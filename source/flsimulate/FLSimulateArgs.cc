@@ -43,6 +43,7 @@ namespace FLSimulate {
     params.simulationManagerParams.manager_config_filename = "";
     // Seeding is auto (from system) unless explicit file supplied
     params.simulationManagerParams.input_prng_seeds_file = "";
+    params.simulationManagerParams.output_prng_seeds_file = "";
     params.simulationManagerParams.vg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the vertex generator
     params.simulationManagerParams.eg_seed   = mygsl::random_utils::SEED_AUTO; // PRNG for the primary event generator
     params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_AUTO; // PRNG for the back end MC hit processors
@@ -60,7 +61,7 @@ namespace FLSimulate {
 
     // I/O control:
     params.outputMetadataFile = "";
-    params.embeddedMetadata   = false;
+    params.embeddedMetadata   = true;
     params.outputFile         = "";
 
     return params;
@@ -163,7 +164,7 @@ namespace FLSimulate {
                                                                 flSimParameters.simulationManagerParams.manager_config_filename);
 
         // File for loading internal PRNG's seeds:
-        if (flSimParameters.userProfile != "expert" && !simSubsystem.has_key("rngSeedFile")) {
+        if (flSimParameters.userProfile == "production" && !simSubsystem.has_key("rngSeedFile")) {
           DT_THROW(FLConfigUserError,
                    "User profile '" << flSimParameters.userProfile << "' "
                    << "must use the '" << "rngSeedFile" << "' simulation configuration parameter!");
@@ -172,6 +173,11 @@ namespace FLSimulate {
           falaise::properties::getValueOrDefault<std::string>(simSubsystem,
                                                               "rngSeedFile",
                                                               flSimParameters.simulationManagerParams.input_prng_seeds_file);
+
+        flSimParameters.simulationManagerParams.output_prng_seeds_file =
+          falaise::properties::getValueOrDefault<std::string>(simSubsystem,
+                                                              "rngSeedFileSave",
+                                                              flSimParameters.simulationManagerParams.output_prng_seeds_file);
 
         // File for loading internal PRNG's states:
         if (flSimParameters.userProfile != "expert" && simSubsystem.has_key("inputRngStateFile")) {
@@ -286,15 +292,25 @@ namespace FLSimulate {
     datatools::kernel & dtk = datatools::kernel::instance();
     const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
+    if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
+      // Make sure PRNG seeds are stored in a default log file:
+      if (flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
+        flSimParameters.simulationManagerParams.output_prng_seeds_file = "__flseeds.log";
+      }
+    }
+
+    // Propagate verbosity to variant service:
+    flSimParameters.variantSubsystemParams.logging = datatools::logger::get_priority_label(flSimParameters.logLevel);
+
     if (flSimParameters.simulationSetupUrn.empty()) {
 
       // Check for hardcoded path to the main simulation setup configuration file:
       if (! flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
         // Only for 'expert' of 'normal' user profiles.
 
-        // Variants configuration:
+        // Variant configuration:
         if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-          DT_LOG_WARNING(flSimParameters.logLevel, "No variants configuration file is provided!");
+          DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration file is provided!");
         }
 
         // Services configuration:
@@ -314,6 +330,8 @@ namespace FLSimulate {
       }
     }
 
+    datatools::urn_info simSetupUrnInfo;
+    datatools::urn_info variantConfigUrnInfo;
     if (!flSimParameters.simulationSetupUrn.empty()) {
       // Check URN registration from the system URN query service:
       {
@@ -321,7 +339,7 @@ namespace FLSimulate {
                     std::logic_error,
                     "Cannot query simulation setup URN='" << flSimParameters.simulationSetupUrn << "'!");
       }
-      const datatools::urn_info & simSetupUrnInfo = dtkUrnQuery.get_urn_info(flSimParameters.simulationSetupUrn);
+      simSetupUrnInfo = dtkUrnQuery.get_urn_info(flSimParameters.simulationSetupUrn);
 
       if (flSimParameters.experimentalSetupUrn.empty()) {
         // Automatically determine the experimental setup component:
@@ -346,7 +364,7 @@ namespace FLSimulate {
         flSimParameters.simulationManagerParams.manager_config_filename = conf_simu_path;
       }
 
-      // Variants:
+      // Variant setup:
       if (flSimParameters.variantConfigUrn.empty()) {
         // Automatically determine the variants configuration component:
         if (simSetupUrnInfo.has_topic("variants") &&
@@ -354,8 +372,16 @@ namespace FLSimulate {
           flSimParameters.variantConfigUrn = simSetupUrnInfo.get_component("variants");
         }
       }
-      {
-        // Resolve variants file:
+      if (!flSimParameters.variantConfigUrn.empty()) {
+        // Check URN registration from the system URN query service:
+        {
+          DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.variantConfigUrn, "variant"),
+                      std::logic_error,
+                      "Cannot query variant setup URN='" << flSimParameters.variantConfigUrn << "'!");
+        }
+        variantConfigUrnInfo = dtkUrnQuery.get_urn_info(flSimParameters.variantConfigUrn);
+
+        // Resolve variant configuration file:
         std::string conf_variants_category = "configuration";
         std::string conf_variants_mime;
         std::string conf_variants_path;
@@ -380,7 +406,7 @@ namespace FLSimulate {
         if (flSimParameters.servicesSubsystemConfigUrn.empty()) {
           if (simSetupUrnInfo.has_topic("services") &&
               simSetupUrnInfo.get_components_by_topic("services").size() == 1) {
-            // If sthe simulation setup URN implies a "services" component, fetch it!
+            // If the simulation setup URN implies a "services" component, fetch it!
             flSimParameters.servicesSubsystemConfigUrn = simSetupUrnInfo.get_component("services");
           }
         }
@@ -400,35 +426,58 @@ namespace FLSimulate {
       }
     } // !flSimParameters.simulationSetupUrn.empty()
 
-    // Search for Variants profile:
     if (!flSimParameters.variantSubsystemParams.profile_load.empty()) {
       // Check the variant config path:
       DT_THROW_IF(flSimParameters.variantSubsystemParams.config_filename.empty(),
                   std::logic_error,
-                  "Variants configuration file='" << flSimParameters.variantSubsystemParams.config_filename << "' is missing!");
+                  "Variant configuration file='" << flSimParameters.variantSubsystemParams.config_filename << "' is missing!");
       // Force the variant profile path:
       DT_THROW_IF(!flSimParameters.variantProfileUrn.empty(),
                   std::logic_error,
-                  "Variants profile URN='" << flSimParameters.variantProfileUrn << "' conflicts with variants profile path='"
+                  "Variant profile URN='" << flSimParameters.variantProfileUrn << "' conflicts with variant profile path='"
                   << flSimParameters.variantSubsystemParams.profile_load << "'!");
-    } else if (!flSimParameters.variantProfileUrn.empty()) {
-      // Determine the variant profile path from a blessed variant profile URN:
-      std::string conf_variantsProfile_category = "configuration";
-      std::string conf_variantsProfile_mime;
-      std::string conf_variantsProfile_path;
-      DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flSimParameters.variantProfileUrn,
-                                                   conf_variantsProfile_category,
-                                                   conf_variantsProfile_mime,
-                                                   conf_variantsProfile_path),
-                  std::logic_error,
-                  "Cannot resolve variants profile URN='" << flSimParameters.variantProfileUrn << "'!");
-      flSimParameters.variantSubsystemParams.profile_load = conf_variantsProfile_path;
+    } else {
+      DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile is set.");
+      if (flSimParameters.variantProfileUrn.empty()) {
+        DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile URN is set.");
+        // No variant profile URN is set:
+        if (variantConfigUrnInfo.is_valid()) {
+          DT_LOG_DEBUG(flSimParameters.logLevel, "Trying to find a default one from the current variant setup...");
+          // Try to find a default one from the current variant setup:
+          if (variantConfigUrnInfo.has_topic("__default_profile__") &&
+              variantConfigUrnInfo.get_components_by_topic("__default_profile__").size() == 1) {
+            // If the simulation setup URN implies a "services" component, fetch it!
+            flSimParameters.variantProfileUrn = variantConfigUrnInfo.get_component("__default_profile__");
+            DT_LOG_DEBUG(flSimParameters.logLevel,
+                         "Using the default variant profile '" << flSimParameters.variantProfileUrn << "'"
+                         << " associated to variant configuration '" << variantConfigUrnInfo.get_urn() << "'.");
+          }
+        }
+      }
+      if (!flSimParameters.variantProfileUrn.empty()) {
+        // Determine the variant profile path from a blessed variant profile URN:
+        std::string conf_variantsProfile_category = "configuration";
+        std::string conf_variantsProfile_mime;
+        std::string conf_variantsProfile_path;
+        DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flSimParameters.variantProfileUrn,
+                                                     conf_variantsProfile_category,
+                                                     conf_variantsProfile_mime,
+                                                     conf_variantsProfile_path),
+                    std::logic_error,
+                    "Cannot resolve variant profile URN='" << flSimParameters.variantProfileUrn << "'!");
+        flSimParameters.variantSubsystemParams.profile_load = conf_variantsProfile_path;
+      }
     }
 
-    if (!flSimParameters.variantSubsystemParams.config_filename.empty()) {
-      DT_LOG_WARNING(flSimParameters.logLevel, "No variants configuration is provided.");
-      // Additional variants settings may be allowed but *must* be compatible
-      // with selected variants config and optional variants profile.
+    if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
+      DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration is provided.");
+    } else {
+      if (flSimParameters.variantSubsystemParams.profile_load.empty()) {
+        DT_LOG_WARNING(flSimParameters.logLevel, "No variant profile is provided.");
+      } else {
+        // Additional variants settings may be allowed but *must* be compatible
+        // with selected variants config and optional variants profile.
+      }
     }
 
     if (flSimParameters.servicesSubsystemConfig.empty()) {
@@ -457,7 +506,7 @@ namespace FLSimulate {
     out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
     out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
     out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename << std::endl;
-    out_ << tag << "digitizationSetupUrn       = " << digitizationSetupUrn << std::endl;
+    out_ << tag << "digitizationSetupUrn       = " << (digitizationSetupUrn.empty() ? "<not used>" : digitizationSetupUrn) << std::endl;
     out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
     out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
     out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;

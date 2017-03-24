@@ -25,7 +25,7 @@ namespace FLSimulate {
     flClarg.logLevel = datatools::logger::PRIO_ERROR;
     flClarg.configScript = "";
     flClarg.outputMetadataFile = "";
-    flClarg.embeddedMetadata = false;
+    flClarg.embeddedMetadata = true;
     flClarg.outputFile = "";
     flClarg.userProfile = "normal";
     return flClarg;
@@ -150,7 +150,7 @@ namespace FLSimulate {
        "file in which to store metadata")
 
       ("embedded-metadata,E",
-       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
+       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
        "flag to (de)activate recording of metadata in the simulation results output file")
 
       ("output-file,o",
