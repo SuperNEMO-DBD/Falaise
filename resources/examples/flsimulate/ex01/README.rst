@@ -124,8 +124,6 @@ Visualization of output Monte Carlo events:
 .. code:: sh
 
    $ flvisualize \
-	  --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
-	  --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-	  --variant-load "vprofile.conf" \
+	  --variant-profile "vprofile.conf" \
 	  --input-file "flSD.brio"
 ..

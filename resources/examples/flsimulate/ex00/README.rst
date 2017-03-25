@@ -98,9 +98,12 @@ Generate simulated data:
 	  --output-file "flSD.brio"
 ..
 
-Note that some output metadata  are generated and automatically stored
- within the  output file (``flSD.brio``) which  contains the generated
- Monte Carlo events (``SD`` bank).
+Here some output metadata  are generated and automatically stored
+within the  output file (``flSD.brio``) which  contains the generated
+Monte Carlo events (``SD`` bank).
+
+Note also the ``--output-metadata-file`` switch which stores the metadata in
+the ``flSD.meta`` companion file.
 
 
 
@@ -111,15 +114,5 @@ Visualization of output Monte Carlo events:
 
 .. code:: sh
 
-   $ flvisualize \
-	  --detector-config-file "urn:snemo:demonstrator:geometry:4.0" \
-	  --variant-config "urn:snemo:demonstrator:simulation:2.1:variants" \
-	  --variant-load "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" \
-	  --input-file "flSD.brio"
-
-   $ flvisualize \
-	  --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
-	  --variant-config "urn:snemo:demonstrator:simulation:2.1:variants" \
-	  --variant-load "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" \
-	  --input-file "flSD.brio"
+   $ flvisualize --input-file "flSD.brio"
 ..

@@ -31,19 +31,20 @@ if [  $? -ne 0 ]; then
 fi
 
 echo >&2 "[info] Running flvisualize..."
-flvisualize \
-    --detector-config-file "urn:snemo:demonstrator:geometry:4.0" \
-    --variant-config "urn:snemo:demonstrator:simulation:2.1:variants" \
-    --variant-load "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" \
-    --input-file "flSD.brio"
+flvisualize --input-file "flSD.brio"
+
+# Set tags:
+# --detector-config-file "urn:snemo:demonstrator:geometry:4.0" \
+# --variant-config "urn:snemo:demonstrator:geometry:4.0:variants" \
+# --variant-profile "urn:snemo:demonstrator:geometry:4.0:variants:profiles:default" \
+
+# Set file paths:
+# --detector-config-file "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
+# --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf"
+# --variant-load "@falaise:config/snemo/demonstrator/geometry/4.0/variants/profiles/default.profile"
 
 cd ${opwd}
 echo >&2 "[info] The end."
 exit 0
 
-# File paths:
-# --detector-config-file "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf"
-# --variant-config "@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf"
-# --variant-load "@falaise:config/snemo/demonstrator/geometry/4.0/variants/profiles/default.profile"
-#
 # end
