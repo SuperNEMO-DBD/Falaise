@@ -181,6 +181,16 @@ namespace FLSimulate {
 
       // Not implemented yet.
 
+      // if (!flSimParameters.digitizationSetupUrn.empty()) {
+      //   digitization_props.store_string("digitizationSetupUrn",
+      //                                        flSimParameters.digitizationSetupUrn,
+      //                                        "Digitization setup URN");
+      // } else if (!flSimParameters.digitizationSetupConfig.empty()) {
+      //   digitization_props.store_path("simulationManagerConfig",
+      //                                      flSimParameters.digitizationSetupConfig,
+      //                                      "Digitization manager configuration file");
+      // }
+
     }
 
     // Variants section:
