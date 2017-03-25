@@ -299,8 +299,6 @@ namespace FLReconstruct {
   void do_postprocess_input_metadata(FLReconstructParams & flRecParameters)
   {
     DT_LOG_TRACE_ENTERING(flRecParameters.logLevel);
-    datatools::kernel & dtk = datatools::kernel::instance();
-    const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
     // Collect input metadata from input files:
     // we first try from some input metadata companion file, if provided,
@@ -392,8 +390,6 @@ namespace FLReconstruct {
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
                   std::logic_error,
                   "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
-
-
       // Resolve reconstruction config file path:
       std::string conf_rec_category = "configuration";
       std::string conf_rec_mime;
