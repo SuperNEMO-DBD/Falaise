@@ -37,6 +37,7 @@ namespace FLVisualize {
     fvArgs.servicesConfigUrn = "";
     fvArgs.servicesConfig = "";
     // I/O:
+    fvArgs.ignoreInputMetadata = false;
     fvArgs.inputMetadataFile = "";
     fvArgs.inputFile = "";
     fvArgs.inputMetadata.reset();
@@ -69,6 +70,8 @@ namespace FLVisualize {
          << "servicesConfigUrn    = " << servicesConfigUrn << std::endl;
     out_ << tag
          << "servicesConfig       = " << servicesConfig << std::endl;
+    out_ << tag
+         << "ignoreInputMetadata  = " << std::boolalpha << ignoreInputMetadata << std::endl;
     out_ << tag
          << "inputMetadataFile    = " << inputMetadataFile << std::endl;
     out_ << tag
@@ -155,7 +158,9 @@ namespace FLVisualize {
     const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
     // Process input metadata:
-    do_postprocess_input_metadata(flVisParameters);
+    if (flVisParameters.ignoreInputMetadata) {
+      do_postprocess_input_metadata(flVisParameters);
+    }
 
     // Input file:
     if (!flVisParameters.inputFile.empty()) {

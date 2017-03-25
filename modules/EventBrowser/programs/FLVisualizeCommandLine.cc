@@ -107,12 +107,18 @@ namespace FLVisualize {
        bpo::value<std::string>()
        ->value_name("tag"),
        "set the services configuration.")
+      ("ignore-input-metadata,G",
+       bpo::value<bool>(&params_.ignoreInputMetadata)
+       ->value_name("flag")
+       ->default_value(false),
+       "flag to ignore input metadata")
       ("input-metadata-file,M",
-       bpo::value<std::string>(&params_.inputMetadataFile)->value_name("file"),
+       bpo::value<std::string>(&params_.inputMetadataFile)
+       ->value_name("file"),
        "file from which to load metadata")
       ("input-file,i",
        bpo::value<std::string>(&params_.inputFile)
-       ->required()
+       // ->required()
        ->value_name("file"),
        "file from which to read input data (simulation, real)")
      ;

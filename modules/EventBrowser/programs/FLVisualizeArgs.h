@@ -42,6 +42,7 @@ namespace FLVisualize {
     std::string                 servicesConfigUrn; //!< Services configuration URN
     std::string                 servicesConfig;    //!< The main configuration file for the service manager
     // I/O:
+    bool         ignoreInputMetadata;              //!< Ignore input metadata
     std::string  inputMetadataFile;                //!< Input metadata file
     std::string  inputFile;                        //!< Input data file for the input module
     datatools::multi_properties inputMetadata;     //!< Metadata imported from the input
