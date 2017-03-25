@@ -98,6 +98,8 @@ namespace snemo {
         /// Setting the input file list
         void set_input_files(const std::vector<std::string> & input_files_);
 
+        void add_input_file(const std::string & input_file_);
+
         const std::vector<std::string> & get_input_files () const;
 
         bool is_preload_required () const;

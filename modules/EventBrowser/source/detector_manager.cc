@@ -392,16 +392,19 @@ namespace snemo {
             if (!geo_manager_config_file.empty()) {
               _geo_manager_config_file_ = geo_manager_config_file;
             } else {
-              // Otherwise, use SuperNEMO/demonstrator config 3.0
-              const std::string resource_dir  = falaise::get_resource_dir();
-              const std::string setup_name    = "snemo/demonstrator";
-              const std::string setup_version = "4.0";
-              _geo_manager_config_file_ = resource_dir + "/config/"
-                + setup_name + "/geometry/" + setup_version + "/manager.conf";
+              // Otherwise, use SuperNEMO/demonstrator config 4.0
+              // const std::string resource_dir  = falaise::get_resource_dir();
+              // const std::string setup_name    = "snemo/demonstrator";
+              // const std::string setup_version = "4.0";
+              // _geo_manager_config_file_ = resource_dir + "/config/"
+              //   + setup_name + "/geometry/" + setup_version + "/manager.conf";
+              // DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
+              //               "Use default SuperNEMO/demonstrator config i.e. " << setup_name << " "
+              //               << "version " << setup_version);
 
+              _geo_manager_config_file_ = "urn:snemo:demonstrator:geometry:4.0";
               DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
-                            "Use default SuperNEMO/demonstrator config i.e. " << setup_name << " "
-                            << "version " << setup_version);
+                            "Use default SuperNEMO/demonstrator config tag : " << _geo_manager_config_file_);
             }
           }
         }
@@ -447,7 +450,8 @@ namespace snemo {
           const std::string gmanager_config_file = _geo_manager_config_file_;
 
           // Load properties from the configuration file
-          datatools::properties::read_config(gmanager_config_file, gmanager_config);
+          uint32_t read_config_flags = datatools::properties::config::RESOLVE_PATH;
+          datatools::properties::read_config(gmanager_config_file, gmanager_config, read_config_flags);
 
           // Prepare mapping configuration with a limited set of geo. categories
           gmanager_config.update("build_mapping", true);

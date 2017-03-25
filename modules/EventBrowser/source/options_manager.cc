@@ -70,7 +70,7 @@ namespace snemo {
 
       void options_manager::set_defaults()
       {
-        _logging_priority_ = datatools::logger::PRIO_NOTICE;
+        _logging_priority_ = datatools::logger::PRIO_WARNING;
 
         _scaling_factor_                 = 0.75;
         _preload_                        = false;
@@ -141,7 +141,7 @@ namespace snemo {
                     "set the logging priority threshold");
         }
 
-        easy_init("scale,s",
+        easy_init("scale,S",
                   po::value<double>(&_scaling_factor_)
                   ->value_name("value"),
                   "scale factor for computer screen (height/width)");
@@ -174,10 +174,10 @@ namespace snemo {
                   ->default_value(false),
                   "enable the load in memory of Boost archive files (working only with pure 'bxg4_production' output)");
 
-        easy_init("input-files,i",
+        easy_init("input-data-files,I",
                   po::value<std::vector<std::string> >(&_input_files_)
                   ->value_name("file"),
-                  "set an input file(s)");
+                  "set an input data file(s)");
 
         if (parse_load_dll) {
           easy_init("load-dll,l",
@@ -538,6 +538,12 @@ namespace snemo {
       void options_manager::set_input_files(const std::vector<std::string> & input_files_)
       {
         _input_files_ = input_files_;
+        return;
+      }
+
+      void options_manager::add_input_file(const std::string & input_file_)
+      {
+        _input_files_.push_back(input_file_);
         return;
       }
 
