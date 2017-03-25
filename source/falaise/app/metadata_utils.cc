@@ -178,7 +178,6 @@ namespace falaise {
       md.clear_key_label();
       md.clear_meta_label();
       md = iMetadataStore;
-      md.set_meta_label("type");
       return md;
     }
 
