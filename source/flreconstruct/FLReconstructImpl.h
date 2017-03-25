@@ -28,19 +28,6 @@
 
 namespace FLReconstruct {
 
-//! \brief Input metadata collector
-class metadata_collector {
- public:
-  //! Constructor
-  metadata_collector(const uint32_t flags_ = 0);
-
-  //! Extract metadata from input data file (embedded metadata)
-  datatools::multi_properties do_get_metadata_from_data(const std::string & file) const;
-
-  //! Extract metadata from input metadata file
-  datatools::multi_properties do_get_metadata_from_file(const std::string & file) const;
-};
-
   //! Populate the metadata container with various informations classified in several categories
   falaise::exit_code do_metadata(const FLReconstructParams &, datatools::multi_properties &);
 

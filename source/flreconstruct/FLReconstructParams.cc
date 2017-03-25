@@ -68,29 +68,42 @@ namespace FLReconstruct {
     static const std::string tag("|-- ");
     static const std::string last_tag("`-- ");
     out_ << "FLReconstruct setup parameters: " << std::endl;
-    out_ << tag << "logLevel                   = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
-    out_ << tag << "userProfile                = " << userProfile << std::endl;
-    out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
-    out_ << tag << "moduloEvents               = " << moduloEvents << std::endl;
-    out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
-    out_ << tag << "reconstructionPipelineUrn    = " << reconstructionPipelineUrn << std::endl;
-    out_ << tag << "reconstructionPipelineConfig = " << reconstructionPipelineConfig << std::endl;
-    out_ << tag << "reconstructionPipelineModule = " << reconstructionPipelineModule << std::endl;
-    out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
-    out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
-    out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;
-    out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
-    out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
-    out_ << tag << "inputMetadataFile          = " << inputMetadataFile << std::endl;
-    out_ << tag << "inputFile                  = " << inputFile << std::endl;
-    out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
-    out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
+    out_ << tag
+         << "logLevel                   = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
+    out_ << tag
+         << "userProfile                = " << userProfile << std::endl;
+    out_ << tag
+         << "numberOfEvents               = " << numberOfEvents << std::endl;
+    out_ << tag
+         << "moduloEvents                 = " << moduloEvents << std::endl;
+    out_ << tag
+         << "experimentalSetupUrn         = " << experimentalSetupUrn << std::endl;
+    out_ << tag
+         << "reconstructionPipelineUrn    = " << reconstructionPipelineUrn << std::endl;
+    out_ << tag
+         << "reconstructionPipelineConfig = " << reconstructionPipelineConfig << std::endl;
+    out_ << tag
+         << "reconstructionPipelineModule = " << reconstructionPipelineModule << std::endl;
+    out_ << tag
+         << "variantConfigUrn             = " << variantConfigUrn << std::endl;
+    out_ << tag
+         << "variantProfileUrn            = " << variantProfileUrn << std::endl;
+    out_ << tag
+         << "variantSubsystemParams       = " << variantSubsystemParams.config_filename << std::endl;
+    out_ << tag
+         << "servicesSubsystemConfigUrn   = " << servicesSubsystemConfigUrn << std::endl;
+    out_ << tag
+         << "servicesSubsystemConfig      = " << servicesSubsystemConfig << std::endl;
+    out_ << tag
+         << "inputMetadataFile            = " << inputMetadataFile << std::endl;
+    out_ << tag
+         << "inputFile                    = " << inputFile << std::endl;
+    out_ << tag
+         << "outputMetadataFile           = " << outputMetadataFile << std::endl;
+    out_ << tag
+         << "embeddedMetadata             = " << std::boolalpha << embeddedMetadata << std::endl;
     out_ << last_tag
-         << "outputFile                 = " << outputFile << std::endl;
-    // out_ << tag
-    //      << "dataType                   = " << dataType << std::endl;
-    // out_ << last_tag
-    //      << "dataSubtype                = " << dataSubtype << std::endl;
+         << "outputFile                   = " << outputFile << std::endl;
     return;
   }
 
