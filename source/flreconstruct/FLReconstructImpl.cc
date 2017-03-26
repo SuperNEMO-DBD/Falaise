@@ -332,6 +332,9 @@ namespace FLReconstruct {
       // Try to extract informations from the metadata:
       DT_LOG_DEBUG(flRecParameters.logLevel, "Found input metadata");
       iMeta.scan(flRecParameters.inputMetadata);
+      if (datatools::logger::is_notice(flRecParameters.logLevel)) {
+        iMeta.print(std::cerr);
+      }
     } // End of using input metadata
 
     if (!iMeta.experimentalSetupUrn.empty()) {
