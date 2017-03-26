@@ -401,7 +401,7 @@ The  `flsimulate.variantService` section  may contains  the `settings`
 parameter.  It consists  in a  list of  assignment instructions  to be
 passed to the variant service.
 
-For example, to simulate 100 Tl208  events from the bulk volume of the
+For example, to simulate 100 Tl-208  events from the bulk volume of the
 tracker cells' field  wires in the full Demonstrator,  you must create
 the      following       `simu.conf`      script       (using      the
 `datatools::multi_properties` format):
@@ -773,7 +773,7 @@ automatically generated  by the  seed manager embedded  in FLSimulate.
 User may  also provide  the `rngSeedFileSave` parameter:  it describes
 the file where to save the  original seeds, particularly when they are
 not set explicitely through  `rngSeedFile`. By default, original seeds
-will be saved in the `__flseeds.log` file in the current directory.
+will be saved in the `__flsimulate-seeds.log` file in the current directory.
 One can thus select explicitely this feature with:
 
 ~~~~~~~~~~~~~
@@ -830,6 +830,137 @@ the `--output-metadata-file` switch. Example:
 $ flsimulate -c simu.conf -o example.brio --output-metadata-file example.meta
 ...
 ~~~~~
+
+Quick start {#usingflsimulate_quickstart}
+===========
+
+Using FLSimulate with default configuration
+-------------------------------------------
+
+Here  we  don't  use  any   configuration  script,  thus  the  default
+simulation   setup  is   used  associated   to  the   default  variant
+profile. Only the output file is set from the command line:
+
+~~~~~
+$ flsimulate -o example.xml
+...
+~~~~~
+
+The  output `example.xml`  file  contains one  unique simulated  event
+corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
+pad.
+
+You may  browse the output file  using your favorite text  editor. You
+will  see   some  leading  records  of   type  `datatools::properties`
+corresponding  to  the   metadata.   Then  comes  a   record  of  type
+`datatools::things`. This data structure  contains the simulated event
+with collections of truth hits.
+
+
+Using FLSimulate with a configuration script
+--------------------------------------------
+
+Here we want to simulate 100 Tl-208 events from the bulk volume of the
+tracker cells' field wires in the full Demonstrator.
+
+1. Prepare the following `simu.conf` script:
+~~~~~
+#@description Main flsimulate configuration script
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+#@config System setup
+#@description Number of events to simulate
+numberOfEvents : integer = 100
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+#@config Variant setup
+#@description List of variant settings
+settings : string[4] = \
+  "@geometry:layout=Basic" \
+  "@vertexes:generator=field_wire_bulk" \
+  "@primary_events:generator=Tl208" \
+  "@simulation:output_profile=all_details"
+~~~~~
+
+2. Run `flsimulate`:
+~~~~~
+$ flsimulate -c simu.conf -o example.brio
+...
+~~~~~
+
+Here we use the *brio* format. This binary format is not readable.
+
+
+Using FLSimulate with a configuration script and an explicit variant profile
+----------------------------------------------------------------------------
+
+
+1. Prepare the following `variant.profile` file:
+~~~~~~
+$ bxvariant_inspector \
+	--load-dll "Falaise@$(flquery --libdir)" \
+	--datatools::resource-path="falaise@$(flquery --resourcedir)" \
+	--variant-config \
+	   "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
+	--variant-gui \
+	--variant-store="variant.profile"
+~~~~~~
+   Use the interface to select the options. We obtain the following profile:
+~~~~~
+#@format=datatools::configuration::variant
+#@format.version=1.0
+#@organization=snemo
+#@application=falaise
+
+[registry="geometry"]
+layout = "Basic"
+layout/if_basic/magnetic_field = true
+layout/if_basic/magnetic_field/is_active/type = "UniformVertical"
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = "+z"
+layout/if_basic/source_layout = "Basic"
+layout/if_basic/source_layout/if_basic/thickness = 250 um
+layout/if_basic/source_layout/if_basic/material = "Se82"
+layout/if_basic/source_calibration = false
+layout/if_basic/shielding = true
+calo_film_thickness = 25 um
+
+[registry="vertexes"]
+generator = "field_wire_bulk"
+
+[registry="primary_events"]
+generator = "Tl208"
+
+[registry="simulation"]
+physics_mode = "Constructors"
+physics_mode/if_constructors/em_model = "standard"
+production_cuts = true
+output_profile = "all_details"
+~~~~~
+2. Prepare the following `simu.conf` script:
+~~~~~
+#@description Main flsimulate configuration script
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+#@config System setup
+#@description Number of events to simulate
+numberOfEvents : integer = 100
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+#@config Variant setup
+#@description List of variant settings
+profile : string as path = "variant.profile"
+~~~~~
+3. Run `flsimulate`:
+~~~~~
+$ flsimulate -c simu.conf -o example.brio
+...
+~~~~~
+
 
 Examples {#usingflsimulate_examples}
 ========
