@@ -17,6 +17,14 @@ namespace falaise {
     {
       userProfile = "";
       experimentalSetupUrn = "";
+      variantConfigUrn = "";
+      variantConfigPath = "";
+      variantProfileUrn = "";
+      variantProfilePath = "";
+      variantProfileUrn = "";
+      variantProfilePath = "";
+      servicesConfigPath = "";
+      variantProfilePath = "";
       numberOfEvents = 0;
       doSimulation = false;
       simuSetupUrn = "";
@@ -36,6 +44,18 @@ namespace falaise {
            << "userProfile           = " << userProfile << std::endl;
       out_ << tag
            << "experimentalSetupUrn  = " << experimentalSetupUrn << std::endl;
+      out_ << tag
+           << "variantConfigUrn      = " << variantConfigUrn << std::endl;
+      out_ << tag
+           << "variantConfigPath     = " << variantConfigPath << std::endl;
+      out_ << tag
+           << "variantProfileUrn     = " << variantProfileUrn << std::endl;
+      out_ << tag
+           << "variantProfilePath    = " << variantProfilePath << std::endl;
+       out_ << tag
+           << "servicesConfigUrn     = " << servicesConfigUrn << std::endl;
+      out_ << tag
+           << "servicesConfigPath    = " << servicesConfigPath << std::endl;
       out_ << tag
            << "numberOfEvents        = " << numberOfEvents << std::endl;
       out_ << tag
