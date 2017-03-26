@@ -597,15 +597,14 @@ are available.
 
 From  Falaise  3.0  (simulation  setup version  2.1),  the  choice  of
 geometry  options  and  vertex/decay  generators  is  done  through  a
-Bayeux/datatools   *variant  service*   embedded  in   the  FlSimulate
+Bayeux/datatools   *variant  service*   embedded  in   the  FLSimulate
 application.  A profile of variant  parameters must be created to suit
 the user's needs (see sections above).
 
 Note  that `flsimulate`  will  throw  an exception  if  you supply  an
 unknown  generator for  the  experimental setup  being simulated.   In
 principle,  the variant  system  does check  that  the combination  of
-vertex  and  event generators  are  sensible.   Other invalid  options
-(geometry...)  should also be reported.
+vertex  and  event generators  are  sensible.
 
 Summary of available configurations {#usingflsimulate_summaryofavailableconfigurations}
 ===================================
@@ -618,19 +617,26 @@ configurations of various types:
 - simulation setups
 - reconstruction pipelines
 
-This official  configurations are related through  dependency schemes.
-Each configuration is given an unique  identifier: its *tag*.  It is a
-character  string which  uses the  URN scheme  format.  In  principle,
-users can thus address, in a given context, any official configuration
-thanks to its tag.
+These  official  configurations are  registered  in  a dedicated  *URN
+service*.   Each  configuration is  given  an  unique identifier:  its
+*tag*.  It is  a character string which uses the  *URN* scheme format.
+In principle, users can thus address, in a given context, any official
+configuration  thanks to  its tag.   Some configurations  are possibly
+linked by some dependency scheme.  Generally, a given simulation setup
+is designed  to work with  a special experimental setup.   It wouldn't
+work with another  one. For example, the default  simulation setup for
+the SuperNEMO  demonstrator implies a collection  of vertex generators
+taht  are not  compatible  with  the BiPo3  geometry  model. The  *URN
+service* tries to formally handle such kind of constraints.
 
-Once selected,  a tag can be  associated to one or  more configuration
-files  from   the  Falaise  resource  directory.   This  operation  is
-automatically handled by an *URN resolver service*.
+Once  selected,  a  tag  can  thus   be  associated  to  one  or  more
+configuration  files  from  the   Falaise  resource  directory.   Such
+operations are automatically handled by an *URN resolver service*.
 
-Users  may  also  use  their   own  simulation  setups  and  associated
+Users  may  also  use  their  own  simulation  setups  and  associated
 configuration  files. In  such case,  explicit paths  to configuration
-files must be provided in configuration scripts.
+files must be  provided in configuration scripts. This  mode should be
+reserved for expert users.
 
 
 List of available experiments {#usingflsimulate_summaryofavailableexperiments}
@@ -831,11 +837,15 @@ $ flsimulate -c simu.conf -o example.brio --output-metadata-file example.meta
 ...
 ~~~~~
 
+In case the user  does not choose to store the  metadata in the output
+data  file and  no  explicit  external metadata  file  is selected,  a
+default one is generated with name `__flsimulate-metadata.log`.
+
 Quick start {#usingflsimulate_quickstart}
 ===========
 
-Using FLSimulate with default configuration
--------------------------------------------
+Case 1 : using FLSimulate with default configuration {#usingflsimulate_quickstart_case1}
+----------------------------------------------------
 
 Here  we  don't  use  any   configuration  script,  thus  the  default
 simulation   setup  is   used  associated   to  the   default  variant
@@ -848,19 +858,25 @@ $ flsimulate -o example.xml
 
 The  output `example.xml`  file  contains one  unique simulated  event
 corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
-pad.
+pad.   You  may  browse  the  output file  using  your  favorite  text
+editor.    You   will    see    some   leading    records   of    type
+`datatools::properties` corresponding  to the metadata.  Then  comes a
+record of  type `datatools::things`. This data  structure contains the
+unique simulated event with collections of truth hits.
 
-You may  browse the output file  using your favorite text  editor. You
-will  see   some  leading  records  of   type  `datatools::properties`
-corresponding  to  the   metadata.   Then  comes  a   record  of  type
-`datatools::things`. This data structure  contains the simulated event
-with collections of truth hits.
+The `__flsimulate-seeds.log` should also be generated. It contains the
+seeds used to initialize the embedded pseudo random number generators.
 
+You may display the event with:
+~~~~~
+$ flvisualize -i example.xml
+...
+~~~~~
 
-Using FLSimulate with a configuration script
---------------------------------------------
+Case 2 : using FLSimulate with a configuration script {#usingflsimulate_quickstart_case2}
+-----------------------------------------------------
 
-Here we want to simulate 100 Tl-208 events from the bulk volume of the
+Here we want to simulate 10 Tl-208 events from the bulk volume of the
 tracker cells' field wires in the full Demonstrator.
 
 1. Prepare the following `simu.conf` script:
@@ -872,30 +888,35 @@ tracker cells' field wires in the full Demonstrator.
 [name="flsimulate" type="flsimulate::section"]
 #@config System setup
 #@description Number of events to simulate
-numberOfEvents : integer = 100
+numberOfEvents : integer = 10
 
 [name="flsimulate.variantService" type="flsimulate::section"]
 #@config Variant setup
 #@description List of variant settings
 settings : string[4] = \
-  "@geometry:layout=Basic" \
-  "@vertexes:generator=field_wire_bulk" \
-  "@primary_events:generator=Tl208" \
-  "@simulation:output_profile=all_details"
+  "geometry:layout=Basic" \
+  "vertexes:generator=field_wire_bulk" \
+  "primary_events:generator=Tl208" \
+  "simulation:output_profile=all_details"
 ~~~~~
-
 2. Run `flsimulate`:
 ~~~~~
 $ flsimulate -c simu.conf -o example.brio
 ...
 ~~~~~
+   Here we use the *brio* format. This binary format is not user friendly and we cannot
+   display its contents with standard tools.
+3. You may display the events with:
+~~~~~
+$ flvisualize -i example.brio
+...
+~~~~~
 
-Here we use the *brio* format. This binary format is not readable.
 
+Case 3 : Using FLSimulate with a configuration script and an explicit variant profile {#usingflsimulate_quickstart_case3}
+-------------------------------------------------------------------------------------
 
-Using FLSimulate with a configuration script and an explicit variant profile
-----------------------------------------------------------------------------
-
+Here we use the same simulation setup than in case 2.
 
 1. Prepare the following `variant.profile` file:
 ~~~~~~
@@ -904,10 +925,13 @@ $ bxvariant_inspector \
 	--datatools::resource-path="falaise@$(flquery --resourcedir)" \
 	--variant-config \
 	   "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
-	--variant-gui \
+    --variant-set "geometry:layout=Basic" \
+    --variant-set "vertexes:generator=field_wire_bulk" \
+    --variant-set "primary_events:generator=Tl208" \
+    --variant-set "simulation:output_profile=all_details" \
 	--variant-store="variant.profile"
 ~~~~~~
-   Use the interface to select the options. We obtain the following profile:
+   Note the list of `--variant-set` switches used to select the options. We obtain the following profile:
 ~~~~~
 #@format=datatools::configuration::variant
 #@format.version=1.0
@@ -938,6 +962,7 @@ physics_mode = "Constructors"
 physics_mode/if_constructors/em_model = "standard"
 production_cuts = true
 output_profile = "all_details"
+
 ~~~~~
 2. Prepare the following `simu.conf` script:
 ~~~~~
@@ -948,7 +973,7 @@ output_profile = "all_details"
 [name="flsimulate" type="flsimulate::section"]
 #@config System setup
 #@description Number of events to simulate
-numberOfEvents : integer = 100
+numberOfEvents : integer = 10
 
 [name="flsimulate.variantService" type="flsimulate::section"]
 #@config Variant setup
@@ -957,7 +982,73 @@ profile : string as path = "variant.profile"
 ~~~~~
 3. Run `flsimulate`:
 ~~~~~
-$ flsimulate -c simu.conf -o example.brio
+$ flsimulate -c simu.conf -o example.data.gz
+...
+~~~~~
+4. Display the events:
+~~~~~
+$ flvisualize -i example.data.gz
+...
+~~~~~
+
+Case 4 : Using FLSimulate with an explicit configuration, profile and seeds {#usingflsimulate_quickstart_case4}
+---------------------------------------------------------------------------
+
+Here we use again the same simulation setup than in cases 2 and 3.
+
+1. Generate a set of seeds:
+~~~~~
+$ bxg4_seeds -k -d . -T -p seeds.conf
+~~~~~
+2. Generate the `variant.profile` file:
+~~~~~~
+$ bxvariant_inspector \
+	--load-dll "Falaise@$(flquery --libdir)" \
+	--datatools::resource-path="falaise@$(flquery --resourcedir)" \
+	--variant-config \
+	   "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
+    --variant-set "geometry:layout=Basic" \
+    --variant-set "vertexes:generator=field_wire_bulk" \
+    --variant-set "primary_events:generator=Tl208" \
+    --variant-set "simulation:output_profile=none" \
+	--variant-store="variant.profile"
+~~~~~~
+3. Prepare the following `simu.conf` script:
+~~~~~
+#@description Main flsimulate configuration script
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+#@config System setup
+#@description Number of events to simulate
+numberOfEvents : integer = 10
+
+[name="flsimulate.simulation" type="flsimulate::section"]
+#@config Simulation setup
+rngSeedFile : string as path = "seeds.conf"
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+#@config Variant setup
+#@description List of variant settings
+profile : string as path = "variant.profile"
+~~~~~
+4. Run `flsimulate` twice:
+~~~~~
+$ flsimulate -c simu.conf -o example.xml
+...
+$ flsimulate -c simu.conf -o example2.xml
+...
+~~~~~
+5. Check that both generated files have strictly the same contents:
+~~~~~
+$ diff example.xml example2.xml
+$ echo $?
+0
+~~~~~
+6. Display the events:
+~~~~~
+$ flvisualize -i example.xml
 ...
 ~~~~~
 
