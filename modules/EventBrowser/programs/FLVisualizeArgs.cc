@@ -51,7 +51,7 @@ namespace FLVisualize {
   {
     static const std::string tag("|-- ");
     static const std::string last_tag("`-- ");
-    out_ << "FLVisualize command line parameters: " << std::endl;
+    out_ << "FLVisualize parameters: " << std::endl;
     out_ << tag
          << "logLevel             = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
     out_ << tag
@@ -104,8 +104,8 @@ namespace FLVisualize {
       // No metadata is available. Do nothing.
       // Probably we should handle this path in the future.
     }
-    if (datatools::logger::is_debug(flVisParameters.logLevel)) {
-      flVisParameters.inputMetadata.tree_dump(std::cerr, "Input metadata: ", "[debug] ");
+    if (datatools::logger::is_notice(flVisParameters.logLevel)) {
+      flVisParameters.inputMetadata.tree_dump(std::cerr, "Loaded input metadata: ", "[notice] ");
     }
 
     // Input metadata of interest:
@@ -114,8 +114,11 @@ namespace FLVisualize {
     // Extract input metadata of interest:
     if (!flVisParameters.inputMetadata.empty()) {
       // Try to extract informations from the metadata:
-      DT_LOG_DEBUG(flVisParameters.logLevel, "Found input metadata");
+      DT_LOG_NOTICE(flVisParameters.logLevel, "Found input metadata");
       iMeta.scan(flVisParameters.inputMetadata);
+      if (datatools::logger::is_notice(flVisParameters.logLevel)) {
+        iMeta.print(std::cerr);
+      }
     } // End of using input metadata
 
     if (!iMeta.experimentalSetupUrn.empty()) {
@@ -159,6 +162,8 @@ namespace FLVisualize {
 
     // Process input metadata:
     if (flVisParameters.ignoreInputMetadata) {
+       DT_LOG_NOTICE(flVisParameters.logLevel, "Do not process input metadata.");
+    } else {
       do_postprocess_input_metadata(flVisParameters);
     }
 
