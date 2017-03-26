@@ -425,10 +425,10 @@ numberOfEvents : integer = 100
 #@config Variant setup
 #@description List of variant settings
 settings : string[4] = \
-  "@geometry:layout=Basic" \
-  "@vertexes:generator=field_wire_bulk" \
-  "@primary_events:generator=Tl208" \
-  "@simulation:output_profile=none"
+  "geometry:layout=Basic" \
+  "vertexes:generator=field_wire_bulk" \
+  "primary_events:generator=Tl208" \
+  "simulation:output_profile=none"
 
 [name="flsimulate.services" type="flsimulate::section"]
 #@config Services setup
