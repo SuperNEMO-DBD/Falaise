@@ -18,6 +18,20 @@
 
 namespace FLSimulate {
 
+  // static
+  const std::string & FLSimulateArgs::default_file_for_output_metadata()
+  {
+    static const std::string _f("__flsimulate-metadata.log");
+    return _f;
+  }
+
+  // static
+  const std::string & FLSimulateArgs::default_file_for_seeds()
+  {
+    static const std::string _f("__flsimulate-seeds.log");
+    return _f;
+  }
+
   void do_postprocess(FLSimulateArgs & flSimParameters);
 
   // static
@@ -88,11 +102,12 @@ namespace FLSimulate {
     flSimParameters.embeddedMetadata   = args.embeddedMetadata;
     flSimParameters.outputFile         = args.outputFile;
 
-    if (flSimParameters.outputMetadataFile.empty()) {
-      // Force storage of metadata in the output data file:
-      flSimParameters.embeddedMetadata = true;
-      // Force a default metadata log file:
-      flSimParameters.outputMetadataFile = "flsimulate-metadata.log";
+    if (! flSimParameters.embeddedMetadata) {
+      if (flSimParameters.outputMetadataFile.empty()) {
+        // Force a default metadata log file:
+        flSimParameters.outputMetadataFile =
+          FLSimulateArgs::default_file_for_output_metadata();
+      }
     }
 
     // If a script was supplied, use that to override params
@@ -295,7 +310,8 @@ namespace FLSimulate {
     if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
       // Make sure PRNG seeds are stored in a default log file:
       if (flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
-        flSimParameters.simulationManagerParams.output_prng_seeds_file = "__flseeds.log";
+        flSimParameters.simulationManagerParams.output_prng_seeds_file
+          = FLSimulateArgs::default_file_for_seeds();
       }
     }
 

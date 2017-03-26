@@ -68,6 +68,12 @@ namespace FLSimulate {
     // Print:
     void print(std::ostream &) const;
 
+    // Return the default file for output metadata
+    static const std::string & default_file_for_output_metadata();
+
+    // Return the default file output metadata file
+    static const std::string & default_file_for_seeds();
+
   };
 
   //! Parse command line arguments to configure the simulation parameters
