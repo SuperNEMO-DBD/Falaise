@@ -36,7 +36,7 @@ echo >&2 "[info] Running flvisualize..."
 flvisualize \
     --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
     --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-    --variant-load "vprofile.conf" \
+    --variant-profile "vprofile.conf" \
     --input-file "flRec.brio"
 
 cd ${opwd}
