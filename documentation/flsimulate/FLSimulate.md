@@ -14,32 +14,41 @@ geometry modelling and I/O handled by the Bayeux framework.
 
 Here  we present  a  brief  overview of  running  FLSimulate from  the
 command line  to generate  an output  file suitable  for input  to the
-[FLReconstruct](@ref usingflreconstruct) application.
+[FLReconstruct](@ref   usingflreconstruct)    and   [FLVisualize](@ref
+usingflvisualize) applications.
 
 Each FLSimulate simulation  setup is built on top  of an *experimental
 setup*.  The experimental  setup is characterized by  a geometry model
 and possibly other dedicated services (electronics...).
 
-When initialized, the simulation setup thus implies :
-- the   instantiation   of    some   dedicated   services   (geometry,
+When initialized, the simulation setup triggers :
+- the instantiation of a *variants  service* (for setting user options
+  like geometry layout, vertex and decay generators...)
+- the   instantiation   of   some  dedicated   *services*   (geometry,
   electronics...),
-- the instantiation of a variants service,
-- some core  components for vertex and  particles generation, particle
-  tracking (Geant4 based engine).
+- the instantiation of a some *modules* dedicated to specific tasks:
+	* the *simulation* module with some core components for vertex and
+	  particles generation, particle tracking (Geant4 based engine),
+	* the *digitization* module (not used yet),
+	* the *output* module to save  output simulated data (and possible
+      embedded metadata).
 
 At  present,  FLSimulate only  supports  simulation  of the  SuperNEMO
-demonstrator module, with several geometry and simulation variants.
+demonstrator module, with several geometry and simulation *variants*.
 
 The user is free to choose among several options:
-- geometry layout of the detector: `Basic` (full detector) or `HalfCommissioning`
-- activation of the magnetic field of not
-- use of the external shieling
-- change source material and thickness
-- use of calibration sources of not
-- use of a specific vertex generator, which may depends on the geometry layout
-- use of a specific event generator, which may depends on the geometry layout
-- use of a specific simulation options
-Other options are available (see section below).
+- geometry  layout  of  the   detector:  `Basic`  (full  detector)  or
+  `HalfCommissioning`
+- activation of the magnetic field of not,
+- use of the external shieling of not,
+- change source material and thickness,
+- use of calibration sources of not,
+- use  of  a specific  vertex  generator,  which  may depends  on  the
+  geometry layout,
+- use of a specific event generator, which may depends on the geometry
+  layout,
+- use of specific simulation options.
+Other options are also available (see section below).
 
 Please contact the Software Working Group if you have any questions or
 feature requests.
@@ -54,8 +63,9 @@ Using FLSimulate on the Command Line {#usingflsimulate_commandline}
 
 FLSimulate is  implemented as a  simple command line  application just
 like familiar  UNIX commands such as  `ls`. In the following,  we will
-write commands assuming that `flsimulate` is  in your path. If is not,
-simply use the relative or absolute path to `flsimulate`.
+write commands  assuming that the  `flsimulate` executable is  in your
+path.  If it  is not,  simply  use the  relative or  absolute path  to
+`flsimulate`.
 
 You can get help on the options that can be passed to `flsimulate`
 by running it with the `-h` of `--help` options, e.g.
@@ -103,29 +113,242 @@ flsimulate uses the following external libraries:
 Note that the exact versions shown  will depend on the current release
 and what versions of packages are linked.
 
-FLSimulate  basically   runs  the  simulation  in   batch  mode.   The
-simulation  setup  must be  explicitely  selected.   This implies  the
-SuperNEMO  demonstrator  module  experimental setup  is  automatically
-selected  to  be simulated,  the  default  geometry layout  being  the
-`Basic`  (full)  demonstrator  module.    By  default,  one  event  is
-generated.  It consists in shooting  one 1 MeV electron, with vertices
-arbitrary generated from the center of the detector.
+FLSimulate's configuration script {#usingflsimulate_configscript}
+=================================
 
-You must provide a configuration script to set the basic parameters of
-the simulation (`SimulationSubsystem` section):
-- the simulation setup identifier (tag using the URN scheme),
-- the number of events to be generated,
-- the input file for the  seeding of random number generators.
+FLSimulate basically runs the  simulation in batch mode.  Practically,
+a *configuration script* must be generally provided by the user.
 
-A    sample    configuration    script    is    provided    in    this
+Script's format {#usingflsimulate_configscript_format}
+---------------
+
+The script  uses  the  Bayeux's `datatools::multi_properties`  format.
+The script contains a mandatory header:
+
+~~~~~~
+#@description a short description of the simulation run
+#@key_label  "name"
+#@meta_label "type"
+~~~~~~
+
+The '`#@description`' line is optional but highly recommended.
+
+You may add comments at any place  in the script. Just prepend a sharp
+('`#`') symbol to any comment line:  You may also prepend a comment at
+the end of a line. Examples:
+
+~~~~~~
+# This is a single commented line
+
+{...some script command...} # Comment starts at the end of the line
+
+# This is
+# a commented
+# block
+~~~~~~
+
+Note   that  lines   starting  with   `'#@`'  are   generally  special
+meta-comment with embedded commands. They  should not be considered as
+comments.  As a matter of rule,  the use of lines starting with '`#@`'
+is reserved for system use.
+
+
+After the header, the script contains sections. A section starts
+with a section definition line with two identifiers:
+
+- the *name* of the section,
+- the *type* of the section (here it must be `"flsimulate::section"`).
+
+The syntax is:
+~~~~~~
+[name="SectionName" type="flsimulate::section"]
+
+... section's body ...
+~~~~~~
+
+The section's body uses the `datatools::properties` format.  After the
+definition line, a short description may be optionally provided thanks
+to the '`#@config`' meta-comment:
+
+~~~~~~
+#@config a short description of the purpose of the section
+~~~~~~
+
+Then comes  the section's body which  consists in a list  of parameter
+setting directives. The format is:
+
+~~~~~~
+#@description a short description of the parameter
+NAME : TYPE [DECORATOR] = VALUE
+~~~~~~
+
+where `NAME` is the parameter's name,  `TYPE` its type and `VALUE` the
+selected value for this parameter. Some parameters may use an optional
+`DECORATOR` which gives additional  informations about the parameter's
+type or processing.  Again, the  `#@description` line is optional, but
+recommended. Example:
+~~~~~~
+#@description The number of events to be generated
+numberOfEvents : integer = 10000
+~~~~~~
+
+Script's sections {#usingflsimulate_configscript_sections}
+-----------------
+
+The  FLSimulate's  script  contains  up   to  five  sections  of  type
+`flsimulate::section` with the following names:
+
+- `flsimulate` : this is the  system/base section where to set general
+  parameters such as:
+
+  - `numberOfEvents` : the number of  events to be generated (integer,
+    optional, default is: `1`),
+  - `doSimulation` : flag to  activate the simulation module (boolean,
+    default is: `true`),
+  - `doDigitization`  :  flag  to  activate  the  digitization  module
+    (boolean, default is: `false`, not used yet).
+
+- `flsimulate.simulation` : this is the *simulation* section where the
+  simulation setup is chosen as  well as parameters for the management
+  of pseudo random number generators (PRNG): seeds, logging about PRNG
+  states.
+
+  Parameters of interest are:
+
+  - `simulationSetupUrn` : the simulation setup tag (string, mandatory
+    for  production   runs,  otherwise   optional,  default   tag  is:
+    `urn:snemo:demonstrator:simulation:2.1`).
+  - `simulationSetupConfig`  : the  explicit  path  to the  simulation
+    configuration   file  for   the  Bayeux/mctools   *Geant4  driver*
+    (string/path, optional).  If not set, it is automatically resolved
+    from the simulation setup tag.
+  - `rngSeedFile` :  the input file  for the seeding of  random number
+	generators (string/path, mandatory  for production runs, otherwise
+	optional; if  this file  is not provided,  initial PRNG  seeds are
+	automatically computed and saved in a default log file).
+
+- `flsimulate.digitization`  : this  is  the *digitization*  section
+  (not used yet).
+
+- `flsimulate.variantService` :  this is the *variants*  section where
+  the Bayeux/datatools  *variant service* dedicated to  the management
+  of variant  parameters and configurations is  configured.  Users are
+  given here the opportunity to tweak some core options about:
+
+  - the geometry,
+  - the vertex generation,
+  - the decay generation,
+  - the simulation engine itself.
+
+  Parameters of interest are:
+  - `configUrn`  :  the  configuration  tag for  the  variant  service
+	associated  to the  simulation setup  (string, optional).   If not
+	set, it is automatically resolved from the simulation setup tag.
+  - `config` : the path to the main configuration file for the variant
+	service   associated  to   the   simulation  setup   (string/path,
+	optional).   If not  set, it  is automatically  resolved from  the
+	`configUrn` tag.
+  - `profileUrn`  :  the configuration  tag  for  the variant  profile
+	chosen by the  user to perform the  simulation (string, optional).
+	If not set, it may  be automatically resolved from the `configUrn`
+	tag is the variant configuration has a registered default profile.
+  - `profile` : the path to the  variant profile chosen by the user to
+	perform the simulation (string/path,optional).   If not set, it is
+	automatically resolved from the `profileUrn` tag.
+  - `settings` :  a list  of explicit  setting for  variant parameters
+	chosen by  the user to  perform the simulation (array  of strings,
+	optional).   If not  set, it  is automatically  resolved from  the
+	`profileUrn` tag.
+
+- `flsimulate.services`  :  this  is the  *services*  section  where
+  explicit  configuration for  the embedded  Bayeux/datatools *service
+  manager* is defined (by tag or explicit configuration file). Typical
+  services are:
+
+  - the  *geometry*   service  :  it  describes   the  geometry  model
+	associated  to  the  experimental  setup   on  top  of  which  the
+	simulation setup is built.
+  - the  *electronics*  service (not  used  yet)  : it  describes  the
+    electronics model associated  to the experimental setup  on top of
+    which the simulation setup is built.
+
+  Parameters of interest are:
+
+  - `configUrn`  :  the  configuration  tag for  the  service  manager
+	associated to  the simulation setup (string,  optional).  not set,
+	it is automatically resolved from the simulation setup tag.
+  - `config` : the path to the main configuration file for the service
+	managerservice  associated to  the simulation  setup (string/path,
+	optional).   If not  set, it  is automatically  resolved from  the
+	`configUrn` tag.
+
+A sample minimal configuration script  (commented) is provided in this
 [document](FLSimulate-3.0.0.conf) (for Falaise 3.0.0).
 
-A  set of  *physics*  parameters  can be  tweaked  through support  of
-variant configuration parameters (`VariantSubsystem` section):
-- various geometry options,
-- the vertex generator,
-- the primary event  generator,
-- additional simulation parameters...
+For a  given run, the simulation  setup is selected from  the script's
+`flsimulate.simulation` section.   Falaise uses  a special  service to
+registered   blessed/official  configuration   (geometry,  simulation,
+reconstruction...). Any  setup of interest  may be registered  with an
+unique *tag*. The  tag is a simple character string  which uses an URN
+scheme.  For  example, Falaise  version  3.0.0  is released  with  the
+registered     simulation    setup     version     2.1    with     tag
+`urn:snemo:demonstrator:simulation:2.1.     This   is    the   default
+simulation setup  whcih will be  used if not explicitely  requested by
+the user.
+
+Thus, in the `flsimulate.simulation` section, the simulation setup tag
+is optional and  defaults to: `urn:snemo:demonstrator:simulation:2.1`.
+If  no other  parameters are  explicitly set,  FLSimulate will  try to
+resolve all  other configuration components using  a dependency scheme
+displayed on the table below:
+
+~~~~~
++--urn:snemo:demonstrator:simulation:2.1 (simulation setup)
+   +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)
+   +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)
+   |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
+   +-- urn:snemo:demonstrator:simulation:2.1:variants (used variant configuration)
+   |   +-- urn:snemo:demonstrator:simulation:2.1:variants:profiles:default (default variant profile)
+   +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)
+   +-- urn:snemo:demonstrator:simulation:decays:1.2 (used decay generation setup)
+~~~~~
+
+Effective  paths  to  various  configuration  files  are  automatically
+resolved by a special service.
+
+The          default          variant         profile,          namely
+`urn:snemo:demonstrator:simulation:2.1:variants:profiles:default`,  is
+associated to the default simulation setup. It implies:
+
+- the `Basic` geometry layout (full) demonstrator module with external
+  iron  shielding,  uniform magnetic  field  (25  Gauss), enriched  Se
+  source pads...
+- (0nubb) decays of Se-82,
+- vertices generated from the bulk volume of random source pads.
+
+To learn more about the format of the simulation configuration script,
+use:
+
+~~~~~
+$ flsimulate --help-scripting
+...
+~~~~~
+
+FLSimulate's variant system {#usingflsimulate_variants}
+===========================
+
+As  mentionned  above, FLSimulate  embeds  a  *variant service*  which
+offers to the user the possibility to tweak a set of parameters from a
+*variant repository*.  A  variant *profile* can thus  be generated and
+imported by the FLSimulate's subsystems.
+
+In  the current  implementation  (Falaise 3.0.0  and simulation  setup
+version  2.1),  4 variant  *registries*  are  defined in  the  variant
+*repository*:
+- `geometry` : handles geometry options,
+- `vertexes` : handles vertex generation options,
+- `primary_events`: handles decays generation options,
+- `simulation` : handles options for the Geant4 engine.
 
 The    list    of    user     choices    is    described    in    this
 [document](FLSimulateVariantsDoc-2.1.pdf) (for  SuperNEMO Demonstrator
@@ -133,10 +356,96 @@ simulation  setup version  2.1 and  Falaise 3.0.0).  It describes  all
 available   simulation   variant   parameters   and   their   possible
 dependencies in this simulation context.
 
+Note that the  variant system tries to ensure  the consistence between
+various choices.  For example,  the vertex generators from calibration
+source (registry  `vertexes`) are  not available when  the calibration
+sources are not arranged in  the source frame geometry model (registry
+`geometry`).   A dependency  scheme  is thus  supported  to take  into
+account such constraints.
+
 The  lists of  valid vertex  and  event generators  for each  geometry
 variant options can  also be dynamically browsed  through the Bayeux's
 `bxvariant_inspector` program  (with builtin  GUI mode of  your Bayeux
 setup). From the Falaise build directory, run:
+
+~~~~~
+$ bxvariant_inspector \
+    --load-dll "Falaise@$(bash ./BuildProducts/bin/flquery --libdir)" \
+    --datatools::resource-path="falaise@$(bash ./BuildProducts/bin/flquery --resourcedir)" \
+    --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
+    --variant-gui
+~~~~~
+
+The  image below  shows  the  typical GUI  interface  of the  Bayeux's
+variant  inspector/editor  program.The  interface  here  displays  the
+`geometry` registry panel:
+
+![Bayeux's variant inspector GUI (geometry panel)](@ref images/fls_variants_gui_1.png)
+@latexonly
+\includegraphics[width=\linewidth]{fls_variants_gui_1}
+@endlatexonly
+
+The next  image shows the selection  of the vertex generator  from the
+`vertexes` registry panel:
+
+![Bayeux's variant inspector GUI (vertexes panel)](@ref images/fls_variants_gui_2.png)
+@latexonly
+\includegraphics[width=\linewidth]{fls_variants_gui_2}
+@endlatexonly
+
+
+Using explicit variant settings  {#usingflsimulate_variants_explicitsettings}
+-------------------------------
+
+The  `flsimulate.variantService` section  may contains  the `settings`
+parameter.  It consists  in a  list of  assignment instructions  to be
+passed to the variant service.
+
+For example, to simulate 100 Tl208  events from the bulk volume of the
+tracker cells' field  wires in the full Demonstrator,  you must create
+the      following       `simu.conf`      script       (using      the
+`datatools::multi_properties` format):
+
+~~~~~
+#@description Main flsimulate configuration script
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+
+#@description Number of events to simulate
+numberOfEvents : integer = 100
+
+[name="flsimulate.simulation" type="flsimulate::section"]
+#@config Simulation setup
+# #@description Tag of the simulation setup (default)
+# simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+#@config Variant setup
+#@description List of variant settings
+settings : string[4] = \
+  "@geometry:layout=Basic" \
+  "@vertexes:generator=field_wire_bulk" \
+  "@primary_events:generator=Tl208" \
+  "@simulation:output_profile=none"
+
+[name="flsimulate.services" type="flsimulate::section"]
+#@config Services setup
+# this section is empty
+~~~~~
+
+The `settings`  parameter must not  be used for production  runs.  One
+should use an explicit variant profile file (`profile`) in place of it
+(see  below)  or, preferably,  a  registered  variant profile's  *tag*
+(`profileUrn`) .
+
+
+Using a variant profile {#usingflsimulate_variants_profile}
+-----------------------
+
+The `bxvariant_inspector` program proposes an interface to edit/select
+a set of parameters and then generate a *variant profile*:
 
 ~~~~~
 $ bxvariant_inspector \
@@ -147,98 +456,70 @@ $ bxvariant_inspector \
     --variant-store "variants.profile"
 ~~~~~
 
-Here the program  generates a variant profile file at  exit. This file
-stores a given set of variant options and thus can be used as input of
-the `flsimulate` program (see below).
-
-To learn more about the format of the simulation configuration script,
-use:
-
-~~~~~
-$ flsimulate --help-scripting
-...
-~~~~~
-
-For example, to simulate 100 Se82 0nuBB events from the source foil in
-the full Demonstrator and write them to a file named `example.brio` in
-the  current   working  directory,  you  must   create  the  following
-`simu.conf` script (using the `datatools::multi_properties` format):
+Here  the   `variant.profile`  file  is  generated   at  exit  (option
+`--variant-store`).   This  *profile* file  stores  a  set of  variant
+options (using a  specific format) from which the  variant service can
+pickup  the parameters'  value  selected by  the  user. The  *profile*
+contains:
 
 ~~~~~
-#@description Main flsimulate configuration script
-#@key_label  "section"
-#@meta_label "description"
+#@format=datatools::configuration::variant
+#@format.version=1.0
+#@organization=snemo
+#@application=falaise
 
-[name="flsimulate" type="flsimulate::section"]
+[registry="geometry"]
+layout = "Basic"
+layout/if_basic/magnetic_field = true
+layout/if_basic/magnetic_field/is_active/type = "UniformVertical"
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = "+z"
+layout/if_basic/source_layout = "Basic"
+layout/if_basic/source_layout/if_basic/thickness = 250 um
+layout/if_basic/source_layout/if_basic/material = "Se82"
+layout/if_basic/source_calibration = false
+layout/if_basic/shielding = true
+calo_film_thickness = 25 um
 
-#@description Number of events to simulate
-numberOfEvents : integer = 10
+[registry="vertexes"]
+generator = "free_spot"
+generator/if_free_spot/x = 0 mm
+generator/if_free_spot/y = 0 mm
+generator/if_free_spot/z = 0 mm
 
-#@description Progression rate on simulated events
-moduloEvents : integer = 2
+[registry="primary_events"]
+generator = "electron.1MeV"
 
-#@description Activate simulation
-doSimulation : boolean = true
+[registry="simulation"]
+physics_mode = "Constructors"
+physics_mode/if_constructors/em_model = "standard"
+production_cuts = true
+output_profile = "none"
 
-[name="flsimulate.simulation" type="flsimulate::section"]
-#@config Simulation setup
-#@description URN (tag/identifier) of the simulation setup
-simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
-#@description Random seeds file
-rngSeedFile   : string as path = "seeds.conf"
-
-[name="flsimulate.variantService" type="flsimulate::section"]
-#@config Variant setup
-#@description List of variant settings
-settings : string[4] = \
-  "@geometry:layout=Basic" \
-  "@vertexes:generator=source_pads_bulk" \
-  "@primary_events:generator=Se82.0nubb" \
-  "@simulation:output_profile=none"
-
-[name="flsimulate.services" type="flsimulate::section"]
-#@config Services setup
-# this section is empty
 ~~~~~
 
-where the `seeds.conf` file is:
-~~~~~
-{EG=142921705; MGR=569932270; SHPF=1008320517; VG=1002945362}
-~~~~~
-as generated by the following command:
-~~~~~
-$ bxg4_seeds -k -d . -p seeds.conf
-~~~~~
+The file  uses an ASCII  format to  ease user's understanding  and for
+debugging purpose.  However, unless you  know what you are  doing, you
+should  not edit  this file  manually (or  even reorder  parameters or
+registry sections)  because its format  is dynamic and depends  on the
+selected  options  by  the user  through  the  `bxvariant_inspector`'s
+interface.
 
-Here we can  see that FLSimulate request 4 seeds,  one for each random
-number generators embedded in the Bayeux/Geant4 simulation engine:
-- `EG` stands for *event generator*,
-- `VG` stands for *vertex generator*,
-- `MGR` stands for *simulation manager* (Geant4 kernel),
-- `SHPF`  stands  for  *step   hit  processing  factory*,  a  software
-  component responsible of  the generation of the  final collection of
-  truth hits (see below).
-
-It  is very  important  to  make sure  that  all  simulation runs  use
-different sets of seeds in order to ensure statistical independancy of
-generated simulation  data samples. The `bxg4_seeds`  program helps to
-generated such  lists of  independant seed  sets in  the context  of a
-massive Monte Carlo production.
-
-Note the *flsimulate.variantService*  here uses an explicit  list of *settings*
-for some variant parameters. It is possible (and recommended) to use a
-variant profile file in place of it:
+This file  can be  reused as  input of  the `flsimulate`  program (see
+below). The `simu.conf` script now contains:.
 
 ~~~~~
 ...
-[section="flsimulate.variantService" description=""]
+[type="flsimulate.variantService" name=""]
 #@config Variant setup
 #@description Variant profile
 profile : string as path = "variants.profile"
 ~~~~~
 
 where  the   `variants.profile`  explicitely  publishes   all  variant
-parameters that have been chosen by the user:
+parameters that  have been chosen  by the user. The  following example
+displays  the  default  variant  profile  associated  to  the  default
+simulation setup (version 2.1) in Falaise 3.0.0:
 
 ~~~~~
 @format=datatools::configuration::variant
@@ -273,29 +554,8 @@ output_profile = "none"
 
 ~~~~~
 
-The FLSimulate output  file is set from the command  line.  It may use
-the XML format (for debugging  purpose) or Bayeux's Brio binary format
-(for production).
-
-Simulation then runs with:
-~~~~~
-$ flsimulate -c simu.conf -m example.meta -o example.brio
-... lots of logging ...
-~~~~~
-
-Here  the ``example.brio``  file  contains the  Monte Carlo  generated
-events and  the ``example.meta``  is a  companion file  which contains
-metadata  associated to  the simulation  run.  These  metadata can  be
-reused in  the context  of the data  reconstruction or  other analysis
-tools.  It is  also possible to embed the metadata  in the output data
-file (see the ``-E`` command line switch).
-
-The  resultant   files  can  be  examined   with  the  `flreconstruct`
-application,  see the  [dedicated guide](@ref  usingflreconstruct) for
-further details.
-
-Available Experiments {#usingflsimulate_experiments}
-=====================
+Available experiments and simulation setups {#usingflsimulate_experimentssimsetups}
+===========================================
 
 The  currently  only  available  experiment  in  `flsimulate`  is  the
 SuperNEMO Demonstrator (tag=`"urn:snemo:demonstrator"`).
@@ -303,19 +563,24 @@ SuperNEMO Demonstrator (tag=`"urn:snemo:demonstrator"`).
 Only       one       experimental       setup       is       available
 (tag=`"urn:snemo:demonstrator:setup:1.0"`).   It   consists   in   the
 description of the SuperNEMO  demonstrator detector through a geometry
-model identified with the `"urn:snemo:demonstrator:geometry:4.0"` tag.
+model identified with the `"urn:snemo:demonstrator:geometry:4.0"` tag
+as shown above in the dependency table.
+
 In  the future,  additional experimental  setups will  be implemented,
 including not only the geometry model  but also the description of the
-electronics (at least the part of it needed for the offline software).
+electronics (at least  the part of it which is  needed for the offline
+software, digitization...).
 
 As of  version 4.0 of  the geometry  model and its  associated variant
 system, the  experimental setup includes  two flavours of  the general
 layout of the detector:
 - `Basic`  :  realistic  model   of  the  full  demonstrator  detector
-  (*French* and *Italian* sides, source frame, external shielding)
+  (*French*  and  *Italian*  sides,   source  frame  with  calibration
+  sources, external shielding)
 - `HalfCommissioning` : realistic model of  the detector with only one
-   calorimeter  wall  assemblied with  one  tracker  submodule and  no
-   source frame (only *French* side, end 2016-begin 2017 context).
+  calorimeter wall assemblied with one tracker submodule and no source
+  frame (only  *French* side,  like in the  context of  end 2016-begin
+  2017).
 
 Each of these layouts publish additional options.
 
@@ -331,55 +596,85 @@ physics sources available, a wide range of vertex and event generators
 are available.
 
 From  Falaise  3.0  (simulation  setup version  2.1),  the  choice  of
-geometry options  and vertex  and event generators  is done  through a
-Bayeux/datatools   variant   service   embedded  in   the `flsimulate`
+geometry  options  and  vertex/decay  generators  is  done  through  a
+Bayeux/datatools   *variant  service*   embedded  in   the  FlSimulate
 application.  A profile of variant  parameters must be created to suit
 the user's needs (see sections above).
 
 Note  that `flsimulate`  will  throw  an exception  if  you supply  an
 unknown  generator for  the  experimental setup  being simulated.   In
 principle,  the variant  system  does check  that  the combination  of
-vertex  and  event  generator  are sensible.   Other  invalid  options
+vertex  and  event generators  are  sensible.   Other invalid  options
 (geometry...)  should also be reported.
 
-Summary of available configurations
+Summary of available configurations {#usingflsimulate_summaryofavailableconfigurations}
 ===================================
 
-List of available experiments:
-- SuperNEMO demonstrator:
-  - Description:  The SuperNEMO  demonstrator experiment  (all phases:
-    half-commissioning, full demonstrator)
-  - Tag : `"urn:snemo:demonstrator"`
-- BiPo3 detector (not used yet):
-  - Description: The BiPo3 detector
-  - Tag : `"urn:bipo3:detector"`
+Falaise   is  distributed   with   an  official   set  of   predefined
+configurations of various types:
+- experiments
+- experimental setups
+- geometry models
+- simulation setups
+- reconstruction pipelines
 
-List of available experimental setups:
-- SuperNEMO demonstrator experimental setup version 1.0:
-  - Description: The model of the SuperNEMO demonstrator experimental setup
-  - Tag : `"urn:snemo:demonstrator:setup:1.0"`
-  - Related experiment: `"urn:snemo:demonstrator"`
-  - Associated to:
-    - Variant system: `"urn:snemo:demonstrator:setup:1.0:variants"`
-    - Services system: `"urn:snemo:demonstrator:setup:1.0:services"`
-      - Geometry service: `"urn:snemo:demonstrator:geometry:4.0"`
+This official  configurations are related through  dependency schemes.
+Each configuration is given an unique  identifier: its *tag*.  It is a
+character  string which  uses the  URN scheme  format.  In  principle,
+users can thus address, in a given context, any official configuration
+thanks to its tag.
 
-List of available simulation setups:
-- SuperNEMO demonstrator simulation setup version  2.1 :
-  - Description: The simulation setup for the SuperNEMO demonstrator detector
-  - Tag : `"urn:snemo:demonstrator:simulation:2.1"`
-  - Based on:
-    - Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
-    - Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.1"`
-    - Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.2"`
-  - Associated to:
-    - Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
-    - Services system: `"urn:snemo:demonstrator:simulation:2.1:services"`
+Once selected,  a tag can be  associated to one or  more configuration
+files  from   the  Falaise  resource  directory.   This  operation  is
+automatically handled by an *URN resolver service*.
+
+Users  may  also  use  their   own  simulation  setups  and  associated
+configuration  files. In  such case,  explicit paths  to configuration
+files must be provided in configuration scripts.
 
 
+List of available experiments {#usingflsimulate_summaryofavailableexperiments}
+-----------------------------
 
-Available output profiles {#usingflsimulate_output_profiles}
-=========================
+1.  SuperNEMO demonstrator:
+		* Description:  The SuperNEMO  demonstrator experiment  (all phases:
+		  half-commissioning, full demonstrator)
+		* Tag : `"urn:snemo:demonstrator"`
+2.  BiPo3 detector (not used yet):
+		*   Description: The BiPo3 detector
+		*   Tag : `"urn:bipo3:detector"`
+
+List of available experimental setups {#usingflsimulate_summaryofavailableexperimentalsetups}
+-------------------------------------
+
+1.  SuperNEMO demonstrator experimental setup version 1.0:
+		*   Description: The model of the SuperNEMO demonstrator experimental setup
+		*   Tag : `"urn:snemo:demonstrator:setup:1.0"`
+		*   Related experiment: `"urn:snemo:demonstrator"`
+		*   Associated to:
+			+   Variant system: `"urn:snemo:demonstrator:setup:1.0:variants"`
+			+   Services system: `"urn:snemo:demonstrator:setup:1.0:services"`
+				- Geometry service: `"urn:snemo:demonstrator:geometry:4.0"`
+
+List of available simulation setups {#usingflsimulate_summaryofavailablesimulationsetups}
+-----------------------------------
+
+1. SuperNEMO demonstrator simulation setup version  2.1 :
+		*   Description: Simulation setup for the SuperNEMO demonstrator detector
+		*   Tag : `"urn:snemo:demonstrator:simulation:2.1"`
+		*   Based on:
+			+   Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
+			+   Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.1"`
+			+   Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.2"`
+		*   Associated to:
+			+   Services system: `"urn:snemo:demonstrator:simulation:2.1:services"`
+			+   Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
+				- Blessed profiles: the default one below
+				- Default profile: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"`
+
+
+Available MC hits output profiles {#usingflsimulate_hits_output_profiles}
+=================================
 
 By  default FLSimulate  produces collections  of *truth*  MC hits  and
 stored them in the output data model (the \ref mctools::simulated_data
@@ -389,10 +684,14 @@ For  the SuperNEMO  Demonstrator  simulation  configuration using  the
 `Basic` geometry layout, four *official* collections of truth hits are
 thus populated:
 
-- `calo` : truth MC hits collected from the scintillator blocks of the main calorimeter
-- `xcalo` : truth MC hits collected from the scintillator blocks of the X-calorimeter
-- `gveto` : truth MC hits collected from the scintillator blocks of the gamma veto
-- `gg` : truth MC hits collected from the drift volume of the tracker cells (Geiger regime)
+- `calo` : truth MC hits collected from the scintillator blocks of the
+  main calorimeter
+- `xcalo` :  truth MC hits  collected from the scintillator  blocks of
+  the X-calorimeter
+- `gveto` :  truth MC hits  collected from the scintillator  blocks of
+  the gamma veto
+- `gg` : truth MC hits collected  from the drift volume of the tracker
+  cells (Geiger regime)
 
 Additional collections  of hits can  be generated : the  *detailed* MC
 hits.   So far,  we  use one  unique collection  of  truth hits  named
@@ -403,16 +702,21 @@ volumes of interest. To activate the recording of such output, several
 
 For the `Demonstrator/Basic` configuration/layout, these are:
 
-- `calo_details`    : collect all Geant4 step hits from the calo, xcalo and gveto sensitive detectors
-- `tracker_details` : collect all Geant4 step hits from within volumes in the tracker part of the detector
-- `source_details`  : collect all Geant4 step hits from within volumes in the source part of the detector
-- `all_details`     : collect all Geant4 step hits from any volumes of interest
-                      (shortcut for the `calo_details+tracker_details+source_details` rule)
+- `calo_details` : collect  all Geant4 step hits from  the calo, xcalo
+  and gveto sensitive detectors
+- `tracker_details` : collect all Geant4 step hits from within volumes
+  in the tracker part of the detector
+- `source_details` : collect all Geant4  step hits from within volumes
+  in the source part of the detector
+- `all_details`     : collect all Geant4 step hits from any volumes of
+  interest (shortcut for the
+  `calo_details+tracker_details+source_details` rule)
 
 The  activation   of  some   additional  output   is  done   with  the
-\@simulation:output_profile variant  parameter. It  may be  limited by
+`@simulation:output_profile` variant  parameter. It may be  limited by
 geometry options,  for example the `source_details`  output profile is
-not available with the `HalfCommissioning` geometry layout.
+not available with the `HalfCommissioning` geometry layout because the
+source frame is not available in this layout.
 
 Be aware that using this feature  implies that the simulation will use
 additional CPU  and the output  file will use  a lot of  storage. This
@@ -424,9 +728,116 @@ The description of the output simulation  data model is described in a
 [dedicated page on FLSimulate output](@ref flsimulateoutput).
 
 
-Example {#usingflsimulate_example}
-=======
+Managing seeds  {#usingflsimulate_seedmgr}
+==============
 
-Falaise  provides  an  example  of FLSimulate  configuration.   It  is
-published   from    the   installation   resource    directory   in
-`examples/flsimulate/ex01/`.
+The   script   `flsimulate.simulation`   section  my   contain   the
+`rngSeedFile`  parameter:
+
+~~~~~~~~~~~~~
+[name="flsimulate.simulation" type="flsimulate::section"]
+#@config Simulation setup
+...
+#@description Random seeds file
+rngSeedFile : string as path = "seeds.conf"
+...
+~~~~~~~~~~~~~
+
+where the `seeds.conf` file uses the following format:
+
+~~~~~
+{EG=142921705; MGR=569932270; SHPF=1008320517; VG=1002945362}
+~~~~~
+as generated by the following command:
+~~~~~
+$ bxg4_seeds -k -d . -p seeds.conf
+~~~~~
+
+Here we can see that FLSimulate  requests 4 seeds, one for each random
+number generators embedded in the Bayeux/Geant4 simulation engine:
+- `EG` stands for *event generator*,
+- `VG` stands for *vertex generator*,
+- `MGR` stands for *simulation manager* (Geant4 kernel),
+- `SHPF`  stands  for  *step   hit  processing  factory*,  a  software
+  component responsible of  the generation of the  final collection of
+  truth hits (see below).
+
+It  is very  important  to  make sure  that  all  simulation runs  use
+different sets of seeds in order to ensure statistical independancy of
+generated simulation  data samples. The `bxg4_seeds`  program helps to
+generated such  lists of  independant seed  sets in  the context  of a
+massive Monte Carlo production.
+
+If the  input seed  file is  not provided, the  initial seeds  will be
+automatically generated  by the  seed manager embedded  in FLSimulate.
+User may  also provide  the `rngSeedFileSave` parameter:  it describes
+the file where to save the  original seeds, particularly when they are
+not set explicitely through  `rngSeedFile`. By default, original seeds
+will be saved in the `__flseeds.log` file in the current directory.
+One can thus select explicitely this feature with:
+
+~~~~~~~~~~~~~
+[name="flsimulate.simulation" type="flsimulate::section"]
+#@config Simulation setup
+...
+#@description File to save initial random seeds
+rngSeedFileSave : string as path = "path/to/the/init_seeds.log"
+...
+~~~~~~~~~~~~~
+
+Ouput data file {#usingflsimulate_outputdatafile}
+===============
+
+The FLSimulate  output file is set  from the command line  through the
+`-o`  or `--output-file`  switch.   It  may use  the  XML format  (for
+debugging purpose) or Bayeux's Brio binary format (for production).
+
+Simulation then runs with:
+
+~~~~~
+$ flsimulate -c simu.conf -o example.brio
+... lots of logging ...
+~~~~~
+
+Here  the `example.brio`  file  contains the  Monte Carlo  generated
+events.
+
+The system automatically select the proper format driver from the file
+extension.  Supported file extensions are:
+
+- `.brio` : Boost  over Root I/O with embedded  portable binary format
+  (fast and highly compressed, reserved for production)
+- `.data`, `.data.gz`, `.data.bz2` :  Portable binary format (fast and
+  possibly highly compressed, reserved for production)
+- `.txt`, `.txt.gz`, `.txt.bz2` : Portable ASCII text format (slow and
+  possibly highly compressed)
+- `.xml`, `.xml.gz`, `.xml.bz2`  : Portable XML format  (very slow and
+  possibly compressed, reserved for debugging)
+
+The  resultant data  files can  be examined  with the  `flreconstruct`
+application,  see the  [dedicated guide](@ref  usingflreconstruct) for
+further details.
+
+Note also that FLSimulate automatically computes some metadata besides
+the simulated events.  These metadata are stored by default within the
+output data file itself.  These metadata  can be reused in the context
+of  the  data reconstruction  or  other  analysis  tools. It  is  also
+possible  to  save the  metadata  container  within a  human  readable
+companion file  (using the `datatools::multi_properties` format) using
+the `--output-metadata-file` switch. Example:
+
+~~~~~
+$ flsimulate -c simu.conf -o example.brio --output-metadata-file example.meta
+...
+~~~~~
+
+Examples {#usingflsimulate_examples}
+========
+
+Falaise  provides examples  of  FLSimulate  configurations.  They  are
+published from the installation resource directory in:
+
+- `examples/flsimulate/ex00/`  : minimal  simulation  setup using  the
+  default configuration.
+- `examples/flsimulate/ex01/`  :  simulation  setup using  a  specific
+  configuration selected by the user.
