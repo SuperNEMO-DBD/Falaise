@@ -42,7 +42,7 @@
 // Third Party
 // - Boost
 #include "boost/filesystem.hpp"
-#include "boost/date_time/posix_time/posix_time.hpp"
+// #include "boost/date_time/posix_time/posix_time.hpp"
 
 // - Bayeux
 #include "bayeux/bayeux.h"
@@ -152,10 +152,11 @@ namespace FLSimulate {
                                flSimParameters.embeddedMetadata,
                                "Metadata embedding flag");
 
-    boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
-    system_props.store_string("timestamp",
-                              boost::posix_time::to_iso_string(start_run_timestamp),
-                              "Run start timestamp");
+    // Remove timestamp from metadata:
+    // boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
+    // system_props.store_string("timestamp",
+    //                           boost::posix_time::to_iso_string(start_run_timestamp),
+    //                           "Run start timestamp");
 
     if (flSimParameters.doSimulation) {
       // Simulation section:

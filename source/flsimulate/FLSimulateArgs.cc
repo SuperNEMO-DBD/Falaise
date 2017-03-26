@@ -261,7 +261,7 @@ namespace FLSimulate {
                                                                 flSimParameters.variantSubsystemParams.profile_load);
 
         // Variant settings:
-        if (flSimParameters.userProfile != "expert" && variantSubsystem.has_key("settings")) {
+        if (flSimParameters.userProfile == "production" && variantSubsystem.has_key("settings")) {
           DT_THROW(FLConfigUserError,
                    "User profile '" << flSimParameters.userProfile << "' "
                    << "does not allow to use the '" << "settings" << "' variants configuration parameter!");
