@@ -68,18 +68,20 @@ add_library(Falaise_TrackFit SHARED
   ${FalaiseTrackFitPlugin_HEADERS}
   ${FalaiseTrackFitPlugin_SOURCES})
 
-target_link_libraries(Falaise_TrackFit TrackFit Falaise)
+target_link_libraries(Falaise_TrackFit TrackFit FalaiseModule)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
   set_target_properties(Falaise_TrackFit
-    PROPERTIES LINK_FLAGS "-undefined dynamic_lookup"
+    PROPERTIES
+      LINK_FLAGS "-undefined dynamic_lookup"
+      INSTALL_RPATH "@loader_path"
     )
 endif()
 
 # Install it:
-install(TARGETS Falaise_TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
+install(TARGETS Falaise_TrackFit DESTINATION ${CMAKE_INSTALL_LIBDIR}/${FALAISE_PLUGINLIBDIR})
 
 # Test support:
 option(FalaiseTrackFitPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTrackFitPlugin" ON)
