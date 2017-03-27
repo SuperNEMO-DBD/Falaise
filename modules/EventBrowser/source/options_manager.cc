@@ -517,7 +517,14 @@ namespace snemo {
         out_ << "      --auto-reading-delay 2 \\" << std::endl;
         out_ << "      --input-file <simulation/reconstruction file>";
         out_ << std::endl;
-        out_ << " 3) Visualizing BiPo3 detector :" << std::endl;
+        out_ << " 3) Using special experimental setup with variant profile:" << std::endl;
+        out_ << "    " << name_ << " \\" << std::endl;
+        out_ << "      --verbose \\" << std::endl;
+        out_ << "      --experiment-setup \"urn:snemo:demonstrator:setup:1.0\" \\" << std::endl;
+        out_ << "      --variant-profile \"variant.profile\" \\" << std::endl;
+        out_ << "      --input-file <simulation/reconstruction file>";
+        out_ << std::endl;
+        out_ << " 4) Visualizing BiPo3 detector :" << std::endl;
         out_ << "    " << name_ << " \\" << std::endl;
         out_ << "      --detector-config-file "
              << "$(flquery --resourcedir)"
