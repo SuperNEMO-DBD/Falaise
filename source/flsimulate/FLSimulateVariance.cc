@@ -265,10 +265,10 @@ namespace FLSimulate {
   {
     DT_LOG_TRACE_ENTERING(_logging_);
     // Launch a Qt based dialog for the variant repository:
-    const datatools::kernel & krnl = datatools::kernel::const_instance();
-    datatools::qt::interface & iqt = datatools::qt::interface::instance(krnl.get_argc(),
-                                                                        krnl.get_argv(),
-                                                                        "flsimulate");
+    //const datatools::kernel & krnl = datatools::kernel::const_instance();
+    //datatools::qt::interface & iqt = datatools::qt::interface::instance(krnl.get_argc(),
+    //                                                                    krnl.get_argv(),
+    //                                                                    "flsimulate");
     datatools::configuration::ui::variant_repository_dialog vrep_dialog(_repository_);
     int ret = vrep_dialog.exec();
     if (ret) {
