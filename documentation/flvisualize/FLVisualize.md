@@ -5,28 +5,31 @@ Using The FLVisualize Application {#usingflvisualize}
 
 Introduction to FLVisualize {#usingflvisualize_intro}
 ===========================
-FLVisualize is the main detector/event viewer GUI for Falaise, and
-can display both raw and reconstructed data for the BiPo3 and Demonstrator
-detectors. It can be used to view
 
-- Raw detector geometries
-- Raw/Calibrated data from flsimulate
-- Reconstructed tracks and calorimetry
+FLVisualize is the main detector/event viewer GUI for Falaise, and can
+display both raw and reconstructed data for the BiPo3 and Demonstrator
+detectors. It can be used to view:
+
+- Raw detector geometries,
+- Raw/Calibrated data from flsimulate,
+- Reconstructed tracks and calorimetry.
 
 Here we present a brief overview of running FLVisualize from the
 command line.
 
 Example Usage {#usingflvisualize_examples}
 =============
-The flvisualize program is a command line application just like any
-other Unix style program (e.g. `ls`). In the following, we will
-write commands assuming that `flvisualize` is in your path. If is not,
+
+The flvisualize  program is a  command line application just  like any
+other Unix style program (e.g. `ls`).  In the following, we will write
+commands assuming that  `flvisualize` is in your path.  If  it is not,
 simply use the relative or absolute path to `flvisualize`.
 
-You can get help on the options that can be passed to `flvisualize`
-by running it with the `-h` or `--help` options, e.g.
+You can get help on the options that can be passed to `flvisualize` by
+running it with the `-h` or `--help` options, e.g.
 
 ~~~~~
+$ flvisualize --help
 flvisualize (3.0.0) : the SuperNEMO event display application
 
 Usage:
@@ -38,9 +41,18 @@ General options:
   -P [ --logging-priority ] level (=notice)
                                         set the logging priority threshold
   -l [ --load-dll ] library             set a DLL to be loaded.
+  -x [ --experiment-setup ] tag         set the experimental setup tag.
+  -v [ --variant-config ] tag           set the variant configuration.
+  -f [ --variant-profile ] tag          set the variant profile.
+  -s [ --services-config ] tag          set the services configuration.
+  -G [ --ignore-input-metadata ] flag (=0)
+                                        flag to ignore input metadata
+  -M [ --input-metadata-file ] file     file from which to load metadata
+  -i [ --input-file ] file              file from which to read input data
+                                        (simulation, real)
 
 Browser options:
-  -s [ --scale ] value                  scale factor for computer screen
+  -S [ --scale ] value                  scale factor for computer screen
                                         (height/width)
   -a [ --auto-reading-delay ] value     automatic event reading delay in
                                         seconds
@@ -53,7 +65,7 @@ Browser options:
   --preload                             enable the load in memory of Boost
                                         archive files (working only with pure
                                         'bxg4_production' output)
-  -i [ --input-files ] file             set an input file(s)
+  -I [ --input-data-files ] file        set an input data file(s)
 
 View options:
   --2d-display position (=left)         set 2D display position
@@ -69,29 +81,9 @@ View options:
   --show-tracker-trajectories flag      show tracker trajectories
   --show-particle-tracks flag           show particle tracks
 
-Variants support:
-  --variant-config [file]               file from which to load the main
-                                        configuration of the variant repository
-  --variant-registry [rule]             rules for additional variant registries
-  --variant-registry-dependencies [rule]
-                                        dependencies for additional variant
-                                        registries
-  --variant-load [file]                 file from which to load a specific
-                                        variant profile at startup
-  --variant-load-no-unknown             do not ignore unknown registry sections
-                                        at variant profile loading
-  --variant-set [setting]               setting rules for variant parameters
-                                        applied at startup
-  --variant-gui                         launch the variant GUI editor at
-                                        startup
-  --variant-store [file]                file in which to store the effective
-                                        current variant profile
-  --variant-reporting [file]            file in which to print the variant
-                                        usage report
-
 Kernel options:
-  --datatools::logging level (=fatal)   Set the datatools kernel's logging
-                                        priority threshold.
+  --datatools::logging level (=fatal)   Set the Bayeux/datatools kernel's
+                                        logging priority threshold.
                                         Example :
                                           --datatools::logging="trace"
   --datatools::resource-path rule       Register a resource path mounted
@@ -117,22 +109,23 @@ Examples:
       --verbose \
       --auto-reading-delay 2 \
       --input-file <simulation/reconstruction file>
- 3) Visualizing BiPo3 detector :
+ 3) Using special experimental setup with variant profile:
+    flvisualize \
+      --verbose \
+      --experiment-setup "urn:snemo:demonstrator:setup:1.0" \
+      --variant-profile "variant.profile" \
+      --input-file <simulation/reconstruction file>
+ 4) Visualizing BiPo3 detector :
     flvisualize \
       --detector-config-file $(flquery --resourcedir)/config/bipo3/geometry/2.0/manager.conf \
       --style-config-file $(flquery --resourcedir)/modules/EventBrowser/styles/bipo3_default.sty
 
-
- See README for other running examples
-
 ~~~~~
 
-Note that at the current revision, porting of the program from the older
-"SNWare" system has not been completed, so that the display names are
-not accurate.
-
 If no command line arguments are passed, then `flvisualize` will start
-up and display the Demonstrator geometry:
+up  and  display the  SuperNEMO  demonstrator  default geometry  model
+(tag=`"urn:snemo:demonstrator:setup:1.0"̀  with   its  default  variant
+profile):
 
 ~~~~~
 $ flvisualize
@@ -146,15 +139,99 @@ applications, you need to supply the input file:
 $ flvisualize -i example.brio
 ~~~~~
 
-Files may also be opened using the "File->Open file..." GUI menu item.
+If metadata  are embedded in the  input data file, they  are extracted
+from it and  FLSimulate tries to guess the experimental  setup and the
+associated geometry model it should  use in combinaison with the data.
+If  an explicit  *variant  profile*  has been  used  to configure  the
+geometry, it must  be given in the command line  because once started,
+FLSimulate (in its current version) cannot switch to another geometry
+model  on  the fly.  In  such  case,  the  recommended way  to  invoke
+`flvisualize` is to  explicitely describe the geometry  setup from the
+command line:
 
-TODO: Screenshots and additional guides
+~~~~~
+$ flvisualize \
+	-x "urn:snemo:demonstrator:setup:1.0" \
+	-f "my-variant.profile" \
+	-i example.brio
+~~~~~
+
+If metadata are only provided from an external file, you should use:
+~~~~~
+$ flvisualize \
+  -M example.meta \
+  -i example.brio
+~~~~~
+
+If external metadata *and* a non registered variant profile should be
+used (no registered official tag is supported for it), you should use:
+~~~~~
+$ flvisualize \
+  -M example.meta \
+  -f "my-unregistered-variant.profile" \
+  -i example.brio
+~~~~~
+
+The  program  displays  its  main  window  with  a  two  panels  event
+viewer. The image below shows a Tl-208 decays from a field wire in the
+tracking volume with emission of one electron and three gamma rays. On
+the left panel, the *Focus on ROI* option is activated (see below).
+
+![FLVisualize main window with one displayed event](@ref flv_event_0.png)
+@latexonly
+\includegraphics[width=\linewidth]{flv_event_1}
+@endlatexonly
+
+Files may  also be  opened using the  `"File->Open file..."`  GUI menu
+item.  In  this case,  the experimental  setup (geometry)  and variant
+profile should have  been set at start from the  command line as shown
+above.
+
+Description of the display
+==========================
+
+The top bar contains four menus:
+
+- `File` : allow to load an input data file from FLSimulate or FLReconstruct,
+reload a previously loaded file (rewind), save individual events in XML file,
+load style file, quit the application.
+- `View` : activate special display drivers (x3d, ROOT'S GL viewer), save images of the events,
+- `Options` : focus on the event's *region of interest*  (*ROI*, automatically computed),
+  activate the rendering of some parts of the event models:
+	  - truth hits (from the `SD` bank,
+	  - calibrated hits (from the `CD` bank),
+	  - fitted tracks and reconstruction patterns (from reconstruction banks)...
+- `Misc.` : additional options.
+
+By default, FLVisualize starts with two panels, one  (left) for the detector top view
+and the other (right) for a 3D rotating view.
+
+The left panel allows to switch between top, side and front views thanks to radiobuttons
+at the bottom.
+
+The right panel contains several pans:
+
+- `Overview` : display the 3D view
+- `Tracks` : display a hierachy of the event data models with vertex, hits, tracks and
+  other reconstruction data structures stored in the event model. Check boxes allow to
+  make the corresponding graphics representations visible or not on the display.
+- `Options` : proposes a set of additional display options (colors...)
+- `Selection` : not documented yet.
+
+A bottom bar contains:
+
+- a message log combo (read only),
+- a set of navigation buttons to loop on input events (forward/backward).
+
+It is recommended to maximize the size of the FLVisualize's main window on your desktop.
 
 Known Issues
 ============
-Performance may be affected on slower systems or those without modern graphics
-cards due to the complexity of the geometry.
 
-macOS systems may also see some performance loss on startup and moving between events.
+Performance may be affected on  slower systems or those without modern
+graphics cards due to the complexity of the geometry.
+
+macOS systems may also see some performance loss on startup and moving
+between events.
 
 Both issues are under investigation.
