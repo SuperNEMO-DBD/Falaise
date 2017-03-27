@@ -26,7 +26,7 @@ find_package(Boost 1.55 REQUIRED ${Boost_COMPONENTS})
 # - ROOT
 # - ROOT
 set(CMAKE_MODULE_PATH_PREROOT ${CMAKE_MODULE_PATH})
-find_package(ROOT 5.34.00 REQUIRED Core Hist RIO Tree GUI Geom)
+find_package(ROOT 5.34.00 REQUIRED Core Hist RIO Tree Gui Geom)
 if(ROOT_VERSION VERSION_LESS 6)
   include(RootNewMacros)
 else()
