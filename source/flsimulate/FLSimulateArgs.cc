@@ -171,14 +171,14 @@ namespace FLSimulate {
                      "flSimParameters.simulationSetupUrn=" << flSimParameters.simulationSetupUrn);
 
         // Simulation manager main configuration file:
-        if (flSimParameters.userProfile == "production" && simSubsystem.has_key("simulationConfig")) {
+        if (flSimParameters.userProfile == "production" && simSubsystem.has_key("simulationSetupConfig")) {
           DT_THROW(FLConfigUserError,
                    "User profile '" << flSimParameters.userProfile << "' "
-                   << "does not allow to use the '" << "simulationConfig" << "' simulation configuration parameter!");
+                   << "does not allow to use the '" << "simulationSetupConfig" << "' simulation configuration parameter!");
         }
         flSimParameters.simulationManagerParams.manager_config_filename
           = falaise::properties::getValueOrDefault<std::string>(simSubsystem,
-                                                                "simulationConfig",
+                                                                "simulationSetupConfig",
                                                                 flSimParameters.simulationManagerParams.manager_config_filename);
 
         // File for loading internal PRNG's seeds:
