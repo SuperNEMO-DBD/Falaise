@@ -63,10 +63,15 @@ namespace FLSimulate {
     os << "Scripting flsimulate\n"
        << "--------------------\n\n"
        << "The following subsystems of flsimulate may be configured using an input\n"
-       << "datatools::multi_properties script. The allowed sections and parameters are:\n"
+       << "datatools::multi_properties script. Some allowed sections and parameters are:\n"
+       << std::endl
+       << "#@description FLSimulate configuration script\n"
+       << "#@key_label  \"name\"\n"
+       << "#@meta_label \"type\"\n"
        << std::endl
        << "[name=\"flsimulate\" type=\"flsimulate::section\"]\n"
        << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
+       << std::endl
        << "[name=\"flsimulate.simulation\" type=\"flsimulate::section\"]\n"
        << "simulationSetupUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
        << "                                                 # URN of simulation setup\n"
