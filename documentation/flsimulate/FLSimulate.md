@@ -380,7 +380,7 @@ The  image below  shows  the  typical GUI  interface  of the  Bayeux's
 variant  inspector/editor  program.The  interface  here  displays  the
 `geometry` registry panel:
 
-![Bayeux's variant inspector GUI (geometry panel)](@ref images/fls_variants_gui_1.png)
+![Bayeux's variant inspector GUI (geometry panel)](@ref fls_variants_gui_1.png)
 @latexonly
 \includegraphics[width=\linewidth]{fls_variants_gui_1}
 @endlatexonly
@@ -388,7 +388,7 @@ variant  inspector/editor  program.The  interface  here  displays  the
 The next  image shows the selection  of the vertex generator  from the
 `vertexes` registry panel:
 
-![Bayeux's variant inspector GUI (vertexes panel)](@ref images/fls_variants_gui_2.png)
+![Bayeux's variant inspector GUI (vertexes panel)](@ref fls_variants_gui_2.png)
 @latexonly
 \includegraphics[width=\linewidth]{fls_variants_gui_2}
 @endlatexonly

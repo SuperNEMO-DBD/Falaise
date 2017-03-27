@@ -147,7 +147,9 @@ foreach(_mdDoc ${FALAISE_MARKDOWN_DOCS})
 endforeach()
 
 # - Image paths
-set(FALAISE_DOXYGEN_IMAGE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate/images")
+set(FALAISE_DOXYGEN_IMAGE_DIRS
+  "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate/images ${CMAKE_CURRENT_SOURCE_DIR}/flvisualize/images"
+  )
 
 #-----------------------------------------------------------------------
 # Build doxygen docs
