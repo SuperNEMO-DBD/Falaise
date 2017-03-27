@@ -65,22 +65,18 @@ namespace FLSimulate {
        << "The following subsystems of flsimulate may be configured using an input\n"
        << "datatools::multi_properties script. The allowed sections and parameters are:\n"
        << std::endl
-       << "[section=\"SimulationSubsystem\" description=\"\"]\n"
-       << "simulationUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
-       << "                                                 # URN of simulation setup\n"
+       << "[name=\"flsimulate\" type=\"flsimulate::section\"]\n"
        << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
+       << "[name=\"flsimulate.simulation\" type=\"flsimulate::section\"]\n"
+       << "simulationSetupUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
+       << "                                                 # URN of simulation setup\n"
        << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
-       << "outputProfile : string = \"\"                      # Output profile (hits collections to output)\n"
        << std::endl
-       << "[section=\"VariantSubsystem\" description=\"\"]\n"
+       << "[name=\"flsimulate.variantService\" type=\"flsimulate::section\"]\n"
        << "profile : string as path = \"vprofile.conf\"       # Input variant profile configuration file.\n"
        << "                                                 # (this is the recommended path). \n"
        << "settings : string[N] = \"setting1\" ... \"settingN\" # Individual variant settings\n"
        << "                                                 # (should be reserved to experts). \n"
-       << std::endl
-       << "[section=\"ServicesSubsystem\" description=\"\"]\n"
-       << "configUrn : string as path= \"services.conf\"       # Service manager profile configuration file.\n"
-       << "config    : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
        << std::endl
        << "All sections and parameters are optional, and flsimulate will supply sensible\n"
        << "default values when only some are set.\n"

@@ -63,11 +63,14 @@ namespace FLSimulate {
     params.simulationManagerParams.shpf_seed = mygsl::random_utils::SEED_AUTO; // PRNG for the back end MC hit processors
     params.simulationManagerParams.mgr_seed  = mygsl::random_utils::SEED_AUTO; // PRNG for the Geant4 engine itself
     params.simulationManagerParams.output_profiles_activation_rule = "";
+    params.saveRngSeeding = true;
+    params.rngSeeding = "";
 
     // Variants support:
     params.variantConfigUrn = "";
     params.variantProfileUrn = "";
     params.variantSubsystemParams.config_filename = "";
+    params.saveVariantSettings = true;
 
     // Service support:
     params.servicesSubsystemConfigUrn = "";
@@ -308,8 +311,10 @@ namespace FLSimulate {
     const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
     if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
-      // Make sure PRNG seeds are stored in a default log file:
-      if (flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
+      if (!flSimParameters.saveRngSeeding &&
+          flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
+        // Make sure PRNG seeds are stored in a default log file if
+        // seeds are not stored in metadata:
         flSimParameters.simulationManagerParams.output_prng_seeds_file
           = FLSimulateArgs::default_file_for_seeds();
       }
@@ -522,10 +527,13 @@ namespace FLSimulate {
     out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
     out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
     out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename << std::endl;
+    out_ << tag << "saveRngSeeding             = " << std::boolalpha << saveRngSeeding << std::endl;
+    out_ << tag << "rngSeeding                 = " << rngSeeding << std::endl;
     out_ << tag << "digitizationSetupUrn       = " << (digitizationSetupUrn.empty() ? "<not used>" : digitizationSetupUrn) << std::endl;
     out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
     out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
     out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;
+    out_ << tag << "saveVariantSettings        = " << std::boolalpha << saveVariantSettings << std::endl;
     out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
     out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
     out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;

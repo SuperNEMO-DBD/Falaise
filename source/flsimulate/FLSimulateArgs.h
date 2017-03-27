@@ -49,6 +49,7 @@ namespace FLSimulate {
     // Variants support:
     std::string                 variantConfigUrn;     //!< Variants configuration URN
     std::string                 variantProfileUrn;    //!< Variants profile URN
+    bool                        saveVariantSettings;  //!< Flag to save effective variant settings in metadata
     datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
 
     // Services support:
@@ -58,6 +59,8 @@ namespace FLSimulate {
     // Simulation control:
     std::string  outputMetadataFile; //!< Output metadata file
     bool         embeddedMetadata;   //!< Flag to embed metadata in the output data file
+    bool         saveRngSeeding;     //!< Flag to save PRNG seeds in metadata
+    std::string  rngSeeding;         //!< PRNG seed initialization
     std::string  outputFile;         //!< Output data file for the output module
 
     //! Construct and return the default configuration object
