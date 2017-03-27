@@ -24,16 +24,15 @@ find_package(Boost 1.55 QUIET COMPONENTS ${Boost_COMPONENTS} NO_MODULE)
 find_package(Boost 1.55 REQUIRED ${Boost_COMPONENTS})
 
 # - ROOT
-if(NOT FALAISE_USE_LEGACY_ROOT)
-  set(CMAKE_MODULE_PATH_PREROOT ${CMAKE_MODULE_PATH})
-endif()
-set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
-find_package(ROOT 5.34.00 QUIET COMPONENTS ${ROOT_COMPONENTS} NO_MODULE)
-find_package(ROOT 5.34.00 REQUIRED ${ROOT_COMPONENTS})
-if(NOT FALAISE_USE_LEGACY_ROOT)
+# - ROOT
+set(CMAKE_MODULE_PATH_PREROOT ${CMAKE_MODULE_PATH})
+find_package(ROOT 5.34.00 REQUIRED Core Hist RIO Tree GUI)
+if(ROOT_VERSION VERSION_LESS 6)
   include(RootNewMacros)
-  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_PREROOT})
+else()
+  include(${ROOT_DIR}/modules/RootNewMacros.cmake)
 endif()
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH_PREROOT})
 
 #-----------------------------------------------------------------------
 # Include directories for all subdirectories

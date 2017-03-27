@@ -240,7 +240,7 @@ namespace snemo {
         return TColor::PixelAsHexString(pixel);
       }
 
-      void root_utilities::write_rgb_color(ostream & out_, const unsigned int color_)
+      void root_utilities::write_rgb_color(std::ostream & out_, const unsigned int color_)
       {
         TColor * root_color = gROOT->GetColor(color_);
 
