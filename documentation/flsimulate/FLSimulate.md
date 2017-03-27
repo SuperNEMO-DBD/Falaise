@@ -225,7 +225,7 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
   - `rngSeedFile` :  the input file  for the seeding of  random number
 	generators (string/path, mandatory  for production runs, otherwise
 	optional; if  this file  is not provided,  initial PRNG  seeds are
-	automatically computed and saved in a default log file).
+	automatically computed and saved in metadata or in a default log file).
 
 - `flsimulate.digitization`  : this  is  the *digitization*  section
   (not used yet).
@@ -779,8 +779,8 @@ automatically generated  by the  seed manager embedded  in FLSimulate.
 User may  also provide  the `rngSeedFileSave` parameter:  it describes
 the file where to save the  original seeds, particularly when they are
 not set explicitely through  `rngSeedFile`. By default, original seeds
-will be saved in the `__flsimulate-seeds.log` file in the current directory.
-One can thus select explicitely this feature with:
+will be saved in metadata of in the `__flsimulate-seeds.log` file in
+the current directory. One can thus select explicitely this feature with:
 
 ~~~~~~~~~~~~~
 [name="flsimulate.simulation" type="flsimulate::section"]
@@ -791,8 +791,8 @@ rngSeedFileSave : string as path = "path/to/the/init_seeds.log"
 ...
 ~~~~~~~~~~~~~
 
-Ouput data file {#usingflsimulate_outputdatafile}
-===============
+Output data file {#usingflsimulate_outputdatafile}
+================
 
 The FLSimulate  output file is set  from the command line  through the
 `-o`  or `--output-file`  switch.   It  may use  the  XML format  (for
@@ -840,6 +840,25 @@ $ flsimulate -c simu.conf -o example.brio --output-metadata-file example.meta
 In case the user  does not choose to store the  metadata in the output
 data  file and  no  explicit  external metadata  file  is selected,  a
 default one is generated with name `__flsimulate-metadata.log`.
+
+Output metadata {#usingflsimulate_outputmetadata}
+===============
+
+Each FLSimulate run produces a  set of *context sensitive* data, known
+as *metadata*.   A set  of metadata  is thus  created just  before the
+simulation run starts. It contains informations about the simulation's
+configuration  setup  and  inputs,   arranged  in  sections  (general,
+simulation, digitization,  variants, services...) in the  same way the
+configuration script is organized. This  enables the off line check of
+the simulation parameters.
+
+As mentionned above,  metadata is saved by default in  the output data
+file, through some kind of header (XML) or parallel branch (BRIO).  If
+asked on  the command line (`-m`  or `--output-metadata-file` switch),
+FLSimulate also saves metadata using the `datatools::multi_properties`
+format   in   an   external   companion   file   (default   name   is:
+`__flsimulate-metadata.log`).
+
 
 Quick start {#usingflsimulate_quickstart}
 ===========
@@ -1052,6 +1071,21 @@ $ flvisualize -i example.xml
 ...
 ~~~~~
 
+User profiles {#usingflsimulate_userprofiles}
+=============
+
+Falaise proposes three *user profiles* for the Monte Carlo production:
+
+- `expert`   :   reserved   for   *expert*  users   who   are   able   to
+  hack/corrupt/distort the Falaise and FLSimulate systems thanks to a large
+  set of options and features,
+- `normal` : for *normal* users with a smaller set of options and features;
+  this is the default profile,
+- `production` : this mode should be reserved for official production of
+  Monte Carlo data; some options and features are inhibited to prevent
+  from generating data with ambiguous configuration(s).
+
+!TODO give details about what can/cannot be done within each user profile.
 
 Examples {#usingflsimulate_examples}
 ========
