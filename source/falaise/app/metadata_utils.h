@@ -61,7 +61,6 @@ namespace falaise {
 
     private:
 
-      uint32_t    _flags_;               //!< Unused flags
       std::string _input_data_file_;     //!< Input data file from which extraction of metadata is done
       std::string _input_metadata_file_; //!< Input metadata plain file
 

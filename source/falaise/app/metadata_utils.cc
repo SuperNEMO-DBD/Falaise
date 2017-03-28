@@ -75,7 +75,6 @@ namespace falaise {
 
     void metadata_input::scan(const datatools::multi_properties & mp_)
     {
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       datatools::kernel & dtk = datatools::kernel::instance();
       const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
       if (mp_.empty()) {
@@ -165,22 +164,18 @@ namespace falaise {
       return;
     }
 
-    metadata_collector::metadata_collector(const uint32_t flags_)
-      : _flags_(flags_)
+    metadata_collector::metadata_collector(const uint32_t /*flags_*/)
     {
-      return;
     }
 
     void metadata_collector::set_input_data_file(const std::string & idf_)
     {
       _input_data_file_ = idf_;
-      return;
     }
 
     void metadata_collector::set_input_metadata_file(const std::string & imf_)
     {
       _input_metadata_file_ = imf_;
-      return;
     }
 
     datatools::multi_properties
@@ -254,7 +249,7 @@ namespace falaise {
 
     const datatools::properties &
     metadata_scanner::get_section(const std::string & section_name_,
-                                  const std::string & section_type_) const
+                                  const std::string & /*section_type_*/) const
     {
       return _mp_.get_section(section_name_);
     }
