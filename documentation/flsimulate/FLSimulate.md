@@ -113,13 +113,42 @@ flsimulate uses the following external libraries:
 Note that the exact versions shown  will depend on the current release
 and what versions of packages are linked.
 
-FLSimulate's configuration script {#usingflsimulate_configscript}
-=================================
+Quick start {#usingflsimulate_quickstart}
+===========
+
+Here  we  propose  to  run  FLSimulate  with  the  default  simulation
+setup. Only the output file is set from the command line:
+
+~~~~~
+$ flsimulate -o example.xml
+...
+~~~~~
+
+The  output `example.xml`  file  contains one  unique simulated  event
+corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
+pad.   You  may  browse  the  output file  using  your  favorite  text
+editor.    You   will    see    some   leading    records   of    type
+`datatools::properties` corresponding  to the metadata.  Then  comes a
+record of  type `datatools::things`. This data  structure contains the
+unique simulated event with collections of truth hits.
+
+The `__flsimulate-seeds.log` should also be generated. It contains the
+seeds used to initialize the embedded pseudo random number generators.
+
+You may display the event with:
+~~~~~
+$ flvisualize -i example.xml
+...
+~~~~~
+
+
+Scripting FLSimulate {#usingflsimulate_scriptingflsimulate}
+====================
 
 FLSimulate basically runs the  simulation in batch mode.  Practically,
 a *configuration script* must be generally provided by the user.
 
-Script's format {#usingflsimulate_configscript_format}
+Script's format {#usingflsimulate_scriptingflsimulate_format}
 ---------------
 
 The script  uses  the  Bayeux's `datatools::multi_properties`  format.
@@ -147,13 +176,12 @@ the end of a line. Examples:
 # block
 ~~~~~~
 
-Note   that  lines   starting  with   `'#@`'  are   generally  special
+Note   that  lines   starting  with   '`#@`'  are   generally  special
 meta-comment with embedded commands. They  should not be considered as
 comments.  As a matter of rule,  the use of lines starting with '`#@`'
 is reserved for system use.
 
-
-After the header, the script contains sections. A section starts
+After the header, the script contains *sections*. A section starts
 with a section definition line with two identifiers:
 
 - the *name* of the section,
@@ -192,14 +220,147 @@ recommended. Example:
 numberOfEvents : integer = 10000
 ~~~~~~
 
-Script's sections {#usingflsimulate_configscript_sections}
------------------
+
+How to change the number of events simulated {#usingflsimulate_changenumberofevents}
+--------------------------------------------
+
+You must create the `simu.conf` with the `flsimulate` section and
+define the `numberOfEvents` integer parameter:
+~~~~~~~~~~~
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+numberOfEvents : integer = 100
+~~~~~~~~~~~
+
+
+How to select the event generator {#usingflsimulate_selecteventgenerator}
+---------------------------------
+
+The choice of the event generator is handle by the embedded *variant service*
+(`primary_events` registry).
+You must create the `simu.conf` with the `flsimulate.variantService` section and
+define the `settings` string array parameter. This array must contain the proper
+*variant* setting directive, namely:
+~~~~~~~~~~~
+primary_events:generator=GENERATOR_NAME
+~~~~~~~~~~~
+where `GENERATOR_NAME` is the name of a valid decay generator.
+
+Example: to select the Tl-208 decay generator, use:
+~~~~~~~~~~~
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+numberOfEvents : integer = 100
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+settings : string[1] = "primary_events:generator=Tl208"
+~~~~~~~~~~~
+
+
+How to select the vertex generator {#usingflsimulate_selectevertexgenerator}
+----------------------------------
+
+The choice of the vertex generator is handle by the embedded *variant service*
+(`vertexes` registry).
+You must create the `simu.conf` with the `flsimulate.variantService` section and
+define the `settings` string array parameter. This array must contain the proper
+*variant* setting directive, namely:
+~~~~~~~~~~~
+vertexes:generator=GENERATOR_NAME
+~~~~~~~~~~~
+where `GENERATOR_NAME` is the name of a valid vertex generator.
+
+Example: to select the generator of vertice from the bulk volume of drift cells'
+field wire, use:
+~~~~~~~~~~~
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+numberOfEvents : integer = 100
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+settings : string[1] = "vertexes:generator=field_wire_bulk"
+~~~~~~~~~~~
+
+
+How to select the geometry layout {#usingflsimulate_selectgeometrylayout}
+---------------------------------
+
+The choice of some geometry options is handle by the embedded *variant service*
+(`geometry` registry).
+You must create the `simu.conf` with the `flsimulate.variantService` section and
+define the `settings` string array parameter. This array must contain the proper
+*variant* setting directive, namely:
+~~~~~~~~~~~
+geometry:layout=LAYOUT_NAME
+~~~~~~~~~~~
+where `LAYOUT_NAME` is the name of a valid vertex generator. Supported values
+are:
+- `Basic` (default),
+- `HalfCommissioning`.
+
+Example: to select the *half-commissioning* layout, use:
+~~~~~~~~~~~
+#@key_label  "name"
+#@meta_label "type"
+
+[name="flsimulate" type="flsimulate::section"]
+numberOfEvents : integer = 100
+
+[name="flsimulate.variantService" type="flsimulate::section"]
+settings : string[1] = "geometry:layout=HalfCommissioning"
+~~~~~~~~~~~
+
+More geometry  options are available  from the *variant  service*, see
+[this section]{#usingflsimulate_variants}.
+
+
+How to choose the random numbers sequence {#usingflsimulate_chooserng}
+-----------------------------------------
+
+By default, FLSimulate initializes embedded pseudo random number generators
+(PRNG) with a default seeding policy. Four seeds are internally chosen by a
+smart algorithm and then passed to the core components of the simulation engine:
+
+- the event generator,
+- the vertex generator,
+- the Geant4 Monte Carlo engine,
+- the truth hit postprocessor(s).
+
+To gain full control on the simulation process, you can select the seeds yourself.
+You must create the `simu.conf` with the `flsimulate.simulation` section and
+define the four seeding integer parameters:
+
+~~~~~~~~~~~~~
+[name="flsimulate.simulation" type="flsimulate::section"]
+rngEventGeneratorSeed         : integer = 314159
+rngVertexGeneratorSeed        : integer = 765432
+rngGeant4GeneratorSeed        : integer = 123456
+rngHitProcessingGeneratorSeed : integer = 987654
+~~~~~~~~~~~~~
+
+Beware to use a set of four different values to avoid correlation effects between
+generators.
+
+Another technique is available, it consists in providing an external file which contains the four seeds.
+See [this section](@ref usingflsimulate_managingrandomnumbersequences) for further details.
+
+
+Script's supported sections and parameters {#usingflsimulate_scriptingflsimulate_sectionsandparameters}
+------------------------------------------
 
 The  FLSimulate's  script  contains  up   to  five  sections  of  type
 `flsimulate::section` with the following names:
 
 - `flsimulate` : this is the  system/base section where to set general
-  parameters such as:
+  parameters.
+
+  Parameters of interest are:
 
   - `numberOfEvents` : the number of  events to be generated (integer,
     optional, default is: `1`),
@@ -226,14 +387,19 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
 	generators (string/path, mandatory  for production runs, otherwise
 	optional; if  this file  is not provided,  initial PRNG  seeds are
 	automatically computed and saved in metadata or in a default log file).
+  - `rngEventGeneratorSeed` : the explicit seed (integer) for the event generator.
+  - `rngVertexGeneratorSeed` : the explicit seed (integer) for the vertex generator.
+  - `rngGeant4GeneratorSeed` : the explicit seed (integer) for the Geant4 generator.
+  - `rngHitProcessingGeneratorSeed` : the explicit seed (integer) for the hit post-processing algorithms.
+  - `rngSeedFileSave` : the file path where to store the effective seeds used by the simulation.
 
 - `flsimulate.digitization`  : this  is  the *digitization*  section
   (not used yet).
 
 - `flsimulate.variantService` :  this is the *variants*  section where
   the Bayeux/datatools  *variant service* dedicated to  the management
-  of variant  parameters and configurations is  configured.  Users are
-  given here the opportunity to tweak some core options about:
+  of  variant parameters  is  configured.  Users  are  given here  the
+  opportunity to tweak some core options about:
 
   - the geometry,
   - the vertex generation,
@@ -260,6 +426,9 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
 	optional).   If not  set, it  is automatically  resolved from  the
 	`profileUrn` tag.
 
+  See [this section](@ref usingflsimulate_variants) for details.
+
+
 - `flsimulate.services`  :  this  is the  *services*  section  where
   explicit  configuration for  the embedded  Bayeux/datatools *service
   manager* is defined (by tag or explicit configuration file). Typical
@@ -275,14 +444,14 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
   Parameters of interest are:
 
   - `configUrn`  :  the  configuration  tag for  the  service  manager
-	associated to  the simulation setup (string,  optional).  not set,
+	associated to  the simulation setup (string,  optional). If not set,
 	it is automatically resolved from the simulation setup tag.
   - `config` : the path to the main configuration file for the service
-	managerservice  associated to  the simulation  setup (string/path,
+	manager service  associated to  the simulation  setup (string/path,
 	optional).   If not  set, it  is automatically  resolved from  the
 	`configUrn` tag.
 
-A sample minimal configuration script  (commented) is provided in this
+A sample configuration script  (commented) is provided in this
 [document](FLSimulate-3.0.0.conf) (for Falaise 3.0.0).
 
 For a  given run, the simulation  setup is selected from  the script's
@@ -337,14 +506,64 @@ $ flsimulate --help-scripting
 FLSimulate's variant system {#usingflsimulate_variants}
 ===========================
 
+Basics
+------
+
 As  mentionned  above, FLSimulate  embeds  a  *variant service*  which
-offers to the user the possibility to tweak a set of parameters from a
-*variant repository*.  A  variant *profile* can thus  be generated and
-imported by the FLSimulate's subsystems.
+offers  to the  user  the  possibility to  tweak  an  official set  of
+parameters from a  *variant repository*. A variant  *profile* can thus
+be generated and imported by the FLSimulate's subsystems.
+
+The variant repository is a container which typically contains several
+sets  of variant  parameters, the  *variant registries*,  organized by
+topics.
+
+The  variant  registry  implements  a  dynamic  hierarchy  of  variant
+parameters  and  depender  variant  menus.  It  is  organized  like  a
+filesystem where each parameter and variant has an unique path.
+
+As an illustration, here is the organization of the geometry registry
+used by the SuperNEMO demonstrator simulation setup (2.1):
+~~~~~~~~~
+geometry/
++-- layout
+|   +-- if_basic/
+|   |   +-- magnetic_field
+|   |   |   +-- is_active/
+|   |   |       +-- type
+|   |   |           +-- if_mapped/
+|   |   |           |   +-- map
+|   |   |           |   |   +-- if_user/
+|   |   |           |   |       +-- map_file
+|   |   |           |   +-- z_inverted
+|   |   |           +-- if_uniform_vertical/
+|   |   |               +-- magnitude
+|   |   |               +-- direction
+|   |   +-- source_layout
+|   |   |   +-- if_basic/
+|   |   |       +-- thickness
+|   |   |       +-- material
+|   |   +-- source_calibration
+|   |   |   +-- is_active/
+|   |   |       +-- type
+|   |   +-- shielding
+|   +-- if_half_coommissioning/
+|       +-- gap
++-- calo_film_thickness
+~~~~~~~~~
+
+Items *without* a trailing slash ('`/`') are variant parameters.  They
+may be given values selected by the user.
+
+Items *with*  a trailing  slash are specific  variant menus  which are
+activated only if specific values are selected for the parent parameter.
+
+FLSimulate registries
+---------------------
 
 In  the current  implementation  (Falaise 3.0.0  and simulation  setup
-version  2.1),  4 variant  *registries*  are  defined in  the  variant
-*repository*:
+version 2.1),  four variant  *registries* are  defined in  the variant
+repository:
 - `geometry` : handles geometry options,
 - `vertexes` : handles vertex generation options,
 - `primary_events`: handles decays generation options,
@@ -376,6 +595,8 @@ $ bxvariant_inspector \
     --variant-gui
 ~~~~~
 
+!TODO: provide a flsimulate-configure app.
+
 The  image below  shows  the  typical GUI  interface  of the  Bayeux's
 variant  inspector/editor  program.The  interface  here  displays  the
 `geometry` registry panel:
@@ -401,6 +622,17 @@ The  `flsimulate.variantService` section  may contains  the `settings`
 parameter.  It consists  in a  list of  assignment instructions  to be
 passed to the variant service.
 
+The format of a setting directive is:
+
+~~~~~~~~~~~
+REGISTRY_NAME:PATH_TO_VARIANT_PARAMATER=VALUE
+~~~~~~~~~~~
+
+where:
+- `REGISTRY_NAME` is the name of the variant registry which hosts the selected parameter,
+- `PATH_TO_VARIANT_PARAMATER` is the path of the target parameter in the registry directory,
+- `VALUE` is the textual representation of the selected value for the target parameter.
+
 For example, to simulate 100 Tl-208  events from the bulk volume of the
 tracker cells' field  wires in the full Demonstrator,  you must create
 the      following       `simu.conf`      script       (using      the
@@ -412,27 +644,13 @@ the      following       `simu.conf`      script       (using      the
 #@meta_label "type"
 
 [name="flsimulate" type="flsimulate::section"]
-
-#@description Number of events to simulate
 numberOfEvents : integer = 100
 
-[name="flsimulate.simulation" type="flsimulate::section"]
-#@config Simulation setup
-# #@description Tag of the simulation setup (default)
-# simulationUrn : string = "urn:snemo:demonstrator:simulation:2.1"
-
 [name="flsimulate.variantService" type="flsimulate::section"]
-#@config Variant setup
-#@description List of variant settings
-settings : string[4] = \
-  "geometry:layout=Basic" \
+settings : string[2] = \
   "vertexes:generator=field_wire_bulk" \
-  "primary_events:generator=Tl208" \
-  "simulation:output_profile=none"
+  "primary_events:generator=Tl208"
 
-[name="flsimulate.services" type="flsimulate::section"]
-#@config Services setup
-# this section is empty
 ~~~~~
 
 The `settings`  parameter must not  be used for production  runs.  One
@@ -445,7 +663,10 @@ Using a variant profile {#usingflsimulate_variants_profile}
 -----------------------
 
 The `bxvariant_inspector` program proposes an interface to edit/select
-a set of parameters and then generate a *variant profile*:
+a set of parameters and then generate a *variant profile*. A variant profile
+is a file which contains the explicit list of variant parameters with their values
+selected for a simulation run.
+
 
 ~~~~~
 $ bxvariant_inspector \
@@ -510,9 +731,7 @@ below). The `simu.conf` script now contains:.
 
 ~~~~~
 ...
-[type="flsimulate.variantService" name=""]
-#@config Variant setup
-#@description Variant profile
+[name="flsimulate.variantService" type="flsimulate::section"]
 profile : string as path = "variants.profile"
 ~~~~~
 
@@ -522,7 +741,7 @@ displays  the  default  variant  profile  associated  to  the  default
 simulation setup (version 2.1) in Falaise 3.0.0:
 
 ~~~~~
-@format=datatools::configuration::variant
+#@format=datatools::configuration::variant
 #@format.version=1.0
 #@organization=snemo
 #@application=falaise
@@ -582,7 +801,7 @@ layout of the detector:
   frame (only  *French* side,  like in the  context of  end 2016-begin
   2017).
 
-Each of these layouts publish additional options.
+Each of these layouts publishes additional options.
 
 
 Available Vertex/Event Generators {#usingflsimulate_generator_table}
@@ -719,10 +938,22 @@ For the `Demonstrator/Basic` configuration/layout, these are:
   `calo_details+tracker_details+source_details` rule)
 
 The  activation   of  some   additional  output   is  done   with  the
-`@simulation:output_profile` variant  parameter. It may be  limited by
+`simulation:output_profile` variant  parameter. It may be  limited by
 geometry options,  for example the `source_details`  output profile is
 not available with the `HalfCommissioning` geometry layout because the
 source frame is not available in this layout.
+
+Example: select the full detail output profile:
+
+~~~~~
+#@description Main flsimulate configuration script
+#@key_label  "name"
+#@meta_label "type"
+[name="flsimulate.variantService" type="flsimulate::section"]
+settings : string[1] = "simulation:output_profile=all_details"
+
+~~~~~
+
 
 Be aware that using this feature  implies that the simulation will use
 additional CPU  and the output  file will use  a lot of  storage. This
@@ -734,36 +965,44 @@ The description of the output simulation  data model is described in a
 [dedicated page on FLSimulate output](@ref flsimulateoutput).
 
 
-Managing seeds  {#usingflsimulate_seedmgr}
-==============
+Managing random number sequences  {#usingflsimulate_managingrandomnumbersequences}
+================================
 
-The   script   `flsimulate.simulation`   section  my   contain   the
-`rngSeedFile`  parameter:
+As shown in the [above section](@ref usingflsimulate_chooserng), users
+can take  full control on  random number sequences used  internally by
+FLSimulate.
+
+The   script   `flsimulate.simulation`  section   recognizes   several
+configuration   parameters   concerning    PRNG   initialization   and
+management.
+
+For production runs, it is mandatory to use the `rngSeedFile`  parameter:
 
 ~~~~~~~~~~~~~
 [name="flsimulate.simulation" type="flsimulate::section"]
 #@config Simulation setup
 ...
-#@description Random seeds file
+#@description Random seeds external file
 rngSeedFile : string as path = "seeds.conf"
 ...
 ~~~~~~~~~~~~~
 
-where the `seeds.conf` file uses the following format:
+The `seeds.conf` file is typically generated by the following command:
+~~~~~
+$ bxg4_seeds -k -d . -p seeds.conf
+~~~~~
+
+It uses the following format:
 
 ~~~~~
 {EG=142921705; MGR=569932270; SHPF=1008320517; VG=1002945362}
-~~~~~
-as generated by the following command:
-~~~~~
-$ bxg4_seeds -k -d . -p seeds.conf
 ~~~~~
 
 Here we can see that FLSimulate  requests 4 seeds, one for each random
 number generators embedded in the Bayeux/Geant4 simulation engine:
 - `EG` stands for *event generator*,
 - `VG` stands for *vertex generator*,
-- `MGR` stands for *simulation manager* (Geant4 kernel),
+- `MGR` stands for *simulation manager* (Geant4 engine),
 - `SHPF`  stands  for  *step   hit  processing  factory*,  a  software
   component responsible of  the generation of the  final collection of
   truth hits (see below).
@@ -776,20 +1015,23 @@ massive Monte Carlo production.
 
 If the  input seed  file is  not provided, the  initial seeds  will be
 automatically generated  by the  seed manager embedded  in FLSimulate.
+
 User may  also provide  the `rngSeedFileSave` parameter:  it describes
 the file where to save the  original seeds, particularly when they are
-not set explicitely through  `rngSeedFile`. By default, original seeds
+not set explicitely through  `rngSeedFile` or `rngXXXGeneratorSeed` parameters.
+By default, original seeds
 will be saved in metadata of in the `__flsimulate-seeds.log` file in
-the current directory. One can thus select explicitely this feature with:
+the current directory. One can thus select explicitely this output file with:
 
 ~~~~~~~~~~~~~
 [name="flsimulate.simulation" type="flsimulate::section"]
 #@config Simulation setup
 ...
 #@description File to save initial random seeds
-rngSeedFileSave : string as path = "path/to/the/init_seeds.log"
+rngSeedFileSave : string as path = "path/to/the/init-seeds.log"
 ...
 ~~~~~~~~~~~~~
+
 
 Output data file {#usingflsimulate_outputdatafile}
 ================
@@ -859,41 +1101,27 @@ FLSimulate also saves metadata using the `datatools::multi_properties`
 format   in   an   external   companion   file   (default   name   is:
 `__flsimulate-metadata.log`).
 
+User profiles {#usingflsimulate_userprofiles}
+=============
 
-Quick start {#usingflsimulate_quickstart}
-===========
+Falaise proposes three *user profiles* for the Monte Carlo production:
 
-Case 1 : using FLSimulate with default configuration {#usingflsimulate_quickstart_case1}
-----------------------------------------------------
+- `expert`   :   reserved   for   *expert*  users   who   are   able   to
+  hack/corrupt/distort the Falaise and FLSimulate systems thanks to a large
+  set of options and features,
+- `normal` : for *normal* users with a smaller set of options and features;
+  this is the default profile,
+- `production` : this mode should be reserved for official production of
+  Monte Carlo data; some options and features are inhibited to prevent
+  from generating data with ambiguous or non official configuration(s).
 
-Here  we  don't  use  any   configuration  script,  thus  the  default
-simulation   setup  is   used  associated   to  the   default  variant
-profile. Only the output file is set from the command line:
+!TODO give details about what can/cannot be done within each user profile.
 
-~~~~~
-$ flsimulate -o example.xml
-...
-~~~~~
+Examples {#usingflsimulate_examples}
+========
 
-The  output `example.xml`  file  contains one  unique simulated  event
-corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
-pad.   You  may  browse  the  output file  using  your  favorite  text
-editor.    You   will    see    some   leading    records   of    type
-`datatools::properties` corresponding  to the metadata.  Then  comes a
-record of  type `datatools::things`. This data  structure contains the
-unique simulated event with collections of truth hits.
-
-The `__flsimulate-seeds.log` should also be generated. It contains the
-seeds used to initialize the embedded pseudo random number generators.
-
-You may display the event with:
-~~~~~
-$ flvisualize -i example.xml
-...
-~~~~~
-
-Case 2 : using FLSimulate with a configuration script {#usingflsimulate_quickstart_case2}
------------------------------------------------------
+Example 1 : using FLSimulate with a configuration script {#usingflsimulate_examples_example1}
+--------------------------------------------------------
 
 Here we want to simulate 10 Tl-208 events from the bulk volume of the
 tracker cells' field wires in the full Demonstrator.
@@ -905,15 +1133,10 @@ tracker cells' field wires in the full Demonstrator.
 #@meta_label "type"
 
 [name="flsimulate" type="flsimulate::section"]
-#@config System setup
-#@description Number of events to simulate
 numberOfEvents : integer = 10
 
 [name="flsimulate.variantService" type="flsimulate::section"]
-#@config Variant setup
-#@description List of variant settings
-settings : string[4] = \
-  "geometry:layout=Basic" \
+settings : string[3] = \
   "vertexes:generator=field_wire_bulk" \
   "primary_events:generator=Tl208" \
   "simulation:output_profile=all_details"
@@ -932,10 +1155,10 @@ $ flvisualize -i example.brio
 ~~~~~
 
 
-Case 3 : Using FLSimulate with a configuration script and an explicit variant profile {#usingflsimulate_quickstart_case3}
--------------------------------------------------------------------------------------
+Example 2 : using FLSimulate with a configuration script and an explicit variant profile {#usingflsimulate_examples_example2}
+----------------------------------------------------------------------------------------
 
-Here we use the same simulation setup than in case 2.
+Here we use the same simulation setup than in case 2:
 
 1. Prepare the following `variant.profile` file:
 ~~~~~~
@@ -990,13 +1213,9 @@ output_profile = "all_details"
 #@meta_label "type"
 
 [name="flsimulate" type="flsimulate::section"]
-#@config System setup
-#@description Number of events to simulate
 numberOfEvents : integer = 10
 
 [name="flsimulate.variantService" type="flsimulate::section"]
-#@config Variant setup
-#@description List of variant settings
 profile : string as path = "variant.profile"
 ~~~~~
 3. Run `flsimulate`:
@@ -1010,10 +1229,10 @@ $ flvisualize -i example.data.gz
 ...
 ~~~~~
 
-Case 4 : Using FLSimulate with an explicit configuration, profile and seeds {#usingflsimulate_quickstart_case4}
----------------------------------------------------------------------------
+Example 3 : using FLSimulate with an explicit configuration, profile and seeds {#usingflsimulate_examples_example3}
+------------------------------------------------------------------------------
 
-Here we use again the same simulation setup than in cases 2 and 3.
+Here we use again the same simulation setup than in examples 1 and 2.
 
 1. Generate a set of seeds:
 ~~~~~
@@ -1039,17 +1258,12 @@ $ bxvariant_inspector \
 #@meta_label "type"
 
 [name="flsimulate" type="flsimulate::section"]
-#@config System setup
-#@description Number of events to simulate
 numberOfEvents : integer = 10
 
 [name="flsimulate.simulation" type="flsimulate::section"]
-#@config Simulation setup
 rngSeedFile : string as path = "seeds.conf"
 
 [name="flsimulate.variantService" type="flsimulate::section"]
-#@config Variant setup
-#@description List of variant settings
 profile : string as path = "variant.profile"
 ~~~~~
 4. Run `flsimulate` twice:
@@ -1070,30 +1284,3 @@ $ echo $?
 $ flvisualize -i example.xml
 ...
 ~~~~~
-
-User profiles {#usingflsimulate_userprofiles}
-=============
-
-Falaise proposes three *user profiles* for the Monte Carlo production:
-
-- `expert`   :   reserved   for   *expert*  users   who   are   able   to
-  hack/corrupt/distort the Falaise and FLSimulate systems thanks to a large
-  set of options and features,
-- `normal` : for *normal* users with a smaller set of options and features;
-  this is the default profile,
-- `production` : this mode should be reserved for official production of
-  Monte Carlo data; some options and features are inhibited to prevent
-  from generating data with ambiguous configuration(s).
-
-!TODO give details about what can/cannot be done within each user profile.
-
-Examples {#usingflsimulate_examples}
-========
-
-Falaise  provides examples  of  FLSimulate  configurations.  They  are
-published from the installation resource directory in:
-
-- `examples/flsimulate/ex00/`  : minimal  simulation  setup using  the
-  default configuration.
-- `examples/flsimulate/ex01/`  :  simulation  setup using  a  specific
-  configuration selected by the user.
