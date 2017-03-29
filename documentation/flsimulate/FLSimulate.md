@@ -126,14 +126,12 @@ $ flsimulate -o example.xml
 
 The  output `example.xml`  file  contains one  unique simulated  event
 corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
-pad.   You  may  browse  the  output file  using  your  favorite  text
+pad (SuperNEMO Demonstrator geometry model 4.0 with `Basic` layout).
+You  may  browse  the  output XML file  using  your  favorite  text
 editor.    You   will    see    some   leading    records   of    type
 `datatools::properties` corresponding  to the metadata.  Then  comes a
 record of  type `datatools::things`. This data  structure contains the
 unique simulated event with collections of truth hits.
-
-The `__flsimulate-seeds.log` should also be generated. It contains the
-seeds used to initialize the embedded pseudo random number generators.
 
 You may display the event with:
 ~~~~~
@@ -163,7 +161,7 @@ The script contains a mandatory header:
 The '`#@description`' line is optional but highly recommended.
 
 You may add comments at any place  in the script. Just prepend a sharp
-('`#`') symbol to any comment line:  You may also prepend a comment at
+('`#`') symbol to any comment line.  You may also prepend a comment at
 the end of a line. Examples:
 
 ~~~~~~
@@ -224,7 +222,8 @@ numberOfEvents : integer = 10000
 How to change the number of events simulated {#usingflsimulate_changenumberofevents}
 --------------------------------------------
 
-You must create the `simu.conf` with the `flsimulate` section and
+By default, FLSimulate generate only one event. To change this behaviour,
+you must create the `simu.conf` with the `flsimulate` section and
 define the `numberOfEvents` integer parameter:
 ~~~~~~~~~~~
 #@key_label  "name"
@@ -238,6 +237,8 @@ numberOfEvents : integer = 100
 How to select the event generator {#usingflsimulate_selecteventgenerator}
 ---------------------------------
 
+FLSimulate use a default primary event generator which is generally
+selected from the context of the selected simulation setup.
 The choice of the event generator is handle by the embedded *variant service*
 (`primary_events` registry).
 You must create the `simu.conf` with the `flsimulate.variantService` section and
@@ -264,6 +265,8 @@ settings : string[1] = "primary_events:generator=Tl208"
 How to select the vertex generator {#usingflsimulate_selectevertexgenerator}
 ----------------------------------
 
+FLSimulate use a default vertex generator which is generally
+selected from the geometry context of the selected simulation setup.
 The choice of the vertex generator is handle by the embedded *variant service*
 (`vertexes` registry).
 You must create the `simu.conf` with the `flsimulate.variantService` section and
@@ -291,7 +294,7 @@ settings : string[1] = "vertexes:generator=field_wire_bulk"
 How to select the geometry layout {#usingflsimulate_selectgeometrylayout}
 ---------------------------------
 
-The choice of some geometry options is handle by the embedded *variant service*
+The choice of some geometry options is handled by the embedded *variant service*
 (`geometry` registry).
 You must create the `simu.conf` with the `flsimulate.variantService` section and
 define the `settings` string array parameter. This array must contain the proper
@@ -317,7 +320,7 @@ settings : string[1] = "geometry:layout=HalfCommissioning"
 ~~~~~~~~~~~
 
 More geometry  options are available  from the *variant  service*, see
-[this section]{#usingflsimulate_variants}.
+[this section]{@ref usingflsimulate_variants}.
 
 
 How to choose the random numbers sequence {#usingflsimulate_chooserng}
@@ -523,12 +526,13 @@ parameters  and  depender  variant  menus.  It  is  organized  like  a
 filesystem where each parameter and variant has an unique path.
 
 As an illustration, here is the organization of the geometry registry
-used by the SuperNEMO demonstrator simulation setup (2.1):
+used by the SuperNEMO demonstrator simulation setup (2.1) (tag : `"urn:snemo:demonstrator:simulation:2.1"`):
+
 ~~~~~~~~~
 geometry/
-+-- layout
++-- layout (string)
 |   +-- if_basic/
-|   |   +-- magnetic_field
+|   |   +-- magnetic_field (boolean)
 |   |   |   +-- is_active/
 |   |   |       +-- type
 |   |   |           +-- if_mapped/
@@ -537,26 +541,33 @@ geometry/
 |   |   |           |   |       +-- map_file
 |   |   |           |   +-- z_inverted
 |   |   |           +-- if_uniform_vertical/
-|   |   |               +-- magnitude
-|   |   |               +-- direction
-|   |   +-- source_layout
+|   |   |               +-- magnitude (real, as magnetic flux density)
+|   |   |               +-- direction (string)
+|   |   +-- source_layout (string)
 |   |   |   +-- if_basic/
-|   |   |       +-- thickness
-|   |   |       +-- material
-|   |   +-- source_calibration
+|   |   |       +-- thickness (real, as length)
+|   |   |       +-- material (string)
+|   |   +-- source_calibration (boolean)
 |   |   |   +-- is_active/
-|   |   |       +-- type
-|   |   +-- shielding
+|   |   |       +-- type (string)
+|   |   +-- shielding (boolean)
 |   +-- if_half_coommissioning/
-|       +-- gap
-+-- calo_film_thickness
+|       +-- gap (real, as length)
++-- calo_film_thickness (real, as length)
 ~~~~~~~~~
 
-Items *without* a trailing slash ('`/`') are variant parameters.  They
-may be given values selected by the user.
-
-Items *with*  a trailing  slash are specific  variant menus  which are
-activated only if specific values are selected for the parent parameter.
+The  top level  so-called `geometry`  item --  here displayed  with an
+arbitrary trailing  slash ('`/`')  -- represents the  *registry* which
+hosts all  variant parameters  related to  the geometry  model.  Items
+*without* a trailing slash are  *variant parameters* (here their types
+are shown between parenthesis).  They  may be given values selected by
+the user, depending  on their type and constraints  implemented by the
+variant service:  support for units,  range or enumeration  of allowed
+values...  Items *with* a trailing  slash are specific *variant menus*
+which are  activated only  if specific values  are selected  for their
+parent parameter.   An activated variant  menu publishes a new  set of
+variant parameters which  are thus made available for the  user from a
+deeper level of the variant hierarchy.
 
 FLSimulate registries
 ---------------------
@@ -584,35 +595,43 @@ account such constraints.
 
 The  lists of  valid vertex  and  event generators  for each  geometry
 variant options can  also be dynamically browsed  through the Bayeux's
-`bxvariant_inspector` program  (with builtin  GUI mode of  your Bayeux
-setup). From the Falaise build directory, run:
+`flsimulate-configure` program  (with builtin  GUI mode of  your Bayeux
+setup).
 
+To get help from the command line, run:
 ~~~~~
-$ bxvariant_inspector \
-    --load-dll "Falaise@$(bash ./BuildProducts/bin/flquery --libdir)" \
-    --datatools::resource-path="falaise@$(bash ./BuildProducts/bin/flquery --resourcedir)" \
-    --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
-    --variant-gui
+$ flsimulate-configure --help
 ~~~~~
 
-!TODO: provide a flsimulate-configure app.
+To launch a FlSimulate configuraion session, run:
+~~~~~
+$ flsimulate-configure
+~~~~~
 
-The  image below  shows  the  typical GUI  interface  of the  Bayeux's
-variant  inspector/editor  program.The  interface  here  displays  the
-`geometry` registry panel:
+And then  inspect the options  available from the  `Vertex generation`
+and  `Primary events`  panels.   Be  aware that  some  choices may  be
+inhibited by the `Geometry` context.
 
-![Bayeux's variant inspector GUI (geometry panel)](@ref fls_variants_gui_1.png)
+
+The   image   below  shows   the   typical   GUI  interface   of   the
+`flsimulate-configure`   variant    inspector/editor   program.    The
+interface here displays the `geometry` registry panel:
+
+![FLSimulate's variant inspector GUI (geometry panel)](@ref fls_variants_gui_1.png)
 @latexonly
 \includegraphics[width=\linewidth]{fls_variants_gui_1}
 @endlatexonly
 
 The next  image shows the selection  of the vertex generator  from the
-`vertexes` registry panel:
+`Vertex generation` registry panel:
 
-![Bayeux's variant inspector GUI (vertexes panel)](@ref fls_variants_gui_2.png)
+![FLSimulate's variant inspector GUI (vertexes panel)](@ref fls_variants_gui_2.png)
 @latexonly
 \includegraphics[width=\linewidth]{fls_variants_gui_2}
 @endlatexonly
+
+Notice: You Bayeux setup should have been compiled with Qt GUI support to benefit
+of the `flsimulate-configure`'s GUI interface.
 
 
 Using explicit variant settings  {#usingflsimulate_variants_explicitsettings}
@@ -662,23 +681,17 @@ should use an explicit variant profile file (`profile`) in place of it
 Using a variant profile {#usingflsimulate_variants_profile}
 -----------------------
 
-The `bxvariant_inspector` program proposes an interface to edit/select
-a set of parameters and then generate a *variant profile*. A variant profile
-is a file which contains the explicit list of variant parameters with their values
-selected for a simulation run.
-
+The   `flsimulate-configure`   program   proposes  an   interface   to
+edit/select  a  set  of  parameters   and  then  generate  a  *variant
+profile*. A variant profile is a file which contains the explicit list
+of variant parameters with their values selected for a simulation run.
 
 ~~~~~
-$ bxvariant_inspector \
-    --load-dll "Falaise@$(flquery --libdir)" \
-    --datatools::resource-path="falaise@$(flquery --resourcedir)" \
-    --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
-    --variant-gui \
-    --variant-store "variants.profile"
+$ flsimulate-configure -o "variants.profile"
 ~~~~~
 
 Here  the   `variant.profile`  file  is  generated   at  exit  (option
-`--variant-store`).   This  *profile* file  stores  a  set of  variant
+`-o`).   This  *profile* file  stores  a  set of  variant
 options (using a  specific format) from which the  variant service can
 pickup  the parameters'  value  selected by  the  user. The  *profile*
 contains:
@@ -723,7 +736,7 @@ The file  uses an ASCII  format to  ease user's understanding  and for
 debugging purpose.  However, unless you  know what you are  doing, you
 should  not edit  this file  manually (or  even reorder  parameters or
 registry sections)  because its format  is dynamic and depends  on the
-selected  options  by  the user  through  the  `bxvariant_inspector`'s
+selected  options  by  the user  through  the  `flsimulate-configure`'s
 interface.
 
 This file  can be  reused as  input of  the `flsimulate`  program (see
@@ -1162,16 +1175,14 @@ Here we use the same simulation setup than in case 2:
 
 1. Prepare the following `variant.profile` file:
 ~~~~~~
-$ bxvariant_inspector \
-	--load-dll "Falaise@$(flquery --libdir)" \
-	--datatools::resource-path="falaise@$(flquery --resourcedir)" \
-	--variant-config \
-	   "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
-    --variant-set "geometry:layout=Basic" \
-    --variant-set "vertexes:generator=field_wire_bulk" \
-    --variant-set "primary_events:generator=Tl208" \
-    --variant-set "simulation:output_profile=all_details" \
-	--variant-store="variant.profile"
+$ flsimulate-configure \
+    --no-gui \
+    -t urn:snemo:demonstrator:simulation:2.1 \
+    -s "geometry:layout=Basic" \
+    -s "vertexes:generator=field_wire_bulk" \
+    -s "primary_events:generator=Tl208" \
+    -s "simulation:output_profile=all_details" \
+    -o "variant.profile"
 ~~~~~~
    Note the list of `--variant-set` switches used to select the options. We obtain the following profile:
 ~~~~~
@@ -1240,16 +1251,14 @@ $ bxg4_seeds -k -d . -T -p seeds.conf
 ~~~~~
 2. Generate the `variant.profile` file:
 ~~~~~~
-$ bxvariant_inspector \
-	--load-dll "Falaise@$(flquery --libdir)" \
-	--datatools::resource-path="falaise@$(flquery --resourcedir)" \
-	--variant-config \
-	   "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf" \
-    --variant-set "geometry:layout=Basic" \
-    --variant-set "vertexes:generator=field_wire_bulk" \
-    --variant-set "primary_events:generator=Tl208" \
-    --variant-set "simulation:output_profile=none" \
-	--variant-store="variant.profile"
+$ flsimulate-configure \
+    --no-gui \
+    -t urn:snemo:demonstrator:simulation:2.1 \
+    -s "geometry:layout=Basic" \
+    -s "vertexes:generator=field_wire_bulk" \
+    -s "primary_events:generator=Tl208" \
+    -s "simulation:output_profile=none" \
+    -o "variant.profile"
 ~~~~~~
 3. Prepare the following `simu.conf` script:
 ~~~~~
