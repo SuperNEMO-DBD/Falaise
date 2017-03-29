@@ -223,8 +223,8 @@ How to change the number of events simulated {#usingflsimulate_changenumberofeve
 --------------------------------------------
 
 By default, FLSimulate generate only one event. To change this behaviour,
-you must create the `simu.conf` with the `flsimulate` section and
-define the `numberOfEvents` integer parameter:
+you must create a `simu.conf` script with the `flsimulate` section and
+define the `numberOfEvents` integer parameter in it:
 ~~~~~~~~~~~
 #@key_label  "name"
 #@meta_label "type"
@@ -241,8 +241,8 @@ FLSimulate use a default primary event generator which is generally
 selected from the context of the selected simulation setup.
 The choice of the event generator is handle by the embedded *variant service*
 (`primary_events` registry).
-You must create the `simu.conf` with the `flsimulate.variantService` section and
-define the `settings` string array parameter. This array must contain the proper
+You must create a `simu.conf` script with the `flsimulate.variantService` section and
+define the `settings` string array parameter in it. This array must contain the proper
 *variant* setting directive, namely:
 ~~~~~~~~~~~
 primary_events:generator=GENERATOR_NAME
@@ -269,16 +269,17 @@ FLSimulate use a default vertex generator which is generally
 selected from the geometry context of the selected simulation setup.
 The choice of the vertex generator is handle by the embedded *variant service*
 (`vertexes` registry).
-You must create the `simu.conf` with the `flsimulate.variantService` section and
-define the `settings` string array parameter. This array must contain the proper
+You must create a `simu.conf` script with the `flsimulate.variantService` section and
+define the `settings` string array parameter in it. This array must contain the proper
 *variant* setting directive, namely:
 ~~~~~~~~~~~
 vertexes:generator=GENERATOR_NAME
 ~~~~~~~~~~~
 where `GENERATOR_NAME` is the name of a valid vertex generator.
 
-Example: to select the generator of vertice from the bulk volume of drift cells'
-field wire, use:
+Example: to  select the generator of  vertice from the bulk  volume of
+drift cells' field wire, use:
+
 ~~~~~~~~~~~
 #@key_label  "name"
 #@meta_label "type"
@@ -290,20 +291,45 @@ numberOfEvents : integer = 100
 settings : string[1] = "vertexes:generator=field_wire_bulk"
 ~~~~~~~~~~~
 
+Note the  mandatory double quotes  ('`"`') around the  variant setting
+string directive.
+
+You may want to simultaneously  modify several variant parameters with
+respect  to  the default  values.  You  must then  accumulate  setting
+directives, here from the above recipes:
+
+~~~~~~~~~~~
+...
+[name="flsimulate.variantService" type="flsimulate::section"]
+settings : string[2] = \
+  "primary_events:generator=Tl208" \
+  "vertexes:generator=field_wire_bulk"
+~~~~~~~~~~~
+
+You  should take  care  on the  size  of the  array  type between  the
+brackets, i.e. `string[2]`.  It must  be compatible with the number of
+setting directives  you pass to  the *variant service*. Note  also the
+use of the backslash ('`\`') as the  last character on a line. It acts
+as the continuation mark for a very long parameter definition line. In
+this example, we  wrote one setting directive per line  (indented by a
+few spaces) to make the script more readable.
+
 
 How to select the geometry layout {#usingflsimulate_selectgeometrylayout}
 ---------------------------------
 
-The choice of some geometry options is handled by the embedded *variant service*
-(`geometry` registry).
-You must create the `simu.conf` with the `flsimulate.variantService` section and
-define the `settings` string array parameter. This array must contain the proper
-*variant* setting directive, namely:
+The  choice  of some  geometry  options  is  handled by  the  embedded
+*variant   service*  (`geometry`   registry).   You   must  create   a
+`simu.conf`  with the  `flsimulate.variantService` section  and define
+the `settings` string array parameter in it, as explained above.  This
+array must contain the proper *variant* setting directive, namely:
+
 ~~~~~~~~~~~
 geometry:layout=LAYOUT_NAME
 ~~~~~~~~~~~
-where `LAYOUT_NAME` is the name of a valid vertex generator. Supported values
-are:
+
+where `LAYOUT_NAME` is the name of a valid vertex generator. Supported
+values are:
 - `Basic` (default),
 - `HalfCommissioning`.
 
@@ -320,7 +346,7 @@ settings : string[1] = "geometry:layout=HalfCommissioning"
 ~~~~~~~~~~~
 
 More geometry  options are available  from the *variant  service*, see
-[this section]{@ref usingflsimulate_variants}.
+[this section](@ref usingflsimulate_variants).
 
 
 How to choose the random numbers sequence {#usingflsimulate_chooserng}
