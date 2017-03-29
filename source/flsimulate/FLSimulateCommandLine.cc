@@ -13,6 +13,7 @@
 #include "falaise/detail/falaise_sys.h"
 #include "falaise/common/user_profile.h"
 #include "FLSimulateErrors.h"
+#include "FLSimulateUtils.h"
 
 namespace FLSimulate {
 
@@ -73,7 +74,7 @@ namespace FLSimulate {
        << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
        << std::endl
        << "[name=\"flsimulate.simulation\" type=\"flsimulate::section\"]\n"
-       << "simulationSetupUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
+       << "simulationSetupUrn : string = \"" << default_simulation_setup() << "\" \n"
        << "                                                 # URN of simulation setup\n"
        << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
        << std::endl
@@ -91,27 +92,18 @@ namespace FLSimulate {
 
   void do_help_simulation_setup(std::ostream& os)
   {
-    datatools::logger::priority logging = falaise::detail::falaise_sys::const_instance().get_logging();
-    datatools::kernel & dtk = ::datatools::kernel::instance();
-    if (dtk.has_urn_query()) {
-      const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
-      if (datatools::logger::is_debug(logging)) {
-        dtkUrnQuery.tree_dump(std::cerr, "Bayeux/datatools's kernel URN query service:", "[debug] ");
-      }
-      std::vector<std::string> flsim_urn_infos;
-      if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
-                                    falaise::detail::falaise_sys::fl_setup_db_name(),
-                                    "(urn:)([^:]*)(:)([^:]*)(:simulation:)([^:]*)",
-                                    "simsetup"
-                                    )) {
-        std::clog << "List of supported simulation setups:" << std::endl;
-        for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
-          const datatools::urn_info & ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
-          os << ui.get_urn() << " : " << ui.get_description() << std::endl;
-        }
+    std::map<std::string, std::string> m = ::FLSimulate::list_of_simulation_setups();
+    std::clog << "List of supported simulation setups: ";
+    if (m.empty()) std::clog << "<empty>";
+    std::clog << std::endl;
+    for (const auto & entry : m) {
+      os << entry.first << " : ";
+      if ( entry.second.empty()) {
+        os << "<no available description>";
       } else {
-        DT_LOG_WARNING(logging, "Could not find any simulation setup from the global URN query service.");
+        os << entry.second;
       }
+      os << std::endl;
     }
     return;
   }

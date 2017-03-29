@@ -15,6 +15,7 @@
 #include "falaise/property_reader.h"
 #include "FLSimulateCommandLine.h"
 #include "FLSimulateErrors.h"
+#include "FLSimulateUtils.h"
 
 namespace FLSimulate {
 
@@ -49,7 +50,7 @@ namespace FLSimulate {
     params.experimentalSetupUrn = "";
 
     // Identification of the simulation setup:
-    params.simulationSetupUrn   = "urn:snemo:demonstrator:simulation:2.1";
+    params.simulationSetupUrn   = default_simulation_setup();
     // Simulation manager internal parameters:
     params.simulationManagerParams.set_defaults();
     params.simulationManagerParams.interactive = false;
@@ -191,6 +192,47 @@ namespace FLSimulate {
           falaise::properties::getValueOrDefault<std::string>(simSubsystem,
                                                               "rngSeedFile",
                                                               flSimParameters.simulationManagerParams.input_prng_seeds_file);
+
+        if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
+          if (flSimParameters.userProfile == "production") {
+            DT_THROW_IF(simSubsystem.has_key("rngEventGeneratorSeed"),
+                        FLConfigUserError,
+                        "User profile '" << flSimParameters.userProfile << "' "
+                        << "does not allow to use the '" << "rngEventGeneratorSeed"
+                        << "' simulation configuration parameter!");
+            DT_THROW_IF(simSubsystem.has_key("rngVertexGeneratorSeed"),
+                        FLConfigUserError,
+                        "User profile '" << flSimParameters.userProfile << "' "
+                        << "does not allow to use the '" << "rngVertexGeneratorSeed"
+                        << "' simulation configuration parameter!");
+            DT_THROW_IF(simSubsystem.has_key("rngHitPostprocessingGeneratorSeed"),
+                        FLConfigUserError,
+                        "User profile '" << flSimParameters.userProfile << "' "
+                        << "does not allow to use the '" << "rngHitProcessingGeneratorSeed"
+                        << "' simulation configuration parameter!");
+            DT_THROW_IF(simSubsystem.has_key("rngGeant4GeneratorSeed"),
+                        FLConfigUserError,
+                        "User profile '" << flSimParameters.userProfile << "' "
+                        << "does not allow to use the '" << "rngGeant4GeneratorSeed"
+                        << "' simulation configuration parameter!");
+          }
+          flSimParameters.simulationManagerParams.eg_seed =
+            falaise::properties::getValueOrDefault<int>(simSubsystem,
+                                                        "rngEventGeneratorSeed",
+                                                        flSimParameters.simulationManagerParams.eg_seed);
+          flSimParameters.simulationManagerParams.vg_seed =
+            falaise::properties::getValueOrDefault<int>(simSubsystem,
+                                                        "rngVertexGeneratorSeed",
+                                                        flSimParameters.simulationManagerParams.vg_seed);
+          flSimParameters.simulationManagerParams.shpf_seed =
+            falaise::properties::getValueOrDefault<int>(simSubsystem,
+                                                        "rngHitProcessingGeneratorSeed",
+                                                        flSimParameters.simulationManagerParams.shpf_seed);
+          flSimParameters.simulationManagerParams.mgr_seed =
+            falaise::properties::getValueOrDefault<int>(simSubsystem,
+                                                        "rngGeant4GeneratorSeed",
+                                                        flSimParameters.simulationManagerParams.mgr_seed);
+        }
 
         flSimParameters.simulationManagerParams.output_prng_seeds_file =
           falaise::properties::getValueOrDefault<std::string>(simSubsystem,
@@ -344,7 +386,7 @@ namespace FLSimulate {
 
         //   // Default simulation setup:
         //   if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-        //     flSimParameters.simulationSetupUrn = "urn:snemo:demonstrator:simulation:2.1";
+        //     flSimParameters.simulationSetupUrn = default_simulation_setup();
         //     DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" << flSimParameters.simulationSetupUrn << "'.");
         //   }
 
