@@ -620,8 +620,8 @@ sources are not arranged in  the source frame geometry model (registry
 account such constraints.
 
 The  lists of  valid vertex  and  event generators  for each  geometry
-variant options can  also be dynamically browsed  through the Bayeux's
-`flsimulate-configure` program  (with builtin  GUI mode of  your Bayeux
+variant  options   can  also   be  dynamically  browsed   through  the
+`flsimulate-configure` program  (with builtin GUI mode  of your Bayeux
 setup).
 
 To get help from the command line, run:
@@ -629,14 +629,14 @@ To get help from the command line, run:
 $ flsimulate-configure --help
 ~~~~~
 
-To launch a FlSimulate configuraion session, run:
+To launch a FlSimulate configuration session, run:
 ~~~~~
 $ flsimulate-configure
 ~~~~~
 
 And then  inspect the options  available from the  `Vertex generation`
-and  `Primary events`  panels.   Be  aware that  some  choices may  be
-inhibited by the `Geometry` context.
+and `Primary  events` panels in the  GUI.  Be aware that  some choices
+may be inhibited by the `Geometry` context.
 
 
 The   image   below  shows   the   typical   GUI  interface   of   the
