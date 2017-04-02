@@ -7,8 +7,6 @@
 #include <memory>
 
 // Third Party
-// - Boost
-#include "boost/date_time/posix_time/posix_time.hpp"
 // - Bayeux
 #include "bayeux/bayeux.h"
 #include "bayeux/version.h"
@@ -79,7 +77,7 @@ namespace FLReconstruct {
     }
     if (flRecParameters.outputMetadataFile.empty()) {
       // Force a default metadata log file:
-      flRecParameters.outputMetadataFile = "flreconstruct-metadata.log";
+      flRecParameters.outputMetadataFile = "__flreconstruct-metadata.log";
       // Force storage of metadata in the output data file:
       flRecParameters.embeddedMetadata = true;
     }
@@ -267,7 +265,6 @@ namespace FLReconstruct {
 
     }
 
-
     {
       // In principle all "flreconstruct::section"(s) of interest should have
       // been processed now.
@@ -288,7 +285,15 @@ namespace FLReconstruct {
        }
     }
 
-    // From this point, no other section than the processing pipeline modules definitions
+    // Check for allowed inline modules:
+    if (flRecParameters.userProfile == "production" &&
+        flRecConfig.size()) {
+      DT_THROW(FLConfigUserError,
+               "User profile '" << flRecParameters.userProfile << "' "
+               << "does not allow the definitions of inline modules!");
+    }
+
+    // From this point, no other section than inline processing pipeline modules definitions
     // should be present in the script. So we fetch modules configuration:
     flRecParameters.modulesConfig = flRecConfig;
 
@@ -409,7 +414,8 @@ namespace FLReconstruct {
     if (!flRecParameters.reconstructionPipelineConfig.empty()) {
       if (!flRecParameters.modulesConfig.empty()) {
         DT_THROW(std::logic_error,
-                 "Pipeline module configuration file '" << flRecParameters.reconstructionPipelineConfig << "' conflicts with pipeline inline configuration provided by the script!");
+                 "Pipeline module configuration file '" << flRecParameters.reconstructionPipelineConfig << "' "
+                 << "conflicts with pipeline inline configuration provided by the script!");
 
       }
       std::string pipeline_config_filename = flRecParameters.reconstructionPipelineConfig;
@@ -572,106 +578,110 @@ namespace FLReconstruct {
   {
     falaise::exit_code code = falaise::EXIT_OK;
 
-    // System section:
-    datatools::properties & system_props
-      = flRecMetadata.add_section("flreconstruct", "flreconstruct::section");
-    system_props.set_description("flreconstruct basic system informations");
+    {
+      // System section:
+      datatools::properties & system_props
+        = flRecMetadata.add_section("flreconstruct", "flreconstruct::section");
+      system_props.set_description("flreconstruct basic system informations");
 
-    system_props.store_string("bayeux.version", bayeux::version::get_version(),
-                              "Bayeux version");
+      system_props.store_string("bayeux.version", bayeux::version::get_version(),
+                                "Bayeux version");
 
-    system_props.store_string("falaise.version", falaise::version::get_version(),
-                              "Falaise version");
+      system_props.store_string("falaise.version", falaise::version::get_version(),
+                                "Falaise version");
 
-    system_props.store_string("application", "flreconstruct",
-                              "The flreconstruct application used to produce reconstructed data");
+      system_props.store_string("application", "flreconstruct",
+                                "The flreconstruct application used to produce reconstructed data");
 
-    system_props.store_string("application.version", falaise::version::get_version(),
-                              "The version of the reconstruction application");
+      system_props.store_string("application.version", falaise::version::get_version(),
+                                "The version of the reconstruction application");
 
-    system_props.store_string("userProfile", flRecParameters.userProfile,
-                              "User profile");
+      system_props.store_string("userProfile", flRecParameters.userProfile,
+                                "User profile");
 
-    system_props.store_boolean("embeddedMetadata",
-                               flRecParameters.embeddedMetadata,
-                               "Metadata embedding flag");
+      system_props.store_boolean("embeddedMetadata",
+                                 flRecParameters.embeddedMetadata,
+                                 "Metadata embedding flag");
 
-    if (flRecParameters.numberOfEvents > 0) {
-      system_props.store_integer("numberOfEvents",
-                                 flRecParameters.numberOfEvents,
-                                 "Number of reconstructed events");
+      if (flRecParameters.numberOfEvents > 0) {
+        system_props.store_integer("numberOfEvents",
+                                   flRecParameters.numberOfEvents,
+                                   "Number of reconstructed events");
+      }
+
+      if (!flRecParameters.experimentalSetupUrn.empty()) {
+        system_props.store_string("experimentalSetupUrn",
+                                  flRecParameters.experimentalSetupUrn,
+                                  "Experimental setup URN");
+      }
+
     }
 
-    if (!flRecParameters.experimentalSetupUrn.empty()) {
-      system_props.store_string("experimentalSetupUrn",
-                                flRecParameters.experimentalSetupUrn,
-                                "Experimental setup URN");
+    {
+      // Variants section:
+      datatools::properties & variants_props
+        = flRecMetadata.add_section("flreconstruct.variantService", "flreconstruct::section");
+      variants_props.set_description("Variant setup");
+
+      if (!flRecParameters.variantConfigUrn.empty()) {
+        variants_props.store_string("configUrn", flRecParameters.variantConfigUrn,
+                                    "Variants setup configuration URN");
+      } else if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
+        variants_props.store_path("config", flRecParameters.variantSubsystemParams.config_filename,
+                                  "Variants setup configuration path");
+      }
+
+      if (!flRecParameters.variantProfileUrn.empty()) {
+        variants_props.store_string("profileUrn", flRecParameters.variantProfileUrn,
+                                    "Variants profile URN");
+      } else if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
+        variants_props.store_path("profile", flRecParameters.variantSubsystemParams.profile_load,
+                                  "Variants profile path");
+      }
+
+      if (flRecParameters.variantSubsystemParams.settings.size()) {
+        // Not with "production" user profile:
+        variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
+                             "Variants settings");
+      }
     }
 
-    boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
-    system_props.store_string("timestamp",
-                              boost::posix_time::to_iso_string(start_run_timestamp),
-                              "Run start timestamp");
+    {
+      // Services section:
+      datatools::properties & services_props
+        = flRecMetadata.add_section("flreconstruct.services", "flreconstruct::section");
+      services_props.set_description("Services configuration");
 
-    // Reconstruction section:
-    datatools::properties & reconstruction_props
-      = flRecMetadata.add_section("flreconstruct.pipeline", "flreconstruct::section");
-    reconstruction_props.set_description("Reconstruction setup parameters");
+      if (!flRecParameters.servicesSubsystemConfigUrn.empty()) {
+        services_props.store_string("configUrn", flRecParameters.servicesSubsystemConfigUrn,
+                                    "Services setup configuration URN");
+      } else if (!flRecParameters.servicesSubsystemConfig.empty()) {
+        services_props.store_path("config", flRecParameters.servicesSubsystemConfig,
+                                  "Services setup configuration path");
+      }
+    }
 
-    if (!flRecParameters.reconstructionPipelineUrn.empty()) {
-      reconstruction_props.store_string("reconstructionPipelineUrn",
-                                        flRecParameters.reconstructionPipelineUrn,
-                                        "Reconstruction setup URN");
-    } else if (!flRecParameters.reconstructionPipelineConfig.empty()) {
-      reconstruction_props.store_path("reconstructionPipelineConfig",
+    {
+      // Pipeline section:
+      datatools::properties & reconstruction_props
+        = flRecMetadata.add_section("flreconstruct.pipeline", "flreconstruct::section");
+      reconstruction_props.set_description("Reconstruction setup parameters");
+
+      if (!flRecParameters.reconstructionPipelineUrn.empty()) {
+        reconstruction_props.store_string("configUrn",
+                                          flRecParameters.reconstructionPipelineUrn,
+                                          "Reconstruction setup URN");
+      } else if (!flRecParameters.reconstructionPipelineConfig.empty()) {
+        reconstruction_props.store_path("config",
                                         flRecParameters.reconstructionPipelineConfig,
                                         "Reconstruction setup main configuration file");
-    }
+      }
 
-    if (!flRecParameters.reconstructionPipelineModule.empty()) {
-      reconstruction_props.store_string("reconstructionPipelineModule",
-                                        flRecParameters.reconstructionPipelineUrn,
-                                        "Reconstruction pipeline top module");
-    }
-
-    // Variants section:
-    datatools::properties & variants_props
-      = flRecMetadata.add_section("flreconstruct.variantService", "flreconstruct::section");
-    variants_props.set_description("Variant setup");
-
-    if (!flRecParameters.variantConfigUrn.empty()) {
-      variants_props.store_string("configUrn", flRecParameters.variantConfigUrn,
-                                  "Variants setup configuration URN");
-    } else if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
-      variants_props.store_path("config", flRecParameters.variantSubsystemParams.config_filename,
-                                "Variants setup configuration path");
-    }
-
-    if (!flRecParameters.variantProfileUrn.empty()) {
-      variants_props.store_string("profileUrn", flRecParameters.variantProfileUrn,
-                                  "Variants profile URN");
-    } else if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
-      variants_props.store_path("profile", flRecParameters.variantSubsystemParams.profile_load,
-                                "Variants profile path");
-    }
-
-    if (flRecParameters.variantSubsystemParams.settings.size()) {
-      // Not with "production" user profile:
-      variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
-                           "Variants settings");
-    }
-
-    // Services section:
-    datatools::properties & services_props
-      = flRecMetadata.add_section("flreconstruct.services", "flreconstruct::section");
-    services_props.set_description("Services configuration");
-
-    if (!flRecParameters.servicesSubsystemConfigUrn.empty()) {
-      services_props.store_string("configUrn", flRecParameters.servicesSubsystemConfigUrn,
-                                  "Services setup configuration URN");
-    } else if (!flRecParameters.servicesSubsystemConfig.empty()) {
-      services_props.store_path("config", flRecParameters.servicesSubsystemConfig,
-                                "Services setup configuration path");
+      if (!flRecParameters.reconstructionPipelineModule.empty()) {
+        reconstruction_props.store_string("module",
+                                          flRecParameters.reconstructionPipelineUrn,
+                                          "Reconstruction pipeline top module");
+      }
     }
 
     return code;
