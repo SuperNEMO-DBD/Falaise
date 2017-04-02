@@ -9,6 +9,7 @@
 #include <bayeux/datatools/urn.h>
 #include <bayeux/datatools/kernel.h>
 #include <bayeux/datatools/urn_query_service.h>
+#include <bayeux/datatools/library_info.h>
 #include <bayeux/mygsl/random_utils.h>
 
 // This Project:
@@ -105,6 +106,37 @@ namespace FLSimulate {
     flSimParameters.outputMetadataFile = args.outputMetadataFile;
     flSimParameters.embeddedMetadata   = args.embeddedMetadata;
     flSimParameters.outputFile         = args.outputFile;
+    flSimParameters.mountPoints        = args.mountPoints;
+
+    if (flSimParameters.mountPoints.size()) {
+      // Apply mount points as soon as possible, because manually set file path below
+      // may use this mechanism to locate files:
+      datatools::kernel & dtk = datatools::kernel::instance();
+      datatools::library_info & dtklLibInfo = dtk.grab_library_info_register();
+      for (const std::string & mountDirective : flSimParameters.mountPoints) {
+        std::string theLibname;
+        std::string theTopic;
+        std::string thePath;
+        std::string errMsg;
+        bool parsed = datatools::library_info::parse_path_registration_directive(mountDirective,
+                                                                                 theLibname,
+                                                                                 theTopic,
+                                                                                 thePath,
+                                                                                 errMsg);
+        DT_THROW_IF(!parsed, FLConfigUserError,
+                    "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
+        DT_LOG_DEBUG(flSimParameters.logLevel, "Path registration: " << mountDirective);
+        DT_LOG_DEBUG(flSimParameters.logLevel, "  Library name : " << theLibname);
+        DT_LOG_DEBUG(flSimParameters.logLevel, "  Topic        : " << theTopic);
+        DT_LOG_DEBUG(flSimParameters.logLevel, "  Path         : " << thePath);
+        try {
+          dtklLibInfo.path_registration(theLibname, theTopic, thePath, false);
+        } catch (std::exception & error) {
+          DT_THROW(FLConfigUserError,
+                   "Cannot apply directory mount directive '" << mountDirective << "': " << error.what());
+        }
+      }
+    }
 
     if (! flSimParameters.embeddedMetadata) {
       if (flSimParameters.outputMetadataFile.empty()) {

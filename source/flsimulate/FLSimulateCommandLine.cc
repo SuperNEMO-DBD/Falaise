@@ -128,19 +128,37 @@ namespace FLSimulate {
 
       ("verbosity,V",
        bpo::value<std::string>(&verbosityLabel)->value_name("level"),
-       "set the verbosity level")
+       "set the verbosity level\n"
+       "Example: \n"
+       "  -V \"debug\" "
+       )
 
       ("user-profile,u",
        bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
        "set the user profile (\"expert\", \"normal\", \"production\")")
 
+      ("mount-directory,d",
+       bpo::value<std::vector<std::string>>(&clArgs.mountPoints)->value_name("rule"),
+       "register directories' mount points\n"
+       "Example: \n"
+       "  -d \"nemoprod@/etc/nemoprod/config\" \n"
+       "  -d \"nemoprod.data@/data/nemoprod/runs\""
+       )
+
       ("config,c",
        bpo::value<std::string>(&clArgs.configScript)->value_name("file"),
-       "configuration script for simulation")
+       "configuration script for simulation\n"
+       "Examples: \n"
+       "  -c \"simu.conf\" \n"
+       "  -c \"${WORKER_DIR}/config/simu1.conf\""
+      )
 
       ("output-metadata-file,m",
        bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
-       "file in which to store metadata")
+       "file in which to store metadata\n"
+       "Example:\n"
+       "  -m \"simu.meta\""
+      )
 
       ("embedded-metadata,E",
        bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
@@ -148,7 +166,11 @@ namespace FLSimulate {
 
       ("output-file,o",
        bpo::value<std::string>(&clArgs.outputFile)->required()->value_name("file"),
-       "file in which to store simulation results")
+       "file in which to store simulation results\n"
+       "Examples:\n"
+       "  -o \"example.brio\" \n"
+       "  -o \"${WORKER_DIR}/data/run_1.xml\""
+       )
 
       ;
 
