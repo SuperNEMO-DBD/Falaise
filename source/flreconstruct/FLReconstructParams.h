@@ -68,7 +68,7 @@ namespace FLReconstruct {
     datatools::multi_properties  userLibConfig; //!< Main configuration file for plugins loader
 
     // Required reconstruction pipeline and versioning:
-    std::string reconstructionPipelineUrn;  //!< The URN of the reconstruction pipeline
+    std::string reconstructionPipelineUrn;        //!< The URN of the reconstruction pipeline
     std::string reconstructionPipelineConfig;     //!< The reconstruction pipeline main definition file
     std::string reconstructionPipelineModule;     //!< The reconstruction module
 
