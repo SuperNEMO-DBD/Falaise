@@ -353,7 +353,7 @@ namespace FLReconstruct {
     // Input metadata of interest:
     std::string inputDataExperimentalSetupUrn = ""; // the experimental setup identifier used to produce input data
     std::string inputDataUserProfile = "";          // the user profile used to produce input data
-    std::size_t inputDataNumberOfEvents = 0;        // the number of event after input data
+    // std::size_t inputDataNumberOfEvents = 0;        // the number of event after input data
     // Fetch input metadata:
     if (!flRecParameters.inputMetadata.empty()) {
       // Try to extract informations from the metadata:
@@ -394,10 +394,10 @@ namespace FLReconstruct {
             inputDataExperimentalSetupUrn = inputDataSystemSection.fetch_string("experimentalSetupUrn");
           }
 
-          // Check user profile associated to input data:
-          if (inputDataSystemSection.has_key("numberOfEvents")) {
-            inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
-          }
+          // // Check user profile associated to input data:
+          // if (inputDataSystemSection.has_key("numberOfEvents")) {
+          //   inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
+          // }
         } // System section
 
         // Simulation section:
@@ -487,10 +487,10 @@ namespace FLReconstruct {
             inputDataExperimentalSetupUrn = inputDataSystemSection.fetch_string("experimentalSetupUrn");
           }
 
-          // Check user profile associated to input data:
-          if (inputDataSystemSection.has_key("numberOfEvents")) {
-            inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
-          }
+          // // Check user profile associated to input data:
+          // if (inputDataSystemSection.has_key("numberOfEvents")) {
+          //   inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
+          // }
 
         } // System section
 

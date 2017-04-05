@@ -56,7 +56,7 @@ namespace FLReconstruct {
     }
 
     // - Run:
-    falaise::exit_code code = falaise::EXIT_OK;
+    // falaise::exit_code code = falaise::EXIT_OK;
     try {
 
       // Load plugins:
@@ -253,7 +253,7 @@ namespace FLReconstruct {
     } catch (std::exception & e) {
       std::cerr << "flreconstruct : Setup/run of simulation threw exception" << std::endl;
       std::cerr << e.what() << std::endl;
-      code = falaise::EXIT_UNAVAILABLE;
+      // code = falaise::EXIT_UNAVAILABLE;
     }
 
     if (variantService.is_started()) {
