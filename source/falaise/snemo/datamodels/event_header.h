@@ -10,8 +10,6 @@
  *
  *   Event header
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H
@@ -36,17 +34,18 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief A event header class to be embedded as a bank in a 'datatools::things' event record.
-    class event_header : public datatools::i_serializable,
-                         public datatools::i_clear,
-                         public datatools::i_tree_dumpable
+    class event_header
+      : public datatools::i_serializable
+      , public datatools::i_clear
+      , public datatools::i_tree_dumpable
     {
     public:
 
       /// \brief Generation type of the event record
       enum generation_type {
-        GENERATION_INVALID   = -1, /// Invalide generation type
-        GENERATION_REAL      =  0, /// Real event from the detector's DAQ
-        GENERATION_SIMULATED =  1  /// Simulated event from the MC application
+        GENERATION_INVALID   = -1, ///< Invalid generation type
+        GENERATION_REAL      =  0, ///< Real event from the detector's DAQ
+        GENERATION_SIMULATED =  1  ///< Simulated event from the MC application
       };
 
       /// Return the default label/name of a 'event header' bank
