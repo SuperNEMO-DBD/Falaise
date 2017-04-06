@@ -4,6 +4,13 @@
 namespace FLReconstruct {
 
   // static
+  const std::string & FLReconstructParams::default_file_for_output_metadata()
+  {
+    static const std::string _f("__flreconstruct-metadata.log");
+    return _f;
+  }
+
+  // static
   FLReconstructParams FLReconstructParams::makeDefault()
   {
     FLReconstructParams params;
@@ -12,13 +19,13 @@ namespace FLReconstruct {
     params.logLevel     = datatools::logger::PRIO_ERROR;
     params.userProfile  = "normal";
     params.numberOfEvents = 0; // 0 == no limit on event loop
-    params.moduloEvents = 0;
+    params.moduloEvents = 0; // 0 == no print
 
     // Experimental setup:
     params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:1.0";
 
     // Reconstruction setup:
-    params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:pipeline:1.0.0";
+    params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:1.0.0:pipeline";
     params.reconstructionPipelineConfig = "";
     params.reconstructionPipelineModule = "pipeline";
 
@@ -36,7 +43,7 @@ namespace FLReconstruct {
     params.inputMetadataFile  = "";
     params.inputFile          = "";
     params.outputMetadataFile = "";
-    params.embeddedMetadata   = false;
+    params.embeddedMetadata   = true;
     params.outputFile         = "";
     params.inputMetadata.reset();
     params.inputMetadata.set_key_label("name");

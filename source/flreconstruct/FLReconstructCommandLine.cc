@@ -42,7 +42,7 @@ namespace FLReconstruct {
     frArgs.pipelineScript = "";
     frArgs.inputMetadataFile = "";
     frArgs.outputMetadataFile = ""; // "flreconstruct.mdata" ?
-    frArgs.embeddedMetadata = false;
+    frArgs.embeddedMetadata = true;
     frArgs.inputFile = "";
     frArgs.outputFile = "";
     return frArgs;
@@ -129,7 +129,7 @@ namespace FLReconstruct {
       std::vector<std::string> flsim_urn_infos;
       if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
                                     falaise::detail::falaise_sys::fl_setup_db_name(),
-                                    "(urn:)([^:]*)(:)([^:]*)(:reconstruction:pipeline:)([^:]*)",
+                                    "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline:)([^:]*)",
                                     "recsetup"
                                     )) {
         std::clog << "List of supported reconstruction pipeline:" << std::endl;
@@ -210,7 +210,7 @@ namespace FLReconstruct {
        "file in which to store metadata")
 
       ("embedded-metadata,E",
-       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
+       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
        "flag to (de)activate recording of metadata in the reconstruction results output file")
 
       ("pipeline,p",

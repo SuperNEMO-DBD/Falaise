@@ -75,11 +75,13 @@ namespace FLReconstruct {
       // Force a default user profile:
       flRecParameters.userProfile = "normal";
     }
-    if (flRecParameters.outputMetadataFile.empty()) {
-      // Force a default metadata log file:
-      flRecParameters.outputMetadataFile = "__flreconstruct-metadata.log";
-      // Force storage of metadata in the output data file:
-      flRecParameters.embeddedMetadata = true;
+
+    if (!flRecParameters.embeddedMetadata) {
+      if (flRecParameters.outputMetadataFile.empty()) {
+        // Force a default metadata log file:
+        flRecParameters.outputMetadataFile
+          = FLReconstructParams::default_file_for_output_metadata();
+      }
     }
 
     // Parse the FLReconstruct pipeline script:
@@ -367,7 +369,7 @@ namespace FLReconstruct {
                     (iMeta.experimentalSetupUrn != flRecParameters.experimentalSetupUrn),
                     std::logic_error,
                     "Experimental setup URN='" << flRecParameters.experimentalSetupUrn << "' conflicts with experimental setup URN='"
-                    << iMeta.experimentalSetupUrn << "' from input metadata!");
+                    << iMeta.experimentalSetupUrn << "' extracted from input metadata!");
       }
     } // End of checks.
 
@@ -679,7 +681,7 @@ namespace FLReconstruct {
 
       if (!flRecParameters.reconstructionPipelineModule.empty()) {
         reconstruction_props.store_string("module",
-                                          flRecParameters.reconstructionPipelineUrn,
+                                          flRecParameters.reconstructionPipelineModule,
                                           "Reconstruction pipeline top module");
       }
     }

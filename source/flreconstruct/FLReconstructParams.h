@@ -56,8 +56,8 @@ namespace FLReconstruct {
     std::string  outputFile;              //!< Output data file for the output module
 
     // // Description of the data to be processed by the FLReconstruct script:
-    // std::string dataType;                 //!< The type of data ("Real", "MC")
-    // std::string dataSubtype;              //!< Additional data subtype/flavour ("Blinded", "Calibration", "Commissioning")
+    // std::string dataType;              //!< The type of data ("Real", "MC")
+    // std::string dataSubtype;           //!< Additional data subtype/flavour ("Blinded", "Calibration", "Commissioning")
     // // For strict checking of the input/output data models:
     // std::vector<std::string>  requiredInputBanks;  //!< Required input data banks ("SD", "UDD"...)
     // std::vector<std::string>  expectedOutputBanks; //!< Expected output data banks ("SSD", "SDD", "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
@@ -65,7 +65,7 @@ namespace FLReconstruct {
     // Working data:
 
     // Plugin dedicated service:
-    datatools::multi_properties  userLibConfig; //!< Main configuration file for plugins loader
+    datatools::multi_properties userLibConfig;    //!< Main configuration file for plugins loader
 
     // Required reconstruction pipeline and versioning:
     std::string reconstructionPipelineUrn;        //!< The URN of the reconstruction pipeline
@@ -73,16 +73,19 @@ namespace FLReconstruct {
     std::string reconstructionPipelineModule;     //!< The reconstruction module
 
     // Metadata container:
-    datatools::multi_properties inputMetadata; //!< Metadata imported from the input
+    datatools::multi_properties inputMetadata;    //!< Metadata imported from the input
 
      // Processing pipeline modules configuration:
-    datatools::multi_properties modulesConfig; //!< Main configuration file for plugins loader
+    datatools::multi_properties modulesConfig;    //!< Main configuration file for plugins loader
 
     //! Build a default arguments set:
     static FLReconstructParams makeDefault();
 
     // Print:
     void print(std::ostream &) const;
+
+    // Return the default file for output metadata
+    static const std::string & default_file_for_output_metadata();
 
   };
 
