@@ -75,7 +75,10 @@ namespace fecom {
     virtual ~tracker_channel_hit();
 
 		/// Check if the tracker
-    bool is_valid() const;
+    virtual bool is_valid() const;
+
+		///
+		virtual double get_timestamp() const;
 
 		/// Reset
     virtual void reset();

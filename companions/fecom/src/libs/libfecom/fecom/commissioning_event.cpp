@@ -18,7 +18,7 @@ namespace fecom {
 
   bool commissioning_event::is_valid() const
   {
-    return _trigger_id_ != 0xFFFFFFFF;
+    return _event_id_.is_valid();
   }
 
   void commissioning_event::set_channel_mapping(const fecom::channel_mapping & mapping_)
@@ -44,14 +44,30 @@ namespace fecom {
     return;
   }
 
-  uint32_t commissioning_event::get_trigger_id() const
+  const datatools::event_id & commissioning_event::get_event_id() const
   {
-    return _trigger_id_;
+    return _event_id_;
   }
 
-  void commissioning_event::set_trigger_id(const uint32_t trigger_id_)
+  datatools::event_id & commissioning_event::grab_event_id()
   {
-    _trigger_id_ = trigger_id_;
+    return _event_id_;
+  }
+
+  void commissioning_event::set_event_id(const datatools::event_id & event_id_)
+  {
+    _event_id_ = event_id_;
+    return;
+  }
+
+  double commissioning_event::get_time_start_ns() const
+  {
+    return _time_start_ns_;
+  }
+
+  void commissioning_event::set_time_start_ns(const double time_start_ns_)
+  {
+    _time_start_ns_ = time_start_ns_;
     return;
   }
 
@@ -177,8 +193,10 @@ namespace fecom {
   void commissioning_event::_reset_()
   {
     _my_channel_mapping_ = nullptr;
-    _trigger_id_ = 0xFFFFFFFF;
+    _event_id_.reset();
+    datatools::invalidate(_time_start_ns_);
     _last_time_in_ns_added_ = 0;
+    _traits_.reset();
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();
     _tracker_hit_collection_.clear();
@@ -194,8 +212,10 @@ namespace fecom {
       out_ << indent_ << title_ << std::endl;
     }
 
-    out_ << indent_ << io::tag()
-	 << "Trigger ID : " << _trigger_id_ << std::endl;
+    _event_id_.tree_dump(out_,
+			 title_,
+			 indent_,
+			 inherit_);
 
     out_ << indent_ << io::tag()
 	 << "Last time added in ns    : " << _last_time_in_ns_added_ << std::endl;
@@ -215,17 +235,7 @@ namespace fecom {
   bool commissioning_event::compare::operator()(const commissioning_event & a,
 						const commissioning_event & b)
   {
-    if (a._trigger_id_ < b._trigger_id_) {
-      return true;
-    }
-    else if ((a._trigger_id_ == b._trigger_id_)){
-      DT_THROW(std::logic_error, "Two commissioning events have the same trigger_id, trigger_id_a = '" << a._trigger_id_ << "', trigger_id_b = '" << b._trigger_id_ << "' !");
-      return true;
-    }
-
-    else {
-      return false;
-    }
+    return a.get_event_id() < b.get_event_id();
   }
 
 } // namespace fecom

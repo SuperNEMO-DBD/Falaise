@@ -6,8 +6,11 @@ include_directories(${PROJECT_BINARY_DIR}/src/libs/libfecom)
 include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 
 set(FeCom_PROGRAMS
-  main_decoder_serializer.cxx
-  main_histogram_builder.cxx
+  decode_sort_serialize.cxx
+  hc_event_builder.cxx
+  hc_raw_data_to_calibrated_data.cxx
+  #main_decoder_serializer.cxx
+  #main_histogram_builder.cxx
   )
 
 find_package(Bayeux 3.0.0

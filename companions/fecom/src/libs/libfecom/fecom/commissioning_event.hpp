@@ -13,6 +13,7 @@
 // - Bayeux:
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.h>
+#include <bayeux/datatools/event_id.h>
 
 // This project:
 #include <fecom/calo_hit.hpp>
@@ -27,19 +28,19 @@ namespace fecom {
 		: public datatools::i_serializable
   {
 		/// Predicate to find by trigger id
-		struct find_by_trigger_id {
-			find_by_trigger_id(const uint32_t & trigger_id) : find_trigger_id(trigger_id) {}
+		struct find_by_event_id {
+			find_by_event_id(const int32_t & event_id) : find_event_id(event_id) {}
 
 			bool operator()(const commissioning_event & com_event) {
-				return com_event.get_trigger_id() == find_trigger_id;
+				return com_event.get_event_id().get_event_number() == find_event_id;
 			}
 
 		private:
 
-			uint32_t find_trigger_id;
+			int32_t find_event_id;
 		};
 
-		/// Comparison of 2 commissioning events (based on trigger id)
+		/// Comparison of 2 commissioning events (based on run trigger id)
 		struct compare
 		{
 			bool operator()(const commissioning_event & a,
@@ -71,20 +72,29 @@ namespace fecom {
 		/// Add a tracker channel hit in the commissioning event
 		void add_tracker_channel_hit(fecom::tracker_channel_hit & a_tracker_channel_hit_);
 
-		/// Get the trigger ID of the commissioning event
-		uint32_t get_trigger_id() const;
+		/// Get the datatools ID of the commissioning event
+		const datatools::event_id & get_event_id() const;
 
-		/// Set the trigger ID of the commissioning event
-		void set_trigger_id(const uint32_t trigger_id_);
+		/// Grab the datatools ID of the commissioning event
+		datatools::event_id & grab_event_id();
+
+		/// Set the datatools ID of the commissioning event
+		void set_event_id(const datatools::event_id & id_);
+
+		/// Set the time start in nanosecond
+		double get_time_start_ns() const;
+
+		/// Set the time start in nanosecond
+		void set_time_start_ns(const double time_start_);
 
 		/// Get the calo hit collection
-		const commissioning_event::calo_hit_collection & get_calo_hit_collection() const;
+		const	commissioning_event::calo_hit_collection & get_calo_hit_collection() const;
 
 		/// Get the tracker channel hit collection
 		const commissioning_event::tracker_channel_hit_collection & get_tracker_channel_hit_collection() const;
 
 		/// Get the tracker hit collection
-		const commissioning_event::tracker_hit_collection & get_tracker_hit_collection() const;
+		const	commissioning_event::tracker_hit_collection & get_tracker_hit_collection() const;
 
 		/// Build a tracker hit from channels (anodic, bot cathode and top cathode max)
     void build_tracker_hit_from_channels();
@@ -102,7 +112,13 @@ namespace fecom {
 
 		// Management :
 		mutable uint64_t _last_time_in_ns_added_; //!< Last time in ns added in the commissioning event (calo or tracker channel)
-
+		mutable std::bitset<4> _traits_; //!< Traits for data quality of the commissioning event of data
+		/*
+			BIT 0 : Tracker only Event
+			BIT 1 : UNDEFINED (ftm)
+			BIT 2 : UNDEFINED (ftm)
+			BIT 3 : UNDEFINED (ftm)
+		*/
   private:
 
     void _reset_();
@@ -111,7 +127,8 @@ namespace fecom {
 		const fecom::channel_mapping * _my_channel_mapping_; //!< Handle to an external channel mapping
 
 		// Datas :
-    uint32_t _trigger_id_; ///< Hit trigger ID
+		datatools::event_id _event_id_; ///< Datatools event ID
+		double _time_start_ns_; ///< Time start of the commissioning event in ns
 		calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
 		tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id

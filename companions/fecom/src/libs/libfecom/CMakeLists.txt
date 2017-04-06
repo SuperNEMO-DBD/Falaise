@@ -1,3 +1,24 @@
+# - Dependencies
+
+find_package(Boost 1.60.0
+  REQUIRED
+  date_time
+  )
+
+find_package(Bayeux 3.0.0
+  REQUIRED
+  )
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
+# Ensure our code can see the Falaise headers
+message( STATUS "******** Fecom : PROJECT_BUILD_INCLUDEDIR = '${PROJECT_BUILD_INCLUDEDIR}'")
+message( STATUS "******** Fecom : PROJECT_BUILD_CMAKEDIR   = '${PROJECT_BUILD_CMAKEDIR}'")
+
+include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
+include_directories(${PROJECT_BUILD_INCLUDEDIR})
+
+
 # - Publish headers
 
 configure_file(fecom/version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp @ONLY)
@@ -15,6 +36,7 @@ set(FeCom_HEADERS
   fecom/calo_utils.hpp
   fecom/calo_hit.hpp
   fecom/calo_hit.ipp
+  fecom/calo_hit_calibration.hpp
   fecom/tracker_hit.hpp
   fecom/tracker_hit.ipp
   fecom/tracker_channel_hit.hpp
@@ -23,6 +45,7 @@ set(FeCom_HEADERS
   fecom/commissioning_event.ipp
   fecom/commissioning_event_data.hpp
   fecom/commissioning_event_data.ipp
+  fecom/mock_hc2cd_module.hpp
   fecom/channel_mapping.hpp
   fecom/calo_pedestal_calib.hpp
   fecom/calo_calibration.hpp
@@ -45,10 +68,12 @@ set(FeCom_SOURCES
   fecom/tracker_constants.cpp
   fecom/calo_utils.cpp
   fecom/calo_hit.cpp
+  fecom/calo_hit_calibration.cpp
   fecom/tracker_hit.cpp
   fecom/tracker_channel_hit.cpp
   fecom/commissioning_event.cpp
   fecom/commissioning_event_data.cpp
+  fecom/mock_hc2cd_module.cpp
   fecom/channel_mapping.cpp
   fecom/calo_pedestal_calib.cpp
   fecom/calo_calibration.cpp
@@ -86,17 +111,6 @@ set(FeCom_TESTS
   # testing/test-libfecom-histogram_builder.cxx
   )
 
-find_package(Bayeux 3.0.0
-  REQUIRED
-  )
-
-find_package(Boost 1.60.0
-  REQUIRED
-  date_time
-  )
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
 add_library(fecom SHARED
   ${FeCom_HEADERS}
   ${FeCom_HEADERS}
@@ -106,6 +120,7 @@ add_library(fecom SHARED
 
 target_link_libraries(fecom Bayeux::Bayeux)
 target_link_libraries(fecom ${Boost_LIBRARIES})
+target_link_libraries(fecom Falaise::Falaise)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
@@ -167,4 +182,3 @@ if(FECOM_ENABLE_TESTING)
       )
   endforeach()
 endif()
-

@@ -131,7 +131,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
       if (valid == "calo") {
 	auto it_set = std::find_if(open_commissioning_events.begin(),
 				   open_commissioning_events.end(),
-				   fecom::commissioning_event::find_by_trigger_id(actual_hit_trigger_id));
+				   fecom::commissioning_event::find_by_event_id(actual_hit_trigger_id));
 
 	if (it_set != open_commissioning_events.end()) {
 	  // Trigger ID already exist, add the calo hit to the existing commissioning event
@@ -142,7 +142,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	else {
 	  // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the comm set
 	  fecom::commissioning_event a_new_comm_event;
-	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
+	  a_new_comm_event.grab_event_id().set_event_id(actual_hit_trigger_id);
 	  a_new_comm_event.add_calo_hit(chit);
 	  a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
 
@@ -155,7 +155,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
 	auto it_set = std::find_if(open_commissioning_events.begin(),
 				   open_commissioning_events.end(),
-				   fecom::commissioning_event::find_by_trigger_id(actual_hit_trigger_id));
+				   fecom::commissioning_event::find_by_event_id(actual_hit_trigger_id));
 
 	if (it_set != open_commissioning_events.end()) {
 	  // Trigger ID already exist, add the tracker channel hit to the existing commissioning event
@@ -166,7 +166,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 	else {
 	  // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the comm set
 	  fecom::commissioning_event a_new_comm_event;
-	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
+	  a_new_comm_event.grab_event_id().set_event_id(actual_hit_trigger_id);
 	  a_new_comm_event.add_tracker_channel_hit(tchit);
 	  a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
 

@@ -24,7 +24,7 @@ namespace fecom {
 
   void commissioning_event_data::add_commissioning_event(commissioning_event & a_commissioning_event_)
   {
-    _commissioning_event_collection_.insert(a_commissioning_event_);
+    _commissioning_event_collection_.push_back(a_commissioning_event_);
     return;
   }
 

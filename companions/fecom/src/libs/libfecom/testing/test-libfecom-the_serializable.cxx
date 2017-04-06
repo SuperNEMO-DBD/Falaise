@@ -104,7 +104,10 @@ void ex_com_event_1(datatools::logger::priority logging)
   DT_LOG_DEBUG(logging, "Declare a commissioning event");
   fecom::commissioning_event CE;
   uint32_t trigger_id = 12;
-  CE.set_trigger_id(trigger_id);
+  uint32_t run_number = 3;
+  uint32_t event_number = trigger_id;
+  CE.grab_event_id().set_run_number(run_number);
+  CE.grab_event_id().set_event_number(event_number);
 
   // Create a fake calo hit and some fake tracker channel hit to fill the commissioning event
   fecom::calo_hit chit;

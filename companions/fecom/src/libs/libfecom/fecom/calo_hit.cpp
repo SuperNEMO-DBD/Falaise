@@ -28,6 +28,11 @@ namespace fecom {
       // return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
   }
 
+  double calo_hit::get_timestamp() const
+  {
+    return tdc_ns + falling_cell * tdc_cell_step_ns;
+  }
+
   void calo_hit::reset()
   {
     this->base_hit::reset();

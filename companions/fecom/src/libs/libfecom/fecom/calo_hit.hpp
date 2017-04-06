@@ -30,7 +30,10 @@ namespace fecom {
     virtual ~calo_hit();
 
 		/// Check if the calo hit is valid
-    bool is_valid() const;
+		virtual bool is_valid() const;
+
+		///
+		virtual double get_timestamp() const;
 
 		/// Reset
     virtual void reset();
@@ -62,6 +65,7 @@ namespace fecom {
     uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
                                          *  Unit: clock period (default: 160 MHz)
                                          */
+		double   tdc_cell_step_ns;
 		double   tdc_ns;
     bool     low_threshold;             ///< Low threshold flag
     bool     high_threshold;            ///< High threshold flag

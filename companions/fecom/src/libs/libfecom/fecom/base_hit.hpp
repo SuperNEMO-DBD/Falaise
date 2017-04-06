@@ -31,10 +31,23 @@ namespace fecom {
       SIG_TRACKER     = 2
     };
 
-		/// Compare two base hit
+		/// Compare two base hits by hit id
 		struct compare
 		{
 			bool operator()(const base_hit & a, const base_hit & b);
+		};
+
+		/// Compare two base hits by timestamp
+		struct compare_by_timestamp
+		{
+			static bool comparetimestamp(const base_hit & a,
+																	 const base_hit & b);
+
+			bool operator()(const base_hit & a,
+											const base_hit & b)
+			{
+				return comparetimestamp(a, b);
+			}
 		};
 
 		/// Default constructor
@@ -50,7 +63,10 @@ namespace fecom {
 		bool has_geom_id() const;
 
 		/// Check if the base hit is valid
-    bool is_valid() const;
+    virtual bool is_valid() const;
+
+		///
+		virtual double get_timestamp() const = 0;
 
 		/// Reset
     virtual void reset();

@@ -32,6 +32,11 @@ namespace fecom {
     return true;
   }
 
+  double tracker_channel_hit::get_timestamp() const
+  {
+    return timestamp_time_ns;
+  }
+
   void tracker_channel_hit::reset()
   {
     this->base_hit::reset();

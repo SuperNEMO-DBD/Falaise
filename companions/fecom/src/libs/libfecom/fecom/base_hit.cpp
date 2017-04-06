@@ -96,5 +96,20 @@ namespace fecom {
     }
   }
 
+  // bool base_hit::compare_by_timestamp::operator()(const base_hit * a,
+  // 						  const base_hit * b)
+  // {
+  //   return a -> get_timestamp() < b -> get_timestamp();
+  //   // if (a.get_timestamp() < b.get_timestamp())  {
+  //   //   return true;
+  //   // }
+  //   // return false;
+  // }
+
+  bool base_hit::compare_by_timestamp::comparetimestamp(const base_hit & a,
+  							const base_hit & b)
+  {
+    return a.get_timestamp() < b.get_timestamp();
+  }
 
 } // namespace fecom
