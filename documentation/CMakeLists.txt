@@ -148,7 +148,7 @@ endforeach()
 
 # - Image paths
 set(FALAISE_DOXYGEN_IMAGE_DIRS
-  "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate/images ${CMAKE_CURRENT_SOURCE_DIR}/flvisualize/images"
+  "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate/images ${CMAKE_CURRENT_SOURCE_DIR}/flreconstruct/images ${CMAKE_CURRENT_SOURCE_DIR}/flvisualize/images"
   )
 
 #-----------------------------------------------------------------------
