@@ -5,6 +5,11 @@
 #@meta_label "category"
 
 
+##########################
+# SuperNEMO Demonstrator #
+##########################
+
+
 ############################################################
 [urn="urn:snemo:demonstrator:setup:1.0" category="expsetup"]
 
@@ -26,9 +31,8 @@ topic.variants.component   : string = "urn:snemo:demonstrator:setup:1.0:variants
 
 description : string = "Services setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
-topics : string[2] = "__parent__" "geometry"
+topics : string[1] = "geometry"
 
-topic.__parent__.component : string = "urn:snemo:demonstrator:setup:1.0"
 topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
@@ -39,10 +43,12 @@ topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 
 description : string = "Variants setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
-topics : string[2] = "__parent__" "__default_profile__"
+topics : string[2] = "default_profile" "profiles"
 
-topic.__parent__.component          : string = "urn:snemo:demonstrator:setup:1.0"
-topic.__default_profile__.component : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
+topic.default_profile.component : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
+topic.profiles.components : string[2] = \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic:1.0.0" \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc:1.0.0"
 
 
 ########################################################################################
@@ -52,6 +58,29 @@ topic.__default_profile__.component : string = "urn:snemo:demonstrator:setup:1.0
 
 description : string = "Default variant setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
+topics : string[1] = "alias_of"
+topic.alias_of.component: string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0"
+
+
+############################################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0" category="varprofile"]
+
+#@config URN registration of basic variant profile 1.0.0 for the SuperNEMO demonstrator detector variants setup (version 1.0)
+
+description : string = "Basic variant setup 1.0.0 for the SuperNEMO demonstrator detector setup (version 1.0)"
+
+
+#########################################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0" category="varprofile"]
+
+#@config URN registration of HC variant profile 1.0.0 for the SuperNEMO demonstrator detector variants setup (version 1.0)
+
+description : string = "HC variant setup 1.0.0 for the SuperNEMO demonstrator detector setup (version 1.0)"
+
+
+#########
+# BiPo3 #
+#########
 
 ########################################################
 [urn="urn:bipo3:detector:setup:1.0" category="expsetup"]
