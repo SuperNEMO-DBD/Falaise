@@ -82,15 +82,30 @@ Options:
   --help-simulation-setup              print help on simulation setup
   --version                            print version number
   -V [ --verbosity ] level             set the verbosity level
+                                       Example:
+                                         -V "debug"
   -u [ --user-profile ] name (=normal) set the user profile ("expert",
                                        "normal", "production")
+  -d [ --mount-directory ] rule        register directories' mount points
+                                       Example:
+                                         -d "nemoprod@/etc/nemoprod/config"
+                                         -d "nemoprod.data@/data/nemoprod/runs"
   -c [ --config ] file                 configuration script for simulation
+                                       Examples:
+                                         -c "simu.conf"
+                                         -c "${WORKER_DIR}/config/simu1.conf"
   -m [ --output-metadata-file ] file   file in which to store metadata
-  -E [ --embedded-metadata ] flag (=0) flag to (de)activate recording of
+                                       Example:
+                                         -m "simu.meta"
+  -E [ --embedded-metadata ] flag (=1) flag to (de)activate recording of
                                        metadata in the simulation results
                                        output file
   -o [ --output-file ] file            file in which to store simulation
                                        results
+                                       Examples:
+                                         -o "example.brio"
+                                         -o "${WORKER_DIR}/data/run_1.xml"
+
 ~~~~~
 
 The `--version` option provides detailed information of the current
