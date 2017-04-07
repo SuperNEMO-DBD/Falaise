@@ -302,9 +302,6 @@ int main(int argc_, char ** argv_)
         commissioning_event_record.set_name("CER");
         commissioning_event_record.set_description("A single data record with banks in it");
 
-        datatools::properties & props = commissioning_event_record.add<datatools::properties>("Props", "Props bank");
-        props.store_flag("test");
-
         fecom::commissioning_event & CE
           = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
 

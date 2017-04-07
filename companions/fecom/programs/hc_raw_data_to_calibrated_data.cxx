@@ -32,6 +32,7 @@ int main(int argc_, char ** argv_)
   std::string input_filename = "";
   std::string output_filename = "";
   std::string output_path = "";
+  int32_t event_number  = -1;
 
   bool is_display  = false;
   bool is_help     = false;
@@ -50,6 +51,11 @@ int main(int argc_, char ** argv_)
     else if (arg == "-op" || arg == "--output-path") {
       output_path = argv_[++iarg];
     }
+
+    else if (arg == "-n" || arg == "--number")
+      {
+	event_number = std::stoi(argv_[++iarg]);
+      }
 
     else if (arg == "-d" || arg == "--display") {
       is_display = true;
@@ -140,17 +146,18 @@ int main(int argc_, char ** argv_)
     my_manager.initialize (manager_config);
 
     std::size_t event_counter = 0;
-    //     int event_number = 10;
+
+    if (event_number == -1) event_number = 10;
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    //reader_config.store ("max_record_total", event_number);
+    reader_config.store ("max_record_total", event_number);
     reader_config.store ("files.mode", "single");
     reader_config.store_path("files.single.filename", input_filename);
     reader.initialize_standalone (reader_config);
-    reader.tree_dump(std::clog, "Half Commissiong Raw Data reader module");
+    // reader.tree_dump(std::clog, "Half Commissiong Raw Data reader module");
 
     // Event writer :
     dpp::output_module writer;
@@ -159,7 +166,7 @@ int main(int argc_, char ** argv_)
     writer_config.store ("files.mode", "single");
     writer_config.store ("files.single.filename", output_filename);
     writer.initialize_standalone(writer_config);
-    writer.tree_dump(std::clog, "Half Commissiong Raw Data writer module");
+    // writer.tree_dump(std::clog, "Half Commissiong Raw Data writer module");
 
     // Event record :
     datatools::things ER;
@@ -179,34 +186,40 @@ int main(int argc_, char ** argv_)
 
     while (!reader.is_terminated())
       {
-	reader.process(ER);
 	DT_LOG_DEBUG(logging, "Event counter = " << event_counter);
+	reader.process(ER);
 
 	// A plain `fecom::commissioning' object is stored here :
 	if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
 	  {
-	    DT_LOG_DEBUG(logging, "Has HCRD bank label");
-	    ER.tree_dump(std::clog, "Things tree dump :");
-	    const fecom::commissioning_event & CE = ER.get<fecom::commissioning_event>(HCRD_bank_label);
-	    CE.tree_dump(std::clog, "CE Bank tree dump :");
+	    // DT_LOG_DEBUG(logging, "Has HCRD bank label");
+	    // ER.tree_dump(std::clog, "Things tree dump :");
+	    // const fecom::commissioning_event & CE = ER.get<fecom::commissioning_event>(HCRD_bank_label);
+	    // CE.tree_dump(std::clog, "CE Bank tree dump :");
 
 	    hc2cd_module.process(ER);
 
 	    ER.remove(HCRD_bank_label);
-	    ER.tree_dump(std::clog, "Things after removal :");
+	    // ER.tree_dump(std::clog, "Things after removal :");
 
 	    bool has_tracker  = false;
 	    bool has_calo     = false;
 
 	    const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
-	    if (CD.calibrated_calorimeter_hits().size() != 0) has_calo = true;
-	    if (CD.calibrated_tracker_hits().size() != 0) has_tracker = true;
+	    if (CD.calibrated_calorimeter_hits().size() > 0) has_calo = true;
+	    if (CD.calibrated_tracker_hits().size() > 2) has_tracker = true;
 
-	    if (has_calo && has_tracker) std::clog << "Calo + tracker event #" <<event_counter << std::endl;
-	    //if (has_calo && has_tracker) writer.process(ER);
-	    writer.process(ER);
+	    if (has_calo && has_tracker)
+	      {
+		std::clog << "Calo + tracker event #" << event_counter << std::endl;
+		writer.process(ER);
+	      }
+
+	    //writer.process(ER);
 
 	  }
+
+	ER.clear();
 	event_counter++;
       }
 

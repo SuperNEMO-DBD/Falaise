@@ -40,7 +40,6 @@ namespace fecom {
     : dpp::base_module(logging_priority_)
   {
     _geom_manager_    = 0;
-    _external_random_ = 0;
     _set_defaults();
     return;
   }
@@ -88,29 +87,6 @@ namespace fecom {
     return *_geom_manager_;
   }
 
-  void mock_hc2cd_module::set_external_random(mygsl::rng & rng_)
-  {
-    DT_THROW_IF(is_initialized(),
-		std::logic_error,
-		"Module '" << get_name() << "' is already initialized ! ");
-    _external_random_ = &rng_;
-    return;
-  }
-
-  void mock_hc2cd_module::reset_external_random()
-  {
-    DT_THROW_IF(is_initialized(),
-		std::logic_error,
-		"Module '" << get_name() << "' is already initialized ! ");
-    _external_random_ = 0;
-    return;
-  }
-
-  bool mock_hc2cd_module::has_external_random() const
-  {
-    return _external_random_ != 0;
-  }
-
   void mock_hc2cd_module::convert_gid_to_falaise_gid(const geomtools::geom_id geometric_id_,
 						     geomtools::geom_id & falaise_geom_id_)
   {
@@ -119,7 +95,7 @@ namespace fecom {
     if (geometric_id_.get_type() == fecom::calo_constants::GEOMETRIC_CALO_TYPE)
       {
 	int column = geometric_id_.get(fecom::calo_constants::COLUMN_INDEX);
-	int row = geometric_id_.get(fecom::calo_constants::COLUMN_INDEX);
+	int row = geometric_id_.get(fecom::calo_constants::ROW_INDEX);
 	falaise_geom_id_.set_type(1302); // To change with constants
 	falaise_geom_id_.set(0, module);
 	falaise_geom_id_.set(1, side);
@@ -137,6 +113,7 @@ namespace fecom {
 	falaise_geom_id_.set(2, layer);
 	falaise_geom_id_.set(3, row);
       }
+
 
     return;
   }
@@ -200,51 +177,45 @@ namespace fecom {
       _module_category_ = "module";
     }
 
-    if (! has_external_random()) {
-      int random_seed = 12345;
-      if (setup_.has_key("random.seed")) {
-	random_seed = setup_.fetch_integer("random.seed");
-      }
-      std::string random_id = "mt19937";
-      if (setup_.has_key("random.id")) {
-	random_id = setup_.fetch_string("random.id");
-      }
-      // Initialize the embedded random number generator:
-      _random_.init(random_id, random_seed);
-    }
-
     // Initialize the Geiger regime utility:
-    _geiger_.initialize(setup_);
+    datatools::properties gg_setup;
+    // void 	store_real_with_explicit_unit (const std::string &prop_key, double a_value, const std::string &desc="", bool a_lock=false)
+    // void 	set_unit_symbol (const std::string &prop_key, const std::string &unit_symbol="")
+    gg_setup.store_real_with_explicit_unit("cell_diameter", 44 * CLHEP::mm);
+    gg_setup.set_unit_symbol("cell_diameter", "mm");
 
-    const double time_unit = CLHEP::microsecond;
+    gg_setup.store_real_with_explicit_unit("cell_length", 2900 * CLHEP::mm);
+    gg_setup.set_unit_symbol("cell_length", "mm");
 
-    // Set minimum drift time for peripheral hits:
-    if (setup_.has_key("peripheral_drift_time_threshold")) {
-      _peripheral_drift_time_threshold_ = setup_.fetch_real("peripheral_drift_time_threshold");
-      if (! setup_.has_explicit_unit("peripheral_drift_time_threshold")) {
-	_peripheral_drift_time_threshold_ *= time_unit;
-      }
-    }
-    // Default value:
-    if (! datatools::is_valid(_peripheral_drift_time_threshold_)) {
-      _peripheral_drift_time_threshold_ = _geiger_.get_t0();
-    }
-    DT_LOG_DEBUG(get_logging_priority(), "peripheral_drift_time_threshold = "
-		 << _peripheral_drift_time_threshold_ / CLHEP::microsecond << " us");
+    gg_setup.store_real_with_explicit_unit("tcut", 10 * CLHEP::microsecond);
+    gg_setup.set_unit_symbol("tcut", "us");
 
-    // Set minium drift time for delayed hits:
-    if (setup_.has_key("delayed_drift_time_threshold")) {
-      _delayed_drift_time_threshold_ = setup_.fetch_real("delayed_drift_time_threshold");
-      if (! setup_.has_explicit_unit("delayed_drift_time_threshold")) {
-	_delayed_drift_time_threshold_ *= time_unit;
-      }
-    }
-    // Default value:
-    if (! datatools::is_valid(_delayed_drift_time_threshold_)) {
-      _delayed_drift_time_threshold_ = _geiger_.get_tcut();
-    }
-    DT_LOG_DEBUG(get_logging_priority(), "delayed_drift_time_threshold = "
-		 << _delayed_drift_time_threshold_ / CLHEP::microsecond << " us");
+    gg_setup.store_real_with_explicit_unit("sigma_anode_time", 25 * CLHEP::nanosecond);
+    gg_setup.set_unit_symbol("sigma_anode_time", "ns");
+
+    gg_setup.store_real_with_explicit_unit("sigma_cathode_time", 1 * CLHEP::microsecond);
+    gg_setup.set_unit_symbol("sigma_cathode_time", "us");
+
+    gg_setup.store_real("base_anode_efficiency", 1);
+
+    gg_setup.store_real("base_cathode_efficiency", 1);
+
+    gg_setup.store_real_with_explicit_unit("plasma_longitudinal_speed", 20 * CLHEP::cm / CLHEP::microsecond);
+    gg_setup.set_unit_symbol("plasma_longitudinal_speed", "cm/us");
+
+    gg_setup.store_real_with_explicit_unit("sigma_plasma_longitudinal_speed", 5 * CLHEP::cm / CLHEP::microsecond);
+    gg_setup.set_unit_symbol("sigma_plasma_longitudinal_speed", "cm/us");
+
+    gg_setup.store_real_with_explicit_unit("sigma_z", 5 * CLHEP::cm);
+    gg_setup.set_unit_symbol("sigma_z", "cm");
+
+    gg_setup.store_real_with_explicit_unit("sigma_z_missing_cathode", 20 * CLHEP::cm);
+    gg_setup.set_unit_symbol("sigma_z_missing_cathode", "cm");
+
+    _geiger_.initialize(gg_setup);
+
+    _fout_.reset(new std::ofstream("__mock_hc2cd.data"));
+    _fout_->precision(15);
 
     this->base_module::_set_initialized(true);
     return;
@@ -258,11 +229,6 @@ namespace fecom {
 
     this->base_module::_set_initialized(false);
 
-    if (! has_external_random()) {
-      // Reset the random number generator:
-      _random_.reset();
-    }
-    _external_random_ = 0;
     // Reset the Geiger regime utility:
     _geiger_.reset();
     _set_defaults();
@@ -273,13 +239,11 @@ namespace fecom {
   void mock_hc2cd_module::_set_defaults()
   {
     _module_category_.clear();
-    _external_random_ = 0;
     _geom_manager_ = 0;
     _HCRD_label_.clear();
     _CD_label_.clear();
     _Geo_label_.clear();
-    datatools::invalidate(_peripheral_drift_time_threshold_);
-    datatools::invalidate(_delayed_drift_time_threshold_);
+    _tracker_clock_tick_ = 12.5 * CLHEP::nanosecond;
     return;
   }
 
@@ -339,24 +303,17 @@ namespace fecom {
     return dpp::base_module::PROCESS_SUCCESS;
   }
 
-  mygsl::rng & mock_hc2cd_module::_get_random()
-  {
-    if (has_external_random()) return *_external_random_;
-    return _random_;
-  }
-
   void mock_hc2cd_module::_process(const fecom::commissioning_event & hc_raw_com_event_,
 				   snemo::datamodel::calibrated_data & the_calibrated_data_)
   {
     DT_LOG_DEBUG(get_logging_priority(), "Entering...");
-
     DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
     _process_calo_calibration(hc_raw_com_event_,
 			      the_calibrated_data_.calibrated_calorimeter_hits());
 
-    // _process_tracker_calibration(the_raw_tracker_hits,
-    // the_calibrated_data_.calibrated_tracker_hits_());
+    _process_tracker_calibration(hc_raw_com_event_,
+				 the_calibrated_data_.calibrated_tracker_hits());
 
     DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
     return;
@@ -379,14 +336,18 @@ namespace fecom {
       {
 	// Convert electronic ID into falaise geometric ID
 	geomtools::geom_id fecom_geometric_id;
-	// icalo.electronic_id
-	_channel_mapping_->get_geometric_id_from_electronic_id(icalo->electronic_id, fecom_geometric_id);
+
+	// Check if the calo electronic mapping is in the bimap
+	if (_channel_mapping_->is_calo_channel_in_map(icalo->electronic_id))
+	  {
+	    _channel_mapping_->get_geometric_id_from_electronic_id(icalo->electronic_id, fecom_geometric_id);
+	  }
+	// If no, skip the hit
+	else break;
 	geomtools::geom_id falaise_geometric_id;
 	convert_gid_to_falaise_gid(fecom_geometric_id,
 				   falaise_geometric_id);
 
-	// This geom_id is not used by any previous calorimeter hit:
-	// we create a new calorimeter hit !
 	snemo::datamodel::calibrated_data::calorimeter_hit_handle_type new_handle(new snemo::datamodel::calibrated_calorimeter_hit);
 	snemo::datamodel::calibrated_calorimeter_hit & new_calibrated_calorimeter_hit = new_handle.grab();
 
@@ -394,7 +355,7 @@ namespace fecom {
 	new_calibrated_calorimeter_hit.set_geom_id(falaise_geometric_id);
 
 	// sigma time and sigma energy are computed later
-	double time = (icalo->tdc_ns + icalo->falling_time_ns) * CLHEP::nanosecond;
+	double time = (icalo->tdc_ns + icalo->falling_time_ns - hc_raw_com_event_.get_time_start_ns() ) * CLHEP::nanosecond;
 	new_calibrated_calorimeter_hit.set_time(time);
 
 	double energy = 0;
@@ -404,10 +365,10 @@ namespace fecom {
 			  energy,
 			  sigma_energy);
 
-	std::clog << "GID : " << falaise_geometric_id
-		  << " Time = " << time
-		  << " Energy = " << energy
-		  << " Sigma energy = " << sigma_energy << std::endl;
+	// std::clog << "GID : " << falaise_geometric_id
+	// 	  << " Time = " << time
+	// 	  << " Energy = " << energy
+	// 	  << " Sigma energy = " << sigma_energy << std::endl;
 	new_calibrated_calorimeter_hit.set_energy(energy);
 
 	// Append it to the collection :
@@ -420,171 +381,189 @@ namespace fecom {
 
   /** Calibrate tracker hits from raw data informations:
    */
-  void mock_hc2cd_module::_process_tracker_calibration(const fecom::commissioning_event & /* hc_raw_com_event_*/,
-						       snemo::datamodel::calibrated_data::tracker_hit_collection_type & /*calibrated_tracker_hits_*/)
+  void mock_hc2cd_module::_process_tracker_calibration(const fecom::commissioning_event & hc_raw_com_event_,
+						       snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_)
   {
-    // DT_LOG_DEBUG(get_logging_priority(), "Entering...");
+    DT_LOG_DEBUG(get_logging_priority(), "Entering...");
 
-    // // pickup the ID mapping from the geometry manager:
-    // const geomtools::mapping & the_mapping = _geom_manager_->get_mapping();
-    // const geomtools::id_mgr & the_id_mgr   = _geom_manager_->get_id_mgr();
+    // pickup the ID mapping from the geometry manager:
+    const geomtools::mapping & the_mapping = _geom_manager_->get_mapping();
+    const geomtools::id_mgr & the_id_mgr   = _geom_manager_->get_id_mgr();
 
-    // // current module geometry ID and information:
-    // int module_number = geomtools::geom_id::INVALID_ADDRESS;
-    // const geomtools::geom_info * module_ginfo = 0;
-    // const geomtools::placement * module_placement = 0;
+    // current module geometry ID and information:
+    int module_number = geomtools::geom_id::INVALID_ADDRESS;
+    const geomtools::geom_info * module_ginfo = 0;
+    const geomtools::placement * module_placement = 0;
 
-    // int32_t calibrated_tracker_hit_id = 0;
-    // // Loop on raw tracker hits:
-    // for (raw_tracker_hit_col_type::const_iterator i = raw_tracker_hits_.begin();
-    // 	 i != raw_tracker_hits_.end();
-    // 	 i++) {
-    //   // get a reference to the tracker hit:
-    //   const snemo::datamodel::mock_raw_tracker_hit & the_raw_tracker_hit = *i;
+    uint32_t calibrated_tracker_hit_id = 0;
 
-    //   // create the calibrated tracker hit to build:
-    //   snemo::datamodel::calibrated_data::tracker_hit_handle_type the_hit_handle(new snemo::datamodel::calibrated_tracker_hit);
-    //   snemo::datamodel::calibrated_tracker_hit & the_calibrated_tracker_hit = the_hit_handle.grab();
+    //// std::vector<double> anode_times;
 
-    //   // extract the corresponding geom ID:
-    //   const geomtools::geom_id & gid = the_raw_tracker_hit.get_geom_id();
-    //   //int this_cell_module_number = geom_manager_->get_id_mgr().get(gid, "module");
-    //   const int this_cell_module_number = gid.get(0);
-    //   if (this_cell_module_number != module_number) {
-    // 	// build the module GID by extraction from the cell GID:
-    // 	geomtools::geom_id module_gid;
-    // 	the_id_mgr.make_id(_module_category_, module_gid);
-    // 	the_id_mgr.extract(gid, module_gid);
-    // 	module_number    = this_cell_module_number;
-    // 	module_ginfo     = &the_mapping.get_geom_info(module_gid);
-    // 	module_placement = &(module_ginfo->get_world_placement());
-    //   }
+    for (auto itracker = hc_raw_com_event_.get_tracker_hit_collection().begin();
+	 itracker != hc_raw_com_event_.get_tracker_hit_collection().end();
+	 itracker++)
+      {
+	// Convert electronic ID into falaise geometric ID
+	geomtools::geom_id fecom_geometric_id = itracker->cell_geometric_id;
 
-    //   // extract the geom info of the corresponding cell:
-    //   const geomtools::geom_info & ginfo = the_mapping.get_geom_info(gid);
+	geomtools::geom_id falaise_geometric_id;
+	convert_gid_to_falaise_gid(fecom_geometric_id,
+				   falaise_geometric_id);
 
-    //   // assign a hit ID and the geometry ID to the hit:
-    //   the_calibrated_tracker_hit.set_hit_id(calibrated_tracker_hit_id);
-    //   //the_raw_tracker_hit.get_hit_id());
-    //   the_calibrated_tracker_hit.set_geom_id(gid);
+	const int this_cell_module_number = falaise_geometric_id.get(0);
+        if (this_cell_module_number != module_number) {
+          // build the module FALAISE_GEOMETRIC_ID by extraction from the cell FALAISE_GEOMETRIC_ID:
+          geomtools::geom_id module_falaise_geometric_id;
+          the_id_mgr.make_id(_module_category_, module_falaise_geometric_id);
+          the_id_mgr.extract(falaise_geometric_id, module_falaise_geometric_id);
+          module_number    = this_cell_module_number;
+          module_ginfo     = &the_mapping.get_geom_info(module_falaise_geometric_id);
+          module_placement = &(module_ginfo->get_world_placement());
+        }
 
-    //   // Use the anode time :
-    //   const double anode_time = the_raw_tracker_hit.get_drift_time();
+        // extract the geom info of the corresponding cell:
+        const geomtools::geom_info & ginfo = the_mapping.get_geom_info(falaise_geometric_id);
 
-    //   // Calibrate the transverse drift distance:
-    //   double radius;
-    //   double sigma_radius;
-    //   datatools::invalidate(radius);
-    //   datatools::invalidate(sigma_radius);
+	snemo::datamodel::calibrated_data::tracker_hit_handle_type new_handle(new snemo::datamodel::calibrated_tracker_hit);
+	snemo::datamodel::calibrated_tracker_hit & new_calibrated_tracker_hit = new_handle.grab();
 
-    //   if (datatools::is_valid(anode_time)) {
-    // 	if (anode_time <= _delayed_drift_time_threshold_) {
-    // 	  // Case of a normal/prompt hit :
-    // 	  _geiger_.calibrate_drift_radius_from_drift_time(anode_time, radius, sigma_radius);
-    // 	  the_calibrated_tracker_hit.set_anode_time(anode_time);
-    // 	  if (anode_time > _peripheral_drift_time_threshold_) {
-    // 	    DT_LOG_TRACE(get_logging_priority(),
-    // 			 "Peripheral Geiger hit with anode time = " << anode_time / CLHEP::microsecond << " us");
-    // 	    the_calibrated_tracker_hit.set_peripheral(true);
-    // 	  }
-    // 	} else {
-    // 	  DT_LOG_TRACE(get_logging_priority(),
-    // 		       "Delayed Geiger hit with anode time = " << anode_time / CLHEP::microsecond << " us");
-    // 	  // 2012-03-29 FM : store the anode_time as the reference delayed time
-    // 	  the_calibrated_tracker_hit.set_delayed_time(anode_time,
-    // 						      _geiger_.get_sigma_anode_time(anode_time));
-    // 	  // Case of a delayed Geiger hit :
-    // 	  // 2012-03-29 FM : do no push anymore specific values, let the radius be invalid
+	new_calibrated_tracker_hit.set_hit_id(calibrated_tracker_hit_id++);
+	new_calibrated_tracker_hit.set_geom_id(falaise_geometric_id);
 
-    // 	  // radius       = _geiger_.get_r0();
-    // 	  // sigma_radius = _geiger_.get_sigma_r(radius);
-    // 	}
-    //   } else {
-    // 	the_calibrated_tracker_hit.set_noisy(true);
-    // 	DT_LOG_DEBUG(get_logging_priority(), "Geiger cell is noisy");
-    //   }
-    //   if (datatools::is_valid(radius)) the_calibrated_tracker_hit.set_r(radius);
-    //   if (datatools::is_valid(sigma_radius)) the_calibrated_tracker_hit.set_sigma_r(sigma_radius);
+	double anode_time;
+	double radius;
+	double sigma_radius;
+	datatools::invalidate(radius);
+	datatools::invalidate(sigma_radius);
+	datatools::invalidate(anode_time);
 
-    //   // Calibrate the longitudinal drift distance:
-    //   const double t1 = the_raw_tracker_hit.get_bottom_time();
-    //   const double t2 = the_raw_tracker_hit.get_top_time();
-    //   double z;
-    //   double sigma_z;
-    //   datatools::invalidate(z);
-    //   datatools::invalidate(sigma_z);
+	if (itracker->has_anodic_t0()) {
+	  // std::clog.precision(15);
+	  // std::clog << "Event anodic t0    = " << itracker->get_anodic_t0() << std::endl
+	  // 	    << "Tracker clock tick = " << _tracker_clock_tick_ << std::endl
+	  // 	    << "Mult               = " << itracker->get_anodic_t0() * _tracker_clock_tick_ << std::endl
+	  // 	    << "Event Time start   = " << hc_raw_com_event_.get_time_start_ns() << std::endl;
 
-    //   const double plasma_propagation_speed = _geiger_.get_plasma_longitudinal_speed();
-    //   size_t missing_cathodes = 0;
-    //   if (! datatools::is_valid(t1) && ! datatools::is_valid(t2)) {
-    // 	// missing top/bottom cathode signals:
-    // 	missing_cathodes = 2;
-    // 	sigma_z = _geiger_.get_sigma_z(z, missing_cathodes);
-    // 	z       = 0.0;
-    // 	the_calibrated_tracker_hit.set_top_cathode_missing(true);
-    // 	the_calibrated_tracker_hit.set_bottom_cathode_missing(true);
-    //   } else if (! datatools::is_valid(t1) && datatools::is_valid(t2)) {
-    // 	// missing bottom cathode signal:
-    // 	missing_cathodes = 1;
-    // 	const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed;
-    // 	sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-    // 	z       = _geiger_.randomize_z(_get_random(), mean_z, sigma_z);
-    // 	the_calibrated_tracker_hit.set_bottom_cathode_missing(true);
-    //   } else if (datatools::is_valid(t1) && ! datatools::is_valid(t2)) {
-    // 	// missing top cathode signal:
-    // 	missing_cathodes = 1;
-    // 	const double mean_z = t1 * plasma_propagation_speed - 0.5 *_geiger_.get_cell_length();
-    // 	sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-    // 	z       = _geiger_.randomize_z(_get_random(), mean_z, sigma_z);
-    // 	the_calibrated_tracker_hit.set_top_cathode_missing(true);
-    //   } else {
-    // 	missing_cathodes = 0;
-    // 	const double plasma_propagation_speed_2 = _geiger_.get_cell_length() /(t1 + t2);
-    // 	const double mean_z = 0.5 *_geiger_.get_cell_length() - t2 * plasma_propagation_speed_2;
-    // 	sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-    // 	z       = _geiger_.randomize_z(_get_random(), mean_z, sigma_z);
-    //   }
+	  anode_time = (itracker->get_anodic_t0() * _tracker_clock_tick_) - (hc_raw_com_event_.get_time_start_ns() * CLHEP::nanosecond);
+	  // std::clog << "Anode time         = " << anode_time / CLHEP::nanosecond << " ns" << std::endl;
 
-    //   // set values in the calibrated tracker hit:
-    //   if (datatools::is_valid(z)) the_calibrated_tracker_hit.set_z(z);
-    //   if (datatools::is_valid(sigma_z)) the_calibrated_tracker_hit.set_sigma_z(sigma_z);
+	  if (anode_time < 0) anode_time = 1.0 * CLHEP::nanosecond;
+	  if (_fout_.get() != nullptr) {
+	    *_fout_ << anode_time << '\n';
+	  }
+	  if (datatools::is_valid(anode_time)) {
+	    _geiger_.calibrate_drift_radius_from_drift_time(anode_time,
+							    radius,
+							    sigma_radius);
+	    std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
+		      << "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
+		      << "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl;
 
-    //   // store the X-Y position of the cell within the module coordinate system:
-    //   const double cell_x = 0.0;
-    //   const double cell_y = 0.0;
-    //   const double cell_z = 0.0;
-    //   geomtools::vector_3d cell_self_pos(cell_x, cell_y, cell_z);
-    //   geomtools::vector_3d cell_world_pos;
-    //   ginfo.get_world_placement().child_to_mother(cell_self_pos, cell_world_pos);
-    //   geomtools::vector_3d cell_module_pos;
-    //   module_placement->mother_to_child(cell_world_pos, cell_module_pos);
-    //   the_calibrated_tracker_hit.set_xy(cell_module_pos.getX(),
-    // 					cell_module_pos.getY());
+	    if (!datatools::is_valid(radius))
+	      {
+		radius = 20 * CLHEP::mm;
+		sigma_radius = 2 * CLHEP::mm;
+	      }
 
-    //   // 2012-07-26 FM : suspend this for now :
-    //   // if (the_raw_tracker_hit.has_hit_id())
-    //   //   {
-    //   //     the_calibrated_tracker_hit.get_auxiliaries()
-    //   //       .store("raw_hit_id", the_raw_tracker_hit.get_hit_id());
-    //   //   }
+	    new_calibrated_tracker_hit.set_anode_time(anode_time);
+	  }
+	} else {
+	  new_calibrated_tracker_hit.set_noisy(true);
+	  DT_LOG_DEBUG(get_logging_priority(), "Geiger cell is noisy");
+	}
 
-    //   // 2012-07-26 FM : add a reference to the MC true hit ID
-    //   if (_store_mc_hit_id_) {
-    // 	if (the_raw_tracker_hit.get_auxiliaries().has_key(mctools::hit_utils::HIT_MC_HIT_ID_KEY)) {
-    // 	  const int true_tracker_hit_id = the_raw_tracker_hit.get_auxiliaries().fetch_integer(mctools::hit_utils::HIT_MC_HIT_ID_KEY);
-    // 	  the_calibrated_tracker_hit.grab_auxiliaries().update(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-    // 							       true_tracker_hit_id);
-    // 	}
-    //   }
+	double z;
+	double sigma_z;
+	datatools::invalidate(z);
+	datatools::invalidate(sigma_z);
 
-    //   // save the calibrate tracker hit:
-    //   calibrated_tracker_hits_.push_back(the_hit_handle);
+	if (datatools::is_valid(radius)) {
+	  new_calibrated_tracker_hit.set_r(radius);
+	  z = 0 * CLHEP::mm;
+	  sigma_z = 1 * CLHEP::meter;
+	}
+	if (datatools::is_valid(sigma_radius)) new_calibrated_tracker_hit.set_sigma_r(sigma_radius);
+	if (datatools::is_valid(z)) new_calibrated_tracker_hit.set_z(z);
+	if (datatools::is_valid(sigma_z)) new_calibrated_tracker_hit.set_sigma_z(sigma_z);
 
-    //   calibrated_tracker_hit_id++;
-    // } // loop over raw tracker hits
+	new_calibrated_tracker_hit.set_peripheral(false);
+
+	new_calibrated_tracker_hit.set_top_cathode_missing(true);
+	new_calibrated_tracker_hit.set_bottom_cathode_missing(true);
+
+	// store the X-Y position of the cell within the module coordinate system:
+	const double cell_x = 0.0;
+	const double cell_y = 0.0;
+	const double cell_z = 0.0;
+	geomtools::vector_3d cell_self_pos(cell_x, cell_y, cell_z);
+	geomtools::vector_3d cell_world_pos;
+	ginfo.get_world_placement().child_to_mother(cell_self_pos, cell_world_pos);
+	geomtools::vector_3d cell_module_pos;
+	module_placement->mother_to_child(cell_world_pos, cell_module_pos);
+
+	new_calibrated_tracker_hit.set_xy(cell_module_pos.getX(),
+					  cell_module_pos.getY());
+
+	// // Add the geiger cell only if anode time is valid
+	// if (datatools::is_valid(anode_time))
+	//   {
+
+	// Append it to the collection :
+	calibrated_tracker_hits_.push_back(new_handle);
+	//// anode_times.push_back(anode_time);
+
+	// }
+      }
+
+    /*
+    double at_min = 1e12 * CLHEP::ns;
+    double at_max = 0.0 * CLHEP::ns;
+    for (std::size_t i = 0; i < anode_times.size(); i++) {
+      double at = anode_times[i];
+      if (datatools::is_valid(at)) {
+	if (at < at_min) at_min = at;
+	if (at > at_max) at_max = at;
+      }
+    }
+    std::clog << "Anode time min = " << at_min / CLHEP::nanosecond << " ns" << std::endl;
+    std::clog << "Anode time max = " << at_max / CLHEP::nanosecond << " ns" << std::endl;
+    for (std::size_t i = 0; i < anode_times.size(); i++) {
+      if (datatools::is_valid(anode_times[i])) {
+	anode_times[i] -= at_min;
+	std::clog << "Anode time #" << i << " = " << anode_times[i] / CLHEP::nanosecond << " ns" << std::endl;
+      }
+    }
+
+    int i = 0;
+    for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::iterator it = calibrated_tracker_hits_.begin();
+	 it != calibrated_tracker_hits_.end();
+	 it++) {
+      snemo::datamodel::calibrated_tracker_hit & hit = it->grab();
+      double anode_time = anode_times[i++];
+      if (datatools::is_valid(anode_time)) {
+	double radius;
+	double sigma_radius;
+	datatools::invalidate(radius);
+	datatools::invalidate(sigma_radius);
+	_geiger_.calibrate_drift_radius_from_drift_time(anode_time,
+							radius,
+							sigma_radius);
+	std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
+		  << "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
+		<< "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl;
+
+	if (!datatools::is_valid(radius)) {
+	  radius = 20 * CLHEP::mm;
+	  sigma_radius = 5 * CLHEP::mm;
+	}
+
+	hit.set_anode_time(anode_time);
+      }
+    }
+    */
 
     // DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-    // return;
+    return;
   }
 
 } // end of namespace fecom

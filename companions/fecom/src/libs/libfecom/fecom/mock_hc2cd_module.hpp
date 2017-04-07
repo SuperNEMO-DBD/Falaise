@@ -21,10 +21,10 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <memory>
+#include <fstream>
 
 // Third party:
-// - Bayeux/mygsl:
-#include <mygsl/rng.h>
 // - Bayeux/dpp:
 #include <dpp/base_module.h>
 
@@ -75,15 +75,6 @@ namespace fecom {
     /// Getting geometry manager
     const geomtools::manager & get_geom_manager() const;
 
-    /// Set the external PRNG
-    void set_external_random(mygsl::rng & rng_);
-
-    /// Reset the external PRNG
-    void reset_external_random();
-
-    /// Check if the module use an external PRNG
-    bool has_external_random() const;
-
     /// GID to falaise GID convertor
     void convert_gid_to_falaise_gid(const geomtools::geom_id geometric_id_,
 				    geomtools::geom_id & falaise_geom_id_);
@@ -104,9 +95,6 @@ namespace fecom {
     /// Set default attributes values
     void _set_defaults();
 
-    /// Getting random number generator
-    mygsl::rng & _get_random();
-
     /// Calibrate calo hits
     void _process_calo_calibration(const fecom::commissioning_event & hc_raw_com_event_,
 				   snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & calibrated_calo_hits_);
@@ -125,13 +113,12 @@ namespace fecom {
     const geomtools::manager * _geom_manager_;        //!< The geometry manager
     std::string   _module_category_;                  //!< The geometry category of the SuperNEMO module
     snemo::processing::geiger_regime _geiger_;        //!< Geiger regime tools
-    double        _peripheral_drift_time_threshold_;  //!< Peripheral drift time threshold
-    double        _delayed_drift_time_threshold_;     //!< Delayed drift time threshold
-    mygsl::rng    _random_;                           //!< internal PRN generator
-    mygsl::rng *  _external_random_;                  //!< external PRN generator
     std::string   _HCRD_label_;                       //!< The label of the half commissioning raw data bank
     std::string   _CD_label_;                         //!< The label of the calibrated data bank
     std::string   _Geo_label_;                        //!< The label of the geometry service
+    double _tracker_clock_tick_;
+    std::unique_ptr<std::ofstream> _fout_;
+
 
     // Macro to automate the registration of the module :
     // DPP_MODULE_REGISTRATION_INTERFACE(mock_hc2cd_module)
