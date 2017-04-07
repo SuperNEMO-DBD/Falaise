@@ -5,7 +5,8 @@
 
 namespace fecom {
 
-  DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(commissioning_event, "fecom::commissioning_event")
+  DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(commissioning_event,
+						    "fecom::commissioning_event")
 
   commissioning_event::commissioning_event()
   {
@@ -195,7 +196,6 @@ namespace fecom {
     _my_channel_mapping_ = nullptr;
     _event_id_.reset();
     datatools::invalidate(_time_start_ns_);
-    _last_time_in_ns_added_ = 0;
     _traits_.reset();
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();
@@ -212,21 +212,22 @@ namespace fecom {
       out_ << indent_ << title_ << std::endl;
     }
 
-    _event_id_.tree_dump(out_,
-			 title_,
-			 indent_,
-			 inherit_);
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Event_id : " << _event_id_.to_string() << std::endl;
 
-    out_ << indent_ << io::tag()
-	 << "Last time added in ns    : " << _last_time_in_ns_added_ << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Time start (ns) : " << _time_start_ns_ << std::endl;
 
-    out_ << indent_ << io::inherit_last_tag(inherit_)
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Traits : " << _traits_ << std::endl;
+
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
 	 << "Calo hit collection size : " << _calo_hit_collection_.size() << std::endl;
 
-    out_ << indent_ << io::inherit_last_tag(inherit_)
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
 	 << "Tracker channel hit collection size : " << _tracker_channel_hit_collection_.size() << std::endl;
 
-    out_ << indent_ << io::inherit_last_tag(inherit_)
+    out_ << indent_ <<  datatools::i_tree_dumpable::inherit_tag(inherit_)
 	 << "Tracker hit collection size : " << _tracker_hit_collection_.size() << std::endl;
 
     return;

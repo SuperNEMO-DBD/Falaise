@@ -22,7 +22,8 @@ namespace fecom {
 					   double & energy_,
 					   double & sigma_energy_)
   {
-    energy_ = 1 * CLHEP::MeV * amplitude_ / 0.300 * CLHEP::volt; // 1 MeV <-> 300 mV
+    double convertion_factor = 1 * CLHEP::MeV / (0.300 * CLHEP::volt);
+    energy_ = std::abs(amplitude_) * convertion_factor; // 1 MeV <-> 300 mV
     sigma_energy_ = 0;
     return;
   }

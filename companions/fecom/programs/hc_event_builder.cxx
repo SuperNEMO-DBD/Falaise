@@ -4,23 +4,24 @@
 #include <iostream>
 #include <stdexcept>
 
-// This project:
-#include <fecom/hit_reader.hpp>
-#include <fecom/commissioning_event.hpp>
-#include <fecom/channel_mapping.hpp>
-
+// Third party:
+// - Boost:
+// // Code dedicated to the serialization of the ``std::set`` template class :
+// #include <boost/serialization/serialization.hpp>
+// #include <boost/serialization/set.hpp>
 // - Bayeux/datatools:
 #include <datatools/logger.h>
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
 #include <datatools/things.h>
+// - Bayeux/dpp:
+#include <dpp/output_module.h>
 
-// Third party:
-// - Boost:
-// Code dedicated to the serialization of the ``std::set`` template class :
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/set.hpp>
+// This project:
+#include <fecom/hit_reader.hpp>
+#include <fecom/commissioning_event.hpp>
+#include <fecom/channel_mapping.hpp>
 
 
 class event_builder
@@ -52,13 +53,13 @@ public :
   fecom::channel_mapping * channel_mapping = nullptr;
   fecom::commissioning_event commissioning_event_for_serialization;
   fecom::commissioning_event working_commissioning_event;
-  double time_start = 0;
-  double time_stop = 0;
+  double time_start = 0.0;
+  double time_stop = 0.0;
   bool com_event_is_active = false;
   bool ready_for_serialization = false;
   bool begin_by_calorimeter = false;
 
-  const double EVENT_BUILDING_GATE_IN_NS = 150000; // 150µs to build a commissioning event (from a valid calo_hit)
+  const double EVENT_BUILDING_GATE_IN_NS = 150000.0; // 150µs to build a commissioning event (from a valid calo_hit)
 
 };
 
@@ -68,6 +69,7 @@ int main(int argc_, char ** argv_)
   // Parsing arguments
   int iarg = 1;
   std::string input_filename = "";
+  std::string output_filename = "";
   std::string output_path = "";
   // std::string run_number_str = "";
   int32_t run_number = -1;
@@ -79,6 +81,10 @@ int main(int argc_, char ** argv_)
 
     if (arg == "-i" || arg == "--input") {
       input_filename = argv_[++iarg];
+    }
+
+    else if (arg == "-o" || arg == "--output") {
+      output_filename = argv_[++iarg];
     }
 
     else if (arg == "-op" || arg == "--output-path") {
@@ -110,10 +116,11 @@ int main(int argc_, char ** argv_)
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
 		<< "$ BuildProducts/fecom_programs/fecom_main_decoder_serializer [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h         [ --help ]        produce help message" << std::endl
-		<< "-i         [ --input ]       set an input file" << std::endl
-		<< "-op        [ --output path ] set a path where all files are store" << std::endl
-		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
+		<< "-h    [ --help ]        produce help message" << std::endl
+		<< "-i    [ --input ] file  set an input file" << std::endl
+		<< "-o    [ --output ] file set an output file" << std::endl
+		<< "-op   [ --output ] path set a path where all files are store" << std::endl
+		<< "-d    [ --display ]     display things for debug" << std::endl << std::endl;
       return 0;
     }
 
@@ -148,10 +155,19 @@ int main(int argc_, char ** argv_)
 					datatools::using_multiple_archives);
 
 
-    std::string output_filename = output_path + "hc_event_builder_serialized.xml"; //data.bz2";
+    if (output_filename.empty()) {
+      output_filename = output_path + "hc_event_builder_serialized.xml"; //.data.bz2
+    }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
-    datatools::data_writer serializer(output_filename,
-				      datatools::using_multiple_archives);
+
+    // Event writer :
+    dpp::output_module serializer;
+    datatools::properties writer_config;
+    writer_config.store ("logging.priority", "debug");
+    writer_config.store ("files.mode", "single");
+    writer_config.store ("files.single.filename", output_filename);
+    serializer.initialize_standalone(writer_config);
+    serializer.tree_dump(std::clog, "HC Event builder writer module");
 
     // Build all tracker hit after the build of all commissioning event :
     std::string input_tracker_mapping_file = input_path + "mapping_tracker.csv";
@@ -183,10 +199,13 @@ int main(int argc_, char ** argv_)
     eb.channel_mapping = & my_channel_mapping;
 
     int64_t event_number = 0;
-
+    int modulo = 100;
     while (deserializer.has_record_tag()) {
       chit.reset();
       tchit.reset();
+      if ((event_number % modulo) == 0){
+	std::clog << "Event #" << event_number << std::endl;
+      }
       //DT_LOG_INFORMATION(logging, "Entering has record tag...");
       std::string deserialized_hit = "none";
       if (deserializer.record_tag_is(fecom::calo_hit::SERIAL_TAG)) {
@@ -220,12 +239,20 @@ int main(int argc_, char ** argv_)
 	datatools::things commissioning_event_record;
 	commissioning_event_record.set_name("CER");
 	commissioning_event_record.set_description("A single data record with banks in it");
+
+	datatools::properties & props = commissioning_event_record.add<datatools::properties>("Props", "Props bank");
+	props.store_flag("test");
+
 	fecom::commissioning_event & CE = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
+
 	CE = eb.commissioning_event_for_serialization;
-	serializer.store(CE);
+	CE.tree_dump(std::clog, "Commissioning event before serialization");
+	commissioning_event_record.tree_dump(std::clog, "Dump CER things");
+	serializer.process(commissioning_event_record);
 	event_serialized++;
 	eb.commissioning_event_for_serialization.reset();
 	eb.ready_for_serialization = false;
+	break;
       }
 
       if (deserialized_hit == "calo") {
@@ -289,7 +316,7 @@ int main(int argc_, char ** argv_)
 	      eb.set_times(time_start);
 	      eb.begin_by_calorimeter = false;
 	      // Event tracker only, add it to the first bit of the traits :
-	      eb.working_commissioning_event._traits_.set(0, true);
+	      eb.working_commissioning_event.grab_traits().set(0, true);
 	    }
 	  } // end of if begin by calo
 	  else {
@@ -311,7 +338,7 @@ int main(int argc_, char ** argv_)
     commissioning_event_record.set_description("Half commissioning event record");
     fecom::commissioning_event & CE = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
     CE = eb.commissioning_event_for_serialization;
-    serializer.store(CE);
+    serializer.process(commissioning_event_record);
     event_serialized++;
 
     DT_LOG_INFORMATION(logging, "Job done !");

@@ -10,9 +10,13 @@
 #include <string>
 #include <iostream>
 
+// Third party:
+// - Boost :
+#include <boost/serialization/access.hpp>
 // - Bayeux:
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.h>
+#include <bayeux/datatools/i_tree_dump.h>
 #include <bayeux/datatools/event_id.h>
 
 // This project:
@@ -26,6 +30,7 @@ namespace fecom {
 	//! \brief Commissioning event, contain a collection of calo_hits and tracker_channel_hits and can build associated tracker hits from channels
   struct commissioning_event
 		: public datatools::i_serializable
+		, public datatools::i_tree_dumpable
   {
 		/// Predicate to find by trigger id
 		struct find_by_event_id {
@@ -108,11 +113,15 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
+		std::bitset<4> & grab_traits() { return _traits_; }
+
+		const std::bitset<4> & get_traits() const { return _traits_; }
+
 	public :
 
 		// Management :
-		mutable uint64_t _last_time_in_ns_added_; //!< Last time in ns added in the commissioning event (calo or tracker channel)
-		mutable std::bitset<4> _traits_; //!< Traits for data quality of the commissioning event of data
+		//	mutable uint64_t _last_time_in_ns_added_; //!< Last time in ns added in the commissioning event (calo or tracker channel)
+		//	mutable std::bitset<4> _traits_; //!< Traits for data quality of the commissioning event of data
 		/*
 			BIT 0 : Tracker only Event
 			BIT 1 : UNDEFINED (ftm)
@@ -129,6 +138,7 @@ namespace fecom {
 		// Datas :
 		datatools::event_id _event_id_; ///< Datatools event ID
 		double _time_start_ns_; ///< Time start of the commissioning event in ns
+		std::bitset<4> _traits_; ///< Traits for data quality of the commissioning event of data
 		calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
 		tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id
@@ -138,6 +148,11 @@ namespace fecom {
   };
 
 } // namespace fecom
+
+
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(fecom::commissioning_event,
+												"fecom::commissioning_event")
 
 #endif // FECOM_COMMISSIONING_EVENT_HPP
 

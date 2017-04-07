@@ -25,9 +25,12 @@
 
 int main(int argc_, char ** argv_)
 {
+  falaise::initialize(argc_, argv_);
+  int error_code = EXIT_SUCCESS;
   // Parsing arguments
   int iarg = 1;
   std::string input_filename = "";
+  std::string output_filename = "";
   std::string output_path = "";
 
   bool is_display  = false;
@@ -38,6 +41,10 @@ int main(int argc_, char ** argv_)
 
     if (arg == "-i" || arg == "--input") {
       input_filename = argv_[++iarg];
+    }
+
+    else if (arg == "-o" || arg == "--output") {
+      output_filename = argv_[++iarg];
     }
 
     else if (arg == "-op" || arg == "--output-path") {
@@ -99,7 +106,9 @@ int main(int argc_, char ** argv_)
     datatools::fetch_path_with_env(output_path);
     DT_LOG_INFORMATION(logging, "Output path : " + output_path);
 
-    std::string output_filename = output_path + "output_hc2cd.xml"; //data.bz2";
+    if (output_filename.empty()) {
+      output_filename = output_path + "output_hc2cd.data.bz2";
+    }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
     // Build all tracker hit after the build of all commissioning event :
@@ -117,7 +126,7 @@ int main(int argc_, char ** argv_)
     my_channel_mapping.initialize();
 
     std::string manager_config_file;
-    manager_config_file = "~/software/Falaise/Falaise-install/share/Falaise-3.0.0/resources/config/snemo/demonstrator/geometry/4.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config (manager_config_file,
@@ -131,15 +140,15 @@ int main(int argc_, char ** argv_)
     my_manager.initialize (manager_config);
 
     std::size_t event_counter = 0;
-    int event_number = 10;
+    //     int event_number = 10;
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", event_number);
+    //reader_config.store ("max_record_total", event_number);
     reader_config.store ("files.mode", "single");
-    reader_config.store ("files.single.filename", input_filename);
+    reader_config.store_path("files.single.filename", input_filename);
     reader.initialize_standalone (reader_config);
     reader.tree_dump(std::clog, "Half Commissiong Raw Data reader module");
 
@@ -150,6 +159,7 @@ int main(int argc_, char ** argv_)
     writer_config.store ("files.mode", "single");
     writer_config.store ("files.single.filename", output_filename);
     writer.initialize_standalone(writer_config);
+    writer.tree_dump(std::clog, "Half Commissiong Raw Data writer module");
 
     // Event record :
     datatools::things ER;
@@ -172,13 +182,30 @@ int main(int argc_, char ** argv_)
 	reader.process(ER);
 	DT_LOG_DEBUG(logging, "Event counter = " << event_counter);
 
-	// A plain `mctools::simulated_data' object is stored here :
+	// A plain `fecom::commissioning' object is stored here :
 	if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
 	  {
 	    DT_LOG_DEBUG(logging, "Has HCRD bank label");
+	    ER.tree_dump(std::clog, "Things tree dump :");
+	    const fecom::commissioning_event & CE = ER.get<fecom::commissioning_event>(HCRD_bank_label);
+	    CE.tree_dump(std::clog, "CE Bank tree dump :");
+
 	    hc2cd_module.process(ER);
 
+	    ER.remove(HCRD_bank_label);
+	    ER.tree_dump(std::clog, "Things after removal :");
+
+	    bool has_tracker  = false;
+	    bool has_calo     = false;
+
+	    const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
+	    if (CD.calibrated_calorimeter_hits().size() != 0) has_calo = true;
+	    if (CD.calibrated_tracker_hits().size() != 0) has_tracker = true;
+
+	    if (has_calo && has_tracker) std::clog << "Calo + tracker event #" <<event_counter << std::endl;
+	    //if (has_calo && has_tracker) writer.process(ER);
 	    writer.process(ER);
+
 	  }
 	event_counter++;
       }
@@ -193,7 +220,8 @@ int main(int argc_, char ** argv_)
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
     DT_LOG_FATAL(logging, "EXIT_STATUS : FAILURE");
-    return EXIT_FAILURE;
+    error_code = EXIT_FAILURE;
   }
-  return EXIT_SUCCESS;
+  falaise::terminate();
+  return error_code;
 }
