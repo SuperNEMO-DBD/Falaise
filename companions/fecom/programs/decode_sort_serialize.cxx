@@ -294,6 +294,7 @@ int main(int argc_, char ** argv_)
          it_list != hl.hits.end();
          it_list++) {
       // it_list->get()->tree_dump(std::clog, "Hit number #" + std::to_string(serial_counter));
+
       if ((serial_counter % modulo) == 0) {
         DT_LOG_INFORMATION(logging, "Serialized hit #" << serial_counter);
       }

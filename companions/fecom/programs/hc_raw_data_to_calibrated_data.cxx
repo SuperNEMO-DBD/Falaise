@@ -82,7 +82,7 @@ int main(int argc_, char ** argv_)
 		<< "-i         [ --input ]       set an input file" << std::endl
 		<< "-op        [ --output path ] set a path where all files are store" << std::endl
 		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
-      return 0;
+      return EXIT_SUCCESS;
     }
 
 
@@ -205,13 +205,13 @@ int main(int argc_, char ** argv_)
 	    bool has_tracker  = false;
 	    bool has_calo     = false;
 
-	    const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
-	    if (CD.calibrated_calorimeter_hits().size() > 0) has_calo = true;
-	    if (CD.calibrated_tracker_hits().size() > 2) has_tracker = true;
+	   const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
+	   if (CD.calibrated_calorimeter_hits().size() != 0) has_calo = true;
+	   if (CD.calibrated_tracker_hits().size() > 1) has_tracker = true;
 
 	    if (has_calo && has_tracker)
 	      {
-		std::clog << "Calo + tracker event #" << event_counter << std::endl;
+		std::clog << "Calo || tracker || calo + tracker event #" << event_counter << std::endl;
 		writer.process(ER);
 	      }
 

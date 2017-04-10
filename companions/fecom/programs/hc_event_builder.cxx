@@ -30,16 +30,24 @@ class event_builder
 
 public :
 
-  static constexpr double EVENT_BUILDING_GATE_IN_NS = 150000.0; // 150µs to build a commissioning event (from a valid calo_hit)
+  static constexpr double EVENT_BUILDING_CALO_L1_GATE_IN_NS = 100.0; // 100ns to stack calorimeters hits in a commissioning event
+  static constexpr double EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS = 150000.0; // 150µs to build a commissioning event
 
-  event_builder(double time_gate_ns_ = -1.0)
+  event_builder(double l1_time_gate_ns_ = -1.0,
+		double l2_time_gate_ns_ = -1.0)
   {
-    time_gate = time_gate_ns_;
-    if (time_gate < 0.0) {
-      time_gate = EVENT_BUILDING_GATE_IN_NS;
+    l1_time_gate = l1_time_gate_ns_;
+    if (l1_time_gate < 0.0) {
+      l1_time_gate = EVENT_BUILDING_CALO_L1_GATE_IN_NS;
     }
+    l2_time_gate = l2_time_gate_ns_;
+    if (l2_time_gate < 0.0) {
+      l2_time_gate = EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
+    }
+
     datatools::invalidate(time_start);
-    datatools::invalidate(time_stop);
+    datatools::invalidate(calo_time_stop);
+    datatools::invalidate(l2_time_stop);
     return;
   }
 
@@ -50,8 +58,9 @@ public :
   void set_times(const double time_start_)
   {
     time_start = time_start_;
-    time_stop = time_start + time_gate;
-    //std::clog << "Tstart = " << time_start << " Tstop = " << time_stop << std::endl;
+    calo_time_stop = time_start + l1_time_gate;
+    l2_time_stop = time_start + l2_time_gate;
+    //std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << std::endl;
     working_commissioning_event.set_time_start_ns(time_start);
     return;
   }
@@ -74,14 +83,16 @@ public :
   }
 
   // Configuration:
-  double time_gate = 0.0;   //!< Time is in implicit ns
+  double l1_time_gate = 0.0; //!< Time is in implicit ns
+  double l2_time_gate = 0.0; //!< Time is in implicit ns
 
   // Working data:
   fecom::channel_mapping * channel_mapping = nullptr;
   fecom::commissioning_event commissioning_event_for_serialization;
   fecom::commissioning_event working_commissioning_event;
-  double time_start;  //!< Time is in implicit ns
-  double time_stop;  //!< Time is in implicit ns
+  double time_start;     //!< Time is in implicit ns
+  double calo_time_stop; //!< Time is in implicit ns
+  double l2_time_stop;      //!< Time is in implicit ns
   bool   com_event_is_active     = false;
   bool   ready_for_serialization = false;
   bool   begin_by_calorimeter    = false;
@@ -103,7 +114,8 @@ int main(int argc_, char ** argv_)
   int32_t     first_event_number = 0;
   bool        is_debug       = false;
   bool        is_help        = false;
-  double      build_gate     = event_builder::EVENT_BUILDING_GATE_IN_NS;
+  double      l1_build_gate  = event_builder::EVENT_BUILDING_CALO_L1_GATE_IN_NS;
+  double      l2_build_gate  = event_builder::EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
   std::size_t min_nb_calo    = 0;
   std::size_t min_nb_tracker = 0;
   std::size_t max_events     = 0;
@@ -127,8 +139,12 @@ int main(int argc_, char ** argv_)
         output_path = argv_[++iarg];
       }
 
-      else if (arg == "-g" || arg == "--build-gate") {
-        build_gate = std::stod(argv_[++iarg]);
+      else if (arg == "-g1" || arg == "--build-gate-l1") {
+        l1_build_gate = std::stod(argv_[++iarg]);
+      }
+
+      else if (arg == "-g2" || arg == "--build-gate-l2") {
+        l2_build_gate = std::stod(argv_[++iarg]);
       }
 
       else if (arg == "-r" || arg == "--run-number") {
@@ -208,7 +224,7 @@ int main(int argc_, char ** argv_)
     datatools::data_reader deserializer(input_filename, datatools::using_multiple_archives);
 
     if (output_filename.empty()) {
-      output_filename = output_path + '/' + "hc_event_builder_serialized.xml"; //.data.bz2
+      output_filename = output_path + '/' + "hc_event_builder_serialized.data.bz2";
     }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
@@ -245,17 +261,18 @@ int main(int argc_, char ** argv_)
     fecom::calo_hit chit;
     fecom::tracker_channel_hit tchit;
 
-    DT_LOG_INFORMATION(logging, "Building the commisioning events...");
+    DT_LOG_INFORMATION(logging, "Building commisioning events...");
     DT_LOG_INFORMATION(logging, "...");
 
-    event_builder eb(build_gate);
+    event_builder eb(l1_build_gate,
+		     l2_build_gate);
     eb.channel_mapping = & my_channel_mapping;
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
-    std::size_t event_count = 0;
-    int64_t event_number = first_event_number;
-    int modulo = 100;
+    uint64_t event_number = first_event_number;
+    int modulo = 1000;
+
     while (deserializer.has_record_tag()) {
       //DT_LOG_DEBUG(logging, "Entering has record tag...");
       chit.reset();
@@ -307,8 +324,9 @@ int main(int argc_, char ** argv_)
 
         CE = eb.commissioning_event_for_serialization;
         if (datatools::logger::is_debug(logging)) {
+	  std::cerr.precision(15);
           CE.tree_dump(std::cerr, "Commissioning event before serialization", "[debug] ");
-          commissioning_event_record.tree_dump(std::cerr, "Dump CER things", "[debug] ");
+          // commissioning_event_record.tree_dump(std::cerr, "Dump CER things", "[debug] ");
         }
         bool save_it = true;
         if (CE.get_calo_hit_collection().size() < min_nb_calo) {
@@ -327,7 +345,7 @@ int main(int argc_, char ** argv_)
           DT_LOG_INFORMATION(logging, "Maximum number of events is reached.");
           break;
         }
-      }
+      } // end of ready for serialization
 
       if (deserialized_hit == "calo") {
         // First calo hit of the event
@@ -340,12 +358,12 @@ int main(int argc_, char ** argv_)
         }
         else {
           if (eb.begin_by_calorimeter) {
-            // Check if the calo hit is in the gate
-            if (chit.tdc_ns < eb.time_stop) {
+            // Check if the calo hit is in the L1 gate
+            if (chit.tdc_ns < eb.calo_time_stop) {
               // Add the calo hit in the working commissioning event :
               eb.working_commissioning_event.add_calo_hit(chit);
             }
-            // Outside gate, close the working com event and internal copy for serialization
+            // Outside gate, close actual commissioning event, copy for serialization, reset and fill it with the new calo hit
             else {
               eb.ready_for_serialization = true;
               eb.commissioning_event_for_serialization = eb.working_commissioning_event;
@@ -356,7 +374,7 @@ int main(int argc_, char ** argv_)
               eb.begin_by_calorimeter = true;
             }
           } // end of begin by calo
-          // if not begin by calo, close actual commissioning event, serialize, reset and fill it with the new calo hit
+          // if not begin by calo, close actual commissioning event, copy for serialization, reset and fill it with the new calo hit
           else {
             eb.ready_for_serialization = true;
             eb.commissioning_event_for_serialization = eb.working_commissioning_event;
@@ -370,17 +388,25 @@ int main(int argc_, char ** argv_)
       } // end of if "calo"
 
       else if (deserialized_hit == "tracker") {
-        // If the commissioning event begin by a tracker hit, skip it
-        // It must begin by a calo hit
-        if (!eb.com_event_is_active) break;
+        // If the commissioning event begin by a tracker hit, create a new event and add tracker hits until there is a new calorimeter hit
+        if (!eb.com_event_is_active)
+	  {
+	    eb.working_commissioning_event.add_tracker_channel_hit(tchit);
+	    double time_start = tchit.timestamp_time_ns;
+	    eb.set_times(time_start);
+	    eb.begin_by_calorimeter = false;
+	    eb.com_event_is_active = true;
+	    // Event tracker only, add it to the first bit of the traits :
+	    eb.working_commissioning_event.grab_traits().set(0, true);
+	  }
         else {
           if (eb.begin_by_calorimeter) {
-            // Check if the tracker channel hit is in the gate
-            if (tchit.timestamp_time_ns < eb.time_stop) {
+            // Check if the tracker channel hit is in the L2 gate
+            if (tchit.timestamp_time_ns < eb.l2_time_stop) {
               // Add the tracker channel hit in the working commissioning event :
               eb.working_commissioning_event.add_tracker_channel_hit(tchit);
             }
-            // Outside gate, close the working com event and internal copy for serialization
+            // Outside gate, close actual commissioning event, copy for serialization, reset and fill it with the new tracker channel hit
             else {
               eb.ready_for_serialization = true;
               eb.commissioning_event_for_serialization = eb.working_commissioning_event;
