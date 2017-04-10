@@ -44,7 +44,6 @@ ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD.m
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/samples/input/flSD-vprofile.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/flreconstruct_simple.conf
 ${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/pipeline_modules.defs
-${PROJECT_SOURCE_DIR}/resources/examples/flreconstruct/ex01/variants.profile
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources/examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources/examples/variants/README.rst
