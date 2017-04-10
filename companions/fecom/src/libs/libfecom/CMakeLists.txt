@@ -16,9 +16,12 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 message( STATUS "******** Fecom : PROJECT_BUILD_INCLUDEDIR = '${PROJECT_BUILD_INCLUDEDIR}'")
 message( STATUS "******** Fecom : PROJECT_BUILD_CMAKEDIR   = '${PROJECT_BUILD_CMAKEDIR}'")
 
-include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
+# include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
 include_directories(${PROJECT_BUILD_INCLUDEDIR})
 
+message( STATUS "******** Fecom : FALAISE_BUILD_PREFIX      = '${FALAISE_BUILD_PREFIX}'")
+include_directories(${FALAISE_BUILD_PREFIX}/include)
+include_directories(${FALAISE_BUILD_PREFIX}/include/falaise)
 
 # - Publish headers
 
@@ -121,7 +124,9 @@ add_library(fecom SHARED
 
 target_link_libraries(fecom ${Boost_LIBRARIES})
 target_link_libraries(fecom Bayeux::Bayeux)
-target_link_libraries(fecom Falaise::Falaise)
+target_link_libraries(fecom Falaise)
+
+#target_link_libraries(fecom Falaise::Falaise)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
