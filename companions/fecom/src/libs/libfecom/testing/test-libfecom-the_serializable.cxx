@@ -44,6 +44,7 @@
 // - Bayeux/datatools:
 #include <datatools/logger.h>
 #include <datatools/io_factory.h>
+#include <datatools/things.h>
 
 // - Bayeux/brio:
 #include <brio/writer.h>
@@ -53,6 +54,7 @@
 
 void ex_com_event_1(datatools::logger::priority logging);
 void ex_com_event_2(datatools::logger::priority logging);
+void ex_com_event_3(datatools::logger::priority logging);
 
 int main (int argc_, char ** argv_)
 {
@@ -85,6 +87,9 @@ int main (int argc_, char ** argv_)
 
     // Deserializer
     ex_com_event_2(logging);
+
+    // Things
+    ex_com_event_3(logging);
 
     DT_LOG_INFORMATION(logging, "The end.");
 
@@ -123,7 +128,6 @@ void ex_com_event_1(datatools::logger::priority logging)
   DT_LOG_DEBUG(logging, "Add calo hit to commissioning event");
   CE.add_calo_hit(chit);
 
-
   for (std::size_t itchann = 0; itchann < 7; itchann++)
     {
       fecom::tracker_channel_hit tchit;
@@ -131,15 +135,15 @@ void ex_com_event_1(datatools::logger::priority logging)
       tchit.hitmode = fecom::base_hit::SIG_TRACKER;
       tchit.trigger_id = trigger_id;
       if (itchann < 5)
-	{
-	  geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::ANODIC_CHANNEL_TYPE, 0, 0, itchann);
-	  tchit.electronic_id = tracker_electronic_id;
-	}
+        {
+          geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::ANODIC_CHANNEL_TYPE, 0, 0, itchann);
+          tchit.electronic_id = tracker_electronic_id;
+        }
       else
-	{
-	  geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::CATHODIC_CHANNEL_TYPE, 0, 0, itchann);
-	  tchit.electronic_id = tracker_electronic_id;
-	}
+        {
+          geomtools::geom_id tracker_electronic_id(fecom::tracker_constants::CATHODIC_CHANNEL_TYPE, 0, 0, itchann);
+          tchit.electronic_id = tracker_electronic_id;
+        }
       std::string timestamp_type = "t" + std::to_string(itchann);
       tchit.timestamp_type = timestamp_type;
       tchit.timestamp_value = 42 * itchann;
@@ -153,7 +157,8 @@ void ex_com_event_1(datatools::logger::priority logging)
   DT_LOG_NOTICE(logging, "Commissioning event : ");
   CE.tree_dump(std::clog, "My commissioning event before serialization");
 
-  std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
+  // std::string output_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
+  std::string output_filename = "./commissioning_event.data";
   datatools::fetch_path_with_env(output_filename);
 
   // Store the hit in a Boost/archive file (txt / XML format):
@@ -161,7 +166,8 @@ void ex_com_event_1(datatools::logger::priority logging)
   datatools::data_writer serializer(output_filename,
                                     datatools::using_multiple_archives);
 
-  brio::writer my_writer("${FECOM_RESOURCES_DIR}/output_test/commissioning_event.brio", logging);
+  //brio::writer my_writer("${FECOM_RESOURCES_DIR}/output_test/commissioning_event.brio", logging);
+  brio::writer my_writer("./commissioning_event.brio", logging);
   my_writer.store(CE);
 
   serializer.store(CE);
@@ -176,13 +182,14 @@ void ex_com_event_1(datatools::logger::priority logging)
 void ex_com_event_2(datatools::logger::priority logging)
 {
   DT_LOG_DEBUG(logging, "ENTERING EX_COM_EVENT_2");
-  std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
+  // std::string input_filename = "${FECOM_RESOURCES_DIR}/output_test/commissioning_event.data";
+  std::string input_filename = "./commissioning_event.data";
   datatools::fetch_path_with_env(input_filename);
 
   // Store the hit in a Boost/archive file (txt / XML format):
   DT_LOG_DEBUG(logging, "Serialize the commissioning event...");
   datatools::data_reader deserializer(input_filename,
-				      datatools::using_multiple_archives);
+                                      datatools::using_multiple_archives);
 
 
   // Declare a ``commissioning_event`` object :
@@ -216,8 +223,40 @@ void ex_com_event_2(datatools::logger::priority logging)
       std::clog << "tracker counter = " << tracker_counter << std::endl;
     }
 
-
-
   DT_LOG_DEBUG(logging, "EXITING EX_COM_EVENT_2");
+  return;
+}
+
+/// Test
+void ex_com_event_3(datatools::logger::priority logging)
+{
+  DT_LOG_DEBUG(logging, "ENTERING EX_COM_EVENT_3");
+
+  std::string fdata("ce.xml");
+  {
+    datatools::things event_record;
+    fecom::commissioning_event & ce = event_record.add<fecom::commissioning_event>("HCRE");
+    datatools::event_id eid(42, 12);
+    ce.set_event_id(eid);
+    ce.set_time_start_ns(12.0);
+    fecom::calo_hit chit;
+    ce.add_calo_hit(chit);
+    fecom::tracker_channel_hit tchit;
+    ce.add_tracker_channel_hit(tchit);
+    ce.tree_dump(std::clog, "Commissioning event:");
+    event_record.tree_dump(std::clog, "Event record:");
+    datatools::data_writer dw(fdata.c_str(), datatools::using_multiple_archives);
+    dw.store(event_record);
+  }
+  {
+    datatools::things event_record;
+    datatools::data_reader dr(fdata.c_str(), datatools::using_multiple_archives);
+    dr.load(event_record);
+    event_record.tree_dump(std::clog, "Event record (loaded):");
+    const fecom::commissioning_event & ce = event_record.get<fecom::commissioning_event>("HCRE");
+    ce.tree_dump(std::clog, "Commissioning event:");
+  }
+
+  DT_LOG_DEBUG(logging, "EXITING EX_COM_EVENT_3");
   return;
 }
