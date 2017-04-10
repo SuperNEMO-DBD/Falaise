@@ -263,7 +263,7 @@ namespace FLReconstruct {
       DT_LOG_DEBUG(flRecParameters.logLevel,"Variants service is stopped.");
     }
     DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-    return falaise::EXIT_OK;
+    return code; //falaise::EXIT_OK;
   }
 
   falaise::exit_code ensure_core_services(const FLReconstructParams & recParams,

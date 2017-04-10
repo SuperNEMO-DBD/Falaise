@@ -181,7 +181,7 @@ namespace FLSimulateConfig {
     return;
   }
 
-  void do_version(std::ostream& os, bool isVerbose)
+  void do_version(std::ostream& os, bool /* isVerbose */)
   {
     os << "flsimulate-configure " << falaise::version::get_version() << "\n";
   }
