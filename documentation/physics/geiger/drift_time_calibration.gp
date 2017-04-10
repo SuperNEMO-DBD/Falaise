@@ -32,11 +32,18 @@ sigma_drift_radius(x) = sigma_r_a * (1.0 + sigma_r_b * ((x - sigma_r_r0) / mm)**
 set xlabel "t_{drift} [usec]"
 set ylabel "r_{drift}[cm]"
 set xrange [0.0: tcut/microsecond]
-set yrange [0.0: 2.5*rcell/cm]
+set yrange [0.0: 1.5*rcell/cm]
 set grid
 set samples 1000
 plot [0.0: tcut/microsecond] drift_radius(x*microsecond)/cm notitle
 pause -1
+
+set terminal pdfcairo
+set output "gg_drift.pdf"
+replot
+set output
+set terminal qt
+
 
 set xlabel "r_{drift} [cm]"
 set ylabel "\sigma_r [cm]"
