@@ -7,6 +7,10 @@
 // Standard library:
 #include <limits>
 
+// Third party:
+// - Bayeux:
+#include <bayeux/datatools/clhep_units.h>
+
 namespace snemo {
 
   namespace datamodel {
@@ -68,7 +72,13 @@ namespace snemo {
       return;
     }
 
-    // ctor:
+    double timestamp::to_real() const
+    {
+      double time = _seconds_ * CLHEP::second;
+      time += _picoseconds_ * CLHEP::picosecond;
+      return time;
+    }
+
     timestamp::timestamp()
     {
       invalidate();

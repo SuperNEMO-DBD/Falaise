@@ -6,6 +6,8 @@
 #include <falaise/snemo/processing/event_header_utils_module.h>
 
 // Third party:
+// // - Bayeux/datatools:
+// #include <datatools/event_id.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 #include <mctools/utils.h>
@@ -45,6 +47,18 @@ namespace snemo {
       }
 
       if (_mode_ == MODE_ADD_HEADER) {
+
+        if (setup_.has_flag("add_header.generation")) {
+          const std::string & genlabel = setup_.fetch_string("add_header.generation");
+          if (genlabel == "real") {
+            _add_header_gentype_ = snemo::datamodel::event_header::GENERATION_REAL;
+          } else if (genlabel == "simulated") {
+            _add_header_gentype_ = snemo::datamodel::event_header::GENERATION_SIMULATED;
+          } else {
+            DT_THROW(std::logic_error, "Invalid generation type '" << genlabel << "'!");
+          }
+        }
+
         if (setup_.has_flag("add_header.update")) {
           _add_header_update_ = true;
         }
@@ -56,7 +70,7 @@ namespace snemo {
         if (setup_.has_key("add_header.run_number")) {
           _add_header_run_number_ = setup_.fetch_integer("add_header.run_number");
           DT_THROW_IF(_add_header_run_number_ < 0, std::logic_error,
-                      "Invalid run number '" << _add_header_run_number_
+                      "Invalid current run number '" << _add_header_run_number_
                       << "' for module '" << get_name() << "' using mode '" << _mode_ << "' !");
         }
 
@@ -67,12 +81,15 @@ namespace snemo {
                       << "' for module '" << get_name() << "' using mode '" << _mode_ << "' !");
         }
 
-        if (setup_.has_flag("add_header.use_genbb_weight")) {
-          _add_header_use_genbb_weight_ = true;
-        }
+        if (ah_is_simulated()) {
 
-        if (setup_.has_flag("add_header.use_genbb_label")) {
-          _add_header_use_genbb_label_ = true;
+          if (setup_.has_flag("add_header.use_genbb_weight")) {
+            _add_header_use_genbb_weight_ = true;
+          }
+
+          if (setup_.has_flag("add_header.use_genbb_label")) {
+            _add_header_use_genbb_label_ = true;
+          }
         }
 
         if (setup_.has_key("add_header.external_properties_path")) {
@@ -85,6 +102,12 @@ namespace snemo {
           _add_header_properties_prefix_
             = setup_.fetch_string("add_header.external_properties_prefix");
         }
+      }
+
+      // Post-initialization:
+      if (is_add_header_mode()) {
+        _ah_current_run_number_ = _add_header_run_number_;
+        _ah_current_event_number_ = _add_header_event_number_;
       }
 
       _set_initialized(true);
@@ -106,7 +129,7 @@ namespace snemo {
       _mode_ = MODE_INVALID;
 
       _add_header_bank_label_ = snemo::datamodel::data_info::default_event_header_label();
-
+      _add_header_gentype_ = snemo::datamodel::event_header::GENERATION_INVALID;
       _add_header_update_       = false;
       _add_header_run_number_   = 0;
       _add_header_event_number_ = 0;
@@ -116,6 +139,8 @@ namespace snemo {
       _add_header_properties_path_   = "";
       _add_header_properties_prefix_ = "";
 
+      _ah_current_run_number_   = _add_header_run_number_;
+      _ah_current_event_number_ = _add_header_event_number_;
       return;
     }
 
@@ -134,6 +159,35 @@ namespace snemo {
       return;
     }
 
+    bool event_header_utils_module::is_add_header_mode() const
+    {
+      return _mode_ == MODE_ADD_HEADER;
+    }
+
+    void event_header_utils_module::ah_increment_run_number(int incr_)
+    {
+      DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
+      _ah_current_run_number_ += incr_;
+      return;
+    }
+
+    void event_header_utils_module::ah_increment_event_number(int incr_)
+    {
+      DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
+      _ah_current_event_number_ += incr_;
+      return;
+    }
+
+    bool event_header_utils_module::ah_is_real() const
+    {
+      return _add_header_gentype_ == snemo::datamodel::event_header::GENERATION_REAL;
+    }
+
+    bool event_header_utils_module::ah_is_simulated() const
+    {
+      return _add_header_gentype_ == snemo::datamodel::event_header::GENERATION_SIMULATED;
+    }
+
     // Processing :
     dpp::base_module::process_status event_header_utils_module::process(datatools::things & data_record_)
     {
@@ -142,7 +196,7 @@ namespace snemo {
                   "Module '" << get_name() << "' is not initialized !");
 
       // Main processing method :
-      if (_mode_ == MODE_ADD_HEADER) {
+      if (is_add_header_mode()) {
         _process_add_header(data_record_);
       }
 
@@ -166,8 +220,11 @@ namespace snemo {
 
       snemo::datamodel::event_header & the_event_header = *ptr_event_header;
       // the_event_header.clear();
-      the_event_header.grab_id().set_run_number(_add_header_run_number_);
-      the_event_header.grab_id().set_event_number(_add_header_event_number_++);
+      the_event_header.grab_id().set_run_number(_ah_current_run_number_);
+      the_event_header.grab_id().set_event_number(_ah_current_event_number_);
+      ah_increment_event_number(1);
+
+      the_event_header.set_generation(_add_header_gentype_);
 
       // default timestamp :
       the_event_header.grab_timestamp().set_seconds(0);
@@ -184,21 +241,24 @@ namespace snemo {
       }
 
       // Store GENBB event weight
-      if (_add_header_use_genbb_weight_ || _add_header_use_genbb_label_) {
-        const std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
-        DT_THROW_IF(! data_record_.has(sd_label), std::logic_error,
-                    "Event record has no '"<< sd_label << "' bank!");
-        const mctools::simulated_data & the_simulated_data
-          = data_record_.get<mctools::simulated_data>(sd_label);
+      if (ah_is_simulated()) {
 
-        if (_add_header_use_genbb_weight_) {
-          const double weight = the_simulated_data.get_primary_event().get_genbb_weight();
-          the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_WEIGHT, weight);
-        }
+        if (_add_header_use_genbb_weight_ || _add_header_use_genbb_label_) {
+          const std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
+          DT_THROW_IF(! data_record_.has(sd_label), std::logic_error,
+                      "Event record has no '"<< sd_label << "' bank!");
+          const mctools::simulated_data & the_simulated_data
+            = data_record_.get<mctools::simulated_data>(sd_label);
 
-        if (_add_header_use_genbb_label_) {
-          const std::string label = the_simulated_data.get_primary_event().get_label();
-          the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_LABEL, label);
+          if (_add_header_use_genbb_weight_) {
+            const double weight = the_simulated_data.get_primary_event().get_genbb_weight();
+            the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_WEIGHT, weight);
+          }
+
+          if (_add_header_use_genbb_label_) {
+            const std::string label = the_simulated_data.get_primary_event().get_label();
+            the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_LABEL, label);
+          }
         }
       }
 
@@ -275,10 +335,28 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module,ocd
       .set_traits(datatools::TYPE_BOOLEAN)
       .set_mandatory(false)
       .set_default_value_boolean(false)
-      .add_example("Use the default value::           \n"
-                   "                                  \n"
-                   "  add_header.update : boolean = 0 \n"
-                   "                                  \n"
+      .add_example("Use the default value::               \n"
+                   "                                      \n"
+                   "  add_header.update : boolean = false \n"
+                   "                                      \n"
+                   )
+      ;
+  }
+
+  {
+    // Description of the 'add_header.bank_label' configuration property :
+    datatools::configuration_property_description & cpd
+      = ocd_.add_property_info();
+    cpd.set_name_pattern("add_header.generation")
+      .set_terse_description("The event generation type")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description("This is the type of generation (\"real\" or \"simulated\")")
+      .set_default_value_string(snemo::datamodel::data_info::default_event_header_label())
+      .add_example("Indicate simulated event:: \n"
+                   "                                                       \n"
+                   "  add_header.generation : string = \"simulated\"       \n"
+                   "                                                       \n"
                    )
       ;
   }
@@ -365,7 +443,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module,ocd
       .set_mandatory(false)
       .set_path(true)
       .set_long_description("The external properties path allows to store miscellaneous \n"
-                            "information from a formated properties file                \n"
+                            "informations extracted from a formated properties file     \n"
                             )
       .add_example("Set a path to Use the default value::                                                 \n"
                    "                                                                                      \n"
@@ -397,13 +475,14 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module,ocd
   ocd_.set_configuration_hints("Here is a full configuration example in the                                            \n"
                                "``datatools::properties`` ASCII format::                                               \n"
                                "                                                                                       \n"
-                               "  mode : string = \"add_header\"                                                    \n"
+                               "  mode : string = \"add_header\"                                                       \n"
+                               "  add_header.generation : string = \"simulated\"                                       \n"
                                "  add_header.bank_label : string = \"EH\"                                              \n"
                                "  add_header.run_number : integer = 666                                                \n"
                                "  add_header.event_number : integer = 0                                                \n"
                                "                                                                                       \n"
-                               "  add_header.use_genbb_weight : boolean = 1                                            \n"
-                               "  add_header.use_genbb_label  : boolean = 1                                            \n"
+                               "  add_header.use_genbb_weight : boolean = true                                         \n"
+                               "  add_header.use_genbb_label  : boolean = true                                         \n"
                                "                                                                                       \n"
                                "  add_header.external_properties_path  : string as path = \"config/event_header.conf\" \n"
                                "  add_header.external_properties_prefix  : string = \"analysis\"                       \n"

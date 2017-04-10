@@ -70,6 +70,9 @@ namespace snemo {
       /// Compare with another timestamp
       int compare(const timestamp &) const;
 
+      /// Convert timestamp to real value (explicit time unit)
+      double to_real() const;
+
       /// Format time stamp as string object and return it
       std::string to_string() const;
 
