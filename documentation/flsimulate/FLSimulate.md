@@ -190,7 +190,7 @@ the end of a line. Examples:
 ~~~~~~
 
 Note   that  lines   starting  with   '`#@`'  are   generally  special
-meta-comment with embedded commands. They  should not be considered as
+meta-comments with embedded commands. They  should not be considered as
 comments.  As a matter of rule,  the use of lines starting with '`#@`'
 is reserved for system use.
 
