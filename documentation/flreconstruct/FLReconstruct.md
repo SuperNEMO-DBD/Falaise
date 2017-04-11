@@ -139,11 +139,11 @@ $
 Quick start {#usingflreconstruct_quickstart}
 ===========
 
-Here we propose to run FLReconstruct  with the default setup. Only the
+Here we propose to run FLReconstruct  with the default setup. Only an
 input simulation file is set from the command line.
 
 We  first  generate  a  single  simulated  event,  using  the  default
-simulation setup, and store it the an output file:
+simulation setup, and store it in an output file:
 
 ~~~~~
 $ flsimulate -o example.xml
@@ -151,8 +151,13 @@ $ flsimulate -o example.xml
 ~~~~~
 
 Then we process this file with a default pipeline:
+
 ~~~~~
 $ flreconstruct -i example.xml
+~~~~~
+
+The output on the terminal is:
+~~~~~
 flreconstruct::default:
 `-- Bank 'SD' : "mctools::simulated_data"
     |-- Properties : <empty>
@@ -200,10 +205,10 @@ flreconstruct::default:
 
 As we can see, the default  behaviour of FLReconstruct is to print the
 contents of  the event record(s) in  the standard output. We  can thus
-identifiy the simulated  event record with its  ``SD`` bank (simulated
-data)  which contains  the  informations about  the generated  primary
-event, the original  vertex and some collections of  thruth hits (here
-in the ``calo`` and ``gg`` categories if hits).
+identify the simulated  event record with its  ``SD`` bank (*simulated
+data*)  which contains  the  informations about  the generated  primary
+event, the original  vertex and some collections of  truth hits (here
+in the ``calo`` and ``gg`` hit categories).
 
 
 
@@ -222,7 +227,7 @@ The script  uses  the  Bayeux's `datatools::multi_properties`  format.
 The script contains a mandatory header:
 
 ~~~~~~
-#@description a short description of the simulation run
+#@description a short description of the reconstruction run
 #@key_label  "name"
 #@meta_label "type"
 ~~~~~~
@@ -244,11 +249,11 @@ the end of a line. Examples:
 ~~~~~~
 
 Note   that  lines   starting  with   `'#@`'  are   generally  special
-meta-comment with embedded commands. They  should not be considered as
+meta-comments with embedded commands. They  should not be considered as
 comments.  As a matter of rule,  the use of lines starting with '`#@`'
 is reserved for system use.
 
-After the header, the script contains sections. A section starts
+After the header, the script contains *sections*. A section starts
 with a section definition line with two identifiers:
 
 - the *name* of the section,
@@ -284,7 +289,7 @@ selected value for this parameter. Some parameters may use an optional
 type or processing.  Again, the  `#@description` line is optional, but
 recommended. Example:
 ~~~~~~
-#@description The number of events to be generated
+#@description The number of events to be processed
 numberOfEvents : integer = 10000
 ~~~~~~
 
@@ -300,9 +305,9 @@ procedure  consist  in   determining  physics/geometrical  observables
 associated to hits : deposited energy, particle's times of flight, hit
 positions in the geometry model...
 
-The  so-called *mock  calibration*  consists  in dedicated  algorithms
-which  are able  to compute  the *calibrated  data* associated  to raw
-*simulated data*.
+The  so-called   *mock  calibration*   consists  in   using  dedicated
+algorithms which are able to  compute the *calibrated data* associated
+to raw *simulated data*.
 
 ![Mock calibration algorithms applied to simulated events](@ref flr_mock_calib.png)
 
@@ -311,7 +316,7 @@ Practically the mock calibration consists in:
 of the Geiger avalanche (and associated uncertainties).
 - for calorimeter hits: compute the total energy deposit in the scintillator block
 and the reference time when the particles first interacted with the block (and associated uncertainties).
-A new `CD` bank is added in the event record, besides the original `SD̀ bank.
+A new `CD` bank is added in the event record, besides the original `SD` bank.
 
 Let's now play with these tools !
 First we prepare a set of 10 simulated events (using the default simulation setup),
@@ -365,7 +370,7 @@ We  use   default  settings   for  each  of   the  `CalibrateTracker`,
 sections are empty.
 
 
-we run:
+We then run:
 ~~~~~
 $ flreconstruct -i example.brio -p rec.conf -o example-cd.xml
 ...
@@ -472,7 +477,7 @@ Now we know how to perform the calibration step, we are interested in the recons
 of electron tracks in the tracking chamber. For that we need additional processing on top
 of the `CD` bank which is now available in the event record.
 
-The reconstruction of trackes associated to charged particles traversing the tracking chamber
+The reconstruction of tracks associated to charged particles traversing the tracking chamber
 is a two step procedure:
 - first the calibrated Geiger hits are clusterized in *tracker clusters*, using some special vicinity criteria,
 - then a fit is performed on each cluster to compute helix or line segments compatible with the Geiger hits.
@@ -552,8 +557,8 @@ Now two banks have been added in the event records:
 The display shows the best found clusterization/fitting solutions with
 two clusters  of tracker hits (red  and blue) and the  best associated
 tracks  that  have been  computed  from  these clusters.   We  clearly
-recognize a two electrons event pattern, but only one is associated to
-a calorimeter block.
+recognize  a  two  electrons  event  pattern, but  here  only  one  is
+associated to a calorimeter block.
 
 ![A simulated event with reconstructed tracker clusters and fitted tracks](@ref flr_qs_trackfit_event.png)
 
@@ -598,7 +603,7 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
   - `profileUrn`  :  the configuration  tag  for  the variant  profile
 	chosen by the  user to perform the  simulation (string, optional).
 	If not set, it may  be automatically resolved from the `configUrn`
-	tag is the variant configuration has a registered default profile.
+	tag if the variant configuration has a registered default profile.
   - `profile` : the path to the  variant profile chosen by the user to
 	perform the simulation (string/path,optional).   If not set, it is
 	automatically resolved from the `profileUrn` tag or from input
@@ -631,7 +636,7 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
 	- `plugins`  :  the  list of plugins to be loaded.
 	- `PLUGIN_NAME.directory` :  the directory  from where  the plugin
       dynamic library  named `PLUGIN_NAME` should be  loaded (default:
-      `@falaise.plugins:`,   i.e.  the   standard  location   for  the
+      `"@falaise.plugins:"`,   i.e.  the   standard  location   for  the
       installation of Falaise's plugins).
 
 - `flreconstruct.pipeline`  : this  is  the  *pipeline* section  where
@@ -670,10 +675,10 @@ the *inline* pipeline mode. Such a section uses the following format:
 ~~~~~~~~
 
 where `ModuleName` is  the unique name of the  module and `ModuleType`
-is its the identifier of its registered class type (see below).
+is the identifier of its registered class type (see below).
 
 This mode should not be used  for production runs. It is expected that
-only  official  registered pipeline  setups  are  used in  such  case,
+only  official  registered pipeline  setups  are  used in  such a case,
 through  the `configUrn`  properties  in the  `flreconstruct.pipeline`
 section.
 
@@ -738,11 +743,10 @@ described above.
 Writing Reconstruction Results to File {#usingflreconstruct_usingoutputpaths}
 ======================================
 
-Running `flreconstruct` as  presented above will process  data but not
-persist any reconstruction results to  file (e.g. for later analysis).
-To  write results  to  file, the  `-o`  option may  be  used to  write
-processed events to  a file supplied as the argument,  with the output
-format chosen based on the file extension.
+To write `flreconstruct`'s results to  file (e.g. for later analysis),
+the  `-o` option  may be  used  to write  processed events  to a  file
+supplied as the  argument, with the output format chosen  based on the
+file extension.
 
 To output  to the  BRIO format recognised  by `flreconstruct`  use the
 `.brio` extension:
@@ -759,7 +763,11 @@ $ flreconstruct -i results.brio
 ... output ...
 ~~~~~
 
-It may also  be further processed by `flreconstruct`  using a pipeline
+Using the  `.xml` extension leads to  output a file in  human readable
+XML format.   This may be  very useful  for debugging purpose  but not
+production because the size of such a file is very large.
+
+The resultant file may also  be further processed by `flreconstruct`  using a pipeline
 constructed from your own analysis modules. Please see the document on
 [FLReconstruct Pipeline  Output](@ref flreconstructpipelineoutput) for
 details  of  the data  structures  stored  for each  processed  event.
