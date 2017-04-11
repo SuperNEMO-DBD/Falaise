@@ -129,7 +129,7 @@ namespace FLReconstruct {
       std::vector<std::string> flsim_urn_infos;
       if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
                                     falaise::detail::falaise_sys::fl_setup_db_name(),
-                                    "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline:)([^:]*)",
+                                    "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline)",
                                     "recsetup"
                                     )) {
         std::clog << "List of supported reconstruction pipeline:" << std::endl;
