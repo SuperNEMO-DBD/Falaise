@@ -125,6 +125,10 @@ namespace FLSimulate {
                                                                                  errMsg);
         DT_THROW_IF(!parsed, FLConfigUserError,
                     "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
+        if (theTopic.empty()) {
+          theTopic = datatools::library_info::default_topic_label();
+          DT_LOG_DEBUG(flSimParameters.logLevel, "Using default path registration topic: " << theTopic);
+        }
         DT_LOG_DEBUG(flSimParameters.logLevel, "Path registration: " << mountDirective);
         DT_LOG_DEBUG(flSimParameters.logLevel, "  Library name : " << theLibname);
         DT_LOG_DEBUG(flSimParameters.logLevel, "  Topic        : " << theTopic);

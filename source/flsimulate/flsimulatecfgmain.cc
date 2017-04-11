@@ -146,7 +146,7 @@ namespace FLSimulateConfig {
     std::cout << "  The flsimulate-configure program provides an interface to build \n";
     std::cout << "  a simulation variant profile on top of a simulation setup.      \n\n";
     std::cout << "Usage:\n"
-              << "  flsimulate [options]\n"
+              << "  flsimulate-configure [options]\n"
               << od
               << "\n";
     std::cout << "Examples:\n\n";
