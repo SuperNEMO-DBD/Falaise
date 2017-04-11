@@ -107,6 +107,9 @@ namespace fecom {
 		/// Reset
     virtual void reset();
 
+		/// Print succinct contained calo and tracker hits
+		virtual void print(std::ostream & out_);
+
 		/// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",

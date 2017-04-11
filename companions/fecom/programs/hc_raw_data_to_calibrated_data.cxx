@@ -32,7 +32,12 @@ int main(int argc_, char ** argv_)
   std::string input_filename = "";
   std::string output_filename = "";
   std::string output_path = "";
-  int32_t event_number  = -1;
+  std::string input_tracker_mapping_file = "";
+  std::string input_calo_mapping_file = "";
+  int32_t     first_event_number = -0;
+  std::size_t min_nb_calo    = 0;
+  std::size_t min_nb_tracker = 0;
+  std::size_t max_events = 0;
 
   bool is_display  = false;
   bool is_help     = false;
@@ -52,16 +57,35 @@ int main(int argc_, char ** argv_)
       output_path = argv_[++iarg];
     }
 
-    else if (arg == "-n" || arg == "--number")
-      {
-	event_number = std::stoi(argv_[++iarg]);
-      }
+    else if (arg == "-cm" || arg == "--calo-map") {
+      input_calo_mapping_file = argv_[++iarg];
+    }
+
+    else if (arg == "-tm" || arg == "--tracker-map") {
+      input_tracker_mapping_file = argv_[++iarg];
+    }
+
+    else if (arg == "-e" || arg == "--event-number") {
+      first_event_number = boost::lexical_cast<std::size_t>(argv_[++iarg]);
+    }
+
+    else if (arg == "-C" || arg == "--min-calo-hits") {
+      min_nb_calo = boost::lexical_cast<std::size_t>(argv_[++iarg]);
+    }
+
+    else if (arg == "-T" || arg == "--min-tracker-hits") {
+      min_nb_tracker = boost::lexical_cast<std::size_t>(argv_[++iarg]);
+    }
+
+    else if (arg == "-M" || arg == "--max-events") {
+      max_events = boost::lexical_cast<std::size_t>(argv_[++iarg]);
+    }
 
     else if (arg == "-d" || arg == "--display") {
       is_display = true;
     }
 
-    else if (arg =="-h" || arg == "--help") {
+    else if (arg == "-h" || arg == "--help") {
       is_help = true;
     }
 
@@ -76,7 +100,7 @@ int main(int argc_, char ** argv_)
   if (is_help)
     {
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
-		<< "$ BuildProducts/fecom_programs/fecom_main_decoder_serializer [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
+		<< "$ BuildProducts/fecom_programs/hc_raw_data_to_calibrated_data [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
 		<< "-h         [ --help ]        produce help message" << std::endl
 		<< "-i         [ --input ]       set an input file" << std::endl
@@ -118,9 +142,13 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
     // Build all tracker hit after the build of all commissioning event :
-    std::string input_tracker_mapping_file = input_path + "mapping_tracker.csv";
+    if (input_tracker_mapping_file.empty()) {
+      input_tracker_mapping_file = input_path + "/" + "mapping_tracker.csv";
+    }
     datatools::fetch_path_with_env(input_tracker_mapping_file);
-    std::string input_calo_mapping_file = input_path + "mapping_calo.csv";
+    if (input_calo_mapping_file.empty()) {
+      input_calo_mapping_file = input_path + "/" + "mapping_calo.csv";
+    }
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
     DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
@@ -145,15 +173,13 @@ int main(int argc_, char ** argv_)
       }
     my_manager.initialize (manager_config);
 
-    std::size_t event_counter = 0;
-
-    if (event_number == -1) event_number = 10;
+    uint64_t event_number = first_event_number;
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
     reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", event_number);
+    reader_config.store ("max_record_total", static_cast<int>(max_events));
     reader_config.store ("files.mode", "single");
     reader_config.store_path("files.single.filename", input_filename);
     reader.initialize_standalone (reader_config);
@@ -186,7 +212,7 @@ int main(int argc_, char ** argv_)
 
     while (!reader.is_terminated())
       {
-	DT_LOG_DEBUG(logging, "Event counter = " << event_counter);
+	DT_LOG_DEBUG(logging, "Event number = " << event_number);
 	reader.process(ER);
 
 	// A plain `fecom::commissioning' object is stored here :
@@ -202,25 +228,26 @@ int main(int argc_, char ** argv_)
 	    ER.remove(HCRD_bank_label);
 	    // ER.tree_dump(std::clog, "Things after removal :");
 
-	    bool has_tracker  = false;
-	    bool has_calo     = false;
-
-	   const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
-	   if (CD.calibrated_calorimeter_hits().size() != 0) has_calo = true;
-	   if (CD.calibrated_tracker_hits().size() > 1) has_tracker = true;
-
-	    if (has_calo && has_tracker)
-	      {
-		std::clog << "Calo || tracker || calo + tracker event #" << event_counter << std::endl;
-		writer.process(ER);
-	      }
-
-	    //writer.process(ER);
+	    const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
+	    bool save_it = true;
+	    if (CD.calibrated_calorimeter_hits().size() < min_nb_calo) {
+	      save_it = false;
+	    }
+	    if (CD.calibrated_tracker_hits().size() < min_nb_tracker) {
+	      save_it = false;
+	    }
+	    if (save_it) {
+	      std::clog << "Calo || tracker || calo + tracker event #" << event_number << std::endl;
+	      writer.process(ER);
+	    }
 
 	  }
-
+	if (max_events > 0 && (event_number >= max_events)) {
+          DT_LOG_INFORMATION(logging, "Maximum number of events is reached.");
+          break;
+        }
 	ER.clear();
-	event_counter++;
+	event_number++;
       }
 
     DT_LOG_INFORMATION(logging, "Output file : " << output_filename);

@@ -243,7 +243,7 @@ namespace fecom {
     _HCRD_label_.clear();
     _CD_label_.clear();
     _Geo_label_.clear();
-    _tracker_clock_tick_ = 12.5 * CLHEP::nanosecond;
+    _tracker_clock_tick_ = tracker_constants::tracker_clock_tick();
     return;
   }
 
@@ -334,6 +334,10 @@ namespace fecom {
 	 icalo != hc_raw_com_event_.get_calo_hit_collection().end();
 	 icalo++)
       {
+	if (!icalo->low_threshold && !icalo->high_threshold) {
+	  continue;
+	}
+
 	// Convert electronic ID into falaise geometric ID
 	geomtools::geom_id fecom_geometric_id;
 
@@ -455,9 +459,10 @@ namespace fecom {
 	    _geiger_.calibrate_drift_radius_from_drift_time(anode_time,
 							    radius,
 							    sigma_radius);
-	    std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
-		      << "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
-		      << "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl;
+
+	    // std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
+	    // 	      << "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
+	    // 	      << "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl;
 
 	    if (!datatools::is_valid(radius))
 	      {

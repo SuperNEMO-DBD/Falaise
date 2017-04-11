@@ -92,7 +92,7 @@ public :
   fecom::commissioning_event working_commissioning_event;
   double time_start;     //!< Time is in implicit ns
   double calo_time_stop; //!< Time is in implicit ns
-  double l2_time_stop;      //!< Time is in implicit ns
+  double l2_time_stop;   //!< Time is in implicit ns
   bool   com_event_is_active     = false;
   bool   ready_for_serialization = false;
   bool   begin_by_calorimeter    = false;
@@ -139,6 +139,14 @@ int main(int argc_, char ** argv_)
         output_path = argv_[++iarg];
       }
 
+      else if (arg == "-cm" || arg == "--calo-map") {
+	input_calo_mapping_file = argv_[++iarg];
+      }
+
+      else if (arg == "-tm" || arg == "--tracker-map") {
+	input_tracker_mapping_file = argv_[++iarg];
+      }
+
       else if (arg == "-g1" || arg == "--build-gate-l1") {
         l1_build_gate = std::stod(argv_[++iarg]);
       }
@@ -171,7 +179,7 @@ int main(int argc_, char ** argv_)
         is_debug = true;
       }
 
-      else if (arg =="-h" || arg == "--help") {
+      else if (arg == "-h" || arg == "--help") {
         is_help = true;
       }
 
@@ -228,9 +236,6 @@ int main(int argc_, char ** argv_)
     }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
-    // // Event writer :
-    // std::string  output_filename2 = output_path + '/' + "__test.xml";
-    // datatools::data_writer serializer2(output_filename2, datatools::using_multiple_archives);
 
     // Event serializer module :
     dpp::output_module serializer;
@@ -240,6 +245,11 @@ int main(int argc_, char ** argv_)
     writer_config.store ("files.single.filename", output_filename);
     serializer.initialize_standalone(writer_config);
     serializer.tree_dump(std::clog, "HC Event builder writer module");
+
+    // Event writer :
+    std::string  output_filename2 = output_path + '/' + "__test.xml";
+    //    datatools::data_writer serializer2(output_filename2, datatools::using_multiple_archives);
+
 
     if (input_tracker_mapping_file.empty()) {
       input_tracker_mapping_file = input_path + "/" + "mapping_tracker.csv";
@@ -336,7 +346,9 @@ int main(int argc_, char ** argv_)
           save_it = false;
         }
         if (save_it) {
-          //serializer2.store(commissioning_event_record);
+	  //serializer2.store(CE);
+	  std::cout.precision(15);
+	  CE.print(std::cout);
           serializer.process(commissioning_event_record);
           event_serialized++;
         }
@@ -347,15 +359,21 @@ int main(int argc_, char ** argv_)
         }
       } // end of ready for serialization
 
+      if (deserialized_hit == "calo" &&
+	  !chit.low_threshold &&
+	  !chit.high_threshold) {
+	continue;
+      }
+
       if (deserialized_hit == "calo") {
         // First calo hit of the event
         if (!eb.com_event_is_active) {
-          eb.working_commissioning_event.add_calo_hit(chit);
-          double time_start = chit.tdc_ns + chit.falling_time_ns;
-          eb.set_times(time_start);
-          eb.com_event_is_active = true;
-          eb.begin_by_calorimeter = true;
-        }
+	  eb.working_commissioning_event.add_calo_hit(chit);
+	  double time_start = chit.tdc_ns + chit.falling_time_ns;
+	  eb.set_times(time_start);
+	  eb.com_event_is_active = true;
+	  eb.begin_by_calorimeter = true;
+	}
         else {
           if (eb.begin_by_calorimeter) {
             // Check if the calo hit is in the L1 gate
@@ -445,7 +463,7 @@ int main(int argc_, char ** argv_)
       save_it = false;
     }
     if (save_it) {
-      //serializer2.store(commissioning_event_record);
+      //serializer2.store(CE);
       serializer.process(commissioning_event_record);
       event_serialized++;
     }

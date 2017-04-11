@@ -161,16 +161,18 @@ namespace fecom {
 
   public:
 
+		uint64_t trigger_id; ///< Tracker hit trigger ID
+
 		// SNDER p.30-31 for channel / cell association
 		geomtools::geom_id cell_geometric_id; ///< Cell ID [Type:layer,row]
 
     // DATA
     // 7 geiger timing
-    uint64_t anodic_t0;   ///< Anodic time 0
-    uint64_t anodic_t1;   ///< Anodic time 1
-    uint64_t anodic_t2;   ///< Anodic time 2
-    uint64_t anodic_t3;   ///< Anodic time 3
-    uint64_t anodic_t4;   ///< Anodic time 4
+    uint64_t anodic_t0; ///< Anodic time 0
+    uint64_t anodic_t1; ///< Anodic time 1
+    uint64_t anodic_t2; ///< Anodic time 2
+    uint64_t anodic_t3; ///< Anodic time 3
+    uint64_t anodic_t4; ///< Anodic time 4
     uint64_t bot_cathodic_time; ///< Bottom cathodic time
     uint64_t top_cathodic_time; ///< Top cathodic time
 

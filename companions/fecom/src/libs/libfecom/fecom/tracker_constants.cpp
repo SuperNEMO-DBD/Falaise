@@ -14,7 +14,10 @@ namespace fecom {
     return 2920 * CLHEP::mm;
   }
 
-  const uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_FEAST;
+  double tracker_constants::tracker_clock_tick()
+  {
+    return 12.5 * CLHEP::nanosecond;
+  }
   const uint16_t tracker_constants::NUMBER_OF_FEAST_PER_BOARD;
   constexpr uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_BOARD;
   const uint16_t tracker_constants::NUMBER_OF_CELLS_PER_BOARD;

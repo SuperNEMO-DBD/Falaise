@@ -86,6 +86,7 @@ namespace fecom {
     reset_anodic_t4();
     reset_bot_cathodic_time();
     reset_top_cathodic_time();
+    trigger_id = 0xFFFFFFFF;
     return;
   }
 

@@ -20,6 +20,8 @@ namespace fecom {
 		// tracker_drift_cell.geom -> z : real as length = 2920.0 mm
 		static double geiger_cell_Leff();
 
+		static double tracker_clock_tick();
+
 		// Page 27 SNDER :
     static const uint16_t NUMBER_OF_CHANNEL_PER_FEAST = 54;
     static const uint16_t NUMBER_OF_FEAST_PER_BOARD = 2;
