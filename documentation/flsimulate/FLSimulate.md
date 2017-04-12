@@ -516,7 +516,7 @@ resolve all  other configuration components using  a dependency scheme
 displayed on the table below:
 
 ~~~~~
-+--urn:snemo:demonstrator:simulation:2.1 (simulation setup)
++-- urn:snemo:demonstrator:simulation:2.1 (simulation setup)
    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)
    +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)
    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)

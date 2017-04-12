@@ -636,7 +636,7 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
 	- `plugins`  :  the  list of plugins to be loaded.
 	- `PLUGIN_NAME.directory` :  the directory  from where  the plugin
       dynamic library  named `PLUGIN_NAME` should be  loaded (default:
-      `"@falaise.plugins:"`,   i.e.  the   standard  location   for  the
+      "@falaise.plugins:",   i.e.  the   standard  location   for  the
       installation of Falaise's plugins).
 
 - `flreconstruct.pipeline`  : this  is  the  *pipeline* section  where
@@ -702,8 +702,25 @@ list of the available builtin pipelines
 ~~~~~
 $ flreconstruct --help-pipeline-list
 List of supported reconstruction pipeline:
-urn:snemo:demonstrator:reconstruction:1.0.0 : SuperNEMO reconstruction pipeline modules (version 1.0.0)
+urn:snemo:demonstrator:reconstruction:1.0.0:pipeline : Processing pipeline modules for the SuperNEMO reconstruction setup (version 1.0.0)
+urn:snemo:demonstrator:reconstruction:hc-1.0.0:pipeline : Processing pipeline modules for the SuperNEMO reconstruction setup (Half-Commissioning version 1.0.0)
 $
+~~~~~
+
+
+In order to use a official registered pipeline, one shoud use:
+
+~~~~~
+[name="flreconstruct.pipeline" type="flreconstruct::section"]
+configUrn : string = PIPELINE_TAG
+~~~~~
+
+where `PIPELINE_TAG` is the release tag of a reconstruction pipeline.
+Example with the official pipeline with tag `"urn:snemo:demonstrator:reconstruction:1.0.0:pipeline"`:
+
+~~~~~
+[name="flreconstruct.pipeline" type="flreconstruct::section"]
+configUrn : string = urn:snemo:demonstrator:reconstruction:1.0.0:pipeline
 ~~~~~
 
 Standard pipeline scripts are organised  into directories based on the
@@ -734,10 +751,34 @@ $ flreconstruct -i example.brio -p @falaise:config/snemo/demonstrator/reconstruc
 
 Here  `@falaise:`  is simply  shorthand  for  "the root  directory  of
 standard Falaise resources"  and can be viewed as a  "mount point" for
-standard resources. The  subsequent path is simply the  path from that
-root to  a standard  reconstruction script. This  path can  be derived
-from  the information  output by  the `--help-pipeline-list`  argument
-described above.
+standard resource files. The  subsequent path is simply the  path from that
+root to  the standard  reconstruction script.
+
+If the script  itself is officially tagged, one can  also use directly
+its tag from the command line:
+
+~~~~~
+$ flreconstruct -i example.brio -p "urn:snemo:demonstrator:reconstruction:1.0.0"
+~~~~~
+
+Note     here     that     the     FLreconstruct     script     tagged
+`"urn:snemo:demonstrator:reconstruction:1.0.0"`   is   based  on   the
+reconstruction                     pipeline                     tagged
+`"urn:snemo:demonstrator:reconstruction:1.0.0:pipeline"`.          The
+dependency scheme associated to this specific FLReconstruct script is:
+
+~~~~~
++-- urn:snemo:demonstrator:reconstruction:1.0.0 (reconstruction script)
+    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)
+    +-- urn:snemo:demonstrator:setup:1.0:services
+    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
+    +-- urn:snemo:demonstrator:setup:1.0:variants (used variant configuration)
+    |   +-- urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0 (variant profile is fixed)
+    +-- urn:snemo:demonstrator:reconstruction:1.0.0:pipeline (reconstruction pipeline)
+~~~~~
+
+We  can see  that choosing  the top-level  script implies  to fix  all
+configuration of all components used by the software.
 
 
 Writing Reconstruction Results to File {#usingflreconstruct_usingoutputpaths}
@@ -772,9 +813,8 @@ constructed from your own analysis modules. Please see the document on
 [FLReconstruct Pipeline  Output](@ref flreconstructpipelineoutput) for
 details  of  the data  structures  stored  for each  processed  event.
 Further        documents         are        available        detailing
-[how    to    write   your    reconstruction/analysis    modules](@ref
-writingflreconstructmodules),                                      and
-[how to access event data from modules](@ref workingwitheventrecords).
+[how    to    write   your    reconstruction/analysis    modules](@ref writingflreconstructmodules),
+and [how to access event data from modules](@ref workingwitheventrecords).
 
 Output to  ROOT format is  also possible  by supplying an  output file
 with the `.root` extension:
@@ -799,8 +839,7 @@ wide range of  use cases for standard reconstruction  tasks leading to
 analyses.   However,  if  you  need   to  study  improvements  to  the
 reconstruction via  tuning existing  modules or  adding new  ones then
 custom  pipeline   scripts  can   be  used  in   `flreconstruct`.  The
-[Writing         FLReconstruct          Pipeline         Scripts](@ref
-writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
+[Writing         FLReconstruct          Pipeline         Scripts](@ref writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
 structure of custom pipeline scripts.
 
 
