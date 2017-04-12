@@ -592,7 +592,7 @@ geometry/
 |   |   |   +-- is_active/
 |   |   |       +-- type (string)
 |   |   +-- shielding (boolean)
-|   +-- if_half_coommissioning/
+|   +-- if_half_commissioning/
 |       +-- gap (real, as length)
 +-- calo_film_thickness (real, as length)
 ~~~~~~~~~
