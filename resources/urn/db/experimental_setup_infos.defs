@@ -47,8 +47,8 @@ topics : string[2] = "default_profile" "profiles"
 
 topic.default_profile.component : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
 topic.profiles.components : string[2] = \
-  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic:1.0.0" \
-  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc:1.0.0"
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0" \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0"
 
 
 ########################################################################################
