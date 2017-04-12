@@ -719,8 +719,14 @@ where `PIPELINE_TAG` is the release tag of a reconstruction pipeline.
 Example with the official pipeline with tag `"urn:snemo:demonstrator:reconstruction:1.0.0:pipeline"`:
 
 ~~~~~
+[name="flreconstruct.plugins" type="flreconstruct::section"]
+plugins : string[4] = "Falaise_CAT"                     \
+                      "TrackFit"                        \
+                      "Falaise_TrackFit"                \
+                      "Falaise_ChargedParticleTracking"
+
 [name="flreconstruct.pipeline" type="flreconstruct::section"]
-configUrn : string = urn:snemo:demonstrator:reconstruction:1.0.0:pipeline
+configUrn : string = "urn:snemo:demonstrator:reconstruction:1.0.0:pipeline"
 ~~~~~
 
 Standard pipeline scripts are organised  into directories based on the
