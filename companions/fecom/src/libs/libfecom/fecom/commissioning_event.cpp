@@ -66,6 +66,11 @@ namespace fecom {
     return _time_start_ns_;
   }
 
+  bool commissioning_event::has_time_start_ns() const
+  {
+    return datatools::is_valid(_time_start_ns_);
+  }
+
   void commissioning_event::set_time_start_ns(const double time_start_ns_)
   {
     _time_start_ns_ = time_start_ns_;
@@ -77,14 +82,44 @@ namespace fecom {
     return _calo_hit_collection_;
   }
 
+  bool commissioning_event::has_calo_hits() const
+  {
+    return _calo_hit_collection_.size() != 0;
+  }
+
   const commissioning_event::tracker_channel_hit_collection & commissioning_event::get_tracker_channel_hit_collection() const
   {
     return _tracker_channel_hit_collection_;
   }
 
+  bool commissioning_event::has_tracker_channel_hits() const
+  {
+    return _tracker_channel_hit_collection_.size() != 0;
+  }
+
   const commissioning_event::tracker_hit_collection & commissioning_event::get_tracker_hit_collection() const
   {
     return _tracker_hit_collection_;
+  }
+
+  bool commissioning_event::has_tracker_hits() const
+  {
+    return _tracker_hit_collection_.size() != 0;
+  }
+
+  bool commissioning_event::is_only_tracker() const
+  {
+    return (has_tracker_hits() && !has_calo_hits());
+  }
+
+  bool commissioning_event::is_only_calo() const
+  {
+    return (!has_tracker_hits() && has_calo_hits());
+  }
+
+  bool commissioning_event::is_calo_tracker() const
+  {
+    return (has_tracker_hits() && has_calo_hits());
   }
 
   void commissioning_event::build_tracker_hit_from_channels()
@@ -206,38 +241,38 @@ namespace fecom {
   void commissioning_event::print(std::ostream & out_)
   {
     // Search tracker min and max :
-    double tracker_min_timestamp = 0;
-    double tracker_max_timestamp = 0;
+    double tracker_min_time = 0;
+    double tracker_max_time = 0;
     for (auto itrack = get_tracker_hit_collection().begin();
 	 itrack != get_tracker_hit_collection().end();
 	 itrack++) {
       if (itrack->has_anodic_t0()) {
-	if (tracker_min_timestamp == 0 && tracker_max_timestamp == 0) {
-	  tracker_min_timestamp = itrack->anodic_t0;
-	  tracker_max_timestamp = itrack->anodic_t0;
+	if (tracker_min_time == 0 && tracker_max_time == 0) {
+	  tracker_min_time = itrack->anodic_t0_ns;
+	  tracker_max_time = itrack->anodic_t0_ns;
 	}
-	if (itrack->anodic_t0 < tracker_min_timestamp) tracker_min_timestamp = itrack->anodic_t0;
-	if (itrack->anodic_t0 > tracker_max_timestamp) tracker_max_timestamp = itrack->anodic_t0;
+	if (itrack->anodic_t0_ns < tracker_min_time) tracker_min_time = itrack->anodic_t0_ns;
+	if (itrack->anodic_t0_ns > tracker_max_time) tracker_max_time = itrack->anodic_t0_ns;
       }
     }
 
     // Header :
-    out_ << "*********** Event_ID " << _event_id_.to_string() << " ***********" << std::endl
-	 << "Event_tstart_ns " << _time_start_ns_ << std::endl
-	 << "DT_tracker_min_max_ns " << (tracker_max_timestamp - tracker_min_timestamp) * tracker_constants::tracker_clock_tick() << std::endl;
+    out_ << "Event_ID=" << _event_id_.to_string() << std::endl
+	 << "Event_tstart_ns=" << _time_start_ns_ << std::endl
+	 << "DT_tracker_min_max_ns=" << tracker_max_time - tracker_min_time << std::endl;
 
     // Calo hits :
     for (auto icalo = get_calo_hit_collection().begin();
 	 icalo != get_calo_hit_collection().end();
 	 icalo++) {
-      out_ << "Calo Hit # TRIG_ID " << icalo->trigger_id
-	   << " EID " << icalo->electronic_id
-	   << " DT " << icalo->tdc_ns + icalo->falling_time_ns - _time_start_ns_
-	   << " Timestamp_+_falling_ns " << icalo->tdc_ns + icalo->falling_time_ns
-	   << " Timestamp_ns " << icalo->tdc_ns
-	   << " Falling_time_ns " << icalo->falling_time_ns
-	   << " LTO " << icalo->low_threshold
-	   << " HT " << icalo->high_threshold << std::endl;
+      out_ << "Calo_hit TRIG_ID=" << icalo->trigger_id
+	   << " EID=" << icalo->electronic_id
+	   << " DT=" << icalo->tdc_ns + icalo->falling_time_ns - _time_start_ns_
+	   << " Timestamp_+_falling_ns=" << icalo->tdc_ns + icalo->falling_time_ns
+	   << " Timestamp_ns=" << icalo->tdc_ns
+	   << " Falling_time_ns=" << icalo->falling_time_ns
+	   << " LTO=" << icalo->low_threshold
+	   << " HT=" << icalo->high_threshold << std::endl;
     }
 
     // Tracker hits :
@@ -245,19 +280,19 @@ namespace fecom {
 	 itrack != get_tracker_hit_collection().end();
 	 itrack++) {
 
-      out_ << "Tracker Hit # TRIG_ID " << itrack->trigger_id
-	   << " GID " << itrack->cell_geometric_id;
+      out_ << "Tracker_hit TRIG_ID=" << itrack->trigger_id
+	   << " GID=" << itrack->cell_geometric_id;
 
-	if (itrack->has_anodic_t0()) {
-	  out_  << " DT_Calo " << itrack->anodic_t0 * tracker_constants::tracker_clock_tick() - _time_start_ns_
-		<< " Anode t0 (ns) : " << itrack->anodic_t0 * tracker_constants::tracker_clock_tick();
-	}
-      if (itrack->has_anodic_t1()) out_ << " Anode t1 (ns) : " << itrack->anodic_t1 * tracker_constants::tracker_clock_tick();
-      if (itrack->has_anodic_t2()) out_ << " Anode t2 (ns) : " << itrack->anodic_t2 * tracker_constants::tracker_clock_tick();
-      if (itrack->has_anodic_t3()) out_ << " Anode t3 (ns) : " << itrack->anodic_t3 * tracker_constants::tracker_clock_tick();
-      if (itrack->has_anodic_t4()) out_ << " Anode t4 (ns) : " << itrack->anodic_t4 * tracker_constants::tracker_clock_tick();
-      if (itrack->has_bot_cathodic_time()) out_ << " Bot Cathode (ns) : " << itrack->bot_cathodic_time * tracker_constants::tracker_clock_tick();
-      if (itrack->has_top_cathodic_time()) out_ << " Top Cathode (ns) : " << itrack->top_cathodic_time * tracker_constants::tracker_clock_tick();
+      if (itrack->has_anodic_t0()) {
+	out_  << " DT_Calo=" << itrack->anodic_t0_ns - _time_start_ns_
+	      << " Anode_t0_ns=" << itrack->anodic_t0_ns;
+      }
+      if (itrack->has_anodic_t1()) out_ << " Anode_t1_ns=" << itrack->anodic_t1_ns;
+      if (itrack->has_anodic_t2()) out_ << " Anode_t2_ns=" << itrack->anodic_t2_ns;
+      if (itrack->has_anodic_t3()) out_ << " Anode_t3_ns=" << itrack->anodic_t3_ns;
+      if (itrack->has_anodic_t4()) out_ << " Anode_t4_ns=" << itrack->anodic_t4_ns;
+      if (itrack->has_bot_cathodic_time()) out_ << " Bot_cathode_ns=" << itrack->bot_cathodic_time_ns;
+      if (itrack->has_top_cathodic_time()) out_ << " Top_cathode_ns=" << itrack->top_cathodic_time_ns;
 
       out_ << std::endl;
     }
@@ -268,41 +303,39 @@ namespace fecom {
     return;
   }
 
-
   void commissioning_event::tree_dump(std::ostream & out_,
-    const std::string & title_,
-    const std::string & indent_,
-    bool inherit_) const
+				      const std::string & title_,
+				      const std::string & indent_,
+				      bool inherit_) const
   {
-  if (!title_.empty()) {
-  out_ << indent_ << title_ << std::endl;
-}
+    if (!title_.empty()) {
+      out_ << indent_ << title_ << std::endl; }
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::tag
-  << "Event_id : " << _event_id_.to_string() << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Event_id : " << _event_id_.to_string() << std::endl;
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::tag
-  << "Time start (ns) : " << _time_start_ns_ << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Time start (ns) : " << _time_start_ns_ << std::endl;
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::tag
-  << "Traits : " << _traits_ << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Traits : " << _traits_ << std::endl;
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::tag
-  << "Calo hit collection size : " << _calo_hit_collection_.size() << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Calo hit collection size : " << _calo_hit_collection_.size() << std::endl;
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::tag
-  << "Tracker channel hit collection size : " << _tracker_channel_hit_collection_.size() << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::tag
+	 << "Tracker channel hit collection size : " << _tracker_channel_hit_collection_.size() << std::endl;
 
-  out_ << indent_ <<  datatools::i_tree_dumpable::inherit_tag(inherit_)
-  << "Tracker hit collection size : " << _tracker_hit_collection_.size() << std::endl;
+    out_ << indent_ <<  datatools::i_tree_dumpable::inherit_tag(inherit_)
+	 << "Tracker hit collection size : " << _tracker_hit_collection_.size() << std::endl;
 
-  return;
-}
+    return;
+  }
 
   bool commissioning_event::compare::operator()(const commissioning_event & a,
-    const commissioning_event & b)
+						const commissioning_event & b)
   {
-  return a.get_event_id() < b.get_event_id();
-}
+    return a.get_event_id() < b.get_event_id();
+  }
 
 } // namespace fecom

@@ -30,7 +30,12 @@ namespace fecom {
 
   double calo_hit::get_timestamp() const
   {
-    return tdc_ns + falling_cell * tdc_cell_step_ns;
+    // WARNING : impossible to use falling cell * tdc_cell_step_ns because we don't have the CFD interpolation from Jihanne
+    // and falling cell * tdc_cell_step_ns != falling_time_ns and will induce a shift when we want to set the t_start of a commissioning event in the hc_event_builder
+    // return tdc_ns + falling_cell * tdc_cell_step_ns;
+
+    // Must use :
+    return tdc_ns + falling_time_ns;
   }
 
   void calo_hit::reset()

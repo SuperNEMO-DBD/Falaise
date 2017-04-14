@@ -115,7 +115,7 @@ int main(int argc_, char ** argv_)
   else logging = datatools::logger::PRIO_INFORMATION;
 
   try {
-    DT_LOG_INFORMATION(logging, "Entering main_decoder_serializer.cxx...");
+    DT_LOG_INFORMATION(logging, "Entering hc_raw_data_to_calibrated.cxx...");
 
     // Set the input file from Jihanne :
     if (input_filename.empty()) input_filename = "${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.dat";
@@ -139,6 +139,8 @@ int main(int argc_, char ** argv_)
     if (output_filename.empty()) {
       output_filename = output_path + "output_hc2cd.data.bz2";
     }
+    datatools::fetch_path_with_env(output_filename);
+
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
     // Build all tracker hit after the build of all commissioning event :

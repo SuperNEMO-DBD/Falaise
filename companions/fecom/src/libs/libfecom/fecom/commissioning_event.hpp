@@ -90,16 +90,37 @@ namespace fecom {
 		double get_time_start_ns() const;
 
 		/// Set the time start in nanosecond
+		bool has_time_start_ns() const;
+
+		/// Set the time start in nanosecond
 		void set_time_start_ns(const double time_start_);
 
 		/// Get the calo hit collection
 		const	commissioning_event::calo_hit_collection & get_calo_hit_collection() const;
 
+		/// Check if has calorimeter hits
+		bool has_calo_hits() const;
+
 		/// Get the tracker channel hit collection
 		const commissioning_event::tracker_channel_hit_collection & get_tracker_channel_hit_collection() const;
 
+		/// Check if has tracker channel hits
+		bool has_tracker_channel_hits() const;
+
 		/// Get the tracker hit collection
 		const	commissioning_event::tracker_hit_collection & get_tracker_hit_collection() const;
+
+		/// Check if has tracker channel hits
+		bool has_tracker_hits() const;
+
+		/// Check if is only tracker
+		bool is_only_tracker() const;
+
+		/// Check if is only calo
+		bool is_only_calo() const;
+
+		/// Check if calo and tracker
+		bool is_calo_tracker() const;
 
 		/// Build a tracker hit from channels (anodic, bot cathode and top cathode max)
     void build_tracker_hit_from_channels();

@@ -103,7 +103,7 @@ public :
 int main(int argc_, char ** argv_)
 {
   int error_code = EXIT_SUCCESS;
-  datatools::logger::priority logging = datatools::logger::PRIO_INFORMATION;;
+  datatools::logger::priority logging = datatools::logger::PRIO_INFORMATION;
   std::string input_filename = "";
   std::string output_filename = "";
   std::string input_path = "";
@@ -283,6 +283,7 @@ int main(int argc_, char ** argv_)
     uint64_t event_number = first_event_number;
     int modulo = 1000;
 
+
     while (deserializer.has_record_tag()) {
       //DT_LOG_DEBUG(logging, "Entering has record tag...");
       chit.reset();
@@ -319,11 +320,11 @@ int main(int argc_, char ** argv_)
         // Build tracker hits from tracker channels
         // DT_LOG_INFORMATION(logging, "Build tracker hits from channels");
         eb.build_tracker_hits_from_channels();
-
-        datatools::event_id event_id;
+	datatools::event_id event_id;
         event_id.set_run_number(run_number);
         event_id.set_event_number(event_number++);
         eb.commissioning_event_for_serialization.set_event_id(event_id);
+
         // Store it in a datatools::things and reset it :
         datatools::things commissioning_event_record;
         commissioning_event_record.set_name("CER");
@@ -359,22 +360,25 @@ int main(int argc_, char ** argv_)
         }
       } // end of ready for serialization
 
-      if (deserialized_hit == "calo" &&
-	  !chit.low_threshold &&
-	  !chit.high_threshold) {
-	continue;
-      }
-
       if (deserialized_hit == "calo") {
         // First calo hit of the event
         if (!eb.com_event_is_active) {
 	  eb.working_commissioning_event.add_calo_hit(chit);
-	  double time_start = chit.tdc_ns + chit.falling_time_ns;
-	  eb.set_times(time_start);
+	  // Fill time reference only if the hit is LTO or HT
+	  if (!eb.working_commissioning_event.is_valid() && (chit.low_threshold || chit.high_threshold)) {
+	    double time_start = chit.tdc_ns + chit.falling_time_ns;
+	    eb.set_times(time_start);
+	  }
 	  eb.com_event_is_active = true;
 	  eb.begin_by_calorimeter = true;
 	}
         else {
+	  // Fill time reference only if the hit is LTO or HT
+	  if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
+	    double time_start = chit.tdc_ns + chit.falling_time_ns;
+	    eb.set_times(time_start);
+	  }
+
           if (eb.begin_by_calorimeter) {
             // Check if the calo hit is in the L1 gate
             if (chit.tdc_ns < eb.calo_time_stop) {
@@ -387,8 +391,11 @@ int main(int argc_, char ** argv_)
               eb.commissioning_event_for_serialization = eb.working_commissioning_event;
               eb.working_commissioning_event.reset();
               eb.working_commissioning_event.add_calo_hit(chit);
-              double time_start = chit.tdc_ns + chit.falling_time_ns;
-              eb.set_times(time_start);
+	      // Fill time reference only if the hit is LTO or HT
+	      if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
+		double time_start = chit.tdc_ns + chit.falling_time_ns;
+		eb.set_times(time_start);
+	      }
               eb.begin_by_calorimeter = true;
             }
           } // end of begin by calo
@@ -398,8 +405,11 @@ int main(int argc_, char ** argv_)
             eb.commissioning_event_for_serialization = eb.working_commissioning_event;
             eb.working_commissioning_event.reset();
             eb.working_commissioning_event.add_calo_hit(chit);
-            double time_start = chit.tdc_ns + chit.falling_time_ns;
-            eb.set_times(time_start);
+	    // Fill time reference only if the hit is LTO or HT
+	    if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
+	      double time_start = chit.tdc_ns + chit.falling_time_ns;
+	      eb.set_times(time_start);
+	    }
             eb.begin_by_calorimeter = true;
           } // end of else not begin by calo
         }

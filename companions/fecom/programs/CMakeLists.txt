@@ -23,6 +23,7 @@ set(FeCom_PROGRAMS
   decode_sort_serialize.cxx
   hc_event_builder.cxx
   hc_raw_data_to_calibrated_data.cxx
+  hc_data_quality.cxx
   #main_decoder_serializer.cxx
   #main_histogram_builder.cxx
   )
