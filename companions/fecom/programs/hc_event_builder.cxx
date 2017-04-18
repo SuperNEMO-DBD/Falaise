@@ -348,8 +348,8 @@ int main(int argc_, char ** argv_)
         }
         if (save_it) {
 	  //serializer2.store(CE);
-	  std::cout.precision(15);
-	  CE.print(std::cout);
+	  // std::cout.precision(15);
+	  // CE.print(std::cout);
           serializer.process(commissioning_event_record);
           event_serialized++;
         }
