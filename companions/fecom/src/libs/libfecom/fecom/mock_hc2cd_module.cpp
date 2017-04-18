@@ -407,6 +407,7 @@ namespace fecom {
 	 itracker != hc_raw_com_event_.get_tracker_hit_collection().end();
 	 itracker++)
       {
+	if (itracker->is_valid()) {
 	// Convert electronic ID into falaise geometric ID
 	geomtools::geom_id fecom_geometric_id = itracker->cell_geometric_id;
 
@@ -517,55 +518,9 @@ namespace fecom {
 	calibrated_tracker_hits_.push_back(new_handle);
 	//// anode_times.push_back(anode_time);
 
-	// }
-      }
+	} // end of itrack is valid
 
-    /*
-    double at_min = 1e12 * CLHEP::ns;
-    double at_max = 0.0 * CLHEP::ns;
-    for (std::size_t i = 0; i < anode_times.size(); i++) {
-      double at = anode_times[i];
-      if (datatools::is_valid(at)) {
-	if (at < at_min) at_min = at;
-	if (at > at_max) at_max = at;
-      }
-    }
-    std::clog << "Anode time min = " << at_min / CLHEP::nanosecond << " ns" << std::endl;
-    std::clog << "Anode time max = " << at_max / CLHEP::nanosecond << " ns" << std::endl;
-    for (std::size_t i = 0; i < anode_times.size(); i++) {
-      if (datatools::is_valid(anode_times[i])) {
-	anode_times[i] -= at_min;
-	std::clog << "Anode time #" << i << " = " << anode_times[i] / CLHEP::nanosecond << " ns" << std::endl;
-      }
-    }
-
-    int i = 0;
-    for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::iterator it = calibrated_tracker_hits_.begin();
-	 it != calibrated_tracker_hits_.end();
-	 it++) {
-      snemo::datamodel::calibrated_tracker_hit & hit = it->grab();
-      double anode_time = anode_times[i++];
-      if (datatools::is_valid(anode_time)) {
-	double radius;
-	double sigma_radius;
-	datatools::invalidate(radius);
-	datatools::invalidate(sigma_radius);
-	_geiger_.calibrate_drift_radius_from_drift_time(anode_time,
-							radius,
-							sigma_radius);
-	std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
-		  << "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
-		<< "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl;
-
-	if (!datatools::is_valid(radius)) {
-	  radius = 20 * CLHEP::mm;
-	  sigma_radius = 5 * CLHEP::mm;
-	}
-
-	hit.set_anode_time(anode_time);
-      }
-    }
-    */
+      } // end of itracker++
 
     // DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
     return;
@@ -573,4 +528,4 @@ namespace fecom {
 
 } // end of namespace fecom
 
-// end of falaise/snemo/processing/mock_hc2cd_module.cpp
+// end of fecom/src/libs/libfecom/fecom/mock_hc2cd_module.cpp

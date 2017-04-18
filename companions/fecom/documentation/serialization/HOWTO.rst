@@ -121,7 +121,7 @@ File ``commissioning_event.ipp``:
   }
 ..
 
-File ``the_serializable.cc``:
+File ``the_serializable.h``:
 
 .. code:: sh
 

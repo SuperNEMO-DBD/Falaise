@@ -242,7 +242,7 @@ namespace fecom {
 	if (it_map != tracker_bimap.left.end()) {
 	  electronic_id_ = it_map -> second;
 	}
-	else DT_THROW(std::logic_error, "Input geometric tracker id is not find in the bimap " << geometric_id_ << " !");
+	else electronic_id_.invalidate();
       }
     else if (geometric_id_.get_type() == calo_constants::GEOMETRIC_CALO_TYPE)
       {
@@ -250,9 +250,9 @@ namespace fecom {
 	if (it_map != calo_bimap.left.end()) {
 	  electronic_id_ = it_map -> second;
 	}
-	else DT_THROW(std::logic_error, "Input geometric calo id is not find in the bimap " << geometric_id_ << " !");
+	else electronic_id_.invalidate();
       }
-    else DT_THROW(std::logic_error, "Input geometric id type is not valid '" << geometric_id_.get_type() << " !");
+    else electronic_id_.invalidate();
 
     return;
   }
@@ -269,7 +269,7 @@ namespace fecom {
 	  geometric_id_ = it_map -> second;
 	}
 
-	else DT_THROW(std::logic_error, "Input electronic tracker id is not find in the bimap " << electronic_id_ << " !");
+	else geometric_id_.invalidate();
       }
     else if (electronic_id_.get_type() == calo_constants::CALO_CHANNEL_TYPE)
       {
@@ -279,9 +279,9 @@ namespace fecom {
 	  geometric_id_ = it_map -> second;
 	}
 
-	else DT_THROW(std::logic_error, "Input electronic calo id is not find in the bimap " << electronic_id_ << " !");
+	else geometric_id_.invalidate();
       }
-    else DT_THROW(std::logic_error, "Input electronic id type is not valid '" << electronic_id_.get_type() << " !");
+    else geometric_id_.invalidate();
 
     return;
   }
@@ -315,6 +315,22 @@ namespace fecom {
       {
 	auto it_map = calo_bimap.right.find(input_electronic_id_);
 	if (it_map != calo_bimap.right.end()) {
+	  validity = true;
+	}
+      }
+    return validity;
+  }
+
+  bool channel_mapping::is_tracker_channel_in_map(const geomtools::geom_id & input_electronic_id_) const
+  {
+    DT_THROW_IF(!is_initialized(), std::logic_error, "Channel mapping is not initizalied !");
+    bool validity = false;
+
+    if (input_electronic_id_.get_type() == tracker_constants::ANODIC_CHANNEL_TYPE
+	|| input_electronic_id_.get_type() == tracker_constants::CATHODIC_CHANNEL_TYPE)
+      {
+	auto it_map = tracker_bimap.right.find(input_electronic_id_);
+	if (it_map != tracker_bimap.right.end()) {
 	  validity = true;
 	}
       }

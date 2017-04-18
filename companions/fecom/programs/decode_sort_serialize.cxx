@@ -23,7 +23,6 @@
 
 // This project:
 #include <fecom/hit_reader.hpp>
-#include <fecom/channel_mapping.hpp>
 
 /// \brief Working list of raw hits
 struct hit_list
@@ -100,8 +99,6 @@ int main(int argc_, char ** argv_)
   datatools::logger::priority logging = datatools::logger::PRIO_INFORMATION;
   std::string input_filename = "";
   std::string output_filename = "";
-  std::string input_tracker_mapping_file = "";
-  std::string input_calo_mapping_file = "";
   std::string input_path  = "";
   std::string output_path = "";
   std::size_t max_hits = 0;
@@ -120,14 +117,6 @@ int main(int argc_, char ** argv_)
 
     else if (arg == "-o" || arg == "--output") {
       output_filename = argv_[++iarg];
-    }
-
-    else if (arg == "-cm" || arg == "--calo-map") {
-      input_calo_mapping_file = argv_[++iarg];
-    }
-
-    else if (arg == "-tm" || arg == "--tracker-map") {
-      input_tracker_mapping_file = argv_[++iarg];
     }
 
     else if (arg == "-op" || arg == "--output-path") {
@@ -207,25 +196,6 @@ int main(int argc_, char ** argv_)
     reader.load_run_header(header);
     DT_LOG_INFORMATION(logging, "File [" << input_filename << "]   header : ");
     header.tree_dump(std::clog, "Run header:");
-
-    // Build all tracker hit after the build of all commissioning event :
-    if (input_tracker_mapping_file.empty()) {
-      input_tracker_mapping_file = input_path + '/' + "mapping_tracker.csv";
-    }
-    datatools::fetch_path_with_env(input_tracker_mapping_file);
-
-    if (input_calo_mapping_file.empty()) {
-      input_calo_mapping_file = input_path + '/' + "mapping_calo.csv";
-    }
-    datatools::fetch_path_with_env(input_calo_mapping_file);
-
-    DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
-    DT_LOG_INFORMATION(logging, "Mapping calo file :" + input_calo_mapping_file);
-
-    fecom::channel_mapping my_channel_mapping;
-    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
-    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
-    my_channel_mapping.initialize();
 
     //    std::size_t event_serialized = 0;
     hit_list hl;

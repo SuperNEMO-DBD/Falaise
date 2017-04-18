@@ -320,10 +320,6 @@ int main(int argc_, char ** argv_)
         // Build tracker hits from tracker channels
         // DT_LOG_INFORMATION(logging, "Build tracker hits from channels");
         eb.build_tracker_hits_from_channels();
-	datatools::event_id event_id;
-        event_id.set_run_number(run_number);
-        event_id.set_event_number(event_number++);
-        eb.commissioning_event_for_serialization.set_event_id(event_id);
 
         // Store it in a datatools::things and reset it :
         datatools::things commissioning_event_record;
@@ -347,6 +343,10 @@ int main(int argc_, char ** argv_)
           save_it = false;
         }
         if (save_it) {
+	  datatools::event_id event_id;
+	  event_id.set_run_number(run_number);
+	  event_id.set_event_number(event_number++);
+	  eb.commissioning_event_for_serialization.set_event_id(event_id);
 	  //serializer2.store(CE);
 	  // std::cout.precision(15);
 	  // CE.print(std::cout);
@@ -473,6 +473,10 @@ int main(int argc_, char ** argv_)
       save_it = false;
     }
     if (save_it) {
+      datatools::event_id event_id;
+      event_id.set_run_number(run_number);
+      event_id.set_event_number(event_number++);
+      eb.commissioning_event_for_serialization.set_event_id(event_id);
       //serializer2.store(CE);
       serializer.process(commissioning_event_record);
       event_serialized++;
@@ -492,6 +496,12 @@ int main(int argc_, char ** argv_)
     std::cout << "event_number=" << event_number << std::endl;
     std::cout << "min_nb_calo=" << min_nb_calo << std::endl;
     std::cout << "min_nb_tracker=" << min_nb_tracker << std::endl;
+
+    std::string sname = "last_event_number.txt";
+    std::ofstream offile(sname.c_str());
+    offile << event_number << std::endl;
+    offile.close();
+    offile.clear();
 
     DT_LOG_INFORMATION(logging, "The end.");
   } catch (std::exception & error) {

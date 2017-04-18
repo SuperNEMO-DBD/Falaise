@@ -80,6 +80,9 @@ namespace fecom {
 		/// Check if the calo channel is in the bimap
 		bool is_calo_channel_in_map(const geomtools::geom_id & input_electronic_id_) const;
 
+		/// Check if the tracker channel is in the bimap
+		bool is_tracker_channel_in_map(const geomtools::geom_id & input_electronic_id_) const;
+
     /// Check if the channel is anodic
     bool is_anodic_channel(const geomtools::geom_id & input_electronic_id_) const;
 
