@@ -8,6 +8,8 @@
 // - Boost:
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/program_options.hpp>
+#include <boost/foreach.hpp>
 
 // - Bayeux/datatools:
 #include <datatools/logger.h>
@@ -30,65 +32,65 @@
 int main(int argc_, char ** argv_)
 {
   int error_code = EXIT_SUCCESS;
+  std::vector<std::string> input_filenames;// = "";
   std::string input_filename = "";
   std::string output_filename = "";
   std::string input_tracker_mapping_file = "";
   std::string input_calo_mapping_file = "";
-  std::size_t max_events     = 0;
+  std::size_t max_events     = 10;
   bool        is_debug       = false;
-  bool        is_help        = false;
 
   try {
-    // Parsing arguments:
-    int iarg = 1;
-    while (iarg < argc_) {
-      std::string arg = argv_[iarg];
+    // Parse options:
+    namespace po = boost::program_options;
+    po::options_description opts("Allowed options");
+    opts.add_options()
+      ("help,h", "produce help message")
+      ("debug,d", "debug mode")
+      ("input,i",
+       po::value<std::vector<std::string> >(& input_filenames)->multitoken(),
+       "set an input file")
+      ("output,o",
+       po::value<std::string>(& output_filename),
+       "set the output filename")
+      ("max-events,M",
+       po::value<std::size_t>(& max_events),
+       "set the maximum number of events")
+      ("calo-map,c",
+       po::value<std::string>(& input_calo_mapping_file),
+       "set the calorimeter map")
+      ("tracker-map,t",
+       po::value<std::string>(& input_tracker_mapping_file),
+       "set the tracker map")
+      ; // end of options description
 
-      if (arg == "-i" || arg == "--input") {
-        input_filename = argv_[++iarg];
-      }
+    // Describe command line arguments :
+    po::variables_map vm;
+    po::store(po::command_line_parser(argc_, argv_)
+              .options(opts)
+              .run(), vm);
+    po::notify(vm);
 
-      else if (arg == "-o" || arg == "--output") {
-        output_filename = argv_[++iarg];
-      }
-
-      else if (arg == "-cm" || arg == "--calo-map") {
-	input_calo_mapping_file = argv_[++iarg];
-      }
-
-      else if (arg == "-tm" || arg == "--tracker-map") {
-	input_tracker_mapping_file = argv_[++iarg];
-      }
-
-      else if (arg == "-M" || arg == "--max-events") {
-        max_events = boost::lexical_cast<std::size_t>(argv_[++iarg]);
-      }
-
-      else if (arg == "-d" || arg == "--debug") {
-        is_debug = true;
-      }
-
-      else if (arg == "-h" || arg == "--help") {
-        is_help = true;
-      }
-
-      else {
-        DT_THROW(std::logic_error, "Unrecognised argument '" << arg << "'!");
-      }
-
-      iarg++;
+    // Use command line arguments :
+    if (vm.count("help")) {
+      std::cout << "Usage : " << std::endl;
+      std::cout << opts << std::endl;
+      return(1);
     }
 
-    if (is_help) {
-      std::cerr << std::endl << "Usage :" << std::endl << std::endl
-                << "fecom-hc_data_quality [OPTIONS]" << std::endl << std::endl
-                << "Allowed options: " << std::endl
-                << "-h    [ --help ]        produce help message" << std::endl
-                << "-i    [ --input ] file  set an input file" << std::endl
-                << "-o    [ --output ] file set an output file" << std::endl
-                << "-d    [ --debug ]       debug mode" << std::endl << std::endl;
-      return 0;
+    // Use command line arguments :
+    else if (vm.count("debug")) {
+      is_debug = true;
     }
+
+    std::size_t file_counter = 0;
+    for (auto file = input_filenames.begin();
+	 file != input_filenames.end();
+	 file++)
+      {
+	std::clog << "File #" << file_counter << ' ' << *file << std::endl;
+	file_counter++;
+      }
 
     datatools::logger::priority logging;
     if (is_debug) logging = datatools::logger::PRIO_DEBUG;
@@ -108,18 +110,20 @@ int main(int argc_, char ** argv_)
     }
     datatools::fetch_path_with_env(output_filename);
 
-    DT_LOG_INFORMATION(logging, "Input filename           : " + input_filename)
-      DT_LOG_INFORMATION(logging, "Input path               : " + input_path);
+    DT_LOG_INFORMATION(logging, "Input filename           : " + input_filename);
+    DT_LOG_INFORMATION(logging, "Input path               : " + input_path);
     DT_LOG_INFORMATION(logging, "Data quality output file : " + output_filename);
     DT_LOG_INFORMATION(logging, "Output path              : " + output_path);
 
     // Event reader :
     dpp::input_module reader;
     datatools::properties reader_config;
-    reader_config.store ("logging.priority", "debug");
-    reader_config.store ("max_record_total", static_cast<int>(max_events));
-    reader_config.store ("files.mode", "single");
-    reader_config.store_path("files.single.filename", input_filename);
+    reader_config.store("logging.priority", "debug");
+    reader_config.store("files.mode", "list");
+    reader_config.store("files.list.filenames", input_filenames);
+    reader_config.store("max_record_total", static_cast<int>(max_events) * static_cast<int>(input_filenames.size()));
+    reader_config.store("max_record_per_file", static_cast<int>(max_events));
+    reader_config.tree_dump(std::clog, "Input module configuration parameters: ");
     reader.initialize_standalone (reader_config);
 
     if (input_tracker_mapping_file.empty()) {
@@ -170,7 +174,6 @@ int main(int argc_, char ** argv_)
     uint64_t bot_cathode_only_counter = 0;
 
     // Calo tracker statistics :
-
 
     // Event record :
     datatools::things ER;

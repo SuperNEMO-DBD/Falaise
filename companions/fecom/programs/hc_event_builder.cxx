@@ -281,7 +281,7 @@ int main(int argc_, char ** argv_)
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
     uint64_t event_number = first_event_number;
-    int modulo = 1000;
+    int modulo = 10000;
 
 
     while (deserializer.has_record_tag()) {

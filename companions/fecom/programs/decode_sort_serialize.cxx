@@ -107,7 +107,7 @@ int main(int argc_, char ** argv_)
   std::size_t max_hits = 0;
   bool        is_debug = false;
   bool        is_help  = false;
-  int         modulo   = 1000;
+  int         modulo   = 10000;
 
   // Parsing arguments:
   int iarg = 1;
