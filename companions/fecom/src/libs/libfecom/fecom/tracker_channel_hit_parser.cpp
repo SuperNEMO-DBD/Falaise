@@ -77,7 +77,7 @@ namespace fecom {
     // uint16_t eventid   = 0xFFFF;
     std::string channel_type ="INVALID";
     std::string timestamp_type = "INVALID";
-    uint64_t timestamp_value  = 0xFFFFFFFF;
+    uint64_t timestamp_value  = 0;
     double timestamp_ns  = 0;
     res = qi::phrase_parse(str_iter,
     			   end_iter,
@@ -123,7 +123,7 @@ namespace fecom {
     hit_.electronic_id.set(tracker_constants::CHANNEL_INDEX, channel_id);
 
     hit_.timestamp_type = timestamp_type;
-    hit_.timestamp_value = timestamp_value;
+    hit_.timestamp_value = timestamp_value; //static_cast<uint64_t>(timestamp_value);
     hit_.timestamp_time_ns = timestamp_ns;
 
     DT_LOG_TRACE_EXITING(logging);

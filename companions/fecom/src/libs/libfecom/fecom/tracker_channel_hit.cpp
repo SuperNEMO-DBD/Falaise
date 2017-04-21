@@ -72,7 +72,7 @@ namespace fecom {
          << "Timestamp type            : " << (std::string) timestamp_type << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Timestamp value           : " << (int) timestamp_value << std::endl;
+         << "Timestamp value           : " << (uint64_t) timestamp_value << std::endl;
 
     out_ << indent_ << io::tag()
          << "Timestamp time (in ns)    : " << timestamp_time_ns << std::endl;

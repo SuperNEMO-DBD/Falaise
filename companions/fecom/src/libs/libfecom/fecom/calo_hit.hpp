@@ -66,7 +66,7 @@ namespace fecom {
                                          *  Unit: clock period (default: 160 MHz)
                                          */
 		double   tdc_cell_step_ns;
-		double   tdc_ns;
+		double   tdc_ns;                    ///< Timestampi in ns
     bool     low_threshold;             ///< Low threshold flag
     bool     high_threshold;            ///< High threshold flag
     uint32_t low_threshold_trig_count;  ///< (16 bits)

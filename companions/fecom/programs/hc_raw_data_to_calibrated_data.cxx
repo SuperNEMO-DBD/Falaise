@@ -239,7 +239,7 @@ int main(int argc_, char ** argv_)
 	      save_it = false;
 	    }
 	    if (save_it) {
-	      std::clog << "Calo || tracker || calo + tracker event #" << event_number << std::endl;
+	      // std::clog << "Calo || tracker || calo + tracker event #" << event_number << std::endl;
 	      writer.process(ER);
 	    }
 

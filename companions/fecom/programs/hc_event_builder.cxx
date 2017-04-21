@@ -232,7 +232,7 @@ int main(int argc_, char ** argv_)
     datatools::data_reader deserializer(input_filename, datatools::using_multiple_archives);
 
     if (output_filename.empty()) {
-      output_filename = output_path + '/' + "hc_event_builder_serialized.data.bz2";
+      output_filename = output_path + '/' + "hc_event_builder_serialized.brio";
     }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
@@ -246,10 +246,6 @@ int main(int argc_, char ** argv_)
     serializer.initialize_standalone(writer_config);
     serializer.tree_dump(std::clog, "HC Event builder writer module");
 
-    // Event writer :
-    std::string  output_filename2 = output_path + '/' + "__test.xml";
-    //    datatools::data_writer serializer2(output_filename2, datatools::using_multiple_archives);
-
 
     if (input_tracker_mapping_file.empty()) {
       input_tracker_mapping_file = input_path + "/" + "mapping_tracker.csv";
@@ -260,8 +256,8 @@ int main(int argc_, char ** argv_)
     }
     datatools::fetch_path_with_env(input_calo_mapping_file);
 
+    DT_LOG_INFORMATION(logging, "Mapping calo file    :" + input_calo_mapping_file);
     DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
-    DT_LOG_INFORMATION(logging, "Mapping calo file :" + input_calo_mapping_file);
 
     fecom::channel_mapping my_channel_mapping;
     my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
@@ -282,7 +278,6 @@ int main(int argc_, char ** argv_)
     std::size_t event_serialized = 0;
     uint64_t event_number = first_event_number;
     int modulo = 10000;
-
 
     while (deserializer.has_record_tag()) {
       //DT_LOG_DEBUG(logging, "Entering has record tag...");
@@ -346,10 +341,11 @@ int main(int argc_, char ** argv_)
 	  datatools::event_id event_id;
 	  event_id.set_run_number(run_number);
 	  event_id.set_event_number(event_number++);
-	  eb.commissioning_event_for_serialization.set_event_id(event_id);
+	  CE.set_event_id(event_id);
 	  //serializer2.store(CE);
 	  // std::cout.precision(15);
 	  // CE.print(std::cout);
+	  // CE.tree_dump(std::clog, "A com event to serialize");
           serializer.process(commissioning_event_record);
           event_serialized++;
         }
@@ -476,8 +472,8 @@ int main(int argc_, char ** argv_)
       datatools::event_id event_id;
       event_id.set_run_number(run_number);
       event_id.set_event_number(event_number++);
-      eb.commissioning_event_for_serialization.set_event_id(event_id);
-      //serializer2.store(CE);
+      CE.set_event_id(event_id);
+
       serializer.process(commissioning_event_record);
       event_serialized++;
     }
@@ -492,9 +488,9 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "End of reader file...");
     deserializer.reset();
 
-    std::cout << "run_number="   << run_number << std::endl;
-    std::cout << "event_number=" << event_number << std::endl;
-    std::cout << "min_nb_calo=" << min_nb_calo << std::endl;
+    std::cout << "run_number="     << run_number << std::endl;
+    std::cout << "event_number="   << event_number << std::endl;
+    std::cout << "min_nb_calo="    << min_nb_calo << std::endl;
     std::cout << "min_nb_tracker=" << min_nb_tracker << std::endl;
 
     std::string sname = "last_event_number.txt";
