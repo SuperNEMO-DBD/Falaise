@@ -276,7 +276,11 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "...");
 
     while (!reader.is_terminated()) {
+
+      DT_LOG_DEBUG(logging, "Entering reader");
+
       reader.process(ER);
+      DT_LOG_DEBUG(logging, "After reader process");
       // A plain `fecom::commissioning' object is stored here :
       if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
 	{
@@ -285,13 +289,14 @@ int main(int argc_, char ** argv_)
 	  if (is_debug) CE.tree_dump(std::clog, "A com event");
 
 	  // Fill data quality :
-	  event_number = CE.get_event_id().get_event_number();
+	  // event_number = CE.get_event_id().get_event_number();
 	  event_time_start_ns = CE.get_time_start_ns();
 
-	  if ((event_number % modulo) == 10 ){
+	  if ((event_number % modulo) == 1 ){
 	    DT_LOG_DEBUG(logging, "Event number = " << event_number);
 	  }
 
+	  DT_LOG_DEBUG(logging, "before has calo hits");
 	  // loop on all calo hits in each commissioning event
 	  if (CE.has_calo_hits()) {
 	    for (auto icalo = CE.get_calo_hit_collection().begin();
@@ -310,14 +315,19 @@ int main(int argc_, char ** argv_)
 	      falling_time_ns.push_back(icalo->falling_time_ns);
 	    }
 	  }
+	  DT_LOG_DEBUG(logging, "after has calo hits");
 
 	  // loop on all tracker hits in each commissioning event
 	  if (CE.has_tracker_hits()) {
+	    std::size_t tracker_hit_counter = 0;
 	    for (auto itrack = CE.get_tracker_hit_collection().begin();
 		 itrack != CE.get_tracker_hit_collection().end();
 		 itrack++) {
 	      unsigned int layer = itrack->cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
 	      unsigned int row = itrack->cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
+	      DT_LOG_DEBUG(logging, "Tracker hit count" << tracker_hit_counter);
+	      DT_LOG_DEBUG(logging, "Layer" << layer);
+	      DT_LOG_DEBUG(logging, "Row  " << row);
 
 	      cell_gid.push_back(itrack->cell_geometric_id);
 	      cell_layer.push_back(layer);
@@ -329,8 +339,11 @@ int main(int argc_, char ** argv_)
 	      if (itrack->has_anodic_t4()) anodic_t4_ns.push_back(itrack->anodic_t4_ns);
 	      if (itrack->has_bot_cathodic_time()) bot_cathodic_time_ns.push_back(itrack->bot_cathodic_time_ns);
 	      if (itrack->has_top_cathodic_time()) top_cathodic_time_ns.push_back(itrack->top_cathodic_time_ns);
+	      tracker_hit_counter++;
 	    }
 	  }
+	  DT_LOG_DEBUG(logging, "after has tracker hits");
+
 	  // Fill the tree for each commissioning event :
 	  root_tree->Fill();
 
@@ -347,6 +360,7 @@ int main(int argc_, char ** argv_)
 	  falling_cell.clear();
 	  falling_offset.clear();
 	  falling_time_ns.clear();
+
 	  cell_gid.clear();
 	  cell_layer.clear();
 	  cell_row.clear();
@@ -358,90 +372,90 @@ int main(int argc_, char ** argv_)
 	  bot_cathodic_time_ns.clear();
 	  top_cathodic_time_ns.clear();
 
-	  double event_time_ref = CE.get_time_start_ns();
+	  DT_LOG_DEBUG(logging, "after clear all vectors");
 
-	  if (CE.is_only_calo()) event_only_calo++;
-	  else if (CE.is_only_tracker()) event_only_tracker++;
-	  else event_calo_tracker++;
+	  // double event_time_ref = CE.get_time_start_ns();
 
-	  if (CE.has_calo_hits()
-	      && CE.get_calo_hit_collection().size() > 1) {
-	    for (auto icalo = CE.get_calo_hit_collection().begin();
-		 icalo != CE.get_calo_hit_collection().end();
-		 icalo++) {
-	      if (icalo->low_threshold || icalo->high_threshold) {
-		double DT_calo_tref = icalo->tdc_ns + icalo->falling_time_ns - event_time_ref;
-		if (DT_calo_tref != 0) delta_t_calo_tref.fill(DT_calo_tref);
-		calo_hit_number++;
-	      }
-	    } // end of icalo
-	  }// end of if has calo hits
+	  // if (CE.is_only_calo()) event_only_calo++;
+	  // else if (CE.is_only_tracker()) event_only_tracker++;
+	  // else event_calo_tracker++;
 
-	  if (CE.has_tracker_hits()
-	      && !CE.is_only_tracker()) {
-	    // First loop to search anode minimum and cathode minimum :
-	    double anode_min_time_ns = 0;
-	    double cathode_min_time_ns = 0;
-	    for (auto itrack = CE.get_tracker_hit_collection().begin();
-		 itrack != CE.get_tracker_hit_collection().end();
-		 itrack++) {
-	      if (itrack->has_anodic_t0()) {
-		if (anode_min_time_ns == 0 || itrack->anodic_t0_ns < anode_min_time_ns) anode_min_time_ns = itrack->anodic_t0_ns;
-	      }
-	      if (itrack->has_bot_cathodic_time()) {
-		if (cathode_min_time_ns == 0 || itrack->bot_cathodic_time_ns < cathode_min_time_ns) cathode_min_time_ns = itrack->bot_cathodic_time_ns;
-	      }
-	    } // end of itrack
+	  // if (CE.has_calo_hits()
+	  //     && CE.get_calo_hit_collection().size() > 1) {
+	  //   for (auto icalo = CE.get_calo_hit_collection().begin();
+	  // 	 icalo != CE.get_calo_hit_collection().end();
+	  // 	 icalo++) {
+	  //     if (icalo->low_threshold || icalo->high_threshold) {
+	  // 	double DT_calo_tref = icalo->tdc_ns + icalo->falling_time_ns - event_time_ref;
+	  // 	if (DT_calo_tref != 0) delta_t_calo_tref.fill(DT_calo_tref);
+	  // 	calo_hit_number++;
+	  //     }
+	  //   } // end of icalo
+	  // }// end of if has calo hits
 
-	    for (auto itrack = CE.get_tracker_hit_collection().begin();
-		 itrack != CE.get_tracker_hit_collection().end();
-		 itrack++) {
+	  // if (CE.has_tracker_hits()
+	  //     && !CE.is_only_tracker()) {
+	  //   // First loop to search anode minimum and cathode minimum :
+	  //   double anode_min_time_ns = 0;
+	  //   double cathode_min_time_ns = 0;
+	  //   for (auto itrack = CE.get_tracker_hit_collection().begin();
+	  // 	 itrack != CE.get_tracker_hit_collection().end();
+	  // 	 itrack++) {
+	  //     if (itrack->has_anodic_t0()) {
+	  // 	if (anode_min_time_ns == 0 || itrack->anodic_t0_ns < anode_min_time_ns) anode_min_time_ns = itrack->anodic_t0_ns;
+	  //     }
+	  //     if (itrack->has_bot_cathodic_time()) {
+	  // 	if (cathode_min_time_ns == 0 || itrack->bot_cathodic_time_ns < cathode_min_time_ns) cathode_min_time_ns = itrack->bot_cathodic_time_ns;
+	  //     }
+	  //   } // end of itrack
 
-	      if (itrack->has_anodic_t0()) {
+	  //   for (auto itrack = CE.get_tracker_hit_collection().begin();
+	  // 	 itrack != CE.get_tracker_hit_collection().end();
+	  // 	 itrack++) {
 
-		double DT_anode_tref = itrack->anodic_t0_ns - event_time_ref;
-		if (DT_anode_tref != 0) {
-		  DT_LOG_DEBUG(logging, "DT(anode-tref) = " << DT_anode_tref);
-		  delta_t_anode_tref.fill(DT_anode_tref);
-		}
+	  //     if (itrack->has_anodic_t0()) {
 
-		double DT_anode_anode = itrack->anodic_t0_ns - anode_min_time_ns;
-		if (DT_anode_anode != 0) {
-		  DT_LOG_DEBUG(logging, "DT(anode-anode)=" << DT_anode_anode);
-		  delta_t_anode_anode.fill(DT_anode_anode);
-		}
-		anode_t0_counter++;
-		if (!itrack->has_bot_cathodic_time()) anode_t0_only_counter++;
-	      }
+	  // 	double DT_anode_tref = itrack->anodic_t0_ns - event_time_ref;
+	  // 	if (DT_anode_tref != 0) {
+	  // 	  DT_LOG_DEBUG(logging, "DT(anode-tref) = " << DT_anode_tref);
+	  // 	  delta_t_anode_tref.fill(DT_anode_tref);
+	  // 	}
 
-	      if (itrack->has_bot_cathodic_time()) {
+	  // 	double DT_anode_anode = itrack->anodic_t0_ns - anode_min_time_ns;
+	  // 	if (DT_anode_anode != 0) {
+	  // 	  DT_LOG_DEBUG(logging, "DT(anode-anode)=" << DT_anode_anode);
+	  // 	  delta_t_anode_anode.fill(DT_anode_anode);
+	  // 	}
+	  // 	anode_t0_counter++;
+	  // 	if (!itrack->has_bot_cathodic_time()) anode_t0_only_counter++;
+	  //     }
 
-		double DT_cathode_tref = itrack->bot_cathodic_time_ns - event_time_ref;
-		DT_LOG_DEBUG(logging, "DT(cathode-tref)=" << DT_cathode_tref);
-		delta_t_cathode_tref.fill(DT_cathode_tref);
+	  //     if (itrack->has_bot_cathodic_time()) {
 
-		if (itrack->has_anodic_t0()) {
-		  double DT_cathode_anode_same_hit = itrack->bot_cathodic_time_ns - itrack->anodic_t0_ns;
-		  DT_LOG_DEBUG(logging,"DT(cathode-anode)=" << DT_cathode_anode_same_hit);
-		  delta_t_anode_cathode_same_hit.fill(DT_cathode_anode_same_hit);
-		}
+	  // 	double DT_cathode_tref = itrack->bot_cathodic_time_ns - event_time_ref;
+	  // 	DT_LOG_DEBUG(logging, "DT(cathode-tref)=" << DT_cathode_tref);
+	  // 	delta_t_cathode_tref.fill(DT_cathode_tref);
 
-		double DT_cathode_cathode = itrack->bot_cathodic_time_ns - cathode_min_time_ns;
-		if (DT_cathode_cathode != 0) {
-		  DT_LOG_DEBUG(logging, "DT(cathode-cathode)=" << DT_cathode_cathode);
-		  delta_t_cathode_cathode.fill(DT_cathode_cathode);
-		}
-		bot_cathode_counter++;
-		if (!itrack->has_anodic_t0()) bot_cathode_only_counter++;
-	      }
+	  // 	if (itrack->has_anodic_t0()) {
+	  // 	  double DT_cathode_anode_same_hit = itrack->bot_cathodic_time_ns - itrack->anodic_t0_ns;
+	  // 	  DT_LOG_DEBUG(logging,"DT(cathode-anode)=" << DT_cathode_anode_same_hit);
+	  // 	  delta_t_anode_cathode_same_hit.fill(DT_cathode_anode_same_hit);
+	  // 	}
 
-	      tracker_hit_number++;
+	  // 	double DT_cathode_cathode = itrack->bot_cathodic_time_ns - cathode_min_time_ns;
+	  // 	if (DT_cathode_cathode != 0) {
+	  // 	  DT_LOG_DEBUG(logging, "DT(cathode-cathode)=" << DT_cathode_cathode);
+	  // 	  delta_t_cathode_cathode.fill(DT_cathode_cathode);
+	  // 	}
+	  // 	bot_cathode_counter++;
+	  // 	if (!itrack->has_anodic_t0()) bot_cathode_only_counter++;
+	  //     }
 
-	    }
-	    if (is_debug) std::clog << std::endl;
+	  //     tracker_hit_number++;
 
-
-	  } // end of if has tracker hits
+	  //   }
+	  //   if (is_debug) std::clog << std::endl;
+	  // } // end of if has tracker hits
 
 	} // end of has HCRD bank label
 
