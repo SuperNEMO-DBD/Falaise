@@ -13,13 +13,8 @@ find_package(Bayeux 3.0.0
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 
 # Ensure our code can see the Falaise headers
-message( STATUS "******** Fecom : PROJECT_BUILD_INCLUDEDIR = '${PROJECT_BUILD_INCLUDEDIR}'")
-message( STATUS "******** Fecom : PROJECT_BUILD_CMAKEDIR   = '${PROJECT_BUILD_CMAKEDIR}'")
-
 # include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
 include_directories(${PROJECT_BUILD_INCLUDEDIR})
-
-message( STATUS "******** Fecom : FALAISE_BUILD_PREFIX      = '${FALAISE_BUILD_PREFIX}'")
 include_directories(${FALAISE_BUILD_PREFIX}/include)
 include_directories(${FALAISE_BUILD_PREFIX}/include/falaise)
 
