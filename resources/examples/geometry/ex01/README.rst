@@ -1,5 +1,5 @@
 =================================
-Falaise geoemtry example ``ex01``
+Falaise geometry example ``ex01``
 =================================
 
 Introduction
@@ -28,7 +28,10 @@ Introduction
 Quick start
 ===========
 
-1. Build, install and setup the Falaise 1.0.0 (or trunk) library
+1. Build, install and setup the Falaise 3.0.0 library: ::
+
+     shell$ falaise_pro_setup
+
 2. Make a copy of the example directory: ::
 
      shell$ cp -a [Falaise-trunk]/resources/examples/geometry/ex01/ /tmp/falaise_geometry_ex01
@@ -39,8 +42,8 @@ Quick start
      shell$ mkdir _build.d
      shell$ cd _build.d
      shell$ cmake \
-        -DCMAKE_INSTALL_PREFIX=.. \
-        -DCMAKE_FIND_ROOT_PATH:PATH="your falaise installation base dir" \
+        -DCMAKE_INSTALL_PREFIX=../_install.d \
+        -DFalaise_DIR="$(flquery --cmakedir)" \
         ..
      shell$ make
      shell$ make install

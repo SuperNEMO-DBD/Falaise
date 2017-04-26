@@ -14,25 +14,21 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "in-source build detected")
 endif()
 
-# - Bayeux :
-# find_package(Bayeux 1.0.0 REQUIRED)
 # - Falaise :
-find_package(Falaise 1.0.0 REQUIRED)
-set(_incs ${Falaise_INCLUDE_DIRS}) # ${Bayeux_INCLUDE_DIRS})
-set(_libs ${Falaise_LIBRARIES})# ${Bayeux_LIBRARIES})
+message( STATUS "Searching Falaise...")
+find_package(Falaise 3 REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR} ${_incs})
-
+include_directories(${PROJECT_SOURCE_DIR})
 add_executable(ex01 ex01.cxx)
+target_compile_features(ex01 PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
+target_link_libraries(ex01 Falaise::Falaise)
 
-target_link_libraries(ex01 ${_libs})
-
-install ( FILES
-    ${PROJECT_BINARY_DIR}/ex01
-    DESTINATION ${CMAKE_INSTALL_PREFIX}
-    PERMISSIONS OWNER_READ OWNER_EXECUTE
-    GROUP_READ GROUP_EXECUTE
-    WORLD_READ WORLD_EXECUTE
+install(FILES
+  ${PROJECT_BINARY_DIR}/ex01
+  DESTINATION ${CMAKE_INSTALL_PREFIX}
+  PERMISSIONS OWNER_READ OWNER_EXECUTE
+  GROUP_READ GROUP_EXECUTE
+  WORLD_READ WORLD_EXECUTE
   )
 
 # end of CMakeLists.txt

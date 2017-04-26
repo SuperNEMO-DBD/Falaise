@@ -85,7 +85,11 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-find_package(Bayeux 3.0.0 REQUIRED geant4)
+set(FALAISE_BAYEUX_MIN_VERSION 3.0.0)
+message( STATUS "Searching Bayeux ${FALAISE_BAYEUX_MIN_VERSION} ...")
+find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
+# message( STATUS "Bayeux_VERSION          = '${Bayeux_VERSION}'")
+# message( STATUS "Bayeux_CMAKE_CONFIG_DIR = '${Bayeux_CMAKE_CONFIG_DIR}'")
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
