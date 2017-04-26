@@ -1,3 +1,4 @@
+// -*- mode: c++ ; -*-
 // Ourselves:
 #include <fecom/commissioning_event_data.hpp>
 
