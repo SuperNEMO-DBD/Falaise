@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <stdexcept>
+#include <limits>
 
 // Third party:
 // - Boost:
@@ -21,24 +22,27 @@
 #include <dpp/input_module.h>
 #include <dpp/output_module.h>
 
-// - Bayeux/mygsl:
-#include <mygsl/histogram.h>
-
 // Root :
+#include "TError.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TH1F.h"
 #include "TH2F.h"
+#include "TGraph.h"
 
 // This project:
 #include <fecom/commissioning_event.hpp>
 #include <fecom/channel_mapping.hpp>
+#include <fecom/data_statistics.hpp>
 
 int main(int argc_, char ** argv_)
 {
   int error_code = EXIT_SUCCESS;
+
+  gErrorAbortLevel = 2000;
+
   std::vector<std::string> input_filenames;// = "";
-  std::string input_filename = "";
+  // std::string input_filename = "";
   std::string output_filename = "";
   std::string input_tracker_mapping_file = "";
   std::string input_calo_mapping_file = "";
@@ -102,18 +106,12 @@ int main(int argc_, char ** argv_)
     else logging = datatools::logger::PRIO_INFORMATION;
     DT_LOG_INFORMATION(logging, "Entering hc_data_quality.cxx...");
 
-    // Set the input file :
-    DT_THROW_IF(input_filenames.size() == 0, std::logic_error, "Missing input file(s)!");
-
-    // if (input_filename.empty()) input_filename = "${FECOM_RESOURCES_DIR}/data/samples/fake_run/calo_fake_tracker_hits_1.dat";
-    // datatools::fetch_path_with_env(input_filename);
-    // std::string input_path = input_filename;
-    // std::size_t found = input_path.find_last_of("/");
-    // input_path.erase(found+1, input_path.size());
+    if (input_filenames.size() == 0) DT_LOG_WARNING(logging, "No input file(s) !");
 
     if (output_filename.empty()) {
       output_filename = "output_hc_data_quality.txt";
     }
+
     std::string output_path = "";
     if (output_path.empty()) {
       boost::filesystem::path p(output_filename);
@@ -145,7 +143,7 @@ int main(int argc_, char ** argv_)
     datatools::properties reader_config;
     reader_config.store("logging.priority", "debug");
     // reader_config.store ("files.mode", "single");
-    // reader_config.store_path("files.single.filename", test_input_filename);
+    // reader_config.store_path("files.single.filename", input_filename);
     reader_config.store("files.mode", "list");
     reader_config.store("files.list.filenames", input_filenames);
     reader_config.store("max_record_total", max_record_total);
@@ -154,87 +152,84 @@ int main(int argc_, char ** argv_)
     reader.initialize_standalone(reader_config);
     reader.tree_dump(std::clog, "Input module 'reader' dump");
 
-    // if (input_tracker_mapping_file.empty()) {
-    //   input_tracker_mapping_file = input_path + '/' + "mapping_tracker.csv";
-    // }
-    // datatools::fetch_path_with_env(input_tracker_mapping_file);
-    // if (input_calo_mapping_file.empty()) {
-    //   input_calo_mapping_file = input_path + '/' + "mapping_calo.csv";
-    // }
-    // datatools::fetch_path_with_env(input_calo_mapping_file);
+    DT_THROW_IF(input_tracker_mapping_file.empty() || input_calo_mapping_file.empty(),
+		std::logic_error,
+		"Missing tracker or calo mapping file !");
+    datatools::fetch_path_with_env(input_tracker_mapping_file);
+    datatools::fetch_path_with_env(input_calo_mapping_file);
 
-    // DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
-    // DT_LOG_INFORMATION(logging, "Mapping calo file :" + input_calo_mapping_file);
+    DT_LOG_INFORMATION(logging, "Mapping tracker file :" + input_tracker_mapping_file);
+    DT_LOG_INFORMATION(logging, "Mapping calo file    :" + input_calo_mapping_file);
 
-    // // Channel mapping :
-    // fecom::channel_mapping my_channel_mapping;
-    // my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
-    // my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
-    // my_channel_mapping.initialize();
-
-    // Data quality :
-    // std::size_t number_of_cathode_wo_anode = 0;
-    // std::size_t number_of_cathode_wo_anode_in_event = 0;
-
-    mygsl::histogram delta_t_calo_tref(100, 0., 10.);
-    mygsl::histogram delta_t_anode_tref(100, 0., 150000.);
-    mygsl::histogram delta_t_cathode_tref(100, 0., 150000.);
-    mygsl::histogram delta_t_anode_anode(100, 0., 100.);
-    mygsl::histogram delta_t_cathode_cathode(100, 0., 100.);
-    mygsl::histogram delta_t_anode_cathode_same_hit(100, 0., 20000.);
-    // h0.fill (0.5, -5.0);
-
-    // General statistics :
-    uint64_t event_only_calo = 0;
-    uint64_t event_only_tracker = 0;
-    uint64_t event_calo_tracker = 0;
-
-    // Calo statistics :
-    uint64_t calo_hit_number = 0;
-
-    // Tracker statistics :
-    uint64_t tracker_hit_number = 0;
-    // uint64_t anode_only_counter = 0;
-    uint64_t anode_t0_counter = 0;
-    uint64_t anode_t0_only_counter = 0;
-    uint64_t bot_cathode_counter = 0;
-    uint64_t bot_cathode_only_counter = 0;
+    // Channel mapping :
+    fecom::channel_mapping my_channel_mapping;
+    my_channel_mapping.build_tracker_mapping_from_file(input_tracker_mapping_file);
+    my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
+    my_channel_mapping.initialize();
 
     // Calo tracker statistics :
-
-
     std::string output_root_filename = output_path + "/main_histograms.root";
     DT_LOG_INFORMATION(logging, "Output main root filename :" + output_root_filename);
     TFile * root_file = new TFile(output_root_filename.c_str(), "RECREATE");
     TTree * root_tree = new TTree("HC_data_quality_tree","Half commissioning data quality");
 
     // General info :
-    uint64_t event_number = 0;
+    uint32_t event_number = 0;
     double   event_time_start_ns = 0;
-    root_tree->Branch("event", &event_number ,"event/I");
+    root_tree->Branch("event_number", &event_number);
     root_tree->Branch("event_tstart", &event_time_start_ns);
 
     // Calorimeter info :
+    std::vector<uint32_t> calo_column;
+    std::vector<uint32_t> calo_row;
+    std::vector<double>   raw_timestamp;
     std::vector<double>   timestamp_ns;
     std::vector<bool>     high_treshold;
     std::vector<bool>     low_treshold_only;
+    std::vector<uint32_t> low_threshold_trig_count;
+    std::vector<int32_t>  low_threshold_time_count;
+    std::vector<uint32_t> waveform_data_size;
+    std::vector<uint32_t> fcr;
+
+    // std::vector<TGraph>   raw_waveform_data; // to add ???? <- big size 1024 * 16 int * X calo hit
+    // std::vector<int> x_value_sample;
+    // for (auto isample = 0; isample < fecom::calo_constants::MAX_NUMBER_OF_SAMPLES; isample++) x_value_sample.push_back(isample);
+
+    std::vector<int32_t>  raw_baseline;
     std::vector<double>   baseline_volt;
+    std::vector<int32_t>  raw_peak;
     std::vector<double>   peak_volt;
     std::vector<double>   raw_charge;
     std::vector<double>   charge_picocoulomb;
+    std::vector<bool>     raw_charge_overflow;
     std::vector<uint32_t> rising_cell;
     std::vector<uint32_t> rising_offset;
     std::vector<double>   rising_time_ns;
     std::vector<uint32_t> falling_cell;
     std::vector<uint32_t> falling_offset;
     std::vector<uint32_t> falling_time_ns;
+    root_tree->Branch("vector_calo_column", &calo_column);
+    root_tree->Branch("vector_calo_row", &calo_row);
+    root_tree->Branch("vector_raw_timestamp", &raw_timestamp);
     root_tree->Branch("vector_timestamp_ns", &timestamp_ns);
     root_tree->Branch("vector_high_treshold", &high_treshold);
     root_tree->Branch("vector_low_treshold_only", &low_treshold_only);
+    root_tree->Branch("vector_low_threshold_trig_count", &low_threshold_trig_count);
+    root_tree->Branch("vector_low_threshold_time_count", &low_threshold_time_count);
+    root_tree->Branch("vector_waveform_data_size", &waveform_data_size);
+    root_tree->Branch("vector_fcr", &fcr);
+
+    // Branch of std::vector<TGraph> not working, error : The class requested (vector<TGraph>) for the branch "vector_raw_waveform_data" refer to an stl collection and do not have a compiled CollectionProxy.  Please generate the dictionary for this class (vector<TGraph>)
+    // We don't add waveforms to the root tree for the moment.
+
+    // root_tree->Branch("vector_raw_waveform_data", "std::vector<TGraph>", &raw_waveform_data);
+    root_tree->Branch("vector_raw_baseline", &raw_baseline);
     root_tree->Branch("vector_baseline_volt", &baseline_volt);
+    root_tree->Branch("vector_raw_peak", &raw_peak);
     root_tree->Branch("vector_peak_volt", &peak_volt);
     root_tree->Branch("vector_raw_charge", &raw_charge);
     root_tree->Branch("vector_charge_picocoulomb", &charge_picocoulomb);
+    root_tree->Branch("vector_raw_charge_overflow", &raw_charge_overflow);
     root_tree->Branch("vector_rising_cell", &rising_cell);
     root_tree->Branch("vector_rising_offset", &rising_offset);
     root_tree->Branch("vector_rising_time_ns", &rising_time_ns);
@@ -270,17 +265,25 @@ int main(int argc_, char ** argv_)
     // Simulated Data "SD" bank label :
     std::string HCRD_bank_label = "HCRD";
 
+
+    // Statistics class
+    fecom::data_statistics cts;
+    cts.initialize();
+
     int modulo = 1000;
 
     DT_LOG_INFORMATION(logging, "Reading commisioning events...");
     DT_LOG_INFORMATION(logging, "...");
 
+
+    DT_THROW_IF(!cts.is_initialized(),
+		std::logic_error,
+		"Data statistics class is not initialized !");
+
     while (!reader.is_terminated()) {
 
-      DT_LOG_DEBUG(logging, "Entering reader");
-
       reader.process(ER);
-      DT_LOG_DEBUG(logging, "After reader process");
+
       // A plain `fecom::commissioning' object is stored here :
       if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
 	{
@@ -289,71 +292,171 @@ int main(int argc_, char ** argv_)
 	  if (is_debug) CE.tree_dump(std::clog, "A com event");
 
 	  // Fill data quality :
-	  // event_number = CE.get_event_id().get_event_number();
+	  event_number = CE.get_event_id().get_event_number();
 	  event_time_start_ns = CE.get_time_start_ns();
+
+	  DT_LOG_DEBUG(logging, "Event number = " << event_number);
 
 	  if ((event_number % modulo) == 1 ){
 	    DT_LOG_DEBUG(logging, "Event number = " << event_number);
 	  }
 
-	  DT_LOG_DEBUG(logging, "before has calo hits");
 	  // loop on all calo hits in each commissioning event
 	  if (CE.has_calo_hits()) {
 	    for (auto icalo = CE.get_calo_hit_collection().begin();
 		 icalo != CE.get_calo_hit_collection().end();
 		 icalo++) {
-	      timestamp_ns.push_back(icalo->tdc_ns);
-	      high_treshold.push_back(icalo->high_threshold);
-	      low_treshold_only.push_back(icalo->low_threshold);
-	      baseline_volt.push_back(icalo->baseline_volt);
-	      raw_charge.push_back(icalo->raw_charge);
-	      peak_volt.push_back(icalo->peak_volt);
-	      charge_picocoulomb.push_back(icalo->charge_picocoulomb);
-	      rising_cell.push_back(icalo->rising_cell);
-	      rising_time_ns.push_back(icalo->rising_time_ns);
-	      falling_cell.push_back(icalo->falling_cell);
-	      falling_time_ns.push_back(icalo->falling_time_ns);
+	      geomtools::geom_id calo_eid = icalo->electronic_id;
+
+	      // Check if the calo hit is in the bimap :
+	      if (my_channel_mapping.is_calo_channel_in_map(calo_eid))
+		{
+		  if (is_debug) icalo->tree_dump(std::clog, "A calo hit");
+
+		  geomtools::geom_id calo_gid;
+		  my_channel_mapping.get_geometric_id_from_electronic_id(calo_eid,
+									 calo_gid);
+
+		  // Calo hit ID is an electronic ID, mapping is needed to have the corresponding GID :
+		  uint16_t column = calo_gid.get(fecom::calo_constants::COLUMN_INDEX);
+		  uint16_t row = calo_gid.get(fecom::calo_constants::ROW_INDEX);
+
+		  // calo_raw_charge_trig_row_TH1F[row]->Fill(icalo->raw_charge);
+		  // hit_calo_count_total_TH2F->Fill(column, row);
+
+		  // Fill raw data calo in root tree :
+		  calo_column.push_back(column);
+		  calo_row.push_back(row);
+		  raw_timestamp.push_back(icalo->raw_tdc);
+		  timestamp_ns.push_back(icalo->tdc_ns);
+		  high_treshold.push_back(icalo->high_threshold);
+		  low_treshold_only.push_back(icalo->low_threshold);
+		  low_threshold_trig_count.push_back(icalo->low_threshold_trig_count);
+		  low_threshold_time_count.push_back(icalo->low_threshold_time_count);
+		  waveform_data_size.push_back(icalo->waveform_data_size);
+		  fcr.push_back(icalo->fcr);
+
+		  // std::vector<int> intermediate_raw_waveform_data;
+		  // for (auto isample = 0; isample < fecom::calo_constants::MAX_NUMBER_OF_SAMPLES; isample ++) {
+		  //   intermediate_raw_waveform_data.push_back(icalo->raw_waveform_data[isample]);
+		  // }
+
+		  // TGraph my_graph(x_value_sample.size(),
+		  // 		  & x_value_sample[0],
+		  // 		  & intermediate_raw_waveform_data[0]);
+		  // raw_waveform_data.push_back(my_graph);
+
+		  raw_baseline.push_back(icalo->raw_baseline);
+		  baseline_volt.push_back(icalo->baseline_volt);
+		  raw_peak.push_back(icalo->raw_peak);
+		  peak_volt.push_back(icalo->peak_volt);
+		  raw_charge.push_back(icalo->raw_charge);
+		  charge_picocoulomb.push_back(icalo->charge_picocoulomb);
+		  raw_charge_overflow.push_back(icalo->raw_charge_overflow);
+		  rising_cell.push_back(icalo->rising_cell);
+		  rising_offset.push_back(icalo->rising_offset);
+		  rising_time_ns.push_back(icalo->rising_time_ns);
+		  falling_cell.push_back(icalo->falling_cell);
+		  falling_offset.push_back(icalo->falling_offset);
+		  falling_time_ns.push_back(icalo->falling_time_ns);
+		}
 	    }
 	  }
-	  DT_LOG_DEBUG(logging, "after has calo hits");
 
 	  // loop on all tracker hits in each commissioning event
 	  if (CE.has_tracker_hits()) {
 	    std::size_t tracker_hit_counter = 0;
+
 	    for (auto itrack = CE.get_tracker_hit_collection().begin();
 		 itrack != CE.get_tracker_hit_collection().end();
 		 itrack++) {
-	      unsigned int layer = itrack->cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
-	      unsigned int row = itrack->cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
-	      DT_LOG_DEBUG(logging, "Tracker hit count" << tracker_hit_counter);
-	      DT_LOG_DEBUG(logging, "Layer" << layer);
-	      DT_LOG_DEBUG(logging, "Row  " << row);
+	      geomtools::geom_id the_actual_cell_gid = itrack->cell_geometric_id;
 
-	      cell_gid.push_back(itrack->cell_geometric_id);
-	      cell_layer.push_back(layer);
-	      cell_row.push_back(row);
-	      if (itrack->has_anodic_t0()) anodic_t0_ns.push_back(itrack->anodic_t0_ns);
-	      if (itrack->has_anodic_t1()) anodic_t1_ns.push_back(itrack->anodic_t1_ns);
-	      if (itrack->has_anodic_t2()) anodic_t2_ns.push_back(itrack->anodic_t2_ns);
-	      if (itrack->has_anodic_t3()) anodic_t3_ns.push_back(itrack->anodic_t3_ns);
-	      if (itrack->has_anodic_t4()) anodic_t4_ns.push_back(itrack->anodic_t4_ns);
-	      if (itrack->has_bot_cathodic_time()) bot_cathodic_time_ns.push_back(itrack->bot_cathodic_time_ns);
-	      if (itrack->has_top_cathodic_time()) top_cathodic_time_ns.push_back(itrack->top_cathodic_time_ns);
-	      tracker_hit_counter++;
+	      if (itrack->cell_geometric_id.is_valid()) {
+		unsigned int layer = itrack->cell_geometric_id.get(fecom::tracker_constants::LAYER_INDEX);
+		unsigned int row = itrack->cell_geometric_id.get(fecom::tracker_constants::ROW_INDEX);
+		// hit_tracker_count_total_TH2F->Fill(row, layer);
+
+		// Fill raw data calo in root tree :
+		cell_gid.push_back(itrack->cell_geometric_id);
+		cell_layer.push_back(layer);
+		cell_row.push_back(row);
+		if (itrack->has_anodic_t0()) anodic_t0_ns.push_back(itrack->anodic_t0_ns);
+		if (itrack->has_anodic_t1()) anodic_t1_ns.push_back(itrack->anodic_t1_ns);
+		if (itrack->has_anodic_t2()) anodic_t2_ns.push_back(itrack->anodic_t2_ns);
+		if (itrack->has_anodic_t3()) anodic_t3_ns.push_back(itrack->anodic_t3_ns);
+		if (itrack->has_anodic_t4()) anodic_t4_ns.push_back(itrack->anodic_t4_ns);
+		if (itrack->has_bot_cathodic_time()) bot_cathodic_time_ns.push_back(itrack->bot_cathodic_time_ns);
+		if (itrack->has_top_cathodic_time()) top_cathodic_time_ns.push_back(itrack->top_cathodic_time_ns);
+		tracker_hit_counter++;
+	      }
+	      else {
+		std::clog << "GID is not valid, it seems that the tracker hit was not in the mapping" << std::endl;
+		// Error not throw because it will be useful for debug purpose
+		// In commissioning, we had some data from the FEB not mapped with a physical geiger cell
+	      }
+	    }
+	  } // end of if has tracker hit
+
+
+	  // Fill histograms if calo tracker :
+	  if (CE.is_calo_tracker()) {
+	    double event_time_start = CE.get_time_start_ns();
+
+	    for (auto icalo = CE.get_calo_hit_collection().begin();
+		 icalo != CE.get_calo_hit_collection().end();
+		 icalo++) {
+	      if (icalo->high_threshold || icalo->low_threshold) {
+		geomtools::geom_id calo_eid = icalo->electronic_id;
+
+		// Check if the calo hit is in the bimap :
+		if (my_channel_mapping.is_calo_channel_in_map(calo_eid)) {
+		  if (is_debug) icalo->tree_dump(std::clog, "A calo hit");
+		  geomtools::geom_id calo_gid;
+		  my_channel_mapping.get_geometric_id_from_electronic_id(calo_eid,
+									 calo_gid);
+
+		  // Calo hit ID is an electronic ID, mapping is needed to have the corresponding GID :
+		  // uint16_t column = calo_gid.get(fecom::calo_constants::COLUMN_INDEX);
+		  // uint16_t row = calo_gid.get(fecom::calo_constants::ROW_INDEX);
+
+		  // calo_tracker_calo_distrib_TH2F->Fill(column, row);
+
+		  double delta_t_calo_calo = icalo->tdc_ns - event_time_start;
+		  if (delta_t_calo_calo != 0) {} //calo_tracker_delta_t_calo_tref_TH1F->Fill(delta_t_calo_calo);
+
+		}
+	      }
 	    }
 	  }
-	  DT_LOG_DEBUG(logging, "after has tracker hits");
 
+
+
+	  if (is_debug) std::clog << "Event number before filling = " << event_number << std::endl;
 	  // Fill the tree for each commissioning event :
 	  root_tree->Fill();
 
+	  // Clear vectors
+	  event_number = 0;
+	  event_time_start_ns = 0;
+	  calo_column.clear();
+	  calo_row.clear();
+	  raw_timestamp.clear();
 	  timestamp_ns.clear();
 	  high_treshold.clear();
 	  low_treshold_only.clear();
+	  low_threshold_trig_count.clear();
+	  low_threshold_time_count.clear();
+	  waveform_data_size.clear();
+	  fcr.clear();
+	  // raw_waveform_data.clear();
+	  raw_baseline.clear();
 	  baseline_volt.clear();
+	  raw_peak.clear();
 	  peak_volt.clear();
 	  raw_charge.clear();
 	  charge_picocoulomb.clear();
+	  raw_charge_overflow.clear();
 	  rising_cell.clear();
 	  rising_offset.clear();
 	  rising_time_ns.clear();
@@ -371,8 +474,6 @@ int main(int argc_, char ** argv_)
 	  anodic_t4_ns.clear();
 	  bot_cathodic_time_ns.clear();
 	  top_cathodic_time_ns.clear();
-
-	  DT_LOG_DEBUG(logging, "after clear all vectors");
 
 	  // double event_time_ref = CE.get_time_start_ns();
 
@@ -461,76 +562,15 @@ int main(int argc_, char ** argv_)
 
 
       ER.clear();
-      event_number++;
+      // event_number++;
     } // end of while is reader
 
     root_file->cd();
-    // Write tree to file:
+    // Write tree and histograms in file:
     root_tree->Write("", TObject::kOverwrite);
+
     // Close file:
     root_file->Close();
-
-
-    // General statistics :
-    std::ofstream ofhist(output_filename.c_str());
-    double eff_only_calo    = (static_cast<double>(event_only_calo) / static_cast<double>(event_number)) * 100.;
-    double eff_only_tracker = (static_cast<double>(event_only_tracker) /  static_cast<double>(event_number)) * 100.;
-    double eff_calo_tracker = (static_cast<double>(event_calo_tracker) /  static_cast<double>(event_number)) * 100.;
-
-    ofhist << "***GENERAL STATISTICS***" << std::endl;
-    ofhist << "Total number of commissioning events : " << event_number <<  std::endl;
-    ofhist << "Total number of calo only events     : " << event_only_calo    << " Eff : " << eff_only_calo    << "%" << std::endl;
-    ofhist << "Total number of tracker only events  : " << event_only_tracker << " Eff : " << eff_only_tracker << "%" <<std::endl;
-    ofhist << "Total number of calo tracker events  : " << event_calo_tracker << " Eff : " << eff_calo_tracker << "%" <<std::endl << std::endl;
-
-    ofhist << "***CALO STATISTICS***" << std::endl;
-    ofhist << "Total Calo hits (if 2+ calos HT)         : " << calo_hit_number << std::endl << std::endl;
-
-    ofhist << "***TRACKER STATISTICS***" << std::endl;
-    ofhist << "Total Tracker hits if calo + tracker     : " << tracker_hit_number << std::endl;
-    ofhist << "Total anode t0 hits if calo + tracker    : " << anode_t0_counter << std::endl;
-    ofhist << "Total anode t0 only if calo + tracker    : " << anode_t0_only_counter << std::endl;
-    ofhist << "Total bot cathode hits if calo + tracker : " << bot_cathode_counter << std::endl;
-    ofhist << "Total bot cathode only if calo + tracker : " << bot_cathode_only_counter << std::endl << std::endl;
-
-    ofhist.close();
-    ofhist.clear();
-
-    std::string sname = "/tmp/delta_t_calo_ref.hist";
-    ofhist.open(sname.c_str());
-    delta_t_calo_tref.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
-
-    sname = "/tmp/delta_t_anode_tref.hist";
-    ofhist.open(sname.c_str());
-    delta_t_anode_tref.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
-
-    sname = "/tmp/delta_t_cathode_tref.hist";
-    ofhist.open(sname.c_str());
-    delta_t_cathode_tref.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
-
-    sname = "/tmp/delta_t_anode_cathode_same_hit.hist";
-    ofhist.open(sname.c_str());
-    delta_t_anode_cathode_same_hit.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
-
-    sname = "/tmp/delta_t_anode_anode.hist";
-    ofhist.open(sname.c_str());
-    delta_t_anode_anode.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
-
-    sname = "/tmp/delta_t_cathode_cathode.hist";
-    ofhist.open(sname.c_str());
-    delta_t_cathode_cathode.print(ofhist);
-    ofhist.close();
-    ofhist.clear();
 
     DT_LOG_INFORMATION(logging, "The end.");
   } catch (std::exception & error) {

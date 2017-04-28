@@ -141,17 +141,6 @@ namespace fecom {
 
 		const std::bitset<4> & get_traits() const { return _traits_; }
 
-	public :
-
-		// Management :
-		//	mutable uint64_t _last_time_in_ns_added_; //!< Last time in ns added in the commissioning event (calo or tracker channel)
-		//	mutable std::bitset<4> _traits_; //!< Traits for data quality of the commissioning event of data
-		/*
-			BIT 0 : Tracker only Event
-			BIT 1 : UNDEFINED (ftm)
-			BIT 2 : UNDEFINED (ftm)
-			BIT 3 : UNDEFINED (ftm)
-		*/
   private:
 
     void _reset_();
@@ -163,6 +152,12 @@ namespace fecom {
 		datatools::event_id _event_id_; ///< Datatools event ID
 		double _time_start_ns_; ///< Time start of the commissioning event in ns
 		std::bitset<4> _traits_; ///< Traits for data quality of the commissioning event of data
+		/*
+			BIT 0 : Tracker only Event
+			BIT 1 : UNDEFINED (ftm)
+			BIT 2 : UNDEFINED (ftm)
+			BIT 3 : UNDEFINED (ftm)
+		*/
 		calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
 		tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id
 		tracker_hit_collection _tracker_hit_collection_; ///< Tracker hit collection for a trigger id

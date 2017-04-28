@@ -105,7 +105,7 @@ int main(int argc_, char ** argv_)
 		<< "-h         [ --help ]        produce help message" << std::endl
 		<< "-i         [ --input ]       set an input file" << std::endl
 		<< "-op        [ --output path ] set a path where all files are store" << std::endl
-		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
+		<< "-d         [ --display ]        display things for debug" << std::endl << std::endl;
       return EXIT_SUCCESS;
     }
 

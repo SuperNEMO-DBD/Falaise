@@ -111,6 +111,9 @@ namespace fecom {
          << "TDC (in ns)               : " << tdc_ns << std::endl;
 
     out_ << indent_ << io::tag()
+         << "TDC cell step (in ns)     : " << tdc_cell_step_ns << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Event ID                  : " << (int) event_id << std::endl;
 
     out_ << indent_ << io::tag()

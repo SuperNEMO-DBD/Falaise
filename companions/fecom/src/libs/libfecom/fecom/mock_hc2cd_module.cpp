@@ -415,8 +415,8 @@ namespace fecom {
 	  convert_gid_to_falaise_gid(fecom_geometric_id,
 				     falaise_geometric_id);
 
-	  std::clog << "Fecom GID : " << fecom_geometric_id
-		    << " Falaise GID : " << falaise_geometric_id << std::endl;
+	  // std::clog << "Fecom GID : " << fecom_geometric_id
+	  // 	    << " Falaise GID : " << falaise_geometric_id << std::endl;
 
 	  const int this_cell_module_number = falaise_geometric_id.get(0);
 	  if (this_cell_module_number != module_number) {
@@ -453,12 +453,12 @@ namespace fecom {
 	    // 	    << "Event Time start   = " << hc_raw_com_event_.get_time_start_ns() << std::endl;
 
 
-	    std::clog.precision(15);
-	    std::clog << "Anodic t0 = " << itracker->anodic_t0_ns << std::endl
-		      << "Tstart    = " << hc_raw_com_event_.get_time_start_ns() << std::endl;
+	    // std::clog.precision(15);
+	    // std::clog << "Anodic t0 = " << itracker->anodic_t0_ns << std::endl
+	    // 	      << "Tstart    = " << hc_raw_com_event_.get_time_start_ns() << std::endl;
 
 	    anode_time = (itracker->anodic_t0_ns - hc_raw_com_event_.get_time_start_ns()) * CLHEP::nanosecond;
-	    std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl;
+	    // std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl;
 
 	    if (anode_time < 0) anode_time = 1.0 * CLHEP::nanosecond;
 	    if (_fout_.get() != nullptr) {
@@ -469,9 +469,9 @@ namespace fecom {
 							      radius,
 							      sigma_radius);
 
-	      std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
-			<< "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
-			<< "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl << std::endl;
+	      // std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl
+	      // 		<< "Radius     = " << radius / CLHEP::cm << " cm" << std::endl
+	      // 		<< "Sigma rad  = " << sigma_radius / CLHEP::cm << " cm" << std::endl << std::endl;
 
 	      if (!datatools::is_valid(radius))
 		{

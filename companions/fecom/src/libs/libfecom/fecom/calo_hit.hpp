@@ -30,19 +30,19 @@ namespace fecom {
     virtual ~calo_hit();
 
 		/// Check if the calo hit is valid
-		virtual bool is_valid() const;
+		bool is_valid() const;
 
 		///
-		virtual double get_timestamp() const;
+		double get_timestamp() const;
 
 		/// Reset
     virtual void reset();
 
 		/// Smart print
-    virtual void tree_dump(std::ostream & out_,
-                           const std::string & title_ = "",
-                           const std::string & indent_ = "",
-                           bool inherit_ = false) const;
+		void tree_dump(std::ostream & out_,
+									 const std::string & title_ = "",
+									 const std::string & indent_ = "",
+									 bool inherit_ = false) const;
 
 		/// Get a raw sample
     int16_t get_raw_sample(const uint16_t cell_) const;
@@ -63,10 +63,9 @@ namespace fecom {
 
     uint8_t  event_id;                  ///< Debug counter (0..255)
     uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
-                                         *  Unit: clock period (default: 160 MHz)
-                                         */
-		double   tdc_cell_step_ns;
-		double   tdc_ns;                    ///< Timestampi in ns
+                                         *  Unit: clock period (default: 160 MHz) **/
+		double   tdc_cell_step_ns;          ///< Timestamp step from the feb (0.390625 ns
+		double   tdc_ns;                    ///< Timestamp in ns
     bool     low_threshold;             ///< Low threshold flag
     bool     high_threshold;            ///< High threshold flag
     uint32_t low_threshold_trig_count;  ///< (16 bits)

@@ -42,6 +42,7 @@ set(FeCom_HEADERS
   fecom/tracker_hit.ipp
   fecom/commissioning_event.hpp
   fecom/commissioning_event.ipp
+  fecom/data_statistics.hpp
   # fecom/commissioning_event_data.hpp
   # fecom/commissioning_event_data.ipp
   fecom/mock_hc2cd_module.hpp
@@ -72,6 +73,7 @@ set(FeCom_SOURCES
   fecom/tracker_hit.cpp
   fecom/commissioning_event.cpp
   # fecom/commissioning_event_data.cpp
+  fecom/data_statistics.cpp
   fecom/mock_hc2cd_module.cpp
   fecom/channel_mapping.cpp
   fecom/calo_pedestal_calib.cpp
