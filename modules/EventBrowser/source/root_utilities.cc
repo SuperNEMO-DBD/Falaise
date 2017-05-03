@@ -21,6 +21,7 @@
 
 // Standard libraries
 #include <algorithm>
+#include <iomanip>
 
 // This project
 #include <falaise/snemo/utils/root_utilities.h>

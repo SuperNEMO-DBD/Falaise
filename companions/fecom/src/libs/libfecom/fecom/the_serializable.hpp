@@ -1,11 +1,12 @@
-// -*- mode: c++; -*-
-/// the_serializable.hpp
-#ifndef THE_SERIALIZABLE_HPP
-#define THE_SERIALIZABLE_HPP
+// -*- mode: c++ ; -*-
+/// \file fecom/the_serializable.hpp
+
+#ifndef FECOM_THE_SERIALIZABLE_HPP
+#define FECOM_THE_SERIALIZABLE_HPP 1
 
 // Third Party
 // - Boost:
-#include <boost/serialization/assume_abstract.hpp>
+// #include <boost/serialization/assume_abstract.hpp>
 #include <boost/serialization/export.hpp>
 // - Bayeux/datatools:
 #include <datatools/archives_instantiation.h>
@@ -16,7 +17,6 @@
 #include <fecom/tracker_channel_hit.ipp>
 #include <fecom/tracker_hit.ipp>
 #include <fecom/commissioning_event.ipp>
-// #include <fecom/commissioning_event_data.ipp>
 
 // Force instantiation of template code associated to the classes above
 // for the Boost archive classes defined in Bayeux/datatools:
@@ -25,10 +25,9 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::calo_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::tracker_channel_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::tracker_hit)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::commissioning_event)
-// DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::commissioning_event_data)
 
 // Special implentation macro to register the class through the
 // Boost/Serialization system :
 BOOST_CLASS_EXPORT_IMPLEMENT(fecom::commissioning_event)
 
-#endif // THE_SERIALIZABLE_HPP
+#endif // FECOM_THE_SERIALIZABLE_HPP

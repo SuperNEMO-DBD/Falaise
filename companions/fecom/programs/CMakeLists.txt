@@ -1,3 +1,17 @@
+# - Dependencies
+
+find_package(Boost 1.60.0
+  REQUIRED
+  date_time
+  serialization
+  )
+
+find_package(Bayeux 3.0.0
+  REQUIRED
+  )
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
 # - Publish headers
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -6,22 +20,16 @@ include_directories(${PROJECT_BINARY_DIR}/src/libs/libfecom)
 include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 
 set(FeCom_PROGRAMS
-  main_decoder_serializer.cxx
-  main_histogram_builder.cxx
+  decode_sort_serialize.cxx
+  #hc_trigger_builder.cxx
+  hc_event_builder.cxx
+  hc_raw_data_to_calibrated_data.cxx
+  hc_data_quality.cxx
+  #main_decoder_serializer.cxx
+  #main_histogram_builder.cxx
   )
 
-find_package(Bayeux 3.0.0
-  REQUIRED
-  )
-
-find_package(Boost 1.60.0
-  REQUIRED
-  date_time
-  )
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-option(FECOM_ENABLE_PROGRAMS "Build unit testing system for libfecom" ON)
+option(FECOM_ENABLE_PROGRAMS "Build programs associated to libfecom" ON)
 
 if(FECOM_ENABLE_PROGRAMS)
   foreach(_programsource ${FeCom_PROGRAMS})
@@ -30,6 +38,8 @@ if(FECOM_ENABLE_PROGRAMS)
     add_executable(${_programname}
       ${_programsource}
       )
+    #target_link_libraries(${_programname} ${Boost_LIBRARIES})
+    #target_link_libraries(${_programname} Bayeux::Bayeux)
     target_link_libraries(${_programname} fecom
       # ${FeCom_OTHER_LIBS}
       )

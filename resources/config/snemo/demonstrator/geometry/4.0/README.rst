@@ -3,7 +3,7 @@ SuperNEMO virtual geometry setup
 ================================
 
 :Authors: François Mauger, Xavier Garrido, Yves Lemière, Guillaume Oliviero
-:Date:    2016-11-14
+:Date:    2017-03-24
 
 .. contents::
    :depth: 3
@@ -81,6 +81,9 @@ Files
 
  * ``variants/``  : the  directory  that contains  files that  describe
    geometry variants.
+
+   * ``variants/profiles/``  : the  directory  that contains official variant profiles.
+
 
 Check the configuration
 =======================

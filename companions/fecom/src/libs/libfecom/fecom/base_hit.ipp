@@ -1,3 +1,9 @@
+// -*- mode: c++ ; -*-
+/// \file fecom/base_hit.ipp
+
+#ifndef FECOM_BASE_HIT_IPP
+#define FECOM_BASE_HIT_IPP 1
+
 // This project:
 #include <fecom/base_hit.hpp>
 // To see if it's necessary :
@@ -33,3 +39,5 @@ namespace fecom {
   }
 
 } // end of fecom namespace
+
+#endif // FECOM_BASE_HIT_IPP

@@ -56,7 +56,7 @@ namespace FLReconstruct {
     }
 
     // - Run:
-    // falaise::exit_code code = falaise::EXIT_OK;
+    falaise::exit_code code = falaise::EXIT_OK;
     try {
 
       // Load plugins:
@@ -253,7 +253,7 @@ namespace FLReconstruct {
     } catch (std::exception & e) {
       std::cerr << "flreconstruct : Setup/run of simulation threw exception" << std::endl;
       std::cerr << e.what() << std::endl;
-      // code = falaise::EXIT_UNAVAILABLE;
+      code = falaise::EXIT_UNAVAILABLE;
     }
 
     if (variantService.is_started()) {
@@ -263,7 +263,7 @@ namespace FLReconstruct {
       DT_LOG_DEBUG(flRecParameters.logLevel,"Variants service is stopped.");
     }
     DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-    return falaise::EXIT_OK;
+    return code; //falaise::EXIT_OK;
   }
 
   falaise::exit_code ensure_core_services(const FLReconstructParams & recParams,

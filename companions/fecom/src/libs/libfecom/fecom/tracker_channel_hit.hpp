@@ -75,7 +75,10 @@ namespace fecom {
     virtual ~tracker_channel_hit();
 
 		/// Check if the tracker
-    bool is_valid() const;
+    virtual bool is_valid() const;
+
+		///
+		virtual double get_timestamp() const;
 
 		/// Reset
     virtual void reset();
@@ -104,7 +107,7 @@ namespace fecom {
     std::string timestamp_type;    ///< Type of the timestamp (t0..t6)
 
     // Data :
-    uint64_t timestamp_value;      ///< Value of the timestamp
+		uint64_t timestamp_value;      ///< Value of the timestamp
     double timestamp_time_ns;      ///< Value of the timestamp in ns
 
 		DATATOOLS_SERIALIZATION_DECLARATION()

@@ -61,6 +61,7 @@ set(FalaiseLibrary_TESTS_CATCH)
 # - Declare headers, sources and test programs specific
 #   to various setups (snemo, bipo3...)
 include(common.cmake)
+include(app.cmake)
 include(snemo.cmake)
 include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
@@ -89,6 +90,9 @@ target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
 
 # - Rpath it
 set_target_properties(Falaise PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+# - Version it
+set_target_properties(Falaise PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_MAJOR})
 
 if(UNIX AND NOT APPLE)
   set_target_properties(Falaise

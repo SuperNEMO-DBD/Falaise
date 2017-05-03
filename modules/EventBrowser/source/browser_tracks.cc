@@ -35,6 +35,7 @@
 // Standard libraries:
 #include <stdexcept>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <cstdlib>
 

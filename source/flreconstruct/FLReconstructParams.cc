@@ -4,6 +4,13 @@
 namespace FLReconstruct {
 
   // static
+  const std::string & FLReconstructParams::default_file_for_output_metadata()
+  {
+    static const std::string _f("__flreconstruct-metadata.log");
+    return _f;
+  }
+
+  // static
   FLReconstructParams FLReconstructParams::makeDefault()
   {
     FLReconstructParams params;
@@ -12,20 +19,21 @@ namespace FLReconstruct {
     params.logLevel     = datatools::logger::PRIO_ERROR;
     params.userProfile  = "normal";
     params.numberOfEvents = 0; // 0 == no limit on event loop
-    params.moduloEvents = 0;
+    params.moduloEvents = 0; // 0 == no print
 
     // Experimental setup:
     params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:1.0";
 
     // Reconstruction setup:
-    params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:pipeline:1.0.0";
+    params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:1.0.0:pipeline";
     params.reconstructionPipelineConfig = "";
     params.reconstructionPipelineModule = "pipeline";
 
     // Variants support:
-    params.variantConfigUrn  = "";
+    params.variantConfigUrn = "";
     params.variantProfileUrn = "";
-    params.variantSubsystemParams.config_filename  = "";
+    params.variantSubsystemParams.config_filename = "";
+    params.variantSubsystemParams.profile_load = "";
 
     // Service support:
     params.servicesSubsystemConfigUrn = "";
@@ -35,7 +43,7 @@ namespace FLReconstruct {
     params.inputMetadataFile  = "";
     params.inputFile          = "";
     params.outputMetadataFile = "";
-    params.embeddedMetadata   = false;
+    params.embeddedMetadata   = true;
     params.outputFile         = "";
     params.inputMetadata.reset();
     params.inputMetadata.set_key_label("name");
@@ -67,29 +75,42 @@ namespace FLReconstruct {
     static const std::string tag("|-- ");
     static const std::string last_tag("`-- ");
     out_ << "FLReconstruct setup parameters: " << std::endl;
-    out_ << tag << "logLevel                   = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
-    out_ << tag << "userProfile                = " << userProfile << std::endl;
-    out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
-    out_ << tag << "moduloEvents               = " << moduloEvents << std::endl;
-    out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
-    out_ << tag << "reconstructionPipelineUrn    = " << reconstructionPipelineUrn << std::endl;
-    out_ << tag << "reconstructionPipelineConfig = " << reconstructionPipelineConfig << std::endl;
-    out_ << tag << "reconstructionPipelineModule = " << reconstructionPipelineModule << std::endl;
-    out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
-    out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
-    out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename << std::endl;
-    out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
-    out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
-    out_ << tag << "inputMetadataFile          = " << inputMetadataFile << std::endl;
-    out_ << tag << "inputFile                  = " << inputFile << std::endl;
-    out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
-    out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
+    out_ << tag
+         << "logLevel                   = " << datatools::logger::get_priority_label(this->logLevel) << std::endl;
+    out_ << tag
+         << "userProfile                = " << userProfile << std::endl;
+    out_ << tag
+         << "numberOfEvents               = " << numberOfEvents << std::endl;
+    out_ << tag
+         << "moduloEvents                 = " << moduloEvents << std::endl;
+    out_ << tag
+         << "experimentalSetupUrn         = " << experimentalSetupUrn << std::endl;
+    out_ << tag
+         << "reconstructionPipelineUrn    = " << reconstructionPipelineUrn << std::endl;
+    out_ << tag
+         << "reconstructionPipelineConfig = " << reconstructionPipelineConfig << std::endl;
+    out_ << tag
+         << "reconstructionPipelineModule = " << reconstructionPipelineModule << std::endl;
+    out_ << tag
+         << "variantConfigUrn             = " << variantConfigUrn << std::endl;
+    out_ << tag
+         << "variantProfileUrn            = " << variantProfileUrn << std::endl;
+    out_ << tag
+         << "variantSubsystemParams       = " << variantSubsystemParams.config_filename << std::endl;
+    out_ << tag
+         << "servicesSubsystemConfigUrn   = " << servicesSubsystemConfigUrn << std::endl;
+    out_ << tag
+         << "servicesSubsystemConfig      = " << servicesSubsystemConfig << std::endl;
+    out_ << tag
+         << "inputMetadataFile            = " << inputMetadataFile << std::endl;
+    out_ << tag
+         << "inputFile                    = " << inputFile << std::endl;
+    out_ << tag
+         << "outputMetadataFile           = " << outputMetadataFile << std::endl;
+    out_ << tag
+         << "embeddedMetadata             = " << std::boolalpha << embeddedMetadata << std::endl;
     out_ << last_tag
-         << "outputFile                 = " << outputFile << std::endl;
-    // out_ << tag
-    //      << "dataType                   = " << dataType << std::endl;
-    // out_ << last_tag
-    //      << "dataSubtype                = " << dataSubtype << std::endl;
+         << "outputFile                   = " << outputFile << std::endl;
     return;
   }
 

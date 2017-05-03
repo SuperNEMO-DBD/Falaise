@@ -42,7 +42,7 @@
 // Third Party
 // - Boost
 #include "boost/filesystem.hpp"
-#include "boost/date_time/posix_time/posix_time.hpp"
+// #include "boost/date_time/posix_time/posix_time.hpp"
 
 // - Bayeux
 #include "bayeux/bayeux.h"
@@ -152,10 +152,11 @@ namespace FLSimulate {
                                flSimParameters.embeddedMetadata,
                                "Metadata embedding flag");
 
-    boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
-    system_props.store_string("timestamp",
-                              boost::posix_time::to_iso_string(start_run_timestamp),
-                              "Run start timestamp");
+    // Remove timestamp from metadata:
+    // boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
+    // system_props.store_string("timestamp",
+    //                           boost::posix_time::to_iso_string(start_run_timestamp),
+    //                           "Run start timestamp");
 
     if (flSimParameters.doSimulation) {
       // Simulation section:
@@ -167,9 +168,14 @@ namespace FLSimulate {
         simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
                                       "Simulation setup URN");
       } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-        simulation_props.store_path("simulationManagerConfig",
+        simulation_props.store_path("simulationSetupConfig",
                                     flSimParameters.simulationManagerParams.manager_config_filename,
                                     "Simulation manager configuration file");
+      }
+      if (flSimParameters.saveRngSeeding && !flSimParameters.rngSeeding.empty()) {
+        // Saving effective initial seeds for PRNGs:
+        simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding,
+                                      "PRNG initial seeds");
       }
     }
 
@@ -180,6 +186,16 @@ namespace FLSimulate {
       digitization_props.set_description("Digitization setup parameters");
 
       // Not implemented yet.
+
+      // if (!flSimParameters.digitizationSetupUrn.empty()) {
+      //   digitization_props.store_string("digitizationSetupUrn",
+      //                                        flSimParameters.digitizationSetupUrn,
+      //                                        "Digitization setup URN");
+      // } else if (!flSimParameters.digitizationSetupConfig.empty()) {
+      //   digitization_props.store_path("digitizationSetupConfig",
+      //                                      flSimParameters.digitizationSetupConfig,
+      //                                      "Digitization manager configuration file");
+      // }
 
     }
 
@@ -204,9 +220,10 @@ namespace FLSimulate {
                                 "Variants profile path");
     }
 
-    if (flSimParameters.variantSubsystemParams.settings.size()) {
+    if (flSimParameters.saveVariantSettings && flSimParameters.variantSubsystemParams.settings.size()) {
+      // Saving effective list of variant settings:
       variants_props.store("settings", flSimParameters.variantSubsystemParams.settings,
-                           "Variants settings");
+                           "Effective variants settings");
     }
 
     // Services section:
@@ -243,17 +260,27 @@ namespace FLSimulate {
     }
 
     // - Variants support:
-    datatools::configuration::variant_service vserv;
+    datatools::configuration::variant_service variantService;
     if (!flSimParameters.variantSubsystemParams.logging.empty()) {
-      vserv.set_logging(datatools::logger::get_priority(flSimParameters.variantSubsystemParams.logging));
+      variantService.set_logging(datatools::logger::get_priority(flSimParameters.variantSubsystemParams.logging));
     }
     try {
       if (flSimParameters.variantSubsystemParams.is_active()) {
-        vserv.configure(flSimParameters.variantSubsystemParams);
+        variantService.configure(flSimParameters.variantSubsystemParams);
         // Start and lock the variant service:
-        vserv.start();
+        variantService.start();
         // From this point, all other services and/or processing modules can
         // benefit of the variant service during their configuration steps.
+        if (flSimParameters.variantSubsystemParams.settings.size()) {
+          // The Variant service uses explicit settings:
+          // Make sure we know the full list of effective variant settings corresponding to user choice:
+          datatools::properties dummyVariantProps;
+          datatools::configuration::variant_repository::exporter varRepExp(dummyVariantProps,
+                                                                           datatools::configuration::variant_repository::exporter::EXPORT_NOCLEAR);
+          varRepExp.process(variantService.get_repository());
+          // Update the list of *all* settings, not only those requested by the user:
+          flSimParameters.variantSubsystemParams.settings = varRepExp.get_settings();
+        }
       }
     } catch (std::exception & e) {
       std::cerr << "flsimulate : Variant service threw exception" << std::endl;
@@ -282,6 +309,15 @@ namespace FLSimulate {
       flSimModule.set_geo_label(geo_label);
       flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
       flSimModule.initialize_simple_with_service(services);
+      if (flSimModule.is_initialized()) {
+        // Fetch effective seeds' value after simulation module initialization
+        // because the embedded PRNG seed manager makes the final choice of
+        // initial seeds.
+        std::ostringstream rngSeedingOut;
+        rngSeedingOut << flSimModule.get_seed_manager();
+        flSimParameters.rngSeeding = rngSeedingOut.str();
+        DT_LOG_DEBUG(flSimParameters.logLevel, "PRNG seeding = " << flSimParameters.rngSeeding);
+      }
 
       // Digitization module:
       if (flSimParameters.doDigitization) {
@@ -347,8 +383,8 @@ namespace FLSimulate {
     }
 
     // Terminate the variant service:
-    if (vserv.is_started()) {
-      vserv.stop();
+    if (variantService.is_started()) {
+      variantService.stop();
     }
 
     return code;

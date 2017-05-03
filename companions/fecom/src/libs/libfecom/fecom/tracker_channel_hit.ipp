@@ -1,3 +1,9 @@
+// -*- mode: c++ ; -*-
+/// \file fecom/tracker_channel_hit.ipp
+
+#ifndef FECOM_TRACKER_CHANNEL_HIT_IPP
+#define FECOM_TRACKER_CHANNEL_HIT_IPP 1
+
 // Ourselves:
 #include <fecom/tracker_channel_hit.hpp>
 
@@ -33,3 +39,5 @@ namespace fecom {
 
 
 } // namespace fecom
+
+#endif // FECOM_TRACKER_CHANNEL_HIT_IPP

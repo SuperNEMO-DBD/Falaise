@@ -32,6 +32,11 @@ namespace fecom {
     return true;
   }
 
+  double tracker_channel_hit::get_timestamp() const
+  {
+    return timestamp_time_ns;
+  }
+
   void tracker_channel_hit::reset()
   {
     this->base_hit::reset();
@@ -67,10 +72,10 @@ namespace fecom {
          << "Timestamp type            : " << (std::string) timestamp_type << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Timestamp value           : " << (int) timestamp_value << std::endl;
+         << "Timestamp value           : " << (uint64_t) timestamp_value << std::endl;
 
     out_ << indent_ << io::tag()
-         << "Timestamp time (in ns     : " << timestamp_time_ns << std::endl;
+         << "Timestamp time (in ns)    : " << timestamp_time_ns << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;

@@ -251,6 +251,10 @@ ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/models/shielding.def
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/models/source_betabeta.def
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/models/source_calibration.def
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/profiles/basic-1.0.0.profile
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/profiles/default.profile
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/profiles/hc-1.0.0.profile
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/profiles/README.rst
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/README.rst
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/registries/demonstrator.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/geometry/4.0/variants/registries/geometry.conf
@@ -262,7 +266,11 @@ ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/README.rst
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/official-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/official_with_visu-1.0.0.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/pipeline/1.0.0/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/pipeline/1.0.0/modules.defs
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/pipeline/hc/1.0.0/flreconstruct.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/pipeline/hc/1.0.0/modules.defs
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/reconstruction/pipeline/README.rst
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/setup/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/setup/1.0/services.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/setup/1.0/variants/repository.conf
@@ -409,6 +417,10 @@ ${PROJECT_SOURCE_DIR}/resources//examples/flreconstruct/ex01/samples/input/flSD.
 ${PROJECT_SOURCE_DIR}/resources//examples/flreconstruct/ex01/samples/output/flRec.brio
 ${PROJECT_SOURCE_DIR}/resources//examples/flreconstruct/ex01/samples/output/flRec.meta
 ${PROJECT_SOURCE_DIR}/resources//examples/flreconstruct/ex01/vprofile.conf
+${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex00/flsimulate.conf
+${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex00/README.rst
+${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex00/samples/output/flSD.brio
+${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex00/samples/output/flSD.meta
 ${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex01/flsimulate.conf
 ${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex01/README.rst
 ${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/ex01/samples/output/flSD.brio
@@ -420,6 +432,12 @@ ${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/legacy/ex01/seeds.conf
 ${PROJECT_SOURCE_DIR}/resources//examples/flsimulate/legacy/ex01/vprofile.conf
 ${PROJECT_SOURCE_DIR}/resources//examples/geometry/ex01/ex01.cxx
 ${PROJECT_SOURCE_DIR}/resources//examples/geometry/ex01/README.rst
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/README.rst
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/rec.bash
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/rec.conf
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/simu.bash
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/simu.conf
+${PROJECT_SOURCE_DIR}/resources//examples/halfcommissioning/ex01/simu.profile
 ${PROJECT_SOURCE_DIR}/resources//examples/variants/dummy/1.0/models/dummy.def
 ${PROJECT_SOURCE_DIR}/resources//examples/variants/dummy/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources//examples/variants/dummy/1.0/registries/dummy.conf

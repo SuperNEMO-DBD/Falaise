@@ -24,7 +24,7 @@ flreconstruct \
     --input-metadata-file "${samples_dir}/input/flSD.meta" \
     --input-file "${samples_dir}/input/flSD.brio" \
     --output-metadata-file "flRec.meta" \
-    --embedded-metadata=1 \
+    --embedded-metadata=0 \
     --output-file "flRec.brio"
 if [  $? -ne 0 ]; then
     echo >&2 "[error] flreconstruct failed!"
@@ -34,9 +34,8 @@ fi
 
 echo >&2 "[info] Running flvisualize..."
 flvisualize \
-    --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
-    --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-    --variant-load "vprofile.conf" \
+    --input-metadata-file "flRec.meta" \
+    --variant-profile "vprofile.conf" \
     --input-file "flRec.brio"
 
 cd ${opwd}

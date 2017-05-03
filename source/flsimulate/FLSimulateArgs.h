@@ -33,6 +33,7 @@ namespace FLSimulate {
     // Application specific parameters:
     datatools::logger::priority logLevel;             //!< Logging priority threshold
     std::string                 userProfile;          //!< User profile
+    std::vector<std::string>    mountPoints;          //!< Directory mount directives
     unsigned int                numberOfEvents;       //!< Number of events to be processed in the pipeline
 
     bool                        doSimulation;         //!< Simulation flag
@@ -49,6 +50,7 @@ namespace FLSimulate {
     // Variants support:
     std::string                 variantConfigUrn;     //!< Variants configuration URN
     std::string                 variantProfileUrn;    //!< Variants profile URN
+    bool                        saveVariantSettings;  //!< Flag to save effective variant settings in metadata
     datatools::configuration::variant_service::config variantSubsystemParams; //!< Variants configuration parameters
 
     // Services support:
@@ -58,6 +60,8 @@ namespace FLSimulate {
     // Simulation control:
     std::string  outputMetadataFile; //!< Output metadata file
     bool         embeddedMetadata;   //!< Flag to embed metadata in the output data file
+    bool         saveRngSeeding;     //!< Flag to save PRNG seeds in metadata
+    std::string  rngSeeding;         //!< PRNG seed initialization
     std::string  outputFile;         //!< Output data file for the output module
 
     //! Construct and return the default configuration object
@@ -67,6 +71,12 @@ namespace FLSimulate {
 
     // Print:
     void print(std::ostream &) const;
+
+    // Return the default file for output metadata
+    static const std::string & default_file_for_output_metadata();
+
+    // Return the default file output metadata file
+    static const std::string & default_file_for_seeds();
 
   };
 

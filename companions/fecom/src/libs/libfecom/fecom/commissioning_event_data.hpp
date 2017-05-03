@@ -18,7 +18,7 @@ namespace fecom {
   struct commissioning_event_data
     : public datatools::i_serializable
   {
-    typedef std::set<fecom::commissioning_event, fecom::commissioning_event::compare> commissioning_event_collection;
+    typedef std::vector<fecom::commissioning_event> commissioning_event_collection;
 
     commissioning_event_data();
 

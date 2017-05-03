@@ -7,8 +7,6 @@
 #include <memory>
 
 // Third Party
-// - Boost
-#include "boost/date_time/posix_time/posix_time.hpp"
 // - Bayeux
 #include "bayeux/bayeux.h"
 #include "bayeux/version.h"
@@ -25,45 +23,12 @@
 #include "falaise/resource.h"
 #include "falaise/property_reader.h"
 #include "falaise/exitcodes.h"
+#include <falaise/app/metadata_utils.h>
 #include "FLReconstructParams.h"
 #include "FLReconstructCommandLine.h"
 #include "FLReconstructUtils.h"
 
 namespace FLReconstruct {
-
-  metadata_collector::metadata_collector(const uint32_t /*flags*/) {
-  }
-
-  //! Extract metadata from input file
-  datatools::multi_properties
-  metadata_collector::do_get_metadata_from_data(const std::string & file) const
-  {
-    // Metadata is currently available as soon as the input module is initialized.
-    std::unique_ptr<dpp::input_module> recInput(new dpp::input_module);
-    recInput->set_single_input_file(file);
-    // Input metadata management:
-    const datatools::multi_properties& iMetadataStore = recInput->get_metadata_store();
-    recInput->initialize_simple();
-    datatools::multi_properties md;
-    md.clear_key_label();
-    md.clear_meta_label();
-    md = iMetadataStore;
-    md.set_meta_label("type");
-    return md;
-  }
-
-  //! Extract metadata from input metadata file
-  datatools::multi_properties
-  metadata_collector::do_get_metadata_from_file(const std::string & file) const
-  {
-    std::string mdfile = file;
-    datatools::fetch_path_with_env(mdfile);
-    datatools::multi_properties md;
-    md.clear_key_label();
-    md.clear_meta_label();
-    md.read(mdfile);
-    return md;
-  }
 
   ///! Parse command line arguments to configure the reconstruction parameters
   void do_configure(int argc, char *argv[], FLReconstructParams& flRecParameters)
@@ -110,11 +75,13 @@ namespace FLReconstruct {
       // Force a default user profile:
       flRecParameters.userProfile = "normal";
     }
-    if (flRecParameters.outputMetadataFile.empty()) {
-      // Force a default metadata log file:
-      flRecParameters.outputMetadataFile = "flreconstruct-metadata.log";
-      // Force storage of metadata in the output data file:
-      flRecParameters.embeddedMetadata = true;
+
+    if (!flRecParameters.embeddedMetadata) {
+      if (flRecParameters.outputMetadataFile.empty()) {
+        // Force a default metadata log file:
+        flRecParameters.outputMetadataFile
+          = FLReconstructParams::default_file_for_output_metadata();
+      }
     }
 
     // Parse the FLReconstruct pipeline script:
@@ -149,6 +116,12 @@ namespace FLReconstruct {
         falaise::properties::getValueOrDefault<int>(basicSystem,
                                                     "moduloEvents",
                                                     flRecParameters.moduloEvents);
+
+      // Printing rate for events:
+      flRecParameters.userProfile =
+        falaise::properties::getValueOrDefault<std::string>(basicSystem,
+                                                            "userprofile",
+                                                            flRecParameters.userProfile);
 
       // // Unused for now:
       // flRecParameters.dataType
@@ -294,7 +267,6 @@ namespace FLReconstruct {
 
     }
 
-
     {
       // In principle all "flreconstruct::section"(s) of interest should have
       // been processed now.
@@ -315,7 +287,15 @@ namespace FLReconstruct {
        }
     }
 
-    // From this point, no other section than the processing pipeline modules definitions
+    // Check for allowed inline modules:
+    if (flRecParameters.userProfile == "production" &&
+        flRecConfig.size()) {
+      DT_THROW(FLConfigUserError,
+               "User profile '" << flRecParameters.userProfile << "' "
+               << "does not allow the definitions of inline modules!");
+    }
+
+    // From this point, no other section than inline processing pipeline modules definitions
     // should be present in the script. So we fetch modules configuration:
     flRecParameters.modulesConfig = flRecConfig;
 
@@ -326,22 +306,23 @@ namespace FLReconstruct {
   void do_postprocess_input_metadata(FLReconstructParams & flRecParameters)
   {
     DT_LOG_TRACE_ENTERING(flRecParameters.logLevel);
-    datatools::kernel & dtk = datatools::kernel::instance();
-    const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
 
     // Collect input metadata from input files:
     // we first try from some input metadata companion file, if provided,
     // then from the input data file itself, in the hope it contains metadata records.
-    uint32_t mcflags = 0;
-    metadata_collector metadataCol(mcflags);
+
+    falaise::app::metadata_collector mc;
     if (!flRecParameters.inputMetadataFile.empty()) {
       // Fetch the metadata from the companion input metadata file, if any:
-      DT_LOG_DEBUG(flRecParameters.logLevel, "Fetching input metadata from input metadata companion file...");
-      flRecParameters.inputMetadata = metadataCol.do_get_metadata_from_file(flRecParameters.inputMetadataFile);
+      DT_LOG_NOTICE(flRecParameters.logLevel,
+                    "Fetching input metadata from input metadata companion file...");
+      mc.set_input_metadata_file(flRecParameters.inputMetadataFile);
+      flRecParameters.inputMetadata = mc.get_metadata_from_metadata_file();
     } else if (!flRecParameters.inputFile.empty()) {
       // Fetch the metadata from the input data file:
-      DT_LOG_DEBUG(flRecParameters.logLevel, "Fetching input metadata from input data file...");
-      flRecParameters.inputMetadata = metadataCol.do_get_metadata_from_data(flRecParameters.inputFile);
+      DT_LOG_NOTICE(flRecParameters.logLevel, "Fetching input metadata from input data file...");
+      mc.set_input_data_file(flRecParameters.inputFile);
+      flRecParameters.inputMetadata = mc.get_metadata_from_data_file();
     } else {
       // No metadata is available. Do nothing.
       // Probably we should handle this path in the future.
@@ -351,195 +332,55 @@ namespace FLReconstruct {
     }
 
     // Input metadata of interest:
-    std::string inputDataExperimentalSetupUrn = ""; // the experimental setup identifier used to produce input data
-    std::string inputDataUserProfile = "";          // the user profile used to produce input data
-    // std::size_t inputDataNumberOfEvents = 0;        // the number of event after input data
-    // Fetch input metadata:
+    falaise::app::metadata_input iMeta;
+
+    // Extract input metadata of interest:
     if (!flRecParameters.inputMetadata.empty()) {
       // Try to extract informations from the metadata:
       DT_LOG_DEBUG(flRecParameters.logLevel, "Found input metadata");
-
-      if (flRecParameters.inputMetadata.has_key_with_meta("flsimulate", "flsimulate::section")) {
-        // Input metadata from FLSimulate
-        DT_LOG_DEBUG(flRecParameters.logLevel, "Input metadata were generated by FLSimulate");
-
-        bool inputDataDoSimulation = false;
-        bool inputDataDoDigitization = false;
-
-        {
-          // System section:
-          const datatools::properties & inputDataSystemSection
-            = flRecParameters.inputMetadata.get_section("flsimulate");
-          if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-            inputDataSystemSection.tree_dump(std::cerr, "Input metadata flsimulate basic system: ", "[debug] ");
-          }
-
-          // Check simulation flag associated to input data:
-          if (inputDataSystemSection.has_key("doSimulation")) {
-            inputDataDoSimulation = inputDataSystemSection.fetch_boolean("doSimulation");
-          }
-
-          // Check digitization flag associated to input data:
-          if (inputDataSystemSection.has_key("doDigitization")) {
-            inputDataDoDigitization = inputDataSystemSection.fetch_boolean("doDigitization");
-          }
-
-          // Check user profile associated to input data:
-          if (inputDataSystemSection.has_key("userProfile")) {
-            inputDataUserProfile = inputDataSystemSection.fetch_string("userProfile");
-          }
-
-          // First try to fetch the experimental setup identifier/URN:
-          if (inputDataSystemSection.has_key("experimentalSetupUrn")) {
-            inputDataExperimentalSetupUrn = inputDataSystemSection.fetch_string("experimentalSetupUrn");
-          }
-
-          // // Check user profile associated to input data:
-          // if (inputDataSystemSection.has_key("numberOfEvents")) {
-          //   inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
-          // }
-        } // System section
-
-        // Simulation section:
-        if (inputDataDoSimulation &&
-            flRecParameters.inputMetadata.has_key_with_meta("SimulationSubsystem", "flsimulate::section")) {
-          const datatools::properties & inputDataSimuSubsystemSection
-            = flRecParameters.inputMetadata.get_section("SimulationSubsystem");
-          if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-            inputDataSimuSubsystemSection.tree_dump(std::cerr, "Input metadata simulation subsystem: ", "[debug] ");
-          }
-
-          // If no experimental setup identifier/URN is set:
-          if (inputDataExperimentalSetupUrn.empty()) {
-            // Then try to fetch the simulation setup identifier/URN:
-            if (inputDataSimuSubsystemSection.has_key("simulationSetupUrn")) {
-              std::string inputDataSimuSetupUrn = inputDataSimuSubsystemSection.fetch_string("simulationSetupUrn");
-              {
-                std::string conf_category = "simsetup";
-                DT_THROW_IF(!dtkUrnQuery.check_urn_info(inputDataSimuSetupUrn, conf_category),
-                            std::logic_error,
-                            "Cannot query URN='" << inputDataSimuSetupUrn << "'!");
-              }
-              // and extract the associated 'experimentalSetupUrn':
-              const datatools::urn_info & simuSetupUrnInfo = dtkUrnQuery.get_urn_info(inputDataSimuSetupUrn);
-              if (simuSetupUrnInfo.has_topic("expsetup") &&
-                  simuSetupUrnInfo.get_components_by_topic("expsetup").size() == 1) {
-                inputDataExperimentalSetupUrn = simuSetupUrnInfo.get_component("expsetup");
-              }
-            }
-          }
-        } // Simulation section
-
-        // Digitization section:
-        if (inputDataDoDigitization &&
-            flRecParameters.inputMetadata.has_key_with_meta("DigitizationSubsystem", "flsimulate::section")) {
-          const datatools::properties & inputDataDigiSubsystemSection
-            = flRecParameters.inputMetadata.get_section("DigitizationSubsystem");
-          if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-            inputDataDigiSubsystemSection.tree_dump(std::cerr, "Input metadata digitization subsystem: ", "[debug] ");
-          }
-
-          // Not implemented yet.
-
-          // // If no experimental setup identifier/URN is set:
-          // if (inputDataExperimentalSetupUrn.empty()) {
-          //   // Then try to fetch the simulation setup identifier/URN:
-          //   if (inputDataDigiSubsystemSection.has_key("digitizationSetupUrn")) {
-          //     std::string inputDataDigiSetupUrn = inputDataDigiSubsystemSection.fetch_string("digitizationSetupUrn");
-          //     {
-          //       std::string conf_category = "setup";
-          //       DT_THROW_IF(!dtkUrnQuery.check_urn_info(inputDataDigiSetupUrn, conf_category),
-          //                   std::logic_error,
-          //                   "Cannot query URN='" << inputDataDigiSetupUrn << "'!");
-          //     }
-          //     // and extract the associated 'experimentalSetupUrn':
-          //     const datatools::urn_info & digiSetupUrnInfo = dtkUrnQuery.get_urn_info(inputDataDigiSetupUrn);
-          //     if (digiSetupUrnInfo.has_topic("expsetup") &&
-          //         digiSetupUrnInfo.get_components_by_topic("expsetup").size() == 1) {
-          //       inputDataExperimentalSetupUrn = digiSetupUrnInfo.get_component("expsetup");
-          //     }
-          //   }
-          // }
-
-        } // Digitization section
-
-      } // Input metadata from FLSimulate
-
-      // Try to extract informations from the metadata:
-      if (flRecParameters.inputMetadata.has_key_with_meta("flreconstruct", "flreconstruct::section")) {
-        // Input metadata from FLReconstruct
-        DT_LOG_DEBUG(flRecParameters.logLevel, "Input metadata were generated by FLReconstruct");
-        {
-          // System section:
-          const datatools::properties & inputDataSystemSection
-            = flRecParameters.inputMetadata.get_section("flreconstruct");
-          if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-            inputDataSystemSection.tree_dump(std::cerr, "Input metadata flreconstruct basic system: ", "[debug] ");
-          }
-
-          // Check user profile associated to input data:
-          if (inputDataSystemSection.has_key("userProfile")) {
-            inputDataUserProfile = inputDataSystemSection.fetch_string("userProfile");
-          }
-
-          // First try to fetch the experimental setup identifier/URN:
-          if (inputDataSystemSection.has_key("experimentalSetupUrn")) {
-            inputDataExperimentalSetupUrn = inputDataSystemSection.fetch_string("experimentalSetupUrn");
-          }
-
-          // // Check user profile associated to input data:
-          // if (inputDataSystemSection.has_key("numberOfEvents")) {
-          //   inputDataNumberOfEvents = inputDataSystemSection.fetch_integer("numberOfEvents");
-          // }
-
-        } // System section
-
-      } // Input metadata from FLReconstruct
-
-      if (!inputDataExperimentalSetupUrn.empty()) {
-        DT_LOG_NOTICE(flRecParameters.logLevel, "Input metadata from the experimental setup identifier (URN) is '" << inputDataExperimentalSetupUrn << "'.");
-      } else {
-        DT_LOG_NOTICE(flRecParameters.logLevel, "No experimental setup identifier (URN) is set from input metadata.");
+      iMeta.scan(flRecParameters.inputMetadata);
+      if (datatools::logger::is_notice(flRecParameters.logLevel)) {
+        iMeta.print(std::cerr);
       }
-
-      {
-        // Checks:
-
-        // Check the user profile:
-        if (flRecParameters.userProfile == "production") {
-          DT_THROW_IF(inputDataUserProfile != "production", FLConfigUserError,
-                      "User profile '" << flRecParameters.userProfile << "' "
-                      << "is not compatible with input metadata production user profile '" << inputDataUserProfile << "'!");
-        } else if (flRecParameters.userProfile == "normal") {
-          DT_THROW_IF(inputDataUserProfile == "expert", FLConfigUserError,
-                      "User profile '" << flRecParameters.userProfile << "' "
-                      << "is not compatible with input metadata production user profile '" << inputDataUserProfile << "'!");
-        }
-
-        // Check the experimental setup identifier:
-        if (! flRecParameters.experimentalSetupUrn.empty()) {
-          DT_THROW_IF(!inputDataExperimentalSetupUrn.empty() &&
-                      (inputDataExperimentalSetupUrn != flRecParameters.experimentalSetupUrn),
-                      std::logic_error,
-                      "Experimental setup URN='" << flRecParameters.experimentalSetupUrn << "' conflicts with experimental setup URN='"
-                      << inputDataExperimentalSetupUrn << "' from input metadata!");
-        }
-
-      } // End of checks.
-
-      {
-        // Settings:
-
-        if (flRecParameters.experimentalSetupUrn.empty()) {
-          // Force the experimental setup identifier from the value found int the input metadata
-          flRecParameters.experimentalSetupUrn = inputDataExperimentalSetupUrn;
-          DT_LOG_NOTICE(flRecParameters.logLevel, "The experimental setup identifier (URN) is set to '" << inputDataExperimentalSetupUrn << "' from input metadata.");
-        }
-
-        // End of settings.
-      }
-
     } // End of using input metadata
+
+    if (!iMeta.experimentalSetupUrn.empty()) {
+      DT_LOG_NOTICE(flRecParameters.logLevel, "Input metadata from the experimental setup identifier (URN) is '" << iMeta.experimentalSetupUrn << "'.");
+    } else {
+      DT_LOG_NOTICE(flRecParameters.logLevel, "No experimental setup identifier (URN) is set from input metadata.");
+    }
+
+    // Checks:
+    {
+      // Check the user profile:
+      if (flRecParameters.userProfile == "production") {
+        DT_THROW_IF(iMeta.userProfile != "production", FLConfigUserError,
+                    "User profile '" << flRecParameters.userProfile << "' "
+                    << "is not compatible with input metadata production user profile '" << iMeta.userProfile << "'!");
+      } else if (flRecParameters.userProfile == "normal") {
+        DT_THROW_IF(iMeta.userProfile == "expert", FLConfigUserError,
+                    "User profile '" << flRecParameters.userProfile << "' "
+                    << "is not compatible with input metadata production user profile '" << iMeta.userProfile << "'!");
+      }
+
+      // Check the experimental setup identifier:
+      if (! flRecParameters.experimentalSetupUrn.empty()) {
+        DT_THROW_IF(!iMeta.experimentalSetupUrn.empty() &&
+                    (iMeta.experimentalSetupUrn != flRecParameters.experimentalSetupUrn),
+                    std::logic_error,
+                    "Experimental setup URN='" << flRecParameters.experimentalSetupUrn << "' conflicts with experimental setup URN='"
+                    << iMeta.experimentalSetupUrn << "' extracted from input metadata!");
+      }
+    } // End of checks.
+
+    // Settings:
+    {
+      if (flRecParameters.experimentalSetupUrn.empty()) {
+        // Force the experimental setup identifier from the value found int the input metadata
+        flRecParameters.experimentalSetupUrn = iMeta.experimentalSetupUrn;
+        DT_LOG_NOTICE(flRecParameters.logLevel, "The experimental setup identifier (URN) is set to '" << iMeta.experimentalSetupUrn << "' from input metadata.");
+      }
+    } // End of settings.
 
     DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
     return;
@@ -559,8 +400,6 @@ namespace FLReconstruct {
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
                   std::logic_error,
                   "Cannot query reconstruction setup URN='" << flRecParameters.reconstructionPipelineUrn << "'!");
-
-
       // Resolve reconstruction config file path:
       std::string conf_rec_category = "configuration";
       std::string conf_rec_mime;
@@ -577,7 +416,8 @@ namespace FLReconstruct {
     if (!flRecParameters.reconstructionPipelineConfig.empty()) {
       if (!flRecParameters.modulesConfig.empty()) {
         DT_THROW(std::logic_error,
-                 "Pipeline module configuration file '" << flRecParameters.reconstructionPipelineConfig << "' conflicts with pipeline inline configuration provided by the script!");
+                 "Pipeline module configuration file '" << flRecParameters.reconstructionPipelineConfig << "' "
+                 << "conflicts with pipeline inline configuration provided by the script!");
 
       }
       std::string pipeline_config_filename = flRecParameters.reconstructionPipelineConfig;
@@ -740,108 +580,110 @@ namespace FLReconstruct {
   {
     falaise::exit_code code = falaise::EXIT_OK;
 
-    // System section:
-    datatools::properties & system_props
-      = flRecMetadata.add_section("flreconstruct", "flreconstruct::section");
-    system_props.set_description("flreconstruct basic system informations");
+    {
+      // System section:
+      datatools::properties & system_props
+        = flRecMetadata.add_section("flreconstruct", "flreconstruct::section");
+      system_props.set_description("flreconstruct basic system informations");
 
-    system_props.store_string("bayeux.version", bayeux::version::get_version(),
-                              "Bayeux version");
+      system_props.store_string("bayeux.version", bayeux::version::get_version(),
+                                "Bayeux version");
 
-    system_props.store_string("falaise.version", falaise::version::get_version(),
-                              "Falaise version");
+      system_props.store_string("falaise.version", falaise::version::get_version(),
+                                "Falaise version");
 
-    system_props.store_string("application", "flreconstruct",
-                              "The flreconstruct application used to produce reconstructed data");
+      system_props.store_string("application", "flreconstruct",
+                                "The flreconstruct application used to produce reconstructed data");
 
-    system_props.store_string("application.version", falaise::version::get_version(),
-                              "The version of the reconstruction application");
+      system_props.store_string("application.version", falaise::version::get_version(),
+                                "The version of the reconstruction application");
 
-    system_props.store_string("userProfile", flRecParameters.userProfile,
-                              "User profile");
+      system_props.store_string("userProfile", flRecParameters.userProfile,
+                                "User profile");
 
-    system_props.store_boolean("embeddedMetadata",
-                               flRecParameters.embeddedMetadata,
-                               "Metadata embedding flag");
+      system_props.store_boolean("embeddedMetadata",
+                                 flRecParameters.embeddedMetadata,
+                                 "Metadata embedding flag");
 
-    if (flRecParameters.numberOfEvents > 0) {
-      system_props.store_integer("numberOfEvents",
-                                 flRecParameters.numberOfEvents,
-                                 "Number of reconstructed events");
+      if (flRecParameters.numberOfEvents > 0) {
+        system_props.store_integer("numberOfEvents",
+                                   flRecParameters.numberOfEvents,
+                                   "Number of reconstructed events");
+      }
+
+      if (!flRecParameters.experimentalSetupUrn.empty()) {
+        system_props.store_string("experimentalSetupUrn",
+                                  flRecParameters.experimentalSetupUrn,
+                                  "Experimental setup URN");
+      }
+
     }
 
-    if (!flRecParameters.experimentalSetupUrn.empty()) {
-      system_props.store_string("experimentalSetupUrn",
-                                flRecParameters.experimentalSetupUrn,
-                                "Experimental setup URN");
+    {
+      // Variants section:
+      datatools::properties & variants_props
+        = flRecMetadata.add_section("flreconstruct.variantService", "flreconstruct::section");
+      variants_props.set_description("Variant setup");
+
+      if (!flRecParameters.variantConfigUrn.empty()) {
+        variants_props.store_string("configUrn", flRecParameters.variantConfigUrn,
+                                    "Variants setup configuration URN");
+      } else if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
+        variants_props.store_path("config", flRecParameters.variantSubsystemParams.config_filename,
+                                  "Variants setup configuration path");
+      }
+
+      if (!flRecParameters.variantProfileUrn.empty()) {
+        variants_props.store_string("profileUrn", flRecParameters.variantProfileUrn,
+                                    "Variants profile URN");
+      } else if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
+        variants_props.store_path("profile", flRecParameters.variantSubsystemParams.profile_load,
+                                  "Variants profile path");
+      }
+
+      if (flRecParameters.variantSubsystemParams.settings.size()) {
+        // Not with "production" user profile:
+        variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
+                             "Variants settings");
+      }
     }
 
-    boost::posix_time::ptime start_run_timestamp = boost::posix_time::second_clock::universal_time();
-    system_props.store_string("timestamp",
-                              boost::posix_time::to_iso_string(start_run_timestamp),
-                              "Run start timestamp");
+    {
+      // Services section:
+      datatools::properties & services_props
+        = flRecMetadata.add_section("flreconstruct.services", "flreconstruct::section");
+      services_props.set_description("Services configuration");
 
-    // Reconstruction section:
-    datatools::properties & reconstruction_props
-      = flRecMetadata.add_section("flreconstruct.pipeline", "flreconstruct::section");
-    reconstruction_props.set_description("Reconstruction setup parameters");
-
-    if (!flRecParameters.reconstructionPipelineUrn.empty()) {
-      reconstruction_props.store_string("reconstructionPipelineUrn",
-                                        flRecParameters.reconstructionPipelineUrn,
-                                        "Reconstruction setup URN");
+      if (!flRecParameters.servicesSubsystemConfigUrn.empty()) {
+        services_props.store_string("configUrn", flRecParameters.servicesSubsystemConfigUrn,
+                                    "Services setup configuration URN");
+      } else if (!flRecParameters.servicesSubsystemConfig.empty()) {
+        services_props.store_path("config", flRecParameters.servicesSubsystemConfig,
+                                  "Services setup configuration path");
+      }
     }
 
-    if (!flRecParameters.reconstructionPipelineConfig.empty()) {
-      reconstruction_props.store_string("reconstructionPipelineConfig",
-                                        flRecParameters.reconstructionPipelineUrn,
+    {
+      // Pipeline section:
+      datatools::properties & reconstruction_props
+        = flRecMetadata.add_section("flreconstruct.pipeline", "flreconstruct::section");
+      reconstruction_props.set_description("Reconstruction setup parameters");
+
+      if (!flRecParameters.reconstructionPipelineUrn.empty()) {
+        reconstruction_props.store_string("configUrn",
+                                          flRecParameters.reconstructionPipelineUrn,
+                                          "Reconstruction setup URN");
+      } else if (!flRecParameters.reconstructionPipelineConfig.empty()) {
+        reconstruction_props.store_path("config",
+                                        flRecParameters.reconstructionPipelineConfig,
                                         "Reconstruction setup main configuration file");
-    }
+      }
 
-    if (!flRecParameters.reconstructionPipelineModule.empty()) {
-      reconstruction_props.store_string("reconstructionPipelineModule",
-                                        flRecParameters.reconstructionPipelineUrn,
-                                        "Reconstruction pipeline top module");
-    }
-
-    // Variants section:
-    datatools::properties & variants_props
-      = flRecMetadata.add_section("flreconstruct.variantService", "flreconstruct::section");
-    variants_props.set_description("Variant setup");
-
-    if (!flRecParameters.variantConfigUrn.empty()) {
-      variants_props.store_string("configUrn", flRecParameters.variantConfigUrn,
-                                  "Variants setup configuration URN");
-    } else if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
-      variants_props.store_path("config", flRecParameters.variantSubsystemParams.config_filename,
-                                "Variants setup configuration path");
-    }
-
-    if (!flRecParameters.variantProfileUrn.empty()) {
-      variants_props.store_string("profileUrn", flRecParameters.variantProfileUrn,
-                                  "Variants profile URN");
-    } else if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
-      variants_props.store_path("profile", flRecParameters.variantSubsystemParams.profile_load,
-                                "Variants profile path");
-    }
-
-    if (flRecParameters.variantSubsystemParams.settings.size()) {
-      // Not with "production" user profile:
-      variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
-                           "Variants settings");
-    }
-
-    // Services section:
-    datatools::properties & services_props
-      = flRecMetadata.add_section("flreconstruct.services", "flreconstruct::section");
-    services_props.set_description("Services configuration");
-
-    if (!flRecParameters.servicesSubsystemConfigUrn.empty()) {
-      services_props.store_string("configUrn", flRecParameters.servicesSubsystemConfigUrn,
-                                  "Services setup configuration URN");
-    } else if (!flRecParameters.servicesSubsystemConfig.empty()) {
-      services_props.store_path("config", flRecParameters.servicesSubsystemConfig,
-                                "Services setup configuration path");
+      if (!flRecParameters.reconstructionPipelineModule.empty()) {
+        reconstruction_props.store_string("module",
+                                          flRecParameters.reconstructionPipelineModule,
+                                          "Reconstruction pipeline top module");
+      }
     }
 
     return code;

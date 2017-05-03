@@ -14,6 +14,7 @@
 #include <datatools/utils.h>
 #include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
+#include <datatools/things.h>
 
 // Third party:
 // - Boost:
@@ -27,8 +28,10 @@ int main(int argc_, char ** argv_)
   int iarg = 1;
   std::string input_filename = "";
   std::string output_path = "";
-  bool is_display      = false;
-  bool is_help         = false;
+  bool is_plain    = false;
+  bool is_pipeline = false;
+  bool is_display  = false;
+  bool is_help     = false;
 
   while (iarg < argc_) {
     std::string arg = argv_[iarg];
@@ -36,8 +39,17 @@ int main(int argc_, char ** argv_)
     if (arg == "-i" || arg == "--input") {
       input_filename = argv_[++iarg];
     }
+
     else if (arg == "-op" || arg == "--output-path") {
       output_path = argv_[++iarg];
+    }
+
+    else if (arg == "--plain") {
+      is_plain = true;
+    }
+
+    else if (arg == "--pipeline") {
+      is_pipeline = true;
     }
 
     else if (arg == "-d" || arg == "--display") {
@@ -61,12 +73,16 @@ int main(int argc_, char ** argv_)
       std::cerr << std::endl << "Usage :" << std::endl << std::endl
 		<< "$ BuildProducts/fecom_programs/fecom_main_decoder_serializer [OPTIONS] [ARGUMENTS]" << std::endl << std::endl
 		<< "Allowed options: " << std::endl
-		<< "-h    [ --help ]           produce help message" << std::endl
-		<< "-i    [ --input ]          set an input file" << std::endl
-		<< "-op   [ --output path ]    set a path where all files are store" << std::endl
+		<< "-h         [ --help ]        produce help message" << std::endl
+		<< "-i         [ --input ]       set an input file" << std::endl
+		<< "-op        [ --output path ] set a path where all files are store" << std::endl
+		<< "--plain    [ --plain ]       set the serialization mode to plain -> no datatools::things" << std::endl
+		<< "--pipeline [ --pipeline ]    set the serialization mode to pipeline -> in a datatools::things -> HCE bank" << std::endl
 		<< "-d    [ --display ]        display things for debug" << std::endl << std::endl;
       return 0;
     }
+  DT_THROW_IF(!is_plain && !is_pipeline, std::logic_error, "The serialization mode is not defined, it has to be defined as plain or pipeline, check your options ! ");
+  DT_THROW_IF(is_plain && is_pipeline, std::logic_error, "The serialization mode can't be plain and pipeline at the same time, check your options ! ");
 
   datatools::logger::priority logging;
   if (is_display) logging = datatools::logger::PRIO_DEBUG;
@@ -130,14 +146,14 @@ int main(int argc_, char ** argv_)
     my_channel_mapping.build_calo_mapping_from_file(input_calo_mapping_file);
     my_channel_mapping.initialize();
 
-    const double SERIALIZATION_GATE_SIZE_IN_NS = 1000000; // = 1ms for the moment (tunable !)
+    const double SERIALIZATION_GATE_SIZE_IN_NS = 100000000; // = 50 ms for the moment (tunable !)
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
-    std::vector<fecom::commissioning_event> open_commissioning_events;
     fecom::calo_hit chit;
     fecom::tracker_channel_hit tchit;
 
+    std::vector<fecom::commissioning_event> open_commissioning_events;
 
     DT_LOG_INFORMATION(logging, "Do the job...");
     DT_LOG_INFORMATION(logging, "...");
@@ -163,13 +179,18 @@ int main(int argc_, char ** argv_)
 	// tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
 	valid = "tracker";
 	actual_hit_trigger_id = tchit.trigger_id;
-	if (tchit.timestamp_time_ns != 0) actual_time_in_ns = tchit.timestamp_time_ns;
+	if (tchit.timestamp_time_ns != 0 && tchit.timestamp_time_ns != 0) actual_time_in_ns = tchit.timestamp_time_ns;
       }
 
       for (auto it_com_set = open_commissioning_events.begin();
 	   it_com_set != open_commissioning_events.end();)
 	{
 	  // it_com_set->tree_dump(std::clog, "BEGIN LOOP COM EVENT : ");
+	  /*std::clog << "Actual time = " << actual_time_in_ns << std::endl;
+	  std::clog << "Last time added = " <<  it_com_set -> _last_time_in_ns_added_ << std::endl;
+	  std::clog << "Last time added + gate = " <<  it_com_set -> _last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS << std::endl;
+	  std::clog << "Size of open com event = " <<  open_commissioning_events.size() << std::endl;*/
+
 	  if (actual_time_in_ns > it_com_set -> _last_time_in_ns_added_ + SERIALIZATION_GATE_SIZE_IN_NS)
 	    {
 	      DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
@@ -180,21 +201,31 @@ int main(int argc_, char ** argv_)
 		  const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
 		  const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
 		}
-	      serializer.store(*it_com_set);
+	      if (is_plain) serializer.store(*it_com_set);
+	      else if (is_pipeline) {
+		datatools::things commissioning_event_record;
+		commissioning_event_record.set_name("CER");
+		commissioning_event_record.set_description("A single data record with banks in it");
+		fecom::commissioning_event & CE = commissioning_event_record.add<fecom::commissioning_event>("RHCE", "The Raw Half Commissioning Event bank");
+		CE = *it_com_set;
+		serializer.store(CE);
+	      }
+	      //std::clog << "Com event Trigger ID = " << it_com_set -> get_trigger_id() << std::endl;
+
 	      DT_LOG_DEBUG(logging, "The commissioning event has been stored in the '" + output_filename + "' file");
-	      // After serialization remove it from the set
+	      // After serialization remove it from the vector
 	      open_commissioning_events.erase(it_com_set);
 	      event_serialized++;
 	    }
 	  else it_com_set++;
 	} // end of for
 
-      // Do the job if the hit is calo
+	  // Do the job if the hit is calo
       if (valid == "calo") {
 	auto it_set = std::find_if(open_commissioning_events.begin(),
 				   open_commissioning_events.end(),
 				   fecom::commissioning_event::find_by_trigger_id(actual_hit_trigger_id));
-       	if (it_set != open_commissioning_events.end()) {
+	if (it_set != open_commissioning_events.end()) {
 	  // Trigger ID already exist, add the calo hit to the existing commissioning event
 	  const_cast<fecom::commissioning_event&>(*it_set).add_calo_hit(chit);
 	  if (actual_time_in_ns > it_set -> _last_time_in_ns_added_) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
@@ -204,7 +235,7 @@ int main(int argc_, char ** argv_)
 	else {
 	  // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the open comm set
 	  fecom::commissioning_event a_new_comm_event;
-	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
+	  //	  a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
 	  a_new_comm_event.add_calo_hit(chit);
 	  a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
 	  open_commissioning_events.push_back(a_new_comm_event);
@@ -221,6 +252,7 @@ int main(int argc_, char ** argv_)
 	  // Trigger ID already exist, add the tracker channel hit to the existing commissioning event if the timestamp is not zero
 	  if (tchit.timestamp_value != 0 && tchit.timestamp_time_ns != 0)
 	    {
+	      // std::clog << "Tracker channel hit timestamp value = " << tchit.timestamp_time_ns << std::endl;
 	      const_cast<fecom::commissioning_event&>(*it_set).add_tracker_channel_hit(tchit);
 	      if (actual_time_in_ns > it_set->_last_time_in_ns_added_) it_set -> _last_time_in_ns_added_ = actual_time_in_ns;
 	    }
@@ -231,7 +263,7 @@ int main(int argc_, char ** argv_)
 	    {
 	      // Trigger ID not exist, create a new commissioning event, add the calo hit then add it to the open comm set
 	      fecom::commissioning_event a_new_comm_event;
-	      a_new_comm_event.set_trigger_id(actual_hit_trigger_id);
+	      // a_new_comm_event.set_event_id(actual_hit_trigger_id);
 	      a_new_comm_event.add_tracker_channel_hit(tchit);
 	      a_new_comm_event._last_time_in_ns_added_ = actual_time_in_ns;
 	      open_commissioning_events.push_back(a_new_comm_event);
@@ -247,6 +279,9 @@ int main(int argc_, char ** argv_)
 	  DT_THROW(std::logic_error, "Nor calo and tracker hit are valid ! ");
 	}
 
+      // std::clog << "Event serialized = " << event_serialized << std::endl;
+      // std::clog << "Hit counter      = " << hit_counter << std::endl;
+
       hit_counter++;
     } // end of while reader
 
@@ -256,6 +291,7 @@ int main(int argc_, char ** argv_)
 	 it_com_set != open_commissioning_events.end();
 	 it_com_set++)
       {
+	std::clog << "Size at the end of the open com event :" << open_commissioning_events.size() << std::endl;
 	if (it_com_set != open_commissioning_events.end() && open_commissioning_events.size() != 0)
 	  {
 	    DT_LOG_DEBUG(logging, "Begin the Serialization for a commissioning event...");
@@ -266,15 +302,36 @@ int main(int argc_, char ** argv_)
 		const_cast<fecom::commissioning_event&>(*it_com_set).set_channel_mapping(my_channel_mapping);
 		const_cast<fecom::commissioning_event&>(*it_com_set).build_tracker_hit_from_channels();
 	      }
-	    serializer.store(*it_com_set);
+	    if (is_plain) serializer.store(*it_com_set);
+	    else if (is_pipeline) {
+	      datatools::things commissioning_event_record;
+	      commissioning_event_record.set_name("CER");
+	      commissioning_event_record.set_description("A single data record with banks in it");
+	      fecom::commissioning_event & CE = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
+	      CE = *it_com_set;
+	      serializer.store(CE);
+	    }
+	    // std::clog << "Com event Trigger ID (at the end)  = " << it_com_set -> get_trigger_id() << std::endl;
 	    event_serialized++;
 	  }
       }
+
     DT_LOG_INFORMATION(logging, "Job done !");
+
+    if (is_plain) {
+      DT_LOG_INFORMATION(logging, "Serialization mode : PLAIN MODE");
+    }
+    else if (is_pipeline) {
+      DT_LOG_INFORMATION(logging, "Serialization mode : PIPELINE MODE");
+    }
+
     DT_LOG_INFORMATION(logging, "Number of commissioning event serialized : " + std::to_string(event_serialized));
+
+
     DT_LOG_INFORMATION(logging, "Output file : " << output_filename);
     DT_LOG_INFORMATION(logging, "End of reader file...");
     reader.reset();
+
 
     DT_LOG_INFORMATION(logging, "Exiting main_decoder_serializer.cxx...");
     DT_LOG_INFORMATION(logging, "EXIT_STATUS : SUCCESS");

@@ -1,3 +1,9 @@
+// -*- mode: c++ ; -*-
+/// \file fecom/calo_hit.ipp
+
+#ifndef FECOM_CALO_HIT_IPP
+#define FECOM_CALO_HIT_IPP 1
+
 // Ourselves:
 #include <fecom/calo_hit.hpp>
 
@@ -46,3 +52,5 @@ namespace fecom {
   }
 
 } // end of fecom namespace
+
+#endif // FECOM_CALO_HIT_IPP

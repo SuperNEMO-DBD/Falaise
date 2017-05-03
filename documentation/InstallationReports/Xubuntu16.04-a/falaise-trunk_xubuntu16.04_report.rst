@@ -223,7 +223,20 @@ Configure Falaise
     ${FL_DEV_SOURCE_DIR}
 ..
 
-.. -DBoost_DIR:PATH="${CADFAELBREW_PREFIX_DIR}/lib/cmake" \
+..
+  A better way:
+  $ cmake \
+    -DCMAKE_BUILD_TYPE:STRING=Release \
+    -DCMAKE_INSTALL_PREFIX:PATH="${FL_DEV_INSTALL_DIR}" \
+    -DBayeux_DIR:PATH="$(bxquery --cmakedir)" \
+    -DFALAISE_COMPILER_ERROR_ON_WARNING=ON \
+    -DFALAISE_CXX_STANDARD=11 \
+    -DFALAISE_ENABLE_TESTING=ON \
+    -DFALAISE_WITH_DOCS=ON \
+    -DFALAISE_WITH_DEVELOPER_TOOLS=ON \
+    -DFALAISE_WITH_COMPANIONS=ON \
+    -GNinja \
+    ${FL_DEV_SOURCE_DIR}
 
 Build
 -----------------

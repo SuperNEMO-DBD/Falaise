@@ -64,7 +64,7 @@ void ex01_inspect_category(const geomtools::manager & gmgr_, geometry_category_t
 
 int main (int argc_, char ** argv_)
 {
-  FALAISE_INIT_MAIN(argc_, argv_);
+  falaise::initialize(argc_, argv_);
   datatools::logger::priority logging = datatools::logger::PRIO_WARNING;
   int error_code = EXIT_SUCCESS;
   try {
@@ -194,7 +194,7 @@ int main (int argc_, char ** argv_)
     DT_LOG_FATAL(datatools::logger::PRIO_FATAL, "Unexpected error!");
     error_code = EXIT_FAILURE;
   }
-  FALAISE_FINI();
+  falaise::terminate();
   return (error_code);
 }
 

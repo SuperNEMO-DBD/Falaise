@@ -73,10 +73,10 @@ namespace snemo {
       void event_browser::welcome() const
       {
         std::cout << std::endl;
-        std::cout << "\tSUPERNEMO EVENT BROWSER                          " << std::endl
+        std::cout << "\tSuperNEMO Event Browser                          " << std::endl
                   << "\tVersion " << EventBrowser::version::get_version()  << std::endl
                   << "                                                   " << std::endl
-                  << "\tCopyright (C) 2010-2016                          " << std::endl
+                  << "\tCopyright (C) 2010-2017                          " << std::endl
                   << "\tSuperNEMO Collaboration                          " << std::endl
                   << "                                                   " << std::endl
                   << "\tCompiled with ROOT v" << gROOT->GetVersion()       << std::endl;

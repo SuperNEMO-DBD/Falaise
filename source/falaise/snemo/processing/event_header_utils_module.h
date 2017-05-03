@@ -10,8 +10,6 @@
  *
  *   Basic module to add info to event header bank
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_PROCESSING_EVENT_HEADER_UTILS_MODULE_H
@@ -21,11 +19,14 @@
 // - Bayeux/dpp:
 #include <dpp/base_module.h>
 
+// This project:
+#include <falaise/snemo/datamodels/event_header.h>
+
 namespace snemo {
 
   namespace processing {
 
-    /// \brief A basic module to add info. into the event header bank
+    /// \brief A basic module to add informations into the event header bank
     class event_header_utils_module : public dpp::base_module
     {
     public:
@@ -53,26 +54,48 @@ namespace snemo {
       /// Data record processing
       virtual process_status process(datatools::things & data_);
 
+      /// Check add header mode
+      bool is_add_header_mode() const;
+
+      /// Increment run number by one unit
+      void ah_increment_run_number(int incr_ = 1);
+
+      /// Increment event number by one unit
+      void ah_increment_event_number(int incr_ = 1);
+
+      /// Check real event type
+      bool ah_is_real() const;
+
+      /// Check simulated event type
+      bool ah_is_simulated() const;
+
     protected:
 
       /// Set default values for attributes
       void _set_defaults();
 
-      /// Process for the ADD_HEADER mode
+      /// Process for the 'add header' mode
       void _process_add_header(datatools::things & data_record_);
 
     private:
 
+      // Configuration:
       mode_type   _mode_;                         //!< Processing mode
       std::string _add_header_bank_label_;        //!< Header bank label
       bool        _add_header_update_;            //!< Update the bank itself
       int         _add_header_run_number_;        //!< Run number of data record
       int         _add_header_event_number_;      //!< Event number of data record
+      snemo::datamodel::event_header::generation_type _add_header_gentype_; //!< Event generation type
       bool        _add_header_use_genbb_weight_;  //!< Store event weight
       bool        _add_header_use_genbb_label_;   //!< Store event label
       std::string _add_header_properties_path_;   //!< Additional properties to be stored
       std::string _add_header_properties_prefix_; //!< Only store properties
                                                   //!< starting with this prefix
+
+      // Working:
+      // For "add header" mode:
+      int _ah_current_run_number_;
+      int _ah_current_event_number_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(event_header_utils_module)

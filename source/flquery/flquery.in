@@ -32,13 +32,13 @@
 prefix_dir="@CMAKE_INSTALL_PREFIX@"
 version_str="@Falaise_VERSION@"
 lib_dir="${prefix_dir}/@CMAKE_INSTALL_LIBDIR@"
+cmake_dir="${prefix_dir}/@CMAKE_INSTALL_LIBDIR@/cmake/Falaise-@Falaise_VERSION@"
 bin_dir="${prefix_dir}/@CMAKE_INSTALL_BINDIR@"
 inc_dir="${prefix_dir}/@CMAKE_INSTALL_INCLUDEDIR@"
 data_dir="${prefix_dir}/@CMAKE_INSTALL_DATADIR@/Falaise-@Falaise_VERSION@"
 doc_dir="${data_dir}/Documentation"
 resource_dir="${data_dir}/resources"
 plugin_dir="${lib_dir}/@Falaise_PLUGINLIBDIR@"
-cmake_dir="${prefix_dir}/@CMAKE_INSTALL_CMAKEDIR@/@Falaise_PLUGINLIBDIR@"
 APPNAME="flquery"
 
 # List of plugins (experimental):
@@ -71,6 +71,8 @@ Options:
   --docdir               Print documentation base directory.
 
   --resourcedir          Print resource base directory.
+
+  --cmakedir             Print CMake config directory.
 
   --plugins              Print the list of shipped plugins/modules.
 
@@ -170,6 +172,9 @@ while [ -n "$?" ]; do
 	      exit 0
 	  elif [ "${option}" = "--plugindir" ]; then
 	      echo ${plugin_dir}
+	      exit 0
+	  elif [ "${option}" = "--cmakedir" ]; then
+	      echo ${cmake_dir}
 	      exit 0
 	  elif [ "${option}" = "--resourcedir" ]; then
 	      echo ${resource_dir}

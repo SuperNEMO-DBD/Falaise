@@ -32,6 +32,7 @@ Setup
 The ``vprofile.conf`` variant configuration profile is extracted from
 the variant profile used for the simulation, preserving only the
 *geometry* part. See the ``samples/input/vprofile.conf`` profile for details.
+This example uses the output of the FLSimulate example ``ex01``.
 
 
 Configuration files
@@ -57,7 +58,7 @@ Input files
 ===========
 
 * ``samples/input/flSD.brio`` : input data file generated from the flsimulate example ``ex01``.
-* ``samples/input/flSD.meta`` : input metadata companion file (flsimulate example ``ex01``).
+* ``samples/input/flSD.meta`` : input metadata companion file (from flsimulate example ``ex01``).
 * ``samples/input/flSD-vprofile.conf`` : variant profile used in flsimulate example ``ex01`` from which
   is extracted the above ``vprofile.conf`` file.
 
@@ -71,10 +72,11 @@ Reconstruct simulated data:
 .. code:: sh
 
    $ flreconstruct \
-	  --config "flreconstruct.conf" \
+	  --pipeline "flreconstruct.conf" \
 	  --input-metadata-file "samples/input/flSD.meta" \
 	  --input-file "samples/input/flSD.brio" \
 	  --output-metadata-file "flRec.meta" \
+	  --embedded-metadata=0 \
 	  --output-file "flRec.brio"
 ..
 
@@ -89,9 +91,8 @@ Visualization of output Monte Carlo events:
 .. code:: sh
 
    $ flvisualize \
-	  --detector-config-file "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/manager.conf" \
-	  --variant-config "$(flquery --resourcedir)/config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
-	  --variant-load "vprofile.conf" \
+	  --input-metadata-file "flRec.meta"
+	  --variant-profile "vprofile.conf" \
 	  --input-file "flRec.brio"
 ..
 

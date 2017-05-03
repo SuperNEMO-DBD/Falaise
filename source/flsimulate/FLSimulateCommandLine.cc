@@ -13,6 +13,7 @@
 #include "falaise/detail/falaise_sys.h"
 #include "falaise/common/user_profile.h"
 #include "FLSimulateErrors.h"
+#include "FLSimulateUtils.h"
 
 namespace FLSimulate {
 
@@ -25,7 +26,7 @@ namespace FLSimulate {
     flClarg.logLevel = datatools::logger::PRIO_ERROR;
     flClarg.configScript = "";
     flClarg.outputMetadataFile = "";
-    flClarg.embeddedMetadata = false;
+    flClarg.embeddedMetadata = true;
     flClarg.outputFile = "";
     flClarg.userProfile = "normal";
     return flClarg;
@@ -63,24 +64,25 @@ namespace FLSimulate {
     os << "Scripting flsimulate\n"
        << "--------------------\n\n"
        << "The following subsystems of flsimulate may be configured using an input\n"
-       << "datatools::multi_properties script. The allowed sections and parameters are:\n"
+       << "datatools::multi_properties script. Some allowed sections and parameters are:\n"
        << std::endl
-       << "[section=\"SimulationSubsystem\" description=\"\"]\n"
-       << "simulationUrn : string = \"urn:snemo:demonstrator:simulation:2.1\" \n"
-       << "                                                 # URN of simulation setup\n"
+       << "#@description FLSimulate configuration script\n"
+       << "#@key_label  \"name\"\n"
+       << "#@meta_label \"type\"\n"
+       << std::endl
+       << "[name=\"flsimulate\" type=\"flsimulate::section\"]\n"
        << "numberOfEvents : integer = 1                     # Number of events to simulate\n"
-       << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
-       << "outputProfile : string = \"\"                      # Output profile (hits collections to output)\n"
        << std::endl
-       << "[section=\"VariantSubsystem\" description=\"\"]\n"
+       << "[name=\"flsimulate.simulation\" type=\"flsimulate::section\"]\n"
+       << "simulationSetupUrn : string = \"" << default_simulation_setup() << "\" \n"
+       << "                                                 # URN of simulation setup\n"
+       << "rngSeedFile : string as path = \"seeds.conf\"      # Path to file containing random number seeds\n"
+       << std::endl
+       << "[name=\"flsimulate.variantService\" type=\"flsimulate::section\"]\n"
        << "profile : string as path = \"vprofile.conf\"       # Input variant profile configuration file.\n"
        << "                                                 # (this is the recommended path). \n"
        << "settings : string[N] = \"setting1\" ... \"settingN\" # Individual variant settings\n"
        << "                                                 # (should be reserved to experts). \n"
-       << std::endl
-       << "[section=\"ServicesSubsystem\" description=\"\"]\n"
-       << "configUrn : string as path= \"services.conf\"       # Service manager profile configuration file.\n"
-       << "config    : string as path = \"services.conf\"       # Service manager profile configuration file.\n"
        << std::endl
        << "All sections and parameters are optional, and flsimulate will supply sensible\n"
        << "default values when only some are set.\n"
@@ -90,27 +92,18 @@ namespace FLSimulate {
 
   void do_help_simulation_setup(std::ostream& os)
   {
-    datatools::logger::priority logging = falaise::detail::falaise_sys::const_instance().get_logging();
-    datatools::kernel & dtk = ::datatools::kernel::instance();
-    if (dtk.has_urn_query()) {
-      const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
-      if (datatools::logger::is_debug(logging)) {
-        dtkUrnQuery.tree_dump(std::cerr, "Bayeux/datatools's kernel URN query service:", "[debug] ");
-      }
-      std::vector<std::string> flsim_urn_infos;
-      if (dtkUrnQuery.find_urn_info(flsim_urn_infos,
-                                    falaise::detail::falaise_sys::fl_setup_db_name(),
-                                    "(urn:)([^:]*)(:)([^:]*)(:simulation:)([^:]*)",
-                                    "simsetup"
-                                    )) {
-        std::clog << "List of supported simulation setups:" << std::endl;
-        for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
-          const datatools::urn_info & ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
-          os << ui.get_urn() << " : " << ui.get_description() << std::endl;
-        }
+    std::map<std::string, std::string> m = ::FLSimulate::list_of_simulation_setups();
+    std::clog << "List of supported simulation setups: ";
+    if (m.empty()) std::clog << "<empty>";
+    std::clog << std::endl;
+    for (const auto & entry : m) {
+      os << entry.first << " : ";
+      if ( entry.second.empty()) {
+        os << "<no available description>";
       } else {
-        DT_LOG_WARNING(logging, "Could not find any simulation setup from the global URN query service.");
+        os << entry.second;
       }
+      os << std::endl;
     }
     return;
   }
@@ -135,27 +128,49 @@ namespace FLSimulate {
 
       ("verbosity,V",
        bpo::value<std::string>(&verbosityLabel)->value_name("level"),
-       "set the verbosity level")
+       "set the verbosity level\n"
+       "Example: \n"
+       "  -V \"debug\" "
+       )
 
       ("user-profile,u",
        bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
        "set the user profile (\"expert\", \"normal\", \"production\")")
 
+      ("mount-directory,d",
+       bpo::value<std::vector<std::string>>(&clArgs.mountPoints)->value_name("rule"),
+       "register directories' mount points\n"
+       "Example: \n"
+       "  -d \"nemoprod@/etc/nemoprod/config\" \n"
+       "  -d \"nemoprod.data@/data/nemoprod/runs\""
+       )
+
       ("config,c",
        bpo::value<std::string>(&clArgs.configScript)->value_name("file"),
-       "configuration script for simulation")
+       "configuration script for simulation\n"
+       "Examples: \n"
+       "  -c \"simu.conf\" \n"
+       "  -c \"${WORKER_DIR}/config/simu1.conf\""
+      )
 
       ("output-metadata-file,m",
        bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
-       "file in which to store metadata")
+       "file in which to store metadata\n"
+       "Example:\n"
+       "  -m \"simu.meta\""
+      )
 
       ("embedded-metadata,E",
-       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(false),
+       bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
        "flag to (de)activate recording of metadata in the simulation results output file")
 
       ("output-file,o",
        bpo::value<std::string>(&clArgs.outputFile)->required()->value_name("file"),
-       "file in which to store simulation results")
+       "file in which to store simulation results\n"
+       "Examples:\n"
+       "  -o \"example.brio\" \n"
+       "  -o \"${WORKER_DIR}/data/run_1.xml\""
+       )
 
       ;
 

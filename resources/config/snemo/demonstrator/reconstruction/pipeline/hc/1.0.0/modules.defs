@@ -1,0 +1,75 @@
+# - Configuration
+# Authors:
+#  - F. Mauger <mauger@lpccaen.in2p3.fr>
+#  - G. Oliviéro <goliviero@lpccaen.in2p3.fr>
+# Date: 2017-04-06
+
+#@description SuperNEMO Demonstrator Reconstruction Pipeline for Half-Commissioning runs
+#@key_label  "name"
+#@meta_label "type"
+
+
+##########################################
+[name="pipeline" type="dpp::chain_module"]
+#@config The main pipeline
+
+#@description The list of processing modules chained along the pipeline
+modules : string[4] = "MockCalibration"        \
+	  	      "CATTrackerClusterizer"  \
+                      "TrackFit"               \
+                      "ChargedParticleTracker"
+
+
+#################################################
+[name="MockCalibration" type="dpp::chain_module"]
+#@config A chain of processing modules that performs the mock calibration
+
+#@description The list of processing modules chained along the pipeline
+modules : string[2] = "CalibrateTracker" "CalibrateCalorimeters"
+
+
+###########################################################################
+[name="CalibrateTracker" type="snemo::processing::mock_tracker_s2c_module"]
+
+
+####################################################################################
+[name="CalibrateCalorimeters" type="snemo::processing::mock_calorimeter_s2c_module"]
+
+
+##########################################################################################
+[name="CATTrackerClusterizer" type="snemo::reconstruction::cat_tracker_clustering_module"]
+
+# #@description Pre-clusterizer processing of prompt hits
+# TPC.processing_prompt_hits : boolean = true
+
+#@description Pre-clusterizer processing of delayed hit
+TPC.processing_delayed_hits : boolean = false
+
+#@description Force the CAT algorithm to consider a 25 gauss magnetic field (temporary trick)
+CAT.magnetic_field        : real    = 0 gauss
+
+
+###############################################################################
+[name="TrackFit" type="snemo::reconstruction::trackfit_tracker_fitting_module"]
+
+#@description The maximum number of fits to be saved (0 means all will be kept)
+maximum_number_of_fits : integer = 0
+
+# #@description Use drift time (re)calibration (values: "default", "snemo")
+# drift_time_calibration_label : string = "snemo"
+
+#@description Fit models ("helix", "line" or both)
+fitting_models : string[1] = "line"
+
+#@description 'Line' fit only guess ("BB", "BT", "TB", "TT")
+line.only_guess  : string[4] = "BB" "BT" "TB" "TT"
+
+
+##############################################################################################
+[name="ChargedParticleTracker" type="snemo::reconstruction::charged_particle_tracking_module"]
+
+#@description List of drivers to be used (see description below)
+drivers : string[3] = "VED" "CCD" "CAD"
+
+
+# end of modules.defs

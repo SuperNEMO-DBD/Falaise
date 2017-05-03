@@ -17,6 +17,7 @@
 
 // Standard Library:
 #include <string>
+#include <vector>
 
 // Third Party
 // - Boost
@@ -30,13 +31,13 @@ namespace FLSimulate {
   // Help and so on are not marked because these are handled by the UI.
   struct FLSimulateCommandLine {
     datatools::logger::priority logLevel; //!< Logging priority threshold
+    std::string userProfile;              //!< User profile
+    std::vector<std::string> mountPoints; //!< Directory mount directives
     std::string configScript;             //!< Path to configuration script
     std::string outputMetadataFile;       //!< Path for saving metadata
     bool        embeddedMetadata;         //!< Flag to embed metadata in the output data file
     std::string outputFile;               //!< Path for the output module
-    std::string userProfile;              //!< User profile
-
-    static FLSimulateCommandLine makeDefault();
+   static FLSimulateCommandLine makeDefault();
   };
 
   //! Handle printing of version information to given ostream

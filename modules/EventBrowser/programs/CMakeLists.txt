@@ -1,10 +1,11 @@
 
 set(_app_name flvisualize)
-# add_executable(${_app_name} snemo_event_browser.cxx)
 add_executable(${_app_name}
   flvisualizemain.cxx
-  FLVisualizeResources.h
-  FLVisualizeResources.cc
+  FLVisualizeArgs.h
+  FLVisualizeArgs.cc
+  FLVisualizeCommandLine.h
+  FLVisualizeCommandLine.cc
   )
 
 set_target_properties(${_app_name} PROPERTIES COMPILE_DEFINITIONS ENABLE_BINRELOC)

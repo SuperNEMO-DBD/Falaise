@@ -36,7 +36,7 @@ doSimulation : boolean = 1
 
 
 #@description Metadata embedding flag
-embeddedMetadata : boolean = 1
+embeddedMetadata : boolean = 0
 
 
 
@@ -56,7 +56,7 @@ numberOfEvents : integer = 10
 
 
 #@description Run start timestamp
-timestamp : string = "20170320T001706"
+timestamp : string = "20170326T061538"
 
 
 

@@ -69,17 +69,17 @@ install(TARGETS flsimulate_legacy
   )
 
 #-----------------------------------------------------------------------
-# Build Tests
+# Build
 add_executable(flsimulate
   flsimulatemain.cc
-  FLSimulateResources.h
-  FLSimulateResources.cc
   FLSimulateArgs.h
   FLSimulateArgs.cc
   FLSimulateCommandLine.h
   FLSimulateCommandLine.cc
   FLSimulateErrors.h
   FLSimulateErrors.cc
+  FLSimulateUtils.h
+  FLSimulateUtils.cc
   )
 target_include_directories(flsimulate PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -111,6 +111,49 @@ endif()
 # - Install
 # TODO : fixup rpaths as needed
 install(TARGETS flsimulate
+  EXPORT FalaiseTargets
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+
+#-----------------------------------------------------------------------
+# Build
+add_executable(flsimulate-configure
+  flsimulatecfgmain.cc
+  FLSimulateCommandLine.h
+  FLSimulateCommandLine.cc
+  FLSimulateErrors.h
+  FLSimulateErrors.cc
+  FLSimulateUtils.h
+  FLSimulateUtils.cc
+  )
+target_include_directories(flsimulate-configure PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  )
+target_link_libraries(flsimulate-configure
+  Falaise
+  Bayeux::Bayeux
+  ${Boost_LIBRARIES}
+  )
+
+# - Ensure link to internal and external deps
+set_target_properties(flsimulate-configure PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(flsimulate-configure
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    )
+elseif(APPLE)
+  # Temporary setting - needs testing
+  set_target_properties(flsimulate-configure
+    PROPERTIES
+      INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+    )
+endif()
+
+# - Install
+# TODO : fixup rpaths as needed
+install(TARGETS flsimulate-configure
   EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
