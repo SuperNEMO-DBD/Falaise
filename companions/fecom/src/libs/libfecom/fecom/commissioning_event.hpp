@@ -110,6 +110,15 @@ namespace fecom {
 		/// Get the tracker hit collection
 		const	commissioning_event::tracker_hit_collection & get_tracker_hit_collection() const;
 
+		/// Get the number of valid calo hits (total)
+		std::size_t get_number_of_calo() const;
+
+		/// Get the number of valid calo hits HT
+		std::size_t get_number_of_calo_ht() const;
+
+		/// Get the number of valid tracker hits (total)
+		std::size_t get_number_of_tracker() const;
+
 		/// Check if has tracker channel hits
 		bool has_tracker_hits() const;
 

@@ -102,6 +102,50 @@ namespace fecom {
     return _tracker_hit_collection_;
   }
 
+  std::size_t commissioning_event::get_number_of_calo() const
+  {
+    std::size_t calo_counter = 0;
+    for (auto icalo = get_calo_hit_collection().begin();
+	 icalo != get_calo_hit_collection().end();
+	 icalo++)
+      {
+	geomtools::geom_id calo_eid = icalo->electronic_id;
+
+	// Check if the calo hit is in the bimap :
+	if (_my_channel_mapping_->is_calo_channel_in_map(calo_eid)) calo_counter++;
+      }
+
+    return calo_counter;
+  }
+
+  std::size_t commissioning_event::get_number_of_calo_ht() const
+  {
+    std::size_t calo_ht_counter = 0;
+    for (auto icalo = get_calo_hit_collection().begin();
+	 icalo != get_calo_hit_collection().end();
+	 icalo++)
+      {
+	geomtools::geom_id calo_eid = icalo->electronic_id;
+
+	// Check if the calo hit is in the bimap :
+	if (_my_channel_mapping_->is_calo_channel_in_map(calo_eid)) if (icalo->high_threshold) calo_ht_counter++;
+      }
+
+    return calo_ht_counter;
+  }
+
+  std::size_t commissioning_event::get_number_of_tracker() const
+  {
+    std::size_t tracker_cell_counter = 0;
+    for (auto itrack = get_tracker_hit_collection().begin();
+	 itrack != get_tracker_hit_collection().end();
+	 itrack++) {
+      geomtools::geom_id the_actual_cell_gid = itrack->cell_geometric_id;
+      if (itrack->cell_geometric_id.is_valid()) tracker_cell_counter++;
+    }
+    return tracker_cell_counter;
+  }
+
   bool commissioning_event::has_tracker_hits() const
   {
     return _tracker_hit_collection_.size() != 0;
