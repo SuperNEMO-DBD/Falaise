@@ -1,0 +1,16 @@
+/* -*- mode: c++ -*- */
+// SULTAN_config.h
+
+#ifndef _SULTAN_config_h_
+#define _SULTAN_config_h_ 1
+
+#define SULTAN_VERSION @CellularAutomatonTracker_VERSION@
+
+#cmakedefine01 SULTAN_WITH_DEVEL_UTILS
+#cmakedefine01 SULTAN_WITH_DEVEL_DISPLAY
+#cmakedefine01 SULTAN_WITH_DEVEL_HISTOGRAMS
+#cmakedefine01 SULTAN_WITH_DEVEL_ROOT
+
+#endif // _SULTAN_config_h_
+
+// end of SULTAN_config.h

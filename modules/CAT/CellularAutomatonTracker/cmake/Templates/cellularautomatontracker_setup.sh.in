@@ -1,0 +1,39 @@
+# -*- mode: shell-script; -*-
+# cellularautomatontracker_setup.sh
+
+function do_cellularautomatontracker_setup ()
+{
+    if [ "x${CELLULARAUTOMATONTRACKER_VERSION}" != "x" ]; then
+	echo "WARNING: do_cellularautomatontracker_setup: CellularAutomatonTracker is already setup !" 1>&2
+	return 2
+    fi
+    export CELLULARAUTOMATONTRACKER_ROOT="@CMAKE_INSTALL_PREFIX@"
+    export CELLULARAUTOMATONTRACKER_ROOT_DIR="@CMAKE_INSTALL_PREFIX@"
+    export CELLULARAUTOMATONTRACKER_NAME="CellularAutomatonTracker"
+    export CELLULARAUTOMATONTRACKER_VERSION="@CellularAutomatonTracker_VERSION@"
+    export CELLULARAUTOMATONTRACKER_ETC_DIR="@CMAKE_INSTALL_FULL_ETCDIR@"
+    export CELLULARAUTOMATONTRACKER_BIN_DIR="@CMAKE_INSTALL_FULL_BINDIR@"
+    export CELLULARAUTOMATONTRACKER_LIB_DIR="@CMAKE_INSTALL_FULL_LIBDIR@"
+    export CELLULARAUTOMATONTRACKER_INCLUDE_DIR="@CMAKE_INSTALL_FULL_INCLUDEDIR@"
+    export CELLULARAUTOMATONTRACKER_CMAKE_CONFIG_DIR="@CMAKE_INSTALL_PREFIX@/@CellularAutomatonTracker_CMAKE_DIR@"
+
+    if [ -n "${PATH}" ]; then
+	export PATH="${CELLULARAUTOMATONTRACKER_BIN_DIR}:${PATH}"
+    else
+	export PATH="${CELLULARAUTOMATONTRACKER_BIN_DIR}"
+    fi 
+    
+    if [ -n "${@_ld_library_path_env@}" ]; then
+	export @_ld_library_path_env@="${CELLULARAUTOMATONTRACKER_LIB_DIR}:${@_ld_library_path_env@}"
+    else
+	export @_ld_library_path_env@="${CELLULARAUTOMATONTRACKER_LIB_DIR}"
+    fi 
+
+    echo "NOTICE: do_cellularautomatontracker_setup: Setup CellularAutomatonTracker done." 1>&2
+    return 0
+}
+typeset -fx do_cellularautomatontracker_setup
+
+echo "NOTICE: do_cellularautomatontracker_setup: Please setup CellularAutomatonTracker with 'do_cellularautomatontracker_setup'." 1>&2
+
+# end of cellularautomatontracker_setup.sh
