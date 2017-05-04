@@ -1,0 +1,14 @@
+
+
+ANA SmallNumber    D  0.1
+ANA TangentPhi     D  20.
+ANA TangentTheta   D  160.
+ANA SmallRadius    D  0.1
+ANA QuadrantAngle  D  90.
+ANA Ratio          D  10.
+ANA CompatibilityDistance  D  4.0
+ANA MaxChi2        D  3.
+ANA nsigma         D  4.
+ANA nofflayers     I  1
+
+

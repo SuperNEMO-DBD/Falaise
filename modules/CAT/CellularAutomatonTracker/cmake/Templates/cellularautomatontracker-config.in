@@ -1,0 +1,170 @@
+#!/usr/bin/env bash
+# -*- mode: shell-script; -*-
+# cellularautomatontracker-config
+#
+
+script_name="cellularautomatontracker-config"
+
+opwd=$(pwd)
+help=0
+debug=0
+
+function my_exit ()
+{
+    cd ${opwd}
+    exit $1
+}
+
+cellularautomatontracker_system="@CMAKE_SYSTEM_NAME@-@CMAKE_SYSTEM_PROCESSOR@"
+
+cellularautomatontracker_root="@CMAKE_INSTALL_PREFIX@"
+
+cellularautomatontracker_include_dir="@CMAKE_INSTALL_FULL_INCLUDEDIR@"
+
+cellularautomatontracker_lib_dir="@CMAKE_INSTALL_FULL_LIBDIR@"
+
+cellularautomatontracker_bin_dir="@CMAKE_INSTALL_FULL_BINDIR@"
+
+cellularautomatontracker_data_dir="@CMAKE_INSTALL_FULL_DATADIR@"
+
+cellularautomatontracker_etc_dir="@CMAKE_INSTALL_FULL_ETCDIR@"
+
+cellularautomatontracker_doc_dir="@CMAKE_INSTALL_FULL_DOCDIR@"
+
+cellularautomatontracker_cmake_config_dir="@CMAKE_INSTALL_PREFIX@/@CellularAutomatonTracker_CMAKE_DIR@"
+
+cellularautomatontracker_version=@CellularAutomatonTracker_VERSION@
+
+cellularautomatontracker_devel_utils=@CAT_WITH_DEVEL_UTILS@
+
+option="$1"
+shift 1
+option2="$1"
+shift 1
+
+if [ "x${option}" = "x" ]; then
+    echo "ERROR: ${script_name}: Missing option ! Abort !" 1>&2
+    help=1
+fi
+
+if [ "x${option}" = "x--help" -o "x${option}" = "x-h" -o "x${option}" = "x-?" ]; then
+    help=1
+fi
+
+function print_help ()
+{
+    cat<<EOF
+Usage: ${script_name} [OPTIONS]
+
+Known values for OPTION are:
+
+  --help                print this help then exit
+  --version             print version information
+  --system              print system
+  --prefix              print CellularAutomatonTracker installation prefix
+  --incdir              print include directory
+  --libdir              print library directory
+  --bindir              print binary directory
+  --datadir             print data/resources base directory
+  --docdir              print documentation base directory
+  --etcdir              print configuration base directory
+  --include             print include path pre-processor flags without dependencies
+  --cflags              print include path pre-processor flags with dependencies
+  --libs                print library linking information, without dependencies
+  --ldflags             print library linking information, with dependencies
+  --cmake-config-dir    print the installation directory for the 'CellularAutomatonTrackerConfig.cmake' file
+EOF
+    return 0
+}
+
+if [ ${help} -eq 1 ]; then
+    print_help
+    my_exit 1
+fi
+
+if [ "x${option}" = "x--system" ]; then
+    echo "${cellularautomatontracker_system}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--prefix" ]; then
+    echo "${cellularautomatontracker_root}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--version" ]; then
+    echo "${cellularautomatontracker_version}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--cmake-config-dir" ]; then
+    echo "${cellularautomatontracker_cmake_config_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--include-dir" -o "x${option}" = "x--incdir" ]; then
+    echo "${cellularautomatontracker_include_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--datadir" ]; then
+    echo "${cellularautomatontracker_data_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--etcdir" ]; then
+    echo "${cellularautomatontracker_etc_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--docdir" ]; then
+    echo "${cellularautomatontracker_doc_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--resources-dir" ]; then
+    echo "${cellularautomatontracker_resources_dir}"
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--include" ]; then
+    echo "-I${cellularautomatontracker_include_dir} "
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--cflags" ]; then
+    echo -n "-fPIC " 
+    echo -n "-I${cellularautomatontracker_include_dir} "
+    echo -n "$(boost-config --cflags math) "
+    echo -n "$(clhep-config --include) "
+    echo ""
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--libdir" ]; then
+    echo "${cellularautomatontracker_lib_dir}"
+    my_exit 0
+fi
+
+link_cat_utils=""
+if [ ${cellularautomatontracker_devel_utils} -eq 1 ]; then
+    link_cat_utils=-lCATUtils
+fi
+if [ "x${option}" = "x--libs" ]; then
+    echo -n "-L${cellularautomatontracker_lib_dir} ${link_cat_utils} -lCATAlgorithm -lmybhep "
+    echo
+    my_exit 0
+fi
+
+if [ "x${option}" = "x--ldflags" ]; then
+    echo -n "-L${cellularautomatontracker_lib_dir} ${link_cat_utils} -lCATAlgorithm -lmybhep "
+    echo -n "$(boost-config --ldflags math) "
+    echo -n "$(clhep-config --libs) "
+    my_exit 0
+fi
+
+echo "ERROR: ${script_name}: Unknown option !" 1>&2
+print_help
+my_exit 1
+
+# end of cellularautomatontracker-config

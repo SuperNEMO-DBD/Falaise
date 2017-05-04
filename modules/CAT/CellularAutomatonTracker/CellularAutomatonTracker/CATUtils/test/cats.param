@@ -1,0 +1,102 @@
+#######################################
+#                                     #
+#   Parameter- file for bhep reader    #
+#                                     #
+#######################################
+
+# Define input dst names
+# as a vector of strings
+
+DATA idst_files SV 1
+/home/nova/SNSW/from_lpc/superreco/pro/base/Nemo3Bi207/data/sunami_bi207_data_noalpha_2423.gz
+#/home/nova/SNSW/from_lpc/superreco/pro/base/Nemo3Bi207/sunami_betabeta_5258.gz
+#/home/nova/SNSW/from_lpc/superreco/pro/base/tempfig/reco.gz
+# SN electrons
+
+# /home/nova/Nemo3Data/output_catsSN.gz
+
+# /home/nova/Nemo3Data/n3cvt_bb_output.gz
+# N3 bb MC
+
+# /home/nova/SNSW/superreco/pro/base/Se82_0nubb/reco.gz
+# SN bb
+
+# /home/nova/Nemo3Data/n3cvt_bb_output_Benton.gz
+
+# /home/nova/Nemo3Data/n3cvt_data_output.gz
+# N3
+
+# /home/nova/SNSW/superreco/pro/base/Se82_0nubb/reco.gz
+
+# /Scratch/fnova/SuperNemo/Data/output_sunami.gz
+# SN MC
+
+# /mnt/users/fnova/NEMO/SNSW/superreco/pro/base/positrons/reco.gz
+
+# /Scratch/fnova/SuperNemo/Data/n3cvt_MC_output.gz
+# Nemo3 MC
+
+# /Scratch/fnova/SuperNemo/Data/n3cvt_data_output.gz
+# Nemo3 Data
+
+# /mnt/users/fnova/Se82_0nubb/sunami.gz
+
+# /Scratch/fnova/SuperNemo/Data/output_nemora_N3_MC.gz
+# Nemo3 MC processed by nemora
+
+# /Scratch/fnova/SuperNemo/Data/output_nemora.gz
+
+# /Scratch/fnova/SuperNemo/Data/output_nemora_SN.gz
+# /Scratch/fnova/SuperNemo/Data/output_nemorapau_SN.gz
+# SN MC processed by nemora
+
+# /Scratch/fnova/SuperNemo/Data/output_nemora_N3_data.gz
+# Nemo3 data processed by nemora
+
+# Define output dst names
+# as a vector of strings
+
+DATA odst_files SV 1
+/home/nova/SNSW/from_lpc/superreco/pro/base/tempfig/output_cats.gz
+
+# /Scratch/fnova/SuperNemo/Data/output_cats_N3_MC.gz
+# /Scratch/fnova/SuperNemo/Data/output_cats_N3_data.gz
+# /Scratch/fnova/SuperNemo/Data/output_cats_SN.gz
+# /mnt/users/fnova/Se82_0nubb/cats.gz
+# data/output_cats.gz
+
+# histogram file
+DATA histo_file S CatsHistogram.root
+
+# default MUTE
+DATA VERBOSITY S NORMAL
+DATA pmax D 3.6
+
+#### maximum time for running an event (ms)
+DATA MaxTime D 5000.
+
+DATA PlotTopView I 1
+DATA PlotSideView I 0
+DATA PlotInitialHits I 0
+DATA PlotTangents I 1
+DATA PlotTriplets I 1
+DATA PlotTrueTracks I 0
+DATA PlotCats I 0
+DATA PlotNemoraTracks I 0
+DATA PlotNemoTracks I 1
+DATA PlotCellIds I 1
+DATA PlotCalos I 1
+DATA PlotCaloEnergy I 1
+DATA PlotHelices I 0
+DATA PlotLegend I 1
+DATA PlotFormat S gif
+
+DATA PrintMode I 1
+
+
+
+
+
+
+
+

@@ -1,0 +1,101 @@
+# - Config file for the CellularAutomatonTracker package
+# It defines the following variables
+#  CellularAutomatonTracker_INCLUDE_DIRS - include directories for CellularAutomatonTracker
+#  CellularAutomatonTracker_DEFINITIONS  - compile definitions needed to use CellularAutomatonTracker
+#  CellularAutomatonTracker_LIBRARIES    - libraries to link against
+#
+
+if ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
+  set ( CellularAutomatonTracker_CONFIG_GUARD_COUNTER 1 )
+
+  # ---------------------------------------------------------------------------
+  # Print out values of the variables that we expect find_package to have passed
+  # to us.
+  #
+  if(CellularAutomatonTracker_CONFIG_DEBUG)
+    message(STATUS "CellularAutomatonTrackerDebug : CellularAutomatonTracker_VERSION         = ${CellularAutomatonTracker_VERSION}")
+    message(STATUS "CellularAutomatonTrackerDebug : CellularAutomatonTracker_FIND_VERSION    = ${CellularAutomatonTracker_FIND_VERSION}")
+    message(STATUS "CellularAutomatonTrackerDebug : CellularAutomatonTracker_FIND_REQUIRED   = ${CellularAutomatonTracker_FIND_REQUIRED}")
+    message(STATUS "CellularAutomatonTrackerDebug : CellularAutomatonTracker_FIND_QUIETLY    = ${CellularAutomatonTracker_FIND_QUIETLY}")
+    message(STATUS "CellularAutomatonTrackerDebug : CellularAutomatonTracker_FIND_COMPONENTS = ${CellularAutomatonTracker_FIND_COMPONENTS}")
+  endif() # end of debugging
+
+  #----------------------------------------------------------------------------
+  # Locate ourselves, since all our config files should have been installed
+  # alongside us...
+  #
+  get_filename_component(_thisdir "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+  #----------------------------------------------------------------------------
+  # Include the file listing all the imported targets.
+  # This is installed in the same location as us...
+  #
+  include("${_thisdir}/CellularAutomatonTrackerLibraryDepends.cmake")
+
+  #----------------------------------------------------------------------------
+  # Configure the path to the CellularAutomatonTracker headers, using a relative path if possible.
+  # This is only known at CMake time, so expand a CMake supplied variable
+  # In fact, this is an example of expanding an actual code block!
+  #
+  @CellularAutomatonTracker_HEADERS_SETUP@
+
+  #----------------------------------------------------------------------------
+  # Configure variables pointing to third party packages
+  #
+
+  if ( @_cat_needs_root@ )
+    ##set(CellularAutomatonTracker_ROOT_ROOT @ROOTSYS@)
+    ##set(CellularAutomatonTracker_ROOT_CONFIG_EXECUTABLE @ROOT_CONFIG_EXECUTABLE@)
+  endif ()
+
+  ##set(CellularAutomatonTracker_CLHEP_CONFIG_EXECUTABLE @CLHEP_CONFIG_EXECUTABLE@)
+
+  # Configure path to third party headers.
+  # We set this as one line for now because of the frontend inclusion of
+  # all headers. It might be possible to simplify this in future.
+  # Third party *libraries* are handled (we hope) by the LibraryDepends
+  # file later on.
+  # Unfortunately, there does not seem to be an infallible way to specify
+  # all third party dependencies, so we just try to do the simplest thing that
+  # works... There are more advanced things we can experiment with
+  # later...
+  #
+  set(CellularAutomatonTracker_THIRD_PARTY_INCLUDE_DIRS @CellularAutomatonTracker_THIRD_PARTY_INCLUDE_DIRS@)
+  set(CellularAutomatonTracker_THIRD_PARTY_LIBRARIES @CellularAutomatonTracker_THIRD_PARTY_LIBRARIES@)
+
+  set(CellularAutomatonTracker_VERSION @CellularAutomatonTracker_VERSION@)
+
+  #----------------------------------------------------------------------------
+  # Construct the overall include path for using CellularAutomatonTracker
+  #
+  list (APPEND CellularAutomatonTracker_INCLUDE_DIRS ${CellularAutomatonTracker_INCLUDE_DIR} )
+  list (APPEND CellularAutomatonTracker_INCLUDE_DIRS ${CellularAutomatonTracker_THIRD_PARTY_INCLUDE_DIRS} )
+
+  #----------------------------------------------------------------------------
+  # Set the compile definitions required to use CellularAutomatonTracker
+  #
+  set(CellularAutomatonTracker_DEFINITIONS @CellularAutomatonTracker_DEFINITIONS@)
+
+  #----------------------------------------------------------------------------
+  # Now perform final configuration
+  set(CellularAutomatonTracker_shared_FOUND TRUE)
+ 
+  set (CellularAutomatonTracker_LIBRARY_DIR @CMAKE_INSTALL_FULL_LIBDIR@ )
+ 
+  set (CellularAutomatonTracker_LIBRARY CATAlgorithm)
+
+  set (CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_LIBRARY} )
+  # if (CAT_WITH_DEV_UTILS)
+  #   list(APPEND CellularAutomatonTracker_LIBRARIES CATUtils)
+  # endif ()
+  # list (APPEND CellularAutomatonTracker_LIBRARIES mybhep)
+  # list (APPEND CellularAutomatonTracker_LIBRARIES ${CellularAutomatonTracker_THIRD_PARTY_LIBRARIES} )
+  list (APPEND CellularAutomatonTracker_LIBRARIES sultan)
+
+
+else ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
+  message ( STATUS "WARNING: Multiple inclusion of the 'CellularAutomatonTrackerConfig.cmake' file from ${PROJECT_NAME} !" )
+  math (EXPR CellularAutomatonTracker_CONFIG_GUARD_COUNTER '${CellularAutomatonTracker_CONFIG_GUARD_COUNTER}+1' )
+endif ( NOT DEFINED CellularAutomatonTracker_CONFIG_GUARD_COUNTER )
+
+# And we should be good to go...
