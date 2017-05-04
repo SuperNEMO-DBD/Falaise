@@ -215,7 +215,9 @@ namespace snemo {
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Initialized : " << is_initialized() << std::endl;
-
+      
+      _tree_dump();
+      
       return;
     }
 

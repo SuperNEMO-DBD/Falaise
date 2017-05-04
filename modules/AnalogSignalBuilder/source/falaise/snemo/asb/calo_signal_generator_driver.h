@@ -34,7 +34,7 @@ namespace snemo {
         MODE_TRIANGLE = 1 ///< Simplified mode with triangular shape signals
         // MODE_XXX = 2, ///< XXX mode with realistic shape signals
       };
-
+			
       /// Constructor
       calo_signal_generator_driver(const std::string & id_ = "calo");
 
@@ -65,7 +65,13 @@ namespace snemo {
 			void _process(const mctools::simulated_data & sim_data_,
 										mctools::signal::signal_data & sim_signal_data_);
 
-    private:
+			// Smart print
+			void _tree_dump(std::ostream & out_ = std::clog,
+											const std::string & title_ = "",
+											const std::string & indent_ = "",
+											bool inherit_ = false) const;
+
+		private:
 
 			/// Run the triangle mode process
       void _process_triangle_mode_(const mctools::simulated_data & sim_data_,
@@ -74,10 +80,6 @@ namespace snemo {
     private:
 
       mode_type _mode_ = MODE_INVALID; //!< Mode type for calo signals
-			
-      struct pimpl_type; //!< Private implementation structure
-      std::unique_ptr<pimpl_type> _pimpl_; //!< Pointer to a private implementation structure
-			
 			
     };
 

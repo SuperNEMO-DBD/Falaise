@@ -102,7 +102,12 @@ namespace snemo {
       /// Run the algorithm
       virtual void _process(const mctools::simulated_data & sim_data_,
                             mctools::signal::signal_data & sim_signal_data_) = 0;
-
+			
+			// Smart print
+      virtual void _tree_dump(std::ostream & out_ = std::clog,
+															const std::string & title_ = "",
+															const std::string & indent_ = "",
+															bool inherit_ = false) const = 0;
     private:
 
       /// Set the initialization flag

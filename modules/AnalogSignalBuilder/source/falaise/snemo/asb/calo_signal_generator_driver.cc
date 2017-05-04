@@ -21,24 +21,15 @@
 // Ourselves:
 #include <snemo/asb/calo_signal_generator_driver.h>
 
-// Third party:
-// - Bayeux/datatools:
-#include <bayeux/mctools/signal/signal_shape_builder.h>
 
 namespace snemo {
 
   namespace asb {
-
-    struct calo_signal_generator_driver::pimpl_type
-    {
-      mctools::signal::signal_shape_builder ssb;
-    };
-
+    
     calo_signal_generator_driver::calo_signal_generator_driver(const std::string & id_)
       :	base_signal_generator_driver(id_)
     {
       _mode_ = MODE_INVALID;
-      _pimpl_.reset(new pimpl_type);
       return;
     }
 
@@ -47,7 +38,6 @@ namespace snemo {
       : base_signal_generator_driver(id_),
 	_mode_(mode_)
     {
-      _pimpl_.reset(new pimpl_type);
       return;
     }
 
@@ -56,7 +46,6 @@ namespace snemo {
       if (is_initialized()) {
         this->calo_signal_generator_driver::reset();
       }
-      _pimpl_.reset();
       return;
     }
 
@@ -91,11 +80,6 @@ namespace snemo {
         DT_THROW(std::logic_error, "Missing driver mode!");
       }
       
-      _pimpl_->ssb.set_logging(datatools::logger::PRIO_DEBUG);
-      _pimpl_->ssb.set_category("calo");
-      _pimpl_->ssb.add_registered_shape_type_id("mctools::signal::triangle_signal_shape");
-      _pimpl_->ssb.add_registered_shape_type_id("mctools::signal::multi_signal_shape");
-      _pimpl_->ssb.initialize_simple();
       return;
     }
 
@@ -130,7 +114,7 @@ namespace snemo {
       return;
     }
 
-    void  calo_signal_generator_driver::_process_triangle_mode_(const mctools::simulated_data & sim_data_,
+    void calo_signal_generator_driver::_process_triangle_mode_(const mctools::simulated_data & sim_data_,
                                                                 mctools::signal::signal_data & sim_signal_data_)
     {
       DT_THROW_IF(!sim_data_.has_step_hits("calo"), std::logic_error, "Simulated Datas have no step hits 'calo'");
@@ -142,47 +126,157 @@ namespace snemo {
       if (sim_data_.has_step_hits("calo"))
 	{
 	  const size_t number_of_calo_hits = sim_data_.get_number_of_step_hits("calo");
+	  
+	  double event_time_ref;
+	  datatools::invalidate(event_time_ref);
+	  std::set<geomtools::geom_id> set_of_gids;
+	  std::map<geomtools::geom_id, unsigned int> map_gid_hit_in_gid;
+	  std::vector<mctools::signal::base_signal> atomic_signal_collection;
+
+	  // Search calo time reference for the event :
+	  for (size_t ihit = 0; ihit < number_of_calo_hits; ihit++)
+	    {
+	      const double signal_time    = sim_data_.get_step_hit("calo", ihit).get_time_start() * CLHEP::ns;
+	      if (!datatools::is_valid(event_time_ref)) event_time_ref = signal_time;
+	      if (signal_time < event_time_ref) event_time_ref = signal_time;
+	    }
+	  
 	  for (size_t ihit = 0; ihit < number_of_calo_hits; ihit++)
 	    {
 	      const mctools::base_step_hit & main_calo_hit = sim_data_.get_step_hit("calo", ihit);
 	      unsigned int calo_hit_id    = main_calo_hit.get_hit_id();
-	      const double signal_time    = main_calo_hit.get_time_stop() * CLHEP::ns;
+	      const double signal_time    = main_calo_hit.get_time_start() * CLHEP::ns;
 	      const double energy_deposit = main_calo_hit.get_energy_deposit() * CLHEP::MeV;
 	      const geomtools::geom_id & calo_gid = main_calo_hit.get_geom_id();
 	      
-	      
-	      mctools::signal::base_signal & signal = sim_signal_data_.add_signal("calo");
-	      signal.set_hit_id(calo_hit_id);
-	      signal.set_geom_id(calo_gid);
-	      // signal.set_shape_builder(_pimpl_->ssb);
-	      double t0 = signal_time;
-	      double t1 = t0 + 14 * CLHEP::ns; // Rise time on calo signal (from Bordeaux wavecatcher signals)
-	      double t2 = t1 + 72 * CLHEP::ns; // Fall time on calo signal (from Bordeaux wavecatcher signals)
+	      auto it = map_gid_hit_in_gid.find(calo_gid);
+	      bool already_exist = false;
+	      if (it != map_gid_hit_in_gid.end()) already_exist = true;
+	      if (already_exist) map_gid_hit_in_gid.find(calo_gid)->second+=1;
+	      else map_gid_hit_in_gid.insert(std::pair<geomtools::geom_id, int> (calo_gid, 1));
+
+	      set_of_gids.insert(calo_gid);
+
+	      mctools::signal::base_signal a_signal;
+
+	      a_signal.set_hit_id(calo_hit_id);
+	      a_signal.set_geom_id(calo_gid);
+
+	      const double t0 = signal_time - event_time_ref;
+	      const double t1 = t0 + 8 * CLHEP::ns; // Rise time on calo signal (from Bordeaux wavecatcher signals)
+	      const double t2 = t1 + 70 * CLHEP::ns; // Fall time on calo signal (from Bordeaux wavecatcher signals)
 	      const double amplitude = _convert_energy_to_amplitude(energy_deposit);
-	      signal.set_shape_type_id("mctools::signal::triangle_signal_shape");
-	      signal.set_shape_string_parameter("polarity", "-");
-	      signal.set_shape_real_parameter_with_explicit_unit("t0", t0, "ns");
-	      signal.set_shape_real_parameter_with_explicit_unit("t1", t1, "ns");
-	      signal.set_shape_real_parameter_with_explicit_unit("t2", t2, "ns");
-	      signal.set_shape_real_parameter_with_explicit_unit("amplitude", amplitude, "V");
-	      signal.initialize_simple();
-	      //signal.build_signal_shape("calo", signal);
+
+	      a_signal.set_category("calo");
+	      a_signal.set_time_ref(event_time_ref);
+	      a_signal.set_shape_type_id("mctools::signal::triangle_signal_shape");
+	      a_signal.set_shape_string_parameter("polarity", "-");
+	      a_signal.set_shape_real_parameter_with_explicit_unit("t0", t0, "ns");
+	      a_signal.set_shape_real_parameter_with_explicit_unit("t1", t1, "ns");
+	      a_signal.set_shape_real_parameter_with_explicit_unit("t2", t2, "ns");
+	      a_signal.set_shape_real_parameter_with_explicit_unit("amplitude", amplitude, "V");
+	      a_signal.initialize_simple();
+	      atomic_signal_collection.push_back(a_signal);
+
+	      a_signal.tree_dump(std::clog, "Calo Hit signal in driver : ");
 	      
-
-	      signal.tree_dump(std::clog, "Calo Hit signal : ");
-
-
 	      std::clog << "Time stop : " << signal_time << std::endl;
 	      std::clog << "Energy    : " << energy_deposit << std::endl;
 	      std::clog << "Amplitude : " << amplitude << std::endl;
 	      std::clog << "GID       : " << calo_gid << std::endl;
-	      
-	      // _pimpl_->ssb.create_signal_shape(
 	    }
+	  
+	  // Merge signals which are in the same calo block (thanks to GID) :
+	  for (auto it = map_gid_hit_in_gid.begin(); it != map_gid_hit_in_gid.end(); it++)
+	    {
+	      if (it->second == 1)
+		{
+		  // Signal alone :
+		  for (size_t isig = 0; isig < atomic_signal_collection.size(); isig++)
+		    {
+		      if (atomic_signal_collection[isig].get_geom_id() == it->first)
+			{
+			  mctools::signal::base_signal & signal = sim_signal_data_.add_signal("calo");
+			  signal = atomic_signal_collection[isig];
+			}
+		    }
+		}
+	      else 
+		{
+		  // Multi signal :
+		  mctools::signal::base_signal & signal = sim_signal_data_.add_signal("calo");
+		  datatools::properties multi_signal_config;
+		  signal.set_shape_type_id("mctools::signal::multi_signal_shape");
+		  for (size_t isig = 0; isig < atomic_signal_collection.size(); isig++)
+		    {
+		      if (atomic_signal_collection[isig].get_geom_id() == it->first)
+			{
+			  // One atomic signal useful to construct the multi signal
+			  
+			  // ici : builder qui permet de recréer les signaux pour construire le multi signal (et le push back dans sim signal data ??)
+			  
+			  
+
+			  //std::vector<std::string> comp_labels({"hit0","hit1","hit2"});
+			  // s5_cfg.store("components", comp_labels);
+
+			  // multi_signal_config.store("components.hit0.key", "s1");
+			  // multi_signal_config.store_real_with_explicit_unit("components.hit0.time_shift", 3.0 * CLHEP::ns);
+			  // multi_signal_config.set_unit_symbol("components.hit0.time_shift", "ns");
+			  // multi_signal_config.store_real("components.hit0.scaling", 0.5);
+
+			  // multi_signal_config.store("components.hit1.key", "s2");
+			  // multi_signal_config.store_real_with_explicit_unit("components.hit1.time_shift", -2.0 * CLHEP::ns);
+			  // multi_signal_config.set_unit_symbol("components.hit1.time_shift", "ns");
+			  // multi_signal_config.store_real("components.hit1.scaling", 1.0);
+
+			  // multi_signal_config.store("components.hit2.key", "s4");
+			  // multi_signal_config.store_real_with_explicit_unit("components.hit2.time_shift", 1.5 * CLHEP::ns);
+			  // multi_signal_config.set_unit_symbol("components.hit2.time_shift", "ns");
+			  // multi_signal_config.store_real("components.hit2.scaling", 1.3);
+			  
+			  //atomic_signal_collection[isig]
+			}
+		    } 
+		}
+	    }
+			      
+	      
+	  // for (auto it_set = set_of_gids.begin(); it_set != set_of_gids.end(); it_set++)
+	  //   {
+	  //     geomtools::geom_id gid_to_search
+	      
+	  
+	  for (size_t isignal = 0; isignal < atomic_signal_collection.size(); isignal++)
+	    {
+	      // mctools::signal::base_signal & signal = sim_signal_data_.add_signal("calo");
+	      
+	    }
+	  
+	  
+	  
+
+	  
 	}
-		     
+	      
       return;
     }
+    
+    void calo_signal_generator_driver::_tree_dump(std::ostream & out_,
+						  const std::string & /* title_ */,
+						  const std::string & indent_,
+						  bool /* inherit_ */) const
+    {
+      
+      std::string mode_str = "";
+      if (get_mode() == MODE_INVALID) mode_str = "invalid";
+      else if (get_mode() == MODE_TRIANGLE) mode_str = "triangle";
+      
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Mode : '" << mode_str << "'"
+           << std::endl;
+    }
+
 
   } // end of namespace asb
 
