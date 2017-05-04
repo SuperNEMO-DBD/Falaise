@@ -3,9 +3,9 @@ Falaise C++ Library for the SuperNEMO experiment
 ================================================
 
 :Authors: Steven Calvez, Xavier Garrido, François Mauger, Ben Morgan, Guillaume Oliviero
-:Date:    2017-03-02
+:Date:    2017-05-04
 :Contact: snemo-software-l@in2p3.fr
-:Version: 3.0.0-alpha
+:Version: 3.0.0
 
 .. contents::
    :depth: 3
@@ -14,6 +14,12 @@ Falaise C++ Library for the SuperNEMO experiment
 .. raw:: pdf
 
    PageBreak oneColumn
+
+Version Control
+===============
+
+As of the 4th May 2017, Falaise development migrated from SVN to Git.
+
 
 About Falaise
 =============
