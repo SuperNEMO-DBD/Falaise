@@ -1,0 +1,101 @@
+/* -*- mode: c++ -*- */
+/*
+ *
+ * Copyright 2006 
+ * J.J. Gomez-Cadenas
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+#include <mybhep/writer_hdf5.h>
+#include <mybhep/error.h>
+#include <mybhep/utilities.h>
+
+namespace mybhep{
+        
+  //! constructor 
+  writer_hdf5::writer_hdf5() :
+    bwriter()
+  {
+  }
+
+  //! destructor
+  writer_hdf5::~writer_hdf5()
+  {
+    if (setFile_)
+      {
+	file_.close();
+	strd_->close();
+	strt_->close();
+	delete strd_;
+	delete strt_;
+
+      }
+
+  }
+
+  //! set file
+  void writer_hdf5::set_file(std::string fileName)
+  {
+    if (setFile_)
+      {
+	file_.close();
+	strd_->close();
+	strt_->close();
+	delete strd_;
+	delete strt_;
+      }
+
+    file_ = H5File(fileName, H5F_ACC_TRUNC);
+  /* Create dataspace for datasets */
+    hsize_t       dims1[] = {DIM1};
+    strd_ = new DataSpace(RANK, dims1);
+
+  /* Create a datatype to refer to */
+    strt_ =new StrType(PredType::C_S1, H5T_VARIABLE);
+
+    Assert(H5T_STRING==H5Tget_class(strt_->getId()) &&
+	   H5Tis_variable_str(strt_->getId()) ,__FILE__,__LINE__,
+           internal_logic("This is not a variable lenght std::string type!"));
+    
+    setFile_ = true;
+    fileName_ = fileName;
+  }
+
+ 
+  //! write event
+  void writer_hdf5::write(event& evt, size_t ievent)
+  {
+    //cout << "converting event = " << ievent << endl;
+    event_cvt cvt(evt,ievent);
+
+    std::string def = cvt.store();
+
+    //cout << "writting event = " << ievent << endl;
+
+    wdata[0] = def.c_str();
+
+    /* Create a dataset */
+    std::string key = to_string(ievent);
+    DataSet dataset = file_.createDataSet(key, *strt_, *strd_);
+
+    /* Write dataset to disk */
+    dataset.write((void*)wdata, *strt_);
+    /* Close Dataset */
+    dataset.close();
+
+  }
+}

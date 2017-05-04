@@ -1,0 +1,59 @@
+2012-09-04 Federico Nova <nova@physics.utexas.edu>
+        * introduced phi_of_point with reference phi
+	to overcome problem with discontinuity of angle at 2pi->0
+2012-07-17 Federico Nova <nova@physics.utexas.edu>
+        * fixed set calo type
+	* no need to have calos to make helix
+2012-06-29 Federico Nova <nova@physics.utexas.edu>
+        * fixed counter of skipped events
+2012-06-29 Federico Nova <nova@physics.utexas.edu>
+        * added sequentiator configuration interface
+2012-06-26 Federico Nova <nova@physics.utexas.edu>
+        * Xavier Garrido fixed some conversions of value to reference
+2012-06-26 Federico Nova <nova@physics.utexas.edu>
+        * removed all "using namespace" from headers
+2012-06-26 Federico Nova <nova@physics.utexas.edu>
+        * ntupler: vertexes
+2012-06-19 Federico Nova <nova@physics.utexas.edu>
+        * ntupler: added charge, momentum
+        * display: possibility to plot chi2
+        * sequentiator: direct scenarios tracks out of foil
+2012-06-15 Federico Nova <nova@physics.utexas.edu>
+        * added features to ntupler
+2012-06-13 Federico Nova <nova@physics.utexas.edu>
+        * calo hits have type "Nemo3 or SuperNEMO"
+	* intersection of vertex with circular foil
+2012-03-26 François Mauger
+        * Preparation of the port to Channel:
+        - fix CMake skeleton files
+        - fix dependencies management :
+	        - compatible with standard packages finding (Boost)
+	        - and Cadfael (CLHEP, ROOT)
+	- fix const reference in mybhep messenger
+        - make CATutils an optional build with ROOT dependencies
+        - add a 'CAT_config.h.in' template file
+        - add/fix CAT and CAT::topology namespaces
+        - fix const decorator(s)
+        - add interface files: 'CAT_clusterizer_interface[.h|.cpp]'
+                - class CAT::clusterizer_setup_data :
+	          - minimal set of configuration parameters to run CAT from SuperNEMO data pipelines
+		  - check method.
+                - class CAT::clusterizer_input_data : list of input GG hits
+		  - check method.
+                - class CAT::clusterizer_output_data : list of output GG hits clusters
+                - global function CAT::clusterizer_configure (...)
+        - add devel/ subdir
+                - add LocalBuild/ subdir
+                - add ProbChi2/ subdir with test program
+                  for boost::math::gamma_q function
+        - add example/ subdir with CATClient project
+                - add toy program client.cxx and useful scripts
+	- clusterizer: clusterize method
+	        - remove usage of malloc/free -> use std::vector::assign in place
+		- some optimizations ('const XXX &' argument passing and returned values)
+	- cmath : use M_PI in place of acos(-1) (faster)
+        * Port to Channel
+        * Pre-version 0.2.0
+2012-01-01 Federico Nova
+        * Creation of the CellularAutomatonTracker (CAT) package
+        * Pre-version 0.1.0
