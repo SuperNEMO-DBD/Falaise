@@ -16,6 +16,7 @@
 #
 #
 # The following cases were not diligently noted during cell insertion, and will need to be determined later:
+# SNCM 047 - field (somewhere?)
 # SNCM 070 - field (cell 15 somewhere?)
 # SNCM 073 - field (somewhere?)
 # SNCM 075 - field (somewhere?)
