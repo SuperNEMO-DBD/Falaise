@@ -36,7 +36,7 @@ must be met:
 - GCC (>= 4.0), Clang (>=3.5) or Xcode 7/8
 - CMake 3.5 or higher
 - Doxygen 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux] 3.0 or higher
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.0 or higher
 - [Boost](https:/boost.org] 1.63.0 or higher
   - Must provide program_options, serialization, filesystem, system components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
