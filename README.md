@@ -2,7 +2,7 @@
 
 Falaise provides the main computational environment for the simulation,
 processing and analysis of data for the [SuperNEMO double beta decay search
-experiment](http/nemo.in2p3.fr). The three main components are
+experiment](http://nemo.in2p3.fr). The three main components are
 
 - `libFalaise`: the core library.
 
