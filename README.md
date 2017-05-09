@@ -34,11 +34,11 @@ must be met:
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
   - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
 - GCC (>= 4.0), Clang (>=3.5) or Xcode 7/8
-- CMake 3.5 or higher
-- Doxygen 1.8 or higher
+- [CMake](https://cmake.org) 3.5 or higher
+- [Doxygen](http://www.doxygen.org) 1.8 or higher
 - [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.0 or higher
-- [Boost](https:/boost.org] 1.63.0 or higher
-  - Must provide program_options, serialization, filesystem, system components
+- [Boost](https:/boost.org) 1.63.0 or higher
+  - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
 - [GSL](http://www.gnu.org/s/gsl) 1.16 or higher
 - [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 or higher
@@ -129,10 +129,8 @@ any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/
 
 
 # Naming
-Falaise is named thus because [Falaise is the town in Normandy](http://en.wikipedia.org/wiki/Falaise,_Calvados where William
+Falaise is named thus because [Falaise is the town in Normandy](http://en.wikipedia.org/wiki/Falaise,_Calvados) where William
 the Conqueror was born. Note this has nothing to do with SuperNEMO software!
-
-.. _`town in Normandy`: http://en.wikipedia.org/wiki/Falaise,_Calvados
 
 # Licensing
 Please study the file ``LICENSE.txt`` for the distribution terms and
