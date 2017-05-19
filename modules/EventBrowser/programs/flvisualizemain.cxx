@@ -44,6 +44,7 @@ namespace dtc = datatools::configuration;
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/exitcodes.h>
+#include <falaise/resource.h>
 // This plugin:
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/options_manager.h>
@@ -67,6 +68,20 @@ namespace FLVisualize {
 //----------------------------------------------------------------------
 int main(int argc_, char *argv_[]) {
   falaise::initialize(argc_, argv_, FLVisualize::app_kernel_init_flags());
+
+  // Hack to get the include path for the GUI dictionary known to ROOT
+  // in a relocatable way
+  // Really seems to require use of env var rather than gSystem include paths...
+  char* rIncludePath = getenv("ROOT_INCLUDE_PATH");
+
+  if(rIncludePath) {
+    std::string ourPath(falaise::get_plugin_dir());
+    std::string oldPath(rIncludePath);
+    std::string newPath = ourPath + ":" + oldPath;
+    setenv("ROOT_INCLUDE_PATH",newPath.c_str(),1);
+  } else {
+    setenv("ROOT_INCLUDE_PATH",falaise::get_plugin_dir().c_str(),1);
+  }
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
@@ -126,7 +141,6 @@ namespace FLVisualize {
 
       // Open a root application
       DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
-
       int narg = 1;
       TApplication * my_application = new TApplication("ROOT Application", &narg, argv_);
 

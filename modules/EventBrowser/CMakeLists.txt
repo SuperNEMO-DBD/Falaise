@@ -40,21 +40,13 @@ endif()
 
 
 #-----------------------------------------------------------------------
-# Include directories for all subdirectories
-#
-include_directories(
-  ${PROJECT_BINARY_DIR}/include
-  ${PROJECT_SOURCE_DIR}/include
-  ${ROOT_INCLUDE_DIRS}
-  )
-
-#-----------------------------------------------------------------------
 # Build the submodules as required
 #
 option(FalaiseEventBrowserPlugin_ENABLE_OPENGL "Enable support for OpenGL rendering" OFF)
 if(FalaiseEventBrowserPlugin_ENABLE_OPENGL)
   set(EVENTBROWSER_USE_OPENGL 1)
 endif()
+
 add_subdirectory(source)
 add_subdirectory(programs)
 
