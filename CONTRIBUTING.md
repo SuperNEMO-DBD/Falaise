@@ -9,11 +9,11 @@ quality is maintained.
 In the following, familiarity with Falaise's core software development
 tools:
 
-- C++ as primary language
-- Catch for C++ unit testing
-- Doxygen/Markdown for API and Reference Documentation
-- Git for version control, hosting on GitHub
-- CMake for building, testing and installing
+- [C++](http://isocpp.org) as primary language
+- [Catch](https://github.com/philsquared/Catch) for C++ unit testing
+- [Doxygen](http://www.doxygen.org) plus [Markdown](https://www.stack.nl/~dimitri/doxygen/manual/markdown.html) for API and Reference Documentation
+- [Git](https://git-scm.com) for version control, hosting on GitHub
+- [CMake](https://cmake.org) for building, running tests and installing
 
 is assumed. [Further documentation on these](#additional-resources) is
 available if required.
@@ -24,12 +24,12 @@ available if required.
 2. [Fork the Falaise repository](https://help.github.com/articles/fork-a-repo/) to your account.
 3. [Create a local clone of your fork](https://help.github.com/articles/fork-a-repo/#step-2-create-a-local-clone-of-your-fork) to work on changes,
    e.g.
-   ```
+   ```console
    $ git clone https://github.com/<your-username>/Falaise.git
    ```
 4. Set up your local clone to [sync with SuperNEMO-DBD/Falaise](https://help.github.com/articles/fork-a-repo/#keep-your-fork-synced),
    e.g.
-   ```
+   ```console
    $ cd Falaise
    $ git remote add upstream https://github.com/SuperNEMO-DBD/Falaise.git
    ```
@@ -45,10 +45,10 @@ The workflow adopted for Falaise is the basic "fork-and-branch" model.
 1. When you have completed work on your feature branch, publish it on
    your fork by pushing the branch to it:
 
-   ```
+   ```console
    $ git push -u origin my-feature-branch
    ```
-2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise]((https://github.com/SuperNEMO-DBD/Falaise)
+2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
 
 
 
@@ -60,7 +60,7 @@ remotes to your local clone and using `git fetch` and `git merge` appropriately.
 For example, let's say I've created a feature branch "fix-bug" in my local clone,
 and published it on my public fork:
 
-```
+```console
 $ git checkout -b fix-bug
 ... edit, test, edit...
 $ git push -u origin fix-bug
@@ -69,7 +69,7 @@ $ git push -u origin fix-bug
 If you want to contribute to this branch, you can add my fork to your local
 clone, then fetch and checkout the `fix-bug` branch
 
-```
+```console
 ... in your local clone ...
 $ git remote add myusername https://github.com/myusername/Falaise.git
 $ git fetch myusername
@@ -80,14 +80,14 @@ $ git checkout myusername/fix-bug
 You can now make changes on this branch and then publish these on your
 fork:
 
-```
+```console
 $ git push -u origin fix-bug
 ```
 
 You can then either submit a Pull Request to my fork, or I can
 add you fork as a remote and merge the changes:
 
-```
+```console
 ... in my local clone ...
 $ git remote add yourusername https://github.com/yourusername/Falaise.git
 $ git fetch yourusername
