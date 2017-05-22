@@ -84,10 +84,16 @@ After configuration is successful, the build is run by:
 $ make -j<N>
 ```
 
-Adjust `<N>` to the number of cores on your machine for a faster build.
+Adjust `<N>` to the number of cores on your machine for a faster build. After a
+successful build, unit tests can be run using the `test` target:
+
+```
+$ make test
+```
+
 On completion of the build, the Falaise programs, libraries and documentation are available
 for use under a POSIX-style hierarchy under the `BuildProducts` subdirectory of
-the directory in which you ran the build. For example, 
+the directory in which you ran the build. For example,
 
 ```
 $ ./BuildProducts/bin/flsimulate --help
@@ -127,6 +133,10 @@ passed as ``CMAKE_INSTALL_PREFIX``.
 If you have problems, questions, ideas or suggestions on Falaise or
 any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/issues).
 
+# Contributing to Falaise
+
+Please see the [Contribution Guide](CONTRIBUTING.md)
+
 
 # Naming
 Falaise is named thus because [Falaise is the town in Normandy](http://en.wikipedia.org/wiki/Falaise,_Calvados) where William
@@ -137,8 +147,6 @@ Please study the file ``LICENSE.txt`` for the distribution terms and
 conditions of use of Falaise.
 
 
-# Contributing to Falaise
-WIP
 
 ## Contributors
 
