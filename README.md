@@ -26,7 +26,7 @@ This will install everything you need, and includes the latest official
 release of the software. Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
 for a full guide to running the software and writing new plugin modules.
 
-## Building and Installing from Source
+## Building, Testing and Installing from Source
 To build Falaise on your machine for use or development, the following requirements
 must be met:
 
@@ -118,7 +118,7 @@ $ xdg-open ./BuildProducts/share/Falaise-<VERSION>/Documentation/API/html/index.
 though ``xdg-open`` may not always be present (``gnome-open`` may be used
 instead, for example).
 
-If you need to install Falaise, after building you can run
+If you need to install Falaise, you can run
 
 ```
 $ make install
