@@ -123,7 +123,7 @@ library from it that `flreconstruct` can load at runtime to make
 `MyModule` available for use in the pipeline. As `MyModule` uses components
 from Falaise, the compilation needs to use its headers,
 libraries and dependencies available. The simplest way to set this up
-is to use CMake to build the shared library and make use of Falaise's 
+is to use CMake to build the shared library and make use of Falaise's
 [find_package](https://cmake.org/cmake/help/v3.3/command/find_package.html) support.
 
 To do this, we add a CMake script alongside the sources:
@@ -143,8 +143,8 @@ The implementation of `CMakeLists.txt` is very straightforward:
 
 Comments begin with a `#`. The first two commands simply setup CMake and
 the compiler for us. The `find_package` command will locate Falaise for us,
-and we supply a version number and the `REQUIRED` argument to ensure CMake will 
-fail if a Falaise install with that version or newer cannot be found. 
+and we supply the `REQUIRED` argument to ensure CMake will
+fail if a Falaise install cannot be found.
 The `add_library` command creates the actual shared library.
 Breaking the arguments to `add_library` down one by one:
 
@@ -154,13 +154,15 @@ on disk name. For example, on Linux, this will output a library file `libMyModul
 3. `MyModule.h MyModule.cpp` : all the sources need to build the library. The header is also listed so that it will show up in IDEs like Xcode.
 
 Finally, the `target_link_libraries` command links the shared library to
-Falaise's `FalaiseModule` target. This ensures that compilation and
+Falaise's `Falaise::FalaiseModule` target. This ensures that compilation and
 linking of the `MyModule` target will have the correct compiler and
-linkjng setup. The PUBLIC keyword means that if any other library links
-to `MyModule`, it must also link to `FalaiseModule`.
+linking setup. The PUBLIC keyword means that if any other library links
+to `MyModule`, it must also link to `FalaiseModule` (In general, Falaise
+plugins should *not* link to other plugins as they are intended to be
+self-contained).
 
 For more detailed documentation on CMake, please refer to the
-[online help](https://cmake.org/cmake/help/v3.3/).
+[online help](https://cmake.org/cmake/help/latest/).
 
 To build the library, we first create a so-called *build directory* so
 that we can isolate the binary files from the source code. This can be wherever you
@@ -312,7 +314,7 @@ directly from the build directory of our module and it will locate the library i
 You can also specify absolute paths, e.g.
 
 ~~~~~~
-[name="flreconstruct.plugins" type=""]
+[name="flreconstruct.plugins" type="flreconstruct::section"]
 plugins : string[1] = "MyModule"
 MyModule.directory : string = "/path/to/MyWorkSpace/MyModule-build"
 ~~~~~~
@@ -320,7 +322,7 @@ MyModule.directory : string = "/path/to/MyWorkSpace/MyModule-build"
 or paths containing environment variables which will be expanded automatically, e.g.
 
 ~~~~~~
-[name="flreconstruct.plugins" type=""]
+[name="flreconstruct.plugins" type="flreconstruct::section"]
 plugins : string[1] = "MyModule"
 MyModule.directory : string = "${MYMODULE_PATH}"
 ~~~~~~
@@ -360,7 +362,7 @@ the following, we assume you have `flsimulate` and `flreconstruct` in your
 $ cd /path/to/MyWorkSpace/MyModule-build
 $ ls
 CMakeCache.txt  CMakeFiles  cmake_install.cmake  libMyModule.dylib  Makefile
-$ flsimulate -n1 -o MyModuleTest.brio
+$ flsimulate -o MyModuleTest.brio
 ....
 $ ls
 CMakeCache.txt  cmake_install.cmake  Makefile
