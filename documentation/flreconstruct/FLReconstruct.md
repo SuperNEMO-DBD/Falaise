@@ -336,10 +336,11 @@ $ flsimulate -c simu.conf -o example.brio
 ~~~~~
 
 The resulting `example.brio` file can be opened with the `flvisualize`
-application. We can visualize the first event where we can
-see plenty of raw truth Geiger hits and one single calorimeter hit, as
-well as the  position of the decay vertex (purple  cross on the source
-foil):
+application. We can visualize the first event where we will
+see any raw tracker/calorimeter hits, as well as the  position of the decay vertex
+(cross on the source foil). An example event is shown below,
+and your view may differ as by default flsimulate will use different
+seeds on each run, and the styling/colours may also vary between machines:
 
 ![A simulated event](@ref flr_qs_sd_event.png)
 
@@ -459,7 +460,8 @@ respectively   *calorimeter*   and   *tracker*  hits.
 The `example-cd.brio` file output by `flreconstruct` and the pipeline
 script may be opened in `flvisualize` as before. Looking at the first
 event again, we can see additional rendering and information associated
-to the `CD` hits:
+to the `CD` hits (as before, your output will differ due to different
+random number seeds used in `flsimulate`):
 
 ![A calibrated simulated event](@ref flr_qs_cd_event.png)
 
