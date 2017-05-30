@@ -41,7 +41,7 @@ available if required.
 The workflow adopted for Falaise is the basic "fork-and-branch" model. This
 model allows easy contribution without requiring all contributors to have
 push access to a single centralized repository, and allows work to continue
-without breaking or interfering with that of others. 
+without breaking or interfering with that of others.
 
 The `develop` branch of the [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
 repository is used as the designated development branch/repository for the SuperNEMO project.
@@ -50,7 +50,7 @@ as described above.
 
 1. In your local clone, begin by ensuring you are syncronized with the latest upstream
    developments:
-   
+
    ```console
    $ git checkout develop
    ... if not done already ...
@@ -70,7 +70,7 @@ as described above.
    On branch expand-flsimulate-documentation
    nothing to commit, working tree clean
    ```
-   
+
    In general, there should be one branch per logical task. For example, _"Fix Bug 1234"_ or
    _"Additional documentation for flsimulate"_, not _"Fix Issue X and Add new Module Y"_.
    This is done to help minimize clashes when integrating your changes and to keep a logical
@@ -85,13 +85,13 @@ as described above.
    - Commit regularly, but only when everything compiles without warning and all tests pass
    - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
  5. Publish the feature branch on your fork
-  
+
   ```console
   $ git push -u origin expand-flsimulate-documentation
   ```
-  
+
   This can be done at any time to share changes between different clones (e.g. desktop, laptop)
-  or as a simple backup. 
+  or as a simple backup.
 
 
 ## Submitting Changes
@@ -101,21 +101,21 @@ as described above.
    ```console
    $ git push -u origin my-feature-branch
    ```
-   
+
    If you have already pushed the branch, you can omit the `-u` flag. The key thing is
    that the branch on your fork has the full set of commits.
-   
+
 2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
 
 3. The PR will be reviewed by SuperNEMO users and developers as appropriate for the issue addressed.
    Other than style/usability, the core requirements for acceptance of a PR are:
-   
+
    - If new/modified code, has unit tests which pass on supported platforms (_WIP: CI with Travis_)
    - Any needed documentation is supplied
-   
+
    Should edits be required, simply add new commits on the feature branch in your local clone
    and push them to your fork. GitHub will automatically append them to the PR.
-   
+
 4. Once approved, the PR will be merged on to the `develop` branch of [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise). You can then delete your feature branch.
 
 

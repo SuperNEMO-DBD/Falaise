@@ -33,7 +33,7 @@ must be met:
 - Linux or macOS System
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
   - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
-- GCC (>= 4.0), Clang (>=3.5) or Xcode 7/8
+- GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
 - [CMake](https://cmake.org) 3.5 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
 - [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.0 or higher

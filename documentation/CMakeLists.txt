@@ -121,7 +121,7 @@ configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
 set(FALAISE_MARKDOWN_DOCS
   Mainpage.md
   ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
-  ${CMAKE_CURRENT_BINARY_DIR}/InstallationGuide.md
+  ${PROJECT_SOURCE_DIR}/README.md
   flsimulate/FLSimulate.md
   flsimulate/FLSimulateOutput.md
   flreconstruct/FLReconstruct.md
@@ -136,6 +136,7 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
   development/DevelopingFalaise.md
+  ${PROJECT_SOURCE_DIR}/CONTRIBUTING.md
   development/UnitTestingWithCatch.md
   development/CodingStandards.md
   )
