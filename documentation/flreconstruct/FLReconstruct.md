@@ -494,7 +494,7 @@ to run the clustering algorithm, followed by the `TrackFitting` module to run
 the line/helix fitting on the found clusters. As before, we add a dump module
 at the end of the pipeline to print each event to standard output.
 
-As we now use modules implemented by dedicated Falaise plugins, we must explicitely
+As we now use modules implemented by dedicated Falaise plugins, we must explicitly
 provide a `flreconstruct.plugins` section with the list of plugins that must
 be dynamically loaded to allow the pipeline to work:
 
