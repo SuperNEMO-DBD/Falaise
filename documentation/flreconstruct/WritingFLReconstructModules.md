@@ -495,7 +495,7 @@ so to change the `fudgeFactor_` parameter, we simply add the appropriate
 
 ~~~~~~
 [name="pipeline" type="MyModule"]
-fudge_factor : real = 3.14;
+fudge_factor : real = 3.14
 ~~~~~~
 
 where the key name `fudge_factor` must match that looked for in the
