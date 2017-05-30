@@ -658,11 +658,17 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
 	  from the list of modules  defined in the main configuration file
 	  (default: `"pipeline"`).
 
-A sample configuration script  (commented) is provided in
-[this document](FLReconstruct-3.0.0.conf).
+A sample configuration script showing the organisation of the above parameters
+is shown below. Note that many of the parameters are commented out as
+they are generally note needed except for advanced use or testing.
 
-Additional  sections  may be  added.  These  are the  *inline*  module
-sections described below.
+\include flreconstruct/FLReconstruct-3.0.0.conf
+
+The majority of scripts will just use the `flreconstruct.plugins` and
+`flreconstruct.pipeline` sections to select from the set of
+plugins and pipelines approved by the Calibration and Reconstruction
+Working Group. Output results from these can be used in the preparation
+of analyses.
 
 Inline modules {#usingflreconstruct_scriptingflsimulate_inlinemodules}
 --------------
@@ -846,7 +852,7 @@ The standard  pipelines provided  by Falaise are  intended to  cover a
 wide range of  use cases for standard reconstruction  tasks leading to
 analyses.   However,  if  you  need   to  study  improvements  to  the
 reconstruction via  tuning existing  modules or  adding new  ones then
-custom  pipeline   scripts  can   be  used  in   `flreconstruct`.  The
+custom  pipeline   scripts  and modules can   be  used  in   `flreconstruct`.  The
 [Writing FLReconstruct Pipeline Scripts](@ref writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
 structure of custom pipeline scripts.
 
