@@ -209,7 +209,7 @@ of the `DATATOOLS_SERIALIZATION_DECLARATION` macro, which declares the
 `get_serial_tag` method for us. We have also provided concrete methods
 to implement this type as a simple increment-only counter.
 Note also the use of Doxygen markup to document the file and methods.
-This is required for your data type is to be integrated into the official
+This is required for your data type to be integrated into the official
 mainline pipeline.
 
 With the header in place we can create the implementation file, which we'll
