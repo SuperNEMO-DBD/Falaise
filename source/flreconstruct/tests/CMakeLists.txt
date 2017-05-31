@@ -44,4 +44,15 @@ set_tests_properties(flreconstruct-standard-pipeline-script-urn PROPERTIES
   DEPENDS flreconstruct-fixture
   )
 
+# Test of writing to an output file after standard pipeline
+# TODO: Add test of contents of file (i.e. that it contains the right bank names/types)!!
+add_test(NAME flreconstruct-standard-pipeline-output
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:1.0.0" -o "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-standard-pipeline-output.brio"
+  )
+set_tests_properties(flreconstruct-standard-pipeline-output PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
+
+
+
 
