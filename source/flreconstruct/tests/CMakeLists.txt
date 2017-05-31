@@ -28,10 +28,20 @@ set_tests_properties(flreconstruct-smoketest PROPERTIES
   )
 
 # Check that standard pipelines run
+# - Command line via urn
 add_test(NAME flreconstruct-standard-pipeline-cli
   COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:1.0.0"
   )
 set_tests_properties(flreconstruct-standard-pipeline-cli PROPERTIES
   DEPENDS flreconstruct-fixture
   )
+
+# - Script with URN
+add_test(NAME flreconstruct-standard-pipeline-script-urn
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "${CMAKE_CURRENT_SOURCE_DIR}/testStandardPipelineURN.conf"
+  )
+set_tests_properties(flreconstruct-standard-pipeline-script-urn PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
+
 
