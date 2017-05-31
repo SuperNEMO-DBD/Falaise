@@ -56,7 +56,7 @@ before is passed a reference to the current event in the pipeline.
 
 We begin working with the event by simply printing its name and description.
 This is a trivial demonstration that the `datatools::things` interface
-works, as for event date these are likely to be blank.
+works, as for event data these are likely to be blank.
 
 The second, more relevant task, is to extract the list of keys, and thus
 data banks, stored in the event. Here, we use the `datatools::things::get_names`
@@ -208,8 +208,8 @@ Note the inheritance from `datatools::i_serializable` and the use
 of the `DATATOOLS_SERIALIZATION_DECLARATION` macro, which declares the
 `get_serial_tag` method for us. We have also provided concrete methods
 to implement this type as a simple increment-only counter.
-Note also the use of Doxygen markup to document the file and methods. 
-This is required for your data type is to be integrated into the official 
+Note also the use of Doxygen markup to document the file and methods.
+This is required for your data type to be integrated into the official
 mainline pipeline.
 
 With the header in place we can create the implementation file, which we'll
@@ -225,7 +225,7 @@ class to be stored in `datatools::things`. Additional work is needed to
 make the type fully serializable to/from a file, and this is described in a
 [later section](@ref things_customdata_serialization).
 
-To use this type in the pipeline, we update the implementation of the 
+To use this type in the pipeline, we update the implementation of the
 `AccessThings` module as follows for the header:
 
 \include flreconstruct/AccessThingsModuleCustom/AccessThingsModule.h
@@ -281,7 +281,7 @@ one function implementation to
 the plugin library.
 
 The first addition is to the `MyDataType` header, where we add a call to the
-[BOOST_CLASS_EXPORT_KEY](http://www.boost.org/doc/libs/1_60_0/libs/serialization/doc/traits.html#export) 
+[BOOST_CLASS_EXPORT_KEY](http://www.boost.org/doc/libs/1_60_0/libs/serialization/doc/traits.html#export)
 macro post the class declaration. We defer detailed explanation of this macro to the [Boost Documentation](http://www.boost.org/doc/libs/1_60_0/libs/serialization/doc/traits.html#export)
 suffice to say that this is needed to ensure templated serialization code
 is instantiated and to register an identifier for the class in the serialization
@@ -319,7 +319,7 @@ Once compiled, we can run as in previous examples, but this time we will not see
 confirm this by using `flreconstruct`'s default dump-to-stdout, we see the exception again:
 
 ```console
-$ flreconstruct -i test-reco.brio 
+$ flreconstruct -i test-reco.brio
 libc++abi.dylib: terminating with uncaught exception of type boost::archive::archive_exception: unregistered class
 Abort trap: 6
 ```
@@ -342,7 +342,7 @@ $ flreconstruct -i test-reco.brio -p ../AccessThingsDump.conf
 
 This has only covered the basics of making your data objects serializable. More advanced topics are deferred to later tutorials.
 
-**TODOS:** 
+**TODOS:**
 * Clarify split of serialization code and the exact purpose/behaviour of the `BOOST_EXPORT_...` macros.
 * Organization of code/files when we have more than one data class
 * Organization of code/files if we want our data objects to used (and serialized) as data members of other objects.
