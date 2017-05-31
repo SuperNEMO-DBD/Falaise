@@ -53,6 +53,26 @@ set_tests_properties(flreconstruct-standard-pipeline-output PROPERTIES
   DEPENDS flreconstruct-fixture
   )
 
+# Test Custom Pipeline scripts
+add_test(NAME flreconstruct-custom-trivial-pipeline
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "${CMAKE_CURRENT_SOURCE_DIR}/flreconstruct-trivial-pipeline.conf"
+  )
+set_tests_properties(flreconstruct-custom-trivial-pipeline PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
 
+add_test(NAME flreconstruct-custom-chain-pipeline
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "${CMAKE_CURRENT_SOURCE_DIR}/flreconstruct-chain-pipeline.conf"
+  )
+set_tests_properties(flreconstruct-custom-chain-pipeline PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
+
+add_test(NAME flreconstruct-custom-multimodule-pipeline
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "${CMAKE_CURRENT_SOURCE_DIR}/flreconstruct-multimodule-pipeline.conf"
+  )
+set_tests_properties(flreconstruct-custom-multimodule-pipeline PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
 
 
