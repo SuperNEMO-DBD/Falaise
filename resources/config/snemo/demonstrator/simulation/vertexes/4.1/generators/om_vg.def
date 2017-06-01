@@ -194,14 +194,14 @@ validation.validator_params.logging.priority : string = "warning"
 # Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
 # scintillator blocks:                                                         #
 ################################################################################
-[name="calo_8inch_scin_bulk" type="genvtx::combined_model_vg"]
+[name="calo_8inch_scin_bulk" type="genvtx::combined_vg"]
 
 #@config Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 8'' PMT
 
 generators : string[2] = "calo_8inch_back_scin_bulk" "calo_8inch_front_scin_bulk"
 
-generators.calo_8inch_back_scin_bulk.volume_activity  : real as volume_activity = 1 Bq/m3
-generators.calo_8inch_front_scin_bulk.volume_activity : real as volume_activity = 1 Bq/m3
+generators.calo_8inch_back_scin_bulk.absolute_weight  : real = 1.0
+generators.calo_8inch_front_scin_bulk.absolute_weight : real = 1.0
 
 
 ################################################################################
@@ -274,14 +274,14 @@ validation.validator_params.logging.priority : string = "warning"
 # Generate vertex on the bulk volume of the wrapper for the main calorimeter's #
 # scintillator blocks:                                                         #
 ################################################################################
-[name="calo_5inch_scin_bulk" type="genvtx::combined_model_vg"]
+[name="calo_5inch_scin_bulk" type="genvtx::combined_vg"]
 
 #@config Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 5'' PMT
 
 generators : string[2] = "calo_5inch_back_scin_bulk" "calo_5inch_front_scin_bulk"
 
-generators.calo_5inch_back_scin_bulk.volume_activity  : real as volume_activity = 1 Bq/m3
-generators.calo_5inch_front_scin_bulk.volume_activity : real as volume_activity = 1 Bq/m3
+generators.calo_5inch_back_scin_bulk.absolute_weight  : real = 1.0
+generators.calo_5inch_front_scin_bulk.absolute_weight : real = 1.0
 
 
 # end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.1/generators/om_vg.def
