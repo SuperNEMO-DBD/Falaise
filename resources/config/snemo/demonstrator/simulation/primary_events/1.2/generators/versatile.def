@@ -8,6 +8,9 @@
 
 ####################################################################
 [name="versatile_generator" type="genbb::single_particle_generator"]
+
+#@variant_section_only primary_events:generator/if_versatile|false
+
 #@config Electron with monokinetic energy;group=user;variant=if_versatile
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
