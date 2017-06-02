@@ -78,7 +78,7 @@ add_test(NAME flsimulate-example-4-profile
           --no-gui
           -t urn:snemo:demonstrator:simulation:2.1
           -s "geometry:layout=Basic"
-          -s "vertexes:generator=field_wire_bulk"
+          -s "vertexes:generator=calo_8inch_scin_bulk"
           -s "primary_events:generator=versatile_generator"
 	  -s "primary_events:generator/if_versatile/particle=gamma"
 	  -s "primary_events:generator/if_versatile/energy=8000 keV"
