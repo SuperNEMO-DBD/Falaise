@@ -158,4 +158,9 @@ install(TARGETS flsimulate-configure
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
+# Testing, if enabled
+if(FALAISE_ENABLE_TESTING)
+  add_subdirectory(tests)
+endif()
+
 # - end
