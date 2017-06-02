@@ -71,5 +71,25 @@ add_test(NAME flsimulate-example-3-run
   )
 set_tests_properties(flsimulate-example-3-run PROPERTIES DEPENDS flsimulate-example-3-profile)
 
-
-
+# - Example 4
+# - Part 1: generate profile
+add_test(NAME flsimulate-example-4-profile
+  COMMAND flsimulate-configure
+          --no-gui
+          -t urn:snemo:demonstrator:simulation:2.1
+          -s "geometry:layout=Basic"
+          -s "vertexes:generator=field_wire_bulk"
+          -s "primary_events:generator=versatile_generator"
+	  -s "primary_events:generator/if_versatile/particle=gamma"
+	  -s "primary_events:generator/if_versatile/energy=8000 keV"
+          -s "simulation:output_profile=none"
+          -o "${CMAKE_CURRENT_BINARY_DIR}/example-4-variant.profile"
+  )
+# Part 2: Use variant profile and seeds file
+add_test(NAME flsimulate-example-4-run
+  COMMAND flsimulate
+          -d "example4@${CMAKE_CURRENT_BINARY_DIR}"
+          -d "example4rng@${CMAKE_CURRENT_SOURCE_DIR}/data"
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/example-4.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/example-4.brio"
+  )
+set_tests_properties(flsimulate-example-4-run PROPERTIES DEPENDS flsimulate-example-4-profile)
