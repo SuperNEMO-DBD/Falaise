@@ -19,9 +19,8 @@ runtime via a plugin mechanism.
 Here we  present a  brief overview of  running FLReconstruct  from the
 command line  using the standard  pipeline scripts. The  more advanced
 topics  of  scripting the  pipeline  and  writing custom  modules  are
-covered   in  the   [Writing   FLReconstruct  Pipeline   Scripts](@ref
-writingflreconstructpipelinescripts)                               and
-[Writing   FLReconstruct  Modules](@ref   writingflreconstructmodules)
+covered   in  the   [Writing   FLReconstruct  Pipeline   Scripts](@ref writingflreconstructpipelinescripts)
+and [Writing   FLReconstruct  Modules](@ref   writingflreconstructmodules)
 tutorials.
 
 Using FLReconstruct on the Command Line {#usingflreconstruct_commandline}
@@ -146,14 +145,14 @@ We  first  generate  a  single  simulated  event,  using  the  default
 simulation setup, and store it in an output file:
 
 ~~~~~
-$ flsimulate -o example.xml
+$ flsimulate -o example.brio
 ...
 ~~~~~
 
 Then we process this file with a default pipeline:
 
 ~~~~~
-$ flreconstruct -i example.xml
+$ flreconstruct -i example.brio
 ~~~~~
 
 The output on the terminal is:
@@ -216,15 +215,16 @@ in the ``calo`` and ``gg`` hit categories).
 Scripting FLReconstruct {#usingflreconstruct_scriptingflsimulate}
 =======================
 
-FLReconstruct basically runs the  simulation in batch mode.  Practically,
-a *configuration script* must be provided by the user.
+As seen above, if supplied with no other information other than an
+input file, `flreconstruct` simply dumps data to standard output.
+To work with and process the data, a *configuration script* must be provided by the user.
 
 
-Script's format {#usingflreconstruct_scriptingflsimulate_format}
----------------
+Basic Script Syntax {#usingflreconstruct_scriptingflsimulate_format}
+-------------------
 
-The script  uses  the  Bayeux's `datatools::multi_properties`  format.
-The script contains a mandatory header:
+FLreconstruct scripts use the `datatools::multi_properties` format
+from Bayeux. The script must begin with a mandatory header:
 
 ~~~~~~
 #@description a short description of the reconstruction run
@@ -234,9 +234,9 @@ The script contains a mandatory header:
 
 The '`#@description`' line is optional but highly recommended.
 
-You may add comments at any place  in the script. Just prepend a sharp
-('`#`') symbol to any comment line:  You may also prepend a comment at
-the end of a line. Examples:
+Comments can be placed at any point in the script. Just prepend a sharp
+('`#`') symbol to any comment line. You may also prepend a comment at
+the end of a line:
 
 ~~~~~~
 # This is a single commented line
@@ -257,17 +257,16 @@ After the header, the script contains *sections*. A section starts
 with a section definition line with two identifiers:
 
 - the *name* of the section,
-- the *type* of the section (here it must be `"flreconstruct::section"`).
-
+- the *type* of the section (in `flreconstruct` scripts it *must be* `"flreconstruct::section"`).
 
 The syntax is:
 ~~~~~~
 [name="SectionName" type="flreconstruct::section"]
 
-... section's body ...
+... section body ...
 ~~~~~~
 
-The section's body uses the `datatools::properties` format.  After the
+The section body uses the `datatools::properties` format from Bayeux.  After the
 definition line, a short description may be optionally provided thanks
 to the '`#@config`' meta-comment:
 
@@ -275,7 +274,7 @@ to the '`#@config`' meta-comment:
 #@config a short description of the purpose of the section
 ~~~~~~
 
-Then comes  the section's body which  consists in a list  of parameter
+Then comes  the section body which  consists in a list  of parameter
 setting directives. The format is:
 
 ~~~~~~
@@ -283,11 +282,12 @@ setting directives. The format is:
 NAME : TYPE [DECORATOR] = VALUE
 ~~~~~~
 
-where `NAME` is the parameter's name,  `TYPE` its type and `VALUE` the
+where `NAME` is the identifier for the parameter,  `TYPE` is its type and `VALUE` the
 selected value for this parameter. Some parameters may use an optional
-`DECORATOR` which gives additional  informations about the parameter's
+`DECORATOR` which gives additional  information about the parameter's
 type or processing.  Again, the  `#@description` line is optional, but
 recommended. Example:
+
 ~~~~~~
 #@description The number of events to be processed
 numberOfEvents : integer = 10000
@@ -298,29 +298,29 @@ How to run a mock calibration on simulated events {#usingflreconstruct_mockcalib
 -------------------------------------------------
 
 When we generate simulated events  with FLSimulate, the so-called `SD`
-bank  contains  only  raw  informations about  truth  calorimeter  and
+bank  contains  only  raw  information about  truth  calorimeter  and
 tracker  hits. In  order to  be able  to reconstruct  and analyze  the
 events,  we  must  apply  a calibration  procedure.  This  calibration
-procedure  consist  in   determining  physics/geometrical  observables
-associated to hits : deposited energy, particle's times of flight, hit
-positions in the geometry model...
+procedure  consists of determining  physics/geometrical  observables
+associated to hits : deposited energy, particle times of flight, hit
+positions in the geometry model and so on.
 
-The  so-called   *mock  calibration*   consists  in   using  dedicated
-algorithms which are able to  compute the *calibrated data* associated
+The  so-called   *mock  calibration* computes the *calibrated data* associated
 to raw *simulated data*.
 
 ![Mock calibration algorithms applied to simulated events](@ref flr_mock_calib.png)
 
-Practically the mock calibration consists in:
-- for tracker hits: compute the drift radius and longitudinal position along the anode wire
-of the Geiger avalanche (and associated uncertainties).
-- for calorimeter hits: compute the total energy deposit in the scintillator block
-and the reference time when the particles first interacted with the block (and associated uncertainties).
-A new `CD` bank is added in the event record, besides the original `SD` bank.
+The mock calibration consists of:
 
-Let's now play with these tools !
-First we prepare a set of 10 simulated events (using the default simulation setup),
-through the following `simu.conf` script for FLSimulate:
+- Tracker hits: compute the drift radius and longitudinal position along the anode wire
+of the Geiger avalanche (and associated uncertainties).
+- Calorimeter hits: compute the total energy deposit in the scintillator block
+and the reference time when the particles first interacted with the block (and associated uncertainties).
+
+A new `CD` bank holding these data is added in the event record, alongside the raw `SD` bank.
+
+To see this processing in action, we first prepare a set of 10 simulated events (using the default simulation setup),
+using the following `simu.conf` script for FLSimulate:
 ~~~~~~~~~~~
 #@key_label  "name"
 #@meta_label "type"
@@ -335,20 +335,21 @@ $ flsimulate -c simu.conf -o example.brio
 ...
 ~~~~~
 
-Running the visualization, we can display the first event where we can
-see plenty of raw truth Geiger hits and one single calorimeter hit, as
-well as the  position of the decay vertex (purple  cross on the source
-foil):
+The resulting `example.brio` file can be opened with the `flvisualize`
+application. We can visualize the first event where we will
+see any raw tracker/calorimeter hits, as well as the  position of the decay vertex
+(cross on the source foil). An example event is shown below,
+and your view may differ as by default flsimulate will use different
+seeds on each run, and the styling/colours may also vary between machines:
 
 ![A simulated event](@ref flr_qs_sd_event.png)
 
-
-Then we create  the `rec.conf` script with a  custom `pipeline` inline
+To process this data in `flreconstruct` and apply the mock calibration
+we create  the `rec.conf` script with a  custom `pipeline` inline
 module made of three consecutive modules. The first one is responsible
 of the calibration of the tracker  hits. The second one is responsible
 of  the calibration  of the  calorimeter  hits.  The  last one  simply
-prints the  content of the  events in the  standard output (not  to be
-used in production of course):
+prints the  content of the  events in the  standard output:
 
 ~~~~~~~~~~~
 #@key_label  "name"
@@ -372,7 +373,7 @@ sections are empty.
 
 We then run:
 ~~~~~
-$ flreconstruct -i example.brio -p rec.conf -o example-cd.xml
+$ flreconstruct -i example.brio -p rec.conf -o example-cd.brio
 ...
 ~~~~~
 
@@ -454,10 +455,13 @@ The use of the `Dump` module prints the events in the terminal. Here is the firs
 
 We clearly see that a new  `CD` bank (*calibrated data*) has been added
 to  the   event  record.   It   contains  two  collections   of  hits,
-respectively   *calorimeter*   and   *tracker*  hits.    Running   the
-visualization, we browse again this  event where we can see additional
-graphics rendering and informations associated to the newly calibrated
-hits:
+respectively   *calorimeter*   and   *tracker*  hits.
+
+The `example-cd.brio` file output by `flreconstruct` and the pipeline
+script may be opened in `flvisualize` as before. Looking at the first
+event again, we can see additional rendering and information associated
+to the `CD` hits (as before, your output will differ due to different
+random number seeds used in `flsimulate`):
 
 ![A calibrated simulated event](@ref flr_qs_cd_event.png)
 
@@ -479,18 +483,20 @@ of the `CD` bank which is now available in the event record.
 
 The reconstruction of tracks associated to charged particles traversing the tracking chamber
 is a two step procedure:
+
 - first the calibrated Geiger hits are clusterized in *tracker clusters*, using some special vicinity criteria,
 - then a fit is performed on each cluster to compute helix or line segments compatible with the Geiger hits.
 
 ![Track fitting procedure applied to calibrated events](@ref flr_track_fit.png)
 
 We create a new `rec.conf` script with a  custom `pipeline` inline module
-made of five consecutive modules. The first two ones do the (mock) calibration
-as shown in the previous section.
-Then we use an algorithm dedicated to the cluterization of tracker hits, followed
-by an algorithm for track fitting (helices and/or straight lines).
-The last module prints the event.
-As we now use modules implemented by dedicated Falaise plugins, we must explicitely
+made of five consecutive modules. The first two perform the mock calibration
+as shown in the previous section. Then we use a new module `CATTrackerClusterizer`
+to run the clustering algorithm, followed by the `TrackFitting` module to run
+the line/helix fitting on the found clusters. As before, we add a dump module
+at the end of the pipeline to print each event to standard output.
+
+As we now use modules implemented by dedicated Falaise plugins, we must explicitly
 provide a `flreconstruct.plugins` section with the list of plugins that must
 be dynamically loaded to allow the pipeline to work:
 
@@ -530,7 +536,7 @@ helix.only_guess : string[8] = "BBB" "BBT" "BTB" "BTT" "TBB" "TBT" "TTB" "TTT"
 
 We run:
 ~~~~~
-$ flreconstruct -i example.brio -p rec.conf -o example-rec.xml
+$ flreconstruct -i example.brio -p rec.conf -o example-rec.brio
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'Falaise_CAT'...
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'TrackFit'...
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'Falaise_TrackFit'...
@@ -572,8 +578,8 @@ Document more reconstruction steps:
 - gamma tracking
 - particle identification
 
-Script's supported sections and parameters {#usingflreconstruct_scriptingflsimulate_sectionsandparameters}
-------------------------------------------
+Supported sections and parameters in FLReconstruct scripts {#usingflreconstruct_scriptingflsimulate_sectionsandparameters}
+----------------------------------------------------------
 
 The  FLReconstruct  script  contains  up   to  five  sections  of  type
 `flreconstruct::section` with the following names:
@@ -587,7 +593,7 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
     (default is: `urn:snemo:demonstrator:setup:1.0`),
 
 - `flreconstruct.variantService`  :  this  is the  *variants*  section
-  where  the  Bayeux/datatools  *variant  service*  dedicated  to  the
+  where  the  Bayeux  *variant  service*  dedicated  to  the
   management   of    variant   parameters   and    configurations   is
   configured. In principle, this section inherits the configuration of
   the variant service used to generate simulated data.
@@ -652,11 +658,17 @@ The  FLReconstruct  script  contains  up   to  five  sections  of  type
 	  from the list of modules  defined in the main configuration file
 	  (default: `"pipeline"`).
 
-A sample configuration script  (commented) is provided in this
-[document](FLReconstruct-3.0.0.conf) (for Falaise 3.0.0).
+A sample configuration script showing the organisation of the above parameters
+is shown below. Note that many of the parameters are commented out as
+they are generally note needed except for advanced use or testing.
 
-Additional  sections  may be  added.  These  are the  *inline*  module
-sections described below.
+\include flreconstruct/FLReconstruct-3.0.0.conf
+
+The majority of scripts will just use the `flreconstruct.plugins` and
+`flreconstruct.pipeline` sections to select from the set of
+plugins and pipelines approved by the Calibration and Reconstruction
+Working Group. Output results from these can be used in the preparation
+of analyses.
 
 Inline modules {#usingflreconstruct_scriptingflsimulate_inlinemodules}
 --------------
@@ -739,8 +751,7 @@ tag to use for production and check its compatibility with the process
 which has generated input data (i.e. the FLSimulate setup).
 
 The output  file generated  by `flreconstruct` may  be opened  and the
-results  visualized  using  the [`flvisualize`  GUI  application](@ref
-usingflvisualize)
+results  visualized  using  the [`flvisualize`  GUI  application](@ref usingflvisualize)
 
 Builtin reconstruction scripts can be run in `flreconstruct`:
 
@@ -810,9 +821,6 @@ $ flreconstruct -i results.brio
 ... output ...
 ~~~~~
 
-Using the  `.xml` extension leads to  output a file in  human readable
-XML format.   This may be  very useful  for debugging purpose  but not
-production because the size of such a file is very large.
 
 The resultant file may also  be further processed by `flreconstruct`  using a pipeline
 constructed from your own analysis modules. Please see the document on
@@ -844,14 +852,7 @@ The standard  pipelines provided  by Falaise are  intended to  cover a
 wide range of  use cases for standard reconstruction  tasks leading to
 analyses.   However,  if  you  need   to  study  improvements  to  the
 reconstruction via  tuning existing  modules or  adding new  ones then
-custom  pipeline   scripts  can   be  used  in   `flreconstruct`.  The
-[Writing         FLReconstruct          Pipeline         Scripts](@ref writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
+custom  pipeline   scripts  and modules can   be  used  in   `flreconstruct`.  The
+[Writing FLReconstruct Pipeline Scripts](@ref writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
 structure of custom pipeline scripts.
 
-
-Example {#usingflreconstruct_example}
-=======
-
-Falaise  provides an  example of  FLreconstruct configuration.   It is
-published    from    the    installation   resource    directory    in
-`examples/flreconstruct/ex01/`.

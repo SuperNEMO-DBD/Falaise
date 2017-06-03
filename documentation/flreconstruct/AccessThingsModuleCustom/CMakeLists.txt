@@ -4,10 +4,10 @@
 cmake_minimum_required(VERSION 3.3)
 project(AccessThingsModuleCustom)
 
-# Modules use FalaiseBayeux, so we need to locate this or fail
+# Modules use Falaise, so we need to locate this or fail
 # Locating Falaise will automatically locate all of its
 # dependencies such as Bayeux, ROOT and Boost.
-find_package(Falaise 2.1.0 REQUIRED)
+find_package(Falaise REQUIRED)
 
 # Build a dynamic library from our sources
 add_library(AccessThingsModule SHARED
@@ -20,4 +20,4 @@ add_library(AccessThingsModule SHARED
 # Link it to the FalaiseModule library
 # This ensures the correct compiler flags, include paths
 # and linker flags are applied to our dynamic library.
-target_link_libraries(AccessThingsModule PUBLIC FalaiseModule)
+target_link_libraries(AccessThingsModule PUBLIC Falaise::FalaiseModule)

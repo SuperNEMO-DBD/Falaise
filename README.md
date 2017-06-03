@@ -26,14 +26,14 @@ This will install everything you need, and includes the latest official
 release of the software. Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
 for a full guide to running the software and writing new plugin modules.
 
-## Building and Installing from Source
+## Building, Testing and Installing from Source
 To build Falaise on your machine for use or development, the following requirements
 must be met:
 
 - Linux or macOS System
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
   - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
-- GCC (>= 4.0), Clang (>=3.5) or Xcode 7/8
+- GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
 - [CMake](https://cmake.org) 3.5 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
 - [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.0 or higher
@@ -84,10 +84,16 @@ After configuration is successful, the build is run by:
 $ make -j<N>
 ```
 
-Adjust `<N>` to the number of cores on your machine for a faster build.
+Adjust `<N>` to the number of cores on your machine for a faster build. After a
+successful build, unit tests can be run using the `test` target:
+
+```
+$ make test
+```
+
 On completion of the build, the Falaise programs, libraries and documentation are available
 for use under a POSIX-style hierarchy under the `BuildProducts` subdirectory of
-the directory in which you ran the build. For example, 
+the directory in which you ran the build. For example,
 
 ```
 $ ./BuildProducts/bin/flsimulate --help
@@ -112,7 +118,7 @@ $ xdg-open ./BuildProducts/share/Falaise-<VERSION>/Documentation/API/html/index.
 though ``xdg-open`` may not always be present (``gnome-open`` may be used
 instead, for example).
 
-If you need to install Falaise, after building you can run
+If you need to install Falaise, you can run
 
 ```
 $ make install
@@ -127,6 +133,10 @@ passed as ``CMAKE_INSTALL_PREFIX``.
 If you have problems, questions, ideas or suggestions on Falaise or
 any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/issues).
 
+# Contributing to Falaise
+
+Please see the [Contribution Guide](CONTRIBUTING.md)
+
 
 # Naming
 Falaise is named thus because [Falaise is the town in Normandy](http://en.wikipedia.org/wiki/Falaise,_Calvados) where William
@@ -137,8 +147,6 @@ Please study the file ``LICENSE.txt`` for the distribution terms and
 conditions of use of Falaise.
 
 
-# Contributing to Falaise
-WIP
 
 ## Contributors
 
