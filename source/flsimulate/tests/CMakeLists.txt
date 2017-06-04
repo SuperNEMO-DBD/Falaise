@@ -3,7 +3,6 @@
 # TODO: crosslink these so there is one set that can
 #       evolve together.
 
-if(0)
 # Basic smoke test of default behaviour
 # - write single event of default setup to output file
 add_test(NAME flsimulate-smoke-test
@@ -94,8 +93,6 @@ add_test(NAME flsimulate-example-4-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/example-4.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/example-4.brio"
   )
 set_tests_properties(flsimulate-example-4-run PROPERTIES DEPENDS flsimulate-example-4-profile)
-
-endif()
 
 # Tests dedicated to the validation of fixes
 # - Validatio of issue #16 fix
