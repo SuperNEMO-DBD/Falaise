@@ -311,11 +311,6 @@ maximum_number_of_fits : integer = 0
 drift_time_calibration_label : string = "snemo"
 
 #@description Fit models ("helix", "line" or both)
-fitting_models : string[1] = "line" # only line when no magnetic field
-
-### fitting_models : string[2] = "helix" "line"
-
-#@description Fit models ("helix", "line" or both)
 ### BEGIN OF FIX https://github.com/SuperNEMO-DBD/Falaise/issues/8
 ### DATE: 2017-06-04
 ### AUTHOR: @fmauger
