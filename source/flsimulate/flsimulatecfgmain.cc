@@ -115,7 +115,9 @@ namespace FLSimulateConfig {
     flClarg.inputVariantProfile = "";
     flClarg.inputVariantSettings.clear();
     flClarg.outputVariantProfile = "";
+#if DATATOOLS_WITH_QT_GUI == 1
     flClarg.variantGui = true;
+#endif // DATATOOLS_WITH_QT_GUI == 1
     return flClarg;
   }
 
