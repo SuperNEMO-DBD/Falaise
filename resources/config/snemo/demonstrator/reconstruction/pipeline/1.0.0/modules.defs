@@ -1,3 +1,4 @@
+# -*- mode: conf-unix; -*-
 # - Configuration
 # Authors:
 #  - X. Garrido <garrido@lal.in2p3.fr>
@@ -310,9 +311,31 @@ maximum_number_of_fits : integer = 0
 drift_time_calibration_label : string = "snemo"
 
 #@description Fit models ("helix", "line" or both)
-fitting_models : string[1] = "line" # only line when no magnetic field
+### BEGIN OF FIX https://github.com/SuperNEMO-DBD/Falaise/issues/8
+### DATE: 2017-06-04
+### AUTHOR: @fmauger
+###
+### In principle, the proper way to do this would be to use
+### variant_if/variant_only directives to wrap the 'fitting_models' property.
+### However, the current implementation in Bayeux is not satisfactory, and maybe
+### buggy.
+### This fix thus uses a brute-force approach, activating both helix/line fits
+### even if no magnetic field is activated in the variant profile.
+### The following sample lines could be a reasonnable approach, but it does
+### not work today (see https://github.com/BxCppDev/Bayeux/issues/3):
+### \code
+###   #@variant_if geometry:layout/if_basic/magnetic_field/is_active|true
+###   fitting_models : string[2] = "helix" "line"
+###   #@variant_endif
+###   #@variant_if geometry:layout/if_basic/magnetic_field/is_inactive|false
+###   fitting_models : string[1] = "line"
+###   #@variant_endif
+### \endcode
 
-### fitting_models : string[2] = "helix" "line"
+#@description Fit models ("helix", "line" or both)
+fitting_models : string[2] = "helix" "line"
+
+### END OF FIX
 
 ############################################
 # Parameters to compute the line fit guess #

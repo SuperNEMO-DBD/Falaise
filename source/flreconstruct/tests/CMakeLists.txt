@@ -76,3 +76,12 @@ set_tests_properties(flreconstruct-custom-multimodule-pipeline PROPERTIES
   )
 
 
+# Tests dedicated to the validation of fixes
+# - Validation of issue #8 fix
+add_test(NAME flreconstruct-fix-issue8-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation"
+  )
+set_tests_properties(flreconstruct-fix-issue8-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
