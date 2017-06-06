@@ -27,8 +27,6 @@
 
 // - Third party
 // - ROOT:
-#include <TStyle.h>
-#include <TROOT.h>
 #include <TSystem.h>
 #include <TEnv.h>
 // - boost:
