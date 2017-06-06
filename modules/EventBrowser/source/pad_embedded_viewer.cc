@@ -38,6 +38,7 @@
 #include <TGeoVolume.h>
 #include <TView.h>
 #include <TObjArray.h>
+#include <TStyle.h>
 
 #include <TPolyLine3D.h>
 #include <TPolyMarker3D.h>
@@ -74,7 +75,6 @@ namespace snemo {
         _max_roi_bound_.SetXYZ(-std::numeric_limits<double>::infinity(),
                                -std::numeric_limits<double>::infinity(),
                                -std::numeric_limits<double>::infinity());
-
         return;
       }
 
@@ -160,6 +160,8 @@ namespace snemo {
 
       void pad_embedded_viewer::update_detector()
       {
+        // Set ROOT style here
+        this->_set_pad_style_();
         this->clear();
 
         TCanvas * canvas = this->get_canvas();
@@ -403,6 +405,34 @@ namespace snemo {
         canvas->Update();
 
         DT_LOG_TRACE(local_priority, "Exiting.");
+        return;
+      }
+
+      void pad_embedded_viewer::_set_pad_style_() const
+      {
+        gStyle->SetTitleBorderSize(0);
+        gStyle->SetTitleX(0.1f);
+        gStyle->SetTitleW(0.8f);
+
+        gStyle->SetPalette         (1,0);
+        gStyle->SetCanvasBorderMode(0);
+        gStyle->SetPadBorderMode   (0);
+        gStyle->SetDrawBorder      (0);
+        gStyle->SetFrameBorderMode (0);
+
+        gStyle->SetLabelFont (42,"xyz");
+        gStyle->SetLabelSize (0.05,"xyz");
+        gStyle->SetTitleSize (0.055,"xyz");
+        gStyle->SetNdivisions(505,"xyz");
+
+        gStyle->SetTitleOffset(1.1, "Y");
+        gStyle->SetTitleOffset(1.15, "X");
+        gStyle->SetLabelOffset(0.01, "xy");
+
+        gStyle->SetPadLeftMargin  (0.15);
+        gStyle->SetPadRightMargin (0.05);
+        gStyle->SetPadTopMargin   (0.05);
+        gStyle->SetPadBottomMargin(0.15);
         return;
       }
 

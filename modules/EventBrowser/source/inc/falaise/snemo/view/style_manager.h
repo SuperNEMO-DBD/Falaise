@@ -232,8 +232,8 @@ namespace snemo {
         /// Read user specific options
         void _read_style_file_(const std::string & style_filename_);
 
-        /// Set global style
-        void _set_global_style_() const;
+        /// Set GUI style
+        void _set_gui_style_() const;
 
         /// Dedicated function for geometry settings section
         void _set_geometry_settings_(const datatools::properties & config_);
