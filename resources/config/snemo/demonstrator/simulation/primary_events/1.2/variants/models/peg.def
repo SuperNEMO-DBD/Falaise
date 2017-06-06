@@ -95,6 +95,18 @@ parameters.energy.model         : string = "peg.generator.vspg.energy.PM"
 parameters.energy.description   : string = "The particle energy (monokinetic)"
 
 
+#############################################
+[name="peg.generator.uniform_energy_model" type="variant"]
+terse_description : string = "Configure a generator for single particles with uniform energy spectrum"
+parameters                            : string[3] = "particle" "minimum_energy" "maximum_energy"
+parameters.particle.model             : string = "peg.generator.vspg.particle.PM"
+parameters.particle.description       : string = "Particle type"
+parameters.minimum_energy.model       : string = "peg.generator.vspg.energy.PM"
+parameters.minimum_energy.description : string = "Lower bound for particle energy"
+parameters.maximum_energy.model       : string = "peg.generator.vspg.energy.PM"
+parameters.maximum_energy.description : string = "Upper bound for particle energy"
+
+
 ##########################################
 [name="peg.generator.PM" type="parameter"]
 
@@ -114,7 +126,6 @@ mutability          : string = "variable"
 
 #@description The mutability mode of the parameter
 variable.mode       : string = "enumeration"
-# variable.mode       : string = "free"
 
 #@description The CSV file containing the list of supported values
 string.enumerated.csv_file : string as path = \
@@ -125,19 +136,19 @@ string.enumerated.csv_file.separators : string = ":"
 
 #@description The default value
 string.default : string = "electron.1MeV"
-# string.default : string = "Se82.0nubb"
 
 #@description The list of variants
-variants : string[1] = "if_versatile"
+variants : string[2] = "if_versatile" "if_uniform_energy"
 
 #@description The model of the variant
 variants.if_versatile.model : string = "peg.generator.vspg.VM"
-
-#@description The description of the variant
 variants.if_versatile.description : string = "Set of parameters for the versatile primary event generator"
+variants.if_uniform_energy.model : string = "peg.generator.uniform_energy_model"
+variants.if_uniform_energy.description : string = "Set of parameters for the uniform energy primary event generator"
 
-#@description Association of some specific generators to some specific variants
+#@description Association of configurable generator names to their variant models
 string.enumerated.versatile_generator.variant : string = "if_versatile"
+string.enumerated.uniform_energy_generator.variant : string = "if_uniform_energy"
 
 
 ##############################

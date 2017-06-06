@@ -103,3 +103,45 @@ add_test(NAME flsimulate-fix-issue16-validation
   )
 set_tests_properties(flsimulate-fix-issue16-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+
+# Test implmentation of uniform_energy generator variant
+# 1) Test basic usage
+# 1.1) Create single event output
+add_test(NAME flsimulate-uniform_energy_generator
+  COMMAND flsimulate
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-uniform-energy-generator.conf"
+          -o "${CMAKE_CURRENT_BINARY_DIR}/fisimulate-uniform_energy-run.brio"
+  )
+# 1.2) Validate that output primary event is of
+#      - Correct label
+#      - Correct particle [TODO]
+#      - Energy in right range [TODO]
+add_test(NAME flsimulate-uniform_energy_generator-validate
+  COMMAND flreconstruct -i "${CMAKE_CURRENT_BINARY_DIR}/fisimulate-uniform_energy-run.brio"
+  )
+set_tests_properties(flsimulate-uniform_energy_generator-validate
+  PROPERTIES
+    DEPENDS_ON flsimulate-uniform_energy_generator
+    PASS_REGULAR_EXPRESSION "     |   |-- Label : 'uniform_energy_generator'"
+  )
+
+# 2) Test failure case of bad particle name
+add_test(NAME flsimulate-uniform_energy_generator-badparticle
+  COMMAND flsimulate
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-uniform-energy-generator-badparticle.conf"
+          -o "${CMAKE_CURRENT_BINARY_DIR}/bad.brio"
+  )
+
+# 3) Test failure case of max energy < min energy
+add_test(NAME flsimulate-uniform_energy_generator-badrange
+  COMMAND flsimulate
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-uniform-energy-generator-badrange.conf"
+          -o "${CMAKE_CURRENT_BINARY_DIR}/fisimulate-uniform_energy-run.brio"
+  )
+
+set_tests_properties(flsimulate-uniform_energy_generator-badparticle flsimulate-uniform_energy_generator-badrange
+  PROPERTIES WILL_FAIL TRUE
+  )
+
+
+
