@@ -1,6 +1,10 @@
 # -*- mode: conf-unix; -*-
 # @falaise:config/snemo/demonstrator/geometry/4.0/models/tracker_module/tracker_volumes.geom
 
+#
+# Pawel Guzowski 05 May 2013: Converted to "missing wires" models
+#
+
 
 ###################################################################
 #
@@ -45,7 +49,8 @@ stacked.number_of_items : integer = 11
 stacked.model_0    : string  = "tracker_gap_source.model"
 stacked.label_0    : string  = "source_gap"
 
-stacked.model_1    : string  = "tracker_layer_closing.model"
+#stacked.model_1    : string  = "tracker_layer_closing.model"
+stacked.model_1    : string  = "tracker_layer_front_l0.model"
 stacked.label_1    : string  = "layer_0"
 
 stacked.model_2    : string  = "tracker_layer.model"
@@ -57,7 +62,8 @@ stacked.label_3    : string  = "layer_2"
 stacked.model_4    : string  = "tracker_layer.model"
 stacked.label_4    : string  = "layer_3"
 
-stacked.model_5    : string  = "tracker_layer.model"
+#stacked.model_5    : string  = "tracker_layer.model"
+stacked.model_5    : string  = "tracker_layer_front_l4.model"
 stacked.label_5    : string  = "layer_4"
 
 stacked.model_6    : string  = "tracker_layer.model"
@@ -69,7 +75,8 @@ stacked.label_7    : string  = "layer_6"
 stacked.model_8    : string  = "tracker_layer.model"
 stacked.label_8    : string  = "layer_7"
 
-stacked.model_9    : string  = "tracker_layer.model"
+#stacked.model_9    : string  = "tracker_layer.model"
+stacked.model_9    : string  = "tracker_layer_front_l8.model"
 stacked.label_9    : string  = "layer_8"
 
 stacked.model_10   : string  = "tracker_gap_calo.model"
@@ -145,13 +152,15 @@ stacked.label_2    : string  = "layer_7"
 stacked.model_3    : string  = "tracker_layer.model"
 stacked.label_3    : string  = "layer_6"
 
-stacked.model_4    : string  = "tracker_layer.model"
+#stacked.model_4    : string  = "tracker_layer.model"
+stacked.model_4    : string  = "tracker_layer_back_l5.model"
 stacked.label_4    : string  = "layer_5"
 
 stacked.model_5    : string  = "tracker_layer.model"
 stacked.label_5    : string  = "layer_4"
 
-stacked.model_6    : string  = "tracker_layer.model"
+#stacked.model_6    : string  = "tracker_layer.model"
+stacked.model_6    : string  = "tracker_layer_back_l3.model"
 stacked.label_6    : string  = "layer_3"
 
 stacked.model_7    : string  = "tracker_layer.model"
