@@ -96,7 +96,7 @@ parameters.energy.description   : string = "The particle energy (monokinetic)"
 
 
 #############################################
-[name="peg.generator.uniform_energy_model" type="variant"]
+[name="peg.generator.uniform_energy_model.VM" type="variant"]
 terse_description : string = "Configure a generator for single particles with uniform energy spectrum"
 parameters                            : string[3] = "particle" "minimum_energy" "maximum_energy"
 parameters.particle.model             : string = "peg.generator.vspg.particle.PM"
@@ -143,7 +143,7 @@ variants : string[2] = "if_versatile" "if_uniform_energy"
 #@description The model of the variant
 variants.if_versatile.model : string = "peg.generator.vspg.VM"
 variants.if_versatile.description : string = "Set of parameters for the versatile primary event generator"
-variants.if_uniform_energy.model : string = "peg.generator.uniform_energy_model"
+variants.if_uniform_energy.model : string = "peg.generator.uniform_energy_model.VM"
 variants.if_uniform_energy.description : string = "Set of parameters for the uniform energy primary event generator"
 
 #@description Association of configurable generator names to their variant models
