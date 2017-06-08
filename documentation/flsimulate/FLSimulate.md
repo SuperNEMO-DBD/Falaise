@@ -422,7 +422,7 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
 
   - `simulationSetupUrn` : the simulation setup tag (string, mandatory
     for  production   runs,  otherwise   optional,  default   tag  is:
-    `urn:snemo:demonstrator:simulation:2.1`).
+    `urn:snemo:demonstrator:simulation:2.2`).
   - `simulationSetupConfig`  : the  explicit  path  to the  simulation
     configuration   file  for   the  Bayeux/mctools   *Geant4  driver*
     (string/path, optional).  If not set, it is automatically resolved
@@ -504,26 +504,26 @@ registered   blessed/official  configuration   (geometry,  simulation,
 reconstruction...). Any  setup of interest  may be registered  with an
 unique *tag*. The  tag is a simple character string  which uses an URN
 scheme.  For  example, Falaise  version  3.0.0  is released  with  the
-registered     simulation    setup     version     2.1    with     tag
-`urn:snemo:demonstrator:simulation:2.1.     This   is    the   default
+registered     simulation    setup     version     2.2    with     tag
+`urn:snemo:demonstrator:simulation:2.2.     This   is    the   default
 simulation setup  whcih will be  used if not explicitely  requested by
 the user.
 
 Thus, in the `flsimulate.simulation` section, the simulation setup tag
-is optional and  defaults to: `urn:snemo:demonstrator:simulation:2.1`.
+is optional and  defaults to: `urn:snemo:demonstrator:simulation:2.2`.
 If  no other  parameters are  explicitly set,  FLSimulate will  try to
 resolve all  other configuration components using  a dependency scheme
 displayed on the table below:
 
 ~~~~~
-+-- urn:snemo:demonstrator:simulation:2.1 (simulation setup)
++-- urn:snemo:demonstrator:simulation:2.2 (simulation setup)
    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)
    +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)
    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
    +-- urn:snemo:demonstrator:simulation:2.1:variants (used variant configuration)
    |   +-- urn:snemo:demonstrator:simulation:2.1:variants:profiles:default (default variant profile)
    +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)
-   +-- urn:snemo:demonstrator:simulation:decays:1.2 (used decay generation setup)
+   +-- urn:snemo:demonstrator:simulation:decays:1.3 (used decay generation setup)
 ~~~~~
 
 Effective  paths  to  various  configuration  files  are  automatically
@@ -567,7 +567,7 @@ parameters  and  depender  variant  menus.  It  is  organized  like  a
 filesystem where each parameter and variant has an unique path.
 
 As an illustration, here is the organization of the geometry registry
-used by the SuperNEMO demonstrator simulation setup (2.1) (tag : `"urn:snemo:demonstrator:simulation:2.1"`):
+used by the SuperNEMO demonstrator simulation setup (2.2) (tag : `"urn:snemo:demonstrator:simulation:2.2"`):
 
 ~~~~~~~~~
 geometry/
@@ -938,13 +938,13 @@ List of available experimental setups {#usingflsimulate_summaryofavailableexperi
 List of available simulation setups {#usingflsimulate_summaryofavailablesimulationsetups}
 -----------------------------------
 
-1. SuperNEMO demonstrator simulation setup version  2.1 :
+1. SuperNEMO demonstrator simulation setup version  2.2 :
 		*   Description: Simulation setup for the SuperNEMO demonstrator detector
-		*   Tag : `"urn:snemo:demonstrator:simulation:2.1"`
+		*   Tag : `"urn:snemo:demonstrator:simulation:2.2"`
 		*   Based on:
 			+   Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
 			+   Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.1"`
-			+   Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.2"`
+			+   Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.3"`
 		*   Associated to:
 			+   Services system: `"urn:snemo:demonstrator:simulation:2.1:services"`
 			+   Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
@@ -1218,7 +1218,6 @@ Here we use the same simulation setup than in case 2:
 ~~~~~~
 $ flsimulate-configure \
     --no-gui \
-    -t urn:snemo:demonstrator:simulation:2.1 \
     -s "geometry:layout=Basic" \
     -s "vertexes:generator=field_wire_bulk" \
     -s "primary_events:generator=Tl208" \
@@ -1294,7 +1293,6 @@ $ bxg4_seeds -k -d . -T -p seeds.conf
 ~~~~~~
 $ flsimulate-configure \
     --no-gui \
-    -t urn:snemo:demonstrator:simulation:2.1 \
     -s "geometry:layout=Basic" \
     -s "vertexes:generator=field_wire_bulk" \
     -s "primary_events:generator=Tl208" \
