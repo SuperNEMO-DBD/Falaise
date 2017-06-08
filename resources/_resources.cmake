@@ -312,6 +312,9 @@ ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_con
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.1/variants/registries/simulation.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.1/visu/visu_0.mac
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.2/manager.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.2/services.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.1/README.rst
@@ -323,6 +326,12 @@ ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_ev
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.2/variants/models/peg_generators.csv
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.2/variants/registries/primary_events.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.2/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/generators/versatile.def
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/manager.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg.def
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_generators.csv
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/variants/registries/primary_events.conf
+${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/primary_events/1.3/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/vertexes/1.0/hall_vg.lis
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/vertexes/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources//config/snemo/demonstrator/simulation/vertexes/1.0/manager_2.conf
