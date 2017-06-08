@@ -66,4 +66,3 @@ gamma.1MeV : Gamma with monokinetic energy @ 1 MeV : Miscellaneous :
 gamma.2MeV : Gamma with monokinetic energy @ 2 MeV : Miscellaneous :
 gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous :
 versatile_generator : Electron with monokinetic energy : User : if_versatile
-uniform_energy_generator : Electron/Gamma/Positron/Alpha/Neutron with uniform energy spectrum : User : if_uniform_energy

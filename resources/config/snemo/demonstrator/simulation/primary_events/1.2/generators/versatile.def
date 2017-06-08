@@ -26,14 +26,4 @@ emission_direction : string = "randomized"
 energy        : real   = @variant(primary_events:generator/if_versatile/energy|1000.0 keV)
 
 
-####################################################################
-[name="uniform_energy_generator" type="genbb::single_particle_generator"]
-#@variant_section_only primary_events:generator/if_uniform_energy
-particle_name      : string = @variant(primary_events:generator/if_uniform_energy/particle)
-mode               : string = "energy_range"
-emission_direction : string = "randomized"
-min_energy         :   real = @variant(primary_events:generator/if_uniform_energy/minimum_energy)
-max_energy         :   real = @variant(primary_events:generator/if_uniform_energy/maximum_energy)
-
 # end of versatile.def
-
