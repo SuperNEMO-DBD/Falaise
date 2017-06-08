@@ -79,4 +79,42 @@ topic.variants.component   : string = "urn:snemo:demonstrator:simulation:2.1:var
 topic.services.component   : string = "urn:snemo:demonstrator:simulation:2.1:services"
 
 
+
+#############################################################################
+[urn="urn:snemo:demonstrator:simulation:decays:1.3" category="configuration"]
+
+#@config URN registration of decay generation setup (version 1.3) for SuperNEMO demonstrator simulation
+
+description : string = "Decay generation setup (version 1.3) for SuperNEMO demonstrator simulation"
+
+
+#########################################################################
+[urn="urn:snemo:demonstrator:simulation:2.2:variants" category="variant"]
+
+#@config URN registration of variants setup for the  SuperNEMO demonstrator simulation setup (version 2.1)
+
+description : string = "Variants setup for the  SuperNEMO demonstrator simulation setup (version 2.1)"
+
+topics : string[2] = "__parent__" "__default_profile__"
+
+topic.__parent__.component          : string    = "urn:snemo:demonstrator:simulation:2.2"
+topic.__default_profile__.component : string    = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"
+
+
+#################################################################
+[urn="urn:snemo:demonstrator:simulation:2.2" category="simsetup"]
+
+#@config URN registration of SuperNEMO demonstrator simulation setup version 2.2
+
+description : string = "SuperNEMO demonstrator simulation setup (version 2.2)"
+
+topics : string[5] = "expsetup" "vertexes" "decays" "variants" "services"
+
+topic.expsetup.component   : string = "urn:snemo:demonstrator:setup:1.0"
+topic.vertexes.component   : string = "urn:snemo:demonstrator:simulation:vertexes:4.1"
+topic.decays.component     : string = "urn:snemo:demonstrator:simulation:decays:1.3"
+topic.variants.component   : string = "urn:snemo:demonstrator:simulation:2.2:variants"
+topic.services.component   : string = "urn:snemo:demonstrator:simulation:2.1:services"
+
+
 # end
