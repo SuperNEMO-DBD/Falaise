@@ -154,11 +154,11 @@ namespace FLSimulateConfig {
     std::cout << "Examples:\n\n";
     std::cout << "  $ flsimulate-configure -o myprofile.conf \n\n";
     std::cout << "  $ flsimulate-configure  \\\n"
-              << "      -t \"urn:snemo:demonstrator:simulation:2.1\" \\\n"
+              << "      -t \"urn:snemo:demonstrator:simulation:2.2\" \\\n"
               << "      -o myprofile.conf \n\n";
     std::cout << "  $ flsimulate-configure \\\n"
               << "      --no-gui \\\n"
-              << "      -t \"urn:snemo:demonstrator:simulation:2.1\" \\\n"
+              << "      -t \"urn:snemo:demonstrator:simulation:2.2\" \\\n"
               << "      -i oldprofile.conf \\\n"
               << "      -s \"geometry:layout/if_basic/magnetic_field=false\" \\\n"
               << "      -o myprofile.conf \n\n";
