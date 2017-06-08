@@ -112,6 +112,8 @@ namespace snemo {
         pad_embedded_viewer             (const pad_embedded_viewer &); // not implemented
         pad_embedded_viewer & operator= (const pad_embedded_viewer &); // not implemented
 
+        void _set_pad_style_() const;
+
         const TVector3 & _get_minimal_roi_bound_ () const;
 
         const TVector3 & _get_maximal_roi_bound_ () const;

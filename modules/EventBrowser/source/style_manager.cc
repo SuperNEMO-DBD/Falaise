@@ -366,7 +366,7 @@ namespace snemo {
 
       void style_manager::_at_init_(const std::string & style_filename_)
       {
-        this->_set_global_style_();
+        this->_set_gui_style_();
         this->_read_style_file_(style_filename_);
         return;
       }
@@ -582,34 +582,8 @@ namespace snemo {
         return;
       }
 
-      void style_manager::_set_global_style_() const
+      void style_manager::_set_gui_style_() const
       {
-        gROOT->SetStyle("Plain");
-
-        gStyle->SetTitleBorderSize(0);
-        gStyle->SetTitleX(0.1f);
-        gStyle->SetTitleW(0.8f);
-
-        gStyle->SetPalette         (1,0);
-        gStyle->SetCanvasBorderMode(0);
-        gStyle->SetPadBorderMode   (0);
-        gStyle->SetDrawBorder      (0);
-        gStyle->SetFrameBorderMode (0);
-
-        gStyle->SetLabelFont (42,"xyz");
-        gStyle->SetLabelSize (0.05,"xyz");
-        gStyle->SetTitleSize (0.055,"xyz");
-        gStyle->SetNdivisions(505,"xyz");
-
-        gStyle->SetTitleOffset(1.1, "Y");
-        gStyle->SetTitleOffset(1.15, "X");
-        gStyle->SetLabelOffset(0.01, "xy");
-
-        gStyle->SetPadLeftMargin  (0.15);
-        gStyle->SetPadRightMargin (0.05);
-        gStyle->SetPadTopMargin   (0.05);
-        gStyle->SetPadBottomMargin(0.15);
-
         // GUI style
         gEnv->SetValue("Gui.DefaultFont",  "-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-1");
         gEnv->SetValue("Gui.MenuFont",     "-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-1");
