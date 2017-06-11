@@ -84,8 +84,8 @@ namespace snemo {
         return _label;
       }
 
-      event_selection::base_widget::base_widget(event_selection * selection_)
-        : _selection(selection_)
+      event_selection::base_widget::base_widget(event_selection * selection_, int id_)
+        : _selection(selection_), _id(id_)
       {
         return;
       }
@@ -93,6 +93,11 @@ namespace snemo {
       event_selection::base_widget::~base_widget()
       {
         return;
+      }
+
+      int event_selection::base_widget::id()
+      {
+        return _id;
       }
 
       event_selection::selection_widget::selection_widget(event_selection * selection_)
@@ -103,19 +108,19 @@ namespace snemo {
 
       void event_selection::selection_widget::initialize()
       {
-        if (_or_button_) _or_button_->SetOn(false);
-        if (_and_button_) _and_button_->SetOn(true);
-        if (_xor_button_) _xor_button_->SetOn(false);
-        if (_save_button_) _save_button_->SetState(kButtonDisabled);
+        _or_button_->SetOn(false);
+        _and_button_->SetOn(true);
+        _xor_button_->SetOn(false);
+        _save_button_->SetState(kButtonDisabled);
         return;
       }
 
-      void event_selection::selection_widget::set_state(const bool enable_)
+      void event_selection::selection_widget::set_state()
       {
-        const EButtonState state = enable_ ? kButtonEngaged : kButtonDisabled;
-        if (_or_button_) _or_button_->SetState(state);
-        if (_and_button_) _and_button_->SetState(state);
-        if (_xor_button_) _xor_button_->SetState(state);
+        // const EButtonState state = enable_ ? kButtonEngaged : kButtonDisabled;
+        // _or_button_->SetState(state);
+        // _and_button_->SetState(state);
+        // _xor_button_->SetState(state);
         return;
       }
 
@@ -171,92 +176,129 @@ namespace snemo {
         return;
       }
 
-      event_selection::complex_selection_widget::complex_selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_)
+      std::string event_selection::selection_widget::get_cut_name()
       {
-        return;
-      }
-
-      void event_selection::complex_selection_widget::initialize()
-      {
-        _combo_->RemoveAll();
-        size_t j = 1;
-        for (cuts::cut_handle_dict_type::const_iterator
-               i = _selection->get_cut_manager().get_cuts().begin();
-             i != _selection->get_cut_manager().get_cuts().end(); ++i) {
-          const std::string & the_cut_name = i->first;
-          if (the_cut_name[0] != '_') {
-            _combo_->AddEntry(the_cut_name.c_str(), j++);
-          }
-        }
-        if (j == 1) {
-          _combo_->AddEntry(" +++ NO CUTS +++ ", 0);
-          set_state(false);
+        std::string cut_name;
+        if (_and_button_->IsDown()) {
+          cut_name = event_selection::multi_and_cut_label();
+        } else if (_or_button_->IsDown()) {
+          cut_name = event_selection::multi_or_cut_label();
+        } else if (_xor_button_->IsDown()) {
+          cut_name = event_selection::multi_xor_cut_label();
         } else {
-          _combo_->AddEntry(" +++ SELECT CUT NAME +++ ", 0);
-          set_state(true);
+          DT_THROW_IF(true, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
         }
-        if (_combo_) _combo_->Select(0);
-        return;
-      }
 
-      void event_selection::complex_selection_widget::set_state(const bool enable_)
-      {
-        if (_combo_) _combo_->SetEnabled(enable_);
-        if (enable_) {
-          _enable_->SetEnabled(enable_);
-        } else {
-          _enable_->SetDisabledAndSelected(enable_);
+        // Instantiate cut if needed
+        cuts::cut_manager & a_cut_mgr = _selection->grab_cut_manager();
+        cuts::cut_handle_dict_type & the_cuts = a_cut_mgr.get_cuts();
+        cuts::cut_handle_dict_type::iterator found = the_cuts.find(cut_name);
+        DT_THROW_IF(found == the_cuts.end(), std::logic_error,
+                    "Cut '" << cut_name << "' has not been registered !");
+        found = the_cuts.find(cut_name);
+
+        // Reset cut
+        cuts::cut_entry_type & a_cet = found->second;
+        if (a_cet.is_initialized()) {
+          a_cet.grab_cut().reset();
+          a_cet.set_uninitialized();
         }
-        return;
+        return cut_name;
       }
 
-      void event_selection::complex_selection_widget::build(TGCompositeFrame * frame_)
-      {
-        TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
-        gframe->SetTitlePos(TGGroupFrame::kLeft);
-        frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
-        _enable_ = new TGCheckButton(gframe, "", ENABLE_COMPLEX_SELECTION);
-        _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                          _selection, "process()");
-        gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+      // event_selection::complex_selection_widget::complex_selection_widget(event_selection * selection_)
+      //   : event_selection::base_widget(selection_)
+      // {
+      //   return;
+      // }
 
-        TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
-                                                         kHorizontalFrame | kFixedWidth);
-        gframe->AddFrame(cframe);
+      // void event_selection::complex_selection_widget::initialize()
+      // {
+      //   _combo_->RemoveAll();
+      //   size_t j = 1;
+      //   for (cuts::cut_handle_dict_type::const_iterator
+      //          i = _selection->get_cut_manager().get_cuts().begin();
+      //        i != _selection->get_cut_manager().get_cuts().end(); ++i) {
+      //     const std::string & the_cut_name = i->first;
+      //     if (the_cut_name[0] != '_') {
+      //       _combo_->AddEntry(the_cut_name.c_str(), j++);
+      //     }
+      //   }
+      //   if (j == 1) {
+      //     _combo_->AddEntry(" +++ NO CUTS +++ ", 0);
+      //     set_state(false);
+      //   } else {
+      //     _combo_->AddEntry(" +++ SELECT CUT NAME +++ ", 0);
+      //     set_state(true);
+      //   }
+      //   if (_combo_) _combo_->Select(0);
+      //   return;
+      // }
 
-        _combo_ = new TGComboBox(cframe, COMBO_SELECTION);
-        _combo_->Connect("Selected(int)", "snemo::visualization::view::event_selection",
-                         _selection, "process()");
-        _combo_->Resize(200, 20);
-        cframe->AddFrame(_combo_, new TGLayoutHints(kLHintsTop     | kLHintsLeft |
-                                                    kLHintsExpandX | kLHintsExpandY,
-                                                    2, 2, 2, 2));
-        initialize();
-        return;
-      }
+      // void event_selection::complex_selection_widget::set_state(const bool enable_)
+      // {
+      //   if (_combo_) _combo_->SetEnabled(enable_);
+      //   if (enable_) {
+      //     _enable_->SetEnabled(enable_);
+      //   } else {
+      //     _enable_->SetDisabledAndSelected(enable_);
+      //   }
+      //   return;
+      // }
+
+      // void event_selection::complex_selection_widget::build(TGCompositeFrame * frame_)
+      // {
+      //   TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
+      //   gframe->SetTitlePos(TGGroupFrame::kLeft);
+      //   frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
+      //   _enable_ = new TGCheckButton(gframe, "", ENABLE_COMPLEX_SELECTION);
+      //   _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+      //                     _selection, "process()");
+      //   gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+
+      //   TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+      //                                                    kHorizontalFrame | kFixedWidth);
+      //   gframe->AddFrame(cframe);
+
+      //   _combo_ = new TGComboBox(cframe, COMBO_SELECTION);
+      //   _combo_->Connect("Selected(int)", "snemo::visualization::view::event_selection",
+      //                    _selection, "process()");
+      //   _combo_->Resize(200, 20);
+      //   cframe->AddFrame(_combo_, new TGLayoutHints(kLHintsTop     | kLHintsLeft |
+      //                                               kLHintsExpandX | kLHintsExpandY,
+      //                                               2, 2, 2, 2));
+      //   initialize();
+      //   return;
+      // }
 
       event_selection::event_header_selection_widget::event_header_selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_)
+        : event_selection::base_widget(selection_, ENABLE_EH_SELECTION)
       {
         return;
       }
 
       void event_selection::event_header_selection_widget::initialize()
       {
-        if (_run_id_min_) _run_id_min_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
-        if (_run_id_max_) _run_id_max_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
-        if (_event_id_min_) _event_id_min_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
-        if (_event_id_max_) _event_id_max_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
-        this->set_state(false);
+        _run_id_min_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
+        _run_id_max_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
+        _event_id_min_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
+        _event_id_max_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
       }
 
-      void event_selection::event_header_selection_widget::set_state(const bool enable_)
+      void event_selection::event_header_selection_widget::set_state()
       {
-        if (_run_id_min_) _run_id_min_->SetState(enable_);
-        if (_run_id_max_) _run_id_max_->SetState(enable_);
-        if (_event_id_min_) _event_id_min_->SetState(enable_);
-        if (_event_id_max_) _event_id_max_->SetState(enable_);
+        bool enable = _enable_->IsDown();
+        const io::event_server & server = _selection->get_event_server();
+        if (! server.get_event().has(io::EH_LABEL)) {
+          _enable_->SetState(kButtonDisabled);
+          enable = false;
+        } else {
+          _enable_->SetState(kButtonUp);
+        }
+        _run_id_min_->SetState(enable);
+        _run_id_max_->SetState(enable);
+        _event_id_min_->SetState(enable);
+        _event_id_max_->SetState(enable);
         return;
       }
 
@@ -320,59 +362,112 @@ namespace snemo {
         return;
       }
 
-      event_selection::simulated_data_selection_widget::simulated_data_selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_)
+      std::string event_selection::event_header_selection_widget::get_cut_name()
       {
-        return;
-      }
+        if (! _enable_->IsDown()) return {}; // empty string
 
-      void event_selection::simulated_data_selection_widget::initialize()
-      {
-        if (_hit_category_) _hit_category_->Clear();
-        this->set_state(false);
-      }
+        cuts::cut_manager & a_cut_mgr = _selection->grab_cut_manager();
+        cuts::cut_handle_dict_type & the_cuts = a_cut_mgr.get_cuts();
+        cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::eh_cut_label());
+        DT_THROW_IF(found == the_cuts.end(), std::logic_error,
+                    "Cut '" << event_selection::eh_cut_label() << "' has not been registered !");
 
-      void event_selection::simulated_data_selection_widget::set_state(const bool enable_)
-      {
-        if (_hit_category_) _hit_category_->SetState(enable_);
-        return;
-      }
-
-      void event_selection::simulated_data_selection_widget::build(TGCompositeFrame * frame_)
-      {
-        // Layout for positionning frame
-        // TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
-        //                                                  2, 2, 20, 2);
-        // TGLayoutHints * label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft,
-        //                                                  2, 2, 2, 2);
-        TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Simulated data cut", kVerticalFrame);
-        gframe->SetTitlePos(TGGroupFrame::kLeft);
-        frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
-        {
-          _enable_ = new TGCheckButton(gframe, "", ENABLE_SD_SELECTION);
-          _enable_->SetToolTipText("enable selection on simulated data bank");
-          _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                            _selection, "process()");
-          gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+        // Reset cut
+        cuts::cut_entry_type & a_cet = found->second;
+        if (a_cet.is_initialized()) {
+          a_cet.grab_cut().reset();
+          a_cet.set_uninitialized();
         }
 
-        {
-          TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
-                                                           kHorizontalFrame | kFixedWidth);
-          gframe->AddFrame(cframe);
-          cframe->AddFrame(new TGLabel(cframe, "Hit category name:"),
-                           new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2));
-          _hit_category_ = new TGTextEntry(cframe, "", -1);
-          // _hit_category_->Connect("ValueSet(Long_t)",
-          //                         "snemo::visualization::view::event_selection",
-          //                         _selection, "process()");
-          cframe->AddFrame(_hit_category_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 0, 2));
+        datatools::properties & cuts_prop = a_cet.grab_cut_config();
+        bool cut_updated = false;
+        // Run number
+        const int run_number_selected_min = _run_id_min_->GetIntNumber();
+        const int run_number_selected_max = _run_id_max_->GetIntNumber();
+        if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER ||
+            run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
+          cuts_prop.update_flag("mode.run_number");
+          if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER)
+            cuts_prop.update_integer("run_number.min", run_number_selected_min);
+          if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER)
+            cuts_prop.update_integer("run_number.max", run_number_selected_max);
+          cut_updated = true;
+        }
+        // Event number
+        const int event_number_selected_min = _event_id_min_->GetIntNumber();
+        const int event_number_selected_max = _event_id_max_->GetIntNumber();
+        if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER ||
+            event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
+          cuts_prop.update_flag("mode.event_number");
+          if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER)
+            cuts_prop.update_integer("event_number.min", event_number_selected_min);
+          if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER)
+            cuts_prop.update_integer("event_number.max", event_number_selected_max);
+          cut_updated = true;
         }
 
-        // Initialize values
-        initialize();
-        return;
+        if (! cut_updated) {
+          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+                         "Missing run id or event id !");
+          return {};
+        }
+
+        return event_selection::eh_cut_label();
       }
+
+      // event_selection::simulated_data_selection_widget::simulated_data_selection_widget(event_selection * selection_)
+      //   : event_selection::base_widget(selection_)
+      // {
+      //   return;
+      // }
+
+      // void event_selection::simulated_data_selection_widget::initialize()
+      // {
+      //   if (_hit_category_) _hit_category_->Clear();
+      //   this->set_state(false);
+      // }
+
+      // void event_selection::simulated_data_selection_widget::set_state(const bool enable_)
+      // {
+      //   if (_hit_category_) _hit_category_->SetState(enable_);
+      //   return;
+      // }
+
+      // void event_selection::simulated_data_selection_widget::build(TGCompositeFrame * frame_)
+      // {
+      //   // Layout for positionning frame
+      //   // TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
+      //   //                                                  2, 2, 20, 2);
+      //   // TGLayoutHints * label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft,
+      //   //                                                  2, 2, 2, 2);
+      //   TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Simulated data cut", kVerticalFrame);
+      //   gframe->SetTitlePos(TGGroupFrame::kLeft);
+      //   frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
+      //   {
+      //     _enable_ = new TGCheckButton(gframe, "", ENABLE_SD_SELECTION);
+      //     _enable_->SetToolTipText("enable selection on simulated data bank");
+      //     _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+      //                       _selection, "process()");
+      //     gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+      //   }
+
+      //   {
+      //     TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+      //                                                      kHorizontalFrame | kFixedWidth);
+      //     gframe->AddFrame(cframe);
+      //     cframe->AddFrame(new TGLabel(cframe, "Hit category name:"),
+      //                      new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2));
+      //     _hit_category_ = new TGTextEntry(cframe, "", -1);
+      //     // _hit_category_->Connect("ValueSet(Long_t)",
+      //     //                         "snemo::visualization::view::event_selection",
+      //     //                         _selection, "process()");
+      //     cframe->AddFrame(_hit_category_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 0, 2));
+      //   }
+
+      //   // Initialize values
+      //   initialize();
+      //   return;
+      // }
 
       //*************************************************************//
 
@@ -395,6 +490,8 @@ namespace snemo {
         _status_      = 0;
         _cut_manager_ = 0;
         _initialized_ = false;
+        _selection_enable_ = false;
+        _initial_event_id_ = 0;
         return;
       }
 
@@ -410,6 +507,12 @@ namespace snemo {
         DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
         _server_ = server_;
         return;
+      }
+
+      io::event_server & event_selection::get_event_server() const
+      {
+        DT_THROW_IF(_server_ == 0, std::logic_error, "Event server is not set !");
+        return *_server_;
       }
 
       void event_selection::set_status_bar(view::status_bar * status_)
@@ -452,9 +555,7 @@ namespace snemo {
         this->_build_widgets_();
         this->_install_cut_manager_();
 
-        _initial_event_id_ = 0;
-        _selection_enable_ = false;
-        _initialized_      = true;
+        _initialized_ = true;
         return;
       }
 
@@ -462,8 +563,8 @@ namespace snemo {
       {
         if (_cut_manager_) {
           delete _cut_manager_;
-          _cut_manager_ = 0;
         }
+        _cut_manager_ = 0;
         return;
       }
 
@@ -501,8 +602,7 @@ namespace snemo {
         } else if (id == RESET_SELECTION) {
           for (widget_collection_type::iterator i = _widgets_.begin();
                i != _widgets_.end(); ++i) {
-            base_widget * a_widget = *i;
-            a_widget->initialize();
+            i->second->initialize();
           }
 
           _server_->clear_selection();
@@ -519,21 +619,19 @@ namespace snemo {
           this->_build_cuts_();
 
           if (is_selection_enable()) {
+            DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Selection is enable");
             _server_->clear_selection();
             _server_->fill_selection();
             _initial_event_id_ = _server_->get_current_event_number();
             _browser_->change_event(FIRST_EVENT);
           }
           return;
-        } else if (id == ENABLE_EH_SELECTION) {
-          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Enable EH selection");
-          // if (_eh_widgets_.tg_enable->IsDown())
-          //   _eh_widgets_.set_state(true);
-          // else _eh_widgets_.set_state(false);
-        } else if (id == ENABLE_COMPLEX_SELECTION) {
-          // if (_complex_widgets_.tg_enable->IsDown())
-          //   _complex_widgets_.set_state(true);
-          // else _complex_widgets_.set_state(false);
+        } else {
+          widget_collection_type::iterator found = _widgets_.find(id);
+          if (found != _widgets_.end()) {
+            found->second->set_state();
+          }
+
         }
 
         // // Disable update button if none of the check box is enable
@@ -604,6 +702,8 @@ namespace snemo {
           }
 
           if (is_selection_enable()) {
+            DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
+                         "Selection enable");
             // Get selected events
             if (this->_check_cuts_()) {
               _server_->select_event(current_event_id);
@@ -635,7 +735,7 @@ namespace snemo {
         }
 
         // Update buttons given avalaible banks
-        this->_update_widgets_();
+        for (auto & i : _widgets_) i.second->set_state();
 
         // Update status bar
         _status_->update(is_selection_enable(), is_selection_enable());
@@ -644,29 +744,15 @@ namespace snemo {
         return;
       }
 
-      void event_selection::_update_widgets_()
-      {
-        // if (! _server_->get_event().has(io::EH_LABEL) &&
-        //     _widgets_.count(event_selection::eh_cut_label())) {
-        //   _widgets_[event_selection::eh_cut_label()]->set_state(false);
-        // }
-        // if (! _server_->get_event().has(io::SD_LABEL) &&
-        //     _widgets_.count(event_selection::sd_cut_label())) {
-        //   _widgets_[event_selection::sd_cut_label()]->set_state(false);
-        // }
-        return;
-      }
-
       void event_selection::_build_widgets_()
       {
-        _widgets_.push_back(new selection_widget(this));
-        _widgets_.push_back(new event_header_selection_widget(this));
-        _widgets_.push_back(new simulated_data_selection_widget(this));
-        _widgets_.push_back(new complex_selection_widget(this));
-        for (widget_collection_type::iterator i = _widgets_.begin();
-             i != _widgets_.end(); ++i) {
-          base_widget * a_widget = *i;
-          a_widget->build(_main_);
+        _widgets_[0] = new selection_widget(this);
+        auto * ehsw = new event_header_selection_widget(this);
+        _widgets_[ehsw->id()] = ehsw;
+        // _widgets_.push_back(new simulated_data_selection_widget(this));
+        // _widgets_.push_back(new complex_selection_widget(this));
+        for (auto & i : _widgets_) {
+          i.second->build(_main_);
         }
         return;
       }
@@ -675,51 +761,35 @@ namespace snemo {
       {
         int cut_status = cuts::SELECTION_REJECTED;
         try {
-          cuts::i_cut * ptr_cut = 0;
-          // if (_selection_widgets_.tg_and_button->IsDown()) {
-          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_and_cut_label());
-          // } else if (_selection_widgets_.tg_or_button->IsDown()) {
-          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_or_cut_label());
-          // } else if (_selection_widgets_.tg_xor_button->IsDown()) {
-          //   ptr_cut = &_cut_manager_->grab(event_selection::multi_xor_cut_label());
-          // }
-          DT_THROW_IF(ptr_cut == 0, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
-          cuts::i_cut & the_cut = *ptr_cut;
-
+          DT_THROW_IF(! _cut_manager_->has(_current_cut_name_), std::logic_error,
+                      "None of the cut (AND, XOR, OR) have been registered !");
+          cuts::i_cut & the_cut = _cut_manager_->grab(_current_cut_name_);
           const io::event_record & a_record = _server_->get_event();
           the_cut.set_user_data(a_record);
           cut_status = the_cut.process();
           the_cut.reset_user_data();
         } catch (std::exception & x) {
-          DT_LOG_ERROR(options_manager::get_instance().get_logging_priority(), x.what());
+          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(), x.what());
         }
 
-        if (cut_status != cuts::SELECTION_ACCEPTED) return false;
+        if (cut_status != cuts::SELECTION_ACCEPTED) {
+          DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Event rejected");
+          return false;
+        }
 
+        DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Event accepted");
         return true;
       }
 
       void event_selection::_build_cuts_()
       {
-        // cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
-        cuts::cut_handle_dict_type::iterator found;
-        // if (_selection_widgets_.tg_and_button->IsDown()) {
-        //   found = the_cuts.find(event_selection::multi_and_cut_label());
-        // } else if (_selection_widgets_.tg_or_button->IsDown()) {
-        //   found = the_cuts.find(event_selection::multi_or_cut_label());
-        // } else if (_selection_widgets_.tg_xor_button->IsDown()) {
-        //   found = the_cuts.find(event_selection::multi_xor_cut_label());
-        // } else {
-        //   DT_THROW_IF(true, std::logic_error, "None of the cut (AND, XOR, OR) have been registered !");
-        // }
-
-        // Reset cut
-        if (found->second.is_initialized()) {
-          found->second.grab_cut().reset();
-          found->second.set_uninitialized();
+        std::vector<std::string> cut_lists;
+        for (auto & a_widget : _widgets_) {
+          if (a_widget.first == 0) continue;
+          const std::string a_cut_name = a_widget.second->get_cut_name();
+          if (! a_cut_name.empty()) cut_lists.push_back(a_cut_name);
         }
 
-        std::vector<std::string> cut_lists;
         // Complex Cut
         // if (_complex_widgets_.tg_enable->IsDown()) {
         //   if (_complex_widgets_.tg_combo->GetSelected() != 0) {
@@ -730,14 +800,9 @@ namespace snemo {
         //   }
         // }
 
-        // // Event Header Cut
-        // if (this->_build_event_header_data_cuts_()) {
-        //   cut_lists.push_back(event_selection::eh_cut_label());
-        // }
-        // // Simulated Data Cut
-        // if (this->_build_simulated_data_cuts_()) {
-        //   cut_lists.push_back(event_selection::sd_cut_label());
-        // }
+        for (const auto & s : cut_lists) {
+          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Cut : " << s);
+        }
 
         if (cut_lists.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -746,6 +811,9 @@ namespace snemo {
           return;
         }
 
+        _current_cut_name_ = _widgets_[0]->get_cut_name();
+        cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
+        cuts::cut_handle_dict_type::iterator found = the_cuts.find(_current_cut_name_);
         datatools::properties & cuts_prop = found->second.grab_cut_config();
         cuts_prop.update("cuts", cut_lists);
 
@@ -753,61 +821,12 @@ namespace snemo {
         return;
       }
 
-      bool event_selection::_build_event_header_data_cuts_()
-      {
-        // if (! _eh_widgets_.tg_enable->IsDown()) return false;
-
-        // cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
-        // cuts::cut_handle_dict_type::iterator found = the_cuts.find(event_selection::eh_cut_label());
-        // if (found == the_cuts.end()) {
-        //   DT_LOG_ERROR(options_manager::get_instance().get_logging_priority(),
-        //                "Cut '" << event_selection::eh_cut_label() << "' has not been registered !");
-        //   return false;
-        // }
-
-        // // Reset cut
-        // if (found->second.is_initialized()) {
-        //   found->second.grab_cut().reset();
-        //   found->second.set_uninitialized();
-        // }
-
-        // bool has_cut_enabled = false;
-        // datatools::properties & cuts_prop = found->second.grab_cut_config();
-        // // Run number
-        // const int run_number_selected_min = _eh_widgets_.tg_run_id_min->GetIntNumber();
-        // const int run_number_selected_max = _eh_widgets_.tg_run_id_max->GetIntNumber();
-        // if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER ||
-        //     run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
-        //   cuts_prop.update_flag("mode.run_number");
-        //   if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER)
-        //     cuts_prop.update_integer("run_number.min", run_number_selected_min);
-        //   if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER)
-        //     cuts_prop.update_integer("run_number.max", run_number_selected_max);
-        //   has_cut_enabled = true;
-        // }
-        // // Event number
-        // const int event_number_selected_min = _eh_widgets_.tg_event_id_min->GetIntNumber();
-        // const int event_number_selected_max = _eh_widgets_.tg_event_id_max->GetIntNumber();
-        // if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER ||
-        //     event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
-        //   cuts_prop.update_flag("mode.event_number");
-        //   if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER)
-        //     cuts_prop.update_integer("event_number.min", event_number_selected_min);
-        //   if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER)
-        //     cuts_prop.update_integer("event_number.max", event_number_selected_max);
-        //   has_cut_enabled = true;
-        // }
-
-        // return has_cut_enabled;
-        return true;
-      }
-
       void event_selection::_install_cut_manager_()
       {
         const options_manager & opt_mgr = options_manager::get_instance();
         _cut_manager_->set_logging_priority(opt_mgr.get_logging_priority());
 
-        // Load event browser cuts
+        // Load event browser cuts before cut manager is initialized
         this->_install_private_cuts_();
 
         const std::string & config_filename = opt_mgr.get_cut_config_file();
@@ -829,8 +848,7 @@ namespace snemo {
 
         for (widget_collection_type::iterator i = _widgets_.begin();
              i != _widgets_.end(); ++i) {
-          base_widget * a_widget = *i;
-          a_widget->initialize();
+          i->second->initialize();
         }
         return;
       }
