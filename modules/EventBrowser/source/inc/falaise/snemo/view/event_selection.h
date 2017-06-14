@@ -96,6 +96,7 @@ namespace snemo {
           virtual ~base_widget();
           virtual void initialize() = 0;
           virtual void set_state() = 0;
+          virtual bool get_state() const = 0;
           virtual void build(TGCompositeFrame * frame_) = 0;
           virtual std::string get_cut_name() = 0;
           virtual int id();
@@ -111,16 +112,13 @@ namespace snemo {
           selection_widget(event_selection * selection_);
           virtual void initialize();
           virtual void set_state();
+          virtual bool get_state() const;
           virtual void build(TGCompositeFrame * frame_);
           virtual std::string get_cut_name();
         private:
           TGRadioButton * _or_button_;
           TGRadioButton * _and_button_;
           TGRadioButton * _xor_button_;
-          TGTextButton  * _load_button_;
-          TGTextButton  * _save_button_;
-          TGTextButton  * _reset_button_;
-          TGTextButton  * _update_button_;
         };
 
         // /// Structure hosting complex selection widgets
@@ -143,6 +141,7 @@ namespace snemo {
           event_header_selection_widget(event_selection * selection_);
           virtual void initialize();
           virtual void set_state();
+          virtual bool get_state() const;
           virtual void build(TGCompositeFrame * frame_);
           virtual std::string get_cut_name();
         private:
@@ -225,7 +224,7 @@ namespace snemo {
         bool _check_cuts_();
 
         /// Build GUI widgets
-        void _build_widgets_();
+        void _build_();
 
       private:
 
@@ -242,6 +241,10 @@ namespace snemo {
         cuts::cut_manager * _cut_manager_;//!< Cut manager pointer
         std::string _current_cut_name_;
 
+        TGTextButton  * _load_button_;
+        TGTextButton  * _save_button_;
+        TGTextButton  * _reset_button_;
+        TGTextButton  * _update_button_;
         widget_collection_type _widgets_;
 
         // No I/O so ClassDefVersionID = 0
