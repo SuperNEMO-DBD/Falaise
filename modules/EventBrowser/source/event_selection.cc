@@ -84,29 +84,105 @@ namespace snemo {
         return _label;
       }
 
-      event_selection::base_widget::base_widget(event_selection * selection_, int id_)
+      // Private data member not to expose
+      class base_widget
+      {
+      public:
+        base_widget(event_selection * selection_, int id_ = 0);
+        virtual ~base_widget();
+        virtual void initialize() = 0;
+        virtual void set_state() = 0;
+        virtual bool get_state() const = 0;
+        virtual void build(TGCompositeFrame * frame_) = 0;
+        virtual std::string get_cut_name() = 0;
+        virtual int id();
+      protected:
+        event_selection * _selection;
+        int _id;
+      };
+
+      /// Structure hosting GUI widgets
+      class selection_widget : public base_widget
+      {
+      public:
+        selection_widget(event_selection * selection_);
+        virtual void initialize();
+        virtual void set_state();
+        virtual bool get_state() const;
+        virtual void build(TGCompositeFrame * frame_);
+        virtual std::string get_cut_name();
+      private:
+        TGRadioButton * _or_button_;
+        TGRadioButton * _and_button_;
+        TGRadioButton * _xor_button_;
+      };
+
+      // /// Structure hosting complex selection widgets
+      // class complex_selection_widget : public base_widget
+      // {
+      // public:
+      //   complex_selection_widget(event_selection * selection_);
+      //   virtual void initialize();
+      //   virtual void set_state(const bool enable_ = true);
+      //   virtual void build(TGCompositeFrame * frame_);
+      // private:
+      //   TGCheckButton * _enable_;
+      //   TGComboBox * _combo_;
+      // };
+
+      /// Structure hosting event header selection widgets
+      class event_header_selection_widget : public base_widget
+      {
+      public:
+        event_header_selection_widget(event_selection * selection_);
+        virtual void initialize();
+        virtual void set_state();
+        virtual bool get_state() const;
+        virtual void build(TGCompositeFrame * frame_);
+        virtual std::string get_cut_name();
+      private:
+        TGCheckButton * _enable_;
+        TGNumberEntry * _run_id_min_;
+        TGNumberEntry * _run_id_max_;
+        TGNumberEntry * _event_id_min_;
+        TGNumberEntry * _event_id_max_;
+      };
+
+      // struct simulated_data_selection_widget : public base_widget
+      // {
+      // public:
+      //   simulated_data_selection_widget(event_selection * selection_);
+      //   virtual void initialize();
+      //   virtual void set_state(const bool enable_ = true);
+      //   virtual void build(TGCompositeFrame * frame_);
+      // private:
+      //   TGCheckButton * _enable_;
+      //   TGTextEntry * _hit_category_;
+      // };
+
+      base_widget::base_widget(event_selection * selection_, int id_)
         : _selection(selection_), _id(id_)
       {
         return;
       }
 
-      event_selection::base_widget::~base_widget()
+      base_widget::~base_widget()
       {
         return;
       }
 
-      int event_selection::base_widget::id()
+      int base_widget::id()
       {
         return _id;
       }
 
-      event_selection::selection_widget::selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_, ENABLE_LOGIC_SELECTION)
+      selection_widget::selection_widget(event_selection * selection_)
+        : base_widget(selection_, ENABLE_LOGIC_SELECTION)
       {
         return;
       }
 
-      void event_selection::selection_widget::initialize()
+      void selection_widget::initialize()
       {
         _or_button_->SetOn(false);
         _and_button_->SetOn(true);
@@ -114,18 +190,18 @@ namespace snemo {
         return;
       }
 
-      void event_selection::selection_widget::set_state()
+      void selection_widget::set_state()
       {
         return;
       }
 
-      bool event_selection::selection_widget::get_state() const
+      bool selection_widget::get_state() const
       {
         // Always return false since there is no activation check box associated
         return false;
       }
 
-      void event_selection::selection_widget::build(TGCompositeFrame * frame_)
+      void selection_widget::build(TGCompositeFrame * frame_)
       {
         TGHButtonGroup * bgroup = new TGHButtonGroup(frame_, "Event selection logic");
         bgroup->SetTitlePos(TGGroupFrame::kLeft);
@@ -146,7 +222,7 @@ namespace snemo {
         return;
       }
 
-      std::string event_selection::selection_widget::get_cut_name()
+      std::string selection_widget::get_cut_name()
       {
         std::string cut_name;
         if (_and_button_->IsDown()) {
@@ -176,13 +252,13 @@ namespace snemo {
         return cut_name;
       }
 
-      // event_selection::complex_selection_widget::complex_selection_widget(event_selection * selection_)
-      //   : event_selection::base_widget(selection_)
+      // complex_selection_widget::complex_selection_widget(event_selection * selection_)
+      //   : base_widget(selection_)
       // {
       //   return;
       // }
 
-      // void event_selection::complex_selection_widget::initialize()
+      // void complex_selection_widget::initialize()
       // {
       //   _combo_->RemoveAll();
       //   size_t j = 1;
@@ -205,7 +281,7 @@ namespace snemo {
       //   return;
       // }
 
-      // void event_selection::complex_selection_widget::set_state(const bool enable_)
+      // void complex_selection_widget::set_state(const bool enable_)
       // {
       //   if (_combo_) _combo_->SetEnabled(enable_);
       //   if (enable_) {
@@ -216,7 +292,7 @@ namespace snemo {
       //   return;
       // }
 
-      // void event_selection::complex_selection_widget::build(TGCompositeFrame * frame_)
+      // void complex_selection_widget::build(TGCompositeFrame * frame_)
       // {
       //   TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
       //   gframe->SetTitlePos(TGGroupFrame::kLeft);
@@ -241,13 +317,13 @@ namespace snemo {
       //   return;
       // }
 
-      event_selection::event_header_selection_widget::event_header_selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_, ENABLE_EH_SELECTION)
+      event_header_selection_widget::event_header_selection_widget(event_selection * selection_)
+        : base_widget(selection_, ENABLE_EH_SELECTION)
       {
         return;
       }
 
-      void event_selection::event_header_selection_widget::initialize()
+      void event_header_selection_widget::initialize()
       {
         _enable_->SetState(kButtonUp);
         _run_id_min_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
@@ -256,7 +332,7 @@ namespace snemo {
         _event_id_max_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
       }
 
-      void event_selection::event_header_selection_widget::set_state()
+      void event_header_selection_widget::set_state()
       {
         bool enable = _enable_->IsDown();
         const io::event_server & server = _selection->get_event_server();
@@ -275,7 +351,7 @@ namespace snemo {
         return;
       }
 
-      bool event_selection::event_header_selection_widget::get_state() const
+      bool event_header_selection_widget::get_state() const
       {
         if (_enable_->IsEnabled()) {
           return _enable_->IsDown();
@@ -283,7 +359,7 @@ namespace snemo {
         return false;
       }
 
-      void event_selection::event_header_selection_widget::build(TGCompositeFrame * frame_)
+      void event_header_selection_widget::build(TGCompositeFrame * frame_)
       {
         // Layout for positionning frame
         TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
@@ -343,7 +419,7 @@ namespace snemo {
         return;
       }
 
-      std::string event_selection::event_header_selection_widget::get_cut_name()
+      std::string event_header_selection_widget::get_cut_name()
       {
         if (! _enable_->IsDown()) return {}; // empty string
 
@@ -396,25 +472,25 @@ namespace snemo {
         return eh_cut_label();
       }
 
-      // event_selection::simulated_data_selection_widget::simulated_data_selection_widget(event_selection * selection_)
-      //   : event_selection::base_widget(selection_)
+      // simulated_data_selection_widget::simulated_data_selection_widget(event_selection * selection_)
+      //   : base_widget(selection_)
       // {
       //   return;
       // }
 
-      // void event_selection::simulated_data_selection_widget::initialize()
+      // void simulated_data_selection_widget::initialize()
       // {
       //   if (_hit_category_) _hit_category_->Clear();
       //   this->set_state(false);
       // }
 
-      // void event_selection::simulated_data_selection_widget::set_state(const bool enable_)
+      // void simulated_data_selection_widget::set_state(const bool enable_)
       // {
       //   if (_hit_category_) _hit_category_->SetState(enable_);
       //   return;
       // }
 
-      // void event_selection::simulated_data_selection_widget::build(TGCompositeFrame * frame_)
+      // void simulated_data_selection_widget::build(TGCompositeFrame * frame_)
       // {
       //   // Layout for positionning frame
       //   // TGLayoutHints * field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight,
