@@ -74,21 +74,6 @@ namespace snemo {
       {
       public:
 
-        /// Label for 'multi_and_cut' logic
-        static const std::string & multi_and_cut_label();
-
-        /// Label for 'multi_or_cut' logic
-        static const std::string & multi_or_cut_label();
-
-        /// Label for 'multi_and_cut' logic
-        static const std::string & multi_xor_cut_label();
-
-        /// Label for 'event header' cut logic
-        static const std::string & eh_cut_label();
-
-        /// Label for 'simulated data' cut logic
-        static const std::string & sd_cut_label();
-
         class base_widget
         {
         public:
