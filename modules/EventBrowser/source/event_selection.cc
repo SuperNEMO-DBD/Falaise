@@ -101,7 +101,7 @@ namespace snemo {
       }
 
       event_selection::selection_widget::selection_widget(event_selection * selection_)
-        : event_selection::base_widget(selection_)
+        : event_selection::base_widget(selection_, ENABLE_LOGIC_SELECTION)
       {
         return;
       }
@@ -111,52 +111,22 @@ namespace snemo {
         _or_button_->SetOn(false);
         _and_button_->SetOn(true);
         _xor_button_->SetOn(false);
-        _save_button_->SetState(kButtonDisabled);
         return;
       }
 
       void event_selection::selection_widget::set_state()
       {
-        // const EButtonState state = enable_ ? kButtonEngaged : kButtonDisabled;
-        // _or_button_->SetState(state);
-        // _and_button_->SetState(state);
-        // _xor_button_->SetState(state);
         return;
+      }
+
+      bool event_selection::selection_widget::get_state() const
+      {
+        // Always return false since there is no activation check box associated
+        return false;
       }
 
       void event_selection::selection_widget::build(TGCompositeFrame * frame_)
       {
-        // Add buttons to save, reset and apply selection
-        TGVerticalFrame * vframe = new TGVerticalFrame(frame_);
-        frame_->AddFrame(vframe, new TGLayoutHints(kLHintsBottom | kLHintsRight, 10, 10, 10, 10));
-
-        TGHorizontalFrame * hframe = new TGHorizontalFrame(vframe);
-        vframe->AddFrame(hframe);
-
-        _load_button_ = new TGTextButton(hframe, "Load selection file", LOAD_SELECTION);
-        _load_button_->SetToolTipText("save current selection into file");
-        _load_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                               _selection, "process()");
-        hframe->AddFrame(_load_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-
-        _save_button_ = new TGTextButton(hframe, "Save selection as...", SAVE_SELECTION);
-        _save_button_->SetToolTipText("save current selection into file");
-        _save_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                               _selection, "process()");
-        hframe->AddFrame(_save_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-
-        _reset_button_ = new TGTextButton(hframe, "Reset selection", RESET_SELECTION);
-        _reset_button_->SetToolTipText("reset current selection");
-        _reset_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                                _selection, "process()");
-        hframe->AddFrame(_reset_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-
-        _update_button_ = new TGTextButton(hframe, "Update selection", UPDATE_SELECTION);
-        _update_button_->SetToolTipText("update selection");
-        _update_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-                                 _selection, "process()");
-        hframe->AddFrame(_update_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
-
         TGHButtonGroup * bgroup = new TGHButtonGroup(frame_, "Event selection logic");
         bgroup->SetTitlePos(TGGroupFrame::kLeft);
         frame_->AddFrame(bgroup, new TGLayoutHints(kLHintsBottom | kLHintsLeft, 3, 3, 3, 3));
@@ -279,6 +249,7 @@ namespace snemo {
 
       void event_selection::event_header_selection_widget::initialize()
       {
+        _enable_->SetState(kButtonUp);
         _run_id_min_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
         _run_id_max_->SetNumber(datatools::event_id::INVALID_RUN_NUMBER);
         _event_id_min_->SetNumber(datatools::event_id::INVALID_EVENT_NUMBER);
@@ -293,13 +264,23 @@ namespace snemo {
           _enable_->SetState(kButtonDisabled);
           enable = false;
         } else {
-          _enable_->SetState(kButtonUp);
+          if (! _enable_->IsEnabled()) {
+            _enable_->SetState(kButtonEngaged);
+          }
         }
         _run_id_min_->SetState(enable);
         _run_id_max_->SetState(enable);
         _event_id_min_->SetState(enable);
         _event_id_max_->SetState(enable);
         return;
+      }
+
+      bool event_selection::event_header_selection_widget::get_state() const
+      {
+        if (_enable_->IsEnabled()) {
+          return _enable_->IsDown();
+        }
+        return false;
       }
 
       void event_selection::event_header_selection_widget::build(TGCompositeFrame * frame_)
@@ -552,7 +533,7 @@ namespace snemo {
         DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
 
         _cut_manager_ = new cuts::cut_manager;
-        this->_build_widgets_();
+        this->_build_();
         this->_install_cut_manager_();
 
         _initialized_ = true;
@@ -611,43 +592,37 @@ namespace snemo {
 
           this->_build_cuts_();
 
-          _browser_->change_event(CURRENT_EVENT, _initial_event_id_);
+          _browser_->change_event(CURRENT_EVENT);//, _initial_event_id_);
           return;
         } else if (id == UPDATE_SELECTION) {
-          // _selection_widgets_.tg_update->SetState(kButtonDisabled);
-
           this->_build_cuts_();
-
           if (is_selection_enable()) {
-            DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Selection is enable");
+            DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                         "Selection is enable !");
+            _update_button_->SetState(kButtonDisabled);
             _server_->clear_selection();
             _server_->fill_selection();
             _initial_event_id_ = _server_->get_current_event_number();
             _browser_->change_event(FIRST_EVENT);
           }
           return;
-        } else {
-          widget_collection_type::iterator found = _widgets_.find(id);
-          if (found != _widgets_.end()) {
-            found->second->set_state();
-          }
-
         }
 
-        // // Disable update button if none of the check box is enable
-        // if (!_complex_widgets_.tg_enable->IsDown() &&
-        //     !_eh_widgets_.tg_enable->IsDown()) {
-        //   DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "coucou");
-        //   _selection_widgets_.tg_update->SetState(kButtonDisabled);
+        widget_collection_type::iterator found = _widgets_.find(id);
+        if (found != _widgets_.end()) {
+          found->second->set_state();
+          if (found->second->get_state()) {
+            _update_button_->SetState(kButtonUp);
+          } else {
+            _update_button_->SetState(kButtonDisabled);
+          }
+        }
+
+        // if (! update) {
         //   _server_->clear_selection();
         //   _server_->fill_selection();
         //   _status_->update(true);
         //   _selection_enable_ = false;
-        // } else {
-        //   DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "caca");
-          // Change update button
-          // _selection_widgets_.tg_update->SetState(kButtonUp);
-          // _selection_widgets_.tg_update->SetTextColor(TColor::Number2Pixel(kRed));
         // }
         return;
       }
@@ -744,9 +719,43 @@ namespace snemo {
         return;
       }
 
-      void event_selection::_build_widgets_()
+      void event_selection::_build_()
       {
-        _widgets_[0] = new selection_widget(this);
+        // Add buttons to save, reset and apply selection
+        TGVerticalFrame * vframe = new TGVerticalFrame(_main_);
+        _main_->AddFrame(vframe, new TGLayoutHints(kLHintsBottom | kLHintsRight, 10, 10, 10, 10));
+
+        TGHorizontalFrame * hframe = new TGHorizontalFrame(vframe);
+        vframe->AddFrame(hframe);
+
+        _load_button_ = new TGTextButton(hframe, "Load selection file", LOAD_SELECTION);
+        _load_button_->SetToolTipText("save current selection into file");
+        _load_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                               this, "process()");
+        hframe->AddFrame(_load_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _save_button_ = new TGTextButton(hframe, "Save selection as...", SAVE_SELECTION);
+        _save_button_->SetToolTipText("save current selection into file");
+        _save_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                               this, "process()");
+        _save_button_->SetState(kButtonDisabled);
+        hframe->AddFrame(_save_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _reset_button_ = new TGTextButton(hframe, "Reset selection", RESET_SELECTION);
+        _reset_button_->SetToolTipText("reset current selection");
+        _reset_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                                this, "process()");
+        hframe->AddFrame(_reset_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        _update_button_ = new TGTextButton(hframe, "Update selection", UPDATE_SELECTION);
+        _update_button_->SetToolTipText("update selection");
+        _update_button_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                                 this, "process()");
+        _update_button_->SetState(kButtonDisabled);
+        hframe->AddFrame(_update_button_, new TGLayoutHints(kLHintsNoHints, 2, 2, 2, 2));
+
+        // Build selection widget
+        _widgets_[ENABLE_LOGIC_SELECTION] = new selection_widget(this);
         auto * ehsw = new event_header_selection_widget(this);
         _widgets_[ehsw->id()] = ehsw;
         // _widgets_.push_back(new simulated_data_selection_widget(this));
@@ -785,7 +794,7 @@ namespace snemo {
       {
         std::vector<std::string> cut_lists;
         for (auto & a_widget : _widgets_) {
-          if (a_widget.first == 0) continue;
+          if (a_widget.first == ENABLE_LOGIC_SELECTION) continue;
           const std::string a_cut_name = a_widget.second->get_cut_name();
           if (! a_cut_name.empty()) cut_lists.push_back(a_cut_name);
         }
@@ -800,18 +809,14 @@ namespace snemo {
         //   }
         // }
 
-        for (const auto & s : cut_lists) {
-          DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Cut : " << s);
-        }
-
         if (cut_lists.empty()) {
-          DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
-                             "No cuts have been enabled !");
+          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+                         "No cuts have been enabled !");
           _selection_enable_ = false;
           return;
         }
 
-        _current_cut_name_ = _widgets_[0]->get_cut_name();
+        _current_cut_name_ = _widgets_[ENABLE_LOGIC_SELECTION]->get_cut_name();
         cuts::cut_handle_dict_type & the_cuts = _cut_manager_->get_cuts();
         cuts::cut_handle_dict_type::iterator found = the_cuts.find(_current_cut_name_);
         datatools::properties & cuts_prop = found->second.grab_cut_config();
