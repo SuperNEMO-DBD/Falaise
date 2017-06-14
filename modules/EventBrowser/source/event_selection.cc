@@ -675,7 +675,6 @@ namespace snemo {
           if (is_selection_enable()) {
             DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                          "Selection is enable !");
-            _update_button_->SetState(kButtonDisabled);
             _server_->clear_selection();
             _server_->fill_selection();
             _initial_event_id_ = _server_->get_current_event_number();
@@ -694,12 +693,6 @@ namespace snemo {
           }
         }
 
-        // if (! update) {
-        //   _server_->clear_selection();
-        //   _server_->fill_selection();
-        //   _status_->update(true);
-        //   _selection_enable_ = false;
-        // }
         return;
       }
 
