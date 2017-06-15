@@ -117,18 +117,20 @@ namespace snemo {
         TGRadioButton * _xor_button_;
       };
 
-      // /// Structure hosting complex selection widgets
-      // class complex_selection_widget : public base_widget
-      // {
-      // public:
-      //   complex_selection_widget(event_selection * selection_);
-      //   virtual void initialize();
-      //   virtual void set_state(const bool enable_ = true);
-      //   virtual void build(TGCompositeFrame * frame_);
-      // private:
-      //   TGCheckButton * _enable_;
-      //   TGComboBox * _combo_;
-      // };
+      /// Structure hosting complex selection widgets
+      class complex_selection_widget : public base_widget
+      {
+      public:
+        complex_selection_widget(event_selection * selection_);
+        virtual void initialize();
+        virtual void set_state();
+        virtual bool get_state() const;
+        virtual void build(TGCompositeFrame * frame_);
+        virtual std::string get_cut_name();
+      private:
+        TGCheckButton * _enable_;
+        TGComboBox * _combo_;
+      };
 
       /// Structure hosting event header selection widgets
       class event_header_selection_widget : public base_widget
@@ -252,70 +254,88 @@ namespace snemo {
         return cut_name;
       }
 
-      // complex_selection_widget::complex_selection_widget(event_selection * selection_)
-      //   : base_widget(selection_)
-      // {
-      //   return;
-      // }
+      complex_selection_widget::complex_selection_widget(event_selection * selection_)
+        : base_widget(selection_, ENABLE_COMPLEX_SELECTION)
+      {
+        return;
+      }
 
-      // void complex_selection_widget::initialize()
-      // {
-      //   _combo_->RemoveAll();
-      //   size_t j = 1;
-      //   for (cuts::cut_handle_dict_type::const_iterator
-      //          i = _selection->get_cut_manager().get_cuts().begin();
-      //        i != _selection->get_cut_manager().get_cuts().end(); ++i) {
-      //     const std::string & the_cut_name = i->first;
-      //     if (the_cut_name[0] != '_') {
-      //       _combo_->AddEntry(the_cut_name.c_str(), j++);
-      //     }
-      //   }
-      //   if (j == 1) {
-      //     _combo_->AddEntry(" +++ NO CUTS +++ ", 0);
-      //     set_state(false);
-      //   } else {
-      //     _combo_->AddEntry(" +++ SELECT CUT NAME +++ ", 0);
-      //     set_state(true);
-      //   }
-      //   if (_combo_) _combo_->Select(0);
-      //   return;
-      // }
+      void complex_selection_widget::initialize()
+      {
+        _enable_->SetState(kButtonUp);
+        _combo_->RemoveAll();
+        size_t j = 1;
+        for (const auto & i : _selection->get_cut_manager().get_cuts()) {
+          const std::string & the_cut_name = i.first;
+          if (the_cut_name[0] != '_') {
+            _combo_->AddEntry(the_cut_name.c_str(), j++);
+          }
+        }
+        if (j == 1) {
+          _combo_->AddEntry(" +++ NO CUTS +++ ", 0);
+          _combo_->SetEnabled(false);
+          _enable_->SetEnabled(false);
+        } else {
+          _combo_->AddEntry(" +++ SELECT CUT NAME +++ ", 0);
+          _combo_->SetEnabled(true);
+        }
+        _combo_->Select(0);
+        return;
+      }
 
-      // void complex_selection_widget::set_state(const bool enable_)
-      // {
-      //   if (_combo_) _combo_->SetEnabled(enable_);
-      //   if (enable_) {
-      //     _enable_->SetEnabled(enable_);
-      //   } else {
-      //     _enable_->SetDisabledAndSelected(enable_);
-      //   }
-      //   return;
-      // }
+      void complex_selection_widget::set_state()
+      {
+        bool enable = _enable_->IsDown();
+        _combo_->SetEnabled(enable);
+        return;
+      }
 
-      // void complex_selection_widget::build(TGCompositeFrame * frame_)
-      // {
-      //   TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
-      //   gframe->SetTitlePos(TGGroupFrame::kLeft);
-      //   frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
-      //   _enable_ = new TGCheckButton(gframe, "", ENABLE_COMPLEX_SELECTION);
-      //   _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
-      //                     _selection, "process()");
-      //   gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
+      bool complex_selection_widget::get_state() const
+      {
+        if (_enable_->IsEnabled()) {
+          return _enable_->IsDown();
+        }
+        return false;
+      }
 
-      //   TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
-      //                                                    kHorizontalFrame | kFixedWidth);
-      //   gframe->AddFrame(cframe);
+      void complex_selection_widget::build(TGCompositeFrame * frame_)
+      {
+        TGGroupFrame * gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
+        gframe->SetTitlePos(TGGroupFrame::kLeft);
+        frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
+        _enable_ = new TGCheckButton(gframe, "", ENABLE_COMPLEX_SELECTION);
+        _enable_->Connect("Clicked()", "snemo::visualization::view::event_selection",
+                          _selection, "process()");
+        gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
 
-      //   _combo_ = new TGComboBox(cframe, COMBO_SELECTION);
-      //   _combo_->Connect("Selected(int)", "snemo::visualization::view::event_selection",
-      //                    _selection, "process()");
-      //   _combo_->Resize(200, 20);
-      //   cframe->AddFrame(_combo_, new TGLayoutHints(kLHintsTop     | kLHintsLeft |
-      //                                               kLHintsExpandX | kLHintsExpandY,
-      //                                               2, 2, 2, 2));
-      //   initialize();
-      //   return;
-      // }
+        TGCompositeFrame * cframe = new TGCompositeFrame(gframe, 200, 1,
+                                                         kHorizontalFrame | kFixedWidth);
+        gframe->AddFrame(cframe);
+
+        _combo_ = new TGComboBox(cframe, COMBO_SELECTION);
+        _combo_->Connect("Selected(int)", "snemo::visualization::view::event_selection",
+                         _selection, "process()");
+        _combo_->Resize(200, 20);
+        cframe->AddFrame(_combo_, new TGLayoutHints(kLHintsTop     | kLHintsLeft |
+                                                    kLHintsExpandX | kLHintsExpandY,
+                                                    2, 2, 2, 2));
+        initialize();
+        return;
+      }
+
+      std::string complex_selection_widget::get_cut_name()
+      {
+        if (! _enable_->IsDown()) return {}; // empty string
+
+        std::string cut_label;
+        if (_combo_->GetSelected() != 0) {
+          TGTextLBEntry * tgt
+            = (TGTextLBEntry*)_combo_->GetSelectedEntry();
+          cut_label = tgt->GetText()->GetString();
+        }
+
+        return cut_label;
+      }
 
       event_header_selection_widget::event_header_selection_widget(event_selection * selection_)
         : base_widget(selection_, ENABLE_EH_SELECTION)
@@ -686,12 +706,16 @@ namespace snemo {
         widget_collection_type::iterator found = _widgets_.find(id);
         if (found != _widgets_.end()) {
           found->second->set_state();
-          if (found->second->get_state()) {
+        }
+
+        // Change update button state
+        for (const auto & i : _widgets_) {
+          if (i.second->get_state()) {
             _update_button_->SetState(kButtonUp);
-          } else {
-            _update_button_->SetState(kButtonDisabled);
+            return;
           }
         }
+        _update_button_->SetState(kButtonDisabled);
 
         return;
       }
@@ -827,8 +851,9 @@ namespace snemo {
         _widgets_[ENABLE_LOGIC_SELECTION] = new selection_widget(this);
         auto * ehsw = new event_header_selection_widget(this);
         _widgets_[ehsw->id()] = ehsw;
+        auto * csw = new complex_selection_widget(this);
+        _widgets_[csw->id()] = csw;
         // _widgets_.push_back(new simulated_data_selection_widget(this));
-        // _widgets_.push_back(new complex_selection_widget(this));
         for (auto & i : _widgets_) {
           i.second->build(_main_);
         }
@@ -867,16 +892,6 @@ namespace snemo {
           const std::string a_cut_name = a_widget.second->get_cut_name();
           if (! a_cut_name.empty()) cut_lists.push_back(a_cut_name);
         }
-
-        // Complex Cut
-        // if (_complex_widgets_.tg_enable->IsDown()) {
-        //   if (_complex_widgets_.tg_combo->GetSelected() != 0) {
-        //     TGTextLBEntry * tgt
-        //       = (TGTextLBEntry*)_complex_widgets_.tg_combo->GetSelectedEntry();
-        //     const std::string cut_label = tgt->GetText()->GetString();
-        //     cut_lists.push_back(cut_label);
-        //   }
-        // }
 
         if (cut_lists.empty()) {
           DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
