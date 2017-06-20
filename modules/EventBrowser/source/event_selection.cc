@@ -716,7 +716,7 @@ namespace snemo {
           }
         }
         _update_button_->SetState(kButtonDisabled);
-
+        _selection_enable_ = false;
         return;
       }
 
