@@ -275,6 +275,7 @@ namespace snemo {
           _combo_->AddEntry(" +++ NO CUTS +++ ", 0);
           _combo_->SetEnabled(false);
           _enable_->SetEnabled(false);
+          _enable_->SetToolTipText("no complex cuts defined");
         } else {
           _combo_->AddEntry(" +++ SELECT CUT NAME +++ ", 0);
           _combo_->SetEnabled(true);
@@ -357,6 +358,9 @@ namespace snemo {
         bool enable = _enable_->IsDown();
         const io::event_server & server = _selection->get_event_server();
         if (! server.get_event().has(io::EH_LABEL)) {
+          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+                         "No event header data bank");
+          _enable_->SetToolTipText("no event header bank");
           _enable_->SetState(kButtonDisabled);
           enable = false;
         } else {
