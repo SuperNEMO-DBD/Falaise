@@ -8,33 +8,45 @@ Introduction to the FLSimulate Output {#flsimulateoutput_introduction}
 
 The  current official  simulation application  defines an  output data
 model  to  represent  the detector  response  (SuperNEMO  demonstrator
-module...).  Each *simulated* event  record is implemented through the
-generic `datatools::things`  container object that handle  a dedicated
-data bank which is conventionaly  named `SD` (for **S** imulated **D**
-ata).
+module...).  Each simulated event  record is implemented using the
+`datatools::things`  container object to stor dedicated data banks:
 
-In  the  future, the  simulation  application  will also  support  the
-creation of  the *digitization  data* `SDD` bank  (**S**imulated **D**
-igitization **D** ata).
+- `EH`: **Event Header**, containing generic information such as
+   run number, event number and how the data was produced (Monte Carlo
+   or real detector)
+- `SD`: **Simulated Data**, containing output of the simulation such
+  as hits.
+- `SDD`: **Simulated Digitized Data**, containing simulated electronic signals (TODO)
 
-Here  we describe  the  contents of  the data  model  produced by  the
+Each bank maps to a C++ object that stores data, so the event record may be visualized as a basic mapping:
+
+~~~~
++- Event N (datatools::things)
+   +- EH (string) -> snemo::datamodel:event_header (C++ object)
+   +- SD (string) -> mctools::simulated_data (C++ object)
+~~~~
+
+Here  we describe  the C++ objects comprising the data  model  produced by  the
 SuperNEMO Monte-Carlo program.
 
-~~~~~
-+----------------------------------+
-| Event record (datatools::things) |
-+----------------------------------+
-          |
-        +----+
-        | SD |----- {this is a bank}
-        +----+
-         /
-        /
-+------+------+
-| Monte-Carlo |
-|   output    |
-+-------------+
-~~~~~
+The EH Bank {#flsimulateoutput_theehbank}
+===========
+
+The `EH` bank stores an instance of the `snemo::datamodel::event_header`
+class. This is a simple Plain-Old-Data object that holds event metadata,
+including:
+
+- Run number
+- Event number
+- How produced (Simulation or Physical Detector)
+- Timestamp
+- User defined attributes
+
+In the simulation output, both the timestamp and attributes member are empty,
+and are retained for compatibility with real data.
+
+See the `snemo::datamodel::event_header` API guide for further information
+on using this class.
 
 The geometry identifier concept {#flsimulateoutput_thegeometryidentifierconcept}
 ===============================
