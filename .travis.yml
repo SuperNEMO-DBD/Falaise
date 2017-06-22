@@ -42,6 +42,7 @@ before_install:
     elif [ "$TRAVIS_OS_NAME" == "osx" ] ; then
       brew tap supernemo-dbd/cadfael
       brew tap-pin supernemo-dbd/cadfael
+      brew install ninja
     fi
 
 # Run packaged script to configure, make, run tests

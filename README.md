@@ -1,5 +1,7 @@
 # Falaise C++ Library and Applications for the SuperNEMO experiment
 
+[![Build Status](https://travis-ci.org/SuperNEMO-DBD/Falaise.svg?branch=develop)](https://travis-ci.org/SuperNEMO-DBD/Falaise)
+
 Falaise provides the main computational environment for the simulation,
 processing and analysis of data for the [SuperNEMO double beta decay search
 experiment](http://nemo.in2p3.fr). The three main components are

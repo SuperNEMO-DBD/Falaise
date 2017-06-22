@@ -4,7 +4,8 @@ Contributions to Falaise are essential to maintain and improve the code
 to ensure that the SuperNEMO experiment reaches its physics goals.
 To ensure stability, reliability and maintainability of the code, and hence physics results,
 there are a few guidelines we need contributors to follow so that this
-quality is maintained.
+quality is maintained. All levels of contribution are welcome, from
+additions/copy editing of documentation through bug fixes and new C++ features.
 
 In the following, familiarity with Falaise's core software development
 tools:
@@ -103,18 +104,29 @@ as described above.
    ```
 
    If you have already pushed the branch, you can omit the `-u` flag. The key thing is
-   that the branch on your fork has the full set of commits.
+   that the branch published on GitHub has the up to date set of commits.
 
 2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
 
 3. The PR will be reviewed by SuperNEMO users and developers as appropriate for the issue addressed.
-   Other than style/usability, the core requirements for acceptance of a PR are:
+   The core requirements for acceptance of a PR are:
 
-   - If new/modified code, has unit tests which pass on supported platforms (_WIP: CI with Travis_)
-   - Any needed documentation is supplied
+   - The code compiles and passes tests on [Travis-CI](https://travis-ci.org/SuperNEMO-DBD/Falaise)
+     for the main supported platforms.
+   - If new code is added, it must have [unit tests](https://supernemo-dbd.github.io/Falaise/fldevel_unittest.html) which pass on supported platforms.
+   - Any needed API and usage documentation is supplied
+   - The code follows the Falaise style guide (WIP)
 
-   Should edits be required, simply add new commits on the feature branch in your local clone
-   and push them to your fork. GitHub will automatically append them to the PR.
+   On the page for your Pull Request, GitHub will display the status of the automated checks
+   performed. The main one to watch is the `continuous-integration/travis-ci/pr` check,
+   which configure, builds and tests the Pull Request. Clicking on the `Details` link will
+   take you to the page on Travis which will display progress and results of these steps.
+   In the case of failures, the log can be reviewed to see what went wrong and where in
+   the code it happened.
+
+   Should changes be required to the Pull Request, simply make new commits on the feature
+   branch in your local clone and push them to your fork. GitHub will automatically append
+   them to the PR, and Travis-CI will run new builds.
 
 4. Once approved, the PR will be merged on to the `develop` branch of [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise). You can then delete your feature branch.
 
