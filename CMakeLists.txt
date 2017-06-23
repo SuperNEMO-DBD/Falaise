@@ -47,6 +47,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
 # Common LPC utilities
 #
 include(LPCCMakeSettings)
+include(ClangTools)
 
 # - SVN revision number for dev builds
 include(LPCSVNUtilities)
