@@ -330,7 +330,7 @@ namespace FLSimulate {
                                                 "Metadata associated to a flsimulate run");
       do_metadata(flSimParameters, flSimMetadata);
       if (datatools::logger::is_debug(flSimParameters.logLevel)) {
-        flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug] ");
+        flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug]: ");
       }
 
       if (!flSimParameters.outputMetadataFile.empty()) {

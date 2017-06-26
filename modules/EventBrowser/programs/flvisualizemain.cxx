@@ -123,7 +123,6 @@ namespace FLVisualize {
         vserv.start();
         // From this point, all other services and/or processing modules can benefit
         // of the variant service during their configuration steps.
-        // flVisParameters.variants.print(std::cerr, "flvisualize: variant service configuration:", "DEVEL: ");
       }
     } catch (std::exception & e) {
       std::cerr << "[datatools::configuration::variant_service::variant_exception] "
