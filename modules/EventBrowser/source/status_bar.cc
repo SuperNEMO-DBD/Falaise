@@ -163,14 +163,17 @@ namespace snemo {
           const int event_number = server.get_current_event_number();
           std::ostringstream status;
           status << " +++ EVENT " << event_number;
-          if (server.has_sequential_data())
+          if (server.has_sequential_data()) {
             status << " +++ SEQUENTIAL READING ONLY +++ ";
-          if (server.has_external_data())
+          }
+          if (server.has_external_data()) {
             status << " +++ EXTERNAL PROCESSING +++ ";
+          }
           _event_list_->RemoveAll();
           _event_list_->AddEntry(status.str().c_str(), 0);
           _event_list_->Select(0);
           _event_list_->SetEnabled(false);
+          _goto_event_->SetEnabled(false);
           return;
         }
 
@@ -200,6 +203,7 @@ namespace snemo {
 
         _event_list_->SetEnabled(!disable_);
         _event_list_->Select(server.get_current_event_number());
+        _goto_event_->SetEnabled(!disable_);
         return;
       }
 
