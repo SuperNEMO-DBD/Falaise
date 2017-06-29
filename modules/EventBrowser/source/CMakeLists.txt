@@ -102,6 +102,7 @@ set(FalaiseEventBrowserPlugin_DICT_HEADERS
   inc/falaise/snemo/view/browser_tracks.h
   inc/falaise/snemo/view/event_selection.h
   inc/falaise/snemo/view/progress_bar.h
+  inc/falaise/snemo/view/status_bar.h
   )
 
 set(_event_browser_root_dict "")

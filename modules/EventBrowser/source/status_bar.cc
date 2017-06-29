@@ -19,17 +19,25 @@
  *
  */
 
+// Ourselves:
 #include <falaise/snemo/view/status_bar.h>
+// This project:
 #include <falaise/snemo/view/event_browser_signals.h>
 #include <falaise/snemo/view/options_manager.h>
-
 #include <falaise/snemo/io/event_server.h>
 
+// Standard library
+#include <regex>
+
+// Third party
+// - ROOT
 #include <TGFrame.h>
 #include <TGComboBox.h>
 #include <TGButton.h>
+#include <TGNumberEntry.h>
+#include <TGLabel.h>
 
-#include <algorithm>
+ClassImp(snemo::visualization::view::status_bar)
 
 namespace snemo {
 
@@ -82,15 +90,26 @@ namespace snemo {
         main_->AddFrame(main_frame,
                         new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX, 3, 3, 3, 3));
 
-        // a combo box for the events
+        // A combo box for the events
         _event_list_ = new TGComboBox(main_frame, STATUS_BAR);
         _event_list_->Resize(int(0.5*width), 20);
         _event_list_->Associate(main_);
-
         main_frame->AddFrame(_event_list_,
                              new TGLayoutHints(kLHintsTop|kLHintsLeft, 1, 1, 1, 1));
 
-        // navigation buttons
+        // Goto event number
+        main_frame->AddFrame(new TGLabel(main_frame, "Goto event"),
+                             new TGLayoutHints(kLHintsTop|kLHintsLeft, 10, 10, 2, 2));
+        _goto_event_ = new TGNumberEntryField(main_frame, GOTO_EVENT, 0,
+                                              TGNumberFormat::kNESInteger,
+                                              TGNumberFormat::kNEAPositive);
+        _goto_event_->Resize(int(0.05*width), 20);
+        _goto_event_->Associate(main_);
+        _goto_event_->Connect("ReturnPressed()", "snemo::visualization::view::status_bar", this, "process()");
+        main_frame->AddFrame(_goto_event_,
+                             new TGLayoutHints(kLHintsTop|kLHintsLeft, 1, 5, 1, 1));
+
+        // Navigation buttons
         _button_first_    = new TGPictureButton(main_frame,
                                                 gClient->GetPicture("first_t.xpm"), FIRST_EVENT);
         _button_previous_ = new TGPictureButton(main_frame,
@@ -108,7 +127,7 @@ namespace snemo {
         this->reset();
 
         TGLayoutHints* layout =
-          new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 1, 1, 1, 1);
+          new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 1, 1, 3, 1);
 
         main_frame->AddFrame(_button_first_, layout);
         main_frame->AddFrame(_button_previous_, layout);
@@ -255,6 +274,19 @@ namespace snemo {
           _button_previous_ ->SetEnabled(false);
           _button_next_     ->SetEnabled(true);
           _button_last_     ->SetEnabled(false);
+        }
+        return;
+      }
+
+      void status_bar::process()
+      {
+        const size_t a_nbr = _goto_event_->GetIntNumber();
+        if (a_nbr >= _server_->get_number_of_events()) {
+          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+                         "Event number (#" << a_nbr << ") larger than the total number of events !");
+        } else {
+          _event_list_->Select(a_nbr);
+          _server_->set_current_event_number(a_nbr);
         }
         return;
       }
