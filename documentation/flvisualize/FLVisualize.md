@@ -220,7 +220,8 @@ The right panel contains several pans:
 
 A bottom bar contains:
 
-- a message log combo (read only),
+- a message log combo,
+- an event number entry widget,
 - a set of navigation buttons to loop on input events (forward/backward).
 
 It is recommended to maximize the size of the FLVisualize's main window on your desktop.
