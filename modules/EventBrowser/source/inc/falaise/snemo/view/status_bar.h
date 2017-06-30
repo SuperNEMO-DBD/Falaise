@@ -63,17 +63,17 @@ namespace snemo {
       {
       public:
 
-        /// Return initialization flag
-        bool is_initialized() const;
-
-        /// Set event server reference
-        void set_event_server(io::event_server * server_);
-
         /// Default constructor
         status_bar();
 
         /// Destructor
         virtual ~status_bar();
+
+        /// Set event server reference
+        void set_event_server(io::event_server * server_);
+
+        /// Return initialization flag
+        bool is_initialized() const;
 
         /// Initialize status bar
         void initialize(TGCompositeFrame * main_);
