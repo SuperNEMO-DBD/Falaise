@@ -148,15 +148,16 @@ namespace snemo {
         // Process messages coming from widgets associated with the dialog.
         DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
                      msg_ << " " << parm1_ << " " << parm2_ << " "
-                     << GET_MSG (msg_) << " " << GET_SUBMSG (msg_));
+                     << GET_MSG(msg_) << " " << GET_SUBMSG(msg_));
 
-        const int get_msg     = GET_MSG (msg_);
-        const int get_sub_msg = GET_SUBMSG (msg_);
+        const int get_msg     = GET_MSG(msg_);
+        const int get_sub_msg = GET_SUBMSG(msg_);
 
         if (get_msg == kC_COMMAND) {
           if (get_sub_msg == kCM_COMBOBOX) {
-            if (parm1_ == STATUS_BAR)
+            if (parm1_ == STATUS_BAR) {
               _browser_->change_event(CURRENT_EVENT, parm2_);
+            }
           } else if (get_sub_msg == kCM_TAB) {
             _browser_->update_tab((event_browser::tab_id_index_type)parm1_);
           } else if (get_sub_msg == kCM_BUTTON) {
@@ -170,8 +171,11 @@ namespace snemo {
 
         if (get_msg == kC_TEXTENTRY) {
           if (get_sub_msg == kTE_ENTER) {
-            if (parm1_ == UPDATE_SELECTION)
+            if (parm1_ == UPDATE_SELECTION) {
               this->_process_button_((button_signals_type)parm1_);
+            } else if (parm1_ == GOTO_EVENT) {
+              _browser_->change_event(CURRENT_EVENT);
+            }
           }
         }
         return true;

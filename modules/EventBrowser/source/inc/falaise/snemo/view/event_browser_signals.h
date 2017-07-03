@@ -104,6 +104,7 @@ enum button_signals_type
 
     // Signals for event navigation control
     STATUS_BAR,
+    GOTO_EVENT,
     FIRST_EVENT,
     CURRENT_EVENT,
     NEXT_EVENT,

@@ -15,6 +15,7 @@
 #pragma link C++ class snemo::visualization::view::browser_tracks+;
 #pragma link C++ class snemo::visualization::view::event_selection+;
 #pragma link C++ class snemo::visualization::view::progress_bar+;
+#pragma link C++ class snemo::visualization::view::status_bar+;
 
 #endif
 /*
