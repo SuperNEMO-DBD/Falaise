@@ -75,24 +75,24 @@ $ cmake -DFALAISE_ENABLE_TESTING=ON
 Note: At this stage, if the following error is encountered;
 
 ```
-$ CMake Error at /home/<user>/CadfaelBrew/lib64/cmake/Bayeux-3.0.0/BayeuxConfig.cmake:130 (find_package):
-$   By not providing "FindQt5Core.cmake" in CMAKE_MODULE_PATH this project has
-$   asked CMake to find a package configuration file provided by "Qt5Core", but
-$   CMake did not find one.
-$
-$   Could not find a package configuration file provided by "Qt5Core"
-$   (requested version 5.8.0) with any of the following names:
-$
-$    Qt5CoreConfig.cmake
-$    qt5core-config.cmake
-$
-$  ...
+  CMake Error at /home/<user>/CadfaelBrew/lib64/cmake/Bayeux-3.0.0/BayeuxConfig.cmake:130 (find_package):
+  By not providing "FindQt5Core.cmake" in CMAKE_MODULE_PATH this project has
+   asked CMake to find a package configuration file provided by "Qt5Core", but
+  CMake did not find one.
+
+  Could not find a package configuration file provided by "Qt5Core"
+   (requested version 5.8.0) with any of the following names:
+
+    Qt5CoreConfig.cmake
+    qt5core-config.cmake
+
+  ..
 ```
 
 add the following options to the cmake command.
 
 ```
-$ cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" <other options follow>
+  cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" <other options follow>
 ```
 
 More info regarding Qt5Core and Falaise can be found at this address: (https://github.com/Homebrew/homebrew-core/issues/8392)
