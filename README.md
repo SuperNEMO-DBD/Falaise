@@ -66,6 +66,12 @@ $ cmake -DCMAKE_INSTALL_PREFIX=/where/you/want/to/install ../Falaise.git
 ...
 ```
 
+If you wish to enable `make test` after building, add the following option to cmake.
+
+```
+$ cmake -DFALAISE_ENABLE_TESTING=ON
+```
+
 Note: At this stage, if the following error is encountered;
 
 ```
