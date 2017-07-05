@@ -92,7 +92,7 @@ Note: At this stage, if the following error is encountered;
 add the following options to the cmake command.
 
 ```
-  cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" <other options follow>
+$ cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" <other options follow>
 ```
 
 More info regarding Qt5Core and Falaise can be found at this address: (https://github.com/Homebrew/homebrew-core/issues/8392)
