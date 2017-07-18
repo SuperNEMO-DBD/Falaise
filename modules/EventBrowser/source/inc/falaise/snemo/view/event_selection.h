@@ -35,7 +35,7 @@
 #define FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_SELECTION_H 1
 
 // Standard library:
-#include <vector>
+#include <map>
 
 // - ROOT:
 #include <Rtypes.h>
@@ -45,11 +45,6 @@
 
 // Forward declaration
 class TGCompositeFrame;
-class TGNumberEntry;
-class TGTextEntry;
-class TGCheckButton;
-class TGComboBox;
-class TGRadioButton;
 class TGTextButton;
 
 namespace cuts {
@@ -68,102 +63,15 @@ namespace snemo {
 
       class event_browser;
       class status_bar;
+      class base_widget;
 
       /// \brief A class hosting interactive event selection cut
       class event_selection
       {
       public:
 
-        /// Label for 'multi_and_cut' logic
-        static const std::string & multi_and_cut_label();
-
-        /// Label for 'multi_or_cut' logic
-        static const std::string & multi_or_cut_label();
-
-        /// Label for 'multi_and_cut' logic
-        static const std::string & multi_xor_cut_label();
-
-        /// Label for 'event header' cut logic
-        static const std::string & eh_cut_label();
-
-        /// Label for 'simulated data' cut logic
-        static const std::string & sd_cut_label();
-
-        class base_widget
-        {
-        public:
-          base_widget(event_selection * selection_);
-          virtual ~base_widget();
-          virtual void initialize() = 0;
-          virtual void set_state(const bool enable_ = true) = 0;
-          virtual void build(TGCompositeFrame * frame_) = 0;
-        protected:
-          event_selection * _selection;
-        };
-
-        /// Structure hosting GUI widgets
-        class selection_widget : public base_widget
-        {
-        public:
-          selection_widget(event_selection * selection_);
-          virtual void initialize();
-          virtual void set_state(const bool enable_ = true);
-          virtual void build(TGCompositeFrame * frame_);
-        private:
-          TGRadioButton * _or_button_;
-          TGRadioButton * _and_button_;
-          TGRadioButton * _xor_button_;
-          TGTextButton  * _load_button_;
-          TGTextButton  * _save_button_;
-          TGTextButton  * _reset_button_;
-          TGTextButton  * _update_button_;
-        };
-
-        /// Structure hosting complex selection widgets
-        class complex_selection_widget : public base_widget
-        {
-        public:
-          complex_selection_widget(event_selection * selection_);
-          virtual void initialize();
-          virtual void set_state(const bool enable_ = true);
-          virtual void build(TGCompositeFrame * frame_);
-        private:
-          TGCheckButton * _enable_;
-          TGComboBox * _combo_;
-        };
-
-        /// Structure hosting event header selection widgets
-        class event_header_selection_widget : public base_widget
-        {
-        public:
-          event_header_selection_widget(event_selection * selection_);
-          virtual void initialize();
-          virtual void set_state(const bool enable_ = true);
-          virtual void build(TGCompositeFrame * frame_);
-        private:
-          TGCheckButton * _enable_;
-          TGNumberEntry * _run_id_min_;
-          TGNumberEntry * _run_id_max_;
-          TGNumberEntry * _event_id_min_;
-          TGNumberEntry * _event_id_max_;
-        };
-
-        struct simulated_data_selection_widget : public base_widget
-        {
-        public:
-          simulated_data_selection_widget(event_selection * selection_);
-          virtual void initialize();
-          virtual void set_state(const bool enable_ = true);
-          virtual void build(TGCompositeFrame * frame_);
-        private:
-          TGCheckButton * _enable_;
-          TGTextEntry * _hit_category_;
-        };
-
-      public:
-
         /// Collection of widgets
-        typedef std::vector<base_widget*> widget_collection_type;
+        typedef std::map<int, base_widget*> widget_collection_type;
 
         /// Check initialization status
         bool is_initialized() const;
@@ -186,6 +94,9 @@ namespace snemo {
         /// Assign event server pointer
         void set_event_server(io::event_server * server_);
 
+        /// Return a non-mutable reference to event server
+        io::event_server & get_event_server() const;
+
         /// Assign status bar pointer
         void set_status_bar(view::status_bar * status_);
 
@@ -204,6 +115,9 @@ namespace snemo {
 
       private:
 
+        /// Build GUI widgets
+        void _build_();
+
         /// Install cut manager
         void _install_cut_manager_();
 
@@ -213,17 +127,8 @@ namespace snemo {
         /// Build cuts
         void _build_cuts_();
 
-        /// Build event header cuts
-        bool _build_event_header_data_cuts_();
-
         /// Check cuts
         bool _check_cuts_();
-
-        /// Build GUI widgets
-        void _build_widgets_();
-
-        /// Update GUI widgets status
-        void _update_widgets_();
 
       private:
 
@@ -236,12 +141,18 @@ namespace snemo {
         io::event_server * _server_;
         event_browser    * _browser_;
         status_bar       * _status_;
-        cuts::cut_manager * _cut_manager_;//!< Cut manager pointer
 
+        cuts::cut_manager * _cut_manager_;//!< Cut manager pointer
+        std::string _current_cut_name_;
+
+        TGTextButton  * _load_button_;
+        TGTextButton  * _save_button_;
+        TGTextButton  * _reset_button_;
+        TGTextButton  * _update_button_;
         widget_collection_type _widgets_;
 
         // No I/O so ClassDefVersionID = 0
-        ClassDef (event_selection, 0);
+        ClassDef(event_selection, 0);
 
       };
 

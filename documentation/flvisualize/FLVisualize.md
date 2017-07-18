@@ -216,7 +216,7 @@ The right panel contains several pans:
   other reconstruction data structures stored in the event model. Check boxes allow to
   make the corresponding graphics representations visible or not on the display.
 - `Options` : proposes a set of additional display options (colors...)
-- `Selection` : not documented yet.
+- `Selection` : allows to select events given a set of cuts.
 
 A bottom bar contains:
 
@@ -225,6 +225,60 @@ A bottom bar contains:
 - a set of navigation buttons to loop on input events (forward/backward).
 
 It is recommended to maximize the size of the FLVisualize's main window on your desktop.
+
+Regarding event selection, the selection is done on data bank level. For
+instance, it is possible to select event by setting a range of run/event ids, a
+cut that operates on the event header bank. It is also possible to use homemade
+cuts by defining a cut manager file that holds several cut files. The cut manager
+file should look likes
+
+~~~~~
+#@description Logging priority
+logging.priority : string = "error"
+
+#@description A list of files that contains definition of cuts
+cuts.configuration_files : string[1] as path = "event_header_cuts.conf"
+~~~~~
+
+where ```event_header_cuts.conf``` file can hold an event list id cut such as
+
+~~~~~
+#@description A sample list of setups
+#@key_label   "name"
+#@meta_label  "type"
+
+[name="list_of_ids_cut" type="snemo::cut::event_header_cut"]
+
+#@description Cut description
+cut.description : string = "Select event following a list of event ids"
+
+#@description Logging priority
+logging.priority : string = "error"
+
+#@description The label/name of the event header' bank (mandatory)
+EH_label : string = "EH"
+
+#@description Activate list of event ids mode
+mode.list_of_event_ids : boolean = true
+
+#@description Filename with event id
+list_of_event_ids.ids : string[5] = "0_3"  "0_7"  "0_15" "0_25" "0_69"
+~~~~~
+
+Only events from run ```0``` and with event ids ```3, 7, 15, 25``` and ```69```
+will be selected.
+
+To make use of this cut, ```flvisualize``` program should be run with the
+```--cut-config-file``` option set :
+
+~~~~~
+$ flvisualize \
+  --cut-config-file cut_manager.conf \
+  -i example.brio
+~~~~~
+
+The additionnal ```--cut-config-file``` will enable the "Complex cut" widget and
+the ```list_of_ids_cut``` may be selected within the combo box.
 
 Known Issues
 ============
