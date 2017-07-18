@@ -32,13 +32,11 @@ namespace snemo {
       _run_number_max_   = -1;
       _event_number_min_ = -1;
       _event_number_max_ = -1;
-      return;
     }
 
     void event_header_cut::set_EH_label (const std::string & EH_label_)
     {
       _EH_label_ = EH_label_;
-      return;
     }
 
     const std::string & event_header_cut::get_EH_label () const
@@ -74,7 +72,6 @@ namespace snemo {
     void event_header_cut::set_flag_name (const std::string & flag_name_)
     {
       _flag_name_ = flag_name_;
-      return;
     }
 
     const std::string & event_header_cut::get_flag_name () const
@@ -85,37 +82,28 @@ namespace snemo {
     void event_header_cut::set_run_number_min (int run_number_min_)
     {
       _run_number_min_ = run_number_min_ >= 0 ? run_number_min_ : -1;
-      return;
     }
 
     void event_header_cut::set_run_number_max (int run_number_max_)
     {
       _run_number_max_ = run_number_max_ >= 0 ? run_number_max_ : -1;
-      return;
     }
 
     void event_header_cut::set_event_number_min (int event_number_min_)
     {
       _event_number_min_ = event_number_min_ >= 0 ? event_number_min_ : -1;
-      return;
     }
 
     void event_header_cut::set_event_number_max (int event_number_max_)
     {
       _event_number_max_ = event_number_max_ >= 0 ? event_number_max_ : -1;
-      return;
     }
 
     void event_header_cut::list_of_event_ids_dump (std::ostream & out_) const
     {
-      for (std::set<datatools::event_id>::const_iterator
-             i = _list_of_events_ids_.begin ();
-           i != _list_of_events_ids_.end ();
-           i++)
-        {
-          out_ << *i << std::endl;
-        }
-      return;
+      for (auto& i : _list_of_events_ids_) {
+        out_ << i << std::endl;
+      }
     }
 
     void event_header_cut::list_of_event_ids_load (const std::string & filename_)
@@ -160,20 +148,17 @@ namespace snemo {
         }
 
       _mode_ |= MODE_LIST_OF_EVENT_IDS;
-      return;
     }
 
     event_header_cut::event_header_cut (datatools::logger::priority logger_priority_)
       : cuts::i_cut(logger_priority_)
     {
       _set_defaults ();
-      return;
     }
 
     event_header_cut::~event_header_cut ()
     {
       if (is_initialized()) this->event_header_cut::reset();
-      return;
     }
 
     void event_header_cut::reset ()
@@ -181,7 +166,6 @@ namespace snemo {
       _set_defaults ();
       this->i_cut::_reset ();
       this->i_cut::_set_initialized (false);
-      return;
     }
 
     void event_header_cut::initialize (const datatools::properties & configuration_,
@@ -323,7 +307,6 @@ namespace snemo {
         }
 
       this->i_cut::_set_initialized (true);
-      return;
     }
 
     int event_header_cut::_accept()
@@ -690,7 +673,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::event_header_cut, ocd_)
 
   ocd_.set_validation_support(true);
   ocd_.lock();
-  return;
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END() // Closing macro for implementation
 
