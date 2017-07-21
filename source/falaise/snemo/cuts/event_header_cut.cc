@@ -16,6 +16,41 @@
 // This project :
 #include "falaise/snemo/datamodels/event_header.h"
 
+namespace  {
+// Until datatools::event_id set functions are fixed:
+//   https://github.com/BxCppDev/Bayeux/issues/9
+// provide a workaround for parsing event_ids from strings.
+// Import implementation of event_id's operator>> as a factory function
+// Retain behaviour of state of input stream begin modified to indicate
+// general parse error, default (invalid) event_id otherwise.
+datatools::event_id make_event_id(std::istream& iput) {
+  int r, e;
+  char c = 0;
+  datatools::event_id invalidId;
+
+  iput >> r;
+
+  if (!iput) return invalidId;
+
+  iput >> c;
+
+  if (!iput) return invalidId;
+
+  if (c != datatools::event_id::IO_FORMAT_SEP) {
+    iput.setstate (std::ios_base::failbit);
+    return invalidId;
+  }
+
+  iput >> e;
+  if (iput) {
+    return datatools::event_id(r, e);
+  }
+
+  return invalidId;
+}
+} // namespace
+
+
 namespace snemo {
 
   namespace cut {
@@ -127,8 +162,8 @@ namespace snemo {
               if (word.length () > 0 && word[0] != '#')
                 {
                   std::istringstream iss2 (word);
-                  datatools::event_id the_event_id;
-                  iss2 >> std::ws >> the_event_id;
+                  iss2 >> std::ws;
+                  datatools::event_id the_event_id = make_event_id(iss2);
                   DT_THROW_IF (! iss2, std::logic_error,
                                "Invalid format for event ID ('" << word << "')  while reading file '"
                                << filename << "' (list of event IDs) !");
@@ -282,11 +317,17 @@ namespace snemo {
                   for (size_t i = 0; i < str_ids.size (); i++)
                     {
                       std::istringstream id_iss (str_ids[i]);
-                      datatools::event_id the_event_id;
-                      id_iss >> the_event_id;
+                      datatools::event_id the_event_id = make_event_id(id_iss);
                       DT_THROW_IF (! id_iss, std::logic_error,
                                    "Invalid format for event ID ('" << str_ids[i] << "') !");
-                      _list_of_events_ids_.insert (the_event_id);
+                      if (the_event_id.is_valid())
+                        {
+                          _list_of_events_ids_.insert (the_event_id);
+                        }
+                      else
+                        {
+                          DT_LOG_WARNING (get_logging_priority (), "Invalid value for event ID ('" << str_ids[i] << "') in list_of_event_ids.ids");
+                        }
                     }
                   count++;
                 }
