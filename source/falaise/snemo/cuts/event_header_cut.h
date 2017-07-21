@@ -35,8 +35,8 @@
 
 // Standard library:
 #include <iostream>
-#include <string>
 #include <set>
+#include <string>
 
 // Third party:
 // - Boost:
@@ -48,118 +48,116 @@
 #include <cuts/i_cut.h>
 
 namespace datatools {
-  class service_manager;
-  class properties;
-}
+class service_manager;
+class properties;
+}  // namespace datatools
 
 namespace snemo {
 
-  namespace cut {
+namespace cut {
 
-    /// \brief A cut performed on the event record's 'event header' bank
-    class event_header_cut : public cuts::i_cut
-    {
-    public:
+/// \brief A cut performed on the event record's 'event header' bank
+class event_header_cut : public cuts::i_cut {
+ public:
+  /// \brief Mode of the cut
+  enum mode_type {
+    MODE_UNDEFINED = 0,
+    MODE_FLAG = 0x1,
+    MODE_RUN_NUMBER = 0x2,
+    MODE_EVENT_NUMBER = 0x4,
+    MODE_LIST_OF_EVENT_IDS = 0x8
+  };
 
-      /// \brief Mode of the cut
-      enum mode_type {
-        MODE_UNDEFINED    = 0,
-        MODE_FLAG         = 0x1,
-        MODE_RUN_NUMBER   = 0x2,
-        MODE_EVENT_NUMBER = 0x4,
-        MODE_LIST_OF_EVENT_IDS = 0x8
-      };
+  /// Set the 'Event header' bank label/name
+  void set_EH_label(const std::string& EH_label_);
 
-      /// Set the 'Event header' bank label/name
-      void set_EH_label (const std::string & EH_label_);
+  /// Return the 'Event header' bank label/name
+  const std::string& get_EH_label() const;
 
-      /// Return the 'Event header' bank label/name
-      const std::string & get_EH_label () const;
+  /// Return the cut mode
+  uint32_t get_mode() const;
 
-      /// Return the cut mode
-      uint32_t get_mode () const;
+  /// Check mode FLAG:
+  bool is_mode_flag() const;
 
-      /// Check mode FLAG:
-      bool is_mode_flag () const;
+  /// Check mode RUN_NUMBER:
+  bool is_mode_run_number() const;
 
-      /// Check mode RUN_NUMBER:
-      bool is_mode_run_number () const;
+  /// Check mode EVENT_NUMBER:
+  bool is_mode_event_number() const;
 
-      /// Check mode EVENT_NUMBER:
-      bool is_mode_event_number () const;
+  /// Check mode LIST_OF_EVENT_IDS:
+  bool is_mode_list_of_event_ids() const;
 
-      /// Check mode LIST_OF_EVENT_IDS:
-      bool is_mode_list_of_event_ids () const;
+  void set_flag_name(const std::string& flag_name_);
 
-      void set_flag_name (const std::string & flag_name_);
+  const std::string& get_flag_name() const;
 
-      const std::string & get_flag_name () const;
+  void set_run_number_min(int run_number_min_);
 
-      void set_run_number_min (int run_number_min_);
+  void set_run_number_max(int run_number_max_);
 
-      void set_run_number_max (int run_number_max_);
+  void set_event_number_min(int event_number_min_);
 
-      void set_event_number_min (int event_number_min_);
+  void set_event_number_max(int event_number_max_);
 
-      void set_event_number_max (int event_number_max_);
+  void list_of_event_ids_dump(std::ostream& out_ = std::clog) const;
 
-      void list_of_event_ids_dump (std::ostream & out_ = std::clog) const;
+  void list_of_event_ids_load(const std::string& filename_);
 
-      void list_of_event_ids_load (const std::string & filename_);
+  /// Constructor
+  event_header_cut(datatools::logger::priority logging_priority_ =
+                       datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      event_header_cut (datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~event_header_cut();
 
-      /// Destructor
-      virtual ~event_header_cut ();
+  /// Initilization
+  virtual void initialize(const datatools::properties& configuration_,
+                          datatools::service_manager& service_manager_,
+                          cuts::cut_handle_dict_type& cut_dict_);
 
-      /// Initilization
-      virtual void initialize (const datatools::properties & configuration_,
-                               datatools::service_manager & service_manager_,
-                               cuts::cut_handle_dict_type & cut_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset ();
+ protected:
+  /// Default values
+  void _set_defaults();
 
-    protected:
+  /// Selection
+  virtual int _accept();
 
-      /// Default values
-      void _set_defaults ();
+ private:
+  std::string _EH_label_;  //!< Name of the "Event header" bank
+  uint32_t _mode_;         //!< Mode of the cut
 
-      /// Selection
-      virtual int _accept();
+  std::string
+      _flag_name_;  //!< Name of the boolean property in the event header
 
-    private:
+  int _run_number_min_;
+  int _run_number_max_;
 
-      std::string _EH_label_;  //!< Name of the "Event header" bank
-      uint32_t    _mode_;      //!< Mode of the cut
+  int _event_number_min_;
+  int _event_number_max_;
 
-      std::string _flag_name_; //!< Name of the boolean property in the event header
+  std::set<datatools::event_id> _list_of_events_ids_;
 
-      int _run_number_min_;
-      int _run_number_max_;
+  // Macro to automate the registration of the cut :
+  CUT_REGISTRATION_INTERFACE(event_header_cut)
+};
 
-      int _event_number_min_;
-      int _event_number_max_;
-
-      std::set<datatools::event_id> _list_of_events_ids_;
-
-      // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(event_header_cut)
-
-    };
-
-  }  // end of namespace cut
+}  // end of namespace cut
 
 }  // end of namespace snemo
 
 // OCD support::
 #include <datatools/ocd_macros.h>
 
-// @arg snemo::cut::event_header_cut the name the registered class in the OCD system
+// @arg snemo::cut::event_header_cut the name the registered class in the OCD
+// system
 DOCD_CLASS_DECLARATION(snemo::cut::event_header_cut)
 
-#endif // FALAISE_SNEMO_CUT_EVENT_HEADER_CUT_H
+#endif  // FALAISE_SNEMO_CUT_EVENT_HEADER_CUT_H
 
 /*
 ** Local Variables: --
