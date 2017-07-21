@@ -307,19 +307,19 @@ namespace snemo {
                 {
                   std::vector<std::string> str_ids;
                   configuration_.fetch ("list_of_event_ids.ids", str_ids);
-                  for (size_t i = 0; i < str_ids.size (); i++)
+                  for (const std::string& str : str_ids)
                     {
-                      std::istringstream id_iss (str_ids[i]);
+                      std::istringstream id_iss (str);
                       datatools::event_id the_event_id = make_event_id(id_iss);
                       DT_THROW_IF (! id_iss, std::logic_error,
-                                   "Invalid format for event ID ('" << str_ids[i] << "') !");
+                                   "Invalid format for event ID ('" << str << "') !");
                       if (the_event_id.is_valid())
                         {
                           _list_of_events_ids_.insert (the_event_id);
                         }
                       else
                         {
-                          DT_LOG_WARNING (get_logging_priority (), "Invalid value for event ID ('" << str_ids[i] << "') in list_of_event_ids.ids");
+                          DT_LOG_WARNING (get_logging_priority (), "Invalid value for event ID ('" << str << "') in list_of_event_ids.ids");
                         }
                     }
                   count++;
