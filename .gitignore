@@ -90,7 +90,8 @@ dkms.conf
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
-Testing
+# Beacuse Falaise has directories name "[Tt]esting]" don't use this!
+#Testing
 Makefile
 cmake_install.cmake
 install_manifest.txt
