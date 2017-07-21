@@ -28,25 +28,18 @@ datatools::event_id make_event_id(std::istream& iput) {
   char c = 0;
   datatools::event_id invalidId;
 
-  iput >> r;
+  if (!(iput >> r)) return invalidId;
 
-  if (!iput) return invalidId;
-
-  iput >> c;
-
-  if (!iput) return invalidId;
+  if (!(iput >> c)) return invalidId;
 
   if (c != datatools::event_id::IO_FORMAT_SEP) {
     iput.setstate (std::ios_base::failbit);
     return invalidId;
   }
 
-  iput >> e;
-  if (iput) {
-    return datatools::event_id(r, e);
-  }
+  if (!(iput >> e)) return invalidId;
 
-  return invalidId;
+  return datatools::event_id(r, e);
 }
 } // namespace
 
