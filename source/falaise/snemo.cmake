@@ -181,7 +181,9 @@ list(APPEND FalaiseLibrary_SOURCES
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/testing/test_snemo_datamodel_timestamp.cxx
+  snemo/testing/test_snemo_cut_event_header_cut.cxx
   )
+
 list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_datamodel_event_header.cxx
   snemo/testing/test_snemo_datamodel_raw_trigger_infos.cxx
