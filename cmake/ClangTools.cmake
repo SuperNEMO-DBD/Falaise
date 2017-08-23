@@ -100,7 +100,7 @@ function(target_clang_format _targetname)
         add_custom_command(OUTPUT ${_format_file}
           DEPENDS ${_source}
           COMMENT "Clang-Format ${_source}"
-          COMMAND ${clangformat_EXECUTABLE} -style=file -fallback-style=Google -sort-includes -i ${_clang_loc}
+          COMMAND ${clangformat_EXECUTABLE} -style=file -fallback-style=Google -i ${_clang_loc}
           COMMAND ${CMAKE_COMMAND} -E touch ${_format_file}
           )
 
