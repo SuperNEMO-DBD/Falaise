@@ -70,6 +70,7 @@
 #include "falaise/resource.h"
 #include "falaise/snemo/processing/services.h"
 #include "falaise/snemo/datamodels/data_model.h"
+#include "falaise/snemo/datamodels/event_header.h"
 
 #include "FLSimulateArgs.h"
 // #include "FLSimulateCommandLine.h"
@@ -330,7 +331,7 @@ namespace FLSimulate {
                                                 "Metadata associated to a flsimulate run");
       do_metadata(flSimParameters, flSimMetadata);
       if (datatools::logger::is_debug(flSimParameters.logLevel)) {
-        flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug] ");
+        flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug]: ");
       }
 
       if (!flSimParameters.outputMetadataFile.empty()) {
@@ -357,6 +358,14 @@ namespace FLSimulate {
 
       for (unsigned int i(0); i < flSimParameters.numberOfEvents; ++i) {
         workItem.clear();
+
+        // Add the event header bank
+        auto& eventHeader = workItem.add<snemo::datamodel::event_header>(
+            snemo::datamodel::data_info::default_event_header_label(),
+            "Event Header Bank");
+        eventHeader.set_generation(snemo::datamodel::event_header::GENERATION_SIMULATED);
+        datatools::event_id eventID {datatools::event_id::ANY_RUN_NUMBER, static_cast<int>(i)};
+        eventHeader.set_id(eventID);
 
         status = flSimModule.process(workItem);
         if (status != dpp::base_module::PROCESS_OK) {

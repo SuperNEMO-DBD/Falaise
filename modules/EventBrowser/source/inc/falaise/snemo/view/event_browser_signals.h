@@ -98,12 +98,14 @@ enum button_signals_type
     OR_SELECTION,
     AND_SELECTION,
     XOR_SELECTION,
-    ENABLE_COMPLEX_SELECTION,
+    ENABLE_LOGIC_SELECTION,
     ENABLE_EH_SELECTION,
     ENABLE_SD_SELECTION,
+    ENABLE_COMPLEX_SELECTION,
 
     // Signals for event navigation control
     STATUS_BAR,
+    GOTO_EVENT,
     FIRST_EVENT,
     CURRENT_EVENT,
     NEXT_EVENT,

@@ -91,13 +91,11 @@ namespace FLVisualize {
       DT_LOG_NOTICE(flVisParameters.logLevel,
                     "Fetching input metadata from input metadata companion file...");
       mc.set_input_metadata_file(flVisParameters.inputMetadataFile);
-      flVisParameters.inputMetadata.tree_dump(std::cerr, "flVisParameters.inputMetadata:", "[DEVEL] ");
       flVisParameters.inputMetadata = mc.get_metadata_from_metadata_file();
     } else if (!flVisParameters.inputFile.empty()) {
       // Fetch the metadata from the input data file:
       DT_LOG_NOTICE(flVisParameters.logLevel, "Fetching input metadata from input data file...");
       mc.set_input_data_file(flVisParameters.inputFile);
-      flVisParameters.inputMetadata.tree_dump(std::cerr, "flVisParameters.inputMetadata:", "[DEVEL] ");
       // flVisParameters.inputMetadata.clear_meta_label();
       flVisParameters.inputMetadata = mc.get_metadata_from_data_file();
     } else {
@@ -105,7 +103,7 @@ namespace FLVisualize {
       // Probably we should handle this path in the future.
     }
     if (datatools::logger::is_notice(flVisParameters.logLevel)) {
-      flVisParameters.inputMetadata.tree_dump(std::cerr, "Loaded input metadata: ", "[notice] ");
+      flVisParameters.inputMetadata.tree_dump(std::clog, "Loaded input metadata: ", "[notice]: ");
     }
 
     // Input metadata of interest:
@@ -286,7 +284,9 @@ namespace FLVisualize {
     }
 
     if (geometryConfigUrnInfo.is_valid()) {
-      geometryConfigUrnInfo.tree_dump(std::cerr, "geometryConfigUrnInfo: ", "[devel] ");
+      if (datatools::logger::is_trace(flVisParameters.logLevel)) {
+        geometryConfigUrnInfo.tree_dump(std::clog, "geometryConfigUrnInfo: ", "[trace]: ");
+      }
       // Resolve geometry configuration file:
       std::string conf_geometry_category = "configuration";
       std::string conf_geometry_mime;
@@ -380,7 +380,9 @@ namespace FLVisualize {
         // No variant profile URN is set:
         if (variantConfigUrnInfo.is_valid()) {
           DT_LOG_NOTICE(flVisParameters.logLevel, "Trying to find a default one from the current variant setup...");
-          variantConfigUrnInfo.tree_dump(std::cerr, "Variant configuration URN info: ", "[notice] ");
+          if (datatools::logger::is_notice(flVisParameters.logLevel)) {
+            variantConfigUrnInfo.tree_dump(std::clog, "Variant configuration URN info: ", "[notice]: ");
+          }
           // Try to find a default one from the current variant setup:
           if (variantConfigUrnInfo.has_topic("__default_profile__") &&
               variantConfigUrnInfo.get_components_by_topic("__default_profile__").size() == 1) {
