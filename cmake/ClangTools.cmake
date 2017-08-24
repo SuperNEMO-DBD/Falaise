@@ -66,6 +66,10 @@ endif()
   code be changed but should not result in any functionality change. Nevertheless,
   a rebuild and retest of the project after a formatting change is recommended.
 
+  Any files in the target ending in ``.in`` are ignored. These are assumed to be
+  templates for generated sources, and thus may have placeholder text that
+  ``clang-format`` cannot parse.
+
   This function is intended to help less experienced developers with applying
   a coding style, but use of ``clang-format`` in editors and IDEs is strongly
   preferred.
@@ -88,6 +92,13 @@ function(target_clang_format _targetname)
     # figure out which sources this should be applied to
     get_target_property(_clang_sources ${_targetname} SOURCES)
     get_target_property(_builddir ${_targetname} BINARY_DIR)
+
+    # [TEMP] Filter out any "*.in" files because these are templates
+    # and may have characters/strings that are incorrectly formatted.
+    # It's TEMP, because strictly speaking the template file shouldn't
+    # appear in the source list, only the generated file should.
+    string(REGEX REPLACE ";?[^;]*\\.in;?" ";" _clang_sources "${_clang_sources}")
+    string(REGEX REPLACE "^;|;$" "" _clang_sources "${_clang_sources}")
 
     set(_sources "")
     foreach(_source ${_clang_sources})
