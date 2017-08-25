@@ -35,8 +35,14 @@ available if required.
    $ git remote add upstream https://github.com/SuperNEMO-DBD/Falaise.git
    ```
 5. Check that you can [build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise)
-6. If you encounter any issues with any of these steps, [raise an issue](https://github.com/SuperNEMO-DBD/Falaise/issues/new)
-
+6. Install and configure additional software packages recommended for developers:
+  - [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) for applying Falaise's code formatting and style style automatically (a code "spell checker")
+    - If you use `brew`, then simply do `brew install clang-format`
+    - On Ubuntu Linux, `apt-get install clang-format`
+    - See the `clang-format` documentation for guides on integrating it with [Vim](https://clang.llvm.org/docs/ClangFormat.html#vim-integration) and
+    [Emacs](https://clang.llvm.org/docs/ClangFormat.html#emacs-integration) so that it can be run easily or automatically
+    - If you use the [VisualStudioCode](https://code.visualstudio.com) editor, it provides `clang-format` support via the [Microsoft C++ plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
+7. If you encounter any issues with any of these steps, [raise an issue](https://github.com/SuperNEMO-DBD/Falaise/issues/new)
 
 ## Making Changes
 The workflow adopted for Falaise is the basic "fork-and-branch" model. This
@@ -80,7 +86,7 @@ as described above.
    initial compilation and test before you make any changes.
 4. Starting making your changes on the feature branch
    - Recompile and test regularly
-   - Follow the style guide (WIP: at present, just match existing case and indents)
+   - Follow the style guide *(WIP: at present, just match existing case and indents)* and use `clang-format` to apply/fix spacing and layout automatically
    - You must add [unit tests](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) for new classes and/or interfaces, or to exercise bugs
    - You must add [documentation](https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) for new classes and/or interfaces
    - Commit regularly, but only when everything compiles without warning and all tests pass

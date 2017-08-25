@@ -25,7 +25,7 @@ further information on features and good practice:
 - [cppreference](http://en.cppreference.com/w/)
 - [ISO C++ Core Guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
 
-**WIP** Falaise also implements a basic style and layout convention
+Falaise also implements a basic style and layout convention
 to help provide uniform and readable source code. Please see the
 [Falaise Style Guide](@ref codingstandards) for full details.
 

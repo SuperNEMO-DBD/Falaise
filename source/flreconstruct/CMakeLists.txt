@@ -55,6 +55,7 @@ target_link_libraries(flreconstruct
   Bayeux::Bayeux
   Boost::program_options
   )
+target_clang_format(flreconstruct)
 
 # - Ensure link to internal and external deps
 set_target_properties(flreconstruct PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)

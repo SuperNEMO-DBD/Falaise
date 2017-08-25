@@ -9,6 +9,7 @@ set_target_properties(testFhiclProperties
   ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
   )
 target_link_libraries(testFhiclProperties FLCatch Bayeux::Bayeux Boost::boost)
+target_clang_format(testFhiclProperties)
 add_test(NAME falaise-testFhiclProperties COMMAND testFhiclProperties)
 
 

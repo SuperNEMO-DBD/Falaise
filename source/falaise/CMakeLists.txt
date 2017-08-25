@@ -87,6 +87,7 @@ target_include_directories(Falaise PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/falaise>
   )
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
+target_clang_format(Falaise)
 
 # - Rpath it
 set_target_properties(Falaise PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
@@ -166,6 +167,7 @@ if(FALAISE_ENABLE_TESTING)
       PUBLIC Falaise FLCatch
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
       )
+    target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
@@ -188,6 +190,7 @@ if(FALAISE_ENABLE_TESTING)
       PUBLIC Falaise
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
       )
+    target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
