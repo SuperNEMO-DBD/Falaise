@@ -1,4 +1,4 @@
-# How to Contribute
+# How to Contribute to Falaise
 
 Contributions to Falaise are essential to maintain and improve the code
 to ensure that the SuperNEMO experiment reaches its physics goals.
@@ -85,10 +85,12 @@ as described above.
 3. [Build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise). This provides an
    initial compilation and test before you make any changes.
 4. Starting making your changes on the feature branch
-   - Recompile and test regularly
-   - Follow the style guide *(WIP: at present, just match existing case and indents)* and use `clang-format` to apply/fix spacing and layout automatically
+   - Recompile and test regularly, ensuring that code compiles without warnings or errors
+   - Follow the [style guide](https://github.com/SuperNEMO-DBD/Falaise/documentation/development/CodingStandards.md) and use `clang-format` to apply/fix spacing and layout automatically
    - You must add [unit tests](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) for new classes and/or interfaces, or to exercise bugs
    - You must add [documentation](https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) for new classes and/or interfaces
+   - Pure documentation updates are also welcome, including HOWTOs and user guide which can be written in [Markdown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
+to make writing and online presentation clearer.
    - Commit regularly, but only when everything compiles without warning and all tests pass
    - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
  5. Publish the feature branch on your fork
@@ -119,9 +121,9 @@ as described above.
 
    - The code compiles and passes tests on [Travis-CI](https://travis-ci.org/SuperNEMO-DBD/Falaise)
      for the main supported platforms.
-   - If new code is added, it must have [unit tests](https://supernemo-dbd.github.io/Falaise/fldevel_unittest.html) which pass on supported platforms.
+   - If new code is added, it must have [unit tests]() which pass on supported platforms.
    - Any needed API and usage documentation is supplied
-   - The code follows the Falaise style guide (WIP)
+   - The code follows the [Falaise style guide](https://github.com/SuperNEMO-DBD/Falaise/documentation/development/CodingStandards.md)
 
    On the page for your Pull Request, GitHub will display the status of the automated checks
    performed. The main one to watch is the `continuous-integration/travis-ci/pr` check,

@@ -103,9 +103,6 @@ endif()
 #-----------------------------------------------------------------------
 # Individual Documents
 #
-set(Cadfael_VERSION "1.1.0")
-configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
-
 # execute_process(COMMAND bxvariant_inspector
 #   --datatools::resource-path=falaise@${PROJECT_SOURCE_DIR}/resources
 #   --variant-config=@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
@@ -120,7 +117,6 @@ configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
 
 set(FALAISE_MARKDOWN_DOCS
   Mainpage.md
-  ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
   ${PROJECT_SOURCE_DIR}/README.md
   flsimulate/FLSimulate.md
   flsimulate/FLSimulateOutput.md
@@ -135,10 +131,6 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
-  development/DevelopingFalaise.md
-  ${PROJECT_SOURCE_DIR}/CONTRIBUTING.md
-  development/UnitTestingWithCatch.md
-  development/CodingStandards.md
   )
 
 set(FALAISE_ABSOLUTE_MARKDOWN_DOCS)

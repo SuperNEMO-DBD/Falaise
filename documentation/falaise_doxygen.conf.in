@@ -128,7 +128,7 @@ FULL_PATH_NAMES        = YES
 # If left blank the directory from which doxygen is run is used as the
 # path to strip.
 
-STRIP_FROM_PATH        = @PROJECT_BUILD_INCLUDEDIR@/include \
+STRIP_FROM_PATH        = @PROJECT_BUILD_INCLUDEDIR@ \
                          @PROJECT_SOURCE_DIR@
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of
@@ -138,7 +138,7 @@ STRIP_FROM_PATH        = @PROJECT_BUILD_INCLUDEDIR@/include \
 # definition is used. Otherwise one should specify the include paths that
 # are normally passed to the compiler using the -I flag.
 
-STRIP_FROM_INC_PATH    = @PROJECT_BUILD_INCLUDEDIR@/include \
+STRIP_FROM_INC_PATH    = @PROJECT_BUILD_INCLUDEDIR@ \
                          @PROJECT_SOURCE_DIR@
 
 # If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter
