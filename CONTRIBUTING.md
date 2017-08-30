@@ -87,7 +87,7 @@ as described above.
 4. Starting making your changes on the feature branch
    - Recompile and test regularly, ensuring that code compiles without warnings or errors
    - Follow the [style guide](documentation/development/CodingStandards.md) and use `clang-format` to apply/fix spacing and layout automatically
-   - You must add [unit tests](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) for new classes and/or interfaces, or to exercise bugs
+   - You must add [unit tests](documentation/development/UnitTestingWithCatch.md)for new classes and/or interfaces, or to exercise bugs
    - You must add [documentation](https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) for new classes and/or interfaces
    - Pure documentation updates are also welcome, including HOWTOs and user guides which can be written in [Markdown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
 to make writing and online presentation clearer.
