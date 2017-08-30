@@ -1,10 +1,6 @@
-Coding Style and Standards for Falaise {#codingstandards}
+Coding Style and Standards for Falaise
 ======================================
 
-\tableofcontents
-
-Introduction {#coding_intro}
-============
 This document is a work in progress, and is expected to evolve
 through both the lifetime of the Falaise software as well as
 the now regular updates to the C++ language it is written in.
@@ -19,6 +15,7 @@ key guidelines when writing code for Falaise are
 
 Consistency
 -----------
+
 Falaise code should follow the [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml) for spacing, layout and organization of classes.
 To help apply this formatting, use of the [clang-format tool](https://clang.llvm.org/docs/ClangFormat.html) is recommended.
 A `.clang-format` file for Falaise is supplied at the root of the source tree.
@@ -58,6 +55,3 @@ No compiler vendor extensions are permitted, e.g. "-std=gnu++11".
 It is recommended to follow the [C++ Core Guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines) for practical and pragmatic use of the C++ language.
 The [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) textbook also provides
 useful guidance on writing stable and useful code.
-
-
-
