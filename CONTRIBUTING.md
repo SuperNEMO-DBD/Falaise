@@ -34,7 +34,7 @@ available if required.
    $ cd Falaise
    $ git remote add upstream https://github.com/SuperNEMO-DBD/Falaise.git
    ```
-5. Check that you can [build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise)
+5. Check that you can [build, test and run Falaise locally](README.md#installing-falaise)
 6. Install and configure additional software packages recommended for developers:
   - [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) for applying Falaise's code formatting and style style automatically (a code "spell checker")
     - If you use `brew`, then simply do `brew install clang-format`
@@ -68,10 +68,10 @@ as described above.
    ...
    $
    ```
-2. Create a branch on which to make your changes, keep the name short but descriptive:
+2. Create a branch off of `develop` on which to make your changes, keep the name short but descriptive:
 
    ```console
-   $ git checkout -b expand-flsimulate-documentation
+   $ git checkout -b expand-flsimulate-documentation develop
    Switched to a new branch 'expand-flsimulate-documentation'
    $ git status
    On branch expand-flsimulate-documentation
@@ -82,14 +82,14 @@ as described above.
    _"Additional documentation for flsimulate"_, not _"Fix Issue X and Add new Module Y"_.
    This is done to help minimize clashes when integrating your changes and to keep a logical
    record of changes between stable releases.
-3. [Build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise). This provides an
+3. [Build, test and run Falaise locally](README.md#installing-falaise). This provides an
    initial compilation and test before you make any changes.
 4. Starting making your changes on the feature branch
    - Recompile and test regularly, ensuring that code compiles without warnings or errors
-   - Follow the [style guide](https://github.com/SuperNEMO-DBD/Falaise/documentation/development/CodingStandards.md) and use `clang-format` to apply/fix spacing and layout automatically
+   - Follow the [style guide](documentation/development/CodingStandards.md) and use `clang-format` to apply/fix spacing and layout automatically
    - You must add [unit tests](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) for new classes and/or interfaces, or to exercise bugs
    - You must add [documentation](https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) for new classes and/or interfaces
-   - Pure documentation updates are also welcome, including HOWTOs and user guide which can be written in [Markdown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
+   - Pure documentation updates are also welcome, including HOWTOs and user guides which can be written in [Markdown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
 to make writing and online presentation clearer.
    - Commit regularly, but only when everything compiles without warning and all tests pass
    - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
@@ -121,9 +121,9 @@ to make writing and online presentation clearer.
 
    - The code compiles and passes tests on [Travis-CI](https://travis-ci.org/SuperNEMO-DBD/Falaise)
      for the main supported platforms.
-   - If new code is added, it must have [unit tests]() which pass on supported platforms.
+   - If new code is added, it must have [unit tests](documentation/development/UnitTestingWithCatch.md) which pass on supported platforms.
    - Any needed API and usage documentation is supplied
-   - The code follows the [Falaise style guide](https://github.com/SuperNEMO-DBD/Falaise/documentation/development/CodingStandards.md)
+   - The code follows the [Falaise style guide](documentation/development/CodingStandards.md)
 
    On the page for your Pull Request, GitHub will display the status of the automated checks
    performed. The main one to watch is the `continuous-integration/travis-ci/pr` check,
