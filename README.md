@@ -182,4 +182,4 @@ conditions of use of Falaise.
 
 ## Contributors
 
-Steven Calvez, Xavier Garrido, François Mauger, Ben Morgan, Guillaume Oliviero
+Many thanks go to Falaise's [contributors](https://github.com/SuperNEMO-DBD/Falaise/graphs/contributors)
