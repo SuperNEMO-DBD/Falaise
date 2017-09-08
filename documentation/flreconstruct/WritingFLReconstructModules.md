@@ -551,5 +551,5 @@ picture of the task performed by the module and its configurable
 parameters. [A tutorial on documenting modules using the builtin Falaise/Bayeux tools](@ref documentingflreconstructmodules) is available.
 
 Though modules for FLReconstruct may not be directly integrated in
-Falaise, for consistency and maintanability their code [must follow the Falaise coding conventions](@ref codingstandards).
+Falaise, for consistency and maintanability their code should use the [Falaise coding standards](https://github.com/SuperNEMO-DBD/Falaise/blob/develop/documentation/development/CodingStandards.md#)
 

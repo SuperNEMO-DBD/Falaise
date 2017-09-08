@@ -167,7 +167,7 @@ any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/
 
 # Contributing to Falaise
 
-Please see the [Contribution Guide](CONTRIBUTING.md)
+Please see the [Contribution Guide](https://github.com/SuperNEMO-DBD/Falaise/blob/develop/CONTRIBUTING.md#)
 
 
 # Naming
@@ -182,4 +182,4 @@ conditions of use of Falaise.
 
 ## Contributors
 
-Steven Calvez, Xavier Garrido, François Mauger, Ben Morgan, Guillaume Oliviero
+Many thanks go to Falaise's [contributors](https://github.com/SuperNEMO-DBD/Falaise/graphs/contributors)
