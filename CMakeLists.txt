@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "3.0.0")
+project(Falaise VERSION "3.1.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -47,6 +47,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
 # Common LPC utilities
 #
 include(LPCCMakeSettings)
+include(ClangTools)
 
 # - SVN revision number for dev builds
 include(LPCSVNUtilities)

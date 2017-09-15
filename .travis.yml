@@ -1,0 +1,50 @@
+# All build envs are for C++
+language: cpp
+
+# Use matrix: to explicitly specify the builds
+# - Linux: Singular VM with docker, one build for
+#          each different image
+# - macOS: One each per osx_image value.
+#          Only latest Sierra w/clang for now.
+matrix:
+  include:
+    - os: linux
+      services: docker
+      env:
+        - DOCKER_IMAGE=supernemo/falaise-ubuntu1604-base
+        - DOCKER_CONTAINER=falaise-docker
+        - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
+    - os: linux
+      services: docker
+      env:
+        - DOCKER_IMAGE=supernemo/falaise-centos6-base
+        - DOCKER_CONTAINER=falaise-docker
+        - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
+    - os: osx
+      osx_image: xcode8.3
+      compiler: clang
+  # Mac doesn't work just yet due to missing bottles but want to confirm things run.
+  allow_failures:
+    - os: osx
+
+# In a C++ project, no clear convention on before_install vs install
+# (Travis doesn't do anything automatically). Use it to:
+# - Linux: start the base container
+# - macOS: install brew packages
+before_install:
+  - |
+    if [ "$TRAVIS_OS_NAME" == "linux" ] ; then
+      docker pull $DOCKER_IMAGE
+      docker run \
+             -itd \
+             -v $TRAVIS_BUILD_DIR:$TRAVIS_BUILD_DIR \
+             --name $DOCKER_CONTAINER $DOCKER_IMAGE
+    elif [ "$TRAVIS_OS_NAME" == "osx" ] ; then
+      brew tap supernemo-dbd/cadfael
+      brew tap-pin supernemo-dbd/cadfael
+      brew install ninja
+    fi
+
+# Run packaged script to configure, make, run tests
+script: $SCRIPT_PREFIX_CMD $TRAVIS_BUILD_DIR/.travis/ciscript.sh
+

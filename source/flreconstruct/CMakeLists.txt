@@ -25,46 +25,6 @@
 # - Bit hacky for now
 find_package(Boost 1.60 REQUIRED program_options)
 
-# #-----------------------------------------------------------------------
-# # Compile/Link App
-# #
-# add_executable(flreconstruct_legacy
-#   legacy/flreconstructmain_legacy.cc
-#   FLReconstructResources.h
-#   FLReconstructResources.cc
-# )
-# target_include_directories(flreconstruct_legacy PRIVATE
-#   ${CMAKE_CURRENT_SOURCE_DIR}
-#   ${CMAKE_CURRENT_BINARY_DIR}
-#   )
-# target_compile_definitions(flreconstruct_legacy PRIVATE ENABLE_BINRELOC)
-# target_link_libraries(flreconstruct_legacy
-#   Falaise
-#   Bayeux::Bayeux
-#   Boost::program_options
-#   )
-
-# # - Ensure link to internal and external deps
-# set_target_properties(flreconstruct_legacy PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
-
-# if(UNIX AND NOT APPLE)
-#   set_target_properties(flreconstruct_legacy
-#     PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
-#     )
-# elseif(APPLE)
-#   # Temporary setting - needs testing
-#   set_target_properties(flreconstruct_legacy
-#     PROPERTIES
-#       INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
-#       )
-# endif()
-
-# # - Install it
-# install(TARGETS flreconstruct_legacy
-#   EXPORT FalaiseTargets
-#   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-#   )
-
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
@@ -95,6 +55,7 @@ target_link_libraries(flreconstruct
   Bayeux::Bayeux
   Boost::program_options
   )
+target_clang_format(flreconstruct)
 
 # - Ensure link to internal and external deps
 set_target_properties(flreconstruct PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
@@ -120,14 +81,6 @@ install(TARGETS flreconstruct
 #-----------------------------------------------------------------------
 # Build Tests
 #
-#add_subdirectory(CommissioningIO)
 if(FALAISE_ENABLE_TESTING)
-  add_executable(testFhiclProperties testFhiclProperties.cc)
-  set_target_properties(testFhiclProperties
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
-    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
-    )
-  target_link_libraries(testFhiclProperties FLCatch Bayeux::Bayeux Boost::boost)
-  add_test(NAME falaise-testFhiclProperties COMMAND testFhiclProperties)
+  add_subdirectory(tests)
 endif()

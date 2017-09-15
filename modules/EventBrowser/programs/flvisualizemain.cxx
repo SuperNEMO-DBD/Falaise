@@ -44,6 +44,7 @@ namespace dtc = datatools::configuration;
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/exitcodes.h>
+#include <falaise/resource.h>
 // This plugin:
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/options_manager.h>
@@ -67,6 +68,20 @@ namespace FLVisualize {
 //----------------------------------------------------------------------
 int main(int argc_, char *argv_[]) {
   falaise::initialize(argc_, argv_, FLVisualize::app_kernel_init_flags());
+
+  // Hack to get the include path for the GUI dictionary known to ROOT
+  // in a relocatable way
+  // Really seems to require use of env var rather than gSystem include paths...
+  char* rIncludePath = getenv("ROOT_INCLUDE_PATH");
+
+  if(rIncludePath) {
+    std::string ourPath(falaise::get_plugin_dir());
+    std::string oldPath(rIncludePath);
+    std::string newPath = ourPath + ":" + oldPath;
+    setenv("ROOT_INCLUDE_PATH",newPath.c_str(),1);
+  } else {
+    setenv("ROOT_INCLUDE_PATH",falaise::get_plugin_dir().c_str(),1);
+  }
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error
@@ -105,12 +120,9 @@ namespace FLVisualize {
       if (flVisParameters.variants.is_active()) {
         vserv.configure(flVisParameters.variants);
         // Start and lock the variant service:
-        DT_LOG_DEBUG(flVisParameters.logLevel,"Starting the variants service...");
         vserv.start();
-        DT_LOG_DEBUG(flVisParameters.logLevel,"Variants service is started.");
         // From this point, all other services and/or processing modules can benefit
         // of the variant service during their configuration steps.
-        // flVisParameters.variants.print(std::cerr, "flvisualize: variant service configuration:", "DEVEL: ");
       }
     } catch (std::exception & e) {
       std::cerr << "[datatools::configuration::variant_service::variant_exception] "
@@ -121,10 +133,6 @@ namespace FLVisualize {
 
     // - Run the browser:
     try {
-
-      // Browser runs here...
-      DT_LOG_NOTICE(flVisParameters.logLevel, "Configuring browser...");
-
       // Build detector manager
       sv::detector::detector_manager & detector_mgr = sv::detector::detector_manager::get_instance();
       detector_mgr.initialize();
@@ -132,7 +140,6 @@ namespace FLVisualize {
 
       // Open a root application
       DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
-
       int narg = 1;
       TApplication * my_application = new TApplication("ROOT Application", &narg, argv_);
 
@@ -152,10 +159,7 @@ namespace FLVisualize {
       sv::view::event_browser * my_event_browser
         = new sv::view::event_browser(gClient->GetRoot(), width, height);
       my_event_browser->initialize();
-
-      DT_LOG_NOTICE(flVisParameters.logLevel, "Browser runs here...");
       my_application->Run(true);
-      DT_LOG_NOTICE(flVisParameters.logLevel, "Browser stopped.");
 
     } catch (std::exception & e) {
       std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
@@ -165,9 +169,7 @@ namespace FLVisualize {
 
     if (vserv.is_started()) {
       // Terminate the variant service:
-      DT_LOG_DEBUG(flVisParameters.logLevel,"Stopping the variants service...");
       vserv.stop();
-      DT_LOG_DEBUG(flVisParameters.logLevel,"Variants service is stopped.");
     }
 
     return falaise::EXIT_OK;

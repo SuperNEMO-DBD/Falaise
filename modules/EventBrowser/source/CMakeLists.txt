@@ -21,107 +21,95 @@ endfunction()
 
 # - Add config header
 configure_file(
-  ${PROJECT_SOURCE_DIR}/include/falaise/snemo/event_browser_version.h.in
-  ${PROJECT_BINARY_DIR}/include/falaise/snemo/event_browser_version.h
+  ${PROJECT_SOURCE_DIR}/source/inc/falaise/snemo/event_browser_version.h.in
+  ${PROJECT_BINARY_DIR}/source/inc/falaise/snemo/event_browser_version.h
   )
 configure_file(
-  ${PROJECT_SOURCE_DIR}/include/falaise/snemo/event_browser_config.h.in
-  ${PROJECT_BINARY_DIR}/include/falaise/snemo/event_browser_config.h
+  ${PROJECT_SOURCE_DIR}/source/inc/falaise/snemo/event_browser_config.h.in
+  ${PROJECT_BINARY_DIR}/source/inc/falaise/snemo/event_browser_config.h
   )
 set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
-  ${PROJECT_BINARY_DIR}/include/falaise/snemo/event_browser_version.h
-  ${PROJECT_BINARY_DIR}/include/falaise/snemo/event_browser_config.h
+  ${PROJECT_BINARY_DIR}/source/inc/falaise/snemo/event_browser_version.h
+  ${PROJECT_BINARY_DIR}/source/inc/falaise/snemo/event_browser_config.h
   )
 
 #-----------------------------------------------------------------------
 # PRIVATE HEADERS
 
-set(FalaiseEventBrowserPlugin_DETECTOR_HEADERS
-  include/falaise/snemo/detector/i_volume.h
-  include/falaise/snemo/detector/i_root_volume.h
-  include/falaise/snemo/detector/volume_model.h
-  include/falaise/snemo/detector/box_volume.h
-  include/falaise/snemo/detector/composite_volume.h
-  include/falaise/snemo/detector/cylinder_volume.h
-  include/falaise/snemo/detector/detector_manager.h
-  include/falaise/snemo/detector/polycone_volume.h
-  include/falaise/snemo/detector/special_volume.h
-  include/falaise/snemo/detector/sphere_volume.h
-  include/falaise/snemo/detector/tube_volume.h
- )
-list_prepend(FalaiseEventBrowserPlugin_DETECTOR_HEADERS "${PROJECT_SOURCE_DIR}/")
-
-set(FalaiseEventBrowserPlugin_IO_HEADERS
-  include/falaise/snemo/io/boost_access.h
-  include/falaise/snemo/io/brio_access.h
-  include/falaise/snemo/io/data_model.h
-  include/falaise/snemo/io/event_server.h
-  include/falaise/snemo/io/i_data_access.h
+set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
+  inc/falaise/snemo/detector/i_volume.h
+  inc/falaise/snemo/detector/i_root_volume.h
+  inc/falaise/snemo/detector/volume_model.h
+  inc/falaise/snemo/detector/box_volume.h
+  inc/falaise/snemo/detector/composite_volume.h
+  inc/falaise/snemo/detector/cylinder_volume.h
+  inc/falaise/snemo/detector/detector_manager.h
+  inc/falaise/snemo/detector/polycone_volume.h
+  inc/falaise/snemo/detector/special_volume.h
+  inc/falaise/snemo/detector/sphere_volume.h
+  inc/falaise/snemo/detector/tube_volume.h
+  inc/falaise/snemo/io/boost_access.h
+  inc/falaise/snemo/io/brio_access.h
+  inc/falaise/snemo/io/data_model.h
+  inc/falaise/snemo/io/event_server.h
+  inc/falaise/snemo/io/i_data_access.h
+  inc/falaise/snemo/utils/root_utilities.h
+  inc/falaise/snemo/utils/singleton.h
+  # inc/falaise/snemo/view/bipo_draw_manager.h
+  inc/falaise/snemo/view/base_renderer.h
+  inc/falaise/snemo/view/browser_icons.h
+  inc/falaise/snemo/view/browser_tracks.h
+  inc/falaise/snemo/view/calorimeter_hit_renderer.h
+  inc/falaise/snemo/view/display_2d.h
+  inc/falaise/snemo/view/display_3d.h
+  inc/falaise/snemo/view/display_options.h
+  inc/falaise/snemo/view/event_browser_ctrl.h
+  inc/falaise/snemo/view/event_browser.h
+  inc/falaise/snemo/view/event_browser_linkdef.h
+  inc/falaise/snemo/view/event_browser_menu.h
+  inc/falaise/snemo/view/event_browser_module.h
+  inc/falaise/snemo/view/event_browser_signals.h
+  inc/falaise/snemo/view/event_display.h
+  inc/falaise/snemo/view/event_selection.h
+  inc/falaise/snemo/view/i_draw_manager.h
+  inc/falaise/snemo/view/i_embedded_viewer.h
+  inc/falaise/snemo/view/opengl_embedded_viewer.h
+  inc/falaise/snemo/view/opengl_event_handler.h
+  inc/falaise/snemo/view/opengl_pad.h
+  inc/falaise/snemo/view/opengl_scene.h
+  inc/falaise/snemo/view/options_manager.h
+  inc/falaise/snemo/view/pad_embedded_viewer.h
+  inc/falaise/snemo/view/progress_bar.h
+  inc/falaise/snemo/view/signal_handling.h
+  inc/falaise/snemo/view/snemo_draw_manager.h
+  inc/falaise/snemo/view/default_draw_manager.h
+  inc/falaise/snemo/view/status_bar.h
+  inc/falaise/snemo/view/style_manager.h
+  # inc/falaise/snemo/view/tiny_viewer.h
+  inc/falaise/snemo/view/tracker_hit_renderer.h
+  inc/falaise/snemo/view/view_models.h
+  inc/falaise/snemo/view/visual_track_renderer.h
   )
-list_prepend(FalaiseEventBrowserPlugin_IO_HEADERS "${PROJECT_SOURCE_DIR}/")
-
-set(FalaiseEventBrowserPlugin_UTILS_HEADERS
-  include/falaise/snemo/utils/root_utilities.h
-  include/falaise/snemo/utils/singleton.h
-  )
-list_prepend(FalaiseEventBrowserPlugin_UTILS_HEADERS "${PROJECT_SOURCE_DIR}/")
-
-set(FalaiseEventBrowserPlugin_VIEW_HEADERS
-  # include/falaise/snemo/view/bipo_draw_manager.h
-  include/falaise/snemo/view/base_renderer.h
-  include/falaise/snemo/view/browser_icons.h
-  include/falaise/snemo/view/browser_tracks.h
-  include/falaise/snemo/view/calorimeter_hit_renderer.h
-  include/falaise/snemo/view/display_2d.h
-  include/falaise/snemo/view/display_3d.h
-  include/falaise/snemo/view/display_options.h
-  include/falaise/snemo/view/event_browser_ctrl.h
-  include/falaise/snemo/view/event_browser.h
-  include/falaise/snemo/view/event_browser_linkdef.h
-  include/falaise/snemo/view/event_browser_menu.h
-  include/falaise/snemo/view/event_browser_module.h
-  include/falaise/snemo/view/event_browser_signals.h
-  include/falaise/snemo/view/event_display.h
-  include/falaise/snemo/view/event_selection.h
-  include/falaise/snemo/view/i_draw_manager.h
-  include/falaise/snemo/view/i_embedded_viewer.h
-  include/falaise/snemo/view/opengl_embedded_viewer.h
-  include/falaise/snemo/view/opengl_event_handler.h
-  include/falaise/snemo/view/opengl_pad.h
-  include/falaise/snemo/view/opengl_scene.h
-  include/falaise/snemo/view/options_manager.h
-  include/falaise/snemo/view/pad_embedded_viewer.h
-  include/falaise/snemo/view/progress_bar.h
-  include/falaise/snemo/view/signal_handling.h
-  include/falaise/snemo/view/snemo_draw_manager.h
-  include/falaise/snemo/view/default_draw_manager.h
-  include/falaise/snemo/view/status_bar.h
-  include/falaise/snemo/view/style_manager.h
-  # include/falaise/snemo/view/tiny_viewer.h
-  include/falaise/snemo/view/tracker_hit_renderer.h
-  include/falaise/snemo/view/view_models.h
-  include/falaise/snemo/view/visual_track_renderer.h
-  )
-list_prepend(FalaiseEventBrowserPlugin_VIEW_HEADERS "${PROJECT_SOURCE_DIR}/")
 
 # - Generate ROOT headers
 set(FalaiseEventBrowserPlugin_DICT_HEADERS
-  include/falaise/snemo/view/event_browser.h
-  include/falaise/snemo/view/display_3d.h
-  include/falaise/snemo/view/display_2d.h
-  include/falaise/snemo/view/display_options.h
-  include/falaise/snemo/view/browser_tracks.h
-  include/falaise/snemo/view/event_selection.h
-  include/falaise/snemo/view/progress_bar.h
+  inc/falaise/snemo/view/event_browser_signals.h
+  inc/falaise/snemo/view/view_models.h
+  inc/falaise/snemo/view/event_browser.h
+  inc/falaise/snemo/view/display_3d.h
+  inc/falaise/snemo/view/display_2d.h
+  inc/falaise/snemo/view/display_options.h
+  inc/falaise/snemo/view/browser_tracks.h
+  inc/falaise/snemo/view/event_selection.h
+  inc/falaise/snemo/view/progress_bar.h
+  inc/falaise/snemo/view/status_bar.h
   )
-list_prepend(FalaiseEventBrowserPlugin_DICT_HEADERS "${PROJECT_SOURCE_DIR}/")
-
 
 set(_event_browser_root_dict "")
 # - Generate ROOT headers
 if(FALAISE_USE_LEGACY_ROOT)
   root_generate_dictionary("${FalaiseEventBrowserPlugin_DICT_HEADERS}"
-    "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
+    "${PROJECT_SOURCE_DIR}/source/inc/falaise/snemo/view/event_browser_linkdef.h"
     "${PROJECT_BINARY_DIR}/event_browser_dict.cc"
     "${PROJECT_SOURCE_DIR}/include"
     )
@@ -137,8 +125,17 @@ else()
   root_generate_dictionary(event_browser_dict
     "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
     ${__EVENTBROWSER_MODULE_ARG}
-    LINKDEF "${PROJECT_SOURCE_DIR}/include/falaise/snemo/view/event_browser_linkdef.h"
+    LINKDEF "${PROJECT_SOURCE_DIR}/source/inc/falaise/snemo/view/event_browser_linkdef.h"
+    OPTIONS "-noIncludePaths"
     )
+  # Publish the dictionary headers next to the module - needed for
+  # cling parsing in R6. NB: this is connected with the setting of
+  # ROOT_INCLUDE_PATH in the main flvisualize application.
+  foreach(_dictheader ${FalaiseEventBrowserPlugin_DICT_HEADERS})
+    get_filename_component(_dictheader_file "${_dictheader}" NAME)
+    configure_file(${_dictheader} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/falaise/snemo/view/${_dictheader_file})
+  endforeach()
+
 
   if(ROOT_VERSION VERSION_GREATER 5.99)
     # pop the true libinstalldir
@@ -146,6 +143,7 @@ else()
   endif()
 
   set(_event_browser_root_dict ${CMAKE_CURRENT_BINARY_DIR}/event_browser_dict.cxx)
+
 endif()
 
 # ROOT dictionaries will refine accessor keywords for reflection purposes
@@ -215,13 +213,15 @@ set(FalaiseEventBrowserPlugin_SOURCES
 #-----------------------------------------------------------------------
 # BUILD THE EVENTBROWSER LIBRARY
 #
-
 add_library(Falaise_EventBrowser SHARED
   ${FalaiseEventBrowserPlugin_PUBLIC_HEADERS}
-  # ${FalaiseEventBrowserPlugin_IO_HEADERS}
-  # ${FalaiseEventBrowserPlugin_DETECTOR_HEADERS}
-  # ${FalaiseEventBrowserPlugin_UTILS_HEADERS}
   ${FalaiseEventBrowserPlugin_SOURCES}
+  )
+
+target_include_directories(Falaise_EventBrowser PUBLIC
+  ${ROOT_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}/inc
+  ${CMAKE_CURRENT_SOURCE_DIR}/inc
   )
 
 target_link_libraries(Falaise_EventBrowser
@@ -238,5 +238,11 @@ endif()
 
 # Install it:
 install(TARGETS Falaise_EventBrowser DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
+
+# Also have to install the headers for the dictionary so that Cling can use them
+# at Runtime.
+install(FILES ${FalaiseEventBrowserPlugin_DICT_HEADERS}
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules/falaise/snemo/view
+  )
 
 # - end of CMakeLists.txt for EventBrowser/src subdir

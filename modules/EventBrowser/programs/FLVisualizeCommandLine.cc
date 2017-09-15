@@ -84,7 +84,7 @@ namespace FLVisualize {
       ("version","print version number")
       ("logging-priority,P",
        bpo::value<std::string>()
-       ->default_value("notice")
+       ->default_value("error")
        ->value_name("level"),
        "set the logging priority threshold")
       ("load-dll,l",

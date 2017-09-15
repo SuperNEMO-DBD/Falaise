@@ -192,9 +192,6 @@ namespace snemo {
           _tab_is_uptodate_[OPTIONS_TAB]       = true;
           _tab_is_uptodate_[SELECTION_TAB]     = true;
 
-          // Selection off by default
-          _tabs_->SetEnabled(SELECTION_TAB, false);
-
           // 2D/3D display view
           if (options_manager::get_instance().is_2d_display_on_left()) {
             _display_2d_ = new display_2d(left_part, _server_);

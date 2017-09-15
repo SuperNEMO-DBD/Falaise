@@ -57,71 +57,18 @@ endif()
 # If we're using an internal Bayeux, use relative paths, otherwise
 # absolute
 if(Bayeux_DOXYGEN_HTML_DIR)
+  # Keep a record of full paths as doxygen may use these!
+  set(Bayeux_DOXYGEN_FULL_TAGFILE "${Bayeux_DOXYGEN_TAGFILE}")
   file(RELATIVE_PATH Bayeux_DOXYGEN_HTML_DIR ${FALAISE_DOXYGEN_OUTPUT_DIR}/html ${Bayeux_DOXYGEN_HTML_DIR})
   file(RELATIVE_PATH Bayeux_DOXYGEN_TAGFILE ${PROJECT_BINARY_DIR} ${Bayeux_DOXYGEN_TAGFILE})
+
+  # Only generate the prep file when we crosslink to Bayeux
+  configure_file(prepare_release_docs.bash.in ${PROJECT_BINARY_DIR}/release-tools/prepare_release_docs.bash @ONLY)
 endif()
-
-# execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory ${FALAISE_DOXYGEN_OUTPUT_DIR}
-#   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-#   )
-
-# execute_process(COMMAND rst2pdf
-#   ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
-#   --output ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.pdf
-#   RESULT_VARIABLE _errcode
-#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
-#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_rst2html.err
-#   )
-# message(STATUS "****** _errcode = [${_errcode}] ")
-
-# #--title="FLSimulate variant  p arameters description (version 2.1)"
-
-# execute_process(COMMAND rst2html
-#   --no-generator
-#   --no-source-link
-#   --toc-entry-backlinks
-#   --toc-top-backlinks
-#   --field-name-limit=0
-#   --stylesheet=tabs.css
-#   --link-stylesheet
-#   ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
-#   RESULT_VARIABLE _errcode
-#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
-#   OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.html
-#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_rst2html.err
-#   )
-# message(STATUS "****** _errcode = [${_errcode}] ")
-
-# configure_file(${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.html
-#   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
-#   COPYONLY)
-
-# configure_file(${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.pdf
-#   ${FALAISE_DOXYGEN_OUTPUT_DIR}/html
-#   COPYONLY)
-
-#-----------------------------------------------------------------------
-# Individual Documents
-#
-set(Cadfael_VERSION "1.1.0")
-configure_file(InstallationGuide.md.in InstallationGuide.md @ONLY)
-
-# execute_process(COMMAND bxvariant_inspector
-#   --datatools::resource-path=falaise@${PROJECT_SOURCE_DIR}/resources
-#   --variant-config=@falaise:config/snemo/demonstrator/simulation/geant4_control/2.1/variants/repository.conf
-#   --action doc
-#   RESULT_VARIABLE _errcode
-#   WORKING_DIRECTORY ${PROJECT_BUILD_PREFIX}
-#   OUTPUT_FILE ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
-#   ERROR_FILE ${CMAKE_CURRENT_BINARY_DIR}/_bxvariant_inspector.err
-#   )
-# message(STATUS "****** _errcode = [${_errcode}]")
-# ${CMAKE_CURRENT_BINARY_DIR}/FLSimulateVariantsDoc.rst
 
 set(FALAISE_MARKDOWN_DOCS
   Mainpage.md
-  ${PROJECT_SOURCE_DIR}/source/Falaise.1.md
-  ${CMAKE_CURRENT_BINARY_DIR}/InstallationGuide.md
+  ${PROJECT_SOURCE_DIR}/README.md
   flsimulate/FLSimulate.md
   flsimulate/FLSimulateOutput.md
   flreconstruct/FLReconstruct.md
@@ -135,9 +82,6 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
-  development/DevelopingFalaise.md
-  development/UnitTestingWithCatch.md
-  development/CodingStandards.md
   )
 
 set(FALAISE_ABSOLUTE_MARKDOWN_DOCS)

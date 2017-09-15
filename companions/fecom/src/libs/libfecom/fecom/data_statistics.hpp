@@ -111,7 +111,7 @@ namespace fecom {
     std::size_t number_of_tracker_only_events;
     std::pair<double, std::size_t> mean_number_of_tracker_cells;
 		std::pair<double, std::size_t> mean_number_of_tracker_cells_if_0_calo_ht;
-    std::array<register_for_cell, fecom::tracker_constants::NUMBER_OF_LAYERS> cell_registers{};
+    std::array<register_for_cell, fecom::tracker_constants::NUMBER_OF_LAYERS> cell_registers;
 
     // Calo + tracker :
     std::size_t number_of_calo_tracker_events;
@@ -120,7 +120,7 @@ namespace fecom {
 		std::pair<double, std::size_t> mean_number_of_tracker_cells_if_1_calo_ht;
 		std::pair<double, std::size_t> mean_number_of_tracker_cells_if_2_calo_ht;
 		std::pair<double, std::size_t> mean_number_of_tracker_cells_if_3p_calo_ht;
-    std::array<register_for_cell, fecom::tracker_constants::NUMBER_OF_LAYERS> cell_registers_if_calo_tracker{};
+    std::array<register_for_cell, fecom::tracker_constants::NUMBER_OF_LAYERS> cell_registers_if_calo_tracker;
 
 
 		std::vector<std::string> unmapped_channels_in_raw_data;
@@ -129,9 +129,9 @@ namespace fecom {
     // General :
 
     // Calorimeter :
-    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_calo_TH1F{};
-    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_ht_calo_TH1F{};
-    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_no_ht_calo_TH1F{};
+    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_calo_TH1F;
+    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_ht_calo_TH1F;
+    std::array<TH1F *, fecom::calo_constants::NUMBERS_OF_CALO_PER_COLUMN> charge_picocoulomb_no_ht_calo_TH1F;
 
     TH2F * calo_distrib_TH2F;
     TH2F * calo_distrib_ht_TH2F;

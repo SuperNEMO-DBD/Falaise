@@ -8,10 +8,13 @@
 
 ####################################################################
 [name="versatile_generator" type="genbb::single_particle_generator"]
+
+#@variant_section_only primary_events:generator/if_versatile|false
+
 #@config Electron with monokinetic energy;group=user;variant=if_versatile
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
-particle_name : string = @variant(primary_event:generator/if_versatile/particle|"gamma")
+particle_name : string = @variant(primary_events:generator/if_versatile/particle|"gamma")
 
 #@description Mode ("energy_range", "gaussian_energy", "monokinetic", "spectrum"):
 mode          : string = "monokinetic"
@@ -20,7 +23,7 @@ mode          : string = "monokinetic"
 emission_direction : string = "randomized"
 
 #@description The kinetic energy of the generated particle
-energy        : real   = @variant(primary_event:generator/if_versatile/energy|1000.0 keV)
+energy        : real   = @variant(primary_events:generator/if_versatile/energy|1000.0 keV)
 
 
 # end of versatile.def

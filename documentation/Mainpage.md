@@ -7,13 +7,12 @@ extension system.
 
 Getting Started
 ===============
-If you're reading this online and don't yet have Falaise installed, an
-[Installation Guide](@ref flinstallguide) is available. Note that
-at present Falaise is only supported on POSIX platforms, and even here
-not all variants are guaranteed to work!
+If you're reading this online and don't yet have an install of Falaise, a
+[Quickstart Guide](@ref md_README) is available. Note that at present
+Falaise is only supported on POSIX platforms, and even here not all variants are guaranteed to work!
 
-Core Applications and Libraries
-===============================
+User Guides for Core Applications and Libraries
+===============================================
 Once you have an install of Falaise, the following pages provide
 introductions to using and extending the core applications:
 
@@ -27,13 +26,8 @@ introductions to using and extending the core applications:
   - [Using Services to access metadata](@ref usingservices).
 - [FLVisualize](@ref usingflvisualize) guide for viewing simulated and reconstructed data.
 
-Developing Falaise
-==================
-Contributions to the core of Falaise are welcome. To begin developing,
-you should familiarize yourself with the [tools, languages and concepts](@ref developingfalaise) of its architecture and development model.
+Contributing to Falaise Development
+===================================
+Contributions to the core of Falaise are welcome. Please visit our [GitHub repo](https://github.com/SuperNEMO-DBD/Falaise)
+for further information.
 
-User Guides
-===========
-Documents detailing the use and design of Falaise may be found on
-under the Related Pages tab if you are reading the HTML documentation,
-or in the following sections in the printed manual.
