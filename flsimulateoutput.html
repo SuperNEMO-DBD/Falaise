@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.0.0</span>
+   &#160;<span id="projectnumber">3.1.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -66,6 +66,7 @@ $(function() {
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#flsimulateoutput_introduction">Introduction to the FLSimulate Output </a></li>
+<li class="level1"><a href="#flsimulateoutput_theehbank">The EH Bank </a></li>
 <li class="level1"><a href="#flsimulateoutput_thegeometryidentifierconcept">The geometry identifier concept </a></li>
 <li class="level1"><a href="#flsimulateoutput_mctoolsbasestephitclass">The mctools::base_step_hit class </a></li>
 <li class="level1"><a href="#flsimulateoutput_mctoolssimulateddata">The mctools::simulated_data class </a></li>
@@ -76,10 +77,27 @@ $(function() {
 </div>
 <div class="textblock"><h1><a class="anchor" id="flsimulateoutput_introduction"></a>
 Introduction to the FLSimulate Output </h1>
-<p>The current official simulation application defines an output data model to represent the detector response (SuperNEMO demonstrator module...). Each <em>simulated</em> event record is implemented through the generic <code><a class="elRef" doxygen="https://supernemo-dbd.github.io/Bayeux/bayeux.doxy.tag:https://supernemo-dbd.github.io/Bayeux/" href="https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1things.html">datatools::things</a></code> container object that handle a dedicated data bank which is conventionaly named <code>SD</code> (for <b>S</b> imulated <b>D</b> ata).</p>
-<p>In the future, the simulation application will also support the creation of the <em>digitization data</em> <code>SDD</code> bank (<b>S**imulated **D</b> igitization <b>D</b> ata).</p>
-<p>Here we describe the contents of the data model produced by the SuperNEMO Monte-Carlo program.</p>
-<div class="fragment"><div class="line">+----------------------------------+</div><div class="line">| Event record (datatools::things) |</div><div class="line">+----------------------------------+</div><div class="line">          |</div><div class="line">        +----+</div><div class="line">        | SD |----- {this is a bank}</div><div class="line">        +----+</div><div class="line">         /</div><div class="line">        /</div><div class="line">+------+------+</div><div class="line">| Monte-Carlo |</div><div class="line">|   output    |</div><div class="line">+-------------+</div></div><!-- fragment --><h1><a class="anchor" id="flsimulateoutput_thegeometryidentifierconcept"></a>
+<p>The current official simulation application defines an output data model to represent the detector response (SuperNEMO demonstrator module...). Each simulated event record is implemented using the <code><a class="elRef" doxygen="https://supernemo-dbd.github.io/Bayeux/bayeux.doxy.tag:https://supernemo-dbd.github.io/Bayeux/" href="https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1things.html">datatools::things</a></code> container object to stor dedicated data banks:</p>
+<ul>
+<li><code>EH</code>: <b>Event Header</b>, containing generic information such as run number, event number and how the data was produced (Monte Carlo or real detector)</li>
+<li><code>SD</code>: <b>Simulated Data</b>, containing output of the simulation such as hits.</li>
+<li><code>SDD</code>: <b>Simulated Digitized Data</b>, containing simulated electronic signals (TODO)</li>
+</ul>
+<p>Each bank maps to a C++ object that stores data, so the event record may be visualized as a basic mapping:</p>
+<div class="fragment"><div class="line">+- Event N (datatools::things)</div><div class="line">   +- EH (string) -&gt; snemo::datamodel:event_header (C++ object)</div><div class="line">   +- SD (string) -&gt; mctools::simulated_data (C++ object)</div></div><!-- fragment --><p>Here we describe the C++ objects comprising the data model produced by the SuperNEMO Monte-Carlo program.</p>
+<h1><a class="anchor" id="flsimulateoutput_theehbank"></a>
+The EH Bank </h1>
+<p>The <code>EH</code> bank stores an instance of the <code><a class="el" href="classsnemo_1_1datamodel_1_1event__header.html" title="A event header class to be embedded as a bank in a &#39;datatools::things&#39; event record. ">snemo::datamodel::event_header</a></code> class. This is a simple Plain-Old-Data object that holds event metadata, including:</p>
+<ul>
+<li>Run number</li>
+<li>Event number</li>
+<li>How produced (Simulation or Physical Detector)</li>
+<li>Timestamp</li>
+<li>User defined attributes</li>
+</ul>
+<p>In the simulation output, both the timestamp and attributes member are empty, and are retained for compatibility with real data.</p>
+<p>See the <code><a class="el" href="classsnemo_1_1datamodel_1_1event__header.html" title="A event header class to be embedded as a bank in a &#39;datatools::things&#39; event record. ">snemo::datamodel::event_header</a></code> API guide for further information on using this class.</p>
+<h1><a class="anchor" id="flsimulateoutput_thegeometryidentifierconcept"></a>
 The geometry identifier concept </h1>
 <p>A very important concept, massively used within the Falaise simulation and data processing, is the <em>geometry identifier</em> (GID). A GID is an object that uniquely identifies a geometry volume in the experimental setup. Given some dedicated rules, the description of the virtual geometry of the experiment is able to associate such an unique GID to each volumes of interest in the geometry (this technique is called <em>geometry mapping</em> and is under the responsibility of the <em>geometry manager</em> object and its embedded <em>GID manager</em> object).</p>
 <p>What is important to know about any GID object is that it stores two kinds of information:</p>

@@ -1,5 +1,1015 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
 <tagfile>
+  <compound kind="file">
+    <name>metadata_utils.h</name>
+    <path>BuildProducts/include/falaise/app/</path>
+    <filename>metadata__utils_8h</filename>
+    <class kind="class">falaise::app::metadata_collector</class>
+    <class kind="struct">falaise::app::metadata_input</class>
+    <class kind="class">falaise::app::metadata_scanner</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::app</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calo_tapered_scin_box_model.h</name>
+    <path>BuildProducts/include/falaise/bipo3/geometry/</path>
+    <filename>calo__tapered__scin__box__model_8h</filename>
+    <class kind="class">snemo::geometry::calo_tapered_scin_box_model</class>
+    <class kind="struct">snemo::geometry::calo_tapered_scin_box_model::wires_drawer</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calorimeter_s2c_module.h</name>
+    <path>BuildProducts/include/falaise/bipo3/processing/</path>
+    <filename>calorimeter__s2c__module_8h</filename>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
+    <includes id="calorimeter__regime_8h" name="calorimeter_regime.h" local="no" imported="no">falaise/snemo/processing/calorimeter_regime.h</includes>
+    <class kind="class">bipo3::processing::calorimeter_s2c_module</class>
+    <namespace>geomtools</namespace>
+    <namespace>mctools</namespace>
+    <namespace>bipo3</namespace>
+    <namespace>bipo3::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>user_profile.h</name>
+    <path>BuildProducts/include/falaise/common/</path>
+    <filename>user__profile_8h</filename>
+    <namespace>falaise</namespace>
+    <namespace>falaise::common</namespace>
+    <member kind="function">
+      <type>const std::set&lt; std::string &gt; &amp;</type>
+      <name>supported_user_profiles</name>
+      <anchorfile>namespacefalaise_1_1common.html</anchorfile>
+      <anchor>a8588405eb5ad6a549131016c021849f4</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>falaise_sys.h</name>
+    <path>BuildProducts/include/falaise/detail/</path>
+    <filename>falaise__sys_8h</filename>
+    <class kind="class">falaise::detail::falaise_sys</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::detail</namespace>
+  </compound>
+  <compound kind="file">
+    <name>exitcodes.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>exitcodes_8h</filename>
+    <namespace>falaise</namespace>
+    <member kind="enumeration">
+      <type></type>
+      <name>exit_code</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a7b777530360efc6dbb4b30c6ef0e01d9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EXIT_OK</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a7b777530360efc6dbb4b30c6ef0e01d9aee568a36cba8ba21624d7a7835363cfa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EXIT_USAGE</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a7b777530360efc6dbb4b30c6ef0e01d9a4341fd05e4833a5298c9747e79901bd5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>EXIT_UNAVAILABLE</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a7b777530360efc6dbb4b30c6ef0e01d9adffb8a6ca1132fcb3c44781374c38457</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>falaise.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>falaise_8h</filename>
+    <namespace>falaise</namespace>
+    <member kind="function">
+      <type>void</type>
+      <name>initialize</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a5e165123329093c61d84e302b155dc7d</anchor>
+      <arglist>(int argc_=0, char *argv_[]=0, uint32_t flags_=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>terminate</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a0663125a6212b3951a484208233b3365</anchor>
+      <arglist>()</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>property_reader.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>property__reader_8h</filename>
+    <namespace>falaise</namespace>
+    <namespace>falaise::properties</namespace>
+    <namespace>falaise::properties::type_check_visitor</namespace>
+    <namespace>falaise::properties::type_check_visitor::detail</namespace>
+    <member kind="typedef">
+      <type>std::logic_error</type>
+      <name>WrongType</name>
+      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
+      <anchor>a2de23be915926881be1d40ba67e3aa23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::logic_error</type>
+      <name>MissingKey</name>
+      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
+      <anchor>a87c5eaa65a2df4d466736ce2dd4844fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>boost::mpl::vector&lt; int, double, bool, std::string, std::vector&lt; int &gt;, std::vector&lt; double &gt;, std::vector&lt; bool &gt;, std::vector&lt; std::string &gt; &gt;</type>
+      <name>AllowedTypes</name>
+      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
+      <anchor>a2f5f4829d75d705ef94d2a2454d8e527</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a2ecd417ead8b54eb6e45446a21683433</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, int)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a2b2865faacd6609e1b3a924ebc0de830</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, double)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>aa71920cd3dd1ec162984ea3fb58bec75</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, bool)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a5e2234f2ce3403a31edee45b436e7c4c</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::string)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a44f9f7529a1dd1cdbcaefd348e7a1f2b</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; int &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a9221c78a560f10b4efb03c8fc8b86511</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; double &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>ab1332721eb76fb5f36f912c0872306af</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; bool &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a52958a1e0764bb108cc2f21ea7359e52</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; std::string &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit</name>
+      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor.html</anchorfile>
+      <anchor>a9fbdd737860e43007489e87d707ee0d9</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>getRequiredValue</name>
+      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
+      <anchor>a20cc10d33aba1ef0a363daaff7e000f2</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>getValueOrDefault</name>
+      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
+      <anchor>af50a05d9efda4499846f340059011e7c</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, T defaultValue)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>resource.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>resource_8h</filename>
+    <class kind="class">falaise::ResourceInitializationException</class>
+    <class kind="class">falaise::UnknownResourceException</class>
+    <namespace>falaise</namespace>
+    <member kind="function">
+      <type>void</type>
+      <name>init_resources</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a079116ae901d5cf05fe140d59e649dd5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource_dir</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>af6b4de5ce0713b39d303615e1d6f9ff4</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>aa5e1819d44cf4f253ec8f262993988e4</anchor>
+      <arglist>(const std::string &amp;rname)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_plugin_dir</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a4a04c1497ef8420e83645a2d9b6e053b</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_plugin</name>
+      <anchorfile>namespacefalaise.html</anchorfile>
+      <anchor>a94a51c926992719268d4f575db923c6c</anchor>
+      <arglist>(const std::string &amp;rname)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>calibrated_data_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>calibrated__data__cut_8h</filename>
+    <class kind="class">snemo::cut::calibrated_data_cut</class>
+    <namespace>datatools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>event_header_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>event__header__cut_8h</filename>
+    <class kind="class">snemo::cut::event_header_cut</class>
+    <namespace>datatools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>particle_track_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>particle__track__cut_8h</filename>
+    <class kind="class">snemo::cut::particle_track_cut</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>particle_track_data_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>particle__track__data__cut_8h</filename>
+    <class kind="class">snemo::cut::particle_track_data_cut</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>simulated_data_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>simulated__data__cut_8h</filename>
+    <class kind="class">snemo::cut::simulated_data_cut</class>
+    <namespace>datatools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_clustering_data_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>tracker__clustering__data__cut_8h</filename>
+    <class kind="class">snemo::cut::tracker_clustering_data_cut</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_trajectory_data_cut.h</name>
+    <path>BuildProducts/include/falaise/snemo/cuts/</path>
+    <filename>tracker__trajectory__data__cut_8h</filename>
+    <class kind="class">snemo::cut::tracker_trajectory_data_cut</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::cut</namespace>
+  </compound>
+  <compound kind="file">
+    <name>base_trajectory_pattern.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>base__trajectory__pattern_8h</filename>
+    <class kind="class">snemo::datamodel::base_trajectory_pattern</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calibrated_calorimeter_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>calibrated__calorimeter__hit_8h</filename>
+    <class kind="class">snemo::datamodel::calibrated_calorimeter_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calibrated_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>calibrated__data_8h</filename>
+    <includes id="calibrated__calorimeter__hit_8h" name="calibrated_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_calorimeter_hit.h</includes>
+    <includes id="calibrated__tracker__hit_8h" name="calibrated_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_tracker_hit.h</includes>
+    <class kind="class">snemo::datamodel::calibrated_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calibrated_tracker_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>calibrated__tracker__hit_8h</filename>
+    <class kind="class">snemo::datamodel::calibrated_tracker_hit</class>
+    <class kind="struct">snemo::datamodel::compare_tracker_hit_by_delayed_time</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>data_model.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>data__model_8h</filename>
+    <class kind="class">snemo::datamodel::data_info</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+    <member kind="typedef">
+      <type>datatools::things</type>
+      <name>event_record</name>
+      <anchorfile>namespacesnemo_1_1datamodel.html</anchorfile>
+      <anchor>a5d79b79aa3bdfb86a59a5028aec3768c</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>event_header.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>event__header_8h</filename>
+    <includes id="timestamp_8h" name="timestamp.h" local="no" imported="no">falaise/snemo/datamodels/timestamp.h</includes>
+    <class kind="class">snemo::datamodel::event_header</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>gg_track_utils.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>gg__track__utils_8h</filename>
+    <class kind="struct">snemo::datamodel::gg_track</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>helix_trajectory_pattern.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>helix__trajectory__pattern_8h</filename>
+    <includes id="base__trajectory__pattern_8h" name="base_trajectory_pattern.h" local="no" imported="no">falaise/snemo/datamodels/base_trajectory_pattern.h</includes>
+    <class kind="class">snemo::datamodel::helix_trajectory_pattern</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>line_trajectory_pattern.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>line__trajectory__pattern_8h</filename>
+    <includes id="base__trajectory__pattern_8h" name="base_trajectory_pattern.h" local="no" imported="no">falaise/snemo/datamodels/base_trajectory_pattern.h</includes>
+    <class kind="class">snemo::datamodel::line_trajectory_pattern</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>mock_raw_tracker_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>mock__raw__tracker__hit_8h</filename>
+    <class kind="class">snemo::datamodel::mock_raw_tracker_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>particle_track.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>particle__track_8h</filename>
+    <includes id="tracker__trajectory_8h" name="tracker_trajectory.h" local="no" imported="no">falaise/snemo/datamodels/tracker_trajectory.h</includes>
+    <includes id="calibrated__calorimeter__hit_8h" name="calibrated_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_calorimeter_hit.h</includes>
+    <class kind="class">snemo::datamodel::particle_track</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>particle_track_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>particle__track__data_8h</filename>
+    <includes id="calibrated__calorimeter__hit_8h" name="calibrated_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_calorimeter_hit.h</includes>
+    <includes id="particle__track_8h" name="particle_track.h" local="no" imported="no">falaise/snemo/datamodels/particle_track.h</includes>
+    <class kind="class">snemo::datamodel::particle_track_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>polyline_trajectory_pattern.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>polyline__trajectory__pattern_8h</filename>
+    <includes id="base__trajectory__pattern_8h" name="base_trajectory_pattern.h" local="no" imported="no">falaise/snemo/datamodels/base_trajectory_pattern.h</includes>
+    <class kind="class">snemo::datamodel::polyline_trajectory_pattern</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>raw_calorimeter_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>raw__calorimeter__hit_8h</filename>
+    <class kind="class">snemo::datamodel::raw_calorimeter_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>raw_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>raw__data_8h</filename>
+    <includes id="raw__trigger__infos_8h" name="raw_trigger_infos.h" local="no" imported="no">falaise/snemo/datamodels/raw_trigger_infos.h</includes>
+    <includes id="raw__calorimeter__hit_8h" name="raw_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_calorimeter_hit.h</includes>
+    <includes id="raw__tracker__hit_8h" name="raw_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_tracker_hit.h</includes>
+    <class kind="class">snemo::datamodel::raw_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>raw_tracker_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>raw__tracker__hit_8h</filename>
+    <class kind="class">snemo::datamodel::raw_tracker_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>raw_trigger_infos.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>raw__trigger__infos_8h</filename>
+    <class kind="class">snemo::datamodel::raw_trigger_infos</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_calo_digi_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__calo__digi__hit_8h</filename>
+    <class kind="class">snemo::datamodel::sim_calo_digi_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_digi_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__digi__data_8h</filename>
+    <includes id="sim__digi__event__data_8h" name="sim_digi_event_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_digi_event_data.h</includes>
+    <class kind="class">snemo::datamodel::sim_digi_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_digi_event_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__digi__event__data_8h</filename>
+    <includes id="sim__trigger__digi__data_8h" name="sim_trigger_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_trigger_digi_data.h</includes>
+    <includes id="sim__readout__digi__data_8h" name="sim_readout_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_readout_digi_data.h</includes>
+    <class kind="class">snemo::datamodel::sim_digi_event_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_readout_digi_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__readout__digi__data_8h</filename>
+    <includes id="sim__calo__digi__hit_8h" name="sim_calo_digi_hit.h" local="no" imported="no">falaise/snemo/datamodels/sim_calo_digi_hit.h</includes>
+    <includes id="sim__tracker__digi__hit_8h" name="sim_tracker_digi_hit.h" local="no" imported="no">falaise/snemo/datamodels/sim_tracker_digi_hit.h</includes>
+    <class kind="class">snemo::datamodel::sim_readout_digi_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_tracker_digi_hit.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__tracker__digi__hit_8h</filename>
+    <class kind="class">snemo::datamodel::sim_tracker_digi_hit</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>sim_trigger_digi_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>sim__trigger__digi__data_8h</filename>
+    <includes id="constants_8h" name="constants.h" local="no" imported="no">snemo/electronics/constants.h</includes>
+    <class kind="class">snemo::datamodel::sim_trigger_digi_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>the_serializable.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>the__serializable_8h</filename>
+  </compound>
+  <compound kind="file">
+    <name>timestamp.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>timestamp_8h</filename>
+    <class kind="class">snemo::datamodel::timestamp</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_cluster.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__cluster_8h</filename>
+    <includes id="calibrated__tracker__hit_8h" name="calibrated_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_tracker_hit.h</includes>
+    <class kind="class">snemo::datamodel::tracker_cluster</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_clustering_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__clustering__data_8h</filename>
+    <includes id="tracker__clustering__solution_8h" name="tracker_clustering_solution.h" local="no" imported="no">falaise/snemo/datamodels/tracker_clustering_solution.h</includes>
+    <class kind="class">snemo::datamodel::tracker_clustering_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_clustering_solution.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__clustering__solution_8h</filename>
+    <includes id="tracker__cluster_8h" name="tracker_cluster.h" local="no" imported="no">falaise/snemo/datamodels/tracker_cluster.h</includes>
+    <class kind="class">snemo::datamodel::tracker_clustering_solution</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_trajectory.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__trajectory_8h</filename>
+    <includes id="base__trajectory__pattern_8h" name="base_trajectory_pattern.h" local="no" imported="no">falaise/snemo/datamodels/base_trajectory_pattern.h</includes>
+    <includes id="tracker__cluster_8h" name="tracker_cluster.h" local="no" imported="no">falaise/snemo/datamodels/tracker_cluster.h</includes>
+    <class kind="class">snemo::datamodel::tracker_trajectory</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_trajectory_data.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__trajectory__data_8h</filename>
+    <includes id="tracker__trajectory__solution_8h" name="tracker_trajectory_solution.h" local="no" imported="no">falaise/snemo/datamodels/tracker_trajectory_solution.h</includes>
+    <class kind="class">snemo::datamodel::tracker_trajectory_data</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tracker_trajectory_solution.h</name>
+    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
+    <filename>tracker__trajectory__solution_8h</filename>
+    <includes id="tracker__trajectory_8h" name="tracker_trajectory.h" local="no" imported="no">falaise/snemo/datamodels/tracker_trajectory.h</includes>
+    <class kind="class">snemo::datamodel::tracker_trajectory_solution</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+  </compound>
+  <compound kind="file">
+    <name>cabling.h</name>
+    <path>BuildProducts/include/falaise/snemo/electronics/</path>
+    <filename>cabling_8h</filename>
+    <includes id="calo__locator_8h" name="calo_locator.h" local="no" imported="no">snemo/geometry/calo_locator.h</includes>
+    <includes id="gveto__locator_8h" name="gveto_locator.h" local="no" imported="no">snemo/geometry/gveto_locator.h</includes>
+    <includes id="xcalo__locator_8h" name="xcalo_locator.h" local="no" imported="no">snemo/geometry/xcalo_locator.h</includes>
+    <includes id="gg__locator_8h" name="gg_locator.h" local="no" imported="no">snemo/geometry/gg_locator.h</includes>
+    <class kind="class">snemo::electronics::cabling</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::electronics</namespace>
+  </compound>
+  <compound kind="file">
+    <name>constants.h</name>
+    <path>BuildProducts/include/falaise/snemo/electronics/</path>
+    <filename>constants_8h</filename>
+    <class kind="class">snemo::electronics::constants</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::electronics</namespace>
+  </compound>
+  <compound kind="file">
+    <name>electronics_service.h</name>
+    <path>BuildProducts/include/falaise/snemo/electronics/</path>
+    <filename>electronics__service_8h</filename>
+    <class kind="class">snemo::electronics::electronics_service</class>
+    <namespace>datatools</namespace>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::electronics</namespace>
+  </compound>
+  <compound kind="file">
+    <name>manager.h</name>
+    <path>BuildProducts/include/falaise/snemo/electronics/</path>
+    <filename>manager_8h</filename>
+    <includes id="cabling_8h" name="cabling.h" local="no" imported="no">snemo/electronics/cabling.h</includes>
+    <class kind="class">snemo::electronics::manager</class>
+    <namespace>datatools</namespace>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::electronics</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calo_locator.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>calo__locator_8h</filename>
+    <includes id="utils_8h" name="utils.h" local="no" imported="no">falaise/snemo/geometry/utils.h</includes>
+    <class kind="class">snemo::geometry::calo_locator</class>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>gg_locator.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>gg__locator_8h</filename>
+    <includes id="utils_8h" name="utils.h" local="no" imported="no">falaise/snemo/geometry/utils.h</includes>
+    <class kind="class">snemo::geometry::gg_locator</class>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>gveto_locator.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>gveto__locator_8h</filename>
+    <includes id="utils_8h" name="utils.h" local="no" imported="no">falaise/snemo/geometry/utils.h</includes>
+    <class kind="class">snemo::geometry::gveto_locator</class>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>locator_plugin.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>locator__plugin_8h</filename>
+    <class kind="class">snemo::geometry::locator_plugin</class>
+    <class kind="struct">snemo::geometry::locator_plugin::locator_entry_type</class>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>mapped_magnetic_field.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>mapped__magnetic__field_8h</filename>
+    <class kind="class">snemo::geometry::mapped_magnetic_field</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>utils.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>utils_8h</filename>
+    <class kind="class">snemo::geometry::utils</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>xcalo_locator.h</name>
+    <path>BuildProducts/include/falaise/snemo/geometry/</path>
+    <filename>xcalo__locator_8h</filename>
+    <includes id="utils_8h" name="utils.h" local="no" imported="no">falaise/snemo/geometry/utils.h</includes>
+    <class kind="class">snemo::geometry::xcalo_locator</class>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+  </compound>
+  <compound kind="file">
+    <name>base_gamma_builder.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>base__gamma__builder_8h</filename>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
+    <class kind="class">snemo::processing::base_gamma_builder</class>
+    <namespace>datatools</namespace>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::datamodel</namespace>
+    <namespace>snemo::geometry</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>base_tracker_clusterizer.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>base__tracker__clusterizer_8h</filename>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="yes" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
+    <includes id="pre__clusterizer_8h" name="pre_clusterizer.h" local="yes" imported="no">falaise/TrackerPreClustering/pre_clusterizer.h</includes>
+    <class kind="class">snemo::processing::base_tracker_clusterizer</class>
+    <namespace>datatools</namespace>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+    <namespace>snemo::datamodel</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>base_tracker_fitter.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>base__tracker__fitter_8h</filename>
+    <class kind="class">snemo::processing::base_tracker_fitter</class>
+    <namespace>datatools</namespace>
+    <namespace>geomtools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+    <namespace>snemo::datamodel</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calorimeter_regime.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>calorimeter__regime_8h</filename>
+    <class kind="class">snemo::processing::calorimeter_regime</class>
+    <namespace>datatools</namespace>
+    <namespace>mygsl</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>event_header_utils_module.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>event__header__utils__module_8h</filename>
+    <includes id="event__header_8h" name="event_header.h" local="no" imported="no">falaise/snemo/datamodels/event_header.h</includes>
+    <class kind="class">snemo::processing::event_header_utils_module</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>geiger_regime.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>geiger__regime_8h</filename>
+    <class kind="class">snemo::processing::geiger_regime</class>
+    <namespace>datatools</namespace>
+    <namespace>mygsl</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>mock_calorimeter_s2c_module.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>mock__calorimeter__s2c__module_8h</filename>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
+    <includes id="calorimeter__regime_8h" name="calorimeter_regime.h" local="no" imported="no">falaise/snemo/processing/calorimeter_regime.h</includes>
+    <class kind="class">snemo::processing::mock_calorimeter_s2c_module</class>
+    <namespace>geomtools</namespace>
+    <namespace>mctools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>mock_tracker_s2c_module.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>mock__tracker__s2c__module_8h</filename>
+    <includes id="mock__raw__tracker__hit_8h" name="mock_raw_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/mock_raw_tracker_hit.h</includes>
+    <includes id="geiger__regime_8h" name="geiger_regime.h" local="no" imported="no">falaise/snemo/processing/geiger_regime.h</includes>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
+    <class kind="class">snemo::processing::mock_tracker_s2c_module</class>
+    <namespace>geomtools</namespace>
+    <namespace>mctools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>services.h</name>
+    <path>BuildProducts/include/falaise/snemo/processing/</path>
+    <filename>services_8h</filename>
+    <class kind="class">snemo::processing::service_info</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::processing</namespace>
+  </compound>
+  <compound kind="file">
+    <name>calorimeter_step_hit_processor.h</name>
+    <path>BuildProducts/include/falaise/snemo/simulation/</path>
+    <filename>calorimeter__step__hit__processor_8h</filename>
+    <class kind="class">snemo::simulation::calorimeter_step_hit_processor</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::geometry</namespace>
+    <namespace>snemo::simulation</namespace>
+  </compound>
+  <compound kind="file">
+    <name>cosmic_muon_generator.h</name>
+    <path>BuildProducts/include/falaise/snemo/simulation/</path>
+    <filename>cosmic__muon__generator_8h</filename>
+    <class kind="class">snemo::simulation::cosmic_muon_generator</class>
+    <class kind="struct">snemo::simulation::cosmic_muon_generator::sea_level_toy_setup</class>
+    <class kind="struct">snemo::simulation::cosmic_muon_generator::sea_level_pdg_setup</class>
+    <class kind="struct">snemo::simulation::cosmic_muon_generator::underground_setup</class>
+    <namespace>mygsl</namespace>
+    <namespace>datatools</namespace>
+    <namespace>snemo</namespace>
+    <namespace>snemo::simulation</namespace>
+  </compound>
+  <compound kind="file">
+    <name>gg_step_hit_processor.h</name>
+    <path>BuildProducts/include/falaise/snemo/simulation/</path>
+    <filename>gg__step__hit__processor_8h</filename>
+    <includes id="gg__locator_8h" name="gg_locator.h" local="no" imported="no">falaise/snemo/geometry/gg_locator.h</includes>
+    <class kind="class">snemo::simulation::gg_step_hit_processor</class>
+    <namespace>snemo</namespace>
+    <namespace>snemo::simulation</namespace>
+  </compound>
+  <compound kind="file">
+    <name>event_display.h</name>
+    <path>BuildProducts/include/falaise/TrackerPreClustering/</path>
+    <filename>event__display_8h</filename>
+    <includes id="gg__hit_8h" name="gg_hit.h" local="yes" imported="no">falaise/TrackerPreClustering/gg_hit.h</includes>
+    <class kind="class">TrackerPreClustering::event_display</class>
+    <namespace>TrackerPreClustering</namespace>
+  </compound>
+  <compound kind="file">
+    <name>event_generator.h</name>
+    <path>BuildProducts/include/falaise/TrackerPreClustering/</path>
+    <filename>event__generator_8h</filename>
+    <includes id="gg__hit_8h" name="gg_hit.h" local="yes" imported="no">falaise/TrackerPreClustering/gg_hit.h</includes>
+    <class kind="class">TrackerPreClustering::event_generator</class>
+    <namespace>TrackerPreClustering</namespace>
+  </compound>
+  <compound kind="file">
+    <name>gg_hit.h</name>
+    <path>BuildProducts/include/falaise/TrackerPreClustering/</path>
+    <filename>gg__hit_8h</filename>
+    <class kind="struct">TrackerPreClustering::gg_hit</class>
+    <namespace>TrackerPreClustering</namespace>
+  </compound>
+  <compound kind="file">
+    <name>interface.h</name>
+    <path>BuildProducts/include/falaise/TrackerPreClustering/</path>
+    <filename>interface_8h</filename>
+    <class kind="struct">TrackerPreClustering::setup_data</class>
+    <class kind="struct">TrackerPreClustering::input_data</class>
+    <class kind="struct">TrackerPreClustering::output_data</class>
+    <namespace>TrackerPreClustering</namespace>
+  </compound>
+  <compound kind="file">
+    <name>pre_clusterizer.h</name>
+    <path>BuildProducts/include/falaise/TrackerPreClustering/</path>
+    <filename>pre__clusterizer_8h</filename>
+    <includes id="interface_8h" name="interface.h" local="yes" imported="no">falaise/TrackerPreClustering/interface.h</includes>
+    <class kind="class">TrackerPreClustering::pre_clusterizer</class>
+    <class kind="struct">TrackerPreClustering::compare_tracker_hit_ptr_by_delayed_time</class>
+    <namespace>TrackerPreClustering</namespace>
+  </compound>
+  <compound kind="file">
+    <name>version.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>version_8h</filename>
+    <class kind="struct">falaise::version</class>
+    <namespace>falaise</namespace>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_MAJOR</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a1ccca3784ebd681189c6f7dc77cc831d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_MINOR</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a315a5a5cc9bc18ee77c236ac05a2a4b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_PATCH</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a3b536792d1e9ed93d1c84003206bda85</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_REVISION</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>ad7c879cc5bb82d075c7da85f611716f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_ENCODE_VERSION</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a73aaccca9df49804208d7e8777a286eb</anchor>
+      <arglist>(major, minor, patch)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>ab2d82778f4bbded0ffa1852cdc3d7fdb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_LIB_VERSION</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a63b4cec3d4150c077f8b9d332e5bf7bb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_IS_AT_LEAST</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a4bd5bd86b41dd4ee64ccd9593b03b143</anchor>
+      <arglist>(major, minor, patch)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>DocumentingFLReconstructModules.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>DocumentingFLReconstructModules_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLPTD2Root.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>FLPTD2Root_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLReconstruct.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>FLReconstruct_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>PipelineOutput.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>PipelineOutput_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>SupportedFLReconstructModules.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>SupportedFLReconstructModules_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>UsingMockCalibration.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>UsingMockCalibration_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>UsingServices.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>UsingServices_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>WorkingWithEventRecords.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>WorkingWithEventRecords_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>WritingFLReconstructModules.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>WritingFLReconstructModules_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>WritingFLReconstructPipelineScripts.md</name>
+    <path>documentation/flreconstruct/</path>
+    <filename>WritingFLReconstructPipelineScripts_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLSimulate.md</name>
+    <path>documentation/flsimulate/</path>
+    <filename>FLSimulate_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLSimulateOutput.md</name>
+    <path>documentation/flsimulate/</path>
+    <filename>FLSimulateOutput_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLVisualize.md</name>
+    <path>documentation/flvisualize/</path>
+    <filename>FLVisualize_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>Mainpage.md</name>
+    <path>documentation/</path>
+    <filename>Mainpage_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>README.md</name>
+    <path></path>
+    <filename>README_8md</filename>
+  </compound>
   <compound kind="class">
     <name>snemo::processing::base_gamma_builder</name>
     <filename>classsnemo_1_1processing_1_1base__gamma__builder.html</filename>
@@ -13697,23 +14707,9 @@
     <class kind="struct">TrackerPreClustering::setup_data</class>
   </compound>
   <compound kind="page">
-    <name>falaiseman</name>
-    <title>FALAISE(1)</title>
-    <filename>falaiseman</filename>
-  </compound>
-  <compound kind="page">
-    <name>flinstallguide</name>
-    <title>Installing Falaise from Source</title>
-    <filename>flinstallguide</filename>
-    <docanchor file="flinstallguide" title="Introduction ">flinstall_intro</docanchor>
-    <docanchor file="flinstallguide" title="Preparing Your System for Installation ">flinstallguide_preparation</docanchor>
-    <docanchor file="flinstallguide" title="Installing Falaise Using the `CadfaelBrew` Package Manager ">flinstallguide_cadfaelbrew</docanchor>
-    <docanchor file="flinstallguide" title="Setting up a Working Copy of Falaise ">flinstallguide_getting</docanchor>
-    <docanchor file="flinstallguide" title="Checking out Falaise ">flinstallguide_installation_checkout</docanchor>
-    <docanchor file="flinstallguide" title="Configuring, Building and Installing Falaise ">flinstallguide_buildinstall</docanchor>
-    <docanchor file="flinstallguide" title="Using an Install of Falaise ">flinstallguide_using</docanchor>
-    <docanchor file="flinstallguide" title="Troubleshooting ">flinstallguide_trouble</docanchor>
-    <docanchor file="flinstallguide" title="Developing Falaise ">flinstallguide_developing</docanchor>
+    <name>md_README</name>
+    <title>Falaise C++ Library and Applications for the SuperNEMO experiment</title>
+    <filename>md_README</filename>
   </compound>
   <compound kind="page">
     <name>usingflsimulate</name>
@@ -13754,6 +14750,7 @@
     <title>FLSimulate Output</title>
     <filename>flsimulateoutput</filename>
     <docanchor file="flsimulateoutput" title="Introduction to the FLSimulate Output ">flsimulateoutput_introduction</docanchor>
+    <docanchor file="flsimulateoutput" title="The EH Bank ">flsimulateoutput_theehbank</docanchor>
     <docanchor file="flsimulateoutput" title="The geometry identifier concept ">flsimulateoutput_thegeometryidentifierconcept</docanchor>
     <docanchor file="flsimulateoutput" title="The mctools::base_step_hit class ">flsimulateoutput_mctoolsbasestephitclass</docanchor>
     <docanchor file="flsimulateoutput" title="The mctools::simulated_data class ">flsimulateoutput_mctoolssimulateddata</docanchor>
@@ -13769,16 +14766,15 @@
     <docanchor file="usingflreconstruct" title="Using FLReconstruct on the Command Line ">usingflreconstruct_commandline</docanchor>
     <docanchor file="usingflreconstruct" title="Quick start ">usingflreconstruct_quickstart</docanchor>
     <docanchor file="usingflreconstruct" title="Scripting FLReconstruct ">usingflreconstruct_scriptingflsimulate</docanchor>
-    <docanchor file="usingflreconstruct" title="Script&apos;s format ">usingflreconstruct_scriptingflsimulate_format</docanchor>
+    <docanchor file="usingflreconstruct" title="Basic Script Syntax ">usingflreconstruct_scriptingflsimulate_format</docanchor>
     <docanchor file="usingflreconstruct" title="How to run a mock calibration on simulated events ">usingflreconstruct_mockcalibalgo</docanchor>
     <docanchor file="usingflreconstruct" title="How to run a tracking algorithm on simulated events ">usingflreconstruct_trackfitalgo</docanchor>
     <docanchor file="usingflreconstruct" title="To do ">usingflreconstruct_todo</docanchor>
-    <docanchor file="usingflreconstruct" title="Script&apos;s supported sections and parameters ">usingflreconstruct_scriptingflsimulate_sectionsandparameters</docanchor>
+    <docanchor file="usingflreconstruct" title="Supported sections and parameters in FLReconstruct scripts ">usingflreconstruct_scriptingflsimulate_sectionsandparameters</docanchor>
     <docanchor file="usingflreconstruct" title="Inline modules ">usingflreconstruct_scriptingflsimulate_inlinemodules</docanchor>
     <docanchor file="usingflreconstruct" title="Using Standard Pipelines ">usingflreconstruct_usingstandardpipelines</docanchor>
     <docanchor file="usingflreconstruct" title="Writing Reconstruction Results to File ">usingflreconstruct_usingoutputpaths</docanchor>
     <docanchor file="usingflreconstruct" title="Using Custom Pipelines ">usingflreconstruct_usingcustompipelines</docanchor>
-    <docanchor file="usingflreconstruct" title="Example ">usingflreconstruct_example</docanchor>
   </compound>
   <compound kind="page">
     <name>flreconstructpipelineoutput</name>
@@ -13871,35 +14867,6 @@
     <filename>usingflvisualize</filename>
     <docanchor file="usingflvisualize" title="Introduction to FLVisualize ">usingflvisualize_intro</docanchor>
     <docanchor file="usingflvisualize" title="Example Usage ">usingflvisualize_examples</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>developingfalaise</name>
-    <title>Developing Falaise</title>
-    <filename>developingfalaise</filename>
-    <docanchor file="developingfalaise" title="Introduction ">developer_intro</docanchor>
-    <docanchor file="developingfalaise" title="Using Subversion for Version Control ">developingfalaise_subversion</docanchor>
-    <docanchor file="developingfalaise" title="Commit Feature Based Changes  ">developingfalaise_logicalcommits</docanchor>
-    <docanchor file="developingfalaise" title="Writing Good Commit Messages ">developingfalaise_goodcommitmsgs</docanchor>
-    <docanchor file="developingfalaise" title="Building using CMake, Make and Xcode ">developingfalaise_cmake</docanchor>
-    <docanchor file="developingfalaise" title="The C++ Architecture and API of Falaise ">developingfalaise_cpparchapi</docanchor>
-    <docanchor file="developingfalaise" title="Unit and Integration Testing ">developingfalaise_testing</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>fldevel_unittest</name>
-    <title>Unit Testing for Falaise using Catch</title>
-    <filename>fldevel_unittest</filename>
-    <docanchor file="fldevel_unittest" title="Introduction ">fldevel_unittest_intro</docanchor>
-    <docanchor file="fldevel_unittest" title="Writing Catch-based Unit Tests for Falaise ">fldevel_unittest_writing</docanchor>
-    <docanchor file="fldevel_unittest" title="Integrating Tests into Falaise&apos;s Testing System ">fldevel_unittest_integrating</docanchor>
-    <docanchor file="fldevel_unittest" title="Integrating Core `libFalaise` Tests ">fldevel_unittest_integrating_library</docanchor>
-    <docanchor file="fldevel_unittest" title="Integrating Core Plugin Module Tests ">fldevel_unittest_integrating_modules</docanchor>
-    <docanchor file="fldevel_unittest" title="Running Falaise&apos;s Tests with CMake/CTest ">fldevel_unittest_running</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>codingstandards</name>
-    <title>Coding Style and Standards for Falaise</title>
-    <filename>codingstandards</filename>
-    <docanchor file="codingstandards" title="Introduction ">coding_intro</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>

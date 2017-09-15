@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.0.0</span>
+   &#160;<span id="projectnumber">3.1.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -111,14 +111,20 @@ FLVisualize main window with one displayed event</div></div>
 <li><code>Overview</code> : display the 3D view</li>
 <li><code>Tracks</code> : display a hierachy of the event data models with vertex, hits, tracks and other reconstruction data structures stored in the event model. Check boxes allow to make the corresponding graphics representations visible or not on the display.</li>
 <li><code>Options</code> : proposes a set of additional display options (colors...)</li>
-<li><code>Selection</code> : not documented yet.</li>
+<li><code>Selection</code> : allows to select events given a set of cuts.</li>
 </ul>
 <p>A bottom bar contains:</p>
 <ul>
-<li>a message log combo (read only),</li>
+<li>a message log combo,</li>
+<li>an event number entry widget,</li>
 <li>a set of navigation buttons to loop on input events (forward/backward).</li>
 </ul>
 <p>It is recommended to maximize the size of the FLVisualize's main window on your desktop.</p>
+<p>Regarding event selection, the selection is done on data bank level. For instance, it is possible to select event by setting a range of run/event ids, a cut that operates on the event header bank. It is also possible to use homemade cuts by defining a cut manager file that holds several cut files. The cut manager file should look likes</p>
+<div class="fragment"><div class="line">#@description Logging priority</div><div class="line">logging.priority : string = &quot;error&quot;</div><div class="line"></div><div class="line">#@description A list of files that contains definition of cuts</div><div class="line">cuts.configuration_files : string[1] as path = &quot;event_header_cuts.conf&quot;</div></div><!-- fragment --><p>where <code>event_header_cuts.conf</code> file can hold an event list id cut such as</p>
+<div class="fragment"><div class="line">#@description A sample list of setups</div><div class="line">#@key_label   &quot;name&quot;</div><div class="line">#@meta_label  &quot;type&quot;</div><div class="line"></div><div class="line">[name=&quot;list_of_ids_cut&quot; type=&quot;snemo::cut::event_header_cut&quot;]</div><div class="line"></div><div class="line">#@description Cut description</div><div class="line">cut.description : string = &quot;Select event following a list of event ids&quot;</div><div class="line"></div><div class="line">#@description Logging priority</div><div class="line">logging.priority : string = &quot;error&quot;</div><div class="line"></div><div class="line">#@description The label/name of the event header&#39; bank (mandatory)</div><div class="line">EH_label : string = &quot;EH&quot;</div><div class="line"></div><div class="line">#@description Activate list of event ids mode</div><div class="line">mode.list_of_event_ids : boolean = true</div><div class="line"></div><div class="line">#@description Filename with event id</div><div class="line">list_of_event_ids.ids : string[5] = &quot;0_3&quot;  &quot;0_7&quot;  &quot;0_15&quot; &quot;0_25&quot; &quot;0_69&quot;</div></div><!-- fragment --><p>Only events from run <code>0</code> and with event ids <code>3, 7, 15, 25</code> and <code>69</code> will be selected.</p>
+<p>To make use of this cut, <code>flvisualize</code> program should be run with the <code>--cut-config-file</code> option set :</p>
+<div class="fragment"><div class="line">$ flvisualize \</div><div class="line">  --cut-config-file cut_manager.conf \</div><div class="line">  -i example.brio</div></div><!-- fragment --><p>The additionnal <code>--cut-config-file</code> will enable the "Complex cut" widget and the <code>list_of_ids_cut</code> may be selected within the combo box.</p>
 <h1>Known Issues </h1>
 <p>Performance may be affected on slower systems or those without modern graphics cards due to the complexity of the geometry.</p>
 <p>macOS systems may also see some performance loss on startup and moving between events.</p>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cuts',['cuts',['https://supernemo-dbd.github.io/Bayeux/namespacecuts.html',1,'']]]
+  ['cuts',['cuts',['../https://supernemo-dbd.github.io/Bayeux/namespacecuts.html',1,'']]]
 ];
