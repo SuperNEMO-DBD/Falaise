@@ -1,23 +1,3 @@
-# - Dependencies
-
-find_package(Boost 1.60.0
-  REQUIRED
-  date_time
-  serialization
-  )
-
-find_package(Bayeux 3.0.0
-  REQUIRED
-  )
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-# Ensure our code can see the Falaise headers
-# include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
-include_directories(${PROJECT_BUILD_INCLUDEDIR})
-include_directories(${FALAISE_BUILD_PREFIX}/include)
-include_directories(${FALAISE_BUILD_PREFIX}/include/falaise)
-
 # - Publish headers
 
 configure_file(fecom/version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp @ONLY)
@@ -119,9 +99,7 @@ add_library(fecom SHARED
   ${FeCom_SOURCES}
   )
 
-target_link_libraries(fecom ${Boost_LIBRARIES})
-target_link_libraries(fecom Bayeux::Bayeux)
-target_link_libraries(fecom Falaise)
+target_link_libraries(fecom PUBLIC Falaise Bayeux::Bayeux)
 
 #target_link_libraries(fecom Falaise::Falaise)
 
