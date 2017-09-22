@@ -2,7 +2,8 @@ var searchData=
 [
   ['tabulated_5ffunction',['tabulated_function',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1tabulated__function.html',1,'mygsl']]],
   ['tabulated_5fsampling',['tabulated_sampling',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1tabulated__sampling.html',1,'mygsl']]],
-  ['tags',['tags',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1i__tree__dumpable_1_1tags.html',1,'datatools::i_tree_dumpable::tags'],['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1version__id_1_1tags.html',1,'datatools::version_id::tags']]],
+  ['tags',['tags',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1i__tree__dumpable_1_1tags.html',1,'datatools::i_tree_dumpable']]],
+  ['tags',['tags',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1version__id_1_1tags.html',1,'datatools::version_id']]],
   ['target_5fcommand',['target_command',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1ui_1_1target__command.html',1,'datatools::ui']]],
   ['target_5fcommand_3c_20basic_5fshell_20_3e',['target_command&lt; basic_shell &gt;',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1ui_1_1target__command.html',1,'']]],
   ['target_5fcommand_5finterface',['target_command_interface',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1ui_1_1target__command__interface.html',1,'datatools::ui']]],

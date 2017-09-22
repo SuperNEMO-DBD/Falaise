@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polyhedra_1_1r__min__max.html',1,'geomtools::polyhedra::r_min_max'],['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polycone_1_1r__min__max.html',1,'geomtools::polycone::r_min_max']]],
+  ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polyhedra_1_1r__min__max.html',1,'geomtools::polyhedra']]],
+  ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polycone_1_1r__min__max.html',1,'geomtools::polycone']]],
   ['random_5fcut',['random_cut',['../https://supernemo-dbd.github.io/Bayeux/classcuts_1_1random__cut.html',1,'cuts']]],
   ['random_5futils',['random_utils',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1random__utils.html',1,'mygsl']]],
   ['range',['range',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1gnuplot__drawer_1_1range.html',1,'geomtools::gnuplot_drawer']]],
@@ -40,7 +41,8 @@ var searchData=
   ['report',['report',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1overlapping_1_1report.html',1,'geomtools::overlapping']]],
   ['resourceinitializationexception',['ResourceInitializationException',['../classfalaise_1_1ResourceInitializationException.html',1,'falaise']]],
   ['returned_5finfo',['returned_info',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1command_1_1returned__info.html',1,'datatools::command']]],
-  ['right_5fcircular_5fconical_5ffrustrum',['right_circular_conical_frustrum',['../https://supernemo-dbd.github.io/Bayeux/structgenvtx_1_1right__circular__conical__frustrum.html',1,'genvtx::right_circular_conical_frustrum'],['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1right__circular__conical__frustrum.html',1,'geomtools::right_circular_conical_frustrum']]],
+  ['right_5fcircular_5fconical_5ffrustrum',['right_circular_conical_frustrum',['../https://supernemo-dbd.github.io/Bayeux/structgenvtx_1_1right__circular__conical__frustrum.html',1,'genvtx']]],
+  ['right_5fcircular_5fconical_5ffrustrum',['right_circular_conical_frustrum',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1right__circular__conical__frustrum.html',1,'geomtools']]],
   ['right_5fcircular_5fconical_5fnappe',['right_circular_conical_nappe',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1right__circular__conical__nappe.html',1,'geomtools']]],
   ['right_5fpolygonal_5ffrustrum',['right_polygonal_frustrum',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1right__polygonal__frustrum.html',1,'geomtools']]],
   ['rng',['rng',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1rng.html',1,'mygsl']]],

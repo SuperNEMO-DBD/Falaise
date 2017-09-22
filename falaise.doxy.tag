@@ -14358,6 +14358,951 @@
   <compound kind="namespace">
     <name>datatools</name>
     <filename>namespacedatatools.html</filename>
+    <member kind="typedef">
+      <type>datatools::handle&lt; base_service &gt;</type>
+      <name>service_handle_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a0cb5897521afd04ca7497eabe9f695e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, int &gt;</type>
+      <name>dependency_level_dict_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8531bb1d9fda7d399258654b27852d06</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, dependency_info_type &gt;</type>
+      <name>service_dependency_dict_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa089b98195282207352be089a1b4f28d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, service_entry &gt;</type>
+      <name>service_dict_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a144db67caabb4c3ac503325dcc0d32f1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>datatools_init_flags</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>range_bound_info_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac2c8e4b40a050e709cfe451795cceb12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>dependency_level_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587ae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>basic_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>data_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3ffba4d8364f0bafe072c594fe9fd8df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>return_code_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>compare_result_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7291f91b21e9a80377c09180b005c229</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>name_validation_flags</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>find_service_name_with_id</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad602550ac84888349e5de58e65bcfd15</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>find_service_names_with_id</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac98f48a531895eefeefb251e1e4d694a</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::vector&lt; std::string &gt; &amp;service_names_)</arglist>
+    </member>
+    <member kind="function">
+      <type>base_service &amp;</type>
+      <name>grab_service</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab862847bd10c84f0cefbbe63777eb4fc</anchor>
+      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>const base_service &amp;</type>
+      <name>get_service</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a5b944b16d1b3fc8bd46775c571007798</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>T &amp;</type>
+      <name>grab</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9c0b278cc428326e86aeb3a1107c00bd</anchor>
+      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>const T &amp;</type>
+      <name>get</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab059bac0563dc9603cab716ab14010f4</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_covariant</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a39bb4fc25859ed2f864172202ddc70c7</anchor>
+      <arglist>(const Base &amp;b)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>initialize</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aef7ac875d160345f8e2e4d984a9dec6c</anchor>
+      <arglist>(int argc_=0, char *argv_[]=0, uint32_t flags_=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>terminate</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7ad5a44fccf76722a487cda7d5f8b2af</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>load_ocd</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad7e59245eed1d1426b3d818afe20294c</anchor>
+      <arglist>(::datatools::object_configuration_description &amp;, typename boost::disable_if&lt; has_load&lt; ::datatools::detail::ocd::loader&lt; ConfigurableType &gt; &gt; &gt;::type *=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>load_ocd</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a381463a4873663c18d21830d65728830</anchor>
+      <arglist>(::datatools::object_configuration_description &amp;ocd_, typename boost::enable_if&lt; has_load&lt; ::datatools::detail::ocd::loader&lt; ConfigurableType &gt; &gt; &gt;::type *dummy=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>serial_tag</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab1a73d6d1b6bf0e1560e4ca13aa7b074</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>backward_serial_tag</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a0bbbda99846fc5e77633bab7c21d4fe3</anchor>
+      <arglist>(int i=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>check_serial_tag</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab7ab5eee6f4d51fb827f15ddd527e112</anchor>
+      <arglist>(const std::string stag_, const std::string alt_tag_=&quot;&quot;, typename boost::disable_if&lt; has_bsts&lt; T &gt; &gt;::type *dummy=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>check_serial_tag</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7d4ea68f6ab12de11268e3e7b91177ef</anchor>
+      <arglist>(const std::string stag_, const std::string alt_tag_=&quot;&quot;, typename boost::enable_if&lt; has_bsts&lt; T &gt; &gt;::type *dummy=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_multi_lines</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ae960e6701139d56377927c97fcd503b4</anchor>
+      <arglist>(std::ostream &amp;out_, const std::string &amp;text_, const std::string &amp;indent_=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>for</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>acba9b051712b09247f962a61bddf9458</anchor>
+      <arglist>(pmap::const_iterator iter=_props_.begin();iter !=_props_.end();++iter)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>for</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aecdfe01644f0e4eb0f1576aa8edddf0c</anchor>
+      <arglist>(keys_col_type::const_iterator i=ks.begin();i !=ks.end();++i)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource_dir</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a448bae2c35e45cf47f0efdbf16fb8118</anchor>
+      <arglist>(bool overriden_env=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a89c75e2d9a33ccc650e1b770e97f2db0</anchor>
+      <arglist>(const std::string &amp;rname, bool overriden_env=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string</type>
+      <name>get_label_from_type</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a1b2313683ded260c68c46f60b3d095eb</anchor>
+      <arglist>(int type_)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>get_type_from_label</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a4d6f6314e79d10200c5716c9eb932fad</anchor>
+      <arglist>(const std::string &amp;label_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a244b4601186bded3a27b13d22481b84b</anchor>
+      <arglist>(float &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>float</type>
+      <name>invalid_real_single</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa6895b90ca98c8adbc90818cb49a4b17</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3dbd503d1923a0ea45441c536a42c1a8</anchor>
+      <arglist>(float value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a6bbaa38f611fe706ca2504f23f4ca658</anchor>
+      <arglist>(float value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_plus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>abf0a6bd947e5ac16a4bbe33482b10037</anchor>
+      <arglist>(float value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_minus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab835add413a08adee12546468927f2e7</anchor>
+      <arglist>(float value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>plus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab3f39a79ef71d3d30e3952c11082cb69</anchor>
+      <arglist>(float &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>minus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a6432c8dc68d94ced7c18c61c672e8c3f</anchor>
+      <arglist>(float &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a16808dfe2e244dbde3851eba7935cc79</anchor>
+      <arglist>(float &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a98e9a34a7aba066230d65e07e91631f6</anchor>
+      <arglist>(double &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>invalid_real_double</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a33cdc1188a5f99e9bad31ca89a846faa</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>invalid_real</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a0a6c531638182ce0ef767da43f35ce26</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac8cf6e068e148b53525ff1d71f9fa782</anchor>
+      <arglist>(double value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a101ab97654e80fe7e2149df1ceca316f</anchor>
+      <arglist>(double value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_plus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a348df2f0550ed21c9d16d4432369d317</anchor>
+      <arglist>(double value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_minus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad3519bc99db4ed6181e5dfd96e86b9b3</anchor>
+      <arglist>(double value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_normal</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a11fd8bc96235e7fffd032448c54aa35f</anchor>
+      <arglist>(double value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>plus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a559909cf93964ddb11bae08679d53ace</anchor>
+      <arglist>(double &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>minus_infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a438d993922655f5172dfd9bc6f58e825</anchor>
+      <arglist>(double &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>infinity</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a550cfc4a0932b9183c1925d0c04184f2</anchor>
+      <arglist>(double &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>compare_result_type</type>
+      <name>compare_real</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3222cc10581fd05623b6b60a5cde7310</anchor>
+      <arglist>(double x1_, double x2_, double abs_eps_=0.0, double rel_eps_=0.0)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>name_validation</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7753e63016a0a2b1768aa09f2a55c435</anchor>
+      <arglist>(const std::string &amp;name_, uint32_t flags_=NV_DEFAULT)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_quoted</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad94950ef136655146cde829ad6bdf161</anchor>
+      <arglist>(const std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>add_quotes</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac101c65ee5dc11d82dad3be4515c1892</anchor>
+      <arglist>(const std::string &amp;from_, std::string &amp;to_, char q_=&apos;&quot;&apos;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>add_quotes</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a0e9928488ef80212088acff5de9bb5c7</anchor>
+      <arglist>(std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>remove_quotes</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad74ec69d865d10626a0819ede57b55de</anchor>
+      <arglist>(const std::string &amp;from_, std::string &amp;to_, char q_=&apos;&quot;&apos;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>remove_quotes</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad964e10c943aec6bd0ecb3048cb134bb</anchor>
+      <arglist>(std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>remove_all_quotes</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9e9d9b46e1485c2110dd20933f4f34da</anchor>
+      <arglist>(std::string &amp;text_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>resolve_library_info_path_keys</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a129f4bd21e110f572e2689afbbf80c25</anchor>
+      <arglist>(const std::string &amp;library_topic_, std::string &amp;install_path_key_, std::string &amp;environ_path_key_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>fetch_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a02d23d3a5f3473d804c01442c26b9821</anchor>
+      <arglist>(const std::string &amp;path_str)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a85ba2df1866039120695ce1d7aeec1dc</anchor>
+      <arglist>(std::string &amp;word, std::string &amp;errmsg_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_with_env</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7a0118cfe0a1d68a9f2c0eb0fe37d0c8</anchor>
+      <arglist>(std::string &amp;word)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_with_env</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aae8fa9dddaff1b7b546fc890e8b6ea12</anchor>
+      <arglist>(std::string &amp;word, std::string &amp;errmsg_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_without_env</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>af76a31243454dd44f4f9412432c250d1</anchor>
+      <arglist>(std::string &amp;word)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_with_env_p</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aad4389bca713d2d46d673461bb90fe46</anchor>
+      <arglist>(std::string &amp;word, const std::string &amp;parent_path_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_with_env_g</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7b115f6c0db6d124d5f33101bea6c2eb</anchor>
+      <arglist>(std::string &amp;word)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>fetch_path_with_env_pg</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a71cd89cdc27fe99c2f1599b1dee0c218</anchor>
+      <arglist>(std::string &amp;word, const std::string &amp;parent_path_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>has_global_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ae06dc1fcdce59cbf1d1eed9d1cbe7e15</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>reset_global_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a85d8803134e29319c8d0c3574de08953</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_global_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>acb949c0c9eadcd1f71b5c79692a94886</anchor>
+      <arglist>(const std::string &amp;gpath_)</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>get_global_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a29de77f32d0147e13ad9c0753389f5ca</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>expand_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a63dc7eff0069f1040e733325cdd82748</anchor>
+      <arglist>(const std::string &amp;path_str)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>split_string</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>abed0dd2085d84f807983c8133d758106</anchor>
+      <arglist>(const std::string &amp;word, const std::string &amp;separators, std::list&lt; std::string &gt; &amp;words)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_bit</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a0a5f06ab207b63134bc1f30cc52b3fda</anchor>
+      <arglist>(Integral &amp;number, int pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>unset_bit</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a826a99f6bf603889eddf89a3c0e09942</anchor>
+      <arglist>(Integral &amp;number, int pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>toggle_bit</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a005bc2cedd4cfd01cddaca19594708de</anchor>
+      <arglist>(Integral &amp;number, int pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>check_bit</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a6448bb5d0e67e69c26edfa9941100f77</anchor>
+      <arglist>(Integral &amp;number, int pos)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>validate_version</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab89d4c55ac993aba1211a5ea00f4be21</anchor>
+      <arglist>(const std::string &amp;label, const version_id &amp;vid, const std::string &amp;version_rules)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_help</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a2ea2df7f2013b4675b3284a857eeb649</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_splash</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a6cd449424b1740169db91c1f763eb958</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_locale_category</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5acdeb1f4886073337164810987751015a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_logging</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a6e2b25f82286418bb6f1648e5429c91e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_inhibit_libquery</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a62c50f6339eb189b07c801ee6ce5546a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_libquery_logging</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ab575040d8d2bf95ae4dd07007a88f5df</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_inhibit_libinfo</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a4df085871a908c0c64044baa3b20bea1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_libinfo_logging</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5acaea386030f2a218fd5a5a8f8c118c82</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_resource_path</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a3d7f6b3fec71d3e0dfaa85c69bc33d7a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_inhibit_variant</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a836f4bcf58698f057d36dbddfa01fb0f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_variant</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a7d3ffa8474fc801edeb2755abaabf1d6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_inhibit_qt_gui</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ae6ff1e2d97694a6069da99338f085499</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_no_inhibit_urnquery</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a8fde7a46b60279386e6d277ecdb384e8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_reserved_11</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a689d88ed19b8902cf33932bf34d93444</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_reserved_12</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a14ee5516eaa3590bb82315f6043e000b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_reserved_13</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ad092123c1acd9cfe4b998b6235e35e12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_reserved_14</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5af923d395fe9d100def8fc672f6026782</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>init_kernel_inhibit</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a0e230da19a20901e412a164a9afe9485</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>range_bound_undefined</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac2c8e4b40a050e709cfe451795cceb12a03498c37115d56c87751062947c625e3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>range_bound_unbounded</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac2c8e4b40a050e709cfe451795cceb12abea4bedffb1b733b9a04c23696a21e72</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>range_bound_included</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac2c8e4b40a050e709cfe451795cceb12a27ead5fd84e246efe9625fe1ef86f0af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>range_bound_excluded</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac2c8e4b40a050e709cfe451795cceb12a53c8f98a681220165d094fb8c1afaffc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DEPENDENCY_UNKNOWN</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aea1a5f962145e15484344aca842b2543c6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DEPENDENCY_NONE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeacc6855c3e0b524b035bafbd01f5a309f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DEPENDENCY_OPTIONAL</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeaebad92245f37e2248e0c8700cb427922</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DEPENDENCY_WEAK</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeae13261305b7a5207a6a3f13fe9fbd1dd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DEPENDENCY_STRICT</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeafbcce386ce0c0b8c63fc5a9750914de8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_NONE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0acbeb867f261d88beb77946dbdeb10756</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_BOOLEAN</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0ac4136dafe4f0b03e84e4b5cf86d2f075</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_INTEGER</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0ac01908e5213d0b5bd84d0569ed0174fa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_REAL</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0a98ce11c6ebcdd6c3423854eec0ead9d3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_STRING</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0a93124a219c167d58ee16fec937eae217</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TYPE_ANY</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a046265eca9fe97f3ab22102f286db0c0aab2b7da89793afaf4c08aa75de6fef41</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DATA_NONE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfa93aea9b48af0e2d1e2aee4d650c103e7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DATA_SCALAR</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfa9807f6f0b797a5d82fef0952f6701b4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DATA_ARRAY</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfab3e203c9559c686b211cef60c7360a00</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DATA_ANY</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfadbda82a3f7e4f3803af6560e5fc030af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SUCCESS</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9ae0ea3e3427841fd398269db260d61160</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ERROR</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9a89c987e1dc587f4584a1f9fceb2d5fab</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>FAILURE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9a2600e82b8e4c4b08abebbf7c912a7c6f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_UNDEFINED</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7291f91b21e9a80377c09180b005c229a10f3b45e9b8ed57492f8c1619dd7d69d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_LESS</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7291f91b21e9a80377c09180b005c229ae915ffb5a6e1afe1d6927ff7849b68b9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_EQUAL</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7291f91b21e9a80377c09180b005c229a086a0fa57152234b0781580dbf51aefc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_GREATER</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a7291f91b21e9a80377c09180b005c229ac8ed404312ec08398a652f78e1c48e4d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_NO_COLON</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea01f19f7337142e254389e60690653723</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_NO_DOT</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eafc24b652871f1d91677b7565f48b5bb6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_NO_HYPHEN</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eac1b1c414692533f70b5b6f2a92670842</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_NO_UNDERSCORE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea5ceae3d35e7fd1b1614f26665788167b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_LEADING_DIGIT</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea35dff577f72fa51add97cbcd7d4ad08a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_DEFAULT</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eaa9cc8660db5b813781b16f05d224e711</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_INSTANCE</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea44a306bf4cd746c7e76cb2f55ca24b61</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>NV_MODEL</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea7dae0416de8e52e38489172e15ea8d43</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>keys_col_type</type>
+      <name>ks</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a955fd338f07278a86be41142e1bc6c97</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="namespace">
     <name>falaise</name>
@@ -14582,6 +15527,1476 @@
   <compound kind="namespace">
     <name>geomtools</name>
     <filename>namespacegeomtools.html</filename>
+    <member kind="typedef">
+      <type>CLHEP::Hep2Vector</type>
+      <name>vector_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a228ed39da627c5d477b64ba5ad681bda</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>CLHEP::Hep3Vector</type>
+      <name>vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>afae2ac02e16b8d2777012e48b9633476</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>CLHEP::HepRotation</type>
+      <name>rotation_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3babbb84872008163338e5e6942cbfd5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>rotation_3d</type>
+      <name>rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1cf4a8940f39b361c771e8782ba07222</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, i_model *&gt;</type>
+      <name>models_col_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a40bfa172ebccdc69d0f619016f38eb76</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>i_model *(*</type>
+      <name>model_creator_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a50b2e9fb3a30e4f1901e2152257573ad</anchor>
+      <arglist>)(const std::string &amp;name_, const datatools::properties &amp;configuration_, models_col_type *models_)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, model_creator_type &gt;</type>
+      <name>model_creator_dict_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a403b00ed994583c3c79e1e1a649fb255</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>elliptical_cylinder</type>
+      <name>elliptical_tube</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a148a12644a523755fec73b7d4ca2dd9f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; face_info &gt;</type>
+      <name>face_info_collection_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad80108297ad3f5027d8d8281f0d0f1b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; geom_id, geom_info &gt;</type>
+      <name>geom_info_dict_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad019ade951719dfef8eeced2b4d06a4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>datatools::handle&lt; i_shape_2d &gt;</type>
+      <name>shape_2d_handle_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab26c4d5caa5d6b1f12100cba869c0f6b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>shape_2d_handle_type</type>
+      <name>face_handle_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7ea86416208884213a3e0adf28558267</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>line_3d</type>
+      <name>segment_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a895be82586cc9ffdbe8a48b4a2089044</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>model_with_internal_items_tools</type>
+      <name>MWIM</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7ce15a74658b58f701784c760c60db64</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>right_circular_conical_frustrum</type>
+      <name>conical_frustrum</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a6baa64f60ee2c6a4864f0629017fe188</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>right_circular_conical_nappe</type>
+      <name>conical_nappe</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3baaeb3fdb8263822abae12aa38d5d76</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>right_polygonal_frustrum</type>
+      <name>polygonal_frustrum</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0637daefff9ddde6d4d783d79a8114cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::list&lt; vector_2d &gt;</type>
+      <name>basic_polyline_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aeb03950ea56af9931cfecebc11f08fe1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::pair&lt; vector_3d, vector_3d &gt;</type>
+      <name>basic_segment_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a29794f7baf5be5964611ad047c7066a3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>basic_segment_3d</type>
+      <name>segment_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aacc4dd9992a1ad7cdfb2ef6812585e95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::list&lt; vector_3d &gt;</type>
+      <name>basic_polyline_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4ee4165c597f8727dba4173f4d09c88f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::list&lt; vector_3d &gt;</type>
+      <name>polyline_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ae89b8504f9d0973322a1a0f7491aec71</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::vector&lt; vector_3d &gt;</type>
+      <name>vertex_col_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa87419750f95916d5a153a083164a0ae</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::list&lt; polyline_type &gt;</type>
+      <name>wires_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a916ad2704cd06417398aa41208e4e499</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>side_2d_type</type>
+      <name>edge_2d_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a100ec43c2258925f60f57b721b247b12</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>rotation_wrapper_type</type>
+      <name>rotation_wrapper_t</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1730566323233fa49d94c349d8659f6b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>orientation_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67ed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>direction_flags_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>direction_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>vertex_1d_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3dba99d2998f454232bac339482afdb7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>path_1d_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>side_2d_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>shape_domain_flags_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>euler_angles_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfa</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>special_rotation_angle_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>axis_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9eae6c1007732f09994b34b3c3389422</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>rotation_axis_type</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a32148578f1a0bb41700808c45923a3d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_face_infos</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a73cb4131d91827bf97a19627e45370d0</anchor>
+      <arglist>(const face_info_collection_type &amp;, std::ostream &amp;out_, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>GEOMTOOLS_MODEL_CLASS_DECLARE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0b072b64b2065cdef464cd9bd5dfafdc</anchor>
+      <arglist>(i_boxed_model)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>transform_wire_to</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac89712c06aefe314fb15f405c1b27335</anchor>
+      <arglist>(const placement &amp;p_, const polyline_type &amp;wire_, polyline_type &amp;tr_wire_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>transform_wires_to</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a20f77b928a5578a504648dbed1955542</anchor>
+      <arglist>(const placement &amp;p_, const wires_type &amp;wires_, wires_type &amp;tr_wires_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>parse_wires</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a6384cc3468dbdbd34a38e11d6b53b5e5</anchor>
+      <arglist>(std::istream &amp;in_, wires_type &amp;wires_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>save_wires</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a43b7717d2f48c0921d1bcc325514d1cc</anchor>
+      <arglist>(std::ostream &amp;out_, const wires_type &amp;wires_, uint32_t flags_=0)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>classify_in_out_segment</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7cabd485d6d955fb795d98c8fa528e63</anchor>
+      <arglist>(const segment_type &amp;segment_, const i_shape_3d &amp;shape_, const placement &amp;shape_placement_, double step_, double tolerance_, std::list&lt; classified_segment &gt; &amp;classified_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>export_gdml</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac0a1c8db07852f0bacb47569f33c2f2d</anchor>
+      <arglist>(const materials::manager &amp;, gdml_writer &amp;gw_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>export_gdml</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4fa06c8197e75985f42a61d3aa82fd44</anchor>
+      <arglist>(const materials::manager &amp;, std::ostream &amp;out_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad91141268f117b814c11c0791c134fb6</anchor>
+      <arglist>(std::ostream &amp;out_, const placement &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource_dir</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7fe4fd1f974ab16593986d1e23957e79</anchor>
+      <arglist>(bool overriden_env=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_resource</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac7ff76e7ad8ba460691fb293dff8744d</anchor>
+      <arglist>(const std::string &amp;rname, bool overriden_env=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>position_is_in</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa6e23539799b3f946e7e1e67c922763c</anchor>
+      <arglist>(double position_, double start_position_, double delta_position_, double tolerance_=0.0, bool bounds_excluded_=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>angle_is_in</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9f5f537ba3898ca9a2168ab8d7e3cdaf</anchor>
+      <arglist>(double angle_, double start_angle_, double delta_angle_, double angular_tolerance_=0.0, bool bounds_excluded_=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aeaa4e5a55c729e7ded42b77bbb8085be</anchor>
+      <arglist>(std::ostream &amp;out_, const vector_2d &amp;p_, bool endl_=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>to_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>af3740aabc2a0222b261a72c8259d97c0</anchor>
+      <arglist>(const vector_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>vector_2d_to_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a62fc007cb6a2423ed2d3618899f5d54e</anchor>
+      <arglist>(const vector_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy_stdout</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a19df57c0d17447c47f5a0d55d0071385</anchor>
+      <arglist>(const vector_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy_stderr</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a68911a5a83605c95b46dcb56f218e80a</anchor>
+      <arglist>(const vector_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad383b4b4e788b0af6a0d99a5b0efe520</anchor>
+      <arglist>(std::ostream &amp;out_, const vector_3d &amp;p_, bool endl_=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a78ca685dfdc1412555b5de5dc89532ad</anchor>
+      <arglist>(std::ostream &amp;out_, const vector_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>to_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>abf5259d8cfdd1bc4179d287ef940cc5e</anchor>
+      <arglist>(const vector_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>vector_3d_to_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a5dc89ae5c84d223a6afa8f909c22bba6</anchor>
+      <arglist>(const vector_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz_stdout</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a33f10b39f09995e709ddec093159923a</anchor>
+      <arglist>(const vector_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz_stderr</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1051fe65fc3d7ee56861a10a5925f3f2</anchor>
+      <arglist>(const vector_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_vector_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0e88eea69502dd8b8a000be962cfebcc</anchor>
+      <arglist>(const std::vector&lt; double &gt; &amp;source_, vector_2d &amp;target_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>afa245f05fe274630d09140797a949c57</anchor>
+      <arglist>(const std::vector&lt; double &gt; &amp;source_, vector_3d &amp;target_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>parse</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a8370bddc065ab719b042fdd4c6d2591a</anchor>
+      <arglist>(std::istream &amp;in_, vector_3d &amp;position_, bool nothing_more_=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>parse</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa2a2cc2e89cf22107e7d9031e68a8bd6</anchor>
+      <arglist>(const std::string &amp;token_, vector_3d &amp;position_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab1662370d4f065376f3b5f4f492f9bea</anchor>
+      <arglist>(std::ostream &amp;out_, const basic_polyline_2d &amp;p_, bool endl_=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>to_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a555be582ab6db02e9ebff6cb6c618a52</anchor>
+      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>basic_polyline_2d_to_xy</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad6bd969a31a1028a73d47cdd512c62ff</anchor>
+      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy_stdout</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a734a81af7f1b1eaafec232529f742471</anchor>
+      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xy_stderr</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9b6da7f92d16b17061340208b1790b69</anchor>
+      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a582b15caec5d697df22dd747fb61fd19</anchor>
+      <arglist>(std::ostream &amp;out_, const basic_polyline_3d &amp;p_, bool endl_=true)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>to_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>af53c455764bb97a71f7538d11b0e78f1</anchor>
+      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>basic_polyline_3d_to_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3cdf97f3d033efc84125be78c9906b67</anchor>
+      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz_stdout</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac25023fb6d57d6f5c2fa3b3be3af87e3</anchor>
+      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>print_xyz_stderr</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a37b50571ba9e41c28d843949ee8a32ce</anchor>
+      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
+    </member>
+    <member kind="function">
+      <type>direction_type</type>
+      <name>get_direction_from_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a02f905d331f9d541f54261a6f529bec0</anchor>
+      <arglist>(const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_direction_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab2e3c4746b3abca8aad8df2cf0c655d4</anchor>
+      <arglist>(direction_type)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>shape_domain_flag_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>afd9579acc95d6d0596046ce28b8cd78a</anchor>
+      <arglist>(shape_domain_flags_type flag_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a99771e606aa500ddd32db15651df21c6</anchor>
+      <arglist>(rotation_3d &amp;rot_, double angle0_, double angle1_, double angle2_, euler_angles_type et_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_zyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a58c75fc51d4e16c80832be6db6654cbd</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a97910786914c7d1d8de6bf3a59ec4a11</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_zxz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1b689e992381f348be8d0552d267b603</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double psi_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a08c7907a9f1a652916ec5cd3c797a38b</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double psi_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a86e7e91fe10501efdf5dc06c34db661d</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation_from_zyz_euler_angles</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a62ba80603226386745b062012448831e</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a5139d067760f10ae1c128639b22fd603</anchor>
+      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_identity</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ae4bb8238d0a460164c8b4f219439da69</anchor>
+      <arglist>(const rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>extract_xyz_euler_angle_from_rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac8ceb37431ba58a0d2e7befa67d26d55</anchor>
+      <arglist>(const rotation_3d &amp;rot_, double &amp;a_, double &amp;b_, double &amp;c_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>extract_zyz_euler_angle_from_rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1eb0f6fe0200660d2d18e757b4b3c1ca</anchor>
+      <arglist>(const rotation_3d &amp;rot_, double &amp;a_, double &amp;b_, double &amp;c_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>check_special_rotation_angle</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0e08066b792d0e040626872d2dfab6d5</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>get_special_rotation_angle</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a648040e81aa4843705f21e80587f3b1c</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>get_special_rotation_angle_from_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a51d708390ef90902545de6cdd6a63ea9</anchor>
+      <arglist>(const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_special_rotation_angle_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ae73de85d9dfac0808c74069261b86efa</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>check_rotation_axis</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a46779ff73f289e7cdf1d991ec2beedb3</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>get_rotation_axis_from_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad6c5e7986356fd6c3e010e4019e95cba</anchor>
+      <arglist>(const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>get_rotation_label</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>af8e4cc82ec75519f8afef740db3cc217</anchor>
+      <arglist>(int)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation_from_axis</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3940e4d62ff5685e01f7c24225eec83e</anchor>
+      <arglist>(rotation_3d &amp;rot_, int axis_, double angle_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a865d11aaef7b0b9d2f25e80dbdece11f</anchor>
+      <arglist>(rotation_3d &amp;rot_, int axis_, double angle_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a8762a67e7ef66d655ed5cc3dd113e393</anchor>
+      <arglist>(rotation_3d &amp;rot_, int axis_, int special_angle_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_rotation_from</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1ad7102adbfd495a78bacf1b3455f226</anchor>
+      <arglist>(rotation_3d &amp;rot_, const std::string &amp;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>reset</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac08a388080f2438ad1e7127dddd712c3</anchor>
+      <arglist>(rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>reset_rotation_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab3f73571346d184aa89ad461614f05f2</anchor>
+      <arglist>(rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tree_dump</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>afce86ffc4373124fa4a6fa04612ce465</anchor>
+      <arglist>(const rotation_3d &amp;rot_, std::ostream &amp;out_, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ae1a2dac253cde6904a292053b535d37a</anchor>
+      <arglist>(rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>rectify</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a459674ca5d9f234d1c3b29bed3228912</anchor>
+      <arglist>(rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate_rotation_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a09c7c317ba7d6237eb447be2e0348c51</anchor>
+      <arglist>(rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a8c791571c26d3bbc38b00cdf2996d01a</anchor>
+      <arglist>(const rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid_rotation_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9f641ac02626e4082a519586e1f6961d</anchor>
+      <arglist>(const rotation_3d &amp;rot_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4d03482f9361af699a205f740467928a</anchor>
+      <arglist>(vector_3d &amp;, double x_, double y_, double z_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_xyz</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>af70af32ea37c416a6d40da663954214c</anchor>
+      <arglist>(vector_3d &amp;, double x_, double y_, double z_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_polar</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9a0768c1b5646246a72c3bad3f63401d</anchor>
+      <arglist>(vector_3d &amp;, double r_, double theta_, double z_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>create_spherical</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4f7ca275e9a7c64cace29fa4343f6322</anchor>
+      <arglist>(vector_3d &amp;, double r_, double phi_, double theta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3f773eed1013bf29ec613e9ab4c8a62a</anchor>
+      <arglist>(vector_3d &amp;vec_, double x_, double y_, double z_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_r_theta_phi</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a8585d234a295e1ce178c8ff69c02141a</anchor>
+      <arglist>(vector_3d &amp;vec_, double r_, double theta_, double phi_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_rho_phi_z</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7754d1104214b900d348b9f0c328409a</anchor>
+      <arglist>(vector_3d &amp;vec_, double rho_, double phi_, double z_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>zero</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab1d584ff17eec2449c35623e3c786431</anchor>
+      <arglist>(vector_3d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a2e929bff078558f7afb7634699f96fb7</anchor>
+      <arglist>(vector_3d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate_vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ae7ad6de7de66d30fd83b282fd285efb9</anchor>
+      <arglist>(vector_3d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1015f1fdecce53899c84065f8920e763</anchor>
+      <arglist>(const vector_3d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid_vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a527ad710e1796541f654a8f1a5497a82</anchor>
+      <arglist>(const vector_3d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>are_near</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a44778c3e187a163b384084284dbceef5</anchor>
+      <arglist>(const vector_3d &amp;vec1_, const vector_3d &amp;vec2_, double tolerance_=constants::DEFAULT_TOLERANCE)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>are_near_vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa71dc86ae41d25eb8667245ee33184c0</anchor>
+      <arglist>(const vector_3d &amp;vec1_, const vector_3d &amp;vec2_, double tolerance_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3a191543a28d3816d1f48b8771a8ed2</anchor>
+      <arglist>(vector_2d &amp;vec_, double x_, double y_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>set_r_phi</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0427d1ed082ce533af700cecb3c7f80b</anchor>
+      <arglist>(vector_2d &amp;vec_, double r_, double phi_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>zero</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4a267aab6890cc67af897ffb16d7a111</anchor>
+      <arglist>(vector_2d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a01b56f13a090155e9263e5d23fe9ae51</anchor>
+      <arglist>(vector_2d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>invalidate_vector_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a49695fb5cf8f66a9ec99c09da70d1a44</anchor>
+      <arglist>(vector_2d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aca55eb2c25425aeabceae259036a84ce</anchor>
+      <arglist>(const vector_2d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_valid_vector_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a1bd5d8b2f5353a7e70f697cc5430aefd</anchor>
+      <arglist>(const vector_2d &amp;vec_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>vector_2d_to_vector_3d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a7a42b6c1154717f77ad9a6decf9eaa80</anchor>
+      <arglist>(const vector_2d &amp;v2d_, vector_3d &amp;v3d_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>vector_3d_to_vector_2d</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a52015f1e2d285261306a16f602ee6ab0</anchor>
+      <arglist>(const vector_3d &amp;v3d_, vector_2d &amp;v2d_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>make_phi_theta</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac6c87cd825e381b95bc3491f835d97dd</anchor>
+      <arglist>(vector_3d &amp;vec_, double phi_, double theta_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>randomize_direction</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a0ec60cd1af9f10ac1575a1f50ec87f49</anchor>
+      <arglist>(ran_func &amp;ran_, vector_3d &amp;ran_dir_)</arglist>
+    </member>
+    <member kind="function">
+      <type>vector_3d</type>
+      <name>randomize_direction</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab758302364afa83c77bb8086de0fae9c</anchor>
+      <arglist>(ran_func &amp;ran_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>randomize_orthogonal_direction</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>acc8d7203e3a3206e734d57f11b0eaca4</anchor>
+      <arglist>(ran_func &amp;ran_, const vector_3d &amp;dir_, vector_3d &amp;ran_dir_)</arglist>
+    </member>
+    <member kind="function">
+      <type>vector_3d</type>
+      <name>randomize_orthogonal_direction</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a17e864a7541d2e3c63200a5136dac079</anchor>
+      <arglist>(ran_func &amp;ran_, const vector_3d &amp;ref_dir_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>compute_barycenter</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a4e132c983fa1cf8fa31703eccbbc1e15</anchor>
+      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, vector_3d &amp;barycenter_)</arglist>
+    </member>
+    <member kind="function">
+      <type>vector_3d</type>
+      <name>compute_barycenter</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac3ebb45d42ba65301c5aee5b34829333</anchor>
+      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>compute_weighted_barycenter</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a65ba27ec78727085a413d78a63f20eb5</anchor>
+      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, const std::vector&lt; double &gt; &amp;weights_, vector_3d &amp;weighted_barycenter_)</arglist>
+    </member>
+    <member kind="function">
+      <type>vector_3d</type>
+      <name>compute_weighted_barycenter</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad8eb0bc4ce03c362cfbc814d80b6c36d</anchor>
+      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, const std::vector&lt; double &gt; &amp;weights_)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ORIENTATION_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67eda15d118d31b7d4a62a38adb050c42a260</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ORIENTATION_VERTICAL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67eda93a75e57f4cdb90bba797a36de5099db</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>VERTICAL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67eda2240251b5811a7021726e3f30e2dc003</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ORIENTATION_HORIZONTAL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67eda21cfefe6766ebd27d99def17a387cb05</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>HORIZONTAL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a641fd0c8193f2cd67aa191a5933a67edad2e9f1463650ebfaafc52f242ce0775d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081aa93c81311b165af12b1babf9855276ba</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_BACK</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a661b5b0dad6b1caba01318e30e9c009a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_FRONT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a5c6d0f6bf4132b5d406421ff2e33f7ec</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_LEFT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a33e1f7a9a8019d6c58f3c780905d854e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_RIGHT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a5830981d8fba645d1caa8964846a6304</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_BOTTOM</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a6acd77a902ea04a93f8ac4465cb42326</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FLAGS_TOP</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ad3371ea0c573237dc8bae0beab964081a6493a9a8c546b20f9dd8292a7454e436</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aaf89c08bc0fd7a0706be43e33b139fc64</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_BACK</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa8cc16254d6d7881998bd9180b9baf50a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_XMINUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa4a8f965a6cf8a6ec3e20b3cb76d30130</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_FRONT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa90da77eb2e99b9ad1694595558942286</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_XPLUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa6eb688ea4aaab989d13bedb0b50c3286</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_LEFT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aabb2d3ba65679a9349d5f582e4a78e7fe</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_YMINUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa1f49400cff074d02f8b57b9773390948</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_RIGHT</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa27fabe3ac79b6485dbc2012a6d556f28</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_YPLUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa4efe89db80aa69c454cd859908ac0b98</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_BOTTOM</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aae71b5daf1c73647a25a0038033b0c474</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_ZMINUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aab5c9d563ec0acf94b6c4d674804d9d34</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_TOP</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aaf99ba89e39b624c8b35faa2e59366a37</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>DIRECTION_ZPLUS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aad7ad4597df3f831c0b24015a73e81fca</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>VERTEX_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3dba99d2998f454232bac339482afdb7a84875b2b76d1f1eb7c6983b6fbec7905</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>VERTEX_ALL_BITS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3dba99d2998f454232bac339482afdb7a3d3cc7937a77b9ecf99b2d636e1a6b87</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>VERTEX_ALL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a3dba99d2998f454232bac339482afdb7afb0f2d5b63af252436c146385cb3284e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PATH_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9a16da5db83fd560f1e605d746d823a26b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PATH_ALL_BITS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9ad6f9dbb6d96592b30902f46dbbd54ce2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PATH_ALL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9a07bef2f8fd941ee89582babb6d761064</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SIDE_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa1487e116d97aea2d6c35e28a8a954533</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EDGE_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fab41fa1a44fe1e16ab80f64bfb147ea77</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SIDE_ALL_BITS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa571f4384ae8e9ed72362c8d6f8ed2195</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EDGE_ALL_BITS</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fad28cfca1c58e8744c77676ed8acf7827</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SIDE_ALL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa8787d1d1d52281a41cb4660731bf29d5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EDGE_ALL</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa487c741c797ad367c1aa76994c8c33cd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_NONE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1a0be1022c0469cd92066d2710cba60420</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_INSIDE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1a0cb0099a3e9f240acd3b9eb413ea6c98</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_OUTSIDE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1a436ebe30b24a2117d1096fdffb93533e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_ON_SURFACE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1afe706838eddd16612a6a0b7ac6ef5a39</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_INSIDE_DAUGHTER</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1ad0c63eea3c81fba09ecb0f7b6eae8da3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>SHAPE_DOMAIN_ON_DAUGHTER_SURFACE</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aa7331b235071b143372c83619cd659b1aff164a2d1c69058bb3b7966958782aa3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaafaa07aa4981cd431ecf3adef628f2736</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_ZXZ</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa57aeeb5e80dfed418655d9b4cb9a7d24</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_XYX</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa19123f7905abd6f8985885d318e84d51</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_YZY</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa89251b9b215089a17b66e297a35871e4</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_ZYZ</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa173d8f7c184a87c9d3bfb2c6b783b7cb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_XZX</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaad961110e11f3323080aa2d3ed26ff41c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_YXY</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaaca01117b3314fc67f62e477cd7b2f031</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_XYZ</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa443af81ac8e32b1a0eaed3b1ac113b4a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_YZX</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa36971b8c939c61e5ad9470bf501607bd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_ZXY</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa9e1d2c9ed030da384828b5f2e7135ae1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_XZY</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa23ec996995dacc015d8fbe644f3c15cb</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_ZYX</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaa3baab0b8906dac31c27d244bf6174750</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>EULER_ANGLES_YXZ</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>aae5d85445fbe5363b5799218c2e98dfaafd43335eda6c50f215015a1bdfc12c15</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_ANGLE_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743a1246ee8b7515c5dbec38d92b3f30a79a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_ANGLE_0</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743a73602ab0973f4b195a76ab30250e8374</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_ANGLE_90</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743ae7ab3e56c9119d2a840802dddfe99bcd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_ANGLE_180</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743a076afa51b1d40520a647ac25bda24107</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_ANGLE_270</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>ab689792afe1676d4f8a2ea3a19f40743a5a94bdb3d9191753e0219bb25d09fb2c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>AXIS_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9eae6c1007732f09994b34b3c3389422af258e7fccca7d1b3823409460ba42530</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>AXIS_X</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9eae6c1007732f09994b34b3c3389422ac60af53755b558806387afa4d92360a6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>AXIS_Y</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9eae6c1007732f09994b34b3c3389422a022ccde8f8de7d3c1c80d100921e5d0e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>AXIS_Z</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a9eae6c1007732f09994b34b3c3389422a92b9396d07043470a124c1a4907eba1a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_AXIS_INVALID</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a32148578f1a0bb41700808c45923a3d5aa08469e3a5843680a1a789893fa5a767</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_AXIS_X</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a32148578f1a0bb41700808c45923a3d5af58c69849794450055ec3def6b9440a1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_AXIS_Y</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a32148578f1a0bb41700808c45923a3d5a35d73767c4b62e79d618238b1785c8f2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>ROTATION_AXIS_Z</name>
+      <anchorfile>namespacegeomtools.html</anchorfile>
+      <anchor>a32148578f1a0bb41700808c45923a3d5aecb2386ace8ec14db0be7ee22e351332</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="namespace">
     <name>mctools</name>
@@ -14590,6 +17005,531 @@
   <compound kind="namespace">
     <name>mygsl</name>
     <filename>namespacemygsl.html</filename>
+    <member kind="typedef">
+      <type>histogram</type>
+      <name>histogram_1d</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>af6a52b4cb8422f7e5eb940199d05e025</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>double(*</type>
+      <name>plain_function_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ac33ef745c175611ac492c5814c0c3522</anchor>
+      <arglist>)(double)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>double(*</type>
+      <name>plain_function_with_parameters_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a9b504af9e167c73f1bd49fea7b4ad2f5</anchor>
+      <arglist>)(double, void *)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, plain_function_entry &gt;</type>
+      <name>plain_function_dict_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a8c58a8a03344b06d107aac33aaa75ac6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>polynomial</type>
+      <name>polynomial_function</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a95ef2f3c87fe297b07d07465e919f28d</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>seed_manager</type>
+      <name>prng_seed_manager</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a16273de26d05fe1c9f0f62e5aa95cfee</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>datatools::handle&lt; i_unary_function &gt;</type>
+      <name>unary_function_handle_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a8758c0ac59e8f1bb82d2ce997baec845</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>datatools::handle&lt; const i_unary_function &gt;</type>
+      <name>const_unary_function_handle_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a4df79c15ba45daf7bd1fd8e914a77d29</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, unary_function_handle_type &gt;</type>
+      <name>unary_function_dict_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a87bc6ff22f42ebb80cc4239f0acc6d77</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>compare_score_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>bin_mode_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>bin_axis_type</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a53a8259e8f36522beb7a90462b3b29a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <type></type>
+      <name>plain_function_flag</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a34dcb7b00002c9532a3eb2a970a102be</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a79f77f6f040aed7fe0ab3969b9cd52cb</anchor>
+      <arglist>(std::ostream &amp;out_, const best_value &amp;bv_)</arglist>
+    </member>
+    <member kind="function">
+      <type>compare_score_type</type>
+      <name>compare_relative</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ae64f8a7f5404a3f57c1c0d062a27c666</anchor>
+      <arglist>(double x_, double y_, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>compare_score_type</type>
+      <name>compare_absolute</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a7de4e71b8d94392190e1dac1aebc6125</anchor>
+      <arglist>(double x_, double y_, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>approximately_equal</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a9282833da03da5224c44a5ef835c268b</anchor>
+      <arglist>(double x_, double y_, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>essentially_equal</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a66d420b016cb30a4cfe23a62485b10c1</anchor>
+      <arglist>(double x_, double b, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>definitely_greater_than</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ab19e870399dd0f19d20ac1ce4570bc68</anchor>
+      <arglist>(double x_, double y_, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>definitely_less_than</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>af15e63887c6d933e06abf4c8f6ab5af6</anchor>
+      <arglist>(double x_, double b, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>nearly_equal</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a9519e4ff9e87d58906006b5503391d52</anchor>
+      <arglist>(double x_, double y_, double epsilon_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>ostream_odouble</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a5a91031423ff41d56276ffea4b1ef195</anchor>
+      <arglist>(std::ostream &amp;os_, const double &amp;x_)</arglist>
+    </member>
+    <member kind="function">
+      <type>OstreamManipulator&lt; double &gt;</type>
+      <name>odouble</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>abf10205855fc1e43afff384c5f5dca6c</anchor>
+      <arglist>(const double &amp;x_)</arglist>
+    </member>
+    <member kind="function">
+      <type>std::istream &amp;</type>
+      <name>istream_idouble</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a4a9578b87df047fa5c8853c8a244118d</anchor>
+      <arglist>(std::istream &amp;is_, double &amp;x_)</arglist>
+    </member>
+    <member kind="function">
+      <type>IstreamManipulatorRef&lt; double &gt;</type>
+      <name>idouble</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a8dddc05c58a9b07bb60c632e6e88a811</anchor>
+      <arglist>(double &amp;x_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>linear_system_2x2_solve</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a20ed74b894382e35397badd278721764</anchor>
+      <arglist>(double a1_, double b1_, double c1_, double a2_, double b2_, double c2_, double &amp;x_, double &amp;y_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>basic_plain_function_registration</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a2c4b6cbe50b8336b0a21d12c61c046cd</anchor>
+      <arglist>(plain_function_dict_type &amp;dict_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>register_plain_function_simple</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a0b80cf840319b84ec4c8d5f8cb044831</anchor>
+      <arglist>(plain_function_dict_type &amp;dict_, const std::string &amp;name_, const plain_function_type &amp;func_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>register_plain_function_with_params</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>aa2a1d0085b996618b641b06f5a451ea2</anchor>
+      <arglist>(plain_function_dict_type &amp;dict_, const std::string &amp;name_, const plain_function_with_parameters_type &amp;func_with_params_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>tree_dump</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>aed219759d1f24e89dd13d2b305781dad</anchor>
+      <arglist>(const plain_function_dict_type &amp;dict_, std::ostream &amp;out_=std::clog, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
+    </member>
+    <member kind="function">
+      <type>plain_function_dict_type &amp;</type>
+      <name>grab_plain_function_dict</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a3c5cf262dd07e25b52cb5a705cf0c54f</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const plain_function_dict_type &amp;</type>
+      <name>get_plain_function_dict</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a9ec6607e95580e30c78398f10cbc3aa5</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>plain_function_is_known</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>abc30329e6f1145fb6f4faef0e05ea93e</anchor>
+      <arglist>(const std::string &amp;name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_plain_function_simple</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>af916367b3d01277b50295f3426fa5c19</anchor>
+      <arglist>(const std::string &amp;name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_plain_function_with_params</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a46ef7ad760e73e86cea4bfb9b6f94f08</anchor>
+      <arglist>(const std::string &amp;name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>plain_function_type</type>
+      <name>get_simple_function</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a147af32f6610a799b297f6cb072d38b1</anchor>
+      <arglist>(const std::string &amp;name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_central</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a58a48efc95ef0cd9cf46998bf68c871c</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_central</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ab63e5f3355b57932928017435d220942</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a4e0d3e5e10374e82ed5cddf763abf24f</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>aa78318e3a0233e730cc4dca980672b3e</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a44c84dd716a728cfcee6ca4c7559fbd3</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a27c67f861276e94f6c5ae688f34ed07f</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a825ed4f96d93c5af6f748623dd1b428d</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, const interval &amp;domain_, double &amp;abserr_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a9e4108809f5a733938b7ce52fb2cd060</anchor>
+      <arglist>(const i_unary_function &amp;eval_, double x_, const interval &amp;domain_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_central_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>aa8cdfe9d61bec68739a2cfae5d0bb698</anchor>
+      <arglist>(double f_1_, double f1_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_central_regular_sampled_4</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a7ee8e2a95db6fc26621baa3d3ccc1562</anchor>
+      <arglist>(double f_2_, double f_1_, double f1_, double f2_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_central_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a57260d56dcd8732a81fb2510d7dd104f</anchor>
+      <arglist>(double f_1_, double f0_, double f1_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_central_regular_sampled_4</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a5284dd107c71d64fb852da034c9db0a6</anchor>
+      <arglist>(double f_2_, double f_1_, double f0_, double f1_, double f2_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward_regular_sampled_1</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a2e5d7afa4a8b0ea05415fa2b8c66e9a7</anchor>
+      <arglist>(double f0_, double f1_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a169306a3807b23cdc84d3b473a406d9d</anchor>
+      <arglist>(double f0_, double f1_, double f2_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward_regular_sampled_3</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ab8332d876e50e380360af02b0841394b</anchor>
+      <arglist>(double f0_, double f1_, double f2_, double f3_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_forward_regular_sampled_4</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a392afaaea994e795e2ecd2e3167909cd</anchor>
+      <arglist>(double f0_, double f1_, double f2_, double f3_, double f4_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_forward_regular_sampled_1</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a1d3e63c9b431375a15f3eee9afe9ade5</anchor>
+      <arglist>(double f0_, double f1_, double f2_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_forward_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ace5604974ec4c506020495545ed63596</anchor>
+      <arglist>(double f0_, double f1_, double f2_, double f3_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward_regular_sampled_1</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ab8c92353960b1d59f4cd133c47027eac</anchor>
+      <arglist>(double f_1_, double f0_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a518ad35affc668a2a823c41582ce1b1e</anchor>
+      <arglist>(double f_2_, double f_1_, double f0_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward_regular_sampled_3</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a1a7432b48f314acd08213260fde4e23b</anchor>
+      <arglist>(double f_3_, double f_2_, double f_1_, double f0_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>derivative_backward_regular_sampled_4</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a1802799d8d39742771f0385dad480a42</anchor>
+      <arglist>(double f_4_, double f_3_, double f_2_, double f_1_, double f0_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_backward_regular_sampled_1</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a02a7aa418f0da192d5503ef028cb3031</anchor>
+      <arglist>(double f_2_, double f_1_, double f0_, double h_)</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>second_derivative_backward_regular_sampled_2</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a368f83da39476906be0cb02c10edb155</anchor>
+      <arglist>(double f_3_, double f_2_, double f_1_, double f_0_, double h_)</arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_LESS_EQUAL</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069a4fc0a69e5f11b63aa457e0933fe77b23</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_LESS</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069a696f8ad8f9c8677595e36d80d9b026ad</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_EQUAL</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069a9f3d0d340bce9638b283008eac9f70ed</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_GREATER</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069a56d55b88d978b926f391c62faf902c84</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_GREATER_EQUAL</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069ac4c0ef6f3bcf5dda771b3c86c7b80f2c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>COMPARE_UNORDERED</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>afbdec76a100ff5ac0692a389a27f4069a363dd00f4c2dd48eeb72feaeba6f82af</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_MODE_INVALID</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1ae8bc1bca727e7dbdff15497dfc9668e5</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_MODE_LINEAR</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1a41923ae567b7d10365351b5ad0414298</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_MODE_LOG</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1af0f9ff425f6dbfeffa6154acaf9899c6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_AXIS_INVALID</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a53a8259e8f36522beb7a90462b3b29a8a4ce1c82f485dccd3ea991f1d1693d75f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_AXIS_X</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a53a8259e8f36522beb7a90462b3b29a8ad2c5da4e7e54c2c3c36677562e541d2a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>BIN_AXIS_Y</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a53a8259e8f36522beb7a90462b3b29a8a2733a36771457557df0331c31f08248b</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PLAIN_FUNCTION_INVALID</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a34dcb7b00002c9532a3eb2a970a102bea73c72f6c15f9106b9a04c4d6488e33b3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PLAIN_FUNCTION_SIMPLE</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a34dcb7b00002c9532a3eb2a970a102beab5f67eff5873b72c0a8ee9dd61b8a2cf</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>PLAIN_FUNCTION_WITH_PARAMS</name>
+      <anchorfile>namespacemygsl.html</anchorfile>
+      <anchor>a34dcb7b00002c9532a3eb2a970a102beaebe6f65961707c57fd37a35e14cfa951</anchor>
+      <arglist></arglist>
+    </member>
   </compound>
   <compound kind="namespace">
     <name>snemo</name>
