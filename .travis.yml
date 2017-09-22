@@ -11,13 +11,13 @@ matrix:
     - os: linux
       services: docker
       env:
-        - DOCKER_IMAGE=supernemo/falaise-ubuntu1604-base
+        - DOCKER_IMAGE=supernemo/falaise-ubuntu1604-base:latest
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: linux
       services: docker
       env:
-        - DOCKER_IMAGE=supernemo/falaise-centos6-base
+        - DOCKER_IMAGE=supernemo/falaise-centos6-base:latest
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: osx
