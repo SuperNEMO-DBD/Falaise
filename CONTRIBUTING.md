@@ -183,6 +183,13 @@ $ git checkout fix-bug
 $ git merge yourusername/fix-bug
 ```
 
+
+# Release Management
+
+The preparation of new releases is handled by Falaise's admins (@drbenmorgan and @goliviero). A workflow for 
+this process is outlined [in a draft document](documentation/development/PreparingReleases.md). Note in particular 
+that updates to external dependencies such as ROOT and Geant4 should be requested through a new Issue Report.
+
 # Additional Resources
 ## Git and GitHub
 - [Software Carpentry Git Lessons](http://swcarpentry.github.io/git-novice/)
