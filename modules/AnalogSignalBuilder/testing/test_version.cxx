@@ -15,8 +15,7 @@
 // This project :
 #include <snemo/asb/version.h>
 
-int main( int  argc_ , char ** argv_  )
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -29,7 +28,7 @@ int main( int  argc_ , char ** argv_  )
     std::clog << "Version revision: " << snemo::asb::version::get_revision() << std::endl;
     std::clog << "Version : '" << snemo::asb::version::get_version() << "'" << std::endl;
 
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   } catch (...) {

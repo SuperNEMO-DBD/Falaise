@@ -26,72 +26,56 @@
 
 namespace snemo {
 
-  namespace asb {
+namespace asb {
 
-    int version::get_major()
-    {
-      return static_cast<int>(FALAISE_ASB_VERSION_MAJOR);
-    }
+int version::get_major() { return static_cast<int>(FALAISE_ASB_VERSION_MAJOR); }
 
-    int version::get_minor()
-    {
-      return static_cast<int>(FALAISE_ASB_VERSION_MINOR);
-    }
+int version::get_minor() { return static_cast<int>(FALAISE_ASB_VERSION_MINOR); }
 
-    int version::get_patch()
-    {
-      return static_cast<int>(FALAISE_ASB_VERSION_PATCH);
-    }
+int version::get_patch() { return static_cast<int>(FALAISE_ASB_VERSION_PATCH); }
 
-    int version::get_revision()
-    {
-      return static_cast<int>(FALAISE_ASB_VERSION_REVISION);
-    }
+int version::get_revision() { return static_cast<int>(FALAISE_ASB_VERSION_REVISION); }
 
-    std::string version::get_version()
-    {
-      static std::string version("");
+std::string version::get_version() {
+  static std::string version("");
 
-      if (version.empty()) {
-        std::ostringstream stream;
-        stream << FALAISE_ASB_VERSION_MAJOR << "."
-               << FALAISE_ASB_VERSION_MINOR << "."
-               << FALAISE_ASB_VERSION_PATCH;
-        version = stream.str();
-      }
+  if (version.empty()) {
+    std::ostringstream stream;
+    stream << FALAISE_ASB_VERSION_MAJOR << "." << FALAISE_ASB_VERSION_MINOR << "."
+           << FALAISE_ASB_VERSION_PATCH;
+    version = stream.str();
+  }
 
-      return version;
-    }
+  return version;
+}
 
-    bool version::is_at_least(int major, int minor, int patch)
-    {
-      if (FALAISE_ASB_VERSION_MAJOR < major) return false;
-      if (FALAISE_ASB_VERSION_MAJOR > major) return true;
-      if (FALAISE_ASB_VERSION_MINOR < minor) return false;
-      if (FALAISE_ASB_VERSION_MINOR > minor) return true;
-      if (FALAISE_ASB_VERSION_PATCH < patch) return false;
-      return true;
-    }
+bool version::is_at_least(int major, int minor, int patch) {
+  if (FALAISE_ASB_VERSION_MAJOR < major) return false;
+  if (FALAISE_ASB_VERSION_MAJOR > major) return true;
+  if (FALAISE_ASB_VERSION_MINOR < minor) return false;
+  if (FALAISE_ASB_VERSION_MINOR > minor) return true;
+  if (FALAISE_ASB_VERSION_PATCH < patch) return false;
+  return true;
+}
 
-    bool version::has_feature(const std::string&)
-    {
-      /// - If you want to add features, then the following implementation
-      ///   provides one example based on string features cached in a set.
-      ///
-      /// static std::set<std::string> features;
-      ///
-      /// if (features.empty())
-      /// {
-      ///   // cache the feature list
-      ///   features.insert("FASTAPI");
-      ///   features.insert("THREADSAFE");
-      /// }
-      ///
-      /// return features.find(name) != features.end();
+bool version::has_feature(const std::string&) {
+  /// - If you want to add features, then the following implementation
+  ///   provides one example based on string features cached in a set.
+  ///
+  /// static std::set<std::string> features;
+  ///
+  /// if (features.empty())
+  /// {
+  ///   // cache the feature list
+  ///   features.insert("FASTAPI");
+  ///   features.insert("THREADSAFE");
+  /// }
+  ///
+  /// return features.find(name) != features.end();
 
-      return false;
-    }
+  return false;
+}
 
-  } // namespace asb
+}  // namespace asb
 
-} // namespace snemo
+}  // namespace snemo
