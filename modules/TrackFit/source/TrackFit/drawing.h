@@ -40,42 +40,35 @@
 #include <TrackFit/gg_hit.h>
 
 namespace geomtools {
-  class placement;
+class placement;
 }
 
 namespace TrackFit {
 
-  class drawing
-  {
-  public:
+class drawing {
+ public:
+  /// Check debug flag
+  bool is_debug() const;
 
-    /// Check debug flag
-    bool is_debug () const;
+  /// Set debug flag
+  void set_debug(bool);
 
-    /// Set debug flag
-    void set_debug (bool);
+  /// Default constructor
+  drawing();
 
-    /// Default constructor
-    drawing ();
+  /// Destructor
+  virtual ~drawing();
 
-    /// Destructor
-    virtual ~drawing ();
+  /// Draw a Geiger hit
+  void draw(std::ostream& out_, const geomtools::placement& p_, const gg_hit& hit_) const;
 
-    /// Draw a Geiger hit
-    void draw (std::ostream & out_,
-               const geomtools::placement & p_,
-               const gg_hit & hit_) const;
+  /// Draw a collection of Geiger hits
+  void draw(std::ostream& out_, const geomtools::placement& p_, const gg_hits_col& hits_) const;
 
-    /// Draw a collection of Geiger hits
-    void draw (std::ostream & out_,
-               const geomtools::placement & p_,
-               const gg_hits_col & hits_) const;
-  private:
+ private:
+  bool _debug_;  /// Debug flag
+};
 
-    bool _debug_; /// Debug flag
+}  // end of namespace TrackFit
 
-  };
-
-} // end of namespace TrackFit
-
-#endif // FALAISE_TRACKFIT_DRAWING_H
+#endif  // FALAISE_TRACKFIT_DRAWING_H
