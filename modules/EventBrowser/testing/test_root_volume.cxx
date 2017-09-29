@@ -2,9 +2,9 @@
 // test_root_volume.cxx
 
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 #include <falaise/snemo/detector/box_volume.h>
 #include <geomtools/box.h>
@@ -17,8 +17,7 @@
 
 using namespace std;
 
-int main (int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   int error_code = EXIT_FAILURE;
   try {
     clog << "Test program for class 'i_root_volume'!" << endl;
@@ -44,8 +43,8 @@ int main (int argc_, char ** argv_)
     my_cylinder_volume->dump();
 
     return EXIT_SUCCESS;
-  } catch (exception & x) {
-    cerr << x.what () << endl;
+  } catch (exception& x) {
+    cerr << x.what() << endl;
   } catch (...) {
     cerr << "unexpected error!" << endl;
   }

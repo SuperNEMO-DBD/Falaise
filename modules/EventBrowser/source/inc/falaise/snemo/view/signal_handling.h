@@ -41,42 +41,39 @@ struct Event_t;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class event_browser;
+class event_browser;
 
-      class signal_handling
-      {
+class signal_handling {
+ public:
+  signal_handling(TGMainFrame* main_);
+  ~signal_handling();
 
-      public:
-        signal_handling (TGMainFrame * main_);
-        ~signal_handling ();
+  bool handle_key(Event_t* event_);
 
-        bool handle_key (Event_t * event_);
+  bool process_message(long msg_, long parm1_, long parm2_);
 
-        bool process_message (long msg_, long parm1_, long parm2_);
+ private:
+  void _process_button_(const button_signals_type signal_);
 
-      private:
+  void _process_menu_(const button_signals_type signal_);
 
-        void _process_button_       (const button_signals_type signal_);
+  void _process_menu_options_(const button_signals_type signal_);
 
-        void _process_menu_         (const button_signals_type signal_);
+ private:
+  event_browser* _browser_;
+};
 
-        void _process_menu_options_ (const button_signals_type signal_);
+}  // end of namespace view
 
-      private:
-        event_browser * _browser_;
-      };
+}  // end of namespace visualization
 
-    } // end of namespace view
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_SIGNAL_HANDLING_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_SIGNAL_HANDLING_H
 
 // end of signal_handling.h
 /*

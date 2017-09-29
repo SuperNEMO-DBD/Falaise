@@ -41,67 +41,58 @@ class TObjArray;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      /// \brief A special volume class to handle complex volume geometry
-      //
-      //  This class can represent a complex geometrical form using an array of
-      //  polyline. It is used for example to visualize BiPo3 light guide shape.
-      class special_volume : public i_root_volume
-      {
+/// \brief A special volume class to handle complex volume geometry
+//
+//  This class can represent a complex geometrical form using an array of
+//  polyline. It is used for example to visualize BiPo3 light guide shape.
+class special_volume : public i_root_volume {
+ public:
+  /// Default constructor
+  special_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-      public:
+  /// Destructor
+  virtual ~special_volume();
 
-        /// Default constructor
-        special_volume(const std::string & name_     = "",
-                       const std::string & category_ = "");
+  /// Overload the clear method to set the TPolyLine style
+  virtual void clear();
 
-        /// Destructor
-        virtual ~special_volume();
+  /// Overload the reset method to clean the TObjArray
+  virtual void reset();
 
-        /// Overload the clear method to set the TPolyLine style
-        virtual void clear();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Overload the reset method to clean the TObjArray
-        virtual void reset();
+  /// Default print
+  virtual void dump() const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream & out_         = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+  /// Check objects presence
+  bool has_objects() const;
 
-        /// Default print
-        virtual void dump() const;
+  void draw() const;
 
-        /// Check objects presence
-        bool has_objects() const;
+ protected:
+  /// Highlight all polylines
+  virtual void _highlight();
 
-        void draw() const;
+  /// Construct the special volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
-      protected:
+ private:
+  TObjArray* _objects_;  //<! ROOT object array
+};
 
-        /// Highlight all polylines
-        virtual void _highlight();
+}  // end of namespace detector
 
-        /// Construct the special volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace visualization
 
-      private:
+}  // end of namespace snemo
 
-        TObjArray * _objects_; //<! ROOT object array
-
-      };
-
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPECIAL_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPECIAL_VOLUME_H
 
 // end of special_volume.h
 /*

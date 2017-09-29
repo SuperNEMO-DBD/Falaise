@@ -49,80 +49,75 @@ class TGNumberEntryField;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      /// \brief Status bar to display run information and navigate through
-      /// events
-      class status_bar
-      {
-      public:
+/// \brief Status bar to display run information and navigate through
+/// events
+class status_bar {
+ public:
+  /// Default constructor
+  status_bar();
 
-        /// Default constructor
-        status_bar();
+  /// Destructor
+  virtual ~status_bar();
 
-        /// Destructor
-        virtual ~status_bar();
+  /// Set event server reference
+  void set_event_server(io::event_server* server_);
 
-        /// Set event server reference
-        void set_event_server(io::event_server * server_);
+  /// Return initialization flag
+  bool is_initialized() const;
 
-        /// Return initialization flag
-        bool is_initialized() const;
+  /// Initialize status bar
+  void initialize(TGCompositeFrame* main_);
 
-        /// Initialize status bar
-        void initialize(TGCompositeFrame * main_);
+  /// Update method
+  void update(const bool reset_ = false, const bool disable_ = false);
 
-        /// Update method
-        void update(const bool reset_ = false, const bool disable_ = false);
+  /// Reset method
+  void reset();
 
-        /// Reset method
-        void reset();
+  /// Update GUI buttons state
+  void update_buttons(const button_signals_type signal_ = UNDEFINED);
 
-        /// Update GUI buttons state
-        void update_buttons(const button_signals_type signal_ = UNDEFINED);
+  /// Reset GUI buttons state
+  void reset_buttons();
 
-        /// Reset GUI buttons state
-        void reset_buttons();
+  /// Process callback signals
+  void process();
 
-        /// Process callback signals
-        void process();
+ private:
+  /// Main initialization method
+  void _at_init_(TGCompositeFrame* main_);
 
-      private:
+ private:
+  bool _initialized_;  //!< Initialization flag
 
-        /// Main initialization method
-        void _at_init_(TGCompositeFrame * main_);
+  io::event_server* _server_;  //!< Event server reference
 
-      private:
+  TGComboBox* _event_list_;            //!< Event list combo box
+  TGNumberEntryField* _goto_event_;    //!< Goto event number box
+  TGPictureButton* _button_first_;     //!< First event button
+  TGPictureButton* _button_previous_;  //!< Previous event button
+  TGPictureButton* _button_next_;      //!< Next event button
+  TGPictureButton* _button_last_;      //!< Last event button
 
-        bool _initialized_;                  //!< Initialization flag
+  // No I/O so ClassDefVersionID = 0
+  ClassDef(status_bar, 0);
+};
 
-        io::event_server * _server_;         //!< Event server reference
+}  // end of namespace view
 
-        TGComboBox * _event_list_;           //!< Event list combo box
-        TGNumberEntryField * _goto_event_;   //!< Goto event number box
-        TGPictureButton * _button_first_;    //!< First event button
-        TGPictureButton * _button_previous_; //!< Previous event button
-        TGPictureButton * _button_next_;     //!< Next event button
-        TGPictureButton * _button_last_;     //!< Last event button
+}  // end of namespace visualization
 
-        // No I/O so ClassDefVersionID = 0
-        ClassDef(status_bar, 0);
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_DISPLAY_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_DISPLAY_H
 
 // end of status_bar.h
 /*

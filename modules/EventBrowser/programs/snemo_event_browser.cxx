@@ -23,9 +23,9 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
-#include <stdexcept>
 
 // Third party:
 // - ROOT:
@@ -39,12 +39,11 @@
 // This project:
 #include <falaise/falaise.h>
 // This plugin:
+#include <falaise/snemo/detector/detector_manager.h>
 #include <falaise/snemo/view/event_browser.h>
 #include <falaise/snemo/view/options_manager.h>
-#include <falaise/snemo/detector/detector_manager.h>
 
-int main(int argc_, char **argv_)
-{
+int main(int argc_, char **argv_) {
   falaise::initialize(argc_, argv_);
   const std::string APPNAME_PREFIX = "flvisualize: ";
 
@@ -53,23 +52,22 @@ int main(int argc_, char **argv_)
     namespace sv = snemo::visualization;
 
     // Command line parser :
-    sv::view::options_manager & options_mgr = sv::view::options_manager::get_instance();
+    sv::view::options_manager &options_mgr = sv::view::options_manager::get_instance();
     if (!options_mgr.parse_command_line(argc_, argv_)) {
       return EXIT_SUCCESS;
     }
 
     // Library loader :
     datatools::library_loader my_library_loader;
-    for (std::vector<std::string>::const_iterator
-           ilib = options_mgr.get_libraries().begin();
+    for (std::vector<std::string>::const_iterator ilib = options_mgr.get_libraries().begin();
          ilib != options_mgr.get_libraries().end(); ++ilib) {
       DT_LOG_NOTICE(options_mgr.get_logging_priority(), "Loading DLL '" << *ilib << "'.");
-      DT_THROW_IF(my_library_loader.load(*ilib) != EXIT_SUCCESS,
-                  std::logic_error, "Cannot load DLL '" << *ilib << "' !");
+      DT_THROW_IF(my_library_loader.load(*ilib) != EXIT_SUCCESS, std::logic_error,
+                  "Cannot load DLL '" << *ilib << "' !");
     }
 
     // Build detector manager
-    sv::detector::detector_manager & detector_mgr = sv::detector::detector_manager::get_instance();
+    sv::detector::detector_manager &detector_mgr = sv::detector::detector_manager::get_instance();
     detector_mgr.initialize();
     detector_mgr.construct();
 
@@ -77,28 +75,27 @@ int main(int argc_, char **argv_)
     DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
 
     int narg = 1;
-    TApplication * my_application = new TApplication("ROOT Application", &narg, argv_);
+    TApplication *my_application = new TApplication("ROOT Application", &narg, argv_);
 
     // Get the screen dimensions
     int position_x, position_y;
     unsigned int screen_width, screen_height;
 
-    gVirtualX->GetWindowSize(gClient->GetRoot()->GetId(),
-                             position_x, position_y,
-                             screen_width, screen_height);
+    gVirtualX->GetWindowSize(gClient->GetRoot()->GetId(), position_x, position_y, screen_width,
+                             screen_height);
 
     // The window is slightly smaller than the screen
     const double scale_factor = options_mgr.get_scaling_factor();
-    const int height = int(scale_factor*screen_height);
-    const int width  = int(scale_factor*screen_width);
+    const int height = int(scale_factor * screen_height);
+    const int width = int(scale_factor * screen_width);
 
     // The event_browser* is autodestructive!!! NEVER delete manually!!
-    sv::view::event_browser * my_event_browser
-      = new sv::view::event_browser(gClient->GetRoot(), width, height);
+    sv::view::event_browser *my_event_browser =
+        new sv::view::event_browser(gClient->GetRoot(), width, height);
     my_event_browser->initialize();
 
     my_application->Run(true);
-  } catch (std::exception & x) {
+  } catch (std::exception &x) {
     DT_LOG_FATAL(datatools::logger::PRIO_FATAL, APPNAME_PREFIX << x.what());
     error_code = EXIT_FAILURE;
   } catch (...) {

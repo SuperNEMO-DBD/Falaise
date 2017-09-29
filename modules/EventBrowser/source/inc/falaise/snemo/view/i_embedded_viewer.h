@@ -39,57 +39,47 @@ class TGFrame;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class i_draw_manager;
+class i_draw_manager;
 
-      class i_embedded_viewer
-      {
+class i_embedded_viewer {
+ public:
+  enum view_dim_type { VIEW_2D = 0, VIEW_3D = 1 };
 
-      public:
+ protected:
+  view_dim_type _view_dim_type;
 
-        enum view_dim_type
-          {
-            VIEW_2D = 0,
-            VIEW_3D = 1
-          };
+ public:
+  i_embedded_viewer(const view_dim_type view_dim_ = VIEW_3D);
+  virtual ~i_embedded_viewer();
 
-      protected:
+  virtual void clear() = 0;
+  virtual void reset() = 0;
 
-        view_dim_type _view_dim_type;
+  virtual void set_view_type(const view_type view_type_) = 0;
+  virtual view_type get_view_type() const = 0;
 
-      public:
+  virtual void update_detector() = 0;
+  virtual void update_scene(i_draw_manager *drawer_) = 0;
 
-        i_embedded_viewer (const view_dim_type view_dim_ = VIEW_3D);
-        virtual ~i_embedded_viewer ();
+  virtual TCanvas *get_canvas() = 0;
+  virtual TGFrame *get_frame() = 0;
 
-        virtual void clear () = 0;
-        virtual void reset () = 0;
+ private:
+  i_embedded_viewer(const i_embedded_viewer &);             // not implemented
+  i_embedded_viewer &operator=(const i_embedded_viewer &);  // not implemented
+};
 
-        virtual void set_view_type (const view_type view_type_) = 0;
-        virtual view_type get_view_type () const = 0;
+}  // end of namespace view
 
-        virtual void update_detector () = 0;
-        virtual void update_scene    (i_draw_manager * drawer_) = 0;
+}  // end of namespace visualization
 
-        virtual TCanvas * get_canvas () = 0;
-        virtual TGFrame * get_frame  () = 0;
+}  // end of namespace snemo
 
-      private:
-
-        i_embedded_viewer            (const i_embedded_viewer &);   // not implemented
-        i_embedded_viewer & operator=(const i_embedded_viewer &);   // not implemented
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_I_EMBEDDED_VIEWER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_I_EMBEDDED_VIEWER_H
 
 // end of i_embedded_viewer.h
 /*

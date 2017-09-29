@@ -46,63 +46,56 @@ class TGFrame;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class opengl_scene;
-      class opengl_event_handler;
-      class i_draw_manager;
+class opengl_scene;
+class opengl_event_handler;
+class i_draw_manager;
 
-      class opengl_embedded_viewer : public i_embedded_viewer,
-                                     public TGLEmbeddedViewer
-      {
+class opengl_embedded_viewer : public i_embedded_viewer, public TGLEmbeddedViewer {
+ public:
+  opengl_embedded_viewer(const std::string &name_, const TGFrame *frame_,
+                         const unsigned int width_ = 0, const unsigned int height_ = 0,
+                         const view_dim_type view_dim_ = VIEW_3D);
+  virtual ~opengl_embedded_viewer();
 
-      public:
+  virtual void clear();
+  virtual void reset();
 
-        opengl_embedded_viewer (const std::string & name_, const TGFrame * frame_,
-                                const unsigned int width_ = 0, const unsigned int height_ = 0,
-                                const view_dim_type view_dim_ = VIEW_3D);
-        virtual ~opengl_embedded_viewer ();
+  virtual void set_view_type(const view_type view_type_);
+  virtual view_type get_view_type() const;
 
-        virtual void clear ();
-        virtual void reset ();
+  virtual void update_detector();
+  virtual void update_scene(i_draw_manager *drawer_);
 
-        virtual void set_view_type (const view_type view_type_);
-        virtual view_type get_view_type () const;
+  virtual TCanvas *get_canvas();
+  virtual TGFrame *get_frame();
 
-        virtual void update_detector ();
-        virtual void update_scene    (i_draw_manager * drawer_);
+ private:
+  void _set_default_();
+  void _set_cameras_();
 
-        virtual TCanvas * get_canvas ();
-        virtual TGFrame * get_frame  ();
+ private:
+  opengl_scene *_opengl_global_scene_;
+  opengl_scene *_opengl_event_scene_;
+  opengl_event_handler *_opengl_event_handler_;
 
-      private:
+  view_type _view_type_;
 
-        void _set_default_ ();
-        void _set_cameras_ ();
+  opengl_embedded_viewer();                                           // not implemented
+  opengl_embedded_viewer(const opengl_embedded_viewer &);             // not implemented
+  opengl_embedded_viewer &operator=(const opengl_embedded_viewer &);  // not implemented
+};
 
-      private:
+}  // end of namespace view
 
-        opengl_scene *         _opengl_global_scene_;
-        opengl_scene *         _opengl_event_scene_;
-        opengl_event_handler * _opengl_event_handler_;
+}  // end of namespace visualization
 
-        view_type              _view_type_;
+}  // end of namespace snemo
 
-        opengl_embedded_viewer             ();                               // not implemented
-        opengl_embedded_viewer             (const opengl_embedded_viewer &); // not implemented
-        opengl_embedded_viewer & operator= (const opengl_embedded_viewer &); // not implemented
-
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_EMBEDDED_VIEWER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_EMBEDDED_VIEWER_H
 
 // end of opengl_embedded_viewer.h
 /*

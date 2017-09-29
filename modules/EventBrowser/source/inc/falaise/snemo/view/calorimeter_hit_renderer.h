@@ -41,35 +41,33 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      /// \brief A ROOT renderer dedicated to calorimeter hit visualization.
-      class calorimeter_hit_renderer : public base_renderer
-      {
-      public:
+/// \brief A ROOT renderer dedicated to calorimeter hit visualization.
+class calorimeter_hit_renderer : public base_renderer {
+ public:
+  /// Default constructor
+  calorimeter_hit_renderer();
 
-        /// Default constructor
-        calorimeter_hit_renderer();
+  /// Destructor
+  virtual ~calorimeter_hit_renderer();
 
-        /// Destructor
-        virtual ~calorimeter_hit_renderer();
+  /// Build simulated calorimeter hits
+  void push_simulated_hits(const std::string& hit_category_ = "");
 
-        /// Build simulated calorimeter hits
-        void push_simulated_hits(const std::string & hit_category_ = "");
+  /// Build calibrated calorimeter hits
+  void push_calibrated_hits();
+};
 
-        /// Build calibrated calorimeter hits
-        void push_calibrated_hits();
-      };
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_CALORIMETER_HIT_RENDERER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_CALORIMETER_HIT_RENDERER_H
 
 // end of calorimeter_hit_renderer.h
 /*

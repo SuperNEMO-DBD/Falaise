@@ -40,39 +40,34 @@ class TGLViewer;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class opengl_embedded_viewer;
+class opengl_embedded_viewer;
 
-      class opengl_event_handler : public TGLEventHandler
-      {
+class opengl_event_handler : public TGLEventHandler {
+ public:
+  opengl_event_handler(opengl_embedded_viewer *viewer_);
+  virtual ~opengl_event_handler();
 
-      public:
+  virtual bool handle_button(Event_t *event_);
 
-        opengl_event_handler (opengl_embedded_viewer * viewer_);
-        virtual ~opengl_event_handler ();
+  // ROOT Interface
+  virtual bool HandleButton(Event_t *event_) { return handle_button(event_); }
 
-        virtual bool handle_button (Event_t * event_);
+ private:
+  opengl_event_handler(const opengl_event_handler &);             // not implemented
+  opengl_event_handler &operator=(const opengl_event_handler &);  // not implemented
+};
 
-        // ROOT Interface
-        virtual bool HandleButton (Event_t * event_) { return handle_button (event_); }
+}  // end of namespace view
 
-      private:
+}  // end of namespace visualization
 
-        opengl_event_handler             (const opengl_event_handler &);   // not implemented
-        opengl_event_handler & operator= (const opengl_event_handler &);   // not implemented
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_EVENT_HANDLER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_EVENT_HANDLER_H
 
 // end of opengl_event_handler.h
 /*

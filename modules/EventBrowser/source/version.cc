@@ -30,25 +30,18 @@
 // This Project
 
 namespace EventBrowser {
-int version::get_major() {
-  return static_cast<int>(EVENTBROWSER_VERSION_MAJOR);
-}
+int version::get_major() { return static_cast<int>(EVENTBROWSER_VERSION_MAJOR); }
 
-int version::get_minor() {
-  return static_cast<int>(EVENTBROWSER_VERSION_MINOR);
-}
+int version::get_minor() { return static_cast<int>(EVENTBROWSER_VERSION_MINOR); }
 
-int version::get_patch() {
-  return static_cast<int>(EVENTBROWSER_VERSION_PATCH);
-}
+int version::get_patch() { return static_cast<int>(EVENTBROWSER_VERSION_PATCH); }
 
 std::string version::get_version() {
   static std::string version("");
 
   if (version.empty()) {
     std::ostringstream stream;
-    stream << EVENTBROWSER_VERSION_MAJOR << "."
-           << EVENTBROWSER_VERSION_MINOR << "."
+    stream << EVENTBROWSER_VERSION_MAJOR << "." << EVENTBROWSER_VERSION_MINOR << "."
            << EVENTBROWSER_VERSION_PATCH;
     version = stream.str();
   }
@@ -82,4 +75,4 @@ bool version::has_feature(const std::string&) {
 
   return false;
 }
-} // namespace EventBrowser
+}  // namespace EventBrowser

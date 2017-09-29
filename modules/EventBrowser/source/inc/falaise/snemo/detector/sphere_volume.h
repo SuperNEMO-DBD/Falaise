@@ -36,53 +36,46 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // \brief A sphere volume
-      class sphere_volume : public i_root_volume
-      {
-      public:
+// \brief A sphere volume
+class sphere_volume : public i_root_volume {
+ public:
+  /// Default constructor
+  sphere_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-        /// Default constructor
-        sphere_volume(const std::string & name_     = "",
-                      const std::string & category_ = "");
+  /// Destructor
+  virtual ~sphere_volume();
 
-        /// Destructor
-        virtual ~sphere_volume();
+  /// Smart dump
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Smart dump
-        virtual void tree_dump(std::ostream      & out_    = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+  /// Default dump
+  virtual void dump() const;
 
-        /// Default dump
-        virtual void dump() const;
+ protected:
+  /// Construct the sphere volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
-      protected:
+ private:
+  double _inner_radius_;  //<! Sphere inner radius
+  double _outer_radius_;  //<! Sphere outer radius
+  double _theta_min_;     //<! Minimal theta angle
+  double _theta_max_;     //<! Maximal theta angle
+  double _phi_min_;       //<! Minimal phi angle
+  double _phi_max_;       //<! Maximal phi angle
+};
 
-        /// Construct the sphere volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace detector
 
-      private:
+}  // end of namespace visualization
 
-        double _inner_radius_; //<! Sphere inner radius
-        double _outer_radius_; //<! Sphere outer radius
-        double _theta_min_;    //<! Minimal theta angle
-        double _theta_max_;    //<! Maximal theta angle
-        double _phi_min_;      //<! Minimal phi angle
-        double _phi_max_;      //<! Maximal phi angle
-      };
+}  // end of namespace snemo
 
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPHERE_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPHERE_VOLUME_H
 
 // end of sphere_volume.h
 /*

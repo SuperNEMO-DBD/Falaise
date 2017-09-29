@@ -26,29 +26,28 @@
 
 namespace FLVisualize {
 
-  //! Exceptions for dialog
-  class FLDialogHelpRequested : public std::exception {};
-  class FLDialogOptionsError : public std::exception {};
+//! Exceptions for dialog
+class FLDialogHelpRequested : public std::exception {};
+class FLDialogOptionsError : public std::exception {};
 
-  //! Initialization flags for kernel setup
-  uint32_t app_kernel_init_flags();
+//! Initialization flags for kernel setup
+uint32_t app_kernel_init_flags();
 
-  //! Handle command line argument dialog
-  void do_cldialog(int argc_, char *argv_[], FLVisualizeArgs& params_);
+//! Handle command line argument dialog
+void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_);
 
-  //! Handle printing of help message to screen
-  void do_help(const boost::program_options::options_description& od);
+//! Handle printing of help message to screen
+void do_help(const boost::program_options::options_description& od);
 
-  //! Handle printing of version information to given ostream
-  void do_version(std::ostream& os, bool isVerbose);
+//! Handle printing of version information to given ostream
+void do_version(std::ostream& os, bool isVerbose);
 
+}  // namespace FLVisualize
 
-} // namespace FLVisualize
+#endif  // FLVISUALIZECOMMANDLINE_H
 
-#endif // FLVISUALIZECOMMANDLINE_H
-
-  // Local Variables: --
-  // mode: c++ --
-  // c-file-style: "gnu" --
-  // tab-width: 2 --
-  // End: --
+// Local Variables: --
+// mode: c++ --
+// c-file-style: "gnu" --
+// tab-width: 2 --
+// End: --
