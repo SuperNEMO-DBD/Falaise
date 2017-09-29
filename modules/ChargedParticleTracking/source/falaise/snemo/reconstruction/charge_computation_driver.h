@@ -37,78 +37,72 @@
 #include <datatools/logger.h>
 
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace snemo {
 
-  namespace datamodel {
-    class tracker_trajectory;
-    class particle_track;
-  }
+namespace datamodel {
+class tracker_trajectory;
+class particle_track;
+}  // namespace datamodel
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// \brief Electric charge determination driver
-    class charge_computation_driver
-    {
-    public:
+/// \brief Electric charge determination driver
+class charge_computation_driver {
+ public:
+  /// Return driver id
+  static const std::string& get_id();
 
-      /// Return driver id
-      static const std::string & get_id();
+  /// Setting initialization flag
+  void set_initialized(const bool initialized_);
 
-      /// Setting initialization flag
-      void set_initialized(const bool initialized_);
+  /// Getting initialization flag
+  bool is_initialized() const;
 
-      /// Getting initialization flag
-      bool is_initialized() const;
+  /// Setting logging priority
+  void set_logging_priority(const datatools::logger::priority priority_);
 
-      /// Setting logging priority
-      void set_logging_priority(const datatools::logger::priority priority_);
+  /// Getting logging priority
+  datatools::logger::priority get_logging_priority() const;
 
-      /// Getting logging priority
-      datatools::logger::priority get_logging_priority() const;
+  /// Constructor:
+  charge_computation_driver();
 
-      /// Constructor:
-      charge_computation_driver();
+  /// Destructor:
+  ~charge_computation_driver();
 
-      /// Destructor:
-      ~charge_computation_driver();
+  /// Initialize the driver through configuration properties
+  void initialize(const datatools::properties& setup_);
 
-      /// Initialize the driver through configuration properties
-      void initialize(const datatools::properties & setup_);
+  /// Reset the driver
+  void reset();
 
-      /// Reset the driver
-      void reset();
+  /// Main driver method
+  void process(const snemo::datamodel::tracker_trajectory& trajectory_,
+               snemo::datamodel::particle_track& particle_);
 
-      /// Main driver method
-      void process(const snemo::datamodel::tracker_trajectory & trajectory_,
-                   snemo::datamodel::particle_track           & particle_);
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+ protected:
+  /// Set default values to class members:
+  void _set_defaults();
 
-    protected:
+ private:
+  /// Measure particle charge:
+  void _measure_particle_charge_(const snemo::datamodel::tracker_trajectory& trajectory_,
+                                 snemo::datamodel::particle_track& particle_);
 
-      /// Set default values to class members:
-      void _set_defaults();
+ private:
+  bool _initialized_;                              //<! Initialize flag
+  datatools::logger::priority _logging_priority_;  //<! Logging flag
+  bool _charge_from_source_;                       //<! Convention flag for charge measurement
+  int _magnetic_field_direction_;                  //<! Magnetic field direction (+/-1)
+};
 
-    private:
-
-      /// Measure particle charge:
-      void _measure_particle_charge_(const snemo::datamodel::tracker_trajectory  & trajectory_,
-                                     snemo::datamodel::particle_track            & particle_);
-
-    private:
-
-      bool _initialized_;                             //<! Initialize flag
-      datatools::logger::priority _logging_priority_; //<! Logging flag
-      bool _charge_from_source_;                      //<! Convention flag for charge measurement
-      int _magnetic_field_direction_;                 //<! Magnetic field direction (+/-1)
-
-    };
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -117,7 +111,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::charge_computation_driver)
 
-#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGE_COMPUTATION_DRIVER_H
+#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGE_COMPUTATION_DRIVER_H
 
 // end of falaise/snemo/reconstruction/charge_computation_driver.h
 /*

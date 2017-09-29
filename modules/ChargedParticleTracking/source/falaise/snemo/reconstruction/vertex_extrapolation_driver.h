@@ -37,96 +37,91 @@
 #include <falaise/snemo/datamodels/particle_track.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace snemo {
 
-  namespace datamodel {
-    class tracker_trajectory;
-  }
+namespace datamodel {
+class tracker_trajectory;
+}
 
-  namespace geometry {
-    class locator_plugin;
-  }
+namespace geometry {
+class locator_plugin;
+}
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// \brief Vertex extrapolation driver
-    class vertex_extrapolation_driver
-    {
-    public:
+/// \brief Vertex extrapolation driver
+class vertex_extrapolation_driver {
+ public:
+  /// Return driver id
+  static const std::string& get_id();
 
-      /// Return driver id
-      static const std::string & get_id();
+  /// Initialization flag
+  void set_initialized(const bool initialized_);
 
-      /// Initialization flag
-      void set_initialized(const bool initialized_);
+  /// Getting initialization flag
+  bool is_initialized() const;
 
-      /// Getting initialization flag
-      bool is_initialized() const;
+  /// Setting logging priority
+  void set_logging_priority(const datatools::logger::priority priority_);
 
-      /// Setting logging priority
-      void set_logging_priority(const datatools::logger::priority priority_);
+  /// Getting logging priority
+  datatools::logger::priority get_logging_priority() const;
 
-      /// Getting logging priority
-      datatools::logger::priority get_logging_priority() const;
+  /// Check the geometry manager
+  bool has_geometry_manager() const;
 
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
+  /// Address the geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Return a non-mutable reference to the geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Return a non-mutable reference to the geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Constructor:
+  vertex_extrapolation_driver();
 
-      /// Constructor:
-      vertex_extrapolation_driver();
+  /// Destructor:
+  ~vertex_extrapolation_driver();
 
-      /// Destructor:
-      ~vertex_extrapolation_driver();
+  /// Initialize the driver through configuration properties
+  void initialize(const datatools::properties& setup_);
 
-      /// Initialize the driver through configuration properties
-      void initialize(const datatools::properties & setup_);
+  /// Reset the driver
+  void reset();
 
-      /// Reset the driver
-      void reset();
+  /// Main driver method
+  void process(const snemo::datamodel::tracker_trajectory& trajectory_,
+               snemo::datamodel::particle_track& particle_);
 
-      /// Main driver method
-      void process(const snemo::datamodel::tracker_trajectory & trajectory_,
-                   snemo::datamodel::particle_track           & particle_);
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+ protected:
+  /// Set default values to class members:
+  void _set_defaults();
 
-    protected:
+ private:
+  /// Check reliability of vertices extrapolation given Geiger cells
+  void _check_vertices_(const snemo::datamodel::tracker_trajectory& trajectory_);
 
-      /// Set default values to class members:
-      void _set_defaults();
+  /// Measure vertices on the calorimeter walls and source foil
+  void _measure_vertices_(const snemo::datamodel::tracker_trajectory& trajectory_,
+                          snemo::datamodel::particle_track::vertex_collection_type& vertices_);
 
-    private:
+ private:
+  bool _initialized_;                                       //!< Initialize flag
+  datatools::logger::priority _logging_priority_;           //!< Logging priority
+  const geomtools::manager* _geometry_manager_;             //!< The SuperNEMO geometry manager
+  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< The SuperNEMO locator plugin
+  std::map<std::string, bool> _use_vertices_;               //!< Vertices reliability
+};
 
-      /// Check reliability of vertices extrapolation given Geiger cells
-      void _check_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_);
-
-      /// Measure vertices on the calorimeter walls and source foil
-      void _measure_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_,
-                              snemo::datamodel::particle_track::vertex_collection_type & vertices_);
-
-    private:
-
-      bool _initialized_;                                       //!< Initialize flag
-      datatools::logger::priority _logging_priority_;           //!< Logging priority
-      const geomtools::manager * _geometry_manager_;            //!< The SuperNEMO geometry manager
-      const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
-      std::map<std::string, bool> _use_vertices_; //!< Vertices reliability
-    };
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -135,7 +130,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::vertex_extrapolation_driver)
 
-#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
+#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
 
 // end of falaise/snemo/reconstruction/vertex_extrapolation_driver.h
 /*
