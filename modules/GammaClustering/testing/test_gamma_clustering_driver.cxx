@@ -2,9 +2,9 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/manager.h>
@@ -16,8 +16,7 @@
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/reconstruction/gamma_clustering_driver.h>
 
-void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & hits_)
-{
+void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_) {
   namespace sdm = snemo::datamodel;
 
   // Fake cluster
@@ -27,7 +26,7 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
     geomtools::geom_id gid(1302, 0, 1, 1, 4, 0);
     gid.set_any(4);
     hCCH.grab().set_geom_id(gid);
-    hCCH.grab().set_time(0.0*CLHEP::ns);
+    hCCH.grab().set_time(0.0 * CLHEP::ns);
     hits_.push_back(hCCH);
   }
   {
@@ -36,8 +35,8 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
     geomtools::geom_id gid(1302, 0, 1, 1, 5, 0);
     gid.set_any(4);
     hCCH.grab().set_geom_id(gid);
-    hCCH.grab().set_time(1.0*CLHEP::ns);
-    hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
+    hCCH.grab().set_time(1.0 * CLHEP::ns);
+    hCCH.grab().set_sigma_time(0.5 * CLHEP::ns);
     hits_.push_back(hCCH);
   }
   // Add another calorimeter hit internally in time
@@ -47,8 +46,8 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
     geomtools::geom_id gid(1302, 0, 0, 1, 5, 0);
     gid.set_any(4);
     hCCH.grab().set_geom_id(gid);
-    hCCH.grab().set_time(2.0*CLHEP::ns);
-    hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
+    hCCH.grab().set_time(2.0 * CLHEP::ns);
+    hCCH.grab().set_sigma_time(0.5 * CLHEP::ns);
     hits_.push_back(hCCH);
   }
   // Finally, create a random time calorimeter hits
@@ -58,15 +57,14 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
     geomtools::geom_id gid(1302, 0, 0, 4, 8, 0);
     gid.set_any(4);
     hCCH.grab().set_geom_id(gid);
-    hCCH.grab().set_time(5.0*CLHEP::ns);
-    hCCH.grab().set_sigma_time(0.5*CLHEP::ns);
+    hCCH.grab().set_time(5.0 * CLHEP::ns);
+    hCCH.grab().set_sigma_time(0.5 * CLHEP::ns);
     hits_.push_back(hCCH);
   }
   return;
 }
 
-int main()
-{
+int main() {
   falaise::initialize();
   int error_code = EXIT_SUCCESS;
   try {
@@ -76,12 +74,11 @@ int main()
     namespace srt = snemo::reconstruction;
 
     // Need an effective geometry manager ot make use of locators
-    const std::string gmanager_config_file = falaise::get_resource_dir() +
-      "/config/snemo/demonstrator/geometry/3.0/manager.conf";
+    const std::string gmanager_config_file =
+        falaise::get_resource_dir() + "/config/snemo/demonstrator/geometry/3.0/manager.conf";
     // Load properties from the configuration file
     datatools::properties gmanager_config;
-    datatools::properties::read_config(gmanager_config_file,
-                                       gmanager_config);
+    datatools::properties::read_config(gmanager_config_file, gmanager_config);
     geomtools::manager geo_mgr;
     geo_mgr.initialize(gmanager_config);
 
@@ -112,17 +109,18 @@ int main()
       GCD.set_geometry_manager(geo_mgr);
       datatools::properties GCD_config;
       GCD_config.store("BGB.logging.priority", "debug");
-      GCD_config.store_with_explicit_unit("GC.minimal_internal_probability", 100*CLHEP::perCent);
+      GCD_config.store_with_explicit_unit("GC.minimal_internal_probability", 100 * CLHEP::perCent);
       GCD.initialize(GCD_config);
       GCD.process(hits, PTD);
       PTD.tree_dump();
     }
 
-  } catch (std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
   } catch (...) {
-    std::cerr << "error: " << "unexpected error !" << std::endl;
+    std::cerr << "error: "
+              << "unexpected error !" << std::endl;
     error_code = EXIT_FAILURE;
   }
   falaise::terminate();
