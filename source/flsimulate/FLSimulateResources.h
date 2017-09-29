@@ -14,35 +14,34 @@
 #define FLSIMULATERESOURCES_H
 
 // Standard Library:
-#include <string>
 #include <stdexcept>
+#include <string>
 
 namespace FLSimulate {
-  //! Exception for unknown resources
-  class UnknownResourceException : public std::runtime_error {
-  public:
-    UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
-  };
+//! Exception for unknown resources
+class UnknownResourceException : public std::runtime_error {
+ public:
+  UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
+};
 
-  //! Return the control file for the given experiment and version id
-  std::string getControlFile(const std::string& experiment,
-                             const std::string& /*versionID*/ = "");
+//! Return the control file for the given experiment and version id
+std::string getControlFile(const std::string& experiment, const std::string& /*versionID*/ = "");
 
-  //! Return the variants file for the given experiment and version id
-  std::string getVariantsConfigFile(const std::string& experiment,
-                                    const std::string& /*versionID*/ = "");
+//! Return the variants file for the given experiment and version id
+std::string getVariantsConfigFile(const std::string& experiment,
+                                  const std::string& /*versionID*/ = "");
 
-  // //! Return the default variants profile file for the given experiment and version id
-  // std::string getVariantsDefaultProfile(const std::string& experiment,
-  //                                       const std::string& /*versionID*/ = "");
+// //! Return the default variants profile file for the given experiment and version id
+// std::string getVariantsDefaultProfile(const std::string& experiment,
+//                                       const std::string& /*versionID*/ = "");
 
-  // //! Return the service configuration file for the given experiment and version id
-  // std::string getServicesConfigFile(const std::string& experiment,
-  //                                   const std::string& /*versionID*/ = "");
+// //! Return the service configuration file for the given experiment and version id
+// std::string getServicesConfigFile(const std::string& experiment,
+//                                   const std::string& /*versionID*/ = "");
 
-} // namespace FLSimulate
+}  // namespace FLSimulate
 
-#endif // FLSIMULATERESOURCES_H
+#endif  // FLSIMULATERESOURCES_H
 
 // Local Variables: --
 // mode: c++ --
