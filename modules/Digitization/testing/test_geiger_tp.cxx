@@ -1,14 +1,14 @@
 // test_geiger_tp.cxx
 
 // Standard libraries :
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
 #include <datatools/io_factory.h>
+#include <datatools/logger.h>
 
 // Falaise:
 #include <falaise/falaise.h>
@@ -16,17 +16,17 @@
 // This project :
 #include <snemo/digitization/geiger_tp.h>
 
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-  try { 
+  try {
     std::clog << "Test program for class 'snemo::digitization::geiger_tp' !" << std::endl;
 
     snemo::digitization::geiger_tp my_geiger_tp;
-    
-    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> my_tp_bitset(std::string("1111100101000001010100000101010000010101000001010110101"));
+
+    std::bitset<snemo::digitization::geiger::tp::TP_SIZE> my_tp_bitset(
+        std::string("1111100101000001010100000101010000010101000001010110101"));
 
     my_geiger_tp.set_gg_tp_bitset(my_tp_bitset);
     my_geiger_tp.set_clocktick_800ns(5);
@@ -37,7 +37,7 @@ int main(int argc_, char ** argv_)
     std::clog << "The end." << std::endl;
   }
 
-  catch (std::exception & error) {
+  catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   }
@@ -50,4 +50,3 @@ int main(int argc_, char ** argv_)
   falaise::terminate();
   return error_code;
 }
-

@@ -19,62 +19,54 @@
 #include <snemo/digitization/signal_data.h>
 
 namespace snemo {
-  
-  namespace digitization {		
 
-    /// \brief Algorithm processing. Take simulated datas and fill geiger signal objects.
-    class sd_to_geiger_signal_algo : boost::noncopyable
-    {
-    public :
+namespace digitization {
 
-      /// Default constructor
-			sd_to_geiger_signal_algo();
+/// \brief Algorithm processing. Take simulated datas and fill geiger signal objects.
+class sd_to_geiger_signal_algo : boost::noncopyable {
+ public:
+  /// Default constructor
+  sd_to_geiger_signal_algo();
 
-			// Constructor by initialisation
-      sd_to_geiger_signal_algo(const geomtools::manager & mgr_);
+  // Constructor by initialisation
+  sd_to_geiger_signal_algo(const geomtools::manager& mgr_);
 
-      /// Destructor
-      virtual ~sd_to_geiger_signal_algo();
-      
-      /// Initializing
-      void initialize();
+  /// Destructor
+  virtual ~sd_to_geiger_signal_algo();
 
-      /// Check if the algorithm is initialized 
-      bool is_initialized() const;
+  /// Initializing
+  void initialize();
 
-      /// Reset the object
-      void reset(); 
+  /// Check if the algorithm is initialized
+  bool is_initialized() const;
 
-			/// Set the geometry manager
-			void set_geo_manager(const geomtools::manager & mgr_ );
+  /// Reset the object
+  void reset();
 
-      int process(const mctools::simulated_data & sd_,
-									signal_data & signal_data_);
+  /// Set the geometry manager
+  void set_geo_manager(const geomtools::manager& mgr_);
 
-    protected: 
-      
-			/// Return the drift time with simple approximation
-			double _anode_drift_time_calculation(const double drift_distance) const;
-			
-      ///  Process to fill a signal data object from simulated data
-      int _process(const mctools::simulated_data & sd_,
-									 signal_data & signal_data_);
+  int process(const mctools::simulated_data& sd_, signal_data& signal_data_);
 
-    private :
-      
-      bool _initialized_; //!< Initialization flag
-			const geomtools::manager * _geo_manager_; //!< Geometry manager
+ protected:
+  /// Return the drift time with simple approximation
+  double _anode_drift_time_calculation(const double drift_distance) const;
 
-    };
+  ///  Process to fill a signal data object from simulated data
+  int _process(const mctools::simulated_data& sd_, signal_data& signal_data_);
 
-  } // end of namespace digitization
+ private:
+  bool _initialized_;                       //!< Initialization flag
+  const geomtools::manager* _geo_manager_;  //!< Geometry manager
+};
 
-} // end of namespace snemo
+}  // end of namespace digitization
 
+}  // end of namespace snemo
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SD_TO_GEIGER_SIGNAL_ALGO_H
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_SD_TO_GEIGER_SIGNAL_ALGO_H
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

@@ -11,41 +11,37 @@
 // Third party:
 // - Boost:
 #include <boost/serialization/base_object.hpp>
-#include <boost/serialization/nvp.hpp>
 #include <boost/serialization/bitset.hpp>
+#include <boost/serialization/nvp.hpp>
 // - Bayeux/geomtools
 #include <geomtools/base_hit.ipp>
-	 
+
 namespace snemo {
-  
-  namespace digitization {
 
-    template<class Archive>
-    void calo_ctw::serialize (Archive            & ar,
-															const unsigned int /* version_ */)
-    {
-      // inherit from the 'base_hit' mother class:
-      ar & boost::serialization::make_nvp ("geomtools__base_hit",
-																					 boost::serialization::base_object<geomtools::base_hit>(*this));
+namespace digitization {
 
-      if (_store & STORE_CLOCKTICK_25NS)
-				{
-					ar & boost::serialization::make_nvp ("clocktick_25ns", _clocktick_25ns_);
-				}
-		
-      if (_store & STORE_CTW)
-				{
-					ar & boost::serialization::make_nvp ("TP", _ctw_);
-				}
+template <class Archive>
+void calo_ctw::serialize(Archive& ar, const unsigned int /* version_ */) {
+  // inherit from the 'base_hit' mother class:
+  ar& boost::serialization::make_nvp("geomtools__base_hit",
+                                     boost::serialization::base_object<geomtools::base_hit>(*this));
 
-      return;
-    }
+  if (_store & STORE_CLOCKTICK_25NS) {
+    ar& boost::serialization::make_nvp("clocktick_25ns", _clocktick_25ns_);
+  }
 
-  } // end of namespace digitization
+  if (_store & STORE_CTW) {
+    ar& boost::serialization::make_nvp("TP", _ctw_);
+  }
 
-} // end of namespace snemo
+  return;
+}
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_IPP
+}  // end of namespace digitization
+
+}  // end of namespace snemo
+
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_IPP
 
 /*
 ** Local Variables: --

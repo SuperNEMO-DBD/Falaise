@@ -1,4 +1,4 @@
-//fldigi_tracker_trigger_mem_maker.cxx
+// fldigi_tracker_trigger_mem_maker.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -16,8 +16,7 @@
 #include <snemo/digitization/memory.h>
 #include <snemo/digitization/tracker_trigger_mem_maker.h>
 
-int main( int  argc_ , char ** argv_  )
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -45,40 +44,40 @@ int main( int  argc_ , char ** argv_  )
     datatools::fetch_path_with_env(mem5_file);
 
     snemo::digitization::tracker_trigger_mem_maker my_memory_maker;
-    
+
     my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM1);
     my_memory_maker.initialize();
     my_memory_maker.store_to_file(mem1_file, "Default mem1.conf : Sliding Zone Vertical memory");
-    
+
     my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM2);
     my_memory_maker.initialize();
     my_memory_maker.store_to_file(mem2_file, "Default mem2.conf : Sliding Zone Horizontal memory");
-    
+
     my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM3);
     my_memory_maker.initialize();
     my_memory_maker.store_to_file(mem3_file, "Default mem3.conf : Zone Vertical memory");
-    
+
     my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM4);
     my_memory_maker.initialize();
     my_memory_maker.store_to_file(mem4_file, "Default mem4.conf : Zone Horizontal memory");
 
     my_memory_maker.configure(snemo::digitization::tracker_trigger_mem_maker::MEM5);
     my_memory_maker.initialize();
-    my_memory_maker.store_to_file(mem5_file, "Default mem5.conf : Zone Vertical for horizontal memory");
-    
+    my_memory_maker.store_to_file(mem5_file,
+                                  "Default mem5.conf : Zone Vertical for horizontal memory");
+
   }
-  
-  catch (std::exception & error) {
+
+  catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   }
-  
+
   catch (...) {
     DT_LOG_FATAL(logging, "Unexpected error!");
     error_code = EXIT_FAILURE;
   }
-    
+
   falaise::terminate();
   return error_code;
-  
 }

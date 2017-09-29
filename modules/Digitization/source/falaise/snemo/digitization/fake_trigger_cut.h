@@ -24,9 +24,9 @@
  *
  * Description:
  *
- * Fake trigger cut : A cut which goal is to process 'fake_trigger_algo' 
+ * Fake trigger cut : A cut which goal is to process 'fake_trigger_algo'
  * to cut SD files from a datatools::things coming from flsimulate
- * The physical selection for a fake trigger is configurable but the 
+ * The physical selection for a fake trigger is configurable but the
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  * Both answer can be save in two different files
  *
@@ -50,60 +50,56 @@
 #include <falaise/snemo/digitization/fake_trigger_algo.h>
 
 namespace datatools {
-  class service_manager;
-  class properties;
-}
+class service_manager;
+class properties;
+}  // namespace datatools
 
 namespace snemo {
 
-  namespace digitization {
+namespace digitization {
 
-    class fake_trigger_cut : public cuts::i_cut
-    {
-    public:
+class fake_trigger_cut : public cuts::i_cut {
+ public:
+  /// Constructor
+  fake_trigger_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      fake_trigger_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~fake_trigger_cut();
 
-      /// Destructor
-      virtual ~fake_trigger_cut();
+  /// Set the SD bank key
+  void set_SD_label(const std::string& SD_label_);
 
-      /// Set the SD bank key
-      void set_SD_label(const std::string & SD_label_);
+  /// Return the SD bank key
+  const std::string& get_SD_label() const;
 
-      /// Return the SD bank key
-      const std::string & get_SD_label() const;
+  /// Initilization
+  virtual void initialize(const datatools::properties& configuration_,
+                          datatools::service_manager& service_manager_,
+                          cuts::cut_handle_dict_type& cut_dict_);
 
-      /// Initilization
-      virtual void initialize(const datatools::properties & configuration_,
-			      datatools::service_manager & service_manager_,
-			      cuts::cut_handle_dict_type & cut_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+ protected:
+  /// Default values
+  void _set_defaults();
 
-    protected:
+  /// Selection
+  virtual int _accept();
 
-      /// Default values
-      void _set_defaults();
+ private:
+  std::string _SD_label_;  //!< The label of the simulated data bank
 
-      /// Selection
-      virtual int _accept();
+  /// Fake Trigger Algo :
+  boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
 
-    private:
+  // Macro to automate the registration of the cut :
+  CUT_REGISTRATION_INTERFACE(fake_trigger_cut)
+};
 
-      std::string _SD_label_; //!< The label of the simulated data bank
+}  // namespace digitization
 
-      /// Fake Trigger Algo :
-      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
-
-      // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(fake_trigger_cut)
-    };
-
-  } // end of namespace cut
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // OCD support::
 #include <datatools/ocd_macros.h>
@@ -111,7 +107,7 @@ namespace snemo {
 // @arg snemo::digitization::fake_trigger_cut the name the registered class in the OCD system
 DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_cut)
 
-#endif // FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H
+#endif  // FALAISE_SNEMO_DIGITIZATION_FAKE_TRIGGER_CUT_H
 
 /*
 ** Local Variables: --
