@@ -28,18 +28,18 @@
 
 namespace FLReconstruct {
 
-  //! Data type
-  enum data_type {
-    DATA_UNKNOWN = 0, //!< Unknown data type
-    DATA_REAL    = 1, //!< Real data
-    DATA_MC      = 2  //!< Monte Carlo data
-  };
+//! Data type
+enum data_type {
+  DATA_UNKNOWN = 0,  //!< Unknown data type
+  DATA_REAL = 1,     //!< Real data
+  DATA_MC = 2        //!< Monte Carlo data
+};
 
-  std::string get_data_type_label(data_type);
+std::string get_data_type_label(data_type);
 
-  data_type get_data_type(const std::string &);
+data_type get_data_type(const std::string&);
 
-} // end of namespace FLReconstruct
+}  // end of namespace FLReconstruct
 
 // - Validation of verbosity command line arguments. must exist inside
 // the datatools namespace.
@@ -47,16 +47,14 @@ namespace FLReconstruct {
 // for validator (bpo dependency not wanted)
 namespace datatools {
 
-  std::istream& operator>>(std::istream& in, datatools::logger::priority& p);
+std::istream& operator>>(std::istream& in, datatools::logger::priority& p);
 
-  //! validate logging argument
-  void validate(boost::any& v,
-                std::vector<std::string> const& values,
-                datatools::logger::priority* /*target_type*/,
-                int);
-}
+//! validate logging argument
+void validate(boost::any& v, std::vector<std::string> const& values,
+              datatools::logger::priority* /*target_type*/, int);
+}  // namespace datatools
 
-#endif // FLRECONSTRUCTUTILS_H
+#endif  // FLRECONSTRUCTUTILS_H
 
 // Local Variables: --
 // mode: c++ --

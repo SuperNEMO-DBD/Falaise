@@ -28,12 +28,12 @@
 
 // Third Party
 // - Boost
-#include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/exceptions.hpp"
+#include "boost/property_tree/ptree.hpp"
 
 // - Bayeux
-#include "bayeux/datatools/properties.h"
 #include "bayeux/datatools/multi_properties.h"
+#include "bayeux/datatools/properties.h"
 
 // This Project
 
@@ -45,13 +45,12 @@ typedef boost::property_tree::basic_ptree<std::string, datatools::properties::da
 //! Traits for types that can be stored in properties
 struct traits {
   // TODO: Support for Paths, Quantities and Arrays
-  typedef boost::mpl::vector<datatools::properties::data::vbool,
-                             datatools::properties::data::vbool::value_type,
-                             datatools::properties::data::vint,
-                             datatools::properties::data::vint::value_type,
-                             datatools::properties::data::vdouble::value_type,
-                             datatools::properties::data::vstring,
-                             datatools::properties::data::vstring::value_type> types;
+  typedef boost::mpl::vector<
+      datatools::properties::data::vbool, datatools::properties::data::vbool::value_type,
+      datatools::properties::data::vint, datatools::properties::data::vint::value_type,
+      datatools::properties::data::vdouble::value_type, datatools::properties::data::vstring,
+      datatools::properties::data::vstring::value_type>
+      types;
   template <typename T>
   using is_storable = typename boost::mpl::contains<types, T>::type;
 };
@@ -76,7 +75,7 @@ struct property_translator {
   //! Conversion can only happen if external_type is supported
   boost::optional<external_type> get_value(const internal_type& internal) {
     static_assert(traits::is_storable<external_type>::value, "Cannot get value, invalid type");
-    return this->get_value_impl(internal, external_type {});
+    return this->get_value_impl(internal, external_type{});
   }
 
   //! Store value, converting to internal_type
@@ -93,8 +92,7 @@ struct property_translator {
   boost::optional<external_type> get_value_impl(const internal_type& internal, bool) {
     if (internal.is_boolean() && internal.is_scalar()) {
       return internal.get_boolean_value();
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to bool");
     }
   }
@@ -102,8 +100,7 @@ struct property_translator {
   boost::optional<external_type> get_value_impl(const internal_type& internal, int) {
     if (internal.is_integer() && internal.is_scalar()) {
       return internal.get_integer_value();
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to int");
     }
   }
@@ -111,8 +108,7 @@ struct property_translator {
   boost::optional<external_type> get_value_impl(const internal_type& internal, double) {
     if (internal.is_real() && internal.is_scalar()) {
       return internal.get_real_value();
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to double");
     }
   }
@@ -120,8 +116,7 @@ struct property_translator {
   boost::optional<external_type> get_value_impl(const internal_type& internal, std::string) {
     if (internal.is_string() && internal.is_scalar()) {
       return internal.get_string_value();
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to string");
     }
   }
@@ -135,8 +130,7 @@ struct property_translator {
         tmp.push_back(internal.get_boolean_value(i));
       }
       return tmp;
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to vector<bool>");
     }
   }
@@ -150,13 +144,13 @@ struct property_translator {
         tmp.push_back(internal.get_integer_value(i));
       }
       return tmp;
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to vector<int>");
     }
   }
 
-  boost::optional<external_type> get_value_impl(const internal_type& internal, std::vector<double>) {
+  boost::optional<external_type> get_value_impl(const internal_type& internal,
+                                                std::vector<double>) {
     if (internal.is_real() && internal.is_vector()) {
       size_t size = static_cast<size_t>(internal.size());
       std::vector<double> tmp;
@@ -165,13 +159,13 @@ struct property_translator {
         tmp.push_back(internal.get_real_value(i));
       }
       return tmp;
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to vector<double>");
     }
   }
 
-  boost::optional<external_type> get_value_impl(const internal_type& internal, std::vector<std::string>) {
+  boost::optional<external_type> get_value_impl(const internal_type& internal,
+                                                std::vector<std::string>) {
     if (internal.is_string() && internal.is_vector()) {
       size_t size = static_cast<size_t>(internal.size());
       std::vector<std::string> tmp;
@@ -180,18 +174,17 @@ struct property_translator {
         tmp.push_back(internal.get_string_value(i));
       }
       return tmp;
-    }
-    else {
+    } else {
       throw type_error("cannot convert value to vector<string>");
     }
   }
 };
 
 //! Print contents of properties
-void tree_dump(std::ostream& oput, const properties& p, int depth=0) {
+void tree_dump(std::ostream& oput, const properties& p, int depth = 0) {
   for (const auto& node : p.get_child("")) {
     // Process current node
-    oput << std::string("").assign(depth*2, ' ') << "* ";
+    oput << std::string("").assign(depth * 2, ' ') << "* ";
     oput << node.first;
     oput << " : ";
     // any data associated with this node
@@ -200,7 +193,7 @@ void tree_dump(std::ostream& oput, const properties& p, int depth=0) {
     oput << "\n";
 
     // recurse to subtree
-    tree_dump(oput, node.second, depth+1);
+    tree_dump(oput, node.second, depth + 1);
   }
 }
 
@@ -266,10 +259,10 @@ datatools::properties write_datatools(const properties& input) {
 properties read_datatools(const datatools::multi_properties& input) {
   // Maint tree is single "multiproperties" node
   properties output;
-  auto& mpTree = output.put_child("multiproperties", properties {});
+  auto& mpTree = output.put_child("multiproperties", properties{});
   mpTree.put("key_label", input.get_key_label());
   mpTree.put("meta_label", input.get_meta_label());
-  auto& sections = mpTree.put_child("sections", properties {});
+  auto& sections = mpTree.put_child("sections", properties{});
 
   for (const auto& entry : input.ordered_entries()) {
     properties opEntry;
@@ -314,9 +307,8 @@ datatools::multi_properties write_datatools_multiproperties(const properties& in
   return output;
 }
 
-} // namespace metadata
-} // namespace falaise
-
+}  // namespace metadata
+}  // namespace falaise
 
 // Don't care (yet) about serializing to/from XML/JSON etc,
 // but do need to think about get/put for data...
@@ -326,27 +318,30 @@ namespace boost {
 namespace property_tree {
 template <typename T>
 struct translator_between<falaise::metadata::properties::data_type, T> {
-  typedef falaise::metadata::property_translator<falaise::metadata::properties::data_type,T> type;
+  typedef falaise::metadata::property_translator<falaise::metadata::properties::data_type, T> type;
 };
 
 // Specialize for self translation of stored type
 template <>
-struct translator_between<falaise::metadata::properties::data_type, falaise::metadata::properties::data_type> {
+struct translator_between<falaise::metadata::properties::data_type,
+                          falaise::metadata::properties::data_type> {
   struct type {
     typedef falaise::metadata::properties::data_type internal_type;
     typedef falaise::metadata::properties::data_type external_type;
 
-    boost::optional<falaise::metadata::properties::data_type> get_value(const falaise::metadata::properties::data_type& value) {
+    boost::optional<falaise::metadata::properties::data_type> get_value(
+        const falaise::metadata::properties::data_type& value) {
       return value;
     }
 
-    boost::optional<falaise::metadata::properties::data_type> put_value(const falaise::metadata::properties::data_type& value) {
+    boost::optional<falaise::metadata::properties::data_type> put_value(
+        const falaise::metadata::properties::data_type& value) {
       return falaise::metadata::properties::data_type(value);
     }
   };
 };
-} // namespace property_tree
-} // namespace boost
+}  // namespace property_tree
+}  // namespace boost
 
 //----------------------------------------------------------------------
 // Catch tests
@@ -359,7 +354,7 @@ datatools::properties makeProperties() {
   input.store("bar", true);
   input.store("baz", "lorem ipsum");
   input.store("bob", 3.14);
-  input.store("config", std::vector<std::string> {"a", "b"});
+  input.store("config", std::vector<std::string>{"a", "b"});
   input.store("a.parameter", 3.14);
   input.store("a.directory", "/a/b/c/");
   input.store("b.parameter", 4.13);
@@ -370,43 +365,42 @@ datatools::properties makeProperties() {
 
 datatools::multi_properties makeMultiProperties() {
   datatools::multi_properties input;
-  datatools::properties & server_section = input.add_section ("server", "server_type");
-  server_section.store_flag ("verbose", "Verbose mode");
-  server_section.store ("max_number_of_connexions", 5, "Maximum number of simultaneous connections");
-  server_section.store ("port", 3456, "Port number");
-  server_section.store ("protocol", "UDP", "Current protocol");
+  datatools::properties& server_section = input.add_section("server", "server_type");
+  server_section.store_flag("verbose", "Verbose mode");
+  server_section.store("max_number_of_connexions", 5, "Maximum number of simultaneous connections");
+  server_section.store("port", 3456, "Port number");
+  server_section.store("protocol", "UDP", "Current protocol");
 
   // Add a section for parameters dedicated to an embedded pseuso-random number generator :
-  datatools::properties & prng_section = input.add_section ("prng", "prng_type");
-  prng_section.store ("seed", 314159, "initial PRNG seed");
-  prng_section.store ("buffer_size", 1000, "Size of the buffer for pre-computed random numbers");
+  datatools::properties& prng_section = input.add_section("prng", "prng_type");
+  prng_section.store("seed", 314159, "initial PRNG seed");
+  prng_section.store("buffer_size", 1000, "Size of the buffer for pre-computed random numbers");
 
   return input;
 }
-
 
 TEST_CASE("properties conversion works", "") {
   auto fixture = makeProperties();
   auto metadata = falaise::metadata::read_datatools(fixture);
 
   SECTION("Failure conditions") {
-    REQUIRE_THROWS_AS( metadata.get<bool>("a.bad.path"), falaise::metadata::key_error );
+    REQUIRE_THROWS_AS(metadata.get<bool>("a.bad.path"), falaise::metadata::key_error);
   }
 
   SECTION("Integer Extraction") {
-    REQUIRE( metadata.get<int>("foo") == 42 );
-    REQUIRE_THROWS_AS( metadata.get<double>("foo"), falaise::metadata::type_error );
-    REQUIRE( metadata.get("foo_opt", 24) == 24 );
+    REQUIRE(metadata.get<int>("foo") == 42);
+    REQUIRE_THROWS_AS(metadata.get<double>("foo"), falaise::metadata::type_error);
+    REQUIRE(metadata.get("foo_opt", 24) == 24);
     metadata.put("foo_opt", 234);
-    REQUIRE( metadata.get("foo_opt", 4321) == 234 );
+    REQUIRE(metadata.get("foo_opt", 4321) == 234);
   }
 
   SECTION("Vector Extraction") {
     auto vecString = metadata.get<std::vector<std::string> >("config");
-    std::vector<std::string> expected {"a", "b"};
-    REQUIRE( vecString == expected );
-    std::vector<int> def {1, 2, 3, 4};
-    REQUIRE( metadata.get("nonexistant", std::vector<int>{1,2,3,4}) == def );
+    std::vector<std::string> expected{"a", "b"};
+    REQUIRE(vecString == expected);
+    std::vector<int> def{1, 2, 3, 4};
+    REQUIRE(metadata.get("nonexistant", std::vector<int>{1, 2, 3, 4}) == def);
   }
 }
 
@@ -414,31 +408,24 @@ TEST_CASE("properties conversion is reversible", "") {
   auto input = makeProperties();
   auto tmp = falaise::metadata::read_datatools(input);
 
-  SECTION("Back conversion works") {
-    REQUIRE_NOTHROW(falaise::metadata::write_datatools(tmp));
-  }
+  SECTION("Back conversion works") { REQUIRE_NOTHROW(falaise::metadata::write_datatools(tmp)); }
 
   SECTION("Read/Write datatools::properties are Identical", "") {
     auto output = falaise::metadata::write_datatools(tmp);
     // Keys
-    REQUIRE( output.keys() == input.keys() );
+    REQUIRE(output.keys() == input.keys());
 
     // Types held at each key
     std::vector<int> inTypes(input.size());
     auto inKeys = input.keys();
     std::transform(inKeys.begin(), inKeys.end(), inTypes.begin(),
-                   [&input](std::string& k) {
-                     return input.get(k).get_type();
-                   });
+                   [&input](std::string& k) { return input.get(k).get_type(); });
 
     std::vector<int> outTypes(output.size());
     auto outKeys = output.keys();
     std::transform(outKeys.begin(), outKeys.end(), outTypes.begin(),
-                   [&output](std::string& k) {
-                     return output.get(k).get_type();
-                   });
-    REQUIRE( outTypes == inTypes );
-
+                   [&output](std::string& k) { return output.get(k).get_type(); });
+    REQUIRE(outTypes == inTypes);
   }
 }
 
@@ -449,5 +436,3 @@ TEST_CASE("multi_properties conversion works", "") {
   auto output = falaise::metadata::write_datatools_multiproperties(rep);
   output.tree_dump(std::cout);
 }
-
-

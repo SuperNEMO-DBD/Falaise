@@ -16,34 +16,32 @@
 #define FLRECONSTRUCTERRORS_H
 
 // Standard Library:
-#include <string>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 namespace FLReconstruct {
 
-  enum FLDialogState {
-    DIALOG_OK,
-    DIALOG_QUERY,
-    DIALOG_ERROR
-  };
+enum FLDialogState { DIALOG_OK, DIALOG_QUERY, DIALOG_ERROR };
 
-  //! Exceptions:
-  //! Exceptions for configuration
-  class FLConfigDefaultError : public std::exception {};
-  class FLConfigHelpHandled : public std::exception {};
-  class FLConfigUserError : public std::runtime_error {using std::runtime_error::runtime_error;};
-  //! Exceptions for dialog
-  class FLDialogHelpRequested : public std::exception {};
-  class FLDialogOptionsError : public std::exception {};
+//! Exceptions:
+//! Exceptions for configuration
+class FLConfigDefaultError : public std::exception {};
+class FLConfigHelpHandled : public std::exception {};
+class FLConfigUserError : public std::runtime_error {
+  using std::runtime_error::runtime_error;
+};
+//! Exceptions for dialog
+class FLDialogHelpRequested : public std::exception {};
+class FLDialogOptionsError : public std::exception {};
 
-  void do_error(std::ostream& os, const char* err);
+void do_error(std::ostream& os, const char* err);
 
-  void do_error(std::ostream& os, const std::string & serr);
+void do_error(std::ostream& os, const std::string& serr);
 
-} // namespace FLReconstruct
+}  // namespace FLReconstruct
 
-#endif // FLRECONSTRUCTERRORS_H
+#endif  // FLRECONSTRUCTERRORS_H
 
 // Local Variables: --
 // mode: c++ --
