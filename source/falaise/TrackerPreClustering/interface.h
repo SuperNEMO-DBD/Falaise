@@ -31,12 +31,12 @@
 #define FALAISE_TRACKERPRECLUSTERING_INTERFACE_H 1
 
 // Standard library:
-#include <string>
-#include <limits>
-#include <vector>
-#include <iostream>
-#include <sstream>
 #include <algorithm>
+#include <iostream>
+#include <limits>
+#include <sstream>
+#include <string>
+#include <vector>
 
 // Third party:
 // - Boost:
@@ -46,100 +46,92 @@
 
 namespace TrackerPreClustering {
 
-  /// \brief Setup data for the TrackerPreClustering algorithm
-  struct setup_data
-  {
-    /// Return the last error message
-    const std::string & get_last_error_message() const;
+/// \brief Setup data for the TrackerPreClustering algorithm
+struct setup_data {
+  /// Return the last error message
+  const std::string &get_last_error_message() const;
 
-    /// Set the last error message
-    void set_last_error_message(const std::string & message_);
+  /// Set the last error message
+  void set_last_error_message(const std::string &message_);
 
-    /// Default constructor
-    setup_data();
+  /// Default constructor
+  setup_data();
 
-    /// Reset
-    void reset();
+  /// Reset
+  void reset();
 
-    /// Check the setup data
-    bool check() const;
+  /// Check the setup data
+  bool check() const;
 
-    // Attributes:
-    datatools::logger::priority logging; //!< Logging flag
-    double cell_size;                    //!< The dimension of a cell
-    double delayed_hit_cluster_time;     //!< Delayed hit cluster time
-    bool   processing_prompt_hits;       //!< Flag for processing of prompt hits
-    bool   processing_delayed_hits;      //!< Flag for processing of delayed hits
-    bool   split_chamber;                //!< Flag to split the chamber
+  // Attributes:
+  datatools::logger::priority logging;  //!< Logging flag
+  double cell_size;                     //!< The dimension of a cell
+  double delayed_hit_cluster_time;      //!< Delayed hit cluster time
+  bool processing_prompt_hits;          //!< Flag for processing of prompt hits
+  bool processing_delayed_hits;         //!< Flag for processing of delayed hits
+  bool split_chamber;                   //!< Flag to split the chamber
 
-  protected:
+ protected:
+  std::string _last_error_message;  /// The last error message
+};
 
-    std::string _last_error_message; /// The last error message
+/// \brief Input data structure
+template <class Hit>
+struct input_data {
+  // Typedefs:
+  typedef Hit hit_type;
+  typedef std::vector<const hit_type *> hit_collection_type;
 
-  };
+  /// Return the last error message
+  const std::string &get_last_error_message() const;
 
-  /// \brief Input data structure
-  template <class Hit>
-  struct input_data
-  {
-    // Typedefs:
-    typedef Hit                           hit_type;
-    typedef std::vector<const hit_type *> hit_collection_type;
+  /// Set the last error message
+  void set_last_error_message(const std::string &message_);
 
-    /// Return the last error message
-    const std::string & get_last_error_message() const;
+  /// Default constructor
+  input_data();
 
-    /// Set the last error message
-    void set_last_error_message(const std::string & message_);
+  /// Reset
+  void reset();
 
-    /// Default constructor
-    input_data();
+  /// Check
+  bool check() const;
 
-    /// Reset
-    void reset();
+  // Attributes:
+  hit_collection_type hits;  //!< Collection of Geiger hits
 
-    /// Check
-    bool check() const;
+ protected:
+  std::string _last_error_message;  //!< The last error message at check
+};
 
-    // Attributes:
-    hit_collection_type hits; //!< Collection of Geiger hits
+/// \brief Output data structure
+template <class Hit>
+struct output_data {
+  // Typedefs:
+  typedef Hit hit_type;
+  typedef std::vector<const hit_type *> hit_collection_type;
+  typedef std::vector<hit_collection_type> cluster_collection_type;
 
-  protected:
+  /// Default constructor
+  output_data();
 
-    std::string _last_error_message; //!< The last error message at check
+  /// Reset
+  void reset();
 
-  };
+  /// Print
+  void dump(std::ostream &out_) const;
 
-  /// \brief Output data structure
-  template <class Hit>
-  struct output_data
-  {
-    // Typedefs:
-    typedef Hit                              hit_type;
-    typedef std::vector<const hit_type *>    hit_collection_type;
-    typedef std::vector<hit_collection_type> cluster_collection_type;
+  // Attributes:
+  hit_collection_type ignored_hits;          //!< Collection of ignored hits
+  cluster_collection_type prompt_clusters;   //!< Collection of prompt clusters
+  cluster_collection_type delayed_clusters;  //!< Collection of delayed clusters
+};
 
-    /// Default constructor
-    output_data();
-
-    /// Reset
-    void reset();
-
-    /// Print
-    void dump(std::ostream & out_) const;
-
-    // Attributes:
-    hit_collection_type     ignored_hits;     //!< Collection of ignored hits
-    cluster_collection_type prompt_clusters;  //!< Collection of prompt clusters
-    cluster_collection_type delayed_clusters; //!< Collection of delayed clusters
-
-   };
-
-} // end of namespace TrackerPreClustering
+}  // end of namespace TrackerPreClustering
 
 #include "falaise/TrackerPreClustering/interface.tpp"
 
-#endif // FALAISE_TRACKERPRECLUSTERING_INTERFACE_H
+#endif  // FALAISE_TRACKERPRECLUSTERING_INTERFACE_H
 
 /*
 ** Local Variables: --

@@ -22,18 +22,17 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    template<class Archive>
-    void tracker_cluster::serialize(Archive & ar_, const unsigned int /* version_ */)
-    {
-      ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-      ar_ & boost::serialization::make_nvp("hits", _hits_);
-      return;
-    }
+template <class Archive>
+void tracker_cluster::serialize(Archive& ar_, const unsigned int /* version_ */) {
+  ar_& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
+  ar_& boost::serialization::make_nvp("hits", _hits_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_IPP
+#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTER_IPP

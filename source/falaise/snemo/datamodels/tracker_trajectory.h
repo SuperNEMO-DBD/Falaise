@@ -23,128 +23,121 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
+/// A trajectory of Geiger calibrated hits referenced by handles
+class tracker_trajectory : public geomtools::base_hit {
+ public:
+  /// Handle on tracker trajectory
+  typedef datatools::handle<tracker_trajectory> handle_type;
 
-    /// A trajectory of Geiger calibrated hits referenced by handles
-    class tracker_trajectory : public geomtools::base_hit
-    {
-    public:
+  /// Handle on tracker cluster
+  typedef tracker_cluster::handle_type handle_cluster;
 
-      /// Handle on tracker trajectory
-      typedef datatools::handle<tracker_trajectory> handle_type;
+  /// Collection of handles on tracker clusters
+  typedef std::vector<handle_cluster> clusters_collection_type;
 
-      /// Handle on tracker cluster
-      typedef tracker_cluster::handle_type handle_cluster;
+  /// Handle on trajectory pattern
+  typedef datatools::handle<base_trajectory_pattern> handle_pattern;
 
-      /// Collection of handles on tracker clusters
-      typedef std::vector<handle_cluster> clusters_collection_type;
+  /// Collection of handles of calibrated tracker hit
+  typedef calibrated_tracker_hit::collection_type orphans_collection_type;
 
-      /// Handle on trajectory pattern
-      typedef datatools::handle<base_trajectory_pattern> handle_pattern;
+  /// Default constructor
+  tracker_trajectory();
 
-      /// Collection of handles of calibrated tracker hit
-      typedef calibrated_tracker_hit::collection_type orphans_collection_type;
+  /// Destructor
+  virtual ~tracker_trajectory();
 
-      /// Default constructor
-      tracker_trajectory();
+  /// Check if there is a valid trajectory ID
+  bool has_trajectory_id() const;
 
-      /// Destructor
-      virtual ~tracker_trajectory();
+  /// Get the trajectory ID
+  int get_trajectory_id() const;
 
-      /// Check if there is a valid trajectory ID
-      bool has_trajectory_id() const;
+  /// Set the trajectory ID
+  void set_trajectory_id(int32_t);
 
-      /// Get the trajectory ID
-      int get_trajectory_id() const;
+  /// Invalidate the trajectory ID
+  void invalidate_trajectory_id();
 
-      /// Set the trajectory ID
-      void set_trajectory_id(int32_t);
+  /// Check if the cluster is present
+  bool has_cluster() const;
 
-      /// Invalidate the trajectory ID
-      void invalidate_trajectory_id();
+  /// Detach the cluster
+  void detach_cluster();
 
-      /// Check if the cluster is present
-      bool has_cluster() const;
+  /// Attach a cluster by handle
+  void set_cluster_handle(const handle_cluster& cluster_handle_);
 
-      /// Detach the cluster
-      void detach_cluster();
+  /// Return a mutable reference on the cluster handle
+  handle_cluster& grab_cluster_handle();
 
-      /// Attach a cluster by handle
-      void set_cluster_handle(const handle_cluster & cluster_handle_);
+  /// Return a non mutable reference on the cluster handle
+  const handle_cluster& get_cluster_handle() const;
 
-      /// Return a mutable reference on the cluster handle
-      handle_cluster & grab_cluster_handle();
+  /// Return a mutable reference on the cluster
+  tracker_cluster& grab_cluster();
 
-      /// Return a non mutable reference on the cluster handle
-      const handle_cluster & get_cluster_handle() const;
+  /// Return a non mutable reference on the cluster
+  const tracker_cluster& get_cluster() const;
 
-      /// Return a mutable reference on the cluster
-      tracker_cluster & grab_cluster();
+  /// Check if there are some orphan hits along the fitted trajectory
+  bool has_orphans() const;
 
-      /// Return a non mutable reference on the cluster
-      const tracker_cluster & get_cluster() const;
+  /// Reset the collection of orphan hits
+  void reset_orphans();
 
-      /// Check if there are some orphan hits along the fitted trajectory
-      bool has_orphans() const;
+  /// Return a mutable reference on the collection of orphan hits (handles)
+  orphans_collection_type& grab_orphans();
 
-      /// Reset the collection of orphan hits
-      void reset_orphans();
+  /// Return a non mutable reference on the collection of orphan hits (handles)
+  const orphans_collection_type& get_orphans() const;
 
-      /// Return a mutable reference on the collection of orphan hits (handles)
-      orphans_collection_type & grab_orphans();
+  /// Check if the pattern is present
+  bool has_pattern() const;
 
-      /// Return a non mutable reference on the collection of orphan hits (handles)
-      const orphans_collection_type & get_orphans() const;
+  /// Detach the pattern
+  void detach_pattern();
 
-      /// Check if the pattern is present
-      bool has_pattern() const;
+  /// Attach a pattern by handle
+  void set_pattern_handle(const handle_pattern& pattern_handle_);
 
-      /// Detach the pattern
-      void detach_pattern();
+  /// Return a mutable reference on the pattern handle
+  handle_pattern& grab_pattern_handle();
 
-      /// Attach a pattern by handle
-      void set_pattern_handle(const handle_pattern & pattern_handle_);
+  /// Return a non mutable reference on the pattern handle
+  const handle_pattern& get_pattern_handle() const;
 
-      /// Return a mutable reference on the pattern handle
-      handle_pattern & grab_pattern_handle();
+  /// Return a mutable reference on the pattern
+  base_trajectory_pattern& grab_pattern();
 
-      /// Return a non mutable reference on the pattern handle
-      const handle_pattern & get_pattern_handle() const;
+  /// Return a non mutable reference on the pattern
+  const base_trajectory_pattern& get_pattern() const;
 
-      /// Return a mutable reference on the pattern
-      base_trajectory_pattern & grab_pattern();
+  /// Reset the tracker trajectory (see clear)
+  void reset();
 
-      /// Return a non mutable reference on the pattern
-      const base_trajectory_pattern & get_pattern() const;
+  /// Empty the contents of the tracker trajectory
+  virtual void clear();
 
-      /// Reset the tracker trajectory (see clear)
-      void reset();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-      /// Empty the contents of the tracker trajectory
-      virtual void clear();
+ private:
+  handle_cluster _cluster_;           ///< Handle to the fitted cluster
+  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles
+  handle_pattern _pattern_;           ///< Handle to a trajectory fitted pattern
 
-      /// Smart print
-      virtual void tree_dump(std::ostream      & out     = std::clog,
-                             const std::string & title_  = "",
-                             const std::string & indent_ = "",
-                             bool inherit_               = false) const;
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-    private:
+}  // end of namespace datamodel
 
-      handle_cluster          _cluster_; ///< Handle to the fitted cluster
-      orphans_collection_type _orphans_; ///< Collection of orphan Geiger hit handles
-      handle_pattern          _pattern_; ///< Handle to a trajectory fitted pattern
+}  // end of namespace snemo
 
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
+#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
 
 /*
 ** Local Variables: --

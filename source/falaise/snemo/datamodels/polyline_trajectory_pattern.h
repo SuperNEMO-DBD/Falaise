@@ -18,44 +18,40 @@
 
 namespace snemo {
 
-    namespace datamodel {
+namespace datamodel {
 
-      /// The fitted polyline trajectory pattern
-      class polyline_trajectory_pattern : public base_trajectory_pattern
-      {
-      public:
+/// The fitted polyline trajectory pattern
+class polyline_trajectory_pattern : public base_trajectory_pattern {
+ public:
+  /// Return pattern identifier of the pattern
+  static const std::string& pattern_id();
 
-        /// Return pattern identifier of the pattern
-        static const std::string & pattern_id();
+  /// Default constructor
+  polyline_trajectory_pattern();
 
-        /// Default constructor
-        polyline_trajectory_pattern();
+  /// Destructor
+  virtual ~polyline_trajectory_pattern();
 
-        /// Destructor
-        virtual ~polyline_trajectory_pattern();
+  /// Get a reference to the mutable polyline path embedded model
+  geomtools::polyline_3d& grab_path();
 
-        /// Get a reference to the mutable polyline path embedded model
-        geomtools::polyline_3d & grab_path();
+  /// Get a reference to the non mutable polyline path embedded model
+  const geomtools::polyline_3d& get_path() const;
 
-        /// Get a reference to the non mutable polyline path embedded model
-        const geomtools::polyline_3d & get_path() const;
+  /// Return the reference to the 1D shape associated to the trajectory
+  virtual const geomtools::i_shape_1d& get_shape() const;
 
-        /// Return the reference to the 1D shape associated to the trajectory
-        virtual const geomtools::i_shape_1d & get_shape() const;
+ private:
+  geomtools::polyline_3d _path_;  //!< The polyline path embedded model
 
-      private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-        geomtools::polyline_3d _path_; //!< The polyline path embedded model
+}  // end of namespace datamodel
 
-        DATATOOLS_SERIALIZATION_DECLARATION()
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H
+#endif  // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H
 
 /*
 ** Local Variables: --

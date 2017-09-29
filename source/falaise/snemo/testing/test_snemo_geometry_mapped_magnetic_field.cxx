@@ -24,36 +24,35 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // Third party:
 // - Bayeux:
 #include <bayeux/bayeux.h>
 // - Bayeux/datatools:
+#include <datatools/clhep_units.h>
+#include <datatools/ioutils.h>
+#include <datatools/library_loader.h>
 #include <datatools/properties.h>
 #include <datatools/temporary_files.h>
-#include <datatools/utils.h>
 #include <datatools/units.h>
-#include <datatools/ioutils.h>
-#include <datatools/clhep_units.h>
-#include <datatools/library_loader.h>
+#include <datatools/utils.h>
 // - Bayeux/geomtools:
-#include <geomtools/manager.h>
 #include <geomtools/box.h>
 #include <geomtools/geomtools_config.h>
 #include <geomtools/gnuplot_draw.h>
+#include <geomtools/manager.h>
 #if GEOMTOOLS_WITH_GNUPLOT_DISPLAY == 1
-#include <geomtools/gnuplot_i.h>
 #include <geomtools/gnuplot_drawer.h>
-#endif // GEOMTOOLS_WITH_GNUPLOT_DISPLAY
+#include <geomtools/gnuplot_i.h>
+#endif  // GEOMTOOLS_WITH_GNUPLOT_DISPLAY
 
 // This project:
 #include <falaise/falaise.h>
 
-int main (int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   try {
@@ -81,8 +80,8 @@ int main (int argc_, char ** argv_)
           } else if (option == "-Z" || option == "--z-inverted") {
             z_inverted = true;
           } else {
-            std::clog << datatools::io::warning << "ignoring option '"
-                      << option << "'!" << std::endl;
+            std::clog << datatools::io::warning << "ignoring option '" << option << "'!"
+                      << std::endl;
           }
         }
       } else {
@@ -91,8 +90,8 @@ int main (int argc_, char ** argv_)
           if (map_filename.empty()) {
             map_filename = argument;
           } else {
-            std::clog << datatools::io::warning << "ignoring argument '"
-                      << argument << "'!" << std::endl;
+            std::clog << datatools::io::warning << "ignoring argument '" << argument << "'!"
+                      << std::endl;
           }
         }
       }
@@ -100,7 +99,9 @@ int main (int argc_, char ** argv_)
     }
 
     if (map_filename.empty()) {
-      map_filename = "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/MapSmoothPlusDetail.csv";
+      map_filename =
+          "@falaise:config/snemo/demonstrator/geometry/4.0/plugins/magnetic_field/data/csv_map_0/"
+          "MapSmoothPlusDetail.csv";
     }
 
     snemo::geometry::mapped_magnetic_field mmf;
@@ -124,28 +125,25 @@ int main (int argc_, char ** argv_)
       double dx = 0.125 * CLHEP::m;
       double dy = 0.25 * CLHEP::m;
       double dz = 0.15 * CLHEP::m;
-      double bmax=0.0;
-      double bzmax=0.0;
+      double bmax = 0.0;
+      double bzmax = 0.0;
       for (double x = -1.0 * CLHEP::m; x <= +1.0 * CLHEP::m; x += dx) {
         for (double y = -3.0 * CLHEP::m; y <= +3.0 * CLHEP::m; y += dy) {
           for (double z = -2.0 * CLHEP::m; z <= +2.0 * CLHEP::m; z += dz) {
             position.set(x, y, z);
-            if (mmf.compute_magnetic_field(position, time, B)
-                == snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS) {
+            if (mmf.compute_magnetic_field(position, time, B) ==
+                snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS) {
               bool save_it = true;
               if (datatools::is_valid(yslice)) {
-                if ( std::abs(position.y() - yslice) > 0.25 * dy) {
+                if (std::abs(position.y() - yslice) > 0.25 * dy) {
                   save_it = false;
                 }
               }
               if (save_it) {
-                tmp_file.out() << position.x() / CLHEP::m << ' '
-                               << position.y() / CLHEP::m << ' '
-                               << position.z() / CLHEP::m << ' '
-                               << bscale * B.x() / (CLHEP::gauss) << ' '
-                               << bscale * B.y() / (CLHEP::gauss) << ' '
-                               << bscale * B.z() / (CLHEP::gauss) << ' '
-                               << std::endl;
+                tmp_file.out() << position.x() / CLHEP::m << ' ' << position.y() / CLHEP::m << ' '
+                               << position.z() / CLHEP::m << ' ' << bscale * B.x() / (CLHEP::gauss)
+                               << ' ' << bscale * B.y() / (CLHEP::gauss) << ' '
+                               << bscale * B.z() / (CLHEP::gauss) << ' ' << std::endl;
               }
               if (B.mag() > bmax) {
                 bmax = B.mag();
@@ -166,8 +164,8 @@ int main (int argc_, char ** argv_)
       // At  1.6231 -1.3692 -0.337
       //     B=[-1662.2485000000004, 11250.897124999996, -9231.159109999995]
       // Somewhere in the middle of the tracking chamber:
-      double x = -0.337  * CLHEP::m;
-      double y =  1.6231 * CLHEP::m;
+      double x = -0.337 * CLHEP::m;
+      double y = 1.6231 * CLHEP::m;
       double z = -1.3692 * CLHEP::m;
       // double x =  0.25  * CLHEP::m;
       // double y =  1.5 * CLHEP::m;
@@ -176,16 +174,10 @@ int main (int argc_, char ** argv_)
       geomtools::vector_3d B;
       mmf.compute_magnetic_field(position, 0.0, B);
       double b_unit = datatools::units::milli() * CLHEP::gauss;
-      std::clog << "At  "
-                << position.y() / CLHEP::m << ' '
-                << position.z() / CLHEP::m << ' '
-                << position.x() / CLHEP::m << ' '
-                << "B=  ["
-                << B.y() / b_unit << ", "
-                << B.z() / b_unit << ", "
-                << B.x() / b_unit << "]"
-                << " mG"
-                << std::endl;
+      std::clog << "At  " << position.y() / CLHEP::m << ' ' << position.z() / CLHEP::m << ' '
+                << position.x() / CLHEP::m << ' ' << "B=  [" << B.y() / b_unit << ", "
+                << B.z() / b_unit << ", " << B.x() / b_unit << "]"
+                << " mG" << std::endl;
       std::clog << "|B| = " << B.mag() / b_unit << " mG" << std::endl;
     }
 
@@ -206,9 +198,10 @@ int main (int argc_, char ** argv_)
 
       {
         std::ostringstream plot_cmd;
-        plot_cmd << "splot '" << tmp_file.get_filename() << "' u 1:2:3:4:5:6 notitle 'Mapped magnetic field' with vectors";
-        g1.cmd (plot_cmd.str());
-        g1.showonscreen(); // window output
+        plot_cmd << "splot '" << tmp_file.get_filename()
+                 << "' u 1:2:3:4:5:6 notitle 'Mapped magnetic field' with vectors";
+        g1.cmd(plot_cmd.str());
+        g1.showonscreen();  // window output
         geomtools::gnuplot_drawer::wait_for_key();
         usleep(200);
       }
@@ -218,24 +211,24 @@ int main (int argc_, char ** argv_)
         g1.cmd("set xrange [-0.75:+0.75]");
         g1.cmd("set yrange [-2:+2]");
         std::ostringstream plot_cmd;
-        plot_cmd << "plot '" << tmp_file.get_filename() << "' u 1:3:4:6 notitle 'Mapped magnetic field' with vectors";
-        g1.cmd (plot_cmd.str());
-        g1.showonscreen(); // window output
+        plot_cmd << "plot '" << tmp_file.get_filename()
+                 << "' u 1:3:4:6 notitle 'Mapped magnetic field' with vectors";
+        g1.cmd(plot_cmd.str());
+        g1.showonscreen();  // window output
         geomtools::gnuplot_drawer::wait_for_key();
         usleep(200);
       }
-#endif // GEOMTOOLS_WITH_GNUPLOT_DISPLAY
+#endif  // GEOMTOOLS_WITH_GNUPLOT_DISPLAY
     }
 
     std::clog << "The end." << std::endl;
 
-  }
-  catch (std::exception & x) {
-    std::cerr << "ERROR: " << x.what () << std::endl;
+  } catch (std::exception& x) {
+    std::cerr << "ERROR: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
-  }
-  catch (...) {
-    std::cerr << "ERROR: " << "unexpected error!" << std::endl;
+  } catch (...) {
+    std::cerr << "ERROR: "
+              << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
   falaise::terminate();

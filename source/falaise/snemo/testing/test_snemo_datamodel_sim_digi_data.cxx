@@ -1,34 +1,33 @@
 // test_snemo_datamodel_sim_digi_data.cxx
 
 // Standard libraries :
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 
 // Third party:
 // - Bayeux/datatools:
-#include <bayeux/datatools/logger.h>
-#include <bayeux/datatools/io_factory.h>
 #include <bayeux/datatools/clhep_units.h>
+#include <bayeux/datatools/io_factory.h>
+#include <bayeux/datatools/logger.h>
 #include <bayeux/datatools/things.h>
 // - Bayeux/mctools:
-#include <bayeux/mctools/simulated_data.h>
 #include <bayeux/mctools/signal/signal_data.h>
+#include <bayeux/mctools/simulated_data.h>
 
 // Falaise:
 #include <falaise/falaise.h>
 
 // This project :
 #include <snemo/datamodels/event_header.h>
-#include <snemo/datamodels/sim_digi_data.h>
 #include <snemo/datamodels/sim_calo_digi_hit.h>
+#include <snemo/datamodels/sim_digi_data.h>
 #include <snemo/datamodels/sim_tracker_digi_hit.h>
 
 void test1();
 void test2();
 
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -42,7 +41,7 @@ int main(int argc_, char ** argv_)
     test2();
 
     std::clog << "The end." << std::endl;
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   } catch (...) {
@@ -53,8 +52,7 @@ int main(int argc_, char ** argv_)
   return error_code;
 }
 
-void test1()
-{
+void test1() {
   std::clog << "\ntest1: running...\n";
   double gigahertz = 1.e9 * CLHEP::hertz;
 
@@ -68,15 +66,18 @@ void test1()
   // Note that sim_digi_data provides a "handle_type" typedef, but not the
   // underlying type. We could derive that from the "handle_type",
   // but that would almost double the number of characters...
-  eventCollection.push_back(snemo::datamodel::sim_digi_data::sim_digi_event_handle_type{new snemo::datamodel::sim_digi_event_data});
+  eventCollection.push_back(snemo::datamodel::sim_digi_data::sim_digi_event_handle_type{
+      new snemo::datamodel::sim_digi_event_data});
 
   for (std::size_t icalohit = 0; icalohit < 3; icalohit++) {
     snemo::datamodel::sim_calo_digi_hit dummy;
     // That's way, way too many leveks of nesting...
-    sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().push_back(dummy);
+    sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().push_back(
+        dummy);
 
     // .... ...
-    snemo::datamodel::sim_calo_digi_hit & calo_hit = sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().back();
+    snemo::datamodel::sim_calo_digi_hit& calo_hit =
+        sddWrite.grab_digi_events().back().grab().grab_readout_data().grab_calo_digi_hits().back();
     calo_hit.set_hit_id(icalohit);
     calo_hit.grab_geom_id().set_type(1234);
     calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
@@ -98,16 +99,14 @@ void test1()
   sddReadback.tree_dump(std::clog, "Loaded Simulated Digitized Data: ");
 }
 
-void test2()
-{
+void test2() {
   std::clog << "\ntest2: running...\n";
 
   {
     datatools::things event_record;
 
     // Add event header bank:
-    snemo::datamodel::event_header & eh =
-      event_record.add<snemo::datamodel::event_header>("EH");
+    snemo::datamodel::event_header& eh = event_record.add<snemo::datamodel::event_header>("EH");
     eh.grab_id().set_run_number(12);
     eh.grab_id().set_event_number(654);
     eh.grab_properties().store("test", "foo");
@@ -130,7 +129,6 @@ void test2()
                                     datatools::using_multi_archives);
       writer.store(event_record);
     }
-
   }
 
   {

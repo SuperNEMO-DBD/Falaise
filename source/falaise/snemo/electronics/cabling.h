@@ -14,8 +14,8 @@
 #include <set>
 
 // - Boost:
-#include <boost/cstdint.hpp>
 #include <boost/bimap.hpp>
+#include <boost/cstdint.hpp>
 
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/geom_id.h>
@@ -26,137 +26,136 @@
 
 // This project
 #include <snemo/geometry/calo_locator.h>
+#include <snemo/geometry/gg_locator.h>
 #include <snemo/geometry/gveto_locator.h>
 #include <snemo/geometry/xcalo_locator.h>
-#include <snemo/geometry/gg_locator.h>
 // #include <snemo/geometry/ID_convertor.h>
 
 namespace snemo {
 
-  namespace electronics {
+namespace electronics {
 
-    /// \brief Electronics channel/geometry elements cabling
-    class cabling
-    {
+/// \brief Electronics channel/geometry elements cabling
+class cabling {
+ public:
+  typedef boost::bimap<geomtools::geom_id, geomtools::geom_id> ID_bimap;
+  typedef ID_bimap::value_type ID_doublet;
 
-    public :
+  /// Default constructor
+  cabling();
 
-      typedef boost::bimap< geomtools::geom_id, geomtools::geom_id > ID_bimap;
-      typedef ID_bimap::value_type ID_doublet;
+  /// Destructor
+  virtual ~cabling();
 
-      /// Default constructor
-      cabling();
+  /// Return logging priority
+  datatools::logger::priority get_logging() const;
 
-      /// Destructor
-      virtual ~cabling();
+  /// Set logging priority
+  void set_logging(const datatools::logger::priority p_);
 
-      /// Return logging priority
-      datatools::logger::priority get_logging() const;
+  /// Precontruct the map for a given type
+  void add_preconstructed_type(int type_);
 
-      /// Set logging priority
-      void set_logging(const datatools::logger::priority p_);
+  /// Set the geometry manager
+  void set_geo_manager(const geomtools::manager& mgr_);
 
-      /// Precontruct the map for a given type
-      void add_preconstructed_type(int type_);
+  /// Check if the geometry manager is set
+  bool has_geo_manager() const;
 
-      /// Set the geometry manager
-      void set_geo_manager(const geomtools::manager & mgr_);
+  /// Set the module number
+  void set_module_number(unsigned int module_number_);
 
-      /// Check if the geometry manager is set
-      bool has_geo_manager() const;
+  /// Check if the module number is set
+  bool has_module_number() const;
 
-      /// Set the module number
-      void set_module_number(unsigned int module_number_);
+  /// Check if the object is initialized
+  bool is_initialized() const;
 
-      /// Check if the module number is set
-      bool has_module_number() const;
+  /// Initializing
+  void initialize();
 
-      /// Check if the object is initialized
-      bool is_initialized() const;
+  /// Reset the object :
+  void reset();
 
-      /// Initializing
-      void initialize();
+  /// Return the set of supported types
+  const std::set<int32_t>& get_supported_geom_types() const;
 
-      /// Reset the object :
-      void reset();
+  /// Convert geometric ID into electronic ID
+  void convert_GID_to_EID(const geomtools::geom_id& geom_id_,
+                          geomtools::geom_id& electronic_id_) const;
 
-      /// Return the set of supported types
-      const std::set<int32_t> & get_supported_geom_types() const;
+  /// Convert electronic ID into geometric ID
+  void convert_EID_to_GID(const geomtools::geom_id& electronic_id_,
+                          geomtools::geom_id& geom_id_) const;
 
-      /// Convert geometric ID into electronic ID
-      void convert_GID_to_EID(const geomtools::geom_id & geom_id_,
-                              geomtools::geom_id & electronic_id_) const;
+ protected:
+  /// Initializing
+  void _initialize();
 
-      /// Convert electronic ID into geometric ID
-      void convert_EID_to_GID(const geomtools::geom_id & electronic_id_,
-                              geomtools::geom_id & geom_id_) const;
+  /// Construct supported geom types
+  void _init_supported_geom_types();
 
-    protected :
+  /// Construct the bimap for geiger category type
+  void _init_geiger();
 
-      /// Initializing
-      void _initialize();
+  /// Construct the bimap for main calorimeters category type
+  void _init_mcalo();
 
-      /// Construct supported geom types
-      void _init_supported_geom_types();
+  /// Construct the bimap for x-wall calorimeters category type
+  void _init_xcalo();
 
-      /// Construct the bimap for geiger category type
-      void _init_geiger();
+  /// Construct the bimap for gamma-veto calorimeters category type
+  void _init_gveto();
 
-      /// Construct the bimap for main calorimeters category type
-      void _init_mcalo();
+  /// Protected convert geometric ID into electronic ID
+  void _convert_GID_to_EID(const geomtools::geom_id& geom_id_, geomtools::geom_id& electronic_id_);
 
-      /// Construct the bimap for x-wall calorimeters category type
-      void _init_xcalo();
+  /// Protected convert electronic ID into geometric ID
+  void _convert_EID_to_GID(const geomtools::geom_id& electronic_id_, geomtools::geom_id& geom_id_);
 
-      /// Construct the bimap for gamma-veto calorimeters category type
-      void _init_gveto();
+  /// Set default values for attributes
+  void _set_defaults();
 
-      /// Protected convert geometric ID into electronic ID
-      void _convert_GID_to_EID(const geomtools::geom_id & geom_id_, geomtools::geom_id & electronic_id_);
+ private:
+  // Management:
+  bool _initialized_ = false;  //!< Initialization flag
 
-      /// Protected convert electronic ID into geometric ID
-      void _convert_EID_to_GID(const geomtools::geom_id & electronic_id_, geomtools::geom_id & geom_id_);
+  // External resources:
+  const geomtools::manager* _geo_manager_ = nullptr;  //!< Eternal geom manager
 
-      /// Set default values for attributes
-      void _set_defaults();
+  // Configuration parameters:
+  datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
+  std::set<int32_t> _supported_geom_types_;
+  unsigned int _module_number_;  //!< Module number (demonstrator module number for the moment)
 
-    private :
+  // Working internal data/resources:
+  std::set<int32_t> _pre_constructed_types_;  //!< Set of pre constructed types ("geiger", "mcalo",
+                                              //!< "xcalo", "gveto" are supported)
+  const geomtools::id_mgr::category_info* _mcalo_cat_info_ = nullptr;
+  const geomtools::id_mgr::category_info* _xcalo_cat_info_ = nullptr;
+  const geomtools::id_mgr::category_info* _gveto_cat_info_ = nullptr;
+  const geomtools::id_mgr::category_info* _gg_cat_info_ = nullptr;
+  const snemo::geometry::calo_locator* _mcalo_locator_ = nullptr;
+  const snemo::geometry::gveto_locator* _gveto_locator_ = nullptr;
+  const snemo::geometry::xcalo_locator* _xcalo_locator_ = nullptr;
+  const snemo::geometry::gg_locator* _gg_locator_ = nullptr;
 
-      // Management:
-      bool _initialized_ = false; //!< Initialization flag
+  // ID_convertor _ID_convertor_; //!< ID convertor (GID to EID)
+  ID_bimap _geiger_id_bimap_;  //!< Bidirectionnal map between geiger cells geom ID and
+                               //!< corresponding electronic channel ID
+  ID_bimap _mcalo_id_bimap_;   //!< Bidirectionnal map between main calorimeter geom ID and
+                               //!< corresponding electronic channel ID
+  ID_bimap _xcalo_id_bimap_;   //!< Bidirectionnal map between x-wall calorimeter geom ID and
+                               //!< corresponding electronic channel ID
+  ID_bimap _gveto_id_bimap_;   //!< Bidirectionnal map between gamma-veto geom ID and corresponding
+                               //!< electronic channel ID
+};
 
-      // External resources:
-      const geomtools::manager * _geo_manager_ = nullptr; //!< Eternal geom manager
+}  // namespace electronics
 
-      // Configuration parameters:
-      datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
-      std::set<int32_t> _supported_geom_types_;
-      unsigned int _module_number_; //!< Module number (demonstrator module number for the moment)
+}  // end of namespace snemo
 
-      // Working internal data/resources:
-      std::set<int32_t> _pre_constructed_types_; //!< Set of pre constructed types ("geiger", "mcalo", "xcalo", "gveto" are supported)
-      const geomtools::id_mgr::category_info * _mcalo_cat_info_ = nullptr;
-      const geomtools::id_mgr::category_info * _xcalo_cat_info_ = nullptr;
-      const geomtools::id_mgr::category_info * _gveto_cat_info_ = nullptr;
-      const geomtools::id_mgr::category_info * _gg_cat_info_    = nullptr;
-      const snemo::geometry::calo_locator  * _mcalo_locator_  = nullptr;
-      const snemo::geometry::gveto_locator * _gveto_locator_ = nullptr;
-      const snemo::geometry::xcalo_locator * _xcalo_locator_ = nullptr;
-      const snemo::geometry::gg_locator    * _gg_locator_    = nullptr;
-
-      //ID_convertor _ID_convertor_; //!< ID convertor (GID to EID)
-      ID_bimap _geiger_id_bimap_;  //!< Bidirectionnal map between geiger cells geom ID and corresponding electronic channel ID
-      ID_bimap _mcalo_id_bimap_;   //!< Bidirectionnal map between main calorimeter geom ID and corresponding electronic channel ID
-      ID_bimap _xcalo_id_bimap_;   //!< Bidirectionnal map between x-wall calorimeter geom ID and corresponding electronic channel ID
-      ID_bimap _gveto_id_bimap_;   //!< Bidirectionnal map between gamma-veto geom ID and corresponding electronic channel ID
-
-    };
-
-  } // end of namespace geometry
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_ELECTRONICS_CABLING_H
+#endif  // FALAISE_SNEMO_ELECTRONICS_CABLING_H
 
 // Local Variables: --
 // mode: c++ --

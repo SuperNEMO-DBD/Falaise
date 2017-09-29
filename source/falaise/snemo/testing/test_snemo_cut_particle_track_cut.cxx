@@ -2,16 +2,15 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // This project:
-#include <falaise/snemo/datamodels/particle_track.h>
 #include <falaise/snemo/cuts/particle_track_cut.h>
+#include <falaise/snemo/datamodels/particle_track.h>
 
-int main()
-{
+int main() {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for the 'particle_track_cut' class." << std::endl;
@@ -19,14 +18,16 @@ int main()
     // Create a handle of fake vertices :
     datatools::handle<geomtools::blur_spot> hV0;
     hV0.reset(new geomtools::blur_spot(geomtools::blur_spot::dimension_three));
-    hV0.grab().grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
-                                        snemo::datamodel::particle_track::vertex_on_source_foil_label());
+    hV0.grab().grab_auxiliaries().store(
+        snemo::datamodel::particle_track::vertex_type_key(),
+        snemo::datamodel::particle_track::vertex_on_source_foil_label());
     hV0.get().tree_dump(std::clog, "Foil vertex : ");
 
     datatools::handle<geomtools::blur_spot> hV1;
-    hV1.reset(new geomtools::blur_spot (geomtools::blur_spot::dimension_three));
-    hV1.grab().grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
-                                        snemo::datamodel::particle_track::vertex_on_main_calorimeter_label());
+    hV1.reset(new geomtools::blur_spot(geomtools::blur_spot::dimension_three));
+    hV1.grab().grab_auxiliaries().store(
+        snemo::datamodel::particle_track::vertex_type_key(),
+        snemo::datamodel::particle_track::vertex_on_main_calorimeter_label());
     hV1.get().tree_dump(std::clog, "Calorimeter vertex : ");
 
     // Create the particle track :
@@ -110,7 +111,7 @@ int main()
       std::cout << "calo vertex" << std::endl;
     }
 
-  } catch (std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << x.what() << std::endl;
     error_code = EXIT_FAILURE;
   } catch (...) {

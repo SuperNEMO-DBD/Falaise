@@ -18,47 +18,44 @@
 
 namespace snemo {
 
-    namespace datamodel {
+namespace datamodel {
 
-      /// \brief The fitted line trajectory pattern
-      class line_trajectory_pattern : public base_trajectory_pattern
-      {
-      public:
+/// \brief The fitted line trajectory pattern
+class line_trajectory_pattern : public base_trajectory_pattern {
+ public:
+  /// Return pattern identifier of the pattern
+  static const std::string& pattern_id();
 
-        /// Return pattern identifier of the pattern
-        static const std::string & pattern_id();
+  /// Default constructor
+  line_trajectory_pattern();
 
-        /// Default constructor
-        line_trajectory_pattern ();
+  /// Destructor
+  virtual ~line_trajectory_pattern();
 
-        /// Destructor
-        virtual ~line_trajectory_pattern ();
+  /// Get a reference to the mutable line/segment embedded model
+  geomtools::line_3d& grab_segment();
 
-        /// Get a reference to the mutable line/segment embedded model
-        geomtools::line_3d & grab_segment ();
+  /// Get a reference to the non mutable line/segment embedded model
+  const geomtools::line_3d& get_segment() const;
 
-        /// Get a reference to the non mutable line/segment embedded model
-        const geomtools::line_3d & get_segment () const;
+  /// Return the reference to the 1D shape associated to the trajectory
+  virtual const geomtools::i_shape_1d& get_shape() const;
 
-        /// Return the reference to the 1D shape associated to the trajectory
-        virtual const geomtools::i_shape_1d & get_shape() const;
+ private:
+  geomtools::line_3d _segment_;  //!< The line/segment embedded model
 
-      private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-        geomtools::line_3d _segment_; //!< The line/segment embedded model
+}  // end of namespace datamodel
 
-        DATATOOLS_SERIALIZATION_DECLARATION()
-
-      };
-
-    } // end of namespace datamodel
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::line_trajectory_pattern, "snemo::datamodel::line_trajectory_pattern")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::line_trajectory_pattern,
+                        "snemo::datamodel::line_trajectory_pattern")
 
-#endif // FALAISE_SNEMO_DATAMODEL_LINE_TRAJECTORY_PATTERN_H
+#endif  // FALAISE_SNEMO_DATAMODEL_LINE_TRAJECTORY_PATTERN_H
 
 /*
 ** Local Variables: --

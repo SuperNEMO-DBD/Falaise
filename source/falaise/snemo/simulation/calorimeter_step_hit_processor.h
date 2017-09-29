@@ -33,35 +33,32 @@
 
 namespace snemo {
 
-  namespace geometry {
-    class locator_plugin;
-  }
+namespace geometry {
+class locator_plugin;
+}
 
-  namespace simulation {
+namespace simulation {
 
-    /// \brief A basic processor of simulated step hits in SuperNEMO calorimeter blocks
-    class calorimeter_step_hit_processor : public mctools::calorimeter_step_hit_processor
-    {
-    public:
+/// \brief A basic processor of simulated step hits in SuperNEMO calorimeter blocks
+class calorimeter_step_hit_processor : public mctools::calorimeter_step_hit_processor {
+ public:
+  /// Find the Gid of the calorimeter block at a given position
+  virtual bool locate_calorimeter_block(const geomtools::vector_3d& position_,
+                                        geomtools::geom_id& gid_) const;
 
-      /// Find the Gid of the calorimeter block at a given position
-      virtual bool locate_calorimeter_block(const geomtools::vector_3d & position_,
-                                            geomtools::geom_id & gid_) const;
+  /// Main setup routine
+  virtual void initialize(const ::datatools::properties& config_,
+                          ::datatools::service_manager& service_mgr_);
 
-      /// Main setup routine
-      virtual void initialize (const ::datatools::properties & config_,
-                               ::datatools::service_manager & service_mgr_);
+ private:
+  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< SuperNEMO Locator plugin
 
-    private:
+  // Registration macro :
+  MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE(calorimeter_step_hit_processor)
+};
 
-      const snemo::geometry::locator_plugin * _locator_plugin_; //!< SuperNEMO Locator plugin
+}  // end of namespace simulation
 
-      // Registration macro :
-      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE (calorimeter_step_hit_processor)
-    };
+}  // end of namespace snemo
 
-  } // end of namespace simulation
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_SIMULATION_CALORIMETER_STEP_HIT_PROCESSOR_H
+#endif  // FALAISE_SNEMO_SIMULATION_CALORIMETER_STEP_HIT_PROCESSOR_H

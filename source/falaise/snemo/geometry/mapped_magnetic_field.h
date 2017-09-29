@@ -41,92 +41,82 @@
 
 namespace snemo {
 
-  namespace geometry {
+namespace geometry {
 
-    /// \brief Class representing a contant mapped  magnetic field
-    class mapped_magnetic_field : public ::emfield::base_electromagnetic_field
-    {
-    public:
+/// \brief Class representing a contant mapped  magnetic field
+class mapped_magnetic_field : public ::emfield::base_electromagnetic_field {
+ public:
+  /// \brief Mapping mode
+  enum mapping_mode_type {
+    MM_INVALID = -1,         ///< Invalid mapping mode
+    MM_IMPORT_CSV_MAP_0 = 0  ///< Build from imported CSV file
+  };
 
-      /// \brief Mapping mode
-      enum mapping_mode_type {
-        MM_INVALID          = -1, ///< Invalid mapping mode
-        MM_IMPORT_CSV_MAP_0 =  0  ///< Build from imported CSV file
-      };
+  /// Default constructor
+  mapped_magnetic_field(uint32_t = 0);
 
-      /// Default constructor
-      mapped_magnetic_field(uint32_t = 0);
+  /// Destructor
+  virtual ~mapped_magnetic_field();
 
-      /// Destructor
-      virtual ~mapped_magnetic_field();
+  /// Initialization
+  virtual void initialize(const ::datatools::properties &, ::datatools::service_manager &,
+                          ::emfield::base_electromagnetic_field::field_dict_type &);
 
-      /// Initialization
-      virtual void initialize(const ::datatools::properties &,
-                              ::datatools::service_manager &,
-                              ::emfield::base_electromagnetic_field::field_dict_type &);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+  /// Compute electric field
+  virtual int compute_electric_field(const ::geomtools::vector_3d &position_, double time_,
+                                     ::geomtools::vector_3d &electric_field_) const;
 
-      /// Compute electric field
-      virtual int compute_electric_field(const ::geomtools::vector_3d & position_,
-                                         double time_,
-                                         ::geomtools::vector_3d & electric_field_) const;
+  /// Compute magnetic field
+  virtual int compute_magnetic_field(const ::geomtools::vector_3d &position_, double time_,
+                                     geomtools::vector_3d &magnetic_field_) const;
 
-      /// Compute magnetic field
-      virtual int compute_magnetic_field(const ::geomtools::vector_3d & position_,
-                                         double time_,
-                                         geomtools::vector_3d & magnetic_field_) const;
+  /// Smart print
+  virtual void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
+                         const std::string &indent_ = "", bool inherit_ = false) const;
 
-      /// Smart print
-      virtual void tree_dump (std::ostream & out_         = std::clog,
-                              const std::string & title_  = "",
-                              const std::string & indent_ = "",
-                              bool inherit_               = false) const;
+  /// Set the map source filename
+  void set_map_filename(const std::string &);
 
-      /// Set the map source filename
-      void set_map_filename(const std::string &);
+  /// Set the mapping mode
+  void set_mapping_mode(mapping_mode_type);
 
-      /// Set the mapping mode
-      void set_mapping_mode(mapping_mode_type);
+  /// Set the flag to force a zero B-field outside the mapped domain
+  void set_zero_field_outside_map(bool);
 
-      /// Set the flag to force a zero B-field outside the mapped domain
-      void set_zero_field_outside_map(bool);
+  /// Return the flag to force a zero B-field outside the mapped domain
+  bool is_zero_field_outside_map() const;
 
-      /// Return the flag to force a zero B-field outside the mapped domain
-      bool is_zero_field_outside_map() const;
+  /// Set the Z component inversion flag
+  void set_z_inverted(bool);
 
-      /// Set the Z component inversion flag
-      void set_z_inverted(bool);
+  /// Return the Z component inversion flag
+  bool is_z_inverted() const;
 
-      /// Return the Z component inversion flag
-      bool is_z_inverted() const;
+ protected:
+  /// Set default attributes values
+  void _set_defaults();
 
-    protected:
+ private:
+  mapping_mode_type _mapping_mode_;  //!< Mapping mode
+  std::string _map_filename_;        //!< Map filename
+  bool _zero_field_outside_map_;     //!< Force zero field outside the interpolated map
+  bool _z_inverted_;                 //!< Invert the Z component of the field
 
-      /// Set default attributes values
-      void _set_defaults();
+  struct _work_type;
+  boost::scoped_ptr<_work_type> _work_;  //!< PIMPL-ized working data
 
-    private:
+  // Macro to automate the registration of the EM field :
+  EMFIELD_REGISTRATION_INTERFACE(mapped_magnetic_field)
+};
 
-      mapping_mode_type _mapping_mode_;           //!< Mapping mode
-      std::string       _map_filename_;           //!< Map filename
-      bool              _zero_field_outside_map_; //!< Force zero field outside the interpolated map
-      bool              _z_inverted_;             //!< Invert the Z component of the field
-
-      struct _work_type;
-      boost::scoped_ptr<_work_type> _work_; //!< PIMPL-ized working data
-
-      // Macro to automate the registration of the EM field :
-      EMFIELD_REGISTRATION_INTERFACE(mapped_magnetic_field)
-
-    };
-
-  }  // end of namespace geometry
+}  // end of namespace geometry
 
 }  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_GEOMETRY_MAPPED_MAGNETIC_FIELD_H
+#endif  // FALAISE_SNEMO_GEOMETRY_MAPPED_MAGNETIC_FIELD_H
 
 // Local Variables: --
 // mode: c++ --

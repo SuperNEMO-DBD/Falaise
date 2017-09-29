@@ -21,48 +21,44 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// \brief The fitted helix trajectory pattern
-    class helix_trajectory_pattern : public base_trajectory_pattern
-    {
-    public:
+/// \brief The fitted helix trajectory pattern
+class helix_trajectory_pattern : public base_trajectory_pattern {
+ public:
+  /// Return pattern identifier of the pattern
+  static const std::string& pattern_id();
 
-      /// Return pattern identifier of the pattern
-      static const std::string & pattern_id();
+  /// Default constructor
+  helix_trajectory_pattern();
 
-      /// Default constructor
-      helix_trajectory_pattern();
+  /// Destructor
+  virtual ~helix_trajectory_pattern();
 
-      /// Destructor
-      virtual ~helix_trajectory_pattern();
+  /// Get a reference to the mutable helix embedded model
+  geomtools::helix_3d& grab_helix();
 
-      /// Get a reference to the mutable helix embedded model
-      geomtools::helix_3d & grab_helix();
+  /// Get a reference to the non mutable helix embedded model
+  const geomtools::helix_3d& get_helix() const;
 
-      /// Get a reference to the non mutable helix embedded model
-      const geomtools::helix_3d & get_helix() const;
+  /// Return the reference to the 1D shape associated to the trajectory
+  virtual const geomtools::i_shape_1d& get_shape() const;
 
-      /// Return the reference to the 1D shape associated to the trajectory
-      virtual const geomtools::i_shape_1d & get_shape() const;
+ private:
+  geomtools::helix_3d _helix_;  //!< The helix embedded model
 
-    private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-      geomtools::helix_3d _helix_; //!< The helix embedded model
+}  // end of namespace datamodel
 
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::helix_trajectory_pattern,
                         "snemo::datamodel::helix_trajectory_pattern")
 
-#endif // FALAISE_SNEMO_DATAMODEL_HELIX_TRAJECTORY_PATTERN_H
+#endif  // FALAISE_SNEMO_DATAMODEL_HELIX_TRAJECTORY_PATTERN_H
 
 /*
 ** Local Variables: --

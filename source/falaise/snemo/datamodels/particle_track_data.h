@@ -20,9 +20,9 @@
 // - Boost:
 #include <boost/serialization/access.hpp>
 // - Bayeux/datatools:
+#include <datatools/i_clear.h>
 #include <datatools/i_serializable.h>
 #include <datatools/i_tree_dump.h>
-#include <datatools/i_clear.h>
 #include <datatools/properties.h>
 
 // This project:
@@ -31,108 +31,103 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// \brief SuperNEMO particle track model
-    //  To be done...
-    class particle_track_data : public datatools::i_serializable,
-                                public datatools::i_tree_dumpable,
-                                public datatools::i_clear
-    {
-    public:
+/// \brief SuperNEMO particle track model
+//  To be done...
+class particle_track_data : public datatools::i_serializable,
+                            public datatools::i_tree_dumpable,
+                            public datatools::i_clear {
+ public:
+  /// Collection of handles on particle tracks
+  typedef std::vector<particle_track::handle_type> particle_collection_type;
 
-      /// Collection of handles on particle tracks
-      typedef std::vector<particle_track::handle_type> particle_collection_type;
+  /// Default constructor
+  particle_track_data();
 
-      /// Default constructor
-      particle_track_data();
+  /// Destructor:
+  virtual ~particle_track_data();
 
-      /// Destructor:
-      virtual ~particle_track_data();
+  /// Check if there are some particles
+  bool has_particles() const;
 
-      /// Check if there are some particles
-      bool has_particles() const;
+  /// Returns the number of particle
+  size_t get_number_of_particles() const;
 
-      /// Returns the number of particle
-      size_t get_number_of_particles() const;
+  /// Add a particle track
+  void add_particle(const particle_track::handle_type& handle_);
 
-      /// Add a particle track
-      void add_particle(const particle_track::handle_type & handle_);
+  /// Return a non mutable reference to a particle by index
+  const particle_track& get_particle(size_t index_) const;
 
-      /// Return a non mutable reference to a particle by index
-      const particle_track & get_particle(size_t index_) const;
+  /// Return a mutable reference to particles
+  particle_collection_type& grab_particles();
 
-      /// Return a mutable reference to particles
-      particle_collection_type & grab_particles();
+  /// Return a non mutable reference to particles
+  const particle_collection_type& get_particles() const;
 
-      /// Return a non mutable reference to particles
-      const particle_collection_type & get_particles() const;
+  /// Remove a particle given its index
+  void remove_particle(size_t index_);
 
-      /// Remove a particle given its index
-      void remove_particle(size_t index_);
+  /// Remove particles given a list of indexes
+  void remove_particles(std::vector<size_t>& indexes_);
 
-      /// Remove particles given a list of indexes
-      void remove_particles(std::vector<size_t> & indexes_);
+  /// Reset the particle tracks
+  void invalidate_particles();
 
-      /// Reset the particle tracks
-      void invalidate_particles();
+  /// Retrieve particles given their charge
+  size_t fetch_particles(particle_collection_type& particles_, const uint32_t flags_,
+                         const bool clear_ = false) const;
 
-      /// Retrieve particles given their charge
-      size_t fetch_particles(particle_collection_type & particles_,
-                             const uint32_t flags_,
-                             const bool clear_ = false) const;
+  /// Check if there are some non associated calorimeters
+  bool has_non_associated_calorimeters() const;
 
-      /// Check if there are some non associated calorimeters
-      bool has_non_associated_calorimeters() const;
+  /// Return a non mutable reference to non associated calorimeters
+  const calibrated_calorimeter_hit::collection_type& get_non_associated_calorimeters() const;
 
-      /// Return a non mutable reference to non associated calorimeters
-      const calibrated_calorimeter_hit::collection_type & get_non_associated_calorimeters() const;
+  /// Return a mutable reference to non associated calorimeters
+  calibrated_calorimeter_hit::collection_type& grab_non_associated_calorimeters();
 
-      /// Return a mutable reference to non associated calorimeters
-      calibrated_calorimeter_hit::collection_type & grab_non_associated_calorimeters();
+  /// Reset the non associated calorimeters
+  void reset_non_associated_calorimeters();
 
-      /// Reset the non associated calorimeters
-      void reset_non_associated_calorimeters();
+  /// Reset the internals
+  void reset();
 
-      /// Reset the internals
-      void reset();
+  /// Check if the object has a valid internal structure
+  bool is_valid() const;
 
-      /// Check if the object has a valid internal structure
-      bool is_valid() const;
+  /// Return a mutable reference on the container of auxiliary properties
+  const datatools::properties& get_auxiliaries() const;
 
-      /// Return a mutable reference on the container of auxiliary properties
-      const datatools::properties & get_auxiliaries() const;
+  /// Return a non mutable reference on the container of auxiliary properties
+  datatools::properties& grab_auxiliaries();
 
-      /// Return a non mutable reference on the container of auxiliary properties
-      datatools::properties & grab_auxiliaries();
+  /// Clear the object
+  virtual void clear();
 
-      /// Clear the object
-      virtual void clear();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-      /// Smart print
-      virtual void tree_dump(std::ostream      & out_    = std::clog,
-                             const std::string & title_  = "",
-                             const std::string & indent_ = "",
-                             bool inherit_               = false) const;
+ private:
+  particle_collection_type _particles_;  //!< Collection of particle track handles
+  calibrated_calorimeter_hit::collection_type
+      _non_associated_calorimeters_;    //!< Collection of calorimeter hit handles
+  datatools::properties _auxiliaries_;  //!< Auxiliary properties
 
-    private :
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-      particle_collection_type _particles_;                                       //!< Collection of particle track handles
-      calibrated_calorimeter_hit::collection_type _non_associated_calorimeters_;  //!< Collection of calorimeter hit handles
-      datatools::properties _auxiliaries_;                                        //!< Auxiliary properties
+}  // end of namespace datamodel
 
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::particle_track_data, "snemo::datamodel::particle_track_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::particle_track_data,
+                        "snemo::datamodel::particle_track_data")
 
-#endif // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H
+#endif  // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H
 
 /*
 ** Local Variables: --
