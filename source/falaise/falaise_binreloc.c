@@ -11,8 +11,8 @@
 #define __BINRELOC_C__
 
 #ifdef ENABLE_BINRELOC
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif /* ENABLE_BINRELOC */
 #include <limits.h>
