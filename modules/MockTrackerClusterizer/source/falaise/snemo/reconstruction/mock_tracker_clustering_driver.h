@@ -31,7 +31,8 @@
  */
 
 #ifndef FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_DRIVER_H
-#define FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_DRIVER_H 1
+#define FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_DRIVER_H \
+  1
 
 // Standard library:
 #include <string>
@@ -41,63 +42,60 @@
 
 // Forward declaration :
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace snemo {
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// Driver for the MockTrackerClusterizer clustering algorithm
-    class mock_tracker_clustering_driver : public ::snemo::processing::base_tracker_clusterizer
-    {
-    public:
+/// Driver for the MockTrackerClusterizer clustering algorithm
+class mock_tracker_clustering_driver : public ::snemo::processing::base_tracker_clusterizer {
+ public:
+  static const std::string MTC_ID;  /// The MockTrackerClusterizer string identifier
 
-      static const std::string MTC_ID; /// The MockTrackerClusterizer string identifier
+  /// Default constructor
+  mock_tracker_clustering_driver();
 
-      /// Default constructor
-      mock_tracker_clustering_driver();
+  /// Destructor
+  virtual ~mock_tracker_clustering_driver();
 
-      /// Destructor
-      virtual ~mock_tracker_clustering_driver();
+  /// Initialize the clusterizer through configuration properties
+  virtual void initialize(const datatools::properties& setup_);
 
-      /// Initialize the clusterizer through configuration properties
-      virtual void initialize(const datatools::properties & setup_);
+  /// Reset the clusterizer
+  virtual void reset();
 
-      /// Reset the clusterizer
-      virtual void reset();
+  // /// Prepare cluster for processing
+  // virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+  //                              const base_tracker_clusterizer::calo_hit_collection_type &
+  //                              calo_hits_, snemo::datamodel::tracker_clustering_data &
+  //                              clustering_);
 
-      // /// Prepare cluster for processing
-      // virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-      //                              const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-      //                              snemo::datamodel::tracker_clustering_data & clustering_);
+  /// Main clustering method
+  virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
+                            const base_tracker_clusterizer::calo_hit_collection_type& calo_hits_,
+                            snemo::datamodel::tracker_clustering_data& clustering_);
 
-      /// Main clustering method
-      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                snemo::datamodel::tracker_clustering_data & clustering_ );
+  // /// Post-processing
+  // virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+  //                           const base_tracker_clusterizer::calo_hit_collection_type &
+  //                           calo_hits_, snemo::datamodel::tracker_clustering_data & clustering_);
 
-      // /// Post-processing
-      // virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-      //                           const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-      //                           snemo::datamodel::tracker_clustering_data & clustering_);
+  /// Check if 2 tracker cells are neighbours
+  bool are_neighbours(const geomtools::geom_id& tracker_hit_id1_,
+                      const geomtools::geom_id& tracker_hit_id2_) const;
 
-      /// Check if 2 tracker cells are neighbours
-      bool are_neighbours(const geomtools::geom_id & tracker_hit_id1_,
-                          const geomtools::geom_id & tracker_hit_id2_) const;
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+ private:
+  unsigned int _max_row_distance_;    ///
+  unsigned int _max_layer_distance_;  ///
+  unsigned int _max_sum_distance_;    ///
+};
 
-    private:
-
-      unsigned int _max_row_distance_;   ///
-      unsigned int _max_layer_distance_; ///
-      unsigned int _max_sum_distance_;   ///
-
-    };
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -106,7 +104,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::mock_tracker_clustering_driver)
 
-#endif // FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_DRIVER_H
+#endif  // FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_DRIVER_H
 
 /*
 ** Local Variables: --
