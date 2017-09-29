@@ -42,77 +42,73 @@
 #include <snemo/datamodels/calibrated_data.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    struct toy_display_driver;
+struct toy_display_driver;
 
-    /// \brief Visualization module for SuperNEMO event record
-    class visu_toy_module : public dpp::base_module
-    {
-    public:
+/// \brief Visualization module for SuperNEMO event record
+class visu_toy_module : public dpp::base_module {
+ public:
+  /// Setting geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      /// Setting geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Getting geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Getting geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Constructor
+  visu_toy_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      visu_toy_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~visu_toy_module();
 
-      /// Destructor
-      virtual ~visu_toy_module();
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+ protected:
+  /// Main process function
+  process_status _process(datatools::things& data_);
 
-    protected:
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-      /// Main process function
-      process_status _process(datatools::things & data_);
+ private:
+  const geomtools::manager* _geometry_manager_;  //!< The geometry manager
+  int _module_number_;                           /// Module number
+  bool _interactive_;                            /// Interactive flag
+  boost::scoped_ptr< ::snemo::visualization::toy_display_driver>
+      _driver_;           //!< Handle to the embedded visualization driver
+  int _event_counter_;    /// Event record counter
+  int _min_event_count_;  /// Minimum event record count
+  int _max_event_count_;  /// Maximum event record count
+  int _usleep_safe_;      /// Time delay between the display of two events (usec)
 
-      /// Give default values to specific class members.
-      void _set_defaults();
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(visu_toy_module)
+};
 
-    private:
+}  // namespace visualization
 
-      const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      int  _module_number_; /// Module number
-      bool _interactive_;   /// Interactive flag
-      boost::scoped_ptr< ::snemo::visualization::toy_display_driver> _driver_; //!< Handle to the embedded visualization driver
-      int _event_counter_;   /// Event record counter
-      int _min_event_count_; /// Minimum event record count
-      int _max_event_count_; /// Maximum event record count
-      int _usleep_safe_;     /// Time delay between the display of two events (usec)
-
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(visu_toy_module)
-
-    };
-
-  } // namespace visualization
-
-} // namespace snemo
+}  // namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::visualization::visu_toy_module)
 
-#endif // FALAISE_VISUTOY_PLUGIN_SNEMO_VISUALIZATION_VISU_TOY_MODULE_H
+#endif  // FALAISE_VISUTOY_PLUGIN_SNEMO_VISUALIZATION_VISU_TOY_MODULE_H
 
 /*
 ** Local Variables: --
