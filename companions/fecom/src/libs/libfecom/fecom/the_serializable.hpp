@@ -14,9 +14,9 @@
 // Include the specific serialization code of serializable classes:
 #include <fecom/base_hit.ipp>
 #include <fecom/calo_hit.ipp>
+#include <fecom/commissioning_event.ipp>
 #include <fecom/tracker_channel_hit.ipp>
 #include <fecom/tracker_hit.ipp>
-#include <fecom/commissioning_event.ipp>
 
 // Force instantiation of template code associated to the classes above
 // for the Boost archive classes defined in Bayeux/datatools:
@@ -30,4 +30,4 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(fecom::commissioning_eve
 // Boost/Serialization system :
 BOOST_CLASS_EXPORT_IMPLEMENT(fecom::commissioning_event)
 
-#endif // FECOM_THE_SERIALIZABLE_HPP
+#endif  // FECOM_THE_SERIALIZABLE_HPP
