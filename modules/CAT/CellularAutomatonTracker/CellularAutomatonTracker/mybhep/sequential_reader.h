@@ -24,9 +24,7 @@
 
 #include <mybhep/base_reader.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! Base class for a sequential reader
 /*!
   Provides common functionality for sequential readers
@@ -57,64 +55,59 @@ namespace mybhep{
 
 */
 
-  class sequential_reader : public base_reader
-  {
+class sequential_reader : public base_reader {
+ protected:
+  //! points to the current event
+  size_t curEvent_;
+  //! max number of events set to reader
+  size_t maxEvents_;
+  //! offset from the beginning of the event
+  std::vector<size_t> off_;
 
-  protected:
-    //! points to the current event
-    size_t curEvent_;
-    //! max number of events set to reader
-    size_t maxEvents_;
-    //! offset from the beginning of the event
-    std::vector<size_t> off_;
+  //! constructor (only to be instantiated by derived classes)
+ protected:
+  sequential_reader();
 
-    //! constructor (only to be instantiated by derived classes)
-  protected:
-    sequential_reader();
+  //!  public functions
+ public:
+  virtual ~sequential_reader();
+  //! open reader
+  void open(std::string fileName);
 
-    //!  public functions
-  public:
-    virtual ~sequential_reader() ;
-    //! open reader
-    void open(std::string fileName);
+  //! close reader
+  void close();
 
-    //! close reader
-    void close();
+  //! set reader to a new file
+  void reopen(std::string fileName);
 
-    //! set reader to a new file
-    void reopen(std::string fileName);
+  //! max events
+  size_t max_events();
 
-    //! max events
-    size_t max_events() ;
+  //! end of file
+  bool eof() { return end_of_file(); }
 
-    //! end of file
-    bool eof(){return end_of_file();}
+  //! read next event
+  event& read_next();
 
-    //! read next event
-    event& read_next() ;
+  //! read event
+  virtual event& read_event(size_t ievent);
 
-    //! read event
-    virtual event& read_event(size_t ievent);
+  //! protected interface
+ protected:
+  //! get max events
+  virtual size_t get_max_events() = 0;
 
-    //! protected interface
-  protected:
+  //! end of file
+  virtual bool end_of_file() = 0;
 
-    //! get max events
-    virtual size_t get_max_events() = 0;
+  //! rewind to ievent
+  virtual void rewind() = 0;
 
-    //! end of file
-    virtual bool end_of_file() =0;
+  //! skip to ievent
+  virtual void skip(size_t ievent) = 0;
 
-    //! rewind to ievent
-    virtual void rewind() =0;
-
-    //! skip to ievent
-    virtual void skip(size_t ievent) =0;
-
-    //! get the event as a record
-    virtual std::string get_record() = 0;
-
-
-  };
-}
+  //! get the event as a record
+  virtual std::string get_record() = 0;
+};
+}  // namespace mybhep
 #endif

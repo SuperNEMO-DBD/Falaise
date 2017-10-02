@@ -25,40 +25,32 @@
 #include <mybhep/sequential_writer.h>
 #include <zlib.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! writer_gz Class
 /*!
   Reads a BHEP DST in gz format
 */
 
+class writer_gz : public sequential_writer {
+ protected:
+  gzFile gf_;
 
-  class writer_gz : public sequential_writer
-  {
+ public:
+  //! constructor
+  writer_gz();
+  virtual ~writer_gz();
 
-  protected:
-    gzFile gf_;
+  //! protected interface
+ protected:
+  //! open file
+  virtual void open_file(std::string fileName);
+  //! close file
+  virtual void close_file();
+  //! write the event as a record
+  virtual void write_record(std::string record);
 
-  public:
-
-    //! constructor
-    writer_gz();
-    virtual ~writer_gz();
-
-    //! protected interface
-  protected:
-    //! open file
-    virtual void open_file(std::string fileName);
-    //! close file
-    virtual void close_file() ;
-    //! write the event as a record
-    virtual void write_record(std::string record) ;
-
-  public:
-    void fede();
-
-
-  };
-}
+ public:
+  void fede();
+};
+}  // namespace mybhep
 #endif

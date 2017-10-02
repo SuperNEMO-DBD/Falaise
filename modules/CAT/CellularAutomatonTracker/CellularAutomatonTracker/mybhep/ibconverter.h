@@ -19,69 +19,55 @@
 #include <mybhep/iconverter.h>
 #include <string>
 
+namespace mybhep {
+//! Base class  for converters
+/*!
+  It propagates and expand the interface for a converter
+*/
 
-namespace mybhep{
-  //! Base class  for converters
-  /*!
-    It propagates and expand the interface for a converter
-  */
+class ibconverter : public Iconverter {
+ public:
+  //! retrieve the index of the object to be converter
+  int index() const { return index_; }
+  //! set the index of the object to be converter
+  void set_index(int index_arg) { index_ = index_arg; }
 
-  class ibconverter : public Iconverter {
+  //! retrieve the name of the object to be converter
+  std::string name() const { return name_; }
+  //! set the name of the object to be converter
+  void set_name(std::string name_arg) { name_ = name_arg; }
 
-  public:
+  //! retrieve the state of the object
+  bool owner() const { return owner_; }
+  //! set the state of the object
+  void set_owner(bool owner_arg) { owner_ = owner_arg; }
 
-    //! retrieve the index of the object to be converter
-    int  index() const		{ return index_; }
-    //! set the index of the object to be converter
-    void set_index( int index_arg )	{ index_ = index_arg; }
+  //! propagate interface (store)
+  virtual std::string store() = 0;
 
-    //! retrieve the name of the object to be converter
-    std::string  name() const		{ return name_; }
-    //! set the name of the object to be converter
-    void set_name( std::string name_arg )	{ name_ = name_arg; }
+  virtual ~ibconverter() {}
 
-    //! retrieve the state of the object
-    bool  owner() const		{ return owner_; }
-    //! set the state of the object
-    void set_owner( bool owner_arg )	{ owner_ = owner_arg; }
+  //! propagate interface (restore)
+  virtual void restore(std::string) = 0;
+  //! propagate interface (restore)
+  virtual void complete_restore() = 0;
 
-    //! propagate interface (store)
-    virtual std::string store() = 0;
+  void strip(std::string& str, size_t size) { str.erase(0, size); }
 
-    virtual ~ibconverter(){
-    }
+ private:
+  std::string name_;
+  int index_;
+  bool owner_;
 
+ private:
+  //! no copy constructor
+  ibconverter(const ibconverter& ib);
+  //! no asignment
+  ibconverter& operator=(const ibconverter& ib);
 
-    //! propagate interface (restore)
-    virtual void restore(std::string) = 0;
-    //! propagate interface (restore)
-    virtual void complete_restore() = 0;
-
-    void strip(std::string& str, size_t size)
-    {
-      str.erase(0,size);
-    }
-
-
-  private :
-
-    std::string name_;
-    int index_;
-    bool owner_;
-
-  private :
-    //! no copy constructor
-    ibconverter(const ibconverter& ib);
-    //! no asignment
-    ibconverter& operator = (const ibconverter& ib) ;
-
-  protected:
-    //! only derived classes have access to constructor
-    ibconverter()
-    {
-      index_ = -1;
-    }
-
-  };
-}
+ protected:
+  //! only derived classes have access to constructor
+  ibconverter() { index_ = -1; }
+};
+}  // namespace mybhep
 #endif

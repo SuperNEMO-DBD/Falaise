@@ -11,123 +11,115 @@
 #include <CATAlgorithm/tracking_object.h>
 #include <CATAlgorithm/cell_base.h>
 
-
 namespace CAT {
 
-  namespace topology{
+namespace topology {
 
+class joint : public tracking_object {
+  // a joint is composed of three experimental points
 
-    class joint : public tracking_object{
+ private:
+  std::string appname_;
 
-      // a joint is composed of three experimental points
+  // first experimental point
+  experimental_point epa_;
 
-    private:
-      std::string appname_;
+  // second experimental point
+  experimental_point epb_;
 
-      // first experimental point
-      experimental_point epa_;
+  // third experimental point
+  experimental_point epc_;
 
-      // second experimental point
-      experimental_point epb_;
+  // phi kink
+  experimental_double kink_phi_;
 
-      // third experimental point
-      experimental_point epc_;
+  // theta kink
+  experimental_double kink_theta_;
 
-      // phi kink
-      experimental_double kink_phi_;
+ public:
+  // joint status
+  bool used_;
 
-      // theta kink
-      experimental_double kink_theta_;
+  // chi2 of connection along a sequence
+  double chi2_;
+  int32_t ndof_;
+  double p_;
 
-    public:
+  //! Default constructor
+  joint();
 
-      // joint status
-      bool used_;
+  //! Default destructor
+  virtual ~joint();
 
-      // chi2 of connection along a sequence
-      double chi2_;
-      int32_t ndof_;
-      double p_;
+  //! constructor
+  joint(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc,
+        mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //!Default constructor
-      joint();
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //!Default destructor
-      virtual ~joint();
+  //! set experimental_points
+  void set(const experimental_point &epa, const experimental_point &epb,
+           const experimental_point &epc);
 
-      //! constructor
-      joint(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set first experimental_points
+  void set_epa(const experimental_point &epa);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set second experimental_points
+  void set_epb(const experimental_point &epb);
 
+  //! set third experimental_points
+  void set_epc(const experimental_point &epc);
 
+  //! set kink phi
+  void set_kink_phi(const experimental_double &phi);
 
-      //! set experimental_points
-      void set(const experimental_point &epa, const experimental_point &epb, const experimental_point &epc);
+  //! set kink theta
+  void set_kink_theta(const experimental_double &theta);
 
+  //! set used
+  void set_used(bool used);
 
-      //! set first experimental_points
-      void set_epa(const experimental_point &epa);
+  //! set chi2
+  void set_chi2(double chi2);
+  void set_ndof(int32_t ndof);
+  void set_p(double p);
 
-      //! set second experimental_points
-      void set_epb(const experimental_point &epb);
+  //! get experimental_point a
+  const experimental_point &epa() const;
 
-      //! set third experimental_points
-      void set_epc(const experimental_point &epc);
+  //! get experimental_point b
+  const experimental_point &epb() const;
 
-      //! set kink phi
-      void set_kink_phi(const experimental_double &phi);
+  //! get experimental_point c
+  const experimental_point &epc() const;
 
-      //! set kink theta
-      void set_kink_theta(const experimental_double &theta);
+  //! get kink phi
+  const experimental_double &kink_phi() const;
 
-      //! set used
-      void set_used(bool used);
+  //! get kink theta
+  const experimental_double &kink_theta() const;
 
-      //! set chi2
-      void set_chi2(double chi2);
-      void set_ndof(int32_t ndof);
-      void set_p(double p);
+  //! get used
+  bool used() const;
 
-      //! get experimental_point a
-      const experimental_point& epa()const;
+  //! get chi2
+  double chi2() const;
+  int32_t ndof() const;
+  double p() const;
 
-      //! get experimental_point b
-      const experimental_point& epb()const;
+  joint invert();
 
-      //! get experimental_point c
-      const experimental_point& epc()const;
+  bool operator<(const joint &j) const;
 
-      //! get kink phi
-      const experimental_double& kink_phi()const;
+  double calculate_chi2(joint j, topology::cell A, topology::cell B, topology::cell C,
+                        joint *modified, bool A_is_on_gap, bool B_is_on_gap) const;
 
-      //! get kink theta
-      const experimental_double& kink_theta()const;
+ private:
+  void calculate_kinks();
+};
 
-      //! get used
-      bool used() const;
-
-      //! get chi2
-      double chi2() const;
-      int32_t ndof() const;
-      double p() const;
-
-      joint invert();
-
-      bool operator<(const joint &j) const;
-
-      double calculate_chi2(joint j, topology::cell A, topology::cell B, topology::cell C, joint * modified, bool A_is_on_gap, bool B_is_on_gap)const;
-
-    private:
-
-      void calculate_kinks();
-
-    };
-
-  }
-}
-#endif // __CATAlgorithm__joint_h
+}  // namespace topology
+}  // namespace CAT
+#endif  // __CATAlgorithm__joint_h

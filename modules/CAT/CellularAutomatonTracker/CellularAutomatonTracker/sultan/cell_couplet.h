@@ -8,106 +8,98 @@
 #include <sultan/experimental_vector.h>
 #include <sultan/cell.h>
 
-namespace SULTAN{
-  namespace topology{
+namespace SULTAN {
+namespace topology {
 
+class cell_couplet : public tracking_object {
+  // a cell_couplet is composed of two cells
+  // and the tangents between them
 
-    class cell_couplet : public tracking_object{
+ protected:
+  std::string appname_;
 
-      // a cell_couplet is composed of two cells
-      // and the tangents between them
+  // first cell
+  cell ca_;
 
-    protected:
-      std::string appname_;
+  // second cell
+  cell cb_;
 
-      // first cell
-      cell ca_;
+  // unit axis from first to second cell
+  experimental_vector forward_axis_;
+  bool forward_axis_calculated_;
 
-      // second cell
-      cell cb_;
+  // unit transverse axis
+  experimental_vector transverse_axis_;
+  bool transverse_axis_calculated_;
 
-      // unit axis from first to second cell
-      experimental_vector forward_axis_;
-      bool forward_axis_calculated_;
+  // distance from first to second cell
+  experimental_double distance_;
 
-      // unit transverse axis
-      experimental_vector transverse_axis_;
-      bool transverse_axis_calculated_;
+  // horizontal distance from first to second cell
+  experimental_double distance_hor_;
 
-      // distance from first to second cell
-      experimental_double distance_;
+ public:
+  //! Default constructor
+  cell_couplet();
 
-      // horizontal distance from first to second cell
-      experimental_double distance_hor_;
+  //! Default destructor
+  virtual ~cell_couplet();
 
-    public:
+  //! constructor
+  cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level = mybhep::NORMAL,
+               double probmin = 1.e-200);
 
-      //!Default constructor
-      cell_couplet();
+  //! constructor
+  cell_couplet(const cell &ca, const cell &cb, const std::string &just,
+               mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //!Default destructor
-      virtual ~cell_couplet();
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //! constructor
-      cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
-   
-      //! constructor
-      cell_couplet(const cell &ca, const cell &cb, const std::string &just, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set cells
+  void set(const cell &ca, const cell &cb);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set fwd axis
+  void set_a_forward_axis(const experimental_vector &v);
 
-      //! set cells
-      void set(const cell &ca, const cell &cb);
+  //! set trv axis
+  void set_a_transverse_axis(const experimental_vector &v);
 
-      //! set fwd axis
-      void set_a_forward_axis(const experimental_vector &v);
+  //! set distance
+  void set_a_distance(const experimental_double &d);
 
-      //! set trv axis
-      void set_a_transverse_axis(const experimental_vector &v);
+  //! set hor distance
+  void set_a_hor_distance(const experimental_double &d);
 
-      //! set distance
-      void set_a_distance(const experimental_double &d);
+  //! get first cell
+  const cell &ca() const;
 
-      //! set hor distance
-      void set_a_hor_distance(const experimental_double &d);
+  //! get second cell
+  const cell &cb() const;
 
-      //! get first cell
-      const cell& ca()const;
+  //! get forward axis
+  const experimental_vector &forward_axis() const;
 
-      //! get second cell
-      const cell& cb()const;
+  //! get transverse axis
+  const experimental_vector &transverse_axis() const;
 
-      //! get forward axis
-      const experimental_vector& forward_axis()const;
+  //! get distance
+  const experimental_double &distance() const;
 
-      //! get transverse axis
-      const experimental_vector& transverse_axis()const;
+  //! get horizontal distance
+  const experimental_double &distance_hor() const;
 
-      //! get distance
-      const experimental_double& distance()const;
+ public:
+  void set_forward_axis(void);
+  void set_transverse_axis(void);
+  cell_couplet invert();
 
-      //! get horizontal distance
-      const experimental_double& distance_hor()const;
+  friend bool operator==(const cell_couplet &left, const cell_couplet &right);
+};
 
-    public:
+}  // namespace topology
 
-      void set_forward_axis(void);
-      void set_transverse_axis(void);
-      cell_couplet invert();
-
-      friend bool operator==(const cell_couplet& left,
-                             const cell_couplet& right);
-
-
-    };
-
-
-  }
-
-}
+}  // namespace SULTAN
 
 #endif

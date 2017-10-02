@@ -41,94 +41,90 @@
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace datamodel {
-    class tracker_clustering_data;
-  }
+namespace datamodel {
+class tracker_clustering_data;
+}
 
-  namespace processing {
-    class base_tracker_clusterizer;
-  }
+namespace processing {
+class base_tracker_clusterizer;
+}
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// \brief Tracker clustering module using the CAT algorithm
-    class cat_tracker_clustering_module : public dpp::base_module
-    {
+/// \brief Tracker clustering module using the CAT algorithm
+class cat_tracker_clustering_module : public dpp::base_module {
+ public:
+  /// Set the 'calibrated data' bank label
+  void set_cd_label(const std::string &);
 
-    public:
+  /// Return the 'calibrated data' bank label
+  const std::string &get_cd_label() const;
 
-      /// Set the 'calibrated data' bank label
-      void set_cd_label(const std::string &);
+  /// Set the 'tracker clustering data' bank label
+  void set_tcd_label(const std::string &);
 
-      /// Return the 'calibrated data' bank label
-      const std::string & get_cd_label() const;
+  /// Return the 'tracker clustering data' bank label
+  const std::string &get_tcd_label() const;
 
-      /// Set the 'tracker clustering data' bank label
-      void set_tcd_label(const std::string &);
+  /// Setting geometry manager
+  void set_geometry_manager(const geomtools::manager &gmgr_);
 
-      /// Return the 'tracker clustering data' bank label
-      const std::string & get_tcd_label() const;
+  /// Getting geometry manager
+  const geomtools::manager &get_geometry_manager() const;
 
-      /// Setting geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Constructor
+  cat_tracker_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-      /// Getting geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Destructor
+  virtual ~cat_tracker_clustering_module();
 
-      /// Constructor
-      cat_tracker_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Initialization
+  virtual void initialize(const datatools::properties &setup_,
+                          datatools::service_manager &service_manager_,
+                          dpp::module_handle_dict_type &module_dict_);
 
-      /// Destructor
-      virtual ~cat_tracker_clustering_module();
+  /// Reset
+  virtual void reset();
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+  /// Data record processing
+  virtual process_status process(datatools::things &data_);
 
-      /// Reset
-      virtual void reset();
+ protected:
+  /// Main process function
+  void _process(const snemo::datamodel::calibrated_data &calib_data_,
+                // const snemo::datamodel::calibrated_data::tracker_hit_collection_type &
+                // calibrated_tracker_hits_,
+                snemo::datamodel::tracker_clustering_data &clustering_data_);
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+  /// Give default values to specific class members
+  void _set_defaults();
 
-    protected:
+ private:
+  const geomtools::manager *_geometry_manager_;  //!< The geometry manager
+  std::string _CD_label_;                        //!< The label of the input calibrated data bank
+  std::string _TCD_label_;  //!< The label of the output tracker clustering data bank
+  boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer>
+      _driver_;  //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
 
-      /// Main process function
-      void _process(const snemo::datamodel::calibrated_data & calib_data_,
-                    // const snemo::datamodel::calibrated_data::tracker_hit_collection_type & calibrated_tracker_hits_,
-                    snemo::datamodel::tracker_clustering_data & clustering_data_);
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(cat_tracker_clustering_module)
+};
 
-      /// Give default values to specific class members
-      void _set_defaults();
+}  // end of namespace reconstruction
 
-    private:
-
-      const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _CD_label_;                        //!< The label of the input calibrated data bank
-      std::string _TCD_label_;                       //!< The label of the output tracker clustering data bank
-      boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer> _driver_; //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
-
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(cat_tracker_clustering_module)
-
-    };
-
-  } // end of namespace reconstruction
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::cat_tracker_clustering_module)
 
-#endif // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_CAT_TRACKER_CLUSTERING_MODULE_H
+#endif  // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_CAT_TRACKER_CLUSTERING_MODULE_H
 /*
 ** Local Variables: --
 ** mode: c++ --

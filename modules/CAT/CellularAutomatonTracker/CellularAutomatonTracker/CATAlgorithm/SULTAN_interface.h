@@ -16,101 +16,94 @@
 
 namespace CAT {
 
-  /// Setup data of the SULTAN algorithms
-  /// This class contains the minimal set of parameters
-  /// needed to run the SULTAN algorithm
-  struct setup_data_sultan
-  {
-  public:
+/// Setup data of the SULTAN algorithms
+/// This class contains the minimal set of parameters
+/// needed to run the SULTAN algorithm
+struct setup_data_sultan {
+ public:
+  setup_data_sultan();
+  bool check() const;
+  void reset();
+  const std::string& get_error_message() const;
 
-    setup_data_sultan ();
-    bool check() const;
-    void reset();
-    const std::string & get_error_message () const;
+ protected:
+  void _set_defaults();
+  bool _check_snemo();
+  void _set_error_message(const std::string& message_);
 
-  protected:
+ protected:
+  std::string _error_message;
 
-    void _set_defaults ();
-    bool _check_snemo ();
-    void _set_error_message (const std::string & message_);
+ public:
+  /// Let all attributes be public :
 
-  protected :
+  /// Verbosity level: "mute", "normal", "verbose", "vverbose"
+  std::string level;
 
-    std::string _error_message;
+  /// Used to flag SuperNEMO of NEMO3 experiment
+  bool SuperNemo;
 
-  public:
+  /// Maximum computing time in ms
+  double MaxTime;
 
-    /// Let all attributes be public :
+  /// minimum p-value
+  double probmin;
 
-    /// Verbosity level: "mute", "normal", "verbose", "vverbose"
-    std::string level;
+  /// Number of cells which can be skipped (because the cell did not
+  /// work) and still the cluster is continuous
+  int nofflayers;
 
-    /// Used to flag SuperNEMO of NEMO3 experiment
-    bool   SuperNemo;
+  /// first event to be processed
+  /// (default = -1 to process all events)
+  int first_event;
 
-    /// Maximum computing time in ms
-    double MaxTime;
+  /// 0. for SuperNEMO, 1.5 m for NEMO3
+  double FoilRadius;
 
-    /// minimum p-value
-    double probmin;
+  double vel;  // plasma velocity in cell, not needed anymore because vertical position
+               // is reconstructed outside of SULTAN
+  double len;  // length of each drift wire, should be read from geometry instead of free parameter
+  double rad;  // radius of each cell, should be read from geometry instead of free parameter
+  double CellDistance;  // same as above
 
-    /// Number of cells which can be skipped (because the cell did not
-    /// work) and still the cluster is continuous
-    int    nofflayers;
+  double bfield;               // value of magnetic field
+  double xsize, ysize, zsize;  // chamber size
 
-    /// first event to be processed
-    /// (default = -1 to process all events)
-    int    first_event;
+  int num_cells_per_plane;
+  double cell_size;
 
-    /// 0. for SuperNEMO, 1.5 m for NEMO3
-    double FoilRadius;
+  // SuperNEMO :
+  double sigma0;  // Longitudinal sigma z
+  double k0, k1, k2, k3;
+  double th0, th1, th2, th3;
+  double l0, l1;
+};
 
-    double vel;  // plasma velocity in cell, not needed anymore because vertical position
-                 // is reconstructed outside of SULTAN
-    double len;  // length of each drift wire, should be read from geometry instead of free parameter
-    double rad;  // radius of each cell, should be read from geometry instead of free parameter
-    double CellDistance;  // same as above
+/// Configure the sultan from a setup data object
+void sultan_configure(Sultan& sultan_, const setup_data_sultan& setup_);
 
-    double bfield; // value of magnetic field
-    double xsize, ysize, zsize; // chamber size
+/// Input data model
+struct input_data_sultan {
+ public:
+  topology::Cell& add_cell();
+  input_data_sultan();
+  bool check() const;
 
-    int    num_cells_per_plane;
-    double cell_size;
+ public:
+  std::vector<topology::Cell> cells;
+};
 
-    // SuperNEMO :
-    double sigma0; // Longitudinal sigma z
-    double k0, k1, k2, k3;
-    double th0, th1, th2, th3;
-    double l0, l1;
+/// Output data model
+struct output_data_sultan {
+ public:
+  output_data_sultan();
 
-  };
+ public:
+  topology::Tracked_data tracked_data;
+};
 
-  /// Configure the sultan from a setup data object
-  void sultan_configure (Sultan & sultan_, const setup_data_sultan & setup_);
+}  // namespace CAT
 
-  /// Input data model
-  struct input_data_sultan
-  {
-  public:
-    topology::Cell & add_cell ();
-    input_data_sultan ();
-    bool check () const;
-
-  public:
-    std::vector<topology::Cell> cells;
-  };
-
-  /// Output data model
-  struct output_data_sultan
-  {
-  public:
-    output_data_sultan ();
-  public:
-    topology::Tracked_data tracked_data;
-  };
-
-}
-
-#endif // _CAT_SULTAN_interface_h_
+#endif  // _CAT_SULTAN_interface_h_
 
 // end of SULTAN_interface.h

@@ -24,65 +24,56 @@
 
 #include <mybhep/random_writer.h>
 
-
 #ifdef HDF5
-#include <mybhep/hdf5.h>      // C++ API header file
+#include <mybhep/hdf5.h>  // C++ API header file
 #endif
-
 
 #define CHNK_DIM 1000
 
-namespace mybhep{
+namespace mybhep {
 
 #ifndef HDF5
 
-  class writer_hdf5 : public random_writer
-  {
-  public:
-    void open_file(std::string /*s*/){out();}
-    void close_file(){out();}
-    void write_record(std::string /*s1*/,std::string /*s2*/){out();}
-    void out(){
-      std::cerr<<"+++ BHEP compiled without HDF5 support. ABORT !!!"<<std::endl;
-      exit(1);
-    }
-  };
+class writer_hdf5 : public random_writer {
+ public:
+  void open_file(std::string /*s*/) { out(); }
+  void close_file() { out(); }
+  void write_record(std::string /*s1*/, std::string /*s2*/) { out(); }
+  void out() {
+    std::cerr << "+++ BHEP compiled without HDF5 support. ABORT !!!" << std::endl;
+    exit(1);
+  }
+};
 
 #else
-
 
 //! writer_hdf5 Class
 /*!
   Writes a BHEP DST in hdf5 format
 */
 
+class writer_hdf5 : public random_writer {
+ protected:
+  const char* wdata_[1];  // std::string to write
 
-  class writer_hdf5 : public random_writer
-  {
+  hid_t file_, gfile_;   // file and gzipped file handler
+  hid_t dataset_;        // dataset handler
+  hid_t space_;          // dataspace handler
+  hid_t type_;           // datatype handler
+  hid_t cparms_, xfer_;  // parameters for plists
+  hid_t dst_;            // name of group
 
-  protected:
-    const char* wdata_[1];  // std::string to write
-
-    hid_t       file_,gfile_;  // file and gzipped file handler
-    hid_t       dataset_;      // dataset handler
-    hid_t       space_;         // dataspace handler
-    hid_t       type_;         // datatype handler
-    hid_t       cparms_,xfer_; // parameters for plists
-    hid_t       dst_;          // name of group
-
-  public:
-
-    //! constructor
-    writer_hdf5();
-    virtual ~writer_hdf5();
-    //! set file
-    virtual void open_file(std::string fileName);
-    //! close file
-    virtual void close_file() ;
-    //! write record
-    virtual void write_record(std::string record, std::string key) ;
-
-  };
+ public:
+  //! constructor
+  writer_hdf5();
+  virtual ~writer_hdf5();
+  //! set file
+  virtual void open_file(std::string fileName);
+  //! close file
+  virtual void close_file();
+  //! write record
+  virtual void write_record(std::string record, std::string key);
+};
 
 #endif
 }

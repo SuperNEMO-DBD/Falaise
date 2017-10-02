@@ -22,64 +22,53 @@
 #ifndef ETool_h
 #define ETool_h 1
 
-
 #include <vector>
 #include <string>
 #include <functional>
 
+namespace mybhep {
 
-namespace mybhep{
+template <class T>
+class unary : public std::unary_function<T, bool> {
+ public:
+  virtual bool operator()(const T) const { return true; }
+};
 
-  template <class T> class unary : public std::unary_function<T,bool> {
-  public:
-    virtual bool operator() (const T) const {return true;}
-  };
+template <class T>
+class binary : public std::binary_function<T, T, bool> {
+ public:
+  virtual bool operator()(const T, const T) const { return true; }
+};
 
-  template <class T> class binary : public std::binary_function<T,T,bool> {
-  public:
-    virtual bool operator() (const T, const T) const
-    {return true;}
-  };
-
-  class container_algorithm
-  {
-  public:
-
-    template <class T>
-    static void destroy(std::vector<T>& ini)
-    {
-      typename std::vector<T>::const_iterator it;
-      for (it = ini.begin(); it != ini.end(); it++)
-        {
-          delete *it;
-        }
-      ini.clear();
+class container_algorithm {
+ public:
+  template <class T>
+  static void destroy(std::vector<T>& ini) {
+    typename std::vector<T>::const_iterator it;
+    for (it = ini.begin(); it != ini.end(); it++) {
+      delete *it;
     }
+    ini.clear();
+  }
 
-    template <class T>
-    static void copy(const std::vector<T>& ini, std::vector<T>& target)
-    {
-      target.clear();
-      typename std::vector<T>::const_iterator it;
-      for (it = ini.begin(); it != ini.end(); it++)
-        {
-          target.push_back(*it);
-        }
+  template <class T>
+  static void copy(const std::vector<T>& ini, std::vector<T>& target) {
+    target.clear();
+    typename std::vector<T>::const_iterator it;
+    for (it = ini.begin(); it != ini.end(); it++) {
+      target.push_back(*it);
     }
+  }
 
-    template <class T>
-    static void append(const std::vector<T>& ini, std::vector<T>& target)
-    {
-      typename std::vector<T>::const_iterator it;
-      for (it = ini.begin(); it != ini.end(); it++)
-        {
-          target.push_back(*it);
-        }
+  template <class T>
+  static void append(const std::vector<T>& ini, std::vector<T>& target) {
+    typename std::vector<T>::const_iterator it;
+    for (it = ini.begin(); it != ini.end(); it++) {
+      target.push_back(*it);
     }
+  }
+};
 
-  };
-
-}
-
+}  // namespace mybhep
 
 #endif

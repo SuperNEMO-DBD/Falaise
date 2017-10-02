@@ -24,463 +24,453 @@
 #include <CATAlgorithm/cluster.h>
 #include <CATAlgorithm/calorimeter_hit.h>
 
-
-
 namespace CAT {
-  namespace topology{
+namespace topology {
 
+class sequence : public tracking_object {
+  // a sequence is composed of a list of nodes
 
+ protected:
+  std::string appname_;
 
-    class sequence : public tracking_object{
+  // list of all chi2 values found in the construction
+  // of the sequence (some of them discarded, kept only for plotting)
+  std::vector<double> chi2s_all_;
 
-      // a sequence is composed of a list of nodes
+  // list of all prob values
+  std::vector<double> probs_all_;
 
-    protected:
-      std::string appname_;
+  // list of helix_chi2 values
+  std::vector<double> helix_chi2s_;
 
-      // list of all chi2 values found in the construction
-      // of the sequence (some of them discarded, kept only for plotting)
-      std::vector<double> chi2s_all_;
+  // fitted helix
+  helix helix_;
 
-      // list of all prob values
-      std::vector<double> probs_all_;
+  experimental_double helix_length_;
 
-      // list of helix_chi2 values
-      std::vector<double> helix_chi2s_;
+  experimental_double tangent_length_;
 
-      // fitted helix
-      helix helix_;
+  experimental_double charge_;
 
-      experimental_double helix_length_;
+  experimental_double helix_charge_;
 
-      experimental_double tangent_length_;
+  experimental_double detailed_charge_;
 
-      experimental_double charge_;
+  experimental_vector momentum_;
 
-      experimental_double helix_charge_;
+  experimental_vector helix_momentum_;
 
-      experimental_double detailed_charge_;
+  bool primary_;
 
-      experimental_vector momentum_;
+ public:
+  // list of nodes
+  std::vector<node> nodes_;
 
-      experimental_vector helix_momentum_;
+  // status of sequence
+  bool free_;
 
-      bool primary_;
+  // sequence's name(s)
+  std::vector<std::string> names_;
 
-    public:
+  bool has_momentum_;
+  bool has_helix_;
 
-      // list of nodes
-      std::vector<node> nodes_;
+  bool has_charge_;
+  bool has_helix_charge_;
+  bool has_detailed_charge_;
 
-      // status of sequence
-      bool free_;
+  bool has_helix_length_;
+  bool has_tangent_length_;
 
-      // sequence's name(s)
-      std::vector<std::string> names_;
+  // sequence's vertex: from helix and from tangents
+  bool has_helix_vertex_;
+  experimental_point helix_vertex_;
+  std::string helix_vertex_type_;
+  size_t helix_vertex_id_;
+  bool has_tangent_vertex_;
+  experimental_point tangent_vertex_;
+  std::string tangent_vertex_type_;
+  size_t tangent_vertex_id_;
 
-      bool has_momentum_;
-      bool has_helix_;
+  // sequence's decay_vertex
+  bool has_decay_helix_vertex_;
+  experimental_point decay_helix_vertex_;
+  std::string decay_helix_vertex_type_;
+  size_t calo_helix_id_;
+  bool has_decay_tangent_vertex_;
+  experimental_point decay_tangent_vertex_;
+  std::string decay_tangent_vertex_type_;
+  size_t calo_tangent_id_;
 
-      bool has_charge_;
-      bool has_helix_charge_;
-      bool has_detailed_charge_;
+  //! Default constructor
+  sequence();
 
-      bool has_helix_length_;
-      bool has_tangent_length_;
+  //! Default destructor
+  virtual ~sequence();
 
-      // sequence's vertex: from helix and from tangents
-      bool has_helix_vertex_;
-      experimental_point helix_vertex_;
-      std::string helix_vertex_type_;
-      size_t helix_vertex_id_;
-      bool has_tangent_vertex_;
-      experimental_point tangent_vertex_;
-      std::string tangent_vertex_type_;
-      size_t tangent_vertex_id_;
+  //! constructor from std::vector of nodes
+  sequence(const std::vector<node> &nodes, mybhep::prlevel level = mybhep::NORMAL,
+           double probmin = 1.e-200);
 
+  //! constructor from single node
+  sequence(const node &node, mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      // sequence's decay_vertex
-      bool has_decay_helix_vertex_;
-      experimental_point decay_helix_vertex_;
-      std::string decay_helix_vertex_type_;
-      size_t calo_helix_id_;
-      bool has_decay_tangent_vertex_;
-      experimental_point decay_tangent_vertex_;
-      std::string decay_tangent_vertex_type_;
-      size_t calo_tangent_id_;
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //!Default constructor
-      sequence();
+  //! set nodes
+  void set_nodes(const std::vector<node> &nodes);
 
-      //!Default destructor
-      virtual ~sequence();
+  //! set free level
+  void set_free(bool free);
 
-      //! constructor from std::vector of nodes
-      sequence(const std::vector<node>&  nodes, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set name
+  void set_name(const std::string &name);
 
-      //! constructor from single node
-      sequence(const node &node, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set names
+  void set_names(const std::vector<std::string> &names);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! add name
+  void add_name(const std::string &name);
 
-      //! set nodes
-      void set_nodes(const std::vector<node> &nodes);
+  //! set helix_vertex
+  void set_helix_vertex(const experimental_point &v, const std::string &type,
+                        size_t calo_helix_id = 0);
 
-      //! set free level
-      void set_free(bool free);
+  //! set decay_helix_vertex
+  void set_decay_helix_vertex(const experimental_point &v, const std::string &type,
+                              size_t calo_helix_id = 0);
 
-      //! set name
-      void set_name(const std::string & name);
+  //! set tangent_vertex
+  void set_tangent_vertex(const experimental_point &v, const std::string &type,
+                          size_t calo_tangent_id = 0);
 
-      //! set names
-      void set_names(const std::vector<std::string> &names);
+  //! set decay_tangent_vertex
+  void set_decay_tangent_vertex(const experimental_point &v, const std::string &type,
+                                size_t calo_tangent_id = 0);
 
-      //! add name
-      void add_name(const std::string &name);
+  //! set chi2 list
+  void set_chi2s(const std::vector<double> &chi2s);
 
-      //! set helix_vertex
-      void set_helix_vertex(const experimental_point & v, const std::string & type, size_t calo_helix_id = 0);
+  //! set helix_chi2 list
+  void set_helix_chi2s(const std::vector<double> &helix_chi2s);
 
-      //! set decay_helix_vertex
-      void set_decay_helix_vertex(const experimental_point &v, const std::string &type, size_t calo_helix_id = 0);
+  //! set prob list
+  void set_probs(const std::vector<double> &probs);
 
-      //! set tangent_vertex
-      void set_tangent_vertex(const experimental_point & v, const std::string & type, size_t calo_tangent_id = 0);
+  //! set charge
+  void set_charge(const experimental_double &charge);
 
-      //! set decay_tangent_vertex
-      void set_decay_tangent_vertex(const experimental_point & v, const std::string & type, size_t calo_tangent_id = 0);
+  //! set helix_charge
+  void set_helix_charge(const experimental_double &helix_charge);
 
-      //! set chi2 list
-      void set_chi2s(const std::vector<double> & chi2s);
+  //! set detailed_charge
+  void set_detailed_charge(const experimental_double &detailed_charge);
 
-      //! set helix_chi2 list
-      void set_helix_chi2s(const std::vector<double> & helix_chi2s);
+  //! set tangent length
+  void set_tangent_length(const experimental_double &length);
 
-      //! set prob list
-      void set_probs(const std::vector<double> & probs);
+  //! set helix length
+  void set_helix_length(const experimental_double &helix_length);
 
-      //! set charge
-      void set_charge(const experimental_double &charge);
+  //! set momentum
+  void set_momentum(const experimental_vector &mom);
 
-      //! set helix_charge
-      void set_helix_charge(const experimental_double &helix_charge);
+  //! set helix_momentum
+  void set_helix_momentum(const experimental_vector &mom);
 
-      //! set detailed_charge
-      void set_detailed_charge(const experimental_double &detailed_charge);
+  //! set primary
+  void set_primary(bool primary);
 
-      //! set tangent length
-      void set_tangent_length(const experimental_double &length);
+  //! set helix
+  void set_helix(const helix &h);
 
-      //! set helix length
-      void set_helix_length(const experimental_double &helix_length);
+  //! get nodes
+  const std::vector<node> &nodes() const;
 
-      //! set momentum
-      void set_momentum(const experimental_vector &mom);
+  //! get free level
+  bool Free() const;
 
-      //! set helix_momentum
-      void set_helix_momentum(const experimental_vector &mom);
+  //! get name
+  const std::string &name() const;
 
-      //! set primary
-      void set_primary(bool primary);
+  //! get names
+  const std::vector<std::string> &names() const;
 
-      //! set helix
-      void set_helix(const helix & h);
+  //! get primary
+  bool primary() const;
 
-      //! get nodes
-      const std::vector<node> & nodes()const;
+  //! get list of all chi2
+  const std::vector<double> &chi2s_all() const;
 
-      //! get free level
-      bool Free()const;
+  //! get list of prob
+  const std::vector<double> &probs_all() const;
 
-      //! get name
-      const std::string & name()const;
+  //! get list of chi2 used in the sequence
+  std::vector<double> chi2s() const;
 
-      //! get names
-      const std::vector<std::string> & names()const;
+  //! compute the list of chi2s  used in the sequence
+  void make_chi2s(std::vector<double> &) const;
 
-      //! get primary
-      bool primary()const;
+  //! get list of helix_chi2
+  const std::vector<double> &helix_chi2s() const;
 
-      //! get list of all chi2
-      const std::vector<double>& chi2s_all() const;
+  //! compute the list of probs  used in the sequence
+  void make_probs(std::vector<double> &) const;
 
-      //! get list of prob
-      const std::vector<double> & probs_all() const;
+  //! get list of probs used in the sequence
+  std::vector<double> probs() const;
 
-      //! get list of chi2 used in the sequence
-      std::vector<double> chi2s()const;
+  // get chi2 of sequence
+  double chi2() const;
 
-      //! compute the list of chi2s  used in the sequence
-      void make_chi2s(std::vector<double> &) const;
+  // get helix_chi2 of sequence
+  double helix_chi2() const;
 
-      //! get list of helix_chi2
-      const std::vector<double> & helix_chi2s() const;
+  // get prob of sequence
+  double Prob() const;
 
-      //! compute the list of probs  used in the sequence
-      void make_probs(std::vector<double> &) const;
+  // get ndof of sequence
+  int32_t ndof() const;
 
-      //! get list of probs used in the sequence
-      std::vector<double> probs()const;
+  // get prob of sequence
+  double helix_Prob() const;
 
-      // get chi2 of sequence
-      double chi2()const;
+  //! has momentum
+  bool has_momentum() const;
 
-      // get helix_chi2 of sequence
-      double helix_chi2()const;
+  //! has helix
+  bool has_helix() const;
 
-      // get prob of sequence
-      double Prob()const;
+  //! has charge
+  bool has_charge() const;
 
-      // get ndof of sequence
-      int32_t ndof()const;
+  //! has helix_charge
+  bool has_helix_charge() const;
 
-      // get prob of sequence
-      double helix_Prob()const;
+  //! has detailed_charge
+  bool has_detailed_charge() const;
 
-      //! has momentum
-      bool has_momentum()const;
+  //! has tangent length
+  bool has_tangent_length() const;
 
-      //! has helix
-      bool has_helix()const;
+  //! has helix length
+  bool has_helix_length() const;
 
-      //! has charge
-      bool has_charge()const;
+  //! has helix_vertex
+  bool has_helix_vertex() const;
 
-      //! has helix_charge
-      bool has_helix_charge()const;
+  //! get helix_vertex
+  const experimental_point &helix_vertex() const;
 
-      //! has detailed_charge
-      bool has_detailed_charge()const;
+  //! get helix_vertex type
+  const std::string &helix_vertex_type() const;
 
-      //! has tangent length
-      bool has_tangent_length()const;
+  //! get helix_vertex id
+  size_t helix_vertex_id() const;
 
-      //! has helix length
-      bool has_helix_length()const;
+  //! has decay_helix_vertex
+  bool has_decay_helix_vertex() const;
 
-      //! has helix_vertex
-      bool has_helix_vertex()const;
+  //! get decay_helix_vertex
+  const experimental_point &decay_helix_vertex() const;
 
-      //! get helix_vertex
-      const experimental_point & helix_vertex()const;
+  //! get calo id
+  size_t calo_helix_id() const;
 
-      //! get helix_vertex type
-      const std::string & helix_vertex_type()const;
+  //! get decay helix_vertex type
+  const std::string &decay_helix_vertex_type() const;
 
-      //! get helix_vertex id
-      size_t helix_vertex_id()const;
+  //! has tangent_vertex
+  bool has_tangent_vertex() const;
 
-      //! has decay_helix_vertex
-      bool has_decay_helix_vertex()const;
+  //! get tangent_vertex
+  const experimental_point &tangent_vertex() const;
 
-      //! get decay_helix_vertex
-      const experimental_point & decay_helix_vertex()const;
+  //! get tangent_vertex type
+  const std::string &tangent_vertex_type() const;
 
-      //! get calo id
-      size_t calo_helix_id()const;
+  //! get tangent_vertex id
+  size_t tangent_vertex_id() const;
 
-      //! get decay helix_vertex type
-      const std::string & decay_helix_vertex_type()const;
+  //! has decay_tangent_vertex
+  bool has_decay_tangent_vertex() const;
 
-      //! has tangent_vertex
-      bool has_tangent_vertex()const;
+  //! get decay_tangent_vertex
+  const experimental_point &decay_tangent_vertex() const;
 
-      //! get tangent_vertex
-      const experimental_point & tangent_vertex()const;
+  //! get calo id
+  size_t calo_tangent_id() const;
 
-      //! get tangent_vertex type
-      const std::string & tangent_vertex_type()const;
+  //! get decay tangent_vertex type
+  const std::string &decay_tangent_vertex_type() const;
 
-      //! get tangent_vertex id
-      size_t tangent_vertex_id()const;
+  //! get charge
+  const experimental_double &charge() const;
 
-      //! has decay_tangent_vertex
-      bool has_decay_tangent_vertex()const;
+  //! get helix_charge
+  const experimental_double &helix_charge() const;
 
-      //! get decay_tangent_vertex
-      const experimental_point & decay_tangent_vertex()const;
+  //! get detailed_charge
+  const experimental_double &detailed_charge() const;
 
-      //! get calo id
-      size_t calo_tangent_id()const;
+  //! get tangent length
+  const experimental_double &tangent_length() const;
 
-      //! get decay tangent_vertex type
-      const std::string & decay_tangent_vertex_type()const;
+  //! get helix length
+  const experimental_double &helix_length() const;
 
-      //! get charge
-      const experimental_double & charge() const;
+  //! get momentum
+  const experimental_vector &momentum() const;
 
-      //! get helix_charge
-      const experimental_double & helix_charge() const;
+  //! get helix_momentum
+  const experimental_vector &helix_momentum() const;
 
-      //! get detailed_charge
-      const experimental_double & detailed_charge() const;
+  //! get helix
+  const helix &get_helix() const;
 
-      //! get tangent length
-      const experimental_double & tangent_length() const;
+  //! get fast
+  bool fast() const;
 
-      //! get helix length
-      const experimental_double & helix_length() const;
+  //! get last node
+  node last_node() const;
 
-      //! get momentum
-      const experimental_vector & momentum() const;
+  //! get second last node
+  node second_last_node() const;
 
-      //! get helix_momentum
-      const experimental_vector & helix_momentum() const;
+  //! get middle node
+  node middle_node() const;
 
-      //! get helix
-      const helix & get_helix() const;
+  bool has_kink(void) const;
+  bool has_kink(std::vector<size_t> *index) const;
 
+ public:
+  bool has_cell(const cell &c) const;
 
-      //! get fast
-      bool fast()const;
+  sequence invert();
 
+  void set_free_level();
 
-      //! get last node
-      node last_node()const;
+  //! get last free node
+  void last_free_node(size_t *lfn, size_t *link);
 
+  topology::node node_of_cell(const topology::cell &c);
 
-      //! get second last node
-      node second_last_node()const;
+  bool contained(const topology::sequence &big) const;
 
+  bool contained_same_size_and_cells(const topology::sequence &big) const;
 
-      //! get middle node
-      node middle_node()const;
+  bool contained_same_extreme_quadrants(const topology::sequence &big) const;
 
-      bool has_kink(void) const;
-      bool has_kink(std::vector<size_t> *index) const;
+  bool is_bridge(const topology::sequence &first, const topology::sequence &second) const;
 
-    public:
+  void increase_iteration(size_t inode, size_t ilink);
 
-      bool has_cell(const cell & c)const;
+  sequence copy_to_last_free_node(size_t *ilfn, size_t *ilink);
 
-      sequence invert();
+  void fill_links_of_node(size_t inode, cluster local_sequence);
 
-      void set_free_level();
+  bool pick_new_cell(size_t *ilink, experimental_point *newp, cluster local_cluster);
 
-      //! get last free node
-      void last_free_node(size_t *lfn, size_t *link);
+  bool compatible(joint *j, cell cc);
 
-      topology::node node_of_cell(const topology::cell & c);
+  void get_chi2_change_for_changing_end_of_sequence(const topology::experimental_point &epa,
+                                                    const topology::experimental_point &epb,
+                                                    double *delta_chi_A, double *delta_chi_alpha);
 
-      bool contained(const topology::sequence & big)const;
+  int get_link_index_of_cell(size_t inode, const cell &link) const;
 
-      bool contained_same_size_and_cells(const topology::sequence & big)const;
+  bool calculate_helix(double Ratio, bool conserve_clustering_from_removal = false,
+                       bool conserve_clustering_from_reordering = true);
 
-      bool contained_same_extreme_quadrants(const topology::sequence & big)const;
+  void reorder_cells(double Ratio);
 
-      bool is_bridge(const topology::sequence & first,const topology::sequence & second)const;
+  const experimental_double &radius() const;
 
-      void increase_iteration(size_t inode, size_t ilink);
+  const experimental_double &pitch() const;
 
-      sequence copy_to_last_free_node(size_t *ilfn, size_t *ilink);
+  const experimental_point &center() const;
 
-      void fill_links_of_node(size_t inode, cluster local_sequence);
+  void calculate_momentum(double bfield, bool SuperNEMO, double ref_value);
 
-      bool pick_new_cell(size_t *ilink, experimental_point *newp, cluster local_cluster);
+  void calculate_charge(void);
 
-      bool compatible(joint *j, cell cc);
+  void calculate_length(void);
 
-      void get_chi2_change_for_changing_end_of_sequence(const topology::experimental_point &epa, const topology::experimental_point &epb, double *delta_chi_A, double *delta_chi_alpha);
+  bool intersect_plane_with_tangent_from_end(const plane &pl, experimental_point *ep) const;
 
-      int get_link_index_of_cell(size_t inode, const cell &link) const;
+  bool intersect_plane_from_end(const plane &pl, experimental_point *ep) const;
 
-      bool calculate_helix(double Ratio, bool conserve_clustering_from_removal = false, bool conserve_clustering_from_reordering = true);
+  bool intersect_plane_with_tangent_from_begin(const plane &pl, experimental_point *ep) const;
 
-      void reorder_cells(double Ratio);
+  bool intersect_plane_from_begin(const plane &pl, experimental_point *ep) const;
 
-      const experimental_double & radius() const;
+  bool intersect_circle_with_tangent_from_end(const circle &c, experimental_point *ep) const;
 
-      const experimental_double & pitch()const;
+  bool intersect_circle_from_end(const circle &c, experimental_point *ep) const;
 
-      const experimental_point & center()const;
+  bool intersect_circle_from_end_minus_one(const circle &c, experimental_point *ep) const;
 
-      void calculate_momentum(double bfield,bool SuperNEMO, double ref_value);
+  bool intersect_circle_with_tangent_from_begin(const circle &c, experimental_point *ep) const;
 
-      void calculate_charge(void);
+  bool intersect_circle_from_begin(const circle &c, experimental_point *ep) const;
 
-      void calculate_length(void);
+  bool intersect_circle_from_begin_minus_one(const circle &c, experimental_point *ep) const;
 
-      bool intersect_plane_with_tangent_from_end(const plane & pl,
-                                                 experimental_point * ep)const;
+  void remove_first_node();
 
-      bool intersect_plane_from_end(const plane & pl, experimental_point * ep)const;
+  void remove_last_node();
 
-      bool intersect_plane_with_tangent_from_begin(const plane & pl, experimental_point * ep)const;
+  bool intersect_sequence(sequence &seq, bool invertA, bool invertB, bool acrossGAP,
+                          experimental_point *ep, double limit_distance, int *with_kink,
+                          int cells_to_delete, double Ratio);
 
-      bool intersect_plane_from_begin(const plane & pl, experimental_point * ep)const;
+  std::string family() const;
 
-      bool intersect_circle_with_tangent_from_end(const circle & c, experimental_point * ep)const;
+  std::vector<size_t> families() const;
 
-      bool intersect_circle_from_end(const circle &c, experimental_point * ep)const;
+  bool good_match(const sequence &seq, bool &invertA, bool &invertB, size_t NOffLayers) const;
 
-      bool intersect_circle_from_end_minus_one(const circle & c, experimental_point * ep)const;
+  sequence match(sequence &seq, bool invertA, bool invertB, bool *ok, int with_kink,
+                 int cells_to_delete, double Ratio);
 
-      bool intersect_circle_with_tangent_from_begin(const circle & c, experimental_point * ep)const;
+  bool good_match_with_kink(const sequence &seq, bool &invertA, bool &invertB, bool &acrossGAP,
+                            double limit_distance, size_t NOffLayers, int &cells_to_delete) const;
 
-      bool intersect_circle_from_begin(const circle & c, experimental_point * ep)const;
+  bool same_families(const topology::sequence &s) const;
 
-      bool intersect_circle_from_begin_minus_one(const circle & c, experimental_point * ep)const;
+  experimental_double delta_phi(const experimental_point &epa, const experimental_point &epb) const;
 
-      void remove_first_node();
+  // is the (true) track all on one side of the foil?
+  bool one_side() const;
 
-      void remove_last_node();
+  experimental_vector initial_dir(bool SupeNEMO, double ref_value) const;
 
-      bool intersect_sequence(sequence & seq, bool invertA, bool invertB, bool acrossGAP, experimental_point * ep, double limit_distance, int* with_kink, int cells_to_delete, double Ratio);
+  experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value) const;
 
-      std::string family()const;
+  experimental_vector final_dir() const;
 
-      std::vector<size_t> families()const;
+  //! get node of worst chi2
+  bool worst_node(topology::node &n) const;
 
-      bool good_match(const sequence & seq,
-                      bool &invertA, bool &invertB, size_t NOffLayers)const;
+  double phi_kink(size_t inode) const;
 
+  // get node of largest horizontal kink
+  bool largest_kink_node(topology::node &n, double &phi) const;
 
-      sequence match(sequence & seq, bool invertA, bool invertB, bool *ok, int with_kink, int cells_to_delete, double Ratio);
+  bool helix_out_of_range(double lim);
 
-      bool good_match_with_kink(const sequence & seq,
-                                bool &invertA, bool &invertB, bool &acrossGAP,
-                                double limit_distance, size_t NOffLayers,
-                                int &cells_to_delete)const;
+  void point_of_max_min_radius(experimental_point epa, experimental_point epb,
+                               experimental_point *epmax, experimental_point *epmin);
 
-      bool same_families(const topology::sequence & s)const;
+  bool common_vertex_on_foil(const sequence *seqB, double *the_distance) const;
 
-      experimental_double delta_phi(const experimental_point & epa,
-                       const experimental_point & epb)const;
+  void circle_order(double Ratio);
+};
 
-      // is the (true) track all on one side of the foil?
-      bool one_side()const;
+}  // namespace topology
 
-      experimental_vector initial_dir(bool SupeNEMO, double ref_value)const;
-
-      experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value)const;
-
-      experimental_vector final_dir()const;
-
-      //! get node of worst chi2
-      bool worst_node(topology::node& n)const;
-
-      double phi_kink(size_t inode)const;
-
-      // get node of largest horizontal kink
-      bool largest_kink_node(topology::node& n, double& phi)const;
-
-      bool helix_out_of_range(double lim);
-
-      void point_of_max_min_radius(experimental_point epa, experimental_point epb, experimental_point *epmax, experimental_point *epmin);
-
-      bool common_vertex_on_foil(const sequence *seqB, double *the_distance) const;
-
-      void circle_order(double Ratio);
-
-    };
-
-  }
-
-
-}
+}  // namespace CAT
 
 #endif
