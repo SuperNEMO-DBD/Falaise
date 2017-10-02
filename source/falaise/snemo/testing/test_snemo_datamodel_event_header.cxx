@@ -2,15 +2,14 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // This project:
 #include <falaise/snemo/datamodels/event_header.h>
 
-int main(int /* argc_ */, char ** /* argv_ */)
-{
+int main(int /* argc_ */, char** /* argv_ */) {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::datamodel::event_header'!" << std::endl;
@@ -28,13 +27,12 @@ int main(int /* argc_ */, char ** /* argv_ */)
     EH.tree_dump(std::clog, "Event header: ", "NOTICE: ");
 
     std::clog << "The end." << std::endl;
-  }
-  catch (std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
-  }
-  catch (...) {
-    std::cerr << "error: " << "unexpected error!" << std::endl;
+  } catch (...) {
+    std::cerr << "error: "
+              << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
   return (error_code);

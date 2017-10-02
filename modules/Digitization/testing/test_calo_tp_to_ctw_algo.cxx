@@ -1,14 +1,14 @@
-//test_calo_tp_to_ctw_algo.cxx
+// test_calo_tp_to_ctw_algo.cxx
 
 // Standard libraries :
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
 #include <datatools/io_factory.h>
+#include <datatools/logger.h>
 
 // Falaise:
 #include <falaise/falaise.h>
@@ -16,8 +16,7 @@
 // This project :
 #include <snemo/digitization/calo_tp_to_ctw_algo.h>
 
-int main(int  argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -27,10 +26,10 @@ int main(int  argc_, char ** argv_)
     snemo::digitization::calo_tp_data my_calo_tp_data;
     // Creation of few calo tps
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,0,14);
+      ctp.grab_geom_id().set_address(3, 0, 14);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(20);
@@ -39,10 +38,10 @@ int main(int  argc_, char ** argv_)
       ctp.tree_dump(std::clog, "CTP 1 : ", "INFO : ");
     }
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,0,5);
+      ctp.grab_geom_id().set_address(3, 0, 5);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(20);
@@ -50,10 +49,10 @@ int main(int  argc_, char ** argv_)
       ctp.tree_dump(std::clog, "CTP 2 : ", "INFO : ");
     }
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,0,17);
+      ctp.grab_geom_id().set_address(3, 0, 17);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(35);
@@ -61,10 +60,10 @@ int main(int  argc_, char ** argv_)
       ctp.tree_dump(std::clog, "CTP 3 : ", "INFO : ");
     }
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,1,5);
+      ctp.grab_geom_id().set_address(3, 1, 5);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(35);
@@ -72,10 +71,10 @@ int main(int  argc_, char ** argv_)
       ctp.tree_dump(std::clog, "CTP 4 : ", "INFO : ");
     }
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,1,11);
+      ctp.grab_geom_id().set_address(3, 1, 11);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(42);
@@ -83,10 +82,10 @@ int main(int  argc_, char ** argv_)
       ctp.tree_dump(std::clog, "CTP 5 : ", "INFO : ");
     }
     {
-      snemo::digitization::calo_tp & ctp = my_calo_tp_data.add();
+      snemo::digitization::calo_tp& ctp = my_calo_tp_data.add();
       ctp.set_hit_id(27);
       ctp.grab_geom_id().set_type(42);
-      ctp.grab_geom_id().set_address(3,0,15);
+      ctp.grab_geom_id().set_address(3, 0, 15);
       ctp.grab_auxiliaries().store("author", "guillaume");
       ctp.grab_auxiliaries().store_flag("fake");
       ctp.set_clocktick_25ns(20);
@@ -106,7 +105,7 @@ int main(int  argc_, char ** argv_)
     std::clog << "The end." << std::endl;
   }
 
-  catch (std::exception & error) {
+  catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   }

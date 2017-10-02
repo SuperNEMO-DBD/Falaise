@@ -3,22 +3,22 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/temporary_files.h>
 #include <datatools/clhep_units.h>
+#include <datatools/temporary_files.h>
 // - Bayeux/geomtools:
-#include <geomtools/manager.h>
+#include <geomtools/color.h>
 #include <geomtools/gnuplot_draw.h>
 #include <geomtools/gnuplot_drawer.h>
 #include <geomtools/gnuplot_i.h>
-#include <geomtools/color.h>
+#include <geomtools/manager.h>
 
-void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
-                      snemo::datamodel::calibrated_data::tracker_hit_collection_type & gghits_)
-{
+void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
+                      snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_) {
   // A fake track:
   for (int i = 0; i < 9; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new snemo::datamodel::calibrated_tracker_hit);
-    snemo::datamodel::calibrated_tracker_hit & gghit = hgghit.grab();
+    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
+        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::calibrated_tracker_hit& gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_geom_id().set_type(1204);
     gghit.grab_geom_id().set_address(0, 1, i, 44 + i);
@@ -39,8 +39,9 @@ void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
 
   // A fake track:
   for (int i = 0; i < 4; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new snemo::datamodel::calibrated_tracker_hit);
-    snemo::datamodel::calibrated_tracker_hit & gghit = hgghit.grab();
+    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
+        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::calibrated_tracker_hit& gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_geom_id().set_type(1204);
     gghit.grab_geom_id().set_address(0, 1, i, 51);
@@ -61,8 +62,9 @@ void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
 
   // A fake track:
   for (int i = 0; i < 3; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new snemo::datamodel::calibrated_tracker_hit);
-    snemo::datamodel::calibrated_tracker_hit & gghit = hgghit.grab();
+    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
+        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::calibrated_tracker_hit& gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_geom_id().set_type(1204);
     gghit.grab_geom_id().set_address(0, 1, 5 - i, 52 + i);
@@ -83,8 +85,9 @@ void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
 
   // A fake track:
   for (int i = 0; i < 6; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new snemo::datamodel::calibrated_tracker_hit);
-    snemo::datamodel::calibrated_tracker_hit & gghit = hgghit.grab();
+    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
+        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::calibrated_tracker_hit& gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_geom_id().set_type(1204);
     gghit.grab_geom_id().set_address(0, 1, i, 42 - i);
@@ -105,11 +108,12 @@ void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
 
   // Add random fake hits
   for (int i = 0; i < 3; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new snemo::datamodel::calibrated_tracker_hit);
-    snemo::datamodel::calibrated_tracker_hit & gghit = hgghit.grab();
+    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
+        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::calibrated_tracker_hit& gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_geom_id().set_type(1204);
-    gghit.grab_geom_id().set_address(0, 1, (int) (9 * drand48()), 56 + (int) (6 * drand48()));
+    gghit.grab_geom_id().set_address(0, 1, (int)(9 * drand48()), 56 + (int)(6 * drand48()));
     gghit.set_z((37.0 + 10.2 * drand48()) * CLHEP::cm);
     gghit.set_sigma_z(0.7 * CLHEP::cm);
     gghit.set_r((0.1 + 2.1 * drand48()) * CLHEP::cm);
@@ -127,10 +131,9 @@ void generate_gg_hits(const snemo::geometry::gg_locator & ggloc_,
   return;
 }
 
-void display_event(const snemo::geometry::gg_locator & ggloc_,
-                   const snemo::datamodel::calibrated_data::tracker_hit_collection_type & gghits_,
-                   const snemo::datamodel::tracker_clustering_data & tcd_)
-{
+void display_event(const snemo::geometry::gg_locator& ggloc_,
+                   const snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_,
+                   const snemo::datamodel::tracker_clustering_data& tcd_) {
   namespace sdm = snemo::datamodel;
   datatools::temp_file tmp_file;
   tmp_file.set_remove_at_destroy(true);
@@ -139,77 +142,74 @@ void display_event(const snemo::geometry::gg_locator & ggloc_,
   geomtools::rotation_3d identity;
 
   // Bounding box:
-  geomtools::gnuplot_draw::xyz_range & BB = geomtools::gnuplot_draw::bounding_box();
+  geomtools::gnuplot_draw::xyz_range& BB = geomtools::gnuplot_draw::bounding_box();
   BB.reset_ranges();
   BB.activate();
 
   // Color context:
-  geomtools::color::context & CC = geomtools::gnuplot_draw::color_context();
+  geomtools::color::context& CC = geomtools::gnuplot_draw::color_context();
 
-  for (int i = 0; i < (int) gghits_.size(); i++) {
-    const sdm::calibrated_data::tracker_hit_handle_type & hgghit = gghits_[i];
-    const sdm::calibrated_tracker_hit & gghit = hgghit.get();
-    double x  = gghit.get_x();
-    double y  = gghit.get_y();
-    double z  = gghit.get_z();
+  for (int i = 0; i < (int)gghits_.size(); i++) {
+    const sdm::calibrated_data::tracker_hit_handle_type& hgghit = gghits_[i];
+    const sdm::calibrated_tracker_hit& gghit = hgghit.get();
+    double x = gghit.get_x();
+    double y = gghit.get_y();
+    double z = gghit.get_z();
     double ez = gghit.get_sigma_z();
-    double r  = gghit.get_r();
+    double r = gghit.get_r();
     double er = gghit.get_sigma_r();
     geomtools::vector_3d hit_pos(x, y, z);
     CC.set_color_code(geomtools::color::COLOR_BLUE);
     geomtools::gnuplot_draw::draw_circle(tmp_file.out(), hit_pos, identity, r + er);
     geomtools::gnuplot_draw::draw_circle(tmp_file.out(), hit_pos, identity, r - er);
-    geomtools::gnuplot_draw::draw_line(tmp_file.out(),
-                                       hit_pos + geomtools::vector_3d(0, 0, +ez),
-                                       hit_pos + geomtools::vector_3d(0, 0, -ez)
-                                       );
-
+    geomtools::gnuplot_draw::draw_line(tmp_file.out(), hit_pos + geomtools::vector_3d(0, 0, +ez),
+                                       hit_pos + geomtools::vector_3d(0, 0, -ez));
   }
 
   if (tcd_.has_default_solution()) {
-    const sdm::tracker_clustering_solution & tcd_sol = tcd_.get_default_solution();
+    const sdm::tracker_clustering_solution& tcd_sol = tcd_.get_default_solution();
     tcd_sol.tree_dump(std::cerr, "Clustering solution: ", "DEVEL: ");
-    for (int i = 0; i < (int) tcd_sol.get_clusters().size(); i++) {
-      const sdm::tracker_clustering_solution::cluster_handle_type & hcluster = tcd_sol.get_clusters()[i];
-      const sdm::tracker_cluster & cluster = hcluster.get();
+    for (int i = 0; i < (int)tcd_sol.get_clusters().size(); i++) {
+      const sdm::tracker_clustering_solution::cluster_handle_type& hcluster =
+          tcd_sol.get_clusters()[i];
+      const sdm::tracker_cluster& cluster = hcluster.get();
       // cluster.tree_dump(std::cerr, "Cluster: ", "DEVEL: ");
-      const sdm::calibrated_tracker_hit::collection_type & clhits = cluster.get_hits();
-      if (i == 0)  CC.set_color_code(geomtools::color::COLOR_RED);
-      if (i == 1)  CC.set_color_code(geomtools::color::COLOR_GREEN);
-      if (i == 2)  CC.set_color_code(geomtools::color::COLOR_MAGENTA);
-      if (i == 3)  CC.set_color_code(geomtools::color::COLOR_YELLOW);
-      if (i == 4)  CC.set_color_code(geomtools::color::COLOR_ORANGE);
-      if (i > 4)  CC.set_color_code(geomtools::color::COLOR_BLUE);
-      for (int j = 0; j < (int) clhits.size(); j++) {
-        const sdm::calibrated_data::tracker_hit_handle_type & hclhit = clhits[j];
-        const sdm::calibrated_tracker_hit & clhit = hclhit.get();
-        double x  = clhit.get_x();
-        double y  = clhit.get_y();
-        double z  = clhit.get_z();
+      const sdm::calibrated_tracker_hit::collection_type& clhits = cluster.get_hits();
+      if (i == 0) CC.set_color_code(geomtools::color::COLOR_RED);
+      if (i == 1) CC.set_color_code(geomtools::color::COLOR_GREEN);
+      if (i == 2) CC.set_color_code(geomtools::color::COLOR_MAGENTA);
+      if (i == 3) CC.set_color_code(geomtools::color::COLOR_YELLOW);
+      if (i == 4) CC.set_color_code(geomtools::color::COLOR_ORANGE);
+      if (i > 4) CC.set_color_code(geomtools::color::COLOR_BLUE);
+      for (int j = 0; j < (int)clhits.size(); j++) {
+        const sdm::calibrated_data::tracker_hit_handle_type& hclhit = clhits[j];
+        const sdm::calibrated_tracker_hit& clhit = hclhit.get();
+        double x = clhit.get_x();
+        double y = clhit.get_y();
+        double z = clhit.get_z();
         double ez = clhit.get_sigma_z();
         // double r  = clhit.get_r();
         // double er = clhit.get_sigma_r();
         geomtools::vector_3d hit_pos(x, y, z);
         geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                          ggloc_.get_cell_diameter(),
-                                          ggloc_.get_cell_diameter(),
+                                          ggloc_.get_cell_diameter(), ggloc_.get_cell_diameter(),
                                           2 * ez);
       }
     }
     CC.set_color_code(geomtools::color::COLOR_BLACK);
-    for (int j = 0; j < (int) tcd_sol.get_unclustered_hits().size(); j++) {
-      const sdm::calibrated_data::tracker_hit_handle_type & huclhit = tcd_sol.get_unclustered_hits()[j];
-      const sdm::calibrated_tracker_hit & uclhit = huclhit.get();
-      double x  = uclhit.get_x();
-      double y  = uclhit.get_y();
-      double z  = uclhit.get_z();
+    for (int j = 0; j < (int)tcd_sol.get_unclustered_hits().size(); j++) {
+      const sdm::calibrated_data::tracker_hit_handle_type& huclhit =
+          tcd_sol.get_unclustered_hits()[j];
+      const sdm::calibrated_tracker_hit& uclhit = huclhit.get();
+      double x = uclhit.get_x();
+      double y = uclhit.get_y();
+      double z = uclhit.get_z();
       double ez = uclhit.get_sigma_z();
       // double r  = uclhit.get_r();
       // double er = uclhit.get_sigma_r();
       geomtools::vector_3d hit_pos(x, y, z);
       geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                        ggloc_.get_cell_diameter(),
-                                        ggloc_.get_cell_diameter(),
+                                        ggloc_.get_cell_diameter(), ggloc_.get_cell_diameter(),
                                         2 * ez);
     }
   }
@@ -225,7 +225,7 @@ void display_event(const snemo::geometry::gg_locator & ggloc_,
          << "index 0 using 1:2:3:4 notitle with lines linecolor variable lw 1 ";
 
   g1.cmd(gp_cmd.str());
-  g1.showonscreen(); // window output
+  g1.showonscreen();  // window output
   geomtools::gnuplot_drawer::wait_for_key();
   usleep(200);
 

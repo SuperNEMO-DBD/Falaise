@@ -30,11 +30,11 @@
 // This project
 
 namespace falaise {
-  /// Initialize resources of the Falaise library
-  void initialize(int argc_ = 0, char * argv_[] = 0, uint32_t flags_ = 0);
+/// Initialize resources of the Falaise library
+void initialize(int argc_ = 0, char* argv_[] = 0, uint32_t flags_ = 0);
 
-  /// Terminate resources of the Falaise library
-  void terminate();
-}
+/// Terminate resources of the Falaise library
+void terminate();
+}  // namespace falaise
 
-#endif // FALAISE_FALAISE_H
+#endif  // FALAISE_FALAISE_H

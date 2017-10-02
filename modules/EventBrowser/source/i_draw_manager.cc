@@ -23,25 +23,21 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      // ctor:
-      i_draw_manager::i_draw_manager ()
-      {
-      }
+// ctor:
+i_draw_manager::i_draw_manager() {}
 
-      // dtor:
-      i_draw_manager::~i_draw_manager ()
-      {
-      }
+// dtor:
+i_draw_manager::~i_draw_manager() {}
 
-    } // end of namespace view
+}  // end of namespace view
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of i_draw_manager.cc
 /*

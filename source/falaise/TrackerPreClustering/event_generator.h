@@ -31,8 +31,8 @@
 
 // Standard library:
 #include <iostream>
-#include <vector>
 #include <map>
+#include <vector>
 
 // Third party:
 // - Boost:
@@ -56,70 +56,67 @@
 #include "falaise/TrackerPreClustering/gg_hit.h"
 
 namespace TrackerPreClustering {
-  /// \brief Generator of mock events (collections of Geiger hits)
-  class event_generator
-  {
-  public:
+/// \brief Generator of mock events (collections of Geiger hits)
+class event_generator {
+ public:
+  /// Set seed
+  void set_seed(long);
 
-    /// Set seed
-    void set_seed(long);
+  /// Set the cell size
+  void set_cell_size(double cell_size_);
 
-    /// Set the cell size
-    void set_cell_size(double cell_size_);
+  /// Set the number of layers
+  void set_nb_layers(unsigned int nb_layers_);
 
-    /// Set the number of layers
-    void set_nb_layers(unsigned int nb_layers_);
+  /// Set the number of rows
+  void set_nb_rows(unsigned int nb_rows_);
 
-    /// Set the number of rows
-    void set_nb_rows(unsigned int nb_rows_);
+  /// Default constructor
+  event_generator();
 
-    /// Default constructor
-    event_generator();
+  /// Constructor
+  event_generator(long seed_);
 
-    /// Constructor
-    event_generator(long seed_);
+  /// Check initialization status
+  bool is_initialized();
 
-    /// Check initialization status
-    bool is_initialized();
+  /// Initialization
+  void initialize();
 
-    /// Initialization
-    void initialize();
+  /// Reset
+  void reset();
 
-    /// Reset
-    void reset();
+  /// Generate the mock prompt Geiger hits
+  void generate_prompt_gg_hits(std::vector<const gg_hit *> &hits_);
 
-    /// Generate the mock prompt Geiger hits
-    void generate_prompt_gg_hits(std::vector<const gg_hit *> & hits_);
+  /// Generate the mock delayed Geiger hits
+  void generate_delayed_gg_hits(std::vector<const gg_hit *> &hits_);
 
-    /// Generate the mock delayed Geiger hits
-    void generate_delayed_gg_hits(std::vector<const gg_hit *> & hits_);
+  /// Generate an event with many Geiger hits
+  void shoot_event(std::vector<const gg_hit *> &hits_);
 
-    /// Generate an event with many Geiger hits
-    void shoot_event(std::vector<const gg_hit *> & hits_);
+  /// Build a unique geometry Id (GID) from cell Ids
+  int build_gid(int side_, int layer_, int row_) const;
 
-    /// Build a unique geometry Id (GID) from cell Ids
-    int build_gid(int side_, int layer_, int row_) const;
+  /// Register a given geometry Id (GID) as prompt or delayed
+  void register_gid(int gid_, bool delayed_ = false);
 
-    /// Register a given geometry Id (GID) as prompt or delayed
-    void register_gid(int gid_, bool delayed_ = false);
+  /// Check if some geometry Id (GID) is registered
+  bool has_gid(int gid_) const;
 
-    /// Check if some geometry Id (GID) is registered
-    bool has_gid(int gid_) const;
+ private:
+  unsigned int _nb_layers_;                               /// Number of cell layers
+  unsigned int _nb_rows_;                                 /// Number of cell rows
+  double _cell_size_;                                     /// Cell size (diameter)
+  long _seed_;                                            /// Seed for the embedded PRNG
+  boost::scoped_ptr<boost::random::mt19937> _generator_;  /// Embedded PRNG
+  std::vector<boost::shared_ptr<gg_hit> > _hits_gc_;      /// Internal collection of Geiger hits
+  std::map<int, bool> _gids_;  /// Internal dictionnary of prompt/delayed status
+};
 
-  private:
+}  // end of namespace TrackerPreClustering
 
-    unsigned int _nb_layers_; /// Number of cell layers
-    unsigned int _nb_rows_;   /// Number of cell rows
-    double       _cell_size_; /// Cell size (diameter)
-    long         _seed_;      /// Seed for the embedded PRNG
-    boost::scoped_ptr<boost::random::mt19937> _generator_; /// Embedded PRNG
-    std::vector<boost::shared_ptr<gg_hit> > _hits_gc_; /// Internal collection of Geiger hits
-    std::map<int, bool> _gids_; /// Internal dictionnary of prompt/delayed status
-  };
-
-} // end of namespace TrackerPreClustering
-
-#endif // FALAISE_TRACKERPRECLUSTERING_EVENT_GENERATOR_H
+#endif  // FALAISE_TRACKERPRECLUSTERING_EVENT_GENERATOR_H
 
 /*
 ** Local Variables: --

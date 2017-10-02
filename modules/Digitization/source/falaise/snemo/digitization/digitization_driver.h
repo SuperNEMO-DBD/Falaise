@@ -42,74 +42,73 @@
 #include <mctools/signal/signal_data.h>
 
 // This project:
-#include <falaise/snemo/digitization/signal_to_calo_tp_algo.h>
-#include <falaise/snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <falaise/snemo/digitization/calo_tp_to_ctw_algo.h>
 #include <falaise/snemo/digitization/geiger_tp_to_ctw_algo.h>
+#include <falaise/snemo/digitization/signal_to_calo_tp_algo.h>
+#include <falaise/snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <falaise/snemo/digitization/trigger_algorithm_test_time.h>
-
 
 namespace snemo {
 
-  namespace digitization {
+namespace digitization {
 
-    /// Driver for the gamma tracking algorithms
-    class digitization_driver
-    {
-    public:
+/// Driver for the gamma tracking algorithms
+class digitization_driver {
+ public:
+  /// Constructor
+  digitization_driver();
 
-      /// Constructor
-      digitization_driver();
+  /// Destructor
+  virtual ~digitization_driver();
 
-      /// Destructor
-      virtual ~digitization_driver();
+  /// Check the geometry manager
+  bool has_geometry_manager() const;
 
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
+  /// Address the geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Return a non-mutable reference to the geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Return a non-mutable reference to the geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Initialize the gamma tracker through configuration properties
+  virtual void initialize(const datatools::properties& setup_);
 
-      /// Initialize the gamma tracker through configuration properties
-      virtual void initialize(const datatools::properties & setup_);
+  /// Reset the clusterizer
+  virtual void reset();
 
-      /// Reset the clusterizer
-      virtual void reset();
-      
-      /// Check the initialization status
-      bool is_initialized() const;
+  /// Check the initialization status
+  bool is_initialized() const;
 
-      /// Process digitization algorithm (sd to trigger for the moment)
-      void process_digitization_algorithms(const mctools::signal::signal_data & SSD_);
+  /// Process digitization algorithm (sd to trigger for the moment)
+  void process_digitization_algorithms(const mctools::signal::signal_data& SSD_);
 
-    private:
-      
-      // Configuration:
-      bool _initialized_; //!< Initialization status
-      const geomtools::manager * _geometry_manager_;  //!< The SuperNEMO geometry manager
+ private:
+  // Configuration:
+  bool _initialized_;                            //!< Initialization status
+  const geomtools::manager* _geometry_manager_;  //!< The SuperNEMO geometry manager
 
-      // Algorithms:
-      
-      snemo::digitization::signal_to_calo_tp_algo _calo_signal_to_tp_algo_; //!< Calo signal algo to calo trigger primitive
-      snemo::digitization::signal_to_geiger_tp_algo _geiger_signal_to_tp_algo_; //!< Geiger signal algo to geiger trigger primitive
-      snemo::digitization::calo_tp_to_ctw_algo _calo_tp_to_ctw_algo_; //!< Calo TP to crate trigger word algo
-      snemo::digitization::geiger_tp_to_ctw_algo _geiger_tp_to_ctw_algo_; //!< Geiger TP to crate trigger word algo
-      snemo::digitization::trigger_algorithm_test_time _trigger_algo_; //!< The trigger alogirhtm
-    };
+  // Algorithms:
 
-  }  // end of namespace digitization
+  snemo::digitization::signal_to_calo_tp_algo
+      _calo_signal_to_tp_algo_;  //!< Calo signal algo to calo trigger primitive
+  snemo::digitization::signal_to_geiger_tp_algo
+      _geiger_signal_to_tp_algo_;  //!< Geiger signal algo to geiger trigger primitive
+  snemo::digitization::calo_tp_to_ctw_algo
+      _calo_tp_to_ctw_algo_;  //!< Calo TP to crate trigger word algo
+  snemo::digitization::geiger_tp_to_ctw_algo
+      _geiger_tp_to_ctw_algo_;  //!< Geiger TP to crate trigger word algo
+  snemo::digitization::trigger_algorithm_test_time _trigger_algo_;  //!< The trigger alogirhtm
+};
+
+}  // end of namespace digitization
 
 }  // end of namespace snemo
-
 
 // Declare the OCD interface of the module
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snemo::digitization::digitization_driver)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGITIZATION_DRIVER_H
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGITIZATION_DRIVER_H
 
 /*
 ** Local Variables: --

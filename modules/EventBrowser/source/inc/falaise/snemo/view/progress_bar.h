@@ -41,45 +41,39 @@ class TGHProgressBar;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class progress_bar  : public TGMainFrame
-      {
+class progress_bar : public TGMainFrame {
+ public:
+  progress_bar(const TGWindow *window_, const int width_, const int height_,
+               const std::string &window_name_ = "", const std::string &label_format_ = "");
+  virtual ~progress_bar();
 
-      public:
+  bool increment(const unsigned int i = 1);
+  void set_range(const unsigned int min_ = 0, const unsigned int max_ = 100);
 
-        progress_bar (const TGWindow *window_,
-                      const int width_, const int height_,
-                      const std::string & window_name_ = "",
-                      const std::string & label_format_ = "");
-        virtual ~progress_bar ();
+  // slots
+  void kill_application(const bool killed_ = true);
+  void close_window();
+  void do_close();
 
-        bool increment (const unsigned int i = 1);
-        void set_range (const unsigned int min_ = 0,
-                        const unsigned int max_ = 100);
+ private:
+  TGHProgressBar *_bar_;
+  bool _is_progressing_;
+  bool _is_killing_application_;
 
-        // slots
-        void kill_application (const bool killed_ = true);
-        void close_window ();
-        void do_close ();
+  ClassDef(progress_bar, 0);
+};
 
-      private:
-        TGHProgressBar * _bar_;
-        bool             _is_progressing_;
-        bool             _is_killing_application_;
+}  // end of namespace view
 
-        ClassDef (progress_bar, 0);
-      };
+}  // end of namespace visualization
 
-    } // end of namespace view
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // __progress_bar_h
+#endif  // __progress_bar_h
 
 // end of progress_bar.h
 /*

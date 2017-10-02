@@ -2,7 +2,7 @@
 // Author(s): Yves LEMIERE <lemiere@lpccaen.in2p3.fr>
 // Author(s): Guillaume OLIVIERO <goliviero@lpccaen.in2p3.fr>
 
-// Standard library : 
+// Standard library :
 #include <iostream>
 
 // Ourselves:
@@ -10,72 +10,64 @@
 
 namespace snemo {
 
-  namespace digitization {
+namespace digitization {
 
-    tracker_zone::tracker_zone()
-    {
-      reset();
-      return;
+tracker_zone::tracker_zone() {
+  reset();
+  return;
+}
+
+void tracker_zone::reset() {
+  side = -1;
+  zone_id = -1;
+  for (unsigned int ilayer = 0; ilayer < snemo::digitization::trigger_info::NLAYERS; ilayer++) {
+    for (unsigned int irow = 0; irow < snemo::digitization::trigger_info::ZONE_WIDTH; irow++) {
+      cells[ilayer][irow] = false;
     }
+  }
 
-    void tracker_zone::reset()
-    {
-      side = -1;
-      zone_id = -1;
-      for (unsigned int ilayer = 0; ilayer < snemo::digitization::trigger_info::NLAYERS; ilayer++) {
-	for (unsigned int irow = 0; irow < snemo::digitization::trigger_info::ZONE_WIDTH; irow++) {
-	  cells[ilayer][irow] = false;
-	}
-      }
+  addr_in_out_pattern.reset();
+  addr_left_mid_right_pattern.reset();
+  addr_left_mid_right_with_in_out_pattern.reset();
+  data_in_out_pattern.reset();
+  data_left_mid_right_pattern.reset();
+  data_near_source.reset();
 
-      addr_in_out_pattern.reset();
-      addr_left_mid_right_pattern.reset();
-      addr_left_mid_right_with_in_out_pattern.reset();
-      data_in_out_pattern.reset();
-      data_left_mid_right_pattern.reset();
-      data_near_source.reset();
+  return;
+}
 
-      return;
-    }
+unsigned int tracker_zone::start_row(unsigned int i_) {
+  static const unsigned int start_row[snemo::digitization::trigger_info::NZONES] = {
+      0, 9, 21, 33, 45, 57, 68, 80, 92, 104};
+  return start_row[i_];
+}
 
-    unsigned int tracker_zone::start_row(unsigned int i_)
-    {
-      static const unsigned int start_row[snemo::digitization::trigger_info::NZONES]
-	= {0, 9, 21, 33, 45, 57, 68, 80, 92, 104};
-      return start_row[i_];
-    }
-    
-    unsigned int tracker_zone::stop_row(unsigned int i_)
-    {
-      static const unsigned int stop_row[snemo::digitization::trigger_info::NZONES]
-	= {8, 20, 32, 44, 56, 67, 79, 91, 103, 112};
-      return stop_row[i_];
-    }
+unsigned int tracker_zone::stop_row(unsigned int i_) {
+  static const unsigned int stop_row[snemo::digitization::trigger_info::NZONES] = {
+      8, 20, 32, 44, 56, 67, 79, 91, 103, 112};
+  return stop_row[i_];
+}
 
-    unsigned int tracker_zone::width(unsigned int i_)
-    {
-      return stop_row(i_) - start_row(i_) + 1;
-    }
-   
-    void tracker_zone::print_layout(std::ostream & out_)
-    {
-      out_ << "Zone layout: " << '\n';
-      out_ << "#Zone   Rows    #\n";
-      for (unsigned int izone = 0; izone < snemo::digitization::trigger_info::NZONES; izone++) {
-	out_ << izone << " " << start_row(izone) << "-" << stop_row(izone)
-	     << ' ' << "#" << width(izone) << '\n';
-      }
-      out_ << std::endl;
-      return;
-    }
+unsigned int tracker_zone::width(unsigned int i_) { return stop_row(i_) - start_row(i_) + 1; }
 
-    void tracker_zone::print_projections(std::ostream & out_) const
-    {
-      out_ << "OI pattern : " << addr_in_out_pattern << " ==> [" << data_in_out_pattern << "] \n"; 
-      out_ << "LMR pattern : " << addr_left_mid_right_pattern << " ==> [" << data_left_mid_right_pattern << "] \n";
-      return;
-    }
+void tracker_zone::print_layout(std::ostream& out_) {
+  out_ << "Zone layout: " << '\n';
+  out_ << "#Zone   Rows    #\n";
+  for (unsigned int izone = 0; izone < snemo::digitization::trigger_info::NZONES; izone++) {
+    out_ << izone << " " << start_row(izone) << "-" << stop_row(izone) << ' ' << "#" << width(izone)
+         << '\n';
+  }
+  out_ << std::endl;
+  return;
+}
 
-  } // end of namespace digitization
+void tracker_zone::print_projections(std::ostream& out_) const {
+  out_ << "OI pattern : " << addr_in_out_pattern << " ==> [" << data_in_out_pattern << "] \n";
+  out_ << "LMR pattern : " << addr_left_mid_right_pattern << " ==> [" << data_left_mid_right_pattern
+       << "] \n";
+  return;
+}
 
-} // end of namespace snemo
+}  // end of namespace digitization
+
+}  // end of namespace snemo

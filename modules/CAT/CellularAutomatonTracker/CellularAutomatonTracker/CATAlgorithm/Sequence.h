@@ -26,64 +26,55 @@
 #include <CATAlgorithm/sequence_base.h>
 #include <CATAlgorithm/Cell.h>
 
-
 namespace CAT {
-  namespace topology{
+namespace topology {
 
-    class Sequence : public sequence {
+class Sequence : public sequence {
+  // a sequence is composed of a list of nodes
 
-      // a sequence is composed of a list of nodes
+ protected:
+  std::string appname_;
 
-    protected:
-      std::string appname_;
+  size_t track_id_;
 
-      size_t track_id_;
+ public:
+  // list of nodes
+  std::vector<Cell> cells_;
 
-    public:
+  //! Default constructor
+  Sequence(){};
 
-      // list of nodes
-      std::vector<Cell> cells_;
+  //! Default destructor
+  virtual ~Sequence(){};
 
-      //!Default constructor
-      Sequence(){};
+  //! set Cells
+  void set_cells(const std::vector<Cell> &a) { cells_ = a; };
 
-      //!Default destructor
-      virtual ~Sequence(){};
+  //! get Cells
+  const std::vector<Cell> &cells() const { return cells_; };
 
-      //! set Cells
-      void set_cells(const std::vector<Cell> &a){cells_=a;};
+  void set_track_id(size_t a) { track_id_ = a; };
 
-      //! get Cells
-      const std::vector<Cell> & cells()const{return cells_;};
+  size_t track_id() const { return track_id_; };
 
-      void set_track_id(size_t a){track_id_ = a;};
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool /*a_inherit*/ = false) const {
+    std::string indent;
+    if (!a_indent.empty()) indent = a_indent;
+    if (!a_title.empty()) {
+      a_out << indent << a_title << std::endl;
+    }
 
-      size_t track_id()const{return track_id_;};
-
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool /*a_inherit*/          = false) const{
-
-        std::string indent;
-        if (! a_indent.empty ()) indent = a_indent;
-        if (! a_title.empty ())
-          {
-            a_out << indent << a_title << std::endl;
-          }
-
-        a_out << indent << " Sequence ------------------- " << this->track_id() << " cells " << cells_.size() << std::endl;
-        for(std::vector<Cell>::const_iterator ic=cells_.begin(); ic!=cells_.end(); ++ic)
-          ic->dump();
-
-      }
-
-    };
-
+    a_out << indent << " Sequence ------------------- " << this->track_id() << " cells "
+          << cells_.size() << std::endl;
+    for (std::vector<Cell>::const_iterator ic = cells_.begin(); ic != cells_.end(); ++ic)
+      ic->dump();
   }
+};
 
+}  // namespace topology
 
-}
+}  // namespace CAT
 
 #endif

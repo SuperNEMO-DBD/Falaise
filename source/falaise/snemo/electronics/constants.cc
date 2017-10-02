@@ -7,23 +7,20 @@
 
 namespace snemo {
 
-  namespace electronics { 
-    
-    // example :
-    // const std::size_t constants::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT;
+namespace electronics {
 
-    const std::size_t constants::NSIDES;
-    const std::size_t constants::NLAYERS;
-    const std::size_t constants::NROWS;
-    const std::size_t constants::NZONES;
-    
-    const std::size_t constants::TRACKER_DATA_FULL_BITSET_SIZE;
-			
-    const uint32_t constants::INVALID_CLOCKTICK;
+// example :
+// const std::size_t constants::NUMBER_OF_LAYERS_HIT_FOR_NEAR_SOURCE_BIT;
 
+const std::size_t constants::NSIDES;
+const std::size_t constants::NLAYERS;
+const std::size_t constants::NROWS;
+const std::size_t constants::NZONES;
 
+const std::size_t constants::TRACKER_DATA_FULL_BITSET_SIZE;
 
-  } // end of namespace electronics
+const uint32_t constants::INVALID_CLOCKTICK;
 
-} // end of namespace snemo
- 
+}  // end of namespace electronics
+
+}  // end of namespace snemo

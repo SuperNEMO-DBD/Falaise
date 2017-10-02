@@ -2,15 +2,14 @@
  * Author (s) :  Federico Nova <nova@physics.utexas.edu>
  * Creation date: 2011-03-31
  * Last modified: 2011-03-31
- * 
- * License: 
- * 
- * Description: 
- * 
- * History: 
- * 
+ *
+ * License:
+ *
+ * Description:
+ *
+ * History:
+ *
  */
-
 
 #ifndef __snlocal_tracking__ntupler_h
 #define __snlocal_tracking__ntupler_h
@@ -31,8 +30,8 @@
 #include "TFile.h"
 #include "TSystem.h"
 #include "TMacro.h"
-#include "Riostream.h"      
-#include "TH1.h"      
+#include "Riostream.h"
+#include "TH1.h"
 #include "TNtuple.h"
 #include "TTree.h"
 #include "TBrowser.h"
@@ -40,21 +39,16 @@
 #include "TRandom.h"
 #include "TCanvas.h"
 
-
-class ntupler
-{
-  
- public: 
-  
+class ntupler {
+ public:
   // ctor:
-  ntupler ();
-  
+  ntupler();
+
   // dtor:
-  virtual ~ntupler ();
-  
- private: 
-  
-  typedef struct SimulatedVsTrackedHitStorage{
+  virtual ~ntupler();
+
+ private:
+  typedef struct SimulatedVsTrackedHitStorage {
     std::vector<int>* id_;
     std::vector<double>* simulated_x_;
     std::vector<double>* simulated_y_;
@@ -106,8 +100,8 @@ class ntupler
     std::vector<double>* tracked_kink_hor_;
     std::vector<double>* tracked_kink_vert_;
   } SimulatedVsTrackedHitStorage;
-  
-  typedef struct SimulatedVsTrackedTrackStorage{
+
+  typedef struct SimulatedVsTrackedTrackStorage {
     std::vector<int>* id_;
     std::vector<double>* simulated_vertex_x_;
     std::vector<double>* simulated_vertex_y_;
@@ -195,40 +189,35 @@ class ntupler
     std::vector<double>* pull_kink_y_;
     std::vector<double>* pull_kink_z_;
   } SimulatedVsTrackedTrackStorage;
-			
 
   TFile* __f;
   TTree* __tree;
   string __outfilename;
   CAT::topology::tracked_data tracked_data_;
 
- public: 
-  
-  
+ public:
   SimulatedVsTrackedHitStorage simulated_vs_tracked_hit_;
   SimulatedVsTrackedTrackStorage simulated_vs_tracked_track_;
   SimulatedVsTrackedTrackStorage simulated_vs_tracked_n3track_;
 
-  void initialize (void);
-  void finalize (void) ;
-  void set_outfilename (std::string title_);
-  std::string  get_outfilename();
+  void initialize(void);
+  void finalize(void);
+  void set_outfilename(std::string title_);
+  std::string get_outfilename();
 
-  bool is_valid () const ;
+  bool is_valid() const;
   void __fill();
   bool get_true_hit_of_reco_cell(CAT::topology::cell c, CAT::topology::node& n, size_t& index);
   size_t get_cell_index(CAT::topology::cell c);
 
-  void set_tracked_data (const CAT::topology::tracked_data& tracked_data);
-  const  CAT::topology::tracked_data & get_tracked_data () const ;
-  
-  void clear ();
-  //   get_next_point(snemo::core::model::lt_track t_, size_t id_);
-  
-};   // end of class ntupler
- 
+  void set_tracked_data(const CAT::topology::tracked_data& tracked_data);
+  const CAT::topology::tracked_data& get_tracked_data() const;
 
-#endif // __snlocal_tracking__ntupler_h
+  void clear();
+  //   get_next_point(snemo::core::model::lt_track t_, size_t id_);
+
+};  // end of class ntupler
+
+#endif  // __snlocal_tracking__ntupler_h
 
 // end of ntupler.h
-

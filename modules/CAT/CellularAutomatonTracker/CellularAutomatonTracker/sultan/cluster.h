@@ -15,126 +15,116 @@
 #include <sultan/experimental_helix.h>
 #include <sultan/LinearRegression.h>
 
+namespace SULTAN {
+namespace topology {
 
-namespace SULTAN{
-  namespace topology{
+class cluster : public tracking_object {
+  // a cluster is composed of a list of nodes
 
-    class cluster : public tracking_object{
+ protected:
+  std::string appname_;
 
-      // a cluster is composed of a list of nodes
+ public:
+  // list of nodes
+  std::vector<node> nodes_;
 
-    protected:
-      std::string appname_;
+  // cluster type: "neighbouring_cells", "broken_line", "straight_line", "helix"
+  std::string cluster_type_;
 
-    public:
+  // fitted helix
+  experimental_helix helix_;
 
-      // list of nodes
-      std::vector<node> nodes_;
+  // vector of pieces: length, first cell
+  std::vector<size_t> first_cell_of_piece_;
+  std::vector<size_t> length_of_piece_;
 
-      // cluster type: "neighbouring_cells", "broken_line", "straight_line", "helix"
-      std::string cluster_type_;
+  //! Default constructor
+  cluster();
 
-      // fitted helix
-      experimental_helix helix_;
+  //! Default destructor
+  virtual ~cluster();
 
-      // vector of pieces: length, first cell
-      std::vector<size_t> first_cell_of_piece_;
-      std::vector<size_t> length_of_piece_;
+  //! constructor from std::vector of nodes
+  cluster(const std::vector<node> &nodes, mybhep::prlevel level = mybhep::NORMAL,
+          double probmin = 1.e-200);
 
-      //!Default constructor
-      cluster();
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
+  //! set nodes
+  void set_nodes(const std::vector<node> &nodes);
 
-      //!Default destructor
-      virtual ~cluster();
+  //! get nodes
+  const std::vector<node> &nodes() const;
 
-      //! constructor from std::vector of nodes
-      cluster(const std::vector<node> &nodes, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! add nodes
+  void add_nodes(const std::vector<node> &nodes);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const ;
-      //! set nodes
-      void set_nodes(const std::vector<node> &nodes);
+  //! remove node
+  void remove_node_with_id(size_t id);
 
-      //! get nodes
-      const std::vector<node> & nodes()const;
+  //! remove nodes
+  void remove_nodes(const std::vector<node> &nodes);
 
-      //! add nodes
-      void add_nodes(const std::vector<node> &nodes);
+  //! set cluster type
+  void set_cluster_type(std::string a) { cluster_type_ = a; }
 
-      //! remove node
-      void remove_node_with_id(size_t id);
+  //! get cluster type
+  std::string get_cluster_type() const { return cluster_type_; }
 
-      //! remove nodes
-      void remove_nodes(const std::vector<node> &nodes);
+  //! set helix
+  void set_helix(const experimental_helix &helix);
 
-      //! set cluster type
-      void set_cluster_type(std::string a){
-	cluster_type_ = a;
-      }
+  //! get helix
+  const experimental_helix &get_helix() const;
 
-      //! get cluster type
-      std::string get_cluster_type()const{
-	return cluster_type_;
-      }
+  std::vector<size_t> first_cell_of_piece(size_t nofflayers, double cell_distance);
 
-      //! set helix
-      void set_helix(const experimental_helix & helix);
+  std::vector<size_t> length_of_piece() { return length_of_piece_; }
 
-     //! get helix
-      const experimental_helix & get_helix()const;
+  std::vector<size_t> first_cell_of_piece() { return first_cell_of_piece_; }
 
-      std::vector<size_t> first_cell_of_piece(size_t nofflayers, double cell_distance);
+ public:
+  bool has_cell(const cell &c) const;
 
-      std::vector<size_t> length_of_piece(){ return length_of_piece_;}
+  cluster invert();
 
-      std::vector<size_t> first_cell_of_piece(){ return first_cell_of_piece_;}
+  void circle_order();
 
-    public:
+  topology::node node_of_cell(const topology::cell &c);
 
-      bool has_cell(const cell & c)const;
+  bool is_good() const;
 
-      cluster invert();
+  bool is_contained_in(const cluster &s) const;
 
-      void circle_order();
+  bool contains(const cluster &s) const;
 
-      topology::node node_of_cell(const topology::cell & c);
+  topology::cluster get_cluster_with_first_last(size_t first, size_t last);
 
-      bool is_good()const;
+  topology::cluster remove_cluster_with_first_last(size_t first, size_t last);
 
-      bool is_contained_in(const cluster & s)const;
+  size_t get_next_index(size_t index);
 
-      bool contains(const cluster & s)const;
+  topology::cluster longest_piece();
 
-      topology::cluster get_cluster_with_first_last(size_t first, size_t last);
+  void break_into_continous_pieces(size_t nofflayers, double cell_distance);
 
-      topology::cluster remove_cluster_with_first_last(size_t first, size_t last);
+  void self_order(std::vector<topology::node> *endpoints);
 
-      size_t get_next_index(size_t index);
+  bool is_continous();
 
-      topology::cluster longest_piece();
+  size_t max_length_of_piece();
 
-      void break_into_continous_pieces(size_t nofflayers, double cell_distance);
+  void recalculate(size_t n_iterations);
 
-      void self_order(std::vector<topology::node> * endpoints);
+  void recalculate_x0();
+  void recalculate_y0();
+  void recalculate_z0();
+  void recalculate_R();
+  void recalculate_H();
+};
 
-      bool is_continous();
-
-      size_t max_length_of_piece();
-
-      void recalculate(size_t n_iterations);
-
-      void recalculate_x0();
-      void recalculate_y0();
-      void recalculate_z0();
-      void recalculate_R();
-      void recalculate_H();
-
-    };
-
-  }
-}
+}  // namespace topology
+}  // namespace SULTAN
 
 #endif

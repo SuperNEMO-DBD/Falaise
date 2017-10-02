@@ -17,45 +17,36 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// \brief Simulated calo digitized hit.
-    class sim_calo_digi_hit :
-      public mctools::digitization::sampled_signal
-    {
+/// \brief Simulated calo digitized hit.
+class sim_calo_digi_hit : public mctools::digitization::sampled_signal {
+ public:
+  /// Constructor
+  sim_calo_digi_hit();
 
-    public:
+  /// Destructor
+  virtual ~sim_calo_digi_hit();
 
-      /// Constructor
-      sim_calo_digi_hit();
+  /// Check validity
+  bool is_valid() const;
 
-      /// Destructor
-      virtual ~sim_calo_digi_hit();
+  /// Reset
+  void reset();
 
-      /// Check validity
-      bool is_valid() const;
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
 
-      /// Reset
-      void reset();
+ private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-      /// Smart print
-      virtual void tree_dump(std::ostream & a_out         = std::clog,
-                             const std::string & a_title  = "",
-                             const std::string & a_indent = "",
-                             bool a_inherit               = false) const;
+}  // end of namespace datamodel
 
-    private:
+}  // end of namespace snemo
 
-
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_CALO_DIGI_HIT_H
+#endif  // FALAISE_SNEMO_DATAMODELS_SIM_CALO_DIGI_HIT_H
 
 // Local Variables: --
 // mode: c++ --

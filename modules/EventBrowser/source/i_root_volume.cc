@@ -26,172 +26,153 @@
 
 #include <geomtools/geom_info.h>
 
-#include <TGeoVolume.h>
 #include <TGeoMatrix.h>
+#include <TGeoVolume.h>
 #include <TMath.h>
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      bool i_root_volume::is_initialized() const
-      {
-        return _initialized;
-      }
+bool i_root_volume::is_initialized() const { return _initialized; }
 
-      void * i_root_volume::grab_volume()
-      {
-        DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
-        return _geo_volume;
-      }
+void* i_root_volume::grab_volume() {
+  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
+  return _geo_volume;
+}
 
-      const void * i_root_volume::get_volume() const
-      {
-        DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
-        return _geo_volume;
-      }
+const void* i_root_volume::get_volume() const {
+  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
+  return _geo_volume;
+}
 
-      // ctor:
-      i_root_volume::i_root_volume(const std::string & name_,
-                                   const std::string & category_) :
-        i_volume()
-      {
-        _name        = name_;
-        _category    = category_;
-        _geo_volume  = 0;
-        _initialized = false;
-        return;
-      }
+// ctor:
+i_root_volume::i_root_volume(const std::string& name_, const std::string& category_) : i_volume() {
+  _name = name_;
+  _category = category_;
+  _geo_volume = 0;
+  _initialized = false;
+  return;
+}
 
-      // dtor:
-      i_root_volume::~i_root_volume()
-      {
-        this->reset();
-        return;
-      }
+// dtor:
+i_root_volume::~i_root_volume() {
+  this->reset();
+  return;
+}
 
-      void i_root_volume::initialize(const geomtools::geom_info & ginfo_)
-      {
-        _placement = ginfo_.get_world_placement();
-        _construct(ginfo_.get_logical().get_shape());
-        _initialized = true;
-        return;
-      }
+void i_root_volume::initialize(const geomtools::geom_info& ginfo_) {
+  _placement = ginfo_.get_world_placement();
+  _construct(ginfo_.get_logical().get_shape());
+  _initialized = true;
+  return;
+}
 
-      void i_root_volume::update()
-      {
-        const view::style_manager & style_mgr = view::style_manager::get_instance();
+void i_root_volume::update() {
+  const view::style_manager& style_mgr = view::style_manager::get_instance();
 
-        _color        = style_mgr.get_volume_color(_category);
-        _transparency = style_mgr.get_volume_transparency(_category);
-        _visibility   = style_mgr.get_volume_visibility(_category) == VISIBLE ? true : false;
+  _color = style_mgr.get_volume_color(_category);
+  _transparency = style_mgr.get_volume_transparency(_category);
+  _visibility = style_mgr.get_volume_visibility(_category) == VISIBLE ? true : false;
 
-        if (is_initialized()) {
-          this->clear();
-        }
-        return;
-      }
+  if (is_initialized()) {
+    this->clear();
+  }
+  return;
+}
 
-      void i_root_volume::clear()
-      {
-        DT_THROW_IF(! is_initialized(), std::logic_error,
-                    "Volume '" << _name << "' is not initialized!");
-        _geo_volume->SetLineColor(_color);
-        _geo_volume->SetFillColor(_color);
-        _geo_volume->SetLineWidth(1);
-        _geo_volume->SetTransparency(_transparency);
-        _geo_volume->SetVisibility(_visibility);
-        return;
-      }
+void i_root_volume::clear() {
+  DT_THROW_IF(!is_initialized(), std::logic_error, "Volume '" << _name << "' is not initialized!");
+  _geo_volume->SetLineColor(_color);
+  _geo_volume->SetFillColor(_color);
+  _geo_volume->SetLineWidth(1);
+  _geo_volume->SetTransparency(_transparency);
+  _geo_volume->SetVisibility(_visibility);
+  return;
+}
 
-      void i_root_volume::reset()
-      {
-        DT_THROW_IF(! is_initialized(), std::logic_error, "Not initialized !");
+void i_root_volume::reset() {
+  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
-        if (_geo_volume) {
-          delete _geo_volume;
-          _geo_volume = 0;
-        }
-        _initialized = false;
-        return;
-      }
+  if (_geo_volume) {
+    delete _geo_volume;
+    _geo_volume = 0;
+  }
+  _initialized = false;
+  return;
+}
 
-      void i_root_volume::highlight(const size_t color_)
-      {
-        DT_THROW_IF(! is_initialized(), std::logic_error,
-                    "Volume '" << get_name() << "' is not initialized!");
-        _highlight_color = color_;
-        _highlight();
-        return;
-      }
+void i_root_volume::highlight(const size_t color_) {
+  DT_THROW_IF(!is_initialized(), std::logic_error,
+              "Volume '" << get_name() << "' is not initialized!");
+  _highlight_color = color_;
+  _highlight();
+  return;
+}
 
-      void i_root_volume::_highlight()
-      {
-        _geo_volume->SetLineColor(_highlight_color);
-        _geo_volume->SetLineWidth(3);
-        // 2015/09/05 XG: Set the visibility of highlighted volume always to
-        // true. To remove them from the view then disable the corresponding
-        // data bank.
-        // _geo_volume->SetVisibility(_visibility);
-        _geo_volume->SetVisibility(true);
-        return;
-      }
+void i_root_volume::_highlight() {
+  _geo_volume->SetLineColor(_highlight_color);
+  _geo_volume->SetLineWidth(3);
+  // 2015/09/05 XG: Set the visibility of highlighted volume always to
+  // true. To remove them from the view then disable the corresponding
+  // data bank.
+  // _geo_volume->SetVisibility(_visibility);
+  _geo_volume->SetVisibility(true);
+  return;
+}
 
-      void i_root_volume::tree_dump(std::ostream      & out_,
-                                    const std::string & title_,
-                                    const std::string & indent_,
-                                    bool inherit_) const
-      {
-        std::string indent;
-        if(! indent_.empty()) {
-          indent = indent_;
-        }
-        if (! title_.empty()) {
-          out_ << indent << title_ << std::endl;
-        }
+void i_root_volume::tree_dump(std::ostream& out_, const std::string& title_,
+                              const std::string& indent_, bool inherit_) const {
+  std::string indent;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
+  if (!title_.empty()) {
+    out_ << indent << title_ << std::endl;
+  }
 
-        out_ << indent << datatools::i_tree_dumpable::tag
-             << "Initialized : " << (is_initialized() ? "yes" : "no") << std::endl;
+  out_ << indent << datatools::i_tree_dumpable::tag
+       << "Initialized : " << (is_initialized() ? "yes" : "no") << std::endl;
 
-        out_ << indent << datatools::i_tree_dumpable::tag;
-        if (!get_name().empty()) {
-          out_ << "Name : " << get_name() << std::endl;
-        } else {
-          out_ << "Name : " << "<empty>" << std::endl;
-        }
+  out_ << indent << datatools::i_tree_dumpable::tag;
+  if (!get_name().empty()) {
+    out_ << "Name : " << get_name() << std::endl;
+  } else {
+    out_ << "Name : "
+         << "<empty>" << std::endl;
+  }
 
-        out_ << indent << datatools::i_tree_dumpable::tag;
-        if (!get_category().empty()) {
-          out_ << "Category : " << get_category() << std::endl;
-        } else {
-          out_ << "Category : " << "<empty>" << std::endl;
-        }
+  out_ << indent << datatools::i_tree_dumpable::tag;
+  if (!get_category().empty()) {
+    out_ << "Category : " << get_category() << std::endl;
+  } else {
+    out_ << "Category : "
+         << "<empty>" << std::endl;
+  }
 
-        out_ << indent << datatools::i_tree_dumpable::tag
-             << "Type : " << get_type() << std::endl;
+  out_ << indent << datatools::i_tree_dumpable::tag << "Type : " << get_type() << std::endl;
 
-        out_ << indent << datatools::i_tree_dumpable::tag
-             << get_placement().get_translation()/CLHEP::mm << " mm" << std::endl;
+  out_ << indent << datatools::i_tree_dumpable::tag << get_placement().get_translation() / CLHEP::mm
+       << " mm" << std::endl;
 
-        out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
-             << get_placement().get_rotation() << " radians" << std::endl;
+  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+       << get_placement().get_rotation() << " radians" << std::endl;
 
-        return;
-      }
+  return;
+}
 
-      void i_root_volume::dump() const
-      {
-        this->tree_dump(std::clog, "snemo::visualization::detector::i_root_volume");
-        return;
-      }
+void i_root_volume::dump() const {
+  this->tree_dump(std::clog, "snemo::visualization::detector::i_root_volume");
+  return;
+}
 
-  } // end of namespace detector
+}  // end of namespace detector
 
-} // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of i_root_volume.cc
 /*

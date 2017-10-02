@@ -28,50 +28,43 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // ctor:
-      composite_volume::composite_volume(const std::string & name_,
-                                          const std::string & category_) :
-        i_root_volume(name_, category_)
-      {
-        _type = "composite";
-        _composite = true;
-        return;
-      }
+// ctor:
+composite_volume::composite_volume(const std::string& name_, const std::string& category_)
+    : i_root_volume(name_, category_) {
+  _type = "composite";
+  _composite = true;
+  return;
+}
 
-      // dtor:
-      composite_volume::~composite_volume()
-      {
-        return;
-      }
+// dtor:
+composite_volume::~composite_volume() { return; }
 
-      void composite_volume::_construct(const geomtools::i_shape_3d & shape_3d_)
-      {
-        TGeoShape * geo_shape = utils::root_utilities::get_geo_shape(shape_3d_);
+void composite_volume::_construct(const geomtools::i_shape_3d& shape_3d_) {
+  TGeoShape* geo_shape = utils::root_utilities::get_geo_shape(shape_3d_);
 
-        TGeoMaterial * material = new TGeoMaterial("Dummy");
-        TGeoMedium   * medium   = new TGeoMedium("Dummy", 1, material);
-        _geo_volume = new TGeoVolume(_name.c_str(), geo_shape, medium);
-        return;
-      }
+  TGeoMaterial* material = new TGeoMaterial("Dummy");
+  TGeoMedium* medium = new TGeoMedium("Dummy", 1, material);
+  _geo_volume = new TGeoVolume(_name.c_str(), geo_shape, medium);
+  return;
+}
 
-      void composite_volume::dump() const
-      {
-        this->tree_dump(std::clog, "snemo::visualization::detector::composite_volume");
+void composite_volume::dump() const {
+  this->tree_dump(std::clog, "snemo::visualization::detector::composite_volume");
 
-        return;
-      }
+  return;
+}
 
-    } // end of namespace detector
+}  // end of namespace detector
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-  // end of composite_volume.cc
+// end of composite_volume.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

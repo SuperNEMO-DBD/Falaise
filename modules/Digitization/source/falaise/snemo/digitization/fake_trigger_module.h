@@ -26,7 +26,7 @@
  *
  * A module which goal is to process 'fake_trigger_algo' to cut SD files
  * from a datatools::things coming from flsimulate
- * The physical selection for a fake trigger is configurable but the 
+ * The physical selection for a fake trigger is configurable but the
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  *
  * History:
@@ -42,63 +42,60 @@
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 
-namespace snemo { 
-  
-  namespace digitization {
+namespace snemo {
 
-    class fake_trigger_algo;
-    
-    /// \brief Fake trigger algorithm class to cut SD files.
-    class fake_trigger_module :  public dpp::base_module
-    {
-    public :
+namespace digitization {
 
-      /// Constructor
-      fake_trigger_module(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+class fake_trigger_algo;
 
-      /// Destructor
-      virtual ~fake_trigger_module();
+/// \brief Fake trigger algorithm class to cut SD files.
+class fake_trigger_module : public dpp::base_module {
+ public:
+  /// Constructor
+  fake_trigger_module(
+      datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-															datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
-      /// Reset
-      virtual void reset();
+  /// Destructor
+  virtual ~fake_trigger_module();
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
+  /// Reset
+  virtual void reset();
 
-    protected : 
-      
-      /// Measure particle track physical parameters such as charge, vertices
-      process_status _process(const mctools::simulated_data & SD_);
-      
-      /// Give default values to specific class members.
-      void _set_defaults();
-      
-    private :
-      
-      std::string _SD_label_; //!< The label of the simulated data bank
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-      /// Fake Trigger Algo :
-      boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
+ protected:
+  /// Measure particle track physical parameters such as charge, vertices
+  process_status _process(const mctools::simulated_data& SD_);
 
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module)
-    };
-  } // end of namespace digitization
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-} // end of namespace snemo
+ private:
+  std::string _SD_label_;  //!< The label of the simulated data bank
+
+  /// Fake Trigger Algo :
+  boost::scoped_ptr<snemo::digitization::fake_trigger_algo> _algo_;
+
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(fake_trigger_module)
+};
+}  // end of namespace digitization
+
+}  // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::digitization::fake_trigger_module)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_MODULE_H
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

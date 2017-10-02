@@ -36,50 +36,42 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // \brief A box volume
-      class box_volume : public i_root_volume
-      {
-      public:
+// \brief A box volume
+class box_volume : public i_root_volume {
+ public:
+  /// Default constructor
+  box_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-        /// Default constructor
-        box_volume(const std::string & name_     = "",
-                   const std::string & category_ = "");
+  /// Destructor
+  virtual ~box_volume();
 
-        /// Destructor
-        virtual ~box_volume();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
+  /// Default dump
+  virtual void dump() const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream & out_         = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
-        /// Default dump
-        virtual void dump() const;
+ protected:
+  /// Construct the box volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
-      protected:
+ private:
+  double _length_;  //<! Box length
+  double _width_;   //<! Box width
+  double _height_;  //<! Box height
+};
 
-        /// Construct the box volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace detector
 
-      private:
+}  // end of namespace visualization
 
-        double _length_; //<! Box length
-        double _width_;  //<! Box width
-        double _height_; //<! Box height
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_BOX_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_BOX_VOLUME_H
 
 // end of box_volume.h
 /*

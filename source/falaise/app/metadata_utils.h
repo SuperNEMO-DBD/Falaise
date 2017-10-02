@@ -23,8 +23,8 @@
 #define FALAISE_APP_METADATA_UTILS_H
 
 // Standard library:
-#include <string>
 #include <iostream>
+#include <string>
 
 // Third party:
 // - Boost:
@@ -34,127 +34,107 @@
 
 namespace falaise {
 
-  namespace app {
+namespace app {
 
-    //! \brief Metadata collector
-    class metadata_collector
-    {
-    public:
+//! \brief Metadata collector
+class metadata_collector {
+ public:
+  //! Constructor
+  metadata_collector(const uint32_t flags_ = 0);
 
-      //! Constructor
-      metadata_collector(const uint32_t flags_ = 0);
+  //! Set the input data file from which we extract metadata
+  void set_input_data_file(const std::string &);
 
-      //! Set the input data file from which we extract metadata
-      void set_input_data_file(const std::string &);
+  //! Set the input plain metadata file
+  void set_input_metadata_file(const std::string &);
 
-      //! Set the input plain metadata file
-      void set_input_metadata_file(const std::string &);
+  //! Extract metadata from input data file (embedded metadata)
+  datatools::multi_properties get_metadata_from_data_file() const;
 
-      //! Extract metadata from input data file (embedded metadata)
-      datatools::multi_properties get_metadata_from_data_file() const;
+  //! Extract metadata from input metadata file
+  datatools::multi_properties get_metadata_from_metadata_file() const;
 
-      //! Extract metadata from input metadata file
-      datatools::multi_properties get_metadata_from_metadata_file() const;
+  //! Extract metadata from input metadata file
+  datatools::multi_properties get_metadata() const;
 
-      //! Extract metadata from input metadata file
-      datatools::multi_properties get_metadata() const;
+ private:
+  std::string _input_data_file_;      //!< Input data file from which extraction of metadata is done
+  std::string _input_metadata_file_;  //!< Input metadata plain file
+};
 
-    private:
+//! \brief Commonly used parameters extracted from input metadata
+struct metadata_input {
+  std::string userProfile = "";           //!< the user profile used to produce input data
+  std::string experimentalSetupUrn = "";  //!< the experimental setup tag used to produce input data
+  std::string variantConfigUrn = "";      //!< the variant service tag used to produce input data
+  std::string variantConfigPath =
+      "";  //!< the variant service configuration file path used to produce input data
+  std::string variantProfileUrn = "";   //!< the variant profile tag used to produce input data
+  std::string variantProfilePath = "";  //!< the variant profile file used to produce input data
+  std::string servicesConfigUrn =
+      "";  //!< the services configuration tag used to produce input data
+  std::string servicesConfigPath =
+      "";  //!< the services configuration file path used to produce input data
+  std::size_t numberOfEvents = 0;  //!< the number of event after input data
+  bool doSimulation = false;       //!< the flag for simulation input
+  std::string simuSetupUrn = "";   //!< the simulation setup tag used to produce input data
+  bool doDigitization = false;     //!< the flag for digitization input
+  std::string digiSetupUrn = "";   //!< the digitization setup tag used to produce input data
+  bool doReconstruction = false;   //!< the flag for reconstruction input
+  std::string recSetupUrn = "";    //!< the reconstruction setup tag used to produce input data
 
-      std::string _input_data_file_;     //!< Input data file from which extraction of metadata is done
-      std::string _input_metadata_file_; //!< Input metadata plain file
+  // Reset parameters to default values
+  void reset();
 
-    };
+  // Scan the source metadata container and extract parameters' values
+  void scan(const datatools::multi_properties &);
 
-    //! \brief Commonly used parameters extracted from input metadata
-    struct metadata_input
-    {
-      std::string userProfile = "";          //!< the user profile used to produce input data
-      std::string experimentalSetupUrn = ""; //!< the experimental setup tag used to produce input data
-      std::string variantConfigUrn = "";     //!< the variant service tag used to produce input data
-      std::string variantConfigPath = "";    //!< the variant service configuration file path used to produce input data
-      std::string variantProfileUrn = "";    //!< the variant profile tag used to produce input data
-      std::string variantProfilePath = "";   //!< the variant profile file used to produce input data
-      std::string servicesConfigUrn = "";    //!< the services configuration tag used to produce input data
-      std::string servicesConfigPath = "";   //!< the services configuration file path used to produce input data
-      std::size_t numberOfEvents = 0;        //!< the number of event after input data
-      bool        doSimulation = false;      //!< the flag for simulation input
-      std::string simuSetupUrn = "";         //!< the simulation setup tag used to produce input data
-      bool        doDigitization = false;    //!< the flag for digitization input
-      std::string digiSetupUrn = "";         //!< the digitization setup tag used to produce input data
-      bool        doReconstruction = false;  //!< the flag for reconstruction input
-      std::string recSetupUrn = "";          //!< the reconstruction setup tag used to produce input data
+  // Raw print
+  void print(std::ostream &out_) const;
+};
 
-      // Reset parameters to default values
-      void reset();
+//! \brief Metadata scanner
+class metadata_scanner {
+ public:
+  typedef boost::variant<bool, int, double, std::string> prop_value_type;
 
-      // Scan the source metadata container and extract parameters' values
-      void scan(const datatools::multi_properties &);
+  //! Constructor
+  metadata_scanner(const datatools::multi_properties &);
 
-      // Raw print
-      void print(std::ostream & out_) const;
-    };
+  bool check_section(const std::string &section_name_, const std::string &section_type_) const;
 
-    //! \brief Metadata scanner
-    class metadata_scanner {
-    public:
+  const datatools::properties &get_section(const std::string &section_name_,
+                                           const std::string &section_type_) const;
 
-      typedef boost::variant<bool, int, double , std::string> prop_value_type;
+  bool find_boolean(const std::string &section_name_, const std::string &section_type_,
+                    const std::string &propKey_, bool &propValue_) const;
 
-      //! Constructor
-      metadata_scanner(const datatools::multi_properties &);
+  bool find_integer(const std::string &section_name_, const std::string &section_type_,
+                    const std::string &propKey_, int &propValue_) const;
 
-      bool check_section(const std::string & section_name_,
-			 const std::string & section_type_) const;
+  bool find_size(const std::string &section_name_, const std::string &section_type_,
+                 const std::string &propKey_, std::size_t &propValue_) const;
 
-      const datatools::properties & get_section(const std::string & section_name_,
-						const std::string & section_type_) const;
+  bool find_real(const std::string &section_name_, const std::string &section_type_,
+                 const std::string &propKey_, double &propValue_) const;
 
-      bool find_boolean(const std::string & section_name_,
-			const std::string & section_type_,
-			const std::string & propKey_,
-			bool & propValue_) const;
+  bool find_string(const std::string &section_name_, const std::string &section_type_,
+                   const std::string &propKey_, std::string &propValue_) const;
 
-      bool find_integer(const std::string & section_name_,
-			const std::string & section_type_,
-			const std::string & propKey_,
-			int & propValue_) const;
+  bool find_path(const std::string &section_name_, const std::string &section_type_,
+                 const std::string &propKey_, std::string &propValue_) const;
 
-      bool find_size(const std::string & section_name_,
-		     const std::string & section_type_,
-		     const std::string & propKey_,
-		     std::size_t & propValue_) const;
+ private:
+  bool _find_data_in_section_(const std::string &section_name_, const std::string &section_type_,
+                              const std::string &propKey_,
+                              datatools::properties::data &data_) const;
 
-      bool find_real(const std::string & section_name_,
-		     const std::string & section_type_,
-		     const std::string & propKey_,
-		     double & propValue_) const;
+ private:
+  const datatools::multi_properties &_mp_;  //!< The source input metadata
+};
 
-      bool find_string(const std::string & section_name_,
-		       const std::string & section_type_,
-		       const std::string & propKey_,
-		       std::string & propValue_) const;
+}  // namespace app
 
-      bool find_path(const std::string & section_name_,
-		     const std::string & section_type_,
-		     const std::string & propKey_,
-		     std::string & propValue_) const;
+}  // namespace falaise
 
-    private:
-
-      bool _find_data_in_section_(const std::string & section_name_,
-				  const std::string & section_type_,
-				  const std::string & propKey_,
-				  datatools::properties::data & data_) const;
-
-    private:
-
-      const datatools::multi_properties & _mp_; //!< The source input metadata
-
-    };
-
-  } // namespace app
-
-} // namespace falaise
-
-#endif // FALAISE_APP_METADATA_UTILS_H
+#endif  // FALAISE_APP_METADATA_UTILS_H

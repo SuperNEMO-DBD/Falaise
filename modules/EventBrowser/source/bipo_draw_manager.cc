@@ -21,8 +21,8 @@
 
 #include <falaise/snemo/view/bipo_draw_manager.h>
 #include <falaise/snemo/view/calorimeter_hit_renderer.h>
-#include <falaise/snemo/view/visual_track_renderer.h>
 #include <falaise/snemo/view/options_manager.h>
+#include <falaise/snemo/view/visual_track_renderer.h>
 
 #include <falaise/snemo/detector/detector_manager.h>
 
@@ -33,223 +33,189 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      // ctor:
-      bipo_draw_manager::bipo_draw_manager (const io::event_server * server_) :
-        i_draw_manager             (),
-        _server_                   (server_),
-        _objects_                  (new TObjArray (1000)),
-        _text_objects_             (new TObjArray (10)),
-        _calorimeter_hit_renderer_ (new calorimeter_hit_renderer ()),
-        _visual_track_renderer_    (new visual_track_renderer ())
-      {
-        _objects_     ->SetOwner (true);
-        _text_objects_->SetOwner (true);
+// ctor:
+bipo_draw_manager::bipo_draw_manager(const io::event_server* server_)
+    : i_draw_manager(),
+      _server_(server_),
+      _objects_(new TObjArray(1000)),
+      _text_objects_(new TObjArray(10)),
+      _calorimeter_hit_renderer_(new calorimeter_hit_renderer()),
+      _visual_track_renderer_(new visual_track_renderer()) {
+  _objects_->SetOwner(true);
+  _text_objects_->SetOwner(true);
 
-        // Initialize renderers
-        _calorimeter_hit_renderer_ ->initialize (_server_, _objects_, _text_objects_);
-        _visual_track_renderer_    ->initialize (_server_, _objects_);
+  // Initialize renderers
+  _calorimeter_hit_renderer_->initialize(_server_, _objects_, _text_objects_);
+  _visual_track_renderer_->initialize(_server_, _objects_);
 
-        return;
-      }
+  return;
+}
 
-      // dtor:
-      bipo_draw_manager::~bipo_draw_manager ()
-      {
-        this->bipo_draw_manager::reset ();
-        return;
-      }
+// dtor:
+bipo_draw_manager::~bipo_draw_manager() {
+  this->bipo_draw_manager::reset();
+  return;
+}
 
-      TObjArray* bipo_draw_manager::get_objects ()
-      {
-        return _objects_;
-      }
+TObjArray* bipo_draw_manager::get_objects() { return _objects_; }
 
-      TObjArray* bipo_draw_manager::get_text_objects ()
-      {
-        return _text_objects_;
-      }
+TObjArray* bipo_draw_manager::get_text_objects() { return _text_objects_; }
 
-      void bipo_draw_manager::update ()
-      {
-        if (!_server_->is_initialized ())
-          {
-            DT_LOG_DEBUG (options_manager::get_instance ().get_logging_priority (),
-                          "Event server is not initialized !");
-            return;
-          }
+void bipo_draw_manager::update() {
+  if (!_server_->is_initialized()) {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "Event server is not initialized !");
+    return;
+  }
 
-        // Add 'simulated_data' objects:
-        if (_server_->get_event ().has (io::SD_LABEL)) this->_add_simulated_data ();
-        else
-          {
-            DT_LOG_DEBUG (options_manager::get_instance ().get_logging_priority (),
-                          "Event has no simulated data");
-          }
+  // Add 'simulated_data' objects:
+  if (_server_->get_event().has(io::SD_LABEL))
+    this->_add_simulated_data();
+  else {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "Event has no simulated data");
+  }
 
-        // Add 'calibrated_data' objects:
-        if (_server_->get_event ().has (io::CD_LABEL)) this->_add_calibrated_data ();
-        else
-          {
-            DT_LOG_DEBUG (options_manager::get_instance ().get_logging_priority (),
-                          "Event has no calibrated data");
-          }
+  // Add 'calibrated_data' objects:
+  if (_server_->get_event().has(io::CD_LABEL))
+    this->_add_calibrated_data();
+  else {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "Event has no calibrated data");
+  }
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::draw ()
-      {
-        _objects_->Draw ();
-        return;
-      }
+void bipo_draw_manager::draw() {
+  _objects_->Draw();
+  return;
+}
 
-      void bipo_draw_manager::draw_text ()
-      {
-        _text_objects_->Draw ();
-        return;
-      }
+void bipo_draw_manager::draw_text() {
+  _text_objects_->Draw();
+  return;
+}
 
-      void bipo_draw_manager::reset ()
-      {
-        this->bipo_draw_manager::clear ();
+void bipo_draw_manager::reset() {
+  this->bipo_draw_manager::clear();
 
-        if (_objects_)
-          delete _objects_;
-        _objects_ = 0;
+  if (_objects_) delete _objects_;
+  _objects_ = 0;
 
-        if (_text_objects_)
-          delete _text_objects_;
-        _text_objects_ = 0;
+  if (_text_objects_) delete _text_objects_;
+  _text_objects_ = 0;
 
-        _calorimeter_hit_renderer_->reset ();
-        if (_calorimeter_hit_renderer_)
-          delete _calorimeter_hit_renderer_;
-        _calorimeter_hit_renderer_ = 0;
+  _calorimeter_hit_renderer_->reset();
+  if (_calorimeter_hit_renderer_) delete _calorimeter_hit_renderer_;
+  _calorimeter_hit_renderer_ = 0;
 
-        _visual_track_renderer_->reset ();
-        if (_visual_track_renderer_)
-          delete _visual_track_renderer_;
-        _visual_track_renderer_ = 0;
+  _visual_track_renderer_->reset();
+  if (_visual_track_renderer_) delete _visual_track_renderer_;
+  _visual_track_renderer_ = 0;
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::clear ()
-      {
-        _calorimeter_hit_renderer_->clear ();
-        _visual_track_renderer_   ->clear ();
+void bipo_draw_manager::clear() {
+  _calorimeter_hit_renderer_->clear();
+  _visual_track_renderer_->clear();
 
-        _objects_     ->Delete ();
-        _text_objects_->Delete ();
-        return;
-      }
+  _objects_->Delete();
+  _text_objects_->Delete();
+  return;
+}
 
-      /***************************************************
-       *  Filling objects from the 'simulated_data' bank *
-       ***************************************************/
+/***************************************************
+ *  Filling objects from the 'simulated_data' bank *
+ ***************************************************/
 
-      void bipo_draw_manager::_add_simulated_data ()
-      {
-        const options_manager & options_mgr = options_manager::get_instance ();
+void bipo_draw_manager::_add_simulated_data() {
+  const options_manager& options_mgr = options_manager::get_instance();
 
-        if (options_mgr.get_option_flag (SHOW_MC_VERTEX))
-          this->_add_simulated_vertex_ ();
+  if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) this->_add_simulated_vertex_();
 
-        if (options_mgr.get_option_flag (SHOW_MC_HITS))
-          this->_add_simulated_hits_ ();
+  if (options_mgr.get_option_flag(SHOW_MC_HITS)) this->_add_simulated_hits_();
 
-        if (options_mgr.get_option_flag (SHOW_MC_TRACKS))
-          this->_add_simulated_tracks_ ();
+  if (options_mgr.get_option_flag(SHOW_MC_TRACKS)) this->_add_simulated_tracks_();
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::_add_simulated_vertex_ ()
-      {
-        const io::event_record & event = _server_->get_event ();
-        const mctools::simulated_data & sim_data = event.get<mctools::simulated_data> (io::SD_LABEL);
+void bipo_draw_manager::_add_simulated_vertex_() {
+  const io::event_record& event = _server_->get_event();
+  const mctools::simulated_data& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
-        if (!sim_data.has_vertex ())
-          {
-            DT_LOG_INFORMATION (options_manager::get_instance ().get_logging_priority (),
-                                "Simulated data has no vertex");
-            return;
-          }
+  if (!sim_data.has_vertex()) {
+    DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                       "Simulated data has no vertex");
+    return;
+  }
 
-        const geomtools::vector_3d & sim_vertex = sim_data.get_vertex ();
+  const geomtools::vector_3d& sim_vertex = sim_data.get_vertex();
 
-        TPolyMarker3D* vertex_3d = new TPolyMarker3D ();
-        _objects_->Add (vertex_3d);
-        vertex_3d->SetMarkerColor (kViolet);
-        vertex_3d->SetMarkerStyle (kPlus);
-        vertex_3d->SetPoint (0,
-                             sim_vertex.x (),
-                             sim_vertex.y (),
-                             sim_vertex.z ());
+  TPolyMarker3D* vertex_3d = new TPolyMarker3D();
+  _objects_->Add(vertex_3d);
+  vertex_3d->SetMarkerColor(kViolet);
+  vertex_3d->SetMarkerStyle(kPlus);
+  vertex_3d->SetPoint(0, sim_vertex.x(), sim_vertex.y(), sim_vertex.z());
 
-        // TMarker3DBox* vertex_3d_box = new TMarker3DBox ();
-        // _objects_->Add (vertex_3d_box);
-        // vertex_3d_box->SetLineColor (kViolet);
-        // vertex_3d_box->SetPosition (sim_vertex.x (),
-        //                             sim_vertex.y (),
-        //                             sim_vertex.z ());
-        // vertex_3d_box->SetSize (10, 10, 10);
+  // TMarker3DBox* vertex_3d_box = new TMarker3DBox ();
+  // _objects_->Add (vertex_3d_box);
+  // vertex_3d_box->SetLineColor (kViolet);
+  // vertex_3d_box->SetPosition (sim_vertex.x (),
+  //                             sim_vertex.y (),
+  //                             sim_vertex.z ());
+  // vertex_3d_box->SetSize (10, 10, 10);
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::_add_simulated_hits_ ()
-      {
-        _calorimeter_hit_renderer_->push_simulated_hits ("scin.hit");
+void bipo_draw_manager::_add_simulated_hits_() {
+  _calorimeter_hit_renderer_->push_simulated_hits("scin.hit");
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::_add_simulated_tracks_ ()
-      {
-        _visual_track_renderer_->push_mc_tracks ("__visu.tracks");
-        _visual_track_renderer_->push_mc_legend ();
-        return;
-      }
+void bipo_draw_manager::_add_simulated_tracks_() {
+  _visual_track_renderer_->push_mc_tracks("__visu.tracks");
+  _visual_track_renderer_->push_mc_legend();
+  return;
+}
 
-      /****************************************************
-       *  Filling objects from the 'calibrated_data' bank *
-       ****************************************************/
+/****************************************************
+ *  Filling objects from the 'calibrated_data' bank *
+ ****************************************************/
 
-      void bipo_draw_manager::_add_calibrated_data ()
-      {
-        const options_manager & options_mgr = options_manager::get_instance ();
+void bipo_draw_manager::_add_calibrated_data() {
+  const options_manager& options_mgr = options_manager::get_instance();
 
-        if (options_mgr.get_option_flag (SHOW_CALIBRATED_HITS))
-          this->_add_calibrated_hits_ ();
+  if (options_mgr.get_option_flag(SHOW_CALIBRATED_HITS)) this->_add_calibrated_hits_();
 
-        if (options_mgr.get_option_flag (SHOW_CALIBRATED_INFO))
-          this->_add_calibrated_info_ ();
+  if (options_mgr.get_option_flag(SHOW_CALIBRATED_INFO)) this->_add_calibrated_info_();
 
-        return;
-      }
+  return;
+}
 
-      void bipo_draw_manager::_add_calibrated_hits_ ()
-      {
-        _calorimeter_hit_renderer_->push_calibrated_hits ();
-        return;
-      }
+void bipo_draw_manager::_add_calibrated_hits_() {
+  _calorimeter_hit_renderer_->push_calibrated_hits();
+  return;
+}
 
-      void bipo_draw_manager::_add_calibrated_info_ ()
-      {
-        _calorimeter_hit_renderer_->push_calibrated_info ();
-        return;
-      }
+void bipo_draw_manager::_add_calibrated_info_() {
+  _calorimeter_hit_renderer_->push_calibrated_info();
+  return;
+}
 
-    } // end of namespace view
+}  // end of namespace view
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace bipo
+}  // namespace snemo
 
 // end of bipo_draw_manager.cc
 /*

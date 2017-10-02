@@ -24,9 +24,7 @@
 
 #include <mybhep/base_reader.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! Base class for a random reader
 /*!
   Provides common functionality for random readers
@@ -53,52 +51,48 @@ namespace mybhep{
 
 */
 
-  class random_reader : public base_reader
-  {
+class random_reader : public base_reader {
+ protected:
+  //! path to root directory
+  std::string path_;
+  //! joins pieces of path
+  std::string join_;
+  //! number of objects in file
+  size_t maxEvents_;
 
-  protected:
-    //! path to root directory
-    std::string path_;
-    //! joins pieces of path
-    std::string join_;
-    //! number of objects in file
-    size_t maxEvents_;
+  //! constructor (only to be instantiated by derived classes)
+ protected:
+  random_reader();
 
-    //! constructor (only to be instantiated by derived classes)
-  protected:
-    random_reader();
+  //!  public functions
+ public:
+  virtual ~random_reader();
 
-    //!  public functions
-  public:
-    virtual ~random_reader() ;
+  //! set path
+  void set_path(std::string path);
 
-    //! set path
-    void set_path(std::string path);
+  //! return path
+  std::string path();
 
-    //! return path
-    std::string path();
+  //! max events
+  size_t max_events();
 
-    //! max events
-    size_t max_events() ;
+  //! end of file
+  bool eof(size_t ievent);
 
-    //! end of file
-    bool eof(size_t ievent);
+  //! read event
+  virtual event& read_event(size_t ievent);
 
-    //! read event
-    virtual event& read_event(size_t ievent);
+  //! read event
+  event& read(std::string key);
 
-    //! read event
-     event& read(std::string key);
+  //! protected interface
+ protected:
+  //! get the event as a record
+  virtual std::string get_record(std::string key) = 0;
 
-    //! protected interface
-  protected:
-
-    //! get the event as a record
-    virtual std::string get_record(std::string key) = 0;
-
-    //! get max events
-    virtual size_t get_max_events() = 0;
-
-  };
-}
+  //! get max events
+  virtual size_t get_max_events() = 0;
+};
+}  // namespace mybhep
 #endif

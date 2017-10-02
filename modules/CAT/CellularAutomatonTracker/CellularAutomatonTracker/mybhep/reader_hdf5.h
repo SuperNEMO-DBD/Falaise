@@ -28,67 +28,62 @@
 #include <mybhep/hdf5.h>
 #endif
 
+#define DIM1 1
+#define RANK 1
 
-#define DIM1    1
-#define RANK    1
-
-namespace mybhep{
-
+namespace mybhep {
 
 #ifndef HDF5
 
-  class reader_hdf5 : public random_reader
-  {
-  public:
-    void open_file(std::string /*s*/){out();}
-    void close_file(){out();}
-    std::string get_record(std::string /*s1*/){out();return "dummy";}
-    size_t get_max_events(){out();return 0;}
-    void out(){
-      std::cerr<<"+++ BHEP compiled without HDF5 support. ABORT!!!"<<std::endl;
-      exit(1);
-    }
-  };
+class reader_hdf5 : public random_reader {
+ public:
+  void open_file(std::string /*s*/) { out(); }
+  void close_file() { out(); }
+  std::string get_record(std::string /*s1*/) {
+    out();
+    return "dummy";
+  }
+  size_t get_max_events() {
+    out();
+    return 0;
+  }
+  void out() {
+    std::cerr << "+++ BHEP compiled without HDF5 support. ABORT!!!" << std::endl;
+    exit(1);
+  }
+};
 
 #else
 
-  class reader_hdf5 : public random_reader
-  {
+class reader_hdf5 : public random_reader {
+ protected:
+  hid_t file_, gfile_;   // file and gzipped file handler
+  hid_t dataset_;        // dataset handler
+  hid_t space_;          // dataspace handler
+  hid_t type_;           // datatype handler
+  hid_t cparms_, xfer_;  // parameters for plists
 
-  protected:
-    hid_t       file_,gfile_;  // file and gzipped file handler
-    hid_t       dataset_;      // dataset handler
-    hid_t       space_;         // dataspace handler
-    hid_t       type_;         // datatype handler
-    hid_t       cparms_,xfer_; // parameters for plists
+  std::string dclass_;  // data class
 
-    std::string      dclass_ ;  // data class
+ public:
+  //! constructor
+  reader_hdf5();
+  virtual ~reader_hdf5();
 
+  ////+++ DO the following functions to be public???
 
-  public:
+  //! open file
+  virtual void open_file(std::string fileName);
+  //! close file
+  virtual void close_file();
 
-    //! constructor
-    reader_hdf5();
-    virtual ~reader_hdf5();
+ protected:
+  //! get the event as a record
+  virtual std::string get_record(std::string key);
 
-
-    ////+++ DO the following functions to be public???
-
-    //! open file
-    virtual void open_file(std::string fileName) ;
-    //! close file
-    virtual void close_file() ;
-
-
-  protected:
-
-    //! get the event as a record
-    virtual std::string get_record(std::string key) ;
-
-    // get number of objects in file
-    virtual size_t get_max_events() ;
-
-  };
+  // get number of objects in file
+  virtual size_t get_max_events();
+};
 #endif
 }
 #endif

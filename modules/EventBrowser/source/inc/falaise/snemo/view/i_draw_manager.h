@@ -36,35 +36,32 @@ class TObjArray;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class i_draw_manager
-      {
+class i_draw_manager {
+ public:
+  i_draw_manager();
+  virtual ~i_draw_manager();
 
-      public:
-        i_draw_manager ();
-        virtual ~i_draw_manager ();
+  virtual TObjArray* get_objects() = 0;
+  virtual TObjArray* get_text_objects() = 0;
 
-        virtual TObjArray * get_objects      () = 0;
-        virtual TObjArray * get_text_objects () = 0;
+  virtual void update() = 0;
+  virtual void draw() = 0;
+  virtual void draw_text() = 0;
+  virtual void clear() = 0;
+  virtual void reset() = 0;
+};
 
-        virtual void update      () = 0;
-        virtual void draw        () = 0;
-        virtual void draw_text   () = 0;
-        virtual void clear       () = 0;
-        virtual void reset       () = 0;
+}  // end of namespace view
 
-      };
+}  // end of namespace visualization
 
-    } // end of namespace view
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_I_DRAW_MANAGER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_I_DRAW_MANAGER_H
 
 // end of i_draw_manager.h
 /*

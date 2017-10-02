@@ -36,100 +36,81 @@
 
 namespace TrackFit {
 
-  /// \brief Abstract interface for any object for drift time calibration
-  struct i_drift_time_calibration
-  {
-    virtual ~i_drift_time_calibration() {}
-    /// Return the fiducial radius of a cell for Geiger avalanche drift
-    virtual double get_sensitive_cell_radius() const = 0;
-    /// Return the maximum radius of the Geiger cell
-    virtual double get_max_cell_radius() const = 0;
-    /// Check the validity of a drift time value
-    virtual bool   drift_time_is_valid(double drift_time_) const;
-    /// Check the validity of a drift radius value
-    virtual bool   radius_is_valid(double radius_) const;
-    /// Convert the drift time to drift radius
-    virtual void   drift_time_to_radius(double time_,
-                                        double & radius_,
-                                        double & sigma_radius_) const = 0;
-    /// Convert the drift radius to drift time
-    virtual void   radius_to_drift_time(double radius_,
-                                        double & time_,
-                                        double & sigma_time_) const = 0;
-  };
+/// \brief Abstract interface for any object for drift time calibration
+struct i_drift_time_calibration {
+  virtual ~i_drift_time_calibration() {}
+  /// Return the fiducial radius of a cell for Geiger avalanche drift
+  virtual double get_sensitive_cell_radius() const = 0;
+  /// Return the maximum radius of the Geiger cell
+  virtual double get_max_cell_radius() const = 0;
+  /// Check the validity of a drift time value
+  virtual bool drift_time_is_valid(double drift_time_) const;
+  /// Check the validity of a drift radius value
+  virtual bool radius_is_valid(double radius_) const;
+  /// Convert the drift time to drift radius
+  virtual void drift_time_to_radius(double time_, double& radius_, double& sigma_radius_) const = 0;
+  /// Convert the drift radius to drift time
+  virtual void radius_to_drift_time(double radius_, double& time_, double& sigma_time_) const = 0;
+};
 
-  /// \brief Functor for drift time to radius conversion
-  struct f_time_radius : public std::unary_function<double,double>
-  {
-    /// \brief Drift time to radius conversion mode
-    enum mode_type {
-      DRIFT_TIME_TO_RADIUS = 0,
-      RADIUS_TO_DRIFT_TIME = 1
-    };
-    /// Constructor
-    f_time_radius();
-    /// Set the computing mode to t->r
-    void set_drift_time_to_radius();
-    /// Set the computing mode to r->t
-    void set_radius_to_drift_time();
-    /// Overloaded functor operator
-    double operator()(double) const;
-    // Attributes:
-    int mode; /// Computing mode
-    double x0, x1, x2, x3, x4, x5; /// Set of internal parameters
-    double y0, y1, y2, y3, y4;     /// Set of internal parameters
-  };
+/// \brief Functor for drift time to radius conversion
+struct f_time_radius : public std::unary_function<double, double> {
+  /// \brief Drift time to radius conversion mode
+  enum mode_type { DRIFT_TIME_TO_RADIUS = 0, RADIUS_TO_DRIFT_TIME = 1 };
+  /// Constructor
+  f_time_radius();
+  /// Set the computing mode to t->r
+  void set_drift_time_to_radius();
+  /// Set the computing mode to r->t
+  void set_radius_to_drift_time();
+  /// Overloaded functor operator
+  double operator()(double) const;
+  // Attributes:
+  int mode;                       /// Computing mode
+  double x0, x1, x2, x3, x4, x5;  /// Set of internal parameters
+  double y0, y1, y2, y3, y4;      /// Set of internal parameters
+};
 
-  /// \brief Default drift time to radius calibration
-  struct default_drift_time_calibration : public i_drift_time_calibration
-  {
-  public:
-    /// Constructor
-    default_drift_time_calibration();
-    /// Return the fiducial radius of a cell for Geiger avalanche drift
-    virtual double get_sensitive_cell_radius() const;
-    /// Return the maximum radius of the Geiger cell
-    virtual double get_max_cell_radius() const;
-    /// Convert the drift time to drift radius
-    virtual void   drift_time_to_radius(double   time_,
-                                        double & radius_,
-                                        double & sigma_radius_) const;
-    /// Convert the drift radius to drift time
-    virtual void   radius_to_drift_time(double   radius_,
-                                        double & time_,
-                                        double & sigma_time_) const;
-    // Attributes:
-    double rmax; /// Maximum drift radius
-    double sigma_r; /// Default error on drift radius
-    f_time_radius td; /// Time to radius conversion functor
-    f_time_radius dt; /// Radius to time conversion functor
-  };
+/// \brief Default drift time to radius calibration
+struct default_drift_time_calibration : public i_drift_time_calibration {
+ public:
+  /// Constructor
+  default_drift_time_calibration();
+  /// Return the fiducial radius of a cell for Geiger avalanche drift
+  virtual double get_sensitive_cell_radius() const;
+  /// Return the maximum radius of the Geiger cell
+  virtual double get_max_cell_radius() const;
+  /// Convert the drift time to drift radius
+  virtual void drift_time_to_radius(double time_, double& radius_, double& sigma_radius_) const;
+  /// Convert the drift radius to drift time
+  virtual void radius_to_drift_time(double radius_, double& time_, double& sigma_time_) const;
+  // Attributes:
+  double rmax;       /// Maximum drift radius
+  double sigma_r;    /// Default error on drift radius
+  f_time_radius td;  /// Time to radius conversion functor
+  f_time_radius dt;  /// Radius to time conversion functor
+};
 
-  /// \brief Alternative drift time to radius calibration
-  struct new_drift_time_calibration : public i_drift_time_calibration
-  {
-  public:
-    /// Constructor
-    new_drift_time_calibration();
-    /// Return the fiducial radius of a cell for Geiger avalanche drift
-    virtual double get_sensitive_cell_radius() const;
-    /// Return the maximum radius of the Geiger cell
-    virtual double get_max_cell_radius() const;
-    /// Convert the drift time to drift radius
-    virtual void   drift_time_to_radius(double   time_,
-                                        double & radius_,
-                                        double & sigma_radius_) const;
-    /// Convert the drift radius to drift time
-    virtual void   radius_to_drift_time(double   radius_,
-                                        double & time_,
-                                        double & sigma_time_) const;
-    // Attributes:
-    double rmax; /// Maximum drift radius
-    double sigma_r; /// Default error on drift radius
-    f_time_radius td; /// Time to radius conversion functor
-    f_time_radius dt;/// Radius to time conversion functor
-  };
+/// \brief Alternative drift time to radius calibration
+struct new_drift_time_calibration : public i_drift_time_calibration {
+ public:
+  /// Constructor
+  new_drift_time_calibration();
+  /// Return the fiducial radius of a cell for Geiger avalanche drift
+  virtual double get_sensitive_cell_radius() const;
+  /// Return the maximum radius of the Geiger cell
+  virtual double get_max_cell_radius() const;
+  /// Convert the drift time to drift radius
+  virtual void drift_time_to_radius(double time_, double& radius_, double& sigma_radius_) const;
+  /// Convert the drift radius to drift time
+  virtual void radius_to_drift_time(double radius_, double& time_, double& sigma_time_) const;
+  // Attributes:
+  double rmax;       /// Maximum drift radius
+  double sigma_r;    /// Default error on drift radius
+  f_time_radius td;  /// Time to radius conversion functor
+  f_time_radius dt;  /// Radius to time conversion functor
+};
 
-} // end of namespace TrackFit
+}  // end of namespace TrackFit
 
-#endif // FALAISE_TRACKFIT_I_DRIFT_TIME_CALIBRATION_H
+#endif  // FALAISE_TRACKFIT_I_DRIFT_TIME_CALIBRATION_H

@@ -16,19 +16,17 @@
 #include <CATAlgorithm/circle_base.h>
 
 namespace CAT {
-  namespace topology{
+namespace topology {
 
-    class Circle : public circle{
+class Circle : public circle {
+ private:
+ public:
+  Circle(){};
+  virtual ~Circle(){};
 
-    private:
-
-    public:
-      Circle(){};
-      virtual ~Circle(){};
-
-      double phi(double x, double y);
-    };
-  }
-}
+  double phi(double x, double y);
+};
+}  // namespace topology
+}  // namespace CAT
 
 #endif

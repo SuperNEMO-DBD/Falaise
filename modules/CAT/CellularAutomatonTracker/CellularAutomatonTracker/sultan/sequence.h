@@ -15,100 +15,91 @@
 #include <sultan/node.h>
 #include <sultan/cluster.h>
 
-
 namespace SULTAN {
-  namespace topology{
+namespace topology {
 
-    class sequence : public tracking_object{
+class sequence : public tracking_object {
+  // a sequence is composed of a list of nodes
 
-      // a sequence is composed of a list of nodes
+ protected:
+  std::string appname_;
 
-    protected:
-      std::string appname_;
+  // fitted helix
+  experimental_helix helix_;
 
-      // fitted helix
-      experimental_helix helix_;
+  experimental_vector helix_momentum_;
 
-      experimental_vector helix_momentum_;
+ public:
+  // list of nodes
+  std::vector<node> nodes_;
 
-    public:
+  // sequence's name
+  std::string name_;
 
-      // list of nodes
-      std::vector<node> nodes_;
+  // calo id
+  size_t calo_id_;
 
-      // sequence's name
-      std::string name_;
+  //! Default constructor
+  sequence();
 
-      // calo id
-      size_t calo_id_;
+  //! Default destructor
+  virtual ~sequence();
 
-      //!Default constructor
-      sequence();
+  //! constructor from std::vector of nodes
+  sequence(const std::vector<node> &nodes, mybhep::prlevel level = mybhep::NORMAL,
+           double probmin = 1.e-200);
 
-      //!Default destructor
-      virtual ~sequence();
+  //! constructor from single node
+  sequence(const node &node, mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //! constructor from std::vector of nodes
-      sequence(const std::vector<node>&  nodes, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //! constructor from single node
-      sequence(const node &node, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set nodes
+  void set_nodes(const std::vector<node> &nodes);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set name
+  void set_name(const std::string &name);
 
-      //! set nodes
-      void set_nodes(const std::vector<node> &nodes);
+  //! set helix
+  void set_helix(const experimental_helix &helix);
 
-      //! set name
-      void set_name(const std::string & name);
+  //! set helix_momentum
+  void set_helix_momentum(const experimental_vector &mom);
 
-      //! set helix
-      void set_helix(const experimental_helix & helix);
+  //! set calo_id
+  void set_calo_id(const size_t id) { calo_id_ = id; }
 
-      //! set helix_momentum
-      void set_helix_momentum(const experimental_vector &mom);
+  //! get nodes
+  const std::vector<node> &nodes() const;
 
-      //! set calo_id
-      void set_calo_id(const size_t id){
-	calo_id_ = id;
-      }
+  //! get name
+  const std::string &name() const;
 
-      //! get nodes
-      const std::vector<node> & nodes()const;
+  //! get helix
+  const experimental_helix &get_helix() const;
 
-      //! get name
-      const std::string & name()const;
+  //! get helix_momentum
+  const experimental_vector &helix_momentum() const;
 
-      //! get helix
-      const experimental_helix & get_helix()const;
+  //! get calo id
+  size_t calo_id() const;
 
-      //! get helix_momentum
-      const experimental_vector & helix_momentum() const;
+ public:
+  bool has_cell(const cell &c) const;
 
-      //! get calo id
-      size_t calo_id()const;
+  bool is_contained_in(const sequence &s) const;
 
-    public:
+  bool contains(const sequence &s) const;
 
-      bool has_cell(const cell & c)const;
+  experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value) const;
 
-      bool is_contained_in(const sequence & s)const;
+  void calculate_momentum(double bfield, bool SuperNEMO, double ref_value);
+};
 
-      bool contains(const sequence & s)const;
+}  // namespace topology
 
-      experimental_vector initial_helix_dir(bool SuperNEMO, double ref_value)const;
-
-      void calculate_momentum(double bfield, bool SuperNEMO, double ref_value);
-
-    };
-
-  }
-
-
-}
+}  // namespace SULTAN
 
 #endif

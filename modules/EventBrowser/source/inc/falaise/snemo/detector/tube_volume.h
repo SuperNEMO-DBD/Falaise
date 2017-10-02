@@ -36,51 +36,43 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // \brief A tube volume
-      class tube_volume : public i_root_volume
-      {
+// \brief A tube volume
+class tube_volume : public i_root_volume {
+ public:
+  /// Default constructor
+  tube_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-      public:
+  /// Destructor
+  virtual ~tube_volume();
 
-        /// Default constructor
-        tube_volume(const std::string & name_     = "",
-                    const std::string & category_ = "");
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Destructor
-        virtual ~tube_volume ();
+  /// Default dump
+  virtual void dump() const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream      & out_    = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+ protected:
+  /// Construct the tube volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
-        /// Default dump
-        virtual void dump () const;
+ private:
+  double _inner_radius_;  //<! Inner radius
+  double _outer_radius_;  //<! Outer radius
+  double _height_;        //<! Tube height
+};
 
-      protected:
+}  // end of namespace detector
 
-        /// Construct the tube volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace visualization
 
-      private:
+}  // end of namespace snemo
 
-        double _inner_radius_; //<! Inner radius
-        double _outer_radius_; //<! Outer radius
-        double _height_;       //<! Tube height
-      };
-
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_TUBE_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_TUBE_VOLUME_H
 
 // end of tube_volume.h
 /*

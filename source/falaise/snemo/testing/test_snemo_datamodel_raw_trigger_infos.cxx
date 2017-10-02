@@ -2,10 +2,10 @@
 
 // Standard library:
 #include <cstdlib>
-#include <iostream>
-#include <string>
 #include <exception>
+#include <iostream>
 #include <limits>
+#include <string>
 
 // Third party:
 // - Bayeux/datatools:
@@ -14,8 +14,7 @@
 // This project:
 #include <falaise/snemo/datamodels/raw_trigger_infos.h>
 
-int main (/* int argc_, char ** argv_ */)
-{
+int main(/* int argc_, char ** argv_ */) {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::datamodel::raw_trigger_infos'!" << std::endl;
@@ -49,13 +48,12 @@ int main (/* int argc_, char ** argv_ */)
     writer.store(RTI);
 
     std::clog << "The end." << std::endl;
-  }
-  catch (std::exception & x) {
-    std::cerr << "error: " << x.what () << std::endl;
+  } catch (std::exception& x) {
+    std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
-  }
-  catch (...) {
-    std::cerr << "error: " << "unexpected error!" << std::endl;
+  } catch (...) {
+    std::cerr << "error: "
+              << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
   return (error_code);

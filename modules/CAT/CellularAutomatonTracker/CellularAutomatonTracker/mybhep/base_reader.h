@@ -24,48 +24,42 @@
 
 #include <mybhep/brw.h>
 
-
-namespace mybhep{
+namespace mybhep {
 //! Base class for a reader
 /*!
   Provides common functionality for readers either sequential
   or random
 */
 
-  class base_reader : public brw
-  {
+class base_reader : public brw {
+ protected:
+  //! memory counter
+  size_t imem_;
 
-  protected:
-    //! memory counter
-    size_t imem_;
+  //! constructor (only to be instantiated by derived classes)
+ protected:
+  base_reader();
 
-    //! constructor (only to be instantiated by derived classes)
-  protected:
-    base_reader();
+  //! virtual destructor
+ public:
+  virtual ~base_reader();
 
-    //! virtual destructor
-  public:
-    virtual ~base_reader();
+  /*!  Interface */
+  //! read event
+  virtual event& read_event(size_t ievent) = 0;
 
-    /*!  Interface */
-    //! read event
-    virtual event& read_event(size_t ievent) = 0;
+  //!  public functions
+ public:
+  //! close reader
+  void close();
 
-    //!  public functions
-  public:
+  //! set reader to a new file
+  void reopen(std::string fileName);
 
-    //! close reader
-    void close();
-
-    //! set reader to a new file
-    void reopen(std::string fileName);
-
-    //! protected functions
-  protected:
-
-    //! clear event
-    void clear_event();
-
-  };
-}
+  //! protected functions
+ protected:
+  //! clear event
+  void clear_event();
+};
+}  // namespace mybhep
 #endif

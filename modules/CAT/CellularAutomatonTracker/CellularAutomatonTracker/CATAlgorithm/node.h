@@ -17,199 +17,185 @@
 #include <map>
 
 namespace CAT {
-  namespace topology{
+namespace topology {
 
+class node : public tracking_object {
+  // a node is composed of a main cell,
+  // a list of cell_couplet
+  // and a list of cell_triplet
 
-    class node : public tracking_object {
+ protected:
+  std::string appname_;
 
-      // a node is composed of a main cell,
-      // a list of cell_couplet
-      // and a list of cell_triplet
+ public:
+  // main cell
+  cell c_;
 
-    protected:
-      std::string appname_;
+  // list of cell couplets
+  std::vector<cell_couplet> cc_;
+  std::map<size_t, size_t> cc_index_;
 
-    public:
+  // list of cell triplets
+  std::vector<cell_triplet> ccc_;
+  std::map<size_t, size_t> ccc_ca_index_;
+  std::map<size_t, size_t> ccc_cc_index_;
 
-      // main cell
-      cell c_;
+  // list of linkable cells
+  std::vector<cell> links_;
 
-      // list of cell couplets
-      std::vector<cell_couplet> cc_;
-      std::map<size_t,size_t> cc_index_;
+  // status of node
+  bool free_;
 
-      // list of cell triplets
-      std::vector<cell_triplet>  ccc_;
-      std::map<size_t,size_t> ccc_ca_index_;
-      std::map<size_t,size_t> ccc_cc_index_;
+  // fitted point
+  experimental_point ep_;
 
-      // list of linkable cells
-      std::vector<cell>  links_;
+  // chi2 of connection in a sequence
+  double chi2_;
+  int32_t ndof_;
 
-      // status of node
-      bool free_;
+  bool is_kink_;
 
-      // fitted point
-      experimental_point ep_;
+  // angle along circle
+  double circle_phi_;
 
-      // chi2 of connection in a sequence
-      double chi2_;
-      int32_t ndof_;
+ public:
+  //! Default constructor
+  node();
 
-      bool is_kink_;
+  //! Default destructor
+  virtual ~node();
 
-      // angle along circle
-      double circle_phi_;
+  //! constructor
+  node(const cell &c, const std::vector<cell_couplet> &cc, const std::vector<cell_triplet> &ccc);
 
- 
-    public:
+  //! constructor
+  node(const cell &c, mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //!Default constructor
-      node();
+  //! constructor from bhep true hit
+  node(const mybhep::hit &truehit, size_t id, bool SuperNemo,
+       mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //!Default destructor
-      virtual ~node();
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //! constructor
-      node(const cell & c, const std::vector<cell_couplet> & cc, const std::vector<cell_triplet> & ccc);
+  //! set cells
+  void set(const cell &c, const std::vector<cell_couplet> &cc,
+           const std::vector<cell_triplet> &ccc);
 
-      //! constructor
-      node(const cell &c, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set main cell
+  void set_c(const cell &c);
 
-      //! constructor from bhep true hit
-      node(const mybhep::hit &truehit,
-           size_t id,
-           bool SuperNemo,
-           mybhep::prlevel level=mybhep::NORMAL,
-           double probmin=1.e-200);
+  //! set cell couplets
+  void set_cc(const std::vector<cell_couplet> &cc);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set cell triplets
+  void set_ccc(const std::vector<cell_triplet> &ccc);
 
-      //! set cells
-      void set(const cell &c,
-               const std::vector<cell_couplet> &cc,
-               const std::vector<cell_triplet> & ccc);
+  //! set links
+  void set_links(const std::vector<cell> &links);
 
-      //! set main cell
-      void set_c(const cell& c);
+  //! set free level
+  void set_free(bool free);
 
-      //! set cell couplets
-      void set_cc(const std::vector<cell_couplet> &cc);
+  //! set chi2
+  void set_chi2(double chi2);
 
-      //! set cell triplets
-      void set_ccc(const std::vector<cell_triplet>  &ccc);
+  //! set ndof
+  void set_ndof(int32_t ndof);
 
-      //! set links
-      void set_links(const std::vector<cell>  &links);
+  //! set fitted experimental_point
+  void set_ep(const experimental_point &ep);
 
-      //! set free level
-      void set_free(bool free);
+  //! set circle phi
+  void set_circle_phi(double a) { circle_phi_ = a; }
 
-      //! set chi2
-      void set_chi2(double chi2);
+  //! set is_kink
+  void set_is_kink(bool is_kink);
 
-      //! set ndof
-      void set_ndof(int32_t ndof);
+  //! get main cell
+  const cell &c() const;
 
-      //! set fitted experimental_point
-      void set_ep( const experimental_point &ep );
+  //! get cell couplets
+  const std::vector<cell_couplet> &cc() const;
 
-      //! set circle phi
-      void set_circle_phi(double a){circle_phi_=a;}
+  //! get cell triplets
+  const std::vector<cell_triplet> &ccc() const;
 
-      //! set is_kink
-      void set_is_kink(bool is_kink);
+  //! get links
+  const std::vector<cell> &links() const;
 
-      //! get main cell
-      const cell& c()const;
+  //! get free level
+  bool free() const;
 
-      //! get cell couplets
-      const std::vector<cell_couplet> &cc()const;
+  //! get chi2
+  double chi2() const;
 
-      //! get cell triplets
-      const std::vector<cell_triplet> &ccc()const;
+  //! get ndof
+  int32_t ndof() const;
 
-      //! get links
-      const std::vector<cell> &links()const;
+  //! get Prob
+  double Prob() const;
 
-      //! get free level
-      bool free()const;
+  //! get is_kink
+  bool is_kink() const;
 
-      //! get chi2
-      double chi2()const;
+  //! get fitted experimental_point
+  const experimental_point &ep() const;
 
-      //! get ndof
-      int32_t ndof()const;
+  //! get circle phi
+  double circle_phi() const { return circle_phi_; }
 
-      //! get Prob
-      double Prob()const;
+  //! grab cc index map
+  std::map<size_t, size_t> cc_index() const;
 
-      //! get is_kink
-      bool is_kink()const;
+  //! grab ccc index map
+  std::map<size_t, size_t> ccc_ca_index() const;
+  std::map<size_t, size_t> ccc_cc_index() const;
 
-      //! get fitted experimental_point
-      const experimental_point& ep()const;
+ private:
+  void setup_cc_maps();
+  void setup_ccc_maps();
 
-      //! get circle phi
-      double circle_phi()const{return circle_phi_;}
+ public:
+  void add_triplet(const cell_triplet &ccc);
 
-      //! grab cc index map
-      std::map<size_t,size_t> cc_index()const;
+  void remove_couplet(size_t index);
 
-      //! grab ccc index map
-      std::map<size_t,size_t> ccc_ca_index()const;
-      std::map<size_t,size_t> ccc_cc_index()const;
+  void remove_triplet(size_t index);
 
-    private:
-      void setup_cc_maps();
-      void setup_ccc_maps();
+  void remove_link(size_t index);
 
-    public:
+  void calculate_triplets(double Ratio, double separation_limit = 90., double phi_limit = 25.,
+                          double theta_limit = 180.);
 
-      void add_triplet(const cell_triplet &ccc);
+  void calculate_triplets_after_sultan(double Ratio);
 
-      void remove_couplet(size_t index);
+  node invert();
 
-      void remove_triplet(size_t index);
+  std::string topological_type() const;
 
-      void remove_link(size_t index);
+  bool has_couplet(const cell &a, cell_couplet *ct) const;
 
-      void calculate_triplets(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
+  bool has_couplet(const cell &a, size_t *index) const;
 
-      void calculate_triplets_after_sultan(double Ratio);
+  bool has_couplet(size_t idd, size_t *index) const;
 
-      node invert();
+  bool has_triplet(const cell &a, const cell &c, size_t *index) const;
 
-      std::string topological_type() const;
+  bool has_triplet(const cell &a, const cell &c) const;
 
-      bool has_couplet(const cell & a, cell_couplet* ct)const;
+  bool has_triplet(const cell &a) const;
 
-      bool has_couplet(const cell& a, size_t* index)const;
+  friend bool operator==(const node &left, const node &right);
 
-      bool has_couplet(size_t idd, size_t* index)const;
+  static bool circle_order(const topology::node &c1, const topology::node &c) {
+    // order nodes based on their angle along an assigned circle
 
-      bool has_triplet(const cell &a, const cell &c, size_t *index)const;
+    return (c1.circle_phi() > c.circle_phi());
+  }
+};
+}  // namespace topology
+}  // namespace CAT
 
-      bool has_triplet(const cell &a, const cell &c)const;
-
-      bool has_triplet(const cell &a)const;
-
-      friend bool operator==(const node& left,
-                             const node& right);
-
-      static bool circle_order(const topology::node& c1, const topology::node& c) {
-        // order nodes based on their angle along an assigned circle
-
-        return( c1.circle_phi() > c.circle_phi() );
-      }
-
-  };
-}
-}
-
-
-#endif // __CATAlgorithm__node_h
+#endif  // __CATAlgorithm__node_h

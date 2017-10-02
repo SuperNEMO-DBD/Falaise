@@ -19,44 +19,27 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include <mybhep/writer_gz.h>
 
-namespace mybhep{
+namespace mybhep {
 
-  using namespace std;
+using namespace std;
 
-  //! constructor
-  writer_gz::writer_gz() :
-    sequential_writer()
-  {
-  }
-  //! destructor
-  writer_gz::~writer_gz()
-  {
-    close();
-  }
+//! constructor
+writer_gz::writer_gz() : sequential_writer() {}
+//! destructor
+writer_gz::~writer_gz() { close(); }
 
-  void writer_gz::open_file(std::string fileName)
-  {
-    gf_ = gzopen (fileName.c_str(),"wb");
-  }
+void writer_gz::open_file(std::string fileName) { gf_ = gzopen(fileName.c_str(), "wb"); }
 
+void writer_gz::close_file() { gzclose(gf_); }
 
-  void writer_gz::close_file()
-  {
-    gzclose (gf_);
-  }
-
-    //! write the event as a record
-  void writer_gz::write_record(std::string record)
-  {
-    record+="\n";
-    gzputs (gf_, record.c_str());
-  }
-
-  void writer_gz::fede(){
-    return;
-  }
-
+//! write the event as a record
+void writer_gz::write_record(std::string record) {
+  record += "\n";
+  gzputs(gf_, record.c_str());
 }
+
+void writer_gz::fede() { return; }
+
+}  // namespace mybhep

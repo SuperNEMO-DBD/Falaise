@@ -46,91 +46,87 @@
 
 namespace snemo {
 
-  namespace cut {
+namespace cut {
 
-    /// \brief A cut performed on the event record's 'tracker trajectory data' bank
-    class tracker_trajectory_data_cut : public cuts::i_cut
-    {
-    public:
+/// \brief A cut performed on the event record's 'tracker trajectory data' bank
+class tracker_trajectory_data_cut : public cuts::i_cut {
+ public:
+  /// \brief Mode of the cut
+  enum mode_type {
+    MODE_UNDEFINED = 0,
+    MODE_FLAG = datatools::bit_mask::bit00,
+    MODE_HAS_SOLUTION = datatools::bit_mask::bit01,
+    MODE_RANGE_SOLUTION = datatools::bit_mask::bit02,
+    MODE_RANGE_CHI2NDF = datatools::bit_mask::bit04,
+    MODE_RANGE_PVALUE = datatools::bit_mask::bit05
+  };
 
-      /// \brief Mode of the cut
-      enum mode_type {
-        MODE_UNDEFINED      = 0,
-        MODE_FLAG           = datatools::bit_mask::bit00,
-        MODE_HAS_SOLUTION   = datatools::bit_mask::bit01,
-        MODE_RANGE_SOLUTION = datatools::bit_mask::bit02,
-        MODE_RANGE_CHI2NDF  = datatools::bit_mask::bit04,
-        MODE_RANGE_PVALUE   = datatools::bit_mask::bit05
-      };
+  /// Set the 'Tracker trajectory' bank label/name
+  void set_TTD_label(const std::string& TTD_label_);
 
-      /// Set the 'Tracker trajectory' bank label/name
-      void set_TTD_label(const std::string & TTD_label_);
+  /// Return the 'Tracker trajectory' bank label/name
+  const std::string& get_TTD_label() const;
 
-      /// Return the 'Tracker trajectory' bank label/name
-      const std::string & get_TTD_label() const;
+  /// Return the cut mode
+  uint32_t get_mode() const;
 
-      /// Return the cut mode
-      uint32_t get_mode() const;
+  /// Check mode FLAG:
+  bool is_mode_flag() const;
 
-      /// Check mode FLAG:
-      bool is_mode_flag() const;
+  /// Check mode HAS_SOLUTION:
+  bool is_mode_has_solution() const;
 
-      /// Check mode HAS_SOLUTION:
-      bool is_mode_has_solution() const;
+  /// Check mode RANGE_SOLUTION:
+  bool is_mode_range_solution() const;
 
-      /// Check mode RANGE_SOLUTION:
-      bool is_mode_range_solution() const;
+  /// Check mode RANGE_CHI2NDF:
+  bool is_mode_range_chi2ndf() const;
 
-      /// Check mode RANGE_CHI2NDF:
-      bool is_mode_range_chi2ndf() const;
+  /// Check mode RANGE_PVALUE:
+  bool is_mode_range_pvalue() const;
 
-      /// Check mode RANGE_PVALUE:
-      bool is_mode_range_pvalue() const;
+  void set_flag_name(const std::string& flag_name_);
 
-      void set_flag_name(const std::string & flag_name_);
+  const std::string& get_flag_name() const;
 
-      const std::string & get_flag_name() const;
+  /// Constructor
+  tracker_trajectory_data_cut(
+      datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      tracker_trajectory_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~tracker_trajectory_data_cut();
 
-      /// Destructor
-      virtual ~tracker_trajectory_data_cut();
+  /// Initilization
+  virtual void initialize(const datatools::properties& configuration_,
+                          datatools::service_manager& service_manager_,
+                          cuts::cut_handle_dict_type& cut_dict_);
 
-      /// Initilization
-      virtual void initialize(const datatools::properties & configuration_,
-                              datatools::service_manager & service_manager_,
-                              cuts::cut_handle_dict_type & cut_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+ protected:
+  /// Default values
+  void _set_defaults();
 
-    protected:
+  /// Selection
+  virtual int _accept();
 
-      /// Default values
-      void _set_defaults();
+ private:
+  std::string _TTD_label_;     //!< Name of the "tracker trajectory data" bank
+  uint32_t _mode_;             //!< Mode of the cut
+  std::string _flag_name_;     //!< Name of the boolean property in the tracker trajectory data
+  int _solution_range_min_;    //!< Minimal number of cluster
+  int _solution_range_max_;    //!< Maximal number of cluster
+  double _chi2ndf_range_min_;  //!< Minimal value of chi2/ndf
+  double _chi2ndf_range_max_;  //!< Maximal value of chi2/ndf
+  double _pvalue_range_min_;   //!< Minimal value of p-value
+  double _pvalue_range_max_;   //!< Maximal value of p-value
 
-      /// Selection
-      virtual int _accept();
+  // Macro to automate the registration of the cut :
+  CUT_REGISTRATION_INTERFACE(tracker_trajectory_data_cut)
+};
 
-    private:
-
-      std::string _TTD_label_;          //!< Name of the "tracker trajectory data" bank
-      uint32_t    _mode_;               //!< Mode of the cut
-      std::string _flag_name_;          //!< Name of the boolean property in the tracker trajectory data
-      int         _solution_range_min_; //!< Minimal number of cluster
-      int         _solution_range_max_; //!< Maximal number of cluster
-      double      _chi2ndf_range_min_;  //!< Minimal value of chi2/ndf
-      double      _chi2ndf_range_max_;  //!< Maximal value of chi2/ndf
-      double      _pvalue_range_min_;   //!< Minimal value of p-value
-      double      _pvalue_range_max_;   //!< Maximal value of p-value
-
-      // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(tracker_trajectory_data_cut)
-
-    };
-
-  }  // end of namespace cut
+}  // end of namespace cut
 
 }  // end of namespace snemo
 
@@ -140,7 +136,7 @@ namespace snemo {
 // @arg snemo::cut::tracker_trajectory_data_cut the name the registered class in the OCD system
 DOCD_CLASS_DECLARATION(snemo::cut::tracker_trajectory_data_cut)
 
-#endif // FALAISE_SNEMO_CUT_TRACKER_TRAJECTORY_DATA_CUT_H
+#endif  // FALAISE_SNEMO_CUT_TRACKER_TRAJECTORY_DATA_CUT_H
 
 /*
 ** Local Variables: --

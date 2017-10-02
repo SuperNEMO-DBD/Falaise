@@ -15,7 +15,6 @@
  * General Public License for more details.
  */
 
-
 #ifndef __TRACK_CVT_H__
 #define __TRACK_CVT_H__
 
@@ -24,59 +23,45 @@
 #include <mybhep/track.h>
 #include <mybhep/ibconverter.h>
 
+namespace mybhep {
 
+//! class track_cvt
+/*!
+  Converter to persistency
+*/
+typedef track track;
 
-namespace mybhep{
+class track_cvt : public ibconverter {
+ private:
+  //! pointer to the track
+  track* ntrack_;
+  //! const pointer to the track
+  const track* track_;
+  //! pointer to mother particle
+  int imother_;
 
-  //! class track_cvt
-  /*!
-    Converter to persistency
-  */
-  typedef track track;
+ public:
+  //! construct from a track and an index
+  track_cvt(const track& t, int inx);
+  //! construct from a string
+  track_cvt(std::string);
+  //! destructor
+  virtual ~track_cvt();
 
-  class track_cvt : public ibconverter{
+  //! store class in a string
+  virtual std::string store();
+  //! restore from a string
+  virtual void restore(std::string);
+  //! complete restore
+  virtual void complete_restore();
 
-  private:
-    //! pointer to the track
-    track*  ntrack_;
-    //! const pointer to the track
-    const track* track_;
-    //! pointer to mother particle
-    int imother_;
+  //! retrieve a constant reference to the track
+  const track& retrieve() const;
+  //! retrieve a reference to the track
+  track& reference();
 
-  public:
-    //! construct from a track and an index
-    track_cvt( const track& t, int inx);
-    //! construct from a string
-    track_cvt( std::string );
-    //! destructor
-    virtual ~track_cvt();
-
-    //! store class in a string
-    virtual std::string store();
-    //! restore from a string
-    virtual void restore( std::string );
-    //! complete restore
-    virtual void complete_restore();
-
-
-    //! retrieve a constant reference to the track
-    const track& retrieve() const;
-    //! retrieve a reference to the track
-    track& reference();
-
-    //! instantiate a new track
-    track* create();
-
-  };
-}
+  //! instantiate a new track
+  track* create();
+};
+}  // namespace mybhep
 #endif
-
-
-
-
-
-
-
-
-

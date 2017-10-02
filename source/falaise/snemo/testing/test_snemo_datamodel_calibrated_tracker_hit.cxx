@@ -2,20 +2,19 @@
 
 // Standard library
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // Third party
 // - Bayeux/datatools
-#include <datatools/smart_ref.h>
 #include <datatools/clhep_units.h>
+#include <datatools/smart_ref.h>
 
 // This project
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 
-int main(/* int argc_, char ** argv_ */)
-{
+int main(/* int argc_, char ** argv_ */) {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::datamodel::calibrated_tracker_hit'!" << std::endl;
@@ -77,36 +76,38 @@ int main(/* int argc_, char ** argv_ */)
       list_of_gg_hits.reserve(nb_hits);
       double cell_diameter = 44.0 * CLHEP::mm;
       double cell_radius = 0.5 * cell_diameter;
-      for(int i = 0; i < nb_hits; i++) {
+      for (int i = 0; i < nb_hits; i++) {
         // append a new empty hit in the list:
         list_of_gg_hits.push_back(sdm::calibrated_tracker_hit());
         // get a reference to the newly pushed hit:
-        sdm::calibrated_tracker_hit & my_gg_hit = list_of_gg_hits.back();
+        sdm::calibrated_tracker_hit& my_gg_hit = list_of_gg_hits.back();
         my_gg_hit.set_hit_id(2125715 + i);
-        geomtools::geom_id gid(1204,               // type for the 'drift_cell_core' category
-                               0,                  // module
-                               1,                  // half chamber
+        geomtools::geom_id gid(1204,  // type for the 'drift_cell_core' category
+                               0,     // module
+                               1,     // half chamber
                                (uint32_t)(drand48() * 9),     // layer
-                               (uint32_t)(drand48() * 113) ); // cell
+                               (uint32_t)(drand48() * 113));  // cell
         my_gg_hit.set_geom_id(gid);
         my_gg_hit.grab_auxiliaries().store_flag("fake");
         double z_error = 1.0 * CLHEP::cm;
-        if(drand48() < 0.1) {
+        if (drand48() < 0.1) {
           my_gg_hit.set_bottom_cathode_missing(true);
           z_error = 10.0 * CLHEP::cm;
         }
-        if(drand48() < 0.1) {
+        if (drand48() < 0.1) {
           my_gg_hit.set_top_cathode_missing(true);
-          if(z_error > 2.0 * CLHEP::cm) z_error = 150.0 * CLHEP::cm;
-          else z_error = 10.0 * CLHEP::cm;
+          if (z_error > 2.0 * CLHEP::cm)
+            z_error = 150.0 * CLHEP::cm;
+          else
+            z_error = 10.0 * CLHEP::cm;
         }
-        if(drand48() < 0.2) {
+        if (drand48() < 0.2) {
           my_gg_hit.set_noisy(true);
         }
         my_gg_hit.set_z(125.0 * CLHEP::cm);
         my_gg_hit.set_sigma_z(z_error);
         my_gg_hit.set_r(drand48() * cell_radius);
-        if(my_gg_hit.get_r() > 0.95  * cell_radius) {
+        if (my_gg_hit.get_r() > 0.95 * cell_radius) {
           my_gg_hit.set_peripheral(true);
         }
         my_gg_hit.set_sigma_r(1.0 * CLHEP::mm);
@@ -118,21 +119,20 @@ int main(/* int argc_, char ** argv_ */)
       typedef datatools::smart_ref<sdm::calibrated_tracker_hit> smart_ref_type;
       smart_ref_type rmin_gg_ref;
       smart_ref_type rmax_gg_ref;
-      for(hit_collection_type::const_iterator i = list_of_gg_hits.begin();
-          i != list_of_gg_hits.end();
-          i++) {
-        const sdm::calibrated_tracker_hit & gg_hit = *i;
+      for (hit_collection_type::const_iterator i = list_of_gg_hits.begin();
+           i != list_of_gg_hits.end(); i++) {
+        const sdm::calibrated_tracker_hit& gg_hit = *i;
         std::ostringstream title;
         title << "Tracker hit #" << gg_hit.get_hit_id();
         gg_hit.tree_dump(std::clog, title.str());
-        if(! rmin_gg_ref.is_valid()) {
+        if (!rmin_gg_ref.is_valid()) {
           rmin_gg_ref.set(gg_hit);
-        } else if(gg_hit.get_r() < rmin_gg_ref.get().get_r()) {
+        } else if (gg_hit.get_r() < rmin_gg_ref.get().get_r()) {
           rmin_gg_ref.set(gg_hit);
         }
-        if(! rmax_gg_ref.is_valid()) {
+        if (!rmax_gg_ref.is_valid()) {
           rmax_gg_ref.set(gg_hit);
-        } else if(gg_hit.get_r() > rmax_gg_ref.get().get_r()) {
+        } else if (gg_hit.get_r() > rmax_gg_ref.get().get_r()) {
           rmax_gg_ref.set(gg_hit);
         }
       }
@@ -144,14 +144,13 @@ int main(/* int argc_, char ** argv_ */)
     }
 
     std::clog << "The end." << std::endl;
-  }
-  catch(std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
-  }
-  catch(...) {
-    std::cerr << "error: " << "unexpected error!" << std::endl;
+  } catch (...) {
+    std::cerr << "error: "
+              << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
-  return(error_code);
+  return (error_code);
 }

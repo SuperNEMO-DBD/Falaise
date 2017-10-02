@@ -44,121 +44,121 @@
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 
 namespace datatools {
-  class properties;
+class properties;
 }
 namespace geomtools {
-  class manager;
+class manager;
 }
 namespace snemo {
 
-  namespace geometry {
-    class locator_plugin;
-  }
+namespace geometry {
+class locator_plugin;
+}
 
-  namespace datamodel {
-    class tracker_trajectory_data;
-    class tracker_trajectory_solution;
-    class particle_track_data;
-  }
+namespace datamodel {
+class tracker_trajectory_data;
+class tracker_trajectory_solution;
+class particle_track_data;
+}  // namespace datamodel
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// \brief Driver for associating particle track with calorimeter hit
-    class alpha_finder_driver
-    {
-    public:
+/// \brief Driver for associating particle track with calorimeter hit
+class alpha_finder_driver {
+ public:
+  /// Tag label for short alpha particle track
+  static const std::string& short_alpha_key();
 
-      /// Tag label for short alpha particle track
-      static const std::string & short_alpha_key();
+  /// Return driver id
+  static const std::string& get_id();
 
-      /// Return driver id
-      static const std::string & get_id();
+  /// Setting initialization flag
+  void set_initialized(const bool initialized_);
 
-      /// Setting initialization flag
-      void set_initialized(const bool initialized_);
+  /// Getting initialization flag
+  bool is_initialized() const;
 
-      /// Getting initialization flag
-      bool is_initialized() const;
+  /// Setting logging priority
+  void set_logging_priority(const datatools::logger::priority priority_);
 
-      /// Setting logging priority
-      void set_logging_priority(const datatools::logger::priority priority_);
+  /// Getting logging priority
+  datatools::logger::priority get_logging_priority() const;
 
-      /// Getting logging priority
-      datatools::logger::priority get_logging_priority() const;
+  /// Check the geometry manager
+  bool has_geometry_manager() const;
 
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
+  /// Address the geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Return a non-mutable reference to the geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Return a non-mutable reference to the geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Constructor:
+  alpha_finder_driver();
 
-      /// Constructor:
-      alpha_finder_driver ();
+  /// Destructor:
+  ~alpha_finder_driver();
 
-      /// Destructor:
-      ~alpha_finder_driver ();
+  /// Initialize the driver through configuration properties
+  void initialize(const datatools::properties& setup_);
 
-      /// Initialize the driver through configuration properties
-      void initialize(const datatools::properties & setup_);
+  /// Reset the driver
+  void reset();
 
-      /// Reset the driver
-      void reset();
+  /// Main driver method
+  void process(const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
+               snemo::datamodel::particle_track_data& particle_track_data_);
 
-      /// Main driver method
-      void process(const snemo::datamodel::tracker_trajectory_data & tracker_trajectory_data_,
-                   snemo::datamodel::particle_track_data & particle_track_data_);
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+ protected:
+  /// Set default values to class members:
+  void _set_defaults();
 
-    protected:
+ private:
+  /// Find the unfitted cluster (cluster with 1 or 2 Geiger hits)
+  void _find_delayed_unfitted_cluster_(
+      const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
+      snemo::datamodel::particle_track_data& particle_track_data_);
 
-      /// Set default values to class members:
-      void _set_defaults();
+  /// Find the delayed unclustered hits
+  void _find_delayed_unclustered_hit_(
+      const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
+      snemo::datamodel::particle_track_data& particle_track_data_);
 
-    private:
+  /// Dedicated method to find short track
+  void _find_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
+                          const snemo::datamodel::tracker_trajectory_solution& solution_,
+                          snemo::datamodel::particle_track_data& particle_track_data_,
+                          const bool hits_from_cluster = true);
 
-			/// Find the unfitted cluster (cluster with 1 or 2 Geiger hits)
-			void _find_delayed_unfitted_cluster_(const snemo::datamodel::tracker_trajectory_data & tracker_trajectory_data_,
-                                           snemo::datamodel::particle_track_data & particle_track_data_);
+  /// Dedicated method to "fit" short track
+  void _fit_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
+                         const geomtools::vector_3d& first_vertex_,
+                         geomtools::vector_3d& last_vertex_);
 
-			/// Find the delayed unclustered hits
-			void _find_delayed_unclustered_hit_(const snemo::datamodel::tracker_trajectory_data & tracker_trajectory_data_,
-                                          snemo::datamodel::particle_track_data & particle_track_data_);
+  /// Add a new short alpha particle track
+  void _build_alpha_particle_track_(
+      const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
+      const geomtools::vector_3d& first_vertex_,
+      snemo::datamodel::particle_track_data& particle_track_data_);
 
-      /// Dedicated method to find short track
-      void _find_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type & hits_,
-                              const snemo::datamodel::tracker_trajectory_solution & solution_,
-                              snemo::datamodel::particle_track_data & particle_track_data_,
-                              const bool hits_from_cluster = true);
+ private:
+  bool _initialized_;                                       //<! Initialize flag
+  datatools::logger::priority _logging_priority_;           //<! Logging flag
+  const geomtools::manager* _geometry_manager_;             //<! The SuperNEMO geometry manager
+  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< The SuperNEMO locator plugin
 
-      /// Dedicated method to "fit" short track
-      void _fit_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type & hits_,
-                             const geomtools::vector_3d & first_vertex_,
-                             geomtools::vector_3d & last_vertex_);
+  double _minimal_delayed_time_;  //!< Minimal Geiger hit delayed time
+  double
+      _minimal_cluster_xy_search_distance_;  //!< Minimal distance in XY coordinate between GG hits
+  double _minimal_cluster_z_search_distance_;  //!< Minimal distance in Z coordinate between GG hits
+  double _minimal_vertex_distance_;  //!< Minimal distance between the prompt vertex and the delayed
+                                     //!< GG hit
+};
 
-      /// Add a new short alpha particle track
-      void _build_alpha_particle_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type & hits_,
-                                        const geomtools::vector_3d & first_vertex_,
-                                        snemo::datamodel::particle_track_data & particle_track_data_);
-
-    private:
-
-      bool _initialized_;                                       //<! Initialize flag
-      datatools::logger::priority _logging_priority_;           //<! Logging flag
-      const geomtools::manager * _geometry_manager_;            //<! The SuperNEMO geometry manager
-      const snemo::geometry::locator_plugin * _locator_plugin_; //!< The SuperNEMO locator plugin
-
-      double _minimal_delayed_time_;               //!< Minimal Geiger hit delayed time
-      double _minimal_cluster_xy_search_distance_; //!< Minimal distance in XY coordinate between GG hits
-      double _minimal_cluster_z_search_distance_;  //!< Minimal distance in Z coordinate between GG hits
-      double _minimal_vertex_distance_;            //!< Minimal distance between the prompt vertex and the delayed GG hit
-  	};
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -167,7 +167,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::alpha_finder_driver)
 
-#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_ALPHA_FINDER_DRIVER_H
+#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_ALPHA_FINDER_DRIVER_H
 
 // end of falaise/snemo/reconstruction/alpha_finder_driver.h
 /*

@@ -36,79 +36,73 @@
 #include <dpp/base_module.h>
 
 namespace datatools {
-  class things;
+class things;
 }
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class event_browser;
-      class event_browser_ctrl;
+class event_browser;
+class event_browser_ctrl;
 
-      class event_browser_module : public dpp::base_module
-      {
+class event_browser_module : public dpp::base_module {
+ public:
+  /// Setting geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      public:
+  /// Getting geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-        /// Setting geometry manager
-        void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Constructor
+  event_browser_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-        /// Getting geometry manager
-        const geomtools::manager & get_geometry_manager() const;
+  /// Destructor
+  virtual ~event_browser_module();
 
-        /// Constructor
-        event_browser_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
 
-        /// Destructor
-        virtual ~event_browser_module();
+  /// Reset
+  virtual void reset();
 
-        /// Initialization
-        virtual void initialize(const datatools::properties  & setup_,
-                                datatools::service_manager   & service_manager_,
-                                dpp::module_handle_dict_type & module_dict_);
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-        /// Reset
-        virtual void reset();
+ protected:
+  void _initialize_event_browser();
 
-        /// Data record processing
-        virtual process_status process(datatools::things & data_);
+  void _terminate_event_browser();
 
-      protected :
+  process_status _show_event(datatools::things& event_record_);
 
-        void _initialize_event_browser ();
+ private:
+  std::string _Geo_label_;  //!< The label of the Geometry service to be accessed
+  const geomtools::manager* _geometry_manager_;  //!< Non-mutable reference to the geometry manager
 
-        void _terminate_event_browser ();
+  event_browser* _event_browser_;  //!< The embedded ROOT event browser
+  event_browser_ctrl*
+      _event_browser_ctrl_;  //!< The embedded control object for thread synchronization
 
-        process_status _show_event (datatools::things & event_record_);
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(event_browser_module)
+};
 
-      private:
+}  // end of namespace view
 
-        std::string _Geo_label_;                         //!< The label of the Geometry service to be accessed
-        const geomtools::manager * _geometry_manager_;   //!< Non-mutable reference to the geometry manager
-
-        event_browser            * _event_browser_;      //!< The embedded ROOT event browser
-        event_browser_ctrl       * _event_browser_ctrl_; //!< The embedded control object for thread synchronization
-
-
-        // Macro to automate the registration of the module :
-        DPP_MODULE_REGISTRATION_INTERFACE(event_browser_module)
-
-      };
-
-    } // end of namespace view
-
-  }  // end of namespace visualization
+}  // end of namespace visualization
 
 }  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_MODULE_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_MODULE_H
 
 // end of event_browser_module.h
 /*

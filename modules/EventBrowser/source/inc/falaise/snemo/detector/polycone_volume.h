@@ -36,48 +36,40 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // \brief A polycone volume
-      class polycone_volume : public i_root_volume
-      {
+// \brief A polycone volume
+class polycone_volume : public i_root_volume {
+ public:
+  /// Default constructor
+  polycone_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-      public:
+  /// Destructor
+  virtual ~polycone_volume();
 
-        /// Default constructor
-        polycone_volume(const std::string & name_     = "",
-                        const std::string & category_ = "");
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
+  /// Default print
+  virtual void dump() const;
 
-        /// Destructor
-        virtual ~polycone_volume ();
+ protected:
+  /// Construct the polycone volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
-        /// Smart print
-        virtual void tree_dump(std::ostream & out_         = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
-        /// Default print
-        virtual void dump() const;
+ private:
+  size_t _nbr_z_section_;  //<! Number of z-section to describe the polycone
+};
 
-      protected:
+}  // end of namespace detector
 
-        /// Construct the polycone volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace visualization
 
-      private:
+}  // end of namespace snemo
 
-        size_t _nbr_z_section_; //<! Number of z-section to describe the polycone
-      };
-
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_POLYCONE_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_POLYCONE_VOLUME_H
 
 // end of polycone_volume.h
 /*

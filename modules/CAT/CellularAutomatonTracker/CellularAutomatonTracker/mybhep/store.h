@@ -25,23 +25,23 @@
 #include <mybhep/tstore.h>
 #include <mybhep/dvector.h>
 
-namespace mybhep{
-  //! a store of integers
-  typedef tstore<int> istore;
-  //! a store of doubles
-  typedef tstore<double> dstore;
-  //! a store of strings
-  typedef tstore<std::string> sstore;
-  //! a store of histogram definitions
-  typedef dvector<double> vdouble;
-  typedef dvector<int> vint;
-  //! a store of std::vectors of string
-  typedef dvector<std::string> vstring;
-  //! a store of std::vectors of double
-  typedef tstore<vdouble> vstore;
-  //! a store of std::vectors of int
-  typedef tstore<vint> ivstore;
-  //! a store of std::vectors of string
-  typedef tstore<vstring> svstore;
-}
+namespace mybhep {
+//! a store of integers
+typedef tstore<int> istore;
+//! a store of doubles
+typedef tstore<double> dstore;
+//! a store of strings
+typedef tstore<std::string> sstore;
+//! a store of histogram definitions
+typedef dvector<double> vdouble;
+typedef dvector<int> vint;
+//! a store of std::vectors of string
+typedef dvector<std::string> vstring;
+//! a store of std::vectors of double
+typedef tstore<vdouble> vstore;
+//! a store of std::vectors of int
+typedef tstore<vint> ivstore;
+//! a store of std::vectors of string
+typedef tstore<vstring> svstore;
+}  // namespace mybhep
 #endif

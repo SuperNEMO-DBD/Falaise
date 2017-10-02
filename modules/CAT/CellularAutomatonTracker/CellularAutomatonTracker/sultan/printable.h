@@ -3,58 +3,47 @@
 #ifndef __sultan__printable_h
 #define __sultan__printable_h 1
 
-
 #include <iostream>
 #include <mybhep/utilities.h>
 
 namespace SULTAN {
-  namespace topology{
+namespace topology {
 
+//! Base utility class for conditional print
+/*!
+  - derived class implement the info method to print information
+  \ingroup base
+*/
 
-    //! Base utility class for conditional print
-    /*!
-      - derived class implement the info method to print information
-      \ingroup base
-    */
+class printable {
+ public:
+  /// print level
+  mybhep::prlevel level_;
 
-    class printable {
+ public:
+  printable();
 
-    public:
+  virtual ~printable();
 
-      /// print level
-      mybhep::prlevel level_;
+  //! print interface
+  virtual void info(std::ostream& os = std::clog) const;
 
-    public:
+  //! print the information using the << operator
+  friend std::ostream& operator<<(std::ostream& os, const printable& v);
 
-      printable();
+  //! print the information using the << operator
+  friend std::ostream& operator<<(std::ostream& os, const printable* v);
 
-      virtual ~printable();
+  //! return print_level
+  const mybhep::prlevel& print_level() const;
 
-      //! print interface
-      virtual void info(std::ostream& os = std::clog) const ;
+  //! set print_level
+  void set_print_level(mybhep::prlevel level);
 
-      //! print the information using the << operator
-      friend std::ostream& operator<<(std::ostream& os, const printable& v) ;
+  /// set the verbosity level
+  void set_print_level(const std::string& info);
+};
+}  // namespace topology
+}  // namespace SULTAN
 
-      //! print the information using the << operator
-      friend std::ostream& operator<<(std::ostream& os, const printable* v) ;
-
-      //! return print_level
-      const mybhep::prlevel& print_level() const ;
-
-      //! set print_level
-      void set_print_level(mybhep::prlevel level) ;
-
-      /// set the verbosity level
-      void set_print_level(const std::string & info);
-
-
-    };
-  }
-}
-
-#endif // __sultan__printable_h
-
-
-
-
+#endif  // __sultan__printable_h

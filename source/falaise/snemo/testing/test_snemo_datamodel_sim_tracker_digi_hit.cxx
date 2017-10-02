@@ -1,14 +1,14 @@
 // test_snemo_datamodel_sim_tracker_digi_hit.cxx
 
 // Standard libraries :
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
 #include <datatools/io_factory.h>
+#include <datatools/logger.h>
 
 // Falaise:
 #include <falaise/falaise.h>
@@ -16,8 +16,7 @@
 // This project :
 #include <snemo/datamodels/sim_tracker_digi_hit.h>
 
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -28,7 +27,7 @@ int main(int argc_, char ** argv_)
       snemo::datamodel::sim_tracker_digi_hit my_hit;
       my_hit.set_hit_id(23);
       my_hit.grab_geom_id().set_type(1234);
-      my_hit.grab_geom_id().set_address(3,0,10);
+      my_hit.grab_geom_id().set_address(3, 0, 10);
       my_hit.set_anode_t0(323);
       my_hit.set_anode_t1(423);
       my_hit.set_anode_t2(432);
@@ -54,7 +53,7 @@ int main(int argc_, char ** argv_)
     }
 
     std::clog << "The end." << std::endl;
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   } catch (...) {

@@ -25,44 +25,36 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      bool opengl_pad::is_batch () const
-      {
-        // no TCanvas is instantiated
-        return true;
-      }
+bool opengl_pad::is_batch() const {
+  // no TCanvas is instantiated
+  return true;
+}
 
-      void opengl_pad::update ()
-      {
-        // Traverse pad hierarchy and (re)paint only modified pads
-        this->PaintModified ();
-      }
+void opengl_pad::update() {
+  // Traverse pad hierarchy and (re)paint only modified pads
+  this->PaintModified();
+}
 
-      TVirtualViewer3D * opengl_pad::get_viewer_3d (Option_t * /*type*/)
-      {
-        // current viewer is returned
-        return fViewer3D;
-      }
+TVirtualViewer3D* opengl_pad::get_viewer_3d(Option_t* /*type*/) {
+  // current viewer is returned
+  return fViewer3D;
+}
 
-      // ctor:
-      opengl_pad::opengl_pad ()
-      {
-        fPrimitives = new THashList ();
-      }
+// ctor:
+opengl_pad::opengl_pad() { fPrimitives = new THashList(); }
 
-      // dtor:
-      opengl_pad::~opengl_pad ()
-      {
-      }
+// dtor:
+opengl_pad::~opengl_pad() {}
 
-    } // end of namespace view
+}  // end of namespace view
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of opengl_pad.cc
 /*

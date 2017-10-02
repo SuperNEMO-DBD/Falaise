@@ -13,49 +13,43 @@
 #include <sultan/node.h>
 
 namespace SULTAN {
-  namespace topology{
+namespace topology {
 
+class scenario : public tracking_object {
+  // a reconstruction scenario is composed of
+  // a collection of tracks
 
-    class scenario : public tracking_object{
+ private:
+  std::string appname_;
 
-      // a reconstruction scenario is composed of
-      // a collection of tracks
+ public:
+  // tracks
+  std::vector<topology::sequence> sequences_;
 
-    private:
-      std::string appname_;
+  //! Default constructor
+  scenario();
 
-    public:
+  //! Default destructor
+  virtual ~scenario();
 
-      // tracks
-      std::vector<topology::sequence> sequences_;
+  //! constructor
+  scenario(const std::vector<sequence>& seqs, mybhep::prlevel level = mybhep::NORMAL,
+           double probmin = 1.e-200);
 
-      //!Default constructor
-      scenario();
+  /*** dump ***/
+  virtual void dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                    const std::string& a_indent = "", bool a_inherit = false) const;
 
-      //!Default destructor
-      virtual ~scenario();
+  //! set experimental_point, radius, error and id;
+  void set(const std::vector<sequence>& seqs);
 
-      //! constructor
-      scenario(const std::vector<sequence> & seqs, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set sequences
+  void set_sequences(const std::vector<sequence>& seqs);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false)const;
-
-
-      //! set experimental_point, radius, error and id;
-      void set(const std::vector<sequence> & seqs);
-
-      //! set sequences
-      void set_sequences(const std::vector<sequence> & seqs);
-
-      //! get sequences
-      const std::vector<sequence> & sequences()const;
-
-    };
-  }
-}
+  //! get sequences
+  const std::vector<sequence>& sequences() const;
+};
+}  // namespace topology
+}  // namespace SULTAN
 
 #endif
