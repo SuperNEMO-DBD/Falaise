@@ -114,7 +114,11 @@ to make writing and online presentation clearer.
    If you have already pushed the branch, you can omit the `-u` flag. The key thing is
    that the branch published on GitHub has the up to date set of commits.
 
-2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
+2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise).
+   A template is provided to help you describe the purpose of the PR (Bugfix,
+   enhancement, documentation etc), and must be filled out. If your PR provides a
+   fix for one or more already reported issues, ensure the `Fixes #<NUMBER>` lines
+   are filled in so that the related issues will be automatically closed when the PR is merged.
 
 3. The PR will be reviewed by SuperNEMO users and developers as appropriate for the issue addressed.
    The core requirements for acceptance of a PR are:
@@ -137,6 +141,19 @@ to make writing and online presentation clearer.
    them to the PR, and Travis-CI will run new builds.
 
 4. Once approved, the PR will be merged on to the `develop` branch of [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise). You can then delete your feature branch.
+
+
+### Reviewing Pull Requests Locally
+If you are a Pull Request reviewer, then changes can be reviewed and commented on
+directly through the [GitHub review interface](https://help.github.com/articles/about-pull-request-reviews/).
+This is useful to comment on higher level aspects like naming, style and design.
+
+It is also possible to checkout the changes in a Pull Request onto a branch in
+your working copy for detailed compile, test and run checks. The interface and
+commands to do this are [documented in GitHub Help](https://help.github.com/articles/checking-out-pull-requests-locally/).
+Note that this creates new branches in yout working copy, so after review and
+merge/dismissal of the PR, you should delete the local branch using `git branch -d`
+or `git branch -D` as needed.
 
 
 ### Working with Others
@@ -186,8 +203,8 @@ $ git merge yourusername/fix-bug
 
 # Release Management
 
-The preparation of new releases is handled by Falaise's admins (@drbenmorgan and @goliviero). A workflow for 
-this process is outlined [in a draft document](documentation/development/PreparingReleases.md). Note in particular 
+The preparation of new releases is handled by Falaise's admins (@drbenmorgan and @goliviero). A workflow for
+this process is outlined [in a draft document](documentation/development/PreparingReleases.md). Note in particular
 that updates to external dependencies such as ROOT and Geant4 should be requested through a new Issue Report.
 
 # Additional Resources
