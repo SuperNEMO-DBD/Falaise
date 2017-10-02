@@ -571,6 +571,10 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
 
     system_props.store_string("falaise.version", falaise::version::get_version(),
                               "Falaise version");
+    system_props.store_string("falaise.version.commit", falaise::version::get_commit(),
+                              "Falaise commit");
+    system_props.store_boolean("falaise.version.state", falaise::version::is_dirty(),
+                               "Falaise commit state");
 
     system_props.store_string("application", "flreconstruct",
                               "The flreconstruct application used to produce reconstructed data");
