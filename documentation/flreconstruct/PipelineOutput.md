@@ -365,3 +365,55 @@ TODO:
  - Describe the `snemo::datamodel::particle_track_solution` object.
  - Describe the `snemo::datamodel::particle_track` object.
  - Describe the `geomtools::blur_spot` object.
+
+Topology measurements {#flreconstructpipelineoutput_topologymeasurements}
+=====================
+
+While all previous data banks determine and compute new information at the
+level of the individual particles involved in an event, topology measurements are
+performed at the event scale. The **T** opology **D** data bank contains
+information relevant only on the full event scale, such as the Time-Of-Flight measurement
+(computed only when at least two particles are involved) or the vertex of the event.
+
+Each `snemo::datamodel::topology_data` object contains:
+ - a collection of auxiliary properties (a `datatools::properties` instance)
+ - a shared handle to the topology pattern.
+
+Several types of topology patterns are supported:
+ - the `snemo::datamodel::topology_1e_pattern` class is used for single electron event,
+ - the `snemo::datamodel::topology_1e1a_pattern` class is used for 1 electron +
+   1 alpha event,
+ - the `snemo::datamodel::topology_1eNg_pattern` class is used for 1 electron +
+   N gammas event,
+ - the `snemo::datamodel::topology_2e_pattern` class is used for 2 electrons event,
+ - the `snemo::datamodel::topology_2eNg_pattern` class is used for 2 electrons +
+   N gammas event.
+
+The classes inherit from the `snemo::datamodel::base_topology_pattern` class which
+contains :
+ - a dictionary of shared handles on `snemo::datamodel::particle_track` belonging
+   to the event. Each particle track object is key-mapped with a unique
+   name like `e1` and `e2` for two-electrons topology pattern.
+ - a dictionary of shared handles on
+   `snemo::datamodel::base_topology_measurement` holding the different
+   topological measurements performed on the event given its pattern.
+
+The `snemo::datamodel::base_topology_pattern` holds the topological data as well
+as a link to the particle tracks whereas the inherited classes from
+`snemo::datamodel::base_topology_pattern` only provide an *interface* and do not
+hold the data.
+
+Several topological measurements, all inherited from `snemo::datamodel::base_topology_measurement`, are provided :
+- a `snemo::datamodel::tof_measurement`, which contains Time-Of-Flight-related
+  measurements:
+  - a list of internal probabilities,
+  - a list of external probabilities.
+- a `snemo::datamodel::energy_measurement`, which contains the total energy of the event
+  as well as the energy associated to every individual particle,
+- a `snemo::datamodel::angle_measurement`, which contains the angle between two
+  given particles,
+- a `snemo::datamodel::vertex_measurement` which contains the 3D position of the
+  event vertex (determined by selecting the hypothesis with the best Χ² probability) and the errors on the extrapolated vertices.
+
+These topological measurements are only performed when relevant. For instance,
+TOF measurements do not make any sense for 1 electron topology patterns.
