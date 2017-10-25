@@ -26,59 +26,54 @@
 #include <mybhep/event.h>
 #include <mybhep/ibconverter.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! event_cvt Class
 /*!
   Converter to persistency
 */
 
-  class particle_cvt;
+class particle_cvt;
 
-  class event_cvt : public ibconverter
-  {
+class event_cvt : public ibconverter {
+ private:
+  //! pointer to the event
+  event* nevent_;
+  //! const pointer to the event
+  const event* event_;
+  //! std::vector of particle converters for true particles
+  std::vector<int> particles_true_;
 
-  private:
-    //! pointer to the event
-    event*   nevent_;
-    //! const pointer to the event
-    const event*   event_;
-    //! std::vector of particle converters for true particles
-    std::vector<int> particles_true_;
+  //! std::vector of particle converters for digi particles
+  std::vector<int> particles_digi_;
 
-    //! std::vector of particle converters for digi particles
-    std::vector<int> particles_digi_;
+  //! std::vector of particle converters for sparticles
+  std::vector<int> particles_spar_;
 
-    //! std::vector of particle converters for sparticles
-    std::vector<int> particles_spar_;
+  //! label for particles
+  std::string particle_label_;
+  std::string sparticle_label_;
 
-    //! label for particles
-    std::string particle_label_ ;
-    std::string sparticle_label_ ;
+  //    char* buf_;
+ public:
+  //! constructor
+  event_cvt(const event& evt, int ind);
+  //! constructor from a string
+  event_cvt(std::string def);
+  //! destructor
+  virtual ~event_cvt();
 
-    //    char* buf_;
-  public:
+  //! store event
+  virtual std::string store();
+  //! restore event
+  virtual void restore(std::string def);
 
-    //! constructor
-    event_cvt(const event& evt, int ind);
-    //! constructor from a string
-    event_cvt(std::string def);
-    //! destructor
-    virtual ~event_cvt();
+  //! restore event
+  virtual void complete_restore();
 
-    //! store event
-    virtual std::string store();
-    //! restore event
-    virtual void restore(std::string def) ;
-
-    //! restore event
-    virtual void complete_restore() ;
-
-    //! constant reference to the event
-    const event& retrieve() const;
-    //! A new instance of event
-    event* create();
-  };
-}
+  //! constant reference to the event
+  const event& retrieve() const;
+  //! A new instance of event
+  event* create();
+};
+}  // namespace mybhep
 #endif

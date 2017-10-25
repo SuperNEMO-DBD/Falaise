@@ -40,83 +40,78 @@
 
 // Forward declaration :
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace snemo {
 
-  namespace geometry {
-    class calo_locator;
-    class xcalo_locator;
-    class gveto_locator;
-  }
+namespace geometry {
+class calo_locator;
+class xcalo_locator;
+class gveto_locator;
+}  // namespace geometry
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// Driver for the Channel/sultan clustering algorithms
-    class sultan_driver : public ::snemo::processing::base_tracker_clusterizer
-    {
-    public:
+/// Driver for the Channel/sultan clustering algorithms
+class sultan_driver : public ::snemo::processing::base_tracker_clusterizer {
+ public:
+  static const std::string SULTAN_ID;  /// The SULTAN string identifier
 
-      static const std::string SULTAN_ID; /// The SULTAN string identifier
+  /// Set the mag field
+  void set_magfield(double);
 
-      /// Set the mag field
-      void set_magfield(double);
+  /// Return the mag field
+  double get_magfield() const;
 
-      /// Return the mag field
-      double get_magfield() const;
+  /// Set the mag field direction
+  void set_magfield_direction(double);
 
-      /// Set the mag field direction
-      void set_magfield_direction(double);
+  /// Return the mag field
+  double get_magfield_direction() const;
 
-      /// Return the mag field
-      double get_magfield_direction() const;
+  /// Default constructor
+  sultan_driver();
 
-      /// Default constructor
-      sultan_driver();
+  /// Destructor
+  virtual ~sultan_driver();
 
-      /// Destructor
-      virtual ~sultan_driver();
+  /// Initialize the clusterizer through configuration properties
+  virtual void initialize(const datatools::properties& setup_);
 
-      /// Initialize the clusterizer through configuration properties
-      virtual void initialize(const datatools::properties & setup_);
+  /// Reset the clusterizer
+  virtual void reset();
 
-      /// Reset the clusterizer
-      virtual void reset();
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+ protected:
+  /// Set default attributes
+  void _set_defaults();
 
-    protected:
+  /// Main clustering method
+  virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
+                            const base_tracker_clusterizer::calo_hit_collection_type& calo_hits_,
+                            snemo::datamodel::tracker_clustering_data& clustering_);
 
-      /// Set default attributes
-      void _set_defaults();
+ private:
+  SULTAN::setup_data _SULTAN_setup_;         /// Configuration data
+  SULTAN::input_data _SULTAN_input_;         /// Input data
+  SULTAN::output_data _SULTAN_output_;       /// Output data
+  SULTAN::clusterizer _SULTAN_clusterizer_;  /// SULTAN clusterizer
+  SULTAN::sultan _SULTAN_sultan_;            /// SULTAN algorithm
+  double _sigma_z_factor_;                   /// Factor for longitudinal error
+  double _magfield_;                         /// Enforced magnetic field
+  double _magfield_dir_;     ///< Enforced magnetic field (direction along the Z axis +1/-1)
+  bool _process_calo_hits_;  /// Flag to process associated calorimeter hits
 
-      /// Main clustering method
-      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                snemo::datamodel::tracker_clustering_data & clustering_);
+  /// Calorimeter locators
+  const snemo::geometry::calo_locator* _calo_locator_;
+  const snemo::geometry::xcalo_locator* _xcalo_locator_;
+  const snemo::geometry::gveto_locator* _gveto_locator_;
+};
 
-    private:
-
-      SULTAN::setup_data   _SULTAN_setup_;       /// Configuration data
-      SULTAN::input_data   _SULTAN_input_;       /// Input data
-      SULTAN::output_data  _SULTAN_output_;      /// Output data
-      SULTAN::clusterizer  _SULTAN_clusterizer_; /// SULTAN clusterizer
-      SULTAN::sultan       _SULTAN_sultan_;      /// SULTAN algorithm
-      double               _sigma_z_factor_;     /// Factor for longitudinal error
-      double               _magfield_;           /// Enforced magnetic field
-      double               _magfield_dir_;      ///< Enforced magnetic field (direction along the Z axis +1/-1)
-      bool                 _process_calo_hits_;  /// Flag to process associated calorimeter hits
-
-      /// Calorimeter locators
-      const snemo::geometry::calo_locator  * _calo_locator_;
-      const snemo::geometry::xcalo_locator * _xcalo_locator_;
-      const snemo::geometry::gveto_locator * _gveto_locator_;
-
-    };
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -125,7 +120,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::sultan_driver)
 
-#endif // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_SULTAN_DRIVER_H
+#endif  // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_SULTAN_DRIVER_H
 
 /*
 ** Local Variables: --

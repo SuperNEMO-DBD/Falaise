@@ -32,7 +32,8 @@
  */
 
 #ifndef FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_MODULE_H
-#define FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_MODULE_H 1
+#define FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_MODULE_H \
+  1
 
 // Third party:
 // - Boost:
@@ -44,92 +45,88 @@
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace datamodel {
-    class tracker_clustering_data;
-  }
+namespace datamodel {
+class tracker_clustering_data;
+}
 
-  namespace processing {
-    class base_tracker_clusterizer;
-  }
+namespace processing {
+class base_tracker_clusterizer;
+}
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// \brief Mock clustering module for simulated data
-    class mock_tracker_clustering_module : public dpp::base_module
-    {
-    public:
+/// \brief Mock clustering module for simulated data
+class mock_tracker_clustering_module : public dpp::base_module {
+ public:
+  /// Set the 'calibrated data' bank label
+  void set_cd_label(const std::string &);
 
-      /// Set the 'calibrated data' bank label
-      void set_cd_label(const std::string &);
+  /// Return the 'calibrated data' bank label
+  const std::string &get_cd_label() const;
 
-      /// Return the 'calibrated data' bank label
-      const std::string & get_cd_label() const;
+  /// Set the 'tracker clustering data' bank label
+  void set_tcd_label(const std::string &);
 
-      /// Set the 'tracker clustering data' bank label
-      void set_tcd_label(const std::string &);
+  /// Return the 'tracker clustering data' bank label
+  const std::string &get_tcd_label() const;
 
-      /// Return the 'tracker clustering data' bank label
-      const std::string & get_tcd_label() const;
+  /// Setting geometry manager
+  void set_geometry_manager(const geomtools::manager &gmgr_);
 
-      /// Setting geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Getting geometry manager
+  const geomtools::manager &get_geometry_manager() const;
 
-      /// Getting geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Constructor
+  mock_tracker_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      mock_tracker_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~mock_tracker_clustering_module();
 
-      /// Destructor
-      virtual ~mock_tracker_clustering_module();
+  /// Initialization
+  virtual void initialize(const datatools::properties &setup_,
+                          datatools::service_manager &service_manager_,
+                          dpp::module_handle_dict_type &module_dict_);
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+  /// Data record processing
+  virtual process_status process(datatools::things &data_);
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+ protected:
+  /// Main process function
+  void _process(const snemo::datamodel::calibrated_data &calib_data_,
+                snemo::datamodel::tracker_clustering_data &clustering_data_);
 
-    protected:
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-      /// Main process function
-      void _process(const snemo::datamodel::calibrated_data & calib_data_,
-                    snemo::datamodel::tracker_clustering_data & clustering_data_);
+ private:
+  const geomtools::manager *_geometry_manager_;  //!< The geometry manager
+  std::string _CD_label_;                        //!< The label of the input calibrated data bank
+  std::string _TCD_label_;  //!< The label of the output tracker clustering data bank
+  boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer>
+      _driver_;  //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
 
-      /// Give default values to specific class members.
-      void _set_defaults();
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(mock_tracker_clustering_module)
+};
 
-    private:
+}  // namespace reconstruction
 
-      const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _CD_label_;                        //!< The label of the input calibrated data bank
-      std::string _TCD_label_;                       //!< The label of the output tracker clustering data bank
-      boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer> _driver_; //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
-
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(mock_tracker_clustering_module)
-
-    };
-
-  } // namespace reconstruction
-
-} // namespace snemo
+}  // namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::mock_tracker_clustering_module)
 
-#endif // FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_MODULE_H
+#endif  // FALAISE_MOCKTRACKERCLUSTERIZER_PLUGIN_SNEMO_RECONSTRUCTION_MOCK_TRACKER_CLUSTERING_MODULE_H
 /*
 ** Local Variables: --
 ** mode: c++ --

@@ -43,126 +43,117 @@ class TGCompositeFrame;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      /// \brief Homemade TGPopupMenu class to ease the use of popup submenu
-      /// especially enabling check/uncheck, enable/disable, hide/unhide
-      /// functionalities. Following
-      /// http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=3919&p=15408&hilit=TGPopupMenu#p15408
-      /// http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=14423
-      class TGMenuEntryPlus : public TGMenuEntry
-      {
-      public:
-        // Public setters to TGMenuEntry members
-        void SetLabel(TGHotString * s);
-        void SetPicture(const TGPicture * s);
-        void SetType(const EMenuEntryType type_);
-        void SetEntryId(const int id_);
-        void SetPopup(TGPopupMenu * popup_);
-        void SetStatus(const int status_);
-        void SetEx(const unsigned int ex_);
-        void SetEy(const unsigned int ey_);
-        void SetEh(const unsigned int eh_);
-        void SetEw(const unsigned int ew_);
-        void SetUserData(void* user_data_);
-      };
+/// \brief Homemade TGPopupMenu class to ease the use of popup submenu
+/// especially enabling check/uncheck, enable/disable, hide/unhide
+/// functionalities. Following
+/// http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=3919&p=15408&hilit=TGPopupMenu#p15408
+/// http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=14423
+class TGMenuEntryPlus : public TGMenuEntry {
+ public:
+  // Public setters to TGMenuEntry members
+  void SetLabel(TGHotString *s);
+  void SetPicture(const TGPicture *s);
+  void SetType(const EMenuEntryType type_);
+  void SetEntryId(const int id_);
+  void SetPopup(TGPopupMenu *popup_);
+  void SetStatus(const int status_);
+  void SetEx(const unsigned int ex_);
+  void SetEy(const unsigned int ey_);
+  void SetEh(const unsigned int eh_);
+  void SetEw(const unsigned int ew_);
+  void SetUserData(void *user_data_);
+};
 
-      class TGPopupMenuPlus : public TGPopupMenu
-      {
-      public:
+class TGPopupMenuPlus : public TGPopupMenu {
+ public:
+  TGPopupMenuPlus(const TGWindow *p = 0);
+  virtual ~TGPopupMenuPlus();
 
-        TGPopupMenuPlus(const TGWindow * p = 0);
-        virtual ~TGPopupMenuPlus();
+  // Hack AddPopup to allow the use of an id (the check, disable mechanism
+  // uses this id to check, enable/disable, hide ... the entry).
+  virtual void AddPopupPlus(TGHotString *s, TGPopupMenu *popup, Int_t id = -2,
+                            TGMenuEntry *before = 0, const TGPicture *p = 0);
+  virtual void AddPopupPlus(const char *s, TGPopupMenu *popup, Int_t id = -2,
+                            TGMenuEntry *before = 0, const TGPicture *p = 0);
 
-        // Hack AddPopup to allow the use of an id (the check, disable mechanism
-        // uses this id to check, enable/disable, hide ... the entry).
-        virtual void AddPopupPlus(TGHotString *s, TGPopupMenu *popup, Int_t id = -2,
-                                  TGMenuEntry *before = 0, const TGPicture *p = 0);
-        virtual void AddPopupPlus(const char *s, TGPopupMenu *popup, Int_t id = -2,
-                                  TGMenuEntry *before = 0, const TGPicture *p = 0);
+  virtual void PlaceMenu(Int_t x, Int_t y, Bool_t stick_mode, Bool_t grab_pointer);
 
-        virtual void PlaceMenu(Int_t x, Int_t y, Bool_t stick_mode, Bool_t grab_pointer);
+  virtual Int_t EndMenu(void *&userData);
 
-        virtual Int_t EndMenu(void *&userData);
+  virtual void UpdateDictionnary(std::map<button_signals_type, TGPopupMenuPlus *> &dict_);
 
-        virtual void UpdateDictionnary(std::map<button_signals_type, TGPopupMenuPlus*> & dict_);
+ private:
+  int fPreviousId;  //!< To be used and remember when popup menu is (un)checked
+};
 
-      private:
-        int fPreviousId; //!< To be used and remember when popup menu is (un)checked
-      };
+/// \brief A menu manager for event browser
+class event_browser_menu {
+ public:
+  /// Menu status
+  enum status_type {
+    DISABLED = 0,
+    ENABLED = 1,
+    CHECKED = 2,
+    UNCHECKED = 3,
+    HIDDEN = 4,
+    UNHIDDEN = 5
+  };
 
-      /// \brief A menu manager for event browser
-      class event_browser_menu
-      {
-      public:
+  /// Default constructor
+  event_browser_menu(TGCompositeFrame *main_);
 
-        /// Menu status
-        enum status_type
-          {
-            DISABLED  = 0,
-            ENABLED   = 1,
-            CHECKED   = 2,
-            UNCHECKED = 3,
-            HIDDEN    = 4,
-            UNHIDDEN  = 5
-          };
+  /// Destructor
+  ~event_browser_menu();
 
-        /// Default constructor
-        event_browser_menu(TGCompositeFrame * main_);
+  /// Refresh menus
+  void update(const button_signals_type signal_);
 
-        /// Destructor
-        ~event_browser_menu();
+  /// Set default menu status given the event data bank
+  void set_default_option(const io::event_server &server_);
 
-        /// Refresh menus
-        void update(const button_signals_type signal_);
+  /// Check if menu button exists
+  bool has_option(const button_signals_type signal_) const;
 
-        /// Set default menu status given the event data bank
-        void set_default_option(const io::event_server & server_);
+  /// Change menu button status
+  void change_option(const button_signals_type signal_, const int status_);
 
-        /// Check if menu button exists
-        bool has_option(const button_signals_type signal_) const;
+  /// Check menu button
+  void check_option(const button_signals_type signal_);
 
-        /// Change menu button status
-        void change_option(const button_signals_type signal_,
-                           const int status_);
+  /// Uncheck menu button
+  void uncheck_option(const button_signals_type signal_);
 
-        /// Check menu button
-        void check_option(const button_signals_type signal_);
+  /// Enable menu button
+  void enable_option(const button_signals_type signal_);
 
-        /// Uncheck menu button
-        void uncheck_option(const button_signals_type signal_);
+  /// Disable menu button
+  void disable_option(const button_signals_type signal_);
 
-        /// Enable menu button
-        void enable_option(const button_signals_type signal_);
+  /// Hide menu button
+  void hide_option(const button_signals_type signal_);
 
-        /// Disable menu button
-        void disable_option(const button_signals_type signal_);
+  /// Recursively check menu button
+  bool rcheck_option(const button_signals_type signal_, const int status_);
 
-        /// Hide menu button
-        void hide_option(const button_signals_type signal_);
+ private:
+  std::map<button_signals_type, TGPopupMenuPlus *> _popup_dict_;  //!< Menu dictionnary
+};
 
-        /// Recursively check menu button
-        bool rcheck_option(const button_signals_type signal_,
-                           const int status_);
+}  // end of namespace view
 
-      private:
+}  // end of namespace visualization
 
-        std::map<button_signals_type, TGPopupMenuPlus *> _popup_dict_; //!< Menu dictionnary
-      };
+}  // end of namespace snemo
 
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_MENU_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_BROWSER_MENU_H
 
 // end of event_browser_menu.h
 

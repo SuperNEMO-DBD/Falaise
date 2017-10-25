@@ -1,7 +1,7 @@
 
 // Standard library:
-#include <iostream>
 #include <chrono>
+#include <iostream>
 #include <random>
 
 // Third party :
@@ -13,8 +13,7 @@
 #include "event.h"
 #include "memory.h"
 
-int main(void)
-{
+int main(void) {
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Hello, SuperNEMO!");
 
   typedef std::chrono::high_resolution_clock myclock;

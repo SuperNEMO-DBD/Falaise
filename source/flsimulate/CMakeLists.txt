@@ -45,6 +45,7 @@ target_link_libraries(flsimulate_legacy
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
   )
+target_clang_format(flsimulate_legacy)
 
 # - Ensure link to internal and external deps
 set_target_properties(flsimulate_legacy PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
@@ -92,6 +93,7 @@ target_link_libraries(flsimulate
   ${Boost_LIBRARIES}
   ${Geant4_LIBRARIES}
   )
+target_clang_format(flsimulate)
 
 # - Ensure link to internal and external deps
 set_target_properties(flsimulate PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
@@ -135,6 +137,7 @@ target_link_libraries(flsimulate-configure
   Bayeux::Bayeux
   ${Boost_LIBRARIES}
   )
+target_clang_format(flsimulate-configure)
 
 # - Ensure link to internal and external deps
 set_target_properties(flsimulate-configure PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)

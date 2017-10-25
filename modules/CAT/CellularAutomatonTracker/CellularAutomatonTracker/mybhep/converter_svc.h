@@ -26,36 +26,30 @@
 #include <vector>
 #include <mybhep/ibconverter.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! converter_svc Class
 /*!
   Converter to persistency
 */
 
-  class converter_svc
-  {
+class converter_svc {
+ private:
+  //! std::vector of converters
+  std::vector<ibconverter*> converters_;
 
-  private:
-    //! std::vector of converters
-    std::vector<ibconverter*> converters_;
-  public:
+ public:
+  //! constructor
+  converter_svc() {}
+  //! destructor
+  virtual ~converter_svc();
 
-    //! constructor
-    converter_svc()
-    {
-    }
-    //! destructor
-    virtual ~converter_svc();
+  //! set converter
+  void add_converter(ibconverter* ib);
 
-    //! set converter
-    void add_converter(ibconverter* ib);
+  ibconverter& converter(int index);
 
-    ibconverter& converter(int index);
-
-    void complete_restore();
-    void clear();
-  };
-}
+  void complete_restore();
+  void clear();
+};
+}  // namespace mybhep
 #endif

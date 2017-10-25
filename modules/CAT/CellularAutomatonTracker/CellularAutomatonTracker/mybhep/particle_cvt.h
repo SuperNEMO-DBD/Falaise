@@ -15,7 +15,6 @@
  * General Public License for more details.
  */
 
-
 #ifndef __PARTICLE_CVT_H__
 #define __PARTICLE_CVT_H__
 
@@ -25,91 +24,78 @@
 #include <mybhep/particle.h>
 #include <mybhep/ibconverter.h>
 
+namespace mybhep {
 
-namespace mybhep{
+//! class particle_cvt
+/*!
+  Converter to persistency
+*/
 
-  //! class particle_cvt
-  /*!
-    Converter to persistency
-  */
+typedef particle particle;
 
-  typedef particle particle;
+class particle_cvt : public ibconverter {
+ private:
+  //! pointer to the particle
+  particle* nparticle_;
 
-  class particle_cvt : public ibconverter
-  {
+  //! const pointer to the particle
+  const particle* particle_;
 
-  private:
-    //! pointer to the particle
-    particle*   nparticle_;
+  //! integer for mother particle
+  int imother_;
 
-    //! const pointer to the particle
-    const particle*   particle_;
+  //! integer for mirror particle
+  std::vector<int> imirror_;
 
-    //! integer for mother particle
-    int imother_;
+  //! integer for daguther particle
+  std::vector<int> idaughters_;
 
-    //! integer for mirror particle
-    std::vector<int> imirror_;
+  //! std::vector of track integers
+  std::vector<int> tracks_;
 
-    //! integer for daguther particle
-    std::vector<int> idaughters_;
+  //! std::vector of detectors
+  std::vector<std::string> idets_;
 
-    //! std::vector of track integers
-    std::vector<int> tracks_;
+  //! map of hit integers
+  std::multimap<std::string, int> hits_;
 
-    //! std::vector of detectors
-    std::vector<std::string> idets_;
+  //! label for mirrors
+  std::string mirror_label_;
 
-    //! map of hit integers
-    std::multimap<std::string,int> hits_;
+  //! label for tracks
+  std::string track_label_;
 
-    //! label for mirrors
-    std::string mirror_label_;
+  //! label for hits
+  std::string hit_label_;
 
-    //! label for tracks
-    std::string track_label_;
+  //! label for hits size
+  std::string hit_size_label_;
 
-    //! label for hits
-    std::string hit_label_;
+  size_t number_of_hits(std::string& def);
 
-    //! label for hits size
-    std::string hit_size_label_;
+ public:
+  //! construct from a particle and an index
+  particle_cvt(const particle& p, int inx);
+  //! construct from a string
+  particle_cvt(std::string);
+  //! destructor
+  virtual ~particle_cvt();
 
-    size_t  number_of_hits( std::string& def );
-  public:
-    //! construct from a particle and an index
-    particle_cvt( const particle& p, int inx);
-    //! construct from a string
-    particle_cvt( std::string );
-    //! destructor
-    virtual ~particle_cvt();
+  //! store class in a string
+  virtual std::string store();
+  //! restore from a string
+  virtual void restore(std::string);
+  //! complete restore
+  virtual void complete_restore();
 
-    //! store class in a string
-    virtual std::string store();
-    //! restore from a string
-    virtual void restore( std::string );
-    //! complete restore
-    virtual void complete_restore();
+  //! retrieve a constant reference to the particle
+  const particle& retrieve() const;
 
-    //! retrieve a constant reference to the particle
-    const particle& retrieve() const;
+  //! retrieve a constant reference to the particle
+  particle& reference();
 
-    //! retrieve a constant reference to the particle
-    particle& reference() ;
-
-    //! instantiate a new particle
-    particle* create();
-
-
-  };
-}
+  //! instantiate a new particle
+  particle* create();
+};
+}  // namespace mybhep
 #endif
-
-
-
-
-
-
-
-
-

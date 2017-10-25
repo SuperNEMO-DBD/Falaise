@@ -19,23 +19,22 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    template<class Archive>
-    void sim_readout_digi_data::serialize(Archive & ar, const unsigned int /* version */)
-    {
-      ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar & boost::serialization::make_nvp("calo_digi_hits", _calo_digi_hits_);
-      ar & boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
-      
-      return;
-    }
+template <class Archive>
+void sim_readout_digi_data::serialize(Archive& ar, const unsigned int /* version */) {
+  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+  ar& boost::serialization::make_nvp("calo_digi_hits", _calo_digi_hits_);
+  ar& boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
 
-  } // end of namespace datamodel
+  return;
+}
 
-} // end of namespace snemo
+}  // end of namespace datamodel
 
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_READOUT_DIGI_DATA_IPP
+}  // end of namespace snemo
+
+#endif  // FALAISE_SNEMO_DATAMODELS_SIM_READOUT_DIGI_DATA_IPP
 
 // Local Variables: --
 // mode: c++ --

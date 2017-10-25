@@ -12,24 +12,21 @@
 //////////////////////////////////////////////////////////////////////////
 
 namespace CAT {
-  namespace topology{
+namespace topology {
 
-    class Legendre_function {
+class Legendre_function {
+ private:
+  // double x0_;
+  // double y0_;
+  // double r_;
 
-    private:
-      //double x0_;
-      //double y0_;
-      //double r_;
+ public:
+  Legendre_function();
+  virtual ~Legendre_function();
 
-    public:
-      Legendre_function();
-      virtual ~Legendre_function();
-
-      double Evaluate(double *x, double *parm);
-
-    };
-  }
-}
-
+  double Evaluate(double *x, double *parm);
+};
+}  // namespace topology
+}  // namespace CAT
 
 #endif

@@ -20,18 +20,18 @@
  */
 
 // This project
-#include <falaise/snemo/view/event_display.h>
-#include <falaise/snemo/view/display_3d.h>
-#include <falaise/snemo/view/display_2d.h>
 #include <falaise/snemo/view/browser_tracks.h>
+#include <falaise/snemo/view/display_2d.h>
+#include <falaise/snemo/view/display_3d.h>
 #include <falaise/snemo/view/display_options.h>
+#include <falaise/snemo/view/event_display.h>
 #include <falaise/snemo/view/event_selection.h>
 #include <falaise/snemo/view/options_manager.h>
 #include <falaise/snemo/view/status_bar.h>
 
-#include <falaise/snemo/view/snemo_draw_manager.h>
 #include <falaise/snemo/view/bipo_draw_manager.h>
 #include <falaise/snemo/view/default_draw_manager.h>
+#include <falaise/snemo/view/snemo_draw_manager.h>
 
 #include <falaise/snemo/io/event_server.h>
 
@@ -46,94 +46,85 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      bool event_display::is_initialized() const
-      {
-        return _initialized_;
-      }
+bool event_display::is_initialized() const { return _initialized_; }
 
-      // ctor:
-      event_display::event_display()
-      {
-        _server_         = 0;
-        _status_         = 0;
-        _display_3d_     = 0;
-        _display_2d_     = 0;
-        _browser_tracks_ = 0;
-        _options_        = 0;
-        _selection_      = 0;
-        _draw_manager_   = 0;
-        _tabs_           = 0;
-        _full_2d_display_ = false;
-        _top_2d_         = 0;
-        _front_2d_       = 0;
-        _side_2d_        = 0;
-        _initialized_ = false;
-        return;
-      }
+// ctor:
+event_display::event_display() {
+  _server_ = 0;
+  _status_ = 0;
+  _display_3d_ = 0;
+  _display_2d_ = 0;
+  _browser_tracks_ = 0;
+  _options_ = 0;
+  _selection_ = 0;
+  _draw_manager_ = 0;
+  _tabs_ = 0;
+  _full_2d_display_ = false;
+  _top_2d_ = 0;
+  _front_2d_ = 0;
+  _side_2d_ = 0;
+  _initialized_ = false;
+  return;
+}
 
-      // dtor:
-      event_display::~event_display()
-      {
-        this->clear();
-        this->reset();
-        return;
-      }
+// dtor:
+event_display::~event_display() {
+  this->clear();
+  this->reset();
+  return;
+}
 
-      void event_display::set_full_2d_display(const bool full_)
-      {
-        _full_2d_display_ = full_;
-        return;
-      }
+void event_display::set_full_2d_display(const bool full_) {
+  _full_2d_display_ = full_;
+  return;
+}
 
-      void event_display::set_event_server(io::event_server * server_)
-      {
-        DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
-        _server_ = server_;
-        return;
-      }
+void event_display::set_event_server(io::event_server* server_) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
+  _server_ = server_;
+  return;
+}
 
-      void event_display::set_status_bar(view::status_bar * status_)
-      {
-        DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
-        _status_ = status_;
-        return;
-      }
+void event_display::set_status_bar(view::status_bar* status_) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
+  _status_ = status_;
+  return;
+}
 
-      void event_display::initialize(TGCompositeFrame * main_)
-      {
-        DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
-        this->_at_init_(main_);
-        _initialized_ = true;
-        return;
-      }
+void event_display::initialize(TGCompositeFrame* main_) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
+  this->_at_init_(main_);
+  _initialized_ = true;
+  return;
+}
 
-      void event_display::_at_init_(TGCompositeFrame * main_)
-      {
-        // Get detector setup label to instantiate the right drawer
-        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+void event_display::_at_init_(TGCompositeFrame* main_) {
+  // Get detector setup label to instantiate the right drawer
+  const detector::detector_manager& detector_mgr = detector::detector_manager::get_instance();
 
-        switch (detector_mgr.get_setup_label()) {
-        case detector::detector_manager::SNEMO:
-        case detector::detector_manager::TRACKER_COMMISSIONING:
-        case detector::detector_manager::SNEMO_DEMONSTRATOR:
-          _draw_manager_ = new snemo_draw_manager(_server_);
-          break;
+  switch (detector_mgr.get_setup_label()) {
+    case detector::detector_manager::SNEMO:
+    case detector::detector_manager::TRACKER_COMMISSIONING:
+    case detector::detector_manager::SNEMO_DEMONSTRATOR:
+      _draw_manager_ = new snemo_draw_manager(_server_);
+      break;
 
-        // case detector::detector_manager::BIPO1:
-        // case detector::detector_manager::BIPO3:
-        //   _draw_manager_ = new bipo_draw_manager(_server_);
-        //   break;
+    // case detector::detector_manager::BIPO1:
+    // case detector::detector_manager::BIPO3:
+    //   _draw_manager_ = new bipo_draw_manager(_server_);
+    //   break;
 
-        case detector::detector_manager::UNDEFINED:
-        default:
-          DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
-                         "Detector setup '" << detector_mgr.get_setup_label_name()
+    case detector::detector_manager::UNDEFINED:
+    default:
+      DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+                     "Detector setup '"
+                         << detector_mgr.get_setup_label_name()
                          << "' not yet supported by any drawing manager ! Use default one");
-          _draw_manager_ = new default_draw_manager(_server_);
+      _draw_manager_ = new default_draw_manager(_server_);
           break;
 
         }

@@ -36,99 +36,93 @@
 #include <falaise/snemo/io/i_data_access.h>
 
 // Standard library:
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace datatools {
-  class data_reader;
+class data_reader;
 }
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
+namespace io {
 
-      /// \brief A data access to read Boost archive file
-      class boost_access : public i_data_access
-      {
-      public:
+/// \brief A data access to read Boost archive file
+class boost_access : public i_data_access {
+ public:
+  /// Set reader as sequential
+  void set_sequential(const bool sequential_ = true);
 
-        /// Set reader as sequential
-        void set_sequential(const bool sequential_ = true);
+  /// Check if reader is sequential
+  bool is_sequential() const;
 
-        /// Check if reader is sequential
-        bool is_sequential() const;
+  /// Default constructor
+  boost_access();
 
-        /// Default constructor
-        boost_access();
+  /// Destructor
+  virtual ~boost_access();
 
-        /// Destructor
-        virtual ~boost_access();
+  /// Return the total number of entry
+  virtual size_t get_number_of_entries() const;
 
-        /// Return the total number of entry
-        virtual size_t get_number_of_entries() const;
+  /// Return a file type as string
+  virtual std::string get_file_type_as_string() const;
 
-        /// Return a file type as string
-        virtual std::string get_file_type_as_string() const;
+  /// Return current filename
+  virtual const std::string& get_current_filename() const;
 
-        /// Return current filename
-        virtual const std::string & get_current_filename() const;
+  /// Open data stream
+  virtual bool open(const std::vector<std::string>& filenames_);
 
-        /// Open data stream
-        virtual bool open(const std::vector<std::string> & filenames_);
+  /// Check file validity
+  virtual bool is_valid(const std::vector<std::string>& filenames_) const;
 
-        /// Check file validity
-        virtual bool is_valid(const std::vector<std::string> & filenames_) const;
+  /// Check if current file can be read
+  virtual bool is_readable();
 
-        /// Check if current file can be read
-        virtual bool is_readable();
+  /// Check if data stream is opened
+  virtual bool is_opened() const;
 
-        /// Check if data stream is opened
-        virtual bool is_opened() const;
+  /// Rewind data stream
+  virtual bool rewind();
 
-        /// Rewind data stream
-        virtual bool rewind();
+  /// Reset
+  virtual bool reset();
 
-        /// Reset
-        virtual bool reset();
+  /// Close data stream
+  virtual bool close();
 
-        /// Close data stream
-        virtual bool close();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream      & out_    = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+  /// Default dump
+  virtual void dump() const;
 
-        /// Default dump
-        virtual void dump() const;
+  /// Build list of event
+  virtual bool build_list();
 
-        /// Build list of event
-        virtual bool build_list();
+  /// Retrieve event record from a given event number
+  virtual bool retrieve_event(event_record& event_, const size_t event_number_);
 
-        /// Retrieve event record from a given event number
-        virtual bool retrieve_event(event_record & event_,
-                                    const size_t event_number_);
+ private:
+  bool _sequential_;                                     //!< Sequential flag
+  size_t _number_of_entries_;                            //!< Total number of entries
+  size_t _current_file_number_;                          //!< Current file index
+  std::vector<std::string> _file_list_;                  //!< File list
+  datatools::data_reader* _reader_;                      //!< Boost reader
+  std::vector<mctools::simulated_data> _sim_data_list_;  //!< Used by preload options
+};
 
-      private:
+}  // end of namespace io
 
-        bool _sequential_;                                    //!< Sequential flag
-        size_t _number_of_entries_;                           //!< Total number of entries
-        size_t _current_file_number_;                         //!< Current file index
-        std::vector<std::string> _file_list_;                 //!< File list
-        datatools::data_reader * _reader_;                    //!< Boost reader
-        std::vector<mctools::simulated_data> _sim_data_list_; //!< Used by preload options
-      };
+}  // end of namespace visualization
 
-    } // end of namespace io
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_IO_BOOST_ACCESS_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_IO_BOOST_ACCESS_H
 
 // end of boost_serial_access.h
 /*

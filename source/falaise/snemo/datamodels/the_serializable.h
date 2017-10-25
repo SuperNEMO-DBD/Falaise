@@ -48,14 +48,12 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::timest
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::event_header)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::event_header)
 
-
 /***************************************
  * snemo::datamodel::raw_trigger_infos *
  ***************************************/
 
 #include <falaise/snemo/datamodels/raw_trigger_infos.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_trigger_infos)
-
 
 /*****************************************
  * snemo::datamodel::raw_calorimeter_hit *
@@ -64,14 +62,12 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_tr
 #include <falaise/snemo/datamodels/raw_calorimeter_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_calorimeter_hit)
 
-
 /*************************************
  * snemo::datamodel::raw_tracker_hit *
  *************************************/
 
 #include <falaise/snemo/datamodels/raw_tracker_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_tracker_hit)
-
 
 /******************************
  * snemo::datamodel::raw_data *
@@ -81,14 +77,13 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_tr
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::raw_data)
 
-
 /************************************************
  * snemo::datamodel::calibrated_calorimeter_hit *
  ************************************************/
 
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_calorimeter_hit)
-
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
+    snemo::datamodel::calibrated_calorimeter_hit)
 
 /********************************************
  * snemo::datamodel::calibrated_tracker_hit *
@@ -96,7 +91,6 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibr
 
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_tracker_hit)
-
 
 /*************************************
  * snemo::datamodel::calibrated_data *
@@ -106,7 +100,6 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibr
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::calibrated_data)
 
-
 /*********************************************
  * snemo::datamodel::tracker_clustering_data *
  *********************************************/
@@ -114,11 +107,11 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::calibrated_data)
 #include <falaise/snemo/datamodels/tracker_cluster.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_cluster)
 #include <falaise/snemo/datamodels/tracker_clustering_solution.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_clustering_solution)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
+    snemo::datamodel::tracker_clustering_solution)
 #include <falaise/snemo/datamodels/tracker_clustering_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_clustering_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_clustering_data)
-
 
 /*************************************************
  * snemo::datamodel::tracker_trajectory_solution *
@@ -134,13 +127,15 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::helix_
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::helix_trajectory_pattern)
 
 #include <falaise/snemo/datamodels/polyline_trajectory_pattern.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::polyline_trajectory_pattern)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
+    snemo::datamodel::polyline_trajectory_pattern)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::polyline_trajectory_pattern)
 
 #include <falaise/snemo/datamodels/tracker_trajectory.ipp>
 #include <falaise/snemo/datamodels/tracker_trajectory_solution.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory)
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_solution)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
+    snemo::datamodel::tracker_trajectory_solution)
 #include <falaise/snemo/datamodels/tracker_trajectory_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
@@ -171,4 +166,4 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_tr
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_digi_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::sim_digi_data)
 
-#endif // FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H
+#endif  // FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H

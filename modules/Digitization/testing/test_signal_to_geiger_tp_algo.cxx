@@ -1,4 +1,4 @@
-//test_signal_to_tp_process.cxx
+// test_signal_to_tp_process.cxx
 
 // Standard libraries :
 #include <iostream>
@@ -7,9 +7,9 @@
 #include <bayeux/mygsl/rng.h>
 
 // - Bayeux/datatools:
-#include <datatools/utils.h>
-#include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
+#include <datatools/io_factory.h>
+#include <datatools/utils.h>
 // - Bayeux/mctools:
 #include <mctools/simulated_data.h>
 // - Bayeux/dpp:
@@ -20,15 +20,14 @@
 
 // This project :
 #include <snemo/digitization/clock_utils.h>
-#include <snemo/digitization/sd_to_geiger_signal_algo.h>
-#include <snemo/digitization/sd_to_calo_signal_algo.h>
-#include <snemo/digitization/signal_to_calo_tp_algo.h>
-#include <snemo/digitization/signal_to_geiger_tp_algo.h>
 #include <snemo/digitization/electronic_mapping.h>
 #include <snemo/digitization/mapping.h>
+#include <snemo/digitization/sd_to_calo_signal_algo.h>
+#include <snemo/digitization/sd_to_geiger_signal_algo.h>
+#include <snemo/digitization/signal_to_calo_tp_algo.h>
+#include <snemo/digitization/signal_to_geiger_tp_algo.h>
 
-int main( int  argc_ , char ** argv_ )
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -39,15 +38,12 @@ int main( int  argc_ , char ** argv_ )
     std::string arg = argv_[iarg];
     if (arg == "-i" || arg == "--input") {
       is_input_file = true;
-      input_filename=argv_[++iarg];
+      input_filename = argv_[++iarg];
     } else if (arg == "-f" || arg == "--filename") {
-      input_filename=argv_[++iarg];
+      input_filename = argv_[++iarg];
     }
     iarg++;
   }
-
-
-
 
   try {
     std::clog << "Test program for class 'snemo::digitization::sd_to_calo_tp_algo' !" << std::endl;
@@ -56,33 +52,30 @@ int main( int  argc_ , char ** argv_ )
     random_generator.initialize(seed);
 
     std::string manager_config_file;
-    
-    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
-    datatools::fetch_path_with_env (manager_config_file);
-    datatools::properties manager_config;
-    datatools::properties::read_config (manager_config_file,
-					manager_config);
-    geomtools::manager my_manager;
-   
-    manager_config.update ("build_mapping", true);
-    if (manager_config.has_key ("mapping.excluded_categories"))
-      {
-	manager_config.erase ("mapping.excluded_categories");
-      }
-    my_manager.initialize (manager_config);
 
-    std::string pipeline_simulated_data_filename="";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+    datatools::fetch_path_with_env(manager_config_file);
+    datatools::properties manager_config;
+    datatools::properties::read_config(manager_config_file, manager_config);
+    geomtools::manager my_manager;
+
+    manager_config.update("build_mapping", true);
+    if (manager_config.has_key("mapping.excluded_categories")) {
+      manager_config.erase("mapping.excluded_categories");
+    }
+    my_manager.initialize(manager_config);
+
+    std::string pipeline_simulated_data_filename = "";
     // std::string SD_bank_label = "SD";
 
-
-    if(is_input_file){
+    if (is_input_file) {
       pipeline_simulated_data_filename = input_filename;
     }
-    //else{
-   //    pipeline_simulated_data_filename = "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
-   //  }
+    // else{
+    //    pipeline_simulated_data_filename =
+    //    "${FALAISE_DIGITIZATION_TESTING_DIR}/data/Se82_0nubb-source_strips_bulk_SD_10_events.brio";
+    //  }
 
-    
     // dpp::input_module reader;
     // datatools::properties reader_config;
     // reader_config.store ("logging.priority", "debug");
@@ -96,7 +89,7 @@ int main( int  argc_ , char ** argv_ )
     my_clock_manager.initialize();
     my_clock_manager.compute_clockticks_ref(random_generator);
     uint32_t clocktick_800_reference = my_clock_manager.get_clocktick_800_ref();
-    double  clocktick_800_shift     = my_clock_manager.get_shift_800();
+    double clocktick_800_shift = my_clock_manager.get_shift_800();
 
     datatools::things ER;
 
@@ -119,32 +112,31 @@ int main( int  argc_ , char ** argv_ )
     const double anode_avalanche_time3 = 4500 * CLHEP::nanosecond;
 
     snemo::digitization::signal_data signal_data;
-    snemo::digitization::geiger_signal & my_gg_signal = signal_data.add_geiger_signal();
+    snemo::digitization::geiger_signal& my_gg_signal = signal_data.add_geiger_signal();
     my_gg_signal.set_header(0, GID1);
     my_gg_signal.set_anode_avalanche_time(anode_avalanche_time1);
 
-    snemo::digitization::geiger_signal & my_gg_signal2 = signal_data.add_geiger_signal();
+    snemo::digitization::geiger_signal& my_gg_signal2 = signal_data.add_geiger_signal();
     my_gg_signal2.set_header(1, GID2);
     my_gg_signal2.set_anode_avalanche_time(anode_avalanche_time2);
 
-    snemo::digitization::geiger_signal & my_gg_signal3 = signal_data.add_geiger_signal();
+    snemo::digitization::geiger_signal& my_gg_signal3 = signal_data.add_geiger_signal();
     my_gg_signal3.set_header(3, GID3);
     my_gg_signal3.set_anode_avalanche_time(anode_avalanche_time3);
 
-
-    std::clog << "DEBUG : size of signal data : " << signal_data.get_geiger_signals().size() << std::endl;
+    std::clog << "DEBUG : size of signal data : " << signal_data.get_geiger_signals().size()
+              << std::endl;
     snemo::digitization::geiger_tp_data my_geiger_tp_data;
 
-    if( signal_data.has_geiger_signals())
-      {		  
-	signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
-	my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
-      }	    
-    
+    if (signal_data.has_geiger_signals()) {
+      signal_2_geiger_tp.process(signal_data, my_geiger_tp_data);
+      my_geiger_tp_data.tree_dump(std::clog, "Geiger TP(s) data : ", "INFO : ");
+    }
+
     std::clog << "The end." << std::endl;
   }
 
-  catch (std::exception & error) {
+  catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
   }

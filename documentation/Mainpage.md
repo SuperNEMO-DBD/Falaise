@@ -28,8 +28,6 @@ introductions to using and extending the core applications:
 
 Contributing to Falaise Development
 ===================================
-Contributions to the core of Falaise are welcome. To begin developing,
-you should familiarize yourself with the [tools, languages and concepts](@ref developingfalaise)
-of its architecture and development model.
-
+Contributions to the core of Falaise are welcome. Please visit our [GitHub repo](https://github.com/SuperNEMO-DBD/Falaise)
+for further information.
 

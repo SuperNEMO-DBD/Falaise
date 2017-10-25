@@ -4,9 +4,9 @@
 #include <stdexcept>
 
 // This project:
-#include <wctools/utils.hpp>
-#include <wctools/raw_reader.hpp>
 #include <wctools/raw_event.hpp>
+#include <wctools/raw_reader.hpp>
+#include <wctools/utils.hpp>
 
 /*
   From the build directory:
@@ -15,12 +15,10 @@
   \endcode
 */
 
-int main(int /*argc_*/, char ** /*argv_*/) {
+int main(int /*argc_*/, char** /*argv_*/) {
   try {
-
     wctools::raw_reader reader;
-    std::string input_filename =
-      "${WCTOOLS_RESOURCE_FILES_DIR}/data/samples/wc_1000keV_1.data";
+    std::string input_filename = "${WCTOOLS_RESOURCE_FILES_DIR}/data/samples/wc_1000keV_1.data";
 
     reader.set_input_filename(input_filename);
     reader.initialize();
@@ -33,11 +31,12 @@ int main(int /*argc_*/, char ** /*argv_*/) {
 
     reader.reset();
 
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     std::cerr << "error: " << error.what() << std::endl;
     return EXIT_FAILURE;
-  } catch(...) {
-    std::cerr << "error: " << "An unexpected error was caught!" << std::endl;
+  } catch (...) {
+    std::cerr << "error: "
+              << "An unexpected error was caught!" << std::endl;
     return EXIT_FAILURE;
   }
   return EXIT_SUCCESS;

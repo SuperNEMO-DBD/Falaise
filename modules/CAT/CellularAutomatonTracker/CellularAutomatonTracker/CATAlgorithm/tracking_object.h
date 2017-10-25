@@ -12,52 +12,38 @@
 
 //#include <util/Clock.h>
 
+namespace CAT {
+namespace topology {
 
-namespace CAT{
-  namespace topology{
+// a generic tracking object
+class tracking_object : public printable {
+ protected:
+  //    Clock clock;
 
+ public:
+  /// print level
+  mybhep::prlevel level_;
 
-    // a generic tracking object
-    class tracking_object : public printable
-    {
+  // the minimum probabilty
+  double probmin_;
 
-    protected:
+  void set_probmin(double probmin);
 
-      //    Clock clock;
+  double probmin() const;
 
-    public:
+  double probof(double chi2, int ndof) const;
 
-      /// print level
-      mybhep::prlevel level_;
+  double get_probmin() const;
 
-      // the minimum probabilty
-      double probmin_;
+  /*
+    inline void print_clock(){
+    clock.dump();
+    return;
+    }
+  */
+};
 
+}  // namespace topology
+}  // namespace CAT
 
-      void set_probmin( double probmin );
-
-      double probmin() const;
-
-      double probof(double chi2, int ndof)const;
-
-      double get_probmin()const;
-
-      /*
-        inline void print_clock(){
-        clock.dump();
-        return;
-        }
-      */
-
-    };
-
-  }
-}
-
-#endif // __CATAlgorithm__tracking_object_h
-
-
-
-
-
-
+#endif  // __CATAlgorithm__tracking_object_h

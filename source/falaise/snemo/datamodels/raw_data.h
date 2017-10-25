@@ -22,86 +22,78 @@
 #include <datatools/properties.h>
 
 // This project :
-#include <falaise/snemo/datamodels/raw_trigger_infos.h>
 #include <falaise/snemo/datamodels/raw_calorimeter_hit.h>
 #include <falaise/snemo/datamodels/raw_tracker_hit.h>
+#include <falaise/snemo/datamodels/raw_trigger_infos.h>
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// \brief The data structure that hosts information about the raw event (trigger and hits)
-    class raw_data : public datatools::i_serializable,
-                     public datatools::i_tree_dumpable
-    {
+/// \brief The data structure that hosts information about the raw event (trigger and hits)
+class raw_data : public datatools::i_serializable, public datatools::i_tree_dumpable {
+ public:
+  /// The collection of raw calorimeter hits
+  typedef std::vector<raw_calorimeter_hit> raw_calorimeter_hit_col;
 
-    public:
+  /// The collection of raw tracker hits
+  typedef std::vector<raw_tracker_hit> raw_tracker_hit_col;
 
-      /// The collection of raw calorimeter hits
-      typedef std::vector<raw_calorimeter_hit> raw_calorimeter_hit_col;
+  /// Return the const trigger data structure
+  const raw_trigger_infos& get_raw_trigger_infos() const;
 
-      /// The collection of raw tracker hits
-      typedef std::vector<raw_tracker_hit>     raw_tracker_hit_col;
+  /// Return the mutable trigger data structure
+  raw_trigger_infos& grab_raw_trigger_infos();
 
-      /// Return the const trigger data structure
-      const raw_trigger_infos & get_raw_trigger_infos() const;
+  /// Return the const collection of raw calorimeter hits
+  const raw_calorimeter_hit_col& get_raw_calorimeter_hits() const;
 
-      /// Return the mutable trigger data structure
-      raw_trigger_infos & grab_raw_trigger_infos();
+  /// Return the mutable collection of raw calorimeter hits
+  raw_calorimeter_hit_col& grab_raw_calorimeter_hits();
 
-      /// Return the const collection of raw calorimeter hits
-      const raw_calorimeter_hit_col & get_raw_calorimeter_hits() const;
+  /// Return the const collection of raw tracker hits
+  const raw_tracker_hit_col& get_raw_tracker_hits() const;
 
-      /// Return the mutable collection of raw calorimeter hits
-      raw_calorimeter_hit_col & grab_raw_calorimeter_hits();
+  /// Return the mutable collection of raw tracker hits
+  raw_tracker_hit_col& grab_raw_tracker_hits();
 
-      /// Return the const collection of raw tracker hits
-      const raw_tracker_hit_col & get_raw_tracker_hits() const;
+  /// Return the const container of auxiliary properties
+  const datatools::properties& get_auxiliaries() const;
 
-      /// Return the mutable collection of raw tracker hits
-      raw_tracker_hit_col & grab_raw_tracker_hits();
+  /// Return the mutable container of auxiliary properties
+  datatools::properties& grab_auxiliaries();
 
-      /// Return the const container of auxiliary properties
-      const datatools::properties & get_auxiliaries() const;
+  /// Constructor
+  raw_data();
 
-      /// Return the mutable container of auxiliary properties
-      datatools::properties & grab_auxiliaries();
+  /// Destructor
+  virtual ~raw_data();
 
-      /// Constructor
-      raw_data();
+  /// Reset
+  void reset();
 
-      /// Destructor
-      virtual ~raw_data();
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
 
-      /// Reset
-      void reset();
+ private:
+  raw_trigger_infos _raw_trigger_infos_;           //!< Trigger raw informations
+  raw_calorimeter_hit_col _raw_calorimeter_hits_;  //!< Collection of raw calorimeter hits
+  raw_tracker_hit_col _raw_tracker_hits_;          //!< Collection of raw tracker hits
+  datatools::properties _auxiliaries_;             //!< Auxiliary properties
 
-      /// Smart print
-      virtual void tree_dump(std::ostream & a_out         = std::clog,
-                             const std::string & a_title  = "",
-                             const std::string & a_indent = "",
-                             bool a_inherit               = false) const;
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-    private:
+}  // end of namespace datamodel
 
-      raw_trigger_infos       _raw_trigger_infos_;    //!< Trigger raw informations
-      raw_calorimeter_hit_col _raw_calorimeter_hits_; //!< Collection of raw calorimeter hits
-      raw_tracker_hit_col     _raw_tracker_hits_;     //!< Collection of raw tracker hits
-      datatools::properties   _auxiliaries_;          //!< Auxiliary properties
-
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // // Class version:
 // #include <boost/serialization/version.hpp>
 // BOOST_CLASS_VERSION(snemo::datamodel::raw_data, 0)
 
-#endif // FALAISE_SNEMO_DATAMODEL_RAW_DATA_H
+#endif  // FALAISE_SNEMO_DATAMODEL_RAW_DATA_H
 
 /*
 ** Local Variables: --

@@ -6,17 +6,14 @@
 #include <mybhep/writer_txt.h>
 #include <fstream>
 
-using namespace std;  
+using namespace std;
 using namespace mybhep;
-
 
 /** Example of use of event and event svc */
 
-
-int main(int, char* [])
-{
+int main(int, char* []) {
   // instantiate the event service
-  
+
   mybhep_svc esvc;
 
   string fileName = "idst.txt";
@@ -33,9 +30,8 @@ int main(int, char* [])
   detectors.push_back("NDC");
   detectors.push_back("CHE");
   detectors.push_back("TOF");
-  
-  for(size_t ievent =1; ievent <= nEvents; ievent++){
-    
+
+  for (size_t ievent = 1; ievent <= nEvents; ievent++) {
     cout << " storing event number = " << ievent << endl;
     generate_event gevt(ievent);
     gevt.create_particles(2);
@@ -43,10 +39,8 @@ int main(int, char* [])
     gevt.add_hits(detectors);
 
     event* evt = gevt.retrieve();
-    wr.write(*evt,ievent);
-
+    wr.write(*evt, ievent);
   }
 
   return 0;
-  
 }

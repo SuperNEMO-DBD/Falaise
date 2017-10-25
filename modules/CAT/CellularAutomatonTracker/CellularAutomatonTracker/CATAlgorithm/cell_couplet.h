@@ -12,159 +12,150 @@
 #include <CATAlgorithm/cell_base.h>
 #include <CATAlgorithm/line.h>
 
-namespace CAT{
-  namespace topology{
+namespace CAT {
+namespace topology {
 
+class cell_couplet : public tracking_object {
+  // a cell_couplet is composed of two cells
+  // and the tangents between them
 
-    class cell_couplet : public tracking_object{
+ protected:
+  std::string appname_;
 
-      // a cell_couplet is composed of two cells
-      // and the tangents between them
+  // first cell
+  cell ca_;
 
-    protected:
-      std::string appname_;
+  // second cell
+  cell cb_;
 
-      // first cell
-      cell ca_;
+  // unit axis from first to second cell
+  experimental_vector forward_axis_;
+  bool forward_axis_calculated_;
 
-      // second cell
-      cell cb_;
+  // unit transverse axis
+  experimental_vector transverse_axis_;
+  bool transverse_axis_calculated_;
 
-      // unit axis from first to second cell
-      experimental_vector forward_axis_;
-      bool forward_axis_calculated_;
+  // distance from first to second cell
+  experimental_double distance_;
 
-      // unit transverse axis
-      experimental_vector transverse_axis_;
-      bool transverse_axis_calculated_;
+  // horizontal distance from first to second cell
+  experimental_double distance_hor_;
 
-      // distance from first to second cell
-      experimental_double distance_;
+ public:
+  // list of tangents
+  std::vector<line> tangents_;
 
-      // horizontal distance from first to second cell
-      experimental_double distance_hor_;
+  // status of cell couplet
+  bool free_;
 
-    public:
+  // begun cell couplet
+  bool begun_;
 
-      // list of tangents
-      std::vector<line>  tangents_;
+  //! Default constructor
+  cell_couplet();
 
-      // status of cell couplet
-      bool free_;
+  //! Default destructor
+  virtual ~cell_couplet();
 
-      // begun cell couplet
-      bool begun_;
+  //! constructor
+  cell_couplet(const cell &ca, const cell &cb, const std::vector<line> &tangents);
 
-      //!Default constructor
-      cell_couplet();
+  //! constructor
+  cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level = mybhep::NORMAL,
+               double probmin = 1.e-200);
 
-      //!Default destructor
-      virtual ~cell_couplet();
+  //! constructor
+  cell_couplet(const cell &ca, const cell &cb, const std::string &just,
+               mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //! constructor
-      cell_couplet(const cell &ca,const cell &cb,const std::vector<line> &tangents);
+  //! constructor from bhep hit
+  cell_couplet(const mybhep::hit &hita, const mybhep::hit &hitb);
 
-      //! constructor
-      cell_couplet(const cell &ca, const cell &cb, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //! constructor
-      cell_couplet(const cell &ca, const cell &cb, const std::string &just, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set cells and tangents
+  void set(const cell &ca, const cell &cb, const std::vector<line> &tangents);
 
-      //! constructor from bhep hit
-      cell_couplet(const mybhep::hit &hita, const mybhep::hit &hitb);
+  //! set cells
+  void set(const cell &ca, const cell &cb);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set free level
+  void set_free(bool free);
 
-      //! set cells and tangents
-      void set(const cell &ca, const cell &cb, const std::vector<line> &tangents);
+  //! set begun level
+  void set_begun(bool begun);
 
-      //! set cells
-      void set(const cell &ca, const cell &cb);
+  //! set tangents
+  void set_tangents(const std::vector<line> &tangents);
 
+  //! set fwd axis
+  void set_a_forward_axis(const experimental_vector &v);
 
-      //! set free level
-      void set_free(bool free);
+  //! set trv axis
+  void set_a_transverse_axis(const experimental_vector &v);
 
-      //! set begun level
-      void set_begun(bool begun);
+  //! set distance
+  void set_a_distance(const experimental_double &d);
 
-      //! set tangents
-      void set_tangents( const std::vector<line> &tangents);
+  //! set hor distance
+  void set_a_hor_distance(const experimental_double &d);
 
-      //! set fwd axis
-      void set_a_forward_axis(const experimental_vector &v);
+  //! get first cell
+  const cell &ca() const;
 
-      //! set trv axis
-      void set_a_transverse_axis(const experimental_vector &v);
+  //! get second cell
+  const cell &cb() const;
 
-      //! set distance
-      void set_a_distance(const experimental_double &d);
+  //! get tangents
+  const std::vector<line> &tangents() const;
 
-      //! set hor distance
-      void set_a_hor_distance(const experimental_double &d);
+  //! get forward axis
+  const experimental_vector &forward_axis() const;
 
-      //! get first cell
-      const cell& ca()const;
+  //! get transverse axis
+  const experimental_vector &transverse_axis() const;
 
-      //! get second cell
-      const cell& cb()const;
+  //! get distance
+  const experimental_double &distance() const;
 
-      //! get tangents
-      const std::vector<line>& tangents()const;
+  //! get horizontal distance
+  const experimental_double &distance_hor() const;
 
-      //! get forward axis
-      const experimental_vector& forward_axis()const;
+  //! get free level
+  bool free() const;
 
-      //! get transverse axis
-      const experimental_vector& transverse_axis()const;
+  //! get begun level
+  bool begun() const;
 
-      //! get distance
-      const experimental_double& distance()const;
+ protected:
+  void obtain_tangents();
+  void obtain_tangents_between_circle_and_circle();
+  void obtain_tangents_between_point_and_point(experimental_point &epa, experimental_point &epb);
+  void obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep);
+  void obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c);
+  void set_first_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down,
+                                          experimental_point *epa) const;
+  void set_second_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down,
+                                           experimental_point *epb) const;
 
-      //! get horizontal distance
-      const experimental_double& distance_hor()const;
+ public:
+  void set_forward_axis(void);
+  void set_transverse_axis(void);
+  size_t iteration() const;
+  cell_couplet invert();
+  void set_all_used();
 
-      //! get free level
-      bool free()const;
+  friend bool operator==(const cell_couplet &left, const cell_couplet &right);
 
-      //! get begun level
-      bool begun()const;
+  //! are the two circles tangent or intersecting?
+  bool intersecting() const;
+};
 
-    protected:
+}  // namespace topology
 
-      void obtain_tangents();
-      void obtain_tangents_between_circle_and_circle();
-      void obtain_tangents_between_point_and_point(experimental_point &epa, experimental_point &epb);
-      void obtain_tangents_between_circle_and_point(const cell &c, experimental_point &ep);
-      void obtain_tangents_between_point_and_circle(experimental_point &ep, const cell &c);
-      void set_first_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down, experimental_point *epa)const;
-      void set_second_error_in_build_from_cell(double sin, int sign_parallel_crossed, int sign_up_down, experimental_point *epb)const;
-
-    public:
-
-      void set_forward_axis(void);
-      void set_transverse_axis(void);
-      size_t iteration()const;
-      cell_couplet invert();
-      void set_all_used();
-
-      friend bool operator==(const cell_couplet& left,
-                             const cell_couplet& right);
-
-      //! are the two circles tangent or intersecting?
-      bool intersecting()const;
-
-
-
-    };
-
-
-  }
-
-}
+}  // namespace CAT
 
 #endif

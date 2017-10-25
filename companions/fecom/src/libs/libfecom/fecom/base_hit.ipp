@@ -26,18 +26,16 @@
 
 namespace fecom {
 
-  template<class Archive>
-  void base_hit::serialize(Archive & ar,
-			   const unsigned int /*version*/)
-  {
-    ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-    ar & boost::serialization::make_nvp("hit_id",  hit_id);
-    ar & boost::serialization::make_nvp("hitmode", hitmode);
-    ar & boost::serialization::make_nvp("electronic_id", electronic_id);
-    ar & boost::serialization::make_nvp("trigger_id", trigger_id);
-    return;
-  }
+template <class Archive>
+void base_hit::serialize(Archive& ar, const unsigned int /*version*/) {
+  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+  ar& boost::serialization::make_nvp("hit_id", hit_id);
+  ar& boost::serialization::make_nvp("hitmode", hitmode);
+  ar& boost::serialization::make_nvp("electronic_id", electronic_id);
+  ar& boost::serialization::make_nvp("trigger_id", trigger_id);
+  return;
+}
 
-} // end of fecom namespace
+}  // namespace fecom
 
-#endif // FECOM_BASE_HIT_IPP
+#endif  // FECOM_BASE_HIT_IPP

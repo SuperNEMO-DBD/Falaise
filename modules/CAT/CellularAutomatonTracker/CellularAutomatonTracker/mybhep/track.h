@@ -15,7 +15,6 @@
  * General Public License for more details.
  */
 
-
 #ifndef __ITRACK_H__
 #define __ITRACK_H__
 
@@ -26,86 +25,71 @@
 #include <mybhep/clhep.h>
 #include <mybhep/material.h>
 
+namespace mybhep {
+class particle;
 
+//! class track
+/*!
+  represents the track left by a particle on one material
+  (passive or active)
+*/
 
-namespace mybhep{
-  class particle;
+class track : public bproperties {
+  //! physical material (water, iron, air)
+  const material* material_;
 
-  //! class track
-  /*!
-    represents the track left by a particle on one material
-    (passive or active)
-  */
+  //! pointer to its mother particle
+  const particle* mother_;
 
-  class track : public bproperties{
+  //! std::vector of rays along the trajectory
+  std::vector<ray*> r_;
 
-    //! physical material (water, iron, air)
-    const material*  material_;
+  //! view
+  std::string view_;
 
-    //! pointer to its mother particle
-    const particle* mother_;
+ private:
+  //! do not allow  copy constructor
+  track(const track& part);
+  //! do not allow asigment
+  track& operator=(const track&);
 
-    //! std::vector of rays along the trajectory
-    std::vector <ray*> r_;
+ public:
+  //! constructor
+  track(const particle& mother, material* material, std::string view = "XYZ");
+  //! constructor
+  track(material* material, std::string view = "XYZ");
+  //! destructor
+  ~track();
 
-    //! view
-    std::string view_;
+ public:
+  void add_ray(ray* r);
 
-  private:
+  // std::vector of rays (const)
+  const std::vector<ray*>& rays() const { return r_; }
 
-    //! do not allow  copy constructor
-    track(const track& part);
-    //! do not allow asigment
-    track& operator = (const track &);
+  // std::vector of rays (non const)
+  std::vector<ray*>& rays() { return r_; }
 
-  public:
-    //! constructor
-    track(const particle& mother, material* material, std::string view="XYZ");
-    //! constructor
-    track(material* material,std::string view="XYZ");
-    //! destructor
-    ~track();
+  //! return std::vector of points along trajectory
+  std::vector<const mybhep::Point3D*> x() const;
+  //! return std::vector of momentum along trajectory
+  std::vector<const mybhep::Vector3D*> p3() const;
 
-  public:
+  //! return material
+  const material& mate() const { return *material_; };
 
+  //! return view
+  std::string view() const { return view_; }
 
-    void add_ray(ray* r);
+  //! return mother particle
+  const particle& mother_particle() const { return *mother_; }
+  //! set mother particle
+  void set_mother_particle(const particle& pmom) { mother_ = &pmom; }
 
-    // std::vector of rays (const)
-    const std::vector<ray*>& rays() const {return r_;}
+  //! track length
+  double track_length() const;
+};
 
-    // std::vector of rays (non const)
-    std::vector<ray*>& rays()  {return r_;}
-
-    //!return std::vector of points along trajectory
-    std::vector<const mybhep::Point3D*> x() const ;
-    //!return std::vector of momentum along trajectory
-    std::vector<const mybhep::Vector3D*> p3() const ;
-
-    //! return material
-    const material& mate() const {return *material_;};
-
-    //! return view
-    std::string view() const {return view_;}
-
-    //! return mother particle
-    const particle& mother_particle() const {return *mother_;}
-    //! set mother particle
-    void set_mother_particle(const particle& pmom) {mother_ = &pmom;}
-
-    //! track length
-    double track_length() const  ;
-  };
-
-  std::ostream& operator << (std::ostream& s, const track& it);
-}
+std::ostream& operator<<(std::ostream& s, const track& it);
+}  // namespace mybhep
 #endif
-
-
-
-
-
-
-
-
-

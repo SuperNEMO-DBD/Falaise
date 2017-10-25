@@ -44,76 +44,73 @@
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/manager.h>
 
-namespace snemo { 
-  
-	namespace digitization {
+namespace snemo {
 
-		class digitization_driver;    
-		/// \brief Digitization module take simulated signal data bank in input
-		// and construct a simulated digitized data bank which contain trigger
-		// data and readout data
-		class digitization_module :  public dpp::base_module
-		{
-		public :
+namespace digitization {
 
-			/// Constructor
-			digitization_module(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+class digitization_driver;
+/// \brief Digitization module take simulated signal data bank in input
+// and construct a simulated digitized data bank which contain trigger
+// data and readout data
+class digitization_module : public dpp::base_module {
+ public:
+  /// Constructor
+  digitization_module(
+      datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-			/// Destructor
-			virtual ~digitization_module();
+  /// Destructor
+  virtual ~digitization_module();
 
-			/// Check the geometry manager
-			bool has_geometry_manager() const;
+  /// Check the geometry manager
+  bool has_geometry_manager() const;
 
-			/// Address the geometry manager
-			void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Address the geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-			/// Return a non-mutable reference to the geometry manager
-			const geomtools::manager & get_geometry_manager() const;
+  /// Return a non-mutable reference to the geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-			/// Initialization
-			virtual void initialize(const datatools::properties  & setup_,
-															datatools::service_manager   & service_manager_,
-															dpp::module_handle_dict_type & module_dict_);
-			/// Reset
-			virtual void reset();
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
+  /// Reset
+  virtual void reset();
 
-			/// Data record processing
-			virtual process_status process(datatools::things & data_);
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-		protected : 
-      
-			/// Measure particle track physical parameters such as charge, vertices
-			void _process(const mctools::signal::signal_data & SSD_);
+ protected:
+  /// Measure particle track physical parameters such as charge, vertices
+  void _process(const mctools::signal::signal_data& SSD_);
 
-			/// Give default values to specific class members.
-			void _set_defaults();
-      
-		private :
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-			std::string _SSD_label_; //!< The label of the simulated data bank
-			std::string _SDD_label_; //!< The label of the simulated digitized data bank (output)
+ private:
+  std::string _SSD_label_;  //!< The label of the simulated data bank
+  std::string _SDD_label_;  //!< The label of the simulated digitized data bank (output)
 
-			const geomtools::manager * _geometry_manager_;  //!< The SuperNEMO geometry manager
+  const geomtools::manager* _geometry_manager_;  //!< The SuperNEMO geometry manager
 
-			// Digitization driver :
-			boost::scoped_ptr<snemo::digitization::digitization_driver> _driver_;
+  // Digitization driver :
+  boost::scoped_ptr<snemo::digitization::digitization_driver> _driver_;
 
-			// Macro to automate the registration of the module :
-			DPP_MODULE_REGISTRATION_INTERFACE(digitization_module)
-		};
-	} // end of namespace digitization
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(digitization_module)
+};
+}  // end of namespace digitization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::digitization::digitization_module)
 
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGITIZATION_MODULE_H
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_DIGITIZATION_MODULE_H
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

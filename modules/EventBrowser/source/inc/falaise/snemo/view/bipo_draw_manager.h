@@ -40,65 +40,59 @@ class TObjArray;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      class calorimeter_hit_renderer;
-      class visual_track_renderer;
+class calorimeter_hit_renderer;
+class visual_track_renderer;
 
-      class bipo_draw_manager : public i_draw_manager
-      {
+class bipo_draw_manager : public i_draw_manager {
+ public:
+  bipo_draw_manager(const io::event_server* server_);
+  virtual ~bipo_draw_manager();
 
-      public:
-        bipo_draw_manager (const io::event_server * server_);
-        virtual ~bipo_draw_manager ();
+  virtual TObjArray* get_objects();
+  virtual TObjArray* get_text_objects();
 
-        virtual TObjArray * get_objects ();
-        virtual TObjArray * get_text_objects ();
+  virtual void update();
+  virtual void draw();
+  virtual void draw_text();
+  virtual void clear();
+  virtual void reset();
 
-        virtual void update      ();
-        virtual void draw        ();
-        virtual void draw_text   ();
-        virtual void clear       ();
-        virtual void reset       ();
+ protected:
+  void _add_simulated_data();
+  void _add_calibrated_data();
 
-      protected:
+ private:
+  void _add_simulated_vertex_();
+  void _add_simulated_hits_();
+  void _add_simulated_tracks_();
 
-        void _add_simulated_data  ();
-        void _add_calibrated_data ();
+  void _add_calibrated_hits_();
+  void _add_calibrated_info_();
 
-      private:
+ private:
+  const io::event_server* _server_;
+  TObjArray* _objects_;
+  TObjArray* _text_objects_;
 
-        void _add_simulated_vertex_ ();
-        void _add_simulated_hits_   ();
-        void _add_simulated_tracks_ ();
+  calorimeter_hit_renderer* _calorimeter_hit_renderer_;
+  visual_track_renderer* _visual_track_renderer_;
+};
 
-        void _add_calibrated_hits_  ();
-        void _add_calibrated_info_  ();
+}  // end of namespace view
 
-      private:
+}  // end of namespace visualization
 
-        const io::event_server  * _server_;
-        TObjArray               * _objects_;
-        TObjArray               * _text_objects_;
+}  // namespace snemo
 
-        calorimeter_hit_renderer * _calorimeter_hit_renderer_;
-        visual_track_renderer    * _visual_track_renderer_;
-
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace bipo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_BIPO_DRAW_MANAGER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_BIPO_DRAW_MANAGER_H
 
 // end of bipo_draw_manager.h
 /*

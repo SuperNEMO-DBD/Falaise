@@ -20,8 +20,7 @@
 #include <iostream>
 #include <mybhep/utilities.h>
 
-
-namespace mybhep{
+namespace mybhep {
 
 //! Base utility class for conditional print
 /*!
@@ -29,53 +28,60 @@ namespace mybhep{
   \ingroup base
 */
 
-  class bprint {
-  public:
-    bprint(){level_ = VERBOSE;}
-    virtual ~bprint(){}
+class bprint {
+ public:
+  bprint() { level_ = VERBOSE; }
+  virtual ~bprint() {}
 
-    //! print interface
-    virtual void info(std::ostream& os = std::clog) const {
-      os << " no information available" <<std::endl;
-    }
+  //! print interface
+  virtual void info(std::ostream& os = std::clog) const {
+    os << " no information available" << std::endl;
+  }
 
-    //! print the information using the << operator
-    friend std::ostream& operator<<(std::ostream& os, const bprint& v) {
-      v.info(os);
-      return os;
-    }
+  //! print the information using the << operator
+  friend std::ostream& operator<<(std::ostream& os, const bprint& v) {
+    v.info(os);
+    return os;
+  }
 
-    //! print the information using the << operator
-    friend std::ostream& operator<<(std::ostream& os, const bprint* v) {
-      v->info(os);
-      return os;
-    }
+  //! print the information using the << operator
+  friend std::ostream& operator<<(std::ostream& os, const bprint* v) {
+    v->info(os);
+    return os;
+  }
 
-    //! return print_level
-    const prlevel& print_level() const {return level_;}
+  //! return print_level
+  const prlevel& print_level() const { return level_; }
 
-    //! set print_level
-    void set_print_level(prlevel& level) {level_ = level;}
+  //! set print_level
+  void set_print_level(prlevel& level) { level_ = level; }
 
-    /// set the verbosity level
-    void set_print_level(std::string info_repr){
-      if(info_repr == "MUTE")  level_ = MUTE;
-      else if(info_repr == "QUIET")  level_ = CONCISE;
-      else if(info_repr == "NORMAL")  level_ = NORMAL;
-      else if(info_repr == "WARNING")  level_ = WARNING;
-      else if(info_repr == "DETAILED")  level_ = DETAILED;
-      else if(info_repr == "VERBOSE")  level_ = VERBOSE;
-      else if(info_repr == "VVERBOSE")  level_ = VVERBOSE;
-      else if(info_repr == "DUMP")  level_ = DUMP;
-      else
-        level_ = NORMAL;
-    }
+  /// set the verbosity level
+  void set_print_level(std::string info_repr) {
+    if (info_repr == "MUTE")
+      level_ = MUTE;
+    else if (info_repr == "QUIET")
+      level_ = CONCISE;
+    else if (info_repr == "NORMAL")
+      level_ = NORMAL;
+    else if (info_repr == "WARNING")
+      level_ = WARNING;
+    else if (info_repr == "DETAILED")
+      level_ = DETAILED;
+    else if (info_repr == "VERBOSE")
+      level_ = VERBOSE;
+    else if (info_repr == "VVERBOSE")
+      level_ = VVERBOSE;
+    else if (info_repr == "DUMP")
+      level_ = DUMP;
+    else
+      level_ = NORMAL;
+  }
 
-  protected:
-    /// print level
-    prlevel level_;
-
-  };
-}
+ protected:
+  /// print level
+  prlevel level_;
+};
+}  // namespace mybhep
 
 #endif

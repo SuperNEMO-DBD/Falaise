@@ -2,17 +2,17 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // Third party:
 #include <bayeux/datatools/ioutils.h>
 #include <bayeux/datatools/multi_properties.h>
-#include <bayeux/dpp/input_module.h>
-#include <bayeux/dpp/i_data_source.h>
-#include <bayeux/dpp/output_module.h>
 #include <bayeux/dpp/dump_module.h>
+#include <bayeux/dpp/i_data_source.h>
+#include <bayeux/dpp/input_module.h>
+#include <bayeux/dpp/output_module.h>
 
 // This project:
 #include <falaise/falaise.h>
@@ -22,15 +22,13 @@ struct io_data_config {
   std::string out;
 };
 
-void test_1(const io_data_config & cfg_);
+void test_1(const io_data_config& cfg_);
 
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize();
   int error_code = EXIT_SUCCESS;
   try {
-    std::clog << "Test I/O data program for the 'Falaise' library."
-              << std::endl;
+    std::clog << "Test I/O data program for the 'Falaise' library." << std::endl;
 
     io_data_config conf;
 
@@ -45,14 +43,14 @@ int main(int argc_, char ** argv_)
           } else if (option == "-o") {
             conf.out = argv_[++iarg];
           } else {
-            std::clog << datatools::io::warning << "ignoring option '"
-                      << option << "'!" << std::endl;
+            std::clog << datatools::io::warning << "ignoring option '" << option << "'!"
+                      << std::endl;
           }
         } else {
           std::string argument = token;
           {
-            std::clog << datatools::io::warning << "ignoring argument '"
-                      << argument << "'!" << std::endl;
+            std::clog << datatools::io::warning << "ignoring argument '" << argument << "'!"
+                      << std::endl;
           }
         }
         iarg++;
@@ -62,19 +60,19 @@ int main(int argc_, char ** argv_)
     test_1(conf);
 
     std::clog << "The end." << std::endl;
-  } catch (std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
   } catch (...) {
-    std::cerr << "error: " << "unexpected error !" << std::endl;
+    std::cerr << "error: "
+              << "unexpected error !" << std::endl;
     error_code = EXIT_FAILURE;
   }
   falaise::terminate();
   return (error_code);
 }
 
-void test_1(const io_data_config & config_)
-{
+void test_1(const io_data_config& config_) {
   std::clog << "\ntest_1: Entering...\n";
 
   std::string indata = config_.in;
@@ -103,13 +101,15 @@ void test_1(const io_data_config & config_)
   const datatools::multi_properties& in_metadata_store = in_mod.get_metadata_store();
   in_mod.initialize_simple();
   in_metadata_store.tree_dump(std::clog, "Metadata store:");
-  std::clog << "test_1: Number of entries  = " << in_mod.get_source().get_number_of_entries() << "\n";
-  std::clog << "test_1: Number of metadata = " << in_mod.get_source().get_number_of_metadata() << "\n";
+  std::clog << "test_1: Number of entries  = " << in_mod.get_source().get_number_of_entries()
+            << "\n";
+  std::clog << "test_1: Number of metadata = " << in_mod.get_source().get_number_of_metadata()
+            << "\n";
 
   dpp::output_module out_mod;
   out_mod.set_name("Out");
   out_mod.set_single_output_file(outdata);
-  datatools::multi_properties & out_metadata_store = out_mod.grab_metadata_store();
+  datatools::multi_properties& out_metadata_store = out_mod.grab_metadata_store();
 
   dpp::dump_module dump_mod;
   dump_mod.set_name("Dump");

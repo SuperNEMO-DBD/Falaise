@@ -38,14 +38,9 @@ if(FECOM_ENABLE_PROGRAMS)
     add_executable(${_programname}
       ${_programsource}
       )
-    #target_link_libraries(${_programname} ${Boost_LIBRARIES})
-    #target_link_libraries(${_programname} Bayeux::Bayeux)
-    target_link_libraries(${_programname} fecom
-      # ${FeCom_OTHER_LIBS}
-      )
-
-    # - Ensure link to internal and external deps
+    target_link_libraries(${_programname} fecom)
     set_target_properties(${_programname} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+    target_clang_format(${_programname})
 
     if(UNIX AND NOT APPLE)
       set_target_properties(${_programname}

@@ -17,7 +17,7 @@
 #include "TStyle.h"
 #include "TCanvas.h"
 #include "TLegend.h"
-#include "TFile.h" 
+#include "TFile.h"
 #include "TPaveLabel.h"
 #include "TPaveText.h"
 #include <iostream>
@@ -42,20 +42,19 @@
 #include <CATAlgorithm/scenario.h>
 #include <sultan/scenario.h>
 
-
-typedef struct{
+typedef struct {
   float calorimeter;
   float foil;
   float AnodeWire;
   float GroundWire;
 } FLAG;
 
-typedef struct{
+typedef struct {
   CAT::POINT center;
   float radius;
 } CIRCLE;
 
-typedef struct{
+typedef struct {
   CIRCLE circle;
   float y;
   float erry;
@@ -68,26 +67,26 @@ typedef struct{
   int n3id;
 } POSITION;
 
-typedef struct{
+typedef struct {
   double pos[3];
   int gg_index;
 } N3POINT;
 
-typedef struct{
+typedef struct {
   double center[3];
   double radius;
   double pitch;
   double charge;
 } N3HELIX;
 
-typedef struct{
+typedef struct {
   double foil[3];
   std::vector<N3POINT> points;
   N3HELIX helix;
   double E;
 } N3TRACK;
 
-typedef struct{
+typedef struct {
   double vertex[3];
   std::vector<N3TRACK> tracks;
   Int_t date;
@@ -96,7 +95,7 @@ typedef struct{
   Int_t nevga;
 } N3EVENT;
 
-typedef struct{
+typedef struct {
   double pos[3];
   double E;
   double t;
@@ -141,63 +140,61 @@ typedef struct{
 
 */
 
-
-class EventDisplay{
-
+class EventDisplay {
  public:
+  TH2F* mapzx;
+  TH2F* mapzy;
+  TCanvas* canvas;
+  std::vector<TGraph*> graphlist;
+  std::vector<TPaveText*> pavelist;
+  TLegend* leg_xz;
+  TLegend* leg_yz;
+  TLegend* leg_xz_true;
+  TLegend* leg_yz_true;
 
-  TH2F *mapzx;
-  TH2F *mapzy;
-  TCanvas *canvas;
-  std::vector<TGraph*> graphlist; 
-  std::vector<TPaveText*> pavelist; 
-  TLegend *leg_xz;
-  TLegend *leg_yz;
-  TLegend *leg_xz_true;
-  TLegend *leg_yz_true;
-
-  TMarker *FirstStarXY;
+  TMarker* FirstStarXY;
   bool FirstStarXY_used;
 
  public:
-  
   EventDisplay(mybhep::gstore);
   EventDisplay(void);
-  
+
   virtual ~EventDisplay();
 
-  void fill_neighbours( std::vector<std::vector<POSITION> > sunami_position, std::vector< std::vector<size_t> > &neighbours );
+  void fill_neighbours(std::vector<std::vector<POSITION> > sunami_position,
+                       std::vector<std::vector<size_t> >& neighbours);
   void DeleteDisplay(void);
-  void EventDisplayExecute(mybhep::event& evt, int ievent );
-  bool InitializeDisplayEvent( mybhep::sstore store, mybhep::gstore gs , mybhep::EventManager2 *eman);
-  void SetPlutsMode( bool plutsmode );
-  bool CheckCells( void );
-  void readDstProper(mybhep::sstore, mybhep::EventManager2 *eman=0);
+  void EventDisplayExecute(mybhep::event& evt, int ievent);
+  bool InitializeDisplayEvent(mybhep::sstore store, mybhep::gstore gs, mybhep::EventManager2* eman);
+  void SetPlutsMode(bool plutsmode);
+  bool CheckCells(void);
+  void readDstProper(mybhep::sstore, mybhep::EventManager2* eman = 0);
   void get_pos(mybhep::hit ahit, float pos[7]);
-  void fill_sunami_positions(mybhep::event& evt, std::vector<std::vector<POSITION> > &sunami_position);
+  void fill_sunami_positions(mybhep::event& evt,
+                             std::vector<std::vector<POSITION> >& sunami_position);
   void fill_true_positions(mybhep::event& evt);
-  void DrawCircleXZ( void );
+  void DrawCircleXZ(void);
   std::string GetName(std::string name);
   void DrawHitXZ(mybhep::event& evt, std::string mode);
-  void DrawCircleYZ( void );
+  void DrawCircleYZ(void);
   void DrawHitYZ(mybhep::event& evt, std::string mode);
-  void GetCellId(mybhep::hit hit,int &block,int &plane,int &id, int &n3id);
-  void GetPlotLimit( std::vector<CAT::topology::calorimeter_hit> calos );
-  void DrawDetectorXZ( void );
-  void DrawDetectorCircleXZ( double radius, size_t color );
-  void DrawDetectorYZ( void );
-  void GenerateWires( void );
+  void GetCellId(mybhep::hit hit, int& block, int& plane, int& id, int& n3id);
+  void GetPlotLimit(std::vector<CAT::topology::calorimeter_hit> calos);
+  void DrawDetectorXZ(void);
+  void DrawDetectorCircleXZ(double radius, size_t color);
+  void DrawDetectorYZ(void);
+  void GenerateWires(void);
   void EventDisplayXZ(mybhep::event& evt, std::string mode);
   void EventDisplayYZ(mybhep::event& evt, std::string mode);
   void Nemo3EventDisplayXZ(void);
   void Nemo3EventDisplayYZ(void);
-  void DrawNemo3HitXZ( void );
-  void DrawNemo3HitYZ( void );
+  void DrawNemo3HitXZ(void);
+  void DrawNemo3HitYZ(void);
   void fill_nemo3_event(mybhep::event& evt);
-  bool same_cell( POSITION a, POSITION b );
+  bool same_cell(POSITION a, POSITION b);
   bool fill_parts(std::vector<mybhep::particle*> digi_parts);
-  void fill_parts_display(  mybhep::event& evt );
-  void fill_nemo3_parts_display(  mybhep::event& evt );
+  void fill_parts_display(mybhep::event& evt);
+  void fill_nemo3_parts_display(mybhep::event& evt);
   float FastHit(POSITION position);
   void Finalize(void);
   void readDstProper();
@@ -221,20 +218,18 @@ class EventDisplay{
   void set_PlotHelices(bool aValue) { PlotHelices = aValue; }
   void set_PlotLegend(bool aValue) { PlotLegend = aValue; }
   void set_PlotFormat(std::string aValue) { PlotFormat = aValue; }
-  
-  
+
  protected:
-    
   mybhep::prlevel level;
-    
+
   mybhep::messenger m;
-  
+
   bool PlutsMode;
 
-  //geom param
+  // geom param
   double CellDistance;
-  double xsize,ysize,zsize; //only for plotting 
-  double InnerRadius, OuterRadius, FoilRadius; //only for plotting 
+  double xsize, ysize, zsize;                   // only for plotting
+  double InnerRadius, OuterRadius, FoilRadius;  // only for plotting
   double calo_X, calo_Y, calo_Z;
   int PlotTopView;
   int PlotSideView;
@@ -258,7 +253,7 @@ class EventDisplay{
   int first_event_number;
   int event_number;
 
-  //error parametrization
+  // error parametrization
   double sigma0;
   double k0;
   double k1;
@@ -269,11 +264,11 @@ class EventDisplay{
   double th1;
   double th2;
   double th3;
-    
+
   double pnob;
   double pnot;
   double pnobt;
-  
+
   double l0;
   double l1;
 
@@ -312,18 +307,17 @@ class EventDisplay{
   std::vector<CAT::POINT> DriftWires;
 
   int num_blocks;
-  mybhep::dvector<double> planes_per_block ;
+  mybhep::dvector<double> planes_per_block;
   mybhep::dvector<double> gaps_Z;
   double GG_CELL_pitch;
   double GG_GRND_diam;
   double GG_CELL_diam;
   double CHAMBER_X;
-  double CHAMBER_height; 
-  double GG_BLOCK_X; 
+  double CHAMBER_height;
+  double GG_BLOCK_X;
   double GG_BLOCK_Y;
   int num_cells_per_plane;
   double SOURCE_thick;
-      
 
   Color_t color_detector;
   Color_t color_cells;
@@ -338,93 +332,71 @@ class EventDisplay{
   Color_t color_calos;
   float Xmin, Xmax, Ymin, Ymax, Zmin, Zmax;
 
+  /////// topological tracking
+ public:
+  void execute(size_t ievent, CAT::topology::tracked_data& __CAT_tracked_data,
+               SULTAN::topology::tracked_data& __SULTAN_tracked_data);
 
-  /////// topological tracking 
-public:
-  void execute(size_t ievent, CAT::topology::tracked_data & __CAT_tracked_data, SULTAN::topology::tracked_data & __SULTAN_tracked_data);
+  //! get cells
+  const std::vector<CAT::topology::cell>& get_cells() const { return cells_; }
 
-  //! get cells 
-  const std::vector<CAT::topology::cell>& get_cells()const
-  {
-    return cells_;
-  }
-
-  //! set cells 
-  void set_cells(std::vector<CAT::topology::cell> cells)
-  {
+  //! set cells
+  void set_cells(std::vector<CAT::topology::cell> cells) {
     cells_.clear();
     cells_ = cells;
   }
 
+  //! get clusters
+  const std::vector<CAT::topology::cluster>& get_clusters() const { return clusters_; }
 
-  //! get clusters 
-  const std::vector<CAT::topology::cluster>& get_clusters()const
-  {
-    return clusters_;
-  }
-
-  //! set clusters 
-  void set_clusters(std::vector<CAT::topology::cluster> clusters)
-  {
+  //! set clusters
+  void set_clusters(std::vector<CAT::topology::cluster> clusters) {
     clusters_.clear();
     clusters_ = clusters;
   }
 
-
   //! get sequences
-  const std::vector<CAT::topology::sequence>& get_CAT_sequences()const
-  {
-    return CAT_sequences_;
-  }
-  const std::vector<SULTAN::topology::sequence>& get_SULTAN_sequences()const
-  {
+  const std::vector<CAT::topology::sequence>& get_CAT_sequences() const { return CAT_sequences_; }
+  const std::vector<SULTAN::topology::sequence>& get_SULTAN_sequences() const {
     return SULTAN_sequences_;
   }
 
   //! get nemo sequences
-  const std::vector<CAT::topology::sequence>& get_nemo_sequences()const
-  {
-    return nemo_sequences_;
-  }
+  const std::vector<CAT::topology::sequence>& get_nemo_sequences() const { return nemo_sequences_; }
 
   //! set sequences
-  void set_CAT_sequences(std::vector<CAT::topology::sequence> sequences)
-  {
+  void set_CAT_sequences(std::vector<CAT::topology::sequence> sequences) {
     CAT_sequences_.clear();
     CAT_sequences_ = sequences;
   }
-  void set_SULTAN_sequences(std::vector<SULTAN::topology::sequence> sequences)
-  {
+  void set_SULTAN_sequences(std::vector<SULTAN::topology::sequence> sequences) {
     SULTAN_sequences_.clear();
     SULTAN_sequences_ = sequences;
   }
 
   //! set nemo sequences
-  void set_nemo_sequences(std::vector<CAT::topology::sequence> sequences)
-  {
+  void set_nemo_sequences(std::vector<CAT::topology::sequence> sequences) {
     nemo_sequences_.clear();
     nemo_sequences_ = sequences;
   }
 
-
-public:
-
-  void set_level(std::string v){
+ public:
+  void set_level(std::string v) {
     level = mybhep::get_info_level(v);
     return;
   }
 
-  void set_CellDistance(double v){
+  void set_CellDistance(double v) {
     CellDistance = v;
     return;
   }
 
-  void set_SuperNemo(bool v){
+  void set_SuperNemo(bool v) {
     SuperNemo = v;
     return;
   }
 
-  void set_FoilRadius(double v){
+  void set_FoilRadius(double v) {
     FoilRadius = v;
     return;
   }
@@ -436,52 +408,55 @@ public:
   void set_calo_Y(double aValue) { calo_Y = aValue; }
   void set_calo_Z(double aValue) { calo_Z = aValue; }
 
-  void set_xsize(double v){
+  void set_xsize(double v) {
     xsize = v;
     return;
   }
 
-  void set_ysize(double v){
+  void set_ysize(double v) {
     ysize = v;
     return;
   }
 
-  void set_zsize(double v){
+  void set_zsize(double v) {
     zsize = v;
     return;
   }
 
-
-private:
-  void event_display_xz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td);
-  void draw_circle_xz( double x0, double z0, double radius, size_t color, size_t thickness, double phi1, double phi2);
-  void draw_initial_hits_xz( void );
-  void draw_calos_xz( std::vector<CAT::topology::calorimeter_hit> calos );
-  void draw_sine_yz( double y0, double z0, double radius, double pitch, size_t color, size_t thickness, double phi1 , double phi2);
+ private:
+  void event_display_xz(std::string mode, CAT::topology::tracked_data CAT_td,
+                        SULTAN::topology::tracked_data SULTAN_td);
+  void draw_circle_xz(double x0, double z0, double radius, size_t color, size_t thickness,
+                      double phi1, double phi2);
+  void draw_initial_hits_xz(void);
+  void draw_calos_xz(std::vector<CAT::topology::calorimeter_hit> calos);
+  void draw_sine_yz(double y0, double z0, double radius, double pitch, size_t color,
+                    size_t thickness, double phi1, double phi2);
   void draw_cats_xz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
   void draw_sultan_xz();
-  void event_display_yz(std::string mode, CAT::topology::tracked_data CAT_td, SULTAN::topology::tracked_data SULTAN_td);
-  void draw_calos_yz( std::vector<CAT::topology::calorimeter_hit> calos );
-  void draw_initial_hits_yz( void );
+  void event_display_yz(std::string mode, CAT::topology::tracked_data CAT_td,
+                        SULTAN::topology::tracked_data SULTAN_td);
+  void draw_calos_yz(std::vector<CAT::topology::calorimeter_hit> calos);
+  void draw_initial_hits_yz(void);
   void draw_cats_yz(std::string mode, std::vector<CAT::topology::sequence> true_seqs);
   void draw_sultan_yz();
   void print_cells(void);
-  void draw_tangents_xz( void );
-  void draw_tangents_yz( void );
-  void draw_helices_xz( std::string mode );
-  void draw_helices_yz( std::string mode );
-  void draw_triplets_xz( void );
-  void draw_triplets_yz( void );
+  void draw_tangents_xz(void);
+  void draw_tangents_yz(void);
+  void draw_helices_xz(std::string mode);
+  void draw_helices_yz(std::string mode);
+  void draw_triplets_xz(void);
+  void draw_triplets_yz(void);
   double get_x_ndc(double x);
   double get_y_ndc(double y);
   double get_z_ndc(double z);
-  std::string get_name(std::string name){
+  std::string get_name(std::string name) {
     size_t i1 = name.find("_");
-    name = name.substr(0,i1);
+    name = name.substr(0, i1);
     return name;
   }
-  int quadrant_xz( CAT::topology::cell c );
-  int quadrant_yz( CAT::topology::cell c );
+  int quadrant_xz(CAT::topology::cell c);
+  int quadrant_yz(CAT::topology::cell c);
   void init_quadrant_counters();
   void locate_legend_xz();
   void locate_legend_yz();
@@ -495,29 +470,21 @@ private:
 
   size_t n_cells_quad[4];
 
-
   //  size_t dp_mode;
 
-//----Modification for bar-module---
-private: 
-  std::string  _moduleNR;
-  int     _MaxBlockSize;
+  //----Modification for bar-module---
+ private:
+  std::string _moduleNR;
+  int _MaxBlockSize;
   std::vector<mybhep::particle*> parts;
   std::vector<mybhep::particle*> nemo3_parts;
-    
-public:
-  void SetModuleNR(std::string mID){
-    _moduleNR=mID;
-  };
+
+ public:
+  void SetModuleNR(std::string mID) { _moduleNR = mID; };
 
   std::vector<Int_t> run_list;
   double run_time;
   bool first_event;
-
-
-
 };
-
-
 
 #endif

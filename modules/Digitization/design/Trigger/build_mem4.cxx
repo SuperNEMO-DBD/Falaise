@@ -8,11 +8,10 @@
 #include <datatools/logger.h>
 
 // This project:
-#include "memory.h"
 #include "build_mem4.h"
+#include "memory.h"
 
-int main(void)
-{
+int main(void) {
   DT_LOG_NOTICE(datatools::logger::PRIO_ALWAYS, "Hello, SuperNEMO!");
 
   snemo::trigger::mem4_type mem4;

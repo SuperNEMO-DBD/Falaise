@@ -16,58 +16,52 @@
 #include <datatools/i_cloneable.h>
 
 namespace snemo {
-  
-  namespace digitization {
 
-    class calo_signal_simple_shape : public mygsl::tabulated_function
-		{
-    public : 
+namespace digitization {
 
-      //! Default constructor
-      calo_signal_simple_shape();
+class calo_signal_simple_shape : public mygsl::tabulated_function {
+ public:
+  //! Default constructor
+  calo_signal_simple_shape();
 
-      //! Destructor
-      virtual ~calo_signal_simple_shape();
+  //! Destructor
+  virtual ~calo_signal_simple_shape();
 
-      //! Initialization
-      virtual void initialize(const datatools::properties & config_,
-                              mygsl::unary_function_dict_type & functors_);
+  //! Initialization
+  virtual void initialize(const datatools::properties& config_,
+                          mygsl::unary_function_dict_type& functors_);
 
-      //! Reset
-      virtual void reset();
+  //! Reset
+  virtual void reset();
 
-      //! Check initialization status
-      virtual bool is_initialized() const;
-			
-    protected:
-      
-      //! Set default attributes
-      void _set_defaults();
+  //! Check initialization status
+  virtual bool is_initialized() const;
 
-    private :
+ protected:
+  //! Set default attributes
+  void _set_defaults();
 
-      // Configuration:
-      double _t0_;         //!< Start time
-      double _amplitude_;  //!< Amplitude of the signal
+ private:
+  // Configuration:
+  double _t0_;         //!< Start time
+  double _amplitude_;  //!< Amplitude of the signal
 
-      // Working data:
+  // Working data:
 
-      //! Registration of the functor class
-      MYGSL_UNARY_FUNCTOR_REGISTRATION_INTERFACE(calo_signal_simple_shape)
+  //! Registration of the functor class
+  MYGSL_UNARY_FUNCTOR_REGISTRATION_INTERFACE(calo_signal_simple_shape)
 
-      //! Cloneable interface
-      DATATOOLS_CLONEABLE_DECLARATION(calo_signal_simple_shape)
+  //! Cloneable interface
+  DATATOOLS_CLONEABLE_DECLARATION(calo_signal_simple_shape)
+};
 
-    };
-  
+}  // end of namespace digitization
 
-  } // end of namespace digitization
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_SIGNAL_SIMPLE_SHAPE_H */
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

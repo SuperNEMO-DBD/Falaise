@@ -18,26 +18,24 @@
  */
 #include <string>
 
+namespace mybhep {
+//! Interfase for converters
+/*!
+  It defines the interface of a converter, that is, an object
+  that saves and retrieves a transient class to persistency
+*/
 
-namespace mybhep{
-  //! Interfase for converters
-  /*!
-    It defines the interface of a converter, that is, an object
-    that saves and retrieves a transient class to persistency
-  */
+class Iconverter {
+ public:
+  virtual ~Iconverter() {}
+  //! save
+  virtual std::string store() = 0;
 
-  class Iconverter {
-  public:
+  //! load
+  virtual void restore(std::string) = 0;
 
-    virtual ~Iconverter(){}
-    //! save
-    virtual std::string store() = 0;
-
-    //! load
-    virtual void restore(std::string) = 0;
-
-    //! load
-    virtual void complete_restore() = 0;
-  };
-}
+  //! load
+  virtual void complete_restore() = 0;
+};
+}  // namespace mybhep
 #endif

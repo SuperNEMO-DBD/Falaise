@@ -28,10 +28,10 @@
 namespace falaise {
 //! enumerator holding exit code values
 enum exit_code {
-  EXIT_OK          = 0,  ///< Successful termination
-  EXIT_USAGE       = 64, ///< Usage error, e.g. incorrect command line
+  EXIT_OK = 0,           ///< Successful termination
+  EXIT_USAGE = 64,       ///< Usage error, e.g. incorrect command line
   EXIT_UNAVAILABLE = 69  ///< Service unavailable
 };
-} // namespace falaise
+}  // namespace falaise
 
-#endif // FALAISE_EXITCODES_H
+#endif  // FALAISE_EXITCODES_H

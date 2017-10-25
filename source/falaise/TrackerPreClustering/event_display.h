@@ -39,77 +39,56 @@
 
 namespace TrackerPreClustering {
 
-  /// \brief Toy display for Geiger hits in a simplified SuperNEMO like geometry
-  class event_display
-  {
-  public:
+/// \brief Toy display for Geiger hits in a simplified SuperNEMO like geometry
+class event_display {
+ public:
+  /// \brief Mode
+  enum mode_type { prompt = 0x1, delayed = 0x2 };
 
-    /// \brief Mode
-    enum mode_type
-      {
-        prompt = 0x1,
-        delayed = 0x2
-      };
+  /// Set the dimension of the cell
+  void set_cell_size(double cell_size_);
 
-    /// Set the dimension of the cell
-    void set_cell_size (double cell_size_);
+  /// Set the number of layers
+  void set_nb_layers(unsigned int nb_layers_);
 
-    /// Set the number of layers
-    void set_nb_layers (unsigned int nb_layers_);
+  /// Set the number of rows
+  void set_nb_rows(unsigned int nb_rows_);
 
-    /// Set the number of rows
-    void set_nb_rows (unsigned int nb_rows_);
+  /// Default constructor
+  event_display();
 
-    /// Default constructor
-    event_display ();
+  /// Display Geiger hits
+  template <typename Hit>
+  void display_gg_hits(std::ostream &out_, const std::vector<const Hit *> &hits_,
+                       uint32_t mode_ = prompt | delayed) const;
 
-    /// Display Geiger hits
-    template<typename Hit>
-    void display_gg_hits (std::ostream & out_,
-                          const std::vector<const Hit *> & hits_, uint32_t mode_ = prompt | delayed) const;
+  /// Display clusters of Geiger hits
+  template <class Hit>
+  void display_cluster(std::ostream &out_, const std::vector<const Hit *> &hits_,
+                       uint32_t mode_ = prompt | delayed) const;
 
-    /// Display clusters of Geiger hits
-    template<class Hit>
-    void display_cluster (std::ostream & out_,
-                          const std::vector<const Hit *> & hits_,
-                          uint32_t mode_ = prompt | delayed) const;
+  /// Plot Geiger hit
+  void plot_gg_hit(std::ostream &out_, int id_, double r_, double er_, double x_, double y_,
+                   double z_, double ez_, double delayed_time_) const;
 
-    /// Plot Geiger hit
-    void plot_gg_hit (std::ostream & out_,
-                      int id_,
-                      double r_,
-                      double er_,
-                      double x_,
-                      double y_,
-                      double z_,
-                      double ez_,
-                      double delayed_time_) const;
+  /// Plot clustered object
+  void plot_clustered_item(std::ostream &out_, int id_, double x_, double y_, double z_, double ez_,
+                           double delayed_time_) const;
 
-    /// Plot clustered object
-    void plot_clustered_item (std::ostream & out_,
-                              int id_,
-                              double x_,
-                              double y_,
-                              double z_,
-                              double ez_,
-                              double delayed_time_) const;
+  /// Display event
+  void display_event();
 
-    /// Display event
-    void display_event();
+ private:
+  unsigned int _nb_layers_;  /// Number of layers
+  unsigned int _nb_rows_;    /// Number of rows
+  double _cell_size_;        /// Cell size
+};
 
-  private:
-
-    unsigned int _nb_layers_; /// Number of layers
-    unsigned int _nb_rows_; /// Number of rows
-    double       _cell_size_; /// Cell size
-
-  };
-
-} // end of namespace TrackerPreClustering
+}  // end of namespace TrackerPreClustering
 
 #include "falaise/TrackerPreClustering/event_display.tpp"
 
-#endif // FALAISE_TRACKERPRECLUSTERING_EVENT_DISPLAY_H
+#endif  // FALAISE_TRACKERPRECLUSTERING_EVENT_DISPLAY_H
 
 /*
 ** Local Variables: --

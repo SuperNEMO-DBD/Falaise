@@ -1,15 +1,15 @@
 // Standard library:
-#include <iostream>
-#include <exception>
 #include <cstdlib>
+#include <exception>
+#include <iostream>
 #include <string>
 
 // Third party:
 // - Bayeux/datatools:
+#include <datatools/clhep_units.h>
 #include <datatools/logger.h>
 #include <datatools/properties.h>
 #include <datatools/utils.h>
-#include <datatools/clhep_units.h>
 // - Bayeux/geomtools:
 #include <geomtools/manager.h>
 // - Bayeux/dpp:
@@ -18,14 +18,13 @@
 // Falaise:
 #include <falaise/falaise.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
-#include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
 
 // This project:
 #include <snemo/visualization/visu_toy_module.h>
 
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -64,7 +63,8 @@ int main(int argc_, char ** argv_)
 
     // DT_THROW_IF (input_file.empty(), std::logic_error, "Missing input filename!");
     if (input_file.empty()) {
-      input_file = "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD.brio";
+      input_file =
+          "@falaise.resources:modules/VisuToy/examples/data/Se82.0nubb-source_strips_bulk_SD.brio";
       datatools::fetch_path_with_env(input_file);
       std::cerr << "NOTICE: Input file is '" << input_file << "'" << std::endl;
     }
@@ -85,7 +85,7 @@ int main(int argc_, char ** argv_)
     // Geometry manager:
     geomtools::manager Geo;
     std::string GeoConfigFile = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
-    datatools::fetch_path_with_env (GeoConfigFile);
+    datatools::fetch_path_with_env(GeoConfigFile);
     datatools::properties GeoConfig;
     datatools::properties::read_config(GeoConfigFile, GeoConfig);
     Geo.initialize(GeoConfig);
@@ -129,12 +129,10 @@ int main(int argc_, char ** argv_)
     Imod.reset();
 
     std::clog << "The end.\n";
-  }
-  catch (std::exception & error) {
+  } catch (std::exception& error) {
     DT_LOG_FATAL(logging, error.what());
     error_code = EXIT_FAILURE;
-  }
-  catch (...) {
+  } catch (...) {
     DT_LOG_FATAL(logging, "Unexpected error!");
     error_code = EXIT_FAILURE;
   }

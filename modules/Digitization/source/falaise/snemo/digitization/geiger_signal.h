@@ -13,74 +13,67 @@
 #include <bayeux/geomtools/base_hit.h>
 
 namespace snemo {
-  
-  namespace digitization {
 
-    /// \brief The geiger tracker signal
-    class geiger_signal : public geomtools::base_hit
-    {
-    public : 
+namespace digitization {
 
-      /// Default constructor
-      geiger_signal();
+/// \brief The geiger tracker signal
+class geiger_signal : public geomtools::base_hit {
+ public:
+  /// Default constructor
+  geiger_signal();
 
-      /// Destructor
-      virtual ~geiger_signal();
-      
-			/// Set the header with valid values
-			void set_header(int32_t geiger_signal_hit_id_,
-											const geomtools::geom_id & electronic_id_);
+  /// Destructor
+  virtual ~geiger_signal();
 
-			/// Set the data with values
-			void set_data(const double & anode_avalanche_time_);
-			
-      /// Return the const time of avalanche on the anode
-      double get_anode_avalanche_time() const;
-     
-      // Set the time of avalanche on the anode
-      void set_anode_avalanche_time(const double & anode_avalanche_time_);
+  /// Set the header with valid values
+  void set_header(int32_t geiger_signal_hit_id_, const geomtools::geom_id& electronic_id_);
 
-      /// Return the const time of plasma on top cathode
-      double get_plasma_top_time_() const;
+  /// Set the data with values
+  void set_data(const double& anode_avalanche_time_);
 
-      /// Set the time plasma on top cathode
-      void set_plasma_top_time_(const double & plasma_top_time_);
+  /// Return the const time of avalanche on the anode
+  double get_anode_avalanche_time() const;
 
-      /// Return the const time of plasma on bottom cathode
-      double get_plasma_bottom_time_() const;
+  // Set the time of avalanche on the anode
+  void set_anode_avalanche_time(const double& anode_avalanche_time_);
 
-      /// Set the time plasma on bottom cathode 
-			void set_plasma_bottom_time_(const double & plasma_bottom_time_);
+  /// Return the const time of plasma on top cathode
+  double get_plasma_top_time_() const;
 
-      /// Check if the internal data of geiger signal is valid
-      bool is_valid() const;
+  /// Set the time plasma on top cathode
+  void set_plasma_top_time_(const double& plasma_top_time_);
 
-      /// Reset the internal data of geiger signal
-      void reset();
+  /// Return the const time of plasma on bottom cathode
+  double get_plasma_bottom_time_() const;
 
-      /// Smart print
-      virtual void tree_dump(std::ostream      & a_out    = std::clog,
-														 const std::string & a_title  = "",
-														 const std::string & a_indent = "",
-														 bool a_inherit               = false) const;
+  /// Set the time plasma on bottom cathode
+  void set_plasma_bottom_time_(const double& plasma_bottom_time_);
 
-    private : 
+  /// Check if the internal data of geiger signal is valid
+  bool is_valid() const;
 
-			double _anode_avalanche_time_; //!< Time of the anode avalanche
-			double _plasma_top_time_; //!< Time of plasma on top cathode
-      double _plasma_bottom_time_; //!< Time of plasma on bottom cathode
+  /// Reset the internal data of geiger signal
+  void reset();
 
-			// DATATOOLS_SERIALIZATION_DECLARATION()
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
 
-    };
+ private:
+  double _anode_avalanche_time_;  //!< Time of the anode avalanche
+  double _plasma_top_time_;       //!< Time of plasma on top cathode
+  double _plasma_bottom_time_;    //!< Time of plasma on bottom cathode
 
-  } // end of namespace digitization
+  // DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-} // end of namespace snemo
+}  // end of namespace digitization
+
+}  // end of namespace snemo
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_GEIGER_SIGNAL_H */
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

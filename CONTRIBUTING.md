@@ -1,10 +1,11 @@
-# How to Contribute
+# How to Contribute to Falaise
 
 Contributions to Falaise are essential to maintain and improve the code
 to ensure that the SuperNEMO experiment reaches its physics goals.
 To ensure stability, reliability and maintainability of the code, and hence physics results,
 there are a few guidelines we need contributors to follow so that this
-quality is maintained.
+quality is maintained. All levels of contribution are welcome, from
+additions/copy editing of documentation through bug fixes and new C++ features.
 
 In the following, familiarity with Falaise's core software development
 tools:
@@ -33,9 +34,15 @@ available if required.
    $ cd Falaise
    $ git remote add upstream https://github.com/SuperNEMO-DBD/Falaise.git
    ```
-5. Check that you can [build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise)
-6. If you encounter any issues with any of these steps, [raise an issue](https://github.com/SuperNEMO-DBD/Falaise/issues/new)
-
+5. Check that you can [build, test and run Falaise locally](README.md#installing-falaise)
+6. Install and configure additional software packages recommended for developers:
+  - [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) for applying Falaise's code formatting and style style automatically (a code "spell checker")
+    - If you use `brew`, then simply do `brew install clang-format`
+    - On Ubuntu Linux, `apt-get install clang-format`
+    - See the `clang-format` documentation for guides on integrating it with [Vim](https://clang.llvm.org/docs/ClangFormat.html#vim-integration) and
+    [Emacs](https://clang.llvm.org/docs/ClangFormat.html#emacs-integration) so that it can be run easily or automatically
+    - If you use the [VisualStudioCode](https://code.visualstudio.com) editor, it provides `clang-format` support via the [Microsoft C++ plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
+7. If you encounter any issues with any of these steps, [raise an issue](https://github.com/SuperNEMO-DBD/Falaise/issues/new)
 
 ## Making Changes
 The workflow adopted for Falaise is the basic "fork-and-branch" model. This
@@ -61,10 +68,10 @@ as described above.
    ...
    $
    ```
-2. Create a branch on which to make your changes, keep the name short but descriptive:
+2. Create a branch off of `develop` on which to make your changes, keep the name short but descriptive:
 
    ```console
-   $ git checkout -b expand-flsimulate-documentation
+   $ git checkout -b expand-flsimulate-documentation develop
    Switched to a new branch 'expand-flsimulate-documentation'
    $ git status
    On branch expand-flsimulate-documentation
@@ -75,13 +82,15 @@ as described above.
    _"Additional documentation for flsimulate"_, not _"Fix Issue X and Add new Module Y"_.
    This is done to help minimize clashes when integrating your changes and to keep a logical
    record of changes between stable releases.
-3. [Build, test and run Falaise locally](https://github.com/SuperNEMO-DBD/Falaise#installing-falaise). This provides an
+3. [Build, test and run Falaise locally](README.md#installing-falaise). This provides an
    initial compilation and test before you make any changes.
 4. Starting making your changes on the feature branch
-   - Recompile and test regularly
-   - Follow the style guide (WIP: at present, just match existing case and indents)
-   - You must add [unit tests](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) for new classes and/or interfaces, or to exercise bugs
+   - Recompile and test regularly, ensuring that code compiles without warnings or errors
+   - Follow the [style guide](documentation/development/CodingStandards.md) and use `clang-format` to apply/fix spacing and layout automatically
+   - You must add [unit tests](documentation/development/UnitTestingWithCatch.md)for new classes and/or interfaces, or to exercise bugs
    - You must add [documentation](https://www.stack.nl/~dimitri/doxygen/manual/docblocks.html) for new classes and/or interfaces
+   - Pure documentation updates are also welcome, including HOWTOs and user guides which can be written in [Markdown](http://www.stack.nl/~dimitri/doxygen/manual/markdown.html)
+to make writing and online presentation clearer.
    - Commit regularly, but only when everything compiles without warning and all tests pass
    - Write [good commit messages](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
  5. Publish the feature branch on your fork
@@ -103,20 +112,48 @@ as described above.
    ```
 
    If you have already pushed the branch, you can omit the `-u` flag. The key thing is
-   that the branch on your fork has the full set of commits.
+   that the branch published on GitHub has the up to date set of commits.
 
-2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise)
+2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise).
+   A template is provided to help you describe the purpose of the PR (Bugfix,
+   enhancement, documentation etc), and must be filled out. If your PR provides a
+   fix for one or more already reported issues, ensure the `Fixes #<NUMBER>` lines
+   are filled in so that the related issues will be automatically closed when the PR is merged.
 
 3. The PR will be reviewed by SuperNEMO users and developers as appropriate for the issue addressed.
-   Other than style/usability, the core requirements for acceptance of a PR are:
+   The core requirements for acceptance of a PR are:
 
-   - If new/modified code, has unit tests which pass on supported platforms (_WIP: CI with Travis_)
-   - Any needed documentation is supplied
+   - The code compiles and passes tests on [Travis-CI](https://travis-ci.org/SuperNEMO-DBD/Falaise)
+     for the main supported platforms.
+   - If new code is added, it must have [unit tests](documentation/development/UnitTestingWithCatch.md) which pass on supported platforms.
+   - Any needed API and usage documentation is supplied
+   - The code follows the [Falaise style guide](documentation/development/CodingStandards.md)
 
-   Should edits be required, simply add new commits on the feature branch in your local clone
-   and push them to your fork. GitHub will automatically append them to the PR.
+   On the page for your Pull Request, GitHub will display the status of the automated checks
+   performed. The main one to watch is the `continuous-integration/travis-ci/pr` check,
+   which configure, builds and tests the Pull Request. Clicking on the `Details` link will
+   take you to the page on Travis which will display progress and results of these steps.
+   In the case of failures, the log can be reviewed to see what went wrong and where in
+   the code it happened.
+
+   Should changes be required to the Pull Request, simply make new commits on the feature
+   branch in your local clone and push them to your fork. GitHub will automatically append
+   them to the PR, and Travis-CI will run new builds.
 
 4. Once approved, the PR will be merged on to the `develop` branch of [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise). You can then delete your feature branch.
+
+
+### Reviewing Pull Requests Locally
+If you are a Pull Request reviewer, then changes can be reviewed and commented on
+directly through the [GitHub review interface](https://help.github.com/articles/about-pull-request-reviews/).
+This is useful to comment on higher level aspects like naming, style and design.
+
+It is also possible to checkout the changes in a Pull Request onto a branch in
+your working copy for detailed compile, test and run checks. The interface and
+commands to do this are [documented in GitHub Help](https://help.github.com/articles/checking-out-pull-requests-locally/).
+Note that this creates new branches in yout working copy, so after review and
+merge/dismissal of the PR, you should delete the local branch using `git branch -d`
+or `git branch -D` as needed.
 
 
 ### Working with Others
@@ -162,6 +199,13 @@ $ git fetch yourusername
 $ git checkout fix-bug
 $ git merge yourusername/fix-bug
 ```
+
+
+# Release Management
+
+The preparation of new releases is handled by Falaise's admins (@drbenmorgan and @goliviero). A workflow for
+this process is outlined [in a draft document](documentation/development/PreparingReleases.md). Note in particular
+that updates to external dependencies such as ROOT and Geant4 should be requested through a new Issue Report.
 
 # Additional Resources
 ## Git and GitHub

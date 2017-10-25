@@ -37,40 +37,34 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // \brief A composite volume
-      class composite_volume : public i_root_volume
-      {
-      public:
+// \brief A composite volume
+class composite_volume : public i_root_volume {
+ public:
+  /// Default print
+  virtual void dump() const;
 
+  /// Default constructor
+  composite_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-        /// Default print
-        virtual void dump() const;
+  /// Destructor
+  virtual ~composite_volume();
 
-        /// Default constructor
-        composite_volume(const std::string & name_     = "",
-                         const std::string & category_ = "");
+ protected:
+  /// Construct the composite volume
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
+};
 
-        /// Destructor
-        virtual ~composite_volume();
+}  // end of namespace detector
 
-      protected:
+}  // end of namespace visualization
 
-        /// Construct the composite volume
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_);
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace detector
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_COMPOSITE_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_COMPOSITE_VOLUME_H
 
 // end of composite_volume.h
 /*

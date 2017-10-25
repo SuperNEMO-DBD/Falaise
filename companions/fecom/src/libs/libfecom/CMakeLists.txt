@@ -1,23 +1,3 @@
-# - Dependencies
-
-find_package(Boost 1.60.0
-  REQUIRED
-  date_time
-  serialization
-  )
-
-find_package(Bayeux 3.0.0
-  REQUIRED
-  )
-
-include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-
-# Ensure our code can see the Falaise headers
-# include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
-include_directories(${PROJECT_BUILD_INCLUDEDIR})
-include_directories(${FALAISE_BUILD_PREFIX}/include)
-include_directories(${FALAISE_BUILD_PREFIX}/include/falaise)
-
 # - Publish headers
 
 configure_file(fecom/version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp @ONLY)
@@ -118,13 +98,7 @@ add_library(fecom SHARED
   ${FeCom_PRIVATE_HEADERS}
   ${FeCom_SOURCES}
   )
-
-target_link_libraries(fecom ${Boost_LIBRARIES})
-target_link_libraries(fecom Bayeux::Bayeux)
-target_link_libraries(fecom Falaise)
-
-#target_link_libraries(fecom Falaise::Falaise)
-
+target_link_libraries(fecom PUBLIC Falaise Bayeux::Bayeux)
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
@@ -134,6 +108,8 @@ if(APPLE)
     INSTALL_RPATH "@loader_path"
     )
 endif()
+target_clang_format(fecom)
+
 
 install( FILES
   ${FeCom_HEADERS}
@@ -166,13 +142,12 @@ if(FECOM_ENABLE_TESTING)
     add_executable(${_testname}
       ${_testsource}
       )
-    target_link_libraries(${_testname} fecom
-      # ${FeCom_OTHER_LIBS}
-      )
+    target_link_libraries(${_testname} fecom)
     # - On Apple, ensure dynamic_lookup of undefined symbols
     if(APPLE)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
+    target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_fecom_TEST_ENVIRONMENT}

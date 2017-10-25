@@ -37,34 +37,32 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class opengl_pad : public TPad
-      {
-      public:
+class opengl_pad : public TPad {
+ public:
+  opengl_pad();
+  virtual ~opengl_pad();
 
-        opengl_pad ();
-        virtual ~opengl_pad ();
+  bool is_batch() const;
+  void update();
+  TVirtualViewer3D *get_viewer_3d(Option_t * /*type*/ = "");
 
-        bool is_batch () const;
-        void update ();
-        TVirtualViewer3D * get_viewer_3d (Option_t * /*type*/ = "");
+  // ROOT Interface
+  virtual bool IsBatch() const { return is_batch(); }
+  virtual void Update() { return update(); }
+  virtual TVirtualViewer3D *GetViewer3D(Option_t * /*type*/ = "") { return fViewer3D; }
+};
 
-        // ROOT Interface
-        virtual bool IsBatch () const { return is_batch (); }
-        virtual void Update ()        { return update (); }
-        virtual TVirtualViewer3D *GetViewer3D (Option_t * /*type*/ = "") { return fViewer3D; }
-      };
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_PAD_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_PAD_H
 
 // end of opengl_pad.h
 /*

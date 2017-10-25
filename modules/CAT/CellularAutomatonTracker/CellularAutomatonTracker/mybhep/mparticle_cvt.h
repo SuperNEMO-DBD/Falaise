@@ -15,7 +15,6 @@
  * General Public License for more details.
  */
 
-
 #ifndef __MPARTICLE_CVT_H__
 #define __MPARTICLE_CVT_H__
 
@@ -25,64 +24,49 @@
 #include <mybhep/mparticle.h>
 #include <mybhep/ibconverter.h>
 
+namespace mybhep {
 
+//! class mparticle_cvt
+/*!
+  Converter to persistency
+*/
 
-namespace mybhep{
+typedef mparticle mparticle;
 
-  //! class mparticle_cvt
-  /*!
-    Converter to persistency
-  */
+class mparticle_cvt : public ibconverter {
+ private:
+  //! pointer to the mparticle
+  mparticle* nparticle_;
 
-  typedef mparticle mparticle;
+  //! const pointer to the mparticle
+  const mparticle* particle_;
 
-  class mparticle_cvt : public ibconverter
-  {
+  //! integer for mirror mparticle
+  int imirror_;
 
-  private:
-    //! pointer to the mparticle
-    mparticle*   nparticle_;
+ public:
+  //! construct from a mparticle and an index
+  mparticle_cvt(const mparticle& p, int inx);
+  //! construct from a string
+  mparticle_cvt(std::string);
+  //! destructor
+  virtual ~mparticle_cvt();
 
-    //! const pointer to the mparticle
-    const mparticle*   particle_;
+  //! store class in a string
+  virtual std::string store();
+  //! restore from a string
+  virtual void restore(std::string);
+  //! complete restore
+  virtual void complete_restore();
 
-    //! integer for mirror mparticle
-    int imirror_;
+  //! retrieve a constant reference to the mparticle
+  const mparticle& retrieve() const;
 
-  public:
-    //! construct from a mparticle and an index
-    mparticle_cvt( const mparticle& p, int inx);
-    //! construct from a string
-    mparticle_cvt( std::string );
-    //! destructor
-    virtual ~mparticle_cvt();
+  //! retrieve a constant reference to the mparticle
+  mparticle& reference();
 
-    //! store class in a string
-    virtual std::string store();
-    //! restore from a string
-    virtual void restore( std::string );
-    //! complete restore
-    virtual void complete_restore();
-
-    //! retrieve a constant reference to the mparticle
-    const mparticle& retrieve() const;
-
-    //! retrieve a constant reference to the mparticle
-    mparticle& reference() ;
-
-    //! instantiate a new mparticle
-    mparticle* create();
-
-
-  };
-}
+  //! instantiate a new mparticle
+  mparticle* create();
+};
+}  // namespace mybhep
 #endif
-
-
-
-
-
-
-
-
-

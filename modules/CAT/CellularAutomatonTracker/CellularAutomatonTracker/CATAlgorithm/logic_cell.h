@@ -13,45 +13,32 @@
 #include <CATAlgorithm/experimental_vector.h>
 
 namespace CAT {
-namespace topology{
+namespace topology {
 
+class logic_cell : public tracking_object {
+  // a logic_cell is composed of an id
 
-  class logic_cell : public tracking_object{
+ private:
+  // id
+  size_t id_;
 
-    // a logic_cell is composed of an id
+ public:
+  //! Default constructor
+  logic_cell() { id_ = mybhep::default_integer; }
 
-  private:
-    // id
-    size_t id_;
+  //! Default destructor
+  virtual ~logic_cell(){};
 
-  public:
+  //! constructor
+  logic_cell(size_t id) { id_ = id; }
 
-    //!Default constructor
-    logic_cell()
-    {
-      id_ = mybhep::default_integer;
-   }
+  //! set id
+  void set_id(size_t id) { id_ = id; }
 
-    //!Default destructor
-    virtual ~logic_cell(){};
-
-    //! constructor
-    logic_cell(size_t id){
-      id_ = id;
-    }
-
-    //! set id
-    void set_id(size_t id)
-      {
-        id_ = id;
-      }
-
-    //!get id
-    const size_t& id() const {return id_;}
-
-
-  };
-}
-}
+  //! get id
+  const size_t& id() const { return id_; }
+};
+}  // namespace topology
+}  // namespace CAT
 
 #endif

@@ -40,8 +40,8 @@
 
 // Third Party
 // - Bayeux
-#include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/exception.h"
+#include "bayeux/datatools/logger.h"
 
 // - Boost
 #include "boost/program_options.hpp"
@@ -51,24 +51,24 @@
 // #include "boost/algorithm/string/predicate.hpp"
 
 // This Project
-#include "falaise/falaise.h"
-#include "falaise/exitcodes.h"
-#include "FLReconstructParams.h"
-#include "FLReconstructImpl.h"
-#include "FLReconstructPipeline.h"
 #include "FLReconstructErrors.h"
+#include "FLReconstructImpl.h"
+#include "FLReconstructParams.h"
+#include "FLReconstructPipeline.h"
+#include "falaise/exitcodes.h"
+#include "falaise/falaise.h"
 
 namespace FLReconstruct {
 
-  //! Perform reconstruction using command line args as given
-  falaise::exit_code do_flreconstruct(int argc, char *argv[]);
+//! Perform reconstruction using command line args as given
+falaise::exit_code do_flreconstruct(int argc, char* argv[]);
 
-} // end of namespace FLReconstruct
+}  // end of namespace FLReconstruct
 
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   falaise::initialize();
 
   // - Do the reconstruction
@@ -82,33 +82,32 @@ int main(int argc, char *argv[]) {
 
 namespace FLReconstruct {
 
-  //! Perform reconstruction using command line args as given
-  falaise::exit_code do_flreconstruct(int argc, char *argv[])
-  {
-    // - Configure
-    FLReconstructParams flRecParameters;
-    try {
-      // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
-      do_configure(argc, argv, flRecParameters);
-      DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
-    } catch (FLConfigDefaultError& e) {
-      std::cerr << "Unable to configure core of flreconstruct" << std::endl;
-      return falaise::EXIT_UNAVAILABLE;
-    } catch (FLConfigHelpHandled& e) {
-      return falaise::EXIT_OK;
-    } catch (FLConfigUserError& e) {
-      std::cerr << "User configuration error: " << e.what() << std::endl;
-      return falaise::EXIT_USAGE;
-    }
-
-    // - Run
-    falaise::exit_code code = falaise::EXIT_OK;
-
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
-    code = do_pipeline(flRecParameters);
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
-
-    return code;
+//! Perform reconstruction using command line args as given
+falaise::exit_code do_flreconstruct(int argc, char* argv[]) {
+  // - Configure
+  FLReconstructParams flRecParameters;
+  try {
+    // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
+    do_configure(argc, argv, flRecParameters);
+    DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
+  } catch (FLConfigDefaultError& e) {
+    std::cerr << "Unable to configure core of flreconstruct" << std::endl;
+    return falaise::EXIT_UNAVAILABLE;
+  } catch (FLConfigHelpHandled& e) {
+    return falaise::EXIT_OK;
+  } catch (FLConfigUserError& e) {
+    std::cerr << "User configuration error: " << e.what() << std::endl;
+    return falaise::EXIT_USAGE;
   }
 
-} // end of namespace FLReconstruct
+  // - Run
+  falaise::exit_code code = falaise::EXIT_OK;
+
+  DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
+  code = do_pipeline(flRecParameters);
+  DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
+
+  return code;
+}
+
+}  // end of namespace FLReconstruct

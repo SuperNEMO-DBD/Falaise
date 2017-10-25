@@ -17,31 +17,29 @@
 #include <datatools/properties.ipp>
 
 // This project:
-#include <falaise/snemo/datamodels/tracker_cluster.h>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
+#include <falaise/snemo/datamodels/tracker_cluster.h>
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// Serialization
-    template<class Archive>
-    void tracker_clustering_solution::serialize(Archive & ar_,
-                                                const unsigned int /* version_ */)
-    {
-      ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar_ & boost::serialization::make_nvp("solution_id",      _solution_id_);
-      ar_ & boost::serialization::make_nvp("clusters",         _clusters_);
-      // if (version_ > 0) {
-      //   ar_ & boost::serialization::make_nvp("delayed_clusters", _delayed__clusters_);
-      // }
-      ar_ & boost::serialization::make_nvp("unclustered_hits", _unclustered_hits_);
-      ar_ & boost::serialization::make_nvp("auxiliaries",      _auxiliaries_);
-      return;
-    }
+/// Serialization
+template <class Archive>
+void tracker_clustering_solution::serialize(Archive& ar_, const unsigned int /* version_ */) {
+  ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+  ar_& boost::serialization::make_nvp("solution_id", _solution_id_);
+  ar_& boost::serialization::make_nvp("clusters", _clusters_);
+  // if (version_ > 0) {
+  //   ar_ & boost::serialization::make_nvp("delayed_clusters", _delayed__clusters_);
+  // }
+  ar_& boost::serialization::make_nvp("unclustered_hits", _unclustered_hits_);
+  ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP
+#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_CLUSTERING_SOLUTION_IPP

@@ -15,7 +15,6 @@
  * General Public License for more details.
  */
 
-
 #ifndef __SPARTICLE_CVT_H__
 #define __SPARTICLE_CVT_H__
 
@@ -24,67 +23,53 @@
 #include <mybhep/sparticle.h>
 #include <mybhep/ibconverter.h>
 
+namespace mybhep {
 
+//! class sparticle_cvt
+/*!
+  Converter to persistency
+*/
 
+typedef sparticle sparticle;
 
-namespace mybhep{
+class sparticle_cvt : public ibconverter {
+ private:
+  //! pointer to the sparticle
+  sparticle* nsparticle_;
+  //! const pointer to the sparticle
+  const sparticle* sparticle_;
 
-  //! class sparticle_cvt
-  /*!
-    Converter to persistency
-  */
+  //! integer for seed particle
+  int iseed_;
 
-  typedef sparticle sparticle;
+  //! integer for subparticles
+  std::vector<int> isubp_;
 
-  class sparticle_cvt : public ibconverter{
+  //! label por particles
+  std::string particle_label_;
 
-  private:
-    //! pointer to the sparticle
-    sparticle*  nsparticle_;
-    //! const pointer to the sparticle
-    const sparticle* sparticle_;
+ public:
+  //! construct from a sparticle and an index
+  sparticle_cvt(const sparticle& t, int inx);
+  //! construct from a string
+  sparticle_cvt(std::string);
+  //! destructor
+  virtual ~sparticle_cvt();
 
-   //! integer for seed particle
-    int iseed_;
+  //! store class in a string
+  virtual std::string store();
+  //! restore from a string
+  virtual void restore(std::string);
+  //! complete restore
+  virtual void complete_restore();
 
-   //! integer for subparticles
-    std::vector<int> isubp_;
+  //! retrieve a constant reference to the sparticle
+  const sparticle& retrieve() const;
+  //! retrieve a reference to the sparticle
+  sparticle& reference();
 
-    //! label por particles
-    std::string particle_label_;
-  public:
-    //! construct from a sparticle and an index
-    sparticle_cvt( const sparticle& t, int inx);
-    //! construct from a string
-    sparticle_cvt( std::string );
-    //! destructor
-    virtual ~sparticle_cvt();
-
-    //! store class in a string
-    virtual std::string store();
-    //! restore from a string
-    virtual void restore( std::string );
-    //! complete restore
-    virtual void complete_restore();
-
-
-    //! retrieve a constant reference to the sparticle
-    const sparticle& retrieve() const;
-    //! retrieve a reference to the sparticle
-    sparticle& reference();
-
-    //! instantiate a new sparticle
-    sparticle* create();
-
-  };
-}
+  //! instantiate a new sparticle
+  sparticle* create();
+};
+}  // namespace mybhep
 #endif
-
-
-
-
-
-
-
-
-

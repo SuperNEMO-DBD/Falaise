@@ -25,19 +25,16 @@
 
 namespace fecom {
 
-  template<class Archive>
-  void tracker_channel_hit::serialize(Archive & ar,
-				      const unsigned int /*version*/)
-  {
-    ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-    ar & boost::serialization::make_nvp("timestamp_type", timestamp_type);
-    ar & boost::serialization::make_nvp("timestamp_value", timestamp_value);
-    ar & boost::serialization::make_nvp("timestamp_time_ns", timestamp_time_ns);
-    ar & boost::serialization::make_nvp("associated", associated);
-    return;
-  }
+template <class Archive>
+void tracker_channel_hit::serialize(Archive& ar, const unsigned int /*version*/) {
+  ar& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
+  ar& boost::serialization::make_nvp("timestamp_type", timestamp_type);
+  ar& boost::serialization::make_nvp("timestamp_value", timestamp_value);
+  ar& boost::serialization::make_nvp("timestamp_time_ns", timestamp_time_ns);
+  ar& boost::serialization::make_nvp("associated", associated);
+  return;
+}
 
+}  // namespace fecom
 
-} // namespace fecom
-
-#endif // FECOM_TRACKER_CHANNEL_HIT_IPP
+#endif  // FECOM_TRACKER_CHANNEL_HIT_IPP

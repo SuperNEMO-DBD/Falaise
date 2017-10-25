@@ -32,101 +32,97 @@
 #define FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_SULTAN_THEN_CAT_DRIVER_H 1
 
 // This project
-#include <string>
 #include <CATAlgorithm/CAT_interface.h>
-#include <sultan/SULTAN_interface.h>
 #include <falaise/snemo/processing/base_tracker_clusterizer.h>
+#include <sultan/SULTAN_interface.h>
+#include <string>
 
 // Forward declaration :
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace snemo {
 
-  namespace geometry {
-    class calo_locator;
-    class xcalo_locator;
-    class gveto_locator;
-  }
+namespace geometry {
+class calo_locator;
+class xcalo_locator;
+class gveto_locator;
+}  // namespace geometry
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// Driver for the Channel/CellularAutomatonTracker (CAT) clustering algorithms
-    class sultan_then_cat_driver : public ::snemo::processing::base_tracker_clusterizer
-    {
-    public:
+/// Driver for the Channel/CellularAutomatonTracker (CAT) clustering algorithms
+class sultan_then_cat_driver : public ::snemo::processing::base_tracker_clusterizer {
+ public:
+  static const std::string SULTAN_THEN_CAT_ID;
 
-      static const std::string SULTAN_THEN_CAT_ID;
+  /// Set the mag field
+  void set_magfield(double);
 
-      /// Set the mag field
-      void set_magfield(double);
+  /// Return the mag field
+  double get_magfield() const;
 
-      /// Return the mag field
-      double get_magfield() const;
+  sultan_then_cat_driver();
 
-      sultan_then_cat_driver ();
+  virtual ~sultan_then_cat_driver();
 
-      virtual ~sultan_then_cat_driver ();
+  /// Initialize the clusterizer through configuration properties
+  virtual void initialize(const datatools::properties& setup_);
 
-      /// Initialize the clusterizer through configuration properties
-      virtual void initialize (const datatools::properties & setup_);
+  /// Reset the clusterizer
+  virtual void reset();
 
-      /// Reset the clusterizer
-      virtual void reset ();
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+  void convert_sultan_data_to_cat_data();
+  void convert_cat_data_to_sultan_data();
 
-      void convert_sultan_data_to_cat_data();
-      void convert_cat_data_to_sultan_data();
+  CAT::topology::cell fill_CAT_hit_from_SULTAN_hit(SULTAN::topology::cell sc);
+  CAT::topology::calorimeter_hit fill_CAT_calo_hit_from_SULTAN_calo_hit(
+      SULTAN::topology::calorimeter_hit sc);
+  CAT::topology::cluster fill_CAT_cluster_from_SULTAN_sequence(SULTAN::topology::sequence ss);
+  SULTAN::topology::cell fill_SULTAN_hit_from_CAT_hit(CAT::topology::cell cc);
+  SULTAN::topology::calorimeter_hit fill_SULTAN_calo_hit_from_CAT_calo_hit(
+      CAT::topology::calorimeter_hit cc);
+  SULTAN::topology::cluster fill_SULTAN_cluster_from_CAT_sequence(CAT::topology::sequence cs);
+  SULTAN::topology::scenario fill_SULTAN_scenario_from_CAT_scenario(CAT::topology::scenario cs);
+  SULTAN::topology::sequence fill_SULTAN_sequence_from_CAT_sequence(CAT::topology::sequence cs);
 
-      CAT::topology::cell fill_CAT_hit_from_SULTAN_hit(SULTAN::topology::cell sc);
-      CAT::topology::calorimeter_hit fill_CAT_calo_hit_from_SULTAN_calo_hit(SULTAN::topology::calorimeter_hit sc);
-      CAT::topology::cluster fill_CAT_cluster_from_SULTAN_sequence(SULTAN::topology::sequence ss);
-      SULTAN::topology::cell fill_SULTAN_hit_from_CAT_hit(CAT::topology::cell cc);
-      SULTAN::topology::calorimeter_hit fill_SULTAN_calo_hit_from_CAT_calo_hit(CAT::topology::calorimeter_hit cc);
-      SULTAN::topology::cluster fill_SULTAN_cluster_from_CAT_sequence(CAT::topology::sequence cs);
-      SULTAN::topology::scenario fill_SULTAN_scenario_from_CAT_scenario(CAT::topology::scenario cs);
-      SULTAN::topology::sequence fill_SULTAN_sequence_from_CAT_sequence(CAT::topology::sequence cs);
+ protected:
+  /// Set default attributes
+  void _set_defaults();
 
-    protected:
+  /// Main clustering method
+  virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
+                            const base_tracker_clusterizer::calo_hit_collection_type& calo_hits_,
+                            snemo::datamodel::tracker_clustering_data& clustering_);
 
-      /// Set default attributes
-      void _set_defaults();
+ private:
+  CAT::setup_data _CAT_setup_;
+  CAT::input_data _CAT_input_;
+  CAT::output_data _CAT_output_;
+  CAT::clusterizer _CAT_clusterizer_;
+  CAT::sequentiator _CAT_sequentiator_;
 
-      /// Main clustering method
-      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                snemo::datamodel::tracker_clustering_data & clustering_);
+  SULTAN::setup_data _SULTAN_setup_;
+  SULTAN::input_data _SULTAN_input_;
+  SULTAN::output_data _SULTAN_output_;
+  SULTAN::clusterizer _SULTAN_clusterizer_;
+  SULTAN::sultan _SULTAN_sultan_;
 
-    private:
+  double _sigma_z_factor_;   /// Factor for longitudinal error
+  double _magfield_;         /// Enforced magnetic field
+  bool _process_calo_hits_;  /// Flag to process associated calorimeter hits
 
-      CAT::setup_data   _CAT_setup_;
-      CAT::input_data   _CAT_input_;
-      CAT::output_data  _CAT_output_;
-      CAT::clusterizer  _CAT_clusterizer_;
-      CAT::sequentiator _CAT_sequentiator_;
+  /// Calorimeter locators
+  const snemo::geometry::calo_locator* _calo_locator_;
+  const snemo::geometry::xcalo_locator* _xcalo_locator_;
+  const snemo::geometry::gveto_locator* _gveto_locator_;
+};
 
-      SULTAN::setup_data   _SULTAN_setup_;
-      SULTAN::input_data   _SULTAN_input_;
-      SULTAN::output_data  _SULTAN_output_;
-      SULTAN::clusterizer  _SULTAN_clusterizer_;
-      SULTAN::sultan _SULTAN_sultan_;
-
-      double               _sigma_z_factor_;     /// Factor for longitudinal error
-      double               _magfield_;           /// Enforced magnetic field
-      bool                 _process_calo_hits_;  /// Flag to process associated calorimeter hits
-
-      /// Calorimeter locators
-      const snemo::geometry::calo_locator  * _calo_locator_;
-      const snemo::geometry::xcalo_locator * _xcalo_locator_;
-      const snemo::geometry::gveto_locator * _gveto_locator_;
-
-    };
-
-  }  // end of namespace reconstruction
-
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
@@ -135,10 +131,9 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::sultan_then_cat_driver)
 
-#endif // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_SULTAN_THEN_CAT_DRIVER_H
+#endif  // FALAISE_CAT_PLUGIN_SNEMO_RECONSTRUCTION_SULTAN_THEN_CAT_DRIVER_H
 
 // end of sultan_then_cat_driver.h
-
 
 /*
 ** Local Variables: --

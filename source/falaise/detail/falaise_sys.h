@@ -35,88 +35,83 @@
 
 namespace falaise {
 
-  namespace detail {
+namespace detail {
 
-    //! \brief Falaise system singleton
-    class falaise_sys
-     : private boost::noncopyable
-    {
-    public:
+//! \brief Falaise system singleton
+class falaise_sys : private boost::noncopyable {
+ public:
+  /// Return the name of the Falaise library URN database service for supported setups (geometry,
+  /// simulation...)
+  static const std::string& fl_setup_db_name();
 
-      /// Return the name of the Falaise library URN database service for supported setups (geometry, simulation...)
-      static const std::string & fl_setup_db_name();
+  /// Return the name of the Falaise library URN to resource path resolver service
+  static const std::string& fl_resource_resolver_name();
 
-      /// Return the name of the Falaise library URN to resource path resolver service
-      static const std::string & fl_resource_resolver_name();
+  /// Extract the verbosity from the FALAISE_SYS_LOGGING environment variable (if any)
+  static datatools::logger::priority process_logging_env();
 
-      /// Extract the verbosity from the FALAISE_SYS_LOGGING environment variable (if any)
-      static datatools::logger::priority process_logging_env();
+  /// Default constructor
+  falaise_sys();
 
-      /// Default constructor
-      falaise_sys();
+  /// Destructor
+  virtual ~falaise_sys();
 
-      /// Destructor
-      virtual ~falaise_sys();
+  /// Return the logging priority
+  datatools::logger::priority get_logging() const;
 
-      /// Return the logging priority
-      datatools::logger::priority get_logging() const;
+  /// Check initialization flag
+  bool is_initialized() const;
 
-      /// Check initialization flag
-      bool is_initialized() const;
+  /// Initialize
+  void initialize();
 
-      /// Initialize
-      void initialize();
+  /// Shutdown
+  void shutdown();
 
-      /// Shutdown
-      void shutdown();
+  /// Return a mutable reference to the embedded service manager
+  datatools::service_manager& grab_services();
 
-      /// Return a mutable reference to the embedded service manager
-      datatools::service_manager & grab_services();
+  /// Return a non mutable reference to the embedded service manager
+  const datatools::service_manager& get_services() const;
 
-      /// Return a non mutable reference to the embedded service manager
-      const datatools::service_manager & get_services() const;
+  /// Check if the Falaise system singleton is instantiated
+  static bool is_instantiated();
 
-      /// Check if the Falaise system singleton is instantiated
-      static bool is_instantiated();
+  /// Return a mutable reference to the Falaise system singleton instance
+  static falaise_sys& instance();
 
-      /// Return a mutable reference to the Falaise system singleton instance
-      static falaise_sys & instance();
+  /// Return a non-mutable reference to the Falaise system singleton instance
+  static const falaise_sys& const_instance();
 
-      /// Return a non-mutable reference to the Falaise system singleton instance
-      static const falaise_sys & const_instance();
+  /// Instantiate the Falaise system singleton
+  static falaise_sys& instantiate();
 
-      /// Instantiate the Falaise system singleton
-      static falaise_sys & instantiate();
+ private:
+  void _libinfo_registration_();
 
-    private:
+  void _libinfo_deregistration_();
 
-      void _libinfo_registration_();
+  void _initialize_urn_services_();
 
-      void _libinfo_deregistration_();
+  void _shutdown_urn_services_();
 
-      void _initialize_urn_services_();
+ private:
+  // Management:
+  bool _initialized_ = false;             //!< Initialization flag
+  datatools::logger::priority _logging_;  //!< Logging priority threshold
 
-      void _shutdown_urn_services_();
+  // Working internal data:
+  datatools::service_manager _services_;  //!< Embedded services
 
-    private:
+  // Singleton:
+  static falaise_sys* _instance_;  //!< Falaise system singleton handle
+};
 
-      // Management:
-      bool _initialized_ = false;            //!< Initialization flag
-      datatools::logger::priority _logging_; //!< Logging priority threshold
+}  // end of namespace detail
 
-      // Working internal data:
-      datatools::service_manager _services_; //!< Embedded services
+}  // namespace falaise
 
-      // Singleton:
-      static falaise_sys * _instance_;       //!< Falaise system singleton handle
-
-    };
-
-  } // end of namespace detail
-
-} // namespace falaise
-
-#endif // FALAISE_DETAIL_FALAISE_SYS_H
+#endif  // FALAISE_DETAIL_FALAISE_SYS_H
 
 // Local Variables: --
 // mode: c++ --

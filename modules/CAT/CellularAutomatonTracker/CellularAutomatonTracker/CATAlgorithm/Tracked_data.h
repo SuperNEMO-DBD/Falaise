@@ -22,100 +22,64 @@
 #include <CATAlgorithm/Cell.h>
 #include <CATAlgorithm/Sequence.h>
 
+namespace CAT {
+namespace topology {
 
-namespace CAT{
-  namespace topology{
+class Tracked_data : public tracked_data {
+  // a Tracked_data is composed of a list of cells
+  // a list of clusters
+  // and a list of scenarios
 
+ protected:
+  std::string appname_;
 
-    class Tracked_data : public tracked_data {
+ public:
+  // list of cells
+  std::vector<Cell> cells_;
 
-      // a Tracked_data is composed of a list of cells
-      // a list of clusters
-      // and a list of scenarios
+  // list of sequences
+  std::vector<Sequence> sequences_;
 
-    protected:
-      std::string appname_;
+  // list of unclustered cells
+  std::vector<topology::Cell> unclustered_cells_;
 
-    public:
+  //! Default constructor
+  Tracked_data() { appname_ = "Tracked_data: "; }
 
-      // list of cells
-      std::vector<Cell> cells_;
+  //! Default destructor
+  virtual ~Tracked_data(){};
 
-      // list of sequences
-      std::vector<Sequence> sequences_;
+  //! set cells
+  void set_cells(const std::vector<Cell>& cells) { cells_ = cells; }
 
-      // list of unclustered cells
-      std::vector<topology::Cell> unclustered_cells_;
+  //! set unclustered cells
+  void set_unclustered_cells(const std::vector<Cell>& cells) { unclustered_cells_ = cells; }
 
-      //!Default constructor
-      Tracked_data()
-      {
-        appname_= "Tracked_data: ";
-      }
+  //! set sequences
+  void set_sequences(const std::vector<Sequence>& sequences) { sequences_ = sequences; }
 
-      //!Default destructor
-      virtual ~Tracked_data(){};
+  //! get cells
+  std::vector<Cell>& get_cells() { return cells_; }
 
-      //! set cells
-      void set_cells(const std::vector<Cell> & cells)
-      {
-        cells_ = cells;
-      }
+  const std::vector<Cell>& get_cells() const { return cells_; }
 
-      //! set unclustered cells
-      void set_unclustered_cells(const std::vector<Cell> & cells)
-      {
-        unclustered_cells_ = cells;
-      }
+  //! get unclustered cells
+  std::vector<Cell>& get_unclustered_cells() { return unclustered_cells_; }
 
-      //! set sequences
-      void set_sequences(const std::vector<Sequence> & sequences)
-      {
-        sequences_ = sequences;
-      }
+  const std::vector<Cell>& get_unclustered_cells() const { return unclustered_cells_; }
 
-      //! get cells
-      std::vector<Cell>& get_cells()
-      {
-        return cells_;
-      }
+  //! get sequences
+  std::vector<Sequence>& get_sequences() { return sequences_; }
 
-      const std::vector<Cell>& get_cells()const
-      {
-        return cells_;
-      }
+  const std::vector<Sequence>& get_sequences() const { return sequences_; }
 
-      //! get unclustered cells
-      std::vector<Cell>& get_unclustered_cells()
-      {
-        return unclustered_cells_;
-      }
-
-      const std::vector<Cell>& get_unclustered_cells()const
-      {
-        return unclustered_cells_;
-      }
-
-      //! get sequences
-      std::vector<Sequence>& get_sequences()
-      {
-        return sequences_;
-      }
-
-      const std::vector<Sequence>& get_sequences()const
-      {
-        return sequences_;
-      }
-
-      void reset(){
-	cells_.clear();
-	sequences_.clear();
-	unclustered_cells_.clear();
-      }
-
-
-    };
+  void reset() {
+    cells_.clear();
+    sequences_.clear();
+    unclustered_cells_.clear();
   }
-}
+};
+}  // namespace topology
+}  // namespace CAT
 
 #endif

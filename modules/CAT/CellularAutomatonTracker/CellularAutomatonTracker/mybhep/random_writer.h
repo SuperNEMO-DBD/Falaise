@@ -24,9 +24,7 @@
 
 #include <mybhep/brw.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 
 //! Base class for a random writer
 /*!
@@ -51,39 +49,33 @@ namespace mybhep{
 
 */
 
+class random_writer : public brw {
+ protected:
+  //! path to root directory
+  std::string path_;
+  //! joins pieces of path
+  std::string join_;
 
-  class random_writer : public brw
-  {
+ protected:
+  random_writer();
 
-  protected:
-    //! path to root directory
-    std::string path_;
-    //! joins pieces of path
-    std::string join_;
+  //! public functions
+ public:
+  //! set path
+  void set_path(std::string path);
 
-  protected:
+  //! return path
+  std::string path();
 
-    random_writer();
+  //! write event
+  void write(event& evt, size_t ievent, std::string key = "");
 
-    //! public functions
-  public:
+  //! protected interface
+ protected:
+  //! write the event as a record
+  virtual void write_record(std::string record, std::string key) = 0;
 
-    //! set path
-    void set_path(std::string path);
-
-    //! return path
-    std::string path();
-
-    //! write event
-    void write(event& evt, size_t ievent, std::string key="");
-
-    //! protected interface
-  protected:
-
-    //! write the event as a record
-    virtual void write_record(std::string record, std::string key) = 0;
-
-    //! protected functions
-  };
-}
+  //! protected functions
+};
+}  // namespace mybhep
 #endif

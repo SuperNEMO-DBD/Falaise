@@ -23,42 +23,38 @@
 
 namespace snemo {
 
-  namespace geometry {
+namespace geometry {
 
-    // static
-    const unsigned int utils::NSIDES;
-    const unsigned int utils::NSUBMODULES;
+// static
+const unsigned int utils::NSIDES;
+const unsigned int utils::NSUBMODULES;
 
-    // static
-    const std::string & utils::side_back_label()
-    {
-      static const std::string _label("back");
-      return _label;
-    }
+// static
+const std::string& utils::side_back_label() {
+  static const std::string _label("back");
+  return _label;
+}
 
-    // static
-    const std::string & utils::side_front_label()
-    {
-      static const std::string _label("front");
-      return _label;
-    }
+// static
+const std::string& utils::side_front_label() {
+  static const std::string _label("front");
+  return _label;
+}
 
-    // static
-    bool utils::is_side_label_valid(const std::string & label_)
-    {
-      if(label_ == side_back_label()) return true;
-      if(label_ == side_front_label()) return true;
-      return false;
-    }
+// static
+bool utils::is_side_label_valid(const std::string& label_) {
+  if (label_ == side_back_label()) return true;
+  if (label_ == side_front_label()) return true;
+  return false;
+}
 
-    // static
-    int utils::get_side_from_label(const std::string & label_)
-    {
-      if(label_ == side_back_label()) return SIDE_BACK;
-      if(label_ == side_front_label()) return SIDE_FRONT;
-      return SIDE_INVALID;
-    }
+// static
+int utils::get_side_from_label(const std::string& label_) {
+  if (label_ == side_back_label()) return SIDE_BACK;
+  if (label_ == side_front_label()) return SIDE_FRONT;
+  return SIDE_INVALID;
+}
 
-  } // end of namespace geometry
+}  // end of namespace geometry
 
-} // end of namespace snemo
+}  // end of namespace snemo

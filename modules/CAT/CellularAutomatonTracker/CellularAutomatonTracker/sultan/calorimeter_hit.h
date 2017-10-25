@@ -13,103 +13,85 @@
 #include <mybhep/hit.h>
 #include <mybhep/system_of_units.h>
 
-
 namespace SULTAN {
-  namespace topology {
+namespace topology {
 
+class calorimeter_hit : public tracking_object {
+  // a calorimeter_hit is identified by one plane
+  // energy and time
 
-    class calorimeter_hit : public tracking_object {
+ private:
+  std::string appname_;
 
-      // a calorimeter_hit is identified by one plane
-      // energy and time
+  // energy
+  experimental_double e_;
 
-    private:
+  // time
+  experimental_double t_;
 
-      std::string appname_;
+  size_t id_;
 
-      // energy
-      experimental_double e_;
+  int user_id_;  // use this value to store user id, never inside tracking
 
-      // time
-      experimental_double t_;
+ public:
+  // plane
+  plane pl_;
 
-      size_t id_;
+  double layer_;
 
-      int user_id_; // use this value to store user id, never inside tracking
+  //! Default constructor
+  calorimeter_hit(mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-    public:
+  //! Default destructor
+  virtual ~calorimeter_hit();
 
-      // plane
-      plane pl_;
+  //! constructor
+  calorimeter_hit(const plane& pl, const experimental_double& e, const experimental_double& t,
+                  size_t id, double layer, mybhep::prlevel level = mybhep::NORMAL,
+                  double probmin = 1.e-200);
 
-      double layer_;
+  /*** dump ***/
+  void dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+            const std::string& a_indent = "", bool a_inherit = false) const;
+  //! set
+  void set(const plane& pl, const experimental_double& e, const experimental_double& t, size_t id);
 
-      //!Default constructor
-      calorimeter_hit(mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set id
+  void set_id(size_t id) { id_ = id; }
+  void set_user_id(int id) { user_id_ = id; }
 
-      //!Default destructor
-      virtual ~calorimeter_hit();
+  //! set plane
+  void set_pl(const plane& pl);
 
-      //! constructor
-      calorimeter_hit(const plane & pl,
-                      const experimental_double & e,
-                      const experimental_double & t,
-                      size_t id,
-                      double layer,
-                      mybhep::prlevel level=mybhep::NORMAL,
-                      double probmin=1.e-200);
+  //! set energy
+  void set_e(const experimental_double& e);
 
-      /*** dump ***/
-      void dump (std::ostream & a_out         = std::clog,
-                 const std::string & a_title  = "",
-                 const std::string & a_indent = "",
-                 bool a_inherit               = false) const;
-      //! set
-      void set(const plane & pl, const experimental_double & e, const experimental_double & t, size_t id);
+  //! set time
+  void set_t(const experimental_double& t);
 
-      //! set id
-      void set_id(size_t id)
-      {
-        id_ = id;
-      }
-      void set_user_id(int id)
-      {
-        user_id_ = id;
-      }
+  //! set layer
+  void set_layer(double layer);
 
-      //! set plane
-      void set_pl(const plane & pl);
+  //! get plane
+  const plane& pl() const;
 
-      //! set energy
-      void set_e(const experimental_double & e);
+  //! get energy
+  const experimental_double& e() const;
 
-      //! set time
-      void set_t(const experimental_double & t);
+  //! get time
+  const experimental_double& t() const;
 
-      //! set layer
-      void set_layer(double layer);
+  //! get id
+  size_t id() const;
+  int user_id() const;
 
-      //! get plane
-      const plane & pl() const;
+  //! get layer
+  double layer() const;
 
-      //! get energy
-      const experimental_double& e()const;
+  bool same_calo(const calorimeter_hit& c) const;
+};
 
-      //! get time
-      const experimental_double& t()const;
+}  // namespace topology
+}  // namespace SULTAN
 
-      //! get id
-      size_t id()const;
-      int user_id()const;
-
-      //!get layer
-      double layer() const;
-
-      bool same_calo(const calorimeter_hit & c) const;
-
-    };
-
-  }
-}
-
-#endif // __SULTAN__calorimeter_hit_h
+#endif  // __SULTAN__calorimeter_hit_h

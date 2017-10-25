@@ -30,30 +30,20 @@
 // This Project
 
 namespace falaise {
-int version::get_major() {
-  return static_cast<int>(FALAISE_VERSION_MAJOR);
-}
+int version::get_major() { return static_cast<int>(FALAISE_VERSION_MAJOR); }
 
-int version::get_minor() {
-  return static_cast<int>(FALAISE_VERSION_MINOR);
-}
+int version::get_minor() { return static_cast<int>(FALAISE_VERSION_MINOR); }
 
-int version::get_patch() {
-  return static_cast<int>(FALAISE_VERSION_PATCH);
-}
+int version::get_patch() { return static_cast<int>(FALAISE_VERSION_PATCH); }
 
-int version::get_revision() {
-  return static_cast<int>(FALAISE_VERSION_REVISION);
-}
+int version::get_revision() { return static_cast<int>(FALAISE_VERSION_REVISION); }
 
 std::string version::get_version() {
   static std::string version("");
 
   if (version.empty()) {
     std::ostringstream stream;
-    stream << FALAISE_VERSION_MAJOR << "."
-           << FALAISE_VERSION_MINOR << "."
-           << FALAISE_VERSION_PATCH;
+    stream << FALAISE_VERSION_MAJOR << "." << FALAISE_VERSION_MINOR << "." << FALAISE_VERSION_PATCH;
     version = stream.str();
   }
 
@@ -86,5 +76,4 @@ bool version::has_feature(const std::string&) {
 
   return false;
 }
-} // namespace falaise
-
+}  // namespace falaise

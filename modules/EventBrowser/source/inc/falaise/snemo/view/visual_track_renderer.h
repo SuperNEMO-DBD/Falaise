@@ -41,39 +41,37 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      /// \brief A ROOT renderer dedicated to track visualization such as
-      /// Monte-Carlo particle path or reconstructed particle track.
-      class visual_track_renderer : public base_renderer
-      {
-      public:
+/// \brief A ROOT renderer dedicated to track visualization such as
+/// Monte-Carlo particle path or reconstructed particle track.
+class visual_track_renderer : public base_renderer {
+ public:
+  /// Default constructor
+  visual_track_renderer();
 
-        /// Default constructor
-        visual_track_renderer();
+  /// Destructor
+  virtual ~visual_track_renderer();
 
-        /// Destructor
-        virtual ~visual_track_renderer();
+  /// Build Monte-Carlo tracks
+  void push_mc_tracks();
 
-        /// Build Monte-Carlo tracks
-        void push_mc_tracks();
+  /// Build Monte-Carlo legend
+  void push_mc_legend();
 
-        /// Build Monte-Carlo legend
-        void push_mc_legend();
+  /// Build reconstructed tracks
+  void push_reconstructed_tracks();
+};
 
-        /// Build reconstructed tracks
-        void push_reconstructed_tracks();
-      };
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_VISUAL_TRACK_RENDERER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_VISUAL_TRACK_RENDERER_H
 
 // end of visual_track_renderer.h
 /*

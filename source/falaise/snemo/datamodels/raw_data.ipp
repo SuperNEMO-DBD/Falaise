@@ -22,21 +22,20 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    template<class Archive>
-    void raw_data::serialize (Archive & ar, const unsigned int /* version */)
-    {
-      ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar & boost::serialization::make_nvp ("raw_trigger_infos",    _raw_trigger_infos_);
-      ar & boost::serialization::make_nvp ("raw_calorimeter_hits", _raw_calorimeter_hits_);
-      ar & boost::serialization::make_nvp ("raw_tracker_hits",     _raw_tracker_hits_);
-      ar & boost::serialization::make_nvp ("auxiliaries",          _auxiliaries_);
-      return;
-    }
+template <class Archive>
+void raw_data::serialize(Archive& ar, const unsigned int /* version */) {
+  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+  ar& boost::serialization::make_nvp("raw_trigger_infos", _raw_trigger_infos_);
+  ar& boost::serialization::make_nvp("raw_calorimeter_hits", _raw_calorimeter_hits_);
+  ar& boost::serialization::make_nvp("raw_tracker_hits", _raw_tracker_hits_);
+  ar& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODEL_RAW_DATA_IPP
+#endif  // FALAISE_SNEMO_DATAMODEL_RAW_DATA_IPP

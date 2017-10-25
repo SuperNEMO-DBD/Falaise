@@ -41,86 +41,87 @@
 
 namespace snemo {
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    /// Driver for the gamma clustering algorithms
-    class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder
-    {
-    public:
-      /// Typedef for list of geom ids
-      typedef std::vector<geomtools::geom_id> gid_list_type;
+/// Driver for the gamma clustering algorithms
+class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder {
+ public:
+  /// Typedef for list of geom ids
+  typedef std::vector<geomtools::geom_id> gid_list_type;
 
-      /// Typedef for time ordered calorimeter hits aka. gamma cluster
-      typedef std::map<double, const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type> cluster_type;
+  /// Typedef for time ordered calorimeter hits aka. gamma cluster
+  typedef std::map<double, const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type>
+      cluster_type;
 
-      /// Typedef for collection of clusters
-      typedef std::vector<cluster_type> cluster_collection_type;
+  /// Typedef for collection of clusters
+  typedef std::vector<cluster_type> cluster_collection_type;
 
-      /// Dedicated algorithm id
-      static const std::string & get_id();
+  /// Dedicated algorithm id
+  static const std::string& get_id();
 
-      /// Constructor
-      gamma_clustering_driver();
+  /// Constructor
+  gamma_clustering_driver();
 
-      /// Destructor
-      virtual ~gamma_clustering_driver();
+  /// Destructor
+  virtual ~gamma_clustering_driver();
 
-      /// Initialize the gamma tracker through configuration properties
-      virtual void initialize(const datatools::properties & setup_);
+  /// Initialize the gamma tracker through configuration properties
+  virtual void initialize(const datatools::properties& setup_);
 
-      /// Reset the clusterizer
-      virtual void reset();
+  /// Reset the clusterizer
+  virtual void reset();
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description & ocd_);
+  /// OCD support:
+  static void init_ocd(datatools::object_configuration_description& ocd_);
 
-    protected:
+ protected:
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-      /// Give default values to specific class members.
-      void _set_defaults ();
+  /// Special method to process and generate particle track data
+  virtual int _process_algo(const base_gamma_builder::hit_collection_type& calo_hits_,
+                            snemo::datamodel::particle_track_data& ptd_);
 
-      /// Special method to process and generate particle track data
-      virtual int _process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
-                                snemo::datamodel::particle_track_data & ptd_);
+  /// Get calorimeter neighbours given teh current calorimeter hit
+  virtual void _get_geometrical_neighbours(
+      const snemo::datamodel::calibrated_calorimeter_hit& hit_,
+      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_,
+      cluster_type& cluster_, gid_list_type& registered_calos_) const;
 
-      /// Get calorimeter neighbours given teh current calorimeter hit
-      virtual void _get_geometrical_neighbours(const snemo::datamodel::calibrated_calorimeter_hit & hit_,
-                                               const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type & hits_,
-                                               cluster_type & cluster_,
-                                               gid_list_type & registered_calos_) const;
+  /// Split calorimeter cluster given a cluster time range value
+  virtual void _get_time_neighbours(cluster_type& cluster_,
+                                    cluster_collection_type& clusters_) const;
 
-      /// Split calorimeter cluster given a cluster time range value
-      virtual void _get_time_neighbours(cluster_type & cluster_, cluster_collection_type & clusters_) const;
+  /// Associate clusters given Time-Of-Flight calculation
+  virtual void _get_tof_association(const cluster_collection_type& from_clusters_,
+                                    cluster_collection_type& to_clusters_) const;
 
-      /// Associate clusters given Time-Of-Flight calculation
-      virtual void _get_tof_association(const cluster_collection_type & from_clusters_,
-                                        cluster_collection_type & to_clusters_) const;
+  /// Return Time-Of-Flight probability between 2 calorimeter hits
+  virtual double _get_tof_probability(
+      const snemo::datamodel::calibrated_calorimeter_hit& head_end_calo_hit_,
+      const snemo::datamodel::calibrated_calorimeter_hit& tail_begin_calo_hit_) const;
 
-      /// Return Time-Of-Flight probability between 2 calorimeter hits
-      virtual double _get_tof_probability(const snemo::datamodel::calibrated_calorimeter_hit & head_end_calo_hit_,
-                                          const snemo::datamodel::calibrated_calorimeter_hit & tail_begin_calo_hit_) const;
+  /// Check if 2 calorimeter hits belong to the same wall
+  virtual bool _are_on_same_wall(
+      const snemo::datamodel::calibrated_calorimeter_hit& head_end_calo_hit_,
+      const snemo::datamodel::calibrated_calorimeter_hit& tail_begin_calo_hit_) const;
 
-      /// Check if 2 calorimeter hits belong to the same wall
-      virtual bool _are_on_same_wall(const snemo::datamodel::calibrated_calorimeter_hit & head_end_calo_hit_,
-                                     const snemo::datamodel::calibrated_calorimeter_hit & tail_begin_calo_hit_) const;
+ private:
+  double _cluster_time_range_;      //!< The time condition for clustering
+  std::string _cluster_grid_mask_;  //!< The spatial condition for clustering
+  double _min_prob_;                //!< The minimal probability required between clusters
+  double _sigma_time_good_calo_;    //!< The minimal time resolution to consider calorimeter hit
+};
 
-    private:
-      double _cluster_time_range_;     //!< The time condition for clustering
-      std::string _cluster_grid_mask_; //!< The spatial condition for clustering
-      double _min_prob_;               //!< The minimal probability required between clusters
-      double _sigma_time_good_calo_;   //!< The minimal time resolution to consider calorimeter hit
-    };
-
-  }  // end of namespace reconstruction
+}  // end of namespace reconstruction
 
 }  // end of namespace snemo
-
 
 // Declare the OCD interface of the module
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snemo::reconstruction::gamma_clustering_driver)
 
-#endif // FALAISE_GAMMA_CLUSTERING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_CLUSTERING_DRIVER_H
+#endif  // FALAISE_GAMMA_CLUSTERING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_CLUSTERING_DRIVER_H
 
 /*
 ** Local Variables: --

@@ -28,106 +28,103 @@
 
 // Standard Library
 #include <exception>
-#include <vector>
 #include <string>
+#include <vector>
 
 // Third Party
 // - Bayeux
 #include <bayeux/datatools/properties.h>
 
 // - Boost
-#include <boost/mpl/vector.hpp>
 #include <boost/mpl/contains.hpp>
+#include <boost/mpl/vector.hpp>
 #include <boost/utility/enable_if.hpp>
 
 // This Project
 
 namespace falaise {
 
-  namespace properties {
+namespace properties {
 
-    // Exceptions
-    typedef std::logic_error WrongType;
-    typedef std::logic_error MissingKey;
+// Exceptions
+typedef std::logic_error WrongType;
+typedef std::logic_error MissingKey;
 
-    //! List of types that can be stored in and read from datatools::properties
-    typedef boost::mpl::vector<int,
-      double,
-      bool,
-      std::string,
-      std::vector<int>,
-      std::vector<double>,
-      std::vector<bool>, // Also allow conversion to bitset?
-      std::vector<std::string>
-      //Path (to allow proper checking of "strings as
-      //paths"
-      //Quantity/Length/etc (to check reals with required unit,
-      //needs a bit of thought for behaviour, as units are
-      //converted, can probably just check dimension)
-      > AllowedTypes;
+//! List of types that can be stored in and read from datatools::properties
+typedef boost::mpl::vector<int, double, bool, std::string, std::vector<int>, std::vector<double>,
+                           std::vector<bool>,  // Also allow conversion to bitset?
+                           std::vector<std::string>
+                           // Path (to allow proper checking of "strings as
+                           // paths"
+                           // Quantity/Length/etc (to check reals with required unit,
+                           // needs a bit of thought for behaviour, as units are
+                           // converted, can probably just check dimension)
+                           >
+    AllowedTypes;
 
-    //! Functions for visiting a property item and checking its type is valid
-    namespace type_check_visitor {
+//! Functions for visiting a property item and checking its type is valid
+namespace type_check_visitor {
 
-      namespace detail {
+namespace detail {
 
-	bool visit_impl(const datatools::properties& p, const std::string& key, int);
-	bool visit_impl(const datatools::properties& p, const std::string& key, double);
-	bool visit_impl(const datatools::properties& p, const std::string& key, bool);
-	bool visit_impl(const datatools::properties& p, const std::string& key, std::string);
-	bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<int>);
-	bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<double>);
-	bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<bool>);
-	bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<std::string>);
-      } // namespace detail
+bool visit_impl(const datatools::properties& p, const std::string& key, int);
+bool visit_impl(const datatools::properties& p, const std::string& key, double);
+bool visit_impl(const datatools::properties& p, const std::string& key, bool);
+bool visit_impl(const datatools::properties& p, const std::string& key, std::string);
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<int>);
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<double>);
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<bool>);
+bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<std::string>);
+}  // namespace detail
 
-      // Compile-time fail on any other type (needs improvement, but does the job
-      // for now (Look also at enable_if on return type (could use mpl vector of
-      // allowed types))
-      template <typename T>
-	bool visit(const datatools::properties& p, const std::string& key) {
-	// Static assert form - gives slightly clearer message...
-	static_assert(boost::mpl::contains<AllowedTypes,T>::type::value, "Unsupported type for visitation");
-	return detail::visit_impl(p, key, T {});
-      }
-    } // namespace type_check_visitor
+// Compile-time fail on any other type (needs improvement, but does the job
+// for now (Look also at enable_if on return type (could use mpl vector of
+// allowed types))
+template <typename T>
+bool visit(const datatools::properties& p, const std::string& key) {
+  // Static assert form - gives slightly clearer message...
+  static_assert(boost::mpl::contains<AllowedTypes, T>::type::value,
+                "Unsupported type for visitation");
+  return detail::visit_impl(p, key, T{});
+}
+}  // namespace type_check_visitor
 
-    // Units are converted automatically, but may want to assert that the given
-    // key has a unit and that this is of specific dimension
-    // The same for interpreting strings as paths...
+// Units are converted automatically, but may want to assert that the given
+// key has a unit and that this is of specific dimension
+// The same for interpreting strings as paths...
 
-    // This should throw on missing key or wrong type
-    template <typename T>
-      T getRequiredValue(const datatools::properties& p, const std::string& key) {
-      if (!p.has_key(key)) {
-	throw properties::MissingKey("No key '"+key+"'");
-      }
-      if (!type_check_visitor::visit<T>(p,key)) {
-	throw properties::WrongType("Key '"+key+"' has incorrect type");
-      }
+// This should throw on missing key or wrong type
+template <typename T>
+T getRequiredValue(const datatools::properties& p, const std::string& key) {
+  if (!p.has_key(key)) {
+    throw properties::MissingKey("No key '" + key + "'");
+  }
+  if (!type_check_visitor::visit<T>(p, key)) {
+    throw properties::WrongType("Key '" + key + "' has incorrect type");
+  }
 
-      T tmp;
-      p.fetch(key, tmp);
-      return tmp;
+  T tmp;
+  p.fetch(key, tmp);
+  return tmp;
+}
+
+// This should throw when key is set, but has the wrong type
+// Also consider rvalue for default.
+template <typename T>
+T getValueOrDefault(const datatools::properties& p, const std::string& key, T defaultValue) {
+  T tmp{defaultValue};
+
+  if (p.has_key(key)) {
+    if (!type_check_visitor::visit<T>(p, key)) {
+      throw properties::WrongType("Key '" + key + "' is set but has incorrect type");
     }
+    p.fetch(key, tmp);
+  }
+  return tmp;
+}
 
-    // This should throw when key is set, but has the wrong type
-    // Also consider rvalue for default.
-    template <typename T>
-      T getValueOrDefault(const datatools::properties& p, const std::string& key, T defaultValue) {
-      T tmp {defaultValue};
+}  // namespace properties
 
-      if (p.has_key(key)) {
-	if(!type_check_visitor::visit<T>(p,key)) {
-	  throw properties::WrongType("Key '"+key+"' is set but has incorrect type");
-	}
-	p.fetch(key, tmp);
-      }
-      return tmp;
-    }
+}  // namespace falaise
 
-  } // namespace properties
-
-} // namespace falaise
-
-#endif // FALAISE_PROPERTY_READER_H
+#endif  // FALAISE_PROPERTY_READER_H

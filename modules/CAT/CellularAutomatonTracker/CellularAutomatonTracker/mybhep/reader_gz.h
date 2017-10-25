@@ -25,52 +25,45 @@
 #include <mybhep/sequential_reader.h>
 #include <zlib.h>
 
-
 #define ZLEN 600000
 
-
-namespace mybhep{
+namespace mybhep {
 //! reader_gz Class
 /*!
   This is a sequentialr reader, able to
   read a mybhep DST in txt format
 */
 
-  class reader_gz : public sequential_reader
-  {
+class reader_gz : public sequential_reader {
+ protected:
+  gzFile gf_;
 
+ public:
+  //! constructor
+  reader_gz();
+  virtual ~reader_gz();
+  //! protected interface
+ protected:
+  //! open file
+  virtual void open_file(std::string fileName);
 
-  protected:
-    gzFile gf_;
+  //! close file
+  virtual void close_file();
 
-  public:
-    //! constructor
-    reader_gz();
-    virtual ~reader_gz();
-    //! protected interface
-  protected:
+  //! max number of events
+  virtual size_t get_max_events();
 
-    //! open file
-    virtual void open_file(std::string fileName);
+  //! end of file
+  virtual bool end_of_file();
 
-    //! close file
-    virtual void close_file() ;
+  //! rewind to beginning
+  virtual void rewind();
 
-    //! max number of events
-    virtual size_t get_max_events();
+  //! skip to ievent
+  virtual void skip(size_t ievent);
 
-    //! end of file
-    virtual bool end_of_file();
-
-    //! rewind to beginning
-    virtual void rewind();
-
-    //! skip to ievent
-    virtual void skip(size_t ievent) ;
-
-    //! get the event as a record
-    virtual std::string get_record();
-
-  };
-}
+  //! get the event as a record
+  virtual std::string get_record();
+};
+}  // namespace mybhep
 #endif

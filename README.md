@@ -1,5 +1,7 @@
 # Falaise C++ Library and Applications for the SuperNEMO experiment
 
+[![Build Status](https://travis-ci.org/SuperNEMO-DBD/Falaise.svg?branch=develop)](https://travis-ci.org/SuperNEMO-DBD/Falaise)
+
 Falaise provides the main computational environment for the simulation,
 processing and analysis of data for the [SuperNEMO double beta decay search
 experiment](http://nemo.in2p3.fr). The three main components are
@@ -27,8 +29,7 @@ release of the software. Once installed, consult the [online documentation](http
 for a full guide to running the software and writing new plugin modules.
 
 ## Building, Testing and Installing from Source
-To build Falaise on your machine for use or development, the following requirements
-must be met:
+To build Falaise on your machine, the following requirements must be met:
 
 - Linux or macOS System
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
@@ -166,7 +167,7 @@ any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/
 
 # Contributing to Falaise
 
-Please see the [Contribution Guide](CONTRIBUTING.md)
+Please see the [Contribution Guide](https://github.com/SuperNEMO-DBD/Falaise/blob/develop/CONTRIBUTING.md#)
 
 
 # Naming
@@ -181,4 +182,4 @@ conditions of use of Falaise.
 
 ## Contributors
 
-Steven Calvez, Xavier Garrido, François Mauger, Ben Morgan, Guillaume Oliviero
+Many thanks go to Falaise's [contributors](https://github.com/SuperNEMO-DBD/Falaise/graphs/contributors)

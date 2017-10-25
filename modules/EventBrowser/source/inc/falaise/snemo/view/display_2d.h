@@ -42,59 +42,55 @@ class TGCompositeFrame;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      class i_draw_manager;
-      class i_embedded_viewer;
+class i_draw_manager;
+class i_embedded_viewer;
 
-      class display_2d
-      {
-      public:
-        void set_view_type (const view_type vtype_ = TOP_VIEW);
+class display_2d {
+ public:
+  void set_view_type(const view_type vtype_ = TOP_VIEW);
 
-        display_2d (TGCompositeFrame * main_,
-                    io::event_server * server_,
-                    const bool switch_mode = true);
-        virtual ~display_2d ();
+  display_2d(TGCompositeFrame *main_, io::event_server *server_, const bool switch_mode = true);
+  virtual ~display_2d();
 
-        void set_drawer (i_draw_manager * draw_manager_ = 0);
+  void set_drawer(i_draw_manager *draw_manager_ = 0);
 
-        void clear  ();
-        void reset  ();
+  void clear();
+  void reset();
 
-        void update_detector ();
-        void update_scene    ();
+  void update_detector();
+  void update_scene();
 
-        void process_option_buttons ();
-        void handle_button_signals (const button_signals_type signal_);
+  void process_option_buttons();
+  void handle_button_signals(const button_signals_type signal_);
 
-      private:
+ private:
+  io::event_server *_server_;
 
-        io::event_server  *  _server_;
+  i_draw_manager *_2d_drawer_;
+  i_embedded_viewer *_2d_viewer_;
 
-        i_draw_manager    *  _2d_drawer_;
-        i_embedded_viewer *  _2d_viewer_;
+  display_2d();                               // disabled
+  display_2d(const display_2d &);             // disabled
+  display_2d &operator=(const display_2d &);  // disabled
 
-        display_2d             ();                   // disabled
-        display_2d             (const display_2d &); // disabled
-        display_2d & operator= (const display_2d &); // disabled
+  ClassDef(display_2d, 0);
+};
 
-        ClassDef (display_2d, 0);
-      };
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_2D_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_2D_H
 
 // end of display_2d.h
 /*
