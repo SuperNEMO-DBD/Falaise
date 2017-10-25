@@ -32,6 +32,15 @@
 #include <falaise/snemo/datamodels/particle_track.ipp>
 #include <falaise/snemo/datamodels/particle_track_data.ipp>
 
+#include <falaise/snemo/datamodels/base_topology_pattern.ipp>
+#include <falaise/snemo/datamodels/base_topology_measurement.ipp>
+#include <falaise/snemo/datamodels/topology_1e_pattern.ipp>
+#include <falaise/snemo/datamodels/topology_2e_pattern.ipp>
+#include <falaise/snemo/datamodels/topology_1eNg_pattern.ipp>
+#include <falaise/snemo/datamodels/topology_2eNg_pattern.ipp>
+#include <falaise/snemo/datamodels/topology_1e1a_pattern.ipp>
+#include <falaise/snemo/datamodels/topology_data.ipp>
+
 //#include <snemo/datamodels/sim_signal_data.ipp>
 #include <snemo/datamodels/sim_calo_digi_hit.ipp>
 #include <snemo/datamodels/sim_digi_data.ipp>
