@@ -63,6 +63,31 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/particle_track_data.h
   snemo/datamodels/particle_track_data.ipp
 
+  snemo/datamodels/base_topology_measurement.h
+  snemo/datamodels/base_topology_measurement.ipp
+  snemo/datamodels/angle_measurement.h
+  snemo/datamodels/angle_measurement.ipp
+  snemo/datamodels/energy_measurement.h
+  snemo/datamodels/energy_measurement.ipp
+  snemo/datamodels/tof_measurement.h
+  snemo/datamodels/tof_measurement.ipp
+  snemo/datamodels/vertex_measurement.h
+  snemo/datamodels/vertex_measurement.ipp
+  snemo/datamodels/base_topology_pattern.h
+  snemo/datamodels/base_topology_pattern.ipp
+  snemo/datamodels/topology_1e_pattern.h
+  snemo/datamodels/topology_1e_pattern.ipp
+  snemo/datamodels/topology_1eNg_pattern.h
+  snemo/datamodels/topology_1eNg_pattern.ipp
+  snemo/datamodels/topology_1e1a_pattern.h
+  snemo/datamodels/topology_1e1a_pattern.ipp
+  snemo/datamodels/topology_2e_pattern.h
+  snemo/datamodels/topology_2e_pattern.ipp
+  snemo/datamodels/topology_2eNg_pattern.h
+  snemo/datamodels/topology_2eNg_pattern.ipp
+  snemo/datamodels/topology_data.h
+  snemo/datamodels/topology_data.ipp
+
   snemo/datamodels/data_model.h
 
   snemo/datamodels/the_serializable.h
@@ -135,6 +160,19 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
 
+  snemo/datamodels/base_topology_measurement.cc
+  snemo/datamodels/angle_measurement.cc
+  snemo/datamodels/energy_measurement.cc
+  snemo/datamodels/tof_measurement.cc
+  snemo/datamodels/vertex_measurement.cc
+  snemo/datamodels/base_topology_pattern.cc
+  snemo/datamodels/topology_1e_pattern.cc
+  snemo/datamodels/topology_1eNg_pattern.cc
+  snemo/datamodels/topology_1e1a_pattern.cc
+  snemo/datamodels/topology_2e_pattern.cc
+  snemo/datamodels/topology_2eNg_pattern.cc
+  snemo/datamodels/topology_data.cc
+
   snemo/datamodels/sim_trigger_digi_data.cc
   snemo/datamodels/sim_readout_digi_data.cc
   snemo/datamodels/sim_tracker_digi_hit.cc
@@ -197,6 +235,10 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/testing/test_snemo_datamodel_tracker_trajectory_solution.cxx
   snemo/testing/test_snemo_datamodel_particle_track.cxx
   snemo/testing/test_snemo_datamodel_particle_track_data.cxx
+  snemo/testing/test_snemo_datamodel_vertex_measurement.cxx
+  snemo/testing/test_snemo_datamodel_tof_measurement.cxx
+  snemo/testing/test_snemo_datamodel_base_topology_pattern.cxx
+  snemo/testing/test_snemo_datamodel_topology_data.cxx
   snemo/testing/test_snemo_geometry_calo_locator_1.cxx
   snemo/testing/test_snemo_geometry_gg_locator_1.cxx
   snemo/testing/test_snemo_geometry_gveto_locator_1.cxx
