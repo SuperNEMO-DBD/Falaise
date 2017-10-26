@@ -58,7 +58,7 @@
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 
-ClassImp(snemo::visualization::view::browser_tracks)
+ClassImp(snemo::visualization::view::browser_tracks);
 
     namespace snemo {
   namespace visualization {

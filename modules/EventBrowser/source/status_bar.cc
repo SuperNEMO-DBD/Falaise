@@ -37,7 +37,7 @@
 #include <TGLabel.h>
 #include <TGNumberEntry.h>
 
-ClassImp(snemo::visualization::view::status_bar)
+ClassImp(snemo::visualization::view::status_bar);
 
     namespace snemo {
   namespace visualization {

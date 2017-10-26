@@ -37,7 +37,7 @@
 #include <TGButtonGroup.h>
 #include <TGFrame.h>
 
-ClassImp(snemo::visualization::view::display_2d)
+ClassImp(snemo::visualization::view::display_2d);
 
     namespace snemo {
   namespace visualization {

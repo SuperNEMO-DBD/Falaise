@@ -44,7 +44,7 @@
 #include <iostream>
 #include <stdexcept>
 
-ClassImp(snemo::visualization::view::display_3d)
+ClassImp(snemo::visualization::view::display_3d);
 
     namespace snemo {
   namespace visualization {
