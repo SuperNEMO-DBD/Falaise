@@ -37,7 +37,11 @@
 #include <TGButtonGroup.h>
 #include <TGFrame.h>
 
+// Need trailing ; to satisfy clang-format, but leads to -pedantic error, ignore
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 ClassImp(snemo::visualization::view::display_2d);
+#pragma GCC diagnostic pop
 
 namespace snemo {
 namespace visualization {
