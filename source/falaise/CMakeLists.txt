@@ -145,6 +145,7 @@ if(FALAISE_ENABLE_TESTING)
     )
   list(APPEND FalaiseLibrary_TESTS_CATCH
     testing/test_property_reader.cxx
+    testing/test_falaise_version.cxx
     )
 endif()
 
