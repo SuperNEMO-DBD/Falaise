@@ -16,7 +16,6 @@
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/datatools/i_tree_dump.h>
-#include <bayeux/datatools/properties.h>
 
 namespace snemo {
 
@@ -32,18 +31,11 @@ class base_topology_measurement : public datatools::i_serializable,
   /// Destructor
   virtual ~base_topology_measurement();
 
-  /// Return the const container of auxiliaries
-  const datatools::properties& get_auxiliaries() const;
-
-  /// Return the mutable container of auxiliaries
-  datatools::properties& grab_auxiliaries();
-
   /// Smart print
   virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
