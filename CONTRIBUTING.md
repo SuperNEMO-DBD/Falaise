@@ -104,22 +104,25 @@ to make writing and online presentation clearer.
 
 
 ## Submitting Changes
-1. When you have completed work on your feature branch, publish it on
-   your fork by pushing the branch to it:
+1. Publish your feature branch on your fork by pushing the branch to it:
 
    ```console
    $ git push -u origin my-feature-branch
    ```
 
    If you have already pushed the branch, you can omit the `-u` flag. The key thing is
-   that the branch published on GitHub has the up to date set of commits.
+   that the branch published on GitHub has the up to date set of commits you want to propose.
 
 2. [Submit a Pull Request](https://help.github.com/articles/creating-a-pull-request/) with the branch to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise).
    A template is provided to help you describe the purpose of the PR (Bugfix,
    enhancement, documentation etc), and must be filled out. If your PR provides a
    fix for one or more already reported issues, ensure the `Fixes #<NUMBER>` lines
    are filled in so that the related issues will be automatically closed when the PR is merged.
-
+   "Work in Progress" Pull Requests are welcome, and should have titles that begin with "WIP:".
+   These are best used for work that you expect may take several iterations to complete,
+   to mark the start of work on a fix/feature and avoid duplication of effort, or to mark
+   work that you want help with. 
+   
 3. The PR will be reviewed by SuperNEMO users and developers as appropriate for the issue addressed.
    The core requirements for acceptance of a PR are:
 
