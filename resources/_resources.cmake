@@ -80,6 +80,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.1/vari
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.1/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.1/variants/registries/primary_events.conf
 ${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.1/manager.conf
+${PROJECT_SOURCE_DIR}/resources/config/common/simulation/primary_events/1.2/generators/dbd_more.def
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/geometry/2.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/geometry/2.0/models/optical_module.geom
 ${PROJECT_SOURCE_DIR}/resources/config/bipo3/geometry/2.0/models/shielding_5sce_side_top.geom
@@ -403,6 +404,17 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/registries/vertexes.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/registries/commissioning_source.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/manager.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/generators/versatile_more.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/documentation/flprimaries-1.3.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_flat_versatile_variant_models.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_versatile_variant_models.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_generators.csv
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/registries/primary_events.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.1/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf
