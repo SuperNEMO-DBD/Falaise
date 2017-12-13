@@ -1,0 +1,29 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of versatile particle generators
+#@key_label  "name"
+#@meta_label "type"
+
+
+#########################################################################
+[name="flat_versatile_generator" type="genbb::single_particle_generator"]
+#@config Particle with flat energy;group=miscellaneous;variant=if_flat_versatile
+
+#@description Generated particle ("electron", "positron", "gamma", "alpha"):
+particle_name : string = @variant(primary_event:generator/if_flat_versatile/particle|"gamma")
+
+#@description Mode ("energy_range", "gaussian_energy", "monokinetic", "spectrum"):
+mode          : string = "energy_range"
+
+#@description Emission direction of the emitted particle (in 4xPi)
+emission_direction : string = "randomized"
+
+#@description The minimum kinetic energy of the generated particle
+min_energy        : real   = @variant(primary_event:generator/if_flat_versatile/min_energy|100.0 keV)
+
+#@description The maximum kinetic energy of the generated particle
+max_energy        : real   = @variant(primary_event:generator/if_flat_versatile/max_energy|4000.0 keV)
+
+
+# end of versatile_more.def

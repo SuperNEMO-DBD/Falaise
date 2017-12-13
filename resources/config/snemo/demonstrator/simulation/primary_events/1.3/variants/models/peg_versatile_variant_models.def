@@ -1,0 +1,99 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/simulation/primary_events/1.3/models/versatile_variant_models.def
+# Description of variants for the primary event generation (format: datatools::multi_properties)
+
+#@description The definitions for variant parameters related to the primary event generation
+#@key_label  "name"
+#@meta_label "type"
+
+
+
+########################################################
+[name="peg.generator.vspg.particle.PM" type="parameter"]
+
+#@config A variant parameter describing the name of a primary particle
+
+#@description The display name of this variant
+display_name        : string = "Particle name"
+
+#@description A short description of the variant
+terse_description   : string = "The primary particle name"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "enumeration"
+
+#@description The number of enumerated values
+string.enumerated.size : integer = 5
+
+# The list of supported values:
+string.enumerated_0.value : string = "gamma"
+string.enumerated_1.value : string = "electron"
+string.enumerated_2.value : string = "positron"
+string.enumerated_3.value : string = "alpha"
+string.enumerated_4.value : string = "neutron"
+
+#@description The default value
+string.default : string = "gamma"
+
+
+######################################################
+[name="peg.generator.vspg.energy.PM" type="parameter"]
+
+#@config A variant parameter describing the energy of a primary particle
+
+#@description The display name of this variant
+display_name        : string = "Particle energy"
+
+#@description A short description of the variant
+terse_description   : string = "The primary particle energy"
+
+#@description The type of the parameter
+type                : string = "real"
+
+#@description The unit label
+real.unit_label     : string = "energy"
+
+#@description The preferred unit
+real.preferred_unit : string = "keV"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "interval"
+
+#@description The domain of supported values
+real.domain         : string = "[1.0 keV, 10 MeV]"
+
+#@description The default value
+real.default        : real as energy = 1.0 MeV
+
+
+#############################################
+[name="peg.generator.vspg.VM" type="variant"]
+
+#@config A variant model describing the parameters for the versatile primary event generator
+
+#@description The display name of this variant
+display_name       : string = "Versatile single particle generator"
+
+#@description A short description of the variant
+terse_description  : string = "The parameters for the versatile single particle generator"
+
+#@description The list of variant parameters
+parameters : string[2] = "particle" "energy"
+
+parameters.particle.model       : string = "peg.generator.vspg.particle.PM"
+parameters.particle.description : string = "The particle type"
+
+parameters.energy.model         : string = "peg.generator.vspg.energy.PM"
+parameters.energy.description   : string = "The particle energy (monokinetic)"
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/primary_events/1.3/models/3/models/versatile_variant_models.def

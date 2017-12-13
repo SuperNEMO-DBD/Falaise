@@ -1,0 +1,34 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/simulation/primary_events/1.3/models/flat_versatile_variant_models.def
+# Description of variants for the primary event generation (format: datatools::multi_properties)
+
+#@description The definitions for variant parameters related to the primary event generation
+#@key_label  "name"
+#@meta_label "type"
+
+
+##############################################
+[name="peg.generator.fvspg.VM" type="variant"]
+
+#@config A variant model describing the parameters for the flat energy versatile primary event generator
+
+#@description The display name of this variant
+display_name       : string = "Flat energy versatile single particle generator"
+
+#@description A short description of the variant
+terse_description  : string = "The parameters for the flat energy versatile single particle generator"
+
+#@description The list of variant parameters
+parameters : string[3] = "particle" "energy_min" "energy_max"
+
+parameters.particle.model       : string = "peg.generator.vspg.particle.PM"
+parameters.particle.description : string = "The particle type"
+
+parameters.energy_min.model         : string = "peg.generator.vspg.energy.PM"
+parameters.energy_min.description   : string = "The particle min energy (flat)"
+
+parameters.energy_max.model         : string = "peg.generator.vspg.energy.PM"
+parameters.energy_max.description   : string = "The particle max energy (flat)"
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/primary_events/1.3/models/3/models/flat_versatile_variant_models.def
