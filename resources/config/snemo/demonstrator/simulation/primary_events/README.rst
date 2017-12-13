@@ -20,6 +20,7 @@ History
     the minimum and maximum energies. The Bayeux variant system cannot ensure Emin < Emax
     so users must take care to the validity of the energy range they choose.
 
+    with flat energy in [100keV-10MeV] range (with variant support)
 
 * Version 1.2:
 
