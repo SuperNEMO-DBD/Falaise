@@ -284,7 +284,7 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
     // if (std::find_if(cch.begin(), cch.end(), [ineighbour] (auto icalo)
     //                  {return ineighbour == icalo.get().get_geom_id();}) != cch.end())
     // Find if the eight neighbours belong to calibrated calo. hits
-    geomtools::base_hit::has_geom_id_predicate hit_pred(a_gid);
+    geomtools::base_hit::has_geom_id_predicate hit_pred(aa_gid);
     datatools::mother_to_daughter_predicate<geomtools::base_hit,
                                             snemo::datamodel::calibrated_calorimeter_hit>
         pred_M2D(hit_pred);
@@ -294,9 +294,11 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
         std::find_if(hits_.begin(), hits_.end(), pred_via_handle);
     if (found == hits_.end()) {
       continue;
+    } else {
+      DT_LOG_TRACE(get_logging_priority(), "Found a neighbour calorimeter hit with geom_id " << aa_gid);
     }
 
-    registered_calos_.push_back(a_gid);
+    registered_calos_.push_back(aa_gid);
     cluster_.insert(std::make_pair(found->get().get_time(), *found));
     _get_geometrical_neighbours(found->get(), hits_, cluster_, registered_calos_);
   }
