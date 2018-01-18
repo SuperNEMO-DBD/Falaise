@@ -25,7 +25,7 @@
 
 echo >&2 "[debug] PATH = '${PATH}'"
 
-label="run-fix-issue49-validation"
+label="run-fix-issue59-validation"
 with_visu=0
 work_dir=""
 cfg_dir=""

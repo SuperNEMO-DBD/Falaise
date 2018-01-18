@@ -93,9 +93,9 @@ add_test(NAME flsimulate-example-4-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/example-4.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/example-4.brio"
   )
 set_tests_properties(flsimulate-example-4-run PROPERTIES DEPENDS flsimulate-example-4-profile)
-  
+
 # Tests dedicated to the validation of fixes
-# - ValidatioN of issue #16 fix
+# - Validation of issue #16 fix
 add_test(NAME flsimulate-fix-issue16-validation
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
@@ -103,7 +103,7 @@ add_test(NAME flsimulate-fix-issue16-validation
   )
 set_tests_properties(flsimulate-fix-issue16-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
-   
+
 # - Flsimulate issue #21
 # - Variant profile is given : flsimulate-issue21.profile
 add_test(NAME flsimulate-issue21-run
@@ -113,3 +113,17 @@ add_test(NAME flsimulate-issue21-run
           -d "issue21rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue21.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue21.brio"
   )
+
+# Tests dedicated to the validation of fixes
+# - Validation of issue #59 fix
+add_test(NAME flsimulate-fix-issue59-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation"
+  )
+set_tests_properties(flsimulate-fix-issue59-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+
+# Add test material for issue fixes here...
+
+# - end
