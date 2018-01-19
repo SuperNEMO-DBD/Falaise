@@ -35,7 +35,7 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flsimulate " << falaise::version::get_version() << "\n";
   if (isVerbose) {
     os << "\n"
-       << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
+       << "Copyright (C) 2013-2018 SuperNEMO Collaboration\n\n"
        << "flsimulate uses the following external libraries:\n"
        << "* Falaise : " << falaise::version::get_version() << "\n"
        << "* Bayeux  : " << bayeux::version::get_version() << "\n"

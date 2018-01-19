@@ -18,8 +18,8 @@
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
-// Copyright (c) 2017 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2017 by Université de Caen Normandie
+// Copyright (c) 2017-2018 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2017-2018 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
