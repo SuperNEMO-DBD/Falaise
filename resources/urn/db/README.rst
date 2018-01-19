@@ -8,26 +8,31 @@ Categories of URN tags
 
 Supported categories of various published tags:
 
-* ``experiment`` : identifier/tag associated
-  to an experiment (example: BiPo3, SuperNEMO demonstrator)
+* ``experiment``   :  identifier/tag   associated  to   an  experiment
+  (example: BiPo3, SuperNEMO demonstrator)
+* ``geosetup`` : identifier/tag associated to a geometry setup
 * ``expsetup`` : identifier/tag associated to an experimental setup
 * ``simsetup`` : identifier/tag associated to a simulation setup
 * ``recsetup`` : identifier/tag associated to a reconstruction setup
-* ``variant`` : identifier/tag associated to the configuration of a variant service
-  A variant tag may have 3 *system* topics:
+* ``service`` :  identifier/tag associated  to the configuration  of a
+  service management system
+* ``configuration`` :  identifier/tag associated to  the configuration
+  of  some   generic  system  or  service   (geometry,  reconstruction
+  modules...)
+* ``variant`` :  identifier/tag associated  to the configuration  of a
+  variant service
+* ``varprofile`` :  identifier/tag associated  to a variant  profile A
+  varprofile tag should have 1 topic:
 
-  * ``__parent__`` : the topic for the identification of the *parent*
-    configuration/setup to which the variant service is related
-  * ``__profiles__`` : the topic for the list of *official* variant profiles
-    registered within this variant service
-  * ``__default_profile__`` : the topic for the unique default variant profile
-      (typically chosen from the list of *official* variant profiles)
+  * ``variants`` :  the topic  for the  identification of  the variant
+    service configuration it is based on.
 
-* ``varprofile`` : identifier/tag associated to a variant profile
-  A varprofile tag may have 1 topic:
+A *setup*  tag which has a dependee  tag of the ``variant``  category may
+have 2 specific topics relative to variant support:
 
-  * ``__parent__`` : the topic for the identification of the *parent*
-    variant service configuration
-
-* ``service`` : identifier/tag associated to the configuration of a services management system
-* ``configuration`` : identifier/tag associated to the configuration of some generic system or service (geometry, reconstruction modules...)
+  * ``varprofiles`` :  the topic  for the  list of  *official* variant
+    profiles registered within the setup and associated to the variant
+    service used by the setup.
+  * ``defvarprofile``  :  the topic  for  the  unique default  variant
+      profile (typically  an alias  of one in  the list  of *official*
+      variant profiles)

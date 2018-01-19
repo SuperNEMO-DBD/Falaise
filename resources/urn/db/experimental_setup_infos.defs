@@ -17,11 +17,15 @@
 
 description : string = "SuperNEMO demonstrator detector setup (version 1.0)"
 
-topics : string[3] = "experiment" "services" "variants"
+topics : string[5] = "experiment" "services" "variants" "varprofiles" "defvarprofile"
 
 topic.experiment.component : string = "urn:snemo:demonstrator"
 topic.services.component   : string = "urn:snemo:demonstrator:setup:1.0:services"
 topic.variants.component   : string = "urn:snemo:demonstrator:setup:1.0:variants"
+topic.varprofiles.components : string[2] = \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0" \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0"
+topic.defvarprofile.component   : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
 
 
 ####################################################################
@@ -43,13 +47,6 @@ topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 
 description : string = "Variants setup for the SuperNEMO demonstrator detector setup (version 1.0)"
 
-topics : string[2] = "default_profile" "profiles"
-
-topic.default_profile.component : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
-topic.profiles.components : string[2] = \
-  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0" \
-  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0"
-
 
 ########################################################################################
 [urn="urn:snemo:demonstrator:setup:1.0:variants:profiles:default" category="varprofile"]
@@ -69,6 +66,9 @@ topic.alias_of.component: string = "urn:snemo:demonstrator:setup:1.0:variants:pr
 
 description : string = "Basic variant setup 1.0.0 for the SuperNEMO demonstrator detector setup (version 1.0)"
 
+topics : string[1] = "variants"
+topic.variants.component : string[1] = "urn:snemo:demonstrator:setup:1.0:variants"
+
 
 #########################################################################################
 [urn="urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0" category="varprofile"]
@@ -76,6 +76,9 @@ description : string = "Basic variant setup 1.0.0 for the SuperNEMO demonstrator
 #@config URN registration of HC variant profile 1.0.0 for the SuperNEMO demonstrator detector variants setup (version 1.0)
 
 description : string = "HC variant setup 1.0.0 for the SuperNEMO demonstrator detector setup (version 1.0)"
+
+topics : string[1] = "variants"
+topic.variants.component : string[1] = "urn:snemo:demonstrator:setup:1.0:variants"
 
 
 #########

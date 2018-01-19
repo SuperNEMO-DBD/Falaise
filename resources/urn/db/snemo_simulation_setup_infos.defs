@@ -32,11 +32,6 @@ description : string = "Decay generation setup (version 1.2) for SuperNEMO demon
 
 description : string = "Variants setup for the  SuperNEMO demonstrator simulation setup (version 2.1)"
 
-topics : string[2] = "__parent__" "__default_profile__"
-
-topic.__parent__.component          : string    = "urn:snemo:demonstrator:simulation:2.1"
-topic.__default_profile__.component : string    = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"
-
 
 #############################################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" category="varprofile"]
@@ -45,9 +40,8 @@ topic.__default_profile__.component : string    = "urn:snemo:demonstrator:simula
 
 description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (version 2.1)"
 
-topics : string[1] = "__parent__"
-
-topic.__parent__.component : string = "urn:snemo:demonstrator:simulation:2.1:variants"
+topics : string[1] = "variants"
+topic.variants.component : string = "urn:snemo:demonstrator:simulation:2.1:variants"
 
 
 #########################################################################
@@ -57,9 +51,7 @@ topic.__parent__.component : string = "urn:snemo:demonstrator:simulation:2.1:var
 
 description : string = "Services setup for the SuperNEMO demonstrator simulation setup (version 2.1)"
 
-topics : string[2] = "__parent__" "geometry"
-
-topic.__parent__.component     : string = "urn:snemo:demonstrator:simulation:2.1"
+topics : string[1] = "geometry"
 topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
@@ -70,12 +62,13 @@ topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
 description : string = "SuperNEMO demonstrator simulation setup (version 2.1)"
 
-topics : string[5] = "expsetup" "vertexes" "decays" "variants" "services"
+topics : string[6] = "variants" "defvarprofile" "expsetup" "vertexes" "decays" "services"
 
+topic.variants.component   : string = "urn:snemo:demonstrator:simulation:2.1:variants"
+topic.defvarprofile.component : string = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"
 topic.expsetup.component   : string = "urn:snemo:demonstrator:setup:1.0"
 topic.vertexes.component   : string = "urn:snemo:demonstrator:simulation:vertexes:4.1"
 topic.decays.component     : string = "urn:snemo:demonstrator:simulation:decays:1.2"
-topic.variants.component   : string = "urn:snemo:demonstrator:simulation:2.1:variants"
 topic.services.component   : string = "urn:snemo:demonstrator:simulation:2.1:services"
 
 
