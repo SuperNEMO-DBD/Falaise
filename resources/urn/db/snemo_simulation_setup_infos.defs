@@ -38,7 +38,7 @@ description : string = "Variants setup for the  SuperNEMO demonstrator simulatio
 
 #@config URN registration of default profile for the SuperNEMO demonstrator simulation setup (tag 2.1)
 
-description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (tag 2.1)"
+description : string = "Variant profile basic-1.0 for the SuperNEMO demonstrator simulation setup (tag 2.1)"
 
 topics : string[1] = "variants"
 topic.variants.component : string = "urn:snemo:demonstrator:simulation:2.1:variants"
