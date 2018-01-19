@@ -42,7 +42,11 @@ have 2 specific topics relative to variant support:
    variant profiles).
 
 
-Example: ::
+Examples
+========
+
+Layout of a simulation setup
+----------------------------
 
   ################################
   #   Simulation setup tag 3.0   #
