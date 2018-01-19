@@ -8,9 +8,9 @@
 ###############################################################################
 [urn="urn:snemo:demonstrator:simulation:vertexes:4.1" category="configuration"]
 
-#@config URN registration of vertex generation setup (version 4.1) for SuperNEMO demonstrator simulation
+#@config URN registration of vertex generation setup (tag 4.1) for SuperNEMO demonstrator simulation
 
-description : string = "Vertex generation setup (version 4.1) for SuperNEMO demonstrator simulation"
+description : string = "Vertex generation setup (tag 4.1) for SuperNEMO demonstrator simulation"
 
 topics : string[1] = "geometry"
 
@@ -20,36 +20,47 @@ topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 #############################################################################
 [urn="urn:snemo:demonstrator:simulation:decays:1.2" category="configuration"]
 
-#@config URN registration of decay generation setup (version 1.2) for SuperNEMO demonstrator simulation
+#@config URN registration of decay generation setup (tag 1.2) for SuperNEMO demonstrator simulation
 
-description : string = "Decay generation setup (version 1.2) for SuperNEMO demonstrator simulation"
+description : string = "Decay generation setup (tag 1.2) for SuperNEMO demonstrator simulation"
 
 
 #########################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1:variants" category="variant"]
 
-#@config URN registration of variants setup for the  SuperNEMO demonstrator simulation setup (version 2.1)
+#@config URN registration of variants setup for the  SuperNEMO demonstrator simulation setup (tag 2.1)
 
-description : string = "Variants setup for the  SuperNEMO demonstrator simulation setup (version 2.1)"
+description : string = "Variants setup for the  SuperNEMO demonstrator simulation setup (tag 2.1)"
 
 
-#############################################################################################
-[urn="urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" category="varprofile"]
+###############################################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0" category="varprofile"]
 
-#@config URN registration of default profile for the SuperNEMO demonstrator simulation setup (version 2.1)
+#@config URN registration of default profile for the SuperNEMO demonstrator simulation setup (tag 2.1)
 
-description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (version 2.1)"
+description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (tag 2.1)"
 
 topics : string[1] = "variants"
 topic.variants.component : string = "urn:snemo:demonstrator:simulation:2.1:variants"
 
 
+#############################################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:variants:profiles:default" category="varprofile"]
+
+#@config URN registration of default profile for the SuperNEMO demonstrator simulation setup (tag 2.1)
+
+description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (tag 2.1)"
+
+topics : string[1] = "alias_of"
+topic.alias_of.component : string = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"
+
+
 #########################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1:services" category="service"]
 
-#@config URN registration of services setup for the SuperNEMO demonstrator simulation setup (version 2.1)
+#@config URN registration of services setup for the SuperNEMO demonstrator simulation setup (tag 2.1)
 
-description : string = "Services setup for the SuperNEMO demonstrator simulation setup (version 2.1)"
+description : string = "Services setup for the SuperNEMO demonstrator simulation setup (tag 2.1)"
 
 topics : string[1] = "geometry"
 topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
@@ -58,18 +69,19 @@ topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 #################################################################
 [urn="urn:snemo:demonstrator:simulation:2.1" category="simsetup"]
 
-#@config URN registration of SuperNEMO demonstrator simulation setup version 2.1
+#@config URN registration of SuperNEMO demonstrator simulation setup tag 2.1
 
-description : string = "SuperNEMO demonstrator simulation setup (version 2.1)"
+description : string = "SuperNEMO demonstrator simulation setup (tag 2.1)"
 
-topics : string[6] = "variants" "defvarprofile" "expsetup" "vertexes" "decays" "services"
+topics : string[7] = "variants" "varprofiles" "defvarprofile" "expsetup" "services" "vertexes" "decays"
 
-topic.variants.component   : string = "urn:snemo:demonstrator:simulation:2.1:variants"
-topic.defvarprofile.component : string = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"
-topic.expsetup.component   : string = "urn:snemo:demonstrator:setup:1.0"
-topic.vertexes.component   : string = "urn:snemo:demonstrator:simulation:vertexes:4.1"
-topic.decays.component     : string = "urn:snemo:demonstrator:simulation:decays:1.2"
-topic.services.component   : string = "urn:snemo:demonstrator:simulation:2.1:services"
+topic.variants.component      : string    = "urn:snemo:demonstrator:simulation:2.1:variants"
+topic.varprofiles.components  : string[1] = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"
+topic.defvarprofile.component : string    = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"
+topic.expsetup.component      : string    = "urn:snemo:demonstrator:setup:1.0"
+topic.services.component      : string    = "urn:snemo:demonstrator:simulation:2.1:services"
+topic.vertexes.component      : string    = "urn:snemo:demonstrator:simulation:vertexes:4.1"
+topic.decays.component        : string    = "urn:snemo:demonstrator:simulation:decays:1.2"
 
 
 # end

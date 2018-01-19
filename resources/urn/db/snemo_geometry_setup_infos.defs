@@ -8,35 +8,17 @@
 #######################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0:variants" category="variant"]
 
-#@config URN registration of SuperNEMO demonstrator geometry variants setup (version 4.0)
+#@config URN registration of SuperNEMO demonstrator geometry variants setup (tag 4.0)
 
-description : string = "SuperNEMO demonstrator geometry variants setup (version 4.0)"
-
-# topics : string[2] = "default_profile" "profiles"
-
-# topic.default_profile.component : string = "urn:snemo:demonstrator:geometry:4.0:variants:profiles:default"
-# topic.profiles.components       : string[2] = \
-#   "urn:snemo:demonstrator:geometry:4.0:variants:profiles:basic:1.0.0" \
-#   "urn:snemo:demonstrator:geometry:4.0:variants:profiles:hc:1.0.0"
-
-
-###########################################################################################
-[urn="urn:snemo:demonstrator:geometry:4.0:variants:profiles:default" category="varprofile"]
-
-#@config URN registration of default variant profile for the SuperNEMO demonstrator geometry (version 4.0)
-
-description : string = "Default variant profile for the SuperNEMO demonstrator geometry (version 4.0)"
-
-topics : string[1] = "alias_of"
-topic.alias_of.component: string = "urn:snemo:demonstrator:geometry:4.0:variants:profiles:basic:1.0.0"
+description : string = "SuperNEMO demonstrator geometry variants setup (tag 4.0)"
 
 
 ###############################################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0:variants:profiles:basic:1.0.0" category="varprofile"]
 
-#@config URN registration of basic 1.0.0 variant profile for the SuperNEMO demonstrator geometry (version 4.0)
+#@config URN registration of basic 1.0.0 variant profile for the SuperNEMO demonstrator geometry (tag 4.0)
 
-description : string = "Basic layout (1.0.0) variant profile for the SuperNEMO demonstrator geometry (version 4.0)"
+description : string = "Basic layout (1.0.0) variant profile for the SuperNEMO demonstrator geometry (tag 4.0)"
 
 topics : string[1] = "variants"
 topic.variants.component : string[1] = "urn:snemo:demonstrator:geometry:4.0:variants"
@@ -45,20 +27,31 @@ topic.variants.component : string[1] = "urn:snemo:demonstrator:geometry:4.0:vari
 ############################################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0:variants:profiles:hc:1.0.0" category="varprofile"]
 
-#@config URN registration of HC-1.0.0 variant profile for the SuperNEMO demonstrator geometry (version 4.0)
+#@config URN registration of HC-1.0.0 variant profile for the SuperNEMO demonstrator geometry (tag 4.0)
 
-description : string = "Half-commissioning variant profile for the SuperNEMO demonstrator geometry (version 4.0)"
+description : string = "Half-commissioning variant profile for the SuperNEMO demonstrator geometry (tag 4.0)"
 
 topics : string[1] = "variants"
 topic.variants.component : string[1] = "urn:snemo:demonstrator:geometry:4.0:variants"
 
 
+###########################################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:variants:profiles:default" category="varprofile"]
+
+#@config URN registration of default variant profile for the SuperNEMO demonstrator geometry (tag 4.0)
+
+description : string = "Default variant profile for the SuperNEMO demonstrator geometry (tag 4.0)"
+
+topics : string[1] = "alias_of"
+topic.alias_of.component: string = "urn:snemo:demonstrator:geometry:4.0:variants:profiles:basic:1.0.0"
+
+
 ###############################################################
 [urn="urn:snemo:demonstrator:geometry:4.0" category="geosetup"]
 
-#@config URN registration of SuperNEMO demonstrator geometry setup (version 4.0)
+#@config URN registration of SuperNEMO demonstrator geometry setup (tag 4.0)
 
-description : string = "SuperNEMO demonstrator geometry setup (version 4.0)"
+description : string = "SuperNEMO demonstrator geometry setup (tag 4.0)"
 
 topics : string[4] = "experiment" "variants" "varprofiles" "defvarprofile"
 
@@ -74,9 +67,9 @@ topic.defvarprofile.component : string = \
 #######################################################################
 [urn="urn:snemo:demonstrator:geometry:4.0:services" category="service"]
 
-#@config URN registration of SuperNEMO demonstrator geometry service setup (version 4.0)
+#@config URN registration of SuperNEMO demonstrator geometry service setup (tag 4.0)
 
-description : string = "SuperNEMO demonstrator geometry service setup (version 4.0)"
+description : string = "SuperNEMO demonstrator geometry service setup (tag 4.0)"
 topics : string[1] = "geometry"
 topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
