@@ -5,8 +5,8 @@
 #@meta_label "category"
 
 
-#######################################################################
-[urn="urn:snemo:demonstrator:geometry:4.0:variants" category="variant"]
+########################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:variants" category="variants"]
 
 #@config URN registration of SuperNEMO demonstrator geometry variants setup (tag 4.0)
 
@@ -46,8 +46,8 @@ topics : string[1] = "alias_of"
 topic.alias_of.component: string = "urn:snemo:demonstrator:geometry:4.0:variants:profiles:basic:1.0.0"
 
 
-###############################################################
-[urn="urn:snemo:demonstrator:geometry:4.0" category="geosetup"]
+################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0" category="geomsetup"]
 
 #@config URN registration of SuperNEMO demonstrator geometry setup (tag 4.0)
 
@@ -64,8 +64,8 @@ topic.defvarprofile.component : string = \
   "urn:snemo:demonstrator:geometry:4.0:variants:profiles:default"
 
 
-#######################################################################
-[urn="urn:snemo:demonstrator:geometry:4.0:services" category="service"]
+########################################################################
+[urn="urn:snemo:demonstrator:geometry:4.0:services" category="services"]
 
 #@config URN registration of SuperNEMO demonstrator geometry service setup (tag 4.0)
 

@@ -25,8 +25,8 @@ topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 description : string = "Decay generation setup (tag 1.2) for SuperNEMO demonstrator simulation"
 
 
-#########################################################################
-[urn="urn:snemo:demonstrator:simulation:2.1:variants" category="variant"]
+##########################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:variants" category="variants"]
 
 #@config URN registration of variants setup for the  SuperNEMO demonstrator simulation setup (tag 2.1)
 
@@ -55,8 +55,8 @@ topics : string[1] = "alias_of"
 topic.alias_of.component : string = "urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"
 
 
-#########################################################################
-[urn="urn:snemo:demonstrator:simulation:2.1:services" category="service"]
+##########################################################################
+[urn="urn:snemo:demonstrator:simulation:2.1:services" category="services"]
 
 #@config URN registration of services setup for the SuperNEMO demonstrator simulation setup (tag 2.1)
 

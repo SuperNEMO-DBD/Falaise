@@ -14,12 +14,12 @@ Supported categories of various published tags:
 * ``expsetup`` : identifier/tag associated to an experimental setup
 * ``simsetup`` : identifier/tag associated to a simulation setup
 * ``recsetup`` : identifier/tag associated to a reconstruction setup
-* ``service`` :  identifier/tag associated to the configuration  of a
+* ``services`` :  identifier/tag associated to the configuration  of a
   service management system
 * ``configuration`` : identifier/tag associated to  the configuration
   of  some   generic  system  or  service   (geometry,  reconstruction
   modules...)
-* ``variant`` :  identifier/tag associated  to the configuration  of a
+* ``variants`` :  identifier/tag associated  to the configuration  of a
   variant service
 * ``varprofile`` : identifier/tag associated  to a variant  profile. A
   varprofile tag must have one topic:
@@ -31,14 +31,14 @@ Supported categories of various published tags:
 Composition of a setup configuration
 ====================================
 
-A *setup*  tag which has a dependee  tag of the ``variant``  category may
-have 2 specific topics relative to variant support:
+A *setup*  tag which has a dependee  tag of the ``variants``  category may
+also have two specific topics relative to *variants* support:
 
  * ``varprofiles`` :  the topic  for the  list of  *official* variant
    profiles registered within the setup and associated to the variant
    service used by the setup.
- * ``defvarprofile``  :  the topic  for  the  unique default  variant
-   profile (typically  an alias  of one in  the list  of *official*
+ * ``defvarprofile``  :  the topic  for  the  unique *default*  variant
+   profile (typically  an alias  of one published in  the list  of *official*
    variant profiles).
 
 

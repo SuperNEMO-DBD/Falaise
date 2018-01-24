@@ -28,8 +28,8 @@ topic.varprofiles.components : string[2] = \
 topic.defvarprofile.component   : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
 
 
-####################################################################
-[urn="urn:snemo:demonstrator:setup:1.0:services" category="service"]
+#####################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:services" category="services"]
 
 #@config URN registration of services setup for the SuperNEMO demonstrator detector setup (tag 1.0)
 
@@ -40,8 +40,8 @@ topics : string[1] = "geometry"
 topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:4.0"
 
 
-####################################################################
-[urn="urn:snemo:demonstrator:setup:1.0:variants" category="variant"]
+#####################################################################
+[urn="urn:snemo:demonstrator:setup:1.0:variants" category="variants"]
 
 #@config URN registration of variants setup for the SuperNEMO demonstrator detector setup (tag 1.0)
 
