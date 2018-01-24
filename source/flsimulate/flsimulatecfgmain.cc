@@ -37,6 +37,7 @@
 #include "falaise/exitcodes.h"
 #include "falaise/falaise.h"
 #include "falaise/version.h"
+#include "falaise/tags.h"
 
 //----------------------------------------------------------------------
 // DECLARATIONS
@@ -334,8 +335,8 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
   datatools::urn_info variantConfigUrnInfo;
   // Check URN registration from the system URN query service:
   {
-    DT_THROW_IF(
-        !dtkUrnQuery.check_urn_info(flSimCfgParameters.simulationSetupUrn, "simsetup"),
+    DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimCfgParameters.simulationSetupUrn,
+                                            falaise::tags::simulation_setup_category()),
         std::logic_error,
         "Cannot query simulation setup URN='" << flSimCfgParameters.simulationSetupUrn << "'!");
   }
@@ -353,7 +354,8 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
     // Check URN registration from the system URN query service:
     {
       DT_THROW_IF(
-          !dtkUrnQuery.check_urn_info(flSimCfgParameters.variantConfigUrn, "variant"),
+                  !dtkUrnQuery.check_urn_info(flSimCfgParameters.variantConfigUrn,
+                                              falaise::tags::variant_service_category()),
           std::logic_error,
           "Cannot query variant setup URN='" << flSimCfgParameters.variantConfigUrn << "'!");
     }

@@ -36,6 +36,8 @@ add_executable(fltags
   FLTagsErrors.cc
   FLTagsUtils.h
   FLTagsUtils.cc
+  FLTags.h
+  FLTags.cc
   )
 target_include_directories(fltags PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}

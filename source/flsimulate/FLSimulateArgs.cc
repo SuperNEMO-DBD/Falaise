@@ -16,6 +16,7 @@
 #include "FLSimulateCommandLine.h"
 #include "FLSimulateErrors.h"
 #include "FLSimulateUtils.h"
+#include "falaise/tags.h"
 #include "falaise/property_reader.h"
 
 namespace FLSimulate {
@@ -419,7 +420,8 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
     // Check URN registration from the system URN query service:
     {
       DT_THROW_IF(
-          !dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn, "simsetup"),
+                  !dtkUrnQuery.check_urn_info(flSimParameters.simulationSetupUrn,
+                                              falaise::tags::simulation_setup_category()),
           std::logic_error,
           "Cannot query simulation setup URN='" << flSimParameters.simulationSetupUrn << "'!");
     }
@@ -457,7 +459,8 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
     if (!flSimParameters.variantConfigUrn.empty()) {
       // Check URN registration from the system URN query service:
       {
-        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.variantConfigUrn, "variant"),
+        DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimParameters.variantConfigUrn,
+                                                falaise::tags::variant_service_category()),
                     std::logic_error,
                     "Cannot query variant setup URN='" << flSimParameters.variantConfigUrn << "'!");
       }

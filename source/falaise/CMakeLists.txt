@@ -30,6 +30,7 @@ set(FalaiseLibrary_HEADERS
   resource.h
   version.h.in
   property_reader.h
+  tags.h
   detail/falaise_sys.h
 )
 
@@ -52,6 +53,7 @@ set(FalaiseLibrary_SOURCES
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
   property_reader.cc
+  tags.cc
   detail/falaise_sys.cc
  )
 
@@ -142,7 +144,8 @@ if(FALAISE_ENABLE_TESTING)
   list(APPEND FalaiseLibrary_TESTS
     testing/test_falaise.cxx
     testing/test_io_data.cxx
-    )
+    testing/test_falaise_tags.cxx
+   )
   list(APPEND FalaiseLibrary_TESTS_CATCH
     testing/test_property_reader.cxx
     testing/test_falaise_version.cxx

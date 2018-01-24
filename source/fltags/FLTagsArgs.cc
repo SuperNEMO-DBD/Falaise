@@ -15,6 +15,7 @@
 #include "FLTagsCommandLine.h"
 #include "FLTagsErrors.h"
 #include "FLTagsUtils.h"
+#include "FLTags.h"
 #include "falaise/property_reader.h"
 
 namespace FLTags {
@@ -27,12 +28,14 @@ namespace FLTags {
     FLTagsArgs params;
 
     // Application specific parameters:
-    params.logLevel = datatools::logger::PRIO_ERROR;
+    params.logLevel = datatools::logger::PRIO_FATAL;
+    params.action = "";
+    params.list_with_tree = false;
     params.dot_with_vertex_index = false;
     params.dot_without_vertex_category = false;
     params.dot_without_edge_topic = false;
     params.dot_without_checks = false;
-    params.dot_outputFile = "";
+    params.outputFile = "";
 
     return params;
   }
@@ -54,12 +57,14 @@ namespace FLTags {
     }
 
     // Feed input from command line to params
-    flTagsParameters.logLevel = args.logLevel;
+    flTagsParameters.logLevel                    = args.logLevel;
+    flTagsParameters.action                      = args.action;
+    flTagsParameters.list_with_tree              = args.list_with_tree;
     flTagsParameters.dot_with_vertex_index       = args.dot_with_vertex_index;
     flTagsParameters.dot_without_vertex_category = args.dot_without_vertex_category;
     flTagsParameters.dot_without_edge_topic      = args.dot_without_edge_topic;
     flTagsParameters.dot_without_checks          = args.dot_without_checks;
-    flTagsParameters.dot_outputFile              = args.dot_outputFile;
+    flTagsParameters.outputFile                  = args.outputFile;
 
     do_postprocess(flTagsParameters);
     return;
@@ -69,10 +74,22 @@ namespace FLTags {
   {
     DT_LOG_TRACE_ENTERING(flTagsParameters.logLevel);
 
-    if (!flTagsParameters.dot_outputFile.empty() && flTagsParameters.dot_outputFile != "-") {
-      if (!flTagsParameters.dot_without_checks &&
-          ! boost::ends_with(flTagsParameters.dot_outputFile, ".dot")) {
-        DT_THROW(FLConfigUserError, "Invalid file extension '" << flTagsParameters.dot_outputFile << "' (expected '.dot')");
+    if (flTagsParameters.action.empty()) {
+      flTagsParameters.action = fltags::default_action();
+    }
+
+    if (!flTagsParameters.outputFile.empty()) {
+      if (flTagsParameters.outputFile != "-" && flTagsParameters.action == "graph") {
+        if (!flTagsParameters.dot_without_checks &&
+            ! boost::ends_with(flTagsParameters.outputFile, ".dot")) {
+          DT_THROW(FLConfigUserError, "Invalid file extension '" << flTagsParameters.outputFile << "' (expected '.dot')");
+        }
+      }
+    } else {
+      if (flTagsParameters.action == "list") {
+        flTagsParameters.outputFile = FLTags::default_list_filename();
+      } else if (flTagsParameters.action == "graph") {
+        flTagsParameters.outputFile = FLTags::default_dot_filename();
       }
     }
 
@@ -94,14 +111,22 @@ namespace FLTags {
          << "logLevel                    = '" << datatools::logger::get_priority_label(this->logLevel)
          << "'" << std::endl;
     out_ << tag
-         << "DOT with wertex index       = " << std::boolalpha << dot_with_vertex_index << std::endl;
-    out_ << tag
-         << "DOT without wertex category = " << std::boolalpha << dot_without_vertex_category << std::endl;
-    out_ << tag
-         << "DOT without edge topic      = " << std::boolalpha << dot_without_edge_topic << std::endl;
+         << "action                      = '" << action << "'" << std::endl;
+    if (action == "list") {
+      out_ << tag
+           << "Print list as a tree        = " << std::boolalpha << list_with_tree << std::endl;
+    }
+    if (action == "graph") {
+      out_ << tag
+           << "DOT with wertex index       = " << std::boolalpha << dot_with_vertex_index << std::endl;
+      out_ << tag
+           << "DOT without wertex category = " << std::boolalpha << dot_without_vertex_category << std::endl;
+      out_ << tag
+           << "DOT without edge topic      = " << std::boolalpha << dot_without_edge_topic << std::endl;
+    }
     out_ << last_tag
-         << "outputFile                  = '" << dot_outputFile << "'" << std::endl;
-    return;
+         << "outputFile                  = '" << outputFile << "'" << std::endl;
+   return;
   }
 
 }  // namespace FLTags

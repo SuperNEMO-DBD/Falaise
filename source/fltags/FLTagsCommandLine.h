@@ -24,26 +24,28 @@
 
 namespace FLTags {
 
-//! \brief The parameters we can receive from the command line
-// Help and so on are not marked because these are handled by the UI.
-struct FLTagsCommandLine {
-  datatools::logger::priority logLevel;  //!< Logging priority threshold
-  bool dot_with_vertex_index       = false;
-  bool dot_without_vertex_category = false;
-  bool dot_without_edge_topic      = false;
-  bool dot_without_checks          = false;
-  std::string dot_outputFile;            //!< Path for the output module
-  static FLTagsCommandLine makeDefault();
-};
+  //! \brief The parameters we can receive from the command line
+  // Help and so on are not marked because these are handled by the UI.
+  struct FLTagsCommandLine {
+    datatools::logger::priority logLevel = datatools::logger::PRIO_FATAL;  //!< Logging priority threshold
+    std::string action               = "";
+    bool list_with_tree              = false;
+    bool dot_with_vertex_index       = false;
+    bool dot_without_vertex_category = false;
+    bool dot_without_edge_topic      = false;
+    bool dot_without_checks          = false;
+    std::string outputFile; //!< Path for the output file
+    static FLTagsCommandLine makeDefault();
+  };
 
-//! Handle printing of version information to given ostream
-void do_version(std::ostream& os, bool isVerbose);
+  //! Handle printing of version information to given ostream
+  void do_version(std::ostream& os, bool isVerbose);
 
-//! Handle printing of help message to screen
-void do_help(const boost::program_options::options_description& od);
+  //! Handle printing of help message to screen
+  void do_help(const boost::program_options::options_description& od);
 
-//! Handle command line argument dialog
-void do_cldialog(int argc, char* argv[], FLTagsCommandLine& clArgs);
+  //! Handle command line argument dialog
+  void do_cldialog(int argc, char* argv[], FLTagsCommandLine& clArgs);
 
 }  // namespace FLTags
 

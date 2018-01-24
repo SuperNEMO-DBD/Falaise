@@ -22,12 +22,14 @@ namespace FLTags {
   FLTagsCommandLine FLTagsCommandLine::makeDefault()
   {
     FLTagsCommandLine flClarg;
-    flClarg.logLevel = datatools::logger::PRIO_ERROR;
+    flClarg.logLevel = datatools::logger::PRIO_FATAL;
+    flClarg.action = "";
+    flClarg.list_with_tree = false;
     flClarg.dot_with_vertex_index = false;
     flClarg.dot_without_vertex_category = false;
     flClarg.dot_without_edge_topic = false;
     flClarg.dot_without_checks = false;
-    flClarg.dot_outputFile = "";
+    flClarg.outputFile = "";
     return flClarg;
   }
 
@@ -77,41 +79,52 @@ namespace FLTags {
        "Example: \n"
        "  -V \"debug\" ")
 
-      ("without-vertex-category,c",
-       bpo::value<bool>(&clArgs.dot_without_vertex_category)->zero_tokens()
+      ("list", "print the list of registered tags (default format: CSV)")
+
+      ("list-with-tree,t",
+       bpo::value<bool>(&clArgs.list_with_tree)
        ->zero_tokens()
        ->default_value(false),
-       "flag to inhibit the printing of the category of each URN vertex\n")
+       "flag to print the list of registered tags with a tree layout (list only)")
 
-      ("without-edge-topic,t",
-       bpo::value<bool>(&clArgs.dot_without_edge_topic)->zero_tokens()
+      ("graph", "generate a DOT graph of registered tags")
+
+      ("dot-without-vertex-category,C",
+       bpo::value<bool>(&clArgs.dot_without_vertex_category)
        ->zero_tokens()
        ->default_value(false),
-       "flag to inhibit the printing of the topic of each URN edge\n")
+       "flag to inhibit the printing of the category of each URN vertex (DOT graph only)")
 
-      ("without-checks,k",
-       bpo::value<bool>(&clArgs.dot_without_checks)->zero_tokens()
+      ("dot-without-edge-topic,T",
+       bpo::value<bool>(&clArgs.dot_without_edge_topic)
        ->zero_tokens()
        ->default_value(false),
-       "flag to skip some checks on DOT output\n")
+       "flag to inhibit the printing of the topic of each URN edge (DOT graph only)")
 
-      ("with-vertex-index,i",
+      ("dot-without-checks,K",
+       bpo::value<bool>(&clArgs.dot_without_checks)
+       ->zero_tokens()
+       ->default_value(false),
+       "flag to skip some checks on DOT output (DOT graph only)")
+
+      ("dot-with-vertex-index,i",
        bpo::value<bool>(&clArgs.dot_with_vertex_index)
        ->zero_tokens()
        ->default_value(false),
-       "flag to print the index of each URN vertex index (expert only)\n")
+       "flag to print the index of each URN vertex index (DOT graph only, expert mode)")
 
       ("output-file,o",
-       bpo::value<std::string>(&clArgs.dot_outputFile)
+       bpo::value<std::string>(&clArgs.outputFile)
        // ->required()
-       ->value_name("file")
-       ->default_value(FLTags::default_dot_filename()),
-        "file in which to export the graph in DOT format\n"
+       ->value_name("file"),
+       //->default_value(FLTags::default_dot_filename()),
+        "file in which to export the graph in DOT format or print the list of registered tags\n"
        "Examples:\n"
-       "  -o \"fltags.dot\" \n"
-       "To print on the standard output:\n"
+       "  --graph -o \"fltags.dot\" \n"
+       "  --list -o \"fltags.lis\" \n"
+      "To print on the standard output:\n"
        "  -o \"-\" ")
-      ;
+     ;
 
     // - Parse...
     bpo::variables_map vMap;
@@ -145,6 +158,14 @@ namespace FLTags {
       if (clArgs.logLevel == datatools::logger::PRIO_UNDEFINED) {
         throw FLDialogOptionsError();
       }
+    }
+
+    if (vMap.count("list")) {
+      clArgs.action = "list";
+    }
+
+    if (vMap.count("graph")) {
+      clArgs.action = "graph";
     }
 
     return;

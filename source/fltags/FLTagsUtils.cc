@@ -16,4 +16,9 @@ namespace FLTags {
     return "fltags.dot";
   }
 
+  std::string default_list_filename()
+  {
+    return "fltags.lis";
+  }
+
 }  // end of namespace FLTags
