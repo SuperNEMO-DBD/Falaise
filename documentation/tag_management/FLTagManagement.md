@@ -9,17 +9,17 @@ Introduction to tags {#managetags_intro}
 
 
 
-Tag categories
+Tag categories {#managetags_tagcategories}
 ==============
 
 
-Tag registration
+Tag registration {#managetags_tagregistration}
 ================
 
 
-Tag dependencies
+Tag dependencies {#managetags_tagdependencies}
 ================
 
 
-Tag to file resolver
+Tag to file resolver {#managetags_tagtofileresolver}
 ====================
