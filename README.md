@@ -25,15 +25,24 @@ can be used too.
 If you simply wish to use or try out Falaise, we recommend installing it
 using [our Home/Linuxbrew tap](https://github.com/SuperNEMO-dbd/homebrew-cadfael).
 This will install everything you need, and includes the latest official
-release of the software. Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
+release of the software. 
+
+Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
 for a full guide to running the software and writing new plugin modules.
+
+If you have [Docker](https://www.docker.com) available, then images for current and past releases
+together with instructions for use are available from [Docker Hub](https://hub.docker.com/r/supernemo/falaise/).
+
 
 ## Building, Testing and Installing from Source
 To build Falaise on your machine, the following requirements must be met:
 
 - Linux or macOS System
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
+  - Other Linux distributions are known to work, but are not
+    officially supported. However, patches are welcome to resolve encountered issues!
   - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
+  - macOS High Sierra is not yet officially supported, but work is in progress
 - GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
 - [CMake](https://cmake.org) 3.5 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher

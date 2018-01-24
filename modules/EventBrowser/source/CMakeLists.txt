@@ -122,6 +122,8 @@ else()
     set(CMAKE_INSTALL_LIBDIR_OLD "${CMAKE_INSTALL_LIBDIR}")
     set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}/Falaise/modules")
   endif()
+  # Root 6.12 requires additional include path
+  include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
   root_generate_dictionary(event_browser_dict
     "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
     ${__EVENTBROWSER_MODULE_ARG}

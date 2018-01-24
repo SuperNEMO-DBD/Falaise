@@ -49,12 +49,19 @@ FLReconstructCommandLine FLReconstructCommandLine::makeDefault() {
 
 //! Handle printing of version information to given ostream
 void do_version(std::ostream& os, bool isVerbose) {
-  os << "flreconstruct " << falaise::version::get_version() << "\n";
+  std::string commitInfo{};
+  if (falaise::version::get_commit() != "") {
+    commitInfo = " (" + falaise::version::get_commit();
+    commitInfo += falaise::version::is_dirty() ? "-dirty" : "";
+    commitInfo += ")";
+  }
+
+  os << "flreconstruct " << falaise::version::get_version() << commitInfo << "\n";
   if (isVerbose) {
     os << "\n"
        << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
        << "flreconstruct uses the following external libraries:\n"
-       << "* Falaise : " << falaise::version::get_version() << "\n"
+       << "* Falaise : " << falaise::version::get_version() << commitInfo << "\n"
        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
        << "* Boost   : " << BOOST_VERSION << "\n"
        << "\n\n";
