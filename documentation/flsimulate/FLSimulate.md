@@ -521,7 +521,7 @@ displayed on the table below:
    +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)
    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
    +-- urn:snemo:demonstrator:simulation:2.1:variants (used variant configuration)
-   |   +-- urn:snemo:demonstrator:simulation:2.1:variants:profiles:default (default variant profile)
+   +-- urn:snemo:demonstrator:simulation:2.1:variants:profiles:default (default variant profile)
    +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)
    +-- urn:snemo:demonstrator:simulation:decays:1.2 (used decay generation setup)
 ~~~~~
@@ -948,8 +948,8 @@ List of available simulation setups {#usingflsimulate_summaryofavailablesimulati
 		*   Associated to:
 			+   Services system: `"urn:snemo:demonstrator:simulation:2.1:services"`
 			+   Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
-				- Blessed profiles: the default one below
-				- Default profile: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"`
+			+   Blessed profiles: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"`
+			+   Default profile: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"`
 
 
 Available MC hits output profiles {#usingflsimulate_hits_output_profiles}
