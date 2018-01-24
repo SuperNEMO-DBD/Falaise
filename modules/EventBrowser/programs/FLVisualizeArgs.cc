@@ -266,7 +266,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
       geometryConfigUrn = servicesConfigUrnInfo.get_component("geometry");
       // Check URN registration from the system URN query service:
       {
-        std::string conf_category = "configuration";
+        std::string conf_category = "geosetup";
         DT_THROW_IF(!dtkUrnQuery.check_urn_info(geometryConfigUrn, conf_category), std::logic_error,
                     "Cannot query URN='" << geometryConfigUrn << "'!");
       }
