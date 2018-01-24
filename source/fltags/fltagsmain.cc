@@ -126,10 +126,10 @@ namespace FLTags {
         if (flTagsParameters.dot_with_vertex_index) {
           xgv_options |= datatools::dependency_graph::XGV_WITH_VERTEX_INDEX;
         }
-        if (flTagsParameters.dot_with_vertex_category) {
+        if (!flTagsParameters.dot_without_vertex_category) {
           xgv_options |= datatools::dependency_graph::XGV_WITH_VERTEX_CATEGORY;
         }
-        if (flTagsParameters.dot_with_edge_topic) {
+        if (!flTagsParameters.dot_without_edge_topic) {
           xgv_options |= datatools::dependency_graph::XGV_WITH_EDGE_TOPIC;
         }
         dg.export_graphviz(*out, xgv_options);

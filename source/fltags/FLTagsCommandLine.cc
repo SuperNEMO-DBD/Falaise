@@ -24,8 +24,8 @@ namespace FLTags {
     FLTagsCommandLine flClarg;
     flClarg.logLevel = datatools::logger::PRIO_ERROR;
     flClarg.dot_with_vertex_index = false;
-    flClarg.dot_with_vertex_category = false;
-    flClarg.dot_with_edge_topic = false;
+    flClarg.dot_without_vertex_category = false;
+    flClarg.dot_without_edge_topic = false;
     flClarg.dot_without_checks = false;
     flClarg.dot_outputFile = "";
     return flClarg;
@@ -77,29 +77,29 @@ namespace FLTags {
        "Example: \n"
        "  -V \"debug\" ")
 
-      ("with-vertex-index,i",
-       bpo::value<bool>(&clArgs.dot_with_vertex_index)
+      ("without-vertex-category,c",
+       bpo::value<bool>(&clArgs.dot_without_vertex_category)->zero_tokens()
        ->zero_tokens()
        ->default_value(false),
-       "flag to print the index of each URN vertex index\n")
+       "flag to inhibit the printing of the category of each URN vertex\n")
 
-      ("with-vertex-category,c",
-       bpo::value<bool>(&clArgs.dot_with_vertex_category)->zero_tokens()
+      ("without-edge-topic,t",
+       bpo::value<bool>(&clArgs.dot_without_edge_topic)->zero_tokens()
        ->zero_tokens()
        ->default_value(false),
-       "flag to print the category of each URN vertex\n")
-
-      ("with-edge-topic,t",
-       bpo::value<bool>(&clArgs.dot_with_edge_topic)->zero_tokens()
-       ->zero_tokens()
-       ->default_value(false),
-       "flag to print the topic of each URN edge\n")
+       "flag to inhibit the printing of the topic of each URN edge\n")
 
       ("without-checks,k",
        bpo::value<bool>(&clArgs.dot_without_checks)->zero_tokens()
        ->zero_tokens()
        ->default_value(false),
        "flag to skip some checks on DOT output\n")
+
+      ("with-vertex-index,i",
+       bpo::value<bool>(&clArgs.dot_with_vertex_index)
+       ->zero_tokens()
+       ->default_value(false),
+       "flag to print the index of each URN vertex index (expert only)\n")
 
       ("output-file,o",
        bpo::value<std::string>(&clArgs.dot_outputFile)

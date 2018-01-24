@@ -29,8 +29,8 @@ namespace FLTags {
     // Application specific parameters:
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.dot_with_vertex_index = false;
-    params.dot_with_vertex_category = false;
-    params.dot_with_edge_topic = false;
+    params.dot_without_vertex_category = false;
+    params.dot_without_edge_topic = false;
     params.dot_without_checks = false;
     params.dot_outputFile = "";
 
@@ -55,11 +55,11 @@ namespace FLTags {
 
     // Feed input from command line to params
     flTagsParameters.logLevel = args.logLevel;
-    flTagsParameters.dot_with_vertex_index    = args.dot_with_vertex_index;
-    flTagsParameters.dot_with_vertex_category = args.dot_with_vertex_category;
-    flTagsParameters.dot_with_edge_topic      = args.dot_with_edge_topic;
-    flTagsParameters.dot_without_checks       = args.dot_without_checks;
-    flTagsParameters.dot_outputFile           = args.dot_outputFile;
+    flTagsParameters.dot_with_vertex_index       = args.dot_with_vertex_index;
+    flTagsParameters.dot_without_vertex_category = args.dot_without_vertex_category;
+    flTagsParameters.dot_without_edge_topic      = args.dot_without_edge_topic;
+    flTagsParameters.dot_without_checks          = args.dot_without_checks;
+    flTagsParameters.dot_outputFile              = args.dot_outputFile;
 
     do_postprocess(flTagsParameters);
     return;
@@ -91,16 +91,16 @@ namespace FLTags {
     static const std::string last_tag("`-- ");
     out_ << "FLTags setup parameters: " << std::endl;
     out_ << tag
-         << "logLevel                 = '" << datatools::logger::get_priority_label(this->logLevel)
+         << "logLevel                    = '" << datatools::logger::get_priority_label(this->logLevel)
          << "'" << std::endl;
     out_ << tag
-         << "DOT with wertex index    = " << std::boolalpha << dot_with_vertex_index << std::endl;
+         << "DOT with wertex index       = " << std::boolalpha << dot_with_vertex_index << std::endl;
     out_ << tag
-         << "DOT with wertex category = " << std::boolalpha << dot_with_vertex_category << std::endl;
+         << "DOT without wertex category = " << std::boolalpha << dot_without_vertex_category << std::endl;
     out_ << tag
-         << "DOT with edge topic      = " << std::boolalpha << dot_with_edge_topic << std::endl;
+         << "DOT without edge topic      = " << std::boolalpha << dot_without_edge_topic << std::endl;
     out_ << last_tag
-         << "outputFile               = '" << dot_outputFile << "'" << std::endl;
+         << "outputFile                  = '" << dot_outputFile << "'" << std::endl;
     return;
   }
 

@@ -27,8 +27,8 @@ struct FLTagsArgs {
   // Application specific parameters:
   datatools::logger::priority logLevel;     //!< Logging priority threshold
   bool dot_with_vertex_index    = false;
-  bool dot_with_vertex_category = false;
-  bool dot_with_edge_topic      = false;
+  bool dot_without_vertex_category = false;
+  bool dot_without_edge_topic      = false;
   bool dot_without_checks       = false;
   std::string dot_outputFile;               //!< Path for the output module
 
