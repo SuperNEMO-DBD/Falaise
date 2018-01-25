@@ -94,7 +94,7 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.0.0)
+set(FALAISE_BAYEUX_MIN_VERSION 3.1.1)
 message( STATUS "Searching Bayeux ${FALAISE_BAYEUX_MIN_VERSION} ...")
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 # message( STATUS "Bayeux_VERSION          = '${Bayeux_VERSION}'")
