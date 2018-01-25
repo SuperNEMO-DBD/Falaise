@@ -149,4 +149,11 @@ TBD
 Tag to file resolver {#managetags_tagtofileresolver}
 ====================
 
-TBD
+
+The fltags  application  {#managetags_fltags}
+=======================
+
+Print usage :
+~~~~~~
+$ fltags --help
+~~~~~~

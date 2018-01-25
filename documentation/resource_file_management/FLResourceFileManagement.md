@@ -7,7 +7,7 @@ Introduction to resource files {#manageresourcefiles_intro}
 ==============================
 
 Each version  of Falaise is  delivered with  a set of  resource files,
-stored from the `resources/` directory.
+stored from the `resources/` source directory.
 
 A  resource file  is  typically  a *configuration  file*  used by  the
 simulation  or  the reconstruction  pipeline  to  setup some  specific
@@ -23,12 +23,12 @@ library.
 Resource files directory {#manageresourcefiles_resourcefilesdirectory}
 ========================
 
-The  `resources/` source  directory  is  located as  the  root of  the
+The  resources/ source  directory  is  located at  the  root of  the
 Falaise's source  tree.  After installation, the  resources files will
-be  stored  from  the  ̀{Falaise  install  path}/share/Falaise-{falaise
-version}/resources/` path.
+be  stored  from  the  ̀̀{Falaise  install  path}/share/Falaise-{falaise
+version}/resources/`` path.
 
-The   `resources/`  source   directory  is   organized  by   topics  :
+The   resources/  source   directory  is   organized  by   topics  :
 configuration files, examples, tags (URN  management). Each time a new
 resource file has  to be published, it must be  stored in the relevant
 subdirectory.
