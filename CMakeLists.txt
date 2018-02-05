@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "3.1.1")
+project(Falaise VERSION "3.1.2")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -94,7 +94,7 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.0.0)
+set(FALAISE_BAYEUX_MIN_VERSION 3.1.1)
 message( STATUS "Searching Bayeux ${FALAISE_BAYEUX_MIN_VERSION} ...")
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 # message( STATUS "Bayeux_VERSION          = '${Bayeux_VERSION}'")

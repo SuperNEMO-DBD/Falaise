@@ -37,6 +37,7 @@
 #include "falaise/exitcodes.h"
 #include "falaise/falaise.h"
 #include "falaise/version.h"
+#include "falaise/tags.h"
 
 //----------------------------------------------------------------------
 // DECLARATIONS
@@ -334,8 +335,8 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
   datatools::urn_info variantConfigUrnInfo;
   // Check URN registration from the system URN query service:
   {
-    DT_THROW_IF(
-        !dtkUrnQuery.check_urn_info(flSimCfgParameters.simulationSetupUrn, "simsetup"),
+    DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimCfgParameters.simulationSetupUrn,
+                                            falaise::tags::simulation_setup_category()),
         std::logic_error,
         "Cannot query simulation setup URN='" << flSimCfgParameters.simulationSetupUrn << "'!");
   }
@@ -353,7 +354,8 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
     // Check URN registration from the system URN query service:
     {
       DT_THROW_IF(
-          !dtkUrnQuery.check_urn_info(flSimCfgParameters.variantConfigUrn, "variant"),
+                  !dtkUrnQuery.check_urn_info(flSimCfgParameters.variantConfigUrn,
+                                              falaise::tags::variant_service_category()),
           std::logic_error,
           "Cannot query variant setup URN='" << flSimCfgParameters.variantConfigUrn << "'!");
     }
@@ -378,20 +380,19 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
     if (flSimCfgParameters.inputVariantProfileUrn.empty()) {
       DT_LOG_DEBUG(flSimCfgParameters.logLevel, "No input variant profile URN is set.");
       // No variant profile URN is set:
-      if (variantConfigUrnInfo.is_valid()) {
+      if (simSetupUrnInfo.is_valid()) {
         DT_LOG_DEBUG(flSimCfgParameters.logLevel,
-                     "Trying to find a default one from the current variant setup...");
+                     "Trying to find a default one from the current simulation setup...");
         // Try to find a default one from the current variant setup:
-        if (variantConfigUrnInfo.has_topic("__default_profile__") &&
-            variantConfigUrnInfo.get_components_by_topic("__default_profile__").size() == 1) {
+        if (simSetupUrnInfo.has_topic("defvarprofile") &&
+            simSetupUrnInfo.get_components_by_topic("defvarprofile").size() == 1) {
           // If the simulation setup URN implies a "services" component, fetch it!
           flSimCfgParameters.inputVariantProfileUrn =
-              variantConfigUrnInfo.get_component("__default_profile__");
+              simSetupUrnInfo.get_component("defvarprofile");
           DT_LOG_DEBUG(flSimCfgParameters.logLevel, "Using the default variant profile '"
-                                                        << flSimCfgParameters.inputVariantProfileUrn
-                                                        << "'"
-                                                        << " associated to variant configuration '"
-                                                        << variantConfigUrnInfo.get_urn() << "'.");
+                                                     << flSimCfgParameters.inputVariantProfileUrn << "'"
+                                                     << " associated to simulation setup '"
+                                                     << simSetupUrnInfo.get_urn() << "'.");
         }
       }
     }

@@ -25,9 +25,10 @@ introductions to using and extending the core applications:
   - [Working with Run/Event Data in plugin modules](@ref workingwitheventrecords).
   - [Using Services to access metadata](@ref usingservices).
 - [FLVisualize](@ref usingflvisualize) guide for viewing simulated and reconstructed data.
+- [Resource files](@ref manageresourcefiles): guide for the management of resource files published in Falaise
+- [FLTags](@ref managetags): guide for using registered tags as identifiers for entities
 
 Contributing to Falaise Development
 ===================================
 Contributions to the core of Falaise are welcome. Please visit our [GitHub repo](https://github.com/SuperNEMO-DBD/Falaise)
 for further information.
-

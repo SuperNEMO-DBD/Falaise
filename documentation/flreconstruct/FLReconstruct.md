@@ -790,7 +790,7 @@ dependency scheme associated to this specific FLReconstruct script is:
     +-- urn:snemo:demonstrator:setup:1.0:services
     |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
     +-- urn:snemo:demonstrator:setup:1.0:variants (used variant configuration)
-    |   +-- urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0 (variant profile is fixed)
+    +-- urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0 (variant profile is fixed)
     +-- urn:snemo:demonstrator:reconstruction:1.0.0:pipeline (reconstruction pipeline)
 ~~~~~
 
@@ -855,4 +855,3 @@ reconstruction via  tuning existing  modules or  adding new  ones then
 custom  pipeline   scripts  and modules can   be  used  in   `flreconstruct`.  The
 [Writing FLReconstruct Pipeline Scripts](@ref writingflreconstructpipelinescripts)  tutorial covers  the syntax  and
 structure of custom pipeline scripts.
-

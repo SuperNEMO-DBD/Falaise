@@ -12,6 +12,7 @@
 
 // This project:
 #include <falaise/app/metadata_utils.h>
+#include <falaise/tags.h>
 #include <falaise/snemo/detector/detector_manager.h>
 #include <falaise/snemo/view/options_manager.h>
 #include "FLVisualizeCommandLine.h"
@@ -202,7 +203,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                                                 << flVisParameters.experimentalSetupUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = "expsetup";
+      std::string conf_category = falaise::tags::experimental_setup_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flVisParameters.experimentalSetupUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flVisParameters.experimentalSetupUrn << "'!");
@@ -233,7 +234,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                   "Services configuration URN='" << flVisParameters.servicesConfigUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = "service";
+      std::string conf_category = falaise::tags::services_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(servicesConfigUrn, conf_category), std::logic_error,
                   "Cannot query URN='" << servicesConfigUrn << "'!");
     }
@@ -266,7 +267,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
       geometryConfigUrn = servicesConfigUrnInfo.get_component("geometry");
       // Check URN registration from the system URN query service:
       {
-        std::string conf_category = "configuration";
+        std::string conf_category = falaise::tags::geometry_setup_category();
         DT_THROW_IF(!dtkUrnQuery.check_urn_info(geometryConfigUrn, conf_category), std::logic_error,
                     "Cannot query URN='" << geometryConfigUrn << "'!");
       }
@@ -330,7 +331,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                   "Variant configuration URN='" << variantConfigUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = "variant";
+      std::string conf_category = falaise::tags::variant_service_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flVisParameters.variantConfigUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flVisParameters.variantConfigUrn << "'!");
