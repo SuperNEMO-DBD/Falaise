@@ -21,7 +21,7 @@ set(_falaise_PLUGINS
   GammaClustering
   VisuToy
   EventBrowser
-  #things2root
+  things2root
 )
 
 # - Process modules here:
