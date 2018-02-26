@@ -142,10 +142,16 @@ namespace snemo {
 
       // Minimal anode time to consider Geiger hit as delayed
       if (setup_.has_key("minimal_delayed_time")) {
+        std::cout << "Has minimal delay time in setup!!!!" << std::endl;
+        std::cout << "Delay time before fetch: " << _minimal_delayed_time_ << std::endl;
         _minimal_delayed_time_ = setup_.fetch_real("minimal_delayed_time");
+        std::cout << "Delay time after fetch: " << _minimal_delayed_time_ << std::endl;
         if (! setup_.has_explicit_unit("minimal_delayed_time")) {
           _minimal_delayed_time_ *= CLHEP::microsecond;
         }
+      }
+      else{
+        std::cout << "Did not find minimal delay time in setup!!!!" << std::endl;
       }
 
       // Minimal distance in XY coordinate between Geiger hits
@@ -308,6 +314,9 @@ namespace snemo {
              ihit = hits_.begin(); ihit != hits_.end(); ++ihit) {
         const snemo::datamodel::calibrated_tracker_hit & a_delayed_gg_hit = ihit->get();
 
+        // set a default distance for closest vertex to check against
+        double closest_vertex_distance = _minimal_vertex_distance_;
+
         if (! a_delayed_gg_hit.is_delayed() ||
             a_delayed_gg_hit.get_delayed_time() < _minimal_delayed_time_) {
           DT_LOG_TRACE(get_logging_priority(), "Geiger is prompt or delayed time is too low ("
@@ -415,13 +424,18 @@ namespace snemo {
                                                           a_delayed_gg_hit.get_z());
             if (geomtools::is_valid(first)) {
               const double distance = (first - a_delayed_position).mag();
-              if (distance < _minimal_vertex_distance_) {
+              if (distance < _minimal_vertex_distance_ && distance < closest_vertex_distance) {
+                // set a new value for the closest vertex
+                closest_vertex_distance = distance;
                 associated_vertex = first;
               }
             }
             if (geomtools::is_valid(last)) {
               const double distance = (last - a_delayed_position).mag();
-              if (distance < _minimal_vertex_distance_) {
+              // previous check was against the minimal vertex distance, but
+              // we want to check against the already asigned distance to see
+              // if this vertex is closer
+              if (distance < _minimal_vertex_distance_ && distance < closest_vertex_distance) {
                 associated_vertex = last;
               }
             }
