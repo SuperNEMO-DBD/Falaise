@@ -436,6 +436,7 @@ namespace snemo {
               // we want to check against the already asigned distance to see
               // if this vertex is closer
               if (distance < _minimal_vertex_distance_ && distance < closest_vertex_distance) {
+                closest_vertex_distance = distance;
                 associated_vertex = last;
               }
             }
