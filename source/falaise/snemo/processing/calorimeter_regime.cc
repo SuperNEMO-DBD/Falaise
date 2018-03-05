@@ -54,60 +54,30 @@ calorimeter_regime::calorimeter_regime() {
 void calorimeter_regime::initialize(const datatools::properties& config_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Calorimeter regime is already initialized !");
 
-  const double energy_unit = CLHEP::keV;
-  const double time_unit = CLHEP::ns;
-
-  // Energy resolution
-  {
-    const std::string key_name = "energy.resolution";
-    if (config_.has_key(key_name)) {
-      _resolution_ = config_.fetch_real(key_name);
-      if (!config_.has_explicit_unit(key_name)) {
-        _resolution_ *= CLHEP::perCent;
-      }
-    }
+  if (config_.has_key("energy.resolution")) {
+    _resolution_ = config_.fetch_real_with_explicit_dimension("energy.resolution", "fraction");
   }
 
-  // Trigger thresholds
-  {
-    const std::string key_name = "energy.high_threshold";
-    if (config_.has_key(key_name)) {
-      _high_threshold_ = config_.fetch_real(key_name);
-      if (!config_.has_explicit_unit(key_name)) {
-        _high_threshold_ *= energy_unit;
-      }
-    }
+  if (config_.has_key("energy.high_threshold")) {
+    _high_threshold_ = config_.fetch_real_with_explicit_dimension("energy.high_threshold", "energy");
   }
 
-  {
-    const std::string key_name = "energy.low_threshold";
-    if (config_.has_key(key_name)) {
-      _low_threshold_ = config_.fetch_real(key_name);
-      if (!config_.has_explicit_unit(key_name)) {
-        _low_threshold_ *= energy_unit;
-      }
-    }
+  if (config_.has_key("energy.low_threshold")) {
+    _low_threshold_ = config_.fetch_real_with_explicit_dimension("energy.low_threshold", "energy");
   }
 
   // Alpha quenching fit parameters
-  {
-    const std::string key_name = "alpha_quenching_parameters";
-    if (config_.has_key(key_name)) {
-      _alpha_quenching_0_ = config_.fetch_real_vector(key_name, 0);
-      _alpha_quenching_1_ = config_.fetch_real_vector(key_name, 1);
-      _alpha_quenching_2_ = config_.fetch_real_vector(key_name, 2);
-    }
+  const std::string key_name = "alpha_quenching_parameters";
+  if (config_.has_key(key_name)) {
+    _alpha_quenching_0_ = config_.fetch_real_vector(key_name, 0);
+    _alpha_quenching_1_ = config_.fetch_real_vector(key_name, 1);
+    _alpha_quenching_2_ = config_.fetch_real_vector(key_name, 2);
   }
 
   // Scintillator relaxation time for time resolution
-  {
-    const std::string key_name = "scintillator_relaxation_time";
-    if (config_.has_key(key_name)) {
-      _scintillator_relaxation_time_ = config_.fetch_real(key_name);
-      if (!config_.has_explicit_unit(key_name)) {
-        _scintillator_relaxation_time_ *= time_unit;
-      }
-    }
+  if (config_.has_key("scintillator_relaxation_time")) {
+    _scintillator_relaxation_time_
+      = config_.fetch_real_with_explicit_dimension("scintillator_relaxation_time", "time");
   }
 
   _initialized_ = true;

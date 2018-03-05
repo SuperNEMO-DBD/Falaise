@@ -159,37 +159,31 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& setup_,
   // Initialize the Geiger regime utility:
   _geiger_.initialize(setup_);
 
-  const double time_unit = CLHEP::microsecond;
-
   // Set minimum drift time for peripheral hits:
   if (setup_.has_key("peripheral_drift_time_threshold")) {
-    _peripheral_drift_time_threshold_ = setup_.fetch_real("peripheral_drift_time_threshold");
-    if (!setup_.has_explicit_unit("peripheral_drift_time_threshold")) {
-      _peripheral_drift_time_threshold_ *= time_unit;
-    }
+    _peripheral_drift_time_threshold_
+      = setup_.fetch_real_with_explicit_dimension("peripheral_drift_time_threshold", "time");
   }
   // Default value:
   if (!datatools::is_valid(_peripheral_drift_time_threshold_)) {
     _peripheral_drift_time_threshold_ = _geiger_.get_t0();
   }
   DT_LOG_DEBUG(get_logging_priority(), "peripheral_drift_time_threshold = "
-                                           << _peripheral_drift_time_threshold_ / CLHEP::microsecond
-                                           << " us");
+               << _peripheral_drift_time_threshold_ / CLHEP::microsecond
+               << " us");
 
   // Set minium drift time for delayed hits:
   if (setup_.has_key("delayed_drift_time_threshold")) {
-    _delayed_drift_time_threshold_ = setup_.fetch_real("delayed_drift_time_threshold");
-    if (!setup_.has_explicit_unit("delayed_drift_time_threshold")) {
-      _delayed_drift_time_threshold_ *= time_unit;
-    }
+    _delayed_drift_time_threshold_
+      = setup_.fetch_real_with_explicit_dimension("delayed_drift_time_threshold", "time");
   }
   // Default value:
   if (!datatools::is_valid(_delayed_drift_time_threshold_)) {
     _delayed_drift_time_threshold_ = _geiger_.get_tcut();
   }
   DT_LOG_DEBUG(get_logging_priority(), "delayed_drift_time_threshold = "
-                                           << _delayed_drift_time_threshold_ / CLHEP::microsecond
-                                           << " us");
+               << _delayed_drift_time_threshold_ / CLHEP::microsecond
+               << " us");
 
   // 2012-07-26 FM : support reference to the MC true hit ID
   if (setup_.has_flag("store_mc_hit_id")) {
