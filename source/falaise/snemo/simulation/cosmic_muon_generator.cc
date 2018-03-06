@@ -203,19 +203,6 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
                 "Missing 'mode' property for particle generator '" << get_name() << "' !");
   }
 
-  double energy_unit = CLHEP::GeV;
-  double angle_unit = CLHEP::degree;
-
-  if (config_.has_key("energy_unit")) {
-    std::string unit_str = config_.fetch_string("energy_unit");
-    energy_unit = datatools::units::get_energy_unit_from(unit_str);
-  }
-
-  if (config_.has_key("angle_unit")) {
-    std::string unit_str = config_.fetch_string("angle_unit");
-    angle_unit = datatools::units::get_angle_unit_from(unit_str);
-  }
-
   if (_mode_ == MODE_SEA_LEVEL) {
     DT_THROW_IF(
         !config_.has_key("sea_level.mode"), std::logic_error,
@@ -233,28 +220,20 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
 
     if (_sea_level_mode_ == SEA_LEVEL_TOY) {
       if (config_.has_key("sea_level_toy.energy_mean")) {
-        _sea_level_toy_setup_.energy_mean = config_.fetch_real("sea_level_toy.energy_mean");
-        if (!config_.has_explicit_unit("sea_level_toy.energy_mean")) {
-          _sea_level_toy_setup_.energy_mean *= energy_unit;
-        }
+        _sea_level_toy_setup_.energy_mean
+          = config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_mean", "energy");
       }
       if (config_.has_key("sea_level_toy.energy_sigma")) {
-        _sea_level_toy_setup_.energy_sigma = config_.fetch_real("sea_level_toy.energy_sigma");
-        if (!config_.has_explicit_unit("sea_level_toy.energy_sigma")) {
-          _sea_level_toy_setup_.energy_sigma *= energy_unit;
-        }
+        _sea_level_toy_setup_.energy_sigma
+          = config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_sigma", "energy");
       }
       if (config_.has_key("sea_level_toy.maximum_theta")) {
-        _sea_level_toy_setup_.maximum_theta = config_.fetch_real("sea_level_toy.maximum_theta");
-        if (!config_.has_explicit_unit("sea_level_toy.maximum_theta")) {
-          _sea_level_toy_setup_.maximum_theta *= angle_unit;
-        }
-        DT_THROW_IF(_sea_level_toy_setup_.maximum_theta < 0.0, std::range_error,
-                    "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
-                        << get_name() << "' !");
-        DT_THROW_IF(_sea_level_toy_setup_.maximum_theta > 90.0 * CLHEP::degree, std::range_error,
-                    "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
-                        << get_name() << "' !");
+        _sea_level_toy_setup_.maximum_theta
+          = config_.fetch_real_with_explicit_dimension("sea_level_toy.maximum_theta", "angle");
+        DT_THROW_IF(_sea_level_toy_setup_.maximum_theta < 0.0 ||
+                    _sea_level_toy_setup_.maximum_theta > 90.0 * CLHEP::degree,
+                    std::range_error, "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
+                    << get_name() << "' !");
       }
       if (config_.has_key("sea_level_toy.muon_ratio")) {
         _sea_level_toy_setup_.muon_ratio = config_.fetch_real("sea_level_toy.muon_ratio");
