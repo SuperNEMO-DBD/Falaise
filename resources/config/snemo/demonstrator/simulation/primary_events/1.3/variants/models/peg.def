@@ -40,7 +40,7 @@ string.default : string = "electron.1MeV"
 # string.default : string = "Se82.0nubb"
 
 #@description The list of variants
-variants : string[2] = "if_versatile" "if_flat_versatile"
+variants : string[3] = "if_versatile" "if_flat_versatile" "if_tweakable"
 
 #@description The model of the variant
 variants.if_versatile.model : string = "peg.generator.vspg.VM"
@@ -53,6 +53,12 @@ variants.if_flat_versatile.model : string = "peg.generator.fvspg.VM"
 
 #@description The description of the variant
 variants.if_flat_versatile.description : string = "Set of parameters for the flat energy particle versatile primary event generator"
+
+#@description The model of the variant
+variants.if_tweakable.model : string = "peg.generator.tpg.VM"
+
+#@description The description of the variant
+variants.if_tweakable.description : string = "Set of parameters for the tweakable primary event generator"
 
 #@description Association of some specific generators to some specific variants
 string.enumerated.versatile_generator.variant : string = "if_versatile"

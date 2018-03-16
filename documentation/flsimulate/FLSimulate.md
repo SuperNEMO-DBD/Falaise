@@ -504,9 +504,9 @@ registered   blessed/official  configuration   (geometry,  simulation,
 reconstruction...). Any  setup of interest  may be registered  with an
 unique *tag*. The  tag is a simple character string  which uses an URN
 scheme.  For  example, Falaise  version  3.0.0  is released  with  the
-registered     simulation    setup     version     2.1    with     tag
+registered     simulation    setup     tag     2.1    with     tag
 `urn:snemo:demonstrator:simulation:2.1.     This   is    the   default
-simulation setup  whcih will be  used if not explicitely  requested by
+simulation setup  which will be  used if not explicitely  requested by
 the user.
 
 Thus, in the `flsimulate.simulation` section, the simulation setup tag
@@ -674,6 +674,18 @@ The next  image shows the selection  of the vertex generator  from the
 Notice: You Bayeux setup should have been compiled with Qt GUI support to benefit
 of the `flsimulate-configure`'s GUI interface.
 
+By `flsimulate-configure` uses a default simulation setup (example: "urn:snemo:demonstrator:simulation:2.1").
+You can change to some arbitrary simulation setup with the `--setup-tag` switch:
+~~~~~
+$ flsimulate-configure --setup-tag "urn:snemo:demonstrator:simulation:2.2"
+~~~~~
+This will activate a variant context specific to the selected simulation setup.
+
+Be aware that two different simulation setups may not be compatible in terms
+of variant context. It means that a variant profile generated and used by
+simulation setup X is not automatically usable with simulation setup Y, typically
+because the newest Y setup publishes and requires more variant parameters associated to a more complex
+and/or realistic description of the experiment.
 
 Using explicit variant settings  {#usingflsimulate_variants_explicitsettings}
 -------------------------------
@@ -916,9 +928,9 @@ List of available experiments {#usingflsimulate_summaryofavailableexperiments}
 -----------------------------
 
 1.  SuperNEMO demonstrator:
-		* Description:  The SuperNEMO  demonstrator experiment  (all phases:
-		  half-commissioning, full demonstrator)
-		* Tag : `"urn:snemo:demonstrator"`
+		*   Description:  The SuperNEMO  demonstrator experiment  (all phases:
+		    half-commissioning, full demonstrator)
+		*   Tag : `"urn:snemo:demonstrator"`
 2.  BiPo3 detector (not used yet):
 		*   Description: The BiPo3 detector
 		*   Tag : `"urn:bipo3:detector"`
@@ -926,7 +938,7 @@ List of available experiments {#usingflsimulate_summaryofavailableexperiments}
 List of available experimental setups {#usingflsimulate_summaryofavailableexperimentalsetups}
 -------------------------------------
 
-1.  SuperNEMO demonstrator experimental setup version 1.0:
+1.  SuperNEMO demonstrator experimental setup tag 1.0:
 		*   Description: The model of the SuperNEMO demonstrator experimental setup
 		*   Tag : `"urn:snemo:demonstrator:setup:1.0"`
 		*   Related experiment: `"urn:snemo:demonstrator"`
@@ -938,7 +950,7 @@ List of available experimental setups {#usingflsimulate_summaryofavailableexperi
 List of available simulation setups {#usingflsimulate_summaryofavailablesimulationsetups}
 -----------------------------------
 
-1. SuperNEMO demonstrator simulation setup version  2.1 :
+1.  SuperNEMO demonstrator simulation setup tag 2.1:
 		*   Description: Simulation setup for the SuperNEMO demonstrator detector
 		*   Tag : `"urn:snemo:demonstrator:simulation:2.1"`
 		*   Based on:
@@ -950,6 +962,18 @@ List of available simulation setups {#usingflsimulate_summaryofavailablesimulati
 			+   Variant system: `"urn:snemo:demonstrator:simulation:2.1:variants"`
 			+   Blessed profiles: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"`
 			+   Default profile: `"urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"`
+2.  SuperNEMO demonstrator simulation setup tag 2.2
+		*   Description: Simulation setup for the SuperNEMO demonstrator detector
+		*   Tag : `"urn:snemo:demonstrator:simulation:2.2"`
+		*   Based on:
+			+   Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
+			+   Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.1"`
+			+   Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.3"`
+		*   Associated to:
+			+   Services system: `"urn:snemo:demonstrator:simulation:2.2:services"`
+			+   Variant system: `"urn:snemo:demonstrator:simulation:2.2:variants"`
+			+   Blessed profiles: `"urn:snemo:demonstrator:simulation:2.2:variants:profiles:basic-1.0"`
+			+   Default profile: `"urn:snemo:demonstrator:simulation:2.2:variants:profiles:default"`
 
 
 Available MC hits output profiles {#usingflsimulate_hits_output_profiles}

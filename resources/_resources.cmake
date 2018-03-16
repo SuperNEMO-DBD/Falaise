@@ -410,10 +410,13 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/registries/commissioning_source.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/data/energy_spectrum-example-1.data
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/generators/versatile_more.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_flat_versatile_variant_models.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_versatile_variant_models.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_tweakable_variant_models.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_common_models.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg_generators.csv
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/models/peg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.3/variants/repository.conf
