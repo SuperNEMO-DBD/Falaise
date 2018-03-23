@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['negative',['negative',['../classsnemo_1_1datamodel_1_1particle__track.html#a3aa05824d285ea3aa745edacb9a74d8da763067de2f9b000bad3fc5240955210d',1,'snemo::datamodel::particle_track::negative()'],['../classsnemo_1_1datamodel_1_1particle__track.html#a3aa05824d285ea3aa745edacb9a74d8da0c99f8ed360bb5caa83bd6af56cc18d5',1,'snemo::datamodel::particle_track::NEGATIVE()']]],
+  ['negative',['NEGATIVE',['../classsnemo_1_1datamodel_1_1particle__track.html#a3aa05824d285ea3aa745edacb9a74d8da0c99f8ed360bb5caa83bd6af56cc18d5',1,'snemo::datamodel::particle_track::NEGATIVE()'],['../classsnemo_1_1datamodel_1_1particle__track.html#a3aa05824d285ea3aa745edacb9a74d8da763067de2f9b000bad3fc5240955210d',1,'snemo::datamodel::particle_track::negative()']]],
   ['neighbour_5fdiag',['NEIGHBOUR_DIAG',['../classsnemo_1_1geometry_1_1utils.html#a03727938ff8c0f9d97ecf2eb71d8ffdca5693665fc465b76b92db51f1d66885df',1,'snemo::geometry::utils']]],
   ['neighbour_5ffirst',['NEIGHBOUR_FIRST',['../classsnemo_1_1geometry_1_1utils.html#a03727938ff8c0f9d97ecf2eb71d8ffdca3f0c10a28a74d063332f934b07f2fea2',1,'snemo::geometry::utils']]],
   ['neighbour_5fnone',['NEIGHBOUR_NONE',['../classsnemo_1_1geometry_1_1utils.html#a03727938ff8c0f9d97ecf2eb71d8ffdcaaeb72ebe9e4429d37e427e5aa54cebd2',1,'snemo::geometry::utils']]],

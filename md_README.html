@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.1.1</span>
+   &#160;<span id="projectnumber">3.2.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -75,19 +75,23 @@ $(function() {
 <p>Additional modules from external sources and individual contribution can be used too.</p>
 <h1>Installing Falaise</h1>
 <h2>Quickstart</h2>
-<p>If you simply wish to use or try out Falaise, we recommend installing it using <a href="https://github.com/SuperNEMO-dbd/homebrew-cadfael">our Home/Linuxbrew tap</a>. This will install everything you need, and includes the latest official release of the software. Once installed, consult the <a href="https://supernemo-dbd.github.io/Falaise">online documentation</a> for a full guide to running the software and writing new plugin modules.</p>
+<p>If you simply wish to use or try out Falaise, we recommend installing it using <a href="https://github.com/SuperNEMO-dbd/homebrew-cadfael">our Home/Linuxbrew tap</a>. This will install everything you need, and includes the latest official release of the software.</p>
+<p>Once installed, consult the <a href="https://supernemo-dbd.github.io/Falaise">online documentation</a> for a full guide to running the software and writing new plugin modules.</p>
+<p>If you have <a href="https://www.docker.com">Docker</a> available, then images for current and past releases together with instructions for use are available from <a href="https://hub.docker.com/r/supernemo/falaise/">Docker Hub</a>.</p>
 <h2>Building, Testing and Installing from Source</h2>
 <p>To build Falaise on your machine, the following requirements must be met:</p>
 <ul>
 <li>Linux or macOS System<ul>
 <li>Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS</li>
+<li>Other Linux distributions are known to work, but are not officially supported. However, patches are welcome to resolve encountered issues!</li>
 <li>Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)</li>
+<li>macOS High Sierra is not yet officially supported, but work is in progress</li>
 </ul>
 </li>
 <li>GCC (&gt;= 4.9), Clang (&gt;=3.5) or Xcode 7/8</li>
 <li><a href="https://cmake.org">CMake</a> 3.5 or higher</li>
 <li><a href="http://www.doxygen.org">Doxygen</a> 1.8 or higher</li>
-<li><a href="https://github.com/SuperNEMO-DBD/Bayeux">Bayeux</a> 3.0 or higher</li>
+<li><a href="https://github.com/SuperNEMO-DBD/Bayeux">Bayeux</a> 3.1.2 or higher</li>
 <li><a href="https:/boost.org">Boost</a> 1.63.0 or higher<ul>
 <li>Must provide <code>program_options</code>, <code>thread</code>, <code>serialization</code>, <code>filesystem</code> and <code>system</code> components</li>
 </ul>
@@ -99,14 +103,14 @@ $(function() {
 <li>with GDML support enabled</li>
 </ul>
 </li>
-<li><a href="http://root.cern.ch">ROOT</a> 6.08 or higher</li>
+<li><a href="http://root.cern.ch">ROOT</a> 6.10 or higher</li>
 </ul>
 <p>Falaise requires use of the C++11 or higher standard, so all of the above packages and their C++ dependencies must be built/installed using this standard. This is to ensure binary compatibility.</p>
 <p>To get the source code, either download a release tarball or to get the latest development, do</p>
 <div class="fragment"><div class="line">$ git clone https://github.com/supernemo-dbd/Falaise.git Falaise.git</div></div><!-- fragment --><p>To build Falaise, do</p>
 <div class="fragment"><div class="line">$ mkdir Falaise.build</div><div class="line">$ cd Falaise.build</div><div class="line">$ cmake -DCMAKE_INSTALL_PREFIX=/where/you/want/to/install ../Falaise.git</div><div class="line">...</div></div><!-- fragment --><p>If you wish to enable <code>make test</code> after building, add the following option to cmake.</p>
 <div class="fragment"><div class="line">$ cmake -DFALAISE_ENABLE_TESTING=ON</div></div><!-- fragment --><p>Note: At this stage, if the following error is encountered;</p>
-<div class="fragment"><div class="line">CMake Error at /home/&lt;user&gt;/CadfaelBrew/lib64/cmake/Bayeux-3.0.0/BayeuxConfig.cmake:130 (find_package):</div><div class="line">By not providing &quot;FindQt5Core.cmake&quot; in CMAKE_MODULE_PATH this project has</div><div class="line"> asked CMake to find a package configuration file provided by &quot;Qt5Core&quot;, but</div><div class="line">CMake did not find one.</div><div class="line"></div><div class="line">Could not find a package configuration file provided by &quot;Qt5Core&quot;</div><div class="line"> (requested version 5.8.0) with any of the following names:</div><div class="line"></div><div class="line">  Qt5CoreConfig.cmake</div><div class="line">  qt5core-config.cmake</div><div class="line"></div><div class="line">..</div></div><!-- fragment --><p>add the following options to the cmake command.</p>
+<div class="fragment"><div class="line">CMake Error at /home/&lt;user&gt;/CadfaelBrew/lib64/cmake/Bayeux-3.1.2/BayeuxConfig.cmake:130 (find_package):</div><div class="line">By not providing &quot;FindQt5Core.cmake&quot; in CMAKE_MODULE_PATH this project has</div><div class="line"> asked CMake to find a package configuration file provided by &quot;Qt5Core&quot;, but</div><div class="line">CMake did not find one.</div><div class="line"></div><div class="line">Could not find a package configuration file provided by &quot;Qt5Core&quot;</div><div class="line"> (requested version 5.8.0) with any of the following names:</div><div class="line"></div><div class="line">  Qt5CoreConfig.cmake</div><div class="line">  qt5core-config.cmake</div><div class="line"></div><div class="line">..</div></div><!-- fragment --><p>add the following options to the cmake command.</p>
 <div class="fragment"><div class="line">$ cmake -DCMAKE_PREFIX_PATH=&quot;$(brew --prefix);$(brew --prefix qt5-base)&quot; &lt;other options follow&gt;</div></div><!-- fragment --><p>More info regarding Qt5Core and Falaise can be found at this address: (<a href="https://github.com/Homebrew/homebrew-core/issues/8392">https://github.com/Homebrew/homebrew-core/issues/8392</a>)</p>
 <p>Errors at this stage are likely to be due to missing/unfound packages. If this is the case, <code>cmake</code> can be directed to look in specific places using the <code>CMAKE_PREFIX_PATH</code> variable. For example, if <code>Boost</code> is installed in <code>$HOME/boost</code> and <code>GSL</code> in <code>$HOME/software/gsl</code>, <code>cmake</code> would be run as:</p>
 <div class="fragment"><div class="line">$ cmake -DCMAKE_PREFIX_PATH=&quot;$HOME/boost;$HOME/software/gsl&quot; -DCMAKE_INSTALL_PREFIX=/some/path ../Falaise.git</div></div><!-- fragment --><p>The <code>CMAKE_INSTALL_PREFIX</code> variable tells CMake where the products of the build should be installed. Ensure you have write permissions to this location.</p>

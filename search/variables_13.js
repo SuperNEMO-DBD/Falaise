@@ -52,7 +52,6 @@ var searchData=
   ['sensitive_5ftrack_5foptical_5fphoton',['SENSITIVE_TRACK_OPTICAL_PHOTON',['../https://supernemo-dbd.github.io/Bayeux/classmctools_1_1sensitive__utils.html#ad1f49cf5b1a014be22dfd4abea47b98f',1,'mctools::sensitive_utils']]],
   ['serialization_5ftag',['serialization_tag',['../https://supernemo-dbd.github.io/Bayeux/structbrio_1_1store__info.html#ae967b81fdf4d8ba9d20730b0bd1f2bb8',1,'brio::store_info']]],
   ['service_5fmasters',['service_masters',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1service__entry.html#ae1a5f74f1950100e34256a6a043461db',1,'datatools::service_entry']]],
-  ['service_5fslaves',['service_slaves',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1service__entry.html#a049bcabe32ea36152077ebee59c87a03',1,'datatools::service_entry']]],
   ['servicesconfigpath',['servicesConfigPath',['../structfalaise_1_1app_1_1metadata__input.html#a57fb0233529b833d8d8d23c9c5346169',1,'falaise::app::metadata_input']]],
   ['servicesconfigurn',['servicesConfigUrn',['../structfalaise_1_1app_1_1metadata__input.html#acea5af11e7e25779d0d9552c4494867f',1,'falaise::app::metadata_input']]],
   ['settings',['settings',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1configuration_1_1variant__service_1_1config.html#a7a36265645ef0ee0f8b0b719da78d2ee',1,'datatools::configuration::variant_service::config']]],

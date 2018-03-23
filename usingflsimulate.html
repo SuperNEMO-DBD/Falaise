@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.1.1</span>
+   &#160;<span id="projectnumber">3.2.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -199,7 +199,7 @@ Script's supported sections and parameters </h2>
 </li>
 <li><p class="startli"><code>flsimulate.simulation</code> : this is the <em>simulation</em> section where the simulation setup is chosen as well as parameters for the management of pseudo random number generators (PRNG): seeds, logging about PRNG states.</p>
 <p class="startli">Parameters of interest are:</p><ul>
-<li><code>simulationSetupUrn</code> : the simulation setup tag (string, mandatory for production runs, otherwise optional, default tag is: <code>urn:snemo:demonstrator:simulation:2.1</code>).</li>
+<li><code>simulationSetupUrn</code> : the simulation setup tag (string, mandatory for production runs, otherwise optional, default tag is: <code>urn:snemo:demonstrator:simulation:2.2</code>).</li>
 <li><code>simulationSetupConfig</code> : the explicit path to the simulation configuration file for the Bayeux/mctools <em>Geant4 driver</em> (string/path, optional). If not set, it is automatically resolved from the simulation setup tag.</li>
 <li><code>rngSeedFile</code> : the input file for the seeding of random number generators (string/path, mandatory for production runs, otherwise optional; if this file is not provided, initial PRNG seeds are automatically computed and saved in metadata or in a default log file).</li>
 <li><code>rngEventGeneratorSeed</code> : the explicit seed (integer) for the event generator.</li>
@@ -236,10 +236,10 @@ Script's supported sections and parameters </h2>
 </li>
 </ul>
 <p>A sample configuration script (commented) is provided in this <a href="FLSimulate-3.0.0.conf">document</a> (for Falaise 3.0.0).</p>
-<p>For a given run, the simulation setup is selected from the script's <code>flsimulate.simulation</code> section. Falaise uses a special service to registered blessed/official configuration (geometry, simulation, reconstruction...). Any setup of interest may be registered with an unique <em>tag</em>. The tag is a simple character string which uses an URN scheme. For example, Falaise version 3.0.0 is released with the registered simulation setup version 2.1 with tag `urn:snemo:demonstrator:simulation:2.1. This is the default simulation setup whcih will be used if not explicitely requested by the user.</p>
-<p>Thus, in the <code>flsimulate.simulation</code> section, the simulation setup tag is optional and defaults to: <code>urn:snemo:demonstrator:simulation:2.1</code>. If no other parameters are explicitly set, FLSimulate will try to resolve all other configuration components using a dependency scheme displayed on the table below:</p>
-<div class="fragment"><div class="line">+-- urn:snemo:demonstrator:simulation:2.1 (simulation setup)</div><div class="line">   +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)</div><div class="line">   |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:2.1:variants (used variant configuration)</div><div class="line">   |   +-- urn:snemo:demonstrator:simulation:2.1:variants:profiles:default (default variant profile)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:decays:1.2 (used decay generation setup)</div></div><!-- fragment --><p>Effective paths to various configuration files are automatically resolved by a special service.</p>
-<p>The default variant profile, namely <code>urn:snemo:demonstrator:simulation:2.1:variants:profiles:default</code>, is associated to the default simulation setup. It implies:</p>
+<p>For a given run, the simulation setup is selected from the script's <code>flsimulate.simulation</code> section. Falaise uses a special service to registered blessed/official configuration (geometry, simulation, reconstruction...). Any setup of interest may be registered with an unique <em>tag</em>. The tag is a simple character string which uses an URN scheme. For example, Falaise version 3.2.0 is released with the registered simulation setup tag 2.2 with tag <code>urn:snemo:demonstrator:simulation:2.2</code>. This is the default simulation setup which will be used if not explicitely requested by the user.</p>
+<p>Thus, in the <code>flsimulate.simulation</code> section, the simulation setup tag is optional and defaults to: <code>urn:snemo:demonstrator:simulation:2.2</code>. If no other parameters are explicitly set, FLSimulate will try to resolve all other configuration components using a dependency scheme displayed on the table below:</p>
+<div class="fragment"><div class="line">+-- urn:snemo:demonstrator:simulation:2.2 (simulation setup)</div><div class="line">   +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)</div><div class="line">   |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:2.2:variants (used variant configuration)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:2.2:variants:profiles:default (default variant profile)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)</div><div class="line">   +-- urn:snemo:demonstrator:simulation:decays:1.3 (used decay generation setup)</div></div><!-- fragment --><p>Effective paths to various configuration files are automatically resolved by a special service.</p>
+<p>The default variant profile, namely <code>urn:snemo:demonstrator:simulation:2.2:variants:profiles:default</code>, is associated to the default simulation setup. It implies:</p>
 <ul>
 <li>the <code>Basic</code> geometry layout (full) demonstrator module with external iron shielding, uniform magnetic field (25 Gauss), enriched Se source pads...</li>
 <li>(0nubb) decays of Se-82,</li>
@@ -252,16 +252,16 @@ FLSimulate's variant system </h1>
 <p>As mentionned above, FLSimulate embeds a <em>variant service</em> which offers to the user the possibility to tweak an official set of parameters from a <em>variant repository</em>. A variant <em>profile</em> can thus be generated and imported by the FLSimulate's subsystems.</p>
 <p>The variant repository is a container which typically contains several sets of variant parameters, the <em>variant registries</em>, organized by topics.</p>
 <p>The variant registry implements a dynamic hierarchy of variant parameters and depender variant menus. It is organized like a filesystem where each parameter and variant has an unique path.</p>
-<p>As an illustration, here is the organization of the geometry registry used by the SuperNEMO demonstrator simulation setup (2.1) (tag : <code>"urn:snemo:demonstrator:simulation:2.1"</code>):</p>
+<p>As an illustration, here is the organization of the geometry registry used by the SuperNEMO demonstrator simulation setup (2.2 (tag : <code>"urn:snemo:demonstrator:simulation:2.2</code>):</p>
 <div class="fragment"><div class="line">geometry/</div><div class="line">+-- layout (string)</div><div class="line">|   +-- if_basic/</div><div class="line">|   |   +-- magnetic_field (boolean)</div><div class="line">|   |   |   +-- is_active/</div><div class="line">|   |   |       +-- type</div><div class="line">|   |   |           +-- if_mapped/</div><div class="line">|   |   |           |   +-- map</div><div class="line">|   |   |           |   |   +-- if_user/</div><div class="line">|   |   |           |   |       +-- map_file</div><div class="line">|   |   |           |   +-- z_inverted</div><div class="line">|   |   |           +-- if_uniform_vertical/</div><div class="line">|   |   |               +-- magnitude (real, as magnetic flux density)</div><div class="line">|   |   |               +-- direction (string)</div><div class="line">|   |   +-- source_layout (string)</div><div class="line">|   |   |   +-- if_basic/</div><div class="line">|   |   |       +-- thickness (real, as length)</div><div class="line">|   |   |       +-- material (string)</div><div class="line">|   |   +-- source_calibration (boolean)</div><div class="line">|   |   |   +-- is_active/</div><div class="line">|   |   |       +-- type (string)</div><div class="line">|   |   +-- shielding (boolean)</div><div class="line">|   +-- if_half_commissioning/</div><div class="line">|       +-- gap (real, as length)</div><div class="line">+-- calo_film_thickness (real, as length)</div></div><!-- fragment --><p>The top level so-called <code>geometry</code> item &ndash; here displayed with an arbitrary trailing slash ('<code>/</code>') &ndash; represents the <em>registry</em> which hosts all variant parameters related to the geometry model. Items <em>without</em> a trailing slash are <em>variant parameters</em> (here their types are shown between parenthesis). They may be given values selected by the user, depending on their type and constraints implemented by the variant service: support for units, range or enumeration of allowed values... Items <em>with</em> a trailing slash are specific <em>variant menus</em> which are activated only if specific values are selected for their parent parameter. An activated variant menu publishes a new set of variant parameters which are thus made available for the user from a deeper level of the variant hierarchy.</p>
 <h2>FLSimulate registries </h2>
-<p>In the current implementation (Falaise 3.0.0 and simulation setup version 2.1), four variant <em>registries</em> are defined in the variant repository:</p><ul>
+<p>In the current implementation (Falaise 3.2.0 and simulation setup version 2.2), four variant <em>registries</em> are defined in the variant repository:</p><ul>
 <li><code>geometry</code> : handles geometry options,</li>
 <li><code>vertexes</code> : handles vertex generation options,</li>
 <li><code>primary_events</code>: handles decays generation options,</li>
 <li><code>simulation</code> : handles options for the Geant4 engine.</li>
 </ul>
-<p>The list of user choices is described in this <a href="FLSimulateVariantsDoc-2.1.pdf">document</a> (for SuperNEMO Demonstrator simulation setup version 2.1 and Falaise 3.0.0). It describes all available simulation variant parameters and their possible dependencies in this simulation context.</p>
+<p>The list of user choices is described in this <a href="FLSimulateVariantsDoc-2.1.pdf">document</a> (for SuperNEMO Demonstrator simulation setup version 2.2 and Falaise 3.2.0). It describes all available simulation variant parameters and their possible dependencies in this simulation context.</p>
 <p>Note that the variant system tries to ensure the consistence between various choices. For example, the vertex generators from calibration source (registry <code>vertexes</code>) are not available when the calibration sources are not arranged in the source frame geometry model (registry <code>geometry</code>). A dependency scheme is thus supported to take into account such constraints.</p>
 <p>The lists of valid vertex and event generators for each geometry variant options can also be dynamically browsed through the <code>flsimulate-configure</code> program (with builtin GUI mode of your Bayeux setup).</p>
 <p>To get help from the command line, run: </p><div class="fragment"><div class="line">$ flsimulate-configure --help</div></div><!-- fragment --><p>To launch a FlSimulate configuration session, run: </p><div class="fragment"><div class="line">$ flsimulate-configure</div></div><!-- fragment --><p>And then inspect the options available from the <code>Vertex generation</code> and <code>Primary events</code> panels in the GUI. Be aware that some choices may be inhibited by the <code>Geometry</code> context.</p>
@@ -276,6 +276,8 @@ FLSimulate's variant inspector GUI (geometry panel)</div></div>
 <div class="caption">
 FLSimulate's variant inspector GUI (vertexes panel)</div></div>
 <p>Notice: You Bayeux setup should have been compiled with Qt GUI support to benefit of the <code>flsimulate-configure</code>'s GUI interface.</p>
+<p>By <code>flsimulate-configure</code> uses a default simulation setup (example: "urn:snemo:demonstrator:simulation:2.2"). You can change to some arbitrary simulation setup with the <code>--setup-tag</code> switch: </p><div class="fragment"><div class="line">$ flsimulate-configure --setup-tag &quot;urn:snemo:demonstrator:simulation:2.2&quot;</div></div><!-- fragment --><p> This will activate a variant context specific to the selected simulation setup.</p>
+<p>Be aware that two different simulation setups may not be compatible in terms of variant context. It means that a variant profile generated and used by simulation setup X is not automatically usable with simulation setup Y, typically because the newest Y setup publishes and requires more variant parameters associated to a more complex and/or realistic description of the experiment.</p>
 <h2><a class="anchor" id="usingflsimulate_variants_explicitsettings"></a>
 Using explicit variant settings  </h2>
 <p>The <code>flsimulate.variantService</code> section may contains the <code>settings</code> parameter. It consists in a list of assignment instructions to be passed to the variant service.</p>
@@ -293,7 +295,7 @@ Using a variant profile </h2>
 <div class="fragment"><div class="line">$ flsimulate-configure -o &quot;variants.profile&quot;</div></div><!-- fragment --><p>Here the <code>variant.profile</code> file is generated at exit (option <code>-o</code>). This <em>profile</em> file stores a set of variant options (using a specific format) from which the variant service can pickup the parameters' value selected by the user. The <em>profile</em> contains:</p>
 <div class="fragment"><div class="line">#@format=datatools::configuration::variant</div><div class="line">#@format.version=1.0</div><div class="line">#@organization=snemo</div><div class="line">#@application=falaise</div><div class="line"></div><div class="line">[registry=&quot;geometry&quot;]</div><div class="line">layout = &quot;Basic&quot;</div><div class="line">layout/if_basic/magnetic_field = true</div><div class="line">layout/if_basic/magnetic_field/is_active/type = &quot;UniformVertical&quot;</div><div class="line">layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss</div><div class="line">layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = &quot;+z&quot;</div><div class="line">layout/if_basic/source_layout = &quot;Basic&quot;</div><div class="line">layout/if_basic/source_layout/if_basic/thickness = 250 um</div><div class="line">layout/if_basic/source_layout/if_basic/material = &quot;Se82&quot;</div><div class="line">layout/if_basic/source_calibration = false</div><div class="line">layout/if_basic/shielding = true</div><div class="line">calo_film_thickness = 25 um</div><div class="line"></div><div class="line">[registry=&quot;vertexes&quot;]</div><div class="line">generator = &quot;free_spot&quot;</div><div class="line">generator/if_free_spot/x = 0 mm</div><div class="line">generator/if_free_spot/y = 0 mm</div><div class="line">generator/if_free_spot/z = 0 mm</div><div class="line"></div><div class="line">[registry=&quot;primary_events&quot;]</div><div class="line">generator = &quot;electron.1MeV&quot;</div><div class="line"></div><div class="line">[registry=&quot;simulation&quot;]</div><div class="line">physics_mode = &quot;Constructors&quot;</div><div class="line">physics_mode/if_constructors/em_model = &quot;standard&quot;</div><div class="line">production_cuts = true</div><div class="line">output_profile = &quot;none&quot;</div></div><!-- fragment --><p>The file uses an ASCII format to ease user's understanding and for debugging purpose. However, unless you know what you are doing, you should not edit this file manually (or even reorder parameters or registry sections) because its format is dynamic and depends on the selected options by the user through the <code>flsimulate-configure</code>'s interface.</p>
 <p>This file can be reused as input of the <code>flsimulate</code> program (see below). The <code>simu.conf</code> script now contains:.</p>
-<div class="fragment"><div class="line">...</div><div class="line">[name=&quot;flsimulate.variantService&quot; type=&quot;flsimulate::section&quot;]</div><div class="line">profile : string as path = &quot;variants.profile&quot;</div></div><!-- fragment --><p>where the <code>variants.profile</code> explicitely publishes all variant parameters that have been chosen by the user. The following example displays the default variant profile associated to the default simulation setup (version 2.1) in Falaise 3.0.0:</p>
+<div class="fragment"><div class="line">...</div><div class="line">[name=&quot;flsimulate.variantService&quot; type=&quot;flsimulate::section&quot;]</div><div class="line">profile : string as path = &quot;variants.profile&quot;</div></div><!-- fragment --><p>where the <code>variants.profile</code> explicitely publishes all variant parameters that have been chosen by the user. The following example displays the default variant profile associated to the default simulation setup (version 2.2) in Falaise 3.2.0:</p>
 <div class="fragment"><div class="line">#@format=datatools::configuration::variant</div><div class="line">#@format.version=1.0</div><div class="line">#@organization=snemo</div><div class="line">#@application=falaise</div><div class="line"></div><div class="line">[registry=&quot;geometry&quot;]</div><div class="line">layout = &quot;Basic&quot;</div><div class="line">layout/if_basic/magnetic_field = true</div><div class="line">layout/if_basic/magnetic_field/is_active/type = &quot;UniformVertical&quot;</div><div class="line">layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss</div><div class="line">layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = &quot;+z&quot;</div><div class="line">layout/if_basic/source_layout = &quot;Basic&quot;</div><div class="line">layout/if_basic/source_layout/if_basic/thickness = 250 um</div><div class="line">layout/if_basic/source_layout/if_basic/material = &quot;Se82&quot;</div><div class="line">layout/if_basic/source_calibration = false</div><div class="line">layout/if_basic/shielding = true</div><div class="line">calo_film_thickness = 25 um</div><div class="line"></div><div class="line">[registry=&quot;vertexes&quot;]</div><div class="line">generator = &quot;source_pads_bulk&quot;</div><div class="line"></div><div class="line">[registry=&quot;primary_events&quot;]</div><div class="line">generator = &quot;Se82.0nubb&quot;</div><div class="line"></div><div class="line">[registry=&quot;simulation&quot;]</div><div class="line">physics_mode = &quot;Constructors&quot;</div><div class="line">physics_mode/if_constructors/em_model = &quot;standard&quot;</div><div class="line">production_cuts = true</div><div class="line">output_profile = &quot;none&quot;</div></div><!-- fragment --><h1><a class="anchor" id="usingflsimulate_experimentssimsetups"></a>
 Available experiments and simulation setups </h1>
 <p>The currently only available experiment in <code>flsimulate</code> is the SuperNEMO Demonstrator (tag=<code>"urn:snemo:demonstrator"</code>).</p>
@@ -338,7 +340,7 @@ List of available experiments </h2>
 <h2><a class="anchor" id="usingflsimulate_summaryofavailableexperimentalsetups"></a>
 List of available experimental setups </h2>
 <ol type="1">
-<li>SuperNEMO demonstrator experimental setup version 1.0:<ul>
+<li>SuperNEMO demonstrator experimental setup tag 1.0:<ul>
 <li>Description: The model of the SuperNEMO demonstrator experimental setup</li>
 <li>Tag : <code>"urn:snemo:demonstrator:setup:1.0"</code></li>
 <li>Related experiment: <code>"urn:snemo:demonstrator"</code></li>
@@ -356,7 +358,7 @@ List of available experimental setups </h2>
 <h2><a class="anchor" id="usingflsimulate_summaryofavailablesimulationsetups"></a>
 List of available simulation setups </h2>
 <ol type="1">
-<li>SuperNEMO demonstrator simulation setup version 2.1 :<ul>
+<li>SuperNEMO demonstrator simulation setup tag 2.1:<ul>
 <li>Description: Simulation setup for the SuperNEMO demonstrator detector</li>
 <li>Tag : <code>"urn:snemo:demonstrator:simulation:2.1"</code></li>
 <li>Based on:<ul>
@@ -367,11 +369,27 @@ List of available simulation setups </h2>
 </li>
 <li>Associated to:<ul>
 <li>Services system: <code>"urn:snemo:demonstrator:simulation:2.1:services"</code></li>
-<li>Variant system: <code>"urn:snemo:demonstrator:simulation:2.1:variants"</code><ul>
-<li>Blessed profiles: the default one below</li>
+<li>Variant system: <code>"urn:snemo:demonstrator:simulation:2.1:variants"</code></li>
+<li>Blessed profiles: <code>"urn:snemo:demonstrator:simulation:2.1:variants:profiles:basic-1.0"</code></li>
 <li>Default profile: <code>"urn:snemo:demonstrator:simulation:2.1:variants:profiles:default"</code></li>
 </ul>
 </li>
+</ul>
+</li>
+<li>SuperNEMO demonstrator simulation setup tag 2.2<ul>
+<li>Description: Simulation setup for the SuperNEMO demonstrator detector</li>
+<li>Tag : <code>"urn:snemo:demonstrator:simulation:2.2"</code></li>
+<li>Based on:<ul>
+<li>Experimental setup: <code>"urn:snemo:demonstrator:setup:1.0"</code></li>
+<li>Vertex generation system: <code>"urn:snemo:demonstrator:simulation:vertexes:4.1"</code></li>
+<li>Primary events generation system : <code>"urn:snemo:demonstrator:simulation:decays:1.3"</code></li>
+</ul>
+</li>
+<li>Associated to:<ul>
+<li>Services system: <code>"urn:snemo:demonstrator:simulation:2.2:services"</code></li>
+<li>Variant system: <code>"urn:snemo:demonstrator:simulation:2.2:variants"</code></li>
+<li>Blessed profiles: <code>"urn:snemo:demonstrator:simulation:2.2:variants:profiles:basic-1.0"</code></li>
+<li>Default profile: <code>"urn:snemo:demonstrator:simulation:2.2:variants:profiles:default"</code></li>
 </ul>
 </li>
 </ul>

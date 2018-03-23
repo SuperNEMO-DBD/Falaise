@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.1.1</span>
+   &#160;<span id="projectnumber">3.2.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -88,9 +88,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:adf60f4468e6aabef3cfe9ea177f5e723"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#adf60f4468e6aabef3cfe9ea177f5e723">get_patch</a> ()</td></tr>
 <tr class="memdesc:adf60f4468e6aabef3cfe9ea177f5e723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the patch version number of falaise, e.g., 3 for '1.2.3'.  <a href="#adf60f4468e6aabef3cfe9ea177f5e723">More...</a><br /></td></tr>
 <tr class="separator:adf60f4468e6aabef3cfe9ea177f5e723"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3b8727efa458e34614307389dd8e6af"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#af3b8727efa458e34614307389dd8e6af">get_revision</a> ()</td></tr>
-<tr class="memdesc:af3b8727efa458e34614307389dd8e6af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the revision/build number of falaise, e.g., 1234.  <a href="#af3b8727efa458e34614307389dd8e6af">More...</a><br /></td></tr>
-<tr class="separator:af3b8727efa458e34614307389dd8e6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac776d901f2360444b003efafe175d192"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#ac776d901f2360444b003efafe175d192">get_revision</a> () __attribute__((deprecated))</td></tr>
+<tr class="separator:ac776d901f2360444b003efafe175d192"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7875a141cf142418566a25cd43016449"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#a7875a141cf142418566a25cd43016449">get_commit</a> ()</td></tr>
+<tr class="memdesc:a7875a141cf142418566a25cd43016449"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the first eight characters of the current Git HEAD hash.  <a href="#a7875a141cf142418566a25cd43016449">More...</a><br /></td></tr>
+<tr class="separator:a7875a141cf142418566a25cd43016449"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2a3009beae865e7eae34002b05bbf6"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#a8e2a3009beae865e7eae34002b05bbf6">is_dirty</a> ()</td></tr>
+<tr class="memdesc:a8e2a3009beae865e7eae34002b05bbf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true when a build from Git used modified, uncommitted changes.  <a href="#a8e2a3009beae865e7eae34002b05bbf6">More...</a><br /></td></tr>
+<tr class="separator:a8e2a3009beae865e7eae34002b05bbf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33ad0e8a2d1a5fa571373dbf58a9557d"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfalaise_1_1version.html#a33ad0e8a2d1a5fa571373dbf58a9557d">get_version</a> ()</td></tr>
 <tr class="memdesc:a33ad0e8a2d1a5fa571373dbf58a9557d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the full version number of falaise as a string, e.g., '1.2.3'.  <a href="#a33ad0e8a2d1a5fa571373dbf58a9557d">More...</a><br /></td></tr>
 <tr class="separator:a33ad0e8a2d1a5fa571373dbf58a9557d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,6 +109,33 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Describe the falaise API version and features. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7875a141cf142418566a25cd43016449"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7875a141cf142418566a25cd43016449">&sect;&nbsp;</a></span>get_commit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string falaise::version::get_commit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the first eight characters of the current Git HEAD hash. </p>
+
+</div>
+</div>
 <a id="a135fcc2cac958d669e8bf760424f6d78"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a135fcc2cac958d669e8bf760424f6d78">&sect;&nbsp;</a></span>get_major()</h2>
 
@@ -185,8 +217,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af3b8727efa458e34614307389dd8e6af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3b8727efa458e34614307389dd8e6af">&sect;&nbsp;</a></span>get_revision()</h2>
+<a id="ac776d901f2360444b003efafe175d192"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac776d901f2360444b003efafe175d192">&sect;&nbsp;</a></span>get_revision()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -207,8 +239,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>Return the revision/build number of falaise, e.g., 1234. </p>
+<p>Return the current revision number </p><dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000012">Deprecated:</a></b></dt><dd>since 3.1 </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfalaise_1_1version.html#a7875a141cf142418566a25cd43016449" title="Return the first eight characters of the current Git HEAD hash. ">get_commit()</a> </dd></dl>
 
 </div>
 </div>
@@ -308,6 +340,33 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Return true if the current falaise version &gt;= (major, minor, patch) </p>
+
+</div>
+</div>
+<a id="a8e2a3009beae865e7eae34002b05bbf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e2a3009beae865e7eae34002b05bbf6">&sect;&nbsp;</a></span>is_dirty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool falaise::version::is_dirty </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return true when a build from Git used modified, uncommitted changes. </p>
 
 </div>
 </div>

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.1.1</span>
+   &#160;<span id="projectnumber">3.2.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -233,7 +233,7 @@ Using Standard Pipelines </h1>
 standard Falaise resources" and can be viewed as a "mount point" for standard resource files. The subsequent path is simply the path from that root to the standard reconstruction script.</p>
 <p>If the script itself is officially tagged, one can also use directly its tag from the command line:</p>
 <div class="fragment"><div class="line">$ flreconstruct -i example.brio -p &quot;urn:snemo:demonstrator:reconstruction:1.0.0&quot;</div></div><!-- fragment --><p>Note here that the FLreconstruct script tagged <code>"urn:snemo:demonstrator:reconstruction:1.0.0"</code> is based on the reconstruction pipeline tagged <code>"urn:snemo:demonstrator:reconstruction:1.0.0:pipeline"</code>. The dependency scheme associated to this specific FLReconstruct script is:</p>
-<div class="fragment"><div class="line">+-- urn:snemo:demonstrator:reconstruction:1.0.0 (reconstruction script)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0:services</div><div class="line">    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0:variants (used variant configuration)</div><div class="line">    |   +-- urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0 (variant profile is fixed)</div><div class="line">    +-- urn:snemo:demonstrator:reconstruction:1.0.0:pipeline (reconstruction pipeline)</div></div><!-- fragment --><p>We can see that choosing the top-level script implies to fix all configuration of all components used by the software.</p>
+<div class="fragment"><div class="line">+-- urn:snemo:demonstrator:reconstruction:1.0.0 (reconstruction script)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0:services</div><div class="line">    |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0:variants (used variant configuration)</div><div class="line">    +-- urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0 (variant profile is fixed)</div><div class="line">    +-- urn:snemo:demonstrator:reconstruction:1.0.0:pipeline (reconstruction pipeline)</div></div><!-- fragment --><p>We can see that choosing the top-level script implies to fix all configuration of all components used by the software.</p>
 <h1><a class="anchor" id="usingflreconstruct_usingoutputpaths"></a>
 Writing Reconstruction Results to File </h1>
 <p>To write <code>flreconstruct</code>'s results to file (e.g. for later analysis), the <code>-o</code> option may be used to write processed events to a file supplied as the argument, with the output format chosen based on the file extension.</p>

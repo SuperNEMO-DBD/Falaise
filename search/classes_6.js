@@ -31,5 +31,6 @@ var searchData=
   ['func_5feval_5ff_5fparam',['func_eval_f_param',['../https://supernemo-dbd.github.io/Bayeux/structmygsl_1_1multidimensional__minimization__system_1_1func__eval__f__param.html',1,'mygsl::multidimensional_minimization_system']]],
   ['function',['function',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1linear__regression_1_1function.html',1,'mygsl::linear_regression']]],
   ['function_5fwith_5fdomain',['function_with_domain',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1function__with__domain.html',1,'mygsl']]],
-  ['functor_5ffactory',['functor_factory',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1functor__factory.html',1,'mygsl']]]
+  ['functor_5ffactory',['functor_factory',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1functor__factory.html',1,'mygsl']]],
+  ['fvocf_5fvisitor',['fvocf_visitor',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1dependency__graph_1_1fvocf__visitor.html',1,'datatools::dependency_graph']]]
 ];

@@ -14,6 +14,7 @@ var searchData=
   ['serialization_5fmacros_2eh',['serialization_macros.h',['../https://supernemo-dbd.github.io/Bayeux/serialization____macros__8h.html',1,'']]],
   ['service_5fmanager_2dinl_2eh',['service_manager-inl.h',['../https://supernemo-dbd.github.io/Bayeux/service____manager-inl__8h.html',1,'']]],
   ['service_5fmanager_2eh',['service_manager.h',['../https://supernemo-dbd.github.io/Bayeux/service____manager__8h.html',1,'']]],
+  ['service_5ftools_2dinl_2eh',['service_tools-inl.h',['../https://supernemo-dbd.github.io/Bayeux/service____tools-inl__8h.html',1,'']]],
   ['service_5ftools_2eh',['service_tools.h',['../https://supernemo-dbd.github.io/Bayeux/service____tools__8h.html',1,'']]],
   ['services_2eh',['services.h',['../services_8h.html',1,'']]],
   ['shape_5ffactory_2eh',['shape_factory.h',['../https://supernemo-dbd.github.io/Bayeux/shape____factory__8h.html',1,'']]],

@@ -22,6 +22,8 @@ var searchData=
   ['dependee_5fdb_5fentry',['dependee_db_entry',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1urn__db__service_1_1dependee__db__entry.html',1,'datatools::urn_db_service']]],
   ['dependee_5frecord',['dependee_record',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1configuration_1_1variant__dependency__model_1_1dependee__record.html',1,'datatools::configuration::variant_dependency_model']]],
   ['dependency_5fentry',['dependency_entry',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1configuration__property__description_1_1dependency__entry.html',1,'datatools::configuration_property_description']]],
+  ['dependency_5fgraph',['dependency_graph',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1dependency__graph.html',1,'datatools']]],
+  ['dependency_5fgraph_5fbuilder',['dependency_graph_builder',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1urn__db__service_1_1dependency__graph__builder.html',1,'datatools::urn_db_service']]],
   ['dependency_5finfo_5ftype',['dependency_info_type',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1dependency__info__type.html',1,'datatools']]],
   ['dependency_5flogic_5fast',['dependency_logic_ast',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1configuration_1_1parsing_1_1dependency__logic__ast.html',1,'datatools::configuration::parsing']]],
   ['dependency_5flogic_5fast_5fop',['dependency_logic_ast_op',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1configuration_1_1parsing_1_1dependency__logic__ast__op.html',1,'datatools::configuration::parsing']]],

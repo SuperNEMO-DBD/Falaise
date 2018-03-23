@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Falaise
-   &#160;<span id="projectnumber">3.1.1</span>
+   &#160;<span id="projectnumber">3.2.0</span>
    </div>
    <div id="projectbrief">SuperNEMO Software Toolkit</div>
   </td>
@@ -75,6 +75,7 @@ $(function() {
 <li class="level2"><a href="#minimalconfigurablemodulescript">Configuring MyModule from the Pipeline Script </a></li>
 </ul>
 </li>
+<li class="level1"><a href="#additionallibraries">Using Additional Libraries in Your Module </a></li>
 </ul>
 </div>
 <div class="textblock"><h1><a class="anchor" id="introduction"></a>
@@ -120,14 +121,14 @@ Building a Loadable Shared Library </h2>
 <li><code>SHARED</code> : the type of the library, in this case a dynamic library.</li>
 <li><code>MyModule.h MyModule.cpp</code> : all the sources need to build the library. The header is also listed so that it will show up in IDEs like Xcode.</li>
 </ol>
-<p>Finally, the <code>target_link_libraries</code> command links the shared library to Falaise's <code>Falaise::FalaiseModule</code> target. This ensures that compilation and linking of the <code>MyModule</code> target will have the correct compiler and linking setup. The PUBLIC keyword means that if any other library links to <code>MyModule</code>, it must also link to <code>FalaiseModule</code> (In general, Falaise plugins should <em>not</em> link to other plugins as they are intended to be self-contained).</p>
+<p>Finally, the <code>target_link_libraries</code> command links the shared library to Falaise's <code>Falaise::FalaiseModule</code> target. This ensures that compilation and linking of the <code>MyModule</code> target will have the correct compiler and linking setup. The PUBLIC keyword means that if any other library links to <code>MyModule</code>, it must also link to <code>FalaiseModule</code> (In general, Falaise plugins should <em>not</em> link to other plugins as they are intended to be self-contained). The <code>flreconstruct</code> application makes a default set of libraries available, and if you require additional functionality CMake must be set up to find and use these. This is documented <a class="el" href="writingflreconstructmodules.html#additionallibraries">later in this tutorial</a>.</p>
 <p>For more detailed documentation on CMake, please refer to the <a href="https://cmake.org/cmake/help/latest/">online help</a>.</p>
 <p>To build the library, we first create a so-called <em>build directory</em> so that we can isolate the binary files from the source code. This can be wherever you like, but it's usually most convenient to create this alongside the directory in which the sources reside. In this example we have the directory structure:</p>
 <div class="fragment"><div class="line">$ pwd</div><div class="line">/path/to/MyWorkSpace</div><div class="line">$ tree .</div><div class="line">.</div><div class="line">`-- MyModule</div><div class="line">    |-- CMakeLists.txt</div><div class="line">    |-- MyModule.cpp</div><div class="line">    `-- MyModule.h</div><div class="line"></div><div class="line">1 directory, 3 files</div><div class="line">$</div></div><!-- fragment --><p>so we can create the build directory under <code>/path/to/MyWorkSpace</code> as</p>
 <div class="fragment"><div class="line">$ mkdir MyModule-build</div><div class="line">$ tree .</div><div class="line">.</div><div class="line">|-- MyModule</div><div class="line">|   |-- CMakeLists.txt</div><div class="line">|   |-- MyModule.cpp</div><div class="line">|   `-- MyModule.h</div><div class="line">`-- MyModule-build</div><div class="line"></div><div class="line">2 directories, 3 files</div><div class="line">$</div></div><!-- fragment --><p>The first step of the build is to change into the build directory and run <code>cmake</code> to configure the build of <code>MyModule</code>:</p>
 <div class="fragment"><div class="line">$ cd MyModule-build</div><div class="line">$ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule</div></div><!-- fragment --><p>Here, the <code>CMAKE_PREFIX_PATH</code> argument should be the directory under which Falaise was installed. If you installed Falaise using <code>brew</code> and are using <code>cmake</code> from <code>brew</code> then you will not need to set this. The argument <code>../MyModule</code> points CMake to the directory holding the <code>CMakeLists.txt</code> file for the project we want to build, in this case our custom module.</p>
 <p>Running the command will produce output that is highly system dependent, but you should see something along the lines of</p>
-<div class="fragment"><div class="line">$ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule</div><div class="line">-- The C compiler identification is AppleClang 7.3.0.7030031</div><div class="line">-- The CXX compiler identification is AppleClang 7.3.0.7030031</div><div class="line">-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc</div><div class="line">-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works</div><div class="line">-- Detecting C compiler ABI info</div><div class="line">-- Detecting C compiler ABI info - done</div><div class="line">-- Detecting C compile features</div><div class="line">-- Detecting C compile features - done</div><div class="line">-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++</div><div class="line">-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works</div><div class="line">-- Detecting CXX compiler ABI info</div><div class="line">-- Detecting CXX compiler ABI info - done</div><div class="line">-- Detecting CXX compile features</div><div class="line">-- Detecting CXX compile features - done</div><div class="line">...</div><div class="line">-- Configuring done</div><div class="line">-- Generating done</div><div class="line">-- Build files have been written to: /..../MyModule-build</div><div class="line">$</div></div><!-- fragment --><p>The exact output will depend on which compiler and platform you are using. However, the last three lines are common (apart from the path), and indicate a successful configuration. Listing the contents of the directory shows that CMake has generated a Makefile for us:</p>
+<div class="fragment"><div class="line">$ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule</div><div class="line">-- The C compiler identification is AppleClang 9.0.0.9000039</div><div class="line">-- The CXX compiler identification is AppleClang 9.0.0.9000039</div><div class="line">-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc</div><div class="line">-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works</div><div class="line">-- Detecting C compiler ABI info</div><div class="line">-- Detecting C compiler ABI info - done</div><div class="line">-- Detecting C compile features</div><div class="line">-- Detecting C compile features - done</div><div class="line">-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++</div><div class="line">-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works</div><div class="line">-- Detecting CXX compiler ABI info</div><div class="line">-- Detecting CXX compiler ABI info - done</div><div class="line">-- Detecting CXX compile features</div><div class="line">-- Detecting CXX compile features - done</div><div class="line">...</div><div class="line">-- Configuring done</div><div class="line">-- Generating done</div><div class="line">-- Build files have been written to: /..../MyModule-build</div><div class="line">$</div></div><!-- fragment --><p>The exact output will depend on which compiler and platform you are using. However, the last three lines are common (apart from the path), and indicate a successful configuration. Listing the contents of the directory shows that CMake has generated a Makefile for us:</p>
 <div class="fragment"><div class="line">$ ls</div><div class="line">CMakeCache.txt  CMakeFiles  cmake_install.cmake  Makefile</div><div class="line">$</div></div><!-- fragment --><p>To build the library for our module we therefore simply run make:</p>
 <div class="fragment"><div class="line">$ make</div><div class="line">Scanning dependencies of target MyModule</div><div class="line">[100%] Building CXX object CMakeFiles/MyModule.dir/MyModule.cpp.o</div><div class="line">Linking CXX shared library libMyModule.so</div><div class="line">[100%] Built target MyModule</div><div class="line">$</div></div><!-- fragment --><p>If the build succeeds, we now have the shared library present in our build directory:</p>
 <div class="fragment"><div class="line">$ ls</div><div class="line">CMakeCache.txt      CMakeFiles          Makefile            cmake_install.cmake libMyModule.dylib</div><div class="line">$</div></div><!-- fragment --><p>Note that the extension of the shared library is platform dependent (<code>dylib</code> for Mac, <code>so</code> on Linux). With the library built, we now need to make <code>flreconstruct</code> aware of it and to use it in the pipeline.</p>
@@ -192,6 +193,39 @@ Configuring MyModule from the Pipeline Script </h2>
 <p>Keys are bound to the section they are defined in, so we can use the same module type multiple times but with different parameters. For example, try the following pipeline script:</p>
 <div class="fragment"><div class="line"># - Configuration</div><div class="line">#@description Simple pipeline using a chain</div><div class="line">#@key_label   &quot;name&quot;</div><div class="line">#@meta_label  &quot;type&quot;</div><div class="line"></div><div class="line"># - Module load section</div><div class="line">[name=&quot;flreconstruct.plugins&quot; type=&quot;flreconstruct::section&quot;]</div><div class="line">plugins : string[1] = &quot;MyModule&quot;</div><div class="line">MyModule.directory : string = &quot;.&quot;</div><div class="line"></div><div class="line"># Must define &quot;pipeline&quot; as this is the module flreconstruct will use</div><div class="line">[name=&quot;pipeline&quot; type=&quot;dpp::chain_module&quot;]</div><div class="line">modules : string[3] = &quot;start_module&quot; &quot;dump&quot; &quot;end_module&quot;</div><div class="line"></div><div class="line">[name=&quot;start_module&quot; type=&quot;MyModule&quot;]</div><div class="line">fudge_factor : real = 3.14</div><div class="line"></div><div class="line">[name=&quot;dump&quot; type=&quot;dpp::dump_module&quot;]</div><div class="line"></div><div class="line">[name=&quot;end_module&quot; type=&quot;MyModule&quot;]</div><div class="line">fudge_factor : real = 4.13</div><div class="line"></div></div><!-- fragment --><p>You should see each event being dumped, with the dumped info being bracketed by the output from each <code>MyModule</code> instance, each with different values of the fudge factor parameter.</p>
 <p>Whilst this ability to make modules configurable is extremely useful, <em>you should aim to minimize the number of parameters your module takes</em>. This helps to make the module easier to use and less error prone. Remember that the modular structure of the pipeline means that tasks are broken down into smaller chunks, so you should consider refactoring complex modules into smaller orthogonal units.</p>
+<h1><a class="anchor" id="additionallibraries"></a>
+Using Additional Libraries in Your Module </h1>
+<p>The <code>flreconstruct</code> program provides the needed libraries to run core modules, specifically the minimal set:</p>
+<ul>
+<li>Falaise</li>
+<li>Bayeux</li>
+<li><a href="https://www.boost.org">Boost</a><ul>
+<li>filesystem</li>
+<li>system</li>
+<li>serialization</li>
+<li>iostreams</li>
+<li>regex</li>
+</ul>
+</li>
+<li><a href="https://www.gnu.org/software/gsl/">GSL</a></li>
+<li><a href="http://proj-clhep.web.cern.ch/proj-clhep/">CLHEP</a></li>
+<li><a href="https://root.cern.ch/doc/v612/modules.html">ROOT</a><ul>
+<li>Core</li>
+<li>RIO</li>
+<li>Hist</li>
+<li>MathCore</li>
+<li>Matrix</li>
+<li>Net</li>
+<li>Tree</li>
+<li>Thread</li>
+</ul>
+</li>
+<li><a href="https://doc.qt.io/qt-5.10/qtcore-index.html">Qt5 QtCore</a></li>
+</ul>
+<p>Linking your module to the <code>Falaise::FalaiseModule</code> target in <code>target_link_libraries</code> ensures that your module uses the appropriate headers at compile time, and the correct symbols at runtime. If your module requires use of additional libraries, then you will need to get CMake to locate these and then link them to your module.</p>
+<p>In the most common case of using non-core libraries from the ROOT package, then the <code>find_package</code> step would be modified to:</p>
+<div class="fragment"><div class="line"># Find Falaise first, which ensures we use correct ROOT</div><div class="line">find_package(Falaise REQUIRED)</div><div class="line"></div><div class="line"># Find ROOT after Falaise, which guarantees use of same ROOT, but configure extra components</div><div class="line"># in this case, TMVA.</div><div class="line">find_package(ROOT REQUIRED TMVA)</div></div><!-- fragment --><p>The module can then be linked to the additional library by adding it in the <code>target_link_libraries</code> command:</p>
+<div class="fragment"><div class="line">target_link_libraries(MyModule PUBLIC Falaise::FalaiseModule ${ROOT_TMVA_LIBRARY})</div></div><!-- fragment --><p>For other packages, <code>find_package</code> followed by <code>target_link_libraries</code> can be used in the same fashion.</p>
 <h1>Next Steps </h1>
 <p>The above examples have illustrated the basic structures needed to implement a module and load it into <code>flreconstruct</code>.</p>
 <p>Practical modules will access the event object passed to them, process it and then write information back into the event record. <a class="el" href="workingwitheventrecords.html">Using the event data model in modules is covered in a dedicated tutorial</a>.</p>

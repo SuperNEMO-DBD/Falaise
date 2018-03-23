@@ -410,8 +410,8 @@
     <name>particle_track.h</name>
     <path>BuildProducts/include/falaise/snemo/datamodels/</path>
     <filename>particle__track_8h</filename>
-    <includes id="tracker__trajectory_8h" name="tracker_trajectory.h" local="no" imported="no">falaise/snemo/datamodels/tracker_trajectory.h</includes>
     <includes id="calibrated__calorimeter__hit_8h" name="calibrated_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_calorimeter_hit.h</includes>
+    <includes id="tracker__trajectory_8h" name="tracker_trajectory.h" local="no" imported="no">falaise/snemo/datamodels/tracker_trajectory.h</includes>
     <class kind="class">snemo::datamodel::particle_track</class>
     <namespace>snemo</namespace>
     <namespace>snemo::datamodel</namespace>
@@ -447,9 +447,9 @@
     <name>raw_data.h</name>
     <path>BuildProducts/include/falaise/snemo/datamodels/</path>
     <filename>raw__data_8h</filename>
-    <includes id="raw__trigger__infos_8h" name="raw_trigger_infos.h" local="no" imported="no">falaise/snemo/datamodels/raw_trigger_infos.h</includes>
     <includes id="raw__calorimeter__hit_8h" name="raw_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_calorimeter_hit.h</includes>
     <includes id="raw__tracker__hit_8h" name="raw_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_tracker_hit.h</includes>
+    <includes id="raw__trigger__infos_8h" name="raw_trigger_infos.h" local="no" imported="no">falaise/snemo/datamodels/raw_trigger_infos.h</includes>
     <class kind="class">snemo::datamodel::raw_data</class>
     <namespace>snemo</namespace>
     <namespace>snemo::datamodel</namespace>
@@ -491,8 +491,8 @@
     <name>sim_digi_event_data.h</name>
     <path>BuildProducts/include/falaise/snemo/datamodels/</path>
     <filename>sim__digi__event__data_8h</filename>
-    <includes id="sim__trigger__digi__data_8h" name="sim_trigger_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_trigger_digi_data.h</includes>
     <includes id="sim__readout__digi__data_8h" name="sim_readout_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_readout_digi_data.h</includes>
+    <includes id="sim__trigger__digi__data_8h" name="sim_trigger_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_trigger_digi_data.h</includes>
     <class kind="class">snemo::datamodel::sim_digi_event_data</class>
     <namespace>snemo</namespace>
     <namespace>snemo::datamodel</namespace>
@@ -597,9 +597,9 @@
     <path>BuildProducts/include/falaise/snemo/electronics/</path>
     <filename>cabling_8h</filename>
     <includes id="calo__locator_8h" name="calo_locator.h" local="no" imported="no">snemo/geometry/calo_locator.h</includes>
+    <includes id="gg__locator_8h" name="gg_locator.h" local="no" imported="no">snemo/geometry/gg_locator.h</includes>
     <includes id="gveto__locator_8h" name="gveto_locator.h" local="no" imported="no">snemo/geometry/gveto_locator.h</includes>
     <includes id="xcalo__locator_8h" name="xcalo_locator.h" local="no" imported="no">snemo/geometry/xcalo_locator.h</includes>
-    <includes id="gg__locator_8h" name="gg_locator.h" local="no" imported="no">snemo/geometry/gg_locator.h</includes>
     <class kind="class">snemo::electronics::cabling</class>
     <namespace>snemo</namespace>
     <namespace>snemo::electronics</namespace>
@@ -783,9 +783,9 @@
     <name>mock_tracker_s2c_module.h</name>
     <path>BuildProducts/include/falaise/snemo/processing/</path>
     <filename>mock__tracker__s2c__module_8h</filename>
+    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
     <includes id="mock__raw__tracker__hit_8h" name="mock_raw_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/mock_raw_tracker_hit.h</includes>
     <includes id="geiger__regime_8h" name="geiger_regime.h" local="no" imported="no">falaise/snemo/processing/geiger_regime.h</includes>
-    <includes id="calibrated__data_8h" name="calibrated_data.h" local="no" imported="no">falaise/snemo/datamodels/calibrated_data.h</includes>
     <class kind="class">snemo::processing::mock_tracker_s2c_module</class>
     <namespace>geomtools</namespace>
     <namespace>mctools</namespace>
@@ -830,6 +830,125 @@
     <class kind="class">snemo::simulation::gg_step_hit_processor</class>
     <namespace>snemo</namespace>
     <namespace>snemo::simulation</namespace>
+  </compound>
+  <compound kind="file">
+    <name>tags.h</name>
+    <path>BuildProducts/include/falaise/</path>
+    <filename>tags_8h</filename>
+    <namespace>falaise</namespace>
+    <namespace>falaise::tags</namespace>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>experiment_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>acd4f18d42545f5c966176868c419801d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>experimental_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a635312102b9309abdcf56202d0978f74</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>geometry_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ab9685c12de07cc53ba912314d6e95898</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>device_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ad8d176abc3ebc537dbbfca14c0ea487d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>electronics_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a77f5b2d19731e8ca939666983759d272</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>cms_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a840d522d680211f1fda28f2546d9680a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>simulation_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a5333523ce3e68f7bd2eb2b83950099f6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>reconstruction_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a95c28e55ba80de36d33e8f3629b7a722</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>variant_service_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>af59b4b74a09d192ecaa3b0c7db11b1aa</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>services_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a29561d1d3363d3448ee30f54e618de33</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_configuration_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a5c7cd9d6ada873725cc52030b9fc5324</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_data_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a28b7f847cc4fc766b9e99b0e04868b48</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_image_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ac80b606bd5634d8b3574903f27ce8292</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>software_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a4811c18e2bcb65b8b4b80c0f50705fbc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>firmware_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a2fc09fc303f4ecc04959283daffb427e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>hardware_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a6c979ba7359173b0c76bae6e8d2f4052</anchor>
+      <arglist>()</arglist>
+    </member>
   </compound>
   <compound kind="file">
     <name>event_display.h</name>
@@ -904,6 +1023,20 @@
       <name>FALAISE_VERSION_REVISION</name>
       <anchorfile>version_8h.html</anchorfile>
       <anchor>ad7c879cc5bb82d075c7da85f611716f3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_COMMIT</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a5fb10c02bcff753c343a1b480bc98232</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_VERSION_IS_DIRTY</name>
+      <anchorfile>version_8h.html</anchorfile>
+      <anchor>a9fdb4a411a4880350c574758f0d2d660</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -1004,6 +1137,16 @@
     <name>Mainpage.md</name>
     <path>documentation/</path>
     <filename>Mainpage_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLResourceFileManagement.md</name>
+    <path>documentation/resource_file_management/</path>
+    <filename>FLResourceFileManagement_8md</filename>
+  </compound>
+  <compound kind="file">
+    <name>FLTagManagement.md</name>
+    <path>documentation/tag_management/</path>
+    <filename>FLTagManagement_8md</filename>
   </compound>
   <compound kind="file">
     <name>README.md</name>
@@ -1622,7 +1765,7 @@
       <type>boost::bimap&lt; geomtools::geom_id, geomtools::geom_id &gt;</type>
       <name>ID_bimap</name>
       <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>ae24c14e041d02ab7dd1c0be402f2d1c4</anchor>
+      <anchor>a4cb24dd37a30998715e0273c1d07c740</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -7282,7 +7425,7 @@
       <type>boost::variant&lt; bool, int, double, std::string &gt;</type>
       <name>prop_value_type</name>
       <anchorfile>classfalaise_1_1app_1_1metadata__scanner.html</anchorfile>
-      <anchor>a79beb4274a9669a31d669833b640dd04</anchor>
+      <anchor>a4088f3a6e9902af0415d7dde3d032e4b</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -13773,7 +13916,21 @@
       <type>static int</type>
       <name>get_revision</name>
       <anchorfile>structfalaise_1_1version.html</anchorfile>
-      <anchor>af3b8727efa458e34614307389dd8e6af</anchor>
+      <anchor>ac776d901f2360444b003efafe175d192</anchor>
+      <arglist>() __attribute__((deprecated))</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static std::string</type>
+      <name>get_commit</name>
+      <anchorfile>structfalaise_1_1version.html</anchorfile>
+      <anchor>a7875a141cf142418566a25cd43016449</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static bool</type>
+      <name>is_dirty</name>
+      <anchorfile>structfalaise_1_1version.html</anchorfile>
+      <anchor>a8e2a3009beae865e7eae34002b05bbf6</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function" static="yes">
@@ -14380,10 +14537,17 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>std::map&lt; std::string, service_entry &gt;</type>
+      <type>std::shared_ptr&lt; service_entry &gt;</type>
+      <name>service_entry_ptr</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a09b0974ea5ce51108f37528860f64149</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::map&lt; std::string, service_entry_ptr &gt;</type>
       <name>service_dict_type</name>
       <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a144db67caabb4c3ac503325dcc0d32f1</anchor>
+      <anchor>a1b031a2eb7066aa8b721b6f0c3557e75</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -14441,48 +14605,6 @@
       <anchorfile>namespacedatatools.html</anchorfile>
       <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22e</anchor>
       <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>find_service_name_with_id</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad602550ac84888349e5de58e65bcfd15</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>find_service_names_with_id</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac98f48a531895eefeefb251e1e4d694a</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::vector&lt; std::string &gt; &amp;service_names_)</arglist>
-    </member>
-    <member kind="function">
-      <type>base_service &amp;</type>
-      <name>grab_service</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab862847bd10c84f0cefbbe63777eb4fc</anchor>
-      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const base_service &amp;</type>
-      <name>get_service</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a5b944b16d1b3fc8bd46775c571007798</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>T &amp;</type>
-      <name>grab</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9c0b278cc428326e86aeb3a1107c00bd</anchor>
-      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const T &amp;</type>
-      <name>get</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab059bac0563dc9603cab716ab14010f4</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
@@ -14581,6 +14703,62 @@
       <anchorfile>namespacedatatools.html</anchorfile>
       <anchor>a89c75e2d9a33ccc650e1b770e97f2db0</anchor>
       <arglist>(const std::string &amp;rname, bool overriden_env=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>T &amp;</type>
+      <name>grab</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a9c0b278cc428326e86aeb3a1107c00bd</anchor>
+      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>const T &amp;</type>
+      <name>get</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab059bac0563dc9603cab716ab14010f4</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>service_exists</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac4d270ff27705036869fc9e8f4087703</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>merge_services</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a5a416cbca025b69351187da4a48f3c2b</anchor>
+      <arglist>(service_dict_type &amp;services_, service_dict_type &amp;merged_, bool duplicate_throw_=false)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>find_service_name_with_id</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ad602550ac84888349e5de58e65bcfd15</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>find_service_names_with_id</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ac98f48a531895eefeefb251e1e4d694a</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::vector&lt; std::string &gt; &amp;service_names_)</arglist>
+    </member>
+    <member kind="function">
+      <type>base_service &amp;</type>
+      <name>grab_service</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>ab862847bd10c84f0cefbbe63777eb4fc</anchor>
+      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
+    </member>
+    <member kind="function">
+      <type>const base_service &amp;</type>
+      <name>get_service</name>
+      <anchorfile>namespacedatatools.html</anchorfile>
+      <anchor>a5b944b16d1b3fc8bd46775c571007798</anchor>
+      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
     </member>
     <member kind="function">
       <type>const std::string</type>
@@ -15311,6 +15489,7 @@
     <namespace>falaise::common</namespace>
     <namespace>falaise::detail</namespace>
     <namespace>falaise::properties</namespace>
+    <namespace>falaise::tags</namespace>
     <class kind="class">falaise::ResourceInitializationException</class>
     <class kind="class">falaise::UnknownResourceException</class>
     <class kind="struct">falaise::version</class>
@@ -15522,6 +15701,122 @@
       <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
       <anchor>a52958a1e0764bb108cc2f21ea7359e52</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; std::string &gt;)</arglist>
+    </member>
+  </compound>
+  <compound kind="namespace">
+    <name>falaise::tags</name>
+    <filename>namespacefalaise_1_1tags.html</filename>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>experiment_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>acd4f18d42545f5c966176868c419801d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>experimental_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a635312102b9309abdcf56202d0978f74</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>geometry_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ab9685c12de07cc53ba912314d6e95898</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>device_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ad8d176abc3ebc537dbbfca14c0ea487d</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>electronics_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a77f5b2d19731e8ca939666983759d272</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>cms_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a840d522d680211f1fda28f2546d9680a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>simulation_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a5333523ce3e68f7bd2eb2b83950099f6</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>reconstruction_setup_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a95c28e55ba80de36d33e8f3629b7a722</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>variant_service_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>af59b4b74a09d192ecaa3b0c7db11b1aa</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>services_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a29561d1d3363d3448ee30f54e618de33</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_configuration_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a5c7cd9d6ada873725cc52030b9fc5324</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_data_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a28b7f847cc4fc766b9e99b0e04868b48</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>generic_image_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>ac80b606bd5634d8b3574903f27ce8292</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>software_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a4811c18e2bcb65b8b4b80c0f50705fbc</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>firmware_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a2fc09fc303f4ecc04959283daffb427e</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>const std::string &amp;</type>
+      <name>hardware_category</name>
+      <anchorfile>namespacefalaise_1_1tags.html</anchorfile>
+      <anchor>a6c979ba7359173b0c76bae6e8d2f4052</anchor>
+      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="namespace">
@@ -17776,6 +18071,7 @@
     <docanchor file="writingflreconstructmodules" title="Making Your Module Configurable ">minimalconfigurablemodule</docanchor>
     <docanchor file="writingflreconstructmodules" title="Adding a Configurable Data Member ">minimalconfigurablemodulecpp</docanchor>
     <docanchor file="writingflreconstructmodules" title="Configuring MyModule from the Pipeline Script ">minimalconfigurablemodulescript</docanchor>
+    <docanchor file="writingflreconstructmodules" title="Using Additional Libraries in Your Module ">additionallibraries</docanchor>
   </compound>
   <compound kind="page">
     <name>workingwitheventrecords</name>
@@ -17807,6 +18103,26 @@
     <filename>usingflvisualize</filename>
     <docanchor file="usingflvisualize" title="Introduction to FLVisualize ">usingflvisualize_intro</docanchor>
     <docanchor file="usingflvisualize" title="Example Usage ">usingflvisualize_examples</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>manageresourcefiles</name>
+    <title>Manage resource files in Falaise</title>
+    <filename>manageresourcefiles</filename>
+    <docanchor file="manageresourcefiles" title="Introduction to resource files ">manageresourcefiles_intro</docanchor>
+    <docanchor file="manageresourcefiles" title="Resource files directory ">manageresourcefiles_resourcefilesdirectory</docanchor>
+    <docanchor file="manageresourcefiles" title="Resource file registration ">manageresourcefiles_resourcefileregistration</docanchor>
+    <docanchor file="manageresourcefiles" title="Resource file path in Falaise ">manageresourcefiles_resourcefilepathinfalaise</docanchor>
+  </compound>
+  <compound kind="page">
+    <name>managetags</name>
+    <title>Manage tags in Falaise</title>
+    <filename>managetags</filename>
+    <docanchor file="managetags" title="Introduction to tags ">managetags_intro</docanchor>
+    <docanchor file="managetags" title="Tag categories ">managetags_tagcategories</docanchor>
+    <docanchor file="managetags" title="Tag registration ">managetags_tagregistration</docanchor>
+    <docanchor file="managetags" title="Tag dependencies ">managetags_tagdependencies</docanchor>
+    <docanchor file="managetags" title="Tag to file resolver ">managetags_tagtofileresolver</docanchor>
+    <docanchor file="managetags" title="The fltags  application  ">managetags_fltags</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>

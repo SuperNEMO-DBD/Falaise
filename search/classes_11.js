@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polyhedra_1_1r__min__max.html',1,'geomtools::polyhedra']]],
   ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polycone_1_1r__min__max.html',1,'geomtools::polycone']]],
+  ['r_5fmin_5fmax',['r_min_max',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1polyhedra_1_1r__min__max.html',1,'geomtools::polyhedra']]],
   ['random_5fcut',['random_cut',['../https://supernemo-dbd.github.io/Bayeux/classcuts_1_1random__cut.html',1,'cuts']]],
   ['random_5futils',['random_utils',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1random__utils.html',1,'mygsl']]],
   ['range',['range',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1gnuplot__drawer_1_1range.html',1,'geomtools::gnuplot_drawer']]],
