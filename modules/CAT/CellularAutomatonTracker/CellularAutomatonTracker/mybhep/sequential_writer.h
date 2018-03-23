@@ -25,9 +25,7 @@
 #include <string>
 #include <mybhep/brw.h>
 
-
-
-namespace mybhep{
+namespace mybhep {
 
 //! Base class for a sequential writer
 /*!
@@ -50,25 +48,18 @@ namespace mybhep{
 
 */
 
+class sequential_writer : public brw {
+ protected:
+  sequential_writer();
 
-  class sequential_writer : public brw
-  {
+ public:
+  //! write event
+  void write(event& evt, size_t ievent);
 
-  protected:
-
-    sequential_writer();
-
-  public:
-
-    //! write event
-    void write(event& evt, size_t ievent);
-
-    //! protected interface
-  protected:
-
-    //! write the event as a record
-    virtual void write_record(std::string record) = 0;
-
-  };
-}
+  //! protected interface
+ protected:
+  //! write the event as a record
+  virtual void write_record(std::string record) = 0;
+};
+}  // namespace mybhep
 #endif

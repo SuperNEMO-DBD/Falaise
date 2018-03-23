@@ -41,57 +41,54 @@ class TGCompositeFrame;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      class i_draw_manager;
-      class i_embedded_viewer;
+class i_draw_manager;
+class i_embedded_viewer;
 
-      class display_3d
-      {
+class display_3d {
+ public:
+  display_3d(TGCompositeFrame *main_, io::event_server *server_);
+  virtual ~display_3d();
 
-      public:
-        display_3d(TGCompositeFrame * main_, io::event_server * server_);
-        virtual ~display_3d();
+  void set_drawer(i_draw_manager *draw_manager_ = 0);
 
-        void set_drawer(i_draw_manager * draw_manager_ = 0);
+  void clear();
+  void reset();
 
-        void clear  ();
-        void reset  ();
+  void update_scene();
+  void update_detector();
 
-        void update_scene    ();
-        void update_detector ();
+  void handle_button_signals(const button_signals_type signal_);
 
-        void handle_button_signals (const button_signals_type signal_);
+ private:
+  io::event_server *_server_;
 
-      private:
+  TGCompositeFrame *_main_;
 
-        io::event_server  * _server_;
+  i_draw_manager *_3d_drawer_;
+  i_embedded_viewer *_3d_viewer_;
 
-        TGCompositeFrame  * _main_;
+  display_3d();                               // disabled
+  display_3d(const display_3d &);             // disabled
+  display_3d &operator=(const display_3d &);  // disabled
 
-        i_draw_manager    * _3d_drawer_;
-        i_embedded_viewer * _3d_viewer_;
+  ClassDef(display_3d, 0);
+};
 
-        display_3d             ();                   // disabled
-        display_3d             (const display_3d &); // disabled
-        display_3d & operator= (const display_3d &); // disabled
+}  // end of namespace view
 
-        ClassDef (display_3d, 0);
-      };
+}  // end of namespace visualization
 
-    } // end of namespace view
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_3D_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_3D_H
 
 // end of display_3d.h
 /*

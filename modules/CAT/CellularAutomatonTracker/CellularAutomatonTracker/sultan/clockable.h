@@ -5,54 +5,49 @@
 
 #include <iostream>
 #include <string>
-#include <sys/time.h> 
+#include <sys/time.h>
 
 namespace SULTAN {
 
-  class clockable {
+class clockable {
+  // a clockable is a time counter
 
-    // a clockable is a time counter
+  struct timeval tv_begin_, tv_end_;
+  struct timezone tz_begin_, tz_end_;
 
-    struct timeval tv_begin_, tv_end_;
-    struct timezone tz_begin_, tz_end_;
-    
-  public:
+ public:
+  std::string name_;
 
-    std::string name_;
+  // time in milliseconds
+  double time_;
 
-    // time in milliseconds
-    double time_;
-    
-    //!Default constructor
-    clockable(std::string name="default");
+  //! Default constructor
+  clockable(std::string name = "default");
 
-    //!Default destructor
-    virtual ~clockable();
+  //! Default destructor
+  virtual ~clockable();
 
-    virtual void dump (double max = 1.,
-                       std::ostream & a_out         = std::clog,
-                       const std::string & a_title  = "",
-                       const std::string & a_indent = "",
-                       bool a_inherit          = false) const;
+  virtual void dump(double max = 1., std::ostream& a_out = std::clog,
+                    const std::string& a_title = "", const std::string& a_indent = "",
+                    bool a_inherit = false) const;
 
-    //! set name
-    void set_name(std::string name);
+  //! set name
+  void set_name(std::string name);
 
-    //! get name
-    const std::string & name() const;
+  //! get name
+  const std::string& name() const;
 
-    //! read time
-    double read();
+  //! read time
+  double read();
 
-    void start();
+  void start();
 
-    void restart();
+  void restart();
 
-    void stop();
+  void stop();
 
-    static bool compare(const clockable& c1, const clockable& c2);
+  static bool compare(const clockable& c1, const clockable& c2);
+};
+}  // namespace SULTAN
 
-  };
-}
-
-#endif // __sultan__clockable_h
+#endif  // __sultan__clockable_h

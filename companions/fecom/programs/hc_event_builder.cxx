@@ -1,41 +1,38 @@
 // Standard library:
 #include <cstdlib>
-#include <string>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 // Third party:
 // - Boost:
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/lexical_cast.hpp>
 
 // - Bayeux/datatools:
-#include <datatools/logger.h>
-#include <datatools/exception.h>
-#include <datatools/utils.h>
-#include <datatools/io_factory.h>
 #include <datatools/clhep_units.h>
+#include <datatools/exception.h>
+#include <datatools/io_factory.h>
+#include <datatools/logger.h>
 #include <datatools/things.h>
+#include <datatools/utils.h>
 // - Bayeux/dpp:
 #include <dpp/output_module.h>
 
 // This project:
-#include <fecom/hit_reader.hpp>
-#include <fecom/commissioning_event.hpp>
 #include <fecom/channel_mapping.hpp>
+#include <fecom/commissioning_event.hpp>
+#include <fecom/hit_reader.hpp>
 
 /// \brief Event builder
-class event_builder
-{
+class event_builder {
+ public:
+  static constexpr double EVENT_BUILDING_CALO_L1_GATE_IN_NS =
+      100.0;  // 100ns to stack calorimeters hits in a commissioning event
+  static constexpr double EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS =
+      150000.0;  // 150µs to build a commissioning event
 
-public :
-
-  static constexpr double EVENT_BUILDING_CALO_L1_GATE_IN_NS = 100.0; // 100ns to stack calorimeters hits in a commissioning event
-  static constexpr double EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS = 150000.0; // 150µs to build a commissioning event
-
-  event_builder(double l1_time_gate_ns_ = -1.0,
-		double l2_time_gate_ns_ = -1.0)
-  {
+  event_builder(double l1_time_gate_ns_ = -1.0, double l2_time_gate_ns_ = -1.0) {
     l1_time_gate = l1_time_gate_ns_;
     if (l1_time_gate < 0.0) {
       l1_time_gate = EVENT_BUILDING_CALO_L1_GATE_IN_NS;
@@ -51,57 +48,48 @@ public :
     return;
   }
 
-  virtual ~event_builder()
-  {
-  }
+  virtual ~event_builder() {}
 
-  void set_times(const double time_start_)
-  {
+  void set_times(const double time_start_) {
     time_start = time_start_;
     calo_time_stop = time_start + l1_time_gate;
     l2_time_stop = time_start + l2_time_gate;
-    //std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << std::endl;
+    // std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << std::endl;
     working_commissioning_event.set_time_start_ns(time_start);
     return;
   }
 
-  void build_tracker_hits_from_channels()
-  {
-    if (commissioning_event_for_serialization.get_tracker_channel_hit_collection().size() != 0)
-      {
-        commissioning_event_for_serialization.set_channel_mapping(*channel_mapping);
-        commissioning_event_for_serialization.build_tracker_hit_from_channels();
-      }
+  void build_tracker_hits_from_channels() {
+    if (commissioning_event_for_serialization.get_tracker_channel_hit_collection().size() != 0) {
+      commissioning_event_for_serialization.set_channel_mapping(*channel_mapping);
+      commissioning_event_for_serialization.build_tracker_hit_from_channels();
+    }
     return;
   }
 
-  void reset_serialization()
-  {
+  void reset_serialization() {
     commissioning_event_for_serialization.reset();
     ready_for_serialization = false;
     return;
   }
 
   // Configuration:
-  double l1_time_gate = 0.0; //!< Time is in implicit ns
-  double l2_time_gate = 0.0; //!< Time is in implicit ns
+  double l1_time_gate = 0.0;  //!< Time is in implicit ns
+  double l2_time_gate = 0.0;  //!< Time is in implicit ns
 
   // Working data:
-  fecom::channel_mapping * channel_mapping = nullptr;
+  fecom::channel_mapping* channel_mapping = nullptr;
   fecom::commissioning_event commissioning_event_for_serialization;
   fecom::commissioning_event working_commissioning_event;
-  double time_start;     //!< Time is in implicit ns
-  double calo_time_stop; //!< Time is in implicit ns
-  double l2_time_stop;   //!< Time is in implicit ns
-  bool   com_event_is_active     = false;
-  bool   ready_for_serialization = false;
-  bool   begin_by_calorimeter    = false;
-
+  double time_start;      //!< Time is in implicit ns
+  double calo_time_stop;  //!< Time is in implicit ns
+  double l2_time_stop;    //!< Time is in implicit ns
+  bool com_event_is_active = false;
+  bool ready_for_serialization = false;
+  bool begin_by_calorimeter = false;
 };
 
-
-int main(int argc_, char ** argv_)
-{
+int main(int argc_, char** argv_) {
   int error_code = EXIT_SUCCESS;
   datatools::logger::priority logging = datatools::logger::PRIO_INFORMATION;
   std::string input_filename = "";
@@ -110,18 +98,17 @@ int main(int argc_, char ** argv_)
   std::string output_path = "";
   std::string input_tracker_mapping_file = "";
   std::string input_calo_mapping_file = "";
-  int32_t     run_number = 0;
-  int32_t     first_event_number = 0;
-  bool        is_debug       = false;
-  bool        is_help        = false;
-  double      l1_build_gate  = event_builder::EVENT_BUILDING_CALO_L1_GATE_IN_NS;
-  double      l2_build_gate  = event_builder::EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
-  std::size_t min_nb_calo    = 0;
+  int32_t run_number = 0;
+  int32_t first_event_number = 0;
+  bool is_debug = false;
+  bool is_help = false;
+  double l1_build_gate = event_builder::EVENT_BUILDING_CALO_L1_GATE_IN_NS;
+  double l2_build_gate = event_builder::EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
+  std::size_t min_nb_calo = 0;
   std::size_t min_nb_tracker = 0;
-  std::size_t max_events     = 0;
+  std::size_t max_events = 0;
 
   try {
-
     // Parsing arguments:
     int iarg = 1;
     while (iarg < argc_) {
@@ -140,11 +127,11 @@ int main(int argc_, char ** argv_)
       }
 
       else if (arg == "-cm" || arg == "--calo-map") {
-	input_calo_mapping_file = argv_[++iarg];
+        input_calo_mapping_file = argv_[++iarg];
       }
 
       else if (arg == "-tm" || arg == "--tracker-map") {
-	input_tracker_mapping_file = argv_[++iarg];
+        input_tracker_mapping_file = argv_[++iarg];
       }
 
       else if (arg == "-g1" || arg == "--build-gate-l1") {
@@ -191,14 +178,18 @@ int main(int argc_, char ** argv_)
     }
 
     if (is_help) {
-      std::cerr << std::endl << "Usage :" << std::endl << std::endl
-                << "fecom-hc_event_builder [OPTIONS]" << std::endl << std::endl
+      std::cerr << std::endl
+                << "Usage :" << std::endl
+                << std::endl
+                << "fecom-hc_event_builder [OPTIONS]" << std::endl
+                << std::endl
                 << "Allowed options: " << std::endl
                 << "-h    [ --help ]        produce help message" << std::endl
                 << "-i    [ --input ] file  set an input file" << std::endl
                 << "-o    [ --output ] file set an output file" << std::endl
                 << "-op   [ --output ] path set a path where all files are store" << std::endl
-                << "-d    [ --debug ]       debug mode" << std::endl << std::endl;
+                << "-d    [ --debug ]       debug mode" << std::endl
+                << std::endl;
       return 0;
     }
 
@@ -207,7 +198,8 @@ int main(int argc_, char ** argv_)
 
     // Set the input file :
     DT_THROW_IF(input_filename.empty(), std::logic_error, "Missing input file!");
-    // if (input_filename.empty()) input_filename = "${FECOM_RESOURCES_DIR}/data/samples/fake_run/toto.xml";
+    // if (input_filename.empty()) input_filename =
+    // "${FECOM_RESOURCES_DIR}/data/samples/fake_run/toto.xml";
     datatools::fetch_path_with_env(input_filename);
 
     if (input_path.empty()) {
@@ -223,7 +215,10 @@ int main(int argc_, char ** argv_)
     // Default output path in input path :
     if (output_path.empty()) {
       output_path = input_path;
-      DT_LOG_WARNING(logging, "The output path is empty, did you forget it in the option ? Default directory for output :" + output_path);
+      DT_LOG_WARNING(logging,
+                     "The output path is empty, did you forget it in the option ? Default "
+                     "directory for output :" +
+                         output_path);
     }
     datatools::fetch_path_with_env(output_path);
     DT_LOG_INFORMATION(logging, "Output path : " + output_path);
@@ -236,16 +231,14 @@ int main(int argc_, char ** argv_)
     }
     DT_LOG_INFORMATION(logging, "Serialization output file :" + output_filename);
 
-
     // Event serializer module :
     dpp::output_module serializer;
     datatools::properties writer_config;
-    writer_config.store ("logging.priority", "debug");
-    writer_config.store ("files.mode", "single");
-    writer_config.store ("files.single.filename", output_filename);
+    writer_config.store("logging.priority", "debug");
+    writer_config.store("files.mode", "single");
+    writer_config.store("files.single.filename", output_filename);
     serializer.initialize_standalone(writer_config);
     serializer.tree_dump(std::clog, "HC Event builder writer module");
-
 
     if (input_tracker_mapping_file.empty()) {
       input_tracker_mapping_file = input_path + "/" + "mapping_tracker.csv";
@@ -270,9 +263,8 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Building commisioning events...");
     DT_LOG_INFORMATION(logging, "...");
 
-    event_builder eb(l1_build_gate,
-		     l2_build_gate);
-    eb.channel_mapping = & my_channel_mapping;
+    event_builder eb(l1_build_gate, l2_build_gate);
+    eb.channel_mapping = &my_channel_mapping;
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
@@ -280,13 +272,13 @@ int main(int argc_, char ** argv_)
     int modulo = 10000;
 
     while (deserializer.has_record_tag()) {
-      //DT_LOG_DEBUG(logging, "Entering has record tag...");
+      // DT_LOG_DEBUG(logging, "Entering has record tag...");
       chit.reset();
       tchit.reset();
-      if ((hit_counter % modulo) == 0){
+      if ((hit_counter % modulo) == 0) {
         std::clog << "Hit #" << hit_counter << std::endl;
       }
-      if ((event_number % modulo) == 0){
+      if ((event_number % modulo) == 0) {
         std::clog << "Event #" << event_number << std::endl;
       }
       std::string deserialized_hit = "none";
@@ -321,12 +313,12 @@ int main(int argc_, char ** argv_)
         commissioning_event_record.set_name("CER");
         commissioning_event_record.set_description("A single data record with banks in it");
 
-        fecom::commissioning_event & CE
-          = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
+        fecom::commissioning_event& CE = commissioning_event_record.add<fecom::commissioning_event>(
+            "HCRD", "The Half Commissioning Raw Data bank");
 
         CE = eb.commissioning_event_for_serialization;
         if (datatools::logger::is_debug(logging)) {
-	  std::cerr.precision(15);
+          std::cerr.precision(15);
           CE.tree_dump(std::cerr, "Commissioning event before serialization", "[debug] ");
           // commissioning_event_record.tree_dump(std::cerr, "Dump CER things", "[debug] ");
         }
@@ -338,14 +330,14 @@ int main(int argc_, char ** argv_)
           save_it = false;
         }
         if (save_it) {
-	  datatools::event_id event_id;
-	  event_id.set_run_number(run_number);
-	  event_id.set_event_number(event_number++);
-	  CE.set_event_id(event_id);
-	  //serializer2.store(CE);
-	  // std::cout.precision(15);
-	  // CE.print(std::cout);
-	  // CE.tree_dump(std::clog, "A com event to serialize");
+          datatools::event_id event_id;
+          event_id.set_run_number(run_number);
+          event_id.set_event_number(event_number++);
+          CE.set_event_id(event_id);
+          // serializer2.store(CE);
+          // std::cout.precision(15);
+          // CE.print(std::cout);
+          // CE.tree_dump(std::clog, "A com event to serialize");
           serializer.process(commissioning_event_record);
           event_serialized++;
         }
@@ -354,26 +346,27 @@ int main(int argc_, char ** argv_)
           DT_LOG_INFORMATION(logging, "Maximum number of events is reached.");
           break;
         }
-      } // end of ready for serialization
+      }  // end of ready for serialization
 
       if (deserialized_hit == "calo") {
         // First calo hit of the event
         if (!eb.com_event_is_active) {
-	  eb.working_commissioning_event.add_calo_hit(chit);
-	  // Fill time reference only if the hit is LTO or HT
-	  if (!eb.working_commissioning_event.is_valid() && (chit.low_threshold || chit.high_threshold)) {
-	    double time_start = chit.tdc_ns + chit.falling_time_ns;
-	    eb.set_times(time_start);
-	  }
-	  eb.com_event_is_active = true;
-	  eb.begin_by_calorimeter = true;
-	}
-        else {
-	  // Fill time reference only if the hit is LTO or HT
-	  if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
-	    double time_start = chit.tdc_ns + chit.falling_time_ns;
-	    eb.set_times(time_start);
-	  }
+          eb.working_commissioning_event.add_calo_hit(chit);
+          // Fill time reference only if the hit is LTO or HT
+          if (!eb.working_commissioning_event.is_valid() &&
+              (chit.low_threshold || chit.high_threshold)) {
+            double time_start = chit.tdc_ns + chit.falling_time_ns;
+            eb.set_times(time_start);
+          }
+          eb.com_event_is_active = true;
+          eb.begin_by_calorimeter = true;
+        } else {
+          // Fill time reference only if the hit is LTO or HT
+          if (!eb.working_commissioning_event.has_time_start_ns() &&
+              (chit.low_threshold || chit.high_threshold)) {
+            double time_start = chit.tdc_ns + chit.falling_time_ns;
+            eb.set_times(time_start);
+          }
 
           if (eb.begin_by_calorimeter) {
             // Check if the calo hit is in the L1 gate
@@ -381,56 +374,60 @@ int main(int argc_, char ** argv_)
               // Add the calo hit in the working commissioning event :
               eb.working_commissioning_event.add_calo_hit(chit);
             }
-            // Outside gate, close actual commissioning event, copy for serialization, reset and fill it with the new calo hit
+            // Outside gate, close actual commissioning event, copy for serialization, reset and
+            // fill it with the new calo hit
             else {
               eb.ready_for_serialization = true;
               eb.commissioning_event_for_serialization = eb.working_commissioning_event;
               eb.working_commissioning_event.reset();
               eb.working_commissioning_event.add_calo_hit(chit);
-	      // Fill time reference only if the hit is LTO or HT
-	      if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
-		double time_start = chit.tdc_ns + chit.falling_time_ns;
-		eb.set_times(time_start);
-	      }
+              // Fill time reference only if the hit is LTO or HT
+              if (!eb.working_commissioning_event.has_time_start_ns() &&
+                  (chit.low_threshold || chit.high_threshold)) {
+                double time_start = chit.tdc_ns + chit.falling_time_ns;
+                eb.set_times(time_start);
+              }
               eb.begin_by_calorimeter = true;
             }
-          } // end of begin by calo
-          // if not begin by calo, close actual commissioning event, copy for serialization, reset and fill it with the new calo hit
+          }  // end of begin by calo
+          // if not begin by calo, close actual commissioning event, copy for serialization, reset
+          // and fill it with the new calo hit
           else {
             eb.ready_for_serialization = true;
             eb.commissioning_event_for_serialization = eb.working_commissioning_event;
             eb.working_commissioning_event.reset();
             eb.working_commissioning_event.add_calo_hit(chit);
-	    // Fill time reference only if the hit is LTO or HT
-	    if (!eb.working_commissioning_event.has_time_start_ns() && (chit.low_threshold || chit.high_threshold)) {
-	      double time_start = chit.tdc_ns + chit.falling_time_ns;
-	      eb.set_times(time_start);
-	    }
+            // Fill time reference only if the hit is LTO or HT
+            if (!eb.working_commissioning_event.has_time_start_ns() &&
+                (chit.low_threshold || chit.high_threshold)) {
+              double time_start = chit.tdc_ns + chit.falling_time_ns;
+              eb.set_times(time_start);
+            }
             eb.begin_by_calorimeter = true;
-          } // end of else not begin by calo
+          }  // end of else not begin by calo
         }
-      } // end of if "calo"
+      }  // end of if "calo"
 
       else if (deserialized_hit == "tracker") {
-        // If the commissioning event begin by a tracker hit, create a new event and add tracker hits until there is a new calorimeter hit
-        if (!eb.com_event_is_active)
-	  {
-	    eb.working_commissioning_event.add_tracker_channel_hit(tchit);
-	    double time_start = tchit.timestamp_time_ns;
-	    eb.set_times(time_start);
-	    eb.begin_by_calorimeter = false;
-	    eb.com_event_is_active = true;
-	    // Event tracker only, add it to the first bit of the traits :
-	    eb.working_commissioning_event.grab_traits().set(0, true);
-	  }
-        else {
+        // If the commissioning event begin by a tracker hit, create a new event and add tracker
+        // hits until there is a new calorimeter hit
+        if (!eb.com_event_is_active) {
+          eb.working_commissioning_event.add_tracker_channel_hit(tchit);
+          double time_start = tchit.timestamp_time_ns;
+          eb.set_times(time_start);
+          eb.begin_by_calorimeter = false;
+          eb.com_event_is_active = true;
+          // Event tracker only, add it to the first bit of the traits :
+          eb.working_commissioning_event.grab_traits().set(0, true);
+        } else {
           if (eb.begin_by_calorimeter) {
             // Check if the tracker channel hit is in the L2 gate
             if (tchit.timestamp_time_ns < eb.l2_time_stop) {
               // Add the tracker channel hit in the working commissioning event :
               eb.working_commissioning_event.add_tracker_channel_hit(tchit);
             }
-            // Outside gate, close actual commissioning event, copy for serialization, reset and fill it with the new tracker channel hit
+            // Outside gate, close actual commissioning event, copy for serialization, reset and
+            // fill it with the new tracker channel hit
             else {
               eb.ready_for_serialization = true;
               eb.commissioning_event_for_serialization = eb.working_commissioning_event;
@@ -442,16 +439,16 @@ int main(int argc_, char ** argv_)
               // Event tracker only, add it to the first bit of the traits :
               eb.working_commissioning_event.grab_traits().set(0, true);
             }
-          } // end of if begin by calo
+          }  // end of if begin by calo
           else {
-            // If com event not begin by a calo add the tracker channel hit until we found a new calo hit :
+            // If com event not begin by a calo add the tracker channel hit until we found a new
+            // calo hit :
             eb.working_commissioning_event.add_tracker_channel_hit(tchit);
           }
-
         }
-      } // end of if tracker
+      }  // end of if tracker
 
-    } // end of while deserializer
+    }  // end of while deserializer
 
     // Serialize the last commissioning event :
     eb.commissioning_event_for_serialization = eb.working_commissioning_event;
@@ -459,7 +456,8 @@ int main(int argc_, char ** argv_)
     datatools::things commissioning_event_record;
     commissioning_event_record.set_name("CER");
     commissioning_event_record.set_description("Half commissioning event record");
-    fecom::commissioning_event & CE = commissioning_event_record.add<fecom::commissioning_event>("HCRD", "The Half Commissioning Raw Data bank");
+    fecom::commissioning_event& CE = commissioning_event_record.add<fecom::commissioning_event>(
+        "HCRD", "The Half Commissioning Raw Data bank");
     CE = eb.commissioning_event_for_serialization;
     bool save_it = true;
     if (CE.get_calo_hit_collection().size() < min_nb_calo) {
@@ -482,15 +480,16 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Job done !");
 
     DT_LOG_INFORMATION(logging, "Run number : " + std::to_string(run_number));
-    DT_LOG_INFORMATION(logging, "Number of commissioning event serialized : " + std::to_string(event_serialized));
+    DT_LOG_INFORMATION(
+        logging, "Number of commissioning event serialized : " + std::to_string(event_serialized));
 
     DT_LOG_INFORMATION(logging, "Output file : " << output_filename);
     DT_LOG_INFORMATION(logging, "End of reader file...");
     deserializer.reset();
 
-    std::cout << "run_number="     << run_number << std::endl;
-    std::cout << "event_number="   << event_number << std::endl;
-    std::cout << "min_nb_calo="    << min_nb_calo << std::endl;
+    std::cout << "run_number=" << run_number << std::endl;
+    std::cout << "event_number=" << event_number << std::endl;
+    std::cout << "min_nb_calo=" << min_nb_calo << std::endl;
     std::cout << "min_nb_tracker=" << min_nb_tracker << std::endl;
 
     std::string sname = "last_event_number.txt";
@@ -500,7 +499,7 @@ int main(int argc_, char ** argv_)
     offile.clear();
 
     DT_LOG_INFORMATION(logging, "The end.");
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     std::cerr << "error: " << error.what() << std::endl;
     error_code = EXIT_FAILURE;
   }

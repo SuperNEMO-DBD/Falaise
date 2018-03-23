@@ -16,32 +16,32 @@
 #define FLRECONSTRUCTRESOURCES_H
 
 // Standard Library:
-#include <string>
 #include <stdexcept>
+#include <string>
 
 namespace FLReconstruct {
 
-  //! Exception for unknown resources
-  class UnknownResourceException : public std::runtime_error {
-  public:
-    UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
-  };
+//! Exception for unknown resources
+class UnknownResourceException : public std::runtime_error {
+ public:
+  UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
+};
 
-  //! Return the pipeline default control file for the given experiment and version id
-  std::string getPipelineDefaultControlFile(const std::string& experiment,
-                                            const std::string& /*versionID*/ = "");
+//! Return the pipeline default control file for the given experiment and version id
+std::string getPipelineDefaultControlFile(const std::string& experiment,
+                                          const std::string& /*versionID*/ = "");
 
-  //! Return the variants file for the given experiment and version id
-  std::string getVariantsConfigFile(const std::string& experiment,
-                                    const std::string& /*versionID*/ = "");
+//! Return the variants file for the given experiment and version id
+std::string getVariantsConfigFile(const std::string& experiment,
+                                  const std::string& /*versionID*/ = "");
 
-  //! Return the default variants profile file for the given experiment and version id
-  std::string getVariantsDefaultProfile(const std::string& experiment,
-                                        const std::string& /*versionID*/ = "");
+//! Return the default variants profile file for the given experiment and version id
+std::string getVariantsDefaultProfile(const std::string& experiment,
+                                      const std::string& /*versionID*/ = "");
 
-} // namespace FLReconstruct
+}  // namespace FLReconstruct
 
-#endif // FLRECONSTRUCTRESOURCES_H
+#endif  // FLRECONSTRUCTRESOURCES_H
 
 // Local Variables: --
 // mode: c++ --

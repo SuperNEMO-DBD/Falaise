@@ -42,101 +42,96 @@
 #include <dpp/base_module.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace datamodel {
-    class calibrated_data;
-    class tracker_trajectory_data;
-    class particle_track_data;
-  }
+namespace datamodel {
+class calibrated_data;
+class tracker_trajectory_data;
+class particle_track_data;
+}  // namespace datamodel
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    class vertex_extrapolation_driver;
-    class charge_computation_driver;
-    class calorimeter_association_driver;
-    class alpha_finder_driver;
+class vertex_extrapolation_driver;
+class charge_computation_driver;
+class calorimeter_association_driver;
+class alpha_finder_driver;
 
-    /// \brief Charged particle tracking module
-    class charged_particle_tracking_module : public dpp::base_module
-    {
-    public:
+/// \brief Charged particle tracking module
+class charged_particle_tracking_module : public dpp::base_module {
+ public:
+  /// Setting Geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-      /// Setting Geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Getting Geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Getting Geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Constructor
+  charged_particle_tracking_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      charged_particle_tracking_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~charged_particle_tracking_module();
 
-      /// Destructor
-      virtual ~charged_particle_tracking_module();
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+ protected:
+  /// Measure particle track physical parameters such as charge, vertices
+  void _process(const snemo::datamodel::calibrated_data& calibrated_data_,
+                const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
+                snemo::datamodel::particle_track_data& particle_track_data_);
 
-    protected:
+  /// Post-processing of particle track data
+  void _post_process(const snemo::datamodel::calibrated_data& calibrated_data_,
+                     snemo::datamodel::particle_track_data& particle_track_data_);
 
-      /// Measure particle track physical parameters such as charge, vertices
-      void _process(const snemo::datamodel::calibrated_data         & calibrated_data_,
-                    const snemo::datamodel::tracker_trajectory_data & tracker_trajectory_data_,
-                    snemo::datamodel::particle_track_data           & particle_track_data_);
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-      /// Post-processing of particle track data
-      void _post_process(const snemo::datamodel::calibrated_data & calibrated_data_,
-                         snemo::datamodel::particle_track_data   & particle_track_data_);
+ private:
+  const geomtools::manager* _geometry_manager_;  //!< The geometry manager
 
-      /// Give default values to specific class members.
-      void _set_defaults();
+  std::string _CD_label_;   //!< The label of the calibrated data bank
+  std::string _TTD_label_;  //!< The label of the tracker trajectory data bank
+  std::string _PTD_label_;  //!< The label of the particle track data bank
 
-    private:
+  /// Vertex Extrapolation Driver :
+  boost::scoped_ptr<snemo::reconstruction::vertex_extrapolation_driver> _VED_;
 
-      const geomtools::manager * _geometry_manager_; //!< The geometry manager
+  /// Charge Computation Driver :
+  boost::scoped_ptr<snemo::reconstruction::charge_computation_driver> _CCD_;
 
-      std::string _CD_label_;  //!< The label of the calibrated data bank
-      std::string _TTD_label_; //!< The label of the tracker trajectory data bank
-      std::string _PTD_label_; //!< The label of the particle track data bank
+  /// Calorimeter Association Driver :
+  boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
 
-      /// Vertex Extrapolation Driver :
-      boost::scoped_ptr<snemo::reconstruction::vertex_extrapolation_driver> _VED_;
+  /// Alpha Finder Driver :
+  boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
 
-      /// Charge Computation Driver :
-      boost::scoped_ptr<snemo::reconstruction::charge_computation_driver> _CCD_;
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module)
+};
 
-      /// Calorimeter Association Driver :
-      boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
+}  // namespace reconstruction
 
-      /// Alpha Finder Driver :
-      boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
-
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module)
-
-    };
-
-  } // namespace reconstruction
-
-} // namespace snemo
+}  // namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::charged_particle_tracking_module)
 
-#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
+#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
 
 // end of snemo/reconstruction/charged_particle_tracking_module.h
 /*

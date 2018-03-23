@@ -28,78 +28,62 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      // ctor:
-      cylinder_volume::cylinder_volume(const std::string & name_,
-                                       const std::string & category_) :
-        i_root_volume(name_, category_)
-      {
-        _type = "cylinder";
-        _composite = false;
+// ctor:
+cylinder_volume::cylinder_volume(const std::string &name_, const std::string &category_)
+    : i_root_volume(name_, category_) {
+  _type = "cylinder";
+  _composite = false;
 
-        _inner_radius_ = 0.0;
-        _outer_radius_ = 0.0;
-        _height_       = 0.0;
+  _inner_radius_ = 0.0;
+  _outer_radius_ = 0.0;
+  _height_ = 0.0;
 
-        return;
-      }
+  return;
+}
 
-      // dtor:
-      cylinder_volume::~cylinder_volume()
-      {
-        return;
-      }
+// dtor:
+cylinder_volume::~cylinder_volume() { return; }
 
-      void cylinder_volume::_construct(const geomtools::i_shape_3d & shape_3d_)
-      {
-        const geomtools::cylinder & mcylinder
-          = dynamic_cast<const geomtools::cylinder &>(shape_3d_);
+void cylinder_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
+  const geomtools::cylinder &mcylinder = dynamic_cast<const geomtools::cylinder &>(shape_3d_);
 
-        _inner_radius_ = 0.0;
-        _outer_radius_ = mcylinder.get_radius();
-        _height_       = mcylinder.get_z();
+  _inner_radius_ = 0.0;
+  _outer_radius_ = mcylinder.get_radius();
+  _height_ = mcylinder.get_z();
 
-        TGeoMaterial * material = new TGeoMaterial("Dummy");
-        TGeoMedium   * medium   = new TGeoMedium("Dummy", 1, material);
+  TGeoMaterial *material = new TGeoMaterial("Dummy");
+  TGeoMedium *medium = new TGeoMedium("Dummy", 1, material);
 
-        _geo_volume = gGeoManager->MakeTube(_name.c_str(), medium,
-                                            _inner_radius_,
-                                            _outer_radius_,
-                                            _height_/2.);
-        return;
-      }
+  _geo_volume =
+      gGeoManager->MakeTube(_name.c_str(), medium, _inner_radius_, _outer_radius_, _height_ / 2.);
+  return;
+}
 
-      void cylinder_volume::tree_dump(std::ostream      & out_,
-                                      const std::string & title_,
-                                      const std::string & indent_,
-                                      bool inherit_) const
-      {
-        std::string indent;
-        if (! indent_.empty()) indent = indent_;
-        i_root_volume::tree_dump(out_, title_, indent_, true);
+void cylinder_volume::tree_dump(std::ostream &out_, const std::string &title_,
+                                const std::string &indent_, bool inherit_) const {
+  std::string indent;
+  if (!indent_.empty()) indent = indent_;
+  i_root_volume::tree_dump(out_, title_, indent_, true);
 
-        out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
-             << "(r1, r2, h) : ("
-             << _inner_radius_ << ", "
-             << _outer_radius_ << ", "
-             << _height_       << ")" << std::endl;
-        return;
-      }
+  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "(r1, r2, h) : ("
+       << _inner_radius_ << ", " << _outer_radius_ << ", " << _height_ << ")" << std::endl;
+  return;
+}
 
-      void cylinder_volume::dump() const
-      {
-        this->tree_dump(std::clog, "snemo::visualization::detector::cylinder_volume");
-        return;
-      }
+void cylinder_volume::dump() const {
+  this->tree_dump(std::clog, "snemo::visualization::detector::cylinder_volume");
+  return;
+}
 
-    } // end of namespace detector
+}  // end of namespace detector
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of cylinder_volume.cc
 /*

@@ -26,145 +26,134 @@
 
 // #include <CATAlgorithm/tracking_object.h>
 
-namespace CAT{
-  namespace topology{
+namespace CAT {
+namespace topology {
 
+class cell_triplet : public tracking_object {
+  // a cell_triplet is composed of three cells
+  // and a list of joints
 
-    class cell_triplet : public tracking_object{
+ protected:
+  std::string appname_;
 
-      // a cell_triplet is composed of three cells
-      // and a list of joints
+  // first cell
+  cell ca_;
 
-    protected:
+  // second cell
+  cell cb_;
 
-      std::string appname_;
+  // third cell
+  cell cc_;
 
-      // first cell
-      cell ca_;
+  // list of chi2 values
+  std::vector<double> chi2s_;
 
-      // second cell
-      cell cb_;
+  // list of prob values
+  std::vector<double> probs_;
 
-      // third cell
-      cell cc_;
+ public:
+  // list of joints
+  std::vector<joint> joints_;
 
-      // list of chi2 values
-      std::vector<double> chi2s_;
+  // status of cell triplet
+  bool free_;
 
-      // list of prob values
-      std::vector<double> probs_;
+  // begun cell triplet
+  bool begun_;
 
-    public:
+  //! Default constructor
+  cell_triplet();
 
-      // list of joints
-      std::vector<joint> joints_;
+  //! Default destructor
+  virtual ~cell_triplet();
 
-      // status of cell triplet
-      bool free_;
+  //! constructor
+  cell_triplet(cell_couplet &cca, cell_couplet &ccb);
 
-      // begun cell triplet
-      bool begun_;
+  //! constructor
+  cell_triplet(const cell &ca, const cell &cb, const cell &cc,
+               mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      //!Default constructor
-      cell_triplet();
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //!Default destructor
-      virtual ~cell_triplet();
+  /*** dump ***/
+  virtual void dump_joint(joint j, std::ostream &a_out = std::clog, const std::string &a_title = "",
+                          const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //! constructor
-      cell_triplet(cell_couplet &cca, cell_couplet &ccb);
+  //! set cells
+  void set(const cell_couplet &cca, const cell_couplet &ccb);
 
-      //! constructor
-      cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set cells
+  void set(const cell &ca, const cell &cb, const cell &cc);
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! set free level
+  void set_free(bool free);
+  //! set begun level
 
-      /*** dump ***/
-      virtual void dump_joint (joint j,
-			       std::ostream & a_out         = std::clog,
-			       const std::string & a_title  = "",
-			       const std::string & a_indent = "",
-			       bool a_inherit          = false) const;
+  void set_begun(bool begun);
 
+  //! set joints
+  void set_joints(const std::vector<joint> &joints);
 
-      //! set cells
-      void set(const cell_couplet &cca, const cell_couplet &ccb);
+  //! set chi2 list
+  void set_chi2s(const std::vector<double> &chi2s);
 
-      //! set cells
-      void set(const cell &ca, const cell &cb, const cell &cc);
+  //! set prob list
+  void set_probs(const std::vector<double> &probs);
 
-      //! set free level
-        void set_free(bool free);
-      //! set begun level
+  //! get first cell couplet
+  cell_couplet cca();
 
-        void set_begun(bool begun);
+  //! get second cell couplet
+  cell_couplet ccb();
 
-      //! set joints
-        void set_joints(const std::vector<joint> & joints);
+  //! get joints
+  const std::vector<joint> &joints() const;
 
-      //! set chi2 list
-        void set_chi2s(const std::vector<double> & chi2s);
+  //! get first cell
+  const cell &ca() const;
 
-      //! set prob list
-      void set_probs(const std::vector<double> & probs);
+  //! get second cell
+  const cell &cb() const;
 
-      //! get first cell couplet
-      cell_couplet cca();
+  //! get third cell
+  const cell &cc() const;
 
-      //! get second cell couplet
-      cell_couplet ccb();
+  //! get list of chi2
+  const std::vector<double> &chi2s() const;
 
-      //! get joints
-      const std::vector<joint>& joints() const;
+  //! get list of prob
+  const std::vector<double> &probs() const;
 
-      //! get first cell
-      const cell& ca()const;
+  //! get free level
+  bool free() const;
 
-      //! get second cell
-      const cell& cb()const;
+  //! get begun level
+  bool begun() const;
 
-      //! get third cell
-      const cell& cc()const;
+ public:
+  void calculate_joints(double Ratio, double separation_limit = 90., double phi_limit = 25.,
+                        double theta_limit = 180.);
 
-      //! get list of chi2
-      const std::vector<double>& chi2s() const;
+  void calculate_joints_after_sultan(double Ratio);
 
-      //! get list of prob
-      const std::vector<double>& probs() const;
+  std::vector<joint> refine(const std::vector<joint> &joints, double Ratio, size_t max_njoints = 4);
 
-      //! get free level
-      bool free()const;
+  size_t iteration() const;
 
-      //! get begun level
-      bool begun()const;
+  cell_triplet invert();
 
-    public:
+  void set_all_used();
 
-      void calculate_joints(double Ratio, double separation_limit=90., double phi_limit=25., double theta_limit=180.);
+  friend bool operator==(const cell_triplet &left, const cell_triplet &right);
 
-      void calculate_joints_after_sultan(double Ratio);
+  bool same_last_cell(cell c) const;
+};
 
-      std::vector<joint> refine(const std::vector<joint> & joints, double Ratio, size_t max_njoints=4);
+}  // namespace topology
 
-      size_t iteration()const;
+}  // namespace CAT
 
-      cell_triplet invert();
-
-      void set_all_used();
-
-      friend bool operator==(const cell_triplet& left,
-                             const cell_triplet& right);
-
-      bool same_last_cell(cell c)const;
-
-    };
-
-  }
-
-}
-
-#endif // __CATAlgorithm__cell_triplet_h
+#endif  // __CATAlgorithm__cell_triplet_h

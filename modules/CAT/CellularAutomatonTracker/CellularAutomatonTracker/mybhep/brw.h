@@ -26,62 +26,54 @@
 #include <vector>
 #include <mybhep/event.h>
 
-
-namespace mybhep{
+namespace mybhep {
 //! Base class for a reader/writer
 /*!
   Provides common functionality for readers and writers
 */
 
-  class brw
-  {
+class brw {
+ protected:
+  //! true if a file has been set to reader
+  bool setFile_;
+  //! file name set to reader
+  std::string fileName_;
+  //! pointer to event
+  event* event_;
 
-  protected:
-    //! true if a file has been set to reader
-    bool setFile_;
-    //! file name set to reader
-    std::string fileName_;
-    //! pointer to event
-    event* event_;
+  //! constructor (only to be instantiated by derived classes)
+ protected:
+  brw();
 
-    //! constructor (only to be instantiated by derived classes)
-  protected:
-    brw();
+  //! virtual destructor
+ public:
+  virtual ~brw();
 
-    //! virtual destructor
-  public:
-    virtual ~brw();
+  //!  public functions
+ public:
+  //! open reader
+  void open(std::string fileName);
 
-    //!  public functions
-  public:
+  //! close reader
+  void close();
 
-    //! open reader
-    void open(std::string fileName);
+  //! set reader to a new file
+  void reopen(std::string fileName);
 
-    //! close reader
-    void close();
+  //! protected interface
+ protected:
+  //! open file for reading
+  virtual void open_file(std::string fileName) = 0;
 
-    //! set reader to a new file
-    void reopen(std::string fileName);
+  //! close file
+  virtual void close_file() = 0;
 
-    //! protected interface
-  protected:
-
-    //! open file for reading
-    virtual void open_file(std::string fileName) = 0;
-
-    //! close file
-    virtual void close_file() = 0;
-
-
-    //! protected functions
-  protected:
-
-    //! clear internal flags
-    void clear_flags();
-    //! init internal flags
-    void init_flags(std::string fileName);
-
-  };
-}
+  //! protected functions
+ protected:
+  //! clear internal flags
+  void clear_flags();
+  //! init internal flags
+  void init_flags(std::string fileName);
+};
+}  // namespace mybhep
 #endif

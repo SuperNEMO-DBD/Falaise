@@ -38,40 +38,35 @@ class TObject;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class opengl_pad;
+class opengl_pad;
 
-      class opengl_scene
-      {
+class opengl_scene {
+ public:
+  opengl_scene();
+  virtual ~opengl_scene();
 
-      public:
+  void add(TObject* object_);
+  void clean();
 
-        opengl_scene ();
-        virtual ~opengl_scene ();
+  TGLScenePad* get_scene_pad();
+  // TPad * get_pad ();
 
-        void add (TObject* object_);
-        void clean ();
+ private:
+  TGLScenePad* _scene_pad_;
+  opengl_pad* _opengl_pad_;
+};
 
-        TGLScenePad * get_scene_pad ();
-        // TPad * get_pad ();
+}  // end of namespace view
 
-      private:
+}  // end of namespace visualization
 
-        TGLScenePad * _scene_pad_;
-        opengl_pad  * _opengl_pad_;
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_SCENE_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_OPENGL_SCENE_H
 
 // end of opengl_scene.h
 /*

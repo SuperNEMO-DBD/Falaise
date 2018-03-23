@@ -37,80 +37,74 @@
 class TGeoVolume;
 
 namespace geomtools {
-  class i_shape_3d;
+class i_shape_3d;
 }
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      /// \brief A dedicated ROOT volume object
-      class i_root_volume : public i_volume
-      {
-      public:
+/// \brief A dedicated ROOT volume object
+class i_root_volume : public i_volume {
+ public:
+  /// Return initialization flag
+  bool is_initialized() const;
 
-        /// Return initialization flag
-        bool is_initialized() const;
+  /// Get a mutable pointer to volume (TGeoVolume cast)
+  virtual void* grab_volume();
 
-        /// Get a mutable pointer to volume (TGeoVolume cast)
-        virtual void * grab_volume();
+  /// Get a non-mutable pointer to volume (TGeoVolume cast)
+  virtual const void* get_volume() const;
 
-        /// Get a non-mutable pointer to volume (TGeoVolume cast)
-        virtual const void * get_volume() const;
+  /// Virtual method to initialize the volume
+  virtual void initialize(const geomtools::geom_info& ginfo_);
 
-        /// Virtual method to initialize the volume
-        virtual void initialize(const geomtools::geom_info & ginfo_);
+  /// Update method to refresh volume properties
+  virtual void update();
 
-        /// Update method to refresh volume properties
-        virtual void update();
+  /// Clear volume properties
+  virtual void clear();
 
-        /// Clear volume properties
-        virtual void clear();
+  /// Reset volume properties
+  virtual void reset();
 
-        /// Reset volume properties
-        virtual void reset();
+  /// Highlight volume
+  virtual void highlight(const size_t color_ = 0);
 
-        /// Highlight volume
-        virtual void highlight(const size_t color_ = 0);
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream      & out_    = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+  /// Default dump
+  virtual void dump() const;
 
-        /// Default dump
-        virtual void dump() const;
+  /// Default constructor
+  i_root_volume(const std::string& name_ = "", const std::string& category_ = "");
 
-        /// Default constructor
-        i_root_volume(const std::string & name_     = "",
-                      const std::string & category_ = "");
+  /// Destructor
+  virtual ~i_root_volume();
 
-        /// Destructor
-        virtual ~i_root_volume();
+ protected:
+  /// Implement dedicated highlight rendering
+  virtual void _highlight();
 
-      protected:
+  /// Implement dedicated construct method
+  virtual void _construct(const geomtools::i_shape_3d& shape_3d_) = 0;
 
-        /// Implement dedicated highlight rendering
-        virtual void _highlight();
+ protected:
+  bool _initialized;        //<! Initialization flag
+  TGeoVolume* _geo_volume;  //<! ROOT geometry volume
+};
 
-        /// Implement dedicated construct method
-        virtual void _construct(const geomtools::i_shape_3d & shape_3d_) = 0;
+}  // end of namespace detector
 
-      protected:
-        bool         _initialized; //<! Initialization flag
-        TGeoVolume * _geo_volume;  //<! ROOT geometry volume
-      };
+}  // end of namespace visualization
 
-    } // end of namespace detector
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_I_ROOT_VOLUME_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_I_ROOT_VOLUME_H
 
 // end of i_root_volume.h
 /*

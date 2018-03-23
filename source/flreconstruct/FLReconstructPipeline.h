@@ -20,21 +20,21 @@
 #include "bayeux/datatools/service_manager.h"
 
 // This Project
-#include "falaise/exitcodes.h"
 #include "FLReconstructParams.h"
+#include "falaise/exitcodes.h"
 
 namespace FLReconstruct {
 
-  //! Run the pipeline after configuration step
-  falaise::exit_code do_pipeline(const FLReconstructParams & recParams);
+//! Run the pipeline after configuration step
+falaise::exit_code do_pipeline(const FLReconstructParams& recParams);
 
-  //! Ensure some critical services are setup
-  falaise::exit_code ensure_core_services(const FLReconstructParams & recParams,
-                                          datatools::service_manager & recServices);
+//! Ensure some critical services are setup
+falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
+                                        datatools::service_manager& recServices);
 
-} // namespace FLReconstruct
+}  // namespace FLReconstruct
 
-#endif // FLRECONSTRUCTPARAMS_H
+#endif  // FLRECONSTRUCTPARAMS_H
 
 // Local Variables: --
 // mode: c++ --

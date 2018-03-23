@@ -45,99 +45,95 @@
 #include <cuts/i_cut.h>
 
 namespace datatools {
-  class service_manager;
-  class properties;
-}
+class service_manager;
+class properties;
+}  // namespace datatools
 
 namespace snemo {
 
-  namespace cut {
+namespace cut {
 
-    /// \brief A cut performed on the event record's 'calibrated data' bank
-    class calibrated_data_cut : public cuts::i_cut
-    {
-    public:
+/// \brief A cut performed on the event record's 'calibrated data' bank
+class calibrated_data_cut : public cuts::i_cut {
+ public:
+  /// \brief Type of cut on calibrated data model
+  enum mode_type {
+    MODE_UNDEFINED = 0,
+    MODE_FLAG = datatools::bit_mask::bit00,
+    MODE_HAS_HIT_CATEGORY = datatools::bit_mask::bit01,
+    MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02,
+    MODE_TRACKER_HIT_HAS_TRAITS = datatools::bit_mask::bit03,
+    MODE_TRACKER_HIT_IS_DELAYED = datatools::bit_mask::bit04
+  };
 
-      /// \brief Type of cut on calibrated data model
-      enum mode_type {
-        MODE_UNDEFINED              = 0,
-        MODE_FLAG                   = datatools::bit_mask::bit00,
-        MODE_HAS_HIT_CATEGORY       = datatools::bit_mask::bit01,
-        MODE_RANGE_HIT_CATEGORY     = datatools::bit_mask::bit02,
-        MODE_TRACKER_HIT_HAS_TRAITS = datatools::bit_mask::bit03,
-        MODE_TRACKER_HIT_IS_DELAYED = datatools::bit_mask::bit04
-      };
+  /// Set the calibrated data bank label/name
+  void set_CD_label(const std::string& CD_label_);
 
-      /// Set the calibrated data bank label/name
-      void set_CD_label (const std::string & CD_label_);
+  /// Return the calibrated data bank label/name
+  const std::string& get_CD_label() const;
 
-      /// Return the calibrated data bank label/name
-      const std::string & get_CD_label () const;
+  /// Return the cut mode
+  uint32_t get_mode() const;
 
-      /// Return the cut mode
-      uint32_t get_mode () const;
+  /// Check cut mode MODE_FLAG :
+  bool is_mode_flag() const;
 
-      /// Check cut mode MODE_FLAG :
-      bool is_mode_flag () const;
+  /// Check cut mode MODE_HAS_HIT_CATEGORY:
+  bool is_mode_has_hit_category() const;
 
-      /// Check cut mode MODE_HAS_HIT_CATEGORY:
-      bool is_mode_has_hit_category () const;
+  /// Check cut mode MODE_RANGE_HIT_CATEGORY:
+  bool is_mode_range_hit_category() const;
 
-      /// Check cut mode MODE_RANGE_HIT_CATEGORY:
-      bool is_mode_range_hit_category () const;
+  /// Check cut mode MODE_TRACKER_HIT_HAS_TRAITS:
+  bool is_mode_tracker_hit_has_traits() const;
 
-      /// Check cut mode MODE_TRACKER_HIT_HAS_TRAITS:
-      bool is_mode_tracker_hit_has_traits () const;
+  /// Check cut mode MODE_TRACKER_HIT_IS_DELAYED:
+  bool is_mode_tracker_hit_is_delayed() const;
 
-      /// Check cut mode MODE_TRACKER_HIT_IS_DELAYED:
-      bool is_mode_tracker_hit_is_delayed () const;
+  /// Set the name of cut mode MODE_FLAG
+  void set_flag_name(const std::string& flag_name_);
 
-      /// Set the name of cut mode MODE_FLAG
-      void set_flag_name (const std::string & flag_name_);
+  /// Return the name of cut mode MODE_FLAG
+  const std::string& get_flag_name() const;
 
-      /// Return the name of cut mode MODE_FLAG
-      const std::string & get_flag_name () const;
+  /// Constructor
+  calibrated_data_cut(
+      datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      calibrated_data_cut (datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~calibrated_data_cut();
 
-      /// Destructor
-      virtual ~calibrated_data_cut ();
+  /// Initilization
+  virtual void initialize(const datatools::properties& configuration_,
+                          datatools::service_manager& service_manager_,
+                          cuts::cut_handle_dict_type& cut_dict_);
 
-      /// Initilization
-      virtual void initialize (const datatools::properties & configuration_,
-                               datatools::service_manager & service_manager_,
-                               cuts::cut_handle_dict_type & cut_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset ();
+ protected:
+  /// Default values
+  void _set_defaults();
 
-    protected:
+  /// Selection
+  virtual int _accept();
 
-      /// Default values
-      void _set_defaults ();
+ private:
+  std::string _CD_label_;           //!< Name of the "Calibrated data" bank
+  uint32_t _mode_;                  //!< Mode of the cut
+  std::string _flag_name_;          //!< Name of the boolean property in the calibrated data
+  std::string _hit_category_;       //!< Name of the hit category to be checked
+  int _hit_category_range_min_;     //!< Minimal number of hits in a category
+  int _hit_category_range_max_;     //!< Maximal number of hits in a category
+  int _tracker_hit_trait_bits_;     //!< Tracker hit traits bits
+  double _tracker_hit_delay_time_;  //!< Tracker hit delayed time
+  // Macro to automate the registration of the cut :
+  CUT_REGISTRATION_INTERFACE(calibrated_data_cut)
+};
 
-      /// Selection
-      virtual int _accept();
+}  // end of namespace cut
 
-    private:
-
-      std::string _CD_label_;               //!< Name of the "Calibrated data" bank
-      uint32_t    _mode_;                   //!< Mode of the cut
-      std::string _flag_name_;              //!< Name of the boolean property in the calibrated data
-      std::string _hit_category_;           //!< Name of the hit category to be checked
-      int         _hit_category_range_min_; //!< Minimal number of hits in a category
-      int         _hit_category_range_max_; //!< Maximal number of hits in a category
-      int         _tracker_hit_trait_bits_; //!< Tracker hit traits bits
-      double      _tracker_hit_delay_time_; //!< Tracker hit delayed time
-      // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(calibrated_data_cut)
-
-    };
-
-  } // end of namespace cut
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // OCD support::
 #include <datatools/ocd_macros.h>
@@ -145,7 +141,7 @@ namespace snemo {
 // @arg snemo::cut::calibrated_data_cut the name the registered class in the OCD system
 DOCD_CLASS_DECLARATION(snemo::cut::calibrated_data_cut)
 
-#endif // FALAISE_SNEMO_CUT_CALIBRATED_DATA_CUT_H
+#endif  // FALAISE_SNEMO_CUT_CALIBRATED_DATA_CUT_H
 
 /*
 ** Local Variables: --

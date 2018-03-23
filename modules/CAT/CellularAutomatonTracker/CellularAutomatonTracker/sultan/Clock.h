@@ -9,41 +9,36 @@
 
 namespace SULTAN {
 
-  class Clock {
+class Clock {
+  // a Clock is a time counter
 
-    // a Clock is a time counter
+ private:
+  // list of clockable objects
+  std::vector<clockable> clockables_;
 
-  private:
-    // list of clockable objects
-    std::vector<clockable> clockables_;
+ public:
+  //! Default constructor
+  Clock();
 
-  public:
+  //! Default destructor
+  virtual ~Clock();
 
-    //!Default constructor
-    Clock();
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-    //!Default destructor
-    virtual ~Clock();
+  std::vector<clockable> &clockables();
 
-    virtual void dump (std::ostream & a_out         = std::clog,
-                       const std::string & a_title  = "",
-                       const std::string & a_indent = "",
-                       bool a_inherit               = false) const;
+  bool has(const std::string &name, size_t *index) const;
 
-    std::vector<clockable> & clockables();
+  void start(const std::string &name, const std::string &mode = "once");
 
-    bool has(const std::string & name, size_t *index) const;
+  void stop(const std::string &name);
 
-    void start(const std::string & name, const std::string & mode="once");
+  double read(const std::string &name);
 
-    void stop(const std::string & name);
+  void stop_all();
+};
 
-    double read(const std::string & name);
+}  // namespace SULTAN
 
-    void stop_all();
-
-  };
-
-}
-
-#endif // __sultan__Clock_h
+#endif  // __sultan__Clock_h

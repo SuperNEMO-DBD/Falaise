@@ -48,121 +48,115 @@ class TGCompositeFrame;
 class TGTextButton;
 
 namespace cuts {
-  class cut_manager;
+class cut_manager;
 }
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      class event_browser;
-      class status_bar;
-      class base_widget;
+class event_browser;
+class status_bar;
+class base_widget;
 
-      /// \brief A class hosting interactive event selection cut
-      class event_selection
-      {
-      public:
+/// \brief A class hosting interactive event selection cut
+class event_selection {
+ public:
+  /// Collection of widgets
+  typedef std::map<int, base_widget*> widget_collection_type;
 
-        /// Collection of widgets
-        typedef std::map<int, base_widget*> widget_collection_type;
+  /// Check initialization status
+  bool is_initialized() const;
 
-        /// Check initialization status
-        bool is_initialized() const;
+  /// Check if selection is enabled
+  bool is_selection_enable() const;
 
-        /// Check if selection is enabled
-        bool is_selection_enable() const;
+  /// Constructor
+  event_selection();
 
-        /// Constructor
-        event_selection();
+  /// Destructor
+  virtual ~event_selection();
 
-        /// Destructor
-        virtual ~event_selection();
+  /// Initialization
+  void initialize(TGCompositeFrame* main_);
 
-        /// Initialization
-        void initialize(TGCompositeFrame * main_);
+  /// Reset
+  void reset();
 
-        /// Reset
-        void reset();
+  /// Assign event server pointer
+  void set_event_server(io::event_server* server_);
 
-        /// Assign event server pointer
-        void set_event_server(io::event_server * server_);
+  /// Return a non-mutable reference to event server
+  io::event_server& get_event_server() const;
 
-        /// Return a non-mutable reference to event server
-        io::event_server & get_event_server() const;
+  /// Assign status bar pointer
+  void set_status_bar(view::status_bar* status_);
 
-        /// Assign status bar pointer
-        void set_status_bar(view::status_bar * status_);
+  /// Return a non-mutable reference to cut manager
+  const cuts::cut_manager& get_cut_manager() const;
 
-        /// Return a non-mutable reference to cut manager
-        const cuts::cut_manager & get_cut_manager() const;
+  /// Return a mutable reference to cut manager
+  cuts::cut_manager& grab_cut_manager();
 
-        /// Return a mutable reference to cut manager
-        cuts::cut_manager & grab_cut_manager();
+  /// Main process method
+  void process();
 
-        /// Main process method
-        void process();
+  /// Event selection
+  void select_events(const button_signals_type signal_ = UNDEFINED, const int event_selected_ = -1);
 
-        /// Event selection
-        void select_events(const button_signals_type signal_ = UNDEFINED,
-                           const int event_selected_ = -1);
+ private:
+  /// Build GUI widgets
+  void _build_();
 
-      private:
+  /// Install cut manager
+  void _install_cut_manager_();
 
-        /// Build GUI widgets
-        void _build_();
+  /// Install private cuts
+  void _install_private_cuts_();
 
-        /// Install cut manager
-        void _install_cut_manager_();
+  /// Build cuts
+  void _build_cuts_();
 
-        /// Install private cuts
-        void _install_private_cuts_();
+  /// Check cuts
+  bool _check_cuts_();
 
-        /// Build cuts
-        void _build_cuts_();
+ private:
+  bool _initialized_;
+  bool _selection_enable_;
 
-        /// Check cuts
-        bool _check_cuts_();
+  int _initial_event_id_;
 
-      private:
+  TGCompositeFrame* _main_;
+  io::event_server* _server_;
+  event_browser* _browser_;
+  status_bar* _status_;
 
-        bool _initialized_;
-        bool _selection_enable_;
+  cuts::cut_manager* _cut_manager_;  //!< Cut manager pointer
+  std::string _current_cut_name_;
 
-        int _initial_event_id_;
+  TGTextButton* _load_button_;
+  TGTextButton* _save_button_;
+  TGTextButton* _reset_button_;
+  TGTextButton* _update_button_;
+  widget_collection_type _widgets_;
 
-        TGCompositeFrame * _main_;
-        io::event_server * _server_;
-        event_browser    * _browser_;
-        status_bar       * _status_;
+  // No I/O so ClassDefVersionID = 0
+  ClassDef(event_selection, 0);
+};
 
-        cuts::cut_manager * _cut_manager_;//!< Cut manager pointer
-        std::string _current_cut_name_;
+}  // end of namespace view
 
-        TGTextButton  * _load_button_;
-        TGTextButton  * _save_button_;
-        TGTextButton  * _reset_button_;
-        TGTextButton  * _update_button_;
-        widget_collection_type _widgets_;
+}  // end of namespace visualization
 
-        // No I/O so ClassDefVersionID = 0
-        ClassDef(event_selection, 0);
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_SELECTION_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_EVENT_SELECTION_H
 
 // end of event_selection.h
 /*

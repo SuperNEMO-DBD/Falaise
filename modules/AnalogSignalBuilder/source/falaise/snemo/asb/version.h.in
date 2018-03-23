@@ -24,61 +24,57 @@
 #define FALAISE_ASB_VERSION_REVISION @FalaiseASB_VERSION_REVISION@
 
 //! Encode falaise to ordered integer available at compile time
-#define FALAISE_ASB_ENCODE_VERSION(major, minor, patch) (               \
-                                                         ((major) * 10000) \
-                                                         + ((minor) *   100) \
-                                                         + ((patch) *     1))
+#define FALAISE_ASB_ENCODE_VERSION(major, minor, patch) \
+  (((major)*10000) + ((minor)*100) + ((patch)*1))
 
 //! Integer encoded falaise version available at compile time
-#define FALAISE_ASB_VERSION FALAISE_ASB_ENCODE_VERSION(                 \
-                                                       FALAISE_ASB_VERSION_MAJOR, \
-                                                       FALAISE_ASB_VERSION_MINOR, \
-                                                       FALAISE_ASB_VERSION_PATCH)
+#define FALAISE_ASB_VERSION                                                        \
+  FALAISE_ASB_ENCODE_VERSION(FALAISE_ASB_VERSION_MAJOR, FALAISE_ASB_VERSION_MINOR, \
+                             FALAISE_ASB_VERSION_PATCH)
 
 //! String encoded full version number, e.g. "1.2.3", available at compile time
-#define FALAISE_ASB_LIB_VERSION "@FalaiseASB_VERSION_MAJOR@.@FalaiseASB_VERSION_MINOR@.@FalaiseASB_VERSION_PATCH@"
+#define FALAISE_ASB_LIB_VERSION \
+  "@FalaiseASB_VERSION_MAJOR@.@FalaiseASB_VERSION_MINOR@.@FalaiseASB_VERSION_PATCH@"
 
 //! Check current version >= (major, minor, patch) at compile time
-#define FALAISE_ASB_IS_AT_LEAST(major,minor,patch) (                    \
-                                                    FALAISE_ASB_VERSION >= \
-                                                    FALAISE_ASB_ENCODE_VERSION(major,minor,patch))
+#define FALAISE_ASB_IS_AT_LEAST(major, minor, patch) \
+  (FALAISE_ASB_VERSION >= FALAISE_ASB_ENCODE_VERSION(major, minor, patch))
 
 //----------------------------------------------------------------------
 // Runtime API
 namespace snemo {
 
-  namespace asb {
+namespace asb {
 
-    //! \brief Describe the falaise API version and features
-    struct version {
+//! \brief Describe the falaise API version and features
+struct version {
+  //! Return the major version number of falaise, e.g., 1 for '1.2.3'
+  static int get_major();
 
-      //! Return the major version number of falaise, e.g., 1 for '1.2.3'
-      static int get_major();
+  //! Return the minor version number of falaise, e.g., 2 for '1.2.3'
+  static int get_minor();
 
-      //! Return the minor version number of falaise, e.g., 2 for '1.2.3'
-      static int get_minor();
+  //! Return the patch version number of falaise, e.g., 3 for '1.2.3'
+  static int get_patch();
 
-      //! Return the patch version number of falaise, e.g., 3 for '1.2.3'
-      static int get_patch();
+  //! Return the revision/build number of falaise, e.g., 1234
+  static int get_revision();
 
-      //! Return the revision/build number of falaise, e.g., 1234
-      static int get_revision();
+  //! Return the full version number of falaise as a string, e.g., '1.2.3'
+  static std::string get_version();
 
-      //! Return the full version number of falaise as a string, e.g., '1.2.3'
-      static std::string get_version();
+  //! Return true if the current falaise version >= (major, minor, patch)
+  static bool is_at_least(int major, int minor, int patch);
 
-      //! Return true if the current falaise version >= (major, minor, patch)
-      static bool is_at_least(int major, int minor, int patch);
+  //! Return true if the named feature is available in falaise
+  static bool has_feature(const std::string& feature);
+};
 
-      //! Return true if the named feature is available in falaise
-      static bool has_feature(const std::string& feature);
-    };
+}  // namespace asb
 
-  } // end of namespace digitization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_ASB_PLUGIN_SNEMO_ASB_VERSION_H
+#endif  // FALAISE_ASB_PLUGIN_SNEMO_ASB_VERSION_H
 
 // Local Variables: --
 // mode: c++ --

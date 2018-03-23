@@ -18,19 +18,19 @@
 
 // Third party:
 // - Bayeux/datatools:
-#if defined (__clang__)
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-local-typedefs"
 #endif
-#if defined (__GNUC__)
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused"
 #endif
 #include <datatools/handle.h>
-#if defined (__GNUC__)
+#if defined(__GNUC__)
 #pragma GCC diagnostic pop
 #endif
-#if defined (__clang__)
+#if defined(__clang__)
 #pragma clang diagnostic pop
 #endif
 
@@ -39,77 +39,71 @@
 
 namespace snemo {
 
-    namespace datamodel {
+namespace datamodel {
 
-      /// \brief Model of a calibrated calorimeter hit
-      class calibrated_calorimeter_hit : public geomtools::base_hit
-      {
-      public:
+/// \brief Model of a calibrated calorimeter hit
+class calibrated_calorimeter_hit : public geomtools::base_hit {
+ public:
+  /// Handle of calibrated calorimeter hit
+  typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
 
-        /// Handle of calibrated calorimeter hit
-        typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
+  /// Collection of handles of calibrated calorimeter hit
+  typedef std::vector<handle_type> collection_type;
 
-        /// Collection of handles of calibrated calorimeter hit
-        typedef std::vector<handle_type> collection_type;
+  /// Return the time associated to the hit
+  double get_time() const;
 
-        /// Return the time associated to the hit
-        double get_time() const;
+  /// Set the time associated to the hit
+  void set_time(double);
 
-        /// Set the time associated to the hit
-        void set_time(double);
+  /// Return the error on the time associated to the hit
+  double get_sigma_time() const;
 
-        /// Return the error on the time associated to the hit
-        double get_sigma_time() const;
+  /// Set the error on the time associated to the hit
+  void set_sigma_time(double);
 
-        /// Set the error on the time associated to the hit
-        void set_sigma_time(double);
+  /// Return the energy associated to the hit
+  double get_energy() const;
 
-        /// Return the energy associated to the hit
-        double get_energy() const;
+  /// Set the energy associated to the hit
+  void set_energy(double);
 
-        /// Set the energy associated to the hit
-        void set_energy(double);
+  /// Return the error on the energy associated to the hit
+  double get_sigma_energy() const;
 
-        /// Return the error on the energy associated to the hit
-        double get_sigma_energy() const;
+  /// Set the error on the energy associated to the hit
+  void set_sigma_energy(double);
 
-        /// Set the error on the energy associated to the hit
-        void set_sigma_energy(double);
+  /// Constructor
+  calibrated_calorimeter_hit();
 
-        /// Constructor
-        calibrated_calorimeter_hit();
+  /// Destructor
+  virtual ~calibrated_calorimeter_hit();
 
-        /// Destructor
-        virtual ~calibrated_calorimeter_hit();
+  /// Check if the internal data of the hit are valid
+  bool is_valid() const;
 
-        /// Check if the internal data of the hit are valid
-        bool is_valid() const;
+  /// Invalidate the internal data of hit
+  void invalidate();
 
-        /// Invalidate the internal data of hit
-        void invalidate();
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream      & a_out    = std::clog,
-                               const std::string & a_title  = "",
-                               const std::string & a_indent = "",
-                               bool a_inherit               = false) const;
+  /// Basic print
+  void dump() const;
 
-        /// Basic print
-        void dump() const;
+ private:
+  double _energy_;        //!< Energy associated to the hit
+  double _sigma_energy_;  //!< Error on the energy associated to the hit
+  double _time_;          //!< Time associated to the hit
+  double _sigma_time_;    //!< Error on the time associated to the hit
 
-      private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-        double _energy_;       //!< Energy associated to the hit
-        double _sigma_energy_; //!< Error on the energy associated to the hit
-        double _time_;         //!< Time associated to the hit
-        double _sigma_time_;   //!< Error on the time associated to the hit
+}  // end of namespace datamodel
 
-        DATATOOLS_SERIALIZATION_DECLARATION()
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H
+#endif  // FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H

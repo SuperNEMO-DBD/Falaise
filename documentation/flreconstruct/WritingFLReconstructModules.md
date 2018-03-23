@@ -159,7 +159,9 @@ linking of the `MyModule` target will have the correct compiler and
 linking setup. The PUBLIC keyword means that if any other library links
 to `MyModule`, it must also link to `FalaiseModule` (In general, Falaise
 plugins should *not* link to other plugins as they are intended to be
-self-contained).
+self-contained). The `flreconstruct` application makes a default set of
+libraries available, and if you require additional functionality CMake
+must be set up to find and use these. This is documented [later in this tutorial](@ref additionallibraries).
 
 For more detailed documentation on CMake, please refer to the
 [online help](https://cmake.org/cmake/help/latest/).
@@ -220,8 +222,8 @@ but you should see something along the lines of
 
 ~~~~~~
 $ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
--- The C compiler identification is AppleClang 7.3.0.7030031
--- The CXX compiler identification is AppleClang 7.3.0.7030031
+-- The C compiler identification is AppleClang 9.0.0.9000039
+-- The CXX compiler identification is AppleClang 9.0.0.9000039
 -- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
 -- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
 -- Detecting C compiler ABI info
@@ -533,6 +535,61 @@ This helps to make the module easier to use and less error prone.
 Remember that the modular structure of the pipeline means that tasks
 are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
+
+
+Using Additional Libraries in Your Module {#additionallibraries}
+=========================================
+
+The `flreconstruct` program provides the needed libraries to run core modules,
+specifically the minimal set:
+
+- Falaise
+- Bayeux
+- [Boost](https://www.boost.org)
+  - filesystem
+  - system
+  - serialization
+  - iostreams
+  - regex
+- [GSL](https://www.gnu.org/software/gsl/)
+- [CLHEP](http://proj-clhep.web.cern.ch/proj-clhep/)
+- [ROOT](https://root.cern.ch/doc/v612/modules.html)
+  - Core
+  - RIO
+  - Hist
+  - MathCore
+  - Matrix
+  - Net
+  - Tree
+  - Thread
+- [Qt5 QtCore](https://doc.qt.io/qt-5.10/qtcore-index.html)
+
+Linking your module to the `Falaise::FalaiseModule` target in `target_link_libraries`
+ensures that your module uses the appropriate headers at compile time, and
+the correct symbols at runtime. If your module requires use of additional libraries,
+then you will need to get CMake to locate these and then link them to your module.
+
+In the most common case of using non-core libraries from the ROOT package, then the `find_package`
+step would be modified to:
+
+~~~~~
+# Find Falaise first, which ensures we use correct ROOT
+find_package(Falaise REQUIRED)
+
+# Find ROOT after Falaise, which guarantees use of same ROOT, but configure extra components
+# in this case, TMVA.
+find_package(ROOT REQUIRED TMVA)
+~~~~~
+
+The module can then be linked to the additional library by adding
+it in the `target_link_libraries` command:
+
+~~~~~
+target_link_libraries(MyModule PUBLIC Falaise::FalaiseModule ${ROOT_TMVA_LIBRARY})
+~~~~~
+
+For other packages, `find_package` followed by `target_link_libraries`
+can be used in the same fashion.
 
 Next Steps
 ==========

@@ -6,23 +6,23 @@
  * and/or modify it under the terms of the Do What The Fuck You Want
  * To Public License, Version 2, as published by Sam Hocevar. See
  * http://sam.zoy.org/wtfpl/COPYING for more details.
-*/
+ */
 #ifndef __BINRELOC_C__
 #define __BINRELOC_C__
 
 #ifdef ENABLE_BINRELOC
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif /* ENABLE_BINRELOC */
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 #include <string.h>
 #if defined(__APPLE__) && defined(__MACH__)
-#include <sys/param.h>
-#include <mach-o/dyld.h>
 #include <dlfcn.h>
+#include <mach-o/dyld.h>
+#include <sys/param.h>
 #endif
 #include "falaise_binreloc.h"
 
@@ -35,333 +35,299 @@ extern "C" {
  * (which must be freed) or NULL on error. If the parameter 'error' is
  * not NULL, the error code will be stored there, if an error occured.
  */
-static char *
-_br_find_exe (BrInitError *error)
-{
+static char *_br_find_exe(BrInitError *error) {
 #ifndef ENABLE_BINRELOC
-	if (error)
-		*error = BR_INIT_ERROR_DISABLED;
-	return NULL;
+  if (error) *error = BR_INIT_ERROR_DISABLED;
+  return NULL;
 #elif defined(sun) || defined(__sun)
-	char *path;
-	path = getexecname();
-	return strdup(path);
+  char *path;
+  path = getexecname();
+  return strdup(path);
 #elif defined(__APPLE__) && defined(__MACH__)
-    char path[MAXPATHLEN+1];
-    uint32_t path_len = MAXPATHLEN;
-    // SPI first appeared in Mac OS X 10.2
-    _NSGetExecutablePath(path, &path_len);
-    return strdup(path);
+  char path[MAXPATHLEN + 1];
+  uint32_t path_len = MAXPATHLEN;
+  // SPI first appeared in Mac OS X 10.2
+  _NSGetExecutablePath(path, &path_len);
+  return strdup(path);
 #else
-	char *path, *path2, *line, *result;
-	size_t buf_size;
-	ssize_t size;
-	struct stat stat_buf;
-	FILE *f;
+  char *path, *path2, *line, *result;
+  size_t buf_size;
+  ssize_t size;
+  struct stat stat_buf;
+  FILE *f;
 
-	/* Read from /proc/self/exe (symlink) */
-	if (sizeof (path) > SSIZE_MAX)
-		buf_size = SSIZE_MAX - 1;
-	else
-		buf_size = PATH_MAX - 1;
-	path = (char *) malloc (buf_size);
-	if (path == NULL) {
-		/* Cannot allocate memory. */
-		if (error)
-			*error = BR_INIT_ERROR_NOMEM;
-		return NULL;
-	}
-	path2 = (char *) malloc (buf_size);
-	if (path2 == NULL) {
-		/* Cannot allocate memory. */
-		if (error)
-			*error = BR_INIT_ERROR_NOMEM;
-		free (path);
-		return NULL;
-	}
+  /* Read from /proc/self/exe (symlink) */
+  if (sizeof(path) > SSIZE_MAX)
+    buf_size = SSIZE_MAX - 1;
+  else
+    buf_size = PATH_MAX - 1;
+  path = (char *)malloc(buf_size);
+  if (path == NULL) {
+    /* Cannot allocate memory. */
+    if (error) *error = BR_INIT_ERROR_NOMEM;
+    return NULL;
+  }
+  path2 = (char *)malloc(buf_size);
+  if (path2 == NULL) {
+    /* Cannot allocate memory. */
+    if (error) *error = BR_INIT_ERROR_NOMEM;
+    free(path);
+    return NULL;
+  }
 
 #ifdef __FreeBSD__
-	strncpy (path2, "/proc/self/file", buf_size - 1);
+  strncpy(path2, "/proc/self/file", buf_size - 1);
 #else
-	strncpy (path2, "/proc/self/exe", buf_size - 1);
+  strncpy(path2, "/proc/self/exe", buf_size - 1);
 #endif
 
-	while (1) {
-		int i;
+  while (1) {
+    int i;
 
-		size = readlink (path2, path, buf_size - 1);
-		if (size == -1) {
-			/* Error. */
-			free (path2);
-			break;
-		}
+    size = readlink(path2, path, buf_size - 1);
+    if (size == -1) {
+      /* Error. */
+      free(path2);
+      break;
+    }
 
-		/* readlink() success. */
-		path[size] = '\0';
+    /* readlink() success. */
+    path[size] = '\0';
 
-		/* Check whether the symlink's target is also a symlink.
-		 * We want to get the final target. */
-		i = stat (path, &stat_buf);
-		if (i == -1) {
-			/* Error. */
-			free (path2);
-			break;
-		}
+    /* Check whether the symlink's target is also a symlink.
+     * We want to get the final target. */
+    i = stat(path, &stat_buf);
+    if (i == -1) {
+      /* Error. */
+      free(path2);
+      break;
+    }
 
-		/* stat() success. */
-		if (!S_ISLNK (stat_buf.st_mode)) {
-			/* path is not a symlink. Done. */
-			free (path2);
-			return path;
-		}
+    /* stat() success. */
+    if (!S_ISLNK(stat_buf.st_mode)) {
+      /* path is not a symlink. Done. */
+      free(path2);
+      return path;
+    }
 
-		/* path is a symlink. Continue loop and resolve this. */
-		strncpy (path, path2, buf_size - 1);
-	}
+    /* path is a symlink. Continue loop and resolve this. */
+    strncpy(path, path2, buf_size - 1);
+  }
 
 #if defined(__FreeBSD__)
-{
+  {
     char *name, *start, *end;
-	char *buffer = NULL, *temp;
-	struct stat finfo;
+    char *buffer = NULL, *temp;
+    struct stat finfo;
 
-	name = (char*) getprogname();
+    name = (char *)getprogname();
     start = end = getenv("PATH");
 
     while (*end) {
-	 end = strchr (start, ':');
-	 if (!end) end = strchr (start, '\0');
+      end = strchr(start, ':');
+      if (!end) end = strchr(start, '\0');
 
-	 /* Resize `buffer' for path component, '/', name and a '\0' */
-	 temp = realloc (buffer, end - start + 1 + strlen (name) + 1);
-	 if (temp) {
-	    buffer = temp;
+      /* Resize `buffer' for path component, '/', name and a '\0' */
+      temp = realloc(buffer, end - start + 1 + strlen(name) + 1);
+      if (temp) {
+        buffer = temp;
 
-	    strncpy (buffer, start, end - start);
-	    *(buffer + (end - start)) = '/';
-	    strcpy (buffer + (end - start) + 1, name);
+        strncpy(buffer, start, end - start);
+        *(buffer + (end - start)) = '/';
+        strcpy(buffer + (end - start) + 1, name);
 
-	    if ((stat(buffer, &finfo)==0) && (!S_ISDIR (finfo.st_mode))) {
-	       path = strdup(buffer);
-	       free (buffer);
-	       return path;
-	    }
-	 } /* else... ignore the failure; `buffer' is still valid anyway. */
+        if ((stat(buffer, &finfo) == 0) && (!S_ISDIR(finfo.st_mode))) {
+          path = strdup(buffer);
+          free(buffer);
+          return path;
+        }
+      } /* else... ignore the failure; `buffer' is still valid anyway. */
 
-	 start = end + 1;
-      }
-      /* Path search failed */
-      free (buffer);
+      start = end + 1;
+    }
+    /* Path search failed */
+    free(buffer);
 
-	if (error)
-		*error = BR_INIT_ERROR_DISABLED;
-	return NULL;
-}
+    if (error) *error = BR_INIT_ERROR_DISABLED;
+    return NULL;
+  }
 #endif
 
-	/* readlink() or stat() failed; this can happen when the program is
-	 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
+  /* readlink() or stat() failed; this can happen when the program is
+   * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
 
-	buf_size = PATH_MAX + 128;
-	line = (char *) realloc (path, buf_size);
-	if (line == NULL) {
-		/* Cannot allocate memory. */
-		free (path);
-		if (error)
-			*error = BR_INIT_ERROR_NOMEM;
-		return NULL;
-	}
+  buf_size = PATH_MAX + 128;
+  line = (char *)realloc(path, buf_size);
+  if (line == NULL) {
+    /* Cannot allocate memory. */
+    free(path);
+    if (error) *error = BR_INIT_ERROR_NOMEM;
+    return NULL;
+  }
 
-	f = fopen ("/proc/self/maps", "r");
-	if (f == NULL) {
-		free (line);
-		if (error)
-			*error = BR_INIT_ERROR_OPEN_MAPS;
-		return NULL;
-	}
+  f = fopen("/proc/self/maps", "r");
+  if (f == NULL) {
+    free(line);
+    if (error) *error = BR_INIT_ERROR_OPEN_MAPS;
+    return NULL;
+  }
 
-	/* The first entry should be the executable name. */
-	result = fgets (line, (int) buf_size, f);
-	if (result == NULL) {
-		fclose (f);
-		free (line);
-		if (error)
-			*error = BR_INIT_ERROR_READ_MAPS;
-		return NULL;
-	}
+  /* The first entry should be the executable name. */
+  result = fgets(line, (int)buf_size, f);
+  if (result == NULL) {
+    fclose(f);
+    free(line);
+    if (error) *error = BR_INIT_ERROR_READ_MAPS;
+    return NULL;
+  }
 
-	/* Get rid of newline character. */
-	buf_size = strlen (line);
-	if (buf_size <= 0) {
-		/* Huh? An empty string? */
-		fclose (f);
-		free (line);
-		if (error)
-			*error = BR_INIT_ERROR_INVALID_MAPS;
-		return NULL;
-	}
-	if (line[buf_size - 1] == 10)
-		line[buf_size - 1] = 0;
+  /* Get rid of newline character. */
+  buf_size = strlen(line);
+  if (buf_size <= 0) {
+    /* Huh? An empty string? */
+    fclose(f);
+    free(line);
+    if (error) *error = BR_INIT_ERROR_INVALID_MAPS;
+    return NULL;
+  }
+  if (line[buf_size - 1] == 10) line[buf_size - 1] = 0;
 
-	/* Extract the filename; it is always an absolute path. */
-	path = strchr (line, '/');
+  /* Extract the filename; it is always an absolute path. */
+  path = strchr(line, '/');
 
-	/* Sanity check. */
-	if (strstr (line, " r-xp ") == NULL || path == NULL) {
-		fclose (f);
-		free (line);
-		if (error)
-			*error = BR_INIT_ERROR_INVALID_MAPS;
-		return NULL;
-	}
+  /* Sanity check. */
+  if (strstr(line, " r-xp ") == NULL || path == NULL) {
+    fclose(f);
+    free(line);
+    if (error) *error = BR_INIT_ERROR_INVALID_MAPS;
+    return NULL;
+  }
 
-	path = strdup (path);
-	free (line);
-	fclose (f);
-	return path;
+  path = strdup(path);
+  free(line);
+  fclose(f);
+  return path;
 #endif /* ENABLE_BINRELOC */
 }
-
 
 /** @internal
  * Find the canonical filename of the executable which owns symbol.
  * Returns a filename which must be freed, or NULL on error.
  */
-static char *
-_br_find_exe_for_symbol (const void *symbol, BrInitError *error)
-{
+static char *_br_find_exe_for_symbol(const void *symbol, BrInitError *error) {
 #ifndef ENABLE_BINRELOC
-	if (error)
-		*error = BR_INIT_ERROR_DISABLED;
-	return (char *) NULL;
+  if (error) *error = BR_INIT_ERROR_DISABLED;
+  return (char *)NULL;
 #else
 #if defined(__APPLE__) && defined(__MACH__)
   Dl_info inf;
   int dladdr_return = dladdr(symbol, &inf);
   if (dladdr_return == 0) {
     *error = BR_INIT_ERROR_INVALID_MAPS;
-    return (char*) NULL;
+    return (char *)NULL;
   }
   return strdup(inf.dli_fname);
 #else
-	#define SIZE PATH_MAX + 100
-	FILE *f;
-	size_t address_string_len;
-	char *address_string, line[SIZE], *found;
+#define SIZE PATH_MAX + 100
+  FILE *f;
+  size_t address_string_len;
+  char *address_string, line[SIZE], *found;
 
-	if (symbol == NULL)
-		return (char *) NULL;
+  if (symbol == NULL) return (char *)NULL;
 
-	f = fopen ("/proc/self/maps", "r");
-	if (f == NULL)
-		return (char *) NULL;
+  f = fopen("/proc/self/maps", "r");
+  if (f == NULL) return (char *)NULL;
 
-	address_string_len = 4;
-	address_string = (char *) malloc (address_string_len);
-	/* Handle OOM (Tracker issue #35) */
-	if (!address_string)
-	{
-		if (error)
-			*error = BR_INIT_ERROR_NOMEM;
-		return (char *) NULL;
-	}
-	found = (char *) NULL;
+  address_string_len = 4;
+  address_string = (char *)malloc(address_string_len);
+  /* Handle OOM (Tracker issue #35) */
+  if (!address_string) {
+    if (error) *error = BR_INIT_ERROR_NOMEM;
+    return (char *)NULL;
+  }
+  found = (char *)NULL;
 
-	while (!feof (f)) {
-		char *start_addr, *end_addr, *end_addr_end, *file;
-		void *start_addr_p, *end_addr_p;
-		size_t len;
+  while (!feof(f)) {
+    char *start_addr, *end_addr, *end_addr_end, *file;
+    void *start_addr_p, *end_addr_p;
+    size_t len;
 
-		if (fgets (line, SIZE, f) == NULL)
-			break;
+    if (fgets(line, SIZE, f) == NULL) break;
 
-		/* Sanity check. */
-		if (strstr (line, " r-xp ") == NULL || strchr (line, '/') == NULL)
-			continue;
+    /* Sanity check. */
+    if (strstr(line, " r-xp ") == NULL || strchr(line, '/') == NULL) continue;
 
-		/* Parse line. */
-		start_addr = line;
-		end_addr = strchr (line, '-');
-		file = strchr (line, '/');
+    /* Parse line. */
+    start_addr = line;
+    end_addr = strchr(line, '-');
+    file = strchr(line, '/');
 
-		/* More sanity check. */
-		if (!(file > end_addr && end_addr != NULL && end_addr[0] == '-'))
-			continue;
+    /* More sanity check. */
+    if (!(file > end_addr && end_addr != NULL && end_addr[0] == '-')) continue;
 
-		end_addr[0] = '\0';
-		end_addr++;
-		end_addr_end = strchr (end_addr, ' ');
-		if (end_addr_end == NULL)
-			continue;
+    end_addr[0] = '\0';
+    end_addr++;
+    end_addr_end = strchr(end_addr, ' ');
+    if (end_addr_end == NULL) continue;
 
-		end_addr_end[0] = '\0';
-		len = strlen (file);
-		if (len == 0)
-			continue;
-		if (file[len - 1] == '\n')
-			file[len - 1] = '\0';
+    end_addr_end[0] = '\0';
+    len = strlen(file);
+    if (len == 0) continue;
+    if (file[len - 1] == '\n') file[len - 1] = '\0';
 
-		/* Get rid of "(deleted)" from the filename. */
-		len = strlen (file);
-		if (len > 10 && strcmp (file + len - 10, " (deleted)") == 0)
-			file[len - 10] = '\0';
+    /* Get rid of "(deleted)" from the filename. */
+    len = strlen(file);
+    if (len > 10 && strcmp(file + len - 10, " (deleted)") == 0) file[len - 10] = '\0';
 
-		/* I don't know whether this can happen but better safe than sorry. */
-		len = strlen (start_addr);
-		if (len != strlen (end_addr))
-			continue;
+    /* I don't know whether this can happen but better safe than sorry. */
+    len = strlen(start_addr);
+    if (len != strlen(end_addr)) continue;
 
+    /* Transform the addresses into a string in the form of 0xdeadbeef,
+     * then transform that into a pointer. */
+    if (address_string_len < len + 3) {
+      address_string_len = len + 3;
+      address_string = (char *)realloc(address_string, address_string_len);
+      /* Handle OOM (Tracker issue #35) */
+      if (!address_string) {
+        if (error) *error = BR_INIT_ERROR_NOMEM;
+        return (char *)NULL;
+      }
+    }
 
-		/* Transform the addresses into a string in the form of 0xdeadbeef,
-		 * then transform that into a pointer. */
-		if (address_string_len < len + 3) {
-			address_string_len = len + 3;
-			address_string = (char *) realloc (address_string, address_string_len);
-			/* Handle OOM (Tracker issue #35) */
-			if (!address_string)
-			{
-				if (error)
-					*error = BR_INIT_ERROR_NOMEM;
-				return (char *) NULL;
-			}
-		}
+    memcpy(address_string, "0x", 2);
+    memcpy(address_string + 2, start_addr, len);
+    address_string[2 + len] = '\0';
+    sscanf(address_string, "%p", &start_addr_p);
 
-		memcpy (address_string, "0x", 2);
-		memcpy (address_string + 2, start_addr, len);
-		address_string[2 + len] = '\0';
-		sscanf (address_string, "%p", &start_addr_p);
+    memcpy(address_string, "0x", 2);
+    memcpy(address_string + 2, end_addr, len);
+    address_string[2 + len] = '\0';
+    sscanf(address_string, "%p", &end_addr_p);
 
-		memcpy (address_string, "0x", 2);
-		memcpy (address_string + 2, end_addr, len);
-		address_string[2 + len] = '\0';
-		sscanf (address_string, "%p", &end_addr_p);
+    if (symbol >= start_addr_p && symbol < end_addr_p) {
+      found = file;
+      break;
+    }
+  }
 
+  free(address_string);
+  fclose(f);
 
-		if (symbol >= start_addr_p && symbol < end_addr_p) {
-			found = file;
-			break;
-		}
-	}
-
-	free (address_string);
-	fclose (f);
-
-	if (found == NULL)
-		return (char *) NULL;
-	else
-		return strdup (found);
+  if (found == NULL)
+    return (char *)NULL;
+  else
+    return strdup(found);
 #endif
 #endif /* ENABLE_BINRELOC */
 }
 
-
 #ifndef BINRELOC_RUNNING_DOXYGEN
-	#undef NULL
-	#define NULL ((char *) 0) /* typecasted as char* for C++ type safeness */
+#undef NULL
+#define NULL ((char *)0) /* typecasted as char* for C++ type safeness */
 #endif
 
-static char *exe = (char *) NULL;
-
+static char *exe = (char *)NULL;
 
 /** Initialize the BinReloc library (for applications).
  *
@@ -379,13 +345,10 @@ static char *exe = (char *) NULL;
  *
  * @returns 1 on success, 0 if BinReloc failed to initialize.
  */
-int
-br_init (BrInitError *error)
-{
-	exe = _br_find_exe (error);
-	return exe != NULL;
+int br_init(BrInitError *error) {
+  exe = _br_find_exe(error);
+  return exe != NULL;
 }
-
 
 /** Initialize the BinReloc library (for libraries).
  *
@@ -403,13 +366,10 @@ br_init (BrInitError *error)
  *
  * @returns 1 on success, 0 if a filename cannot be found.
  */
-int
-br_init_lib (BrInitError *error)
-{
-	exe = _br_find_exe_for_symbol ((const void *) "", error);
-	return exe != NULL;
+int br_init_lib(BrInitError *error) {
+  exe = _br_find_exe_for_symbol((const void *)"", error);
+  return exe != NULL;
 }
-
 
 /** Find the canonical filename of the current application.
  *
@@ -420,19 +380,16 @@ br_init_lib (BrInitError *error)
  *          default_exe will be returned. If default_exe is NULL, then
  *          NULL will be returned.
  */
-char *
-br_find_exe (const char *default_exe)
-{
-	if (exe == (char *) NULL) {
-		/* BinReloc is not initialized. */
-		if (default_exe != (const char *) NULL)
-			return strdup (default_exe);
-		else
-			return (char *) NULL;
-	}
-	return strdup (exe);
+char *br_find_exe(const char *default_exe) {
+  if (exe == (char *)NULL) {
+    /* BinReloc is not initialized. */
+    if (default_exe != (const char *)NULL)
+      return strdup(default_exe);
+    else
+      return (char *)NULL;
+  }
+  return strdup(exe);
 }
-
 
 /** Locate the directory in which the current application is installed.
  *
@@ -448,20 +405,17 @@ br_find_exe (const char *default_exe)
  *         will be returned. If default_dir is NULL, then NULL will be
  *         returned.
  */
-char *
-br_find_exe_dir (const char *default_dir)
-{
-	if (exe == NULL) {
-		/* BinReloc not initialized. */
-		if (default_dir != NULL)
-			return strdup (default_dir);
-		else
-			return NULL;
-	}
+char *br_find_exe_dir(const char *default_dir) {
+  if (exe == NULL) {
+    /* BinReloc not initialized. */
+    if (default_dir != NULL)
+      return strdup(default_dir);
+    else
+      return NULL;
+  }
 
-	return br_dirname (exe);
+  return br_dirname(exe);
 }
-
 
 /** Locate the prefix in which the current application is installed.
  *
@@ -476,25 +430,22 @@ br_find_exe_dir (const char *default_dir)
  *         the initialization function failed, then a copy of default_prefix
  *         will be returned. If default_prefix is NULL, then NULL will be returned.
  */
-char *
-br_find_prefix (const char *default_prefix)
-{
-	char *dir1, *dir2;
+char *br_find_prefix(const char *default_prefix) {
+  char *dir1, *dir2;
 
-	if (exe == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_prefix != (const char *) NULL)
-			return strdup (default_prefix);
-		else
-			return (char *) NULL;
-	}
+  if (exe == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_prefix != (const char *)NULL)
+      return strdup(default_prefix);
+    else
+      return (char *)NULL;
+  }
 
-	dir1 = br_dirname (exe);
-	dir2 = br_dirname (dir1);
-	free (dir1);
-	return dir2;
+  dir1 = br_dirname(exe);
+  dir2 = br_dirname(dir1);
+  free(dir1);
+  return dir2;
 }
-
 
 /** Locate the application's binary folder.
  *
@@ -509,25 +460,22 @@ br_find_prefix (const char *default_prefix)
  *         the initialization function failed, then a copy of default_bin_dir will
  *         be returned. If default_bin_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_bin_dir (const char *default_bin_dir)
-{
-	char *prefix, *dir;
+char *br_find_bin_dir(const char *default_bin_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_bin_dir != (const char *) NULL)
-			return strdup (default_bin_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_bin_dir != (const char *)NULL)
+      return strdup(default_bin_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "bin");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "bin");
+  free(prefix);
+  return dir;
 }
-
 
 /** Locate the application's superuser binary folder.
  *
@@ -542,25 +490,22 @@ br_find_bin_dir (const char *default_bin_dir)
  *         initialization function failed, then a copy of default_sbin_dir will
  *         be returned. If default_bin_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_sbin_dir (const char *default_sbin_dir)
-{
-	char *prefix, *dir;
+char *br_find_sbin_dir(const char *default_sbin_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_sbin_dir != (const char *) NULL)
-			return strdup (default_sbin_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_sbin_dir != (const char *)NULL)
+      return strdup(default_sbin_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "sbin");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "sbin");
+  free(prefix);
+  return dir;
 }
-
 
 /** Locate the application's data folder.
  *
@@ -576,25 +521,22 @@ br_find_sbin_dir (const char *default_sbin_dir)
  *         will be returned. If default_data_dir is NULL, then NULL will be
  *         returned.
  */
-char *
-br_find_data_dir (const char *default_data_dir)
-{
-	char *prefix, *dir;
+char *br_find_data_dir(const char *default_data_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_data_dir != (const char *) NULL)
-			return strdup (default_data_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_data_dir != (const char *)NULL)
+      return strdup(default_data_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "share");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "share");
+  free(prefix);
+  return dir;
 }
-
 
 /** Locate the application's localization folder.
  *
@@ -609,25 +551,22 @@ br_find_data_dir (const char *default_data_dir)
  *         initialization function failed, then a copy of default_locale_dir will be returned.
  *         If default_locale_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_locale_dir (const char *default_locale_dir)
-{
-	char *data_dir, *dir;
+char *br_find_locale_dir(const char *default_locale_dir) {
+  char *data_dir, *dir;
 
-	data_dir = br_find_data_dir ((const char *) NULL);
-	if (data_dir == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_locale_dir != (const char *) NULL)
-			return strdup (default_locale_dir);
-		else
-			return (char *) NULL;
-	}
+  data_dir = br_find_data_dir((const char *)NULL);
+  if (data_dir == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_locale_dir != (const char *)NULL)
+      return strdup(default_locale_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (data_dir, "locale");
-	free (data_dir);
-	return dir;
+  dir = br_build_path(data_dir, "locale");
+  free(data_dir);
+  return dir;
 }
-
 
 /** Locate the application's library folder.
  *
@@ -642,25 +581,22 @@ br_find_locale_dir (const char *default_locale_dir)
  *         function failed, then a copy of default_lib_dir will be returned.
  *         If default_lib_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_lib_dir (const char *default_lib_dir)
-{
-	char *prefix, *dir;
+char *br_find_lib_dir(const char *default_lib_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_lib_dir != (const char *) NULL)
-			return strdup (default_lib_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_lib_dir != (const char *)NULL)
+      return strdup(default_lib_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "lib");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "lib");
+  free(prefix);
+  return dir;
 }
-
 
 /** Locate the application's libexec folder.
  *
@@ -675,25 +611,22 @@ br_find_lib_dir (const char *default_lib_dir)
  *         function failed, then a copy of default_libexec_dir will be returned.
  *         If default_libexec_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_libexec_dir (const char *default_libexec_dir)
-{
-	char *prefix, *dir;
+char *br_find_libexec_dir(const char *default_libexec_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_libexec_dir != (const char *) NULL)
-			return strdup (default_libexec_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_libexec_dir != (const char *)NULL)
+      return strdup(default_libexec_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "libexec");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "libexec");
+  free(prefix);
+  return dir;
 }
-
 
 /** Locate the application's configuration files folder.
  *
@@ -708,25 +641,22 @@ br_find_libexec_dir (const char *default_libexec_dir)
  *         function failed, then a copy of default_etc_dir will be returned.
  *         If default_etc_dir is NULL, then NULL will be returned.
  */
-char *
-br_find_etc_dir (const char *default_etc_dir)
-{
-	char *prefix, *dir;
+char *br_find_etc_dir(const char *default_etc_dir) {
+  char *prefix, *dir;
 
-	prefix = br_find_prefix ((const char *) NULL);
-	if (prefix == (char *) NULL) {
-		/* BinReloc not initialized. */
-		if (default_etc_dir != (const char *) NULL)
-			return strdup (default_etc_dir);
-		else
-			return (char *) NULL;
-	}
+  prefix = br_find_prefix((const char *)NULL);
+  if (prefix == (char *)NULL) {
+    /* BinReloc not initialized. */
+    if (default_etc_dir != (const char *)NULL)
+      return strdup(default_etc_dir);
+    else
+      return (char *)NULL;
+  }
 
-	dir = br_build_path (prefix, "etc");
-	free (prefix);
-	return dir;
+  dir = br_build_path(prefix, "etc");
+  free(prefix);
+  return dir;
 }
-
 
 /***********************
  * Utility functions
@@ -738,79 +668,62 @@ br_find_etc_dir (const char *default_etc_dir)
  * @param str2 Another string.
  * @returns A newly-allocated string. This string should be freed when no longer needed.
  */
-char *
-br_strcat (const char *str1, const char *str2)
-{
-	char *result;
-	size_t len1, len2;
+char *br_strcat(const char *str1, const char *str2) {
+  char *result;
+  size_t len1, len2;
 
-	if (str1 == NULL)
-		str1 = "";
-	if (str2 == NULL)
-		str2 = "";
+  if (str1 == NULL) str1 = "";
+  if (str2 == NULL) str2 = "";
 
-	len1 = strlen (str1);
-	len2 = strlen (str2);
+  len1 = strlen(str1);
+  len2 = strlen(str2);
 
-	result = (char *) malloc (len1 + len2 + 1);
-	/* Handle OOM (Tracker issue #35) */
-	if (result)
-	{
-		memcpy (result, str1, len1);
-		memcpy (result + len1, str2, len2);
-		result[len1 + len2] = '\0';
-	}
-	return result;
+  result = (char *)malloc(len1 + len2 + 1);
+  /* Handle OOM (Tracker issue #35) */
+  if (result) {
+    memcpy(result, str1, len1);
+    memcpy(result + len1, str2, len2);
+    result[len1 + len2] = '\0';
+  }
+  return result;
 }
 
+char *br_build_path(const char *dir, const char *file) {
+  char *dir2, *result;
+  size_t len;
+  int must_free = 0;
 
-char *
-br_build_path (const char *dir, const char *file)
-{
-	char *dir2, *result;
-	size_t len;
-	int must_free = 0;
+  len = strlen(dir);
+  if (len > 0 && dir[len - 1] != '/') {
+    dir2 = br_strcat(dir, "/");
+    must_free = 1;
+  } else
+    dir2 = (char *)dir;
 
-	len = strlen (dir);
-	if (len > 0 && dir[len - 1] != '/') {
-		dir2 = br_strcat (dir, "/");
-		must_free = 1;
-	} else
-		dir2 = (char *) dir;
-
-	result = br_strcat (dir2, file);
-	if (must_free)
-		free (dir2);
-	return result;
+  result = br_strcat(dir2, file);
+  if (must_free) free(dir2);
+  return result;
 }
-
 
 /* Emulates glibc's strndup() */
-static char *
-br_strndup (const char *str, size_t size)
-{
-	char *result = (char *) NULL;
-	size_t len;
+static char *br_strndup(const char *str, size_t size) {
+  char *result = (char *)NULL;
+  size_t len;
 
-	if (str == (const char *) NULL)
-		return (char *) NULL;
+  if (str == (const char *)NULL) return (char *)NULL;
 
-	len = strlen (str);
-	if (len == 0)
-		return strdup ("");
-	if (size > len)
-		size = len;
+  len = strlen(str);
+  if (len == 0) return strdup("");
+  if (size > len) size = len;
 
-	result = (char *) malloc (len + 1);
-	/* Handle OOM (Tracker issue #35) */
-	if (result)
-	{
-		memcpy (result, str, size);
-		result[size] = '\0';
-	}
-	return result;
+  result = (char *)malloc(len + 1);
+  /* Handle OOM (Tracker issue #35) */
+  if (result) {
+    memcpy(result, str, size);
+    result[size] = '\0';
+  }
+  return result;
 }
-
 
 /** Extracts the directory component of a path.
  *
@@ -824,28 +737,22 @@ br_strndup (const char *str, size_t size)
  * @param path  A path.
  * @returns     A directory name. This string should be freed when no longer needed.
  */
-char *
-br_dirname (const char *path)
-{
-	char *end, *result;
+char *br_dirname(const char *path) {
+  char *end, *result;
 
-	if (path == (const char *) NULL)
-		return (char *) NULL;
+  if (path == (const char *)NULL) return (char *)NULL;
 
-	end = strrchr (path, '/');
-	if (end == (const char *) NULL)
-		return strdup (".");
+  end = strrchr(path, '/');
+  if (end == (const char *)NULL) return strdup(".");
 
-	while (end > path && *end == '/')
-		end--;
-	result = br_strndup (path, end - path + 1);
-	if (result[0] == 0) {
-		free (result);
-		return strdup ("/");
-	} else
-		return result;
+  while (end > path && *end == '/') end--;
+  result = br_strndup(path, end - path + 1);
+  if (result[0] == 0) {
+    free(result);
+    return strdup("/");
+  } else
+    return result;
 }
-
 
 #ifdef __cplusplus
 }

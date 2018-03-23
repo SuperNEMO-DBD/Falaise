@@ -6,8 +6,8 @@
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_DATA_H
 
 // Standard library :
-#include <vector>
 #include <bitset>
+#include <vector>
 
 // Third party:
 // - Boost:
@@ -20,88 +20,85 @@
 #include <snemo/digitization/calo_ctw_constants.h>
 
 namespace snemo {
-  
-  namespace digitization {		
 
-    /// \brief Collection of calorimeter crate trigger words (C-CTW)
-    class calo_ctw_data : public datatools::i_serializable
-    {
-    public : 
-      
-      /// Default constructor
-      calo_ctw_data();
+namespace digitization {
 
-      /// Destructor
-      virtual ~calo_ctw_data();
+/// \brief Collection of calorimeter crate trigger words (C-CTW)
+class calo_ctw_data : public datatools::i_serializable {
+ public:
+  /// Default constructor
+  calo_ctw_data();
 
-      /// Handle to a calorimeter crate trigger word
-      typedef datatools::handle<calo_ctw> calo_ctw_handle_type;
+  /// Destructor
+  virtual ~calo_ctw_data();
 
-      /// Collection of handles of calorimeter crate trigger word
-      typedef std::vector<calo_ctw_handle_type> calo_ctw_collection_type;
-       
-      /// Return the index of the calorimeter crate trigger word with minimum clocktick
-			unsigned int get_clocktick_min_index() const;
-			
-      /// Return the index of the calorimeter crate trigger word with maximum clocktick
-			unsigned int get_clocktick_max_index() const;
- 
-      /// Return the clocktick min for the calorimeter crate trigger word with minimum clocktick (thanks to his index)
-      uint32_t get_clocktick_min() const;
+  /// Handle to a calorimeter crate trigger word
+  typedef datatools::handle<calo_ctw> calo_ctw_handle_type;
 
-      /// Return the clocktick max for the calorimeter crate trigger word with maximum clocktick (thanks to his index)
-			uint32_t get_clocktick_max() const;
-			
-      /// Return the range between the clocktick min and the clocktick max
-			uint32_t get_clocktick_range() const;
-					
-      /// Do a list of calorimeter crate trigger word which are in the same clocktick
-      void get_list_of_calo_ctw_per_clocktick(uint32_t clocktick_25ns_, calo_ctw_collection_type & ctws_) const;
+  /// Collection of handles of calorimeter crate trigger word
+  typedef std::vector<calo_ctw_handle_type> calo_ctw_collection_type;
 
-      /// Reset the list of ctws
-      void reset_ctws();
+  /// Return the index of the calorimeter crate trigger word with minimum clocktick
+  unsigned int get_clocktick_min_index() const;
 
-      /// Add a calorimeter crate trigger word at the end of the collection
-      calo_ctw & add();
+  /// Return the index of the calorimeter crate trigger word with maximum clocktick
+  unsigned int get_clocktick_max_index() const;
 
-      /// Return the const collection of calorimeter crate trigger
-      const calo_ctw_collection_type & get_calo_ctws() const;
-		
-			/// Check if calo ctw data has ctw(s)
-			bool has_calo_ctw() const;
-			
-      /// Reset
-      void reset();
+  /// Return the clocktick min for the calorimeter crate trigger word with minimum clocktick (thanks
+  /// to his index)
+  uint32_t get_clocktick_min() const;
 
-      /// Smart print
-      virtual void tree_dump(std::ostream      & a_out    = std::clog,
-														 const std::string & a_title  = "",
-														 const std::string & a_indent = "",
-														 bool a_inherit               = false) const;
+  /// Return the clocktick max for the calorimeter crate trigger word with maximum clocktick (thanks
+  /// to his index)
+  uint32_t get_clocktick_max() const;
 
-    protected : 
-      /// Check if two calorimeters crate trigger word do not have the same clocktick AND the same geom ID
-      void _check();
-			
-    private : 
-      calo_ctw_collection_type _calo_ctws_; //!< Collection of calorimeters crate trigger
+  /// Return the range between the clocktick min and the clocktick max
+  uint32_t get_clocktick_range() const;
 
-      DATATOOLS_SERIALIZATION_DECLARATION()
+  /// Do a list of calorimeter crate trigger word which are in the same clocktick
+  void get_list_of_calo_ctw_per_clocktick(uint32_t clocktick_25ns_,
+                                          calo_ctw_collection_type& ctws_) const;
 
-    };
+  /// Reset the list of ctws
+  void reset_ctws();
 
-  } // end of namespace digitization
+  /// Add a calorimeter crate trigger word at the end of the collection
+  calo_ctw& add();
 
-} // end of namespace snemo
+  /// Return the const collection of calorimeter crate trigger
+  const calo_ctw_collection_type& get_calo_ctws() const;
+
+  /// Check if calo ctw data has ctw(s)
+  bool has_calo_ctw() const;
+
+  /// Reset
+  void reset();
+
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
+
+ protected:
+  /// Check if two calorimeters crate trigger word do not have the same clocktick AND the same geom
+  /// ID
+  void _check();
+
+ private:
+  calo_ctw_collection_type _calo_ctws_;  //!< Collection of calorimeters crate trigger
+
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
+
+}  // end of namespace digitization
+
+}  // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::digitization::calo_ctw_data,
-                        "snemo::digitization::calo_ctw_data")
-
+BOOST_CLASS_EXPORT_KEY2(snemo::digitization::calo_ctw_data, "snemo::digitization::calo_ctw_data")
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_CALO_CTW_DATA_H */
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

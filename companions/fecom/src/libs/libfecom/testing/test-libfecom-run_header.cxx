@@ -1,14 +1,13 @@
 // Standard library:
 #include <cstdlib>
-#include <string>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 
 // This project:
 #include <fecom/run_header.hpp>
 
-int main(int /*argc_*/, char ** /*argv_*/)
-{
+int main(int /*argc_*/, char** /*argv_*/) {
   try {
     fecom::run_header rh;
     rh.software_version = "V1.2";
@@ -18,7 +17,7 @@ int main(int /*argc_*/, char ** /*argv_*/)
 
     rh.tree_dump(std::clog, "Calorimeter calibration:");
 
-  } catch (std::exception & error) {
+  } catch (std::exception& error) {
     std::cerr << "error: " << error.what() << std::endl;
     return EXIT_FAILURE;
   }

@@ -25,35 +25,28 @@
 #include <mybhep/sequential_writer.h>
 #include <fstream>
 
-
-
-namespace mybhep{
+namespace mybhep {
 //! writer_txt Class
 /*!
   Reads a BHEP DST in txt format
 */
 
+class writer_txt : public sequential_writer {
+ protected:
+  std::ofstream os_;
 
-  class writer_txt : public sequential_writer
-  {
-
-  protected:
-    std::ofstream os_;
-
-  public:
-
-    //! constructor
-    writer_txt();
-    virtual ~writer_txt();
-    //! protected interface
-  protected:
-    //! open file
-    virtual void open_file(std::string fileName);
-    //! close file
-    virtual void close_file() ;
-    //! write the event as a record
-    virtual void write_record(std::string record) ;
-
-  };
-}
+ public:
+  //! constructor
+  writer_txt();
+  virtual ~writer_txt();
+  //! protected interface
+ protected:
+  //! open file
+  virtual void open_file(std::string fileName);
+  //! close file
+  virtual void close_file();
+  //! write the event as a record
+  virtual void write_record(std::string record);
+};
+}  // namespace mybhep
 #endif

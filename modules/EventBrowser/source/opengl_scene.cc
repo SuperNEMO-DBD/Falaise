@@ -19,72 +19,63 @@
  *
  */
 
-#include <falaise/snemo/view/opengl_scene.h>
 #include <falaise/snemo/view/opengl_pad.h>
+#include <falaise/snemo/view/opengl_scene.h>
 
 #include <TGLScenePad.h>
-#include <TObject.h>
 #include <THashList.h>
+#include <TObject.h>
 
 #include <iostream>
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      TGLScenePad * opengl_scene::get_scene_pad ()
-      {
-        return _scene_pad_;
-      }
+TGLScenePad* opengl_scene::get_scene_pad() { return _scene_pad_; }
 
-      // TPad * opengl_scene::get_pad ()
-      // {
-      //   return __pad;
-      // }
+// TPad * opengl_scene::get_pad ()
+// {
+//   return __pad;
+// }
 
-      opengl_scene::opengl_scene () :
-        _scene_pad_  (0),
-        _opengl_pad_ (0)
-      {
-        _opengl_pad_ = new opengl_pad ();
-        _scene_pad_  = new TGLScenePad (_opengl_pad_);
-        _scene_pad_->SetAutoDestruct (false);
-        _scene_pad_->SetSmartRefresh (true);
+opengl_scene::opengl_scene() : _scene_pad_(0), _opengl_pad_(0) {
+  _opengl_pad_ = new opengl_pad();
+  _scene_pad_ = new TGLScenePad(_opengl_pad_);
+  _scene_pad_->SetAutoDestruct(false);
+  _scene_pad_->SetSmartRefresh(true);
 
-        return;
-      }
+  return;
+}
 
-      opengl_scene::~opengl_scene ()
-      {
-        this->clean ();
+opengl_scene::~opengl_scene() {
+  this->clean();
 
-        delete _scene_pad_;
-        delete _opengl_pad_;
-        return;
-      }
+  delete _scene_pad_;
+  delete _opengl_pad_;
+  return;
+}
 
-      void opengl_scene::add (TObject* object_)
-      {
-        _opengl_pad_->GetListOfPrimitives ()->Add (object_);
-        // std::cout << "number of pad entries = "
-        //           << __opengl_pad->GetListOfPrimitives ()->GetEntries ()
-        //           << std::endl;
-        return;
-      }
+void opengl_scene::add(TObject* object_) {
+  _opengl_pad_->GetListOfPrimitives()->Add(object_);
+  // std::cout << "number of pad entries = "
+  //           << __opengl_pad->GetListOfPrimitives ()->GetEntries ()
+  //           << std::endl;
+  return;
+}
 
-      void opengl_scene::clean ()
-      {
-        _opengl_pad_->Clear ();
-        return;
-      }
+void opengl_scene::clean() {
+  _opengl_pad_->Clear();
+  return;
+}
 
-    } // end of namespace view
+}  // end of namespace view
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of opengl_scene.cc
 /*

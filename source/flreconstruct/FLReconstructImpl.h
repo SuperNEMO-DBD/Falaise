@@ -23,26 +23,26 @@
 #include "bayeux/datatools/multi_properties.h"
 
 // This project
-#include "falaise/exitcodes.h"
 #include "FLReconstructParams.h"
+#include "falaise/exitcodes.h"
 
 namespace FLReconstruct {
 
-  //! Populate the metadata container with various informations classified in several categories
-  falaise::exit_code do_metadata(const FLReconstructParams &, datatools::multi_properties &);
+//! Populate the metadata container with various informations classified in several categories
+falaise::exit_code do_metadata(const FLReconstructParams &, datatools::multi_properties &);
 
-  ///! Post process input metadata
-  void do_postprocess_input_metadata(FLReconstructParams & flRecParameters);
+///! Post process input metadata
+void do_postprocess_input_metadata(FLReconstructParams &flRecParameters);
 
-  ///! Post process reconstruction parameters
-  void do_postprocess(FLReconstructParams & flRecParameters);
+///! Post process reconstruction parameters
+void do_postprocess(FLReconstructParams &flRecParameters);
 
-  ///! Parse command line arguments and provided script to configure the reconstruction parameters
-  void do_configure(int argc, char *argv[], FLReconstructParams& recParameters);
+///! Parse command line arguments and provided script to configure the reconstruction parameters
+void do_configure(int argc, char *argv[], FLReconstructParams &recParameters);
 
-} // namespace FLReconstruct
+}  // namespace FLReconstruct
 
-#endif // FLRECONSTRUCTIMPL_H
+#endif  // FLRECONSTRUCTIMPL_H
 
 // Local Variables: --
 // mode: c++ --

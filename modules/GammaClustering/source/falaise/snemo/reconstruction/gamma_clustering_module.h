@@ -38,68 +38,64 @@
 #include <dpp/base_module.h>
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 namespace snemo {
 
-  namespace reconstruction {
+namespace reconstruction {
 
-    class gamma_clustering_driver;
+class gamma_clustering_driver;
 
-    /// \brief The data processing module for the gamma clustering
-    class gamma_clustering_module : public dpp::base_module
-    {
+/// \brief The data processing module for the gamma clustering
+class gamma_clustering_module : public dpp::base_module {
+ public:
+  /// Setting geometry manager
+  void set_geometry_manager(const geomtools::manager& gmgr_);
 
-    public:
+  /// Getting geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-      /// Setting geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
+  /// Constructor
+  gamma_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
-      /// Getting geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Destructor
+  virtual ~gamma_clustering_module();
 
-      /// Constructor
-      gamma_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
+  /// Initialization
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          dpp::module_handle_dict_type& module_dict_);
 
-      /// Destructor
-      virtual ~gamma_clustering_module();
+  /// Reset
+  virtual void reset();
 
-      /// Initialization
-      virtual void initialize(const datatools::properties  & setup_,
-                              datatools::service_manager   & service_manager_,
-                              dpp::module_handle_dict_type & module_dict_);
+  /// Data record processing
+  virtual process_status process(datatools::things& data_);
 
-      /// Reset
-      virtual void reset();
+ protected:
+  /// Special method to process and generate particle track data
+  void _process(datatools::things& data_);
 
-      /// Data record processing
-      virtual process_status process(datatools::things & data_);
+  /// Give default values to specific class members.
+  void _set_defaults();
 
-    protected:
+ private:
+  const geomtools::manager* _geometry_manager_;  //!< The geometry manager
+  std::string _PTD_label_;                       //!< The label of the input/output data bank
+  boost::scoped_ptr< ::snemo::reconstruction::gamma_clustering_driver>
+      _driver_;  //!< Handle to the embedded fitter algorithm with dynamic memory auto-deletion
 
-      /// Special method to process and generate particle track data
-      void _process(datatools::things & data_);
+  // Macro to automate the registration of the module :
+  DPP_MODULE_REGISTRATION_INTERFACE(gamma_clustering_module)
+};
 
-      /// Give default values to specific class members.
-      void _set_defaults ();
+}  // end of namespace reconstruction
 
-    private:
-
-      const geomtools::manager * _geometry_manager_; //!< The geometry manager
-      std::string _PTD_label_;                       //!< The label of the input/output data bank
-      boost::scoped_ptr< ::snemo::reconstruction::gamma_clustering_driver> _driver_; //!< Handle to the embedded fitter algorithm with dynamic memory auto-deletion
-
-      // Macro to automate the registration of the module :
-      DPP_MODULE_REGISTRATION_INTERFACE(gamma_clustering_module)
-    };
-
-  } // end of namespace reconstruction
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::gamma_clustering_module)
 
-#endif // FALAISE_GAMMA_CLUSTERING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_CLUSTERING_MODULE_H
+#endif  // FALAISE_GAMMA_CLUSTERING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_CLUSTERING_MODULE_H

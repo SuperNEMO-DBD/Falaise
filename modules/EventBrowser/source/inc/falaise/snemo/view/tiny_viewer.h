@@ -33,8 +33,8 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_VIEW_TINY_VIEWER_H
 #define FALAISE_SNEMO_VISUALIZATION_VIEW_TINY_VIEWER_H 1
 
-#include <string>
 #include <map>
+#include <string>
 
 #include <falaise/snemo/view/i_embedded_viewer.h>
 #include <falaise/snemo/view/view_models.h>
@@ -46,111 +46,95 @@ class TObjArray;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class i_draw_manager;
+class i_draw_manager;
 
-      class tiny_viewer : public i_embedded_viewer
-      {
+class tiny_viewer : public i_embedded_viewer {
+ public:
+  tiny_viewer();
+  tiny_viewer(const std::string &name_, const unsigned int width_ = 0,
+              const unsigned int height_ = 0, const view_dim_type view_dim_ = VIEW_3D);
+  virtual ~tiny_viewer();
 
-      public:
+  virtual void set_external_canvas(TCanvas *canvas_);
 
-        tiny_viewer ();
-        tiny_viewer (const std::string & name_,
-                     const unsigned int width_ = 0, const unsigned int height_ = 0,
-                     const view_dim_type view_dim_ = VIEW_3D);
-        virtual ~tiny_viewer ();
+  virtual void clear();
+  virtual void reset();
 
-        virtual void set_external_canvas (TCanvas * canvas_);
+  virtual void set_view_type(const view_type view_type_);
+  virtual view_type get_view_type() const;
 
-        virtual void clear ();
-        virtual void reset ();
+  virtual void update_detector();
+  virtual void update_scene(i_draw_manager *drawer_);
 
-        virtual void set_view_type      (const view_type view_type_);
-        virtual view_type get_view_type () const;
+  virtual TCanvas *get_canvas();
+  virtual TGFrame *get_frame();
 
-        virtual void update_detector ();
-        virtual void update_scene    (i_draw_manager * drawer_);
+  virtual void search_for_boundaries();
 
-        virtual TCanvas * get_canvas ();
-        virtual TGFrame * get_frame  ();
+  virtual void optimize_range(const TVector3 &min_bound_, const TVector3 &max_bound_);
 
-        virtual void search_for_boundaries ();
+ protected:
+  virtual bool _zoom(const int x_, const int y_);
+  virtual bool _unzoom(const int x_, const int y_);
+  virtual bool _zoom_to_position(const int x_, const int y_);
 
-        virtual void optimize_range (const TVector3 & min_bound_,
-                                     const TVector3 & max_bound_);
+ private:
+  tiny_viewer(const tiny_viewer &);             // not implemented
+  tiny_viewer &operator=(const tiny_viewer &);  // not implemented
 
-      protected:
+  const TVector3 &_get_minimal_roi_bound_() const;
 
-        virtual bool _zoom             (const int x_, const int y_);
-        virtual bool _unzoom           (const int x_, const int y_);
-        virtual bool _zoom_to_position (const int x_, const int y_);
+  const TVector3 &_get_maximal_roi_bound_() const;
 
-      private:
+  TVector3 &_grab_minimal_roi_bound_();
 
-        tiny_viewer             (const tiny_viewer &); // not implemented
-        tiny_viewer & operator= (const tiny_viewer &); // not implemented
+  TVector3 &_grab_maximal_roi_bound_();
 
-        const TVector3 & _get_minimal_roi_bound_ () const;
+  void _set_scale_factors_();
 
-        const TVector3 & _get_maximal_roi_bound_ () const;
+  void _scale_text_();
 
-        TVector3 & _grab_minimal_roi_bound_ ();
+  void _convert_pixel_to_pad_coordinates_(const int xpixel_, const int ypixel_, double &xpad_,
+                                          double &ypad_);
 
-        TVector3 & _grab_maximal_roi_bound_ ();
+  void _convert_pixel_to_world_coordinates_(const int xpixel_, const int ypixel_, double &xworld_,
+                                            double &yworld_);
 
-        void _set_scale_factors_ ();
+  void _convert_world_to_pad_coordinates_(const double xworld_, const double yworld_,
+                                          const double zworld_, double &xpad_, double &ypad_);
 
-        void _scale_text_ ();
+ private:
+  TObjArray *_text_objects_;
+  TObjArray *_objects_;
 
-        void _convert_pixel_to_pad_coordinates_ (const int xpixel_,
-                                                 const int ypixel_,
-                                                 double & xpad_,
-                                                 double & ypad_);
+  TCanvas *_canvas_;
 
-        void _convert_pixel_to_world_coordinates_ (const int xpixel_,
-                                                   const int ypixel_,
-                                                   double & xworld_,
-                                                   double & yworld_);
+  view_type _view_type_;
 
-        void _convert_world_to_pad_coordinates_ (const double xworld_,
-                                                 const double yworld_,
-                                                 const double zworld_,
-                                                 double & xpad_,
-                                                 double & ypad_);
+  double _zoom_factor_;
+  int _zoom_index_;
 
-      private:
+  // For 2D purpose
+  bool _scaling_;
+  std::map<view_type, double> _scale_factors_;
+  std::map<view_type, double> _fudge_factors_;
 
-        TObjArray * _text_objects_;
-        TObjArray * _objects_;
+  // ROI boundaries
+  TVector3 _min_roi_bound_;
+  TVector3 _max_roi_bound_;
+};
 
-        TCanvas * _canvas_;
+}  // end of namespace view
 
-        view_type   _view_type_;
+}  // end of namespace visualization
 
-        double      _zoom_factor_;
-        int         _zoom_index_;
+}  // end of namespace snemo
 
-        // For 2D purpose
-        bool                        _scaling_;
-        std::map<view_type, double> _scale_factors_;
-        std::map<view_type, double> _fudge_factors_;
-
-        // ROI boundaries
-        TVector3 _min_roi_bound_;
-        TVector3 _max_roi_bound_;
-
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_TINY_VIEWER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_TINY_VIEWER_H
 
 // end of tiny_viewer.h
 /*

@@ -14,166 +14,118 @@
 #include <sultan/calorimeter_hit.h>
 #include <sultan/scenario.h>
 
+namespace SULTAN {
+namespace topology {
 
-namespace SULTAN{
-  namespace topology{
+class tracked_data : public tracking_object {
+  // a tracked_data is composed of a list of cells
+  // a list of clusters
+  // and a list of scenarios
 
+ protected:
+  std::string appname_;
 
-    class tracked_data : public tracking_object{
+ public:
+  // list of cells
+  std::vector<cell> cells_;
 
-      // a tracked_data is composed of a list of cells
-      // a list of clusters
-      // and a list of scenarios
+  // list of calos
+  std::vector<calorimeter_hit> calos_;
 
-    protected:
-      std::string appname_;
+  // list of clusters
+  std::vector<cluster> clusters_;
 
-    public:
+  // list of scenarios
+  std::vector<scenario> scenarios_;
 
-      // list of cells
-      std::vector<cell> cells_;
+  //! Default constructor
+  tracked_data() { appname_ = "tracked_data: "; }
 
-      // list of calos
-      std::vector<calorimeter_hit> calos_;
+  //! Default destructor
+  virtual ~tracked_data(){};
 
-      // list of clusters
-      std::vector<cluster> clusters_;
-
-      // list of scenarios
-      std::vector<scenario> scenarios_;
-
-      //!Default constructor
-      tracked_data()
-      {
-        appname_= "tracked_data: ";
-      }
-
-      //!Default destructor
-      virtual ~tracked_data(){};
-
-      //! constructor
-      tracked_data(const std::vector<cell> &cells,
-                   const std::vector<calorimeter_hit> &calos,
-                   const std::vector<cluster> &clusters,
-                   const std::vector<scenario> &scenarios,
-                   mybhep::prlevel level=mybhep::NORMAL,
-                   double probmin=1.e-200){
-        set_print_level(level);
-        set_probmin(probmin);
-        appname_= "tracked_data: ";
-        cells_ = cells;
-        calos_ = calos;
-        clusters_ = clusters;
-        scenarios_ = scenarios;
-      }
-
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool /* a_inherit */          = false) const {
-        std::string indent;
-        if (! a_indent.empty ()) indent = a_indent;
-        if (! a_title.empty ())
-          {
-            a_out << indent << a_title << std::endl;
-          }
-
-        a_out << indent << appname_ << " ------------------- " << std::endl;
-        a_out << indent << " number of cells : " << cells_.size() << std::endl;
-        for(std::vector<cell>::const_iterator icell=cells_.begin(); icell!=cells_.end();++icell)
-          icell->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of calos : " << calos_.size() << std::endl;
-        for(std::vector<calorimeter_hit>::const_iterator icalo=calos_.begin(); icalo!=calos_.end();++icalo)
-          icalo->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of clusters : " << clusters_.size() << std::endl;
-        for(std::vector<cluster>::const_iterator icluster=clusters_.begin(); icluster!=clusters_.end();++icluster)
-          icluster->dump(a_out, "",indent + "     ");
-        a_out << indent << " number of scenarios : " << scenarios_.size() << std::endl;
-        for(std::vector<scenario>::const_iterator iscenario=scenarios_.begin(); iscenario!=scenarios_.end();++iscenario)
-          iscenario->dump(a_out, "",indent + "     ");
-        a_out << indent << " ------------------- " << std::endl;
-
-        return;
-      }
-
-      //! set cells
-      void set_cells(const std::vector<cell> & cells)
-      {
-        cells_ = cells;
-      }
-
-      //! set calos
-      void set_calos(const std::vector<calorimeter_hit> & calos)
-      {
-        calos_ = calos;
-      }
-
-      //! set clusters
-      void set_clusters(const std::vector<cluster> & clusters)
-      {
-        clusters_ = clusters;
-      }
-
-      //! set scenarios
-      void set_scenarios(const std::vector<scenario> & scenarios)
-      {
-        scenarios_ = scenarios;
-      }
-
-      //! get cells
-      std::vector<cell>& get_cells()
-      {
-        return cells_;
-      }
-
-      const std::vector<cell>& get_cells()const
-      {
-        return cells_;
-      }
-
-      //! get calos
-      std::vector<calorimeter_hit>& get_calos()
-      {
-        return calos_;
-      }
-
-      const std::vector<calorimeter_hit>& get_calos()const
-      {
-        return calos_;
-      }
-
-      //! get clusters
-      std::vector<cluster>& get_clusters()
-      {
-        return clusters_;
-      }
-
-      const std::vector<cluster>& get_clusters()const
-      {
-        return clusters_;
-      }
-
-      //! get scenarios
-      std::vector<scenario>& get_scenarios()
-      {
-        return scenarios_;
-      }
-
-      const std::vector<scenario>& get_scenarios()const
-      {
-        return scenarios_;
-      }
-
-      void reset(){
-        cells_.clear();
-        clusters_.clear();
-        scenarios_.clear();
-      }
-
-
-    };
+  //! constructor
+  tracked_data(const std::vector<cell>& cells, const std::vector<calorimeter_hit>& calos,
+               const std::vector<cluster>& clusters, const std::vector<scenario>& scenarios,
+               mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200) {
+    set_print_level(level);
+    set_probmin(probmin);
+    appname_ = "tracked_data: ";
+    cells_ = cells;
+    calos_ = calos;
+    clusters_ = clusters;
+    scenarios_ = scenarios;
   }
-}
+
+  /*** dump ***/
+  virtual void dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                    const std::string& a_indent = "", bool /* a_inherit */ = false) const {
+    std::string indent;
+    if (!a_indent.empty()) indent = a_indent;
+    if (!a_title.empty()) {
+      a_out << indent << a_title << std::endl;
+    }
+
+    a_out << indent << appname_ << " ------------------- " << std::endl;
+    a_out << indent << " number of cells : " << cells_.size() << std::endl;
+    for (std::vector<cell>::const_iterator icell = cells_.begin(); icell != cells_.end(); ++icell)
+      icell->dump(a_out, "", indent + "     ");
+    a_out << indent << " number of calos : " << calos_.size() << std::endl;
+    for (std::vector<calorimeter_hit>::const_iterator icalo = calos_.begin(); icalo != calos_.end();
+         ++icalo)
+      icalo->dump(a_out, "", indent + "     ");
+    a_out << indent << " number of clusters : " << clusters_.size() << std::endl;
+    for (std::vector<cluster>::const_iterator icluster = clusters_.begin();
+         icluster != clusters_.end(); ++icluster)
+      icluster->dump(a_out, "", indent + "     ");
+    a_out << indent << " number of scenarios : " << scenarios_.size() << std::endl;
+    for (std::vector<scenario>::const_iterator iscenario = scenarios_.begin();
+         iscenario != scenarios_.end(); ++iscenario)
+      iscenario->dump(a_out, "", indent + "     ");
+    a_out << indent << " ------------------- " << std::endl;
+
+    return;
+  }
+
+  //! set cells
+  void set_cells(const std::vector<cell>& cells) { cells_ = cells; }
+
+  //! set calos
+  void set_calos(const std::vector<calorimeter_hit>& calos) { calos_ = calos; }
+
+  //! set clusters
+  void set_clusters(const std::vector<cluster>& clusters) { clusters_ = clusters; }
+
+  //! set scenarios
+  void set_scenarios(const std::vector<scenario>& scenarios) { scenarios_ = scenarios; }
+
+  //! get cells
+  std::vector<cell>& get_cells() { return cells_; }
+
+  const std::vector<cell>& get_cells() const { return cells_; }
+
+  //! get calos
+  std::vector<calorimeter_hit>& get_calos() { return calos_; }
+
+  const std::vector<calorimeter_hit>& get_calos() const { return calos_; }
+
+  //! get clusters
+  std::vector<cluster>& get_clusters() { return clusters_; }
+
+  const std::vector<cluster>& get_clusters() const { return clusters_; }
+
+  //! get scenarios
+  std::vector<scenario>& get_scenarios() { return scenarios_; }
+
+  const std::vector<scenario>& get_scenarios() const { return scenarios_; }
+
+  void reset() {
+    cells_.clear();
+    clusters_.clear();
+    scenarios_.clear();
+  }
+};
+}  // namespace topology
+}  // namespace SULTAN
 
 #endif

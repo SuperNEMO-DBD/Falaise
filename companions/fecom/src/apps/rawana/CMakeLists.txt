@@ -5,5 +5,5 @@ include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 
 add_executable(flrawana rawana.cxx)
 target_link_libraries(flrawana fecom)
-
+target_clang_format(flrawana)
 # - end of CMakeLists.txt

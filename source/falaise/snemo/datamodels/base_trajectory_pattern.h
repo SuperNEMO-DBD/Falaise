@@ -20,46 +20,41 @@
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// \brief The base class of fitted trajectory pattern
-    class base_trajectory_pattern : public datatools::i_serializable
-    {
-    public:
+/// \brief The base class of fitted trajectory pattern
+class base_trajectory_pattern : public datatools::i_serializable {
+ public:
+  /// Check if a valid pattern ID exists
+  bool has_pattern_id() const;
 
-      /// Check if a valid pattern ID exists
-      bool has_pattern_id() const;
+  /// Return the pattern ID
+  const std::string& get_pattern_id() const;
 
-      /// Return the pattern ID
-      const std::string & get_pattern_id() const;
+  /// Return the reference to the 1D shape associated to the trajectory
+  virtual const geomtools::i_shape_1d& get_shape() const = 0;
 
-      /// Return the reference to the 1D shape associated to the trajectory
-      virtual const geomtools::i_shape_1d & get_shape() const = 0;
+  /// Constructor
+  base_trajectory_pattern(const std::string& pattern_id_ = "");
 
-      /// Constructor
-      base_trajectory_pattern(const std::string & pattern_id_ = "");
+  /// Destructor
+  virtual ~base_trajectory_pattern();
 
-      /// Destructor
-      virtual ~base_trajectory_pattern();
+ protected:
+  /// Set the pattern ID
+  void _set_pattern_id(const std::string& pattern_id_);
 
-    protected:
+ private:
+  std::string _pattern_id_;  //!< The pattern identifier
 
-      /// Set the pattern ID
-      void _set_pattern_id(const std::string & pattern_id_);
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-    private:
+}  // end of namespace datamodel
 
-      std::string _pattern_id_; //!< The pattern identifier
+}  // end of namespace snemo
 
-      DATATOOLS_SERIALIZATION_DECLARATION()
-
-    };
-
-  } // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H
+#endif  // FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H
 
 /*
 ** Local Variables: --

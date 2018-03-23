@@ -32,10 +32,7 @@ add_library(wctools SHARED
   ${WcTools_PRIVATE_HEADERS}
   ${WcTools_SOURCES}
   )
-
 target_link_libraries(wctools Bayeux::Bayeux)
-#target_link_libraries(wctools ${Boost_LIBRARIES})
-
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
@@ -45,6 +42,7 @@ if(APPLE)
     INSTALL_RPATH "@loader_path"
     )
 endif()
+target_clang_format(wctools)
 
 install( FILES
   ${WcTools_HEADERS}
@@ -82,6 +80,8 @@ if(WCTOOLS_ENABLE_TESTING)
     if(APPLE)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
+    target_clang_format(${_testname})
+
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_wctools_TEST_ENVIRONMENT}

@@ -35,26 +35,24 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      enum view_type
-        {
-          // 2D enum
-          TOP_VIEW   = 0,
-          FRONT_VIEW = 1,
-          SIDE_VIEW  = 2
-        };
+enum view_type {
+  // 2D enum
+  TOP_VIEW = 0,
+  FRONT_VIEW = 1,
+  SIDE_VIEW = 2
+};
 
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
+}  // end of namespace snemo
 
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_VIEW_MODELS_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_VIEW_MODELS_H
 
 // end of view_models.h
 /*

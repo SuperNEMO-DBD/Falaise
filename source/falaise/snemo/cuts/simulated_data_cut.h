@@ -45,98 +45,96 @@
 #include <cuts/i_cut.h>
 
 namespace datatools {
-  class service_manager;
-  class properties;
-}
+class service_manager;
+class properties;
+}  // namespace datatools
 
 namespace snemo {
 
-  namespace cut {
+namespace cut {
 
-    class simulated_data_cut : public cuts::i_cut
-    {
-    public:
+class simulated_data_cut : public cuts::i_cut {
+ public:
+  /// \brief The cut mode
+  enum mode_type {
+    MODE_UNDEFINED = 0,
+    MODE_FLAG = datatools::bit_mask::bit00,
+    MODE_HAS_HIT_CATEGORY = datatools::bit_mask::bit01,  // simulated_data::has_step_hits
+    MODE_RANGE_HIT_CATEGORY =
+        datatools::bit_mask::bit02,                     // simulated_data::get_number_of_step_hits
+    MODE_HAS_HIT_PROPERTY = datatools::bit_mask::bit03  //
+  };
 
-      /// \brief The cut mode
-      enum mode_type {
-        MODE_UNDEFINED          = 0,
-        MODE_FLAG               = datatools::bit_mask::bit00,
-        MODE_HAS_HIT_CATEGORY   = datatools::bit_mask::bit01, // simulated_data::has_step_hits
-        MODE_RANGE_HIT_CATEGORY = datatools::bit_mask::bit02, // simulated_data::get_number_of_step_hits
-        MODE_HAS_HIT_PROPERTY   = datatools::bit_mask::bit03  //
-      };
+  /// Set the SD bank key
+  void set_SD_label(const std::string& SD_label_);
 
-      /// Set the SD bank key
-      void set_SD_label(const std::string & SD_label_);
+  /// Return the SD bank key
+  const std::string& get_SD_label() const;
 
-      /// Return the SD bank key
-      const std::string & get_SD_label() const;
+  /// Return the cut mode
+  uint32_t get_mode() const;
 
-      /// Return the cut mode
-      uint32_t get_mode() const;
+  /// Check mode MODE_FLAG:
+  bool is_mode_flag() const;
 
-      /// Check mode MODE_FLAG:
-      bool is_mode_flag() const;
+  /// Check mode MODE_HAS_HIT_CATEGORY:
+  bool is_mode_has_hit_category() const;
 
-      /// Check mode MODE_HAS_HIT_CATEGORY:
-      bool is_mode_has_hit_category() const;
+  /// Check mode MODE_RANGE_HIT_CATEGORY:
+  bool is_mode_range_hit_category() const;
 
-      /// Check mode MODE_RANGE_HIT_CATEGORY:
-      bool is_mode_range_hit_category() const;
+  /// Check mode MODE_HAS_HIT_PROPERTY:
+  bool is_mode_has_hit_property() const;
 
-      /// Check mode MODE_HAS_HIT_PROPERTY:
-      bool is_mode_has_hit_property() const;
+  /// Set the name of cut mode MODE_FLAG
+  void set_flag_name(const std::string& flag_name_);
 
-      /// Set the name of cut mode MODE_FLAG
-      void set_flag_name(const std::string & flag_name_);
+  /// Return the name of cut mode MODE_FLAG
+  const std::string& get_flag_name() const;
 
-      /// Return the name of cut mode MODE_FLAG
-      const std::string & get_flag_name() const;
+  /// Constructor
+  simulated_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
 
-      /// Constructor
-      simulated_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  /// Destructor
+  virtual ~simulated_data_cut();
 
-      /// Destructor
-      virtual ~simulated_data_cut();
+  /// Initilization
+  virtual void initialize(const datatools::properties& configuration_,
+                          datatools::service_manager& service_manager_,
+                          cuts::cut_handle_dict_type& cut_dict_);
 
-      /// Initilization
-      virtual void initialize(const datatools::properties & configuration_,
-                               datatools::service_manager & service_manager_,
-                               cuts::cut_handle_dict_type & cut_dict_);
+  /// Reset
+  virtual void reset();
 
-      /// Reset
-      virtual void reset();
+ protected:
+  /// Default values
+  void _set_defaults();
 
-    protected:
+  /// Selection
+  virtual int _accept();
 
-      /// Default values
-      void _set_defaults();
+ private:
+  std::string _SD_label_;  //!< Name of the "Simulated data" bank
+  uint32_t _mode_;         //!< Mode of the cut
 
-      /// Selection
-      virtual int _accept();
+  std::string _flag_name_;  //!< Name of the boolean property in the simulated data
 
-    private:
+  std::string _hit_category_;    //!< Name of the hit category to be checked
+  int _hit_category_range_min_;  //!< Minimal number of hits in a category
+  int _hit_category_range_max_;  //!< Maximal number of hits in a category
 
-      std::string _SD_label_;                          //!< Name of the "Simulated data" bank
-      uint32_t    _mode_;                              //!< Mode of the cut
+  std::string _hit_property_logic_;  //!< Logic operation between property selection
+  typedef std::map<std::string, std::vector<std::string> > property_values_dict_type;
+  property_values_dict_type
+      _hit_property_values_;  //!< Values of the 'step_hit' property to look for
 
-      std::string _flag_name_;                         //!< Name of the boolean property in the simulated data
+  // Macro to automate the registration of the cut :
+  CUT_REGISTRATION_INTERFACE(simulated_data_cut)
+};
 
-      std::string _hit_category_;                      //!< Name of the hit category to be checked
-      int         _hit_category_range_min_;            //!< Minimal number of hits in a category
-      int         _hit_category_range_max_;            //!< Maximal number of hits in a category
+}  // end of namespace cut
 
-      std::string _hit_property_logic_;                //!< Logic operation between property selection
-      typedef std::map<std::string, std::vector<std::string> > property_values_dict_type;
-      property_values_dict_type _hit_property_values_; //!< Values of the 'step_hit' property to look for
-
-      // Macro to automate the registration of the cut :
-      CUT_REGISTRATION_INTERFACE(simulated_data_cut)
-    };
-
-  } // end of namespace cut
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // OCD support::
 #include <datatools/ocd_macros.h>
@@ -144,7 +142,7 @@ namespace snemo {
 // @arg snemo::cut::simulated_data_cut the name the registered class in the OCD system
 DOCD_CLASS_DECLARATION(snemo::cut::simulated_data_cut)
 
-#endif // FALAISE_SNEMO_CUT_SIMULATED_DATA_CUT_H
+#endif  // FALAISE_SNEMO_CUT_SIMULATED_DATA_CUT_H
 
 /*
 ** Local Variables: --

@@ -98,11 +98,7 @@ add_library(fecom SHARED
   ${FeCom_PRIVATE_HEADERS}
   ${FeCom_SOURCES}
   )
-
 target_link_libraries(fecom PUBLIC Falaise Bayeux::Bayeux)
-
-#target_link_libraries(fecom Falaise::Falaise)
-
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
@@ -112,6 +108,8 @@ if(APPLE)
     INSTALL_RPATH "@loader_path"
     )
 endif()
+target_clang_format(fecom)
+
 
 install( FILES
   ${FeCom_HEADERS}
@@ -144,13 +142,12 @@ if(FECOM_ENABLE_TESTING)
     add_executable(${_testname}
       ${_testsource}
       )
-    target_link_libraries(${_testname} fecom
-      # ${FeCom_OTHER_LIBS}
-      )
+    target_link_libraries(${_testname} fecom)
     # - On Apple, ensure dynamic_lookup of undefined symbols
     if(APPLE)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
+    target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_fecom_TEST_ENVIRONMENT}

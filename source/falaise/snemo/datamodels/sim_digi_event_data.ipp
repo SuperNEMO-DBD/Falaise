@@ -16,28 +16,27 @@
 #include <bayeux/datatools/properties.ipp>
 
 // This project:
-#include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
 #include <falaise/snemo/datamodels/sim_readout_digi_data.ipp>
+#include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    template<class Archive>
-    void sim_digi_event_data::serialize(Archive & ar, const unsigned int /* version */)
-    {
-      ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar & boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
-      ar & boost::serialization::make_nvp("trigger_digi_data", _trigger_digi_data_);
-      ar & boost::serialization::make_nvp("readout_digi_data", _readout_digi_data_);
-      return;
-    }
+template <class Archive>
+void sim_digi_event_data::serialize(Archive& ar, const unsigned int /* version */) {
+  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+  ar& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
+  ar& boost::serialization::make_nvp("trigger_digi_data", _trigger_digi_data_);
+  ar& boost::serialization::make_nvp("readout_digi_data", _readout_digi_data_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_DIGI_EVENT_DATA_IPP
+#endif  // FALAISE_SNEMO_DATAMODELS_SIM_DIGI_EVENT_DATA_IPP
 
 // Local Variables: --
 // mode: c++ --

@@ -5,88 +5,88 @@
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_SLIDING_ZONE_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_SLIDING_ZONE_H
 
-// Standard library : 
+// Standard library :
 #include <bitset>
 
-// Boost : 
+// Boost :
 #include <boost/cstdint.hpp>
- 
-// Ourselves : 
-#include <snemo/digitization/trigger_info.h>
+
+// Ourselves :
 #include <snemo/digitization/tracker_trigger_mem_maker.h>
+#include <snemo/digitization/trigger_info.h>
 
 namespace snemo {
-  
-  namespace digitization {	
-	
-    struct tracker_sliding_zone
-    {
-      enum bit_index {
-				LAYER_PROJ_BIT_0 = 0,
-				LAYER_PROJ_BIT_1 = 1,
-				LAYER_PROJ_BIT_2 = 2,
-				LAYER_PROJ_BIT_3 = 3,
-				LAYER_PROJ_BIT_4 = 4,
-				LAYER_PROJ_BIT_5 = 5,
-				LAYER_PROJ_BIT_6 = 6,
-				LAYER_PROJ_BIT_7 = 7,
-				LAYER_PROJ_BIT_8 = 8,
 
-				ROW_PROJ_BIT_0 = 0,
-				ROW_PROJ_BIT_1 = 1,
-				ROW_PROJ_BIT_2 = 2,
-				ROW_PROJ_BIT_3 = 3,
-				ROW_PROJ_BIT_4 = 4,
-				ROW_PROJ_BIT_5 = 5,
-				ROW_PROJ_BIT_6 = 6,
-				ROW_PROJ_BIT_7 = 7,
+namespace digitization {
 
-				DATA_IO_PROJ_BIT_INNER = 0,
-				DATA_IO_PROJ_BIT_OUTER = 1,
+struct tracker_sliding_zone {
+  enum bit_index {
+    LAYER_PROJ_BIT_0 = 0,
+    LAYER_PROJ_BIT_1 = 1,
+    LAYER_PROJ_BIT_2 = 2,
+    LAYER_PROJ_BIT_3 = 3,
+    LAYER_PROJ_BIT_4 = 4,
+    LAYER_PROJ_BIT_5 = 5,
+    LAYER_PROJ_BIT_6 = 6,
+    LAYER_PROJ_BIT_7 = 7,
+    LAYER_PROJ_BIT_8 = 8,
 
-				DATA_LR_PROJ_BIT_RIGHT = 0,
-				DATA_LR_PROJ_BIT_LEFT = 1
-      };
-      
-			tracker_sliding_zone();
+    ROW_PROJ_BIT_0 = 0,
+    ROW_PROJ_BIT_1 = 1,
+    ROW_PROJ_BIT_2 = 2,
+    ROW_PROJ_BIT_3 = 3,
+    ROW_PROJ_BIT_4 = 4,
+    ROW_PROJ_BIT_5 = 5,
+    ROW_PROJ_BIT_6 = 6,
+    ROW_PROJ_BIT_7 = 7,
 
-      void reset();
+    DATA_IO_PROJ_BIT_INNER = 0,
+    DATA_IO_PROJ_BIT_OUTER = 1,
 
-      static unsigned int start_row(unsigned int i_);
+    DATA_LR_PROJ_BIT_RIGHT = 0,
+    DATA_LR_PROJ_BIT_LEFT = 1
+  };
 
-      static unsigned int stop_row(unsigned int i_);
- 
-      static unsigned int width(unsigned int i_);
+  tracker_sliding_zone();
 
-      void compute_lr_proj();
-      
-      void build_pattern(tracker_trigger_mem_maker::mem1_type & mem1_, tracker_trigger_mem_maker::mem2_type & mem2_);
+  void reset();
 
-      static void print_layout(std::ostream & out_);
+  static unsigned int start_row(unsigned int i_);
 
-      void print(std::ostream & out_) const;
+  static unsigned int stop_row(unsigned int i_);
 
-			void print_projections(std::ostream & out_) const;
-			
-      unsigned int side;
-      unsigned int szone_id;
-      bool cells[snemo::digitization::trigger_info::NLAYERS][snemo::digitization::trigger_info::SLZONE_WIDTH];
-      
-      std::bitset<snemo::digitization::trigger_info::SLZONE_LAYER_PROJ> addr_layer_proj;
-      std::bitset<snemo::digitization::trigger_info::SLZONE_ROW_PROJ>   addr_row_proj;
+  static unsigned int width(unsigned int i_);
 
-      std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_IO_PROJ>   data_IO_proj;
-      std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_LR_PROJ>   data_LR_proj;
-       
-    };
-	
-  } // end of namespace digitization
-	
-} // end of namespace snemo
+  void compute_lr_proj();
+
+  void build_pattern(tracker_trigger_mem_maker::mem1_type& mem1_,
+                     tracker_trigger_mem_maker::mem2_type& mem2_);
+
+  static void print_layout(std::ostream& out_);
+
+  void print(std::ostream& out_) const;
+
+  void print_projections(std::ostream& out_) const;
+
+  unsigned int side;
+  unsigned int szone_id;
+  bool cells[snemo::digitization::trigger_info::NLAYERS]
+            [snemo::digitization::trigger_info::SLZONE_WIDTH];
+
+  std::bitset<snemo::digitization::trigger_info::SLZONE_LAYER_PROJ> addr_layer_proj;
+  std::bitset<snemo::digitization::trigger_info::SLZONE_ROW_PROJ> addr_row_proj;
+
+  std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_IO_PROJ> data_IO_proj;
+  std::bitset<snemo::digitization::trigger_info::SLZONE_DATA_LR_PROJ> data_LR_proj;
+};
+
+}  // end of namespace digitization
+
+}  // end of namespace snemo
 
 #endif /* FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_TRACKER_SLIDING_ZONE_H */
 
-/* 
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

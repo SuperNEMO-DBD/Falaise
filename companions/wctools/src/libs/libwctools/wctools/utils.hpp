@@ -11,12 +11,12 @@
 
 namespace wctools {
 
-  //!< Expand a string with respect to environment
-  void expand_environ(std::string &);
+//!< Expand a string with respect to environment
+void expand_environ(std::string &);
 
-} // namespace wctools
+}  // namespace wctools
 
-#endif // WCTOOLS_UTILS_HPP
+#endif  // WCTOOLS_UTILS_HPP
 
 // Local Variables: --
 // Mode: c++ --

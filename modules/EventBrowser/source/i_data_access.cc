@@ -23,27 +23,21 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
+namespace io {
 
-      // ctor:
-      i_data_access::i_data_access ()
-      {
-        return;
-      }
+// ctor:
+i_data_access::i_data_access() { return; }
 
-      // dtor:
-      i_data_access::~i_data_access ()
-      {
-        return;
-      }
+// dtor:
+i_data_access::~i_data_access() { return; }
 
-    } // end of namespace io
+}  // end of namespace io
 
-  } // end of namespace visualization
+}  // end of namespace visualization
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of i_data_access.cc
 /*

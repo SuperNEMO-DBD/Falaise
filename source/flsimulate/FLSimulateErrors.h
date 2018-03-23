@@ -16,37 +16,36 @@
 #define FLSIMULATEERRORS_H
 
 // Standard library:
-#include <string>
 #include <stdexcept>
+#include <string>
 
 namespace FLSimulate {
 
-  //----------------------------------------------------------------------
-  // IMPLEMENTATION DETAILS
-  //----------------------------------------------------------------------
-  //! Exceptions:
-  //! Exceptions for configuration
-  class FLConfigDefaultError : public std::exception {};
-  class FLConfigHelpHandled : public std::exception {};
-  class FLConfigUserError : public std::invalid_argument {
-  public:
-    FLConfigUserError();
-    explicit FLConfigUserError(const std::string& what_arg);
-    explicit FLConfigUserError(const char*);
+//----------------------------------------------------------------------
+// IMPLEMENTATION DETAILS
+//----------------------------------------------------------------------
+//! Exceptions:
+//! Exceptions for configuration
+class FLConfigDefaultError : public std::exception {};
+class FLConfigHelpHandled : public std::exception {};
+class FLConfigUserError : public std::invalid_argument {
+ public:
+  FLConfigUserError();
+  explicit FLConfigUserError(const std::string& what_arg);
+  explicit FLConfigUserError(const char*);
+};
+//! Exceptions for dialog
+class FLDialogHelpRequested : public std::exception {};
+class FLDialogOptionsError : public std::invalid_argument {
+ public:
+  FLDialogOptionsError();
+  explicit FLDialogOptionsError(const std::string& what_arg);
+  explicit FLDialogOptionsError(const char*);
+};
 
-  };
-  //! Exceptions for dialog
-  class FLDialogHelpRequested : public std::exception {};
-  class FLDialogOptionsError : public std::invalid_argument {
-  public:
-    FLDialogOptionsError();
-    explicit FLDialogOptionsError(const std::string& what_arg);
-    explicit FLDialogOptionsError(const char*);
-  };
+}  // namespace FLSimulate
 
-} // namespace FLSimulate
-
-#endif // FLSIMULATEERRORS_H
+#endif  // FLSIMULATEERRORS_H
 
 // Local Variables: --
 // mode: c++ --

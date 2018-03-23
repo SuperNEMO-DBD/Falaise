@@ -44,124 +44,109 @@
 #include <genbb_help/i_genbb.h>
 
 namespace mygsl {
-  class i_unary_function;
-  class von_neumann_method;
-}
+class i_unary_function;
+class von_neumann_method;
+}  // namespace mygsl
 namespace datatools {
-  class properties;
-  class multi_properties;
-}
+class properties;
+class multi_properties;
+}  // namespace datatools
 
 namespace snemo {
 
-  namespace simulation {
+namespace simulation {
 
-    /// Generator for cosmic muons
-    class cosmic_muon_generator : public ::genbb::i_genbb
-    {
-    public:
+/// Generator for cosmic muons
+class cosmic_muon_generator : public ::genbb::i_genbb {
+ public:
+  enum mode_type { MODE_INVALID = -1, MODE_SEA_LEVEL = 0, MODE_UNDERGROUND = 1 };
 
-      enum mode_type {
-        MODE_INVALID     = -1,
-        MODE_SEA_LEVEL   = 0,
-        MODE_UNDERGROUND = 1
-      };
+  enum sea_level_mode_type { SEA_LEVEL_INVALID = -1, SEA_LEVEL_TOY = 0, SEA_LEVEL_PDG = 1 };
 
-      enum sea_level_mode_type {
-        SEA_LEVEL_INVALID = -1,
-        SEA_LEVEL_TOY     = 0,
-        SEA_LEVEL_PDG     = 1
-      };
+  struct sea_level_toy_setup {
+    double energy_mean;    //!< ~ 4 GeV
+    double energy_sigma;   //!< ~ 1 GeV
+    double muon_ratio;     //!< Ratio (Nmu+/Nmu-) ~ 1.1
+    double maximum_theta;  //!< Maximum azimuthal angle (70 degree)
+    mygsl::i_unary_function* theta_density_function;
+    mygsl::von_neumann_method* angular_VNM;
+    sea_level_toy_setup();
+    void set_defaults();
+    void reset();
+  };
 
-      struct sea_level_toy_setup {
-        double energy_mean;   //!< ~ 4 GeV
-        double energy_sigma;  //!< ~ 1 GeV
-        double muon_ratio;    //!< Ratio (Nmu+/Nmu-) ~ 1.1
-        double maximum_theta; //!< Maximum azimuthal angle (70 degree)
-        mygsl::i_unary_function   * theta_density_function;
-        mygsl::von_neumann_method * angular_VNM;
-        sea_level_toy_setup ();
-        void set_defaults ();
-        void reset ();
-      };
+  struct sea_level_pdg_setup {
+    sea_level_pdg_setup();
+    void set_defaults();
+    void reset();
+  };
 
-      struct sea_level_pdg_setup {
-        sea_level_pdg_setup ();
-        void set_defaults ();
-        void reset ();
-      };
+  struct underground_setup {
+    std::string underground_lab;
+    double underground_depth;
+    underground_setup();
+    void set_defaults();
+    void reset();
+  };
 
-      struct underground_setup {
-        std::string underground_lab;
-        double underground_depth;
-        underground_setup ();
-        void set_defaults ();
-        void reset ();
-      };
+ public:
+  bool is_initialized() const;
+  int get_mode() const;
+  void set_mode(int);
+  const mygsl::rng& get_random() const;
+  mygsl::rng& grab_random();
+  bool can_external_random() const;
 
-    public:
+  /// Constructor
+  cosmic_muon_generator();
 
-      bool is_initialized () const;
-      int get_mode () const;
-      void set_mode (int);
-      const mygsl::rng & get_random () const;
-      mygsl::rng & grab_random ();
-      bool can_external_random () const;
+  /// Destructor
+  virtual ~cosmic_muon_generator();
 
-      /// Constructor
-      cosmic_muon_generator ();
+  /// Main initialization interface method
+  virtual void initialize(const datatools::properties& setup_,
+                          datatools::service_manager& service_manager_,
+                          ::genbb::detail::pg_dict_type& dictionary_);
 
-      /// Destructor
-      virtual ~cosmic_muon_generator ();
+  /// Reset the object
+  virtual void reset();
 
-      /// Main initialization interface method
-      virtual void initialize (const datatools::properties & setup_,
-                               datatools::service_manager & service_manager_,
-                               ::genbb::detail::pg_dict_type & dictionary_);
+  /// Check if some next primary event is available
+  virtual bool has_next();
 
-      /// Reset the object
-      virtual void reset ();
+  static double energy_spectrum_at_sea_level_HE(double muon_cos_theta, double muon_energy);
 
-      /// Check if some next primary event is available
-      virtual bool has_next ();
+ protected:
+  virtual void _load_next(::genbb::primary_event& event_, bool compute_classification_ = true);
 
-      static double energy_spectrum_at_sea_level_HE (double muon_cos_theta,
-                                                     double muon_energy);
+ private:
+  void _at_init_();
 
-    protected:
+  void _at_reset_();
 
-      virtual void _load_next (::genbb::primary_event & event_,
-                               bool compute_classification_ = true);
-    private:
+ private:
+  bool _initialized_;  //!< Initialization flag
+  int _mode_;          //!< Mode
 
-      void _at_init_ ();
+  // muon generator at sea level :
+  int _sea_level_mode_;
+  sea_level_toy_setup
+      _sea_level_toy_setup_;  //!< Using inputs from JPG 37, 075021 (2010) (http://pdg.lbl.gov)
+  sea_level_pdg_setup _sea_level_pdg_setup_;  //!< [not implemented yet]
 
-      void _at_reset_ ();
+  // muon generator in an underground location :
+  underground_setup _underground_setup_;  //!< [not implemented yet]
 
-    private:
+  unsigned long _seed_;  //!< Local PRNG's seed
+  mygsl::rng _random_;   //!< Local PRNG
 
-      bool   _initialized_; //!< Initialization flag
-      int    _mode_;        //!< Mode
+  GENBB_PG_REGISTRATION_INTERFACE(cosmic_muon_generator)
+};
 
-      // muon generator at sea level :
-      int    _sea_level_mode_;
-      sea_level_toy_setup _sea_level_toy_setup_; //!< Using inputs from JPG 37, 075021 (2010) (http://pdg.lbl.gov)
-      sea_level_pdg_setup _sea_level_pdg_setup_; //!< [not implemented yet]
+}  // end of namespace simulation
 
-      // muon generator in an underground location :
-      underground_setup   _underground_setup_;   //!< [not implemented yet]
+}  // end of namespace snemo
 
-      unsigned long _seed_;   //!< Local PRNG's seed
-      mygsl::rng    _random_; //!< Local PRNG
-
-      GENBB_PG_REGISTRATION_INTERFACE(cosmic_muon_generator)
-
-    };
-
-  } // end of namespace simulation
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_SIMULATION_COSMIC_MUON_GENERATOR_H
+#endif  // FALAISE_SNEMO_SIMULATION_COSMIC_MUON_GENERATOR_H
 
 // end of falaise/snemo/simulation/cosmic_muon_generator.h

@@ -21,66 +21,57 @@
 
 namespace snemo {
 
-	namespace datamodel {
+namespace datamodel {
 
-		/// \brief The data structure that hosts information about the digitized readout data
-		class sim_readout_digi_data :
-			public datatools::i_serializable,
-			public datatools::i_tree_dumpable
-		{
+/// \brief The data structure that hosts information about the digitized readout data
+class sim_readout_digi_data : public datatools::i_serializable, public datatools::i_tree_dumpable {
+ public:
+  /// The collection of calorimeter digi hits
+  typedef std::vector<sim_calo_digi_hit> calo_digi_hit_collection_type;
 
-		public:
+  /// The collection of tracker digi hits
+  typedef std::vector<sim_tracker_digi_hit> tracker_digi_hit_collection_type;
 
-			/// The collection of calorimeter digi hits
-			typedef std::vector<sim_calo_digi_hit> calo_digi_hit_collection_type;
+  /// Constructor
+  sim_readout_digi_data();
 
-			/// The collection of tracker digi hits
-			typedef std::vector<sim_tracker_digi_hit> tracker_digi_hit_collection_type;
+  /// Destructor
+  virtual ~sim_readout_digi_data();
 
-			/// Constructor
-			sim_readout_digi_data();
+  /// Check validity
+  bool is_valid() const;
 
-			/// Destructor
-			virtual ~sim_readout_digi_data();
+  /// Reset
+  void reset();
 
-			/// Check validity
-			bool is_valid() const;
+  /// Return the const collection of calorimeter digi hits
+  const calo_digi_hit_collection_type& get_calo_digi_hits() const;
 
-			/// Reset
-			void reset();
-			
-      /// Return the const collection of calorimeter digi hits
-      const calo_digi_hit_collection_type & get_calo_digi_hits() const;
+  /// Return the mutable collection of calorimeter digi hits
+  calo_digi_hit_collection_type& grab_calo_digi_hits();
 
-      /// Return the mutable collection of calorimeter digi hits
-      calo_digi_hit_collection_type & grab_calo_digi_hits();
+  /// Return the const collection of tracker digi hits
+  const tracker_digi_hit_collection_type& get_tracker_digi_hits() const;
 
-      /// Return the const collection of tracker digi hits
-      const tracker_digi_hit_collection_type & get_tracker_digi_hits() const;
+  /// Return the mutable collection of tracker digi hits
+  tracker_digi_hit_collection_type& grab_tracker_digi_hits();
 
-      /// Return the mutable collection of tracker digi hits
-      tracker_digi_hit_collection_type & grab_tracker_digi_hits();
+  /// Smart print
+  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                         const std::string& a_indent = "", bool a_inherit = false) const;
 
-			/// Smart print
-			virtual void tree_dump(std::ostream & a_out         = std::clog,
-														 const std::string & a_title  = "",
-														 const std::string & a_indent = "",
-														 bool a_inherit               = false) const;
+ private:
+  calo_digi_hit_collection_type _calo_digi_hits_;        //!< Simulated calorimeter digitized hits
+  tracker_digi_hit_collection_type _tracker_digi_hits_;  //!< Simulated tracker digitized hits
 
-		private:
+  DATATOOLS_SERIALIZATION_DECLARATION()
+};
 
-      calo_digi_hit_collection_type    _calo_digi_hits_;    //!< Simulated calorimeter digitized hits
-      tracker_digi_hit_collection_type _tracker_digi_hits_; //!< Simulated tracker digitized hits
+}  // end of namespace datamodel
 
-			DATATOOLS_SERIALIZATION_DECLARATION()
+}  // end of namespace snemo
 
-		};
-
-	} // end of namespace datamodel
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_READOUT_DIGI_DATA_H
+#endif  // FALAISE_SNEMO_DATAMODELS_SIM_READOUT_DIGI_DATA_H
 
 // Local Variables: --
 // mode: c++ --

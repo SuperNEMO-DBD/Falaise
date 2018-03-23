@@ -38,8 +38,8 @@
 #ifndef FALAISE_RESOURCE_H
 #define FALAISE_RESOURCE_H
 // Standard Library
-#include <string>
 #include <stdexcept>
+#include <string>
 
 // Third Party
 // - A
@@ -75,6 +75,6 @@ std::string get_plugin_dir();
 //! Return URL, i.e. a path, to named resource
 std::string get_plugin(const std::string& rname);
 
-} // namespace falaise
+}  // namespace falaise
 
-#endif // FALAISE_RESOURCE_H
+#endif  // FALAISE_RESOURCE_H

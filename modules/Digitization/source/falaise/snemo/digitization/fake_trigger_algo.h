@@ -24,8 +24,8 @@
  *
  * Description:
  *
- * An algorithm class that implements a fake trigger to cut SD files.  
- * The physical selection for a fake trigger is configurable but the 
+ * An algorithm class that implements a fake trigger to cut SD files.
+ * The physical selection for a fake trigger is configurable but the
  * default configuration is 1 PMT hit and 3 Geiger cells hits.
  *
  * History:
@@ -39,55 +39,51 @@
 #ifndef FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
 #define FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
 
-namespace snemo { 
-  
-  namespace digitization {
+namespace snemo {
 
-    /// \brief Fake trigger algorithm class to cut SD files.
-    class fake_trigger_algo
-    { 
-		public : 
+namespace digitization {
 
-      /// Default constructor :
-      fake_trigger_algo();
+/// \brief Fake trigger algorithm class to cut SD files.
+class fake_trigger_algo {
+ public:
+  /// Default constructor :
+  fake_trigger_algo();
 
-      /// Destructor
-      virtual ~fake_trigger_algo();
-      
-      /// Getting initialization flag
-      bool is_initialized() const;
-     
-      /// Initialize the driver through configuration properties
-      void initialize();
-      
-      /// Reset
-      void reset();
-      
-      /// Get the boolean status to know if we keep a SD or not
-      bool get_status_for_a_SD();
-      
-       /// Data record processing
-      bool process(const mctools::simulated_data & SD_);
-      
-   protected:
+  /// Destructor
+  virtual ~fake_trigger_algo();
 
-      /// Fake trigger algo process
-      bool _process(const mctools::simulated_data & SD_);
+  /// Getting initialization flag
+  bool is_initialized() const;
 
-    private :
-     
-      // Configuration :
-      bool _initialized_;     //!< Initialization flag
-      bool _status_for_a_SD_; //!< Flag to know if the fake trigger is passed or not.
-    };
+  /// Initialize the driver through configuration properties
+  void initialize();
 
-  } // end of namespace digitization
+  /// Reset
+  void reset();
 
-} // end of namespace snemo
-    
-#endif // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
+  /// Get the boolean status to know if we keep a SD or not
+  bool get_status_for_a_SD();
 
-/* 
+  /// Data record processing
+  bool process(const mctools::simulated_data& SD_);
+
+ protected:
+  /// Fake trigger algo process
+  bool _process(const mctools::simulated_data& SD_);
+
+ private:
+  // Configuration :
+  bool _initialized_;      //!< Initialization flag
+  bool _status_for_a_SD_;  //!< Flag to know if the fake trigger is passed or not.
+};
+
+}  // end of namespace digitization
+
+}  // end of namespace snemo
+
+#endif  // FALAISE_DIGITIZATION_PLUGIN_SNEMO_DIGITIZATION_FAKE_TRIGGER_ALGO_H
+
+/*
 ** Local Variables: --
 ** mode: c++ --
 ** c-file-style: "gnu" --

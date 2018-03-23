@@ -8,29 +8,29 @@
 
 // Third party:
 // - Boost:
-#include <boost/serialization/nvp.hpp>
 #include <boost/serialization/base_object.hpp>
+#include <boost/serialization/nvp.hpp>
 // - Bayeux/mctools:
 #include <bayeux/mctools/digitization/sampled_signal.ipp>
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    template<class Archive>
-    void sim_calo_digi_hit::serialize(Archive & ar, const unsigned int /* version */)
-    {
-      ar & boost::serialization::make_nvp("mctools__digitization__sampled_signal",
-                                          boost::serialization::base_object<mctools::digitization::sampled_signal>(*this));
-      // ar & boost::serialization::make_nvp("xxx", _xxx_);
-      return;
-    }
+template <class Archive>
+void sim_calo_digi_hit::serialize(Archive& ar, const unsigned int /* version */) {
+  ar& boost::serialization::make_nvp(
+      "mctools__digitization__sampled_signal",
+      boost::serialization::base_object<mctools::digitization::sampled_signal>(*this));
+  // ar & boost::serialization::make_nvp("xxx", _xxx_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_SIM_CALO_DIGI_HIT_IPP
+#endif  // FALAISE_SNEMO_DATAMODELS_SIM_CALO_DIGI_HIT_IPP
 
 // Local Variables: --
 // mode: c++ --

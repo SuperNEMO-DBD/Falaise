@@ -12,4 +12,4 @@ List of registered profiles:
 
   * ``hc-1.0.0.profile``    : Standard geometry setup for the Half-Commissioning geometry layout.
 
-* Default profile: ``default.profile``, same as  ``basic-1.0.0.profile``.
+* Default profile: ``basic-1.0.0.profile``.

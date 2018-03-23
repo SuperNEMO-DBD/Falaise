@@ -2,9 +2,9 @@
 
 // Standard library:
 #include <cstdlib>
+#include <exception>
 #include <iostream>
 #include <string>
-#include <exception>
 
 // Third party:
 // - Bayeux/datatools:
@@ -13,8 +13,7 @@
 // This project:
 #include <TrackFit/gg_hit.h>
 
-int main(int /* argc_ */, char ** /* argv_ */)
-{
+int main(int /* argc_ */, char** /* argv_ */) {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'TrackFit::gg_hit'!" << std::endl;
@@ -58,14 +57,13 @@ int main(int /* argc_ */, char ** /* argv_ */)
     hit.tree_dump(std::clog, "A Geiger hit: ");
 
     std::clog << "The end.\n";
-  }
-  catch (std::exception & x) {
+  } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;
-  }
-  catch (...) {
-    std::cerr << "error: " << "unexpected error!" << std::endl;
+  } catch (...) {
+    std::cerr << "error: "
+              << "unexpected error!" << std::endl;
     error_code = EXIT_FAILURE;
   }
-  return(error_code);
+  return (error_code);
 }

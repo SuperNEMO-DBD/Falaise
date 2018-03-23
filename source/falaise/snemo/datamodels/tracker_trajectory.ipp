@@ -15,28 +15,26 @@
 #include <geomtools/base_hit.ipp>
 
 // This project:
-#include <falaise/snemo/datamodels/tracker_cluster.ipp>
-#include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
 #include <falaise/snemo/datamodels/base_trajectory_pattern.ipp>
+#include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
+#include <falaise/snemo/datamodels/tracker_cluster.ipp>
 
 namespace snemo {
 
-  namespace datamodel {
+namespace datamodel {
 
-    /// Serialization
-    template<class Archive>
-    void tracker_trajectory::serialize(Archive & ar,
-                                       const unsigned int /* version */)
-    {
-      ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-      ar & boost::serialization::make_nvp("cluster", _cluster_);
-      ar & boost::serialization::make_nvp("orphans", _orphans_);
-      ar & boost::serialization::make_nvp("pattern", _pattern_);
-      return;
-    }
+/// Serialization
+template <class Archive>
+void tracker_trajectory::serialize(Archive& ar, const unsigned int /* version */) {
+  ar& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
+  ar& boost::serialization::make_nvp("cluster", _cluster_);
+  ar& boost::serialization::make_nvp("orphans", _orphans_);
+  ar& boost::serialization::make_nvp("pattern", _pattern_);
+  return;
+}
 
-  } // end of namespace datamodel
+}  // end of namespace datamodel
 
-} // end of namespace snemo
+}  // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_IPP
+#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_IPP

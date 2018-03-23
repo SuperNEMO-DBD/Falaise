@@ -10,44 +10,31 @@
 #include <mybhep/utilities.h>
 #include <sultan/printable.h>
 
-namespace SULTAN{
-  namespace topology{
+namespace SULTAN {
+namespace topology {
 
+// a generic tracking object
+class tracking_object : public printable {
+ protected:
+  //    Clock clock;
 
-    // a generic tracking object
-    class tracking_object : public printable
-    {
+ public:
+  /// print level
+  mybhep::prlevel level_;
 
-    protected:
+  // the minimum probabilty
+  double probmin_;
 
-      //    Clock clock;
+  void set_probmin(double probmin);
 
-    public:
+  double probmin() const;
 
-      /// print level
-      mybhep::prlevel level_;
+  double probof(double chi2, int ndof) const;
 
-      // the minimum probabilty
-      double probmin_;
+  double get_probmin() const;
+};
 
+}  // namespace topology
+}  // namespace SULTAN
 
-      void set_probmin( double probmin );
-
-      double probmin() const;
-
-      double probof(double chi2, int ndof)const;
-
-      double get_probmin()const;
-
-    };
-
-  }
-}
-
-#endif // __sultan__tracking_object_h
-
-
-
-
-
-
+#endif  // __sultan__tracking_object_h

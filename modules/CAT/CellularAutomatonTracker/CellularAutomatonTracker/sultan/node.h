@@ -14,79 +14,68 @@
 #include <map>
 
 namespace SULTAN {
-  namespace topology{
+namespace topology {
 
+class node : public tracking_object {
+  // a node is composed of a cell
+  // and a fitted point
 
-    class node : public tracking_object {
+ protected:
+  std::string appname_;
 
-      // a node is composed of a cell
-      // and a fitted point
+ public:
+  // main cell
+  cell c_;
 
-    protected:
-      std::string appname_;
+  // fitted point
+  experimental_point ep_;
 
-    public:
+  // angle along circle
+  double circle_phi_;
 
-      // main cell
-      cell c_;
+ public:
+  //! Default constructor
+  node();
 
-      // fitted point
-      experimental_point ep_;
+  //! Default destructor
+  virtual ~node();
 
-      // angle along circle
-      double circle_phi_;
+  //! constructor
+  node(const cell& c, mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-    public:
+  /*** dump ***/
+  virtual void dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
+                    const std::string& a_indent = "", bool a_inherit = false) const;
 
-      //!Default constructor
-      node();
+  //! set main cell
+  void set_c(const cell& c);
 
-      //!Default destructor
-      virtual ~node();
+  //! set fitted experimental_point
+  void set_ep(const experimental_point& ep);
 
-      //! constructor
-      node(const cell &c, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! set circle phi
+  void set_circle_phi(double a) { circle_phi_ = a; }
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! get main cell
+  const cell& c() const;
 
-      //! set main cell
-      void set_c(const cell& c);
+  //! get fitted experimental_point
+  const experimental_point& ep() const;
 
-      //! set fitted experimental_point
-      void set_ep( const experimental_point &ep );
+  //! get circle phi
+  double circle_phi() const { return circle_phi_; }
 
-      //! set circle phi
-      void set_circle_phi(double a){circle_phi_=a;}
+  node invert();
 
-      //! get main cell
-      const cell& c()const;
+  friend bool operator==(const node& left, const node& right);
 
-      //! get fitted experimental_point
-      const experimental_point& ep()const;
+  static bool circle_order(const topology::node& c1, const topology::node& c) {
+    // order nodes based on their angle along an assigned circle
 
-      //! get circle phi
-      double circle_phi()const{return circle_phi_;}
+    return (c1.circle_phi() > c.circle_phi());
+  }
+};
+}  // namespace topology
+}  // namespace SULTAN
 
-      node invert();
-
-      friend bool operator==(const node& left,
-                             const node& right);
-
-      static bool circle_order(const topology::node& c1, const topology::node& c) {
-        // order nodes based on their angle along an assigned circle
-
-        return( c1.circle_phi() > c.circle_phi() );
-      }
-
-
-
-  };
-}
-}
-
-
-#endif // __sultan__node_h
+#endif  // __sultan__node_h

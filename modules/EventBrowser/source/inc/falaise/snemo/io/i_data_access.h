@@ -42,60 +42,54 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
+namespace io {
 
-      class i_data_access : public datatools::i_tree_dumpable
-      {
-      public:
+class i_data_access : public datatools::i_tree_dumpable {
+ public:
+  i_data_access();
 
-        i_data_access();
+  virtual ~i_data_access();
 
-        virtual ~i_data_access();
+  virtual size_t get_number_of_entries() const = 0;
 
-        virtual size_t get_number_of_entries() const = 0;
+  virtual std::string get_file_type_as_string() const = 0;
 
-        virtual std::string get_file_type_as_string() const = 0;
+  virtual const std::string& get_current_filename() const = 0;
 
-        virtual const std::string & get_current_filename() const = 0;
+  virtual bool open(const std::vector<std::string>& filenames_) = 0;
 
-        virtual bool open(const std::vector<std::string> & filenames_) = 0;
+  virtual bool is_valid(const std::vector<std::string>& filenames_) const = 0;
 
-        virtual bool is_valid(const std::vector<std::string> & filenames_) const = 0;
+  virtual bool is_readable() = 0;
 
-        virtual bool is_readable() = 0;
+  virtual bool is_opened() const = 0;
 
-        virtual bool is_opened() const = 0;
+  virtual bool rewind() = 0;
 
-        virtual bool rewind() = 0;
+  virtual bool reset() = 0;
 
-        virtual bool reset() = 0;
+  virtual bool close() = 0;
 
-        virtual bool close() = 0;
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const = 0;
 
-        virtual void tree_dump(std::ostream      & out_    = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const = 0;
+  virtual void dump() const = 0;
 
-        virtual void dump() const = 0;
+  // Need probably a better name
+  virtual bool build_list() = 0;
 
-        // Need probably a better name
-        virtual bool build_list() = 0;
+  virtual bool retrieve_event(event_record& event_, const size_t event_number_) = 0;
+};
 
-        virtual bool retrieve_event(event_record & event_,
-                                    const size_t event_number_) = 0;
+}  // end of namespace io
 
-      };
+}  // end of namespace visualization
 
-    } // end of namespace io
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_IO_I_DATA_ACCESS_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_IO_I_DATA_ACCESS_H
 
 // end of i_data_access.h
 /*

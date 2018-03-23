@@ -19,40 +19,21 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
 #include <mybhep/writer_txt.h>
 
-namespace mybhep{
+namespace mybhep {
 
+using namespace std;
+//! constructor
+writer_txt::writer_txt() : sequential_writer() {}
+//! destructor
+writer_txt::~writer_txt() { close(); }
 
-  using namespace std;
-  //! constructor
-  writer_txt::writer_txt() :
-    sequential_writer()
-  {
-  }
-  //! destructor
-  writer_txt::~writer_txt()
-  {
-    close();
-  }
+void writer_txt::open_file(std::string fileName) { os_.open(fileName.c_str(), ios::out); }
 
-  void writer_txt::open_file(std::string fileName)
-  {
-    os_.open(fileName.c_str(), ios::out);
-  }
+void writer_txt::close_file() { os_.close(); }
 
+//! write the event as a record
+void writer_txt::write_record(std::string record) { os_ << record << endl; }
 
-  void writer_txt::close_file()
-  {
-    os_.close();
-  }
-
-    //! write the event as a record
-  void writer_txt::write_record(std::string record)
-  {
-    os_ << record << endl;
-  }
-
-
-}
+}  // namespace mybhep

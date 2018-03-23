@@ -2,15 +2,13 @@
 /*
  */
 
-
 #include <mybhep/generate_event.h>
-using namespace std;  
+using namespace std;
 using namespace mybhep;
 
 /** Example of use of event and event svc */
 
-int main(int, char* [])
-{
+int main(int, char* []) {
   // instantiate the event service
 
   mybhep_svc sevt;
@@ -25,8 +23,7 @@ int main(int, char* [])
   detectors.push_back("CHE");
   detectors.push_back("TOF");
 
-  for(size_t ievent =1; ievent <= 20; ievent++){
-
+  for (size_t ievent = 1; ievent <= 20; ievent++) {
     cout << "event number = " << ievent << endl;
     generate_event gevt(ievent);
     gevt.create_particles(2);
@@ -37,7 +34,7 @@ int main(int, char* [])
 
     // get event
     event* evt = gevt.retrieve();
-    event_cvt cvt(*evt,ievent);
+    event_cvt cvt(*evt, ievent);
 
     string def = cvt.store();
     cout << "storing event " << ievent << " in string" << endl;
@@ -55,7 +52,4 @@ int main(int, char* [])
   }
 
   return 0;
-  
 }
-
-

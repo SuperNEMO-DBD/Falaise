@@ -1,0 +1,18 @@
+# tabulated energy spectrum for the 'single_particle_generator'
+#@interpolation_name cspline
+#@energy_unit        keV
+0     0.90
+50    1.0
+100   1.15
+150   1.20
+200   1.10
+250   0.90
+300   0.70
+350   0.40
+500   0.25
+1000  0.15
+1400  0.11
+1450  0.05
+1500  0.0
+# end
+(END)

@@ -49,94 +49,87 @@ class TGLineWidthComboBox;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class event_browser;
+class event_browser;
 
-      class display_options
-      {
-      public:
+class display_options {
+ public:
+  struct volume_widgets {
+    TGGroupFrame* _tg_frame_;
+    TGColorSelect* _tg_color_;
+    TGNumberEntryField* _tg_transparency_;
+    TGCheckButton* _tg_visibility_;
+  };
 
-        struct volume_widgets
-        {
-          TGGroupFrame       * _tg_frame_;
-          TGColorSelect      * _tg_color_;
-          TGNumberEntryField * _tg_transparency_;
-          TGCheckButton      * _tg_visibility_;
-        };
+  struct particle_widgets {
+    TGColorSelect* _tg_color_;
+    TGCheckButton* _tg_visibility_;
+  };
 
-        struct particle_widgets
-        {
-          TGColorSelect * _tg_color_;
-          TGCheckButton * _tg_visibility_;
-        };
+ public:
+  display_options();
+  virtual ~display_options();
 
-      public:
-        display_options  ();
-        virtual ~display_options ();
+  void initialize(TGCompositeFrame* main_);
 
-        void initialize (TGCompositeFrame * main_);
+  bool is_initialized() const;
 
-        bool is_initialized () const;
+  void update();
+  void clear();
+  void reset();
 
-        void update ();
-        void clear  ();
-        void reset  ();
+  void process_volume_settings();
+  void process_particle_settings();
+  void process_button_misc_settings();
+  void process_combo_misc_settings();
+  void process_auto_reading();
 
-        void process_volume_settings      ();
-        void process_particle_settings    ();
-        void process_button_misc_settings ();
-        void process_combo_misc_settings  ();
-        void process_auto_reading         ();
+  void reload_style_settings();
+  void save_style_settings();
 
-        void reload_style_settings ();
-        void save_style_settings   ();
+  void do_slider(const int delay_);
 
-        void do_slider (const int delay_);
+  void test_add_frame();
 
-        void test_add_frame ();
+ private:
+  void _at_init_(TGCompositeFrame* main_);
+  void _at_construct_();
 
-      private:
+  void _build_volume_buttons_();
+  void _build_particle_buttons_();
+  void _build_misc_buttons_();
 
-        void _at_init_ (TGCompositeFrame * main_);
-        void _at_construct_ ();
+  void _set_button_values_();
 
-        void _build_volume_buttons_   ();
-        void _build_particle_buttons_ ();
-        void _build_misc_buttons_     ();
+ private:
+  bool _initialized_;
 
-        void _set_button_values_      ();
+  TGCompositeFrame* _main_;
+  event_browser* _browser_;
 
-      private:
+  std::map<unsigned int, std::string> _button_dictionnary_;
+  std::map<std::string, volume_widgets> _volumes_widgets_;
+  std::map<std::string, particle_widgets> _particles_widgets_;
 
-        bool _initialized_;
+  TGColorSelect* _background_color_;
+  TGLineWidthComboBox* _line_width_;
+  TGLineStyleComboBox* _line_style_;
+  TGTextEntry* _show_delay_;
 
-        TGCompositeFrame * _main_;
-        event_browser    * _browser_;
+  // No I/O so ClassDefVersionID = 0
+  ClassDef(display_options, 0);
+};
 
-        std::map<unsigned int, std::string>     _button_dictionnary_;
-        std::map<std::string, volume_widgets>   _volumes_widgets_;
-        std::map<std::string, particle_widgets> _particles_widgets_;
+}  // end of namespace view
 
-        TGColorSelect       * _background_color_;
-        TGLineWidthComboBox * _line_width_;
-        TGLineStyleComboBox * _line_style_;
-        TGTextEntry         * _show_delay_;
+}  // end of namespace visualization
 
-        // No I/O so ClassDefVersionID = 0
-        ClassDef (display_options, 0);
+}  // end of namespace snemo
 
-      };
-
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_OPTIONS_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_OPTIONS_H
 
 // end of display_options.h
 /*

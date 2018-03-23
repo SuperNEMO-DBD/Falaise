@@ -43,11 +43,11 @@
 #include <geomtools/utils.h>
 
 namespace geomtools {
-  class geom_id;
-  class helix_3d;
-  class line_3d;
-  class i_wires_3d_rendering;
-}
+class geom_id;
+class helix_3d;
+class line_3d;
+class i_wires_3d_rendering;
+}  // namespace geomtools
 
 class TObjArray;
 class TPolyLine3D;
@@ -55,92 +55,89 @@ class TPolyMarker3D;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace io {
-      class event_server;
-    }
+namespace io {
+class event_server;
+}
 
-    namespace view {
+namespace view {
 
-      class base_renderer
-      {
-      public:
+class base_renderer {
+ public:
+  /// Unique set of geomtools::geom_id
+  typedef std::set<geomtools::geom_id> geom_id_collection;
 
-        /// Unique set of geomtools::geom_id
-        typedef std::set<geomtools::geom_id> geom_id_collection;
+  /// Return initialization status
+  bool is_initialized() const;
 
-        /// Return initialization status
-        bool is_initialized() const;
+  /// Check if server is referenced
+  bool has_server() const;
 
-        /// Check if server is referenced
-        bool has_server() const;
+  /// Check if graphical object is referenced
+  bool has_graphical_objects() const;
 
-        /// Check if graphical object is referenced
-        bool has_graphical_objects() const;
+  /// Check if text object is referenced
+  bool has_text_objects() const;
 
-        /// Check if text object is referenced
-        bool has_text_objects() const;
+  /// Set event server reference
+  void set_server(const io::event_server* server_);
 
-        /// Set event server reference
-        void set_server(const io::event_server * server_);
+  /// Set graphical ROOT::TObject reference
+  void set_graphical_objects(TObjArray* objects_);
 
-        /// Set graphical ROOT::TObject reference
-        void set_graphical_objects(TObjArray * objects_);
+  /// Set text ROOT::TObject reference
+  void set_text_objects(TObjArray* text_objects_);
 
-        /// Set text ROOT::TObject reference
-        void set_text_objects(TObjArray * text_objects_);
+  /// Default constructor
+  base_renderer();
 
-        /// Default constructor
-        base_renderer();
+  /// Destructor
+  virtual ~base_renderer();
 
-        /// Destructor
-        virtual ~base_renderer();
+  /// Initialization
+  void initialize(const io::event_server* server_ = 0, TObjArray* objects_ = 0,
+                  TObjArray* text_objects_ = 0);
 
-        /// Initialization
-        void initialize(const io::event_server * server_ = 0,
-                        TObjArray              * objects_ = 0,
-                        TObjArray              * text_objects_ = 0);
+  /// Clear
+  void clear();
 
-        /// Clear
-        void clear();
+  /// Reset
+  void reset();
 
-        /// Reset
-        void reset();
+  /// Visually highlight a given geomtools::geom_id object
+  void highlight_geom_id(const geomtools::geom_id& gid_, const size_t color_,
+                         const std::string& text_ = "");
 
-        /// Visually highlight a given geomtools::geom_id object
-        void highlight_geom_id(const geomtools::geom_id & gid_, const size_t color_, const std::string & text_ = "");
-
-        /// Build a marker from a 3D point
-        static TPolyMarker3D * make_polymarker(const geomtools::vector_3d & point_,
-                                               const bool convert_ = false);
-
-        /// Build a polyline from a set of 3D points
-        static TPolyLine3D * make_polyline(const geomtools::polyline_type & polyline_,
-                                           const bool convert_ = false);
-
-        /// Build a polyline from an track
-        static TPolyLine3D * make_track(const geomtools::i_wires_3d_rendering & wires_,
+  /// Build a marker from a 3D point
+  static TPolyMarker3D* make_polymarker(const geomtools::vector_3d& point_,
                                         const bool convert_ = false);
 
-      protected:
-        bool _initialized;                       //!< Initialization flag
+  /// Build a polyline from a set of 3D points
+  static TPolyLine3D* make_polyline(const geomtools::polyline_type& polyline_,
+                                    const bool convert_ = false);
 
-        const io::event_server * _server;        //!< Event server
-        TObjArray              * _objects;       //!< ROOT graphical objects container
-        TObjArray              * _text_objects;  //!< ROOT text objects container
+  /// Build a polyline from an track
+  static TPolyLine3D* make_track(const geomtools::i_wires_3d_rendering& wires_,
+                                 const bool convert_ = false);
 
-        geom_id_collection _highlighted_geom_id; //!< List of geom_id highlighted
+ protected:
+  bool _initialized;  //!< Initialization flag
 
-      };
+  const io::event_server* _server;  //!< Event server
+  TObjArray* _objects;              //!< ROOT graphical objects container
+  TObjArray* _text_objects;         //!< ROOT text objects container
 
-    } // end of namespace view
+  geom_id_collection _highlighted_geom_id;  //!< List of geom_id highlighted
+};
 
-  } // end of namespace visualization
+}  // end of namespace view
 
-} // end of namespace snemo
+}  // end of namespace visualization
 
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_BASE_RENDERER_H
+}  // end of namespace snemo
+
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_BASE_RENDERER_H
 
 // end of base_renderer.h
 /*

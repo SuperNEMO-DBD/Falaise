@@ -41,77 +41,69 @@
 #include <snemo/electronics/cabling.h>
 
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace snemo {
 
-  namespace electronics {
+namespace electronics {
 
-    /// \brief Electronics manager
-    class manager
-      : public datatools::i_tree_dumpable
-    {
-    public:
+/// \brief Electronics manager
+class manager : public datatools::i_tree_dumpable {
+ public:
+  /// Default constructor
+  manager();
 
-      /// Default constructor
-      manager();
+  /// Destructor
+  virtual ~manager();
 
-      /// Destructor
-      virtual ~manager();
+  /// Check if the non mutable geometry manager is set
+  bool has_geometry_manager() const;
 
-      /// Check if the non mutable geometry manager is set
-      bool has_geometry_manager() const;
+  /// Set a reference to the non mutable geometry manager
+  void set_geometry_manager(const geomtools::manager &);
 
-      /// Set a reference to the non mutable geometry manager
-      void set_geometry_manager(const geomtools::manager &);
+  /// Return a reference to the non mutable geometry manager
+  const geomtools::manager &get_geometry_manager() const;
 
-      /// Return a reference to the non mutable geometry manager
-      const geomtools::manager & get_geometry_manager() const;
+  /// Check if cabling is setup
+  bool has_cabling() const;
 
-      /// Check if cabling is setup
-      bool has_cabling() const;
+  /// Check initialization flag
+  virtual bool is_initialized() const;
 
-      /// Check initialization flag
-      virtual bool is_initialized() const;
+  /// Initialization
+  virtual void initialize(const datatools::properties &config_);
 
-      /// Initialization
-      virtual void initialize(const datatools::properties & config_);
+  /// Termination
+  virtual void reset();
 
-      /// Termination
-      virtual void reset();
+  /// Smart print
+  virtual void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
+                         const std::string &indent_ = "", bool inherit_ = false) const;
 
-      /// Smart print
-      virtual void tree_dump(std::ostream & out_         = std::clog,
-                             const std::string & title_  = "",
-                             const std::string & indent_ = "",
-                             bool inherit_               = false) const;
+ private:
+  void _init_cabling_(const datatools::properties &cabling_config_);
 
-    private:
+  void _reset_cabling_();
 
-      void _init_cabling_(const datatools::properties & cabling_config_);
+ private:
+  // Management:
+  bool _initialized_ = false;  //!< Initialization flag
 
-      void _reset_cabling_();
+  // Configuration:
+  const geomtools::manager *_geometry_manager_ = nullptr;
+  bool _no_cabling_ = false;  //!< Inhibit cabling service
 
-    private:
+  // Working data:
+  cabling _cabling_;  //!< Cabling (geometry <-> electronics ID converter)
+};
 
-      // Management:
-      bool _initialized_ = false; //!< Initialization flag
-
-      // Configuration:
-      const geomtools::manager * _geometry_manager_ = nullptr;
-      bool _no_cabling_ = false; //!< Inhibit cabling service
-
-      // Working data:
-      cabling _cabling_; //!< Cabling (geometry <-> electronics ID converter)
-
-    };
-
-  }  // end of namespace electronics
+}  // end of namespace electronics
 
 }  // end of namespace snemo
 
@@ -120,7 +112,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::electronics::manager)
 
-#endif // FALAISE_SNEMO_ELECTRONICS_MANAGER_H
+#endif  // FALAISE_SNEMO_ELECTRONICS_MANAGER_H
 
 // Local Variables: --
 // mode: c++ --

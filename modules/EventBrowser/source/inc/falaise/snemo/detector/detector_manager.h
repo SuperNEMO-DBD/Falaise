@@ -34,8 +34,8 @@
 
 // Standard libraries:
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
 
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_tree_dump.h>
@@ -46,191 +46,185 @@
 #include <falaise/snemo/utils/singleton.h>
 
 namespace geomtools {
-  class manager;
-  class i_shape_3d;
-  class geom_id;
-  class geom_info;
-  class placement;
-}
+class manager;
+class i_shape_3d;
+class geom_id;
+class geom_info;
+class placement;
+}  // namespace geomtools
 
 class TGeoVolume;
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace detector {
+namespace detector {
 
-      class i_volume;
+class i_volume;
 
-      /// \brief The detector manager which handle all geometry volumes
-      class detector_manager : public utils::singleton<detector_manager>,
-                               public datatools::i_tree_dumpable
-      {
-      public:
+/// \brief The detector manager which handle all geometry volumes
+class detector_manager : public utils::singleton<detector_manager>,
+                         public datatools::i_tree_dumpable {
+ public:
+  /// Experimental setup enum
+  enum setup_label_type {
+    UNDEFINED = -1,
+    SNEMO = 0,
+    BIPO3 = 1,
+    TEST_BENCH = 2,
+    HPGE = 3,
+    BIPO1 = 4,
+    TRACKER_COMMISSIONING = 5,
+    SNEMO_DEMONSTRATOR = 6
+  };
 
-        /// Experimental setup enum
-        enum setup_label_type
-          {
-            UNDEFINED             = -1,
-            SNEMO                 = 0,
-            BIPO3                 = 1,
-            TEST_BENCH            = 2,
-            HPGE                  = 3,
-            BIPO1                 = 4,
-            TRACKER_COMMISSIONING = 5,
-            SNEMO_DEMONSTRATOR    = 6
-          };
+  /// Volume dictionnary
+  typedef std::map<geomtools::geom_id, i_volume*> volume_dict_type;
 
-        /// Volume dictionnary
-        typedef std::map<geomtools::geom_id, i_volume*> volume_dict_type;
+  /// Compute world coordinates
+  void compute_world_coordinates(const geomtools::vector_3d& mother_pos_,
+                                 geomtools::vector_3d& world_pos_) const;
 
-        /// Compute world coordinates
-        void compute_world_coordinates(const geomtools::vector_3d & mother_pos_,
-                                       geomtools::vector_3d & world_pos_) const;
+  /// Return initialization status
+  bool is_initialized() const;
 
-        /// Return initialization status
-        bool is_initialized() const;
+  /// Return construction status
+  bool is_constructed() const;
 
-        /// Return construction status
-        bool is_constructed() const;
+  /// Return experimental setup enum
+  setup_label_type get_setup_label() const;
 
-        /// Return experimental setup enum
-        setup_label_type get_setup_label() const;
+  /// Return experimental setup name
+  const std::string& get_setup_label_name() const;
 
-        /// Return experimental setup name
-        const std::string & get_setup_label_name() const;
+  /// Return if 'volume_name_' is a special volume
+  bool is_special_volume(const std::string& volume_name_) const;
 
-        /// Return if 'volume_name_' is a special volume
-        bool is_special_volume(const std::string & volume_name_) const;
+  /// Get a mutable reference to volume
+  i_volume* grab_volume(const geomtools::geom_id& id_);
 
-        /// Get a mutable reference to volume
-        i_volume * grab_volume(const geomtools::geom_id & id_);
+  /// Get a non-mutable reference to volume
+  const i_volume* get_volume(const geomtools::geom_id& id_) const;
 
-        /// Get a non-mutable reference to volume
-        const i_volume * get_volume(const geomtools::geom_id & id_) const;
+  /// Get a list of matching geom_id
+  void get_matching_ids(const geomtools::geom_id& id_,
+                        std::vector<geomtools::geom_id>& vids_) const;
 
-        /// Get a list of matching geom_id
-        void get_matching_ids(const geomtools::geom_id & id_,
-                              std::vector<geomtools::geom_id> & vids_) const;
+  /// Get volume name associated to geom_id
+  std::string get_volume_name(const geomtools::geom_id& id_) const;
 
-        /// Get volume name associated to geom_id
-        std::string get_volume_name(const geomtools::geom_id & id_) const;
+  /// Get volume category associated to geom_id
+  std::string get_volume_category(const geomtools::geom_id& id_) const;
 
-        /// Get volume category associated to geom_id
-        std::string get_volume_category(const geomtools::geom_id & id_) const;
+  /// Check if geometry manager has been externalized
+  bool has_external_geometry_manager() const;
 
-        /// Check if geometry manager has been externalized
-        bool has_external_geometry_manager() const;
+  /// Set external geometry manager
+  void set_external_geometry_manager(geomtools::manager& geometry_manager_);
 
-        /// Set external geometry manager
-        void set_external_geometry_manager(geomtools::manager & geometry_manager_);
+  /// Get a mutable reference to geometry manager
+  geomtools::manager& grab_geometry_manager();
 
-        /// Get a mutable reference to geometry manager
-        geomtools::manager & grab_geometry_manager();
+  /// Get a non-mutable reference to geometry manager
+  const geomtools::manager& get_geometry_manager() const;
 
-        /// Get a non-mutable reference to geometry manager
-        const geomtools::manager & get_geometry_manager() const;
+  /// Get a mutable reference to the 'world' volume
+  TGeoVolume* grab_world_volume();
 
-        /// Get a mutable reference to the 'world' volume
-        TGeoVolume * grab_world_volume();
+  /// Get non-mutable reference to the 'world' volume
+  const TGeoVolume* get_world_volume() const;
 
-        /// Get non-mutable reference to the 'world' volume
-        const TGeoVolume * get_world_volume() const;
+  /// Initialize detector manager
+  void initialize(const std::string& geo_manager_config_file_ = "");
 
-        /// Initialize detector manager
-        void initialize(const std::string & geo_manager_config_file_ = "");
+  /// Construct geometrical volumes
+  void construct();
 
-        /// Construct geometrical volumes
-        void construct();
+  /// Update detector manager
+  void update();
 
-        /// Update detector manager
-        void update();
+  /// Draw geometrical volumes
+  void draw();
 
-        /// Draw geometrical volumes
-        void draw();
+  /// Reset detector manager
+  void reset();
 
-        /// Reset detector manager
-        void reset();
+  /// Smart print
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-        /// Smart print
-        virtual void tree_dump(std::ostream & out_         = std::clog,
-                               const std::string & title_  = "",
-                               const std::string & indent_ = "",
-                               bool inherit_               = false) const;
+  /// Default print
+  void dump() const;
 
-        /// Default print
-        void dump() const;
+ private:
+  /// Forbid default constructor
+  detector_manager();
 
-      private:
+  /// Forbid destructor (done within singleton object)
+  virtual ~detector_manager();
 
-        /// Forbid default constructor
-        detector_manager();
+  /// Non copyable constructor
+  detector_manager(const detector_manager&);
 
-        /// Forbid destructor (done within singleton object)
-        virtual ~detector_manager();
+  /// Non-copyable assignation
+  detector_manager& operator=(const detector_manager&);
 
-        /// Non copyable constructor
-        detector_manager(const detector_manager&);
+  /// Make the class singleton friend
+  friend class utils::singleton<detector_manager>;
 
-        /// Non-copyable assignation
-        detector_manager & operator=(const detector_manager&);
+  /// Initialization of detector manager
+  void _at_init_(const std::string& geo_manager_config_file_);
 
-        /// Make the class singleton friend
-        friend class utils::singleton<detector_manager>;
+  /// Construction of detector manager
+  void _at_construct_();
 
-        /// Initialization of detector manager
-        void _at_init_(const std::string & geo_manager_config_file_);
+  /// Read geometry detector configuration
+  void _read_detector_config_();
 
-        /// Construction of detector manager
-        void _at_construct_();
+  /// Set volume categories with their visibility attributes
+  void _set_categories_(std::vector<std::string>& only_categories_) const;
 
-        /// Read geometry detector configuration
-        void _read_detector_config_();
+  /// Construct volume given its 3D shape and its geometry info
+  void _set_volume_(const geomtools::geom_info& ginfo_);
 
-        /// Set volume categories with their visibility attributes
-        void _set_categories_(std::vector<std::string> & only_categories_) const;
+  /// Add each volume contained in geo mapping
+  void _add_volumes_();
 
-        /// Construct volume given its 3D shape and its geometry info
-        void _set_volume_(const geomtools::geom_info & ginfo_);
+  /// Set world coordinates
+  void _set_world_dimensions_();
 
-        /// Add each volume contained in geo mapping
-        void _add_volumes_();
+ private:
+  bool _initialized_;  //!< Initialization flag
+  bool _constructed_;  //!< Construction flag
 
-        /// Set world coordinates
-        void _set_world_dimensions_();
+  std::string _setup_label_name_;  //!< Experimental setup label name
+  setup_label_type _setup_label_;  //!< Experimental setup label
 
-      private:
-        bool                _initialized_;                   //!< Initialization flag
-        bool                _constructed_;                   //!< Construction flag
+  std::vector<std::string> _special_volume_name_;  //!< List of special volumes
 
-        std::string         _setup_label_name_;              //!< Experimental setup label name
-        setup_label_type    _setup_label_;                   //!< Experimental setup label
+  volume_dict_type _volumes_;  //!< Volume dictionnary
 
-        std::vector<std::string> _special_volume_name_;      //!< List of special volumes
+  bool _has_external_geometry_manager_;  //!< External geometry manager
 
-        volume_dict_type    _volumes_;                       //!< Volume dictionnary
+  std::string _geo_manager_config_file_;  //!< Geometry manager configuration file
+  geomtools::manager* _geo_manager_;      //!< Geometry manager
 
-        bool                _has_external_geometry_manager_; //!< External geometry manager
+  const geomtools::placement* _module_placement_;  //!< Module placement
 
-        std::string          _geo_manager_config_file_;      //!< Geometry manager configuration file
-        geomtools::manager * _geo_manager_;                  //!< Geometry manager
+  TGeoVolume* _world_volume_;  //!< ROOT world volume
+  double _world_length_;       //!< World length
+  double _world_width_;        //!< World width
+  double _world_height_;       //!< World height
+};
 
-        const geomtools::placement * _module_placement_;     //!< Module placement
+}  // end of namespace detector
 
-        TGeoVolume        * _world_volume_;                  //!< ROOT world volume
-        double              _world_length_;                  //!< World length
-        double              _world_width_;                   //!< World width
-        double              _world_height_;                  //!< World height
-      };
+}  // end of namespace visualization
 
-    } // end of namespace detector
+}  // end of namespace snemo
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_DETECTOR_DETECTOR_MANAGER_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_DETECTOR_DETECTOR_MANAGER_H
 
 // end of detector_manager.h
 /*

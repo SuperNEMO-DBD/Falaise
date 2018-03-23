@@ -24,103 +24,97 @@
 #include <geomtools/manager_macros.h>
 
 namespace geomtools {
-  class i_base_locator;
+class i_base_locator;
 }
 
 namespace snemo {
 
-  namespace geometry {
+namespace geometry {
 
-    class gg_locator;
-    class calo_locator;
-    class xcalo_locator;
-    class gveto_locator;
+class gg_locator;
+class calo_locator;
+class xcalo_locator;
+class gveto_locator;
 
-    /// \brief A geometry manager plugin with embedded SuperNEMO locators.
-    class locator_plugin : public geomtools::manager::base_plugin
-    {
-    public:
+/// \brief A geometry manager plugin with embedded SuperNEMO locators.
+class locator_plugin : public geomtools::manager::base_plugin {
+ public:
+  typedef datatools::handle<geomtools::base_locator> locator_handle_type;
 
-      typedef datatools::handle<geomtools::base_locator> locator_handle_type;
+  struct locator_entry_type {
+    std::string label;
+    std::string category_name;
+    int category_type;
+    uint32_t status;
+    locator_handle_type locator_handle;
+  };
 
-      struct locator_entry_type
-      {
-        std::string label;
-        std::string category_name;
-        int         category_type;
-        uint32_t    status;
-        locator_handle_type locator_handle;
-      };
+  typedef std::map<std::string, locator_entry_type> locator_dict_type;
 
-      typedef std::map<std::string, locator_entry_type> locator_dict_type;
+  /// Default constructor
+  locator_plugin();
 
-      /// Default constructor
-      locator_plugin();
+  /// Destructor
+  virtual ~locator_plugin();
 
-      /// Destructor
-      virtual ~locator_plugin();
+  /// Main plugin initialization method
+  virtual int initialize(const datatools::properties& config_,
+                         const geomtools::manager::plugins_dict_type& plugins_,
+                         const datatools::service_dict_type& services_);
 
-      /// Main plugin initialization method
-      virtual int initialize(const datatools::properties & config_,
-                             const geomtools::manager::plugins_dict_type & plugins_,
-                             const datatools::service_dict_type & services_);
+  /// Plugin reset method
+  virtual int reset();
 
-      /// Plugin reset method
-      virtual int reset();
+  /// Check if plugin is initialized
+  virtual bool is_initialized() const;
 
-      /// Check if plugin is initialized
-      virtual bool is_initialized() const;
+  /// Returns a non-mutable reference to the dictionary of locators
+  const locator_dict_type& get_locators() const;
 
-      /// Returns a non-mutable reference to the dictionary of locators
-      const locator_dict_type & get_locators() const;
+  /// Returns a mutable reference to the dictionary of locators
+  locator_dict_type& grab_locators();
 
-      /// Returns a mutable reference to the dictionary of locators
-      locator_dict_type & grab_locators();
+  /// Check if geiger locator is available
+  bool has_gg_locator() const;
 
-      /// Check if geiger locator is available
-      bool has_gg_locator() const;
+  /// Check if calo locator is available
+  bool has_calo_locator() const;
 
-      /// Check if calo locator is available
-      bool has_calo_locator() const;
+  /// Check if xcalo locator is available
+  bool has_xcalo_locator() const;
 
-      /// Check if xcalo locator is available
-      bool has_xcalo_locator() const;
+  /// Check if gveto locator is available
+  bool has_gveto_locator() const;
 
-      /// Check if gveto locator is available
-      bool has_gveto_locator() const;
+  /// Returns a non-mutable reference to the geiger locator
+  const snemo::geometry::gg_locator& get_gg_locator() const;
 
-      /// Returns a non-mutable reference to the geiger locator
-      const snemo::geometry::gg_locator & get_gg_locator() const;
+  /// Returns a non-mutable reference to the main wall locator
+  const snemo::geometry::calo_locator& get_calo_locator() const;
 
-      /// Returns a non-mutable reference to the main wall locator
-      const snemo::geometry::calo_locator & get_calo_locator() const;
+  /// Returns a non-mutable reference to the X wall locator
+  const snemo::geometry::xcalo_locator& get_xcalo_locator() const;
 
-      /// Returns a non-mutable reference to the X wall locator
-      const snemo::geometry::xcalo_locator & get_xcalo_locator() const;
+  /// Returns a non-mutable reference to the gamma veto locator
+  const snemo::geometry::gveto_locator& get_gveto_locator() const;
 
-      /// Returns a non-mutable reference to the gamma veto locator
-      const snemo::geometry::gveto_locator & get_gveto_locator() const;
+ protected:
+  /// Internal mapping build method
+  void _build_locators(const datatools::properties& config_);
 
-     protected:
+ private:
+  bool _initialized_;                                     //!< Initialization flag
+  locator_dict_type _locators_;                           //!< Locator dictionary
+  const snemo::geometry::gg_locator* _gg_locator_;        //!< Geiger locator
+  const snemo::geometry::calo_locator* _calo_locator_;    //!< Main wall locator
+  const snemo::geometry::xcalo_locator* _xcalo_locator_;  //!< X-wall locator
+  const snemo::geometry::gveto_locator* _gveto_locator_;  //!< gamma-veto locator
 
-      /// Internal mapping build method
-      void _build_locators(const datatools::properties & config_);
+  GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin)
+};
 
-    private:
+}  // end of namespace geometry
 
-      bool              _initialized_;   //!< Initialization flag
-      locator_dict_type _locators_;      //!< Locator dictionary
-      const snemo::geometry::gg_locator    * _gg_locator_;    //!< Geiger locator
-      const snemo::geometry::calo_locator  * _calo_locator_;  //!< Main wall locator
-      const snemo::geometry::xcalo_locator * _xcalo_locator_; //!< X-wall locator
-      const snemo::geometry::gveto_locator * _gveto_locator_; //!< gamma-veto locator
+}  // end of namespace snemo
 
-      GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin)
-
-    };
-
-  } // end of namespace geometry
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_GEOMETRY_LOCATOR_PLUGIN_H
+#endif  // FALAISE_SNEMO_GEOMETRY_LOCATOR_PLUGIN_H

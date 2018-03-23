@@ -9,9 +9,11 @@
 ####################################################################
 [name="versatile_generator" type="genbb::single_particle_generator"]
 
+# The following line guards from loading this generator definition if the
+# current variant constext is not adapted.
 #@variant_section_only primary_events:generator/if_versatile|false
 
-#@config Electron with monokinetic energy;group=user;variant=if_versatile
+#@config Single particle generator with monokinetic energy;group=user;variant=if_versatile
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
 particle_name : string = @variant(primary_events:generator/if_versatile/particle|"gamma")

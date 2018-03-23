@@ -34,16 +34,16 @@
 #define FALAISE_SNEMO_VISUALIZATION_VIEW_OPTIONS_MANAGER_H 1
 
 // Stahdard library:
-#include <vector>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
 
 // Third party:
 // - Boost:
 #include <boost/program_options.hpp>
 // - Bayeux/datatools:
-#include <datatools/logger.h>
 #include <datatools/bit_mask.h>
+#include <datatools/logger.h>
 
 // This project:
 #include <falaise/snemo/utils/singleton.h>
@@ -51,139 +51,131 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      class options_manager : public utils::singleton<options_manager>
-      {
-      public:
+class options_manager : public utils::singleton<options_manager> {
+ public:
+  /// Get the logging priority threshold
+  datatools::logger::priority get_logging_priority() const;
 
-        /// Get the logging priority threshold
-        datatools::logger::priority get_logging_priority () const;
+  /// Set the logging priority threshold
+  void set_logging_priority(datatools::logger::priority priority_);
 
-        /// Set the logging priority threshold
-        void set_logging_priority (datatools::logger::priority priority_);
+  void reset();
 
-        void reset ();
+  void set_defaults();
 
-        void set_defaults ();
+  void set_default_options();
 
-        void set_default_options ();
+  void print_help(std::ostream& out_, const std::string& name_, const std::string& title_) const;
 
-        void print_help (std::ostream      & out_,
-                         const std::string & name_,
-                         const std::string & title_) const;
+  void print_examples(std::ostream& out_, const std::string& name_,
+                      const std::string& title_) const;
 
-        void print_examples (std::ostream      & out_,
-                             const std::string & name_,
-                             const std::string & title_) const;
+  enum browser_options_flags {
+    browser_opt_no_logging = datatools::bit_mask::bit00,
+    browser_opt_no_dll_load = datatools::bit_mask::bit01,
+    browser_opt_no_detector_config = datatools::bit_mask::bit02
+  };
 
-        enum browser_options_flags {
-          browser_opt_no_logging  = datatools::bit_mask::bit00,
-          browser_opt_no_dll_load = datatools::bit_mask::bit01,
-          browser_opt_no_detector_config = datatools::bit_mask::bit02
-        };
+  void define_browser_options(boost::program_options::options_description& browser_options_,
+                              uint32_t flags_ = 0);
 
-        void define_browser_options(boost::program_options::options_description & browser_options_,
-                                    uint32_t flags_ = 0);
+  void define_view_options(boost::program_options::options_description& view_options_,
+                           uint32_t flags_ = 0);
 
-        void define_view_options(boost::program_options::options_description & view_options_,
-                                 uint32_t flags_ = 0);
+  int apply_options(const boost::program_options::variables_map& vm_);
 
-        int apply_options(const boost::program_options::variables_map & vm_);
+  bool parse_command_line(int argc_, char** argv_);
 
-        bool parse_command_line (int argc_, char** argv_);
+  /// Setting the input file list
+  void set_input_files(const std::vector<std::string>& input_files_);
 
-        /// Setting the input file list
-        void set_input_files(const std::vector<std::string> & input_files_);
+  void add_input_file(const std::string& input_file_);
 
-        void add_input_file(const std::string & input_file_);
+  const std::vector<std::string>& get_input_files() const;
 
-        const std::vector<std::string> & get_input_files () const;
+  bool is_preload_required() const;
 
-        bool is_preload_required () const;
+  bool is_automatic_event_reading_mode() const;
 
-        bool is_automatic_event_reading_mode   () const;
+  double get_automatic_event_reading_delay() const;
 
-        double get_automatic_event_reading_delay () const;
+  void set_automatic_event_reading_mode(const bool test_ = true);
 
-        void set_automatic_event_reading_mode    (const bool test_ = true);
+  void set_automatic_event_reading_delay(const unsigned int delay_ = 1);
 
-        void set_automatic_event_reading_delay   (const unsigned int delay_ = 1);
+  // Detector & style config files
+  const std::string& get_detector_config_file() const;
 
-        // Detector & style config files
-        const std::string & get_detector_config_file () const;
+  void set_detector_config_file(const std::string& config_file_);
 
-        void set_detector_config_file (const std::string & config_file_);
+  const std::string& get_style_config_file() const;
 
-        const std::string & get_style_config_file () const;
+  void set_style_config_file(const std::string& config_file_);
 
-        void set_style_config_file (const std::string & config_file_);
+  const std::string& get_cut_config_file() const;
 
-        const std::string & get_cut_config_file () const;
+  void set_cut_config_file(const std::string& config_file_);
 
-        void set_cut_config_file (const std::string & config_file_);
+  // View options
+  double get_scaling_factor() const;
 
-        // View options
-        double get_scaling_factor () const;
+  bool is_2d_display_on_left() const;
 
-        bool is_2d_display_on_left () const;
+  void set_2d_display_on_left(const bool display_left_ = true);
 
-        void set_2d_display_on_left (const bool display_left_ = true);
+  // Event record options
+  const std::map<button_signals_type, bool>& get_options_dictionnary() const;
 
-        // Event record options
-        const std::map<button_signals_type, bool> & get_options_dictionnary  () const;
+  std::map<button_signals_type, bool>& grab_options_dictionnary();
 
-        std::map<button_signals_type, bool> & grab_options_dictionnary ();
+  bool get_option_flag(const button_signals_type signal_) const;
 
-        bool get_option_flag (const button_signals_type signal_) const;
+  void set_option_flag(const button_signals_type signal_, const bool flag_);
 
-        void set_option_flag (const button_signals_type signal_,
-                              const bool flag_);
+  // Retrieve 'library loader' config:
+  const std::vector<std::string>& get_libraries() const;
 
-        // Retrieve 'library loader' config:
-        const std::vector<std::string> & get_libraries () const;
+ private:
+  datatools::logger::priority _logging_priority_;
 
-      private:
+  bool _preload_;
 
-        datatools::logger::priority _logging_priority_;
+  double _scaling_factor_;
 
-        bool         _preload_;
+  bool _automatic_event_reading_;
+  unsigned int _automatic_event_reading_delay_;
 
-        double       _scaling_factor_;
+  std::string _detector_config_file_;
+  std::string _style_config_file_;
+  std::string _cut_config_file_;
 
-        bool         _automatic_event_reading_;
-        unsigned int _automatic_event_reading_delay_;
+  bool _2d_display_on_left_;
 
-        std::string  _detector_config_file_;
-        std::string  _style_config_file_;
-        std::string  _cut_config_file_;
+  std::map<button_signals_type, bool> _options_dictionnary_;
 
-        bool _2d_display_on_left_;
+  std::vector<std::string> _input_files_;
 
-        std::map<button_signals_type, bool> _options_dictionnary_;
+  std::vector<std::string> _libraries_;
 
-        std::vector<std::string> _input_files_;
+  friend class utils::singleton<options_manager>;
 
-        std::vector<std::string> _libraries_;
+  options_manager();
+  ~options_manager();
+  options_manager(const options_manager&);
+  options_manager& operator=(const options_manager&);
+};
 
-        friend class utils::singleton<options_manager>;
+}  // end of namespace view
 
-        options_manager  ();
-        ~options_manager ();
-        options_manager            (const options_manager&);
-        options_manager& operator= (const options_manager&);
+}  // end of namespace visualization
 
-      };
+}  // end of namespace snemo
 
-    } // end of namespace view
-
-  } // end of namespace visualization
-
-} // end of namespace snemo
-
-#endif // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_3D_H
+#endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_DISPLAY_3D_H
 
 // end of display_3d.h
 /*

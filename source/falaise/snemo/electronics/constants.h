@@ -37,45 +37,40 @@
 
 namespace snemo {
 
-  namespace electronics {
+namespace electronics {
 
-    class constants
-    {
-    public :
-      
-			static const std::size_t NSIDES  = 2;
-			static const std::size_t NLAYERS = 9;
-			static const std::size_t NROWS   = 113;
-			static const std::size_t NZONES  = 10;
-			
-      static const std::size_t TRACKER_DATA_FULL_BITSET_SIZE = 7;
-			
-			static const uint32_t INVALID_CLOCKTICK = std::numeric_limits<uint32_t>::max(); //!< Invalid value for clocktick
+class constants {
+ public:
+  static const std::size_t NSIDES = 2;
+  static const std::size_t NLAYERS = 9;
+  static const std::size_t NROWS = 113;
+  static const std::size_t NZONES = 10;
 
+  static const std::size_t TRACKER_DATA_FULL_BITSET_SIZE = 7;
 
-			/// Size of each bitset in the Calo summary record
-			enum calo_summary_record_bitset_size {
-				FULL_BITSET_SIZE    = 35,
-				ZONING_BITSET_SIZE  = 10,
-				HTM_BITSET_SIZE     = 2,
-				XT_INFO_BITSET_SIZE = 3
-			};
-			
-			enum L2_trigger_mode {
-				INVALID      = 0,
-				CALO_ONLY    = 1,
-				CALO_TRACKER_TIME_COINC = 2,
-				CARACO       = 3,
-				OPEN_DELAYED = 4,
-				APE          = 5,
-				DAVE         = 6					
-			};
+  static const uint32_t INVALID_CLOCKTICK =
+      std::numeric_limits<uint32_t>::max();  //!< Invalid value for clocktick
 
+  /// Size of each bitset in the Calo summary record
+  enum calo_summary_record_bitset_size {
+    FULL_BITSET_SIZE = 35,
+    ZONING_BITSET_SIZE = 10,
+    HTM_BITSET_SIZE = 2,
+    XT_INFO_BITSET_SIZE = 3
+  };
 
-    };
+  enum L2_trigger_mode {
+    INVALID = 0,
+    CALO_ONLY = 1,
+    CALO_TRACKER_TIME_COINC = 2,
+    CARACO = 3,
+    OPEN_DELAYED = 4,
+    APE = 5,
+    DAVE = 6
+  };
+};
 
-    
-  }  // end of namespace electronics
+}  // end of namespace electronics
 
 }  // end of namespace snemo
 
@@ -84,7 +79,7 @@ namespace snemo {
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::electronics::constants)
 
-#endif // FALAISE_SNEMO_ELECTRONICS_CONSTANTS_H
+#endif  // FALAISE_SNEMO_ELECTRONICS_CONSTANTS_H
 
 // Local Variables: --
 // mode: c++ --

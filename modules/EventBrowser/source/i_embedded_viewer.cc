@@ -23,29 +23,23 @@
 
 namespace snemo {
 
-  namespace visualization {
+namespace visualization {
 
-    namespace view {
+namespace view {
 
-      // ctor:
-      i_embedded_viewer::i_embedded_viewer (const view_dim_type view_dim_) :
-        _view_dim_type (view_dim_)
-      {
-        return;
-      }
+// ctor:
+i_embedded_viewer::i_embedded_viewer(const view_dim_type view_dim_) : _view_dim_type(view_dim_) {
+  return;
+}
 
-      // dtor:
-      i_embedded_viewer::~i_embedded_viewer ()
-      {
-        return;
-      }
+// dtor:
+i_embedded_viewer::~i_embedded_viewer() { return; }
 
+}  // end of namespace view
 
-    } // end of namespace view
+}  // end of namespace visualization
 
-  } // end of namespace visualization
-
-} // end of namespace snemo
+}  // end of namespace snemo
 
 // end of i_embedded_viewer.cc
 /*

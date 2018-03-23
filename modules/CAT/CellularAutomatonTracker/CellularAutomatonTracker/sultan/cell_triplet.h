@@ -10,91 +10,81 @@
 #include <sultan/cell_couplet.h>
 #include <sultan/experimental_helix.h>
 
-namespace SULTAN{
-  namespace topology{
+namespace SULTAN {
+namespace topology {
 
+class cell_triplet : public tracking_object {
+  // a cell_triplet is composed of three cells
+  // and a list of joints
 
-    class cell_triplet : public tracking_object{
+ protected:
+  std::string appname_;
 
-      // a cell_triplet is composed of three cells
-      // and a list of joints
+  // first cell
+  cell ca_;
 
-    protected:
+  // second cell
+  cell cb_;
 
-      std::string appname_;
+  // third cell
+  cell cc_;
 
-      // first cell
-      cell ca_;
+ public:
+  std::vector<experimental_helix> helices_;
 
-      // second cell
-      cell cb_;
+  //! Default constructor
+  cell_triplet();
 
-      // third cell
-      cell cc_;
+  //! Default destructor
+  virtual ~cell_triplet();
 
-    public:
+  //! constructor
+  cell_triplet(const cell &ca, const cell &cb, const cell &cc,
+               mybhep::prlevel level = mybhep::NORMAL, double probmin = 1.e-200);
 
-      std::vector<experimental_helix> helices_;
+  /*** dump ***/
+  virtual void dump(std::ostream &a_out = std::clog, const std::string &a_title = "",
+                    const std::string &a_indent = "", bool a_inherit = false) const;
 
-      //!Default constructor
-      cell_triplet();
+  //! set cells
+  void set(const cell_couplet &cca, const cell_couplet &ccb);
 
-      //!Default destructor
-      virtual ~cell_triplet();
+  //! set cells
+  void set(const cell &ca, const cell &cb, const cell &cc);
 
-      //! constructor
-      cell_triplet(const cell &ca, const cell &cb, const cell &cc, mybhep::prlevel level=mybhep::NORMAL, double probmin=1.e-200);
+  //! get first cell couplet
+  cell_couplet cca();
 
-      /*** dump ***/
-      virtual void dump (std::ostream & a_out         = std::clog,
-                         const std::string & a_title  = "",
-                         const std::string & a_indent = "",
-                         bool a_inherit          = false) const;
+  //! get second cell couplet
+  cell_couplet ccb();
 
-      //! set cells
-      void set(const cell_couplet &cca, const cell_couplet &ccb);
+  //! get first cell
+  const cell &ca() const;
 
-      //! set cells
-      void set(const cell &ca, const cell &cb, const cell &cc);
+  //! get second cell
+  const cell &cb() const;
 
-      //! get first cell couplet
-      cell_couplet cca();
+  //! get third cell
+  const cell &cc() const;
 
-      //! get second cell couplet
-      cell_couplet ccb();
+ public:
+  const std::vector<experimental_helix> helices() const { return helices_; }
 
-      //! get first cell
-      const cell& ca()const;
+  void calculate_helices(double Rmin, double Rmax, double nsigmas);
 
-      //! get second cell
-      const cell& cb()const;
+  cell_triplet invert();
 
-      //! get third cell
-      const cell& cc()const;
+  friend bool operator==(const cell_triplet &left, const cell_triplet &right);
 
-    public:
+  bool has_cell_of_id(size_t id) const;
 
-      const std::vector<experimental_helix> helices()const{ return helices_;}
-
-
-      void calculate_helices(double Rmin, double Rmax, double nsigmas);
-
-      cell_triplet invert();
-
-      friend bool operator==(const cell_triplet& left,
-                             const cell_triplet& right);
-
-      bool has_cell_of_id(size_t id)const;
-
-      void print_ids()const{
-        std::clog << " ( " << ca_.id() << ", " << cb_.id() << ", " << cc_.id() << ") ";
-      }
-
-    };
-
-
+  void print_ids() const {
+    std::clog << " ( " << ca_.id() << ", " << cb_.id() << ", " << cc_.id() << ") ";
   }
+};
 
-}
+}  // namespace topology
 
-#endif // __sultan__cell_triplet_h
+}  // namespace SULTAN
+
+#endif  // __sultan__cell_triplet_h
