@@ -240,6 +240,7 @@ void falaise_sys::_initialize_urn_services_() {
     }
     DT_LOG_TRACE(_logging_, "Publishing the URN info DB '"
                                 << urnSetupDb.get_name() << "' to the Bayeux/datatools' kernel...");
+    urnSetupDb.lock();
     urnSetupDb.kernel_push();
     DT_LOG_TRACE(_logging_, "URN info DB has been plugged in the Bayeux/datatools' kernel.");
   }
@@ -295,6 +296,7 @@ void falaise_sys::_shutdown_urn_services_() {
                                 << urnSetupDb.get_name()
                                 << "' from the  Bayeux/datatools's kernel...");
     urnSetupDb.kernel_pop();
+    urnSetupDb.unlock();
     DT_LOG_TRACE(_logging_,
                  "URN info setup DB has been removed from the  Bayeux/datatools kernel.");
     urnSetupDb.reset();
