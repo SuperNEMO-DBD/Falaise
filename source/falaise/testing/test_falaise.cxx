@@ -38,12 +38,14 @@ int main(int /* argc_ */, char** /* argv_ */) {
           lib_info_reg.tree_dump(std::clog, "Kernel library info register: ");
           std::clog << std::endl;
         }
-        if (krnl.get_urn_query().has_db(falaise::detail::falaise_sys::fl_setup_db_name())) {
-          const datatools::urn_db_service & flUrnDb =
-            krnl.get_urn_query().get_db(falaise::detail::falaise_sys::fl_setup_db_name());
-          flUrnDb.tree_dump(std::clog, "Falaise library's URN Database Service: ");
-          std::clog << std::endl;
-        }
+        // Only with Bayeux from 3.3.0 because the 'datatools::urn_query_service::get_db' method
+        // is not available before.
+        // if (krnl.get_urn_query().has_db(falaise::detail::falaise_sys::fl_setup_db_name())) {
+        //   const datatools::urn_db_service & flUrnDb =
+        //     krnl.get_urn_query().get_db(falaise::detail::falaise_sys::fl_setup_db_name());
+        //   flUrnDb.tree_dump(std::clog, "Falaise library's URN Database Service: ");
+        //   std::clog << std::endl;
+        // }
       }
     }
 
