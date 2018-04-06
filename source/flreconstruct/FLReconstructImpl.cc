@@ -27,6 +27,7 @@
 #include "falaise/property_reader.h"
 #include "falaise/resource.h"
 #include "falaise/version.h"
+#include "falaise/tags.h"
 
 namespace FLReconstruct {
 
@@ -380,7 +381,8 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
 
   if (!flRecParameters.reconstructionPipelineUrn.empty()) {
     // Check URN registration from the system URN query service:
-    DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn, "recsetup"),
+    DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.reconstructionPipelineUrn,
+                                            falaise::tags::reconstruction_setup_category()),
                 std::logic_error,
                 "Cannot query reconstruction setup URN='"
                     << flRecParameters.reconstructionPipelineUrn << "'!");
@@ -433,8 +435,9 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   if (!flRecParameters.experimentalSetupUrn.empty()) {
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = "expsetup";
-      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn, conf_category),
+      std::string conf_category = falaise::tags::experimental_setup_category();
+      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn,
+                                              conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flRecParameters.experimentalSetupUrn << "'!");
     }
@@ -571,6 +574,10 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
 
     system_props.store_string("falaise.version", falaise::version::get_version(),
                               "Falaise version");
+    system_props.store_string("falaise.version.commit", falaise::version::get_commit(),
+                              "Falaise commit");
+    system_props.store_boolean("falaise.version.state", falaise::version::is_dirty(),
+                               "Falaise commit state");
 
     system_props.store_string("application", "flreconstruct",
                               "The flreconstruct application used to produce reconstructed data");

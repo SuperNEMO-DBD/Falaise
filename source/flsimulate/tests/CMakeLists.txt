@@ -124,6 +124,14 @@ add_test(NAME flsimulate-fix-issue59-validation
 set_tests_properties(flsimulate-fix-issue59-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 
-# Add test material for issue fixes here...
+# Tests dedicated to the validation of fixes
+# - Validation of feature PR #75
+add_test(NAME flsimulate-feature-pr75-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation"
+  )
+set_tests_properties(flsimulate-feature-pr75-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 
 # - end

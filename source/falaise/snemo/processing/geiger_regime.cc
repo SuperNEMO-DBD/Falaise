@@ -82,14 +82,14 @@ void geiger_regime::initialize(const datatools::properties& config_) {
 
   if (config_.has_key("plasma_longitudinal_speed")) {
     _plasma_longitudinal_speed_ = config_.fetch_real("plasma_longitudinal_speed");
-    if (config_.has_explicit_unit("plasma_longitudinal_speed")) {
+    if (!config_.has_explicit_unit("plasma_longitudinal_speed")) {
       _plasma_longitudinal_speed_ *= drift_speed_unit;
     }
   }
 
   if (config_.has_key("sigma_plasma_longitudinal_speed")) {
     _sigma_plasma_longitudinal_speed_ = config_.fetch_real("sigma_plasma_longitudinal_speed");
-    if (config_.has_explicit_unit("sigma_plasma_longitudinal_speed")) {
+    if (!config_.has_explicit_unit("sigma_plasma_longitudinal_speed")) {
       _sigma_plasma_longitudinal_speed_ *= drift_speed_unit;
     }
   }

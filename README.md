@@ -25,19 +25,28 @@ can be used too.
 If you simply wish to use or try out Falaise, we recommend installing it
 using [our Home/Linuxbrew tap](https://github.com/SuperNEMO-dbd/homebrew-cadfael).
 This will install everything you need, and includes the latest official
-release of the software. Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
+release of the software.
+
+Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
 for a full guide to running the software and writing new plugin modules.
+
+If you have [Docker](https://www.docker.com) available, then images for current and past releases
+together with instructions for use are available from [Docker Hub](https://hub.docker.com/r/supernemo/falaise/).
+
 
 ## Building, Testing and Installing from Source
 To build Falaise on your machine, the following requirements must be met:
 
 - Linux or macOS System
   - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
+  - Other Linux distributions are known to work, but are not
+    officially supported. However, patches are welcome to resolve encountered issues!
   - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
+  - macOS High Sierra is not yet officially supported, but work is in progress
 - GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
 - [CMake](https://cmake.org) 3.5 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.0 or higher
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.1.2 or higher
 - [Boost](https:/boost.org) 1.63.0 or higher
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
@@ -45,7 +54,7 @@ To build Falaise on your machine, the following requirements must be met:
 - [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 or higher
 - [Geant4](http://geant4.cern.ch) 9.6.4 or higher
    - with GDML support enabled
-- [ROOT](http://root.cern.ch) 6.08 or higher
+- [ROOT](http://root.cern.ch) 6.10 or higher
 
 Falaise requires use of the C++11 or higher standard, so all of the above packages
 and their C++ dependencies must be built/installed using this standard. This is
@@ -76,7 +85,7 @@ $ cmake -DFALAISE_ENABLE_TESTING=ON
 Note: At this stage, if the following error is encountered;
 
 ```
-  CMake Error at /home/<user>/CadfaelBrew/lib64/cmake/Bayeux-3.0.0/BayeuxConfig.cmake:130 (find_package):
+  CMake Error at /home/<user>/CadfaelBrew/lib64/cmake/Bayeux-3.1.2/BayeuxConfig.cmake:130 (find_package):
   By not providing "FindQt5Core.cmake" in CMAKE_MODULE_PATH this project has
    asked CMake to find a package configuration file provided by "Qt5Core", but
   CMake did not find one.

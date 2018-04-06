@@ -18,8 +18,8 @@
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
-// Copyright (c) 2017 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2017 by Université de Caen Normandie
+// Copyright (c) 2017-2018 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2017-2018 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -117,6 +117,10 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
   system_props.store_string("bayeux.version", bayeux::version::get_version(), "Bayeux version");
 
   system_props.store_string("falaise.version", falaise::version::get_version(), "Falaise version");
+  system_props.store_string("falaise.version.commit", falaise::version::get_commit(),
+                            "Falaise commit");
+  system_props.store_boolean("falaise.version.state", falaise::version::is_dirty(),
+                             "Falaise commit state");
 
   system_props.store_string("application", "flsimulate",
                             "The simulation application used to produce Monte Carlo data");

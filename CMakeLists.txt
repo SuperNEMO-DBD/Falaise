@@ -38,25 +38,33 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "3.1.1")
+project(Falaise VERSION "3.2.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
 
 #-----------------------------------------------------------------------
-# Common LPC utilities
+# Needed Modules
 #
+#- Common LPC utilities
 include(LPCCMakeSettings)
+
+# - Clang Format/Tidy
 include(ClangTools)
 
-# - SVN revision number for dev builds
-include(LPCSVNUtilities)
-set(Falaise_VERSION_REVISION 0)
-
-Subversion_DIRECTORY_IS_WC(${PROJECT_SOURCE_DIR} Falaise)
-if(Falaise_DIRECTORY_IS_WC)
-  Subversion_WC_INFO(${PROJECT_SOURCE_DIR} Falaise)
-  set(Falaise_VERSION_REVISION ${Falaise_WC_REVISION})
+# - Add Git info to versioning
+#   1. Add "-g<HEADHASH:0-8>" when in Git working copy
+#   2. If there are uncommitted local changes, add "-dirty"
+include(GetGitRevisionDescription)
+get_git_head_revision(Falaise_GIT_REFSPEC Falaise_GIT_HASH)
+git_local_changes(Falaise_GIT_STATE)
+if(Falaise_GIT_HASH)
+  string(SUBSTRING "${Falaise_GIT_HASH}" 0 8 Falaise_GIT_HASH_SHORT)
+  set(Falaise_VERSION "${Falaise_VERSION}-g${Falaise_GIT_HASH_SHORT}")
+  if(Falaise_GIT_STATE STREQUAL "DIRTY")
+    set(Falaise_VERSION "${Falaise_VERSION}-dirty")
+    set(FALAISE_VERSION_IS_DIRTY YES)
+  endif()
 endif()
 
 #-----------------------------------------------------------------------
@@ -86,11 +94,9 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.0.0)
+set(FALAISE_BAYEUX_MIN_VERSION 3.1.2)
 message( STATUS "Searching Bayeux ${FALAISE_BAYEUX_MIN_VERSION} ...")
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
-# message( STATUS "Bayeux_VERSION          = '${Bayeux_VERSION}'")
-# message( STATUS "Bayeux_CMAKE_CONFIG_DIR = '${Bayeux_CMAKE_CONFIG_DIR}'")
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
