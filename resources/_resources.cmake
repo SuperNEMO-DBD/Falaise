@@ -266,6 +266,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/geometry/4.0/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/1.0/mock_calorimeter_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-1.0.0.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official-2.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official_with_visu-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/1.0.0/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/1.0.0/modules.defs
