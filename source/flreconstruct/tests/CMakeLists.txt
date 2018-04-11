@@ -45,6 +45,15 @@ set_tests_properties(flreconstruct-standard-pipeline-script-urn PROPERTIES
   DEPENDS flreconstruct-fixture
   )
 
+# - Non-URN internal scripts - "next/devel" pipeline
+add_test(NAME flreconstruct-standard-pipeline-develscript
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:config/snemo/demonstrator/reconstruction/official-2.0.0.conf"
+  )
+set_tests_properties(flreconstruct-standard-pipeline-develscript PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
+
+
 # Test of writing to an output file after standard pipeline
 # TODO: Add test of contents of file (i.e. that it contains the right bank names/types)!!
 add_test(NAME flreconstruct-standard-pipeline-output
