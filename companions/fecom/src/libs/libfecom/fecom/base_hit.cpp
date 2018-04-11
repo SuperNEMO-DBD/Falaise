@@ -64,7 +64,7 @@ void base_hit::tree_dump(std::ostream& out_, const std::string& title_, const st
   return;
 }
 
-bool base_hit::compare::operator()(const base_hit& a, const base_hit& b) {
+bool base_hit::compare::operator()(const base_hit& a, const base_hit& b) const {
   if (a.hit_id < b.hit_id) {
     return true;
   } else if ((a.hit_id == b.hit_id)) {
