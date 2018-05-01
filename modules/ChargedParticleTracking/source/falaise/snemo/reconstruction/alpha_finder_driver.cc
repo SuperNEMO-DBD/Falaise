@@ -142,16 +142,10 @@ namespace snemo {
 
       // Minimal anode time to consider Geiger hit as delayed
       if (setup_.has_key("minimal_delayed_time")) {
-        std::cout << "Has minimal delay time in setup!!!!" << std::endl;
-        std::cout << "Delay time before fetch: " << _minimal_delayed_time_ << std::endl;
         _minimal_delayed_time_ = setup_.fetch_real("minimal_delayed_time");
-        std::cout << "Delay time after fetch: " << _minimal_delayed_time_ << std::endl;
         if (! setup_.has_explicit_unit("minimal_delayed_time")) {
           _minimal_delayed_time_ *= CLHEP::microsecond;
         }
-      }
-      else{
-        std::cout << "Did not find minimal delay time in setup!!!!" << std::endl;
       }
 
       // Minimal distance in XY coordinate between Geiger hits
