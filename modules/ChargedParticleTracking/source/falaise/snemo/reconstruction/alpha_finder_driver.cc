@@ -288,6 +288,9 @@ void alpha_finder_driver::_find_short_track_(
        ihit != hits_.end(); ++ihit) {
     const snemo::datamodel::calibrated_tracker_hit &a_delayed_gg_hit = ihit->get();
 
+    // set a default distance for closest vertex to check against
+    double closest_vertex_distance = _minimal_vertex_distance_;
+
     if (!a_delayed_gg_hit.is_delayed() ||
         a_delayed_gg_hit.get_delayed_time() < _minimal_delayed_time_) {
       DT_LOG_TRACE(get_logging_priority(),
@@ -397,13 +400,19 @@ void alpha_finder_driver::_find_short_track_(
             a_delayed_gg_hit.get_x(), a_delayed_gg_hit.get_y(), a_delayed_gg_hit.get_z());
         if (geomtools::is_valid(first)) {
           const double distance = (first - a_delayed_position).mag();
-          if (distance < _minimal_vertex_distance_) {
+          if (distance < _minimal_vertex_distance_ && distance < closest_vertex_distance) {
+            // set a new value for the closest vertex
+            closest_vertex_distance = distance;
             associated_vertex = first;
           }
         }
         if (geomtools::is_valid(last)) {
           const double distance = (last - a_delayed_position).mag();
-          if (distance < _minimal_vertex_distance_) {
+          // previous check was against the minimal vertex distance, but
+          // we want to check against the already asigned distance to see
+          // if this vertex is closer
+          if (distance < _minimal_vertex_distance_ && distance < closest_vertex_distance) {
+            closest_vertex_distance = distance;
             associated_vertex = last;
           }
         }
