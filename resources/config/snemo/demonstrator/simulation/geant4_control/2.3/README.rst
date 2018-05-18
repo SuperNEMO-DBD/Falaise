@@ -3,7 +3,7 @@ Geant4 simulation for SuperNEMO demonstrator
 ================================================================
 
 :Authors: François Mauger, Yves Lemière
-:Date:    2018-01-19
+:Date:    2018-05-18
 
 .. contents::
    :depth: 3
@@ -15,13 +15,13 @@ Presentation
 This directory  contains the files  needed to run Geant4 simulation
 for the SuperNEMO demonstrator simulation.
 
-* Version is : ``2.2``
+* Version is : ``2.3``
 
-This setup reuses a large part of the  ``2.1`` setup depends on:
+This setup reuses a large part of the  ``2.2`` setup depends on:
 
 * the SuperNEMO demonstrator's geometry layout (``4.0``) and its variants.
 * the SuperNEMO vertex generation (``4.1``) and its variants.
-* the SuperNEMO primary event generation (``1.3``) and its variants.
+* the SuperNEMO primary event generation (``1.4``) and its variants.
 
 Files
 =====
@@ -75,7 +75,7 @@ or:
 
    brewsh> bxvariant_inspector \
 	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
-	  --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf" \
+	  --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf" \
           --variant-gui \
 	  --variant-store "myprofile.conf"
 ..
@@ -92,10 +92,10 @@ the default geometry:
    brewsh> LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
      bxg4_production \
      --datatools::logging "warning" \
-     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.2.0/resources" \
      --logging-priority "debug" \
      --load-dll Falaise \
-     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/manager.conf \
+     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/manager.conf \
      --vertex-generator-name "source_pads_bulk"  \
      --vertex-generator-seed 0 \
      --event-generator-name "Tl208" \
@@ -125,10 +125,10 @@ variant geometry layout:
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.X.X/resources" \
      --logging-priority "debug" \
      --load-dll Falaise \
-     --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf" \
      --variant-gui \
      --variant-store "cfg1.conf" \
-     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/manager.conf \
+     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/manager.conf \
      --vertex-generator-seed 0 \
      --event-generator-seed 0  \
      --g4-manager-seed 0       \
@@ -153,10 +153,10 @@ Run in interactive mode:
      --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.X.X/resources" \
      --logging-priority "debug" \
      --load-dll Falaise \
-     --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf" \
      --variant-gui \
      --variant-store "cfg1.conf" \
-     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/manager.conf \
+     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/manager.conf \
      --vertex-generator-seed 0 \
      --event-generator-seed 0  \
      --g4-manager-seed 0       \
