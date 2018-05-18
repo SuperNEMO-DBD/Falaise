@@ -54,8 +54,8 @@ Browse and edit primary event generation variant parameters and options
 .. code:: sh
 
    brewsh> bxvariant_inspector \
-          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
-          --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf" \
+          --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.x.x/resources" \
+          --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf" \
 	  --action doc > flg4ctrl.rst
    brewsh> flg4ctrl.rst > flg4ctrl.html
    brewsh> xdg-open flg4ctrl.html &
@@ -74,7 +74,7 @@ or:
 .. code:: sh
 
    brewsh> bxvariant_inspector \
-	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.0.0/resources" \
+	  --datatools::resource-path="falaise@$(pwd)/BuildProducts/share/Falaise-3.x.x/resources" \
 	  --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf" \
           --variant-gui \
 	  --variant-store "myprofile.conf"
