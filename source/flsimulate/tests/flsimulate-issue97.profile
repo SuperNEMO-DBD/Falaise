@@ -20,7 +20,7 @@ calo_film_thickness=25 um
 generator="source_pads_bulk"
 
 [registry="primary_events"]
-generator = "Rh106"
+generator="Rh106"
 
 [registry="simulation"]
 physics_mode="Constructors"
