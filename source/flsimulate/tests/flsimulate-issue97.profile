@@ -17,7 +17,7 @@ layout/if_basic/shielding=true
 calo_film_thickness=25 um
 
 [registry="vertexes"]
-generator="csource_pads_bulkd"
+generator="source_pads_bulkd"
 
 [registry="primary_events"]
 generator = "Rh106"
