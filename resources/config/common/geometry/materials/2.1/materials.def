@@ -1,0 +1,28 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/common/geometry/materials/2.1/materials.def
+# List of materials (format: datatools::multi_properties):
+
+#@description A list of materials for SuperNEMO experiment
+#@key_label   "name"
+#@meta_label  "type"
+
+#########
+# may 2018, YL
+# density should be estimated
+# here dummy value
+#########
+
+
+####################################################
+[name="snemo::sn124_enriched100_pva" type="material"]
+#@config 100 % enriched tin source material ('àla' LAPP PVA-mix)
+density          : real   = 3.0
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::tin-124"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.90                  0.10
+
+
+
+# end of @falaise:config/common/geometry/materials/2.1/materials.def

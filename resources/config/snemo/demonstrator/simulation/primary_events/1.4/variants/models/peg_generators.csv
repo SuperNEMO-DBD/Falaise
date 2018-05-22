@@ -51,6 +51,8 @@ Mn54 : Mn-54 decay : Calibration :
 Cs137 : Cs-137 decay : Calibration : 
 Se82.2nubb_2MeV : Two neutrino double beta decay of Se-82, 2nubb : DBD/Se82 : 
 Rh106 : Rh106 decay : Background : 
+Sn124.0nubb : Neutrinoless double beta decay of Sn-124, 0nubb(mn) : DBD/Sn124 : 
+Sn124.2nubb : Two neutrino double beta decay of Sn-124, 2nubb : DBD/Sn124 : 
 electron.20keV : Electron with monokinetic energy @ 20 keV : Miscellaneous : 
 electron.50keV : Electron with monokinetic energy @ 50 keV : Miscellaneous : 
 electron.100keV : Electron with monokinetic energy @ 100 keV : Miscellaneous : 

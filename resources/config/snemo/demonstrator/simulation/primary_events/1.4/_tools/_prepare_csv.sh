@@ -50,6 +50,9 @@ bxextract_table_of_objects -i ${common_pe_dir_1_2}/generators/dbd_more.def \
 bxextract_table_of_objects -i ${common_pe_dir_1_3}/generators/more_background.def --group "Background" -G\
 			   >> ${csv_target}
 
+bxextract_table_of_objects -i ${common_pe_dir_1_3}/generators/dbd.def \
+			   >> ${csv_target}
+
 bxextract_table_of_objects -i ${pe_dir_1_2}/generators/misc.def --group "Miscellaneous" -G \
 			   >> ${csv_target}
 

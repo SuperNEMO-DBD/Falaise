@@ -1,0 +1,66 @@
+# -*- mode: conf-unix -*-
+#  @falaise:config/snemo/demonstrator/geometry/4.0/variants/models/shielding.def
+# Description of variants for the definition of the shielding (format: datatools::multi_properties)
+
+
+#############################################
+[name="shielding.on_off.PM" type="parameter"]
+
+#@config A parameter model describing the activation of the shielding
+
+#@description The display name of this variant
+display_name        : string = "Shielding activation"
+
+#@description A short description of the variant
+terse_description   : string = "The activation of the shielding "
+
+#@description The type of the parameter
+type                : string = "boolean"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The default value
+boolean.default     : boolean = true
+
+# #@description List of variants
+# variants : string [2] = "is_active" "is_inactive"
+#
+# #@description The variant model associated to the "is_active" variant
+# variants.is_active.model       : string = "magnetic_field.description.VM"
+#
+# #@description The description of the "is_active" variant
+# variants.is_active.description : string = "Set of parameters for activated magnetic field"
+#
+# #@description The variant model associated to the "is_inactive" variant (empty variant)
+# variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+#
+# #@description The description of the "is_inactive" variant
+# variants.is_inactive.description : string = "Inactive magnetic field"
+#
+# #@description Variant associated to the magnetic field activation
+# boolean.true.variant : string = "is_active"
+#
+# #@description Variant associated to the inactivation of the magnetic field
+# boolean.false.variant : string = "is_inactive"
+
+
+####################################
+[name="shielding.VM" type="variant"]
+
+#@config A variant model describing the parameters for the shielding
+
+#@description The display name of this variant
+display_name       : string = "Shielding"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the shielding"
+
+#@description The list of variant parameters
+parameters : string[1] = "active"
+
+parameters.active.model       : string = "shielding.on_off.PM"
+parameters.active.description : string = "The activation flag of the shielding"
+
+
+# end of @falaise:config/snemo/demonstrator/geometry/4.0/variants/models/shielding.def

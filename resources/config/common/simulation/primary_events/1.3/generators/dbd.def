@@ -1,0 +1,29 @@
+# -*- mode: conf-unix; -*-
+# List of multi-properties (datatools::multi_properties):
+
+#@description A list of DBD generators
+#@key_label  "name"
+#@meta_label "type"
+
+
+#########################################
+[name="Sn124.0nubb" type="genbb::wdecay0"]
+#@config Neutrinoless double beta decay of Sn-124, 0nubb(mn);group=DBD/Sn124
+decay_type      : string  = "DBD"
+decay_isotope   : string  = "Sn124"
+decay_dbd_level : integer = 0
+decay_dbd_mode  : integer = 1 # 0nubb(mn)
+
+
+#########################################
+[name="Sn124.2nubb" type="genbb::wdecay0"]
+#@config Two neutrino double beta decay of Sn-124, 2nubb;group=DBD/Sn124
+decay_type      : string  = "DBD"
+decay_isotope   : string  = "Sn124"
+decay_dbd_level : integer = 0
+decay_dbd_mode  : integer = 4 # 2nubb
+
+
+
+
+# end of dbd.def

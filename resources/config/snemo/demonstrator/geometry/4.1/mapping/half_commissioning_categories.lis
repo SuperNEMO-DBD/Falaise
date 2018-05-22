@@ -1,0 +1,26 @@
+# -*- mode: conf-unix; -*-
+# half_commissioning_categories.lis
+# List of geometry ID categories/types (format: datatools::multi_properties):
+
+#@description A sample list of geometry ID categories/types for tracker submodules
+#@key_label   "category"
+#@meta_label  "type"
+
+
+#############################################
+[category="source_like_plate"    type="1520"]
+inherits : string  = "module"
+
+
+######################################################
+[category="commissioning_source_plane"    type="1500"]
+inherits : string  = "module"
+
+
+#####################################################
+[category="commissioning_source_spot"    type="1510"]
+extends : string    = "commissioning_source_plane"
+by      : string[2] = "column" "row"
+
+
+# end of half_commissioning_categories.lis

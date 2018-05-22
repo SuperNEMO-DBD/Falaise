@@ -19,7 +19,7 @@ for the SuperNEMO demonstrator simulation.
 
 This setup reuses a large part of the  ``2.2`` setup depends on:
 
-* the SuperNEMO demonstrator's geometry layout (``4.0``) and its variants.
+* the SuperNEMO demonstrator's geometry layout (``4.1``) and its variants.
 * the SuperNEMO vertex generation (``4.1``) and its variants.
 * the SuperNEMO primary event generation (``1.4``) and its variants.
 

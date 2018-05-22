@@ -24,6 +24,20 @@ topics : string[1] = "geometry"
 
 topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.0"
 
+  ############
+  # TAG 4.2  #
+  ############
+
+###############################################################################
+[urn="urn:snemo:demonstrator:simulation:vertexes:4.2" category="configuration"]
+
+#@config URN registration of vertex generation setup (tag 4.2) for SuperNEMO demonstrator simulation
+
+description : string = "Vertex generation setup (tag 4.2) for SuperNEMO demonstrator simulation"
+
+topics : string[1] = "geometry"
+
+topic.geometry.component : string = "urn:snemo:demonstrator:geometry:4.1"
 
 ############
 #  DECAYS  #
@@ -208,9 +222,11 @@ topics : string[6] = "variants" "defvarprofile" "expsetup" "vertexes" "decays" "
 topic.variants.component      : string = "urn:snemo:demonstrator:simulation:2.3:variants"
 topic.defvarprofile.component : string = "urn:snemo:demonstrator:simulation:2.2:variants:profiles:default"
 topic.expsetup.component      : string = "urn:snemo:demonstrator:setup:1.0"
-topic.vertexes.component      : string = "urn:snemo:demonstrator:simulation:vertexes:4.1"
+topic.vertexes.component      : string = "urn:snemo:demonstrator:simulation:vertexes:4.2"
 topic.decays.component        : string = "urn:snemo:demonstrator:simulation:decays:1.4"
 topic.services.component      : string = "urn:snemo:demonstrator:simulation:2.1:services"
+
+
 
 
 
