@@ -15,37 +15,40 @@
 
 namespace snemo {
 
-namespace datamodel {
+	namespace datamodel {
 
-template <class Archive>
-void sim_tracker_digi_hit::serialize(Archive& ar, const unsigned int /* version */) {
-  ar& boost::serialization::make_nvp("geomtools__base_hit",
-                                     boost::serialization::base_object<geomtools::base_hit>(*this));
-  if (has_anode_t0()) {
-    ar& boost::serialization::make_nvp("anode_t0", _anode_t0_);
-  }
-  if (has_anode_t1()) {
-    ar& boost::serialization::make_nvp("anode_t1", _anode_t1_);
-  }
-  if (has_anode_t2()) {
-    ar& boost::serialization::make_nvp("anode_t2", _anode_t2_);
-  }
-  if (has_anode_t3()) {
-    ar& boost::serialization::make_nvp("anode_t3", _anode_t3_);
-  }
-  if (has_anode_t4()) {
-    ar& boost::serialization::make_nvp("anode_t4", _anode_t4_);
-  }
-  if (has_cathode_t5()) {
-    ar& boost::serialization::make_nvp("cathode_t5", _cathode_t5_);
-  }
-  if (has_cathode_t6()) {
-    ar& boost::serialization::make_nvp("cathode_t6", _cathode_t6_);
-  }
-  return;
-}
+		template <class Archive>
+		void sim_tracker_digi_hit::serialize(Archive& ar, const unsigned int /* version */) {
+			ar & boost::serialization::make_nvp("geomtools__base_hit",
+																					boost::serialization::base_object<geomtools::base_hit>(*this));
 
-}  // end of namespace datamodel
+			ar & boost::serialization::make_nvp("elec_id", _elec_id_);
+
+			if (has_anode_R0()) {
+				ar & boost::serialization::make_nvp("anode_R0", _anode_R0_);
+			}
+			if (has_anode_R1()) {
+				ar & boost::serialization::make_nvp("anode_R1", _anode_R1_);
+			}
+			if (has_anode_R2()) {
+				ar & boost::serialization::make_nvp("anode_R2", _anode_R2_);
+			}
+			if (has_anode_R3()) {
+				ar & boost::serialization::make_nvp("anode_R3", _anode_R3_);
+			}
+			if (has_anode_R4()) {
+				ar & boost::serialization::make_nvp("anode_R4", _anode_R4_);
+			}
+			if (has_cathode_R5()) {
+				ar & boost::serialization::make_nvp("cathode_R5", _cathode_R5_);
+			}
+			if (has_cathode_R6()) {
+				ar & boost::serialization::make_nvp("cathode_R6", _cathode_R6_);
+			}
+			return;
+		}
+
+	}  // end of namespace datamodel
 
 }  // end of namespace snemo
 

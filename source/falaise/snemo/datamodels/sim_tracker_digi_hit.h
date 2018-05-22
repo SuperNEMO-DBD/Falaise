@@ -17,139 +17,163 @@
 
 namespace snemo {
 
-namespace datamodel {
+	namespace datamodel {
 
-/// \brief Simulated tracker digitized hit.
-class sim_tracker_digi_hit : public geomtools::base_hit {
- public:
-  static const int16_t INVALID_TIME = std::numeric_limits<int16_t>::min();
-  static const int16_t OVERFLOW_TIME = std::numeric_limits<int16_t>::min() + 1;
-  static const int16_t UNDERFLOW_TIME = std::numeric_limits<int16_t>::max();
+		/// \brief Simulated tracker digitized hit.
+		class sim_tracker_digi_hit : public geomtools::base_hit
+		{
 
-  /// Masks to automatically tag the attributes to be stored
-  enum more_store_mask_type {
-    STORE_ANODE_T0 = datatools::bit_mask::bit03,    //!< Serialization mask for the anode t0
-    STORE_ANODE_T1 = datatools::bit_mask::bit04,    //!< Serialization mask for the anode t1
-    STORE_ANODE_T2 = datatools::bit_mask::bit05,    //!< Serialization mask for the anode t2
-    STORE_ANODE_T3 = datatools::bit_mask::bit06,    //!< Serialization mask for the anode t3
-    STORE_ANODE_T4 = datatools::bit_mask::bit07,    //!< Serialization mask for the anode t4
-    STORE_CATHODE_T5 = datatools::bit_mask::bit08,  //!< Serialization mask for the cathode t5
-    STORE_CATHODE_T6 = datatools::bit_mask::bit09   //!< Serialization mask for the cathode t6
-  };
+		public:
 
-  /// Constructor
-  sim_tracker_digi_hit();
+			static const int64_t INVALID_TIME = std::numeric_limits<int64_t>::min();
+			static const int64_t OVERFLOW_TIME = std::numeric_limits<int64_t>::min() + 1;
+			static const int64_t UNDERFLOW_TIME = std::numeric_limits<int64_t>::max();
 
-  /// Destructor
-  virtual ~sim_tracker_digi_hit();
+			/// Masks to automatically tag the attributes to be stored
+			enum more_store_mask_type
+				{
+					STORE_ANODE_R0   = datatools::bit_mask::bit03,  //!< Serialization mask for the anode t0
+					STORE_ANODE_R1	 = datatools::bit_mask::bit04,	//!< Serialization mask for the anode t1
+					STORE_ANODE_R2	 = datatools::bit_mask::bit05,	//!< Serialization mask for the anode t2
+					STORE_ANODE_R3	 = datatools::bit_mask::bit06,	//!< Serialization mask for the anode t3
+					STORE_ANODE_R4	 = datatools::bit_mask::bit07,	//!< Serialization mask for the anode t4
+					STORE_CATHODE_R5 = datatools::bit_mask::bit08,  //!< Serialization mask for the cathode t5
+					STORE_CATHODE_R6 = datatools::bit_mask::bit09   //!< Serialization mask for the cathode t6
+				};
 
-  /// Check validity
-  bool is_valid() const;
+			/// Constructor
+			sim_tracker_digi_hit();
 
-  /// Reset
-  void reset();
+			/// Destructor
+			virtual ~sim_tracker_digi_hit();
 
-  /// Set the anode t0
-  void set_anode_t0(const int16_t);
+			/// Check validity
+			bool is_valid() const;
 
-  /// Reset the anode t0
-  void reset_anode_t0();
+			/// Reset
+			void reset();
 
-  /// Check if anode t0 is available
-  bool has_anode_t0() const;
+			/// Check if the electronic ID is valid
+			bool has_elec_id() const;
 
-  /// Return the anode t0
-  int16_t get_anode_t0() const;
+			/// Reset the electronic ID
+			void invalidate_elec_id();
 
-  /// Set the anode t1
-  void set_anode_t1(const int16_t);
+			/// Get a reference on the non-mutable electronic ID
+			const geomtools::geom_id & get_elec_id() const;
 
-  /// Reset the anode t1
-  void reset_anode_t1();
+			/// Get a reference on the mutable electronic ID
+			geomtools::geom_id & grab_elec_id();
 
-  /// Check if anode t1 is available
-  bool has_anode_t1() const;
+			/// Set the electronic ID
+			void set_elec_id(const geomtools::geom_id & a_gid);
 
-  /// Return the anode t1
-  int16_t get_anode_t1() const;
+			/// Set the anode t0
+			void set_anode_R0(const int64_t);
 
-  /// Set the anode t2
-  void set_anode_t2(const int16_t);
+			/// Reset the anode t0
+			void reset_anode_R0();
 
-  /// Reset the anode t2
-  void reset_anode_t2();
+			/// Check if anode t0 is available
+			bool has_anode_R0() const;
 
-  /// Check if anode t2 is available
-  bool has_anode_t2() const;
+			/// Return the anode t0
+			int64_t get_anode_R0() const;
 
-  /// Return the anode t2
-  int16_t get_anode_t2() const;
+			/// Set the anode t1
+			void set_anode_R1(const int64_t);
 
-  /// Set the anode t3
-  void set_anode_t3(const int16_t);
+			/// Reset the anode t1
+			void reset_anode_R1();
 
-  /// Reset the anode t3
-  void reset_anode_t3();
+			/// Check if anode t1 is available
+			bool has_anode_R1() const;
 
-  /// Check if anode t3 is available
-  bool has_anode_t3() const;
+			/// Return the anode t1
+			int64_t get_anode_R1() const;
 
-  /// Return the anode t3
-  int16_t get_anode_t3() const;
+			/// Set the anode t2
+			void set_anode_R2(const int64_t);
 
-  /// Set the anode t4
-  void set_anode_t4(const int16_t);
+			/// Reset the anode t2
+			void reset_anode_R2();
 
-  /// Reset the anode t4
-  void reset_anode_t4();
+			/// Check if anode t2 is available
+			bool has_anode_R2() const;
 
-  /// Check if anode t4 is available
-  bool has_anode_t4() const;
+			/// Return the anode t2
+			int64_t get_anode_R2() const;
 
-  /// Return the anode t4
-  int16_t get_anode_t4() const;
+			/// Set the anode t3
+			void set_anode_R3(const int64_t);
 
-  /// Set the anode t5
-  void set_cathode_t5(const int16_t);
+			/// Reset the anode t3
+			void reset_anode_R3();
 
-  /// Reset the anode t5
-  void reset_cathode_t5();
+			/// Check if anode t3 is available
+			bool has_anode_R3() const;
 
-  /// Check if cathode t5 is available
-  bool has_cathode_t5() const;
+			/// Return the anode t3
+			int64_t get_anode_R3() const;
 
-  /// Return the cathode t5
-  int16_t get_cathode_t5() const;
+			/// Set the anode t4
+			void set_anode_R4(const int64_t);
 
-  /// Set the cathode t6
-  void set_cathode_t6(const int16_t);
+			/// Reset the anode t4
+			void reset_anode_R4();
 
-  /// Reset the anode t6
-  void reset_cathode_t6();
+			/// Check if anode t4 is available
+			bool has_anode_R4() const;
 
-  /// Check if cathode t6 is available
-  bool has_cathode_t6() const;
+			/// Return the anode t4
+			int64_t get_anode_R4() const;
 
-  /// Return the cathode t6
-  int16_t get_cathode_t6() const;
+			/// Set the anode t5
+			void set_cathode_R5(const int64_t);
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+			/// Reset the anode t5
+			void reset_cathode_R5();
 
- private:
-  int16_t _anode_t0_ = INVALID_TIME;    //!< Anode differential time t0 (relative time reference)
-  int16_t _anode_t1_ = INVALID_TIME;    //!< Anode differential time t1
-  int16_t _anode_t2_ = INVALID_TIME;    //!< Anode differential time t2
-  int16_t _anode_t3_ = INVALID_TIME;    //!< Anode differential time t3 (cathode bottom)
-  int16_t _anode_t4_ = INVALID_TIME;    //!< Anode differential time t4 (cathode top)
-  int16_t _cathode_t5_ = INVALID_TIME;  //!< Cathode time t5 (cathode bottom)
-  int16_t _cathode_t6_ = INVALID_TIME;  //!< Cathode time t6 (cathode top)
+			/// Check if cathode t5 is available
+			bool has_cathode_R5() const;
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+			/// Return the cathode t5
+			int64_t get_cathode_R5() const;
 
-}  // end of namespace datamodel
+			/// Set the cathode t6
+			void set_cathode_R6(const int64_t);
+
+			/// Reset the anode t6
+			void reset_cathode_R6();
+
+			/// Check if cathode t6 is available
+			bool has_cathode_R6() const;
+
+			/// Return the cathode t6
+			int64_t get_cathode_R6() const;
+
+			/// Smart print
+			virtual void tree_dump(std::ostream& a_out = std::clog,
+														 const std::string& a_title = "",
+														 const std::string& a_indent = "",
+														 bool a_inherit = false) const;
+
+		private:
+
+			geomtools::geom_id _elec_id_; //!< The Electronic ID of the Geiger cell
+
+			int64_t _anode_R0_   = INVALID_TIME;	//!< Anode differential time t0 (relative time reference)
+			int64_t _anode_R1_	 = INVALID_TIME;	//!< Anode differential time t1
+			int64_t _anode_R2_	 = INVALID_TIME;	//!< Anode differential time t2
+			int64_t _anode_R3_	 = INVALID_TIME;	//!< Anode differential time t3
+			int64_t _anode_R4_	 = INVALID_TIME;	//!< Anode differential time t4
+			int64_t _cathode_R5_ = INVALID_TIME;  //!< Cathode time t5
+			int64_t _cathode_R6_ = INVALID_TIME;  //!< Cathode time t6
+
+			DATATOOLS_SERIALIZATION_DECLARATION()
+		};
+
+	}  // end of namespace datamodel
 
 }  // end of namespace snemo
 

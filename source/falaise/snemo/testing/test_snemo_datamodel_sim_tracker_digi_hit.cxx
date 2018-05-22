@@ -28,11 +28,11 @@ int main(int argc_, char** argv_) {
       my_hit.set_hit_id(23);
       my_hit.grab_geom_id().set_type(1234);
       my_hit.grab_geom_id().set_address(3, 0, 10);
-      my_hit.set_anode_t0(323);
-      my_hit.set_anode_t1(423);
-      my_hit.set_anode_t2(432);
-      my_hit.set_anode_t3(673);
-      my_hit.set_cathode_t6(683);
+      my_hit.set_anode_R0(323);
+      my_hit.set_anode_R1(423);
+      my_hit.set_anode_R2(432);
+      my_hit.set_anode_R3(673);
+      my_hit.set_cathode_R6(683);
       my_hit.tree_dump(std::clog, "Simulated tracker digitized hit: ");
 
       {

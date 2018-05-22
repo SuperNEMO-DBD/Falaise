@@ -24,60 +24,84 @@
 #include <datatools/handle.h>
 
 // This project:
-#include <falaise/snemo/datamodels/sim_digi_event_data.h>
+#include <falaise/snemo/datamodels/sim_calo_digi_hit.h>
+#include <falaise/snemo/datamodels/sim_tracker_digi_hit.h>
+#include <falaise/snemo/datamodels/sim_trigger_digi_data.h>
 
 namespace snemo {
 
-namespace datamodel {
+	namespace datamodel {
 
-/// \brief The data structure that hosts information about the digitized information
-/// (trigger, readout and hits) associated to a simulated event.
-class sim_digi_data : public datatools::i_serializable, public datatools::i_tree_dumpable {
- public:
-  /// Handle to a simulated digitize event
-  typedef datatools::handle<sim_digi_event_data> sim_digi_event_handle_type;
+		/// \brief The data structure that hosts information about the digitized information
+		/// (trigger, readout and hits) associated to a simulated event.
+		class sim_digi_data : public datatools::i_serializable,
+													public datatools::i_tree_dumpable
+		{
+		public:
 
-  /// Collection of handles on trigger event
-  typedef std::vector<sim_digi_event_handle_type> sim_digi_event_collection_type;
+			/// The collection of calorimeter digi hits
+			typedef std::vector<sim_calo_digi_hit> calo_digi_hit_collection_type;
 
-  /// Constructor
-  sim_digi_data();
+			/// The collection of tracker digi hits
+			typedef std::vector<sim_tracker_digi_hit> tracker_digi_hit_collection_type;
 
-  /// Destructor
-  virtual ~sim_digi_data();
+			/// The collection of trigger info
+			typedef std::vector<sim_trigger_digi_data> trigger_info_data_collection_type;
 
-  /// Check validity
-  bool is_valid() const;
+			/// Constructor
+			sim_digi_data();
 
-  /// Reset
-  void reset();
+			/// Destructor
+			virtual ~sim_digi_data();
 
-  /// Return the const collection of trigger digi events
-  const sim_digi_event_collection_type& get_digi_events() const;
+			/// Check validity
+			bool is_valid() const;
 
-  /// Return the mutable collection of trigger digi events
-  sim_digi_event_collection_type& grab_digi_events();
+			/// Reset
+			void reset();
 
-  /// Return the const container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
+			/// Return the const collection of trigger digi events
+			const calo_digi_hit_collection_type & get_calo_digi_hits() const;
 
-  /// Return the mutable container of auxiliary properties
-  datatools::properties& grab_auxiliaries();
+			/// Return the mutable collection of trigger digi events
+			calo_digi_hit_collection_type & grab_calo_digi_hits();
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+			/// Return the const collection of trigger digi events
+			const tracker_digi_hit_collection_type & get_tracker_digi_hits() const;
 
- private:
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties
+			/// Return the mutable collection of trigger digi events
+			tracker_digi_hit_collection_type & grab_tracker_digi_hits();
 
-  sim_digi_event_collection_type
-      _digi_events_;  //!< Simulated digitized events (trigger + readout datas)
+			/// Return the const collection of trigger digi events
+			const trigger_info_data_collection_type & get_trigger_digi_data() const;
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+			/// Return the mutable collection of trigger digi events
+			trigger_info_data_collection_type & grab_trigger_digi_data();
 
-}  // end of namespace datamodel
+			/// Return the const container of auxiliary properties
+			const datatools::properties & get_auxiliaries() const;
+
+			/// Return the mutable container of auxiliary properties
+			datatools::properties & grab_auxiliaries();
+
+			/// Smart print
+			virtual void tree_dump(std::ostream& a_out = std::clog,
+														 const std::string& a_title = "",
+														 const std::string& a_indent = "",
+														 bool a_inherit = false) const;
+
+		private:
+
+			datatools::properties _auxiliaries_;  //!< Auxiliary properties
+
+			calo_digi_hit_collection_type     _calo_digi_hits_;    //!< Calorimeter Digitized Hits
+			tracker_digi_hit_collection_type  _tracker_digi_hits_; //!< Tracker Digitized Hits
+			trigger_info_data_collection_type _trigger_data_;      //!< Trigger data
+
+			DATATOOLS_SERIALIZATION_DECLARATION()
+		};
+
+	}  // end of namespace datamodel
 
 }  // end of namespace snemo
 

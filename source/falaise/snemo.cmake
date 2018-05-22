@@ -9,14 +9,10 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/datamodels/sim_trigger_digi_data.h
   snemo/datamodels/sim_trigger_digi_data.ipp
-  snemo/datamodels/sim_readout_digi_data.h
-  snemo/datamodels/sim_readout_digi_data.ipp
   snemo/datamodels/sim_tracker_digi_hit.h
   snemo/datamodels/sim_tracker_digi_hit.ipp
   snemo/datamodels/sim_calo_digi_hit.h
   snemo/datamodels/sim_calo_digi_hit.ipp
-  snemo/datamodels/sim_digi_event_data.h
-  snemo/datamodels/sim_digi_event_data.ipp
   snemo/datamodels/sim_digi_data.h
   snemo/datamodels/sim_digi_data.ipp
 
@@ -136,10 +132,8 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/gg_track_utils.cc
 
   snemo/datamodels/sim_trigger_digi_data.cc
-  snemo/datamodels/sim_readout_digi_data.cc
   snemo/datamodels/sim_tracker_digi_hit.cc
   snemo/datamodels/sim_calo_digi_hit.cc
-  snemo/datamodels/sim_digi_event_data.cc
   snemo/datamodels/sim_digi_data.cc
 
   snemo/geometry/calo_locator.cc
