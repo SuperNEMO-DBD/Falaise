@@ -351,8 +351,10 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.2/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/services.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/documentation/flsimulation-variant-doc.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/gdm.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf

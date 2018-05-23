@@ -123,6 +123,16 @@ add_test(NAME flsimulate-issue97-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue97.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue97.brio"
   )
 
+# - Flsimulate issue #98
+# - Variant profile is given : flsimulate-issue98.profile
+add_test(NAME flsimulate-issue98-run
+  COMMAND flsimulate
+          -d "issue98@${CMAKE_CURRENT_BINARY_DIR}"
+          -d "issue98variant@${CMAKE_CURRENT_SOURCE_DIR}/"
+          -d "issue98rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue98.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue98.brio"
+  )
+
 
 
 # Tests dedicated to the validation of fixes

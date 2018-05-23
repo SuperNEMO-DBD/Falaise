@@ -14,12 +14,6 @@ material : string = "snemo::se82_enriched100_pva"
 
 
 ########################################
-[name="snemo::sn124::basic" type="alias"]
-#@config The material alias for the betabeta enriched Sn124 source material (basic layout)
-material : string = "snemo::sn124_enriched100_pva"
-
-
-########################################
 [name="snemo::ca48::basic" type="alias"]
 #@config The material alias for the betabeta Ca48 source material (basic layout)
 material : string = "snemo::ca48::nemo3"
@@ -37,6 +31,12 @@ material : string = "snemo::nd150::nemo3"
 material : string = "snemo::mo100::nemo3"
 
 
+########################################
+[name="snemo::sn124::basic" type="alias"]
+#@config The material alias for the betabeta enriched Sn124 source material (basic layout)
+material : string = "snemo::sn124_enriched100_pva"
+
+
 ##############################################
 [name="bb_source_material.basic" type="alias"]
 
@@ -52,7 +52,7 @@ material : string = "snemo::ca48::basic"
 material : string = "snemo::se82::basic"
 
 #@description The name of the referenced material
-#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_sn124|true
+#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_sn124|false
 material : string = "snemo::sn124::basic"
 
 #@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_mo100|false

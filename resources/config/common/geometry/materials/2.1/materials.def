@@ -15,7 +15,7 @@
 
 ####################################################
 [name="snemo::sn124_enriched100_pva" type="material"]
-#@config 100 % enriched tin source material ('àla' LAPP PVA-mix)
+#@config 100 % enriched tin source material (LAPP PVA-mix)
 density          : real   = 3.0
 density.unit     : string = "g/cm3"
 state            : string = "solid"
