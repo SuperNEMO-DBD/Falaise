@@ -17,58 +17,59 @@
 
 namespace snemo {
 
-	namespace datamodel {
+  namespace datamodel {
 
-		/// \brief Simulated calo digitized hit.
-		class sim_calo_digi_hit : public mctools::digitization::sampled_signal
-		{
-		public:
-			/// Constructor
-			sim_calo_digi_hit();
+    /// \brief Simulated calo digitized hit.
+    class sim_calo_digi_hit : public mctools::digitization::sampled_signal
+    {
+    public:
 
-			/// Destructor
-			virtual ~sim_calo_digi_hit();
+      /// Constructor
+      sim_calo_digi_hit();
 
-			/// Check validity
-			bool is_valid() const;
+      /// Destructor
+      virtual ~sim_calo_digi_hit();
 
-			/// Reset
-			void reset();
+      /// Check validity
+      bool is_valid() const;
 
-			/// Smart print
-			virtual void tree_dump(std::ostream& a_out = std::clog,
-														 const std::string& a_title = "",
-														 const std::string& a_indent = "",
-														 bool a_inherit = false) const;
+      /// Reset
+      void reset();
 
-		private:
+      /// Smart print
+      virtual void tree_dump(std::ostream & a_out = std::clog,
+			     const std::string & a_title = "",
+			     const std::string & a_indent = "",
+			     bool a_inherit = false) const;
 
-			DATATOOLS_SERIALIZATION_DECLARATION()
+    private:
 
-			// Data:
-			uint64_t		_trigger_ID_; //!< Trigger ID number
+      // Data:
+      geomtools::geom_id _elec_id_; //!< The Electronic ID of the Optical module
+      uint64_t _trigger_ID_; //!< Trigger ID number
 
-			bool		 _is_LTO_;   //!< Low Threshold Only flag
-			bool	 	 _is_LT_;    //!< Low Threshold flag
-			bool		 _is_HT_;    //!< High Threshold flag
-			uint32_t _LT_CT_25_; //!< Low Threshold Clocktick 25ns
-			uint32_t _HT_CT_25_; //!< High Threshold Clocktick 25ns
+      bool _is_LTO_; //!< Low Threshold Only flag
+      bool _is_LT_;  //!< Low Threshold flag
+      bool _is_HT_;  //!< High Threshold flag
+      uint32_t _LT_CT_25_; //!< Low Threshold Clocktick 25ns
+      uint32_t _HT_CT_25_; //!< High Threshold Clocktick 25ns
 
-			int64_t _timestamp_; //!< LT crossing timestamp
-			int16_t _baseline_;  //!< Baseline value in ADC
-			int16_t _peak_;      //!< Peak value in ADC
-			int16_t _charge_;    //!< Charge value in ADC
-			bool    _charge_overflow_; //!< Charge overflow flag
+      int64_t _timestamp_; //!< LT crossing timestamp
+      int16_t _baseline_;  //!< Baseline value in ADC
+      int16_t _peak_;      //!< Peak value in ADC
+      int16_t _charge_;    //!< Charge value in ADC
+      bool    _charge_overflow_; //!< Charge overflow flag
 
-			uint32_t _rising_cell_;    //< Index of the rising cell
-			uint32_t _rising_offset_;  //< Offset of the rising cell
-			uint32_t _falling_cell_;	 //< Index of the falling cell
-			uint32_t _falling_offset_; //< Offset of the falling cell
+      uint32_t _rising_cell_; //< Index of the rising cell
+      uint32_t _rising_offset_; //< Offset of the rising cell
+      uint32_t _falling_cell_; //< Index of the falling cell
+      uint32_t _falling_offset_; //< Offset of the falling cell
 
+      DATATOOLS_SERIALIZATION_DECLARATION()
 
-		};
+    };
 
-	}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

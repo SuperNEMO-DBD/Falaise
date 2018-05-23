@@ -58,28 +58,36 @@ void test1() {
 
   // Create and set some dummy data
   snemo::datamodel::sim_digi_data sddWrite;
-  // Calling back() on empty vector is *undefined behaviour*
-  // so must put one event into sim_digi_data instance before
-  // the loop can proceed
+
   auto & calo_collection    = sddWrite.grab_calo_digi_hits();
   // auto & tracker_collection = sddWrite.grab_tracker_digi_hits();
   // auto & trigger_collection = sddWrite.grab_trigger_digi_data();
 
+
   for (std::size_t icalohit = 0; icalohit < 3; icalohit++)
     {
-      snemo::datamodel::sim_calo_digi_hit dummy;
-      calo_collection.push_back(dummy);
+      snemo::datamodel::sim_digi_data::calo_digi_hit_handle_type new_handle(new snemo::datamodel::sim_calo_digi_hit);
+      snemo::datamodel::sim_calo_digi_hit & calo_hit = new_handle.grab();
 
-      snemo::datamodel::sim_calo_digi_hit& calo_hit = sddWrite.grab_calo_digi_hits().back();
       calo_hit.set_hit_id(icalohit);
       calo_hit.grab_geom_id().set_type(1234);
       calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
       calo_hit.set_sampling_frequency(1.0 * gigahertz);
       calo_hit.set_number_of_samples(128, 0);
+      calo_hit.tree_dump();
+
+      calo_collection.push_back(new_handle);
     }
 
   // Write the data to bare xml file
   sddWrite.tree_dump(std::clog, "Simulated Digitized Data: ");
+
+  std::clog << "Calo collection size = " << calo_collection.size() << std::endl;
+  for (auto itcalo = calo_collection.begin(); itcalo != calo_collection.end(); itcalo++)
+    {
+      itcalo->get().tree_dump();
+    }
+
   datatools::data_writer writer("test_snemo_datamodel_sim_digi_data.xml",
                                 datatools::using_multi_archives);
   writer.store(sddWrite);
@@ -99,7 +107,7 @@ void test2() {
     datatools::things event_record;
 
     // Add event header bank:
-    snemo::datamodel::event_header& eh = event_record.add<snemo::datamodel::event_header>("EH");
+    snemo::datamodel::event_header & eh = event_record.add<snemo::datamodel::event_header>("EH");
     eh.grab_id().set_run_number(12);
     eh.grab_id().set_event_number(654);
     eh.grab_properties().store("test", "foo");

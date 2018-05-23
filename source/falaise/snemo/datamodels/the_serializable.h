@@ -154,12 +154,12 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::particle_track_data)
  * snemo::datamodel::sim_digi_data *
  ***********************************/
 
-#include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_trigger_digi_data)
 #include <falaise/snemo/datamodels/sim_calo_digi_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_calo_digi_hit)
 #include <falaise/snemo/datamodels/sim_tracker_digi_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_tracker_digi_hit)
+#include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_trigger_digi_data)
 #include <falaise/snemo/datamodels/sim_digi_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_digi_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::sim_digi_data)

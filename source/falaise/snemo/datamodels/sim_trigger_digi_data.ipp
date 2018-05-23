@@ -17,15 +17,16 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-template <class Archive>
-void sim_trigger_digi_data::serialize(Archive& ar, const unsigned int /* version */) {
-  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  return;
-}
+    template <class Archive>
+    void sim_trigger_digi_data::serialize(Archive& ar, const unsigned int /* version */)
+    {
+      ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+      return;
+    }
 
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

@@ -58,12 +58,12 @@ namespace snemo {
       return _tracker_digi_hits_;
     }
 
-    const sim_digi_data::trigger_info_data_collection_type & sim_digi_data::get_trigger_digi_data() const
+    const sim_digi_data::trigger_digi_data_collection_type & sim_digi_data::get_trigger_digi_data() const
     {
       return _trigger_data_;
     }
 
-    sim_digi_data::trigger_info_data_collection_type & sim_digi_data::grab_trigger_digi_data()
+    sim_digi_data::trigger_digi_data_collection_type & sim_digi_data::grab_trigger_digi_data()
     {
       return _trigger_data_;
     }
@@ -78,23 +78,23 @@ namespace snemo {
       return _auxiliaries_;
     }
 
-    void sim_digi_data::tree_dump(std::ostream& out_,
-				  const std::string& title_,
-				  const std::string& indent_,
+    void sim_digi_data::tree_dump(std::ostream & out_,
+				  const std::string & title_,
+				  const std::string & indent_,
 				  bool inherit_) const
     {
       if (!title_.empty())
 	{
-	out_ << indent_ << title_ << std::endl;
-      }
+	  out_ << indent_ << title_ << std::endl;
+	}
 
       // Auxiliary properties:
       {
 	out_ << indent_ << datatools::i_tree_dumpable::tag << "Auxiliary properties : ";
 	if (_auxiliaries_.size() == 0)
 	  {
-	  out_ << "<empty>";
-	}
+	    out_ << "<empty>";
+	  }
 	out_ << std::endl;
 	{
 	  std::ostringstream indent_oss;

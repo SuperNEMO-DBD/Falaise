@@ -22,19 +22,20 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-template <class Archive>
-void sim_digi_data::serialize(Archive& ar, const unsigned int /* version */) {
-  ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  ar& boost::serialization::make_nvp("auxiliaries",       _auxiliaries_);
-  ar& boost::serialization::make_nvp("calo_digi_hits",    _calo_digi_hits_);
-  ar& boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
-  ar& boost::serialization::make_nvp("trigger_data",      _trigger_data_);
-  return;
-}
+    template <class Archive>
+    void sim_digi_data::serialize(Archive & ar, const unsigned int /* version */)
+    {
+      ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+      ar & boost::serialization::make_nvp("auxiliaries",       _auxiliaries_);
+      ar & boost::serialization::make_nvp("calo_digi_hits",    _calo_digi_hits_);
+      ar & boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
+      ar & boost::serialization::make_nvp("trigger_data",      _trigger_data_);
+      return;
+    }
 
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 
