@@ -11,6 +11,7 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 // - Bayeux/datatools:
 #include <bayeux/datatools/i_serializable.ipp>
 #include <bayeux/datatools/properties.ipp>
@@ -28,10 +29,10 @@ namespace snemo {
     void sim_digi_data::serialize(Archive & ar, const unsigned int /* version */)
     {
       ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-      ar & boost::serialization::make_nvp("auxiliaries",       _auxiliaries_);
       ar & boost::serialization::make_nvp("calo_digi_hits",    _calo_digi_hits_);
       ar & boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
       ar & boost::serialization::make_nvp("trigger_data",      _trigger_data_);
+      ar & boost::serialization::make_nvp("auxiliaries",       _properties_);
       return;
     }
 

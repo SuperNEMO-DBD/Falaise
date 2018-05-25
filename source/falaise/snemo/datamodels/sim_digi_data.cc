@@ -12,16 +12,10 @@ namespace snemo {
 
     sim_digi_data::sim_digi_data()
     {
-      _calo_digi_hits_.clear();
-      _tracker_digi_hits_.clear();
-      _trigger_data_.clear();
-      _auxiliaries_.clear();
-      return;
     }
 
     sim_digi_data::~sim_digi_data()
     {
-      return;
     }
 
     bool sim_digi_data::is_valid() const
@@ -34,7 +28,7 @@ namespace snemo {
       _calo_digi_hits_.clear();
       _tracker_digi_hits_.clear();
       _trigger_data_.clear();
-      _auxiliaries_.clear();
+      _properties_.clear();
       return;
     }
 
@@ -68,14 +62,14 @@ namespace snemo {
       return _trigger_data_;
     }
 
-    const datatools::properties & sim_digi_data::get_auxiliaries() const
+    const datatools::properties & sim_digi_data::get_properties() const
     {
-      return _auxiliaries_;
+      return _properties_;
     }
 
-    datatools::properties & sim_digi_data::grab_auxiliaries()
+    datatools::properties & sim_digi_data::grab_properties()
     {
-      return _auxiliaries_;
+      return _properties_;
     }
 
     void sim_digi_data::tree_dump(std::ostream & out_,
@@ -91,7 +85,7 @@ namespace snemo {
       // Auxiliary properties:
       {
 	out_ << indent_ << datatools::i_tree_dumpable::tag << "Auxiliary properties : ";
-	if (_auxiliaries_.size() == 0)
+	if (_properties_.size() == 0)
 	  {
 	    out_ << "<empty>";
 	  }
@@ -100,7 +94,7 @@ namespace snemo {
 	  std::ostringstream indent_oss;
 	  indent_oss << indent_;
 	  indent_oss << datatools::i_tree_dumpable::skip_tag;
-	  _auxiliaries_.tree_dump(out_, "", indent_oss.str());
+	  _properties_.tree_dump(out_, "", indent_oss.str());
 	}
       }
 

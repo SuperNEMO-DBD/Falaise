@@ -20,40 +20,16 @@ namespace snemo {
     template <class Archive>
     void sim_tracker_digi_hit::serialize(Archive& ar, const unsigned int /* version */)
     {
-      ar & boost::serialization::make_nvp("geomtools__base_hit",
-					  boost::serialization::base_object<geomtools::base_hit>(*this));
-
+      ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar & boost::serialization::make_nvp("elec_id", _elec_id_);
-      ar & boost::serialization::make_nvp("trigger_ID", _trigger_ID_);
-
-      if (has_anode_R0())
-	{
-	  ar & boost::serialization::make_nvp("anode_R0", _anode_R0_);
-	}
-      if (has_anode_R1())
-	{
-	  ar & boost::serialization::make_nvp("anode_R1", _anode_R1_);
-	}
-      if (has_anode_R2())
-	{
-	  ar & boost::serialization::make_nvp("anode_R2", _anode_R2_);
-	}
-      if (has_anode_R3())
-	{
-	  ar & boost::serialization::make_nvp("anode_R3", _anode_R3_);
-	}
-      if (has_anode_R4())
-	{
-	  ar & boost::serialization::make_nvp("anode_R4", _anode_R4_);
-	}
-      if (has_cathode_R5())
-	{
-	  ar & boost::serialization::make_nvp("cathode_R5", _cathode_R5_);
-	}
-      if (has_cathode_R6())
-	{
-	  ar & boost::serialization::make_nvp("cathode_R6", _cathode_R6_);
-	}
+      ar & boost::serialization::make_nvp("trigger_id", _trigger_id_);
+      ar & boost::serialization::make_nvp("anode_R0", _anode_R0_);
+      ar & boost::serialization::make_nvp("anode_R1", _anode_R1_);
+      ar & boost::serialization::make_nvp("anode_R2", _anode_R2_);
+      ar & boost::serialization::make_nvp("anode_R3", _anode_R3_);
+      ar & boost::serialization::make_nvp("anode_R4", _anode_R4_);
+      ar & boost::serialization::make_nvp("cathode_R5", _cathode_R5_);
+      ar & boost::serialization::make_nvp("cathode_R6", _cathode_R6_);
 
       return;
     }

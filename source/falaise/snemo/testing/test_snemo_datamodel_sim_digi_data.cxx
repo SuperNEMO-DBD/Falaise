@@ -20,9 +20,7 @@
 
 // This project :
 #include <snemo/datamodels/event_header.h>
-#include <snemo/datamodels/sim_calo_digi_hit.h>
 #include <snemo/datamodels/sim_digi_data.h>
-#include <snemo/datamodels/sim_tracker_digi_hit.h>
 
 void test1();
 void test2();
@@ -54,26 +52,25 @@ int main(int argc_, char** argv_) {
 
 void test1() {
   std::clog << "\ntest1: running...\n";
-  double gigahertz = 1.e9 * CLHEP::hertz;
+  // double gigahertz = 1.e9 * CLHEP::hertz;
 
   // Create and set some dummy data
   snemo::datamodel::sim_digi_data sddWrite;
 
-  auto & calo_collection    = sddWrite.grab_calo_digi_hits();
+  auto & calo_collection = sddWrite.grab_calo_digi_hits();
   // auto & tracker_collection = sddWrite.grab_tracker_digi_hits();
   // auto & trigger_collection = sddWrite.grab_trigger_digi_data();
-
 
   for (std::size_t icalohit = 0; icalohit < 3; icalohit++)
     {
       snemo::datamodel::sim_digi_data::calo_digi_hit_handle_type new_handle(new snemo::datamodel::sim_calo_digi_hit);
-      snemo::datamodel::sim_calo_digi_hit & calo_hit = new_handle.grab();
 
+      snemo::datamodel::sim_calo_digi_hit & calo_hit = new_handle.grab();
       calo_hit.set_hit_id(icalohit);
       calo_hit.grab_geom_id().set_type(1234);
       calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
-      calo_hit.set_sampling_frequency(1.0 * gigahertz);
-      calo_hit.set_number_of_samples(128, 0);
+      //calo_hit.set_sampling_frequency(1.0 * gigahertz);
+      // calo_hit.set_number_of_samples(128, 0);
       calo_hit.tree_dump();
 
       calo_collection.push_back(new_handle);
@@ -82,22 +79,21 @@ void test1() {
   // Write the data to bare xml file
   sddWrite.tree_dump(std::clog, "Simulated Digitized Data: ");
 
-  std::clog << "Calo collection size = " << calo_collection.size() << std::endl;
-  for (auto itcalo = calo_collection.begin(); itcalo != calo_collection.end(); itcalo++)
-    {
-      itcalo->get().tree_dump();
-    }
-
-  datatools::data_writer writer("test_snemo_datamodel_sim_digi_data.xml",
-                                datatools::using_multi_archives);
-  writer.store(sddWrite);
+  {
+    datatools::data_writer writer("test_snemo_datamodel_sim_digi_data.xml",
+				  datatools::using_multi_archives);
+    writer.store(sddWrite);
+  }
 
   // Create and read back data
   snemo::datamodel::sim_digi_data sddReadback;
-  datatools::data_reader reader("test_snemo_datamodel_sim_digi_data.xml",
-                                datatools::using_multi_archives);
-  reader.load(sddReadback);
+  {
+    datatools::data_reader reader("test_snemo_datamodel_sim_digi_data.xml",
+				  datatools::using_multi_archives);
+    reader.load(sddReadback);
+  }
   sddReadback.tree_dump(std::clog, "Loaded Simulated Digitized Data: ");
+
 }
 
 void test2() {

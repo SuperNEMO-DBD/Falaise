@@ -21,7 +21,7 @@
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/datatools/i_tree_dump.h>
 #include <bayeux/datatools/properties.h>
-#include <datatools/handle.h>
+#include <bayeux/datatools/handle.h>
 
 // This project:
 #include <falaise/snemo/datamodels/sim_calo_digi_hit.h>
@@ -88,10 +88,10 @@ namespace snemo {
       trigger_digi_data_collection_type & grab_trigger_digi_data();
 
       /// Return the const container of auxiliary properties
-      const datatools::properties & get_auxiliaries() const;
+      const datatools::properties & get_properties() const;
 
       /// Return the mutable container of auxiliary properties
-      datatools::properties & grab_auxiliaries();
+      datatools::properties & grab_properties();
 
       /// Smart print
       virtual void tree_dump(std::ostream & a_out = std::clog,
@@ -101,7 +101,7 @@ namespace snemo {
 
     private:
 
-      datatools::properties _auxiliaries_; //!< Auxiliary properties
+      datatools::properties _properties_; //!< Auxiliary properties
 
       calo_digi_hit_collection_type     _calo_digi_hits_;    //!< Calorimeter Digitized Hits
       tracker_digi_hit_collection_type	_tracker_digi_hits_; //!< Tracker Digitized Hits

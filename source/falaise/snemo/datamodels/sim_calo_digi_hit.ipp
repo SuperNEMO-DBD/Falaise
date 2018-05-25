@@ -10,8 +10,9 @@
 // - Boost:
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <boost/serialization/vector.hpp>
 // - Bayeux/mctools:
-#include <bayeux/mctools/digitization/sampled_signal.ipp>
+#include <bayeux/geomtools/base_hit.ipp>
 
 namespace snemo {
 
@@ -20,10 +21,9 @@ namespace snemo {
     template <class Archive>
     void sim_calo_digi_hit::serialize(Archive& ar, const unsigned int /* version */)
     {
-      ar & boost::serialization::make_nvp("mctools__digitization__sampled_signal",
-					  boost::serialization::base_object<mctools::digitization::sampled_signal>(*this));
+      ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar & boost::serialization::make_nvp("elec_id", _elec_id_);
-      ar & boost::serialization::make_nvp("trigger_ID", _trigger_ID_);
+      ar & boost::serialization::make_nvp("trigger_id", _trigger_id_);
       ar & boost::serialization::make_nvp("is_LTO", _is_LTO_);
       ar & boost::serialization::make_nvp("is_LT", _is_LT_);
       ar & boost::serialization::make_nvp("is_HT", _is_HT_);
