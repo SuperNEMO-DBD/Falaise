@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-# @falaise:config/snemo/demonstrator/geometry/4.0/plugins/materials/material_aliases.def
+# @falaise:config/snemo/demonstrator/geometry/4.1/plugins/materials/material_aliases.def
 # List of material aliases (format: datatools::multi_properties):
 
 #@description A sample list of materials aliases
@@ -31,6 +31,12 @@ material : string = "snemo::nd150::nemo3"
 material : string = "snemo::mo100::nemo3"
 
 
+########################################
+[name="snemo::sn124::basic" type="alias"]
+#@config The material alias for the betabeta enriched Sn124 source material (basic layout)
+material : string = "snemo::sn124_enriched100_pva"
+
+
 ##############################################
 [name="bb_source_material.basic" type="alias"]
 
@@ -45,6 +51,10 @@ material : string = "snemo::ca48::basic"
 #@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_se82|true
 material : string = "snemo::se82::basic"
 
+#@description The name of the referenced material
+#@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_sn124|false
+material : string = "snemo::sn124::basic"
+
 #@variant_only geometry:layout/if_basic/source_layout/if_basic/material/if_mo100|false
 material : string = "snemo::mo100::basic"
 
@@ -52,6 +62,4 @@ material : string = "snemo::mo100::basic"
 material : string = "snemo::nd150::basic"
 
 
-
-
-# end of @falaise:config/snemo/demonstrator/geometry/4.0/plugins/materials/material_aliases.def
+# end of @falaise:config/snemo/demonstrator/geometry/4.1/plugins/materials/material_aliases.def

@@ -15,15 +15,3 @@ layout/if_basic/source_layout/if_basic/material = "Se82"
 layout/if_basic/source_calibration = false
 layout/if_basic/shielding = true
 calo_film_thickness = 25 um
-
-[registry="vertexes"]
-generator = "source_pads_bulk"
-
-[registry="primary_events"]
-generator = "Se82.0nubb"
-
-[registry="simulation"]
-physics_mode = "Constructors"
-physics_mode/if_constructors/em_model = "standard"
-production_cuts = true
-output_profile = "none"
