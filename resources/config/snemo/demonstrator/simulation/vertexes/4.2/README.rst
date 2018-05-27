@@ -283,7 +283,72 @@ Display the geometry with the set of previously generated vertexes:
    geomtools> display -yz [1100:0]
    ...
    geomtools> q
+   ..
+
+
+
+
+
+Generate 10000 vertexes from the PMT glass bulk
+-----------------------------------------------
+
+Run from the Falaise build directory (preliminary):
+
+.. raw:: sh
+
+   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+     bxgenvtx_production \
+     --logging "fatal" \
+     --load-dll Falaise \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.2.0/resources" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.2/variants/repository.conf" \
+     --variant-store "profile.conf" \
+     --vertex-generator "pmt_main_wall_glass_bulk" \
+     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/4.1/manager.conf" \
+     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/4.2/manager.conf" \
+     --shoot \
+     --prng-seed 314159 \
+     --number-of-vertices 10000 \
+     --vertex-modulo 100 \
+     --visu \
+     --visu-object "[1100:0]" \
+     --visu-spot-zoom 2.0 \
+     --visu-spot-color "magenta" \
+     --visu-output-file "vertices-visu-dd.data.gz"
 ..
+
+Display the geometry with the set of previously generated vertexes:
+
+.. raw:: sh
+
+   $ LD_LIBRARY_PATH="$(pwd)/BuildProducts/lib:${LD_LIBRARY_PATH}" \
+     bxgeomtools_inspector \
+     --logging "warning" \
+     --load-dll Falaise \
+     --datatools::resource-path "falaise@$(pwd)/BuildProducts/share/Falaise-3.2.0/resources" \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/4.2/variants/repository.conf" \
+     --variant-load "profile.conf" \
+     --manager-config "@falaise:config/snemo/demonstrator/geometry/4.1/manager.conf"
+   geomtools> ldd vtx vertices-visu-dd.data.gz
+   geomtools> G --with-category calorimeter_pmt_glass
+   List of available GIDs :
+   [1305:0] as 'calorimeter_pmt_glass'
+   geomtools> display -xy [1310:0.1.19]
+   ...
+   geomtools> q
+..
+
+
+
+
+
+
+
+
+
+
+
+   
 
 Vertex generator from calibration source with basic layout:
 ----------------------------------------------------------------------
