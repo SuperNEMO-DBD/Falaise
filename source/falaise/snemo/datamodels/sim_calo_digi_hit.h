@@ -59,6 +59,92 @@ namespace snemo {
       /// Get a reference on the mutable waveform
       std::vector<int16_t> & grab_waveform();
 
+      /// Check if the calo digi hit is Low Threshold Only
+      bool is_lto() const;
+
+      /// Set Low Threshold Only flag
+      void set_lto(const bool lto_);
+
+      /// Check if the calo digi hit is Low Threshold
+      bool is_lt() const;
+
+      /// Set Low Threshold flag
+      void set_lt(const bool lt_);
+
+      /// Check if the calo digi hit is High Threshold
+      bool is_ht() const;
+
+      /// Set High Threshold flag
+      void set_ht(const bool ht_);
+
+      /// Return the LT Clocktick 25
+      uint32_t get_lt_ct_25() const;
+
+      /// Set the LT Clocktick 25
+      void set_lt_ct_25(const uint32_t lt_ct_25_);
+
+      /// Return the HT Clocktick 25
+      uint32_t get_ht_ct_25() const;
+
+      /// Set the HT Clocktick 25
+      void set_ht_ct_25(const uint32_t ht_ct_25_);
+
+      /// Return the timestamp in ADC value
+      int64_t get_timestamp() const;
+
+      /// Set the timestamp in ADC value
+      void set_timestamp(const int64_t timestamp_);
+
+      /// Return the baseline in ADC value
+      int16_t get_baseline() const;
+
+      /// Set the baseline in ADC value
+      void set_baseline(const int16_t baseline_);
+
+      /// Return the peak in ADC value
+      int16_t get_peak() const;
+
+      /// Set the peak in ADC value
+      void set_peak(const int16_t peak_);
+
+      /// Return the charge in ADC value
+      int16_t get_charge() const;
+
+      /// Set the charge in ADC value
+      void set_charge(const int16_t charge_);
+
+      /// Check if the calo digi hit has his charge overflow
+      bool is_charge_overflow() const;
+
+      /// Set the charge overflow flag
+      void set_charge_overflow(const bool co_);
+
+      /// Return the rising cell in sample value
+      uint32_t get_rising_cell() const;
+
+      /// Set the rising cell in sample value
+      void set_rising_cell(const uint32_t rising_cell_);
+
+      /// Return the rising offset (1/256 precision)
+      uint32_t get_rising_offset() const;
+
+      /// Set the rising offset (1/256 precision)
+      void set_rising_offset(const uint32_t rising_offset_);
+
+      /// Return the falling cell in sample value
+      uint32_t get_falling_cell() const;
+
+      /// Set the falling cell in sample value
+      void set_falling_cell(const uint32_t falling_cell_);
+
+      /// Return the falling offset (1/256 precision)
+      uint32_t get_falling_offset() const;
+
+
+      /// Set the falling offset (1/256 precision)
+      void set_falling_offset(const uint32_t falling_offset_);
+
+
       /// Smart print
       virtual void tree_dump(std::ostream & a_out = std::clog,
 			     const std::string & a_title = "",
@@ -73,11 +159,11 @@ namespace snemo {
 
       std::vector<int16_t> _waveform_; //<! Waveform composed by N Samples
 
-      bool _is_LTO_ = false; //!< Low Threshold Only flag
-      bool _is_LT_  = false; //!< Low Threshold flag
-      bool _is_HT_  = false; //!< High Threshold flag
-      uint32_t _LT_CT_25_;   //!< Low Threshold Clocktick 25ns
-      uint32_t _HT_CT_25_;   //!< High Threshold Clocktick 25ns
+      bool _is_lto_ = false; //!< Low Threshold Only flag
+      bool _is_lt_  = false; //!< Low Threshold flag
+      bool _is_ht_  = false; //!< High Threshold flag
+      uint32_t _lt_ct_25_;   //!< Low Threshold Clocktick 25ns
+      uint32_t _ht_ct_25_;   //!< High Threshold Clocktick 25ns
 
       int64_t _timestamp_; //!< LT crossing timestamp
       int16_t _baseline_;  //!< Baseline value in ADC

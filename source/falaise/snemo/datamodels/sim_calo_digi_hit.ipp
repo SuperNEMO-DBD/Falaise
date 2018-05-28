@@ -24,11 +24,11 @@ namespace snemo {
       ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar & boost::serialization::make_nvp("elec_id", _elec_id_);
       ar & boost::serialization::make_nvp("trigger_id", _trigger_id_);
-      ar & boost::serialization::make_nvp("is_LTO", _is_LTO_);
-      ar & boost::serialization::make_nvp("is_LT", _is_LT_);
-      ar & boost::serialization::make_nvp("is_HT", _is_HT_);
-      ar & boost::serialization::make_nvp("LT_CT_25", _LT_CT_25_);
-      ar & boost::serialization::make_nvp("HT_CT_25", _HT_CT_25_);
+      ar & boost::serialization::make_nvp("is_lto", _is_lto_);
+      ar & boost::serialization::make_nvp("is_lt", _is_lt_);
+      ar & boost::serialization::make_nvp("is_ht", _is_ht_);
+      ar & boost::serialization::make_nvp("lt_ct_25", _lt_ct_25_);
+      ar & boost::serialization::make_nvp("ht_ct_25", _ht_ct_25_);
       ar & boost::serialization::make_nvp("timestamp", _timestamp_);
       ar & boost::serialization::make_nvp("baseline", _baseline_);
       ar & boost::serialization::make_nvp("peak",   _peak_);

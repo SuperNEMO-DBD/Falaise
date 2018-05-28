@@ -83,6 +83,160 @@ namespace snemo {
       return _waveform_;
     }
 
+    bool sim_calo_digi_hit::is_lto() const
+    {
+      return _is_lto_;
+    }
+
+    void sim_calo_digi_hit::set_lto(const bool lto_)
+    {
+      _is_lto_ = lto_;
+      return;
+    }
+
+    bool sim_calo_digi_hit::is_lt() const
+    {
+      return _is_lt_;
+    }
+
+    void sim_calo_digi_hit::set_lt(const bool lt_)
+    {
+      _is_lt_ = lt_;
+      return;
+    }
+
+    bool sim_calo_digi_hit::is_ht() const
+    {
+      return _is_ht_;
+    }
+
+    void sim_calo_digi_hit::set_ht(const bool ht_)
+    {
+      _is_ht_ = ht_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_lt_ct_25() const
+    {
+      return _lt_ct_25_;
+    }
+
+    void sim_calo_digi_hit::set_lt_ct_25(const uint32_t lt_ct_25_)
+    {
+      _lt_ct_25_ = lt_ct_25_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_ht_ct_25() const
+    {
+      return _ht_ct_25_;
+    }
+
+    void sim_calo_digi_hit::set_ht_ct_25(const uint32_t ht_ct_25_)
+    {
+      _ht_ct_25_ = ht_ct_25_;
+      return;
+    }
+
+    int64_t sim_calo_digi_hit::get_timestamp() const
+    {
+      return _timestamp_;
+    }
+
+    void sim_calo_digi_hit::set_timestamp(const int64_t timestamp_)
+    {
+      _timestamp_ = timestamp_;
+      return;
+    }
+
+    int16_t sim_calo_digi_hit::get_baseline() const
+    {
+      return _baseline_;
+    }
+
+    void sim_calo_digi_hit::set_baseline(const int16_t baseline_)
+    {
+      _baseline_ = baseline_;
+      return;
+    }
+
+    int16_t sim_calo_digi_hit::get_peak() const
+    {
+      return _peak_;
+    }
+
+    void sim_calo_digi_hit::set_peak(const int16_t peak_)
+    {
+      _peak_ = peak_;
+      return;
+    }
+
+    int16_t sim_calo_digi_hit::get_charge() const
+    {
+      return _charge_;
+    }
+
+    void sim_calo_digi_hit::set_charge(const int16_t charge_)
+    {
+      _charge_ = charge_;
+      return;
+    }
+
+    bool sim_calo_digi_hit::is_charge_overflow() const
+    {
+      return _charge_overflow_;
+    }
+
+    void sim_calo_digi_hit::set_charge_overflow(const bool co_)
+    {
+      _charge_overflow_ = co_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_rising_cell() const
+    {
+      return _rising_cell_;
+    }
+
+    void sim_calo_digi_hit::set_rising_cell(const uint32_t rising_cell_)
+    {
+      _rising_cell_ = rising_cell_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_rising_offset() const
+    {
+      return _rising_offset_;
+    }
+
+    void sim_calo_digi_hit::set_rising_offset(const uint32_t rising_offset_)
+    {
+      _rising_offset_ = rising_offset_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_falling_cell() const
+    {
+      return _falling_cell_;
+    }
+
+    void sim_calo_digi_hit::set_falling_cell(const uint32_t falling_cell_)
+    {
+      _falling_cell_ = falling_cell_;
+      return;
+    }
+
+    uint32_t sim_calo_digi_hit::get_falling_offset() const
+    {
+      return _falling_offset_;
+    }
+
+    void sim_calo_digi_hit::set_falling_offset(const uint32_t falling_offset_)
+    {
+      _falling_offset_ = falling_offset_;
+      return;
+    }
+
     void sim_calo_digi_hit::tree_dump(std::ostream & out_,
 				      const std::string & title_,
 				      const std::string & indent_,
