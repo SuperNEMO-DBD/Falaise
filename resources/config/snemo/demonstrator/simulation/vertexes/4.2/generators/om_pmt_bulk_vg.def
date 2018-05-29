@@ -72,8 +72,8 @@ generators : string[2]  = "pmt_5inch_main_wall_glass_bulk" "pmt_8inch_main_wall_
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.pmt_5inch_main_wall_glass_bulk.absolute_weight : real  = 1.0 # To calculate : YL -- may2018
-generators.pmt_8inch_main_wall_glass_bulk.absolute_weight : real  = 2.0  # 
+generators.pmt_5inch_main_wall_glass_bulk.absolute_weight : real  = 18166.8288 # grams (density*volume*nb = 2.23g/cm^3*101.832cm^3*80)
+generators.pmt_8inch_main_wall_glass_bulk.absolute_weight : real  = 1858882.4528  #  grams (density*volume*nb = 2.23g/cm^3*189.444cm^3*440)
 
 # Maybe the following could work (to be checked) :
 #generators.generators.pmt_5inch_main_wall_glass_bulk.absolute_weight.activity : string  = "1.0 Bq/m3"
