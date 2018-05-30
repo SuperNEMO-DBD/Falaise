@@ -33,16 +33,6 @@ int main(int /*argc_*/, char ** /*argv_*/)
     // std::string input_tracker_mapping_file("${FECOM_RESOURCES_DIR}/config/mapping_tracker.csv");
     // datatools::fetch_path_with_env(input_tracker_mapping_file);
 
-    // fecom::commissioning_event_data deserialize_commissioning_event_collection;
-    // {
-    //   DT_LOG_DEBUG(logging, "Deserialize the commissioning event data...");
-    //   datatools::data_reader deserializer(input_filename,
-    // 					  datatools::using_multiple_archives);
-
-    //   deserializer.load(deserialize_commissioning_event_collection);
-    //   DT_LOG_DEBUG(logging, "The commissioning event data has been loaded");
-    // }
-
     // std::clog << "Size of deserialized commissioning event data = [" << deserialize_commissioning_event_collection.get_commissioning_event_collection().size() << "]" << std::endl;
 
     // fecom::channel_mapping my_channel_mapping;

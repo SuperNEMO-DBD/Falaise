@@ -44,8 +44,6 @@ set(FeCom_HEADERS
   fecom/commissioning_event.hpp
   fecom/commissioning_event.ipp
   fecom/data_statistics.hpp
-  # fecom/commissioning_event_data.hpp
-  # fecom/commissioning_event_data.ipp
   fecom/mock_hc2cd_module.hpp
   fecom/channel_mapping.hpp
   fecom/calo_pedestal_calib.hpp
@@ -75,7 +73,6 @@ set(FeCom_SOURCES
   fecom/tracker_channel_hit.cpp
   fecom/tracker_hit.cpp
   fecom/commissioning_event.cpp
-  # fecom/commissioning_event_data.cpp
   fecom/data_statistics.cpp
   fecom/mock_hc2cd_module.cpp
   fecom/channel_mapping.cpp
@@ -125,8 +122,6 @@ add_library(fecom SHARED
 target_link_libraries(fecom ${Boost_LIBRARIES})
 target_link_libraries(fecom Bayeux::Bayeux)
 target_link_libraries(fecom Falaise)
-
-#target_link_libraries(fecom Falaise::Falaise)
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
