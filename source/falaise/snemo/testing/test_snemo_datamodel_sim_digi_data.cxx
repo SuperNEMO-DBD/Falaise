@@ -52,28 +52,17 @@ int main(int argc_, char** argv_) {
 
 void test1() {
   std::clog << "\ntest1: running...\n";
-  // double gigahertz = 1.e9 * CLHEP::hertz;
 
   // Create and set some dummy data
   snemo::datamodel::sim_digi_data sddWrite;
 
-  auto & calo_collection = sddWrite.grab_calo_digi_hits();
-  // auto & tracker_collection = sddWrite.grab_tracker_digi_hits();
-  // auto & trigger_collection = sddWrite.grab_trigger_digi_data();
-
   for (std::size_t icalohit = 0; icalohit < 3; icalohit++)
     {
-      snemo::datamodel::sim_digi_data::calo_digi_hit_handle_type new_handle(new snemo::datamodel::sim_calo_digi_hit);
-
-      snemo::datamodel::sim_calo_digi_hit & calo_hit = new_handle.grab();
+      snemo::datamodel::sim_calo_digi_hit & calo_hit = sddWrite.add_calo_digi_hit();
       calo_hit.set_hit_id(icalohit);
       calo_hit.grab_geom_id().set_type(1234);
       calo_hit.grab_geom_id().set_address(1, 3, 8 - icalohit, 3 + icalohit);
-      //calo_hit.set_sampling_frequency(1.0 * gigahertz);
-      // calo_hit.set_number_of_samples(128, 0);
       calo_hit.tree_dump();
-
-      calo_collection.push_back(new_handle);
     }
 
   // Write the data to bare xml file

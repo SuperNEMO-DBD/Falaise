@@ -59,6 +59,9 @@ namespace snemo {
       /// Get a reference on the mutable waveform
       std::vector<int16_t> & grab_waveform();
 
+      /// Set the waveform
+      void set_waveform(std::vector<int16_t> & waveform_);
+
       /// Check if the calo digi hit is Low Threshold Only
       bool is_lto() const;
 

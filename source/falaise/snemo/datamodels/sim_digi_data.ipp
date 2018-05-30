@@ -31,8 +31,7 @@ namespace snemo {
       ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       ar & boost::serialization::make_nvp("calo_digi_hits",    _calo_digi_hits_);
       ar & boost::serialization::make_nvp("tracker_digi_hits", _tracker_digi_hits_);
-      ar & boost::serialization::make_nvp("trigger_data",      _trigger_data_);
-      ar & boost::serialization::make_nvp("auxiliaries",       _properties_);
+      ar & boost::serialization::make_nvp("trigger_digi_data",      _trigger_digi_data_);
       return;
     }
 

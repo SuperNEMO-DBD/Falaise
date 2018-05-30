@@ -83,6 +83,12 @@ namespace snemo {
       return _waveform_;
     }
 
+    void sim_calo_digi_hit::set_waveform(std::vector<int16_t> & waveform_)
+    {
+      _waveform_ = waveform_;
+      return;
+    }
+
     bool sim_calo_digi_hit::is_lto() const
     {
       return _is_lto_;

@@ -27,8 +27,7 @@ namespace snemo {
     {
       _calo_digi_hits_.clear();
       _tracker_digi_hits_.clear();
-      _trigger_data_.clear();
-      _properties_.clear();
+      _trigger_digi_data_.clear();
       return;
     }
 
@@ -42,6 +41,18 @@ namespace snemo {
       return _calo_digi_hits_;
     }
 
+    sim_calo_digi_hit & sim_digi_data::add_calo_digi_hit()
+    {
+      {
+	calo_digi_hit_handle_type dummy_handle;
+	_calo_digi_hits_.push_back(dummy_handle);
+      }
+      // Grab and return the reference on the last handle pushed back
+      calo_digi_hit_handle_type & last = _calo_digi_hits_.back();
+      last.reset(new sim_calo_digi_hit);
+      return last.grab();
+    }
+
     const sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::get_tracker_digi_hits() const
     {
       return _tracker_digi_hits_;
@@ -52,24 +63,38 @@ namespace snemo {
       return _tracker_digi_hits_;
     }
 
+    sim_tracker_digi_hit & sim_digi_data::add_tracker_digi_hit()
+    {
+      {
+	tracker_digi_hit_handle_type dummy_handle;
+	_tracker_digi_hits_.push_back(dummy_handle);
+      }
+      // Grab and return the reference on the last handle pushed back
+      tracker_digi_hit_handle_type & last = _tracker_digi_hits_.back();
+      last.reset(new sim_tracker_digi_hit);
+      return last.grab();
+    }
+
     const sim_digi_data::trigger_digi_data_collection_type & sim_digi_data::get_trigger_digi_data() const
     {
-      return _trigger_data_;
+      return _trigger_digi_data_;
     }
 
     sim_digi_data::trigger_digi_data_collection_type & sim_digi_data::grab_trigger_digi_data()
     {
-      return _trigger_data_;
+      return _trigger_digi_data_;
     }
 
-    const datatools::properties & sim_digi_data::get_properties() const
+    sim_trigger_digi_data & sim_digi_data::add_trigger_digi_data()
     {
-      return _properties_;
-    }
-
-    datatools::properties & sim_digi_data::grab_properties()
-    {
-      return _properties_;
+      {
+	trigger_digi_data_handle_type dummy_handle;
+	_trigger_digi_data_.push_back(dummy_handle);
+      }
+      // Grab and return the reference on the last handle pushed back
+      trigger_digi_data_handle_type & last = _trigger_digi_data_.back();
+      last.reset(new sim_trigger_digi_data);
+      return last.grab();
     }
 
     void sim_digi_data::tree_dump(std::ostream & out_,
@@ -81,22 +106,6 @@ namespace snemo {
 	{
 	  out_ << indent_ << title_ << std::endl;
 	}
-
-      // Auxiliary properties:
-      {
-	out_ << indent_ << datatools::i_tree_dumpable::tag << "Auxiliary properties : ";
-	if (_properties_.size() == 0)
-	  {
-	    out_ << "<empty>";
-	  }
-	out_ << std::endl;
-	{
-	  std::ostringstream indent_oss;
-	  indent_oss << indent_;
-	  indent_oss << datatools::i_tree_dumpable::skip_tag;
-	  _properties_.tree_dump(out_, "", indent_oss.str());
-	}
-      }
 
       // Calorimeter hits:
       {
@@ -113,7 +122,7 @@ namespace snemo {
       // Trigger data:
       {
 	out_ << indent_ << datatools::i_tree_dumpable::tag << "Trigger data : " << std::endl;
-	out_ << _trigger_data_.size();
+	out_ << _trigger_digi_data_.size();
 	out_ << std::endl;
       }
 
