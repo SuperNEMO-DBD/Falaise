@@ -10,23 +10,23 @@
 
 namespace fecom {
 
-namespace io {
+  namespace io {
 
-std::string tag();
+    std::string tag();
 
-std::string last_tag();
+    std::string last_tag();
 
-std::string skip_tag();
+    std::string skip_tag();
 
-std::string last_skip_tag();
+    std::string last_skip_tag();
 
-std::string inherit_last_tag(bool inherit_);
+    std::string inherit_last_tag(bool inherit_);
 
-}  // namespace io
+  } // namespace io
 
-}  // namespace fecom
+} // namespace fecom
 
-#endif  // FECOM_UTILS_HPP
+#endif // FECOM_UTILS_HPP
 
 // Local Variables: --
 // Mode: c++ --

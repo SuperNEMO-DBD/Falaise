@@ -6,8 +6,8 @@
 #define FECOM_CALO_HIT_HPP
 
 // Standard library:
-#include <iostream>
 #include <string>
+#include <iostream>
 
 // - Bayeux:
 // - Bayeux/datatools:
@@ -19,76 +19,82 @@
 
 namespace fecom {
 
-//! \brief Commissioning calorimeter hit, inherit from base hit
-struct calo_hit : public base_hit {
-  /// Default constructor
-  calo_hit();
+	//! \brief Commissioning calorimeter hit, inherit from base hit
+	struct calo_hit
+    : public base_hit
+  {
+		/// Default constructor
+    calo_hit();
 
-  /// Destructor
-  virtual ~calo_hit();
+		/// Destructor
+    virtual ~calo_hit();
 
-  /// Check if the calo hit is valid
-  bool is_valid() const;
+		/// Check if the calo hit is valid
+		bool is_valid() const;
 
-  ///
-  double get_timestamp() const;
+		/// Get hit timestamp
+		double get_timestamp() const;
 
-  /// Reset
-  virtual void reset();
+		/// Reset
+    virtual void reset();
 
-  /// Smart print
-  void tree_dump(std::ostream& out_, const std::string& title_ = "",
-                 const std::string& indent_ = "", bool inherit_ = false) const;
+		/// Smart print
+		void tree_dump(std::ostream & out_,
+									 const std::string & title_ = "",
+									 const std::string & indent_ = "",
+									 bool inherit_ = false) const;
 
-  /// Get a raw sample
-  int16_t get_raw_sample(const uint16_t cell_) const;
+		/// Get a raw sample
+    int16_t get_raw_sample(const uint16_t cell_) const;
 
-  /// Set a raw sample
-  void set_raw_sample(const uint16_t cell_, const int16_t);
+		/// Set a raw sample
+    void set_raw_sample(const uint16_t cell_, const int16_t);
 
-  /// Print the waveform
-  void print_waveform(std::ostream& out_, const uint32_t flags_ = 0) const;
+		/// Print the waveform
+    void print_waveform(std::ostream & out_, const uint32_t flags_ = 0) const;
 
- private:
-  void _reset_();
+  private:
 
-  void _reset_raw_waveform_data_();
+    void _reset_();
 
- public:
-  uint8_t event_id;                   ///< Debug counter (0..255)
-  uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
-                                       *  Unit: clock period (default: 160 MHz) **/
-  double tdc_cell_step_ns;            ///< Timestamp step from the feb (0.390625 ns
-  double tdc_ns;                      ///< Timestamp in ns
-  bool low_threshold;                 ///< Low threshold flag
-  bool high_threshold;                ///< High threshold flag
-  uint32_t low_threshold_trig_count;  ///< (16 bits)
-  int32_t low_threshold_time_count;   ///< (24 bits)
-  uint16_t waveform_data_size;        ///< Number of raw samples (64..1024 % 16)
-  uint16_t fcr;                       ///< First cell read (index of the first sample) (0..1023)
-  int16_t raw_waveform_data[calo_constants::MAX_NUMBER_OF_SAMPLES];  ///< Raw samples
-  int16_t raw_baseline;                                              ///< Raw baseline
-  double baseline_volt;                                              ///< Baseline in volt
-  int16_t raw_peak;                                                  ///< ADC amplitude of the peak
-  double peak_volt;           ///< ADC amplitude of the peak in volt
-  int32_t raw_charge;         ///< Raw integrated charge
-  double charge_picocoulomb;  ///< Integrated charge in pC
-  bool raw_charge_overflow;   ///< Raw charge overflow flag
-  uint32_t rising_cell;       ///< Index of the rising cell
-  uint32_t rising_offset;     ///< Offset of the rising cell
-  double rising_time_ns;      ///< Rising time in ns
-  uint32_t falling_cell;      ///< Index of the falling cell
-  uint32_t falling_offset;    ///< Offset of the falling cell
-  double falling_time_ns;     ///< Falling time in ns
+    void _reset_raw_waveform_data_();
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
+  public:
 
-  friend class calo_hit_parser;
-};
+    uint8_t  event_id;                  ///< Debug counter (0..255)
+    uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
+                                         *  Unit: clock period (default: 160 MHz) **/
+		double   tdc_cell_step_ns;          ///< Timestamp step from the feb (0.390625 ns
+		double   tdc_ns;                    ///< Timestamp in ns
+    bool     low_threshold;             ///< Low threshold flag
+    bool     high_threshold;            ///< High threshold flag
+    uint32_t low_threshold_trig_count;  ///< (16 bits)
+    int32_t  low_threshold_time_count;  ///< (24 bits)
+    uint16_t waveform_data_size;        ///< Number of raw samples (64..1024 % 16)
+    uint16_t fcr;                       ///< First cell read (index of the first sample) (0..1023)
+    int16_t  raw_waveform_data[calo_constants::MAX_NUMBER_OF_SAMPLES]; ///< Raw samples
+    int16_t  raw_baseline;              ///< Raw baseline
+		double   baseline_volt;             ///< Baseline in volt
+    int16_t  raw_peak;                  ///< ADC amplitude of the peak
+		double   peak_volt;                 ///< ADC amplitude of the peak in volt
+    int32_t  raw_charge;                ///< Raw integrated charge
+		double   charge_picocoulomb;        ///< Integrated charge in pC
+    bool     raw_charge_overflow;       ///< Raw charge overflow flag
+		uint32_t rising_cell;               ///< Index of the rising cell
+		uint32_t rising_offset;             ///< Offset of the rising cell
+		double   rising_time_ns;            ///< Rising time in ns
+		uint32_t falling_cell;              ///< Index of the falling cell
+		uint32_t falling_offset;            ///< Offset of the falling cell
+		double   falling_time_ns;           ///< Falling time in ns
 
-}  // namespace fecom
+		DATATOOLS_SERIALIZATION_DECLARATION()
 
-#endif  // FECOM_CALO_HIT_HPP
+    friend class calo_hit_parser;
+  };
+
+} // namespace fecom
+
+#endif // FECOM_CALO_HIT_HPP
 
 // Local Variables: --
 // Mode: c++ --

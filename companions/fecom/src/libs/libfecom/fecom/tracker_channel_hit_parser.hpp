@@ -8,8 +8,8 @@
 #define FECOM_TRACKER_CHANNEL_HIT_PARSER_HPP
 
 // Standard library:
-#include <fstream>
 #include <string>
+#include <fstream>
 
 // Third party:
 // - Bayeux:
@@ -21,33 +21,39 @@
 
 namespace fecom {
 
-//! \brief Commissioning tracker hit parser
-class tracker_channel_hit_parser {
- public:
-  //! Number of header lines
-  static const std::size_t NB_TRACKER_HEADER_LINES = 0;
+  //! \brief Commissioning tracker hit parser
+  class tracker_channel_hit_parser
+  {
+  public:
 
-  //! Constructor
-  tracker_channel_hit_parser();
+    //! Number of header lines
+    static const std::size_t NB_TRACKER_HEADER_LINES = 0;
 
-  //! Parse
-  bool parse(std::istream& in_, tracker_channel_hit& hit_);
+    //! Constructor
+    tracker_channel_hit_parser();
 
- private:
-  // void _parse_header_(const std::string & header_line_,
-  //                     const int index_,
-  //                     tracker_channel_hit & hit_);
+    //! Parse
+    bool parse(std::istream & in_,
+							 tracker_channel_hit & hit_);
 
-  void _parse_timestamp_(const std::string& data_line_, tracker_channel_hit& hit_);
+  private:
+    // void _parse_header_(const std::string & header_line_,
+    //                     const int index_,
+    //                     tracker_channel_hit & hit_);
 
- public:
-  // Management:
-  datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-};
+    void _parse_timestamp_(const std::string & data_line_,
+													 tracker_channel_hit & hit_);
 
-}  // namespace fecom
+  public:
 
-#endif  // FECOM_TRACKER_CHANNEL_HIT_PARSER_HPP
+    // Management:
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+
+  };
+
+} // namespace fecom
+
+#endif // FECOM_TRACKER_CHANNEL_HIT_PARSER_HPP
 
 // Local Variables: --
 // Mode: c++ --

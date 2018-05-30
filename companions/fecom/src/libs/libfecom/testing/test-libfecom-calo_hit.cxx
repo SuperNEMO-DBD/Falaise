@@ -6,11 +6,11 @@
 // This project:
 #include <fecom/calo_hit.hpp>
 
-int main(int /*argc_*/, char** /*argv_*/) {
+int main(int /*argc_*/, char ** /*argv_*/)
+{
   try {
     fecom::calo_hit hit;
-    geomtools::geom_id electronic_id(fecom::calo_constants::CALO_CHANNEL_TYPE, 0,
-                                     11);  // EID [Type:board.channel]
+    geomtools::geom_id electronic_id(fecom::calo_constants::CALO_CHANNEL_TYPE, 0, 11); // EID [Type:board.channel]
     hit.electronic_id = electronic_id;
     hit.hitmode = fecom::base_hit::SIG_CALORIMETER;
     hit.trigger_id = 12;
@@ -21,7 +21,7 @@ int main(int /*argc_*/, char** /*argv_*/) {
     hit.tree_dump(std::clog, "Calo hit:");
     hit.print_waveform(std::cout);
 
-  } catch (std::exception& error) {
+  } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
     return EXIT_FAILURE;
   }

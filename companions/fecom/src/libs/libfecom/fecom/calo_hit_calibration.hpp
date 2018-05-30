@@ -6,8 +6,8 @@
 #define FECOM_CALO_HIT_CALIBRATION_HPP
 
 // Standard library:
-#include <iostream>
 #include <string>
+#include <iostream>
 
 // - Bayeux:
 // - Bayeux/datatools:
@@ -17,22 +17,25 @@
 
 namespace fecom {
 
-//! \brief Commissioning calorimeter hit calibration
-struct calo_hit_calibration {
-  /// Constructor
-  calo_hit_calibration();
+  //! \brief Commissioning calorimeter hit calibration
+  struct calo_hit_calibration
+  {
+    /// Constructor
+    calo_hit_calibration();
 
-  /// Destructor
-  virtual ~calo_hit_calibration();
+    /// Destructor
+    virtual ~calo_hit_calibration();
 
-  /// Calibrate hit, 1 MeV <-> 300 mV
-  void calibrate_hit(const geomtools::geom_id& calo_gid_, const double amplitude_, double& energy_,
-                     double& sigma_energy_);
-};
+    /// Calibrate hit, 1 MeV <-> 300 mV
+    void calibrate_hit(const geomtools::geom_id & calo_gid_,
+		       const double amplitude_,
+		       double & energy_,
+		       double & sigma_energy_);
+  };
 
-}  // namespace fecom
+} // namespace fecom
 
-#endif  // FECOM_CALO_HIT_CALIBRATION_HPP
+#endif // FECOM_CALO_HIT_CALIBRATION_HPP
 
 // Local Variables: --
 // Mode: c++ --

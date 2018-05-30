@@ -7,9 +7,9 @@
 #define FECOM_CALO_HIT_READER_HPP
 
 // Standard library:
-#include <fstream>
-#include <memory>
 #include <string>
+#include <memory>
+#include <fstream>
 
 // Third party:
 // - Boost:
@@ -18,78 +18,84 @@
 #include <bayeux/datatools/logger.h>
 
 // This project:
+#include <fecom/run_header.hpp>
 #include <fecom/calo_hit.hpp>
 #include <fecom/calo_hit_parser.hpp>
-#include <fecom/run_header.hpp>
 
 namespace fecom {
 
-//! \brief Commissioning calo hit file reader
-class calo_hit_reader : private boost::noncopyable {
- public:
-  static const std::size_t HEADER_NBLINES = 7;
+  //! \brief Commissioning calo hit file reader
+  class calo_hit_reader
+    : private boost::noncopyable
+  {
+  public:
 
-  //! Default constructor
-  calo_hit_reader();
+    static const std::size_t HEADER_NBLINES = 7;
 
-  //! Set the input file name
-  void set_input_filename(const std::string& input_filename_);
+    //! Default constructor
+    calo_hit_reader();
 
-  //! Return the input file name
-  const std::string& get_input_filename() const;
+    //! Set the input file name
+    void set_input_filename(const std::string & input_filename_);
 
-  //! Chek if a next hit is available
-  bool has_next_hit() const;
+    //! Return the input file name
+    const std::string & get_input_filename() const;
 
-  //! Load the next hit
-  void load_next_hit(calo_hit& hit_);
+    //! Chek if a next hit is available
+    bool has_next_hit() const;
 
-  //! Load the run header
-  void load_run_header(run_header& header_);
+    //! Load the next hit
+    void load_next_hit(calo_hit & hit_);
 
-  //! Check initialization flag
-  bool is_initialized() const;
+    //! Load the run header
+    void load_run_header(run_header & header_);
 
-  //! Initialize the reader
-  void initialize();
+    //! Check initialization flag
+    bool is_initialized() const;
 
-  //! Reset the reader
-  void reset();
+    //! Initialize the reader
+    void initialize();
 
-  //! Return the logging level
-  datatools::logger::priority get_logging() const;
+    //! Reset the reader
+    void reset();
 
-  //! Set the logging level
-  void set_logging(const datatools::logger::priority);
+    //! Return the logging level
+    datatools::logger::priority get_logging() const;
 
- private:
-  void _init_input_file_();
+    //! Set the logging level
+    void set_logging(const datatools::logger::priority);
 
-  void _reset_input_file_();
+  private:
 
-  void _init_header_();
+    void _init_input_file_();
 
-  void _reset_header_();
+    void _reset_input_file_();
 
-  void _decode_header_(const std::string& hline_, const int index_);
+    void _init_header_();
 
- private:
-  // Configuration:
-  std::string _input_filename_;
+    void _reset_header_();
 
-  // Management:
-  bool _initialized_ = false;
-  datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
+    void _decode_header_(const std::string & hline_, const int index_);
 
-  // Working:
-  std::unique_ptr<std::ifstream> _fin_;  //!< Handle to the input file stream
-  std::unique_ptr<run_header> _header_;  //!< Handle to the input file header
-  calo_hit_parser _hit_parser_;          //!< Hit parser
-};
+  private:
 
-}  // namespace fecom
+    // Configuration:
+    std::string _input_filename_;
 
-#endif  // FECOM_CALO_HIT_READER_HPP
+    // Management:
+    bool _initialized_ = false;
+    datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
+
+    // Working:
+    std::unique_ptr<std::ifstream> _fin_;        //!< Handle to the input file stream
+    std::unique_ptr<run_header>    _header_;     //!< Handle to the input file header
+    calo_hit_parser                _hit_parser_; //!< Hit parser
+
+  };
+
+} // namespace fecom
+
+#endif // FECOM_CALO_HIT_READER_HPP
 
 // Local Variables: --
 // Mode: c++ --

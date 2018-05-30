@@ -6,11 +6,14 @@
 // This project:
 #include <fecom/base_hit.hpp>
 
-int main(int /*argc_*/, char** /*argv_*/) {
+int main(int /*argc_*/, char ** /*argv_*/)
+{
   try {
+
     std::clog << "Base hit is pure virtual now !" << std::endl;
 
-  } catch (std::exception& error) {
+
+  } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;
     return EXIT_FAILURE;
   }

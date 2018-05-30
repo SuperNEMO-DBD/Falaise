@@ -20,13 +20,10 @@ include_directories(${PROJECT_BINARY_DIR}/src/libs/libfecom)
 include_directories(${PROJECT_SOURCE_DIR}/src/libs/libfecom)
 
 set(FeCom_PROGRAMS
-  decode_sort_serialize.cxx
-  #hc_trigger_builder.cxx
+  hc_decode_sort_serialize.cxx
   hc_event_builder.cxx
   hc_raw_data_to_calibrated_data.cxx
-  hc_data_quality.cxx
-  #main_decoder_serializer.cxx
-  #main_histogram_builder.cxx
+  hc_rd_bank_reader.cxx
   )
 
 option(FECOM_ENABLE_PROGRAMS "Build programs associated to libfecom" ON)
@@ -38,9 +35,14 @@ if(FECOM_ENABLE_PROGRAMS)
     add_executable(${_programname}
       ${_programsource}
       )
-    target_link_libraries(${_programname} fecom)
+    #target_link_libraries(${_programname} ${Boost_LIBRARIES})
+    #target_link_libraries(${_programname} Bayeux::Bayeux)
+    target_link_libraries(${_programname} fecom
+      # ${FeCom_OTHER_LIBS}
+      )
+
+    # - Ensure link to internal and external deps
     set_target_properties(${_programname} PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
-    target_clang_format(${_programname})
 
     if(UNIX AND NOT APPLE)
       set_target_properties(${_programname}

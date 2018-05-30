@@ -8,41 +8,47 @@
 
 namespace fecom {
 
-// statics:
-double tracker_constants::geiger_cell_Leff() { return 2920 * CLHEP::mm; }
+  // statics:
+  double tracker_constants::geiger_cell_Leff()
+  {
+    return 2920 * CLHEP::mm;
+  }
 
-double tracker_constants::tracker_clock_tick() { return 12.5 * CLHEP::nanosecond; }
+  double tracker_constants::tracker_clock_tick()
+  {
+    return 12.5 * CLHEP::nanosecond;
+  }
 
-const uint16_t tracker_constants::NUMBER_OF_FEAST_PER_BOARD;
-constexpr uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_BOARD;
-const uint16_t tracker_constants::NUMBER_OF_CELLS_PER_BOARD;
-const uint16_t tracker_constants::INVALID_BOARD;
-const uint16_t tracker_constants::INVALID_FEAST;
-const uint16_t tracker_constants::INVALID_CHANNEL;
-const uint64_t tracker_constants::INVALID_TIME;
+  const uint16_t tracker_constants::NUMBER_OF_FEAST_PER_BOARD;
+  constexpr uint16_t tracker_constants::NUMBER_OF_CHANNEL_PER_BOARD;
+  const uint16_t tracker_constants::NUMBER_OF_CELLS_PER_BOARD;
+  const uint16_t tracker_constants::INVALID_BOARD;
+  const uint16_t tracker_constants::INVALID_FEAST;
+  const uint16_t tracker_constants::INVALID_CHANNEL;
+  const uint64_t tracker_constants::INVALID_TIME;
 
-const uint64_t tracker_constants::NUMBER_OF_LAYERS;
-const uint64_t tracker_constants::NUMBER_OF_ROWS_PER_BOARD;
-const uint64_t tracker_constants::TOTAL_NUMBER_OF_ROWS;
-const uint64_t tracker_constants::NUMBER_OF_TIMES;
+  const uint64_t tracker_constants::NUMBER_OF_LAYERS;
+  const uint64_t tracker_constants::NUMBER_OF_ROWS_PER_BOARD;
+  const uint64_t tracker_constants::TOTAL_NUMBER_OF_ROWS;
+  const uint64_t tracker_constants::NUMBER_OF_TIMES;
 
-const uint64_t tracker_constants::GEOMETRIC_CELL_TYPE;
-const uint64_t tracker_constants::LAYER_INDEX;
-const uint64_t tracker_constants::ROW_INDEX;
-const uint64_t tracker_constants::PORT_INDEX;
+  const uint64_t tracker_constants::GEOMETRIC_CELL_TYPE;
+  const uint64_t tracker_constants::LAYER_INDEX;
+  const uint64_t tracker_constants::ROW_INDEX;
+  const uint64_t tracker_constants::PORT_INDEX;
 
-const uint64_t tracker_constants::ANODIC_PORT;
-const uint64_t tracker_constants::BOT_CATHODE_PORT;
-const uint64_t tracker_constants::TOP_CATHODE_PORT;
+  const uint64_t tracker_constants::ANODIC_PORT;
+  const uint64_t tracker_constants::BOT_CATHODE_PORT;
+  const uint64_t tracker_constants::TOP_CATHODE_PORT;
 
-const uint64_t tracker_constants::ANODIC_CHANNEL_TYPE;
-const uint64_t tracker_constants::CATHODIC_CHANNEL_TYPE;
+  const uint64_t tracker_constants::ANODIC_CHANNEL_TYPE;
+  const uint64_t tracker_constants::CATHODIC_CHANNEL_TYPE;
 
-// const uint64_t tracker_constants::BOT_CATHODIC_CHANNEL_TYPE;
-// const uint64_t tracker_constants::TOP_CATHODIC_CHANNEL_TYPE;
+  // const uint64_t tracker_constants::BOT_CATHODIC_CHANNEL_TYPE;
+  // const uint64_t tracker_constants::TOP_CATHODIC_CHANNEL_TYPE;
 
-const uint64_t tracker_constants::SLOT_INDEX;
-const uint64_t tracker_constants::FEAST_INDEX;
-const uint64_t tracker_constants::CHANNEL_INDEX;
+  const uint64_t tracker_constants::SLOT_INDEX;
+  const uint64_t tracker_constants::FEAST_INDEX;
+  const uint64_t tracker_constants::CHANNEL_INDEX;
 
-}  // namespace fecom
+} // namespace fecom

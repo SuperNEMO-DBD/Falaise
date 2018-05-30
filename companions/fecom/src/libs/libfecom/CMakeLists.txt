@@ -1,3 +1,23 @@
+# - Dependencies
+
+find_package(Boost 1.60.0
+  REQUIRED
+  date_time
+  serialization
+  )
+
+find_package(Bayeux 3.0.0
+  REQUIRED
+  )
+
+include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
+
+# Ensure our code can see the Falaise headers
+# include(${PROJECT_BUILD_CMAKEDIR}/${FALAISE_TAG}/FalaiseConfig.cmake)
+include_directories(${PROJECT_BUILD_INCLUDEDIR})
+include_directories(${FALAISE_BUILD_PREFIX}/include)
+include_directories(${FALAISE_BUILD_PREFIX}/include/falaise)
+
 # - Publish headers
 
 configure_file(fecom/version.hpp.in ${CMAKE_CURRENT_BINARY_DIR}/fecom/version.hpp @ONLY)
@@ -12,7 +32,8 @@ set(FeCom_HEADERS
   fecom/base_hit.ipp
   fecom/calo_constants.hpp
   fecom/tracker_constants.hpp
-  fecom/calo_utils.hpp
+  fecom/calo_channel_id.hpp
+  fecom/calo_channel_id.ipp
   fecom/calo_hit.hpp
   fecom/calo_hit.ipp
   fecom/calo_hit_calibration.hpp
@@ -28,7 +49,9 @@ set(FeCom_HEADERS
   fecom/mock_hc2cd_module.hpp
   fecom/channel_mapping.hpp
   fecom/calo_pedestal_calib.hpp
+  fecom/calo_pedestal_calib.ipp
   fecom/calo_calibration.hpp
+  fecom/calo_calibration.ipp
   fecom/run_header.hpp
   fecom/calo_hit_parser.hpp
   fecom/tracker_channel_hit_parser.hpp
@@ -46,7 +69,7 @@ set(FeCom_SOURCES
   fecom/base_hit.cpp
   fecom/calo_constants.cpp
   fecom/tracker_constants.cpp
-  fecom/calo_utils.cpp
+  fecom/calo_channel_id.cpp
   fecom/calo_hit.cpp
   fecom/calo_hit_calibration.cpp
   fecom/tracker_channel_hit.cpp
@@ -98,7 +121,13 @@ add_library(fecom SHARED
   ${FeCom_PRIVATE_HEADERS}
   ${FeCom_SOURCES}
   )
-target_link_libraries(fecom PUBLIC Falaise Bayeux::Bayeux)
+
+target_link_libraries(fecom ${Boost_LIBRARIES})
+target_link_libraries(fecom Bayeux::Bayeux)
+target_link_libraries(fecom Falaise)
+
+#target_link_libraries(fecom Falaise::Falaise)
+
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
@@ -108,8 +137,6 @@ if(APPLE)
     INSTALL_RPATH "@loader_path"
     )
 endif()
-target_clang_format(fecom)
-
 
 install( FILES
   ${FeCom_HEADERS}
@@ -142,12 +169,13 @@ if(FECOM_ENABLE_TESTING)
     add_executable(${_testname}
       ${_testsource}
       )
-    target_link_libraries(${_testname} fecom)
+    target_link_libraries(${_testname} fecom
+      # ${FeCom_OTHER_LIBS}
+      )
     # - On Apple, ensure dynamic_lookup of undefined symbols
     if(APPLE)
       set_target_properties(${_testname} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif()
-    target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_fecom_TEST_ENVIRONMENT}

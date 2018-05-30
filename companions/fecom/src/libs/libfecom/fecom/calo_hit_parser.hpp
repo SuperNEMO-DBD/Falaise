@@ -7,8 +7,8 @@
 #define FECOM_CALO_HIT_PARSER_HPP
 
 // Standard library:
-#include <fstream>
 #include <string>
+#include <fstream>
 
 // Third party:
 // - Bayeux:
@@ -19,33 +19,41 @@
 
 namespace fecom {
 
-//! \brief Commissioning calo hit parser
-class calo_hit_parser {
- public:
-  //! Number of header lines
-  static const std::size_t NB_CALO_HEADER_LINES = 1;
+  //! \brief Commissioning calo hit parser
+  class calo_hit_parser
+  {
+  public:
 
-  //! Constructor
-  calo_hit_parser();
+    //! Number of header lines
+    static const std::size_t NB_CALO_HEADER_LINES = 1;
 
-  //! Parse
-  bool parse(std::istream& in_, calo_hit& hit_);
+    //! Constructor
+    calo_hit_parser();
 
- private:
-  /// Header parsing
-  void _parse_header_(const std::string& header_line_, const int index_, calo_hit& hit_);
+    //! Parse
+    bool parse(std::istream & in_, calo_hit & hit_);
 
-  /// Samples parsing
-  void _parse_samples_(const std::string& data_line_, calo_hit& hit_);
+  private:
 
- public:
-  // Management:
-  datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-};
+		/// Header parsing
+    void _parse_header_(const std::string & header_line_,
+                        const int index_,
+                        calo_hit & hit_);
 
-}  // namespace fecom
+		/// Samples parsing
+    void _parse_samples_(const std::string & data_line_,
+                         calo_hit & hit_);
 
-#endif  // FECOM_CALO_HIT_PARSER_HPP
+  public:
+
+    // Management:
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+
+  };
+
+} // namespace fecom
+
+#endif // FECOM_CALO_HIT_PARSER_HPP
 
 // Local Variables: --
 // Mode: c++ --
