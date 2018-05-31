@@ -92,10 +92,16 @@ namespace snemo {
       /// Set the HT Clocktick 25
       void set_ht_ct_25(const uint32_t ht_ct_25_);
 
-      /// Return the timestamp in ADC value
+      /// Return the time in ns
+      double get_time() const;
+
+      /// Set the time in ns
+      void set_time(const double time_);
+
+      /// Return the timestamp
       int64_t get_timestamp() const;
 
-      /// Set the timestamp in ADC value
+      /// Set the timestamp
       void set_timestamp(const int64_t timestamp_);
 
       /// Return the baseline in ADC value
@@ -114,7 +120,7 @@ namespace snemo {
       int16_t get_charge() const;
 
       /// Set the charge in ADC value
-      void set_charge(const int16_t charge_);
+      void set_charge(const int32_t charge_);
 
       /// Check if the calo digi hit has his charge overflow
       bool is_charge_overflow() const;
@@ -129,10 +135,10 @@ namespace snemo {
       void set_rising_cell(const uint32_t rising_cell_);
 
       /// Return the rising offset (1/256 precision)
-      uint32_t get_rising_offset() const;
+      uint16_t get_rising_offset() const;
 
       /// Set the rising offset (1/256 precision)
-      void set_rising_offset(const uint32_t rising_offset_);
+      void set_rising_offset(const uint16_t rising_offset_);
 
       /// Return the falling cell in sample value
       uint32_t get_falling_cell() const;
@@ -141,11 +147,11 @@ namespace snemo {
       void set_falling_cell(const uint32_t falling_cell_);
 
       /// Return the falling offset (1/256 precision)
-      uint32_t get_falling_offset() const;
+      uint16_t get_falling_offset() const;
 
 
       /// Set the falling offset (1/256 precision)
-      void set_falling_offset(const uint32_t falling_offset_);
+      void set_falling_offset(const uint16_t falling_offset_);
 
 
       /// Smart print
@@ -168,16 +174,17 @@ namespace snemo {
       uint32_t _lt_ct_25_;   //!< Low Threshold Clocktick 25ns
       uint32_t _ht_ct_25_;   //!< High Threshold Clocktick 25ns
 
+      double   _time_;     //!< LT crossing time in ns (Keep it for the moment)
       int64_t _timestamp_; //!< LT crossing timestamp
       int16_t _baseline_;  //!< Baseline value in ADC
-      int16_t _peak_;      //!< Peak value in ADC
-      int16_t _charge_;    //!< Charge value in ADC
+      int16_t _peak_;      //!< Peak value in ADC (8 bits precision)
+      int32_t _charge_;    //!< Charge value in ADC
       bool    _charge_overflow_ = false; //!< Charge overflow flag
 
-      uint32_t _rising_cell_;    //< Index of the rising cell
-      uint32_t _rising_offset_;  //< Offset of the rising cell
       uint32_t _falling_cell_;   //< Index of the falling cell
-      uint32_t _falling_offset_; //< Offset of the falling cell
+      uint16_t _falling_offset_; //< Offset of the falling cell
+      uint32_t _rising_cell_;    //< Index of the rising cell
+      uint16_t _rising_offset_;  //< Offset of the rising cell
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

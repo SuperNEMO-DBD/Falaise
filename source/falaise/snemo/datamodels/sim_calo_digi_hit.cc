@@ -13,6 +13,18 @@ namespace snemo {
 
     sim_calo_digi_hit::sim_calo_digi_hit()
     {
+      _lt_ct_25_ = -1;
+      _ht_ct_25_ = -1;
+      datatools::invalidate(_time_);
+      _timestamp_ = -1;
+      _baseline_ = 0;
+      _peak_ = 0;
+      _charge_ = 0;
+      _falling_cell_ = -1;
+      _falling_offset_ = 0;
+      _rising_cell_ = -1;
+      _rising_offset_ = 0;
+
       return;
     }
 
@@ -144,6 +156,17 @@ namespace snemo {
       return;
     }
 
+    double sim_calo_digi_hit::get_time() const
+    {
+      return _time_;
+    }
+
+    void sim_calo_digi_hit::set_time(const double time_)
+    {
+      _time_ = time_;
+      return;
+    }
+
     int64_t sim_calo_digi_hit::get_timestamp() const
     {
       return _timestamp_;
@@ -182,7 +205,7 @@ namespace snemo {
       return _charge_;
     }
 
-    void sim_calo_digi_hit::set_charge(const int16_t charge_)
+    void sim_calo_digi_hit::set_charge(const int32_t charge_)
     {
       _charge_ = charge_;
       return;
@@ -210,12 +233,12 @@ namespace snemo {
       return;
     }
 
-    uint32_t sim_calo_digi_hit::get_rising_offset() const
+    uint16_t sim_calo_digi_hit::get_rising_offset() const
     {
       return _rising_offset_;
     }
 
-    void sim_calo_digi_hit::set_rising_offset(const uint32_t rising_offset_)
+    void sim_calo_digi_hit::set_rising_offset(const uint16_t rising_offset_)
     {
       _rising_offset_ = rising_offset_;
       return;
@@ -232,12 +255,12 @@ namespace snemo {
       return;
     }
 
-    uint32_t sim_calo_digi_hit::get_falling_offset() const
+    uint16_t sim_calo_digi_hit::get_falling_offset() const
     {
       return _falling_offset_;
     }
 
-    void sim_calo_digi_hit::set_falling_offset(const uint32_t falling_offset_)
+    void sim_calo_digi_hit::set_falling_offset(const uint16_t falling_offset_)
     {
       _falling_offset_ = falling_offset_;
       return;
@@ -256,16 +279,61 @@ namespace snemo {
 
       base_hit::tree_dump(out_, title_, indent_, true);
 
-      out_ << indent << datatools::i_tree_dumpable::tag << "Electronic ID : ";
-      if (_elec_id_.is_valid()) {
+      out_ << indent << datatools::i_tree_dumpable::tag << "Electronic ID  : ";
+      if (_elec_id_.is_valid())	{
 	out_ << _elec_id_;
       } else {
 	out_ << "<none>";
       }
       out_ << std::endl;
 
-      out_ << indent_ << datatools::i_tree_dumpable::tag << "Trigger ID : ";
-      out_ << _trigger_id_ << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Trigger ID     : " << _trigger_id_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Waveform       : " << (_waveform_.size() != 0 ? "<yes>" : "<no>") << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Is LTO         : " << _is_lto_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Is LT          : " << _is_lt_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Is HT          : " << _is_ht_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "LT CT 25ns     : " << _lt_ct_25_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "HT CT 25ns     : " << _ht_ct_25_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Time (ns)      : " << _time_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Timestamp      : " << _timestamp_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Baseline       : " << _baseline_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Peak Value     : " << _peak_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Charge Value   : " << _charge_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Falling cell   : " << _falling_cell_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Falling offset : " << _falling_offset_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Rising cell    : " << _rising_cell_ << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag
+	   << "Rising offset  : " << _rising_offset_ << std::endl;
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
 	   << "Validity : " << (is_valid() ? "<yes>" : "<no>") << std::endl;
