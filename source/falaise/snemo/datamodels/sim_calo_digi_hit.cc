@@ -13,6 +13,7 @@ namespace snemo {
 
     sim_calo_digi_hit::sim_calo_digi_hit()
     {
+      _trigger_id_ = -1;
       _lt_ct_25_ = -1;
       _ht_ct_25_ = -1;
       datatools::invalidate(_time_);

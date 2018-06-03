@@ -149,7 +149,7 @@ namespace snemo {
 
     void sim_tracker_digi_hit::_set_defaults()
     {
-      _trigger_id_ = INVALID_TIME;
+      _trigger_id_ = -1;
       _anode_R0_   = INVALID_TIME;
       _anode_R1_   = INVALID_TIME;
       _anode_R2_   = INVALID_TIME;

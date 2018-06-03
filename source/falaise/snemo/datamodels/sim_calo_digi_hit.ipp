@@ -23,21 +23,23 @@ namespace snemo {
     {
       ar & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar & boost::serialization::make_nvp("elec_id", _elec_id_);
+      ar & boost::serialization::make_nvp("waveform", _waveform_);
       ar & boost::serialization::make_nvp("trigger_id", _trigger_id_);
       ar & boost::serialization::make_nvp("is_lto", _is_lto_);
       ar & boost::serialization::make_nvp("is_lt", _is_lt_);
       ar & boost::serialization::make_nvp("is_ht", _is_ht_);
       ar & boost::serialization::make_nvp("lt_ct_25", _lt_ct_25_);
       ar & boost::serialization::make_nvp("ht_ct_25", _ht_ct_25_);
+      ar & boost::serialization::make_nvp("time", _time_);
       ar & boost::serialization::make_nvp("timestamp", _timestamp_);
       ar & boost::serialization::make_nvp("baseline", _baseline_);
       ar & boost::serialization::make_nvp("peak",   _peak_);
       ar & boost::serialization::make_nvp("charge", _charge_);
       ar & boost::serialization::make_nvp("charge_overflow", _charge_overflow_);
-      ar & boost::serialization::make_nvp("rising_cell",    _rising_cell_);
-      ar & boost::serialization::make_nvp("rising_offset",  _rising_offset_);
       ar & boost::serialization::make_nvp("falling_cell",   _falling_cell_);
       ar & boost::serialization::make_nvp("falling_offset", _falling_offset_);
+      ar & boost::serialization::make_nvp("rising_cell",    _rising_cell_);
+      ar & boost::serialization::make_nvp("rising_offset",  _rising_offset_);
       return;
     }
 
