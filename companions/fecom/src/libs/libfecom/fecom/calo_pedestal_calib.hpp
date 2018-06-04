@@ -20,7 +20,7 @@ namespace fecom {
 
   /// \brief Calorimeter pedestal calibration data
   struct calo_pedestal_calib
-		: public datatools::i_serializable
+    : public datatools::i_serializable
   {
 
   public:
@@ -63,7 +63,7 @@ namespace fecom {
     uint16_t offset_size; ///< Number of raw samples (64..1024 % 16)
     int32_t  offset[calo_constants::MAX_NUMBER_OF_SAMPLES]; ///< Offset per cell
 
-		DATATOOLS_SERIALIZATION_DECLARATION()
+    DATATOOLS_SERIALIZATION_DECLARATION()
   };
 
 } // namespace fecom

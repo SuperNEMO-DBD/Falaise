@@ -172,7 +172,7 @@ namespace fecom {
                               >> qi::lit("time =")
                               >> (+~qi::char_("="))
                               >> "==="
-                             ),
+			      ),
                              //  End grammar
                              qi::space,
                              sw_version, unix_time, date, time);
@@ -197,7 +197,7 @@ namespace fecom {
                               "===" >>
                               qi::lit("DATA TYPE :") >> (+~qi::char_("="))
                               >> "==="
-                             ),
+			      ),
                              //  End grammar
                              qi::space,
                              data_type);

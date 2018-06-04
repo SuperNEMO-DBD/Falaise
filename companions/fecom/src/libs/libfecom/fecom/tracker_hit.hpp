@@ -21,42 +21,42 @@
 
 namespace fecom {
 
-	//! \brief commissioning tracker hit, inherit from base
+  //! \brief commissioning tracker hit, inherit from base
   struct tracker_hit
     : public base_hit
   {
-		/// Default constructor
+    /// Default constructor
     tracker_hit();
 
-		/// Destructor
+    /// Destructor
     virtual ~tracker_hit();
 
-		/// Check if the tracker hit is valid
+    /// Check if the tracker hit is valid
     bool is_valid() const;
 
-		/// Add an anodic tracker channel hit
-		void add_anodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+    /// Add an anodic tracker channel hit
+    void add_anodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
-		/// Add a bottom cathodic tracker channel hit
-		void add_bot_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+    /// Add a bottom cathodic tracker channel hit
+    void add_bot_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
-		/// Add a top cathodic tracker channel hit
-		void add_top_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
+    /// Add a top cathodic tracker channel hit
+    void add_top_cathodic_tracker_channel(const fecom::tracker_channel_hit & a_tracker_channel_);
 
-		/// Reset
+    /// Reset
     virtual void reset();
 
-		/// Smart print
+    /// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
-		/// Get hit timestamp (based on anode R0)
-		double get_timestamp() const;
+    /// Get hit timestamp (based on anode R0)
+    double get_timestamp() const;
 
-		/// Check if tracker hit has geom id
-		// bool has_geom_id() const;
+    /// Check if tracker hit has geom id
+    // bool has_geom_id() const;
 
     /// Check if has anodic time 0
     bool has_anodic_t0() const;
@@ -144,21 +144,21 @@ namespace fecom {
 
     /// Set all anodic times
     void set_anodic_timestamps(const uint64_t t0_,
-															 const uint64_t t1_,
-															 const uint64_t t2_,
-															 const uint64_t t3_,
-															 const uint64_t t4_);
+			       const uint64_t t1_,
+			       const uint64_t t2_,
+			       const uint64_t t3_,
+			       const uint64_t t4_);
 
     /// Set all cathodic times
     void set_cathodic_timestamps(const uint64_t bot_time_,
-																 const uint64_t top_time_);
+				 const uint64_t top_time_);
 
     /// Reset all times (anodic and cathodic)
     void reset_times();
 
   private:
 
-		void _reset_();
+    void _reset_();
 
   public:
 
@@ -173,14 +173,14 @@ namespace fecom {
     uint64_t top_cathodic_timestamp; ///< Top cathodic timestamp R0
 
     double anodic_t0_ns; ///< Anodic time 0 in implicit ns
-		double anodic_t1_ns; ///< Anodic time 1 in implicit ns
-		double anodic_t2_ns; ///< Anodic time 2 in implicit ns
-		double anodic_t3_ns; ///< Anodic time 3 in implicit ns
-		double anodic_t4_ns; ///< Anodic time 4 in implicit ns
-		double bot_cathodic_time_ns; ///< Bottom cathodic time implicit ns
-		double top_cathodic_time_ns; ///< Top cathodic time in implicit ns
+    double anodic_t1_ns; ///< Anodic time 1 in implicit ns
+    double anodic_t2_ns; ///< Anodic time 2 in implicit ns
+    double anodic_t3_ns; ///< Anodic time 3 in implicit ns
+    double anodic_t4_ns; ///< Anodic time 4 in implicit ns
+    double bot_cathodic_time_ns; ///< Bottom cathodic time implicit ns
+    double top_cathodic_time_ns; ///< Top cathodic time in implicit ns
 
-		DATATOOLS_SERIALIZATION_DECLARATION()
+    DATATOOLS_SERIALIZATION_DECLARATION()
 
   };
 

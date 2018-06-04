@@ -50,9 +50,9 @@ namespace fecom {
   }
 
   void run_header::tree_dump(std::ostream & out_,
-                                      const std::string & title_,
-                                      const std::string & indent_,
-                                      bool inherit_) const
+			     const std::string & title_,
+			     const std::string & indent_,
+			     bool inherit_) const
   {
     if (!title_.empty()) {
       out_ << indent_ << title_ << std::endl;

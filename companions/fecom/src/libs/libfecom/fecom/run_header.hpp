@@ -14,19 +14,19 @@ namespace fecom {
   /// \brief Run header
   struct run_header
   {
-		/// Default constructor
-		run_header();
+    /// Default constructor
+    run_header();
 
-		/// Destructor
+    /// Destructor
     virtual ~run_header();
 
-		/// Check if the run header is valid
+    /// Check if the run header is valid
     bool is_valid() const;
 
-		/// Reset
+    /// Reset
     void reset();
 
-		/// Smart print
+    /// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",

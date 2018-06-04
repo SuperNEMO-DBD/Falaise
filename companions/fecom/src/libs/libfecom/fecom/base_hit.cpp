@@ -101,7 +101,7 @@ namespace fecom {
     }
     else if ((a.hit_id == b.hit_id)){
       DT_THROW(std::logic_error, "Two hits have the same hit_id, hit_a = '" << a.hit_id << "' , hit_b = '" << b.hit_id << "' !");
-     return true;
+      return true;
     }
 
     else {

@@ -11,7 +11,7 @@ namespace fecom {
   DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calo_hit, "fecom::calo_hit")
 
   calo_hit::calo_hit()
-    : base_hit(SIG_CALORIMETER)
+  : base_hit(SIG_CALORIMETER)
   {
     _reset_();
   }
@@ -25,7 +25,7 @@ namespace fecom {
     if (! this->base_hit::is_valid()) return false;
     if (electronic_id.get(calo_constants::CHANNEL_INDEX) >= calo_constants::INVALID_BOARD_CHANNEL) return false;
     else return true;
-      // return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
+    // return (fcr < calo_constants::MAX_NUMBER_OF_SAMPLES) && (raw_tdc < 0xFFFFFFFF);
   }
 
   double calo_hit::get_timestamp() const

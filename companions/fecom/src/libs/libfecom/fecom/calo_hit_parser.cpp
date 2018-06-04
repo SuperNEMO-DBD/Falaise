@@ -121,7 +121,7 @@ namespace fecom {
                               >> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
                               >> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
                               >> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
-                             ),
+			      ),
                              //  End grammar
                              qi::space);
       DT_THROW_IF(!res || str_iter != end_iter,
@@ -207,18 +207,18 @@ namespace fecom {
                            //  End grammar
                            qi::space,
                            raw_waveform_data);
-     DT_THROW_IF(!res || str_iter != end_iter,
-                  std::logic_error,
-                 "Cannot parse event samples!");
-     // DT_THROW_IF(raw_waveform_data.size() != hit_.waveform_data_size,
-     //             std::logic_error, "Invalid waveform size!");
-     // Waveform:
-     hit_.waveform_data_size = raw_waveform_data.size();
-     for (uint16_t icell = 0; icell < raw_waveform_data.size(); icell++) {
-       hit_.set_raw_sample(icell, (int16_t) raw_waveform_data[icell]);
-     }
-     DT_LOG_TRACE_EXITING(logging);
-     return;
+    DT_THROW_IF(!res || str_iter != end_iter,
+		std::logic_error,
+		"Cannot parse event samples!");
+    // DT_THROW_IF(raw_waveform_data.size() != hit_.waveform_data_size,
+    //             std::logic_error, "Invalid waveform size!");
+    // Waveform:
+    hit_.waveform_data_size = raw_waveform_data.size();
+    for (uint16_t icell = 0; icell < raw_waveform_data.size(); icell++) {
+      hit_.set_raw_sample(icell, (int16_t) raw_waveform_data[icell]);
+    }
+    DT_LOG_TRACE_EXITING(logging);
+    return;
   }
 
 } // namespace fecom

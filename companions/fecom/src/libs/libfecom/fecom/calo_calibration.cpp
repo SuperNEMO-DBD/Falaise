@@ -70,7 +70,7 @@ namespace fecom {
     }
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
-      << "End." << std::endl;
+	 << "End." << std::endl;
 
     return;
   }
@@ -122,7 +122,7 @@ namespace fecom {
     }
     DT_LOG_TRACE_EXITING(logging);
     return;
-   }
+  }
 
   void calo_calibration::_parse_pedestals_per_channel_(const std::string & offsets_line_,
                                                        const int channel_id_,
@@ -196,7 +196,7 @@ namespace fecom {
         DT_LOG_DEBUG_SHORT(logging, "|-- Stop cell     = [" << parsing_data_.header.stop_cell << "]");
         DT_LOG_DEBUG_SHORT(logging, "|-- Start channel = [" << parsing_data_.header.start_channel << "]");
         DT_LOG_DEBUG_SHORT(logging, "`-- Stop channel  = [" << parsing_data_.header.stop_channel << "]");
-     }
+      }
 
       {
         // Parsing pedestals data:

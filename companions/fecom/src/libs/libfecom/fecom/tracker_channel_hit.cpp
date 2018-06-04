@@ -11,7 +11,7 @@ namespace fecom {
   DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_channel_hit, "fecom::tracker_channel_hit")
 
   tracker_channel_hit::tracker_channel_hit()
-    : base_hit(SIG_TRACKER)
+  : base_hit(SIG_TRACKER)
   {
     reset();
   }
@@ -62,9 +62,9 @@ namespace fecom {
   }
 
   void tracker_channel_hit::tree_dump(std::ostream & out_,
-			      const std::string & title_,
-			      const std::string & indent_,
-			      bool inherit_) const
+				      const std::string & title_,
+				      const std::string & indent_,
+				      bool inherit_) const
   {
     this->base_hit::tree_dump(out_, title_, indent_, true);
 

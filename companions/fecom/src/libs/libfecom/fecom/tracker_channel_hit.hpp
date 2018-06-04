@@ -20,70 +20,70 @@
 
 namespace fecom {
 
-	//! \brief Commissioning tracker channel hit parser
+  //! \brief Commissioning tracker channel hit parser
   struct tracker_channel_hit
     : public base_hit
   {
-		/// Predicate to find a tracker channel hit by channel
-		struct find_by_channel {
-			find_by_channel(const uint16_t & feast_id_,
-											const uint16_t & channel_id_) : feast_id(feast_id_),
-																											channel_id(channel_id_) {}
+    /// Predicate to find a tracker channel hit by channel
+    struct find_by_channel {
+      find_by_channel(const uint16_t & feast_id_,
+		      const uint16_t & channel_id_) : feast_id(feast_id_),
+						      channel_id(channel_id_) {}
 
-			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
-				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
-				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
-				bool finded = false;
-				if (feast_id == input_feast_id && channel_id == input_channel_id) finded = true;
-				else finded = false;
-				return finded;
-			}
+      bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
+	uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
+	uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
+	bool finded = false;
+	if (feast_id == input_feast_id && channel_id == input_channel_id) finded = true;
+	else finded = false;
+	return finded;
+      }
 
-			uint16_t feast_id;
-			uint16_t channel_id;
-		};
+      uint16_t feast_id;
+      uint16_t channel_id;
+    };
 
-		/// Predicate to find a tracker channel hit by timestamp
-		struct find_by_timestamp {
-			find_by_timestamp(const uint16_t & feast_id_,
-												const uint16_t & channel_id_,
-												const std::string & timestamp_type_) : feast_id(feast_id_),
-																															 channel_id(channel_id_),
-																															 timestamp_type(timestamp_type_) {}
+    /// Predicate to find a tracker channel hit by timestamp
+    struct find_by_timestamp {
+      find_by_timestamp(const uint16_t & feast_id_,
+			const uint16_t & channel_id_,
+			const std::string & timestamp_type_) : feast_id(feast_id_),
+							       channel_id(channel_id_),
+							       timestamp_type(timestamp_type_) {}
 
-			bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
-				uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
-				uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
-				std::string input_timestamp_type = tracker_channel_hit_.timestamp_type;
-				bool finded = false;
-				if (feast_id == input_feast_id
-						&& channel_id == input_channel_id
-						&& timestamp_type == input_timestamp_type) finded = true;
-				else finded = false;
-				return finded;
-			}
+      bool operator()(const tracker_channel_hit & tracker_channel_hit_) {
+	uint16_t input_feast_id = tracker_channel_hit_.electronic_id.get(tracker_constants::FEAST_INDEX);
+	uint16_t input_channel_id = tracker_channel_hit_.electronic_id.get(tracker_constants::CHANNEL_INDEX);
+	std::string input_timestamp_type = tracker_channel_hit_.timestamp_type;
+	bool finded = false;
+	if (feast_id == input_feast_id
+	    && channel_id == input_channel_id
+	    && timestamp_type == input_timestamp_type) finded = true;
+	else finded = false;
+	return finded;
+      }
 
-			uint16_t feast_id;
-			uint16_t channel_id;
-			std::string timestamp_type;
-		};
+      uint16_t feast_id;
+      uint16_t channel_id;
+      std::string timestamp_type;
+    };
 
-		/// Default constructor
+    /// Default constructor
     tracker_channel_hit();
 
-		/// Destructor
+    /// Destructor
     virtual ~tracker_channel_hit();
 
-		/// Check if the tracker
+    /// Check if the tracker
     virtual bool is_valid() const;
 
-		///
-		virtual double get_timestamp() const;
+    ///
+    virtual double get_timestamp() const;
 
-		/// Reset
+    /// Reset
     virtual void reset();
 
-		/// Smart print
+    /// Smart print
     virtual void tree_dump(std::ostream & out_,
                            const std::string & title_ = "",
                            const std::string & indent_ = "",
@@ -99,18 +99,18 @@ namespace fecom {
 
   public:
 
-		// Management :
-		mutable bool associated = false; ///< Flag to know if the tracker channel is already asociate in a tracker_hit
+    // Management :
+    mutable bool associated = false; ///< Flag to know if the tracker channel is already asociate in a tracker_hit
 
     // Config :
 
     std::string timestamp_type;    ///< Type of the timestamp (t0..t6)
 
     // Data :
-		uint64_t timestamp_value;      ///< Value of the timestamp
+    uint64_t timestamp_value;      ///< Value of the timestamp
     double timestamp_time_ns;      ///< Value of the timestamp in ns
 
-		DATATOOLS_SERIALIZATION_DECLARATION()
+    DATATOOLS_SERIALIZATION_DECLARATION()
 
     friend class tracker_channel_hit_parser;
   };
