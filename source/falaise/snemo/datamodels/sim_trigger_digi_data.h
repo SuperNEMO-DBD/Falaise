@@ -223,6 +223,12 @@ namespace snemo {
       /// Return the coincidence Zoning Word S1 at 1600 ns
       std::bitset<snemo::electronics::constants::NZONES> get_coincidence_ZW_S1_1600ns() const;
 
+      /// Set the geiger matrix at 1600 ns
+      void set_geiger_matrix_1600ns(const bool tab_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NLAYERS][snemo::electronics::constants::NROWS]);
+
+      /// Get the geiger matrix at 1600 ns
+      void get_geiger_matrix_1600ns(bool tab_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NLAYERS][snemo::electronics::constants::NROWS]);
+
       /// Reset
       void reset();
 
@@ -270,6 +276,8 @@ namespace snemo {
       std::bitset<snemo::electronics::constants::TRACKER_DATA_FULL_BITSET_SIZE> _tracker_finale_data_1600ns_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NZONES];  //!< Tracker Finale data bitset for each zone (2 sides, 10 zones / side)
       std::bitset<snemo::electronics::constants::NZONES> _coincidence_ZW_S0_1600ns_; //!< Coincidence calo / tracker Zoning Word Side 0
       std::bitset<snemo::electronics::constants::NZONES> _coincidence_ZW_S1_1600ns_; //!< Coincidence calo / tracker Zoning Word Side 1
+
+      bool _geiger_matrix_1600ns_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NLAYERS][snemo::electronics::constants::NROWS]; //!< The snapshot of the Geiger matrix
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

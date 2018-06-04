@@ -49,6 +49,11 @@ namespace snemo {
 	for (unsigned int izone = 0; izone < snemo::electronics::constants::NZONES; izone++) {
 	  _tracker_finale_data_1600ns_[iside][izone].reset();
 	}
+	for (unsigned int ilayer = 0; ilayer < snemo::electronics::constants::NLAYERS; ilayer++) {
+	  for (unsigned int irow = 0; irow < snemo::electronics::constants::NROWS; irow++) {
+	    _geiger_matrix_1600ns_[iside][ilayer][irow] = 0;
+	  }
+	}
       }
       _coincidence_ZW_S0_1600ns_.reset();
       _coincidence_ZW_S1_1600ns_.reset();
@@ -415,6 +420,32 @@ namespace snemo {
       return _coincidence_ZW_S1_1600ns_;
     }
 
+    void sim_trigger_digi_data::set_geiger_matrix_1600ns(const bool tab_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NLAYERS][snemo::electronics::constants::NROWS])
+    {
+      for (unsigned int iside = 0; iside < snemo::electronics::constants::NSIDES; iside++) {
+	for (unsigned int ilayer = 0; ilayer < snemo::electronics::constants::NLAYERS; ilayer++) {
+	  for (unsigned int irow = 0; irow < snemo::electronics::constants::NROWS; irow++) {
+	    _geiger_matrix_1600ns_[iside][ilayer][irow] = tab_[iside][ilayer][irow];
+	  }
+	}
+      }
+
+      return;
+    }
+
+    void sim_trigger_digi_data::get_geiger_matrix_1600ns(bool tab_[snemo::electronics::constants::NSIDES][snemo::electronics::constants::NLAYERS][snemo::electronics::constants::NROWS])
+    {
+      for (unsigned int iside = 0; iside < snemo::electronics::constants::NSIDES; iside++) {
+	for (unsigned int ilayer = 0; ilayer < snemo::electronics::constants::NLAYERS; ilayer++) {
+	  for (unsigned int irow = 0; irow < snemo::electronics::constants::NROWS; irow++) {
+	    tab_[iside][ilayer][irow] =  _geiger_matrix_1600ns_[iside][ilayer][irow];
+	  }
+	}
+      }
+
+      return;
+    }
+
     void sim_trigger_digi_data::reset()
     {
       _L1_decision_25ns_ = false;
@@ -461,11 +492,55 @@ namespace snemo {
     void sim_trigger_digi_data::tree_dump(std::ostream & out_,
 					  const std::string & title_,
 					  const std::string & indent_,
-					  bool /* inherit_ */) const
+					  bool inherit_) const
     {
       if (!title_.empty()) {
 	out_ << indent_ << title_ << std::endl;
       }
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "L1 decision 25ns              : [" << _L1_decision_25ns_             << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "L1 decision clocktick 25ns    : [" << _L1_decision_clocktick_25ns_   << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo zoning word S0 25ns      : [" << _calo_zoning_word_S0_25ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo zoning word S1 25ns      : [" << _calo_zoning_word_S1_25ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM S0 25ns              : [" << _calo_HTM_S0_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM S1 25ns              : [" << _calo_HTM_S1_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM gveto 25ns           : [" << _calo_HTM_gveto_25ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO S0 25ns              : [" << _calo_LTO_S0_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO S1 25ns              : [" << _calo_LTO_S1_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO gveto 25ns           : [" << _calo_LTO_gveto_25ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo SS_coinc 25ns            : [" << _calo_SS_coinc_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo TTM 25ns                 : [" << _calo_TTM_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo XT info 25ns             : [" << _calo_XT_info_25ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "L2 decision 1600ns            : [" << _L2_decision_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "L2 decision clocktick 1600ns  : [" << _L2_decision_clocktick_1600ns_ << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "L2 decision trigger mode      : [" << _L2_decision_trigger_mode_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo zoning word S0 1600ns    : [" << _calo_zoning_word_S0_1600ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo zoning word S1 1600ns    : [" << _calo_zoning_word_S1_1600ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM S0 1600ns            : [" << _calo_HTM_S0_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM S1 1600ns            : [" << _calo_HTM_S1_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo HTM gveto 1600ns         : [" << _calo_HTM_gveto_1600ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO S0 1600ns            : [" << _calo_LTO_S0_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO S1 1600ns            : [" << _calo_LTO_S1_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo LTO gveto 1600ns         : [" << _calo_LTO_gveto_1600ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo SS coinc 1600ns          : [" << _calo_SS_coinc_1600ns_	  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo TTM 1600ns               : [" << _calo_TTM_1600ns_		  << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Calo XT info 1600ns           : [" << _calo_XT_info_1600ns_	  << "]" << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Tracker finale data 1600ns : " << std::endl;
+      for (unsigned int iside = 0; iside < snemo::electronics::constants::NSIDES; iside++)
+	{
+	  out_ << indent_ << datatools::i_tree_dumpable::tag << "Side " << iside << " : ";
+	  for (unsigned int izone = 0; izone < snemo::electronics::constants::NZONES; izone++)
+	    {
+	      out_ << "[" << _tracker_finale_data_1600ns_[iside][izone] << "] ";
+	    }
+	  out_ << std::endl;
+	}
+
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Coincidence ZW S0 1600ns : [" <<_coincidence_ZW_S0_1600ns_ << "]" << std::endl;
+      out_ << indent_ << datatools::i_tree_dumpable::tag << "Coincidence ZW S1 1600ns : [" <<_coincidence_ZW_S1_1600ns_ << "]" << std::endl;
+
+      out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Geiger matrix            : [" << std::to_string(true) << "]" << std::endl;
 
       return;
     }

@@ -55,6 +55,7 @@ namespace snemo {
       ar & boost::serialization::make_nvp("tracker_finale_data_1600ns"  , _tracker_finale_data_1600ns_);
       ar & boost::serialization::make_nvp("coincidence_ZW_S0_1600ns"    , _coincidence_ZW_S0_1600ns_);
       ar & boost::serialization::make_nvp("coincidence_ZW_S1_1600ns"    , _coincidence_ZW_S1_1600ns_);
+      ar & boost::serialization::make_nvp("geiger_matrix_1600ns"        , _geiger_matrix_1600ns_);
 
       return;
     }
