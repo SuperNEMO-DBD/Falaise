@@ -72,7 +72,7 @@ by running it with the `-h` of `--help` options, e.g.
 
 ~~~~~
 $ flsimulate --help
-flsimulate (3.0.0) : SuperNEMO simulation program
+flsimulate (3.3.0) : SuperNEMO simulation program
 Usage:
   flsimulate [options]
 Options:
@@ -113,14 +113,14 @@ status of the application, including which libraries it uses:
 
 ~~~~~
 $ flsimulate --version
-flsimulate 3.0.0
+flsimulate 3.3.0
 
 Copyright (C) 2013-2017 SuperNEMO Collaboration
 
 flsimulate uses the following external libraries:
-* Falaise : 3.0.0
-* Bayeux  : 3.0.0
-* Boost   : 106000
+* Falaise : 3.3.0
+* Bayeux  : 3.1.2
+* Boost   : 106300
 * Geant4  : 9.6.4
 
 ~~~~~
@@ -141,7 +141,7 @@ $ flsimulate -o example.xml
 
 The  output `example.xml`  file  contains one  unique simulated  event
 corresponding to  a Se-82 (0nubb)  decay emitted from a  random source
-pad (SuperNEMO Demonstrator geometry model 4.0 with `Basic` layout).
+pad (SuperNEMO Demonstrator geometry model 4.1 with `Basic` layout).
 You  may  browse  the  output XML file  using  your  favorite  text
 editor.    You   will    see    some   leading    records   of    type
 `datatools::properties` corresponding  to the metadata.  Then  comes a
@@ -422,7 +422,7 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
 
   - `simulationSetupUrn` : the simulation setup tag (string, mandatory
     for  production   runs,  otherwise   optional,  default   tag  is:
-    `urn:snemo:demonstrator:simulation:2.2`).
+    `urn:snemo:demonstrator:simulation:2.3`).
   - `simulationSetupConfig`  : the  explicit  path  to the  simulation
     configuration   file  for   the  Bayeux/mctools   *Geant4  driver*
     (string/path, optional).  If not set, it is automatically resolved
@@ -496,41 +496,41 @@ The  FLSimulate's  script  contains  up   to  five  sections  of  type
 	`configUrn` tag.
 
 A sample configuration script  (commented) is provided in this
-[document](FLSimulate-3.0.0.conf) (for Falaise 3.0.0).
+[document](FLSimulate-3.3.0.conf) (for Falaise 3.3.0).
 
 For a  given run, the simulation  setup is selected from  the script's
 `flsimulate.simulation` section.   Falaise uses  a special  service to
 registered   blessed/official  configuration   (geometry,  simulation,
 reconstruction...). Any  setup of interest  may be registered  with an
 unique *tag*. The  tag is a simple character string  which uses an URN
-scheme.  For  example, Falaise  version  3.2.0  is released  with  the
-registered     simulation    setup     tag     2.2    with     tag
-`urn:snemo:demonstrator:simulation:2.2`.     This   is    the   default
+scheme.  For  example, Falaise  version  3.3.0  is released  with  the
+registered     simulation    setup     tag     2.3    with     tag
+`urn:snemo:demonstrator:simulation:2.3`.     This   is    the   default
 simulation setup  which will be  used if not explicitely  requested by
 the user.
 
 Thus, in the `flsimulate.simulation` section, the simulation setup tag
-is optional and  defaults to: `urn:snemo:demonstrator:simulation:2.2`.
+is optional and  defaults to: `urn:snemo:demonstrator:simulation:2.3`.
 If  no other  parameters are  explicitly set,  FLSimulate will  try to
 resolve all  other configuration components using  a dependency scheme
 displayed on the table below:
 
 ~~~~~
-+-- urn:snemo:demonstrator:simulation:2.2 (simulation setup)
++-- urn:snemo:demonstrator:simulation:2.3 (simulation setup)
    +-- urn:snemo:demonstrator:setup:1.0 (related experimental setup)
-   +-- urn:snemo:demonstrator:simulation:2.1:services (used service configuration)
-   |   +-- urn:snemo:demonstrator:geometry:4.0 (used geometry model)
-   +-- urn:snemo:demonstrator:simulation:2.2:variants (used variant configuration)
-   +-- urn:snemo:demonstrator:simulation:2.2:variants:profiles:default (default variant profile)
-   +-- urn:snemo:demonstrator:simulation:vertexes:4.1 (used vertex generation setup)
-   +-- urn:snemo:demonstrator:simulation:decays:1.3 (used decay generation setup)
+   +-- urn:snemo:demonstrator:simulation:2.3:services (used service configuration)
+   |   +-- urn:snemo:demonstrator:geometry:4.1 (used geometry model)
+   +-- urn:snemo:demonstrator:simulation:2.3:variants (used variant configuration)
+   +-- urn:snemo:demonstrator:simulation:2.3:variants:profiles:default (default variant profile)
+   +-- urn:snemo:demonstrator:simulation:vertexes:4.2 (used vertex generation setup)
+   +-- urn:snemo:demonstrator:simulation:decays:1.4 (used decay generation setup)
 ~~~~~
 
 Effective  paths  to  various  configuration  files  are  automatically
 resolved by a special service.
 
 The          default          variant         profile,          namely
-`urn:snemo:demonstrator:simulation:2.2:variants:profiles:default`,  is
+`urn:snemo:demonstrator:simulation:2.3:variants:profiles:default`,  is
 associated to the default simulation setup. It implies:
 
 - the `Basic` geometry layout (full) demonstrator module with external
@@ -567,7 +567,7 @@ parameters  and  depender  variant  menus.  It  is  organized  like  a
 filesystem where each parameter and variant has an unique path.
 
 As an illustration, here is the organization of the geometry registry
-used by the SuperNEMO demonstrator simulation setup (2.2 (tag : `"urn:snemo:demonstrator:simulation:2.2`):
+used by the SuperNEMO demonstrator simulation setup (2." (tag : `"urn:snemo:demonstrator:simulation:2.3`):
 
 ~~~~~~~~~
 geometry/
@@ -613,8 +613,8 @@ deeper level of the variant hierarchy.
 FLSimulate registries
 ---------------------
 
-In  the current  implementation  (Falaise 3.2.0  and simulation  setup
-version 2.2),  four variant  *registries* are  defined in  the variant
+In  the current  implementation  (Falaise 3.3.0  and simulation  setup
+version 2.3),  four variant  *registries* are  defined in  the variant
 repository:
 - `geometry` : handles geometry options,
 - `vertexes` : handles vertex generation options,
@@ -674,10 +674,10 @@ The next  image shows the selection  of the vertex generator  from the
 Notice: You Bayeux setup should have been compiled with Qt GUI support to benefit
 of the `flsimulate-configure`'s GUI interface.
 
-By `flsimulate-configure` uses a default simulation setup (example: "urn:snemo:demonstrator:simulation:2.2").
+By `flsimulate-configure` uses a default simulation setup (example: "urn:snemo:demonstrator:simulation:2.3").
 You can change to some arbitrary simulation setup with the `--setup-tag` switch:
 ~~~~~
-$ flsimulate-configure --setup-tag "urn:snemo:demonstrator:simulation:2.2"
+$ flsimulate-configure --setup-tag "urn:snemo:demonstrator:simulation:2.3"
 ~~~~~
 This will activate a variant context specific to the selected simulation setup.
 
@@ -804,7 +804,7 @@ profile : string as path = "variants.profile"
 where  the   `variants.profile`  explicitely  publishes   all  variant
 parameters that  have been chosen  by the user. The  following example
 displays  the  default  variant  profile  associated  to  the  default
-simulation setup (version 2.2) in Falaise 3.2.0:
+simulation setup (version 2.3) in Falaise 3.3.0:
 
 ~~~~~
 #@format=datatools::configuration::variant
@@ -848,7 +848,7 @@ SuperNEMO Demonstrator (tag=`"urn:snemo:demonstrator"`).
 Only       one       experimental       setup       is       available
 (tag=`"urn:snemo:demonstrator:setup:1.0"`).   It   consists   in   the
 description of the SuperNEMO  demonstrator detector through a geometry
-model identified with the `"urn:snemo:demonstrator:geometry:4.0"` tag
+model identified with the `"urn:snemo:demonstrator:geometry:4.1"` tag
 as shown above in the dependency table.
 
 In  the future,  additional experimental  setups will  be implemented,
@@ -856,7 +856,7 @@ including not only the geometry model  but also the description of the
 electronics (at least  the part of it which is  needed for the offline
 software, digitization...).
 
-As of  version 4.0 of  the geometry  model and its  associated variant
+As of  version 4.1 of  the geometry  model and its  associated variant
 system, the  experimental setup includes  two flavours of  the general
 layout of the detector:
 - `Basic`  :  realistic  model   of  the  full  demonstrator  detector
@@ -945,7 +945,7 @@ List of available experimental setups {#usingflsimulate_summaryofavailableexperi
 		*   Associated to:
 			+   Variant system: `"urn:snemo:demonstrator:setup:1.0:variants"`
 			+   Services system: `"urn:snemo:demonstrator:setup:1.0:services"`
-				- Geometry service: `"urn:snemo:demonstrator:geometry:4.0"`
+				- Geometry service: `"urn:snemo:demonstrator:geometry:4.1"`
 
 List of available simulation setups {#usingflsimulate_summaryofavailablesimulationsetups}
 -----------------------------------
@@ -974,6 +974,18 @@ List of available simulation setups {#usingflsimulate_summaryofavailablesimulati
 			+   Variant system: `"urn:snemo:demonstrator:simulation:2.2:variants"`
 			+   Blessed profiles: `"urn:snemo:demonstrator:simulation:2.2:variants:profiles:basic-1.0"`
 			+   Default profile: `"urn:snemo:demonstrator:simulation:2.2:variants:profiles:default"`
+2.  SuperNEMO demonstrator simulation setup tag 2.3
+		*   Description: Simulation setup for the SuperNEMO demonstrator detector
+		*   Tag : `"urn:snemo:demonstrator:simulation:2.3"`
+		*   Based on:
+			+   Experimental setup: `"urn:snemo:demonstrator:setup:1.0"`
+			+   Vertex generation system: `"urn:snemo:demonstrator:simulation:vertexes:4.2"`
+			+   Primary events generation system : `"urn:snemo:demonstrator:simulation:decays:1.4"`
+		*   Associated to:
+			+   Services system: `"urn:snemo:demonstrator:simulation:2.3:services"`
+			+   Variant system: `"urn:snemo:demonstrator:simulation:2.3:variants"`
+			+   Blessed profiles: `"urn:snemo:demonstrator:simulation:2.3:variants:profiles:basic-1.0"`
+			+   Default profile: `"urn:snemo:demonstrator:simulation:2.3:variants:profiles:default"`
 
 
 Available MC hits output profiles {#usingflsimulate_hits_output_profiles}

@@ -11,7 +11,7 @@
 
 namespace FLSimulate {
 
-std::string default_simulation_setup() { return "urn:snemo:demonstrator:simulation:2.2"; }
+std::string default_simulation_setup() { return "urn:snemo:demonstrator:simulation:2.3"; }
 
 std::map<std::string, std::string> list_of_simulation_setups() {
   std::map<std::string, std::string> m;
