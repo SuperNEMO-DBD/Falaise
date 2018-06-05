@@ -11,6 +11,7 @@ EOF
 find ./ -type f \
   | grep -v "/_" \
   | grep -v "~$" \
+  | grep -v "\#$" \
   | grep -v /.svn/ \
   | grep -v "CMakeLists.txt" \
   | grep -v "/\..*" \

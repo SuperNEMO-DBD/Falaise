@@ -440,6 +440,13 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/registries/commissioning_source.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/registries/vertexes.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.1/variants/repository.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/generators/om_pmt_bulk_vg.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/manager.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/README.rst
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/variants/models/vertexes.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/variants/models/vertexes_generators.csv
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/variants/registries/vertexes.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/4.2/variants/repository.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/geometry_service.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/tracker_commissioning/geometry/1.0/mapping/categories.lis
