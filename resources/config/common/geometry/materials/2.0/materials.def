@@ -257,7 +257,6 @@ composition.mode            : string    = "fraction_mass"
 composition.names           : string[2] = "snemo::selenium-82"  "basic::polyvinylalcohol"
 composition.fraction_mass   : real[2]   =  0.90                  0.10
 
-
 ####################################################
 [name="snemo::se82_enriched97_pva" type="material"]
 #@config Highly enriched selenium source material (LAPP PVA-mix)

@@ -27,7 +27,7 @@ struct base_hit : public datatools::i_serializable {
 
   /// Compare two base hits by hit id
   struct compare {
-    bool operator()(const base_hit& a, const base_hit& b);
+    bool operator()(const base_hit& a, const base_hit& b) const;
   };
 
   /// Compare two base hits by timestamp

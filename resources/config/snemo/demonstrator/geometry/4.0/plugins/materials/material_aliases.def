@@ -52,4 +52,6 @@ material : string = "snemo::mo100::basic"
 material : string = "snemo::nd150::basic"
 
 
+
+
 # end of @falaise:config/snemo/demonstrator/geometry/4.0/plugins/materials/material_aliases.def

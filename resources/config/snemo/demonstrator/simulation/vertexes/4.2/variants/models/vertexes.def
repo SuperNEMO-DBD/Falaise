@@ -1,0 +1,90 @@
+# -*- mode: conf-unix -*-
+# @falaise:config/snemo/demonstrator/simulation/vertexes/4.2/variants/models/vertexes.def
+# Description of variants for the definition of the vertex generation (format: datatools::multi_properties)
+
+#@description The definitions for variant parameters related to the vertex generation
+#@key_label  "name"
+#@meta_label "type"
+
+
+###############################################
+[name="vertexes.generator.PM" type="parameter"]
+
+#@config A variant parameter describing the primary vertex generator
+
+#@description Logging priority threshold
+logging.priority : string = "fatal"
+#logging.priority : string = "trace"
+
+#@description The display name of this variant
+display_name        : string = "Primary vertex generator"
+
+#@description A short description of the variant
+terse_description   : string = "The primary vertex generator"
+
+#@description The type of the parameter
+type                : string = "string"
+
+#@description The mutability of the parameter
+mutability          : string = "variable"
+
+#@description The mutability mode of the parameter
+variable.mode       : string = "enumeration"
+
+#@description The CSV file containing the list of supported values
+string.enumerated.csv_file : string as path = \
+  "@falaise:config/snemo/demonstrator/simulation/vertexes/4.2/variants/models/vertexes_generators.csv"
+
+# #@description The CSV file supported field separator
+# string.enumerated.csv_file.separator : string = ":"
+
+# #@description The CSV file supported field sub-separators
+# string.enumerated.csv_file.subseparator : string = ";"
+
+#@description The default value
+string.default : string = "free_spot"
+
+#@description The list of variants
+variants : string[3] = \
+  "if_half_commissioning_single_spot" \
+  "if_free_spot" \
+  "if_source_calibration_single_spot"
+
+#@description The model of the variant
+variants.if_half_commissioning_single_spot.model       : string = "half_commissioning.single_spot.VM"
+
+#@description The description of the variant
+variants.if_half_commissioning_single_spot.description : string = "Set of parameters for the half commissioning single splot vertex generator"
+
+#@description The model of the variant
+variants.if_free_spot.model       : string = "free_spot_vertex.VM"
+
+#@description The description of the variant
+variants.if_free_spot.description : string = "Set of parameters for the free single splot vertex generator"
+
+#@description The model of the variant
+variants.if_source_calibration_single_spot.model       : string = "source_calibration.single_spot.VM"
+
+#@description The description of the variant
+variants.if_source_calibration_single_spot.description : string = "Set of parameters for the calibration source single splot vertex generator"
+
+
+###################################
+[name="vertexes.VM" type="variant"]
+
+#@config A variant model describing the parameters for the vertex generation
+
+#@description The display name of this variant
+display_name       : string = "Vertex generation"
+
+#@description A short description of the variant
+terse_description  : string = "The configuration parameters for the vertex generation"
+
+#@description The list of variant parameters
+parameters : string[1] = "generator"
+
+parameters.generator.model       : string = "vertexes.generator.PM"
+parameters.generator.description : string = "The selected primary vertex generator"
+
+
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/4.2/variants/models/vertexes.def
