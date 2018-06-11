@@ -384,12 +384,12 @@ TEST_CASE("properties conversion works", "") {
   auto metadata = falaise::metadata::read_datatools(fixture);
 
   SECTION("Failure conditions") {
-    REQUIRE_THROWS_AS(metadata.get<bool>("a.bad.path"), falaise::metadata::key_error);
+    REQUIRE_THROWS_AS(metadata.get<bool>("a.bad.path"), falaise::metadata::key_error&);
   }
 
   SECTION("Integer Extraction") {
     REQUIRE(metadata.get<int>("foo") == 42);
-    REQUIRE_THROWS_AS(metadata.get<double>("foo"), falaise::metadata::type_error);
+    REQUIRE_THROWS_AS(metadata.get<double>("foo"), falaise::metadata::type_error&);
     REQUIRE(metadata.get("foo_opt", 24) == 24);
     metadata.put("foo_opt", 234);
     REQUIRE(metadata.get("foo_opt", 4321) == 234);
