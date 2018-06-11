@@ -65,11 +65,11 @@ namespace fecom {
     /// Check if the commissioning event is valid
     bool is_valid() const;
 
-    /// Set the external channel mapping (ptr)
-    void set_channel_mapping(const fecom::channel_mapping & mapping_);
+    // /// Set the external channel mapping (ptr)
+    // void set_channel_mapping(const fecom::channel_mapping & mapping_);
 
-    /// Reference to the external channel mapping
-    const fecom::channel_mapping & get_channel_mapping() const;
+    // /// Reference to the external channel mapping
+    // const fecom::channel_mapping & get_channel_mapping() const;
 
     /// Add a calo hit in the commissioning event
     void add_calo_hit(fecom::calo_hit & a_calo_hit_);
@@ -138,7 +138,7 @@ namespace fecom {
     bool is_calo_tracker() const;
 
     /// Build a tracker hit from channels (anodic, bot cathode and top cathode max) SNDER p.30-31 for channel / cell association
-    void build_tracker_hit_from_channels();
+    void build_tracker_hit_from_channels(const fecom::channel_mapping & channel_mapping_);
 
     /// Reset
     virtual void reset();
@@ -152,21 +152,17 @@ namespace fecom {
                            const std::string & indent_ = "",
                            bool inherit_ = false) const;
 
-    std::bitset<4> & grab_traits() { return _traits_; }
-
-    const std::bitset<4> & get_traits() const { return _traits_; }
 
   private:
 
     void _reset_();
 
     // Configuration
-    const fecom::channel_mapping * _my_channel_mapping_; //!< Handle to an external channel mapping
+    // const fecom::channel_mapping * _my_channel_mapping_; //!< Handle to an external channel mapping
 
     // Datas :
     datatools::event_id _event_id_; ///< Datatools event ID
     double _time_start_ns_; ///< Time start of the commissioning event in ns
-    std::bitset<4> _traits_; ///< Traits for data quality of the commissioning event of data
 
     calo_hit_collection _calo_hit_collection_; ///< Calo hit collection for a trigger id
     tracker_channel_hit_collection _tracker_channel_hit_collection_; ///< Tracker hit collection for a trigger id

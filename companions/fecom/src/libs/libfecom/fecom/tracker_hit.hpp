@@ -144,14 +144,14 @@ namespace fecom {
 
     /// Set all anodic times
     void set_anodic_timestamps(const uint64_t t0_,
-			       const uint64_t t1_,
-			       const uint64_t t2_,
-			       const uint64_t t3_,
-			       const uint64_t t4_);
+                               const uint64_t t1_,
+                               const uint64_t t2_,
+                               const uint64_t t3_,
+                               const uint64_t t4_);
 
     /// Set all cathodic times
     void set_cathodic_timestamps(const uint64_t bot_time_,
-				 const uint64_t top_time_);
+                                 const uint64_t top_time_);
 
     /// Reset all times (anodic and cathodic)
     void reset_times();
@@ -169,8 +169,8 @@ namespace fecom {
     uint64_t anodic_timestamp_t2; ///< Anodic timestamp R2
     uint64_t anodic_timestamp_t3; ///< Anodic timestamp R3
     uint64_t anodic_timestamp_t4; ///< Anodic timestamp R4
-    uint64_t bot_cathodic_timestamp; ///< Bottom cathodic timestamp R0
-    uint64_t top_cathodic_timestamp; ///< Top cathodic timestamp R0
+    uint64_t bot_cathodic_timestamp; ///< Bottom cathodic timestamp R5
+    uint64_t top_cathodic_timestamp; ///< Top cathodic timestamp R6
 
     double anodic_t0_ns; ///< Anodic time 0 in implicit ns
     double anodic_t1_ns; ///< Anodic time 1 in implicit ns

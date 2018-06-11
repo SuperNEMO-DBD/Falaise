@@ -22,16 +22,16 @@ namespace fecom {
     return _event_id_.is_valid();
   }
 
-  void commissioning_event::set_channel_mapping(const fecom::channel_mapping & mapping_)
-  {
-    _my_channel_mapping_ = & mapping_;
-    return;
-  }
+  // void commissioning_event::set_channel_mapping(const fecom::channel_mapping & mapping_)
+  // {
+  //   _my_channel_mapping_ = & mapping_;
+  //   return;
+  // }
 
-  const fecom::channel_mapping & commissioning_event::get_channel_mapping() const
-  {
-    return * _my_channel_mapping_;
-  }
+  // const fecom::channel_mapping & commissioning_event::get_channel_mapping() const
+  // {
+  //   return * _my_channel_mapping_;
+  // }
 
   void commissioning_event::add_calo_hit(fecom::calo_hit & a_calo_hit_)
   {
@@ -180,7 +180,7 @@ namespace fecom {
     return (has_tracker_hits() && has_calo_hits());
   }
 
-  void commissioning_event::build_tracker_hit_from_channels()
+  void commissioning_event::build_tracker_hit_from_channels(const fecom::channel_mapping & channel_mapping_)
   {
     bool verbose = false;
     if (verbose) std::clog << "Number of tracker channel in the event : " << _tracker_channel_hit_collection_.size() << std::endl;
@@ -204,8 +204,8 @@ namespace fecom {
 	    const uint16_t channel_type = electronic_channel_id.get_type();
 	    geomtools::geom_id associated_geometric_id;
 
-	    _my_channel_mapping_-> get_geometric_id_from_electronic_id(electronic_channel_id,
-								       associated_geometric_id);
+	    channel_mapping_.get_geometric_id_from_electronic_id(electronic_channel_id,
+								   associated_geometric_id);
 
 	    if (associated_geometric_id.is_valid()) {
 
@@ -218,10 +218,10 @@ namespace fecom {
 	      geomtools::geom_id bot_cathodic_id;
 	      geomtools::geom_id top_cathodic_id;
 
-	      _my_channel_mapping_-> get_associated_electronics_id(electronic_channel_id,
-								   anodic_id,
-								   bot_cathodic_id,
-								   top_cathodic_id);
+	      channel_mapping_.get_associated_electronics_id(electronic_channel_id,
+							       anodic_id,
+							       bot_cathodic_id,
+							       top_cathodic_id);
 
 	      const std::string timestamp = ichan -> timestamp_type;
 	      DT_THROW_IF(!(channel_type == tracker_constants::ANODIC_CHANNEL_TYPE || channel_type == tracker_constants::CATHODIC_CHANNEL_TYPE),
@@ -301,10 +301,8 @@ namespace fecom {
 
   void commissioning_event::_reset_()
   {
-    _my_channel_mapping_ = nullptr;
     _event_id_.reset();
     datatools::invalidate(_time_start_ns_);
-    _traits_.reset();
     _calo_hit_collection_.clear();
     _tracker_channel_hit_collection_.clear();
     _tracker_hit_collection_.clear();
@@ -392,8 +390,6 @@ namespace fecom {
     out_ << indent_ <<  datatools::i_tree_dumpable::tag
 	 << "Time start (ns) : " << _time_start_ns_ << std::endl;
 
-    out_ << indent_ <<  datatools::i_tree_dumpable::tag
-	 << "Traits : " << _traits_ << std::endl;
 
     out_ << indent_ <<  datatools::i_tree_dumpable::tag
 	 << "Calo hit collection size : " << _calo_hit_collection_.size() << std::endl;

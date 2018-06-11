@@ -247,6 +247,8 @@ namespace fecom {
     const fecom::commissioning_event & the_hc_raw_data
       = event_record_.get<fecom::commissioning_event>(_HCRD_label_);
 
+    // the_hc_raw_data.tree_dump(std::clog, "A Commissioning Event");
+
     // Check calibrated data *
     const bool abort_at_former_output = false;
     const bool preserve_former_output = false;
@@ -349,6 +351,8 @@ namespace fecom {
 	// 	  << " Energy = " << energy
 	// 	  << " Sigma energy = " << sigma_energy << std::endl;
 	new_calibrated_calorimeter_hit.set_energy(energy);
+
+	// new_calibrated_calorimeter_hit.tree_dump(std::clog, "A calibrated calo hit");
 
 	// Append it to the collection :
 	calibrated_calorimeter_hits_.push_back(new_handle);

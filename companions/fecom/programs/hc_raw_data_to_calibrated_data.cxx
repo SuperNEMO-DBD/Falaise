@@ -137,6 +137,7 @@ int main(int argc_, char ** argv_)
     std::string CD_bank_label = "CD";
 
     fecom::mock_hc2cd_module hc2cd_module;
+    // hc2cd_module.set_logging_priority(logging);
     hc2cd_module.set_geom_manager(my_manager);
     hc2cd_module.initialize_simple();
 
@@ -157,13 +158,14 @@ int main(int argc_, char ** argv_)
 	if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
 	  {
 	    hc2cd_module.process(ER);
+	    // Remove the bank in order to see the CD bank in flvisualize:
+	    ER.remove(HCRD_bank_label);
 
-	    // ER.remove(HCRD_bank_label);
 
 	    if (ER.has(CD_bank_label)) {
 	      const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
 	      if (CD.has_calibrated_calorimeter_hits() || CD.has_calibrated_tracker_hits()) {
-		// CD.tree_dump(std::clog, "Calibrated data");
+		CD.tree_dump(std::clog, "Calibrated data");
 		bool save_it = true;
 		if (save_it) {
 		  writer.process(ER);

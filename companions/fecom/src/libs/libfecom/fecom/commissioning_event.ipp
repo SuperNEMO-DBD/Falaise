@@ -40,7 +40,6 @@ namespace fecom {
     ar & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
     ar & boost::serialization::make_nvp("event_id", _event_id_);
     ar & boost::serialization::make_nvp("time_start_ns", _time_start_ns_);
-    ar & boost::serialization::make_nvp("traits", _traits_);
     ar & boost::serialization::make_nvp("calo_hit_collection", _calo_hit_collection_);
     ar & boost::serialization::make_nvp("tracker_channel_hit_collection", _tracker_channel_hit_collection_);
     ar & boost::serialization::make_nvp("tracker_hit_collection", _tracker_hit_collection_);

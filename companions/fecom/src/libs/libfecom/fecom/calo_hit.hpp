@@ -33,7 +33,7 @@ namespace fecom {
 		bool is_valid() const;
 
 		/// Get hit timestamp
-		double get_timestamp() const;
+		virtual double get_timestamp() const override;
 
 		/// Reset
     virtual void reset();
@@ -64,7 +64,7 @@ namespace fecom {
     uint8_t  event_id;                  ///< Debug counter (0..255)
     uint64_t raw_tdc;                   /** Raw timestamp (dynamic 40 bits)
                                          *  Unit: clock period (default: 160 MHz) **/
-		double   tdc_cell_step_ns;          ///< Timestamp step from the feb (0.390625 ns
+		double   tdc_cell_step_ns;          ///< Timestamp step from the feb (0.390625 ns)
 		double   tdc_ns;                    ///< Timestamp in ns
     bool     low_threshold;             ///< Low threshold flag
     bool     high_threshold;            ///< High threshold flag

@@ -22,84 +22,11 @@
 
 // This project:
 #include <fecom/hit_reader.hpp>
+#include <fecom/event_builder.hpp>
 #include <fecom/commissioning_event.hpp>
 #include <fecom/channel_mapping.hpp>
 #include <fecom/calo_calibration.hpp>
 
-/// \brief Event builder
-class event_builder
-{
-
-public :
-
-  static constexpr double EVENT_BUILDING_CALO_L1_GATE_IN_NS = 100.0; // 100ns to stack calorimeters hits in a commissioning event
-  static constexpr double EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS = 150000.0; // 150µs to build a commissioning event
-
-  event_builder(double l1_time_gate_ns_ = -1.0,
-		double l2_time_gate_ns_ = -1.0)
-  {
-    l1_time_gate = l1_time_gate_ns_;
-    if (l1_time_gate < 0.0) {
-      l1_time_gate = EVENT_BUILDING_CALO_L1_GATE_IN_NS;
-    }
-    l2_time_gate = l2_time_gate_ns_;
-    if (l2_time_gate < 0.0) {
-      l2_time_gate = EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
-    }
-
-    datatools::invalidate(time_start);
-    datatools::invalidate(calo_time_stop);
-    datatools::invalidate(l2_time_stop);
-    return;
-  }
-
-  virtual ~event_builder()
-  {
-  }
-
-  void set_times(const double time_start_)
-  {
-    time_start = time_start_;
-    calo_time_stop = time_start + l1_time_gate;
-    l2_time_stop = time_start + l2_time_gate;
-    //std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << std::endl;
-    working_commissioning_event.set_time_start_ns(time_start);
-    return;
-  }
-
-  void build_tracker_hits_from_channels()
-  {
-    if (commissioning_event_for_serialization.get_tracker_channel_hit_collection().size() != 0)
-      {
-        commissioning_event_for_serialization.set_channel_mapping(*channel_mapping);
-        commissioning_event_for_serialization.build_tracker_hit_from_channels();
-      }
-    return;
-  }
-
-  void reset_serialization()
-  {
-    commissioning_event_for_serialization.reset();
-    ready_for_serialization = false;
-    return;
-  }
-
-  // Configuration:
-  double l1_time_gate = 0.0; //!< Time is in implicit ns
-  double l2_time_gate = 0.0; //!< Time is in implicit ns
-
-  // Working data:
-  fecom::channel_mapping * channel_mapping = nullptr;
-  fecom::commissioning_event commissioning_event_for_serialization;
-  fecom::commissioning_event working_commissioning_event;
-  double time_start;     //!< Time is in implicit ns
-  double calo_time_stop; //!< Time is in implicit ns
-  double l2_time_stop;   //!< Time is in implicit ns
-  bool   com_event_is_active     = false;
-  bool   ready_for_serialization = false;
-  bool   begin_by_calorimeter    = false;
-
-};
 
 int main(int argc_, char ** argv_)
 {
@@ -118,8 +45,8 @@ int main(int argc_, char ** argv_)
     std::size_t first_event_number = 0;
     std::size_t min_nb_calo    = 0;
     std::size_t min_nb_tracker = 0;
-    double      l1_build_gate  = event_builder::EVENT_BUILDING_CALO_L1_GATE_IN_NS;
-    double      l2_build_gate  = event_builder::EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
+    double      l1_build_gate  = fecom::event_builder::EVENT_BUILDING_CALO_L1_GATE_IN_NS;
+    double      l2_build_gate  = fecom::event_builder::EVENT_BUILDING_CALO_TRACKER_L2_GATE_IN_NS;
 
     // Parse options:
     namespace po = boost::program_options;
@@ -229,9 +156,8 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Building commisioning events...");
     DT_LOG_INFORMATION(logging, "...");
 
-    event_builder eb(l1_build_gate,
-		     l2_build_gate);
-    eb.channel_mapping = & my_channel_mapping;
+    fecom::event_builder eb(l1_build_gate,
+			    l2_build_gate);
 
     std::size_t hit_counter = 0;
     std::size_t event_serialized = 0;
@@ -289,7 +215,7 @@ int main(int argc_, char ** argv_)
       if (eb.ready_for_serialization) {
         // Build tracker hits from tracker channels
         // DT_LOG_INFORMATION(logging, "Build tracker hits from channels");
-        eb.build_tracker_hits_from_channels();
+        eb.build_tracker_hits_from_channels(my_channel_mapping);
 
         // Store it in a datatools::things and reset it :
         datatools::things commissioning_event_record;
@@ -393,8 +319,6 @@ int main(int argc_, char ** argv_)
 	    eb.set_times(time_start);
 	    eb.begin_by_calorimeter = false;
 	    eb.com_event_is_active = true;
-	    // Event tracker only, add it to the first bit of the traits :
-	    eb.working_commissioning_event.grab_traits().set(0, true);
 	  }
         else {
           if (eb.begin_by_calorimeter) {
@@ -412,8 +336,6 @@ int main(int argc_, char ** argv_)
               double time_start = tchit.timestamp_time_ns;
               eb.set_times(time_start);
               eb.begin_by_calorimeter = false;
-              // Event tracker only, add it to the first bit of the traits :
-              eb.working_commissioning_event.grab_traits().set(0, true);
             }
           } // end of if begin by calo
           else {
@@ -428,7 +350,7 @@ int main(int argc_, char ** argv_)
 
     // Serialize the last commissioning event :
     eb.commissioning_event_for_serialization = eb.working_commissioning_event;
-    eb.build_tracker_hits_from_channels();
+    eb.build_tracker_hits_from_channels(my_channel_mapping);
     datatools::things commissioning_event_record;
     commissioning_event_record.set_name("CER");
     commissioning_event_record.set_description("Half commissioning event record");
