@@ -34,7 +34,9 @@ material : string = "snemo::mo100::nemo3"
 ##############################################
 [name="bb_source_material.basic" type="alias"]
 
-#@variant_section_only geometry:layout/if_basic|true
+
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic
+##@variant_section_only geometry:layout/if_basic|true
 
 #@config The alias for the betabeta source material (basic layout)
 

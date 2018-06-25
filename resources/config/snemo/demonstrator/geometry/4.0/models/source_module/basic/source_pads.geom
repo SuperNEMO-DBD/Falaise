@@ -10,6 +10,7 @@
 ##############################################################################
 [name="source_external_pad.basic.model" type="geomtools::simple_shaped_model"]
 
+
 shape_type         : string  = "box"
 x                  : real as length = @variant(geometry:layout/if_basic/source_layout/if_basic/thickness|250 um)
 y                  : real as length = 125.0 mm
@@ -23,6 +24,7 @@ visibility.color   : string  = "magenta"
 ##############################################################################
 [name="source_internal_pad.basic.model" type="geomtools::simple_shaped_model"]
 
+#@variant_only geometry:layout/if_basic/source_layout/if_basic
 shape_type         : string  = "box"
 x                  : real as length = @variant(geometry:layout/if_basic/source_layout/if_basic/thickness|250 um)
 y                  : real as length = 135.5 mm

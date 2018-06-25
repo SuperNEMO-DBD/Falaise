@@ -1,0 +1,2550 @@
+# -*- mode: conf-unix; -*-
+# Author : Y.LEMIERE
+# Date   : June 2018
+# @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/realistic_source_pads_surface_vg.def
+
+
+
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+##########################################################################
+
+[name="snemo_source_strip_0_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_0_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={0} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_1_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_1_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={1} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_2_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_2_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={2} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_3_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_3_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={3} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_4_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_4_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={4} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_5_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_5_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={5} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_6_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_6_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={6} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_7_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_7_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={7} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_8_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_8_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={8} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_9_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_9_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={9} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_10_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_10_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={10} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_11_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_11_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={11} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_12_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_12_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={12} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_13_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_13_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={13} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_14_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_14_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={14} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_15_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_15_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={15} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_16_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_16_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={16} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_17_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_17_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={17} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_18_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_18_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={18} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_19_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_19_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={19} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_20_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_20_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={20} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_21_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_21_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={21} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_22_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_22_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={22} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_23_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_23_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={23} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_24_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_24_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={24} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_25_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_25_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={25} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_26_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_26_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={26} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_27_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_27_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={27} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_28_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_28_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={28} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_29_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_29_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={29} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_30_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_30_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={30} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_31_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_31_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={31} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_32_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_32_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={32} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_7_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_7_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={7}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_6_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_6_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={6}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_5_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_5_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={5}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_4_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_4_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={4}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_3_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_3_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={3}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_2_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_2_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={2}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_1_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_1_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={1}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_33_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_33_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={33} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_34_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_34_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={34} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+
+##########################################################################
+
+[name="snemo_source_strip_35_pad_0_surface" type="genvtx::box_model_vg"]
+
+#@config Vertex generation from the surface of the snemo_source_strip_35_pad_0_surface
+
+#@description Logging priority
+logging.priority : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
+origin : string = "category='source_pad' module={*} strip={35} pad={0}"
+
+#@description Generation mode ("surface" or "bulk")
+mode : string = "surface"
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/realistic_source_pads_surface_vg.def

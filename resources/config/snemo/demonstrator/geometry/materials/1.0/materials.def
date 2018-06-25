@@ -1,0 +1,1408 @@
+# -*- mode: conf-unix; -*-
+# @falaise:config/snemo/demonstrator/geometry/materials/1.0/materials.def
+# List of materials (format: datatools::multi_properties):
+
+#@description A list of materials for SuperNEMO experiment
+#@key_label   "name"
+#@meta_label  "type"
+####################################################
+[name="snemo::se82_enrichedx_pva0.9400_density0.457" type="material"]
+#@config x enriched selenium source material and PVA mix (0.9400))
+density          : real   = 0.4571428571428571
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.06 0.94
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density2.811" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.811236357130077
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density2.951" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.951205173427396
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density2.800" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.800473874547948
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density2.258" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.2578875171467763
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.823" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.822633744855967
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.960" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.9603441825664043
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.592" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.591906721536351
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.92_pva0.0787_density2.122" type="material"]
+#@config 96.92 enriched selenium source material and PVA mix (0.0787))
+density          : real   = 2.1222701444512904
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.92percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9213 0.07870000000000005
+
+####################################################
+[name="snemo::se82_enriched96.92_pva0.0780_density2.081" type="material"]
+#@config 96.92 enriched selenium source material and PVA mix (0.0780))
+density          : real   = 2.0807161937766225
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.92percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.922 0.07799999999999997
+
+####################################################
+[name="snemo::se82_enriched96.92_pva0.0790_density1.971" type="material"]
+#@config 96.92 enriched selenium source material and PVA mix (0.0790))
+density          : real   = 1.9711934156378599
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.92percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9209999999999999 0.07900000000000006
+
+####################################################
+[name="snemo::se82_enriched96.92_pva0.0783_density1.949" type="material"]
+#@config 96.92 enriched selenium source material and PVA mix (0.0783))
+density          : real   = 1.9487390915962346
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.92percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9217 0.07829999999999998
+
+####################################################
+[name="snemo::se82_enriched98.31_pva0.0786_density2.198" type="material"]
+#@config 98.31 enriched selenium source material and PVA mix (0.0786))
+density          : real   = 2.198445358939186
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::98.31percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9214 0.07859999999999999
+
+####################################################
+[name="snemo::se82_enriched98.31_pva0.0820_density2.104" type="material"]
+#@config 98.31 enriched selenium source material and PVA mix (0.0820))
+density          : real   = 2.1036645110719183
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::98.31percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9179999999999999 0.08200000000000003
+
+####################################################
+[name="snemo::se82_enriched99.92_pva0.0771_density2.217" type="material"]
+#@config 99.92 enriched selenium source material and PVA mix (0.0771))
+density          : real   = 2.2167352537722906
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::99.92percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9229 0.07709999999999993
+
+####################################################
+[name="snemo::se82_enriched99.6_pva0.0784_density2.388" type="material"]
+#@config 99.6 enriched selenium source material and PVA mix (0.0784))
+density          : real   = 2.387811091514795
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::99.6percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9216 0.07840000000000004
+
+####################################################
+[name="snemo::se82_enriched97_pva0.0801_density2.276" type="material"]
+#@config 97 enriched selenium source material and PVA mix (0.0801))
+density          : real   = 2.276112090926906
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::97percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9198999999999999 0.08010000000000005
+
+####################################################
+[name="snemo::se82_enriched97.5_pva0.0810_density2.300" type="material"]
+#@config 97.5 enriched selenium source material and PVA mix (0.0810))
+density          : real   = 2.3001371742112484
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::97.5percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.919 0.08099999999999995
+
+####################################################
+[name="snemo::se82_enriched98_pva0.0820_density2.160" type="material"]
+#@config 98 enriched selenium source material and PVA mix (0.0820))
+density          : real   = 2.1604938271604937
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::98percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9179999999999999 0.08200000000000003
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.227" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2274527922814067
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.299" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2985917437172958
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.952" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9523353385602418
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.886" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8861638721769274
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.795" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7948028096183575
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.899" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8985903368992236
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.959" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9589906022530383
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.919" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.919458619880944
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.236" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2362628965864622
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.140" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.1401271395386958
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.268" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2680788668481808
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.288" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2880864712786373
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.972" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9716040723235662
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density2.096" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.0961381739629488
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density2.093" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.0928018913418933
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density2.068" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.068203588419702
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.708" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7075331102550404
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.648" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6482595468201753
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.296" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2956215863732103
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# #################################################### ALREADY EXIST
+# [name="snemo::se82_enrichedx_pva0.1000_density1.300" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.1000))
+# density          : real   = 1.3004420056693489
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.333" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3328788232332276
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.088" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.0881566011738935
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.030" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.030260479688256
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.060" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.06023255926245
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.372" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3719708081281772
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.362" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3622281524645352
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.347" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3469054916626833
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.586" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5858279672693532
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.670" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6696504169439526
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.576" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5756554985898366
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.717" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.716671821837303
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.678" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6776032972641808
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.591" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5909065368722728
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.758" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7581783387946517
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.730" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7295803724266394
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.721" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7212962184660814
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# #################################################### Already defined ....
+# [name="snemo::se82_enrichedx_pva0.1000_density1.708" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.1000))
+# density          : real   = 1.7075423298277164
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.654" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6540578378379378
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.664" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.663853712726142
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.749" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7493645868175867
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.363" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3634320638791582
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.480" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.480027409781286
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.714" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7139256588444989
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.580" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5798936720470664
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.524" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5241486336189922
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.517" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5171751316514752
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.552" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5520806626523205
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.547" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5465093259920484
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.535" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.535258324321707
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.300" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.300222892726368
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.390" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3901420595479637
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.448" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.448377408921067
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.414" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.413884678292164
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.545" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5450858138330053
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.526" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.526454199350941
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.584" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5836086633748767
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.577" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5772808662580398
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.599" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5988149487189143
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.566" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5655791370147676
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.525" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5246538529532483
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.537" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.537156154956138
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.521" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5211166895235482
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.530" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5298768045774982
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.543" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.542656655073331
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.487" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.4872257262509427
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.617" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6167126663115816
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.626" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6264015632118631
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.542" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5416901461923023
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.597" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5970185592142847
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# #################################################### ALREADY EXIST
+# [name="snemo::se82_enrichedx_pva0.1000_density1.596" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.1000))
+# density          : real   = 1.595856380264386
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.562" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.561931706501703
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.590" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5902750509009689
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.408" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.4083270252514775
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.306" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.305689597127146
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.257" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.2565458749826959
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.317" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3165013223636055
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.578" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5781057120412971
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.531" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5314469360031024
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# #################################################### ALREADY EXIST
+# [name="snemo::se82_enrichedx_pva0.1000_density1.444" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.1000))
+# density          : real   = 1.4444837696997948
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# #################################################### ALREADY EXIST
+# [name="snemo::se82_enrichedx_pva0.1000_density1.597" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.1000))
+# density          : real   = 1.597370752486653
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.593" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5930026374165114
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.646" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.6461949648208707
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.570" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5703327109824816
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.486" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.485734413695838
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.509" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.5088489252289796
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.444" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.4439188426904772
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.449" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.4490004933150045
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.596" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.596379666337493
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.737" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7369513876513794
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.148" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.148106840843789
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.200" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.1996249144885556
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.176" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.176490846411328
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.208" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.2075463339778167
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.107" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.107300719395748
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.9_pva0.1000_density2.321" type="material"]
+#@config 96.9 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.3211359264139997
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.9percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.725" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.725443233153916
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.865" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8654610315988391
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density2.024" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.024230762329586
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.914" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9137491092765324
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.723" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.723399308666352
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.789" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7887984026652692
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.785" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7845188300873833
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.762" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7620758078872636
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.767" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7668951619697018
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.850" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8504265284548826
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.930" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9302034907541994
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.762" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.7615730936530503
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.861" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8610332063569324
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.974" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.974044099264983
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.828" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.8284122651702737
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.911" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9114798352344804
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enriched96.1_pva0.1000_density1.890" type="material"]
+#@config 96.1 enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.890126270129889
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::96.1percent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.367" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.3668063663535088
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density2.098" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 2.0979580490955994
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.955" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9550666840801947
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.991" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9912103820247986
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.947" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.946698866278145
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.964" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.963526062246684
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.990" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9899491927361757
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+####################################################
+[name="snemo::se82_enrichedx_pva0.1000_density1.975" type="material"]
+#@config x enriched selenium source material and PVA mix (0.1000))
+density          : real   = 1.9745384348873503
+density.unit     : string = "g/cm3"
+state            : string = "solid"
+composition.mode            : string    = "fraction_mass"
+composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+composition.fraction_mass   : real[2]   =  0.9 0.1
+
+# ####################################################
+# [name="snemo::se82_enrichedx_pva0.9400_density0.457" type="material"]
+# #@config x enriched selenium source material and PVA mix (0.9400))
+# density          : real   = 0.4571428571428571
+# density.unit     : string = "g/cm3"
+# state            : string = "solid"
+# composition.mode            : string    = "fraction_mass"
+# composition.names           : string[2] = "snemo::selenium-82::xpercent"  "basic::polyvinylalcohol"
+# composition.fraction_mass   : real[2]   =  0.06 0.94
+
+# end of @falaise:config/snemo/demonstrator/geometry/materials/1.0/materials.def

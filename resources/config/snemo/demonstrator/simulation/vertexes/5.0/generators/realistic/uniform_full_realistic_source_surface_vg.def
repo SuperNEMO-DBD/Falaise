@@ -1,0 +1,92 @@
+# -*- mode: conf-unix; -*-
+# Author : Y.LEMIERE
+# Date   : June 2018
+# @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_full_realistic_source_surface_vg.def
+
+
+
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+#####################################################
+# Generate vertex on surface for full Copper foils  #
+#####################################################
+[name="snemo_full_copper_surface" type="genvtx::combined_vg"]
+
+#@variant_section_only geometry:layout/if_basic/source_layout/if_realistic|true
+
+#@config Vertex generation from the surface of Copper foils
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Vertex generator names
+generators : string[2]  =  'snemo_source_strip_0_surface' 'snemo_source_strip_35_surface'
+
+# Absolute weight of different generators
+generators.snemo_source_strip_0_surface : real  = 3037.7999999999997 # cm x cm
+generators.snemo_source_strip_35_surface : real  = 3037.7999999999997 # cm x cm
+
+
+
+
+#####################################################
+# Generate vertex on surface for full source foils  #
+#####################################################
+[name="snemo_full_source_surface" type="genvtx::combined_vg"]
+
+#@variant_section_only geometry:layout/if_basic/source_layout/if_realistic|true
+
+#@config Vertex generation from the surface of all source pads
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+
+#@description Geometry version requirement (not working with version lower than 5.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
+
+#@description Vertex generator names
+generators : string[34]  =  'snemo_source_strip_1_surface' 'snemo_source_strip_2_surface' 'snemo_source_strip_3_surface' 'snemo_source_strip_4_surface' 'snemo_source_strip_5_surface' 'snemo_source_strip_6_surface' 'snemo_source_strip_7_surface' 'snemo_source_strip_8_surface' 'snemo_source_strip_9_surface' 'snemo_source_strip_10_surface' 'snemo_source_strip_11_surface' 'snemo_source_strip_12_surface' 'snemo_source_strip_13_surface' 'snemo_source_strip_14_surface' 'snemo_source_strip_15_surface' 'snemo_source_strip_16_surface' 'snemo_source_strip_17_surface' 'snemo_source_strip_18_surface' 'snemo_source_strip_19_surface' 'snemo_source_strip_20_surface' 'snemo_source_strip_21_surface' 'snemo_source_strip_22_surface' 'snemo_source_strip_23_surface' 'snemo_source_strip_24_surface' 'snemo_source_strip_25_surface' 'snemo_source_strip_26_surface' 'snemo_source_strip_27_surface' 'snemo_source_strip_28_surface' 'snemo_source_strip_29_surface' 'snemo_source_strip_30_surface' 'snemo_source_strip_31_surface' 'snemo_source_strip_32_surface' 'snemo_source_strip_33_surface' 'snemo_source_strip_34_surface'
+
+# Absolute weight of different generators
+generators.snemo_source_strip_1_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_2_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_3_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_4_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_5_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_6_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_7_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_8_surface : real  = 3651.75 # cm x cm
+generators.snemo_source_strip_9_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_10_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_11_surface : real  = 3638.25 # cm x cm
+generators.snemo_source_strip_12_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_13_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_14_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_15_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_16_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_17_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_18_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_19_surface : real  = 3563.01 # cm x cm
+generators.snemo_source_strip_20_surface : real  = 3563.01 # cm x cm
+generators.snemo_source_strip_21_surface : real  = 3556.2999999999997 # cm x cm
+generators.snemo_source_strip_22_surface : real  = 3556.2999999999997 # cm x cm
+generators.snemo_source_strip_23_surface : real  = 3569.7200000000003 # cm x cm
+generators.snemo_source_strip_24_surface : real  = 3566.3650000000002 # cm x cm
+generators.snemo_source_strip_25_surface : real  = 3566.0550000000003 # cm x cm
+generators.snemo_source_strip_26_surface : real  = 3540.4000000000005 # cm x cm
+generators.snemo_source_strip_27_surface : real  = 3540.4000000000005 # cm x cm
+generators.snemo_source_strip_28_surface : real  = 3561.4000000000005 # cm x cm
+generators.snemo_source_strip_29_surface : real  = 3551.765000000001 # cm x cm
+generators.snemo_source_strip_30_surface : real  = 3559.6549999999997 # cm x cm
+generators.snemo_source_strip_31_surface : real  = 3569.7200000000003 # cm x cm
+generators.snemo_source_strip_32_surface : real  = 3569.7200000000003 # cm x cm
+generators.snemo_source_strip_33_surface : real  = 3566.3650000000002 # cm x cm
+generators.snemo_source_strip_34_surface : real  = 3645.0 # cm x cm
+
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_full_realistic_source_surface_vg.def
