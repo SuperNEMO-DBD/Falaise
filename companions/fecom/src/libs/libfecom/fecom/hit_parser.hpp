@@ -47,6 +47,9 @@ namespace fecom {
     datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
 
     // Config :
+		int FIRMWARE_MAJOR_VERSION;
+		int FIRMWARE_MINOR_VERSION;
+
     calo_hit_parser    _calo_hit_parser_;    //!< Calo hit parser
     tracker_channel_hit_parser _tracker_channel_hit_parser_; //!< Tracker hit parser
 

@@ -73,7 +73,7 @@ namespace fecom {
 						     geomtools::geom_id & falaise_geom_id_)
   {
     int module = 0;
-    int side = 1;
+    int side = 0;
     if (geometric_id_.get_type() == fecom::calo_constants::GEOMETRIC_CALO_TYPE)
       {
 	int column = geometric_id_.get(fecom::calo_constants::COLUMN_INDEX);
@@ -195,8 +195,8 @@ namespace fecom {
 
     _geiger_.initialize(gg_setup);
 
-    _fout_.reset(new std::ofstream("__mock_hc2cd.data"));
-    _fout_->precision(15);
+    // _fout_.reset(new std::ofstream("__mock_hc2cd.data"));
+    // _fout_->precision(15);
 
     this->base_module::_set_initialized(true);
     return;
@@ -440,9 +440,9 @@ namespace fecom {
 	    // std::clog << "Anode time = " << anode_time / CLHEP::nanosecond << " ns" << std::endl;
 
 	    if (anode_time < 0) anode_time = 1.0 * CLHEP::nanosecond;
-	    if (_fout_.get() != nullptr) {
-	      *_fout_ << anode_time << '\n';
-	    }
+	    // if (_fout_.get() != nullptr) {
+	      // *_fout_ << anode_time << '\n';
+	    // }
 	    if (datatools::is_valid(anode_time)) {
 	      _geiger_.calibrate_drift_radius_from_drift_time(anode_time,
 							      radius,

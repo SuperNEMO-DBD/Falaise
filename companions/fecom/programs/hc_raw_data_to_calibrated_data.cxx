@@ -69,7 +69,7 @@ int main(int argc_, char ** argv_)
       return(1);
     }
 
-    // Use command line arguments :
+    // Use command ne arguments :
     if (vm.count("debug")) {
       is_debug = true;
     }
@@ -93,7 +93,6 @@ int main(int argc_, char ** argv_)
 
     std::string output_filename = output_path + "output_hc2cd.brio";
     datatools::fetch_path_with_env(output_filename);
-
     DT_LOG_INFORMATION(logging, "HC2CD output file :" + output_filename);
 
     std::string manager_config_file;
@@ -127,6 +126,17 @@ int main(int argc_, char ** argv_)
     writer_config.store ("files.single.filename", output_filename);
     writer.initialize_standalone(writer_config);
     // writer.tree_dump(std::clog, "Half Commissiong Raw Data writer module");
+
+    // Calo + tracker Events writer :
+    std::string output_filename_ct = output_path + "output_hc2cd_calo_tracker_events.brio";
+    datatools::fetch_path_with_env(output_filename_ct);
+    DT_LOG_INFORMATION(logging, "HC2CD calo + tracker events output file :" + output_filename_ct);
+    dpp::output_module ct_writer;
+    datatools::properties ct_writer_config;
+    ct_writer_config.store ("logging.priority", "debug");
+    ct_writer_config.store ("files.mode", "single");
+    ct_writer_config.store ("files.single.filename", output_filename_ct);
+    ct_writer.initialize_standalone(ct_writer_config);
 
     // Event record :
     datatools::things ER;
@@ -165,11 +175,16 @@ int main(int argc_, char ** argv_)
 	    if (ER.has(CD_bank_label)) {
 	      const snemo::datamodel::calibrated_data & CD = ER.get<snemo::datamodel::calibrated_data>(CD_bank_label);
 	      if (CD.has_calibrated_calorimeter_hits() || CD.has_calibrated_tracker_hits()) {
-		CD.tree_dump(std::clog, "Calibrated data");
-		bool save_it = true;
-		if (save_it) {
-		  writer.process(ER);
-		}
+		// CD.tree_dump(std::clog, "Calibrated data");
+
+		// All events are writed (calo only and calo + tracker)
+		writer.process(ER);
+
+		// only calo + tracker events are writed
+		if (CD.has_calibrated_calorimeter_hits() && CD.has_calibrated_tracker_hits())
+		  {
+		    ct_writer.process(ER);
+		  }
 	      } // end of has calib calo or tracker hits
 	    } // has CD bank label
 	  }

@@ -48,6 +48,8 @@ namespace fecom {
 
     // Management:
     datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+		int FIRMWARE_MAJOR_VERSION;
+		int FIRMWARE_MINOR_VERSION;
 
   };
 

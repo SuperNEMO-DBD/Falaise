@@ -79,27 +79,57 @@ namespace fecom {
     std::string timestamp_type = "INVALID";
     uint64_t timestamp_value  = 0;
     double timestamp_ns  = 0;
-    res = qi::phrase_parse(str_iter,
-    			   end_iter,
-    			   //  Begin grammar
-    			   (
-    			    qi::lit("Slot")     >> qi::uint_[boost::phoenix::ref(slot_id) = boost::spirit::qi::_1]
-    			    >> qi::lit("Feast") >> qi::uint_[boost::phoenix::ref(feast_id) = boost::spirit::qi::_1]
-    			    >> qi::lit("Ch")    >> qi::uint_[boost::phoenix::ref(channel_id) = boost::spirit::qi::_1]
-			    >> (qi::string("AN") |
-				qi::string("CA"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
-			    >> (qi::string("R0") |
-				qi::string("R1") |
-				qi::string("R2") |
-				qi::string("R3") |
-				qi::string("R4") |
-				qi::string("R5") |
-				qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
-			    >> qi::ulong_long[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
-			    >> qi::double_[boost::phoenix::ref(timestamp_ns) = boost::spirit::qi::_1]
-    			    ),
-    			   //  End grammar
-    			   qi::space);
+    double unixtime = 0;
+
+    if (FIRMWARE_MAJOR_VERSION >= 2 && FIRMWARE_MINOR_VERSION >= 4)
+      {
+	res = qi::phrase_parse(str_iter,
+			       end_iter,
+			       //  Begin grammar
+			       (
+				qi::lit("Slot")     >> qi::uint_[boost::phoenix::ref(slot_id) = boost::spirit::qi::_1]
+				>> qi::lit("Feast") >> qi::uint_[boost::phoenix::ref(feast_id) = boost::spirit::qi::_1]
+				>> qi::lit("Ch")    >> qi::uint_[boost::phoenix::ref(channel_id) = boost::spirit::qi::_1]
+				>> (qi::string("AN") |
+				    qi::string("CA"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
+				>> (qi::string("R0") |
+				    qi::string("R1") |
+				    qi::string("R2") |
+				    qi::string("R3") |
+				    qi::string("R4") |
+				    qi::string("R5") |
+				    qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
+				>> qi::ulong_long[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
+				>> qi::double_[boost::phoenix::ref(timestamp_ns) = boost::spirit::qi::_1]
+				>> qi::lit("UnixTime")      >> qi::double_[boost::phoenix::ref(unixtime) = boost::spirit::qi::_1]
+				),
+			       //  End grammar
+			       qi::space);
+      }
+    else
+      {
+	res = qi::phrase_parse(str_iter,
+			       end_iter,
+			       //  Begin grammar
+			       (
+				qi::lit("Slot")     >> qi::uint_[boost::phoenix::ref(slot_id) = boost::spirit::qi::_1]
+				>> qi::lit("Feast") >> qi::uint_[boost::phoenix::ref(feast_id) = boost::spirit::qi::_1]
+				>> qi::lit("Ch")    >> qi::uint_[boost::phoenix::ref(channel_id) = boost::spirit::qi::_1]
+				>> (qi::string("AN") |
+				    qi::string("CA"))[boost::phoenix::ref(channel_type) = boost::spirit::qi::_1]
+				>> (qi::string("R0") |
+				    qi::string("R1") |
+				    qi::string("R2") |
+				    qi::string("R3") |
+				    qi::string("R4") |
+				    qi::string("R5") |
+				    qi::string("R6"))[boost::phoenix::ref(timestamp_type) = boost::spirit::qi::_1]
+				>> qi::ulong_long[boost::phoenix::ref(timestamp_value) = boost::spirit::qi::_1]
+				>> qi::double_[boost::phoenix::ref(timestamp_ns) = boost::spirit::qi::_1]
+				),
+			       //  End grammar
+			       qi::space);
+      }
     DT_THROW_IF(!res || str_iter != end_iter,
     		std::logic_error,
     		"Cannot parse file timestamp : " << data_line << "; failed at '" << *str_iter << "'!");
@@ -110,6 +140,7 @@ namespace fecom {
     DT_LOG_DEBUG(logging, "timestamp_type  = " << timestamp_type);
     DT_LOG_DEBUG(logging, "timestamp_value = " << timestamp_value);
     DT_LOG_DEBUG(logging, "timestamp_ns    = " << timestamp_ns);
+    DT_LOG_DEBUG(logging, "unixtime        = " << unixtime);
 
     if (channel_type == "AN") {
       hit_.electronic_id.set_type(tracker_constants::ANODIC_CHANNEL_TYPE);
@@ -125,6 +156,7 @@ namespace fecom {
     hit_.timestamp_type = timestamp_type;
     hit_.timestamp_value = timestamp_value; //static_cast<uint64_t>(timestamp_value);
     hit_.timestamp_time_ns = timestamp_ns;
+    hit_.unix_time = unixtime;
 
     DT_LOG_TRACE_EXITING(logging);
     return;

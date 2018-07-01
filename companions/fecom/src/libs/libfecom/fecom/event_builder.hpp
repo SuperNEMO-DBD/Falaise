@@ -33,7 +33,7 @@ namespace fecom {
 
     // Constructor
     event_builder(double l1_time_gate_ns_ = -1.0,
-		  double l2_time_gate_ns_ = -1.0);
+									double l2_time_gate_ns_ = -1.0);
 
     // Destructor
     virtual ~event_builder();
@@ -47,7 +47,10 @@ namespace fecom {
     // Reset internal CE for a new serialization
     void reset_serialization();
 
-    // Configuration:
+		// Print configuration
+		void print_config(std::ofstream);
+
+		// Configuration:
     double l1_time_gate = 0.0; //!< Time is in implicit ns
     double l2_time_gate = 0.0; //!< Time is in implicit ns
 

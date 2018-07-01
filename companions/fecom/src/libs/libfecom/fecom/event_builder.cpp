@@ -30,7 +30,9 @@ namespace fecom {
     time_start = time_start_;
     calo_time_stop = time_start + l1_time_gate;
     l2_time_stop = time_start + l2_time_gate;
-    //std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << std::endl;
+    //std::clog << "Event builder set times method" << std::endl;
+    //std::clog << "L1 duration = " << l1_time_gate << " L2 duration = " << l2_time_gate << std::endl;
+    //std::clog << "Tstart = " << time_start << " Tstop = " << l2_time_stop << " Calo time stop = " << calo_time_stop << std::endl;
     working_commissioning_event.set_time_start_ns(time_start);
     return;
   }

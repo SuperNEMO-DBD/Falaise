@@ -62,6 +62,12 @@ namespace fecom {
          << "Software version : '" << software_version << "'" << std::endl;
 
     out_ << indent_ << io::tag()
+         << "Software major version : '" << software_major_version << "'" << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Software minor version : '" << software_minor_version << "'" << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Unix time : [" << std::setprecision(15) << unix_time / CLHEP::second << " s]" << std::endl;
 
     out_ << indent_ << io::tag()

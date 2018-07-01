@@ -77,6 +77,7 @@ namespace fecom {
 		double   baseline_volt;             ///< Baseline in volt
     int16_t  raw_peak;                  ///< ADC amplitude of the peak
 		double   peak_volt;                 ///< ADC amplitude of the peak in volt
+		uint32_t peak_cell;                 ///< Index of the peak cell
     int32_t  raw_charge;                ///< Raw integrated charge
 		double   charge_picocoulomb;        ///< Integrated charge in pC
     bool     raw_charge_overflow;       ///< Raw charge overflow flag
@@ -86,6 +87,7 @@ namespace fecom {
 		uint32_t falling_cell;              ///< Index of the falling cell
 		uint32_t falling_offset;            ///< Offset of the falling cell
 		double   falling_time_ns;           ///< Falling time in ns
+		double   unix_time;                 ///< Unix reference time of the hit
 
 		DATATOOLS_SERIALIZATION_DECLARATION()
 

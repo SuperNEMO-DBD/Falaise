@@ -77,13 +77,14 @@ namespace fecom {
       uint     ht_flag   = 0;
       uint32_t eventid   = 0xFFFFFFFF;
       uint64_t rawtdc    = 0xFFFFFFFFFFFFFFFF; // 64bits ? to be checked
-      double   tdc_ns; // 64bits ? to be checked
+      double   tdc_ns;
       uint32_t trigcount;
       uint32_t timecount;
       int32_t  rawbaseline;
       double   baseline_volt;
       int32_t  rawpeak;
       double   peak_volt;
+      uint32_t peakcell = 1024;
       int32_t  rawcharge;
       double   charge_picocoulomb;
       uint32_t overflow;
@@ -94,36 +95,112 @@ namespace fecom {
       uint32_t fallingoffset;
       double   falling_ns;
       uint32_t fcr = 1024;
-      res = qi::phrase_parse(str_iter,
-                             end_iter,
-                             //  Begin grammar
-                             (
-                              qi::lit("Slot")             >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
-                              >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
-                              >> qi::lit("LTO")           >> qi::uint_[boost::phoenix::ref(lto_flag) = boost::spirit::qi::_1]
-                              >> qi::lit("HT")            >> qi::uint_[boost::phoenix::ref(ht_flag) = boost::spirit::qi::_1]
-                              >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
-                              >> qi::lit("RawTDC")        >> qi::ulong_long[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
-                              >> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
-                              >> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
-                              >> qi::lit("Timecount")     >> qi::ulong_long[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
-                              >> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]
-                              >> qi::lit("Baseline")      >> qi::double_[boost::phoenix::ref(baseline_volt) = boost::spirit::qi::_1]
-                              >> qi::lit("RawPeak")       >> qi::int_[boost::phoenix::ref(rawpeak) = boost::spirit::qi::_1]
-                              >> qi::lit("Peak")          >> qi::double_[boost::phoenix::ref(peak_volt) = boost::spirit::qi::_1]
-                              >> qi::lit("RawCharge")     >> qi::int_[boost::phoenix::ref(rawcharge) = boost::spirit::qi::_1]
-                              >> qi::lit("Charge")        >> qi::double_[boost::phoenix::ref(charge_picocoulomb) = boost::spirit::qi::_1]
-                              >> qi::lit("Overflow")      >> qi::uint_[boost::phoenix::ref(overflow) = boost::spirit::qi::_1]
-                              >> qi::lit("RisingCell")    >> qi::uint_[boost::phoenix::ref(risingcell) = boost::spirit::qi::_1]
-                              >> qi::lit("RisingOffset")  >> qi::uint_[boost::phoenix::ref(risingoffset) = boost::spirit::qi::_1]
-                              >> qi::lit("RisingTime")    >> qi::double_[boost::phoenix::ref(rising_ns) = boost::spirit::qi::_1]
-                              >> qi::lit("FallingCell")   >> qi::uint_[boost::phoenix::ref(fallingcell) = boost::spirit::qi::_1]
-                              >> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
-                              >> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
-                              >> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
-			      ),
-                             //  End grammar
-                             qi::space);
+      double   unixtime = 0;
+
+      // Parsing depending of the firmware version :
+      if (FIRMWARE_MAJOR_VERSION >= 2 && FIRMWARE_MINOR_VERSION >= 4)
+	{
+	  // With PeakCell and UnixTime
+	  res = qi::phrase_parse(str_iter,
+				 end_iter,
+				 //  Begin grammar
+				 (
+				  qi::lit("Slot")             >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
+				  >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
+				  >> qi::lit("LTO")           >> qi::uint_[boost::phoenix::ref(lto_flag) = boost::spirit::qi::_1]
+				  >> qi::lit("HT")            >> qi::uint_[boost::phoenix::ref(ht_flag) = boost::spirit::qi::_1]
+				  >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
+				  >> qi::lit("RawTDC")        >> qi::ulong_long[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
+				  >> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
+				  >> qi::lit("Timecount")     >> qi::ulong_long[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
+				  >> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]
+				  >> qi::lit("Baseline")      >> qi::double_[boost::phoenix::ref(baseline_volt) = boost::spirit::qi::_1]
+				  >> qi::lit("RawPeak")       >> qi::int_[boost::phoenix::ref(rawpeak) = boost::spirit::qi::_1]
+				  >> qi::lit("Peak")          >> qi::double_[boost::phoenix::ref(peak_volt) = boost::spirit::qi::_1]
+				  >> qi::lit("PeakCell")      >> qi::uint_[boost::phoenix::ref(peakcell) = boost::spirit::qi::_1]
+				  >> qi::lit("RawCharge")     >> qi::int_[boost::phoenix::ref(rawcharge) = boost::spirit::qi::_1]
+				  >> qi::lit("Charge")        >> qi::double_[boost::phoenix::ref(charge_picocoulomb) = boost::spirit::qi::_1]
+				  >> qi::lit("Overflow")      >> qi::uint_[boost::phoenix::ref(overflow) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingCell")    >> qi::uint_[boost::phoenix::ref(risingcell) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingOffset")  >> qi::uint_[boost::phoenix::ref(risingoffset) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingTime")    >> qi::double_[boost::phoenix::ref(rising_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingCell")   >> qi::uint_[boost::phoenix::ref(fallingcell) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
+				  >> qi::lit("UnixTime")      >> qi::double_[boost::phoenix::ref(unixtime) = boost::spirit::qi::_1]
+				  ),
+				 //  End grammar
+				 qi::space);
+	}
+      else if (FIRMWARE_MAJOR_VERSION >= 2 && FIRMWARE_MINOR_VERSION >= 3)
+	{
+	  // With Peakcell
+	  res = qi::phrase_parse(str_iter,
+				 end_iter,
+				 //  Begin grammar
+				 (
+				  qi::lit("Slot")             >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
+				  >> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
+				  >> qi::lit("LTO")           >> qi::uint_[boost::phoenix::ref(lto_flag) = boost::spirit::qi::_1]
+				  >> qi::lit("HT")            >> qi::uint_[boost::phoenix::ref(ht_flag) = boost::spirit::qi::_1]
+				  >> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
+				  >> qi::lit("RawTDC")        >> qi::ulong_long[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
+				  >> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
+				  >> qi::lit("Timecount")     >> qi::ulong_long[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
+				  >> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]
+				  >> qi::lit("Baseline")      >> qi::double_[boost::phoenix::ref(baseline_volt) = boost::spirit::qi::_1]
+				  >> qi::lit("RawPeak")       >> qi::int_[boost::phoenix::ref(rawpeak) = boost::spirit::qi::_1]
+				  >> qi::lit("Peak")          >> qi::double_[boost::phoenix::ref(peak_volt) = boost::spirit::qi::_1]
+				  >> qi::lit("PeakCell")      >> qi::uint_[boost::phoenix::ref(peakcell) = boost::spirit::qi::_1]
+				  >> qi::lit("RawCharge")     >> qi::int_[boost::phoenix::ref(rawcharge) = boost::spirit::qi::_1]
+				  >> qi::lit("Charge")        >> qi::double_[boost::phoenix::ref(charge_picocoulomb) = boost::spirit::qi::_1]
+				  >> qi::lit("Overflow")      >> qi::uint_[boost::phoenix::ref(overflow) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingCell")    >> qi::uint_[boost::phoenix::ref(risingcell) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingOffset")  >> qi::uint_[boost::phoenix::ref(risingoffset) = boost::spirit::qi::_1]
+				  >> qi::lit("RisingTime")    >> qi::double_[boost::phoenix::ref(rising_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingCell")   >> qi::uint_[boost::phoenix::ref(fallingcell) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
+				  >> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
+				  >> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
+				  ),
+				 //  End grammar
+				 qi::space);
+	}
+      else {
+	res = qi::phrase_parse(str_iter,
+			       end_iter,
+			       //  Begin grammar
+			       (
+				qi::lit("Slot")             >> qi::uint_[boost::phoenix::ref(slotid) = boost::spirit::qi::_1]
+				>> qi::lit("Ch")            >> qi::uint_[boost::phoenix::ref(channelid) = boost::spirit::qi::_1]
+				>> qi::lit("LTO")           >> qi::uint_[boost::phoenix::ref(lto_flag) = boost::spirit::qi::_1]
+				>> qi::lit("HT")            >> qi::uint_[boost::phoenix::ref(ht_flag) = boost::spirit::qi::_1]
+				>> qi::lit("EvtID")         >> qi::uint_[boost::phoenix::ref(eventid) = boost::spirit::qi::_1]
+				>> qi::lit("RawTDC")        >> qi::ulong_long[boost::phoenix::ref(rawtdc) = boost::spirit::qi::_1]
+				>> qi::lit("TDC")           >> qi::double_[boost::phoenix::ref(tdc_ns) = boost::spirit::qi::_1]
+				>> qi::lit("TrigCount")     >> qi::uint_[boost::phoenix::ref(trigcount) = boost::spirit::qi::_1]
+				>> qi::lit("Timecount")     >> qi::ulong_long[boost::phoenix::ref(timecount) = boost::spirit::qi::_1]
+				>> qi::lit("RawBaseline")   >> qi::int_[boost::phoenix::ref(rawbaseline) = boost::spirit::qi::_1]
+				>> qi::lit("Baseline")      >> qi::double_[boost::phoenix::ref(baseline_volt) = boost::spirit::qi::_1]
+				>> qi::lit("RawPeak")       >> qi::int_[boost::phoenix::ref(rawpeak) = boost::spirit::qi::_1]
+				>> qi::lit("Peak")          >> qi::double_[boost::phoenix::ref(peak_volt) = boost::spirit::qi::_1]
+				>> qi::lit("RawCharge")     >> qi::int_[boost::phoenix::ref(rawcharge) = boost::spirit::qi::_1]
+				>> qi::lit("Charge")        >> qi::double_[boost::phoenix::ref(charge_picocoulomb) = boost::spirit::qi::_1]
+				>> qi::lit("Overflow")      >> qi::uint_[boost::phoenix::ref(overflow) = boost::spirit::qi::_1]
+				>> qi::lit("RisingCell")    >> qi::uint_[boost::phoenix::ref(risingcell) = boost::spirit::qi::_1]
+				>> qi::lit("RisingOffset")  >> qi::uint_[boost::phoenix::ref(risingoffset) = boost::spirit::qi::_1]
+				>> qi::lit("RisingTime")    >> qi::double_[boost::phoenix::ref(rising_ns) = boost::spirit::qi::_1]
+				>> qi::lit("FallingCell")   >> qi::uint_[boost::phoenix::ref(fallingcell) = boost::spirit::qi::_1]
+				>> qi::lit("FallingOffset") >> qi::uint_[boost::phoenix::ref(fallingoffset) = boost::spirit::qi::_1]
+				>> qi::lit("FallingTime")   >> qi::double_[boost::phoenix::ref(falling_ns) = boost::spirit::qi::_1]
+				>> qi::lit("FCR")           >> qi::uint_[boost::phoenix::ref(fcr) = boost::spirit::qi::_1]
+				),
+			       //  End grammar
+			       qi::space);
+      }
       DT_THROW_IF(!res || str_iter != end_iter,
                   std::logic_error,
                   "Cannot parse file header line #" << index_ << "; failed at '" << *str_iter << "'!");
@@ -140,6 +217,7 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "baseline (V)  = " << baseline_volt);
       DT_LOG_DEBUG(logging, "rawpeak       = " << rawpeak);
       DT_LOG_DEBUG(logging, "peak (V)      = " << peak_volt);
+      DT_LOG_DEBUG(logging, "peakcell      = " << peakcell);
       DT_LOG_DEBUG(logging, "rawcharge     = " << rawcharge);
       DT_LOG_DEBUG(logging, "charge (pC)   = " << charge_picocoulomb);
       DT_LOG_DEBUG(logging, "overflow      = " << overflow);
@@ -150,6 +228,7 @@ namespace fecom {
       DT_LOG_DEBUG(logging, "fallingoffset = " << fallingoffset);
       DT_LOG_DEBUG(logging, "fallingtime(ns= " << falling_ns);
       DT_LOG_DEBUG(logging, "fcr           = " << fcr);
+      DT_LOG_DEBUG(logging, "unixtime      = " << unixtime);
 
       hit_.electronic_id.set_type(calo_constants::CALO_CHANNEL_TYPE);
       hit_.electronic_id.set(calo_constants::SLOT_INDEX, slotid);
@@ -168,6 +247,7 @@ namespace fecom {
       hit_.baseline_volt = baseline_volt;
       hit_.raw_peak = rawpeak;
       hit_.peak_volt = peak_volt;
+      hit_.peak_cell = peakcell;
       hit_.raw_charge = rawcharge;
       hit_.charge_picocoulomb = charge_picocoulomb;
       hit_.raw_charge_overflow = (overflow == 0 ? false: true);
@@ -177,6 +257,7 @@ namespace fecom {
       hit_.falling_cell = fallingcell;
       hit_.falling_offset = fallingoffset;
       hit_.falling_time_ns = falling_ns;
+      hit_.unix_time = unixtime;
       // Waveform size is not saved in the header !!!
       // hit_.waveform_data_size = 1024;
     }

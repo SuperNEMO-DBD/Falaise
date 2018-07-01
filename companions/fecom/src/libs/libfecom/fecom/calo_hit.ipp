@@ -38,6 +38,7 @@ namespace fecom {
     ar & boost::serialization::make_nvp("baseline_volt", baseline_volt);
     ar & boost::serialization::make_nvp("raw_peak", raw_peak);
     ar & boost::serialization::make_nvp("peak_volt", peak_volt);
+    ar & boost::serialization::make_nvp("peak_cell", peak_cell);
     ar & boost::serialization::make_nvp("raw_charge", raw_charge);
     ar & boost::serialization::make_nvp("charge_picocoulomb", charge_picocoulomb);
     ar & boost::serialization::make_nvp("raw_charge_overflow", raw_charge_overflow);
@@ -47,6 +48,7 @@ namespace fecom {
     ar & boost::serialization::make_nvp("falling_cell", falling_cell);
     ar & boost::serialization::make_nvp("falling_offset", falling_offset);
     ar & boost::serialization::make_nvp("falling_time_ns", falling_time_ns);
+    ar & boost::serialization::make_nvp("unix_time_ns", unix_time);
 
     return;
   }

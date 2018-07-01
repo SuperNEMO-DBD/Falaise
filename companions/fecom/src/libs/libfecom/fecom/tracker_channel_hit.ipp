@@ -34,6 +34,7 @@ namespace fecom {
     ar & boost::serialization::make_nvp("timestamp_value", timestamp_value);
     ar & boost::serialization::make_nvp("timestamp_time_ns", timestamp_time_ns);
     ar & boost::serialization::make_nvp("associated", associated);
+    ar & boost::serialization::make_nvp("unix_time", unix_time);
     return;
   }
 

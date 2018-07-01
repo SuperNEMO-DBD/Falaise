@@ -99,7 +99,8 @@ int main(int argc_, char ** argv_)
   try {
 
     bool        is_debug = false;
-    std::string input_filename = "";
+    // std::string input_filename = "";
+    std::vector<std::string> input_filenames;
     std::string input_calo_pedestal_filename = "";
     std::string output_path = "";
     std::size_t max_hits = 0;
@@ -111,9 +112,12 @@ int main(int argc_, char ** argv_)
     opts.add_options()
       ("help,h", "produce help message")
       ("debug,d", "debug mode")
+      // ("input,i",
+      //  po::value<std::string>(& input_filename),
+      //  "set an input file")
       ("input,i",
-       po::value<std::string>(& input_filename),
-       "set an input file")
+       po::value<std::vector<std::string> >(& input_filenames)->multitoken(),
+       "set a list of input files")
       ("calo-pedestal,p",
        po::value<std::string>(& input_calo_pedestal_filename),
        "set a calo pedestal input file")
@@ -149,10 +153,22 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Starting...");
 
     // Set the input file from Jihane's DAQ :
-    DT_THROW_IF(input_filename.empty(), std::logic_error, "Missing input file ! ");
-    datatools::fetch_path_with_env(input_filename);
+    // DT_THROW_IF(input_filename.empty(), std::logic_error, "Missing input file ! ");
+    // datatools::fetch_path_with_env(input_filename);
+    // DT_LOG_INFORMATION(logging, "Input filename      : " + input_filename);
 
-    DT_LOG_INFORMATION(logging, "Input filename      : " + input_filename);
+    // Parse input files coming from 2 crates (so calo and tracker data are in a different files)
+    // BTW : parse the list the input file and put all hits in the same serialized file
+    // Brutal method because the file can be big at the end.
+    // No other solution ATM (during manchester commissioning).
+
+    DT_LOG_INFORMATION(logging, "List of input file(s) : ");
+    for (auto file = input_filenames.begin();
+    	 file != input_filenames.end();
+    	 file++) std::clog << *file << ' ';
+    std::clog << std::endl;
+    DT_THROW_IF(input_filenames.size() == 0, std::logic_error, "No input file(s) ! ");
+    DT_LOG_INFORMATION(logging, "Total number of files = " << input_filenames.size());
 
     // Default output path in input path :
     if (output_path.empty()){
@@ -169,79 +185,95 @@ int main(int argc_, char ** argv_)
     datatools::data_writer serializer(output_filename,
                                       datatools::using_multiple_archives);
 
-    // Input file (from Jihanne) hits reader :
-    fecom::hit_reader reader;
-    reader.set_logging(datatools::logger::PRIO_FATAL);
-    reader.set_input_filename(input_filename);
-    reader.initialize();
-    fecom::run_header header;
-    reader.load_run_header(header);
-    DT_LOG_INFORMATION(logging, "File [" << input_filename << "]   header : ");
-    header.tree_dump(std::clog, "Run header:");
-
     hit_list hl;
-    hl.make_new_calo_hit();
-    hl.make_new_tracker_channel_hit();
-    // List -> [!C][!T]
-    //           ^   ^
+    std::size_t hit_id = 0;
 
-    DT_LOG_INFORMATION(logging, "Read and store raw hits in object...");
-    DT_LOG_INFORMATION(logging, "...");
+    for (std::size_t ifile = 0; ifile < input_filenames.size(); ifile++)
+      {
+	std::string input_filename = input_filenames[ifile];
 
-    std::size_t entry_counter = 0;
-    std::size_t hit_counter = 0;
-    std::size_t bad_hit_counter = 0;
+	// Input file (from Jihanne) hits reader :
+	fecom::hit_reader reader;
+	reader.set_logging(datatools::logger::PRIO_FATAL);
+	reader.set_input_filename(input_filename);
+	reader.initialize();
+	fecom::run_header header;
+	reader.load_run_header(header);
+	DT_LOG_INFORMATION(logging, "File [" << input_filename << "]   header : ");
+	header.tree_dump(std::clog, "Run header:");
 
-    bool has_calo_pedestal = false;
-    if (!input_calo_pedestal_filename.empty()) {
-      has_calo_pedestal = true;
-      DT_LOG_INFORMATION(logging, "Process do not have calo pedestal filename and no calibration...");
-    }
+	hl.make_new_calo_hit();
+	hl.make_new_tracker_channel_hit();
+	// List -> [!C][!T]
+	//           ^   ^
 
-    // Read, decode and serialize calo_pedestals from input file into calo_calibration object
-    fecom::calo_calibration ccalib;
-    if (has_calo_pedestal) {
-      ccalib.load_pedestals(input_calo_pedestal_filename);
-      ccalib.tree_dump(std::clog, "Calorimeter calibration:");
-      DT_LOG_INFORMATION(logging, "Calo pedestal filename :" << input_calo_pedestal_filename);
-      serializer.store(ccalib);
-    }
+	DT_LOG_INFORMATION(logging, "Read and store raw hits in object...");
+	DT_LOG_INFORMATION(logging, "...");
 
-    while(reader.has_next_hit()) {
-      DT_LOG_DEBUG(logging, "Entry counter = " << entry_counter);
-      if ((entry_counter % modulo) == 0) {
-        DT_LOG_INFORMATION(logging, "Entry #" << entry_counter);
-      }
-      reader.load_next_hit(hl.chit(), hl.tchit());
-      entry_counter++;
-      if (hl.chit().is_valid()) {
-        // hl.chit().tree_dump(std::clog, "Calo hit is valid :");
-        hl.make_new_calo_hit();
-        hit_counter++;
-        // List -> [C][!T][!C]
-        //              ^   ^
-      } else if (hl.tchit().is_valid()) {
-        // Do not add tracker channel hit with a null value in the register :
-        if (hl.tchit().timestamp_time_ns > 0.0) {
-          // tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
-          hl.make_new_tracker_channel_hit();
-          hit_counter++;
-          // List -> [!C][T][!T]
-          //           ^      ^
-        } else {
-          bad_hit_counter++;
-          hl.tchit().reset();
-        }
-      } else {
-        DT_LOG_DEBUG(logging, "Invalid entry!");
-      }
+	std::size_t entry_counter = 0;
+	std::size_t hit_counter = 0;
+	std::size_t bad_hit_counter = 0;
 
-      if (max_hits > 0 && (hit_counter >= max_hits)) {
-        DT_LOG_INFORMATION(logging, "Maximum number of hits is reached.");
-        break;
-      }
-    } // end of while reader
-    // List -> [C][T][T][T][C][C][T][T][!C][T][!T]
+	// bool has_calo_pedestal = false;
+	// if (!input_calo_pedestal_filename.empty()) {
+	//   has_calo_pedestal = true;
+	//   DT_LOG_INFORMATION(logging, "Process do not have calo pedestal filename and no calibration...");
+	// }
+
+	// Read, decode and serialize calo_pedestals from input file into calo_calibration object
+	// fecom::calo_calibration ccalib;
+	// if (has_calo_pedestal) {
+	//   ccalib.load_pedestals(input_calo_pedestal_filename);
+	//   ccalib.tree_dump(std::clog, "Calorimeter calibration:");
+	//   DT_LOG_INFORMATION(logging, "Calo pedestal filename :" << input_calo_pedestal_filename);
+	//   serializer.store(ccalib);
+	// }
+
+	while(reader.has_next_hit()) {
+	  DT_LOG_DEBUG(logging, "Entry counter = " << entry_counter);
+	  if ((entry_counter % modulo) == 0) {
+	    DT_LOG_INFORMATION(logging, "Entry #" << entry_counter);
+	  }
+	  reader.load_next_hit(hl.chit(), hl.tchit());
+	  // hl.chit().tree_dump(std::clog, "Calo hit in hitlist :");
+	  // hl.tchit().tree_dump(std::clog, "Tracker hit in hitlist :");
+
+	  entry_counter++;
+	  if (hl.chit().is_valid()) {
+	    // hit id was bugged for run0
+	    hl.chit().hit_id = hit_id;
+	    hl.make_new_calo_hit();
+	    hit_counter++;
+	    // List -> [C][!T][!C]
+	    //              ^   ^
+	  } else if (hl.tchit().is_valid()) {
+	    // Do not add tracker channel hit with a null value in the register :
+	    if (hl.tchit().timestamp_time_ns > 0.0) {
+	      // tchit.tree_dump(std::clog, "Tracker channel hit is valid :");
+	      // hit id was bugged for run0
+	      hl.tchit().hit_id = hit_id;
+	      hl.make_new_tracker_channel_hit();
+	      hit_counter++;
+	      // List -> [!C][T][!T]
+	      //           ^      ^
+	    } else {
+	      bad_hit_counter++;
+	      hl.tchit().reset();
+	    }
+	  } else {
+	    DT_LOG_DEBUG(logging, "Invalid entry!");
+	  }
+
+	  if (max_hits > 0 && (hit_counter >= max_hits)) {
+	    DT_LOG_INFORMATION(logging, "Maximum number of hits is reached.");
+	    break;
+	  }
+	  hit_id++;
+	} // end of while reader
+	// List -> [C][T][T][T][C][C][T][T][!C][T][!T]
+
+	reader.reset();
+      } // end of ifile
 
     // Remove unvalid calo / tracker hits
     std::size_t nb_removed_hits = hl.remove_bad_hits();
@@ -278,7 +310,6 @@ int main(int argc_, char ** argv_)
     DT_LOG_INFORMATION(logging, "Number of commissioning hits serialized : " + std::to_string(serial_counter));
 
     DT_LOG_INFORMATION(logging, "End of reader file...");
-    reader.reset();
     DT_LOG_INFORMATION(logging, "The end.");
   } catch (std::exception & error) {
     std::cerr << "error: " << error.what() << std::endl;

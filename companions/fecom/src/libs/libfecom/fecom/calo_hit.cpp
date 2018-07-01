@@ -69,6 +69,7 @@ namespace fecom {
     raw_baseline = 0;
     raw_peak = calo_constants::INVALID_SAMPLE;
     peak_volt = 0;
+    peak_cell = calo_constants::INVALID_SAMPLE;
     raw_baseline = 0;
     baseline_volt = 0;
     raw_charge = 0;
@@ -80,6 +81,7 @@ namespace fecom {
     falling_cell = calo_constants::INVALID_SAMPLE;
     falling_offset = 0;
     falling_time_ns = 0;
+    unix_time = 0;
     return;
   }
 
@@ -147,6 +149,9 @@ namespace fecom {
          << "Peak (in V)               : " << peak_volt << std::endl;
 
     out_ << indent_ << io::tag()
+         << "Peak cell                 : " << peak_cell << std::endl;
+
+    out_ << indent_ << io::tag()
          << "Raw charge                : " << raw_charge << std::endl;
 
     out_ << indent_ << io::tag()
@@ -172,6 +177,9 @@ namespace fecom {
 
     out_ << indent_ << io::tag()
          << "Falling time (in ns)      : " << falling_time_ns << std::endl;
+
+    out_ << indent_ << io::tag()
+         << "Unix Time                 : " << unix_time << std::endl;
 
     out_ << indent_ << io::inherit_last_tag(inherit_)
          << "Validity                  : " << std::boolalpha << is_valid() << std::endl;

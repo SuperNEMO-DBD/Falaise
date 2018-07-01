@@ -109,6 +109,7 @@ namespace fecom {
     // Data :
     uint64_t timestamp_value;      ///< Value of the timestamp
     double timestamp_time_ns;      ///< Value of the timestamp in ns (redunduncy from DAQ)
+		double unix_time;              ///< Unix reference time of the hit
 
     DATATOOLS_SERIALIZATION_DECLARATION()
 

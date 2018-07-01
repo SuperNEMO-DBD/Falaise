@@ -50,6 +50,7 @@ namespace fecom {
   {
     DT_THROW_IF(!_initialized_, std::logic_error, "Reader is not initialized!");
     header_ = *_header_.get();
+
     return;
   }
 
@@ -57,6 +58,9 @@ namespace fecom {
 				 tracker_channel_hit & a_tracker_channel_hit_)
   {
     DT_THROW_IF(!_initialized_, std::logic_error, "Reader is not initialized!");
+
+    _hit_parser_.FIRMWARE_MAJOR_VERSION = _header_->software_major_version;
+    _hit_parser_.FIRMWARE_MINOR_VERSION = _header_->software_minor_version;
 
     bool success = _hit_parser_.parse(*_fin_,
 				      a_calo_hit_,
@@ -180,11 +184,26 @@ namespace fecom {
                              sw_version, unix_time, date, time);
       DT_THROW_IF(!res || str_iter != end_iter, std::logic_error,
                   "Cannot parse file header line #" << index_);
+
+      std::string delimiter = ".";
+      std::string version_delimiter = "V";
+
+      std::string token_1_major = sw_version.substr(0,  sw_version.find(delimiter));
+      std::string token_2_major = token_1_major.substr(token_1_major.find(version_delimiter) + 1,
+						       token_1_major.length());
+
+      std::string token_minor = sw_version.substr(sw_version.find(delimiter) + 1,sw_version.length());
+
+      int sw_major_version = std::stoi(token_2_major);
+      int sw_minor_version = std::stoi(token_minor);
+
       DT_LOG_DEBUG(_logging_, "sw_version = " << sw_version);
       DT_LOG_DEBUG(_logging_, "unix_time = " << unix_time);
       DT_LOG_DEBUG(_logging_, "date = " << date);
       DT_LOG_DEBUG(_logging_, "time = " << time);
       _header_->software_version = sw_version;
+      _header_->software_major_version = sw_major_version;
+      _header_->software_minor_version = sw_minor_version;
       _header_->unix_time = unix_time * CLHEP::second;
       _header_->date = date;
       _header_->time = time;

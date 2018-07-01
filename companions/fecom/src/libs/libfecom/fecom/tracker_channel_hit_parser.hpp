@@ -34,7 +34,7 @@ namespace fecom {
 
     //! Parse
     bool parse(std::istream & in_,
-	       tracker_channel_hit & hit_);
+							 tracker_channel_hit & hit_);
 
   private:
     // void _parse_header_(const std::string & header_line_,
@@ -42,12 +42,14 @@ namespace fecom {
     //                     tracker_channel_hit & hit_);
 
     void _parse_timestamp_(const std::string & data_line_,
-			   tracker_channel_hit & hit_);
+													 tracker_channel_hit & hit_);
 
   public:
 
     // Management:
     datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+		int FIRMWARE_MAJOR_VERSION;
+		int FIRMWARE_MINOR_VERSION;
 
   };
 

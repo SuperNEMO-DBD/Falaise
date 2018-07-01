@@ -31,7 +31,13 @@ namespace fecom {
   {
     DT_LOG_TRACE_ENTERING(logging);
     bool success = false;
+
     try {
+      _calo_hit_parser_.FIRMWARE_MAJOR_VERSION = FIRMWARE_MAJOR_VERSION;
+      _calo_hit_parser_.FIRMWARE_MINOR_VERSION = FIRMWARE_MINOR_VERSION;
+      _tracker_channel_hit_parser_.FIRMWARE_MAJOR_VERSION = FIRMWARE_MAJOR_VERSION;
+      _tracker_channel_hit_parser_.FIRMWARE_MINOR_VERSION = FIRMWARE_MINOR_VERSION;
+
       // Header:
       for (std::size_t ih = 0; ih < NB_HIT_HEADER_LINES; ih++) {
         std::string hline;

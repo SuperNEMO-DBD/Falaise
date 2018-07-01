@@ -151,6 +151,9 @@ int main(int argc_, char ** argv_)
     // Half Commissioning Raw Data "HCRD" bank label :
     std::string HCRD_bank_label = "HCRD";
 
+    // Calibrated Data "CD" bank label :
+    std::string CD_bank_label = "CD";
+
     int modulo = 1000;
     DT_LOG_INFORMATION(logging, "Reading commisioning events...");
     DT_LOG_INFORMATION(logging, "...");
@@ -160,45 +163,63 @@ int main(int argc_, char ** argv_)
     while (!reader.is_terminated()) {
 
       reader.process(ER);
+      if ((psd_count % modulo) == 1 ){
+	DT_LOG_DEBUG(logging, "Event number = " << psd_count);
+      }
 
       // A plain `fecom::commissioning_event' object is stored here :
-      if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
+      // if (ER.has(HCRD_bank_label) && ER.is_a<fecom::commissioning_event>(HCRD_bank_label))
+      // 	{
+      // 	  if ((psd_count % modulo) == 1 ){
+      // 	    DT_LOG_DEBUG(logging, "Event number = " << psd_count);
+      // 	  }
+      // 	  const fecom::commissioning_event & CE = ER.grab<fecom::commissioning_event>(HCRD_bank_label);
+
+      // 	  if (is_debug) CE.tree_dump(std::clog, "A com event");
+
+      // 	  std::size_t event_number = CE.get_event_id().get_event_number();
+      // 	  double event_time_start_ns = CE.get_time_start_ns();
+
+      // 	  std::size_t number_of_calo = CE.get_number_of_calo();
+      // 	  std::size_t number_of_geiger_cells = CE.get_number_of_tracker();
+      // 	  std::size_t number_of_calo_ht = CE.get_number_of_calo_ht();
+
+      // 	  if (is_debug) {
+      // 	    std::clog << "Event # " << event_number
+      // 		      << " Tstart (ns) =" << event_time_start_ns
+      // 		      << " #Calo = "      << number_of_calo
+      // 		      << " #CaloHT = "    << number_of_calo_ht
+      // 		      << " #Cells = "     << number_of_geiger_cells << std::endl << std::endl;;
+      // 	  }
+
+      // 	  // Test to retrieve the calorimeter collection of HT hits only :
+      // 	  fecom::commissioning_event::calo_hit_collection calo_ht_hit_collection;
+      // 	  CE.get_calo_ht_hit_collection(calo_ht_hit_collection);
+      // 	  if (is_debug) {
+      // 	    std::clog << "Number of calo HT = " << calo_ht_hit_collection.size() << std::endl;
+
+      // 	    for (auto icalo = calo_ht_hit_collection.begin();
+      // 		 icalo != calo_ht_hit_collection.end();
+      // 		 icalo++) {
+      // 	      icalo->tree_dump(std::clog, "A calo HT");
+      // 	    }
+      // 	  }
+      // 	} // end of has HCRD bank label
+
+      if (ER.has(CD_bank_label) && ER.is_a<snemo::datamodel::calibrated_data>(CD_bank_label))
 	{
-	  if ((psd_count % modulo) == 1 ){
-	    DT_LOG_DEBUG(logging, "Event number = " << psd_count);
-	  }
-	  const fecom::commissioning_event & CE = ER.grab<fecom::commissioning_event>(HCRD_bank_label);
+	  const snemo::datamodel::calibrated_data & CD = ER.grab<snemo::datamodel::calibrated_data>(CD_bank_label);
+	  if (CD.has_calibrated_tracker_hits())
+	    {
+	      for (std::size_t i = 0; i < CD.calibrated_tracker_hits().size(); i++)
+		{
+		  const snemo::datamodel::calibrated_tracker_hit & a_cth = CD.calibrated_tracker_hits()[i].get();
+		  a_cth.tree_dump(std::clog, "A calibrated tracker hit");
+		}
 
-	  if (is_debug) CE.tree_dump(std::clog, "A com event");
-
-	  std::size_t event_number = CE.get_event_id().get_event_number();
-	  double event_time_start_ns = CE.get_time_start_ns();
-
-	  std::size_t number_of_calo = CE.get_number_of_calo();
-	  std::size_t number_of_geiger_cells = CE.get_number_of_tracker();
-	  std::size_t number_of_calo_ht = CE.get_number_of_calo_ht();
-
-	  if (is_debug) {
-	    std::clog << "Event # " << event_number
-		      << " Tstart (ns) =" << event_time_start_ns
-		      << " #Calo = "      << number_of_calo
-		      << " #CaloHT = "    << number_of_calo_ht
-		      << " #Cells = "     << number_of_geiger_cells << std::endl << std::endl;;
-	  }
-
-	  // Test to retrieve the calorimeter collection of HT hits only :
-	  fecom::commissioning_event::calo_hit_collection calo_ht_hit_collection;
-	  CE.get_calo_ht_hit_collection(calo_ht_hit_collection);
-	  if (is_debug) {
-	    std::clog << "Number of calo HT = " << calo_ht_hit_collection.size() << std::endl;
-
-	    for (auto icalo = calo_ht_hit_collection.begin();
-		 icalo != calo_ht_hit_collection.end();
-		 icalo++) {
-	      icalo->tree_dump(std::clog, "A calo HT");
 	    }
-	  }
-	} // end of has HCRD bank label
+
+	} // end of has CD bank label
 
       ER.clear();
       psd_count++;

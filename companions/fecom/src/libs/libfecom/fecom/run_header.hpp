@@ -39,6 +39,8 @@ namespace fecom {
   public:
 
     std::string software_version; ///< The parsed software version
+		uint software_major_version;  ///< The parsed major software version
+		uint software_minor_version;  ///< The parsed minor software version
     double      unix_time;        ///< The parsed unix time
     std::string date;             ///< The parsed date
     std::string time;             ///< The parsed time
