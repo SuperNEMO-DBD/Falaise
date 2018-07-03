@@ -140,7 +140,59 @@ variant geometry layout:
      --number-of-events-modulo 10 \
      --output-data-format "bank" \
      --output-data-bank "SD" \
+   --output-data-file "cfg1-out.xml"
+
+
+
+
+
+    bxg4_production \
+     --datatools::logging "warning" \
+     --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources" \
+     --logging-priority "debug" \
+     --load-dll Falaise \
+     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/3.0/manager.conf \
+     --vertex-generator-name "snemo_full_foils_se82_bulk"  \
+     --vertex-generator-seed 0 \
+     --event-generator-name "Tl208" \
+     --event-generator-seed 0  \
+     --g4-manager-seed 0       \
+     --shpf-seed 0             \
+     --output-prng-seeds-file mc_g4_production.seeds   \
+     --output-prng-states-file mc_g4_production.states \
+     --batch \
+     --using-time-statistics \
+     --number-of-events 10 \
+     --number-of-events-modulo 2 \
+     --output-data-format "bank" \
+     --output-data-bank "SD" \
+    --output-data-file "cfg1-Tl208-source.xml"
+
+
+  bxg4_production \
+     --datatools::logging "warning" \
+     --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources" \
+     --logging-priority "debug" \
+     --load-dll Falaise \
+     --config @falaise:config/snemo/demonstrator/simulation/geant4_control/3.0/manager.conf \
+     --variant-config "@falaise:config/snemo/demonstrator/simulation/geant4_control/3.0/variants/repository.conf" \
+     --variant-gui \
+     --variant-store "cfg1.conf" \
+     --vertex-generator-seed 0 \
+     --event-generator-seed 0  \
+     --g4-manager-seed 0       \
+     --shpf-seed 0             \
+     --output-prng-seeds-file mc_g4_production.seeds   \
+     --output-prng-states-file mc_g4_production.states \
+     --using-time-statistics \
+     --number-of-events 100 \
+     --number-of-events-modulo 10 \
+     --output-data-format "bank" \
+     --output-data-bank "SD" \
      --output-data-file "cfg1-out.xml"
+
+
+   
 ..
 
 Run in interactive mode:

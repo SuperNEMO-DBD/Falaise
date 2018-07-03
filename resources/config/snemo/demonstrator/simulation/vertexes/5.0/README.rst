@@ -473,49 +473,60 @@ Visualize:
 
 Vertex generator with Realistic source layout:
 ----------------------------------------------
+
 bxvariant_inspector     \
  --datatools::resource-path="falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources"\
  --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
  --variant-gui 
 
-bxgeomtools_inspector --logging "warning" --load-dll Falaise --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/"    --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf"  --variant-set "geometry:layout=Basic" --manager-config "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf"
+ bxgeomtools_inspector \
+--logging "warning" \
+--load-dll Falaise \
+--datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
+--variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
+--variant-set "geometry:layout=Basic" \
+--manager-config "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf"
 
 
 
-   bxgenvtx_production \
-     --logging "warning" \
-     --load-dll Falaise \
-     --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
-     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
-     --variant-gui \
-     --variant-store "realistic.rep" \
-     --geometry-manager         "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf" \
-     --vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/manager.conf" \
-     --shoot \
-     --prng-seed 314159 \
-     --number-of-vertices 10000 \
-     --visu-spot-size "0.05 mm" \
-     --visu-spot-color "red" \
-     --visu-output-file "realistic_vertices-visu-dd.data.gz"
+Shoot vertexes from a realistic Se82 source :
+
+.. raw:: sh
+bxgenvtx_production \
+--logging "warning" \
+--load-dll Falaise \
+--datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
+--variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
+--variant-gui \
+--variant-store "realistic.rep" \
+--geometry-manager         "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf" \
+--vertex-generator-manager "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/manager.conf" \
+--shoot \
+--prng-seed 314159 \
+--number-of-vertices 1000000 \
+--visu-spot-size "1.0 mm" \
+--visu-spot-color "red" \
+--visu-output-file "realistic_vertices-visu.data.gz"
      ..
+
+
+Visualize:
+
+.. raw:: sh
      
-   bxgeomtools_inspector \
-     --logging "warning" \
-     --load-dll Falaise \
-     --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
-     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
-     --variant-load "realistic.rep" \
-     --manager-config "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf"
- 
-
 bxgeomtools_inspector \
-     --logging "warning" \
-     --load-dll Falaise \
-     --datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
-     --variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
-     --variant-load "realistic.rep" \
-     --manager-config "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf"
+--logging "warning" \
+--load-dll Falaise \
+--datatools::resource-path "falaise@/home/lemiere/sofware/NEMO/simulation/3.0/Falaise_add_rh106/Falaise/resources/" \
+--variant-config "@falaise:config/snemo/demonstrator/simulation/vertexes/5.0/variants/repository.conf" \
+--variant-load "realistic.rep" \
+--manager-config "@falaise:config/snemo/demonstrator/geometry/5.0/manager.conf"
 
+
+geomtools> ldd vtx realistic_vertices-visu.data.gz
+geomtools> d [1100:0]
+..
+     
 
      
 Prepare the list of supported vertex generators for the variant system

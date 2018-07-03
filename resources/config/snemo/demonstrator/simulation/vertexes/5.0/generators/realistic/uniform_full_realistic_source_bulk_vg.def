@@ -30,11 +30,11 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[2]  = 'snemo_source_strip_0_bulk' 'snemo_source_strip_35_bulk'
+generators : string[2]  = "snemo_source_strip_0_bulk" "snemo_source_strip_35_bulk"
 
 # Absolute weight of different generators
-generators.snemo_source_strip_0_bulk : real  = 201.4 # grams
-generators.snemo_source_strip_35_bulk : real  = 201.4 # grams
+generators.snemo_source_strip_0_bulk.absolute_weight : real  = 201.4 # grams
+generators.snemo_source_strip_35_bulk.absolute_weight : real  = 201.4 # grams
 
 
 
@@ -54,43 +54,43 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[34]  = 'snemo_source_strip_1_bulk' 'snemo_source_strip_2_bulk' 'snemo_source_strip_3_bulk' 'snemo_source_strip_4_bulk' 'snemo_source_strip_5_bulk' 'snemo_source_strip_6_bulk' 'snemo_source_strip_7_bulk' 'snemo_source_strip_8_bulk' 'snemo_source_strip_9_bulk' 'snemo_source_strip_10_bulk' 'snemo_source_strip_11_bulk' 'snemo_source_strip_12_bulk' 'snemo_source_strip_13_bulk' 'snemo_source_strip_14_bulk' 'snemo_source_strip_15_bulk' 'snemo_source_strip_16_bulk' 'snemo_source_strip_17_bulk' 'snemo_source_strip_18_bulk' 'snemo_source_strip_19_bulk' 'snemo_source_strip_20_bulk' 'snemo_source_strip_21_bulk' 'snemo_source_strip_22_bulk' 'snemo_source_strip_23_bulk' 'snemo_source_strip_24_bulk' 'snemo_source_strip_25_bulk' 'snemo_source_strip_26_bulk' 'snemo_source_strip_27_bulk' 'snemo_source_strip_28_bulk' 'snemo_source_strip_29_bulk' 'snemo_source_strip_30_bulk' 'snemo_source_strip_31_bulk' 'snemo_source_strip_32_bulk' 'snemo_source_strip_33_bulk' 'snemo_source_strip_34_bulk'
+generators : string[34]  = "snemo_source_strip_1_bulk" "snemo_source_strip_2_bulk" "snemo_source_strip_3_bulk" "snemo_source_strip_4_bulk" "snemo_source_strip_5_bulk" "snemo_source_strip_6_bulk" "snemo_source_strip_7_bulk" "snemo_source_strip_8_bulk" "snemo_source_strip_9_bulk" "snemo_source_strip_10_bulk" "snemo_source_strip_11_bulk" "snemo_source_strip_12_bulk" "snemo_source_strip_13_bulk" "snemo_source_strip_14_bulk" "snemo_source_strip_15_bulk" "snemo_source_strip_16_bulk" "snemo_source_strip_17_bulk" "snemo_source_strip_18_bulk" "snemo_source_strip_19_bulk" "snemo_source_strip_20_bulk" "snemo_source_strip_21_bulk" "snemo_source_strip_22_bulk" "snemo_source_strip_23_bulk" "snemo_source_strip_24_bulk" "snemo_source_strip_25_bulk" "snemo_source_strip_26_bulk" "snemo_source_strip_27_bulk" "snemo_source_strip_28_bulk" "snemo_source_strip_29_bulk" "snemo_source_strip_30_bulk" "snemo_source_strip_31_bulk" "snemo_source_strip_32_bulk" "snemo_source_strip_33_bulk" "snemo_source_strip_34_bulk"
 
 # Absolute weight of different generators
-generators.snemo_source_strip_1_bulk : real  = 235.68 # grams
-generators.snemo_source_strip_2_bulk : real  = 225.9 # grams
-generators.snemo_source_strip_3_bulk : real  = 224.57 # grams
-generators.snemo_source_strip_4_bulk : real  = 205.75 # grams
-generators.snemo_source_strip_5_bulk : real  = 205.77 # grams
-generators.snemo_source_strip_6_bulk : real  = 237.39 # grams
-generators.snemo_source_strip_7_bulk : real  = 226.74 # grams
-generators.snemo_source_strip_8_bulk : real  = 155.0 # grams
-generators.snemo_source_strip_9_bulk : real  = 144.1 # grams
-generators.snemo_source_strip_10_bulk : real  = 143.7 # grams
-generators.snemo_source_strip_11_bulk : real  = 141.8 # grams
-generators.snemo_source_strip_12_bulk : real  = 240.4 # grams
-generators.snemo_source_strip_13_bulk : real  = 214.7 # grams
-generators.snemo_source_strip_14_bulk : real  = 242.4 # grams
-generators.snemo_source_strip_15_bulk : real  = 243.7 # grams
-generators.snemo_source_strip_16_bulk : real  = 232.3 # grams
-generators.snemo_source_strip_17_bulk : real  = 209.6 # grams
-generators.snemo_source_strip_18_bulk : real  = 189.0 # grams
-generators.snemo_source_strip_19_bulk : real  = 191.78 # grams
-generators.snemo_source_strip_20_bulk : real  = 188.99 # grams
-generators.snemo_source_strip_21_bulk : real  = 187.2 # grams
-generators.snemo_source_strip_22_bulk : real  = 203.84000000000003 # grams
-generators.snemo_source_strip_23_bulk : real  = 202.79 # grams
-generators.snemo_source_strip_24_bulk : real  = 204.04000000000002 # grams
-generators.snemo_source_strip_25_bulk : real  = 190.17999999999998 # grams
-generators.snemo_source_strip_26_bulk : real  = 200.5 # grams
-generators.snemo_source_strip_27_bulk : real  = 197.45999999999998 # grams
-generators.snemo_source_strip_28_bulk : real  = 197.76 # grams
-generators.snemo_source_strip_29_bulk : real  = 157.54 # grams
-generators.snemo_source_strip_30_bulk : real  = 226.81 # grams
-generators.snemo_source_strip_31_bulk : real  = 203.77 # grams
-generators.snemo_source_strip_32_bulk : real  = 195.55 # grams
-generators.snemo_source_strip_33_bulk : real  = 215.19 # grams
-generators.snemo_source_strip_34_bulk : real  = 218.06 # grams
+generators.snemo_source_strip_1_bulk.absolute_weight : real  = 235.68 # grams
+generators.snemo_source_strip_2_bulk.absolute_weight : real  = 225.9 # grams
+generators.snemo_source_strip_3_bulk.absolute_weight : real  = 224.57 # grams
+generators.snemo_source_strip_4_bulk.absolute_weight : real  = 205.75 # grams
+generators.snemo_source_strip_5_bulk.absolute_weight : real  = 205.77 # grams
+generators.snemo_source_strip_6_bulk.absolute_weight : real  = 237.39 # grams
+generators.snemo_source_strip_7_bulk.absolute_weight : real  = 226.74 # grams
+generators.snemo_source_strip_8_bulk.absolute_weight : real  = 155.0 # grams
+generators.snemo_source_strip_9_bulk.absolute_weight : real  = 144.1 # grams
+generators.snemo_source_strip_10_bulk.absolute_weight : real  = 143.7 # grams
+generators.snemo_source_strip_11_bulk.absolute_weight : real  = 141.8 # grams
+generators.snemo_source_strip_12_bulk.absolute_weight : real  = 240.4 # grams
+generators.snemo_source_strip_13_bulk.absolute_weight : real  = 214.7 # grams
+generators.snemo_source_strip_14_bulk.absolute_weight : real  = 242.4 # grams
+generators.snemo_source_strip_15_bulk.absolute_weight : real  = 243.7 # grams
+generators.snemo_source_strip_16_bulk.absolute_weight : real  = 232.3 # grams
+generators.snemo_source_strip_17_bulk.absolute_weight : real  = 209.6 # grams
+generators.snemo_source_strip_18_bulk.absolute_weight : real  = 189.0 # grams
+generators.snemo_source_strip_19_bulk.absolute_weight : real  = 191.78 # grams
+generators.snemo_source_strip_20_bulk.absolute_weight : real  = 188.99 # grams
+generators.snemo_source_strip_21_bulk.absolute_weight : real  = 187.2 # grams
+generators.snemo_source_strip_22_bulk.absolute_weight : real  = 203.84000000000003 # grams
+generators.snemo_source_strip_23_bulk.absolute_weight : real  = 202.79 # grams
+generators.snemo_source_strip_24_bulk.absolute_weight : real  = 204.04000000000002 # grams
+generators.snemo_source_strip_25_bulk.absolute_weight : real  = 190.17999999999998 # grams
+generators.snemo_source_strip_26_bulk.absolute_weight : real  = 200.5 # grams
+generators.snemo_source_strip_27_bulk.absolute_weight : real  = 197.45999999999998 # grams
+generators.snemo_source_strip_28_bulk.absolute_weight : real  = 197.76 # grams
+generators.snemo_source_strip_29_bulk.absolute_weight : real  = 157.54 # grams
+generators.snemo_source_strip_30_bulk.absolute_weight : real  = 226.81 # grams
+generators.snemo_source_strip_31_bulk.absolute_weight : real  = 203.77 # grams
+generators.snemo_source_strip_32_bulk.absolute_weight : real  = 195.55 # grams
+generators.snemo_source_strip_33_bulk.absolute_weight : real  = 215.19 # grams
+generators.snemo_source_strip_34_bulk.absolute_weight : real  = 218.06 # grams
 
 
 
@@ -110,42 +110,42 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[34]  =  'snemo_source_strip_1_se82_bulk' 'snemo_source_strip_2_se82_bulk' 'snemo_source_strip_3_se82_bulk' 'snemo_source_strip_4_se82_bulk' 'snemo_source_strip_5_se82_bulk' 'snemo_source_strip_6_se82_bulk' 'snemo_source_strip_7_se82_bulk' 'snemo_source_strip_8_se82_bulk' 'snemo_source_strip_9_se82_bulk' 'snemo_source_strip_10_se82_bulk' 'snemo_source_strip_11_se82_bulk' 'snemo_source_strip_12_se82_bulk' 'snemo_source_strip_13_se82_bulk' 'snemo_source_strip_14_se82_bulk' 'snemo_source_strip_15_se82_bulk' 'snemo_source_strip_16_se82_bulk' 'snemo_source_strip_17_se82_bulk' 'snemo_source_strip_18_se82_bulk' 'snemo_source_strip_19_se82_bulk' 'snemo_source_strip_20_se82_bulk' 'snemo_source_strip_21_se82_bulk' 'snemo_source_strip_22_se82_bulk' 'snemo_source_strip_23_se82_bulk' 'snemo_source_strip_24_se82_bulk' 'snemo_source_strip_25_se82_bulk' 'snemo_source_strip_26_se82_bulk' 'snemo_source_strip_27_se82_bulk' 'snemo_source_strip_28_se82_bulk' 'snemo_source_strip_29_se82_bulk' 'snemo_source_strip_30_se82_bulk' 'snemo_source_strip_31_se82_bulk' 'snemo_source_strip_32_se82_bulk' 'snemo_source_strip_33_se82_bulk' 'snemo_source_strip_34_se82_bulk'
+generators : string[34]  =  "snemo_source_strip_1_se82_bulk" "snemo_source_strip_2_se82_bulk" "snemo_source_strip_3_se82_bulk" "snemo_source_strip_4_se82_bulk" "snemo_source_strip_5_se82_bulk" "snemo_source_strip_6_se82_bulk" "snemo_source_strip_7_se82_bulk" "snemo_source_strip_8_se82_bulk" "snemo_source_strip_9_se82_bulk" "snemo_source_strip_10_se82_bulk" "snemo_source_strip_11_se82_bulk" "snemo_source_strip_12_se82_bulk" "snemo_source_strip_13_se82_bulk" "snemo_source_strip_14_se82_bulk" "snemo_source_strip_15_se82_bulk" "snemo_source_strip_16_se82_bulk" "snemo_source_strip_17_se82_bulk" "snemo_source_strip_18_se82_bulk" "snemo_source_strip_19_se82_bulk" "snemo_source_strip_20_se82_bulk" "snemo_source_strip_21_se82_bulk" "snemo_source_strip_22_se82_bulk" "snemo_source_strip_23_se82_bulk" "snemo_source_strip_24_se82_bulk" "snemo_source_strip_25_se82_bulk" "snemo_source_strip_26_se82_bulk" "snemo_source_strip_27_se82_bulk" "snemo_source_strip_28_se82_bulk" "snemo_source_strip_29_se82_bulk" "snemo_source_strip_30_se82_bulk" "snemo_source_strip_31_se82_bulk" "snemo_source_strip_32_se82_bulk" "snemo_source_strip_33_se82_bulk" "snemo_source_strip_34_se82_bulk"
 
 # Absolute weight of different generators
-generators.snemo_source_strip_1_se82_bulk : real  = 212.11200000000002 # grams
-generators.snemo_source_strip_2_se82_bulk : real  = 203.31 # grams
-generators.snemo_source_strip_3_se82_bulk : real  = 202.11299999999997 # grams
-generators.snemo_source_strip_4_se82_bulk : real  = 185.175 # grams
-generators.snemo_source_strip_5_se82_bulk : real  = 185.193 # grams
-generators.snemo_source_strip_6_se82_bulk : real  = 213.65099999999998 # grams
-generators.snemo_source_strip_7_se82_bulk : real  = 204.06600000000003 # grams
-generators.snemo_source_strip_8_se82_bulk : real  = 142.8015 # grams
-generators.snemo_source_strip_9_se82_bulk : real  = 132.86020000000002 # grams
-generators.snemo_source_strip_10_se82_bulk : real  = 132.34769999999997 # grams
-generators.snemo_source_strip_11_se82_bulk : real  = 130.69706000000002 # grams
-generators.snemo_source_strip_12_se82_bulk : real  = 221.50456 # grams
-generators.snemo_source_strip_13_se82_bulk : real  = 197.09459999999999 # grams
-generators.snemo_source_strip_14_se82_bulk : real  = 223.71096 # grams
-generators.snemo_source_strip_15_se82_bulk : real  = 224.59391999999997 # grams
-generators.snemo_source_strip_16_se82_bulk : real  = 213.69277 # grams
-generators.snemo_source_strip_17_se82_bulk : real  = 192.62240000000003 # grams
-generators.snemo_source_strip_18_se82_bulk : real  = 173.502 # grams
-generators.snemo_source_strip_19_se82_bulk : real  = 172.602 # grams
-generators.snemo_source_strip_20_se82_bulk : real  = 170.091 # grams
-generators.snemo_source_strip_21_se82_bulk : real  = 168.48000000000002 # grams
-generators.snemo_source_strip_22_se82_bulk : real  = 183.45600000000002 # grams
-generators.snemo_source_strip_23_se82_bulk : real  = 182.511 # grams
-generators.snemo_source_strip_24_se82_bulk : real  = 183.636 # grams
-generators.snemo_source_strip_25_se82_bulk : real  = 171.16199999999998 # grams
-generators.snemo_source_strip_26_se82_bulk : real  = 180.45000000000002 # grams
-generators.snemo_source_strip_27_se82_bulk : real  = 177.714 # grams
-generators.snemo_source_strip_28_se82_bulk : real  = 177.984 # grams
-generators.snemo_source_strip_29_se82_bulk : real  = 141.786 # grams
-generators.snemo_source_strip_30_se82_bulk : real  = 204.12900000000002 # grams
-generators.snemo_source_strip_31_se82_bulk : real  = 183.393 # grams
-generators.snemo_source_strip_32_se82_bulk : real  = 175.99500000000003 # grams
-generators.snemo_source_strip_33_se82_bulk : real  = 193.671 # grams
-generators.snemo_source_strip_34_se82_bulk : real  = 196.25400000000002 # grams
+generators.snemo_source_strip_1_se82_bulk.absolute_weight : real  = 212.11200000000002 # grams
+generators.snemo_source_strip_2_se82_bulk.absolute_weight : real  = 203.31 # grams
+generators.snemo_source_strip_3_se82_bulk.absolute_weight : real  = 202.11299999999997 # grams
+generators.snemo_source_strip_4_se82_bulk.absolute_weight : real  = 185.175 # grams
+generators.snemo_source_strip_5_se82_bulk.absolute_weight : real  = 185.193 # grams
+generators.snemo_source_strip_6_se82_bulk.absolute_weight : real  = 213.65099999999998 # grams
+generators.snemo_source_strip_7_se82_bulk.absolute_weight : real  = 204.06600000000003 # grams
+generators.snemo_source_strip_8_se82_bulk.absolute_weight : real  = 142.8015 # grams
+generators.snemo_source_strip_9_se82_bulk.absolute_weight : real  = 132.86020000000002 # grams
+generators.snemo_source_strip_10_se82_bulk.absolute_weight : real  = 132.34769999999997 # grams
+generators.snemo_source_strip_11_se82_bulk.absolute_weight : real  = 130.69706000000002 # grams
+generators.snemo_source_strip_12_se82_bulk.absolute_weight : real  = 221.50456 # grams
+generators.snemo_source_strip_13_se82_bulk.absolute_weight : real  = 197.09459999999999 # grams
+generators.snemo_source_strip_14_se82_bulk.absolute_weight : real  = 223.71096 # grams
+generators.snemo_source_strip_15_se82_bulk.absolute_weight : real  = 224.59391999999997 # grams
+generators.snemo_source_strip_16_se82_bulk.absolute_weight : real  = 213.69277 # grams
+generators.snemo_source_strip_17_se82_bulk.absolute_weight : real  = 192.62240000000003 # grams
+generators.snemo_source_strip_18_se82_bulk.absolute_weight : real  = 173.502 # grams
+generators.snemo_source_strip_19_se82_bulk.absolute_weight : real  = 172.602 # grams
+generators.snemo_source_strip_20_se82_bulk.absolute_weight : real  = 170.091 # grams
+generators.snemo_source_strip_21_se82_bulk.absolute_weight : real  = 168.48000000000002 # grams
+generators.snemo_source_strip_22_se82_bulk.absolute_weight : real  = 183.45600000000002 # grams
+generators.snemo_source_strip_23_se82_bulk.absolute_weight : real  = 182.511 # grams
+generators.snemo_source_strip_24_se82_bulk.absolute_weight : real  = 183.636 # grams
+generators.snemo_source_strip_25_se82_bulk.absolute_weight : real  = 171.16199999999998 # grams
+generators.snemo_source_strip_26_se82_bulk.absolute_weight : real  = 180.45000000000002 # grams
+generators.snemo_source_strip_27_se82_bulk.absolute_weight : real  = 177.714 # grams
+generators.snemo_source_strip_28_se82_bulk.absolute_weight : real  = 177.984 # grams
+generators.snemo_source_strip_29_se82_bulk.absolute_weight : real  = 141.786 # grams
+generators.snemo_source_strip_30_se82_bulk.absolute_weight : real  = 204.12900000000002 # grams
+generators.snemo_source_strip_31_se82_bulk.absolute_weight : real  = 183.393 # grams
+generators.snemo_source_strip_32_se82_bulk.absolute_weight : real  = 175.99500000000003 # grams
+generators.snemo_source_strip_33_se82_bulk.absolute_weight : real  = 193.671 # grams
+generators.snemo_source_strip_34_se82_bulk.absolute_weight : real  = 196.25400000000002 # grams
 
 

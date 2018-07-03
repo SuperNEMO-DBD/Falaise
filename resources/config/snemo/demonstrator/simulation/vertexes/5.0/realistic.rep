@@ -15,5 +15,8 @@ layout/if_basic/shielding = true
 calo_film_thickness = 25 um
 
 [registry="vertexes"]
-generator = "snemo_source_strip_9_surface"
+generator = "free_spot"
+generator/if_free_spot/x = 0 mm
+generator/if_free_spot/y = 0 mm
+generator/if_free_spot/z = 0 mm
 

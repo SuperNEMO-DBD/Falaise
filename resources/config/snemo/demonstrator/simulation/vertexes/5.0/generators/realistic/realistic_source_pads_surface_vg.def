@@ -28,6 +28,15 @@ origin : string = "category='source_pad' module={*} strip={0} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_1_pad_0_surface" type="genvtx::box_model_vg"]
@@ -45,6 +54,15 @@ origin : string = "category='source_pad' module={*} strip={1} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -64,6 +82,15 @@ origin : string = "category='source_pad' module={*} strip={2} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_3_pad_0_surface" type="genvtx::box_model_vg"]
@@ -81,6 +108,15 @@ origin : string = "category='source_pad' module={*} strip={3} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -100,6 +136,15 @@ origin : string = "category='source_pad' module={*} strip={4} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_5_pad_0_surface" type="genvtx::box_model_vg"]
@@ -117,6 +162,15 @@ origin : string = "category='source_pad' module={*} strip={5} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -136,6 +190,15 @@ origin : string = "category='source_pad' module={*} strip={6} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_7_pad_0_surface" type="genvtx::box_model_vg"]
@@ -153,6 +216,15 @@ origin : string = "category='source_pad' module={*} strip={7} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -172,6 +244,15 @@ origin : string = "category='source_pad' module={*} strip={8} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_9_pad_0_surface" type="genvtx::box_model_vg"]
@@ -189,6 +270,15 @@ origin : string = "category='source_pad' module={*} strip={9} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -208,6 +298,15 @@ origin : string = "category='source_pad' module={*} strip={10} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_11_pad_0_surface" type="genvtx::box_model_vg"]
@@ -225,6 +324,15 @@ origin : string = "category='source_pad' module={*} strip={11} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -244,6 +352,15 @@ origin : string = "category='source_pad' module={*} strip={12} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_13_pad_0_surface" type="genvtx::box_model_vg"]
@@ -261,6 +378,15 @@ origin : string = "category='source_pad' module={*} strip={13} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -280,6 +406,15 @@ origin : string = "category='source_pad' module={*} strip={14} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_15_pad_0_surface" type="genvtx::box_model_vg"]
@@ -297,6 +432,15 @@ origin : string = "category='source_pad' module={*} strip={15} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -316,6 +460,15 @@ origin : string = "category='source_pad' module={*} strip={16} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_17_pad_0_surface" type="genvtx::box_model_vg"]
@@ -333,6 +486,15 @@ origin : string = "category='source_pad' module={*} strip={17} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -352,6 +514,15 @@ origin : string = "category='source_pad' module={*} strip={18} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_19_pad_7_surface" type="genvtx::box_model_vg"]
@@ -369,6 +540,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -388,6 +568,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_19_pad_5_surface" type="genvtx::box_model_vg"]
@@ -405,6 +594,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -424,6 +622,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_19_pad_3_surface" type="genvtx::box_model_vg"]
@@ -441,6 +648,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -460,6 +676,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_19_pad_1_surface" type="genvtx::box_model_vg"]
@@ -477,6 +702,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -496,6 +730,15 @@ origin : string = "category='source_pad' module={*} strip={19} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_20_pad_7_surface" type="genvtx::box_model_vg"]
@@ -513,6 +756,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -532,6 +784,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_20_pad_5_surface" type="genvtx::box_model_vg"]
@@ -549,6 +810,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -568,6 +838,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_20_pad_3_surface" type="genvtx::box_model_vg"]
@@ -585,6 +864,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -604,6 +892,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_20_pad_1_surface" type="genvtx::box_model_vg"]
@@ -621,6 +918,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -640,6 +946,15 @@ origin : string = "category='source_pad' module={*} strip={20} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_21_pad_7_surface" type="genvtx::box_model_vg"]
@@ -657,6 +972,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -676,6 +1000,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_21_pad_5_surface" type="genvtx::box_model_vg"]
@@ -693,6 +1026,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -712,6 +1054,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_21_pad_3_surface" type="genvtx::box_model_vg"]
@@ -729,6 +1080,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -748,6 +1108,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_21_pad_1_surface" type="genvtx::box_model_vg"]
@@ -765,6 +1134,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -784,6 +1162,15 @@ origin : string = "category='source_pad' module={*} strip={21} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_22_pad_7_surface" type="genvtx::box_model_vg"]
@@ -801,6 +1188,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -820,6 +1216,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_22_pad_5_surface" type="genvtx::box_model_vg"]
@@ -837,6 +1242,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -856,6 +1270,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_22_pad_3_surface" type="genvtx::box_model_vg"]
@@ -873,6 +1296,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -892,6 +1324,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_22_pad_1_surface" type="genvtx::box_model_vg"]
@@ -909,6 +1350,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -928,6 +1378,15 @@ origin : string = "category='source_pad' module={*} strip={22} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_23_pad_7_surface" type="genvtx::box_model_vg"]
@@ -945,6 +1404,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -964,6 +1432,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_23_pad_5_surface" type="genvtx::box_model_vg"]
@@ -981,6 +1458,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1000,6 +1486,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_23_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1017,6 +1512,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1036,6 +1540,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_23_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1053,6 +1566,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1072,6 +1594,15 @@ origin : string = "category='source_pad' module={*} strip={23} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_24_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1089,6 +1620,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1108,6 +1648,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_24_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1125,6 +1674,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1144,6 +1702,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_24_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1161,6 +1728,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1180,6 +1756,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_24_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1197,6 +1782,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1216,6 +1810,15 @@ origin : string = "category='source_pad' module={*} strip={24} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_25_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1233,6 +1836,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1252,6 +1864,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_25_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1269,6 +1890,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1288,6 +1918,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_25_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1305,6 +1944,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1324,6 +1972,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_25_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1341,6 +1998,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1360,6 +2026,15 @@ origin : string = "category='source_pad' module={*} strip={25} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_26_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1377,6 +2052,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1396,6 +2080,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_26_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1413,6 +2106,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1432,6 +2134,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_26_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1449,6 +2160,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1468,6 +2188,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_26_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1485,6 +2214,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1504,6 +2242,15 @@ origin : string = "category='source_pad' module={*} strip={26} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_27_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1521,6 +2268,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1540,6 +2296,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_27_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1557,6 +2322,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1576,6 +2350,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_27_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1593,6 +2376,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1612,6 +2404,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_27_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1629,6 +2430,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1648,6 +2458,15 @@ origin : string = "category='source_pad' module={*} strip={27} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_28_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1665,6 +2484,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1684,6 +2512,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_28_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1701,6 +2538,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1720,6 +2566,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_28_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1737,6 +2592,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1756,6 +2620,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_28_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1773,6 +2646,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1792,6 +2674,15 @@ origin : string = "category='source_pad' module={*} strip={28} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_29_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1809,6 +2700,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1828,6 +2728,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_29_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1845,6 +2754,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1864,6 +2782,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_29_pad_3_surface" type="genvtx::box_model_vg"]
@@ -1881,6 +2808,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1900,6 +2836,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_29_pad_1_surface" type="genvtx::box_model_vg"]
@@ -1917,6 +2862,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1936,6 +2890,15 @@ origin : string = "category='source_pad' module={*} strip={29} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_30_pad_7_surface" type="genvtx::box_model_vg"]
@@ -1953,6 +2916,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -1972,6 +2944,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_30_pad_5_surface" type="genvtx::box_model_vg"]
@@ -1989,6 +2970,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2008,6 +2998,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_30_pad_3_surface" type="genvtx::box_model_vg"]
@@ -2025,6 +3024,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2044,6 +3052,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_30_pad_1_surface" type="genvtx::box_model_vg"]
@@ -2061,6 +3078,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2080,6 +3106,15 @@ origin : string = "category='source_pad' module={*} strip={30} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_31_pad_7_surface" type="genvtx::box_model_vg"]
@@ -2097,6 +3132,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2116,6 +3160,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_31_pad_5_surface" type="genvtx::box_model_vg"]
@@ -2133,6 +3186,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2152,6 +3214,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_31_pad_3_surface" type="genvtx::box_model_vg"]
@@ -2169,6 +3240,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2188,6 +3268,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_31_pad_1_surface" type="genvtx::box_model_vg"]
@@ -2205,6 +3294,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2224,6 +3322,15 @@ origin : string = "category='source_pad' module={*} strip={31} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_32_pad_7_surface" type="genvtx::box_model_vg"]
@@ -2241,6 +3348,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2260,6 +3376,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_32_pad_5_surface" type="genvtx::box_model_vg"]
@@ -2277,6 +3402,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2296,6 +3430,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_32_pad_3_surface" type="genvtx::box_model_vg"]
@@ -2313,6 +3456,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2332,6 +3484,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_32_pad_1_surface" type="genvtx::box_model_vg"]
@@ -2349,6 +3510,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2368,6 +3538,15 @@ origin : string = "category='source_pad' module={*} strip={32} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_33_pad_7_surface" type="genvtx::box_model_vg"]
@@ -2385,6 +3564,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={7}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2404,6 +3592,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={6}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_33_pad_5_surface" type="genvtx::box_model_vg"]
@@ -2421,6 +3618,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2440,6 +3646,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={4}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_33_pad_3_surface" type="genvtx::box_model_vg"]
@@ -2457,6 +3672,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={3}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2476,6 +3700,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={2}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_33_pad_1_surface" type="genvtx::box_model_vg"]
@@ -2493,6 +3726,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={1}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 
 ##########################################################################
 
@@ -2512,6 +3754,15 @@ origin : string = "category='source_pad' module={*} strip={33} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_34_pad_0_surface" type="genvtx::box_model_vg"]
@@ -2530,6 +3781,15 @@ origin : string = "category='source_pad' module={*} strip={34} pad={0}"
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
 
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
+
 ##########################################################################
 
 [name="snemo_source_strip_35_pad_0_surface" type="genvtx::box_model_vg"]
@@ -2547,4 +3807,13 @@ origin : string = "category='source_pad' module={*} strip={35} pad={0}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "surface"
+
+
+#@description Surface mode box back face activation
+mode.surface.back  : boolean = 1
+
+#@description Surface mode box front face activation
+mode.surface.front : boolean = 1
+
+
 # end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/realistic_source_pads_surface_vg.def

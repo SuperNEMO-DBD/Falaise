@@ -401,7 +401,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={19} pad={5"
+origin : string = "category='source_pad' module={*} strip={19} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -545,7 +545,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={20} pad={5"
+origin : string = "category='source_pad' module={*} strip={20} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -689,7 +689,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={21} pad={5"
+origin : string = "category='source_pad' module={*} strip={21} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -833,7 +833,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={22} pad={5"
+origin : string = "category='source_pad' module={*} strip={22} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -977,7 +977,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={23} pad={5"
+origin : string = "category='source_pad' module={*} strip={23} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1121,7 +1121,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={24} pad={5"
+origin : string = "category='source_pad' module={*} strip={24} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1265,7 +1265,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={25} pad={5"
+origin : string = "category='source_pad' module={*} strip={25} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1409,7 +1409,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={26} pad={5"
+origin : string = "category='source_pad' module={*} strip={26} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1553,7 +1553,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={27} pad={5"
+origin : string = "category='source_pad' module={*} strip={27} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1697,7 +1697,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={28} pad={5"
+origin : string = "category='source_pad' module={*} strip={28} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1841,7 +1841,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={29} pad={5"
+origin : string = "category='source_pad' module={*} strip={29} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -1985,7 +1985,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={30} pad={5"
+origin : string = "category='source_pad' module={*} strip={30} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -2129,7 +2129,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={31} pad={5"
+origin : string = "category='source_pad' module={*} strip={31} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"
@@ -2273,7 +2273,7 @@ logging.priority : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Geometry origin of vertex in term of geometry category and addresses (geom ID)
-origin : string = "category='source_pad' module={*} strip={32} pad={5"
+origin : string = "category='source_pad' module={*} strip={32} pad={5}"
 
 #@description Generation mode ("surface" or "bulk")
 mode : string = "bulk"

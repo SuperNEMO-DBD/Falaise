@@ -26,7 +26,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_1_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_1_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -34,7 +34,7 @@ generators : string[1]  = 'snemo_source_strip_1_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_1_pad_0_bulk : real  = 212.11200000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_1_pad_0_bulk.absolute_weight : real  = 212.11200000000002 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -53,7 +53,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_2_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_2_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -61,7 +61,7 @@ generators : string[1]  = 'snemo_source_strip_2_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_2_pad_0_bulk : real  = 203.31 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_2_pad_0_bulk.absolute_weight : real  = 203.31 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -80,7 +80,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_3_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_3_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -88,7 +88,7 @@ generators : string[1]  = 'snemo_source_strip_3_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_3_pad_0_bulk : real  = 202.11299999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_3_pad_0_bulk.absolute_weight : real  = 202.11299999999997 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -107,7 +107,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_4_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_4_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -115,7 +115,7 @@ generators : string[1]  = 'snemo_source_strip_4_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_4_pad_0_bulk : real  = 185.175 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_4_pad_0_bulk.absolute_weight : real  = 185.175 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -134,7 +134,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_5_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_5_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -142,7 +142,7 @@ generators : string[1]  = 'snemo_source_strip_5_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_5_pad_0_bulk : real  = 185.193 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_5_pad_0_bulk.absolute_weight : real  = 185.193 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -161,7 +161,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_6_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_6_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -169,7 +169,7 @@ generators : string[1]  = 'snemo_source_strip_6_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_6_pad_0_bulk : real  = 213.65099999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_6_pad_0_bulk.absolute_weight : real  = 213.65099999999998 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -188,7 +188,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_7_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_7_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -196,7 +196,7 @@ generators : string[1]  = 'snemo_source_strip_7_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_7_pad_0_bulk : real  = 204.06600000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_7_pad_0_bulk.absolute_weight : real  = 204.06600000000003 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -215,7 +215,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_8_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_8_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -223,7 +223,7 @@ generators : string[1]  = 'snemo_source_strip_8_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_8_pad_0_bulk : real  = 142.8015 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_8_pad_0_bulk.absolute_weight : real  = 142.8015 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -242,7 +242,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_9_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_9_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -250,7 +250,7 @@ generators : string[1]  = 'snemo_source_strip_9_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_9_pad_0_bulk : real  = 132.86020000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_9_pad_0_bulk.absolute_weight : real  = 132.86020000000002 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -269,7 +269,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_10_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_10_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -277,7 +277,7 @@ generators : string[1]  = 'snemo_source_strip_10_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_10_pad_0_bulk : real  = 132.34769999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_10_pad_0_bulk.absolute_weight : real  = 132.34769999999997 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -296,7 +296,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_11_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_11_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -304,7 +304,7 @@ generators : string[1]  = 'snemo_source_strip_11_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_11_pad_0_bulk : real  = 130.69706000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_11_pad_0_bulk.absolute_weight : real  = 130.69706000000002 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -323,7 +323,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_12_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_12_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -331,7 +331,7 @@ generators : string[1]  = 'snemo_source_strip_12_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_12_pad_0_bulk : real  = 221.50456 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_12_pad_0_bulk.absolute_weight : real  = 221.50456 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -350,7 +350,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_13_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_13_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -358,7 +358,7 @@ generators : string[1]  = 'snemo_source_strip_13_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_13_pad_0_bulk : real  = 197.09459999999999 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_13_pad_0_bulk.absolute_weight : real  = 197.09459999999999 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -377,7 +377,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_14_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_14_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -385,7 +385,7 @@ generators : string[1]  = 'snemo_source_strip_14_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_14_pad_0_bulk : real  = 223.71096 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_14_pad_0_bulk.absolute_weight : real  = 223.71096 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -404,7 +404,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_15_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_15_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -412,7 +412,7 @@ generators : string[1]  = 'snemo_source_strip_15_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_15_pad_0_bulk : real  = 224.59391999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_15_pad_0_bulk.absolute_weight : real  = 224.59391999999997 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -431,7 +431,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_16_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_16_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -439,7 +439,7 @@ generators : string[1]  = 'snemo_source_strip_16_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_16_pad_0_bulk : real  = 213.69277 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_16_pad_0_bulk.absolute_weight : real  = 213.69277 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -458,7 +458,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_17_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_17_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -466,7 +466,7 @@ generators : string[1]  = 'snemo_source_strip_17_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_17_pad_0_bulk : real  = 192.62240000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_17_pad_0_bulk.absolute_weight : real  = 192.62240000000003 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -485,7 +485,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_18_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_18_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -493,7 +493,7 @@ generators : string[1]  = 'snemo_source_strip_18_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_18_pad_0_bulk : real  = 173.502 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_18_pad_0_bulk.absolute_weight : real  = 173.502 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -512,7 +512,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_19_pad_7_bulk' 'snemo_source_strip_19_pad_6_bulk' 'snemo_source_strip_19_pad_5_bulk' 'snemo_source_strip_19_pad_4_bulk' 'snemo_source_strip_19_pad_3_bulk' 'snemo_source_strip_19_pad_2_bulk' 'snemo_source_strip_19_pad_1_bulk' 'snemo_source_strip_19_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_19_pad_7_bulk" "snemo_source_strip_19_pad_6_bulk" "snemo_source_strip_19_pad_5_bulk" "snemo_source_strip_19_pad_4_bulk" "snemo_source_strip_19_pad_3_bulk" "snemo_source_strip_19_pad_2_bulk" "snemo_source_strip_19_pad_1_bulk" "snemo_source_strip_19_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -520,14 +520,14 @@ generators : string[8]  = 'snemo_source_strip_19_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_19_pad_7_bulk : real  = 19.08 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_6_bulk : real  = 20.573999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_5_bulk : real  = 22.212 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_4_bulk : real  = 23.04 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_3_bulk : real  = 21.924 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_2_bulk : real  = 22.302000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_1_bulk : real  = 21.501 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_19_pad_0_bulk : real  = 21.969 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_7_bulk.absolute_weight : real  = 19.08 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_6_bulk.absolute_weight : real  = 20.573999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_5_bulk.absolute_weight : real  = 22.212 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_4_bulk.absolute_weight : real  = 23.04 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_3_bulk.absolute_weight : real  = 21.924 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_2_bulk.absolute_weight : real  = 22.302000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_1_bulk.absolute_weight : real  = 21.501 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_19_pad_0_bulk.absolute_weight : real  = 21.969 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -546,7 +546,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_20_pad_7_bulk' 'snemo_source_strip_20_pad_6_bulk' 'snemo_source_strip_20_pad_5_bulk' 'snemo_source_strip_20_pad_4_bulk' 'snemo_source_strip_20_pad_3_bulk' 'snemo_source_strip_20_pad_2_bulk' 'snemo_source_strip_20_pad_1_bulk' 'snemo_source_strip_20_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_20_pad_7_bulk" "snemo_source_strip_20_pad_6_bulk" "snemo_source_strip_20_pad_5_bulk" "snemo_source_strip_20_pad_4_bulk" "snemo_source_strip_20_pad_3_bulk" "snemo_source_strip_20_pad_2_bulk" "snemo_source_strip_20_pad_1_bulk" "snemo_source_strip_20_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -554,14 +554,14 @@ generators : string[8]  = 'snemo_source_strip_20_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_20_pad_7_bulk : real  = 22.752000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_6_bulk : real  = 18.702 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_5_bulk : real  = 19.152 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_4_bulk : real  = 18.81 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_3_bulk : real  = 22.896 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_2_bulk : real  = 22.166999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_1_bulk : real  = 23.462999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_20_pad_0_bulk : real  = 22.149 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_7_bulk.absolute_weight : real  = 22.752000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_6_bulk.absolute_weight : real  = 18.702 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_5_bulk.absolute_weight : real  = 19.152 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_4_bulk.absolute_weight : real  = 18.81 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_3_bulk.absolute_weight : real  = 22.896 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_2_bulk.absolute_weight : real  = 22.166999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_1_bulk.absolute_weight : real  = 23.462999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_20_pad_0_bulk.absolute_weight : real  = 22.149 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -580,7 +580,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_21_pad_7_bulk' 'snemo_source_strip_21_pad_6_bulk' 'snemo_source_strip_21_pad_5_bulk' 'snemo_source_strip_21_pad_4_bulk' 'snemo_source_strip_21_pad_3_bulk' 'snemo_source_strip_21_pad_2_bulk' 'snemo_source_strip_21_pad_1_bulk' 'snemo_source_strip_21_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_21_pad_7_bulk" "snemo_source_strip_21_pad_6_bulk" "snemo_source_strip_21_pad_5_bulk" "snemo_source_strip_21_pad_4_bulk" "snemo_source_strip_21_pad_3_bulk" "snemo_source_strip_21_pad_2_bulk" "snemo_source_strip_21_pad_1_bulk" "snemo_source_strip_21_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -588,14 +588,14 @@ generators : string[8]  = 'snemo_source_strip_21_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_21_pad_7_bulk : real  = 21.861 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_6_bulk : real  = 21.267 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_5_bulk : real  = 21.771000000000004 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_4_bulk : real  = 21.852 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_3_bulk : real  = 22.796999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_2_bulk : real  = 18.459000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_1_bulk : real  = 19.476 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_21_pad_0_bulk : real  = 20.997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_7_bulk.absolute_weight : real  = 21.861 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_6_bulk.absolute_weight : real  = 21.267 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_5_bulk.absolute_weight : real  = 21.771000000000004 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_4_bulk.absolute_weight : real  = 21.852 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_3_bulk.absolute_weight : real  = 22.796999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_2_bulk.absolute_weight : real  = 18.459000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_1_bulk.absolute_weight : real  = 19.476 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_21_pad_0_bulk.absolute_weight : real  = 20.997 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -614,7 +614,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_22_pad_7_bulk' 'snemo_source_strip_22_pad_6_bulk' 'snemo_source_strip_22_pad_5_bulk' 'snemo_source_strip_22_pad_4_bulk' 'snemo_source_strip_22_pad_3_bulk' 'snemo_source_strip_22_pad_2_bulk' 'snemo_source_strip_22_pad_1_bulk' 'snemo_source_strip_22_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_22_pad_7_bulk" "snemo_source_strip_22_pad_6_bulk" "snemo_source_strip_22_pad_5_bulk" "snemo_source_strip_22_pad_4_bulk" "snemo_source_strip_22_pad_3_bulk" "snemo_source_strip_22_pad_2_bulk" "snemo_source_strip_22_pad_1_bulk" "snemo_source_strip_22_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -622,14 +622,14 @@ generators : string[8]  = 'snemo_source_strip_22_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_22_pad_7_bulk : real  = 25.524 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_6_bulk : real  = 25.479000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_5_bulk : real  = 25.866 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_4_bulk : real  = 19.827 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_3_bulk : real  = 21.042 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_2_bulk : real  = 21.591 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_1_bulk : real  = 21.978 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_22_pad_0_bulk : real  = 22.149 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_7_bulk.absolute_weight : real  = 25.524 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_6_bulk.absolute_weight : real  = 25.479000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_5_bulk.absolute_weight : real  = 25.866 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_4_bulk.absolute_weight : real  = 19.827 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_3_bulk.absolute_weight : real  = 21.042 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_2_bulk.absolute_weight : real  = 21.591 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_1_bulk.absolute_weight : real  = 21.978 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_22_pad_0_bulk.absolute_weight : real  = 22.149 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -648,7 +648,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_23_pad_7_bulk' 'snemo_source_strip_23_pad_6_bulk' 'snemo_source_strip_23_pad_5_bulk' 'snemo_source_strip_23_pad_4_bulk' 'snemo_source_strip_23_pad_3_bulk' 'snemo_source_strip_23_pad_2_bulk' 'snemo_source_strip_23_pad_1_bulk' 'snemo_source_strip_23_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_23_pad_7_bulk" "snemo_source_strip_23_pad_6_bulk" "snemo_source_strip_23_pad_5_bulk" "snemo_source_strip_23_pad_4_bulk" "snemo_source_strip_23_pad_3_bulk" "snemo_source_strip_23_pad_2_bulk" "snemo_source_strip_23_pad_1_bulk" "snemo_source_strip_23_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -656,14 +656,14 @@ generators : string[8]  = 'snemo_source_strip_23_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_23_pad_7_bulk : real  = 22.095000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_6_bulk : real  = 24.183 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_5_bulk : real  = 23.615999999999996 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_4_bulk : real  = 22.869 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_3_bulk : real  = 22.401 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_2_bulk : real  = 22.806 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_1_bulk : real  = 22.329 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_23_pad_0_bulk : real  = 22.212 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_7_bulk.absolute_weight : real  = 22.095000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_6_bulk.absolute_weight : real  = 24.183 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_5_bulk.absolute_weight : real  = 23.615999999999996 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_4_bulk.absolute_weight : real  = 22.869 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_3_bulk.absolute_weight : real  = 22.401 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_2_bulk.absolute_weight : real  = 22.806 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_1_bulk.absolute_weight : real  = 22.329 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_23_pad_0_bulk.absolute_weight : real  = 22.212 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -682,7 +682,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_24_pad_7_bulk' 'snemo_source_strip_24_pad_6_bulk' 'snemo_source_strip_24_pad_5_bulk' 'snemo_source_strip_24_pad_4_bulk' 'snemo_source_strip_24_pad_3_bulk' 'snemo_source_strip_24_pad_2_bulk' 'snemo_source_strip_24_pad_1_bulk' 'snemo_source_strip_24_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_24_pad_7_bulk" "snemo_source_strip_24_pad_6_bulk" "snemo_source_strip_24_pad_5_bulk" "snemo_source_strip_24_pad_4_bulk" "snemo_source_strip_24_pad_3_bulk" "snemo_source_strip_24_pad_2_bulk" "snemo_source_strip_24_pad_1_bulk" "snemo_source_strip_24_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -690,14 +690,14 @@ generators : string[8]  = 'snemo_source_strip_24_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_24_pad_7_bulk : real  = 25.677 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_6_bulk : real  = 22.040999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_5_bulk : real  = 22.599 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_4_bulk : real  = 23.211000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_3_bulk : real  = 22.239 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_2_bulk : real  = 22.239 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_1_bulk : real  = 23.22 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_24_pad_0_bulk : real  = 22.41 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_7_bulk.absolute_weight : real  = 25.677 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_6_bulk.absolute_weight : real  = 22.040999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_5_bulk.absolute_weight : real  = 22.599 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_4_bulk.absolute_weight : real  = 23.211000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_3_bulk.absolute_weight : real  = 22.239 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_2_bulk.absolute_weight : real  = 22.239 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_1_bulk.absolute_weight : real  = 23.22 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_24_pad_0_bulk.absolute_weight : real  = 22.41 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -716,7 +716,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_25_pad_7_bulk' 'snemo_source_strip_25_pad_6_bulk' 'snemo_source_strip_25_pad_5_bulk' 'snemo_source_strip_25_pad_4_bulk' 'snemo_source_strip_25_pad_3_bulk' 'snemo_source_strip_25_pad_2_bulk' 'snemo_source_strip_25_pad_1_bulk' 'snemo_source_strip_25_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_25_pad_7_bulk" "snemo_source_strip_25_pad_6_bulk" "snemo_source_strip_25_pad_5_bulk" "snemo_source_strip_25_pad_4_bulk" "snemo_source_strip_25_pad_3_bulk" "snemo_source_strip_25_pad_2_bulk" "snemo_source_strip_25_pad_1_bulk" "snemo_source_strip_25_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -724,14 +724,14 @@ generators : string[8]  = 'snemo_source_strip_25_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_25_pad_7_bulk : real  = 21.402 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_6_bulk : real  = 20.016 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_5_bulk : real  = 21.168 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_4_bulk : real  = 20.988000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_3_bulk : real  = 20.583000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_2_bulk : real  = 21.924 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_1_bulk : real  = 21.762 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_25_pad_0_bulk : real  = 23.319 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_7_bulk.absolute_weight : real  = 21.402 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_6_bulk.absolute_weight : real  = 20.016 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_5_bulk.absolute_weight : real  = 21.168 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_4_bulk.absolute_weight : real  = 20.988000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_3_bulk.absolute_weight : real  = 20.583000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_2_bulk.absolute_weight : real  = 21.924 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_1_bulk.absolute_weight : real  = 21.762 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_25_pad_0_bulk.absolute_weight : real  = 23.319 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -750,7 +750,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_26_pad_7_bulk' 'snemo_source_strip_26_pad_6_bulk' 'snemo_source_strip_26_pad_5_bulk' 'snemo_source_strip_26_pad_4_bulk' 'snemo_source_strip_26_pad_3_bulk' 'snemo_source_strip_26_pad_2_bulk' 'snemo_source_strip_26_pad_1_bulk' 'snemo_source_strip_26_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_26_pad_7_bulk" "snemo_source_strip_26_pad_6_bulk" "snemo_source_strip_26_pad_5_bulk" "snemo_source_strip_26_pad_4_bulk" "snemo_source_strip_26_pad_3_bulk" "snemo_source_strip_26_pad_2_bulk" "snemo_source_strip_26_pad_1_bulk" "snemo_source_strip_26_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -758,14 +758,14 @@ generators : string[8]  = 'snemo_source_strip_26_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_26_pad_7_bulk : real  = 22.878000000000004 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_6_bulk : real  = 21.491999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_5_bulk : real  = 22.5 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_4_bulk : real  = 23.481 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_3_bulk : real  = 22.806 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_2_bulk : real  = 21.861 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_1_bulk : real  = 22.697999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_26_pad_0_bulk : real  = 22.734000000000005 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_7_bulk.absolute_weight : real  = 22.878000000000004 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_6_bulk.absolute_weight : real  = 21.491999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_5_bulk.absolute_weight : real  = 22.5 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_4_bulk.absolute_weight : real  = 23.481 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_3_bulk.absolute_weight : real  = 22.806 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_2_bulk.absolute_weight : real  = 21.861 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_1_bulk.absolute_weight : real  = 22.697999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_26_pad_0_bulk.absolute_weight : real  = 22.734000000000005 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -784,7 +784,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_27_pad_7_bulk' 'snemo_source_strip_27_pad_6_bulk' 'snemo_source_strip_27_pad_5_bulk' 'snemo_source_strip_27_pad_4_bulk' 'snemo_source_strip_27_pad_3_bulk' 'snemo_source_strip_27_pad_2_bulk' 'snemo_source_strip_27_pad_1_bulk' 'snemo_source_strip_27_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_27_pad_7_bulk" "snemo_source_strip_27_pad_6_bulk" "snemo_source_strip_27_pad_5_bulk" "snemo_source_strip_27_pad_4_bulk" "snemo_source_strip_27_pad_3_bulk" "snemo_source_strip_27_pad_2_bulk" "snemo_source_strip_27_pad_1_bulk" "snemo_source_strip_27_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -792,14 +792,14 @@ generators : string[8]  = 'snemo_source_strip_27_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_27_pad_7_bulk : real  = 21.384000000000004 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_6_bulk : real  = 21.636 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_5_bulk : real  = 21.96 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_4_bulk : real  = 22.608000000000004 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_3_bulk : real  = 22.581 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_2_bulk : real  = 22.194000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_1_bulk : real  = 22.707 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_27_pad_0_bulk : real  = 22.644 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_7_bulk.absolute_weight : real  = 21.384000000000004 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_6_bulk.absolute_weight : real  = 21.636 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_5_bulk.absolute_weight : real  = 21.96 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_4_bulk.absolute_weight : real  = 22.608000000000004 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_3_bulk.absolute_weight : real  = 22.581 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_2_bulk.absolute_weight : real  = 22.194000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_1_bulk.absolute_weight : real  = 22.707 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_27_pad_0_bulk.absolute_weight : real  = 22.644 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -818,7 +818,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_28_pad_7_bulk' 'snemo_source_strip_28_pad_6_bulk' 'snemo_source_strip_28_pad_5_bulk' 'snemo_source_strip_28_pad_4_bulk' 'snemo_source_strip_28_pad_3_bulk' 'snemo_source_strip_28_pad_2_bulk' 'snemo_source_strip_28_pad_1_bulk' 'snemo_source_strip_28_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_28_pad_7_bulk" "snemo_source_strip_28_pad_6_bulk" "snemo_source_strip_28_pad_5_bulk" "snemo_source_strip_28_pad_4_bulk" "snemo_source_strip_28_pad_3_bulk" "snemo_source_strip_28_pad_2_bulk" "snemo_source_strip_28_pad_1_bulk" "snemo_source_strip_28_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -826,14 +826,14 @@ generators : string[8]  = 'snemo_source_strip_28_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_28_pad_7_bulk : real  = 26.613000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_6_bulk : real  = 20.942999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_5_bulk : real  = 20.709000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_4_bulk : real  = 21.221999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_3_bulk : real  = 22.275 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_2_bulk : real  = 21.555 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_1_bulk : real  = 22.59 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_28_pad_0_bulk : real  = 22.077 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_7_bulk.absolute_weight : real  = 26.613000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_6_bulk.absolute_weight : real  = 20.942999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_5_bulk.absolute_weight : real  = 20.709000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_4_bulk.absolute_weight : real  = 21.221999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_3_bulk.absolute_weight : real  = 22.275 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_2_bulk.absolute_weight : real  = 21.555 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_1_bulk.absolute_weight : real  = 22.59 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_28_pad_0_bulk.absolute_weight : real  = 22.077 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -852,7 +852,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_29_pad_7_bulk' 'snemo_source_strip_29_pad_6_bulk' 'snemo_source_strip_29_pad_5_bulk' 'snemo_source_strip_29_pad_4_bulk' 'snemo_source_strip_29_pad_3_bulk' 'snemo_source_strip_29_pad_2_bulk' 'snemo_source_strip_29_pad_1_bulk' 'snemo_source_strip_29_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_29_pad_7_bulk" "snemo_source_strip_29_pad_6_bulk" "snemo_source_strip_29_pad_5_bulk" "snemo_source_strip_29_pad_4_bulk" "snemo_source_strip_29_pad_3_bulk" "snemo_source_strip_29_pad_2_bulk" "snemo_source_strip_29_pad_1_bulk" "snemo_source_strip_29_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -860,14 +860,14 @@ generators : string[8]  = 'snemo_source_strip_29_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_29_pad_7_bulk : real  = 16.506 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_6_bulk : real  = 18.099 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_5_bulk : real  = 18.963 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_4_bulk : real  = 18.512999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_3_bulk : real  = 17.343 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_2_bulk : real  = 17.559 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_1_bulk : real  = 16.848 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_29_pad_0_bulk : real  = 17.955000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_7_bulk.absolute_weight : real  = 16.506 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_6_bulk.absolute_weight : real  = 18.099 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_5_bulk.absolute_weight : real  = 18.963 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_4_bulk.absolute_weight : real  = 18.512999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_3_bulk.absolute_weight : real  = 17.343 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_2_bulk.absolute_weight : real  = 17.559 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_1_bulk.absolute_weight : real  = 16.848 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_29_pad_0_bulk.absolute_weight : real  = 17.955000000000002 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -886,7 +886,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_30_pad_7_bulk' 'snemo_source_strip_30_pad_6_bulk' 'snemo_source_strip_30_pad_5_bulk' 'snemo_source_strip_30_pad_4_bulk' 'snemo_source_strip_30_pad_3_bulk' 'snemo_source_strip_30_pad_2_bulk' 'snemo_source_strip_30_pad_1_bulk' 'snemo_source_strip_30_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_30_pad_7_bulk" "snemo_source_strip_30_pad_6_bulk" "snemo_source_strip_30_pad_5_bulk" "snemo_source_strip_30_pad_4_bulk" "snemo_source_strip_30_pad_3_bulk" "snemo_source_strip_30_pad_2_bulk" "snemo_source_strip_30_pad_1_bulk" "snemo_source_strip_30_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -894,14 +894,14 @@ generators : string[8]  = 'snemo_source_strip_30_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_30_pad_7_bulk : real  = 24.327000000000005 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_6_bulk : real  = 26.496 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_5_bulk : real  = 24.714000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_4_bulk : real  = 25.398 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_3_bulk : real  = 27.306 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_2_bulk : real  = 26.136 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_1_bulk : real  = 25.730999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_30_pad_0_bulk : real  = 24.021 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_7_bulk.absolute_weight : real  = 24.327000000000005 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_6_bulk.absolute_weight : real  = 26.496 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_5_bulk.absolute_weight : real  = 24.714000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_4_bulk.absolute_weight : real  = 25.398 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_3_bulk.absolute_weight : real  = 27.306 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_2_bulk.absolute_weight : real  = 26.136 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_1_bulk.absolute_weight : real  = 25.730999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_30_pad_0_bulk.absolute_weight : real  = 24.021 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -920,7 +920,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_31_pad_7_bulk' 'snemo_source_strip_31_pad_6_bulk' 'snemo_source_strip_31_pad_5_bulk' 'snemo_source_strip_31_pad_4_bulk' 'snemo_source_strip_31_pad_3_bulk' 'snemo_source_strip_31_pad_2_bulk' 'snemo_source_strip_31_pad_1_bulk' 'snemo_source_strip_31_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_31_pad_7_bulk" "snemo_source_strip_31_pad_6_bulk" "snemo_source_strip_31_pad_5_bulk" "snemo_source_strip_31_pad_4_bulk" "snemo_source_strip_31_pad_3_bulk" "snemo_source_strip_31_pad_2_bulk" "snemo_source_strip_31_pad_1_bulk" "snemo_source_strip_31_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -928,14 +928,14 @@ generators : string[8]  = 'snemo_source_strip_31_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_31_pad_7_bulk : real  = 22.662000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_6_bulk : real  = 22.491 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_5_bulk : real  = 22.032 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_4_bulk : real  = 26.127 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_3_bulk : real  = 23.796000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_2_bulk : real  = 23.112000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_1_bulk : real  = 21.122999999999998 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_31_pad_0_bulk : real  = 22.05 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_7_bulk.absolute_weight : real  = 22.662000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_6_bulk.absolute_weight : real  = 22.491 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_5_bulk.absolute_weight : real  = 22.032 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_4_bulk.absolute_weight : real  = 26.127 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_3_bulk.absolute_weight : real  = 23.796000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_2_bulk.absolute_weight : real  = 23.112000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_1_bulk.absolute_weight : real  = 21.122999999999998 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_31_pad_0_bulk.absolute_weight : real  = 22.05 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -954,7 +954,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_32_pad_7_bulk' 'snemo_source_strip_32_pad_6_bulk' 'snemo_source_strip_32_pad_5_bulk' 'snemo_source_strip_32_pad_4_bulk' 'snemo_source_strip_32_pad_3_bulk' 'snemo_source_strip_32_pad_2_bulk' 'snemo_source_strip_32_pad_1_bulk' 'snemo_source_strip_32_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_32_pad_7_bulk" "snemo_source_strip_32_pad_6_bulk" "snemo_source_strip_32_pad_5_bulk" "snemo_source_strip_32_pad_4_bulk" "snemo_source_strip_32_pad_3_bulk" "snemo_source_strip_32_pad_2_bulk" "snemo_source_strip_32_pad_1_bulk" "snemo_source_strip_32_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -962,14 +962,14 @@ generators : string[8]  = 'snemo_source_strip_32_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_32_pad_7_bulk : real  = 21.303 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_6_bulk : real  = 21.33 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_5_bulk : real  = 21.852 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_4_bulk : real  = 24.165000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_3_bulk : real  = 21.537000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_2_bulk : real  = 21.753000000000004 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_1_bulk : real  = 22.131 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_32_pad_0_bulk : real  = 21.924 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_7_bulk.absolute_weight : real  = 21.303 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_6_bulk.absolute_weight : real  = 21.33 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_5_bulk.absolute_weight : real  = 21.852 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_4_bulk.absolute_weight : real  = 24.165000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_3_bulk.absolute_weight : real  = 21.537000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_2_bulk.absolute_weight : real  = 21.753000000000004 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_1_bulk.absolute_weight : real  = 22.131 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_32_pad_0_bulk.absolute_weight : real  = 21.924 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -988,7 +988,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_33_pad_7_bulk' 'snemo_source_strip_33_pad_6_bulk' 'snemo_source_strip_33_pad_5_bulk' 'snemo_source_strip_33_pad_4_bulk' 'snemo_source_strip_33_pad_3_bulk' 'snemo_source_strip_33_pad_2_bulk' 'snemo_source_strip_33_pad_1_bulk' 'snemo_source_strip_33_pad_0_bulk' 
+generators : string[8]  = "snemo_source_strip_33_pad_7_bulk" "snemo_source_strip_33_pad_6_bulk" "snemo_source_strip_33_pad_5_bulk" "snemo_source_strip_33_pad_4_bulk" "snemo_source_strip_33_pad_3_bulk" "snemo_source_strip_33_pad_2_bulk" "snemo_source_strip_33_pad_1_bulk" "snemo_source_strip_33_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -996,14 +996,14 @@ generators : string[8]  = 'snemo_source_strip_33_pad_7_bulk' 'snemo_source_strip
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_33_pad_7_bulk : real  = 24.651000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_6_bulk : real  = 24.011999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_5_bulk : real  = 24.011999999999997 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_4_bulk : real  = 24.723 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_3_bulk : real  = 22.932000000000002 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_2_bulk : real  = 23.985000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_1_bulk : real  = 24.840000000000003 # grams (Se mass --> should be Se82)
-generators.snemo_source_strip_33_pad_0_bulk : real  = 24.516 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_7_bulk.absolute_weight : real  = 24.651000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_6_bulk.absolute_weight : real  = 24.011999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_5_bulk.absolute_weight : real  = 24.011999999999997 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_4_bulk.absolute_weight : real  = 24.723 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_3_bulk.absolute_weight : real  = 22.932000000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_2_bulk.absolute_weight : real  = 23.985000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_1_bulk.absolute_weight : real  = 24.840000000000003 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_33_pad_0_bulk.absolute_weight : real  = 24.516 # grams (Se mass --> should be Se82)
 
 
 ################################################
@@ -1022,7 +1022,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
         
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_34_pad_0_bulk' 
+generators : string[1]  = "snemo_source_strip_34_pad_0_bulk" 
     
 # Absolute weight of different generators
         
@@ -1030,6 +1030,6 @@ generators : string[1]  = 'snemo_source_strip_34_pad_0_bulk'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_34_pad_0_bulk : real  = 196.25400000000002 # grams (Se mass --> should be Se82)
+generators.snemo_source_strip_34_pad_0_bulk.absolute_weight : real  = 196.25400000000002 # grams (Se mass --> should be Se82)
 
 # end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_se82_realistic_source_foils_bulk_vg.def

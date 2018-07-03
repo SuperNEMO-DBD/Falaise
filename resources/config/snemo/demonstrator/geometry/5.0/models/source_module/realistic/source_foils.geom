@@ -5,12 +5,25 @@
 
 
 
+###############################################################################
+[name="copper_film.realistic.model" type="geomtools::simple_shaped_model"]
+
+shape_type         : string  = "box"
+x                  : real as length =   12.0 um 
+y                  : real as length =  125.0 mm
+z                  : real as length =  455.0 mm
+
+material.ref       : string  = "basic::mylar"
+
+visibility.hidden  : boolean = false
+visibility.color   : string  = "cyan"
+
 
 ###############################################################################
 [name="source_film.realistic.model" type="geomtools::simple_shaped_model"]
 
 shape_type         : string  = "box"
-x                  : real as length =   12.0 um # YL : to check
+x                  : real as length =   12.0 um 
 y                  : real as length =  135.5 mm
 z                  : real as length = 3350.0 mm
 
@@ -90,8 +103,6 @@ stacked.number_of_items : integer = 1
 
 stacked.model_0   : string  = "snemo_foil_1_pad_0.model"
 stacked.label_0   : string  = "snemo_pad_1_0"
-
-
 
 visibility.hidden  : boolean = 0
 
@@ -249,7 +260,7 @@ stacked.label_0   : string  = "snemo_pad_4_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
-mapping.daughter_id.pads : string = "[source_pad:pad+0]"
+mapping.daughter_id.snemo_pad_4_0 : string = "[source_pad:pad=0]"
 
 #########################################################################
 [name="snemo_strip_4.model" type="geomtools::stacked_model"]

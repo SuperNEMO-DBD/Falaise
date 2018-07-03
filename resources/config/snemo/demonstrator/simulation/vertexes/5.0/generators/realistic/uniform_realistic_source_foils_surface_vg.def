@@ -1,7 +1,7 @@
 # -*- mode: conf-unix; -*-
 # Author : Y.LEMIERE
 # Date   : June 2018
-# @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_realistic_source_foils_surface_vg.def
+# @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_realistic_source_pads_surface_vg.def
 
 
 
@@ -26,7 +26,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_0_pad_0_surface'
+generators : string[1]  = "snemo_source_strip_0_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -34,7 +34,7 @@ generators : string[1]  = 'snemo_source_strip_0_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_0_pad_0_surface : real  = 3037.7999999999997 # cm x cm
+generators.snemo_source_strip_0_pad_0_surface.absolute_weight : real  = 3037.7999999999997 # cm x cm
 
 
 ####################################################
@@ -53,7 +53,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_1_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_1_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -61,7 +61,7 @@ generators : string[1]  = 'snemo_source_strip_1_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_1_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_1_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -80,7 +80,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_2_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_2_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -88,7 +88,7 @@ generators : string[1]  = 'snemo_source_strip_2_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_2_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_2_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -107,7 +107,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_3_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_3_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -115,7 +115,7 @@ generators : string[1]  = 'snemo_source_strip_3_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_3_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_3_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -134,7 +134,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_4_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_4_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -142,7 +142,7 @@ generators : string[1]  = 'snemo_source_strip_4_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_4_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_4_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -161,7 +161,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_5_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_5_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -169,7 +169,7 @@ generators : string[1]  = 'snemo_source_strip_5_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_5_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_5_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -188,7 +188,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_6_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_6_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -196,7 +196,7 @@ generators : string[1]  = 'snemo_source_strip_6_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_6_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_6_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -215,7 +215,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_7_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_7_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -223,7 +223,7 @@ generators : string[1]  = 'snemo_source_strip_7_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_7_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_7_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -242,7 +242,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_8_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_8_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -250,7 +250,7 @@ generators : string[1]  = 'snemo_source_strip_8_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_8_pad_0_surface : real  = 3651.75 # cm x cm
+generators.snemo_source_strip_8_pad_0_surface.absolute_weight : real  = 3651.75 # cm x cm
 
 
 ####################################################
@@ -269,7 +269,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_9_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_9_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -277,7 +277,7 @@ generators : string[1]  = 'snemo_source_strip_9_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_9_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_9_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -296,7 +296,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_10_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_10_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -304,7 +304,7 @@ generators : string[1]  = 'snemo_source_strip_10_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_10_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_10_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -323,7 +323,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_11_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_11_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -331,7 +331,7 @@ generators : string[1]  = 'snemo_source_strip_11_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_11_pad_0_surface : real  = 3638.25 # cm x cm
+generators.snemo_source_strip_11_pad_0_surface.absolute_weight : real  = 3638.25 # cm x cm
 
 
 ####################################################
@@ -350,7 +350,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_12_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_12_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -358,7 +358,7 @@ generators : string[1]  = 'snemo_source_strip_12_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_12_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_12_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -377,7 +377,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_13_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_13_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -385,7 +385,7 @@ generators : string[1]  = 'snemo_source_strip_13_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_13_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_13_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -404,7 +404,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_14_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_14_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -412,7 +412,7 @@ generators : string[1]  = 'snemo_source_strip_14_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_14_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_14_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -431,7 +431,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_15_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_15_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -439,7 +439,7 @@ generators : string[1]  = 'snemo_source_strip_15_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_15_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_15_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -458,7 +458,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_16_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_16_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -466,7 +466,7 @@ generators : string[1]  = 'snemo_source_strip_16_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_16_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_16_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -485,7 +485,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_17_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_17_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -493,7 +493,7 @@ generators : string[1]  = 'snemo_source_strip_17_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_17_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_17_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -512,7 +512,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_18_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_18_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -520,7 +520,7 @@ generators : string[1]  = 'snemo_source_strip_18_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_18_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_18_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -539,7 +539,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_19_pad_7_surface' 'snemo_source_strip_19_pad_6_surface' 'snemo_source_strip_19_pad_5_surface' 'snemo_source_strip_19_pad_4_surface' 'snemo_source_strip_19_pad_3_surface' 'snemo_source_strip_19_pad_2_surface' 'snemo_source_strip_19_pad_1_surface' 'snemo_source_strip_19_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_19_pad_7_surface" "snemo_source_strip_19_pad_6_surface" "snemo_source_strip_19_pad_5_surface" "snemo_source_strip_19_pad_4_surface" "snemo_source_strip_19_pad_3_surface" "snemo_source_strip_19_pad_2_surface" "snemo_source_strip_19_pad_1_surface" "snemo_source_strip_19_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -547,14 +547,14 @@ generators : string[8]  = 'snemo_source_strip_19_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_19_pad_7_surface : real  = 442.85999999999996 # cm x cm
-generators.snemo_source_strip_19_pad_6_surface : real  = 442.85999999999996 # cm x cm
-generators.snemo_source_strip_19_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_19_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_19_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_19_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_19_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_19_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_7_surface.absolute_weight : real  = 442.85999999999996 # cm x cm
+generators.snemo_source_strip_19_pad_6_surface.absolute_weight : real  = 442.85999999999996 # cm x cm
+generators.snemo_source_strip_19_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_19_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -573,7 +573,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_20_pad_7_surface' 'snemo_source_strip_20_pad_6_surface' 'snemo_source_strip_20_pad_5_surface' 'snemo_source_strip_20_pad_4_surface' 'snemo_source_strip_20_pad_3_surface' 'snemo_source_strip_20_pad_2_surface' 'snemo_source_strip_20_pad_1_surface' 'snemo_source_strip_20_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_20_pad_7_surface" "snemo_source_strip_20_pad_6_surface" "snemo_source_strip_20_pad_5_surface" "snemo_source_strip_20_pad_4_surface" "snemo_source_strip_20_pad_3_surface" "snemo_source_strip_20_pad_2_surface" "snemo_source_strip_20_pad_1_surface" "snemo_source_strip_20_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -581,14 +581,14 @@ generators : string[8]  = 'snemo_source_strip_20_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_20_pad_7_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_20_pad_6_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_20_pad_5_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_20_pad_4_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_20_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_20_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_20_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_20_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_20_pad_7_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_20_pad_6_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_20_pad_5_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_20_pad_4_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_20_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_20_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_20_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_20_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -607,7 +607,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_21_pad_7_surface' 'snemo_source_strip_21_pad_6_surface' 'snemo_source_strip_21_pad_5_surface' 'snemo_source_strip_21_pad_4_surface' 'snemo_source_strip_21_pad_3_surface' 'snemo_source_strip_21_pad_2_surface' 'snemo_source_strip_21_pad_1_surface' 'snemo_source_strip_21_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_21_pad_7_surface" "snemo_source_strip_21_pad_6_surface" "snemo_source_strip_21_pad_5_surface" "snemo_source_strip_21_pad_4_surface" "snemo_source_strip_21_pad_3_surface" "snemo_source_strip_21_pad_2_surface" "snemo_source_strip_21_pad_1_surface" "snemo_source_strip_21_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -615,14 +615,14 @@ generators : string[8]  = 'snemo_source_strip_21_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_21_pad_7_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_6_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_5_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_4_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_3_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_2_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_1_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_21_pad_0_surface : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_7_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_6_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_5_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_4_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_3_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_2_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_1_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_21_pad_0_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
 
 
 ####################################################
@@ -641,7 +641,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_22_pad_7_surface' 'snemo_source_strip_22_pad_6_surface' 'snemo_source_strip_22_pad_5_surface' 'snemo_source_strip_22_pad_4_surface' 'snemo_source_strip_22_pad_3_surface' 'snemo_source_strip_22_pad_2_surface' 'snemo_source_strip_22_pad_1_surface' 'snemo_source_strip_22_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_22_pad_7_surface" "snemo_source_strip_22_pad_6_surface" "snemo_source_strip_22_pad_5_surface" "snemo_source_strip_22_pad_4_surface" "snemo_source_strip_22_pad_3_surface" "snemo_source_strip_22_pad_2_surface" "snemo_source_strip_22_pad_1_surface" "snemo_source_strip_22_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -649,14 +649,14 @@ generators : string[8]  = 'snemo_source_strip_22_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_22_pad_7_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_6_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_5_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_4_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_3_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_2_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_1_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_22_pad_0_surface : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_7_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_6_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_5_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_4_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_3_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_2_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_1_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_22_pad_0_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
 
 
 ####################################################
@@ -675,7 +675,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_23_pad_7_surface' 'snemo_source_strip_23_pad_6_surface' 'snemo_source_strip_23_pad_5_surface' 'snemo_source_strip_23_pad_4_surface' 'snemo_source_strip_23_pad_3_surface' 'snemo_source_strip_23_pad_2_surface' 'snemo_source_strip_23_pad_1_surface' 'snemo_source_strip_23_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_23_pad_7_surface" "snemo_source_strip_23_pad_6_surface" "snemo_source_strip_23_pad_5_surface" "snemo_source_strip_23_pad_4_surface" "snemo_source_strip_23_pad_3_surface" "snemo_source_strip_23_pad_2_surface" "snemo_source_strip_23_pad_1_surface" "snemo_source_strip_23_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -683,14 +683,14 @@ generators : string[8]  = 'snemo_source_strip_23_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_23_pad_7_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_23_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_7_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_23_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -709,7 +709,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_24_pad_7_surface' 'snemo_source_strip_24_pad_6_surface' 'snemo_source_strip_24_pad_5_surface' 'snemo_source_strip_24_pad_4_surface' 'snemo_source_strip_24_pad_3_surface' 'snemo_source_strip_24_pad_2_surface' 'snemo_source_strip_24_pad_1_surface' 'snemo_source_strip_24_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_24_pad_7_surface" "snemo_source_strip_24_pad_6_surface" "snemo_source_strip_24_pad_5_surface" "snemo_source_strip_24_pad_4_surface" "snemo_source_strip_24_pad_3_surface" "snemo_source_strip_24_pad_2_surface" "snemo_source_strip_24_pad_1_surface" "snemo_source_strip_24_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -717,14 +717,14 @@ generators : string[8]  = 'snemo_source_strip_24_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_24_pad_7_surface : real  = 442.85999999999996 # cm x cm
-generators.snemo_source_strip_24_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_24_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_7_surface.absolute_weight : real  = 442.85999999999996 # cm x cm
+generators.snemo_source_strip_24_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_24_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -743,7 +743,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_25_pad_7_surface' 'snemo_source_strip_25_pad_6_surface' 'snemo_source_strip_25_pad_5_surface' 'snemo_source_strip_25_pad_4_surface' 'snemo_source_strip_25_pad_3_surface' 'snemo_source_strip_25_pad_2_surface' 'snemo_source_strip_25_pad_1_surface' 'snemo_source_strip_25_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_25_pad_7_surface" "snemo_source_strip_25_pad_6_surface" "snemo_source_strip_25_pad_5_surface" "snemo_source_strip_25_pad_4_surface" "snemo_source_strip_25_pad_3_surface" "snemo_source_strip_25_pad_2_surface" "snemo_source_strip_25_pad_1_surface" "snemo_source_strip_25_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -751,14 +751,14 @@ generators : string[8]  = 'snemo_source_strip_25_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_25_pad_7_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_25_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_25_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_7_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_25_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_25_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -777,7 +777,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_26_pad_7_surface' 'snemo_source_strip_26_pad_6_surface' 'snemo_source_strip_26_pad_5_surface' 'snemo_source_strip_26_pad_4_surface' 'snemo_source_strip_26_pad_3_surface' 'snemo_source_strip_26_pad_2_surface' 'snemo_source_strip_26_pad_1_surface' 'snemo_source_strip_26_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_26_pad_7_surface" "snemo_source_strip_26_pad_6_surface" "snemo_source_strip_26_pad_5_surface" "snemo_source_strip_26_pad_4_surface" "snemo_source_strip_26_pad_3_surface" "snemo_source_strip_26_pad_2_surface" "snemo_source_strip_26_pad_1_surface" "snemo_source_strip_26_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -785,14 +785,14 @@ generators : string[8]  = 'snemo_source_strip_26_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_26_pad_7_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_6_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_5_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_4_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_3_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_2_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_1_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_26_pad_0_surface : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_7_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_6_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_5_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_4_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_3_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_2_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_1_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_26_pad_0_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
 
 
 ####################################################
@@ -811,7 +811,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_27_pad_7_surface' 'snemo_source_strip_27_pad_6_surface' 'snemo_source_strip_27_pad_5_surface' 'snemo_source_strip_27_pad_4_surface' 'snemo_source_strip_27_pad_3_surface' 'snemo_source_strip_27_pad_2_surface' 'snemo_source_strip_27_pad_1_surface' 'snemo_source_strip_27_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_27_pad_7_surface" "snemo_source_strip_27_pad_6_surface" "snemo_source_strip_27_pad_5_surface" "snemo_source_strip_27_pad_4_surface" "snemo_source_strip_27_pad_3_surface" "snemo_source_strip_27_pad_2_surface" "snemo_source_strip_27_pad_1_surface" "snemo_source_strip_27_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -819,14 +819,14 @@ generators : string[8]  = 'snemo_source_strip_27_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_27_pad_7_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_6_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_5_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_4_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_3_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_2_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_1_surface : real  = 442.54999999999995 # cm x cm
-generators.snemo_source_strip_27_pad_0_surface : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_7_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_6_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_5_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_4_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_3_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_2_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_1_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_27_pad_0_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
 
 
 ####################################################
@@ -845,7 +845,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_28_pad_7_surface' 'snemo_source_strip_28_pad_6_surface' 'snemo_source_strip_28_pad_5_surface' 'snemo_source_strip_28_pad_4_surface' 'snemo_source_strip_28_pad_3_surface' 'snemo_source_strip_28_pad_2_surface' 'snemo_source_strip_28_pad_1_surface' 'snemo_source_strip_28_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_28_pad_7_surface" "snemo_source_strip_28_pad_6_surface" "snemo_source_strip_28_pad_5_surface" "snemo_source_strip_28_pad_4_surface" "snemo_source_strip_28_pad_3_surface" "snemo_source_strip_28_pad_2_surface" "snemo_source_strip_28_pad_1_surface" "snemo_source_strip_28_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -853,14 +853,14 @@ generators : string[8]  = 'snemo_source_strip_28_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_28_pad_7_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_6_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_5_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_4_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_3_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_2_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_1_surface : real  = 445.55 # cm x cm
-generators.snemo_source_strip_28_pad_0_surface : real  = 442.54999999999995 # cm x cm
+generators.snemo_source_strip_28_pad_7_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_6_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_5_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_4_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_3_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_2_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_1_surface.absolute_weight : real  = 445.55 # cm x cm
+generators.snemo_source_strip_28_pad_0_surface.absolute_weight : real  = 442.54999999999995 # cm x cm
 
 
 ####################################################
@@ -879,7 +879,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_29_pad_7_surface' 'snemo_source_strip_29_pad_6_surface' 'snemo_source_strip_29_pad_5_surface' 'snemo_source_strip_29_pad_4_surface' 'snemo_source_strip_29_pad_3_surface' 'snemo_source_strip_29_pad_2_surface' 'snemo_source_strip_29_pad_1_surface' 'snemo_source_strip_29_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_29_pad_7_surface" "snemo_source_strip_29_pad_6_surface" "snemo_source_strip_29_pad_5_surface" "snemo_source_strip_29_pad_4_surface" "snemo_source_strip_29_pad_3_surface" "snemo_source_strip_29_pad_2_surface" "snemo_source_strip_29_pad_1_surface" "snemo_source_strip_29_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -887,14 +887,14 @@ generators : string[8]  = 'snemo_source_strip_29_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_29_pad_7_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_6_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_5_surface : real  = 443.55500000000006 # cm x cm
-generators.snemo_source_strip_29_pad_4_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_3_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_2_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_1_surface : real  = 444.22 # cm x cm
-generators.snemo_source_strip_29_pad_0_surface : real  = 442.89 # cm x cm
+generators.snemo_source_strip_29_pad_7_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_6_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_5_surface.absolute_weight : real  = 443.55500000000006 # cm x cm
+generators.snemo_source_strip_29_pad_4_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_3_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_2_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_1_surface.absolute_weight : real  = 444.22 # cm x cm
+generators.snemo_source_strip_29_pad_0_surface.absolute_weight : real  = 442.89 # cm x cm
 
 
 ####################################################
@@ -913,7 +913,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_30_pad_7_surface' 'snemo_source_strip_30_pad_6_surface' 'snemo_source_strip_30_pad_5_surface' 'snemo_source_strip_30_pad_4_surface' 'snemo_source_strip_30_pad_3_surface' 'snemo_source_strip_30_pad_2_surface' 'snemo_source_strip_30_pad_1_surface' 'snemo_source_strip_30_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_30_pad_7_surface" "snemo_source_strip_30_pad_6_surface" "snemo_source_strip_30_pad_5_surface" "snemo_source_strip_30_pad_4_surface" "snemo_source_strip_30_pad_3_surface" "snemo_source_strip_30_pad_2_surface" "snemo_source_strip_30_pad_1_surface" "snemo_source_strip_30_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -921,14 +921,14 @@ generators : string[8]  = 'snemo_source_strip_30_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_30_pad_7_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_30_pad_6_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_5_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_4_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_3_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_2_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_1_surface : real  = 444.53749999999997 # cm x cm
-generators.snemo_source_strip_30_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_30_pad_7_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_30_pad_6_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_5_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_4_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_3_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_2_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_1_surface.absolute_weight : real  = 444.53749999999997 # cm x cm
+generators.snemo_source_strip_30_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -947,7 +947,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_31_pad_7_surface' 'snemo_source_strip_31_pad_6_surface' 'snemo_source_strip_31_pad_5_surface' 'snemo_source_strip_31_pad_4_surface' 'snemo_source_strip_31_pad_3_surface' 'snemo_source_strip_31_pad_2_surface' 'snemo_source_strip_31_pad_1_surface' 'snemo_source_strip_31_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_31_pad_7_surface" "snemo_source_strip_31_pad_6_surface" "snemo_source_strip_31_pad_5_surface" "snemo_source_strip_31_pad_4_surface" "snemo_source_strip_31_pad_3_surface" "snemo_source_strip_31_pad_2_surface" "snemo_source_strip_31_pad_1_surface" "snemo_source_strip_31_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -955,14 +955,14 @@ generators : string[8]  = 'snemo_source_strip_31_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_31_pad_7_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_31_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_7_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_31_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -981,7 +981,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_32_pad_7_surface' 'snemo_source_strip_32_pad_6_surface' 'snemo_source_strip_32_pad_5_surface' 'snemo_source_strip_32_pad_4_surface' 'snemo_source_strip_32_pad_3_surface' 'snemo_source_strip_32_pad_2_surface' 'snemo_source_strip_32_pad_1_surface' 'snemo_source_strip_32_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_32_pad_7_surface" "snemo_source_strip_32_pad_6_surface" "snemo_source_strip_32_pad_5_surface" "snemo_source_strip_32_pad_4_surface" "snemo_source_strip_32_pad_3_surface" "snemo_source_strip_32_pad_2_surface" "snemo_source_strip_32_pad_1_surface" "snemo_source_strip_32_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -989,14 +989,14 @@ generators : string[8]  = 'snemo_source_strip_32_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_32_pad_7_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_32_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_7_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_32_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -1015,7 +1015,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[8]  = 'snemo_source_strip_33_pad_7_surface' 'snemo_source_strip_33_pad_6_surface' 'snemo_source_strip_33_pad_5_surface' 'snemo_source_strip_33_pad_4_surface' 'snemo_source_strip_33_pad_3_surface' 'snemo_source_strip_33_pad_2_surface' 'snemo_source_strip_33_pad_1_surface' 'snemo_source_strip_33_pad_0_surface' 
+generators : string[8]  = "snemo_source_strip_33_pad_7_surface" "snemo_source_strip_33_pad_6_surface" "snemo_source_strip_33_pad_5_surface" "snemo_source_strip_33_pad_4_surface" "snemo_source_strip_33_pad_3_surface" "snemo_source_strip_33_pad_2_surface" "snemo_source_strip_33_pad_1_surface" "snemo_source_strip_33_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -1023,14 +1023,14 @@ generators : string[8]  = 'snemo_source_strip_33_pad_7_surface' 'snemo_source_st
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_33_pad_7_surface : real  = 442.85999999999996 # cm x cm
-generators.snemo_source_strip_33_pad_6_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_5_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_4_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_3_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_2_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_1_surface : real  = 446.215 # cm x cm
-generators.snemo_source_strip_33_pad_0_surface : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_7_surface.absolute_weight : real  = 442.85999999999996 # cm x cm
+generators.snemo_source_strip_33_pad_6_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_5_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_4_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_3_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_2_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_1_surface.absolute_weight : real  = 446.215 # cm x cm
+generators.snemo_source_strip_33_pad_0_surface.absolute_weight : real  = 446.215 # cm x cm
 
 
 ####################################################
@@ -1049,7 +1049,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_34_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_34_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -1057,7 +1057,7 @@ generators : string[1]  = 'snemo_source_strip_34_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_34_pad_0_surface : real  = 3645.0 # cm x cm
+generators.snemo_source_strip_34_pad_0_surface.absolute_weight : real  = 3645.0 # cm x cm
 
 
 ####################################################
@@ -1076,7 +1076,7 @@ logging.priority  : string = "fatal"
 geometry.setup_requirement : string = "snemo::demonstrator(>=5)"
 
 #@description Vertex generator names
-generators : string[1]  = 'snemo_source_strip_35_pad_0_surface' 
+generators : string[1]  = "snemo_source_strip_35_pad_0_surface" 
 
 # Absolute weight of different generators
 
@@ -1084,6 +1084,6 @@ generators : string[1]  = 'snemo_source_strip_35_pad_0_surface'
 # With "Basic" source layout, weighting factors are computed from the effective
 # relative masses of internal/external strips:
 #
-generators.snemo_source_strip_35_pad_0_surface : real  = 3037.7999999999997 # cm x cm
+generators.snemo_source_strip_35_pad_0_surface.absolute_weight : real  = 3037.7999999999997 # cm x cm
 
-# end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_realistic_source_foils_surface_vg.def
+# end of @falaise:config/snemo/demonstrator/simulation/vertexes/5.0/generators/uniform_realistic_source_pads_surface_vg.def

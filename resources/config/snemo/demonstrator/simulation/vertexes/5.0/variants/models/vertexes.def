@@ -61,7 +61,7 @@ variants.if_half_commissioning_single_spot.description : string = "Set of parame
 variants.if_free_spot.model       : string = "free_spot_vertex.VM"
 
 #@description The description of the variant
-variants.if_free_spot.description : string = "Set of parameters for the free single splot vertex generator"
+variants.if_free_spot.description : string = "Set of parameters for the free single spot vertex generator"
 
 #@description The model of the variant
 variants.if_source_calibration_single_spot.model       : string = "source_calibration.single_spot.VM"
