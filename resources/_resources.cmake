@@ -321,6 +321,8 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/officia
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/official_with_visu-1.0.0.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/1.0.0/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/1.0.0/modules.defs
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/2.0.0/flreconstruct.conf
+${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/2.0.0/modules.defs
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/hc/1.0.0/flreconstruct.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/hc/1.0.0/modules.defs
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/reconstruction/pipeline/README.rst
@@ -380,9 +382,7 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_cont
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/gdm.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/profiles/default.profile
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/2.3/variants/repository.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/cfg1.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/manager.conf
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/mc_g4_production.seeds
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/services.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/geant4_control/3.0/variants/documentation/flsimulation-variant-doc.rst
@@ -489,8 +489,6 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/generators/realistic/uniform_se82_realistic_source_foils_bulk_vg.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/README.rst
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/realistic.rep
-${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/realistic_vertices-visu.data.gz
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/variants/models/vertexes.def
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/variants/models/vertexes_generators.csv
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/simulation/vertexes/5.0/variants/registries/vertexes.conf

@@ -36,8 +36,8 @@ string.enumerated.csv_file : string as path = \
 string.enumerated.csv_file.separators : string = ":"
 
 #@description The default value
-string.default : string = "Se82.0nubb"
-#string.default : string = "electron.1MeV"
+#string.default : string = "Se82.0nubb"
+string.default : string = "electron.1MeV"
 
 
 #@description The list of variants

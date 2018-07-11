@@ -15,10 +15,11 @@ layout/if_basic/shielding = true
 calo_film_thickness = 25 um
 
 [registry="vertexes"]
-generator = "snemo_full_foils_se82_bulk"
+generator = "snemo_full_foils_mass_bulk"
 
 [registry="primary_events"]
-generator = "Se82.2nubb_2MeV"
+generator = "Se82.0nubb"
+
 
 [registry="simulation"]
 physics_mode = "Constructors"

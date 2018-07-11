@@ -15,8 +15,14 @@ layout/if_basic/shielding = true
 calo_film_thickness = 25 um
 
 [registry="vertexes"]
-generator = "free_spot"
-generator/if_free_spot/x = 0 mm
-generator/if_free_spot/y = 0 mm
-generator/if_free_spot/z = 0 mm
+generator = "snemo_full_foils_mass_bulk"
+
+[registry="primary_events"]
+generator = "Se82.0nubb"
+
+[registry="simulation"]
+physics_mode = "Constructors"
+physics_mode/if_constructors/em_model = "standard"
+production_cuts = true
+output_profile = "none"
 

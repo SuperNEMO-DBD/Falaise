@@ -244,7 +244,7 @@ stacked.model_0  : string = "snemo_strip_21.model"
 stacked.model_2  : string = "snemo_strip_22.model"
 stacked.model_4  : string = "snemo_strip_23.model"
 stacked.model_6  : string = "snemo_strip_24.model"
-stacked.model_8  : string = "snemo_strip_24.model"
+stacked.model_8  : string = "snemo_strip_25.model"
 stacked.model_10 : string = "snemo_strip_26.model"
 #@variant_endif
 

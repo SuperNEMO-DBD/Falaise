@@ -25,20 +25,20 @@ vg_dir_5_0=$(pwd)/../5.0
 # bxextract_table_of_objects -i ${this_vg_dir}/generators/tracker_vg.def --group "Tracker" -G \
 # 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/realistic_source_pads_bulk_vg.def  --group "RealSource" -G\
-			   >> ${csv_target}
+#bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/realistic_source_pads_bulk_vg.def  --group "RealSource" -G\
+#			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/realistic_source_pads_surface_vg.def  --group "RealSource" -G\
-			   >> ${csv_target}
+# bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/realistic_source_pads_surface_vg.def  --group "RealSource" -G\
+# 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_mass_realistic_source_foils_bulk_vg.def  --group "RealSource" -G\
-			   >> ${csv_target}
+# bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_mass_realistic_source_foils_bulk_vg.def  --group "RealSource" -G\
+# 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_realistic_source_foils_surface_vg.def  --group "RealSource" -G\
-			   >> ${csv_target}
+# bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_realistic_source_foils_surface_vg.def  --group "RealSource" -G\
+# 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_se82_realistic_source_foils_bulk_vg.def  --group "RealSource" -G\
-			   >> ${csv_target}
+# bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_se82_realistic_source_foils_bulk_vg.def  --group "RealSource" -G\
+# 			   >> ${csv_target}
 
 bxextract_table_of_objects -i ${vg_dir_5_0}/generators/realistic/uniform_full_realistic_source_bulk_vg.def  --group "RealSource" -G\
 			   >> ${csv_target}

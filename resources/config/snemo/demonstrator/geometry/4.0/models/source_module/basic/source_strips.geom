@@ -12,7 +12,7 @@
 [name="source_external_film.basic.model" type="geomtools::simple_shaped_model"]
 
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 shape_type         : string  = "box"
 x                  : real as length =   12.0 um
 y                  : real as length =  125.0 mm
@@ -27,7 +27,7 @@ visibility.color   : string  = "cyan"
 ###############################################################################
 [name="source_internal_film.basic.model" type="geomtools::simple_shaped_model"]
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 shape_type         : string  = "box"
 x                  : real as length =   12.0 um
 y                  : real as length =  135.5 mm
@@ -68,7 +68,7 @@ visibility.color   : string  = "cyan"
 #
 [name="source_external_multipad.basic.model" type="geomtools::replicated_model"]
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 
 
 #@description The stacking axis
@@ -129,7 +129,7 @@ mapping.daughter_id.pads : string = "[source_pad:pad+0]"
 #
 [name="source_internal_multipad.basic.model" type="geomtools::replicated_model"]
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 
 #@description The stacking axis
 replicated.axis : string = "z"
@@ -184,7 +184,7 @@ mapping.daughter_id.pads : string = "[source_pad:pad+0]"
 #
 [name="source_internal_strip.basic.model" type="geomtools::stacked_model"]
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 
 
 stacked.axis            : string = "x"
@@ -232,7 +232,7 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 #
 [name="source_external_strip.basic.model" type="geomtools::stacked_model"]
 
-#@variant_only geometry:layout/if_basic/source_layout/if_basic
+#@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
 
 
 stacked.axis            : string = "x"

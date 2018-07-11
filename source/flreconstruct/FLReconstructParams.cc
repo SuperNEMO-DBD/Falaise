@@ -20,10 +20,10 @@ FLReconstructParams FLReconstructParams::makeDefault() {
   params.moduloEvents = 0;    // 0 == no print
 
   // Experimental setup:
-  params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:1.0";
+  params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:2.0";
 
   // Reconstruction setup:
-  params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:1.0.0:pipeline";
+  params.reconstructionPipelineUrn = "";  // "urn:snemo:demonstrator:reconstruction:2.0.0:pipeline";
   params.reconstructionPipelineConfig = "";
   params.reconstructionPipelineModule = "pipeline";
 

@@ -15,7 +15,7 @@ Presentation
 
 This directory  contains the files  needed to describe  several vertex
 generators as input for  SuperNEMO demonstrator simulation. This setup
-depends on the SuperNEMO  demonstrator's geometry layout (``4.0``) and
+depends on the SuperNEMO  demonstrator's geometry layout (``5.0``) and
 its variants.
 
  * Version is : ``5.0``

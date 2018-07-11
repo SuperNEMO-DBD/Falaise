@@ -16,7 +16,7 @@ This directory contains  the files needed to describe  the geometry of
 the full SuperNEMO demonstrator module.
 
  * Setup label is : ``snemo::demonstrator``
- * Setup version is : ``4.1``
+ * Setup version is : ``5.0``
 
 This version supports variant parameters.
 
