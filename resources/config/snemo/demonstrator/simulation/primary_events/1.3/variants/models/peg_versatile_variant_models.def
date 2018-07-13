@@ -38,7 +38,7 @@ string.enumerated_3.value : string = "alpha"
 string.enumerated_4.value : string = "neutron"
 
 #@description The default value
-string.default : string = "gamma"
+string.default : string = "positron"
 
 
 ######################################################

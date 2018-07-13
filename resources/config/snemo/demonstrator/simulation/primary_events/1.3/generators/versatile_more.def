@@ -12,9 +12,10 @@
 # The lines prefixed with '#@variant_' guards from loading this generator
 # definition or some of its parts if the current variant context is not
 # adapted.
+
 #@variant_section_only primary_events:generator/if_flat_versatile|false
 
-#@config Single particle generator with flat energy distribution;group=user;variant=if_flat_versatile
+#@config Single particle generator with flat energy distribution;group=User;variant=if_flat_versatile
 
 #@description Generated particle ("electron", "positron", "gamma", "alpha"):
 particle_name : string = @variant(primary_events:generator/if_flat_versatile/particle|"gamma")
@@ -26,7 +27,7 @@ mode          : string = "energy_range"
 emission_direction : string = "randomized"
 
 #@description The minimum kinetic energy of the generated particle
-min_energy        : real   = @variant(primary_events:generator/if_flat_versatile/energy_min|100.0 keV)
+min_energy        : real   = @variant(primary_events:generator/if_flat_versatile/energy_min|42.0 keV)
 
 #@description The maximum kinetic energy of the generated particle
 max_energy        : real   = @variant(primary_events:generator/if_flat_versatile/energy_max|4000.0 keV)
@@ -41,7 +42,7 @@ max_energy        : real   = @variant(primary_events:generator/if_flat_versatile
 ######################
 #@variant_section_only primary_events:generator/if_tweakable|false
 
-#@config Broadly tweakable single particle generator;group=user;variant=if_tweakable
+#@config Broadly tweakable single particle generator;group=User;variant=if_tweakable
 
 #@description Generated particle
 particle_name : string = @variant(primary_events:generator/if_tweakable/particle|"gamma")
@@ -53,7 +54,7 @@ mode       : string = @variant(primary_events:generator/if_tweakable/energy_mode
 #@variant_if primary_events:generator/if_tweakable/energy_mode/if_monokinetic|true
 
 #@description The minimum kinetic energy of the generated particle
-energy : real as energy = @variant(primary_events:generator/if_tweakable/energy_mode/if_monokinetic/energy|1000.0 keV)
+energy : real as energy = @variant(primary_events:generator/if_tweakable/energy_mode/if_monokinetic/energy|666.0 keV)
 
 #@variant_endif primary_events:generator/if_tweakable/energy_mode/if_monokinetic
 

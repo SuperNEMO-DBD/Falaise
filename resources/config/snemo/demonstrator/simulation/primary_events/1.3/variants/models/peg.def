@@ -62,6 +62,8 @@ variants.if_tweakable.description : string = "Set of parameters for the tweakabl
 
 #@description Association of some specific generators to some specific variants
 string.enumerated.versatile_generator.variant : string = "if_versatile"
+string.enumerated.flat_versatile_generator.variant : string = "if_flat_versatile"
+string.enumerated.tweakable_generator.variant : string = "if_tweakable"
 
 
 ##############################
