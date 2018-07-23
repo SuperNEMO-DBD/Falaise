@@ -70,5 +70,5 @@ gamma.1MeV : Gamma with monokinetic energy @ 1 MeV : Miscellaneous :
 gamma.2MeV : Gamma with monokinetic energy @ 2 MeV : Miscellaneous : 
 gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous : 
 versatile_generator : Single particle generator with monokinetic energy : User : if_versatile
-flat_versatile_generator :  :  : 
-tweakable_generator :  :  : 
+flat_versatile_generator : Single particle generator with flat energy distribution : User : if_flat_versatile
+tweakable_generator : Broadly tweakable single particle generator : User : if_tweakable

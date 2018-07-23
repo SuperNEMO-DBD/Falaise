@@ -59,7 +59,7 @@ bxextract_table_of_objects -i ${pe_dir_1_2}/generators/misc.def --group "Miscell
 bxextract_table_of_objects -i ${pe_dir_1_2}/generators/versatile.def --group "User" -G \
 			   >> ${csv_target}
 
-bxextract_table_of_objects -i ${pe_dir_1_3}/generators/versatile_more.def --group "User" -G \
+bxextract_table_of_objects -i ${pe_dir_1_3}/generators/versatile_more.def --group "User" -G -l 10 \
 			   >> ${csv_target}
 
 echo >&2 "INFO: File '${csv_target}' has been generated!"
