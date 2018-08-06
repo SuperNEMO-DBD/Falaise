@@ -31,6 +31,11 @@ namespace snemo {
       return;
     }
 
+    bool sim_digi_data::has_calorimeter_digi_hits() const
+    {
+      return _calo_digi_hits_.size() != 0;
+    }
+
     const sim_digi_data::calo_digi_hit_collection_type & sim_digi_data::get_calo_digi_hits() const
     {
       return _calo_digi_hits_;
@@ -53,6 +58,11 @@ namespace snemo {
       return last.grab();
     }
 
+    bool sim_digi_data::has_tracker_digi_hits() const
+    {
+      return _tracker_digi_hits_.size() != 0;
+    }
+
     const sim_digi_data::tracker_digi_hit_collection_type & sim_digi_data::get_tracker_digi_hits() const
     {
       return _tracker_digi_hits_;
@@ -73,6 +83,11 @@ namespace snemo {
       tracker_digi_hit_handle_type & last = _tracker_digi_hits_.back();
       last.reset(new sim_tracker_digi_hit);
       return last.grab();
+    }
+
+    bool sim_digi_data::has_trigger_digi_data() const
+    {
+      return _trigger_digi_data_.size() != 0;
     }
 
     const sim_digi_data::trigger_digi_data_collection_type & sim_digi_data::get_trigger_digi_data() const

@@ -69,15 +69,20 @@ namespace snemo {
       /// Reset
       void reset();
 
+			/// Check if there are some calorimeter digi hits
+			bool has_calorimeter_digi_hits() const;
+
       /// Return the const collection of trigger digi events
       const calo_digi_hit_collection_type & get_calo_digi_hits() const;
 
       /// Return the mutable collection of trigger digi events
       calo_digi_hit_collection_type & grab_calo_digi_hits();
 
-
       /// Add a simulated calo digi hit at the end of the collection and grab the reference on it
       sim_calo_digi_hit & add_calo_digi_hit();
+
+			/// Check if there are some tracker calorimeter digi hits
+			bool has_tracker_digi_hits() const;
 
       /// Return the const collection of trigger digi events
       const tracker_digi_hit_collection_type & get_tracker_digi_hits() const;
@@ -85,8 +90,11 @@ namespace snemo {
       /// Return the mutable collection of trigger digi events
       tracker_digi_hit_collection_type & grab_tracker_digi_hits();
 
-      /// Add a simulated tracker digi hit at the end of the collection and grab the reference on it
+			/// Add a simulated tracker digi hit at the end of the collection and grab the reference on it
       sim_tracker_digi_hit & add_tracker_digi_hit();
+
+			/// Check if there are some tracker calorimeter digi hits
+			bool has_trigger_digi_data() const;
 
       /// Return the const collection of trigger digi events
       const trigger_digi_data_collection_type & get_trigger_digi_data() const;
