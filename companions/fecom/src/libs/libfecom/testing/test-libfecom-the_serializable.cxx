@@ -89,7 +89,7 @@ int main (int argc_, char ** argv_)
     ex_com_event_2(logging);
 
     // Things
-    ex_com_event_3(logging);
+    // ex_com_event_3(logging);
 
     DT_LOG_INFORMATION(logging, "The end.");
 
@@ -232,10 +232,14 @@ void ex_com_event_3(datatools::logger::priority logging)
 {
   DT_LOG_DEBUG(logging, "ENTERING EX_COM_EVENT_3");
 
+  // Half Commissioning Raw Data "HCRD" bank label :
+  std::string HCRD_bank_label = "HCRD";
+
   std::string fdata("ce.xml");
   {
     datatools::things event_record;
-    fecom::commissioning_event & ce = event_record.add<fecom::commissioning_event>("HCRD");
+    event_record.set_name("Commissioning Event Record");
+    fecom::commissioning_event & ce = event_record.add<fecom::commissioning_event>(HCRD_bank_label);
     datatools::event_id eid(42, 12);
     ce.set_event_id(eid);
     ce.set_time_start_ns(12.0);
@@ -245,15 +249,20 @@ void ex_com_event_3(datatools::logger::priority logging)
     ce.add_tracker_channel_hit(tchit);
     ce.tree_dump(std::clog, "Commissioning event:");
     event_record.tree_dump(std::clog, "Event record:");
-    datatools::data_writer dw(fdata.c_str(), datatools::using_multiple_archives);
+    datatools::data_writer dw(fdata.c_str(),
+			      datatools::using_multiple_archives);
     dw.store(event_record);
+    std::clog << "Store of commissioning_event in the archive file is OK..." << std::endl;
   }
   {
+    std::clog << "Read commissioning_event from archive file : " << std::endl;
     datatools::things event_record;
-    datatools::data_reader dr(fdata.c_str(), datatools::using_multiple_archives);
+    datatools::data_reader dr(fdata.c_str(),
+			      datatools::using_multiple_archives);
     dr.load(event_record);
     event_record.tree_dump(std::clog, "Event record (loaded):");
-    const fecom::commissioning_event & ce = event_record.get<fecom::commissioning_event>("HCRD");
+
+    const fecom::commissioning_event & ce = event_record.get<fecom::commissioning_event>(HCRD_bank_label);
     ce.tree_dump(std::clog, "Commissioning event:");
   }
 
