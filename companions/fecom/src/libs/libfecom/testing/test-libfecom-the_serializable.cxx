@@ -235,7 +235,7 @@ void ex_com_event_3(datatools::logger::priority logging)
   std::string fdata("ce.xml");
   {
     datatools::things event_record;
-    fecom::commissioning_event & ce = event_record.add<fecom::commissioning_event>("HCRE");
+    fecom::commissioning_event & ce = event_record.add<fecom::commissioning_event>("HCRD");
     datatools::event_id eid(42, 12);
     ce.set_event_id(eid);
     ce.set_time_start_ns(12.0);
@@ -253,7 +253,7 @@ void ex_com_event_3(datatools::logger::priority logging)
     datatools::data_reader dr(fdata.c_str(), datatools::using_multiple_archives);
     dr.load(event_record);
     event_record.tree_dump(std::clog, "Event record (loaded):");
-    const fecom::commissioning_event & ce = event_record.get<fecom::commissioning_event>("HCRE");
+    const fecom::commissioning_event & ce = event_record.get<fecom::commissioning_event>("HCRD");
     ce.tree_dump(std::clog, "Commissioning event:");
   }
 
