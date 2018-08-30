@@ -75,7 +75,9 @@ ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/4.0/models/tracker_
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/4.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/1.0/README.rst
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/2.0/elements.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/2.0/elements.sav
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/2.0/materials.def
+${PROJECT_SOURCE_DIR}/resources/config/snemo/common/geometry/materials/2.0/materials.sav
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/common/reconstruction/1.0/mock_tracker_s2c.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/experiment/1.0/devices/manager.conf
 ${PROJECT_SOURCE_DIR}/resources/config/snemo/demonstrator/experiment/1.0/devices/mapping/categories.lis

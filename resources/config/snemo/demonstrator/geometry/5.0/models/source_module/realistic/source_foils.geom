@@ -16,7 +16,8 @@ z                  : real as length =  425.0 mm
 material.ref       : string  = "basic::mylar"
 
 visibility.hidden  : boolean = false
-visibility.color   : string  = "cyan"
+visibility.color : string = "cyan"
+
 
 ###############################################################################
 [name="source_film.realistic.model" type="geomtools::simple_shaped_model"]
@@ -36,12 +37,16 @@ visibility.color   : string  = "cyan"
 [name="snemo_foil_0_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 12.5 
-z                  : real    = 250.0  
-x                  : real as length = 42.0 um
+y                  : real    = 12.5  # cm
+z                  : real    = 250.0  # cm
+x                  : real as length = 74.0 um
 material.ref       : string  = "snemo::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
+
+
+
+
 
 
 [name="snemo_source_0.model" type="geomtools::simple_shaped_model"]
@@ -98,13 +103,14 @@ visibility.color  : string = "green"
 # mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
 # mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
+
 ##########################################################################
 
 [name="snemo_foil_1_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 230.0 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.811"
 visibility.hidden  : boolean = 0
@@ -119,11 +125,13 @@ stacked.number_of_items : integer = 1
 stacked.model_0   : string  = "snemo_foil_1_pad_0.model"
 stacked.label_0   : string  = "snemo_pad_1_0"
 
+
+
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_1_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_1.model" type="geomtools::stacked_model"]
 
@@ -152,8 +160,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_2_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 210.0 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.951"
 visibility.hidden  : boolean = 0
@@ -174,7 +182,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_2_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_2.model" type="geomtools::stacked_model"]
 
@@ -203,8 +211,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_3_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 220.0 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.800"
 visibility.hidden  : boolean = 0
@@ -225,7 +233,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_3_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_3.model" type="geomtools::stacked_model"]
 
@@ -254,8 +262,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_4_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 250.0 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.258"
 visibility.hidden  : boolean = 0
@@ -276,7 +284,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_4_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_4.model" type="geomtools::stacked_model"]
 
@@ -305,8 +313,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_5_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 200.0 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.823"
 visibility.hidden  : boolean = 0
@@ -327,7 +335,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_5_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_5.model" type="geomtools::stacked_model"]
 
@@ -356,8 +364,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_6_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 220.0 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.960"
 visibility.hidden  : boolean = 0
@@ -378,7 +386,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_6_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_6.model" type="geomtools::stacked_model"]
 
@@ -407,8 +415,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_7_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 240.0 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.592"
 visibility.hidden  : boolean = 0
@@ -429,7 +437,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_7_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_7.model" type="geomtools::stacked_model"]
 
@@ -458,8 +466,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_8_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.5  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.5  # cm
 x                  : real as length = 200.0 um
 material.ref       : string  = "snemo::se82_enriched96.92_pva0.0787_density2.122"
 visibility.hidden  : boolean = 0
@@ -480,7 +488,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_8_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_8.model" type="geomtools::stacked_model"]
 
@@ -509,8 +517,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_9_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 190.0 um
 material.ref       : string  = "snemo::se82_enriched96.92_pva0.0780_density2.081"
 visibility.hidden  : boolean = 0
@@ -531,7 +539,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_9_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_9.model" type="geomtools::stacked_model"]
 
@@ -560,8 +568,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_10_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 200.0 um
 material.ref       : string  = "snemo::se82_enriched96.92_pva0.0790_density1.971"
 visibility.hidden  : boolean = 0
@@ -582,7 +590,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_10_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_10.model" type="geomtools::stacked_model"]
 
@@ -611,8 +619,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_11_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 269.5  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 269.5  # cm
 x                  : real as length = 200.0 um
 material.ref       : string  = "snemo::se82_enriched96.92_pva0.0783_density1.949"
 visibility.hidden  : boolean = 0
@@ -633,7 +641,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_11_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_11.model" type="geomtools::stacked_model"]
 
@@ -662,8 +670,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_12_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 300.0 um
 material.ref       : string  = "snemo::se82_enriched98.31_pva0.0786_density2.198"
 visibility.hidden  : boolean = 0
@@ -684,7 +692,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_12_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_12.model" type="geomtools::stacked_model"]
 
@@ -713,8 +721,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_13_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 280.0 um
 material.ref       : string  = "snemo::se82_enriched98.31_pva0.0820_density2.104"
 visibility.hidden  : boolean = 0
@@ -735,7 +743,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_13_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_13.model" type="geomtools::stacked_model"]
 
@@ -764,8 +772,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_14_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 300.0 um
 material.ref       : string  = "snemo::se82_enriched99.92_pva0.0771_density2.217"
 visibility.hidden  : boolean = 0
@@ -785,8 +793,8 @@ stacked.label_0   : string  = "snemo_pad_14_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
-mapping.daughter_id.snemo_pad_14_0: string = "[source_pad:pad=0]"
-
+mapping.daughter_id.snemo_pad_14_0 : string = "[source_pad:pad=0]"
+    
 #########################################################################
 [name="snemo_strip_14.model" type="geomtools::stacked_model"]
 
@@ -815,8 +823,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_15_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 280.0 um
 material.ref       : string  = "snemo::se82_enriched99.6_pva0.0784_density2.388"
 visibility.hidden  : boolean = 0
@@ -837,7 +845,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_15_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_15.model" type="geomtools::stacked_model"]
 
@@ -866,8 +874,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_16_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 280.0 um
 material.ref       : string  = "snemo::se82_enriched97_pva0.0801_density2.276"
 visibility.hidden  : boolean = 0
@@ -888,7 +896,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_16_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_16.model" type="geomtools::stacked_model"]
 
@@ -917,8 +925,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_17_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 250.0 um
 material.ref       : string  = "snemo::se82_enriched97.5_pva0.0810_density2.300"
 visibility.hidden  : boolean = 0
@@ -939,7 +947,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_17_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_17.model" type="geomtools::stacked_model"]
 
@@ -968,8 +976,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_18_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
 x                  : real as length = 240.0 um
 material.ref       : string  = "snemo::se82_enriched98_pva0.0820_density2.160"
 visibility.hidden  : boolean = 0
@@ -990,7 +998,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_18_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_18.model" type="geomtools::stacked_model"]
 
@@ -1019,10 +1027,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_19_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.2  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.2  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 390.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.227"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.227"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1031,10 +1039,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.2  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.2  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 397.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.299"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.299"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1043,10 +1051,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 283.3 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.952"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.952"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1055,10 +1063,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 304.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.886"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.886"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1067,10 +1075,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 304.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.795"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.795"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1079,10 +1087,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 292.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.899"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.899"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1091,10 +1099,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 273.3 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.959"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.959"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1103,10 +1111,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_19_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 285.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.919"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.919"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1153,6 +1161,8 @@ stacked.label_0   : string  = "snemo_pad_19_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
+
+    
 mapping.daughter_id.snemo_pad_19_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_19_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_19_2 : string = "[source_pad:pad=2]"
@@ -1161,9 +1171,7 @@ mapping.daughter_id.snemo_pad_19_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_19_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_19_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_19_7 : string = "[source_pad:pad=7]"
-
-
-
+    
 #########################################################################
 [name="snemo_strip_19.model" type="geomtools::stacked_model"]
 
@@ -1192,10 +1200,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_20_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 460.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.236"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.236"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1204,10 +1212,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 410.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.140"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.140"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1216,10 +1224,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 377.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.268"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.268"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1228,10 +1236,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 365.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.288"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.288"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1240,10 +1248,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 289.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.972"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.972"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1252,10 +1260,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 263.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density2.096"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density2.096"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1264,10 +1272,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 279.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density2.093"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density2.093"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1276,10 +1284,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_20_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 266.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density2.068"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density2.068"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1326,6 +1334,8 @@ stacked.label_0   : string  = "snemo_pad_20_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
+
+
 mapping.daughter_id.snemo_pad_20_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_20_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_20_2 : string = "[source_pad:pad=2]"
@@ -1334,8 +1344,7 @@ mapping.daughter_id.snemo_pad_20_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_20_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_20_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_20_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_20.model" type="geomtools::stacked_model"]
 
@@ -1364,10 +1373,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_21_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 320.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.708"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.708"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1376,10 +1385,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 322.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.648"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.648"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1388,10 +1397,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 420.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.296"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.296"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1400,10 +1409,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 420.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.300"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.300"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1412,10 +1421,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 427.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.333"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.333"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1424,10 +1433,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 424.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.088"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.088"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1436,10 +1445,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 472.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.030"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.030"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1448,10 +1457,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_21_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 495.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.060"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.060"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1498,6 +1507,7 @@ stacked.label_0   : string  = "snemo_pad_21_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
+
 mapping.daughter_id.snemo_pad_21_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_21_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_21_2 : string = "[source_pad:pad=2]"
@@ -1506,8 +1516,8 @@ mapping.daughter_id.snemo_pad_21_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_21_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_21_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_21_7 : string = "[source_pad:pad=7]"
-
-
+    
+    
 #########################################################################
 [name="snemo_strip_21.model" type="geomtools::stacked_model"]
 
@@ -1536,10 +1546,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_22_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 465.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.372"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.372"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1548,10 +1558,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 467.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.362"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.362"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1560,10 +1570,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 480.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.347"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.347"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1572,10 +1582,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 312.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.586"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.586"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1584,10 +1594,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 315.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.670"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.670"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1596,10 +1606,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 342.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.576"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.576"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1608,10 +1618,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 320.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.717"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.717"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1620,10 +1630,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_22_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 330.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.678"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.678"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1671,6 +1681,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 
+    
 mapping.daughter_id.snemo_pad_22_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_22_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_22_2 : string = "[source_pad:pad=2]"
@@ -1679,8 +1690,7 @@ mapping.daughter_id.snemo_pad_22_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_22_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_22_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_22_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_22.model" type="geomtools::stacked_model"]
 
@@ -1709,10 +1719,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_23_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 345.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.591"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.591"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1721,10 +1731,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 342.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.758"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.758"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1733,10 +1743,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 340.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.730"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.730"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1745,10 +1755,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 330.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.721"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.721"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1757,10 +1767,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 326.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.708"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.708"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1769,10 +1779,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 343.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.654"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.654"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1781,10 +1791,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 334.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.664"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.664"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1793,10 +1803,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_23_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 316.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.749"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.749"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1843,7 +1853,8 @@ stacked.label_0   : string  = "snemo_pad_23_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
-
+   
+    
 mapping.daughter_id.snemo_pad_23_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_23_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_23_2 : string = "[source_pad:pad=2]"
@@ -1852,8 +1863,7 @@ mapping.daughter_id.snemo_pad_23_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_23_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_23_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_23_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_23.model" type="geomtools::stacked_model"]
 
@@ -1882,10 +1892,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_24_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.2  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.2  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 472.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.363"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.363"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1894,10 +1904,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 370.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.480"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.480"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1906,10 +1916,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 328.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.714"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.714"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1918,10 +1928,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 365.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.580"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.580"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1930,10 +1940,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 363.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.524"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.524"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1942,10 +1952,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 365.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.517"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.517"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1954,10 +1964,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 372.53 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.552"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.552"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -1966,10 +1976,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_24_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 360.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.547"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.547"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2016,7 +2026,8 @@ stacked.label_0   : string  = "snemo_pad_24_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
-
+   
+    
 mapping.daughter_id.snemo_pad_24_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_24_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_24_2 : string = "[source_pad:pad=2]"
@@ -2025,8 +2036,7 @@ mapping.daughter_id.snemo_pad_24_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_24_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_24_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_24_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_24.model" type="geomtools::stacked_model"]
 
@@ -2052,28 +2062,25 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
 
-
 [name="snemo_foil_25_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 350.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.535"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.535"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
 ##########################################################################
 
-
-
 [name="snemo_foil_25_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 383.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.300"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.300"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2082,10 +2089,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 379.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.390"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.390"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2094,10 +2101,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 360.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.448"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.448"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2106,10 +2113,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 362.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.414"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.414"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2118,10 +2125,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 353.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.545"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.545"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2130,10 +2137,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 355.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.526"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.526"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2142,14 +2149,12 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_25_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 366.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.584"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.584"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
-
-
 
 #########################################################################
 [name="snemo_source_25.model" type="geomtools::stacked_model"]
@@ -2157,7 +2162,7 @@ material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
 
-stacked.model_7  : string  = "snemo_foil_25_pad_7.model"
+stacked.model_7   : string  = "snemo_foil_25_pad_7.model"
 stacked.limit_max_7 : real as length =16.9 cm
 stacked.label_7   : string  = "snemo_pad_25_7"
 
@@ -2203,8 +2208,7 @@ mapping.daughter_id.snemo_pad_25_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_25_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_25_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_25_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_25.model" type="geomtools::stacked_model"]
 
@@ -2228,15 +2232,15 @@ visibility.color  : string = "green"
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
-#########################################################################
+##########################################################################
 
 [name="snemo_foil_26_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 364.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.577"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.577"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2245,10 +2249,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 337.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.599"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.599"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2257,10 +2261,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 360.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.566"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.566"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2269,10 +2273,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 386.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.525"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.525"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2281,10 +2285,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 372.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.537"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.537"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2293,10 +2297,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 360.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.521"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.521"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2305,10 +2309,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 372.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.530"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.530"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2317,10 +2321,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_26_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 370.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.543"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.543"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2367,6 +2371,7 @@ stacked.label_0   : string  = "snemo_pad_26_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
+
 mapping.daughter_id.snemo_pad_26_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_26_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_26_2 : string = "[source_pad:pad=2]"
@@ -2377,6 +2382,8 @@ mapping.daughter_id.snemo_pad_26_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_26_7 : string = "[source_pad:pad=7]"
 
 
+
+    
 #########################################################################
 [name="snemo_strip_26.model" type="geomtools::stacked_model"]
 
@@ -2405,10 +2412,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_27_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 361.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.487"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.487"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2417,10 +2424,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 336.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.617"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.617"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2429,10 +2436,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 339.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.626"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.626"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2441,10 +2448,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 368.18 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.542"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.542"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2453,10 +2460,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 355.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.597"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.597"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2465,10 +2472,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 349.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.596"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.596"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2477,10 +2484,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 365.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.562"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.562"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2489,10 +2496,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_27_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 357.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.590"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.590"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2539,6 +2546,7 @@ stacked.label_0   : string  = "snemo_pad_27_0"
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
+
 mapping.daughter_id.snemo_pad_27_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_27_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_27_2 : string = "[source_pad:pad=2]"
@@ -2549,6 +2557,7 @@ mapping.daughter_id.snemo_pad_27_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_27_7 : string = "[source_pad:pad=7]"
 
 
+    
 #########################################################################
 [name="snemo_strip_27.model" type="geomtools::stacked_model"]
 
@@ -2577,10 +2586,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_28_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 471.25 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.408"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.408"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2589,10 +2598,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 400.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.306"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.306"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2601,10 +2610,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 411.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.257"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.257"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2613,10 +2622,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 402.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.317"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.317"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2625,10 +2634,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 352.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.578"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.578"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2637,10 +2646,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 351.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.531"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.531"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2649,10 +2658,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.5  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.5  # cm
 x                  : real as length = 390.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.444"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.444"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2661,10 +2670,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_28_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 347.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.597"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.597"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2722,6 +2731,7 @@ mapping.daughter_id.snemo_pad_28_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_28_7 : string = "[source_pad:pad=7]"
 
 
+    
 #########################################################################
 [name="snemo_strip_28.model" type="geomtools::stacked_model"]
 
@@ -2750,10 +2760,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_29_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 259.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.593"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.593"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2762,10 +2772,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 275.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.646"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.646"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2774,10 +2784,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.35  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.35  # cm
 x                  : real as length = 302.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.570"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.570"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2786,10 +2796,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 311.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.486"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.486"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2798,10 +2808,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 287.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.509"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.509"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2810,10 +2820,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 304.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.444"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.444"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2822,10 +2832,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.4  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.4  # cm
 x                  : real as length = 290.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.449"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.449"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2834,10 +2844,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_29_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.3  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.3  # cm
 x                  : real as length = 282.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.596"
+material.ref       : string  = "snemo::se82_enriched96.65_pva0.1000_density1.596"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -2893,8 +2903,7 @@ mapping.daughter_id.snemo_pad_29_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_29_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_29_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_29_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_29.model" type="geomtools::stacked_model"]
 
@@ -2923,8 +2932,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_30_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 348.75 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.737"
 visibility.hidden  : boolean = 0
@@ -2935,8 +2944,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 308.3 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.148"
 visibility.hidden  : boolean = 0
@@ -2947,8 +2956,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 280.83 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.200"
 visibility.hidden  : boolean = 0
@@ -2959,8 +2968,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 291.67 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.176"
 visibility.hidden  : boolean = 0
@@ -2971,8 +2980,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 309.17 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.208"
 visibility.hidden  : boolean = 0
@@ -2983,8 +2992,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 310.0 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.107"
 visibility.hidden  : boolean = 0
@@ -2995,8 +3004,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.25  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.25  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 277.08 um
 material.ref       : string  = "snemo::se82_enriched96.9_pva0.1000_density2.321"
 visibility.hidden  : boolean = 0
@@ -3007,8 +3016,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_30_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 346.66 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.725"
 visibility.hidden  : boolean = 0
@@ -3068,6 +3077,8 @@ mapping.daughter_id.snemo_pad_30_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_30_7 : string = "[source_pad:pad=7]"
 
 
+
+    
 #########################################################################
 [name="snemo_strip_30.model" type="geomtools::stacked_model"]
 
@@ -3096,8 +3107,8 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_31_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 302.5 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.865"
 visibility.hidden  : boolean = 0
@@ -3108,8 +3119,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 276.67 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.024"
 visibility.hidden  : boolean = 0
@@ -3120,8 +3131,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 286.67 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.914"
 visibility.hidden  : boolean = 0
@@ -3132,8 +3143,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 377.5 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.723"
 visibility.hidden  : boolean = 0
@@ -3144,8 +3155,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 331.25 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.789"
 visibility.hidden  : boolean = 0
@@ -3156,8 +3167,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 322.5 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.785"
 visibility.hidden  : boolean = 0
@@ -3168,8 +3179,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 298.5 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.762"
 visibility.hidden  : boolean = 0
@@ -3180,8 +3191,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_31_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 310.75 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.767"
 visibility.hidden  : boolean = 0
@@ -3231,6 +3242,7 @@ visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 
+    
 mapping.daughter_id.snemo_pad_31_0 : string = "[source_pad:pad=0]"
 mapping.daughter_id.snemo_pad_31_1 : string = "[source_pad:pad=1]"
 mapping.daughter_id.snemo_pad_31_2 : string = "[source_pad:pad=2]"
@@ -3239,7 +3251,6 @@ mapping.daughter_id.snemo_pad_31_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_31_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_31_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_31_7 : string = "[source_pad:pad=7]"
-
 
 #########################################################################
 [name="snemo_strip_31.model" type="geomtools::stacked_model"]
@@ -3269,10 +3280,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_32_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 286.67 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.850"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.850"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3281,10 +3292,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 275.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.930"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.930"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3293,10 +3304,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 308.89 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.762"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.762"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3305,8 +3316,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 323.33 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.861"
 visibility.hidden  : boolean = 0
@@ -3317,8 +3328,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 271.67 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.974"
 visibility.hidden  : boolean = 0
@@ -3329,8 +3340,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 296.25 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.828"
 visibility.hidden  : boolean = 0
@@ -3341,8 +3352,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 288.3 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.911"
 visibility.hidden  : boolean = 0
@@ -3353,8 +3364,8 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_32_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 288.83 um
 material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density1.890"
 visibility.hidden  : boolean = 0
@@ -3412,8 +3423,7 @@ mapping.daughter_id.snemo_pad_32_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_32_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_32_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_32_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_32.model" type="geomtools::stacked_model"]
 
@@ -3442,10 +3452,10 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_33_pad_7.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.2  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.2  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 452.5 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.367"
+material.ref       : string  = "snemo::se82_enriched99.88_pva0.1000_density1.367"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3454,10 +3464,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_6.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 285.0 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density2.098"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density2.098"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3466,10 +3476,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_5.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 305.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.955"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.955"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3478,10 +3488,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_4.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 309.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.991"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.991"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3490,10 +3500,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_3.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 293.33 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.947"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.947"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3502,10 +3512,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_2.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 304.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.964"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.964"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3514,10 +3524,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_1.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 310.83 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.990"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.990"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3526,10 +3536,10 @@ visibility.color   : string  = "magenta"
 [name="snemo_foil_33_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.3  # mm
-z                  : real    = 33.55  # mm
+y                  : real    = 13.3  # cm
+z                  : real    = 33.55  # cm
 x                  : real as length = 309.17 um
-material.ref       : string  = "snemo::se82_enrichedx_pva0.1000_density1.975"
+material.ref       : string  = "snemo::se82_enriched97.9_pva0.1000_density1.975"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3585,8 +3595,7 @@ mapping.daughter_id.snemo_pad_33_4 : string = "[source_pad:pad=4]"
 mapping.daughter_id.snemo_pad_33_5 : string = "[source_pad:pad=5]"
 mapping.daughter_id.snemo_pad_33_6 : string = "[source_pad:pad=6]"
 mapping.daughter_id.snemo_pad_33_7 : string = "[source_pad:pad=7]"
-
-
+    
 #########################################################################
 [name="snemo_strip_33.model" type="geomtools::stacked_model"]
 
@@ -3610,21 +3619,19 @@ visibility.color  : string = "green"
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
-
-
-########################################################################## FAKE PAD
+##########################################################################
 
 [name="snemo_foil_34_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 13.5  # mm
-z                  : real    = 270.0  # mm
-x                  : real as length = 230.0 um
-material.ref       : string  = "snemo::se82_enriched96.1_pva0.1000_density2.811"
+y                  : real    = 13.5  # cm
+z                  : real    = 270.0  # cm
+x                  : real as length = 280.0 um
+material.ref       : string  = "snemo::se82_enriched97.0_pva0.1000_density2.137"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
-######################################################################### FAKE FOIL
+#########################################################################
 [name="snemo_source_34.model" type="geomtools::stacked_model"]
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
@@ -3634,11 +3641,12 @@ stacked.model_0   : string  = "snemo_foil_34_pad_0.model"
 stacked.label_0   : string  = "snemo_pad_34_0"
 
 
+
 visibility.hidden  : boolean = 0
 
 # Mapping the source foil from its parent category :
 mapping.daughter_id.snemo_pad_34_0 : string = "[source_pad:pad=0]"
-
+    
 #########################################################################
 [name="snemo_strip_34.model" type="geomtools::stacked_model"]
 
@@ -3667,9 +3675,9 @@ mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 [name="snemo_foil_35_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 12.5  # mm
-z                  : real    = 250.0  # mm
-x                  : real as length = 42.0 um
+y                  : real    = 12.5  # cm
+z                  : real    = 250.0  # cm
+x                  : real as length = 74.0 um
 material.ref       : string  = "snemo::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
