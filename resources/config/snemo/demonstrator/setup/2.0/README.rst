@@ -1,5 +1,5 @@
 ================================
-SuperNEMO Demonstrator setup 1.0
+SuperNEMO Demonstrator setup 2.0
 ================================
 
 This experimental setup model is built on top of
@@ -13,6 +13,6 @@ Files:
   Embedded services are:
 
   * Geometry service based on geometry configuration
-    with URN=``urn:snemo:demonstrator:geometry:4.0``.
+    with URN=``urn:snemo:demonstrator:geometry:5.0``.
 
 .. end

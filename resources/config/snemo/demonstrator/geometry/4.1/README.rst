@@ -31,7 +31,7 @@ has been  made more realistic.  Calibration source (Bi207) can  now be
 inserted at standard position from the 6 calibration tracks.
 
 Magnetic  field can  be  enabled/disabled. Also  when  enable, we  can
-choose between uniform  vertical B-field of mapped  field (using Steve
+choose between uniform  vertical B-field or mapped  field (using Steve
 Snow's work).
 
 This  setup  uses  the  new  ``basic/1.0``  materials  resource  files
