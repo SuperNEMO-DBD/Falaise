@@ -9,6 +9,10 @@
 # SuperNEMO Demonstrator #
 ##########################
 
+#############
+# Setup 1.0 #
+#############
+
 
 ############################################################
 [urn="urn:snemo:demonstrator:setup:1.0" category="expsetup"]
@@ -79,6 +83,81 @@ description : string = "HC variant setup 1.0.0 for the SuperNEMO demonstrator de
 
 topics : string[1] = "variants"
 topic.variants.component : string[1] = "urn:snemo:demonstrator:setup:1.0:variants"
+
+#############
+# Setup 2.0 #
+#############
+
+
+############################################################
+[urn="urn:snemo:demonstrator:setup:2.0" category="expsetup"]
+
+#@config URN registration of the SuperNEMO demonstrator detector setup (tag 2.0)
+
+description : string = "SuperNEMO demonstrator detector setup (tag 2.0)"
+
+topics : string[5] = "experiment" "services" "variants" "varprofiles" "defvarprofile"
+
+topic.experiment.component : string = "urn:snemo:demonstrator"
+topic.services.component   : string = "urn:snemo:demonstrator:setup:2.0:services"
+topic.variants.component   : string = "urn:snemo:demonstrator:setup:2.0:variants"
+topic.varprofiles.components : string[2] = \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:basic-1.0.0" \
+  "urn:snemo:demonstrator:setup:1.0:variants:profiles:hc-1.0.0"
+topic.defvarprofile.component   : string = "urn:snemo:demonstrator:setup:1.0:variants:profiles:default"
+
+
+#####################################################################
+[urn="urn:snemo:demonstrator:setup:2.0:services" category="services"]
+
+#@config URN registration of services setup for the SuperNEMO demonstrator detector setup (tag 2.0)
+
+description : string = "Services setup for the SuperNEMO demonstrator detector setup (tag 2.0)"
+
+topics : string[1] = "geometry"
+
+topic.geometry.component   : string = "urn:snemo:demonstrator:geometry:5.0"
+
+
+#####################################################################
+[urn="urn:snemo:demonstrator:setup:2.0:variants" category="variants"]
+
+#@config URN registration of variants setup for the SuperNEMO demonstrator detector setup (tag 2.0)
+
+description : string = "Variants setup for the SuperNEMO demonstrator detector setup (tag 2.0)"
+
+
+########################################################################################
+[urn="urn:snemo:demonstrator:setup:2.0:variants:profiles:default" category="varprofile"]
+
+#@config URN registration of default variant profile for the SuperNEMO demonstrator detector variants setup (tag 2.0)
+
+description : string = "Default variant setup for the SuperNEMO demonstrator detector setup (tag 2.0)"
+
+topics : string[1] = "alias_of"
+topic.alias_of.component: string = "urn:snemo:demonstrator:setup:2.0:variants:profiles:basic-2.0.0"
+
+
+############################################################################################
+[urn="urn:snemo:demonstrator:setup:2.0:variants:profiles:basic-2.0.0" category="varprofile"]
+
+#@config URN registration of basic variant profile 2.0.0 for the SuperNEMO demonstrator detector variants setup (tag 2.0)
+
+description : string = "Basic variant setup 2.0.0 for the SuperNEMO demonstrator detector setup (tag 2.0)"
+
+topics : string[1] = "variants"
+topic.variants.component : string[1] = "urn:snemo:demonstrator:setup:2.0:variants"
+
+
+#########################################################################################
+[urn="urn:snemo:demonstrator:setup:2.0:variants:profiles:hc-2.0.0" category="varprofile"]
+
+#@config URN registration of HC variant profile 2.0.0 for the SuperNEMO demonstrator detector variants setup (tag 2.0)
+
+description : string = "HC variant setup 2.0.0 for the SuperNEMO demonstrator detector setup (tag 2.0)"
+
+topics : string[1] = "variants"
+topic.variants.component : string[1] = "urn:snemo:demonstrator:setup:2.0:variants"
 
 
 #########
