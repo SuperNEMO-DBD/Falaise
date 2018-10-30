@@ -1,0 +1,59 @@
+#@description The definitions for variant parameters related to the DBD source
+#@key_label   "name"
+#@meta_label  "type"
+
+[name="source_calibration.bi207.basic.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the basic Bi207 source calibration setup
+  display_name       : string = "Basic Bi207 source calibration"
+  terse_description  : string = "The configuration parameters for the basic Bi207 source calibration"
+
+
+[name="source_calibration.type.PM" type="parameter"]
+  #@config A parameter describing the type of the source calibration setup
+  display_name              : string = "Type of the source calibration setup"
+  terse_description         : string = "The type of the source calibration setup"
+  mutability : string = "variable"
+    variable.mode : string = "enumeration"
+  type : string = "string"
+    string.default            : string = "Bi207"
+    string.enumerated.size    : integer = 1
+    string.enumerated_0.value : string = "Bi207"
+    string.enumerated_0.variant   : string = "if_bi207"
+  variants : string[1] = "if_bi207"
+    variants.if_bi207.model       : string = "source_calibration.bi207.basic.VM"
+    variants.if_bi207.description : string = "Set of parameters for the Bi207 source calibration"
+
+
+[name="source_calibration.description.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the source calibration setup
+  display_name       : string = "Active source calibration"
+  terse_description  : string = "The configuration parameters for the source calibration setup"
+  parameters : string[1] = "type"
+    parameters.type.model       : string = "source_calibration.type.PM"
+    parameters.type.description : string = "The type of the source calibration setup"
+
+
+[name="source_calibration.off_on.PM" type="parameter"]
+  #@config A parameter model describing the activation of the source calibration
+  display_name        : string = "Source calibration activation"
+  terse_description   : string = "The activation of the source calibration"
+  mutability : string = "variable"
+  type : string = "boolean"
+    boolean.default     : boolean = false
+    boolean.true.variant : string = "is_active"
+    boolean.false.variant : string = "is_inactive"
+  variants : string[2] = "is_active" "is_inactive"
+    variants.is_active.model       : string = "source_calibration.description.VM"
+    variants.is_active.description : string = "Set of parameters for source calibration"
+    variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+    variants.is_inactive.description : string = "No source calibration"
+
+
+[name="source_calibration.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the source calibration setup
+  display_name       : string = "Source calibration"
+  terse_description  : string = "The configuration parameters for the source calibration"
+  parameters : string[1] = "active"
+    parameters.active.model       : string = "source_calibration.off_on.PM"
+    parameters.active.description : string = "The activation flag of the source calibration setup"
+

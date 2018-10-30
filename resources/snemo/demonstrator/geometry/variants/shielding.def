@@ -1,0 +1,24 @@
+[name="shielding.on_off.PM" type="parameter"]
+  #@config A parameter model describing the activation of the shielding
+  display_name        : string = "Shielding activation"
+  terse_description   : string = "The activation of the shielding "
+  mutability : string = "variable"
+  type : string = "boolean"
+    boolean.default     : boolean = true
+  #   boolean.true.variant : string = "is_active"
+  #   boolean.false.variant : string = "is_inactive"
+  # variants : string [2] = "is_active" "is_inactive"
+  #   variants.is_active.model       : string = "magnetic_field.description.VM"
+  #   variants.is_active.description : string = "Set of parameters for activated magnetic field"
+  #   variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+  #   variants.is_inactive.description : string = "Inactive magnetic field"
+
+
+[name="shielding.VM" type="variant"]
+  #@config A variant model describing the parameters for the shielding
+  display_name       : string = "Shielding"
+  terse_description  : string = "The configuration parameters for the shielding"
+  parameters : string[1] = "active"
+    parameters.active.model       : string = "shielding.on_off.PM"
+    parameters.active.description : string = "The activation flag of the shielding"
+

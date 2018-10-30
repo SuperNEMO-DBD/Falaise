@@ -615,14 +615,7 @@ int main(int argc_, char** argv_) {
   try {
     clog << "Test program for class 'snemo::geometry::gveto_locator' !" << endl;
 
-    bool debug = false;
-    bool devel = false;
-    bool verbose = false;
-    bool file = false;
     string manager_config_file;
-    bool dump = false;
-    bool draw = false;
-    bool with_mapping = true;
     bool do_test1 = true;
     bool do_test2 = true;
     bool do_test3 = false;
@@ -630,72 +623,8 @@ int main(int argc_, char** argv_) {
     bool do_test5 = true;
     bool do_test6 = true;
 
-    int iarg = 1;
-    while (iarg < argc_) {
-      string token = argv_[iarg];
-
-      if (token[0] == '-') {
-        string option = token;
-        if ((option == "-d") || (option == "--debug")) {
-          debug = true;
-        } else if ((option == "-D") || (option == "--devel")) {
-          devel = true;
-        } else if ((option == "-t1") || (option == "--test1")) {
-          do_test1 = true;
-        } else if ((option == "-t2") || (option == "--test2")) {
-          do_test2 = true;
-        } else if ((option == "-t3") || (option == "--test3")) {
-          do_test3 = true;
-        } else if ((option == "-t4") || (option == "--test4")) {
-          do_test4 = true;
-        } else if ((option == "-t5") || (option == "--test5")) {
-          do_test5 = true;
-        } else if ((option == "-t6") || (option == "--test6")) {
-          do_test6 = true;
-        } else if ((option == "-T1") || (option == "--no-test1")) {
-          do_test1 = false;
-        } else if ((option == "-T2") || (option == "--no-test2")) {
-          do_test2 = false;
-        } else if ((option == "-T3") || (option == "--no-test3")) {
-          do_test3 = false;
-        } else if ((option == "-T4") || (option == "--no-test4")) {
-          do_test4 = false;
-        } else if ((option == "-T5") || (option == "--no-test5")) {
-          do_test5 = false;
-        } else if ((option == "-T6") || (option == "--no-test6")) {
-          do_test6 = false;
-        } else if ((option == "-V") || (option == "--verbose")) {
-          verbose = true;
-        } else if ((option == "-F") || (option == "--file")) {
-          file = true;
-        } else if ((option == "-p") || (option == "--dump")) {
-          dump = true;
-        } else if ((option == "-m") || (option == "--with-mapping")) {
-          with_mapping = true;
-        } else if ((option == "-M") || (option == "--without-mapping")) {
-          with_mapping = false;
-        } else if (option == "--no-draw") {
-          draw = false;
-        } else if (option == "--draw") {
-          draw = true;
-        } else {
-          clog << datatools::io::warning << "ignoring option '" << option << "'!" << endl;
-        }
-      } else {
-        string argument = token;
-        {
-          if (manager_config_file.empty()) {
-            manager_config_file = argument;
-          } else {
-            clog << datatools::io::warning << "ignoring argument '" << argument << "'!" << endl;
-          }
-        }
-      }
-      iarg++;
-    }
-
     if (manager_config_file.empty()) {
-      manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+      manager_config_file = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
     }
     datatools::fetch_path_with_env(manager_config_file);
     clog << datatools::io::notice << "Manager config. file : '" << manager_config_file << "'"
@@ -705,47 +634,11 @@ int main(int argc_, char** argv_) {
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);
     geomtools::manager my_manager;
-    if (verbose) my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
-    if (debug) my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
-    if (devel) my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
-    if (with_mapping) {
-      // prepare mapping configuration with a limited set
-      // of geometry categories:
-
-      // ensure the mapping features will be built:
-      manager_config.update("build_mapping", true);
-
-      // remove the 'exclusion' property if any:
-      if (manager_config.has_key("mapping.excluded_categories")) {
-        manager_config.erase("mapping.excluded_categories");
-      }
-
-      // define a set of geometry categories to be mapped
-      // through the embedded mapping system:
-      vector<string> only_categories;
-      only_categories.push_back("hall");
-      only_categories.push_back("module");
-      only_categories.push_back("source_pad");
-      only_categories.push_back("source_strip");
-      only_categories.push_back("tracker_submodule");
-      only_categories.push_back("tracker_volume");
-      only_categories.push_back("drift_cell_core");
-      only_categories.push_back("gveto_block");
-      only_categories.push_back("gveto_wrapper");
-      only_categories.push_back("gveto_block");
-      only_categories.push_back("gveto_wrapper");
-      only_categories.push_back("calorimeter_submodule");
-      only_categories.push_back("calorimeter_block");
-      only_categories.push_back("calorimeter_wrapper");
-
-      // set the 'only' property:
-      manager_config.update("mapping.only_categories", only_categories);
-    }
+    my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
+   
     my_manager.initialize(manager_config);
-    if (dump) {
-      my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
-      my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
-    }
+    my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
+    my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
 
     long seed = 12345;
     srand48(seed);
@@ -758,12 +651,12 @@ int main(int argc_, char** argv_) {
     size_t nhits = 10000;
     if (do_test2) {
       clog << "\n*** TEST 2 *** \n : ";
-      test2(my_manager, nhits, file);
+      test2(my_manager, nhits, false);
     }
 
     if (do_test3) {
       clog << "\n*** TEST 3 *** \n : ";
-      test3(my_manager, nhits, file);
+      test3(my_manager, nhits, false);
     }
 
     if (do_test4) {
@@ -778,7 +671,7 @@ int main(int argc_, char** argv_) {
 
     if (do_test6) {
       clog << "\n*** TEST 6 *** \n : ";
-      test6(my_manager, draw);
+      test6(my_manager, false);
     }
 
   } catch (exception& x) {

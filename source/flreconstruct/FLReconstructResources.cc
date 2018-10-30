@@ -58,9 +58,9 @@ struct ExperimentLookup {
 //! Construct lookup table
 ExperimentLookup::Table constructLookupPipelineTable() {
   ExperimentLookup::Table a;
-  boost::assign::insert(a)("", "config/snemo/demonstrator/reconstruction/official-1.0.0.conf")(
-      "default", "config/snemo/demonstrator/reconstruction/official-1.0.0.conf")(
-      "demonstrator", "config/snemo/demonstrator/reconstruction/official-1.0.0.conf")("bipo3", "");
+  boost::assign::insert(a)("", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
+      "default", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
+      "demonstrator", "snemo/demonstrator/reconstruction/official-1.0.0.conf")("bipo3", "");
 
   return a;
 }
@@ -69,11 +69,11 @@ ExperimentLookup::Table constructLookupPipelineTable() {
 ExperimentLookup::Table constructLookupVariantsConfigTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)(
-      "", "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")(
+      "", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
       "default",
-      "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")(
+      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
       "demonstrator",
-      "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf")("bipo3",
+      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")("bipo3",
                                                                                           "");
   ;
   return a;
@@ -84,11 +84,11 @@ ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)(
       "",
-      "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")(
+      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
       "default",
-      "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")(
+      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
       "demonstrator",
-      "config/snemo/demonstrator/simulation/geant4_control/2.0/variants/profiles/default.profile")(
+      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
       "bipo3", "");
   ;
   return a;

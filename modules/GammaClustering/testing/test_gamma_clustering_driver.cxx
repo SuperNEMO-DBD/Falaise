@@ -75,7 +75,7 @@ int main() {
 
     // Need an effective geometry manager ot make use of locators
     const std::string gmanager_config_file =
-        falaise::get_resource_dir() + "/config/snemo/demonstrator/geometry/3.0/manager.conf";
+        falaise::get_resource_dir() + "/snemo/demonstrator/geometry/GeometryManager.conf";
     // Load properties from the configuration file
     datatools::properties gmanager_config;
     datatools::properties::read_config(gmanager_config_file, gmanager_config);

@@ -65,7 +65,7 @@ int main(int argc_, char** argv_) {
 
     // Geometry manager:
     geomtools::manager Geo;
-    std::string GeoConfigFile = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+    std::string GeoConfigFile = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
     datatools::fetch_path_with_env(GeoConfigFile);
     datatools::properties GeoConfig;
     datatools::properties::read_config(GeoConfigFile, GeoConfig);
