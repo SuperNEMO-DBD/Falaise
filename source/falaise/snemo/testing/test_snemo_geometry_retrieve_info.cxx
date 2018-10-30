@@ -49,88 +49,23 @@ int main(int argc_, char **argv_) {
   try {
     clog << "Test program for class 'geomtools::manager' from SuperNEMO geometry !" << endl;
 
-    bool debug = false;
-    bool devel = false;
-    bool verbose = false;
     string manager_config_file;
-    bool dump = false;
-    bool with_mapping = true;
-
-    int iarg = 1;
-    while (iarg < argc_) {
-      string token = argv_[iarg];
-
-      if (token[0] == '-') {
-        string option = token;
-        if ((option == "-d") || (option == "--debug")) {
-          debug = true;
-        } else if ((option == "-D") || (option == "--devel")) {
-          devel = true;
-        } else if ((option == "-V") || (option == "--verbose")) {
-          verbose = true;
-        } else if ((option == "-p") || (option == "--dump")) {
-          dump = true;
-        } else if ((option == "-m") || (option == "--with-mapping")) {
-          with_mapping = true;
-        } else if ((option == "-M") || (option == "--without-mapping")) {
-          with_mapping = false;
-        } else {
-          clog << datatools::io::warning << "ignoring option '" << option << "'!" << endl;
-        }
-      } else {
-        string argument = token;
-        { clog << datatools::io::warning << "ignoring argument '" << argument << "'!" << endl; }
-      }
-      iarg++;
-    }
-
+    
     if (manager_config_file.empty()) {
-      manager_config_file = "@falaise:config/snemo/demonstrator/geometry/3.0/manager.conf";
+      manager_config_file = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
     }
     datatools::fetch_path_with_env(manager_config_file);
-    if (devel) {
-      clog << datatools::io::devel << "Manager config. file : '" << manager_config_file << "'"
-           << endl;
-    }
+    clog << datatools::io::devel << "Manager config. file : '" << manager_config_file << "'" << std::endl;
+    
     // load properties from the configuration file:
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);
     geomtools::manager my_manager;
-    if (verbose) my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
-    if (debug) my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
-    if (devel) my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
-    if (with_mapping) {
-      // prepare mapping configuration with a limited set
-      // of geometry categories:
-
-      // ensure the mapping features will be built:
-      manager_config.update("build_mapping", true);
-
-      // remove the 'exclusion' property if any:
-      if (manager_config.has_key("mapping.excluded_categories")) {
-        manager_config.erase("mapping.excluded_categories");
-      }
-
-      // define a set of geometry categories to be mapped
-      // through the embedded mapping system:
-      vector<string> only_categories;
-      only_categories.push_back("hall");
-      only_categories.push_back("module");
-      only_categories.push_back("source_pad");
-      only_categories.push_back("source_strip");
-      only_categories.push_back("drift_cell_core");
-      only_categories.push_back("xcalo_block");
-      only_categories.push_back("gveto_block");
-      only_categories.push_back("calorimeter_block");
-
-      // set the 'only' property:
-      manager_config.update("mapping.only_categories", only_categories);
-    }
+    my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
     my_manager.initialize(manager_config);
-    if (dump) {
-      my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
-      my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
-    }
+    my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
+    my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
+    
     my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
 
     /* Partial view of the manager data model :

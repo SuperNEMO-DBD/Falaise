@@ -225,12 +225,15 @@ void falaise_sys::_libinfo_deregistration_() {
 void falaise_sys::_initialize_urn_services_() {
   DT_LOG_TRACE_ENTERING(_logging_);
 
+  // Currently, path to these are hardcoded...
+  std::string urn_db_conf_file = "@falaise:urn_db.conf";
+  std::string urn_resolver_conf_file = "@falaise:urn_resolver.conf";
+
   // Activate an URN info DB service:
   {
     datatools::urn_db_service &urnSetupDb = dynamic_cast<datatools::urn_db_service &>(
         _services_.load_no_init(fl_setup_db_name(), "datatools::urn_db_service"));
     urnSetupDb.set_logging_priority(_logging_);
-    std::string urn_db_conf_file = "@falaise:urn/db/snemo_setup_db.conf";
     datatools::fetch_path_with_env(urn_db_conf_file);
     datatools::properties urn_db_conf;
     urn_db_conf.read_configuration(urn_db_conf_file);
@@ -250,7 +253,6 @@ void falaise_sys::_initialize_urn_services_() {
         dynamic_cast<datatools::urn_to_path_resolver_service &>(_services_.load_no_init(
             fl_resource_resolver_name(), "datatools::urn_to_path_resolver_service"));
     urnResourceResolver.set_logging_priority(_logging_);
-    std::string urn_resolver_conf_file = "@falaise:urn/resolvers/snemo_resource_path_resolver.conf";
     datatools::fetch_path_with_env(urn_resolver_conf_file);
     datatools::properties urn_resolver_conf;
     urn_resolver_conf.read_configuration(urn_resolver_conf_file);

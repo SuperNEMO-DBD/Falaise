@@ -297,7 +297,7 @@ falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
       // We try to setup one with the proper configuration.
       datatools::multi_properties geoServiceConfig("name", "type");
       std::string geoServicePath = geometrySetupConfig;
-      // "@falaise:config/snemo/demonstrator/geometry/4.0/geometry_service.conf";
+      // "@falaise:config/snemo/demonstrator/geometry/GeometryService.conf";
       if (!geoServicePath.empty()) {
         datatools::properties& gs =
             geoServiceConfig.add_section("geometry", "geomtools::geometry_service");

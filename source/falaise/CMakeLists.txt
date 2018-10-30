@@ -158,7 +158,7 @@ endif()
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}"
+  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
   "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
   )
 if(FALAISE_ENABLE_TESTING)

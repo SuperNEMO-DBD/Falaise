@@ -44,10 +44,10 @@ Example
 
 .. raw:: sh
    $ flvisualize \
-     --variant-config="@falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf" \
+     --variant-config="@falaise:config/snemo/demonstrator/geometry/variants/repository.conf" \
      --variant-load="hc1.rep" \
      --input-file "hc1_mc.rec.brio"
 ..
 
-.. @falaise:config/snemo/demonstrator/geometry/4.0/variants/repository.conf
+.. @falaise:config/snemo/demonstrator/geometry/variants/repository.conf
 .. @falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/variants/repository.conf

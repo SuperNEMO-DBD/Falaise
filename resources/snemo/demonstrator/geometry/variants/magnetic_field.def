@@ -1,0 +1,194 @@
+#@description The definitions for variant parameters related to the magnetic field
+#@key_label  "name"
+#@meta_label "type"
+
+# Tree of variants:
+#
+# magnetic_field.VM
+# +-- active : on_off_mag_field.PM
+#     +-- is_active (true)
+#     |   +-- mag_field_desc.VM
+#     |      +-- type : mag_field_type.PM
+#     |          +-- if_mapped (MappedField)
+#     |          |   +-- mapped_mag_field.VM
+#     |          |       +-- map_file :
+#     |          |       +-- z_inverted :
+#     |          +-- if_uniform_vertical (UniformVerticalField)
+#     |              +-- uniform_vertical_mag.VM
+#     |                  +-- magnitude : mag_field_magnitude.PM
+#     |                  +-- direction : mag_field_direction.PM
+#     +-- is_inactive (false)
+#
+# NB: Remember that order is important in a variants file, so innermost
+#     variants in a tree must come first!
+
+[name="magnetic_field.uniform_vertical.direction.PM" type="parameter"]
+  #@config A parameter model describing the direction of the magnetic field
+  display_name        : string = "Magnetic field direction"
+  terse_description   : string = "The direction of the uniform vertical magnetic field"
+  mutability : string = "variable"
+    variable.mode : string = "enumeration"
+  type : string = "string"
+    string.default : string = "+z"
+    string.enumerated.size : integer = 2
+    string.enumerated_0.value : string = "-z"
+    string.enumerated_1.value : string = "+z"
+
+
+[name="magnetic_field.uniform_vertical.magnitude.PM" type="parameter"]
+  #@config A parameter model describing the amplitude of the magnetic field
+  display_name        : string = "Magnetic field magnitude"
+  terse_description   : string = "The magnitude of the uniform vertical magnetic field"
+  mutability : string = "variable"
+    variable.mode : string = "interval"
+  type : string = "real"
+    real.default        : real as magnetic_flux_density = 25 gauss
+    real.unit_label     : string = "magnetic_flux_density"
+    real.preferred_unit : string = "gauss"
+    real.domain         : string = "[0.1 gauss, 100 gauss]"
+
+
+[name="magnetic_field.uniform_vertical.VM" type="variant"]
+  #@config A variant model describing the parameters for the uniform vertical magnetic field
+  display_name       : string = "Uniform vertical magnetic field"
+  terse_description  : string = "The configuration parameters for the uniform vertical magnetic field"
+  parameters : string[2] = "magnitude" "direction"
+    parameters.magnitude.model       : string = "magnetic_field.uniform_vertical.magnitude.PM"
+    parameters.magnitude.description : string = "The magnitude of the magnetic field"
+    parameters.direction.model       : string = "magnetic_field.uniform_vertical.direction.PM"
+    parameters.direction.description : string = "The direction of the magnetic field"
+
+
+[name="magnetic_field.mapped.z_inverted.PM" type="parameter"]
+  #@config A parameter model describing the inversion of the Z component of the mapped magnetic field
+  display_name        : string = "Mapped magnetic field Z inversion"
+  terse_description   : string = "The Z inversion of the mapped magnetic field"
+  mutability : string = "variable"
+  type : string = "boolean"
+    boolean.default : boolean = false
+    boolean.false.documentation : string = "The mapped magnetic field points to the Z>0 axis"
+    boolean.false.variant : string = "is_inactive"
+    boolean.true.documentation  : string = "The mapped magnetic field points to the Z<0 axis"
+    boolean.true.variant  : string = "is_active"
+  variants : string [2] = "is_active" "is_inactive"
+    variants.is_active.model       : string = "datatools::basic::is_on.VM"
+    variants.is_active.description : string = "Inverted Z component"
+    variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+    variants.is_inactive.description : string = "Normal Z component"
+
+
+[name="magnetic_field.mapped.map.user.map_file.PM" type="parameter"]
+  display_name        : string = "User defined magnetic field mapping file"
+  terse_description   : string = "The user defined mapping file of the mapped magnetic field"
+  mutability : string = "variable"
+    variable.mode       : string = "free"
+  type : string = "string"
+  path : boolean = true
+  path.io : string = "input"
+
+
+[name="magnetic_field.mapped.map.user.VM" type="variant"]
+  #@config A variant model describing the parameters for the 'user' mapped magnetic field
+  display_name       : string = "User defined mapped magnetic field"
+  terse_description  : string = "The configuration parameters for the 'User' mapped magnetic field"
+  parameters : string[1] = "map_file"
+    parameters.map_file.model       : string = "magnetic_field.mapped.map.user.map_file.PM"
+    parameters.map_file.description : string = "The mapping file of the user defined mapped magnetic field"
+
+
+[name="magnetic_field.mapped.map.map0.VM" type="variant"]
+  #@config A variant model describing the parameters for the 'map0' mapped magnetic field
+  display_name       : string = "Map0 mapped magnetic field"
+  terse_description  : string = "The configuration parameters for the 'map0' mapped magnetic field"
+
+
+[name="magnetic_field.mapped.map.PM" type="parameter"]
+  #@config A parameter model describing the mapping file of the mapped magnetic field
+  display_name        : string = "Magnetic field mapping file"
+  terse_description   : string = "The mapping file of the mapped magnetic field"
+  mutability : string = "variable"
+    variable.mode : string = "enumeration"
+  type : string = "string"
+    string.default : string = "Map0"
+    string.enumerated.size : integer = 2
+      string.enumerated_0.value         : string = "Map0"
+      string.enumerated_0.documentation : string = "Registered mapped magnetic field #0"
+      string.enumerated_0.variant       : string = "if_map0"
+      string.enumerated_1.value         : string = "User"
+      string.enumerated_1.documentation : string = "User defined mapped magnetic field"
+      string.enumerated_1.variant       : string = "if_user"
+  variants : string[2] = "if_map0" "if_user"
+    variants.if_map0.model       : string = "magnetic_field.mapped.map.map0.VM"
+    variants.if_map0.description : string = "'Map0' mapped magnetic field"
+    variants.if_user.model       : string = "magnetic_field.mapped.map.user.VM"
+    variants.if_user.description : string = "Set of parameters for the 'User' defined mapped magnetic field"
+
+
+[name="magnetic_field.mapped.VM" type="variant"]
+  #@config A variant model describing the parameters for the mapped magnetic field
+  display_name       : string = "Mapped magnetic field"
+  terse_description  : string = "The configuration parameters for the mapped magnetic field"
+  parameters : string[2] = "map" "z_inverted"
+    parameters.map.model         : string = "magnetic_field.mapped.map.PM"
+    parameters.map.description   : string = "Selection of the mapped magnetic field"
+    parameters.z_inverted.model       : string = "magnetic_field.mapped.z_inverted.PM"
+    parameters.z_inverted.description : string = "The Z inversion of the mapped magnetic field"
+
+
+[name="magnetic_field.type.PM" type="parameter"]
+  #@config A parameter describing the type of magnetic field
+  display_name              : string = "Type of magnetic field"
+  terse_description         : string = "The type of the magnetic field"
+  mutability : string = "variable"
+    variable.mode : string = "enumeration"
+  type : string = "string"
+    string.default : string = "UniformVertical"
+    string.enumerated.size : integer = 2
+      string.enumerated_0.value         : string = "UniformVertical"
+      string.enumerated_0.documentation : string = "Magnetic field is uniform vertical"
+      string.enumerated_0.variant       : string = "if_uniform_vertical"
+      string.enumerated_1.value         : string= "Mapped"
+      string.enumerated_1.documentation : string = "Magnetic field is mapped"
+      string.enumerated_1.variant       : string       = "if_mapped"
+  variants : string[2] = "if_uniform_vertical" "if_mapped"
+    variants.if_uniform_vertical.model       : string = "magnetic_field.uniform_vertical.VM"
+    variants.if_uniform_vertical.description : string = "Set of parameters for the uniform vertical magnetic field"
+    variants.if_mapped.model       : string = "magnetic_field.mapped.VM"
+    variants.if_mapped.description : string = "Set of parameters for the mapped magnetic field"
+
+
+[name="magnetic_field.description.VM" type="variant"]
+  #@config A variant model describing the active magnetic field
+  display_name       : string = "Description of the magnetic field"
+  terse_description  : string = "The description of the magnetic field"
+  parameters : string[1] = "type"
+    parameters.type.model       : string = "magnetic_field.type.PM"
+    parameters.type.description : string = "The type of the magnetic field"
+
+
+[name="magnetic_field.on_off.PM" type="parameter"]
+  #@config A parameter model describing the activation of the magnetic field
+  display_name        : string = "Magnetic field activation"
+  terse_description   : string = "The activation of the magnetic field "
+  mutability : string = "variable"
+  type : string = "boolean"
+    boolean.default     : boolean = true
+    boolean.true.variant : string = "is_active"
+    boolean.true.documentation : string = "Apply a magnetic field"
+    boolean.false.variant : string = "is_inactive"
+    boolean.false.documentation : string = "No magnetic field"
+  variants : string [2] = "is_active" "is_inactive"
+    variants.is_active.model       : string = "magnetic_field.description.VM"
+    variants.is_active.description : string = "Set of parameters for activated magnetic field"
+    variants.is_inactive.model       : string = "datatools::basic::is_off.VM"
+    variants.is_inactive.description : string = "Inactive magnetic field"
+
+
+[name="magnetic_field.VM" type="variant"]
+  #@config A variant model describing the parameters for the magnetic field
+  display_name       : string = "Source strips"
+  terse_description  : string = "The configuration parameters for the magnetic field"
+  parameters : string[1] = "active"
+    parameters.active.model       : string = "magnetic_field.on_off.PM"
+    parameters.active.description : string = "The activation flag of the magnetic field"
+

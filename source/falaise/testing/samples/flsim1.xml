@@ -177,7 +177,7 @@
 				<string_values>
 					<count>1</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf</item>
+					<item>@falaise:snemo/demonstrator/geometry/GeometryManager.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -239,7 +239,7 @@
 				<string_values>
 					<count>1</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/primary_events/1.1/manager.conf</item>
+					<item>@falaise:snemo/demonstrator/simulation/primary_events/1.1/manager.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -301,7 +301,7 @@
 				<string_values>
 					<count>1</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/vertexes/4.0/manager.conf</item>
+          <item>@falaise:snemo/demonstrator/geometry/VertexGeneratorManager.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -387,8 +387,8 @@
 				<string_values>
 					<count>2</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/hit_processing/step_hit_processors-no_visu_tracks.conf</item>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/hit_processing/step_hit_processors-only_visu_tracks.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/hit_processing/step_hit_processors-no_visu_tracks.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/hit_processing/step_hit_processors-only_visu_tracks.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -603,10 +603,10 @@
 				<string_values>
 					<count>4</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/calorimeter.conf</item>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/gveto.conf</item>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/xcalorimeter.conf</item>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/sensitive/tracker.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/sensitive/calorimeter.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/sensitive/gveto.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/sensitive/xcalorimeter.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/sensitive/tracker.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -679,7 +679,7 @@
 				<string_values>
 					<count>1</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/processes/em.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/processes/em.conf</item>
 				</string_values>
 			</second>
 		</item>
@@ -716,7 +716,7 @@
 				<string_values>
 					<count>1</count>
 					<item_version>0</item_version>
-					<item>@falaise:config/snemo/demonstrator/simulation/geant4_control/2.0/processes/particles.conf</item>
+					<item>@falaise:snemo/demonstrator/geant4_control/processes/particles.conf</item>
 				</string_values>
 			</second>
 		</item>
