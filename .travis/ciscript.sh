@@ -10,6 +10,13 @@ set -ex
 SELFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECTDIR="$(dirname "${SELFDIR}")"
 
+# On Linux, check for brew'd GCC
+if [ `uname` == "Linux" ] ; then
+  export CC=gcc-7
+  export CXX=g++-7
+  export FC=gfortran-7
+fi
+
 # Create build directory, deleting if present
 rm -Rf build && mkdir build
 cd build
