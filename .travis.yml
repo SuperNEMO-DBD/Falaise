@@ -20,6 +20,12 @@ matrix:
         - DOCKER_IMAGE=supernemo/falaise-centos6-base:latest
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
+    - os: linux
+      services: docker
+      env:
+        - DOCKER_IMAGE=supernemo/falaise-centos7-base:latest
+        - DOCKER_CONTAINER=falaise-docker
+        - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: osx
       osx_image: xcode8.3
       compiler: clang
