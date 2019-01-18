@@ -38,15 +38,14 @@ together with instructions for use are available from [Docker Hub](https://hub.d
 To build Falaise on your machine, the following requirements must be met:
 
 - Linux or macOS System
-  - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
+  - Supported Linux systems: CentOS6/7, Ubuntu 16.04/18.04LTS
   - Other Linux distributions are known to work, but are not
     officially supported. However, patches are welcome to resolve encountered issues!
-  - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
-  - macOS High Sierra is not yet officially supported, but work is in progress
-- GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
+  - Suported macOS systems: 10.12/13/14 (Sierra/High Sierra/Mojave)
+- GCC (>= 4.9), Clang (>=3.5) or Xcode >= 8
 - [CMake](https://cmake.org) 3.5 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.1.2 or higher
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.0 or higher
 - [Boost](https:/boost.org) 1.63.0 or higher
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
