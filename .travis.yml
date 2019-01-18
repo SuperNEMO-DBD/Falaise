@@ -17,6 +17,12 @@ matrix:
     - os: linux
       services: docker
       env:
+        - DOCKER_IMAGE=supernemo/falaise-ubuntu1804-base:latest
+        - DOCKER_CONTAINER=falaise-docker
+        - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
+    - os: linux
+      services: docker
+      env:
         - DOCKER_IMAGE=supernemo/falaise-centos6-base:latest
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
@@ -27,7 +33,7 @@ matrix:
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10.1
       compiler: clang
   # Mac doesn't work just yet due to missing bottles but want to confirm things run.
   allow_failures:
