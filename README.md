@@ -22,14 +22,14 @@ can be used too.
 
 # Getting Falaise
 ## Quickstart
-We recommend installing Falaise and its requirements as documented on our [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew). Both build-from-source and Docker/Singularity
-Image installs are available, both providing a complete suite for using and developing
-Falaise and extension modules. We strongly recommend Docker/Singularity Images on systems
-which support these tools, especially on institution systems/clusters such as CC-IN2P3, as
-these provide the most reliable and reproducible environments.
+We recommend installing Falaise and its requirements as documented on our [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew).
+Build-from-source and [Docker](https://www.docker.com)/[Singularity](https://www.sylabs.io/singularity/)
+Image installs are available, both providing a complete suite of software and tools for using and developing Falaise and extension modules.
 
-For both systems, we strongly recommend that you run and develop Falaise from within the
-`snemo-shell` environment provided, which is started and exited by running:
+We strongly recommend Docker/Singularity Images on systems which support these tools,
+especially on institution systems/clusters such as CC-IN2P3, as these provide the most
+reliable and reproducible environments. For both systems, we strongly recommend that you
+run and develop Falaise from within the `snemo-shell` environment provided, which is started and exited by running:
 
 ```console
 $ brew snemo-shell
