@@ -22,8 +22,7 @@ can be used too.
 
 # Getting Falaise
 ## Quickstart
-We recommend installing Falaise and its requirements as documented on our [fork of Homebrew]
-(https://github.com/SuperNEMO-DBD/brew). Both build-from-source and Docker/Singularity
+We recommend installing Falaise and its requirements as documented on our [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew). Both build-from-source and Docker/Singularity
 Image installs are available, both providing a complete suite for using and developing
 Falaise and extension modules. We strongly recommend Docker/Singularity Images on systems
 which support these tools, especially on institution systems/clusters such as CC-IN2P3, as
