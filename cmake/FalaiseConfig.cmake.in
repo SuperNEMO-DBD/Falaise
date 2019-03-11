@@ -39,7 +39,6 @@ set(Falaise_VERSION_REVISION "@Falaise_VERSION_REVISION@")
 set(Falaise_CMAKE_CONFIG_DIR "${CMAKE_CURRENT_LIST_DIR}")
 
 # Component Availability
-set(Falaise_developer_tools_FOUND "@FALAISE_WITH_DEVELOPER_TOOLS@")
 set(Falaise_companions_FOUND "@FALAISE_WITH_COMPANIONS@")
 set(Falaise_docs_FOUND "@FALAISE_WITH_DOCS@")
 

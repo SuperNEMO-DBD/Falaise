@@ -76,12 +76,6 @@ if(FALAISE_ENABLE_TESTING)
 endif()
 
 #-----------------------------------------------------------------------
-# Configure/Build utilities as needed
-#
-option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
-mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
-
-#-----------------------------------------------------------------------
 # Optional build of documentation
 #
 option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
