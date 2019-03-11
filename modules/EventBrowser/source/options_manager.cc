@@ -462,17 +462,6 @@ void options_manager::print_examples(std::ostream& out_, const std::string& name
   out_ << "      --variant-profile \"variant.profile\" \\" << std::endl;
   out_ << "      --input-file <simulation/reconstruction file>";
   out_ << std::endl;
-  out_ << " 4) Visualizing BiPo3 detector :" << std::endl;
-  out_ << "    " << name_ << " \\" << std::endl;
-  out_ << "      --detector-config-file "
-       << "$(flquery --resourcedir)"
-       /* << falaise::get_resource_dir()*/
-       << "/config/bipo3/geometry/2.0/manager.conf \\" << std::endl;
-  out_ << "      --style-config-file "
-       << "$(flquery --resourcedir)"
-       /* << falaise::get_resource_dir() */
-       << "/modules/EventBrowser/styles/bipo3_default.sty" << std::endl;
-  out_ << std::endl;
   out_ << std::endl;
   out_ << " See README for other running examples" << std::endl;
   out_ << std::endl;

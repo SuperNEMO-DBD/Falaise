@@ -44,9 +44,6 @@ add_subdirectory(flreconstruct)
 # - Tags
 add_subdirectory(fltags)
 
-# - Utilities
-add_subdirectory(flquery)
-
 #-----------------------------------------------------------------------
 # Manual
 #
