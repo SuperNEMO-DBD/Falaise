@@ -141,11 +141,8 @@ void calorimeter_s2c_module::initialize(const datatools::properties& setup_,
        icategory != _hit_categories_.end(); ++icategory) {
     const std::string& the_category = *icategory;
 
-    snemo::processing::calorimeter_regime new_regime;
-    new_regime.set_category(the_category);
-    new_regime.initialize(setup_);
-
-    _calorimeter_regimes_[the_category] = new_regime;
+    snemo::processing::CalorimeterModel new_regime {setup_};
+    _CalorimeterModels_[the_category] = new_regime;
   }
 
   // Setup trigger time
@@ -170,10 +167,10 @@ void calorimeter_s2c_module::reset() {
   _random_.reset();
 
   // Reset the calorimeter regime utility:
-  for (calorimeter_regime_col_type::iterator icalo = _calorimeter_regimes_.begin();
-       icalo != _calorimeter_regimes_.end(); ++icalo) {
-    icalo->second.reset();
-  }
+  //for (CalorimeterModel_col_type::iterator icalo = _CalorimeterModels_.begin();
+  //     icalo != _CalorimeterModels_.end(); ++icalo) {
+  //  icalo->second.reset();
+  //}
 
   _hit_categories_.clear();
 
@@ -281,8 +278,8 @@ void calorimeter_s2c_module::_process_calorimeter_digitization(
 
       // quench the alpha particle energy if property is activated:
       if (a_calo_hit.get_particle_name() == "alpha" && _alpha_quenching_) {
-        const snemo::processing::calorimeter_regime& the_calo_regime =
-            _calorimeter_regimes_.at(category);
+        const snemo::processing::CalorimeterModel& the_calo_regime =
+            _CalorimeterModels_.at(category);
         const double quenched_energy = the_calo_regime.quench_alpha_energy(step_hit_energy_deposit);
         step_hit_energy_deposit = quenched_energy;
       }
@@ -474,8 +471,8 @@ void calorimeter_s2c_module::_process_calorimeter_calibration(
     // Setting category in order to get the correct energy resolution:
     // first recover the calorimeter category
     const std::string& category_name = the_calo_cluster.get_auxiliaries().fetch_string("category");
-    const snemo::processing::calorimeter_regime& the_calo_regime =
-        _calorimeter_regimes_.at(category_name);
+    const snemo::processing::CalorimeterModel& the_calo_regime =
+        _CalorimeterModels_.at(category_name);
 
     // Compute a random 'experimental' energy taking into account
     // the expected energy resolution of the calorimeter hit:
@@ -513,8 +510,8 @@ void calorimeter_s2c_module::_process_calorimeter_trigger(
     // Setting category in order to get the correct trigger parameters:
     // first recover the calorimeter category
     const std::string& category_name = the_calo_cluster.get_auxiliaries().fetch_string("category");
-    const snemo::processing::calorimeter_regime& the_calo_regime =
-        _calorimeter_regimes_.at(category_name);
+    const snemo::processing::CalorimeterModel& the_calo_regime =
+        _CalorimeterModels_.at(category_name);
 
     const double energy = the_calo_cluster.get_energy();
 
@@ -532,8 +529,8 @@ void calorimeter_s2c_module::_process_calorimeter_trigger(
 
       const std::string& category_name =
           the_calo_cluster.get_auxiliaries().fetch_string("category");
-      const snemo::processing::calorimeter_regime& the_calo_regime =
-          _calorimeter_regimes_.at(category_name);
+      const snemo::processing::CalorimeterModel& the_calo_regime =
+          _CalorimeterModels_.at(category_name);
 
       const double energy = the_calo_cluster.get_energy();
 

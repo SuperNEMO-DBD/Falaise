@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/processing/calorimeter_regime.cc
+/** \file falaise/snemo/processing/CalorimeterModel.cc
  */
 
 // Ourselves:
@@ -10,225 +10,100 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/clhep_units.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/clhep_units.h>
 // - Bayeux/mygsl:
-#include <mygsl/rng.h>
+
+namespace {
+const double fwhm2sig{1.0 / (2 * sqrt(2 * log(2.0)))};
+}
 
 namespace snemo {
 
 namespace processing {
 
-// static
-const double& calorimeter_regime::default_energy_resolution() {
-  static double _r(8. * CLHEP::perCent);
-  return _r;
-}
-
-// static
-const double& calorimeter_regime::default_low_energy_threshold() {
-  static double _th(50. * CLHEP::keV);
-  return _th;
-}
-
-// static
-const double& calorimeter_regime::default_high_energy_threshold() {
-  static double _th(150. * CLHEP::keV);
-  return _th;
-}
-
-// static
-const double& calorimeter_regime::default_scintillator_relaxation_time() {
-  static double _t(6. * CLHEP::ns);
-  return _t;
-}
-
-bool calorimeter_regime::is_initialized() const { return _initialized_; }
-
-calorimeter_regime::calorimeter_regime() {
-  _initialized_ = false;
-  _init_defaults_();
-  return;
-}
-
-void calorimeter_regime::initialize(const datatools::properties& config_) {
-  DT_THROW_IF(is_initialized(), std::logic_error, "Calorimeter regime is already initialized !");
-
-  if (config_.has_key("energy.resolution")) {
-    _resolution_ = config_.fetch_real_with_explicit_dimension("energy.resolution", "fraction");
+CalorimeterModel::CalorimeterModel(falaise::config::property_set const& ps)
+    : CalorimeterModel::CalorimeterModel() {
+  if (ps.has_key("energy.resolution")) {
+    energyResolution = ps.get<falaise::config::fraction_t>("energy.resolution")();
   }
 
-  if (config_.has_key("energy.high_threshold")) {
-    _high_threshold_ = config_.fetch_real_with_explicit_dimension("energy.high_threshold", "energy");
+  if (ps.has_key("energy.high_threshold")) {
+    highEnergyThreshold = ps.get<falaise::config::energy_t>("energy.high_threshold")();
   }
 
-  if (config_.has_key("energy.low_threshold")) {
-    _low_threshold_ = config_.fetch_real_with_explicit_dimension("energy.low_threshold", "energy");
+  if (ps.has_key("energy.low_threshold")) {
+    lowEnergyThreshold = ps.get<falaise::config::energy_t>("energy.low_threshold")();
   }
 
-  // Alpha quenching fit parameters
   const std::string key_name = "alpha_quenching_parameters";
-  if (config_.has_key(key_name)) {
-    _alpha_quenching_0_ = config_.fetch_real_vector(key_name, 0);
-    _alpha_quenching_1_ = config_.fetch_real_vector(key_name, 1);
-    _alpha_quenching_2_ = config_.fetch_real_vector(key_name, 2);
+  if (ps.has_key(key_name)) {
+    auto tmp = ps.get<std::vector<double>>(key_name);
+    DT_THROW_IF(tmp.size() != 3, std::domain_error, "alpha_quenching_parameters must be array of size 3");
+    alphaQuenching_0 = tmp[0];
+    alphaQuenching_1 = tmp[1];
+    alphaQuenching_2 = tmp[2];
   }
 
   // Scintillator relaxation time for time resolution
-  if (config_.has_key("scintillator_relaxation_time")) {
-    _scintillator_relaxation_time_
-      = config_.fetch_real_with_explicit_dimension("scintillator_relaxation_time", "time");
+  if (ps.has_key("scintillator_relaxation_time")) {
+    relaxationTime = ps.get<falaise::config::time_t>("scintillator_relaxation_time")();
   }
-
-  _initialized_ = true;
-  return;
 }
 
-void calorimeter_regime::_init_defaults_() {
-  // Default energy resolution:
-  _resolution_ = default_energy_resolution();
-
-  // Default trigger thresholds:
-  _high_threshold_ = default_high_energy_threshold();
-  _low_threshold_ = default_low_energy_threshold();
-
-  // Default scintillation relaxation time:
-  _scintillator_relaxation_time_ = default_scintillator_relaxation_time();
-
-  // Default alpha quenching parameters:
-  _alpha_quenching_0_ = 77.4;
-  _alpha_quenching_1_ = 0.639;
-  _alpha_quenching_2_ = 2.34;
-
-  // Default category is empty:
-  _category_ = "";
-
-  return;
-}
-
-void calorimeter_regime::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-  _init_defaults_();
-  _initialized_ = false;
-  return;
-}
-
-void calorimeter_regime::set_category(const std::string& category_) { _category_ = category_; }
-
-const std::string& calorimeter_regime::get_category() const { return _category_; }
-
-double calorimeter_regime::randomize_energy(mygsl::rng& ran_, const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-
+double CalorimeterModel::randomize_energy(mygsl::rng& rng, const double energy) const {
   // 2015-01-08 XG: Implement a better energy calibration based on Poisson
   // statistics for the number of photons inside scintillator. This
   // technique should be more accurate for low energy deposit.
   // const double fwhm2sig = 2*sqrt(2*log(2.0));
-  // const double nrj2photon = std::pow(fwhm2sig/_resolution_, 2);
+  // const double nrj2photon = std::pow(fwhm2sig/energyResolution, 2);
   // const double mu = energy_ / CLHEP::MeV * nrj2photon;
   // const double spread_energy = ran_.poisson(mu) / nrj2photon;
   // return spread_energy;
 
   // 2016-06-01 XG: Get back to gaussian fluctuation to avoid fixed number
   // of photon-electron due to Poisson distribution
-  const double sigma_energy = get_sigma_energy(energy_);
-  const double spread_energy = ran_.gaussian(energy_, sigma_energy);
+  const double sigma_energy = get_sigma_energy(energy);
+  const double spread_energy = rng.gaussian(energy, sigma_energy);
   return (spread_energy < 0.0 ? 0.0 : spread_energy);
 }
 
-double calorimeter_regime::get_sigma_energy(const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-
-  const double fwhm2sig = 1.0 / (2 * sqrt(2 * log(2.0)));
-
-  return _resolution_ * fwhm2sig * sqrt(energy_ / CLHEP::MeV);
+double CalorimeterModel::get_sigma_energy(const double energy) const {
+  return energyResolution * fwhm2sig * sqrt(energy / CLHEP::MeV);
 }
 
-double calorimeter_regime::quench_alpha_energy(const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
-  const double energy = energy_ * CLHEP::MeV;
+double CalorimeterModel::quench_alpha_energy(const double energy) const {
+  const double raw_energy = energy * CLHEP::MeV;
 
-  const double par_0 = _alpha_quenching_0_;
-  const double par_1 = _alpha_quenching_1_;
-  const double par_2 = _alpha_quenching_2_;
-
-  const double mod_energy = 1.0 / (par_1 * energy + 1.0);
+  const double mod_energy = 1.0 / (alphaQuenching_1 * raw_energy + 1.0);
   const double quenching_factor =
-      -par_0 * (std::pow(mod_energy, par_2) - std::pow(mod_energy, par_2 / 2.0));
+      -alphaQuenching_0 *
+      (std::pow(mod_energy, alphaQuenching_2) - std::pow(mod_energy, alphaQuenching_2 / 2.0));
 
-  const double quenched_energy = energy / quenching_factor;
-
-  return quenched_energy;
+  return raw_energy / quenching_factor;
 }
 
-double calorimeter_regime::randomize_time(mygsl::rng& ran_, const double time_,
-                                          const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-
-  const double sigma_time = get_sigma_time(energy_);
-  const double spread_time = ran_.gaussian(time_, sigma_time);
-
-  // Negative time are physical since start time does not have
-  // physical sense: return (spread_time < 0.0 ? 0.0 : spread_time);
-  return spread_time;
+double CalorimeterModel::randomize_time(mygsl::rng& rng, const double time,
+                                        const double energy) const {
+  const double sigma_time = get_sigma_time(energy);
+  // Negative time are physical since input time is relative
+  return rng.gaussian(time, sigma_time);
 }
 
-double calorimeter_regime::get_sigma_time(const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-
+double CalorimeterModel::get_sigma_time(const double energy) const {
   // Have a look inside Gregoire Pichenot thesis(NEMO2) and
   // L. Simard parametrization for NEMO3 simulation
-  const double scin_time = _scintillator_relaxation_time_;
-
-  const double fwhm2sig = 1.0 / (2 * sqrt(2 * log(2.0)));
-  const double sigma_e = _resolution_ * fwhm2sig;
-
-  const double sigma_time = scin_time * sigma_e / sqrt(energy_ / CLHEP::MeV);
-
-  return sigma_time;
+  const double sigma_e = energyResolution * fwhm2sig;
+  return relaxationTime * sigma_e / sqrt(energy / CLHEP::MeV);
 }
 
-bool calorimeter_regime::is_high_threshold(const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-  return (energy_ >= _high_threshold_);
+bool CalorimeterModel::is_high_threshold(const double energy) const {
+  return (energy >= highEnergyThreshold);
 }
 
-bool calorimeter_regime::is_low_threshold(const double energy_) const {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-  return (energy_ >= _low_threshold_);
-}
-
-void calorimeter_regime::tree_dump(std::ostream& out_, const std::string& title_,
-                                   const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
-  if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
-  }
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Initialized          : " << is_initialized()
-       << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Energy resolution     = " << _resolution_ / CLHEP::perCent << " %" << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Low energy threshold  = " << _low_threshold_ / CLHEP::keV << " keV" << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "High energy threshold = " << _high_threshold_ / CLHEP::keV << " keV" << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Relaxation time       = " << _scintillator_relaxation_time_ / CLHEP::ns << " ns"
-       << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Alpha quenching par0  = " << _alpha_quenching_0_ << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Alpha quenching par1  = " << _alpha_quenching_1_ << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Alpha quenching par2  = " << _alpha_quenching_2_ << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
-       << "Category              = " << _category_ << std::endl;
-  return;
+bool CalorimeterModel::is_low_threshold(const double energy) const {
+  return (energy >= lowEnergyThreshold);
 }
 
 }  // end of namespace processing
@@ -242,14 +117,14 @@ void calorimeter_regime::tree_dump(std::ostream& out_, const std::string& title_
 #include <datatools/object_configuration_description.h>
 
 /** Opening macro for implementation
- *  @arg snemo::processing::calorimeter_regime  the full class name
+ *  @arg snemo::processing::CalorimeterModel  the full class name
  *  @arg ocd_ is the identifier of the 'datatools::object_configuration_description'
  *            to be initialized (passed by mutable reference).
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
-  ocd_.set_class_name("snemo::processing::calorimeter_regime");
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::CalorimeterModel, ocd_) {
+  ocd_.set_class_name("snemo::processing::CalorimeterModel");
   ocd_.set_class_description(
-      "This object describes the calorimeter regime of SuperNEMO optical line");
+      "A model of the energy/time smearing in SuperNEMO Wall and Veto Calorimeters");
   ocd_.set_class_library("falaise");
   // ocd_.set_class_documentation("");
 
@@ -262,8 +137,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
         .set_explicit_unit(true)
         .set_unit_label("fraction")
         .set_unit_symbol("%")
-        .set_default_value_real(snemo::processing::calorimeter_regime::default_energy_resolution(),
-                                "%")
         .add_example(
             "Set the default value::                          \n"
             "                                                 \n"
@@ -281,8 +154,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
         .set_explicit_unit(true)
         .set_unit_label("energy")
         .set_unit_symbol("keV")
-        .set_default_value_real(
-            snemo::processing::calorimeter_regime::default_low_energy_threshold(), "keV")
         .add_example(
             "Set the default value::                          \n"
             "                                                 \n"
@@ -300,8 +171,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
         .set_explicit_unit(true)
         .set_unit_label("energy")
         .set_unit_symbol("keV")
-        .set_default_value_real(
-            snemo::processing::calorimeter_regime::default_high_energy_threshold(), "keV")
         .add_example(
             "Set the default value::                            \n"
             "                                                   \n"
@@ -320,8 +189,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
         .set_explicit_unit(true)
         .set_unit_label("time")
         .set_unit_symbol("ns")
-        .set_default_value_real(
-            snemo::processing::calorimeter_regime::default_scintillator_relaxation_time(), "ns")
         .add_example(
             "Set the default value::                                \n"
             "                                                       \n"
@@ -365,8 +232,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::calorimeter_regime, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'snemo::processing::calorimeter_regime' :
-DOCD_CLASS_SYSTEM_REGISTRATION(snemo::processing::calorimeter_regime,
-                               "snemo::processing::calorimeter_regime")
-
-// end of falaise/snemo/processing/calorimeter_regime.cc
+// Registration macro for class 'snemo::processing::CalorimeterModel' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snemo::processing::CalorimeterModel,
+                               "snemo::processing::CalorimeterModel")

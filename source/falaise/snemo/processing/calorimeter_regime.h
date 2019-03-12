@@ -23,15 +23,11 @@
 
 // Third party
 // - Bayeux/datatools
-#include <datatools/i_tree_dump.h>
+#include <bayeux/mygsl/rng.h>
+#include <CLHEP/Units/SystemOfUnits.h>
 
-namespace datatools {
-class properties;
-}
+#include "falaise/config/property_set.h"
 
-namespace mygsl {
-class rng;
-}
 
 namespace snemo {
 
@@ -39,77 +35,41 @@ namespace processing {
 
 /// \brief Simple modelling of the energy and time measurement with the SuperNEMO calorimeter
 /// optical lines
-class calorimeter_regime : public datatools::i_tree_dumpable {
+class CalorimeterModel {
  public:
-  /// Return the default energy resolution
-  static const double& default_energy_resolution();
-
-  /// Return the default low energy threshold
-  static const double& default_low_energy_threshold();
-
-  /// Return the default high energy threshold
-  static const double& default_high_energy_threshold();
-
-  /// Return the default scintillator relaxation time
-  static const double& default_scintillator_relaxation_time();
-
-  /// Check initialization flag
-  bool is_initialized() const;
-
-  /// Default constructor
-  calorimeter_regime();
-
-  /// Initialization from parameters
-  void initialize(const datatools::properties& config_);
-
-  /// Reset
-  void reset();
+  CalorimeterModel() = default;
+  explicit CalorimeterModel(falaise::config::property_set const& ps);
 
   /// Randomize the measured energy value given the true energy
-  double randomize_energy(mygsl::rng& ran_, const double energy_) const;
+  double randomize_energy(mygsl::rng& rng, const double energy) const;
 
   /// Return the error on energy
-  double get_sigma_energy(const double energy_) const;
+  double get_sigma_energy(const double energy) const;
 
   /// Compute the effective quenched energy for alpha particle
-  double quench_alpha_energy(const double energy_) const;
+  double quench_alpha_energy(const double energy) const;
 
   /// Randomize the measured time value given the true time and energy
-  double randomize_time(mygsl::rng& ran_, const double time_, const double energy_) const;
+  double randomize_time(mygsl::rng& rng, const double time, const double energy) const;
 
   /// Return the error on time
-  double get_sigma_time(const double energy_) const;
+  double get_sigma_time(const double energy) const;
 
   /// Check if a given energy passes the high threshold
-  bool is_high_threshold(const double energy_) const;
+  bool is_high_threshold(const double energy) const;
 
   /// Check if a given energy passes the low threshold
-  bool is_low_threshold(const double energy_) const;
-
-  /// Set the category of the optical modules associated to this calorimeter regime
-  void set_category(const std::string& category_);
-
-  /// Return the category of the optical modules associated to this calorimeter regime
-  const std::string& get_category() const;
-
-  /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  bool is_low_threshold(const double energy) const;
 
  private:
-  void _init_defaults_();
+  double highEnergyThreshold {150.*CLHEP::keV}; //!< High energy threshold
+  double lowEnergyThreshold {50.*CLHEP::keV};   //!< Low energy threshold
 
- private:
-  bool _initialized_;                     //!< Initialization flag
-  double _resolution_;                    //!< Energy resolution for electrons at 1 MeV
-  double _high_threshold_;                //!< High energy threshold
-  double _low_threshold_;                 //!< Low energy threshold
-  double _alpha_quenching_0_;             //!< Parameter 0 for alpha quenching
-  double _alpha_quenching_1_;             //!< Parameter 1 for alpha quenching
-  double _alpha_quenching_2_;             //!< Parameter 2 for alpha quenching
-  double _scintillator_relaxation_time_;  //!< Scintillator relaxation time
-  std::string
-      _category_;  //!< The category of the optical modules associated to this calorimeter regime
+  double energyResolution {8.*CLHEP::perCent};  //!< Energy resolution for electrons at 1 MeV
+  double alphaQuenching_0 {77.4};               //!< Parameter 0 for alpha quenching
+  double alphaQuenching_1 {0.639};              //!< Parameter 1 for alpha quenching
+  double alphaQuenching_2 {2.34};               //!< Parameter 2 for alpha quenching
+  double relaxationTime {6.*CLHEP::ns};         //!< Scintillator relaxation time
 };
 
 }  // end of namespace processing
@@ -123,7 +83,7 @@ class calorimeter_regime : public datatools::i_tree_dumpable {
 #include <datatools/ocd_macros.h>
 
 // @arg snemo::processing::calorimeter_regime the name the registered class
-DOCD_CLASS_DECLARATION(snemo::processing::calorimeter_regime)
+DOCD_CLASS_DECLARATION(snemo::processing::CalorimeterModel)
 
 #endif  // FALAISE_SNEMO_PROCESSING_CALORIMETER_REGIME_H
 

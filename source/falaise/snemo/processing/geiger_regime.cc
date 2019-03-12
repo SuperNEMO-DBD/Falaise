@@ -21,14 +21,12 @@ namespace snemo {
 
 namespace processing {
 
-bool geiger_regime::is_initialized() const { return _initialized_; }
-
-void geiger_regime::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-  _init_defaults_();
+geiger_regime::geiger_regime() {
   _initialized_ = false;
-  return;
+  _init_defaults_();
 }
+
+bool geiger_regime::is_initialized() const { return _initialized_; }
 
 void geiger_regime::initialize(const datatools::properties& config_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
@@ -125,7 +123,11 @@ void geiger_regime::initialize(const datatools::properties& config_) {
   _rdiag_ = r_cell * sqrt(2.0);
 
   _initialized_ = true;
-  return;
+}
+
+void geiger_regime::reset() {
+  _init_defaults_();
+  _initialized_ = false;
 }
 
 void geiger_regime::_init_defaults_() {
@@ -155,17 +157,7 @@ void geiger_regime::_init_defaults_() {
   datatools::invalidate(_r0_);
   datatools::invalidate(_rdiag_);
   _base_rt_.reset();
-
-  return;
 }
-
-geiger_regime::geiger_regime() {
-  _initialized_ = false;
-  _init_defaults_();
-  return;
-}
-
-geiger_regime::~geiger_regime() { return; }
 
 double geiger_regime::get_cell_diameter() const { return _cell_diameter_; }
 
@@ -245,8 +237,7 @@ double geiger_regime::randomize_z(mygsl::rng& ran_, double z_, double sigma_z_) 
 
 double geiger_regime::randomize_r(mygsl::rng& ran_, double r_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
-  double r;
-  datatools::invalidate(r);
+  double r{datatools::invalid_real_double()};
   double sr0 = get_sigma_r(_r0_);
   if (r_ < (_r0_ + 2. * sr0)) {
     const double sr = get_sigma_r(r_);
@@ -296,25 +287,18 @@ void geiger_regime::calibrate_drift_radius_from_drift_time(double drift_time_,
     drift_radius_ = base_t_2_r(drift_time_);
     sigma_drift_radius_ = get_sigma_r(drift_radius_);
   }
-  return;
 }
 
 double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
                                                                double drift_distance_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
   DT_THROW_IF(drift_distance_ < 0.0, std::range_error, "Invalid drift distance !");
-  datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
 
-  double drift_time;
-  datatools::invalidate(drift_time);
+  double drift_time{datatools::invalid_real_double()};
 
   if (drift_distance_ <= _rdiag_) {
     const double rcut = _base_rt_.x_max();
     const double tcut = _base_rt_(rcut);
-
-    DT_LOG_TRACE(local_priority, "drift_distance_ = " << drift_distance_ << " "
-                                                      << "rdiag = " << _rdiag_ << " "
-                                                      << "rcut = " << rcut);
 
     // if (drift_distance_ <= __r0 + sr0)
     if (drift_distance_ <= rcut) {
@@ -341,10 +325,6 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
       const double r2 = rcut;
       const double r1 = (r2 + _r0_) / 2;
       const double t1 = _t0_;
-      DT_LOG_TRACE(local_priority, "t0 = " << _t0_);
-      DT_LOG_TRACE(local_priority, "tcut = " << _tcut_);
-      DT_LOG_TRACE(local_priority, "t1 = " << t1 << " t2 = " << t2);
-      DT_LOG_TRACE(local_priority, "r1 = " << r1 << " r2 = " << r2);
       if (drift_distance_ < r2) {
         const double sr = get_sigma_r(drift_distance_);
         const double r_min = drift_distance_ - sr;
@@ -355,8 +335,6 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
         const double sigma_time = 0.5 * (t_max - t_min);
         drift_time = ran_.gaussian(mean_time, sigma_time);
         drift_time = mean_time;  // XXX
-        DT_LOG_TRACE(local_priority,
-                     "drift_distance_ = " << drift_distance_ << " mean_time = " << mean_time);
         const double tlim = _t0_;
         if (drift_time < tlim) {
           drift_time = 2 * tlim - drift_time;
@@ -384,7 +362,6 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
     drift_time = _tcut_;
   }
 
-  DT_LOG_TRACE(local_priority, "drift_time = " << drift_time);
   return drift_time;
 }
 
@@ -419,11 +396,9 @@ void geiger_regime::tree_dump(std::ostream& out_, const std::string& title_,
        << " mm" << std::endl;
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "rdiag         = " << _rdiag_ / CLHEP::mm << " mm" << std::endl;
-  return;
 }
 
 }  // end of namespace processing
-
 }  // end of namespace snemo
 
 /********************************
