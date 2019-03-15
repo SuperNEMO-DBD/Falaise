@@ -95,6 +95,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
   snemo/processing/services.h
+  snemo/processing/module.h
 
   snemo/processing/base_gamma_builder.h
 
@@ -181,6 +182,7 @@ list(APPEND FalaiseLibrary_SOURCES
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_datamodel_timestamp.cxx
+  snemo/test/test_module.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_event_header.cxx
