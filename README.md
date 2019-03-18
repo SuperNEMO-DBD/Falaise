@@ -145,7 +145,7 @@ present:
 - GCC (>= 7), Clang (>=6) or Xcode >= 9
 - [CMake](https://cmake.org) 3.12 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.0 or higher
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.1 or higher
 - [Boost](https:/boost.org) 1.63.0 only
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
