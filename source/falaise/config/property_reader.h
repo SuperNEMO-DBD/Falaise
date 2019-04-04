@@ -44,7 +44,7 @@
 
 namespace falaise {
 
-namespace properties {
+namespace config {
 
 // Exceptions
 typedef std::logic_error WrongType;
@@ -97,10 +97,10 @@ bool visit(const datatools::properties& p, const std::string& key) {
 template <typename T>
 T getRequiredValue(const datatools::properties& p, const std::string& key) {
   if (!p.has_key(key)) {
-    throw properties::MissingKey("No key '" + key + "'");
+    throw MissingKey("No key '" + key + "'");
   }
   if (!type_check_visitor::visit<T>(p, key)) {
-    throw properties::WrongType("Key '" + key + "' has incorrect type");
+    throw WrongType("Key '" + key + "' has incorrect type");
   }
 
   T tmp;
@@ -116,14 +116,14 @@ T getValueOrDefault(const datatools::properties& p, const std::string& key, T de
 
   if (p.has_key(key)) {
     if (!type_check_visitor::visit<T>(p, key)) {
-      throw properties::WrongType("Key '" + key + "' is set but has incorrect type");
+      throw WrongType("Key '" + key + "' is set but has incorrect type");
     }
     p.fetch(key, tmp);
   }
   return tmp;
 }
 
-}  // namespace properties
+}  // namespace config
 
 }  // namespace falaise
 

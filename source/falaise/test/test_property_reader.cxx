@@ -1,9 +1,9 @@
 // Catch
 #include "catch.hpp"
 
-#include "property_reader.h"
+#include "falaise/config/property_reader.h"
 
-namespace flp = falaise::properties;
+namespace flp = falaise::config;
 
 TEST_CASE("property_reader scalars Work", "") {
   datatools::properties test;

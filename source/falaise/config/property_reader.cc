@@ -1,11 +1,11 @@
 // property_reader.cc
 
 // Ourselves
-#include "falaise/property_reader.h"
+#include "falaise/config/property_reader.h"
 
 namespace falaise {
 
-namespace properties {
+namespace config {
 
 namespace type_check_visitor {
 
@@ -45,5 +45,5 @@ bool visit_impl(const datatools::properties& p, const std::string& key, std::vec
 
 }  // namespace detail
 }  // namespace type_check_visitor
-}  // namespace properties
+}  // namespace config
 }  // namespace falaise
