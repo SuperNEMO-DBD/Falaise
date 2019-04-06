@@ -1,67 +1,32 @@
-// - Implementation of MyModule
+// Interface from Falaise
+#include "falaise/processing/module.h"
 
-// Ourselves
-#include "MyModule.h"
+// Current problem in the below is how to initialize with
+// an optional parameter. fetch_string will throw if the
+// key isn't present. Fine for required parameters, but
+// many will be optional. Refer to Art docs to see how FHiCL
+// handles this (with PSes). Might also be able to introduce
+// type like:
+//OptionalProperty<std::string>(key, ps, default)
+//Property<T>(key, ps)
+//Table(prefix,ps)
 
-// Standard Library
 
-// Third Party
-// - A
+class MyModule {
+ public:
+  MyModule() = default;
 
-// This Project
+  MyModule(std::string const& /*name*/, datatools::properties const& ps,
+           datatools::service_manager& /*services*/)
+      : message(ps.fetch_string("message")) {}
 
-// Macro which automatically implements the interface needed
-// to enable the module to be loaded at runtime
-// The first argument is the typename
-// The second is the string key used to access the module in pipeline
-// scripts. This must be globally unique.
-DPP_MODULE_REGISTRATION_IMPLEMENT(MyModule,"MyModule");
-
-// Construct
-MyModule::MyModule() : dpp::base_module(), fudgeFactor_(1.0) {
-  this->reset();
-}
-
-// Destruct
-MyModule::~MyModule() {
-  // MUST reset module at destruction
-  if (this->is_initialized()) this->reset();
-}
-
-// Initialize
-void MyModule::initialize(const datatools::properties& myConfig,
-                          datatools::service_manager& /*flServices*/,
-                          dpp::module_handle_dict_type& /*moduleDict*/) {
-  // Throw logic exception if we've already initialized this instance
-  DT_THROW_IF(this->is_initialized(),
-              std::logic_error,
-              "MyModule already initialized");
-
-  // Extract the fudge_factor key from the supplied config, if
-  // the key exists. datatools::properties throws an exception if
-  // the key isn't in the config, so catch this if thrown and don't do
-  // anything
-  try {
-    myConfig.fetch("fudge_factor",this->fudgeFactor_);
-  } catch (std::logic_error& e) {
+  falaise::processing::status process(datatools::things& /*workItem*/) {
+    std::cout << "MyModule::process says \"" << message "\"\n";
+    return falaise::processing::PROCESS_OK;
   }
 
-  this->_set_initialized(true);
-}
+ private:
+  std::string message;
+};
 
-// Process
-dpp::base_module::process_status
-MyModule::process(datatools::things& /*workItem*/) {
-  // Hello world!
-  std::cout << "MyModule::process using fudgeFactor("
-            << fudgeFactor_ << ")" << std::endl;
-
-  // MUST return a status, see ref dpp::processing_status_flags_type
-  return PROCESS_OK;
-}
-
-// Reset
-void MyModule::reset() {
-  this->_set_initialized(false);
-  fudgeFactor_ = 1.0;
-}
+FALAISE_REGISTER_MODULE(MyModule, "MyModule");

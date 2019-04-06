@@ -357,35 +357,25 @@ is sufficient, but if your module has parameters that may change
 frequently (e.g. a threshold that requires optimization), it is easy
 to make them configurable at runtime through the pipeline script.
 To demonstrate this, we'll modify the `MyModule` class from earlier to
-have a single `double` type data member and make this configurable.
+have a single `std::string` type data member and make this configurable.
 
 Adding a Configurable Data Member {#minimalconfigurablemodulecpp}
 ---------------------------------
-To begin with we simply add the declaration of the data member in the
-header file:
-
-\include flreconstruct/MyModuleConfigurable/MyModule.h
-
-and add extra code in the implementation file to handle the management
-of the member:
+To add a configurable data member to `MyModule`, we modify the code
+as follows:
 
 \include flreconstruct/MyModuleConfigurable/MyModule.cpp
 
-The key additions are:
+The key changes are:
 
-1. Initializer for member in `MyModule` constructor.
-2. Reset of member to default value in `reset` method.
-3. Use of the `myConfig` datatools::properties instance passed to the
-`initialize` method to extract requested value for data member.
+1. `std::string` data member `message`, in-class initialized with a sensible
+default value
+2. Use of the data member in the `process` member function
+3. Use of the `ps` datatools::properties instance passed to the
+`initialize` method to extract the requested value for data member, if any
 
 The first two items are simply management tasks, and the third is where
 the main configuration is performed.
-
-The use of the `DT_THROW_IF` macro
-is used to enforce one-time initialization of the module so that we can't
-accidentaly and silently override the configuration. This locking
-behaviour is not required, but is useful to prevent such accidental
-overwrites.
 
 The try/catch block is used to "bind" the value of the `fudge_factor`
 string key from the `myConfig` `datatools::properties` instance to the
