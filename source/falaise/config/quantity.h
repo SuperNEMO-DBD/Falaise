@@ -16,7 +16,7 @@
  * e.g.
  *
  * ```cpp
- * FALAISE_ADD_DIMENSION_TAG(length);
+ * FALAISE_ADD_DIMENSION_TAG(length)
  *
  * // Expansion results in definition of:
  * namespace falaise {
@@ -297,7 +297,7 @@ class quantity_t : public quantity {
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(absorbed_dose);
+FALAISE_ADD_DIMENSION_TAG(absorbed_dose)
 
 /*! \class falaise::config::acceleration_t
  *  \ingroup falaise_units
@@ -315,7 +315,7 @@ FALAISE_ADD_DIMENSION_TAG(absorbed_dose);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(acceleration);
+FALAISE_ADD_DIMENSION_TAG(acceleration)
 
 /*! \class falaise::config::activity_t
  *  \ingroup falaise_units
@@ -346,7 +346,7 @@ FALAISE_ADD_DIMENSION_TAG(acceleration);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(activity);
+FALAISE_ADD_DIMENSION_TAG(activity)
 
 /*! \class falaise::config::amount_t
  *  \ingroup falaise_units
@@ -364,7 +364,7 @@ FALAISE_ADD_DIMENSION_TAG(activity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(amount);
+FALAISE_ADD_DIMENSION_TAG(amount)
 
 /*! \class falaise::config::angle_t
  *  \ingroup falaise_units
@@ -391,7 +391,7 @@ FALAISE_ADD_DIMENSION_TAG(amount);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(angle);
+FALAISE_ADD_DIMENSION_TAG(angle)
 
 /*! \class falaise::config::angular_frequency_t
  *  \ingroup falaise_units
@@ -409,7 +409,7 @@ FALAISE_ADD_DIMENSION_TAG(angle);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(angular_frequency);
+FALAISE_ADD_DIMENSION_TAG(angular_frequency)
 
 /*! \class falaise::config::capacitance_t
  *  \ingroup falaise_units
@@ -432,7 +432,7 @@ FALAISE_ADD_DIMENSION_TAG(angular_frequency);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(capacitance);
+FALAISE_ADD_DIMENSION_TAG(capacitance)
 
 /*! \class falaise::config::conductance_t
  *  \ingroup falaise_units
@@ -450,7 +450,7 @@ FALAISE_ADD_DIMENSION_TAG(capacitance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(conductance);
+FALAISE_ADD_DIMENSION_TAG(conductance)
 
 /*! \class falaise::config::conductivity_t
  *  \ingroup falaise_units
@@ -468,7 +468,7 @@ FALAISE_ADD_DIMENSION_TAG(conductance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(conductivity);
+FALAISE_ADD_DIMENSION_TAG(conductivity)
 
 /*! \class falaise::config::cross_section_t
  *  \ingroup falaise_units
@@ -493,7 +493,7 @@ FALAISE_ADD_DIMENSION_TAG(conductivity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(cross_section);
+FALAISE_ADD_DIMENSION_TAG(cross_section)
 
 /*! \class falaise::config::data_storage_t
  *  \ingroup falaise_units
@@ -544,7 +544,7 @@ FALAISE_ADD_DIMENSION_TAG(cross_section);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(data_storage);
+FALAISE_ADD_DIMENSION_TAG(data_storage)
 
 /*! \class falaise::config::data_transfer_rate_t
  *  \ingroup falaise_units
@@ -579,7 +579,7 @@ FALAISE_ADD_DIMENSION_TAG(data_storage);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(data_transfer_rate);
+FALAISE_ADD_DIMENSION_TAG(data_transfer_rate)
 
 /*! \class falaise::config::density_t
  *  \ingroup falaise_units
@@ -602,7 +602,7 @@ FALAISE_ADD_DIMENSION_TAG(data_transfer_rate);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(density);
+FALAISE_ADD_DIMENSION_TAG(density)
 
 /*! \class falaise::config::electric_charge_t
  *  \ingroup falaise_units
@@ -625,7 +625,7 @@ FALAISE_ADD_DIMENSION_TAG(density);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_charge);
+FALAISE_ADD_DIMENSION_TAG(electric_charge)
 
 /*! \class falaise::config::electric_current_t
  *  \ingroup falaise_units
@@ -650,7 +650,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_charge);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_current);
+FALAISE_ADD_DIMENSION_TAG(electric_current)
 
 /*! \class falaise::config::electric_displacement_field_t
  *  \ingroup falaise_units
@@ -668,7 +668,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_current);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_displacement_field);
+FALAISE_ADD_DIMENSION_TAG(electric_displacement_field)
 
 /*! \class falaise::config::electric_field_t
  *  \ingroup falaise_units
@@ -689,7 +689,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_displacement_field);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_field);
+FALAISE_ADD_DIMENSION_TAG(electric_field)
 
 /*! \class falaise::config::electric_flux_t
  *  \ingroup falaise_units
@@ -707,7 +707,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_field);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_flux);
+FALAISE_ADD_DIMENSION_TAG(electric_flux)
 
 /*! \class falaise::config::electric_potential_t
  *  \ingroup falaise_units
@@ -729,7 +729,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_flux);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_potential);
+FALAISE_ADD_DIMENSION_TAG(electric_potential)
 
 /*! \class falaise::config::electric_resistance_t
  *  \ingroup falaise_units
@@ -749,7 +749,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_potential);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_resistance);
+FALAISE_ADD_DIMENSION_TAG(electric_resistance)
 
 /*! \class falaise::config::electric_signal_integral_t
  *  \ingroup falaise_units
@@ -767,7 +767,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_resistance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(electric_signal_integral);
+FALAISE_ADD_DIMENSION_TAG(electric_signal_integral)
 
 /*! \class falaise::config::energy_t
  *  \ingroup falaise_units
@@ -794,7 +794,7 @@ FALAISE_ADD_DIMENSION_TAG(electric_signal_integral);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(energy);
+FALAISE_ADD_DIMENSION_TAG(energy)
 
 /*! \class falaise::config::equivalent_dose_t
  *  \ingroup falaise_units
@@ -817,7 +817,7 @@ FALAISE_ADD_DIMENSION_TAG(energy);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(equivalent_dose);
+FALAISE_ADD_DIMENSION_TAG(equivalent_dose)
 
 /*! \class falaise::config::force_t
  *  \ingroup falaise_units
@@ -837,7 +837,7 @@ FALAISE_ADD_DIMENSION_TAG(equivalent_dose);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(force);
+FALAISE_ADD_DIMENSION_TAG(force)
 
 /*! \class falaise::config::fraction_t
  *  \ingroup falaise_units
@@ -860,7 +860,7 @@ FALAISE_ADD_DIMENSION_TAG(force);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(fraction);
+FALAISE_ADD_DIMENSION_TAG(fraction)
 
 /*! \class falaise::config::frequency_t
  *  \ingroup falaise_units
@@ -883,7 +883,7 @@ FALAISE_ADD_DIMENSION_TAG(fraction);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(frequency);
+FALAISE_ADD_DIMENSION_TAG(frequency)
 
 /*! \class falaise::config::illuminance_t
  *  \ingroup falaise_units
@@ -901,7 +901,7 @@ FALAISE_ADD_DIMENSION_TAG(frequency);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(illuminance);
+FALAISE_ADD_DIMENSION_TAG(illuminance)
 
 /*! \class falaise::config::inductance_t
  *  \ingroup falaise_units
@@ -921,7 +921,7 @@ FALAISE_ADD_DIMENSION_TAG(illuminance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(inductance);
+FALAISE_ADD_DIMENSION_TAG(inductance)
 
 /*! \class falaise::config::length_t
  *  \ingroup falaise_units
@@ -964,7 +964,7 @@ FALAISE_ADD_DIMENSION_TAG(inductance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(length);
+FALAISE_ADD_DIMENSION_TAG(length)
 
 /*! \class falaise::config::level_t
  *  \ingroup falaise_units
@@ -984,7 +984,7 @@ FALAISE_ADD_DIMENSION_TAG(length);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(level);
+FALAISE_ADD_DIMENSION_TAG(level)
 
 /*! \class falaise::config::luminance_t
  *  \ingroup falaise_units
@@ -1002,7 +1002,7 @@ FALAISE_ADD_DIMENSION_TAG(level);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminance);
+FALAISE_ADD_DIMENSION_TAG(luminance)
 
 /*! \class falaise::config::luminous_energy_t
  *  \ingroup falaise_units
@@ -1020,7 +1020,7 @@ FALAISE_ADD_DIMENSION_TAG(luminance);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminous_energy);
+FALAISE_ADD_DIMENSION_TAG(luminous_energy)
 
 /*! \class falaise::config::luminous_energy_density_t
  *  \ingroup falaise_units
@@ -1038,7 +1038,7 @@ FALAISE_ADD_DIMENSION_TAG(luminous_energy);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminous_energy_density);
+FALAISE_ADD_DIMENSION_TAG(luminous_energy_density)
 
 /*! \class falaise::config::luminous_exposure_t
  *  \ingroup falaise_units
@@ -1056,7 +1056,7 @@ FALAISE_ADD_DIMENSION_TAG(luminous_energy_density);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminous_exposure);
+FALAISE_ADD_DIMENSION_TAG(luminous_exposure)
 
 /*! \class falaise::config::luminous_flux_t
  *  \ingroup falaise_units
@@ -1074,7 +1074,7 @@ FALAISE_ADD_DIMENSION_TAG(luminous_exposure);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminous_flux);
+FALAISE_ADD_DIMENSION_TAG(luminous_flux)
 
 /*! \class falaise::config::luminous_intensity_t
  *  \ingroup falaise_units
@@ -1092,7 +1092,7 @@ FALAISE_ADD_DIMENSION_TAG(luminous_flux);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(luminous_intensity);
+FALAISE_ADD_DIMENSION_TAG(luminous_intensity)
 
 /*! \class falaise::config::magnetic_field_strength_t
  *  \ingroup falaise_units
@@ -1110,7 +1110,7 @@ FALAISE_ADD_DIMENSION_TAG(luminous_intensity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(magnetic_field_strength);
+FALAISE_ADD_DIMENSION_TAG(magnetic_field_strength)
 
 /*! \class falaise::config::magnetic_flux_t
  *  \ingroup falaise_units
@@ -1132,7 +1132,7 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_field_strength);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(magnetic_flux);
+FALAISE_ADD_DIMENSION_TAG(magnetic_flux)
 
 /*! \class falaise::config::magnetic_flux_density_t
  *  \ingroup falaise_units
@@ -1156,7 +1156,7 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_flux);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(magnetic_flux_density);
+FALAISE_ADD_DIMENSION_TAG(magnetic_flux_density)
 
 /*! \class falaise::config::mass_t
  *  \ingroup falaise_units
@@ -1186,7 +1186,7 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_flux_density);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(mass);
+FALAISE_ADD_DIMENSION_TAG(mass)
 
 /*! \class falaise::config::mass_activity_t
  *  \ingroup falaise_units
@@ -1210,7 +1210,7 @@ FALAISE_ADD_DIMENSION_TAG(mass);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(mass_activity);
+FALAISE_ADD_DIMENSION_TAG(mass_activity)
 
 /*! \class falaise::config::permeability_t
  *  \ingroup falaise_units
@@ -1228,7 +1228,7 @@ FALAISE_ADD_DIMENSION_TAG(mass_activity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(permeability);
+FALAISE_ADD_DIMENSION_TAG(permeability)
 
 /*! \class falaise::config::permittivity_t
  *  \ingroup falaise_units
@@ -1246,7 +1246,7 @@ FALAISE_ADD_DIMENSION_TAG(permeability);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(permittivity);
+FALAISE_ADD_DIMENSION_TAG(permittivity)
 
 /*! \class falaise::config::power_t
  *  \ingroup falaise_units
@@ -1270,7 +1270,7 @@ FALAISE_ADD_DIMENSION_TAG(permittivity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(power);
+FALAISE_ADD_DIMENSION_TAG(power)
 
 /*! \class falaise::config::pressure_t
  *  \ingroup falaise_units
@@ -1303,7 +1303,7 @@ FALAISE_ADD_DIMENSION_TAG(power);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(pressure);
+FALAISE_ADD_DIMENSION_TAG(pressure)
 
 /*! \class falaise::config::procedure_defined_t
  *  \ingroup falaise_units
@@ -1323,7 +1323,7 @@ FALAISE_ADD_DIMENSION_TAG(pressure);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(procedure_defined);
+FALAISE_ADD_DIMENSION_TAG(procedure_defined)
 
 /*! \class falaise::config::resistivity_t
  *  \ingroup falaise_units
@@ -1341,7 +1341,7 @@ FALAISE_ADD_DIMENSION_TAG(procedure_defined);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(resistivity);
+FALAISE_ADD_DIMENSION_TAG(resistivity)
 
 /*! \class falaise::config::solid_angle_t
  *  \ingroup falaise_units
@@ -1367,7 +1367,7 @@ FALAISE_ADD_DIMENSION_TAG(resistivity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(solid_angle);
+FALAISE_ADD_DIMENSION_TAG(solid_angle)
 
 /*! \class falaise::config::surface_t
  *  \ingroup falaise_units
@@ -1393,7 +1393,7 @@ FALAISE_ADD_DIMENSION_TAG(solid_angle);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(surface);
+FALAISE_ADD_DIMENSION_TAG(surface)
 
 /*! \class falaise::config::surface_activity_t
  *  \ingroup falaise_units
@@ -1417,7 +1417,7 @@ FALAISE_ADD_DIMENSION_TAG(surface);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(surface_activity);
+FALAISE_ADD_DIMENSION_TAG(surface_activity)
 
 /*! \class falaise::config::surface_density_t
  *  \ingroup falaise_units
@@ -1436,7 +1436,7 @@ FALAISE_ADD_DIMENSION_TAG(surface_activity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(surface_density);
+FALAISE_ADD_DIMENSION_TAG(surface_density)
 
 /*! \class falaise::config::surface_tension_t
  *  \ingroup falaise_units
@@ -1455,7 +1455,7 @@ FALAISE_ADD_DIMENSION_TAG(surface_density);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(surface_tension);
+FALAISE_ADD_DIMENSION_TAG(surface_tension)
 
 /*! \class falaise::config::temperature_t
  *  \ingroup falaise_units
@@ -1475,7 +1475,7 @@ FALAISE_ADD_DIMENSION_TAG(surface_tension);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(temperature);
+FALAISE_ADD_DIMENSION_TAG(temperature)
 
 /*! \class falaise::config::time_t
  *  \ingroup falaise_units
@@ -1502,7 +1502,7 @@ FALAISE_ADD_DIMENSION_TAG(temperature);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(time);
+FALAISE_ADD_DIMENSION_TAG(time)
 
 /*! \class falaise::config::velocity_t
  *  \ingroup falaise_units
@@ -1536,7 +1536,7 @@ FALAISE_ADD_DIMENSION_TAG(time);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(velocity);
+FALAISE_ADD_DIMENSION_TAG(velocity)
 
 /*! \class falaise::config::volume_t
  *  \ingroup falaise_units
@@ -1572,7 +1572,7 @@ FALAISE_ADD_DIMENSION_TAG(velocity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(volume);
+FALAISE_ADD_DIMENSION_TAG(volume)
 
 /*! \class falaise::config::volume_activity_t
  *  \ingroup falaise_units
@@ -1596,7 +1596,7 @@ FALAISE_ADD_DIMENSION_TAG(volume);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(volume_activity);
+FALAISE_ADD_DIMENSION_TAG(volume_activity)
 
 /*! \class falaise::config::wave_number_t
  *  \ingroup falaise_units
@@ -1614,6 +1614,6 @@ FALAISE_ADD_DIMENSION_TAG(volume_activity);
  *
  * A @ref wrong_dimension_error will be thrown if the supplied unit tag is not in the above list
  */
-FALAISE_ADD_DIMENSION_TAG(wave_number);
+FALAISE_ADD_DIMENSION_TAG(wave_number)
 
 #endif /* FALAISE_QUANTITY_H */
