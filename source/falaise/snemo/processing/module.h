@@ -2,6 +2,7 @@
 #ifndef FALAISE_SNEMO_PROCESSING_MODULE_H
 #define FALAISE_SNEMO_PROCESSING_MODULE_H
 
+#include <exception>
 #include <type_traits>
 
 #include <bayeux/datatools/properties.h>
@@ -13,48 +14,50 @@ namespace processing {
 //! Enumeration for module to indicate processing success/failure/other
 using status = dpp::base_module::process_status;
 
-//! \brief A DPP module that wraps a simple processing algorithm
+//! Exception thrown if configuration overwrites reserved keys
+class reserved_key_error : public std::logic_error {
+  using std::logic_error::logic_error;
+};
+
+//! \brief A DPP module wrapping a simple processing algorithm
 /*!
- * Modules in Falaise's DPP pipeline are concrete classes of dpp::base_module.
+ * Modules in Falaise's DPP pipeline are concrete classes of @ref dpp::base_module.
  * Authors of modules need to write a significant amount of boilerplate code
  * for the initialize/reset/destruction member functions/states *required* by
- * DPP. This class template automatically generates these state transitions
- * for the templated type `T`. This type then only needs to implement
- * constructors and the data processing member function.
+ * @ref dpp::base_module. This class template automatically generates these state transitions
+ * for the templated type `T`. This type only needs to implement
+ * constructors for initialization (via configuration properties) and a `process` member function
+ * in which the event data will be processed.
  *
  * The type to be wrapped must meet the requirements:
  *
  *  - `DefaultConstructible`
- *  - `Construtible` with `T(std::string const&, datatools::properties const&,
- * datatools::service_manager&)
+ *  - `Construtible` with `T(datatools::properties const&, datatools::service_manager&)
  *  - `CopyAssignable`
  *  - Has a member function with signature
- *    \code{.cpp}
- *    falaise::processing::status
- *    process(datatools::things& d)
- *    \endcode
+ *    ```cpp
+ *    falaise::processing::status process(datatools::things& d)
+ *    ```
  *
  * For example:
  *
- * \code{.cpp}
+ * ```cpp
  * class MyModule
  * {
  *   MyModule(); // ideally this is =default
- *   MyModule(std::string const& name, datatools::properties const& config,
- * datatools::service_manager& services);
+ *   MyModule(datatools::properties const& config, datatools::service_manager& services);
  *
- *   falaise::processing::status
- *   process(datatools::things& data);
+ *   falaise::processing::status process(datatools::things& data);
  * };
- * \endcode
+ * ```
  *
- * The user defined constructor should throw if initialization fails.
+ * The user defined constructor must throw if initialization fails.
  *
  * The class is wrapped and registered with Falaise's DPP plugin system
- * by calling the macro #FALAISE_REGISTER_MODULE(T, Key)
+ * by calling the macro #FALAISE_REGISTER_MODULE(T)
  * in the module's implementation file, e.g.
  *
- * \code{.cpp}
+ * ```cpp
  * // This is MyModule.cpp
  * #include "falaise/snemo/processing/module.h"
  * class MyModule
@@ -62,22 +65,26 @@ using status = dpp::base_module::process_status;
  *   ... as above ...
  * };
  *
- * FALAISE_REGISTER_MODULE(MyModule, "MyModule")
+ * FALAISE_REGISTER_MODULE(MyModule)
+ * ```
  *
- * \endcode
- *
- * It is strongly recommended to set the `Key` string to the typename
- * so that use in pipeline scripts is transparent.
+ * The module will be registered with a string key equal to the typename
+ * so that use in pipeline scripts is transparent, e.g.
+ * 
+ * ```ini
+ * [name="theLabel" type="MyModule"]
+ * ... config ...
+ * ```
  *
  * \sa dpp::base_module
  */
 template <typename T>
 class module : public dpp::base_module {
   static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
-  static_assert(std::is_constructible<T, std::string const&, datatools::properties const&,
-                                      datatools::service_manager&>::value,
-                "T must have a constructor T(std::string const&, datatools::properties const&, "
-                "datatools::services const&)");
+  static_assert(
+      std::is_constructible<T, datatools::properties const&, datatools::service_manager&>::value,
+      "T must have a constructor T(datatools::properties const&, "
+      "datatools::services const&)");
   // static_assert(has process member function)
  public:
   //! Destructor
@@ -92,13 +99,26 @@ class module : public dpp::base_module {
   //! Initialize the module
   /*!
    * Constructs an instance of T using its user defined constructor,
-   * passing it the module name, config, and services parameters.
+   * passing it the module configuration, and services parameters.
    * \param config Parameters passed to configure the module
    * \param services Reference to running service provider
    */
   void initialize(datatools::properties const& config, datatools::service_manager& services,
                   dpp::module_handle_dict_type&) override {
-    wrappedModule = T(get_name(), config, services);
+    // Inject required parameters, throwing if config sets these
+    if (config.has_key("module_label")) {
+      throw reserved_key_error("reserved key 'module_name' passed to module '" + get_name() + "'");
+    }
+    if (config.has_key("module_type")) {
+      throw reserved_key_error("reserved key 'module_type' passed to module '" + get_name() + "'");
+    }
+
+    datatools::properties module_config{config};
+    module_config.store("module_label", get_name());
+    module_config.store("module_type", factory.get_type_id());
+
+    wrappedModule = T(module_config, services);
+
     _set_initialized(true);
   }
 
@@ -122,17 +142,16 @@ class module : public dpp::base_module {
 }  // namespace processing
 }  // namespace falaise
 
-//! \def FALAISE_REGISTER_MODULE(T, Key)
-/*! Registers T with the module manager referenced by the given key
- *  \param T Typename register
- *  \param Key String ID with which to register the module
+//! \def FALAISE_REGISTER_MODULE(T)
+/*! Registers T with the module manager
+ *  \param T Typename to register
  */
-#define FALAISE_REGISTER_MODULE(T, Key)              \
-  namespace falaise {                                \
-  namespace processing {                             \
-  template <>                                        \
-  module<T>::WrapperFactory module<T>::factory{Key}; \
-  }                                                  \
+#define FALAISE_REGISTER_MODULE(T)                  \
+  namespace falaise {                               \
+  namespace processing {                            \
+  template <>                                       \
+  module<T>::WrapperFactory module<T>::factory{#T}; \
+  }                                                 \
   }
 
 #endif  // FALAISE_SNEMO_PROCESSING_MODULE_H

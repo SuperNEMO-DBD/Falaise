@@ -5,20 +5,19 @@
 
 #include "bayeux/dpp/module_manager.h"
 
-namespace flp = falaise::processing;
+#include <memory>
 
+namespace flp = falaise::processing;
 
 // A trivial wrapped module
 class TrivialModule {
  public:
   TrivialModule() = default;
-  TrivialModule(std::string const&, datatools::properties const&, datatools::service_manager&) : TrivialModule() {}
+  TrivialModule(datatools::properties const&, datatools::service_manager&) : TrivialModule() {}
 
-  flp::status process(datatools::things&) {
-    return flp::status::PROCESS_OK;
-  }
+  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
 };
-FALAISE_REGISTER_MODULE(TrivialModule, "TrivialModule")
+FALAISE_REGISTER_MODULE(TrivialModule)
 
 // A module with a config class
 class FooConfig {
@@ -30,14 +29,12 @@ class FooConfig {
 class FooModule {
  public:
   FooModule() = default;
-  FooModule(std::string const&, FooConfig const&, datatools::service_manager&) : FooModule() {}
+  FooModule(FooConfig const&, datatools::service_manager&) : FooModule() {}
 
-  flp::status process(datatools::things&) {
-    return flp::status::PROCESS_OK;
-  }
+  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
 };
 
-FALAISE_REGISTER_MODULE(FooModule, "FooModule")
+FALAISE_REGISTER_MODULE(FooModule)
 
 
 TEST_CASE("Construction and initialization work", "") {
@@ -47,7 +44,7 @@ TEST_CASE("Construction and initialization work", "") {
   datatools::service_manager dummyServices{};
   dpp::module_handle_dict_type dummyWhatever{};
 
-  mod.initialize(dummyConfig, dummyServices, dummyWhatever);
+  REQUIRE_NOTHROW(mod.initialize(dummyConfig, dummyServices, dummyWhatever));
 }
 
 TEST_CASE("Configuration objects work", "") {
@@ -57,7 +54,24 @@ TEST_CASE("Configuration objects work", "") {
   datatools::service_manager dummyServices{};
   dpp::module_handle_dict_type dummyWhatever{};
 
-  mod.initialize(dummyConfig, dummyServices, dummyWhatever);
+  REQUIRE_NOTHROW(mod.initialize(dummyConfig, dummyServices, dummyWhatever));
 }
 
+TEST_CASE("Use of reserved keys throws", "") {
+  flp::module<TrivialModule> mod;
+  datatools::properties badConfig{};
+  datatools::service_manager dummyServices{};
+  dpp::module_handle_dict_type dummyWhatever{};
 
+  SECTION("Supplying module_label in config throws") {
+    badConfig.store("module_label", "not allowed!!");
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever),
+                      falaise::processing::reserved_key_error);
+  }
+
+  SECTION("Supplying module_type in config throws") {
+    badConfig.store("module_type", "not allowed!!");
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever),
+                      falaise::processing::reserved_key_error);
+  }
+}
