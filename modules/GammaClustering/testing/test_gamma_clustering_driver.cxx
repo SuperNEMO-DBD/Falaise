@@ -64,8 +64,8 @@ void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection
   return;
 }
 
-int main() {
-  falaise::initialize();
+int main(int argc, char* argv[]) {
+  falaise::initialize(argc, argv);
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for the 'gamma_clustering_driver' class." << std::endl;

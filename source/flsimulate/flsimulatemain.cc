@@ -91,7 +91,7 @@ falaise::exit_code do_metadata(const FLSimulateArgs &, datatools::multi_properti
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char *argv[]) {
-  falaise::initialize();
+  falaise::initialize(argc, argv);
 
   // - Do the simulation.
   // Ideally, exceptions SHOULD NOT propagate out of this  - the error

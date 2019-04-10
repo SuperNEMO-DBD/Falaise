@@ -69,7 +69,7 @@ falaise::exit_code do_flreconstruct(int argc, char* argv[]);
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char* argv[]) {
-  falaise::initialize();
+  falaise::initialize(argc, argv);
 
   // - Do the reconstruction
   // Ideally, exceptions SHOULD NOT propagate out of this - the error

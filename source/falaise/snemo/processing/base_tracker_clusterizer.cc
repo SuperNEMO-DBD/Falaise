@@ -572,7 +572,7 @@ int base_tracker_clusterizer::process(
       sdm::tracker_clustering_solution &sol_prompt = isol->grab();
       datatools::properties &aux_prompt = sol_prompt.grab_auxiliaries();
       if (!aux_prompt.has_flag(sdm::tracker_clustering_data::prompt_key())) continue;
-      for (sdm::tracker_clustering_data::solution_col_type::iterator jsol = boost::next(isol);
+      for (sdm::tracker_clustering_data::solution_col_type::iterator jsol = std::next(isol);
            jsol != the_solutions.end(); ++jsol) {
         sdm::tracker_clustering_solution &sol_delayed = jsol->grab();
         datatools::properties &aux_delayed = sol_delayed.grab_auxiliaries();
