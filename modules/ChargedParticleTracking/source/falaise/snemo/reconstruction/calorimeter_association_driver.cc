@@ -230,7 +230,7 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
       gveto_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
     }
     for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator jcalo =
-             boost::next(icalo);
+             std::next(icalo);
          jcalo != calorimeter_hits_.end(); ++jcalo) {
       const snemo::datamodel::calibrated_calorimeter_hit& j_calo_hit = jcalo->get();
       const geomtools::geom_id& a_gid = j_calo_hit.get_geom_id();
