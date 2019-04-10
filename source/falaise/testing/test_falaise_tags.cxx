@@ -18,8 +18,8 @@
 #include <falaise/version.h>
 #include <falaise/tags.h>
 
-int main(int /* argc_ */, char** /* argv_ */) {
-  falaise::initialize();
+int main(int argc, char** argv) {
+  falaise::initialize(argc, argv);
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for the 'Falaise' library." << std::endl;

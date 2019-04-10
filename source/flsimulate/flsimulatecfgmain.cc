@@ -93,7 +93,7 @@ falaise::exit_code do_flsimulate_config(int argc, char* argv[]);
 // MAIN PROGRAM
 //----------------------------------------------------------------------
 int main(int argc, char* argv[]) {
-  falaise::initialize();
+  falaise::initialize(argc, argv);
 
   // - Do the configuration.
   falaise::exit_code ret = FLSimulateConfig::do_flsimulate_config(argc, argv);
