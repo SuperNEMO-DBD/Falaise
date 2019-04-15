@@ -83,6 +83,7 @@ class wrong_type_error : public std::logic_error {
  *   - @ref falaise::config::path
  *   - @ref falaise::config::quantity_t
  *     - Plus any type listed in @ref falaise_units
+ *   - @ref falaise::config::property_set
  *   - std::vector<int>
  *   - std::vector<double>
  *   - std::vector<bool>
@@ -121,16 +122,57 @@ class wrong_type_error : public std::logic_error {
  * }
  * ```
  *
+ * Support for @ref put and @ref get of @ref property_set values is provided to
+ * support @ref datatools::properties constructs of the form:
+ *
+ * ```conf
+ * plain : string = "A plain property"
+ * table.foo : string = "A string property in a 'table'"
+ * table.bar : int = 42
+ * ```
+ *
+ * The `foo` and `bar` properties an be extracted either by their full keys:
+ *
+ * ```cpp
+ * auto foo = ps.get<std::string>("table.foo");
+ * auto bar = ps.get<int>("table.bar);
+ * ```
+ *
+ * or by getting the `table` key as a @ref property_set, then its properties
+ * which will be stored using their subkey names:
+ *
+ * ```cpp
+ * auto table = ps.get<falaise::config::property_set>("table");
+ * auto foo = ps.get<std::string>("foo");
+ * auto bar = ps.get<int>("bar);
+ * ```
+ *
+ * This can be extended to further levels of nesting if required. However,
+ * note that @ref datatools::properties configuration of the form:
+ *
+ * ```conf
+ * table : string = "Not a valid table"
+ * table.x : int = 11
+ * table.y : int = 22
+ * ```
+ *
+ * are not considered get-able as `property_set`s. This is due to the ambiguity
+ * of the `table` key which @ref property_set regards as an atomic property
+ * of type `std::string`. Here, the `table.x` and table.y` keys can be extracted
+ * only via their fully qualified keys. It is therefore strongly recommended that
+ * you structure your configuration in the "pure table" form above for clarity
+ * and ease of use.
+ *
  * The default value form of @ref get can be used to implement optional configuration, for
  * example
  *
  * ```cpp
  * void configure_me(property_set const& ps) {
  *   // throws missing_key_error if ps doesn't have "foo"
- *   auto required = ps.get<int>("foo");
+ *   auto requiredParam = ps.get<int>("foo");
  *
- *   // sets optional to the value held at "answer", or 42 if ps doesn't have an "answer" key
- *   auto optional = ps.get<int>("answer",42);
+ *   // sets optionalParam to the value held at "answer", or 42 if ps doesn't have an "answer" key
+ *   auto optionalParam = ps.get<int>("answer",42);
  *
  *   ...
  * }
@@ -164,9 +206,55 @@ class property_set {
 
   //! Returns true if the property_set stores a pair with the supplied key
   /*!
+   * A nested key, e.g. `foo.bar`, may be supplied.
+   *
    * \param[in] key name of key to check for existence
    */
   bool has_key(std::string const& key) const;
+
+  //! Returns true if the key's value is a property/atom
+  /*!
+   * A nested key, e.g. `foo.bar`, may be supplied.
+   *
+   * \param[in] key name of the key to check
+   */
+  bool is_key_to_property(std::string const& key) const;
+
+  //! Returns true if the keys's value is sequence
+  /*!
+   * A nested key, e.g. `foo.bar`, may be supplied.
+   *
+   * \param[in] key name of the key to check
+   */
+  bool is_key_to_sequence(std::string const& key) const;
+
+  //! Returns true if the key's value is a @ref property_set
+  /*!
+   * A nested key, e.g. `foo.bar`, may be supplied.
+   *
+   * A key is only considered to have a @ref property_set value if
+   * it only exists as a prefix to a set of nested keys, e.g.
+   *
+   * ```
+   * pure.foo : int = 1
+   * pure.bar : int = 2
+   * pure.nested.x : int = 11
+   * pure.nested.y : int = 22
+   * ```
+   *
+   * Keys `pure` and `pure.nested` are considered as @ref property_set values.
+   * In mixed properties/values such as
+   *
+   * ```
+   * bad : int = 1
+   * bad.foo : int = 2
+   * ```
+   *
+   * `bad` is not considered as a @ref property_set.
+   *
+   * \param[in] key name of the key to check
+   */
+  bool is_key_to_property_set(std::string const& key) const;
 
   //! Returns a string representation of the property_set
   std::string to_string() const;
@@ -337,6 +425,17 @@ T property_set::get(std::string const& key) const {
   return result;
 }
 
+// Specialization of get for @ref property_set
+template <>
+property_set property_set::get(std::string const& key) const {
+  if (!is_key_to_property_set(key)) {
+    throw wrong_type_error("key '" + key + "' is not a pure property_set");
+  }
+  datatools::properties tmp;
+  ps_.export_and_rename_starting_with(tmp, key + ".", "");
+  return property_set{tmp};
+}
+
 template <typename T>
 T property_set::get(std::string const& key, T const& default_value) const {
   T result{default_value};
@@ -349,6 +448,15 @@ T property_set::get(std::string const& key, T const& default_value) const {
   return result;
 }
 
+// Specialization of get for @ref property_set
+template <>
+property_set property_set::get(std::string const& key, property_set const& default_value) const {
+  if (!is_key_to_property_set(key)) {
+    return default_value;
+  }
+  return get<property_set>(key);
+}
+
 template <typename T>
 void property_set::put(std::string const& key, T const& value) {
   static_assert(can_hold_t_<T>::value, "property_set cannot hold values of type T");
@@ -359,10 +467,32 @@ void property_set::put(std::string const& key, T const& value) {
   put_impl_(key, value);
 }
 
+// Specialization of put for @ref property_set
+template <>
+void property_set::put(std::string const& key, property_set const& value) {
+ // Check both key/table existence
+  if (ps_.has_key(key) || is_key_to_property_set(key)) {
+    throw existing_key_error{"property_set already contains key " + key};
+  }
+  // Have to resort to the low level interface to put data in
+  for (auto& subkey : (value.ps_).keys()) {
+    ps_.store(key+"."+subkey, (value.ps_).get(subkey));
+  }
+}
+
 template <typename T>
 void property_set::put_or_replace(std::string const& key, T const& value) {
-  // Cannot change type of already held data, so must erase/re-store
+  // Cannot change type of existing data, so must erase/re-store
   erase(key);
+  put(key, value);
+}
+
+// Specialization of put_or_replace for @ref property_set
+template <>
+void property_set::put_or_replace(std::string const& key, property_set const& value) {
+  // Cannot change type of existing data, so must erase/re-store all keys/subkeys
+  erase(key);
+  ps_.erase_all_starting_with(key + ".");
   put(key, value);
 }
 

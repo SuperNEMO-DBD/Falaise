@@ -12,6 +12,30 @@ std::vector<std::string> property_set::get_names() const { return ps_.keys(); }
 
 bool property_set::has_key(std::string const& key) const { return ps_.has_key(key); }
 
+bool property_set::is_key_to_property(std::string const& key) const {
+  return has_key(key) && !is_key_to_sequence(key);
+}
+
+bool property_set::is_key_to_sequence(std::string const& key) const {
+  if (has_key(key)) {
+    return ps_.is_vector(key);
+  }
+  return false;
+}
+
+bool property_set::is_key_to_property_set(std::string const& key) const {
+  // Has to be a key and not a sequence/property
+  if ( is_key_to_property(key) || is_key_to_sequence(key) ) {
+    return false;
+  }
+
+  // Otherwise, must have > 0 keys starting with "prefix."
+  auto keyCount = ps_.keys_starting_with(key + ".");
+  return keyCount.size() > 0 ? true : false;
+}
+
+
+
 std::string property_set::to_string() const {
   std::ostringstream oss;
   ps_.tree_dump(oss);
