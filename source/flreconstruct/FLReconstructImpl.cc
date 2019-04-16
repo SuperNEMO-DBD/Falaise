@@ -23,11 +23,11 @@
 #include "FLReconstructCommandLine.h"
 #include "FLReconstructParams.h"
 #include "FLReconstructUtils.h"
+#include "falaise/config/property_reader.h"
 #include "falaise/exitcodes.h"
-#include "falaise/property_reader.h"
 #include "falaise/resource.h"
-#include "falaise/version.h"
 #include "falaise/tags.h"
+#include "falaise/version.h"
 
 namespace FLReconstruct {
 
@@ -99,36 +99,36 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     flRecConfig.remove("flreconstruct");
 
     // Fetch the experimental setup URN:
-    flRecParameters.experimentalSetupUrn = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.experimentalSetupUrn = falaise::config::getValueOrDefault<std::string>(
         basicSystem, "experimentalSetupUrn", flRecParameters.experimentalSetupUrn);
 
     // Number of events to be processed:
-    flRecParameters.numberOfEvents = falaise::properties::getValueOrDefault<int>(
+    flRecParameters.numberOfEvents = falaise::config::getValueOrDefault<int>(
         basicSystem, "numberOfEvents", flRecParameters.numberOfEvents);
 
     // Printing rate for events:
-    flRecParameters.moduloEvents = falaise::properties::getValueOrDefault<int>(
+    flRecParameters.moduloEvents = falaise::config::getValueOrDefault<int>(
         basicSystem, "moduloEvents", flRecParameters.moduloEvents);
 
     // Printing rate for events:
-    flRecParameters.userProfile = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.userProfile = falaise::config::getValueOrDefault<std::string>(
         basicSystem, "userprofile", flRecParameters.userProfile);
 
     // // Unused for now:
     // flRecParameters.dataType
-    //   = falaise::properties::getValueOrDefault<std::string>(basicSystem,
+    //   = falaise::config::getValueOrDefault<std::string>(basicSystem,
     //                                                         "dataType",
     //                                                         flRecParameters.dataType);
     // flRecParameters.dataSubtype
-    //   = falaise::properties::getValueOrDefault<std::string>(basicSystem,
+    //   = falaise::config::getValueOrDefault<std::string>(basicSystem,
     //                                                         "dataSubtype",
     //                                                         flRecParameters.dataSubtype);
     // flRecParameters.requiredInputBanks
-    //   = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
+    //   = falaise::config::getValueOrDefault<std::vector<std::string> >(basicSystem,
     //                                                                       "requiredInputBanks",
     //                                                                       flRecParameters.requiredInputBanks);
     // flRecParameters.expectedOutputBanks
-    //   = falaise::properties::getValueOrDefault<std::vector<std::string> >(basicSystem,
+    //   = falaise::config::getValueOrDefault<std::vector<std::string> >(basicSystem,
     //                                                                       "expectedOutputBanks",
     //                                                                       flRecParameters.expectedOutputBanks);
   }
@@ -140,7 +140,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     flRecConfig.remove("flreconstruct.variantService");
 
     // Variant configuration URN:
-    flRecParameters.variantConfigUrn = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.variantConfigUrn = falaise::config::getValueOrDefault<std::string>(
         variantSubsystem, "configUrn", flRecParameters.variantConfigUrn);
 
     // Variant configuration:
@@ -151,16 +151,16 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "' variants configuration parameter!");
     }
     flRecParameters.variantSubsystemParams.config_filename =
-        falaise::properties::getValueOrDefault<std::string>(
+        falaise::config::getValueOrDefault<std::string>(
             variantSubsystem, "config", flRecParameters.variantSubsystemParams.config_filename);
 
     // Variant profile URN:
-    flRecParameters.variantProfileUrn = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.variantProfileUrn = falaise::config::getValueOrDefault<std::string>(
         variantSubsystem, "profileUrn", flRecParameters.variantProfileUrn);
 
     // Variant profile:
     flRecParameters.variantSubsystemParams.profile_load =
-        falaise::properties::getValueOrDefault<std::string>(
+        falaise::config::getValueOrDefault<std::string>(
             variantSubsystem, "profile", flRecParameters.variantSubsystemParams.profile_load);
 
     // Variant settings:
@@ -171,7 +171,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "' variants configuration parameter!");
     }
     flRecParameters.variantSubsystemParams.settings =
-        falaise::properties::getValueOrDefault<std::vector<std::string> >(
+        falaise::config::getValueOrDefault<std::vector<std::string> >(
             variantSubsystem, "settings", flRecParameters.variantSubsystemParams.settings);
   }
 
@@ -207,9 +207,8 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     flRecConfig.remove("flreconstruct.services");
 
     // Services manager configuration URN:
-    flRecParameters.servicesSubsystemConfigUrn =
-        falaise::properties::getValueOrDefault<std::string>(
-            servicesSubsystem, "configUrn", flRecParameters.servicesSubsystemConfigUrn);
+    flRecParameters.servicesSubsystemConfigUrn = falaise::config::getValueOrDefault<std::string>(
+        servicesSubsystem, "configUrn", flRecParameters.servicesSubsystemConfigUrn);
 
     // Services manager main configuration file:
     if (flRecParameters.userProfile == "production" && servicesSubsystem.has_key("config")) {
@@ -219,7 +218,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "config"
                                                    << "' services configuration parameter!");
     }
-    flRecParameters.servicesSubsystemConfig = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.servicesSubsystemConfig = falaise::config::getValueOrDefault<std::string>(
         servicesSubsystem, "config", flRecParameters.servicesSubsystemConfig);
   }
 
@@ -231,16 +230,14 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
       pipelineSubsystem.tree_dump(std::cerr, "Pipeline subsystem: ", "[debug] ");
     }
 
-    flRecParameters.reconstructionPipelineUrn = falaise::properties::getValueOrDefault<std::string>(
+    flRecParameters.reconstructionPipelineUrn = falaise::config::getValueOrDefault<std::string>(
         pipelineSubsystem, "configUrn", flRecParameters.reconstructionPipelineUrn);
 
-    flRecParameters.reconstructionPipelineConfig =
-        falaise::properties::getValueOrDefault<std::string>(
-            pipelineSubsystem, "config", flRecParameters.reconstructionPipelineConfig);
+    flRecParameters.reconstructionPipelineConfig = falaise::config::getValueOrDefault<std::string>(
+        pipelineSubsystem, "config", flRecParameters.reconstructionPipelineConfig);
 
-    flRecParameters.reconstructionPipelineModule =
-        falaise::properties::getValueOrDefault<std::string>(
-            pipelineSubsystem, "module", flRecParameters.reconstructionPipelineModule);
+    flRecParameters.reconstructionPipelineModule = falaise::config::getValueOrDefault<std::string>(
+        pipelineSubsystem, "module", flRecParameters.reconstructionPipelineModule);
   }
 
   {
@@ -436,8 +433,7 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
     // Check URN registration from the system URN query service:
     {
       std::string conf_category = falaise::tags::experimental_setup_category();
-      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn,
-                                              conf_category),
+      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flRecParameters.experimentalSetupUrn << "'!");
     }

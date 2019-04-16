@@ -180,33 +180,33 @@ list(APPEND FalaiseLibrary_SOURCES
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
-  snemo/testing/test_snemo_datamodel_timestamp.cxx
+  snemo/test/test_snemo_datamodel_timestamp.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
-  snemo/testing/test_snemo_datamodel_event_header.cxx
-  snemo/testing/test_snemo_datamodel_raw_trigger_infos.cxx
-  snemo/testing/test_snemo_datamodel_raw_tracker_hit.cxx
-  snemo/testing/test_snemo_datamodel_raw_calorimeter_hit.cxx
-  snemo/testing/test_snemo_datamodel_raw_data.cxx
-  snemo/testing/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
-  snemo/testing/test_snemo_datamodel_calibrated_tracker_hit.cxx
-  snemo/testing/test_snemo_datamodel_tracker_cluster.cxx
-  snemo/testing/test_snemo_datamodel_tracker_clustering_data.cxx
-  snemo/testing/test_snemo_datamodel_tracker_clustering_solution.cxx
-  snemo/testing/test_snemo_datamodel_tracker_trajectory.cxx
-  snemo/testing/test_snemo_datamodel_tracker_trajectory_solution.cxx
-  snemo/testing/test_snemo_datamodel_particle_track.cxx
-  snemo/testing/test_snemo_datamodel_particle_track_data.cxx
-  snemo/testing/test_snemo_geometry_calo_locator_1.cxx
-  snemo/testing/test_snemo_geometry_gg_locator_1.cxx
-  snemo/testing/test_snemo_geometry_gveto_locator_1.cxx
-  snemo/testing/test_snemo_geometry_retrieve_info.cxx
-  snemo/testing/test_snemo_geometry_xcalo_locator_1.cxx
-  snemo/testing/test_snemo_geometry_mapped_magnetic_field.cxx
+  snemo/test/test_snemo_datamodel_event_header.cxx
+  snemo/test/test_snemo_datamodel_raw_trigger_infos.cxx
+  snemo/test/test_snemo_datamodel_raw_tracker_hit.cxx
+  snemo/test/test_snemo_datamodel_raw_calorimeter_hit.cxx
+  snemo/test/test_snemo_datamodel_raw_data.cxx
+  snemo/test/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
+  snemo/test/test_snemo_datamodel_calibrated_tracker_hit.cxx
+  snemo/test/test_snemo_datamodel_tracker_cluster.cxx
+  snemo/test/test_snemo_datamodel_tracker_clustering_data.cxx
+  snemo/test/test_snemo_datamodel_tracker_clustering_solution.cxx
+  snemo/test/test_snemo_datamodel_tracker_trajectory.cxx
+  snemo/test/test_snemo_datamodel_tracker_trajectory_solution.cxx
+  snemo/test/test_snemo_datamodel_particle_track.cxx
+  snemo/test/test_snemo_datamodel_particle_track_data.cxx
+  snemo/test/test_snemo_geometry_calo_locator_1.cxx
+  snemo/test/test_snemo_geometry_gg_locator_1.cxx
+  snemo/test/test_snemo_geometry_gveto_locator_1.cxx
+  snemo/test/test_snemo_geometry_retrieve_info.cxx
+  snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
+  snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
   # snemo/testing/test_snemo_electronics_mapping.cxx
 
-  snemo/testing/test_snemo_cut_particle_track_cut.cxx
-  snemo/testing/test_snemo_datamodel_sim_calo_digi_hit.cxx
-  snemo/testing/test_snemo_datamodel_sim_tracker_digi_hit.cxx
-  snemo/testing/test_snemo_datamodel_sim_digi_data.cxx
+  snemo/test/test_snemo_cut_particle_track_cut.cxx
+  snemo/test/test_snemo_datamodel_sim_calo_digi_hit.cxx
+  snemo/test/test_snemo_datamodel_sim_tracker_digi_hit.cxx
+  snemo/test/test_snemo_datamodel_sim_digi_data.cxx
   )
