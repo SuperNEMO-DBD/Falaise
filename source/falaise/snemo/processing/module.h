@@ -9,6 +9,8 @@
 #include <bayeux/datatools/service_manager.h>
 #include <bayeux/dpp/base_module.h>
 
+#include "falaise/config/property_set.h"
+
 namespace falaise {
 namespace processing {
 //! Enumeration for module to indicate processing success/failure/other
@@ -32,7 +34,7 @@ class reserved_key_error : public std::logic_error {
  * The type to be wrapped must meet the requirements:
  *
  *  - `DefaultConstructible`
- *  - `Construtible` with `T(datatools::properties const&, datatools::service_manager&)
+ *  - `Construtible` with `T(falaise::config::property_set const&, datatools::service_manager&)
  *  - `CopyAssignable`
  *  - Has a member function with signature
  *    ```cpp
@@ -45,7 +47,7 @@ class reserved_key_error : public std::logic_error {
  * class MyModule
  * {
  *   MyModule(); // ideally this is =default
- *   MyModule(datatools::properties const& config, datatools::service_manager& services);
+ *   MyModule(falaise::config::property_set const& config, datatools::service_manager& services);
  *
  *   falaise::processing::status process(datatools::things& data);
  * };
@@ -70,7 +72,7 @@ class reserved_key_error : public std::logic_error {
  *
  * The module will be registered with a string key equal to the typename
  * so that use in pipeline scripts is transparent, e.g.
- * 
+ *
  * ```ini
  * [name="theLabel" type="MyModule"]
  * ... config ...
@@ -82,7 +84,7 @@ template <typename T>
 class module : public dpp::base_module {
   static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
   static_assert(
-      std::is_constructible<T, datatools::properties const&, datatools::service_manager&>::value,
+      std::is_constructible<T, falaise::config::property_set const&, datatools::service_manager&>::value,
       "T must have a constructor T(datatools::properties const&, "
       "datatools::services const&)");
   // static_assert(has process member function)
@@ -113,10 +115,11 @@ class module : public dpp::base_module {
       throw reserved_key_error("reserved key 'module_type' passed to module '" + get_name() + "'");
     }
 
-    datatools::properties module_config{config};
-    module_config.store("module_label", get_name());
-    module_config.store("module_type", factory.get_type_id());
+    falaise::config::property_set module_config{config};
+    module_config.put("module_label", get_name());
+    module_config.put("module_type", factory.get_type_id());
 
+    // Assumed to throw if construction is not successful
     wrappedModule = T(module_config, services);
 
     _set_initialized(true);

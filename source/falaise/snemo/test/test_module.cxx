@@ -13,7 +13,7 @@ namespace flp = falaise::processing;
 class TrivialModule {
  public:
   TrivialModule() = default;
-  TrivialModule(datatools::properties const&, datatools::service_manager&) : TrivialModule() {}
+  TrivialModule(falaise::config::property_set const&, datatools::service_manager&) : TrivialModule() {}
 
   flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
 };
@@ -23,7 +23,7 @@ FALAISE_REGISTER_MODULE(TrivialModule)
 class FooConfig {
  public:
   FooConfig() = default;
-  FooConfig(datatools::properties const& p) { p.tree_dump(std::cout); }
+  FooConfig(falaise::config::property_set const& p) { p.has_key("foo"); }
 };
 
 class FooModule {
