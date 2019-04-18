@@ -10,7 +10,7 @@ project(MyModule)
 find_package(Falaise REQUIRED)
 
 # Build a dynamic library from our sources
-add_library(MyModule SHARED MyModule.h MyModule.cpp)
+add_library(MyModule SHARED MyModule.cpp)
 
 # Link it to the FalaiseModule library
 # This ensures the correct compiler flags, include paths

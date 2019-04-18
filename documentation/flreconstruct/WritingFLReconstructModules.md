@@ -10,11 +10,10 @@ If you have just started using Falaise or the FLReconstruct application,
 we strongly recommend that you familiarize yourself with the basic usage
 of FLReconstruct covered in [The FLReconstruct Application](@ref usingflreconstruct).
 
-FLReconstruct uses a [pipeline pattern](http://en.wikipedia.org/wiki/Pipeline_%28software%29) to process events. You can view this like a production
-line with each stage on the line performing some operation on the event.
-Each stage in the pipeline is called a "pipeline module" (or just "module")
-and is implemented as a C++ class. The FLReconstruct application can load
-new modules at runtime using a ["plugin" mechanism](http://en.wikipedia.org/wiki/Plug-in_%28computing%29). Scripting, as demonstrated in the
+FLReconstruct uses a [pipeline pattern](http://en.wikipedia.org/wiki/Pipeline_%28software%29) to process events. You can view this as a production line with each stage on the line
+performing some operation on the event. Each stage in the pipeline is called
+a "pipeline module" (or just "module") and is implemented as a C++ class.
+The FLReconstruct application can load new modules at runtime using a ["plugin" mechanism](http://en.wikipedia.org/wiki/Plug-in_%28computing%29). Scripting, as demonstrated in the
 [tutorial on using FLReconstruct](@ref usingflreconstruct), is used to load new modules from plugins,
 select the modules to use in the pipeline, and configure each module.
 
@@ -23,7 +22,7 @@ use in the FLReconstruct pipeline. This will cover
 
 1. Writing a basic C++ module class
 2. Compiling the class into a plugin for use by FLReconstruct
-3. Scripting the loading and use of the plugin in FLReconstruct
+3. Scripting for use of the plugin by FLReconstruct
 4. Implementing runtime module configuration
 
 Getting your module to actually do something with the events that are
@@ -36,13 +35,13 @@ Creating the Module Source Code {#minimalmodule_sources}
 We begin by creating an empty directory to hold the source code for
 our example module, which we'll name "MyModule"
 
-~~~~~
+```console
 $ cd MyWorkSpace
 $ mkdir MyModule
 $ cd MyModule
 $ ls
 $
-~~~~~
+```
 
 You are free to organise the source code under this directory as you see
 fit. In this very simple case we will just place all files in the `MyModule`
@@ -52,53 +51,56 @@ for the C++ class, which we'll name `MyModule.cpp`
 \include flreconstruct/MyModule/MyModule.cpp
 
 Here we can see the minimal interface and infrastructure required by a module class for `flreconstruct`.
-The class must:
+The class must implement:
 
 - A default constructor
-- A constructor taking parameters:
-  - `std::string const&`, the `name` given to the module in the `flreconstruct` script
-  - `datatools::properties const&`, the set of properties set for the module
-    in the pipeline script
-  - `datatools::service_manager&`, `flreconstruct`'s service provider.
+- A non-default constructor taking parameters:
+  - `falaise::config::property_set const&`, the configuration supplied to the module by the pipeline script
+  - `datatools::service_manager&`, `flreconstruct`'s service provider
 - A public member function `process` taking a single `datatools::things&` input
   parameter, and returning a @ref falaise::processing::status enumeration.
 
-To make the compiled module loadable by `flreconstruct` we must also use the
-@ref FALAISE_REGISTER_MODULE macro, passing it the class's typename, and a string
-that can be used to create a module of this type in an `flreconstruct` pipeline
-script. This key can be any string you like, but for clarity and uniqueness we strongly
-recommend it match the class name.
+To make the plugin we'll build from this code loadable by `flreconstruct` we must also use the
+@ref FALAISE_REGISTER_MODULE macro, passing it the class's typename. This will
+also become a string that can be used to create a module of this type in
+an `flreconstruct` pipeline script.
 
-The `process` member function will perform the actual
-operation on the event, which is represented as a @ref datatools::things
-class, and passed to the method via non-const reference.
-As noted above, a later tutorial will cover the interface and use of
-@ref datatools::things . We therefore don't do anything with the event,
-and simply write a message to standard output so that we'll be able to
-see the method being called in `flreconstruct`. `process`  **must** return a
+The non-default constructor is responsible for initializing the module using,
+if required, the information supplied in the @ref falaise::config::property_set
+and @ref datatools::service_manager objects. Our basic module doesn't require
+any configuration or service information so we simply ignore these arguments.
+Later tutorials will cover [module configuration](@ref minimalconfigurablemodule)
+and [use of services by modules](@ref usingservices).
+
+The `process` member function performs the actual
+operation on the event, which is represented by a @ref datatools::things
+instance. It is passed via non-const reference so `process` can both read and
+write data to the event. As noted above, [a later tutorial](@ref workingwitheventrecords)
+will cover the interface and use of @ref datatools::things. We therefore don't do anything
+with the event, and simply write a message to standard output so that we'll be able to
+see the method being called in `flreconstruct`. `process` **must** return a
 [processing exit code](@ref falaise::processing::status). In this case,
-our processing is always successful, so we return @ref falaise::processing::status::PROCESS_OK.
+our processing is always successful, so we return `falaise::processing::status::PROCESS_OK`.
 
 Building the Loadable Shared Library {#minimalmodulebuilding}
 ----------------------------------
 With the source code for `MyModule` in place we need to build a shared
 library from it that `flreconstruct` can load at runtime to make
-`MyModule` available for use in the pipeline. As `MyModule` uses components
-from Falaise, the compilation needs to use its headers,
-libraries and dependencies available. The simplest way to set this up
-is to use CMake to build the shared library and make use of Falaise's
-[find_package](https://cmake.org/cmake/help/v3.9/command/find_package.html) support.
+`MyModule` usable in a pipeline. As `MyModule` uses components
+from Falaise, the compilation needs to use its headers, libraries and dependencies.
+The simplest way to set this up is to use [CMake](https://cmake.org) to build the
+shared library and make use of Falaise's [find_package](https://cmake.org/cmake/help/v3.9/command/find_package.html) support.
 
 To do this, we add a CMake script alongside the sources:
 
-~~~~~~
+```console
 $ ls
 MyModule.cpp
 $ touch CMakeLists.txt
 $ ls
 CMakeLists.txt MyModule.cpp
 $
-~~~~~~
+```
 
 The implementation of `CMakeLists.txt` is very straightforward:
 
@@ -118,24 +120,24 @@ on disk name. For example, on Linux, this will output a library file `libMyModul
 
 Finally, the `target_link_libraries` command links the shared library to
 Falaise's `Falaise::FalaiseModule` target. This ensures that compilation and
-linking of the `MyModule` target will have the correct compiler and
-linking setup. The `flreconstruct` application makes a default set of
-libraries available, and if you require additional functionality CMake
+linking of the `MyModule` target will use the correct compiler and
+linker flags for use of Falaise. The `flreconstruct` application makes a default set of
+libraries available, and if you require use of additional ones, CMake
 must be set up to find and use these. This is documented [later in this tutorial](@ref additionallibraries).
 
-For more detailed documentation on CMake, please refer to the
+For more detailed documentation on CMake, please refer to its
 [online help](https://cmake.org/cmake/help/latest/).
 
-To build the library, we first create a so-called *build directory* to
-isolate the binary files from the source code. This means we can very quickly
-delete and recreate the build without worrying about deleting the primary
-sources (it also helps to avoid accidental commits of local build artifacts
-to Git!). This directory can be wherever you
+To build the library, we first create a so-called *build directory* to hold
+the files generated by the compilation to isolate them from the source code.
+This means we can very quickly delete and recreate the build without worrying
+about deleting the primary sources (it also helps to avoid accidental commits of
+local build artifacts to Git!). This directory can be wherever you
 like, but it's usually most convenient to create it alongside the
 directory in which the sources reside. In this example we have the directory
 structure:
 
-~~~~~~
+```console
 $ pwd
 /path/to/MyWorkSpace
 $ tree .
@@ -146,11 +148,11 @@ $ tree .
 
 1 directory, 2 files
 $
-~~~~~~
+```
 
-so we can create the build directory under `/path/to/MyWorkSpace` as
+so we create the build directory under `/path/to/MyWorkSpace` as
 
-~~~~~~
+```console
 $ mkdir MyModule-build
 $ tree .
 .
@@ -161,38 +163,38 @@ $ tree .
 
 2 directories, 2 files
 $
-~~~~~~
+```
 
 The first step of the build is to change into the build directory and
 run `cmake` to configure the build of `MyModule`:
 
-~~~~~~
+```
 $ cd MyModule-build
 $ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
-~~~~~~
+```
 
 Here, the `CMAKE_PREFIX_PATH` argument should be the directory under which Falaise
-was installed. If you installed Falaise using `brew` and are using `cmake` from `brew`
-then you will not need to set this.
-The argument `../MyModule` points CMake to the directory holding the
+was installed. If you installed Falaise using `brew` and are using the `snemo-shell`
+environment then you will not need to set this.
+The last argument `../MyModule` points CMake to the directory holding the
 `CMakeLists.txt` file for the project we want to build, in this case our
 custom module.
 
 Running the command will produce output that is highly system dependent,
 but you should see something along the lines of
 
-~~~~~~
+```console
 $ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
--- The C compiler identification is AppleClang 9.0.0.9000039
--- The CXX compiler identification is AppleClang 9.0.0.9000039
--- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
--- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc -- works
+-- The C compiler identification is AppleClang 10.0.0.10001044
+-- The CXX compiler identification is AppleClang 10.0.0.10001044
+-- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc
+-- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc -- works
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
 -- Detecting C compile features
 -- Detecting C compile features - done
--- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++
--- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -- works
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++
+-- Check for working CXX compiler: /Library/Developer/CommandLineTools/usr/bin/c++ -- works
 -- Detecting CXX compiler ABI info
 -- Detecting CXX compiler ABI info - done
 -- Detecting CXX compile features
@@ -202,61 +204,61 @@ $ cmake -DCMAKE_PREFIX_PATH=/where/Falaise/is ../MyModule
 -- Generating done
 -- Build files have been written to: /..../MyModule-build
 $
-~~~~~~
+```
 
 The exact output will depend on which compiler and platform you are using.
-However, the last three lines are common (apart from the path), and indicate a
+However, the last three lines are common apart from the path, and indicate a
 successful configuration. Listing the contents of the directory shows
 that CMake has generated a Makefile for us:
 
-~~~~~~~
+```console
 $ ls
 CMakeCache.txt CMakeFiles cmake_install.cmake Makefile
 $
-~~~~~~~
+```
 
-To build the library for our module we therefore simply run make:
+To build the library for our module we simply run `make`:
 
-~~~~~~
+```console
 $ make
 Scanning dependencies of target MyModule
-[100%] Building CXX object CMakeFiles/MyModule.dir/MyModule.cpp.o
-Linking CXX shared library libMyModule.dylib
+[ 50%] Building CXX object CMakeFiles/MyModule.dir/MyModule.cpp.o
+[100%] Linking CXX shared library libMyModule.dylib
 [100%] Built target MyModule
 $
-~~~~~~
+```
 
 If the build succeeds, we now have the shared library present in our
 build directory:
 
-~~~~~~
+```console
 $ ls
 CMakeCache.txt   CMakeFiles     Makefile      cmake_install.cmake libMyModule.dylib
 $
-~~~~~~
+```
 
-Note that the extension of the shared library is platform dependent (`dylib` for Mac, `so` on Linux).
+Note that the extension of the shared library is platform dependent (`.dylib` for Mac, `.so` on Linux).
 With the library built, we now need to make `flreconstruct` aware of
-it and to use it in the pipeline.
+it so we can use `MyModule` in a pipeline.
 
 
 Running flreconstruct With a Custom Module {#minimalmodulerunning}
 ------------------------------------------
 To use our new module in `flreconstruct` we need to tell the application
-about it and then use it in the pipeline. We do this via the pipeline
+about it before using it in a pipeline. We do this through the pipeline
 script we pass to `flreconstruct` via
 
 1. Adding a new section named `flreconstruct.plugins` which tells `flreconstruct` about libraries to be loaded.
-2. Declaring a section for our module
+2. Adding a section declaring our module
 
 We create a script named `MyModulePipeline.conf` in our project directory:
 
-~~~~~~
+```console
 $ pwd
 /path/to/MyWorkSpace/MyModule
 $ ls
 CMakeLists.txt MyModule.cpp MyModulePipeline.conf
-~~~~~~
+```
 
 This script takes the same basic form as shown in the [tutorial on using flreconstruct](@ref usingflreconstruct):
 
@@ -265,53 +267,49 @@ This script takes the same basic form as shown in the [tutorial on using flrecon
 The `plugins` key in the `flreconstruct.plugins` section is a list of
 strings naming the libraries to be loaded by `flreconstruct` at startup.
 These are taken as the "basename" of the library, from which the full
-physical file to be loaded `lib<basename>.{so,dylib}` is constructed.
-By default, `flreconstruct` only searches for plugin libraries in its builtin
-location, so custom modules must supply the `.directory` attribute to tell
-it the path under which the library is located.
+physical file to be loaded, `lib<basename>.{so,dylib}`, is constructed.
+`flreconstruct` only searches for plugin libraries in its builtin
+location by default, so custom modules must set the `<basename>.directory` property to tell
+it the path under which their `<basename>` library is located.
 
-In the above example, `MyModule.directory : string ='.'` tells `flreconstruct`
-to look in the current working directory, i.e. the directory from which it was run.
-This is convenient for testing a local build of a module, as we can run `flreconstruct`
+In the above example, `MyModule.directory : string ="."` tells `flreconstruct`
+to look in the current working directory, i.e. the directory from which it was run, for the `MyModule`
+plugin. This is convenient for testing a local build of a module, as we can run `flreconstruct`
 directly from the build directory of our module and it will locate the library immediately.
 You can also specify absolute paths, e.g.
 
-~~~~~~
+```ini
 [name="flreconstruct.plugins" type="flreconstruct::section"]
 plugins : string[1] = "MyModule"
 MyModule.directory : string = "/path/to/MyWorkSpace/MyModule-build"
-~~~~~~
+```
 
 or paths containing environment variables which will be expanded automatically, e.g.
 
-~~~~~~
+```ini
 [name="flreconstruct.plugins" type="flreconstruct::section"]
 plugins : string[1] = "MyModule"
 MyModule.directory : string = "${MYMODULE_PATH}"
-~~~~~~
+```
 
 With the loading of the custom module in place, we can use it in the
 script as we did for the builtin modules. As we did in in the [trivial pipeline example for flreconstruct](@ref trivial_pipeline),
 we can simply declare the main pipeline module as being of the `MyModule`
 type, hence the line
 
-~~~~~~
+```ini
 [name="pipeline" type="MyModule"]
-~~~~~~
+```
 
-Note that the `type` key value must always refer to the id with which the
-module was registered, and this is determined by the second argument to
-the @ref FALAISE_REGISTER_MODULE macro called in the source code
-for the module. Remember that in `MyModule.cpp` we called
-the macro as:
+Note that the `type` key value must always be the full typename
+of the module, as used in the @ref FALAISE_REGISTER_MODULE macro.
+Remember that in `MyModule.cpp` we called the macro as:
 
-~~~~~~{.cpp}
-FALAISE_REGISTER_MODULE(MyModule,"MyModule");
-~~~~~~
+```cpp
+FALAISE_REGISTER_MODULE(MyModule);
+```
 
-This is why we recommend registering your modules with a key equal
-to their C++ typename. It makes it absolutely clear which module is
-to be constructed and minimizes potential name clashes.
+thus `type` is just "MyModule".
 
 We can now run `flreconstruct` with `MyModulePipeline.conf` as the pipeline
 script. Because we've specified the location of the `MyModule`
@@ -321,7 +319,7 @@ we run `flsimulate` first to create a simple file of one event (NB in
 the following, we assume you have `flsimulate` and `flreconstruct` in your
 `PATH`).
 
-~~~~~~
+```console
 $ cd /path/to/MyWorkSpace/MyModule-build
 $ ls
 CMakeCache.txt CMakeFiles cmake_install.cmake libMyModule.dylib Makefile
@@ -334,9 +332,9 @@ $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'MyModule'...
 MyModule::process called!
 $
-~~~~~~
+```
 
-So we can see that `flreconstruct` loaded the `MyModule` library,
+We can see that `flreconstruct` loaded the `MyModule` library,
 and the `MyModule::process` method was called, showing that the pipeline
 used our custom module! We can also add our module into a chain pipeline
 and other pipeline structures. For example, try the following pipeline script:
@@ -351,13 +349,14 @@ instances in the chain.
 Making Your Module Configurable {#minimalconfigurablemodule}
 ===============================
 The minimal module presented in [the section above](@ref minimalmodule)
-outputs a fixed message which can only be changed by modifiying the
+outputs a fixed message which can only be changed by modifying the
 code and recompiling the module. In most use cases hard-coding like this
 is sufficient, but if your module has parameters that may change
 frequently (e.g. a threshold that requires optimization), it is easy
 to make them configurable at runtime through the pipeline script.
 To demonstrate this, we'll modify the `MyModule` class from earlier to
-have a single `std::string` type data member and make this configurable.
+have a single `std::string` type data member and make this configurable
+from the pipeline script.
 
 Adding a Configurable Data Member {#minimalconfigurablemodulecpp}
 ---------------------------------
@@ -368,40 +367,37 @@ as follows:
 
 The key changes are:
 
-1. `std::string` data member `message`, in-class initialized with a sensible
-default value
+1. `std::string` data member `message`
 2. Use of the data member in the `process` member function
-3. Use of the `ps` datatools::properties instance passed to the
-`initialize` method to extract the requested value for data member, if any
+3. Use of the falaise::config::property_set instance `ps` passed to the user-defined
+constructor to extract the configured value for data member, or set a default.
 
-The first two items are simply management tasks, and the third is where
-the main configuration is performed.
+Configuration is handled by the constructor for simpli
 
-The try/catch block is used to "bind" the value of the `fudge_factor`
-string key from the `myConfig` `datatools::properties` instance to the
-actual `fudgeFactor_` data member. This is wrapped in a try/catch block
-because `datatools::properties` will throw a `std:logic_error` exception if
+The last item is where the actual configuration is performed and validated.
 
-1. The key cannot be found.
-2. The value of the key cannot be converted to the requested type (in this
-case `double`).
 
-We don't do anything if an exception is thrown here as we are
-happy in this case to use the default value for `fudgeFactor_` if the
-configuration does not override it or fails otherwise.
-Different error handling strategies can be applied to meet the needs of
-your own configurable parameters. You should consult the documentation
-for `datatools::properties` for full details of its key checking and
- extraction API.
+In this case we have
+a single, *optional*, parameter, and initialize it in `MyModule`s initializer list.
+Its value is initialized by using the @ref falaise::config::property_set::get member
+function to return the `std::string` type parameter named "message" from `ps`, or "hello"
+if that parameter does not exist. It will throw an exception automatically if the "message"
+parameter exists, but is not a `std::string`. Falaise mod
+
+The @ref falaise::config::property_set has a range of
+member functions
 
 An important restriction on configurable parameters is that they can only
-be of types understood by the `datatools::properties` class, namely:
+be of types understood by @ref falaise::config::property_set, namely:
 
 - `std::string`
 - `int`
 - `double`
 - `bool`
 - `std::vector` of all above types.
+- @ref falaise::config::path for explicit filesystem paths
+- @ref falaise::config::quantity_t for physical (dimensionful) values, e.g. energy
+- @ref falaise::config::property_set for nested configurations
 
 Building a Loadable Shared Library for a Configurable Module
 ------------------------------------------------------------
@@ -414,7 +410,7 @@ If you've made the changes as above, simply rebuild!
 Configuring MyModule from the Pipeline Script {#minimalconfigurablemodulescript}
 ----------------------------------------------
 In the preceeding section, we saw that module configuration is passed to
-the module by an instance of the `datatools::properties` class.
+the module by an instance of the @ref falaise::config::property_set class.
 This instance is created by `flreconstruct` for the module from the
 properties, if any, supplied in the section of the pipeline script
 defining the module. To begin with, we can use the pipeline script from
@@ -424,7 +420,7 @@ earlier to run the configurable module:
 
 and run it in `flreconstruct` with
 
-~~~~~~
+```console
 $ cd /path/to/MyWorkSpace/MyModule-build
 $ ls
 CMakeCache.txt cmake_install.cmake Makefile
@@ -433,41 +429,49 @@ $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'MyModule'...
 MyModule::process using fudgeFactor(1)
 $
-~~~~~~
+```
 
-We can see that the module has been run using the default value of the
+We can see that the module has been run using the default value for the
 parameter. The section of the pipeline script defining `MyModule` is
 the line
 
-~~~~~~
+```ini
 [name="pipeline" type="MyModule"]
-~~~~~~
+```
 
-so to change the `fudgeFactor_` parameter, we simply add the appropriate
-`datatools::properties` key for it to the section:
+so to change the `message` parameter, we simply add the appropriate
+key-value for it to the section:
 
-~~~~~~
+```ini
 [name="pipeline" type="MyModule"]
-fudge_factor : real = 3.14
-~~~~~~
+message : string = "goodbye"
+```
 
-where the key name `fudge_factor` must match that looked for in the
-`MyModule::initialize` method. How to document parameters is covered in
+where the key name `message` must match that looked for in the
+set of properties passed to `MyModule`'s constructor. How to document parameters is covered in
 [a later tutorial](@ref documentingflreconstructmodules).
 The format of `datatools::properties` key entries is
 described in the documentation of that class.
 
 Having add the key, we can rerun with the updated pipeline script:
 
-~~~~~~
+```console
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
 [notice:void datatools::library_loader::init():449] Automatic loading of library 'MyModule'...
 MyModule::process using fudgeFactor(3.14)
 $
-~~~~~~
+```
 
 and we see that the parameter has been changed to the value defined in
-the script. Try changing the value to see the effect.
+the script. Try changing the value to see what happens, and also try
+changing the property's type, e.g.
+
+```ini
+[name="pipeline" type="MyModule"]
+message : int = 42
+```
+
+to see the errors emitted.
 
 Keys are bound to the section they are defined in, so we can use the
 same module type multiple times but with different parameters. For example,
@@ -477,7 +481,7 @@ try the following pipeline script:
 
 You should see each event being dumped, with the dumped info being
 bracketed by the output from each `MyModule` instance, each with
-different values of the fudge factor parameter.
+different values of the message parameter.
 
 
 Whilst this ability to make modules configurable is extremely useful,
@@ -523,21 +527,21 @@ then you will need to get CMake to locate these and then link them to your modul
 In the most common case of using non-core libraries from the ROOT package, then the `find_package`
 step would be modified to:
 
-~~~~~
+```cmake
 # Find Falaise first, which ensures we use correct ROOT
 find_package(Falaise REQUIRED)
 
 # Find ROOT after Falaise, which guarantees use of same ROOT, but configure extra components
 # in this case, TMVA.
 find_package(ROOT REQUIRED TMVA)
-~~~~~
+```
 
 The module can then be linked to the additional library by adding
 it in the `target_link_libraries` command:
 
-~~~~~
+```cmake
 target_link_libraries(MyModule PUBLIC Falaise::FalaiseModule ${ROOT_TMVA_LIBRARY})
-~~~~~
+```
 
 For other packages, `find_package` followed by `target_link_libraries`
 can be used in the same fashion.

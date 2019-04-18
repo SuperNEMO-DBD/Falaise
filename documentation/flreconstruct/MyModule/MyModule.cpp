@@ -1,5 +1,5 @@
 // Interface from Falaise
-#include "falaise/processing/module.h"
+#include "falaise/snemo/processing/module.h"
 
 class MyModule {
  public:
@@ -7,18 +7,17 @@ class MyModule {
   MyModule() = default;
 
   // User-defined Constructor
-  MyModule(std::string const& /*name*/,
-           datatools::properties const& /*ps*/,
+  MyModule(falaise::config::property_set const& /*ps*/,
            datatools::service_manager& /*services*/) {
   }
 
   // Process event
   falaise::processing::status process(datatools::things& /*e*/) {
-    std::cout << "MyModule::process called!\n"
-    return PROCESS_OK;
+    std::cout << "MyModule::process called!\n";
+    return falaise::processing::status::PROCESS_OK;
   }
 };
 
 // Register module with Falaise's plugin system on load
-FALAISE_REGISTER_MODULE(MyModule,"MyModule");
+FALAISE_REGISTER_MODULE(MyModule)
 

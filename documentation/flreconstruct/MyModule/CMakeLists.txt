@@ -1,7 +1,7 @@
-# - Basic CMake setup
-# Check version meets ou requirements
-# Declare project, which will configure compiler for us
+# Check cmake version meets our requirements
 cmake_minimum_required(VERSION 3.9)
+
+# Declare project, which will configure compiler for us
 project(MyModule)
 
 # Modules use Falaise, so we need to locate this or fail
@@ -9,11 +9,11 @@ project(MyModule)
 # dependencies such as Bayeux, ROOT and Boost.
 find_package(Falaise REQUIRED)
 
-# Build a dynamic library from our source
+# Build a shared/dynamic library from our source
 add_library(MyModule SHARED MyModule.cpp)
 
-# Link it to the FalaiseModule library
+# Link this library to the FalaiseModule library
 # This ensures the correct compiler flags, include paths
-# and linker flags are used to compile our dynamic library.
+# and linker flags are used to compile our library.
 target_link_libraries(MyModule Falaise::FalaiseModule)
 
