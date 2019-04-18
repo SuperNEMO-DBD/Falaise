@@ -21,6 +21,11 @@ class reserved_key_error : public std::logic_error {
   using std::logic_error::logic_error;
 };
 
+//! Exception thrown if module fails configuration
+class configuration_error : public std::logic_error {
+  using std::logic_error::logic_error;
+};
+
 //! \brief A DPP module wrapping a simple processing algorithm
 /*!
  * Modules in Falaise's DPP pipeline are concrete classes of @ref dpp::base_module.
@@ -119,8 +124,30 @@ class module : public dpp::base_module {
     module_config.put("module_label", get_name());
     module_config.put("module_type", factory.get_type_id());
 
-    // Assumed to throw if construction is not successful
-    wrappedModule = T(module_config, services);
+    try {
+      wrappedModule = T(module_config, services);
+    }
+    catch (const falaise::config::missing_key_error& e) {
+      std::ostringstream oss{};
+      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
+          << "- missing_key_error: " << e.what() << "\n";
+      config.tree_dump(oss, "- config:");
+      throw configuration_error{oss.str()};
+    }
+    catch (const falaise::config::wrong_type_error& e) {
+      std::ostringstream oss{};
+      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failedwith exception:\n"
+          << "- wrong_type_error: " << e.what() << "\n";
+      config.tree_dump(oss, "- config:");
+      throw configuration_error{oss.str()};
+    }
+    catch (const std::exception& e) {
+      std::ostringstream oss{};
+      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failedwith exception:\n"
+          << "- <unknown>: " << e.what() << "\n";
+      config.tree_dump(oss, "- config:");
+      throw configuration_error{oss.str()};
+    }
 
     _set_initialized(true);
   }

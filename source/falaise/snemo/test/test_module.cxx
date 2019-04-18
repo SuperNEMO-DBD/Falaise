@@ -36,6 +36,18 @@ class FooModule {
 
 FALAISE_REGISTER_MODULE(FooModule)
 
+class ModuleThatThrows {
+ public:
+  ModuleThatThrows() = default;
+  ModuleThatThrows(falaise::config::property_set const& ps, datatools::service_manager&)
+      : aprop(ps.get<std::string>("aprop")){}
+
+  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+
+ private:
+  std::string aprop;
+};
+FALAISE_REGISTER_MODULE(ModuleThatThrows);
 
 TEST_CASE("Construction and initialization work", "") {
   flp::module<TrivialModule> mod;
@@ -75,3 +87,21 @@ TEST_CASE("Use of reserved keys throws", "") {
                       falaise::processing::reserved_key_error);
   }
 }
+
+TEST_CASE("Initialization errors are handled") {
+  flp::module<ModuleThatThrows> mod;
+  datatools::properties badConfig{};
+  datatools::service_manager dummyServices{};
+  dpp::module_handle_dict_type dummyWhatever{};
+
+  SECTION("missing key error handled") {
+    badConfig.store("missingkey", 42);
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever), falaise::processing::configuration_error);
+  }
+
+  SECTION("wrong type key error handled") {
+    badConfig.store("aprop", 42);
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever), falaise::processing::configuration_error);
+  }
+}
+
