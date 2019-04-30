@@ -370,34 +370,17 @@ The key changes are:
 1. `std::string` data member `message`
 2. Use of the data member in the `process` member function
 3. Use of the falaise::config::property_set instance `ps` passed to the user-defined
-constructor to extract the configured value for data member, or set a default.
+constructor to extract configuration information
 
-Configuration is handled by the constructor for simpli
+Here, `message` is our configurable parameter, and is initialized in the `MyModule` constructor
+using the @ref falaise::config::property_set::get member function. We supply `std::string` as
+the template argument as that is the type we need, and `message` as the parameter ID to extract.
+This ID does not have to match the name of the data member, but it is useful to do so for clarity.
 
-The last item is where the actual configuration is performed and validated.
+As configuration is always done through the constructor, you can then use configured data members
+just like any other. In this case we simply report the value of `message` to standard output in
+the `process` member function.
 
-
-In this case we have
-a single, *optional*, parameter, and initialize it in `MyModule`s initializer list.
-Its value is initialized by using the @ref falaise::config::property_set::get member
-function to return the `std::string` type parameter named "message" from `ps`, or "hello"
-if that parameter does not exist. It will throw an exception automatically if the "message"
-parameter exists, but is not a `std::string`. Falaise mod
-
-The @ref falaise::config::property_set has a range of
-member functions
-
-An important restriction on configurable parameters is that they can only
-be of types understood by @ref falaise::config::property_set, namely:
-
-- `std::string`
-- `int`
-- `double`
-- `bool`
-- `std::vector` of all above types.
-- @ref falaise::config::path for explicit filesystem paths
-- @ref falaise::config::quantity_t for physical (dimensionful) values, e.g. energy
-- @ref falaise::config::property_set for nested configurations
 
 Building a Loadable Shared Library for a Configurable Module
 ------------------------------------------------------------
@@ -409,16 +392,20 @@ If you've made the changes as above, simply rebuild!
 
 Configuring MyModule from the Pipeline Script {#minimalconfigurablemodulescript}
 ----------------------------------------------
-In the preceeding section, we saw that module configuration is passed to
-the module by an instance of the @ref falaise::config::property_set class.
+In the preceding section, we saw that module configuration is passed to
+a module through an instance of the @ref falaise::config::property_set class.
 This instance is created by `flreconstruct` for the module from the
 properties, if any, supplied in the section of the pipeline script
 defining the module. To begin with, we can use the pipeline script from
-earlier to run the configurable module:
+earlier to run the configurable module, simply adding the required string parameter
+`message` to its section:
 
-\include flreconstruct/MyModule/MyModulePipeline.conf
+\include flreconstruct/MyModuleConfigurable/MyModulePipeline.conf
 
-and run it in `flreconstruct` with
+The key name `message` and its type must match that looked for by `MyModule`'s constructor
+in the supplied @ref property_set. Allowed key/types and their mappings to C++
+types are documented in [a later section](@ref configurationbestpractices).
+The script can be run in `flreconstruct` as before:
 
 ```console
 $ cd /path/to/MyWorkSpace/MyModule-build
@@ -426,54 +413,30 @@ $ ls
 CMakeCache.txt cmake_install.cmake Makefile
 CMakeFiles   libMyModule.so    MyModuleTest.brio
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
-[notice:void datatools::library_loader::init():449] Automatic loading of library 'MyModule'...
-MyModule::process using fudgeFactor(1)
+[notice:void datatools::library_loader::_init():467] Automatic loading of library 'MyModule'...
+MyModule::process says 'hello'
 $
 ```
 
-We can see that the module has been run using the default value for the
-parameter. The section of the pipeline script defining `MyModule` is
-the line
-
-```ini
-[name="pipeline" type="MyModule"]
-```
-
-so to change the `message` parameter, we simply add the appropriate
-key-value for it to the section:
+We can see that the module has been run using the supplied value for the
+parameter. To change the `message` parameter, we simply update its value,
+e.g.
 
 ```ini
 [name="pipeline" type="MyModule"]
 message : string = "goodbye"
 ```
-
-where the key name `message` must match that looked for in the
-set of properties passed to `MyModule`'s constructor. How to document parameters is covered in
-[a later tutorial](@ref documentingflreconstructmodules).
-The format of `datatools::properties` key entries is
-described in the documentation of that class.
-
 Having add the key, we can rerun with the updated pipeline script:
 
 ```console
 $ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModulePipeline.conf
-[notice:void datatools::library_loader::init():449] Automatic loading of library 'MyModule'...
-MyModule::process using fudgeFactor(3.14)
+[notice:void datatools::library_loader::_init():467] Automatic loading of library 'MyModule'...
+MyModule::process says 'goodbye'
 $
 ```
 
-and we see that the parameter has been changed to the value defined in
-the script. Try changing the value to see what happens, and also try
-changing the property's type, e.g.
-
-```ini
-[name="pipeline" type="MyModule"]
-message : int = 42
-```
-
-to see the errors emitted.
-
-Keys are bound to the section they are defined in, so we can use the
+and see that the parameter has been changed to the value defined in
+the script. Keys are bound to the section they are defined in, so we can use the
 same module type multiple times but with different parameters. For example,
 try the following pipeline script:
 
@@ -483,13 +446,192 @@ You should see each event being dumped, with the dumped info being
 bracketed by the output from each `MyModule` instance, each with
 different values of the message parameter.
 
+Both `flreconstruct` and @ref property_set work together to check that needed parameters
+are supplied and of the correct type. For example, if we *did not* supply the `message`
+parameter:
 
-Whilst this ability to make modules configurable is extremely useful,
+\include flreconstruct/MyModuleConfigurable/MyModuleMissingParam.conf
+
+then `flreconstruct` will error out and tell us what happened:
+
+```console
+$ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModuleMissingParam.conf
+[notice:void datatools::library_loader::_init():467] Automatic loading of library 'MyModule'...
+[fatal:falaise::exit_code FLReconstruct::do_pipeline(const FLReconstruct::FLReconstructParams &):156] Failed to initialize pipeline : initialization of module 'pipeline' (type 'MyModule') failed with exception:
+- missing_key_error: property_set does not hold a key 'message'
+- config:
+`-- <no property>
+
+$
+```
+
+Equally, if we supply the parameter but it has the wrong type:
+
+```ini
+[name="pipeline" type="MyModule"]
+message : integer = 42
+```
+
+then a similar error would be reported:
+
+```console
+$ flreconstruct -i MyModuleTest.brio -p ../MyModule/MyModuleWrongType.conf
+[notice:void datatools::library_loader::_init():467] Automatic loading of library 'MyModule'...
+[fatal:falaise::exit_code FLReconstruct::do_pipeline(const FLReconstruct::FLReconstructParams &):156] Failed to initialize pipeline : initialization of module 'pipeline' (type 'MyModule') failedwith exception:
+- wrong_type_error: value at 'message' is not of requested type
+- config:
+`-- Name : 'message'
+    |-- Type  : integer (scalar)
+    `-- Value : 42
+
+$
+```
+
+Additional methods for configuration and validation are covered in the
+[following section](@ref configurationbestpractices).
+
+
+
+Best Practices for Module Configuration {#configurationbestpractices}
+---------------------------------------
+Whilst the ability to make modules configurable is extremely useful,
 *you should aim to minimize the number of parameters your module takes*.
 This helps to make the module easier to use and less error prone.
 Remember that the modular structure of the pipeline means that tasks
 are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
+
+An important restriction on configurable parameters is that they can only
+be of types understood by @ref falaise::config::property_set and the underlying
+@ref datatools::properties configuration language.
+
+
+| C++ Type                           | `property_set` accessor                                  | properties script syntax          |
+| ---------------------------------- | -------------------------------------------------------- | --------------------------------- |
+| `std::string`                      | `auto x = ps.get<std::string>("key");`                   | key : string = "hello"            |
+| `int`                              | `auto x = ps.get<int>("key");`                           | key : integer = 42                |
+| `double`                           | `auto x = ps.get<double>("key");`                        | key : real = 3.14                 |
+| `bool`                             | `auto x = ps.get<bool>("key");`                          | key : boolean = true              |
+| `std::vector<std::string>`         | `auto x = ps.get<std::vector<std::string>>("key");`      | key : string[2] = "hello" "world" |
+| `std::vector<int>`                 | `auto x = ps.get<std::vector<int>>("key");`              | key : int[2] = 1 2                |
+| `std::vector<double>`              | `auto x = ps.get<std::vector<double>>("key");`           | key : real[2] = 3.14 4.13         |
+| `std::vector<bool>`                | `auto x = ps.get<std::vector<bool>>("key");`             | key : bool[2] = true false        |
+| @ref falaise::config::path         | `auto x = ps.get<falaise::config::path>("key");`         | key : string as path = "/tmp/foo" |
+| @ref falaise::config::quantity_t   | `auto x = ps.get<falaise::config::length_t>("key");`     | key : real as length = 3.14 mm    |
+| @ref falaise::config::property_set | `auto x = ps.get<falaise::config::property_set>("key");` | _see below_                       |
+
+The last item handles the case of nested configurations, for example
+
+```ini
+[name="nested" type="NestedModule"]
+a.x : int = 1
+a.y : int = 3
+b.x : int = 2
+b.y : int = 4
+```
+
+The keys can be extracted individually from the resultant @ref falaise::config::property_set, e.g.
+
+```cpp
+auto x = ps.get<int>("a.x");
+```
+
+However, nested configurations typically imply structured data, with periods indicating the nesting level.
+Each level can be extracted into its own set of properties, e.g.
+
+```cpp
+auto a = ps.get<falaise::config::property_set>("a"); // a now holds key-values x=1, y=3
+auto b = ps.get<falaise::config::property_set>("b"); // b now holds key-values x=2, y=4
+```
+
+with subsequent handling as required. A restriction on nesting is that it _cannot_ support
+configurations such as
+
+```ini
+[name="nested" type="BadlyNested"]
+a : int = 1
+a.x : real = 3.14
+```
+
+as the key "a" is ambiguous. You should not use this form in any case as it generally
+indicates bad design.
+
+When using @ref falaise::config::property_set, you have several methods to _validate_
+the configuration supplied to your module. By _validation_, we mean checking the configuration
+supplies:
+
+1. The required parameters...
+2. ... of the correct type ...
+3. .. in the correct value range
+
+All configuration and validation must be handled in the module's constructor, with exceptions
+thrown if an validation check fails. The first two checks can be handled automatically by
+@ref falaise::config::property_set through its `get` member functions.
+
+Parameters may be _required_, i.e. there is no sensible default, or _optional_, i.e. where we
+may wish to adjust the default. A required parameter is validated for
+existence and correct type by the single parameter `get` member function, e.g.
+
+```cpp
+class MyModule {
+ public:
+  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+   : message( ps.get<std::string>("message") )
+  {}
+  // other code omitted
+ private:
+  std::string message;
+};
+```
+
+If the `ps` instance does not hold a parameter "message", or holds it with a type other than `std::string`,
+then an exception is thrown and will be handled automatically by `flreconstruct`.
+
+An optional parameter is validated in the same way, but we use the two parameter form of `get`, e.g:
+
+```cpp
+class MyModule {
+ public:
+  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+   : myparam( ps.get<int>("myparam", 42) )
+  {}
+  // other code omitted
+ private:
+  int myparam;
+};
+```
+
+Here, if the `ps` instance does not hold a parameter "myparam" then the `myparam` data member will
+be initialized to `42`. If `ps` holds parameter "myparam" of type `int` then `myparam` will be set
+to its value. If `ps` holds parameter "myparam" and it is _not_ of type `int`, then an exception is
+thrown (and handled by `flreconstruct` as above). Both forms are particularly useful for parameters
+that supply physical quantities such as lengths. See the documentation on Falaise's [System of Units](@ref falaise_units)
+for further information on their use to assist with dimensional and scaling correctness.
+
+Additional validation tasks such as bounds checking must be handled manually, and generally
+within the body of the module's constructor. For example, if we have a required integer parameter
+that must be even, we could validate this via:
+
+```cpp
+class MyModule {
+ public:
+  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+   : myparam( ps.get<int>("myparam") )
+  {
+    if(myparam%2 != 0) {
+      throw std::out_of_range{"value for 'myparam' parameter is not even"};
+    }
+  }
+  // other code omitted
+ private:
+  int myparam;
+};
+```
+
+You should prefer to initialize parameter values in the constructor's initializer list, with
+further validation, if required, in the constructor body. Errors must be handled by throwing
+an exception derived from `std::exception`.
+
 
 
 Using Additional Libraries in Your Module {#additionallibraries}

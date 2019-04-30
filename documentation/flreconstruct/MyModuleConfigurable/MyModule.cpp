@@ -7,10 +7,10 @@ class MyModule {
 
   MyModule(falaise::config::property_set const& ps,
            datatools::service_manager& /*services*/)
-      : message(ps.get<std::string>("message", "hello")) {}
+      : message(ps.get<std::string>("message")) {}
 
   falaise::processing::status process(datatools::things& /*workItem*/) {
-    std::cout << "MyModule::process says \"" << message << "\"\n";
+    std::cout << "MyModule::process says '" << message << "'\n";
     return falaise::processing::status::PROCESS_OK;
   }
 
