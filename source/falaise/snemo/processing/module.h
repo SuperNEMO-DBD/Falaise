@@ -136,14 +136,14 @@ class module : public dpp::base_module {
     }
     catch (const falaise::config::wrong_type_error& e) {
       std::ostringstream oss{};
-      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failedwith exception:\n"
+      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
           << "- wrong_type_error: " << e.what() << "\n";
       config.tree_dump(oss, "- config:");
       throw configuration_error{oss.str()};
     }
     catch (const std::exception& e) {
       std::ostringstream oss{};
-      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failedwith exception:\n"
+      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
           << "- <unknown>: " << e.what() << "\n";
       config.tree_dump(oss, "- config:");
       throw configuration_error{oss.str()};
