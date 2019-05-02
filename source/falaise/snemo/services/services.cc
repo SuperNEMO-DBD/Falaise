@@ -2,11 +2,9 @@
 /** \file falaise/snemo/processing/services.cc */
 
 // Ourselves:
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
-
-namespace processing {
 
 const std::string& service_info::default_metadata_service_label() {
   static std::string lbl("metadata");
@@ -32,7 +30,5 @@ const std::string& service_info::default_database_service_label() {
   static std::string lbl("database");
   return lbl;
 }
-
-}  // end of namespace processing
 
 }  // end of namespace snemo
