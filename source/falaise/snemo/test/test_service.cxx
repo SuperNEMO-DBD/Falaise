@@ -10,7 +10,7 @@
 
 
 TEST_CASE("Default construction works", "") {
-  snemo::service_handle<snemo::geometry> x;
+  snemo::service_handle<snemo::geometry_svc> x;
   REQUIRE_THROWS_AS( x->is_debug(), snemo::bad_service_access);
 }
 
@@ -18,14 +18,14 @@ TEST_CASE("Construction from bad services fails", "") {
   datatools::service_manager dummyServices{};
 
   SECTION("non-existant service throws") {
-    REQUIRE_THROWS_AS( snemo::service_handle<snemo::geometry> x{dummyServices}, snemo::missing_service_error );
+    REQUIRE_THROWS_AS( snemo::service_handle<snemo::geometry_svc> x{dummyServices}, snemo::missing_service_error );
   }
 
   SECTION("service label/type mismatch throws") {
     datatools::multi_properties config;
     config.add_section("geometry", "dpp::histogram_service");
     dummyServices.load(config);
-    REQUIRE_THROWS_AS( snemo::service_handle<snemo::geometry> x{dummyServices}, snemo::bad_service_type );
+    REQUIRE_THROWS_AS( snemo::service_handle<snemo::geometry_svc> x{dummyServices}, snemo::bad_service_type );
   }
 }
 
@@ -40,7 +40,7 @@ TEST_CASE("Construction from good services works", "") {
   dummyServices.initialize();
 
   SECTION("manager-holder service works") {
-    snemo::service_handle<snemo::geometry> x{dummyServices};
+    snemo::service_handle<snemo::geometry_svc> x{dummyServices};
     REQUIRE_NOTHROW( x->is_debug() );
   }
 
