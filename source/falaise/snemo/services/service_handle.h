@@ -64,10 +64,10 @@ T* service_maker(datatools::service_manager& provider) {
  *
  * ```cpp
  * void example(datatools::service_manager& p) {
- *   snemo::service_handle<geometry> geoSvc{p};
+ *   snemo::service_handle<some_service_type> someSvc{p};
  *
- *   // ... use geoSvc ...
- *   geoSvc->some_geometry_memfn();
+ *   // ... use someSvc ...
+ *   someSvc->some_service_memfn();
  * }
  * ```
  *
@@ -81,8 +81,8 @@ T* service_maker(datatools::service_manager& provider) {
  * - The dereference operator will throw @ref snemo::bad_service_access if the
  *   held service interface is `nullptr`
  *
- * It is only a semi-smart pointer as it only stores, rather than owns, a raw
- * pointer. The lifetime of service interface pointers is expected, but not
+ * It is only a semi-smart pointer as it does not own the raw
+ * pointer to the service interface. The lifetime of service interface pointers is expected, but not
  * guaranteed, to be equal to the lifetime of an `flreconstruct` process.
  *
  * \sa falaise::processing::module
