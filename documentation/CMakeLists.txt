@@ -82,8 +82,6 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
-  resource_file_management/FLResourceFileManagement.md
-  tag_management/FLTagManagement.md
   )
 
 set(FALAISE_ABSOLUTE_MARKDOWN_DOCS)
