@@ -14,9 +14,8 @@ pipeline modules, as covered in [Writing FLReconstruct Modules](@ref writingflre
 In FLReconstruct, modules are the basic "unit" for processing events.
 Each event stores data relevant to that event, but creation, use, and interpretation
 of this data may require other data which common to a set of events
-(e.g. a detector run).
+(e.g. a detector run). These data are supplied through *Services*.
 
-Common data is supplied through a *Services*.
 Your module can access any services it needs via the @ref datatools::service_manager
 reference supplied to its constructor by the flreconstruct
 application. From this, you can get a smart pointer to a current
@@ -76,5 +75,4 @@ so you can follow the [build instructions from the original example](@ref minima
 
 Available Services {#useservices_servicelist}
 ==================
-- @ref snemo::geometry_svc
-
+- @ref snemo::geometry_svc : queries related to geometric positions, etc in the detector

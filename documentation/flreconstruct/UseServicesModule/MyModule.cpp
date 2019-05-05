@@ -20,7 +20,7 @@ class MyModule {
   }
 
  private:
-  snemo::service_handle<snemo::geometry> geosvc;
+  snemo::service_handle<snemo::geometry_svc> geosvc;
 };
 
 // Register module with Falaise's plugin system on load
