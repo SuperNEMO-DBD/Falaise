@@ -1,3 +1,5 @@
+//! \file falaise/snemo/services/geometry.h
+//! \brief Types and traits for the SuperNEMO Geometry Service
 #ifndef SNEMO_GEOMETRY_SVC_HH
 #define SNEMO_GEOMETRY_SVC_HH
 
@@ -5,10 +7,29 @@
 #include "bayeux/geomtools/manager.h"
 
 namespace snemo {
-
-// Naming is odd because of existence of snemo::geometry namespace
+// NB: Document in terms of inheritance purely to fool Doxygen...
+/*! \class snemo::geometry_svc
+ *  \brief Locate, track, and trace elements of the SuperNEMO detector geometry
+ *  \implements geomtools::manager
+ *
+ * It provides an implementation of the `const` parts of the @ref geomtools::manager interface,
+ * and you should consult documentation for that class for full details.
+ *
+ * It should always be created through obtaining a @ref snemo::service_handle
+ * using a @ref datatools::service_manager, e.g.
+ *
+ * ```cpp
+ * void example(datatools::service_manager& s) {
+ *   snemo::service_handle<snemo::geometry_svc> geosvc{s};
+ *   ...
+ * }
+ * ```
+ *
+ * \sa geomtools::manager
+ */
 using geometry_svc = const geomtools::manager;
 
+//! Specialization of service_traits for geometry_svc
 template <>
 struct service_traits<geometry_svc> {
   using label_type = BOOST_METAPARSE_STRING("geometry");

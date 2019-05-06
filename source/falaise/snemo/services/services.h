@@ -29,14 +29,8 @@ class service_info {
   /// Return the default string label/name for the 'geometry' service
   static const std::string& default_geometry_service_label();
 
-  /// Return the default string label/name for the 'electronics' service
-  static const std::string& default_electronics_service_label();
-
   /// Return the default string label/name for the 'cuts' service
   static const std::string& default_cut_service_label();
-
-  /// Return the default string label/name for the 'database' service
-  static const std::string& default_database_service_label();
 };
 
 }  // end of namespace snemo

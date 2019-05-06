@@ -73,7 +73,6 @@ set(FALAISE_MARKDOWN_DOCS
   flsimulate/FLSimulateOutput.md
   flreconstruct/FLReconstruct.md
   flreconstruct/PipelineOutput.md
-  flreconstruct/FLPTD2Root.md
   flreconstruct/WritingFLReconstructPipelineScripts.md
   flreconstruct/SupportedFLReconstructModules.md
   flreconstruct/UsingMockCalibration.md
