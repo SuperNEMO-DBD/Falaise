@@ -15,7 +15,7 @@ namespace snemo {
  * It provides an implementation of the `const` parts of the @ref geomtools::manager interface,
  * and you should consult documentation for that class for full details.
  *
- * It should always be created through obtaining a @ref snemo::service_handle
+ * The class should only be created through obtaining a @ref snemo::service_handle
  * using a @ref datatools::service_manager, e.g.
  *
  * ```cpp
@@ -24,6 +24,8 @@ namespace snemo {
  *   ...
  * }
  * ```
+ *
+ * Direct construction is not supported and cannot be guaranteed to work.
  *
  * \sa geomtools::manager
  */
