@@ -17,7 +17,7 @@
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 // Gamma Tracking
 #include <snemo/reconstruction/gamma_tracking_driver.h>
@@ -68,7 +68,7 @@ void gamma_tracking_module::initialize(const datatools::properties& setup_,
 
   // Geometry manager :
   if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
+    std::string geo_label = snemo::service_info::default_geometry_service_label();
     if (setup_.has_key("Geo_label")) {
       geo_label = setup_.fetch_string("Geo_label");
     }
@@ -205,7 +205,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::gamma_tracking_module, oc
             "geometry service.                                 \n"
             "This property is only used if no geometry manager \n"
             "as been provided to the module.                   \n")
-        .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+        .set_default_value_string(snemo::service_info::default_geometry_service_label())
         .add_example(
             "Use an alternative name for the geometry service:: \n"
             "                                     \n"

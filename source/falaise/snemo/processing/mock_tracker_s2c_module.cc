@@ -21,7 +21,7 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -106,7 +106,7 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& setup_,
     }
   }
   if (_Geo_label_.empty()) {
-    _Geo_label_ = snemo::processing::service_info::default_geometry_service_label();
+    _Geo_label_ = snemo::service_info::default_geometry_service_label();
   }
   if (_geom_manager_ == 0) {
     DT_THROW_IF(_Geo_label_.empty(), std::logic_error,
@@ -779,7 +779,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
         .set_long_description(ldesc.str())
-        .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+        .set_default_value_string(snemo::service_info::default_geometry_service_label())
         .add_example(
             "Use an alternative name for the geometry service:: \n"
             "                                    \n"

@@ -1,82 +1,50 @@
-#include "AccessThingsModule.h"
+// Interface from Falaise
+#include "falaise/snemo/processing/module.h"
 
-#include <boost/foreach.hpp>
+// Any data models we need
+#include <bayeux/mctools/simulated_data.h>
 
-#include "bayeux/mctools/simulated_data.h"
+class AccessThingsModule {
+ public:
+  AccessThingsModule() = default;
 
-DPP_MODULE_REGISTRATION_IMPLEMENT(AccessThingsModule,"AccessThingsModule");
-
-AccessThingsModule::AccessThingsModule() : dpp::base_module()
-{}
-
-AccessThingsModule::~AccessThingsModule() {
-  this->reset();
-}
-
-void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
-                          datatools::service_manager& /*flServices*/,
-                          dpp::module_handle_dict_type& /*moduleDict*/) {
-  this->_set_initialized(true);
-}
-
-//! [AccessThingsModule::Process]
-dpp::base_module::process_status AccessThingsModule::process(
-    datatools::things& workItem) {
-  process_status readStatus = this->read(workItem);
-  if (readStatus != PROCESS_OK) return readStatus;
-
-  process_status writeStatus = this->write(workItem);
-
-  // MUST return a status, see ref dpp::processing_status_flags_type
-  return writeStatus;
-}
-//! [AccessThingsModule::Process]
-
-void AccessThingsModule::reset() {
-  this->_set_initialized(false);
-}
-
-dpp::base_module::process_status AccessThingsModule::read(datatools::things& workItem) {
-  // Print most basic information
-  std::cout << "AccessThingsModule::process called!" << std::endl;
-  std::cout << "[name]        : " << workItem.get_name() << std::endl;
-  std::cout << "[description] : " << workItem.get_description() << std::endl;
-
-  // Extract list of keys stored by the object
-  std::vector<std::string> workItemKeyList;
-  workItem.get_names(workItemKeyList);
-
-  // Iterate over keys, printing their name and the type of the object
-  // they map to
-  BOOST_FOREACH(std::string key, workItemKeyList) {
-    std::cout << "- [key, serial_tag] : "
-              << key
-              << ", "
-              << workItem.get_entry_serial_tag(key)
-              << std::endl;
+  AccessThingsModule(falaise::config::property_set const& /*ps*/,
+           datatools::service_manager& /*services*/) {
   }
 
-  // Grab simulated data bank
-  // Simulated data will only be present in simulation output files,
-  // so wrap in a try block
-  try {
-    const mctools::simulated_data& simData = workItem.get<mctools::simulated_data>("SD");
-    simData.tree_dump();
-  } catch (std::logic_error& e) {
-    std::cerr << "failed to grab SD bank : " << e.what() << std::endl;
-    return PROCESS_INVALID;
+  // Process event
+  falaise::processing::status process(datatools::things& event) {
+    std::cout << "AccessThingsModule::process called!" << std::endl;
+    read(event);
+    write(event);
+    return falaise::processing::status::PROCESS_OK;
   }
 
-  return PROCESS_OK;
-}
+ private:
+  // read data
+  void read(datatools::things& event) {
+    // Extract list of keys stored by the object
+    std::vector<std::string> keys;
+    event.get_names(keys);
 
-//! [AccessThingsModule::write]
-dpp::base_module::process_status AccessThingsModule::write(datatools::things& workItem) {
-  // Add a new entry to the things
-  datatools::properties& atmProperties = workItem.add<datatools::properties>("ATMProperties");
-  atmProperties.set_description("Properties added by the AccessThings Module");
-  atmProperties.store("foo", "bar");
-  atmProperties.store("baz", 3.14);
+    // Print each key and its concrete type
+    for (const auto& k : keys) {
+      std::cout << "- [key, serial_tag] : "
+          << k
+          << ", "
+          << event.get_entry_serial_tag(k)
+          << std::endl;
+    }
+  }
 
-  return PROCESS_OK;
-}
+  // write data
+  void write(datatools::things& event) {
+    // Add a new data bank to the event
+    auto& atmProperties = event.add<datatools::properties>("ATMProperties");
+    atmProperties.set_description("Properties added by the AccessThings Module");
+    atmProperties.store("foo", "bar");
+  }
+};
+
+FALAISE_REGISTER_MODULE(AccessThingsModule)
+

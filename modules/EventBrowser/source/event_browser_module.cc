@@ -21,7 +21,7 @@
 #include <geomtools/manager.h>
 
 // SuperNEMO services
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -64,7 +64,7 @@ void event_browser_module::initialize(const datatools::properties &config_,
 
   this->base_module::_common_initialize(config_);
 
-  std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
+  std::string geo_label = snemo::service_info::default_geometry_service_label();
   if (config_.has_key("Geo_label")) {
     geo_label = config_.fetch_string("Geo_label");
   }

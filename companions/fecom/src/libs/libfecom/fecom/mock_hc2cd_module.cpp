@@ -20,7 +20,7 @@
 
 // - Falaise:
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 // This project :
 #include <fecom/calo_hit_calibration.hpp>
@@ -134,7 +134,7 @@ void mock_hc2cd_module::initialize(const datatools::properties& setup_,
     }
   }
   if (_Geo_label_.empty()) {
-    _Geo_label_ = snemo::processing::service_info::default_geometry_service_label();
+    _Geo_label_ = snemo::service_info::default_geometry_service_label();
   }
   if (_geom_manager_ == 0) {
     DT_THROW_IF(_Geo_label_.empty(), std::logic_error,

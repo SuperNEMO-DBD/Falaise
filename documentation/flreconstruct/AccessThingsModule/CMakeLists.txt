@@ -10,7 +10,7 @@ project(AccessThingsModule)
 find_package(Falaise REQUIRED)
 
 # Build a dynamic library from our sources
-add_library(AccessThingsModule SHARED AccessThingsModule.h AccessThingsModule.cpp)
+add_library(AccessThingsModule SHARED AccessThingsModule.cpp)
 
 # Link it to the FalaiseModule library
 # This ensures the correct compiler flags, include paths

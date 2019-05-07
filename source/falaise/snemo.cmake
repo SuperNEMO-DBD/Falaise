@@ -94,9 +94,15 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_tracker_s2c_module.h
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
-  snemo/processing/services.h
-
+  snemo/processing/module.h
   snemo/processing/base_gamma_builder.h
+
+
+  snemo/services/services.h
+  snemo/services/service_traits.h
+  snemo/services/service_handle.h
+  snemo/services/geometry.h
+  snemo/services/histogram.h
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
@@ -162,9 +168,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/mock_tracker_s2c_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
-  snemo/processing/services.cc
-
   snemo/processing/base_gamma_builder.cc
+
+  snemo/services/services.cc
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
@@ -181,6 +187,8 @@ list(APPEND FalaiseLibrary_SOURCES
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_datamodel_timestamp.cxx
+  snemo/test/test_module.cxx
+  snemo/test/test_service.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_event_header.cxx
