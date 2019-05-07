@@ -159,15 +159,6 @@ install(
 add_subdirectory(modules)
 
 #-----------------------------------------------------------------------
-# Configure/Build companions as needed
-#
-option(FALAISE_WITH_COMPANIONS "Build/install companions tools" OFF)
-mark_as_advanced(FALAISE_WITH_COMPANIONS)
-if (FALAISE_WITH_COMPANIONS)
-  add_subdirectory(companions)
-endif()
-
-#-----------------------------------------------------------------------
 # - Install published resources and documentation
 install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}

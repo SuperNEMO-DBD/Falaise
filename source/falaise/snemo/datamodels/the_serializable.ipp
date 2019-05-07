@@ -7,11 +7,6 @@
 #include <falaise/snemo/datamodels/event_header.ipp>
 #include <falaise/snemo/datamodels/timestamp.ipp>
 
-#include <falaise/snemo/datamodels/raw_calorimeter_hit.ipp>
-#include <falaise/snemo/datamodels/raw_data.ipp>
-#include <falaise/snemo/datamodels/raw_tracker_hit.ipp>
-#include <falaise/snemo/datamodels/raw_trigger_infos.ipp>
-
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.ipp>
 #include <falaise/snemo/datamodels/calibrated_data.ipp>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.ipp>
@@ -31,11 +26,5 @@
 
 #include <falaise/snemo/datamodels/particle_track.ipp>
 #include <falaise/snemo/datamodels/particle_track_data.ipp>
-
-//#include <snemo/datamodels/sim_signal_data.ipp>
-#include <snemo/datamodels/sim_calo_digi_hit.ipp>
-#include <snemo/datamodels/sim_digi_data.ipp>
-#include <snemo/datamodels/sim_tracker_digi_hit.ipp>
-#include <snemo/datamodels/sim_trigger_digi_data.ipp>
 
 #endif  // FALAISE_SNEMO_DATAMODEL_THE_SERIALIZABLE_IPP

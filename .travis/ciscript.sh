@@ -22,7 +22,7 @@ rm -Rf build && mkdir build
 cd build
 
 # Configure, assuming presence of Ninja tool
-cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" -DFALAISE_ENABLE_TESTING=ON -DFALAISE_WITH_COMPANIONS=ON -GNinja $PROJECTDIR
+cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" -DFALAISE_ENABLE_TESTING=ON -GNinja $PROJECTDIR
 # Build using Ninja to auto-parallelize
 ninja
 # Run tests - rerunning any that fail in verbose mode
