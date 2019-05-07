@@ -20,7 +20,7 @@
 
 // - Falaise:
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 // This project :
 #include <fecom/calo_hit_calibration.hpp>
