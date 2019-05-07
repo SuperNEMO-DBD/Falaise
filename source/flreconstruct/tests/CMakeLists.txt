@@ -67,6 +67,17 @@ set_tests_properties(flreconstruct-standard-pipeline-develscript PROPERTIES
   )
 set_falaise_test_environment(flreconstruct-standard-pipeline-develscript)
 
+# - Same, but use symlinked name
+add_test(NAME flreconstruct-standard-pipeline-develscript-symlink
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/production.pipeline.conf"
+  )
+set_tests_properties(flreconstruct-standard-pipeline-develscript-symlink PROPERTIES
+  DEPENDS flreconstruct-fixture
+  )
+set_falaise_test_environment(flreconstruct-standard-pipeline-develscript-symlink)
+
+
+
 # Test of writing to an output file after standard pipeline
 # TODO: Add test of contents of file (i.e. that it contains the right bank names/types)!!
 add_test(NAME flreconstruct-standard-pipeline-output
