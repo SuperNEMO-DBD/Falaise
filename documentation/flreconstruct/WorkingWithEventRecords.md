@@ -90,7 +90,7 @@ In this example, we simply use the
 @ref mctools::simulated_data::tree_dump member function to dump some information on
 the object to screen.
 
-Finally, we return @ref falaise::processing::status::PROCESS_OK to indicate that
+Finally, we return @ref falaise::processing::status to indicate that
 we've processed the event without error.
 
 To see the reading of the data in action, we compile the above code into a shared

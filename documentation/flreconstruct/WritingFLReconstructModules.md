@@ -403,7 +403,7 @@ earlier to run the configurable module, simply adding the required string parame
 \include flreconstruct/MyModuleConfigurable/MyModulePipeline.conf
 
 The key name `message` and its type must match that looked for by `MyModule`'s constructor
-in the supplied @ref property_set. Allowed key/types and their mappings to C++
+in the supplied @ref falaise::config::property_set. Allowed key/types and their mappings to C++
 types are documented in [a later section](@ref configurationbestpractices).
 The script can be run in `flreconstruct` as before:
 
@@ -446,7 +446,7 @@ You should see each event being dumped, with the dumped info being
 bracketed by the output from each `MyModule` instance, each with
 different values of the message parameter.
 
-Both `flreconstruct` and @ref property_set work together to check that needed parameters
+Both `flreconstruct` and @ref falaise::config::property_set work together to check that needed parameters
 are supplied and of the correct type. For example, if we *did not* supply the `message`
 parameter:
 
