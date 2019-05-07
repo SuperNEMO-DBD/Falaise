@@ -47,7 +47,7 @@ class ModuleThatThrows {
  private:
   std::string aprop;
 };
-FALAISE_REGISTER_MODULE(ModuleThatThrows);
+FALAISE_REGISTER_MODULE(ModuleThatThrows)
 
 TEST_CASE("Construction and initialization work", "") {
   flp::module<TrivialModule> mod;
