@@ -121,14 +121,10 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
   _tpc_setup_data_.processing_delayed_hits = true;
   _tpc_setup_data_.split_chamber = false;
 
-  double default_time_unit = CLHEP::microsecond;
-
   // Delayed hit minimum time :
   if (setup_.has_key("TPC.delayed_hit_cluster_time")) {
-    double delayed_hit_cluster_time = setup_.fetch_real("TPC.delayed_hit_cluster_time");
-    if (!setup_.has_explicit_unit("TPC.delayed_hit_cluster_time")) {
-      delayed_hit_cluster_time *= default_time_unit;
-    }
+    const double delayed_hit_cluster_time =
+      setup_.fetch_real_with_explicit_dimension("TPC.delayed_hit_cluster_time", "time");
     _tpc_setup_data_.delayed_hit_cluster_time = delayed_hit_cluster_time;
   }
 

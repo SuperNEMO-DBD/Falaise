@@ -223,10 +223,8 @@ void calibrated_data_cut::initialize(const datatools::properties& configuration_
     if (is_mode_tracker_hit_is_delayed()) {
       DT_LOG_DEBUG(get_logging_priority(), "Using TRACKER_HIT_IS_DELAYED mode...");
       if (configuration_.has_key("tracker_hit_is_delayed.delay_time")) {
-        _tracker_hit_delay_time_ = configuration_.fetch_real("tracker_hit_is_delayed.delay_time");
-        if (!configuration_.has_explicit_unit("tracker_hit_is_delayed.delay_time")) {
-          _tracker_hit_delay_time_ *= CLHEP::microsecond;
-        }
+        _tracker_hit_delay_time_ =
+          configuration_.fetch_real_with_explicit_dimension("tracker_hit_is_delayed.delay_time", "time");
       }
     }  // end of is_mode_tracker_hit_is_delayed
   }

@@ -135,37 +135,22 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
   }
 
   // set the time resolution of the Geiger cell TDC measurement:
-  const double time_unit = CLHEP::ns;
   if (config_.has_key("time_resolution")) {
-    _time_resolution_ = config_.fetch_real("time_resolution");
-    if (!config_.has_explicit_unit("time_resolution")) {
-      _time_resolution_ *= time_unit;
-    }
+    _time_resolution_ = config_.fetch_real_with_explicit_dimension("time_resolution", "time");
   }
 
-  const double length_unit = CLHEP::mm;
   // set the fiducial drift radius of the Geiger cell:
   if (config_.has_key("fiducial_drift_radius")) {
-    _fiducial_drift_radius_ = config_.fetch_real("fiducial_drift_radius");
-    if (!config_.has_explicit_unit("fiducial_drift_radius")) {
-      _fiducial_drift_radius_ *= length_unit;
-    }
+    _fiducial_drift_radius_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
   }
   // set the fiducial drift length of the Geiger cell:
   if (config_.has_key("fiducial_drift_length")) {
-    _fiducial_drift_length_ = config_.fetch_real("fiducial_drift_length");
-    if (!config_.has_explicit_unit("fiducial_drift_length")) {
-      _fiducial_drift_length_ *= length_unit;
-    }
+    _fiducial_drift_length_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
   }
 
   // set the mean ionization energy in the tracking gas:
-  const double energy_unit = CLHEP::eV;
   if (config_.has_key("mean_ionization_energy")) {
-    _mean_ionization_energy_ = config_.fetch_real("mean_ionization_energy");
-    if (!config_.has_explicit_unit("mean_ionization_energy")) {
-      _mean_ionization_energy_ *= energy_unit;
-    }
+    _mean_ionization_energy_ = config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
   }
 
   // pickup the ID mapping from the geometry manager:
