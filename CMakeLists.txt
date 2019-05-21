@@ -107,7 +107,6 @@ endif()
 file(COPY resources/ DESTINATION "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}")
 install(DIRECTORY resources/
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
-  PATTERN "_deprecated" EXCLUDE
   )
 
 #-----------------------------------------------------------------------
