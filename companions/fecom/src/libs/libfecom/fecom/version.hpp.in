@@ -1,9 +1,0 @@
-// -*- mode: c++; -*-
-
-#ifndef FECOM_VERSION_HPP
-#define FECOM_VERSION_HPP
-
-//! String encoded full version number, e.g. "1.2.3", available at compile time
-#define FECOM_LIB_VERSION "@FeCom_VERSION_MAJOR@.@FeCom_VERSION_MINOR@.@FeCom_VERSION_PATCH@"
-
-#endif // FECOM_VERSION_HPP
