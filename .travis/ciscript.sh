@@ -6,6 +6,10 @@
 # - Stop on first command that fails
 set -ex
 
+# Bayeux *cannot* run without the USER env var..
+# It may not be set in the image, so....
+export USER=`whoami`
+
 # Find ourselves
 SELFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECTDIR="$(dirname "${SELFDIR}")"
