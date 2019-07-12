@@ -138,7 +138,7 @@ To build and run Falaise on your machine, the following OS and Software must be
 present:
 
 - Linux or macOS System
-  - Supported Linux systems: CentOS6/7, Ubuntu 16.04/18.04LTS
+  - Supported Linux systems: CentOS7, Ubuntu 16.04/18.04LTS
   - Other Linux distributions are known to work, but are not
     officially supported. However, patches are welcome to resolve encountered issues!
   - Suported macOS systems: 10.12/13/14 (Sierra/High Sierra/Mojave)
@@ -146,7 +146,7 @@ present:
 - [CMake](https://cmake.org) 3.12 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
 - [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.1 or higher
-- [Boost](https:/boost.org) 1.63.0 only
+- [Boost](https:/boost.org) 1.63.0/1.69.0 only
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
 - [GSL](http://www.gnu.org/s/gsl) 2 or higher
