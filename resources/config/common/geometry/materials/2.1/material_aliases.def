@@ -1,9 +1,0 @@
-# -*- mode: conf-unix; -*-
-# @falaise:config/common/geometry/materials/2.1/material_aliases.def
-# List of material aliases (format: datatools::multi_properties):
-
-#@description A sample list of materials aliases
-#@key_label   "name"
-#@meta_label  "type"
-
-# end of @falaise:config/common/geometry/materials/2.1/material_aliases.def

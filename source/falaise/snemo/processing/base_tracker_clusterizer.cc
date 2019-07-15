@@ -121,14 +121,10 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
   _tpc_setup_data_.processing_delayed_hits = true;
   _tpc_setup_data_.split_chamber = false;
 
-  double default_time_unit = CLHEP::microsecond;
-
   // Delayed hit minimum time :
   if (setup_.has_key("TPC.delayed_hit_cluster_time")) {
-    double delayed_hit_cluster_time = setup_.fetch_real("TPC.delayed_hit_cluster_time");
-    if (!setup_.has_explicit_unit("TPC.delayed_hit_cluster_time")) {
-      delayed_hit_cluster_time *= default_time_unit;
-    }
+    const double delayed_hit_cluster_time =
+      setup_.fetch_real_with_explicit_dimension("TPC.delayed_hit_cluster_time", "time");
     _tpc_setup_data_.delayed_hit_cluster_time = delayed_hit_cluster_time;
   }
 
@@ -572,7 +568,7 @@ int base_tracker_clusterizer::process(
       sdm::tracker_clustering_solution &sol_prompt = isol->grab();
       datatools::properties &aux_prompt = sol_prompt.grab_auxiliaries();
       if (!aux_prompt.has_flag(sdm::tracker_clustering_data::prompt_key())) continue;
-      for (sdm::tracker_clustering_data::solution_col_type::iterator jsol = boost::next(isol);
+      for (sdm::tracker_clustering_data::solution_col_type::iterator jsol = std::next(isol);
            jsol != the_solutions.end(); ++jsol) {
         sdm::tracker_clustering_solution &sol_delayed = jsol->grab();
         datatools::properties &aux_delayed = sol_delayed.grab_auxiliaries();

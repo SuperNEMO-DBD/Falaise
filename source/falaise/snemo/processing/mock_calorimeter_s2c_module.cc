@@ -22,7 +22,7 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -98,7 +98,7 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& setup_
     }
   }
   if (_Geo_label_.empty()) {
-    _Geo_label_ = snemo::processing::service_info::default_geometry_service_label();
+    _Geo_label_ = snemo::service_info::default_geometry_service_label();
   }
   if (_geom_manager_ == 0) {
     DT_THROW_IF(_Geo_label_.empty(), std::logic_error,
@@ -158,16 +158,8 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& setup_
   }
 
   // Setup trigger time
-  if (!datatools::is_valid(_cluster_time_width_)) {
-    if (setup_.has_key("cluster_time_width")) {
-      _cluster_time_width_ = setup_.fetch_real("cluster_time_width");
-      if (!setup_.has_explicit_unit("cluster_time_width")) {
-        _cluster_time_width_ *= CLHEP::ns;
-      }
-    }
-  }
-  if (!datatools::is_valid(_cluster_time_width_)) {
-    _cluster_time_width_ = 100 * CLHEP::ns;
+  if (setup_.has_key("cluster_time_width")) {
+    _cluster_time_width_ = setup_.fetch_real_with_explicit_dimension("cluster_time_width", "time");
   }
 
   // 2012-09-17 FM : support reference to the MC true hit ID
@@ -212,7 +204,7 @@ void mock_calorimeter_s2c_module::_set_defaults() {
   _SD_label_.clear();
   _CD_label_.clear();
   _Geo_label_.clear();
-  datatools::invalidate(_cluster_time_width_);
+  _cluster_time_width_ = 100 * CLHEP::ns;
   _alpha_quenching_ = true;
   _store_mc_hit_id_ = false;
   return;
@@ -606,7 +598,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
         .set_long_description(ldesc.str())
-        .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+        .set_default_value_string(snemo::service_info::default_geometry_service_label())
         .add_example(
             "Use an alternative name for the geometry service:: \n"
             "                                     \n"

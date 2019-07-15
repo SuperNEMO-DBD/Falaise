@@ -23,7 +23,7 @@
 #include <falaise/snemo/geometry/gveto_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -312,7 +312,7 @@ void gamma_clustering_driver::_get_time_neighbours(cluster_type& cluster_,
   cluster_type::iterator it = cluster_.begin();
   for (; it != cluster_.end(); ++it) {
     const double current_time = it->first;
-    const double next_time = boost::next(it)->first;
+    const double next_time = std::next(it)->first;
     const double delta_time = next_time - current_time;
     if (delta_time > _cluster_time_range_) {
       DT_LOG_TRACE(get_logging_priority(),
@@ -328,8 +328,8 @@ void gamma_clustering_driver::_get_time_neighbours(cluster_type& cluster_,
   // of clusters otherwise clusters_ stays in a frozen state if the cluster
   // is added first and then filled.
   cluster_type a_cluster;
-  a_cluster.insert(boost::next(it), cluster_.end());
-  cluster_.erase(boost::next(it), cluster_.end());
+  a_cluster.insert(std::next(it), cluster_.end());
+  cluster_.erase(std::next(it), cluster_.end());
   clusters_.push_back(a_cluster);
 
   _get_time_neighbours(a_cluster, clusters_);

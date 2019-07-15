@@ -146,7 +146,7 @@
 # - ``<PROJECT_NAME_UC>_CXX_STANDARD`` : (default : 11)
 #
 #   - Compile projects against this C++ Standard. Allowed values are
-#     ``11`` (default) and ``14``.
+#     ``11`` (default), ``14``, ``17`` (CMake > 3.7) , and ``20`` (CMake > 3.11).
 #
 
 #-----------------------------------------------------------------------
@@ -345,8 +345,16 @@ endif()
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # - Allow choice of standard
+set(BX_CXXSTD_VALUES "11" "14")
+if(CMAKE_VERSION VERSION_GREATER 3.7)
+  list(APPEND BX_CXXSTD_VALUES "17")
+endif()
+if(CMAKE_VERSION VERSION_GREATER 3.11)
+  list(APPEND BX_CXXSTD_VALUES "20")
+endif()
+
 enum_option(${PROJECT_NAME_UC}_CXX_STANDARD
-  VALUES "11" "14"
+  VALUES ${BX_CXXSTD_VALUES}
   TYPE   STRING
   DOC    "Choose C++ Standard to compile against"
   )
@@ -404,17 +412,19 @@ set(${PROJECT_NAME_UC}_CXX11_COMPILE_FEATURES
   cxx_variadic_templates
   )
 
-# - For C++14, add all features supported by current compiler
+# - For C++14,17,20 add all features supported by current compiler
 set(${PROJECT_NAME_UC}_CXX14_COMPILE_FEATURES "${CMAKE_CXX14_COMPILE_FEATURES}")
+set(${PROJECT_NAME_UC}_CXX17_COMPILE_FEATURES "${CMAKE_CXX17_COMPILE_FEATURES}")
+set(${PROJECT_NAME_UC}_CXX20_COMPILE_FEATURES "${CMAKE_CXX20_COMPILE_FEATURES}")
 
 # - Process compile features based on selected standard
 if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 11)
   list(APPEND ${PROJECT_NAME_UC}_CXX_COMPILE_FEATURES ${${PROJECT_NAME_UC}_CXX11_COMPILE_FEATURES})
 endif()
 
-# - If C++14 is requested, add all features supported by current
-#   compiler. If no 14 features are supported, fail under assumption
-#   compiler does not support it.
+# - If C++14/17/20 is requested, add all features supported by current
+#   compiler. If no 14/17/20 features are supported, fail under assumption
+#   compiler/cmake does not support it.
 if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 14)
   if(NOT ${PROJECT_NAME_UC}_CXX14_COMPILE_FEATURES)
     message(FATAL_ERROR "C++14 requested, but no support for any C++14 features for compiler:\n"
@@ -424,6 +434,36 @@ if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 14)
 
   list(APPEND ${PROJECT_NAME_UC}_CXX_COMPILE_FEATURES
     ${${PROJECT_NAME_UC}_CXX11_COMPILE_FEATURES}
-    ${${PROJECT_NAME_UC}_PROJECT_CXX14_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX14_COMPILE_FEATURES}
     )
 endif()
+
+if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 17)
+  if(NOT ${PROJECT_NAME_UC}_CXX17_COMPILE_FEATURES)
+    message(FATAL_ERROR "C++17 requested, but no support for any C++17 features for compiler:\n"
+      "'${CMAKE_CXX_COMPILER_ID}', '${CMAKE_CXX_COMPILER_VERSION}'"
+      )
+  endif()
+
+  list(APPEND ${PROJECT_NAME_UC}_CXX_COMPILE_FEATURES
+    ${${PROJECT_NAME_UC}_CXX11_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX14_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX17_COMPILE_FEATURES}
+    )
+endif()
+
+if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 20)
+  if(NOT ${PROJECT_NAME_UC}_CXX20_COMPILE_FEATURES)
+    message(FATAL_ERROR "C++20 requested, but no support for any C++20 features for compiler:\n"
+      "'${CMAKE_CXX_COMPILER_ID}', '${CMAKE_CXX_COMPILER_VERSION}'"
+      )
+  endif()
+
+  list(APPEND ${PROJECT_NAME_UC}_CXX_COMPILE_FEATURES
+    ${${PROJECT_NAME_UC}_CXX11_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX14_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX17_COMPILE_FEATURES}
+    ${${PROJECT_NAME_UC}_CXX20_COMPILE_FEATURES}
+    )
+endif()
+

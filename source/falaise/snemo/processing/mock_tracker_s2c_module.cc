@@ -21,7 +21,7 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -106,7 +106,7 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& setup_,
     }
   }
   if (_Geo_label_.empty()) {
-    _Geo_label_ = snemo::processing::service_info::default_geometry_service_label();
+    _Geo_label_ = snemo::service_info::default_geometry_service_label();
   }
   if (_geom_manager_ == 0) {
     DT_THROW_IF(_Geo_label_.empty(), std::logic_error,
@@ -159,37 +159,31 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& setup_,
   // Initialize the Geiger regime utility:
   _geiger_.initialize(setup_);
 
-  const double time_unit = CLHEP::microsecond;
-
   // Set minimum drift time for peripheral hits:
   if (setup_.has_key("peripheral_drift_time_threshold")) {
-    _peripheral_drift_time_threshold_ = setup_.fetch_real("peripheral_drift_time_threshold");
-    if (!setup_.has_explicit_unit("peripheral_drift_time_threshold")) {
-      _peripheral_drift_time_threshold_ *= time_unit;
-    }
+    _peripheral_drift_time_threshold_
+      = setup_.fetch_real_with_explicit_dimension("peripheral_drift_time_threshold", "time");
   }
   // Default value:
   if (!datatools::is_valid(_peripheral_drift_time_threshold_)) {
     _peripheral_drift_time_threshold_ = _geiger_.get_t0();
   }
   DT_LOG_DEBUG(get_logging_priority(), "peripheral_drift_time_threshold = "
-                                           << _peripheral_drift_time_threshold_ / CLHEP::microsecond
-                                           << " us");
+               << _peripheral_drift_time_threshold_ / CLHEP::microsecond
+               << " us");
 
   // Set minium drift time for delayed hits:
   if (setup_.has_key("delayed_drift_time_threshold")) {
-    _delayed_drift_time_threshold_ = setup_.fetch_real("delayed_drift_time_threshold");
-    if (!setup_.has_explicit_unit("delayed_drift_time_threshold")) {
-      _delayed_drift_time_threshold_ *= time_unit;
-    }
+    _delayed_drift_time_threshold_
+      = setup_.fetch_real_with_explicit_dimension("delayed_drift_time_threshold", "time");
   }
   // Default value:
   if (!datatools::is_valid(_delayed_drift_time_threshold_)) {
     _delayed_drift_time_threshold_ = _geiger_.get_tcut();
   }
   DT_LOG_DEBUG(get_logging_priority(), "delayed_drift_time_threshold = "
-                                           << _delayed_drift_time_threshold_ / CLHEP::microsecond
-                                           << " us");
+               << _delayed_drift_time_threshold_ / CLHEP::microsecond
+               << " us");
 
   // 2012-07-26 FM : support reference to the MC true hit ID
   if (setup_.has_flag("store_mc_hit_id")) {
@@ -785,7 +779,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
         .set_long_description(ldesc.str())
-        .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+        .set_default_value_string(snemo::service_info::default_geometry_service_label())
         .add_example(
             "Use an alternative name for the geometry service:: \n"
             "                                    \n"

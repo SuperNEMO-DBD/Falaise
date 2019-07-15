@@ -1,65 +1,27 @@
-// - Implementation of MyModule
+// Interface from Falaise
+#include "falaise/snemo/processing/module.h"
 
-// Ourselves
-#include "MyModule.h"
+#include "falaise/snemo/services/geometry.h"
 
-// Standard Library
+class MyModule {
+ public:
+  // Default constructor
+  MyModule() = default;
 
-// Third Party
-// - Bayeux
-#include <bayeux/datatools/service_manager.h>
-#include <bayeux/geomtools/geometry_service.h>
-#include <bayeux/geomtools/manager.h>
+  // User-defined Constructor
+  MyModule(falaise::config::property_set const& /*ps*/, datatools::service_manager& sp)
+      : geosvc{sp} {}
 
-// This Project
-
-// Macro which automatically implements the interface needed
-// to enable the module to be loaded at runtime
-// The first argument is the typename
-// The second is the string key used to access the module in pipeline
-// scripts. This must be globally unique.
-DPP_MODULE_REGISTRATION_IMPLEMENT(MyModule,"MyModule");
-
-// Construct
-MyModule::MyModule() : dpp::base_module(), geoManager_(0)
-{}
-
-// Destruct
-MyModule::~MyModule() {
-  // MUST reset module at destruction
-  this->reset();
-}
-
-// Initialize
-void MyModule::initialize(const datatools::properties& /*myConfig*/,
-                          datatools::service_manager& flServices,
-                          dpp::module_handle_dict_type& /*moduleDict*/) {
-  if (flServices.has("geometry")) {
-    // Service Manager can supply a geometry service, so get it and
-    // then the corresponding manager
-    const geomtools::geometry_service& geoService = flServices.get<geomtools::geometry_service>("geometry");
-    geoManager_ = &geoService.get_geom_manager();
-
-    // Some output to demonstrate we have something
-    geoService.tree_dump(std::cout,"Geometry Service");
-    geoManager_->tree_dump(std::cout, "Geometry Manager");
+  // Process event
+  falaise::processing::status process(datatools::things& /*e*/) {
+    std::cout << "MyModule::process called!\n";
+    geosvc->tree_dump(std::cout);
+    return falaise::processing::status::PROCESS_OK;
   }
-  this->_set_initialized(true);
-}
 
-// Process
-dpp::base_module::process_status
-MyModule::process(datatools::things& /*workItem*/) {
-  // Hello world!
-  std::cout << "MyModule::process called!" << std::endl;
-  std::cout << "Using Geometry Manager instance at : " << geoManager_ << std::endl;
+ private:
+  snemo::service_handle<snemo::geometry_svc> geosvc;
+};
 
-  // MUST return a status, see ref dpp::base_module::process_status
-  return PROCESS_OK;
-}
-
-// Reset
-void MyModule::reset() {
-  geoManager_ = 0;
-  this->_set_initialized(false);
-}
+// Register module with Falaise's plugin system on load
+FALAISE_REGISTER_MODULE(MyModule)

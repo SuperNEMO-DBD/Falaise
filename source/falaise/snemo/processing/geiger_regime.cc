@@ -33,43 +33,24 @@ void geiger_regime::reset() {
 void geiger_regime::initialize(const datatools::properties& config_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
 
-  double length_unit = CLHEP::mm;
-  double time_unit = CLHEP::microsecond;
-  double drift_speed_unit = (CLHEP::cm / CLHEP::microsecond);
-
   if (config_.has_key("cell_diameter")) {
-    _cell_diameter_ = config_.fetch_real("cell_diameter");
-    if (!config_.has_explicit_unit("cell_diameter")) {
-      _cell_diameter_ *= length_unit;
-    }
+    _cell_diameter_ = config_.fetch_real_with_explicit_dimension("cell_diameter", "length");
   }
 
   if (config_.has_key("cell_length")) {
-    _cell_length_ = config_.fetch_real("cell_length");
-    if (!config_.has_explicit_unit("cell_length")) {
-      _cell_length_ *= length_unit;
-    }
+    _cell_length_ = config_.fetch_real_with_explicit_dimension("cell_length", "length");
   }
 
   if (config_.has_key("tcut")) {
-    _tcut_ = config_.fetch_real("tcut");
-    if (!config_.has_explicit_unit("tcut")) {
-      _tcut_ *= time_unit;
-    }
+    _tcut_ = config_.fetch_real_with_explicit_dimension("tcut", "time");
   }
 
   if (config_.has_key("sigma_anode_time")) {
-    _sigma_anode_time_ = config_.fetch_real("sigma_anode_time");
-    if (!config_.has_explicit_unit("sigma_anode_time")) {
-      _sigma_anode_time_ *= time_unit;
-    }
+    _sigma_anode_time_ = config_.fetch_real_with_explicit_dimension("sigma_anode_time", "time");
   }
 
   if (config_.has_key("sigma_cathode_time")) {
-    _sigma_cathode_time_ = config_.fetch_real("sigma_cathode_time");
-    if (!config_.has_explicit_unit("sigma_cathode_time")) {
-      _sigma_cathode_time_ *= time_unit;
-    }
+    _sigma_cathode_time_ = config_.fetch_real_with_explicit_dimension("sigma_cathode_time", "time");
   }
 
   if (config_.has_key("base_anode_efficiency")) {
@@ -81,38 +62,26 @@ void geiger_regime::initialize(const datatools::properties& config_) {
   }
 
   if (config_.has_key("plasma_longitudinal_speed")) {
-    _plasma_longitudinal_speed_ = config_.fetch_real("plasma_longitudinal_speed");
-    if (!config_.has_explicit_unit("plasma_longitudinal_speed")) {
-      _plasma_longitudinal_speed_ *= drift_speed_unit;
-    }
+    _plasma_longitudinal_speed_
+      = config_.fetch_real_with_explicit_dimension("plasma_longitudinal_speed", "velocity");
   }
 
   if (config_.has_key("sigma_plasma_longitudinal_speed")) {
-    _sigma_plasma_longitudinal_speed_ = config_.fetch_real("sigma_plasma_longitudinal_speed");
-    if (!config_.has_explicit_unit("sigma_plasma_longitudinal_speed")) {
-      _sigma_plasma_longitudinal_speed_ *= drift_speed_unit;
-    }
+    _sigma_plasma_longitudinal_speed_
+      = config_.fetch_real_with_explicit_dimension("sigma_plasma_longitudinal_speed", "velocity");
   }
 
   if (config_.has_key("sigma_z")) {
-    _sigma_z_ = config_.fetch_real("sigma_z");
-    if (!config_.has_explicit_unit("sigma_z")) {
-      _sigma_z_ *= length_unit;
-    }
+    _sigma_z_ = config_.fetch_real_with_explicit_dimension("sigma_z", "length");
   }
 
   if (config_.has_key("sigma_z_missing_cathode")) {
-    _sigma_z_missing_cathode_ = config_.fetch_real("sigma_z_missing_cathode");
-    if (!config_.has_explicit_unit("sigma_z_missing_cathode")) {
-      _sigma_z_missing_cathode_ *= length_unit;
-    }
+    _sigma_z_missing_cathode_
+      = config_.fetch_real_with_explicit_dimension("sigma_z_missing_cathode", "length");
   }
 
   if (config_.has_key("sigma_r_a")) {
-    _sigma_r_a_ = config_.fetch_real("sigma_r_a");
-    if (!config_.has_explicit_unit("sigma_r_a")) {
-      _sigma_r_a_ *= length_unit;
-    }
+    _sigma_r_a_ = config_.fetch_real_with_explicit_dimension("sigma_r_a", "length");
   }
 
   if (config_.has_key("sigma_r_b")) {
@@ -120,20 +89,17 @@ void geiger_regime::initialize(const datatools::properties& config_) {
   }
 
   if (config_.has_key("sigma_r_r0")) {
-    _sigma_r_r0_ = config_.fetch_real("sigma_r_r0");
-    if (!config_.has_explicit_unit("sigma_r_r0")) {
-      _sigma_r_r0_ *= length_unit;
-    }
+    _sigma_r_r0_ = config_.fetch_real_with_explicit_dimension("sigma_r_r0", "length");
   }
 
-  DT_THROW_IF(_tcut_ < 8 * time_unit, std::range_error,
-              "Cut drift time is too short (" << _tcut_ / time_unit << " us < 8 us) !");
+  DT_THROW_IF(_tcut_ < 8 * CLHEP::microsecond, std::range_error,
+              "Cut drift time is too short (" << _tcut_ / CLHEP::microsecond << " us < 8 us) !");
 
   const double r_cell = 0.5 * _cell_diameter_;
   // 2011-05-12 FM : Compute a valid t0 before :
-  double step_drift_time1 = 0.050 * time_unit;
+  double step_drift_time1 = 0.050 * CLHEP::microsecond;
   bool tune = false;
-  for (double drift_time = 0.0 * time_unit; drift_time < (_tcut_ + 0.5 * step_drift_time1);
+  for (double drift_time = 0.0 * CLHEP::microsecond; drift_time < (_tcut_ + 0.5 * step_drift_time1);
        drift_time += step_drift_time1) {
     const double drift_radius = base_t_2_r(drift_time, 1);
     if (drift_radius > r_cell) {
@@ -148,8 +114,8 @@ void geiger_regime::initialize(const datatools::properties& config_) {
     }
   }
 
-  const double step_drift_time = 0.2 * time_unit;
-  for (double drift_time = 0.0 * time_unit; drift_time < (_tcut_ + 0.5 * step_drift_time);
+  const double step_drift_time = 0.2 * CLHEP::microsecond;
+  for (double drift_time = 0.0 * CLHEP::microsecond; drift_time < (_tcut_ + 0.5 * step_drift_time);
        drift_time += step_drift_time) {
     const double drift_radius = base_t_2_r(drift_time);
     _base_rt_.add_point(drift_radius, drift_time, false);

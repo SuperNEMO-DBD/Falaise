@@ -18,7 +18,7 @@
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/processing/base_tracker_clusterizer.h>
-#include <falaise/snemo/processing/services.h>
+#include <falaise/snemo/services/services.h>
 
 // This plugin:
 #include <falaise/snemo/reconstruction/sultan_driver.h>
@@ -102,7 +102,7 @@ void sultan_tracker_clustering_module::initialize(
   }
 
   if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::processing::service_info::default_geometry_service_label();
+    std::string geo_label = snemo::service_info::default_geometry_service_label();
     if (setup_.has_key("Geo_label")) {
       geo_label = setup_.fetch_string("Geo_label");
     }
@@ -308,7 +308,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
             "geometry service.                                 \n"
             "This property is only used if no geometry manager \n"
             "as been provided to the module.                   \n")
-        .set_default_value_string(snemo::processing::service_info::default_geometry_service_label())
+        .set_default_value_string(snemo::service_info::default_geometry_service_label())
         .add_example(
             "Use an alternative name for the geometry service::  \n"
             "                                                    \n"

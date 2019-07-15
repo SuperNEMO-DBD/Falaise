@@ -1,0 +1,13 @@
+# List of geometry models definition files for the SuperNEMO Demonstrator
+# Tracker layout:
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/pmt_5inch.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/xwall_module.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/xwall.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/gveto_module.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/gveto.geom
+@falaise:geometry/TrackerCellCore.conf
+@falaise:geometry/TrackerCell.conf
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/tracker_layers.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/tracker_volumes.geom
+@falaise:snemo/demonstrator/geometry/GeometryModels/tracker_modules/tracker_submodules.geom
+

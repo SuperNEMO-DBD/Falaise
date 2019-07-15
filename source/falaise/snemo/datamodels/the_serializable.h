@@ -48,35 +48,6 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::timest
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::event_header)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::event_header)
 
-/***************************************
- * snemo::datamodel::raw_trigger_infos *
- ***************************************/
-
-#include <falaise/snemo/datamodels/raw_trigger_infos.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_trigger_infos)
-
-/*****************************************
- * snemo::datamodel::raw_calorimeter_hit *
- *****************************************/
-
-#include <falaise/snemo/datamodels/raw_calorimeter_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_calorimeter_hit)
-
-/*************************************
- * snemo::datamodel::raw_tracker_hit *
- *************************************/
-
-#include <falaise/snemo/datamodels/raw_tracker_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_tracker_hit)
-
-/******************************
- * snemo::datamodel::raw_data *
- ******************************/
-
-#include <falaise/snemo/datamodels/raw_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_data)
-BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::raw_data)
-
 /************************************************
  * snemo::datamodel::calibrated_calorimeter_hit *
  ************************************************/
@@ -149,21 +120,5 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::partic
 #include <falaise/snemo/datamodels/particle_track_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::particle_track_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::particle_track_data)
-
-/***********************************
- * snemo::datamodel::sim_digi_data *
- ***********************************/
-
-#include <falaise/snemo/datamodels/sim_trigger_digi_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_trigger_digi_data)
-#include <falaise/snemo/datamodels/sim_readout_digi_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_readout_digi_data)
-#include <falaise/snemo/datamodels/sim_calo_digi_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_calo_digi_hit)
-#include <falaise/snemo/datamodels/sim_tracker_digi_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_tracker_digi_hit)
-#include <falaise/snemo/datamodels/sim_digi_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::sim_digi_data)
-BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::sim_digi_data)
 
 #endif  // FALAISE_SNEMO_DATAMODELS_THE_SERIALIZABLE_H

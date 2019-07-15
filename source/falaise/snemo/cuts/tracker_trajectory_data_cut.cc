@@ -161,20 +161,14 @@ void tracker_trajectory_data_cut::initialize(const datatools::properties& config
       DT_LOG_DEBUG(get_logging_priority(), "Using RANGE_PVALUE mode...");
       int count = 0;
       if (configuration_.has_key("range_pvalue.min")) {
-        double pmin = configuration_.fetch_real("range_pvalue.min");
-        if (!configuration_.has_explicit_unit("range_pvalue.min")) {
-          pmin *= CLHEP::perCent;
-        }
+        const double pmin = configuration_.fetch_real_with_explicit_dimension("range_pvalue.min", "fraction");
         DT_THROW_IF(pmin < 0.0 * CLHEP::perCent || pmin > 100.0 * CLHEP::perCent, std::range_error,
                     "Invalid min value of p-value (" << pmin << ") !");
         _pvalue_range_min_ = pmin;
         count++;
       }
       if (configuration_.has_key("range_pvalue.max")) {
-        double pmax = configuration_.fetch_real("range_pvalue.max");
-        if (!configuration_.has_explicit_unit("range_pvalue.max")) {
-          pmax *= CLHEP::perCent;
-        }
+        const double pmax = configuration_.fetch_real_with_explicit_dimension("range_pvalue.max", "fraction");
         DT_THROW_IF(pmax < 0.0 * CLHEP::perCent || pmax > 100.0 * CLHEP::perCent, std::range_error,
                     "Invalid max value of p-value (" << pmax << ") !");
         _pvalue_range_max_ = pmax;

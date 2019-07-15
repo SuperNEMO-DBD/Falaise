@@ -1,0 +1,19 @@
+#@description A sample list of geometry ID categories/types
+#@key_label  "category"
+#@meta_label "type"
+
+[category="world" type="0"]
+  addresses : string[1] = "world"
+
+[category="hall"  type="100"]
+  addresses : string[1] = "hall"
+
+[category="ground"  type="110"]
+  inherits : string[1] = "hall"
+
+[category="external_shield" type="200"]
+  addresses : string[1] = "side"
+
+[category="module" type="1000"]
+  addresses : string[1] = "module"
+

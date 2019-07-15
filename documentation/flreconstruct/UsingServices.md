@@ -12,31 +12,17 @@ of FLReconstruct covered in [The FLReconstruct Application](@ref usingflreconstr
 pipeline modules, as covered in [Writing FLReconstruct Modules](@ref writingflreconstructmodules).
 
 In FLReconstruct, modules are the basic "unit" for processing events.
-Each event stores data relevant to that event, but use and interpretation
-of this data may require other data which is "global"; that is, data common
-to a set of events (e.g. a detector run). As this data is common to an
-event set, it is not stored in the events received via the
-@ref dpp::base_module::process method because this would cause
+Each event stores data relevant to that event, but creation, use, and interpretation
+of this data may require other data which common to a set of events
+(e.g. a detector run). These data are supplied through *Services*.
 
-1. Duplication of data, leading to storage and RAM issues.
-2. Each module needing this data would have to extract it before
-processing each event, causing inefficiencies.
-
-Instead, common data is supplied through a collection of *Services*.
-Your module can access these via the @ref datatools::service_manager
-reference supplied to its `initialize` method by the flreconstruct
-application. From this, you can get and hold references to a current
+Your module can access any services it needs via the @ref datatools::service_manager
+reference supplied to its constructor by the flreconstruct
+application. From this, you can get a smart pointer to a current
 service.
 
-In this tutorial, we will see how to implement access and use of the
-@ref geomtools::geometry_service. This will cover
-
-1. Accessing and storing the service
-2. Description of available services (DEFERRED)
-
-As such, using the services with event data is deferred to individual
-tutorials.
-
+In this tutorial, we will see how to implement a module requiring the
+@ref snemo::geometry_svc service.
 
 Implementing a Service-Aware Module {#useservices_module}
 ===================================
@@ -52,48 +38,33 @@ $ ls
 MyModule
 $ cd MyModule
 $ ls
-CMakeLists.txt  MyModule.h              MyModulePipeline.conf
-MyModule.cpp    MyModulePipeline2.conf
+CMakeLists.txt         MyModulePipeline.conf
+MyModule.cpp           MyModulePipeline2.conf
 $
 ~~~~~
 
 The `CMakeLists.txt` build script and `.conf` pipeline scripts are
-identical to the earlier tutorial. We begin by modifying the header file
-to the following
-
-\include flreconstruct/UseServicesModule/MyModule.h
-
-All we have added is a forward declaration to the type of the service
-we will will use, in this case @ref geomtools::manager, and a `const`
-pointer to the service as a data member.
-
-The main change comes in the implementation, where we extend the
-`initialize` method to check for and obtain the service:
+identical to the earlier tutorial. We begin by modifying the module's
+implementation as follows:
 
 \include flreconstruct/UseServicesModule/MyModule.cpp
 
-Note the main updates which are:
+The changes are pretty simple:
 
-1. The constructor initializes the pointer to null.
-2. The `reset` method nulls the pointer, which is fine because we don't own the service.
-3. The `initialize` method queries the supplied @ref datatools::service_manager instance for the presence of a service named "geometry".
-4. If the @ref datatools::service_manager supplied the service, it is
-extracted from the manager as a reference-to @ref geomtools::geometry_service.
-5. At present, @ref geomtools::geometry_service is just a thin holder of
-an underlying @ref geomtools::manager instance, so a const pointer to this
-is extracted from the service into the data member.
+1. The service is held as a data member of type `snemo::service_handle<snemo::geometry_svc>`
+   - @ref snemo::service_handle is the "smart pointer" holding the service implementation
+   - @ref snemo::geometry_svc is the type of the service implementation we need.
+2. The service is initialized by in `MyModule`'s constructor from the supplied @ref datatools::service_manager instance.
+3. The service is used in the `process` member function, here for illustration only by
+   calling the `tree_dump` member function of the held @ref snemo::geometry_svc instance.
 
-Though the service is not used directly, we call the `tree_dump` methods
-of the @ref geomtools::geometry_service and @ref geomtools::manager instances to demonstrate that these hold something.
+You do not need to worry about checking that the service is correctly constructed and valid.
+@ref snemo::service_handle will throw exceptions if:
 
-The `process` method is also updated to output the address of the
-@ref geomtools::manager instance, indicating that it should be useful.
+- A valid service of the requested type cannot be constructed
+- The service is accessed (e.g. `geosvc->tree_dump(std::cout)`) and is not valid
 
-Don't worry about the two step process of getting a service and then
-something within the service (the @ref geomtools::manager). Sometimes
-the interface of a service will be used directly, in other cases
-it may provide a convenience wrapper around additional but related tools.
-
+The `flreconstruct` pipeline with handle these errors and report them on the command line.
 
 Building and Running a Service-Aware Module
 -------------------------------------------
@@ -104,5 +75,4 @@ so you can follow the [build instructions from the original example](@ref minima
 
 Available Services {#useservices_servicelist}
 ==================
-TODO
-
+- @ref snemo::geometry_svc : queries related to geometric positions, etc in the detector

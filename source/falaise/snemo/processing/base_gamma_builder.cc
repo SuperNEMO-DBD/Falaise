@@ -119,10 +119,7 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
   if (_add_foil_vertex_extrapolation_) {
     if (bgb_setup.has_key("add_foil_vertex_extrapolation.minimal_probability")) {
       _add_foil_vertex_minimal_probability_ =
-          bgb_setup.fetch_real("add_foil_vertex_extrapolation.minimal_probability");
-      if (!bgb_setup.has_explicit_unit("add_foil_vertex_extrapolation.minimal_probability")) {
-        _add_foil_vertex_minimal_probability_ *= CLHEP::perCent;
-      }
+        bgb_setup.fetch_real_with_explicit_dimension("add_foil_vertex_extrapolation.minimal_probability", "fraction");
     }
   }
 
@@ -134,10 +131,7 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
   if (_add_gamma_from_annihilation_) {
     if (bgb_setup.has_key("add_gamma_from_annihilation.minimal_probability")) {
       _add_gamma_from_annihilation_minimal_probability_ =
-          bgb_setup.fetch_real("add_gamma_from_annihilation.minimal_probability");
-      if (!bgb_setup.has_explicit_unit("add_gamma_from_annihilation.minimal_probability")) {
-        _add_gamma_from_annihilation_minimal_probability_ *= CLHEP::perCent;
-      }
+        bgb_setup.fetch_real_with_explicit_dimension("add_gamma_from_annihilation.minimal_probability", "fraction");
     }
   }
   return;

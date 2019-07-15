@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "3.3.0")
+project(Falaise VERSION "4.0.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -76,12 +76,6 @@ if(FALAISE_ENABLE_TESTING)
 endif()
 
 #-----------------------------------------------------------------------
-# Configure/Build utilities as needed
-#
-option(FALAISE_WITH_DEVELOPER_TOOLS "Build/install developer tools" ON)
-mark_as_advanced(FALAISE_WITH_DEVELOPER_TOOLS)
-
-#-----------------------------------------------------------------------
 # Optional build of documentation
 #
 option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
@@ -94,8 +88,7 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.1.2)
-message( STATUS "Searching Bayeux ${FALAISE_BAYEUX_MIN_VERSION} ...")
+set(FALAISE_BAYEUX_MIN_VERSION 3.4.1)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 
 #-----------------------------------------------------------------------
@@ -103,11 +96,18 @@ find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 #
 add_subdirectory(utilities)
 add_subdirectory(source)
-add_subdirectory(resources)
 
 if(FALAISE_WITH_DOCS)
   add_subdirectory(documentation)
 endif()
+
+#-----------------------------------------------------------------------
+# Copy/Install resources
+#
+file(COPY resources/ DESTINATION "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}")
+install(DIRECTORY resources/
+  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
+  )
 
 #-----------------------------------------------------------------------
 # - CMake Support files
@@ -156,15 +156,6 @@ install(
 # - Plugins/modules installation - Must come last because they must find
 # Falaise, so require the config/targets file to have been generated
 add_subdirectory(modules)
-
-#-----------------------------------------------------------------------
-# Configure/Build companions as needed
-#
-option(FALAISE_WITH_COMPANIONS "Build/install companions tools" OFF)
-mark_as_advanced(FALAISE_WITH_COMPANIONS)
-if (FALAISE_WITH_COMPANIONS)
-  add_subdirectory(companions)
-endif()
 
 #-----------------------------------------------------------------------
 # - Install published resources and documentation

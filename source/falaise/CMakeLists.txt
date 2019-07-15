@@ -29,7 +29,10 @@ set(FalaiseLibrary_HEADERS
   falaise.h
   resource.h
   version.h.in
-  property_reader.h
+  config/path.h
+  config/property_reader.h
+  config/property_set.h
+  config/quantity.h
   tags.h
   detail/falaise_sys.h
 )
@@ -52,7 +55,10 @@ set(FalaiseLibrary_SOURCES
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
-  property_reader.cc
+  config/path.cpp
+  config/property_reader.cc
+  config/property_set.cpp
+  config/quantity.cpp
   tags.cc
   detail/falaise_sys.cc
  )
@@ -142,13 +148,16 @@ install(DIRECTORY ${FALAISE_BUILD_INCLUDEDIR}/
 
 if(FALAISE_ENABLE_TESTING)
   list(APPEND FalaiseLibrary_TESTS
-    testing/test_falaise.cxx
-    testing/test_io_data.cxx
-    testing/test_falaise_tags.cxx
+    test/test_falaise.cxx
+    test/test_io_data.cxx
+    test/test_falaise_tags.cxx
    )
   list(APPEND FalaiseLibrary_TESTS_CATCH
-    testing/test_property_reader.cxx
-    testing/test_falaise_version.cxx
+    test/test_property_reader.cxx
+    test/test_falaise_version.cxx
+    test/test_path.cxx
+    test/test_property_set.cxx
+    test/test_quantity.cxx
     )
 endif()
 
@@ -158,8 +167,8 @@ endif()
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
 set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${FALAISE_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}"
-  "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/testing"
+  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test"
   )
 if(FALAISE_ENABLE_TESTING)
   # - CATCH TESTS

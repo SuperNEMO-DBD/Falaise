@@ -1,0 +1,46 @@
+#@description The definitions for variant parameters related to the DBD source
+#@key_label   "name"
+#@meta_label  "type"
+
+[name="demonstrator.basic.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the SN demonstrator module basic layout
+  display_name       : string = "Basic layout"
+  terse_description  : string = "The configuration parameters for the demonstrator module basic layout"
+
+
+[name="demonstrator.half_commissioning.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the SN demonstrator half module commissioning layout
+  display_name       : string = "Half module commissioning layout"
+  terse_description  : string = "The configuration parameters for the demonstrator half module commissioning layout"
+
+
+[name="demonstrator.layout.PM" type="parameter"]
+  #@config A parameter model describing the layout of the demonstrator module
+  display_name       : string = "Demonstrator layout"
+  terse_description  : string = "The demonstrator layout"
+  mutability         : string = "variable"
+  variable.mode      : string = "enumeration"
+  type : string = "string"
+    string.default            : string = "Basic"
+    string.enumerated.size    : integer = 2
+      string.enumerated_0.value : string = "Basic"
+      string.enumerated_0.documentation : string = "Basic layout of the SuperNEMO demonstrator module"
+      string.enumerated_0.variant : string = "if_basic"
+      string.enumerated_1.value : string = "HalfCommissioning"
+      string.enumerated_1.documentation : string = "Half-commissioning layout of the SuperNEMO demonstrator module"
+      string.enumerated_1.variant : string = "if_half_commissioning"
+  variants : string[2] = "if_basic" "if_half_commissioning"
+    variants.if_basic.model       : string = "demonstrator.basic.VM"
+    variants.if_basic.description : string = "Set of parameters for basic demonstrator layout"
+    variants.if_half_commissioning.model       : string = "demonstrator.half_commissioning.VM"
+    variants.if_half_commissioning.description : string = "Set of parameters for demonstrator half module commissioning layout"
+
+
+[name="demonstrator.VM" type="variant"]
+  #@config A variant model describing the set of parameters associated to the SN demonstrator module
+  display_name       : string = "Demonstrator"
+  terse_description  : string = "The configuration parameters for the demonstrator geometry"
+  parameters : string[1] = "layout"
+    parameters.layout.model       : string = "demonstrator.layout.PM"
+    parameters.layout.description : string = "The layout of the demonstrator module"
+

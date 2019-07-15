@@ -115,10 +115,6 @@ Examples:
       --experiment-setup "urn:snemo:demonstrator:setup:1.0" \
       --variant-profile "variant.profile" \
       --input-file <simulation/reconstruction file>
- 4) Visualizing BiPo3 detector :
-    flvisualize \
-      --detector-config-file $(flquery --resourcedir)/config/bipo3/geometry/2.0/manager.conf \
-      --style-config-file $(flquery --resourcedir)/modules/EventBrowser/styles/bipo3_default.sty
 
 ~~~~~
 

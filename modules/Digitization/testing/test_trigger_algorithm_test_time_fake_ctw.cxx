@@ -95,7 +95,7 @@ int main(int argc_, char **argv_) {
 
     std::string manager_config_file;
 
-    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/4.0/manager.conf";
+    manager_config_file = "@falaise:config/snemo/demonstrator/geometry/GeometryManager.conf";
     datatools::fetch_path_with_env(manager_config_file);
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);

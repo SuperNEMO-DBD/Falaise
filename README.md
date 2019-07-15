@@ -20,46 +20,34 @@ with each module (or set of modules) having its own directory.
 Additional modules from external sources and individual contribution
 can be used too.
 
-# Installing Falaise
+# Getting Falaise
 ## Quickstart
-If you simply wish to use or try out Falaise, we recommend installing it
-using [our Home/Linuxbrew tap](https://github.com/SuperNEMO-dbd/homebrew-cadfael).
-This will install everything you need, and includes the latest official
-release of the software.
+We recommend installing Falaise and its requirements as documented on our [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew).
+Build-from-source and [Docker](https://www.docker.com)/[Singularity](https://www.sylabs.io/singularity/)
+Image installs are available, both providing a complete suite of software and tools for using and developing Falaise and extension modules.
 
-Once installed, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
-for a full guide to running the software and writing new plugin modules.
+We strongly recommend Docker/Singularity Images on systems which support these tools,
+especially on institution systems/clusters such as CC-IN2P3, as these provide the most
+reliable and reproducible environments. For both systems, we strongly recommend that you
+run and develop Falaise from within the `snemo-shell` environment provided, which is started and exited by running:
 
-If you have [Docker](https://www.docker.com) available, then images for current and past releases
-together with instructions for use are available from [Docker Hub](https://hub.docker.com/r/supernemo/falaise/).
+```console
+$ brew snemo-shell
+Homebrew >=1.7.1 (shallow or no git repository)
+Supernemo-dbd/homebrew-core (git revision 15b2f; last commit 2019-02-27)
+Type "brew ls --versions" to list available software
+Type "exit" to deactivate the session
+snemo-shell> flsimulate --version
+...
+snemo-shell> exit
+$
+```
+
+Once installed and setup, consult the [online documentation](https://supernemo-dbd.github.io/Falaise)
+for a full guide to running `flsimulate`, `flreconstruct`, and writing new plugin modules.
 
 
 ## Building, Testing and Installing from Source
-To build Falaise on your machine, the following requirements must be met:
-
-- Linux or macOS System
-  - Supported Linux systems: CentOS6/7, Ubuntu 14.04/16.04LTS
-  - Other Linux distributions are known to work, but are not
-    officially supported. However, patches are welcome to resolve encountered issues!
-  - Suported macOS systems: 10.10/11/12 (Mavericks/El Capitan/Sierra)
-  - macOS High Sierra is not yet officially supported, but work is in progress
-- GCC (>= 4.9), Clang (>=3.5) or Xcode 7/8
-- [CMake](https://cmake.org) 3.5 or higher
-- [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.1.2 or higher
-- [Boost](https:/boost.org) 1.63.0 or higher
-  - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
-- [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
-- [GSL](http://www.gnu.org/s/gsl) 1.16 or higher
-- [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 or higher
-- [Geant4](http://geant4.cern.ch) 9.6.4 or higher
-   - with GDML support enabled
-- [ROOT](http://root.cern.ch) 6.10 or higher
-
-Falaise requires use of the C++11 or higher standard, so all of the above packages
-and their C++ dependencies must be built/installed using this standard. This is
-to ensure binary compatibility.
-
 To get the source code, either download a release tarball or to get the latest development,
 do
 
@@ -82,34 +70,10 @@ If you wish to enable `make test` after building, add the following option to cm
 $ cmake -DFALAISE_ENABLE_TESTING=ON
 ```
 
-Note: At this stage, if the following error is encountered;
-
-```
-  CMake Error at /home/<user>/CadfaelBrew/lib64/cmake/Bayeux-3.1.2/BayeuxConfig.cmake:130 (find_package):
-  By not providing "FindQt5Core.cmake" in CMAKE_MODULE_PATH this project has
-   asked CMake to find a package configuration file provided by "Qt5Core", but
-  CMake did not find one.
-
-  Could not find a package configuration file provided by "Qt5Core"
-   (requested version 5.8.0) with any of the following names:
-
-    Qt5CoreConfig.cmake
-    qt5core-config.cmake
-
-  ..
-```
-
-add the following options to the cmake command.
-
-```
-$ cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" <other options follow>
-```
-
-More info regarding Qt5Core and Falaise can be found at this address: (https://github.com/Homebrew/homebrew-core/issues/8392)
-
 Errors at this stage are likely to be due to missing/unfound packages. If this is the
 case, `cmake` can be directed to look in specific places using the `CMAKE_PREFIX_PATH`
-variable. For example, if `Boost` is installed in `$HOME/boost` and `GSL` in `$HOME/software/gsl`,
+variable (If you are running in an `snemo-shell` session, this is preset for you).
+For example, if `Boost` is installed in `$HOME/boost` and `GSL` in `$HOME/software/gsl`,
 `cmake` would be run as:
 
 ```
@@ -167,6 +131,36 @@ $ make install
 
 to install everything in a standard POSIX style hierarchy under the directory
 passed as ``CMAKE_INSTALL_PREFIX``.
+
+
+## Full Prerequisites
+To build and run Falaise on your machine, the following OS and Software must be
+present:
+
+- Linux or macOS System
+  - Supported Linux systems: CentOS7, Ubuntu 16.04/18.04LTS
+  - Other Linux distributions are known to work, but are not
+    officially supported. However, patches are welcome to resolve encountered issues!
+  - Suported macOS systems: 10.12/13/14 (Sierra/High Sierra/Mojave)
+- GCC (>= 7), Clang (>=6) or Xcode >= 9
+- [CMake](https://cmake.org) 3.12 or higher
+- [Doxygen](http://www.doxygen.org) 1.8 or higher
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.1 or higher
+- [Boost](https:/boost.org) 1.63.0/1.69.0 only
+  - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
+- [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
+- [GSL](http://www.gnu.org/s/gsl) 2 or higher
+- [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 only
+- [Geant4](http://geant4.cern.ch) 9.6.4 only
+   - with GDML support enabled
+- [ROOT](http://root.cern.ch) 6.10 or higher
+
+Falaise requires use of the C++11 or higher standard, so all of the above packages
+and their C++ dependencies must be built/installed using this standard. This is
+to ensure binary compatibility.
+
+The [SuperNEMO brew system](https://github.com/SuperNEMO-DBD/brew) can install the
+above, either as build-from-source or as Docker/Singularity Images.
 
 
 # Getting Help

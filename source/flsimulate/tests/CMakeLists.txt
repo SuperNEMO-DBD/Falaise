@@ -2,12 +2,23 @@
 # Scripts are taken from documentation
 # TODO: crosslink these so there is one set that can
 #       evolve together.
+set(_falaise_TEST_ENVIRONMENT
+  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
+  )
+macro(set_falaise_test_environment _tname)
+  set_property(TEST ${_tname}
+    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+    )
+endmacro()
+
 
 # Basic smoke test of default behaviour
 # - write single event of default setup to output file
 add_test(NAME flsimulate-smoke-test
   COMMAND flsimulate -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-smoke-test.brio"
   )
+set_falaise_test_environment(flsimulate-smoke-test)
 
 # Basic test scripts
 # NB: these only check that scripts run, they do not validate the
@@ -29,6 +40,7 @@ foreach(_test ${FLSIMULATE_TESTSCRIPT_NAMES})
   add_test(NAME ${_test}
     COMMAND flsimulate -d "testdata@${CMAKE_CURRENT_SOURCE_DIR}/data" -c "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/${_test}.brio"
     )
+  set_falaise_test_environment(${_test})
 endforeach()
 
 # More detailed tests from examples
@@ -50,6 +62,9 @@ add_test(NAME flsimulate-example-2-run
   )
 set_tests_properties(flsimulate-example-2-run PROPERTIES DEPENDS flsimulate-example-2-profile)
 
+set_falaise_test_environment(flsimulate-example-2-profile)
+set_falaise_test_environment(flsimulate-example-2-run)
+
 # - Example 3
 # - Part 1: generate profile
 add_test(NAME flsimulate-example-3-profile
@@ -70,6 +85,9 @@ add_test(NAME flsimulate-example-3-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/example-3.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/example-3.brio"
   )
 set_tests_properties(flsimulate-example-3-run PROPERTIES DEPENDS flsimulate-example-3-profile)
+
+set_falaise_test_environment(flsimulate-example-3-profile)
+set_falaise_test_environment(flsimulate-example-3-run)
 
 # - Example 4
 # - Part 1: generate profile
@@ -94,6 +112,9 @@ add_test(NAME flsimulate-example-4-run
   )
 set_tests_properties(flsimulate-example-4-run PROPERTIES DEPENDS flsimulate-example-4-profile)
 
+set_falaise_test_environment(flsimulate-example-4-profile)
+set_falaise_test_environment(flsimulate-example-4-run)
+
 # Tests dedicated to the validation of fixes
 # - Validation of issue #16 fix
 add_test(NAME flsimulate-fix-issue16-validation
@@ -103,6 +124,7 @@ add_test(NAME flsimulate-fix-issue16-validation
   )
 set_tests_properties(flsimulate-fix-issue16-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-fix-issue16-validation)
 
 # - Flsimulate issue #21
 # - Variant profile is given : flsimulate-issue21.profile
@@ -113,8 +135,7 @@ add_test(NAME flsimulate-issue21-run
           -d "issue21rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue21.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue21.brio"
   )
-
-
+set_falaise_test_environment(flsimulate-issue21-run)
 
 # - Flsimulate issue #71
 # - Variant profile is given : flsimulate-issue71.profile
@@ -125,7 +146,7 @@ add_test(NAME flsimulate-issue71-run
           -d "issue71rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue71.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue71.brio"
   )
-
+set_falaise_test_environment(flsimulate-issue71-run)
 
 # - Flsimulate issue #97
 # - Variant profile is given : flsimulate-issue97.profile
@@ -136,6 +157,7 @@ add_test(NAME flsimulate-issue97-run
           -d "issue97rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue97.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue97.brio"
   )
+set_falaise_test_environment(flsimulate-issue97-run)
 
 # - Flsimulate issue #98
 # - Variant profile is given : flsimulate-issue98.profile
@@ -146,8 +168,7 @@ add_test(NAME flsimulate-issue98-run
           -d "issue98rng@${CMAKE_CURRENT_SOURCE_DIR}/data/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue98.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue98.brio"
   )
-
-
+set_falaise_test_environment(flsimulate-issue98-run)
 
 # Tests dedicated to the validation of fixes
 # - Validation of issue #59 fix
@@ -156,8 +177,7 @@ add_test(NAME flsimulate-fix-issue59-validation
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation"
   )
-set_tests_properties(flsimulate-fix-issue59-validation
-   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-fix-issue59-validation)
 
 # Tests dedicated to the validation of fixes
 # - Validation of feature PR #75
@@ -169,4 +189,5 @@ add_test(NAME flsimulate-feature-pr75-validation
 set_tests_properties(flsimulate-feature-pr75-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 
-# - end
+set_falaise_test_environment(flsimulate-feature-pr75-validation)
+
