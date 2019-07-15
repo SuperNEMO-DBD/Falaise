@@ -8,11 +8,12 @@ var indexSectionsWithContent =
   5: "_abcdefghijklmnopqrstuvwxyz",
   6: "abcdefghiklmnoprstuvwz",
   7: "abcdefghilmnopqrstuvwxz",
-  8: "abcdefghimnopstuvwxz",
-  9: "osv",
+  8: "bdefgimnpsuvwx",
+  9: "iosv",
   10: "bchimopsv",
   11: "f",
-  12: "bdfimouw"
+  12: "s",
+  13: "bdfiouw"
 };
 
 var indexSectionNames =
@@ -29,7 +30,8 @@ var indexSectionNames =
   9: "properties",
   10: "related",
   11: "defines",
-  12: "pages"
+  12: "groups",
+  13: "pages"
 };
 
 var indexSectionLabels =
@@ -46,6 +48,7 @@ var indexSectionLabels =
   9: "Properties",
   10: "Friends",
   11: "Macros",
-  12: "Pages"
+  12: "Modules",
+  13: "Pages"
 };
 

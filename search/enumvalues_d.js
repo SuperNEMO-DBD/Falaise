@@ -1,26 +1,4 @@
 var searchData=
 [
-  ['sampling_5ffrequency_5f1280mhz',['SAMPLING_FREQUENCY_1280MHZ',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa2da8ca5d5a602aadc405680b8788df12',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5f1920mhz',['SAMPLING_FREQUENCY_1920MHZ',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa095ab8e7dbb0f687c73d12bae1327bd6',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5f2560mhz',['SAMPLING_FREQUENCY_2560MHZ',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa4211a4e610f214088988b6541e0954d4',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5f3200mhz',['SAMPLING_FREQUENCY_3200MHZ',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa2e672e91156e41ffa25b37948862e340',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5f640mhz',['SAMPLING_FREQUENCY_640MHZ',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa0cd5325f2b35b6ba3d92c2e18eb14cdb',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5fmask',['SAMPLING_FREQUENCY_MASK',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aac277fad23b54426fc691ebac36b3ec39',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sampling_5ffrequency_5fundef',['SAMPLING_FREQUENCY_UNDEF',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24aa2331bff9f981f17e2ae38a537db0eff6',1,'snemo::datamodel::raw_calorimeter_hit']]],
-  ['sea_5flevel_5finvalid',['SEA_LEVEL_INVALID',['../classsnemo_1_1simulation_1_1cosmic__muon__generator.html#a97305c1da33f868ef00063a7bc80eddda428326e149085ca91a07e703cf6c9bee',1,'snemo::simulation::cosmic_muon_generator']]],
-  ['sea_5flevel_5fpdg',['SEA_LEVEL_PDG',['../classsnemo_1_1simulation_1_1cosmic__muon__generator.html#a97305c1da33f868ef00063a7bc80eddda6d440d83d1e5b9f0a37c9db9bfae72cd',1,'snemo::simulation::cosmic_muon_generator']]],
-  ['sea_5flevel_5ftoy',['SEA_LEVEL_TOY',['../classsnemo_1_1simulation_1_1cosmic__muon__generator.html#a97305c1da33f868ef00063a7bc80edddaaa72510957927017f59f82f074bc8f7e',1,'snemo::simulation::cosmic_muon_generator']]],
-  ['side_5fback',['SIDE_BACK',['../classsnemo_1_1geometry_1_1utils.html#a03c671d3db6e90196aba0e92afca0820a56aeed70898cfc5c6a4d25131ff21a97',1,'snemo::geometry::utils']]],
-  ['side_5ffront',['SIDE_FRONT',['../classsnemo_1_1geometry_1_1utils.html#a03c671d3db6e90196aba0e92afca0820acfd92bfe2e06ac233e7d7b0b07e10c41',1,'snemo::geometry::utils']]],
-  ['side_5finvalid',['SIDE_INVALID',['../classsnemo_1_1geometry_1_1utils.html#a03c671d3db6e90196aba0e92afca0820a117bd70e3cc25e9d7a758bfd1fffe9b5',1,'snemo::geometry::utils']]],
-  ['sterile',['sterile',['../classsnemo_1_1datamodel_1_1calibrated__tracker__hit.html#a525b82b15caaeb0507fdcc9305bafa86a60b747176f14c1573cf6ba783399e8ec',1,'snemo::datamodel::calibrated_tracker_hit']]],
-  ['store_5fanode_5ft0',['STORE_ANODE_T0',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50ecaa995394306a398086e8468174d532e8e',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fanode_5ft1',['STORE_ANODE_T1',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50ecaf4f1c94cf8557cb52a5243c6b2def278',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fanode_5ft2',['STORE_ANODE_T2',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50eca67f2104844997c6478d0546f29b0e936',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fanode_5ft3',['STORE_ANODE_T3',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50eca43bf318eff531b24b9e2c2357025df8b',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fanode_5ft4',['STORE_ANODE_T4',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50eca7ce545ac727ad5b8680c412c27d9715d',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fcathode_5ft5',['STORE_CATHODE_T5',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50ecac3bd87a82e039db95ca8ec9233054f3c',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fcathode_5ft6',['STORE_CATHODE_T6',['../classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html#a6e566040aa546143a305a1a525af50ecaa2bf3f56072623323b5b0fc530c29f75',1,'snemo::datamodel::sim_tracker_digi_hit']]],
-  ['store_5fref_5ftime',['STORE_REF_TIME',['../classsnemo_1_1datamodel_1_1mock__raw__tracker__hit.html#a0c0c82c8d229fcfd9a44d105e2a3d9abab15967ccc97988f27507b487a2505ad2',1,'snemo::datamodel::mock_raw_tracker_hit']]],
-  ['store_5ftimes',['STORE_TIMES',['../classsnemo_1_1datamodel_1_1mock__raw__tracker__hit.html#a0c0c82c8d229fcfd9a44d105e2a3d9aba2a6e2b45473a1efa743ba2602af9e634',1,'snemo::datamodel::mock_raw_tracker_hit']]]
+  ['xy',['xy',['../classsnemo_1_1datamodel_1_1calibrated__tracker__hit.html#a525b82b15caaeb0507fdcc9305bafa86a8f8382c260149c5adb1bb5198d1702ae',1,'snemo::datamodel::calibrated_tracker_hit']]]
 ];

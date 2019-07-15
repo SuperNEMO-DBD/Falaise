@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['data_5fdescription_5fmask',['data_description_mask',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a99efd12767393cd356cb8054b5802381',1,'snemo::datamodel::raw_calorimeter_hit::data_description_mask()'],['../classsnemo_1_1datamodel_1_1raw__tracker__hit.html#a98e3894a9502a6c5879e50010edfa81b',1,'snemo::datamodel::raw_tracker_hit::data_description_mask()']]],
   ['data_5fformat_5ftype',['data_format_type',['../https://supernemo-dbd.github.io/Bayeux/classmctools_1_1io__utils.html#a31868f3049f13364bfcc948f3d95929f',1,'mctools::io_utils']]],
   ['data_5flayout',['data_layout',['../https://supernemo-dbd.github.io/Bayeux/namespacedatatools_1_1introspection.html#a0e41a2f65aeaab83316ffa74d45e588a',1,'datatools::introspection']]],
   ['data_5ftype',['data_type',['../https://supernemo-dbd.github.io/Bayeux/namespacedatatools.html#a3ffba4d8364f0bafe072c594fe9fd8df',1,'datatools::data_type()'],['../https://supernemo-dbd.github.io/Bayeux/namespacedatatools_1_1introspection.html#af2c6d38ca8a41b26e661d86e034df7c2',1,'datatools::introspection::data_type()']]],

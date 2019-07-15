@@ -21,5 +21,7 @@ var searchData=
   ['output_5fmodule',['output_module',['../https://supernemo-dbd.github.io/Bayeux/classdpp_1_1output__module.html',1,'dpp']]],
   ['ovectorstream',['ovectorstream',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1ovectorstream.html',1,'datatools']]],
   ['overlap_5finfo',['overlap_info',['../https://supernemo-dbd.github.io/Bayeux/structgeomtools_1_1overlapping_1_1overlap__info.html',1,'geomtools::overlapping']]],
-  ['overlapping',['overlapping',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1overlapping.html',1,'geomtools']]]
+  ['overlapping',['overlapping',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1overlapping.html',1,'geomtools']]],
+  ['overlined_5foff',['overlined_off',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1ui_1_1ansi__colors_1_1overlined__off.html',1,'datatools::ui::ansi_colors']]],
+  ['overlined_5fon',['overlined_on',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1ui_1_1ansi__colors_1_1overlined__on.html',1,'datatools::ui::ansi_colors']]]
 ];

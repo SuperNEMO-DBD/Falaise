@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['sampling_5ffrequency_5ftype',['sampling_frequency_type',['../classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html#a58d00d87fcb6be2188d1410cccbbf24a',1,'snemo::datamodel::raw_calorimeter_hit']]],
   ['sampling_5flevel_5ftype',['sampling_level_type',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1i__wires__3d__rendering.html#a263c3f5b4bebebd9652ee1ebbb80cbf3',1,'geomtools::i_wires_3d_rendering']]],
   ['sampling_5fstatus_5findex',['sampling_status_index',['../https://supernemo-dbd.github.io/Bayeux/classmctools_1_1digitization_1_1sampled__signal.html#a92e891c6d11df5d90fe839b92fa9bf63',1,'mctools::digitization::sampled_signal']]],
   ['sea_5flevel_5fmode_5ftype',['sea_level_mode_type',['../classsnemo_1_1simulation_1_1cosmic__muon__generator.html#a97305c1da33f868ef00063a7bc80eddd',1,'snemo::simulation::cosmic_muon_generator']]],
@@ -12,6 +11,7 @@ var searchData=
   ['side_5f2d_5ftype',['side_2d_type',['../https://supernemo-dbd.github.io/Bayeux/namespacegeomtools.html#ac00f18cb79ba2285b31ac2f9ccc0355f',1,'geomtools']]],
   ['side_5findex',['side_index',['../classsnemo_1_1geometry_1_1utils.html#a03c671d3db6e90196aba0e92afca0820',1,'snemo::geometry::utils']]],
   ['simple_5fpolygon_5fwires_5frendering_5foption_5ftype',['simple_polygon_wires_rendering_option_type',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1simple__polygon.html#acd1ad7c84743e1b4697ed542dba81d3a',1,'geomtools::simple_polygon']]],
+  ['slice_5fmode_5ftype',['slice_mode_type',['../https://supernemo-dbd.github.io/Bayeux/classgenbb_1_1time__slicer__generator.html#a2e11913845c4194fd75521a6d491ec0f',1,'genbb::time_slicer_generator']]],
   ['slicing_5fbits',['slicing_bits',['../https://supernemo-dbd.github.io/Bayeux/classmctools_1_1digitization_1_1sampled__signal.html#affbe6867b42a781c7f16db4c94816297',1,'mctools::digitization::sampled_signal']]],
   ['smart_5fprint_5fflags_5ftype',['smart_print_flags_type',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1mapping.html#a4e6d96d1e349099fb8b1389d79d0da2a',1,'geomtools::mapping']]],
   ['special_5frotation_5fangle_5ftype',['special_rotation_angle_type',['../https://supernemo-dbd.github.io/Bayeux/namespacegeomtools.html#ab689792afe1676d4f8a2ea3a19f40743',1,'geomtools']]],

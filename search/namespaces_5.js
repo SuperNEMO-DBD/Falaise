@@ -1,8 +1,7 @@
 var searchData=
 [
   ['decay0',['decay0',['../https://supernemo-dbd.github.io/Bayeux/namespacegenbb_1_1decay0.html',1,'genbb']]],
-  ['detail',['detail',['../https://supernemo-dbd.github.io/Bayeux/namespacegenvtx_1_1detail.html',1,'genvtx']]],
-  ['detail',['detail',['../https://supernemo-dbd.github.io/Bayeux/namespacegenbb_1_1detail.html',1,'genbb']]],
+  ['detail',['detail',['../https://supernemo-dbd.github.io/Bayeux/namespacegenbb_1_1detail.html',1,'genbb::detail'],['../https://supernemo-dbd.github.io/Bayeux/namespacegenvtx_1_1detail.html',1,'genvtx::detail']]],
   ['genbb',['genbb',['../https://supernemo-dbd.github.io/Bayeux/namespacegenbb.html',1,'']]],
   ['genvtx',['genvtx',['../https://supernemo-dbd.github.io/Bayeux/namespacegenvtx.html',1,'']]],
   ['geomtools',['geomtools',['../namespacegeomtools.html',1,'']]],

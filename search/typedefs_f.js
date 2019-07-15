@@ -1,8 +1,6 @@
 var searchData=
 [
   ['ranked_5fdict_5ftype',['ranked_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1variant__repository.html#abaaabb5dc26eca2c729350a10c92f1b3',1,'datatools::configuration::variant_repository']]],
-  ['raw_5fcalorimeter_5fhit_5fcol',['raw_calorimeter_hit_col',['../classsnemo_1_1datamodel_1_1raw__data.html#ad00a83cf749eebb9d7cf930fada193b0',1,'snemo::datamodel::raw_data']]],
-  ['raw_5ftracker_5fhit_5fcol',['raw_tracker_hit_col',['../classsnemo_1_1datamodel_1_1raw__data.html#ac93b974ec2e6a20446a176b0c6994a89',1,'snemo::datamodel::raw_data']]],
   ['raw_5ftracker_5fhit_5fcol_5ftype',['raw_tracker_hit_col_type',['../classsnemo_1_1processing_1_1mock__tracker__s2c__module.html#a95c54050da4a012003d3ce4ecbce01bd',1,'snemo::processing::mock_tracker_s2c_module']]],
   ['real_5fenum_5fdict_5ftype',['real_enum_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1parameter__model.html#a2a424e5bea7314e5099d3e7bbf65a112',1,'datatools::configuration::parameter_model']]],
   ['real_5frange_5fenum_5fdict_5ftype',['real_range_enum_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1parameter__model.html#a8465fff5c973094c90ddd26cdbf4114a',1,'datatools::configuration::parameter_model']]],

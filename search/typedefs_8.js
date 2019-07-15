@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['id_5fbimap',['ID_bimap',['../classsnemo_1_1electronics_1_1cabling.html#a4cb24dd37a30998715e0273c1d07c740',1,'snemo::electronics::cabling']]],
-  ['id_5fdoublet',['ID_doublet',['../classsnemo_1_1electronics_1_1cabling.html#aa260625cbfa87d6cf86ca2d36abbe77a',1,'snemo::electronics::cabling']]],
   ['in_5fedge_5fiter_5ft',['in_edge_iter_t',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1dependency__graph.html#a42be8fea5277045f959fb1f5484b6fd3',1,'datatools::dependency_graph']]],
   ['indexed_5fparameter_5fcol_5ftype',['indexed_parameter_col_type',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1parameter__store.html#a02f3d2dce086d496c906ed72de8d8f37',1,'mygsl::parameter_store']]],
   ['input_5fdict_5ftype',['input_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1base__dependency__logic.html#aeeaedad0d45f8fd37f6fdf2ef09a154a',1,'datatools::configuration::base_dependency_logic']]],
-  ['instance_5ftype',['instance_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1smart__ref.html#aa9a54aecbc3b707eb607dc1f5a6322d1',1,'datatools::smart_ref']]],
+  ['instance_5ftype',['instance_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1smart__ref.html#aa9a54aecbc3b707eb607dc1f5a6322d1',1,'datatools::smart_ref::instance_type()'],['../structsnemo_1_1service__traits_3_01geometry__svc_01_4.html#a84fa9fb7d493b190daef55a73a2f0926',1,'snemo::service_traits&lt; geometry_svc &gt;::instance_type()'],['../structsnemo_1_1service__traits_3_01histogram_01_4.html#a5c150a3a5ccddf0b63596ffcbc98a6b0',1,'snemo::service_traits&lt; histogram &gt;::instance_type()']]],
   ['integer_5fenum_5fdict_5ftype',['integer_enum_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1parameter__model.html#a431d8c025bafd584da0e4a371d8e174c',1,'datatools::configuration::parameter_model']]],
   ['integer_5frange_5fenum_5fdict_5ftype',['integer_range_enum_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1parameter__model.html#abcef4daf7862d33822b92babc58dd159',1,'datatools::configuration::parameter_model']]],
   ['isotope_5fdict_5ftype',['isotope_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classmaterials_1_1isotope.html#a9841b630c1bc4ec8df15a33e63030815',1,'materials::isotope::isotope_dict_type()'],['../https://supernemo-dbd.github.io/Bayeux/namespacematerials.html#ad0e1a567012fd6c0a3f891e3e1591bc3',1,'materials::isotope_dict_type()']]],

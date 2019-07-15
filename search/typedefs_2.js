@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['calo_5fdigi_5fhit_5fcollection_5ftype',['calo_digi_hit_collection_type',['../classsnemo_1_1datamodel_1_1sim__readout__digi__data.html#a163c2c3e30b54265ee95a9fe2bdb4bba',1,'snemo::datamodel::sim_readout_digi_data']]],
   ['calo_5fhit_5fcollection_5ftype',['calo_hit_collection_type',['../classsnemo_1_1processing_1_1base__tracker__clusterizer.html#a204343ac5f50814fb13df594c174d803',1,'snemo::processing::base_tracker_clusterizer']]],
   ['calorimeter_5fhit_5fcollection_5ftype',['calorimeter_hit_collection_type',['../classsnemo_1_1datamodel_1_1calibrated__data.html#acb71a5d3d4ecd1dec01a864b902fc2bf',1,'snemo::datamodel::calibrated_data']]],
   ['calorimeter_5fhit_5fhandle_5ftype',['calorimeter_hit_handle_type',['../classsnemo_1_1datamodel_1_1calibrated__data.html#af0c3c58ed11510867be23d15b00bee8e',1,'snemo::datamodel::calibrated_data']]],
@@ -15,6 +14,7 @@ var searchData=
   ['coeff_5fdict_5ftype',['coeff_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classmaterials_1_1refractive__index.html#aa4f00f06bbd7a7f7e093a3979c907012',1,'materials::refractive_index']]],
   ['col_5ftype',['col_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1smart__ref.html#a72a0a7a2ed1161dac23d5237f6b1b508',1,'datatools::smart_ref']]],
   ['collection_5ftype',['collection_type',['../classsnemo_1_1datamodel_1_1calibrated__calorimeter__hit.html#ae861ab92edd51acb001476aeff4d56e8',1,'snemo::datamodel::calibrated_calorimeter_hit::collection_type()'],['../classsnemo_1_1datamodel_1_1calibrated__tracker__hit.html#ad3d79a34797afc9a088a27402a14673d',1,'snemo::datamodel::calibrated_tracker_hit::collection_type()']]],
+  ['color256',['color256',['../https://supernemo-dbd.github.io/Bayeux/namespacedatatools_1_1ui_1_1ansi__colors.html#a2fe1e47e96f11f1c31c1361cb0bd889e',1,'datatools::ui::ansi_colors']]],
   ['color_5fmap_5ftype',['color_map_type',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1color.html#abf5a1f8998afa030ea9ec7f16a0fd519',1,'geomtools::color::color_map_type()'],['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1dependency__graph_1_1fvocf__visitor.html#a8b89c563a55fd5679921f579957300dd',1,'datatools::dependency_graph::fvocf_visitor::color_map_type()']]],
   ['combined_5ffield_5fdict_5ftype',['combined_field_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classemfield_1_1linear__combination__field.html#aa248785e6ff21f9d439838760271ef9c',1,'emfield::linear_combination_field']]],
   ['component_5ftopic_5fdict_5ftype',['component_topic_dict_type',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1urn__info.html#ae3edc934c4cd35e2b73b988714f26468',1,'datatools::urn_info']]],

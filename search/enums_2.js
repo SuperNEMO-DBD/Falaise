@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['calo_5fsummary_5frecord_5fbitset_5fsize',['calo_summary_record_bitset_size',['../classsnemo_1_1electronics_1_1constants.html#a53e51c0c6b9ac3835ee78ec247072e24',1,'snemo::electronics::constants']]],
   ['charge_5ftype',['charge_type',['../classsnemo_1_1datamodel_1_1particle__track.html#a3aa05824d285ea3aa745edacb9a74d8d',1,'snemo::datamodel::particle_track']]],
   ['child_5fto_5fmother_5fgap_5fmode',['child_to_mother_gap_mode',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1placement_1_1builder.html#a8056c47bea08141b2db37d28c1e06422',1,'geomtools::placement::builder']]],
   ['code_5ftype',['code_type',['../https://supernemo-dbd.github.io/Bayeux/classgeomtools_1_1color.html#abfe417740ca43d098f7b9fefc8c5027a',1,'geomtools::color']]],

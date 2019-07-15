@@ -46,6 +46,167 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>path.h</name>
+    <path>BuildProducts/include/falaise/config/</path>
+    <filename>path_8h</filename>
+    <class kind="class">falaise::config::invalid_path_error</class>
+    <class kind="class">falaise::config::path</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::config</namespace>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>ab8e78d3d0a890170cb4993039e0d60fb</anchor>
+      <arglist>(std::ostream &amp;os, path const &amp;p)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>property_reader.h</name>
+    <path>BuildProducts/include/falaise/config/</path>
+    <filename>property__reader_8h</filename>
+    <namespace>falaise</namespace>
+    <namespace>falaise::config</namespace>
+    <namespace>falaise::config::type_check_visitor</namespace>
+    <namespace>falaise::config::type_check_visitor::detail</namespace>
+    <member kind="typedef">
+      <type>std::logic_error</type>
+      <name>WrongType</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a63f1962f2aabe1fd25a5f4b8ab0f9141</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>std::logic_error</type>
+      <name>MissingKey</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>aa729b08e48c94b5cdf0cd57299b35ffd</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>boost::mpl::vector&lt; int, double, bool, std::string, std::vector&lt; int &gt;, std::vector&lt; double &gt;, std::vector&lt; bool &gt;, std::vector&lt; std::string &gt; &gt;</type>
+      <name>AllowedTypes</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a5e95d5089ad6a71cb6f5d9661e845a34</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>afc0e8191a1ff1be360873b291c92464b</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, int)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a390c9d2e8a5685c6670d972df3bf8777</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, double)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a409fd15647f07c0271340dcff034fca7</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, bool)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a293fecfa47865fe6a402ec538bf10c83</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::string)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a14eac89b4c82999aa451ce92907bf7c9</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; int &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a820a9fd953187b4304519132aea58f59</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; double &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a2a07922d76688b89ec5ee36523fa408a</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; bool &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit_impl</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a3ca55feb8c390e7b8cca4e406990550d</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; std::string &gt;)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>visit</name>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor.html</anchorfile>
+      <anchor>a0cc771e4e8b1242cdb765a92199e342c</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>getRequiredValue</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a2fe877d281ff6e0ce658a8220a98551c</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>getValueOrDefault</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a0103857b63ef56c86aef6defdb0dc12c</anchor>
+      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, T defaultValue)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>property_set.h</name>
+    <path>BuildProducts/include/falaise/config/</path>
+    <filename>property__set_8h</filename>
+    <includes id="path_8h" name="path.h" local="yes" imported="no">falaise/config/path.h</includes>
+    <includes id="quantity_8h" name="quantity.h" local="yes" imported="no">falaise/config/quantity.h</includes>
+    <class kind="class">falaise::config::missing_key_error</class>
+    <class kind="class">falaise::config::existing_key_error</class>
+    <class kind="class">falaise::config::wrong_type_error</class>
+    <class kind="class">falaise::config::property_set</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::config</namespace>
+    <member kind="function">
+      <type>void</type>
+      <name>make_property_set</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a6ca098a565baac93f1361fc03fca663d</anchor>
+      <arglist>(const std::string &amp;filename, property_set &amp;ps)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>quantity.h</name>
+    <path>BuildProducts/include/falaise/config/</path>
+    <filename>quantity_8h</filename>
+    <class kind="class">falaise::config::wrong_dimension_error</class>
+    <class kind="class">falaise::config::unknown_unit_error</class>
+    <class kind="class">falaise::config::quantity</class>
+    <class kind="class">falaise::config::quantity_t</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::config</namespace>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_ADD_DIMENSION_TAG</name>
+      <anchorfile>quantity_8h.html</anchorfile>
+      <anchor>a9cb8b624dec2eaa3268e4dcb7003314a</anchor>
+      <arglist>(Tag)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>falaise_sys.h</name>
     <path>BuildProducts/include/falaise/detail/</path>
     <filename>falaise__sys_8h</filename>
@@ -102,113 +263,6 @@
       <anchorfile>namespacefalaise.html</anchorfile>
       <anchor>a0663125a6212b3951a484208233b3365</anchor>
       <arglist>()</arglist>
-    </member>
-  </compound>
-  <compound kind="file">
-    <name>property_reader.h</name>
-    <path>BuildProducts/include/falaise/</path>
-    <filename>property__reader_8h</filename>
-    <namespace>falaise</namespace>
-    <namespace>falaise::properties</namespace>
-    <namespace>falaise::properties::type_check_visitor</namespace>
-    <namespace>falaise::properties::type_check_visitor::detail</namespace>
-    <member kind="typedef">
-      <type>std::logic_error</type>
-      <name>WrongType</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a2de23be915926881be1d40ba67e3aa23</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::logic_error</type>
-      <name>MissingKey</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a87c5eaa65a2df4d466736ce2dd4844fe</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>boost::mpl::vector&lt; int, double, bool, std::string, std::vector&lt; int &gt;, std::vector&lt; double &gt;, std::vector&lt; bool &gt;, std::vector&lt; std::string &gt; &gt;</type>
-      <name>AllowedTypes</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a2f5f4829d75d705ef94d2a2454d8e527</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a2ecd417ead8b54eb6e45446a21683433</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, int)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a2b2865faacd6609e1b3a924ebc0de830</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, double)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>aa71920cd3dd1ec162984ea3fb58bec75</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, bool)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a5e2234f2ce3403a31edee45b436e7c4c</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::string)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a44f9f7529a1dd1cdbcaefd348e7a1f2b</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; int &gt;)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a9221c78a560f10b4efb03c8fc8b86511</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; double &gt;)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>ab1332721eb76fb5f36f912c0872306af</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; bool &gt;)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a52958a1e0764bb108cc2f21ea7359e52</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; std::string &gt;)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>visit</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor.html</anchorfile>
-      <anchor>a9fbdd737860e43007489e87d707ee0d9</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
-    </member>
-    <member kind="function">
-      <type>T</type>
-      <name>getRequiredValue</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a20cc10d33aba1ef0a363daaff7e000f2</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
-    </member>
-    <member kind="function">
-      <type>T</type>
-      <name>getValueOrDefault</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>af50a05d9efda4499846f340059011e7c</anchor>
-      <arglist>(const datatools::properties &amp;p, const std::string &amp;key, T defaultValue)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -436,95 +490,6 @@
     <namespace>snemo::datamodel</namespace>
   </compound>
   <compound kind="file">
-    <name>raw_calorimeter_hit.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>raw__calorimeter__hit_8h</filename>
-    <class kind="class">snemo::datamodel::raw_calorimeter_hit</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>raw_data.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>raw__data_8h</filename>
-    <includes id="raw__calorimeter__hit_8h" name="raw_calorimeter_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_calorimeter_hit.h</includes>
-    <includes id="raw__tracker__hit_8h" name="raw_tracker_hit.h" local="no" imported="no">falaise/snemo/datamodels/raw_tracker_hit.h</includes>
-    <includes id="raw__trigger__infos_8h" name="raw_trigger_infos.h" local="no" imported="no">falaise/snemo/datamodels/raw_trigger_infos.h</includes>
-    <class kind="class">snemo::datamodel::raw_data</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>raw_tracker_hit.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>raw__tracker__hit_8h</filename>
-    <class kind="class">snemo::datamodel::raw_tracker_hit</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>raw_trigger_infos.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>raw__trigger__infos_8h</filename>
-    <class kind="class">snemo::datamodel::raw_trigger_infos</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_calo_digi_hit.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__calo__digi__hit_8h</filename>
-    <class kind="class">snemo::datamodel::sim_calo_digi_hit</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_digi_data.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__digi__data_8h</filename>
-    <includes id="sim__digi__event__data_8h" name="sim_digi_event_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_digi_event_data.h</includes>
-    <class kind="class">snemo::datamodel::sim_digi_data</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_digi_event_data.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__digi__event__data_8h</filename>
-    <includes id="sim__readout__digi__data_8h" name="sim_readout_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_readout_digi_data.h</includes>
-    <includes id="sim__trigger__digi__data_8h" name="sim_trigger_digi_data.h" local="no" imported="no">falaise/snemo/datamodels/sim_trigger_digi_data.h</includes>
-    <class kind="class">snemo::datamodel::sim_digi_event_data</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_readout_digi_data.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__readout__digi__data_8h</filename>
-    <includes id="sim__calo__digi__hit_8h" name="sim_calo_digi_hit.h" local="no" imported="no">falaise/snemo/datamodels/sim_calo_digi_hit.h</includes>
-    <includes id="sim__tracker__digi__hit_8h" name="sim_tracker_digi_hit.h" local="no" imported="no">falaise/snemo/datamodels/sim_tracker_digi_hit.h</includes>
-    <class kind="class">snemo::datamodel::sim_readout_digi_data</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_tracker_digi_hit.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__tracker__digi__hit_8h</filename>
-    <class kind="class">snemo::datamodel::sim_tracker_digi_hit</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>sim_trigger_digi_data.h</name>
-    <path>BuildProducts/include/falaise/snemo/datamodels/</path>
-    <filename>sim__trigger__digi__data_8h</filename>
-    <includes id="constants_8h" name="constants.h" local="no" imported="no">snemo/electronics/constants.h</includes>
-    <class kind="class">snemo::datamodel::sim_trigger_digi_data</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
     <name>the_serializable.h</name>
     <path>BuildProducts/include/falaise/snemo/datamodels/</path>
     <filename>the__serializable_8h</filename>
@@ -591,47 +556,6 @@
     <class kind="class">snemo::datamodel::tracker_trajectory_solution</class>
     <namespace>snemo</namespace>
     <namespace>snemo::datamodel</namespace>
-  </compound>
-  <compound kind="file">
-    <name>cabling.h</name>
-    <path>BuildProducts/include/falaise/snemo/electronics/</path>
-    <filename>cabling_8h</filename>
-    <includes id="calo__locator_8h" name="calo_locator.h" local="no" imported="no">snemo/geometry/calo_locator.h</includes>
-    <includes id="gg__locator_8h" name="gg_locator.h" local="no" imported="no">snemo/geometry/gg_locator.h</includes>
-    <includes id="gveto__locator_8h" name="gveto_locator.h" local="no" imported="no">snemo/geometry/gveto_locator.h</includes>
-    <includes id="xcalo__locator_8h" name="xcalo_locator.h" local="no" imported="no">snemo/geometry/xcalo_locator.h</includes>
-    <class kind="class">snemo::electronics::cabling</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::electronics</namespace>
-  </compound>
-  <compound kind="file">
-    <name>constants.h</name>
-    <path>BuildProducts/include/falaise/snemo/electronics/</path>
-    <filename>constants_8h</filename>
-    <class kind="class">snemo::electronics::constants</class>
-    <namespace>snemo</namespace>
-    <namespace>snemo::electronics</namespace>
-  </compound>
-  <compound kind="file">
-    <name>electronics_service.h</name>
-    <path>BuildProducts/include/falaise/snemo/electronics/</path>
-    <filename>electronics__service_8h</filename>
-    <class kind="class">snemo::electronics::electronics_service</class>
-    <namespace>datatools</namespace>
-    <namespace>geomtools</namespace>
-    <namespace>snemo</namespace>
-    <namespace>snemo::electronics</namespace>
-  </compound>
-  <compound kind="file">
-    <name>manager.h</name>
-    <path>BuildProducts/include/falaise/snemo/electronics/</path>
-    <filename>manager_8h</filename>
-    <includes id="cabling_8h" name="cabling.h" local="no" imported="no">snemo/electronics/cabling.h</includes>
-    <class kind="class">snemo::electronics::manager</class>
-    <namespace>datatools</namespace>
-    <namespace>geomtools</namespace>
-    <namespace>snemo</namespace>
-    <namespace>snemo::electronics</namespace>
   </compound>
   <compound kind="file">
     <name>calo_locator.h</name>
@@ -793,12 +717,96 @@
     <namespace>snemo::processing</namespace>
   </compound>
   <compound kind="file">
-    <name>services.h</name>
+    <name>module.h</name>
     <path>BuildProducts/include/falaise/snemo/processing/</path>
-    <filename>services_8h</filename>
-    <class kind="class">snemo::processing::service_info</class>
+    <filename>module_8h</filename>
+    <includes id="property__set_8h" name="property_set.h" local="yes" imported="no">falaise/config/property_set.h</includes>
+    <class kind="class">falaise::processing::reserved_key_error</class>
+    <class kind="class">falaise::processing::configuration_error</class>
+    <class kind="class">falaise::processing::module</class>
+    <namespace>falaise</namespace>
+    <namespace>falaise::processing</namespace>
+    <member kind="define">
+      <type>#define</type>
+      <name>FALAISE_REGISTER_MODULE</name>
+      <anchorfile>module_8h.html</anchorfile>
+      <anchor>a63c0e69cd4edd7150e04dd18e3de1358</anchor>
+      <arglist>(T)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>dpp::base_module::process_status</type>
+      <name>status</name>
+      <anchorfile>namespacefalaise_1_1processing.html</anchorfile>
+      <anchor>ae017f352999f7a267a0d3094b8573774</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>geometry.h</name>
+    <path>BuildProducts/include/falaise/snemo/services/</path>
+    <filename>geometry_8h</filename>
+    <class kind="struct">snemo::service_traits&lt; geometry_svc &gt;</class>
     <namespace>snemo</namespace>
-    <namespace>snemo::processing</namespace>
+    <member kind="typedef">
+      <type>const geomtools::manager</type>
+      <name>geometry_svc</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>aa6c66e87a114544d1364b2a1ca20ce86</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>histogram.h</name>
+    <path>BuildProducts/include/falaise/snemo/services/</path>
+    <filename>histogram_8h</filename>
+    <class kind="struct">snemo::service_traits&lt; histogram &gt;</class>
+    <namespace>snemo</namespace>
+    <member kind="typedef">
+      <type>dpp::histogram_service</type>
+      <name>histogram</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>a4ca1250db2e98643946949d8932e6733</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>service_handle.h</name>
+    <path>BuildProducts/include/falaise/snemo/services/</path>
+    <filename>service__handle_8h</filename>
+    <includes id="service__traits_8h" name="service_traits.h" local="yes" imported="no">falaise/snemo/services/service_traits.h</includes>
+    <class kind="class">snemo::missing_service_error</class>
+    <class kind="class">snemo::bad_service_type</class>
+    <class kind="class">snemo::bad_service_access</class>
+    <class kind="class">snemo::service_handle</class>
+    <namespace>snemo</namespace>
+    <member kind="function">
+      <type>T *</type>
+      <name>service_maker</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>ab9ea59ddafb52cb57d9619d68cbf6ca2</anchor>
+      <arglist>(datatools::service_manager &amp;provider)</arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>service_traits.h</name>
+    <path>BuildProducts/include/falaise/snemo/services/</path>
+    <filename>service__traits_8h</filename>
+    <class kind="struct">snemo::service_traits</class>
+    <namespace>snemo</namespace>
+    <member kind="typedef">
+      <type>typename boost::mpl::c_str&lt; typename service_traits&lt; T &gt;::label_type &gt;::type</type>
+      <name>service_label</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>a4f5d3fddcde5b65ef9da7fd363dacec3</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>services.h</name>
+    <path>BuildProducts/include/falaise/snemo/services/</path>
+    <filename>services_8h</filename>
+    <class kind="class">snemo::service_info</class>
+    <namespace>snemo</namespace>
   </compound>
   <compound kind="file">
     <name>calorimeter_step_hit_processor.h</name>
@@ -1074,11 +1082,6 @@
     <filename>DocumentingFLReconstructModules_8md</filename>
   </compound>
   <compound kind="file">
-    <name>FLPTD2Root.md</name>
-    <path>documentation/flreconstruct/</path>
-    <filename>FLPTD2Root_8md</filename>
-  </compound>
-  <compound kind="file">
     <name>FLReconstruct.md</name>
     <path>documentation/flreconstruct/</path>
     <filename>FLReconstruct_8md</filename>
@@ -1139,19 +1142,41 @@
     <filename>Mainpage_8md</filename>
   </compound>
   <compound kind="file">
-    <name>FLResourceFileManagement.md</name>
-    <path>documentation/resource_file_management/</path>
-    <filename>FLResourceFileManagement_8md</filename>
-  </compound>
-  <compound kind="file">
-    <name>FLTagManagement.md</name>
-    <path>documentation/tag_management/</path>
-    <filename>FLTagManagement_8md</filename>
-  </compound>
-  <compound kind="file">
     <name>README.md</name>
     <path></path>
     <filename>README_8md</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::absorbed_dose_t</name>
+    <filename>classfalaise_1_1config_1_1absorbed__dose__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::acceleration_t</name>
+    <filename>classfalaise_1_1config_1_1acceleration__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::activity_t</name>
+    <filename>classfalaise_1_1config_1_1activity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::amount_t</name>
+    <filename>classfalaise_1_1config_1_1amount__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::angle_t</name>
+    <filename>classfalaise_1_1config_1_1angle__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::angular_frequency_t</name>
+    <filename>classfalaise_1_1config_1_1angular__frequency__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>snemo::bad_service_access</name>
+    <filename>classsnemo_1_1bad__service__access.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>snemo::bad_service_type</name>
+    <filename>classsnemo_1_1bad__service__type.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::processing::base_gamma_builder</name>
@@ -1756,192 +1781,6 @@
       <anchorfile>classsnemo_1_1datamodel_1_1base__trajectory__pattern.html</anchorfile>
       <anchor>a879701a1172de5968c52196caefb786e</anchor>
       <arglist>(const std::string &amp;pattern_id_)</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::electronics::cabling</name>
-    <filename>classsnemo_1_1electronics_1_1cabling.html</filename>
-    <member kind="typedef">
-      <type>boost::bimap&lt; geomtools::geom_id, geomtools::geom_id &gt;</type>
-      <name>ID_bimap</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a4cb24dd37a30998715e0273c1d07c740</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>ID_bimap::value_type</type>
-      <name>ID_doublet</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>aa260625cbfa87d6cf86ca2d36abbe77a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>cabling</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a72448977d1b28ba1f8fced0191f34f17</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~cabling</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>af3845430064ad5a52bff07f0d4c721b0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>datatools::logger::priority</type>
-      <name>get_logging</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>acde2e18e5b907c1cf06e546743a665ce</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_logging</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a1f03013533de1239709e1b7b8d7c016e</anchor>
-      <arglist>(const datatools::logger::priority p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>add_preconstructed_type</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a4ae6fcb4759761d3b01661dd90451033</anchor>
-      <arglist>(int type_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_geo_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>aece188d603b2faf1d01403cd16c87e69</anchor>
-      <arglist>(const geomtools::manager &amp;mgr_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_geo_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a90441b7a8ec3e9793c1003d62cbb2724</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_module_number</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a97c140ffb2e0ad73627aeaff5b2f04a7</anchor>
-      <arglist>(unsigned int module_number_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_module_number</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>ab0cd235fffd20d25bf2ac3ad5afb063f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_initialized</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a1b338a3c9056a09964abb0c80179cf00</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initialize</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>acb5eba1c55fc7dd9b670b46db2ca831f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>ae8cb606036db0729de9bd5bdf8cfa27c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::set&lt; int32_t &gt; &amp;</type>
-      <name>get_supported_geom_types</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a89a1242f10c9a8c5d4a581f0d04d14ba</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>convert_GID_to_EID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a9d1ac142d1ccead916bb6795fae08f81</anchor>
-      <arglist>(const geomtools::geom_id &amp;geom_id_, geomtools::geom_id &amp;electronic_id_) const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>convert_EID_to_GID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a4cfba81b465efa79873525bced4022b2</anchor>
-      <arglist>(const geomtools::geom_id &amp;electronic_id_, geomtools::geom_id &amp;geom_id_) const</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_initialize</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a609890e7de69cf564dd4521aebaadba6</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_init_supported_geom_types</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>ae3dba0ddb90ce16e4eaa6b13cb5e82d4</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_init_geiger</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a9e5b58c6a0918e2bb627f07ba5ccc80e</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_init_mcalo</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a9aa24f07ede25ea42b880a887922fb5b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_init_xcalo</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a115d3d3dc9917b22d41a38e53f51e6e2</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_init_gveto</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a4dd15534b41aee0a69f549d315d94f4f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_convert_GID_to_EID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>ac59356cc179161ae748583386153d810</anchor>
-      <arglist>(const geomtools::geom_id &amp;geom_id_, geomtools::geom_id &amp;electronic_id_)</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_convert_EID_to_GID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>a4ed29ef7b93b0066f3458c15078268ce</anchor>
-      <arglist>(const geomtools::geom_id &amp;electronic_id_, geomtools::geom_id &amp;geom_id_)</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_set_defaults</name>
-      <anchorfile>classsnemo_1_1electronics_1_1cabling.html</anchorfile>
-      <anchor>aed75e9eb2fde4fcfd347bf649ea3a7cd</anchor>
-      <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -3728,6 +3567,10 @@
       <arglist>(const ::datatools::properties &amp;config_, ::datatools::service_manager &amp;service_mgr_)</arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>falaise::config::capacitance_t</name>
+    <filename>classfalaise_1_1config_1_1capacitance__t.html</filename>
+  </compound>
   <compound kind="struct">
     <name>snemo::datamodel::compare_tracker_hit_by_delayed_time</name>
     <filename>structsnemo_1_1datamodel_1_1compare__tracker__hit__by__delayed__time.html</filename>
@@ -3752,196 +3595,16 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::electronics::constants</name>
-    <filename>classsnemo_1_1electronics_1_1constants.html</filename>
-    <member kind="enumeration">
-      <type></type>
-      <name>calo_summary_record_bitset_size</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>FULL_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a6c9b2e1d9bebd3b5a3f8a84191d5b97b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ZONING_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a389530e0133ec7cfb1f26ec2be69d70e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>HTM_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a4ddf7c771089691cf5fa18674de478c5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>XT_INFO_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a00fca413294094c840497303f9798d39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>L2_trigger_mode</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>INVALID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5faf7599f1fb28cdb1735963659f9412996</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CALO_ONLY</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa7719dc7e43d64d0914d707e442403377</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CALO_TRACKER_TIME_COINC</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa5d752fd3b4cfdf094f04153cd5a90337</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CARACO</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa3a5f60641893b7997558d73af3b4c62b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>OPEN_DELAYED</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa873c4cccb9142838696ea5e6aad56fae</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>APE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5faf3c431b1c9656f05839a8e27f7e7cbd3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DAVE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5facc2b652876625ff74be0a8d0b5c1fa40</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>FULL_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a6c9b2e1d9bebd3b5a3f8a84191d5b97b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ZONING_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a389530e0133ec7cfb1f26ec2be69d70e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>HTM_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a4ddf7c771089691cf5fa18674de478c5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>XT_INFO_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a53e51c0c6b9ac3835ee78ec247072e24a00fca413294094c840497303f9798d39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>INVALID</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5faf7599f1fb28cdb1735963659f9412996</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CALO_ONLY</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa7719dc7e43d64d0914d707e442403377</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CALO_TRACKER_TIME_COINC</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa5d752fd3b4cfdf094f04153cd5a90337</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>CARACO</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa3a5f60641893b7997558d73af3b4c62b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>OPEN_DELAYED</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5fa873c4cccb9142838696ea5e6aad56fae</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>APE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5faf3c431b1c9656f05839a8e27f7e7cbd3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DAVE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad85e2429a9131d7594fe0013c2160f5facc2b652876625ff74be0a8d0b5c1fa40</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const std::size_t</type>
-      <name>NSIDES</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>aa48b2145302430ce6c9568966a54cb7f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const std::size_t</type>
-      <name>NLAYERS</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>aa3fd39dab6ae7505529571202a49e44a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const std::size_t</type>
-      <name>NROWS</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a15092359c3ac3ea1e77331edf04096f0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const std::size_t</type>
-      <name>NZONES</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>a988f911d7e831a9c9655863b2f2bf697</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const std::size_t</type>
-      <name>TRACKER_DATA_FULL_BITSET_SIZE</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>aa625067f32725d0de686bf25d96c2881</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint32_t</type>
-      <name>INVALID_CLOCKTICK</name>
-      <anchorfile>classsnemo_1_1electronics_1_1constants.html</anchorfile>
-      <anchor>ad258c453a52772dea5120a5c0666ef3d</anchor>
-      <arglist></arglist>
-    </member>
+    <name>falaise::config::conductance_t</name>
+    <filename>classfalaise_1_1config_1_1conductance__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::conductivity_t</name>
+    <filename>classfalaise_1_1config_1_1conductivity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::processing::configuration_error</name>
+    <filename>classfalaise_1_1processing_1_1configuration__error.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::simulation::cosmic_muon_generator</name>
@@ -4129,6 +3792,10 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>falaise::config::cross_section_t</name>
+    <filename>classfalaise_1_1config_1_1cross__section__t.html</filename>
+  </compound>
+  <compound kind="class">
     <name>snemo::datamodel::data_info</name>
     <filename>classsnemo_1_1datamodel_1_1data__info.html</filename>
     <member kind="function" static="yes">
@@ -4280,100 +3947,56 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::electronics::electronics_service</name>
-    <filename>classsnemo_1_1electronics_1_1electronics__service.html</filename>
-    <base>datatools::base_service</base>
-    <member kind="function">
-      <type></type>
-      <name>electronics_service</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a6e31252137bdce4571d86eddb88e5937</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~electronics_service</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a4eb8924a4cfb6f3337fca264b51d1c53</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::string &amp;</type>
-      <name>get_geo_label</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a6950aac8a5fbf153628bb17aa6295ff4</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_geo_label</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>aed4da86639745c6556f9c77e091819db</anchor>
-      <arglist>(const std::string &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>ade0587279e04b91b5c308ab5a040d11d</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>acd17594dacd0348a443e2e4561e58438</anchor>
-      <arglist>(const geomtools::manager &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>const geomtools::manager &amp;</type>
-      <name>get_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a2e953dafeb5ca465de4e57a1fdcf00c7</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_electronics_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>ac58a2909129cb1862e31999f5b444471</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>const manager &amp;</type>
-      <name>get_electronics_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a9affbcaf31bd728e4617eaaab49f17c8</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual bool</type>
-      <name>is_initialized</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>aec0ce80a1233d4afd44d0f9f684532b1</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual int</type>
-      <name>initialize</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>a45626d0e35e106d4beb354c28fbab0c2</anchor>
-      <arglist>(const datatools::properties &amp;config_, datatools::service_dict_type &amp;service_dict_)</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual int</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>afbb9a04119dc0232d5f9fb6ad11d7546</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1electronics_1_1electronics__service.html</anchorfile>
-      <anchor>acb3f1ef62dbdea08db8474e9df70f96b</anchor>
-      <arglist>(std::ostream &amp;out_=std::clog, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;, bool inherit_=false) const</arglist>
-    </member>
+    <name>falaise::config::data_storage_t</name>
+    <filename>classfalaise_1_1config_1_1data__storage__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::data_transfer_rate_t</name>
+    <filename>classfalaise_1_1config_1_1data__transfer__rate__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::density_t</name>
+    <filename>classfalaise_1_1config_1_1density__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_charge_t</name>
+    <filename>classfalaise_1_1config_1_1electric__charge__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_current_t</name>
+    <filename>classfalaise_1_1config_1_1electric__current__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_displacement_field_t</name>
+    <filename>classfalaise_1_1config_1_1electric__displacement__field__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_field_t</name>
+    <filename>classfalaise_1_1config_1_1electric__field__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_flux_t</name>
+    <filename>classfalaise_1_1config_1_1electric__flux__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_potential_t</name>
+    <filename>classfalaise_1_1config_1_1electric__potential__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_resistance_t</name>
+    <filename>classfalaise_1_1config_1_1electric__resistance__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::electric_signal_integral_t</name>
+    <filename>classfalaise_1_1config_1_1electric__signal__integral__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::energy_t</name>
+    <filename>classfalaise_1_1config_1_1energy__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::equivalent_dose_t</name>
+    <filename>classfalaise_1_1config_1_1equivalent__dose__t.html</filename>
   </compound>
   <compound kind="class">
     <name>TrackerPreClustering::event_display</name>
@@ -4441,15 +4064,15 @@
       <type>void</type>
       <name>display_gg_hits</name>
       <anchorfile>classTrackerPreClustering_1_1event__display.html</anchorfile>
-      <anchor>ac91d14f0ecb00073927fa24a01cded9c</anchor>
-      <arglist>(std::ostream &amp;out_, const std::vector&lt; const Hit *&gt; &amp;hits_, uint32_t mode_=prompt|delayed) const</arglist>
+      <anchor>a2d1bcf0e4912ad3c8d1f8c20703e85b4</anchor>
+      <arglist>(std::ostream &amp;out_, const std::vector&lt; const Hit * &gt; &amp;hits_, uint32_t mode_=prompt|delayed) const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>display_cluster</name>
       <anchorfile>classTrackerPreClustering_1_1event__display.html</anchorfile>
-      <anchor>a298d411f90d43b48c76c98f59c5cb78c</anchor>
-      <arglist>(std::ostream &amp;out_, const std::vector&lt; const Hit *&gt; &amp;hits_, uint32_t mode_=prompt|delayed) const</arglist>
+      <anchor>a765316d34d1c6b3a0d6629bbb47f3bcb</anchor>
+      <arglist>(std::ostream &amp;out_, const std::vector&lt; const Hit * &gt; &amp;hits_, uint32_t mode_=prompt|delayed) const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4543,22 +4166,22 @@
       <type>void</type>
       <name>generate_prompt_gg_hits</name>
       <anchorfile>classTrackerPreClustering_1_1event__generator.html</anchorfile>
-      <anchor>aa4d4f7976d38e0c60224e423609ea291</anchor>
-      <arglist>(std::vector&lt; const gg_hit *&gt; &amp;hits_)</arglist>
+      <anchor>a6b894029334723ec2a7c12e27051e6ee</anchor>
+      <arglist>(std::vector&lt; const gg_hit * &gt; &amp;hits_)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>generate_delayed_gg_hits</name>
       <anchorfile>classTrackerPreClustering_1_1event__generator.html</anchorfile>
-      <anchor>a289657de590efe59f2c68a1cc6090045</anchor>
-      <arglist>(std::vector&lt; const gg_hit *&gt; &amp;hits_)</arglist>
+      <anchor>ac2bf2dc11576115b1d32e9fa24e68915</anchor>
+      <arglist>(std::vector&lt; const gg_hit * &gt; &amp;hits_)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>shoot_event</name>
       <anchorfile>classTrackerPreClustering_1_1event__generator.html</anchorfile>
-      <anchor>a72bc4d257a75809586cec683d877472c</anchor>
-      <arglist>(std::vector&lt; const gg_hit *&gt; &amp;hits_)</arglist>
+      <anchor>a2241af31acc0bf3b992d9f0ae9229861</anchor>
+      <arglist>(std::vector&lt; const gg_hit * &gt; &amp;hits_)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -5105,6 +4728,10 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>falaise::config::existing_key_error</name>
+    <filename>classfalaise_1_1config_1_1existing__key__error.html</filename>
+  </compound>
+  <compound kind="class">
     <name>falaise::detail::falaise_sys</name>
     <filename>classfalaise_1_1detail_1_1falaise__sys.html</filename>
     <member kind="function">
@@ -5212,6 +4839,18 @@
       <anchor>ad07fbf63b6d6917ae42e6e2ce3a87893</anchor>
       <arglist>()</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::force_t</name>
+    <filename>classfalaise_1_1config_1_1force__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::fraction_t</name>
+    <filename>classfalaise_1_1config_1_1fraction__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::frequency_t</name>
+    <filename>classfalaise_1_1config_1_1frequency__t.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::processing::geiger_regime</name>
@@ -5420,6 +5059,11 @@
       <anchor>a4703e08e8d59ea9735fc5d22acd6e430</anchor>
       <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>snemo::geometry_svc</name>
+    <filename>classsnemo_1_1geometry__svc.html</filename>
+    <base>geomtools::manager</base>
   </compound>
   <compound kind="struct">
     <name>TrackerPreClustering::gg_hit</name>
@@ -6747,6 +6391,14 @@
       <arglist>()</arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>falaise::config::illuminance_t</name>
+    <filename>classfalaise_1_1config_1_1illuminance__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::inductance_t</name>
+    <filename>classfalaise_1_1config_1_1inductance__t.html</filename>
+  </compound>
   <compound kind="struct">
     <name>TrackerPreClustering::input_data</name>
     <filename>structTrackerPreClustering_1_1input__data.html</filename>
@@ -6814,6 +6466,18 @@
       <anchor>ad29ff6b0ccb75397c45ec4d5455a7634</anchor>
       <arglist></arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::invalid_path_error</name>
+    <filename>classfalaise_1_1config_1_1invalid__path__error.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::length_t</name>
+    <filename>classfalaise_1_1config_1_1length__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::level_t</name>
+    <filename>classfalaise_1_1config_1_1level__t.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::datamodel::line_trajectory_pattern</name>
@@ -7034,79 +6698,40 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::electronics::manager</name>
-    <filename>classsnemo_1_1electronics_1_1manager.html</filename>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="function">
-      <type></type>
-      <name>manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a37ec3c3f70d3b03ce9eaeb45dd149e2a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a4ea79f6a73763d6e3db50548055d85bf</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>aaefcc607cd4fc26738f60fded216ab5e</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>aad3edc1e9e2086d84384774de289f573</anchor>
-      <arglist>(const geomtools::manager &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>const geomtools::manager &amp;</type>
-      <name>get_geometry_manager</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a3a93f25d09a7c51955ee399de97ae6b3</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_cabling</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a37d2a67d43aa0c2f522fd2b3427dcf15</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual bool</type>
-      <name>is_initialized</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>aec1acb9dc47ef62b42fa80418176208a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>initialize</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>ab8a07c05beef9188cd0f01f5729bac4c</anchor>
-      <arglist>(const datatools::properties &amp;config_)</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a78485a25267daf0406897f01b5410844</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1electronics_1_1manager.html</anchorfile>
-      <anchor>a9fc0277c5988c1a553e79b3ee012bee4</anchor>
-      <arglist>(std::ostream &amp;out_=std::clog, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;, bool inherit_=false) const</arglist>
-    </member>
+    <name>falaise::config::luminance_t</name>
+    <filename>classfalaise_1_1config_1_1luminance__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::luminous_energy_density_t</name>
+    <filename>classfalaise_1_1config_1_1luminous__energy__density__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::luminous_energy_t</name>
+    <filename>classfalaise_1_1config_1_1luminous__energy__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::luminous_exposure_t</name>
+    <filename>classfalaise_1_1config_1_1luminous__exposure__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::luminous_flux_t</name>
+    <filename>classfalaise_1_1config_1_1luminous__flux__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::luminous_intensity_t</name>
+    <filename>classfalaise_1_1config_1_1luminous__intensity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::magnetic_field_strength_t</name>
+    <filename>classfalaise_1_1config_1_1magnetic__field__strength__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::magnetic_flux_density_t</name>
+    <filename>classfalaise_1_1config_1_1magnetic__flux__density__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::magnetic_flux_t</name>
+    <filename>classfalaise_1_1config_1_1magnetic__flux__t.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::geometry::mapped_magnetic_field</name>
@@ -7241,6 +6866,14 @@
       <anchor>aaeba2eb3618397a4351f312755abe166</anchor>
       <arglist>()</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::mass_activity_t</name>
+    <filename>classfalaise_1_1config_1_1mass__activity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::mass_t</name>
+    <filename>classfalaise_1_1config_1_1mass__t.html</filename>
   </compound>
   <compound kind="class">
     <name>falaise::app::metadata_collector</name>
@@ -7491,6 +7124,14 @@
       <anchor>a15136a8556796a4871c6b4c9fd2e7b98</anchor>
       <arglist>(const std::string &amp;section_name_, const std::string &amp;section_type_, const std::string &amp;propKey_, std::string &amp;propValue_) const</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::missing_key_error</name>
+    <filename>classfalaise_1_1config_1_1missing__key__error.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>snemo::missing_service_error</name>
+    <filename>classsnemo_1_1missing__service__error.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::processing::mock_calorimeter_s2c_module</name>
@@ -7998,6 +7639,40 @@
       <anchorfile>classsnemo_1_1processing_1_1mock__tracker__s2c__module.html</anchorfile>
       <anchor>a4732304727262b10ce6ececf7e455676</anchor>
       <arglist>(const mctools::simulated_data &amp;simulated_data_, snemo::datamodel::calibrated_data::tracker_hit_collection_type &amp;calibrated_tracker_hits_)</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::processing::module</name>
+    <filename>classfalaise_1_1processing_1_1module.html</filename>
+    <templarg></templarg>
+    <base>dpp::base_module</base>
+    <member kind="function" virtualness="virtual">
+      <type>virtual</type>
+      <name>~module</name>
+      <anchorfile>classfalaise_1_1processing_1_1module.html</anchorfile>
+      <anchor>a16dd541149a36e79c3967a836629bbdd</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>reset</name>
+      <anchorfile>classfalaise_1_1processing_1_1module.html</anchorfile>
+      <anchor>a7e3910ac8cf73c76a225c3ef695c6ab7</anchor>
+      <arglist>() override</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>initialize</name>
+      <anchorfile>classfalaise_1_1processing_1_1module.html</anchorfile>
+      <anchor>adb91cef015bf9890a7a543ee83f5cab9</anchor>
+      <arglist>(datatools::properties const &amp;config, datatools::service_manager &amp;services, dpp::module_handle_dict_type &amp;) override</arglist>
+    </member>
+    <member kind="function">
+      <type>status</type>
+      <name>process</name>
+      <anchorfile>classfalaise_1_1processing_1_1module.html</anchorfile>
+      <anchor>a7f57f243f34ef18b51d6bbc59545af0f</anchor>
+      <arglist>(datatools::things &amp;data) override</arglist>
     </member>
   </compound>
   <compound kind="struct">
@@ -9181,6 +8856,67 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>falaise::config::path</name>
+    <filename>classfalaise_1_1config_1_1path.html</filename>
+    <member kind="function">
+      <type></type>
+      <name>path</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>a7fcc53cc32465858920d2bde4c95b16f</anchor>
+      <arglist>()=default</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>path</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>a0ad9aecb3ae9183af7f46c17dd912e00</anchor>
+      <arglist>(std::string const &amp;p)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>operator std::string</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>ae3b50853d70db68d07b0254a84281d87</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator==</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>a618125c259e6be6b64e60e13e1b25810</anchor>
+      <arglist>(path const &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator!=</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>a44cac9697166272b058f5709dffea806</anchor>
+      <arglist>(path const &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator==</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>ae7e17d751d4647ae789d53928ec4b43a</anchor>
+      <arglist>(std::string const &amp;other) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>operator!=</name>
+      <anchorfile>classfalaise_1_1config_1_1path.html</anchorfile>
+      <anchor>a6c717a10b1be3d33bedfdc3d9ff77016</anchor>
+      <arglist>(std::string const &amp;other) const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::permeability_t</name>
+    <filename>classfalaise_1_1config_1_1permeability__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::permittivity_t</name>
+    <filename>classfalaise_1_1config_1_1permittivity__t.html</filename>
+  </compound>
+  <compound kind="class">
     <name>snemo::datamodel::polyline_trajectory_pattern</name>
     <filename>classsnemo_1_1datamodel_1_1polyline__trajectory__pattern.html</filename>
     <base>snemo::datamodel::base_trajectory_pattern</base>
@@ -9226,6 +8962,10 @@
       <anchor>ae805bc4b781dd5ddf260bfc989c9db40</anchor>
       <arglist>()</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::power_t</name>
+    <filename>classfalaise_1_1config_1_1power__t.html</filename>
   </compound>
   <compound kind="class">
     <name>TrackerPreClustering::pre_clusterizer</name>
@@ -9379,1404 +9119,279 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::datamodel::raw_calorimeter_hit</name>
-    <filename>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</filename>
-    <base>geomtools::base_hit</base>
-    <member kind="enumeration">
+    <name>falaise::config::pressure_t</name>
+    <filename>classfalaise_1_1config_1_1pressure__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::procedure_defined_t</name>
+    <filename>classfalaise_1_1config_1_1procedure__defined__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::property_set</name>
+    <filename>classfalaise_1_1config_1_1property__set.html</filename>
+    <member kind="function">
       <type></type>
-      <name>sampling_frequency_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_UNDEF</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2331bff9f981f17e2ae38a537db0eff6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_640MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa0cd5325f2b35b6ba3d92c2e18eb14cdb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_1280MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2da8ca5d5a602aadc405680b8788df12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_1920MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa095ab8e7dbb0f687c73d12bae1327bd6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_2560MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa4211a4e610f214088988b6541e0954d4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_3200MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2e672e91156e41ffa25b37948862e340</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_MASK</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aac277fad23b54426fc691ebac36b3ec39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>data_description_mask</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381aa489b3cf37b3f78f2ffe746298edba46</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_SIG_HASWAVEFORM</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a64526f32d62ebd84d7962fcb5aae69d0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASBASELINE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a9b6bf0404fb29997393df2fbdce2ffcc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASPEAKCHARGE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381ad8d61769852d1c2a2d5c5891f7fcefcc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASPEAKDATA</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a5bd338e1d047d54eb3ac7e4f308fbc92</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASTIMECFDINTERP</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a996375a5b054383be0478b82537305cc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNUSED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381aea3a7a04fc908ac3ec9a89fcd03b68d6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>address_mask</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_MODULE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a439ad7ef4f3153e7fc0ee06f3fb5b092</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CRATE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a188adeb0e32d9bcc1ea5e2f96e548519</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_BOARD_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a560c85037f86f33552b5f00e108fa0d2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CHANNEL_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53ad8d4c0a029dce380a1094e50236aa3d2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>time_info_mask</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648faa800f88589d7db0cd25594e9042ffbb8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_SAMPLING_FREQUENCY</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648fa1b78952f31896a188f2b1f8e5db1e1c2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_POSTTRIG</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648fa52eade00eb528f71a64bee9e660fe3b5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; uint16_t &gt;</type>
-      <name>waveform_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a92df7c9c7bdf3e41a74cebba1e7e5748</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_UNDEF</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2331bff9f981f17e2ae38a537db0eff6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_640MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa0cd5325f2b35b6ba3d92c2e18eb14cdb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_1280MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2da8ca5d5a602aadc405680b8788df12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_1920MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa095ab8e7dbb0f687c73d12bae1327bd6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_2560MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa4211a4e610f214088988b6541e0954d4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_3200MHZ</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aa2e672e91156e41ffa25b37948862e340</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>SAMPLING_FREQUENCY_MASK</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a58d00d87fcb6be2188d1410cccbbf24aac277fad23b54426fc691ebac36b3ec39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381aa489b3cf37b3f78f2ffe746298edba46</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_SIG_HASWAVEFORM</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a64526f32d62ebd84d7962fcb5aae69d0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASBASELINE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a9b6bf0404fb29997393df2fbdce2ffcc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASPEAKCHARGE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381ad8d61769852d1c2a2d5c5891f7fcefcc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASPEAKDATA</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a5bd338e1d047d54eb3ac7e4f308fbc92</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_AUX_HASTIMECFDINTERP</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381a996375a5b054383be0478b82537305cc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNUSED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a99efd12767393cd356cb8054b5802381aea3a7a04fc908ac3ec9a89fcd03b68d6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_MODULE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a439ad7ef4f3153e7fc0ee06f3fb5b092</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CRATE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a188adeb0e32d9bcc1ea5e2f96e548519</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_BOARD_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53a560c85037f86f33552b5f00e108fa0d2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CHANNEL_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae7f8beeee7c1826621f439f340ee8c53ad8d4c0a029dce380a1094e50236aa3d2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648faa800f88589d7db0cd25594e9042ffbb8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_SAMPLING_FREQUENCY</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648fa1b78952f31896a188f2b1f8e5db1e1c2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>TIME_INFO_POSTTRIG</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae80b604a4c5ef0e2b0640e7be13c648fa52eade00eb528f71a64bee9e660fe3b5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a0d65b1229147aad410500a0374c0c88a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_trigger_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a04bf795b2856b72b0bd72eb1e581b9f2</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_trigger_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>acf8f834ae0c6790e39e5c692a79c60b8</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_channel_address</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a7c1a16a03fa03a5e022db2fa5f2aad54</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_channel_address</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a6100e369ca5c9235a693c205d0dde477</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_module_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a9d7b3f69c80a62ae8d173f6e942428b2</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_crate_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a05566c347e68321aac0a5d7303339d7f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_board_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a7a5c6ea3d6fac5d91b62a9ac3d8052d1</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_channel_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>abffc089e5cafaa2830fda2979218efe1</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_time_info</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a2c9143476a60752d0b003d3c5199de3b</anchor>
-      <arglist>(uint64_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint64_t</type>
-      <name>get_time_info</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a5c09995e58bf7ec66be5e19e36e0122d</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>sampling_frequency_type</type>
-      <name>get_sampling_frequency</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae691d102988a923513f563a88989a507</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_posttrig</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>abf9979fbc7bee9e497300dab9c511620</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_data_description</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>afa205b7ff6b938e323bf20f2b47e910a</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_data_description</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>acfece73e8adb1916a864fa30f4b677d4</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_waveform</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae98dea29f4af54dfe00e857b1cf92d32</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_aux_baseline</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ad9d2bdba59325352d1ee719c8edf4497</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_aux_peak_charge</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a1757eeabc6296b72a2a46952220fb6f0</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_aux_peak_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a65991707387c1dbbf9d95f139c52e849</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_aux_cfd_interpolated_time</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a27d44039fc6fbf56e5955654306438a2</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_waveform_first_sample</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a336ba963e461f50169f81191204769cc</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_waveform_first_sample</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>acb2131070e556d454ac9f6da5bb4ea37</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_waveform_last_sample</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a8a5dc47b7afc8dfac107666d8ee77cd6</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_waveform_last_sample</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ad1c9498f458c88412afe4d119e35ba1f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>const waveform_type &amp;</type>
-      <name>get_waveform</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a10adeaa9b7e3526dcc13daf3c2225c30</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>waveform_type &amp;</type>
-      <name>grab_waveform</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a5b5f5f015d77e0433e8ca706b15d64e7</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_baseline</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a68defba7160bd2b879d498ece99245b1</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_baseline</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>aa0fd9d61ba2fd97211c8d4986dbc7ce7</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_peak_charge</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a4ab59dc385d04cd5bc8200605b797913</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_peak_charge</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae66eac1df1f3374a4553ce501bcae04f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_peak_amplitude</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>adac250957266314f2f3770b036615cad</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_peak_amplitude</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>af71b340f57a705e5df19e9da58532f8c</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_peak_time_max_amplitude</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a199d5f6b1033ce76cb7daca2179d3183</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_peak_time_max_amplitude</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a1c2119776c449576927f9d327413480c</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_underflow_tot</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a46e29209eb37993a6b748f0ee270e64e</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_underflow_tot</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a164f99bcb1441f934d5fc7303907b2e7</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_aux_time_cfd_interp</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae59a6b9e0dd5dc1bff1df06b6e79ecd3</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_aux_time_cfd_interp</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a52549e2a5002ea546a50c26e58faf666</anchor>
-      <arglist>() const</arglist>
+      <name>property_set</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>ad7aec25d41e5574e48b1daa3cccda5a2</anchor>
+      <arglist>()=default</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>raw_calorimeter_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ae79683b35fdea9e7b9410ae445018b36</anchor>
-      <arglist>()</arglist>
+      <name>property_set</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>aa9858922c051b03aa582e267b2f3ffa3</anchor>
+      <arglist>(datatools::properties const &amp;ps)</arglist>
     </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~raw_calorimeter_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ac4761f6797e78f8c7c04b4faefc20db3</anchor>
-      <arglist>()</arglist>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_empty</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>aa7dc6a13a2d6b87622ac6f604ca65eba</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>std::vector&lt; std::string &gt;</type>
+      <name>get_names</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a36fbbd6b78f7cd87ef81884ae54d9b29</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>has_key</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a9d83381c5ede00893269f860e539efb1</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_key_to_property</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>ab2beb3ff9b591967c73c998290145b64</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_key_to_sequence</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>ade1631fafae0a82574d786e3ba1f0ca4</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>is_key_to_property_set</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>ac303625c183caac1d3f7ffb15c028c89</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string</type>
+      <name>to_string</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a7687adc8b5e78d02eac0811dce40b8e2</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>get</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a2046c76a30b2d2fa0e9bf7262faaf724</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>T</type>
+      <name>get</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a63f3b69d009e381cd5320109e0aa859d</anchor>
+      <arglist>(std::string const &amp;key, T const &amp;default_value) const</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>operator datatools::properties</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>ae744ba8661e05e82bd89a235e141bf4e</anchor>
+      <arglist>() const</arglist>
     </member>
     <member kind="function">
       <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>adf4603b222d2a055e42fc994e4c0387e</anchor>
-      <arglist>()</arglist>
+      <name>put</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a0f1a12fe5ee074026a6c57a7666f3673</anchor>
+      <arglist>(std::string const &amp;key, T const &amp;value)</arglist>
     </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a897ecd465009b8a1da46a688da3c813c</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>TDC_MIN_VALUE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a3582e99b814e3c4aaea9311d724ec875</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>TDC_MAX_VALUE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a3d654f430d76f688e062ebf95858aa1b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>TDC_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>aa0d6e1275f25bf37762a92174c2b1bed</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>TDC_MAX_SAMPLING_DEPTH</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>aa0556f28cdadfe36eb0a97eed3f2f2fe</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>ADC_MIN_VALUE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a9dba73cbb9617c6884c5cb0b9e6c5050</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>ADC_MAX_VALUE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>a6ea2ea33cfce195af4287a62b5146d59</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>ADC_OVERFLOW</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>aaa06c37fd2771cf13c8a86a0f1ce8494</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>ADC_UNDERFLOW</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>abf16c77d04dc50bbfd47aaa78bf077d2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const uint16_t</type>
-      <name>ADC_UNDEFINED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>ab0e58eb491c373ba677c6771a901da7f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function" protection="protected">
+    <member kind="function">
       <type>void</type>
-      <name>_set_defaults</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__calorimeter__hit.html</anchorfile>
-      <anchor>aa1620bd7db5f948cdd2a6ffabd6d3c13</anchor>
-      <arglist>()</arglist>
+      <name>put_or_replace</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>af24c9aceaff1e17024ee7d548be7a5e4</anchor>
+      <arglist>(std::string const &amp;key, T const &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>bool</type>
+      <name>erase</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a6dfa2b38c62583a04ae213112776b0c5</anchor>
+      <arglist>(std::string const &amp;key)</arglist>
+    </member>
+    <member kind="function">
+      <type>property_set</type>
+      <name>get</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>afa9e00e62e2398f6b383dabbe1a37086</anchor>
+      <arglist>(std::string const &amp;key) const</arglist>
+    </member>
+    <member kind="function">
+      <type>property_set</type>
+      <name>get</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a087a0a564d3b921ecd3e9e1392821816</anchor>
+      <arglist>(std::string const &amp;key, property_set const &amp;default_value) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>put</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a5669721c8b073ec7e8bf9e086fb06cb1</anchor>
+      <arglist>(std::string const &amp;key, property_set const &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>put_or_replace</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a2c199a7e71ccb357160d9fd5af86b837</anchor>
+      <arglist>(std::string const &amp;key, property_set const &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>put_impl_</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a6ddb370301481e46cbbba50114b702f1</anchor>
+      <arglist>(std::string const &amp;key, falaise::config::path const &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>put_impl_</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a6c357c86931e85bca79b71e42abe0df6</anchor>
+      <arglist>(std::string const &amp;key, falaise::config::quantity const &amp;value)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>get_impl_</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>a3b442853536b692ead696a0b58e87825</anchor>
+      <arglist>(std::string const &amp;key, falaise::config::path &amp;result) const</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>get_impl_</name>
+      <anchorfile>classfalaise_1_1config_1_1property__set.html</anchorfile>
+      <anchor>aae67f97a3626f68084f57e6af1b921d8</anchor>
+      <arglist>(std::string const &amp;key, falaise::config::quantity &amp;result) const</arglist>
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::datamodel::raw_data</name>
-    <filename>classsnemo_1_1datamodel_1_1raw__data.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="typedef">
-      <type>std::vector&lt; raw_calorimeter_hit &gt;</type>
-      <name>raw_calorimeter_hit_col</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>ad00a83cf749eebb9d7cf930fada193b0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; raw_tracker_hit &gt;</type>
-      <name>raw_tracker_hit_col</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>ac93b974ec2e6a20446a176b0c6994a89</anchor>
-      <arglist></arglist>
-    </member>
+    <name>falaise::config::quantity</name>
+    <filename>classfalaise_1_1config_1_1quantity.html</filename>
     <member kind="function">
-      <type>const raw_trigger_infos &amp;</type>
-      <name>get_raw_trigger_infos</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>ac586e357088ffd71fefa0510dada1c07</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>raw_trigger_infos &amp;</type>
-      <name>grab_raw_trigger_infos</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>af59a968f4e713e4bcc14684a9dfce881</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const raw_calorimeter_hit_col &amp;</type>
-      <name>get_raw_calorimeter_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a355f60c71bbdc24fad31c185a5667788</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>raw_calorimeter_hit_col &amp;</type>
-      <name>grab_raw_calorimeter_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a06caefb234ee8e3f97781da14f8b7aa0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const raw_tracker_hit_col &amp;</type>
-      <name>get_raw_tracker_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>aff7d3a82803c42aba4758c1375e950ed</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>raw_tracker_hit_col &amp;</type>
-      <name>grab_raw_tracker_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>ab710aece25291e690464881de3cca6d9</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const datatools::properties &amp;</type>
-      <name>get_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a47520c7fded26422201e41f06ed3755b</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>datatools::properties &amp;</type>
-      <name>grab_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a9992de2c0c7afdddfa918da056c79541</anchor>
-      <arglist>()</arglist>
+      <type></type>
+      <name>quantity</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>a797869329da5b5afce4cb163a04b2b21</anchor>
+      <arglist>()=default</arglist>
     </member>
     <member kind="function">
       <type></type>
-      <name>raw_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a5a78455ba7a5ddaeadeb63ebca37cb09</anchor>
-      <arglist>()</arglist>
+      <name>quantity</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>af7d0709e025f9be9e91e43ee22f13ee0</anchor>
+      <arglist>(double value, std::string const &amp;unit)</arglist>
     </member>
     <member kind="function" virtualness="virtual">
       <type>virtual</type>
-      <name>~raw_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>acdb56d9f50d3013d2f1bd7d2b33767c7</anchor>
-      <arglist>()</arglist>
+      <name>~quantity</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>a24e808c3eb298302f84cf0d637ab6d75</anchor>
+      <arglist>()=default</arglist>
     </member>
     <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a0c5f4e938daea13674a64003cf46a378</anchor>
-      <arglist>()</arglist>
+      <type>double</type>
+      <name>operator()</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>aeee25e1aa1af8c0e63830416b71e51c7</anchor>
+      <arglist>() const</arglist>
     </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__data.html</anchorfile>
-      <anchor>a8e15f2eda2bf9f1b34b1d35382b7d6d7</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
+    <member kind="function">
+      <type>double</type>
+      <name>value</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>a25e2bb5fb06826afaa45bcc754250ac3</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>double</type>
+      <name>value_in</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>a4be025e959387ecfb97d58f643149917</anchor>
+      <arglist>(std::string const &amp;unit) const</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string const  &amp;</type>
+      <name>unit</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>a1012002fbb731f8caf0150f0ee9e398c</anchor>
+      <arglist>() const</arglist>
+    </member>
+    <member kind="function">
+      <type>std::string const  &amp;</type>
+      <name>dimension</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity.html</anchorfile>
+      <anchor>addb6f93caae3054ab9a7b2f4c897a5af</anchor>
+      <arglist>() const</arglist>
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::datamodel::raw_tracker_hit</name>
-    <filename>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</filename>
-    <base>geomtools::base_hit</base>
-    <member kind="enumeration">
-      <type></type>
-      <name>mode_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_UNDEF</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89a20a5cb66777fcc63f52e1c0449cc4fe3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_BOTTOM_CATHODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89af58893aa1e5f47ccaeef88e3047f6d1f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_TOP_CATHODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89adcd00a9ecc2686dd768ba6bfbc22ea2b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_NEMO3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89af736af8fdceb9a25ba6fc3f4eded402d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_ALTERNATIVE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89afddb5a7ef3fa79fab0078cd4922f56d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>data_description_mask</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_MODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81baec992deb5e876a9a90f82e7d4395d108</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba51b4760b58860ea37fecb48f6a07cd09</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba38dda83bc9afb848ca3f979664455db4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81bac59830370cda76e185b47ca0bd5e9262</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81babc1e8b7a9ac1962ab54cbc9a84e9063f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81baab5328be6e8a3a8a9c0580810d954178</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_CATHODE_T5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba50868975ac0169a017cfb1c747f1b35f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_CATHODE_T6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81bae73f5e24650523d73846439cdeb7259d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNUSED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba4903ef82e7387a5c09c0a560213ff980</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>address_mask</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_MODULE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935a95d05b15e307de4ee77656c0cce86815</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CRATE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935a044bb47e2fbe1f79250a2a86d5465561</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_BOARD_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935aa051843299dc2599a027a6fae96076d7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CHANNEL_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935acbb132817066708a770495ccfce8128e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_UNDEF</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89a20a5cb66777fcc63f52e1c0449cc4fe3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_BOTTOM_CATHODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89af58893aa1e5f47ccaeef88e3047f6d1f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_TOP_CATHODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89adcd00a9ecc2686dd768ba6bfbc22ea2b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_NEMO3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89af736af8fdceb9a25ba6fc3f4eded402d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>MODE_ALTERNATIVE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a874720dbd5b8b5b8141a326055b26c89afddb5a7ef3fa79fab0078cd4922f56d1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_MODE</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81baec992deb5e876a9a90f82e7d4395d108</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba51b4760b58860ea37fecb48f6a07cd09</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba38dda83bc9afb848ca3f979664455db4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81bac59830370cda76e185b47ca0bd5e9262</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81babc1e8b7a9ac1962ab54cbc9a84e9063f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_ANODE_T4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81baab5328be6e8a3a8a9c0580810d954178</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_CATHODE_T5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba50868975ac0169a017cfb1c747f1b35f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_HAS_CATHODE_T6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81bae73f5e24650523d73846439cdeb7259d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>DATA_DESC_UNUSED</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a98e3894a9502a6c5879e50010edfa81ba4903ef82e7387a5c09c0a560213ff980</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_MODULE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935a95d05b15e307de4ee77656c0cce86815</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CRATE_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935a044bb47e2fbe1f79250a2a86d5465561</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_BOARD_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935aa051843299dc2599a027a6fae96076d7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>ADDRESS_CHANNEL_ID</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a157fdede1f58af71ab2b1b9524f4e935acbb132817066708a770495ccfce8128e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>af7e8eb78cfd26d72def466cb6fe7bc74</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_trigger_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a3aca3dc8a607978e40b0997a4ad0d4c2</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_trigger_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>aefab7904c03baba3201708b682bb4241</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_channel_address</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a8e2becf36a4bb56aac362f300f57b031</anchor>
-      <arglist>(uint32_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_channel_address</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ab6ec53e9392d179af1bd853ffe288556</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_module_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ab1c282928348645fe97d0994c34fad3a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_crate_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>afbc67ad933d1d83294c1ce5d92446342</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_board_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ad336696caf7d924b9ee8a105d1b272de</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_channel_id</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>aaa938b4ba3099e2e1301bd185555a9a6</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_data_description</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a44d29e518572b508a34a061f86410539</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_data_description</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a6db5bc9d241a0ebb570c62dc8473ea6a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_mode_nemo3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a552079b1f3f126e00d53108d8eaf2b6b</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_mode_alternative</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ae6847e1c6edaff874d63f077253fe415</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ae33d273a2482232053c6c7a0feea45a5</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a718a68551c45e11d3614a5c389473ea4</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a7137d6f158858fc8d77e7ff6fb5d95f0</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ab8970668de23462c37c928b39dfd35ad</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a1a74fcb2507f442e594515573615a760</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a0ef5ece72d9fe958eeeccc5f1298f3ca</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a3d4e986754ea87b3ba2c93a3842eb651</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a4873afb0ac234e132da4653d55e619bc</anchor>
-      <arglist>(uint64_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint64_t</type>
-      <name>get_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a6c8b66c5b92d533c700a203223f350ef</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a277ebda4dc7561ee361c9f68664d9755</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a28699804d5ed6d879e97306ef3db36e8</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a78968e640c31f163457e136d47b53f17</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a0d38ab92c8702eb8901ceacc1651dbfb</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a2e205b76bcc4d24953694531e4d0d9cc</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a3a1f3e38a3771b1fa9abfba965e5b478</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a40d5ee606a476f4d14a8b2832532b028</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a9e5f9033a91a04d51ea50b18123f51f0</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a4c60de5bb522196a6b51694f5c97971f</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a1119a85ff12818f8abf34220b15c2eb3</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>af31824a8c8b07a1e21071375c4fa4ca2</anchor>
-      <arglist>(uint16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>get_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ad5e0bca5b6c409aa7451a98ed6d2b03c</anchor>
-      <arglist>() const</arglist>
-    </member>
+    <name>falaise::config::quantity_t</name>
+    <filename>classfalaise_1_1config_1_1quantity__t.html</filename>
+    <templarg>Dimension</templarg>
+    <base>falaise::config::quantity</base>
     <member kind="function">
       <type></type>
-      <name>raw_tracker_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a6751001f78a9ae2e2d47dff22850d1b9</anchor>
+      <name>quantity_t</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity__t.html</anchorfile>
+      <anchor>a55cdbcc879e3e9918a1fba255c96d9a7</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>quantity_t</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity__t.html</anchorfile>
+      <anchor>a76c3c1bd79c21bb7bdaedcc36210b5f1</anchor>
+      <arglist>(double value, std::string const &amp;unit)</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>quantity_t</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity__t.html</anchorfile>
+      <anchor>a764d3228ba6d5dba06d66a1487f15de6</anchor>
+      <arglist>(quantity const &amp;q)</arglist>
     </member>
     <member kind="function" virtualness="virtual">
       <type>virtual</type>
-      <name>~raw_tracker_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>a76a19112727003791544dfe3f15eae91</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>abc28432b6eeee80342501a40a528302c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ae075b4ee0c5395ee9dcd7de781cc2ddb</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-    <member kind="function" protection="protected">
-      <type>void</type>
-      <name>_set_defaults</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__tracker__hit.html</anchorfile>
-      <anchor>ab2c92420d2fd5e8167d4951393335a19</anchor>
-      <arglist>()</arglist>
+      <name>~quantity_t</name>
+      <anchorfile>classfalaise_1_1config_1_1quantity__t.html</anchorfile>
+      <anchor>ae649c5bb1bc20cb9d152fd97284a960c</anchor>
+      <arglist>()=default</arglist>
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::datamodel::raw_trigger_infos</name>
-    <filename>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="function">
-      <type>void</type>
-      <name>set_trigger_number</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a328a5292185d9bcf8154331664a1c7a9</anchor>
-      <arglist>(uint32_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t</type>
-      <name>get_trigger_number</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a7d9276a1a7af504ef77c86517d05e46f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::bitset&lt; 3 &gt; &amp;</type>
-      <name>get_vtzw</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ad9f965e02a3d0642dddc5707d64d505a</anchor>
-      <arglist>(int side_) const</arglist>
-    </member>
-    <member kind="function">
-      <type>std::bitset&lt; 3 &gt; &amp;</type>
-      <name>grab_vtzw</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ada6f15a0ec4807d082d7879c81bd5696</anchor>
-      <arglist>(int side_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::bitset&lt; 10 &gt; &amp;</type>
-      <name>get_ctzw</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ab63c6dd52245c7dad3a1f2fcbf02496a</anchor>
-      <arglist>(int side_) const</arglist>
-    </member>
-    <member kind="function">
-      <type>std::bitset&lt; 10 &gt; &amp;</type>
-      <name>grab_ctzw</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a293c62bdaa53ce7044a471e5c2f1af9b</anchor>
-      <arglist>(int side_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::bitset&lt; 9 &gt; &amp;</type>
-      <name>get_ttp</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ae7791d5209634ca85558a3d75a04a575</anchor>
-      <arglist>(int side_, int row_) const</arglist>
-    </member>
-    <member kind="function">
-      <type>std::bitset&lt; 9 &gt; &amp;</type>
-      <name>grab_ttp</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ab05862ed03e58296705ef64b1e912e90</anchor>
-      <arglist>(int side_, int row_)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>raw_trigger_infos</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>aae7f38c5d2c8c9dcd31a500333cb7d3c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~raw_trigger_infos</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ab2068ee10050819ea7e3e8e69afefe1c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>acadb2b23ae91bb5a28cd7dbf37f61739</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a51888b902963afea46746629202be29b</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const unsigned int</type>
-      <name>NUMBER_OF_SIDES</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a63c96d3d35ce72d863184f4cf313cebe</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const unsigned int</type>
-      <name>NUMBER_OF_ROWS</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>ae94469bc5947ed752fa9685d56c1ed64</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const unsigned int</type>
-      <name>NUMBER_OF_LAYERS</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a4cdec738d0755110318d4afb9bb3ce7b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const unsigned int</type>
-      <name>NUMBER_OF_CALO_ZONES</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a430dfab027b957be832342d6098da3db</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const unsigned int</type>
-      <name>NUMBER_OF_GVETO_ZONES</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1raw__trigger__infos.html</anchorfile>
-      <anchor>a071d5425c3890373081c369c2477879f</anchor>
-      <arglist></arglist>
-    </member>
+    <name>falaise::processing::reserved_key_error</name>
+    <filename>classfalaise_1_1processing_1_1reserved__key__error.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::resistivity_t</name>
+    <filename>classfalaise_1_1config_1_1resistivity__t.html</filename>
   </compound>
   <compound kind="class">
     <name>falaise::ResourceInitializationException</name>
@@ -10882,42 +9497,123 @@
     </member>
   </compound>
   <compound kind="class">
-    <name>snemo::processing::service_info</name>
-    <filename>classsnemo_1_1processing_1_1service__info.html</filename>
+    <name>snemo::service_handle</name>
+    <filename>classsnemo_1_1service__handle.html</filename>
+    <templarg>T</templarg>
+    <member kind="function">
+      <type></type>
+      <name>service_handle</name>
+      <anchorfile>classsnemo_1_1service__handle.html</anchorfile>
+      <anchor>ae53b06380c118a67158bb70486d757c8</anchor>
+      <arglist>()=default</arglist>
+    </member>
+    <member kind="function">
+      <type></type>
+      <name>service_handle</name>
+      <anchorfile>classsnemo_1_1service__handle.html</anchorfile>
+      <anchor>a7297d034626d4eecccc9b41db57e5082</anchor>
+      <arglist>(datatools::service_manager &amp;sm)</arglist>
+    </member>
+    <member kind="function">
+      <type>T *</type>
+      <name>operator-&gt;</name>
+      <anchorfile>classsnemo_1_1service__handle.html</anchorfile>
+      <anchor>a98acac4cb4cfc7d28dc87e80cd3398d2</anchor>
+      <arglist>() const</arglist>
+    </member>
+  </compound>
+  <compound kind="class">
+    <name>snemo::service_info</name>
+    <filename>classsnemo_1_1service__info.html</filename>
     <member kind="function" static="yes">
       <type>static const std::string &amp;</type>
       <name>default_metadata_service_label</name>
-      <anchorfile>classsnemo_1_1processing_1_1service__info.html</anchorfile>
-      <anchor>a6cf237f252fff3beefb5d97215a2e384</anchor>
+      <anchorfile>classsnemo_1_1service__info.html</anchorfile>
+      <anchor>a1ff88ce152c5e79c6c3e96d289314e2e</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static const std::string &amp;</type>
       <name>default_geometry_service_label</name>
-      <anchorfile>classsnemo_1_1processing_1_1service__info.html</anchorfile>
-      <anchor>abfe307782c0d5707f0149e7e29f64178</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" static="yes">
-      <type>static const std::string &amp;</type>
-      <name>default_electronics_service_label</name>
-      <anchorfile>classsnemo_1_1processing_1_1service__info.html</anchorfile>
-      <anchor>aa7972e254c19741a5005ccc240d0370a</anchor>
+      <anchorfile>classsnemo_1_1service__info.html</anchorfile>
+      <anchor>a2562b1213868c27a111fa25cb8234647</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function" static="yes">
       <type>static const std::string &amp;</type>
       <name>default_cut_service_label</name>
-      <anchorfile>classsnemo_1_1processing_1_1service__info.html</anchorfile>
-      <anchor>a3767fdbd32b8b9c5cf2123b1f5bd5f37</anchor>
+      <anchorfile>classsnemo_1_1service__info.html</anchorfile>
+      <anchor>a44ff01561a954f824b2c654f8f408ff5</anchor>
       <arglist>()</arglist>
     </member>
+  </compound>
+  <compound kind="struct">
+    <name>snemo::service_traits</name>
+    <filename>structsnemo_1_1service__traits.html</filename>
+    <templarg></templarg>
+  </compound>
+  <compound kind="struct">
+    <name>snemo::service_traits&lt; geometry_svc &gt;</name>
+    <filename>structsnemo_1_1service__traits_3_01geometry__svc_01_4.html</filename>
+    <member kind="typedef">
+      <type>BOOST_METAPARSE_STRING(&quot;geometry&quot;)</type>
+      <name>label_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01geometry__svc_01_4.html</anchorfile>
+      <anchor>a0fe419e9bb18b2ab0ff8962f19a6b0fc</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>geomtools::geometry_service</type>
+      <name>service_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01geometry__svc_01_4.html</anchorfile>
+      <anchor>a1c6ec66344ccf3b52737380fc573fb89</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>geometry_svc</type>
+      <name>instance_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01geometry__svc_01_4.html</anchorfile>
+      <anchor>a84fa9fb7d493b190daef55a73a2f0926</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="function" static="yes">
-      <type>static const std::string &amp;</type>
-      <name>default_database_service_label</name>
-      <anchorfile>classsnemo_1_1processing_1_1service__info.html</anchorfile>
-      <anchor>ac520e09b11348c81f831c3ab9bed92ef</anchor>
-      <arglist>()</arglist>
+      <type>static instance_type *</type>
+      <name>get</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01geometry__svc_01_4.html</anchorfile>
+      <anchor>a42130a2f2052dc73903952d232329ac5</anchor>
+      <arglist>(service_type &amp;sm)</arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>snemo::service_traits&lt; histogram &gt;</name>
+    <filename>structsnemo_1_1service__traits_3_01histogram_01_4.html</filename>
+    <member kind="typedef">
+      <type>BOOST_METAPARSE_STRING(&quot;histogram&quot;)</type>
+      <name>label_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01histogram_01_4.html</anchorfile>
+      <anchor>a75b5f8fa27a84bb275eaf39be54c1e5a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>histogram</type>
+      <name>service_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01histogram_01_4.html</anchorfile>
+      <anchor>a1dd1a4a53e9a28c14089c367c48005e9</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>histogram</type>
+      <name>instance_type</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01histogram_01_4.html</anchorfile>
+      <anchor>a5c150a3a5ccddf0b63596ffcbc98a6b0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function" static="yes">
+      <type>static instance_type *</type>
+      <name>get</name>
+      <anchorfile>structsnemo_1_1service__traits_3_01histogram_01_4.html</anchorfile>
+      <anchor>ab3c24a6c968aeb82b0302b30670aeb69</anchor>
+      <arglist>(service_type &amp;sm)</arglist>
     </member>
   </compound>
   <compound kind="struct">
@@ -11006,677 +9702,6 @@
       <anchorfile>structTrackerPreClustering_1_1setup__data.html</anchorfile>
       <anchor>ae9268f107aa58ad3f058a20ff75dac57</anchor>
       <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_calo_digi_hit</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</filename>
-    <base>mctools::digitization::sampled_signal</base>
-    <member kind="function">
-      <type></type>
-      <name>sim_calo_digi_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</anchorfile>
-      <anchor>a9f85a01d8a0064bae01a1908f54ad45c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_calo_digi_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</anchorfile>
-      <anchor>ab63040c0eee6be20a1bea214a905b522</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</anchorfile>
-      <anchor>a189bc38c9631febc9aeeaa2e1ae483de</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</anchorfile>
-      <anchor>a5f33e5eee46ea2b6b96c31c11fef6c48</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__calo__digi__hit.html</anchorfile>
-      <anchor>af190198d85e0bebf8f96f277cb6ecf85</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_digi_data</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__digi__data.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="typedef">
-      <type>datatools::handle&lt; sim_digi_event_data &gt;</type>
-      <name>sim_digi_event_handle_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>a7bc4446cf07599d2e1b128559f7c8aec</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; sim_digi_event_handle_type &gt;</type>
-      <name>sim_digi_event_collection_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>acd7a46f6838a8b9f799ab3d9e6067169</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>sim_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>af76cdfac84b42e60c6944966dbfe005f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>afa77c15155ec78d5705f8161acf6efe2</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>aa409ae44e756fc460e29b2ea2c542432</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>accc018f23d469ab206aae459ef518694</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const sim_digi_event_collection_type &amp;</type>
-      <name>get_digi_events</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>a79cb2ebe9d74e8fa7a24d18f6039e64d</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>sim_digi_event_collection_type &amp;</type>
-      <name>grab_digi_events</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>aa4ffb901a8e97531916b1f2f2695977f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const datatools::properties &amp;</type>
-      <name>get_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>a7bf8f238059b41fcb8ce3f344c402df9</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>datatools::properties &amp;</type>
-      <name>grab_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>ad7cf7f49308880f4b7b96a7267a41e81</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__data.html</anchorfile>
-      <anchor>a1abb2eb405dfe62b539904676abfe414</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_digi_event_data</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="function">
-      <type></type>
-      <name>sim_digi_event_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>ac3681981360fe6e8fde34936fdf03adf</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_digi_event_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>acadb89fa35dd137bedf09646b49389f8</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a8f18583c9d80081a2d1f80632de56604</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a16426582b4b4cb7cb67b2ea6cb344319</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const sim_trigger_digi_data &amp;</type>
-      <name>get_trigger_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a7a72d7e97708904195231ee894f35043</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>sim_trigger_digi_data &amp;</type>
-      <name>grab_trigger_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a259a948aa35f44d60579d6441056f92a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const sim_readout_digi_data &amp;</type>
-      <name>get_readout_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a651b201ac9c0f0da6cc67b29320164b7</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>sim_readout_digi_data &amp;</type>
-      <name>grab_readout_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>afee11afae3e1a6fdc0fb1b444a173a1c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const datatools::properties &amp;</type>
-      <name>get_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a4cc055a0298ad74477b6a370bb116699</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>datatools::properties &amp;</type>
-      <name>grab_auxiliaries</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a71dbdf8ad2d59df5c1a68dd9154a0b1b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__digi__event__data.html</anchorfile>
-      <anchor>a50683d613a2a899ec8c30ff91807df03</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_readout_digi_data</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="typedef">
-      <type>std::vector&lt; sim_calo_digi_hit &gt;</type>
-      <name>calo_digi_hit_collection_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a163c2c3e30b54265ee95a9fe2bdb4bba</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; sim_tracker_digi_hit &gt;</type>
-      <name>tracker_digi_hit_collection_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a9a8b1a4848548c21da12a64830660d0f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>sim_readout_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>aee74efc0dea1e878505590369f71f716</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_readout_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>acdfb5dcd43a6b56ed4833f09485229b7</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a17dbb916139bad69986efa577467489a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a3956c53ddd532cac2c675f261413081a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const calo_digi_hit_collection_type &amp;</type>
-      <name>get_calo_digi_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>ad1d79f1110112f5f8d677df7783fa02b</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>calo_digi_hit_collection_type &amp;</type>
-      <name>grab_calo_digi_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>add0ecdfde0964c90eccdf16f2f4f02f6</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const tracker_digi_hit_collection_type &amp;</type>
-      <name>get_tracker_digi_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>ae245cd2647e3682f56489d8c969f6288</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>tracker_digi_hit_collection_type &amp;</type>
-      <name>grab_tracker_digi_hits</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a32475fec8674d116dc2edac3869a2a7d</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__readout__digi__data.html</anchorfile>
-      <anchor>a0d696f3942e4a75b2e0cd54950afceaa</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_tracker_digi_hit</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</filename>
-    <base>geomtools::base_hit</base>
-    <member kind="enumeration">
-      <type></type>
-      <name>more_store_mask_type</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ec</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaa995394306a398086e8468174d532e8e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaf4f1c94cf8557cb52a5243c6b2def278</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca67f2104844997c6478d0546f29b0e936</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca43bf318eff531b24b9e2c2357025df8b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca7ce545ac727ad5b8680c412c27d9715d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_CATHODE_T5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecac3bd87a82e039db95ca8ec9233054f3c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_CATHODE_T6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaa2bf3f56072623323b5b0fc530c29f75</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaa995394306a398086e8468174d532e8e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaf4f1c94cf8557cb52a5243c6b2def278</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca67f2104844997c6478d0546f29b0e936</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca43bf318eff531b24b9e2c2357025df8b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_ANODE_T4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50eca7ce545ac727ad5b8680c412c27d9715d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_CATHODE_T5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecac3bd87a82e039db95ca8ec9233054f3c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumvalue">
-      <name>STORE_CATHODE_T6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6e566040aa546143a305a1a525af50ecaa2bf3f56072623323b5b0fc530c29f75</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>sim_tracker_digi_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>aa099a06fd5cf40912906ea320c3014c2</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_tracker_digi_hit</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>aa0d74c6c13d2a44501636e9cb41b242b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ab642c320ebd816f7781b22849a1a8423</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>aba151c055dc528fa3f5a12146e995631</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a60096750e2298ebe4467d0c6801c5860</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ac1a4806c4558e6d7da7c40be4b057def</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a857807f207917ac092d6227b96d8fc3f</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_anode_t0</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>adc4c0ef995916f617226367f70a529ba</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a146103b042837a02424d93252af18f3f</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a20b642890221d30034617ec4aff28e77</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a2aadb7826dda5cc4d0221abf7185adf7</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_anode_t1</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>acb13634d1dca1d74108fdc04a402ff6e</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a308df84424be98cfdcbc3afbfef7b1c3</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a3f54881f97e20243b74f7da46276d778</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ac4c0d3d9645eeeed52d43877a370d654</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_anode_t2</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a1efb7d2c5569481f1a0e6f0d323ae975</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ae7fd0f845eb8b99f6adcc6d8cf656a4e</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ac97edcabb848db034a894113e365136b</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a748f5773d39bc11cfdf8568c57b9c325</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_anode_t3</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a5011e0b4bcd7c8ecc65b89d7f318146e</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a9a407bc168ef83349243a5fd5f4b9140</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ad1d349bdfcfd88c670bd2a730db0edd0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a7e0fd4111f9dde013ce2561fbfc6e1cf</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_anode_t4</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>af0183f80918a0a76a63521a30df08d8a</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a2949d30b2a76f3634d9fd946eca7da67</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a133a6c9a9a9cc0d5da426c339386bd45</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>ac9546360981305448111179d9d95b88b</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_cathode_t5</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a3288ee1a7f4ef1ccba0b13c13fd3b185</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a1cd970e941b477bc6e261f7dd2519392</anchor>
-      <arglist>(const int16_t)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>accd565d49b335cac44ea925f133f13f1</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a340f7c9900be047434eea6e4fec0f7a5</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function">
-      <type>int16_t</type>
-      <name>get_cathode_t6</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>af29150752a096d6b61a7e48efa8852c0</anchor>
-      <arglist>() const</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>aa59dad7ebb407f83bf74df0456c3b8de</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const int16_t</type>
-      <name>INVALID_TIME</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a0678f5254fce4b127f6f950780eb99b3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const int16_t</type>
-      <name>OVERFLOW_TIME</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>abcb39a2dfe94fb55f297e0bc69f0d11a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable" static="yes">
-      <type>static const int16_t</type>
-      <name>UNDERFLOW_TIME</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__tracker__digi__hit.html</anchorfile>
-      <anchor>a6b256430ae9658ca7ac25125b046c8a4</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="class">
-    <name>snemo::datamodel::sim_trigger_digi_data</name>
-    <filename>classsnemo_1_1datamodel_1_1sim__trigger__digi__data.html</filename>
-    <base>datatools::i_serializable</base>
-    <base>datatools::i_tree_dumpable</base>
-    <member kind="function">
-      <type></type>
-      <name>sim_trigger_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__trigger__digi__data.html</anchorfile>
-      <anchor>a971b07769f79657506e5e5b31aa4bbd6</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual</type>
-      <name>~sim_trigger_digi_data</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__trigger__digi__data.html</anchorfile>
-      <anchor>ab944ef55d70f1271006e866bc6f77e6c</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__trigger__digi__data.html</anchorfile>
-      <anchor>a989a749a0bfe4a34f311fc68ca88163a</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function" virtualness="virtual">
-      <type>virtual void</type>
-      <name>tree_dump</name>
-      <anchorfile>classsnemo_1_1datamodel_1_1sim__trigger__digi__data.html</anchorfile>
-      <anchor>a3fdabd41abb4cba9fd13f46f61c66891</anchor>
-      <arglist>(std::ostream &amp;a_out=std::clog, const std::string &amp;a_title=&quot;&quot;, const std::string &amp;a_indent=&quot;&quot;, bool a_inherit=false) const</arglist>
     </member>
   </compound>
   <compound kind="class">
@@ -11855,6 +9880,34 @@
       <anchor>afb7e99e9cea9d1c503a4f5c235c146cb</anchor>
       <arglist>()</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::solid_angle_t</name>
+    <filename>classfalaise_1_1config_1_1solid__angle__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::surface_activity_t</name>
+    <filename>classfalaise_1_1config_1_1surface__activity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::surface_density_t</name>
+    <filename>classfalaise_1_1config_1_1surface__density__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::surface_t</name>
+    <filename>classfalaise_1_1config_1_1surface__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::surface_tension_t</name>
+    <filename>classfalaise_1_1config_1_1surface__tension__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::temperature_t</name>
+    <filename>classfalaise_1_1config_1_1temperature__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::time_t</name>
+    <filename>classfalaise_1_1config_1_1time__t.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::datamodel::timestamp</name>
@@ -13631,6 +11684,10 @@
     </member>
   </compound>
   <compound kind="class">
+    <name>falaise::config::unknown_unit_error</name>
+    <filename>classfalaise_1_1config_1_1unknown__unit__error.html</filename>
+  </compound>
+  <compound kind="class">
     <name>falaise::UnknownResourceException</name>
     <filename>classfalaise_1_1UnknownResourceException.html</filename>
     <member kind="function">
@@ -13888,6 +11945,10 @@
       <arglist></arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>falaise::config::velocity_t</name>
+    <filename>classfalaise_1_1config_1_1velocity__t.html</filename>
+  </compound>
   <compound kind="struct">
     <name>falaise::version</name>
     <filename>structfalaise_1_1version.html</filename>
@@ -13955,6 +12016,18 @@
       <arglist>(const std::string &amp;feature)</arglist>
     </member>
   </compound>
+  <compound kind="class">
+    <name>falaise::config::volume_activity_t</name>
+    <filename>classfalaise_1_1config_1_1volume__activity__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::volume_t</name>
+    <filename>classfalaise_1_1config_1_1volume__t.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::wave_number_t</name>
+    <filename>classfalaise_1_1config_1_1wave__number__t.html</filename>
+  </compound>
   <compound kind="struct">
     <name>snemo::geometry::calo_tapered_scin_box_model::wires_drawer</name>
     <filename>structsnemo_1_1geometry_1_1calo__tapered__scin__box__model_1_1wires__drawer.html</filename>
@@ -14011,6 +12084,14 @@
       <anchor>a6257baa69b2d02a31e8952e75f15fcd5</anchor>
       <arglist>(geomtools::wires_type &amp;wires_, uint32_t options_=0) const</arglist>
     </member>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::wrong_dimension_error</name>
+    <filename>classfalaise_1_1config_1_1wrong__dimension__error.html</filename>
+  </compound>
+  <compound kind="class">
+    <name>falaise::config::wrong_type_error</name>
+    <filename>classfalaise_1_1config_1_1wrong__type__error.html</filename>
   </compound>
   <compound kind="class">
     <name>snemo::geometry::xcalo_locator</name>
@@ -14515,980 +12596,15 @@
   <compound kind="namespace">
     <name>datatools</name>
     <filename>namespacedatatools.html</filename>
-    <member kind="typedef">
-      <type>datatools::handle&lt; base_service &gt;</type>
-      <name>service_handle_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a0cb5897521afd04ca7497eabe9f695e7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, int &gt;</type>
-      <name>dependency_level_dict_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8531bb1d9fda7d399258654b27852d06</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, dependency_info_type &gt;</type>
-      <name>service_dependency_dict_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa089b98195282207352be089a1b4f28d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::shared_ptr&lt; service_entry &gt;</type>
-      <name>service_entry_ptr</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a09b0974ea5ce51108f37528860f64149</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, service_entry_ptr &gt;</type>
-      <name>service_dict_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1b031a2eb7066aa8b721b6f0c3557e75</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>datatools_init_flags</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>range_bound_info_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac2c8e4b40a050e709cfe451795cceb12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>dependency_level_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587ae</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>basic_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>data_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3ffba4d8364f0bafe072c594fe9fd8df</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>return_code_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>compare_result_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7291f91b21e9a80377c09180b005c229</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>name_validation_flags</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_covariant</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a39bb4fc25859ed2f864172202ddc70c7</anchor>
-      <arglist>(const Base &amp;b)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initialize</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aef7ac875d160345f8e2e4d984a9dec6c</anchor>
-      <arglist>(int argc_=0, char *argv_[]=0, uint32_t flags_=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>terminate</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7ad5a44fccf76722a487cda7d5f8b2af</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>load_ocd</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad7e59245eed1d1426b3d818afe20294c</anchor>
-      <arglist>(::datatools::object_configuration_description &amp;, typename boost::disable_if&lt; has_load&lt; ::datatools::detail::ocd::loader&lt; ConfigurableType &gt; &gt; &gt;::type *=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>load_ocd</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a381463a4873663c18d21830d65728830</anchor>
-      <arglist>(::datatools::object_configuration_description &amp;ocd_, typename boost::enable_if&lt; has_load&lt; ::datatools::detail::ocd::loader&lt; ConfigurableType &gt; &gt; &gt;::type *dummy=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::string &amp;</type>
-      <name>serial_tag</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab1a73d6d1b6bf0e1560e4ca13aa7b074</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::string &amp;</type>
-      <name>backward_serial_tag</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a0bbbda99846fc5e77633bab7c21d4fe3</anchor>
-      <arglist>(int i=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>check_serial_tag</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab7ab5eee6f4d51fb827f15ddd527e112</anchor>
-      <arglist>(const std::string stag_, const std::string alt_tag_=&quot;&quot;, typename boost::disable_if&lt; has_bsts&lt; T &gt; &gt;::type *dummy=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>check_serial_tag</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7d4ea68f6ab12de11268e3e7b91177ef</anchor>
-      <arglist>(const std::string stag_, const std::string alt_tag_=&quot;&quot;, typename boost::enable_if&lt; has_bsts&lt; T &gt; &gt;::type *dummy=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_multi_lines</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ae960e6701139d56377927c97fcd503b4</anchor>
-      <arglist>(std::ostream &amp;out_, const std::string &amp;text_, const std::string &amp;indent_=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>for</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>acba9b051712b09247f962a61bddf9458</anchor>
-      <arglist>(pmap::const_iterator iter=_props_.begin();iter !=_props_.end();++iter)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>for</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aecdfe01644f0e4eb0f1576aa8edddf0c</anchor>
-      <arglist>(keys_col_type::const_iterator i=ks.begin();i !=ks.end();++i)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_resource_dir</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a448bae2c35e45cf47f0efdbf16fb8118</anchor>
-      <arglist>(bool overriden_env=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_resource</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a89c75e2d9a33ccc650e1b770e97f2db0</anchor>
-      <arglist>(const std::string &amp;rname, bool overriden_env=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>T &amp;</type>
-      <name>grab</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9c0b278cc428326e86aeb3a1107c00bd</anchor>
-      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const T &amp;</type>
-      <name>get</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab059bac0563dc9603cab716ab14010f4</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>service_exists</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac4d270ff27705036869fc9e8f4087703</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>merge_services</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a5a416cbca025b69351187da4a48f3c2b</anchor>
-      <arglist>(service_dict_type &amp;services_, service_dict_type &amp;merged_, bool duplicate_throw_=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>find_service_name_with_id</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad602550ac84888349e5de58e65bcfd15</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>find_service_names_with_id</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac98f48a531895eefeefb251e1e4d694a</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_id_, std::vector&lt; std::string &gt; &amp;service_names_)</arglist>
-    </member>
-    <member kind="function">
-      <type>base_service &amp;</type>
-      <name>grab_service</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab862847bd10c84f0cefbbe63777eb4fc</anchor>
-      <arglist>(service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const base_service &amp;</type>
-      <name>get_service</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a5b944b16d1b3fc8bd46775c571007798</anchor>
-      <arglist>(const service_dict_type &amp;services_, const std::string &amp;service_name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::string</type>
-      <name>get_label_from_type</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1b2313683ded260c68c46f60b3d095eb</anchor>
-      <arglist>(int type_)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>get_type_from_label</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a4d6f6314e79d10200c5716c9eb932fad</anchor>
-      <arglist>(const std::string &amp;label_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a244b4601186bded3a27b13d22481b84b</anchor>
-      <arglist>(float &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>float</type>
-      <name>invalid_real_single</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa6895b90ca98c8adbc90818cb49a4b17</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3dbd503d1923a0ea45441c536a42c1a8</anchor>
-      <arglist>(float value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a6bbaa38f611fe706ca2504f23f4ca658</anchor>
-      <arglist>(float value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_plus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>abf0a6bd947e5ac16a4bbe33482b10037</anchor>
-      <arglist>(float value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_minus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab835add413a08adee12546468927f2e7</anchor>
-      <arglist>(float value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>plus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab3f39a79ef71d3d30e3952c11082cb69</anchor>
-      <arglist>(float &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>minus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a6432c8dc68d94ced7c18c61c672e8c3f</anchor>
-      <arglist>(float &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a16808dfe2e244dbde3851eba7935cc79</anchor>
-      <arglist>(float &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a98e9a34a7aba066230d65e07e91631f6</anchor>
-      <arglist>(double &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>invalid_real_double</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a33cdc1188a5f99e9bad31ca89a846faa</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>invalid_real</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a0a6c531638182ce0ef767da43f35ce26</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac8cf6e068e148b53525ff1d71f9fa782</anchor>
-      <arglist>(double value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a101ab97654e80fe7e2149df1ceca316f</anchor>
-      <arglist>(double value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_plus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a348df2f0550ed21c9d16d4432369d317</anchor>
-      <arglist>(double value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_minus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad3519bc99db4ed6181e5dfd96e86b9b3</anchor>
-      <arglist>(double value)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_normal</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a11fd8bc96235e7fffd032448c54aa35f</anchor>
-      <arglist>(double value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>plus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a559909cf93964ddb11bae08679d53ace</anchor>
-      <arglist>(double &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>minus_infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a438d993922655f5172dfd9bc6f58e825</anchor>
-      <arglist>(double &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>infinity</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a550cfc4a0932b9183c1925d0c04184f2</anchor>
-      <arglist>(double &amp;value)</arglist>
-    </member>
-    <member kind="function">
-      <type>compare_result_type</type>
-      <name>compare_real</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3222cc10581fd05623b6b60a5cde7310</anchor>
-      <arglist>(double x1_, double x2_, double abs_eps_=0.0, double rel_eps_=0.0)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>name_validation</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7753e63016a0a2b1768aa09f2a55c435</anchor>
-      <arglist>(const std::string &amp;name_, uint32_t flags_=NV_DEFAULT)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_quoted</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad94950ef136655146cde829ad6bdf161</anchor>
-      <arglist>(const std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>add_quotes</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac101c65ee5dc11d82dad3be4515c1892</anchor>
-      <arglist>(const std::string &amp;from_, std::string &amp;to_, char q_=&apos;&quot;&apos;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>add_quotes</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a0e9928488ef80212088acff5de9bb5c7</anchor>
-      <arglist>(std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>remove_quotes</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad74ec69d865d10626a0819ede57b55de</anchor>
-      <arglist>(const std::string &amp;from_, std::string &amp;to_, char q_=&apos;&quot;&apos;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>remove_quotes</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ad964e10c943aec6bd0ecb3048cb134bb</anchor>
-      <arglist>(std::string &amp;text_, char q_=&apos;&quot;&apos;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>remove_all_quotes</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9e9d9b46e1485c2110dd20933f4f34da</anchor>
-      <arglist>(std::string &amp;text_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>resolve_library_info_path_keys</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a129f4bd21e110f572e2689afbbf80c25</anchor>
-      <arglist>(const std::string &amp;library_topic_, std::string &amp;install_path_key_, std::string &amp;environ_path_key_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>fetch_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a02d23d3a5f3473d804c01442c26b9821</anchor>
-      <arglist>(const std::string &amp;path_str)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a85ba2df1866039120695ce1d7aeec1dc</anchor>
-      <arglist>(std::string &amp;word, std::string &amp;errmsg_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_with_env</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7a0118cfe0a1d68a9f2c0eb0fe37d0c8</anchor>
-      <arglist>(std::string &amp;word)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_with_env</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aae8fa9dddaff1b7b546fc890e8b6ea12</anchor>
-      <arglist>(std::string &amp;word, std::string &amp;errmsg_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_without_env</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>af76a31243454dd44f4f9412432c250d1</anchor>
-      <arglist>(std::string &amp;word)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_with_env_p</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aad4389bca713d2d46d673461bb90fe46</anchor>
-      <arglist>(std::string &amp;word, const std::string &amp;parent_path_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_with_env_g</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7b115f6c0db6d124d5f33101bea6c2eb</anchor>
-      <arglist>(std::string &amp;word)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>fetch_path_with_env_pg</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a71cd89cdc27fe99c2f1599b1dee0c218</anchor>
-      <arglist>(std::string &amp;word, const std::string &amp;parent_path_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>has_global_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ae06dc1fcdce59cbf1d1eed9d1cbe7e15</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_global_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a85d8803134e29319c8d0c3574de08953</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_global_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>acb949c0c9eadcd1f71b5c79692a94886</anchor>
-      <arglist>(const std::string &amp;gpath_)</arglist>
-    </member>
-    <member kind="function">
-      <type>const std::string &amp;</type>
-      <name>get_global_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a29de77f32d0147e13ad9c0753389f5ca</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>expand_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a63dc7eff0069f1040e733325cdd82748</anchor>
-      <arglist>(const std::string &amp;path_str)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>split_string</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>abed0dd2085d84f807983c8133d758106</anchor>
-      <arglist>(const std::string &amp;word, const std::string &amp;separators, std::list&lt; std::string &gt; &amp;words)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_bit</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a0a5f06ab207b63134bc1f30cc52b3fda</anchor>
-      <arglist>(Integral &amp;number, int pos)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>unset_bit</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a826a99f6bf603889eddf89a3c0e09942</anchor>
-      <arglist>(Integral &amp;number, int pos)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>toggle_bit</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a005bc2cedd4cfd01cddaca19594708de</anchor>
-      <arglist>(Integral &amp;number, int pos)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>check_bit</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a6448bb5d0e67e69c26edfa9941100f77</anchor>
-      <arglist>(Integral &amp;number, int pos)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>validate_version</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ab89d4c55ac993aba1211a5ea00f4be21</anchor>
-      <arglist>(const std::string &amp;label, const version_id &amp;vid, const std::string &amp;version_rules)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_help</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a2ea2df7f2013b4675b3284a857eeb649</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_splash</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a6cd449424b1740169db91c1f763eb958</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_locale_category</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5acdeb1f4886073337164810987751015a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_logging</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a6e2b25f82286418bb6f1648e5429c91e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_inhibit_libquery</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a62c50f6339eb189b07c801ee6ce5546a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_libquery_logging</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ab575040d8d2bf95ae4dd07007a88f5df</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_inhibit_libinfo</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a4df085871a908c0c64044baa3b20bea1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_libinfo_logging</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5acaea386030f2a218fd5a5a8f8c118c82</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_resource_path</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a3d7f6b3fec71d3e0dfaa85c69bc33d7a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_inhibit_variant</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a836f4bcf58698f057d36dbddfa01fb0f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_variant</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a7d3ffa8474fc801edeb2755abaabf1d6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_inhibit_qt_gui</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ae6ff1e2d97694a6069da99338f085499</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_no_inhibit_urnquery</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a8fde7a46b60279386e6d277ecdb384e8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_reserved_11</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a689d88ed19b8902cf33932bf34d93444</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_reserved_12</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a14ee5516eaa3590bb82315f6043e000b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_reserved_13</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5ad092123c1acd9cfe4b998b6235e35e12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_reserved_14</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5af923d395fe9d100def8fc672f6026782</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>init_kernel_inhibit</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>aa259fb71188a29a6a84ac3e5d7ec83d5a0e230da19a20901e412a164a9afe9485</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>range_bound_undefined</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac2c8e4b40a050e709cfe451795cceb12a03498c37115d56c87751062947c625e3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>range_bound_unbounded</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac2c8e4b40a050e709cfe451795cceb12abea4bedffb1b733b9a04c23696a21e72</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>range_bound_included</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac2c8e4b40a050e709cfe451795cceb12a27ead5fd84e246efe9625fe1ef86f0af</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>range_bound_excluded</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>ac2c8e4b40a050e709cfe451795cceb12a53c8f98a681220165d094fb8c1afaffc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DEPENDENCY_UNKNOWN</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aea1a5f962145e15484344aca842b2543c6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DEPENDENCY_NONE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeacc6855c3e0b524b035bafbd01f5a309f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DEPENDENCY_OPTIONAL</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeaebad92245f37e2248e0c8700cb427922</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DEPENDENCY_WEAK</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeae13261305b7a5207a6a3f13fe9fbd1dd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DEPENDENCY_STRICT</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a8503d068e0f04c9ef8c2d58f5bb587aeafbcce386ce0c0b8c63fc5a9750914de8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_NONE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0acbeb867f261d88beb77946dbdeb10756</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_BOOLEAN</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0ac4136dafe4f0b03e84e4b5cf86d2f075</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_INTEGER</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0ac01908e5213d0b5bd84d0569ed0174fa</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_REAL</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0a98ce11c6ebcdd6c3423854eec0ead9d3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_STRING</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0a93124a219c167d58ee16fec937eae217</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>TYPE_ANY</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a046265eca9fe97f3ab22102f286db0c0aab2b7da89793afaf4c08aa75de6fef41</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DATA_NONE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfa93aea9b48af0e2d1e2aee4d650c103e7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DATA_SCALAR</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfa9807f6f0b797a5d82fef0952f6701b4a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DATA_ARRAY</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfab3e203c9559c686b211cef60c7360a00</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DATA_ANY</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a3ffba4d8364f0bafe072c594fe9fd8dfadbda82a3f7e4f3803af6560e5fc030af</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SUCCESS</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9ae0ea3e3427841fd398269db260d61160</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ERROR</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9a89c987e1dc587f4584a1f9fceb2d5fab</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>FAILURE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a1758fcf1ab39e2b7230d8482d8e28ff9a2600e82b8e4c4b08abebbf7c912a7c6f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_UNDEFINED</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7291f91b21e9a80377c09180b005c229a10f3b45e9b8ed57492f8c1619dd7d69d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_LESS</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7291f91b21e9a80377c09180b005c229ae915ffb5a6e1afe1d6927ff7849b68b9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_EQUAL</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7291f91b21e9a80377c09180b005c229a086a0fa57152234b0781580dbf51aefc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_GREATER</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a7291f91b21e9a80377c09180b005c229ac8ed404312ec08398a652f78e1c48e4d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_NO_COLON</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea01f19f7337142e254389e60690653723</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_NO_DOT</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eafc24b652871f1d91677b7565f48b5bb6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_NO_HYPHEN</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eac1b1c414692533f70b5b6f2a92670842</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_NO_UNDERSCORE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea5ceae3d35e7fd1b1614f26665788167b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_LEADING_DIGIT</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea35dff577f72fa51add97cbcd7d4ad08a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_DEFAULT</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22eaa9cc8660db5b813781b16f05d224e711</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_INSTANCE</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea44a306bf4cd746c7e76cb2f55ca24b61</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>NV_MODEL</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a9fd611aa45f5c925ebd3a8e1abf7f22ea7dae0416de8e52e38489172e15ea8d43</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>keys_col_type</type>
-      <name>ks</name>
-      <anchorfile>namespacedatatools.html</anchorfile>
-      <anchor>a955fd338f07278a86be41142e1bc6c97</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="namespace">
     <name>falaise</name>
     <filename>namespacefalaise.html</filename>
     <namespace>falaise::app</namespace>
     <namespace>falaise::common</namespace>
+    <namespace>falaise::config</namespace>
     <namespace>falaise::detail</namespace>
-    <namespace>falaise::properties</namespace>
+    <namespace>falaise::processing</namespace>
     <namespace>falaise::tags</namespace>
     <class kind="class">falaise::ResourceInitializationException</class>
     <class kind="class">falaise::UnknownResourceException</class>
@@ -15587,120 +12703,216 @@
     </member>
   </compound>
   <compound kind="namespace">
-    <name>falaise::detail</name>
-    <filename>namespacefalaise_1_1detail.html</filename>
-    <class kind="class">falaise::detail::falaise_sys</class>
-  </compound>
-  <compound kind="namespace">
-    <name>falaise::properties</name>
-    <filename>namespacefalaise_1_1properties.html</filename>
-    <namespace>falaise::properties::type_check_visitor</namespace>
+    <name>falaise::config</name>
+    <filename>namespacefalaise_1_1config.html</filename>
+    <namespace>falaise::config::type_check_visitor</namespace>
+    <class kind="class">falaise::config::absorbed_dose_t</class>
+    <class kind="class">falaise::config::acceleration_t</class>
+    <class kind="class">falaise::config::activity_t</class>
+    <class kind="class">falaise::config::amount_t</class>
+    <class kind="class">falaise::config::angle_t</class>
+    <class kind="class">falaise::config::angular_frequency_t</class>
+    <class kind="class">falaise::config::capacitance_t</class>
+    <class kind="class">falaise::config::conductance_t</class>
+    <class kind="class">falaise::config::conductivity_t</class>
+    <class kind="class">falaise::config::cross_section_t</class>
+    <class kind="class">falaise::config::data_storage_t</class>
+    <class kind="class">falaise::config::data_transfer_rate_t</class>
+    <class kind="class">falaise::config::density_t</class>
+    <class kind="class">falaise::config::electric_charge_t</class>
+    <class kind="class">falaise::config::electric_current_t</class>
+    <class kind="class">falaise::config::electric_displacement_field_t</class>
+    <class kind="class">falaise::config::electric_field_t</class>
+    <class kind="class">falaise::config::electric_flux_t</class>
+    <class kind="class">falaise::config::electric_potential_t</class>
+    <class kind="class">falaise::config::electric_resistance_t</class>
+    <class kind="class">falaise::config::electric_signal_integral_t</class>
+    <class kind="class">falaise::config::energy_t</class>
+    <class kind="class">falaise::config::equivalent_dose_t</class>
+    <class kind="class">falaise::config::existing_key_error</class>
+    <class kind="class">falaise::config::force_t</class>
+    <class kind="class">falaise::config::fraction_t</class>
+    <class kind="class">falaise::config::frequency_t</class>
+    <class kind="class">falaise::config::illuminance_t</class>
+    <class kind="class">falaise::config::inductance_t</class>
+    <class kind="class">falaise::config::invalid_path_error</class>
+    <class kind="class">falaise::config::length_t</class>
+    <class kind="class">falaise::config::level_t</class>
+    <class kind="class">falaise::config::luminance_t</class>
+    <class kind="class">falaise::config::luminous_energy_density_t</class>
+    <class kind="class">falaise::config::luminous_energy_t</class>
+    <class kind="class">falaise::config::luminous_exposure_t</class>
+    <class kind="class">falaise::config::luminous_flux_t</class>
+    <class kind="class">falaise::config::luminous_intensity_t</class>
+    <class kind="class">falaise::config::magnetic_field_strength_t</class>
+    <class kind="class">falaise::config::magnetic_flux_density_t</class>
+    <class kind="class">falaise::config::magnetic_flux_t</class>
+    <class kind="class">falaise::config::mass_activity_t</class>
+    <class kind="class">falaise::config::mass_t</class>
+    <class kind="class">falaise::config::missing_key_error</class>
+    <class kind="class">falaise::config::path</class>
+    <class kind="class">falaise::config::permeability_t</class>
+    <class kind="class">falaise::config::permittivity_t</class>
+    <class kind="class">falaise::config::power_t</class>
+    <class kind="class">falaise::config::pressure_t</class>
+    <class kind="class">falaise::config::procedure_defined_t</class>
+    <class kind="class">falaise::config::property_set</class>
+    <class kind="class">falaise::config::quantity</class>
+    <class kind="class">falaise::config::quantity_t</class>
+    <class kind="class">falaise::config::resistivity_t</class>
+    <class kind="class">falaise::config::solid_angle_t</class>
+    <class kind="class">falaise::config::surface_activity_t</class>
+    <class kind="class">falaise::config::surface_density_t</class>
+    <class kind="class">falaise::config::surface_t</class>
+    <class kind="class">falaise::config::surface_tension_t</class>
+    <class kind="class">falaise::config::temperature_t</class>
+    <class kind="class">falaise::config::time_t</class>
+    <class kind="class">falaise::config::unknown_unit_error</class>
+    <class kind="class">falaise::config::velocity_t</class>
+    <class kind="class">falaise::config::volume_activity_t</class>
+    <class kind="class">falaise::config::volume_t</class>
+    <class kind="class">falaise::config::wave_number_t</class>
+    <class kind="class">falaise::config::wrong_dimension_error</class>
+    <class kind="class">falaise::config::wrong_type_error</class>
     <member kind="typedef">
       <type>std::logic_error</type>
       <name>WrongType</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a2de23be915926881be1d40ba67e3aa23</anchor>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a63f1962f2aabe1fd25a5f4b8ab0f9141</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>std::logic_error</type>
       <name>MissingKey</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a87c5eaa65a2df4d466736ce2dd4844fe</anchor>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>aa729b08e48c94b5cdf0cd57299b35ffd</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>boost::mpl::vector&lt; int, double, bool, std::string, std::vector&lt; int &gt;, std::vector&lt; double &gt;, std::vector&lt; bool &gt;, std::vector&lt; std::string &gt; &gt;</type>
       <name>AllowedTypes</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a2f5f4829d75d705ef94d2a2454d8e527</anchor>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a5e95d5089ad6a71cb6f5d9661e845a34</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>std::ostream &amp;</type>
+      <name>operator&lt;&lt;</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>ab8e78d3d0a890170cb4993039e0d60fb</anchor>
+      <arglist>(std::ostream &amp;os, path const &amp;p)</arglist>
     </member>
     <member kind="function">
       <type>T</type>
       <name>getRequiredValue</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>a20cc10d33aba1ef0a363daaff7e000f2</anchor>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a2fe877d281ff6e0ce658a8220a98551c</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
     </member>
     <member kind="function">
       <type>T</type>
       <name>getValueOrDefault</name>
-      <anchorfile>namespacefalaise_1_1properties.html</anchorfile>
-      <anchor>af50a05d9efda4499846f340059011e7c</anchor>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a0103857b63ef56c86aef6defdb0dc12c</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, T defaultValue)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
+      <name>make_property_set</name>
+      <anchorfile>namespacefalaise_1_1config.html</anchorfile>
+      <anchor>a6ca098a565baac93f1361fc03fca663d</anchor>
+      <arglist>(const std::string &amp;filename, property_set &amp;ps)</arglist>
     </member>
   </compound>
   <compound kind="namespace">
-    <name>falaise::properties::type_check_visitor</name>
-    <filename>namespacefalaise_1_1properties_1_1type__check__visitor.html</filename>
-    <namespace>falaise::properties::type_check_visitor::detail</namespace>
+    <name>falaise::config::type_check_visitor</name>
+    <filename>namespacefalaise_1_1config_1_1type__check__visitor.html</filename>
+    <namespace>falaise::config::type_check_visitor::detail</namespace>
     <member kind="function">
       <type>bool</type>
       <name>visit</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor.html</anchorfile>
-      <anchor>a9fbdd737860e43007489e87d707ee0d9</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor.html</anchorfile>
+      <anchor>a0cc771e4e8b1242cdb765a92199e342c</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key)</arglist>
     </member>
   </compound>
   <compound kind="namespace">
-    <name>falaise::properties::type_check_visitor::detail</name>
-    <filename>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</filename>
+    <name>falaise::config::type_check_visitor::detail</name>
+    <filename>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</filename>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a2ecd417ead8b54eb6e45446a21683433</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>afc0e8191a1ff1be360873b291c92464b</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, int)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a2b2865faacd6609e1b3a924ebc0de830</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a390c9d2e8a5685c6670d972df3bf8777</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, double)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>aa71920cd3dd1ec162984ea3fb58bec75</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a409fd15647f07c0271340dcff034fca7</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, bool)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a5e2234f2ce3403a31edee45b436e7c4c</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a293fecfa47865fe6a402ec538bf10c83</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::string)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a44f9f7529a1dd1cdbcaefd348e7a1f2b</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a14eac89b4c82999aa451ce92907bf7c9</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; int &gt;)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a9221c78a560f10b4efb03c8fc8b86511</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a820a9fd953187b4304519132aea58f59</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; double &gt;)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>ab1332721eb76fb5f36f912c0872306af</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a2a07922d76688b89ec5ee36523fa408a</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; bool &gt;)</arglist>
     </member>
     <member kind="function">
       <type>bool</type>
       <name>visit_impl</name>
-      <anchorfile>namespacefalaise_1_1properties_1_1type__check__visitor_1_1detail.html</anchorfile>
-      <anchor>a52958a1e0764bb108cc2f21ea7359e52</anchor>
+      <anchorfile>namespacefalaise_1_1config_1_1type__check__visitor_1_1detail.html</anchorfile>
+      <anchor>a3ca55feb8c390e7b8cca4e406990550d</anchor>
       <arglist>(const datatools::properties &amp;p, const std::string &amp;key, std::vector&lt; std::string &gt;)</arglist>
+    </member>
+  </compound>
+  <compound kind="namespace">
+    <name>falaise::detail</name>
+    <filename>namespacefalaise_1_1detail.html</filename>
+    <class kind="class">falaise::detail::falaise_sys</class>
+  </compound>
+  <compound kind="namespace">
+    <name>falaise::processing</name>
+    <filename>namespacefalaise_1_1processing.html</filename>
+    <class kind="class">falaise::processing::configuration_error</class>
+    <class kind="class">falaise::processing::module</class>
+    <class kind="class">falaise::processing::reserved_key_error</class>
+    <member kind="typedef">
+      <type>dpp::base_module::process_status</type>
+      <name>status</name>
+      <anchorfile>namespacefalaise_1_1processing.html</anchorfile>
+      <anchor>ae017f352999f7a267a0d3094b8573774</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="namespace">
@@ -15822,1476 +13034,6 @@
   <compound kind="namespace">
     <name>geomtools</name>
     <filename>namespacegeomtools.html</filename>
-    <member kind="typedef">
-      <type>CLHEP::Hep2Vector</type>
-      <name>vector_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a228ed39da627c5d477b64ba5ad681bda</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>CLHEP::Hep3Vector</type>
-      <name>vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>afae2ac02e16b8d2777012e48b9633476</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>CLHEP::HepRotation</type>
-      <name>rotation_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3babbb84872008163338e5e6942cbfd5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>rotation_3d</type>
-      <name>rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1cf4a8940f39b361c771e8782ba07222</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, i_model *&gt;</type>
-      <name>models_col_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a40bfa172ebccdc69d0f619016f38eb76</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>i_model *(*</type>
-      <name>model_creator_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a50b2e9fb3a30e4f1901e2152257573ad</anchor>
-      <arglist>)(const std::string &amp;name_, const datatools::properties &amp;configuration_, models_col_type *models_)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, model_creator_type &gt;</type>
-      <name>model_creator_dict_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a403b00ed994583c3c79e1e1a649fb255</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>elliptical_cylinder</type>
-      <name>elliptical_tube</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a148a12644a523755fec73b7d4ca2dd9f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; face_info &gt;</type>
-      <name>face_info_collection_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad80108297ad3f5027d8d8281f0d0f1b1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; geom_id, geom_info &gt;</type>
-      <name>geom_info_dict_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad019ade951719dfef8eeced2b4d06a4a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>datatools::handle&lt; i_shape_2d &gt;</type>
-      <name>shape_2d_handle_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab26c4d5caa5d6b1f12100cba869c0f6b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>shape_2d_handle_type</type>
-      <name>face_handle_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7ea86416208884213a3e0adf28558267</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>line_3d</type>
-      <name>segment_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a895be82586cc9ffdbe8a48b4a2089044</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>model_with_internal_items_tools</type>
-      <name>MWIM</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7ce15a74658b58f701784c760c60db64</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>right_circular_conical_frustrum</type>
-      <name>conical_frustrum</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a6baa64f60ee2c6a4864f0629017fe188</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>right_circular_conical_nappe</type>
-      <name>conical_nappe</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3baaeb3fdb8263822abae12aa38d5d76</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>right_polygonal_frustrum</type>
-      <name>polygonal_frustrum</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0637daefff9ddde6d4d783d79a8114cf</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::list&lt; vector_2d &gt;</type>
-      <name>basic_polyline_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aeb03950ea56af9931cfecebc11f08fe1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::pair&lt; vector_3d, vector_3d &gt;</type>
-      <name>basic_segment_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a29794f7baf5be5964611ad047c7066a3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>basic_segment_3d</type>
-      <name>segment_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aacc4dd9992a1ad7cdfb2ef6812585e95</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::list&lt; vector_3d &gt;</type>
-      <name>basic_polyline_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4ee4165c597f8727dba4173f4d09c88f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::list&lt; vector_3d &gt;</type>
-      <name>polyline_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ae89b8504f9d0973322a1a0f7491aec71</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::vector&lt; vector_3d &gt;</type>
-      <name>vertex_col_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa87419750f95916d5a153a083164a0ae</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::list&lt; polyline_type &gt;</type>
-      <name>wires_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a916ad2704cd06417398aa41208e4e499</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>side_2d_type</type>
-      <name>edge_2d_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a100ec43c2258925f60f57b721b247b12</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>rotation_wrapper_type</type>
-      <name>rotation_wrapper_t</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1730566323233fa49d94c349d8659f6b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>orientation_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67ed</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>direction_flags_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>direction_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>vertex_1d_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3dba99d2998f454232bac339482afdb7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>path_1d_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>side_2d_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>shape_domain_flags_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>euler_angles_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfa</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>special_rotation_angle_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>axis_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9eae6c1007732f09994b34b3c3389422</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>rotation_axis_type</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a32148578f1a0bb41700808c45923a3d5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_face_infos</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a73cb4131d91827bf97a19627e45370d0</anchor>
-      <arglist>(const face_info_collection_type &amp;, std::ostream &amp;out_, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type></type>
-      <name>GEOMTOOLS_MODEL_CLASS_DECLARE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0b072b64b2065cdef464cd9bd5dfafdc</anchor>
-      <arglist>(i_boxed_model)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>transform_wire_to</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac89712c06aefe314fb15f405c1b27335</anchor>
-      <arglist>(const placement &amp;p_, const polyline_type &amp;wire_, polyline_type &amp;tr_wire_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>transform_wires_to</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a20f77b928a5578a504648dbed1955542</anchor>
-      <arglist>(const placement &amp;p_, const wires_type &amp;wires_, wires_type &amp;tr_wires_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>parse_wires</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a6384cc3468dbdbd34a38e11d6b53b5e5</anchor>
-      <arglist>(std::istream &amp;in_, wires_type &amp;wires_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>save_wires</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a43b7717d2f48c0921d1bcc325514d1cc</anchor>
-      <arglist>(std::ostream &amp;out_, const wires_type &amp;wires_, uint32_t flags_=0)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>classify_in_out_segment</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7cabd485d6d955fb795d98c8fa528e63</anchor>
-      <arglist>(const segment_type &amp;segment_, const i_shape_3d &amp;shape_, const placement &amp;shape_placement_, double step_, double tolerance_, std::list&lt; classified_segment &gt; &amp;classified_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>export_gdml</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac0a1c8db07852f0bacb47569f33c2f2d</anchor>
-      <arglist>(const materials::manager &amp;, gdml_writer &amp;gw_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>export_gdml</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4fa06c8197e75985f42a61d3aa82fd44</anchor>
-      <arglist>(const materials::manager &amp;, std::ostream &amp;out_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::ostream &amp;</type>
-      <name>operator&lt;&lt;</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad91141268f117b814c11c0791c134fb6</anchor>
-      <arglist>(std::ostream &amp;out_, const placement &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_resource_dir</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7fe4fd1f974ab16593986d1e23957e79</anchor>
-      <arglist>(bool overriden_env=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_resource</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac7ff76e7ad8ba460691fb293dff8744d</anchor>
-      <arglist>(const std::string &amp;rname, bool overriden_env=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>position_is_in</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa6e23539799b3f946e7e1e67c922763c</anchor>
-      <arglist>(double position_, double start_position_, double delta_position_, double tolerance_=0.0, bool bounds_excluded_=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>angle_is_in</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9f5f537ba3898ca9a2168ab8d7e3cdaf</anchor>
-      <arglist>(double angle_, double start_angle_, double delta_angle_, double angular_tolerance_=0.0, bool bounds_excluded_=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aeaa4e5a55c729e7ded42b77bbb8085be</anchor>
-      <arglist>(std::ostream &amp;out_, const vector_2d &amp;p_, bool endl_=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>to_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>af3740aabc2a0222b261a72c8259d97c0</anchor>
-      <arglist>(const vector_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>vector_2d_to_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a62fc007cb6a2423ed2d3618899f5d54e</anchor>
-      <arglist>(const vector_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy_stdout</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a19df57c0d17447c47f5a0d55d0071385</anchor>
-      <arglist>(const vector_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy_stderr</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a68911a5a83605c95b46dcb56f218e80a</anchor>
-      <arglist>(const vector_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad383b4b4e788b0af6a0d99a5b0efe520</anchor>
-      <arglist>(std::ostream &amp;out_, const vector_3d &amp;p_, bool endl_=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a78ca685dfdc1412555b5de5dc89532ad</anchor>
-      <arglist>(std::ostream &amp;out_, const vector_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>to_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>abf5259d8cfdd1bc4179d287ef940cc5e</anchor>
-      <arglist>(const vector_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>vector_3d_to_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a5dc89ae5c84d223a6afa8f909c22bba6</anchor>
-      <arglist>(const vector_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz_stdout</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a33f10b39f09995e709ddec093159923a</anchor>
-      <arglist>(const vector_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz_stderr</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1051fe65fc3d7ee56861a10a5925f3f2</anchor>
-      <arglist>(const vector_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_vector_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0e88eea69502dd8b8a000be962cfebcc</anchor>
-      <arglist>(const std::vector&lt; double &gt; &amp;source_, vector_2d &amp;target_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>afa245f05fe274630d09140797a949c57</anchor>
-      <arglist>(const std::vector&lt; double &gt; &amp;source_, vector_3d &amp;target_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>parse</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a8370bddc065ab719b042fdd4c6d2591a</anchor>
-      <arglist>(std::istream &amp;in_, vector_3d &amp;position_, bool nothing_more_=false)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>parse</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa2a2cc2e89cf22107e7d9031e68a8bd6</anchor>
-      <arglist>(const std::string &amp;token_, vector_3d &amp;position_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab1662370d4f065376f3b5f4f492f9bea</anchor>
-      <arglist>(std::ostream &amp;out_, const basic_polyline_2d &amp;p_, bool endl_=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>to_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a555be582ab6db02e9ebff6cb6c618a52</anchor>
-      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>basic_polyline_2d_to_xy</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad6bd969a31a1028a73d47cdd512c62ff</anchor>
-      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy_stdout</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a734a81af7f1b1eaafec232529f742471</anchor>
-      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xy_stderr</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9b6da7f92d16b17061340208b1790b69</anchor>
-      <arglist>(const basic_polyline_2d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a582b15caec5d697df22dd747fb61fd19</anchor>
-      <arglist>(std::ostream &amp;out_, const basic_polyline_3d &amp;p_, bool endl_=true)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>to_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>af53c455764bb97a71f7538d11b0e78f1</anchor>
-      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>basic_polyline_3d_to_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3cdf97f3d033efc84125be78c9906b67</anchor>
-      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz_stdout</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac25023fb6d57d6f5c2fa3b3be3af87e3</anchor>
-      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>print_xyz_stderr</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a37b50571ba9e41c28d843949ee8a32ce</anchor>
-      <arglist>(const basic_polyline_3d &amp;p_)</arglist>
-    </member>
-    <member kind="function">
-      <type>direction_type</type>
-      <name>get_direction_from_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a02f905d331f9d541f54261a6f529bec0</anchor>
-      <arglist>(const std::string &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_direction_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab2e3c4746b3abca8aad8df2cf0c655d4</anchor>
-      <arglist>(direction_type)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>shape_domain_flag_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>afd9579acc95d6d0596046ce28b8cd78a</anchor>
-      <arglist>(shape_domain_flags_type flag_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a99771e606aa500ddd32db15651df21c6</anchor>
-      <arglist>(rotation_3d &amp;rot_, double angle0_, double angle1_, double angle2_, euler_angles_type et_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_zyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a58c75fc51d4e16c80832be6db6654cbd</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a97910786914c7d1d8de6bf3a59ec4a11</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_zxz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1b689e992381f348be8d0552d267b603</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double psi_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a08c7907a9f1a652916ec5cd3c797a38b</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double psi_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a86e7e91fe10501efdf5dc06c34db661d</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation_from_zyz_euler_angles</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a62ba80603226386745b062012448831e</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a5139d067760f10ae1c128639b22fd603</anchor>
-      <arglist>(rotation_3d &amp;rot_, double phi_, double theta_, double delta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_identity</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ae4bb8238d0a460164c8b4f219439da69</anchor>
-      <arglist>(const rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>extract_xyz_euler_angle_from_rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac8ceb37431ba58a0d2e7befa67d26d55</anchor>
-      <arglist>(const rotation_3d &amp;rot_, double &amp;a_, double &amp;b_, double &amp;c_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>extract_zyz_euler_angle_from_rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1eb0f6fe0200660d2d18e757b4b3c1ca</anchor>
-      <arglist>(const rotation_3d &amp;rot_, double &amp;a_, double &amp;b_, double &amp;c_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>check_special_rotation_angle</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0e08066b792d0e040626872d2dfab6d5</anchor>
-      <arglist>(int)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>get_special_rotation_angle</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a648040e81aa4843705f21e80587f3b1c</anchor>
-      <arglist>(int)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>get_special_rotation_angle_from_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a51d708390ef90902545de6cdd6a63ea9</anchor>
-      <arglist>(const std::string &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_special_rotation_angle_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ae73de85d9dfac0808c74069261b86efa</anchor>
-      <arglist>(int)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>check_rotation_axis</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a46779ff73f289e7cdf1d991ec2beedb3</anchor>
-      <arglist>(int)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>get_rotation_axis_from_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad6c5e7986356fd6c3e010e4019e95cba</anchor>
-      <arglist>(const std::string &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::string</type>
-      <name>get_rotation_label</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>af8e4cc82ec75519f8afef740db3cc217</anchor>
-      <arglist>(int)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation_from_axis</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3940e4d62ff5685e01f7c24225eec83e</anchor>
-      <arglist>(rotation_3d &amp;rot_, int axis_, double angle_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a865d11aaef7b0b9d2f25e80dbdece11f</anchor>
-      <arglist>(rotation_3d &amp;rot_, int axis_, double angle_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a8762a67e7ef66d655ed5cc3dd113e393</anchor>
-      <arglist>(rotation_3d &amp;rot_, int axis_, int special_angle_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_rotation_from</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1ad7102adbfd495a78bacf1b3455f226</anchor>
-      <arglist>(rotation_3d &amp;rot_, const std::string &amp;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac08a388080f2438ad1e7127dddd712c3</anchor>
-      <arglist>(rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>reset_rotation_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab3f73571346d184aa89ad461614f05f2</anchor>
-      <arglist>(rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tree_dump</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>afce86ffc4373124fa4a6fa04612ce465</anchor>
-      <arglist>(const rotation_3d &amp;rot_, std::ostream &amp;out_, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ae1a2dac253cde6904a292053b535d37a</anchor>
-      <arglist>(rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>rectify</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a459674ca5d9f234d1c3b29bed3228912</anchor>
-      <arglist>(rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate_rotation_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a09c7c317ba7d6237eb447be2e0348c51</anchor>
-      <arglist>(rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a8c791571c26d3bbc38b00cdf2996d01a</anchor>
-      <arglist>(const rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid_rotation_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9f641ac02626e4082a519586e1f6961d</anchor>
-      <arglist>(const rotation_3d &amp;rot_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4d03482f9361af699a205f740467928a</anchor>
-      <arglist>(vector_3d &amp;, double x_, double y_, double z_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_xyz</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>af70af32ea37c416a6d40da663954214c</anchor>
-      <arglist>(vector_3d &amp;, double x_, double y_, double z_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_polar</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9a0768c1b5646246a72c3bad3f63401d</anchor>
-      <arglist>(vector_3d &amp;, double r_, double theta_, double z_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>create_spherical</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4f7ca275e9a7c64cace29fa4343f6322</anchor>
-      <arglist>(vector_3d &amp;, double r_, double phi_, double theta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3f773eed1013bf29ec613e9ab4c8a62a</anchor>
-      <arglist>(vector_3d &amp;vec_, double x_, double y_, double z_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_r_theta_phi</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a8585d234a295e1ce178c8ff69c02141a</anchor>
-      <arglist>(vector_3d &amp;vec_, double r_, double theta_, double phi_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_rho_phi_z</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7754d1104214b900d348b9f0c328409a</anchor>
-      <arglist>(vector_3d &amp;vec_, double rho_, double phi_, double z_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>zero</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab1d584ff17eec2449c35623e3c786431</anchor>
-      <arglist>(vector_3d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a2e929bff078558f7afb7634699f96fb7</anchor>
-      <arglist>(vector_3d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate_vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ae7ad6de7de66d30fd83b282fd285efb9</anchor>
-      <arglist>(vector_3d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1015f1fdecce53899c84065f8920e763</anchor>
-      <arglist>(const vector_3d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid_vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a527ad710e1796541f654a8f1a5497a82</anchor>
-      <arglist>(const vector_3d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>are_near</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a44778c3e187a163b384084284dbceef5</anchor>
-      <arglist>(const vector_3d &amp;vec1_, const vector_3d &amp;vec2_, double tolerance_=constants::DEFAULT_TOLERANCE)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>are_near_vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa71dc86ae41d25eb8667245ee33184c0</anchor>
-      <arglist>(const vector_3d &amp;vec1_, const vector_3d &amp;vec2_, double tolerance_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3a191543a28d3816d1f48b8771a8ed2</anchor>
-      <arglist>(vector_2d &amp;vec_, double x_, double y_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>set_r_phi</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0427d1ed082ce533af700cecb3c7f80b</anchor>
-      <arglist>(vector_2d &amp;vec_, double r_, double phi_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>zero</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4a267aab6890cc67af897ffb16d7a111</anchor>
-      <arglist>(vector_2d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a01b56f13a090155e9263e5d23fe9ae51</anchor>
-      <arglist>(vector_2d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>invalidate_vector_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a49695fb5cf8f66a9ec99c09da70d1a44</anchor>
-      <arglist>(vector_2d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aca55eb2c25425aeabceae259036a84ce</anchor>
-      <arglist>(const vector_2d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_valid_vector_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a1bd5d8b2f5353a7e70f697cc5430aefd</anchor>
-      <arglist>(const vector_2d &amp;vec_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>vector_2d_to_vector_3d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a7a42b6c1154717f77ad9a6decf9eaa80</anchor>
-      <arglist>(const vector_2d &amp;v2d_, vector_3d &amp;v3d_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>vector_3d_to_vector_2d</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a52015f1e2d285261306a16f602ee6ab0</anchor>
-      <arglist>(const vector_3d &amp;v3d_, vector_2d &amp;v2d_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>make_phi_theta</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac6c87cd825e381b95bc3491f835d97dd</anchor>
-      <arglist>(vector_3d &amp;vec_, double phi_, double theta_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>randomize_direction</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a0ec60cd1af9f10ac1575a1f50ec87f49</anchor>
-      <arglist>(ran_func &amp;ran_, vector_3d &amp;ran_dir_)</arglist>
-    </member>
-    <member kind="function">
-      <type>vector_3d</type>
-      <name>randomize_direction</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab758302364afa83c77bb8086de0fae9c</anchor>
-      <arglist>(ran_func &amp;ran_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>randomize_orthogonal_direction</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>acc8d7203e3a3206e734d57f11b0eaca4</anchor>
-      <arglist>(ran_func &amp;ran_, const vector_3d &amp;dir_, vector_3d &amp;ran_dir_)</arglist>
-    </member>
-    <member kind="function">
-      <type>vector_3d</type>
-      <name>randomize_orthogonal_direction</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a17e864a7541d2e3c63200a5136dac079</anchor>
-      <arglist>(ran_func &amp;ran_, const vector_3d &amp;ref_dir_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>compute_barycenter</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a4e132c983fa1cf8fa31703eccbbc1e15</anchor>
-      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, vector_3d &amp;barycenter_)</arglist>
-    </member>
-    <member kind="function">
-      <type>vector_3d</type>
-      <name>compute_barycenter</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac3ebb45d42ba65301c5aee5b34829333</anchor>
-      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>compute_weighted_barycenter</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a65ba27ec78727085a413d78a63f20eb5</anchor>
-      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, const std::vector&lt; double &gt; &amp;weights_, vector_3d &amp;weighted_barycenter_)</arglist>
-    </member>
-    <member kind="function">
-      <type>vector_3d</type>
-      <name>compute_weighted_barycenter</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad8eb0bc4ce03c362cfbc814d80b6c36d</anchor>
-      <arglist>(const std::vector&lt; vector_3d &gt; &amp;points_, const std::vector&lt; double &gt; &amp;weights_)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ORIENTATION_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67eda15d118d31b7d4a62a38adb050c42a260</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ORIENTATION_VERTICAL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67eda93a75e57f4cdb90bba797a36de5099db</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>VERTICAL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67eda2240251b5811a7021726e3f30e2dc003</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ORIENTATION_HORIZONTAL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67eda21cfefe6766ebd27d99def17a387cb05</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>HORIZONTAL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a641fd0c8193f2cd67aa191a5933a67edad2e9f1463650ebfaafc52f242ce0775d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081aa93c81311b165af12b1babf9855276ba</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_BACK</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a661b5b0dad6b1caba01318e30e9c009a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_FRONT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a5c6d0f6bf4132b5d406421ff2e33f7ec</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_LEFT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a33e1f7a9a8019d6c58f3c780905d854e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_RIGHT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a5830981d8fba645d1caa8964846a6304</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_BOTTOM</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a6acd77a902ea04a93f8ac4465cb42326</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FLAGS_TOP</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ad3371ea0c573237dc8bae0beab964081a6493a9a8c546b20f9dd8292a7454e436</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aaf89c08bc0fd7a0706be43e33b139fc64</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_BACK</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa8cc16254d6d7881998bd9180b9baf50a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_XMINUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa4a8f965a6cf8a6ec3e20b3cb76d30130</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_FRONT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa90da77eb2e99b9ad1694595558942286</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_XPLUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa6eb688ea4aaab989d13bedb0b50c3286</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_LEFT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aabb2d3ba65679a9349d5f582e4a78e7fe</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_YMINUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa1f49400cff074d02f8b57b9773390948</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_RIGHT</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa27fabe3ac79b6485dbc2012a6d556f28</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_YPLUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aa4efe89db80aa69c454cd859908ac0b98</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_BOTTOM</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aae71b5daf1c73647a25a0038033b0c474</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_ZMINUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aab5c9d563ec0acf94b6c4d674804d9d34</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_TOP</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aaf99ba89e39b624c8b35faa2e59366a37</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>DIRECTION_ZPLUS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab42fc1399c233f441b62e60cb2f3fc0aad7ad4597df3f831c0b24015a73e81fca</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>VERTEX_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3dba99d2998f454232bac339482afdb7a84875b2b76d1f1eb7c6983b6fbec7905</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>VERTEX_ALL_BITS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3dba99d2998f454232bac339482afdb7a3d3cc7937a77b9ecf99b2d636e1a6b87</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>VERTEX_ALL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a3dba99d2998f454232bac339482afdb7afb0f2d5b63af252436c146385cb3284e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PATH_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9a16da5db83fd560f1e605d746d823a26b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PATH_ALL_BITS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9ad6f9dbb6d96592b30902f46dbbd54ce2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PATH_ALL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aca1d4f13977b9c6a35fe1b99fef88ef9a07bef2f8fd941ee89582babb6d761064</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SIDE_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa1487e116d97aea2d6c35e28a8a954533</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EDGE_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fab41fa1a44fe1e16ab80f64bfb147ea77</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SIDE_ALL_BITS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa571f4384ae8e9ed72362c8d6f8ed2195</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EDGE_ALL_BITS</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fad28cfca1c58e8744c77676ed8acf7827</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SIDE_ALL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa8787d1d1d52281a41cb4660731bf29d5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EDGE_ALL</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ac00f18cb79ba2285b31ac2f9ccc0355fa487c741c797ad367c1aa76994c8c33cd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_NONE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1a0be1022c0469cd92066d2710cba60420</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_INSIDE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1a0cb0099a3e9f240acd3b9eb413ea6c98</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_OUTSIDE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1a436ebe30b24a2117d1096fdffb93533e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_ON_SURFACE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1afe706838eddd16612a6a0b7ac6ef5a39</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_INSIDE_DAUGHTER</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1ad0c63eea3c81fba09ecb0f7b6eae8da3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>SHAPE_DOMAIN_ON_DAUGHTER_SURFACE</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aa7331b235071b143372c83619cd659b1aff164a2d1c69058bb3b7966958782aa3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaafaa07aa4981cd431ecf3adef628f2736</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_ZXZ</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa57aeeb5e80dfed418655d9b4cb9a7d24</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_XYX</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa19123f7905abd6f8985885d318e84d51</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_YZY</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa89251b9b215089a17b66e297a35871e4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_ZYZ</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa173d8f7c184a87c9d3bfb2c6b783b7cb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_XZX</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaad961110e11f3323080aa2d3ed26ff41c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_YXY</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaaca01117b3314fc67f62e477cd7b2f031</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_XYZ</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa443af81ac8e32b1a0eaed3b1ac113b4a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_YZX</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa36971b8c939c61e5ad9470bf501607bd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_ZXY</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa9e1d2c9ed030da384828b5f2e7135ae1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_XZY</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa23ec996995dacc015d8fbe644f3c15cb</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_ZYX</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaa3baab0b8906dac31c27d244bf6174750</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>EULER_ANGLES_YXZ</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>aae5d85445fbe5363b5799218c2e98dfaafd43335eda6c50f215015a1bdfc12c15</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_ANGLE_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743a1246ee8b7515c5dbec38d92b3f30a79a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_ANGLE_0</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743a73602ab0973f4b195a76ab30250e8374</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_ANGLE_90</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743ae7ab3e56c9119d2a840802dddfe99bcd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_ANGLE_180</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743a076afa51b1d40520a647ac25bda24107</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_ANGLE_270</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>ab689792afe1676d4f8a2ea3a19f40743a5a94bdb3d9191753e0219bb25d09fb2c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>AXIS_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9eae6c1007732f09994b34b3c3389422af258e7fccca7d1b3823409460ba42530</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>AXIS_X</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9eae6c1007732f09994b34b3c3389422ac60af53755b558806387afa4d92360a6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>AXIS_Y</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9eae6c1007732f09994b34b3c3389422a022ccde8f8de7d3c1c80d100921e5d0e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>AXIS_Z</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a9eae6c1007732f09994b34b3c3389422a92b9396d07043470a124c1a4907eba1a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_AXIS_INVALID</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a32148578f1a0bb41700808c45923a3d5aa08469e3a5843680a1a789893fa5a767</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_AXIS_X</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a32148578f1a0bb41700808c45923a3d5af58c69849794450055ec3def6b9440a1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_AXIS_Y</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a32148578f1a0bb41700808c45923a3d5a35d73767c4b62e79d618238b1785c8f2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>ROTATION_AXIS_Z</name>
-      <anchorfile>namespacegeomtools.html</anchorfile>
-      <anchor>a32148578f1a0bb41700808c45923a3d5aecb2386ace8ec14db0be7ee22e351332</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="namespace">
     <name>mctools</name>
@@ -17300,541 +13042,52 @@
   <compound kind="namespace">
     <name>mygsl</name>
     <filename>namespacemygsl.html</filename>
-    <member kind="typedef">
-      <type>histogram</type>
-      <name>histogram_1d</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>af6a52b4cb8422f7e5eb940199d05e025</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>double(*</type>
-      <name>plain_function_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ac33ef745c175611ac492c5814c0c3522</anchor>
-      <arglist>)(double)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>double(*</type>
-      <name>plain_function_with_parameters_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a9b504af9e167c73f1bd49fea7b4ad2f5</anchor>
-      <arglist>)(double, void *)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, plain_function_entry &gt;</type>
-      <name>plain_function_dict_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a8c58a8a03344b06d107aac33aaa75ac6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>polynomial</type>
-      <name>polynomial_function</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a95ef2f3c87fe297b07d07465e919f28d</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>seed_manager</type>
-      <name>prng_seed_manager</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a16273de26d05fe1c9f0f62e5aa95cfee</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>datatools::handle&lt; i_unary_function &gt;</type>
-      <name>unary_function_handle_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a8758c0ac59e8f1bb82d2ce997baec845</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>datatools::handle&lt; const i_unary_function &gt;</type>
-      <name>const_unary_function_handle_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a4df79c15ba45daf7bd1fd8e914a77d29</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>std::map&lt; std::string, unary_function_handle_type &gt;</type>
-      <name>unary_function_dict_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a87bc6ff22f42ebb80cc4239f0acc6d77</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>compare_score_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>bin_mode_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>bin_axis_type</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a53a8259e8f36522beb7a90462b3b29a8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="enumeration">
-      <type></type>
-      <name>plain_function_flag</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a34dcb7b00002c9532a3eb2a970a102be</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>std::ostream &amp;</type>
-      <name>operator&lt;&lt;</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a79f77f6f040aed7fe0ab3969b9cd52cb</anchor>
-      <arglist>(std::ostream &amp;out_, const best_value &amp;bv_)</arglist>
-    </member>
-    <member kind="function">
-      <type>compare_score_type</type>
-      <name>compare_relative</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ae64f8a7f5404a3f57c1c0d062a27c666</anchor>
-      <arglist>(double x_, double y_, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>compare_score_type</type>
-      <name>compare_absolute</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a7de4e71b8d94392190e1dac1aebc6125</anchor>
-      <arglist>(double x_, double y_, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>approximately_equal</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a9282833da03da5224c44a5ef835c268b</anchor>
-      <arglist>(double x_, double y_, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>essentially_equal</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a66d420b016cb30a4cfe23a62485b10c1</anchor>
-      <arglist>(double x_, double b, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>definitely_greater_than</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ab19e870399dd0f19d20ac1ce4570bc68</anchor>
-      <arglist>(double x_, double y_, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>definitely_less_than</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>af15e63887c6d933e06abf4c8f6ab5af6</anchor>
-      <arglist>(double x_, double b, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>nearly_equal</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a9519e4ff9e87d58906006b5503391d52</anchor>
-      <arglist>(double x_, double y_, double epsilon_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::ostream &amp;</type>
-      <name>ostream_odouble</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a5a91031423ff41d56276ffea4b1ef195</anchor>
-      <arglist>(std::ostream &amp;os_, const double &amp;x_)</arglist>
-    </member>
-    <member kind="function">
-      <type>OstreamManipulator&lt; double &gt;</type>
-      <name>odouble</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>abf10205855fc1e43afff384c5f5dca6c</anchor>
-      <arglist>(const double &amp;x_)</arglist>
-    </member>
-    <member kind="function">
-      <type>std::istream &amp;</type>
-      <name>istream_idouble</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a4a9578b87df047fa5c8853c8a244118d</anchor>
-      <arglist>(std::istream &amp;is_, double &amp;x_)</arglist>
-    </member>
-    <member kind="function">
-      <type>IstreamManipulatorRef&lt; double &gt;</type>
-      <name>idouble</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a8dddc05c58a9b07bb60c632e6e88a811</anchor>
-      <arglist>(double &amp;x_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>linear_system_2x2_solve</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a20ed74b894382e35397badd278721764</anchor>
-      <arglist>(double a1_, double b1_, double c1_, double a2_, double b2_, double c2_, double &amp;x_, double &amp;y_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>basic_plain_function_registration</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a2c4b6cbe50b8336b0a21d12c61c046cd</anchor>
-      <arglist>(plain_function_dict_type &amp;dict_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>register_plain_function_simple</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a0b80cf840319b84ec4c8d5f8cb044831</anchor>
-      <arglist>(plain_function_dict_type &amp;dict_, const std::string &amp;name_, const plain_function_type &amp;func_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>register_plain_function_with_params</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>aa2a1d0085b996618b641b06f5a451ea2</anchor>
-      <arglist>(plain_function_dict_type &amp;dict_, const std::string &amp;name_, const plain_function_with_parameters_type &amp;func_with_params_)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tree_dump</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>aed219759d1f24e89dd13d2b305781dad</anchor>
-      <arglist>(const plain_function_dict_type &amp;dict_, std::ostream &amp;out_=std::clog, const std::string &amp;title_=&quot;&quot;, const std::string &amp;indent_=&quot;&quot;)</arglist>
-    </member>
-    <member kind="function">
-      <type>plain_function_dict_type &amp;</type>
-      <name>grab_plain_function_dict</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a3c5cf262dd07e25b52cb5a705cf0c54f</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>const plain_function_dict_type &amp;</type>
-      <name>get_plain_function_dict</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a9ec6607e95580e30c78398f10cbc3aa5</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>plain_function_is_known</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>abc30329e6f1145fb6f4faef0e05ea93e</anchor>
-      <arglist>(const std::string &amp;name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_plain_function_simple</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>af916367b3d01277b50295f3426fa5c19</anchor>
-      <arglist>(const std::string &amp;name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>bool</type>
-      <name>is_plain_function_with_params</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a46ef7ad760e73e86cea4bfb9b6f94f08</anchor>
-      <arglist>(const std::string &amp;name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>plain_function_type</type>
-      <name>get_simple_function</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a147af32f6610a799b297f6cb072d38b1</anchor>
-      <arglist>(const std::string &amp;name_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_central</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a58a48efc95ef0cd9cf46998bf68c871c</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_central</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ab63e5f3355b57932928017435d220942</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a4e0d3e5e10374e82ed5cddf763abf24f</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>aa78318e3a0233e730cc4dca980672b3e</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a44c84dd716a728cfcee6ca4c7559fbd3</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_, double &amp;abserr_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a27c67f861276e94f6c5ae688f34ed07f</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a825ed4f96d93c5af6f748623dd1b428d</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, const interval &amp;domain_, double &amp;abserr_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a9e4108809f5a733938b7ce52fb2cd060</anchor>
-      <arglist>(const i_unary_function &amp;eval_, double x_, const interval &amp;domain_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_central_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>aa8cdfe9d61bec68739a2cfae5d0bb698</anchor>
-      <arglist>(double f_1_, double f1_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_central_regular_sampled_4</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a7ee8e2a95db6fc26621baa3d3ccc1562</anchor>
-      <arglist>(double f_2_, double f_1_, double f1_, double f2_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_central_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a57260d56dcd8732a81fb2510d7dd104f</anchor>
-      <arglist>(double f_1_, double f0_, double f1_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_central_regular_sampled_4</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a5284dd107c71d64fb852da034c9db0a6</anchor>
-      <arglist>(double f_2_, double f_1_, double f0_, double f1_, double f2_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward_regular_sampled_1</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a2e5d7afa4a8b0ea05415fa2b8c66e9a7</anchor>
-      <arglist>(double f0_, double f1_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a169306a3807b23cdc84d3b473a406d9d</anchor>
-      <arglist>(double f0_, double f1_, double f2_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward_regular_sampled_3</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ab8332d876e50e380360af02b0841394b</anchor>
-      <arglist>(double f0_, double f1_, double f2_, double f3_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_forward_regular_sampled_4</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a392afaaea994e795e2ecd2e3167909cd</anchor>
-      <arglist>(double f0_, double f1_, double f2_, double f3_, double f4_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_forward_regular_sampled_1</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a1d3e63c9b431375a15f3eee9afe9ade5</anchor>
-      <arglist>(double f0_, double f1_, double f2_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_forward_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ace5604974ec4c506020495545ed63596</anchor>
-      <arglist>(double f0_, double f1_, double f2_, double f3_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward_regular_sampled_1</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ab8c92353960b1d59f4cd133c47027eac</anchor>
-      <arglist>(double f_1_, double f0_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a518ad35affc668a2a823c41582ce1b1e</anchor>
-      <arglist>(double f_2_, double f_1_, double f0_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward_regular_sampled_3</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a1a7432b48f314acd08213260fde4e23b</anchor>
-      <arglist>(double f_3_, double f_2_, double f_1_, double f0_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>derivative_backward_regular_sampled_4</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a1802799d8d39742771f0385dad480a42</anchor>
-      <arglist>(double f_4_, double f_3_, double f_2_, double f_1_, double f0_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_backward_regular_sampled_1</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a02a7aa418f0da192d5503ef028cb3031</anchor>
-      <arglist>(double f_2_, double f_1_, double f0_, double h_)</arglist>
-    </member>
-    <member kind="function">
-      <type>double</type>
-      <name>second_derivative_backward_regular_sampled_2</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a368f83da39476906be0cb02c10edb155</anchor>
-      <arglist>(double f_3_, double f_2_, double f_1_, double f_0_, double h_)</arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_LESS_EQUAL</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069a4fc0a69e5f11b63aa457e0933fe77b23</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_LESS</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069a696f8ad8f9c8677595e36d80d9b026ad</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_EQUAL</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069a9f3d0d340bce9638b283008eac9f70ed</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_GREATER</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069a56d55b88d978b926f391c62faf902c84</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_GREATER_EQUAL</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069ac4c0ef6f3bcf5dda771b3c86c7b80f2c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>COMPARE_UNORDERED</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>afbdec76a100ff5ac0692a389a27f4069a363dd00f4c2dd48eeb72feaeba6f82af</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_MODE_INVALID</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1ae8bc1bca727e7dbdff15497dfc9668e5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_MODE_LINEAR</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1a41923ae567b7d10365351b5ad0414298</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_MODE_LOG</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>ae9acf0cd136609bfc9a1d1f80b11aae1af0f9ff425f6dbfeffa6154acaf9899c6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_AXIS_INVALID</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a53a8259e8f36522beb7a90462b3b29a8a4ce1c82f485dccd3ea991f1d1693d75f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_AXIS_X</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a53a8259e8f36522beb7a90462b3b29a8ad2c5da4e7e54c2c3c36677562e541d2a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>BIN_AXIS_Y</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a53a8259e8f36522beb7a90462b3b29a8a2733a36771457557df0331c31f08248b</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PLAIN_FUNCTION_INVALID</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a34dcb7b00002c9532a3eb2a970a102bea73c72f6c15f9106b9a04c4d6488e33b3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PLAIN_FUNCTION_SIMPLE</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a34dcb7b00002c9532a3eb2a970a102beab5f67eff5873b72c0a8ee9dd61b8a2cf</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type></type>
-      <name>PLAIN_FUNCTION_WITH_PARAMS</name>
-      <anchorfile>namespacemygsl.html</anchorfile>
-      <anchor>a34dcb7b00002c9532a3eb2a970a102beaebe6f65961707c57fd37a35e14cfa951</anchor>
-      <arglist></arglist>
-    </member>
   </compound>
   <compound kind="namespace">
     <name>snemo</name>
     <filename>namespacesnemo.html</filename>
     <namespace>snemo::cut</namespace>
     <namespace>snemo::datamodel</namespace>
-    <namespace>snemo::electronics</namespace>
     <namespace>snemo::geometry</namespace>
     <namespace>snemo::processing</namespace>
     <namespace>snemo::simulation</namespace>
+    <class kind="class">snemo::bad_service_access</class>
+    <class kind="class">snemo::bad_service_type</class>
+    <class kind="class">snemo::geometry_svc</class>
+    <class kind="class">snemo::missing_service_error</class>
+    <class kind="class">snemo::service_handle</class>
+    <class kind="class">snemo::service_info</class>
+    <class kind="struct">snemo::service_traits</class>
+    <class kind="struct">snemo::service_traits&lt; geometry_svc &gt;</class>
+    <class kind="struct">snemo::service_traits&lt; histogram &gt;</class>
+    <member kind="typedef">
+      <type>const geomtools::manager</type>
+      <name>geometry_svc</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>aa6c66e87a114544d1364b2a1ca20ce86</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>dpp::histogram_service</type>
+      <name>histogram</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>a4ca1250db2e98643946949d8932e6733</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>typename boost::mpl::c_str&lt; typename service_traits&lt; T &gt;::label_type &gt;::type</type>
+      <name>service_label</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>a4f5d3fddcde5b65ef9da7fd363dacec3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>T *</type>
+      <name>service_maker</name>
+      <anchorfile>namespacesnemo.html</anchorfile>
+      <anchor>ab9ea59ddafb52cb57d9619d68cbf6ca2</anchor>
+      <arglist>(datatools::service_manager &amp;provider)</arglist>
+    </member>
   </compound>
   <compound kind="namespace">
     <name>snemo::cut</name>
@@ -17864,16 +13117,6 @@
     <class kind="class">snemo::datamodel::particle_track</class>
     <class kind="class">snemo::datamodel::particle_track_data</class>
     <class kind="class">snemo::datamodel::polyline_trajectory_pattern</class>
-    <class kind="class">snemo::datamodel::raw_calorimeter_hit</class>
-    <class kind="class">snemo::datamodel::raw_data</class>
-    <class kind="class">snemo::datamodel::raw_tracker_hit</class>
-    <class kind="class">snemo::datamodel::raw_trigger_infos</class>
-    <class kind="class">snemo::datamodel::sim_calo_digi_hit</class>
-    <class kind="class">snemo::datamodel::sim_digi_data</class>
-    <class kind="class">snemo::datamodel::sim_digi_event_data</class>
-    <class kind="class">snemo::datamodel::sim_readout_digi_data</class>
-    <class kind="class">snemo::datamodel::sim_tracker_digi_hit</class>
-    <class kind="class">snemo::datamodel::sim_trigger_digi_data</class>
     <class kind="class">snemo::datamodel::timestamp</class>
     <class kind="class">snemo::datamodel::tracker_cluster</class>
     <class kind="class">snemo::datamodel::tracker_clustering_data</class>
@@ -17888,14 +13131,6 @@
       <anchor>a5d79b79aa3bdfb86a59a5028aec3768c</anchor>
       <arglist></arglist>
     </member>
-  </compound>
-  <compound kind="namespace">
-    <name>snemo::electronics</name>
-    <filename>namespacesnemo_1_1electronics.html</filename>
-    <class kind="class">snemo::electronics::cabling</class>
-    <class kind="class">snemo::electronics::constants</class>
-    <class kind="class">snemo::electronics::electronics_service</class>
-    <class kind="class">snemo::electronics::manager</class>
   </compound>
   <compound kind="namespace">
     <name>snemo::geometry</name>
@@ -17920,7 +13155,6 @@
     <class kind="class">snemo::processing::geiger_regime</class>
     <class kind="class">snemo::processing::mock_calorimeter_s2c_module</class>
     <class kind="class">snemo::processing::mock_tracker_s2c_module</class>
-    <class kind="class">snemo::processing::service_info</class>
   </compound>
   <compound kind="namespace">
     <name>snemo::simulation</name>
@@ -17941,6 +13175,69 @@
     <class kind="class">TrackerPreClustering::pre_clusterizer</class>
     <class kind="struct">TrackerPreClustering::setup_data</class>
   </compound>
+  <compound kind="group">
+    <name>falaise_units</name>
+    <title>System of Units</title>
+    <filename>group__falaise__units.html</filename>
+    <class kind="class">falaise::config::absorbed_dose_t</class>
+    <class kind="class">falaise::config::acceleration_t</class>
+    <class kind="class">falaise::config::activity_t</class>
+    <class kind="class">falaise::config::amount_t</class>
+    <class kind="class">falaise::config::angle_t</class>
+    <class kind="class">falaise::config::angular_frequency_t</class>
+    <class kind="class">falaise::config::capacitance_t</class>
+    <class kind="class">falaise::config::conductance_t</class>
+    <class kind="class">falaise::config::conductivity_t</class>
+    <class kind="class">falaise::config::cross_section_t</class>
+    <class kind="class">falaise::config::data_storage_t</class>
+    <class kind="class">falaise::config::data_transfer_rate_t</class>
+    <class kind="class">falaise::config::density_t</class>
+    <class kind="class">falaise::config::electric_charge_t</class>
+    <class kind="class">falaise::config::electric_current_t</class>
+    <class kind="class">falaise::config::electric_displacement_field_t</class>
+    <class kind="class">falaise::config::electric_field_t</class>
+    <class kind="class">falaise::config::electric_flux_t</class>
+    <class kind="class">falaise::config::electric_potential_t</class>
+    <class kind="class">falaise::config::electric_resistance_t</class>
+    <class kind="class">falaise::config::electric_signal_integral_t</class>
+    <class kind="class">falaise::config::energy_t</class>
+    <class kind="class">falaise::config::equivalent_dose_t</class>
+    <class kind="class">falaise::config::force_t</class>
+    <class kind="class">falaise::config::fraction_t</class>
+    <class kind="class">falaise::config::frequency_t</class>
+    <class kind="class">falaise::config::illuminance_t</class>
+    <class kind="class">falaise::config::inductance_t</class>
+    <class kind="class">falaise::config::length_t</class>
+    <class kind="class">falaise::config::level_t</class>
+    <class kind="class">falaise::config::luminance_t</class>
+    <class kind="class">falaise::config::luminous_energy_t</class>
+    <class kind="class">falaise::config::luminous_energy_density_t</class>
+    <class kind="class">falaise::config::luminous_exposure_t</class>
+    <class kind="class">falaise::config::luminous_flux_t</class>
+    <class kind="class">falaise::config::luminous_intensity_t</class>
+    <class kind="class">falaise::config::magnetic_field_strength_t</class>
+    <class kind="class">falaise::config::magnetic_flux_t</class>
+    <class kind="class">falaise::config::magnetic_flux_density_t</class>
+    <class kind="class">falaise::config::mass_t</class>
+    <class kind="class">falaise::config::mass_activity_t</class>
+    <class kind="class">falaise::config::permeability_t</class>
+    <class kind="class">falaise::config::permittivity_t</class>
+    <class kind="class">falaise::config::power_t</class>
+    <class kind="class">falaise::config::pressure_t</class>
+    <class kind="class">falaise::config::procedure_defined_t</class>
+    <class kind="class">falaise::config::resistivity_t</class>
+    <class kind="class">falaise::config::solid_angle_t</class>
+    <class kind="class">falaise::config::surface_t</class>
+    <class kind="class">falaise::config::surface_activity_t</class>
+    <class kind="class">falaise::config::surface_density_t</class>
+    <class kind="class">falaise::config::surface_tension_t</class>
+    <class kind="class">falaise::config::temperature_t</class>
+    <class kind="class">falaise::config::time_t</class>
+    <class kind="class">falaise::config::velocity_t</class>
+    <class kind="class">falaise::config::volume_t</class>
+    <class kind="class">falaise::config::volume_activity_t</class>
+    <class kind="class">falaise::config::wave_number_t</class>
+  </compound>
   <compound kind="page">
     <name>md_README</name>
     <title>Falaise C++ Library and Applications for the SuperNEMO experiment</title>
@@ -17950,99 +13247,26 @@
     <name>usingflsimulate</name>
     <title>Using The FLSimulate Application</title>
     <filename>usingflsimulate</filename>
-    <docanchor file="usingflsimulate" title="Introduction to FLSimulate ">usingflsimulate_intro</docanchor>
-    <docanchor file="usingflsimulate" title="Using FLSimulate on the Command Line ">usingflsimulate_commandline</docanchor>
-    <docanchor file="usingflsimulate" title="Quick start ">usingflsimulate_quickstart</docanchor>
-    <docanchor file="usingflsimulate" title="Scripting FLSimulate ">usingflsimulate_scriptingflsimulate</docanchor>
-    <docanchor file="usingflsimulate" title="Script&apos;s format ">usingflsimulate_scriptingflsimulate_format</docanchor>
-    <docanchor file="usingflsimulate" title="How to change the number of events simulated ">usingflsimulate_changenumberofevents</docanchor>
-    <docanchor file="usingflsimulate" title="How to select the event generator ">usingflsimulate_selecteventgenerator</docanchor>
-    <docanchor file="usingflsimulate" title="How to select the vertex generator ">usingflsimulate_selectevertexgenerator</docanchor>
-    <docanchor file="usingflsimulate" title="How to select the geometry layout ">usingflsimulate_selectgeometrylayout</docanchor>
-    <docanchor file="usingflsimulate" title="How to choose the random numbers sequence ">usingflsimulate_chooserng</docanchor>
-    <docanchor file="usingflsimulate" title="Script&apos;s supported sections and parameters ">usingflsimulate_scriptingflsimulate_sectionsandparameters</docanchor>
-    <docanchor file="usingflsimulate" title="FLSimulate&apos;s variant system ">usingflsimulate_variants</docanchor>
-    <docanchor file="usingflsimulate" title="Using explicit variant settings  ">usingflsimulate_variants_explicitsettings</docanchor>
-    <docanchor file="usingflsimulate" title="Using a variant profile ">usingflsimulate_variants_profile</docanchor>
-    <docanchor file="usingflsimulate" title="Available experiments and simulation setups ">usingflsimulate_experimentssimsetups</docanchor>
-    <docanchor file="usingflsimulate" title="Available Vertex/Event Generators ">usingflsimulate_generator_table</docanchor>
-    <docanchor file="usingflsimulate" title="Summary of available configurations ">usingflsimulate_summaryofavailableconfigurations</docanchor>
-    <docanchor file="usingflsimulate" title="List of available experiments ">usingflsimulate_summaryofavailableexperiments</docanchor>
-    <docanchor file="usingflsimulate" title="List of available experimental setups ">usingflsimulate_summaryofavailableexperimentalsetups</docanchor>
-    <docanchor file="usingflsimulate" title="List of available simulation setups ">usingflsimulate_summaryofavailablesimulationsetups</docanchor>
-    <docanchor file="usingflsimulate" title="Available MC hits output profiles ">usingflsimulate_hits_output_profiles</docanchor>
-    <docanchor file="usingflsimulate" title="Managing random number sequences  ">usingflsimulate_managingrandomnumbersequences</docanchor>
-    <docanchor file="usingflsimulate" title="Output data file ">usingflsimulate_outputdatafile</docanchor>
-    <docanchor file="usingflsimulate" title="Output metadata ">usingflsimulate_outputmetadata</docanchor>
-    <docanchor file="usingflsimulate" title="User profiles ">usingflsimulate_userprofiles</docanchor>
-    <docanchor file="usingflsimulate" title="Examples ">usingflsimulate_examples</docanchor>
-    <docanchor file="usingflsimulate" title="Example 1 : using FLSimulate with a configuration script ">usingflsimulate_examples_example1</docanchor>
-    <docanchor file="usingflsimulate" title="Example 2 : using FLSimulate with a configuration script and an explicit variant profile ">usingflsimulate_examples_example2</docanchor>
-    <docanchor file="usingflsimulate" title="Example 3 : using FLSimulate with an explicit configuration, profile and seeds ">usingflsimulate_examples_example3</docanchor>
   </compound>
   <compound kind="page">
     <name>flsimulateoutput</name>
     <title>FLSimulate Output</title>
     <filename>flsimulateoutput</filename>
-    <docanchor file="flsimulateoutput" title="Introduction to the FLSimulate Output ">flsimulateoutput_introduction</docanchor>
-    <docanchor file="flsimulateoutput" title="The EH Bank ">flsimulateoutput_theehbank</docanchor>
-    <docanchor file="flsimulateoutput" title="The geometry identifier concept ">flsimulateoutput_thegeometryidentifierconcept</docanchor>
-    <docanchor file="flsimulateoutput" title="The mctools::base_step_hit class ">flsimulateoutput_mctoolsbasestephitclass</docanchor>
-    <docanchor file="flsimulateoutput" title="The mctools::simulated_data class ">flsimulateoutput_mctoolssimulateddata</docanchor>
-    <docanchor file="flsimulateoutput" title="The truth calorimeter hits ">flsimulateoutput_truthcalorimeterhits</docanchor>
-    <docanchor file="flsimulateoutput" title="The truth tracker hits ">flsimulateoutput_truthtrackerhits</docanchor>
-    <docanchor file="flsimulateoutput" title="An example of simulated event in the SuperNEMO demonstrator ">flsimulateoutput_exampleofsimulatedeventinthesupernemodemonstrator</docanchor>
   </compound>
   <compound kind="page">
     <name>usingflreconstruct</name>
     <title>Using The FLReconstruct Application</title>
     <filename>usingflreconstruct</filename>
-    <docanchor file="usingflreconstruct" title="Introduction to FLReconstruct ">usingflreconstruct_intro</docanchor>
-    <docanchor file="usingflreconstruct" title="Using FLReconstruct on the Command Line ">usingflreconstruct_commandline</docanchor>
-    <docanchor file="usingflreconstruct" title="Quick start ">usingflreconstruct_quickstart</docanchor>
-    <docanchor file="usingflreconstruct" title="Scripting FLReconstruct ">usingflreconstruct_scriptingflsimulate</docanchor>
-    <docanchor file="usingflreconstruct" title="Basic Script Syntax ">usingflreconstruct_scriptingflsimulate_format</docanchor>
-    <docanchor file="usingflreconstruct" title="How to run a mock calibration on simulated events ">usingflreconstruct_mockcalibalgo</docanchor>
-    <docanchor file="usingflreconstruct" title="How to run a tracking algorithm on simulated events ">usingflreconstruct_trackfitalgo</docanchor>
-    <docanchor file="usingflreconstruct" title="To do ">usingflreconstruct_todo</docanchor>
-    <docanchor file="usingflreconstruct" title="Supported sections and parameters in FLReconstruct scripts ">usingflreconstruct_scriptingflsimulate_sectionsandparameters</docanchor>
-    <docanchor file="usingflreconstruct" title="Inline modules ">usingflreconstruct_scriptingflsimulate_inlinemodules</docanchor>
-    <docanchor file="usingflreconstruct" title="Using Standard Pipelines ">usingflreconstruct_usingstandardpipelines</docanchor>
-    <docanchor file="usingflreconstruct" title="Writing Reconstruction Results to File ">usingflreconstruct_usingoutputpaths</docanchor>
-    <docanchor file="usingflreconstruct" title="Using Custom Pipelines ">usingflreconstruct_usingcustompipelines</docanchor>
   </compound>
   <compound kind="page">
     <name>flreconstructpipelineoutput</name>
     <title>FLReconstruct Pipeline Output</title>
     <filename>flreconstructpipelineoutput</filename>
-    <docanchor file="flreconstructpipelineoutput" title="Introduction ">flreconstructpipelineoutput_introduction</docanchor>
-    <docanchor file="flreconstructpipelineoutput" title="The shared handle concept ">flreconstructpipelineoutput_thesharedhandleconcept</docanchor>
-    <docanchor file="flreconstructpipelineoutput" title="Mock digitization and calibration ">flreconstructpipelineoutput_mockdigitizationandcalibration</docanchor>
-    <docanchor file="flreconstructpipelineoutput" title="Tracker clustering ">flreconstructpipelineoutput_trackerclustering</docanchor>
-    <docanchor file="flreconstructpipelineoutput" title="Track fitting ">flreconstructpipelineoutput_trackfitting</docanchor>
-    <docanchor file="flreconstructpipelineoutput" title="Charged particle measurements ">flreconstructpipelineoutput_chargedparticlemeasurements</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>usingflptd2root</name>
-    <title>Using The FLPTD2Root Application</title>
-    <filename>usingflptd2root</filename>
-    <docanchor file="usingflptd2root" title="Introduction to FLPTD2Root ">usingflptd2root_intro</docanchor>
-    <docanchor file="usingflptd2root" title="Installing FLPTD2Root ">usingflptd2root_install</docanchor>
-    <docanchor file="usingflptd2root" title="Using FLPTD2Root.py  ">usingflptd2root_using</docanchor>
-    <docanchor file="usingflptd2root" title="Format of the FLPTD2Root ROOT TTree ">usingflptd2root_format</docanchor>
   </compound>
   <compound kind="page">
     <name>writingflreconstructpipelinescripts</name>
     <title>Writing FLReconstruct Pipeline Scripts</title>
     <filename>writingflreconstructpipelinescripts</filename>
-    <docanchor file="writingflreconstructpipelinescripts" title="Introduction to FLReconstruct Pipeline Scripts ">wflrps_intro</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Discovering Available Modules ">wflrps_discoveringavailablemodules</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Implementing Pipeline Scripts ">wflrps_implementing_pipeline_scripts</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Trivial Pipeline ">trivial_pipeline</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Creating a Chained Pipeline ">wflrps_chain_pipeline</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Multi-Module Pipeline ">wflrps_multi_pipeline</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Using Plugin Modules ">wflrps_pluginmodules</docanchor>
-    <docanchor file="writingflreconstructpipelinescripts" title="Going Further ">further</docanchor>
   </compound>
   <compound kind="page">
     <name>supportedflreconstructmodules</name>
@@ -18053,76 +13277,31 @@
     <name>usingmockcalibration</name>
     <title>Using Mock Calibration for Reconstruction</title>
     <filename>usingmockcalibration</filename>
-    <docanchor file="usingmockcalibration" title="Introduction ">mockcalo_intro</docanchor>
-    <docanchor file="usingmockcalibration" title="Using the Mock Calibration Models ">mockcalo_using</docanchor>
-    <docanchor file="usingmockcalibration" title="Future Development ">mockcalo_future</docanchor>
-    <docanchor file="usingmockcalibration" title="Specific Topics for Development of Digitization ">mockcalo_digidevel</docanchor>
-    <docanchor file="usingmockcalibration" title="Specific Topics for Development of Calibration ">mockcalo_calodevel</docanchor>
   </compound>
   <compound kind="page">
     <name>writingflreconstructmodules</name>
     <title>Writing FLReconstruct Modules</title>
     <filename>writingflreconstructmodules</filename>
-    <docanchor file="writingflreconstructmodules" title="Introduction to the writing of FLReconstruct modules ">introduction</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Implementing a Minimal flreconstruct Module ">minimalmodule</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Creating the Module Sources ">minimalmodule_sources</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Building a Loadable Shared Library ">minimalmodulebuilding</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Running flreconstruct With a Custom Module ">minimalmodulerunning</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Making Your Module Configurable ">minimalconfigurablemodule</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Adding a Configurable Data Member ">minimalconfigurablemodulecpp</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Configuring MyModule from the Pipeline Script ">minimalconfigurablemodulescript</docanchor>
-    <docanchor file="writingflreconstructmodules" title="Using Additional Libraries in Your Module ">additionallibraries</docanchor>
   </compound>
   <compound kind="page">
     <name>workingwitheventrecords</name>
     <title>Working With Events in FLReconstruct</title>
     <filename>workingwitheventrecords</filename>
-    <docanchor file="workingwitheventrecords" title="Introduction to event record ">workingwitheventrecords_introduction</docanchor>
-    <docanchor file="workingwitheventrecords" title="Reading Data from datatools::things Instances ">workingwitheventrecords_things_readingdata</docanchor>
-    <docanchor file="workingwitheventrecords" title="Writing Data to datatools::things Instances ">things_writingdata</docanchor>
-    <docanchor file="workingwitheventrecords" title="Implementing Custom Objects for Storage in datatools::things ">things_customdata</docanchor>
-    <docanchor file="workingwitheventrecords" title="Serializing Custom Objects to Persistant Files/Archives ">things_customdata_serialization</docanchor>
   </compound>
   <compound kind="page">
     <name>usingservices</name>
     <title>Using Services in FLReconstruct Modules</title>
     <filename>usingservices</filename>
-    <docanchor file="usingservices" title="Introduction ">useservices_introduction</docanchor>
-    <docanchor file="usingservices" title="Implementing a Service-Aware Module ">useservices_module</docanchor>
-    <docanchor file="usingservices" title="Available Services ">useservices_servicelist</docanchor>
   </compound>
   <compound kind="page">
     <name>documentingflreconstructmodules</name>
     <title>Documenting FLReconstruct Modules</title>
     <filename>documentingflreconstructmodules</filename>
-    <docanchor file="documentingflreconstructmodules" title="Introduction ">documentingflrecontrustmodules_introduction</docanchor>
   </compound>
   <compound kind="page">
     <name>usingflvisualize</name>
     <title>Using The FLVisualize Application</title>
     <filename>usingflvisualize</filename>
-    <docanchor file="usingflvisualize" title="Introduction to FLVisualize ">usingflvisualize_intro</docanchor>
-    <docanchor file="usingflvisualize" title="Example Usage ">usingflvisualize_examples</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>manageresourcefiles</name>
-    <title>Manage resource files in Falaise</title>
-    <filename>manageresourcefiles</filename>
-    <docanchor file="manageresourcefiles" title="Introduction to resource files ">manageresourcefiles_intro</docanchor>
-    <docanchor file="manageresourcefiles" title="Resource files directory ">manageresourcefiles_resourcefilesdirectory</docanchor>
-    <docanchor file="manageresourcefiles" title="Resource file registration ">manageresourcefiles_resourcefileregistration</docanchor>
-    <docanchor file="manageresourcefiles" title="Resource file path in Falaise ">manageresourcefiles_resourcefilepathinfalaise</docanchor>
-  </compound>
-  <compound kind="page">
-    <name>managetags</name>
-    <title>Manage tags in Falaise</title>
-    <filename>managetags</filename>
-    <docanchor file="managetags" title="Introduction to tags ">managetags_intro</docanchor>
-    <docanchor file="managetags" title="Tag categories ">managetags_tagcategories</docanchor>
-    <docanchor file="managetags" title="Tag registration ">managetags_tagregistration</docanchor>
-    <docanchor file="managetags" title="Tag dependencies ">managetags_tagdependencies</docanchor>
-    <docanchor file="managetags" title="Tag to file resolver ">managetags_tagtofileresolver</docanchor>
-    <docanchor file="managetags" title="The fltags  application  ">managetags_fltags</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>

@@ -5,6 +5,7 @@ var searchData=
   ['neutrino_5fdata_5ftype',['neutrino_data_type',['../https://supernemo-dbd.github.io/Bayeux/structgenbb_1_1single__particle__generator_1_1neutrino__data__type.html',1,'genbb::single_particle_generator']]],
   ['node',['node',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1ui_1_1ihs_1_1node.html',1,'datatools::ui::ihs']]],
   ['nor_5fcut',['nor_cut',['../https://supernemo-dbd.github.io/Bayeux/classcuts_1_1nor__cut.html',1,'cuts']]],
+  ['normal_5fintensity',['normal_intensity',['../https://supernemo-dbd.github.io/Bayeux/structdatatools_1_1ui_1_1ansi__colors_1_1normal__intensity.html',1,'datatools::ui::ansi_colors']]],
   ['not_5fcut',['not_cut',['../https://supernemo-dbd.github.io/Bayeux/classcuts_1_1not__cut.html',1,'cuts']]],
   ['not_5fin_5fdaughters_5fvertex_5fvalidator',['not_in_daughters_vertex_validator',['../https://supernemo-dbd.github.io/Bayeux/classgenvtx_1_1not__in__daughters__vertex__validator.html',1,'genvtx']]],
   ['not_5flogic',['not_logic',['../https://supernemo-dbd.github.io/Bayeux/classdatatools_1_1configuration_1_1not__logic.html',1,'datatools::configuration']]],
@@ -13,5 +14,6 @@ var searchData=
   ['nuclear_5fdecay_5fmanager',['nuclear_decay_manager',['../https://supernemo-dbd.github.io/Bayeux/classgenbb_1_1nuclear__decay__manager.html',1,'genbb']]],
   ['nuclear_5flevel',['nuclear_level',['../https://supernemo-dbd.github.io/Bayeux/classgenbb_1_1nuclear__level.html',1,'genbb']]],
   ['nuclear_5ftransition',['nuclear_transition',['../https://supernemo-dbd.github.io/Bayeux/classgenbb_1_1nuclear__transition.html',1,'genbb']]],
-  ['num',['num',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1constants_1_1num.html',1,'mygsl::constants']]]
+  ['num',['num',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1constants_1_1num.html',1,'mygsl::constants']]],
+  ['nw_5fsampled_5ffunction_5fsmoother',['nw_sampled_function_smoother',['../https://supernemo-dbd.github.io/Bayeux/classmygsl_1_1nw__sampled__function__smoother.html',1,'mygsl']]]
 ];
