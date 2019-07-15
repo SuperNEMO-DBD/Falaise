@@ -5,31 +5,25 @@ language: cpp
 # - Linux: Singular VM with docker, one build for
 #          each different image
 # - macOS: One each per osx_image value.
-#          Only latest Sierra w/clang for now.
+#          Only latest w/clang for now.
 matrix:
   include:
     - os: linux
       services: docker
       env:
-        - DOCKER_IMAGE=supernemo/falaise-ubuntu1604-base:latest
+        - DOCKER_IMAGE=supernemo/falaise-ubuntu1604-base:develop
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: linux
       services: docker
       env:
-        - DOCKER_IMAGE=supernemo/falaise-ubuntu1804-base:latest
+        - DOCKER_IMAGE=supernemo/falaise-ubuntu1804-base:develop
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: linux
       services: docker
       env:
-        - DOCKER_IMAGE=supernemo/falaise-centos6-base:latest
-        - DOCKER_CONTAINER=falaise-docker
-        - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
-    - os: linux
-      services: docker
-      env:
-        - DOCKER_IMAGE=supernemo/falaise-centos7-base:latest
+        - DOCKER_IMAGE=supernemo/falaise-centos7-base:develop
         - DOCKER_CONTAINER=falaise-docker
         - SCRIPT_PREFIX_CMD="docker exec $DOCKER_CONTAINER"
     - os: osx

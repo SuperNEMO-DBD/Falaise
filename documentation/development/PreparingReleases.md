@@ -16,47 +16,32 @@ development process*. This allows API/ABI incompatibilities to be identified ear
 coordination across:
 
 1) The Falaise repository via a special "update externals" Pull Request
-2) The [homebrew-cadfael](https://github.com/SuperNEMO-DBD/homebrew-cadfael) repository
+2) The [homebrew](https://github.com/SuperNEMO-DBD/brew) repository
 where externals are managed.
-3) The [cadfael-deployment](https://github.com/SuperNEMO-DBD/cadfael-deployment) repository
-where Docker containers for testing are managed.
 
-Updating Linuxbrew
--------------------
+Updating brew
+-------------
 This is the core package manager implementation, hosted in [supernemo-dbd/brew](https://github.com/supernemo-dbd/brew.git).
-It's a fork of upstream [Linuxbrew](https://github.com/linuxbrew/brew.git), and whilst
-the `master` branch of that can be followed, the recommended proceedure is:
+It's a fork of upstream [Linuxbrew](https://github.com/linuxbrew/brew.git), and
+is no largely locked down as SuperNEMO migrate to the [Spack](https://spack.io) system.
 
-1. Fetch upstream changes from https://github.com/linuxbrew/brew.git
-2. Check for new tags
-3. If there's a new tag, merge this onto `master`, e.g. `git checkout master; git merge <newtagname>`
-4. Fix any conflicts, and commit
-5. Push master back to origin (i.e. `supernemo-dbd/brew`)
+Updates are thus mostly to resolve missing/broken URLs in third-party packages
+and bump versions of third-party or the SuperNEMO packages.
 
-This only needs doing when there's a new tag.
-
-Updating homebrew-cadfael
--------------------------
-[This](https://github.com/SuperNEMO-DBD/homebrew-cadfael) hosts the linuxbrew `Formulae`
-for `falaise` and important dependencies like `bayeux`, `ROOT`, `Qt`, `boost` and `Geant4`. It needs updating in two main cases:
-
-1. When upstream Formulae from [linuxbrew/homebrew-core](https://github.com/Linuxbrew/homebrew-core)
-   that are used directly or indirectly by `falaise` are updated in an ABI incompatible way.
+1. When formulae that are used directly or indirectly by `falaise` are updated in an ABI incompatible way.
    - The main task here is to track the dependency, and issue revision bumps
      to each dependent formulae (and their dependees, and so on...)
    - Canonical case is `icu4c`/`boost`. If `icu4c` is upgraded, then the `boost` formula
-     require a revision bump, as does `camp`, `bayeux` and `falaise`.
-2. When Formulae in [homebrew-cadfael](https://github.com/SuperNEMO-DBD/homebrew-cadfael)
-   undergo a version bump (e.g. we want to try a new version)
+     requires a revision bump, as does `camp`, `bayeux` and `falaise`.
+2. When Formulae undergo a version bump (e.g. we want to try a new version)
    - Simply employ the same proceedure as for 1.
-3. TODO: Automate these, including building of binary bottles!!
 
 
 Rebuilding Docker Containers
 ----------------------------
-The [cadfael-deployment](https://github.com/SuperNEMO-DBD/cadfael-deployment) repository hosts
-the `Dockerfile`s for building images of the Falaise dependencies on CentOS6/7 and Ubuntu 14.04LTS/16.04LTS.
-The procedure below assumes that we have updated `homebrew-cadfael` as above
+The [brew](https://github.com/SuperNEMO-DBD/brew) repository hosts
+the `Dockerfile`s for building images of the Falaise dependencies on CentOS 7 and Ubuntu 16.04LTS/18.04LTS.
+The procedure below assumes that we have updated `brew` as above
 *with a version change in the main dependencies* so that we have a change to propagate to testing.
 
 1. Ensure docker is running
@@ -73,7 +58,7 @@ The procedure below assumes that we have updated `homebrew-cadfael` as above
    holding its Dockerfile and naming the built image as appropriate:
 
    ```
-   $ docker build -t falaise-centos6-next .
+   $ docker build -t falaise-centos7-base .
    ... rebuilds ...
    ```
 
@@ -85,43 +70,35 @@ The procedure below assumes that we have updated `homebrew-cadfael` as above
    $ docker images
    ... take note of the IMAGE ID entries ...
    ... say we find the IMAGE ID for the new Ubuntu 16.04 container:
-   $ docker tag <UBUNTU16IMAGEID> supernemo/falaise-ubuntu1604-base:next
+   $ docker tag <UBUNTU16IMAGEID> supernemo/falaise-ubuntu1604-base:develop
    ```
 
    Note the use of the organization name `supernemo`, the image name `falaise-<osname><osversion>-base`
    (`base` indicating base dependencies for falaise itself) and the "version" `:<version>`.
-   In this case we use the `next` version as a symbolic name for testing (next step).
+   In this case we use the `develop` version as a symbolic name for testing the `develop` branch.
 5. Push the newly tagged containers to Docker Hub (you will need to be a member
    of the `supernemo` or on Docker Hub to do this):
 
    ```
    ... e.g. for the example above, similar for others ...
-   $ docker push supernemo/falaise-ubuntu1604-base:next
+   $ docker push supernemo/falaise-ubuntu1604-base:develop
    ```
 
 Testing Falaise with Rebuilt Containers
 ---------------------------------------
-The idea of the `next` containers is to provide a testbench for building the current
-`develop` branch of Falaise against updated external dependencies. It's likely that
-a simpler system using Travis-CI environments or robots can acheieve the same thing,
-but for now:
+Simply open a new Pull Request bumping the minimum require version(s) of the external
+packages updated in the previous step. If there are issues in the build due to the new dependencies
 
-1. Open a new Pull Request that modifies the `.travis.yml` so that the docker image tags
-   use the freshly pushed `:next` containers.
-2. Submitting the PR will trigger a new Travis build using the updated container
-3. If there are issues in the build due to the new dependencies
-   - Fix and push changes to the Pull Request
-   - Try to retain backward compatibility with older package versions if possible
-   - If this is not possible, bump the minimum required version of the package in Falaise's
-     calls to `find_package` in the CMake scripts
-4. When resolved, return the docker image tag to `:latest` in the `.travis.yml` file
-5. Merge the Pull Request
-6. Retag the the `-base` docker images to `:latest` and push, e.g.
+- Fix and push changes to the Pull Request
+- Try to retain backward compatibility with older package versions if possible
+- Merge the Pull Request
+
+The `-base` docker images can then be tagged again with the `latest` symbolic tag
+
    ```
    $ docker tag <UBUNTU16IMAGEID> supernemo/falaise-ubuntu1604-base:latest
    $ docker push supernemo/falaise-ubuntu1604-base:latest
    ```
-   It's fine to leave the `:next` tag in place.
 
 After this step, a new release should be prepared
 
@@ -163,14 +140,13 @@ This simply follows the `git-flow` model.
      $ git commit -m "Documentation for <tagname>"
      $ git push
      ```
-5. Update [homebrew-cadfael](https://github.com/SuperNEMO-DBD/homebrew-cadfael)
-   tap formulae for Falaise
-   - Point falaise stable to new release tag
+5. Update the Falaise Formula in [brew](https://github.com/SuperNEMO-DBD/brew) to point
+   the stable spec to the new tag
 6. Build new `supernemo/falaise` container
-   - Go to [cadfael-deployment](https://github.com/SuperNEMO-DBD/cadfael-deployment) repo:
+   - Go to [brew](https://github.com/SuperNEMO-DBD/brew) repo:
      ```
      $ cd docker/falaise
-     $ docker build -t falaise-next .
+     $ docker build -t falaise .
      ```
    - Tag container as both `:latest` and `:<newversion>` then push e.g.
      ```
@@ -179,16 +155,5 @@ This simply follows the `git-flow` model.
      $ docker push supernemo/falaise:3.1
      $ docker push supernemo/falaise:latest
      ```
-
-Notes
-=====
-As mentioned, this is a rough outline and to be improved. Major challenge
-is syncing releases with external dependency versions. Package management with
-[`spack`](https://github.com/llnl/spack) will help here, once enough experience with
-it, and tested support on all platforms, is obtained. We could also explore use of
-LCG via CVMFS or Docker, though may not help with macOS.
-
-Need to also explore greater automation of building binary bottles (whether homebrew
-or spack) and docker containers!
 
 
