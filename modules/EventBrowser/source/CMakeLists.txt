@@ -55,7 +55,6 @@ set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
   inc/falaise/snemo/io/i_data_access.h
   inc/falaise/snemo/utils/root_utilities.h
   inc/falaise/snemo/utils/singleton.h
-  # inc/falaise/snemo/view/bipo_draw_manager.h
   inc/falaise/snemo/view/base_renderer.h
   inc/falaise/snemo/view/browser_icons.h
   inc/falaise/snemo/view/browser_tracks.h
@@ -179,7 +178,6 @@ set(FalaiseEventBrowserPlugin_SOURCES
   i_data_access.cc
   root_utilities.cc
   base_renderer.cc
-  # bipo_draw_manager.cc
   browser_tracks.cc
   calorimeter_hit_renderer.cc
   display_2d.cc

@@ -67,11 +67,10 @@ set(FalaiseLibrary_TESTS)
 set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
-#   to various setups (snemo, bipo3...)
+#   to various setups (snemo)
 include(common.cmake)
 include(app.cmake)
 include(snemo.cmake)
-include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
 
 # - Publish headers

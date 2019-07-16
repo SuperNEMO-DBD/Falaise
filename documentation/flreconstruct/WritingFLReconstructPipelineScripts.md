@@ -35,7 +35,6 @@ A list of pipeline modules known to `flreconstruct` can be obtained using its
 ~~~~~
 $ flreconstruct --help-module-list
 Things2Root
-bipo3::processing::calorimeter_s2c_module
 dpp::chain_module
 dpp::dummy_module
 dpp::dump_module

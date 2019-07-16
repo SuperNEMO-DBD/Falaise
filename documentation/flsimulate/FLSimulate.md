@@ -931,9 +931,6 @@ List of available experiments {#usingflsimulate_summaryofavailableexperiments}
 		*   Description:  The SuperNEMO  demonstrator experiment  (all phases:
 		    half-commissioning, full demonstrator)
 		*   Tag : `"urn:snemo:demonstrator"`
-2.  BiPo3 detector (not used yet):
-		*   Description: The BiPo3 detector
-		*   Tag : `"urn:bipo3:detector"`
 
 List of available experimental setups {#usingflsimulate_summaryofavailableexperimentalsetups}
 -------------------------------------

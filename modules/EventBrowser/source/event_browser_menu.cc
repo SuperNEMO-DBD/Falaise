@@ -355,8 +355,7 @@ void event_browser_menu::set_default_option(const io::event_server &server_) {
   const detector::detector_manager &detector_mgr = detector::detector_manager::get_instance();
   const std::string setup_label = detector_mgr.get_setup_label_name();
 
-  if (setup_label.find("bipo") != std::string::npos ||
-      setup_label.find("test_bench") != std::string::npos) {
+  if (setup_label.find("test_bench") != std::string::npos) {
     disable_option(SHOW_MC_TRACKER_HITS);
     // disable_option(SHOW_GG_CIRCLE);
     // disable_option(SHOW_GG_TIME_GRADIENT);

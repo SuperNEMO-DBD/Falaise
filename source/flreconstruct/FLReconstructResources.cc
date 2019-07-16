@@ -60,7 +60,7 @@ ExperimentLookup::Table constructLookupPipelineTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)("", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
       "default", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
-      "demonstrator", "snemo/demonstrator/reconstruction/official-1.0.0.conf")("bipo3", "");
+      "demonstrator", "snemo/demonstrator/reconstruction/official-1.0.0.conf");
 
   return a;
 }
@@ -73,8 +73,7 @@ ExperimentLookup::Table constructLookupVariantsConfigTable() {
       "default",
       "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
       "demonstrator",
-      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")("bipo3",
-                                                                                          "");
+      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf");
   ;
   return a;
 }
@@ -88,8 +87,7 @@ ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
       "default",
       "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
       "demonstrator",
-      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
-      "bipo3", "");
+      "snemo/demonstrator/profiles/demonstrator-simulation.profile")
   ;
   return a;
 }

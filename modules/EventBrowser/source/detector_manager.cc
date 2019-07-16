@@ -403,7 +403,7 @@ void detector_manager::_read_detector_config_() {
       gmanager_config.erase("mapping.excluded_categories");
     }
 
-    // Get setup label (snemo, test bench, bipo ...)
+    // Get setup label (snemo, test bench, ...)
     _setup_label_name_ = gmanager_config.fetch_string("setup_label");
   }
 
@@ -411,11 +411,6 @@ void detector_manager::_read_detector_config_() {
     _setup_label_ = SNEMO;
   } else if (_setup_label_name_ == "test_bench") {
     _setup_label_ = TEST_BENCH;
-  } else if (_setup_label_name_ == "bipo1") {
-    _setup_label_ = BIPO1;
-  } else if (_setup_label_name_ == "bipo3") {
-    _setup_label_ = BIPO3;
-    _special_volume_name_.push_back("light_guide.category");
   } else if (_setup_label_name_ == "snemo::tracker_commissioning") {
     _setup_label_ = TRACKER_COMMISSIONING;
   } else if (_setup_label_name_ == "snemo::demonstrator") {
@@ -587,12 +582,6 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
         only_categories_.push_back("diaphragm");
         only_categories_.push_back("air_gap");
         only_categories_.push_back("test_source");
-        break;
-      case BIPO1:
-      case BIPO3:
-        only_categories_.push_back("scin_block");
-        only_categories_.push_back("source");
-        //            only_categories_.push_back("bipo3_module");
         break;
       default:
         break;
