@@ -99,7 +99,7 @@ void tracker_clustering_data::clear() {
 }
 
 void tracker_clustering_data::tree_dump(std::ostream& out_, const std::string& title_,
-                                        const std::string& indent_, bool inherit_) const {
+                                        const std::string& indent_, bool /*inherit_*/) const {
   std::string indent;
   if (!indent_.empty()) {
     indent = indent_;

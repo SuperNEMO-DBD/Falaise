@@ -14,15 +14,15 @@ const std::string& anode_time_key() {
   return key;
 }
 
-const std::string& bottom_cathode_time_key() {
-  static const std::string key("bottom_cathode_time");
-  return key;
-}
+//const std::string& bottom_cathode_time_key() {
+//  static const std::string key("bottom_cathode_time");
+//  return key;
+//}
 
-const std::string& top_cathode_time_key() {
-  static const std::string key("top_cathode_time");
-  return key;
-}
+//const std::string& top_cathode_time_key() {
+//  static const std::string key("top_cathode_time");
+//  return key;
+//}
 }
 
 namespace snemo {
@@ -152,15 +152,7 @@ void calibrated_tracker_hit::set_xy(double x_, double y_) {
 
 double calibrated_tracker_hit::get_x() const { return _x_; }
 
-//void calibrated_tracker_hit::_set_x(double x_) {
-//  _x_ = x_;
-//}
-
 double calibrated_tracker_hit::get_y() const { return _y_; }
-
-//void calibrated_tracker_hit::_set_y(double y_) {
-//  _y_ = y_;
-//}
 
 double calibrated_tracker_hit::get_z() const { return _z_; }
 

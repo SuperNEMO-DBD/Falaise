@@ -123,12 +123,12 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::tracker_clustering_solution> hTCS0(new
     // sdm::tracker_clustering_solution);  sdm::tracker_clustering_solution & TCS0 = hTCS0.get();
     TCS0.set_solution_id(0);
-    TCS0.grab_auxiliaries().store("weighting.chi2", 3.2546);
-    TCS0.grab_auxiliaries().store("weighting.ndof", 5);
-    TCS0.grab_unclustered_hits().push_back(hits.at(16));
-    TCS0.grab_unclustered_hits().push_back(hits.at(17));
-    TCS0.grab_clusters().push_back(hTC0);
-    TCS0.grab_clusters().push_back(hTC1);
+    TCS0.get_auxiliaries().store("weighting.chi2", 3.2546);
+    TCS0.get_auxiliaries().store("weighting.ndof", 5);
+    TCS0.get_unclustered_hits().push_back(hits.at(16));
+    TCS0.get_unclustered_hits().push_back(hits.at(17));
+    TCS0.get_clusters().push_back(hTC0);
+    TCS0.get_clusters().push_back(hTC1);
     TCS0.tree_dump(std::clog, "TCS0 : ");
 
     /*****************************

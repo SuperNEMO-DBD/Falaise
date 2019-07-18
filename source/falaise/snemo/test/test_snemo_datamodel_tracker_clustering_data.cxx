@@ -254,12 +254,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_clustering_solution::handle_type hTCS0(new sdm::tracker_clustering_solution);
     sdm::tracker_clustering_solution& TCS0 = hTCS0.grab();
     TCS0.set_solution_id(0);
-    TCS0.grab_auxiliaries().store_real("weighting.chi2", 3.2546);
-    TCS0.grab_auxiliaries().store_integer("weighting.ndof", 5);
-    TCS0.grab_clusters().push_back(hTC0);
-    TCS0.grab_clusters().push_back(hTC1);
-    TCS0.grab_unclustered_hits().push_back(gg_hits[16]);
-    TCS0.grab_unclustered_hits().push_back(gg_hits[17]);
+    TCS0.get_auxiliaries().store_real("weighting.chi2", 3.2546);
+    TCS0.get_auxiliaries().store_integer("weighting.ndof", 5);
+    TCS0.get_clusters().push_back(hTC0);
+    TCS0.get_clusters().push_back(hTC1);
+    TCS0.get_unclustered_hits().push_back(gg_hits[16]);
+    TCS0.get_unclustered_hits().push_back(gg_hits[17]);
     {
       std::ostringstream title;
       title << "Tracker clustering solution #0";
@@ -272,8 +272,6 @@ int main(int argc_, char** argv_) {
     }
 
     TCD.add_solution(hTCS0, true);
-    //TCD.grab_auxiliaries().store_flag("fake_tcd");
-    //TCD.grab_auxiliaries().store("tracker_clustering_algo", "warwick");
     TCD.tree_dump(std::clog, "Tracker clustering data('TCD') : ");
     std::clog << std::endl;
 

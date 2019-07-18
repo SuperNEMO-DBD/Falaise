@@ -840,7 +840,7 @@ void browser_tracks::_update_tracker_clustering_data() {
       item_solution->SetTipText(tip_text.str().c_str());
     }
     // Get solution auxiliaries:
-    datatools::properties &a_auxiliaries = a_solution.grab_auxiliaries();
+    datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
 
     if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
@@ -850,7 +850,7 @@ void browser_tracks::_update_tracker_clustering_data() {
 
     // Get clusters stored in the current tracker solution:
     snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
-        a_solution.grab_clusters();
+        a_solution.get_clusters();
     for (snemo::datamodel::tracker_clustering_solution::cluster_col_type::iterator icluster =
              clusters.begin();
          icluster != clusters.end(); ++icluster) {

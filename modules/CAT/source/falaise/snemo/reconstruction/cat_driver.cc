@@ -496,7 +496,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     clustering_.add_solution(htcs, true);
     clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.grab_auxiliaries().update_string(
+    clustering_solution.get_auxiliaries().update_string(
         sdm::tracker_clustering_data::clusterizer_id_key(), CAT_ID);
 
     // Analyse the sequentiator output :
@@ -517,11 +517,11 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         {
           // Append a new cluster :
           sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
-          clustering_solution.grab_clusters().push_back(tch);
+          clustering_solution.get_clusters().push_back(tch);
         }
         sdm::tracker_cluster::handle_type& cluster_handle =
-            clustering_solution.grab_clusters().back();
-        cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
+            clustering_solution.get_clusters().back();
+        cluster_handle->set_cluster_id(clustering_solution.get_clusters().size() - 1);
         if (_store_result_as_properties_) {
           // 2012/06/28 XG : Adding
           // - tangency points

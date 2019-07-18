@@ -65,7 +65,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
       new snemo::datamodel::tracker_clustering_solution);
   snemo::datamodel::tracker_clustering_solution &tcs = htcs.grab();
   tcs.set_solution_id(0);
-  tcs.grab_auxiliaries().store_flag("mock");
+  tcs.get_auxiliaries().store_flag("mock");
 
   // Add a cluster:
   snemo::datamodel::tracker_clustering_solution::cluster_handle_type htc0(
@@ -205,12 +205,12 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits.push_back(hgghit);
-    tcs.grab_unclustered_hits().push_back(hgghit);
+    tcs.get_unclustered_hits().push_back(hgghit);
   }
 
-  tcs.grab_clusters().push_back(htc0);
-  tcs.grab_clusters().push_back(htc1);
-  tcs.grab_clusters().push_back(htc2);
+  tcs.get_clusters().push_back(htc0);
+  tcs.get_clusters().push_back(htc1);
+  tcs.get_clusters().push_back(htc2);
   tcd_.add_solution(htcs);
   tcs.tree_dump(std::cerr, "Tracker clustering solution:", "", true);
   std::cerr << "|-- "

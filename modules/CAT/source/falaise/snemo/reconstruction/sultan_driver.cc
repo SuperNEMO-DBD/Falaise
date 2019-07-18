@@ -563,7 +563,7 @@ int sultan_driver::_process_algo(
     clustering_.add_solution(htcs, true);
     clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.grab_auxiliaries().update_string(
+    clustering_solution.get_auxiliaries().update_string(
         sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_ID);
 
     const std::vector<st::sequence>& the_sequences = iscenario->sequences();
@@ -579,9 +579,9 @@ int sultan_driver::_process_algo(
       }
       // Append a new cluster :
       sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
-      clustering_solution.grab_clusters().push_back(tch);
+      clustering_solution.get_clusters().push_back(tch);
       sdm::tracker_cluster::handle_type& cluster_handle =
-          clustering_solution.grab_clusters().back();
+          clustering_solution.get_clusters().back();
       cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
       const st::experimental_helix& seq_helix = isequence->get_helix();
 
