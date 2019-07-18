@@ -53,14 +53,8 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   /// Alias for a collection of handles on calibrated tracker hits
   typedef std::vector<handle_type> collection_type;
 
-  /// Name of the property to store optional anode time
-  static const std::string& anode_time_key();
-
-  /// Name of the property to store optional bottom cathode time
-  static const std::string& bottom_cathode_time_key();
-
-  /// Name of the property to store optional top cathode time
-  static const std::string& top_cathode_time_key();
+  // Destructor
+  virtual ~calibrated_tracker_hit() = default;
 
   /// Return the hit ID
   int32_t get_id() const;
@@ -194,12 +188,6 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   /// Mark/unmark the hit as fake
   void set_fake(bool);
 
-  /// Default constructor
-  calibrated_tracker_hit();
-
-  // Destructor
-  virtual ~calibrated_tracker_hit();
-
   /// Check if minimal calibration informations are present to consider the hit as valid and usable
   bool is_valid() const;
 
@@ -209,9 +197,6 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   /// Invalidate calibration informations stored in the hit
   virtual void clear();
 
-  /// Apply a measurement functor on the hit
-  calibrated_tracker_hit& measure(i_measurement&);
-
   /// Smart print method
   virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
                          const std::string& a_indent = "", bool a_inherit = false) const;
@@ -220,26 +205,20 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   void dump() const;
 
  protected:
-  /// Set the X position of the center of the cell in the module coordinates system
-  void _set_x(double);
-
-  /// Set the Y position of the center of the cell in the module coordinates system
-  void _set_y(double);
-
   void _set_trait_bit(bool value_, uint32_t mask_);
 
   bool _get_trait_bit(uint32_t mask_) const;
 
  private:
-  uint32_t _traits_;      //!< Bitset for special traits
-  double _r_;             //!< Transverse drift distance within the cell coordinates system
-  double _sigma_r_;       //!< Transverse drift distance error
-  double _z_;             //!< Longitudinal position within the cell coordinates system
-  double _sigma_z_;       //!< Longitudinal position error
-  double _x_;             //!< X position of the anode wire within the module coordinates system
-  double _y_;             //!< Y position of the anode wire within the module coordinates system
-  double _delayed_time_;  //!< Delayed reference time
-  double _delayed_time_error_;  //!< Delayed reference time error
+  uint32_t _traits_{0x0};                                 //!< Bitset for special traits
+  double _r_{datatools::invalid_real()};                  //!< Transverse drift distance within the cell coordinates system
+  double _sigma_r_{datatools::invalid_real()};            //!< Transverse drift distance error
+  double _z_{datatools::invalid_real()};                  //!< Longitudinal position within the cell coordinates system
+  double _sigma_z_{datatools::invalid_real()};            //!< Longitudinal position error
+  double _x_{datatools::invalid_real()};                  //!< X position of the anode wire within the module coordinates system
+  double _y_{datatools::invalid_real()};                  //!< Y position of the anode wire within the module coordinates system
+  double _delayed_time_{datatools::invalid_real()};       //!< Delayed reference time
+  double _delayed_time_error_{datatools::invalid_real()}; //!< Delayed reference time error
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
