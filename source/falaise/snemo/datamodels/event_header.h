@@ -45,14 +45,14 @@ class event_header : public datatools::i_serializable,
     GENERATION_SIMULATED = 1  ///< Simulated event from the MC application
   };
 
-  /// Return the default label/name of a 'event header' bank
-  static const std::string &event_header_label();
+  /// Destructor
+  virtual ~event_header() = default;
 
   /// Return the event ID
   const datatools::event_id &get_id() const;
 
   /// Return the mutable event ID
-  datatools::event_id &grab_id();
+  datatools::event_id &get_id();
 
   /// Set the event ID
   void set_id(const datatools::event_id &);
@@ -61,7 +61,7 @@ class event_header : public datatools::i_serializable,
   const datatools::properties &get_properties() const;
 
   /// Return the mutable list of properties
-  datatools::properties &grab_properties();
+  datatools::properties &get_properties();
 
   /// Set the list of properties
   void set_properties(const datatools::properties &);
@@ -70,7 +70,7 @@ class event_header : public datatools::i_serializable,
   const snemo::datamodel::timestamp &get_timestamp() const;
 
   /// Return the mutable timestamp
-  snemo::datamodel::timestamp &grab_timestamp();
+  snemo::datamodel::timestamp &get_timestamp();
 
   /// Set the timestamp
   void set_timestamp(const snemo::datamodel::timestamp &);
@@ -87,12 +87,6 @@ class event_header : public datatools::i_serializable,
   /// Check if event record is simulated
   bool is_simulated() const;
 
-  /// Constructor
-  event_header();
-
-  /// Destructor
-  virtual ~event_header();
-
   /// Clear the event header internal data
   virtual void clear();
 
@@ -104,10 +98,10 @@ class event_header : public datatools::i_serializable,
   void dump() const;
 
  private:
-  datatools::event_id _id_;                 //!< Run/Event ID
-  generation_type _generation_;             //!< Generation flag
-  snemo::datamodel::timestamp _timestamp_;  //!< Reference time of the event
-  datatools::properties _properties_;       //!< Dictionary of properties
+  datatools::event_id _id_{};                 //!< Run/Event ID
+  generation_type _generation_{GENERATION_INVALID};             //!< Generation flag
+  snemo::datamodel::timestamp _timestamp_{};  //!< Reference time of the event
+  datatools::properties _properties_{};       //!< Dictionary of properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

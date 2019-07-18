@@ -155,8 +155,8 @@ int main(int argc_, char** argv_) {
     EH.set_id(datatools::event_id(666, 345));
     EH.set_timestamp(sdm::timestamp(1268644034, 1204));
     EH.set_generation(sdm::event_header::GENERATION_SIMULATED);
-    EH.grab_properties().store_flag("fake");
-    EH.grab_properties().store("date", 20120306);
+    EH.get_properties().store_flag("fake");
+    EH.get_properties().store("date", 20120306);
     EH.tree_dump(std::clog, "Event header('EH'): ");
 
     // Calibrated data bank :
