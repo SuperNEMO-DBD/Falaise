@@ -898,27 +898,24 @@ void browser_tracks::_update_tracker_clustering_data() {
                                 _get_colored_icon_("cluster", hex_str));
 
       // Get tracker hits stored in the current tracker cluster:
-      snemo::datamodel::calibrated_tracker_hit::collection_type &hits = a_cluster.grab_hits();
-      for (snemo::datamodel::calibrated_tracker_hit::collection_type::iterator igg = hits.begin();
-           igg != hits.end(); ++igg) {
-        snemo::datamodel::calibrated_tracker_hit &a_gg_hit = igg->grab();
+      for (auto& a_gg_hit : a_cluster.get_hits()) {
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
         label_hit.setf(std::ios::fixed, std::ios::floatfield);
-        label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_gg_hit.get_id()
-                  << " (r, z) = (" << a_gg_hit.get_r() / CLHEP::cm << ", "
-                  << a_gg_hit.get_z() / CLHEP::cm << ") cm";
+        label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_gg_hit->get_id()
+                  << " (r, z) = (" << a_gg_hit->get_r() / CLHEP::cm << ", "
+                  << a_gg_hit->get_z() / CLHEP::cm << ") cm";
 
         TGListTreeItem *item_hit = _tracks_list_box_->AddItem(
             item_cluster, label_hit.str().c_str(), _get_colored_icon_("geiger", hex_str, true),
             _get_colored_icon_("geiger", hex_str));
         item_hit->SetUserData((void *)(intptr_t) - (++icheck_id));
-        _base_hit_dictionnary_[-icheck_id] = &(a_gg_hit);
+        _base_hit_dictionnary_[-icheck_id] = &(*a_gg_hit);
 
         std::ostringstream tip_text;
         if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          a_gg_hit.tree_dump(tip_text);
+          a_gg_hit->tree_dump(tip_text);
         } else {
           tip_text << "Double click to highlight Geiger hit "
                    << "and to dump info on terminal";

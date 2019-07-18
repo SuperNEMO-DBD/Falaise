@@ -75,52 +75,8 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   htc0.grab().set_cluster_id(0);
   for (int i = 0; i < (int)gghits.size(); i++) {
     snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
-    tc0.grab_hits().push_back(gghit);
+    tc0.get_hits().push_back(gghit);
   }
-
-  /*
-  // A fake track:
-  for (int i = 0; i < 4; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new
-  snemo::datamodel::calibrated_tracker_hit); snemo::datamodel::calibrated_tracker_hit & gghit =
-  hgghit.grab(); gghit.set_hit_id(i); gghit.grab_geom_id().set_type(1204);
-    gghit.grab_geom_id().set_address(0, 1, i, 51);
-    gghit.set_z((25.0 - 1.8 * i + 3.2 * drand48()) * CLHEP::cm);
-    gghit.set_sigma_z(1.3 * CLHEP::cm);
-    gghit.set_r((0.1 + 2.1 * drand48()) * CLHEP::cm);
-    gghit.set_r(2.2 * CLHEP::cm);
-    gghit.set_sigma_r(0.3 * CLHEP::mm);
-    gghit.set_delayed(false);
-    gghit.set_bottom_cathode_missing(false);
-    gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
-    gghit.set_xy(cell_position.x(), cell_position.y());
-    // gghit.tree_dump(std::clog, "Generated geiger hit: ");
-    gghits.push_back(hgghit);
-  }
-
-  // A fake track:
-  for (int i = 0; i < 3; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(new
-  snemo::datamodel::calibrated_tracker_hit); snemo::datamodel::calibrated_tracker_hit & gghit =
-  hgghit.grab(); gghit.set_hit_id(i); gghit.grab_geom_id().set_type(1204);
-    gghit.grab_geom_id().set_address(0, 1, 5 - i, 52 + i);
-    gghit.set_z((17.0 + 1.3 * i + 1.7 * drand48()) * CLHEP::cm);
-    gghit.set_sigma_z(1.3 * CLHEP::cm);
-    gghit.set_r((0.1 + 2.1 * drand48()) * CLHEP::cm);
-    gghit.set_r(2.2 * CLHEP::cm);
-    gghit.set_sigma_r(0.3 * CLHEP::mm);
-    gghit.set_delayed(false);
-    gghit.set_bottom_cathode_missing(false);
-    gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
-    gghit.set_xy(cell_position.x(), cell_position.y());
-    // gghit.tree_dump(std::clog, "Generated geiger hit: ");
-    gghits.push_back(hgghit);
-  }
-  */
 
   // Another fake track:
   for (int i = 0; i < 6; i++) {
@@ -157,9 +113,9 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   htc1.grab().set_cluster_id(1);
   for (int i = 0; i < (int)gghits.size(); i++) {
     snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
-    if (gghit.get().get_auxiliaries().has_key("cluster_id")) {
-      if (gghit.get().get_auxiliaries().fetch_integer("cluster_id") == 1) {
-        tc1.grab_hits().push_back(gghit);
+    if (gghit->get_auxiliaries().has_key("cluster_id")) {
+      if (gghit->get_auxiliaries().fetch_integer("cluster_id") == 1) {
+        tc1.get_hits().push_back(gghit);
       }
     }
   }
@@ -216,13 +172,13 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   snemo::datamodel::tracker_clustering_solution::cluster_handle_type htc2(
       new snemo::datamodel::tracker_cluster);
   snemo::datamodel::tracker_cluster &tc2 = htc2.grab();
-  htc2.grab().grab_auxiliaries().store_flag("mock");
-  htc2.grab().set_cluster_id(2);
+  htc2->grab_auxiliaries().store_flag("mock");
+  htc2->set_cluster_id(2);
   for (int i = 0; i < (int)gghits.size(); i++) {
     snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
-    if (gghit.get().get_auxiliaries().has_key("cluster_id")) {
-      if (gghit.get().get_auxiliaries().fetch_integer("cluster_id") == 2) {
-        tc2.grab_hits().push_back(gghit);
+    if (gghit->get_auxiliaries().has_key("cluster_id")) {
+      if (gghit->get_auxiliaries().fetch_integer("cluster_id") == 2) {
+        tc2.get_hits().push_back(gghit);
       }
     }
   }

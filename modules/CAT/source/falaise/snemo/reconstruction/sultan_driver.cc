@@ -600,7 +600,7 @@ int sultan_driver::_process_algo(
       for (size_t i = 0; i < seqsz; i++) {
         const st::node& a_node = a_sequence.nodes()[i];
         int hit_id = a_node.c().id();
-        cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
+        cluster_handle->get_hits().push_back(gg_hits_mapping[hit_id]);
         DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
         const double xt = a_node.ep().x().value();

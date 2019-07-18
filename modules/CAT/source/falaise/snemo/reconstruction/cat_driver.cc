@@ -711,7 +711,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         for (int i = 0; i < (int)seqsz; i++) {
           const CAT::topology::node& a_node = a_sequence.nodes()[i];
           const int hit_id = a_node.c().id();
-          cluster_handle.grab().grab_hits().push_back(hits_mapping[hit_id]);
+          cluster_handle->get_hits().push_back(hits_mapping[hit_id]);
           hits_status[hit_id] = 1;
           DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 

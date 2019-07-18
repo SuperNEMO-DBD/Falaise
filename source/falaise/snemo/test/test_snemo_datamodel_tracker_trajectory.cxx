@@ -54,11 +54,11 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(hits[0]);
-    TC0.grab_hits().push_back(hits[1]);
-    TC0.grab_hits().push_back(hits[2]);
-    TC0.grab_hits().push_back(hits[3]);
-    TC0.grab_hits().push_back(hits[4]);
+    TC0.get_hits().push_back(hits[0]);
+    TC0.get_hits().push_back(hits[1]);
+    TC0.get_hits().push_back(hits[2]);
+    TC0.get_hits().push_back(hits[3]);
+    TC0.get_hits().push_back(hits[4]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;

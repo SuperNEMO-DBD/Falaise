@@ -80,11 +80,11 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC0 = hTC0.get();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(hits.at(0));
-    TC0.grab_hits().push_back(hits.at(1));
-    TC0.grab_hits().push_back(hits.at(2));
-    TC0.grab_hits().push_back(hits.at(3));
-    TC0.grab_hits().push_back(hits.at(4));
+    TC0.get_hits().push_back(hits.at(0));
+    TC0.get_hits().push_back(hits.at(1));
+    TC0.get_hits().push_back(hits.at(2));
+    TC0.get_hits().push_back(hits.at(3));
+    TC0.get_hits().push_back(hits.at(4));
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -99,12 +99,12 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC1 = hTC1.get();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.grab_hits().push_back(hits.at(10));
-    TC1.grab_hits().push_back(hits.at(11));
-    TC1.grab_hits().push_back(hits.at(12));
-    TC1.grab_hits().push_back(hits.at(13));
-    TC1.grab_hits().push_back(hits.at(14));
-    TC1.grab_hits().push_back(hits.at(15));
+    TC1.get_hits().push_back(hits.at(10));
+    TC1.get_hits().push_back(hits.at(11));
+    TC1.get_hits().push_back(hits.at(12));
+    TC1.get_hits().push_back(hits.at(13));
+    TC1.get_hits().push_back(hits.at(14));
+    TC1.get_hits().push_back(hits.at(15));
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;

@@ -139,7 +139,7 @@ int mock_tracker_clustering_driver::_process_algo(
     sdm::tracker_cluster::handle_type& cluster_handle = tc_solution.grab_clusters().back();
     DT_LOG_TRACE(get_logging_priority(),
                  "Current cluster id " << cluster_handle.get().get_cluster_id());
-    cluster_handle.grab().grab_hits().push_back(*igg);
+    cluster_handle->get_hits().push_back(*igg);
     // hits_ids.insert(a_gg_hit.get_hit_id());
     previous_gg_hit = a_gg_hit;
   }

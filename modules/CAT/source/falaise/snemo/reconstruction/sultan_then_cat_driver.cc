@@ -1185,7 +1185,7 @@ int sultan_then_cat_driver::_process_algo(
         for (int i = 0; i < (int)seqsz; i++) {
           const ct::node& a_node = a_sequence.nodes()[i];
           int hit_id = a_node.c().id();
-          cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
+          cluster_handle->get_hits().push_back(gg_hits_mapping[hit_id]);
           gg_hits_status[hit_id] = true;
 
           const double xt = a_node.ep().x().value();

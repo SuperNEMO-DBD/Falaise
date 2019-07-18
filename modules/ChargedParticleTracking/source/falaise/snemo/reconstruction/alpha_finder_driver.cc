@@ -429,11 +429,9 @@ void alpha_finder_driver::_find_short_track_(
         // If hits come from unclustered hits then add a new particle
         // Create a new cluster with only one delayed geiger hits and associate it
         // to the particle track trajectory
-        snemo::datamodel::tracker_cluster::handle_type a_cluster(
-            new snemo::datamodel::tracker_cluster);
-        a_cluster.grab().make_delayed();
-        snemo::datamodel::calibrated_tracker_hit::collection_type &hits =
-            a_cluster.grab().grab_hits();
+        auto a_cluster = datatools::make_handle<snemo::datamodel::tracker_cluster>();
+        a_cluster->make_delayed();
+        auto& hits = a_cluster->get_hits();
         hits.push_back(*ihit);
 
         // Build a new particle track
