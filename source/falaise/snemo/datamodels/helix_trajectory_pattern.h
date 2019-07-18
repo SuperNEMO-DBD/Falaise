@@ -33,10 +33,10 @@ class helix_trajectory_pattern : public base_trajectory_pattern {
   helix_trajectory_pattern();
 
   /// Destructor
-  virtual ~helix_trajectory_pattern();
+  virtual ~helix_trajectory_pattern() = default;
 
   /// Get a reference to the mutable helix embedded model
-  geomtools::helix_3d& grab_helix();
+  geomtools::helix_3d& get_helix();
 
   /// Get a reference to the non mutable helix embedded model
   const geomtools::helix_3d& get_helix() const;
@@ -45,7 +45,7 @@ class helix_trajectory_pattern : public base_trajectory_pattern {
   virtual const geomtools::i_shape_1d& get_shape() const;
 
  private:
-  geomtools::helix_3d _helix_;  //!< The helix embedded model
+  geomtools::helix_3d _helix_{};  //!< The helix embedded model
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

@@ -28,28 +28,6 @@ int main(/* int argc_, char ** argv_ */) {
     std::clog << "Test program for the 'snemo::datamodel::tracker_trajectory_solution' class."
               << std::endl;
 
-    /*
-    bool debug = false;
-    int iarg = 1;
-    while(iarg < argc_) {
-      std::string token = argv_[iarg];
-
-      if(token[0] == '-') {
-        std::string option = token;
-        if((option == "-d") ||(option == "--debug")) {
-          debug = true;
-        } else {
-          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
-        }
-      } else {
-        std::string argument = token;
-        {
-          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
-        }
-      }
-      iarg++;
-    }
-    */
 
     namespace sdm = snemo::datamodel;
 
@@ -184,12 +162,12 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP1;
     sdm::helix_trajectory_pattern* HTP = new sdm::helix_trajectory_pattern;
     // access to the internal helix model :
-    HTP->grab_helix().set_radius(0.75 * CLHEP::m);
-    HTP->grab_helix().set_center(
+    HTP->get_helix().set_radius(0.75 * CLHEP::m);
+    HTP->get_helix().set_center(
         geomtools::vector_3d(1.3 * CLHEP::m, -0.5 * CLHEP::m, 1.2 * CLHEP::m));
-    HTP->grab_helix().set_step(0.10 * CLHEP::m);
-    HTP->grab_helix().set_angle1(0.25 * M_PI * CLHEP::radian);
-    HTP->grab_helix().set_angle2(0.65 * M_PI * CLHEP::radian);
+    HTP->get_helix().set_step(0.10 * CLHEP::m);
+    HTP->get_helix().set_angle1(0.25 * M_PI * CLHEP::radian);
+    HTP->get_helix().set_angle2(0.65 * M_PI * CLHEP::radian);
     hLTP1.reset(HTP);
 
     DATATOOLS_HANDLE_DECLARE_NEW(hTJ1, sdm::tracker_trajectory);

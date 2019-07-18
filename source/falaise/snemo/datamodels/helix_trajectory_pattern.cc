@@ -19,12 +19,9 @@ const std::string &helix_trajectory_pattern::pattern_id() {
 
 helix_trajectory_pattern::helix_trajectory_pattern()
     : base_trajectory_pattern(helix_trajectory_pattern::pattern_id()) {
-  return;
 }
 
-helix_trajectory_pattern::~helix_trajectory_pattern() { return; }
-
-geomtools::helix_3d &helix_trajectory_pattern::grab_helix() { return _helix_; }
+geomtools::helix_3d &helix_trajectory_pattern::get_helix() { return _helix_; }
 
 const geomtools::helix_3d &helix_trajectory_pattern::get_helix() const { return _helix_; }
 
