@@ -29,12 +29,10 @@ void tracker_clustering_data_cut::_set_defaults() {
   _cluster_range_max_ = -1;
   _unclustered_range_min_ = -1;
   _unclustered_range_max_ = -1;
-  return;
 }
 
 void tracker_clustering_data_cut::set_TCD_label(const std::string& TCD_label_) {
   _TCD_label_ = TCD_label_;
-  return;
 }
 
 const std::string& tracker_clustering_data_cut::get_TCD_label() const { return _TCD_label_; }
@@ -59,7 +57,6 @@ bool tracker_clustering_data_cut::is_mode_range_unclustered_hits() const {
 
 void tracker_clustering_data_cut::set_flag_name(const std::string& flag_name_) {
   _flag_name_ = flag_name_;
-  return;
 }
 
 const std::string& tracker_clustering_data_cut::get_flag_name() const { return _flag_name_; }
@@ -68,19 +65,16 @@ tracker_clustering_data_cut::tracker_clustering_data_cut(
     datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 tracker_clustering_data_cut::~tracker_clustering_data_cut() {
   if (is_initialized()) this->tracker_clustering_data_cut::reset();
-  return;
 }
 
 void tracker_clustering_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void tracker_clustering_data_cut::initialize(const datatools::properties& configuration_,
@@ -215,13 +209,9 @@ int tracker_clustering_data_cut::_accept() {
       ER.get<snemo::datamodel::tracker_clustering_data>(_TCD_label_);
 
   // Check if the tracker clustering data has a property flag with a specific name :
-  bool check_flag = true;
+  bool check_flag = false;
   if (is_mode_flag()) {
-    DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
-    const bool check = TCD.get_auxiliaries().has_flag(_flag_name_);
-    if (!check) {
-      check_flag = false;
-    }
+    DT_LOG_ERROR(get_logging_priority(), "FLAG mode no longer supported");
   }
 
   // Check if the tracker clustering data has clusters :

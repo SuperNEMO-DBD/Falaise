@@ -272,8 +272,8 @@ int main(int argc_, char** argv_) {
     }
 
     TCD.add_solution(hTCS0, true);
-    TCD.grab_auxiliaries().store_flag("fake_tcd");
-    TCD.grab_auxiliaries().store("tracker_clustering_algo", "warwick");
+    //TCD.grab_auxiliaries().store_flag("fake_tcd");
+    //TCD.grab_auxiliaries().store("tracker_clustering_algo", "warwick");
     TCD.tree_dump(std::clog, "Tracker clustering data('TCD') : ");
     std::clog << std::endl;
 

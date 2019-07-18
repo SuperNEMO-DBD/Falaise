@@ -809,7 +809,7 @@ void browser_tracks::_update_tracker_clustering_data() {
   }
 
   snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
-      tcd.grab_solutions();
+      tcd.get_solutions();
   for (snemo::datamodel::tracker_clustering_data::solution_col_type::iterator isolution =
            cluster_solutions.begin();
        isolution != cluster_solutions.end(); ++isolution) {
