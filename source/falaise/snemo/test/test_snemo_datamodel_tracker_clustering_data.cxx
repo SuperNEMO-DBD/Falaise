@@ -151,7 +151,7 @@ int main(int argc_, char** argv_) {
     sdm::event_record ER;
 
     // Event header bank :
-    sdm::event_header& EH = ER.add<sdm::event_header>(sdm::data_info::EVENT_HEADER_LABEL);
+    sdm::event_header& EH = ER.add<sdm::event_header>(sdm::data_info::default_event_header_label());
     EH.set_id(datatools::event_id(666, 345));
     EH.set_timestamp(sdm::timestamp(1268644034, 1204));
     EH.set_generation(sdm::event_header::GENERATION_SIMULATED);
@@ -160,7 +160,7 @@ int main(int argc_, char** argv_) {
     EH.tree_dump(std::clog, "Event header('EH'): ");
 
     // Calibrated data bank :
-    sdm::calibrated_data& CD = ER.add<sdm::calibrated_data>(sdm::data_info::CALIBRATED_DATA_LABEL);
+    sdm::calibrated_data& CD = ER.add<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label());
     // Populate a collection of handles on Geiger hits :
     for (int i = 0; i < 18; ++i) {
       sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
@@ -200,7 +200,7 @@ int main(int argc_, char** argv_) {
 
     // Tracker clustering data bank :
     sdm::tracker_clustering_data& TCD =
-        ER.add<sdm::tracker_clustering_data>(sdm::data_info::TRACKER_CLUSTERING_DATA_LABEL);
+        ER.add<sdm::tracker_clustering_data>(sdm::data_info::default_tracker_clustering_data_label());
 
     // Get a reference to the collection of calibrated Geiger hits from the 'CD' bank :
     sdm::calibrated_data::tracker_hit_collection_type& gg_hits = CD.calibrated_tracker_hits();
