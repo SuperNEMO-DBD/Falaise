@@ -411,11 +411,11 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
             "guess", a_fit_solution.auxiliaries.fetch_string("guess"));
 
         const geomtools::vector_3d center(a_fit_solution.x0, a_fit_solution.y0, a_fit_solution.z0);
-        htp->grab_helix().set_center(center);
-        htp->grab_helix().set_radius(a_fit_solution.r);
-        htp->grab_helix().set_step(a_fit_solution.step);
-        htp->grab_helix().set_angle1(a_fit_solution.angle_1);
-        htp->grab_helix().set_angle2(a_fit_solution.angle_2);
+        htp->get_helix().set_center(center);
+        htp->get_helix().set_radius(a_fit_solution.r);
+        htp->get_helix().set_step(a_fit_solution.step);
+        htp->get_helix().set_angle1(a_fit_solution.angle_1);
+        htp->get_helix().set_angle2(a_fit_solution.angle_2);
       }
 
       // Line fit solutions:
@@ -461,7 +461,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         }
 
         // compute the trajectory segment in the g.r.f(lab) frame:
-        geomtools::line_3d& l3d = ltp->grab_segment();
+        geomtools::line_3d& l3d = ltp->get_segment();
         TrackFit::line_fit_mgr::convert_solution(this->get_hits_referential(), a_fit_solution,
                                                  this->get_working_referential(), l3d);
       }

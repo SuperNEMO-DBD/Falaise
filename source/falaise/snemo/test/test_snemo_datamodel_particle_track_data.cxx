@@ -23,9 +23,9 @@ int main(/*int argc_, char ** argv_*/) {
     datatools::handle<sdm::base_trajectory_pattern> hLTP0;
     sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
     // access to the internal geometry model :
-    LTP->grab_segment().set_first(
+    LTP->get_segment().set_first(
         geomtools::vector_3d(3. * CLHEP::mm, 5. * CLHEP::mm, 7. * CLHEP::mm));
-    LTP->grab_segment().set_last(
+    LTP->get_segment().set_last(
         geomtools::vector_3d(13. * CLHEP::mm, -5. * CLHEP::mm, 12. * CLHEP::mm));
     hLTP0.reset(LTP);
 

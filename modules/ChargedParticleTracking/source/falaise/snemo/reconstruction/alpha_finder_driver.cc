@@ -509,8 +509,8 @@ void alpha_finder_driver::_build_alpha_particle_track_(
   // Set trajectory pattern
   snemo::datamodel::line_trajectory_pattern *a_line = new snemo::datamodel::line_trajectory_pattern;
   a_trajectory.set_pattern_handle(a_line);
-  a_line->grab_segment().set_first(first_vertex);
-  a_line->grab_segment().set_last(last_vertex);
+  a_line->get_segment().set_first(first_vertex);
+  a_line->get_segment().set_last(last_vertex);
   a_short_alpha.set_trajectory_handle(htrajectory);
 
   // Set a alpha delayed time based on Geiger delayed times and store as

@@ -142,8 +142,8 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP0;
     sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
     // access to the internal line model :
-    LTP->grab_segment().set_first(geomtools::vector_3d(3., 5., 7.));
-    LTP->grab_segment().set_last(geomtools::vector_3d(13., -5., 12.));
+    LTP->get_segment().set_first(geomtools::vector_3d(3., 5., 7.));
+    LTP->get_segment().set_last(geomtools::vector_3d(13., -5., 12.));
     hLTP0.reset(LTP);
 
     DATATOOLS_HANDLE_DECLARE_NEW(hTJ0, sdm::tracker_trajectory);
