@@ -1268,7 +1268,7 @@ void browser_tracks::_update_particle_track_data() {
 
     // Get associated vertices
     if (a_particle.has_vertices()) {
-      snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.grab_vertices();
+      snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.get_vertices();
       for (snemo::datamodel::particle_track::vertex_collection_type::iterator ivtx = vts.begin();
            ivtx != vts.end(); ++ivtx) {
         geomtools::blur_spot &a_vertex = ivtx->grab();
@@ -1315,7 +1315,7 @@ void browser_tracks::_update_particle_track_data() {
     // Get associated calorimeter
     if (a_particle.has_associated_calorimeter_hits()) {
       snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-          a_particle.grab_associated_calorimeter_hits();
+          a_particle.get_associated_calorimeter_hits();
 
       for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator it_hit =
                cc_collection.begin();

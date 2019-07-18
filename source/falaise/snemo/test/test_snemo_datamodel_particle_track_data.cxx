@@ -72,8 +72,8 @@ int main(/*int argc_, char ** argv_*/) {
     hPT0.grab().set_track_id(0);
     hPT0.grab().set_charge(sdm::particle_track::positive);
     hPT0.grab().set_trajectory_handle(hTJ0);
-    hPT0.grab().grab_vertices().push_back(hV0);
-    hPT0.grab().grab_vertices().push_back(hV1);
+    hPT0.grab().get_vertices().push_back(hV0);
+    hPT0.grab().get_vertices().push_back(hV1);
     hPT0.grab().grab_auxiliaries().store_flag("fake_positron");
     hPT0.get().tree_dump(std::clog, "Particle track : ");
 

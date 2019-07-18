@@ -439,7 +439,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
             snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
             // a_gamma.grab_vertices().push_back(hBSv);
-            a_gamma.grab_vertices().insert(a_gamma.grab_vertices().begin(), hBSv);
+            a_gamma.get_vertices().insert(a_gamma.get_vertices().begin(), hBSv);
             geomtools::blur_spot& spot_v = hBSv.grab();
             spot_v.set_hit_id(0);
             spot_v.grab_auxiliaries().store(
@@ -497,7 +497,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
             // a_gamma.grab_associated_calorimeter_hits(); hits.insert(hits.begin(),
             // the_calorimeters.front());
             snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
-            a_gamma.grab_vertices().insert(a_gamma.grab_vertices().begin(), hBSv);
+            a_gamma.get_vertices().insert(a_gamma.get_vertices().begin(), hBSv);
             geomtools::blur_spot& spot_v = hBSv.grab();
             spot_v.set_hit_id(a_calo_hit.get_hit_id());
             spot_v.set_geom_id(a_calo_hit.get_geom_id());

@@ -253,7 +253,7 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
 
   // Loop over reconstructed vertices
   snemo::datamodel::particle_track::vertex_collection_type& the_vertices =
-      particle_.grab_vertices();
+      particle_.get_vertices();
   for (snemo::datamodel::particle_track::vertex_collection_type::iterator ivertex =
            the_vertices.begin();
        ivertex != the_vertices.end(); ++ivertex) {
@@ -332,7 +332,7 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
     const snemo::datamodel::calibrated_calorimeter_hit& a_calo =
         calo_collection.begin()->second.get();
     const geomtools::geom_id& a_gid = a_calo.get_geom_id();
-    particle_.grab_associated_calorimeter_hits().push_back(calo_collection.begin()->second);
+    particle_.get_associated_calorimeter_hits().push_back(calo_collection.begin()->second);
     // Add a private property
     calorimeter_utils::flag_as(a_calo, calorimeter_utils::associated_flag());
     // Set the geom_id of the corresponding vertex to the calorimeter hit geom_id

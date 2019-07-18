@@ -232,7 +232,7 @@ void alpha_finder_driver::_find_delayed_unfitted_cluster_(
       snemo::datamodel::particle_track &a_particle = particles.back().grab();
       const datatools::properties &aux = a_particle.get_auxiliaries();
       if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle.has_trajectory()) {
-        snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.grab_trajectory();
+        snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.get_trajectory();
         a_trajectory.set_cluster_handle(*iclus);
       }
     }
@@ -445,7 +445,7 @@ void alpha_finder_driver::_find_short_track_(
         snemo::datamodel::particle_track &a_particle = particles.back().grab();
         const datatools::properties &aux = a_particle.get_auxiliaries();
         if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle.has_trajectory()) {
-          snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.grab_trajectory();
+          snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.get_trajectory();
           a_trajectory.set_cluster_handle(a_cluster);
         }
       }
@@ -535,7 +535,7 @@ void alpha_finder_driver::_build_alpha_particle_track_(
   // 'VERTEX_ON_WIRE'; the former will be set given its relative position
   // wrt to detector geometry.
   snemo::datamodel::particle_track::vertex_collection_type &vertices =
-      a_short_alpha.grab_vertices();
+      a_short_alpha.get_vertices();
   {
     // Vertex on wire
     snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);

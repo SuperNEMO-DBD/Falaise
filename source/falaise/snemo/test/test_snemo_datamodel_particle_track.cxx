@@ -70,8 +70,8 @@ int main(/* int argc_, char ** argv_ */) {
     PT0.set_track_id(0);
     PT0.set_trajectory_handle(hTJ0);
     PT0.set_charge(sdm::particle_track::positive);
-    PT0.grab_vertices().push_back(hV0);
-    PT0.grab_vertices().push_back(hV1);
+    PT0.get_vertices().push_back(hV0);
+    PT0.get_vertices().push_back(hV1);
     PT0.grab_auxiliaries().store_flag("fake_electron");
     PT0.tree_dump(std::clog, "Particle track : ");
 

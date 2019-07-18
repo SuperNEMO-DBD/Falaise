@@ -126,40 +126,21 @@ int particle_track::get_track_id() const { return get_hit_id(); }
 
 void particle_track::set_track_id(int32_t track_id_) {
   set_hit_id(track_id_);
-  return;
-}
-
-void particle_track::invalidate_track_id() {
-  invalidate_hit_id();
-  return;
 }
 
 void particle_track::set_charge(charge_type charge_) {
   _charge_from_source_ = charge_;
-  return;
 }
 
 particle_track::charge_type particle_track::get_charge() const { return _charge_from_source_; }
-
-particle_track::particle_track() {
-  _charge_from_source_ = invalid;
-  invalidate_track_id();
-  return;
-}
-
-particle_track::~particle_track() {
-  this->reset();
-  return;
-}
 
 bool particle_track::has_trajectory() const { return _trajectory_.has_data(); }
 
 void particle_track::detach_trajectory() {
   _trajectory_.reset();
-  return;
 }
 
-tracker_trajectory::handle_type& particle_track::grab_trajectory_handle() { return _trajectory_; }
+tracker_trajectory::handle_type& particle_track::get_trajectory_handle() { return _trajectory_; }
 
 const tracker_trajectory::handle_type& particle_track::get_trajectory_handle() const {
   return _trajectory_;
@@ -168,21 +149,19 @@ const tracker_trajectory::handle_type& particle_track::get_trajectory_handle() c
 void particle_track::set_trajectory_handle(
     const tracker_trajectory::handle_type& trajectory_handle_) {
   _trajectory_ = trajectory_handle_;
-  return;
 }
 
-tracker_trajectory& particle_track::grab_trajectory() { return _trajectory_.grab(); }
+tracker_trajectory& particle_track::get_trajectory() { return *_trajectory_; }
 
-const tracker_trajectory& particle_track::get_trajectory() const { return _trajectory_.get(); }
+const tracker_trajectory& particle_track::get_trajectory() const { return *_trajectory_; }
 
 bool particle_track::has_vertices() const { return _vertices_.size() > 0; }
 
 void particle_track::reset_vertices() {
   _vertices_.clear();
-  return;
 }
 
-particle_track::vertex_collection_type& particle_track::grab_vertices() { return _vertices_; }
+particle_track::vertex_collection_type& particle_track::get_vertices() { return _vertices_; }
 
 const particle_track::vertex_collection_type& particle_track::get_vertices() const {
   return _vertices_;
@@ -192,23 +171,21 @@ size_t particle_track::fetch_vertices(vertex_collection_type& vertices_, const u
                                       const bool clear_) const {
   if (clear_) vertices_.clear();
   size_t ivtx = 0;
-  for (vertex_collection_type::const_iterator i = get_vertices().begin(); i != get_vertices().end();
-       ++i) {
-    const handle_spot& a_vertex = *i;
-    const datatools::properties& aux = a_vertex.get().get_auxiliaries();
+  for (const auto& a_vertex : get_vertices()) {
+    const datatools::properties& aux = a_vertex->get_auxiliaries();
     std::string vtx_type;
     if (aux.has_key(vertex_type_key())) {
       vtx_type = aux.fetch_string(vertex_type_key());
     }
     const bool has_vertex_on_foil =
-        (flags_ & VERTEX_ON_SOURCE_FOIL) && vertex_is_on_source_foil(a_vertex.get());
+        (flags_ & VERTEX_ON_SOURCE_FOIL) && vertex_is_on_source_foil(*a_vertex);
     const bool has_vertex_on_calo =
-        (flags_ & VERTEX_ON_MAIN_CALORIMETER) && vertex_is_on_main_calorimeter(a_vertex.get());
+        (flags_ & VERTEX_ON_MAIN_CALORIMETER) && vertex_is_on_main_calorimeter(*a_vertex);
     const bool has_vertex_on_xcalo =
-        (flags_ & VERTEX_ON_X_CALORIMETER) && vertex_is_on_x_calorimeter(a_vertex.get());
+        (flags_ & VERTEX_ON_X_CALORIMETER) && vertex_is_on_x_calorimeter(*a_vertex);
     const bool has_vertex_on_gveto =
-        (flags_ & VERTEX_ON_GAMMA_VETO) && vertex_is_on_gamma_veto(a_vertex.get());
-    const bool has_vertex_on_wire = (flags_ & VERTEX_ON_WIRE) && vertex_is_on_wire(a_vertex.get());
+        (flags_ & VERTEX_ON_GAMMA_VETO) && vertex_is_on_gamma_veto(*a_vertex);
+    const bool has_vertex_on_wire = (flags_ & VERTEX_ON_WIRE) && vertex_is_on_wire(*a_vertex);
 
     if (has_vertex_on_foil || has_vertex_on_calo || has_vertex_on_xcalo || has_vertex_on_gveto ||
         has_vertex_on_wire) {
@@ -225,10 +202,9 @@ bool particle_track::has_associated_calorimeter_hits() const {
 
 void particle_track::reset_associated_calorimeter_hits() {
   _associated_calorimeter_hits_.clear();
-  return;
 }
 
-calibrated_calorimeter_hit::collection_type& particle_track::grab_associated_calorimeter_hits() {
+calibrated_calorimeter_hit::collection_type& particle_track::get_associated_calorimeter_hits() {
   return _associated_calorimeter_hits_;
 }
 
@@ -239,7 +215,6 @@ const calibrated_calorimeter_hit::collection_type& particle_track::get_associate
 
 void particle_track::reset() {
   this->clear();
-  return;
 }
 
 void particle_track::clear() {
@@ -250,7 +225,6 @@ void particle_track::clear() {
 
   invalidate_track_id();
   _charge_from_source_ = invalid;
-  return;
 }
 
 void particle_track::tree_dump(std::ostream& out_, const std::string& title_,
@@ -329,8 +303,6 @@ void particle_track::tree_dump(std::ostream& out_, const std::string& title_,
     out_ << "Hit Id=" << calo_hit.get_hit_id() << " @ " << calo_hit.get_geom_id();
     out_ << std::endl;
   }
-
-  return;
 }
 
 // serial tag for datatools::serialization::i_serializable interface :

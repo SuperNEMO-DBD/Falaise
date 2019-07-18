@@ -172,13 +172,13 @@ int gamma_clustering_driver::_process_algo(
     const cluster_type& a_cluster = the_reconstructed_gammas.at(i);
     for (cluster_type::const_iterator j = a_cluster.begin(); j != a_cluster.end(); ++j) {
       const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = j->second.get();
-      hPT.grab().grab_associated_calorimeter_hits().push_back(j->second);
+      hPT.grab().get_associated_calorimeter_hits().push_back(j->second);
 
       const geomtools::geom_id& a_gid = a_calo_hit.get_geom_id();
 
       // Build calorimeter vertices
       snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);
-      hPT.grab().grab_vertices().push_back(hBS);
+      hPT.grab().get_vertices().push_back(hBS);
       geomtools::blur_spot& spot = hBS.grab();
       spot.set_hit_id(a_calo_hit.get_hit_id());
       spot.set_geom_id(a_gid);
