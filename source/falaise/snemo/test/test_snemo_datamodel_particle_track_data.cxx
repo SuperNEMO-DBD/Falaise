@@ -84,7 +84,6 @@ int main(/*int argc_, char ** argv_*/) {
     sdm::particle_track_data& PTD =
         ER.add<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label());
     PTD.add_particle(hPT0);
-    PTD.grab_auxiliaries().store_flag("test_ptd");
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any
