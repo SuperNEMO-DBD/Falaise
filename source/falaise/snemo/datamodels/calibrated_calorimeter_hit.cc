@@ -24,39 +24,25 @@ double calibrated_calorimeter_hit::get_time() const { return _time_; }
 
 void calibrated_calorimeter_hit::set_time(double time_) {
   _time_ = time_;
-  return;
 }
 
 double calibrated_calorimeter_hit::get_sigma_time() const { return _sigma_time_; }
 
 void calibrated_calorimeter_hit::set_sigma_time(double sigma_time_) {
   _sigma_time_ = sigma_time_;
-  return;
 }
 
 double calibrated_calorimeter_hit::get_energy() const { return _energy_; }
 
 void calibrated_calorimeter_hit::set_energy(double energy_) {
   _energy_ = energy_;
-  return;
 }
 
 double calibrated_calorimeter_hit::get_sigma_energy() const { return _sigma_energy_; }
 
 void calibrated_calorimeter_hit::set_sigma_energy(double sigma_energy_) {
   _sigma_energy_ = sigma_energy_;
-  return;
 }
-
-calibrated_calorimeter_hit::calibrated_calorimeter_hit() : base_hit() {
-  datatools::invalidate(_energy_);
-  datatools::invalidate(_sigma_energy_);
-  datatools::invalidate(_time_);
-  datatools::invalidate(_sigma_time_);
-  return;
-}
-
-calibrated_calorimeter_hit::~calibrated_calorimeter_hit() { return; }
 
 bool calibrated_calorimeter_hit::is_valid() const {
   return this->base_hit::is_valid() && std::isnormal(_energy_);
@@ -68,7 +54,6 @@ void calibrated_calorimeter_hit::invalidate() {
   datatools::invalidate(_sigma_energy_);
   datatools::invalidate(_time_);
   datatools::invalidate(_sigma_time_);
-  return;
 }
 
 void calibrated_calorimeter_hit::tree_dump(std::ostream& out_, const std::string& title_,
@@ -88,13 +73,10 @@ void calibrated_calorimeter_hit::tree_dump(std::ostream& out_, const std::string
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "Sigma(energy) : " << _sigma_energy_ / CLHEP::keV << " keV" << std::endl;
-
-  return;
 }
 
 void calibrated_calorimeter_hit::dump() const {
   this->tree_dump(std::clog, "snemo::datamodel::calibrated_calorimeter_hit");
-  return;
 }
 
 }  // end of namespace datamodel
