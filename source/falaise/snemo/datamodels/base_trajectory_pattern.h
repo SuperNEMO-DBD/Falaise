@@ -13,10 +13,9 @@
 #include <string>
 
 // Third party:
-// - Bayeux/datatools:
-#include <datatools/i_serializable.h>
-// - Bayeux/geomtools:
-#include <geomtools/i_shape_1d.h>
+// - Bayeux
+#include <bayeux/datatools/i_serializable.h>
+#include <bayeux/geomtools/i_shape_1d.h>
 
 namespace snemo {
 
@@ -25,6 +24,14 @@ namespace datamodel {
 /// \brief The base class of fitted trajectory pattern
 class base_trajectory_pattern : public datatools::i_serializable {
  public:
+  /// Constructors
+  base_trajectory_pattern() = default;
+
+  base_trajectory_pattern(const std::string& pattern_id_);
+
+  /// Destructor
+  virtual ~base_trajectory_pattern() = default;
+
   /// Check if a valid pattern ID exists
   bool has_pattern_id() const;
 
@@ -34,18 +41,12 @@ class base_trajectory_pattern : public datatools::i_serializable {
   /// Return the reference to the 1D shape associated to the trajectory
   virtual const geomtools::i_shape_1d& get_shape() const = 0;
 
-  /// Constructor
-  base_trajectory_pattern(const std::string& pattern_id_ = "");
-
-  /// Destructor
-  virtual ~base_trajectory_pattern();
-
  protected:
   /// Set the pattern ID
   void _set_pattern_id(const std::string& pattern_id_);
 
  private:
-  std::string _pattern_id_;  //!< The pattern identifier
+  std::string _pattern_id_{""};  //!< The pattern identifier
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
