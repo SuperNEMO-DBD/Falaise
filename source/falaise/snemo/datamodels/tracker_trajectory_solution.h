@@ -52,12 +52,6 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   /// Collection of handles on tracker clusters
   typedef std::vector<cluster_handle_type> cluster_col_type;
 
-  /// Default constructor
-  tracker_trajectory_solution();
-
-  /// Default constructor
-  virtual ~tracker_trajectory_solution();
-
   /// Reset the tracker cluster solution
   void reset();
 
@@ -92,15 +86,7 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   /// Return a non mutable reference on the reference clustering solution
   const tracker_clustering_solution& get_clustering_solution() const;
 
-  /*** Auxiliaries ***/
-
-  /// Return a mutable reference on the container of auxiliary properties
-  datatools::properties& grab_auxiliaries();
-
-  /// Return a non mutable reference on the container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
-
-  /// Check if there is trajectories
+   /// Check if there is trajectories
   bool has_trajectories() const;
 
   /// Return a mutable reference on the container of trajectories
@@ -131,8 +117,17 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
- private:
-  int32_t _solution_id_;                                  //!< Unique solution ID
+  /*** Auxiliaries ***/
+  /// Return a mutable reference on the container of auxiliary properties
+  ///\deprecated properties should not be used in core data types
+  datatools::properties& get_auxiliaries() __attribute__((deprecated));
+
+  /// Return a non mutable reference on the container of auxiliary properties
+  ///\deprecated properties should not be used in core data types
+  const datatools::properties& get_auxiliaries() const __attribute__((deprecated));
+
+private:
+  int32_t _solution_id_ = -1;                                  //!< Unique solution ID
   handle_clustering_solution_type _clustering_solution_;  //!< The reference clustering solution
   trajectory_col_type
       _trajectories_;  //!< Collection of handles on trajectories associated to clusters

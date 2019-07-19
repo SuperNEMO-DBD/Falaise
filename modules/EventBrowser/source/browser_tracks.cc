@@ -999,8 +999,12 @@ void browser_tracks::_update_tracker_trajectory_data() {
     _tracks_list_box_->OpenItem(item_solution);
     item_solution->SetUserData((void *)(intptr_t)++icheck_id);
 
+// DONT couple data model to view
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Get solution auxiliaries:
-    datatools::properties &a_auxiliaries = a_solution.grab_auxiliaries();
+    datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
+#pragma GCC diagnostic pop
 
     if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));

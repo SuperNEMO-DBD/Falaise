@@ -192,7 +192,6 @@ int main(/* int argc_, char ** argv_ */) {
     TJS0.set_clustering_solution(hTCS0);
     TJS0.grab_trajectories().push_back(hTJ0);
     TJS0.grab_trajectories().push_back(hTJ1);
-    TJS0.grab_auxiliaries().store_flag("test");
     TJS0.tree_dump(std::clog, "Tracker trajectory solution #0 : ");
 
     std::clog << "Store..." << std::endl;
