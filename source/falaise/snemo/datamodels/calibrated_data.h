@@ -93,12 +93,6 @@ class calibrated_data : public datatools::i_serializable,
   /// Reset
   void reset();
 
-  /// Constructor
-  calibrated_data();
-
-  /// Destructor
-  virtual ~calibrated_data();
-
   /// Clear attributes
   virtual void clear();
 

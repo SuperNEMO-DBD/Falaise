@@ -151,7 +151,7 @@ void tracker_trajectory_solution::tree_dump(std::ostream& out_, const std::strin
        << "Unfitted clusters : " << _unfitted_clusters_.size() << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
-  if (_auxiliaries_.size() == 0) {
+  if (_auxiliaries_.empty()) {
     out_ << "<empty>";
   }
   out_ << std::endl;

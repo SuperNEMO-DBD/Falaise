@@ -53,37 +53,33 @@ void event_header::clear() {
 
 void event_header::tree_dump(std::ostream& out_, const std::string& title_,
                              const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
   if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
+    out_ << indent_ << title_ << std::endl;
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Id : " << std::endl;
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Id : " << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent;
+    indent_oss << indent_;
     indent_oss << datatools::i_tree_dumpable::skip_tag;
     _id_.tree_dump(out_, "", indent_oss.str());
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Timestamp : " << _timestamp_ << std::endl;
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Timestamp : " << _timestamp_ << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Properties : ";
-  if (_properties_.size() == 0) {
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Properties : ";
+  if (_properties_.empty()) {
     out_ << "<empty>";
   }
   out_ << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent;
+    indent_oss << indent_;
     indent_oss << datatools::i_tree_dumpable::skip_tag;
     _properties_.tree_dump(out_, "", indent_oss.str());
   }
 
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "Generation : " << _generation_;
   if (is_simulated()) {
     out_ << ' ' << "[simulated]";

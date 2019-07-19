@@ -97,7 +97,6 @@ void mock_raw_tracker_hit::invalidate_times() {
   _store &= ~STORE_TIMES;
 }
 
-
 bool mock_raw_tracker_hit::is_valid() const {
   return this->base_hit::is_valid() && datatools::is_valid(_ref_time_);
 }
@@ -108,38 +107,34 @@ void mock_raw_tracker_hit::invalidate() {
   invalidate_times();
 }
 
-void mock_raw_tracker_hit::clear() {
-  mock_raw_tracker_hit::invalidate();
-}
+void mock_raw_tracker_hit::clear() { mock_raw_tracker_hit::invalidate(); }
 
 void mock_raw_tracker_hit::tree_dump(std::ostream& out_, const std::string& title_,
                                      const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) indent = indent_;
   base_hit::tree_dump(out_, title_, indent_, true);
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Reference time    : " << _ref_time_ / CLHEP::ns << " ns" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Sigma reference time    : " << _sigma_ref_time_ / CLHEP::ns << " ns" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Drift time        : " << _drift_time_ / CLHEP::ns << " ns" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Sigma drift time  : " << _sigma_drift_time_ / CLHEP::ns << " ns" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Bottom time       : " << _bottom_time_ / CLHEP::microsecond << " us" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Sigma bottom time : " << _sigma_bottom_time_ / CLHEP::microsecond << " us" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag
+  out_ << indent_ << datatools::i_tree_dumpable::tag
        << "Top time          : " << _top_time_ / CLHEP::microsecond << " us" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "Sigma top time    : " << _sigma_top_time_ / CLHEP::microsecond << " us" << std::endl;
 }
 

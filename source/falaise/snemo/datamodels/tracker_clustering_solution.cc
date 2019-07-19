@@ -22,9 +22,7 @@ void tracker_clustering_solution::set_solution_id(int32_t solution_id_) {
   }
 }
 
-void tracker_clustering_solution::invalidate_solution_id() {
-  _solution_id_ = -1;
-}
+void tracker_clustering_solution::invalidate_solution_id() { _solution_id_ = -1; }
 
 datatools::properties &tracker_clustering_solution::get_auxiliaries() { return _auxiliaries_; }
 
@@ -55,10 +53,7 @@ const tracker_clustering_solution::cluster_col_type &tracker_clustering_solution
   return _clusters_;
 }
 
-
-void tracker_clustering_solution::reset() {
-  this->clear();
-}
+void tracker_clustering_solution::reset() { this->clear(); }
 
 void tracker_clustering_solution::clear() {
   reset_hit_belonging();
@@ -78,14 +73,18 @@ bool tracker_clustering_solution::hit_is_clustered(const calibrated_tracker_hit 
 }
 
 bool tracker_clustering_solution::hit_is_clustered(int32_t hit_id_) const {
-  if (_hit_belonging_.size() > 0) {
+  if (!_hit_belonging_.empty()) {
     auto found = _hit_belonging_.find(hit_id_);
-    return found != _hit_belonging_.end() && found->second.size() > 0;
+    return found != _hit_belonging_.end() && !found->second.empty();
   }
 
-  for (const auto& ihit : _unclustered_hits_) {
-    if (!ihit.has_data()) continue;
-    if (ihit->get_hit_id() == hit_id_) return false;
+  for (const auto &ihit : _unclustered_hits_) {
+    if (!ihit.has_data()) {
+      continue;
+    }
+    if (ihit->get_hit_id() == hit_id_) {
+      return false;
+    }
   }
   return true;
 }
@@ -97,22 +96,28 @@ bool tracker_clustering_solution::hit_belongs_to_several_clusters(
 
 bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id_) const {
   // If available, use the' hit_belonging' collection :
-  if (_hit_belonging_.size() > 0) {
+  if (!_hit_belonging_.empty()) {
     auto found = _hit_belonging_.find(hit_id_);
     return found != _hit_belonging_.end() && found->second.size() > 1;
   }
 
   // Shortcut :
-  if (_clusters_.size() < 2) return false;
-  
+  if (_clusters_.size() < 2) {
+    return false;
+  }
+
   // Traverse all clusters to count belongings for this hit
   // TODO: Review use of has_data, since a cluster by definition should have valid data
   int cluster_counter = 0;
-  for (const auto& the_cluster : _clusters_) {
-    if (!the_cluster.has_data()) continue;
+  for (const auto &the_cluster : _clusters_) {
+    if (!the_cluster.has_data()) {
+      continue;
+    }
 
-    for (const auto& the_hit : the_cluster->get_hits()) {
-      if (!the_hit.has_data()) continue;
+    for (const auto &the_hit : the_cluster->get_hits()) {
+      if (!the_hit.has_data()) {
+        continue;
+      }
 
       if (the_hit->get_hit_id() == hit_id_) {
         cluster_counter++;
@@ -126,13 +131,13 @@ bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id
 bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
                                                          int32_t cluster_id_) const {
   // If available, use the' hit_belonging' collection :
-  if (_hit_belonging_.size() > 0) {
+  if (!_hit_belonging_.empty()) {
     auto found_iter = _hit_belonging_.find(hit_id_);
     if (found_iter == _hit_belonging_.end()) {
       return false;
     }
 
-    for (const auto& the_cluster : found_iter->second) {
+    for (const auto &the_cluster : found_iter->second) {
       if (the_cluster.has_data()) {
         if (the_cluster->get_cluster_id() == cluster_id_) {
           return true;
@@ -141,16 +146,18 @@ bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
     }
   } else {
     // Shortcut :
-    if (_clusters_.size() < 1) return false;
+    if (_clusters_.empty()) {
+      return false;
+    }
     // Traverse all clusters to detect belongings for this hit :
-    for (const auto& the_cluster : _clusters_) {
+    for (const auto &the_cluster : _clusters_) {
       if (the_cluster.has_data()) {
         if (the_cluster->get_cluster_id() != cluster_id_) {
           continue;
         }
       }
       // Traverse all hits in the current cluster :
-      for (const auto& the_hit : the_cluster->get_hits()) {
+      for (const auto &the_hit : the_cluster->get_hits()) {
         if (the_hit.has_data()) {
           if (the_hit->get_hit_id() == hit_id_) {
             return true;
@@ -167,22 +174,24 @@ tracker_clustering_solution::get_hit_belonging() const {
   return _hit_belonging_;
 }
 
-void tracker_clustering_solution::reset_hit_belonging() {
-  _hit_belonging_.clear();
-}
+void tracker_clustering_solution::reset_hit_belonging() { _hit_belonging_.clear(); }
 
-bool tracker_clustering_solution::has_hit_belonging() const { return _hit_belonging_.size() > 0; }
+bool tracker_clustering_solution::has_hit_belonging() const { return !_hit_belonging_.empty(); }
 
 // static
 void tracker_clustering_solution::compute_hit_belonging_from_solution(
     const tracker_clustering_solution &tcs_, hit_belonging_col_type &hbc_) {
   hbc_.clear();
 
-  for (const auto& the_cluster : tcs_.get_clusters()) {
-    if (!the_cluster.has_data()) continue;
+  for (const auto &the_cluster : tcs_.get_clusters()) {
+    if (!the_cluster.has_data()) {
+      continue;
+    }
 
-    for (const auto& the_hit : the_cluster->get_hits()) {
-      if (!the_hit.has_data()) continue;
+    for (const auto &the_hit : the_cluster->get_hits()) {
+      if (!the_hit.has_data()) {
+        continue;
+      }
 
       int32_t hit_id = the_hit->get_hit_id();
 
@@ -205,41 +214,40 @@ void tracker_clustering_solution::compute_hit_belonging() {
 int tracker_clustering_solution::copy_one_solution_in_one(
     const tracker_clustering_solution &source_, tracker_clustering_solution &target_) {
   // Preallocate the total number of clusters/hits from both solutions:
-  auto& src_clusters = source_.get_clusters();
-  auto& src_hits = source_.get_unclustered_hits();
-  
-  auto& tgt_clusters = target_.get_clusters();
+  auto &src_clusters = source_.get_clusters();
+  auto &src_hits = source_.get_unclustered_hits();
+
+  auto &tgt_clusters = target_.get_clusters();
   tgt_clusters.reserve(tgt_clusters.size() + src_clusters.size());
 
-  auto& tgt_hits = target_.get_unclustered_hits();
+  auto &tgt_hits = target_.get_unclustered_hits();
   tgt_hits.reserve(tgt_hits.size() + src_hits.size());
 
   // Search for the maximum cluster Id from the target:
   int max_cluster_id = -1;
 
-  if(!tgt_clusters.empty()) {
-    auto id_comp = [](const cluster_handle_type& a, const cluster_handle_type& b) {
+  if (!tgt_clusters.empty()) {
+    auto id_comp = [](const cluster_handle_type &a, const cluster_handle_type &b) {
       return a->get_cluster_id() < b->get_cluster_id();
     };
-  
+
     auto max_cluster_id_iter = std::max_element(tgt_clusters.begin(), tgt_clusters.end(), id_comp);
 
     max_cluster_id = (*max_cluster_id_iter)->get_cluster_id();
   }
 
   // copy clusters from the solution into the target
-  for (size_t icluster_source = 0; icluster_source < src_clusters.size();
-       icluster_source++) {
+  for (size_t icluster_source = 0; icluster_source < src_clusters.size(); icluster_source++) {
     // Pickup cluster from the solution:
     const auto &a_cluster_hdl = src_clusters.at(icluster_source);
     // Create a new cluster from the old::
     auto hcl = datatools::make_handle<tracker_cluster>(*a_cluster_hdl);
     // But give it an unique Id:
-    hcl->set_cluster_id(max_cluster_id + icluster_source + 1);  
+    hcl->set_cluster_id(max_cluster_id + icluster_source + 1);
     tgt_clusters.push_back(hcl);
   }
 
-  // TODO: Possible bug. as does not touch solution input parameter... 
+  // TODO: Possible bug. as does not touch solution input parameter...
   // Extract unclustered hits from the solution: Huh? copies target to target?
   for (int iunclustered_hit = 0; iunclustered_hit < (int)target_.get_unclustered_hits().size();
        iunclustered_hit++) {
@@ -258,16 +266,15 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
   const tracker_clustering_solution &sol1 = source1_;
   // Preallocate the total number of clusters from both solutions:
   target_.get_clusters().reserve(target_.get_clusters().size() + sol0.get_clusters().size() +
-                                  sol1.get_clusters().size());
+                                 sol1.get_clusters().size());
   // Preallocate the total number of unclustered hits from both solutions:
   target_.get_unclustered_hits().reserve(target_.get_unclustered_hits().size() +
-                                          sol0.get_unclustered_hits().size() +
-                                          sol1.get_unclustered_hits().size());
+                                         sol0.get_unclustered_hits().size() +
+                                         sol1.get_unclustered_hits().size());
   // Search for the maximum cluster Id from the target:
   int max_cluster_id = -1;
-  for (int icluster_target = 0; icluster_target < (int)target_.get_clusters().size();
-       icluster_target++) {
-    const tracker_cluster &a_cluster = target_.get_clusters().at(icluster_target).get();
+  for (auto &icluster_target : target_.get_clusters()) {
+    const tracker_cluster &a_cluster = icluster_target.get();
     int cluster_id = a_cluster.get_cluster_id();
     if (cluster_id > max_cluster_id) {
       max_cluster_id = cluster_id;
@@ -276,7 +283,7 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
   static const unsigned int NSOURCES = 2;
   std::set<int> check_hits[NSOURCES];
   for (int source = 0; source < (int)NSOURCES; source++) {
-    const tracker_clustering_solution *psol = 0;
+    const tracker_clustering_solution *psol = nullptr;
     if (source == 0) {
       psol = &sol0;
     } else {
@@ -296,24 +303,22 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
       // But give it an unique Id:
       cl.set_cluster_id(max_cluster_id + icluster_source + 1);  // target_.grab_clusters().size());
       // Record the hit Ids in the check set for this source:
-      for (int iclustered_hit = 0; iclustered_hit < (int)cl.get_hits().size(); iclustered_hit++) {
-        int hit_id = cl.get_hits().at(iclustered_hit).get().get_hit_id();
+      for (auto &iclustered_hit : cl.get_hits()) {
+        int hit_id = iclustered_hit.get().get_hit_id();
         check_hits[source].insert(hit_id);
       }
       // Store this cluster in the solution:
       target_.get_clusters().push_back(hcl);
     }
     // Extract unclustered hits from the solution:
-    for (int iunclustered_hit = 0; iunclustered_hit < (int)rsol.get_unclustered_hits().size();
-         iunclustered_hit++) {
-      target_.get_unclustered_hits().push_back(rsol.get_unclustered_hits().at(iunclustered_hit));
-      int uhit_id = rsol.get_unclustered_hits().at(iunclustered_hit).get().get_hit_id();
+    for (const auto &iunclustered_hit : rsol.get_unclustered_hits()) {
+      target_.get_unclustered_hits().push_back(iunclustered_hit);
+      int uhit_id = iunclustered_hit.get().get_hit_id();
       check_hits[source].insert(uhit_id);
     }
   }
 
-  for (std::set<int>::const_iterator ihit_id = check_hits[0].begin();
-       ihit_id != check_hits[0].end(); ihit_id++) {
+  for (auto ihit_id = check_hits[0].begin(); ihit_id != check_hits[0].end(); ihit_id++) {
     int hit_id = *ihit_id;
     if (check_hits[1].count(hit_id) == 1) {
       DT_THROW_IF(true, std::logic_error,
@@ -329,24 +334,20 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
 
 void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::string &title_,
                                             const std::string &indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
   if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
+    out_ << indent_ << title_ << std::endl;
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Solution ID  : " << _solution_id_
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Solution ID  : " << _solution_id_
        << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Cluster(s)   : " << get_clusters().size()
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Cluster(s)   : " << get_clusters().size()
        << std::endl;
   for (size_t i = 0; i < get_clusters().size(); i++) {
     const tracker_cluster &tc = get_clusters()[i].get();
     std::ostringstream indent2;
-    out_ << indent << datatools::i_tree_dumpable::skip_tag;
-    indent2 << indent << datatools::i_tree_dumpable::skip_tag;
+    out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
+    indent2 << indent_ << datatools::i_tree_dumpable::skip_tag;
     if (i == get_clusters().size() - 1) {
       out_ << datatools::i_tree_dumpable::last_tag;
       indent2 << datatools::i_tree_dumpable::last_skip_tag;
@@ -360,12 +361,11 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
 
   {
     int hit_index = 0;
-    out_ << indent << datatools::i_tree_dumpable::tag
+    out_ << indent_ << datatools::i_tree_dumpable::tag
          << "Unclustered hit(s) : " << _unclustered_hits_.size() << std::endl;
-    for (hit_collection_type::const_iterator i = _unclustered_hits_.begin();
-         i != _unclustered_hits_.end(); i++) {
-      out_ << indent << datatools::i_tree_dumpable::skip_tag;
-      hit_collection_type::const_iterator j = i;
+    for (auto i = _unclustered_hits_.begin(); i != _unclustered_hits_.end(); i++) {
+      out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
+      auto j = i;
       j++;
       if (j == _unclustered_hits_.end()) {
         out_ << datatools::i_tree_dumpable::last_tag;
@@ -379,17 +379,17 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
     }
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Hits belonging : " << _hit_belonging_.size()
-       << std::endl;
+  out_ << indent_ << datatools::i_tree_dumpable::tag
+       << "Hits belonging : " << _hit_belonging_.size() << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
-  if (_auxiliaries_.size() == 0) {
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
+  if (_auxiliaries_.empty()) {
     out_ << "<empty>";
   }
   out_ << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent;
+    indent_oss << indent_;
     indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
     _auxiliaries_.tree_dump(out_, "", indent_oss.str());
   }

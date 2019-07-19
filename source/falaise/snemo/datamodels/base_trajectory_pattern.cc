@@ -4,6 +4,8 @@
 // Ourselves:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 
+#include <utility>
+
 namespace snemo {
 
 namespace datamodel {
@@ -13,7 +15,7 @@ DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(base_trajectory_pattern,
                                                   "snemo::datamodel::base_trajectory_pattern")
 
 base_trajectory_pattern::base_trajectory_pattern(const std::string& pid)
-    : datatools::i_serializable(), _pattern_id_(pid) {}
+    :  _pattern_id_(pid) {}
 
 bool base_trajectory_pattern::has_pattern_id() const { return !_pattern_id_.empty(); }
 

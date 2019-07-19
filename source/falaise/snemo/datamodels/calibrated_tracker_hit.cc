@@ -14,16 +14,16 @@ const std::string& anode_time_key() {
   return key;
 }
 
-//const std::string& bottom_cathode_time_key() {
+// const std::string& bottom_cathode_time_key() {
 //  static const std::string key("bottom_cathode_time");
 //  return key;
 //}
 
-//const std::string& top_cathode_time_key() {
+// const std::string& top_cathode_time_key() {
 //  static const std::string key("top_cathode_time");
 //  return key;
 //}
-}
+}  // namespace
 
 namespace snemo {
 
@@ -33,18 +33,18 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_tracker_hit,
                                                   "snemo::datamodel::calibrated_tracker_hit")
 
-
-
 bool calibrated_tracker_hit::get_trait_bit(uint32_t mask_) const { return _get_trait_bit(mask_); }
 
-bool calibrated_tracker_hit::_get_trait_bit(uint32_t mask_) const { return _traits_ & mask_; }
+bool calibrated_tracker_hit::_get_trait_bit(uint32_t mask_) const {
+  return (_traits_ & mask_) != 0u;
+}
 
 void calibrated_tracker_hit::_set_trait_bit(bool value_, uint32_t mask_) {
-  if (value_)
+  if (value_) {
     _traits_ |= mask_;
-  else
+  } else {
     _traits_ &= ~mask_;
-  return;
+  }
 }
 
 bool calibrated_tracker_hit::is_delayed() const { return _get_trait_bit(delayed); }
@@ -59,13 +59,9 @@ bool calibrated_tracker_hit::is_sterile() const { return _get_trait_bit(sterile)
 
 bool calibrated_tracker_hit::is_fake() const { return _get_trait_bit(fake); }
 
-void calibrated_tracker_hit::set_fake(bool fake_) {
-  _set_trait_bit(fake_, fake);
-}
+void calibrated_tracker_hit::set_fake(bool fake_) { _set_trait_bit(fake_, fake); }
 
-void calibrated_tracker_hit::set_sterile(bool sterile_) {
-  _set_trait_bit(sterile_, sterile);
-}
+void calibrated_tracker_hit::set_sterile(bool sterile_) { _set_trait_bit(sterile_, sterile); }
 
 void calibrated_tracker_hit::set_delayed(bool delayed_) {
   _set_trait_bit(delayed_, delayed);
@@ -109,9 +105,7 @@ void calibrated_tracker_hit::set_top_cathode_missing(bool missing_) {
   _set_trait_bit(missing_, missing_top_cathode);
 }
 
-void calibrated_tracker_hit::set_noisy(bool noisy_) {
-  _set_trait_bit(noisy_, noisy);
-}
+void calibrated_tracker_hit::set_noisy(bool noisy_) { _set_trait_bit(noisy_, noisy); }
 
 void calibrated_tracker_hit::set_peripheral(bool peripheral_) {
   _set_trait_bit(peripheral_, peripheral);
@@ -156,27 +150,19 @@ double calibrated_tracker_hit::get_y() const { return _y_; }
 
 double calibrated_tracker_hit::get_z() const { return _z_; }
 
-void calibrated_tracker_hit::set_z(double z_) {
-  _z_ = z_;
-}
+void calibrated_tracker_hit::set_z(double z_) { _z_ = z_; }
 
 double calibrated_tracker_hit::get_sigma_z() const { return _sigma_z_; }
 
-void calibrated_tracker_hit::set_sigma_z(double sigma_z_) {
-  _sigma_z_ = sigma_z_;
-}
+void calibrated_tracker_hit::set_sigma_z(double sigma_z_) { _sigma_z_ = sigma_z_; }
 
 double calibrated_tracker_hit::get_r() const { return _r_; }
 
-void calibrated_tracker_hit::set_r(double r_) {
-  _r_ = r_;
-}
+void calibrated_tracker_hit::set_r(double r_) { _r_ = r_; }
 
 double calibrated_tracker_hit::get_sigma_r() const { return _sigma_r_; }
 
-void calibrated_tracker_hit::set_sigma_r(double sigma_r_) {
-  _sigma_r_ = sigma_r_;
-}
+void calibrated_tracker_hit::set_sigma_r(double sigma_r_) { _sigma_r_ = sigma_r_; }
 
 void calibrated_tracker_hit::invalidate_xy() {
   datatools::invalidate(_x_);
@@ -204,9 +190,7 @@ void calibrated_tracker_hit::invalidate() {
   _traits_ = 0x0;
 }
 
-void calibrated_tracker_hit::clear() {
-  calibrated_tracker_hit::invalidate();
-}
+void calibrated_tracker_hit::clear() { calibrated_tracker_hit::invalidate(); }
 
 bool calibrated_tracker_hit::is_bottom_cathode_missing() const {
   return _get_trait_bit(missing_bottom_cathode);
@@ -220,67 +204,7 @@ bool calibrated_tracker_hit::are_both_cathodes_missing() const {
   return is_bottom_cathode_missing() && is_top_cathode_missing();
 }
 
-void calibrated_tracker_hit::tree_dump(std::ostream& out_, const std::string& title_,
-                                       const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) indent = indent_;
-  base_hit::tree_dump(out_, title_, indent_, true);
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Traits        : " << _traits_ << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Delayed        : " << is_delayed()
-       << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Noisy        : " << is_noisy() << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Peripheral        : " << is_peripheral()
-       << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Bottom cathode missing : " << is_bottom_cathode_missing() << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Top cathode missing : " << is_top_cathode_missing() << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Sterile        : " << is_sterile()
-       << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Fake        : " << is_fake() << std::endl;
-
-  if (has_xy()) {
-    out_ << indent << datatools::i_tree_dumpable::tag << "x        : " << _x_ / CLHEP::mm << " mm"
-         << std::endl;
-
-    out_ << indent << datatools::i_tree_dumpable::tag << "y        : " << _y_ / CLHEP::mm << " mm"
-         << std::endl;
-  }
-
-  if (is_delayed()) {
-    out_ << indent << datatools::i_tree_dumpable::tag
-         << "delayed_time       : " << _delayed_time_ / CLHEP::microsecond << " us" << std::endl;
-
-    out_ << indent << datatools::i_tree_dumpable::tag
-         << "delayed_time_error : " << _delayed_time_error_ / CLHEP::microsecond << " us"
-         << std::endl;
-  }
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "r        : " << _r_ / CLHEP::mm << " mm"
-       << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "sigma(r) : " << _sigma_r_ / CLHEP::mm
-       << " mm" << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "z        : " << _z_ / CLHEP::cm << " cm"
-       << std::endl;
-
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
-       << "sigma(z) : " << _sigma_z_ / CLHEP::cm << " cm" << std::endl;
-
-}
-
-void calibrated_tracker_hit::dump() const {
-  tree_dump(std::clog, "snemo::core::model::calibrated_tracker_hit");
-}
 
 int32_t calibrated_tracker_hit::get_id() const { return get_hit_id(); }
 
@@ -305,6 +229,65 @@ bool compare_tracker_hit_by_delayed_time::operator()(const calibrated_tracker_hi
   return (dti < dtj);
 }
 
+void calibrated_tracker_hit::tree_dump(std::ostream& out_, const std::string& title_,
+                                       const std::string& indent_, bool inherit_) const {
+  base_hit::tree_dump(out_, title_, indent_, true);
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Traits        : " << _traits_ << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Delayed        : " << is_delayed()
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Noisy        : " << is_noisy()
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Peripheral        : " << is_peripheral()
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag
+       << "Bottom cathode missing : " << is_bottom_cathode_missing() << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag
+       << "Top cathode missing : " << is_top_cathode_missing() << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Sterile        : " << is_sterile()
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Fake        : " << is_fake() << std::endl;
+
+  if (has_xy()) {
+    out_ << indent_ << datatools::i_tree_dumpable::tag << "x        : " << _x_ / CLHEP::mm << " mm"
+         << std::endl;
+
+    out_ << indent_ << datatools::i_tree_dumpable::tag << "y        : " << _y_ / CLHEP::mm << " mm"
+         << std::endl;
+  }
+
+  if (is_delayed()) {
+    out_ << indent_ << datatools::i_tree_dumpable::tag
+         << "delayed_time       : " << _delayed_time_ / CLHEP::microsecond << " us" << std::endl;
+
+    out_ << indent_ << datatools::i_tree_dumpable::tag
+         << "delayed_time_error : " << _delayed_time_error_ / CLHEP::microsecond << " us"
+         << std::endl;
+  }
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "r        : " << _r_ / CLHEP::mm << " mm"
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "sigma(r) : " << _sigma_r_ / CLHEP::mm
+       << " mm" << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "z        : " << _z_ / CLHEP::cm << " cm"
+       << std::endl;
+
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
+       << "sigma(z) : " << _sigma_z_ / CLHEP::cm << " cm" << std::endl;
+}
+
+void calibrated_tracker_hit::dump() const {
+  tree_dump(std::clog, "snemo::core::model::calibrated_tracker_hit");
+}
 }  // end of namespace datamodel
 
 }  // end of namespace snemo

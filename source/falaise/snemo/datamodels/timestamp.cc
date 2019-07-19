@@ -11,12 +11,12 @@
 // - Bayeux:
 #include <bayeux/datatools/clhep_units.h>
 
-namespace {  
-  const char IO_FORMAT_OPEN = '[';
-  const char IO_FORMAT_SEP = ':';
-  const char IO_FORMAT_CLOSE = ']';
-  const char IO_FORMAT_INVALID = '?';
-}
+namespace {
+const char IO_FORMAT_OPEN = '[';
+const char IO_FORMAT_SEP = ':';
+const char IO_FORMAT_CLOSE = ']';
+const char IO_FORMAT_INVALID = '?';
+}  // namespace
 
 namespace snemo {
 
@@ -40,31 +40,34 @@ void timestamp::invalidate() {
 int timestamp::compare(const timestamp& ts_) const {
   DT_THROW_IF(!is_valid(), std::logic_error, "Invalid timestamp (this) !");
   DT_THROW_IF(!ts_.is_valid(), std::logic_error, "Invalid timestamp (argument) !");
-  if (_seconds_ < ts_._seconds_) return -1;
-  if (_seconds_ > ts_._seconds_) return +1;
-  if (_picoseconds_ < ts_._picoseconds_) return -1;
-  if (_picoseconds_ > ts_._picoseconds_) return +1;
+  if (_seconds_ < ts_._seconds_) {
+    return -1;
+  }
+  if (_seconds_ > ts_._seconds_) {
+    return +1;
+  }
+  if (_picoseconds_ < ts_._picoseconds_) {
+    return -1;
+  }
+  if (_picoseconds_ > ts_._picoseconds_) {
+    return +1;
+  }
   return 0;
 }
 
 int64_t timestamp::get_seconds() const { return _seconds_; }
 
-void timestamp::set_seconds(int64_t new_value_) {
-  _seconds_ = new_value_;
-}
+void timestamp::set_seconds(int64_t new_value_) { _seconds_ = new_value_; }
 
 int64_t timestamp::get_picoseconds() const { return _picoseconds_; }
 
-void timestamp::set_picoseconds(int64_t new_value_) {
-  _picoseconds_ = new_value_;
-}
+void timestamp::set_picoseconds(int64_t new_value_) { _picoseconds_ = new_value_; }
 
 double timestamp::to_real() const {
   double time = _seconds_ * CLHEP::second;
   time += _picoseconds_ * CLHEP::picosecond;
   return time;
 }
-
 
 bool operator==(const timestamp& ts1_, const timestamp& ts2_) { return ts1_.compare(ts2_) == 0; }
 
@@ -116,7 +119,9 @@ std::ostream& operator<<(std::ostream& out_, const timestamp& ts_) {
 std::istream& operator>>(std::istream& a_in, timestamp& ts_) {
   char c = 0;
   a_in >> c;
-  if (!a_in) return a_in;
+  if (!a_in) {
+    return a_in;
+  }
   if (c != ::IO_FORMAT_OPEN) {
     a_in.setstate(std::ios_base::failbit);
     return a_in;
@@ -130,7 +135,9 @@ std::istream& operator>>(std::istream& a_in, timestamp& ts_) {
     a_in.get();
   } else {
     a_in >> s;
-    if (!a_in) return a_in;
+    if (!a_in) {
+      return a_in;
+    }
   }
 
   c = 0;
@@ -146,7 +153,9 @@ std::istream& operator>>(std::istream& a_in, timestamp& ts_) {
     a_in.get();
   } else {
     a_in >> ps;
-    if (!a_in) return a_in;
+    if (!a_in) {
+      return a_in;
+    }
   }
 
   c = 0;

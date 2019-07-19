@@ -58,20 +58,18 @@ void calibrated_calorimeter_hit::invalidate() {
 
 void calibrated_calorimeter_hit::tree_dump(std::ostream& out_, const std::string& title_,
                                            const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) indent = indent_;
   base_hit::tree_dump(out_, title_, indent_, true);
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Time  : " << _time_ / CLHEP::ns << " ns"
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Time  : " << _time_ / CLHEP::ns << " ns"
        << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Sigma(time) : " << _sigma_time_ / CLHEP::ns
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Sigma(time) : " << _sigma_time_ / CLHEP::ns
        << " ns" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Energy  : " << _energy_ / CLHEP::keV
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Energy  : " << _energy_ / CLHEP::keV
        << " keV" << std::endl;
 
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "Sigma(energy) : " << _sigma_energy_ / CLHEP::keV << " keV" << std::endl;
 }
 
