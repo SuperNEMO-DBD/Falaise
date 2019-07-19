@@ -204,34 +204,43 @@ void tracker_clustering_solution::compute_hit_belonging() {
 // static
 int tracker_clustering_solution::copy_one_solution_in_one(
     const tracker_clustering_solution &source_, tracker_clustering_solution &target_) {
-  // Preallocate the total number of clusters from both solutions:
-  target_.get_clusters().reserve(target_.get_clusters().size() + source_.get_clusters().size());
-  // Preallocate the total number of unclustered hits from both solutions:
-  target_.get_unclustered_hits().reserve(target_.get_unclustered_hits().size() +
-                                          source_.get_unclustered_hits().size());
+  // Preallocate the total number of clusters/hits from both solutions:
+  auto& src_clusters = source_.get_clusters();
+  auto& src_hits = source_.get_unclustered_hits();
+  
+  auto& tgt_clusters = target_.get_clusters();
+  tgt_clusters.reserve(tgt_clusters.size() + src_clusters.size());
+
+  auto& tgt_hits = target_.get_unclustered_hits();
+  tgt_hits.reserve(tgt_hits.size() + src_hits.size());
+
   // Search for the maximum cluster Id from the target:
   int max_cluster_id = -1;
-  for (size_t icluster_target = 0; icluster_target < target_.get_clusters().size();
-       icluster_target++) {
-    const tracker_cluster &a_cluster = target_.get_clusters().at(icluster_target).get();
-    int cluster_id = a_cluster.get_cluster_id();
-    if (cluster_id > max_cluster_id) {
-      max_cluster_id = cluster_id;
-    }
+
+  if(!tgt_clusters.empty()) {
+    auto id_comp = [](const cluster_handle_type& a, const cluster_handle_type& b) {
+      return a->get_cluster_id() < b->get_cluster_id();
+    };
+  
+    auto max_cluster_id_iter = std::max_element(tgt_clusters.begin(), tgt_clusters.end(), id_comp);
+
+    max_cluster_id = (*max_cluster_id_iter)->get_cluster_id();
   }
 
-  // Extract clusters from the solution:
-  for (size_t icluster_source = 0; icluster_source < source_.get_clusters().size();
+  // copy clusters from the solution into the target
+  for (size_t icluster_source = 0; icluster_source < src_clusters.size();
        icluster_source++) {
     // Pickup cluster from the solution:
-    const tracker_cluster &a_cluster = source_.get_clusters().at(icluster_source).get();
+    const auto &a_cluster_hdl = src_clusters.at(icluster_source);
     // Create a new cluster from the old::
-    auto hcl = datatools::make_handle<tracker_cluster>(a_cluster);
+    auto hcl = datatools::make_handle<tracker_cluster>(*a_cluster_hdl);
     // But give it an unique Id:
     hcl->set_cluster_id(max_cluster_id + icluster_source + 1);  
-    target_.get_clusters().push_back(hcl);
+    tgt_clusters.push_back(hcl);
   }
-  // Extract unclustered hits from the solution:
+
+  // TODO: Possible bug. as does not touch solution input parameter... 
+  // Extract unclustered hits from the solution: Huh? copies target to target?
   for (int iunclustered_hit = 0; iunclustered_hit < (int)target_.get_unclustered_hits().size();
        iunclustered_hit++) {
     target_.get_unclustered_hits().push_back(target_.get_unclustered_hits().at(iunclustered_hit));
@@ -240,6 +249,7 @@ int tracker_clustering_solution::copy_one_solution_in_one(
   return 0;
 }
 
+// A mess, so not touching for now...
 // static
 int tracker_clustering_solution::merge_two_solutions_in_ones(
     const tracker_clustering_solution &source0_, const tracker_clustering_solution &source1_,

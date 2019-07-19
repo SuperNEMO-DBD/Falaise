@@ -102,9 +102,6 @@ class tracker_clustering_solution : public datatools::i_serializable {
   /// Dictionary of hit/cluster belonging
   typedef std::map<int32_t, cluster_col_type> hit_belonging_col_type;
 
-  /// Default the destructor, must define as virtual
-  virtual ~tracker_clustering_solution() = default;
-
   /// Check if there is a valid solution ID
   bool has_solution_id() const;
 
