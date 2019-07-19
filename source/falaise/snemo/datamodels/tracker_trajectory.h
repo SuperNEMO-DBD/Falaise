@@ -43,12 +43,6 @@ class tracker_trajectory : public geomtools::base_hit {
   /// Collection of handles of calibrated tracker hit
   typedef calibrated_tracker_hit::collection_type orphans_collection_type;
 
-  /// Default constructor
-  tracker_trajectory();
-
-  /// Destructor
-  virtual ~tracker_trajectory();
-
   /// Check if there is a valid trajectory ID
   bool has_trajectory_id() const;
 
@@ -71,28 +65,16 @@ class tracker_trajectory : public geomtools::base_hit {
   void set_cluster_handle(const handle_cluster& cluster_handle_);
 
   /// Return a mutable reference on the cluster handle
-  handle_cluster& grab_cluster_handle();
+  handle_cluster& get_cluster_handle();
 
   /// Return a non mutable reference on the cluster handle
   const handle_cluster& get_cluster_handle() const;
 
   /// Return a mutable reference on the cluster
-  tracker_cluster& grab_cluster();
+  tracker_cluster& get_cluster();
 
   /// Return a non mutable reference on the cluster
   const tracker_cluster& get_cluster() const;
-
-  /// Check if there are some orphan hits along the fitted trajectory
-  bool has_orphans() const;
-
-  /// Reset the collection of orphan hits
-  void reset_orphans();
-
-  /// Return a mutable reference on the collection of orphan hits (handles)
-  orphans_collection_type& grab_orphans();
-
-  /// Return a non mutable reference on the collection of orphan hits (handles)
-  const orphans_collection_type& get_orphans() const;
 
   /// Check if the pattern is present
   bool has_pattern() const;
@@ -104,13 +86,13 @@ class tracker_trajectory : public geomtools::base_hit {
   void set_pattern_handle(const handle_pattern& pattern_handle_);
 
   /// Return a mutable reference on the pattern handle
-  handle_pattern& grab_pattern_handle();
+  handle_pattern& get_pattern_handle();
 
   /// Return a non mutable reference on the pattern handle
   const handle_pattern& get_pattern_handle() const;
 
   /// Return a mutable reference on the pattern
-  base_trajectory_pattern& grab_pattern();
+  base_trajectory_pattern& get_pattern();
 
   /// Return a non mutable reference on the pattern
   const base_trajectory_pattern& get_pattern() const;
@@ -127,7 +109,7 @@ class tracker_trajectory : public geomtools::base_hit {
 
  private:
   handle_cluster _cluster_;           ///< Handle to the fitted cluster
-  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles
+  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles (retained only for serialization back-compatibility)
   handle_pattern _pattern_;           ///< Handle to a trajectory fitted pattern
 
   DATATOOLS_SERIALIZATION_DECLARATION()
