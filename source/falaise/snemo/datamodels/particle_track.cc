@@ -222,8 +222,6 @@ void particle_track::clear() {
   reset_associated_calorimeter_hits();
   detach_trajectory();
   base_hit::clear();
-
-  invalidate_track_id();
   _charge_from_source_ = invalid;
 }
 
