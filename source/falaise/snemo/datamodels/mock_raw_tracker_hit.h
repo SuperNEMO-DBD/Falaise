@@ -31,9 +31,6 @@ class mock_raw_tracker_hit : public geomtools::base_hit {
  public:
   enum store_mask_type { STORE_REF_TIME = 0x8, STORE_TIMES = 0x10 };
 
-  /// Destructor
-  virtual ~mock_raw_tracker_hit() = default;
-
   bool is_ref_time_missing() const;
 
   bool is_drift_time_missing() const;

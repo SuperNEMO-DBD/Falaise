@@ -53,9 +53,6 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   /// Alias for a collection of handles on calibrated tracker hits
   typedef std::vector<handle_type> collection_type;
 
-  // Destructor
-  virtual ~calibrated_tracker_hit() = default;
-
   /// Return the hit ID
   int32_t get_id() const;
 
@@ -198,8 +195,8 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   virtual void clear();
 
   /// Smart print method
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
   /// Shortcut for the smart print method
   void dump() const;

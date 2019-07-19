@@ -41,6 +41,13 @@ class timestamp : public datatools::i_serializable {
   /// Destructor
   virtual ~timestamp() = default;
 
+  /// Copy/Move operations to get Ro5
+  timestamp(const timestamp&) = default;
+  timestamp& operator=(const timestamp&) = default; 
+  timestamp(timestamp&&) = default;
+  timestamp& operator=(timestamp&&) = default;
+
+
   /// Return the number of seconds
   int64_t get_seconds() const;
 

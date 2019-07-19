@@ -45,9 +45,6 @@ class event_header : public datatools::i_serializable,
     GENERATION_SIMULATED = 1  ///< Simulated event from the MC application
   };
 
-  /// Destructor
-  virtual ~event_header() = default;
-
   /// Return the event ID
   const datatools::event_id &get_id() const;
 

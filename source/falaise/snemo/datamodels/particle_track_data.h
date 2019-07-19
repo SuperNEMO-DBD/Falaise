@@ -42,9 +42,6 @@ class particle_track_data : public datatools::i_serializable,
   /// Collection of handles on particle tracks
   typedef std::vector<particle_track::handle_type> particle_collection_type;
 
-  /// Destructor:
-  virtual ~particle_track_data() = default;
-
   /// Check if there are some particles
   bool has_particles() const;
 

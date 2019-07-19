@@ -33,9 +33,6 @@ class tracker_cluster : public geomtools::base_hit {
   /// Flag for a auxiliary property
   static const std::string& delayed_cluster_flag();
 
-  /// Destructor
-  virtual ~tracker_cluster() = default;
-
   /// Check if the cluster is associated to delayed hits
   bool is_delayed() const;
 

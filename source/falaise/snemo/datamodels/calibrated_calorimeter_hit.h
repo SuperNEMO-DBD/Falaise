@@ -50,9 +50,6 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   /// Collection of handles of calibrated calorimeter hit
   typedef std::vector<handle_type> collection_type;
 
-  /// Destructor
-  virtual ~calibrated_calorimeter_hit() = default;
-
   /// Return the time associated to the hit
   double get_time() const;
 
@@ -84,8 +81,8 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   void invalidate();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
   /// Basic print
   void dump() const;

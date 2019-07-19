@@ -126,9 +126,6 @@ class particle_track : public geomtools::base_hit {
   /// Handle on particle track
   typedef datatools::handle<particle_track> handle_type;
 
-  /// Destructor
-  virtual ~particle_track() = default;
-
   /// Check if there is a valid track ID
   bool has_track_id() const;
 

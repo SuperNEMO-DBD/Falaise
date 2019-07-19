@@ -150,9 +150,6 @@ class tracker_clustering_data : public datatools::i_serializable,
   /// Collection of handles on tracker clustering solutions
   typedef std::vector<tracker_clustering_solution::handle_type> solution_col_type;
 
-  /// Destructor:
-  virtual ~tracker_clustering_data() = default;
-
   /// Check if there are some clustering solutions
   bool has_solutions() const;
 
