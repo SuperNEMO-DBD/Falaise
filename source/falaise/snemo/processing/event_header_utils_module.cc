@@ -199,19 +199,19 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
 
   snemo::datamodel::event_header& the_event_header = *ptr_event_header;
   // the_event_header.clear();
-  the_event_header.grab_id().set_run_number(_ah_current_run_number_);
-  the_event_header.grab_id().set_event_number(_ah_current_event_number_);
+  the_event_header.get_id().set_run_number(_ah_current_run_number_);
+  the_event_header.get_id().set_event_number(_ah_current_event_number_);
   ah_increment_event_number(1);
 
   the_event_header.set_generation(_add_header_gentype_);
 
   // default timestamp :
-  the_event_header.grab_timestamp().set_seconds(0);
-  the_event_header.grab_timestamp().set_picoseconds(0);
+  the_event_header.get_timestamp().set_seconds(0);
+  the_event_header.get_timestamp().set_picoseconds(0);
 
   // Retrieve properties from external files
   if (!_add_header_properties_path_.empty()) {
-    datatools::properties& the_properties = the_event_header.grab_properties();
+    datatools::properties& the_properties = the_event_header.get_properties();
     datatools::properties::read_config(_add_header_properties_path_, the_properties);
     if (!_add_header_properties_prefix_.empty()) {
       the_properties.erase_all_not_starting_with(_add_header_properties_prefix_);
@@ -229,12 +229,12 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
 
       if (_add_header_use_genbb_weight_) {
         const double weight = the_simulated_data.get_primary_event().get_genbb_weight();
-        the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_WEIGHT, weight);
+        the_event_header.get_properties().update(mctools::event_utils::EVENT_GENBB_WEIGHT, weight);
       }
 
       if (_add_header_use_genbb_label_) {
         const std::string label = the_simulated_data.get_primary_event().get_label();
-        the_event_header.grab_properties().update(mctools::event_utils::EVENT_GENBB_LABEL, label);
+        the_event_header.get_properties().update(mctools::event_utils::EVENT_GENBB_LABEL, label);
       }
     }
   }

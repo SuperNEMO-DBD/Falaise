@@ -22,9 +22,9 @@ int main(/* int argc_, char ** argv_ */) {
     datatools::handle<sdm::base_trajectory_pattern> hLTP0;
     sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
     // access to the internal geometry model :
-    LTP->grab_segment().set_first(
+    LTP->get_segment().set_first(
         geomtools::vector_3d(3. * CLHEP::mm, 5. * CLHEP::mm, 7. * CLHEP::mm));
-    LTP->grab_segment().set_last(
+    LTP->get_segment().set_last(
         geomtools::vector_3d(13. * CLHEP::mm, -5. * CLHEP::mm, 12. * CLHEP::mm));
     hLTP0.reset(LTP);
 
@@ -70,8 +70,8 @@ int main(/* int argc_, char ** argv_ */) {
     PT0.set_track_id(0);
     PT0.set_trajectory_handle(hTJ0);
     PT0.set_charge(sdm::particle_track::positive);
-    PT0.grab_vertices().push_back(hV0);
-    PT0.grab_vertices().push_back(hV1);
+    PT0.get_vertices().push_back(hV0);
+    PT0.get_vertices().push_back(hV1);
     PT0.grab_auxiliaries().store_flag("fake_electron");
     PT0.tree_dump(std::clog, "Particle track : ");
 

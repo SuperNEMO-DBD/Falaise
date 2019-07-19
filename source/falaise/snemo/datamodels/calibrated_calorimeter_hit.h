@@ -18,21 +18,21 @@
 
 // Third party:
 // - Bayeux/datatools:
-#if defined(__clang__)
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunused-local-typedefs"
-#endif
-#if defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused"
-#endif
+//#if defined(__clang__)
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wunused-local-typedefs"
+//#endif
+//#if defined(__GNUC__)
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Wunused"
+//#endif
 #include <datatools/handle.h>
-#if defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-#if defined(__clang__)
-#pragma clang diagnostic pop
-#endif
+//#if defined(__GNUC__)
+//#pragma GCC diagnostic pop
+//#endif
+//#if defined(__clang__)
+//#pragma clang diagnostic pop
+//#endif
 
 // - Bayeux/geomtools:
 #include <geomtools/base_hit.h>
@@ -74,12 +74,6 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   /// Set the error on the energy associated to the hit
   void set_sigma_energy(double);
 
-  /// Constructor
-  calibrated_calorimeter_hit();
-
-  /// Destructor
-  virtual ~calibrated_calorimeter_hit();
-
   /// Check if the internal data of the hit are valid
   bool is_valid() const;
 
@@ -87,17 +81,17 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   void invalidate();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
   /// Basic print
   void dump() const;
 
  private:
-  double _energy_;        //!< Energy associated to the hit
-  double _sigma_energy_;  //!< Error on the energy associated to the hit
-  double _time_;          //!< Time associated to the hit
-  double _sigma_time_;    //!< Error on the time associated to the hit
+  double _energy_{datatools::invalid_real()};       //!< Energy associated to the hit
+  double _sigma_energy_{datatools::invalid_real()}; //!< Error on the energy associated to the hit
+  double _time_{datatools::invalid_real()};         //!< Time associated to the hit
+  double _sigma_time_{datatools::invalid_real()};   //!< Error on the time associated to the hit
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

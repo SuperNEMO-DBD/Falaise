@@ -219,7 +219,7 @@ int base_tracker_fitter::_post_process(snemo::datamodel::tracker_trajectory_data
 
   // Loop over all trajectory solutions
   snemo::datamodel::tracker_trajectory_data::solution_col_type& the_solutions =
-      trajectory_.grab_solutions();
+      trajectory_.get_solutions();
 
   for (snemo::datamodel::tracker_trajectory_data::solution_col_type::iterator isolution =
            the_solutions.begin();

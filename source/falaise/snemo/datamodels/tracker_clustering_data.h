@@ -130,6 +130,9 @@ class tracker_clustering_data : public datatools::i_serializable,
                                 public datatools::i_tree_dumpable,
                                 public datatools::i_clear {
  public:
+  // s'Far as I can tell, these statics are ONLY used by base_tracker_clusterizer
+  // They therefore make zero sense here (more to the point DONT STORE IN PROPERTIES)
+  // ----- NOT RELEVANT TO THIS CLASS -----
   /// Key for the boolean property associated to prompt clustering solutions
   static const std::string& prompt_key();
 
@@ -142,15 +145,10 @@ class tracker_clustering_data : public datatools::i_serializable,
   /// Key for the string Id property documenting the clustering algorithm used to build a given
   /// clustering solution
   static const std::string& clusterizer_id_key();
+  // ----- ABOVE ARE NOT RELEVANT TO THIS CLASS ----
 
   /// Collection of handles on tracker clustering solutions
   typedef std::vector<tracker_clustering_solution::handle_type> solution_col_type;
-
-  /// Default constructor
-  tracker_clustering_data();
-
-  /// Destructor:
-  virtual ~tracker_clustering_data();
 
   /// Check if there are some clustering solutions
   bool has_solutions() const;
@@ -175,13 +173,13 @@ class tracker_clustering_data : public datatools::i_serializable,
   const tracker_clustering_data::solution_col_type& get_solutions() const;
 
   /// Return the mutable reference to the collection of clustering solutions
-  tracker_clustering_data::solution_col_type& grab_solutions();
+  tracker_clustering_data::solution_col_type& get_solutions();
 
   /// Return a non mutable reference to the default clustering solution is any
   const tracker_clustering_solution& get_default_solution() const;
 
   /// Return a mutable reference to the default clustering solution is any
-  tracker_clustering_solution& grab_default_solution();
+  tracker_clustering_solution& get_default_solution();
 
   /// Reset the default clustering solution is any
   void invalidate_default_solution();
@@ -195,12 +193,6 @@ class tracker_clustering_data : public datatools::i_serializable,
   /// Check if the object has a valid internal structure
   bool is_valid() const;
 
-  /// Return a mutable reference on the container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
-
-  /// Return a non mutable reference on the container of auxiliary properties
-  datatools::properties& grab_auxiliaries();
-
   /// Clear the object
   virtual void clear();
 
@@ -209,11 +201,10 @@ class tracker_clustering_data : public datatools::i_serializable,
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  solution_col_type _solutions_;  //!< Collection of Geiger cluster solution handles
+  solution_col_type _solutions_{};  //!< Collection of Geiger cluster solution handles
   tracker_clustering_solution::handle_type
-      _default_solution_;               //!< Handle to the default/best solution
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties
-
+      _default_solution_{};               //!< Handle to the default/best solution
+  datatools::properties _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 

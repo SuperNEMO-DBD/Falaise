@@ -45,12 +45,6 @@ class tracker_cluster : public geomtools::base_hit {
   /// Mark the cluster as associated to prompt hits
   void make_prompt();
 
-  /// Default constructor
-  tracker_cluster();
-
-  /// Destructor
-  virtual ~tracker_cluster();
-
   /// Check if there is a valid cluster ID
   bool has_cluster_id() const;
 
@@ -64,7 +58,7 @@ class tracker_cluster : public geomtools::base_hit {
   void invalidate_cluster_id();
 
   /// Return a mutable reference on the container of handles on calibrated tracker hits
-  calibrated_tracker_hit::collection_type& grab_hits();
+  calibrated_tracker_hit::collection_type& get_hits();
 
   /// Return a non mutable reference on the container of handles on calibrated tracker hits
   const calibrated_tracker_hit::collection_type& get_hits() const;

@@ -36,12 +36,6 @@ class tracker_trajectory_data : public datatools::i_serializable,
   /// Collection of handles on tracker trajectory solutions
   typedef std::vector<tracker_trajectory_solution::handle_type> solution_col_type;
 
-  /// Default constructor
-  tracker_trajectory_data();
-
-  /// Destructor:
-  virtual ~tracker_trajectory_data();
-
   /// Check if there are some trajectory solutions
   bool has_solutions() const;
 
@@ -52,10 +46,8 @@ class tracker_trajectory_data : public datatools::i_serializable,
   void add_solution(const tracker_trajectory_solution::handle_type& handle_,
                     bool default_solution_ = false);
 
-  // tracker_trajectory_solution & grab_solution(int i_);
-
   /// Return a non mutable reference to a trajectory solution by index
-  const tracker_trajectory_solution& get_solution(int i_) const;
+  const tracker_trajectory_solution& get_solution(size_t index) const;
 
   /// Reset the trajectory solutions
   void invalidate_solutions();
@@ -65,7 +57,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
 
   const tracker_trajectory_data::solution_col_type& get_solutions() const;
 
-  tracker_trajectory_data::solution_col_type& grab_solutions();
+  tracker_trajectory_data::solution_col_type& get_solutions();
 
   /// Return a non mutable reference to the default trajectory solution is any
   const tracker_trajectory_solution& get_default_solution() const;
@@ -74,16 +66,10 @@ class tracker_trajectory_data : public datatools::i_serializable,
   void invalidate_default_solution();
 
   /// Set the default trajectory solution
-  void set_default_solution(int index_);
+  void set_default_solution(size_t index);
 
   /// Reset the internals
   void reset();
-
-  /// Return a mutable reference on the container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
-
-  /// Return a non mutable reference on the container of auxiliary properties
-  datatools::properties& grab_auxiliaries();
 
   /// Clear the object
   virtual void clear();
@@ -96,7 +82,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
   solution_col_type _solutions_;  //!< Collection of tracker trajectory solution handles
   tracker_trajectory_solution::handle_type
       _default_solution_;               //!< Handle to the default/best solution
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties
+  datatools::properties _auxiliaries_;  //!< Auxiliary properties (retained for back compatibility with serialization)
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 

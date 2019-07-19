@@ -23,9 +23,9 @@ int main(/*int argc_, char ** argv_*/) {
     datatools::handle<sdm::base_trajectory_pattern> hLTP0;
     sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
     // access to the internal geometry model :
-    LTP->grab_segment().set_first(
+    LTP->get_segment().set_first(
         geomtools::vector_3d(3. * CLHEP::mm, 5. * CLHEP::mm, 7. * CLHEP::mm));
-    LTP->grab_segment().set_last(
+    LTP->get_segment().set_last(
         geomtools::vector_3d(13. * CLHEP::mm, -5. * CLHEP::mm, 12. * CLHEP::mm));
     hLTP0.reset(LTP);
 
@@ -72,8 +72,8 @@ int main(/*int argc_, char ** argv_*/) {
     hPT0.grab().set_track_id(0);
     hPT0.grab().set_charge(sdm::particle_track::positive);
     hPT0.grab().set_trajectory_handle(hTJ0);
-    hPT0.grab().grab_vertices().push_back(hV0);
-    hPT0.grab().grab_vertices().push_back(hV1);
+    hPT0.grab().get_vertices().push_back(hV0);
+    hPT0.grab().get_vertices().push_back(hV1);
     hPT0.grab().grab_auxiliaries().store_flag("fake_positron");
     hPT0.get().tree_dump(std::clog, "Particle track : ");
 
@@ -84,7 +84,6 @@ int main(/*int argc_, char ** argv_*/) {
     sdm::particle_track_data& PTD =
         ER.add<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label());
     PTD.add_particle(hPT0);
-    PTD.grab_auxiliaries().store_flag("test_ptd");
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any

@@ -42,12 +42,6 @@ class particle_track_data : public datatools::i_serializable,
   /// Collection of handles on particle tracks
   typedef std::vector<particle_track::handle_type> particle_collection_type;
 
-  /// Default constructor
-  particle_track_data();
-
-  /// Destructor:
-  virtual ~particle_track_data();
-
   /// Check if there are some particles
   bool has_particles() const;
 
@@ -97,11 +91,8 @@ class particle_track_data : public datatools::i_serializable,
   /// Check if the object has a valid internal structure
   bool is_valid() const;
 
-  /// Return a mutable reference on the container of auxiliary properties
+  /// Return const reference container of auxiliary properties
   const datatools::properties& get_auxiliaries() const;
-
-  /// Return a non mutable reference on the container of auxiliary properties
-  datatools::properties& grab_auxiliaries();
 
   /// Clear the object
   virtual void clear();

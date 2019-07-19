@@ -921,12 +921,12 @@ int sultan_then_cat_driver::_process_algo(
     // Add a new solution :
     sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
-    clustering_.grab_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
-    sdm::tracker_clustering_solution& clustering_solution = clustering_.grab_default_solution();
-    clustering_solution.grab_auxiliaries().update_string(
+    clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
+    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
+    clustering_solution.get_auxiliaries().update_string(
         sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_THEN_CAT_ID);
 
-    clustering_solution.grab_auxiliaries().update_string("TRACKER", "CAT");
+    clustering_solution.get_auxiliaries().update_string("TRACKER", "CAT");
 
     // Analyse the sequentiator output :
     const std::vector<ct::sequence>& the_sequences = iscenario->sequences();
@@ -947,16 +947,16 @@ int sultan_then_cat_driver::_process_algo(
         // A CAT cluster with only one hit/cell (node) :
         int hit_id = a_sequence.nodes()[0].c().id();
         gg_hits_status[hit_id] = true;
-        clustering_solution.grab_unclustered_hits().push_back(gg_hits_mapping[hit_id]);
+        clustering_solution.get_unclustered_hits().push_back(gg_hits_mapping[hit_id]);
       } else {
         // A CAT cluster with more than one hit/cell (node) :
         {
           // Append a new cluster :
           sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
-          clustering_solution.grab_clusters().push_back(tch);
+          clustering_solution.get_clusters().push_back(tch);
         }
         sdm::tracker_cluster::handle_type& cluster_handle =
-            clustering_solution.grab_clusters().back();
+            clustering_solution.get_clusters().back();
         cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
         const ct::helix& seq_helix = isequence->get_helix();
 
@@ -1185,7 +1185,7 @@ int sultan_then_cat_driver::_process_algo(
         for (int i = 0; i < (int)seqsz; i++) {
           const ct::node& a_node = a_sequence.nodes()[i];
           int hit_id = a_node.c().id();
-          cluster_handle.grab().grab_hits().push_back(gg_hits_mapping[hit_id]);
+          cluster_handle->get_hits().push_back(gg_hits_mapping[hit_id]);
           gg_hits_status[hit_id] = true;
 
           const double xt = a_node.ep().x().value();
@@ -1231,7 +1231,7 @@ int sultan_then_cat_driver::_process_algo(
          ihs != gg_hits_status.end(); ihs++) {
       bool hit_id = ihs->first;
       if (ihs->second == 0) {
-        clustering_solution.grab_unclustered_hits().push_back(gg_hits_mapping[hit_id]);
+        clustering_solution.get_unclustered_hits().push_back(gg_hits_mapping[hit_id]);
       }
     }
 

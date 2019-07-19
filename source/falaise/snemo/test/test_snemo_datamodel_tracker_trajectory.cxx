@@ -54,11 +54,11 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(hits[0]);
-    TC0.grab_hits().push_back(hits[1]);
-    TC0.grab_hits().push_back(hits[2]);
-    TC0.grab_hits().push_back(hits[3]);
-    TC0.grab_hits().push_back(hits[4]);
+    TC0.get_hits().push_back(hits[0]);
+    TC0.get_hits().push_back(hits[1]);
+    TC0.get_hits().push_back(hits[2]);
+    TC0.get_hits().push_back(hits[3]);
+    TC0.get_hits().push_back(hits[4]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -72,8 +72,8 @@ int main(/* int argc_, char ** argv_ */) {
       datatools::handle<sdm::base_trajectory_pattern> hLTP0;
       sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
       // access to the internal geometry model :
-      LTP->grab_segment().set_first(geomtools::vector_3d(3., 5., 7.));
-      LTP->grab_segment().set_last(geomtools::vector_3d(13., -5., 12.));
+      LTP->get_segment().set_first(geomtools::vector_3d(3., 5., 7.));
+      LTP->get_segment().set_last(geomtools::vector_3d(13., -5., 12.));
       hLTP0.reset(LTP);
 
       sdm::tracker_trajectory TJ0;

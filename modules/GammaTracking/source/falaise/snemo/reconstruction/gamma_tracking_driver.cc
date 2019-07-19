@@ -164,11 +164,11 @@ int gamma_tracking_driver::_process_algo(
           std::find_if(cch.begin(), cch.end(), pred_via_handle);
       DT_THROW_IF(found == cch.end(), std::logic_error,
                   "Calibrated calorimeter hit with id " << calo_id << " can not be found");
-      hPT.grab().grab_associated_calorimeter_hits().push_back(*found);
+      hPT.grab().get_associated_calorimeter_hits().push_back(*found);
 
       // Build vertex
       snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);
-      hPT.grab().grab_vertices().push_back(hBS);
+      hPT.grab().get_vertices().push_back(hBS);
       geomtools::blur_spot& spot = hBS.grab();
       spot.set_hit_id(calo_id);
       spot.set_geom_id(found->get().get_geom_id());

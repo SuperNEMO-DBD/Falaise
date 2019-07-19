@@ -369,7 +369,7 @@ void base_tracker_clusterizer::_post_process_collect_unclustered_hits(
   namespace sdm = snemo::datamodel;
 
   for (size_t isol = 0; isol < clustering_.get_solutions().size(); isol++) {
-    sdm::tracker_clustering_solution &the_solution = clustering_.grab_solutions()[isol].grab();
+    sdm::tracker_clustering_solution &the_solution = clustering_.get_solutions()[isol].grab();
     std::set<int> clustered_hits_ids;
     for (size_t icluster = 0; icluster < the_solution.get_clusters().size(); icluster++) {
       const sdm::tracker_cluster &the_cluster = the_solution.get_clusters()[icluster].get();
@@ -385,8 +385,7 @@ void base_tracker_clusterizer::_post_process_collect_unclustered_hits(
       int hit_id = hhit.get().get_hit_id();
       if (clustered_hits_ids.count(hit_id) == 0) {
         // This hit is not clustered in any of the clusters:
-        the_solution.grab_unclustered_hits().push_back(hhit);
-        // std::cerr << "  -> unclustered hit ID : " << hit_id << std::endl;
+        the_solution.get_unclustered_hits().push_back(hhit);
       }
     }  // hit loop
   }
@@ -447,18 +446,18 @@ int base_tracker_clusterizer::process(
       // In this case, only one clustering algorithm has been performed on
       // only one side of the tracking chamber or on both sides in a single shot:
       sdm::tracker_clustering_data &prompt_cd = prompt_work_clusterings[0];
-      clustering_.grab_solutions().reserve(prompt_cd.get_number_of_solutions());
+      clustering_.get_solutions().reserve(prompt_cd.get_number_of_solutions());
       for (size_t isol = 0; isol < prompt_cd.get_number_of_solutions(); isol++) {
         sdm::tracker_clustering_solution::handle_type h_tc_sol(
             new sdm::tracker_clustering_solution);
         sdm::tracker_clustering_solution &tc_sol = h_tc_sol.grab();
         tc_sol.set_solution_id(isol);
-        tc_sol.grab_auxiliaries().store_flag(sdm::tracker_clustering_data::prompt_key());
+        tc_sol.get_auxiliaries().store_flag(sdm::tracker_clustering_data::prompt_key());
         const sdm::tracker_clustering_solution &prompt_sol = prompt_cd.get_solution(isol);
         sdm::tracker_clustering_solution::copy_one_solution_in_one(prompt_sol, tc_sol);
         if (prompt_sol.get_auxiliaries().has_key(
                 sdm::tracker_clustering_data::clusterizer_id_key())) {
-          tc_sol.grab_auxiliaries().store_string(
+          tc_sol.get_auxiliaries().store_string(
               sdm::tracker_clustering_data::clusterizer_id_key(),
               prompt_sol.get_auxiliaries().fetch_string(
                   sdm::tracker_clustering_data::clusterizer_id_key()));
@@ -481,7 +480,7 @@ int base_tracker_clusterizer::process(
             new sdm::tracker_clustering_solution);
         sdm::tracker_clustering_solution &tc_sol = h_tc_sol.grab();
         tc_sol.set_solution_id(isol);
-        tc_sol.grab_auxiliaries().store_flag(sdm::tracker_clustering_data::prompt_key());
+        tc_sol.get_auxiliaries().store_flag(sdm::tracker_clustering_data::prompt_key());
         int isol0 = isol % nb_prompt_sol0;
         int isol1 = isol / nb_prompt_sol0;
         const sdm::tracker_clustering_solution &prompt_sol0 = prompt_cd0.get_solution(isol0);
@@ -490,7 +489,7 @@ int base_tracker_clusterizer::process(
                                                                       tc_sol);
         if (prompt_sol0.get_auxiliaries().has_key(
                 sdm::tracker_clustering_data::clusterizer_id_key())) {
-          tc_sol.grab_auxiliaries().store_string(
+          tc_sol.get_auxiliaries().store_string(
               sdm::tracker_clustering_data::clusterizer_id_key(),
               prompt_sol0.get_auxiliaries().fetch_string(
                   sdm::tracker_clustering_data::clusterizer_id_key()));
@@ -536,23 +535,23 @@ int base_tracker_clusterizer::process(
             new sdm::tracker_clustering_solution);
         sdm::tracker_clustering_solution &tc_sol = h_tc_sol.grab();
         // Give it an unique solution id:
-        tc_sol.set_solution_id(clustering_.grab_solutions().size() + idelayed_sol);
+        tc_sol.set_solution_id(clustering_.get_solutions().size() + idelayed_sol);
         // Record the delayed time-cluster unique Idd solution:
-        tc_sol.grab_auxiliaries().store_integer(sdm::tracker_clustering_data::delayed_id_key(),
+        tc_sol.get_auxiliaries().store_integer(sdm::tracker_clustering_data::delayed_id_key(),
                                                 idelayed_clustering);
         sdm::tracker_clustering_solution::copy_one_solution_in_one(delayed_sol, tc_sol);
         if (delayed_sol.get_auxiliaries().has_key(
                 sdm::tracker_clustering_data::clusterizer_id_key())) {
-          tc_sol.grab_auxiliaries().store_string(
+          tc_sol.get_auxiliaries().store_string(
               sdm::tracker_clustering_data::clusterizer_id_key(),
               delayed_sol.get_auxiliaries().fetch_string(
                   sdm::tracker_clustering_data::clusterizer_id_key()));
         }
         // Flag it as a delayed clustering solution:
-        tc_sol.grab_auxiliaries().store_flag(sdm::tracker_clustering_data::delayed_key());
+        tc_sol.get_auxiliaries().store_flag(sdm::tracker_clustering_data::delayed_key());
         for (sdm::tracker_clustering_solution::cluster_col_type::iterator icluster =
-                 tc_sol.grab_clusters().begin();
-             icluster != tc_sol.grab_clusters().end(); ++icluster) {
+                 tc_sol.get_clusters().begin();
+             icluster != tc_sol.get_clusters().end(); ++icluster) {
           icluster->grab().make_delayed();
         }
         clustering_.add_solution(h_tc_sol);
@@ -562,16 +561,16 @@ int base_tracker_clusterizer::process(
 
   const bool merge_prompt_delayed_solutions = true;
   if (merge_prompt_delayed_solutions) {
-    sdm::tracker_clustering_data::solution_col_type &the_solutions = clustering_.grab_solutions();
+    sdm::tracker_clustering_data::solution_col_type &the_solutions = clustering_.get_solutions();
     for (sdm::tracker_clustering_data::solution_col_type::iterator isol = the_solutions.begin();
          isol != the_solutions.end(); ++isol) {
       sdm::tracker_clustering_solution &sol_prompt = isol->grab();
-      datatools::properties &aux_prompt = sol_prompt.grab_auxiliaries();
+      datatools::properties &aux_prompt = sol_prompt.get_auxiliaries();
       if (!aux_prompt.has_flag(sdm::tracker_clustering_data::prompt_key())) continue;
       for (sdm::tracker_clustering_data::solution_col_type::iterator jsol = std::next(isol);
            jsol != the_solutions.end(); ++jsol) {
         sdm::tracker_clustering_solution &sol_delayed = jsol->grab();
-        datatools::properties &aux_delayed = sol_delayed.grab_auxiliaries();
+        datatools::properties &aux_delayed = sol_delayed.get_auxiliaries();
         if (!aux_delayed.has_flag(sdm::tracker_clustering_data::delayed_key())) continue;
         aux_prompt.unset_flag(sdm::tracker_clustering_data::prompt_key());
         // aux_delayed.unset_flag(sdm::tracker_clustering_data::delayed_key());

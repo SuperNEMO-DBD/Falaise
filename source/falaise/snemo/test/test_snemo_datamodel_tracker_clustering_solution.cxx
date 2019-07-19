@@ -184,16 +184,16 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(hits[0]);
-    TC0.grab_hits().push_back(hits[1]);
-    TC0.grab_hits().push_back(hits[2]);
-    TC0.grab_hits().push_back(hits[3]);
-    TC0.grab_hits().push_back(hits[4]);
-    TC0.grab_hits().push_back(hits[5]);
-    TC0.grab_hits().push_back(hits[6]);
-    TC0.grab_hits().push_back(hits[7]);
-    TC0.grab_hits().push_back(hits[8]);
-    TC0.grab_hits().push_back(hits[9]);
+    TC0.get_hits().push_back(hits[0]);
+    TC0.get_hits().push_back(hits[1]);
+    TC0.get_hits().push_back(hits[2]);
+    TC0.get_hits().push_back(hits[3]);
+    TC0.get_hits().push_back(hits[4]);
+    TC0.get_hits().push_back(hits[5]);
+    TC0.get_hits().push_back(hits[6]);
+    TC0.get_hits().push_back(hits[7]);
+    TC0.get_hits().push_back(hits[8]);
+    TC0.get_hits().push_back(hits[9]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -209,12 +209,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.grab_hits().push_back(hits[10]);
-    TC1.grab_hits().push_back(hits[11]);
-    TC1.grab_hits().push_back(hits[12]);
-    TC1.grab_hits().push_back(hits[13]);
-    TC1.grab_hits().push_back(hits[14]);
-    TC1.grab_hits().push_back(hits[15]);
+    TC1.get_hits().push_back(hits[10]);
+    TC1.get_hits().push_back(hits[11]);
+    TC1.get_hits().push_back(hits[12]);
+    TC1.get_hits().push_back(hits[13]);
+    TC1.get_hits().push_back(hits[14]);
+    TC1.get_hits().push_back(hits[15]);
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -228,12 +228,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_clustering_solution::handle_type hTCS0(new sdm::tracker_clustering_solution);
     sdm::tracker_clustering_solution& TCS0 = hTCS0.grab();
     TCS0.set_solution_id(0);
-    TCS0.grab_auxiliaries().store("weighting.chi2", 3.2546);
-    TCS0.grab_auxiliaries().store("weighting.ndof", 5);
-    TCS0.grab_unclustered_hits().push_back(hits[16]);
-    TCS0.grab_unclustered_hits().push_back(hits[17]);
-    TCS0.grab_clusters().push_back(hTC0);
-    TCS0.grab_clusters().push_back(hTC1);
+    TCS0.get_auxiliaries().store("weighting.chi2", 3.2546);
+    TCS0.get_auxiliaries().store("weighting.ndof", 5);
+    TCS0.get_unclustered_hits().push_back(hits[16]);
+    TCS0.get_unclustered_hits().push_back(hits[17]);
+    TCS0.get_clusters().push_back(hTC0);
+    TCS0.get_clusters().push_back(hTC1);
     {
       std::ostringstream title;
       title << "Tracker clustering solution #1";

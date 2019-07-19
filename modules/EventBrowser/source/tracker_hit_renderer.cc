@@ -38,6 +38,7 @@
 #include <falaise/snemo/processing/geiger_regime.h>
 
 // This project:
+#include <falaise/snemo/io/data_model.h>
 #include <falaise/snemo/view/browser_tracks.h>
 #include <falaise/snemo/view/options_manager.h>
 #include <falaise/snemo/view/style_manager.h>
@@ -313,10 +314,14 @@ void tracker_hit_renderer::push_fitted_tracks() {
     // Get current tracker trajectory solution:
     const snemo::datamodel::tracker_trajectory_solution &a_solution = isolution->get();
 
+// DONT couple data model to view!
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Check solution properties:
     if (a_solution.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
         !a_solution.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG))
       continue;
+#pragma GCC diagnostic pop
 
     // Get trajectories stored in the current tracker trajectory solution:
     const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =

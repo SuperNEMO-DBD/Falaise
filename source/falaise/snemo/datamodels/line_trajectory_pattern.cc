@@ -19,12 +19,9 @@ const std::string &line_trajectory_pattern::pattern_id() {
 
 line_trajectory_pattern::line_trajectory_pattern()
     : base_trajectory_pattern(line_trajectory_pattern::pattern_id()) {
-  return;
 }
 
-line_trajectory_pattern::~line_trajectory_pattern() { return; }
-
-geomtools::line_3d &line_trajectory_pattern::grab_segment() { return _segment_; }
+geomtools::line_3d &line_trajectory_pattern::get_segment() { return _segment_; }
 
 const geomtools::line_3d &line_trajectory_pattern::get_segment() const { return _segment_; }
 

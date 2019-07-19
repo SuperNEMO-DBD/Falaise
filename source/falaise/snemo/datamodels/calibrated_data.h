@@ -93,18 +93,12 @@ class calibrated_data : public datatools::i_serializable,
   /// Reset
   void reset();
 
-  /// Constructor
-  calibrated_data();
-
-  /// Destructor
-  virtual ~calibrated_data();
-
   /// Clear attributes
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
   calorimeter_hit_collection_type

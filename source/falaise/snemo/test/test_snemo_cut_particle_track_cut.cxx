@@ -16,26 +16,24 @@ int main() {
     std::clog << "Test program for the 'particle_track_cut' class." << std::endl;
 
     // Create a handle of fake vertices :
-    datatools::handle<geomtools::blur_spot> hV0;
-    hV0.reset(new geomtools::blur_spot(geomtools::blur_spot::dimension_three));
-    hV0.grab().grab_auxiliaries().store(
+    auto hV0 = datatools::make_handle<geomtools::blur_spot>(geomtools::blur_spot::dimension_three);
+    hV0->grab_auxiliaries().store(
         snemo::datamodel::particle_track::vertex_type_key(),
         snemo::datamodel::particle_track::vertex_on_source_foil_label());
-    hV0.get().tree_dump(std::clog, "Foil vertex : ");
+    hV0->tree_dump(std::clog, "Foil vertex : ");
 
-    datatools::handle<geomtools::blur_spot> hV1;
-    hV1.reset(new geomtools::blur_spot(geomtools::blur_spot::dimension_three));
-    hV1.grab().grab_auxiliaries().store(
+    auto hV1 = datatools::make_handle<geomtools::blur_spot>(geomtools::blur_spot::dimension_three);
+    hV1->grab_auxiliaries().store(
         snemo::datamodel::particle_track::vertex_type_key(),
         snemo::datamodel::particle_track::vertex_on_main_calorimeter_label());
-    hV1.get().tree_dump(std::clog, "Calorimeter vertex : ");
+    hV1->tree_dump(std::clog, "Calorimeter vertex : ");
 
     // Create the particle track :
     snemo::datamodel::particle_track PT0;
     PT0.set_track_id(0);
     PT0.set_charge(snemo::datamodel::particle_track::positive);
-    PT0.grab_vertices().push_back(hV0);
-    PT0.grab_vertices().push_back(hV1);
+    PT0.get_vertices().push_back(hV0);
+    PT0.get_vertices().push_back(hV1);
     PT0.grab_auxiliaries().store_flag("fake_electron");
     PT0.tree_dump(std::clog, "Particle track : ");
 

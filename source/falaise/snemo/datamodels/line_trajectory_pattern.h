@@ -30,10 +30,10 @@ class line_trajectory_pattern : public base_trajectory_pattern {
   line_trajectory_pattern();
 
   /// Destructor
-  virtual ~line_trajectory_pattern();
+  virtual ~line_trajectory_pattern() = default;
 
   /// Get a reference to the mutable line/segment embedded model
-  geomtools::line_3d& grab_segment();
+  geomtools::line_3d& get_segment();
 
   /// Get a reference to the non mutable line/segment embedded model
   const geomtools::line_3d& get_segment() const;
@@ -42,7 +42,7 @@ class line_trajectory_pattern : public base_trajectory_pattern {
   virtual const geomtools::i_shape_1d& get_shape() const;
 
  private:
-  geomtools::line_3d _segment_;  //!< The line/segment embedded model
+  geomtools::line_3d _segment_{};  //!< The line/segment embedded model
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

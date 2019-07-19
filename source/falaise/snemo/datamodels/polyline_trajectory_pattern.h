@@ -30,10 +30,10 @@ class polyline_trajectory_pattern : public base_trajectory_pattern {
   polyline_trajectory_pattern();
 
   /// Destructor
-  virtual ~polyline_trajectory_pattern();
+  virtual ~polyline_trajectory_pattern() = default;
 
   /// Get a reference to the mutable polyline path embedded model
-  geomtools::polyline_3d& grab_path();
+  geomtools::polyline_3d& get_path();
 
   /// Get a reference to the non mutable polyline path embedded model
   const geomtools::polyline_3d& get_path() const;
@@ -42,7 +42,7 @@ class polyline_trajectory_pattern : public base_trajectory_pattern {
   virtual const geomtools::i_shape_1d& get_shape() const;
 
  private:
-  geomtools::polyline_3d _path_;  //!< The polyline path embedded model
+  geomtools::polyline_3d _path_{};  //!< The polyline path embedded model
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

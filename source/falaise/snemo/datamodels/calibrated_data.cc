@@ -20,7 +20,7 @@ bool calibrated_data::has_data() const {
 }
 
 bool calibrated_data::has_calibrated_calorimeter_hits() const {
-  return _calibrated_calorimeter_hits_.size() != 0;
+  return !_calibrated_calorimeter_hits_.empty();
 }
 
 const calibrated_data::calorimeter_hit_collection_type&
@@ -33,7 +33,7 @@ calibrated_data::calorimeter_hit_collection_type& calibrated_data::calibrated_ca
 }
 
 bool calibrated_data::has_calibrated_tracker_hits() const {
-  return _calibrated_tracker_hits_.size() != 0;
+  return !_calibrated_tracker_hits_.empty();
 }
 
 const calibrated_data::tracker_hit_collection_type& calibrated_data::calibrated_tracker_hits()
@@ -49,66 +49,45 @@ const datatools::properties& calibrated_data::get_properties() const { return _p
 
 datatools::properties& calibrated_data::grab_properties() { return _properties_; }
 
-calibrated_data::calibrated_data() { return; }
+void calibrated_data::reset_calibrated_calorimeter_hits() { _calibrated_calorimeter_hits_.clear(); }
 
-calibrated_data::~calibrated_data() {
-  clear();
-  return;
-}
-
-void calibrated_data::reset_calibrated_calorimeter_hits() {
-  _calibrated_calorimeter_hits_.clear();
-  return;
-}
-
-void calibrated_data::reset_calibrated_tracker_hits() {
-  _calibrated_tracker_hits_.clear();
-  return;
-}
+void calibrated_data::reset_calibrated_tracker_hits() { _calibrated_tracker_hits_.clear(); }
 
 void calibrated_data::reset() {
   reset_calibrated_calorimeter_hits();
   reset_calibrated_tracker_hits();
   _properties_.clear();
-  return;
 }
 
-void calibrated_data::clear() {
-  reset();
-  return;
-}
+void calibrated_data::clear() { reset(); }
 
 void calibrated_data::tree_dump(std::ostream& out_, const std::string& title_,
                                 const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
   if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
+    out_ << indent_ << title_ << std::endl;
   }
 
   // Properties:
   {
-    out_ << indent << datatools::i_tree_dumpable::tag << "Properties : ";
-    if (_properties_.size() == 0) {
+    out_ << indent_ << datatools::i_tree_dumpable::tag << "Properties : ";
+    if (_properties_.empty()) {
       out_ << "<empty>";
     }
     out_ << std::endl;
     {
       std::ostringstream indent_oss;
-      indent_oss << indent;
+      indent_oss << indent_;
       indent_oss << datatools::i_tree_dumpable::skip_tag;
       _properties_.tree_dump(out_, "", indent_oss.str());
     }
   }
 
   // Calibrated calorimeter hits:
-  out_ << indent << datatools::i_tree_dumpable::tag;
+  out_ << indent_ << datatools::i_tree_dumpable::tag;
   out_ << "Calibrated calorimeter hits: " << _calibrated_calorimeter_hits_.size() << std::endl;
   for (size_t i = 0; i < _calibrated_calorimeter_hits_.size(); i++) {
     const calibrated_calorimeter_hit& calo_calib_hit = _calibrated_calorimeter_hits_.at(i).get();
-    out_ << indent << datatools::i_tree_dumpable::skip_tag;
+    out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
     if (i + 1 == _calibrated_calorimeter_hits_.size()) {
       out_ << datatools::i_tree_dumpable::last_tag;
     } else {
@@ -121,11 +100,11 @@ void calibrated_data::tree_dump(std::ostream& out_, const std::string& title_,
   }
 
   // Calibrated tracker hits:
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_);
+  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_);
   out_ << "Calibrated tracker hits: " << _calibrated_tracker_hits_.size() << std::endl;
   for (size_t i = 0; i < _calibrated_tracker_hits_.size(); i++) {
     const calibrated_tracker_hit& tracker_calib_hit = _calibrated_tracker_hits_.at(i).get();
-    out_ << indent << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
+    out_ << indent_ << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
     if (i + 1 == _calibrated_tracker_hits_.size()) {
       out_ << datatools::i_tree_dumpable::last_tag;
     } else {
@@ -133,12 +112,14 @@ void calibrated_data::tree_dump(std::ostream& out_, const std::string& title_,
     }
     out_ << "Hit #" << i << " : Id=" << tracker_calib_hit.get_hit_id()
          << " GID=" << tracker_calib_hit.get_geom_id() << ' ';
-    if (tracker_calib_hit.is_prompt()) out_ << "[prompt]";
-    if (tracker_calib_hit.is_delayed()) out_ << "[delayed]";
+    if (tracker_calib_hit.is_prompt()) {
+      out_ << "[prompt]";
+    }
+    if (tracker_calib_hit.is_delayed()) {
+      out_ << "[delayed]";
+    }
     out_ << std::endl;
   }
-
-  return;
 }
 
 }  // end of namespace datamodel

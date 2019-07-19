@@ -17,8 +17,8 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
-#include <datatools/handle.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/handle.h>
+#include <bayeux/datatools/properties.h>
 
 // This project:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
@@ -102,12 +102,6 @@ class tracker_clustering_solution : public datatools::i_serializable {
   /// Dictionary of hit/cluster belonging
   typedef std::map<int32_t, cluster_col_type> hit_belonging_col_type;
 
-  /// Default constructor
-  tracker_clustering_solution();
-
-  /// Default constructor
-  virtual ~tracker_clustering_solution();
-
   /// Check if there is a valid solution ID
   bool has_solution_id() const;
 
@@ -121,32 +115,26 @@ class tracker_clustering_solution : public datatools::i_serializable {
   void invalidate_solution_id();
 
   /// Return a mutable reference on the container of auxiliary properties
-  datatools::properties &grab_auxiliaries();
+  datatools::properties& get_auxiliaries();
 
   /// Return a non mutable reference on the container of auxiliary properties
-  const datatools::properties &get_auxiliaries() const;
+  const datatools::properties& get_auxiliaries() const;
 
   /// Return a mutable reference on the container of clusters
-  cluster_col_type &grab_clusters();
+  cluster_col_type& get_clusters();
 
   /// Return a non mutable reference on the container of clusters
-  const cluster_col_type &get_clusters() const;
-
-  // /// Return a mutable reference on the container of delayed clusters
-  // cluster_col_type & grab_delayed_clusters() const;
-
-  // /// Return a non mutable reference on the container of delayed clusters
-  // const cluster_col_type & get_delayed_clusters() const;
+  const cluster_col_type& get_clusters() const;
 
   /// Check if there is some unclustered hits
   bool has_unclustered_hits() const;
 
   /// Return a mutable reference on the container of handles on unclustered calibrated tracker hits
-  hit_collection_type &grab_unclustered_hits();
+  hit_collection_type& get_unclustered_hits();
 
   /// Return a non mutable reference on the container of handles on unclustered calibrated tracker
   /// hits
-  const hit_collection_type &get_unclustered_hits() const;
+  const hit_collection_type& get_unclustered_hits() const;
 
   /// Empty the contents of the tracker cluster solution
   void clear();
@@ -204,13 +192,13 @@ class tracker_clustering_solution : public datatools::i_serializable {
                                       tracker_clustering_solution &target_);
 
  private:
-  int32_t _solution_id_;                   //!< Unique solution ID
-  cluster_col_type _clusters_;             //!< Collection of handles on prompt Geiger hits clusters
-  hit_collection_type _unclustered_hits_;  //!< Collection of handles on unclustered Geiger hits
-  datatools::properties _auxiliaries_;     //!< List of auxiliary properties
+  int32_t _solution_id_{-1};                   //!< Unique solution ID
+  cluster_col_type _clusters_{};             //!< Collection of handles on prompt Geiger hits clusters
+  hit_collection_type _unclustered_hits_{};  //!< Collection of handles on unclustered Geiger hits
+  datatools::properties _auxiliaries_{};     //!< List of auxiliary properties
 
   // Non persistent information :
-  hit_belonging_col_type _hit_belonging_;  //!< List of clusters for each clustered hits
+  hit_belonging_col_type _hit_belonging_{};  //!< List of clusters for each clustered hits
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

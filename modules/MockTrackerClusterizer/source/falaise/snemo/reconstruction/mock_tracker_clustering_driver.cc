@@ -108,7 +108,7 @@ int mock_tracker_clustering_driver::_process_algo(
   // Filling a unique tracker clustering solution:
   sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
   sdm::tracker_clustering_solution& tc_solution = htcs.grab();
-  tc_solution.grab_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
+  tc_solution.get_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
                                                MTC_ID);
 
   // GG hit loop :
@@ -132,14 +132,14 @@ int mock_tracker_clustering_driver::_process_algo(
       // Create a tracker cluster handle:
       sdm::tracker_cluster::handle_type ht_cluster(new sdm::tracker_cluster);
       ht_cluster.grab().set_cluster_id(tc_solution.get_clusters().size());
-      tc_solution.grab_clusters().push_back(ht_cluster);
+      tc_solution.get_clusters().push_back(ht_cluster);
     }
 
     // Continue to fill the current track
-    sdm::tracker_cluster::handle_type& cluster_handle = tc_solution.grab_clusters().back();
+    sdm::tracker_cluster::handle_type& cluster_handle = tc_solution.get_clusters().back();
     DT_LOG_TRACE(get_logging_priority(),
-                 "Current cluster id " << cluster_handle.get().get_cluster_id());
-    cluster_handle.grab().grab_hits().push_back(*igg);
+                 "Current cluster id " << cluster_handle->get_cluster_id());
+    cluster_handle->get_hits().push_back(*igg);
     // hits_ids.insert(a_gg_hit.get_hit_id());
     previous_gg_hit = a_gg_hit;
   }

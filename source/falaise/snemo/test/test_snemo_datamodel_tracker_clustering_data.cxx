@@ -151,16 +151,16 @@ int main(int argc_, char** argv_) {
     sdm::event_record ER;
 
     // Event header bank :
-    sdm::event_header& EH = ER.add<sdm::event_header>(sdm::data_info::EVENT_HEADER_LABEL);
+    sdm::event_header& EH = ER.add<sdm::event_header>(sdm::data_info::default_event_header_label());
     EH.set_id(datatools::event_id(666, 345));
     EH.set_timestamp(sdm::timestamp(1268644034, 1204));
     EH.set_generation(sdm::event_header::GENERATION_SIMULATED);
-    EH.grab_properties().store_flag("fake");
-    EH.grab_properties().store("date", 20120306);
+    EH.get_properties().store_flag("fake");
+    EH.get_properties().store("date", 20120306);
     EH.tree_dump(std::clog, "Event header('EH'): ");
 
     // Calibrated data bank :
-    sdm::calibrated_data& CD = ER.add<sdm::calibrated_data>(sdm::data_info::CALIBRATED_DATA_LABEL);
+    sdm::calibrated_data& CD = ER.add<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label());
     // Populate a collection of handles on Geiger hits :
     for (int i = 0; i < 18; ++i) {
       sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
@@ -200,7 +200,7 @@ int main(int argc_, char** argv_) {
 
     // Tracker clustering data bank :
     sdm::tracker_clustering_data& TCD =
-        ER.add<sdm::tracker_clustering_data>(sdm::data_info::TRACKER_CLUSTERING_DATA_LABEL);
+        ER.add<sdm::tracker_clustering_data>(sdm::data_info::default_tracker_clustering_data_label());
 
     // Get a reference to the collection of calibrated Geiger hits from the 'CD' bank :
     sdm::calibrated_data::tracker_hit_collection_type& gg_hits = CD.calibrated_tracker_hits();
@@ -210,16 +210,16 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(gg_hits[0]);
-    TC0.grab_hits().push_back(gg_hits[1]);
-    TC0.grab_hits().push_back(gg_hits[2]);
-    TC0.grab_hits().push_back(gg_hits[3]);
-    TC0.grab_hits().push_back(gg_hits[4]);
-    TC0.grab_hits().push_back(gg_hits[5]);
-    TC0.grab_hits().push_back(gg_hits[6]);
-    TC0.grab_hits().push_back(gg_hits[7]);
-    TC0.grab_hits().push_back(gg_hits[8]);
-    TC0.grab_hits().push_back(gg_hits[9]);
+    TC0.get_hits().push_back(gg_hits[0]);
+    TC0.get_hits().push_back(gg_hits[1]);
+    TC0.get_hits().push_back(gg_hits[2]);
+    TC0.get_hits().push_back(gg_hits[3]);
+    TC0.get_hits().push_back(gg_hits[4]);
+    TC0.get_hits().push_back(gg_hits[5]);
+    TC0.get_hits().push_back(gg_hits[6]);
+    TC0.get_hits().push_back(gg_hits[7]);
+    TC0.get_hits().push_back(gg_hits[8]);
+    TC0.get_hits().push_back(gg_hits[9]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -233,12 +233,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.grab_hits().push_back(gg_hits[10]);
-    TC1.grab_hits().push_back(gg_hits[11]);
-    TC1.grab_hits().push_back(gg_hits[12]);
-    TC1.grab_hits().push_back(gg_hits[13]);
-    TC1.grab_hits().push_back(gg_hits[14]);
-    TC1.grab_hits().push_back(gg_hits[15]);
+    TC1.get_hits().push_back(gg_hits[10]);
+    TC1.get_hits().push_back(gg_hits[11]);
+    TC1.get_hits().push_back(gg_hits[12]);
+    TC1.get_hits().push_back(gg_hits[13]);
+    TC1.get_hits().push_back(gg_hits[14]);
+    TC1.get_hits().push_back(gg_hits[15]);
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -254,12 +254,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_clustering_solution::handle_type hTCS0(new sdm::tracker_clustering_solution);
     sdm::tracker_clustering_solution& TCS0 = hTCS0.grab();
     TCS0.set_solution_id(0);
-    TCS0.grab_auxiliaries().store_real("weighting.chi2", 3.2546);
-    TCS0.grab_auxiliaries().store_integer("weighting.ndof", 5);
-    TCS0.grab_clusters().push_back(hTC0);
-    TCS0.grab_clusters().push_back(hTC1);
-    TCS0.grab_unclustered_hits().push_back(gg_hits[16]);
-    TCS0.grab_unclustered_hits().push_back(gg_hits[17]);
+    TCS0.get_auxiliaries().store_real("weighting.chi2", 3.2546);
+    TCS0.get_auxiliaries().store_integer("weighting.ndof", 5);
+    TCS0.get_clusters().push_back(hTC0);
+    TCS0.get_clusters().push_back(hTC1);
+    TCS0.get_unclustered_hits().push_back(gg_hits[16]);
+    TCS0.get_unclustered_hits().push_back(gg_hits[17]);
     {
       std::ostringstream title;
       title << "Tracker clustering solution #0";
@@ -272,8 +272,6 @@ int main(int argc_, char** argv_) {
     }
 
     TCD.add_solution(hTCS0, true);
-    TCD.grab_auxiliaries().store_flag("fake_tcd");
-    TCD.grab_auxiliaries().store("tracker_clustering_algo", "warwick");
     TCD.tree_dump(std::clog, "Tracker clustering data('TCD') : ");
     std::clog << std::endl;
 

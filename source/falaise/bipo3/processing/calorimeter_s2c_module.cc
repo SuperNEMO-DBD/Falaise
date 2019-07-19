@@ -186,8 +186,8 @@ calorimeter_s2c_module::calorimeter_s2c_module(datatools::logger::priority loggi
     : dpp::base_module(logging_priority_) {
   _geom_manager_ = 0;
 
-  _SD_label_ = snemo::datamodel::data_info::SIMULATED_DATA_LABEL;
-  _CD_label_ = snemo::datamodel::data_info::CALIBRATED_DATA_LABEL;
+  _SD_label_ = snemo::datamodel::data_info::default_simulated_data_label();
+  _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
 
   _cluster_time_width_ = 100 * CLHEP::ns;
   _alpha_quenching_ = true;

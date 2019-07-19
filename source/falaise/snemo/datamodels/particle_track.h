@@ -126,12 +126,6 @@ class particle_track : public geomtools::base_hit {
   /// Handle on particle track
   typedef datatools::handle<particle_track> handle_type;
 
-  /// Default constructor
-  particle_track();
-
-  /// Destructor
-  virtual ~particle_track();
-
   /// Check if there is a valid track ID
   bool has_track_id() const;
 
@@ -160,13 +154,13 @@ class particle_track : public geomtools::base_hit {
   void set_trajectory_handle(const tracker_trajectory::handle_type &trajectory_handle_);
 
   /// Return a mutable reference on the trajectory handle
-  tracker_trajectory::handle_type &grab_trajectory_handle();
+  tracker_trajectory::handle_type &get_trajectory_handle();
 
   /// Return a non mutable reference on the trajectory handle
   const tracker_trajectory::handle_type &get_trajectory_handle() const;
 
   /// Return a mutable reference on the trajectory
-  tracker_trajectory &grab_trajectory();
+  tracker_trajectory &get_trajectory();
 
   /// Return a non mutable reference on the trajectory
   const tracker_trajectory &get_trajectory() const;
@@ -178,7 +172,7 @@ class particle_track : public geomtools::base_hit {
   void reset_vertices();
 
   /// Return a mutable reference on the collection of vertices (handles)
-  vertex_collection_type &grab_vertices();
+  vertex_collection_type &get_vertices();
 
   /// Return a non mutable reference on the collection of vertices (handles)
   const vertex_collection_type &get_vertices() const;
@@ -196,7 +190,7 @@ class particle_track : public geomtools::base_hit {
   void reset_associated_calorimeter_hits();
 
   /// Return a mutable reference on the collection of associated calorimeter hits (handles)
-  calibrated_calorimeter_hit::collection_type &grab_associated_calorimeter_hits();
+  calibrated_calorimeter_hit::collection_type &get_associated_calorimeter_hits();
 
   /// Return a non mutable reference on the collection of associated calorimeter hits (handles)
   const calibrated_calorimeter_hit::collection_type &get_associated_calorimeter_hits() const;
@@ -212,11 +206,11 @@ class particle_track : public geomtools::base_hit {
                          const std::string &indent_ = "", bool inherit_ = false) const;
 
  private:
-  charge_type _charge_from_source_;              //!< Particle charge
-  tracker_trajectory::handle_type _trajectory_;  //!< Handle to the fitted trajectory
-  vertex_collection_type _vertices_;             //!< Collection of vertices
+  charge_type _charge_from_source_{invalid};              //!< Particle charge
+  tracker_trajectory::handle_type _trajectory_{};  //!< Handle to the fitted trajectory
+  vertex_collection_type _vertices_{};             //!< Collection of vertices
   calibrated_calorimeter_hit::collection_type
-      _associated_calorimeter_hits_;  //!< Collection of associated calorimeter hits
+      _associated_calorimeter_hits_{};  //!< Collection of associated calorimeter hits
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

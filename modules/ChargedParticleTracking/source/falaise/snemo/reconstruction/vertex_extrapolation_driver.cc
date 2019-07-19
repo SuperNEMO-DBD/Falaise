@@ -136,7 +136,7 @@ void vertex_extrapolation_driver::_set_defaults() {
 void vertex_extrapolation_driver::process(const snemo::datamodel::tracker_trajectory &trajectory_,
                                           snemo::datamodel::particle_track &particle_) {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Driver is not initialized !");
-  this->_measure_vertices_(trajectory_, particle_.grab_vertices());
+  this->_measure_vertices_(trajectory_, particle_.get_vertices());
   return;
 }
 

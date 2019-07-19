@@ -28,28 +28,6 @@ int main(/* int argc_, char ** argv_ */) {
     std::clog << "Test program for the 'snemo::datamodel::tracker_trajectory_solution' class."
               << std::endl;
 
-    /*
-    bool debug = false;
-    int iarg = 1;
-    while(iarg < argc_) {
-      std::string token = argv_[iarg];
-
-      if(token[0] == '-') {
-        std::string option = token;
-        if((option == "-d") ||(option == "--debug")) {
-          debug = true;
-        } else {
-          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
-        }
-      } else {
-        std::string argument = token;
-        {
-          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
-        }
-      }
-      iarg++;
-    }
-    */
 
     namespace sdm = snemo::datamodel;
 
@@ -102,11 +80,11 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC0 = hTC0.get();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.grab_hits().push_back(hits.at(0));
-    TC0.grab_hits().push_back(hits.at(1));
-    TC0.grab_hits().push_back(hits.at(2));
-    TC0.grab_hits().push_back(hits.at(3));
-    TC0.grab_hits().push_back(hits.at(4));
+    TC0.get_hits().push_back(hits.at(0));
+    TC0.get_hits().push_back(hits.at(1));
+    TC0.get_hits().push_back(hits.at(2));
+    TC0.get_hits().push_back(hits.at(3));
+    TC0.get_hits().push_back(hits.at(4));
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -121,12 +99,12 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC1 = hTC1.get();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.grab_hits().push_back(hits.at(10));
-    TC1.grab_hits().push_back(hits.at(11));
-    TC1.grab_hits().push_back(hits.at(12));
-    TC1.grab_hits().push_back(hits.at(13));
-    TC1.grab_hits().push_back(hits.at(14));
-    TC1.grab_hits().push_back(hits.at(15));
+    TC1.get_hits().push_back(hits.at(10));
+    TC1.get_hits().push_back(hits.at(11));
+    TC1.get_hits().push_back(hits.at(12));
+    TC1.get_hits().push_back(hits.at(13));
+    TC1.get_hits().push_back(hits.at(14));
+    TC1.get_hits().push_back(hits.at(15));
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -145,12 +123,12 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::tracker_clustering_solution> hTCS0(new
     // sdm::tracker_clustering_solution);  sdm::tracker_clustering_solution & TCS0 = hTCS0.get();
     TCS0.set_solution_id(0);
-    TCS0.grab_auxiliaries().store("weighting.chi2", 3.2546);
-    TCS0.grab_auxiliaries().store("weighting.ndof", 5);
-    TCS0.grab_unclustered_hits().push_back(hits.at(16));
-    TCS0.grab_unclustered_hits().push_back(hits.at(17));
-    TCS0.grab_clusters().push_back(hTC0);
-    TCS0.grab_clusters().push_back(hTC1);
+    TCS0.get_auxiliaries().store("weighting.chi2", 3.2546);
+    TCS0.get_auxiliaries().store("weighting.ndof", 5);
+    TCS0.get_unclustered_hits().push_back(hits.at(16));
+    TCS0.get_unclustered_hits().push_back(hits.at(17));
+    TCS0.get_clusters().push_back(hTC0);
+    TCS0.get_clusters().push_back(hTC1);
     TCS0.tree_dump(std::clog, "TCS0 : ");
 
     /*****************************
@@ -164,8 +142,8 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP0;
     sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
     // access to the internal line model :
-    LTP->grab_segment().set_first(geomtools::vector_3d(3., 5., 7.));
-    LTP->grab_segment().set_last(geomtools::vector_3d(13., -5., 12.));
+    LTP->get_segment().set_first(geomtools::vector_3d(3., 5., 7.));
+    LTP->get_segment().set_last(geomtools::vector_3d(13., -5., 12.));
     hLTP0.reset(LTP);
 
     DATATOOLS_HANDLE_DECLARE_NEW(hTJ0, sdm::tracker_trajectory);
@@ -184,12 +162,12 @@ int main(/* int argc_, char ** argv_ */) {
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP1;
     sdm::helix_trajectory_pattern* HTP = new sdm::helix_trajectory_pattern;
     // access to the internal helix model :
-    HTP->grab_helix().set_radius(0.75 * CLHEP::m);
-    HTP->grab_helix().set_center(
+    HTP->get_helix().set_radius(0.75 * CLHEP::m);
+    HTP->get_helix().set_center(
         geomtools::vector_3d(1.3 * CLHEP::m, -0.5 * CLHEP::m, 1.2 * CLHEP::m));
-    HTP->grab_helix().set_step(0.10 * CLHEP::m);
-    HTP->grab_helix().set_angle1(0.25 * M_PI * CLHEP::radian);
-    HTP->grab_helix().set_angle2(0.65 * M_PI * CLHEP::radian);
+    HTP->get_helix().set_step(0.10 * CLHEP::m);
+    HTP->get_helix().set_angle1(0.25 * M_PI * CLHEP::radian);
+    HTP->get_helix().set_angle2(0.65 * M_PI * CLHEP::radian);
     hLTP1.reset(HTP);
 
     DATATOOLS_HANDLE_DECLARE_NEW(hTJ1, sdm::tracker_trajectory);
@@ -214,7 +192,6 @@ int main(/* int argc_, char ** argv_ */) {
     TJS0.set_clustering_solution(hTCS0);
     TJS0.grab_trajectories().push_back(hTJ0);
     TJS0.grab_trajectories().push_back(hTJ1);
-    TJS0.grab_auxiliaries().store_flag("test");
     TJS0.tree_dump(std::clog, "Tracker trajectory solution #0 : ");
 
     std::clog << "Store..." << std::endl;

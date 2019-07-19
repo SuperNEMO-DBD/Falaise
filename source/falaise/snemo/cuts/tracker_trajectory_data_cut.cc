@@ -31,12 +31,10 @@ void tracker_trajectory_data_cut::_set_defaults() {
   _chi2ndf_range_max_ = datatools::invalid_real();
   _pvalue_range_min_ = datatools::invalid_real();
   _pvalue_range_max_ = datatools::invalid_real();
-  return;
 }
 
 void tracker_trajectory_data_cut::set_TTD_label(const std::string& TTD_label_) {
   _TTD_label_ = TTD_label_;
-  return;
 }
 
 const std::string& tracker_trajectory_data_cut::get_TTD_label() const { return _TTD_label_; }
@@ -59,7 +57,6 @@ bool tracker_trajectory_data_cut::is_mode_range_pvalue() const {
 
 void tracker_trajectory_data_cut::set_flag_name(const std::string& flag_name_) {
   _flag_name_ = flag_name_;
-  return;
 }
 
 const std::string& tracker_trajectory_data_cut::get_flag_name() const { return _flag_name_; }
@@ -68,19 +65,16 @@ tracker_trajectory_data_cut::tracker_trajectory_data_cut(
     datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 tracker_trajectory_data_cut::~tracker_trajectory_data_cut() {
   if (is_initialized()) this->tracker_trajectory_data_cut::reset();
-  return;
 }
 
 void tracker_trajectory_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void tracker_trajectory_data_cut::initialize(const datatools::properties& configuration_,
@@ -184,7 +178,6 @@ void tracker_trajectory_data_cut::initialize(const datatools::properties& config
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int tracker_trajectory_data_cut::_accept() {
@@ -205,11 +198,11 @@ int tracker_trajectory_data_cut::_accept() {
   // Check if the tracker trajectory data has a property flag with a specific name :
   bool check_flag = true;
   if (is_mode_flag()) {
-    DT_LOG_DEBUG(get_logging_priority(), "Running FLAG mode...");
-    const bool check = TTD.get_auxiliaries().has_flag(_flag_name_);
-    if (!check) {
-      check_flag = false;
-    }
+    DT_LOG_ERROR(get_logging_priority(), "FLAG mode is no longer supported...");
+    //const bool check = TTD.get_auxiliaries().has_flag(_flag_name_);
+    //if (!check) {
+    //  check_flag = false;
+    //}
   }
 
   // Check if the tracker trajectory data has solutions :

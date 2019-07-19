@@ -18,28 +18,6 @@ int main(/* int argc_, char ** argv_ */) {
   try {
     std::clog << "Test program for the 'tracker_cluster' class." << std::endl;
 
-    /*
-    bool debug = false;
-
-    int iarg = 1;
-    while(iarg < argc_) {
-      std::string token = argv_[iarg];
-      if(token[0] == '-') {
-        std::string option = token;
-        if((option == "-d") ||(option == "--debug")) {
-          debug = true;
-        } else {
-          std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
-        }
-      } else {
-        std::string argument = token;
-        {
-          std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl;
-        }
-      }
-      iarg++;
-    }
-    */
 
     namespace sdm = snemo::datamodel;
 
@@ -73,11 +51,11 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(0);
     TC1.make_prompt();
-    TC1.grab_hits().push_back(hits[0]);
-    TC1.grab_hits().push_back(hits[1]);
-    TC1.grab_hits().push_back(hits[2]);
-    TC1.grab_hits().push_back(hits[3]);
-    TC1.grab_hits().push_back(hits[4]);
+    TC1.get_hits().push_back(hits[0]);
+    TC1.get_hits().push_back(hits[1]);
+    TC1.get_hits().push_back(hits[2]);
+    TC1.get_hits().push_back(hits[3]);
+    TC1.get_hits().push_back(hits[4]);
     TC1.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -90,10 +68,10 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::tracker_cluster& TC2 = hTC2.grab();
     TC2.set_cluster_id(1);
     TC2.make_prompt();
-    TC2.grab_hits().push_back(hits[6]);
-    TC2.grab_hits().push_back(hits[7]);
-    TC2.grab_hits().push_back(hits[8]);
-    TC2.grab_hits().push_back(hits[9]);
+    TC2.get_hits().push_back(hits[6]);
+    TC2.get_hits().push_back(hits[7]);
+    TC2.get_hits().push_back(hits[8]);
+    TC2.get_hits().push_back(hits[9]);
     TC2.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;

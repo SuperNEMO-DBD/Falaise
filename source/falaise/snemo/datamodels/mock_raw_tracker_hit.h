@@ -20,7 +20,7 @@
 
 // Third party:
 // - Bayeux/geomtools:
-#include <geomtools/base_hit.h>
+#include <bayeux/geomtools/base_hit.h>
 
 namespace snemo {
 
@@ -29,9 +29,6 @@ namespace datamodel {
 /// \brief A mock class to represent SuperNEMO raw tracker hit
 class mock_raw_tracker_hit : public geomtools::base_hit {
  public:
-  static const double INVALID_VALUE;
-  static const std::string NOISY_FLAG;
-
   enum store_mask_type { STORE_REF_TIME = 0x8, STORE_TIMES = 0x10 };
 
   bool is_ref_time_missing() const;
@@ -78,12 +75,6 @@ class mock_raw_tracker_hit : public geomtools::base_hit {
 
   void invalidate_times();
 
-  /// Default constructor
-  mock_raw_tracker_hit();
-
-  /// Destructor
-  virtual ~mock_raw_tracker_hit();
-
   /// Check if the hit is valid
   bool is_valid() const;
 
@@ -100,27 +91,21 @@ class mock_raw_tracker_hit : public geomtools::base_hit {
   void dump() const;
 
  private:
-  double _ref_time_;  //!< Relative time of the hit in relation to the absolute timestamp of the
+  double _ref_time_{datatools::invalid_real()};  //!< Relative time of the hit in relation to the absolute timestamp of the
                       //!< current event
-  double _sigma_ref_time_;  //!< Relative time error
+  double _sigma_ref_time_{datatools::invalid_real()};  //!< Relative time error
 
   // Geiger regime anode/cathodes drift times:
-  double _drift_time_;         //!< Anode drift time
-  double _sigma_drift_time_;   //!< Anode drift time error
-  double _top_time_;           //!< Top cathode signal drift time
-  double _sigma_top_time_;     //!< Top cathode signal drift time error
-  double _bottom_time_;        //!< Bottom cathode signal drift time
-  double _sigma_bottom_time_;  //!< Bottom cathode signal drift time error
-
-  // DATATOOLS_SERIALIZATION_DECLARATION();
+  double _drift_time_{datatools::invalid_real()};         //!< Anode drift time
+  double _sigma_drift_time_{datatools::invalid_real()};   //!< Anode drift time error
+  double _top_time_{datatools::invalid_real()};           //!< Top cathode signal drift time
+  double _sigma_top_time_{datatools::invalid_real()};     //!< Top cathode signal drift time error
+  double _bottom_time_{datatools::invalid_real()};        //!< Bottom cathode signal drift time
+  double _sigma_bottom_time_{datatools::invalid_real()};  //!< Bottom cathode signal drift time error
 };
 
 }  // end of namespace datamodel
 
 }  // end of namespace snemo
-
-//#include <boost/serialization/export.hpp>
-// BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::mock_raw_tracker_hit,
-// "snemo::datamodel::mock_raw_tracker_hit")
 
 #endif  // FALAISE_SNEMO_DATAMODEL_MOCK_RAW_TRACKER_HIT_H

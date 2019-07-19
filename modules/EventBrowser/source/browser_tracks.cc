@@ -809,7 +809,7 @@ void browser_tracks::_update_tracker_clustering_data() {
   }
 
   snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
-      tcd.grab_solutions();
+      tcd.get_solutions();
   for (snemo::datamodel::tracker_clustering_data::solution_col_type::iterator isolution =
            cluster_solutions.begin();
        isolution != cluster_solutions.end(); ++isolution) {
@@ -840,7 +840,7 @@ void browser_tracks::_update_tracker_clustering_data() {
       item_solution->SetTipText(tip_text.str().c_str());
     }
     // Get solution auxiliaries:
-    datatools::properties &a_auxiliaries = a_solution.grab_auxiliaries();
+    datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
 
     if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
@@ -850,7 +850,7 @@ void browser_tracks::_update_tracker_clustering_data() {
 
     // Get clusters stored in the current tracker solution:
     snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
-        a_solution.grab_clusters();
+        a_solution.get_clusters();
     for (snemo::datamodel::tracker_clustering_solution::cluster_col_type::iterator icluster =
              clusters.begin();
          icluster != clusters.end(); ++icluster) {
@@ -898,27 +898,24 @@ void browser_tracks::_update_tracker_clustering_data() {
                                 _get_colored_icon_("cluster", hex_str));
 
       // Get tracker hits stored in the current tracker cluster:
-      snemo::datamodel::calibrated_tracker_hit::collection_type &hits = a_cluster.grab_hits();
-      for (snemo::datamodel::calibrated_tracker_hit::collection_type::iterator igg = hits.begin();
-           igg != hits.end(); ++igg) {
-        snemo::datamodel::calibrated_tracker_hit &a_gg_hit = igg->grab();
+      for (auto& a_gg_hit : a_cluster.get_hits()) {
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
         label_hit.setf(std::ios::fixed, std::ios::floatfield);
-        label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_gg_hit.get_id()
-                  << " (r, z) = (" << a_gg_hit.get_r() / CLHEP::cm << ", "
-                  << a_gg_hit.get_z() / CLHEP::cm << ") cm";
+        label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_gg_hit->get_id()
+                  << " (r, z) = (" << a_gg_hit->get_r() / CLHEP::cm << ", "
+                  << a_gg_hit->get_z() / CLHEP::cm << ") cm";
 
         TGListTreeItem *item_hit = _tracks_list_box_->AddItem(
             item_cluster, label_hit.str().c_str(), _get_colored_icon_("geiger", hex_str, true),
             _get_colored_icon_("geiger", hex_str));
         item_hit->SetUserData((void *)(intptr_t) - (++icheck_id));
-        _base_hit_dictionnary_[-icheck_id] = &(a_gg_hit);
+        _base_hit_dictionnary_[-icheck_id] = &(*a_gg_hit);
 
         std::ostringstream tip_text;
         if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          a_gg_hit.tree_dump(tip_text);
+          a_gg_hit->tree_dump(tip_text);
         } else {
           tip_text << "Double click to highlight Geiger hit "
                    << "and to dump info on terminal";
@@ -971,7 +968,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
   if (!ttd.has_solutions()) return;
 
   snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
-      ttd.grab_solutions();
+      ttd.get_solutions();
   for (snemo::datamodel::tracker_trajectory_data::solution_col_type::iterator isolution =
            trajectory_solutions.begin();
        isolution != trajectory_solutions.end(); ++isolution) {
@@ -1002,8 +999,12 @@ void browser_tracks::_update_tracker_trajectory_data() {
     _tracks_list_box_->OpenItem(item_solution);
     item_solution->SetUserData((void *)(intptr_t)++icheck_id);
 
+// DONT couple data model to view
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Get solution auxiliaries:
-    datatools::properties &a_auxiliaries = a_solution.grab_auxiliaries();
+    datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
+#pragma GCC diagnostic pop
 
     if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
@@ -1268,7 +1269,7 @@ void browser_tracks::_update_particle_track_data() {
 
     // Get associated vertices
     if (a_particle.has_vertices()) {
-      snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.grab_vertices();
+      snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.get_vertices();
       for (snemo::datamodel::particle_track::vertex_collection_type::iterator ivtx = vts.begin();
            ivtx != vts.end(); ++ivtx) {
         geomtools::blur_spot &a_vertex = ivtx->grab();
@@ -1315,7 +1316,7 @@ void browser_tracks::_update_particle_track_data() {
     // Get associated calorimeter
     if (a_particle.has_associated_calorimeter_hits()) {
       snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-          a_particle.grab_associated_calorimeter_hits();
+          a_particle.get_associated_calorimeter_hits();
 
       for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator it_hit =
                cc_collection.begin();

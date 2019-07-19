@@ -232,7 +232,7 @@ void alpha_finder_driver::_find_delayed_unfitted_cluster_(
       snemo::datamodel::particle_track &a_particle = particles.back().grab();
       const datatools::properties &aux = a_particle.get_auxiliaries();
       if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle.has_trajectory()) {
-        snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.grab_trajectory();
+        snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.get_trajectory();
         a_trajectory.set_cluster_handle(*iclus);
       }
     }
@@ -429,11 +429,9 @@ void alpha_finder_driver::_find_short_track_(
         // If hits come from unclustered hits then add a new particle
         // Create a new cluster with only one delayed geiger hits and associate it
         // to the particle track trajectory
-        snemo::datamodel::tracker_cluster::handle_type a_cluster(
-            new snemo::datamodel::tracker_cluster);
-        a_cluster.grab().make_delayed();
-        snemo::datamodel::calibrated_tracker_hit::collection_type &hits =
-            a_cluster.grab().grab_hits();
+        auto a_cluster = datatools::make_handle<snemo::datamodel::tracker_cluster>();
+        a_cluster->make_delayed();
+        auto& hits = a_cluster->get_hits();
         hits.push_back(*ihit);
 
         // Build a new particle track
@@ -445,7 +443,7 @@ void alpha_finder_driver::_find_short_track_(
         snemo::datamodel::particle_track &a_particle = particles.back().grab();
         const datatools::properties &aux = a_particle.get_auxiliaries();
         if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle.has_trajectory()) {
-          snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.grab_trajectory();
+          snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.get_trajectory();
           a_trajectory.set_cluster_handle(a_cluster);
         }
       }
@@ -509,8 +507,8 @@ void alpha_finder_driver::_build_alpha_particle_track_(
   // Set trajectory pattern
   snemo::datamodel::line_trajectory_pattern *a_line = new snemo::datamodel::line_trajectory_pattern;
   a_trajectory.set_pattern_handle(a_line);
-  a_line->grab_segment().set_first(first_vertex);
-  a_line->grab_segment().set_last(last_vertex);
+  a_line->get_segment().set_first(first_vertex);
+  a_line->get_segment().set_last(last_vertex);
   a_short_alpha.set_trajectory_handle(htrajectory);
 
   // Set a alpha delayed time based on Geiger delayed times and store as
@@ -535,7 +533,7 @@ void alpha_finder_driver::_build_alpha_particle_track_(
   // 'VERTEX_ON_WIRE'; the former will be set given its relative position
   // wrt to detector geometry.
   snemo::datamodel::particle_track::vertex_collection_type &vertices =
-      a_short_alpha.grab_vertices();
+      a_short_alpha.get_vertices();
   {
     // Vertex on wire
     snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);

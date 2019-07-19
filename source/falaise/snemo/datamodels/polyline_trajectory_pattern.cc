@@ -19,12 +19,10 @@ const std::string &polyline_trajectory_pattern::pattern_id() {
 
 polyline_trajectory_pattern::polyline_trajectory_pattern()
     : base_trajectory_pattern(polyline_trajectory_pattern::pattern_id()) {
-  return;
 }
 
-polyline_trajectory_pattern::~polyline_trajectory_pattern() { return; }
 
-geomtools::polyline_3d &polyline_trajectory_pattern::grab_path() { return _path_; }
+geomtools::polyline_3d &polyline_trajectory_pattern::get_path() { return _path_; }
 
 const geomtools::polyline_3d &polyline_trajectory_pattern::get_path() const { return _path_; }
 
