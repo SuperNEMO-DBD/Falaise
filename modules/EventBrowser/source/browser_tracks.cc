@@ -968,7 +968,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
   if (!ttd.has_solutions()) return;
 
   snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
-      ttd.grab_solutions();
+      ttd.get_solutions();
   for (snemo::datamodel::tracker_trajectory_data::solution_col_type::iterator isolution =
            trajectory_solutions.begin();
        isolution != trajectory_solutions.end(); ++isolution) {
