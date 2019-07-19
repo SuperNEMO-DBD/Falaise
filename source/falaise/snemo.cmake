@@ -1,53 +1,45 @@
 # SuperNEMO specific classes:
 
 list(APPEND FalaiseLibrary_HEADERS
-  snemo/datamodels/timestamp.h
-  snemo/datamodels/timestamp.ipp
-
-  snemo/datamodels/event_header.h
-  snemo/datamodels/event_header.ipp
-
-  snemo/datamodels/mock_raw_tracker_hit.h
-
-  snemo/datamodels/calibrated_calorimeter_hit.h
-  snemo/datamodels/calibrated_calorimeter_hit.ipp
-  snemo/datamodels/calibrated_tracker_hit.h
-  snemo/datamodels/calibrated_tracker_hit.ipp
-  snemo/datamodels/calibrated_data.h
-  snemo/datamodels/calibrated_data.ipp
-
-  snemo/datamodels/tracker_cluster.h
-  snemo/datamodels/tracker_cluster.ipp
-  snemo/datamodels/tracker_clustering_solution.h
-  snemo/datamodels/tracker_clustering_solution.ipp
-  snemo/datamodels/tracker_clustering_data.h
-  snemo/datamodels/tracker_clustering_data.ipp
-
   snemo/datamodels/base_trajectory_pattern.h
-  snemo/datamodels/base_trajectory_pattern.ipp
-  snemo/datamodels/line_trajectory_pattern.h
-  snemo/datamodels/line_trajectory_pattern.ipp
-  snemo/datamodels/polyline_trajectory_pattern.h
-  snemo/datamodels/polyline_trajectory_pattern.ipp
-  snemo/datamodels/helix_trajectory_pattern.h
-  snemo/datamodels/helix_trajectory_pattern.ipp
-  snemo/datamodels/tracker_trajectory.h
-  snemo/datamodels/tracker_trajectory.ipp
-  snemo/datamodels/tracker_trajectory_solution.h
-  snemo/datamodels/tracker_trajectory_solution.ipp
-  snemo/datamodels/tracker_trajectory_data.h
-  snemo/datamodels/tracker_trajectory_data.ipp
-  snemo/datamodels/particle_track.h
-  snemo/datamodels/particle_track.ipp
-  snemo/datamodels/particle_track_data.h
-  snemo/datamodels/particle_track_data.ipp
-
+  snemo/datamodels/calibrated_calorimeter_hit.h
+  snemo/datamodels/calibrated_data.h
+  snemo/datamodels/calibrated_tracker_hit.h
   snemo/datamodels/data_model.h
-
-  snemo/datamodels/the_serializable.h
-  snemo/datamodels/the_serializable.ipp
-
+  snemo/datamodels/event_header.h
   snemo/datamodels/gg_track_utils.h
+  snemo/datamodels/helix_trajectory_pattern.h
+  snemo/datamodels/line_trajectory_pattern.h
+  snemo/datamodels/mock_raw_tracker_hit.h
+  snemo/datamodels/particle_track.h
+  snemo/datamodels/particle_track_data.h
+  snemo/datamodels/polyline_trajectory_pattern.h
+  snemo/datamodels/timestamp.h
+  snemo/datamodels/tracker_cluster.h
+  snemo/datamodels/tracker_clustering_data.h
+  snemo/datamodels/tracker_clustering_solution.h
+  snemo/datamodels/tracker_trajectory.h
+  snemo/datamodels/tracker_trajectory_data.h
+  snemo/datamodels/tracker_trajectory_solution.h
+
+  snemo/datamodels/boost_io/base_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp
+  snemo/datamodels/boost_io/calibrated_data.ipp
+  snemo/datamodels/boost_io/calibrated_tracker_hit.ipp
+  snemo/datamodels/boost_io/event_header.ipp
+  snemo/datamodels/boost_io/helix_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/line_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/particle_track.ipp
+  snemo/datamodels/boost_io/particle_track_data.ipp
+  snemo/datamodels/boost_io/polyline_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/timestamp.ipp
+  snemo/datamodels/boost_io/tracker_cluster.ipp
+  snemo/datamodels/boost_io/tracker_clustering_data.ipp
+  snemo/datamodels/boost_io/tracker_clustering_solution.ipp
+  snemo/datamodels/boost_io/tracker_trajectory.ipp
+  snemo/datamodels/boost_io/tracker_trajectory_data.ipp
+  snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
+
 
   snemo/geometry/utils.h
   snemo/geometry/calo_locator.h
@@ -70,7 +62,6 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_fitter.h
   snemo/processing/module.h
   snemo/processing/base_gamma_builder.h
-
 
   snemo/services/services.h
   snemo/services/service_traits.h
@@ -108,7 +99,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/particle_track_data.cc
   snemo/datamodels/mock_raw_tracker_hit.cc
   snemo/datamodels/data_model.cc
-  snemo/datamodels/the_serializable.cc
+  snemo/datamodels/boost_io/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
 
   snemo/geometry/calo_locator.cc
