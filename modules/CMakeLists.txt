@@ -12,7 +12,6 @@ set(Falaise_DIR "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}/${FALAISE_TAG
 
 # - List of plugins:
 set(_falaise_PLUGINS
-  # Digitization
   CAT
   MockTrackerClusterizer
   TrackFit
