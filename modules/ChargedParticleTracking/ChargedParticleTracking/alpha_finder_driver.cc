@@ -1,7 +1,7 @@
 // \file falaise/snemo/reconstruction/alpha_finder_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/reconstruction/alpha_finder_driver.h>
+#include <ChargedParticleTracking/alpha_finder_driver.h>
 
 // Standard library:
 #include <sstream>

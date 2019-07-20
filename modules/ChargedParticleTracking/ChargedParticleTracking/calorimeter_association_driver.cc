@@ -1,7 +1,7 @@
 // \file falaise/snemo/reconstruction/calorimeter_association_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/reconstruction/calorimeter_association_driver.h>
+#include <ChargedParticleTracking/calorimeter_association_driver.h>
 
 // Standard library:
 #include <sstream>

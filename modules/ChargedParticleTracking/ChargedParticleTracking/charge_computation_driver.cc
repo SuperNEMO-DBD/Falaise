@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/charge_computation_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/reconstruction/charge_computation_driver.h>
+#include <ChargedParticleTracking/charge_computation_driver.h>
 
 // Standard library:
 #include <sstream>

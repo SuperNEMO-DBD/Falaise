@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/vertex_extrapolation_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/reconstruction/vertex_extrapolation_driver.h>
+#include <ChargedParticleTracking/vertex_extrapolation_driver.h>
 
 // Standard library:
 #include <sstream>
