@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/trackfit_driver.cc
 
 // Ourselves:
-#include <snemo/reconstruction/trackfit_driver.h>
+#include <TrackFit/trackfit_driver.h>
 
 // Third party:
 // - Bayeux/geomtools:

@@ -21,7 +21,7 @@
 #include <falaise/snemo/geometry/locator_plugin.h>
 
 // This project:
-#include <snemo/reconstruction/trackfit_driver.h>
+#include <TrackFit/trackfit_driver.h>
 
 // Testing resources:
 #include <utilities.h>

@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/trackfit_tracker_fitting_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/trackfit_tracker_fitting_module.h>
+#include <TrackFit/trackfit_tracker_fitting_module.h>
 
 // Standard library:
 #include <sstream>
@@ -21,7 +21,7 @@
 #include <falaise/snemo/services/services.h>
 
 // TrackFit
-#include <snemo/reconstruction/trackfit_driver.h>
+#include <TrackFit/trackfit_driver.h>
 
 namespace snemo {
 
