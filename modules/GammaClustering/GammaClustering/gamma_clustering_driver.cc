@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/gamma_clustering_driver.cc
 
 // Ourselves:
-#include <snemo/reconstruction/gamma_clustering_driver.h>
+#include <GammaClustering/gamma_clustering_driver.h>
 
 // Standard library:
 #include <sstream>

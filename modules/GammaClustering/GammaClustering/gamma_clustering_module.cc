@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/gamma_clustering_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/gamma_clustering_module.h>
+#include <GammaClustering/gamma_clustering_module.h>
 
 // Standard library:
 #include <sstream>
@@ -24,7 +24,7 @@
 #include <falaise/snemo/services/services.h>
 
 // Gamma Clustering
-#include <snemo/reconstruction/gamma_clustering_driver.h>
+#include <GammaClustering/gamma_clustering_driver.h>
 
 namespace snemo {
 

@@ -14,7 +14,8 @@
 #include <falaise/resource.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
-#include <falaise/snemo/reconstruction/gamma_clustering_driver.h>
+
+#include <GammaClustering/gamma_clustering_driver.h>
 
 void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_) {
   namespace sdm = snemo::datamodel;
