@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/gamma_tracking_driver.cc
 
 // Ourselves:
-#include <snemo/reconstruction/gamma_tracking_driver.h>
+#include <GammaTracking/gamma_tracking_driver.h>
 
 // Third party:
 // - Bayeux/geomtools:

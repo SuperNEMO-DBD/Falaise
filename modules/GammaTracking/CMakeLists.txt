@@ -8,21 +8,21 @@ project(FalaiseGammaTrackingPlugin VERSION "2.1.0")
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 ############################################################################################
 # - GammaTracking library:
 
 list(APPEND GammaTracking_HEADERS
-  source/GammaTracking/event.h
-  source/GammaTracking/tof_computing.h
-  source/GammaTracking/gamma_tracking.h
+  GammaTracking/event.h
+  GammaTracking/tof_computing.h
+  GammaTracking/gamma_tracking.h
 )
 
 list(APPEND GammaTracking_SOURCES
-  source/GammaTracking/event.cc
-  source/GammaTracking/tof_computing.cc
-  source/GammaTracking/gamma_tracking.cc
+  GammaTracking/event.cc
+  GammaTracking/tof_computing.cc
+  GammaTracking/gamma_tracking.cc
 )
 
 # Build a dynamic library from our sources
@@ -40,15 +40,13 @@ endif()
 
 ############################################################################################
 # - GammaTracking modules:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
-
 # - Headers:
-list(APPEND FalaiseGammaTrackingPlugin_HEADERS source/falaise/snemo/reconstruction/gamma_tracking_driver.h)
-list(APPEND FalaiseGammaTrackingPlugin_HEADERS source/falaise/snemo/reconstruction/gamma_tracking_module.h)
+list(APPEND FalaiseGammaTrackingPlugin_HEADERS GammaTracking/gamma_tracking_driver.h)
+list(APPEND FalaiseGammaTrackingPlugin_HEADERS GammaTracking/gamma_tracking_module.h)
 
 # - Sources:
-list(APPEND FalaiseGammaTrackingPlugin_SOURCES source/falaise/snemo/reconstruction/gamma_tracking_driver.cc)
-list(APPEND FalaiseGammaTrackingPlugin_SOURCES source/falaise/snemo/reconstruction/gamma_tracking_module.cc)
+list(APPEND FalaiseGammaTrackingPlugin_SOURCES GammaTracking/gamma_tracking_driver.cc)
+list(APPEND FalaiseGammaTrackingPlugin_SOURCES GammaTracking/gamma_tracking_module.cc)
 
 ############################################################################################
 
@@ -76,5 +74,5 @@ install(TARGETS GammaTracking Falaise_GammaTracking DESTINATION ${CMAKE_INSTALL_
 option(FalaiseGammaTrackingPlugin_ENABLE_TESTING "Build unit testing system for FalaiseGammaTracking" ON)
 if(FalaiseGammaTrackingPlugin_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(testing)
+  add_subdirectory(GammaTracking/test)
 endif()

@@ -1,5 +1,5 @@
 // Ourselves:
-#include "tof_computing.h"
+#include "GammaTracking/tof_computing.h"
 
 // Standard library
 #include <cmath>

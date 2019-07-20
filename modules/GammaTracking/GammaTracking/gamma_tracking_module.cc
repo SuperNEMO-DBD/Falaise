@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/gamma_tracking_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/gamma_tracking_module.h>
+#include <GammaTracking/gamma_tracking_module.h>
 
 // Standard library:
 #include <sstream>
@@ -20,7 +20,7 @@
 #include <falaise/snemo/services/services.h>
 
 // Gamma Tracking
-#include <snemo/reconstruction/gamma_tracking_driver.h>
+#include <GammaTracking/gamma_tracking_driver.h>
 
 namespace snemo {
 
