@@ -1,7 +1,7 @@
 /// \file falaise/snemo/visualization/toy_display_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/visualization/toy_display_driver.h>
+#include <VisuToy/toy_display_driver.h>
 
 // Standard library:
 #include <unistd.h>
@@ -49,7 +49,7 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 
 // This project:
-#include <falaise/snemo/visualization/visu_toy_config.h>
+#include <VisuToy/visu_toy_config.h>
 
 #if FALAISEVISUTOYPLUGIN_WITH_READLINE == 1
 #include <readline/history.h>

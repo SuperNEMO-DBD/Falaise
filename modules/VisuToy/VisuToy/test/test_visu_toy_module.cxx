@@ -22,7 +22,7 @@
 #include <falaise/snemo/geometry/locator_plugin.h>
 
 // This project:
-#include <snemo/visualization/visu_toy_module.h>
+#include <VisuToy/visu_toy_module.h>
 
 int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);

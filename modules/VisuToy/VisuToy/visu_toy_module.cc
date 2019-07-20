@@ -1,7 +1,7 @@
 // \file falaise/snemo/visualization/visu_toy_module.cc
 
 // Ourselves:
-#include <snemo/visualization/visu_toy_module.h>
+#include <VisuToy/visu_toy_module.h>
 
 // Standard library:
 #include <unistd.h>
@@ -18,7 +18,7 @@
 // This project (Falaise):
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/services/services.h>
-#include <falaise/snemo/visualization/toy_display_driver.h>
+#include <VisuToy/toy_display_driver.h>
 
 namespace snemo {
 
