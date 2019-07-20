@@ -8,11 +8,9 @@ project(FalaiseCATPlugin VERSION "2.1.0")
 #find_package(Falaise REQUIRED)
 
 # Ensure our code can see the Falaise headers
-#include_directories(${Falaise_INCLUDE_DIRS})
 include_directories(${ROOT_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 ############################################################################################
 # - Include directives to build the CellularAutomatonTracker source code (svn:externals)
@@ -24,20 +22,20 @@ include(cmake/CAT_import.cmake)
 
 # - Headers:
 list(APPEND FalaiseCATPlugin_HEADERS
-  source/falaise/snemo/reconstruction/cat_driver.h
-  source/falaise/snemo/reconstruction/sultan_driver.h
-  source/falaise/snemo/reconstruction/sultan_then_cat_driver.h
-  source/falaise/snemo/reconstruction/cat_tracker_clustering_module.h
-  source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.h
+  CAT/cat_driver.h
+  CAT/sultan_driver.h
+  CAT/sultan_then_cat_driver.h
+  CAT/cat_tracker_clustering_module.h
+  CAT/sultan_tracker_clustering_module.h
 )
 
 # - Sources:
 list(APPEND FalaiseCATPlugin_SOURCES
-  source/falaise/snemo/reconstruction/cat_driver.cc
-  source/falaise/snemo/reconstruction/sultan_driver.cc
-  source/falaise/snemo/reconstruction/sultan_then_cat_driver.cc
-  source/falaise/snemo/reconstruction/cat_tracker_clustering_module.cc
-  source/falaise/snemo/reconstruction/sultan_tracker_clustering_module.cc
+  CAT/cat_driver.cc
+  CAT/sultan_driver.cc
+  CAT/sultan_then_cat_driver.cc
+  CAT/cat_tracker_clustering_module.cc
+  CAT/sultan_tracker_clustering_module.cc
 )
 
 ############################################################################################
@@ -68,5 +66,5 @@ install(TARGETS Falaise_CAT DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 option(FalaiseCATPlugin_ENABLE_TESTING "Build unit testing system for FalaiseCATPlugin" ON)
 if(FalaiseCATPlugin_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(testing)
+  add_subdirectory(CAT/test)
 endif()
