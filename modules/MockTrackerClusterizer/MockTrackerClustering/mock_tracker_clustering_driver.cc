@@ -1,7 +1,7 @@
 /// \file falaise/snemo/reconstruction/mock_tracker_clustering_driver.cc
 
 // Ourselves:
-#include <falaise/snemo/reconstruction/mock_tracker_clustering_driver.h>
+#include <MockTrackerClustering/mock_tracker_clustering_driver.h>
 
 // Standard library:
 #include <set>

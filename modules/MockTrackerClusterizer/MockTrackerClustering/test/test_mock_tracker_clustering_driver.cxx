@@ -20,7 +20,7 @@
 #include <falaise/snemo/geometry/locator_plugin.h>
 
 // This project:
-#include <snemo/reconstruction/mock_tracker_clustering_module.h>
+#include <MockTrackerClustering/mock_tracker_clustering_driver.h>
 
 // Testing resources:
 #include <utilities.h>
@@ -32,7 +32,6 @@ int main(int argc_, char** argv_) {
   try {
     std::clog << "Hello, World!\n";
     bool draw = false;
-
     int iarg = 1;
     while (iarg < argc_) {
       std::string token = argv_[iarg];
@@ -78,37 +77,29 @@ int main(int argc_, char** argv_) {
       gg_locator = dynamic_cast<const snemo::geometry::gg_locator*>(&(lp.get_gg_locator()));
     }
 
-    // The MTC module:
-    snemo::reconstruction::mock_tracker_clustering_module MTCmod;
-    MTCmod.set_logging_priority(logging);
-    MTCmod.set_cd_label("CD");
-    MTCmod.set_tcd_label("TCD");
-    MTCmod.set_geometry_manager(Geo);
-    MTCmod.initialize_standalone(MTCconfig);
+    // The MTC driver:
+    snemo::reconstruction::mock_tracker_clustering_driver MTC;
+    MTC.set_logging_priority(logging);
+    MTC.set_geometry_manager(Geo);
+    MTC.initialize(MTCconfig);
 
     // Event loop:
     for (int i = 0; i < 3; i++) {
       std::clog << "Processing event #" << i << "\n";
-      datatools::things eventRecord;
-      snemo::datamodel::calibrated_data& CD =
-          eventRecord.add<snemo::datamodel::calibrated_data>("CD");
-      snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits =
-          CD.calibrated_tracker_hits();
+      snemo::reconstruction::mock_tracker_clustering_driver::hit_collection_type gghits;
       generate_gg_hits(*gg_locator, gghits);
-      dpp::base_module::process_status status = MTCmod.process(eventRecord);
-      if (status != 0) {
-        DT_LOG_FATAL(logging, "Mock tracker clustering module failed!");
+      snemo::reconstruction::mock_tracker_clustering_driver::calo_hit_collection_type calohits;
+      snemo::datamodel::tracker_clustering_data clustering_data;
+      int code = MTC.process(gghits, calohits, clustering_data);
+      if (code != 0) {
         break;
       }
-      const snemo::datamodel::tracker_clustering_data& TCD =
-          eventRecord.get<snemo::datamodel::tracker_clustering_data>("TCD");
-      TCD.tree_dump(std::clog, "Tracker clustering data: ", "DEVEL: ");
-      if (draw) display_event(*gg_locator, gghits, TCD);
-      eventRecord.tree_dump(std::clog, "Event record: ", "DEVEL: ");
+      clustering_data.tree_dump(std::clog, "Clustering data: ");
+      if (draw) display_event(*gg_locator, gghits, clustering_data);
     }
 
-    // Terminate the MTC module:
-    MTCmod.reset();
+    // Terminate the MTC driver:
+    MTC.reset();
 
     std::clog << "The end.\n";
   } catch (std::exception& error) {

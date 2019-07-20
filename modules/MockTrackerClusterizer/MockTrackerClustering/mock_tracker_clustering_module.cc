@@ -1,7 +1,7 @@
 // \file falaise/snemo/reconstruction/mock_tracker_clustering_module.cc
 
 // Ourselves:
-#include <snemo/reconstruction/mock_tracker_clustering_module.h>
+#include <MockTrackerClustering/mock_tracker_clustering_module.h>
 
 // Standard library:
 #include <sstream>
@@ -21,7 +21,7 @@
 #include <falaise/snemo/services/services.h>
 
 // This plugin (MockTrackerClusterizer):
-#include <snemo/reconstruction/mock_tracker_clustering_driver.h>
+#include <MockTrackerClustering/mock_tracker_clustering_driver.h>
 
 namespace snemo {
 
