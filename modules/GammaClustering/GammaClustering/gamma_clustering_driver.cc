@@ -17,6 +17,8 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
+#include <falaise/config/property_set.h>
+#include <falaise/config/quantity.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -38,25 +40,18 @@ const std::string& gamma_clustering_driver::get_id() {
 gamma_clustering_driver::gamma_clustering_driver()
     : snemo::processing::base_gamma_builder(gamma_clustering_driver::get_id()) {
   _set_defaults();
-  return;
 }
 
 // Destructor
-gamma_clustering_driver::~gamma_clustering_driver() {
-  if (is_initialized()) {
-    reset();
-  }
-  return;
-}
+gamma_clustering_driver::~gamma_clustering_driver() = default;
 
 void gamma_clustering_driver::_set_defaults() {
   base_gamma_builder::_set_defaults();
 
-  _cluster_time_range_ = 6 * CLHEP::ns;
-  _cluster_grid_mask_ = "first";
-  _min_prob_ = 1e-3 * CLHEP::perCent;
-  _sigma_time_good_calo_ = 2.5 * CLHEP::ns;
-  return;
+  timeRange_ = 6 * CLHEP::ns;
+  gridMask_ = "first";
+  minProbability_ = 1e-3 * CLHEP::perCent;
+  minTimeResolution_ = 2.5 * CLHEP::ns;
 }
 
 // Initialization :
@@ -64,94 +59,47 @@ void gamma_clustering_driver::initialize(const datatools::properties& setup_) {
   this->snemo::processing::base_gamma_builder::_initialize(setup_);
 
   // Extract the setup of the base gamma builder :
-  datatools::properties gc_setup;
-  setup_.export_and_rename_starting_with(gc_setup, get_id() + ".", "");
+  falaise::config::property_set tmpPS{setup_};
+  auto ps = tmpPS.get<falaise::config::property_set>(get_id(),{});
 
-  std::string key;
-  if (gc_setup.has_key(key = "cluster_time_range")) {
-    _cluster_time_range_ = gc_setup.fetch_real(key);
-    if (!gc_setup.has_explicit_unit(key)) {
-      _cluster_time_range_ *= CLHEP::ns;
-    }
-  }
-
-  if (gc_setup.has_key(key = "cluster_grid_mask")) {
-    _cluster_grid_mask_ = gc_setup.fetch_string(key);
-  }
-
-  if (gc_setup.has_key(key = "minimal_internal_probability")) {
-    _min_prob_ = gc_setup.fetch_real(key);
-    if (!gc_setup.has_explicit_unit(key)) {
-      _min_prob_ *= CLHEP::perCent;
-    }
-  }
-
-  if (gc_setup.has_key(key = "sigma_time_good_calo")) {
-    _sigma_time_good_calo_ = gc_setup.fetch_real(key);
-    if (!gc_setup.has_explicit_unit(key)) {
-      _sigma_time_good_calo_ *= CLHEP::ns;
-    }
-  }
+  timeRange_ = ps.get<falaise::config::time_t>("cluster_time_range",{6, "nanosecond"})();
+  gridMask_ = ps.get<std::string>("cluster_grid_mask", "first");
+  minProbability_ = ps.get<falaise::config::fraction_t>("minimal_internal_probability", {1e-3, "percent"})();
+  minTimeResolution_ = ps.get<falaise::config::time_t>("sigma_time_good_calo", {2.5, "nanosecond"})();
 
   _set_initialized(true);
-  return;
 }
 
 void gamma_clustering_driver::reset() {
   this->snemo::processing::base_gamma_builder::_reset();
   _set_defaults();
-  return;
 }
 
 int gamma_clustering_driver::_process_algo(
     const base_gamma_builder::hit_collection_type& calo_hits_,
     snemo::datamodel::particle_track_data& ptd_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
   // Registered calorimeter hits (to be skipped)
   gid_list_type registered_calos;
 
   // Getting gamma clusters
   cluster_collection_type the_reconstructed_clusters;
-  for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator icalo =
-           calo_hits_.begin();
-       icalo != calo_hits_.end(); ++icalo) {
-    const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = icalo->get();
-
-    const geomtools::geom_id& a_gid = a_calo_hit.get_geom_id();
+  for (const auto& a_calo_hit : calo_hits_) {
+    const geomtools::geom_id& a_gid = a_calo_hit->get_geom_id();
     // If already clustered then skip it
     if (std::find(registered_calos.begin(), registered_calos.end(), a_gid) !=
-        registered_calos.end())
+        registered_calos.end()) {
       continue;
-
-    {
-      // Insert empty cluster
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Insert new gamma cluster (#" << the_reconstructed_clusters.size() << ")");
-      cluster_type dummy;
-      the_reconstructed_clusters.push_back(dummy);
     }
 
+    the_reconstructed_clusters.push_back(cluster_type{});
     cluster_type& a_cluster = the_reconstructed_clusters.back();
-    a_cluster.insert(std::make_pair(a_calo_hit.get_time(), *icalo));
+    a_cluster.insert(std::make_pair(a_calo_hit->get_time(), a_calo_hit));
 
     // Get geometrical neighbours given the current geom id
-    _get_geometrical_neighbours(a_calo_hit, calo_hits_, a_cluster, registered_calos);
+    _get_geometrical_neighbours(*a_calo_hit, calo_hits_, a_cluster, registered_calos);
 
     // Ensure all calorimeter hits within a cluster are in time
     _get_time_neighbours(a_cluster, the_reconstructed_clusters);
-  }
-
-  if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-    for (size_t i = 0; i < the_reconstructed_clusters.size(); ++i) {
-      const cluster_type& a_cluster = the_reconstructed_clusters.at(i);
-      DT_LOG_TRACE(get_logging_priority(), "New gamma cluster #" << i << " (" << a_cluster.size()
-                                                                 << " associated calorimeters)");
-      for (cluster_type::const_iterator j = a_cluster.begin(); j != a_cluster.end(); ++j) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = j->second.get();
-        a_calo_hit.tree_dump();
-      }
-    }
   }
 
   /*A : Carry on with tracking*/
@@ -162,26 +110,23 @@ int gamma_clustering_driver::_process_algo(
   // cluster_collection_type the_reconstructed_gammas = the_reconstructed_clusters;
 
   // Set new particles within 'particle track data' container
-  for (size_t i = 0; i < the_reconstructed_gammas.size(); ++i) {
-    DT_LOG_TRACE(get_logging_priority(), "Adding a new clustered gamma");
-    snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
+  for (const auto& a_cluster : the_reconstructed_gammas) {
+    auto hPT = datatools::make_handle<snemo::datamodel::particle_track>();
     ptd_.add_particle(hPT);
-    hPT.grab().set_track_id(ptd_.get_number_of_particles());
-    hPT.grab().set_charge(snemo::datamodel::particle_track::neutral);
+    hPT->set_track_id(ptd_.get_number_of_particles());
+    hPT->set_charge(snemo::datamodel::particle_track::neutral);
 
-    const cluster_type& a_cluster = the_reconstructed_gammas.at(i);
-    for (cluster_type::const_iterator j = a_cluster.begin(); j != a_cluster.end(); ++j) {
-      const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = j->second.get();
-      hPT.grab().get_associated_calorimeter_hits().push_back(j->second);
+    for (const auto& j : a_cluster) {
+      const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = *(j.second);
+      hPT->get_associated_calorimeter_hits().push_back(j.second);
 
       const geomtools::geom_id& a_gid = a_calo_hit.get_geom_id();
 
       // Build calorimeter vertices
-      snemo::datamodel::particle_track::handle_spot hBS(new geomtools::blur_spot);
-      hPT.grab().get_vertices().push_back(hBS);
-      geomtools::blur_spot& spot = hBS.grab();
-      spot.set_hit_id(a_calo_hit.get_hit_id());
-      spot.set_geom_id(a_gid);
+      auto hBS = datatools::make_handle<geomtools::blur_spot>();
+      hPT->get_vertices().push_back(hBS);
+      hBS->set_hit_id(a_calo_hit.get_hit_id());
+      hBS->set_geom_id(a_gid);
 
       const snemo::geometry::calo_locator& calo_locator = base_gamma_builder::get_calo_locator();
       const snemo::geometry::xcalo_locator& xcalo_locator = base_gamma_builder::get_xcalo_locator();
@@ -189,6 +134,7 @@ int gamma_clustering_driver::_process_algo(
 
       geomtools::vector_3d position;
       std::string label;
+
       if (calo_locator.is_calo_block_in_current_module(a_gid)) {
         calo_locator.get_block_position(a_gid, position);
         const double offset = 45.5 * CLHEP::mm;
@@ -208,16 +154,12 @@ int gamma_clustering_driver::_process_algo(
         DT_THROW_IF(true, std::logic_error,
                     "Current geom id '" << a_gid << "' does not match any scintillator block !");
       }
-      spot.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), label);
-      spot.set_blur_dimension(geomtools::blur_spot::dimension_three);
-      spot.set_position(position);
+
+      hBS->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), label);
+      hBS->set_blur_dimension(geomtools::blur_spot::dimension_three);
+      hBS->set_position(position);
     }
   }
-
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Number of clusters : " << the_reconstructed_clusters.size());
-  DT_LOG_DEBUG(get_logging_priority(), "Number of gammas : " << the_reconstructed_gammas.size());
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
   return 0;
 }
 
@@ -229,37 +171,33 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
 
   // If already clustered then skip it
   if (std::find(registered_calos_.begin(), registered_calos_.end(), a_gid) !=
-      registered_calos_.end())
+      registered_calos_.end()) {
     return;
+  }
 
   // Store the current calorimeter as registered one
   registered_calos_.push_back(a_gid);
-  if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-    for (gid_list_type::const_iterator i = registered_calos_.begin(); i != registered_calos_.end();
-         ++i) {
-      DT_LOG_TRACE(get_logging_priority(), "Registered geom id = " << *i);
-    }
+
+  uint8_t mask = snemo::geometry::utils::NEIGHBOUR_NONE;
+  if (gridMask_ == "first") {
+    mask = snemo::geometry::utils::NEIGHBOUR_FIRST;
+  } else if (gridMask_ == "second") {
+    mask = snemo::geometry::utils::NEIGHBOUR_FIRST | snemo::geometry::utils::NEIGHBOUR_SECOND;
+  } else if (gridMask_ == "diagonal") {
+    mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+  } else if (gridMask_ == "side") {
+    mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+  } else if (gridMask_ == "none") {
+    mask = snemo::geometry::utils::NEIGHBOUR_NONE;
+  } else {
+    DT_THROW_IF(true, std::logic_error, "Unknown neighbour mask '" << gridMask_ << "' !")
   }
 
-  gid_list_type the_neighbours;
   const snemo::geometry::calo_locator& calo_locator = base_gamma_builder::get_calo_locator();
   const snemo::geometry::xcalo_locator& xcalo_locator = base_gamma_builder::get_xcalo_locator();
   const snemo::geometry::gveto_locator& gveto_locator = base_gamma_builder::get_gveto_locator();
+  gid_list_type the_neighbours;
 
-  uint8_t mask = snemo::geometry::utils::NEIGHBOUR_NONE;
-  if (_cluster_grid_mask_ == "first") {
-    mask = snemo::geometry::utils::NEIGHBOUR_FIRST;
-  } else if (_cluster_grid_mask_ == "second") {
-    mask = snemo::geometry::utils::NEIGHBOUR_FIRST | snemo::geometry::utils::NEIGHBOUR_SECOND;
-  } else if (_cluster_grid_mask_ == "diagonal") {
-    mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
-  } else if (_cluster_grid_mask_ == "side") {
-    mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
-  } else if (_cluster_grid_mask_ == "none") {
-    mask = snemo::geometry::utils::NEIGHBOUR_NONE;
-  } else {
-    DT_THROW_IF(true, std::logic_error, "Unknown neighbour mask '" << _cluster_grid_mask_ << "' !")
-  }
   if (calo_locator.is_calo_block_in_current_module(a_gid)) {
     calo_locator.get_neighbours_ids(a_gid, the_neighbours, mask);
   } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
@@ -271,10 +209,7 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
                 "Current geom id '" << a_gid << "' does not match any scintillator block !");
   }
 
-  for (gid_list_type::const_iterator ineighbour = the_neighbours.begin();
-       ineighbour != the_neighbours.end(); ++ineighbour) {
-    const geomtools::geom_id& aa_gid = *ineighbour;
-    DT_LOG_TRACE(get_logging_priority(), "Neighbour geom_id " << aa_gid);
+  for (const auto& aa_gid : the_neighbours) {
     if (std::find(registered_calos_.begin(), registered_calos_.end(), aa_gid) !=
         registered_calos_.end()) {
       continue;
@@ -290,38 +225,37 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
         pred_M2D(hit_pred);
     datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(
         pred_M2D);
-    snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator found =
-        std::find_if(hits_.begin(), hits_.end(), pred_via_handle);
+    auto found = std::find_if(hits_.begin(), hits_.end(), pred_via_handle);
     if (found == hits_.end()) {
       continue;
-    } else {
-      DT_LOG_TRACE(get_logging_priority(), "Found a neighbour calorimeter hit with geom_id " << aa_gid);
     }
 
     registered_calos_.push_back(aa_gid);
-    cluster_.insert(std::make_pair(found->get().get_time(), *found));
+    cluster_.insert(std::make_pair((*found)->get_time(), *found));
+    // Seemingly bad const-correctness s we have to call get() on the handle....
     _get_geometrical_neighbours(found->get(), hits_, cluster_, registered_calos_);
   }
-  return;
 }
 
 void gamma_clustering_driver::_get_time_neighbours(cluster_type& cluster_,
                                                    cluster_collection_type& clusters_) const {
-  if (cluster_.size() < 2) return;
+  if (cluster_.size() < 2) {
+    return;
+  }
 
-  cluster_type::iterator it = cluster_.begin();
+  auto it = cluster_.begin();
   for (; it != cluster_.end(); ++it) {
     const double current_time = it->first;
     const double next_time = std::next(it)->first;
     const double delta_time = next_time - current_time;
-    if (delta_time > _cluster_time_range_) {
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Delta time > " << _cluster_time_range_ / CLHEP::ns << " ns !!");
+    if (delta_time > timeRange_) {
       break;
     }
   }
 
-  if (it == cluster_.end()) return;
+  if (it == cluster_.end()) {
+    return;
+  }
 
   // Create a new cluster to be checked later. To be done in this way
   // i.e. create first a new empty cluster and then add it to the collection
@@ -333,7 +267,6 @@ void gamma_clustering_driver::_get_time_neighbours(cluster_type& cluster_,
   clusters_.push_back(a_cluster);
 
   _get_time_neighbours(a_cluster, clusters_);
-  return;
 }
 
 void gamma_clustering_driver::_get_tof_association(
@@ -347,14 +280,18 @@ void gamma_clustering_driver::_get_tof_association(
     const cluster_type& a_cluster = the_reconstructed_clusters.at(i);
 
     // Retrieve the last calorimeter for check in quality
-    cluster_type::const_reverse_iterator it_head = a_cluster.rbegin();
+    auto it_head = a_cluster.rbegin();
 
     // The algo tries to find a tail to a head
     for (; it_head != a_cluster.rend(); ++it_head) {
-      const snemo::datamodel::calibrated_calorimeter_hit& a_calo = it_head->second.get();
-      if (a_calo.get_sigma_time() < _sigma_time_good_calo_) break;
+      const snemo::datamodel::calibrated_calorimeter_hit& a_calo = *(it_head->second);
+      if (a_calo.get_sigma_time() < minTimeResolution_) {
+        break;
+      }
     }
-    if (it_head == a_cluster.rend()) it_head = a_cluster.rbegin();
+    if (it_head == a_cluster.rend()) {
+      it_head = a_cluster.rbegin();
+    }
 
     // Holds the probability from head->tail and the index of the tail
     std::map<double, size_t> possible_clusters_association;
@@ -362,26 +299,31 @@ void gamma_clustering_driver::_get_tof_association(
     for (size_t j = i + 1; j < the_reconstructed_clusters.size(); ++j) {
       const cluster_type& next_cluster = the_reconstructed_clusters.at(j);
 
-      cluster_type::const_iterator it_tail = next_cluster.begin();
-      if (_are_on_same_wall(it_head->second.get(), it_tail->second.get())) continue;
+      auto it_tail = next_cluster.begin();
+      if (_are_on_same_wall(it_head->second.get(), it_tail->second.get())) {
+        continue;
+      }
 
       for (; it_tail != next_cluster.end(); ++it_tail) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo = it_tail->second.get();
-        if (a_calo.get_sigma_time() < _sigma_time_good_calo_) break;
+        const snemo::datamodel::calibrated_calorimeter_hit& a_calo = *(it_tail->second);
+        if (a_calo.get_sigma_time() < minTimeResolution_) {
+          break;
+        }
       }
-      if (it_tail == next_cluster.end()) it_tail = next_cluster.begin();
+      if (it_tail == next_cluster.end()) {
+        it_tail = next_cluster.begin();
+      }
 
-      const snemo::datamodel::calibrated_calorimeter_hit& head_end_calo_hit = it_head->second.get();
-      const snemo::datamodel::calibrated_calorimeter_hit& tail_begin_calo_hit =
-          it_tail->second.get();
-      const double tof_prob = _get_tof_probability(head_end_calo_hit, tail_begin_calo_hit);
-      if (tof_prob > _min_prob_) {
+      const double tof_prob = _get_tof_probability(*(it_head->second), *(it_tail->second));
+      if (tof_prob > minProbability_) {
         // Keep all possible solutions
         possible_clusters_association.insert(std::make_pair(tof_prob, j));
       }
     }  // end of second loop on cluster
 
-    if (possible_clusters_association.empty()) continue;
+    if (possible_clusters_association.empty()) {
+      continue;
+    }
 
     // The probability distribution is flat so above P=50%, there are as much
     // chances for a 51% pair and a 99% to be the correct pair. Here, it
@@ -404,8 +346,9 @@ void gamma_clustering_driver::_get_tof_association(
 
   // Initialize with all the clusters in the event
   std::vector<size_t> cluster_to_be_considered;
-  for (size_t i = 0; i < the_reconstructed_clusters.size(); ++i)
+  for (size_t i = 0; i < the_reconstructed_clusters.size(); ++i) {
     cluster_to_be_considered.push_back(i);
+  }
 
   for (std::map<size_t, size_t>::const_iterator i_pair = merge_indices.begin();
        i_pair != merge_indices.end(); ++i_pair) {
@@ -413,8 +356,9 @@ void gamma_clustering_driver::_get_tof_association(
 
     // Skip the cluster if it has already been involved in an association before
     if (std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_cluster) ==
-        cluster_to_be_considered.end())
+        cluster_to_be_considered.end()) {
       continue;
+    }
 
     {
       cluster_type dummy;
@@ -423,16 +367,15 @@ void gamma_clustering_driver::_get_tof_association(
     cluster_type& new_cluster = the_reconstructed_gammas.back();
 
     // Fill a new cluster made of the concatenation of successive clusters
-    while (merge_indices.count(i_cluster)) {
+    while (merge_indices.count(i_cluster) != 0u) {
       const size_t i_next_cluster = merge_indices.at(i_cluster);
 
-      const std::vector<size_t>::iterator it1 =
-          std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_cluster);
+      auto it1 = std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_cluster);
       if (it1 != cluster_to_be_considered.end()) {
         cluster_to_be_considered.erase(it1);
       }
-      const std::vector<size_t>::iterator it2 = std::find(
-          cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_next_cluster);
+
+      auto it2 = std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_next_cluster);
       if (it2 != cluster_to_be_considered.end()) {
         cluster_to_be_considered.erase(it2);
       }
@@ -449,34 +392,9 @@ void gamma_clustering_driver::_get_tof_association(
   }
 
   // Add the remaining isolated clusters
-  for (std::vector<size_t>::const_iterator i_solo = cluster_to_be_considered.begin();
-       i_solo != cluster_to_be_considered.end(); ++i_solo) {
-    const cluster_type& new_cluster = the_reconstructed_clusters.at(*i_solo);
+  for (auto i_solo : cluster_to_be_considered) {
+    const cluster_type& new_cluster = the_reconstructed_clusters.at(i_solo);
     the_reconstructed_gammas.push_back(new_cluster);
-  }
-
-  if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-    for (size_t i = 0; i < the_reconstructed_clusters.size(); ++i) {
-      const cluster_type& a_cluster = the_reconstructed_clusters.at(i);
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Cluster #" << i << " (" << a_cluster.size() << " associated calorimeters)");
-      for (cluster_type::const_iterator j = a_cluster.begin(); j != a_cluster.end(); ++j) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = j->second.get();
-        a_calo_hit.tree_dump();
-      }
-    }
-  }
-
-  if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-    for (size_t i = 0; i < the_reconstructed_gammas.size(); ++i) {
-      const cluster_type& a_gamma = the_reconstructed_gammas.at(i);
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Gamma #" << i << " (" << a_gamma.size() << " associated calorimeters)");
-      for (cluster_type::const_iterator j = a_gamma.begin(); j != a_gamma.end(); ++j) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = j->second.get();
-        a_calo_hit.tree_dump();
-      }
-    }
   }
 }
 
@@ -489,25 +407,28 @@ double gamma_clustering_driver::_get_tof_probability(
 
   geomtools::vector_3d head_position;
   const geomtools::geom_id& head_gid = head_end_calo_hit_.get_geom_id();
-  if (calo_locator.is_calo_block_in_current_module(head_gid))
+
+  if (calo_locator.is_calo_block_in_current_module(head_gid)) {
     calo_locator.get_block_position(head_gid, head_position);
-  else if (xcalo_locator.is_calo_block_in_current_module(head_gid))
+  } else if (xcalo_locator.is_calo_block_in_current_module(head_gid)) {
     xcalo_locator.get_block_position(head_gid, head_position);
-  else if (gveto_locator.is_calo_block_in_current_module(head_gid))
+  } else if (gveto_locator.is_calo_block_in_current_module(head_gid)) {
     gveto_locator.get_block_position(head_gid, head_position);
-  else
+  } else {
     DT_THROW_IF(true, std::logic_error,
                 "Current geom id '" << head_gid << "' does not match any scintillator block !");
+  }
 
   geomtools::vector_3d tail_position;
   const geomtools::geom_id& tail_gid = tail_begin_calo_hit_.get_geom_id();
-  if (calo_locator.is_calo_block_in_current_module(tail_gid))
+
+  if (calo_locator.is_calo_block_in_current_module(tail_gid)) {
     calo_locator.get_block_position(tail_gid, tail_position);
-  else if (xcalo_locator.is_calo_block_in_current_module(tail_gid))
+  } else if (xcalo_locator.is_calo_block_in_current_module(tail_gid)) {
     xcalo_locator.get_block_position(tail_gid, tail_position);
-  else if (gveto_locator.is_calo_block_in_current_module(tail_gid))
+  } else if (gveto_locator.is_calo_block_in_current_module(tail_gid)) {
     gveto_locator.get_block_position(tail_gid, tail_position);
-  else
+  } else
     DT_THROW_IF(true, std::logic_error,
                 "Current geom id '" << tail_gid << "' does not match any scintillator block !");
 
@@ -624,8 +545,6 @@ void gamma_clustering_driver::init_ocd(datatools::object_configuration_descripti
             "  GC.sigma_time_good_calo : real as time = 2.5 ns \n"
             "                                                  \n");
   }
-
-  return;
 }
 
 }  // end of namespace reconstruction
