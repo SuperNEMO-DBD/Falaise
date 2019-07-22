@@ -10,20 +10,19 @@ project(FalaiseMockTrackerClusterizerPlugin VERSION "2.1.0")
 # Ensure our code can see the Falaise headers
 #include_directories(${Falaise_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
 ############################################################################################
 # - MockTrackerClusterizer modules:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
 
 # - Headers:
-list(APPEND FalaiseMockTrackerClusterizerPlugin_HEADERS source/falaise/snemo/reconstruction/mock_tracker_clustering_driver.h)
-list(APPEND FalaiseMockTrackerClusterizerPlugin_HEADERS source/falaise/snemo/reconstruction/mock_tracker_clustering_module.h)
+list(APPEND FalaiseMockTrackerClusterizerPlugin_HEADERS MockTrackerClustering/mock_tracker_clustering_driver.h)
+list(APPEND FalaiseMockTrackerClusterizerPlugin_HEADERS MockTrackerClustering/mock_tracker_clustering_module.h)
 
 # - Sources:
-list(APPEND FalaiseMockTrackerClusterizerPlugin_SOURCES source/falaise/snemo/reconstruction/mock_tracker_clustering_driver.cc)
-list(APPEND FalaiseMockTrackerClusterizerPlugin_SOURCES source/falaise/snemo/reconstruction/mock_tracker_clustering_module.cc)
+list(APPEND FalaiseMockTrackerClusterizerPlugin_SOURCES MockTrackerClustering/mock_tracker_clustering_driver.cc)
+list(APPEND FalaiseMockTrackerClusterizerPlugin_SOURCES MockTrackerClustering/mock_tracker_clustering_module.cc)
 
 ############################################################################################
 
@@ -49,5 +48,5 @@ install(TARGETS Falaise_MockTrackerClusterizer DESTINATION ${CMAKE_INSTALL_LIBDI
 option(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING "Build unit testing system for FalaiseMockTrackerClusterizerPlugin" ON)
 if(FalaiseMockTrackerClusterizerPlugin_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(testing)
+  add_subdirectory(MockTrackerClustering/test)
 endif()

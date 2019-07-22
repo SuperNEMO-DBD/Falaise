@@ -7,19 +7,17 @@ project(FalaiseGammaClusteringPlugin VERSION "2.1.0")
 
 # Ensure our code can see the Falaise headers
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 ############################################################################################
 # - GammaClustering modules:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
-
 # - Headers:
-list(APPEND FalaiseGammaClusteringPlugin_HEADERS source/falaise/snemo/reconstruction/gamma_clustering_driver.h)
-list(APPEND FalaiseGammaClusteringPlugin_HEADERS source/falaise/snemo/reconstruction/gamma_clustering_module.h)
+list(APPEND FalaiseGammaClusteringPlugin_HEADERS GammaClustering/gamma_clustering_driver.h)
+list(APPEND FalaiseGammaClusteringPlugin_HEADERS GammaClustering/gamma_clustering_module.h)
 
 # - Sources:
-list(APPEND FalaiseGammaClusteringPlugin_SOURCES source/falaise/snemo/reconstruction/gamma_clustering_driver.cc)
-list(APPEND FalaiseGammaClusteringPlugin_SOURCES source/falaise/snemo/reconstruction/gamma_clustering_module.cc)
+list(APPEND FalaiseGammaClusteringPlugin_SOURCES GammaClustering/gamma_clustering_driver.cc)
+list(APPEND FalaiseGammaClusteringPlugin_SOURCES GammaClustering/gamma_clustering_module.cc)
 
 ############################################################################################
 
@@ -45,5 +43,5 @@ install(TARGETS Falaise_GammaClustering DESTINATION ${CMAKE_INSTALL_LIBDIR}/Fala
 option(FalaiseGammaClusteringPlugin_ENABLE_TESTING "Build unit testing system for FalaiseGammaClustering" ON)
 if(FalaiseGammaClusteringPlugin_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(testing)
+  add_subdirectory(GammaClustering/test)
 endif()

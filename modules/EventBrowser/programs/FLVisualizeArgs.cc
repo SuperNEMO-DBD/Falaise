@@ -13,8 +13,8 @@
 // This project:
 #include <falaise/app/metadata_utils.h>
 #include <falaise/tags.h>
-#include <falaise/snemo/detector/detector_manager.h>
-#include <falaise/snemo/view/options_manager.h>
+#include <EventBrowser/detector/detector_manager.h>
+#include <EventBrowser/view/options_manager.h>
 #include "FLVisualizeCommandLine.h"
 
 namespace FLVisualize {

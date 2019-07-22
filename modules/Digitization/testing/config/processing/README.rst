@@ -1,5 +1,0 @@
-FakeTrigger Falaise module
-======================================
-
-Introduction
-------------

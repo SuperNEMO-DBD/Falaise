@@ -13,7 +13,7 @@ include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
 include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
 include_directories(${Bayeux_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -25,24 +25,19 @@ endif()
 
 ############################################################################################
 # - VisuToy module:
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source/falaise)
-
-configure_file(source/falaise/snemo/visualization/visu_toy_config.h.in
-  ${CMAKE_CURRENT_BINARY_DIR}/falaise/snemo/visualization/visu_toy_config.h
+configure_file(VisuToy/visu_toy_config.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/VisuToy/visu_toy_config.h
   @ONLY)
 
-### ${Falaise_BUILDPRODUCT_DIR}/include/falaise/snemo/visualization/visu_toy_config.h
 
 # - Headers:
-list(APPEND FalaiseVisuToyPlugin_HEADERS source/falaise/snemo/visualization/toy_display_driver.h)
-list(APPEND FalaiseVisuToyPlugin_HEADERS source/falaise/snemo/visualization/visu_toy_module.h
-            ${CMAKE_CURRENT_BINARY_DIR}/falaise/snemo/visualization/visu_toy_config.h)
-
-### ${Falaise_BUILDPRODUCT_DIR}/include/falaise/snemo/visualization/visu_toy_config.h )
+list(APPEND FalaiseVisuToyPlugin_HEADERS VisuToy/toy_display_driver.h)
+list(APPEND FalaiseVisuToyPlugin_HEADERS VisuToy/visu_toy_module.h
+            ${CMAKE_CURRENT_BINARY_DIR}/VisuToy/visu_toy_config.h)
 
 # - Sources:
-list(APPEND FalaiseVisuToyPlugin_SOURCES source/falaise/snemo/visualization/toy_display_driver.cc)
-list(APPEND FalaiseVisuToyPlugin_SOURCES source/falaise/snemo/visualization/visu_toy_module.cc)
+list(APPEND FalaiseVisuToyPlugin_SOURCES VisuToy/toy_display_driver.cc)
+list(APPEND FalaiseVisuToyPlugin_SOURCES VisuToy/visu_toy_module.cc)
 
 ############################################################################################
 
@@ -73,5 +68,5 @@ install(TARGETS Falaise_VisuToy DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modu
 option(FalaiseVisuToyPlugin_ENABLE_TESTING "Build unit testing system for FalaiseVisuToyPlugin" ON)
 if(FalaiseVisuToyPlugin_ENABLE_TESTING)
   enable_testing()
-  add_subdirectory(testing)
+  add_subdirectory(VisuToy/test)
 endif()
