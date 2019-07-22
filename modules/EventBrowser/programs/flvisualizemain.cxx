@@ -46,9 +46,9 @@ namespace dtc = datatools::configuration;
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
 // This plugin:
-#include <falaise/snemo/detector/detector_manager.h>
-#include <falaise/snemo/view/event_browser.h>
-#include <falaise/snemo/view/options_manager.h>
+#include <EventBrowser/detector/detector_manager.h>
+#include <EventBrowser/view/event_browser.h>
+#include <EventBrowser/view/options_manager.h>
 #include "FLVisualizeArgs.h"
 #include "FLVisualizeCommandLine.h"
 

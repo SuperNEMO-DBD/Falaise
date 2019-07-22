@@ -25,21 +25,14 @@ set(_falaise_PLUGINS
 
 # - Process modules here:
 foreach(_flplugin ${_falaise_PLUGINS})
-  if(EXISTS ${PROJECT_SOURCE_DIR}/modules/${_flplugin})
-    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/${_flplugin})
-    # Publish resource files for this plugin:
-    if(EXISTS ${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/_resources.cmake)
-      include(${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/_resources.cmake)
-      foreach(_rfin ${_falaise_${_flplugin}_RESOURCES_FILES})
-        string(REGEX REPLACE "\\.in$" "" _rfout "${_rfin}")
-        string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/" "${PROJECT_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}/modules/${_flplugin}/" _rfout "${_rfout}")
-        get_filename_component (_rfin_ext ${_rfin} EXT)
-        if (_rfin_ext STREQUAL ".in")
-          configure_file(${_rfin} ${_rfout} @ONLY)
-        else()
-          configure_file(${_rfin} ${_rfout} COPYONLY)
-        endif()
-      endforeach()
-    endif()
+  add_subdirectory(${_flplugin})
+  # LEGACY ONLY, for EventBrowser style files.
+  # Publish resource files for this plugin:
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${_flplugin}/resources/_resources.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/${_flplugin}/resources/_resources.cmake)
+    foreach(_rfin ${_falaise_${_flplugin}_RESOURCES_FILES})
+      string(REGEX REPLACE "^${PROJECT_SOURCE_DIR}/modules/${_flplugin}/resources/" "${PROJECT_BUILD_DATAROOTDIR}/${FALAISE_RESOURCE_DIR}/modules/${_flplugin}/" _rfout "${_rfin}")
+      configure_file(${_rfin} ${_rfout} COPYONLY)
+    endforeach()
   endif()
 endforeach()

@@ -47,7 +47,7 @@ if(FalaiseEventBrowserPlugin_ENABLE_OPENGL)
   set(EVENTBROWSER_USE_OPENGL 1)
 endif()
 
-add_subdirectory(source)
+add_subdirectory(EventBrowser)
 add_subdirectory(programs)
 
 if(Falaise_ENABLE_TESTING)
