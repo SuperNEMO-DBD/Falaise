@@ -1,234 +1,88 @@
-/// \file falaise/snemo/reconstruction/gamma_tracking_module.cc
+// -*- mode: c++ ; -*-
+/** \file falaise/snemo/reconstruction/gamma_tracking_module.h
+ * Author(s) :    Xavier Garrido <garrido@lal.in2p3.fr>
+ * Creation date: 2012-10-07
+ * Last modified: 2014-02-28
+ *
+ * Copyright (C) 2011-2014 Xavier Garrido <garrido@lal.in2p3.fr>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
+ *
+ *
+ * Description:
+ *
+ *   Module for gamma tracking
+ *
+ * History:
+ *
+ */
 
-// Ourselves:
-#include <GammaTracking/gamma_tracking_module.h>
 
-// Standard library:
-#include <sstream>
-#include <stdexcept>
+#include "falaise/snemo/datamodels/data_model.h"
+#include "falaise/snemo/datamodels/event.h"
+#include "falaise/snemo/datamodels/particle_track_data.h"
+#include "falaise/snemo/processing/module.h"
 
-// Third party:
-// - Bayeux/datatools:
-#include <datatools/service_manager.h>
-// - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
-#include <geomtools/manager.h>
+#include "falaise/snemo/services/service_handle.h"
+#include "falaise/snemo/services/geometry.h"
 
-// This project:
-#include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/datamodels/particle_track_data.h>
-#include <falaise/snemo/services/services.h>
-
-// Gamma Tracking
-#include <GammaTracking/gamma_tracking_driver.h>
+#include "GammaTracking/gamma_tracking_driver.h"
 
 namespace snemo {
 
 namespace reconstruction {
 
-// Registration instantiation macro :
-DPP_MODULE_REGISTRATION_IMPLEMENT(gamma_tracking_module,
-                                  "snemo::reconstruction::gamma_tracking_module")
+/// \brief The data processing module for the gamma tracking
+class gamma_tracking_module {
+ public:
+  /// Default Constructor
+  gamma_tracking_module() = default;
 
-const geomtools::manager& gamma_tracking_module::get_geometry_manager() const {
-  return *_geometry_manager_;
+  /// Construction with configuration
+  gamma_tracking_module(const falaise::config::property_set& ps,
+                          datatools::service_manager& services);
+
+  /// Data record processing
+  falaise::processing::status process(datatools::things& event);
+
+ private:
+  snemo::service_handle<snemo::geometry_svc> geoSVC_;  //!< The geometry manager
+  std::string PTD_tag_;                                //!< The label of the input/output data bank
+  snemo::reconstruction::gamma_tracking_driver algo_;  //!< Handle fitter algorithm
+};
+
+gamma_tracking_module::gamma_tracking_module(const falaise::config::property_set& ps,
+                                                 datatools::service_manager& services)
+    : geoSVC_{services},
+      PTD_tag_{ps.get<std::string>(
+          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())}
+      {
+  algo_.set_geometry_manager(*(geoSVC_.operator->()));
+  algo_.initialize(ps);
 }
 
-void gamma_tracking_module::set_geometry_manager(const geomtools::manager& gmgr_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-  _geometry_manager_ = &gmgr_;
-
-  // Check setup label:
-  const std::string& setup_label = _geometry_manager_->get_setup_label();
-  DT_THROW_IF(setup_label != "snemo::demonstrator", std::logic_error,
-              "Setup label '" << setup_label << "' is not supported !");
-  return;
-}
-
-void gamma_tracking_module::_set_defaults() {
-  _geometry_manager_ = 0;
-  _PTD_label_ = snemo::datamodel::data_info::default_particle_track_data_label();
-  _driver_.reset();
-  return;
-}
-
-// Initialization :
-void gamma_tracking_module::initialize(const datatools::properties& setup_,
-                                       datatools::service_manager& service_manager_,
-                                       dpp::module_handle_dict_type& /* module_dict_ */) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-
-  dpp::base_module::_common_initialize(setup_);
-
-  if (setup_.has_key("PTD_label")) {
-    _PTD_label_ = setup_.fetch_string("PTD_label");
-  }
-
-  // Geometry manager :
-  if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::service_info::default_geometry_service_label();
-    if (setup_.has_key("Geo_label")) {
-      geo_label = setup_.fetch_string("Geo_label");
-    }
-    DT_THROW_IF(geo_label.empty(), std::logic_error,
-                "Module '" << get_name() << "' has no valid '"
-                           << "Geo_label"
-                           << "' property !");
-    DT_THROW_IF(!service_manager_.has(geo_label) ||
-                    !service_manager_.is_a<geomtools::geometry_service>(geo_label),
-                std::logic_error,
-                "Module '" << get_name() << "' has no '" << geo_label << "' service !");
-    const geomtools::geometry_service& Geo =
-        service_manager_.get<geomtools::geometry_service>(geo_label);
-    set_geometry_manager(Geo.get_geom_manager());
-  }
-
-  // Gamma tracking algorithm :
-  DT_THROW_IF(!setup_.has_key("driver"), std::logic_error, "Missing 'driver' algorithm");
-  const std::string algorithm_id = setup_.fetch_string("driver");
-  if (algorithm_id == "GT") {
-    _driver_.reset(new snemo::reconstruction::gamma_tracking_driver);
-  } else {
-    DT_THROW_IF(true, std::logic_error,
-                "Unsupported '" << algorithm_id << "'gamma tracking algorithm ");
-  }
-
-  // Plug the geometry manager :
-  _driver_.get()->set_geometry_manager(get_geometry_manager());
-
-  // Initialize the clustering driver :
-  _driver_.get()->initialize(setup_);
-
-  _set_initialized(true);
-  return;
-}
-
-void gamma_tracking_module::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is not initialized !");
-  _set_initialized(false);
-  _set_defaults();
-  return;
-}
-
-// Constructor :
-gamma_tracking_module::gamma_tracking_module(datatools::logger::priority logging_priority_)
-    : dpp::base_module(logging_priority_) {
-  _set_defaults();
-  return;
-}
-
-// Destructor :
-gamma_tracking_module::~gamma_tracking_module() {
-  if (is_initialized()) gamma_tracking_module::reset();
-  return;
-}
-
-// Processing :
-dpp::base_module::process_status gamma_tracking_module::process(datatools::things& data_record_) {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is not initialized !");
-
-  // Main processing method :
-  _process(data_record_);
-
-  return dpp::base_module::PROCESS_SUCCESS;
-}
-
-void gamma_tracking_module::_process(datatools::things& data_record_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
-  snemo::datamodel::particle_track_data* ptr_particle_track_data = 0;
-  if (!data_record_.has(_PTD_label_)) {
-    ptr_particle_track_data =
-        &(data_record_.add<snemo::datamodel::particle_track_data>(_PTD_label_));
-  } else {
-    ptr_particle_track_data =
-        &(data_record_.grab<snemo::datamodel::particle_track_data>(_PTD_label_));
-  }
-  snemo::datamodel::particle_track_data& ptd = *ptr_particle_track_data;
-
-  // process the fitter driver :
-  _driver_.get()->process(ptd.get_non_associated_calorimeters(), ptd);
-
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
+falaise::processing::status gamma_tracking_module::process(datatools::things& event) {
+  auto& ptd =
+      snemo::datamodel::getOrAddToEvent<snemo::datamodel::particle_track_data>(PTD_tag_, event);
+  algo_.process(ptd.get_non_associated_calorimeters(), ptd);
+  return falaise::processing::status::PROCESS_SUCCESS;
 }
 
 }  // end of namespace reconstruction
 
 }  // end of namespace snemo
 
-/* OCD support */
-#include <datatools/object_configuration_description.h>
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::gamma_tracking_module, ocd_) {
-  ocd_.set_class_name("snemo::reconstruction::gamma_tracking_module");
-  ocd_.set_class_description(
-      "A module that performs the gamma tracking using the Gamma_Tracking algorithms");
-  ocd_.set_class_library("Falaise_GammaTracking");
-  ocd_.set_class_documentation(
-      "This module uses the Gamma Tracking algorithms for.   \n"
-      "gamma involved in non associated calorimeter hits. See also OCD   \n"
-      "support for the ``snemo::reconstruction::gamma_tracking_driver`` class. \n");
-
-  dpp::base_module::common_ocd(ocd_);
-
-  {
-    // Description of the 'PTD_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("PTD_label")
-        .set_terse_description("The label/name of the 'particle track data' bank")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(
-            "This is the name of the bank to be used as    \n"
-            "the source of calorimeter hits and reconstructed vertices. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_particle_track_data_label())
-        .add_example(
-            "Use an alternative name for the 'particle track data' bank:: \n"
-            "                                  \n"
-            "  PTD_label : string = \"PTD2\"   \n"
-            "                                  \n");
-  }
-
-  {
-    // Description of the 'Geo_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("Geo_label")
-        .set_terse_description("The label/name of the geometry service")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(
-            "This is the name of the service to be used as the \n"
-            "geometry service.                                 \n"
-            "This property is only used if no geometry manager \n"
-            "as been provided to the module.                   \n")
-        .set_default_value_string(snemo::service_info::default_geometry_service_label())
-        .add_example(
-            "Use an alternative name for the geometry service:: \n"
-            "                                     \n"
-            "  Geo_label : string = \"geometry2\" \n"
-            "                                     \n");
-  }
-
-  // Additionnal configuration hints :
-  ocd_.set_configuration_hints(
-      "Here is a full configuration example in the      \n"
-      "``datatools::properties`` ASCII format::         \n"
-      "                                         \n"
-      "  PTD_label : string = \"PTD\"           \n"
-      "  Geo_label : string = \"geometry\"      \n"
-      "                                         \n"
-      "Additional specific parameters are used to configure         \n"
-      "the embedded ``Gamma_Tracking`` driver itself; see the OCD support \n"
-      "of the ``snemo::reconstruction::gamma_tracking_driver`` class.     \n");
-
-  ocd_.set_validation_support(true);
-  ocd_.lock();
-  return;
-}
-DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
-DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::gamma_tracking_module,
-                               "snemo::reconstruction::gamma_tracking_module")
+FALAISE_REGISTER_MODULE(snemo::reconstruction::gamma_tracking_module)

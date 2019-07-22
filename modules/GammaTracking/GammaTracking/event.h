@@ -32,12 +32,6 @@ class event {
   /// Typedef for calorimeter collection type
   typedef std::map<size_t, calorimeter_hit> calorimeter_collection_type;
 
-  /// Constructor
-  event();
-
-  /// Destructor
-  ~event();
-
   /// Reset
   void reset();
 

@@ -83,7 +83,7 @@ class gamma_tracking {
 
   /// Just add standalone gamma
   /*!< For complete gamma tracking, gamma_tracking::get_reflect gives also alone gammas*/
-  void add(int number1_);
+  void add(int number_);
 
   /// Add 2 ref number combinaison with a proba in [0,1]
   void add_probability(int number1_, int number2_, double proba_);
@@ -97,7 +97,7 @@ class gamma_tracking {
   void add_start(int number_);
 
   /// Check if an element of gamma_tracking::list_type values_ is in serie collection type
-  bool is_inside_serie(const list_type& values_) const;
+  bool is_inside_serie(const list_type& list_) const;
 
   /// Check if an element of gamma_tracking::list_type values_ is in gamma_tracking::list_type
   /// check_
@@ -113,13 +113,13 @@ class gamma_tracking {
   void put_inside(const list_type& from_, list_type& to_);
 
   /// if true, only by prob, else by size and then by prob.
-  void set_absolute(bool a_);
+  void set_absolute(bool absolute_);
 
   /// check gamma_tracking::set_absolute
   bool is_absolute();
 
   /// if true, forbid the starts to be elsewhere than at start
-  void set_extern(bool e_);
+  void set_extern(bool extern_);
 
   /// check gamma_tracking::set_extern
   bool is_extern();

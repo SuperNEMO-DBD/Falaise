@@ -78,7 +78,7 @@ class gamma_tracking_driver : public ::snemo::processing::base_gamma_builder {
                             snemo::datamodel::particle_track_data& ptd_);
 
  private:
-  gt::gamma_tracking _gt_;  //!< The Gamma Tracking algorithm
+  gt::gamma_tracking gtAlgo_;  //!< The Gamma Tracking algorithm
 };
 
 }  // end of namespace reconstruction
