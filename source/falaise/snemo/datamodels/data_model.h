@@ -20,7 +20,7 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/things.h>
+#include <falaise/snemo/datamodels/event.h>
 
 namespace snemo {
 
@@ -63,9 +63,6 @@ class data_info {
   /// Return the default string label/name for the 'particle track data'
   static const std::string& default_particle_track_data_label();
 };
-
-/// Alias for the event record container type
-typedef datatools::things event_record;
 
 }  // end of namespace datamodel
 
