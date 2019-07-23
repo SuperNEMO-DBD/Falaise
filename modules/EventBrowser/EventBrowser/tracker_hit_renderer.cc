@@ -373,8 +373,6 @@ void tracker_hit_renderer::push_fitted_tracks() {
           options_manager::get_instance().get_option_flag(SHOW_RECALIBRATED_TRACKER_HITS)) {
         const double t0 = traj_properties.fetch_real("t0");
         snemo::processing::geiger_regime a_gg_regime;
-        datatools::properties dummy_config;
-        a_gg_regime.initialize(dummy_config);
         if (a_trajectory.has_cluster()) {
           const snemo::datamodel::tracker_cluster &a_cluster = a_trajectory.get_cluster();
           // Get tracker hits stored in the current tracker cluster:

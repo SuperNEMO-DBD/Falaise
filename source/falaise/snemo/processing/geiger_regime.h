@@ -23,17 +23,12 @@
 
 // Third party:
 // - Bayeux/datatools
-#include <datatools/i_tree_dump.h>
+#include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/mygsl:
-#include <mygsl/tabulated_function.h>
+#include <bayeux/mygsl/tabulated_function.h>
+#include <bayeux/mygsl/rng.h>
 
-namespace datatools {
-class properties;
-}
-
-namespace mygsl {
-class rng;
-}
 
 namespace snemo {
 
@@ -45,17 +40,15 @@ class geiger_regime : public datatools::i_tree_dumpable {
   /// Default constructor
   geiger_regime();
 
-  /// Destructor
-  virtual ~geiger_regime() = default;
-
-  /// Check initialization flag
-  bool is_initialized() const;
-
   /// Initialization from parameters
-  void initialize(const datatools::properties& config_);
+  explicit geiger_regime(const datatools::properties& config_);
 
-  /// Reset
-  void reset();
+  // RoF defaults
+  virtual ~geiger_regime() = default;
+  geiger_regime(const geiger_regime&) = default;
+  geiger_regime& operator=(const geiger_regime&) = default;
+  geiger_regime(geiger_regime&&) = default;
+  geiger_regime& operator=(geiger_regime&&) = default;
 
   /// Return the diameter of the cell
   double get_cell_diameter() const;
@@ -102,9 +95,6 @@ class geiger_regime : public datatools::i_tree_dumpable {
   /// Return the error on the plasma longitudinal speed
   double get_sigma_plasma_longitudinal_speed() const;
 
-  /// Return the tabulated radius/time calibration function
-  mygsl::tabulated_function& grab_base_rt();
-
   /// Randomize the longitudinal position of a Geiger hit
   double randomize_z(mygsl::rng& ran_, double z_, double sigma_z_) const;
 
@@ -118,7 +108,7 @@ class geiger_regime : public datatools::i_tree_dumpable {
   double base_t_2_r(double time_, int mode_ = 0) const;
 
   /// Return the error on longitudinal position
-  double get_sigma_z(double z_, size_t missing_cathodes_ = 0) const;
+  double get_sigma_z(double z, size_t missing_cathode = 0) const;
 
   /// Return the error on the drift distance
   double get_sigma_r(double r_) const;
@@ -128,14 +118,10 @@ class geiger_regime : public datatools::i_tree_dumpable {
                                               double& sigma_drift_radius_) const;
 
   /// Smart print
-  virtual void tree_dump(std::ostream& a_out = std::clog, const std::string& a_title = "",
-                         const std::string& a_indent = "", bool a_inherit = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool inherit = false) const;
 
  private:
-  /// Set default values for attributes
-  void _init_defaults_();
-  
-  bool _initialized_;                        //!< Initalization flag
   double _cell_diameter_;                    //!< Fiducial drift diameter of a cell
   double _cell_length_;                      //!< Fiducial drift length of a cell
   double _sigma_anode_time_;                 //!< Anode TDC resolution

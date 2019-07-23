@@ -28,35 +28,28 @@ namespace reconstruction {
 /// SuperNEMO drift time calibration
 snemo_drift_time_calibration::snemo_drift_time_calibration() {
   _gg_regime_.reset(new snemo::processing::geiger_regime);
-  // Initialize by using default parameters
-  datatools::properties dummy;
-  _gg_regime_.get()->initialize(dummy);
-  return;
 }
 
 snemo_drift_time_calibration::~snemo_drift_time_calibration() {
   _gg_regime_.reset();
-  return;
 }
 
 double snemo_drift_time_calibration::get_max_cell_radius() const {
-  return _gg_regime_.get()->get_rdiag();
+  return _gg_regime_->get_rdiag();
 }
 
 double snemo_drift_time_calibration::get_sensitive_cell_radius() const {
-  return _gg_regime_.get()->get_rdiag();
+  return _gg_regime_->get_rdiag();
 }
 
 void snemo_drift_time_calibration::drift_time_to_radius(double time_, double& radius_,
                                                         double& sigma_radius_) const {
-  _gg_regime_.get()->calibrate_drift_radius_from_drift_time(time_, radius_, sigma_radius_);
-  return;
+  _gg_regime_->calibrate_drift_radius_from_drift_time(time_, radius_, sigma_radius_);
 }
 
 void snemo_drift_time_calibration::radius_to_drift_time(double /* radius_ */, double& /* time_ */,
                                                         double& /* sigma_time_ */) const {
   DT_LOG_WARNING(datatools::logger::PRIO_WARNING, "Not implemented");
-  return;
 }
 
 const std::string& trackfit_driver::trackfit_id() {

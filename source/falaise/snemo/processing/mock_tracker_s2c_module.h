@@ -31,6 +31,9 @@
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/mock_raw_tracker_hit.h>
 #include <falaise/snemo/processing/geiger_regime.h>
+#include <falaise/snemo/services/service_handle.h>
+#include <falaise/snemo/services/geometry.h>
+
 
 namespace geomtools {
 class manager;
@@ -55,7 +58,7 @@ class mock_tracker_s2c_module : public dpp::base_module {
   virtual void reset() override;
 
   /// Data record processing
-  virtual process_status process(datatools::things& data_) override;
+  virtual process_status process(datatools::things& event) override;
 
  private:
   // Rationalized typenames
@@ -72,8 +75,7 @@ class mock_tracker_s2c_module : public dpp::base_module {
   /// Main process function
   cal_tracker_hit_col_t process_(const sim_tracker_hit_col_t& hits);
 
-  std::string geoServiceTag{};                    //!< The label of the geometry service
-  const geomtools::manager* geoManager{nullptr};  //!< The geometry manager
+  snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
   std::string _module_category_{};                //!< The geometry category of the SuperNEMO module
   std::string _hit_category_{};                   //!< The category of the input Geiger hits
   geiger_regime _geiger_{};                       //!< Geiger regime tools
