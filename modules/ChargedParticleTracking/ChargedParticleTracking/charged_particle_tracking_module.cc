@@ -15,6 +15,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project (Falaise):
+#include <falaise/config/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
@@ -36,29 +37,18 @@ namespace reconstruction {
 DPP_MODULE_REGISTRATION_IMPLEMENT(charged_particle_tracking_module,
                                   "snemo::reconstruction::charged_particle_tracking_module")
 
-const geomtools::manager& charged_particle_tracking_module::get_geometry_manager() const {
-  return *_geometry_manager_;
-}
-
-void charged_particle_tracking_module::set_geometry_manager(const geomtools::manager& gmgr_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-  _geometry_manager_ = &gmgr_;
-  return;
-}
-
 void charged_particle_tracking_module::_set_defaults() {
-  _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
-  _TTD_label_ = snemo::datamodel::data_info::default_tracker_trajectory_data_label();
-  _PTD_label_ = snemo::datamodel::data_info::default_particle_track_data_label();
+  using sdmi = snemo::datamodel::data_info;
+  CDTag_ = sdmi::default_calibrated_data_label();
+  TTDTag_ = sdmi::default_tracker_trajectory_data_label();
+  PTDTag_ = sdmi::default_particle_track_data_label();
 
-  _geometry_manager_ = 0;
+  geoManager_ = snemo::service_handle<snemo::geometry_svc>{};
 
-  _VED_.reset();
-  _CCD_.reset();
-  _CAD_.reset();
-  _AFD_.reset();
-  return;
+  VEAlgo_.reset();
+  CCAlgo_.reset();
+  CAAlgo_.reset();
+  AFAlgo_.reset();
 }
 
 void charged_particle_tracking_module::initialize(
@@ -66,99 +56,55 @@ void charged_particle_tracking_module::initialize(
     dpp::module_handle_dict_type& /* module_dict_ */) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
+  using sdmi = snemo::datamodel::data_info;
+  namespace snreco = snemo::reconstruction;
+
+  using VertexExtrapolator = snreco::vertex_extrapolation_driver;
+  using ChargeCalculator = snreco::charge_computation_driver;
+  using TrackToCaloMatcher = snreco::calorimeter_association_driver;
+  using AlphaFinder = snreco::alpha_finder_driver;
 
   dpp::base_module::_common_initialize(setup_);
 
-  if (setup_.has_key("CD_label")) {
-    _CD_label_ = setup_.fetch_string("CD_label");
-  }
+  falaise::config::property_set ps{setup_};
 
-  if (setup_.has_key("TTD_label")) {
-    _TTD_label_ = setup_.fetch_string("TTD_label");
-  }
+  CDTag_ = ps.get<std::string>("CD_label", sdmi::default_calibrated_data_label());
+  TTDTag_ = ps.get<std::string>("TTD_label", sdmi::default_tracker_trajectory_data_label());
+  PTDTag_ = ps.get<std::string>("PTD_label", sdmi::default_particle_track_data_label());
 
-  if (setup_.has_key("PTD_label")) {
-    _PTD_label_ = setup_.fetch_string("PTD_label");
-  }
-
-  std::string geometry_label = snemo::service_info::default_geometry_service_label();
-  if (setup_.has_key("Geo_label")) {
-    geometry_label = setup_.fetch_string("Geo_label");
-  }
   // Geometry manager :
-  if (_geometry_manager_ == 0) {
-    DT_THROW_IF(geometry_label.empty(), std::logic_error,
-                "Module '" << get_name() << "' has no valid '"
-                           << "Geo_label"
-                           << "' property !");
-    DT_THROW_IF(!service_manager_.has(geometry_label) ||
-                    !service_manager_.is_a<geomtools::geometry_service>(geometry_label),
-                std::logic_error,
-                "Module '" << get_name() << "' has no '" << geometry_label << "' service !");
-    const geomtools::geometry_service& Geo =
-        service_manager_.get<geomtools::geometry_service>(geometry_label);
-    set_geometry_manager(Geo.get_geom_manager());
-  }
+  geoManager_ = snemo::service_handle<snemo::geometry_svc>{service_manager_};
 
-  // Drivers :
-  std::vector<std::string> driver_names;
-  if (setup_.has_key("drivers")) {
-    setup_.fetch("drivers", driver_names);
-  } else {
-    // Add default set of drivers
-    driver_names.push_back(snemo::reconstruction::vertex_extrapolation_driver::get_id());
-    driver_names.push_back(snemo::reconstruction::charge_computation_driver::get_id());
-    driver_names.push_back(snemo::reconstruction::calorimeter_association_driver::get_id());
-    driver_names.push_back(snemo::reconstruction::alpha_finder_driver::get_id());
-  }
-  for (std::vector<std::string>::const_iterator idriver = driver_names.begin();
-       idriver != driver_names.end(); ++idriver) {
-    const std::string& a_driver_name = *idriver;
+  auto driver_names = ps.get<std::vector<std::string>>("drivers", {
+                                                                      VertexExtrapolator::get_id(),
+                                                                      ChargeCalculator::get_id(),
+                                                                      TrackToCaloMatcher::get_id(),
+                                                                      AlphaFinder::get_id(),
+                                                                  });
 
-    if (a_driver_name == snemo::reconstruction::vertex_extrapolation_driver::get_id()) {
-      // Initialize Vertex Extrapolation Driver
-      _VED_.reset(new snemo::reconstruction::vertex_extrapolation_driver);
-      _VED_->set_geometry_manager(get_geometry_manager());
-      datatools::properties VED_config;
-      setup_.export_and_rename_starting_with(VED_config, a_driver_name + ".", "");
-      _VED_->initialize(VED_config);
-    } else if (a_driver_name == snemo::reconstruction::charge_computation_driver::get_id()) {
-      // Initialize Charge Computation Driver
-      _CCD_.reset(new snemo::reconstruction::charge_computation_driver);
-      datatools::properties CCD_config;
-      setup_.export_and_rename_starting_with(CCD_config, a_driver_name + ".", "");
-      _CCD_->initialize(CCD_config);
-    } else if (a_driver_name == snemo::reconstruction::calorimeter_association_driver::get_id()) {
-      // Initialize Calorimeter Association Driver
-      _CAD_.reset(new snemo::reconstruction::calorimeter_association_driver);
-      _CAD_->set_geometry_manager(get_geometry_manager());
-      datatools::properties CAD_config;
-      setup_.export_and_rename_starting_with(CAD_config, a_driver_name + ".", "");
-      _CAD_->initialize(CAD_config);
-    } else if (a_driver_name == snemo::reconstruction::alpha_finder_driver::get_id()) {
-      // Initialize Alpha Finder Driver
-      _AFD_.reset(new snemo::reconstruction::alpha_finder_driver);
-      _AFD_->set_geometry_manager(get_geometry_manager());
-      datatools::properties AFD_config;
-      setup_.export_and_rename_starting_with(AFD_config, a_driver_name + ".", "");
-      _AFD_->initialize(AFD_config);
+  for (const std::string& id : driver_names) {
+    auto dps = ps.get<falaise::config::property_set>(id, {});
+    if (id == VertexExtrapolator::get_id()) {
+      VEAlgo_.reset(new VertexExtrapolator{dps, (geoManager_.operator->())});
+    } else if (id == ChargeCalculator::get_id()) {
+      CCAlgo_.reset(new ChargeCalculator{dps});
+    } else if (id == TrackToCaloMatcher::get_id()) {
+      CAAlgo_.reset(new TrackToCaloMatcher{dps, (geoManager_.operator->())});
+    } else if (id == AlphaFinder::get_id()) {
+      AFAlgo_.reset(new AlphaFinder{dps, (geoManager_.operator->())});
     } else {
-      DT_THROW_IF(true, std::logic_error, "Driver '" << a_driver_name << "' does not exist !");
+      DT_THROW_IF(true, std::logic_error, "Driver '" << id << "' does not exist !");
     }
   }
-
   // Tag the module as initialized :
   _set_initialized(true);
-  return;
 }
 
 void charged_particle_tracking_module::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is not initialized !");
-
   _set_initialized(false);
   _set_defaults();
-  return;
 }
 
 // Constructor :
@@ -166,13 +112,13 @@ charged_particle_tracking_module::charged_particle_tracking_module(
     datatools::logger::priority logging_priority_)
     : dpp::base_module(logging_priority_) {
   _set_defaults();
-  return;
 }
 
 // Destructor :
 charged_particle_tracking_module::~charged_particle_tracking_module() {
-  if (is_initialized()) charged_particle_tracking_module::reset();
-  return;
+  if (is_initialized()) {
+    charged_particle_tracking_module::reset();
+  }
 }
 
 // Processing :
@@ -180,71 +126,20 @@ dpp::base_module::process_status charged_particle_tracking_module::process(
     datatools::things& data_record_) {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is not initialized !");
+  namespace snedm = snemo::datamodel;
 
-  /*************************
-   * Check calibrated data *
-   *************************/
+  // Get required input products
+  const auto& the_calibrated_data = data_record_.get<snedm::calibrated_data>(CDTag_);
+  const auto& the_tracker_trajectory_data =
+      data_record_.get<snedm::tracker_trajectory_data>(TTDTag_);
 
-  const bool abort_at_missing_input = true;
-  // Check if some 'calibrated_data' are available in the data model:
-  if (!data_record_.has(_CD_label_)) {
-    DT_THROW_IF(abort_at_missing_input, std::logic_error,
-                "Missing calibrated data to be processed !");
-    // leave the data unchanged.
-    return dpp::base_module::PROCESS_ERROR;
-  }
-  // Get the 'calibrated_data' entry from the data model :
-  const snemo::datamodel::calibrated_data& the_calibrated_data =
-      data_record_.get<snemo::datamodel::calibrated_data>(_CD_label_);
-
-  /*********************************
-   * Check tracker trajectory data *
-   *********************************/
-
-  // Check if some 'tracker_trajectory_data' are available in the data model:
-  if (!data_record_.has(_TTD_label_)) {
-    DT_THROW_IF(abort_at_missing_input, std::logic_error,
-                "Missing tracker trajectory data to be processed !");
-    // leave the data unchanged.
-    return dpp::base_module::PROCESS_ERROR;
-  }
-  // Get the 'tracker_trajectory_data' entry from the data model :
-  const snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data =
-      data_record_.get<snemo::datamodel::tracker_trajectory_data>(_TTD_label_);
-
-  /*********************************
-   * Check particle track data     *
-   *********************************/
-  const bool abort_at_former_output = false;
-  const bool preserve_former_output = false;
-
-  // check if some 'particle_track_data' are available in the data model:
-  snemo::datamodel::particle_track_data* ptr_particle_track_data = 0;
-  if (!data_record_.has(_PTD_label_)) {
-    ptr_particle_track_data =
-        &(data_record_.add<snemo::datamodel::particle_track_data>(_PTD_label_));
-  } else {
-    ptr_particle_track_data =
-        &(data_record_.grab<snemo::datamodel::particle_track_data>(_PTD_label_));
-  }
-  snemo::datamodel::particle_track_data& the_particle_track_data = *ptr_particle_track_data;
-  if (the_particle_track_data.has_particles() ||
-      the_particle_track_data.has_non_associated_calorimeters()) {
-    DT_THROW_IF(abort_at_former_output, std::logic_error,
-                "Already has processed particle track data !");
-    if (!preserve_former_output) {
-      the_particle_track_data.reset();
-    }
-  }
-
-  /********************
-   * Process the data *
-   ********************/
+  // Create or reset output bank
+  auto the_particle_track_data =
+      snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, data_record_);
+  the_particle_track_data.reset();
 
   // Main processing method :
   this->_process(the_calibrated_data, the_tracker_trajectory_data, the_particle_track_data);
-
-  // Post-processing method:
   this->_post_process(the_calibrated_data, the_particle_track_data);
 
   return dpp::base_module::PROCESS_SUCCESS;
@@ -254,76 +149,74 @@ void charged_particle_tracking_module::_process(
     const snemo::datamodel::calibrated_data& calibrated_data_,
     const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
     snemo::datamodel::particle_track_data& particle_track_data_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
+  namespace snedm = snemo::datamodel;
 
-  // Process trajectories using external resource:
   if (!tracker_trajectory_data_.has_default_solution()) {
-    DT_LOG_DEBUG(get_logging_priority(), "No default trajectory solution has been found");
     // Fill non associated calorimeter hits
-    const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& chits =
-        calibrated_data_.calibrated_calorimeter_hits();
-    for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit =
-             chits.begin();
-         ihit != chits.end(); ++ihit) {
-      particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
+    for (const auto& chit : calibrated_data_.calibrated_calorimeter_hits()) {
+      particle_track_data_.grab_non_associated_calorimeters().push_back(chit);
     }
     return;
   }
 
-  const snemo::datamodel::tracker_trajectory_solution& a_solution =
+  const snedm::tracker_trajectory_solution& a_solution =
       tracker_trajectory_data_.get_default_solution();
-  const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type& trajectories =
+  const snedm::tracker_trajectory_solution::trajectory_col_type& trajectories =
       a_solution.get_trajectories();
-  for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
-           itrajectory = trajectories.begin();
-       itrajectory != trajectories.end(); ++itrajectory) {
-    const snemo::datamodel::tracker_trajectory& a_trajectory = itrajectory->get();
 
+  for (const datatools::handle<snedm::tracker_trajectory> a_trajectory : trajectories) {
     // Look into properties to find the default
     // trajectory. Here, default means the one with the best
     // chi2. This flag is set by the 'fitting' module.
-    if (!a_trajectory.get_auxiliaries().has_flag("default")) continue;
+    // Implies that there should be a member function of
+    // tracker_trajectory_solution to get the default?
+    if (!a_trajectory->get_auxiliaries().has_flag("default")) {
+      continue;
+    }
 
     // Add a new particle_track
-    snemo::datamodel::particle_track::handle_type hPT(new snemo::datamodel::particle_track);
-    hPT.grab().set_trajectory_handle(*itrajectory);
-    hPT.grab().set_track_id(particle_track_data_.get_number_of_particles());
+    auto hPT = datatools::make_handle<snedm::particle_track>();
+    hPT->set_trajectory_handle(a_trajectory);
+    hPT->set_track_id(particle_track_data_.get_number_of_particles());
     particle_track_data_.add_particle(hPT);
 
     // Compute particle charge
-    if (_CCD_) _CCD_->process(a_trajectory, hPT.grab());
-
+    if (CCAlgo_) {
+      CCAlgo_->process(*a_trajectory, *hPT);
+    }
     // Determine track vertices
-    if (_VED_) _VED_->process(a_trajectory, hPT.grab());
-
+    if (VEAlgo_) {
+      VEAlgo_->process(*a_trajectory, *hPT);
+    }
     // Associate vertices to calorimeter hits
-    if (_CAD_) _CAD_->process(calibrated_data_.calibrated_calorimeter_hits(), hPT.grab());
+    if (CAAlgo_) {
+      CAAlgo_->process(calibrated_data_.calibrated_calorimeter_hits(), *hPT);
+    }
   }
 
   // Alpha finder
-  if (_AFD_) _AFD_->process(tracker_trajectory_data_, particle_track_data_);
-
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
+  if (AFAlgo_) {
+    AFAlgo_->process(tracker_trajectory_data_, particle_track_data_);
+  }
 }
 
 void charged_particle_tracking_module::_post_process(
     const snemo::datamodel::calibrated_data& calibrated_data_,
     snemo::datamodel::particle_track_data& particle_track_data_) {
+  namespace snedm = snemo::datamodel;
   // Grab non associated calorimeters :
   if (!particle_track_data_.has_non_associated_calorimeters()) {
     geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_utils::associated_flag());
     geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
     // Wrapper predicates :
-    datatools::mother_to_daughter_predicate<geomtools::base_hit,
-                                            snemo::datamodel::calibrated_calorimeter_hit>
+    datatools::mother_to_daughter_predicate<geomtools::base_hit, snedm::calibrated_calorimeter_hit>
         pred_M2D(not_asso_pred);
-    datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(
-        pred_M2D);
-    const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& chits =
+    datatools::handle_predicate<snedm::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
+
+    const snedm::calibrated_data::calorimeter_hit_collection_type& chits =
         calibrated_data_.calibrated_calorimeter_hits();
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator ihit =
-        std::find_if(chits.begin(), chits.end(), pred_via_handle);
+    // The below might be better with copy_if and back_inserter?
+    auto ihit = std::find_if(chits.begin(), chits.end(), pred_via_handle);
     while (ihit != chits.end()) {
       particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
       ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
@@ -333,55 +226,52 @@ void charged_particle_tracking_module::_post_process(
   // 2015/12/02 XG: Also look if the non associated calorimeters are
   // isolated i.e. without Geiger cells in front or not: tag them
   // consequently
-  const snemo::datamodel::calibrated_data::tracker_hit_collection_type& thits =
+  const snedm::calibrated_data::tracker_hit_collection_type& thits =
       calibrated_data_.calibrated_tracker_hits();
-  snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& chits =
+  snedm::calibrated_data::calorimeter_hit_collection_type& chits =
       particle_track_data_.grab_non_associated_calorimeters();
-  for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator chit =
-           chits.begin();
-       chit != chits.end(); ++chit) {
-    snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = chit->grab();
+
+  for (datatools::handle<snedm::calibrated_calorimeter_hit>& a_calo_hit : chits) {
     const bool has_neighbors =
-        calorimeter_utils::has_flag(a_calo_hit, calorimeter_utils::neighbor_flag());
+        calorimeter_utils::has_flag(*a_calo_hit, calorimeter_utils::neighbor_flag());
     bool has_gg_in_front = false;
 
     // Getting geometry mapping for parted block
-    const geomtools::mapping& the_mapping = get_geometry_manager().get_mapping();
+    const geomtools::mapping& the_mapping = geoManager_->get_mapping();
     std::vector<geomtools::geom_id> gids;
-    the_mapping.compute_matching_geom_id(a_calo_hit.get_geom_id(), gids);
-    for (size_t i = 0; i < gids.size(); ++i) {
-      const geomtools::geom_id& a_gid = gids.at(i);
+    the_mapping.compute_matching_geom_id(a_calo_hit->get_geom_id(), gids);
+
+    for (const geomtools::geom_id& a_gid : gids) {
       const geomtools::geom_info* ginfo_ptr = the_mapping.get_geom_info_ptr(a_gid);
-      if (!ginfo_ptr) {
+      if (ginfo_ptr == nullptr) {
         DT_LOG_WARNING(get_logging_priority(), "Unmapped geom id " << a_gid << "!");
         continue;
       }
       // Loop over all calibrated geiger hits to find one close enough
-      for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator thit =
-               thits.begin();
-           thit != thits.end(); ++thit) {
-        const snemo::datamodel::calibrated_tracker_hit& a_tracker_hit = thit->get();
-        if (!a_tracker_hit.has_xy()) continue;
-        DT_LOG_TRACE(get_logging_priority(), "Geiger cell has xy position");
-        const geomtools::vector_3d cell_pos(a_tracker_hit.get_x(), a_tracker_hit.get_y(),
-                                            a_tracker_hit.get_z());
+      for (const datatools::handle<snedm::calibrated_tracker_hit>& a_tracker_hit : thits) {
+        if (!a_tracker_hit->has_xy()) {
+          continue;
+        }
+        const geomtools::vector_3d cell_pos(a_tracker_hit->get_x(), a_tracker_hit->get_y(),
+                                            a_tracker_hit->get_z());
         // Tolerance must be understood as 'skin' tolerance so must be
         // multiplied by a factor of 2
         const double tolerance = 100 * CLHEP::mm;
-        if (the_mapping.check_inside(*ginfo_ptr, cell_pos, tolerance, true)) {
-          DT_LOG_TRACE(get_logging_priority(), "Found Geiger cell in front of calorimeter block");
+        if (geomtools::mapping::check_inside(*ginfo_ptr, cell_pos, tolerance, true)) {
           has_gg_in_front = true;
           break;
         }
       }  // end of tracker hits
-      if (has_gg_in_front) break;
+
+      if (has_gg_in_front) {
+        break;
+      }
     }  // end of calorimeter geom ids
 
     if (!has_gg_in_front || (has_neighbors && has_gg_in_front)) {
-      calorimeter_utils::flag_as(a_calo_hit, calorimeter_utils::isolated_flag());
+      calorimeter_utils::flag_as(*a_calo_hit, calorimeter_utils::isolated_flag());
     }
   }  // end of calorimeter hits
-  return;
 }
 
 }  // end of namespace reconstruction
@@ -509,9 +399,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
   }
 
   // Invoke specific OCD support from the driver class:
-  ::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
-  ::snemo::reconstruction::charge_computation_driver::init_ocd(ocd_);
-  ::snemo::reconstruction::calorimeter_association_driver::init_ocd(ocd_);
+  //::snemo::reconstruction::vertex_extrapolation_driver::init_ocd(ocd_);
+  //::snemo::reconstruction::charge_computation_driver::init_ocd(ocd_);
+  //::snemo::reconstruction::calorimeter_association_driver::init_ocd(ocd_);
 
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
@@ -521,7 +411,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
       "  CD_label                     : string = \"CD\"                      \n"
       "  TTD_label                    : string = \"TTD\"                     \n"
       "  PTD_label                    : string = \"PTD\"                     \n"
-      "  Geo_label                    : string = \"geometry\"                \n"
       "  drivers                      : string[3] = \"VED\" \"CCD\" \"CAD\"  \n"
       "  VED.logging.priority         : string = \"fatal\"                   \n"
       "  VED.use_linear_extrapolation : boolean = 0                          \n"
