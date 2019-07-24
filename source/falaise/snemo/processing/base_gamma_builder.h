@@ -68,7 +68,13 @@ namespace processing {
 class base_gamma_builder {
  public:
   /// Typedef to calibrated calorimeter hits
-  typedef snemo::datamodel::calibrated_data::calorimeter_hit_collection_type hit_collection_type;
+  using hit_collection_type = snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+
+  /// Default constructor
+  base_gamma_builder(const std::string &id_ = "anonymous");
+
+  /// Destructor
+  virtual ~base_gamma_builder();
 
   /// Set logging priority level
   void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -99,12 +105,6 @@ class base_gamma_builder {
 
   /// Check if theclusterizer is initialized
   bool is_initialized() const;
-
-  /// Default constructor
-  base_gamma_builder(const std::string &id_ = "anonymous");
-
-  /// Destructor
-  virtual ~base_gamma_builder();
 
   /// Main tracker trajectory driver
   int process(const base_gamma_builder::hit_collection_type &calo_hits_,

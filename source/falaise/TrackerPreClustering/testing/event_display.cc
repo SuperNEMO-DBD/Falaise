@@ -1,7 +1,7 @@
 /// \file falaise/TrackerPreClustering/event_display.cc
 
 // Ourselves:
-#include "falaise/TrackerPreClustering/event_display.h"
+#include "event_display.h"
 
 // Standard library:
 #include <cmath>
@@ -16,24 +16,20 @@ namespace TrackerPreClustering {
 
 void event_display::set_cell_size(double cell_size_) {
   _cell_size_ = cell_size_;
-  return;
 }
 
 void event_display::set_nb_layers(unsigned int nb_layers_) {
   _nb_layers_ = nb_layers_;
-  return;
 }
 
 void event_display::set_nb_rows(unsigned int nb_rows_) {
   _nb_rows_ = nb_rows_;
-  return;
 }
 
 event_display::event_display() {
   _nb_layers_ = 9;
   _nb_rows_ = 113;
   _cell_size_ = 44.0 * CLHEP::mm;
-  return;
 }
 
 void event_display::plot_gg_hit(std::ostream& out_, int id_, double r_, double er_, double x_,
@@ -75,7 +71,6 @@ void event_display::plot_gg_hit(std::ostream& out_, int id_, double r_, double e
   out_ << x0 << ' ' << y0 << ' ' << z0 + ez0 << std::endl;
   out_ << x0 << ' ' << y0 << ' ' << z0 - ez0 << std::endl;
   out_ << std::endl;
-  return;
 }
 
 void event_display::plot_clustered_item(std::ostream& out_, int /* id_ */, double x_, double y_,
@@ -113,7 +108,6 @@ void event_display::plot_clustered_item(std::ostream& out_, int /* id_ */, doubl
   out_ << x0 + s << ' ' << y0 + s << ' ' << z0 + dz0 << std::endl;
   out_ << x0 + s << ' ' << y0 + s << ' ' << z0 - dz0 << std::endl;
   out_ << std::endl;
-  return;
 }
 
 }  // end of namespace TrackerPreClustering

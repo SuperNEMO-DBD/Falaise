@@ -13,12 +13,10 @@ const std::string& setup_data::get_last_error_message() const { return _last_err
 
 void setup_data::set_last_error_message(const std::string& message_) {
   _last_error_message = message_;
-  return;
 }
 
 setup_data::setup_data() {
   reset();
-  return;
 }
 
 void setup_data::reset() {
@@ -29,7 +27,6 @@ void setup_data::reset() {
   processing_delayed_hits = true;
   split_chamber = false;
   _last_error_message.clear();
-  return;
 }
 
 bool setup_data::check() const {

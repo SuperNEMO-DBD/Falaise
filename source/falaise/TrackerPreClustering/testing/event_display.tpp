@@ -16,7 +16,7 @@ void event_display::display_gg_hits(std::ostream &out_, const std::vector<const 
                                     uint32_t mode_) const {
   typedef Hit hit_type;
 
-  BOOST_FOREACH (const hit_type *hitref, hits_) {
+  for (const hit_type *hitref :  hits_) {
     const hit_type &hit = *hitref;
     bool plot = false;
     if ((mode_ & prompt) && hit.is_prompt()) {
@@ -30,7 +30,6 @@ void event_display::display_gg_hits(std::ostream &out_, const std::vector<const 
                   hit.get_z(), hit.get_dz(), hit.get_delayed_time());
     }
   }
-  return;
 }
 
 template <class Hit>
@@ -38,7 +37,7 @@ void event_display::display_cluster(std::ostream &out_, const std::vector<const 
                                     uint32_t mode_) const {
   typedef Hit hit_type;
 
-  BOOST_FOREACH (const hit_type *hitref, cluster_) {
+  for (const hit_type *hitref : cluster_) {
     const hit_type &hit = *hitref;
     bool plot = false;
     if ((mode_ & prompt) && hit.is_prompt()) {
@@ -52,7 +51,6 @@ void event_display::display_cluster(std::ostream &out_, const std::vector<const 
                           hit.get_delayed_time());
     }
   }
-  return;
 }
 
 }  // end of namespace TrackerPreClustering

@@ -16,9 +16,9 @@
 #include <geomtools/gnuplot_i.h>
 
 // This project:
-#include <TrackerPreClustering/event_display.h>
-#include <TrackerPreClustering/event_generator.h>
-#include <TrackerPreClustering/gg_hit.h>
+#include "event_display.h"
+#include "event_generator.h"
+#include "gg_hit.h"
 #include <TrackerPreClustering/pre_clusterizer.h>
 
 void wait_for_key();

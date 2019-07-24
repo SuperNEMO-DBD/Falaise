@@ -2,7 +2,7 @@
 /// \file falaise/TrackerPreClustering/event_generator.cc
 
 // Ourselves:
-#include "falaise/TrackerPreClustering/event_generator.h"
+#include "event_generator.h"
 
 // Standard library:
 #include <algorithm>
@@ -31,22 +31,18 @@ namespace TrackerPreClustering {
 
 void event_generator::set_seed(long seed_) {
   _seed_ = seed_;
-  return;
 }
 
 void event_generator::set_cell_size(double cell_size_) {
   _cell_size_ = cell_size_;
-  return;
 }
 
 void event_generator::set_nb_layers(unsigned int nb_layers_) {
   _nb_layers_ = nb_layers_;
-  return;
 }
 
 void event_generator::set_nb_rows(unsigned int nb_rows_) {
   _nb_rows_ = nb_rows_;
-  return;
 }
 
 event_generator::event_generator() {
@@ -54,7 +50,6 @@ event_generator::event_generator() {
   set_nb_layers(9);
   set_nb_rows(113);
   set_cell_size(44.0 * CLHEP::mm);
-  return;
 }
 
 event_generator::event_generator(long seed_) {
@@ -63,7 +58,6 @@ event_generator::event_generator(long seed_) {
   set_nb_rows(113);
   set_cell_size(44.0 * CLHEP::mm);
   initialize();
-  return;
 }
 
 bool event_generator::is_initialized() { return _generator_.get() != 0; }
@@ -71,13 +65,11 @@ bool event_generator::is_initialized() { return _generator_.get() != 0; }
 void event_generator::initialize() {
   DT_THROW_IF(is_initialized(), std::logic_error, "Event generator is already initialized!");
   _generator_.reset(new boost::random::mt19937(_seed_));
-  return;
 }
 
 void event_generator::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Event generator is not initialized!");
   _generator_.reset();
-  return;
 }
 
 int event_generator::build_gid(int side_, int layer_, int row_) const {
@@ -88,7 +80,6 @@ int event_generator::build_gid(int side_, int layer_, int row_) const {
 
 void event_generator::register_gid(int gid_, bool delayed_) {
   _gids_[gid_] = delayed_;
-  return;
 }
 
 bool event_generator::has_gid(int gid_) const { return _gids_.find(gid_) != _gids_.end(); }
@@ -164,7 +155,6 @@ void event_generator::generate_prompt_gg_hits(std::vector<const gg_hit *> &hits_
   }
   DT_LOG_TRACE(local_priority, "N hits=" << _gids_.size());
   DT_LOG_TRACE(local_priority, "Exiting.");
-  return;
 }
 
 void event_generator::generate_delayed_gg_hits(std::vector<const gg_hit *> &hits_) {
@@ -233,11 +223,7 @@ void event_generator::generate_delayed_gg_hits(std::vector<const gg_hit *> &hits
       hits_.push_back(h);
       n0++;
     }
-    DT_LOG_TRACE(local_priority, "nb_delayed_hits=" << n0);
   }
-  DT_LOG_TRACE(local_priority, "N hits=" << _gids_.size());
-  DT_LOG_TRACE(local_priority, "Exiting.");
-  return;
 }
 
 void event_generator::shoot_event(std::vector<const gg_hit *> &hits_) {
@@ -246,7 +232,6 @@ void event_generator::shoot_event(std::vector<const gg_hit *> &hits_) {
   generate_prompt_gg_hits(hits_);
   generate_delayed_gg_hits(hits_);
   _gids_.clear();
-  return;
 }
 
 }  // end of namespace TrackerPreClustering

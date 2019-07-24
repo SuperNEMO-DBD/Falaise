@@ -70,11 +70,17 @@ namespace processing {
 class base_tracker_clusterizer {
  public:
   // Typedefs
-  typedef snemo::datamodel::calibrated_tracker_hit hit_type;
-  typedef snemo::datamodel::calibrated_tracker_hit::handle_type hit_handle_type;
-  typedef snemo::datamodel::calibrated_data::tracker_hit_collection_type hit_collection_type;
-  typedef snemo::datamodel::calibrated_data::calorimeter_hit_collection_type
-      calo_hit_collection_type;
+  using hit_type = snemo::datamodel::calibrated_tracker_hit;
+  using hit_handle_type = snemo::datamodel::calibrated_tracker_hit::handle_type;
+  using hit_collection_type = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
+  using calo_hit_collection_type = snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+
+  /// Default constructor
+  base_tracker_clusterizer(const std::string &id_ = "anonymous");
+
+  /// Destructor
+  virtual ~base_tracker_clusterizer();
+
 
   /// Set logging priority level
   void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -99,12 +105,6 @@ class base_tracker_clusterizer {
 
   /// Check if theclusterizer is initialized
   bool is_initialized() const;
-
-  /// Default constructor
-  base_tracker_clusterizer(const std::string &id_ = "anonymous");
-
-  /// Destructor
-  virtual ~base_tracker_clusterizer();
 
   /// Main clustering process
   int process(const base_tracker_clusterizer::hit_collection_type &gg_hits_,

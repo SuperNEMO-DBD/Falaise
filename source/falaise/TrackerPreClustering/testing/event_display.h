@@ -35,7 +35,7 @@
 #include <vector>
 
 // This project:
-#include "falaise/TrackerPreClustering/gg_hit.h"
+#include "gg_hit.h"
 
 namespace TrackerPreClustering {
 
@@ -86,7 +86,7 @@ class event_display {
 
 }  // end of namespace TrackerPreClustering
 
-#include "falaise/TrackerPreClustering/event_display.tpp"
+#include "event_display.tpp"
 
 #endif  // FALAISE_TRACKERPRECLUSTERING_EVENT_DISPLAY_H
 

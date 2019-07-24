@@ -2,7 +2,7 @@
 /// \file falaise/TrackerPreClustering/gg_hit.cc
 
 // Ourselves:
-#include "falaise/TrackerPreClustering/gg_hit.h"
+#include "gg_hit.h"
 
 // Standard library:
 #include <limits>

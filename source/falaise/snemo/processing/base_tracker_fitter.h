@@ -63,6 +63,12 @@ namespace processing {
 /// \brief The base class for all tracker fitter algorithms
 class base_tracker_fitter {
  public:
+  /// Default constructor
+  base_tracker_fitter(const std::string &id_ = "anonymous");
+
+  /// Destructor
+  virtual ~base_tracker_fitter();
+
   /// Set logging priority level
   void set_logging_priority(datatools::logger::priority logging_priority_);
 
@@ -86,12 +92,6 @@ class base_tracker_fitter {
 
   /// Check if theclusterizer is initialized
   bool is_initialized() const;
-
-  /// Default constructor
-  base_tracker_fitter(const std::string &id_ = "anonymous");
-
-  /// Destructor
-  virtual ~base_tracker_fitter();
 
   /// Main tracker trajectory driver
   int process(const snemo::datamodel::tracker_clustering_data &clustering_,

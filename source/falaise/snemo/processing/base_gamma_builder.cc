@@ -22,13 +22,26 @@ namespace snemo {
 
 namespace processing {
 
+// Constructor
+base_gamma_builder::base_gamma_builder(const std::string& id_) {
+  _id_ = id_;
+  _set_initialized(false);
+  _set_defaults();
+}
+
+base_gamma_builder::~base_gamma_builder() {
+  if (is_initialized()) {
+    _reset();
+  }
+}
+
+
 datatools::logger::priority base_gamma_builder::get_logging_priority() const {
   return _logging_priority;
 }
 
 void base_gamma_builder::set_logging_priority(datatools::logger::priority priority_) {
   _logging_priority = priority_;
-  return;
 }
 
 const std::string& base_gamma_builder::get_id() const { return _id_; }
@@ -55,7 +68,6 @@ bool base_gamma_builder::is_initialized() const { return _initialized_; }
 
 void base_gamma_builder::_set_initialized(bool i_) {
   _initialized_ = i_;
-  return;
 }
 
 void base_gamma_builder::_initialize(const datatools::properties& setup_) {
@@ -83,10 +95,8 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
     locator_plugin_name = bgb_setup.fetch_string("locator_plugin_name");
   } else {
     // If no locator plugin name is set, then search for the first one
-    const geomtools::manager::plugins_dict_type& plugins = geo_mgr.get_plugins();
-    for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
-         ip != plugins.end(); ip++) {
-      const std::string& plugin_name = ip->first;
+    for (const auto& ip : geo_mgr.get_plugins()) {
+      const std::string& plugin_name = ip.first;
       if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
         DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
         locator_plugin_name = plugin_name;
@@ -134,26 +144,22 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
         bgb_setup.fetch_real_with_explicit_dimension("add_gamma_from_annihilation.minimal_probability", "fraction");
     }
   }
-  return;
 }
 
 void base_gamma_builder::_clear_working_arrays() {
   _ignored_hits_.clear();
   _used_hits_.clear();
-  return;
 }
 
 void base_gamma_builder::_reset() {
   _set_initialized(false);
   this->base_gamma_builder::_set_defaults();
   this->base_gamma_builder::_clear_working_arrays();
-  return;
 }
 
 void base_gamma_builder::set_geometry_manager(const geomtools::manager& gmgr_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized/locked !");
   _geometry_manager_ = &gmgr_;
-  return;
 }
 
 const geomtools::manager& base_gamma_builder::get_geometry_manager() const {
@@ -173,77 +179,6 @@ void base_gamma_builder::_set_defaults() {
   _add_gamma_from_annihilation_minimal_probability_ = 1.0 * CLHEP::perCent;
   _select_calorimeter_hits_ = false;
   _select_calorimeter_hits_tags_.clear();
-  return;
-}
-
-// Constructor
-base_gamma_builder::base_gamma_builder(const std::string& id_) {
-  _id_ = id_;
-  _set_initialized(false);
-  _set_defaults();
-  return;
-}
-
-base_gamma_builder::~base_gamma_builder() {
-  if (is_initialized()) {
-    _reset();
-  }
-  return;
-}
-
-void base_gamma_builder::tree_dump(std::ostream& out_, const std::string& title_,
-                                   const std::string& indent_, bool inherit_) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
-  if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
-  }
-
-  out_ << indent << datatools::i_tree_dumpable::tag << "Logging          : '"
-       << datatools::logger::get_priority_label(_logging_priority) << "'" << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag << "Initialized      : " << is_initialized()
-       << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << _geometry_manager_
-       << std::endl;
-  if (has_geometry_manager()) {
-    out_ << indent << datatools::i_tree_dumpable::tag << "Geometry setup label   : '"
-         << _geometry_manager_->get_setup_label() << "'" << std::endl;
-    out_ << indent << datatools::i_tree_dumpable::tag << "Geometry setup version : '"
-         << _geometry_manager_->get_setup_version() << "'" << std::endl;
-  }
-
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Foil vertex extrapolation : " << _add_foil_vertex_extrapolation_ << std::endl;
-  if (_add_foil_vertex_extrapolation_) {
-    out_ << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
-         << "Minimal TOF probability : " << _add_foil_vertex_minimal_probability_ / CLHEP::perCent
-         << "%" << std::endl;
-  }
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Search for gamma from e+/e- annihilation : " << _add_gamma_from_annihilation_
-       << std::endl;
-  if (_add_gamma_from_annihilation_) {
-    out_ << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
-         << "Minimal TOF probability : "
-         << _add_gamma_from_annihilation_minimal_probability_ / CLHEP::perCent << "%" << std::endl;
-  }
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Selection of calorimeter hits : " << _select_calorimeter_hits_ << std::endl;
-  if (_select_calorimeter_hits_) {
-    for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
-      out_ << indent << datatools::i_tree_dumpable::skip_tag;
-      if (i + 1 == _select_calorimeter_hits_tags_.size()) {
-        out_ << datatools::i_tree_dumpable::last_tag;
-      } else {
-        out_ << datatools::i_tree_dumpable::tag;
-      }
-      out_ << "tag[" << i << "] = " << _select_calorimeter_hits_tags_[i] << std::endl;
-    }
-  }
-  out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "End." << std::endl;
-  return;
 }
 
 int base_gamma_builder::process(const base_gamma_builder::hit_collection_type& calo_hits_,
@@ -279,15 +214,13 @@ int base_gamma_builder::_prepare_process(const base_gamma_builder::hit_collectio
   this->base_gamma_builder::_clear_working_arrays();
   _used_hits_.reserve(calo_hits_.size());
   _ignored_hits_.reserve(calo_hits_.size());
-  for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator ihit =
-           calo_hits_.begin();
-       ihit != calo_hits_.end(); ++ihit) {
-    const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = ihit->get();
+
+  for (const auto& a_calo_hit : calo_hits_) {
     bool use_hit = false;
     if (_select_calorimeter_hits_) {
-      const datatools::properties& the_auxiliaries = a_calo_hit.get_auxiliaries();
-      for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
-        if (the_auxiliaries.has_flag(_select_calorimeter_hits_tags_[i])) {
+      const datatools::properties& the_auxiliaries = a_calo_hit->get_auxiliaries();
+      for (const auto& tag : _select_calorimeter_hits_tags_) {
+        if (the_auxiliaries.has_flag(tag)) {
           use_hit = true;
           break;
         }
@@ -295,10 +228,11 @@ int base_gamma_builder::_prepare_process(const base_gamma_builder::hit_collectio
     } else {
       use_hit = true;
     }
+
     if (use_hit) {
-      _used_hits_.push_back(*ihit);
+      _used_hits_.push_back(a_calo_hit);
     } else {
-      _ignored_hits_.push_back(*ihit);
+      _ignored_hits_.push_back(a_calo_hit);
     }
   }
   DT_LOG_DEBUG(get_logging_priority(),
@@ -311,8 +245,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
                                       snemo::datamodel::particle_track_data& ptd_) {
   // Add the ignored hits to the list of non associated calorimeters
   // ptd_.reset_non_associated_calorimeters();
-  snemo::datamodel::calibrated_calorimeter_hit::collection_type& calos =
-      ptd_.grab_non_associated_calorimeters();
+  auto& calos = ptd_.grab_non_associated_calorimeters();
   calos.assign(_ignored_hits_.begin(), _ignored_hits_.end());
 
   // Given charged particle then process gammas
@@ -332,23 +265,15 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
     return 0;
   }
 
-  for (snemo::datamodel::particle_track_data::particle_collection_type::const_iterator iparticle =
-           charged_particles.begin();
-       iparticle != charged_particles.end(); ++iparticle) {
-    const snemo::datamodel::particle_track& a_particle = iparticle->get();
-
+  for (const auto& a_particle : charged_particles) {
     // No calorimeter associated, no TOF computation
-    if (!a_particle.has_associated_calorimeter_hits()) continue;
+    if (!a_particle->has_associated_calorimeter_hits()) {
+      continue;
+    }
 
-    for (snemo::datamodel::particle_track_data::particle_collection_type::iterator igamma =
-             gamma_particles.begin();
-         igamma != gamma_particles.end(); ++igamma) {
-      snemo::datamodel::particle_track& a_gamma = igamma->grab();
-
-      // snemo::datamodel::particle_track::vertex_collection_type & vertices =
-      // a_gamma.grab_vertices();
+    for (auto& a_gamma : gamma_particles) {
       snemo::datamodel::particle_track::vertex_collection_type the_vertices_2;
-      a_gamma.fetch_vertices(the_vertices_2,
+      a_gamma->fetch_vertices(the_vertices_2,
                              snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
                                  snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
                                  snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
@@ -357,29 +282,23 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
         continue;
       }
 
-      for (snemo::datamodel::particle_track::vertex_collection_type::iterator ivtx =
-               the_vertices_2.begin();
-           ivtx != the_vertices_2.end(); ++ivtx) {
-        const geomtools::blur_spot& a_spot = ivtx->get();
+      for (const auto& a_spot : the_vertices_2) {
         // Get associated calorimeter:
-        if (!a_gamma.has_associated_calorimeter_hits()) {
+        if (!a_gamma->has_associated_calorimeter_hits()) {
           DT_LOG_DEBUG(get_logging_priority(),
                        "Gamma track is not associated to any calorimeter block !");
           continue;
         }
-        const snemo::datamodel::calibrated_calorimeter_hit::collection_type& hits =
-            a_gamma.get_associated_calorimeter_hits();
-        geomtools::base_hit::has_geom_id_predicate hit_pred(a_spot.get_geom_id());
+        const auto& hits = a_gamma->get_associated_calorimeter_hits();
+        geomtools::base_hit::has_geom_id_predicate hit_pred(a_spot->get_geom_id());
         datatools::mother_to_daughter_predicate<geomtools::base_hit,
                                                 snemo::datamodel::calibrated_calorimeter_hit>
             pred_M2D(hit_pred);
         datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(
             pred_M2D);
-        snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator found =
-            std::find_if(hits.begin(), hits.end(), pred_via_handle);
-        DT_THROW_IF(
-            found == hits.end(), std::logic_error,
-            "Calibrated calorimeter hit with id " << a_spot.get_geom_id() << " can not be found");
+        auto found = std::find_if(hits.begin(), hits.end(), pred_via_handle);
+        DT_THROW_IF(found == hits.end(), std::logic_error,
+            "Calibrated calorimeter hit with id " << a_spot->get_geom_id() << " can not be found");
         const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit_2 = found->get();
         const double gamma_time = a_calo_hit_2.get_time();
         const double gamma_sigma_time = a_calo_hit_2.get_sigma_time();
@@ -391,32 +310,31 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
         if (_add_foil_vertex_extrapolation_) {
           // Get track length
           const snemo::datamodel::base_trajectory_pattern& a_track_pattern =
-              a_particle.get_trajectory().get_pattern();
+              a_particle->get_trajectory().get_pattern();
           const geomtools::i_shape_1d& a_shape = a_track_pattern.get_shape();
           const double particle_track_length = a_shape.get_length();
-          DT_LOG_DEBUG(get_logging_priority(),
-                       "Track length = " << particle_track_length / CLHEP::mm << " mm");
 
           snemo::datamodel::particle_track::vertex_collection_type vertices;
-          a_particle.fetch_vertices(vertices,
+          a_particle->fetch_vertices(vertices,
                                     snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
-          if (vertices.empty()) continue;
-          const geomtools::vector_3d& a_foil_vertex = vertices.front().get().get_position();
+          if (vertices.empty()) {
+            continue;
+          }
+          const geomtools::vector_3d& a_foil_vertex = (vertices.front())->get_position();
 
           // Compute theoritical time for the gamma in case it comes from the foil vertex
-          const double gamma_track_length = (a_foil_vertex - a_spot.get_position()).mag();
+          const double gamma_track_length = (a_foil_vertex - a_spot->get_position()).mag();
           const double gamma_time_th = gamma_track_length / CLHEP::c_light;
 
           // Assume particle are electron/positron
           const snemo::datamodel::calibrated_calorimeter_hit::collection_type& the_calorimeters =
-              a_particle.get_associated_calorimeter_hits();
+              a_particle->get_associated_calorimeter_hits();
           // Only take care of the first associated calorimeter
-          const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit =
-              the_calorimeters.front().get();
-          const double particle_time = a_calo_hit.get_time();
-          const double particle_sigma_time = a_calo_hit.get_sigma_time();
-          const double particle_energy = a_calo_hit.get_energy();
-          const double particle_sigma_energy = a_calo_hit.get_sigma_energy();
+          const auto& a_calo_hit = the_calorimeters.front();
+          const double particle_time = a_calo_hit->get_time();
+          const double particle_sigma_time = a_calo_hit->get_sigma_time();
+          const double particle_energy = a_calo_hit->get_energy();
+          const double particle_sigma_energy = a_calo_hit->get_sigma_energy();
           const double particle_mass = CLHEP::electron_mass_c2;
           const double beta = std::sqrt(particle_energy * (particle_energy + 2. * particle_mass)) /
                               (particle_energy + particle_mass);
@@ -434,36 +352,28 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1) * 100. * CLHEP::perCent;
           const double int_prob_limit = _add_foil_vertex_minimal_probability_;
           if (int_prob > int_prob_limit) {
-            DT_LOG_DEBUG(get_logging_priority(),
-                         "Adding foil vertex (with internal probability = " << int_prob << ")");
-
-            snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
-            // a_gamma.grab_vertices().push_back(hBSv);
-            a_gamma.get_vertices().insert(a_gamma.get_vertices().begin(), hBSv);
-            geomtools::blur_spot& spot_v = hBSv.grab();
-            spot_v.set_hit_id(0);
-            spot_v.grab_auxiliaries().store(
-                snemo::datamodel::particle_track::vertex_type_key(),
-                snemo::datamodel::particle_track::vertex_on_source_foil_label());
-            spot_v.set_blur_dimension(geomtools::blur_spot::dimension_three);
-            spot_v.set_position(a_foil_vertex);
+            auto hBSv = datatools::make_handle<geomtools::blur_spot>();
+            a_gamma->get_vertices().insert(a_gamma->get_vertices().begin(), hBSv);
+            hBSv->set_hit_id(0);
+            hBSv->set_blur_dimension(geomtools::blur_spot::dimension_three);
+            hBSv->set_position(a_foil_vertex);
+            hBSv->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), snemo::datamodel::particle_track::vertex_on_source_foil_label());
             break;
           }
         }
         // Perform the search for gamma from e+/e- annihilation
         if (_add_gamma_from_annihilation_) {
           // Get calorimeter hit position associated to charged particle
-          const snemo::datamodel::calibrated_calorimeter_hit::collection_type& the_calorimeters =
-              a_particle.get_associated_calorimeter_hits();
+          const auto& the_calorimeters = a_particle->get_associated_calorimeter_hits();
           // Only take care of the first associated calorimeter
-          const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit =
-              the_calorimeters.front().get();
-          const double particle_time = a_calo_hit.get_time();
-          const double particle_sigma_time = a_calo_hit.get_sigma_time();
+          const auto& a_calo_hit = the_calorimeters.front();
+          const double particle_time = a_calo_hit->get_time();
+          const double particle_sigma_time = a_calo_hit->get_sigma_time();
           // Get block position and label
           geomtools::vector_3d a_block_position;
           std::string a_label;
-          const geomtools::geom_id& a_gid = a_calo_hit.get_geom_id();
+          const geomtools::geom_id& a_gid = a_calo_hit->get_geom_id();
+
           if (get_calo_locator().is_calo_block_in_current_module(a_gid)) {
             get_calo_locator().get_block_position(a_gid, a_block_position);
             a_label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
@@ -474,12 +384,11 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
             get_gveto_locator().get_block_position(a_gid, a_block_position);
             a_label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
           } else {
-            DT_THROW_IF(
-                true, std::logic_error,
+            DT_THROW_IF(true, std::logic_error,
                 "Current geom id '" << a_gid << "' does not match any scintillator block !");
           }
 
-          const double track_length = (a_block_position - a_spot.get_position()).mag();
+          const double track_length = (a_block_position - a_spot->get_position()).mag();
           const double dt_exp = std::abs(particle_time - gamma_time);
           const double dt_th = track_length / CLHEP::c_light;
           const double dt_int = dt_exp - dt_th;
@@ -488,24 +397,19 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1) * 100. * CLHEP::perCent;
           const double int_prob_limit = _add_gamma_from_annihilation_minimal_probability_;
           if (int_prob > int_prob_limit) {
-            DT_LOG_DEBUG(
-                get_logging_priority(),
-                "Found gamma from annihilation (with internal probability = " << int_prob << ")");
             // Do not add the calorimeter hit from the charged particle to
             // the list of calorimeter hits of the gamma particle
             // snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits =
             // a_gamma.grab_associated_calorimeter_hits(); hits.insert(hits.begin(),
             // the_calorimeters.front());
-            snemo::datamodel::particle_track::handle_spot hBSv(new geomtools::blur_spot);
-            a_gamma.get_vertices().insert(a_gamma.get_vertices().begin(), hBSv);
-            geomtools::blur_spot& spot_v = hBSv.grab();
-            spot_v.set_hit_id(a_calo_hit.get_hit_id());
-            spot_v.set_geom_id(a_calo_hit.get_geom_id());
-            spot_v.grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
-                                            a_label);
-            spot_v.set_blur_dimension(geomtools::blur_spot::dimension_three);
-            spot_v.set_position(a_block_position);
-            a_gamma.grab_auxiliaries().update_flag("__gamma_from_annihilation");
+            auto hBSv = datatools::make_handle<geomtools::blur_spot>();
+            a_gamma->get_vertices().insert(a_gamma->get_vertices().begin(), hBSv);
+            hBSv->set_hit_id(a_calo_hit->get_hit_id());
+            hBSv->set_geom_id(a_calo_hit->get_geom_id());
+            hBSv->set_blur_dimension(geomtools::blur_spot::dimension_three);
+            hBSv->set_position(a_block_position);
+            hBSv->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), a_label);
+            a_gamma->grab_auxiliaries().update_flag("__gamma_from_annihilation");
             break;
           }
         }
@@ -517,6 +421,57 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
   }
 
   return 0;
+}
+
+
+void base_gamma_builder::tree_dump(std::ostream& out, const std::string& title,
+                                   const std::string& indent, bool inherit) const {
+  if (!title.empty()) {
+    out << indent << title << std::endl;
+  }
+
+  out << indent << datatools::i_tree_dumpable::tag << "Logging          : '"
+      << datatools::logger::get_priority_label(_logging_priority) << "'" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Initialized      : " << is_initialized()
+      << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << _geometry_manager_
+      << std::endl;
+  if (has_geometry_manager()) {
+    out << indent << datatools::i_tree_dumpable::tag << "Geometry setup label   : '"
+         << _geometry_manager_->get_setup_label() << "'" << std::endl;
+    out << indent << datatools::i_tree_dumpable::tag << "Geometry setup version : '"
+        << _geometry_manager_->get_setup_version() << "'" << std::endl;
+  }
+
+  out << indent << datatools::i_tree_dumpable::tag
+      << "Foil vertex extrapolation : " << _add_foil_vertex_extrapolation_ << std::endl;
+  if (_add_foil_vertex_extrapolation_) {
+    out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
+        << "Minimal TOF probability : " << _add_foil_vertex_minimal_probability_ / CLHEP::perCent
+        << "%" << std::endl;
+  }
+  out << indent << datatools::i_tree_dumpable::tag
+      << "Search for gamma from e+/e- annihilation : " << _add_gamma_from_annihilation_
+      << std::endl;
+  if (_add_gamma_from_annihilation_) {
+    out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
+        << "Minimal TOF probability : "
+        << _add_gamma_from_annihilation_minimal_probability_ / CLHEP::perCent << "%" << std::endl;
+  }
+  out << indent << datatools::i_tree_dumpable::tag
+      << "Selection of calorimeter hits : " << _select_calorimeter_hits_ << std::endl;
+  if (_select_calorimeter_hits_) {
+    for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
+      out << indent << datatools::i_tree_dumpable::skip_tag;
+      if (i + 1 == _select_calorimeter_hits_tags_.size()) {
+        out << datatools::i_tree_dumpable::last_tag;
+      } else {
+        out << datatools::i_tree_dumpable::tag;
+      }
+      out << "tag[" << i << "] = " << _select_calorimeter_hits_tags_[i] << std::endl;
+    }
+  }
+  out << indent << datatools::i_tree_dumpable::inherit_tag(inherit) << "End." << std::endl;
 }
 
 // static
