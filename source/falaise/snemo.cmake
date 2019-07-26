@@ -47,6 +47,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/xcalo_locator.h
   snemo/geometry/gg_locator.h
   snemo/geometry/gveto_locator.h
+  snemo/geometry/locator_helpers.h
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
 

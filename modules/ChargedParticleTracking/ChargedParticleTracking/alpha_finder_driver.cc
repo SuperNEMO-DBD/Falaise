@@ -27,23 +27,7 @@
 #include <falaise/snemo/geometry/gveto_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
-
-namespace {
-const snemo::geometry::locator_plugin *getSNemoLocator(const geomtools::manager &gm,
-                                                       const std::string &name) {
-  using PluginType = snemo::geometry::locator_plugin;
-  if (name.empty()) {
-    // Just find the first of the right type
-    for (const auto &ip : gm.get_plugins()) {
-      if (gm.is_plugin_a<PluginType>(ip.first)) {
-        return &(gm.get_plugin<PluginType>(ip.first));
-      }
-    }
-  }
-  // Direct get will throw if no plugin with that name, or not of correct type
-  return &(gm.get_plugin<PluginType>(name));
-}
-}  // namespace
+#include <falaise/snemo/geometry/locator_helpers.h>
 
 namespace snemo {
 
@@ -73,7 +57,7 @@ alpha_finder_driver::alpha_finder_driver(const falaise::config::property_set &ps
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   geoManager_ = gm;
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
-  geoLocator_ = getSNemoLocator(geoManager(), locator_plugin_name);
+  geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), locator_plugin_name);
   minDelayedTime_ = ps.get<fc::time_t>("minimal_delayed_time", {15., "microsecond"})();
   minXYSearchDistance_ = ps.get<fc::length_t>("minimal_cluster_xy_search_distance", {21., "cm"})();
   minZSearchDistance_ = ps.get<fc::length_t>("minimal_cluster_z_search_distance", {30., "cm"})();
