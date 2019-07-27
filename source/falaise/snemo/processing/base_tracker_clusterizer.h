@@ -73,14 +73,14 @@ class base_tracker_clusterizer {
   using hit_type = snemo::datamodel::calibrated_tracker_hit;
   using hit_handle_type = snemo::datamodel::calibrated_tracker_hit::handle_type;
   using hit_collection_type = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
-  using calo_hit_collection_type = snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+  using calo_hit_collection_type =
+      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
 
   /// Default constructor
-  base_tracker_clusterizer(const std::string &id_ = "anonymous");
+  base_tracker_clusterizer(const std::string &name = "anonymous");
 
   /// Destructor
   virtual ~base_tracker_clusterizer();
-
 
   /// Set logging priority level
   void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -168,23 +168,18 @@ class base_tracker_clusterizer {
   datatools::logger::priority _logging_priority;  /// Logging priority
 
  private:
-  bool _initialized_;                            //!< Initialization status
-  std::string _id_;                              //!< Identifier of the clusterizer algorithm
-  const geomtools::manager *_geometry_manager_;  //!< The SuperNEMO geometry manager
-  const snemo::geometry::gg_locator
-      *_gg_locator_;  //!< Locator dedicated to the SuperNEMO tracking chamber
-  geomtools::id_selector _cell_id_selector_;  //!< A selector of GIDs
-  TrackerPreClustering::setup_data
-      _tpc_setup_data_;  //!< The configuration data for the time-clustering algorithm
-  TrackerPreClustering::pre_clusterizer _pc_;  //!< The time-clustering algorithm
+  bool isInitialized_;                                //!< Initialization status
+  std::string id_;                                    //!< Identifier of the clusterizer algorithm
+  const geomtools::manager *geoManager_;              //!< The SuperNEMO geometry manager
+  const snemo::geometry::gg_locator *geigerLocator_;  //!< Locator for geiger cells
+  geomtools::id_selector cellSelector_;               //!< A selector of GIDs
+  TrackerPreClustering::setup_data tpcConfig_;  //!< Configuration of the time-clustering algorithm
+  TrackerPreClustering::pre_clusterizer preClusterer_;  //!< The time-clustering algorithm
 
   // Internal work space:
-  hit_collection_type
-      _ignored_hits_;  //!< Hits that are not used as input for any clustering algorithm
-  std::vector<hit_collection_type>
-      _prompt_time_clusters_;  //!< Collection of pre-clusters of only prompt hits
-  std::vector<hit_collection_type>
-      _delayed_time_clusters_;  //!< Collection of pre-clusters of only delayed hits
+  hit_collection_type ignoredHits_;  //!< Hits not used as input for any clustering algorithm
+  std::vector<hit_collection_type> promptClusters_;   //!< Clusters of only prompt hits
+  std::vector<hit_collection_type> delayedClusters_;  //!< Clusters of only delayed hits
 };
 
 }  // end of namespace processing

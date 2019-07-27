@@ -12,9 +12,13 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
+#include <falaise/config/property_set.h>
+#include <falaise/config/quantity.h>
+
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
 
@@ -23,132 +27,24 @@ namespace snemo {
 namespace processing {
 
 // Constructor
-base_gamma_builder::base_gamma_builder(const std::string& id_) {
-  _id_ = id_;
+base_gamma_builder::base_gamma_builder(const std::string& name) {
+  id_ = name;
   _set_initialized(false);
   _set_defaults();
 }
 
-base_gamma_builder::~base_gamma_builder() {
-  if (is_initialized()) {
-    _reset();
-  }
-}
+base_gamma_builder::~base_gamma_builder() = default;
 
-
-datatools::logger::priority base_gamma_builder::get_logging_priority() const {
-  return _logging_priority;
-}
-
-void base_gamma_builder::set_logging_priority(datatools::logger::priority priority_) {
-  _logging_priority = priority_;
-}
-
-const std::string& base_gamma_builder::get_id() const { return _id_; }
-
-const snemo::geometry::calo_locator& base_gamma_builder::get_calo_locator() const {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Driver '" << get_id() << "' is not initialized !");
-  return _locator_plugin_->get_calo_locator();
-}
-
-const snemo::geometry::xcalo_locator& base_gamma_builder::get_xcalo_locator() const {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Driver '" << get_id() << "' is not initialized !");
-  return _locator_plugin_->get_xcalo_locator();
-}
-
-const snemo::geometry::gveto_locator& base_gamma_builder::get_gveto_locator() const {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Driver '" << get_id() << "' is not initialized !");
-  return _locator_plugin_->get_gveto_locator();
-}
-
-bool base_gamma_builder::is_initialized() const { return _initialized_; }
-
-void base_gamma_builder::_set_initialized(bool i_) {
-  _initialized_ = i_;
-}
-
-void base_gamma_builder::_initialize(const datatools::properties& setup_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Driver '" << get_id() << "' is already initialized !");
-
-  DT_THROW_IF(!has_geometry_manager(), std::logic_error, "Missing geometry manager !");
-  DT_THROW_IF(!get_geometry_manager().is_initialized(), std::logic_error,
-              "Geometry manager is not initialized !");
-
-  // Extract the setup of the base gamma builder :
-  datatools::properties bgb_setup;
-  setup_.export_and_rename_starting_with(bgb_setup, "BGB.", "");
-
-  // Logging priority
-  datatools::logger::priority lp = datatools::logger::extract_logging_configuration(bgb_setup);
-  DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED, std::logic_error,
-              "Invalid logging priority level for base gamma builder !");
-  set_logging_priority(lp);
-
-  // Get geometry locator plugin
-  const geomtools::manager& geo_mgr = get_geometry_manager();
-  std::string locator_plugin_name;
-  if (bgb_setup.has_key("locator_plugin_name")) {
-    locator_plugin_name = bgb_setup.fetch_string("locator_plugin_name");
-  } else {
-    // If no locator plugin name is set, then search for the first one
-    for (const auto& ip : geo_mgr.get_plugins()) {
-      const std::string& plugin_name = ip.first;
-      if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
-        DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
-        locator_plugin_name = plugin_name;
-        break;
-      }
-    }
-  }
-  // Access to a given plugin by name and type :
-  DT_THROW_IF(!geo_mgr.has_plugin(locator_plugin_name) ||
-                  !geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name),
-              std::logic_error, "Found no locator plugin named '" << locator_plugin_name << "'");
-  _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
-
-  // Select calorimeter hits based on associated tags
-  if (bgb_setup.has_key("select_calorimeter_hits")) {
-    _select_calorimeter_hits_ = bgb_setup.fetch_boolean("select_calorimeter_hits");
-  }
-
-  if (_select_calorimeter_hits_) {
-    DT_THROW_IF(!bgb_setup.has_key("select_calorimeter_hits.tags"), std::logic_error,
-                "Missing 'select_calorimeter_hits.tags' field!");
-    bgb_setup.fetch("select_calorimeter_hits.tags", _select_calorimeter_hits_tags_);
-  }
-
-  // Extrapolation on the source foil given charged particle
-  if (bgb_setup.has_key("add_foil_vertex_extrapolation")) {
-    _add_foil_vertex_extrapolation_ = bgb_setup.fetch_boolean("add_foil_vertex_extrapolation");
-  }
-
-  if (_add_foil_vertex_extrapolation_) {
-    if (bgb_setup.has_key("add_foil_vertex_extrapolation.minimal_probability")) {
-      _add_foil_vertex_minimal_probability_ =
-        bgb_setup.fetch_real_with_explicit_dimension("add_foil_vertex_extrapolation.minimal_probability", "fraction");
-    }
-  }
-
-  // Search for gamma from e+/e- annihilation
-  if (bgb_setup.has_key("add_gamma_from_annihilation")) {
-    _add_gamma_from_annihilation_ = bgb_setup.fetch_boolean("add_gamma_from_annihilation");
-  }
-
-  if (_add_gamma_from_annihilation_) {
-    if (bgb_setup.has_key("add_gamma_from_annihilation.minimal_probability")) {
-      _add_gamma_from_annihilation_minimal_probability_ =
-        bgb_setup.fetch_real_with_explicit_dimension("add_gamma_from_annihilation.minimal_probability", "fraction");
-    }
-  }
-}
-
-void base_gamma_builder::_clear_working_arrays() {
-  _ignored_hits_.clear();
-  _used_hits_.clear();
+void base_gamma_builder::_set_defaults() {
+  _logging_priority = datatools::logger::PRIO_WARNING;
+  geoManager_ = nullptr;
+  geoLocator_ = nullptr;
+  extrapolateFoilVertex_ = true;
+  minFoilVertexProbability_ = 1.0 * CLHEP::perCent;
+  tagAnnihilationGamma_ = false;
+  minAnnihilationGammaProbability_ = 1.0 * CLHEP::perCent;
+  selectCaloHits_ = false;
+  caloHitTags_.clear();
 }
 
 void base_gamma_builder::_reset() {
@@ -157,35 +53,104 @@ void base_gamma_builder::_reset() {
   this->base_gamma_builder::_clear_working_arrays();
 }
 
+datatools::logger::priority base_gamma_builder::get_logging_priority() const {
+  return _logging_priority;
+}
+
+void base_gamma_builder::set_logging_priority(datatools::logger::priority priority_) {
+  DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
+              "Invalid logging priority level for base gamma builder !");
+  _logging_priority = priority_;
+}
+
+const std::string& base_gamma_builder::get_id() const { return id_; }
+
+const snemo::geometry::calo_locator& base_gamma_builder::get_calo_locator() const {
+  DT_THROW_IF(!is_initialized(), std::logic_error,
+              "Driver '" << get_id() << "' is not initialized !");
+  return geoLocator_->get_calo_locator();
+}
+
+const snemo::geometry::xcalo_locator& base_gamma_builder::get_xcalo_locator() const {
+  DT_THROW_IF(!is_initialized(), std::logic_error,
+              "Driver '" << get_id() << "' is not initialized !");
+  return geoLocator_->get_xcalo_locator();
+}
+
+const snemo::geometry::gveto_locator& base_gamma_builder::get_gveto_locator() const {
+  DT_THROW_IF(!is_initialized(), std::logic_error,
+              "Driver '" << get_id() << "' is not initialized !");
+  return geoLocator_->get_gveto_locator();
+}
+
+bool base_gamma_builder::is_initialized() const { return isInitialized_; }
+
+void base_gamma_builder::_set_initialized(bool i_) { isInitialized_ = i_; }
+
+void base_gamma_builder::_initialize(const datatools::properties& setup_) {
+  DT_THROW_IF(is_initialized(), std::logic_error,
+              "Driver '" << get_id() << "' is already initialized !");
+  DT_THROW_IF(!has_geometry_manager(), std::logic_error, "Missing geometry manager !");
+  DT_THROW_IF(!get_geometry_manager().is_initialized(), std::logic_error,
+              "Geometry manager is not initialized !");
+
+  // Extract the setup of the base gamma builder :
+  falaise::config::property_set localSetup{setup_};
+  auto ps = localSetup.get<falaise::config::property_set>("BGB", {});
+
+  // Logging priority
+  auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
+  set_logging_priority(lp);
+
+  // Get geometry locator plugin
+  auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
+  const geomtools::manager& geo_mgr = get_geometry_manager();
+  geoLocator_ = snemo::geometry::getSNemoLocator(geo_mgr, locator_plugin_name);
+
+  // Select calorimeter hits based on associated tags
+  // TODO: boolean flag is redundant, as use indicated by non-empty tags
+  selectCaloHits_ = ps.get<bool>("select_calorimeter_hits", false);
+  if (selectCaloHits_) {
+    caloHitTags_ = ps.get<std::vector<std::string>>("select_calorimeter_hits.tags");
+  }
+
+  // Extrapolation on the source foil given charged particle
+  extrapolateFoilVertex_ = ps.get<bool>("add_foil_vertex_extrapolation", true);
+  if (extrapolateFoilVertex_) {
+    minFoilVertexProbability_ = ps.get<falaise::config::fraction_t>(
+        "add_foil_vertex_extrapolation.minimal_probability", {1.0, "percent"})();
+  }
+
+  // Search for gamma from e+/e- annihilation
+  tagAnnihilationGamma_ = ps.get<bool>("add_gamma_from_annihilation", false);
+  if (tagAnnihilationGamma_) {
+    minAnnihilationGammaProbability_ = ps.get<falaise::config::fraction_t>(
+        "add_gamma_from_annihilation.minimal_probability", {1.0, "percent"})();
+  }
+}
+
+void base_gamma_builder::_clear_working_arrays() {
+  ignoredHits_.clear();
+  usedHits_.clear();
+}
+
 void base_gamma_builder::set_geometry_manager(const geomtools::manager& gmgr_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized/locked !");
-  _geometry_manager_ = &gmgr_;
+  geoManager_ = &gmgr_;
 }
 
 const geomtools::manager& base_gamma_builder::get_geometry_manager() const {
   DT_THROW_IF(!has_geometry_manager(), std::logic_error, "No geometry manager is setup !");
-  return *_geometry_manager_;
+  return *geoManager_;
 }
 
-bool base_gamma_builder::has_geometry_manager() const { return _geometry_manager_ != 0; }
-
-void base_gamma_builder::_set_defaults() {
-  _logging_priority = datatools::logger::PRIO_WARNING;
-  _geometry_manager_ = 0;
-  _locator_plugin_ = 0;
-  _add_foil_vertex_extrapolation_ = true;
-  _add_foil_vertex_minimal_probability_ = 1.0 * CLHEP::perCent;
-  _add_gamma_from_annihilation_ = false;
-  _add_gamma_from_annihilation_minimal_probability_ = 1.0 * CLHEP::perCent;
-  _select_calorimeter_hits_ = false;
-  _select_calorimeter_hits_tags_.clear();
-}
+bool base_gamma_builder::has_geometry_manager() const { return geoManager_ != nullptr; }
 
 int base_gamma_builder::process(const base_gamma_builder::hit_collection_type& calo_hits_,
                                 snemo::datamodel::particle_track_data& ptd_) {
   int status = 0;
   DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Gamma builder '" << _id_ << "' is not initialized !");
+              "Gamma builder '" << id_ << "' is not initialized !");
 
   status = _prepare_process(calo_hits_, ptd_);
   if (status != 0) {
@@ -193,7 +158,7 @@ int base_gamma_builder::process(const base_gamma_builder::hit_collection_type& c
     return status;
   }
 
-  status = _process_algo(_used_hits_, ptd_);
+  status = _process_algo(usedHits_, ptd_);
   if (status != 0) {
     DT_LOG_ERROR(get_logging_priority(),
                  "Processing of '" << get_id() << "' algorithm has failed !");
@@ -212,14 +177,14 @@ int base_gamma_builder::process(const base_gamma_builder::hit_collection_type& c
 int base_gamma_builder::_prepare_process(const base_gamma_builder::hit_collection_type& calo_hits_,
                                          snemo::datamodel::particle_track_data& /*ptd_*/) {
   this->base_gamma_builder::_clear_working_arrays();
-  _used_hits_.reserve(calo_hits_.size());
-  _ignored_hits_.reserve(calo_hits_.size());
+  usedHits_.reserve(calo_hits_.size());
+  ignoredHits_.reserve(calo_hits_.size());
 
   for (const auto& a_calo_hit : calo_hits_) {
     bool use_hit = false;
-    if (_select_calorimeter_hits_) {
+    if (selectCaloHits_) {
       const datatools::properties& the_auxiliaries = a_calo_hit->get_auxiliaries();
-      for (const auto& tag : _select_calorimeter_hits_tags_) {
+      for (const auto& tag : caloHitTags_) {
         if (the_auxiliaries.has_flag(tag)) {
           use_hit = true;
           break;
@@ -230,14 +195,14 @@ int base_gamma_builder::_prepare_process(const base_gamma_builder::hit_collectio
     }
 
     if (use_hit) {
-      _used_hits_.push_back(a_calo_hit);
+      usedHits_.push_back(a_calo_hit);
     } else {
-      _ignored_hits_.push_back(a_calo_hit);
+      ignoredHits_.push_back(a_calo_hit);
     }
   }
   DT_LOG_DEBUG(get_logging_priority(),
-               "Number of calorimeter hits used: " << _used_hits_.size() << " ("
-                                                   << _ignored_hits_.size() << " skipped)");
+               "Number of calorimeter hits used: " << usedHits_.size() << " ("
+                                                   << ignoredHits_.size() << " skipped)");
   return 0;
 }
 
@@ -246,7 +211,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
   // Add the ignored hits to the list of non associated calorimeters
   // ptd_.reset_non_associated_calorimeters();
   auto& calos = ptd_.grab_non_associated_calorimeters();
-  calos.assign(_ignored_hits_.begin(), _ignored_hits_.end());
+  calos.assign(ignoredHits_.begin(), ignoredHits_.end());
 
   // Given charged particle then process gammas
   snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
@@ -274,9 +239,9 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
     for (auto& a_gamma : gamma_particles) {
       snemo::datamodel::particle_track::vertex_collection_type the_vertices_2;
       a_gamma->fetch_vertices(the_vertices_2,
-                             snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
-                                 snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
-                                 snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
+                              snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
+                                  snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
+                                  snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
       if (the_vertices_2.empty()) {
         DT_LOG_DEBUG(get_logging_priority(), "Gamma track has no vertices associated !");
         continue;
@@ -297,7 +262,8 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
         datatools::handle_predicate<snemo::datamodel::calibrated_calorimeter_hit> pred_via_handle(
             pred_M2D);
         auto found = std::find_if(hits.begin(), hits.end(), pred_via_handle);
-        DT_THROW_IF(found == hits.end(), std::logic_error,
+        DT_THROW_IF(
+            found == hits.end(), std::logic_error,
             "Calibrated calorimeter hit with id " << a_spot->get_geom_id() << " can not be found");
         const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit_2 = found->get();
         const double gamma_time = a_calo_hit_2.get_time();
@@ -307,7 +273,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
         // Perform extrapolation to the source foil given charged particles
         // and favor it wrt the search of gamma from e+/e- annihilation
-        if (_add_foil_vertex_extrapolation_) {
+        if (extrapolateFoilVertex_) {
           // Get track length
           const snemo::datamodel::base_trajectory_pattern& a_track_pattern =
               a_particle->get_trajectory().get_pattern();
@@ -316,7 +282,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
           snemo::datamodel::particle_track::vertex_collection_type vertices;
           a_particle->fetch_vertices(vertices,
-                                    snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
+                                     snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
           if (vertices.empty()) {
             continue;
           }
@@ -350,19 +316,21 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
                                std::pow(sigma_particle_time_th, 2);
           const double chi2_int = std::pow(dt_int, 2) / sigma;
           const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1) * 100. * CLHEP::perCent;
-          const double int_prob_limit = _add_foil_vertex_minimal_probability_;
+          const double int_prob_limit = minFoilVertexProbability_;
           if (int_prob > int_prob_limit) {
             auto hBSv = datatools::make_handle<geomtools::blur_spot>();
             a_gamma->get_vertices().insert(a_gamma->get_vertices().begin(), hBSv);
             hBSv->set_hit_id(0);
             hBSv->set_blur_dimension(geomtools::blur_spot::dimension_three);
             hBSv->set_position(a_foil_vertex);
-            hBSv->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), snemo::datamodel::particle_track::vertex_on_source_foil_label());
+            hBSv->grab_auxiliaries().store(
+                snemo::datamodel::particle_track::vertex_type_key(),
+                snemo::datamodel::particle_track::vertex_on_source_foil_label());
             break;
           }
         }
         // Perform the search for gamma from e+/e- annihilation
-        if (_add_gamma_from_annihilation_) {
+        if (tagAnnihilationGamma_) {
           // Get calorimeter hit position associated to charged particle
           const auto& the_calorimeters = a_particle->get_associated_calorimeter_hits();
           // Only take care of the first associated calorimeter
@@ -384,7 +352,8 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
             get_gveto_locator().get_block_position(a_gid, a_block_position);
             a_label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
           } else {
-            DT_THROW_IF(true, std::logic_error,
+            DT_THROW_IF(
+                true, std::logic_error,
                 "Current geom id '" << a_gid << "' does not match any scintillator block !");
           }
 
@@ -395,7 +364,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double sigma = std::pow(particle_sigma_time, 2) + std::pow(gamma_sigma_time, 2);
           const double chi2_int = std::pow(dt_int, 2) / sigma;
           const double int_prob = gsl_cdf_chisq_Q(chi2_int, 1) * 100. * CLHEP::perCent;
-          const double int_prob_limit = _add_gamma_from_annihilation_minimal_probability_;
+          const double int_prob_limit = minAnnihilationGammaProbability_;
           if (int_prob > int_prob_limit) {
             // Do not add the calorimeter hit from the charged particle to
             // the list of calorimeter hits of the gamma particle
@@ -408,7 +377,8 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
             hBSv->set_geom_id(a_calo_hit->get_geom_id());
             hBSv->set_blur_dimension(geomtools::blur_spot::dimension_three);
             hBSv->set_position(a_block_position);
-            hBSv->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(), a_label);
+            hBSv->grab_auxiliaries().store(snemo::datamodel::particle_track::vertex_type_key(),
+                                           a_label);
             a_gamma->grab_auxiliaries().update_flag("__gamma_from_annihilation");
             break;
           }
@@ -423,7 +393,6 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
   return 0;
 }
 
-
 void base_gamma_builder::tree_dump(std::ostream& out, const std::string& title,
                                    const std::string& indent, bool inherit) const {
   if (!title.empty()) {
@@ -434,41 +403,40 @@ void base_gamma_builder::tree_dump(std::ostream& out, const std::string& title,
       << datatools::logger::get_priority_label(_logging_priority) << "'" << std::endl;
   out << indent << datatools::i_tree_dumpable::tag << "Initialized      : " << is_initialized()
       << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << _geometry_manager_
+  out << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << geoManager_
       << std::endl;
   if (has_geometry_manager()) {
     out << indent << datatools::i_tree_dumpable::tag << "Geometry setup label   : '"
-         << _geometry_manager_->get_setup_label() << "'" << std::endl;
+        << geoManager_->get_setup_label() << "'" << std::endl;
     out << indent << datatools::i_tree_dumpable::tag << "Geometry setup version : '"
-        << _geometry_manager_->get_setup_version() << "'" << std::endl;
+        << geoManager_->get_setup_version() << "'" << std::endl;
   }
 
   out << indent << datatools::i_tree_dumpable::tag
-      << "Foil vertex extrapolation : " << _add_foil_vertex_extrapolation_ << std::endl;
-  if (_add_foil_vertex_extrapolation_) {
+      << "Foil vertex extrapolation : " << extrapolateFoilVertex_ << std::endl;
+  if (extrapolateFoilVertex_) {
     out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
-        << "Minimal TOF probability : " << _add_foil_vertex_minimal_probability_ / CLHEP::perCent
-        << "%" << std::endl;
+        << "Minimal TOF probability : " << minFoilVertexProbability_ / CLHEP::perCent << "%"
+        << std::endl;
   }
   out << indent << datatools::i_tree_dumpable::tag
-      << "Search for gamma from e+/e- annihilation : " << _add_gamma_from_annihilation_
-      << std::endl;
-  if (_add_gamma_from_annihilation_) {
+      << "Search for gamma from e+/e- annihilation : " << tagAnnihilationGamma_ << std::endl;
+  if (tagAnnihilationGamma_) {
     out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag
-        << "Minimal TOF probability : "
-        << _add_gamma_from_annihilation_minimal_probability_ / CLHEP::perCent << "%" << std::endl;
+        << "Minimal TOF probability : " << minAnnihilationGammaProbability_ / CLHEP::perCent << "%"
+        << std::endl;
   }
   out << indent << datatools::i_tree_dumpable::tag
-      << "Selection of calorimeter hits : " << _select_calorimeter_hits_ << std::endl;
-  if (_select_calorimeter_hits_) {
-    for (size_t i = 0; i < _select_calorimeter_hits_tags_.size(); i++) {
+      << "Selection of calorimeter hits : " << selectCaloHits_ << std::endl;
+  if (selectCaloHits_) {
+    for (size_t i = 0; i < caloHitTags_.size(); i++) {
       out << indent << datatools::i_tree_dumpable::skip_tag;
-      if (i + 1 == _select_calorimeter_hits_tags_.size()) {
+      if (i + 1 == caloHitTags_.size()) {
         out << datatools::i_tree_dumpable::last_tag;
       } else {
         out << datatools::i_tree_dumpable::tag;
       }
-      out << "tag[" << i << "] = " << _select_calorimeter_hits_tags_[i] << std::endl;
+      out << "tag[" << i << "] = " << caloHitTags_[i] << std::endl;
     }
   }
   out << indent << datatools::i_tree_dumpable::inherit_tag(inherit) << "End." << std::endl;
@@ -607,8 +575,6 @@ void base_gamma_builder::ocd_support(datatools::object_configuration_description
             "  BGB.select_calorimeter_hits.tags : string[1] = \"__isolated\" \n"
             "                                                                \n");
   }
-
-  return;
 }
 
 }  // end of namespace processing

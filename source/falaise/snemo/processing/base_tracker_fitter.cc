@@ -21,21 +21,27 @@
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
+
+#include <falaise/config/property_set.h>
 
 namespace snemo {
 
 namespace processing {
 // Constructor
-base_tracker_fitter::base_tracker_fitter(const std::string& id_) {
-  _id_ = id_;
+base_tracker_fitter::base_tracker_fitter(const std::string& name) {
+  id_ = name;
   _set_initialized(false);
   _set_defaults();
 }
 
-base_tracker_fitter::~base_tracker_fitter() {
-  if (is_initialized()) {
-    _reset();
-  }
+base_tracker_fitter::~base_tracker_fitter() = default;
+
+void base_tracker_fitter::_set_defaults() {
+  _logging_priority = datatools::logger::PRIO_WARNING;
+  geoManager_ = nullptr;
+  geigerLocator_ = nullptr;
+  maxFitsToSave_ = 0;
 }
 
 datatools::logger::priority base_tracker_fitter::get_logging_priority() const {
@@ -43,74 +49,47 @@ datatools::logger::priority base_tracker_fitter::get_logging_priority() const {
 }
 
 void base_tracker_fitter::set_logging_priority(datatools::logger::priority priority_) {
+  DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
+              "Invalid logging priority level for base gamma builder !");
   _logging_priority = priority_;
 }
 
 const std::string& base_tracker_fitter::get_id() const {
-  return _id_;
+  return id_;
 }
 
 bool base_tracker_fitter::is_initialized() const {
-  return _initialized_;
+  return isInitialized_;
 }
 
-void base_tracker_fitter::_set_initialized(bool i_) {
-  _initialized_ = i_;
+void base_tracker_fitter::_set_initialized(bool state) {
+  isInitialized_ = state;
 }
 
 const snemo::geometry::gg_locator& base_tracker_fitter::get_gg_locator() const {
-  return *_gg_locator_;
+  return *geigerLocator_;
 }
 
 void base_tracker_fitter::_initialize(const datatools::properties& setup_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
-
-  DT_THROW_IF(_geometry_manager_ == 0, std::logic_error, "Missing geometry manager !");
-  DT_THROW_IF(!_geometry_manager_->is_initialized(), std::logic_error,
+  DT_THROW_IF(!has_geometry_manager(), std::logic_error, "Missing geometry manager !");
+  DT_THROW_IF(!geoManager_->is_initialized(), std::logic_error,
               "Geometry manager is not initialized !");
 
   /* Parse configuration parameters */
+  falaise::config::property_set localSetup{setup_};
+  auto ps = localSetup.get<falaise::config::property_set>("BTF",{});
 
   // Extract the setup of the base tracker fitter :
-  datatools::properties btf_setup;
-  setup_.export_and_rename_starting_with(btf_setup, "BTF.", "");
-
-  // Logging priority:
-  datatools::logger::priority lp = datatools::logger::extract_logging_configuration(btf_setup);
-  DT_THROW_IF(lp == datatools::logger::PRIO_UNDEFINED, std::logic_error,
-              "Invalid logging priority level for base tracker fitter !");
+  auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   set_logging_priority(lp);
 
-  // Maximum number of fit to be saved :
-  if (btf_setup.has_key("maximum_number_of_fits")) {
-    _maximum_number_of_fits_ = btf_setup.fetch_integer("maximum_number_of_fits");
-  }
+  maxFitsToSave_ = ps.get<int>("maximum_number_of_fits", 0);
 
-  /* initialization stuff */
-  // Get the Geiger cell locator from geometry plugins :
-  const geomtools::manager& geo_mgr = get_geometry_manager();
-  std::string locator_plugin_name;
-  if (btf_setup.has_key("locator_plugin_name")) {
-    locator_plugin_name = btf_setup.fetch_string("locator_plugin_name");
-  }
-  // If no locator plugin name is set, then search for the first one
-  if (locator_plugin_name.empty()) {
-    for (const auto& ip : geo_mgr.get_plugins()) {
-      const std::string& plugin_name = ip.first;
-      if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
-        locator_plugin_name = plugin_name;
-        break;
-      }
-    }
-  }
-  // Access to a given plugin by name and type :
-  if (geo_mgr.has_plugin(locator_plugin_name) &&
-      geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
-    const auto& locplug = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
-    // Set the Geiger cell locator :
-    _gg_locator_ = &(locplug.get_gg_locator());
-  }
-  DT_THROW_IF(_gg_locator_ == 0, std::logic_error, "Cannot find Geiger locator !");
+  auto locator_plugin_name = ps.get<std::string>("locator_plugin_name","");
+  auto snLocator = snemo::geometry::getSNemoLocator(get_geometry_manager(),locator_plugin_name);
+  geigerLocator_ = &(snLocator->get_gg_locator());
+  DT_THROW_IF(geigerLocator_ == nullptr, std::logic_error, "Cannot find Geiger locator !");
 }
 
 void base_tracker_fitter::_reset() {
@@ -120,38 +99,29 @@ void base_tracker_fitter::_reset() {
 
 void base_tracker_fitter::set_geometry_manager(const geomtools::manager& gmgr_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized/locked !");
-  _geometry_manager_ = &gmgr_;
+  geoManager_ = &gmgr_;
 }
 
 const geomtools::manager& base_tracker_fitter::get_geometry_manager() const {
   DT_THROW_IF(!has_geometry_manager(), std::logic_error, "No geometry manager is setup !");
-  return *_geometry_manager_;
+  return *geoManager_;
 }
 
 bool base_tracker_fitter::has_geometry_manager() const {
-  return _geometry_manager_ != 0;
-}
-
-void base_tracker_fitter::_set_defaults() {
-  _logging_priority = datatools::logger::PRIO_WARNING;
-
-  _geometry_manager_ = 0;
-  _gg_locator_ = 0;
-
-  _maximum_number_of_fits_ = 0;
+  return geoManager_ != nullptr;
 }
 
 int base_tracker_fitter::process(const snemo::datamodel::tracker_clustering_data& clustering_,
                                  snemo::datamodel::tracker_trajectory_data& trajectory_) {
   int status = 0;
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Fitter '" << _id_ << "' is not initialized !");
+  DT_THROW_IF(!is_initialized(), std::logic_error, "Fitter '" << id_ << "' is not initialized !");
 
   trajectory_.invalidate_solutions();
 
   status = _process_algo(clustering_, trajectory_);
   if (status != 0) {
     DT_LOG_ERROR(get_logging_priority(),
-                 "Processing of cluster hits by '" << _id_ << "' algorithm has failed !");
+                 "Processing of cluster hits by '" << id_ << "' algorithm has failed !");
     return status;
   }
 
@@ -195,18 +165,19 @@ int base_tracker_fitter::_post_process(snemo::datamodel::tracker_trajectory_data
 
     // Tag helix trajectory as default(best chi2) and remove the useless one
     // based on the maximum number of fits to be kept.
-    for (auto i = vtrajs.begin(); i != vtrajs.end(); ++i) {
-      chi2_dict_type& a_trajectory_dict = i->second;
+    for (auto& i : vtrajs) {
+    //for (auto i = vtrajs.begin(); i != vtrajs.end(); ++i) {
+      chi2_dict_type& a_trajectory_dict = i.second;
 
       // Tag default solution i.e. the first one in the trajectory dictionnary
       snemo::datamodel::tracker_trajectory& a_trajectory = a_trajectory_dict.begin()->second.grab();
       a_trajectory.grab_auxiliaries().update("default", true);
 
-      if (_maximum_number_of_fits_ == 0) {
+      if (maxFitsToSave_ == 0) {
         continue;
       }
 
-      // Remove solution based on _maximum_number_of_fits_. Also keep
+      // Remove solution based on maxFitsToSave_. Also keep
       // trajectory with chi2 value pretty close to the previous saved
       // trajectory
       size_t count = 0;
@@ -214,7 +185,7 @@ int base_tracker_fitter::_post_process(snemo::datamodel::tracker_trajectory_data
       for (auto j = a_trajectory_dict.begin(); j != a_trajectory_dict.end();
            ++j, ++count) {
         const double chi2_tolerance = 0.1;
-        if (count >= _maximum_number_of_fits_ && std::abs(j->first - prev_chi2) > chi2_tolerance) {
+        if (count >= maxFitsToSave_ && std::abs(j->first - prev_chi2) > chi2_tolerance) {
           (j->second)->grab_auxiliaries().store_flag("__remove");
         } else {
           prev_chi2 = j->first;
@@ -228,6 +199,7 @@ int base_tracker_fitter::_post_process(snemo::datamodel::tracker_trajectory_data
                                             snemo::datamodel::tracker_trajectory>
         pred_M2D(remove_pred);
     datatools::handle_predicate<snemo::datamodel::tracker_trajectory> pred_via_handle(pred_M2D);
+
     the_trajectories.erase(
         std::remove_if(the_trajectories.begin(), the_trajectories.end(), pred_via_handle),
         the_trajectories.end());
@@ -247,16 +219,16 @@ void base_tracker_fitter::tree_dump(std::ostream& out_, const std::string& title
        << datatools::logger::get_priority_label(_logging_priority) << "'" << std::endl;
   out_ << indent << datatools::i_tree_dumpable::tag << "Initialized      : " << is_initialized()
        << std::endl;
-  out_ << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << _geometry_manager_
+  out_ << indent << datatools::i_tree_dumpable::tag << "Geometry manager : " << geoManager_
        << std::endl;
   if (has_geometry_manager()) {
     out_ << indent << datatools::i_tree_dumpable::tag << "Geometry setup label   : '"
-         << _geometry_manager_->get_setup_label() << "'" << std::endl;
+         << geoManager_->get_setup_label() << "'" << std::endl;
     out_ << indent << datatools::i_tree_dumpable::tag << "Geometry setup version : '"
-         << _geometry_manager_->get_setup_version() << "'" << std::endl;
+         << geoManager_->get_setup_version() << "'" << std::endl;
   }
   out_ << indent << datatools::i_tree_dumpable::tag
-       << "Max number of fit to be saved : " << _maximum_number_of_fits_ << std::endl;
+       << "Max number of fit to be saved : " << maxFitsToSave_ << std::endl;
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "End." << std::endl;
 }
