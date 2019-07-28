@@ -36,15 +36,9 @@ f_time_radius::f_time_radius() {
   y4 = 17.0 * CLHEP::mm;
 }
 
-void f_time_radius::set_drift_time_to_radius() {
-  mode = DRIFT_TIME_TO_RADIUS;
-  return;
-}
+void f_time_radius::set_drift_time_to_radius() { mode = DRIFT_TIME_TO_RADIUS; }
 
-void f_time_radius::set_radius_to_drift_time() {
-  mode = RADIUS_TO_DRIFT_TIME;
-  return;
-}
+void f_time_radius::set_radius_to_drift_time() { mode = RADIUS_TO_DRIFT_TIME; }
 
 double f_time_radius::operator()(double u_) const {
   const double A1 = (y1 - y0) / (x1 - x0);
@@ -62,22 +56,34 @@ double f_time_radius::operator()(double u_) const {
                 "mode=[t -> r]: invalid drift time=" << t << "(t<" << x0 << ")!");
     if (t < x1) {
       double z = A1 * t + B1;
-      if (z < 0) z = 0.0;
+      if (z < 0) {
+        z = 0.0;
+      }
       return z;
     }
-    if (t < x2) return A2 * t + B2;
-    if (t < x3) return A3 * sqrt(t) + B3;
+    if (t < x2) {
+      return A2 * t + B2;
+    }
+    if (t < x3) {
+      return A3 * sqrt(t) + B3;
+    }
     return A4 * t + B4;
-  } else {
-    const double r = u_;
-    DT_THROW_IF(r < 0.0, std::logic_error,
-                "mode=[r -> t]: invalid drift distance=" << r << "(r<0)!");
-    if (r < y0) return (x0);  // r=y0; // protect against very small drift distance
-    if (r < y1) return (r - B1) / A1;
-    if (r < y2) return (r - B2) / A2;
-    if (r < y3) return pow((r - B3) / A3, 2);
-    return (r - B4) / A4;
   }
+  const double r = u_;
+  DT_THROW_IF(r < 0.0, std::logic_error, "mode=[r -> t]: invalid drift distance=" << r << "(r<0)!");
+  if (r < y0) {
+    return (x0);  // r=y0; // protect against very small drift distance
+  }
+  if (r < y1) {
+    return (r - B1) / A1;
+  }
+  if (r < y2) {
+    return (r - B2) / A2;
+  }
+  if (r < y3) {
+    return pow((r - B3) / A3, 2);
+  }
+  return (r - B4) / A4;
 }
 
 default_drift_time_calibration::default_drift_time_calibration() {
@@ -97,7 +103,6 @@ default_drift_time_calibration::default_drift_time_calibration() {
   dt.set_radius_to_drift_time();
   rmax = td.y4;
   sigma_r = 1.0 * CLHEP::mm;
-  return;
 }
 
 double default_drift_time_calibration::get_sensitive_cell_radius() const { return td.y4; }
@@ -117,20 +122,22 @@ void default_drift_time_calibration::drift_time_to_radius(double time_, double& 
     radius_ = 0.;
     sigma_radius_ = 0.3 * rmax;
   }
-  return;
 }
 
 void default_drift_time_calibration::radius_to_drift_time(double radius_, double& time_,
                                                           double& sigma_time_) const {
   double r1 = radius_ - sigma_r;
-  if (r1 < 0) r1 = 0.0;
+  if (r1 < 0) {
+    r1 = 0.0;
+  }
   double t1 = dt(r1);
-  if (t1 < 0) t1 = 0.0;
+  if (t1 < 0) {
+    t1 = 0.0;
+  }
   const double r2 = radius_ + sigma_r;
   const double t2 = dt(r2);
   time_ = (t2 + t1) * 0.5;
   sigma_time_ = (t2 - t1) * 0.5;
-  return;
 }
 
 new_drift_time_calibration::new_drift_time_calibration() {
@@ -150,7 +157,6 @@ new_drift_time_calibration::new_drift_time_calibration() {
   dt.set_radius_to_drift_time();
   rmax = td.y4;
   sigma_r = 1.0 * CLHEP::mm;
-  return;
 }
 
 double new_drift_time_calibration::get_sensitive_cell_radius() const { return td.y4; }
@@ -162,26 +168,32 @@ void new_drift_time_calibration::drift_time_to_radius(double time_, double& radi
   const double time = time_;
   radius_ = td(time);
   sigma_radius_ = sigma_r;
-  if (radius_ > td.y3) sigma_radius_ = 3. * sigma_r;
-  if (radius_ > td.y4) sigma_radius_ = 5. * sigma_r;
+  if (radius_ > td.y3) {
+    sigma_radius_ = 3. * sigma_r;
+  }
+  if (radius_ > td.y4) {
+    sigma_radius_ = 5. * sigma_r;
+  }
   if (time_ > td.x5) {
     radius_ = 0.;
     sigma_radius_ = 0.3 * rmax;
   }
-  return;
 }
 
 void new_drift_time_calibration::radius_to_drift_time(double radius_, double& time_,
                                                       double& sigma_time_) const {
   double r1 = radius_ - sigma_r;
-  if (r1 < 0) r1 = 0.0;
+  if (r1 < 0) {
+    r1 = 0.0;
+  }
   double r2 = radius_ + sigma_r;
   double t1 = dt(r1);
-  if (t1 < 0) t1 = 0.0;
+  if (t1 < 0) {
+    t1 = 0.0;
+  }
   double t2 = dt(r2);
   time_ = (t2 + t1) * 0.5;
   sigma_time_ = (t2 - t1) * 0.5;
-  return;
 }
 
 }  // end of namespace TrackFit

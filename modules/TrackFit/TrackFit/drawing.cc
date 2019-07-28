@@ -18,15 +18,13 @@ bool drawing::is_debug() const { return _debug_; }
 
 void drawing::set_debug(bool new_value_) {
   _debug_ = new_value_;
-  return;
 }
 
 drawing::drawing() {
   _debug_ = false;
-  return;
 }
 
-drawing::~drawing() { return; }
+drawing::~drawing() = default;
 
 void drawing::draw(std::ostream& out_, const geomtools::placement& p_, const gg_hit& hit_) const {
   // Bounding box:
@@ -53,16 +51,13 @@ void drawing::draw(std::ostream& out_, const geomtools::placement& p_, const gg_
 
   geomtools::gnuplot_draw::draw_circle(out_, p_.get_translation() + p0, p_.get_rotation(),
                                        hit_.get_r() + hit_.get_sigma_r());
-  return;
 }
 
 void drawing::draw(std::ostream& out_, const geomtools::placement& p_,
                    const gg_hits_col& hits_) const {
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); i++) {
-    const gg_hit& hit = *i;
+  for (const auto & hit : hits_) {
     draw(out_, p_, hit);
   }
-  return;
-}
+  }
 
 }  // end of namespace TrackFit

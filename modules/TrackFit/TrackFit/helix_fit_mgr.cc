@@ -38,22 +38,13 @@ bool helix_fit_params::has_quality() const { return quality >= 0; }
 
 int helix_fit_params::get_quality() const { return quality; }
 
-void helix_fit_params::set_quality(int q_) {
-  quality = q_ < 0 ? -1 : q_;
-  return;
-}
+void helix_fit_params::set_quality(int q_) { quality = q_ < 0 ? -1 : q_; }
 
-void helix_fit_params::reset_quality() {
-  set_quality(-1);
-  return;
-}
+void helix_fit_params::reset_quality() { set_quality(-1); }
 
 bool helix_fit_params::is_valid() const { return (x0 == x0); }
 
-helix_fit_params::helix_fit_params() {
-  reset();
-  return;
-}
+helix_fit_params::helix_fit_params() { reset(); }
 
 void helix_fit_params::reset() {
   quality = -1;
@@ -66,7 +57,6 @@ void helix_fit_params::reset() {
   has_angles = false;
   angle_1 = -M_PI;
   angle_2 = +M_PI;
-  return;
 }
 
 void helix_fit_params::tree_dump(std::ostream &out_, const std::string &title_,
@@ -87,7 +77,6 @@ void helix_fit_params::tree_dump(std::ostream &out_, const std::string &title_,
        << indent << "`-- has_angles = " << has_angles << std::endl
        << indent << "    |-- theta1 = " << angle_1 << std::endl
        << indent << "    `-- theta2 = " << angle_2 << std::endl;
-  return;
 }
 
 /*************************************************/
@@ -95,25 +84,25 @@ void helix_fit_params::tree_dump(std::ostream &out_, const std::string &title_,
 const gg_hits_col helix_fit_data::get_hits() const { return *hits; }
 
 bool helix_fit_data::is_valid() const {
-  if (hits == 0) return false;
-  if (calibration == 0) return false;
+  if (hits == nullptr) {
+    return false;
+  }
+  if (calibration == nullptr) {
+    return false;
+  }
   return true;
 }
 
 void helix_fit_data::reset() {
-  hits = 0;
-  calibration = 0;
+  hits = nullptr;
+  calibration = nullptr;
   start_time = 0.0;
   using_first = false;
   using_last = false;
   using_drift_time = false;
-  return;
 }
 
-helix_fit_data::helix_fit_data() {
-  reset();
-  return;
-}
+helix_fit_data::helix_fit_data() { reset(); }
 
 void helix_fit_solution::tree_dump(std::ostream &out_, const std::string &title_,
                                    const std::string &indent_, bool /*inherit_*/) const {
@@ -138,18 +127,11 @@ void helix_fit_solution::tree_dump(std::ostream &out_, const std::string &title_
        << indent << "|-- niter   = " << niter << std::endl
        << indent << "|-- prob(P) = " << probability_p() << std::endl
        << indent << "`-- prob(Q) = " << probability_q() << std::endl;
-  return;
 }
 
-helix_fit_solution::helix_fit_solution() : helix_fit_params() {
-  reset();
-  return;
-}
+helix_fit_solution::helix_fit_solution() : helix_fit_params() { reset(); }
 
-helix_fit_solution::~helix_fit_solution() {
-  reset();
-  return;
-}
+helix_fit_solution::~helix_fit_solution() { reset(); }
 
 void helix_fit_solution::reset() {
   helix_fit_params::reset();
@@ -162,34 +144,33 @@ void helix_fit_solution::reset() {
   chi = std::numeric_limits<double>::infinity();
   ndof = 0;
   niter = 0;
-  return;
 }
 
 double helix_fit_solution::probability_p() const { return gsl_cdf_chisq_P(chi * chi, ndof); }
 
 double helix_fit_solution::probability_q() const { return gsl_cdf_chisq_Q(chi * chi, ndof); }
 
-void helix_fit_mgr::draw_solution(std::ostream &out_) const {
-  draw_solution(out_, _solution_);
-  return;
-}
+void helix_fit_mgr::draw_solution(std::ostream &out_) const { draw_solution(out_, _solution_); }
 
 void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &traj_,
                                    bool compute_step_, const uint32_t flags_) {
   datatools::logger::priority local_priority = datatools::logger::PRIO_FATAL;
-  if (flags_ & WARNING) local_priority = datatools::logger::PRIO_WARNING;
-  if (flags_ & DEVEL) local_priority = datatools::logger::PRIO_TRACE;
+  if ((flags_ & WARNING) != 0u) {
+    local_priority = datatools::logger::PRIO_WARNING;
+  }
+  if ((flags_ & DEVEL) != 0u) {
+    local_priority = datatools::logger::PRIO_TRACE;
+  }
 
   const geomtools::vector_3d Oh(traj_.x0, traj_.y0, 0.);
-  DT_LOG_TRACE(local_priority, "Oh = " << Oh);
 
   double mean_x = 0.;
   double mean_y = 0.;
   double mean_z = 0.;
-  for (gg_hits_col::const_iterator hit_iter = hits_.begin(); hit_iter != hits_.end(); ++hit_iter) {
-    mean_x += hit_iter->get_x();
-    mean_y += hit_iter->get_y();
-    mean_z += hit_iter->get_z();
+  for (const auto &hit : hits_) {
+    mean_x += hit.get_x();
+    mean_y += hit.get_y();
+    mean_z += hit.get_z();
   }
   mean_x /= hits_.size();
   mean_y /= hits_.size();
@@ -198,15 +179,10 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
   const geomtools::vector_3d mean_hit(mean_x, mean_y, 0);
   geomtools::vector_3d mean_direction = mean_hit - Oh;
   const double mean_angle = atan2(mean_direction.y(), mean_direction.x());
-  DT_LOG_TRACE(local_priority, "mean hit angle = " << mean_angle / M_PI * 180.);
-  ;
 
   geomtools::rotation_3d dir_rot;
   geomtools::create_zyz(dir_rot, mean_angle, 0., 0.);
   geomtools::vector_3d trans_mean_dir = mean_direction.transform(dir_rot);
-  const double trans_mean_angle = atan2(trans_mean_dir.y(), trans_mean_dir.x());
-  DT_LOG_TRACE(local_priority,
-               "mean hit angle after zyz rotation = " << trans_mean_angle / M_PI * 180.);
 
   double min_angle = +2. * M_PI;
   double max_angle = -2. * M_PI;
@@ -216,8 +192,8 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
   mygsl::arithmetic_mean mean_theta_l;
   mygsl::arithmetic_mean mean_theta_r;
 
-  for (gg_hits_col::const_iterator hit_iter = hits_.begin(); hit_iter != hits_.end(); ++hit_iter) {
-    const geomtools::vector_3d the_hit_pos(hit_iter->get_x(), hit_iter->get_y(), Oh.z());
+  for (const auto &hit : hits_) {
+    const geomtools::vector_3d the_hit_pos(hit.get_x(), hit.get_y(), Oh.z());
     // rotate hit of mean_angle...
     geomtools::vector_3d direction = the_hit_pos - Oh;
     geomtools::vector_3d trans_dir = direction.transform(dir_rot);
@@ -226,18 +202,21 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
     if (compute_step_) {
       if (angle < 0.) {
         mean_theta_l.add(angle);
-        mean_z_l.add(hit_iter->get_z());
+        mean_z_l.add(hit.get_z());
       } else {
         mean_theta_r.add(angle);
-        mean_z_r.add(hit_iter->get_z());
+        mean_z_r.add(hit.get_z());
       }
     }
 
     angle += mean_angle;
-    DT_LOG_TRACE(local_priority, "angle = " << angle / M_PI * 180.);
 
-    if (angle < min_angle) min_angle = angle;
-    if (angle > max_angle) max_angle = angle;
+    if (angle < min_angle) {
+      min_angle = angle;
+    }
+    if (angle > max_angle) {
+      max_angle = angle;
+    }
   }
 
   if (compute_step_) {
@@ -252,35 +231,20 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
 
   const double t =
       round((traj_.z0 + traj_.step * (mean_angle / (2. * M_PI)) - mean_z) / traj_.step);
-  DT_LOG_TRACE(local_priority, "min_angle = " << min_angle / M_PI * 180.);
-  DT_LOG_TRACE(local_priority, "max_angle = " << max_angle / M_PI * 180.);
-  DT_LOG_TRACE(local_priority, "mean_z = " << mean_z);
-  DT_LOG_TRACE(local_priority, "step   = " << traj_.step);
-  DT_LOG_TRACE(local_priority, "t = " << t);
 
   if (traj_.step > 0.) {
-    DT_LOG_TRACE(local_priority, "z0(before) = " << traj_.z0 << "(step > 0 )");
     traj_.z0 -= t * traj_.step;
-    DT_LOG_TRACE(local_priority, "z0(after) = " << traj_.z0);
-    DT_LOG_TRACE(local_priority, mean_z - traj_.step / 2.
-                                     << " < z_rec == " << traj_.z0 + traj_.step * mean_angle
-                                     << " < " << mean_z + traj_.step / 2.);
   } else {
-    DT_LOG_TRACE(local_priority, "z0(before) = " << traj_.z0 << "(step > 0 )");
     traj_.z0 += t * traj_.step;
-    DT_LOG_TRACE(local_priority, "z0(after) = " << traj_.z0);
-    DT_LOG_TRACE(local_priority, mean_z - traj_.step / 2.
-                                     << " < z_rec == " << traj_.z0 + traj_.step * mean_angle
-                                     << " < " << mean_z - traj_.step / 2.);
   }
 
   traj_.angle_1 = min_angle;
   traj_.angle_2 = max_angle;
   traj_.has_angles = true;
 
-  DT_LOG_TRACE(local_priority, "Computed guess");
-  if (local_priority >= datatools::logger::PRIO_TRACE) traj_.tree_dump(std::clog, "", "[trace]: ");
-  return;
+  if (local_priority >= datatools::logger::PRIO_TRACE) {
+    traj_.tree_dump(std::clog, "", "[trace]: ");
+  }
 }
 
 void helix_fit_mgr::draw_solution(std::ostream &out_, const helix_fit_solution &sol_) {
@@ -301,12 +265,7 @@ void helix_fit_mgr::draw_solution(std::ostream &out_, const helix_fit_solution &
   h3d.set_angle1(min_angle);
   h3d.set_angle2(max_angle);  // updated at the end
 
-  // DT_LOG_TRACE(get_logging_priority(), "Reconstructed h3d");
-  // if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
-  //   h3d.tree_dump(std::clog);
-
   geomtools::helix_3d::print_xyz(out_, h3d, 0.01, 0);
-  return;
 }
 
 void helix_fit_mgr::draw_temporary_solution(std::ostream &out_) const {
@@ -322,18 +281,6 @@ void helix_fit_mgr::draw_temporary_solution(std::ostream &out_) const {
   sol.niter = _fit_iter_;
   compute_angles(*_hits_, sol);
   draw_solution(out_, sol);
-
-  DT_LOG_TRACE(get_logging_priority(), "Temporary solution: ");
-  DT_LOG_TRACE(get_logging_priority(), "   solution.x0    = " << sol.x0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.y0    = " << sol.y0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.z0    = " << sol.z0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.r     = " << sol.r);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.step  = " << sol.step);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.chi   = " << sol.chi);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.ndof  = " << sol.ndof);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.niter = " << sol.niter);
-
-  return;
 }
 
 /*****************************************************************/
@@ -346,9 +293,8 @@ helix_fit_residual_function_param::helix_fit_residual_function_param() {
   residual_type = RESIDUAL_INVALID;
   first = false;
   last = false;
-  dtc = 0;
+  dtc = nullptr;
   start_time = 0.0 * CLHEP::ns;
-  return;
 }
 
 /*****************************************************************/
@@ -370,7 +316,6 @@ unsigned int helix_fit_mgr::constants::min_number_of_hits() {
 
 void helix_fit_mgr::set_logging_priority(datatools::logger::priority priority_) {
   _logging_priority_ = priority_;
-  return;
 }
 
 datatools::logger::priority helix_fit_mgr::get_logging_priority() const {
@@ -379,64 +324,36 @@ datatools::logger::priority helix_fit_mgr::get_logging_priority() const {
 
 bool helix_fit_mgr::is_initialized() const { return _initialized_; }
 
-void helix_fit_mgr::set_initialized(bool initialized_) {
-  _initialized_ = initialized_;
-  return;
-}
+void helix_fit_mgr::set_initialized(bool initialized_) { _initialized_ = initialized_; }
 
 bool helix_fit_mgr::is_debug() const {
   return get_logging_priority() >= datatools::logger::PRIO_DEBUG;
 }
 
 void helix_fit_mgr::set_debug(bool debug_) {
-  if (debug_)
+  if (debug_) {
     set_logging_priority(datatools::logger::PRIO_DEBUG);
-  else
+  } else {
     set_logging_priority(datatools::logger::PRIO_WARNING);
-  return;
+  }
 }
 
 const helix_fit_solution &helix_fit_mgr::get_solution() { return _solution_; }
 
 helix_fit_solution &helix_fit_mgr::grab_solution() { return _solution_; }
 
-void helix_fit_mgr::set_t0(double t0_) {
-  _t0_ = t0_;
-  return;
-}
+void helix_fit_mgr::set_t0(double t0_) { _t0_ = t0_; }
 
-void helix_fit_mgr::set_fit_max_iter(size_t fit_max_iter_) {
-  _fit_max_iter_ = fit_max_iter_;
-  return;
-}
+void helix_fit_mgr::set_fit_max_iter(size_t fit_max_iter_) { _fit_max_iter_ = fit_max_iter_; }
 
-void helix_fit_mgr::set_fit_eps(double eps_) {
-  _fit_eps_ = eps_;
-  return;
-}
+void helix_fit_mgr::set_fit_eps(double eps_) { _fit_eps_ = eps_; }
 
 void helix_fit_mgr::set_guess(const helix_fit_params &guess_) {
-  DT_LOG_DEBUG(get_logging_priority(), "Entering...");
   _fit_x_init_[helix_fit_params::PARAM_INDEX_X0] = guess_.x0;
   _fit_x_init_[helix_fit_params::PARAM_INDEX_Y0] = guess_.y0;
   _fit_x_init_[helix_fit_params::PARAM_INDEX_Z0] = guess_.z0;
   _fit_x_init_[helix_fit_params::PARAM_INDEX_R] = guess_.r;
   _fit_x_init_[helix_fit_params::PARAM_INDEX_STEP] = guess_.step;
-  DT_LOG_DEBUG(get_logging_priority(),
-               "X0    = " << _fit_x_init_[helix_fit_params::PARAM_INDEX_X0] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Y0    = " << _fit_x_init_[helix_fit_params::PARAM_INDEX_Y0] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Z0    = " << _fit_x_init_[helix_fit_params::PARAM_INDEX_Z0] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(get_logging_priority(),
-               "R     = " << _fit_x_init_[helix_fit_params::PARAM_INDEX_R] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(
-      get_logging_priority(),
-      "STEP  = " << _fit_x_init_[helix_fit_params::PARAM_INDEX_STEP] / (CLHEP::mm / CLHEP::degree)
-                 << " mm/degree");
-
-  DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-  return;
 }
 
 void helix_fit_mgr::_set_defaults_() {
@@ -444,15 +361,15 @@ void helix_fit_mgr::_set_defaults_() {
 
   _fit_npars_ = helix_fit_params::HELIX_FIT_FIXED_START_TIME_NOPARS;
   _fit_npoints_ = 0;
-  _fit_mf_fdf_solver_ = 0;
-  _fit_covar_ = 0;
+  _fit_mf_fdf_solver_ = nullptr;
+  _fit_covar_ = nullptr;
   _fit_iter_ = 0;
   _fit_max_iter_ = helix_fit_mgr::constants::default_fit_max_iter();
   _fit_eps_ = helix_fit_mgr::constants::default_fit_eps();
   _fit_status_ = GSL_CONTINUE;
 
-  _hits_ = 0;
-  _calibration_ = 0;
+  _hits_ = nullptr;
+  _calibration_ = nullptr;
   _t0_ = 0.0 * CLHEP::ns;
 
   _solution_.ok = false;
@@ -463,61 +380,51 @@ void helix_fit_mgr::_set_defaults_() {
 
   // Debug flags :
   _step_print_status_ = false;
-  _step_draw_ = false;  // Only with TRACKFIT_TEST_WITH_DRAW_ONLINE == 1
-  return;
+  _step_draw_ = false;
 }
 
 void helix_fit_mgr::set_hits(const gg_hits_col &hits_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Object is now locked ! Operation is not allowed !");
   _hits_ = &hits_;
-  return;
 }
 
-bool helix_fit_mgr::has_calibration() const { return _calibration_ != 0; }
+bool helix_fit_mgr::has_calibration() const { return _calibration_ != nullptr; }
 
 void helix_fit_mgr::set_calibration(const i_drift_time_calibration &calibration_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Object is now locked ! Operation is not allowed !");
   _calibration_ = &calibration_;
-  return;
 }
 
 // ctor:
 helix_fit_mgr::helix_fit_mgr() {
   _set_defaults_();
   set_initialized(false);
-  return;
 }
 
 // dtor:
 helix_fit_mgr::~helix_fit_mgr() {
-  if (is_initialized()) reset();
-  return;
+  if (is_initialized()) {
+    reset();
+  }
 }
 
-void helix_fit_mgr::initialize(const datatools::properties &config_) {
-  init(config_);
-  return;
-}
+void helix_fit_mgr::initialize(const datatools::properties &config_) { init(config_); }
 
 void helix_fit_mgr::init(const datatools::properties &config_) {
-  DT_LOG_DEBUG(get_logging_priority(), "Entering...");
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
 
   // 2013-06-03 XG: Sanity checks but you may want to be less strict on that
   // and just warn people.. to be continued...
-  DT_THROW_IF(_hits_ == 0, std::logic_error, "No hits !");
+  DT_THROW_IF(_hits_ == nullptr, std::logic_error, "No hits !");
 
   const size_t nhits = _hits_->size();
   DT_THROW_IF(nhits < helix_fit_mgr::constants::min_number_of_hits(), std::logic_error,
               "Not enough hits !");
-  DT_LOG_DEBUG(get_logging_priority(), "nhits=" << nhits);
 
   _fit_npoints_ = 2 * nhits;
   _fit_npars_ = helix_fit_params::HELIX_FIT_FIXED_START_TIME_NOPARS;
-  DT_LOG_DEBUG(get_logging_priority(), "Number of free parameters: " << _fit_npars_);
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'fit data'...");
   _fit_covar_ = gsl_matrix_alloc(_fit_npars_, _fit_npars_);
 
   if (config_.has_flag("step_print_status")) {
@@ -549,7 +456,6 @@ void helix_fit_mgr::init(const datatools::properties &config_) {
   _fit_data_.calibration = _calibration_;
   _fit_data_.start_time = _t0_;
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'fdf'...");
   _fit_mf_fdf_function_.f = &residual_f;
   _fit_mf_fdf_function_.df = &residual_df;
   _fit_mf_fdf_function_.fdf = &residual_fdf;
@@ -557,40 +463,31 @@ void helix_fit_mgr::init(const datatools::properties &config_) {
   _fit_mf_fdf_function_.n = _fit_npoints_;
   _fit_mf_fdf_function_.params = &_fit_data_;
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'solver'...");
   const gsl_multifit_fdfsolver_type *T = gsl_multifit_fdfsolver_lmder;
   _fit_mf_fdf_solver_ = gsl_multifit_fdfsolver_alloc(T, _fit_npoints_, _fit_npars_);
-  DT_THROW_IF(_fit_mf_fdf_solver_ == 0, std::logic_error, "Cannot create solver !");
+  DT_THROW_IF(_fit_mf_fdf_solver_ == nullptr, std::logic_error, "Cannot create solver !");
   const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
-  DT_LOG_DEBUG(get_logging_priority(), "Solver name is '" << fdsolver_name << "'");
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'view'...");
   _fit_vview_ = gsl_vector_view_array(_fit_x_init_, _fit_npars_);
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'solver' with 'fdf'...");
   gsl_multifit_fdfsolver_set(_fit_mf_fdf_solver_, &_fit_mf_fdf_function_, &_fit_vview_.vector);
-  DT_LOG_DEBUG(get_logging_priority(), "'solver' is setup.");
 
   set_initialized(true);
-  DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-  return;
 }
 
 void helix_fit_mgr::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
-  if (_fit_mf_fdf_solver_ != 0) {
+  if (_fit_mf_fdf_solver_ != nullptr) {
     const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
-    DT_LOG_DEBUG(get_logging_priority(), "Free solver '" << fdsolver_name << "'");
     gsl_multifit_fdfsolver_free(_fit_mf_fdf_solver_);
   }
-  if (_fit_covar_ != 0) {
+  if (_fit_covar_ != nullptr) {
     gsl_matrix_free(_fit_covar_);
   }
   _fit_data_.reset();
   _set_defaults_();
   set_initialized(false);
-  return;
 }
 
 bool helix_fit_mgr::is_using_last() const { return _using_last_; }
@@ -635,12 +532,10 @@ void helix_fit_mgr::print_fit_status(std::ostream &out_) const {
   out_ << "`-- "
        << "Solution: "
        << "[NOT IMPLEMENTED]" << std::endl;
-  return;
 }
 
 void helix_fit_mgr::at_fit_step_do() {
   if (_step_print_status_) {
-    DT_LOG_DEBUG(get_logging_priority(), "status = " << gsl_strerror(_fit_status_));
     print_fit_status(std::clog);
   }
 
@@ -673,11 +568,9 @@ void helix_fit_mgr::at_fit_step_do() {
     g1.showonscreen();  // window output
     geomtools::gnuplot_drawer::wait_for_key();
   }
-  return;
 }
 
 void helix_fit_mgr::fit() {
-  DT_LOG_DEBUG(get_logging_priority(), "Starting fit...");
   DT_THROW_IF(!is_initialized(), std::logic_error, "Fit manager is not initialized !");
 
   const double r_crit = 10. * CLHEP::km;
@@ -687,24 +580,23 @@ void helix_fit_mgr::fit() {
   bool under_r_crit_limit = true;
 
   do {
-    DT_LOG_DEBUG(get_logging_priority(), "Fit loop #" << _fit_iter_);
     _fit_iter_++;
     _fit_status_ = gsl_multifit_fdfsolver_iterate(_fit_mf_fdf_solver_);
-    DT_LOG_DEBUG(get_logging_priority(), "Iterate status = " << gsl_strerror(_fit_status_));
 
     // Do not break fit loop for GSL_SUCCESS but also when iteration
     // does not make progress towards solution. Then, redo the fit
     // and hope that the next iteration will be fine. Basically this
     // happens when the initial fitted values are pretty close to
     // the chi2 minimal value.
-    if (_fit_status_ != GSL_SUCCESS && _fit_status_ != GSL_ENOPROG) break;
+    if (_fit_status_ != GSL_SUCCESS && _fit_status_ != GSL_ENOPROG) {
+      break;
+    }
     _fit_status_ = gsl_multifit_test_delta(_fit_mf_fdf_solver_->dx, _fit_mf_fdf_solver_->x,
                                            _fit_eps_, _fit_eps_);
     at_fit_step_do();
 
     const double r = gsl_vector_get(_fit_mf_fdf_solver_->x, helix_fit_params::PARAM_INDEX_R);
     if (r > r_crit) {
-      DT_LOG_DEBUG(get_logging_priority(), "r > r_crit");
       if (r < r_ref) {
         r_ref = -1.;
         count_r_crit = 0;
@@ -714,16 +606,12 @@ void helix_fit_mgr::fit() {
       }
       if (count_r_crit >= count_r_crit_limit) {
         under_r_crit_limit = false;
-        DT_LOG_DEBUG(get_logging_priority(),
-                     "Stop fit at iter = " << _fit_iter_ << " with fit_status = " << _fit_status_);
         break;
       }
     }
-    DT_LOG_DEBUG(get_logging_priority(), "Test_delta status = " << gsl_strerror(_fit_status_));
   } while ((_fit_status_ == GSL_CONTINUE) && (_fit_iter_ < _fit_max_iter_));
 
   if (_fit_status_ <= GSL_SUCCESS && under_r_crit_limit) {
-    DT_LOG_DEBUG(get_logging_priority(), "Calling gsl_multifit_covar...");
 #if GSL_MAJOR_VERSION > 1
     gsl_matrix *J = gsl_matrix_alloc(_fit_npoints_, _fit_npars_);
     gsl_multifit_fdfsolver_jac(_fit_mf_fdf_solver_, J);
@@ -761,22 +649,20 @@ void helix_fit_mgr::fit() {
     _solution_.ok = false;
   }
 
-  if (is_debug() && _solution_.ok) get_residuals_at_solution();
-
-  return;
+  if (is_debug() && _solution_.ok) {
+    get_residuals_at_solution();
+  }
 }
 
 double helix_fit_mgr::residual_function(double x_, void *params_) {
   datatools::logger::priority local_priority = datatools::logger::PRIO_ERROR;
-  DT_LOG_TRACE(local_priority, "Entering...");
-  const helix_fit_residual_function_param *param_ptr =
-      static_cast<const helix_fit_residual_function_param *>(params_);
-  DT_THROW_IF(param_ptr == 0, std::logic_error, "Invalid cast !");
+  const auto *param_ptr = static_cast<const helix_fit_residual_function_param *>(params_);
+  DT_THROW_IF(param_ptr == nullptr, std::logic_error, "Invalid cast !");
 
   const helix_fit_residual_function_param &param = *param_ptr;
 
   // calibration
-  DT_THROW_IF(param.using_drift_time && param.dtc == 0, std::logic_error,
+  DT_THROW_IF(param.using_drift_time && param.dtc == nullptr, std::logic_error,
               "Drift time should be recomputed by some drift-time calibration algo !");
   const i_drift_time_calibration *dtc = param.dtc;
   const bool using_first = param.using_first;
@@ -794,16 +680,21 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
   // dynamic parameter:
   const int mode = param.mode;
   const int residual_type = param.residual_type;
-  if (mode == helix_fit_params::PARAM_INDEX_X0) x0 = x_;
-  if (mode == helix_fit_params::PARAM_INDEX_Y0) y0 = x_;
-  if (mode == helix_fit_params::PARAM_INDEX_Z0) z0 = x_;
-  if (mode == helix_fit_params::PARAM_INDEX_R) r = x_;
-  if (mode == helix_fit_params::PARAM_INDEX_STEP) step = x_;
-  DT_LOG_TRACE(local_priority, "x0 = " << x0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "y0 = " << y0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "z0 = " << z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "r  = " << r / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "step = " << step / (CLHEP::mm / CLHEP::degree) << " mm/degree");
+  if (mode == helix_fit_params::PARAM_INDEX_X0) {
+    x0 = x_;
+  }
+  if (mode == helix_fit_params::PARAM_INDEX_Y0) {
+    y0 = x_;
+  }
+  if (mode == helix_fit_params::PARAM_INDEX_Z0) {
+    z0 = x_;
+  }
+  if (mode == helix_fit_params::PARAM_INDEX_R) {
+    r = x_;
+  }
+  if (mode == helix_fit_params::PARAM_INDEX_STEP) {
+    step = x_;
+  }
 
   // parameters from the hit:
   const bool last = param.last;
@@ -834,9 +725,6 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
     const double drift_time = ti - start_time;
     if (!dtc->drift_time_is_valid(drift_time)) {
       DT_LOG_WARNING(local_priority, "Drift_time is out of physics range!");
-      DT_LOG_TRACE(local_priority, "ti         = " << ti);
-      DT_LOG_TRACE(local_priority, "start_time = " << start_time);
-      DT_LOG_TRACE(local_priority, "drift_time = " << drift_time);
     }
     dtc->drift_time_to_radius(drift_time, drift_distance, sigma_drift_distance);
 
@@ -850,10 +738,6 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
   //     drift_distance       = 0.0 * CLHEP::mm;
   //     sigma_drift_distance = rmaxi / 2.;
   //   }
-
-  DT_LOG_TRACE(local_priority, "drift_distance= " << drift_distance / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority,
-               "sigma_drift_distance= " << sigma_drift_distance / CLHEP::mm << " mm");
 
   const geomtools::vector_2d Oh(x0, y0);
   const geomtools::vector_2d Oi(xi, yi);
@@ -903,7 +787,6 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
   const double sigma_ri = sigma_drift_distance;
 
   double beta_i = 0.0;
-  double zL = 0.0;
   const double theta_i = atan2(udi.y(), udi.x());
   const double eps_step = 1.e-8;
 
@@ -912,9 +795,6 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
     const int kmax = (int)floor(dkmax);
     const int kminus = kmax;
     const int kplus = kmax + 1;
-    DT_LOG_TRACE(local_priority, "dkmax  = " << dkmax);
-    DT_LOG_TRACE(local_priority, "kmax   = " << kmax);
-    DT_LOG_TRACE(local_priority, "kminus = " << kminus);
 
     double theta_minus = theta_i + kminus * 2 * M_PI;
     double theta_plus = theta_minus + 2 * M_PI;
@@ -922,17 +802,12 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
     double zLminus = z0 + step * theta_minus / (2 * M_PI);
     double zLplus = z0 + step * theta_plus / (2 * M_PI);
     if (zLminus > zLplus) {
-      DT_LOG_TRACE(local_priority, "Swap z value !");
       std::swap(zLminus, zLplus);
     }
     if (zi < zLminus - 0.001) {
-      DT_LOG_WARNING(local_priority, "zi == " << zi);
-      DT_LOG_WARNING(local_priority,
-                     "|-- zi > zLminus == " << zLminus << "(KMINUS == " << kminus << ")");
       DT_LOG_WARNING(local_priority,
                      "`-- zi < zLplus  == " << zLplus << "(KPLUS  == " << kplus << ")");
       return datatools::invalid_real();
-      // DT_THROW_IF (true, std::logic_error, "****** STOP minus *******");
     }
     if (zi > zLplus + 0.001) {
       DT_LOG_WARNING(local_priority, "zi == " << zi);
@@ -941,28 +816,17 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
       DT_LOG_WARNING(local_priority,
                      "`-- zi < zLplus  == " << zLplus << "(KPLUS  == " << kplus << ")");
       return datatools::invalid_real();
-      // DT_THROW_IF (true, std::logic_error, "****** STOP plus *******");
     }
     const double beta_i_plus = zLplus - zi;
     const double beta_i_minus = zLminus - zi;
     if (std::abs(beta_i_minus) < std::abs(beta_i_plus)) {
-      zL = zLminus;
       beta_i = beta_i_minus;
     } else {
-      zL = zLplus;
       beta_i = beta_i_plus;
     }
   } else {
-    zL = z0;
     beta_i = z0 - zi;
   }
-
-  DT_LOG_TRACE(local_priority, "z0       = " << z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "zL       = " << zL / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "alpha_i  = " << alpha_i);
-  DT_LOG_TRACE(local_priority, "sigma_ri = " << sigma_ri);
-  DT_LOG_TRACE(local_priority, "beta_i   = " << beta_i);
-  DT_LOG_TRACE(local_priority, "sigma_zi = " << sigma_zi);
 
   double Ri = datatools::invalid_real();
   if (residual_type == helix_fit_residual_function_param::RESIDUAL_ALPHA) {
@@ -973,33 +837,25 @@ double helix_fit_mgr::residual_function(double x_, void *params_) {
     DT_THROW_IF(true, std::logic_error, "Invalid residual type !");
   }
 
-  DT_LOG_TRACE(local_priority, "Exiting.");
   return Ri;
 }
 
 void helix_fit_mgr::get_residuals_at_solution() const {
-  datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-  DT_LOG_TRACE(local_priority, "Entering...");
+  // datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
 
-  int hit_counter = 0;
-  const gg_hits_col *hits = this->_hits_;
+  // int hit_counter = 0;
+  // const gg_hits_col *hits = this->_hits_;
 
-  for (gg_hits_col::const_iterator it_hit = hits->begin(); it_hit != hits->end(); ++it_hit) {
-    const double xi = it_hit->get_x();
-    const double yi = it_hit->get_y();
-    const double zi = it_hit->get_z();
+  // for (const auto &hit : *hits) {
+  // const double xi = hit.get_x();
+  // const double yi = hit.get_y();
+  // const double zi = hit.get_z();
 
-    double alpha_i, beta_i;
-    get_residuals_per_hit(hit_counter, alpha_i, beta_i, true);
+  //  double alpha_i, beta_i;
+  //  get_residuals_per_hit(hit_counter, alpha_i, beta_i, true);
 
-    DT_LOG_TRACE(local_priority,
-                 "hit #" << hit_counter << "(" << xi << ", " << yi << ", " << zi << "):");
-    DT_LOG_TRACE(local_priority, "|-- alpha_res = " << alpha_i);
-    DT_LOG_TRACE(local_priority, "`-- beta_res  = " << beta_i);
-    hit_counter++;
-  }
-  DT_LOG_TRACE(local_priority, "Exiting.");
-  return;
+  //  hit_counter++;
+  //}
 }
 
 void helix_fit_mgr::get_residuals_per_hit(size_t hit_index_, double &alpha_residual_,
@@ -1024,9 +880,11 @@ void helix_fit_mgr::get_residuals_per_hit(size_t hit_index_, double &alpha_resid
     param.step = _solution_.step;
   }
   size_t count = 0;
-  gg_hits_col::const_iterator it_hit = hits->end();
+  auto it_hit = hits->end();
   for (it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, count++) {
-    if (count == hit_index_) break;
+    if (count == hit_index_) {
+      break;
+    }
   }
   DT_THROW_IF(it_hit == hits->end(), std::logic_error, "Broken list of hits !");
 
@@ -1047,13 +905,9 @@ void helix_fit_mgr::get_residuals_per_hit(size_t hit_index_, double &alpha_resid
   alpha_residual_ = residual_function(param.x0, &param);
   param.residual_type = helix_fit_residual_function_param::RESIDUAL_BETA;
   beta_residual_ = residual_function(param.x0, &param);
-  return;
 }
 
 int helix_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f_) {
-  datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-  DT_LOG_TRACE(local_priority, "Entering...");
-
   // initialize the helix parameters:
   helix_fit_residual_function_param param;
   param.x0 = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_X0);
@@ -1061,17 +915,16 @@ int helix_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f
   param.z0 = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_Z0);
   param.r = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_R);
   param.step = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_STEP);
-  const helix_fit_data *lf_data = static_cast<const helix_fit_data *>(params_);
+  const auto *lf_data = static_cast<const helix_fit_data *>(params_);
   param.start_time = lf_data->start_time;
   param.dtc = lf_data->calibration;
   param.using_first = lf_data->using_first;
   param.using_last = lf_data->using_last;
   param.using_drift_time = lf_data->using_drift_time;
 
-  const gg_hits_col *hits = static_cast<const gg_hits_col *>(lf_data->hits);
+  const auto *hits = static_cast<const gg_hits_col *>(lf_data->hits);
   size_t i = 0;
-  for (gg_hits_col::const_iterator it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
-    DT_LOG_TRACE(local_priority, "hit #" << i);
+  for (auto it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
     // pick up useful values from the hit:
     param.last = it_hit->is_last();
     param.first = it_hit->is_first();
@@ -1088,12 +941,9 @@ int helix_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f
     const double residuali_alpha = residual_function(param.x0, &param);
     param.residual_type = helix_fit_residual_function_param::RESIDUAL_BETA;
     const double residuali_beta = residual_function(param.x0, &param);
-    DT_LOG_TRACE(local_priority, "residuali_alpha =" << residuali_alpha);
-    DT_LOG_TRACE(local_priority, "residuali_beta  =" << residuali_beta);
     gsl_vector_set(f_, i, residuali_alpha);
     gsl_vector_set(f_, i + hits->size(), residuali_beta);
   }
-  DT_LOG_TRACE(local_priority, "Exiting.");
   return GSL_SUCCESS;
 }
 
@@ -1105,17 +955,17 @@ int helix_fit_mgr::residual_df(const gsl_vector *x_, void *params_, gsl_matrix *
   param.z0 = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_Z0);
   param.r = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_R);
   param.step = gsl_vector_get(x_, helix_fit_params::PARAM_INDEX_STEP);
-  const helix_fit_data *lf_data = static_cast<const helix_fit_data *>(params_);
+  const auto *lf_data = static_cast<const helix_fit_data *>(params_);
   param.start_time = lf_data->start_time;
   param.dtc = lf_data->calibration;
   param.using_first = lf_data->using_first;
   param.using_last = lf_data->using_last;
   param.using_drift_time = lf_data->using_drift_time;
 
-  const gg_hits_col *hits = static_cast<const gg_hits_col *>(lf_data->hits);
+  const auto *hits = static_cast<const gg_hits_col *>(lf_data->hits);
 
   size_t i = 0;
-  for (gg_hits_col::const_iterator it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
+  for (auto it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
     // pick up useful values from the hit:
     param.last = it_hit->is_last();
     param.first = it_hit->is_first();
@@ -1248,18 +1098,11 @@ void helix_fit_mgr::guess_utils::_set_defaults() {
   _use_guess_trust_ = false;
   _guess_trust_mode_ = fit_utils::GUESS_TRUST_MODE_COUNTER;
   _fit_delayed_clusters_ = false;
-  return;
 }
 
-helix_fit_mgr::guess_utils::guess_utils() {
-  _set_defaults();
-  return;
-}
+helix_fit_mgr::guess_utils::guess_utils() { _set_defaults(); }
 
-void helix_fit_mgr::guess_utils::reset() {
-  _set_defaults();
-  return;
-}
+void helix_fit_mgr::guess_utils::reset() { _set_defaults(); }
 
 void helix_fit_mgr::guess_utils::initialize(const datatools::properties &config_) {
   datatools::logger::priority p = datatools::logger::PRIO_UNDEFINED;
@@ -1293,8 +1136,6 @@ void helix_fit_mgr::guess_utils::initialize(const datatools::properties &config_
       }
     }
   }
-
-  return;
 }
 
 // COMPUTE GUESS:
@@ -1316,29 +1157,22 @@ void helix_fit_mgr::guess_utils::initialize(const datatools::properties &config_
  */
 bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int guess_mode_,
                                                helix_fit_params &guess_, bool draw_) {
-  DT_LOG_TRACE(_logging_priority_, "Entering...");
-
   const int guess_mode = guess_mode_;
-  DT_LOG_TRACE(_logging_priority_, "guess_mode = " << guess_mode_label(guess_mode));
 
   const size_t minimum_number_of_hits = helix_fit_mgr::constants::min_number_of_hits();
   if (hits_.size() < minimum_number_of_hits) {
-    DT_LOG_WARNING(_logging_priority_, "Not enough hits(" << hits_.size() << " < min=="
-                                                          << minimum_number_of_hits << ")!");
     return false;
   }
 
   // Check if the cluster is or not delayed
   bool is_cluster_delayed = true;
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
-    const gg_hit &a_hit = *i;
+  for (const auto &a_hit : hits_) {
     if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
       is_cluster_delayed = false;
       break;
     }
   }
   if (is_cluster_delayed && !_fit_delayed_clusters_) {
-    DT_LOG_WARNING(_logging_priority_, "Cluster is delayed !");
     return false;
   }
 
@@ -1350,22 +1184,21 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
     for (gg_hit_info_dict_type::const_iterator i = gg_hit_infos.begin(); i != gg_hit_infos.end();
          i++) {
-      DT_LOG_TRACE(_logging_priority_, "Hit #" << i->second.hit->get_id() << " : ");
       i->second.dump(std::clog);
     }
   }
 
   double dist = -std::numeric_limits<double>::infinity();
-  gg_hits_col::const_iterator iter_hit_1 = hits_.end();
-  gg_hits_col::const_iterator iter_hit_2 = hits_.end();
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
+  auto iter_hit_1 = hits_.end();
+  auto iter_hit_2 = hits_.end();
+  for (auto i = hits_.begin(); i != hits_.end(); ++i) {
     const gg_hit &hit_1 = *i;
     const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
 
     // Loop on the other hits :
-    gg_hits_col::const_iterator j_start = i;
+    auto j_start = i;
     j_start++;
-    for (gg_hits_col::const_iterator j = j_start; j != hits_.end(); ++j) {
+    for (auto j = j_start; j != hits_.end(); ++j) {
       const gg_hit &hit_2 = *j;
       const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), hit_2.get_z());
 
@@ -1379,7 +1212,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     }
   }
 
-  DT_LOG_TRACE(_logging_priority_, "Hits 1 & 2: ");
   if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
     iter_hit_1->tree_dump(std::clog, "", "[trace]: ");
     iter_hit_2->tree_dump(std::clog, "", "[trace]: ");
@@ -1398,9 +1230,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   geomtools::vector_3d p2(p_hit2);
   p1.setZ(z_ref);
   p2.setZ(z_ref);
-
-  DT_LOG_TRACE(_logging_priority_, "Hit_1.rmax = " << hit_1.get_rmax() / CLHEP::cm << " cm");
-  DT_LOG_TRACE(_logging_priority_, "Hit_2.rmax = " << hit_2.get_rmax() / CLHEP::cm << " cm");
 
   const double extreme_hits_distance_factor = 2.0;
   const double extreme_hits_minimum_distance =
@@ -1423,18 +1252,15 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   double dist_far_pos = std::numeric_limits<double>::infinity();
   double dist_far_neg = std::numeric_limits<double>::infinity();
   double dist_far_aligned = std::numeric_limits<double>::infinity();
-  gg_hits_col::const_iterator iter_hit_far_pos = hits_.end();
-  gg_hits_col::const_iterator iter_hit_far_neg = hits_.end();
-  gg_hits_col::const_iterator iter_hit_far_aligned = hits_.end();
+  auto iter_hit_far_pos = hits_.end();
+  auto iter_hit_far_neg = hits_.end();
+  auto iter_hit_far_aligned = hits_.end();
 
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); i++) {
+  for (auto i = hits_.begin(); i != hits_.end(); i++) {
     const geomtools::vector_3d hi(i->get_x(), i->get_y(), z_ref);
     const geomtools::vector_3d p1hi = hi - p1;
     const geomtools::vector_3d p2hi = hi - p2;
     const geomtools::vector_3d cross_prod = u.cross(p1hi);
-    DT_LOG_TRACE(_logging_priority_, "z_ref= " << z_ref / CLHEP::cm << " cm");
-    DT_LOG_TRACE(_logging_priority_, "u= " << u);
-    DT_LOG_TRACE(_logging_priority_, "cross_prod= " << cross_prod);
 
     if ((iter_hit_1 != i) && (iter_hit_2 != i)) {
       const double d1 = p1hi.mag();
@@ -1481,17 +1307,12 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     }
   }
 
-  DT_LOG_TRACE(_logging_priority_, "count_pos= " << count_pos);
-  DT_LOG_TRACE(_logging_priority_, "count_neg= " << count_neg);
-
-  gg_hits_col::const_iterator iter_hit_far = iter_hit_far_pos;
+  auto iter_hit_far = iter_hit_far_pos;
   // double dist_far = dist_far_pos;
   int sgn = +1;
   if (count_neg == 0 && count_pos == 0) {
     // if count_pos == count_neg == 0 means that all geiger cells are
     // aligned i.e. all have the same y value.
-    DT_LOG_TRACE(_logging_priority_, "All geiger cells are aligned !");
-
     // 2012-11-04 XG: If the cluster hits is delayed and all cells
     // are aligned then r = rmax and there is no way to compute
     // the bisectrix
@@ -1513,7 +1334,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     DT_LOG_WARNING(_logging_priority_, "Cannot find medium hit !");
     return false;
   }
-  DT_LOG_TRACE(_logging_priority_, "Medium hit:");
   if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
     iter_hit_far->tree_dump(std::clog, "", "[trace]: ");
   }
@@ -1531,11 +1351,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   if (sgn != 0 && sgn * u2_x_v2.z() > 0.0) {
     v2 *= -1.0;
   }
-  DT_LOG_TRACE(_logging_priority_, "uu2 = " << uu2);
-  DT_LOG_TRACE(_logging_priority_, "vv2 = " << vv2);
-  DT_LOG_TRACE(_logging_priority_, "v2  = " << v2);
-  DT_LOG_TRACE(_logging_priority_, "u2_x_v2 = " << u2_x_v2);
-  DT_LOG_TRACE(_logging_priority_, "sgn = " << sgn);
 
   // Compute intersection 0123 of P1P3 and P2P3 medians :
   double x0_123 = 0.0, y0_123 = 0.0;
@@ -1567,9 +1382,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     det = a1 * b2 - a2 * b1;
 
     if (det == 0) {
-      DT_LOG_TRACE(
-          _logging_priority_,
-          "Determinant is null, intersection point is at infinity ! Fix it to something small... ");
       det = 1e-5;
     }
     x0_123 = (c1 * b2 - c2 * b1) / det;
@@ -1588,7 +1400,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     }
   }
   const geomtools::vector_3d O123(x0_123, y0_123, z_ref);
-  DT_LOG_TRACE(_logging_priority_, "O123 = " << O123 / CLHEP::mm << " mm");
 
   // Set radius shift to test guesses :
   double guess_bt_factor = fit_utils::default_guess_bt_factor();
@@ -1617,18 +1428,11 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   geomtools::vector_3d H1(p1);
   geomtools::vector_3d H2(p2);
   geomtools::vector_3d H3(p3);
-  DT_LOG_TRACE(_logging_priority_, "H1 = " << H1 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "H3 = " << H3 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "H2 = " << H2 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "shift1 = " << shift1 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "shift3 = " << shift3 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "shift2 = " << shift2 / CLHEP::mm << " mm");
 
   const bool use_guess_trust = _use_guess_trust_;
-  DT_LOG_TRACE(_logging_priority_, "use_guess_trust = " << use_guess_trust);
 
   // clarity and debugging purpose
-  int computed_guess_trust[3];
+  int computed_guess_trust[3] = {fit_utils::INVALID_HYPOTHESIS, fit_utils::INVALID_HYPOTHESIS, fit_utils::INVALID_HYPOTHESIS};
   if (use_guess_trust) {
     if (_guess_trust_mode_ == fit_utils::GUESS_TRUST_MODE_COUNTER) {
       computed_guess_trust[0] =
@@ -1647,17 +1451,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
       computed_guess_trust[2] = fit_utils::compute_guess_trust_barycenter(gg_hit_infos, hit_3, H3,
                                                                           H3 + shift3, H3 - shift3);
     }
-
-    if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-      for (size_t i = 0; i < 3; ++i) {
-        std::ostringstream message;
-        message << "computed_guess_trust[" << i << "]= " << computed_guess_trust[i] << " ";
-        if (computed_guess_trust[i] == fit_utils::INVALID_HYPOTHESIS) message << "invalid";
-        if (computed_guess_trust[i] == fit_utils::BOTTOM_HYPOTHESIS) message << "bottom";
-        if (computed_guess_trust[i] == fit_utils::TOP_HYPOTHESIS) message << "top";
-        DT_LOG_TRACE(_logging_priority_, message.str());
-      }
-    }
   }
 
   const int gm = guess_mode;
@@ -1673,7 +1466,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_BBB");
     H1 += shift1;
     H3 += shift3;
     H2 += shift2;
@@ -1686,7 +1478,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_BBT");
     H1 += shift1;
     H3 += shift3;
     H2 -= shift2;
@@ -1699,7 +1490,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_BTT");
     H1 += shift1;
     H3 -= shift3;
     H2 -= shift2;
@@ -1712,7 +1502,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_TTT");
     H1 -= shift1;
     H3 -= shift3;
     H2 -= shift2;
@@ -1725,7 +1514,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_TTB");
     H1 -= shift1;
     H3 -= shift3;
     H2 += shift2;
@@ -1738,7 +1526,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_TBB");
     H1 -= shift1;
     H3 += shift3;
     H2 += shift2;
@@ -1751,7 +1538,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_BTB");
     H1 += shift1;
     H3 -= shift3;
     H2 += shift2;
@@ -1764,7 +1550,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         return false;
       }
     }
-    DT_LOG_TRACE(_logging_priority_, "MODE_TBT");
     H1 -= shift1;
     H3 += shift3;
     H2 -= shift2;
@@ -1774,21 +1559,14 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   }
 
   const std::string mode_label = guess_mode_label(guess_mode);
-  DT_LOG_TRACE(_logging_priority_, "Guess mode = '" << mode_label << "'");
-  DT_LOG_TRACE(_logging_priority_, "H1[" << mode_label[0] << "] = " << H1 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "H3[" << mode_label[1] << "] = " << H3 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "H2[" << mode_label[2] << "] = " << H2 / CLHEP::mm << " mm");
 
   // Take care of configuration where H1, H2, H3 are aligned
   const geomtools::vector_3d h2h1 = H2 - H1;
   const geomtools::vector_3d h3h1 = H3 - H1;
   const geomtools::vector_3d cross_prod = h2h1.cross(h3h1);
-  DT_LOG_TRACE(_logging_priority_, "cross_prod= " << cross_prod / CLHEP::mm << " mm");
 
   const double eps = 0.0001;
   if (fabs(cross_prod.z()) < eps) {
-    DT_LOG_TRACE(_logging_priority_, "H1, H2, H3 are aligned(i.e. helix with infinite radius) !");
-    DT_LOG_TRACE(_logging_priority_, mode_label << " hypothesis excluded !");
     return false;
   }
 
@@ -1796,7 +1574,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   const double a = (H2 - H3).mag();
   const double alpha = uuu2.angle(H3 - H1);
   const double radius = 0.5 * a / sin(alpha);
-  DT_LOG_TRACE(_logging_priority_, "radius = " << radius / CLHEP::mm << " mm");
 
   const geomtools::vector_2d ww13((H3 - H1).orthogonal().unit().x(),
                                   (H3 - H1).orthogonal().unit().y());
@@ -1821,7 +1598,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     y0 = (c2 * a1 - c1 * a2) / det;
   }
   geomtools::vector_3d Oh(x0, y0, z_ref);
-  DT_LOG_TRACE(_logging_priority_, "helix center O = " << Oh / CLHEP::mm << " mm");
 
   guess_.x0 = Oh.x();
   guess_.y0 = Oh.y();
@@ -1856,8 +1632,7 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     g1.set_title(title_oss.str());
 
     // DRAW HITS:
-    for (TrackFit::gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); i++) {
-      TrackFit::gg_hit hit = *i;
+    for (auto hit : hits_) {
       const double xi = hit.get_x();
       const double yi = hit.get_y();
       const double zi = hit.get_z();
@@ -2002,10 +1777,6 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
     // unlink(tmp_filename.c_str());
   }  // if (draw)
 
-  DT_LOG_TRACE(_logging_priority_, "Guess.x0:  " << guess_.x0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Guess.y0:  " << guess_.y0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Guess.z0:  " << guess_.z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Guess:");
   if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
     h3d.tree_dump(std::clog, "", "[trace]: ");
   }

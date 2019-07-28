@@ -34,10 +34,7 @@ namespace TrackFit {
 
 bool line_fit_params::is_valid() const { return (z0 == z0); }
 
-line_fit_params::line_fit_params() {
-  reset();
-  return;
-}
+line_fit_params::line_fit_params() { reset(); }
 
 void line_fit_params::reset() {
   y0 = datatools::invalid_real();
@@ -45,7 +42,6 @@ void line_fit_params::reset() {
   phi = datatools::invalid_real();
   theta = datatools::invalid_real();
   t0 = datatools::invalid_real();
-  return;
 }
 
 void line_fit_params::draw(std::ostream &out_, double length_) const {
@@ -59,29 +55,28 @@ void line_fit_params::draw(std::ostream &out_, double length_) const {
   geomtools::gnuplot_draw::basic_draw_point(out_, A);
   geomtools::gnuplot_draw::basic_draw_point(out_, B);
   out_ << std::endl;
-  return;
 }
 
 bool line_fit_data::is_valid() const {
-  if (hits == 0) return false;
-  if (calibration == 0) return false;
+  if (hits == nullptr) {
+    return false;
+  }
+  if (calibration == nullptr) {
+    return false;
+  }
   return true;
 }
 
 void line_fit_data::reset() {
-  hits = 0;
-  calibration = 0;
+  hits = nullptr;
+  calibration = nullptr;
   using_first = false;
   using_last = false;
   using_drift_time = false;
   fit_start_time = false;
-  return;
 }
 
-line_fit_data::line_fit_data() {
-  reset();
-  return;
-}
+line_fit_data::line_fit_data() { reset(); }
 
 void line_fit_solution::tree_dump(std::ostream &out_, const std::string &title_,
                                   const std::string &indent_, bool /*inherit_*/) const {
@@ -110,18 +105,11 @@ void line_fit_solution::tree_dump(std::ostream &out_, const std::string &title_,
        << indent << "|-- prob(P) = " << probability_p() << std::endl
        << indent << "`-- prob(Q) = " << probability_q() << std::endl
        << std::endl;
-  return;
 }
 
-line_fit_solution::line_fit_solution() {
-  reset();
-  return;
-}
+line_fit_solution::line_fit_solution() { reset(); }
 
-line_fit_solution::~line_fit_solution() {
-  reset();
-  return;
-}
+line_fit_solution::~line_fit_solution() { reset(); }
 
 void line_fit_solution::reset() {
   line_fit_params::reset();
@@ -134,17 +122,13 @@ void line_fit_solution::reset() {
   chi = std::numeric_limits<double>::infinity();
   ndof = 0;
   niter = 0;
-  return;
 }
 
 double line_fit_solution::probability_p() const { return gsl_cdf_chisq_P(chi * chi, ndof); }
 
 double line_fit_solution::probability_q() const { return gsl_cdf_chisq_Q(chi * chi, ndof); }
 
-void line_fit_mgr::draw_solution(std::ostream &out_) const {
-  draw_solution(out_, _solution_);
-  return;
-}
+void line_fit_mgr::draw_solution(std::ostream &out_) const { draw_solution(out_, _solution_); }
 
 void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &sol_) const {
   static size_t g_count = 0;  // gnuplot trick
@@ -162,9 +146,9 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
   double y0 = sol_.y0;
   double z0 = sol_.z0;
 
-  for (gg_hits_col::const_iterator i = _hits_->begin(); i != _hits_->end(); i++) {
-    geomtools::vector_3d pos(i->get_x(), i->get_y(), i->get_z());
-    double x = i->get_x();
+  for (const auto &_hit : *_hits_) {
+    geomtools::vector_3d pos(_hit.get_x(), _hit.get_y(), _hit.get_z());
+    double x = _hit.get_x();
     if (xmin > xmax) {
       xmin = x;
       xmax = x;
@@ -182,7 +166,7 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
   geomtools::vector_3d p1 = ref + lambda1 * dir;
   geomtools::vector_3d p2 = ref + lambda2 * dir;
   geomtools::gnuplot_draw::basic_draw_point(out_, p1);
-  if (g_count % 2) {
+  if ((g_count % 2) != 0u) {
     geomtools::vector_3d pmid = 0.5 * (p1 + p2);
     geomtools::gnuplot_draw::basic_draw_point(out_, pmid);
   }
@@ -190,14 +174,14 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
   out_ << std::endl;
   g_count++;
 
-  for (gg_hits_col::const_iterator i = _hits_->begin(); i != _hits_->end(); i++) {
-    bool last = i->is_last();
-    bool first = i->is_first();
-    double xi = i->get_x();
-    double yi = i->get_y();
-    double zi = i->get_z();
-    double ti = i->get_t();
-    double rmaxi = i->get_rmax();
+  for (const auto &_hit : *_hits_) {
+    //bool last = _hit.is_last();
+    //bool first = _hit.is_first();
+    double xi = _hit.get_x();
+    double yi = _hit.get_y();
+    double zi = _hit.get_z();
+    double ti = _hit.get_t();
+    double rmaxi = _hit.get_rmax();
     double Uix = xi;
     double Uiy = yi - y0;
     double lambda = (Uix * ex + Uiy * ey) / (ex * ex + ey * ey);
@@ -206,8 +190,6 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
     geomtools::vector_2d OdOi(Uix, Uiy);
     geomtools::vector_2d OiPi = OdPi - OdOi;
     geomtools::vector_2d udi = OiPi.unit();
-
-    DT_LOG_TRACE(get_logging_priority(), "udi = " << udi);
 
     double drift_distance = 1.5 * CLHEP::cm;
     double sigma_drift_distance = 1.0 * CLHEP::mm;
@@ -219,54 +201,24 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
       drift_time = 0.;
     }
 
-    DT_LOG_TRACE(get_logging_priority(), "drift_time = " << drift_time);
-    DT_LOG_TRACE(get_logging_priority(), "drift_distance = " << drift_distance);
-
     geomtools::vector_2d OiCi = rmaxi * udi;
     geomtools::vector_2d CiPi = OiPi - OiCi;
     geomtools::vector_2d OiTi = drift_distance * udi;
     geomtools::vector_2d TiPi = OiPi - OiTi;
-    double alpha_i = TiPi.mag();
-
-    if (!is_using_drift_time()) {
-      if (OiPi < rmaxi)
-        alpha_i = 0.;
-      else
-        alpha_i = CiPi.mag();
-    } else {
-      if (is_using_last()) {
-        if (last) {
-          if (OiPi.mag() <= OiTi.mag()) {
-            alpha_i = 0.0;
-          }
-        }
-      }
-      if (is_using_first()) {
-        if (first) {
-          if (OiPi.mag() <= OiTi.mag()) {
-            alpha_i = 0.0;
-          }
-        }
-      }
-    }
-    DT_LOG_TRACE(get_logging_priority(), "alpha_i = " << alpha_i);
-
+    
     double zPi = z0 + lambda * ez;
     double beta_i = zPi - zi;
     geomtools::vector_3d OOd_3d(0.0, y0, z0);
     geomtools::vector_3d OOi_3d(xi, yi, zi);
     geomtools::vector_3d OiTi_3d(drift_distance * udi.x(), drift_distance * udi.y(), 0.0);
-    DT_LOG_TRACE(get_logging_priority(), "OiTi_3d = " << OiTi_3d);
     geomtools::vector_3d OiPi_3d(OiPi.x(), OiPi.y(), 0.0);
-    DT_LOG_TRACE(get_logging_priority(), "OiPi_3d = " << OiPi_3d);
     geomtools::vector_3d PiL_3d(0, 0, beta_i);
     // L is the 3D-position of the hit vertical to Pi(Pi is in the cell x-y plane)
-    DT_LOG_TRACE(get_logging_priority(), "PiL_3d = " << PiL_3d);
     geomtools::vector_3d OTi_3d = OOi_3d + OiTi_3d;
     geomtools::vector_3d OPi_3d = OOi_3d + OiPi_3d;
     geomtools::vector_3d OL_3d = OPi_3d + PiL_3d;
     geomtools::gnuplot_draw::basic_draw_point(out_, OTi_3d);
-    if (g_count % 2) {
+    if ((g_count % 2) != 0u) {
       geomtools::vector_3d pmid = 0.5 * (OTi_3d + OPi_3d);
       geomtools::gnuplot_draw::basic_draw_point(out_, pmid);
     }
@@ -275,7 +227,6 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
     geomtools::gnuplot_draw::basic_draw_point(out_, OL_3d);
     out_ << std::endl;
   }
-  return;
 }
 
 void line_fit_mgr::draw_temporary_solution(std::ostream &out_) const {
@@ -295,18 +246,7 @@ void line_fit_mgr::draw_temporary_solution(std::ostream &out_) const {
   sol.ndof = _fit_npoints_ - _fit_npars_;
   sol.niter = _fit_iter_;
 
-  DT_LOG_TRACE(get_logging_priority(), "Temporary solution: ");
-  DT_LOG_TRACE(get_logging_priority(), "   solution.y0    = " << sol.y0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.z0    = " << sol.z0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.phi   = " << sol.phi);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.theta = " << sol.theta);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.t0    = " << sol.t0);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.chi   = " << sol.chi);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.ndof  = " << sol.ndof);
-  DT_LOG_TRACE(get_logging_priority(), "   solution.niter = " << sol.niter);
-
   draw_solution(out_, sol);
-  return;
 }
 
 line_fit_residual_function_param::line_fit_residual_function_param() {
@@ -317,10 +257,9 @@ line_fit_residual_function_param::line_fit_residual_function_param() {
   residual_type = RESIDUAL_INVALID;
   first = false;
   last = false;
-  dtc = 0;
+  dtc = nullptr;
   fit_start_time = false;
   t0 = 0.0 * CLHEP::ns;
-  return;
 }
 
 unsigned int line_fit_mgr::constants::default_fit_max_iter() {
@@ -340,7 +279,6 @@ unsigned int line_fit_mgr::constants::min_number_of_hits() {
 
 void line_fit_mgr::set_logging_priority(datatools::logger::priority priority_) {
   _logging_priority_ = priority_;
-  return;
 }
 
 datatools::logger::priority line_fit_mgr::get_logging_priority() const {
@@ -349,74 +287,50 @@ datatools::logger::priority line_fit_mgr::get_logging_priority() const {
 
 bool line_fit_mgr::is_initialized() const { return _initialized_; }
 
-void line_fit_mgr::_set_initialized(bool initialized_) {
-  _initialized_ = initialized_;
-  return;
-}
+void line_fit_mgr::_set_initialized(bool initialized_) { _initialized_ = initialized_; }
 
 bool line_fit_mgr::is_debug() const {
   return get_logging_priority() >= datatools::logger::PRIO_DEBUG;
 }
 
 void line_fit_mgr::set_debug(bool debug_) {
-  if (debug_)
+  if (debug_) {
     set_logging_priority(datatools::logger::PRIO_DEBUG);
-  else
+  } else {
     set_logging_priority(datatools::logger::PRIO_WARNING);
-  return;
+  }
 }
 
 const line_fit_solution &line_fit_mgr::get_solution() { return _solution_; }
 
 line_fit_solution &line_fit_mgr::grab_solution() { return _solution_; }
 
-void line_fit_mgr::set_t0(double t0_) {
-  _t0_ = t0_;
-  return;
-}
+void line_fit_mgr::set_t0(double t0_) { _t0_ = t0_; }
 
-void line_fit_mgr::set_fit_eps(double eps_) {
-  _fit_eps_ = eps_;
-  return;
-}
+void line_fit_mgr::set_fit_eps(double eps_) { _fit_eps_ = eps_; }
 
 void line_fit_mgr::set_guess(const line_fit_params &guess_) {
-  DT_LOG_DEBUG(get_logging_priority(), "Entering...");
   // 2012-11-02 XG: Initialize start time even if it will not be used later
   _fit_x_init_[line_fit_params::PARAM_INDEX_T0] = guess_.t0;
   _fit_x_init_[line_fit_params::PARAM_INDEX_Y0] = guess_.y0;
   _fit_x_init_[line_fit_params::PARAM_INDEX_Z0] = guess_.z0;
   _fit_x_init_[line_fit_params::PARAM_INDEX_PHI] = guess_.phi;
   _fit_x_init_[line_fit_params::PARAM_INDEX_THETA] = guess_.theta;
-  DT_LOG_DEBUG(get_logging_priority(),
-               "T0    = " << _fit_x_init_[line_fit_params::PARAM_INDEX_T0] / CLHEP::ns << " ns");
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Y0    = " << _fit_x_init_[line_fit_params::PARAM_INDEX_Y0] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Z0    = " << _fit_x_init_[line_fit_params::PARAM_INDEX_Z0] / CLHEP::mm << " mm");
-  DT_LOG_DEBUG(
-      get_logging_priority(),
-      "PHI   = " << _fit_x_init_[line_fit_params::PARAM_INDEX_PHI] / CLHEP::degree << " degree");
-  DT_LOG_DEBUG(
-      get_logging_priority(),
-      "THETA = " << _fit_x_init_[line_fit_params::PARAM_INDEX_THETA] / CLHEP::degree << " degree");
-  DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-  return;
 }
 void line_fit_mgr::_set_defaults_() {
   _logging_priority_ = datatools::logger::PRIO_FATAL;
 
   _fit_npars_ = line_fit_params::LINE_FIT_NOPARS;
   _fit_npoints_ = 0;
-  _fit_mf_fdf_solver_ = 0;
-  _fit_covar_ = 0;
+  _fit_mf_fdf_solver_ = nullptr;
+  _fit_covar_ = nullptr;
   _fit_iter_ = 0;
   _fit_max_iter_ = line_fit_mgr::constants::default_fit_max_iter();
   _fit_eps_ = line_fit_mgr::constants::default_fit_eps();
   _fit_status_ = GSL_CONTINUE;
 
-  _hits_ = 0;
-  _calibration_ = 0;
+  _hits_ = nullptr;
+  _calibration_ = nullptr;
   _t0_ = 0.0 * CLHEP::ns;
 
   _solution_.ok = false;
@@ -427,54 +341,45 @@ void line_fit_mgr::_set_defaults_() {
 
   _step_print_status_ = false;
   _step_draw_ = false;
-
-  return;
 }
 
 void line_fit_mgr::set_hits(const gg_hits_col &hits_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Object is now locked ! Operation is not allowed !");
   _hits_ = &hits_;
-  return;
 }
 
-bool line_fit_mgr::has_calibration() const { return _calibration_ != 0; }
+bool line_fit_mgr::has_calibration() const { return _calibration_ != nullptr; }
 
 void line_fit_mgr::set_calibration(const i_drift_time_calibration &calibration_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Object is now locked ! Operation is not allowed !");
   _calibration_ = &calibration_;
-  return;
 }
 
 // ctor:
 line_fit_mgr::line_fit_mgr(bool /* debug_ */) {
   _set_defaults_();
   _set_initialized(false);
-  return;
 }
 
 // dtor:
 line_fit_mgr::~line_fit_mgr() {
-  if (is_initialized()) reset();
-  return;
+  if (is_initialized()) {
+    reset();
+  }
 }
 
-void line_fit_mgr::initialize(const datatools::properties &config_) {
-  init(config_);
-  return;
-}
+void line_fit_mgr::initialize(const datatools::properties &config_) { init(config_); }
 
 void line_fit_mgr::init(const datatools::properties &config_) {
-  DT_LOG_DEBUG(get_logging_priority(), "Entering...");
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
 
-  DT_THROW_IF(_hits_ == 0, std::logic_error, "No hits !");
+  DT_THROW_IF(_hits_ == nullptr, std::logic_error, "No hits !");
 
   const size_t nhits = _hits_->size();
   DT_THROW_IF(nhits < line_fit_mgr::constants::min_number_of_hits(), std::logic_error,
               "Not enough hits !");
-  DT_LOG_DEBUG(get_logging_priority(), "nhits=" << nhits);
 
   // parse config options:
   if (config_.has_flag("step_print_status")) {
@@ -508,8 +413,7 @@ void line_fit_mgr::init(const datatools::properties &config_) {
   // yes then the '_fit_start_time_' & '_using_drift_time' are
   // enabled by default
   bool is_cluster_delayed = true;
-  for (gg_hits_col::const_iterator i = _hits_->begin(); i != _hits_->end(); ++i) {
-    const gg_hit &a_hit = *i;
+  for (const auto &a_hit : *_hits_) {
     if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
       is_cluster_delayed = false;
       break;
@@ -533,8 +437,6 @@ void line_fit_mgr::init(const datatools::properties &config_) {
     // Only use 4 parameters
     _fit_npars_--;
   }
-  DT_LOG_DEBUG(get_logging_priority(), "Number of free parameters: " << _fit_npars_);
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'fit data'...");
   _fit_covar_ = gsl_matrix_alloc(_fit_npars_, _fit_npars_);
 
   // init fit params
@@ -545,7 +447,6 @@ void line_fit_mgr::init(const datatools::properties &config_) {
   _fit_data_.hits = _hits_;
   _fit_data_.calibration = _calibration_;
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'fdf'...");
   _fit_mf_fdf_function_.f = &residual_f;
   _fit_mf_fdf_function_.df = &residual_df;
   _fit_mf_fdf_function_.fdf = &residual_fdf;
@@ -553,41 +454,32 @@ void line_fit_mgr::init(const datatools::properties &config_) {
   _fit_mf_fdf_function_.n = _fit_npoints_;
   _fit_mf_fdf_function_.params = &_fit_data_;
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'solver'...");
   const gsl_multifit_fdfsolver_type *T = gsl_multifit_fdfsolver_lmder;
   _fit_mf_fdf_solver_ = gsl_multifit_fdfsolver_alloc(T, _fit_npoints_, _fit_npars_);
-  DT_THROW_IF(_fit_mf_fdf_solver_ == 0, std::logic_error, "Cannot create solver !");
+  DT_THROW_IF(_fit_mf_fdf_solver_ == nullptr, std::logic_error, "Cannot create solver !");
   const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
-  DT_LOG_DEBUG(get_logging_priority(), "Solver name is '" << fdsolver_name << "'");
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'view'...");
   _fit_vview_ = gsl_vector_view_array(_fit_x_init_, _fit_npars_);
 
-  DT_LOG_DEBUG(get_logging_priority(), "Initializing 'solver' with 'fdf'...");
   gsl_multifit_fdfsolver_set(_fit_mf_fdf_solver_, &_fit_mf_fdf_function_, &_fit_vview_.vector);
-  DT_LOG_DEBUG(get_logging_priority(), "'solver' is setup.");
 
   _set_initialized(true);
-  DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-  return;
 }
 
 void line_fit_mgr::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
-  if (_fit_mf_fdf_solver_ != 0) {
+  if (_fit_mf_fdf_solver_ != nullptr) {
     const std::string fdsolver_name = gsl_multifit_fdfsolver_name(_fit_mf_fdf_solver_);
-    DT_LOG_DEBUG(get_logging_priority(), "Free solver '" << fdsolver_name << "'");
     gsl_multifit_fdfsolver_free(_fit_mf_fdf_solver_);
   }
-  if (_fit_covar_ != 0) {
+  if (_fit_covar_ != nullptr) {
     gsl_matrix_free(_fit_covar_);
   }
   _fit_data_.reset();
 
   _set_defaults_();
   _set_initialized(false);
-  return;
 }
 
 bool line_fit_mgr::is_using_first() const { return _using_first_; }
@@ -636,12 +528,10 @@ void line_fit_mgr::print_fit_status(std::ostream &out_) const {
   out_ << "`-- "
        << "Solution: "
        << "[NOT IMPLEMENTED]" << std::endl;
-  return;
 }
 
 void line_fit_mgr::at_fit_step_do() {
   if (_step_print_status_) {
-    DT_LOG_DEBUG(get_logging_priority(), "status = " << gsl_strerror(_fit_status_));
     print_fit_status(std::clog);
   }
 
@@ -673,30 +563,25 @@ void line_fit_mgr::at_fit_step_do() {
     g1.showonscreen();  // window output
     geomtools::gnuplot_drawer::wait_for_key();
   }
-
-  return;
 }
 
 void line_fit_mgr::fit() {
-  DT_LOG_DEBUG(get_logging_priority(), "Starting fit...");
   DT_THROW_IF(!is_initialized(), std::logic_error, "Fit manager is not initialized !");
 
   do {
-    DT_LOG_DEBUG(get_logging_priority(), "Fit loop #" << _fit_iter_);
     _fit_iter_++;
     _fit_status_ = gsl_multifit_fdfsolver_iterate(_fit_mf_fdf_solver_);
-    DT_LOG_DEBUG(get_logging_priority(), "Iterate status = " << gsl_strerror(_fit_status_));
 
-    if (_fit_status_ != GSL_SUCCESS && _fit_status_ != GSL_ENOPROG) break;
+    if (_fit_status_ != GSL_SUCCESS && _fit_status_ != GSL_ENOPROG) {
+      break;
+    }
     _fit_status_ = gsl_multifit_test_delta(_fit_mf_fdf_solver_->dx, _fit_mf_fdf_solver_->x,
                                            _fit_eps_, _fit_eps_);
     at_fit_step_do();
 
-    DT_LOG_DEBUG(get_logging_priority(), "Test_delta status = " << gsl_strerror(_fit_status_));
   } while ((_fit_status_ == GSL_CONTINUE) && (_fit_iter_ < _fit_max_iter_));
 
   if (_fit_status_ <= GSL_SUCCESS) {
-    DT_LOG_DEBUG(get_logging_priority(), "Calling gsl_multifit_covar...");
 #if GSL_MAJOR_VERSION > 1
     gsl_matrix *J = gsl_matrix_alloc(_fit_npoints_, _fit_npars_);
     gsl_multifit_fdfsolver_jac(_fit_mf_fdf_solver_, J);
@@ -734,16 +619,17 @@ void line_fit_mgr::fit() {
   } else {
     _solution_.ok = false;
   }
-  return;
 }
 
 void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hits_ref_,
                                       geomtools::placement &pl_, const uint32_t flags_) {
   datatools::logger::priority local_priority = datatools::logger::PRIO_FATAL;
-  if (flags_ & WARNING) local_priority = datatools::logger::PRIO_WARNING;
-  if (flags_ & DEVEL) local_priority = datatools::logger::PRIO_TRACE;
-
-  DT_LOG_TRACE(local_priority, "Entering...");
+  if ((flags_ & WARNING) != 0u) {
+    local_priority = datatools::logger::PRIO_WARNING;
+  }
+  if ((flags_ & DEVEL) != 0u) {
+    local_priority = datatools::logger::PRIO_TRACE;
+  }
 
   // Clean stuff before doing anything
   hits_ref_.clear();
@@ -755,8 +641,8 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
                                                       << minimum_number_of_hits << ")!");
     return;
   }
-  gg_hits_col::const_iterator iter_hit_1 = hits_.end();
-  gg_hits_col::const_iterator iter_hit_2 = hits_.end();
+  auto iter_hit_1 = hits_.end();
+  auto iter_hit_2 = hits_.end();
   // // 2012-10-08 FM :
   // // GG hits map with infos :
   // 2012-11-02 XG :
@@ -765,14 +651,14 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
   // build_hit_info_map(hits_, gg_hit_infos, 2);
 
   double dist = -1.0;
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
+  for (auto i = hits_.begin(); i != hits_.end(); ++i) {
     const gg_hit &hit_1 = *i;
     const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
 
     // Loop on the other hits :
-    gg_hits_col::const_iterator j_start = i;
+    auto j_start = i;
     j_start++;
-    for (gg_hits_col::const_iterator j = j_start; j != hits_.end(); ++j) {
+    for (auto j = j_start; j != hits_.end(); ++j) {
       const gg_hit &hit_2 = *j;
       const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), hit_2.get_z());
 
@@ -800,38 +686,34 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
   pl_.set_orientation(best_phi, 0., 0.);
 
   // Compute the hits' positions in the new frame :
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
+  for (const auto &i : hits_) {
     {
       gg_hit dummy_hit;
       hits_ref_.push_back(dummy_hit);
     }
     gg_hit &hit = hits_ref_.back();
     // Copy the hit contents in the new transformed hit :
-    hit = *i;
-    geomtools::vector_3d pos(i->get_x(), i->get_y(), i->get_z());
+    hit = i;
+    geomtools::vector_3d pos(i.get_x(), i.get_y(), i.get_z());
     geomtools::vector_3d pos_ref;
     // Compute the hit position in the working reference frame:
-    pl_.mother_to_child(geomtools::vector_3d(i->get_x(), i->get_y(), i->get_z()), pos_ref);
+    pl_.mother_to_child(geomtools::vector_3d(i.get_x(), i.get_y(), i.get_z()), pos_ref);
     hit.set_x(pos_ref.x());
     hit.set_y(pos_ref.y());
     hit.set_z(pos_ref.z());
     hit.set_phi_ref(best_phi);
   }
-  DT_LOG_TRACE(local_priority, "Exiting.");
-  return;
 }
 
 double line_fit_mgr::residual_function(double x_, void *params_) {
   datatools::logger::priority local_priority = datatools::logger::PRIO_ERROR;
-  DT_LOG_TRACE(local_priority, "Entering...");
-  const line_fit_residual_function_param *param_ptr =
-      static_cast<const line_fit_residual_function_param *>(params_);
-  DT_THROW_IF(param_ptr == 0, std::logic_error, "Invalid cast !");
+  const auto *param_ptr = static_cast<const line_fit_residual_function_param *>(params_);
+  DT_THROW_IF(param_ptr == nullptr, std::logic_error, "Invalid cast !");
 
   const line_fit_residual_function_param &param = *param_ptr;
 
   // calibration
-  DT_THROW_IF(param.using_drift_time && param.dtc == 0, std::logic_error,
+  DT_THROW_IF(param.using_drift_time && param.dtc == nullptr, std::logic_error,
               "Drift time should be recomputed by some drift-time calibration algo !");
   const i_drift_time_calibration *dtc = param.dtc;
   const bool using_first = param.using_first;
@@ -851,17 +733,21 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   // dynamic parameter:
   const int mode = param.mode;
   const int residual_type = param.residual_type;
-  if (mode == line_fit_params::PARAM_INDEX_Z0) z0 = x_;
-  if (mode == line_fit_params::PARAM_INDEX_Y0) y0 = x_;
-  if (mode == line_fit_params::PARAM_INDEX_PHI) phi = x_;
-  if (mode == line_fit_params::PARAM_INDEX_THETA) theta = x_;
-  if (mode == line_fit_params::PARAM_INDEX_T0) t0 = x_;
-  DT_LOG_TRACE(local_priority, "mode  = " << mode);
-  DT_LOG_TRACE(local_priority, "t0    = " << t0 / CLHEP::ns << " ns");
-  DT_LOG_TRACE(local_priority, "z0    = " << z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "y0    = " << y0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "phi   = " << phi / CLHEP::degree << " degree");
-  DT_LOG_TRACE(local_priority, "theta = " << theta / CLHEP::degree << " degree");
+  if (mode == line_fit_params::PARAM_INDEX_Z0) {
+    z0 = x_;
+  }
+  if (mode == line_fit_params::PARAM_INDEX_Y0) {
+    y0 = x_;
+  }
+  if (mode == line_fit_params::PARAM_INDEX_PHI) {
+    phi = x_;
+  }
+  if (mode == line_fit_params::PARAM_INDEX_THETA) {
+    theta = x_;
+  }
+  if (mode == line_fit_params::PARAM_INDEX_T0) {
+    t0 = x_;
+  }
 
   // parameters from the hit:
   const bool last = param.last;
@@ -889,9 +775,6 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   // time value
   if (using_drift_time) {
     double drift_time = ti - t0;
-    DT_LOG_TRACE(local_priority, "ti         = " << ti / CLHEP::ns << " ns");
-    DT_LOG_TRACE(local_priority, "t0         = " << t0 / CLHEP::ns << " ns");
-    DT_LOG_TRACE(local_priority, "drift_time = " << drift_time / CLHEP::ns << " ns");
     if (!dtc->drift_time_is_valid(drift_time)) {
       DT_LOG_WARNING(local_priority, "Drift_time is out of physics range!");
       // 2012-11-02 XG: This is a bit harsh !
@@ -909,10 +792,6 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   //     sigma_drift_distance = rmaxi / 2.;
   //   }
 
-  DT_LOG_TRACE(local_priority, "drift_distance= " << drift_distance / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority,
-               "sigma_drift_distance= " << sigma_drift_distance / CLHEP::mm << " mm");
-
   // compute direction of the line:
   const double ex = std::sin(theta) * std::cos(phi);
   const double ey = std::sin(theta) * std::sin(phi);
@@ -922,10 +801,6 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   const double Uix = xi;
   const double Uiy = yi - y0;
   const double lambda = (Uix * ex + Uiy * ey) / (ex * ex + ey * ey);
-  DT_LOG_TRACE(local_priority, "ex = " << ex << " ");
-  DT_LOG_TRACE(local_priority, "ey = " << ey << " ");
-  DT_LOG_TRACE(local_priority, "ez = " << ez << " ");
-  DT_LOG_TRACE(local_priority, "lambda = " << lambda << " ");
 
   const geomtools::vector_2d OOd(0.0, y0);
   const geomtools::vector_2d OdPi(lambda * ex, lambda * ey);
@@ -970,12 +845,6 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   const double sigma_ri = sigma_drift_distance;
   const double zPi = z0 + lambda * ez;
   const double beta_i = zi - zPi;
-  DT_LOG_TRACE(local_priority, "z0 = " << z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "zPi = " << zPi / CLHEP::mm << " mm");
-  DT_LOG_TRACE(local_priority, "alpha_i = " << alpha_i);
-  DT_LOG_TRACE(local_priority, "sigma_ri = " << sigma_ri);
-  DT_LOG_TRACE(local_priority, "beta_i = " << beta_i);
-  DT_LOG_TRACE(local_priority, "sigma_zi = " << sigma_zi);
 
   double Ri;
   if (residual_type == line_fit_residual_function_param::RESIDUAL_ALPHA) {
@@ -985,7 +854,6 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   } else {
     DT_THROW_IF(true, std::logic_error, "Invalid residual type !");
   }
-  DT_LOG_TRACE(local_priority, "Exiting.");
   return Ri;
 }
 
@@ -1020,7 +888,7 @@ void line_fit_mgr::get_residuals_per_hit(size_t hit_index_, double &alpha_residu
     }
   }
   size_t count = 0;
-  gg_hits_col::const_iterator it_hit = hits->end();
+  auto it_hit = hits->end();
   for (it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, count++) {
     if (count == hit_index_) {
       break;
@@ -1044,13 +912,9 @@ void line_fit_mgr::get_residuals_per_hit(size_t hit_index_, double &alpha_residu
   alpha_residual_ = residual_function(param.z0, &param);
   param.residual_type = line_fit_residual_function_param::RESIDUAL_BETA;
   beta_residual_ = residual_function(param.z0, &param);
-  return;
 }
 
 int line_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f_) {
-  datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-  DT_LOG_TRACE(local_priority, "Entering...");
-
   // initialize the line parameters:
   line_fit_residual_function_param param;
   param.z0 = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_Z0);
@@ -1058,7 +922,7 @@ int line_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f_
   param.phi = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_PHI);
   param.theta = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_THETA);
 
-  const line_fit_data *lf_data = static_cast<const line_fit_data *>(params_);
+  const auto *lf_data = static_cast<const line_fit_data *>(params_);
   param.dtc = lf_data->calibration;
   param.using_first = lf_data->using_first;
   param.using_last = lf_data->using_last;
@@ -1068,11 +932,11 @@ int line_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f_
     param.t0 = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_T0);
   }
 
-  const gg_hits_col *hits = static_cast<const gg_hits_col *>(lf_data->hits);
+  const auto *hits = static_cast<const gg_hits_col *>(lf_data->hits);
+
 
   size_t i = 0;
-  for (gg_hits_col::const_iterator it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
-    DT_LOG_TRACE(local_priority, "hit #" << i);
+  for (auto it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
     // pick up useful values from the hit:
     param.last = it_hit->is_last();
     param.first = it_hit->is_first();
@@ -1089,19 +953,13 @@ int line_fit_mgr::residual_f(const gsl_vector *x_, void *params_, gsl_vector *f_
     const double residuali_alpha = residual_function(param.z0, &param);
     param.residual_type = line_fit_residual_function_param::RESIDUAL_BETA;
     const double residuali_beta = residual_function(param.z0, &param);
-    DT_LOG_TRACE(local_priority, "residuali_alpha =" << residuali_alpha);
-    DT_LOG_TRACE(local_priority, "residuali_beta  =" << residuali_beta);
     gsl_vector_set(f_, i, residuali_alpha);
     gsl_vector_set(f_, i + hits->size(), residuali_beta);
   }
-  DT_LOG_TRACE(local_priority, "Exiting.");
   return GSL_SUCCESS;
 }
 
 int line_fit_mgr::residual_df(const gsl_vector *x_, void *params_, gsl_matrix *J_) {
-  datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-  DT_LOG_TRACE(local_priority, "Entering...");
-
   // initialize the line parameters:
   line_fit_residual_function_param param;
   param.z0 = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_Z0);
@@ -1109,7 +967,7 @@ int line_fit_mgr::residual_df(const gsl_vector *x_, void *params_, gsl_matrix *J
   param.phi = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_PHI);
   param.theta = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_THETA);
 
-  const line_fit_data *lf_data = static_cast<const line_fit_data *>(params_);
+  const auto *lf_data = static_cast<const line_fit_data *>(params_);
   param.dtc = lf_data->calibration;
   param.using_first = lf_data->using_first;
   param.using_last = lf_data->using_last;
@@ -1119,11 +977,10 @@ int line_fit_mgr::residual_df(const gsl_vector *x_, void *params_, gsl_matrix *J
     param.t0 = gsl_vector_get(x_, line_fit_params::PARAM_INDEX_T0);
   }
 
-  const gg_hits_col *hits = static_cast<const gg_hits_col *>(lf_data->hits);
+  const auto *hits = static_cast<const gg_hits_col *>(lf_data->hits);
 
   size_t i = 0;
-  for (gg_hits_col::const_iterator it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
-    DT_LOG_TRACE(local_priority, "hit #" << i);
+  for (auto it_hit = hits->begin(); it_hit != hits->end(); ++it_hit, ++i) {
     // pick up useful values from the hit:
     param.last = it_hit->is_last();
     param.first = it_hit->is_first();
@@ -1221,7 +1078,6 @@ int line_fit_mgr::residual_df(const gsl_vector *x_, void *params_, gsl_matrix *J
       }
     }
   }
-  DT_LOG_TRACE(local_priority, "Exiting.");
   return GSL_SUCCESS;
 }
 
@@ -1240,8 +1096,8 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
     f1.open("aaa.data");
   }
   //<<<
-  gg_hits_col::const_iterator i_neg = hits_ref_.end();
-  gg_hits_col::const_iterator i_pos = hits_ref_.end();
+  auto i_neg = hits_ref_.end();
+  auto i_pos = hits_ref_.end();
   geomtools::vector_3d dir(1.0, 0.0, 0.0);
   dir.setPhi(sol_.phi);
   dir.setTheta(sol_.theta);
@@ -1252,7 +1108,7 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
   double dmax_n = -1.0;
   double dmax_p = -1.0;
   const double point_sz = 4.0 * CLHEP::mm;
-  for (gg_hits_col::const_iterator i = hits_ref_.begin(); i != hits_ref_.end(); i++) {
+  for (auto i = hits_ref_.begin(); i != hits_ref_.end(); i++) {
     const geomtools::vector_3d Oi(i->get_x(), i->get_y(), i->get_z());
     const geomtools::vector_3d OdOi = Od - Oi;
     if (draw) {
@@ -1300,7 +1156,6 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
   }
   line_.set_first(pl_.child_to_mother(first));
   line_.set_last(pl_.child_to_mother(last));
-  return;
 }
 
 /****************************************************************************/
@@ -1326,18 +1181,11 @@ void line_fit_mgr::guess_utils::_set_defaults() {
   _use_guess_trust_ = false;
   _guess_trust_mode_ = fit_utils::GUESS_TRUST_MODE_COUNTER;
   _fit_delayed_clusters_ = false;
-  return;
 }
 
-line_fit_mgr::guess_utils::guess_utils() {
-  _set_defaults();
-  return;
-}
+line_fit_mgr::guess_utils::guess_utils() { _set_defaults(); }
 
-void line_fit_mgr::guess_utils::reset() {
-  _set_defaults();
-  return;
-}
+void line_fit_mgr::guess_utils::reset() { _set_defaults(); }
 
 void line_fit_mgr::guess_utils::initialize(const datatools::properties &config_) {
   datatools::logger::priority p = datatools::logger::PRIO_UNDEFINED;
@@ -1371,17 +1219,11 @@ void line_fit_mgr::guess_utils::initialize(const datatools::properties &config_)
       }
     }
   }
-
-  return;
 }
 
 bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int guess_mode_,
                                               line_fit_params &guess_) {
-  DT_LOG_TRACE(_logging_priority_, "Entering...");
-
   const int guess_mode = guess_mode_;
-  DT_LOG_TRACE(_logging_priority_, "guess_mode = " << guess_mode_label(guess_mode));
-
   const size_t minimum_number_of_hits = line_fit_mgr::constants::min_number_of_hits();
   if (hits_.size() < minimum_number_of_hits) {
     DT_LOG_WARNING(_logging_priority_, "Not enough hits(" << hits_.size() << " < min=="
@@ -1391,8 +1233,7 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
 
   // Check if the cluster is or not delayed
   bool is_cluster_delayed = true;
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
-    const gg_hit &a_hit = *i;
+  for (const auto &a_hit : hits_) {
     if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
       is_cluster_delayed = false;
       break;
@@ -1405,14 +1246,14 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
 
   double dist = -std::numeric_limits<double>::infinity();
   double start_time = std::numeric_limits<double>::infinity();
-  gg_hits_col::const_iterator iter_hit_1 = hits_.end();
-  gg_hits_col::const_iterator iter_hit_2 = hits_.end();
+  auto iter_hit_1 = hits_.end();
+  auto iter_hit_2 = hits_.end();
 
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i) {
+  for (auto i = hits_.begin(); i != hits_.end(); ++i) {
     const geomtools::vector_3d pos1(i->get_x(), i->get_y(), i->get_z());
-    gg_hits_col::const_iterator j_start = i;
+    auto j_start = i;
     j_start++;
-    for (gg_hits_col::const_iterator j = j_start; j != hits_.end(); j++) {
+    for (auto j = j_start; j != hits_.end(); j++) {
       const geomtools::vector_3d pos2(j->get_x(), j->get_y(), j->get_z());
       const double d = (pos2 - pos1).mag();
       if (d > dist) {
@@ -1431,19 +1272,12 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     std::swap(hit1, hit2);
   }
 
-  DT_LOG_TRACE(_logging_priority_, "Max cell radius: " << hit1.get_rmax() / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Hits 1 & 2: ");
-  if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-    hit1.tree_dump(std::clog, "Hit 1:", "[trace]: ");
-    hit2.tree_dump(std::clog, "Hit 2:", "[trace]: ");
-  }
   geomtools::vector_3d phit1(hit1.get_x(), hit1.get_y(), hit1.get_z());
   geomtools::vector_3d phit2(hit2.get_x(), hit2.get_y(), hit2.get_z());
 
   const geomtools::vector_2d dd((phit2 - phit1).x(), (phit2 - phit1).y());
   const geomtools::vector_2d dd2 = dd.unit();
   const geomtools::vector_2d shift_dir = dd2.orthogonal();
-  DT_LOG_TRACE(_logging_priority_, "dd2=" << dd2);
 
   double guess_bt_factor = fit_utils::default_guess_bt_factor();
   const bool use_rmax = _use_max_radius_;
@@ -1460,36 +1294,15 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
 
   // compute guesses
   const bool use_guess_trust = _use_guess_trust_;
-  DT_LOG_TRACE(_logging_priority_, "use_guess_trust = " << use_guess_trust);
 
   // clarity and debugging purpose
-  int computed_guess_trust[2];
+  int computed_guess_trust[2] = {fit_utils::INVALID_HYPOTHESIS, fit_utils::INVALID_HYPOTHESIS};
   if (use_guess_trust) {
     if (_guess_trust_mode_ == fit_utils::GUESS_TRUST_MODE_COUNTER) {
       computed_guess_trust[0] =
           fit_utils::compute_guess_trust_counter(hits_, phit1, phit1 - shift1, phit1 + shift1);
       computed_guess_trust[1] =
           fit_utils::compute_guess_trust_counter(hits_, phit2, phit2 - shift2, phit2 + shift2);
-    }
-
-    /*
-      if (_guess_trust_mode_ == fit_utils::GUESS_TRUST_MODE_BARYCENTER)
-      {
-      computed_guess_trust[0] = fit_utils::compute_guess_trust_barycenter(gg_hit_infos, hit_1, H1,
-      H1 + shift1, H1 - shift1); computed_guess_trust[1] =
-      fit_utils::compute_guess_trust_barycenter(gg_hit_infos, hit_2, H2, H2 + shift2, H2 - shift2);
-      }
-    */
-
-    if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
-      for (size_t i = 0; i < 2; ++i) {
-        std::ostringstream message;
-        message << "computed_guess_trust[" << i << "]= " << computed_guess_trust[i] << " ";
-        if (computed_guess_trust[i] == fit_utils::INVALID_HYPOTHESIS) message << "invalid";
-        if (computed_guess_trust[i] == fit_utils::BOTTOM_HYPOTHESIS) message << "bottom";
-        if (computed_guess_trust[i] == fit_utils::TOP_HYPOTHESIS) message << "top";
-        DT_LOG_TRACE(_logging_priority_, message.str());
-      }
     }
   }
 
@@ -1545,11 +1358,6 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
   guess_.phi = dir0.phi();
   guess_.theta = dir0.theta();
   guess_.t0 = start_time;
-  DT_LOG_TRACE(_logging_priority_, "Guess.y0:    " << guess_.y0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Guess.z0:    " << guess_.z0 / CLHEP::mm << " mm");
-  DT_LOG_TRACE(_logging_priority_, "Guess.phi:   " << guess_.phi / CLHEP::degree << " degree");
-  DT_LOG_TRACE(_logging_priority_, "Guess.theta: " << guess_.theta / CLHEP::degree << " degree");
-  DT_LOG_TRACE(_logging_priority_, "Guess.t0:    " << guess_.t0 / CLHEP::ns << " ns");
 
   return true;
 }
