@@ -56,16 +56,16 @@ namespace reconstruction {
 class sultan_then_cat_driver : public ::snemo::processing::base_tracker_clusterizer {
  public:
   static const std::string SULTAN_THEN_CAT_ID;
+ 
+  sultan_then_cat_driver();
+
+  virtual ~sultan_then_cat_driver();
 
   /// Set the mag field
   void set_magfield(double);
 
   /// Return the mag field
   double get_magfield() const;
-
-  sultan_then_cat_driver();
-
-  virtual ~sultan_then_cat_driver();
 
   /// Initialize the clusterizer through configuration properties
   virtual void initialize(const datatools::properties& setup_);
