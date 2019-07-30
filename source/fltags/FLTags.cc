@@ -32,8 +32,7 @@ namespace FLTags {
   fltags::fltags(const FLTags::FLTagsArgs & args_)
     : _args_(args_)
   {
-    return;
-  }
+     }
 
   void fltags::run()
   {
@@ -47,8 +46,7 @@ namespace FLTags {
     if (_args_.action == "graph") {
       _run_generate_graph_();
     }
-    return;
-  }
+     }
 
   void fltags::_run_print_list_()
   {
@@ -103,8 +101,7 @@ namespace FLTags {
 
     out = nullptr;
     hfout.reset();
-    return;
-  }
+ }
 
   void fltags::_run_generate_graph_()
   {
@@ -164,7 +161,6 @@ namespace FLTags {
       std::clog << "***********************************************" << std::endl;
       std::clog << std::endl;
     }
-    return;
-  }
+     }
 
 }  // namespace FLTags
