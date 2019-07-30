@@ -63,38 +63,41 @@ bool property_set::is_type_impl_(std::string const& key, bool /*unused*/) const 
   return ps_.is_boolean(key) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::string /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key, const std::string& /*unused*/) const {
   // Request for raw string implies a non-path type string is wanted
   return ps_.is_string(key) && (!ps_.is_explicit_path(key)) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, falaise::config::path /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const falaise::config::path& /*unused*/) const {
   return ps_.is_explicit_path(key) && ps_.is_scalar(key);
 }
 
 bool property_set::is_type_impl_(std::string const& key,
-                                 falaise::config::quantity /*unused*/) const {
+                                 const falaise::config::quantity& /*unused*/) const {
   // Quantity must be real, and have explicit unit *and* unit symbol
   return ps_.is_real(key) && ps_.has_explicit_unit(key) && ps_.has_unit_symbol(key) &&
          ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<int> /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key, const std::vector<int>& /*unused*/) const {
   return ps_.is_integer(key) && ps_.is_vector(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<double> /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const std::vector<double>& /*unused*/) const {
   // vector of raw doubles is always dimensionless
   return ps_.is_real(key) && (!ps_.has_explicit_unit(key)) && (!ps_.has_unit_symbol(key)) &&
          ps_.is_vector(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<bool> /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const std::vector<bool>& /*unused*/) const {
   return ps_.is_boolean(key) && ps_.is_vector(key);
 }
 
 bool property_set::is_type_impl_(std::string const& key,
-                                 std::vector<std::string> /*unused*/) const {
+                                 const std::vector<std::string>& /*unused*/) const {
   return ps_.is_string(key) && ps_.is_vector(key);
 }
 

@@ -360,26 +360,26 @@ class property_set {
   bool is_type_impl_(std::string const& key, bool) const;
 
   //! Return true if value at key is a non-path std::string
-  bool is_type_impl_(std::string const& key, std::string) const;
+  bool is_type_impl_(std::string const& key, const std::string&) const;
 
   //! Return true if value at key is a falaise::path
-  bool is_type_impl_(std::string const& key, falaise::config::path) const;
+  bool is_type_impl_(std::string const& key, const falaise::config::path&) const;
 
   //! Return true if value at key is a falaise::quantity
-  bool is_type_impl_(std::string const& key, falaise::config::quantity) const;
+  bool is_type_impl_(std::string const& key, const falaise::config::quantity&) const;
 
   //! Return true if value at key is a std::vector<int>
-  bool is_type_impl_(std::string const& key, std::vector<int>) const;
+  bool is_type_impl_(std::string const& key, const std::vector<int>&) const;
 
   //! Return true if value at key is a std::vector<double> (dimensionless
   //! doubles)
-  bool is_type_impl_(std::string const& key, std::vector<double>) const;
+  bool is_type_impl_(std::string const& key, const std::vector<double>&) const;
 
   //! Return true if value at key is a std::vector<bool>
-  bool is_type_impl_(std::string const& key, std::vector<bool>) const;
+  bool is_type_impl_(std::string const& key, const std::vector<bool>&) const;
 
   //! Return true if value at key is a std::vector<std::string>
-  bool is_type_impl_(std::string const& key, std::vector<std::string>) const;
+  bool is_type_impl_(std::string const& key, const std::vector<std::string>&) const;
 
   //! Insert key-value pair
   /*!
@@ -450,7 +450,8 @@ T property_set::get(std::string const& key, T const& default_value) const {
 
 // Specialization of get for @ref property_set
 template <>
-inline property_set property_set::get(std::string const& key, property_set const& default_value) const {
+inline property_set property_set::get(std::string const& key,
+                                      property_set const& default_value) const {
   if (!is_key_to_property_set(key)) {
     return default_value;
   }
@@ -470,13 +471,13 @@ void property_set::put(std::string const& key, T const& value) {
 // Specialization of put for @ref property_set
 template <>
 inline void property_set::put(std::string const& key, property_set const& value) {
- // Check both key/table existence
+  // Check both key/table existence
   if (ps_.has_key(key) || is_key_to_property_set(key)) {
     throw existing_key_error{"property_set already contains key " + key};
   }
   // Have to resort to the low level interface to put data in
   for (auto& subkey : (value.ps_).keys()) {
-    ps_.store(key+"."+subkey, (value.ps_).get(subkey));
+    ps_.store(key + "." + subkey, (value.ps_).get(subkey));
   }
 }
 
@@ -520,7 +521,8 @@ inline void property_set::put_impl_(std::string const& key, falaise::config::pat
 
 //! Private specialization of put_impl_ for @ref quantity
 template <>
-inline void property_set::put_impl_(std::string const& key, falaise::config::quantity const& value) {
+inline void property_set::put_impl_(std::string const& key,
+                                    falaise::config::quantity const& value) {
   ps_.store_with_explicit_unit(key, value.value());
   ps_.set_unit_symbol(key, value.unit());
 }
@@ -546,7 +548,8 @@ inline void property_set::get_impl_(std::string const& key, falaise::config::pat
 
 // Private specialization of get_impl_ for @ref units::quantity type
 template <>
-inline void property_set::get_impl_(std::string const& key, falaise::config::quantity& result) const {
+inline void property_set::get_impl_(std::string const& key,
+                                    falaise::config::quantity& result) const {
   result = {ps_.fetch_real_with_explicit_unit(key), ps_.get_unit_symbol(key)};
 }
 

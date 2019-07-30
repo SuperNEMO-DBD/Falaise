@@ -23,27 +23,28 @@ bool visit_impl(const datatools::properties& p, const std::string& key, bool /*u
   return p.is_boolean(key) && p.is_scalar(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::string /*unused*/) {
+bool visit_impl(const datatools::properties& p, const std::string& key,
+                const std::string& /*unused*/) {
   return p.is_string(key) && p.is_scalar(key);
 }
 
 bool visit_impl(const datatools::properties& p, const std::string& key,
-                std::vector<int> /*unused*/) {
+                const std::vector<int>& /*unused*/) {
   return p.is_integer(key) && p.is_vector(key);
 }
 
 bool visit_impl(const datatools::properties& p, const std::string& key,
-                std::vector<double> /*unused*/) {
+                const std::vector<double>& /*unused*/) {
   return p.is_real(key) && p.is_vector(key);
 }
 
 bool visit_impl(const datatools::properties& p, const std::string& key,
-                std::vector<bool> /*unused*/) {
+                const std::vector<bool>& /*unused*/) {
   return p.is_boolean(key) && p.is_vector(key);
 }
 
 bool visit_impl(const datatools::properties& p, const std::string& key,
-                std::vector<std::string> /*unused*/) {
+                const std::vector<std::string>& /*unused*/) {
   return p.is_string(key) && p.is_vector(key);
 }
 
