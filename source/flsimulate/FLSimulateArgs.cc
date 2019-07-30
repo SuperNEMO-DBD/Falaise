@@ -110,7 +110,7 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
   flSimParameters.outputFile = args.outputFile;
   flSimParameters.mountPoints = args.mountPoints;
 
-  if (flSimParameters.mountPoints.size()) {
+  if (static_cast<unsigned int>(!flSimParameters.mountPoints.empty()) != 0u) {
     // Apply mount points as soon as possible, because manually set file path below
     // may use this mechanism to locate files:
     datatools::kernel& dtk = datatools::kernel::instance();
@@ -359,7 +359,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
   }  // !args.configScript.empty()
 
   do_postprocess(flSimParameters);
-  return;
 }
 
 void do_postprocess(FLSimulateArgs& flSimParameters) {
@@ -569,7 +568,6 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
   }
 
   DT_LOG_TRACE_EXITING(flSimParameters.logLevel);
-  return;
 }
 
 void FLSimulateArgs::print(std::ostream& out_) const {
@@ -602,7 +600,6 @@ void FLSimulateArgs::print(std::ostream& out_) const {
   out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
   out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
   out_ << last_tag << "outputFile                 = " << outputFile << std::endl;
-  return;
 }
 
 }  // namespace FLSimulate

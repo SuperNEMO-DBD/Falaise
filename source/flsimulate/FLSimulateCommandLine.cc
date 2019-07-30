@@ -33,7 +33,7 @@ FLSimulateCommandLine FLSimulateCommandLine::makeDefault() {
 
 void do_version(std::ostream& os, bool isVerbose) {
   std::string commitInfo{};
-  if (falaise::version::get_commit() != "") {
+  if (!falaise::version::get_commit().empty()) {
     commitInfo = " (" + falaise::version::get_commit();
     commitInfo += falaise::version::is_dirty() ? "-dirty" : "";
     commitInfo += ")";
@@ -52,7 +52,6 @@ void do_version(std::ostream& os, bool isVerbose) {
        << "\n"
        << "\n\n";
   }
-  return;
 }
 
 void do_help(const bpo::options_description& od) {
@@ -61,7 +60,6 @@ void do_help(const bpo::options_description& od) {
   std::cout << "Usage:\n"
             << "  flsimulate [options]\n"
             << od << "\n";
-  return;
 }
 
 void do_help_scripting(std::ostream& os) {
@@ -94,13 +92,14 @@ void do_help_scripting(std::ostream& os) {
      << "All sections and parameters are optional, and flsimulate will supply sensible\n"
      << "default values when only some are set.\n"
      << std::endl;
-  return;
 }
 
 void do_help_simulation_setup(std::ostream& os) {
   std::map<std::string, std::string> m = ::FLSimulate::list_of_simulation_setups();
   std::clog << "List of supported simulation setups: ";
-  if (m.empty()) std::clog << "<empty>";
+  if (m.empty()) {
+    std::clog << "<empty>";
+  }
   std::clog << std::endl;
   for (const auto& entry : m) {
     os << entry.first << " : ";
@@ -111,7 +110,6 @@ void do_help_simulation_setup(std::ostream& os) {
     }
     os << std::endl;
   }
-  return;
 }
 
 void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
@@ -188,8 +186,8 @@ void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {
     // We need to handle help/version even if required_option thrown
-    if (!vMap.count("help") && !vMap.count("version") && !vMap.count("help-scripting") &&
-        !vMap.count("help-simulation-setup")) {
+    if ((vMap.count("help") == 0u) && (vMap.count("version") == 0u) &&
+        (vMap.count("help-scripting") == 0u) && (vMap.count("help-simulation-setup") == 0u)) {
       std::cerr << "[OptionsException] " << e.what() << std::endl;
       throw FLDialogOptionsError();
     }
@@ -199,38 +197,36 @@ void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
   }
 
   // Handle any non-bound options
-  if (vMap.count("help")) {
+  if (vMap.count("help") != 0u) {
     do_help(optDesc);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("version")) {
+  if (vMap.count("version") != 0u) {
     do_version(std::cout, true);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("help-scripting")) {
+  if (vMap.count("help-scripting") != 0u) {
     do_help_scripting(std::cout);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("help-simulation-setup")) {
+  if (vMap.count("help-simulation-setup") != 0u) {
     do_help_simulation_setup(std::cout);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("verbosity")) {
+  if (vMap.count("verbosity") != 0u) {
     clArgs.logLevel = datatools::logger::get_priority(verbosityLabel);
     if (clArgs.logLevel == datatools::logger::PRIO_UNDEFINED) {
       throw FLDialogOptionsError();
     }
   }
 
-  if (!falaise::common::supported_user_profiles().count(clArgs.userProfile)) {
+  if (falaise::common::supported_user_profiles().count(clArgs.userProfile) == 0u) {
     DT_THROW(FLDialogOptionsError, "Invalid user profile '" << clArgs.userProfile << "'");
   }
-
-  return;
 }
 
 }  // namespace FLSimulate
