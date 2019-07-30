@@ -93,8 +93,8 @@ class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder {
                                     cluster_collection_type& clusters_) const;
 
   /// Associate clusters given Time-Of-Flight calculation
-  virtual void _get_tof_association(const cluster_collection_type& from_clusters_,
-                                    cluster_collection_type& to_clusters_) const;
+  virtual void _get_tof_association(const cluster_collection_type& the_reconstructed_clusters,
+                                    cluster_collection_type& the_reconstructed_gammas) const;
 
   /// Return Time-Of-Flight probability between 2 calorimeter hits
   virtual double _get_tof_probability(
@@ -107,10 +107,10 @@ class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder {
       const snemo::datamodel::calibrated_calorimeter_hit& tail_begin_calo_hit_) const;
 
  private:
-  double _cluster_time_range_;      //!< The time condition for clustering
-  std::string _cluster_grid_mask_;  //!< The spatial condition for clustering
-  double _min_prob_;                //!< The minimal probability required between clusters
-  double _sigma_time_good_calo_;    //!< The minimal time resolution to consider calorimeter hit
+  double timeRange_;          //!< The time condition for clustering
+  std::string gridMask_;      //!< The spatial condition for clustering
+  double minProbability_;     //!< The minimal probability required between clusters
+  double minTimeResolution_;  //!< The minimal time resolution to consider calorimeter hit
 };
 
 }  // end of namespace reconstruction

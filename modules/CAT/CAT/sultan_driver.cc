@@ -35,7 +35,6 @@ const std::string sultan_driver::SULTAN_ID = "SULTAN";
 void sultan_driver::set_magfield(double value_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "SULTAN driver is already initialized!");
   _magfield_ = value_;
-  return;
 }
 
 double sultan_driver::get_magfield() const { return _magfield_; }
@@ -46,7 +45,6 @@ void sultan_driver::set_magfield_direction(double dir_) {
   } else {
     _magfield_dir_ = -1.0;
   }
-  return;
 }
 
 double sultan_driver::get_magfield_direction() const { return _magfield_dir_; }
@@ -54,16 +52,30 @@ double sultan_driver::get_magfield_direction() const { return _magfield_dir_; }
 sultan_driver::sultan_driver()
     : ::snemo::processing::base_tracker_clusterizer(sultan_driver::SULTAN_ID) {
   _set_defaults();
-  return;
 }
 
-sultan_driver::~sultan_driver() {
-  if (is_initialized()) {
-    this->sultan_driver::reset();
-  }
-  return;
+sultan_driver::~sultan_driver() = default;
+
+void sultan_driver::_set_defaults() {
+  _SULTAN_setup_.reset();
+  _sigma_z_factor_ = 1.0;
+  datatools::invalidate(_magfield_);
+  _magfield_dir_ = +1.0;
+  _process_calo_hits_ = true;
+  _calo_locator_ = nullptr;
+  _xcalo_locator_ = nullptr;
+  _gveto_locator_ = nullptr;
+  this->base_tracker_clusterizer::_reset();
 }
 
+// Reset the Sultan
+void sultan_driver::reset() {
+  _set_initialized(false);
+  _SULTAN_clusterizer_.finalize();
+  _SULTAN_sultan_.finalize();
+  _set_defaults();
+  this->base_tracker_clusterizer::_reset();
+}
 // Initialize the clusterizer through configuration properties
 void sultan_driver::initialize(const datatools::properties& setup_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "SULTAN driver is already initialized!");
@@ -237,9 +249,8 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
   // If no locator plugin name is set, then search for the first one
   if (locator_plugin_name.empty()) {
     const geomtools::manager::plugins_dict_type& plugins = geo_mgr.get_plugins();
-    for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
-         ip != plugins.end(); ip++) {
-      const std::string& plugin_name = ip->first;
+    for (const auto& plugin : plugins) {
+      const std::string& plugin_name = plugin.first;
       if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
         DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
         locator_plugin_name = plugin_name;
@@ -252,23 +263,14 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
       geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
     DT_LOG_NOTICE(get_logging_priority(),
                   "Found locator plugin named '" << locator_plugin_name << "'");
-    const snemo::geometry::locator_plugin& lp =
-        geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
+    const auto& lp = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
     // Set the calo cell locator :
     _calo_locator_ = &(lp.get_calo_locator());
     _xcalo_locator_ = &(lp.get_xcalo_locator());
     _gveto_locator_ = &(lp.get_gveto_locator());
   }
-  if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
-    DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
-    _calo_locator_->tree_dump(std::clog, "", "[debug]: ");
-    DT_LOG_DEBUG(get_logging_priority(), "X-calo locator :");
-    _xcalo_locator_->tree_dump(std::clog, "", "[debug]: ");
-    DT_LOG_DEBUG(get_logging_priority(), "G-veto locator :");
-    _gveto_locator_->tree_dump(std::clog, "", "[debug]: ");
-  }
-
-  // Geometry description :
+ 
+   // Geometry description :
   _SULTAN_setup_.num_blocks = 1;
   _SULTAN_setup_.planes_per_block.clear();
   _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
@@ -301,33 +303,9 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
   _SULTAN_sultan_.initialize();
 
   _set_initialized(true);
-
-  return;
 }
 
-void sultan_driver::_set_defaults() {
-  _SULTAN_setup_.reset();
-  _sigma_z_factor_ = 1.0;
-  datatools::invalidate(_magfield_);
-  _magfield_dir_ = +1.0;
-  _process_calo_hits_ = true;
-  _calo_locator_ = 0;
-  _xcalo_locator_ = 0;
-  _gveto_locator_ = 0;
-  this->base_tracker_clusterizer::_reset();
-  return;
-}
 
-// Reset the Sultan
-void sultan_driver::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "SULTAN driver is not initialized !");
-  _set_initialized(false);
-  _SULTAN_clusterizer_.finalize();
-  _SULTAN_sultan_.finalize();
-  _set_defaults();
-  this->base_tracker_clusterizer::_reset();
-  return;
-}
 
 // Main clustering method
 int sultan_driver::_process_algo(
@@ -351,7 +329,9 @@ int sultan_driver::_process_algo(
   // GG hit loop :
   BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
     // Skip NULL handle :
-    if (!gg_handle.has_data()) continue;
+    if (!gg_handle.has_data()) {
+      continue;
+    }
 
     // Get a const reference on the calibrated Geiger hit :
     const sdm::calibrated_tracker_hit& snemo_gg_hit = gg_handle.get();
@@ -363,7 +343,6 @@ int sultan_driver::_process_algo(
                 "Calibrated tracker hit can not be located inside detector !");
 
     if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
-      DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
       continue;
     }
 
@@ -437,10 +416,6 @@ int sultan_driver::_process_algo(
 
     // Store mapping info between both data models :
     gg_hits_mapping[c.id()] = gg_handle;
-
-    DT_LOG_DEBUG(get_logging_priority(), "Geiger cell #"
-                                             << snemo_gg_hit.get_id() << " has been added "
-                                             << "to SULTAN input data with id number #" << c.id());
   }
 
   // Take into account calo hits:
@@ -458,7 +433,9 @@ int sultan_driver::_process_algo(
     BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
                    calo_hits_) {
       // Skip NULL handle :
-      if (!calo_handle.has_data()) continue;
+      if (!calo_handle.has_data()) {
+        continue;
+      }
 
       // Get a const reference on the calibrated Calo hit :
       const sdm::calibrated_calorimeter_hit& sncore_calo_hit = calo_handle.get();
@@ -526,10 +503,6 @@ int sultan_driver::_process_algo(
 
       // Store mapping info between both data models :
       calo_hits_mapping[c.id()] = calo_handle;
-
-      DT_LOG_DEBUG(get_logging_priority(),
-                   "Calo_cell #" << sncore_calo_hit.get_hit_id() << " has been added "
-                                 << "to SULTAN input data with id number #" << c.id());
     }
   }
 
@@ -554,10 +527,8 @@ int sultan_driver::_process_algo(
 
   // Analyse the Sultan output: scenarios made of sequences
   const std::vector<st::scenario>& tss = _SULTAN_output_.tracked_data.get_scenarios();
-  DT_LOG_DEBUG(get_logging_priority(), "Number of scenarios = " << tss.size());
 
-  for (std::vector<st::scenario>::const_iterator iscenario = tss.begin(); iscenario != tss.end();
-       ++iscenario) {
+  for (const auto& ts : tss) {
     // Add a new solution :
     sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
@@ -566,12 +537,10 @@ int sultan_driver::_process_algo(
     clustering_solution.get_auxiliaries().update_string(
         sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_ID);
 
-    const std::vector<st::sequence>& the_sequences = iscenario->sequences();
-    DT_LOG_DEBUG(get_logging_priority(), "Number of sequences = " << the_sequences.size());
+    const std::vector<st::sequence>& the_sequences = ts.sequences();
 
-    for (std::vector<st::sequence>::const_iterator isequence = the_sequences.begin();
-         isequence != the_sequences.end(); ++isequence) {
-      const st::sequence& a_sequence = *isequence;
+    for (const auto& the_sequence : the_sequences) {
+      const st::sequence& a_sequence = the_sequence;
       const size_t seqsz = a_sequence.nodes().size();
       if (seqsz <= 1) {
         // A SULTAN cluster with only one hit/cell(node) is ignored:
@@ -580,10 +549,9 @@ int sultan_driver::_process_algo(
       // Append a new cluster :
       sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
       clustering_solution.get_clusters().push_back(tch);
-      sdm::tracker_cluster::handle_type& cluster_handle =
-          clustering_solution.get_clusters().back();
+      sdm::tracker_cluster::handle_type& cluster_handle = clustering_solution.get_clusters().back();
       cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
-      const st::experimental_helix& seq_helix = isequence->get_helix();
+      const st::experimental_helix& seq_helix = the_sequence.get_helix();
 
       // Adding points
       // from SULTAN algorithm. Since it is a none generic
@@ -965,8 +933,6 @@ void sultan_driver::init_ocd(datatools::object_configuration_description& ocd_) 
             "  SULTAN.ncells_between_triplet_range : integer = 0  \n"
             "                                              \n");
   }
-
-  return;
 }
 
 }  // end of namespace reconstruction
@@ -986,7 +952,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_driver, ocd_) {
 
   ocd_.set_validation_support(true);
   ocd_.lock();
-  return;
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 DOCD_CLASS_SYSTEM_REGISTRATION(snemo::reconstruction::sultan_driver,

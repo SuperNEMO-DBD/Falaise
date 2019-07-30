@@ -15,19 +15,12 @@ const std::string& input_data<Hit>::get_last_error_message() const {
 template <class Hit>
 void input_data<Hit>::set_last_error_message(const std::string& message_) {
   _last_error_message = message_;
-  return;
-}
-
-template <class Hit>
-input_data<Hit>::input_data() {
-  return;
 }
 
 template <class Hit>
 void input_data<Hit>::reset() {
   hits.clear();
   _last_error_message.clear();
-  return;
 }
 
 template <class Hit>
@@ -35,9 +28,9 @@ bool input_data<Hit>::check() const {
   input_data* mutable_this = const_cast<input_data*>(this);
   hit_collection_type tags;
   tags.reserve(hits.size());
-  for (unsigned int i = 0; i < hits.size(); i++) {
-    const hit_type* a_hit = hits.at(i);
-    if (a_hit == 0) {
+
+  for(const hit_type* a_hit : hits) {
+    if (a_hit == nullptr) {
       std::ostringstream message;
       message << "TrackerPreClustering::input_data<>::check: "
               << "Null hit !";
@@ -51,7 +44,9 @@ bool input_data<Hit>::check() const {
       mutable_this->set_last_error_message(message.str());
       return false;
     }
+
     tags.push_back(a_hit);
+
     if (!a_hit->has_geom_id()) {
       std::ostringstream message;
       message << "TrackerPreClustering::input_data<>::check: "
@@ -59,6 +54,7 @@ bool input_data<Hit>::check() const {
       mutable_this->set_last_error_message(message.str());
       return false;
     }
+
     if (!a_hit->has_xy()) {
       std::ostringstream message;
       message << "TrackerPreClustering::input_data<>::check: "
@@ -66,6 +62,7 @@ bool input_data<Hit>::check() const {
       mutable_this->set_last_error_message(message.str());
       return false;
     }
+
     if (a_hit->is_delayed() && !a_hit->has_delayed_time()) {
       std::ostringstream message;
       message << "TrackerPreClustering::input_data<>::check: "
@@ -77,17 +74,12 @@ bool input_data<Hit>::check() const {
   return true;
 }
 
-template <class Hit>
-output_data<Hit>::output_data() {
-  return;
-}
 
 template <class Hit>
 void output_data<Hit>::reset() {
   ignored_hits.clear();
   prompt_clusters.clear();
   delayed_clusters.clear();
-  return;
 }
 
 template <class Hit>
@@ -112,8 +104,6 @@ void output_data<Hit>::dump(std::ostream& out_) const {
     }
     out_ << "Delayed cluster #" << i << "  size : " << delayed_clusters.at(i).size() << std::endl;
   }
-
-  return;
 }
 
 }  // end of namespace TrackerPreClustering

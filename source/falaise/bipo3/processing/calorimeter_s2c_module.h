@@ -51,7 +51,6 @@ class calorimeter_s2c_module : public dpp::base_module {
                                      std::string& classification_);
 
   /// Collection of calorimeter regime
-  typedef std::map<std::string, snemo::processing::calorimeter_regime> calorimeter_regime_col_type;
 
   /// Collection of geometry category names
   typedef std::vector<std::string> category_col_type;
@@ -107,8 +106,9 @@ class calorimeter_s2c_module : public dpp::base_module {
 
   mygsl::rng _random_;  //!< Embedded PRNG
 
+  typedef std::map<std::string, snemo::processing::CalorimeterModel> calorimeter_regime_col_type;
   category_col_type _hit_categories_;                 //!< Calorimeter categories
-  calorimeter_regime_col_type _calorimeter_regimes_;  //!< Calorimeter regime tools
+  calorimeter_regime_col_type _CalorimeterModels_;  //!< Calorimeter regime tools
 
   std::string _SD_label_;  //!< The label of the simulated data bank
   std::string _CD_label_;  //!< The label of the calibrated data bank

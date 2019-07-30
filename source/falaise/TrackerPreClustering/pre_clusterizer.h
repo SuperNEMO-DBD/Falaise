@@ -67,6 +67,18 @@ class pre_clusterizer {
   static const int OK;
   static const int ERROR;
 
+  /// Default constructor
+  pre_clusterizer();
+
+  /// Destrutor
+  virtual ~pre_clusterizer() = default;
+
+  // defaults to satisfy Ro5
+  pre_clusterizer(const pre_clusterizer&) = default;
+  pre_clusterizer& operator=(const pre_clusterizer&) = default;
+  pre_clusterizer(pre_clusterizer&&) = default;
+  pre_clusterizer& operator=(pre_clusterizer&&) = default;
+
   /// Check the lock flag
   bool is_locked() const;
 
@@ -75,12 +87,6 @@ class pre_clusterizer {
 
   /// Set logging threshold
   void set_logging_priority(datatools::logger::priority logging_);
-
-  /// Default constructor
-  pre_clusterizer();
-
-  /// Destrctuor
-  virtual ~pre_clusterizer();
 
   /// Configure and initialize the algorithm
   int initialize(const setup_data& setup_);

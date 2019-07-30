@@ -35,15 +35,15 @@
 #ifndef FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H
 #define FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGED_PARTICLE_TRACKING_MODULE_H 1
 
+#include <memory>
+
 // Third party:
 // - Boost:
-#include <boost/scoped_ptr.hpp>
 // - Bayeux/dpp:
 #include <dpp/base_module.h>
 
-namespace geomtools {
-class manager;
-}
+#include "falaise/snemo/services/geometry.h"
+#include "falaise/snemo/services/service_handle.h"
 
 namespace snemo {
 
@@ -63,12 +63,6 @@ class alpha_finder_driver;
 /// \brief Charged particle tracking module
 class charged_particle_tracking_module : public dpp::base_module {
  public:
-  /// Setting Geometry manager
-  void set_geometry_manager(const geomtools::manager& gmgr_);
-
-  /// Getting Geometry manager
-  const geomtools::manager& get_geometry_manager() const;
-
   /// Constructor
   charged_particle_tracking_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
 
@@ -100,23 +94,23 @@ class charged_particle_tracking_module : public dpp::base_module {
   void _set_defaults();
 
  private:
-  const geomtools::manager* _geometry_manager_;  //!< The geometry manager
+  snemo::service_handle<snemo::geometry_svc> geoManager_;  //!< The geometry manager
 
-  std::string _CD_label_;   //!< The label of the calibrated data bank
-  std::string _TTD_label_;  //!< The label of the tracker trajectory data bank
-  std::string _PTD_label_;  //!< The label of the particle track data bank
+  std::string CDTag_;   //!< The label of the calibrated data bank
+  std::string TTDTag_;  //!< The label of the tracker trajectory data bank
+  std::string PTDTag_;  //!< The label of the particle track data bank
 
   /// Vertex Extrapolation Driver :
-  boost::scoped_ptr<snemo::reconstruction::vertex_extrapolation_driver> _VED_;
+  std::unique_ptr<snemo::reconstruction::vertex_extrapolation_driver> VEAlgo_;
 
   /// Charge Computation Driver :
-  boost::scoped_ptr<snemo::reconstruction::charge_computation_driver> _CCD_;
+  std::unique_ptr<snemo::reconstruction::charge_computation_driver> CCAlgo_;
 
   /// Calorimeter Association Driver :
-  boost::scoped_ptr<snemo::reconstruction::calorimeter_association_driver> _CAD_;
+  std::unique_ptr<snemo::reconstruction::calorimeter_association_driver> CAAlgo_;
 
   /// Alpha Finder Driver :
-  boost::scoped_ptr<snemo::reconstruction::alpha_finder_driver> _AFD_;
+  std::unique_ptr<snemo::reconstruction::alpha_finder_driver> AFAlgo_;
 
   // Macro to automate the registration of the module :
   DPP_MODULE_REGISTRATION_INTERFACE(charged_particle_tracking_module)

@@ -58,6 +58,12 @@ class sultan_driver : public ::snemo::processing::base_tracker_clusterizer {
  public:
   static const std::string SULTAN_ID;  /// The SULTAN string identifier
 
+  /// Default constructor
+  sultan_driver();
+
+  /// Destructor
+  virtual ~sultan_driver();
+
   /// Set the mag field
   void set_magfield(double);
 
@@ -69,12 +75,6 @@ class sultan_driver : public ::snemo::processing::base_tracker_clusterizer {
 
   /// Return the mag field
   double get_magfield_direction() const;
-
-  /// Default constructor
-  sultan_driver();
-
-  /// Destructor
-  virtual ~sultan_driver();
 
   /// Initialize the clusterizer through configuration properties
   virtual void initialize(const datatools::properties& setup_);

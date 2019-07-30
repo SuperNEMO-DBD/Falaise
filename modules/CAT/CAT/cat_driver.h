@@ -58,6 +58,12 @@ class cat_driver : public ::snemo::processing::base_tracker_clusterizer {
  public:
   static const std::string CAT_ID;  /// The CAT string identifier
 
+  /// Default constructor
+  cat_driver();
+
+  /// Destructor
+  virtual ~cat_driver();
+
   /// Set the mag field
   void set_magfield(double);
 
@@ -69,12 +75,6 @@ class cat_driver : public ::snemo::processing::base_tracker_clusterizer {
 
   /// Return the mag field
   double get_magfield_direction() const;
-
-  /// Default constructor
-  cat_driver();
-
-  /// Destructor
-  virtual ~cat_driver();
 
   /// Initialize the clusterizer through configuration properties
   virtual void initialize(const datatools::properties& setup_);

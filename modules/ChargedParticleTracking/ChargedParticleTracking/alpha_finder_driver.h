@@ -41,6 +41,7 @@
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/clhep.h>
 // - Falaise:
+#include <falaise/config/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 
 namespace datatools {
@@ -72,38 +73,19 @@ class alpha_finder_driver {
   /// Return driver id
   static const std::string& get_id();
 
-  /// Setting initialization flag
-  void set_initialized(const bool initialized_);
+  // Defaults for most are probably o.k. since pointers aren't owned
+  // Constructor:
+  alpha_finder_driver() = default;
 
-  /// Getting initialization flag
-  bool is_initialized() const;
-
-  /// Setting logging priority
-  void set_logging_priority(const datatools::logger::priority priority_);
-
-  /// Getting logging priority
-  datatools::logger::priority get_logging_priority() const;
-
-  /// Check the geometry manager
-  bool has_geometry_manager() const;
-
-  /// Address the geometry manager
-  void set_geometry_manager(const geomtools::manager& gmgr_);
-
-  /// Return a non-mutable reference to the geometry manager
-  const geomtools::manager& get_geometry_manager() const;
-
-  /// Constructor:
-  alpha_finder_driver();
+  alpha_finder_driver(const falaise::config::property_set& ps, const geomtools::manager* gm);
 
   /// Destructor:
-  ~alpha_finder_driver();
+  ~alpha_finder_driver() = default;
 
-  /// Initialize the driver through configuration properties
-  void initialize(const datatools::properties& setup_);
-
-  /// Reset the driver
-  void reset();
+  alpha_finder_driver(const alpha_finder_driver&) = default;
+  alpha_finder_driver& operator=(const alpha_finder_driver&) = default;
+  alpha_finder_driver(alpha_finder_driver&&) = default;
+  alpha_finder_driver& operator=(alpha_finder_driver&&) = default;
 
   /// Main driver method
   void process(const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
@@ -112,11 +94,10 @@ class alpha_finder_driver {
   /// OCD support:
   static void init_ocd(datatools::object_configuration_description& ocd_);
 
- protected:
-  /// Set default values to class members:
-  void _set_defaults();
-
  private:
+  /// Return a valid reference to the geometry manager
+  const geomtools::manager& geoManager() const;
+
   /// Find the unfitted cluster (cluster with 1 or 2 Geiger hits)
   void _find_delayed_unfitted_cluster_(
       const snemo::datamodel::tracker_trajectory_data& tracker_trajectory_data_,
@@ -145,17 +126,15 @@ class alpha_finder_driver {
       snemo::datamodel::particle_track_data& particle_track_data_);
 
  private:
-  bool _initialized_;                                       //<! Initialize flag
-  datatools::logger::priority _logging_priority_;           //<! Logging flag
-  const geomtools::manager* _geometry_manager_;             //<! The SuperNEMO geometry manager
-  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< The SuperNEMO locator plugin
+  datatools::logger::priority logPriority_ = datatools::logger::PRIO_WARNING;  //<! Logging flag
+  const geomtools::manager* geoManager_ = nullptr;               //<! The SuperNEMO geometry manager
+  const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< The SuperNEMO locator plugin
 
-  double _minimal_delayed_time_;  //!< Minimal Geiger hit delayed time
-  double
-      _minimal_cluster_xy_search_distance_;  //!< Minimal distance in XY coordinate between GG hits
-  double _minimal_cluster_z_search_distance_;  //!< Minimal distance in Z coordinate between GG hits
-  double _minimal_vertex_distance_;  //!< Minimal distance between the prompt vertex and the delayed
-                                     //!< GG hit
+  double minDelayedTime_ = 15 * CLHEP::microsecond;  //!< Minimum Geiger hit delayed time
+  double minXYSearchDistance_ = 21 * CLHEP::cm;      //!< Minimum distance in XY between GG hits
+  double minZSearchDistance_ = 30 * CLHEP::cm;       //!< Minimum distance in Z between GG hits
+  double minVertexDistance_ = 30 * CLHEP::cm;        //!< Minimum distance between the prompt
+                                                     //!< vertex and the delayed GG hit
 };
 
 }  // end of namespace reconstruction

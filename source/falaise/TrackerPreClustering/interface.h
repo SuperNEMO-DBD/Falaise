@@ -48,14 +48,21 @@ namespace TrackerPreClustering {
 
 /// \brief Setup data for the TrackerPreClustering algorithm
 struct setup_data {
+  /// Default constructor
+  setup_data();
+
+  // Ro5 otherwise
+  ~setup_data() = default;
+  setup_data(const setup_data&) = default;
+  setup_data& operator=(const setup_data&) = default;
+  setup_data(setup_data&&) = default;
+  setup_data& operator=(setup_data&&) = default;
+
   /// Return the last error message
   const std::string &get_last_error_message() const;
 
   /// Set the last error message
   void set_last_error_message(const std::string &message_);
-
-  /// Default constructor
-  setup_data();
 
   /// Reset
   void reset();
@@ -80,16 +87,13 @@ template <class Hit>
 struct input_data {
   // Typedefs:
   typedef Hit hit_type;
-  typedef std::vector<const hit_type *> hit_collection_type;
+  typedef std::vector<const hit_type*> hit_collection_type;
 
   /// Return the last error message
   const std::string &get_last_error_message() const;
 
   /// Set the last error message
   void set_last_error_message(const std::string &message_);
-
-  /// Default constructor
-  input_data();
 
   /// Reset
   void reset();
@@ -98,10 +102,10 @@ struct input_data {
   bool check() const;
 
   // Attributes:
-  hit_collection_type hits;  //!< Collection of Geiger hits
+  hit_collection_type hits = {};  //!< Collection of Geiger hits
 
  protected:
-  std::string _last_error_message;  //!< The last error message at check
+  std::string _last_error_message = "";  //!< The last error message at check
 };
 
 /// \brief Output data structure
@@ -109,11 +113,8 @@ template <class Hit>
 struct output_data {
   // Typedefs:
   typedef Hit hit_type;
-  typedef std::vector<const hit_type *> hit_collection_type;
+  typedef std::vector<const hit_type*> hit_collection_type;
   typedef std::vector<hit_collection_type> cluster_collection_type;
-
-  /// Default constructor
-  output_data();
 
   /// Reset
   void reset();

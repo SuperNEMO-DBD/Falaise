@@ -59,6 +59,12 @@ namespace reconstruction {
 /// \brief Tracker clustering module using the CAT algorithm
 class cat_tracker_clustering_module : public dpp::base_module {
  public:
+  /// Constructor
+  cat_tracker_clustering_module(datatools::logger::priority p = datatools::logger::PRIO_FATAL);
+
+  /// Destructor
+  virtual ~cat_tracker_clustering_module();
+
   /// Set the 'calibrated data' bank label
   void set_cd_label(const std::string &);
 
@@ -72,44 +78,35 @@ class cat_tracker_clustering_module : public dpp::base_module {
   const std::string &get_tcd_label() const;
 
   /// Setting geometry manager
-  void set_geometry_manager(const geomtools::manager &gmgr_);
+  void set_geometry_manager(const geomtools::manager &gm);
 
   /// Getting geometry manager
   const geomtools::manager &get_geometry_manager() const;
 
-  /// Constructor
-  cat_tracker_clustering_module(datatools::logger::priority = datatools::logger::PRIO_FATAL);
-
-  /// Destructor
-  virtual ~cat_tracker_clustering_module();
-
   /// Initialization
-  virtual void initialize(const datatools::properties &setup_,
-                          datatools::service_manager &service_manager_,
-                          dpp::module_handle_dict_type &module_dict_);
+  virtual void initialize(const datatools::properties &config, datatools::service_manager &services,
+                          dpp::module_handle_dict_type & /* unused */);
 
   /// Reset
   virtual void reset();
 
   /// Data record processing
-  virtual process_status process(datatools::things &data_);
+  virtual process_status process(datatools::things &event);
 
  protected:
   /// Main process function
-  void _process(const snemo::datamodel::calibrated_data &calib_data_,
-                // const snemo::datamodel::calibrated_data::tracker_hit_collection_type &
-                // calibrated_tracker_hits_,
-                snemo::datamodel::tracker_clustering_data &clustering_data_);
+  void _process(const snemo::datamodel::calibrated_data &calib_data,
+                snemo::datamodel::tracker_clustering_data &clustering_data);
 
   /// Give default values to specific class members
   void _set_defaults();
 
  private:
-  const geomtools::manager *_geometry_manager_;  //!< The geometry manager
-  std::string _CD_label_;                        //!< The label of the input calibrated data bank
-  std::string _TCD_label_;  //!< The label of the output tracker clustering data bank
-  boost::scoped_ptr< ::snemo::processing::base_tracker_clusterizer>
-      _driver_;  //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
+  const geomtools::manager *geoManager_;  //!< The geometry manager
+  std::string CDTag_;                     //!< The label of the input calibrated data bank
+  std::string TCDTag_;                    //!< The label of the output tracker clustering data bank
+  std::unique_ptr<snemo::processing::base_tracker_clusterizer>
+      catAlgo_;  //!< Handle to the embedded clustering algorithm with dynamic memory auto-deletion
 
   // Macro to automate the registration of the module :
   DPP_MODULE_REGISTRATION_INTERFACE(cat_tracker_clustering_module)

@@ -26,7 +26,6 @@ datatools::logger::priority pre_clusterizer::get_logging_priority() const { retu
 
 void pre_clusterizer::set_logging_priority(datatools::logger::priority logging_) {
   _logging_ = logging_;
-  return;
 }
 
 double pre_clusterizer::get_cell_size() const { return _cell_size_; }
@@ -36,7 +35,6 @@ void pre_clusterizer::set_cell_size(double cell_size_) {
   DT_THROW_IF(cell_size_ <= 1.0 * CLHEP::millimeter, std::logic_error,
               "Invalid cell size (" << cell_size_ / CLHEP::mm << " mm) !");
   _cell_size_ = cell_size_;
-  return;
 }
 
 void pre_clusterizer::set_delayed_hit_cluster_time(double dhct_) {
@@ -44,7 +42,6 @@ void pre_clusterizer::set_delayed_hit_cluster_time(double dhct_) {
   DT_THROW_IF(dhct_ <= 1.0 * CLHEP::microsecond, std::logic_error,
               "Invalid delayed hit cluster time (" << dhct_ / CLHEP::microsecond << " microsec) !");
   _delayed_hit_cluster_time_ = dhct_;
-  return;
 }
 
 double pre_clusterizer::get_delayed_hit_cluster_time() const { return _delayed_hit_cluster_time_; }
@@ -54,7 +51,6 @@ bool pre_clusterizer::is_processing_prompt_hits() const { return _processing_pro
 void pre_clusterizer::set_processing_prompt_hits(bool pph_) {
   DT_THROW_IF(is_locked(), std::logic_error, "Pre clusterizer is locked!");
   _processing_prompt_hits_ = pph_;
-  return;
 }
 
 bool pre_clusterizer::is_processing_delayed_hits() const { return _processing_delayed_hits_; }
@@ -62,7 +58,6 @@ bool pre_clusterizer::is_processing_delayed_hits() const { return _processing_de
 void pre_clusterizer::set_processing_delayed_hits(bool pdh_) {
   DT_THROW_IF(is_locked(), std::logic_error, "Pre clusterizer is locked!");
   _processing_delayed_hits_ = pdh_;
-  return;
 }
 
 bool pre_clusterizer::is_split_chamber() const { return _split_chamber_; }
@@ -70,7 +65,6 @@ bool pre_clusterizer::is_split_chamber() const { return _split_chamber_; }
 void pre_clusterizer::set_split_chamber(bool sc_) {
   DT_THROW_IF(is_locked(), std::logic_error, "Pre clusterizer is locked!");
   _split_chamber_ = sc_;
-  return;
 }
 
 void pre_clusterizer::_set_defaults() {
@@ -79,23 +73,18 @@ void pre_clusterizer::_set_defaults() {
   _processing_prompt_hits_ = true;
   _processing_delayed_hits_ = true;
   _split_chamber_ = true;
-  return;
 }
 
 void pre_clusterizer::reset() {
   _locked_ = false;
   _set_defaults();
-  return;
 }
 
 pre_clusterizer::pre_clusterizer() {
   _locked_ = false;
   _logging_ = datatools::logger::PRIO_WARNING;
   _set_defaults();
-  return;
 }
-
-pre_clusterizer::~pre_clusterizer() { return; }
 
 int pre_clusterizer::initialize(const setup_data& setup_) {
   DT_THROW_IF(is_locked(), std::logic_error, "Pre clusterizer is locked!");

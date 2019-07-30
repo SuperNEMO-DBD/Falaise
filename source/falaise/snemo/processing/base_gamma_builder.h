@@ -68,7 +68,13 @@ namespace processing {
 class base_gamma_builder {
  public:
   /// Typedef to calibrated calorimeter hits
-  typedef snemo::datamodel::calibrated_data::calorimeter_hit_collection_type hit_collection_type;
+  using hit_collection_type = snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+
+  /// Default constructor
+  base_gamma_builder(const std::string &name = "anonymous");
+
+  /// Destructor
+  virtual ~base_gamma_builder();
 
   /// Set logging priority level
   void set_logging_priority(datatools::logger::priority logging_priority_);
@@ -99,12 +105,6 @@ class base_gamma_builder {
 
   /// Check if theclusterizer is initialized
   bool is_initialized() const;
-
-  /// Default constructor
-  base_gamma_builder(const std::string &id_ = "anonymous");
-
-  /// Destructor
-  virtual ~base_gamma_builder();
 
   /// Main tracker trajectory driver
   int process(const base_gamma_builder::hit_collection_type &calo_hits_,
@@ -156,25 +156,24 @@ class base_gamma_builder {
   datatools::logger::priority _logging_priority;  //!< Logging priority threshold
 
  private:
-  bool _initialized_;                            //!< Initialization status
-  std::string _id_;                              //!< Identifier of the gamma builder algorithm
-  const geomtools::manager *_geometry_manager_;  //!< The SuperNEMO geometry manager
-  const snemo::geometry::locator_plugin *_locator_plugin_;  //!< The SuperNEMO locator plugin
+  bool isInitialized_;                    //!< Initialization status
+  std::string id_;                        //!< Identifier of the gamma builder algorithm
+  const geomtools::manager *geoManager_;  //!< The SuperNEMO geometry manager
+  const snemo::geometry::locator_plugin *geoLocator_;  //!< The SuperNEMO locator plugin
 
-  hit_collection_type _used_hits_;     //!< Hits that are used as input for any gamma algorithm
-  hit_collection_type _ignored_hits_;  //!< Hits that are not used as input for any gamma algorithm
+  hit_collection_type usedHits_;     //!< Hits that are used as input for any gamma algorithm
+  hit_collection_type ignoredHits_;  //!< Hits that are not used as input for any gamma algorithm
 
-  bool _add_foil_vertex_extrapolation_;          //!< Flag to enable foil vertex extrapolation
-  double _add_foil_vertex_minimal_probability_;  //!< Minimal TOF internal probability to accept
-                                                 //!< foil vertex extrapolation
+  bool extrapolateFoilVertex_;       //!< Flag to enable foil vertex extrapolation
+  double minFoilVertexProbability_;  //!< Minimal TOF internal probability to accept
+                                     //!< foil vertex extrapolation
 
-  bool _add_gamma_from_annihilation_;  //!< Flag to enable tagging of gamma from e+/e- annihilation
-  double _add_gamma_from_annihilation_minimal_probability_;  //!< Minimal TOF probability to tag
-                                                             //!< gamma from annihilation
+  bool tagAnnihilationGamma_;  //!< Flag to enable tagging of gamma from e+/e- annihilation
+  double minAnnihilationGammaProbability_;  //!< Minimal TOF probability to tag
+                                            //!< gamma from annihilation
 
-  bool _select_calorimeter_hits_;  //!< Flag to select calorimeter hits based on auxiliaries tags
-  std::vector<std::string>
-      _select_calorimeter_hits_tags_;  //!< List of auxiliaries tags to select calorimeter hits
+  bool selectCaloHits_;                   //!< Flag to select calorimeter hits based on tags
+  std::vector<std::string> caloHitTags_;  //!< Tags to use in selecting calorimeter hits
 };
 
 }  // end of namespace processing

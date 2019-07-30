@@ -111,6 +111,7 @@ int main(int argc, char* argv[]) {
       datatools::properties GCD_config;
       GCD_config.store("BGB.logging.priority", "debug");
       GCD_config.store_with_explicit_unit("GC.minimal_internal_probability", 100 * CLHEP::perCent);
+      GCD_config.set_unit_symbol("GC.minimal_internal_probability", "%");
       GCD.initialize(GCD_config);
       GCD.process(hits, PTD);
       PTD.tree_dump();

@@ -53,7 +53,7 @@
 #include <boost/shared_ptr.hpp>
 
 // This project:
-#include "falaise/TrackerPreClustering/gg_hit.h"
+#include "gg_hit.h"
 
 namespace TrackerPreClustering {
 /// \brief Generator of mock events (collections of Geiger hits)

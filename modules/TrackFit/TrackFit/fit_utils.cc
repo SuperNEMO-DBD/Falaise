@@ -24,7 +24,7 @@ int fit_utils::compute_guess_trust_barycenter(const gg_hit_info_dict_type &hits_
                                               const geomtools::vector_3d & /* hit_pos_ */,
                                               const geomtools::vector_3d & /* bottom_pos_ */,
                                               const geomtools::vector_3d & /* top_pos_ */) {
-  if (hits_infos_.size() == 0) {
+  if (hits_infos_.empty()) {
     return INVALID_HYPOTHESIS;
   }
   return INVALID_HYPOTHESIS;
@@ -34,8 +34,7 @@ int fit_utils::compute_guess_trust_counter(const gg_hits_col &hits_,
                                            const geomtools::vector_3d &hit_pos_,
                                            const geomtools::vector_3d &bottom_pos_,
                                            const geomtools::vector_3d &top_pos_) {
-  datatools::logger::priority local_priority = datatools::logger::PRIO_FATAL;
-  if (hits_.size() == 0) {
+  if (hits_.empty()) {
     return INVALID_HYPOTHESIS;
   }
   const geomtools::vector_2d hit_pos(hit_pos_.x(), hit_pos_.y());
@@ -48,26 +47,21 @@ int fit_utils::compute_guess_trust_counter(const gg_hits_col &hits_,
   size_t near_top_counter = 0;
   const double min_distance = vicinity_factor * hits_.begin()->get_rmax();
 
-  for (gg_hits_col::const_iterator it_hit = hits_.begin(); it_hit != hits_.end(); ++it_hit) {
-    const geomtools::vector_2d curr_hit_pos(it_hit->get_x(), it_hit->get_y());
+  for (const auto &hit : hits_) {
+    const geomtools::vector_2d curr_hit_pos(hit.get_x(), hit.get_y());
     const double distance = (hit_pos - curr_hit_pos).mag();
 
-    if (distance > it_hit->get_rmax() && distance < min_distance) {
-      DT_LOG_TRACE(local_priority,
-                   "Candidate hit is in the vicinity of the X-Y reference position !");
-
+    if (distance > hit.get_rmax() && distance < min_distance) {
       const double bottom_current_distance = (bottom_pos - curr_hit_pos).mag();
       const double top_current_distance = (top_pos - curr_hit_pos).mag();
-      if (bottom_current_distance < top_current_distance)
+      if (bottom_current_distance < top_current_distance) {
         near_bottom_counter++;
-      else if (top_current_distance < bottom_current_distance)
+      } else if (top_current_distance < bottom_current_distance) {
         near_top_counter++;
+      }
     }
   }
 
-  DT_LOG_TRACE(
-      local_priority,
-      "near_bottom_counter= " << near_bottom_counter << " near_top_counter= " << near_top_counter);
   if (near_bottom_counter > near_top_counter) {
     return BOTTOM_HYPOTHESIS;
   }
@@ -79,37 +73,30 @@ int fit_utils::compute_guess_trust_counter(const gg_hits_col &hits_,
 
 bool fit_utils::is_debug() const { return _debug_; }
 
-void fit_utils::set_debug(bool debug_) {
-  _debug_ = debug_;
-  return;
-}
+void fit_utils::set_debug(bool debug_) { _debug_ = debug_; }
 
 double fit_utils::get_vicinity_factor() const { return _vicinity_factor_; }
 
 void fit_utils::set_vicinity_factor(double vicinity_factor_) {
   _vicinity_factor_ = vicinity_factor_;
-  return;
 }
 
 void fit_utils::reset() {
   set_vicinity_factor(fit_utils::default_vicinity_factor());
   set_debug(false);
   _config_.clear();
-  return;
 }
 
 fit_utils::fit_utils(bool debug_) {
   reset();
   set_debug(debug_);
-  return;
 }
 
-fit_utils::~fit_utils() { return; }
+fit_utils::~fit_utils() = default;
 
 gg_hit_info::gg_hit_info(size_t max_nb_closest_hits_) {
-  hit = 0;
+  hit = nullptr;
   max_nb_closest_hits = max_nb_closest_hits_;
-  return;
 }
 
 void gg_hit_info::update_closest_hits(const gg_hit *other_hit_, double dist_) {
@@ -118,17 +105,16 @@ void gg_hit_info::update_closest_hits(const gg_hit *other_hit_, double dist_) {
 
   // If maximum capacity of the map is reached, remove trailing elements :
   if (max_nb_closest_hits > 0 && closest_hits_map.size() > max_nb_closest_hits) {
-    std::map<double, const gg_hit *>::iterator erase_pos = closest_hits_map.begin();
+    auto erase_pos = closest_hits_map.begin();
     for (unsigned int count = 0; count < max_nb_closest_hits; count++) {
       erase_pos++;
     }
     closest_hits_map.erase(erase_pos, closest_hits_map.end());
   }
-  return;
 }
 
 void gg_hit_info::dump(std::ostream &out_) const {
-  if (hit == 0) {
+  if (hit == nullptr) {
     out_ << "trackfit::gg_hit_info::dump: "
          << "No hit !" << std::endl;
     return;
@@ -137,19 +123,17 @@ void gg_hit_info::dump(std::ostream &out_) const {
        << "Hit #" << hit->get_id() << std::endl;
   out_ << "trackfit::gg_hit_info::dump: "
        << "Closest hits [" << closest_hits_map.size() << "] : " << std::endl;
-  for (std::map<double, const gg_hit *>::const_iterator i = closest_hits_map.begin();
-       i != closest_hits_map.end(); i++) {
+  for (auto i : closest_hits_map) {
     out_ << "trackfit::gg_hit_info::dump: "
-         << "  Hit #" << i->second->get_id() << " @ " << i->first << std::endl;
+         << "  Hit #" << i.second->get_id() << " @ " << i.first << std::endl;
   }
-  return;
 }
 
 void build_hit_info_map(const gg_hits_col &hits_, gg_hit_info_dict_type &dict_,
                         size_t max_nb_closest_hits_) {
   // Loop on hits :
   int irank = 0;
-  for (gg_hits_col::const_iterator i = hits_.begin(); i != hits_.end(); ++i, ++irank) {
+  for (auto i = hits_.begin(); i != hits_.end(); ++i, ++irank) {
     const gg_hit &hit_1 = *i;
     if (dict_.find(hit_1.get_id()) == dict_.end()) {
       gg_hit_info dummy_1(max_nb_closest_hits_);
@@ -162,10 +146,10 @@ void build_hit_info_map(const gg_hits_col &hits_, gg_hit_info_dict_type &dict_,
     const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
 
     // Loop on the other hits :
-    gg_hits_col::const_iterator j_start = i;
+    auto j_start = i;
     j_start++;
     int jrank = irank + 1;
-    for (gg_hits_col::const_iterator j = j_start; j != hits_.end(); ++j, ++jrank) {
+    for (auto j = j_start; j != hits_.end(); ++j, ++jrank) {
       const gg_hit &hit_2 = *j;
       if (dict_.find(hit_2.get_id()) == dict_.end()) {
         gg_hit_info dummy_2(max_nb_closest_hits_);
@@ -186,7 +170,6 @@ void build_hit_info_map(const gg_hits_col &hits_, gg_hit_info_dict_type &dict_,
       wrapper_2.update_closest_hits(&hit_1, d12_bis);
     }
   }
-  return;
 }
 
 }  // end of namespace TrackFit

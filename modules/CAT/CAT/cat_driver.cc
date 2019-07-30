@@ -35,7 +35,6 @@ const std::string cat_driver::CAT_ID = "CAT";
 void cat_driver::set_magfield(double value_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "CAT driver is already initialized!");
   _magfield_ = value_;
-  return;
 }
 
 double cat_driver::get_magfield() const { return _magfield_; }
@@ -46,21 +45,37 @@ void cat_driver::set_magfield_direction(double dir_) {
   } else {
     _magfield_dir_ = -1.0;
   }
-  return;
 }
 
 double cat_driver::get_magfield_direction() const { return _magfield_dir_; }
 
 cat_driver::cat_driver() : ::snemo::processing::base_tracker_clusterizer(cat_driver::CAT_ID) {
   _set_defaults();
-  return;
 }
 
-cat_driver::~cat_driver() {
-  if (is_initialized()) {
-    this->cat_driver::reset();
-  }
-  return;
+cat_driver::~cat_driver() = default;
+
+void cat_driver::_set_defaults() {
+  _CAT_setup_.reset();
+  _sigma_z_factor_ = 1.0;
+  datatools::invalidate(_magfield_);
+  _magfield_dir_ = +1.0;
+  _process_calo_hits_ = true;
+  _store_result_as_properties_ = true;
+  _calo_locator_ = nullptr;
+  _xcalo_locator_ = nullptr;
+  _gveto_locator_ = nullptr;
+  this->base_tracker_clusterizer::_reset();
+}
+
+// Reset the clusterizer
+void cat_driver::reset() {
+  _set_initialized(false);
+  _CAT_clusterizer_.finalize();
+  _CAT_sequentiator_.finalize();
+  _CAT_setup_.reset();
+  _set_defaults();
+  this->base_tracker_clusterizer::_reset();
 }
 
 // Initialize the clusterizer through configuration properties
@@ -173,11 +188,9 @@ void cat_driver::initialize(const datatools::properties& setup_) {
   // If no locator plugin name is set, then search for the first one
   if (locator_plugin_name.empty()) {
     const geomtools::manager::plugins_dict_type& plugins = geo_mgr.get_plugins();
-    for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
-         ip != plugins.end(); ip++) {
-      const std::string& plugin_name = ip->first;
+    for (const auto& plugin : plugins) {
+      const std::string& plugin_name = plugin.first;
       if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
-        DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
         locator_plugin_name = plugin_name;
         break;
       }
@@ -186,22 +199,11 @@ void cat_driver::initialize(const datatools::properties& setup_) {
   // Access to a given plugin by name and type :
   if (geo_mgr.has_plugin(locator_plugin_name) &&
       geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name)) {
-    DT_LOG_NOTICE(get_logging_priority(),
-                  "Found locator plugin named '" << locator_plugin_name << "'");
-    const snemo::geometry::locator_plugin& lp =
-        geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
+    const auto& lp = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
     // Set the calo cell locator :
     _calo_locator_ = &(lp.get_calo_locator());
     _xcalo_locator_ = &(lp.get_xcalo_locator());
     _gveto_locator_ = &(lp.get_gveto_locator());
-  }
-  if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
-    DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
-    _calo_locator_->tree_dump(std::clog, "", "[debug]: ");
-    DT_LOG_DEBUG(get_logging_priority(), "X-calo locator :");
-    _xcalo_locator_->tree_dump(std::clog, "", "[debug]: ");
-    DT_LOG_DEBUG(get_logging_priority(), "G-veto locator :");
-    _gveto_locator_->tree_dump(std::clog, "", "[debug]: ");
   }
 
   // Geometry description :
@@ -234,40 +236,13 @@ void cat_driver::initialize(const datatools::properties& setup_) {
   // Configure and initialize the CAT machine :
   CAT::clusterizer_configure(_CAT_clusterizer_, _CAT_setup_);
   CAT::sequentiator_configure(_CAT_sequentiator_, _CAT_setup_);
-
   _CAT_clusterizer_.initialize();
   _CAT_sequentiator_.initialize();
 
   _set_initialized(true);
-
-  return;
 }
 
-void cat_driver::_set_defaults() {
-  _CAT_setup_.reset();
-  _sigma_z_factor_ = 1.0;
-  datatools::invalidate(_magfield_);
-  _magfield_dir_ = +1.0;
-  _process_calo_hits_ = true;
-  _store_result_as_properties_ = true;
-  _calo_locator_ = 0;
-  _xcalo_locator_ = 0;
-  _gveto_locator_ = 0;
-  this->base_tracker_clusterizer::_reset();
-  return;
-}
 
-// Reset the clusterizer
-void cat_driver::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "CAT driver is not initialized !");
-  _set_initialized(false);
-  _CAT_clusterizer_.finalize();
-  _CAT_sequentiator_.finalize();
-  _CAT_setup_.reset();
-  _set_defaults();
-  this->base_tracker_clusterizer::_reset();
-  return;
-}
 
 /// Main clustering method
 int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
@@ -290,7 +265,9 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   // GG hit loop :
   BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
     // Skip NULL handle :
-    if (!gg_handle) continue;
+    if (!gg_handle) {
+      continue;
+    }
 
     // Get a const reference on the calibrated Geiger hit :
     const sdm::calibrated_tracker_hit& snemo_gg_hit = gg_handle.get();
@@ -302,7 +279,6 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
                 "Calibrated tracker hit can not be located inside detector !");
 
     if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
-      DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
       continue;
     }
 
@@ -365,10 +341,6 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     // Store mapping info between both data models :
     hits_mapping[c.id()] = gg_handle;
     hits_status[c.id()] = 0;
-
-    DT_LOG_DEBUG(get_logging_priority(), "Geiger cell #"
-                                             << snemo_gg_hit.get_id() << " has been added "
-                                             << "to CAT input data with id number #" << c.id());
   }  // BOOST_FOREACH(gg_hits_)
 
   // Take into account calo hits:
@@ -386,7 +358,9 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
                    calo_hits_) {
       // Skip NULL handle :
-      if (!calo_handle.has_data()) continue;
+      if (!calo_handle.has_data()) {
+        continue;
+      }
 
       // Get a const reference on the calibrated Calo hit :
       const sdm::calibrated_calorimeter_hit& sncore_calo_hit = calo_handle.get();
@@ -454,10 +428,6 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
 
       // Store mapping info between both data models :
       calo_hits_mapping[c.id()] = calo_handle;
-
-      DT_LOG_DEBUG(get_logging_priority(), "Calo_cell #"
-                                               << sncore_calo_hit.get_hit_id() << " has been added "
-                                               << "to CAT input data with id number #" << c.id());
     }
   }
 
@@ -485,12 +455,10 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   // Analyse the sequentiator output i.e. 'scenarios' made of 'sequences' of geiger cells:
   const std::vector<CAT::topology::scenario>& tss = _CAT_output_.tracked_data.get_scenarios();
 
-  for (std::vector<CAT::topology::scenario>::const_iterator iscenario = tss.begin();
-       iscenario != tss.end(); ++iscenario) {
-    for (std::map<int, int>::iterator ihs = hits_status.begin(); ihs != hits_status.end(); ihs++) {
-      ihs->second = 0;
+  for (const CAT::topology::scenario& iscenario : tss) {
+    for (auto& ihs : hits_status) {
+      ihs.second = 0;
     }
-    DT_LOG_DEBUG(get_logging_priority(), "Number of scenarios = " << tss.size());
 
     sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
@@ -500,12 +468,9 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         sdm::tracker_clustering_data::clusterizer_id_key(), CAT_ID);
 
     // Analyse the sequentiator output :
-    const std::vector<CAT::topology::sequence>& the_sequences = iscenario->sequences();
-    DT_LOG_DEBUG(get_logging_priority(), "Number of sequences = " << the_sequences.size());
+    const std::vector<CAT::topology::sequence>& the_sequences = iscenario.sequences();
 
-    for (std::vector<CAT::topology::sequence>::const_iterator isequence = the_sequences.begin();
-         isequence != the_sequences.end(); ++isequence) {
-      const CAT::topology::sequence& a_sequence = *isequence;
+    for (const CAT::topology::sequence& a_sequence : the_sequences) {
       const size_t seqsz = a_sequence.nodes().size();
       if (seqsz == 1) {
         // A CAT cluster with only one hit/cell(node) is ignored:
@@ -713,7 +678,6 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
           const int hit_id = a_node.c().id();
           cluster_handle->get_hits().push_back(hits_mapping[hit_id]);
           hits_status[hit_id] = 1;
-          DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
           if (_store_result_as_properties_) {
             const double xt = a_node.ep().x().value();
@@ -723,7 +687,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
             const double yterr = a_node.ep().y().error();
             const double zterr = a_node.ep().z().error();
 
-            const CAT::topology::helix& seq_helix = isequence->get_helix();
+            const CAT::topology::helix& seq_helix = a_sequence.get_helix();
             phi_ref = phi.value();
             phi = seq_helix.phi_of_point(a_node.c().ep(), phi_ref);
             CAT::topology::experimental_vector hpos = seq_helix.position(phi);
@@ -935,8 +899,6 @@ void cat_driver::init_ocd(datatools::object_configuration_description& ocd_) {
             "  CAT.sigma_z_factor : real = 1.0        \n"
             "                                         \n");
   }
-
-  return;
 }
 
 }  // end of namespace reconstruction

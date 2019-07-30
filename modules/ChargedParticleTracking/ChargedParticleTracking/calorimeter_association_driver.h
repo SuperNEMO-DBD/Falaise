@@ -32,7 +32,10 @@
 #ifndef FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CALORIMETER_ASSOCIATION_DRIVER_H
 #define FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CALORIMETER_ASSOCIATION_DRIVER_H 1
 
+#include <CLHEP/Units/SystemOfUnits.h>
+
 // this project
+#include <falaise/config/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace datatools {
@@ -79,38 +82,27 @@ class calorimeter_association_driver {
   /// Return driver id
   static const std::string& get_id();
 
-  /// Setting initialization flag
-  void set_initialized(const bool initialized_);
+  /// Default constructor
+  calorimeter_association_driver() = default;
 
-  /// Getting initialization flag
-  bool is_initialized() const;
+  /// Construct from configuration and geometry
+  calorimeter_association_driver(const falaise::config::property_set& ps,
+                                 const geomtools::manager* gm);
 
-  /// Setting logging priority
-  void set_logging_priority(const datatools::logger::priority priority_);
+  /// Destructor
+  ~calorimeter_association_driver() = default;
 
-  /// Getting logging priority
-  datatools::logger::priority get_logging_priority() const;
+  /// Copy constructor
+  calorimeter_association_driver(const calorimeter_association_driver&) = default;
 
-  /// Check the geometry manager
-  bool has_geometry_manager() const;
+  /// Copy assignment operator
+  calorimeter_association_driver& operator=(const calorimeter_association_driver&) = default;
 
-  /// Address the geometry manager
-  void set_geometry_manager(const geomtools::manager& gmgr_);
+  /// Move constructor
+  calorimeter_association_driver(calorimeter_association_driver&&) = default;
 
-  /// Return a non-mutable reference to the geometry manager
-  const geomtools::manager& get_geometry_manager() const;
-
-  /// Constructor:
-  calorimeter_association_driver();
-
-  /// Destructor:
-  ~calorimeter_association_driver();
-
-  /// Initialize the driver through configuration properties
-  void initialize(const datatools::properties& setup_);
-
-  /// Reset the driver
-  void reset();
+  /// Move assignment operator
+  calorimeter_association_driver& operator=(calorimeter_association_driver&&) = default;
 
   /// Main driver method
   void process(
@@ -120,22 +112,20 @@ class calorimeter_association_driver {
   /// OCD support:
   static void init_ocd(datatools::object_configuration_description& ocd_);
 
- protected:
-  /// Set default values to class members:
-  void _set_defaults();
-
  private:
+  /// Return a valid reference to the geometry manager
+  const geomtools::manager& geoManager() const;
+
   /// Find matching calorimeters:
   void _measure_matching_calorimeters_(
       const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calorimeter_hits_,
       snemo::datamodel::particle_track& particle_);
 
  private:
-  bool _initialized_;                                       //<! Initialize flag
-  datatools::logger::priority _logging_priority_;           //<! Logging flag
-  const geomtools::manager* _geometry_manager_;             //<! The SuperNEMO geometry manager
-  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< The SuperNEMO locator plugin
-  double _matching_tolerance_;  //<! Matching distance between vertex and calorimeter
+  datatools::logger::priority logPriority_ = datatools::logger::PRIO_WARNING;  //<! Logging flag
+  const geomtools::manager* geoManager_ = nullptr;               //<! The SuperNEMO geometry manager
+  const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< The SuperNEMO locator plugin
+  double matchTolerance_ = 50 * CLHEP::mm;  //<! Matching distance between vertex and calorimeter
 };
 
 }  // end of namespace reconstruction

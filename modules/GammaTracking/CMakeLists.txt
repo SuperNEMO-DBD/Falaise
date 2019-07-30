@@ -42,7 +42,6 @@ endif()
 # - GammaTracking modules:
 # - Headers:
 list(APPEND FalaiseGammaTrackingPlugin_HEADERS GammaTracking/gamma_tracking_driver.h)
-list(APPEND FalaiseGammaTrackingPlugin_HEADERS GammaTracking/gamma_tracking_module.h)
 
 # - Sources:
 list(APPEND FalaiseGammaTrackingPlugin_SOURCES GammaTracking/gamma_tracking_driver.cc)

@@ -15,10 +15,14 @@
 #include <geomtools/manager.h>
 
 // This project:
+#include <falaise/config/property_set.h>
+
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/processing/base_tracker_clusterizer.h>
 #include <falaise/snemo/services/services.h>
+#include "falaise/snemo/services/geometry.h"
+#include "falaise/snemo/services/service_handle.h"
 
 // CAT:
 #include <CAT/cat_driver.h>
@@ -31,110 +35,23 @@ namespace reconstruction {
 DPP_MODULE_REGISTRATION_IMPLEMENT(cat_tracker_clustering_module,
                                   "snemo::reconstruction::cat_tracker_clustering_module")
 
-void cat_tracker_clustering_module::set_cd_label(const std::string& cdl_) {
+// Constructor :
+cat_tracker_clustering_module::cat_tracker_clustering_module(datatools::logger::priority p)
+    : dpp::base_module(p) {
+  _set_defaults();
+}
+
+// Destructor :
+cat_tracker_clustering_module::~cat_tracker_clustering_module() {
+  if (is_initialized()) {
+    cat_tracker_clustering_module::reset();
+  }
+}
+
+void cat_tracker_clustering_module::set_cd_label(const std::string& cd) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
-  _CD_label_ = cdl_;
-  return;
-}
-
-const std::string& cat_tracker_clustering_module::get_cd_label() const { return _CD_label_; }
-
-void cat_tracker_clustering_module::set_tcd_label(const std::string& tcdl_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-  _TCD_label_ = tcdl_;
-  return;
-}
-
-const std::string& cat_tracker_clustering_module::get_tcd_label() const { return _TCD_label_; }
-
-const geomtools::manager& cat_tracker_clustering_module::get_geometry_manager() const {
-  return *_geometry_manager_;
-}
-
-void cat_tracker_clustering_module::set_geometry_manager(const geomtools::manager& gmgr_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-  _geometry_manager_ = &gmgr_;
-
-  // Check setup label:
-  const std::string& setup_label = _geometry_manager_->get_setup_label();
-  DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
-              std::logic_error, "Setup label '" << setup_label << "' is not supported !");
-  return;
-}
-
-void cat_tracker_clustering_module::_set_defaults() {
-  _geometry_manager_ = 0;
-  _CD_label_.clear();
-  _TCD_label_.clear();
-  _driver_.reset(0);
-  return;
-}
-
-void cat_tracker_clustering_module::initialize(const datatools::properties& setup_,
-                                               datatools::service_manager& service_manager_,
-                                               dpp::module_handle_dict_type& /* module_dict_ */) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-
-  dpp::base_module::_common_initialize(setup_);
-
-  if (_CD_label_.empty()) {
-    if (setup_.has_key("CD_label")) {
-      _CD_label_ = setup_.fetch_string("CD_label");
-    }
-  }
-  // Default label:
-  if (_CD_label_.empty()) {
-    _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
-  }
-
-  if (_TCD_label_.empty()) {
-    if (setup_.has_key("TCD_label")) {
-      _TCD_label_ = setup_.fetch_string("TCD_label");
-    }
-  }
-  // Default label:
-  if (_TCD_label_.empty()) {
-    _TCD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
-  }
-
-  // Geometry manager :
-  if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::service_info::default_geometry_service_label();
-    if (setup_.has_key("Geo_label")) {
-      geo_label = setup_.fetch_string("Geo_label");
-    }
-    DT_THROW_IF(geo_label.empty(), std::logic_error,
-                "Module '" << get_name() << "' has no valid '"
-                           << "Geo_label"
-                           << "' property !");
-    DT_THROW_IF(!service_manager_.has(geo_label) ||
-                    !service_manager_.is_a<geomtools::geometry_service>(geo_label),
-                std::logic_error,
-                "Module '" << get_name() << "' has no '" << geo_label << "' service !");
-    const geomtools::geometry_service& Geo =
-        service_manager_.get<geomtools::geometry_service>(geo_label);
-    set_geometry_manager(Geo.get_geom_manager());
-  }
-
-  // Clustering algorithm :
-  std::string algorithm_id = cat_driver::CAT_ID;
-  _driver_.reset(new cat_driver);
-  DT_THROW_IF(!_driver_, std::logic_error,
-              "Module '" << get_name() << "' could not instantiate the '" << algorithm_id
-                         << "' tracker clusterizer algorithm !");
-
-  // Plug the geometry manager :
-  _driver_.get()->set_geometry_manager(get_geometry_manager());
-
-  // Initialize the clustering driver :
-  _driver_.get()->initialize(setup_);
-
-  _set_initialized(true);
-  return;
+  CDTag_ = cd;
 }
 
 void cat_tracker_clustering_module::reset() {
@@ -142,100 +59,113 @@ void cat_tracker_clustering_module::reset() {
               "Module '" << get_name() << "' is not initialized !");
   _set_initialized(false);
   // Reset the clusterizer driver :
-  if (_driver_) {
-    if (_driver_->is_initialized()) {
-      _driver_->reset();
+  if (catAlgo_) {
+    if (catAlgo_->is_initialized()) {
+      catAlgo_->reset();
     }
-    _driver_.reset();
+    catAlgo_.reset();
   }
   _set_defaults();
-  return;
 }
 
-// Constructor :
-cat_tracker_clustering_module::cat_tracker_clustering_module(
-    datatools::logger::priority logging_priority_)
-    : dpp::base_module(logging_priority_) {
-  _set_defaults();
-  return;
+void cat_tracker_clustering_module::_set_defaults() {
+  geoManager_ = nullptr;
+  CDTag_.clear();
+  TCDTag_.clear();
+  catAlgo_.reset(nullptr);
 }
 
-// Destructor :
-cat_tracker_clustering_module::~cat_tracker_clustering_module() {
-  if (is_initialized()) cat_tracker_clustering_module::reset();
-  return;
+const std::string& cat_tracker_clustering_module::get_cd_label() const { return CDTag_; }
+
+void cat_tracker_clustering_module::set_tcd_label(const std::string& tc) {
+  DT_THROW_IF(is_initialized(), std::logic_error,
+              "Module '" << get_name() << "' is already initialized ! ");
+  TCDTag_ = tc;
+}
+
+const std::string& cat_tracker_clustering_module::get_tcd_label() const { return TCDTag_; }
+
+const geomtools::manager& cat_tracker_clustering_module::get_geometry_manager() const {
+  return *geoManager_;
+}
+
+void cat_tracker_clustering_module::set_geometry_manager(const geomtools::manager& gm) {
+  DT_THROW_IF(is_initialized(), std::logic_error,
+              "Module '" << get_name() << "' is already initialized ! ");
+  // Check setup label:
+  const std::string& setup_label = gm.get_setup_label();
+  DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
+              std::logic_error, "Setup label '" << setup_label << "' is not supported !");
+  geoManager_ = &gm;
+}
+
+void cat_tracker_clustering_module::initialize(const datatools::properties& config,
+                                               datatools::service_manager& services,
+                                               dpp::module_handle_dict_type& /* unused */) {
+  DT_THROW_IF(is_initialized(), std::logic_error,
+              "Module '" << get_name() << "' is already initialized ! ");
+  dpp::base_module::_common_initialize(config);
+
+  namespace snedm = snemo::datamodel;
+
+  falaise::config::property_set ps{config};
+
+  CDTag_ = ps.get<std::string>("CD_label", snedm::data_info::default_calibrated_data_label());
+  TCDTag_ =
+      ps.get<std::string>("TCD_label", snedm::data_info::default_tracker_clustering_data_label());
+
+  // Geometry manager :
+  if (geoManager_ == nullptr) {
+    snemo::service_handle<snemo::geometry_svc> geoSVC{services};
+    set_geometry_manager(*(geoSVC.operator->()));
+  }
+
+  // Clustering algorithm :
+  // Initialize the clustering driver :
+  catAlgo_.reset(new cat_driver);
+  DT_THROW_IF(!catAlgo_, std::logic_error,
+              "Module '" << get_name() << "' could not instantiate the '" << cat_driver::CAT_ID
+                         << "' tracker clusterizer algorithm !");
+  catAlgo_->set_geometry_manager(get_geometry_manager());
+  catAlgo_->initialize(config);
+  _set_initialized(true);
 }
 
 // Processing :
-dpp::base_module::process_status cat_tracker_clustering_module::process(
-    datatools::things& data_record_) {
+dpp::base_module::process_status cat_tracker_clustering_module::process(datatools::things& event) {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is not initialized !");
-
-  ///////////////////////////
-  // Check calibrated data //
-  ///////////////////////////
-
-  bool abort_at_missing_input = true;
-
-  // Check if some 'calibrated_data' are available in the data model:
-  if (!data_record_.has(_CD_label_)) {
-    DT_THROW_IF(abort_at_missing_input, std::logic_error,
-                "Missing calibrated data to be processed !");
-    // leave the data unchanged.
-    return dpp::base_module::PROCESS_ERROR;
+  namespace snedm = snemo::datamodel;
+  // Get input data or fail
+  if (!event.has(CDTag_)) {
+    DT_THROW_IF(true, std::logic_error, "Missing calibrated data to be processed !");
   }
-  // grab the 'calibrated_data' entry from the data model :
-  snemo::datamodel::calibrated_data& the_calibrated_data =
-      data_record_.grab<snemo::datamodel::calibrated_data>(_CD_label_);
+  const auto& calibratedData = event.get<snedm::calibrated_data>(CDTag_);
 
-  ///////////////////////////////////
-  // Check tracker clustering data //
-  ///////////////////////////////////
+  // Get or create output data
+  auto& clusteringData = snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
 
-  bool abort_at_former_output = false;
-  bool preserve_former_output = false;
-
-  // check if some 'tracker_clustering_data' are available in the data model:
-  snemo::datamodel::tracker_clustering_data* ptr_cluster_data = 0;
-  if (!data_record_.has(_TCD_label_)) {
-    ptr_cluster_data = &(data_record_.add<snemo::datamodel::tracker_clustering_data>(_TCD_label_));
-  } else {
-    ptr_cluster_data = &(data_record_.grab<snemo::datamodel::tracker_clustering_data>(_TCD_label_));
+  if (clusteringData.has_solutions()) {
+    DT_LOG_WARNING(get_logging_priority(),
+                   "Module " << get_name() << " resetting solutions in bank " << TCDTag_)
+    clusteringData.reset();
   }
-  snemo::datamodel::tracker_clustering_data& the_clustering_data = *ptr_cluster_data;
-  if (the_clustering_data.has_solutions()) {
-    DT_THROW_IF(abort_at_former_output, std::logic_error,
-                "Already has processed tracker clustering data !");
-    if (!preserve_former_output) {
-      the_clustering_data.reset();
-    }
-  }
-
-  /********************
-   * Process the data *
-   ********************/
 
   // Main processing method :
-  _process(the_calibrated_data, the_clustering_data);
+  _process(calibratedData, clusteringData);
 
   return dpp::base_module::PROCESS_SUCCESS;
 }
 
 void cat_tracker_clustering_module::_process(
-    const snemo::datamodel::calibrated_data& calib_data_,
-    snemo::datamodel::tracker_clustering_data& clustering_data_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
+    const snemo::datamodel::calibrated_data& calib_data,
+    snemo::datamodel::tracker_clustering_data& clustering_data) {
   // Process the clusterizer driver :
-  _driver_.get()->process(calib_data_.calibrated_tracker_hits(),
-                          calib_data_.calibrated_calorimeter_hits(), clustering_data_);
-
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
+  catAlgo_->process(calib_data.calibrated_tracker_hits(), calib_data.calibrated_calorimeter_hits(),
+                    clustering_data);
 }
 
-}  // end of namespace reconstruction
+}  // namespace reconstruction
 
 }  // end of namespace snemo
 

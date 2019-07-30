@@ -13,7 +13,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 # - GammaClustering modules:
 # - Headers:
 list(APPEND FalaiseGammaClusteringPlugin_HEADERS GammaClustering/gamma_clustering_driver.h)
-list(APPEND FalaiseGammaClusteringPlugin_HEADERS GammaClustering/gamma_clustering_module.h)
 
 # - Sources:
 list(APPEND FalaiseGammaClusteringPlugin_SOURCES GammaClustering/gamma_clustering_driver.cc)

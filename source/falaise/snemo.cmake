@@ -6,6 +6,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/calibrated_data.h
   snemo/datamodels/calibrated_tracker_hit.h
   snemo/datamodels/data_model.h
+  snemo/datamodels/event.h
   snemo/datamodels/event_header.h
   snemo/datamodels/gg_track_utils.h
   snemo/datamodels/helix_trajectory_pattern.h
@@ -46,6 +47,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/xcalo_locator.h
   snemo/geometry/gg_locator.h
   snemo/geometry/gveto_locator.h
+  snemo/geometry/locator_helpers.h
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
 
@@ -135,6 +137,7 @@ list(APPEND FalaiseLibrary_SOURCES
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
+  snemo/test/test_snemo_datamodel_event.cxx
   snemo/test/test_snemo_datamodel_timestamp.cxx
   snemo/test/test_module.cxx
   snemo/test/test_service.cxx
