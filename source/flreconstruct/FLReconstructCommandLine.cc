@@ -85,13 +85,13 @@ void do_module_list(std::ostream& os) {
   ModuleInfo mods;
   // Builtin
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
-  for (ModuleInfo::value_type entry : mods) {
+  for (const ModuleInfo::value_type& entry : mods) {
     os << entry << std::endl;
   }
 }
 
 //! Print OCD help for supplied module name to given ostream
-void do_help_module(std::ostream& os, std::string module) {
+void do_help_module(std::ostream& os, const std::string& module) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
   // Is module valid?
@@ -132,7 +132,7 @@ void do_help_pipeline_list(std::ostream& os) {
                                   "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline)",
                                   "recsetup")) {
       std::clog << "List of supported reconstruction pipeline:" << std::endl;
-      for (const auto & flsim_urn_info : flsim_urn_infos) {
+      for (const auto& flsim_urn_info : flsim_urn_infos) {
         const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_info);
         os << ui.get_urn() << " : " << ui.get_description() << std::endl;
       }

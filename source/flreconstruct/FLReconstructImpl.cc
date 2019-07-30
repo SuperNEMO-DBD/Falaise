@@ -178,7 +178,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
       flRecConfig.remove("flreconstruct.plugins");
       std::vector<std::string> pList;
       userFLPlugins.fetch("plugins", pList);
-      for (std::string plugin_name : pList) {
+      for (const std::string& plugin_name : pList) {
         static const std::string no_explicit_plugin_file;
         datatools::properties& pSection =
             flRecParameters.userLibConfig.add_section(plugin_name, no_explicit_plugin_file);
@@ -242,7 +242,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     // Clean the flRecConfig from unused sections of type "flreconstruct::section":
     std::vector<std::string> section_keys = flRecConfig.keys();
     std::vector<std::string> unused_section_keys;
-    for (const auto & section_key : section_keys) {
+    for (const auto& section_key : section_keys) {
       if (flRecConfig.has_key_with_meta(section_key, "flreconstruct::section")) {
         DT_LOG_ERROR(flRecParameters.logLevel, "Found an unused flreconstruct section named '"
                                                    << section_key << "'! We will discard it!");
@@ -418,7 +418,7 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   if (!flRecParameters.experimentalSetupUrn.empty()) {
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = falaise::tags::experimental_setup_category();
+      const std::string& conf_category = falaise::tags::experimental_setup_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flRecParameters.experimentalSetupUrn << "'!");
@@ -537,7 +537,6 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   if (datatools::logger::is_debug(flRecParameters.logLevel)) {
     flRecParameters.print(std::cerr);
   }
-
 }
 
 falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
