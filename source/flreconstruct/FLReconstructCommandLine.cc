@@ -81,7 +81,7 @@ void do_help(std::ostream& os, const bpo::options_description& od) {
 void do_module_list(std::ostream& os) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
-  typedef std::vector<std::string> ModuleInfo;
+  using ModuleInfo = std::vector<std::string>;
   ModuleInfo mods;
   // Builtin
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
@@ -95,7 +95,7 @@ void do_help_module(std::ostream& os, std::string module) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
   // Is module valid?
-  typedef std::vector<std::string> ModuleInfo;
+  using ModuleInfo = std::vector<std::string>;
   ModuleInfo mods;
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
   std::set<std::string> moduleSet(mods.begin(), mods.end());
@@ -132,8 +132,8 @@ void do_help_pipeline_list(std::ostream& os) {
                                   "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline)",
                                   "recsetup")) {
       std::clog << "List of supported reconstruction pipeline:" << std::endl;
-      for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
-        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
+      for (const auto & flsim_urn_info : flsim_urn_infos) {
+        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_info);
         os << ui.get_urn() << " : " << ui.get_description() << std::endl;
       }
     } else {
@@ -182,7 +182,7 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
       "progress modulo on number of events")
 
     ("user-profile,u", bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
-      "set the user profile (\"expert\", \"normal\", \"production\")")
+      R"(set the user profile ("expert", "normal", "production"))")
 
     ("input-metadata-file,M", bpo::value<std::string>(&clArgs.inputMetadataFile)->value_name("file"),
       "file from which to load metadata")
