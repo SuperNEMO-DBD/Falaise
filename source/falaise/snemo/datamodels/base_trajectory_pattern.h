@@ -27,7 +27,7 @@ class base_trajectory_pattern : public datatools::i_serializable {
   /// Constructors
   base_trajectory_pattern() = default;
 
-  base_trajectory_pattern(const std::string& pid);
+  base_trajectory_pattern(std::string pid);
 
   /// Destructor
   virtual ~base_trajectory_pattern() = default;

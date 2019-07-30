@@ -105,7 +105,6 @@ void event_header_utils_module::initialize(const datatools::properties& setup_,
   }
 
   _set_initialized(true);
-  return;
 }
 
 void event_header_utils_module::reset() {
@@ -113,7 +112,6 @@ void event_header_utils_module::reset() {
               "Module '" << get_name() << "' is not initialized !");
   _set_initialized(false);
   _set_defaults();
-  return;
 }
 
 void event_header_utils_module::_set_defaults() {
@@ -132,20 +130,19 @@ void event_header_utils_module::_set_defaults() {
 
   _ah_current_run_number_ = _add_header_run_number_;
   _ah_current_event_number_ = _add_header_event_number_;
-  return;
 }
 
 // Constructor :
 event_header_utils_module::event_header_utils_module(datatools::logger::priority logging_priority_)
     : dpp::base_module(logging_priority_) {
   _set_defaults();
-  return;
 }
 
 // Destructor
 event_header_utils_module::~event_header_utils_module() {
-  if (is_initialized()) event_header_utils_module::reset();
-  return;
+  if (is_initialized()) {
+    event_header_utils_module::reset();
+  }
 }
 
 bool event_header_utils_module::is_add_header_mode() const { return _mode_ == MODE_ADD_HEADER; }
@@ -153,13 +150,11 @@ bool event_header_utils_module::is_add_header_mode() const { return _mode_ == MO
 void event_header_utils_module::ah_increment_run_number(int incr_) {
   DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
   _ah_current_run_number_ += incr_;
-  return;
 }
 
 void event_header_utils_module::ah_increment_event_number(int incr_) {
   DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
   _ah_current_event_number_ += incr_;
-  return;
 }
 
 bool event_header_utils_module::ah_is_real() const {
@@ -187,7 +182,7 @@ dpp::base_module::process_status event_header_utils_module::process(
 void event_header_utils_module::_process_add_header(datatools::things& data_record_) {
   DT_THROW_IF(_add_header_bank_label_.empty(), std::logic_error,
               "Missing bank label to be enriched !");
-  snemo::datamodel::event_header* ptr_event_header = 0;
+  snemo::datamodel::event_header* ptr_event_header = nullptr;
   if (data_record_.has(_add_header_bank_label_)) {
     DT_THROW_IF(!_add_header_update_, std::logic_error,
                 "Event record already has a header '" << _add_header_bank_label_ << "' !");
@@ -224,8 +219,7 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
       const std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
       DT_THROW_IF(!data_record_.has(sd_label), std::logic_error,
                   "Event record has no '" << sd_label << "' bank!");
-      const mctools::simulated_data& the_simulated_data =
-          data_record_.get<mctools::simulated_data>(sd_label);
+      const auto& the_simulated_data = data_record_.get<mctools::simulated_data>(sd_label);
 
       if (_add_header_use_genbb_weight_) {
         const double weight = the_simulated_data.get_primary_event().get_genbb_weight();
@@ -238,8 +232,6 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
       }
     }
   }
-
-  return;
 }
 
 }  // end of namespace processing
@@ -320,7 +312,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module, oc
         .set_terse_description("The event generation type")
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
-        .set_long_description("This is the type of generation (\"real\" or \"simulated\")")
+        .set_long_description(R"(This is the type of generation ("real" or "simulated"))")
         .set_default_value_string(snemo::datamodel::data_info::default_event_header_label())
         .add_example(
             "Indicate simulated event:: \n"

@@ -34,43 +34,40 @@ void calibrated_data_cut::_set_defaults() {
   _hit_category_range_max_ = -1;
   _tracker_hit_trait_bits_ = snemo::datamodel::calibrated_tracker_hit::none;
   _tracker_hit_delay_time_ = 0.0 * CLHEP::microsecond;
-  return;
 }
 
 void calibrated_data_cut::set_CD_label(const std::string& CD_label_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Cut '" << get_name() << "' is already initialized ! ");
   _CD_label_ = CD_label_;
-  return;
 }
 
 const std::string& calibrated_data_cut::get_CD_label() const { return _CD_label_; }
 
 uint32_t calibrated_data_cut::get_mode() const { return _mode_; }
 
-bool calibrated_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool calibrated_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool calibrated_data_cut::is_mode_range_hit_category() const {
-  return _mode_ & MODE_RANGE_HIT_CATEGORY;
+  return (_mode_ & MODE_RANGE_HIT_CATEGORY) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_has_hit_category() const {
-  return _mode_ & MODE_HAS_HIT_CATEGORY;
+  return (_mode_ & MODE_HAS_HIT_CATEGORY) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_tracker_hit_has_traits() const {
-  return _mode_ & MODE_TRACKER_HIT_HAS_TRAITS;
+  return (_mode_ & MODE_TRACKER_HIT_HAS_TRAITS) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_tracker_hit_is_delayed() const {
-  return _mode_ & MODE_TRACKER_HIT_IS_DELAYED;
+  return (_mode_ & MODE_TRACKER_HIT_IS_DELAYED) != 0u;
 }
 
 void calibrated_data_cut::set_flag_name(const std::string& flag_name_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Cut '" << get_name() << "' is already initialized ! ");
   _flag_name_ = flag_name_;
-  return;
 }
 
 const std::string& calibrated_data_cut::get_flag_name() const { return _flag_name_; }
@@ -78,19 +75,18 @@ const std::string& calibrated_data_cut::get_flag_name() const { return _flag_nam
 calibrated_data_cut::calibrated_data_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 calibrated_data_cut::~calibrated_data_cut() {
-  if (is_initialized()) this->calibrated_data_cut::reset();
-  return;
+  if (is_initialized()) {
+    this->calibrated_data_cut::reset();
+  }
 }
 
 void calibrated_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void calibrated_data_cut::initialize(const datatools::properties& configuration_,
@@ -194,8 +190,7 @@ void calibrated_data_cut::initialize(const datatools::properties& configuration_
                   "Missing 'tracker_hit_has_traits.bits_name' property !");
       std::vector<std::string> bits_name;
       configuration_.fetch("tracker_hit_has_traits.bits_name", bits_name);
-      for (size_t i = 0; i < bits_name.size(); ++i) {
-        const std::string& bit_name = bits_name[i];
+      for (const auto& bit_name : bits_name) {
         if (bit_name == "delayed") {
           _tracker_hit_trait_bits_ |= snemo::datamodel::calibrated_tracker_hit::delayed;
         } else if (bit_name == "noisy") {
@@ -223,21 +218,20 @@ void calibrated_data_cut::initialize(const datatools::properties& configuration_
     if (is_mode_tracker_hit_is_delayed()) {
       DT_LOG_DEBUG(get_logging_priority(), "Using TRACKER_HIT_IS_DELAYED mode...");
       if (configuration_.has_key("tracker_hit_is_delayed.delay_time")) {
-        _tracker_hit_delay_time_ =
-          configuration_.fetch_real_with_explicit_dimension("tracker_hit_is_delayed.delay_time", "time");
+        _tracker_hit_delay_time_ = configuration_.fetch_real_with_explicit_dimension(
+            "tracker_hit_is_delayed.delay_time", "time");
       }
     }  // end of is_mode_tracker_hit_is_delayed
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int calibrated_data_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_CD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _CD_label_ << "' bank !");
@@ -245,8 +239,7 @@ int calibrated_data_cut::_accept() {
   }
 
   // Get calibrated data bank
-  const snemo::datamodel::calibrated_data& CD =
-      ER.get<snemo::datamodel::calibrated_data>(_CD_label_);
+  const auto& CD = ER.get<snemo::datamodel::calibrated_data>(_CD_label_);
 
   // Check if the calibrated data has a property flag with a specific name :
   bool check_flag = true;
@@ -323,10 +316,8 @@ int calibrated_data_cut::_accept() {
     check_tracker_hit_has_traits = false;
     const snemo::datamodel::calibrated_data::tracker_hit_collection_type& hits =
         CD.calibrated_tracker_hits();
-    for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator ihit =
-             hits.begin();
-         ihit != hits.end(); ++ihit) {
-      const snemo::datamodel::calibrated_tracker_hit& a_hit = ihit->get();
+    for (const auto& hit : hits) {
+      const snemo::datamodel::calibrated_tracker_hit& a_hit = hit.get();
       if (a_hit.get_trait_bit(_tracker_hit_trait_bits_)) {
         check_tracker_hit_has_traits = true;
         break;
@@ -346,10 +337,8 @@ int calibrated_data_cut::_accept() {
     check_tracker_hit_is_delayed = false;
     const snemo::datamodel::calibrated_data::tracker_hit_collection_type& hits =
         CD.calibrated_tracker_hits();
-    for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator ihit =
-             hits.begin();
-         ihit != hits.end(); ++ihit) {
-      const snemo::datamodel::calibrated_tracker_hit& a_hit = ihit->get();
+    for (const auto& hit : hits) {
+      const snemo::datamodel::calibrated_tracker_hit& a_hit = hit.get();
       if (a_hit.is_delayed() && a_hit.get_delayed_time() > _tracker_hit_delay_time_) {
         check_tracker_hit_is_delayed = true;
         break;

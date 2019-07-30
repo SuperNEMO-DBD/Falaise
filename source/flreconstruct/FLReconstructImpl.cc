@@ -41,14 +41,11 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   FLDialogState clDialogRet = DIALOG_OK;
   try {
     clDialogRet = do_cldialog(argc, argv, clArgs);
-    // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Command line dialog end with exit code=" <<
-    // clDialogRet);
 
     if (clDialogRet == DIALOG_ERROR) {
-      // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Detected a dialog error!");
       throw FLConfigUserError{"bad command line input"};
-    } else if (clDialogRet == DIALOG_QUERY) {
-      // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Detected a dialog query!");
+    }
+    if (clDialogRet == DIALOG_QUERY) {
       throw FLConfigHelpHandled();
     }
   } catch (FLConfigHelpHandled& e) {
@@ -60,7 +57,6 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   } catch (std::exception& e) {
     throw FLConfigUserError{"bad command line input"};
   }
-  DT_LOG_DEBUG(clArgs.logLevel, "Configuring...");
 
   // Import parameters from the command line:
   flRecParameters.logLevel = clArgs.logLevel;
@@ -182,8 +178,8 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
       flRecConfig.remove("flreconstruct.plugins");
       std::vector<std::string> pList;
       userFLPlugins.fetch("plugins", pList);
-      for (std::string plugin_name : pList) {
-        static const std::string no_explicit_plugin_file = "";
+      for (const std::string& plugin_name : pList) {
+        static const std::string no_explicit_plugin_file;
         datatools::properties& pSection =
             flRecParameters.userLibConfig.add_section(plugin_name, no_explicit_plugin_file);
         userFLPlugins.export_and_rename_starting_with(pSection, plugin_name + ".", "");
@@ -246,11 +242,11 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     // Clean the flRecConfig from unused sections of type "flreconstruct::section":
     std::vector<std::string> section_keys = flRecConfig.keys();
     std::vector<std::string> unused_section_keys;
-    for (std::size_t i = 0; i < section_keys.size(); i++) {
-      if (flRecConfig.has_key_with_meta(section_keys[i], "flreconstruct::section")) {
+    for (const auto& section_key : section_keys) {
+      if (flRecConfig.has_key_with_meta(section_key, "flreconstruct::section")) {
         DT_LOG_ERROR(flRecParameters.logLevel, "Found an unused flreconstruct section named '"
-                                                   << section_keys[i] << "'! We will discard it!");
-        unused_section_keys.push_back(section_keys[i]);
+                                                   << section_key << "'! We will discard it!");
+        unused_section_keys.push_back(section_key);
       }
     }
     for (std::size_t i = 0; i < unused_section_keys.size(); i++) {
@@ -261,7 +257,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   }
 
   // Check for allowed inline modules:
-  if (flRecParameters.userProfile == "production" && flRecConfig.size()) {
+  if (flRecParameters.userProfile == "production" && !flRecConfig.empty()) {
     DT_THROW(FLConfigUserError, "User profile '"
                                     << flRecParameters.userProfile << "' "
                                     << "does not allow the definitions of inline modules!");
@@ -272,12 +268,9 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   flRecParameters.modulesConfig = flRecConfig;
 
   do_postprocess(flRecParameters);
-  return;
 }
 
 void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
-  DT_LOG_TRACE_ENTERING(flRecParameters.logLevel);
-
   // Collect input metadata from input files:
   // we first try from some input metadata companion file, if provided,
   // then from the input data file itself, in the hope it contains metadata records.
@@ -285,13 +278,10 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
   falaise::app::metadata_collector mc;
   if (!flRecParameters.inputMetadataFile.empty()) {
     // Fetch the metadata from the companion input metadata file, if any:
-    DT_LOG_NOTICE(flRecParameters.logLevel,
-                  "Fetching input metadata from input metadata companion file...");
     mc.set_input_metadata_file(flRecParameters.inputMetadataFile);
     flRecParameters.inputMetadata = mc.get_metadata_from_metadata_file();
   } else if (!flRecParameters.inputFile.empty()) {
     // Fetch the metadata from the input data file:
-    DT_LOG_NOTICE(flRecParameters.logLevel, "Fetching input metadata from input data file...");
     mc.set_input_data_file(flRecParameters.inputFile);
     flRecParameters.inputMetadata = mc.get_metadata_from_data_file();
   } else {
@@ -308,13 +298,13 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
   // Extract input metadata of interest:
   if (!flRecParameters.inputMetadata.empty()) {
     // Try to extract informations from the metadata:
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Found input metadata");
     iMeta.scan(flRecParameters.inputMetadata);
     if (datatools::logger::is_notice(flRecParameters.logLevel)) {
       iMeta.print(std::cerr);
     }
   }  // End of using input metadata
 
+  // TODO: Is this an error?
   if (!iMeta.experimentalSetupUrn.empty()) {
     DT_LOG_NOTICE(flRecParameters.logLevel,
                   "Input metadata from the experimental setup identifier (URN) is '"
@@ -363,13 +353,9 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
                                                   << "' from input metadata.");
     }
   }  // End of settings.
-
-  DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-  return;
 }
 
 void do_postprocess(FLReconstructParams& flRecParameters) {
-  DT_LOG_TRACE_ENTERING(flRecParameters.logLevel);
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
@@ -432,7 +418,7 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   if (!flRecParameters.experimentalSetupUrn.empty()) {
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = falaise::tags::experimental_setup_category();
+      const std::string& conf_category = falaise::tags::experimental_setup_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flRecParameters.experimentalSetupUrn << "'!");
@@ -551,9 +537,6 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   if (datatools::logger::is_debug(flRecParameters.logLevel)) {
     flRecParameters.print(std::cerr);
   }
-
-  DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-  return;
 }
 
 falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
@@ -619,7 +602,7 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
                                 "Variants profile path");
     }
 
-    if (flRecParameters.variantSubsystemParams.settings.size()) {
+    if (!flRecParameters.variantSubsystemParams.settings.empty()) {
       // Not with "production" user profile:
       variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
                            "Variants settings");

@@ -50,7 +50,7 @@ FLReconstructCommandLine FLReconstructCommandLine::makeDefault() {
 //! Handle printing of version information to given ostream
 void do_version(std::ostream& os, bool isVerbose) {
   std::string commitInfo{};
-  if (falaise::version::get_commit() != "") {
+  if (!falaise::version::get_commit().empty()) {
     commitInfo = " (" + falaise::version::get_commit();
     commitInfo += falaise::version::is_dirty() ? "-dirty" : "";
     commitInfo += ")";
@@ -81,21 +81,21 @@ void do_help(std::ostream& os, const bpo::options_description& od) {
 void do_module_list(std::ostream& os) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
-  typedef std::vector<std::string> ModuleInfo;
+  using ModuleInfo = std::vector<std::string>;
   ModuleInfo mods;
   // Builtin
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
-  for (ModuleInfo::value_type entry : mods) {
+  for (const ModuleInfo::value_type& entry : mods) {
     os << entry << std::endl;
   }
 }
 
 //! Print OCD help for supplied module name to given ostream
-void do_help_module(std::ostream& os, std::string module) {
+void do_help_module(std::ostream& os, const std::string& module) {
   datatools::library_loader libLoader;
   do_load_plugins(libLoader);
   // Is module valid?
-  typedef std::vector<std::string> ModuleInfo;
+  using ModuleInfo = std::vector<std::string>;
   ModuleInfo mods;
   DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(dpp::base_module).list_of_factories(mods);
   std::set<std::string> moduleSet(mods.begin(), mods.end());
@@ -132,8 +132,8 @@ void do_help_pipeline_list(std::ostream& os) {
                                   "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline)",
                                   "recsetup")) {
       std::clog << "List of supported reconstruction pipeline:" << std::endl;
-      for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
-        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
+      for (const auto& flsim_urn_info : flsim_urn_infos) {
+        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_info);
         os << ui.get_urn() << " : " << ui.get_description() << std::endl;
       }
     } else {
@@ -147,8 +147,6 @@ void do_help_pipeline_list(std::ostream& os) {
 void do_load_plugins(datatools::library_loader& libLoader) {
   std::string pluginPath = falaise::get_plugin_dir();
   // explicitly list for now...
-  // libLoader.load("Falaise_AnalogSignalBuilder", pluginPath);
-  // libLoader.load("Falaise_Digitization", pluginPath);
   libLoader.load("Falaise_CAT", pluginPath);
   libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
   libLoader.load("Falaise_MockTrackerClusterizer", pluginPath);
@@ -165,68 +163,47 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
   // Bind command line parser to exposed parameters
   std::string verbosityLabel;
   // Application specific options:
+  // clang-format off
   bpo::options_description optDesc("Options");
   optDesc.add_options()("help,h", "print this help message")
+    ("help-module-list", "list available modules and exit")
 
-      ("help-module-list", "list available modules and exit")
+    ("help-module", bpo::value<std::string>()->value_name("name"),
+      "print help for a single module and exit")
 
-          ("help-module", bpo::value<std::string>()->value_name("name"),
-           "print help for a single module and exit")
+    ("help-pipeline-list", "list available pipeline configurations and exit")
 
-              ("help-pipeline-list", "list available pipeline configurations and exit")
+    ("version", "print version number")
 
-                  ("version", "print version number")
-
-      // ("verbosity,v",
-      //  bpo::value<datatools::logger::priority>(&clArgs.logLevel)
-      //  ->default_value(datatools::logger::PRIO_FATAL)
-      //  ->value_name("level"),
-      //  "set verbosity level of logging")
-
-      ("verbosity,V", bpo::value<std::string>(&verbosityLabel)->value_name("level"),
+    ("verbosity,V", bpo::value<std::string>(&verbosityLabel)->value_name("level"),
        "set the verbosity level")
 
-          ("modulo,P",
-           bpo::value<uint32_t>(&clArgs.moduloEvents)->default_value(0)->value_name("period"),
-           "progress modulo on number of events")
+    ("modulo,P", bpo::value<uint32_t>(&clArgs.moduloEvents)->default_value(0)->value_name("period"),
+      "progress modulo on number of events")
 
-              ("user-profile,u",
-               bpo::value<std::string>(&clArgs.userProfile)
-                   ->value_name("name")
-                   ->default_value("normal"),
-               "set the user profile (\"expert\", \"normal\", \"production\")")
+    ("user-profile,u", bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
+      R"(set the user profile ("expert", "normal", "production"))")
 
-                  ("input-metadata-file,M",
-                   bpo::value<std::string>(&clArgs.inputMetadataFile)->value_name("file"),
-                   "file from which to load metadata")
+    ("input-metadata-file,M", bpo::value<std::string>(&clArgs.inputMetadataFile)->value_name("file"),
+      "file from which to load metadata")
 
-                      ("output-metadata-file,m",
-                       bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
-                       "file in which to store metadata")
+    ("output-metadata-file,m", bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
+      "file in which to store metadata")
 
-                          ("embedded-metadata,E",
-                           bpo::value<bool>(&clArgs.embeddedMetadata)
-                               ->value_name("flag")
-                               ->default_value(true),
-                           "flag to (de)activate recording of metadata in the reconstruction "
-                           "results output file")
+    ("embedded-metadata,E", bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
+      "flag to (de)activate recording of metadata in the reconstruction "
+      "results output file")
 
-                              ("pipeline,p",
-                               bpo::value<std::string>(&clArgs.pipelineScript)->value_name("file"),
-                               "pipeline script")
+    ("pipeline,p", bpo::value<std::string>(&clArgs.pipelineScript)->value_name("file"),
+      "pipeline script")
 
-                                  ("input-file,i",
-                                   bpo::value<std::string>(&clArgs.inputFile)
-                                       ->required()
-                                       ->value_name("file"),
-                                   "file from which to read input data (simulation, real)")
+    ("input-file,i", bpo::value<std::string>(&clArgs.inputFile)->required()->value_name("file"),
+      "file from which to read input data (simulation, real)")
 
-                                      ("output-file,o",
-                                       bpo::value<std::string>(&clArgs.outputFile)
-                                           ->value_name("file"),
-                                       "file in which to store reconstruction results")
-
-      ;
+    ("output-file,o", bpo::value<std::string>(&clArgs.outputFile)->value_name("file"),
+      "file in which to store reconstruction results")
+    ;
+  // clang-format on
 
   // - Store first, handling parse errors
   bpo::variables_map vMap;
@@ -235,8 +212,9 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {
     // We need to handle help/version even if required_option thrown
-    if (!vMap.count("help") && !vMap.count("version") && !vMap.count("help-module-list") &&
-        !vMap.count("help-module") && !vMap.count("help-pipeline-list")) {
+    if ((vMap.count("help") == 0u) && (vMap.count("version") == 0u) &&
+        (vMap.count("help-module-list") == 0u) && (vMap.count("help-module") == 0u) &&
+        (vMap.count("help-pipeline-list") == 0u)) {
       do_error(std::cerr, e.what());
       return DIALOG_ERROR;
     }
@@ -246,32 +224,32 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
   }
 
   // Handle any non-bound options
-  if (vMap.count("help")) {
+  if (vMap.count("help") != 0u) {
     do_help(std::cout, optDesc);
     return DIALOG_QUERY;
   }
 
-  if (vMap.count("version")) {
+  if (vMap.count("version") != 0u) {
     do_version(std::cout, true);
     return DIALOG_QUERY;
   }
 
-  if (vMap.count("help-module-list")) {
+  if (vMap.count("help-module-list") != 0u) {
     do_module_list(std::cout);
     return DIALOG_QUERY;
   }
 
-  if (vMap.count("help-module")) {
+  if (vMap.count("help-module") != 0u) {
     do_help_module(std::cout, vMap["help-module"].as<std::string>());
     return DIALOG_QUERY;
   }
 
-  if (vMap.count("help-pipeline-list")) {
+  if (vMap.count("help-pipeline-list") != 0u) {
     do_help_pipeline_list(std::cout);
     return DIALOG_QUERY;
   }
 
-  if (vMap.count("verbosity")) {
+  if (vMap.count("verbosity") != 0u) {
     clArgs.logLevel = datatools::logger::get_priority(verbosityLabel);
     if (clArgs.logLevel == datatools::logger::PRIO_UNDEFINED) {
       do_error(std::cerr, "Invalid verbosity level '" + verbosityLabel + "'!");
@@ -279,7 +257,7 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
     }
   }
 
-  if (!falaise::common::supported_user_profiles().count(clArgs.userProfile)) {
+  if (falaise::common::supported_user_profiles().count(clArgs.userProfile) == 0u) {
     do_error(std::cerr, "Invalid user profile '" + clArgs.userProfile + "'!");
     return DIALOG_ERROR;
   }

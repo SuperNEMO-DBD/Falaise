@@ -83,7 +83,8 @@ namespace FLSimulate {
 falaise::exit_code do_flsimulate(int argc, char *argv[]);
 
 //! Populate the metadata container with various informations classified in several categories
-falaise::exit_code do_metadata(const FLSimulateArgs &, datatools::multi_properties &);
+falaise::exit_code do_metadata(const FLSimulateArgs & /*flSimParameters*/,
+                               datatools::multi_properties & /*flSimMetadata*/);
 
 }  // end of namespace FLSimulate
 
@@ -213,7 +214,7 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
   }
 
   if (flSimParameters.saveVariantSettings &&
-      flSimParameters.variantSubsystemParams.settings.size()) {
+      !flSimParameters.variantSubsystemParams.settings.empty()) {
     // Saving effective list of variant settings:
     variants_props.store("settings", flSimParameters.variantSubsystemParams.settings,
                          "Effective variants settings");
@@ -264,7 +265,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
       variantService.start();
       // From this point, all other services and/or processing modules can
       // benefit of the variant service during their configuration steps.
-      if (flSimParameters.variantSubsystemParams.settings.size()) {
+      if (!flSimParameters.variantSubsystemParams.settings.empty()) {
         // The Variant service uses explicit settings:
         // Make sure we know the full list of effective variant settings corresponding to user
         // choice:

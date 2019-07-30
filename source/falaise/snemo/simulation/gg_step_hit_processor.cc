@@ -26,29 +26,32 @@ MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_IMPLEMENT(gg_step_hit_processor,
 
 bool gg_step_hit_processor::accept_external_rng() const { return true; }
 
-bool gg_step_hit_processor::has_external_rng() const { return _external_rng_ != 0; }
+bool gg_step_hit_processor::has_external_rng() const { return _external_rng_ != nullptr; }
 
 void gg_step_hit_processor::set_external_rng(mygsl::rng &rng_) {
   DT_LOG_NOTICE(get_logging_priority(),
                 "Processor '" << get_name() << "' now uses an external PRNG.");
   _external_rng_ = &rng_;
-  return;
 }
 
 const mygsl::rng &gg_step_hit_processor::get_rng() const {
-  if (has_external_rng()) return *_external_rng_;
+  if (has_external_rng()) {
+    return *_external_rng_;
+  }
   return _rng_;
 }
 
 mygsl::rng &gg_step_hit_processor::grab_rng() {
-  if (has_external_rng()) return *_external_rng_;
+  if (has_external_rng()) {
+    return *_external_rng_;
+  }
   return _rng_;
 }
 
 void gg_step_hit_processor::_set_defaults() {
-  _mapping_ = 0;
-  _categories_ = 0;
-  _external_rng_ = 0;
+  _mapping_ = nullptr;
+  _categories_ = nullptr;
+  _external_rng_ = nullptr;
   _time_resolution_ = 25. * CLHEP::ns;
   _mean_ionization_energy_ = 50. * CLHEP::eV;
   datatools::invalidate(_fiducial_drift_radius_);
@@ -60,13 +63,9 @@ void gg_step_hit_processor::_set_defaults() {
   _module_type_ = geomtools::geom_id::INVALID_TYPE;
   _mapping_category_ = "";
   _module_category_ = "module";
-  return;
 }
 
-void gg_step_hit_processor::reset() {
-  _set_defaults();
-  return;
-}
+void gg_step_hit_processor::reset() { _set_defaults(); }
 
 gg_step_hit_processor::~gg_step_hit_processor() {
   if (_gg_cell_type_ != geomtools::geom_id::INVALID_TYPE) {
@@ -78,20 +77,16 @@ gg_step_hit_processor::~gg_step_hit_processor() {
     _CT2_.tree_dump(std::clog, "", "[debug]: ");
   }
   reset();
-  return;
 }
 
-gg_step_hit_processor::gg_step_hit_processor() : base_step_hit_processor() {
-  _set_defaults();
-  return;
-}
+gg_step_hit_processor::gg_step_hit_processor() { _set_defaults(); }
 
 void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
                                        ::datatools::service_manager &service_mgr_) {
   this->base_step_hit_processor::initialize(config_, service_mgr_);
 
   // The geometry manager is mandatory for this processor:
-  DT_THROW_IF(_geom_manager == 0, std::logic_error, "Missing geometry manager !");
+  DT_THROW_IF(_geom_manager == nullptr, std::logic_error, "Missing geometry manager !");
 
   DT_LOG_DEBUG(get_logging_priority(), "Parsing setup properties...");
 
@@ -141,16 +136,19 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
 
   // set the fiducial drift radius of the Geiger cell:
   if (config_.has_key("fiducial_drift_radius")) {
-    _fiducial_drift_radius_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
+    _fiducial_drift_radius_ =
+        config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
   }
   // set the fiducial drift length of the Geiger cell:
   if (config_.has_key("fiducial_drift_length")) {
-    _fiducial_drift_length_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
+    _fiducial_drift_length_ =
+        config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
   }
 
   // set the mean ionization energy in the tracking gas:
   if (config_.has_key("mean_ionization_energy")) {
-    _mean_ionization_energy_ = config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
+    _mean_ionization_energy_ =
+        config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
   }
 
   // pickup the ID mapping from the geometry manager:
@@ -158,8 +156,7 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
 
   // check if the sensitive category is known:
   _categories_ = &(_geom_manager->get_id_mgr().categories_by_name());
-  geomtools::id_mgr::categories_by_name_col_type::const_iterator icat =
-      _categories_->find(_mapping_category_);
+  auto icat = _categories_->find(_mapping_category_);
   DT_THROW_IF(icat == _categories_->end(), std::logic_error,
               "Cannot find geometry ID category '" << _mapping_category_ << "' string property !");
 
@@ -199,9 +196,7 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
     // 2012-05-04 FM : now use the following
     {
       const std::list<const geomtools::geom_info *> &module_infos = _module_locator_.get_ginfos();
-      for (std::list<const geomtools::geom_info *>::const_iterator i = module_infos.begin();
-           i != module_infos.end(); i++) {
-        const geomtools::geom_info *ginfo = *i;
+      for (auto ginfo : module_infos) {
         const uint32_t module_number = ginfo->get_geom_id().get(0);
         DT_LOG_NOTICE(get_logging_priority(), "Found module #" << module_number);
         {
@@ -215,7 +210,6 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
       }
     }
   }
-  return;
 }
 
 bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
@@ -312,17 +306,16 @@ void gg_step_hit_processor::process(
     const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
     ::mctools::simulated_data::hit_collection_type &the_plain_gg_hits) {
   DT_LOG_TRACE_ENTERING(get_logging_priority());
-  _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *)0,
+  _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *)nullptr,
            &the_plain_gg_hits);
   DT_LOG_TRACE_EXITING(get_logging_priority());
-  return;
 }
 
 void gg_step_hit_processor::process(
     const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
     ::mctools::simulated_data::hit_handle_collection_type &the_gg_hits) {
-  _process(the_base_step_hits, &the_gg_hits, (mctools::simulated_data::hit_collection_type *)0);
-  return;
+  _process(the_base_step_hits, &the_gg_hits,
+           (mctools::simulated_data::hit_collection_type *)nullptr);
 }
 
 void gg_step_hit_processor::_process(
@@ -333,12 +326,12 @@ void gg_step_hit_processor::_process(
 
   // Check the type of output collection (handles or plain hits) :
   bool use_handles = false;
-  if (gg_hits_ != 0) {
+  if (gg_hits_ != nullptr) {
     use_handles = true;
-  } else if (plain_gg_hits_ == 0) {
+  } else if (plain_gg_hits_ == nullptr) {
     DT_THROW_IF(true, std::logic_error, "Missing hit collection type (NULL pointer) !");
   }
-  mctools::base_step_hit *current_gg_hit = 0;
+  mctools::base_step_hit *current_gg_hit = nullptr;
   uint32_t gg_hit_count = 0;
 
   // Traverses the whole list of step hits and computes for each of them
@@ -357,13 +350,13 @@ void gg_step_hit_processor::_process(
 
   double locator_tolerance = 0.1 * CLHEP::micrometer;
 
-  for (mctools::base_step_hit_processor::step_hit_ptr_collection_type::const_iterator ihit =
-           shpc_.begin();
-       ihit != shpc_.end(); ++ihit) {
+  for (auto ihit : shpc_) {
     bool process_this_hit = false;
-    mctools::base_step_hit &the_step_hit = const_cast<mctools::base_step_hit &>(*(*ihit));
+    auto &the_step_hit = const_cast<mctools::base_step_hit &>(*ihit);
 
-    if (is_debug()) _CT1_.start();
+    if (is_debug()) {
+      _CT1_.start();
+    }
     const double hit_energy_deposit = the_step_hit.get_energy_deposit();
     // XXX
     // if (hit_energy_deposit == 0) continue;
@@ -463,7 +456,7 @@ void gg_step_hit_processor::_process(
 
     // extract geometry information about the drift cell with this ID:
     // 2012-06-04 FM : added for debugging purpose :
-    const geomtools::geom_info *ginfo_ptr = 0;
+    const geomtools::geom_info *ginfo_ptr = nullptr;
     try {
       const geomtools::geom_info &ginfo = _gg_cell_locator_.get_geom_info(gid);
       ginfo_ptr = &ginfo;
@@ -647,7 +640,9 @@ void gg_step_hit_processor::_process(
           // not in the fiducial drift Z longitudinal region:
           // drop this ion/electron pair which will not
           // produce a Geiger avalanche and thus is sterile.
-          if (std::abs(hit_z) > 0.5 * _fiducial_drift_length_) continue;
+          if (std::abs(hit_z) > 0.5 * _fiducial_drift_length_) {
+            continue;
+          }
         }
 
         if (!datatools::is_valid(min_drift_distance)) {
@@ -893,7 +888,9 @@ void gg_step_hit_processor::_process(
       continue;
     }
 
-    if (is_debug()) _CT1_.stop();
+    if (is_debug()) {
+      _CT1_.stop();
+    }
 
     /* Now we try to merge the current step hit
      * within one of the recorded candidate Geiger hits.
@@ -901,22 +898,25 @@ void gg_step_hit_processor::_process(
      * that matches: same drift cell and compatible times.
      */
 
-    if (is_debug()) _CT2_.start();
+    if (is_debug()) {
+      _CT2_.start();
+    }
     // For efficiency we first search a match with
     // the current Geiger hit (if any):
-    mctools::base_step_hit *matching_gg = 0;
-    if (current_gg_hit != 0) {
+    mctools::base_step_hit *matching_gg = nullptr;
+    if (current_gg_hit != nullptr) {
       if (match_gg_hit(*current_gg_hit, the_step_hit)) {
         matching_gg = current_gg_hit;
       }
     }
     // else we scan the whole list of gg hits to find a match :
-    if (matching_gg == 0) {
+    if (matching_gg == nullptr) {
       if (use_handles) {
-        for (mctools::simulated_data::hit_handle_collection_type::iterator igg = gg_hits_->begin();
-             igg != gg_hits_->end(); igg++) {
-          if (!igg->has_data()) continue;
-          mctools::base_step_hit &matching_hit = igg->grab();
+        for (auto &gg_hit : *gg_hits_) {
+          if (!gg_hit.has_data()) {
+            continue;
+          }
+          mctools::base_step_hit &matching_hit = gg_hit.grab();
           if (match_gg_hit(matching_hit, the_step_hit)) {
             // pick up the first matching gg hit :
             matching_gg = &matching_hit;
@@ -924,9 +924,7 @@ void gg_step_hit_processor::_process(
           }
         }
       } else {
-        for (mctools::simulated_data::hit_collection_type::iterator igg = plain_gg_hits_->begin();
-             igg != plain_gg_hits_->end(); igg++) {
-          mctools::base_step_hit &matching_hit = *igg;
+        for (auto &matching_hit : *plain_gg_hits_) {
           if (match_gg_hit(matching_hit, the_step_hit)) {
             // pick up the first matching gg hit :
             matching_gg = &matching_hit;
@@ -936,7 +934,7 @@ void gg_step_hit_processor::_process(
       }
     }
 
-    if (matching_gg == 0) {
+    if (matching_gg == nullptr) {
       // If the current step hit does not match any candidate
       // Geiger hit, we insert a new candidate Geiger hit:
 
@@ -1107,7 +1105,9 @@ void gg_step_hit_processor::_process(
         }
       }
     }
-    if (is_debug()) _CT2_.stop();
+    if (is_debug()) {
+      _CT2_.stop();
+    }
   }  // end of the loop : for (i_step_hit_processor::step_hit_ptr_collection_type::const_iterator
      // ihit...
 
@@ -1122,7 +1122,6 @@ void gg_step_hit_processor::_process(
     _purge_gg_hits(gg_hits_, plain_gg_hits_);
   }
   DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
 }
 
 void gg_step_hit_processor::_purge_gg_hits(
@@ -1130,9 +1129,9 @@ void gg_step_hit_processor::_purge_gg_hits(
     mctools::simulated_data::hit_collection_type *plain_gg_hits_) {
   // Check the type of output collection (handles or plain hits) :
   bool use_handles = false;
-  if (gg_hits_ != 0) {
+  if (gg_hits_ != nullptr) {
     use_handles = true;
-  } else if (plain_gg_hits_ == 0) {
+  } else if (plain_gg_hits_ == nullptr) {
     DT_THROW_IF(true, std::logic_error, "Missing hit collection type (NULL pointer) !");
   }
 
@@ -1143,9 +1142,7 @@ void gg_step_hit_processor::_purge_gg_hits(
       kill_hit_pred_M2D(kill_hit_pred);
 
   if (use_handles) {
-    for (mctools::simulated_data::hit_handle_collection_type::iterator i = gg_hits_->begin();
-         i != gg_hits_->end(); ++i) {
-      mctools::simulated_data::hit_handle_type &the_hit_handle = *i;
+    for (auto &the_hit_handle : *gg_hits_) {
       if (the_hit_handle.has_data()) {
         mctools::base_step_hit &the_hit = the_hit_handle.grab();
         if (the_hit.grab_auxiliaries().has_flag(
@@ -1160,17 +1157,14 @@ void gg_step_hit_processor::_purge_gg_hits(
     // wrapper predicate :
     mctools::simulated_data::hit_handle_type::predicate_type handle_kill_hit_pred(
         kill_hit_pred_M2D);
-    mctools::simulated_data::hit_handle_collection_type::iterator new_end =
-        std::remove_if(gg_hits_->begin(), gg_hits_->end(), handle_kill_hit_pred);
+    auto new_end = std::remove_if(gg_hits_->begin(), gg_hits_->end(), handle_kill_hit_pred);
     if (new_end != gg_hits_->end()) {
       DT_LOG_TRACE(get_logging_priority(),
                    "Found some handle hits with the KILL_HIT_FLAG ! Kill them !");
       gg_hits_->erase(new_end, gg_hits_->end());
     }
   } else {
-    for (mctools::simulated_data::hit_collection_type::iterator i = plain_gg_hits_->begin();
-         i != plain_gg_hits_->end(); ++i) {
-      mctools::base_step_hit &the_hit = *i;
+    for (auto &the_hit : *plain_gg_hits_) {
       if (the_hit.get_auxiliaries().has_flag(
               snemo::datamodel::gg_track::missing_geiger_hit_flag())) {
         DT_LOG_TRACE(get_logging_priority(),
@@ -1179,7 +1173,7 @@ void gg_step_hit_processor::_purge_gg_hits(
         the_hit.grab_auxiliaries().store_flag(KILL_HIT_FLAG);
       }
     }
-    mctools::simulated_data::hit_collection_type::iterator new_end =
+    auto new_end =
         std::remove_if(plain_gg_hits_->begin(), plain_gg_hits_->end(), kill_hit_pred_M2D);
     if (new_end != plain_gg_hits_->end()) {
       DT_LOG_TRACE(get_logging_priority(),
@@ -1187,8 +1181,6 @@ void gg_step_hit_processor::_purge_gg_hits(
       plain_gg_hits_->erase(new_end, plain_gg_hits_->end());
     }
   }
-
-  return;
 }
 
 }  // end of namespace simulation

@@ -38,7 +38,7 @@ const std::string &falaise_sys::fl_resource_resolver_name() {
 datatools::logger::priority falaise_sys::process_logging_env() {
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   char *l = getenv("FALAISE_SYS_LOGGING");
-  if (l) {
+  if (l != nullptr) {
     std::string level_label(l);
     ::datatools::logger::priority prio = ::datatools::logger::get_priority(level_label);
     if (prio != ::datatools::logger::PRIO_UNDEFINED) {
@@ -63,7 +63,6 @@ falaise_sys::falaise_sys() {
               "Falaise system singleton is already set!");
   falaise_sys::_instance_ = this;
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 falaise_sys::~falaise_sys() {
@@ -73,7 +72,6 @@ falaise_sys::~falaise_sys() {
   }
   falaise_sys::_instance_ = nullptr;
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 datatools::logger::priority falaise_sys::get_logging() const { return _logging_; }
@@ -99,7 +97,6 @@ void falaise_sys::initialize() {
 
   _initialized_ = true;
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 void falaise_sys::shutdown() {
@@ -119,7 +116,6 @@ void falaise_sys::shutdown() {
   _libinfo_deregistration_();
 
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 datatools::service_manager &falaise_sys::grab_services() { return _services_; }
@@ -194,7 +190,6 @@ void falaise_sys::_libinfo_registration_() {
   }
 
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 void falaise_sys::_libinfo_deregistration_() {
@@ -219,7 +214,6 @@ void falaise_sys::_libinfo_deregistration_() {
   }
 
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 void falaise_sys::_initialize_urn_services_() {
@@ -268,7 +262,6 @@ void falaise_sys::_initialize_urn_services_() {
   }
 
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 void falaise_sys::_shutdown_urn_services_() {
@@ -303,7 +296,6 @@ void falaise_sys::_shutdown_urn_services_() {
   }
 
   DT_LOG_TRACE_EXITING(_logging_);
-  return;
 }
 
 }  // end of namespace detail

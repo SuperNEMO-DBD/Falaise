@@ -81,7 +81,7 @@ struct FLSimulateArgs {
 };
 
 //! Parse command line arguments to configure the simulation parameters
-void do_configure(int argc, char *argv[], FLSimulateArgs &params);
+void do_configure(int argc, char *argv[], FLSimulateArgs &flSimParameters);
 
 }  // namespace FLSimulate
 

@@ -32,7 +32,7 @@ GENBB_PG_REGISTRATION_IMPLEMENT(cosmic_muon_generator, "snemo::simulation::cosmi
 
 struct sea_level_toy_theta_density_function : public mygsl::i_unary_function {
  protected:
-  virtual double _eval(double x_) const;
+  double _eval(double x_) const override;
 };
 
 double sea_level_toy_theta_density_function::_eval(double x_) const {
@@ -45,16 +45,15 @@ double sea_level_toy_theta_density_function::_eval(double x_) const {
 bool cosmic_muon_generator::can_external_random() const { return true; }
 
 void cosmic_muon_generator::sea_level_toy_setup::reset() {
-  if (angular_VNM != 0) {
+  if (angular_VNM != nullptr) {
     delete angular_VNM;
-    angular_VNM = 0;
+    angular_VNM = nullptr;
   }
-  if (theta_density_function != 0) {
+  if (theta_density_function != nullptr) {
     delete theta_density_function;
-    theta_density_function = 0;
+    theta_density_function = nullptr;
   }
   set_defaults();
-  return;
 }
 
 void cosmic_muon_generator::sea_level_toy_setup::set_defaults() {
@@ -62,15 +61,11 @@ void cosmic_muon_generator::sea_level_toy_setup::set_defaults() {
   energy_sigma = 1.0 * CLHEP::GeV;
   maximum_theta = 70. * CLHEP::degree;
   muon_ratio = 1.2;
-  theta_density_function = 0;
-  angular_VNM = 0;
-  return;
+  theta_density_function = nullptr;
+  angular_VNM = nullptr;
 }
 
-cosmic_muon_generator::sea_level_toy_setup::sea_level_toy_setup() {
-  set_defaults();
-  return;
-}
+cosmic_muon_generator::sea_level_toy_setup::sea_level_toy_setup() { set_defaults(); }
 
 /* cosmic_muon_generator::sea_level_pdg_setup */
 
@@ -79,36 +74,22 @@ void cosmic_muon_generator::sea_level_pdg_setup::set_defaults() {
    *
    *
    */
-  return;
 }
 
-void cosmic_muon_generator::sea_level_pdg_setup::reset() {
-  set_defaults();
-  return;
-}
+void cosmic_muon_generator::sea_level_pdg_setup::reset() { set_defaults(); }
 
-cosmic_muon_generator::sea_level_pdg_setup::sea_level_pdg_setup() {
-  set_defaults();
-  return;
-}
+cosmic_muon_generator::sea_level_pdg_setup::sea_level_pdg_setup() { set_defaults(); }
 
 /* cosmic_muon_generator::underground_setup */
 
 void cosmic_muon_generator::underground_setup::set_defaults() {
   underground_lab = "lsm";
-  underground_depth = 4800.0;  // m.w.e.
-  return;
+  underground_depth = 4800.0;
 }
 
-void cosmic_muon_generator::underground_setup::reset() {
-  set_defaults();
-  return;
-}
+void cosmic_muon_generator::underground_setup::reset() { set_defaults(); }
 
-cosmic_muon_generator::underground_setup::underground_setup() {
-  set_defaults();
-  return;
-}
+cosmic_muon_generator::underground_setup::underground_setup() { set_defaults(); }
 
 /*** cosmic_muon_generator ***/
 
@@ -119,23 +100,20 @@ int cosmic_muon_generator::get_mode() const { return _mode_; }
 void cosmic_muon_generator::set_mode(int new_value_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Generator is already initialized !");
   _mode_ = new_value_;
-  return;
 }
 
-cosmic_muon_generator::cosmic_muon_generator() : ::genbb::i_genbb() {
+cosmic_muon_generator::cosmic_muon_generator() {
   _initialized_ = false;
 
   _at_reset_();
 
   _seed_ = 0;
-  return;
 }
 
 cosmic_muon_generator::~cosmic_muon_generator() {
   if (_initialized_) {
     reset();
   }
-  return;
 }
 
 const mygsl::rng& cosmic_muon_generator::get_random() const {
@@ -163,15 +141,14 @@ void cosmic_muon_generator::_at_reset_() {
     _random_.reset();
   }
   _seed_ = 0;
-
-  return;
 }
 
 void cosmic_muon_generator::reset() {
-  if (!_initialized_) return;
+  if (!_initialized_) {
+    return;
+  }
   _initialized_ = false;
   _at_reset_();
-  return;
 }
 
 void cosmic_muon_generator::initialize(const datatools::properties& config_,
@@ -220,20 +197,21 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
 
     if (_sea_level_mode_ == SEA_LEVEL_TOY) {
       if (config_.has_key("sea_level_toy.energy_mean")) {
-        _sea_level_toy_setup_.energy_mean
-          = config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_mean", "energy");
+        _sea_level_toy_setup_.energy_mean =
+            config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_mean", "energy");
       }
       if (config_.has_key("sea_level_toy.energy_sigma")) {
-        _sea_level_toy_setup_.energy_sigma
-          = config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_sigma", "energy");
+        _sea_level_toy_setup_.energy_sigma =
+            config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_sigma", "energy");
       }
       if (config_.has_key("sea_level_toy.maximum_theta")) {
-        _sea_level_toy_setup_.maximum_theta
-          = config_.fetch_real_with_explicit_dimension("sea_level_toy.maximum_theta", "angle");
+        _sea_level_toy_setup_.maximum_theta =
+            config_.fetch_real_with_explicit_dimension("sea_level_toy.maximum_theta", "angle");
         DT_THROW_IF(_sea_level_toy_setup_.maximum_theta < 0.0 ||
-                    _sea_level_toy_setup_.maximum_theta > 90.0 * CLHEP::degree,
-                    std::range_error, "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
-                    << get_name() << "' !");
+                        _sea_level_toy_setup_.maximum_theta > 90.0 * CLHEP::degree,
+                    std::range_error,
+                    "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
+                        << get_name() << "' !");
       }
       if (config_.has_key("sea_level_toy.muon_ratio")) {
         _sea_level_toy_setup_.muon_ratio = config_.fetch_real("sea_level_toy.muon_ratio");
@@ -253,7 +231,6 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
   _at_init_();
 
   _initialized_ = true;
-  return;
 }
 
 void cosmic_muon_generator::_at_init_() {
@@ -270,8 +247,6 @@ void cosmic_muon_generator::_at_init_() {
           mygsl::von_neumann_method::AUTO_FMAX, 100, 100);
     }
   }
-
-  return;
 }
 
 bool cosmic_muon_generator::has_next() { return true; }
@@ -334,7 +309,6 @@ void cosmic_muon_generator::_load_next(::genbb::primary_event& event_,
   }
 
   DT_LOG_DEBUG(get_logging_priority(), "Exiting.");
-  return;
 }
 
 double cosmic_muon_generator::energy_spectrum_at_sea_level_HE(double muon_cos_theta,

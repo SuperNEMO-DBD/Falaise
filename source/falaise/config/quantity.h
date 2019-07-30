@@ -101,7 +101,7 @@ class quantity {
    * \param[in] unit @ref datatools::units::unit tag
    * \throws falaise::config::unknown_unit_error if unit is not supported by @ref datatools::units
    */
-  quantity(double value, std::string const& unit);
+  quantity(double value, std::string unit);
 
   //! Destructor
   virtual ~quantity() = default;

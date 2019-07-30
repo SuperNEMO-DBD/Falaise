@@ -39,7 +39,7 @@ int version::get_patch() { return static_cast<int>(FALAISE_VERSION_PATCH); }
 int version::get_revision() { return static_cast<int>(FALAISE_VERSION_REVISION); }
 
 std::string version::get_commit() {
-  static std::string revision {FALAISE_VERSION_COMMIT};
+  static std::string revision{FALAISE_VERSION_COMMIT};
   return revision;
 }
 
@@ -52,7 +52,7 @@ bool version::is_dirty() {
 }
 
 std::string version::get_version() {
-  static std::string version("");
+  static std::string version;
   if (version.empty()) {
     std::ostringstream stream;
     stream << FALAISE_VERSION_MAJOR << "." << FALAISE_VERSION_MINOR << "." << FALAISE_VERSION_PATCH;
@@ -62,15 +62,25 @@ std::string version::get_version() {
 }
 
 bool version::is_at_least(int major, int minor, int patch) {
-  if (FALAISE_VERSION_MAJOR < major) return false;
-  if (FALAISE_VERSION_MAJOR > major) return true;
-  if (FALAISE_VERSION_MINOR < minor) return false;
-  if (FALAISE_VERSION_MINOR > minor) return true;
-  if (FALAISE_VERSION_PATCH < patch) return false;
+  if (FALAISE_VERSION_MAJOR < major) {
+    return false;
+  }
+  if (FALAISE_VERSION_MAJOR > major) {
+    return true;
+  }
+  if (FALAISE_VERSION_MINOR < minor) {
+    return false;
+  }
+  if (FALAISE_VERSION_MINOR > minor) {
+    return true;
+  }
+  if (FALAISE_VERSION_PATCH < patch) {
+    return false;
+  }
   return true;
 }
 
-bool version::has_feature(const std::string&) {
+bool version::has_feature(const std::string& /*unused*/) {
   /// - If you want to add features, then the following implementation
   ///   provides one example based on string features cached in a set.
   ///

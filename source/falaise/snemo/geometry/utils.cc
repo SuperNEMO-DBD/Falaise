@@ -43,15 +43,23 @@ const std::string& utils::side_front_label() {
 
 // static
 bool utils::is_side_label_valid(const std::string& label_) {
-  if (label_ == side_back_label()) return true;
-  if (label_ == side_front_label()) return true;
+  if (label_ == side_back_label()) {
+    return true;
+  }
+  if (label_ == side_front_label()) {
+    return true;
+  }
   return false;
 }
 
 // static
 int utils::get_side_from_label(const std::string& label_) {
-  if (label_ == side_back_label()) return SIDE_BACK;
-  if (label_ == side_front_label()) return SIDE_FRONT;
+  if (label_ == side_back_label()) {
+    return SIDE_BACK;
+  }
+  if (label_ == side_front_label()) {
+    return SIDE_FRONT;
+  }
   return SIDE_INVALID;
 }
 

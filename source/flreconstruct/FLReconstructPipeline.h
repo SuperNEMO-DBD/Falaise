@@ -26,7 +26,7 @@
 namespace FLReconstruct {
 
 //! Run the pipeline after configuration step
-falaise::exit_code do_pipeline(const FLReconstructParams& recParams);
+falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters);
 
 //! Ensure some critical services are setup
 falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,

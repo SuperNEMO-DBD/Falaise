@@ -70,11 +70,11 @@ namespace detail {
 bool visit_impl(const datatools::properties& p, const std::string& key, int);
 bool visit_impl(const datatools::properties& p, const std::string& key, double);
 bool visit_impl(const datatools::properties& p, const std::string& key, bool);
-bool visit_impl(const datatools::properties& p, const std::string& key, std::string);
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<int>);
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<double>);
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<bool>);
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<std::string>);
+bool visit_impl(const datatools::properties& p, const std::string& key, const std::string&);
+bool visit_impl(const datatools::properties& p, const std::string& key, const std::vector<int>&);
+bool visit_impl(const datatools::properties& p, const std::string& key, const std::vector<double>&);
+bool visit_impl(const datatools::properties& p, const std::string& key, const std::vector<bool>&);
+bool visit_impl(const datatools::properties& p, const std::string& key, const std::vector<std::string>&);
 }  // namespace detail
 
 // Compile-time fail on any other type (needs improvement, but does the job

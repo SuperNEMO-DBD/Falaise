@@ -15,9 +15,7 @@ void setup_data::set_last_error_message(const std::string& message_) {
   _last_error_message = message_;
 }
 
-setup_data::setup_data() {
-  reset();
-}
+setup_data::setup_data() { reset(); }
 
 void setup_data::reset() {
   logging = datatools::logger::PRIO_WARNING;
@@ -30,7 +28,7 @@ void setup_data::reset() {
 }
 
 bool setup_data::check() const {
-  setup_data* mutable_this = const_cast<setup_data*>(this);
+  auto* mutable_this = const_cast<setup_data*>(this);
   if (cell_size != cell_size) {
     std::ostringstream message;
     message << "TrackerPreClustering::setup_data::check: "

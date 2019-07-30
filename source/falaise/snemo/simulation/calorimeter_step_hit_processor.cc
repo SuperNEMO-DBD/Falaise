@@ -21,31 +21,24 @@ bool calorimeter_step_hit_processor::locate_calorimeter_block(const geomtools::v
   bool located = false;
   if (!located) {
     if (_locator_plugin_->get_calo_locator().find_block_geom_id(position_, gid_)) {
-      DT_LOG_TRACE(get_logging_priority(), "Found step with the main wall calorimeter locator.");
       located = true;
     }
   }
   if (!located) {
     if (_locator_plugin_->get_xcalo_locator().find_block_geom_id(position_, gid_)) {
-      DT_LOG_TRACE(get_logging_priority(), "Found step with the X-wall calorimeter locator.");
       located = true;
     }
   }
   if (!located) {
     if (_locator_plugin_->get_gveto_locator().find_block_geom_id(position_, gid_)) {
-      DT_LOG_TRACE(get_logging_priority(), "Found step with the gamma veto calorimeter locator.");
       located = true;
     }
   }
   if (!located) {
     // Fallback locator from the parent class:
     if (this->mctools::calorimeter_step_hit_processor::locate_calorimeter_block(position_, gid_)) {
-      DT_LOG_TRACE(get_logging_priority(), "Found step with the fallback locator.");
       located = true;
     }
-  }
-  if (!located) {
-    DT_LOG_TRACE(get_logging_priority(), "Cannot locate step with any of the available locators!");
   }
   return located;
 }
@@ -63,9 +56,8 @@ void calorimeter_step_hit_processor::initialize(const ::datatools::properties& c
     // If no locator plugin name is set, then search for the first one available
     // from the geometry manager:
     const geomtools::manager::plugins_dict_type& plugins = geo_mgr.get_plugins();
-    for (geomtools::manager::plugins_dict_type::const_iterator ip = plugins.begin();
-         ip != plugins.end(); ip++) {
-      const std::string& plugin_name = ip->first;
+    for (const auto& plugin : plugins) {
+      const std::string& plugin_name = plugin.first;
       if (geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(plugin_name)) {
         DT_LOG_DEBUG(get_logging_priority(), "Find locator plugin with name = " << plugin_name);
         locator_plugin_name = plugin_name;
@@ -78,8 +70,6 @@ void calorimeter_step_hit_processor::initialize(const ::datatools::properties& c
                   !geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name),
               std::logic_error, "Found no locator plugin named '" << locator_plugin_name << "'");
   _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
-
-  return;
 }
 
 }  // end of namespace simulation

@@ -31,37 +31,36 @@ void particle_track_data_cut::_set_defaults() {
   _particles_range_max_ = -1;
   _non_associated_calorimeter_hits_range_min_ = -1;
   _non_associated_calorimeter_hits_range_max_ = -1;
-  return;
 }
 
 void particle_track_data_cut::set_PTD_label(const std::string& PTD_label_) {
   _PTD_label_ = PTD_label_;
-  return;
 }
 
 const std::string& particle_track_data_cut::get_PTD_label() const { return _PTD_label_; }
 
 uint32_t particle_track_data_cut::get_mode() const { return _mode_; }
 
-bool particle_track_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool particle_track_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool particle_track_data_cut::is_mode_has_non_associated_calorimeter_hits() const {
-  return _mode_ & MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_HAS_NON_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
 bool particle_track_data_cut::is_mode_range_non_associated_calorimeter_hits() const {
-  return _mode_ & MODE_RANGE_NON_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_RANGE_NON_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
-bool particle_track_data_cut::is_mode_has_particles() const { return _mode_ & MODE_HAS_PARTICLES; }
+bool particle_track_data_cut::is_mode_has_particles() const {
+  return (_mode_ & MODE_HAS_PARTICLES) != 0u;
+}
 
 bool particle_track_data_cut::is_mode_range_particles() const {
-  return _mode_ & MODE_RANGE_PARTICLES;
+  return (_mode_ & MODE_RANGE_PARTICLES) != 0u;
 }
 
 void particle_track_data_cut::set_flag_name(const std::string& flag_name_) {
   _flag_name_ = flag_name_;
-  return;
 }
 
 const std::string& particle_track_data_cut::get_flag_name() const { return _flag_name_; }
@@ -69,19 +68,18 @@ const std::string& particle_track_data_cut::get_flag_name() const { return _flag
 particle_track_data_cut::particle_track_data_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 particle_track_data_cut::~particle_track_data_cut() {
-  if (is_initialized()) this->particle_track_data_cut::reset();
-  return;
+  if (is_initialized()) {
+    this->particle_track_data_cut::reset();
+  }
 }
 
 void particle_track_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void particle_track_data_cut::initialize(const datatools::properties& configuration_,
@@ -203,14 +201,13 @@ void particle_track_data_cut::initialize(const datatools::properties& configurat
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int particle_track_data_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_PTD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _PTD_label_ << "' bank !");
@@ -218,8 +215,7 @@ int particle_track_data_cut::_accept() {
   }
 
   // Get Particle Track Data bank
-  const snemo::datamodel::particle_track_data& PTD =
-      ER.get<snemo::datamodel::particle_track_data>(_PTD_label_);
+  const auto& PTD = ER.get<snemo::datamodel::particle_track_data>(_PTD_label_);
 
   // Check if the tracker clustering data has a property flag with a specific name :
   bool check_flag = true;

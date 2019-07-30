@@ -27,8 +27,8 @@ std::map<std::string, std::string> list_of_simulation_setups() {
     if (dtkUrnQuery.find_urn_info(flsim_urn_infos, falaise::detail::falaise_sys::fl_setup_db_name(),
                                   // Format : "urn:{namespace}:{experiment}:simulation:{version}"
                                   "(urn:)([^:]*)(:)([^:]*)(:simulation:)([^:]*)", "simsetup")) {
-      for (size_t i = 0; i < flsim_urn_infos.size(); i++) {
-        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_infos[i]);
+      for (const auto& flsim_urn_info : flsim_urn_infos) {
+        const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_info);
         m[ui.get_urn()] = ui.get_description();
       }
     }

@@ -60,7 +60,7 @@ void do_help(std::ostream& os, const boost::program_options::options_description
 void do_module_list(std::ostream& os);
 
 //! Print OCD help for supplied module name to given ostream
-void do_help_module(std::ostream& os, std::string module);
+void do_help_module(std::ostream& os, const std::string& module);
 
 //! Print list of standard pipeline configurations to supplied ostream
 void do_help_pipeline_list(std::ostream& os);

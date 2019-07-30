@@ -28,45 +28,42 @@ void particle_track_cut::_set_defaults() {
   _calorimeter_hits_range_category_ = "";
   _calorimeter_hits_range_min_ = -1;
   _calorimeter_hits_range_max_ = -1;
-  return;
 }
 
 uint32_t particle_track_cut::get_mode() const { return _mode_; }
 
-bool particle_track_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool particle_track_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool particle_track_cut::is_mode_has_associated_calorimeter_hits() const {
-  return _mode_ & MODE_HAS_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_HAS_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
 bool particle_track_cut::is_mode_range_associated_calorimeter_hits() const {
-  return _mode_ & MODE_RANGE_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_RANGE_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
-bool particle_track_cut::is_mode_has_vertex() const { return _mode_ & MODE_HAS_VERTEX; }
+bool particle_track_cut::is_mode_has_vertex() const { return (_mode_ & MODE_HAS_VERTEX) != 0u; }
 
-bool particle_track_cut::is_mode_has_charge() const { return _mode_ & MODE_HAS_CHARGE; }
+bool particle_track_cut::is_mode_has_charge() const { return (_mode_ & MODE_HAS_CHARGE) != 0u; }
 
 bool particle_track_cut::is_mode_has_delayed_cluster() const {
-  return _mode_ & MODE_HAS_DELAYED_CLUSTER;
+  return (_mode_ & MODE_HAS_DELAYED_CLUSTER) != 0u;
 }
 
 particle_track_cut::particle_track_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 particle_track_cut::~particle_track_cut() {
-  if (is_initialized()) this->particle_track_cut::reset();
-  return;
+  if (is_initialized()) { this->particle_track_cut::reset();
+}
 }
 
 void particle_track_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void particle_track_cut::initialize(const datatools::properties& configuration_,
@@ -177,7 +174,6 @@ void particle_track_cut::initialize(const datatools::properties& configuration_,
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int particle_track_cut::_accept() {
@@ -185,7 +181,7 @@ int particle_track_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get particle track
-  const snemo::datamodel::particle_track& a_particle =
+  const auto& a_particle =
       get_user_data<snemo::datamodel::particle_track>();
 
   // Check if the calibrated data has a property flag with a specific name :
@@ -247,10 +243,8 @@ int particle_track_cut::_accept() {
                        << " , max = " << _calorimeter_hits_range_max_ << ")");
     } else {
       // Look for special calorimeter category
-      for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator icalo =
-               the_calorimeters.begin();
-           icalo != the_calorimeters.end(); ++icalo) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = icalo->get();
+      for (const auto & the_calorimeter : the_calorimeters) {
+        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = the_calorimeter.get();
         const datatools::properties& aux = a_calo_hit.get_auxiliaries();
         if (aux.has_key("category") &&
             aux.fetch_string("category") == _calorimeter_hits_range_category_) {
@@ -283,10 +277,8 @@ int particle_track_cut::_accept() {
       bool has_vertex = false;
       const snemo::datamodel::particle_track::vertex_collection_type& the_vertices =
           a_particle.get_vertices();
-      for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator ivertex =
-               the_vertices.begin();
-           ivertex != the_vertices.end(); ++ivertex) {
-        const geomtools::blur_spot& a_vertex = ivertex->get();
+      for (const auto & the_vertice : the_vertices) {
+        const geomtools::blur_spot& a_vertex = the_vertice.get();
         const snemo::datamodel::particle_track::vertex_type vtype =
             snemo::datamodel::particle_track::label_to_vertex_type(_vertex_type_);
         if (snemo::datamodel::particle_track::vertex_is(a_vertex, vtype)) {

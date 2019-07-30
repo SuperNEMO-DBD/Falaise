@@ -88,11 +88,10 @@ double gg_locator::get_layer_x(uint32_t side_, uint32_t layer_) const {
     DT_THROW_IF(layer_ >= _back_cell_x_.size(), std::logic_error,
                 "Invalid layer number (" << layer_ << ">" << _back_cell_x_.size() - 1 << ")!");
     return _back_cell_x_[layer_];
-  } else {
-    DT_THROW_IF(layer_ >= _front_cell_x_.size(), std::logic_error,
-                "Invalid layer number (" << layer_ << ">" << _front_cell_x_.size() - 1 << ")!");
-    return _front_cell_x_[layer_];
   }
+  DT_THROW_IF(layer_ >= _front_cell_x_.size(), std::logic_error,
+              "Invalid layer number (" << layer_ << ">" << _front_cell_x_.size() - 1 << ")!");
+  return _front_cell_x_[layer_];
 }
 
 double gg_locator::get_row_y(uint32_t side_, uint32_t row_) const {
@@ -102,18 +101,16 @@ double gg_locator::get_row_y(uint32_t side_, uint32_t row_) const {
     DT_THROW_IF(row_ >= _back_cell_y_.size(), std::logic_error,
                 "Invalid row number (" << row_ << ">" << _back_cell_y_.size() - 1 << ")!");
     return _back_cell_y_[row_];
-  } else {
-    DT_THROW_IF(row_ >= _front_cell_y_.size(), std::logic_error,
-                "Invalid row number (" << row_ << ">" << _front_cell_y_.size() - 1 << ")!");
-    return _front_cell_y_[row_];
   }
+  DT_THROW_IF(row_ >= _front_cell_y_.size(), std::logic_error,
+              "Invalid row number (" << row_ << ">" << _front_cell_y_.size() - 1 << ")!");
+  return _front_cell_y_[row_];
 }
 
 void gg_locator::compute_cell_position(uint32_t side_, uint32_t layer_, uint32_t row_,
                                        geomtools::vector_3d &module_position_) const {
   geomtools::invalidate(module_position_);
   module_position_.set(get_layer_x(side_, layer_), get_row_y(side_, row_), 0.0);
-  return;
 }
 
 geomtools::vector_3d gg_locator::get_cell_position(uint32_t side_, uint32_t layer_,
@@ -141,7 +138,6 @@ void gg_locator::get_cell_position(const geomtools::geom_id &gid_,
       "Invalid module number (" << gid_.get(_module_index_) << "!=" << _module_number_ << ")!");
   return get_cell_position(gid_.get(_side_index_), gid_.get(_layer_index_), gid_.get(_row_index_),
                            position_);
-  return;
 }
 
 void gg_locator::get_cell_position(uint32_t side_, uint32_t layer_, uint32_t row_,
@@ -163,7 +159,6 @@ void gg_locator::get_cell_position(uint32_t side_, uint32_t layer_, uint32_t row
                 "Invalid row number (" << row_ << ">" << _front_cell_y_.size() - 1 << ")!");
     position_.set(_front_cell_x_[layer_], _front_cell_y_[row_], 0.0);
   }
-  return;
 }
 
 void gg_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
@@ -174,7 +169,6 @@ void gg_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
       "Invalid module number (" << gid_.get(_module_index_) << "!=" << _module_number_ << ")!");
   get_neighbours_ids(gid_.get(_side_index_), gid_.get(_layer_index_), gid_.get(_row_index_), ids_,
                      other_side_);
-  return;
 }
 
 void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t row_,
@@ -198,7 +192,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][x]
        *  [ ][ ][ ]
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_);
     }
     if (layer_ < (_back_cell_x_.size() - 1)) {
       /*  L+1 L L-1
@@ -206,7 +200,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_);
     }
     if (row_ > 0) {
       /*  L+1 L L-1
@@ -214,7 +208,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][x][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ - 1);
     }
     if (row_ < (_back_cell_y_.size() - 1)) {
       /*  L+1 L L-1
@@ -222,7 +216,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ + 1);
     }
 
     if ((layer_ < (_back_cell_x_.size() - 1)) && (row_ > 0)) {
@@ -231,7 +225,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [x][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1);
     }
     if ((layer_ < (_back_cell_x_.size() - 1)) && (row_ < (_back_cell_y_.size() - 1))) {
       /*  L+1 L L-1
@@ -239,7 +233,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1);
     }
     if ((layer_ > 0) && (row_ > 0)) {
       /*  L+1 L L-1
@@ -247,7 +241,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1);
     }
     if ((layer_ > 0) && (row_ < (_back_cell_y_.size() - 1))) {
       /*  L+1 L L-1
@@ -255,7 +249,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1);
     }
     if ((layer_ == 0) && (row_ > 0) && other_side_) {
       /*   1  0     0
@@ -263,7 +257,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [ ] R
        *  [ ][ ] | [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_ - 1);
     }
     if ((layer_ == 0) && other_side_) {
       /*   1  0     0
@@ -271,7 +265,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [x] R
        *  [ ][ ] | [ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_);
     }
     if ((layer_ == 0) && (row_ < (_back_cell_y_.size() - 1)) && other_side_) {
       /*   1  0     0
@@ -279,7 +273,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [ ] R
        *  [ ][ ] | [ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_ + 1);
     }
   }
   // front:
@@ -294,7 +288,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x][.][ ]
        *  [ ][ ][ ]
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_);
     }
     if (layer_ < (_front_cell_x_.size() - 1)) {
       /*  L-1 L L+1
@@ -302,7 +296,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][x] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_);
     }
     if (row_ > 0) {
       /*  L-1 L L+1
@@ -310,7 +304,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][x][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ - 1);
     }
     if (row_ < (_front_cell_y_.size() - 1)) {
       /*  L-1 L L+1
@@ -318,7 +312,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ + 1);
     }
 
     if ((layer_ < (_front_cell_x_.size() - 1)) && (row_ > 0)) {
@@ -327,7 +321,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1);
     }
     if ((layer_ < (_front_cell_x_.size() - 1)) && (row_ < (_front_cell_y_.size() - 1))) {
       /*  L-1 L L+1
@@ -335,7 +329,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1);
     }
     if ((layer_ > 0) && (row_ > 0)) {
       /*  L-1 L L+1
@@ -343,7 +337,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [x][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1);
     }
     if ((layer_ > 0) && (row_ < (_front_cell_y_.size() - 1))) {
       /*  L-1 L L+1
@@ -351,7 +345,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1);
     }
     if ((layer_ == 0) && (row_ > 0) && other_side_) {
       /*   0     0  1
@@ -359,7 +353,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ] | [.][ ] R
        *  [x] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_ - 1);
     }
     if ((layer_ == 0) && other_side_) {
       /*   0     0  1
@@ -367,7 +361,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x] | [.][ ] R
        *  [ ] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_);
     }
     if ((layer_ == 0) && (row_ < (_front_cell_y_.size() - 1)) && other_side_) {
       /*   0     0  1
@@ -375,10 +369,9 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ] | [.][ ] R
        *  [ ] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_ + 1);
     }
   }
-  return;
 }
 
 size_t gg_locator::get_number_of_neighbours(uint32_t side_, uint32_t layer_, uint32_t row_,
@@ -417,8 +410,12 @@ size_t gg_locator::get_number_of_neighbours(uint32_t side_, uint32_t layer_, uin
       }
     }
   }
-  if (corner) return 3 + plus;
-  if (side) return 5 + plus;
+  if (corner) {
+    return 3 + plus;
+  }
+  if (side) {
+    return 5 + plus;
+  }
   return 8;
 }
 
@@ -474,7 +471,7 @@ bool gg_locator::is_drift_cell_volume_in_current_module(const geomtools::geom_id
 
 void gg_locator::_hack_trace() {
   char *ev = getenv("FLGEOMLOCATOR");
-  if (ev != 0) {
+  if (ev != nullptr) {
     std::string evstr(ev);
     if (evstr == "trace") {
       set_logging_priority(datatools::logger::PRIO_TRACE);
@@ -482,7 +479,6 @@ void gg_locator::_hack_trace() {
                    "Trace logging activated through env 'FLGEOMLOCATOR'...");
     }
   }
-  return;
 }
 
 void gg_locator::_set_defaults() {
@@ -503,14 +499,14 @@ void gg_locator::_set_defaults() {
   _row_index_ = -1;
 
   _module_number_ = geomtools::geom_id::INVALID_ADDRESS;
-  _mapping_ = 0;
-  _id_manager_ = 0;
-  _module_ginfo_ = 0;
-  _module_box_ = 0;
-  _cell_box_ = 0;
+  _mapping_ = nullptr;
+  _id_manager_ = nullptr;
+  _module_ginfo_ = nullptr;
+  _module_box_ = nullptr;
+  _cell_box_ = nullptr;
 
-  for (size_t i = 0; i < utils::NSIDES; i++) {
-    _submodules_[i] = false;
+  for (bool &_submodule : _submodules_) {
+    _submodule = false;
   }
 
   datatools::invalidate(_anode_wire_length_);
@@ -519,24 +515,18 @@ void gg_locator::_set_defaults() {
   datatools::invalidate(_field_wire_diameter_);
 
   _initialized_ = false;
-  return;
 }
 
 // Constructor:
-gg_locator::gg_locator() : base_locator() {
-  _set_defaults();
-  return;
-}
+gg_locator::gg_locator() { _set_defaults(); }
 
 // Constructor:
-gg_locator::gg_locator(const ::geomtools::manager &mgr_, uint32_t module_number_) : base_locator() {
+gg_locator::gg_locator(const ::geomtools::manager &mgr_, uint32_t module_number_) {
   _set_defaults();
 
   // Setup :
   set_geo_manager(mgr_);
   set_module_number(module_number_);
-
-  return;
 }
 
 // Destructor:
@@ -544,7 +534,6 @@ gg_locator::~gg_locator() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 void gg_locator::_construct() {
@@ -623,7 +612,9 @@ void gg_locator::_construct() {
   vlx[utils::SIDE_FRONT] = &_front_cell_x_;
   // Loop on tracker sides:
   for (size_t side = 0; side < utils::NSIDES; side++) {
-    if (!_submodules_[side]) continue;
+    if (!_submodules_[side]) {
+      continue;
+    }
     size_t i_layer = 0;
     vlx[side]->reserve(10);
     while (true) {
@@ -646,7 +637,9 @@ void gg_locator::_construct() {
   vcy[1] = &_front_cell_y_;
   // Loop on tracker sides:
   for (size_t side = 0; side < utils::NSIDES; side++) {
-    if (!_submodules_[side]) continue;
+    if (!_submodules_[side]) {
+      continue;
+    }
     size_t i_cell = 0;
     vlx[side]->reserve(130);
     while (true) {
@@ -670,7 +663,7 @@ void gg_locator::_construct() {
 
   {
     // extract the geometry model associated to the "anode_wire" :
-    const geomtools::i_model *anode_wire_model = 0;
+    const geomtools::i_model *anode_wire_model = nullptr;
     std::string model_name = "anode_wire.model";  // default model name
     if (geom_mgr_setup_vid.has_major()) {
       // trick for an old version of the geometry
@@ -680,8 +673,7 @@ void gg_locator::_construct() {
       }
     }
 
-    geomtools::models_col_type::const_iterator found =
-        get_geo_manager().get_factory().get_models().find(model_name);
+    auto found = get_geo_manager().get_factory().get_models().find(model_name);
     DT_THROW_IF(found == get_geo_manager().get_factory().get_models().end(), std::logic_error,
                 "You should have found the '" << model_name << "' model here !");
     anode_wire_model = found->second;
@@ -695,8 +687,7 @@ void gg_locator::_construct() {
     const geomtools::i_shape_3d &anode_wire_shape = anode_wire_log.get_shape();
 
     // we know the concret shape class is a box, so we cast it :
-    const geomtools::cylinder &anode_wire_cylinder =
-        dynamic_cast<const geomtools::cylinder &>(anode_wire_shape);
+    const auto &anode_wire_cylinder = dynamic_cast<const geomtools::cylinder &>(anode_wire_shape);
 
     _anode_wire_length_ = anode_wire_cylinder.get_z();
     _anode_wire_diameter_ = anode_wire_cylinder.get_diameter();
@@ -704,7 +695,7 @@ void gg_locator::_construct() {
 
   {
     // extract the geometry model associated to the "field_wire" :
-    const geomtools::i_model *field_wire_model = 0;
+    const geomtools::i_model *field_wire_model = nullptr;
     std::string model_name = "field_wire.model";  // default model name
     if (geom_mgr_setup_vid.has_major()) {
       // trick for an old version of the geometry
@@ -714,8 +705,7 @@ void gg_locator::_construct() {
       }
     }
 
-    geomtools::models_col_type::const_iterator found =
-        get_geo_manager().get_factory().get_models().find(model_name);
+    auto found = get_geo_manager().get_factory().get_models().find(model_name);
     DT_THROW_IF(found == get_geo_manager().get_factory().get_models().end(), std::logic_error,
                 "You should have found the '" << model_name << "' model here !");
     field_wire_model = found->second;
@@ -729,8 +719,7 @@ void gg_locator::_construct() {
     const geomtools::i_shape_3d &field_wire_shape = field_wire_log.get_shape();
 
     // we know the concret shape class is a cylinder, so we cast it :
-    const geomtools::cylinder &field_wire_cylinder =
-        dynamic_cast<const geomtools::cylinder &>(field_wire_shape);
+    const auto &field_wire_cylinder = dynamic_cast<const geomtools::cylinder &>(field_wire_shape);
 
     _field_wire_length_ = field_wire_cylinder.get_z();
     _field_wire_diameter_ = field_wire_cylinder.get_diameter();
@@ -754,20 +743,15 @@ void gg_locator::_construct() {
   _row_address_index_ = module_ci.get_subaddress_index("row");
 
   DT_LOG_TRACE_EXITING(get_logging_priority());
-  return;
 }
 
-void gg_locator::set_module_number(uint32_t module_number_) {
-  _module_number_ = module_number_;
-  return;
-}
+void gg_locator::set_module_number(uint32_t module_number_) { _module_number_ = module_number_; }
 
 uint32_t gg_locator::get_module_number() const { return _module_number_; }
 
 void gg_locator::initialize() {
   datatools::properties dummy;
   initialize(dummy);
-  return;
 }
 
 void gg_locator::initialize(const datatools::properties &config_) {
@@ -780,12 +764,10 @@ void gg_locator::initialize(const datatools::properties &config_) {
   if (datatools::logger::is_trace(get_logging_priority())) {
     tree_dump(std::cerr, "Geiger locator : ", "[trace] ");
   }
-  return;
 }
 
 void gg_locator::dump(std::ostream &out_) const {
   gg_locator::tree_dump(out_, "snemo::geometry:gg_locator::dump: ");
-  return;
 }
 
 void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
@@ -816,22 +798,22 @@ void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Tracker layer type         = " << _tracker_layer_type_ << std::endl;
   out_ << indent << itag << "Cell type                  = " << _cell_type_ << std::endl;
   out_ << indent << itag << "Module placement    : " << std::endl;
-  if (_module_world_placement_ != 0) {
+  if (_module_world_placement_ != nullptr) {
     _module_world_placement_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Module box : " << std::endl;
-  if (_module_box_ != 0) {
+  if (_module_box_ != nullptr) {
     _module_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
   out_ << indent << itag << "Front submodule : " << _submodules_[utils::SIDE_FRONT] << std::endl;
   out_ << indent << itag << "Cell box : " << std::endl;
-  if (_cell_box_ != 0) {
+  if (_cell_box_ != nullptr) {
     _cell_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back layer X-pos [" << _back_cell_x_.size() << "] = ";
-  for (size_t i = 0; i < _back_cell_x_.size(); i++) {
-    out_ << _back_cell_x_[i] / CLHEP::mm << " ";
+  for (double i : _back_cell_x_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Back cell Y-pos [" << _back_cell_y_.size() << "] = ";
@@ -844,8 +826,8 @@ void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front layer X-pos [" << _front_cell_x_.size() << "] =  ";
-  for (size_t i = 0; i < _front_cell_x_.size(); i++) {
-    out_ << _front_cell_x_[i] / CLHEP::mm << " ";
+  for (double i : _front_cell_x_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front cell Y-pos [" << _front_cell_y_.size() << "] = ";
@@ -871,7 +853,6 @@ void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Layer address GID index  = " << _layer_address_index_ << std::endl;
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "Row address GID index    = " << _row_address_index_ << std::endl;
-  return;
 }
 
 void gg_locator::reset() {
@@ -885,21 +866,18 @@ void gg_locator::reset() {
   _front_cell_y_.clear();
 
   _initialized_ = false;
-  return;
 }
 
 void gg_locator::transform_world_to_module(const geomtools::vector_3d &world_position_,
                                            geomtools::vector_3d &module_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->mother_to_child(world_position_, module_position_);
-  return;
 }
 
 void gg_locator::transform_module_to_world(const geomtools::vector_3d &module_position_,
                                            geomtools::vector_3d &world_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->child_to_mother(module_position_, world_position_);
-  return;
 }
 
 bool gg_locator::is_in_module(const geomtools::vector_3d &module_position_,
@@ -912,7 +890,9 @@ bool gg_locator::is_in_module(const geomtools::vector_3d &module_position_,
 bool gg_locator::is_in_cell(const geomtools::vector_3d &module_position_, uint32_t side_,
                             uint32_t layer_, uint32_t row_, double tolerance_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
-  if (!_submodules_[side_]) return false;
+  if (!_submodules_[side_]) {
+    return false;
+  }
   geomtools::vector_3d to_cell_pos = module_position_;
   to_cell_pos -= get_cell_position(side_, layer_, row_);
   // here one misses one transformation step (rotation) but it is ok :
@@ -924,7 +904,9 @@ bool gg_locator::is_world_position_in_cell(const geomtools::vector_3d &world_pos
                                            uint32_t side_, uint32_t layer_, uint32_t row_,
                                            double tolerance_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
-  if (!_submodules_[side_]) return false;
+  if (!_submodules_[side_]) {
+    return false;
+  }
   geomtools::vector_3d in_module_position;
   this->transform_world_to_module(world_position_, in_module_position);
   return is_in_cell(in_module_position, side_, layer_, row_, tolerance_);
@@ -1060,7 +1042,7 @@ bool gg_locator::_find_cell_geom_id(const geomtools::vector_3d &in_module_positi
     if (gid.is_valid()) {
       // 2012-05-31 FM : use ginfo from mapping (see below)
       const geomtools::geom_info *ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
-      if (ginfo_ptr == 0) {
+      if (ginfo_ptr == nullptr) {
         DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
         DT_LOG_TRACE(get_logging_priority(), "Not a GG!");
         gid.invalidate();
@@ -1070,7 +1052,7 @@ bool gg_locator::_find_cell_geom_id(const geomtools::vector_3d &in_module_positi
       // 2012-05-31 FM : we check if the 'world' position is in the volume:
       geomtools::vector_3d world_position;
       transform_module_to_world(in_module_position_, world_position);
-      if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance, true)) {
+      if (geomtools::mapping::check_inside(*ginfo_ptr, world_position, tolerance, true)) {
         DT_LOG_TRACE(get_logging_priority(), "Position inside gid = " << gid);
         DT_LOG_TRACE_EXITING(get_logging_priority());
         return true;

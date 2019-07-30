@@ -22,31 +22,30 @@
 
 namespace FLTags {
 
-  //! Collect all needed configuration parameters in one data structure
-  struct FLTagsArgs
-  {
-    // Application specific parameters:
-    datatools::logger::priority logLevel = datatools::logger::PRIO_FATAL; //!< Logging priority threshold
-    std::string action               = "";
-    bool list_with_tree              = false;
-    bool dot_with_vertex_index       = false;
-    bool dot_without_vertex_category = false;
-    bool dot_without_edge_topic      = false;
-    bool dot_without_checks          = false;
-    std::string outputFile; //!< Path for the output file
+//! Collect all needed configuration parameters in one data structure
+struct FLTagsArgs {
+  // Application specific parameters:
+  datatools::logger::priority logLevel =
+      datatools::logger::PRIO_FATAL;  //!< Logging priority threshold
+  std::string action = "";
+  bool list_with_tree = false;
+  bool dot_with_vertex_index = false;
+  bool dot_without_vertex_category = false;
+  bool dot_without_edge_topic = false;
+  bool dot_without_checks = false;
+  std::string outputFile;  //!< Path for the output file
 
-    //! Construct and return the default configuration object
-    // Equally, could be supplied in a .application file, though note
-    // how some parameters are derived (i.e. there's a postprocessing step)
-    static FLTagsArgs makeDefault();
+  //! Construct and return the default configuration object
+  // Equally, could be supplied in a .application file, though note
+  // how some parameters are derived (i.e. there's a postprocessing step)
+  static FLTagsArgs makeDefault();
 
-    // Print:
-    void print(std::ostream &) const;
+  // Print:
+  void print(std::ostream &) const;
+};
 
-  };
-
-  //! Parse command line arguments to configure the simulation parameters
-  void do_configure(int argc, char *argv[], FLTagsArgs &params);
+//! Parse command line arguments to configure the simulation parameters
+void do_configure(int argc, char *argv[], FLTagsArgs &flTagsParameters);
 
 }  // namespace FLTags
 

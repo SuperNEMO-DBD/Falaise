@@ -71,7 +71,7 @@ set(FalaiseLibrary_TESTS_CATCH)
 include(common.cmake)
 include(app.cmake)
 include(snemo.cmake)
-include(bipo3.cmake)
+#include(bipo3.cmake)
 include(TrackerPreClustering.cmake)
 
 # - Publish headers

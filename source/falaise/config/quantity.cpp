@@ -1,8 +1,10 @@
 #include "falaise/config/quantity.h"
 
+#include <utility>
+
 namespace falaise {
 namespace config {
-quantity::quantity(double value, std::string const& unit) : value_(value), unit_name(unit) {
+quantity::quantity(double value, std::string  unit) : value_(value), unit_name(std::move(unit)) {
   if (!datatools::units::find_unit(unit_name, unit_scale, dimension_name)) {
     throw unknown_unit_error{"unit '" + unit_name + "' is unknown"};
   }

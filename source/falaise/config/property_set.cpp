@@ -25,16 +25,14 @@ bool property_set::is_key_to_sequence(std::string const& key) const {
 
 bool property_set::is_key_to_property_set(std::string const& key) const {
   // Has to be a key and not a sequence/property
-  if ( is_key_to_property(key) || is_key_to_sequence(key) ) {
+  if (is_key_to_property(key) || is_key_to_sequence(key)) {
     return false;
   }
 
   // Otherwise, must have > 0 keys starting with "prefix."
   auto keyCount = ps_.keys_starting_with(key + ".");
-  return keyCount.size() > 0 ? true : false;
+  return !keyCount.empty();
 }
-
-
 
 std::string property_set::to_string() const {
   std::ostringstream oss;
@@ -51,50 +49,55 @@ bool property_set::erase(std::string const& key) {
   return false;
 }
 
-bool property_set::is_type_impl_(std::string const& key, int) const {
+bool property_set::is_type_impl_(std::string const& key, int /*unused*/) const {
   return ps_.is_integer(key) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, double) const {
+bool property_set::is_type_impl_(std::string const& key, double /*unused*/) const {
   // Request for raw double implies a dimensionless number is wanted
   return ps_.is_real(key) && (!ps_.has_explicit_unit(key)) && (!ps_.has_unit_symbol(key)) &&
          ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, bool) const {
+bool property_set::is_type_impl_(std::string const& key, bool /*unused*/) const {
   return ps_.is_boolean(key) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::string) const {
+bool property_set::is_type_impl_(std::string const& key, const std::string& /*unused*/) const {
   // Request for raw string implies a non-path type string is wanted
   return ps_.is_string(key) && (!ps_.is_explicit_path(key)) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, falaise::config::path) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const falaise::config::path& /*unused*/) const {
   return ps_.is_explicit_path(key) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, falaise::config::quantity) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const falaise::config::quantity& /*unused*/) const {
   // Quantity must be real, and have explicit unit *and* unit symbol
   return ps_.is_real(key) && ps_.has_explicit_unit(key) && ps_.has_unit_symbol(key) &&
          ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<int>) const {
+bool property_set::is_type_impl_(std::string const& key, const std::vector<int>& /*unused*/) const {
   return ps_.is_integer(key) && ps_.is_vector(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<double>) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const std::vector<double>& /*unused*/) const {
   // vector of raw doubles is always dimensionless
   return ps_.is_real(key) && (!ps_.has_explicit_unit(key)) && (!ps_.has_unit_symbol(key)) &&
          ps_.is_vector(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<bool>) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const std::vector<bool>& /*unused*/) const {
   return ps_.is_boolean(key) && ps_.is_vector(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key, std::vector<std::string>) const {
+bool property_set::is_type_impl_(std::string const& key,
+                                 const std::vector<std::string>& /*unused*/) const {
   return ps_.is_string(key) && ps_.is_vector(key);
 }
 

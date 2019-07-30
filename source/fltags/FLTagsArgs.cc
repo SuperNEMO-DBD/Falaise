@@ -20,7 +20,7 @@
 
 namespace FLTags {
 
-void do_postprocess(FLTagsArgs& flTagParameters);
+void do_postprocess(FLTagsArgs& flTagsParameters);
 
 // static
 FLTagsArgs FLTagsArgs::makeDefault() {
@@ -65,7 +65,6 @@ void do_configure(int argc, char* argv[], FLTagsArgs& flTagsParameters) {
   flTagsParameters.outputFile = args.outputFile;
 
   do_postprocess(flTagsParameters);
-  return;
 }
 
 void do_postprocess(FLTagsArgs& flTagsParameters) {
@@ -97,8 +96,7 @@ void do_postprocess(FLTagsArgs& flTagsParameters) {
   }
 
   DT_LOG_TRACE_EXITING(flTagsParameters.logLevel);
-  return;
-}
+  }
 
 void FLTagsArgs::print(std::ostream& out_) const {
   static const std::string tag("|-- ");
@@ -120,7 +118,6 @@ void FLTagsArgs::print(std::ostream& out_) const {
          << std::endl;
   }
   out_ << last_tag << "outputFile                  = '" << outputFile << "'" << std::endl;
-  return;
 }
 
 }  // namespace FLTags

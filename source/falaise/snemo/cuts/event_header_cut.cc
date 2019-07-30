@@ -31,59 +31,48 @@ void event_header_cut::_set_defaults() {
   _run_number_max_ = -1;
   _event_number_min_ = -1;
   _event_number_max_ = -1;
-  return;
 }
 
-void event_header_cut::set_EH_label(const std::string& EH_label_) {
-  _EH_label_ = EH_label_;
-  return;
-}
+void event_header_cut::set_EH_label(const std::string& EH_label_) { _EH_label_ = EH_label_; }
 
 const std::string& event_header_cut::get_EH_label() const { return _EH_label_; }
 
 uint32_t event_header_cut::get_mode() const { return _mode_; }
 
-bool event_header_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool event_header_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
-bool event_header_cut::is_mode_run_number() const { return _mode_ & MODE_RUN_NUMBER; }
+bool event_header_cut::is_mode_run_number() const { return (_mode_ & MODE_RUN_NUMBER) != 0u; }
 
-bool event_header_cut::is_mode_event_number() const { return _mode_ & MODE_EVENT_NUMBER; }
+bool event_header_cut::is_mode_event_number() const { return (_mode_ & MODE_EVENT_NUMBER) != 0u; }
 
-bool event_header_cut::is_mode_list_of_event_ids() const { return _mode_ & MODE_LIST_OF_EVENT_IDS; }
-
-void event_header_cut::set_flag_name(const std::string& flag_name_) {
-  _flag_name_ = flag_name_;
-  return;
+bool event_header_cut::is_mode_list_of_event_ids() const {
+  return (_mode_ & MODE_LIST_OF_EVENT_IDS) != 0u;
 }
+
+void event_header_cut::set_flag_name(const std::string& flag_name_) { _flag_name_ = flag_name_; }
 
 const std::string& event_header_cut::get_flag_name() const { return _flag_name_; }
 
 void event_header_cut::set_run_number_min(int run_number_min_) {
   _run_number_min_ = run_number_min_ >= 0 ? run_number_min_ : -1;
-  return;
 }
 
 void event_header_cut::set_run_number_max(int run_number_max_) {
   _run_number_max_ = run_number_max_ >= 0 ? run_number_max_ : -1;
-  return;
 }
 
 void event_header_cut::set_event_number_min(int event_number_min_) {
   _event_number_min_ = event_number_min_ >= 0 ? event_number_min_ : -1;
-  return;
 }
 
 void event_header_cut::set_event_number_max(int event_number_max_) {
   _event_number_max_ = event_number_max_ >= 0 ? event_number_max_ : -1;
-  return;
 }
 
 void event_header_cut::list_of_event_ids_dump(std::ostream& out_) const {
-  for (std::set<datatools::event_id>::const_iterator i = _list_of_events_ids_.begin();
-       i != _list_of_events_ids_.end(); i++) {
-    out_ << *i << std::endl;
+  for (const auto& _list_of_events_id : _list_of_events_ids_) {
+    out_ << _list_of_events_id << std::endl;
   }
-  return;
 }
 
 void event_header_cut::list_of_event_ids_load(const std::string& filename_) {
@@ -119,29 +108,29 @@ void event_header_cut::list_of_event_ids_load(const std::string& filename_) {
       }
     }
     ifs >> std::ws;
-    if (ifs.eof()) break;
+    if (ifs.eof()) {
+      break;
+    }
   }
 
   _mode_ |= MODE_LIST_OF_EVENT_IDS;
-  return;
 }
 
 event_header_cut::event_header_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 event_header_cut::~event_header_cut() {
-  if (is_initialized()) this->event_header_cut::reset();
-  return;
+  if (is_initialized()) {
+    this->event_header_cut::reset();
+  }
 }
 
 void event_header_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void event_header_cut::initialize(const datatools::properties& configuration_,
@@ -234,12 +223,12 @@ void event_header_cut::initialize(const datatools::properties& configuration_,
       if (configuration_.has_key("list_of_event_ids.ids")) {
         std::vector<std::string> str_ids;
         configuration_.fetch("list_of_event_ids.ids", str_ids);
-        for (size_t i = 0; i < str_ids.size(); i++) {
-          std::istringstream id_iss(str_ids[i]);
+        for (const auto& str_id : str_ids) {
+          std::istringstream id_iss(str_id);
           datatools::event_id the_event_id;
           id_iss >> the_event_id;
           DT_THROW_IF(!id_iss, std::logic_error,
-                      "Invalid format for event ID ('" << str_ids[i] << "') !");
+                      "Invalid format for event ID ('" << str_id << "') !");
           _list_of_events_ids_.insert(the_event_id);
         }
         count++;
@@ -259,14 +248,13 @@ void event_header_cut::initialize(const datatools::properties& configuration_,
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int event_header_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_EH_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _EH_label_ << "' bank !");
@@ -274,7 +262,7 @@ int event_header_cut::_accept() {
   }
 
   // Get event header bank
-  const snemo::datamodel::event_header& EH = ER.get<snemo::datamodel::event_header>(_EH_label_);
+  const auto& EH = ER.get<snemo::datamodel::event_header>(_EH_label_);
 
   // Check if the event header has a property flag with a specific name :
   bool check_flag = true;
@@ -296,10 +284,14 @@ int event_header_cut::_accept() {
     const int rn = EH.get_id().get_run_number();
     bool check = true;
     if (_run_number_min_ >= 0) {
-      if (rn < _run_number_min_) check = false;
+      if (rn < _run_number_min_) {
+        check = false;
+      }
     }
     if (_run_number_max_ >= 0) {
-      if (rn > _run_number_max_) check = false;
+      if (rn > _run_number_max_) {
+        check = false;
+      }
     }
     if (!check) {
       check_run_number = false;
@@ -325,10 +317,14 @@ int event_header_cut::_accept() {
     const int en = EH.get_id().get_event_number();
     bool check = true;
     if (_event_number_min_ >= 0) {
-      if (en < _event_number_min_) check = false;
+      if (en < _event_number_min_) {
+        check = false;
+      }
     }
     if (_event_number_max_ >= 0) {
-      if (en > _event_number_max_) check = false;
+      if (en > _event_number_max_) {
+        check = false;
+      }
     }
     if (!check) {
       check_event_number = false;
@@ -351,7 +347,7 @@ int event_header_cut::_accept() {
     if (!EH.get_id().is_valid()) {
       return cut_returned;
     }
-    std::set<datatools::event_id>::const_iterator found = _list_of_events_ids_.find(EH.get_id());
+    auto found = _list_of_events_ids_.find(EH.get_id());
     bool check = true;
     if (found == _list_of_events_ids_.end()) {
       check = false;

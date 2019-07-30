@@ -41,18 +41,18 @@ const std::string& tracker_trajectory_data_cut::get_TTD_label() const { return _
 
 uint32_t tracker_trajectory_data_cut::get_mode() const { return _mode_; }
 
-bool tracker_trajectory_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool tracker_trajectory_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool tracker_trajectory_data_cut::is_mode_has_solution() const {
-  return _mode_ & MODE_HAS_SOLUTION;
+  return (_mode_ & MODE_HAS_SOLUTION) != 0u;
 }
 
 bool tracker_trajectory_data_cut::is_mode_range_chi2ndf() const {
-  return _mode_ & MODE_RANGE_CHI2NDF;
+  return (_mode_ & MODE_RANGE_CHI2NDF) != 0u;
 }
 
 bool tracker_trajectory_data_cut::is_mode_range_pvalue() const {
-  return _mode_ & MODE_RANGE_PVALUE;
+  return (_mode_ & MODE_RANGE_PVALUE) != 0u;
 }
 
 void tracker_trajectory_data_cut::set_flag_name(const std::string& flag_name_) {
@@ -68,7 +68,9 @@ tracker_trajectory_data_cut::tracker_trajectory_data_cut(
 }
 
 tracker_trajectory_data_cut::~tracker_trajectory_data_cut() {
-  if (is_initialized()) this->tracker_trajectory_data_cut::reset();
+  if (is_initialized()) {
+    this->tracker_trajectory_data_cut::reset();
+  }
 }
 
 void tracker_trajectory_data_cut::reset() {
@@ -155,14 +157,16 @@ void tracker_trajectory_data_cut::initialize(const datatools::properties& config
       DT_LOG_DEBUG(get_logging_priority(), "Using RANGE_PVALUE mode...");
       int count = 0;
       if (configuration_.has_key("range_pvalue.min")) {
-        const double pmin = configuration_.fetch_real_with_explicit_dimension("range_pvalue.min", "fraction");
+        const double pmin =
+            configuration_.fetch_real_with_explicit_dimension("range_pvalue.min", "fraction");
         DT_THROW_IF(pmin < 0.0 * CLHEP::perCent || pmin > 100.0 * CLHEP::perCent, std::range_error,
                     "Invalid min value of p-value (" << pmin << ") !");
         _pvalue_range_min_ = pmin;
         count++;
       }
       if (configuration_.has_key("range_pvalue.max")) {
-        const double pmax = configuration_.fetch_real_with_explicit_dimension("range_pvalue.max", "fraction");
+        const double pmax =
+            configuration_.fetch_real_with_explicit_dimension("range_pvalue.max", "fraction");
         DT_THROW_IF(pmax < 0.0 * CLHEP::perCent || pmax > 100.0 * CLHEP::perCent, std::range_error,
                     "Invalid max value of p-value (" << pmax << ") !");
         _pvalue_range_max_ = pmax;
@@ -184,7 +188,7 @@ int tracker_trajectory_data_cut::_accept() {
   int cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_TTD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _TTD_label_ << "' bank !");
@@ -192,15 +196,14 @@ int tracker_trajectory_data_cut::_accept() {
   }
 
   // Get tracker trajectory data bank
-  const snemo::datamodel::tracker_trajectory_data& TTD =
-      ER.get<snemo::datamodel::tracker_trajectory_data>(_TTD_label_);
+  const auto& TTD = ER.get<snemo::datamodel::tracker_trajectory_data>(_TTD_label_);
 
   // Check if the tracker trajectory data has a property flag with a specific name :
   bool check_flag = true;
   if (is_mode_flag()) {
     DT_LOG_ERROR(get_logging_priority(), "FLAG mode is no longer supported...");
-    //const bool check = TTD.get_auxiliaries().has_flag(_flag_name_);
-    //if (!check) {
+    // const bool check = TTD.get_auxiliaries().has_flag(_flag_name_);
+    // if (!check) {
     //  check_flag = false;
     //}
   }
@@ -210,7 +213,9 @@ int tracker_trajectory_data_cut::_accept() {
   if (is_mode_has_solution()) {
     DT_LOG_DEBUG(get_logging_priority(), "Running HAS_TRAJECTORY mode...");
     // 2012-05-13 XG: Here we only take care of the default solution
-    if (!TTD.has_default_solution()) check_has_solution = false;
+    if (!TTD.has_default_solution()) {
+      check_has_solution = false;
+    }
   }
 
   // Check if the tracker trajectory data has a range of chi2/ndf values
@@ -231,13 +236,13 @@ int tracker_trajectory_data_cut::_accept() {
 
     const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type& the_trajectories =
         a_default_solution.get_trajectories();
-    for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator itraj =
-             the_trajectories.begin();
-         itraj != the_trajectories.end(); ++itraj) {
-      const snemo::datamodel::tracker_trajectory& a_trajectory = itraj->get();
+    for (const auto& the_trajectorie : the_trajectories) {
+      const snemo::datamodel::tracker_trajectory& a_trajectory = the_trajectorie.get();
 
       const datatools::properties& properties = a_trajectory.get_auxiliaries();
-      if (!properties.has_key("chi2") || !properties.has_key("ndof")) continue;
+      if (!properties.has_key("chi2") || !properties.has_key("ndof")) {
+        continue;
+      }
       const double chi2 = properties.fetch_real("chi2");
       const size_t ndof = properties.fetch_integer("ndof");
 

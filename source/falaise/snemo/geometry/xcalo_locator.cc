@@ -105,12 +105,11 @@ double xcalo_locator::get_column_x(uint32_t side_, uint32_t wall_, uint32_t colu
         column_ >= _back_block_x_[wall_].size(), std::logic_error,
         "Invalid column number (" << column_ << ">" << _back_block_x_[wall_].size() - 1 << ")!");
     return _back_block_x_[wall_][column_];
-  } else {
-    DT_THROW_IF(
-        column_ >= _front_block_x_[wall_].size(), std::logic_error,
-        "Invalid column number (" << column_ << ">" << _front_block_x_[wall_].size() - 1 << ")!");
-    return _front_block_x_[wall_][column_];
   }
+  DT_THROW_IF(
+      column_ >= _front_block_x_[wall_].size(), std::logic_error,
+      "Invalid column number (" << column_ << ">" << _front_block_x_[wall_].size() - 1 << ")!");
+  return _front_block_x_[wall_][column_];
 }
 
 double xcalo_locator::get_row_z(uint32_t side_, uint32_t wall_, uint32_t row_) const {
@@ -124,11 +123,10 @@ double xcalo_locator::get_row_z(uint32_t side_, uint32_t wall_, uint32_t row_) c
     DT_THROW_IF(row_ >= _back_block_z_[wall_].size(), std::logic_error,
                 "Invalid row number (" << row_ << ">" << _back_block_z_[wall_].size() - 1 << ")!");
     return _back_block_z_[wall_][row_];
-  } else {
-    DT_THROW_IF(row_ >= _front_block_z_[wall_].size(), std::logic_error,
-                "Invalid row number (" << row_ << ">" << _front_block_z_[wall_].size() - 1 << ")!");
-    return _front_block_z_[wall_][row_];
   }
+  DT_THROW_IF(row_ >= _front_block_z_[wall_].size(), std::logic_error,
+              "Invalid row number (" << row_ << ">" << _front_block_z_[wall_].size() - 1 << ")!");
+  return _front_block_z_[wall_][row_];
 }
 
 void xcalo_locator::compute_block_position(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -137,7 +135,6 @@ void xcalo_locator::compute_block_position(uint32_t side_, uint32_t wall_, uint3
   geomtools::invalidate(module_position_);
   module_position_.set(get_column_x(side_, wall_, column_), get_wall_y(side_, wall_),
                        get_row_z(side_, wall_, row_));
-  return;
 }
 
 void xcalo_locator::compute_block_window_position(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -146,7 +143,6 @@ void xcalo_locator::compute_block_window_position(uint32_t side_, uint32_t wall_
   geomtools::invalidate(module_position_);
   module_position_.set(get_column_x(side_, wall_, column_), get_wall_window_y(side_, wall_),
                        get_row_z(side_, wall_, row_));
-  return;
 }
 
 geomtools::vector_3d xcalo_locator::get_block_position(uint32_t side_, uint32_t wall_,
@@ -188,7 +184,6 @@ void xcalo_locator::get_block_position(const geomtools::geom_id &gid_,
   return get_block_position(gid_.get(_side_address_index_), gid_.get(_wall_address_index_),
                             gid_.get(_column_address_index_), gid_.get(_row_address_index_),
                             position_);
-  return;
 }
 
 void xcalo_locator::get_block_position(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -216,7 +211,6 @@ void xcalo_locator::get_block_position(uint32_t side_, uint32_t wall_, uint32_t 
     position_.set(_front_block_x_[wall_][column_], _block_y_[utils::SIDE_FRONT][wall_],
                   _front_block_z_[wall_][row_]);
   }
-  return;
 }
 
 void xcalo_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
@@ -229,7 +223,6 @@ void xcalo_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
                                         << "!=" << _module_number_ << ")!");
   get_neighbours_ids(gid_.get(_side_address_index_), gid_.get(_wall_address_index_),
                      gid_.get(_column_address_index_), gid_.get(_row_address_index_), ids_, mask_);
-  return;
 }
 
 void xcalo_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -244,9 +237,9 @@ void xcalo_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t 
   ids_.clear();
   ids_.reserve(8);
 
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
   if (second) {
     DT_LOG_NOTICE(get_logging_priority(),
                   "Looking for second order neighbour of 'xcalo' locator is not implemented !");
@@ -450,8 +443,6 @@ void xcalo_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t 
       ids_.push_back(gid);
     }
   }
-
-  return;
 }
 
 size_t xcalo_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -464,9 +455,9 @@ size_t xcalo_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, u
 
   bool corner = false;
   bool side = false;
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
   if (second) {
     DT_LOG_NOTICE(get_logging_priority(),
                   "Looking for second order neighbour of 'xcalo' locator is not implemented !");
@@ -491,14 +482,26 @@ size_t xcalo_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, u
   }
   size_t number = 0;
   if (corner) {
-    if (sides) number += 2;
-    if (diagonal) number += 1;
+    if (sides) {
+      number += 2;
+    }
+    if (diagonal) {
+      number += 1;
+    }
   } else if (side) {
-    if (sides) number += 3;
-    if (diagonal) number += 2;
+    if (sides) {
+      number += 3;
+    }
+    if (diagonal) {
+      number += 2;
+    }
   } else {
-    if (sides) number += 4;
-    if (diagonal) number += 4;
+    if (sides) {
+      number += 4;
+    }
+    if (diagonal) {
+      number += 4;
+    }
   }
   return number;
 }
@@ -542,14 +545,14 @@ void xcalo_locator::_set_defaults_() {
   _block_part_ = geomtools::geom_id::INVALID_ADDRESS;
   _block_partitioned_ = false;
 
-  _mapping_ = 0;
-  _id_manager_ = 0;
-  _module_ginfo_ = 0;
-  _module_world_placement_ = 0;
-  _module_box_ = 0;
-  _block_shape_ = 0;
+  _mapping_ = nullptr;
+  _id_manager_ = nullptr;
+  _module_ginfo_ = nullptr;
+  _module_world_placement_ = nullptr;
+  _module_box_ = nullptr;
+  _block_shape_ = nullptr;
   _composite_block_shape_ = false;
-  _block_box_ = 0;
+  _block_box_ = nullptr;
 
   for (size_t i = 0; i < utils::NSIDES; i++) {
     for (size_t j = 0; j < NWALLS_PER_SIDE; j++) {
@@ -571,24 +574,17 @@ void xcalo_locator::_set_defaults_() {
   _part_address_index_ = geomtools::geom_id::INVALID_ADDRESS;
 
   _initialized_ = false;
-  return;
 }
 
 // Constructor:
-xcalo_locator::xcalo_locator() : base_locator() {
-  _set_defaults_();
-  return;
-}
+xcalo_locator::xcalo_locator() { _set_defaults_(); }
 
 // Constructor:
-xcalo_locator::xcalo_locator(const ::geomtools::manager &gmgr_, uint32_t module_number_)
-    : base_locator() {
+xcalo_locator::xcalo_locator(const ::geomtools::manager &gmgr_, uint32_t module_number_) {
   _set_defaults_();
 
   set_geo_manager(gmgr_);
   set_module_number(module_number_);
-
-  return;
 }
 
 // dtor:
@@ -596,7 +592,6 @@ xcalo_locator::~xcalo_locator() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 bool xcalo_locator::is_block_partitioned() const { return _block_partitioned_; }
@@ -712,8 +707,7 @@ void xcalo_locator::_construct() {
     // Example : 'calo_scin_box_model' case :
     _composite_block_shape_ = true;
 
-    const geomtools::subtraction_3d &ref_s3d =
-        dynamic_cast<const geomtools::subtraction_3d &>(*_block_shape_);
+    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(*_block_shape_);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_s3d.get_shape1();
     const geomtools::i_shape_3d &sh1 = sht1.get_shape();
     DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
@@ -723,13 +717,12 @@ void xcalo_locator::_construct() {
     // Example : 'calo_tapered_scin_box_model' case :
     _composite_block_shape_ = true;
 
-    const geomtools::intersection_3d &ref_i3d =
-        dynamic_cast<const geomtools::intersection_3d &>(*_block_shape_);
+    const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*_block_shape_);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
     const geomtools::i_shape_3d &sh1 = sht1.get_shape();
     DT_THROW_IF(sh1.get_shape_name() != "subtraction_3d", std::logic_error,
                 "Do not support non-subtraction_3d shaped block with ID = " << block_gid << " !");
-    const geomtools::subtraction_3d &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
+    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
     const geomtools::i_composite_shape_3d::shape_type &sht11 = ref_s3d.get_shape1();
     const geomtools::i_shape_3d &sh11 = sht11.get_shape();
     DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
@@ -750,7 +743,9 @@ void xcalo_locator::_construct() {
   vcx[utils::SIDE_FRONT][WALL_LEFT] = &_front_block_x_[WALL_LEFT];
   vcx[utils::SIDE_FRONT][WALL_RIGHT] = &_front_block_x_[WALL_RIGHT];
   for (size_t local_side = 0; local_side < utils::NSIDES; ++local_side) {
-    if (!_submodules_[local_side]) continue;
+    if (!_submodules_[local_side]) {
+      continue;
+    }
     for (size_t wall = 0; wall < NWALLS_PER_SIDE; wall++) {
       size_t i_column = 0;
       vcx[local_side][wall]->reserve(2);
@@ -801,7 +796,9 @@ void xcalo_locator::_construct() {
   vrz[utils::SIDE_FRONT][WALL_LEFT] = &_front_block_z_[WALL_LEFT];
   vrz[utils::SIDE_FRONT][WALL_RIGHT] = &_front_block_z_[WALL_RIGHT];
   for (size_t iside = 0; iside < utils::NSIDES; iside++) {
-    if (!_submodules_[iside]) continue;
+    if (!_submodules_[iside]) {
+      continue;
+    }
     for (size_t wall = 0; wall < NWALLS_PER_SIDE; wall++) {
       size_t i_row = 0;
       vrz[iside][wall]->reserve(16);
@@ -833,8 +830,6 @@ void xcalo_locator::_construct() {
   _block_width_ = _block_box_->get_x();
   _block_height_ = _block_box_->get_y();
   _block_thickness_ = _block_box_->get_z();
-
-  return;
 }
 
 int xcalo_locator::get_module_address_index() const { return _module_address_index_; }
@@ -887,7 +882,6 @@ bool xcalo_locator::is_calo_block_in_current_module(const geomtools::geom_id &gi
 void xcalo_locator::set_module_number(uint32_t a_module_number) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Locator is already initialized !");
   _module_number_ = a_module_number;
-  return;
 }
 
 uint32_t xcalo_locator::get_module_number() const { return _module_number_; }
@@ -895,7 +889,6 @@ uint32_t xcalo_locator::get_module_number() const { return _module_number_; }
 void xcalo_locator::initialize() {
   datatools::properties dummy;
   initialize(dummy);
-  return;
 }
 
 void xcalo_locator::initialize(const datatools::properties &config_) {
@@ -908,12 +901,10 @@ void xcalo_locator::initialize(const datatools::properties &config_) {
   if (datatools::logger::is_trace(get_logging_priority())) {
     tree_dump(std::cerr, "X-calo locator : ", "[trace] ");
   }
-  return;
 }
 
 void xcalo_locator::dump(std::ostream &out_) const {
   xcalo_locator::tree_dump(out_, "snemo::geometry:xcalo_locator::dump: ");
-  return;
 }
 
 void xcalo_locator::tree_dump(std::ostream &out_, const std::string &title_,
@@ -945,15 +936,16 @@ void xcalo_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Calorimeter block type     = " << _block_type_ << std::endl;
   out_ << indent << itag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
   out_ << indent << itag << "Block partitioned          = " << _block_partitioned_ << std::endl;
-  if (is_block_partitioned())
+  if (is_block_partitioned()) {
     out_ << indent << itag << "Block part                 = " << _block_part_ << std::endl;
+  }
   out_ << indent << itag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
   out_ << indent << itag << "Module placement : " << std::endl;
-  if (_module_world_placement_ != 0) {
+  if (_module_world_placement_ != nullptr) {
     _module_world_placement_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Module box : " << std::endl;
-  if (_module_box_ != 0) {
+  if (_module_box_ != nullptr) {
     _module_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
@@ -961,21 +953,21 @@ void xcalo_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
   out_ << indent << itag << "Composite block shape = " << _composite_block_shape_ << std::endl;
   out_ << indent << itag << "Block box : " << std::endl;
-  if (_block_box_ != 0) {
+  if (_block_box_ != nullptr) {
     _block_box_->tree_dump(out_, "", indent + stag);
   }
   for (size_t i = 0; i < NWALLS_PER_SIDE; ++i) {
     const std::string wall_name = (i == (uint32_t)WALL_LEFT) ? "left wall" : "right wall";
     out_ << indent << itag << "Back  block X-pos on " << wall_name << " ["
          << _back_block_x_[i].size() << "] = ";
-    for (size_t j = 0; j < _back_block_x_[i].size(); j++) {
-      out_ << _back_block_x_[i][j] / CLHEP::mm << " ";
+    for (double j : _back_block_x_[i]) {
+      out_ << j / CLHEP::mm << " ";
     }
     out_ << " (mm)" << std::endl;
     out_ << indent << itag << "Front block X-pos on " << wall_name << " ["
          << _front_block_x_[i].size() << "] = ";
-    for (size_t j = 0; j < _front_block_x_[i].size(); j++) {
-      out_ << _front_block_x_[i][j] / CLHEP::mm << " ";
+    for (double j : _front_block_x_[i]) {
+      out_ << j / CLHEP::mm << " ";
     }
     out_ << " (mm)" << std::endl;
     out_ << indent << itag << "Back  block Y-pos on " << wall_name << "  = "
@@ -1029,7 +1021,6 @@ void xcalo_locator::tree_dump(std::ostream &out_, const std::string &title_,
     out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
          << "Part   address GID index = " << _part_address_index_ << std::endl;
   }
-  return;
 }
 
 void xcalo_locator::reset() {
@@ -1041,21 +1032,18 @@ void xcalo_locator::reset() {
     _front_block_x_[i].clear();
   }
   _set_defaults_();
-  return;
 }
 
 void xcalo_locator::transform_world_to_module(const geomtools::vector_3d &world_position_,
                                               geomtools::vector_3d &module_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->mother_to_child(world_position_, module_position_);
-  return;
 }
 
 void xcalo_locator::transform_module_to_world(const geomtools::vector_3d &module_position_,
                                               geomtools::vector_3d &world_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->child_to_mother(module_position_, world_position_);
-  return;
 }
 
 bool xcalo_locator::is_in_module(const geomtools::vector_3d &module_position_,
@@ -1131,7 +1119,7 @@ bool xcalo_locator::id_is_valid(uint32_t side_, uint32_t wall_, uint32_t column_
 
 void xcalo_locator::_hack_trace() {
   char *ev = getenv("FLGEOMLOCATOR");
-  if (ev != 0) {
+  if (ev != nullptr) {
     std::string evstr(ev);
     if (evstr == "trace") {
       set_logging_priority(datatools::logger::PRIO_TRACE);
@@ -1139,7 +1127,6 @@ void xcalo_locator::_hack_trace() {
                    "Trace logging activated through env 'FLGEOMLOCATOR'...");
     }
   }
-  return;
 }
 
 bool xcalo_locator::find_block_geom_id(const geomtools::vector_3d &world_position_,
@@ -1218,8 +1205,8 @@ bool xcalo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
       if (delta_y <= the_tolerance) {
         wall_number = WALL_LEFT;
         DT_LOG_TRACE(get_logging_priority(), "  in this block");
-        const std::vector<double> *block_x_ptr = 0;
-        const std::vector<double> *block_z_ptr = 0;
+        const std::vector<double> *block_x_ptr = nullptr;
+        const std::vector<double> *block_z_ptr = nullptr;
         if (_submodules_[utils::SIDE_BACK] && side_number == utils::SIDE_BACK) {
           block_x_ptr = &_back_block_x_[wall_number];
           block_z_ptr = &_back_block_z_[wall_number];
@@ -1248,8 +1235,8 @@ bool xcalo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
       if (delta_y <= the_tolerance) {
         wall_number = WALL_RIGHT;
         DT_LOG_TRACE(get_logging_priority(), "  in this block");
-        const std::vector<double> *block_x_ptr = 0;
-        const std::vector<double> *block_z_ptr = 0;
+        const std::vector<double> *block_x_ptr = nullptr;
+        const std::vector<double> *block_z_ptr = nullptr;
         if (_submodules_[utils::SIDE_BACK] && side_number == utils::SIDE_BACK) {
           block_x_ptr = &_back_block_x_[wall_number];
           block_z_ptr = &_back_block_z_[wall_number];
@@ -1303,7 +1290,7 @@ bool xcalo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
     if (gid.is_valid()) {
       // 2012-05-31 FM : use ginfo from mapping (see below)
       const geomtools::geom_info *ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
-      if (ginfo_ptr == 0) {
+      if (ginfo_ptr == nullptr) {
         DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
         DT_LOG_TRACE(get_logging_priority(), "Not a X-calo!");
         gid.invalidate();
@@ -1315,7 +1302,7 @@ bool xcalo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
       geomtools::vector_3d world_position;
       transform_module_to_world(in_module_position_, world_position);
       double the_tolerance2 = 1.e-7 * CLHEP::mm;
-      if (_mapping_->check_inside(*ginfo_ptr, world_position, the_tolerance2)) {
+      if (geomtools::mapping::check_inside(*ginfo_ptr, world_position, the_tolerance2)) {
         DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
         DT_LOG_TRACE_EXITING(get_logging_priority());
         return true;

@@ -14,17 +14,11 @@
 
 namespace TrackerPreClustering {
 
-void event_display::set_cell_size(double cell_size_) {
-  _cell_size_ = cell_size_;
-}
+void event_display::set_cell_size(double cell_size_) { _cell_size_ = cell_size_; }
 
-void event_display::set_nb_layers(unsigned int nb_layers_) {
-  _nb_layers_ = nb_layers_;
-}
+void event_display::set_nb_layers(unsigned int nb_layers_) { _nb_layers_ = nb_layers_; }
 
-void event_display::set_nb_rows(unsigned int nb_rows_) {
-  _nb_rows_ = nb_rows_;
-}
+void event_display::set_nb_rows(unsigned int nb_rows_) { _nb_rows_ = nb_rows_; }
 
 event_display::event_display() {
   _nb_layers_ = 9;
@@ -82,7 +76,7 @@ void event_display::plot_clustered_item(std::ostream& out_, int /* id_ */, doubl
   double z0 = z_;
   double dz0 = ez_;
   out_ << x0 + s << ' ' << y0 + s << ' ' << z0 << std::endl;
-  if (count % 2) {
+  if ((count % 2) != 0) {
     // gnuplot 3D-plot trick
     out_ << x0 + s << ' ' << y0 << ' ' << z0 + dz0 << std::endl;
   }
