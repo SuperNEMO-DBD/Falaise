@@ -7,7 +7,7 @@ namespace common {
 
 const std::set<std::string>& supported_user_profiles() {
   static std::set<std::string> _ups;
-  if (_ups.size() == 0) {
+  if (_ups.empty()) {
     _ups.insert("expert");
     _ups.insert("normal");
     _ups.insert("production");

@@ -32,51 +32,47 @@ void simulated_data_cut::_set_defaults() {
   _hit_category_range_min_ = -1;
   _hit_category_range_max_ = -1;
   _hit_property_logic_ = "";
-  return;
 }
 
-void simulated_data_cut::set_SD_label(const std::string& SD_label_) {
-  _SD_label_ = SD_label_;
-  return;
-}
+void simulated_data_cut::set_SD_label(const std::string& SD_label_) { _SD_label_ = SD_label_; }
 
 const std::string& simulated_data_cut::get_SD_label() const { return _SD_label_; }
 
 uint32_t simulated_data_cut::get_mode() const { return _mode_; }
 
-bool simulated_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool simulated_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool simulated_data_cut::is_mode_range_hit_category() const {
-  return _mode_ & MODE_RANGE_HIT_CATEGORY;
+  return (_mode_ & MODE_RANGE_HIT_CATEGORY) != 0u;
 }
 
-bool simulated_data_cut::is_mode_has_hit_category() const { return _mode_ & MODE_HAS_HIT_CATEGORY; }
-
-bool simulated_data_cut::is_mode_has_hit_property() const { return _mode_ & MODE_HAS_HIT_PROPERTY; }
-
-void simulated_data_cut::set_flag_name(const std::string& flag_name_) {
-  _flag_name_ = flag_name_;
-  return;
+bool simulated_data_cut::is_mode_has_hit_category() const {
+  return (_mode_ & MODE_HAS_HIT_CATEGORY) != 0u;
 }
+
+bool simulated_data_cut::is_mode_has_hit_property() const {
+  return (_mode_ & MODE_HAS_HIT_PROPERTY) != 0u;
+}
+
+void simulated_data_cut::set_flag_name(const std::string& flag_name_) { _flag_name_ = flag_name_; }
 
 const std::string& simulated_data_cut::get_flag_name() const { return _flag_name_; }
 
 simulated_data_cut::simulated_data_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 simulated_data_cut::~simulated_data_cut() {
-  if (is_initialized()) this->simulated_data_cut::reset();
-  return;
+  if (is_initialized()) {
+    this->simulated_data_cut::reset();
+  }
 }
 
 void simulated_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void simulated_data_cut::initialize(const datatools::properties& configuration_,
@@ -198,7 +194,6 @@ void simulated_data_cut::initialize(const datatools::properties& configuration_,
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int simulated_data_cut::_accept() {
@@ -295,7 +290,9 @@ int simulated_data_cut::_accept() {
           std::find_if(istart, istop, pred_via_handle);
       if (ifound == the_step_hits.end()) {
         check_has_hit_property = false;
-        if (_hit_property_logic_ == "and") break;
+        if (_hit_property_logic_ == "and") {
+          break;
+        }
         // Go to the next property (OR mode)
         istart = the_step_hits.begin();
         istop = the_step_hits.end();
@@ -309,7 +306,9 @@ int simulated_data_cut::_accept() {
       } else {
         // Found one hit : check next property for this hit
         check_has_hit_property = true;
-        if (_hit_property_logic_ == "or") break;
+        if (_hit_property_logic_ == "or") {
+          break;
+        }
         istart = ifound;
         istop = ++ifound;
         iprop++;

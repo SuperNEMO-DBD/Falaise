@@ -32,16 +32,19 @@ void gg_step_hit_processor::set_external_rng(mygsl::rng &rng_) {
   DT_LOG_NOTICE(get_logging_priority(),
                 "Processor '" << get_name() << "' now uses an external PRNG.");
   _external_rng_ = &rng_;
-  return;
 }
 
 const mygsl::rng &gg_step_hit_processor::get_rng() const {
-  if (has_external_rng()) return *_external_rng_;
+  if (has_external_rng()) {
+    return *_external_rng_;
+  }
   return _rng_;
 }
 
 mygsl::rng &gg_step_hit_processor::grab_rng() {
-  if (has_external_rng()) return *_external_rng_;
+  if (has_external_rng()) {
+    return *_external_rng_;
+  }
   return _rng_;
 }
 
@@ -60,13 +63,9 @@ void gg_step_hit_processor::_set_defaults() {
   _module_type_ = geomtools::geom_id::INVALID_TYPE;
   _mapping_category_ = "";
   _module_category_ = "module";
-  return;
 }
 
-void gg_step_hit_processor::reset() {
-  _set_defaults();
-  return;
-}
+void gg_step_hit_processor::reset() { _set_defaults(); }
 
 gg_step_hit_processor::~gg_step_hit_processor() {
   if (_gg_cell_type_ != geomtools::geom_id::INVALID_TYPE) {
@@ -78,13 +77,9 @@ gg_step_hit_processor::~gg_step_hit_processor() {
     _CT2_.tree_dump(std::clog, "", "[debug]: ");
   }
   reset();
-  return;
 }
 
-gg_step_hit_processor::gg_step_hit_processor() : base_step_hit_processor() {
-  _set_defaults();
-  return;
-}
+gg_step_hit_processor::gg_step_hit_processor() { _set_defaults(); }
 
 void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
                                        ::datatools::service_manager &service_mgr_) {
@@ -141,16 +136,19 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
 
   // set the fiducial drift radius of the Geiger cell:
   if (config_.has_key("fiducial_drift_radius")) {
-    _fiducial_drift_radius_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
+    _fiducial_drift_radius_ =
+        config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
   }
   // set the fiducial drift length of the Geiger cell:
   if (config_.has_key("fiducial_drift_length")) {
-    _fiducial_drift_length_ = config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
+    _fiducial_drift_length_ =
+        config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
   }
 
   // set the mean ionization energy in the tracking gas:
   if (config_.has_key("mean_ionization_energy")) {
-    _mean_ionization_energy_ = config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
+    _mean_ionization_energy_ =
+        config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
   }
 
   // pickup the ID mapping from the geometry manager:
@@ -215,7 +213,6 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
       }
     }
   }
-  return;
 }
 
 bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
@@ -315,14 +312,12 @@ void gg_step_hit_processor::process(
   _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *)0,
            &the_plain_gg_hits);
   DT_LOG_TRACE_EXITING(get_logging_priority());
-  return;
 }
 
 void gg_step_hit_processor::process(
     const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
     ::mctools::simulated_data::hit_handle_collection_type &the_gg_hits) {
   _process(the_base_step_hits, &the_gg_hits, (mctools::simulated_data::hit_collection_type *)0);
-  return;
 }
 
 void gg_step_hit_processor::_process(
@@ -363,7 +358,9 @@ void gg_step_hit_processor::_process(
     bool process_this_hit = false;
     mctools::base_step_hit &the_step_hit = const_cast<mctools::base_step_hit &>(*(*ihit));
 
-    if (is_debug()) _CT1_.start();
+    if (is_debug()) {
+      _CT1_.start();
+    }
     const double hit_energy_deposit = the_step_hit.get_energy_deposit();
     // XXX
     // if (hit_energy_deposit == 0) continue;
@@ -647,7 +644,9 @@ void gg_step_hit_processor::_process(
           // not in the fiducial drift Z longitudinal region:
           // drop this ion/electron pair which will not
           // produce a Geiger avalanche and thus is sterile.
-          if (std::abs(hit_z) > 0.5 * _fiducial_drift_length_) continue;
+          if (std::abs(hit_z) > 0.5 * _fiducial_drift_length_) {
+            continue;
+          }
         }
 
         if (!datatools::is_valid(min_drift_distance)) {
@@ -893,7 +892,9 @@ void gg_step_hit_processor::_process(
       continue;
     }
 
-    if (is_debug()) _CT1_.stop();
+    if (is_debug()) {
+      _CT1_.stop();
+    }
 
     /* Now we try to merge the current step hit
      * within one of the recorded candidate Geiger hits.
@@ -901,7 +902,9 @@ void gg_step_hit_processor::_process(
      * that matches: same drift cell and compatible times.
      */
 
-    if (is_debug()) _CT2_.start();
+    if (is_debug()) {
+      _CT2_.start();
+    }
     // For efficiency we first search a match with
     // the current Geiger hit (if any):
     mctools::base_step_hit *matching_gg = 0;
@@ -915,7 +918,9 @@ void gg_step_hit_processor::_process(
       if (use_handles) {
         for (mctools::simulated_data::hit_handle_collection_type::iterator igg = gg_hits_->begin();
              igg != gg_hits_->end(); igg++) {
-          if (!igg->has_data()) continue;
+          if (!igg->has_data()) {
+            continue;
+          }
           mctools::base_step_hit &matching_hit = igg->grab();
           if (match_gg_hit(matching_hit, the_step_hit)) {
             // pick up the first matching gg hit :
@@ -1107,7 +1112,9 @@ void gg_step_hit_processor::_process(
         }
       }
     }
-    if (is_debug()) _CT2_.stop();
+    if (is_debug()) {
+      _CT2_.stop();
+    }
   }  // end of the loop : for (i_step_hit_processor::step_hit_ptr_collection_type::const_iterator
      // ihit...
 
@@ -1122,7 +1129,6 @@ void gg_step_hit_processor::_process(
     _purge_gg_hits(gg_hits_, plain_gg_hits_);
   }
   DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
 }
 
 void gg_step_hit_processor::_purge_gg_hits(
@@ -1187,8 +1193,6 @@ void gg_step_hit_processor::_purge_gg_hits(
       plain_gg_hits_->erase(new_end, plain_gg_hits_->end());
     }
   }
-
-  return;
 }
 
 }  // end of namespace simulation

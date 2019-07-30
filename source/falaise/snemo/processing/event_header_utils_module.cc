@@ -105,7 +105,6 @@ void event_header_utils_module::initialize(const datatools::properties& setup_,
   }
 
   _set_initialized(true);
-  return;
 }
 
 void event_header_utils_module::reset() {
@@ -113,7 +112,6 @@ void event_header_utils_module::reset() {
               "Module '" << get_name() << "' is not initialized !");
   _set_initialized(false);
   _set_defaults();
-  return;
 }
 
 void event_header_utils_module::_set_defaults() {
@@ -132,20 +130,19 @@ void event_header_utils_module::_set_defaults() {
 
   _ah_current_run_number_ = _add_header_run_number_;
   _ah_current_event_number_ = _add_header_event_number_;
-  return;
 }
 
 // Constructor :
 event_header_utils_module::event_header_utils_module(datatools::logger::priority logging_priority_)
     : dpp::base_module(logging_priority_) {
   _set_defaults();
-  return;
 }
 
 // Destructor
 event_header_utils_module::~event_header_utils_module() {
-  if (is_initialized()) event_header_utils_module::reset();
-  return;
+  if (is_initialized()) {
+    event_header_utils_module::reset();
+  }
 }
 
 bool event_header_utils_module::is_add_header_mode() const { return _mode_ == MODE_ADD_HEADER; }
@@ -153,13 +150,11 @@ bool event_header_utils_module::is_add_header_mode() const { return _mode_ == MO
 void event_header_utils_module::ah_increment_run_number(int incr_) {
   DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
   _ah_current_run_number_ += incr_;
-  return;
 }
 
 void event_header_utils_module::ah_increment_event_number(int incr_) {
   DT_THROW_IF(!is_add_header_mode(), std::logic_error, "Invalid mode!");
   _ah_current_event_number_ += incr_;
-  return;
 }
 
 bool event_header_utils_module::ah_is_real() const {
@@ -238,8 +233,6 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
       }
     }
   }
-
-  return;
 }
 
 }  // end of namespace processing

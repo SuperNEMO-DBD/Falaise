@@ -11,35 +11,39 @@ namespace type_check_visitor {
 
 namespace detail {
 
-bool visit_impl(const datatools::properties& p, const std::string& key, int) {
+bool visit_impl(const datatools::properties& p, const std::string& key, int /*unused*/) {
   return p.is_integer(key) && p.is_scalar(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, double) {
+bool visit_impl(const datatools::properties& p, const std::string& key, double /*unused*/) {
   return p.is_real(key) && p.is_scalar(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, bool) {
+bool visit_impl(const datatools::properties& p, const std::string& key, bool /*unused*/) {
   return p.is_boolean(key) && p.is_scalar(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::string) {
+bool visit_impl(const datatools::properties& p, const std::string& key, std::string /*unused*/) {
   return p.is_string(key) && p.is_scalar(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<int>) {
+bool visit_impl(const datatools::properties& p, const std::string& key,
+                std::vector<int> /*unused*/) {
   return p.is_integer(key) && p.is_vector(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<double>) {
+bool visit_impl(const datatools::properties& p, const std::string& key,
+                std::vector<double> /*unused*/) {
   return p.is_real(key) && p.is_vector(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<bool>) {
+bool visit_impl(const datatools::properties& p, const std::string& key,
+                std::vector<bool> /*unused*/) {
   return p.is_boolean(key) && p.is_vector(key);
 }
 
-bool visit_impl(const datatools::properties& p, const std::string& key, std::vector<std::string>) {
+bool visit_impl(const datatools::properties& p, const std::string& key,
+                std::vector<std::string> /*unused*/) {
   return p.is_string(key) && p.is_vector(key);
 }
 

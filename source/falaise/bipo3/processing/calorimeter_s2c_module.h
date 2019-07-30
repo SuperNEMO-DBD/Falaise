@@ -76,7 +76,7 @@ class calorimeter_s2c_module : public dpp::base_module {
   virtual void reset();
 
   /// Data record processing
-  virtual process_status process(datatools::things& data_);
+  virtual process_status process(datatools::things& event);
 
  protected:
   /// Getting random number generator

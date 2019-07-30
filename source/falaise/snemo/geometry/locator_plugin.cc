@@ -19,13 +19,13 @@ namespace geometry {
 
 GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin, "snemo::geometry::locator_plugin")
 
-bool locator_plugin::has_gg_locator() const { return _gg_locator_; }
+bool locator_plugin::has_gg_locator() const { return _gg_locator_ != nullptr; }
 
-bool locator_plugin::has_calo_locator() const { return _calo_locator_; }
+bool locator_plugin::has_calo_locator() const { return _calo_locator_ != nullptr; }
 
-bool locator_plugin::has_xcalo_locator() const { return _xcalo_locator_; }
+bool locator_plugin::has_xcalo_locator() const { return _xcalo_locator_ != nullptr; }
 
-bool locator_plugin::has_gveto_locator() const { return _gveto_locator_; }
+bool locator_plugin::has_gveto_locator() const { return _gveto_locator_ != nullptr; }
 
 const snemo::geometry::gg_locator& locator_plugin::get_gg_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator plugin is not initialized !");
@@ -63,14 +63,12 @@ locator_plugin::locator_plugin() {
   _calo_locator_ = 0;
   _xcalo_locator_ = 0;
   _gveto_locator_ = 0;
-  return;
 }
 
 locator_plugin::~locator_plugin() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 bool locator_plugin::is_initialized() const { return _initialized_; }
@@ -200,7 +198,6 @@ void locator_plugin::_build_locators(const datatools::properties& config_) {
   }
 
   DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
 }
 
 }  // end of namespace geometry

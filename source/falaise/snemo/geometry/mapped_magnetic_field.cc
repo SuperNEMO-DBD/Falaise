@@ -62,11 +62,15 @@ std::istream& safe_getline(std::istream& in_, std::string& out_) {
       case '\n':
         return in_;
       case '\r':
-        if (sb->sgetc() == '\n') sb->sbumpc();
+        if (sb->sgetc() == '\n') {
+          sb->sbumpc();
+        }
         return in_;
       case EOF:
         // Also handle the case when the last line has no line ending
-        if (out_.empty()) in_.setstate(std::ios::eofbit);
+        if (out_.empty()) {
+          in_.setstate(std::ios::eofbit);
+        }
         return in_;
       default:
         out_ += (char)c;
@@ -87,7 +91,7 @@ struct csv_map_0_type {
   csv_map_0_type();
   void init();
   void load();
-  void dump(std::ostream& = std::clog) const;
+  void dump(std::ostream& /*out_*/ = std::clog) const;
   void reset();
   int interpolate(const ::geomtools::vector_3d& position_,
                   ::geomtools::vector_3d& magnetic_field_) const;
@@ -126,7 +130,6 @@ csv_map_0_type::csv_map_0_type() {
   datatools::invalidate(dx);
   datatools::invalidate(dy);
   datatools::invalidate(dz);
-  return;
 }
 
 void csv_map_0_type::reset() {
@@ -138,7 +141,6 @@ void csv_map_0_type::reset() {
   datatools::invalidate(dx);
   datatools::invalidate(dy);
   datatools::invalidate(dz);
-  return;
 }
 
 void csv_map_0_type::dump(std::ostream& out_) const {
@@ -150,7 +152,6 @@ void csv_map_0_type::dump(std::ostream& out_) const {
   out_ << "  dx = " << dx / CLHEP::mm << " mm" << '\n';
   out_ << "  dy = " << dy / CLHEP::mm << " mm" << '\n';
   out_ << "  dz = " << dz / CLHEP::mm << " mm" << '\n';
-  return;
 }
 
 /// \brief Private working data
@@ -161,61 +162,44 @@ struct mapped_magnetic_field::_work_type {
   csv_map_0_type csv_map_0_data;
 };
 
-mapped_magnetic_field::_work_type::_work_type() { return; }
+mapped_magnetic_field::_work_type::_work_type() {}
 
-mapped_magnetic_field::_work_type::~_work_type() {
-  reset();
-  return;
-}
+mapped_magnetic_field::_work_type::~_work_type() { reset(); }
 
-void mapped_magnetic_field::_work_type::reset() {
-  csv_map_0_data.reset();
-  return;
-}
+void mapped_magnetic_field::_work_type::reset() { csv_map_0_data.reset(); }
 
 void mapped_magnetic_field::_set_defaults() {
   _mapping_mode_ = MM_INVALID;
   _zero_field_outside_map_ = true;
   _z_inverted_ = false;
-  return;
 }
 
 mapped_magnetic_field::mapped_magnetic_field(uint32_t flags_)
     : ::emfield::base_electromagnetic_field(flags_) {
   _set_defaults();
-  return;
 }
 
 mapped_magnetic_field::~mapped_magnetic_field() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 void mapped_magnetic_field::set_map_filename(const std::string& mfn_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the map source filename !");
   _map_filename_ = mfn_;
-  return;
 }
 
 void mapped_magnetic_field::set_mapping_mode(mapping_mode_type mm_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the magnetic field value !");
   _mapping_mode_ = mm_;
-  return;
 }
 
-void mapped_magnetic_field::set_zero_field_outside_map(bool f_) {
-  _zero_field_outside_map_ = f_;
-  return;
-}
+void mapped_magnetic_field::set_zero_field_outside_map(bool f_) { _zero_field_outside_map_ = f_; }
 
 bool mapped_magnetic_field::is_zero_field_outside_map() const { return _zero_field_outside_map_; }
 
-void mapped_magnetic_field::set_z_inverted(bool f_) {
-  _z_inverted_ = f_;
-  return;
-}
+void mapped_magnetic_field::set_z_inverted(bool f_) { _z_inverted_ = f_; }
 
 bool mapped_magnetic_field::is_z_inverted() const { return _z_inverted_; }
 
@@ -269,7 +253,6 @@ void mapped_magnetic_field::initialize(const ::datatools::properties& config_,
   }
 
   _set_initialized(true);
-  return;
 }
 
 void mapped_magnetic_field::reset() {
@@ -283,7 +266,6 @@ void mapped_magnetic_field::reset() {
   _map_filename_.clear();
   _set_defaults();
   this->base_electromagnetic_field::_set_defaults();
-  return;
 }
 
 void mapped_magnetic_field::tree_dump(std::ostream& out_, const std::string& title_,
@@ -295,8 +277,6 @@ void mapped_magnetic_field::tree_dump(std::ostream& out_, const std::string& tit
 
   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Map file : '"
        << _map_filename_ << std::endl;
-
-  return;
 }
 
 int mapped_magnetic_field::compute_electric_field(const geomtools::vector_3d& /* position_ */,
@@ -328,10 +308,7 @@ int mapped_magnetic_field::compute_magnetic_field(const ::geomtools::vector_3d& 
   return status;
 }
 
-void csv_map_0_type::init() {
-  load();
-  return;
-}
+void csv_map_0_type::init() { load(); }
 
 void csv_map_0_type::load() {
   DT_LOG_TRACE_ENTERING(logging);
@@ -435,7 +412,6 @@ void csv_map_0_type::load() {
   }
 
   DT_LOG_TRACE_EXITING(logging);
-  return;
 }
 
 int csv_map_0_type::interpolate(const ::geomtools::vector_3d& position_,

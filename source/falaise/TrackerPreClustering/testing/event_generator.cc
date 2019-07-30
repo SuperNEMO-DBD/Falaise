@@ -29,21 +29,13 @@
 
 namespace TrackerPreClustering {
 
-void event_generator::set_seed(long seed_) {
-  _seed_ = seed_;
-}
+void event_generator::set_seed(long seed_) { _seed_ = seed_; }
 
-void event_generator::set_cell_size(double cell_size_) {
-  _cell_size_ = cell_size_;
-}
+void event_generator::set_cell_size(double cell_size_) { _cell_size_ = cell_size_; }
 
-void event_generator::set_nb_layers(unsigned int nb_layers_) {
-  _nb_layers_ = nb_layers_;
-}
+void event_generator::set_nb_layers(unsigned int nb_layers_) { _nb_layers_ = nb_layers_; }
 
-void event_generator::set_nb_rows(unsigned int nb_rows_) {
-  _nb_rows_ = nb_rows_;
-}
+void event_generator::set_nb_rows(unsigned int nb_rows_) { _nb_rows_ = nb_rows_; }
 
 event_generator::event_generator() {
   set_seed(0);
@@ -74,13 +66,13 @@ void event_generator::reset() {
 
 int event_generator::build_gid(int side_, int layer_, int row_) const {
   int gid = layer_ * 1000 + row_;
-  if (side_ == 0) gid *= -1;
+  if (side_ == 0) {
+    gid *= -1;
+  }
   return gid;
 }
 
-void event_generator::register_gid(int gid_, bool delayed_) {
-  _gids_[gid_] = delayed_;
-}
+void event_generator::register_gid(int gid_, bool delayed_) { _gids_[gid_] = delayed_; }
 
 bool event_generator::has_gid(int gid_) const { return _gids_.find(gid_) != _gids_.end(); }
 
@@ -129,8 +121,10 @@ void event_generator::generate_prompt_gg_hits(std::vector<const gg_hit *> &hits_
         }
         attempts++;
       }
-      if (attempts >= 5) break;
-      h->sterile = uni() < 0.1 ? true : false;
+      if (attempts >= 5) {
+        break;
+      }
+      h->sterile = uni() < 0.1;
       h->peripheral = false;
       h->noisy = false;
       h->missing_top_cathode = false;
@@ -202,8 +196,10 @@ void event_generator::generate_delayed_gg_hits(std::vector<const gg_hit *> &hits
         }
         attempts++;
       }
-      if (attempts >= 5) break;
-      h->sterile = uni() < 0.1 ? true : false;
+      if (attempts >= 5) {
+        break;
+      }
+      h->sterile = uni() < 0.1;
       h->delayed = true;
       h->peripheral = false;
       h->noisy = false;

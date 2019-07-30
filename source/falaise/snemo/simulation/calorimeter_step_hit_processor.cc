@@ -78,8 +78,6 @@ void calorimeter_step_hit_processor::initialize(const ::datatools::properties& c
                   !geo_mgr.is_plugin_a<snemo::geometry::locator_plugin>(locator_plugin_name),
               std::logic_error, "Found no locator plugin named '" << locator_plugin_name << "'");
   _locator_plugin_ = &geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
-
-  return;
 }
 
 }  // end of namespace simulation

@@ -28,45 +28,42 @@ void particle_track_cut::_set_defaults() {
   _calorimeter_hits_range_category_ = "";
   _calorimeter_hits_range_min_ = -1;
   _calorimeter_hits_range_max_ = -1;
-  return;
 }
 
 uint32_t particle_track_cut::get_mode() const { return _mode_; }
 
-bool particle_track_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool particle_track_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool particle_track_cut::is_mode_has_associated_calorimeter_hits() const {
-  return _mode_ & MODE_HAS_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_HAS_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
 bool particle_track_cut::is_mode_range_associated_calorimeter_hits() const {
-  return _mode_ & MODE_RANGE_ASSOCIATED_CALORIMETER_HITS;
+  return (_mode_ & MODE_RANGE_ASSOCIATED_CALORIMETER_HITS) != 0u;
 }
 
-bool particle_track_cut::is_mode_has_vertex() const { return _mode_ & MODE_HAS_VERTEX; }
+bool particle_track_cut::is_mode_has_vertex() const { return (_mode_ & MODE_HAS_VERTEX) != 0u; }
 
-bool particle_track_cut::is_mode_has_charge() const { return _mode_ & MODE_HAS_CHARGE; }
+bool particle_track_cut::is_mode_has_charge() const { return (_mode_ & MODE_HAS_CHARGE) != 0u; }
 
 bool particle_track_cut::is_mode_has_delayed_cluster() const {
-  return _mode_ & MODE_HAS_DELAYED_CLUSTER;
+  return (_mode_ & MODE_HAS_DELAYED_CLUSTER) != 0u;
 }
 
 particle_track_cut::particle_track_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 particle_track_cut::~particle_track_cut() {
-  if (is_initialized()) this->particle_track_cut::reset();
-  return;
+  if (is_initialized()) { this->particle_track_cut::reset();
+}
 }
 
 void particle_track_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void particle_track_cut::initialize(const datatools::properties& configuration_,
@@ -177,7 +174,6 @@ void particle_track_cut::initialize(const datatools::properties& configuration_,
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int particle_track_cut::_accept() {

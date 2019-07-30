@@ -31,7 +31,6 @@ void metadata_input::reset() {
   digiSetupUrn = "";
   doReconstruction = false;
   recSetupUrn = "";
-  return;
 }
 
 void metadata_input::print(std::ostream& out_) const {
@@ -53,7 +52,6 @@ void metadata_input::print(std::ostream& out_) const {
   out_ << tag << "digiSetupUrn          = " << digiSetupUrn << std::endl;
   out_ << tag << "doReconstruction      = " << std::boolalpha << doReconstruction << std::endl;
   out_ << last_tag << "recSetupUrn           = " << recSetupUrn << std::endl;
-  return;
 }
 
 void metadata_input::scan(const datatools::multi_properties& mp_) {
@@ -146,8 +144,6 @@ void metadata_input::scan(const datatools::multi_properties& mp_) {
     }
 
   }  // Input metadata from FLReconstruct
-
-  return;
 }
 
 metadata_collector::metadata_collector(const uint32_t /*flags_*/) {}
@@ -189,7 +185,7 @@ datatools::multi_properties metadata_collector::get_metadata() const {
   return md;
 }
 
-metadata_scanner::metadata_scanner(const datatools::multi_properties& mp_) : _mp_(mp_) { return; }
+metadata_scanner::metadata_scanner(const datatools::multi_properties& mp_) : _mp_(mp_) {}
 
 bool metadata_scanner::_find_data_in_section_(const std::string& section_name_,
                                               const std::string& section_type_,
@@ -208,7 +204,9 @@ bool metadata_scanner::_find_data_in_section_(const std::string& section_name_,
 
 bool metadata_scanner::check_section(const std::string& section_name_,
                                      const std::string& section_type_) const {
-  if (_mp_.empty()) return false;
+  if (_mp_.empty()) {
+    return false;
+  }
   if (!_mp_.has_key_with_meta(section_name_, section_type_)) {
     return false;
   }
@@ -227,7 +225,9 @@ bool metadata_scanner::find_boolean(const std::string& section_name_,
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_boolean()) return false;
+  if (!d.is_boolean()) {
+    return false;
+  }
   propValue_ = d.get_boolean_value();
   return true;
 }
@@ -238,7 +238,9 @@ bool metadata_scanner::find_path(const std::string& section_name_, const std::st
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_path()) return false;
+  if (!d.is_path()) {
+    return false;
+  }
   propValue_ = d.get_string_value();
   return true;
 }
@@ -250,7 +252,9 @@ bool metadata_scanner::find_string(const std::string& section_name_,
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_string()) return false;
+  if (!d.is_string()) {
+    return false;
+  }
   propValue_ = d.get_string_value();
   return true;
 }
@@ -261,7 +265,9 @@ bool metadata_scanner::find_size(const std::string& section_name_, const std::st
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_integer()) return false;
+  if (!d.is_integer()) {
+    return false;
+  }
   propValue_ = (std::size_t)d.get_integer_value();
   return true;
 }
@@ -273,7 +279,9 @@ bool metadata_scanner::find_integer(const std::string& section_name_,
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_integer()) return false;
+  if (!d.is_integer()) {
+    return false;
+  }
   propValue_ = d.get_integer_value();
   return true;
 }
@@ -284,7 +292,9 @@ bool metadata_scanner::find_real(const std::string& section_name_, const std::st
   if (!_find_data_in_section_(section_name_, section_type_, propKey_, d)) {
     return false;
   }
-  if (!d.is_real()) return false;
+  if (!d.is_real()) {
+    return false;
+  }
   propValue_ = d.get_real_value();
   return true;
 }

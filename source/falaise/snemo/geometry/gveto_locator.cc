@@ -104,12 +104,11 @@ double gveto_locator::get_column_x(uint32_t side_, uint32_t wall_, uint32_t colu
         column_ >= _back_block_x_[wall_].size(), std::logic_error,
         "Invalid column number(" << column_ << ">" << _back_block_x_[wall_].size() - 1 << ")!");
     return _back_block_x_[wall_][column_];
-  } else {
-    DT_THROW_IF(
-        column_ >= _front_block_x_[wall_].size(), std::logic_error,
-        "Invalid column number(" << column_ << ">" << _front_block_x_[wall_].size() - 1 << ")!");
-    return _front_block_x_[wall_][column_];
   }
+  DT_THROW_IF(
+      column_ >= _front_block_x_[wall_].size(), std::logic_error,
+      "Invalid column number(" << column_ << ">" << _front_block_x_[wall_].size() - 1 << ")!");
+  return _front_block_x_[wall_][column_];
 }
 
 double gveto_locator::get_column_y(uint32_t side_, uint32_t wall_, uint32_t column_) const {
@@ -124,12 +123,11 @@ double gveto_locator::get_column_y(uint32_t side_, uint32_t wall_, uint32_t colu
         column_ >= _back_block_y_[wall_].size(), std::logic_error,
         "Invalid column number(" << column_ << ">" << _back_block_y_[wall_].size() - 1 << ")!");
     return _back_block_y_[wall_][column_];
-  } else {
-    DT_THROW_IF(
-        column_ >= _front_block_y_[wall_].size(), std::logic_error,
-        "Invalid column number(" << column_ << ">" << _front_block_y_[wall_].size() - 1 << ")!");
-    return _front_block_y_[wall_][column_];
   }
+  DT_THROW_IF(
+      column_ >= _front_block_y_[wall_].size(), std::logic_error,
+      "Invalid column number(" << column_ << ">" << _front_block_y_[wall_].size() - 1 << ")!");
+  return _front_block_y_[wall_][column_];
 }
 
 void gveto_locator::compute_block_position(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -137,7 +135,6 @@ void gveto_locator::compute_block_position(uint32_t side_, uint32_t wall_, uint3
   geomtools::invalidate(module_position_);
   module_position_.set(get_column_x(side_, wall_, column_), get_column_y(side_, wall_, column_),
                        get_wall_z(side_, wall_));
-  return;
 }
 
 void gveto_locator::compute_block_window_position(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -145,7 +142,6 @@ void gveto_locator::compute_block_window_position(uint32_t side_, uint32_t wall_
   geomtools::invalidate(module_position_);
   module_position_.set(get_column_x(side_, wall_, column_), get_column_y(side_, wall_, column_),
                        get_wall_z(side_, wall_));
-  return;
 }
 
 geomtools::vector_3d gveto_locator::get_block_position(uint32_t side_, uint32_t wall_,
@@ -207,7 +203,6 @@ void gveto_locator::get_block_position(uint32_t side_, uint32_t wall_, uint32_t 
     position_.set(_front_block_x_[wall_][0], _front_block_y_[wall_][column_],
                   _block_z_[side_][wall_]);
   }
-  return;
 }
 
 void gveto_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
@@ -220,7 +215,6 @@ void gveto_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
                                        << "!=" << _module_number_ << ")!");
   get_neighbours_ids(gid_.get(_side_address_index_), gid_.get(_wall_address_index_),
                      gid_.get(_column_address_index_), ids_, mask_);
-  return;
 }
 
 void gveto_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -234,9 +228,9 @@ void gveto_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t 
   ids_.clear();
   ids_.reserve(8);
 
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
   if (second) {
     DT_LOG_NOTICE(get_logging_priority(),
                   "Looking for second order neighbour of 'gveto' locator is not implemented !");
@@ -381,8 +375,6 @@ void gveto_locator::get_neighbours_ids(uint32_t side_, uint32_t wall_, uint32_t 
       ids_.push_back(gid);
     }
   }
-
-  return;
 }
 
 size_t gveto_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, uint32_t column_,
@@ -395,9 +387,9 @@ size_t gveto_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, u
 
   bool corner = false;
   bool side = false;
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
   if (second) {
     DT_LOG_NOTICE(get_logging_priority(),
                   "Looking for second order neighbour of 'gveto' locator is not implemented !");
@@ -415,14 +407,26 @@ size_t gveto_locator::get_number_of_neighbours(uint32_t side_, uint32_t wall_, u
   }
   size_t number = 0;
   if (corner) {
-    if (sides) number += 2;
-    if (diagonal) number += 1;
+    if (sides) {
+      number += 2;
+    }
+    if (diagonal) {
+      number += 1;
+    }
   } else if (side) {
-    if (sides) number += 3;
-    if (diagonal) number += 2;
+    if (sides) {
+      number += 3;
+    }
+    if (diagonal) {
+      number += 2;
+    }
   } else {
-    if (sides) number += 4;
-    if (diagonal) number += 4;
+    if (sides) {
+      number += 4;
+    }
+    if (diagonal) {
+      number += 4;
+    }
   }
   return number;
 }
@@ -479,24 +483,17 @@ void gveto_locator::_set_defaults_() {
   _part_address_index_ = geomtools::geom_id::INVALID_ADDRESS;
 
   _initialized_ = false;
-  return;
 }
 
 // Constructor:
-gveto_locator::gveto_locator() : base_locator() {
-  _set_defaults_();
-  return;
-}
+gveto_locator::gveto_locator() { _set_defaults_(); }
 
 // Constructor:
-gveto_locator::gveto_locator(const ::geomtools::manager &mgr_, uint32_t module_number_)
-    : base_locator() {
+gveto_locator::gveto_locator(const ::geomtools::manager &mgr_, uint32_t module_number_) {
   _set_defaults_();
 
   set_geo_manager(mgr_);
   set_module_number(module_number_);
-
-  return;
 }
 
 // dtor:
@@ -504,7 +501,6 @@ gveto_locator::~gveto_locator() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 bool gveto_locator::is_block_partitioned() const { return _block_partitioned_; }
@@ -658,7 +654,9 @@ void gveto_locator::_construct() {
   vcy[utils::SIDE_FRONT][WALL_TOP] = &_front_block_y_[WALL_TOP];
   vcy[utils::SIDE_FRONT][WALL_BOTTOM] = &_front_block_y_[WALL_BOTTOM];
   for (unsigned int iside = 0; iside < utils::NSIDES; iside++) {
-    if (!_submodules_[iside]) continue;
+    if (!_submodules_[iside]) {
+      continue;
+    }
     for (unsigned int wall = 0; wall < NWALLS_PER_SIDE; wall++) {
       size_t i_column = 0;
       vcx[iside][wall]->reserve(1);
@@ -708,8 +706,6 @@ void gveto_locator::_construct() {
   _block_width_ = _block_box_->get_x();
   _block_height_ = _block_box_->get_y();
   _block_thickness_ = _block_box_->get_z();
-
-  return;
 }
 
 int gveto_locator::get_module_address_index() const { return _module_address_index_; }
@@ -756,7 +752,6 @@ bool gveto_locator::is_calo_block_in_current_module(const geomtools::geom_id &gi
 void gveto_locator::set_module_number(uint32_t a_module_number) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Locator is already initialized !");
   _module_number_ = a_module_number;
-  return;
 }
 
 uint32_t gveto_locator::get_module_number() const { return _module_number_; }
@@ -764,7 +759,6 @@ uint32_t gveto_locator::get_module_number() const { return _module_number_; }
 void gveto_locator::initialize() {
   datatools::properties dummy;
   initialize(dummy);
-  return;
 }
 
 void gveto_locator::initialize(const datatools::properties &config_) {
@@ -777,12 +771,10 @@ void gveto_locator::initialize(const datatools::properties &config_) {
   if (datatools::logger::is_trace(get_logging_priority())) {
     tree_dump(std::cerr, "Gamma-veto locator : ", "[trace] ");
   }
-  return;
 }
 
 void gveto_locator::dump(std::ostream &out_) const {
   gveto_locator::tree_dump(out_, "snemo::geometry:gveto_locator::dump: ");
-  return;
 }
 
 void gveto_locator::tree_dump(std::ostream &out_, const std::string &title_,
@@ -814,8 +806,9 @@ void gveto_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Calorimeter block type     = " << _block_type_ << std::endl;
   out_ << indent << itag << "Calorimeter wrapper type   = " << _wrapper_type_ << std::endl;
   out_ << indent << itag << "Block partitioned          = " << _block_partitioned_ << std::endl;
-  if (is_block_partitioned())
+  if (is_block_partitioned()) {
     out_ << indent << itag << "Block part                 = " << _block_part_ << std::endl;
+  }
   out_ << indent << itag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
   out_ << indent << itag << "Module placement : " << std::endl;
   if (_module_world_placement_ != 0) {
@@ -891,7 +884,6 @@ void gveto_locator::tree_dump(std::ostream &out_, const std::string &title_,
     out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
          << "Part address GID index   = " << _part_address_index_ << std::endl;
   }
-  return;
 }
 
 void gveto_locator::reset() {
@@ -903,21 +895,18 @@ void gveto_locator::reset() {
     _front_block_y_[i].clear();
   }
   _set_defaults_();
-  return;
 }
 
 void gveto_locator::transform_world_to_module(const geomtools::vector_3d &world_position_,
                                               geomtools::vector_3d &module_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->mother_to_child(world_position_, module_position_);
-  return;
 }
 
 void gveto_locator::transform_module_to_world(const geomtools::vector_3d &module_position_,
                                               geomtools::vector_3d &world_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->child_to_mother(module_position_, world_position_);
-  return;
 }
 
 bool gveto_locator::is_in_module(const geomtools::vector_3d &module_position_,
@@ -996,7 +985,6 @@ void gveto_locator::_hack_trace() {
                    "Trace logging activated through env 'FLGEOMLOCATOR'...");
     }
   }
-  return;
 }
 
 bool gveto_locator::find_block_geom_id(const geomtools::vector_3d &world_position_,
@@ -1142,7 +1130,9 @@ bool gveto_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
     const int iy = (int)(((y - first_block_y) / block_delta_y) + 0.5);
     if ((iy >= 0) && (iy < (int)ncolumns)) {
       column_number = iy;
-      if (y > 0.0) column_number += ncolumns;
+      if (y > 0.0) {
+        column_number += ncolumns;
+      }
     }
     gid.set(_column_address_index_, column_number);
     DT_LOG_TRACE(get_logging_priority(), "gid = " << gid);
@@ -1161,7 +1151,7 @@ bool gveto_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_po
       geomtools::vector_3d world_position;
       transform_module_to_world(in_module_position_, world_position);
       double tolerance_2 = 1.e-7 * CLHEP::mm;
-      if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance_2)) {
+      if (geomtools::mapping::check_inside(*ginfo_ptr, world_position, tolerance_2)) {
         DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
         DT_LOG_TRACE_EXITING(get_logging_priority());
         return true;

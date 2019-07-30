@@ -92,11 +92,10 @@ double calo_locator::get_column_y(uint32_t side_, uint32_t column_) const {
     DT_THROW_IF(column_ >= _back_block_y_.size(), std::logic_error,
                 "Invalid column number (" << column_ << ">" << _back_block_y_.size() - 1 << ")!");
     return _back_block_y_[column_];
-  } else {
-    DT_THROW_IF(column_ >= _front_block_y_.size(), std::logic_error,
-                "Invalid column number (" << column_ << ">" << _front_block_y_.size() - 1 << ")!");
-    return _front_block_y_[column_];
   }
+  DT_THROW_IF(column_ >= _front_block_y_.size(), std::logic_error,
+              "Invalid column number (" << column_ << ">" << _front_block_y_.size() - 1 << ")!");
+  return _front_block_y_[column_];
 }
 
 double calo_locator::get_row_z(uint32_t side_, uint32_t row_) const {
@@ -106,18 +105,16 @@ double calo_locator::get_row_z(uint32_t side_, uint32_t row_) const {
     DT_THROW_IF(row_ >= _back_block_z_.size(), std::logic_error,
                 "Invalid row number (" << row_ << ">" << _back_block_z_.size() - 1 << ")!");
     return _back_block_z_[row_];
-  } else {
-    DT_THROW_IF(row_ >= _front_block_z_.size(), std::logic_error,
-                "Invalid row number (" << row_ << ">" << _front_block_z_.size() - 1 << ")!");
-    return _front_block_z_[row_];
   }
+  DT_THROW_IF(row_ >= _front_block_z_.size(), std::logic_error,
+              "Invalid row number (" << row_ << ">" << _front_block_z_.size() - 1 << ")!");
+  return _front_block_z_[row_];
 }
 
 void calo_locator::compute_block_position(uint32_t side_, uint32_t column_, uint32_t row_,
                                           geomtools::vector_3d &module_position_) const {
   geomtools::invalidate(module_position_);
   module_position_.set(get_wall_x(side_), get_column_y(side_, column_), get_row_z(side_, row_));
-  return;
 }
 
 void calo_locator::compute_block_window_position(uint32_t side_, uint32_t column_, uint32_t row_,
@@ -125,7 +122,6 @@ void calo_locator::compute_block_window_position(uint32_t side_, uint32_t column
   geomtools::invalidate(module_position_);
   module_position_.set(get_wall_window_x(side_), get_column_y(side_, column_),
                        get_row_z(side_, row_));
-  return;
 }
 
 geomtools::vector_3d calo_locator::get_block_position(uint32_t side_, uint32_t column_,
@@ -159,7 +155,6 @@ void calo_locator::get_block_position(const geomtools::geom_id &gid_,
                                         << "!=" << _module_number_ << ")!");
   return get_block_position(gid_.get(_side_address_index_), gid_.get(_column_address_index_),
                             gid_.get(_row_address_index_), position_);
-  return;
 }
 
 void calo_locator::get_block_position(uint32_t side_, uint32_t column_, uint32_t row_,
@@ -180,7 +175,6 @@ void calo_locator::get_block_position(uint32_t side_, uint32_t column_, uint32_t
                 "Invalid row number (" << row_ << ">" << _front_block_z_.size() - 1 << ")!");
     position_.set(_block_x_[utils::SIDE_FRONT], _front_block_y_[column_], _front_block_z_[row_]);
   }
-  return;
 }
 
 void calo_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
@@ -191,7 +185,6 @@ void calo_locator::get_neighbours_ids(const geomtools::geom_id &gid_,
                                         << "!=" << _module_number_ << ")!");
   get_neighbours_ids(gid_.get(_side_address_index_), gid_.get(_column_address_index_),
                      gid_.get(_row_address_index_), ids_, mask_);
-  return;
 }
 
 void calo_locator::get_neighbours_ids(uint32_t side_, uint32_t column_, uint32_t row_,
@@ -202,9 +195,9 @@ void calo_locator::get_neighbours_ids(uint32_t side_, uint32_t column_, uint32_t
   ids_.clear();
   ids_.reserve(8);
 
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
 
   // prepare neighbour GID :
   geomtools::geom_id gid;
@@ -321,10 +314,16 @@ void calo_locator::get_neighbours_ids(uint32_t side_, uint32_t column_, uint32_t
      */
     if (second) {
       for (int ir = -2; ir <= +2; ir++) {
-        if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+        if (row_ + ir > (_back_block_z_.size() - 1)) {
+          continue;
+        }
         for (int ic = -2; ic <= +2; ic++) {
-          if (column_ + ic > (_back_block_y_.size() - 1)) continue;
-          if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+          if (column_ + ic > (_back_block_y_.size() - 1)) {
+            continue;
+          }
+          if (std::abs(ir) != 2 && std::abs(ic) != 2) {
+            continue;
+          }
           gid.set(_column_address_index_, column_ + ic);
           gid.set(_row_address_index_, row_ + ir);
           ids_.push_back(gid);
@@ -434,10 +433,16 @@ void calo_locator::get_neighbours_ids(uint32_t side_, uint32_t column_, uint32_t
      */
     if (second) {
       for (int ir = -2; ir <= +2; ir++) {
-        if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+        if (row_ + ir > (_back_block_z_.size() - 1)) {
+          continue;
+        }
         for (int ic = -2; ic <= +2; ic++) {
-          if (column_ + ic > (_back_block_y_.size() - 1)) continue;
-          if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+          if (column_ + ic > (_back_block_y_.size() - 1)) {
+            continue;
+          }
+          if (std::abs(ir) != 2 && std::abs(ic) != 2) {
+            continue;
+          }
           gid.set(_column_address_index_, column_ + ic);
           gid.set(_row_address_index_, row_ + ir);
           ids_.push_back(gid);
@@ -445,8 +450,6 @@ void calo_locator::get_neighbours_ids(uint32_t side_, uint32_t column_, uint32_t
       }
     }
   }
-
-  return;
 }
 
 size_t calo_locator::get_number_of_neighbours(uint32_t side_, uint32_t column_, uint32_t row_,
@@ -454,8 +457,8 @@ size_t calo_locator::get_number_of_neighbours(uint32_t side_, uint32_t column_, 
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   bool corner = false;
   bool side = false;
-  const bool sides = mask_ & utils::NEIGHBOUR_SIDE;
-  const bool diagonal = mask_ & utils::NEIGHBOUR_DIAG;
+  const bool sides = (mask_ & utils::NEIGHBOUR_SIDE) != 0;
+  const bool diagonal = (mask_ & utils::NEIGHBOUR_DIAG) != 0;
   if (side_ == (uint32_t)utils::SIDE_BACK) {
     if ((column_ == 0) || (column_ == _back_block_y_.size() - 1)) {
       if ((row_ == 0) || (row_ == _back_block_z_.size() - 1)) {
@@ -476,34 +479,58 @@ size_t calo_locator::get_number_of_neighbours(uint32_t side_, uint32_t column_, 
   }
   size_t number = 0;
   if (corner) {
-    if (sides) number += 2;
-    if (diagonal) number += 1;
+    if (sides) {
+      number += 2;
+    }
+    if (diagonal) {
+      number += 1;
+    }
   } else if (side) {
-    if (sides) number += 3;
-    if (diagonal) number += 2;
+    if (sides) {
+      number += 3;
+    }
+    if (diagonal) {
+      number += 2;
+    }
   } else {
-    if (sides) number += 4;
-    if (diagonal) number += 4;
+    if (sides) {
+      number += 4;
+    }
+    if (diagonal) {
+      number += 4;
+    }
   }
 
-  const bool second = mask_ & utils::NEIGHBOUR_SECOND;
+  const bool second = (mask_ & utils::NEIGHBOUR_SECOND) != 0;
   if (second) {
     if (side_ == (uint32_t)utils::SIDE_BACK) {
       for (int ir = -2; ir <= +2; ir++) {
-        if (row_ + ir > (_back_block_z_.size() - 1)) continue;
+        if (row_ + ir > (_back_block_z_.size() - 1)) {
+          continue;
+        }
         for (int ic = -2; ic <= +2; ic++) {
-          if (column_ + ic > (_back_block_y_.size() - 1)) continue;
-          if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+          if (column_ + ic > (_back_block_y_.size() - 1)) {
+            continue;
+          }
+          if (std::abs(ir) != 2 && std::abs(ic) != 2) {
+            continue;
+          }
           number++;
         }
       }
     }
     if (side_ == (uint32_t)utils::SIDE_FRONT) {
       for (int ir = -2; ir <= +2; ir++) {
-        if (row_ + ir > (_front_block_z_.size() - 1)) continue;
+        if (row_ + ir > (_front_block_z_.size() - 1)) {
+          continue;
+        }
         for (int ic = -2; ic <= +2; ic++) {
-          if (column_ + ic > (_front_block_y_.size() - 1)) continue;
-          if (std::abs(ir) != 2 && std::abs(ic) != 2) continue;
+          if (column_ + ic > (_front_block_y_.size() - 1)) {
+            continue;
+          }
+          if (std::abs(ir) != 2 && std::abs(ic) != 2) {
+            continue;
+          }
           number++;
         }
       }
@@ -571,26 +598,19 @@ void calo_locator::_set_defaults_() {
   _part_address_index_ = geomtools::geom_id::INVALID_ADDRESS;
 
   _initialized_ = false;
-  return;
 }
 
 // Constructor:
-calo_locator::calo_locator() : base_locator() {
-  _set_defaults_();
-  return;
-}
+calo_locator::calo_locator() { _set_defaults_(); }
 
 // Constructor:
 calo_locator::calo_locator(const ::geomtools::manager &mgr_, uint32_t module_number_,
-                           uint32_t block_part_)
-    : base_locator() {
+                           uint32_t block_part_) {
   _set_defaults_();
 
   set_geo_manager(mgr_);
   set_module_number(module_number_);
   set_block_part(block_part_);
-
-  return;
 }
 
 // dtor:
@@ -598,7 +618,6 @@ calo_locator::~calo_locator() {
   if (is_initialized()) {
     reset();
   }
-  return;
 }
 
 bool calo_locator::is_block_partitioned() const { return _block_partitioned_; }
@@ -751,7 +770,9 @@ void calo_locator::_construct() {
   vcy[utils::SIDE_BACK] = &_back_block_y_;
   vcy[utils::SIDE_FRONT] = &_front_block_y_;
   for (size_t iside = 0; iside < utils::NSIDES; iside++) {
-    if (!_submodules_[iside]) continue;
+    if (!_submodules_[iside]) {
+      continue;
+    }
     size_t i_column = 0;
     vcy[iside]->reserve(20);
     while (true) {
@@ -796,7 +817,9 @@ void calo_locator::_construct() {
   vrz[utils::SIDE_BACK] = &_back_block_z_;
   vrz[utils::SIDE_FRONT] = &_front_block_z_;
   for (size_t iside = 0; iside < utils::NSIDES; iside++) {
-    if (!_submodules_[iside]) continue;
+    if (!_submodules_[iside]) {
+      continue;
+    }
     size_t i_row = 0;
     vrz[iside]->reserve(13);
     while (true) {
@@ -825,8 +848,6 @@ void calo_locator::_construct() {
   _block_width_ = _block_box_->get_x();
   _block_height_ = _block_box_->get_y();
   _block_thickness_ = _block_box_->get_z();
-
-  return;
 }
 
 int calo_locator::get_module_address_index() const { return _module_address_index_; }
@@ -873,13 +894,11 @@ bool calo_locator::is_calo_block_in_current_module(const geomtools::geom_id &gid
 void calo_locator::set_module_number(uint32_t a_module_number) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Locator is already initialized !");
   _module_number_ = a_module_number;
-  return;
 }
 
 void calo_locator::set_block_part(uint32_t a_block_part) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Locator is already initialized !");
   _block_part_ = a_block_part;
-  return;
 }
 
 uint32_t calo_locator::get_module_number() const { return _module_number_; }
@@ -889,7 +908,6 @@ uint32_t calo_locator::get_block_part() const { return _block_part_; }
 void calo_locator::initialize() {
   datatools::properties dummy;
   initialize(dummy);
-  return;
 }
 
 void calo_locator::_hack_trace() {
@@ -902,7 +920,6 @@ void calo_locator::_hack_trace() {
                    "Trace logging activated through env 'FLGEOMLOCATOR'...");
     }
   }
-  return;
 }
 
 void calo_locator::initialize(const datatools::properties &config_) {
@@ -915,12 +932,10 @@ void calo_locator::initialize(const datatools::properties &config_) {
   if (datatools::logger::is_trace(get_logging_priority())) {
     tree_dump(std::cerr, "Main calo locator : ", "[trace] ");
   }
-  return;
 }
 
 void calo_locator::dump(std::ostream &out_) const {
   calo_locator::tree_dump(out_, "snemo::geometry:calo_locator::dump: ");
-  return;
 }
 
 void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
@@ -1025,7 +1040,6 @@ void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
     out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
          << "Part address GID index   = " << _part_address_index_ << std::endl;
   }
-  return;
 }
 
 void calo_locator::reset() {
@@ -1035,21 +1049,18 @@ void calo_locator::reset() {
   _back_block_y_.clear();
   _front_block_y_.clear();
   _set_defaults_();
-  return;
 }
 
 void calo_locator::transform_world_to_module(const geomtools::vector_3d &world_position_,
                                              geomtools::vector_3d &module_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->mother_to_child(world_position_, module_position_);
-  return;
 }
 
 void calo_locator::transform_module_to_world(const geomtools::vector_3d &module_position_,
                                              geomtools::vector_3d &world_position_) const {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Locator is not initialized !");
   _module_world_placement_->child_to_mother(module_position_, world_position_);
-  return;
 }
 
 bool calo_locator::is_in_module(const geomtools::vector_3d &module_position_,
@@ -1235,7 +1246,7 @@ bool calo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_pos
       // 2012-05-31 FM : we check if the 'world' position is in the volume:
       geomtools::vector_3d world_position;
       transform_module_to_world(in_module_position_, world_position);
-      if (_mapping_->check_inside(*ginfo_ptr, world_position, tolerance)) {
+      if (geomtools::mapping::check_inside(*ginfo_ptr, world_position, tolerance)) {
         DT_LOG_TRACE(get_logging_priority(), "INSIDE " << gid);
         DT_LOG_TRACE_EXITING(get_logging_priority());
         return true;

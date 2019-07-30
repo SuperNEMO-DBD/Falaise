@@ -39,20 +39,22 @@ const std::string& tracker_clustering_data_cut::get_TCD_label() const { return _
 
 uint32_t tracker_clustering_data_cut::get_mode() const { return _mode_; }
 
-bool tracker_clustering_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool tracker_clustering_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
-bool tracker_clustering_data_cut::is_mode_has_cluster() const { return _mode_ & MODE_HAS_CLUSTER; }
+bool tracker_clustering_data_cut::is_mode_has_cluster() const {
+  return (_mode_ & MODE_HAS_CLUSTER) != 0u;
+}
 
 bool tracker_clustering_data_cut::is_mode_range_cluster() const {
-  return _mode_ & MODE_RANGE_CLUSTER;
+  return (_mode_ & MODE_RANGE_CLUSTER) != 0u;
 }
 
 bool tracker_clustering_data_cut::is_mode_has_unclustered_hits() const {
-  return _mode_ & MODE_HAS_UNCLUSTERED_HITS;
+  return (_mode_ & MODE_HAS_UNCLUSTERED_HITS) != 0u;
 }
 
 bool tracker_clustering_data_cut::is_mode_range_unclustered_hits() const {
-  return _mode_ & MODE_RANGE_UNCLUSTERED_HITS;
+  return (_mode_ & MODE_RANGE_UNCLUSTERED_HITS) != 0u;
 }
 
 void tracker_clustering_data_cut::set_flag_name(const std::string& flag_name_) {
@@ -68,7 +70,9 @@ tracker_clustering_data_cut::tracker_clustering_data_cut(
 }
 
 tracker_clustering_data_cut::~tracker_clustering_data_cut() {
-  if (is_initialized()) this->tracker_clustering_data_cut::reset();
+  if (is_initialized()) {
+    this->tracker_clustering_data_cut::reset();
+  }
 }
 
 void tracker_clustering_data_cut::reset() {
@@ -190,7 +194,6 @@ void tracker_clustering_data_cut::initialize(const datatools::properties& config
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int tracker_clustering_data_cut::_accept() {
@@ -219,10 +222,11 @@ int tracker_clustering_data_cut::_accept() {
   if (is_mode_has_cluster()) {
     DT_LOG_DEBUG(get_logging_priority(), "Running HAS_CLUSTER mode...");
     // 2012-05-13 XG: Here we only take care of the default solution
-    if (!TCD.has_default_solution())
+    if (!TCD.has_default_solution()) {
       check_has_cluster = false;
-    else
+    } else {
       check_has_cluster = !TCD.get_default_solution().get_clusters().empty();
+    }
   }
 
   // Check if the tracker clustering data has a range of clusters :
@@ -231,10 +235,11 @@ int tracker_clustering_data_cut::_accept() {
     DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_CLUSTER mode...");
     // 2012-05-13 XG: Here we only take care of the default solution
     bool check_has_cluster_2 = true;
-    if (!TCD.has_default_solution())
+    if (!TCD.has_default_solution()) {
       check_has_cluster_2 = false;
-    else
+    } else {
       check_has_cluster_2 = !TCD.get_default_solution().get_clusters().empty();
+    }
     if (!check_has_cluster_2) {
       DT_LOG_DEBUG(get_logging_priority(), "Tracker clustering data has no clusters");
       return cuts::SELECTION_INAPPLICABLE;
@@ -263,10 +268,11 @@ int tracker_clustering_data_cut::_accept() {
   if (is_mode_has_unclustered_hits()) {
     DT_LOG_DEBUG(get_logging_priority(), "Running HAS_UNCLUSTERED_HITS mode...");
     // 2012-05-13 XG: Here we only take care of the default solution
-    if (!TCD.has_default_solution())
+    if (!TCD.has_default_solution()) {
       check_has_unclustered_hits = false;
-    else
+    } else {
       check_has_unclustered_hits = !TCD.get_default_solution().get_unclustered_hits().empty();
+    }
   }
 
   // Check if the tracker clustering data has a range of unclustered hits :
@@ -275,10 +281,11 @@ int tracker_clustering_data_cut::_accept() {
     DT_LOG_DEBUG(get_logging_priority(), "Running RANGE_UNCLUSTERED_HITS mode...");
     // 2012-05-13 XG: Here we only take care of the default solution
     bool check_has_unclustered_hits_2 = true;
-    if (!TCD.has_default_solution())
+    if (!TCD.has_default_solution()) {
       check_has_unclustered_hits_2 = false;
-    else
+    } else {
       check_has_unclustered_hits_2 = !TCD.get_default_solution().get_unclustered_hits().empty();
+    }
     if (!check_has_unclustered_hits_2) {
       DT_LOG_DEBUG(get_logging_priority(), "Tracker clustering data has no unclustered hits");
       return cuts::SELECTION_INAPPLICABLE;

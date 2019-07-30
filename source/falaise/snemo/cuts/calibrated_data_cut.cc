@@ -34,43 +34,40 @@ void calibrated_data_cut::_set_defaults() {
   _hit_category_range_max_ = -1;
   _tracker_hit_trait_bits_ = snemo::datamodel::calibrated_tracker_hit::none;
   _tracker_hit_delay_time_ = 0.0 * CLHEP::microsecond;
-  return;
 }
 
 void calibrated_data_cut::set_CD_label(const std::string& CD_label_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Cut '" << get_name() << "' is already initialized ! ");
   _CD_label_ = CD_label_;
-  return;
 }
 
 const std::string& calibrated_data_cut::get_CD_label() const { return _CD_label_; }
 
 uint32_t calibrated_data_cut::get_mode() const { return _mode_; }
 
-bool calibrated_data_cut::is_mode_flag() const { return _mode_ & MODE_FLAG; }
+bool calibrated_data_cut::is_mode_flag() const { return (_mode_ & MODE_FLAG) != 0u; }
 
 bool calibrated_data_cut::is_mode_range_hit_category() const {
-  return _mode_ & MODE_RANGE_HIT_CATEGORY;
+  return (_mode_ & MODE_RANGE_HIT_CATEGORY) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_has_hit_category() const {
-  return _mode_ & MODE_HAS_HIT_CATEGORY;
+  return (_mode_ & MODE_HAS_HIT_CATEGORY) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_tracker_hit_has_traits() const {
-  return _mode_ & MODE_TRACKER_HIT_HAS_TRAITS;
+  return (_mode_ & MODE_TRACKER_HIT_HAS_TRAITS) != 0u;
 }
 
 bool calibrated_data_cut::is_mode_tracker_hit_is_delayed() const {
-  return _mode_ & MODE_TRACKER_HIT_IS_DELAYED;
+  return (_mode_ & MODE_TRACKER_HIT_IS_DELAYED) != 0u;
 }
 
 void calibrated_data_cut::set_flag_name(const std::string& flag_name_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Cut '" << get_name() << "' is already initialized ! ");
   _flag_name_ = flag_name_;
-  return;
 }
 
 const std::string& calibrated_data_cut::get_flag_name() const { return _flag_name_; }
@@ -78,19 +75,17 @@ const std::string& calibrated_data_cut::get_flag_name() const { return _flag_nam
 calibrated_data_cut::calibrated_data_cut(datatools::logger::priority logger_priority_)
     : cuts::i_cut(logger_priority_) {
   _set_defaults();
-  return;
 }
 
 calibrated_data_cut::~calibrated_data_cut() {
-  if (is_initialized()) this->calibrated_data_cut::reset();
-  return;
+  if (is_initialized()) { this->calibrated_data_cut::reset();
+}
 }
 
 void calibrated_data_cut::reset() {
   _set_defaults();
   this->i_cut::_reset();
   this->i_cut::_set_initialized(false);
-  return;
 }
 
 void calibrated_data_cut::initialize(const datatools::properties& configuration_,
@@ -230,7 +225,6 @@ void calibrated_data_cut::initialize(const datatools::properties& configuration_
   }
 
   this->i_cut::_set_initialized(true);
-  return;
 }
 
 int calibrated_data_cut::_accept() {

@@ -27,7 +27,6 @@ void gg_hit::set_defaults() {
   noisy = false;
   missing_top_cathode = false;
   missing_bottom_cathode = false;
-  return;
 }
 
 int32_t gg_hit::get_id() const { return id; }
@@ -44,15 +43,9 @@ bool gg_hit::has_geom_id() const {
   return (module >= 0) && (side >= 0) && (layer >= 0) && (row >= 0);
 }
 
-gg_hit::gg_hit() {
-  set_defaults();
-  return;
-}
+gg_hit::gg_hit() { set_defaults(); }
 
-void gg_hit::reset() {
-  set_defaults();
-  return;
-}
+void gg_hit::reset() { set_defaults(); }
 
 bool gg_hit::has_xy() const { return (x == x) && (y == y); }
 
