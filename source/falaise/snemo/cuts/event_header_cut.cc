@@ -70,9 +70,8 @@ void event_header_cut::set_event_number_max(int event_number_max_) {
 }
 
 void event_header_cut::list_of_event_ids_dump(std::ostream& out_) const {
-  for (std::set<datatools::event_id>::const_iterator i = _list_of_events_ids_.begin();
-       i != _list_of_events_ids_.end(); i++) {
-    out_ << *i << std::endl;
+  for (const auto& _list_of_events_id : _list_of_events_ids_) {
+    out_ << _list_of_events_id << std::endl;
   }
 }
 
@@ -224,12 +223,12 @@ void event_header_cut::initialize(const datatools::properties& configuration_,
       if (configuration_.has_key("list_of_event_ids.ids")) {
         std::vector<std::string> str_ids;
         configuration_.fetch("list_of_event_ids.ids", str_ids);
-        for (size_t i = 0; i < str_ids.size(); i++) {
-          std::istringstream id_iss(str_ids[i]);
+        for (const auto& str_id : str_ids) {
+          std::istringstream id_iss(str_id);
           datatools::event_id the_event_id;
           id_iss >> the_event_id;
           DT_THROW_IF(!id_iss, std::logic_error,
-                      "Invalid format for event ID ('" << str_ids[i] << "') !");
+                      "Invalid format for event ID ('" << str_id << "') !");
           _list_of_events_ids_.insert(the_event_id);
         }
         count++;
@@ -255,7 +254,7 @@ int event_header_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_EH_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _EH_label_ << "' bank !");
@@ -263,7 +262,7 @@ int event_header_cut::_accept() {
   }
 
   // Get event header bank
-  const snemo::datamodel::event_header& EH = ER.get<snemo::datamodel::event_header>(_EH_label_);
+  const auto& EH = ER.get<snemo::datamodel::event_header>(_EH_label_);
 
   // Check if the event header has a property flag with a specific name :
   bool check_flag = true;
@@ -348,7 +347,7 @@ int event_header_cut::_accept() {
     if (!EH.get_id().is_valid()) {
       return cut_returned;
     }
-    std::set<datatools::event_id>::const_iterator found = _list_of_events_ids_.find(EH.get_id());
+    auto found = _list_of_events_ids_.find(EH.get_id());
     bool check = true;
     if (found == _list_of_events_ids_.end()) {
       check = false;

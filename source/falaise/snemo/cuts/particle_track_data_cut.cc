@@ -207,7 +207,7 @@ int particle_track_data_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_PTD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _PTD_label_ << "' bank !");
@@ -215,8 +215,7 @@ int particle_track_data_cut::_accept() {
   }
 
   // Get Particle Track Data bank
-  const snemo::datamodel::particle_track_data& PTD =
-      ER.get<snemo::datamodel::particle_track_data>(_PTD_label_);
+  const auto& PTD = ER.get<snemo::datamodel::particle_track_data>(_PTD_label_);
 
   // Check if the tracker clustering data has a property flag with a specific name :
   bool check_flag = true;

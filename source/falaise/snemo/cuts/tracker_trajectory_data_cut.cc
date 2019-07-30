@@ -188,7 +188,7 @@ int tracker_trajectory_data_cut::_accept() {
   int cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_TTD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _TTD_label_ << "' bank !");
@@ -196,8 +196,7 @@ int tracker_trajectory_data_cut::_accept() {
   }
 
   // Get tracker trajectory data bank
-  const snemo::datamodel::tracker_trajectory_data& TTD =
-      ER.get<snemo::datamodel::tracker_trajectory_data>(_TTD_label_);
+  const auto& TTD = ER.get<snemo::datamodel::tracker_trajectory_data>(_TTD_label_);
 
   // Check if the tracker trajectory data has a property flag with a specific name :
   bool check_flag = true;
@@ -237,10 +236,8 @@ int tracker_trajectory_data_cut::_accept() {
 
     const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type& the_trajectories =
         a_default_solution.get_trajectories();
-    for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator itraj =
-             the_trajectories.begin();
-         itraj != the_trajectories.end(); ++itraj) {
-      const snemo::datamodel::tracker_trajectory& a_trajectory = itraj->get();
+    for (const auto& the_trajectorie : the_trajectories) {
+      const snemo::datamodel::tracker_trajectory& a_trajectory = the_trajectorie.get();
 
       const datatools::properties& properties = a_trajectory.get_auxiliaries();
       if (!properties.has_key("chi2") || !properties.has_key("ndof")) {

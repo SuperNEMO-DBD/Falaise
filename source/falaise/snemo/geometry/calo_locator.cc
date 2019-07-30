@@ -572,14 +572,14 @@ void calo_locator::_set_defaults_() {
   _block_part_ = geomtools::geom_id::INVALID_ADDRESS;
   _block_partitioned_ = false;
 
-  _mapping_ = 0;
-  _id_manager_ = 0;
-  _module_ginfo_ = 0;
-  _module_world_placement_ = 0;
-  _module_box_ = 0;
-  _block_shape_ = 0;
+  _mapping_ = nullptr;
+  _id_manager_ = nullptr;
+  _module_ginfo_ = nullptr;
+  _module_world_placement_ = nullptr;
+  _module_box_ = nullptr;
+  _block_shape_ = nullptr;
   _composite_block_shape_ = false;
-  _block_box_ = 0;
+  _block_box_ = nullptr;
 
   for (size_t i = 0; i < utils::NSIDES; i++) {
     datatools::invalidate(_block_x_[i]);
@@ -732,8 +732,7 @@ void calo_locator::_construct() {
   const geomtools::i_shape_3d &b_shape = block_ginfo.get_logical().get_shape();
   _block_shape_ = &b_shape;
   if (_block_shape_->get_shape_name() == "subtraction_3d") {
-    const geomtools::subtraction_3d &ref_s3d =
-        dynamic_cast<const geomtools::subtraction_3d &>(*_block_shape_);
+    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(*_block_shape_);
     // Example : 'calo_scin_box_model' case :
     _composite_block_shape_ = true;
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_s3d.get_shape1();
@@ -745,13 +744,12 @@ void calo_locator::_construct() {
     // Example : 'calo_tapered_scin_box_model' case :
     _composite_block_shape_ = true;
 
-    const geomtools::intersection_3d &ref_i3d =
-        dynamic_cast<const geomtools::intersection_3d &>(*_block_shape_);
+    const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*_block_shape_);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
     const geomtools::i_shape_3d &sh1 = sht1.get_shape();
     DT_THROW_IF(sh1.get_shape_name() != "subtraction_3d", std::logic_error,
                 "Do not support non-subtraction_3d shaped block with ID = " << block_gid << " !");
-    const geomtools::subtraction_3d &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
+    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
     const geomtools::i_composite_shape_3d::shape_type &sht11 = ref_s3d.get_shape1();
     const geomtools::i_shape_3d &sh11 = sht11.get_shape();
     DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
@@ -912,7 +910,7 @@ void calo_locator::initialize() {
 
 void calo_locator::_hack_trace() {
   char *ev = getenv("FLGEOMLOCATOR");
-  if (ev != 0) {
+  if (ev != nullptr) {
     std::string evstr(ev);
     if (evstr == "trace") {
       set_logging_priority(datatools::logger::PRIO_TRACE);
@@ -972,11 +970,11 @@ void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
   }
   out_ << indent << itag << "Module ginfo @             = " << _module_ginfo_ << std::endl;
   out_ << indent << itag << "Module placement : " << std::endl;
-  if (_module_world_placement_ != 0) {
+  if (_module_world_placement_ != nullptr) {
     _module_world_placement_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Module box : " << std::endl;
-  if (_module_box_ != 0) {
+  if (_module_box_ != nullptr) {
     _module_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
@@ -984,7 +982,7 @@ void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Block shape : " << _block_shape_->get_shape_name() << std::endl;
   out_ << indent << itag << "Composite block shape = " << _composite_block_shape_ << std::endl;
   out_ << indent << itag << "Block box : " << std::endl;
-  if (_block_box_ != 0) {
+  if (_block_box_ != nullptr) {
     _block_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back  block X-pos = " << _block_x_[utils::SIDE_BACK] / CLHEP::mm
@@ -998,8 +996,8 @@ void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
        << "Front block window X-pos = " << _block_window_x_[utils::SIDE_FRONT] / CLHEP::mm
        << " (mm) \n";
   out_ << indent << itag << "Back  block Y-pos [" << _back_block_y_.size() << "] = ";
-  for (size_t i = 0; i < _back_block_y_.size(); i++) {
-    out_ << _back_block_y_[i] / CLHEP::mm << " ";
+  for (double i : _back_block_y_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Back  block Z-pos [" << _back_block_z_.size() << "] = ";
@@ -1012,8 +1010,8 @@ void calo_locator::tree_dump(std::ostream &out_, const std::string &title_,
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front block Y-pos [" << _front_block_y_.size() << "] = ";
-  for (size_t i = 0; i < _front_block_y_.size(); i++) {
-    out_ << _front_block_y_[i] / CLHEP::mm << " ";
+  for (double i : _front_block_y_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front block Z-pos [" << _front_block_z_.size() << "] = ";
@@ -1235,7 +1233,7 @@ bool calo_locator::find_block_geom_id_(const geomtools::vector_3d &in_module_pos
     if (gid.is_valid()) {
       // 2012-05-31 FM : use ginfo from mapping (see below)
       const geomtools::geom_info *ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
-      if (ginfo_ptr == 0) {
+      if (ginfo_ptr == nullptr) {
         DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
         DT_LOG_TRACE(get_logging_priority(), "Not a main calo!");
         gid.invalidate();

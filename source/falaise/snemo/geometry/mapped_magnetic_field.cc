@@ -113,10 +113,10 @@ struct csv_map_0_type {
   double dy;
   double dz;
   // Mapped B-field:
-  typedef std::vector<int> vd;
-  typedef std::vector<vd> vvd;
-  typedef std::vector<vvd> vvvd;
-  typedef std::vector<vvvd> vvvvd;
+  using vd = std::vector<int>;
+  using vvd = std::vector<vd>;
+  using vvvd = std::vector<vvd>;
+  using vvvvd = std::vector<vvvd>;
   vvvvd bmap;
 };
 
@@ -162,7 +162,7 @@ struct mapped_magnetic_field::_work_type {
   csv_map_0_type csv_map_0_data;
 };
 
-mapped_magnetic_field::_work_type::_work_type() {}
+mapped_magnetic_field::_work_type::_work_type() = default;
 
 mapped_magnetic_field::_work_type::~_work_type() { reset(); }
 
@@ -391,9 +391,9 @@ void csv_map_0_type::load() {
           boost::split(btokens, bmap_line, boost::is_any_of(","));
           DT_LOG_TRACE(logging, "    btokens.size = [" << btokens.size() << "]");
           DT_THROW_IF(btokens.size() != nx + 3, std::logic_error, "Invalid B-line format!");
-          unsigned int axi = boost::lexical_cast<unsigned int>(btokens[0]);
-          unsigned int iyi = boost::lexical_cast<unsigned int>(btokens[1]);
-          unsigned int izi = boost::lexical_cast<unsigned int>(btokens[2]);
+          auto axi = boost::lexical_cast<unsigned int>(btokens[0]);
+          auto iyi = boost::lexical_cast<unsigned int>(btokens[1]);
+          auto izi = boost::lexical_cast<unsigned int>(btokens[2]);
           DT_LOG_TRACE(logging, "    axi=[" << axi << "] iyi=[" << iyi << "] izi=[" << izi << "] ");
           DT_THROW_IF(axi != ax || iyi != iy || izi != iz, std::logic_error,
                       "Invalid B map line format!");

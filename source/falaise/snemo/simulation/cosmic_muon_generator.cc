@@ -32,7 +32,7 @@ GENBB_PG_REGISTRATION_IMPLEMENT(cosmic_muon_generator, "snemo::simulation::cosmi
 
 struct sea_level_toy_theta_density_function : public mygsl::i_unary_function {
  protected:
-  virtual double _eval(double x_) const;
+  double _eval(double x_) const override;
 };
 
 double sea_level_toy_theta_density_function::_eval(double x_) const {
@@ -45,13 +45,13 @@ double sea_level_toy_theta_density_function::_eval(double x_) const {
 bool cosmic_muon_generator::can_external_random() const { return true; }
 
 void cosmic_muon_generator::sea_level_toy_setup::reset() {
-  if (angular_VNM != 0) {
+  if (angular_VNM != nullptr) {
     delete angular_VNM;
-    angular_VNM = 0;
+    angular_VNM = nullptr;
   }
-  if (theta_density_function != 0) {
+  if (theta_density_function != nullptr) {
     delete theta_density_function;
-    theta_density_function = 0;
+    theta_density_function = nullptr;
   }
   set_defaults();
 }
@@ -61,8 +61,8 @@ void cosmic_muon_generator::sea_level_toy_setup::set_defaults() {
   energy_sigma = 1.0 * CLHEP::GeV;
   maximum_theta = 70. * CLHEP::degree;
   muon_ratio = 1.2;
-  theta_density_function = 0;
-  angular_VNM = 0;
+  theta_density_function = nullptr;
+  angular_VNM = nullptr;
 }
 
 cosmic_muon_generator::sea_level_toy_setup::sea_level_toy_setup() { set_defaults(); }

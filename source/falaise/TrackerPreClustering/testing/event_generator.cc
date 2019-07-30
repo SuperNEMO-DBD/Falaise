@@ -52,7 +52,7 @@ event_generator::event_generator(long seed_) {
   initialize();
 }
 
-bool event_generator::is_initialized() { return _generator_.get() != 0; }
+bool event_generator::is_initialized() { return _generator_.get() != nullptr; }
 
 void event_generator::initialize() {
   DT_THROW_IF(is_initialized(), std::logic_error, "Event generator is already initialized!");
@@ -99,7 +99,7 @@ void event_generator::generate_prompt_gg_hits(std::vector<const gg_hit *> &hits_
     double z0 = (-100. + 200. * uni()) * CLHEP::cm;
     int n0 = 0;
     for (unsigned int ihit = 0; ihit < nb_prompt_hits; ihit++) {
-      gg_hit *h = new gg_hit;
+      auto *h = new gg_hit;
       {
         boost::shared_ptr<gg_hit> sp(h);
         _hits_gc_.push_back(sp);
@@ -175,7 +175,7 @@ void event_generator::generate_delayed_gg_hits(std::vector<const gg_hit *> &hits
     double delayed_time = (10. + 4000. * uni()) * CLHEP::microsecond;
     int n0 = 0;
     for (unsigned int ihit = 0; ihit < nb_delayed_hits; ihit++) {
-      gg_hit *h = new gg_hit;
+      auto *h = new gg_hit;
       {
         boost::shared_ptr<gg_hit> sp(h);
         _hits_gc_.push_back(sp);

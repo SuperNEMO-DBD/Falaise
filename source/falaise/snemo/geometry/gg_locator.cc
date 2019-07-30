@@ -192,7 +192,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][x]
        *  [ ][ ][ ]
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_);
     }
     if (layer_ < (_back_cell_x_.size() - 1)) {
       /*  L+1 L L-1
@@ -200,7 +200,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_);
     }
     if (row_ > 0) {
       /*  L+1 L L-1
@@ -208,7 +208,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][x][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ - 1);
     }
     if (row_ < (_back_cell_y_.size() - 1)) {
       /*  L+1 L L-1
@@ -216,7 +216,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ + 1);
     }
 
     if ((layer_ < (_back_cell_x_.size() - 1)) && (row_ > 0)) {
@@ -225,7 +225,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [x][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1);
     }
     if ((layer_ < (_back_cell_x_.size() - 1)) && (row_ < (_back_cell_y_.size() - 1))) {
       /*  L+1 L L-1
@@ -233,7 +233,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1);
     }
     if ((layer_ > 0) && (row_ > 0)) {
       /*  L+1 L L-1
@@ -241,7 +241,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1);
     }
     if ((layer_ > 0) && (row_ < (_back_cell_y_.size() - 1))) {
       /*  L+1 L L-1
@@ -249,7 +249,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1);
     }
     if ((layer_ == 0) && (row_ > 0) && other_side_) {
       /*   1  0     0
@@ -257,7 +257,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [ ] R
        *  [ ][ ] | [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_ - 1);
     }
     if ((layer_ == 0) && other_side_) {
       /*   1  0     0
@@ -265,7 +265,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [x] R
        *  [ ][ ] | [ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_);
     }
     if ((layer_ == 0) && (row_ < (_back_cell_y_.size() - 1)) && other_side_) {
       /*   1  0     0
@@ -273,7 +273,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.] | [ ] R
        *  [ ][ ] | [ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ + 1, 0, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ + 1, 0, row_ + 1);
     }
   }
   // front:
@@ -288,7 +288,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x][.][ ]
        *  [ ][ ][ ]
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_);
     }
     if (layer_ < (_front_cell_x_.size() - 1)) {
       /*  L-1 L L+1
@@ -296,7 +296,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][x] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_);
     }
     if (row_ > 0) {
       /*  L-1 L L+1
@@ -304,7 +304,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][x][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ - 1);
     }
     if (row_ < (_front_cell_y_.size() - 1)) {
       /*  L-1 L L+1
@@ -312,7 +312,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_, row_ + 1);
     }
 
     if ((layer_ < (_front_cell_x_.size() - 1)) && (row_ > 0)) {
@@ -321,7 +321,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ - 1);
     }
     if ((layer_ < (_front_cell_x_.size() - 1)) && (row_ < (_front_cell_y_.size() - 1))) {
       /*  L-1 L L+1
@@ -329,7 +329,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ + 1, row_ + 1);
     }
     if ((layer_ > 0) && (row_ > 0)) {
       /*  L-1 L L+1
@@ -337,7 +337,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [x][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ - 1);
     }
     if ((layer_ > 0) && (row_ < (_front_cell_y_.size() - 1))) {
       /*  L-1 L L+1
@@ -345,7 +345,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ][.][ ] R
        *  [ ][ ][ ] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_, layer_ - 1, row_ + 1);
     }
     if ((layer_ == 0) && (row_ > 0) && other_side_) {
       /*   0     0  1
@@ -353,7 +353,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ] | [.][ ] R
        *  [x] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_ - 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_ - 1);
     }
     if ((layer_ == 0) && other_side_) {
       /*   0     0  1
@@ -361,7 +361,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [x] | [.][ ] R
        *  [ ] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_);
     }
     if ((layer_ == 0) && (row_ < (_front_cell_y_.size() - 1)) && other_side_) {
       /*   0     0  1
@@ -369,7 +369,7 @@ void gg_locator::get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t ro
        *  [ ] | [.][ ] R
        *  [ ] | [ ]| [x] R-1
        */
-      ids_.push_back(geomtools::geom_id(_cell_type_, _module_number_, side_ - 1, 0, row_ + 1));
+      ids_.emplace_back(_cell_type_, _module_number_, side_ - 1, 0, row_ + 1);
     }
   }
 }
@@ -471,7 +471,7 @@ bool gg_locator::is_drift_cell_volume_in_current_module(const geomtools::geom_id
 
 void gg_locator::_hack_trace() {
   char *ev = getenv("FLGEOMLOCATOR");
-  if (ev != 0) {
+  if (ev != nullptr) {
     std::string evstr(ev);
     if (evstr == "trace") {
       set_logging_priority(datatools::logger::PRIO_TRACE);
@@ -499,14 +499,14 @@ void gg_locator::_set_defaults() {
   _row_index_ = -1;
 
   _module_number_ = geomtools::geom_id::INVALID_ADDRESS;
-  _mapping_ = 0;
-  _id_manager_ = 0;
-  _module_ginfo_ = 0;
-  _module_box_ = 0;
-  _cell_box_ = 0;
+  _mapping_ = nullptr;
+  _id_manager_ = nullptr;
+  _module_ginfo_ = nullptr;
+  _module_box_ = nullptr;
+  _cell_box_ = nullptr;
 
-  for (size_t i = 0; i < utils::NSIDES; i++) {
-    _submodules_[i] = false;
+  for (bool &_submodule : _submodules_) {
+    _submodule = false;
   }
 
   datatools::invalidate(_anode_wire_length_);
@@ -663,7 +663,7 @@ void gg_locator::_construct() {
 
   {
     // extract the geometry model associated to the "anode_wire" :
-    const geomtools::i_model *anode_wire_model = 0;
+    const geomtools::i_model *anode_wire_model = nullptr;
     std::string model_name = "anode_wire.model";  // default model name
     if (geom_mgr_setup_vid.has_major()) {
       // trick for an old version of the geometry
@@ -673,8 +673,7 @@ void gg_locator::_construct() {
       }
     }
 
-    geomtools::models_col_type::const_iterator found =
-        get_geo_manager().get_factory().get_models().find(model_name);
+    auto found = get_geo_manager().get_factory().get_models().find(model_name);
     DT_THROW_IF(found == get_geo_manager().get_factory().get_models().end(), std::logic_error,
                 "You should have found the '" << model_name << "' model here !");
     anode_wire_model = found->second;
@@ -688,8 +687,7 @@ void gg_locator::_construct() {
     const geomtools::i_shape_3d &anode_wire_shape = anode_wire_log.get_shape();
 
     // we know the concret shape class is a box, so we cast it :
-    const geomtools::cylinder &anode_wire_cylinder =
-        dynamic_cast<const geomtools::cylinder &>(anode_wire_shape);
+    const auto &anode_wire_cylinder = dynamic_cast<const geomtools::cylinder &>(anode_wire_shape);
 
     _anode_wire_length_ = anode_wire_cylinder.get_z();
     _anode_wire_diameter_ = anode_wire_cylinder.get_diameter();
@@ -697,7 +695,7 @@ void gg_locator::_construct() {
 
   {
     // extract the geometry model associated to the "field_wire" :
-    const geomtools::i_model *field_wire_model = 0;
+    const geomtools::i_model *field_wire_model = nullptr;
     std::string model_name = "field_wire.model";  // default model name
     if (geom_mgr_setup_vid.has_major()) {
       // trick for an old version of the geometry
@@ -707,8 +705,7 @@ void gg_locator::_construct() {
       }
     }
 
-    geomtools::models_col_type::const_iterator found =
-        get_geo_manager().get_factory().get_models().find(model_name);
+    auto found = get_geo_manager().get_factory().get_models().find(model_name);
     DT_THROW_IF(found == get_geo_manager().get_factory().get_models().end(), std::logic_error,
                 "You should have found the '" << model_name << "' model here !");
     field_wire_model = found->second;
@@ -722,8 +719,7 @@ void gg_locator::_construct() {
     const geomtools::i_shape_3d &field_wire_shape = field_wire_log.get_shape();
 
     // we know the concret shape class is a cylinder, so we cast it :
-    const geomtools::cylinder &field_wire_cylinder =
-        dynamic_cast<const geomtools::cylinder &>(field_wire_shape);
+    const auto &field_wire_cylinder = dynamic_cast<const geomtools::cylinder &>(field_wire_shape);
 
     _field_wire_length_ = field_wire_cylinder.get_z();
     _field_wire_diameter_ = field_wire_cylinder.get_diameter();
@@ -802,22 +798,22 @@ void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << itag << "Tracker layer type         = " << _tracker_layer_type_ << std::endl;
   out_ << indent << itag << "Cell type                  = " << _cell_type_ << std::endl;
   out_ << indent << itag << "Module placement    : " << std::endl;
-  if (_module_world_placement_ != 0) {
+  if (_module_world_placement_ != nullptr) {
     _module_world_placement_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Module box : " << std::endl;
-  if (_module_box_ != 0) {
+  if (_module_box_ != nullptr) {
     _module_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back  submodule : " << _submodules_[utils::SIDE_BACK] << std::endl;
   out_ << indent << itag << "Front submodule : " << _submodules_[utils::SIDE_FRONT] << std::endl;
   out_ << indent << itag << "Cell box : " << std::endl;
-  if (_cell_box_ != 0) {
+  if (_cell_box_ != nullptr) {
     _cell_box_->tree_dump(out_, "", indent + stag);
   }
   out_ << indent << itag << "Back layer X-pos [" << _back_cell_x_.size() << "] = ";
-  for (size_t i = 0; i < _back_cell_x_.size(); i++) {
-    out_ << _back_cell_x_[i] / CLHEP::mm << " ";
+  for (double i : _back_cell_x_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Back cell Y-pos [" << _back_cell_y_.size() << "] = ";
@@ -830,8 +826,8 @@ void gg_locator::tree_dump(std::ostream &out_, const std::string &title_,
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front layer X-pos [" << _front_cell_x_.size() << "] =  ";
-  for (size_t i = 0; i < _front_cell_x_.size(); i++) {
-    out_ << _front_cell_x_[i] / CLHEP::mm << " ";
+  for (double i : _front_cell_x_) {
+    out_ << i / CLHEP::mm << " ";
   }
   out_ << " (mm)" << std::endl;
   out_ << indent << itag << "Front cell Y-pos [" << _front_cell_y_.size() << "] = ";
@@ -1046,7 +1042,7 @@ bool gg_locator::_find_cell_geom_id(const geomtools::vector_3d &in_module_positi
     if (gid.is_valid()) {
       // 2012-05-31 FM : use ginfo from mapping (see below)
       const geomtools::geom_info *ginfo_ptr = _mapping_->get_geom_info_ptr(gid);
-      if (ginfo_ptr == 0) {
+      if (ginfo_ptr == nullptr) {
         DT_LOG_TRACE(get_logging_priority(), "Unmapped gid = " << gid);
         DT_LOG_TRACE(get_logging_priority(), "Not a GG!");
         gid.invalidate();

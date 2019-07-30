@@ -181,7 +181,7 @@ int particle_track_cut::_accept() {
   uint32_t cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get particle track
-  const snemo::datamodel::particle_track& a_particle =
+  const auto& a_particle =
       get_user_data<snemo::datamodel::particle_track>();
 
   // Check if the calibrated data has a property flag with a specific name :
@@ -243,10 +243,8 @@ int particle_track_cut::_accept() {
                        << " , max = " << _calorimeter_hits_range_max_ << ")");
     } else {
       // Look for special calorimeter category
-      for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator icalo =
-               the_calorimeters.begin();
-           icalo != the_calorimeters.end(); ++icalo) {
-        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = icalo->get();
+      for (const auto & the_calorimeter : the_calorimeters) {
+        const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = the_calorimeter.get();
         const datatools::properties& aux = a_calo_hit.get_auxiliaries();
         if (aux.has_key("category") &&
             aux.fetch_string("category") == _calorimeter_hits_range_category_) {
@@ -279,10 +277,8 @@ int particle_track_cut::_accept() {
       bool has_vertex = false;
       const snemo::datamodel::particle_track::vertex_collection_type& the_vertices =
           a_particle.get_vertices();
-      for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator ivertex =
-               the_vertices.begin();
-           ivertex != the_vertices.end(); ++ivertex) {
-        const geomtools::blur_spot& a_vertex = ivertex->get();
+      for (const auto & the_vertice : the_vertices) {
+        const geomtools::blur_spot& a_vertex = the_vertice.get();
         const snemo::datamodel::particle_track::vertex_type vtype =
             snemo::datamodel::particle_track::label_to_vertex_type(_vertex_type_);
         if (snemo::datamodel::particle_track::vertex_is(a_vertex, vtype)) {

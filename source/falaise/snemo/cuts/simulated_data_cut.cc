@@ -200,7 +200,7 @@ int simulated_data_cut::_accept() {
   int cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_SD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _SD_label_ << "' bank !");
@@ -208,7 +208,7 @@ int simulated_data_cut::_accept() {
   }
 
   // Get simulated data bank
-  const mctools::simulated_data& SD = ER.get<mctools::simulated_data>(_SD_label_);
+  const auto& SD = ER.get<mctools::simulated_data>(_SD_label_);
 
   // Check if the simulated data has a property flag with a specific name :
   bool check_flag = true;
@@ -269,9 +269,8 @@ int simulated_data_cut::_accept() {
         SD.get_step_hits(_hit_category_);
 
     // Iterators
-    mctools::simulated_data::hit_handle_collection_type::const_iterator istart =
-        the_step_hits.begin();
-    mctools::simulated_data::hit_handle_collection_type::const_iterator istop = the_step_hits.end();
+    auto istart = the_step_hits.begin();
+    auto istop = the_step_hits.end();
     property_values_dict_type::const_iterator iprop = _hit_property_values_.begin();
 
     while (iprop != _hit_property_values_.end()) {
@@ -286,8 +285,7 @@ int simulated_data_cut::_accept() {
       datatools::handle_predicate<mctools::base_step_hit> pred_via_handle(pred);
 
       // Update iterator position
-      mctools::simulated_data::hit_handle_collection_type::const_iterator ifound =
-          std::find_if(istart, istop, pred_via_handle);
+      auto ifound = std::find_if(istart, istop, pred_via_handle);
       if (ifound == the_step_hits.end()) {
         check_has_hit_property = false;
         if (_hit_property_logic_ == "and") {

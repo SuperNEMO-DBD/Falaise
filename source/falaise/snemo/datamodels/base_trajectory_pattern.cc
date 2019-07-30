@@ -14,8 +14,7 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(base_trajectory_pattern,
                                                   "snemo::datamodel::base_trajectory_pattern")
 
-base_trajectory_pattern::base_trajectory_pattern(const std::string& pid)
-    :  _pattern_id_(pid) {}
+base_trajectory_pattern::base_trajectory_pattern(std::string pid) : _pattern_id_(std::move(pid)) {}
 
 bool base_trajectory_pattern::has_pattern_id() const { return !_pattern_id_.empty(); }
 

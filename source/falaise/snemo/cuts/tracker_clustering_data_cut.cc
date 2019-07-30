@@ -200,7 +200,7 @@ int tracker_clustering_data_cut::_accept() {
   int cut_returned = cuts::SELECTION_INAPPLICABLE;
 
   // Get event record
-  const datatools::things& ER = get_user_data<datatools::things>();
+  const auto& ER = get_user_data<datatools::things>();
 
   if (!ER.has(_TCD_label_)) {
     DT_LOG_DEBUG(get_logging_priority(), "Event record has no '" << _TCD_label_ << "' bank !");
@@ -208,8 +208,7 @@ int tracker_clustering_data_cut::_accept() {
   }
 
   // Get tracker clustering data bank
-  const snemo::datamodel::tracker_clustering_data& TCD =
-      ER.get<snemo::datamodel::tracker_clustering_data>(_TCD_label_);
+  const auto& TCD = ER.get<snemo::datamodel::tracker_clustering_data>(_TCD_label_);
 
   // Check if the tracker clustering data has a property flag with a specific name :
   bool check_flag = false;
