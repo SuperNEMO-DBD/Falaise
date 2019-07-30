@@ -47,7 +47,8 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     if (clDialogRet == DIALOG_ERROR) {
       // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Detected a dialog error!");
       throw FLConfigUserError{"bad command line input"};
-    } else if (clDialogRet == DIALOG_QUERY) {
+    }
+    if (clDialogRet == DIALOG_QUERY) {
       // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Detected a dialog query!");
       throw FLConfigHelpHandled();
     }
@@ -183,7 +184,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
       std::vector<std::string> pList;
       userFLPlugins.fetch("plugins", pList);
       for (std::string plugin_name : pList) {
-        static const std::string no_explicit_plugin_file = "";
+        static const std::string no_explicit_plugin_file;
         datatools::properties& pSection =
             flRecParameters.userLibConfig.add_section(plugin_name, no_explicit_plugin_file);
         userFLPlugins.export_and_rename_starting_with(pSection, plugin_name + ".", "");
@@ -261,7 +262,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   }
 
   // Check for allowed inline modules:
-  if (flRecParameters.userProfile == "production" && flRecConfig.size()) {
+  if (flRecParameters.userProfile == "production" && !flRecConfig.empty()) {
     DT_THROW(FLConfigUserError, "User profile '"
                                     << flRecParameters.userProfile << "' "
                                     << "does not allow the definitions of inline modules!");
@@ -272,7 +273,6 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   flRecParameters.modulesConfig = flRecConfig;
 
   do_postprocess(flRecParameters);
-  return;
 }
 
 void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
@@ -365,7 +365,6 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
   }  // End of settings.
 
   DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-  return;
 }
 
 void do_postprocess(FLReconstructParams& flRecParameters) {
@@ -553,7 +552,6 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
   }
 
   DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
-  return;
 }
 
 falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
@@ -619,7 +617,7 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
                                 "Variants profile path");
     }
 
-    if (flRecParameters.variantSubsystemParams.settings.size()) {
+    if (!flRecParameters.variantSubsystemParams.settings.empty()) {
       // Not with "production" user profile:
       variants_props.store("settings", flRecParameters.variantSubsystemParams.settings,
                            "Variants settings");

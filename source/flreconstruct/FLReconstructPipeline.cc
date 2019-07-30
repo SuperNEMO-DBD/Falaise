@@ -192,7 +192,9 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     while (true) {
       // Prepare and read work
       workItem.clear();
-      if (recInput->is_terminated()) break;
+      if (recInput->is_terminated()) {
+        break;
+      }
       if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
         DT_LOG_FATAL(flRecParameters.logLevel, "Failed to read data record from input source");
         break;
@@ -209,18 +211,26 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
       // This is a very conservative approach, but it is compatible with the default behaviour of
       // the bxdpp_processing executable.
-      if (pStatus == dpp::base_module::PROCESS_FATAL) break;
-      if (pStatus == dpp::base_module::PROCESS_ERROR) break;
-      if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) break;
+      if (pStatus == dpp::base_module::PROCESS_FATAL) {
+        break;
+      }
+      if (pStatus == dpp::base_module::PROCESS_ERROR) {
+        break;
+      }
+      if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
+        break;
+      }
 
       // STOP means the current event should not be processed anymore nor saved
       // but the loop can continue with other items
-      if (pStatus == dpp::base_module::PROCESS_STOP) continue;
+      if (pStatus == dpp::base_module::PROCESS_STOP) {
+        continue;
+      }
 
       // Check post-conditions on event model (expectedOutputBanks) ?
 
       // Write item
-      if (recOutputHandle) {
+      if (recOutputHandle != nullptr) {
         pStatus = recOutputHandle->process(workItem);
         if (pStatus != dpp::base_module::PROCESS_OK) {
           DT_LOG_FATAL(flRecParameters.logLevel, "Failed to write data record to output sink");
@@ -241,7 +251,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
 
     // - MUST delete the module manager BEFORE the library loader clears
     // in case the manager is holding resources created from a shared lib
-    if (moduleManager.get() != nullptr) {
+    if (moduleManager != nullptr) {
       if (moduleManager->is_initialized()) {
         moduleManager->reset();
       }

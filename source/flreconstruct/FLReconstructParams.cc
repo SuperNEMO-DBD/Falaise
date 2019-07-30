@@ -94,7 +94,6 @@ void FLReconstructParams::print(std::ostream& out_) const {
   out_ << tag << "embeddedMetadata             = " << std::boolalpha << embeddedMetadata
        << std::endl;
   out_ << last_tag << "outputFile                   = " << outputFile << std::endl;
-  return;
 }
 
 }  // namespace FLReconstruct

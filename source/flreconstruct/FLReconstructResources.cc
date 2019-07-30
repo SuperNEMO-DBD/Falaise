@@ -68,13 +68,10 @@ ExperimentLookup::Table constructLookupPipelineTable() {
 //! Construct lookup table
 ExperimentLookup::Table constructLookupVariantsConfigTable() {
   ExperimentLookup::Table a;
-  boost::assign::insert(a)(
-      "", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
-      "default",
-      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
-      "demonstrator",
-      "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")("bipo3",
-                                                                                          "");
+  boost::assign::insert(a)("", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
+      "default", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
+      "demonstrator", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")("bipo3",
+                                                                                        "");
   ;
   return a;
 }
@@ -82,14 +79,9 @@ ExperimentLookup::Table constructLookupVariantsConfigTable() {
 //! Construct lookup table
 ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
   ExperimentLookup::Table a;
-  boost::assign::insert(a)(
-      "",
-      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
-      "default",
-      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
-      "demonstrator",
-      "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
-      "bipo3", "");
+  boost::assign::insert(a)("", "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
+      "default", "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
+      "demonstrator", "snemo/demonstrator/profiles/demonstrator-simulation.profile")("bipo3", "");
   ;
   return a;
 }
@@ -97,7 +89,9 @@ ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
 std::string getPipelineDefaultControlFile(const std::string& experiment,
                                           const std::string& /*versionID*/) {
   static ExperimentLookup::Table a;
-  if (a.empty()) a = constructLookupPipelineTable();
+  if (a.empty()) {
+    a = constructLookupPipelineTable();
+  }
 
   std::string path = ExperimentLookup::findPathInTable(a, experiment);
 
@@ -110,7 +104,9 @@ std::string getPipelineDefaultControlFile(const std::string& experiment,
 
 std::string getVariantsConfigFile(const std::string& experiment, const std::string& /*versionID*/) {
   static ExperimentLookup::Table a;
-  if (a.empty()) a = constructLookupVariantsConfigTable();
+  if (a.empty()) {
+    a = constructLookupVariantsConfigTable();
+  }
 
   std::string path = ExperimentLookup::findPathInTable(a, experiment);
 
@@ -124,7 +120,9 @@ std::string getVariantsConfigFile(const std::string& experiment, const std::stri
 std::string getVariantsDefaultProfile(const std::string& experiment,
                                       const std::string& /*versionID*/) {
   static ExperimentLookup::Table a;
-  if (a.empty()) a = constructLookupVariantsDefaultProfileTable();
+  if (a.empty()) {
+    a = constructLookupVariantsDefaultProfileTable();
+  }
 
   std::string path = ExperimentLookup::findPathInTable(a, experiment);
 

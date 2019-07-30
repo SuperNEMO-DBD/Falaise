@@ -10,14 +10,22 @@
 namespace FLReconstruct {
 
 std::string get_data_type_label(data_type dt_) {
-  if (dt_ == DATA_REAL) return "Real";
-  if (dt_ == DATA_MC) return "MC";
+  if (dt_ == DATA_REAL) {
+    return "Real";
+  }
+  if (dt_ == DATA_MC) {
+    return "MC";
+  }
   return "";
 }
 
 data_type get_data_type(const std::string& label_) {
-  if (label_ == get_data_type_label(DATA_REAL)) return DATA_REAL;
-  if (label_ == get_data_type_label(DATA_MC)) return DATA_MC;
+  if (label_ == get_data_type_label(DATA_REAL)) {
+    return DATA_REAL;
+  }
+  if (label_ == get_data_type_label(DATA_MC)) {
+    return DATA_MC;
+  }
   return DATA_UNKNOWN;
 }
 
@@ -38,7 +46,7 @@ std::istream& operator>>(std::istream& in, datatools::logger::priority& p) {
 
 //! validate logging argument
 void validate(boost::any& v, std::vector<std::string> const& values,
-              datatools::logger::priority* /*target_type*/, int) {
+              datatools::logger::priority* /*target_type*/, int /*unused*/) {
   namespace bpo = boost::program_options;
   // Make sure no previous assignment to v was made
   bpo::validators::check_first_occurrence(v);
