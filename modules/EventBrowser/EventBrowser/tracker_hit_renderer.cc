@@ -395,7 +395,7 @@ void tracker_hit_renderer::push_fitted_tracks() {
             if (new_anode_time < 0.0 * CLHEP::ns) {
               new_anode_time = 0.0 * CLHEP::ns;
             }
-            a_gg_regime.calibrate_drift_radius_from_drift_time(new_anode_time, new_r, new_sigma_r);
+            a_gg_regime.calibrateRadiusFromTime(new_anode_time, new_r, new_sigma_r);
             a_gg_hit_copy.set_r(new_r);
             a_gg_hit_copy.set_sigma_r(new_sigma_r);
             a_gg_hit_copy.set_delayed(false);

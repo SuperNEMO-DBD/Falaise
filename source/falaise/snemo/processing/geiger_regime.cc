@@ -16,6 +16,9 @@
 #include <datatools/utils.h>
 // - Bayeux/mygsl:
 
+#include "falaise/property_set.h"
+#include "falaise/quantity.h"
+
 namespace {
 // Refactored "basic" time to radius calculation
 // calculation dependendent on a transition time
@@ -54,44 +57,47 @@ class BasicTimeToRadius {
   double transitionTime_ = std::numeric_limits<double>::max();
 };
 
-
 // Calculates the transition time for time-to-radius function
 // based on time cut and radius parameters
-double calculateTZero(double _tcut_, double r_cell) {
-  double _t0_ = std::numeric_limits<double>::max();
+// Looks like the calculation is of the drift time corresponding
+// to the core cell radius, IAOI this time is less than "timeCut",
+// otherwise, return max<double>
+double calculateTZero(double timeCut, double cellRadius) {
+  double tZero = std::numeric_limits<double>::max();
   BasicTimeToRadius timeToRadius;
 
-  double step_drift_time1 = 0.050 * CLHEP::microsecond;
+  const double timeBegin = 0.0 * CLHEP::microsecond;
+  double timeStep = 0.050 * CLHEP::microsecond;
+  const double timeEnd = timeCut + 0.5 * timeStep;
   bool tune = false;
-  for (double drift_time = 0.0 * CLHEP::microsecond; drift_time < (_tcut_ + 0.5 * step_drift_time1);
-       drift_time += step_drift_time1) {
-    const double drift_radius = timeToRadius(drift_time);
 
-    if (drift_radius > r_cell) {
+  for (double driftTime = timeBegin; driftTime < timeEnd; driftTime += timeStep) {
+    const double driftRadius = timeToRadius(driftTime);
+    if (driftRadius > cellRadius) {
       if (tune) {
-        _t0_ = drift_time - 0.5 * step_drift_time1;
+        tZero = driftTime - 0.5 * timeStep;
         break;
       }
-      
-      drift_time -= 2 * step_drift_time1;
-      step_drift_time1 /= 20;
+
+      driftTime -= 2 * timeStep;
+      timeStep /= 20;
       tune = true;
     }
   }
 
-  return _t0_;
+  return tZero;
 }
 
-mygsl::tabulated_function makeRadiusTimeTable(double timeCut, BasicTimeToRadius timeToRadius) {
+mygsl::tabulated_function makeTimeFromRadius(double timeCut, BasicTimeToRadius timeToRadius) {
   mygsl::tabulated_function fn;
-  const double step_drift_time = 0.2 * CLHEP::microsecond;
+  const double timeBegin = 0.0 * CLHEP::microsecond;
+  const double timeStep = 0.2 * CLHEP::microsecond;
+  const double timeEnd = timeCut + 0.5 * timeStep;
 
-  for (double drift_time = 0.0 * CLHEP::microsecond; drift_time < (timeCut + 0.5 * step_drift_time);
-       drift_time += step_drift_time) {
-    const double drift_radius = timeToRadius(drift_time);
-    fn.add_point(drift_radius, drift_time, false);
+  for (double driftTime = timeBegin; driftTime < timeEnd; driftTime += timeStep) {
+    fn.add_point(timeToRadius(driftTime), driftTime, false);
   }
-  
+
   fn.lock_table("linear");
   return fn;
 }
@@ -103,247 +109,238 @@ namespace snemo {
 namespace processing {
 
 geiger_regime::geiger_regime() {
-  // Default cell size:
-  _cell_diameter_ = 44. * CLHEP::mm;
-  _cell_length_ = 2900. * CLHEP::mm;
+  // Default cell dimensions:
+  cellRadius_ = 44. * 0.5 * CLHEP::mm;
+  cellDiagonal_ = cellRadius_ * sqrt(2.0);
+  cellLength_ = 2900. * CLHEP::mm;
 
   // Default TDC electronics resolution:
-  _sigma_anode_time_ = 12.5 * CLHEP::ns;
-  _sigma_cathode_time_ = 100.0 * CLHEP::ns;
+  anodeTimeResolution_ = 12.5 * CLHEP::ns;
+  cathodeTimeResolution_ = 100.0 * CLHEP::ns;
 
   // Default resolution parameters (see I.Nasteva's work):
-  _sigma_z_ = 1.0 * CLHEP::cm;
-  _sigma_z_missing_cathode_ = 5.0 * CLHEP::cm;
-  _sigma_r_a_ = 0.425 * CLHEP::mm;
-  _sigma_r_b_ = 0.0083;  // dimensionless
-  _sigma_r_r0_ = 12.25 * CLHEP::mm;
+  // Longitudinal
+  zResolution_ = 1.0 * CLHEP::cm;
+  zResolutionSingleCathode_ = 5.0 * CLHEP::cm;
 
-  _base_anode_efficiency_ = 1.0;
-  _base_cathode_efficiency_ = 1.0;
-  _plasma_longitudinal_speed_ = 5.0 * CLHEP::cm / CLHEP::microsecond;
-  _sigma_plasma_longitudinal_speed_ = 0.5 * CLHEP::cm / CLHEP::microsecond;
+  // Radial (parameterized)
+  rResolution_a_ = 0.425 * CLHEP::mm;
+  rResolution_b_ = 0.0083;  // dimensionless
+  rResolution_r0_ = 12.25 * CLHEP::mm;
 
-  _r0_ = 0.5 * _cell_diameter_;
-  _rdiag_ = _r0_ * sqrt(2.0);
-  _tcut_ = 10. * CLHEP::microsecond;
-  
-  // _t0_ and the function are derived.
-  _t0_ = calculateTZero(_tcut_, _r0_);
-  _base_rt_ = makeRadiusTimeTable(_tcut_, BasicTimeToRadius{_t0_});
+  coreAnodeEfficiency_ = 1.0;
+  coreCathodeEfficiency_ = 1.0;
+  plasmaSpeed_ = 5.0 * CLHEP::cm / CLHEP::microsecond;
+  plasmaSpeedError_ = 0.5 * CLHEP::cm / CLHEP::microsecond;
+
+  tCut_ = 10. * CLHEP::microsecond;
+
+  // timeToDriftCellRadius_ and the function are derived.
+  timeToDriftCellRadius_ = calculateTZero(tCut_, cellRadius_);
+  timeFromRadius_ = makeTimeFromRadius(tCut_, BasicTimeToRadius{timeToDriftCellRadius_});
 }
 
-geiger_regime::geiger_regime(const datatools::properties& config_)
-    : geiger_regime::geiger_regime() {
-  if (config_.has_key("cell_diameter")) {
-    _cell_diameter_ = config_.fetch_real_with_explicit_dimension("cell_diameter", "length");
+geiger_regime::geiger_regime(const datatools::properties& dps) : geiger_regime::geiger_regime() {
+  falaise::property_set ps{dps};
+
+  // NB: these are slightly more complex than ideal, because we
+  // can't put the value (a double) in directly:
+  // ps.get<falaise::length_t>("param", {value / CLHEP::mm, "mm"})();
+  // Can review after clarifying variable names, which should shorten
+  // them and help things fit.
+  if (ps.has_key("cell_diameter")) {
+    cellRadius_ = 0.5 * ps.get<falaise::length_t>("cell_diameter")();
+  }
+  cellDiagonal_ = cellRadius_ * sqrt(2.0);
+
+  if (ps.has_key("cell_length")) {
+    cellLength_ = ps.get<falaise::length_t>("cell_length")();
   }
 
-  if (config_.has_key("cell_length")) {
-    _cell_length_ = config_.fetch_real_with_explicit_dimension("cell_length", "length");
+  if (ps.has_key("tcut")) {
+    tCut_ = ps.get<falaise::time_t>("tcut")();
+    DT_THROW_IF(tCut_ < 8 * CLHEP::microsecond, std::range_error,
+                "Cut drift time is too short (" << tCut_ / CLHEP::microsecond << " us < 8 us) !");
   }
 
-  if (config_.has_key("tcut")) {
-    _tcut_ = config_.fetch_real_with_explicit_dimension("tcut", "time");
+  if (ps.has_key("sigma_anode_time")) {
+    anodeTimeResolution_ = ps.get<falaise::time_t>("sigma_anode_time")();
   }
 
-  if (config_.has_key("sigma_anode_time")) {
-    _sigma_anode_time_ = config_.fetch_real_with_explicit_dimension("sigma_anode_time", "time");
+  if (ps.has_key("sigma_cathode_time")) {
+    cathodeTimeResolution_ = ps.get<falaise::time_t>("sigma_cathode_time")();
   }
 
-  if (config_.has_key("sigma_cathode_time")) {
-    _sigma_cathode_time_ = config_.fetch_real_with_explicit_dimension("sigma_cathode_time", "time");
+  if (ps.has_key("base_anode_efficiency")) {
+    coreAnodeEfficiency_ = ps.get<double>("base_anode_efficiency");
   }
 
-  if (config_.has_key("base_anode_efficiency")) {
-    _base_anode_efficiency_ = config_.fetch_real("base_anode_efficiency");
+  if (ps.has_key("base_cathode_efficiency")) {
+    coreCathodeEfficiency_ = ps.get<double>("base_cathode_efficiency");
   }
 
-  if (config_.has_key("base_cathode_efficiency")) {
-    _base_cathode_efficiency_ = config_.fetch_real("base_cathode_efficiency");
+  if (ps.has_key("plasma_longitudinal_speed")) {
+    plasmaSpeed_ = ps.get<falaise::velocity_t>("plasma_longitudinal_speed")();
   }
 
-  if (config_.has_key("plasma_longitudinal_speed")) {
-    _plasma_longitudinal_speed_ =
-        config_.fetch_real_with_explicit_dimension("plasma_longitudinal_speed", "velocity");
+  if (ps.has_key("sigma_plasma_longitudinal_speed")) {
+    plasmaSpeedError_ = ps.get<falaise::velocity_t>("sigma_plasma_longitudinal_speed")();
   }
 
-  if (config_.has_key("sigma_plasma_longitudinal_speed")) {
-    _sigma_plasma_longitudinal_speed_ =
-        config_.fetch_real_with_explicit_dimension("sigma_plasma_longitudinal_speed", "velocity");
+  if (ps.has_key("sigma_z")) {
+    zResolution_ = ps.get<falaise::length_t>("sigma_z")();
   }
 
-  if (config_.has_key("sigma_z")) {
-    _sigma_z_ = config_.fetch_real_with_explicit_dimension("sigma_z", "length");
+  if (ps.has_key("sigma_z_missing_cathode")) {
+    zResolutionSingleCathode_ = ps.get<falaise::length_t>("sigma_z_missing_cathode")();
   }
 
-  if (config_.has_key("sigma_z_missing_cathode")) {
-    _sigma_z_missing_cathode_ =
-        config_.fetch_real_with_explicit_dimension("sigma_z_missing_cathode", "length");
+  if (ps.has_key("sigma_r_a")) {
+    rResolution_a_ = ps.get<falaise::length_t>("sigma_r_a")();
   }
 
-  if (config_.has_key("sigma_r_a")) {
-    _sigma_r_a_ = config_.fetch_real_with_explicit_dimension("sigma_r_a", "length");
+  if (ps.has_key("sigma_r_b")) {
+    rResolution_b_ = ps.get<double>("sigma_r_b");
   }
 
-  if (config_.has_key("sigma_r_b")) {
-    _sigma_r_b_ = config_.fetch_real("sigma_r_b");
+  if (ps.has_key("sigma_r_r0")) {
+    rResolution_r0_ = ps.get<falaise::length_t>("sigma_r_r0")();
   }
 
-  if (config_.has_key("sigma_r_r0")) {
-    _sigma_r_r0_ = config_.fetch_real_with_explicit_dimension("sigma_r_r0", "length");
-  }
-
-  DT_THROW_IF(_tcut_ < 8 * CLHEP::microsecond, std::range_error,
-              "Cut drift time is too short (" << _tcut_ / CLHEP::microsecond << " us < 8 us) !");
-
-  _r0_ = 0.5 *_cell_diameter_;
-  _rdiag_ = _r0_ * sqrt(2.0);
-  _t0_ = calculateTZero(_tcut_, _r0_);
-  _base_rt_ = makeRadiusTimeTable(_tcut_, BasicTimeToRadius(_t0_));
+  timeToDriftCellRadius_ = calculateTZero(tCut_, cellRadius_);
+  timeFromRadius_ = makeTimeFromRadius(tCut_, BasicTimeToRadius(timeToDriftCellRadius_));
 }
 
-double geiger_regime::get_cell_diameter() const { return _cell_diameter_; }
+double geiger_regime::getCellDiameter() const { return 2.0 * cellRadius_; }
 
-double geiger_regime::get_cell_radius() const { return 0.5 * _cell_diameter_; }
+double geiger_regime::getCellRadius() const { return cellRadius_; }
 
-double geiger_regime::get_cell_length() const { return _cell_length_; }
+double geiger_regime::getCellLength() const { return cellLength_; }
 
-double geiger_regime::get_sigma_anode_time(double /* anode_time_ */) const {
-  return _sigma_anode_time_;
+double geiger_regime::getAnodeTimeResolution(double /* anode_time_ */) const {
+  return anodeTimeResolution_;
 }
 
-double geiger_regime::get_sigma_cathode_time() const { return _sigma_cathode_time_; }
+double geiger_regime::getCathodeTimeResolution() const { return cathodeTimeResolution_; }
 
-double geiger_regime::get_t0() const { return _t0_; }
+double geiger_regime::getDriftTimeForCellRadius() const { return timeToDriftCellRadius_; }
 
-double geiger_regime::get_tcut() const { return _tcut_; }
+double geiger_regime::getMaximumDriftTime() const { return tCut_; }
 
-double geiger_regime::get_r0() const { return _r0_; }
+double geiger_regime::getMaximumRadius() const { return cellDiagonal_; }
 
-double geiger_regime::get_rdiag() const { return _rdiag_; }
-
-double geiger_regime::get_base_anode_efficiency() const { return _base_anode_efficiency_; }
-
-double geiger_regime::get_base_cathode_efficiency() const { return _base_cathode_efficiency_; }
+double geiger_regime::getCathodeEfficiency() const { return coreCathodeEfficiency_; }
 
 /** Value computed from I.Nasteva's plot in DocDB #843:
  *  see: <sncore source dir>/doc/geiger_regime/sn90cells_anode_efficiency.jpg
  */
-double geiger_regime::get_anode_efficiency(double r_) const {
-  if (r_ < _r0_) {
-    return _base_anode_efficiency_;
+double geiger_regime::getAnodeEfficiency(double radius) const {
+  if (radius < cellRadius_) {
+    return coreAnodeEfficiency_;
   }
 
-  if (r_ < _rdiag_) {
-    const double sr0 = get_sigma_r(_r0_);
-    return _base_anode_efficiency_ * exp(-(r_ - _r0_) / sr0);
+  if (radius < cellDiagonal_) {
+    const double sr0 = getRadialResolution(cellRadius_);
+    return coreAnodeEfficiency_ * exp(-(radius - cellRadius_) / sr0);
   }
-  
+
   return 0.0;
 }
 
-double geiger_regime::get_cathode_efficiency() const { return _base_cathode_efficiency_; }
+double geiger_regime::getPlasmaSpeed() const { return plasmaSpeed_; }
 
-double geiger_regime::get_plasma_longitudinal_speed() const { return _plasma_longitudinal_speed_; }
-
-double geiger_regime::get_sigma_plasma_longitudinal_speed() const {
-  return _sigma_plasma_longitudinal_speed_;
-}
+double geiger_regime::getPlasmaSpeedError() const { return plasmaSpeedError_; }
 
 /** Value computed from I.Nasteva's plot in DocDB #843:
  *  see: <sncore source dir>/doc/geiger_regime/sn90cells_longitudinal_resolution.jpg
  */
-double geiger_regime::get_sigma_z(double /* z_ */, size_t missing_cathode) const {
+double geiger_regime::getLongitudinalResolution(double /* z_ */, size_t missing_cathode) const {
   if (missing_cathode == 0) {
-    return _sigma_z_;
+    return zResolution_;
   }
   if (missing_cathode == 1) {
-    return _sigma_z_missing_cathode_;
+    return zResolutionSingleCathode_;
   }
-  return 0.5 * _cell_length_;
+  return 0.5 * cellLength_;
 }
 
 /** Value computed from I.Nasteva's plot in DocDB #843:
  *  see: <sncore source dir>/doc/geiger_regime/sn90cells_sigma_r.jpg
  */
-double geiger_regime::get_sigma_r(double r_) const {
-  const double a = _sigma_r_a_;
-  const double b = _sigma_r_b_;
-  const double r0 = _sigma_r_r0_;
-  const double sr = a * (1.0 + b * std::pow((r_ - r0) / CLHEP::mm, 2));
-  return sr * CLHEP::mm;
+double geiger_regime::getRadialResolution(double r) const {
+  const double a = rResolution_a_;
+  const double b = rResolution_b_;
+  const double r0 = rResolution_r0_;
+  const double rResolution = a * (1.0 + b * std::pow((r - r0) / CLHEP::mm, 2));
+  return rResolution * CLHEP::mm;
 }
 
-double geiger_regime::randomize_z(mygsl::rng& ran_, double z_, double sigma_z_) const {
-  const double z = ran_.gaussian(z_, sigma_z_);
-  return z;
+double geiger_regime::smearZ(mygsl::rng& ran_, double z_, double sigma_z_) const {
+  return ran_.gaussian(z_, sigma_z_);
 }
 
-double geiger_regime::randomize_r(mygsl::rng& ran_, double r_) const {
+double geiger_regime::smearRadius(mygsl::rng& ran_, double r_) const {
   double r{datatools::invalid_real_double()};
-  double sr0 = get_sigma_r(_r0_);
-  if (r_ < (_r0_ + 2. * sr0)) {
-    const double sr = get_sigma_r(r_);
+  double sr0 = getRadialResolution(cellRadius_);
+  if (r_ < (cellRadius_ + 2. * sr0)) {
+    const double sr = getRadialResolution(r_);
     r = ran_.gaussian(r_, sr);
     if (r < 0.0) {
       r = 0.0 * CLHEP::mm;
     }
   } else {
-    r = ran_.flat(_r0_, _rdiag_);
+    r = ran_.flat(cellRadius_, cellDiagonal_);
   }
   return r;
 }
 
 double geiger_regime::base_t_2_r(double time_, int mode_) const {
   if (mode_ == 0) {
-    return BasicTimeToRadius(_t0_)(time_);
+    return BasicTimeToRadius(timeToDriftCellRadius_)(time_);
   }
   return BasicTimeToRadius()(time_);
 }
 
-void geiger_regime::calibrate_drift_radius_from_drift_time(double drift_time_,
-                                                           double& drift_radius_,
-                                                           double& sigma_drift_radius_) const {
+void geiger_regime::calibrateRadiusFromTime(double drift_time_, double& drift_radius_,
+                                            double& sigma_drift_radius_) const {
   DT_THROW_IF(drift_time_ < 0.0, std::range_error,
-              "Invalid drift time (" << drift_time_ / CLHEP::ns << " ns) !");
+              "Negative drift time (" << drift_time_ / CLHEP::ns << " ns)");
   datatools::invalidate(drift_radius_);
   datatools::invalidate(sigma_drift_radius_);
-  if (drift_time_ < _tcut_) {
+  if (drift_time_ < tCut_) {
     drift_radius_ = base_t_2_r(drift_time_);
-    sigma_drift_radius_ = get_sigma_r(drift_radius_);
+    sigma_drift_radius_ = getRadialResolution(drift_radius_);
   }
 }
 
-double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
-                                                               double drift_distance_) const {
-  DT_THROW_IF(drift_distance_ < 0.0, std::range_error, "Invalid drift distance !");
+double geiger_regime::getRandomTimeGivenRadius(mygsl::rng& ran_, double drift_distance_) const {
+  DT_THROW_IF(drift_distance_ < 0.0, std::range_error, "Negative drift distance !");
 
   double drift_time{datatools::invalid_real_double()};
 
-  if (drift_distance_ <= _rdiag_) {
-    const double rcut = _base_rt_.x_max();
-    const double tcut = _base_rt_(rcut);
+  if (drift_distance_ <= cellDiagonal_) {
+    const double rcut = timeFromRadius_.x_max();
+    const double tcut = timeFromRadius_(rcut);
 
-    // if (drift_distance_ <= __r0 + sr0)
     if (drift_distance_ <= rcut) {
-      double sr = get_sigma_r(drift_distance_);
-      if (drift_distance_ > _r0_) {
-        sr = get_sigma_r(_r0_);
+      double sr = getRadialResolution(drift_distance_);
+      if (drift_distance_ > cellRadius_) {
+        sr = getRadialResolution(cellRadius_);
       }
       double r_min = drift_distance_ - sr;
       if (r_min < 0.0) {
         r_min = 0.0;
       }
-      const double t_min = _base_rt_(r_min);
-      const double t_mean = _base_rt_(drift_distance_);
+      const double t_min = timeFromRadius_(r_min);
+      const double t_mean = timeFromRadius_(drift_distance_);
       const double mean_time = t_mean;
       const double sigma_time = (t_mean - t_min);
       drift_time = ran_.gaussian(mean_time, sigma_time);
       // protect against pathological times :
-      if (drift_distance_ > _r0_) {
-        const double sr0 = get_sigma_r(_r0_);
-        const double st0 = _t0_ - _base_rt_(_r0_ - sr0);
-        const double tinf = _t0_ - 2 * st0;
+      if (drift_distance_ > cellRadius_) {
+        const double sr0 = getRadialResolution(cellRadius_);
+        const double st0 = timeToDriftCellRadius_ - timeFromRadius_(cellRadius_ - sr0);
+        const double tinf = timeToDriftCellRadius_ - 2 * st0;
         if (drift_time < tinf) {
           drift_time = 2 * tinf - drift_time;
         }
@@ -351,10 +348,10 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
     } else {
       const double t2 = tcut;
       const double r2 = rcut;
-      const double r1 = (r2 + _r0_) / 2;
-      const double t1 = _t0_;
+      const double r1 = (r2 + cellRadius_) / 2;
+      const double t1 = timeToDriftCellRadius_;
       if (drift_distance_ < r2) {
-        const double sr = get_sigma_r(drift_distance_);
+        const double sr = getRadialResolution(drift_distance_);
         const double r_min = drift_distance_ - sr;
         const double r_max = drift_distance_ + sr;
         const double t_min = t1 + (r_min - r1) * (t2 - t1) / (r2 - r1);
@@ -363,7 +360,7 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
         const double sigma_time = 0.5 * (t_max - t_min);
         drift_time = ran_.gaussian(mean_time, sigma_time);
         drift_time = mean_time;  // XXX
-        const double tlim = _t0_;
+        const double tlim = timeToDriftCellRadius_;
         if (drift_time < tlim) {
           drift_time = 2 * tlim - drift_time;
         }
@@ -379,7 +376,7 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
 
     // protection against negative random drift times:
     if (drift_time < 0.0) {
-      drift_time = 0.5 * _sigma_anode_time_;
+      drift_time = 0.5 * anodeTimeResolution_;
     }
   }
 
@@ -387,12 +384,11 @@ double geiger_regime::randomize_drift_time_from_drift_distance(mygsl::rng& ran_,
   // there is a better by solving some strange 'if' condition
   // before)
   if (!datatools::is_valid(drift_time)) {
-    drift_time = _tcut_;
+    drift_time = tCut_;
   }
 
   return drift_time;
 }
-
 
 void geiger_regime::tree_dump(std::ostream& out, const std::string& title,
                               const std::string& indent, bool inherit) const {
@@ -400,25 +396,25 @@ void geiger_regime::tree_dump(std::ostream& out, const std::string& title,
     out << indent << title << std::endl;
   }
   out << indent << datatools::i_tree_dumpable::tag
-       << "Cell diameter = " << _cell_diameter_ / CLHEP::mm << " mm" << std::endl;
+      << "Cell diameter = " << 2.0 * cellRadius_ / CLHEP::mm << " mm" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Cell length   = " << cellLength_ / CLHEP::cm
+      << " cm" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Sigma z       = " << zResolution_ / CLHEP::mm
+      << " mm" << std::endl;
   out << indent << datatools::i_tree_dumpable::tag
-      << "Cell length   = " << _cell_length_ / CLHEP::cm << " cm" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "Sigma z       = " << _sigma_z_ / CLHEP::mm
-      << " mm" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "Sigma r/a     = " << _sigma_r_a_ / CLHEP::mm
-      << " mm" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "Sigma r/b     = " << _sigma_r_b_
+      << "Sigma r/a     = " << rResolution_a_ / CLHEP::mm << " mm" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Sigma r/b     = " << rResolution_b_
       << std::endl;
   out << indent << datatools::i_tree_dumpable::tag
-      << "Sigma r/r0    = " << _sigma_r_r0_ / CLHEP::mm << " mm" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "t0            = " << _t0_ / CLHEP::ns
+      << "Sigma r/r0    = " << rResolution_r0_ / CLHEP::mm << " mm" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "t0            = " << timeToDriftCellRadius_ / CLHEP::ns
       << " ns" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "tcut          = " << _tcut_ / CLHEP::ns
+  out << indent << datatools::i_tree_dumpable::tag << "tcut          = " << tCut_ / CLHEP::ns
       << " ns" << std::endl;
-  out << indent << datatools::i_tree_dumpable::tag << "r0            = " << _r0_ / CLHEP::mm
+  out << indent << datatools::i_tree_dumpable::tag << "r0            = " << cellRadius_ / CLHEP::mm
       << " mm" << std::endl;
   out << indent << datatools::i_tree_dumpable::inherit_tag(inherit)
-      << "rdiag         = " << _rdiag_ / CLHEP::mm << " mm" << std::endl;
+      << "rdiag         = " << cellDiagonal_ / CLHEP::mm << " mm" << std::endl;
 }
 
 }  // end of namespace processing

@@ -97,14 +97,14 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
   calibratedData.calibrated_calorimeter_hits().clear();
 
   // Main processing method :
-  _process(simulatedData, calibratedData.calibrated_calorimeter_hits());
+  process_impl(simulatedData, calibratedData.calibrated_calorimeter_hits());
 
   return dpp::base_module::PROCESS_SUCCESS;
 }
 
 // Here collect the 'calorimeter' raw hits from the simulation data source
 // and build the final list of calibrated 'calorimeter' hits
-void mock_calorimeter_s2c_module::_digitizeHits(
+void mock_calorimeter_s2c_module::digitizeHits(
     const mctools::simulated_data& simdata,
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
   uint32_t calibrated_calorimeter_hit_id = 0;
@@ -126,7 +126,7 @@ void mock_calorimeter_s2c_module::_digitizeHits(
       double energyDeposit = a_calo_mc_hit->get_energy_deposit();
 
       if (quenchAlphas && a_calo_mc_hit->get_particle_name() == "alpha") {
-        energyDeposit = theCaloModel.quench_alpha_energy(energyDeposit);
+        energyDeposit = theCaloModel.quenchAlphaParticle(energyDeposit);
       }
 
       // Get the step hit time start:
@@ -205,7 +205,7 @@ void mock_calorimeter_s2c_module::_digitizeHits(
 }
 
 // Calibrate calorimeter hits from digitization informations:
-void mock_calorimeter_s2c_module::_calibrateHits(
+void mock_calorimeter_s2c_module::calibrateHits(
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
   for (auto& theCaloHit : calohits) {
     // Setting category in order to get the correct energy resolution:
@@ -216,24 +216,23 @@ void mock_calorimeter_s2c_module::_calibrateHits(
     // Compute a random 'experimental' energy taking into account
     // the expected energy resolution of the calorimeter hit:
     const double energy = theCaloHit->get_energy();
-    const double exp_energy = the_calo_regime.randomize_energy(RNG_, energy);
-    const double exp_sigma_energy = the_calo_regime.get_sigma_energy(exp_energy);
-    theCaloHit->set_energy(exp_energy);
-    theCaloHit->set_sigma_energy(exp_sigma_energy);
+    const double measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
+    const double measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
+    theCaloHit->set_energy(measuredEnergy);
+    theCaloHit->set_sigma_energy(measuredEnergySigma);
 
     // Compute a random 'experimental' time taking into account
     // the expected time resolution of the calorimeter hit:
     const double time = theCaloHit->get_time();
-    const double exp_time = the_calo_regime.randomize_time(RNG_, time, exp_energy);
-    const double exp_sigma_time = the_calo_regime.get_sigma_time(exp_energy);
-    theCaloHit->set_time(exp_time);
-    theCaloHit->set_sigma_time(exp_sigma_time);
+    const double measuredTime = the_calo_regime.smearTime(RNG_, time, measuredEnergy);
+    const double measuredTimeSigma = the_calo_regime.getSigmaTime(measuredEnergy);
+    theCaloHit->set_time(measuredTime);
+    theCaloHit->set_sigma_time(measuredTimeSigma);
   }
 }
 
 // Select calorimeter hit following trigger conditions
-
-void mock_calorimeter_s2c_module::_triggerHits(
+void mock_calorimeter_s2c_module::triggerHits(
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
   bool high_threshold = false;
   for (auto& theCaloHit : calohits) {
@@ -242,7 +241,7 @@ void mock_calorimeter_s2c_module::_triggerHits(
     const std::string& category_name = theCaloHit->get_auxiliaries().fetch_string("category");
     const CalorimeterModel& the_calo_regime = caloModels.at(category_name);
     const double energy = theCaloHit->get_energy();
-    if (the_calo_regime.is_high_threshold(energy)) {
+    if (the_calo_regime.aboveHighThreshold(energy)) {
       high_threshold = true;
       break;
     }
@@ -256,7 +255,7 @@ void mock_calorimeter_s2c_module::_triggerHits(
       const CalorimeterModel& the_calo_regime = caloModels.at(category_name);
       const double energy = (*iCheckedHit)->get_energy();
       // If energy hit is too low then remove calorimeter hit
-      if (!the_calo_regime.is_low_threshold(energy)) {
+      if (!the_calo_regime.aboveLowThreshold(energy)) {
         iCheckedHit = calohits.erase(iCheckedHit);
       } else {
         ++iCheckedHit;
@@ -267,12 +266,12 @@ void mock_calorimeter_s2c_module::_triggerHits(
   }
 }
 
-void mock_calorimeter_s2c_module::_process(
+void mock_calorimeter_s2c_module::process_impl(
     const mctools::simulated_data& simdata,
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
-  _digitizeHits(simdata, calohits);
-  _calibrateHits(calohits);
-  _triggerHits(calohits);
+  digitizeHits(simdata, calohits);
+  calibrateHits(calohits);
+  triggerHits(calohits);
 }
 
 }  // end of namespace processing

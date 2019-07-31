@@ -51,7 +51,6 @@ configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 
 set(FalaiseLibrary_SOURCES
   version.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
@@ -71,7 +70,6 @@ set(FalaiseLibrary_TESTS_CATCH)
 # - Declare headers, sources and test programs specific
 #   to various setups
 include(snemo.cmake)
-include(TrackerPreClustering.cmake)
 
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})

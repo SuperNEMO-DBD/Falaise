@@ -35,16 +35,16 @@ snemo_drift_time_calibration::snemo_drift_time_calibration() {
 snemo_drift_time_calibration::~snemo_drift_time_calibration() { _gg_regime_.reset(); }
 
 double snemo_drift_time_calibration::get_max_cell_radius() const {
-  return _gg_regime_->get_rdiag();
+  return _gg_regime_->getMaximumRadius();
 }
 
 double snemo_drift_time_calibration::get_sensitive_cell_radius() const {
-  return _gg_regime_->get_rdiag();
+  return _gg_regime_->getMaximumRadius();
 }
 
 void snemo_drift_time_calibration::drift_time_to_radius(double time_, double& radius_,
                                                         double& sigma_radius_) const {
-  _gg_regime_->calibrate_drift_radius_from_drift_time(time_, radius_, sigma_radius_);
+  _gg_regime_->calibrateRadiusFromTime(time_, radius_, sigma_radius_);
 }
 
 void snemo_drift_time_calibration::radius_to_drift_time(double /* radius_ */, double& /* time_ */,

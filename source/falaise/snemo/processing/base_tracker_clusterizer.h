@@ -43,7 +43,7 @@
 #include "falaise/snemo/datamodels/calibrated_data.h"
 
 // Falaise module:
-#include "falaise/TrackerPreClustering/pre_clusterizer.h"
+#include "falaise/snemo/processing/detail/GeigerTimePartitioner.h"
 
 // Forward declaration :
 namespace datatools {
@@ -173,8 +173,7 @@ class base_tracker_clusterizer {
   const geomtools::manager *geoManager_;              //!< The SuperNEMO geometry manager
   const snemo::geometry::gg_locator *geigerLocator_;  //!< Locator for geiger cells
   geomtools::id_selector cellSelector_;               //!< A selector of GIDs
-  TrackerPreClustering::setup_data tpcConfig_;  //!< Configuration of the time-clustering algorithm
-  TrackerPreClustering::pre_clusterizer preClusterer_;  //!< The time-clustering algorithm
+  snreco::detail::GeigerTimePartitioner preClusterer_;  //!< The time-clustering algorithm
 
   // Internal work space:
   hit_collection_type ignoredHits_;  //!< Hits not used as input for any clustering algorithm

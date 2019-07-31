@@ -53,8 +53,7 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
   virtual ~mock_calorimeter_s2c_module() { this->reset(); }
 
   /// Initialization
-  virtual void initialize(const datatools::properties& ps,
-                          datatools::service_manager& /*unused*/,
+  virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
                           dpp::module_handle_dict_type& /*unused*/);
 
   /// Reset
@@ -65,18 +64,18 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
 
  private:
   /// Digitize calorimeter hits
-  void _digitizeHits(const mctools::simulated_data& simdata,
-                     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void digitizeHits(const mctools::simulated_data& simdata,
+                    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
 
   /// Calibrate calorimeter hits (energy/time resolution spread)
-  void _calibrateHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void calibrateHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
 
   /// Apply basic trigger filter
-  void _triggerHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void triggerHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
 
   /// Main process function
-  void _process(const mctools::simulated_data& simdata,
-                snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void process_impl(const mctools::simulated_data& simdata,
+                    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
 
  private:
   mygsl::rng RNG_{};                     //!< PRN generator

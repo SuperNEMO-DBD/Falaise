@@ -73,7 +73,7 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
 
   // Default value:
   if (!datatools::is_valid(_peripheral_drift_time_threshold_)) {
-    _peripheral_drift_time_threshold_ = _geiger_.get_t0();
+    _peripheral_drift_time_threshold_ = _geiger_.getDriftTimeForCellRadius();
   }
 
   // Set minium drift time for delayed hits:
@@ -82,7 +82,7 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
 
   // Default value:
   if (!datatools::is_valid(_delayed_drift_time_threshold_)) {
-    _delayed_drift_time_threshold_ = _geiger_.get_tcut();
+    _delayed_drift_time_threshold_ = _geiger_.getMaximumDriftTime();
   }
 
   // 2012-07-26 FM : support reference to the MC true hit ID
@@ -162,7 +162,7 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
 
     // true drift distance:
     const double drift_distance = (avalanche_impact_world_pos - ionization_world_pos).mag();
-    const double anode_efficiency = _geiger_.get_anode_efficiency(drift_distance);
+    const double anode_efficiency = _geiger_.getAnodeEfficiency(drift_distance);
     const double r = RNG_.uniform();
     if (r > anode_efficiency) {
       // This hit is lost due to anode signal inefficiency:
@@ -175,20 +175,20 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
     /*** Anode TDC ***/
     // randomize the expected Geiger drift time:
     const double expected_drift_time =
-        _geiger_.randomize_drift_time_from_drift_distance(RNG_, drift_distance);
+        _geiger_.getRandomTimeGivenRadius(RNG_, drift_distance);
     const double anode_time = ionization_time + expected_drift_time;
-    const double sigma_anode_time = _geiger_.get_sigma_anode_time(anode_time);
+    const double sigma_anode_time = _geiger_.getAnodeTimeResolution(anode_time);
 
     /*** Cathodes TDCs ***/
-    const double cathode_efficiency = _geiger_.get_cathode_efficiency();
+    const double cathode_efficiency = _geiger_.getCathodeEfficiency();
     double bottom_cathode_time{datatools::invalid_real_double()};
     double top_cathode_time{datatools::invalid_real_double()};
-    const double sigma_cathode_time = _geiger_.get_sigma_cathode_time();
+    const double sigma_cathode_time = _geiger_.getCathodeTimeResolution();
     size_t missing_cathodes = 2;
     const double r1 = RNG_.uniform();
     if (r1 < cathode_efficiency) {
-      const double l_bottom = longitudinal_position + 0.5 * _geiger_.get_cell_length();
-      const double mean_bottom_cathode_time = l_bottom / _geiger_.get_plasma_longitudinal_speed();
+      const double l_bottom = longitudinal_position + 0.5 * _geiger_.getCellLength();
+      const double mean_bottom_cathode_time = l_bottom / _geiger_.getPlasmaSpeed();
       const double sigma_bottom_cathode_time = 0.0;
       bottom_cathode_time = RNG_.gaussian(mean_bottom_cathode_time, sigma_bottom_cathode_time);
       if (bottom_cathode_time < 0.0) {
@@ -198,8 +198,8 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
     }
     const double r2 = RNG_.uniform();
     if (r2 < cathode_efficiency) {
-      const double l_top = 0.5 * _geiger_.get_cell_length() - longitudinal_position;
-      const double mean_top_cathode_time = l_top / _geiger_.get_plasma_longitudinal_speed();
+      const double l_top = 0.5 * _geiger_.getCellLength() - longitudinal_position;
+      const double mean_top_cathode_time = l_top / _geiger_.getPlasmaSpeed();
       const double sigma_top_cathode_time = 0.0;
       top_cathode_time = RNG_.gaussian(mean_top_cathode_time, sigma_top_cathode_time);
       if (top_cathode_time < 0.0) {
@@ -332,14 +332,14 @@ mock_tracker_s2c_module::cal_tracker_hit_col_t mock_tracker_s2c_module::calibrat
     if (datatools::is_valid(anode_time)) {
       if (anode_time <= _delayed_drift_time_threshold_) {
         // Case of a normal/prompt hit :
-        _geiger_.calibrate_drift_radius_from_drift_time(anode_time, radius, sigma_radius);
+        _geiger_.calibrateRadiusFromTime(anode_time, radius, sigma_radius);
         calTrackerHit->set_anode_time(anode_time);
         if (anode_time > _peripheral_drift_time_threshold_) {
           calTrackerHit->set_peripheral(true);
         }
       } else {
         // 2012-03-29 FM : store the anode_time as the reference delayed time
-        calTrackerHit->set_delayed_time(anode_time, _geiger_.get_sigma_anode_time(anode_time));
+        calTrackerHit->set_delayed_time(anode_time, _geiger_.getAnodeTimeResolution(anode_time));
       }
     } else {
       calTrackerHit->set_noisy(true);
@@ -359,35 +359,35 @@ mock_tracker_s2c_module::cal_tracker_hit_col_t mock_tracker_s2c_module::calibrat
     double z{datatools::invalid_real_double()};
     double sigma_z{datatools::invalid_real_double()};
 
-    const double plasma_propagation_speed = _geiger_.get_plasma_longitudinal_speed();
+    const double plasma_propagation_speed = _geiger_.getPlasmaSpeed();
     size_t missing_cathodes = 0;
     if (!datatools::is_valid(t1) && !datatools::is_valid(t2)) {
       // missing top/bottom cathode signals:
       missing_cathodes = 2;
-      sigma_z = _geiger_.get_sigma_z(z, missing_cathodes);
+      sigma_z = _geiger_.getLongitudinalResolution(z, missing_cathodes);
       z = 0.0;
       calTrackerHit->set_top_cathode_missing(true);
       calTrackerHit->set_bottom_cathode_missing(true);
     } else if (!datatools::is_valid(t1) && datatools::is_valid(t2)) {
       // missing bottom cathode signal:
       missing_cathodes = 1;
-      const double mean_z = 0.5 * _geiger_.get_cell_length() - t2 * plasma_propagation_speed;
-      sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-      z = _geiger_.randomize_z(RNG_, mean_z, sigma_z);
+      const double mean_z = 0.5 * _geiger_.getCellLength() - t2 * plasma_propagation_speed;
+      sigma_z = _geiger_.getLongitudinalResolution(mean_z, missing_cathodes);
+      z = _geiger_.smearZ(RNG_, mean_z, sigma_z);
       calTrackerHit->set_bottom_cathode_missing(true);
     } else if (datatools::is_valid(t1) && !datatools::is_valid(t2)) {
       // missing top cathode signal:
       missing_cathodes = 1;
-      const double mean_z = t1 * plasma_propagation_speed - 0.5 * _geiger_.get_cell_length();
-      sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-      z = _geiger_.randomize_z(RNG_, mean_z, sigma_z);
+      const double mean_z = t1 * plasma_propagation_speed - 0.5 * _geiger_.getCellLength();
+      sigma_z = _geiger_.getLongitudinalResolution(mean_z, missing_cathodes);
+      z = _geiger_.smearZ(RNG_, mean_z, sigma_z);
       calTrackerHit->set_top_cathode_missing(true);
     } else {
       missing_cathodes = 0;
-      const double plasma_propagation_speed_2 = _geiger_.get_cell_length() / (t1 + t2);
-      const double mean_z = 0.5 * _geiger_.get_cell_length() - t2 * plasma_propagation_speed_2;
-      sigma_z = _geiger_.get_sigma_z(mean_z, missing_cathodes);
-      z = _geiger_.randomize_z(RNG_, mean_z, sigma_z);
+      const double plasma_propagation_speed_2 = _geiger_.getCellLength() / (t1 + t2);
+      const double mean_z = 0.5 * _geiger_.getCellLength() - t2 * plasma_propagation_speed_2;
+      sigma_z = _geiger_.getLongitudinalResolution(mean_z, missing_cathodes);
+      z = _geiger_.smearZ(RNG_, mean_z, sigma_z);
     }
 
     // set values in the calibrated tracker hit:
