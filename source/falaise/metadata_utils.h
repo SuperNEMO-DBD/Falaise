@@ -39,14 +39,11 @@ namespace app {
 //! \brief Metadata collector
 class metadata_collector {
  public:
-  //! Constructor
-  metadata_collector(const uint32_t flags_ = 0);
-
   //! Set the input data file from which we extract metadata
-  void set_input_data_file(const std::string &);
+  void set_input_data_file(const std::string &filename);
 
   //! Set the input plain metadata file
-  void set_input_metadata_file(const std::string &);
+  void set_input_metadata_file(const std::string &filename);
 
   //! Extract metadata from input data file (embedded metadata)
   datatools::multi_properties get_metadata_from_data_file() const;
@@ -54,12 +51,9 @@ class metadata_collector {
   //! Extract metadata from input metadata file
   datatools::multi_properties get_metadata_from_metadata_file() const;
 
-  //! Extract metadata from input metadata file
-  datatools::multi_properties get_metadata() const;
-
  private:
-  std::string _input_data_file_;      //!< Input data file from which extraction of metadata is done
-  std::string _input_metadata_file_;  //!< Input metadata plain file
+  std::string brioFile_;  //!< Input data file from which extraction of metadata is done
+  std::string textFile_;  //!< Input metadata plain file
 };
 
 //! \brief Commonly used parameters extracted from input metadata
@@ -83,54 +77,47 @@ struct metadata_input {
   bool doReconstruction = false;   //!< the flag for reconstruction input
   std::string recSetupUrn = "";    //!< the reconstruction setup tag used to produce input data
 
-  // Reset parameters to default values
-  void reset();
-
   // Scan the source metadata container and extract parameters' values
-  void scan(const datatools::multi_properties &);
+  void scan(const datatools::multi_properties &mp);
 
   // Raw print
-  void print(std::ostream &out_) const;
+  void print(std::ostream &os) const;
 };
 
 //! \brief Metadata scanner
 class metadata_scanner {
  public:
-  typedef boost::variant<bool, int, double, std::string> prop_value_type;
-
   //! Constructor
-  metadata_scanner(const datatools::multi_properties &);
+  metadata_scanner(const datatools::multi_properties &mp);
 
-  bool check_section(const std::string &section_name_, const std::string &section_type_) const;
+  bool hasSection(const std::string &name, const std::string &type) const;
 
-  const datatools::properties &get_section(const std::string &section_name_,
-                                           const std::string &section_type_) const;
+  const datatools::properties &getSection(const std::string &name, const std::string &type) const;
 
-  bool find_boolean(const std::string &section_name_, const std::string &section_type_,
-                    const std::string &propKey_, bool &propValue_) const;
+  bool getBoolean(const std::string &name, const std::string &type, const std::string &key,
+                  bool &value) const;
 
-  bool find_integer(const std::string &section_name_, const std::string &section_type_,
-                    const std::string &propKey_, int &propValue_) const;
+  bool getInteger(const std::string &name, const std::string &type, const std::string &key,
+                  int &value) const;
 
-  bool find_size(const std::string &section_name_, const std::string &section_type_,
-                 const std::string &propKey_, std::size_t &propValue_) const;
+  bool getSize(const std::string &name, const std::string &type, const std::string &key,
+               std::size_t &value) const;
 
-  bool find_real(const std::string &section_name_, const std::string &section_type_,
-                 const std::string &propKey_, double &propValue_) const;
+  bool getReal(const std::string &name, const std::string &type, const std::string &key,
+               double &value) const;
 
-  bool find_string(const std::string &section_name_, const std::string &section_type_,
-                   const std::string &propKey_, std::string &propValue_) const;
+  bool getString(const std::string &name, const std::string &type, const std::string &key,
+                 std::string &value) const;
 
-  bool find_path(const std::string &section_name_, const std::string &section_type_,
-                 const std::string &propKey_, std::string &propValue_) const;
-
- private:
-  bool _find_data_in_section_(const std::string &section_name_, const std::string &section_type_,
-                              const std::string &propKey_,
-                              datatools::properties::data &data_) const;
+  bool getPath(const std::string &name, const std::string &type, const std::string &key,
+               std::string &value) const;
 
  private:
-  const datatools::multi_properties &_mp_;  //!< The source input metadata
+  bool getDataFromSection(const std::string &name, const std::string &type, const std::string &key,
+                          datatools::properties::data &value) const;
+
+ private:
+  const datatools::multi_properties &metadata_;  //!< The source input metadata
 };
 
 }  // namespace app

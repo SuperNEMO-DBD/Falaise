@@ -15,8 +15,8 @@
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
-#include <falaise/version.h>
 #include <falaise/tags.h>
+#include <falaise/version.h>
 
 int main(int argc, char** argv) {
   falaise::initialize(argc, argv);
@@ -28,39 +28,23 @@ int main(int argc, char** argv) {
     std::clog << "Tag categories : " << std::endl;
     std::clog << " - Experiment:          : '" << falaise::tags::experiment_category() << "'"
               << std::endl;
-    std::clog << " - Experimental setup   : '" << falaise::tags::experimental_setup_category() << "'"
-              << std::endl;
+    std::clog << " - Experimental setup   : '" << falaise::tags::experimental_setup_category()
+              << "'" << std::endl;
     std::clog << " - Geometry setup       : '" << falaise::tags::geometry_setup_category() << "'"
-              << std::endl;
-    std::clog << " - Device setup         : '" << falaise::tags::device_setup_category() << "'"
-              << std::endl;
-    std::clog << " - Electronics setup    : '" << falaise::tags::electronics_setup_category() << "'"
-              << std::endl;
-    std::clog << " - CMS setup            : '" << falaise::tags::cms_setup_category() << "'"
               << std::endl;
     std::clog << " - Simulation setup     : '" << falaise::tags::simulation_setup_category() << "'"
               << std::endl;
-    std::clog << " - Reconstruction setup : '" << falaise::tags::reconstruction_setup_category() << "'"
-              << std::endl;
+    std::clog << " - Reconstruction setup : '" << falaise::tags::reconstruction_setup_category()
+              << "'" << std::endl;
     std::clog << " - Variant service      : '" << falaise::tags::variant_service_category() << "'"
               << std::endl;
     std::clog << " - Services             : '" << falaise::tags::services_category() << "'"
               << std::endl;
-    std::clog << " - Configuration        : '" << falaise::tags::generic_configuration_category() << "'"
-              << std::endl;
-    std::clog << " - Data                 : '" << falaise::tags::generic_data_category() << "'"
-              << std::endl;
-    std::clog << " - Image                : '" << falaise::tags::generic_image_category() << "'"
-              << std::endl;
-    std::clog << " - Software             : '" << falaise::tags::software_category() << "'"
-              << std::endl;
-    std::clog << " - Firmware             : '" << falaise::tags::firmware_category() << "'"
-              << std::endl;
-    std::clog << " - Hardware             : '" << falaise::tags::hardware_category() << "'"
-              << std::endl;
+    std::clog << " - Configuration        : '" << falaise::tags::generic_configuration_category()
+              << "'" << std::endl;
 
-    datatools::kernel & dtk = datatools::kernel::instance();
-    const datatools::urn_query_service & dtkUrnQuery = dtk.get_urn_query();
+    datatools::kernel& dtk = datatools::kernel::instance();
+    const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
     {
       datatools::urn_info urnInfo;
@@ -68,8 +52,7 @@ int main(int argc, char** argv) {
       if (dtkUrnQuery.check_urn_info(urn, falaise::tags::experiment_category())) {
         urnInfo = dtkUrnQuery.get_urn_info(urn);
         std::clog << "The tag '" << urn << "' is registered with category '"
-                  << urnInfo.get_category()
-                  << "'." << std::endl;
+                  << urnInfo.get_category() << "'." << std::endl;
       }
     }
 
@@ -79,8 +62,7 @@ int main(int argc, char** argv) {
       if (dtkUrnQuery.check_urn_info(urn, falaise::tags::geometry_setup_category())) {
         urnInfo = dtkUrnQuery.get_urn_info(urn);
         std::clog << "The tag '" << urn << "' is registered with category '"
-                  << urnInfo.get_category()
-                  << "'." << std::endl;
+                  << urnInfo.get_category() << "'." << std::endl;
       }
     }
 
@@ -90,8 +72,7 @@ int main(int argc, char** argv) {
       if (dtkUrnQuery.check_urn_info(urn, falaise::tags::simulation_setup_category())) {
         urnInfo = dtkUrnQuery.get_urn_info(urn);
         std::clog << "The tag '" << urn << "' is registered with category '"
-                  << urnInfo.get_category()
-                  << "'." << std::endl;
+                  << urnInfo.get_category() << "'." << std::endl;
       }
     }
 

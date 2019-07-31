@@ -23,11 +23,10 @@
 
 // Third party
 // - Bayeux/datatools
-#include <bayeux/mygsl/rng.h>
 #include <CLHEP/Units/SystemOfUnits.h>
+#include <bayeux/mygsl/rng.h>
 
-#include "falaise/config/property_set.h"
-
+#include "falaise/property_set.h"
 
 namespace snemo {
 
@@ -38,7 +37,7 @@ namespace processing {
 class CalorimeterModel {
  public:
   CalorimeterModel() = default;
-  explicit CalorimeterModel(falaise::config::property_set const& ps);
+  explicit CalorimeterModel(falaise::property_set const& ps);
 
   /// Randomize the measured energy value given the true energy
   double randomize_energy(mygsl::rng& rng, const double energy) const;
@@ -62,14 +61,14 @@ class CalorimeterModel {
   bool is_low_threshold(const double energy) const;
 
  private:
-  double highEnergyThreshold {150.*CLHEP::keV}; //!< High energy threshold
-  double lowEnergyThreshold {50.*CLHEP::keV};   //!< Low energy threshold
+  double highEnergyThreshold{150. * CLHEP::keV};  //!< High energy threshold
+  double lowEnergyThreshold{50. * CLHEP::keV};    //!< Low energy threshold
 
-  double energyResolution {8.*CLHEP::perCent};  //!< Energy resolution for electrons at 1 MeV
-  double alphaQuenching_0 {77.4};               //!< Parameter 0 for alpha quenching
-  double alphaQuenching_1 {0.639};              //!< Parameter 1 for alpha quenching
-  double alphaQuenching_2 {2.34};               //!< Parameter 2 for alpha quenching
-  double relaxationTime {6.*CLHEP::ns};         //!< Scintillator relaxation time
+  double energyResolution{8. * CLHEP::perCent};  //!< Energy resolution for electrons at 1 MeV
+  double alphaQuenching_0{77.4};                 //!< Parameter 0 for alpha quenching
+  double alphaQuenching_1{0.639};                //!< Parameter 1 for alpha quenching
+  double alphaQuenching_2{2.34};                 //!< Parameter 2 for alpha quenching
+  double relaxationTime{6. * CLHEP::ns};         //!< Scintillator relaxation time
 };
 
 }  // end of namespace processing

@@ -1,44 +1,43 @@
 #include "catch.hpp"
 
-#include "falaise/config/quantity.h"
+#include "falaise/quantity.h"
 
 #include "bayeux/datatools/units.h"
 
 TEST_CASE("Raw quantity construction", "") {
-  falaise::config::quantity x{};
+  falaise::quantity x{};
   REQUIRE(x() == 0.0);
-  REQUIRE_THROWS_AS(falaise::config::quantity y(3.14, "furlong"),
-                    falaise::config::unknown_unit_error);
+  REQUIRE_THROWS_AS(falaise::quantity y(3.14, "furlong"), falaise::unknown_unit_error);
 }
 
 TEST_CASE("Raw quantity conversion", "") {
-  falaise::config::quantity x{3.14, "GeV"};
+  falaise::quantity x{3.14, "GeV"};
   REQUIRE(x.dimension() == "energy");
   REQUIRE(x.unit() == "GeV");
   REQUIRE(x() == Approx(3.14 * CLHEP::GeV));
   REQUIRE(x.value_in("eV") == Approx(3.14 * CLHEP::GeV / CLHEP::eV));
-  REQUIRE_THROWS_AS(x.value_in("km"), falaise::config::wrong_dimension_error);
+  REQUIRE_THROWS_AS(x.value_in("km"), falaise::wrong_dimension_error);
 }
 
 TEST_CASE("Explicit dimensions construction", "") {
-  REQUIRE_THROWS_AS(falaise::config::mass_t ma(3.14, "km"), falaise::config::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::config::mass_t mb(3.14, "foo"), falaise::config::unknown_unit_error);
+  REQUIRE_THROWS_AS(falaise::mass_t ma(3.14, "km"), falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS(falaise::mass_t mb(3.14, "foo"), falaise::unknown_unit_error);
 
   // Default construction has to have a sensible defaults!
-  falaise::config::length_t l{};
+  falaise::length_t l{};
   REQUIRE(l() == 0.0);
   REQUIRE(l.unit() == "m");
   REQUIRE(l.dimension() == "length");
 
-  falaise::config::length_t u{3.14, "m"};
-  falaise::config::energy_t e;
-  REQUIRE_THROWS_AS(e = u, falaise::config::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::config::energy_t e2 = u, falaise::config::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::config::mass_t v(u), falaise::config::wrong_dimension_error);
+  falaise::length_t u{3.14, "m"};
+  falaise::energy_t e;
+  REQUIRE_THROWS_AS(e = u, falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS(falaise::energy_t e2 = u, falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS(falaise::mass_t v(u), falaise::wrong_dimension_error);
 }
 
 TEST_CASE("Explicit dimension conversions", "") {
-  falaise::config::mass_t m{3.14, "GeV/c2"};
+  falaise::mass_t m{3.14, "GeV/c2"};
   REQUIRE(m() == Approx(3.14 * CLHEP::GeV / CLHEP::c_squared));
 }
 
@@ -58,14 +57,14 @@ void foo() {
     std::string dimPowers{};
     ud.encode_dimensional_powers(dimPowers);
 
-    std::cout << "/*! \\class falaise::config::" << d << "_t\n"
+    std::cout << "/*! \\class falaise::" << d << "_t\n"
               << " *  \\brief quantity for values with dimension tag `" << d << "` (" << dimPowers
               << ")\n"
               << " *\n"
               << " * A @ref " << d << "_t value may be constructed using, for example\n"
               << " *\n"
               << " * ```cpp\n"
-              << " * falaise::config::" << d << "_t x{3.14, \"TAG\"};\n"
+              << " * falaise::" << d << "_t x{3.14, \"TAG\"};\n"
               << " * ```\n"
               << " *\n"
               << " * where `TAG` is one of the following valid unit tags:\n"

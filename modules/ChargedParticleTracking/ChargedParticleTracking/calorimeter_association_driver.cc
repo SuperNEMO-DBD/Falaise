@@ -14,7 +14,7 @@
 #include <geomtools/manager.h>
 
 // This project (Falaise):
-#include <falaise/config/quantity.h>
+#include <falaise/quantity.h>
 
 #include <falaise/snemo/datamodels/particle_track.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -65,13 +65,13 @@ const geomtools::manager& calorimeter_association_driver::geoManager() const {
 
 /// Initialize the driver through configuration properties
 calorimeter_association_driver::calorimeter_association_driver(
-    const falaise::config::property_set& ps, const geomtools::manager* gm) {
+    const falaise::property_set& ps, const geomtools::manager* gm) {
   logPriority_ =
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   geoManager_ = gm;
   auto lpname = ps.get<std::string>("locator_plugin_name", "");
   geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), lpname);
-  matchTolerance_ = ps.get<falaise::config::length_t>("matching_tolerance", {50, "mm"})();
+  matchTolerance_ = ps.get<falaise::length_t>("matching_tolerance", {50, "mm"})();
 }
 
 void calorimeter_association_driver::process(

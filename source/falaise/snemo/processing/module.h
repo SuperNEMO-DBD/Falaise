@@ -9,7 +9,7 @@
 #include <bayeux/datatools/service_manager.h>
 #include <bayeux/dpp/base_module.h>
 
-#include "falaise/config/property_set.h"
+#include "falaise/property_set.h"
 
 namespace falaise {
 namespace processing {
@@ -39,7 +39,7 @@ class configuration_error : public std::logic_error {
  * The type to be wrapped must meet the requirements:
  *
  *  - `DefaultConstructible`
- *  - `Construtible` with `T(falaise::config::property_set const&, datatools::service_manager&)
+ *  - `Construtible` with `T(falaise::property_set const&, datatools::service_manager&)
  *  - `CopyAssignable`
  *  - Has a member function with signature
  *    ```cpp
@@ -52,7 +52,7 @@ class configuration_error : public std::logic_error {
  * class MyModule
  * {
  *   MyModule(); // ideally this is =default
- *   MyModule(falaise::config::property_set const& config, datatools::service_manager& services);
+ *   MyModule(falaise::property_set const& config, datatools::service_manager& services);
  *
  *   falaise::processing::status process(datatools::things& data);
  * };
@@ -89,7 +89,7 @@ template <typename T>
 class module : public dpp::base_module {
   static_assert(std::is_default_constructible<T>::value, "T must be default constructible");
   static_assert(
-      std::is_constructible<T, falaise::config::property_set const&, datatools::service_manager&>::value,
+      std::is_constructible<T, falaise::property_set const&, datatools::service_manager&>::value,
       "T must have a constructor T(datatools::properties const&, "
       "datatools::services const&)");
   // static_assert(has process member function)
@@ -120,30 +120,30 @@ class module : public dpp::base_module {
       throw reserved_key_error("reserved key 'module_type' passed to module '" + get_name() + "'");
     }
 
-    falaise::config::property_set module_config{config};
+    falaise::property_set module_config{config};
     module_config.put("module_label", get_name());
     module_config.put("module_type", factory.get_type_id());
 
     try {
       wrappedModule = T(module_config, services);
-    }
-    catch (const falaise::config::missing_key_error& e) {
+    } catch (const falaise::missing_key_error& e) {
       std::ostringstream oss{};
-      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
+      oss << "initialization of module '" << get_name() << "' (type '" << factory.get_type_id()
+          << "') failed with exception:\n"
           << "- missing_key_error: " << e.what() << "\n";
       config.tree_dump(oss, "- config:");
       throw configuration_error{oss.str()};
-    }
-    catch (const falaise::config::wrong_type_error& e) {
+    } catch (const falaise::wrong_type_error& e) {
       std::ostringstream oss{};
-      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
+      oss << "initialization of module '" << get_name() << "' (type '" << factory.get_type_id()
+          << "') failed with exception:\n"
           << "- wrong_type_error: " << e.what() << "\n";
       config.tree_dump(oss, "- config:");
       throw configuration_error{oss.str()};
-    }
-    catch (const std::exception& e) {
+    } catch (const std::exception& e) {
       std::ostringstream oss{};
-      oss << "initialization of module '" << get_name() <<"' (type '" << factory.get_type_id() << "') failed with exception:\n"
+      oss << "initialization of module '" << get_name() << "' (type '" << factory.get_type_id()
+          << "') failed with exception:\n"
           << "- <unknown>: " << e.what() << "\n";
       config.tree_dump(oss, "- config:");
       throw configuration_error{oss.str()};

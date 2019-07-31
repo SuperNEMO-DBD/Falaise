@@ -15,7 +15,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
@@ -113,7 +113,7 @@ void sultan_tracker_clustering_module::initialize(
 
   namespace snedm = snemo::datamodel;
 
-  falaise::config::property_set ps{config};
+  falaise::property_set ps{config};
 
   CDTag_ = ps.get<std::string>("CD_label", snedm::data_info::default_calibrated_data_label());
   TCDTag_ =

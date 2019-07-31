@@ -15,14 +15,9 @@ std::string default_simulation_setup() { return "urn:snemo:demonstrator:simulati
 
 std::map<std::string, std::string> list_of_simulation_setups() {
   std::map<std::string, std::string> m;
-  datatools::logger::priority logging =
-      falaise::detail::falaise_sys::const_instance().get_logging();
   datatools::kernel& dtk = ::datatools::kernel::instance();
   if (dtk.has_urn_query()) {
     const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
-    if (datatools::logger::is_debug(logging)) {
-      dtkUrnQuery.tree_dump(std::cerr, "Bayeux/datatools's kernel URN query service:", "[debug] ");
-    }
     std::vector<std::string> flsim_urn_infos;
     if (dtkUrnQuery.find_urn_info(flsim_urn_infos, falaise::detail::falaise_sys::fl_setup_db_name(),
                                   // Format : "urn:{namespace}:{experiment}:simulation:{version}"

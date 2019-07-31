@@ -32,7 +32,7 @@
 #ifndef FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGE_COMPUTATION_DRIVER_H
 #define FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_CHARGE_COMPUTATION_DRIVER_H 1
 
-#include "falaise/config/property_set.h"
+#include "falaise/property_set.h"
 
 namespace snemo {
 
@@ -50,7 +50,7 @@ class charge_computation_driver {
   static const std::string& get_id();
 
   charge_computation_driver() = default;
-  explicit charge_computation_driver(const falaise::config::property_set& ps);
+  explicit charge_computation_driver(const falaise::property_set& ps);
 
   ~charge_computation_driver() = default;
   charge_computation_driver(const charge_computation_driver&) = default;

@@ -39,10 +39,12 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
               "Module '" << get_name() << "' is already initialized ! ");
 
   this->base_module::_common_initialize(ps);
-  falaise::config::property_set fps{ps};
+  falaise::property_set fps{ps};
 
-  sdInputTag = fps.get<std::string>("SD_label",snemo::datamodel::data_info::default_simulated_data_label());
-  cdOutputTag = fps.get<std::string>("CD_label",snemo::datamodel::data_info::default_calibrated_data_label());
+  sdInputTag =
+      fps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
+  cdOutputTag = fps.get<std::string>("CD_label",
+                                     snemo::datamodel::data_info::default_calibrated_data_label());
 
   // Initialize the embedded random number generator:
   int random_seed = fps.get<int>("random.seed", 12345);
@@ -54,15 +56,15 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
 
   caloModels = {};
   for (const std::string& calo : caloTypes) {
-    auto caloPS = fps.get<falaise::config::property_set>(calo,falaise::config::property_set{});
+    auto caloPS = fps.get<falaise::property_set>(calo, falaise::property_set{});
     caloModels.emplace(std::make_pair(calo, CalorimeterModel{caloPS}));
   }
 
   // Setup trigger time
-  timeWindow = fps.get<falaise::config::time_t>("cluster_time_width", {100., "ns"})();
+  timeWindow = fps.get<falaise::time_t>("cluster_time_width", {100., "ns"})();
 
   // 2012-09-17 FM : support reference to the MC true hit ID
-  assocMCHitId = fps.get<bool>("store_mc_hit_id",false);
+  assocMCHitId = fps.get<bool>("store_mc_hit_id", false);
 
   // Get the alpha quenching (always)
   quenchAlphas = true;
@@ -88,7 +90,8 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
   // Calibrated Data is a single object with each hit collection
   // May, or may not, have it depending on if we run before or after
   // other calibrators
-  auto& calibratedData = snemo::datamodel::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
+  auto& calibratedData =
+      snemo::datamodel::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
 
   // Always rewrite hits....
   calibratedData.calibrated_calorimeter_hits().clear();
@@ -133,13 +136,14 @@ void mock_calorimeter_s2c_module::_digitizeHits(
       auto& geomID = a_calo_mc_hit->get_geom_id();
       using CCHitHdl = snemo::datamodel::calibrated_calorimeter_hit::collection_type::value_type;
 
-      auto found = std::find_if(calohits.rbegin(), calohits.rend(),
-                                [&geomID](CCHitHdl const& x) { return x->get_geom_id() == geomID; });
+      auto found = std::find_if(calohits.rbegin(), calohits.rend(), [&geomID](CCHitHdl const& x) {
+        return x->get_geom_id() == geomID;
+      });
 
       if (found == calohits.rend()) {
         // Then it's a new hit
         auto newHit = datatools::make_handle<snemo::datamodel::calibrated_calorimeter_hit>();
-        //auto& newHit = newHandle.grab();
+        // auto& newHit = newHandle.grab();
 
         newHit->set_hit_id(calibrated_calorimeter_hit_id++);
         newHit->set_geom_id(a_calo_mc_hit->get_geom_id());
@@ -154,7 +158,7 @@ void mock_calorimeter_s2c_module::_digitizeHits(
         // 2012-09-17 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
           newHit->grab_auxiliaries().store(mctools::hit_utils::HIT_MC_HIT_ID_KEY,
-                                          a_calo_mc_hit->get_hit_id());
+                                           a_calo_mc_hit->get_hit_id());
         }
 
         // Append it to the collection :
@@ -262,7 +266,6 @@ void mock_calorimeter_s2c_module::_triggerHits(
     calohits.clear();
   }
 }
-
 
 void mock_calorimeter_s2c_module::_process(
     const mctools::simulated_data& simdata,
@@ -384,7 +387,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
             "  cluster_time_width : real as time = 100 ns \n"
             "                                             \n");
   }
-
 
   {
     // Description of the 'store_mc_hit_id' configuration property :

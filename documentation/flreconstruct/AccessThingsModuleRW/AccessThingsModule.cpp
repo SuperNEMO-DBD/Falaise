@@ -8,9 +8,8 @@ class AccessThingsModule {
  public:
   AccessThingsModule() = default;
 
-  AccessThingsModule(falaise::config::property_set const& /*ps*/,
-           datatools::service_manager& /*services*/) {
-  }
+  AccessThingsModule(falaise::property_set const& /*ps*/,
+                     datatools::service_manager& /*services*/) {}
 
   // Process event
   falaise::processing::status process(datatools::things& event) {
@@ -29,11 +28,8 @@ class AccessThingsModule {
 
     // Print each key and its concrete type
     for (const auto& k : keys) {
-      std::cout << "- [key, serial_tag] : "
-          << k
-          << ", "
-          << event.get_entry_serial_tag(k)
-          << std::endl;
+      std::cout << "- [key, serial_tag] : " << k << ", " << event.get_entry_serial_tag(k)
+                << std::endl;
     }
   }
 
@@ -47,4 +43,3 @@ class AccessThingsModule {
 };
 
 FALAISE_REGISTER_MODULE(AccessThingsModule)
-

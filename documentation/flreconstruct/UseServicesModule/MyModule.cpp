@@ -9,8 +9,7 @@ class MyModule {
   MyModule() = default;
 
   // User-defined Constructor
-  MyModule(falaise::config::property_set const& /*ps*/, datatools::service_manager& sp)
-      : geosvc{sp} {}
+  MyModule(falaise::property_set const& /*ps*/, datatools::service_manager& sp) : geosvc{sp} {}
 
   // Process event
   falaise::processing::status process(datatools::things& /*e*/) {

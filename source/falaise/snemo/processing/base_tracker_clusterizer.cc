@@ -16,8 +16,8 @@
 #include <geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/locator_helpers.h>
@@ -60,9 +60,9 @@ datatools::logger::priority base_tracker_clusterizer::get_logging_priority() con
 }
 
 void base_tracker_clusterizer::set_logging_priority(datatools::logger::priority priority_) {
-   DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
+  DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
               "Invalid logging priority level !");
-   _logging_priority = priority_;
+  _logging_priority = priority_;
 }
 
 const std::string &base_tracker_clusterizer::get_id() const { return id_; }
@@ -82,8 +82,8 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
               "Geometry manager is not initialized !");
 
   // Extract the setup of the base tracker fitter :
-  falaise::config::property_set localPS{setup_};
-  auto ps = localPS.get<falaise::config::property_set>("BTC", {});
+  falaise::property_set localPS{setup_};
+  auto ps = localPS.get<falaise::property_set>("BTC", {});
 
   // Logging priority:
   auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
@@ -101,14 +101,13 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
     cellSelector_.initialize(cell_id_mask_rules);
   }
 
-
   // Configure TrackerPreClustering :
   // derived:
   tpcConfig_.logging = get_logging_priority();
   tpcConfig_.cell_size = get_gg_locator().get_cell_diameter();
   // configurable:
   tpcConfig_.delayed_hit_cluster_time =
-      ps.get<falaise::config::time_t>("TPC.delayed_hit_cluster_time", {10.0, "microsecond"})();
+      ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time", {10.0, "microsecond"})();
   tpcConfig_.processing_prompt_hits = ps.get<bool>("TPC.processing_prompt_hits", true);
   tpcConfig_.processing_delayed_hits = ps.get<bool>("TPC.processing_delayed_hits", true);
   tpcConfig_.split_chamber = ps.get<bool>("TPC.split_chamber", false);
@@ -212,16 +211,16 @@ int base_tracker_clusterizer::_prepare_process(
 
   // Ignored hits :
   ignoredHits_.reserve(odata.ignored_hits.size());
-  for (const auto& ignored_hit : odata.ignored_hits) {
+  for (const auto &ignored_hit : odata.ignored_hits) {
     ignoredHits_.push_back(pre_cluster_mapping[ignored_hit]);
   }
 
   // Prompt time clusters :
   promptClusters_.reserve(odata.prompt_clusters.size());
-  for (const auto& prompt_cluster : odata.prompt_clusters) {
+  for (const auto &prompt_cluster : odata.prompt_clusters) {
     hit_collection_type hc;
     hc.reserve(prompt_cluster.size());
-    for(const auto& hit : prompt_cluster) {
+    for (const auto &hit : prompt_cluster) {
       hc.push_back(pre_cluster_mapping[hit]);
     }
     promptClusters_.push_back(std::move(hc));
@@ -229,10 +228,10 @@ int base_tracker_clusterizer::_prepare_process(
 
   // Delayed time clusters :
   delayedClusters_.reserve(odata.delayed_clusters.size());
-  for (const auto& delayed_cluster : odata.delayed_clusters) {
+  for (const auto &delayed_cluster : odata.delayed_clusters) {
     hit_collection_type hc;
     hc.reserve(delayed_cluster.size());
-    for (const auto& ihit : delayed_cluster) {
+    for (const auto &ihit : delayed_cluster) {
       hc.push_back(pre_cluster_mapping[ihit]);
     }
     delayedClusters_.push_back(std::move(hc));

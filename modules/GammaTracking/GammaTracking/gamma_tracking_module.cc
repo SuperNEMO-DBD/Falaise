@@ -30,14 +30,13 @@
  *
  */
 
-
 #include "falaise/snemo/datamodels/data_model.h"
 #include "falaise/snemo/datamodels/event.h"
 #include "falaise/snemo/datamodels/particle_track_data.h"
 #include "falaise/snemo/processing/module.h"
 
-#include "falaise/snemo/services/service_handle.h"
 #include "falaise/snemo/services/geometry.h"
+#include "falaise/snemo/services/service_handle.h"
 
 #include "GammaTracking/gamma_tracking_driver.h"
 
@@ -52,8 +51,7 @@ class gamma_tracking_module {
   gamma_tracking_module() = default;
 
   /// Construction with configuration
-  gamma_tracking_module(const falaise::config::property_set& ps,
-                          datatools::service_manager& services);
+  gamma_tracking_module(const falaise::property_set& ps, datatools::service_manager& services);
 
   /// Data record processing
   falaise::processing::status process(datatools::things& event);
@@ -64,12 +62,11 @@ class gamma_tracking_module {
   snemo::reconstruction::gamma_tracking_driver algo_;  //!< Handle fitter algorithm
 };
 
-gamma_tracking_module::gamma_tracking_module(const falaise::config::property_set& ps,
-                                                 datatools::service_manager& services)
+gamma_tracking_module::gamma_tracking_module(const falaise::property_set& ps,
+                                             datatools::service_manager& services)
     : geoSVC_{services},
       PTD_tag_{ps.get<std::string>(
-          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())}
-      {
+          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())} {
   algo_.set_geometry_manager(*(geoSVC_.operator->()));
   algo_.initialize(ps);
 }

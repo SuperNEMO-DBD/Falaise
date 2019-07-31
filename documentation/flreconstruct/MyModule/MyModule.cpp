@@ -7,9 +7,7 @@ class MyModule {
   MyModule() = default;
 
   // User-defined Constructor
-  MyModule(falaise::config::property_set const& /*ps*/,
-           datatools::service_manager& /*services*/) {
-  }
+  MyModule(falaise::property_set const& /*ps*/, datatools::service_manager& /*services*/) {}
 
   // Process event
   falaise::processing::status process(datatools::things& /*e*/) {
@@ -20,4 +18,3 @@ class MyModule {
 
 // Register module with Falaise's plugin system on load
 FALAISE_REGISTER_MODULE(MyModule)
-

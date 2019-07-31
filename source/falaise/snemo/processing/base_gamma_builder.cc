@@ -12,8 +12,8 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -95,8 +95,8 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
               "Geometry manager is not initialized !");
 
   // Extract the setup of the base gamma builder :
-  falaise::config::property_set localSetup{setup_};
-  auto ps = localSetup.get<falaise::config::property_set>("BGB", {});
+  falaise::property_set localSetup{setup_};
+  auto ps = localSetup.get<falaise::property_set>("BGB", {});
 
   // Logging priority
   auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
@@ -117,14 +117,14 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
   // Extrapolation on the source foil given charged particle
   extrapolateFoilVertex_ = ps.get<bool>("add_foil_vertex_extrapolation", true);
   if (extrapolateFoilVertex_) {
-    minFoilVertexProbability_ = ps.get<falaise::config::fraction_t>(
+    minFoilVertexProbability_ = ps.get<falaise::fraction_t>(
         "add_foil_vertex_extrapolation.minimal_probability", {1.0, "percent"})();
   }
 
   // Search for gamma from e+/e- annihilation
   tagAnnihilationGamma_ = ps.get<bool>("add_gamma_from_annihilation", false);
   if (tagAnnihilationGamma_) {
-    minAnnihilationGammaProbability_ = ps.get<falaise::config::fraction_t>(
+    minAnnihilationGammaProbability_ = ps.get<falaise::fraction_t>(
         "add_gamma_from_annihilation.minimal_probability", {1.0, "percent"})();
   }
 }

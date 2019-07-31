@@ -17,8 +17,8 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -59,13 +59,13 @@ void gamma_clustering_driver::initialize(const datatools::properties& setup_) {
   this->snemo::processing::base_gamma_builder::_initialize(setup_);
 
   // Extract the setup of the base gamma builder :
-  falaise::config::property_set tmpPS{setup_};
-  auto ps = tmpPS.get<falaise::config::property_set>(get_id(),{});
+  falaise::property_set tmpPS{setup_};
+  auto ps = tmpPS.get<falaise::property_set>(get_id(),{});
 
-  timeRange_ = ps.get<falaise::config::time_t>("cluster_time_range",{6, "nanosecond"})();
+  timeRange_ = ps.get<falaise::time_t>("cluster_time_range",{6, "nanosecond"})();
   gridMask_ = ps.get<std::string>("cluster_grid_mask", "first");
-  minProbability_ = ps.get<falaise::config::fraction_t>("minimal_internal_probability", {1e-3, "percent"})();
-  minTimeResolution_ = ps.get<falaise::config::time_t>("sigma_time_good_calo", {2.5, "nanosecond"})();
+  minProbability_ = ps.get<falaise::fraction_t>("minimal_internal_probability", {1e-3, "percent"})();
+  minTimeResolution_ = ps.get<falaise::time_t>("sigma_time_good_calo", {2.5, "nanosecond"})();
 
   _set_initialized(true);
 }

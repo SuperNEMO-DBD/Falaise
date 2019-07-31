@@ -39,7 +39,7 @@ const geomtools::manager &vertex_extrapolation_driver::geoManager() const {
 }
 
 /// Initialize the driver through configuration properties
-vertex_extrapolation_driver::vertex_extrapolation_driver(const falaise::config::property_set &ps,
+vertex_extrapolation_driver::vertex_extrapolation_driver(const falaise::property_set &ps,
                                                          const geomtools::manager *gm) {
   logPriority_ =
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));

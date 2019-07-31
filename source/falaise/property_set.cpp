@@ -1,7 +1,6 @@
 #include "property_set.h"
 
 namespace falaise {
-namespace config {
 property_set::property_set(datatools::properties const& ps) : ps_(ps) {}
 
 property_set::operator datatools::properties() const { return ps_; }
@@ -69,12 +68,12 @@ bool property_set::is_type_impl_(std::string const& key, const std::string& /*un
 }
 
 bool property_set::is_type_impl_(std::string const& key,
-                                 const falaise::config::path& /*unused*/) const {
+                                 const falaise::path& /*unused*/) const {
   return ps_.is_explicit_path(key) && ps_.is_scalar(key);
 }
 
 bool property_set::is_type_impl_(std::string const& key,
-                                 const falaise::config::quantity& /*unused*/) const {
+                                 const falaise::quantity& /*unused*/) const {
   // Quantity must be real, and have explicit unit *and* unit symbol
   return ps_.is_real(key) && ps_.has_explicit_unit(key) && ps_.has_unit_symbol(key) &&
          ps_.is_scalar(key);
@@ -106,5 +105,4 @@ void make_property_set(const std::string& filename, property_set& ps) {
   datatools::properties::read_config(filename, tmp);
   ps = tmp;
 }
-}  // namespace config
 }  // namespace falaise

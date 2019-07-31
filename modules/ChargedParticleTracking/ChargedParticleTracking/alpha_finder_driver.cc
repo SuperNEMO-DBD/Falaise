@@ -14,8 +14,8 @@
 #include <geomtools/manager.h>
 
 // This project (Falaise):
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
@@ -49,19 +49,18 @@ const geomtools::manager &alpha_finder_driver::geoManager() const {
 }
 
 /// Initialize the driver through configuration properties
-alpha_finder_driver::alpha_finder_driver(const falaise::config::property_set &ps,
+alpha_finder_driver::alpha_finder_driver(const falaise::property_set &ps,
                                          const geomtools::manager *gm)
     : alpha_finder_driver::alpha_finder_driver() {
-  namespace fc = falaise::config;
   logPriority_ =
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   geoManager_ = gm;
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), locator_plugin_name);
-  minDelayedTime_ = ps.get<fc::time_t>("minimal_delayed_time", {15., "microsecond"})();
-  minXYSearchDistance_ = ps.get<fc::length_t>("minimal_cluster_xy_search_distance", {21., "cm"})();
-  minZSearchDistance_ = ps.get<fc::length_t>("minimal_cluster_z_search_distance", {30., "cm"})();
-  minVertexDistance_ = ps.get<fc::length_t>("minimal_vertex_distance", {30., "cm"})();
+  minDelayedTime_ = ps.get<falaise::time_t>("minimal_delayed_time", {15., "microsecond"})();
+  minXYSearchDistance_ = ps.get<falaise::length_t>("minimal_cluster_xy_search_distance", {21., "cm"})();
+  minZSearchDistance_ = ps.get<falaise::length_t>("minimal_cluster_z_search_distance", {30., "cm"})();
+  minVertexDistance_ = ps.get<falaise::length_t>("minimal_vertex_distance", {30., "cm"})();
 }
 
 void alpha_finder_driver::process(

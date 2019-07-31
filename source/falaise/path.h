@@ -6,7 +6,6 @@
 #include <string>
 
 namespace falaise {
-namespace config {
 //! Exception for paths that cannot be resolved by datatools::utils
 class invalid_path_error : public std::logic_error {
   using std::logic_error::logic_error;
@@ -31,7 +30,7 @@ class invalid_path_error : public std::logic_error {
  * 
  * ```cpp
  * void configure_me(property_set const& ps) {
- *   auto p = ps.get<falaise::config::path>("mypath"); // throws if "mypath" is not a path value
+ *   auto p = ps.get<falaise::path>("mypath"); // throws if "mypath" is not a path value
  *   std::cout << p << std::endl; // prints absolute path
  * }
  * ```
@@ -39,8 +38,8 @@ class invalid_path_error : public std::logic_error {
  * A @ref path can be constructed from any string whose value is a valid path
  * as understood by @ref datatools::fetch_path_with_env. Examples are:
  *
- * - An absolute path, e.g. `auto x = falaise::config::path{"/foo/bar/baz.txt"};`
- * - A relative path, e.g. `auto x = falaise::config::path{"bar/baz.txt"};`
+ * - An absolute path, e.g. `auto x = falaise::path{"/foo/bar/baz.txt"};`
+ * - A relative path, e.g. `auto x = falaise::path{"bar/baz.txt"};`
  *
  * The string may also include environment variables, e.g. `$HOME` or `${HOME}`,
  * which will be expanded if they exist, otherwise a @ref invalid_path_error
@@ -111,7 +110,6 @@ inline std::ostream& operator<<(std::ostream& os, path const& p) {
   return os;
 }
 
-}  // namespace config
 }  // namespace falaise
 
 #endif /* FALAISE_PATH_H */

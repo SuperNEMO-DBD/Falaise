@@ -15,7 +15,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project (Falaise):
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
@@ -66,7 +66,7 @@ void charged_particle_tracking_module::initialize(
 
   dpp::base_module::_common_initialize(setup_);
 
-  falaise::config::property_set ps{setup_};
+  falaise::property_set ps{setup_};
 
   CDTag_ = ps.get<std::string>("CD_label", sdmi::default_calibrated_data_label());
   TTDTag_ = ps.get<std::string>("TTD_label", sdmi::default_tracker_trajectory_data_label());
@@ -83,7 +83,7 @@ void charged_particle_tracking_module::initialize(
                                                                   });
 
   for (const std::string& id : driver_names) {
-    auto dps = ps.get<falaise::config::property_set>(id, {});
+    auto dps = ps.get<falaise::property_set>(id, {});
     if (id == VertexExtrapolator::get_id()) {
       VEAlgo_.reset(new VertexExtrapolator{dps, (geoManager_.operator->())});
     } else if (id == ChargeCalculator::get_id()) {

@@ -25,8 +25,8 @@
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/services/services.h>
-#include "falaise/config/property_set.h"
-#include "falaise/config/quantity.h"
+#include "falaise/property_set.h"
+#include "falaise/quantity.h"
 
 namespace snemo {
 
@@ -44,10 +44,12 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
 
   this->base_module::_common_initialize(ps);
 
-  falaise::config::property_set fps{ps};
+  falaise::property_set fps{ps};
 
-  sdInputTag = fps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
-  cdOutputTag = fps.get<std::string>("CD_label", snemo::datamodel::data_info::default_calibrated_data_label());
+  sdInputTag =
+      fps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
+  cdOutputTag = fps.get<std::string>("CD_label",
+                                     snemo::datamodel::data_info::default_calibrated_data_label());
 
   geoManager = snemo::service_handle<snemo::geometry_svc>{services};
 
@@ -66,8 +68,8 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
   _geiger_ = geiger_regime{ps};
 
   // Set minimum drift time for peripheral hits:
-  _peripheral_drift_time_threshold_ = fps.get<falaise::config::time_t>(
-      "peripheral_drift_time_threshold", {datatools::invalid_real(), "us"})();
+  _peripheral_drift_time_threshold_ = fps.get<falaise::time_t>("peripheral_drift_time_threshold",
+                                                               {datatools::invalid_real(), "us"})();
 
   // Default value:
   if (!datatools::is_valid(_peripheral_drift_time_threshold_)) {
@@ -75,8 +77,8 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
   }
 
   // Set minium drift time for delayed hits:
-  _delayed_drift_time_threshold_ = fps.get<falaise::config::time_t>(
-      "delayed_drift_time_threshold", {datatools::invalid_real(), "us"})();
+  _delayed_drift_time_threshold_ =
+      fps.get<falaise::time_t>("delayed_drift_time_threshold", {datatools::invalid_real(), "us"})();
 
   // Default value:
   if (!datatools::is_valid(_delayed_drift_time_threshold_)) {
@@ -205,7 +207,6 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
       }
       missing_cathodes--;
     }
-
 
     // find if some tracker hit already uses this geom ID:
     geomtools::base_hit::has_geom_id_predicate pred_has_gid(gid);

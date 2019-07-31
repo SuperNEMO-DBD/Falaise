@@ -8,7 +8,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
@@ -177,7 +177,7 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
   // Invoke initialization at parent level :
   this->snemo::processing::base_tracker_fitter::_initialize(setup_);
 
-  falaise::config::property_set ps{setup_};
+  falaise::property_set ps{setup_};
 
   _drift_time_calibration_label_ = ps.get<std::string>("drift_time_calibration_label", "snemo");
   auto fitting_models = ps.get<std::vector<std::string>>("fitting_models", {"line", "helix"});

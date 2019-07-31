@@ -47,17 +47,11 @@ class falaise_sys : private boost::noncopyable {
   /// Return the name of the Falaise library URN to resource path resolver service
   static const std::string& fl_resource_resolver_name();
 
-  /// Extract the verbosity from the FALAISE_SYS_LOGGING environment variable (if any)
-  static datatools::logger::priority process_logging_env();
-
   /// Default constructor
   falaise_sys();
 
   /// Destructor
   virtual ~falaise_sys();
-
-  /// Return the logging priority
-  datatools::logger::priority get_logging() const;
 
   /// Check initialization flag
   bool is_initialized() const;
@@ -69,7 +63,7 @@ class falaise_sys : private boost::noncopyable {
   void shutdown();
 
   /// Return a mutable reference to the embedded service manager
-  datatools::service_manager& grab_services();
+  datatools::service_manager& get_services();
 
   /// Return a non mutable reference to the embedded service manager
   const datatools::service_manager& get_services() const;
@@ -81,7 +75,7 @@ class falaise_sys : private boost::noncopyable {
   static falaise_sys& instance();
 
   /// Return a non-mutable reference to the Falaise system singleton instance
-  static const falaise_sys& const_instance();
+  //static const falaise_sys& const_instance();
 
   /// Instantiate the Falaise system singleton
   static falaise_sys& instantiate();
@@ -97,9 +91,7 @@ class falaise_sys : private boost::noncopyable {
 
  private:
   // Management:
-  bool _initialized_ = false;             //!< Initialization flag
-  datatools::logger::priority _logging_;  //!< Logging priority threshold
-
+  bool _initialized_ = false;  //!< Initialization flag
   // Working internal data:
   datatools::service_manager _services_;  //!< Embedded services
 

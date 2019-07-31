@@ -5,8 +5,7 @@ class MyModule {
  public:
   MyModule() = default;
 
-  MyModule(falaise::config::property_set const& ps,
-           datatools::service_manager& /*services*/)
+  MyModule(falaise::property_set const& ps, datatools::service_manager& /*services*/)
       : message(ps.get<std::string>("message")) {}
 
   falaise::processing::status process(datatools::things& /*workItem*/) {

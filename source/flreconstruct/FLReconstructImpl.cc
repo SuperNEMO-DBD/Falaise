@@ -19,12 +19,12 @@
 #include "bayeux/version.h"
 
 // This Project
-#include <falaise/app/metadata_utils.h>
 #include "FLReconstructCommandLine.h"
 #include "FLReconstructParams.h"
 #include "FLReconstructUtils.h"
-#include "falaise/config/property_reader.h"
 #include "falaise/exitcodes.h"
+#include "falaise/metadata_utils.h"
+#include "falaise/property_set.h"
 #include "falaise/resource.h"
 #include "falaise/tags.h"
 #include "falaise/version.h"
@@ -91,53 +91,50 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   // Fetch basic configuration from the script:
   if (flRecConfig.has_key_with_meta("flreconstruct", "flreconstruct::section")) {
     // Reconstruction basic subsystem:
-    datatools::properties basicSystem = flRecConfig.get_section("flreconstruct");
+    falaise::property_set basicSystem{flRecConfig.get_section("flreconstruct")};
     flRecConfig.remove("flreconstruct");
 
     // Fetch the experimental setup URN:
-    flRecParameters.experimentalSetupUrn = falaise::config::getValueOrDefault<std::string>(
-        basicSystem, "experimentalSetupUrn", flRecParameters.experimentalSetupUrn);
-
+    flRecParameters.experimentalSetupUrn =
+        basicSystem.get<std::string>("experimentalSetupURN", flRecParameters.experimentalSetupUrn);
     // Number of events to be processed:
-    flRecParameters.numberOfEvents = falaise::config::getValueOrDefault<int>(
-        basicSystem, "numberOfEvents", flRecParameters.numberOfEvents);
+    flRecParameters.numberOfEvents =
+        basicSystem.get<int>("numberOfEvents", flRecParameters.numberOfEvents);
 
     // Printing rate for events:
-    flRecParameters.moduloEvents = falaise::config::getValueOrDefault<int>(
-        basicSystem, "moduloEvents", flRecParameters.moduloEvents);
+    flRecParameters.moduloEvents =
+        basicSystem.get<int>("moduloEvents", flRecParameters.moduloEvents);
 
     // Printing rate for events:
-    flRecParameters.userProfile = falaise::config::getValueOrDefault<std::string>(
-        basicSystem, "userprofile", flRecParameters.userProfile);
+    flRecParameters.userProfile =
+        basicSystem.get<std::string>("userprofile", flRecParameters.userProfile);
 
     // // Unused for now:
     // flRecParameters.dataType
-    //   = falaise::config::getValueOrDefault<std::string>(basicSystem,
+    //   = falaise::getValueOrDefault<std::string>(basicSystem,
     //                                                         "dataType",
     //                                                         flRecParameters.dataType);
     // flRecParameters.dataSubtype
-    //   = falaise::config::getValueOrDefault<std::string>(basicSystem,
+    //   = falaise::getValueOrDefault<std::string>(basicSystem,
     //                                                         "dataSubtype",
     //                                                         flRecParameters.dataSubtype);
     // flRecParameters.requiredInputBanks
-    //   = falaise::config::getValueOrDefault<std::vector<std::string> >(basicSystem,
+    //   = falaise::getValueOrDefault<std::vector<std::string> >(basicSystem,
     //                                                                       "requiredInputBanks",
     //                                                                       flRecParameters.requiredInputBanks);
     // flRecParameters.expectedOutputBanks
-    //   = falaise::config::getValueOrDefault<std::vector<std::string> >(basicSystem,
+    //   = falaise::getValueOrDefault<std::vector<std::string> >(basicSystem,
     //                                                                       "expectedOutputBanks",
     //                                                                       flRecParameters.expectedOutputBanks);
   }
 
   // Fetch variant service configuration:
   if (flRecConfig.has_key_with_meta("flreconstruct.variantService", "flreconstruct::section")) {
-    datatools::properties variantSubsystem =
-        flRecConfig.get_section("flreconstruct.variantService");
-    flRecConfig.remove("flreconstruct.variantService");
+    falaise::property_set variantSubsystem{flRecConfig.get_section("flreconstruct.variantService")};
 
     // Variant configuration URN:
-    flRecParameters.variantConfigUrn = falaise::config::getValueOrDefault<std::string>(
-        variantSubsystem, "configUrn", flRecParameters.variantConfigUrn);
+    flRecParameters.variantConfigUrn =
+        variantSubsystem.get<std::string>("configUrn", flRecParameters.variantConfigUrn);
 
     // Variant configuration:
     if (flRecParameters.userProfile == "production" && variantSubsystem.has_key("config")) {
@@ -146,18 +143,16 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "config"
                                                    << "' variants configuration parameter!");
     }
-    flRecParameters.variantSubsystemParams.config_filename =
-        falaise::config::getValueOrDefault<std::string>(
-            variantSubsystem, "config", flRecParameters.variantSubsystemParams.config_filename);
+    flRecParameters.variantSubsystemParams.config_filename = variantSubsystem.get<std::string>(
+        "config", flRecParameters.variantSubsystemParams.config_filename);
 
     // Variant profile URN:
-    flRecParameters.variantProfileUrn = falaise::config::getValueOrDefault<std::string>(
-        variantSubsystem, "profileUrn", flRecParameters.variantProfileUrn);
+    flRecParameters.variantProfileUrn =
+        variantSubsystem.get<std::string>("profileUrn", flRecParameters.variantProfileUrn);
 
     // Variant profile:
-    flRecParameters.variantSubsystemParams.profile_load =
-        falaise::config::getValueOrDefault<std::string>(
-            variantSubsystem, "profile", flRecParameters.variantSubsystemParams.profile_load);
+    flRecParameters.variantSubsystemParams.profile_load = variantSubsystem.get<falaise::path>(
+        "profile", flRecParameters.variantSubsystemParams.profile_load);
 
     // Variant settings:
     if (flRecParameters.userProfile != "expert" && variantSubsystem.has_key("settings")) {
@@ -167,27 +162,37 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "' variants configuration parameter!");
     }
     flRecParameters.variantSubsystemParams.settings =
-        falaise::config::getValueOrDefault<std::vector<std::string> >(
-            variantSubsystem, "settings", flRecParameters.variantSubsystemParams.settings);
+        variantSubsystem.get<std::vector<std::string>>(
+            "settings", flRecParameters.variantSubsystemParams.settings);
   }
 
   // Fetch plugins configuration:
   if (flRecConfig.has_key_with_meta("flreconstruct.plugins", "flreconstruct::section")) {
     try {
-      datatools::properties userFLPlugins = flRecConfig.get_section("flreconstruct.plugins");
+      falaise::property_set userFLPlugins{flRecConfig.get_section("flreconstruct.plugins")};
       flRecConfig.remove("flreconstruct.plugins");
-      std::vector<std::string> pList;
-      userFLPlugins.fetch("plugins", pList);
+
+      auto pList = userFLPlugins.get<std::vector<std::string>>("plugins", {});
+
       for (const std::string& plugin_name : pList) {
-        static const std::string no_explicit_plugin_file;
-        datatools::properties& pSection =
-            flRecParameters.userLibConfig.add_section(plugin_name, no_explicit_plugin_file);
-        userFLPlugins.export_and_rename_starting_with(pSection, plugin_name + ".", "");
-        pSection.store_flag("autoload");
+        auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
+
+        // datatools::properties& pSection =
+        //    flRecParameters.userLibConfig.add_section(plugin_name, std::string{});
+
+        // userFLPlugins.export_and_rename_starting_with(pSection, plugin_name + ".", "");
+
+        // pSection.store_flag("autoload");
+        pSection.put("autoload", true);
+
         // - Default, search plugin DLL in the falaise plugin install directory:
+        // if (!pSection.has_key("directory")) {
+        //  pSection.store_string("directory", "@falaise.plugins:");
         if (!pSection.has_key("directory")) {
-          pSection.store_string("directory", "@falaise.plugins:");
+          pSection.put("directory", std::string{"@falaise.plugins:"});
         }
+
+        flRecParameters.userLibConfig.add(plugin_name, "", pSection);
       }
     } catch (std::logic_error& e) {
       DT_LOG_ERROR(flRecParameters.logLevel, e.what());
@@ -199,12 +204,12 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
 
   // Fetch services configuration:
   if (flRecConfig.has_key_with_meta("flreconstruct.services", "flreconstruct::section")) {
-    datatools::properties servicesSubsystem = flRecConfig.get_section("flreconstruct.services");
+    falaise::property_set servicesSubsystem{flRecConfig.get_section("flreconstruct.services")};
     flRecConfig.remove("flreconstruct.services");
 
     // Services manager configuration URN:
-    flRecParameters.servicesSubsystemConfigUrn = falaise::config::getValueOrDefault<std::string>(
-        servicesSubsystem, "configUrn", flRecParameters.servicesSubsystemConfigUrn);
+    flRecParameters.servicesSubsystemConfigUrn =
+        servicesSubsystem.get<std::string>("configUrn", flRecParameters.servicesSubsystemConfigUrn);
 
     // Services manager main configuration file:
     if (flRecParameters.userProfile == "production" && servicesSubsystem.has_key("config")) {
@@ -214,26 +219,27 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
                                                    << "config"
                                                    << "' services configuration parameter!");
     }
-    flRecParameters.servicesSubsystemConfig = falaise::config::getValueOrDefault<std::string>(
-        servicesSubsystem, "config", flRecParameters.servicesSubsystemConfig);
+    flRecParameters.servicesSubsystemConfig =
+        servicesSubsystem.get<std::string>("config", flRecParameters.servicesSubsystemConfig);
   }
 
   // Fetch pipeline configuration:
   if (flRecConfig.has_key_with_meta("flreconstruct.pipeline", "flreconstruct::section")) {
-    datatools::properties pipelineSubsystem = flRecConfig.get_section("flreconstruct.pipeline");
+    falaise::property_set pipelineSubsystem{flRecConfig.get_section("flreconstruct.pipeline")};
     flRecConfig.remove("flreconstruct.pipeline");
+
     if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-      pipelineSubsystem.tree_dump(std::cerr, "Pipeline subsystem: ", "[debug] ");
+      std::cerr << "Pipeline subsystem: \n" << pipelineSubsystem.to_string() << std::endl;
     }
 
-    flRecParameters.reconstructionPipelineUrn = falaise::config::getValueOrDefault<std::string>(
-        pipelineSubsystem, "configUrn", flRecParameters.reconstructionPipelineUrn);
+    flRecParameters.reconstructionPipelineUrn =
+        pipelineSubsystem.get<std::string>("configUrn", flRecParameters.reconstructionPipelineUrn);
 
-    flRecParameters.reconstructionPipelineConfig = falaise::config::getValueOrDefault<std::string>(
-        pipelineSubsystem, "config", flRecParameters.reconstructionPipelineConfig);
+    flRecParameters.reconstructionPipelineConfig =
+        pipelineSubsystem.get<std::string>("config", flRecParameters.reconstructionPipelineConfig);
 
-    flRecParameters.reconstructionPipelineModule = falaise::config::getValueOrDefault<std::string>(
-        pipelineSubsystem, "module", flRecParameters.reconstructionPipelineModule);
+    flRecParameters.reconstructionPipelineModule =
+        pipelineSubsystem.get<std::string>("module", flRecParameters.reconstructionPipelineModule);
   }
 
   {
