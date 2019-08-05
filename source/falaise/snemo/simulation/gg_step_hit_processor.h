@@ -49,21 +49,6 @@ namespace simulation {
 /// \brief A basic processor of simulated step hits in some drift cell in Geiger regime
 class gg_step_hit_processor : public mctools::base_step_hit_processor {
  public:
-  /// Return a non mutable reference to the PRNG
-  const mygsl::rng& get_rng() const;
-
-  /// Return a mutable reference to the PRNG
-  mygsl::rng& grab_rng();
-
-  /// Check if processor uses an external PRNG
-  bool has_external_rng() const;
-
-  /// Check if processor accepts an external PRNG
-  virtual bool accept_external_rng() const;
-
-  /// Set an external PRNG
-  virtual void set_external_rng(mygsl::rng& rng_);
-
   /// Default constructor
   gg_step_hit_processor();
 
@@ -76,6 +61,21 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
   /// Main setup routine
   virtual void initialize(const ::datatools::properties& config_,
                           ::datatools::service_manager& service_mgr_);
+
+  /// Return a non mutable reference to the PRNG
+  const mygsl::rng& get_rng() const;
+
+  /// Return a mutable reference to the PRNG
+  mygsl::rng& get_rng();
+
+  /// Check if processor uses an external PRNG
+  bool has_external_rng() const;
+
+  /// Check if processor accepts an external PRNG
+  virtual bool accept_external_rng() const;
+
+  /// Set an external PRNG
+  virtual void set_external_rng(mygsl::rng& rng_);
 
   /// Main processing routine :
   virtual void process(
@@ -106,74 +106,63 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
                       mctools::simulated_data::hit_collection_type* plain_gg_hits_);
 
  private:
-  std::string _module_category_;  /* the name of the mapping
-                                   * category of module
-                                   */
-  std::string _mapping_category_; /* the name of the mapping
-                                   * category of volumes
-                                   * that should be considered
-                                   * as a sensitive volume
-                                   */
+  std::string moduleCategory_;  /* the name of the mapping
+                                 * category of module
+                                 */
+  std::string mappingCategory_; /* the name of the mapping
+                                 * category of volumes
+                                 * that should be considered
+                                 * as a sensitive volume
+                                 */
 
-  double _time_resolution_; /* the time resolution of the
-                             * Geiger regime (typically 15-25 ns)
-                             */
+  double timeResolution_; /* the time resolution of the
+                           * Geiger regime (typically 15-25 ns)
+                           */
 
-  double _fiducial_drift_radius_; /* the radius of the effective
-                                   * drift region
-                                   */
+  double fiducialCellRadius_; /* the radius of the effective
+                               * drift region
+                               */
 
-  double _fiducial_drift_length_; /* the active length of the
-                                   * drift region
-                                   */
+  double fiducialCellLength_; /* the active length of the
+                               * drift region
+                               */
 
-  double _mean_ionization_energy_; /* the mean ionization energy
-                                    * in the tracking gas:
-                                    *
-                                    * Default: ~50 eV
-                                    *
-                                    * From Georges Szkarlz
-                                    *   Helium:
-                                    *     ~6 e- / cm
-                                    *   Helium+Alcohol+Argon:
-                                    *     10-15 e- / cm
-                                    */
+  double meanIonizationEnergy_; /* the mean ionization energy
+                                 * in the tracking gas:
+                                 *
+                                 * Default: ~50 eV
+                                 *
+                                 * From Georges Szkarlz
+                                 *   Helium:
+                                 *     ~6 e- / cm
+                                 *   Helium+Alcohol+Argon:
+                                 *     10-15 e- / cm
+                                 */
 
-  /*double _geiger_dead_time_;*/ /* Dead time before a Geiger cell
-                                  * is active again after a former hit
-                                  *
-                                  * From Georges Szkarlz:
-                                  *   typically 1-2 ms
-                                  *
-                                  */
-  bool _use_continuous_ionization_;
-  bool _compute_minimum_approach_position_;
-  bool _store_track_infos_;
+  bool useContinuousIonization_;
+  bool computeMinimumApproachPosition_;
+  bool storeTrackInfo_;
 
   // Pseudo-random numbers generator:
-  mygsl::rng _rng_;            //!< Embedded PRNG
-  mygsl::rng* _external_rng_;  //!< Handle to an external PRNG
+  mygsl::rng localRNG_;      //!< Embedded PRNG
+  mygsl::rng* externalRNG_;  //!< Handle to an external PRNG
 
   // Internals:
-  const geomtools::mapping* _mapping_;  //!< The reference geometry ID mapping
-  const geomtools::id_mgr::categories_by_name_col_type* _categories_;
-  uint32_t _module_type_;   //!< The integral ID of the geometry category for module volume
-  uint32_t _gg_cell_type_;  //!< The integral ID of the geometry category for gg drift volume
+  uint32_t moduleCategoryID_;   //!< The integral ID of the geometry category for module volume
+  uint32_t geigerCellCategoryID_;  //!< The integral ID of the geometry category for gg drift volume
+  const geomtools::mapping* geomIDMap_;  //!< The reference geometry ID mapping
+  const geomtools::id_mgr::categories_by_name_col_type* allCategoryIDs_;
   // Locators:
-  geomtools::smart_id_locator _module_locator_;  /** A locator to compute the
+  geomtools::smart_id_locator moduleLocator_;  /** A locator to compute the
                                                   * module number
                                                   * some hit lies in.
                                                   */
-  geomtools::smart_id_locator _gg_cell_locator_; /** A locator to compute the
+  geomtools::smart_id_locator geigerCellLocator_; /** A locator to compute the
                                                   * geometry ID of the detector
                                                   * block some hit lies in.
                                                   */
-  geometry::gg_locator _fast_gg_cell_locator_;   //!< A fast locator for SuperNEMO Geiger cells
-  std::map<uint32_t, geometry::gg_locator> _fast_gg_cell_locators_per_module_;
-
-  // Used only for performance test in debug mode:
-  datatools::computing_time _CT1_;
-  datatools::computing_time _CT2_;
+  geometry::gg_locator fastGeigerCellLocator_;   //!< A fast locator for SuperNEMO Geiger cells
+  std::map<uint32_t, geometry::gg_locator> perModuleFastGeigerLocators_;
 
   // Registration macro :
   MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE(gg_step_hit_processor)
