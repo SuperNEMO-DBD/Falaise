@@ -523,14 +523,14 @@ inline void property_set::put_impl_(std::string const& key, falaise::config::pat
 template <>
 inline void property_set::put_impl_(std::string const& key,
                                     falaise::config::quantity const& value) {
-  ps_.store_with_explicit_unit(key, value.value());
+  ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
 
 //! Private overload of put_impl_ for @ref quantity_t
 template <typename T>
 void property_set::put_impl_(std::string const& key, falaise::config::quantity_t<T> const& value) {
-  ps_.store_with_explicit_unit(key, value.value());
+  ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
 
@@ -550,13 +550,21 @@ inline void property_set::get_impl_(std::string const& key, falaise::config::pat
 template <>
 inline void property_set::get_impl_(std::string const& key,
                                     falaise::config::quantity& result) const {
-  result = {ps_.fetch_real_with_explicit_unit(key), ps_.get_unit_symbol(key)};
+  // Fetch with explicit unit gives value in CLHEP scale, so must
+  // divide by the scaling factor for the symbol
+  double rescaledValue =
+      ps_.fetch_real_with_explicit_unit(key) / datatools::units::get_unit(ps_.get_unit_symbol(key));
+  result = {rescaledValue, ps_.get_unit_symbol(key)};
 }
 
 // Overload for explicitly dimensioned quantities
 template <typename T>
 void property_set::get_impl_(std::string const& key, falaise::config::quantity_t<T>& result) const {
-  result = {ps_.fetch_real_with_explicit_unit(key), ps_.get_unit_symbol(key)};
+  // fetch with explicit unit gives value in CLHEP scale, so must
+  // divide it by the scaling factor for the symbol
+  double rescaledValue =
+      ps_.fetch_real_with_explicit_unit(key) / datatools::units::get_unit(ps_.get_unit_symbol(key));
+  result = {rescaledValue, ps_.get_unit_symbol(key)};
 }
 
 //! Construct a property_set from an input datatools::properties file
