@@ -427,7 +427,7 @@ T property_set::get(std::string const& key) const {
 
 // Specialization of get for @ref property_set
 template <>
-property_set property_set::get(std::string const& key) const {
+inline property_set property_set::get(std::string const& key) const {
   if (!is_key_to_property_set(key)) {
     throw wrong_type_error("key '" + key + "' is not a pure property_set");
   }
@@ -450,7 +450,7 @@ T property_set::get(std::string const& key, T const& default_value) const {
 
 // Specialization of get for @ref property_set
 template <>
-property_set property_set::get(std::string const& key, property_set const& default_value) const {
+inline property_set property_set::get(std::string const& key, property_set const& default_value) const {
   if (!is_key_to_property_set(key)) {
     return default_value;
   }
@@ -469,7 +469,7 @@ void property_set::put(std::string const& key, T const& value) {
 
 // Specialization of put for @ref property_set
 template <>
-void property_set::put(std::string const& key, property_set const& value) {
+inline void property_set::put(std::string const& key, property_set const& value) {
  // Check both key/table existence
   if (ps_.has_key(key) || is_key_to_property_set(key)) {
     throw existing_key_error{"property_set already contains key " + key};
@@ -489,7 +489,7 @@ void property_set::put_or_replace(std::string const& key, T const& value) {
 
 // Specialization of put_or_replace for @ref property_set
 template <>
-void property_set::put_or_replace(std::string const& key, property_set const& value) {
+inline void property_set::put_or_replace(std::string const& key, property_set const& value) {
   // Cannot change type of existing data, so must erase/re-store all keys/subkeys
   erase(key);
   ps_.erase_all_starting_with(key + ".");
@@ -514,21 +514,22 @@ void property_set::put_impl_(std::string const& key, T const& value) {
 
 //! Private specialization of put_impl_ for @ref path
 template <>
-void property_set::put_impl_(std::string const& key, falaise::config::path const& value) {
+inline void property_set::put_impl_(std::string const& key, falaise::config::path const& value) {
   ps_.store_path(key, value);
 }
 
 //! Private specialization of put_impl_ for @ref quantity
 template <>
-void property_set::put_impl_(std::string const& key, falaise::config::quantity const& value) {
-  ps_.store_with_explicit_unit(key, value.value());
+inline void property_set::put_impl_(std::string const& key,
+                                    falaise::config::quantity const& value) {
+  ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
 
 //! Private overload of put_impl_ for @ref quantity_t
 template <typename T>
 void property_set::put_impl_(std::string const& key, falaise::config::quantity_t<T> const& value) {
-  ps_.store_with_explicit_unit(key, value.value());
+  ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
 
@@ -540,20 +541,29 @@ void property_set::get_impl_(std::string const& key, T& result) const {
 
 // Private specialization of get_impl_ for @ref path type
 template <>
-void property_set::get_impl_(std::string const& key, falaise::config::path& result) const {
+inline void property_set::get_impl_(std::string const& key, falaise::config::path& result) const {
   result = falaise::config::path{ps_.fetch_path(key)};
 }
 
 // Private specialization of get_impl_ for @ref units::quantity type
 template <>
-void property_set::get_impl_(std::string const& key, falaise::config::quantity& result) const {
-  result = {ps_.fetch_real_with_explicit_unit(key), ps_.get_unit_symbol(key)};
+inline void property_set::get_impl_(std::string const& key,
+                                    falaise::config::quantity& result) const {
+  // Fetch with explicit unit gives value in CLHEP scale, so must
+  // divide by the scaling factor for the symbol
+  double rescaledValue =
+      ps_.fetch_real_with_explicit_unit(key) / datatools::units::get_unit(ps_.get_unit_symbol(key));
+  result = {rescaledValue, ps_.get_unit_symbol(key)};
 }
 
 // Overload for explicitly dimensioned quantities
 template <typename T>
 void property_set::get_impl_(std::string const& key, falaise::config::quantity_t<T>& result) const {
-  result = {ps_.fetch_real_with_explicit_unit(key), ps_.get_unit_symbol(key)};
+  // fetch with explicit unit gives value in CLHEP scale, so must
+  // divide it by the scaling factor for the symbol
+  double rescaledValue =
+      ps_.fetch_real_with_explicit_unit(key) / datatools::units::get_unit(ps_.get_unit_symbol(key));
+  result = {rescaledValue, ps_.get_unit_symbol(key)};
 }
 
 //! Construct a property_set from an input datatools::properties file

@@ -97,7 +97,7 @@ class quantity {
 
   //! Construct a quantity from a value and unit
   /*!
-   * \param[in] value Numeric value
+   * \param[in] value Numeric value in units of unit
    * \param[in] unit @ref datatools::units::unit tag
    * \throws falaise::config::unknown_unit_error if unit is not supported by @ref datatools::units
    */
