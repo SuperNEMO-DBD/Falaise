@@ -357,26 +357,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
   }
 
   {
-    // Description of the 'Geo_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("Geo_label")
-        .set_terse_description("The label/name of the geometry service")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(
-            "This is the name of the service to be used as the \n"
-            "geometry service.                                 \n"
-            "This property is only used if no geometry manager \n"
-            "has been provided to the module.                  \n")
-        .set_default_value_string(snemo::service_info::default_geometry_service_label())
-        .add_example(
-            "Use an alternative name for the geometry service:: \n"
-            "                                                   \n"
-            "  Geo_label : string = \"geometry2\"               \n"
-            "                                                   \n");
-  }
-
-  {
     // Description of the 'drivers' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
     cpd.set_name_pattern("drivers")

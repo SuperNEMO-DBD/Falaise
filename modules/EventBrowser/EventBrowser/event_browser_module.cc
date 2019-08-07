@@ -64,10 +64,7 @@ void event_browser_module::initialize(const datatools::properties &config_,
 
   this->base_module::_common_initialize(config_);
 
-  std::string geo_label = snemo::service_info::default_geometry_service_label();
-  if (config_.has_key("Geo_label")) {
-    geo_label = config_.fetch_string("Geo_label");
-  }
+  std::string geo_label = snemo::service_info::geometryServiceName();
   if (_geometry_manager_ == 0) {
     // Access to the Geometry Service :
     DT_THROW_IF(geo_label.empty(), std::logic_error,

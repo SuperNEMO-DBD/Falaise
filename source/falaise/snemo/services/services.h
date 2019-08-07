@@ -20,17 +20,17 @@
 
 namespace snemo {
 
-/// \brief Service utility
+/// \brief Service infomation
 class service_info {
  public:
   /// Return the default string label/name for the 'global metadata' service
-  static const std::string& default_metadata_service_label();
+  static const std::string& metadataServiceName();
 
   /// Return the default string label/name for the 'geometry' service
-  static const std::string& default_geometry_service_label();
+  static const std::string& geometryServiceName();
 
   /// Return the default string label/name for the 'cuts' service
-  static const std::string& default_cut_service_label();
+  static const std::string& cutServiceName();
 };
 
 }  // end of namespace snemo

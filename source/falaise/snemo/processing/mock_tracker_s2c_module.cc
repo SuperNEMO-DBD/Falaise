@@ -505,27 +505,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
   }
 
   {
-    std::ostringstream ldesc;
-    ldesc << "This is the name of the service to be used as the \n"
-          << "geometry service.                                 \n"
-          << "This property is only used if no geometry manager \n"
-          << "as been provided to the module.                   \n";
-    // Description of the 'Geo_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("Geo_label")
-        .set_terse_description("The label/name of the geometry service")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(ldesc.str())
-        .set_default_value_string(snemo::service_info::default_geometry_service_label())
-        .add_example(
-            "Use an alternative name for the geometry service:: \n"
-            "                                    \n"
-            "  Geo_label : string = \"geometry\" \n"
-            "                                    \n");
-  }
-
-  {
     // Description of the 'random.seed' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
     cpd.set_name_pattern("random.seed")
@@ -677,7 +656,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
       "                                                             \n"
       "  SD_label        : string = \"SD\"                          \n"
       "  CD_label        : string = \"CD\"                          \n"
-      "  Geo_label       : string = \"geometry\"                    \n"
       "  random.seed     : integer = 314159                         \n"
       "  random.id       : string = \"taus2\"                       \n"
       "  module_category : string = \"module\"                      \n"

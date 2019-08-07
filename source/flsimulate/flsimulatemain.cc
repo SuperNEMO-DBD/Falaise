@@ -299,7 +299,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
     std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
-    std::string geo_label = snemo::service_info::default_geometry_service_label();
+    std::string geo_label = snemo::service_info::geometryServiceName();
     flSimModule.set_sd_label(sd_label);
     flSimModule.set_geo_label(geo_label);
     flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);

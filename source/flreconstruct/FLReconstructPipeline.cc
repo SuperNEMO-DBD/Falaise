@@ -285,7 +285,7 @@ falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
   // Geometry is a fundamental service, try to set one if missing:
-  std::string geoServiceName = snemo::service_info::default_geometry_service_label();
+  std::string geoServiceName = snemo::service_info::geometryServiceName();
   if (!recServices.has(geoServiceName) ||
       !recServices.is_a<geomtools::geometry_service>(geoServiceName)) {
     std::string geometrySetupUrn;
