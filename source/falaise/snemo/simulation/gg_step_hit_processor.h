@@ -148,20 +148,20 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
   mygsl::rng* externalRNG_;  //!< Handle to an external PRNG
 
   // Internals:
-  uint32_t moduleCategoryID_;   //!< The integral ID of the geometry category for module volume
+  uint32_t moduleCategoryID_;      //!< The integral ID of the geometry category for module volume
   uint32_t geigerCellCategoryID_;  //!< The integral ID of the geometry category for gg drift volume
   const geomtools::mapping* geomIDMap_;  //!< The reference geometry ID mapping
   const geomtools::id_mgr::categories_by_name_col_type* allCategoryIDs_;
   // Locators:
-  geomtools::smart_id_locator moduleLocator_;  /** A locator to compute the
-                                                  * module number
-                                                  * some hit lies in.
-                                                  */
+  geomtools::smart_id_locator moduleLocator_;     /** A locator to compute the
+                                                   * module number
+                                                   * some hit lies in.
+                                                   */
   geomtools::smart_id_locator geigerCellLocator_; /** A locator to compute the
-                                                  * geometry ID of the detector
-                                                  * block some hit lies in.
-                                                  */
-  geometry::gg_locator fastGeigerCellLocator_;   //!< A fast locator for SuperNEMO Geiger cells
+                                                   * geometry ID of the detector
+                                                   * block some hit lies in.
+                                                   */
+  geometry::gg_locator fastGeigerCellLocator_;    //!< A fast locator for SuperNEMO Geiger cells
   std::map<uint32_t, geometry::gg_locator> perModuleFastGeigerLocators_;
 
   // Registration macro :

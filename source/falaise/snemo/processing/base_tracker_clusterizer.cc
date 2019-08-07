@@ -91,7 +91,7 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
   // Get the Geiger cell locator from geometry plugins :
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   auto snLocator = snemo::geometry::getSNemoLocator(get_geometry_manager(), locator_plugin_name);
-  geigerLocator_ = &(snLocator->get_gg_locator());
+  geigerLocator_ = &(snLocator->geigerLocator());
 
   // Cell geom_id mask
   auto cell_id_mask_rules = ps.get<std::string>("cell_id_mask_rules", "");

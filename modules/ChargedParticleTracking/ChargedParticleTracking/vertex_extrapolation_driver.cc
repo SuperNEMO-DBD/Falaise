@@ -72,19 +72,19 @@ void vertex_extrapolation_driver::_measure_vertices_(
   const int side = id_mgr.get(gid, "side");
 
   // Set the calorimeter locators :
-  const snemo::geometry::calo_locator &calo_locator = geoLocator_->get_calo_locator();
-  const snemo::geometry::xcalo_locator &xcalo_locator = geoLocator_->get_xcalo_locator();
-  const snemo::geometry::gveto_locator &gveto_locator = geoLocator_->get_gveto_locator();
+  const snemo::geometry::calo_locator &calo_locator = geoLocator_->caloLocator();
+  const snemo::geometry::xcalo_locator &xcalo_locator = geoLocator_->xcaloLocator();
+  const snemo::geometry::gveto_locator &gveto_locator = geoLocator_->gvetoLocator();
   // TODO: Add source strip locator...
 
-  const double xcalo_bd[2] = {calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_BACK),
-                              calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_FRONT)};
+  const double xcalo_bd[2] = {calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::BACK),
+                              calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::FRONT)};
   const double ycalo_bd[2] = {
-      xcalo_locator.get_wall_window_y(side, snemo::geometry::xcalo_locator::WALL_LEFT),
-      xcalo_locator.get_wall_window_y(side, snemo::geometry::xcalo_locator::WALL_RIGHT)};
+      xcalo_locator.getYCoordOfWallWindow(side, snemo::geometry::xcalo_wall_t::LEFT),
+      xcalo_locator.getYCoordOfWallWindow(side, snemo::geometry::xcalo_wall_t::RIGHT)};
   const double zcalo_bd[2] = {
-      gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_BOTTOM),
-      gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_TOP)};
+      gveto_locator.getZCoordOfWallWindow(side, snemo::geometry::gveto_wall_t::BOTTOM),
+      gveto_locator.getZCoordOfWallWindow(side, snemo::geometry::gveto_wall_t::TOP)};
 
   // Check Geiger cell location wrt to vertex extrapolation
   this->_check_vertices_(trajectory_);
@@ -344,8 +344,8 @@ void vertex_extrapolation_driver::_measure_vertices_(
     const std::string &flag = vertice.first;
     const geomtools::vector_3d &pos = vertice.second;
     // Check vertex side is on the same side as the trajectory
-    if ((side == snemo::geometry::utils::SIDE_BACK && pos.x() > 0.0) ||
-        (side == snemo::geometry::utils::SIDE_FRONT && pos.x() < 0.0)) {
+    if ((side == snemo::geometry::side_t::BACK && pos.x() > 0.0) ||
+        (side == snemo::geometry::side_t::FRONT && pos.x() < 0.0)) {
       // Is this an error or warning?
       DT_LOG_WARNING(logPriority_, "Closest vertex is on the opposite side!");
     }
@@ -398,7 +398,7 @@ void vertex_extrapolation_driver::_measure_vertices_(
     //     //
     //     //
     //     spot.set_blur_dimension(geomtools::blur_spot::dimension_two);
-    //     if (side == snemo::geometry::utils::SIDE_BACK) {
+    //     if (side == snemo::geometry::side_t::BACK) {
     //       spot.grab_placement().set_orientation(ROTATION_AXIS_Y, 90.0 * CLHEP::degree);
     //     } else {
     //       spot.grab_placement().set_orientation(ROTATION_AXIS_Y, -90.0 * CLHEP::degree);
@@ -427,20 +427,20 @@ void vertex_extrapolation_driver::_check_vertices_(
     const geomtools::geom_id &a_gid = a_hit->get_geom_id();
 
     // Extract layer
-    const snemo::geometry::gg_locator &gg_locator = geoLocator_->get_gg_locator();
-    const uint32_t layer = gg_locator.extract_layer(a_gid);
+    const snemo::geometry::gg_locator &gg_locator = geoLocator_->geigerLocator();
+    const uint32_t layer = gg_locator.getLayerAddress(a_gid);
     if (layer < 1) {
       // Extrapolate vertex to the foil if the first GG layers are fired
       _use_vertices_[snedm::particle_track::vertex_on_source_foil_label()] = true;
     }
 
-    const uint32_t side = gg_locator.extract_side(a_gid);
-    if (layer >= gg_locator.get_number_of_layers(side) - 1) {
+    const uint32_t side = gg_locator.getSideAddress(a_gid);
+    if (layer >= gg_locator.numberOfLayers(side) - 1) {
       _use_vertices_[snedm::particle_track::vertex_on_main_calorimeter_label()] = true;
     }
 
-    const uint32_t row = gg_locator.extract_row(a_gid);
-    if (row <= 1 || row >= gg_locator.get_number_of_rows(side) - 1) {
+    const uint32_t row = gg_locator.getRowAddress(a_gid);
+    if (row <= 1 || row >= gg_locator.numberOfRows(side) - 1) {
       _use_vertices_[snedm::particle_track::vertex_on_x_calorimeter_label()] = true;
     }
   }

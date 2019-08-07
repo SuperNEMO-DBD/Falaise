@@ -241,7 +241,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
   // Retrieve geiger cell diameter from gg_locator (to be used
   // by trackfit algorithm)
-  const double gg_cell_diameter = get_gg_locator().get_cell_diameter() / CLHEP::mm;
+  const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;
 
   // Get cluster solutions:
   const snemo::datamodel::tracker_clustering_data::solution_col_type& cluster_solutions =

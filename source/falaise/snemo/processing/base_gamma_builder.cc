@@ -68,19 +68,19 @@ const std::string& base_gamma_builder::get_id() const { return id_; }
 const snemo::geometry::calo_locator& base_gamma_builder::get_calo_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_calo_locator();
+  return geoLocator_->caloLocator();
 }
 
 const snemo::geometry::xcalo_locator& base_gamma_builder::get_xcalo_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_xcalo_locator();
+  return geoLocator_->xcaloLocator();
 }
 
 const snemo::geometry::gveto_locator& base_gamma_builder::get_gveto_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_gveto_locator();
+  return geoLocator_->gvetoLocator();
 }
 
 bool base_gamma_builder::is_initialized() const { return isInitialized_; }
@@ -342,19 +342,18 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           std::string a_label;
           const geomtools::geom_id& a_gid = a_calo_hit->get_geom_id();
 
-          if (get_calo_locator().is_calo_block_in_current_module(a_gid)) {
-            get_calo_locator().get_block_position(a_gid, a_block_position);
+          if (get_calo_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_calo_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
-          } else if (get_xcalo_locator().is_calo_block_in_current_module(a_gid)) {
-            get_xcalo_locator().get_block_position(a_gid, a_block_position);
+          } else if (get_xcalo_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_xcalo_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_x_calorimeter_label();
-          } else if (get_gveto_locator().is_calo_block_in_current_module(a_gid)) {
-            get_gveto_locator().get_block_position(a_gid, a_block_position);
+          } else if (get_gveto_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_gveto_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
           } else {
-            DT_THROW_IF(
-                true, std::logic_error,
-                "Current geom id '" << a_gid << "' does not match any scintillator block !");
+            DT_THROW(std::logic_error,
+                     "Current geom id '" << a_gid << "' does not match any scintillator block !");
           }
 
           const double track_length = (a_block_position - a_spot->get_position()).mag();

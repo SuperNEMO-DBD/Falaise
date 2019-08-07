@@ -105,10 +105,10 @@ int main(int argc_, char** argv_) {
     }
 
     snemo::geometry::mapped_magnetic_field mmf;
-    mmf.set_mapping_mode(snemo::geometry::mapped_magnetic_field::MM_IMPORT_CSV_MAP_0);
-    mmf.set_map_filename(map_filename);
-    mmf.set_zero_field_outside_map(true);
-    mmf.set_z_inverted(z_inverted);
+    mmf.setMapMode(snemo::geometry::mapped_magnetic_field::map_mode_t::IMPORT_CSV_MAP_0);
+    mmf.setMapFilename(map_filename);
+    mmf.setZeroFieldOutsideMap(true);
+    mmf.setInvertedZ(z_inverted);
     if (trace) mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
     mmf.initialize_simple();
 

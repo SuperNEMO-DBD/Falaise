@@ -82,7 +82,7 @@ void base_tracker_fitter::_initialize(const datatools::properties& setup_) {
 
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   auto snLocator = snemo::geometry::getSNemoLocator(get_geometry_manager(), locator_plugin_name);
-  geigerLocator_ = &(snLocator->get_gg_locator());
+  geigerLocator_ = &(snLocator->geigerLocator());
   DT_THROW_IF(geigerLocator_ == nullptr, std::logic_error, "Cannot find Geiger locator !");
 }
 

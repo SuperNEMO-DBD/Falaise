@@ -59,7 +59,7 @@ using namespace std;
 void test1(geomtools::manager& mgr_) {
   clog << "********** test1..." << endl;
   try {
-    snemo::geometry::calo_locator badCL(mgr_, 666);
+    snemo::geometry::calo_locator badCL(666, mgr_, {});
   } catch (exception& x) {
     cerr << "ERROR: test1: As expected, there is no way to use a calo_locator for module #666 !"
          << endl;
@@ -69,13 +69,8 @@ void test1(geomtools::manager& mgr_) {
 
 void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.set_block_part(snemo::geometry::calo_locator::DEFAULT_BLOCK_PART);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
   size_t counts = 0;
   ofstream f1, f2;
   if (a_file) {
@@ -163,26 +158,22 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
 
 void test4(geomtools::manager& a_mgr) {
   clog << "********** test4..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
 
-  clog << "Number of sides = " << CL.get_number_of_sides() << endl;
+  clog << "Number of sides = " << CL.numberOfSides() << endl;
 
-  clog << "Number of columns = " << CL.get_number_of_columns(0) << endl;
+  clog << "Number of columns = " << CL.numberOfColumns(0) << endl;
 
-  clog << "Number of rows = " << CL.get_number_of_rows(0) << endl;
+  clog << "Number of rows = " << CL.numberOfRows(0) << endl;
 
-  clog << "Number of neighbours [0,0,0] = " << CL.get_number_of_neighbours(0, 0, 0) << endl;
+  clog << "Number of neighbours [0,0,0] = " << CL.countNeighbours(0, 0, 0) << endl;
 
-  clog << "Number of neighbours [0,0,19] = " << CL.get_number_of_neighbours(0, 0, 19) << endl;
+  clog << "Number of neighbours [0,0,19] = " << CL.countNeighbours(0, 0, 19) << endl;
 
-  clog << "Number of neighbours [0,0,5] = " << CL.get_number_of_neighbours(0, 0, 5) << endl;
+  clog << "Number of neighbours [0,0,5] = " << CL.countNeighbours(0, 0, 5) << endl;
 
-  clog << "Number of neighbours [0,6,154] = " << CL.get_number_of_neighbours(0, 6, 154) << endl;
+  clog << "Number of neighbours [0,6,154] = " << CL.countNeighbours(0, 6, 154) << endl;
 
   return;
 }
@@ -193,17 +184,13 @@ void test5(geomtools::manager& a_mgr) {
    * Validated 2011-04-13 FM.
    *
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
 
   vector<geomtools::geom_id> ids;
   for (uint32_t side = 0; side < 2; side++) {
     {
-      CL.get_neighbours_ids(side, 0, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,0] (with first)=" << ids.size() << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
         clog << ids[i] << ' ';
@@ -212,7 +199,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 0, ids, snemo::geometry::utils::NEIGHBOUR_DIAG);
+      ids = CL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::DIAG);
       clog << "Neighbour blocks for block [" << side << ",0,0] (with diagonal)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -222,7 +209,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,0] (with first)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -232,7 +219,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 7, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 7, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",7,0] (with first)=" << ids.size() << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
         clog << ids[i] << ' ';
@@ -241,7 +228,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 7, 4, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 7, 4, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",7,4] (with first)=" << ids.size() << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
         clog << ids[i] << ' ';
@@ -250,7 +237,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,12] (with first)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -260,7 +247,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,12] (with first)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -271,7 +258,7 @@ void test5(geomtools::manager& a_mgr) {
 
     {
       try {
-        CL.get_neighbours_ids(side, 0, 14, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+        ids = CL.getNeighbourGIDs(side, 0, 14, snemo::geometry::grid_mask_t::FIRST);
       } catch (exception& x) {
         cerr << "ERROR: test5: As expected, block [" << side << ",0,14] is not valid !" << endl
              << endl;
@@ -279,7 +266,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 6, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 6, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,6] (with first)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -289,7 +276,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 4, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 4, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",4,12] (with first)=" << ids.size()
            << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
@@ -299,7 +286,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 4, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 4, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,4] (with first)=" << ids.size() << endl;
       for (int i = 0; i < (int)ids.size(); i++) {
         clog << ids[i] << ' ';
@@ -317,26 +304,12 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
    * Validated 2011-05-08 FM.
    *
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.set_block_part(1);  // Front part of the scintillator block
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}, 1};
 
-  snemo::geometry::calo_locator CL_back;
-  CL_back.set_geo_manager(a_mgr);
-  CL_back.set_module_number(my_module_number);
-  CL_back.set_block_part(0);  // Back part of the scintillator block
-  CL_back.initialize();
-  CL_back.dump(clog);
+  snemo::geometry::calo_locator CL_back{my_module_number, a_mgr, {}, 0};
 
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
 
   datatools::version_id geom_mgr_setup_vid;
   a_mgr.fetch_setup_version_id(geom_mgr_setup_vid);
@@ -456,12 +429,12 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
           if (spurious) {
             // add spurious hit in one neighbour block :
             vector<geomtools::geom_id> neighbour_ids;
-            int neighbours_mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+            int neighbours_mask = snemo::geometry::grid_mask_t::DIAG;
             if (hit_id.get(1) == 0) {
-              neighbours_mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+              neighbours_mask = snemo::geometry::grid_mask_t::SIDE;
             }
 
-            CL.get_neighbours_ids(hit_id, neighbour_ids, neighbours_mask);
+            neighbour_ids = CL.getNeighbourGIDs(hit_id, neighbours_mask);
             for (int in = 0; in < (int)neighbour_ids.size(); ++in) {
               hit_ids.push_back(neighbour_ids[in]);
             }
@@ -567,14 +540,14 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
       // Draw some arbitrary scintillator blocks:
       // uint32_t side = 1;
       vector<geomtools::geom_id> neighbour_ids;
-      int neighbours_mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+      int neighbours_mask = snemo::geometry::grid_mask_t::DIAG;
       geomtools::geom_id gid1;
       gid1.set_type(scin_block_type);
-      gid1.set_address(my_module_number, 0, 4, 3);
-      if (CL.is_block_partitioned()) {
-        gid1.set(CL.get_part_address_index(), 1);
-      }
-      CL.get_neighbours_ids(gid1, neighbour_ids, neighbours_mask);
+      gid1.set_address(my_module_number, 0, 4, 3, 1);
+      //if (CL.isBlockPartitioned()) {
+      //  gid1.set(CL.get_part_address_index(), 1);
+      //}
+      neighbour_ids = CL.getNeighbourGIDs(gid1, neighbours_mask);
       for (vector<geomtools::geom_id>::const_iterator i = neighbour_ids.begin();
            i != neighbour_ids.end(); i++) {
         const geomtools::geom_info& a_geom_info = the_mapping.get_geom_info(*i);
@@ -584,14 +557,14 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
         clog << "Scintillator block geometry info: " << a_geom_info << endl;
         geomtools::gnuplot_draw::draw(fout1.out(), a_placement, a_shape);
       }
-      neighbours_mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+      neighbours_mask = snemo::geometry::grid_mask_t::SIDE;
       geomtools::geom_id gid2;
       gid2.set_type(scin_block_type);
-      gid2.set_address(my_module_number, 1, 17, 9);
-      if (CL.is_block_partitioned()) {
-        gid2.set(CL.get_part_address_index(), 1);
-      }
-      CL.get_neighbours_ids(gid2, neighbour_ids, neighbours_mask);
+      gid2.set_address(my_module_number, 1, 17, 9, 1);
+      //if (CL.isBlockPartitioned()) {
+      //  gid2.set(CL.get_part_address_index(), 1);
+      //}
+      neighbour_ids = CL.getNeighbourGIDs(gid2, neighbours_mask);
       for (vector<geomtools::geom_id>::const_iterator i = neighbour_ids.begin();
            i != neighbour_ids.end(); i++) {
         const geomtools::geom_info& a_geom_info = the_mapping.get_geom_info(*i);

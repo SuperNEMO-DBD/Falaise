@@ -58,7 +58,7 @@ using namespace std;
 void test1(geomtools::manager& mgr_) {
   clog << "********** test1..." << endl;
   try {
-    snemo::geometry::gg_locator badGGL(mgr_, 666);
+    snemo::geometry::gg_locator badGGL(666, mgr_, falaise::property_set{});
   } catch (exception& x) {
     cerr << "ERROR: test1: As expected, there is no way to use a gg_locator for module #666 !"
          << endl;
@@ -68,12 +68,8 @@ void test1(geomtools::manager& mgr_) {
 
 void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
   size_t counts = 0;
   ofstream f1, f2;
   if (a_file) {
@@ -161,20 +157,16 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
 
 void test4(geomtools::manager& a_mgr) {
   clog << "********** test4..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
 
-  clog << "Number of neighbours [0,0,0] = " << GGL.get_number_of_neighbours(0, 0, 0) << endl;
+  clog << "Number of neighbours [0,0,0] = " << GGL.countNeighbours(0, 0, 0) << endl;
 
-  clog << "Number of neighbours [0,0,112] = " << GGL.get_number_of_neighbours(0, 0, 112) << endl;
+  clog << "Number of neighbours [0,0,112] = " << GGL.countNeighbours(0, 0, 112) << endl;
 
-  clog << "Number of neighbours [0,0,56] = " << GGL.get_number_of_neighbours(0, 0, 56) << endl;
+  clog << "Number of neighbours [0,0,56] = " << GGL.countNeighbours(0, 0, 56) << endl;
 
-  clog << "Number of neighbours [0,6,154] = " << GGL.get_number_of_neighbours(0, 6, 154) << endl;
+  clog << "Number of neighbours [0,6,154] = " << GGL.countNeighbours(0, 6, 154) << endl;
 
   return;
 }
@@ -185,17 +177,13 @@ void test5(geomtools::manager& a_mgr) {
    * Validated 2011-04-13 FM.
    *
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
 
   vector<geomtools::geom_id> ids;
   for (uint32_t side = 0; side < 2; side++) {
     {
-      GGL.get_neighbours_ids(side, 0, 0, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 0, 0, true);
       clog << "Neighbour cells for cell [" << side << ",0,0] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -205,7 +193,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 0, 0, ids);
+      ids = GGL.getNeighbourGIDs(side, 0, 0);
       clog << "Neighbour cells for cell [" << side << ",0,0] (w/o other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -215,7 +203,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 0, 112, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 0, 112, true);
       clog << "Neighbour cells for cell [" << side << ",0,112] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -225,7 +213,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 0, 56, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 0, 56, true);
       clog << "Neighbour cells for cell [" << side << ",0,56] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -235,7 +223,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 6, 54, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 6, 54, true);
       clog << "Neighbour cells for cell [" << side << ",6,54] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -245,7 +233,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 8, 0, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 8, 0, true);
       clog << "Neighbour cells for cell [" << side << ",8,0] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -255,7 +243,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 8, 112, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 8, 112, true);
       clog << "Neighbour cells for cell [" << side << ",8,112] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -266,7 +254,7 @@ void test5(geomtools::manager& a_mgr) {
 
     {
       try {
-        GGL.get_neighbours_ids(side, 123, 0, ids);
+        ids = GGL.getNeighbourGIDs(side, 123, 0);
       } catch (exception& x) {
         cerr << "ERROR: test5: As expected, cell [" << side << ",123,0] is not valid !" << endl
              << endl;
@@ -274,7 +262,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 8, 57, ids, true);
+      ids = GGL.getNeighbourGIDs(side, 8, 57, true);
       clog << "Neighbour cells for cell [" << side << ",8,57] (with other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -284,7 +272,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 4, 112, ids);
+      ids = GGL.getNeighbourGIDs(side, 4, 112);
       clog << "Neighbour cells for cell [" << side << ",4,112] (w/o other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -294,7 +282,7 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      GGL.get_neighbours_ids(side, 4, 0, ids);
+      ids = GGL.getNeighbourGIDs(side, 4, 0);
       clog << "Neighbour cells for cell [" << side << ",4,0] (w/o other side)=" << ids.size()
            << endl;
       for (unsigned int i = 0; i < ids.size(); i++) {
@@ -311,14 +299,10 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
   clog << "********** test6..." << endl;
   /**
    * Validated 2011-05-08 FM.
-   *
+   * HOW?
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
 
   datatools::version_id geom_mgr_setup_vid;
   a_mgr.fetch_setup_version_id(geom_mgr_setup_vid);
@@ -394,8 +378,7 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
         hit_ids.push_back(hit_id);
 
         // add spurious hit in one neighbour cell :
-        vector<geomtools::geom_id> neighbour_ids;
-        GGL.get_neighbours_ids(hit_id, neighbour_ids);
+        vector<geomtools::geom_id> neighbour_ids = GGL.getNeighbourGIDs(hit_id);
         size_t sz = neighbour_ids.size();
         int noise_index = (int)(sz * drand48());
         hit_ids.push_back(neighbour_ids[noise_index]);

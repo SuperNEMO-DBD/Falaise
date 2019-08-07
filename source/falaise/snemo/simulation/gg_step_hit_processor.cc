@@ -117,8 +117,8 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
     {
       fastGeigerCellLocator_.set_geo_manager(*_geom_manager);
       const uint32_t module_number = 0;
-      fastGeigerCellLocator_.set_module_number(module_number);
-      fastGeigerCellLocator_.initialize();
+      fastGeigerCellLocator_.setModuleNumber(module_number);
+      fastGeigerCellLocator_.initialize({});
     }
 
     // 2012-05-04 FM : now use the following
@@ -132,8 +132,8 @@ void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
         }
         snemo::geometry::gg_locator &fggloc = perModuleFastGeigerLocators_[module_number];
         fggloc.set_geo_manager(*_geom_manager);
-        fggloc.set_module_number(module_number);
-        fggloc.initialize();
+        fggloc.setModuleNumber(module_number);
+        fggloc.initialize({});
       }
     }
   }
@@ -322,14 +322,14 @@ void gg_step_hit_processor::_process(
                                         << "' from the fast gg cell locator dictionary !");
       // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
       const bool find_success =
-          perModuleFastGeigerLocators_[module_number].find_cell_geom_id(world_hit_pos_median, gid);
+          perModuleFastGeigerLocators_[module_number].findCellGID(world_hit_pos_median, gid);
       if (!find_success) {
         gid.invalidate();
       }
     } else if (fastGeigerCellLocator_.is_initialized()) {
       // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
       bool find_success =
-          fastGeigerCellLocator_.find_cell_geom_id(world_hit_pos_median, gid, locator_tolerance);
+          fastGeigerCellLocator_.findCellGID(world_hit_pos_median, gid, locator_tolerance);
       if (!find_success) {
         gid.invalidate();
       }

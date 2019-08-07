@@ -81,14 +81,14 @@ int gamma_tracking_driver::_prepare_process(
     const snemo::geometry::calo_locator& calo_locator = get_calo_locator();
     const snemo::geometry::xcalo_locator& xcalo_locator = get_xcalo_locator();
     const snemo::geometry::gveto_locator& gveto_locator = get_gveto_locator();
-    if (calo_locator.is_calo_block_in_current_module(a_gid)) {
-      calo_locator.get_block_position(a_gid, new_calo_hit.position);
+    if (calo_locator.isCaloBlockInThisModule(a_gid)) {
+      new_calo_hit.position = calo_locator.getBlockPosition(a_gid);
       new_calo_hit.label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
-    } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
-      xcalo_locator.get_block_position(a_gid, new_calo_hit.position);
+    } else if (xcalo_locator.isCaloBlockInThisModule(a_gid)) {
+      new_calo_hit.position = xcalo_locator.getBlockPosition(a_gid);
       new_calo_hit.label = snemo::datamodel::particle_track::vertex_on_x_calorimeter_label();
-    } else if (gveto_locator.is_calo_block_in_current_module(a_gid)) {
-      gveto_locator.get_block_position(a_gid, new_calo_hit.position);
+    } else if (gveto_locator.isCaloBlockInThisModule(a_gid)) {
+      new_calo_hit.position = gveto_locator.getBlockPosition(a_gid);
       new_calo_hit.label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
     } else {
       DT_THROW_IF(true, std::logic_error,

@@ -25,9 +25,9 @@
 
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
-#include <falaise/snemo/geometry/locator_helpers.h>
 
 namespace snemo {
 
@@ -58,8 +58,10 @@ alpha_finder_driver::alpha_finder_driver(const falaise::property_set &ps,
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), locator_plugin_name);
   minDelayedTime_ = ps.get<falaise::time_t>("minimal_delayed_time", {15., "microsecond"})();
-  minXYSearchDistance_ = ps.get<falaise::length_t>("minimal_cluster_xy_search_distance", {21., "cm"})();
-  minZSearchDistance_ = ps.get<falaise::length_t>("minimal_cluster_z_search_distance", {30., "cm"})();
+  minXYSearchDistance_ =
+      ps.get<falaise::length_t>("minimal_cluster_xy_search_distance", {21., "cm"})();
+  minZSearchDistance_ =
+      ps.get<falaise::length_t>("minimal_cluster_z_search_distance", {30., "cm"})();
   minVertexDistance_ = ps.get<falaise::length_t>("minimal_vertex_distance", {30., "cm"})();
 }
 
@@ -390,19 +392,19 @@ void alpha_finder_driver::_build_alpha_particle_track_(
     }
     const int side = id_mgr.get(gid, "side");
     // Set the calorimeter locators :
-    const snemo::geometry::calo_locator &calo_locator = geoLocator_->get_calo_locator();
-    const snemo::geometry::xcalo_locator &xcalo_locator = geoLocator_->get_xcalo_locator();
-    const snemo::geometry::gveto_locator &gveto_locator = geoLocator_->get_gveto_locator();
+    const snemo::geometry::calo_locator &calo_locator = geoLocator_->caloLocator();
+    const snemo::geometry::xcalo_locator &xcalo_locator = geoLocator_->xcaloLocator();
+    const snemo::geometry::gveto_locator &gveto_locator = geoLocator_->gvetoLocator();
     // TODO: Add source strip locator...
 
-    const double xcalo_bd[2] = {calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_BACK),
-                                calo_locator.get_wall_window_x(snemo::geometry::utils::SIDE_FRONT)};
+    const double xcalo_bd[2] = {calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::BACK),
+                                calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::FRONT)};
     const double ycalo_bd[2] = {
-        xcalo_locator.get_wall_window_y(side, snemo::geometry::xcalo_locator::WALL_LEFT),
-        xcalo_locator.get_wall_window_y(side, snemo::geometry::xcalo_locator::WALL_RIGHT)};
+        xcalo_locator.getYCoordOfWallWindow(side, snemo::geometry::xcalo_wall_t::LEFT),
+        xcalo_locator.getYCoordOfWallWindow(side, snemo::geometry::xcalo_wall_t::RIGHT)};
     const double zcalo_bd[2] = {
-        gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_BOTTOM),
-        gveto_locator.get_wall_window_z(side, snemo::geometry::gveto_locator::WALL_TOP)};
+        gveto_locator.getZCoordOfWallWindow(side, snemo::geometry::gveto_wall_t::BOTTOM),
+        gveto_locator.getZCoordOfWallWindow(side, snemo::geometry::gveto_wall_t::TOP)};
 
     const double epsilon = 1e-5 * CLHEP::mm;
     std::string vertex_label;
