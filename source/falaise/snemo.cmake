@@ -74,12 +74,6 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
-  snemo/cuts/calibrated_data_cut.h
-  snemo/cuts/tracker_clustering_data_cut.h
-  snemo/cuts/tracker_trajectory_data_cut.h
-  snemo/cuts/particle_track_data_cut.h
-
-  snemo/cuts/particle_track_cut.h
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -138,11 +132,6 @@ list(APPEND FalaiseLibrary_SOURCES
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
-  snemo/cuts/calibrated_data_cut.cc
-  snemo/cuts/tracker_clustering_data_cut.cc
-  snemo/cuts/tracker_trajectory_data_cut.cc
-  snemo/cuts/particle_track_data_cut.cc
-  snemo/cuts/particle_track_cut.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
@@ -169,6 +158,5 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
 
-  snemo/test/test_snemo_cut_particle_track_cut.cxx
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
   )
