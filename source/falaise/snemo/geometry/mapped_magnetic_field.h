@@ -54,7 +54,7 @@ class mapped_magnetic_field : public ::emfield::base_electromagnetic_field {
   };
 
   /// Default constructor
-  mapped_magnetic_field(uint32_t = 0);
+  mapped_magnetic_field(uint32_t flags = 0);
 
   /// Destructor
   virtual ~mapped_magnetic_field();
@@ -68,7 +68,7 @@ class mapped_magnetic_field : public ::emfield::base_electromagnetic_field {
 
   /// Compute electric field
   virtual int compute_electric_field(const geomtools::vector_3d &position, double time,
-                                     geomtools::vector_3d &electric_field) const;
+                                     geomtools::vector_3d &efield) const;
 
   /// Compute magnetic field
   virtual int compute_magnetic_field(const geomtools::vector_3d &position, double time,
@@ -82,7 +82,7 @@ class mapped_magnetic_field : public ::emfield::base_electromagnetic_field {
   void setMapFilename(const std::string &);
 
   /// Set the mapping mode
-  void setMapMode(map_mode_t mode);
+  void setMapMode(map_mode_t mm);
 
   /// Set the flag to force a zero B-field outside the mapped domain
   void setZeroFieldOutsideMap(bool);

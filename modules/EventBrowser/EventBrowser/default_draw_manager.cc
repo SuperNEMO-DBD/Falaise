@@ -37,7 +37,7 @@ namespace visualization {
 namespace view {
 
 // ctor:
-default_draw_manager::default_draw_manager(const io::event_server* server_) : i_draw_manager() {
+default_draw_manager::default_draw_manager(const io::event_server* server_) {
   _server_ = server_;
 
   _objects_ = new TObjArray(1000);
@@ -48,15 +48,10 @@ default_draw_manager::default_draw_manager(const io::event_server* server_) : i_
   // Initialize renderers
   _calorimeter_hit_renderer_.initialize(_server_, _objects_, _text_objects_);
   _visual_track_renderer_.initialize(_server_, _objects_, _text_objects_);
-
-  return;
 }
 
 // dtor:
-default_draw_manager::~default_draw_manager() {
-  this->default_draw_manager::reset();
-  return;
-}
+default_draw_manager::~default_draw_manager() { this->default_draw_manager::reset(); }
 
 TObjArray* default_draw_manager::get_objects() { return _objects_; }
 
@@ -70,39 +65,29 @@ void default_draw_manager::update() {
   }
 
   // Add 'simulated_data' objects:
-  if (_server_->get_event().has(io::SD_LABEL))
+  if (_server_->get_event().has(io::SD_LABEL)) {
     this->_add_simulated_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no simulated data");
   }
-
-  return;
 }
 
-void default_draw_manager::draw() {
-  _objects_->Draw();
-  return;
-}
+void default_draw_manager::draw() { _objects_->Draw(); }
 
-void default_draw_manager::draw_text() {
-  _text_objects_->Draw();
-  return;
-}
+void default_draw_manager::draw_text() { _text_objects_->Draw(); }
 
 void default_draw_manager::reset() {
   this->default_draw_manager::clear();
 
-  if (_objects_) delete _objects_;
-  _objects_ = 0;
+  delete _objects_;
+  _objects_ = nullptr;
 
-  if (_text_objects_) delete _text_objects_;
-  _text_objects_ = 0;
+  delete _text_objects_;
+  _text_objects_ = nullptr;
 
   _calorimeter_hit_renderer_.reset();
   _visual_track_renderer_.reset();
-
-  return;
 }
 
 void default_draw_manager::clear() {
@@ -111,7 +96,6 @@ void default_draw_manager::clear() {
 
   _objects_->Delete();
   _text_objects_->Delete();
-  return;
 }
 
 /***************************************************
@@ -121,21 +105,23 @@ void default_draw_manager::clear() {
 void default_draw_manager::_add_simulated_data() {
   const options_manager& options_mgr = options_manager::get_instance();
 
-  if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) this->_add_simulated_vertex_();
+  if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) {
+    this->_add_simulated_vertex_();
+  }
 
-  if (options_mgr.get_option_flag(SHOW_MC_HITS)) this->_add_simulated_hits_();
+  if (options_mgr.get_option_flag(SHOW_MC_HITS)) {
+    this->_add_simulated_hits_();
+  }
 
   if (options_mgr.get_option_flag(SHOW_MC_TRACKS)) {
     _visual_track_renderer_.push_mc_tracks();
     _visual_track_renderer_.push_mc_legend();
   }
-
-  return;
 }
 
 void default_draw_manager::_add_simulated_vertex_() {
   const io::event_record& event = _server_->get_event();
-  const mctools::simulated_data& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   if (!sim_data.has_vertex()) {
     DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -156,7 +142,6 @@ void default_draw_manager::_add_simulated_vertex_() {
     vertex_3d->SetMarkerColor(kViolet);
     vertex_3d->SetMarkerStyle(kCircle);
   }
-  return;
 }
 
 void default_draw_manager::_add_simulated_hits_() {
@@ -165,21 +150,18 @@ void default_draw_manager::_add_simulated_hits_() {
   // SuperNEMO, this method is overloaded for its own purpose making
   // distinction between calorimeter hits and Geiger hits
   const io::event_record& event = _server_->get_event();
-  const mctools::simulated_data& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   // Retrieve all category names except private category such as '__visual.tracks'
   std::vector<std::string> categories;
   sim_data.get_step_hits_categories(categories, mctools::simulated_data::HIT_CATEGORY_TYPE_PUBLIC);
 
-  for (size_t i = 0; i < categories.size(); i++) {
-    const std::string& a_category = categories[i];
+  for (const auto& a_category : categories) {
     const options_manager& options_mgr = options_manager::get_instance();
     if (options_mgr.get_option_flag(SHOW_MC_CALORIMETER_HITS)) {
       _calorimeter_hit_renderer_.push_simulated_hits(a_category);
     }
   }
-
-  return;
 }
 
 }  // end of namespace view

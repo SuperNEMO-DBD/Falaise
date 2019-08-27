@@ -59,8 +59,8 @@ namespace view {
 class TGMenuEntryPlus : public TGMenuEntry {
  public:
   // Public setters to TGMenuEntry members
-  void SetLabel(TGHotString *s);
-  void SetPicture(const TGPicture *s);
+  void SetLabel(TGHotString *label_);
+  void SetPicture(const TGPicture *pic_);
   void SetType(const EMenuEntryType type_);
   void SetEntryId(const int id_);
   void SetPopup(TGPopupMenu *popup_);

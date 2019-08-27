@@ -22,7 +22,7 @@ TEST_CASE("Copying works", "") {
   falaise::path ca = std::string("$HOME");
   REQUIRE(ca == std::string{getenv("HOME")});
 
-  falaise::path cc{ca};
+  const falaise::path& cc{ca};
   REQUIRE(cc == ca);
 }
 

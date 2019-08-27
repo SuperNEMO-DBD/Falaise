@@ -59,7 +59,9 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh1);
-  } else if (caloBlockShape->get_shape_name() == "intersection_3d") {
+  }
+
+  if (caloBlockShape->get_shape_name() == "intersection_3d") {
     // Example : 'calo_tapered_scin_box_model' case :
     const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*caloBlockShape);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
@@ -73,7 +75,9 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh11);
-  } else if (caloBlockShape->get_shape_name() == "box") {
+  }
+
+  if (caloBlockShape->get_shape_name() == "box") {
     // Simple box case :
     return dynamic_cast<const geomtools::box *>(caloBlockShape);
   }
@@ -100,8 +104,8 @@ calo_locator::calo_locator(uint32_t moduleID, const geomtools::manager &geoMgr,
 
 bool calo_locator::is_initialized() const { return isInitialized_; }
 
-void calo_locator::initialize(const datatools::properties &config_) {
-  base_locator::_basic_initialize(config_);
+void calo_locator::initialize(const datatools::properties &ps) {
+  base_locator::_basic_initialize(ps);
   DT_THROW_IF(moduleNumber_ == geomtools::geom_id::INVALID_ADDRESS, std::logic_error,
               "Missing module number ! Use the 'setModuleNumber' method before !");
   construct_();
@@ -137,18 +141,24 @@ size_t calo_locator::numberOfSides() const { return utils::NSIDES; }
 size_t calo_locator::numberOfColumns(uint32_t side) const {
   if (side == 0) {
     return backCaloBlock_Y_.size();
-  } else if (side == 1) {
+  } 
+  
+  if (side == 1) {
     return frontCaloBlock_Y_.size();
   }
+ 
   DT_THROW(std::logic_error, "Invalid side number " << side << " !");
 }
 
 size_t calo_locator::numberOfRows(uint32_t side) const {
   if (side == 0) {
     return backCaloBlock_Z_.size();
-  } else if (side == 1) {
+  } 
+  
+  if (side == 1) {
     return frontCaloBlock_Z_.size();
   }
+  
   DT_THROW(std::logic_error, "Invalid side number " << side << " !");
 }
 

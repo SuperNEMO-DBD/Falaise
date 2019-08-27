@@ -18,7 +18,6 @@ int main(/* int argc_, char ** argv_ */) {
   try {
     std::clog << "Test program for the 'tracker_cluster' class." << std::endl;
 
-
     namespace sdm = snemo::datamodel;
 
     srand48(314159);

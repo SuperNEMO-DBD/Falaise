@@ -69,7 +69,7 @@ int main(int argc_, char** argv_) {
       std::string token = argv_[iarg];
 
       if (token[0] == '-') {
-        std::string option = token;
+        const std::string& option = token;
         {
           if (option == "-D" || option == "--draw") {
             draw = true;
@@ -85,7 +85,7 @@ int main(int argc_, char** argv_) {
           }
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         {
           if (map_filename.empty()) {
             map_filename = argument;
@@ -109,7 +109,9 @@ int main(int argc_, char** argv_) {
     mmf.setMapFilename(map_filename);
     mmf.setZeroFieldOutsideMap(true);
     mmf.setInvertedZ(z_inverted);
-    if (trace) mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
+    if (trace) {
+      mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
+    }
     mmf.initialize_simple();
 
     datatools::temp_file tmp_file;

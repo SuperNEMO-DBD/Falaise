@@ -44,15 +44,13 @@ sphere_volume::sphere_volume(const std::string &name_, const std::string &catego
   _theta_max_ = 0.0;
   _phi_min_ = 0.0;
   _phi_max_ = 0.0;
-
-  return;
 }
 
 // dtor:
-sphere_volume::~sphere_volume() { return; }
+sphere_volume::~sphere_volume() = default;
 
 void sphere_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
-  const geomtools::sphere &msphere = dynamic_cast<const geomtools::sphere &>(shape_3d_);
+  const auto &msphere = dynamic_cast<const geomtools::sphere &>(shape_3d_);
 
   _inner_radius_ = 0.0;
   _outer_radius_ = msphere.get_radius();
@@ -61,30 +59,29 @@ void sphere_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
   _phi_min_ = 0.0;
   _phi_max_ = 360;
 
-  TGeoMaterial *material = new TGeoMaterial("Dummy");
-  TGeoMedium *medium = new TGeoMedium("Dummy", 1, material);
+  auto *material = new TGeoMaterial("Dummy");
+  auto *medium = new TGeoMedium("Dummy", 1, material);
 
   _geo_volume = gGeoManager->MakeSphere(_name.c_str(), medium, _inner_radius_, _outer_radius_,
                                         _theta_min_, _theta_max_, _phi_min_, _phi_max_);
-  return;
 }
 
 void sphere_volume::tree_dump(std::ostream &out_, const std::string &title_,
                               const std::string &indent_, bool inherit_) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   i_root_volume::tree_dump(out_, title_, indent_, true);
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "(r1, r2, th1, th2, ph1, ph2) : (" << _inner_radius_ << ", " << _outer_radius_ << ", "
        << _theta_min_ << ", " << _theta_max_ << ", " << _phi_min_ << ", " << _phi_max_ << ")"
        << std::endl;
-  return;
 }
 
 void sphere_volume::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::sphere_volume");
-  return;
 }
 
 }  // end of namespace detector

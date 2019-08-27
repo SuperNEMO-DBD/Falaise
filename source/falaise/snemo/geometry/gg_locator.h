@@ -76,7 +76,7 @@ class gg_locator : public geomtools::base_locator, public datatools::i_tree_dump
   virtual void reset();
 
   /// Initialize
-  virtual void initialize(const datatools::properties& config_);
+  virtual void initialize(const datatools::properties& ps);
 
   /// Check intialization flag
   virtual bool is_initialized() const;

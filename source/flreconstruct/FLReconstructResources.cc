@@ -38,7 +38,7 @@ namespace FLReconstruct {
 
 //! Define defaults and type for lookup table of experiment control/configuration files
 struct ExperimentLookup {
-  typedef std::map<std::string, std::string> Table;
+  using Table = std::map<std::string, std::string>;
 
   /// Return resource path in table for given experiment
   /// Returns empty string if not found

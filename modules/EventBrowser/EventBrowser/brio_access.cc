@@ -43,18 +43,14 @@ namespace visualization {
 namespace io {
 
 // ctor:
-brio_access::brio_access() : i_data_access() {
+brio_access::brio_access() {
   _number_of_entries_ = 0;
   _current_file_number_ = 0;
-  _reader_ = 0;
-  return;
+  _reader_ = nullptr;
 }
 
 // dtor:
-brio_access::~brio_access() {
-  this->reset();
-  return;
-}
+brio_access::~brio_access() { this->reset(); }
 
 size_t brio_access::get_number_of_entries() const { return _number_of_entries_; }
 
@@ -65,17 +61,17 @@ const std::string& brio_access::get_current_filename() const {
 }
 
 bool brio_access::open(const std::vector<std::string>& filenames_) {
-  if (_reader_ == 0) {
+  if (_reader_ == nullptr) {
     _reader_ = new brio::reader;
   }
 
-  for (std::vector<std::string>::const_iterator it_file = filenames_.begin();
-       it_file != filenames_.end(); ++it_file) {
-    const std::string& a_file = *it_file;
+  for (const auto& a_file : filenames_) {
     DT_LOG_DEBUG(view::options_manager::get_instance().get_logging_priority(),
                  "Opening file " << a_file << "...");
     _reader_->open(a_file);
-    if (!is_readable()) return false;
+    if (!is_readable()) {
+      return false;
+    }
     build_list();
     _reader_->close();
   }
@@ -88,10 +84,7 @@ bool brio_access::open(const std::vector<std::string>& filenames_) {
 }
 
 bool brio_access::is_valid(const std::vector<std::string>& filenames_) const {
-  for (std::vector<std::string>::const_iterator it_file = filenames_.begin();
-       it_file != filenames_.end(); ++it_file) {
-    const std::string& a_file = *it_file;
-
+  for (const auto& a_file : filenames_) {
     // Check file existence
     if (!boost::filesystem::exists(a_file)) {
       DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
@@ -143,7 +136,7 @@ bool brio_access::is_readable() {
   return true;
 }
 
-bool brio_access::is_opened() const { return (_reader_ != 0) && _reader_->is_opened(); }
+bool brio_access::is_opened() const { return (_reader_ != nullptr) && _reader_->is_opened(); }
 
 bool brio_access::rewind() {
   this->close();
@@ -152,9 +145,11 @@ bool brio_access::rewind() {
   // _file_list_ and ask user to reconstruct all the chain
   // This is needed by event_display::show_all_vertices:
   // I don't really know where to put that for the time being
-  if (_file_list_.empty()) return false;
+  if (_file_list_.empty()) {
+    return false;
+  }
 
-  if (_reader_ == 0) {
+  if (_reader_ == nullptr) {
     _reader_ = new brio::reader;
   }
   _reader_->open(_file_list_.at(_current_file_number_ = 0));
@@ -178,7 +173,7 @@ bool brio_access::close() {
   if (this->is_opened()) {
     _reader_->close();
     delete _reader_;
-    _reader_ = 0;
+    _reader_ = nullptr;
   }
   return true;
 }
@@ -238,7 +233,9 @@ bool brio_access::retrieve_event(event_record& event_, const size_t event_number
 void brio_access::tree_dump(std::ostream& out_, const std::string& title_,
                             const std::string& indent_, bool /*inherit_*/) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   if (!title_.empty()) {
     out_ << indent << title_ << std::endl;
   }
@@ -250,10 +247,9 @@ void brio_access::tree_dump(std::ostream& out_, const std::string& title_,
   out_ << indent << datatools::i_tree_dumpable::last_tag
        << "Attached files : " << _file_list_.size() << std::endl;
 
-  for (std::vector<std::string>::const_iterator ifile = _file_list_.begin();
-       ifile != _file_list_.end(); ++ifile) {
+  for (auto ifile = _file_list_.begin(); ifile != _file_list_.end(); ++ifile) {
     out_ << indent << datatools::i_tree_dumpable::last_skip_tag;
-    std::vector<std::string>::const_iterator jfile = ifile;
+    auto jfile = ifile;
     if (++jfile == _file_list_.end()) {
       out_ << datatools::i_tree_dumpable::last_tag;
     } else {
@@ -261,12 +257,10 @@ void brio_access::tree_dump(std::ostream& out_, const std::string& title_,
     }
     out_ << "File[" << distance(_file_list_.begin(), ifile) << "]: '" << *ifile << "'" << std::endl;
   }
-  return;
 }
 
 void brio_access::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::io::brio_access");
-  return;
 }
 
 }  // end of namespace io

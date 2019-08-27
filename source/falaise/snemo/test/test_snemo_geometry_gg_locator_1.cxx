@@ -63,7 +63,6 @@ void test1(geomtools::manager& mgr_) {
     cerr << "ERROR: test1: As expected, there is no way to use a gg_locator for module #666 !"
          << endl;
   }
-  return;
 }
 
 void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
@@ -86,7 +85,9 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
     geomtools::geom_id gid;
     GGL.find_geom_id(hit_pos, 1204, gid);
@@ -107,7 +108,6 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts (gg_locator) = " << counts << endl;
-  return;
 }
 
 void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
@@ -132,9 +132,11 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
-    geomtools::geom_id gid = geiger_cell_locator.get_geom_id(hit_pos, 1204);
+    const geomtools::geom_id& gid = geiger_cell_locator.get_geom_id(hit_pos, 1204);
     CT.pause();
     if (a_file) {
       if ((i % 100) == 0) {
@@ -152,7 +154,6 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts (smart_id_locator)  = " << counts << endl;
-  return;
 }
 
 void test4(geomtools::manager& a_mgr) {
@@ -167,8 +168,6 @@ void test4(geomtools::manager& a_mgr) {
   clog << "Number of neighbours [0,0,56] = " << GGL.countNeighbours(0, 0, 56) << endl;
 
   clog << "Number of neighbours [0,6,154] = " << GGL.countNeighbours(0, 6, 154) << endl;
-
-  return;
 }
 
 void test5(geomtools::manager& a_mgr) {
@@ -186,8 +185,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 0, 0, true);
       clog << "Neighbour cells for cell [" << side << ",0,0] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -196,8 +195,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 0, 0);
       clog << "Neighbour cells for cell [" << side << ",0,0] (w/o other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -206,8 +205,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 0, 112, true);
       clog << "Neighbour cells for cell [" << side << ",0,112] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -216,8 +215,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 0, 56, true);
       clog << "Neighbour cells for cell [" << side << ",0,56] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -226,8 +225,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 6, 54, true);
       clog << "Neighbour cells for cell [" << side << ",6,54] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -236,8 +235,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 8, 0, true);
       clog << "Neighbour cells for cell [" << side << ",8,0] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -246,8 +245,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 8, 112, true);
       clog << "Neighbour cells for cell [" << side << ",8,112] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -265,8 +264,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 8, 57, true);
       clog << "Neighbour cells for cell [" << side << ",8,57] (with other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -275,8 +274,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 4, 112);
       clog << "Neighbour cells for cell [" << side << ",4,112] (w/o other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -285,14 +284,12 @@ void test5(geomtools::manager& a_mgr) {
       ids = GGL.getNeighbourGIDs(side, 4, 0);
       clog << "Neighbour cells for cell [" << side << ",4,0] (w/o other side)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
   }
-
-  return;
 }
 
 void test6(geomtools::manager& a_mgr, bool draw_) {
@@ -473,11 +470,11 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     {
       const geomtools::geom_map::ginfo_ptr_collection_type& source_ginfo_array =
           the_mapping.get_ginfo_collection_with_type(source_volume_type);
-      if (source_ginfo_array.size() == 0) {
+      if (source_ginfo_array.empty()) {
         clog << "No source volumes are mapped with type '" << source_volume_type << "' !" << endl;
       }
-      for (int i = 0; i < (int)source_ginfo_array.size(); i++) {
-        const geomtools::geom_info& a_geom_info = *source_ginfo_array[i];
+      for (auto i : source_ginfo_array) {
+        const geomtools::geom_info& a_geom_info = *i;
         //    const geomtools::geom_info & a_geom_info = the_mapping.get_geom_info (a_id);
         const geomtools::placement& a_placement = a_geom_info.get_world_placement();
         const geomtools::logical_volume& plog = a_geom_info.get_logical();
@@ -537,8 +534,6 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     }
 
   }  // Draw
-
-  return;
 }
 
 int main(int argc_, char** argv_) {
@@ -567,7 +562,7 @@ int main(int argc_, char** argv_) {
       string token = argv_[iarg];
 
       if (token[0] == '-') {
-        string option = token;
+        const string& option = token;
         if ((option == "-d") || (option == "--debug")) {
           debug = true;
         } else if ((option == "-D") || (option == "--devel")) {
@@ -614,7 +609,7 @@ int main(int argc_, char** argv_) {
           clog << datatools::io::warning << "ignoring option '" << option << "'!" << endl;
         }
       } else {
-        string argument = token;
+        const string& argument = token;
         {
           if (manager_config_file.empty()) {
             manager_config_file = argument;
@@ -636,9 +631,15 @@ int main(int argc_, char** argv_) {
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);
     geomtools::manager my_manager;
-    if (verbose) my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
-    if (debug) my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
-    if (devel) my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
+    if (verbose) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
+    }
+    if (debug) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
+    }
+    if (devel) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
+    }
     if (with_mapping) {
       // prepare mapping configuration with a limited set
       // of geometry categories:
@@ -654,20 +655,20 @@ int main(int argc_, char** argv_) {
       // define a set of geometry categories to be mapped
       // through the embedded mapping system:
       vector<string> only_categories;
-      only_categories.push_back("hall");
-      only_categories.push_back("module");
-      only_categories.push_back("source_pad");
-      only_categories.push_back("source_strip");
-      only_categories.push_back("tracker_submodule");
-      only_categories.push_back("tracker_volume");
-      only_categories.push_back("drift_cell_core");
-      only_categories.push_back("xcalo_block");
-      only_categories.push_back("xcalo_wrapper");
-      only_categories.push_back("gveto_block");
-      only_categories.push_back("gveto_wrapper");
-      only_categories.push_back("calorimeter_submodule");
-      only_categories.push_back("calorimeter_block");
-      only_categories.push_back("calorimeter_wrapper");
+      only_categories.emplace_back("hall");
+      only_categories.emplace_back("module");
+      only_categories.emplace_back("source_pad");
+      only_categories.emplace_back("source_strip");
+      only_categories.emplace_back("tracker_submodule");
+      only_categories.emplace_back("tracker_volume");
+      only_categories.emplace_back("drift_cell_core");
+      only_categories.emplace_back("xcalo_block");
+      only_categories.emplace_back("xcalo_wrapper");
+      only_categories.emplace_back("gveto_block");
+      only_categories.emplace_back("gveto_wrapper");
+      only_categories.emplace_back("calorimeter_submodule");
+      only_categories.emplace_back("calorimeter_block");
+      only_categories.emplace_back("calorimeter_wrapper");
 
       // set the 'only' property:
       manager_config.update("mapping.only_categories", only_categories);

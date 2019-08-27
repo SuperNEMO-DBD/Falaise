@@ -66,7 +66,6 @@ void draw_gg_hit(std::ostream& out_, const sdm::calibrated_tracker_hit& gg_hit_)
   hit_segm.setZ(-zdrift_err);
   geomtools::line_3d line(hit_segp, hit_segm);
   geomtools::gnuplot_draw::draw_line(out_, hit_pos, hit_rot, line);
-  return;
 }
 
 void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit& gg_hit_,
@@ -77,40 +76,39 @@ void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit&
   geomtools::rotation_3d hit_rot;
   hit_pos.setZ(hit_pos.x() + zdrift);
   double width = 42 * CLHEP::mm;
-  if (enlarged_) width += 2 * CLHEP::mm;
+  if (enlarged_) {
+    width += 2 * CLHEP::mm;
+  }
   geomtools::rectangle rect(width, width);
   geomtools::gnuplot_draw::draw_rectangle(out_, hit_pos, hit_rot, rect);
-  return;
 }
 
 void draw_gg_cluster(std::ostream& out_, const sdm::tracker_cluster& gg_cluster_,
                      bool enlarged_ = false, bool sep_ = true) {
-  for (int i = 0; i < (int)gg_cluster_.get_hits().size(); ++i) {
-    draw_gg_cluster_item(out_, gg_cluster_.get_hits()[i].get(), enlarged_);
+  for (const auto& i : gg_cluster_.get_hits()) {
+    draw_gg_cluster_item(out_, i.get(), enlarged_);
   }
   if (sep_) {
     out_ << std::endl << std::endl;
   }
-  return;
 }
 
 void draw_gg_clustering_solution(std::ostream& out_,
                                  const sdm::tracker_clustering_solution& gg_cluster_solution_,
                                  const std::string& mode_, bool sep_ = true) {
   if (mode_ == "clusters") {
-    for (int i = 0; i < (int)gg_cluster_solution_.get_clusters().size(); ++i) {
-      draw_gg_cluster(out_, gg_cluster_solution_.get_clusters()[i].get(), true, false);
+    for (const auto& i : gg_cluster_solution_.get_clusters()) {
+      draw_gg_cluster(out_, i.get(), true, false);
     }
   }
   if (mode_ == "unclustered_hits") {
-    for (int i = 0; i < (int)gg_cluster_solution_.get_unclustered_hits().size(); ++i) {
-      draw_gg_cluster_item(out_, gg_cluster_solution_.get_unclustered_hits()[i].get(), true);
+    for (const auto& i : gg_cluster_solution_.get_unclustered_hits()) {
+      draw_gg_cluster_item(out_, i.get(), true);
     }
   }
   if (sep_) {
     out_ << std::endl << std::endl;
   }
-  return;
 }
 
 int main(int argc_, char** argv_) {
@@ -124,7 +122,7 @@ int main(int argc_, char** argv_) {
     while (iarg < argc_) {
       std::string token = argv_[iarg];
       if (token[0] == '-') {
-        std::string option = token;
+        const std::string& option = token;
         if ((option == "--no-draw")) {
           draw = false;
         } else if ((option == "--draw")) {
@@ -133,7 +131,7 @@ int main(int argc_, char** argv_) {
           std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         { std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl; }
       }
       iarg++;
@@ -151,7 +149,7 @@ int main(int argc_, char** argv_) {
     sdm::event_record ER;
 
     // Event header bank :
-    sdm::event_header& EH = ER.add<sdm::event_header>(sdm::data_info::default_event_header_label());
+    auto& EH = ER.add<sdm::event_header>(sdm::data_info::default_event_header_label());
     EH.set_id(datatools::event_id(666, 345));
     EH.set_timestamp(sdm::timestamp(1268644034, 1204));
     EH.set_generation(sdm::event_header::GENERATION_SIMULATED);
@@ -160,7 +158,7 @@ int main(int argc_, char** argv_) {
     EH.tree_dump(std::clog, "Event header('EH'): ");
 
     // Calibrated data bank :
-    sdm::calibrated_data& CD = ER.add<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label());
+    auto& CD = ER.add<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label());
     // Populate a collection of handles on Geiger hits :
     for (int i = 0; i < 18; ++i) {
       sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
@@ -194,13 +192,15 @@ int main(int argc_, char** argv_) {
       CD.calibrated_tracker_hits().push_back(h);
     }
     std::clog << std::endl;
-    if (draw) fvisu.grab() << std::endl << std::endl;
+    if (draw) {
+      fvisu.grab() << std::endl << std::endl;
+    }
     CD.tree_dump(std::clog, "Calibrated data('CD'): ");
     std::clog << std::endl;
 
     // Tracker clustering data bank :
-    sdm::tracker_clustering_data& TCD =
-        ER.add<sdm::tracker_clustering_data>(sdm::data_info::default_tracker_clustering_data_label());
+    auto& TCD = ER.add<sdm::tracker_clustering_data>(
+        sdm::data_info::default_tracker_clustering_data_label());
 
     // Get a reference to the collection of calibrated Geiger hits from the 'CD' bank :
     sdm::calibrated_data::tracker_hit_collection_type& gg_hits = CD.calibrated_tracker_hits();
@@ -315,5 +315,4 @@ void wait_for_key() {
   std::cin.ignore(std::cin.rdbuf()->in_avail());
   std::cin.get();
 #endif
-  return;
 }

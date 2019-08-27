@@ -13,9 +13,10 @@ namespace flp = falaise::processing;
 class TrivialModule {
  public:
   TrivialModule() = default;
-  TrivialModule(falaise::property_set const&, datatools::service_manager&) : TrivialModule() {}
+  TrivialModule(falaise::property_set const& /*unused*/, datatools::service_manager& /*unused*/)
+      : TrivialModule() {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 };
 FALAISE_REGISTER_MODULE(TrivialModule)
 
@@ -29,9 +30,9 @@ class FooConfig {
 class FooModule {
  public:
   FooModule() = default;
-  FooModule(FooConfig const&, datatools::service_manager&) : FooModule() {}
+  FooModule(FooConfig const& /*unused*/, datatools::service_manager& /*unused*/) : FooModule() {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 };
 
 FALAISE_REGISTER_MODULE(FooModule)
@@ -39,10 +40,10 @@ FALAISE_REGISTER_MODULE(FooModule)
 class ModuleThatThrows {
  public:
   ModuleThatThrows() = default;
-  ModuleThatThrows(falaise::property_set const& ps, datatools::service_manager&)
+  ModuleThatThrows(falaise::property_set const& ps, datatools::service_manager& /*unused*/)
       : aprop(ps.get<std::string>("aprop")) {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 
  private:
   std::string aprop;

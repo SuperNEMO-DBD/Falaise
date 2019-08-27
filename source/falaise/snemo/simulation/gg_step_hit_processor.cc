@@ -49,13 +49,13 @@ void gg_step_hit_processor::_set_defaults() {
 
 void gg_step_hit_processor::reset() { _set_defaults(); }
 
-void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
-                                       ::datatools::service_manager &service_mgr_) {
-  this->base_step_hit_processor::initialize(config_, service_mgr_);
+void gg_step_hit_processor::initialize(const ::datatools::properties &dps,
+                                       ::datatools::service_manager &services) {
+  this->base_step_hit_processor::initialize(dps, services);
   // The geometry manager is mandatory for this processor:
   DT_THROW_IF(_geom_manager == nullptr, std::logic_error, "Missing geometry manager !");
 
-  falaise::property_set ps{config_};
+  falaise::property_set ps{dps};
 
   // A sensitive category is mandatory for this processor,
   // i.e. the one defined for the target Geiger drift cell:
@@ -243,21 +243,20 @@ bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
 }
 
 void gg_step_hit_processor::process(
-    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
-    ::mctools::simulated_data::hit_collection_type &the_plain_gg_hits) {
-  _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *)nullptr,
-           &the_plain_gg_hits);
+    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &baseStepHits,
+    ::mctools::simulated_data::hit_handle_collection_type &handleHits) {
+  _process(baseStepHits, &handleHits, (mctools::simulated_data::hit_collection_type *)nullptr);
 }
 
 void gg_step_hit_processor::process(
-    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
-    ::mctools::simulated_data::hit_handle_collection_type &the_gg_hits) {
-  _process(the_base_step_hits, &the_gg_hits,
-           (mctools::simulated_data::hit_collection_type *)nullptr);
+    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &baseStepHits,
+    ::mctools::simulated_data::hit_collection_type &plainHits) {
+  _process(baseStepHits, (mctools::simulated_data::hit_handle_collection_type *)nullptr,
+           &plainHits);
 }
 
 void gg_step_hit_processor::_process(
-    const mctools::base_step_hit_processor::step_hit_ptr_collection_type &shpc_,
+    const mctools::base_step_hit_processor::step_hit_ptr_collection_type &hitPtrCollection,
     mctools::simulated_data::hit_handle_collection_type *handleHits,
     mctools::simulated_data::hit_collection_type *plainHits) {
   // Check the type of output collection (handles or plain hits) :
@@ -282,7 +281,7 @@ void gg_step_hit_processor::_process(
 
   const double locator_tolerance = 0.1 * CLHEP::micrometer;
 
-  for (auto ihit : shpc_) {
+  for (auto ihit : hitPtrCollection) {
     auto &the_step_hit = const_cast<mctools::base_step_hit &>(*ihit);
 
     const double hit_energy_deposit = the_step_hit.get_energy_deposit();

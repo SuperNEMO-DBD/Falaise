@@ -52,28 +52,22 @@ bool status_bar::is_initialized() const { return _initialized_; }
 
 // ctor:
 status_bar::status_bar() {
-  _server_ = 0;
+  _server_ = nullptr;
   _initialized_ = false;
-  return;
 }
 
 // dtor:
-status_bar::~status_bar() {
-  this->reset();
-  return;
-}
+status_bar::~status_bar() { this->reset(); }
 
 void status_bar::set_event_server(io::event_server* server_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   _server_ = server_;
-  return;
 }
 
 void status_bar::initialize(TGCompositeFrame* main_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   this->_at_init_(main_);
   _initialized_ = true;
-  return;
 }
 
 void status_bar::_at_init_(TGCompositeFrame* main_) {
@@ -81,7 +75,7 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
   const int height = main_->GetHeight();
 
   // a horizontal frame
-  TGHorizontalFrame* main_frame = new TGHorizontalFrame(main_, width, int(height * 0.1));
+  auto* main_frame = new TGHorizontalFrame(main_, width, int(height * 0.1));
   main_->AddFrame(main_frame,
                   new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 3, 3, 3, 3));
 
@@ -116,13 +110,12 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
 
   this->reset();
 
-  TGLayoutHints* layout = new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 1, 1, 3, 1);
+  auto* layout = new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 1, 1, 3, 1);
 
   main_frame->AddFrame(_button_first_, layout);
   main_frame->AddFrame(_button_previous_, layout);
   main_frame->AddFrame(_button_next_, layout);
   main_frame->AddFrame(_button_last_, layout);
-  return;
 }
 
 void status_bar::reset() {
@@ -139,7 +132,6 @@ void status_bar::reset() {
   }
 
   this->reset_buttons();
-  return;
 }
 
 void status_bar::update(const bool reset_, const bool disable_) {
@@ -172,10 +164,7 @@ void status_bar::update(const bool reset_, const bool disable_) {
       _event_list_->AddEntry(" +++ NO EVENT MATCHED SELECTION +++ ", 0);
       _event_list_->Select(0);
     } else {
-      for (io::event_server::event_selection_list_type::const_iterator i_selection =
-               event_selection_list.begin();
-           i_selection != event_selection_list.end(); ++i_selection) {
-        const size_t ievent = *i_selection;
+      for (size_t ievent : event_selection_list) {
         const size_t total = server.get_number_of_events() - 1;
         std::ostringstream label;
         label << "event #" << ievent << "/" << total << " ("
@@ -188,7 +177,6 @@ void status_bar::update(const bool reset_, const bool disable_) {
   _event_list_->SetEnabled(!disable_);
   _event_list_->Select(server.get_current_event_number());
   _goto_event_->SetEnabled(!disable_);
-  return;
 }
 
 void status_bar::update_buttons(const button_signals_type signal_) {
@@ -226,8 +214,6 @@ void status_bar::update_buttons(const button_signals_type signal_) {
     _button_first_->SetEnabled(false);
     _button_previous_->SetEnabled(false);
   }
-
-  return;
 }
 
 void status_bar::reset_buttons() {
@@ -241,7 +227,9 @@ void status_bar::reset_buttons() {
   _button_next_->SetEnabled(false);
   _button_last_->SetEnabled(false);
 
-  if (!_server_->is_initialized()) return;
+  if (!_server_->is_initialized()) {
+    return;
+  }
 
   if (_server_->has_random_data()) {
     _button_first_->SetEnabled(true);
@@ -254,7 +242,6 @@ void status_bar::reset_buttons() {
     _button_next_->SetEnabled(true);
     _button_last_->SetEnabled(false);
   }
-  return;
 }
 
 void status_bar::process() {
@@ -266,7 +253,6 @@ void status_bar::process() {
     _event_list_->Select(a_nbr);
     _server_->set_current_event_number(a_nbr);
   }
-  return;
 }
 
 }  // end of namespace view

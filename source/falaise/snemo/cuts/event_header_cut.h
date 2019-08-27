@@ -77,9 +77,9 @@ class event_header_cut : public cuts::i_cut {
   virtual ~event_header_cut();
 
   /// Initilization
-  virtual void initialize(const datatools::properties& configuration_,
-                          datatools::service_manager& service_manager_,
-                          cuts::cut_handle_dict_type& cut_dict_);
+  virtual void initialize(const datatools::properties& dps,
+                          datatools::service_manager& services,
+                          cuts::cut_handle_dict_type& cuts);
 
   /// Reset
   virtual void reset();
@@ -105,7 +105,7 @@ class event_header_cut : public cuts::i_cut {
   /// Check mode LIST_OF_EVENT_IDS:
   bool cutsOnEventIDs() const;
 
-  void setFlagLabel(const std::string& flag_name_);
+  void setFlagLabel(const std::string& label);
 
   const std::string& getFlagLabel() const;
 
@@ -117,7 +117,7 @@ class event_header_cut : public cuts::i_cut {
 
   void setMaxEventNumber(int max);
 
-  void loadEventIDList(const std::string& file);
+  void loadEventIDList(const std::string& fname);
 
  protected:
   /// Default values

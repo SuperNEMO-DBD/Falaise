@@ -39,7 +39,7 @@ TEST_CASE("Timestamps can be validated/invalidated", "[falaise][datamodel]") {
 
 TEST_CASE("Timestamps can be copied and compared", "[falaise][datamodel]") {
   snemo::datamodel::timestamp t1{12345, 678910};
-  snemo::datamodel::timestamp t1_copy(t1);
+  const snemo::datamodel::timestamp& t1_copy(t1);
 
   snemo::datamodel::timestamp t2_sec{12346, 678910};
   snemo::datamodel::timestamp t2_pico{12345, 678911};

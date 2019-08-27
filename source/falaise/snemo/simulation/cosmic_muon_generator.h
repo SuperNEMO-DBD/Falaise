@@ -104,9 +104,9 @@ class cosmic_muon_generator : public ::genbb::i_genbb {
   virtual ~cosmic_muon_generator();
 
   /// Main initialization interface method
-  virtual void initialize(const datatools::properties& setup_,
-                          datatools::service_manager& service_manager_,
-                          ::genbb::detail::pg_dict_type& dictionary_);
+  virtual void initialize(const datatools::properties& dps,
+                          datatools::service_manager& /* unused */,
+                          genbb::detail::pg_dict_type& /* unused */);
 
   /// Reset the object
   virtual void reset();

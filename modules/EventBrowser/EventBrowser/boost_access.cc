@@ -40,26 +40,19 @@ namespace visualization {
 
 namespace io {
 
-void boost_access::set_sequential(const bool sequential_) {
-  _sequential_ = sequential_;
-  return;
-}
+void boost_access::set_sequential(const bool sequential_) { _sequential_ = sequential_; }
 
 bool boost_access::is_sequential() const { return _sequential_; }
 
 // ctor:
-boost_access::boost_access() : i_data_access() {
+boost_access::boost_access() {
   _number_of_entries_ = 0;
   _current_file_number_ = 0;
-  _reader_ = 0;
-  return;
+  _reader_ = nullptr;
 }
 
 // dtor:
-boost_access::~boost_access() {
-  this->reset();
-  return;
-}
+boost_access::~boost_access() { this->reset(); }
 
 size_t boost_access::get_number_of_entries() const { return _number_of_entries_; }
 
@@ -70,18 +63,20 @@ const std::string& boost_access::get_current_filename() const {
 }
 
 bool boost_access::open(const std::vector<std::string>& filenames_) {
-  if (_reader_ == 0) {
+  if (_reader_ == nullptr) {
     _reader_ = new datatools::data_reader;
   }
 
-  for (std::vector<std::string>::const_iterator it_file = filenames_.begin();
-       it_file != filenames_.end(); ++it_file) {
-    const std::string& a_file = *it_file;
+  for (const auto& a_file : filenames_) {
     _reader_->init_multi(a_file);
 
-    if (!is_readable()) return false;
+    if (!is_readable()) {
+      return false;
+    }
 
-    if (!is_sequential()) build_list();
+    if (!is_sequential()) {
+      build_list();
+    }
 
     _reader_->reset();
   }
@@ -95,10 +90,7 @@ bool boost_access::open(const std::vector<std::string>& filenames_) {
 }
 
 bool boost_access::is_valid(const std::vector<std::string>& filenames_) const {
-  for (std::vector<std::string>::const_iterator it_file = filenames_.begin();
-       it_file != filenames_.end(); ++it_file) {
-    const std::string& a_file = *it_file;
-
+  for (const auto& a_file : filenames_) {
     // Check file existence
     if (!boost::filesystem::exists(a_file)) {
       DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
@@ -122,20 +114,22 @@ bool boost_access::is_valid(const std::vector<std::string>& filenames_) const {
 
     if (boost::filesystem::extension(a_file) == gz_ext ||
         boost::filesystem::extension(a_file) == bzip2_ext) {
-      const std::string stem = a_file.substr(0, a_file.find_last_of("."));
+      const std::string stem = a_file.substr(0, a_file.find_last_of('.'));
 
-      if (boost::filesystem::extension(stem) == txt_ext)
+      if (boost::filesystem::extension(stem) == txt_ext) {
         ok = true;
-      else if (boost::filesystem::extension(stem) == xml_ext)
+      } else if (boost::filesystem::extension(stem) == xml_ext) {
         ok = true;
-      else if (boost::filesystem::extension(stem) == bin_ext)
+      } else if (boost::filesystem::extension(stem) == bin_ext) {
         ok = true;
-    } else if (boost::filesystem::extension(a_file) == txt_ext)
+      }
+    } else if (boost::filesystem::extension(a_file) == txt_ext) {
       ok = true;
-    else if (boost::filesystem::extension(a_file) == xml_ext)
+    } else if (boost::filesystem::extension(a_file) == xml_ext) {
       ok = true;
-    else if (boost::filesystem::extension(a_file) == bin_ext)
+    } else if (boost::filesystem::extension(a_file) == bin_ext) {
       ok = true;
+    }
 
     if (!ok) {
       DT_LOG_DEBUG(view::options_manager::get_instance().get_logging_priority(),
@@ -181,7 +175,7 @@ bool boost_access::is_readable() {
 }
 
 bool boost_access::is_opened() const {
-  return (_reader_ != 0) && (_reader_->is_initialized() || !is_sequential());
+  return (_reader_ != nullptr) && (_reader_->is_initialized() || !is_sequential());
 }
 
 bool boost_access::rewind() {
@@ -190,9 +184,11 @@ bool boost_access::rewind() {
   if (is_sequential()) {
     close();
 
-    if (_file_list_.empty()) return false;
+    if (_file_list_.empty()) {
+      return false;
+    }
 
-    if (_reader_ == 0) {
+    if (_reader_ == nullptr) {
       _reader_ = new datatools::data_reader;
     }
     _reader_->init_multi(_file_list_.at(_current_file_number_ = 0));
@@ -217,7 +213,7 @@ bool boost_access::close() {
   if (is_opened()) {
     _reader_->reset();
     delete _reader_;
-    _reader_ = 0;
+    _reader_ = nullptr;
   }
 
   return true;
@@ -272,7 +268,7 @@ bool boost_access::retrieve_event(event_record& event_, const size_t event_numbe
       return true;
     }
     event_.clear();
-    mctools::simulated_data& sim_data = event_.add<mctools::simulated_data>(SD_LABEL);
+    auto& sim_data = event_.add<mctools::simulated_data>(SD_LABEL);
     sim_data = _sim_data_list_.at(event_number_);
     return true;
   }
@@ -287,7 +283,7 @@ bool boost_access::retrieve_event(event_record& event_, const size_t event_numbe
       _reader_->load(event_);
       record_found = true;
     } else if (_reader_->record_tag_is(mctools::simulated_data::SERIAL_TAG)) {
-      mctools::simulated_data& sim_data = event_.add<mctools::simulated_data>(SD_LABEL);
+      auto& sim_data = event_.add<mctools::simulated_data>(SD_LABEL);
       _reader_->load(sim_data);
       record_found = true;
     } else if (_reader_->record_tag_is(datatools::properties::SERIAL_TAG)) {
@@ -308,7 +304,9 @@ bool boost_access::retrieve_event(event_record& event_, const size_t event_numbe
 void boost_access::tree_dump(std::ostream& out_, const std::string& title_,
                              const std::string& indent_, bool /*inherit_*/) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   if (!title_.empty()) {
     out_ << indent << title_ << std::endl;
   }
@@ -320,10 +318,9 @@ void boost_access::tree_dump(std::ostream& out_, const std::string& title_,
   out_ << indent << datatools::i_tree_dumpable::last_tag
        << "Attached files : " << _file_list_.size() << std::endl;
 
-  for (std::vector<std::string>::const_iterator ifile = _file_list_.begin();
-       ifile != _file_list_.end(); ++ifile) {
+  for (auto ifile = _file_list_.begin(); ifile != _file_list_.end(); ++ifile) {
     out_ << indent << datatools::i_tree_dumpable::last_skip_tag;
-    std::vector<std::string>::const_iterator jfile = ifile;
+    auto jfile = ifile;
     if (++jfile == _file_list_.end()) {
       out_ << datatools::i_tree_dumpable::last_tag;
     } else {
@@ -332,12 +329,10 @@ void boost_access::tree_dump(std::ostream& out_, const std::string& title_,
     out_ << "File[" << std::distance(_file_list_.begin(), ifile) << "]: '" << *ifile << "'"
          << std::endl;
   }
-  return;
 }
 
 void boost_access::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::io::boost_access");
-  return;
 }
 
 }  // end of namespace io

@@ -21,7 +21,7 @@ int main(/*int argc_, char ** argv_*/) {
 
     // Create a handle on some trajectory pattern :
     datatools::handle<sdm::base_trajectory_pattern> hLTP0;
-    sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
+    auto* LTP = new sdm::line_trajectory_pattern;
     // access to the internal geometry model :
     LTP->get_segment().set_first(
         geomtools::vector_3d(3. * CLHEP::mm, 5. * CLHEP::mm, 7. * CLHEP::mm));
@@ -81,7 +81,7 @@ int main(/*int argc_, char ** argv_*/) {
     sdm::event_record ER;
 
     // Particle track data bank :
-    sdm::particle_track_data& PTD =
+    auto& PTD =
         ER.add<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label());
     PTD.add_particle(hPT0);
     PTD.tree_dump(std::clog, "Particle track data :");

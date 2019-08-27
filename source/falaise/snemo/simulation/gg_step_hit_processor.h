@@ -59,8 +59,8 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
   virtual void reset();
 
   /// Main setup routine
-  virtual void initialize(const ::datatools::properties& config_,
-                          ::datatools::service_manager& service_mgr_);
+  virtual void initialize(const datatools::properties& dps,
+                          datatools::service_manager& services);
 
   /// Return a non mutable reference to the PRNG
   const mygsl::rng& get_rng() const;
@@ -75,21 +75,21 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
   virtual bool accept_external_rng() const;
 
   /// Set an external PRNG
-  virtual void set_external_rng(mygsl::rng& rng_);
+  virtual void set_external_rng(mygsl::rng& rng);
 
   /// Main processing routine :
   virtual void process(
-      const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type& the_base_step_hits,
-      ::mctools::simulated_data::hit_handle_collection_type& the_handle_hits);
+      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& baseStepHits,
+      mctools::simulated_data::hit_handle_collection_type& handleHits);
 
   /// Main processing routine :
   virtual void process(
-      const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type& the_base_step_hits,
-      ::mctools::simulated_data::hit_collection_type& the_plain_hits);
+      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& baseStepHits,
+      mctools::simulated_data::hit_collection_type& plainHits);
 
   /// Check if a step hit is a candidate for being part within a proposed Geiger hit
-  bool match_gg_hit(const mctools::base_step_hit& gg_hit_,
-                    const mctools::base_step_hit& step_hit_) const;
+  bool match_gg_hit(const mctools::base_step_hit& gg_hit,
+                    const mctools::base_step_hit& step_hit) const;
 
  protected:
   /// Set default values for attributes
@@ -97,13 +97,13 @@ class gg_step_hit_processor : public mctools::base_step_hit_processor {
 
   /// Main process method
   void _process(
-      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& base_step_hits_,
-      mctools::simulated_data::hit_handle_collection_type* gg_hits_,
-      mctools::simulated_data::hit_collection_type* plain_gg_hits_);
+      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& hitPtrCollection,
+      mctools::simulated_data::hit_handle_collection_type* handleHits,
+      mctools::simulated_data::hit_collection_type* plainHits);
 
   /// To be documented
-  void _purge_gg_hits(mctools::simulated_data::hit_handle_collection_type* gg_hits_,
-                      mctools::simulated_data::hit_collection_type* plain_gg_hits_);
+  void _purge_gg_hits(mctools::simulated_data::hit_handle_collection_type* handleHits,
+                      mctools::simulated_data::hit_collection_type* plainHits);
 
  private:
   std::string moduleCategory_;  /* the name of the mapping

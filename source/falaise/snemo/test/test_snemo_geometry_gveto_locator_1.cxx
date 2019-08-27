@@ -64,16 +64,15 @@ void test1(geomtools::manager& mgr_) {
     cerr << "ERROR: test1: As expected, there is no way to use a gveto_locator for module #666 !"
          << endl;
   }
-  return;
 }
 
 void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
   uint32_t my_module_number = 0;
   snemo::geometry::gveto_locator GL{my_module_number, a_mgr, {}};
-  //GL.set_geo_manager(a_mgr);
-  //GL.set_module_number(my_module_number);
-  //GL.initialize(datatools::properties{});
+  // GL.set_geo_manager(a_mgr);
+  // GL.set_module_number(my_module_number);
+  // GL.initialize(datatools::properties{});
   size_t counts = 0;
   ofstream f1, f2;
   if (a_file) {
@@ -90,7 +89,9 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
     geomtools::geom_id gid;
     GL.find_geom_id(hit_pos, 1252, gid);
@@ -111,7 +112,6 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts(gveto_locator) = " << counts << endl;
-  return;
 }
 
 void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
@@ -136,9 +136,11 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
-    geomtools::geom_id gid = gveto_locator.get_geom_id(hit_pos, calo_block_type);
+    const geomtools::geom_id& gid = gveto_locator.get_geom_id(hit_pos, calo_block_type);
     CT.pause();
     if (a_file) {
       if ((i % 100) == 0) {
@@ -156,7 +158,6 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts(smart_id_locator)  = " << counts << endl;
-  return;
 }
 
 void test4(geomtools::manager& a_mgr) {
@@ -180,8 +181,6 @@ void test4(geomtools::manager& a_mgr) {
   clog << "Number of neighbours [0,0,0,5] = " << GL.countNeighbours(0, 0, 0, 5) << endl;
 
   clog << "Number of neighbours [0,0,1,15] = " << GL.countNeighbours(0, 0, 1, 15) << endl;
-
-  return;
 }
 
 void test5(geomtools::manager& a_mgr) {
@@ -201,8 +200,8 @@ void test5(geomtools::manager& a_mgr) {
     {
       ids = GL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,0](with first)=" << ids.size() << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -211,8 +210,8 @@ void test5(geomtools::manager& a_mgr) {
       ids = GL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::DIAG);
       clog << "Neighbour blocks for block [" << side << ",0,0](with diagonal)=" << ids.size()
            << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -220,8 +219,8 @@ void test5(geomtools::manager& a_mgr) {
     {
       ids = GL.getNeighbourGIDs(side, 0, 1, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,1](with first)=" << ids.size() << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -229,8 +228,8 @@ void test5(geomtools::manager& a_mgr) {
     {
       ids = GL.getNeighbourGIDs(side, 1, 4, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",1,4](with first)=" << ids.size() << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -238,8 +237,8 @@ void test5(geomtools::manager& a_mgr) {
     {
       ids = GL.getNeighbourGIDs(side, 0, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,12](with first)=" << ids.size() << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -247,8 +246,8 @@ void test5(geomtools::manager& a_mgr) {
     {
       ids = GL.getNeighbourGIDs(side, 1, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << "1,12](with first)=" << ids.size() << endl;
-      for (unsigned int i = 0; i < ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
@@ -262,8 +261,6 @@ void test5(geomtools::manager& a_mgr) {
       }
     }
   }
-
-  return;
 }
 
 void test6(geomtools::manager& a_mgr, bool draw_) {
@@ -400,8 +397,8 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
             }
 
             neighbour_ids = GL.getNeighbourGIDs(hit_id, neighbours_mask);
-            for (unsigned int in = 0; in < neighbour_ids.size(); ++in) {
-              hit_ids.push_back(neighbour_ids[in]);
+            for (const auto& neighbour_id : neighbour_ids) {
+              hit_ids.push_back(neighbour_id);
             }
           }
         }
@@ -478,11 +475,11 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     {
       const geomtools::geom_map::ginfo_ptr_collection_type& source_ginfo_array =
           the_mapping.get_ginfo_collection_with_type(source_volume_type);
-      if (source_ginfo_array.size() == 0) {
+      if (source_ginfo_array.empty()) {
         clog << "No source volumes are mapped with type '" << source_volume_type << "' !" << endl;
       }
-      for (int i = 0; i < (int)source_ginfo_array.size(); i++) {
-        const geomtools::geom_info& a_geom_info = *source_ginfo_array[i];
+      for (auto i : source_ginfo_array) {
+        const geomtools::geom_info& a_geom_info = *i;
         //    const geomtools::geom_info & a_geom_info = the_mapping.get_geom_info(a_id);
         const geomtools::placement& a_placement = a_geom_info.get_world_placement();
         const geomtools::logical_volume& plog = a_geom_info.get_logical();
@@ -500,7 +497,7 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
       geomtools::geom_id gid1;
       gid1.set_type(scin_block_type);
       gid1.set_address(my_module_number, 0, 0, 3, 1);
-      //if (GL.is_block_partitioned()) {
+      // if (GL.is_block_partitioned()) {
       //  gid1.set(GL.get_part_address_index(), 1);
       //}
       neighbour_ids = GL.getNeighbourGIDs(gid1, neighbours_mask);
@@ -517,7 +514,7 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
       geomtools::geom_id gid2;
       gid2.set_type(scin_block_type);
       gid2.set_address(my_module_number, 1, 1, 9, 1);
-      //if (GL.is_block_partitioned()) {
+      // if (GL.is_block_partitioned()) {
       //  gid2.set(GL.get_part_address_index(), 1);
       //}
       neighbour_ids = GL.getNeighbourGIDs(gid2, neighbours_mask);
@@ -597,8 +594,6 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     }
 
   }  // Draw
-
-  return;
 }
 
 int main(int argc_, char** argv_) {
@@ -627,7 +622,7 @@ int main(int argc_, char** argv_) {
     datatools::properties::read_config(manager_config_file, manager_config);
     geomtools::manager my_manager;
     my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
-   
+
     my_manager.initialize(manager_config);
     my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
     my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");

@@ -20,7 +20,7 @@ int main(/* int argc_, char ** argv_ */) {
 
     // Create a handle on some trajectory pattern :
     datatools::handle<sdm::base_trajectory_pattern> hLTP0;
-    sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
+    auto* LTP = new sdm::line_trajectory_pattern;
     // access to the internal geometry model :
     LTP->get_segment().set_first(
         geomtools::vector_3d(3. * CLHEP::mm, 5. * CLHEP::mm, 7. * CLHEP::mm));

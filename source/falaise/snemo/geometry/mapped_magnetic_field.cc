@@ -85,11 +85,11 @@ std::istream& safe_getline(std::istream& in_, std::string& out_) {
 struct csv_map_0_t {
  public:
   csv_map_0_t() = default;
-  csv_map_0_t(const std::string& mapfile) : map_filename{mapfile} { load(map_filename); }
+  csv_map_0_t(std::string mapfile) : map_filename{std::move(mapfile)} { load(map_filename); }
   void load(const std::string& mapfile);
   void reset();
-  int interpolate(const geomtools::vector_3d& position, geomtools::vector_3d& field) const;
-  int compute(const geomtools::vector_3d& position, geomtools::vector_3d& field) const;
+  int interpolate(const geomtools::vector_3d& position, geomtools::vector_3d& magnetic_field) const;
+  int compute(const geomtools::vector_3d& position, geomtools::vector_3d& magnetic_field) const;
 
  public:
   // Configuration:
@@ -201,7 +201,7 @@ void csv_map_0_t::load(const std::string& mapfile) {
 }
 
 int csv_map_0_t::interpolate(const geomtools::vector_3d& position_,
-                             geomtools::vector_3d& magnetic_field_) const {
+                             geomtools::vector_3d& magnetic_field) const {
   double xu = (position_.x() - origin.x()) / dx;
   double yu = (position_.y() - origin.y()) / dy;
   double zu = (position_.z() - origin.z()) / dz;
@@ -234,26 +234,26 @@ int csv_map_0_t::interpolate(const geomtools::vector_3d& position_,
       double bf11 = gx * b011 + fx * b111;
       double bff1 = gy * bf01 + fy * bf11;
       double bfff = gz * bff0 + fz * bff1;
-      magnetic_field_[ax] = bfff;
+      magnetic_field[ax] = bfff;
     }
   } else {
-    geomtools::invalidate(magnetic_field_);
+    geomtools::invalidate(magnetic_field);
     return snemo::geometry::mapped_magnetic_field::STATUS_ERROR;
   }
 
   return snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS;
 }
 
-int csv_map_0_t::compute(const ::geomtools::vector_3d& position_,
-                         ::geomtools::vector_3d& magnetic_field_) const {
-  geomtools::invalidate(magnetic_field_);
+int csv_map_0_t::compute(const ::geomtools::vector_3d& position,
+                         ::geomtools::vector_3d& magnetic_field) const {
+  geomtools::invalidate(magnetic_field);
   // the coordinate system has its origin in the centre of the source foil.
   // X is in the horizontal direction within the foil.
   // Y is in the vertical direction within the foil.
   // Z is perpendicular to X and Y to make a right-handed cartesian system.
-  double x = position_.y();
-  double y = position_.z();
-  double z = position_.x();
+  double x = position.y();
+  double y = position.z();
+  double z = position.x();
   int mx[3];
   mx[0] = 1;
   mx[1] = 1;
@@ -284,9 +284,9 @@ int csv_map_0_t::compute(const ::geomtools::vector_3d& position_,
     for (int ax = 0; ax < 3; ax++) {
       b[ax] = bb[ax] * mx[ax] * my[ax] * mz[ax];
     }
-    magnetic_field_[0] = b[2] * mag_field_unit;
-    magnetic_field_[1] = b[0] * mag_field_unit;
-    magnetic_field_[2] = b[1] * mag_field_unit;
+    magnetic_field[0] = b[2] * mag_field_unit;
+    magnetic_field[1] = b[0] * mag_field_unit;
+    magnetic_field[2] = b[1] * mag_field_unit;
   }
   return status;
 }
@@ -385,17 +385,17 @@ int mapped_magnetic_field::compute_electric_field(const geomtools::vector_3d& /*
 
 int mapped_magnetic_field::compute_magnetic_field(const ::geomtools::vector_3d& position_,
                                                   double /* time_ */,
-                                                  ::geomtools::vector_3d& magnetic_field_) const {
+                                                  ::geomtools::vector_3d& magnetic_field) const {
   int status = STATUS_ERROR;
   if (mapMode_ == map_mode_t::IMPORT_CSV_MAP_0) {
-    status = fieldMap_->map.compute(position_, magnetic_field_);
+    status = fieldMap_->map.compute(position_, magnetic_field);
     if (invertFieldAlongZ_) {
-      double Bz = -magnetic_field_.z();
-      magnetic_field_.setZ(Bz);
+      double Bz = -magnetic_field.z();
+      magnetic_field.setZ(Bz);
     }
     if (status != STATUS_SUCCESS) {
       if (zeroFieldOutsideMap_) {
-        magnetic_field_.set(0., 0., 0.);
+        magnetic_field.set(0., 0., 0.);
         status = STATUS_SUCCESS;
       }
     }

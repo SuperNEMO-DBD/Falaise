@@ -32,8 +32,8 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_DETECTOR_I_VOLUME_H
 #define FALAISE_SNEMO_VISUALIZATION_DETECTOR_I_VOLUME_H 1
 
-#include <datatools/i_tree_dump.h>
 #include <EventBrowser/detector/volume_model.h>
+#include <datatools/i_tree_dump.h>
 
 namespace geomtools {
 class geom_info;

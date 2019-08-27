@@ -45,7 +45,7 @@ datatools::properties makeTableLikeProperties() {
 TEST_CASE("property_set default construction works", "") {
   falaise::property_set ps;
   REQUIRE(ps.is_empty());
-  REQUIRE(ps.get_names() == std::vector<std::string>{});
+  REQUIRE(ps.get_names().empty());
 }
 
 TEST_CASE("property_set construction from datatools work", "") {
@@ -120,7 +120,7 @@ TEST_CASE("Insertion/Erase interfaces work", "") {
   ps.put("foo", 1);
 
   SECTION("putting the same key throws existing_key_error") {
-    REQUIRE_THROWS_AS( ps.put("foo", 1), falaise::existing_key_error );
+    REQUIRE_THROWS_AS(ps.put("foo", 1), falaise::existing_key_error);
   }
 
   SECTION("replacing an existing key/value works") {
@@ -135,8 +135,8 @@ TEST_CASE("Insertion/Erase interfaces work", "") {
     ps.put("ascalar", 1234);
     ps.put("avector", std::vector<int>{1, 2, 3, 4});
 
-    REQUIRE_THROWS_AS( ps.get<std::vector<int>>("ascalar"), falaise::wrong_type_error );
-    REQUIRE_THROWS_AS( ps.get<int>("avector"), falaise::wrong_type_error );
+    REQUIRE_THROWS_AS(ps.get<std::vector<int>>("ascalar"), falaise::wrong_type_error);
+    REQUIRE_THROWS_AS(ps.get<int>("avector"), falaise::wrong_type_error);
   }
 
   SECTION("putting values as subkeys works") {
@@ -158,16 +158,16 @@ TEST_CASE("Path type put/get specialization works", "") {
     ps.put("my_relpath", relpth);
     ps.put("my_abspath", abspth);
 
-    REQUIRE( ps.get<falaise::path>("my_relpath") == relpth );
-    REQUIRE_THROWS_AS( ps.get<std::string>("my_relpath"), falaise::wrong_type_error );
+    REQUIRE(ps.get<falaise::path>("my_relpath") == relpth);
+    REQUIRE_THROWS_AS(ps.get<std::string>("my_relpath"), falaise::wrong_type_error);
 
-    REQUIRE( ps.get<falaise::path>("my_abspath") == abspth );
-    REQUIRE_THROWS_AS( ps.get<std::string>("my_abspath"), falaise::wrong_type_error );
+    REQUIRE(ps.get<falaise::path>("my_abspath") == abspth);
+    REQUIRE_THROWS_AS(ps.get<std::string>("my_abspath"), falaise::wrong_type_error);
   }
 
   SECTION("env vars are expanded on get") {
     ps.put("home", falaise::path{"$HOME"});
-    REQUIRE( ps.get<falaise::path>("home") == getenv("HOME") );
+    REQUIRE(ps.get<falaise::path>("home") == getenv("HOME"));
   }
 }
 
@@ -177,49 +177,51 @@ TEST_CASE("Quantity type put/get specialization works", "") {
   ps.put("quantity", falaise::quantity{4.13, "m"});
   ps.put("amass", falaise::mass_t{4.13, "kg"});
 
-  REQUIRE_THROWS_AS( ps.get<falaise::quantity>("number"), falaise::wrong_type_error );
-  REQUIRE_THROWS_AS( ps.get<double>("quantity"), falaise::wrong_type_error );
+  REQUIRE_THROWS_AS(ps.get<falaise::quantity>("number"), falaise::wrong_type_error);
+  REQUIRE_THROWS_AS(ps.get<double>("quantity"), falaise::wrong_type_error);
 
-  REQUIRE( ps.get<falaise::quantity>("quantity").value() == Approx(4.13) );
-  REQUIRE( ps.get<falaise::quantity>("quantity").unit() == "m" );
+  REQUIRE(ps.get<falaise::quantity>("quantity").value() == Approx(4.13));
+  REQUIRE(ps.get<falaise::quantity>("quantity").unit() == "m");
 
   falaise::length_t q;
-  REQUIRE_NOTHROW( q = ps.get<falaise::length_t>("quantity") );
-  REQUIRE( q.value() == Approx(4.13) );
-  REQUIRE( q.unit() == "m" );
-  REQUIRE( q.dimension() == "length" );
-  REQUIRE( q() == Approx(4.13 * CLHEP::m) );
+  REQUIRE_NOTHROW(q = ps.get<falaise::length_t>("quantity"));
+  REQUIRE(q.value() == Approx(4.13));
+  REQUIRE(q.unit() == "m");
+  REQUIRE(q.dimension() == "length");
+  REQUIRE(q() == Approx(4.13 * CLHEP::m));
 }
 
 TEST_CASE("property_set type put/get specialization works", "") {
   falaise::property_set ps{makeTableLikeProperties()};
 
   SECTION("can only create table from pure tables") {
-    REQUIRE_THROWS_AS( auto notATable = ps.get<falaise::property_set>("myprop"), falaise::wrong_type_error );
-    REQUIRE_THROWS_AS( auto badTable = ps.get<falaise::property_set>("mix_table"), falaise::wrong_type_error );
+    REQUIRE_THROWS_AS(auto notATable = ps.get<falaise::property_set>("myprop"),
+                      falaise::wrong_type_error);
+    REQUIRE_THROWS_AS(auto badTable = ps.get<falaise::property_set>("mix_table"),
+                      falaise::wrong_type_error);
   }
 
   SECTION("tables must have correct size") {
     falaise::property_set goodTable = ps.get<falaise::property_set>("pure_table");
-    REQUIRE( goodTable.get_names().size() == 6 );
-    REQUIRE( ps.has_key("pure_table.x") );
+    REQUIRE(goodTable.get_names().size() == 6);
+    REQUIRE(ps.has_key("pure_table.x"));
   }
 
   SECTION("subtables can be extracted directly") {
     auto subTable = ps.get<falaise::property_set>("pure_table.sub_table");
-    REQUIRE( subTable.get_names().size() == 3 );
-    REQUIRE( subTable.get<int>("x") == 111 );
-    REQUIRE( subTable.get<int>("y") == 222 );
-    REQUIRE( subTable.get<int>("z") == 333 );
+    REQUIRE(subTable.get_names().size() == 3);
+    REQUIRE(subTable.get<int>("x") == 111);
+    REQUIRE(subTable.get<int>("y") == 222);
+    REQUIRE(subTable.get<int>("z") == 333);
   }
 
   SECTION("subtables can be extracted indirectly") {
     auto firstTable = ps.get<falaise::property_set>("pure_table");
     auto secondTable = firstTable.get<falaise::property_set>("sub_table");
-    REQUIRE( secondTable.get_names().size() == 3 );
-    REQUIRE( secondTable.get<int>("x") == 111 );
-    REQUIRE( secondTable.get<int>("y") == 222 );
-    REQUIRE( secondTable.get<int>("z") == 333 );
+    REQUIRE(secondTable.get_names().size() == 3);
+    REQUIRE(secondTable.get<int>("x") == 111);
+    REQUIRE(secondTable.get<int>("y") == 222);
+    REQUIRE(secondTable.get<int>("z") == 333);
   }
 
   SECTION("Can put property_set into another") {
@@ -238,15 +240,15 @@ TEST_CASE("property_set type put/get specialization works", "") {
     REQUIRE(ps.has_key("sub.baz"));
     REQUIRE(ps.has_key("sub.bob"));
 
-    REQUIRE_THROWS_AS( ps.put("pure_table", newSub), falaise::existing_key_error );
-    REQUIRE_NOTHROW( ps.put_or_replace("pure_table", newSub) );
+    REQUIRE_THROWS_AS(ps.put("pure_table", newSub), falaise::existing_key_error);
+    REQUIRE_NOTHROW(ps.put_or_replace("pure_table", newSub));
 
     auto newPs = ps.get<falaise::property_set>("pure_table");
-    REQUIRE_FALSE( newPs.has_key("x") );
-    REQUIRE_FALSE( newPs.is_key_to_property_set("sub_table") );
-    REQUIRE( newPs.has_key("baz") );
-    REQUIRE( newPs.has_key("bob") );
-    REQUIRE( newPs.get<double>("bob") == Approx(3.14) );
+    REQUIRE_FALSE(newPs.has_key("x"));
+    REQUIRE_FALSE(newPs.is_key_to_property_set("sub_table"));
+    REQUIRE(newPs.has_key("baz"));
+    REQUIRE(newPs.has_key("bob"));
+    REQUIRE(newPs.get<double>("bob") == Approx(3.14));
   }
 }
 
@@ -256,8 +258,8 @@ TEST_CASE("Creation from file works", "") {
   datatools::properties::write_config(fname, tmp);
 
   falaise::property_set ps;
-  REQUIRE_NOTHROW( make_property_set(fname, ps) );
-  REQUIRE_FALSE( ps.is_empty() );
+  REQUIRE_NOTHROW(make_property_set(fname, ps));
+  REQUIRE_FALSE(ps.is_empty());
 
   auto names = ps.get_names();
   REQUIRE(names.size() == 6);
@@ -299,7 +301,7 @@ TEST_CASE("Check datatools::properties interface", "") {
   double cFactor{0.0};
   bool hasLabel = datatools::units::find_unit(ps.get_unit_symbol("alength"), cFactor, unit_label);
   if (hasLabel) {
-   std::cout << "length has label: " << unit_label << std::endl;
+    std::cout << "length has label: " << unit_label << std::endl;
   }
 
   // All dimensions known
@@ -317,8 +319,10 @@ TEST_CASE("Check datatools::properties interface", "") {
   std::cout << "mylength raw fetch: " << val << std::endl;
   val = ps.fetch_real_with_explicit_unit("mylength");
   std::cout << "mylength via explicit unit : " << val << std::endl;
-  std::cout << "conversion from: " << datatools::units::get_unit(ps.get_unit_symbol("mylength")) << std::endl;
-  std::cout << "so would be: " << val / datatools::units::get_unit(ps.get_unit_symbol("mylength")) << ps.get_unit_symbol("mylength") << std::endl; 
+  std::cout << "conversion from: " << datatools::units::get_unit(ps.get_unit_symbol("mylength"))
+            << std::endl;
+  std::cout << "so would be: " << val / datatools::units::get_unit(ps.get_unit_symbol("mylength"))
+            << ps.get_unit_symbol("mylength") << std::endl;
 }
 
 TEST_CASE("Check units are read correctly", "") {
@@ -348,9 +352,9 @@ TEST_CASE("Check units are read correctly", "") {
     ops.put<falaise::energy_t>("bar", {4.13, "GeV"});
 
     datatools::properties dOPS = ops;
-    REQUIRE(dOPS.fetch_real("foo") == Approx(3.14*CLHEP::um));
+    REQUIRE(dOPS.fetch_real("foo") == Approx(3.14 * CLHEP::um));
     REQUIRE(dOPS.get_unit_symbol("foo") == "um");
-    REQUIRE(dOPS.fetch_real("bar") == Approx(4.13*CLHEP::GeV));
+    REQUIRE(dOPS.fetch_real("bar") == Approx(4.13 * CLHEP::GeV));
     REQUIRE(dOPS.get_unit_symbol("bar") == "GeV");
   }
 }

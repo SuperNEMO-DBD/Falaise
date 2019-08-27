@@ -92,7 +92,7 @@ void event_header_cut::initialize(const datatools::properties& dps,
   this->i_cut::_set_initialized(true);
 }
 
-void event_header_cut::setEventHeaderTag(const std::string& label) { eventHeaderTag_ = label; }
+void event_header_cut::setEventHeaderTag(const std::string& tag) { eventHeaderTag_ = tag; }
 
 const std::string& event_header_cut::getEventHeaderTag() const { return eventHeaderTag_; }
 
@@ -106,7 +106,7 @@ bool event_header_cut::cutsOnEventNumber() const { return (cutMode_ & mode_t::EV
 
 bool event_header_cut::cutsOnEventIDs() const { return (cutMode_ & mode_t::EVENT_ID_LIST) != 0u; }
 
-void event_header_cut::setFlagLabel(const std::string& name) { flagLabel_ = name; }
+void event_header_cut::setFlagLabel(const std::string& label) { flagLabel_ = label; }
 
 const std::string& event_header_cut::getFlagLabel() const { return flagLabel_; }
 

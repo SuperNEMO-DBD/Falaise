@@ -28,10 +28,10 @@ namespace visualization {
 namespace io {
 
 // ctor:
-i_data_access::i_data_access() { return; }
+i_data_access::i_data_access() = default;
 
 // dtor:
-i_data_access::~i_data_access() { return; }
+i_data_access::~i_data_access() = default;
 
 }  // end of namespace io
 

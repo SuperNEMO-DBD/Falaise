@@ -5,7 +5,7 @@
 
 #cmakedefine EVENTBROWSER_USE_OPENGL
 
-#endif // FALAISE_SNEMO_EVENT_BROWSER_CONFIG_H
+#endif  // FALAISE_SNEMO_EVENT_BROWSER_CONFIG_H
 
 /*
 ** Local Variables: --

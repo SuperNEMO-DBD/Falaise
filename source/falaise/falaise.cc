@@ -58,7 +58,7 @@
 
 namespace {
 
-static bool _flinit = false;
+bool _flinit = false;
 
 void falaise_initialize_impl() {
   falaise::init_resources();

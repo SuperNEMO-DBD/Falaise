@@ -67,21 +67,21 @@ class simulated_data_cut : public cuts::i_cut {
   };
 
   /// Constructor
-  simulated_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  simulated_data_cut(datatools::logger::priority lp = datatools::logger::PRIO_FATAL);
 
   /// Destructor
   virtual ~simulated_data_cut();
 
   /// Initilization
-  virtual void initialize(const datatools::properties& configuration_,
-                          datatools::service_manager& service_manager_,
-                          cuts::cut_handle_dict_type& cut_dict_);
+  virtual void initialize(const datatools::properties& dps,
+                          datatools::service_manager& services,
+                          cuts::cut_handle_dict_type& cuts);
 
   /// Reset
   virtual void reset();
 
   /// Set the SD bank key
-  void setSDTag(const std::string& SD_label_);
+  void setSDTag(const std::string& tag);
 
   /// Return the SD bank key
   const std::string& getSDTag() const;
@@ -102,7 +102,7 @@ class simulated_data_cut : public cuts::i_cut {
   bool cutsOnHitProperty() const;
 
   /// Set the name of cut mode MODE_FLAG
-  void setFlagLabel(const std::string& flag_name_);
+  void setFlagLabel(const std::string& label);
 
   /// Return the name of cut mode MODE_FLAG
   const std::string& getFlagLabel() const;

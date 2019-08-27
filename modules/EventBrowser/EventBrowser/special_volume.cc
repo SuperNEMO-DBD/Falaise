@@ -33,67 +33,64 @@ namespace visualization {
 
 namespace detector {
 
-bool special_volume::has_objects() const { return _objects_ != 0; }
+bool special_volume::has_objects() const { return _objects_ != nullptr; }
 
 // ctor:
 special_volume::special_volume(const std::string &name_, const std::string &category_)
-    : i_root_volume(name_, category_), _objects_(0) {
+    : i_root_volume(name_, category_), _objects_(nullptr) {
   _type = "special";
   _composite = false;
-  return;
 }
 
 // dtor:
-special_volume::~special_volume() {
-  this->reset();
-  return;
-}
+special_volume::~special_volume() { this->reset(); }
 
 void special_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
   _objects_ = utils::root_utilities::wires_to_root_draw(get_placement().get_translation(),
                                                         get_placement().get_rotation(), shape_3d_);
-  return;
 }
 
 void special_volume::clear() {
-  if (!has_objects()) return;
+  if (!has_objects()) {
+    return;
+  }
 
   TObjArrayIter iter(_objects_);
-  while (iter.Next()) {
+  while (iter.Next() != nullptr) {
     TObject *a_object = *iter;
 
     if (a_object->IsA() == TPolyLine3D::Class()) {
-      TPolyLine3D *pl3d = dynamic_cast<TPolyLine3D *>(a_object);
+      auto *pl3d = dynamic_cast<TPolyLine3D *>(a_object);
       pl3d->SetLineWidth(1);
       pl3d->SetLineColor(_color);
     }
   }
-  return;
 }
 
 void special_volume::reset() {
   _objects_->Delete();
 
-  _objects_ = 0;
+  _objects_ = nullptr;
   _initialized = false;
-  return;
 }
 
 void special_volume::_highlight() {
   _color = _highlight_color;
   this->clear();
-  return;
 }
 
 void special_volume::draw() const {
-  if (has_objects()) _objects_->Draw();
-  return;
+  if (has_objects()) {
+    _objects_->Draw();
+  }
 }
 
 void special_volume::tree_dump(std::ostream &out_, const std::string &title_,
                                const std::string &indent_, bool inherit_) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   i_root_volume::tree_dump(out_, title_, indent_, true);
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_);
@@ -102,12 +99,10 @@ void special_volume::tree_dump(std::ostream &out_, const std::string &title_,
   } else {
     out_ << "No attached polylines" << std::endl;
   }
-  return;
 }
 
 void special_volume::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::special_volume");
-  return;
 }
 
 }  // end of namespace detector

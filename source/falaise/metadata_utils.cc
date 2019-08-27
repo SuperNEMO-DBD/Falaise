@@ -46,25 +46,25 @@ datatools::multi_properties metadata_collector::get_metadata_from_metadata_file(
 
 // ----- metadata_input
 
-void metadata_input::print(std::ostream& out_) const {
+void metadata_input::print(std::ostream& os) const {
   static const std::string tag("|-- ");
   static const std::string last_tag("`-- ");
-  out_ << "Input metadata of interest: " << std::endl;
-  out_ << tag << "userProfile           = " << userProfile << std::endl;
-  out_ << tag << "experimentalSetupUrn  = " << experimentalSetupUrn << std::endl;
-  out_ << tag << "variantConfigUrn      = " << variantConfigUrn << std::endl;
-  out_ << tag << "variantConfigPath     = " << variantConfigPath << std::endl;
-  out_ << tag << "variantProfileUrn     = " << variantProfileUrn << std::endl;
-  out_ << tag << "variantProfilePath    = " << variantProfilePath << std::endl;
-  out_ << tag << "servicesConfigUrn     = " << servicesConfigUrn << std::endl;
-  out_ << tag << "servicesConfigPath    = " << servicesConfigPath << std::endl;
-  out_ << tag << "numberOfEvents        = " << numberOfEvents << std::endl;
-  out_ << tag << "doSimulation          = " << std::boolalpha << doSimulation << std::endl;
-  out_ << tag << "simuSetupUrn          = " << simuSetupUrn << std::endl;
-  out_ << tag << "doDigitization        = " << std::boolalpha << doDigitization << std::endl;
-  out_ << tag << "digiSetupUrn          = " << digiSetupUrn << std::endl;
-  out_ << tag << "doReconstruction      = " << std::boolalpha << doReconstruction << std::endl;
-  out_ << last_tag << "recSetupUrn           = " << recSetupUrn << std::endl;
+  os << "Input metadata of interest: " << std::endl;
+  os << tag << "userProfile           = " << userProfile << std::endl;
+  os << tag << "experimentalSetupUrn  = " << experimentalSetupUrn << std::endl;
+  os << tag << "variantConfigUrn      = " << variantConfigUrn << std::endl;
+  os << tag << "variantConfigPath     = " << variantConfigPath << std::endl;
+  os << tag << "variantProfileUrn     = " << variantProfileUrn << std::endl;
+  os << tag << "variantProfilePath    = " << variantProfilePath << std::endl;
+  os << tag << "servicesConfigUrn     = " << servicesConfigUrn << std::endl;
+  os << tag << "servicesConfigPath    = " << servicesConfigPath << std::endl;
+  os << tag << "numberOfEvents        = " << numberOfEvents << std::endl;
+  os << tag << "doSimulation          = " << std::boolalpha << doSimulation << std::endl;
+  os << tag << "simuSetupUrn          = " << simuSetupUrn << std::endl;
+  os << tag << "doDigitization        = " << std::boolalpha << doDigitization << std::endl;
+  os << tag << "digiSetupUrn          = " << digiSetupUrn << std::endl;
+  os << tag << "doReconstruction      = " << std::boolalpha << doReconstruction << std::endl;
+  os << last_tag << "recSetupUrn           = " << recSetupUrn << std::endl;
 }
 
 void metadata_input::scan(const datatools::multi_properties& mp) {

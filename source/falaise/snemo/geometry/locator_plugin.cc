@@ -20,13 +20,13 @@ namespace geometry {
 
 GEOMTOOLS_PLUGIN_REGISTRATION_IMPLEMENT(locator_plugin, "snemo::geometry::locator_plugin")
 
-bool locator_plugin::hasGeigerLocator() const { return geigerLocator_.get() != nullptr; }
+bool locator_plugin::hasGeigerLocator() const { return geigerLocator_ != nullptr; }
 
-bool locator_plugin::hasCaloLocator() const { return caloLocator_.get() != nullptr; }
+bool locator_plugin::hasCaloLocator() const { return caloLocator_ != nullptr; }
 
-bool locator_plugin::hasXCaloLocator() const { return xcaloLocator_.get() != nullptr; }
+bool locator_plugin::hasXCaloLocator() const { return xcaloLocator_ != nullptr; }
 
-bool locator_plugin::hasGVetoLocator() const { return gvetoLocator_.get() != nullptr; }
+bool locator_plugin::hasGVetoLocator() const { return gvetoLocator_ != nullptr; }
 
 const snemo::geometry::gg_locator& locator_plugin::geigerLocator() const {
   DT_THROW_IF(!hasGeigerLocator(), std::logic_error, "No GeigerLocator available");

@@ -61,9 +61,7 @@ bool style_manager::use_opengl() const {
   return can_use_opengl;
 }
 
-void style_manager::set_filename(const std::string& filename_) {
-  _filename_ = filename_;
-}
+void style_manager::set_filename(const std::string& filename_) { _filename_ = filename_; }
 
 const std::string& style_manager::get_filename() const { return _filename_; }
 
@@ -112,36 +110,38 @@ const style_manager::volume_properties_dict_type& style_manager::get_volumes_pro
 }
 
 bool style_manager::has_volume_properties(const std::string& volume_name_) const {
-  volume_properties_dict_type::const_iterator found = _volumes_properties_.find(volume_name_);
-  if (found == _volumes_properties_.end()) return false;
-  return true;
+  auto found = _volumes_properties_.find(volume_name_);
+  return found != _volumes_properties_.end();
 }
 
 size_t style_manager::get_volume_color(const std::string& volume_name_) const {
   size_t volume_color = _default_volume_color_;
-  if (has_volume_properties(volume_name_))
+  if (has_volume_properties(volume_name_)) {
     volume_color = _volumes_properties_.at(volume_name_)._color_;
+  }
   return volume_color;
 }
 
 size_t style_manager::get_volume_transparency(const std::string& volume_name_) const {
   size_t volume_transparency = _default_volume_transparency_;
-  if (has_volume_properties(volume_name_))
+  if (has_volume_properties(volume_name_)) {
     volume_transparency = _volumes_properties_.at(volume_name_)._transparency_;
+  }
   // Take care of pad vs. opengl : if opengl is not used then
   // transparency must be less than 50% otherwise no detector
   // can be seen (the line will be invisible) !
-  if (!this->use_opengl())
+  if (!this->use_opengl()) {
     return 50;
-  else
-    return volume_transparency;
+  }
+  { return volume_transparency; }
 }
 
 detector::visibility_type style_manager::get_volume_visibility(
     const std::string& volume_name_) const {
   detector::visibility_type volume_visibility = detector::VISIBLE;
-  if (has_volume_properties(volume_name_))
+  if (has_volume_properties(volume_name_)) {
     volume_visibility = _volumes_properties_.at(volume_name_)._visibility_;
+  }
   return volume_visibility;
 }
 
@@ -158,7 +158,9 @@ bool style_manager::add_particle_properties(const std::string& particle_name_) {
   std::map<std::string, std::string>::const_iterator found =
       _particle_name_dict_.find(particle_name_);
 
-  if (found == _particle_name_dict_.end()) return false;
+  if (found == _particle_name_dict_.end()) {
+    return false;
+  }
 
   _particles_properties_[particle_name_]._color_ = utils::root_utilities::get_random_color();
   _particles_properties_[particle_name_]._latex_name_ = found->second;
@@ -168,22 +170,23 @@ bool style_manager::add_particle_properties(const std::string& particle_name_) {
 }
 
 bool style_manager::has_particle_properties(const std::string& particle_name_) const {
-  particle_properties_dict_type::const_iterator found = _particles_properties_.find(particle_name_);
-  if (found == _particles_properties_.end()) return false;
-  return true;
+  auto found = _particles_properties_.find(particle_name_);
+  return found != _particles_properties_.end();
 }
 
 size_t style_manager::get_particle_color(const std::string& particle_name_) const {
   size_t particle_color = _undefined_particle_color_;
-  if (has_particle_properties(particle_name_))
+  if (has_particle_properties(particle_name_)) {
     particle_color = _particles_properties_.at(particle_name_)._color_;
+  }
   return particle_color;
 }
 
 bool style_manager::get_particle_visibility(const std::string& particle_name_) const {
   bool particle_visibility = true;
-  if (has_particle_properties(particle_name_))
+  if (has_particle_properties(particle_name_)) {
     particle_visibility = _particles_properties_.at(particle_name_)._visibility_;
+  }
   return particle_visibility;
 }
 
@@ -206,12 +209,10 @@ const std::string& style_manager::get_save_extension() const { return _save_exte
 const std::string& style_manager::get_save_prefix() const { return _save_prefix_; }
 
 // ctor:
-style_manager::style_manager() {
-  this->_set_default_();
-}
+style_manager::style_manager() { this->_set_default_(); }
 
 // dtor:
-style_manager::~style_manager() {}
+style_manager::~style_manager() = default;
 
 void style_manager::_build_particle_dictionnary_() {
   // build particle dictionnary
@@ -293,7 +294,9 @@ void style_manager::_read_style_file_(const std::string& style_filename_) {
                  "_default.sty";
     // Replace double semi colon with underscore
     const size_t start_semi_colon = _filename_.find("::");
-    if (start_semi_colon != std::string::npos) _filename_.replace(start_semi_colon, 2, "_");
+    if (start_semi_colon != std::string::npos) {
+      _filename_.replace(start_semi_colon, 2, "_");
+    }
   } else {
     _filename_ = style_filename_;
   }
@@ -349,8 +352,8 @@ void style_manager::_read_style_file_(const std::string& style_filename_) {
   if (browser_config.has_key("color_palette")) {
     std::vector<std::string> colors;
     browser_config.fetch("color_palette", colors);
-    for (size_t i = 0; i < colors.size(); ++i) {
-      _color_palette_.push_back(utils::root_utilities::get_color_value(colors[i]));
+    for (const auto& color : colors) {
+      _color_palette_.push_back(utils::root_utilities::get_color_value(color));
     }
   }
 
@@ -429,7 +432,9 @@ void style_manager::_set_particle_settings_(const datatools::properties& config_
     const std::string particle_name = i->first;
     std::string key = particle_name + ".color";
 
-    if (!config_.has_key(key)) continue;
+    if (!config_.has_key(key)) {
+      continue;
+    }
 
     // Set particle color
     _particles_properties_[particle_name]._color_ =
@@ -450,20 +455,30 @@ void style_manager::_set_particle_settings_(const datatools::properties& config_
 
 void style_manager::_set_miscellaneous_(const datatools::properties& config_) {
   // MC stuff
-  if (config_.has_key("mc_line_style"))
+  if (config_.has_key("mc_line_style")) {
     _mc_line_style_ = utils::root_utilities::get_line_style("mc_line_style", config_);
+  }
 
-  if (config_.has_key("mc_line_width")) _mc_line_width_ = config_.fetch_integer("mc_line_width");
+  if (config_.has_key("mc_line_width")) {
+    _mc_line_width_ = config_.fetch_integer("mc_line_width");
+  }
 
-  if (config_.has_key("calibrated_data_color"))
+  if (config_.has_key("calibrated_data_color")) {
     _calibrated_data_color_ =
         utils::root_utilities::get_color_value("calibrated_data_color", config_);
+  }
 
-  if (config_.has_key("save.directory")) _save_directory_ = config_.fetch_string("save.directory");
+  if (config_.has_key("save.directory")) {
+    _save_directory_ = config_.fetch_string("save.directory");
+  }
 
-  if (config_.has_key("save.extension")) _save_extension_ = config_.fetch_string("save.extension");
+  if (config_.has_key("save.extension")) {
+    _save_extension_ = config_.fetch_string("save.extension");
+  }
 
-  if (config_.has_key("save.prefix")) _save_prefix_ = config_.fetch_string("save.prefix");
+  if (config_.has_key("save.prefix")) {
+    _save_prefix_ = config_.fetch_string("save.prefix");
+  }
 }
 
 void style_manager::_set_gui_style_() const {
@@ -529,9 +544,11 @@ void style_manager::dump_into_file(const std::string& filename_) {
   oss << "volume_category_list : string[" << _volumes_properties_.size() << "] = ";
   fout << oss.str() << "\\" << std::endl;
   size_t n_characters = 0;
-  for (volume_properties_dict_type::iterator it_volume = _volumes_properties_.begin();
-       it_volume != _volumes_properties_.end(); ++it_volume) {
-    for (size_t i_space = 0; i_space < oss.str().size(); ++i_space) fout << " ";
+  for (auto it_volume = _volumes_properties_.begin(); it_volume != _volumes_properties_.end();
+       ++it_volume) {
+    for (size_t i_space = 0; i_space < oss.str().size(); ++i_space) {
+      fout << " ";
+    }
     fout << "\"" << it_volume->first << "\"";
 
     const size_t index = std::distance(_volumes_properties_.begin(), it_volume) + 1;
@@ -546,8 +563,9 @@ void style_manager::dump_into_file(const std::string& filename_) {
   for (volume_properties_dict_type::const_iterator it_volume = _volumes_properties_.begin();
        it_volume != _volumes_properties_.end(); ++it_volume) {
     fout << it_volume->first << ".visibility";
-    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space)
+    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space) {
       fout << " ";
+    }
     fout << " : string = ";
     switch (it_volume->second._visibility_) {
       case detector::VISIBLE:
@@ -570,8 +588,9 @@ void style_manager::dump_into_file(const std::string& filename_) {
   for (volume_properties_dict_type::const_iterator it_volume = _volumes_properties_.begin();
        it_volume != _volumes_properties_.end(); ++it_volume) {
     fout << it_volume->first << ".color";
-    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space)
+    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space) {
       fout << " ";
+    }
     fout << " : integer[3] = ";
     utils::root_utilities::write_rgb_color(fout, it_volume->second._color_);
     fout << std::endl;
@@ -583,8 +602,9 @@ void style_manager::dump_into_file(const std::string& filename_) {
   for (volume_properties_dict_type::const_iterator it_volume = _volumes_properties_.begin();
        it_volume != _volumes_properties_.end(); ++it_volume) {
     fout << it_volume->first << ".transparency";
-    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space)
+    for (size_t i_space = 0; i_space < n_characters - it_volume->first.size(); ++i_space) {
       fout << " ";
+    }
     fout << " : integer = " << it_volume->second._transparency_;
     fout << std::endl;
   }
@@ -603,8 +623,9 @@ void style_manager::dump_into_file(const std::string& filename_) {
   for (particle_properties_dict_type::const_iterator it_particle = _particles_properties_.begin();
        it_particle != _particles_properties_.end(); ++it_particle) {
     fout << it_particle->first << ".color";
-    for (size_t i_space = 0; i_space < n_characters - it_particle->first.size(); ++i_space)
+    for (size_t i_space = 0; i_space < n_characters - it_particle->first.size(); ++i_space) {
       fout << " ";
+    }
     fout << " : integer[3] = ";
     utils::root_utilities::write_rgb_color(fout, it_particle->second._color_);
     fout << std::endl;
@@ -666,13 +687,12 @@ void style_manager::tree_dump(std::ostream& out_, const std::string& title_,
          << "Geometry settings : " << _volumes_properties_.size() << " "
          << "volume" << (_volumes_properties_.size() > 1 ? "s" : "") << std::endl;
 
-    for (volume_properties_dict_type::const_iterator i = _volumes_properties_.begin();
-         i != _volumes_properties_.end(); ++i) {
+    for (auto i = _volumes_properties_.begin(); i != _volumes_properties_.end(); ++i) {
       std::ostringstream oss;
       oss << indent << datatools::i_tree_dumpable::skip_tag;
       out_ << oss.str();
 
-      volume_properties_dict_type::const_iterator j = i;
+      auto j = i;
       if (++j == _volumes_properties_.end()) {
         out_ << datatools::i_tree_dumpable::last_tag;
         oss << datatools::i_tree_dumpable::last_skip_tag
@@ -687,9 +707,15 @@ void style_manager::tree_dump(std::ostream& out_, const std::string& title_,
 
       const volume_properties& vprop = i->second;
       out_ << oss.str() << datatools::i_tree_dumpable::tag << "Visibility   : ";
-      if (vprop._visibility_ == detector::VISIBLE) out_ << "visible";
-      if (vprop._visibility_ == detector::INVISIBLE) out_ << "invisible";
-      if (vprop._visibility_ == detector::DISABLE) out_ << "disable";
+      if (vprop._visibility_ == detector::VISIBLE) {
+        out_ << "visible";
+      }
+      if (vprop._visibility_ == detector::INVISIBLE) {
+        out_ << "invisible";
+      }
+      if (vprop._visibility_ == detector::DISABLE) {
+        out_ << "disable";
+      }
       out_ << std::endl;
 
       out_ << oss.str() << datatools::i_tree_dumpable::tag << "Color (RGB)  : ";
@@ -706,13 +732,12 @@ void style_manager::tree_dump(std::ostream& out_, const std::string& title_,
          << "Particle settings : " << _particles_properties_.size() << " "
          << "particle" << (_particles_properties_.size() > 1 ? "s" : "") << std::endl;
 
-    for (particle_properties_dict_type::const_iterator i = _particles_properties_.begin();
-         i != _particles_properties_.end(); ++i) {
+    for (auto i = _particles_properties_.begin(); i != _particles_properties_.end(); ++i) {
       std::ostringstream oss;
       oss << indent << datatools::i_tree_dumpable::skip_tag;
       out_ << oss.str();
 
-      particle_properties_dict_type::const_iterator j = i;
+      auto j = i;
       if (++j == _particles_properties_.end()) {
         out_ << datatools::i_tree_dumpable::last_tag;
         oss << datatools::i_tree_dumpable::last_skip_tag

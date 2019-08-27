@@ -107,7 +107,7 @@ class browser_tracks {
   void reset();
 
   /// Callback method when an item is checked
-  void item_checked(TObject *object_, bool test_);
+  void item_checked(TObject *object_, bool is_checked_);
 
   /// Callback method when an item is selected
   void item_selected(TGListTreeItem *item_, int button_);
@@ -168,10 +168,10 @@ class browser_tracks {
   // Dictionnary matching a pointer to an item id
   int _item_id_;  //!< Internal item id counter
   std::map<int, datatools::properties *>
-      _properties_dictionnary_;  //!<
-                                 //! Dictionary
-                                 //! of
-                                 //!'datatools::properties' pointers
+      _properties_dictionnary_;                                 //!<
+                                                                //! Dictionary
+                                                                //! of
+                                                                //!'datatools::properties' pointers
   std::map<int, geomtools::base_hit *> _base_hit_dictionnary_;  //!<
                                                                 //! Dictionary
                                                                 //! of

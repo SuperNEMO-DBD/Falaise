@@ -62,8 +62,8 @@ void gg_locator::reset() { set_defaults_(); }
 
 bool gg_locator::is_initialized() const { return isInitialized_; }
 
-void gg_locator::initialize(const datatools::properties &config_) {
-  base_locator::_basic_initialize(config_);
+void gg_locator::initialize(const datatools::properties &ps) {
+  base_locator::_basic_initialize(ps);
   DT_THROW_IF(moduleNumber_ == geomtools::geom_id::INVALID_ADDRESS, std::logic_error,
               "Missing module number ! Use the 'setModuleNumber' method before !");
   construct_();
@@ -97,18 +97,24 @@ size_t gg_locator::numberOfSides() const { return utils::NSIDES; }
 size_t gg_locator::numberOfLayers(uint32_t side) const {
   if (side == side_t::BACK) {
     return backCellX_.size();
-  } else if (side == side_t::FRONT) {
+  }
+
+  if (side == side_t::FRONT) {
     return frontCellX_.size();
   }
+
   DT_THROW(std::logic_error, "Invalid side number " << side << " !");
 }
 
 size_t gg_locator::numberOfRows(uint32_t side) const {
   if (side == side_t::BACK) {
     return backCellY_.size();
-  } else if (side == side_t::FRONT) {
+  }
+
+  if (side == side_t::FRONT) {
     return frontCellY_.size();
   }
+
   DT_THROW(std::logic_error, "Invalid side number " << side << " !");
 }
 
@@ -158,7 +164,7 @@ size_t gg_locator::countNeighbours(const geomtools::geom_id &gid, bool acrossFoi
 }
 
 size_t gg_locator::countNeighbours(uint32_t side_, uint32_t layer_, uint32_t row_,
-                                   bool other_side_) const {
+                                   bool acrossFoil) const {
   bool corner = false;
   bool side = false;
   size_t plus = 0;
@@ -166,11 +172,11 @@ size_t gg_locator::countNeighbours(uint32_t side_, uint32_t layer_, uint32_t row
     if ((layer_ == 0) || (layer_ == backCellX_.size() - 1)) {
       if ((row_ == 0) || (row_ == backCellY_.size() - 1)) {
         corner = true;
-        if (other_side_ && (layer_ == 0)) {
+        if (acrossFoil && (layer_ == 0)) {
           plus = 2;
         }
       } else {
-        if (other_side_ && (layer_ == 0)) {
+        if (acrossFoil && (layer_ == 0)) {
           plus = 3;
         }
         side = true;
@@ -181,11 +187,11 @@ size_t gg_locator::countNeighbours(uint32_t side_, uint32_t layer_, uint32_t row
     if ((layer_ == 0) || (layer_ == frontCellX_.size() - 1)) {
       if ((row_ == 0) || (row_ == frontCellY_.size() - 1)) {
         corner = true;
-        if (other_side_ && (layer_ == 0)) {
+        if (acrossFoil && (layer_ == 0)) {
           plus = 2;
         }
       } else {
-        if (other_side_ && (layer_ == 0)) {
+        if (acrossFoil && (layer_ == 0)) {
           plus = 3;
         }
         side = true;
@@ -211,8 +217,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(const geomtools::ge
 }
 
 std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uint32_t layer_,
-                                                             uint32_t row_,
-                                                             bool other_side_) const {
+                                                             uint32_t row_, bool acrossFoil) const {
   DT_THROW_IF(side_ != side_t::BACK && side_ != side_t::FRONT, std::logic_error,
               "Invalid side number (" << side_ << "> 1)!");
 
@@ -290,7 +295,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_, layer_ - 1, row_ + 1);
     }
-    if ((layer_ == 0) && (row_ > 0) && other_side_) {
+    if ((layer_ == 0) && (row_ > 0) && acrossFoil) {
       /*   1  0     0
        *  [ ][ ] | [ ] R+1
        *  [ ][.] | [ ] R
@@ -298,7 +303,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_ + 1, 0, row_ - 1);
     }
-    if ((layer_ == 0) && other_side_) {
+    if ((layer_ == 0) && acrossFoil) {
       /*   1  0     0
        *  [ ][ ] | [ ] R+1
        *  [ ][.] | [x] R
@@ -306,7 +311,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_ + 1, 0, row_);
     }
-    if ((layer_ == 0) && (row_ < (backCellY_.size() - 1)) && other_side_) {
+    if ((layer_ == 0) && (row_ < (backCellY_.size() - 1)) && acrossFoil) {
       /*   1  0     0
        *  [ ][ ] | [x] R+1
        *  [ ][.] | [ ] R
@@ -386,7 +391,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_, layer_ - 1, row_ + 1);
     }
-    if ((layer_ == 0) && (row_ > 0) && other_side_) {
+    if ((layer_ == 0) && (row_ > 0) && acrossFoil) {
       /*   0     0  1
        *  [ ] | [ ][ ] R+1
        *  [ ] | [.][ ] R
@@ -394,7 +399,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_ - 1, 0, row_ - 1);
     }
-    if ((layer_ == 0) && other_side_) {
+    if ((layer_ == 0) && acrossFoil) {
       /*   0     0  1
        *  [ ] | [ ][ ] R+1
        *  [x] | [.][ ] R
@@ -402,7 +407,7 @@ std::vector<geomtools::geom_id> gg_locator::getNeighbourGIDs(uint32_t side_, uin
        */
       ids_.emplace_back(cellGIDType_, moduleNumber_, side_ - 1, 0, row_);
     }
-    if ((layer_ == 0) && (row_ < (frontCellY_.size() - 1)) && other_side_) {
+    if ((layer_ == 0) && (row_ < (frontCellY_.size() - 1)) && acrossFoil) {
       /*   0     0  1
        *  [x] | [ ][ ] R+1
        *  [ ] | [.][ ] R

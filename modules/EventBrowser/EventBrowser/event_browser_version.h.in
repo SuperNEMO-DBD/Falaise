@@ -28,6 +28,7 @@
 // Standard Library:
 #include <string>
 
+// clang-format off
 //----------------------------------------------------------------------
 // - Compile Time API
 //! Major version number of EventBrowser
@@ -40,49 +41,46 @@
 #define EVENTBROWSER_VERSION_PATCH @FalaiseEventBrowserPlugin_VERSION_PATCH@
 
 //! Encode EventBrowser to ordered integer available at compile time
-#define EVENTBROWSER_ENCODE_VERSION(major, minor, patch) ( \
-        ((major) * 10000) \
-      + ((minor) *   100) \
-      + ((patch) *     1))
+#define EVENTBROWSER_ENCODE_VERSION(major, minor, patch) \
+  (((major)*10000) + ((minor)*100) + ((patch)*1))
 
 //! Integer encoded EventBrowser version available at compile time
-#define EVENTBROWSER_VERSION EVENTBROWSER_ENCODE_VERSION( \
-        EVENTBROWSER_VERSION_MAJOR, \
-        EVENTBROWSER_VERSION_MINOR, \
-        EVENTBROWSER_VERSION_PATCH)
+#define EVENTBROWSER_VERSION                                                          \
+  EVENTBROWSER_ENCODE_VERSION(EVENTBROWSER_VERSION_MAJOR, EVENTBROWSER_VERSION_MINOR, \
+                              EVENTBROWSER_VERSION_PATCH)
 
 //! String encoded full version number, e.g. "1.2.3", available at compile time
 #define EVENTBROWSER_LIB_VERSION                                        \
   "@FalaiseEventBrowserPlugin_VERSION@.@FalaiseEventBrowserPlugin_VERSION_MINOR@.@FalaiseEventBrowserPlugin_VERSION_PATCH"
 
 //! Check current version >= (major, minor, patch) at compile time
-#define EVENTBROWSER_IS_AT_LEAST(major,minor,patch) ( \
-        EVENTBROWSER_VERSION >= \
-        EVENTBROWSER_ENCODE_VERSION(major,minor,patch))
+#define EVENTBROWSER_IS_AT_LEAST(major, minor, patch) \
+  (EVENTBROWSER_VERSION >= EVENTBROWSER_ENCODE_VERSION(major, minor, patch))
+// clang-format on
 
 //----------------------------------------------------------------------
 // Runtime API
 namespace EventBrowser {
 //! \brief Describe the EventBrowser API version and features
 struct version {
-//! Return the major version number of EventBrowser, e.g., 1 for '1.2.3'
-static int get_major();
+  //! Return the major version number of EventBrowser, e.g., 1 for '1.2.3'
+  static int get_major();
 
-//! Return the minor version number of EventBrowser, e.g., 2 for '1.2.3'
-static int get_minor();
+  //! Return the minor version number of EventBrowser, e.g., 2 for '1.2.3'
+  static int get_minor();
 
-//! Return the patch version number of EventBrowser, e.g., 3 for '1.2.3'
-static int get_patch();
+  //! Return the patch version number of EventBrowser, e.g., 3 for '1.2.3'
+  static int get_patch();
 
-//! Return the full version number of EventBrowser as a string, e.g., '1.2.3'
-static std::string get_version();
+  //! Return the full version number of EventBrowser as a string, e.g., '1.2.3'
+  static std::string get_version();
 
-//! Return true if the current EventBrowser version >= (major, minor, patch)
-static bool is_at_least(int major, int minor, int patch);
+  //! Return true if the current EventBrowser version >= (major, minor, patch)
+  static bool is_at_least(int major, int minor, int patch);
 
-//! Return true if the named feature is available in EventBrowser
-static bool has_feature(const std::string& feature);
+  //! Return true if the named feature is available in EventBrowser
+  static bool has_feature(const std::string& feature);
 };
-} // namespace EventBrowser
+}  // namespace EventBrowser
 
-#endif // FALAISE_SNEMO_EVENT_BROWSER_VERSION_H
+#endif  // FALAISE_SNEMO_EVENT_BROWSER_VERSION_H

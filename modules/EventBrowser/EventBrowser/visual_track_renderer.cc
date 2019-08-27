@@ -48,14 +48,14 @@ namespace visualization {
 namespace view {
 
 // ctor:
-visual_track_renderer::visual_track_renderer() : base_renderer() { return; }
+visual_track_renderer::visual_track_renderer() = default;
 
 // dtor:
-visual_track_renderer::~visual_track_renderer() { return; }
+visual_track_renderer::~visual_track_renderer() = default;
 
 void visual_track_renderer::push_mc_tracks() {
   const io::event_record &event = _server->get_event();
-  const mctools::simulated_data &sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto &sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   // Get hit categories related to visual track
   std::vector<std::string> visual_categories;
@@ -73,11 +73,11 @@ void visual_track_renderer::push_mc_tracks() {
   const mctools::simulated_data::primary_event_type &pevent = sim_data.get_primary_event();
   const genbb::primary_event::particles_col_type &particles = pevent.get_particles();
 
-  for (genbb::primary_event::particles_col_type::const_iterator ip = particles.begin();
-       ip != particles.end(); ++ip) {
-    const genbb::primary_particle &a_primary = *ip;
-    if (!a_primary.has_generation_id()) continue;
-    const datatools::properties particle_aux = a_primary.get_auxiliaries();
+  for (const auto &a_primary : particles) {
+    if (!a_primary.has_generation_id()) {
+      continue;
+    }
+    const datatools::properties &particle_aux = a_primary.get_auxiliaries();
     const int track_id = a_primary.get_generation_id() + 1;
     if (particle_aux.has_key(browser_tracks::CHECKED_FLAG) &&
         !particle_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
@@ -85,34 +85,33 @@ void visual_track_renderer::push_mc_tracks() {
     }
   }
 
-  for (size_t icat = 0; icat < visual_categories.size(); ++icat) {
+  for (const auto &visual_categorie : visual_categories) {
     const mctools::simulated_data::hit_handle_collection_type &hit_collection =
-        sim_data.get_step_hits(visual_categories[icat]);
+        sim_data.get_step_hits(visual_categorie);
     if (hit_collection.empty()) {
       DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(), "No MC hits");
       continue;
     }
 
-    for (mctools::simulated_data::hit_handle_collection_type::const_iterator it_hit =
-             hit_collection.begin();
-         it_hit != hit_collection.end(); ++it_hit) {
-      const mctools::base_step_hit &a_hit = it_hit->get();
+    for (const auto &it_hit : hit_collection) {
+      const mctools::base_step_hit &a_hit = it_hit.get();
       std::string particle_name = a_hit.get_particle_name();
 
       const std::string delta_ray_from_alpha_flag = mctools::track_utils::DELTA_RAY_FROM_ALPHA_FLAG;
       const bool is_delta_ray_from_alpha =
           a_hit.get_auxiliaries().has_flag(delta_ray_from_alpha_flag);
 
-      if (is_delta_ray_from_alpha)
+      if (is_delta_ray_from_alpha) {
         particle_name = "delta_ray_from_alpha";
-      else if (particle_name == "e+")
+      } else if (particle_name == "e+") {
         particle_name = "positron";
-      else if (particle_name == "e-")
+      } else if (particle_name == "e-") {
         particle_name = "electron";
-      else if (particle_name == "mu+")
+      } else if (particle_name == "mu+") {
         particle_name = "muon_plus";
-      else if (particle_name == "mu-")
+      } else if (particle_name == "mu-") {
         particle_name = "muon_minus";
+      }
 
       style_manager &style_mgr = style_manager::get_instance();
       if (!style_mgr.has_particle_properties(particle_name)) {
@@ -122,7 +121,9 @@ void visual_track_renderer::push_mc_tracks() {
         }
       }
 
-      if (!style_mgr.get_particle_visibility(particle_name)) continue;
+      if (!style_mgr.get_particle_visibility(particle_name)) {
+        continue;
+      }
 
       size_t line_color = style_mgr.get_particle_color(particle_name);
       size_t line_width = style_mgr.get_mc_line_width();
@@ -134,7 +135,9 @@ void visual_track_renderer::push_mc_tracks() {
           !hit_aux.has_flag(browser_tracks::CHECKED_FLAG)) {
         enable_tracks.insert(track_id);
       }
-      if (enable_tracks.count(track_id)) continue;
+      if (enable_tracks.count(track_id) != 0u) {
+        continue;
+      }
 
       if (hit_aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {  //  &&
         // a_hit.get_auxiliaries().has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
@@ -158,27 +161,26 @@ void visual_track_renderer::push_mc_tracks() {
       mc_path->SetLineStyle(line_style);
     }
   }  // end of category list
-  return;
 }
 
 void visual_track_renderer::push_mc_legend() {
   const style_manager &style_mgr = style_manager::get_instance();
-  const std::map<std::string, style_manager::particle_properties> particles =
+  const std::map<std::string, style_manager::particle_properties> &particles =
       style_mgr.get_particles_properties();
 
   double x = 1.00;
   double y = 0.97;
   const double dx = 0.05;
 
-  for (std::map<std::string, style_manager::particle_properties>::const_iterator it_particle =
-           particles.begin();
-       it_particle != particles.end(); ++it_particle) {
-    const std::string particle_name = it_particle->first;
-    const style_manager::particle_properties particle_properties = it_particle->second;
+  for (const auto &particle : particles) {
+    const std::string particle_name = particle.first;
+    const style_manager::particle_properties particle_properties = particle.second;
 
-    if (!particle_properties._visibility_) continue;
+    if (!particle_properties._visibility_) {
+      continue;
+    }
 
-    TLatex *legend = new TLatex;
+    auto *legend = new TLatex;
     _objects->Add(legend);
     legend->SetNDC();
     legend->SetTextAlign(31);
@@ -191,7 +193,7 @@ void visual_track_renderer::push_mc_legend() {
   }
 
   // Add a latest legend text for particles not in the previous list
-  TLatex *legend = new TLatex;
+  auto *legend = new TLatex;
   _objects->Add(legend);
   legend->SetNDC();
   legend->SetTextAlign(31);
@@ -199,14 +201,11 @@ void visual_track_renderer::push_mc_legend() {
   legend->SetTextFont(42);
   legend->SetTextColor(style_mgr.get_particle_color("others"));
   legend->SetText(x -= dx, y, "others");
-
-  return;
 }
 
 void visual_track_renderer::push_reconstructed_tracks() {
   const io::event_record &event = _server->get_event();
-  const snemo::datamodel::particle_track_data &pt_data =
-      event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
+  const auto &pt_data = event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
 
   if (!pt_data.has_particles()) {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
@@ -218,10 +217,8 @@ void visual_track_renderer::push_reconstructed_tracks() {
   if (pt_data.has_non_associated_calorimeters()) {
     const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
         pt_data.get_non_associated_calorimeters();
-    for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator icalo =
-             calos.begin();
-         icalo != calos.end(); ++icalo) {
-      const snemo::datamodel::calibrated_calorimeter_hit &a_calo = icalo->get();
+    for (const auto &calo : calos) {
+      const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
       const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
       this->highlight_geom_id(a_calo_gid,
                               style_manager::get_instance().get_calibrated_data_color());
@@ -249,14 +246,13 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
   const snemo::datamodel::particle_track_data::particle_collection_type &particles =
       pt_data.get_particles();
-  for (snemo::datamodel::particle_track_data::particle_collection_type::const_iterator iparticle =
-           particles.begin();
-       iparticle != particles.end(); ++iparticle) {
-    const snemo::datamodel::particle_track &a_particle = iparticle->get();
+  for (const auto &particle : particles) {
+    const snemo::datamodel::particle_track &a_particle = particle.get();
 
     if (a_particle.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
-        !a_particle.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG))
+        !a_particle.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG)) {
       continue;
+    }
 
     // Get color from charge
     size_t color = 0;
@@ -274,10 +270,8 @@ void visual_track_renderer::push_reconstructed_tracks() {
     if (a_particle.has_vertices()) {
       const snemo::datamodel::particle_track::vertex_collection_type &vtx =
           a_particle.get_vertices();
-      for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator ivtx =
-               vtx.begin();
-           ivtx != vtx.end(); ++ivtx) {
-        const geomtools::blur_spot &a_vertex = ivtx->get();
+      for (const auto &ivtx : vtx) {
+        const geomtools::blur_spot &a_vertex = ivtx.get();
         const geomtools::vector_3d &a_position = a_vertex.get_position();
         {
           TPolyMarker3D *mark = base_renderer::make_polymarker(a_position);
@@ -296,10 +290,8 @@ void visual_track_renderer::push_reconstructed_tracks() {
       // Gamma tracks
       if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
         geomtools::polyline_type vtces;
-        for (snemo::datamodel::particle_track::vertex_collection_type::const_iterator ivtx =
-                 vtx.begin();
-             ivtx != vtx.end(); ++ivtx) {
-          vtces.push_back(ivtx->get().get_position());
+        for (const auto &ivtx : vtx) {
+          vtces.push_back(ivtx.get().get_position());
         }
         TPolyLine3D *track = base_renderer::make_polyline(vtces);
         _objects->Add(track);
@@ -321,10 +313,8 @@ void visual_track_renderer::push_reconstructed_tracks() {
     if (a_particle.has_associated_calorimeter_hits()) {
       const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
           a_particle.get_associated_calorimeter_hits();
-      for (snemo::datamodel::calibrated_calorimeter_hit::collection_type::const_iterator icalo =
-               calos.begin();
-           icalo != calos.end(); ++icalo) {
-        const snemo::datamodel::calibrated_calorimeter_hit &a_calo = icalo->get();
+      for (const auto &calo : calos) {
+        const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
         const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
         this->highlight_geom_id(a_calo_gid, color);
         const double energy = a_calo.get_energy();
@@ -351,14 +341,13 @@ void visual_track_renderer::push_reconstructed_tracks() {
     if (a_particle.has_trajectory()) {
       const snemo::datamodel::tracker_trajectory &a_trajectory = a_particle.get_trajectory();
       const snemo::datamodel::base_trajectory_pattern &a_pattern = a_trajectory.get_pattern();
-      const geomtools::i_wires_3d_rendering &iw3dr =
+      const auto &iw3dr =
           dynamic_cast<const geomtools::i_wires_3d_rendering &>(a_pattern.get_shape());
       TPolyLine3D *track = base_renderer::make_track(iw3dr);
       _objects->Add(track);
       track->SetLineColor(color);
     }
   }
-  return;
 }
 }  // end of namespace view
 

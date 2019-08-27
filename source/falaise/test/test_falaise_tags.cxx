@@ -83,9 +83,9 @@ int main(int argc, char** argv) {
       std::string urn_regex = "(.*)";
       std::string category_regex = "(.*)";
       if (dtkUrnQuery.find_urn_info(all_urns, urn_db_regex, urn_regex, category_regex, true)) {
-        for (auto urn : all_urns) {
+        for (const auto& urn : all_urns) {
           std::clog << " - Tag : '" << urn << "'" << std::endl;
-          datatools::urn_info urnInfo = dtkUrnQuery.get_urn_info(urn);
+          const datatools::urn_info& urnInfo = dtkUrnQuery.get_urn_info(urn);
           urnInfo.tree_dump(std::clog, "", "    ");
         }
       }

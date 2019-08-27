@@ -36,7 +36,7 @@ int main(int argc_, char** argv_) {
     while (iarg < argc_) {
       std::string token = argv_[iarg];
       if (token[0] == '-') {
-        std::string option = token;
+        const std::string& option = token;
         if ((option == "-D") || (option == "--draw")) {
           draw = true;
         } else if ((option == "-P")) {
@@ -49,7 +49,7 @@ int main(int argc_, char** argv_) {
           std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         { std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl; }
       }
       iarg++;
@@ -73,7 +73,7 @@ int main(int argc_, char** argv_) {
     // Event loop :
     for (unsigned int ievent = 0; ievent < 20; ievent++) {
       std::clog << "Processing event #" << ievent << "..." << std::endl;
-      typedef TrackerPreClustering::gg_hit hit_type;
+      using hit_type = TrackerPreClustering::gg_hit;
       snreco::detail::GeigerHitPtrCollection<hit_type> idata;
 
       EG.shoot_event(idata);
@@ -104,8 +104,8 @@ int main(int argc_, char** argv_) {
         std::string fpcluster_name = "__pcluster.data";
         {
           std::ofstream fpcluster(fpcluster_name.c_str());
-          for (unsigned int i = 0; i < odata.promptClusters.size(); i++) {
-            ED.display_cluster<hit_type>(fpcluster, odata.promptClusters[i],
+          for (const auto& promptCluster : odata.promptClusters) {
+            ED.display_cluster<hit_type>(fpcluster, promptCluster,
                                          TrackerPreClustering::event_display::prompt);
             fpcluster << std::endl << std::endl;
           }
@@ -114,8 +114,8 @@ int main(int argc_, char** argv_) {
         std::string fdcluster_name = "__dcluster.data";
         {
           std::ofstream fdcluster(fdcluster_name.c_str());
-          for (unsigned int i = 0; i < odata.delayedClusters.size(); i++) {
-            ED.display_cluster<hit_type>(fdcluster, odata.delayedClusters[i],
+          for (const auto& delayedCluster : odata.delayedClusters) {
+            ED.display_cluster<hit_type>(fdcluster, delayedCluster,
                                          TrackerPreClustering::event_display::delayed);
             fdcluster << std::endl << std::endl;
           }
@@ -138,7 +138,7 @@ int main(int argc_, char** argv_) {
         gp_command << "plot ";
         gp_command << "'" << fgghits_name << "' index 0 title 'prompt hits' with lines lt 3";
         gp_command << ", '" << fgghits_name << "' index 1 title 'delayed hits' with lines lt 4";
-        if (odata.ignoredHits.size() > 0) {
+        if (!odata.ignoredHits.empty()) {
           gp_command << ", '" << figghits_name << "' index 0 title 'ignored hits' with lines lt 7";
         }
         for (unsigned int i = 0; i < odata.promptClusters.size(); i++) {
@@ -185,5 +185,4 @@ void wait_for_key() {
   std::cin.ignore(std::cin.rdbuf()->in_avail());
   std::cin.get();
 #endif
-  return;
 }

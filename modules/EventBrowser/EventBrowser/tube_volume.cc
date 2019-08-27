@@ -41,41 +41,39 @@ tube_volume::tube_volume(const std::string &name_, const std::string &category_)
   _inner_radius_ = 0.0;
   _outer_radius_ = 0.0;
   _height_ = 0.0;
-  return;
 }
 
 // dtor:
-tube_volume::~tube_volume() { return; }
+tube_volume::~tube_volume() = default;
 
 void tube_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
-  const geomtools::tube &mtube = dynamic_cast<const geomtools::tube &>(shape_3d_);
+  const auto &mtube = dynamic_cast<const geomtools::tube &>(shape_3d_);
 
   _inner_radius_ = mtube.get_inner_r();
   _outer_radius_ = mtube.get_outer_r();
   _height_ = mtube.get_z();
 
-  TGeoMaterial *material = new TGeoMaterial("Dummy");
-  TGeoMedium *medium = new TGeoMedium("Dummy", 1, material);
+  auto *material = new TGeoMaterial("Dummy");
+  auto *medium = new TGeoMedium("Dummy", 1, material);
 
   _geo_volume =
       gGeoManager->MakeTube(_name.c_str(), medium, _inner_radius_, _outer_radius_, _height_ / 2.);
-  return;
 }
 
 void tube_volume::tree_dump(std::ostream &out_, const std::string &title_,
                             const std::string &indent_, bool inherit_) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   i_root_volume::tree_dump(out_, title_, indent_, true);
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "(r1, r2, h) : ("
        << _inner_radius_ << ", " << _outer_radius_ << ", " << _height_ << ")" << std::endl;
-  return;
 }
 
 void tube_volume::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::tube_volume");
-  return;
 }
 
 }  // end of namespace detector

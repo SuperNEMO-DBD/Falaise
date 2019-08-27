@@ -41,15 +41,15 @@ void simulated_data_cut::reset() {
   this->i_cut::_set_initialized(false);
 }
 
-void simulated_data_cut::initialize(const datatools::properties& configuration_,
-                                    datatools::service_manager& /* service_manager_ */,
-                                    cuts::cut_handle_dict_type& /* cut_dict_ */) {
+void simulated_data_cut::initialize(const datatools::properties& dps,
+                                    datatools::service_manager& /* unused */,
+                                    cuts::cut_handle_dict_type& /* unused */) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Cut '" << get_name() << "' is already initialized ! ");
 
-  this->i_cut::_common_initialize(configuration_);
+  this->i_cut::_common_initialize(dps);
 
-  falaise::property_set ps{configuration_};
+  falaise::property_set ps{dps};
 
   SDTag_ =
       ps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
@@ -64,7 +64,7 @@ void simulated_data_cut::initialize(const datatools::properties& configuration_,
     hitCategory_ = ps.get<std::string>("has_hit_category.category");
   }
 
-  if (configuration_.has_flag("mode.range_hit_category")) {
+  if (dps.has_key("mode.range_hit_category")) {
     cutMode_ |= mode_t::RANGE_HIT_CATEGORY;
     hitCategory_ = ps.get<std::string>("range_hit_category.category");
     minHitCount_ = ps.get<int>("range_hit_category.min");
@@ -73,7 +73,7 @@ void simulated_data_cut::initialize(const datatools::properties& configuration_,
     DT_THROW_IF(maxHitCount_ < 0, std::out_of_range, "Max hit count < 0")
   }
 
-  if (configuration_.has_flag("mode.has_hit_property")) {
+  if (dps.has_flag("mode.has_hit_property")) {
     cutMode_ |= mode_t::HAS_HIT_PROPERTY;
     hitCategory_ = ps.get<std::string>("has_hit_property.category");
     hitPropertyLogic_ = ps.get<std::string>("has_hit_property.logic");

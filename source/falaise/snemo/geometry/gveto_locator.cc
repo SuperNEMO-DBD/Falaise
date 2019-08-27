@@ -58,7 +58,9 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh1);
-  } else if (caloBlockShape->get_shape_name() == "intersection_3d") {
+  }
+
+  if (caloBlockShape->get_shape_name() == "intersection_3d") {
     // Example : 'calo_tapered_scin_box_model' case :
     const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*caloBlockShape);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
@@ -72,10 +74,13 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh11);
-  } else if (caloBlockShape->get_shape_name() == "box") {
+  }
+
+  if (caloBlockShape->get_shape_name() == "box") {
     // Simple box case :
     return dynamic_cast<const geomtools::box *>(caloBlockShape);
   }
+
   return nullptr;
 }
 
@@ -102,8 +107,8 @@ gveto_locator::~gveto_locator() = default;
 
 void gveto_locator::reset() { set_defaults_(); }
 
-void gveto_locator::initialize(const datatools::properties &config_) {
-  base_locator::_basic_initialize(config_);
+void gveto_locator::initialize(const datatools::properties &ps) {
+  base_locator::_basic_initialize(ps);
   DT_THROW_IF(moduleNumber_ == geomtools::geom_id::INVALID_ADDRESS, std::logic_error,
               "Missing module number ! Use the 'setModuleNumber' method before !");
   construct_();
@@ -136,9 +141,12 @@ size_t gveto_locator::numberOfColumns(uint32_t side, uint32_t wall) const {
               "Invalid wall number(" << wall << ">" << NWALLS_PER_SIDE << ")!");
   if (side == (uint32_t)side_t::BACK) {
     return backCaloBlock_Y_[wall].size();
-  } else if (side == (uint32_t)side_t::FRONT) {
+  }
+
+  if (side == (uint32_t)side_t::FRONT) {
     return frontCaloBlock_Y_[wall].size();
   }
+
   DT_THROW(std::logic_error, "Invalid side number(" << side << ">= " << utils::NSIDES << ")!");
 }
 

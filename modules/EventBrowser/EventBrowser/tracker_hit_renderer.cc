@@ -56,14 +56,14 @@ namespace visualization {
 namespace view {
 
 // ctor:
-tracker_hit_renderer::tracker_hit_renderer() : base_renderer() { return; }
+tracker_hit_renderer::tracker_hit_renderer() = default;
 
 // dtor:
-tracker_hit_renderer::~tracker_hit_renderer() { return; }
+tracker_hit_renderer::~tracker_hit_renderer() = default;
 
 void tracker_hit_renderer::push_simulated_hits(const std::string &hit_category_) {
   const io::event_record &event = _server->get_event();
-  const mctools::simulated_data &sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto &sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   if (!sim_data.has_step_hits(hit_category_)) {
     DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -86,35 +86,31 @@ void tracker_hit_renderer::push_simulated_hits(const std::string &hit_category_)
   const bool geiger_with_gradient =
       options_manager::get_instance().get_option_flag(SHOW_GG_TIME_GRADIENT);
   if (geiger_with_gradient) {
-    for (mctools::simulated_data::hit_handle_collection_type::const_iterator it_hit =
-             hit_collection.begin();
-         it_hit != hit_collection.end(); ++it_hit) {
-      hit_start_time = std::min(it_hit->get().get_time_start(), hit_start_time);
-      hit_stop_time = std::max(it_hit->get().get_time_start(), hit_stop_time);
+    for (const auto &it_hit : hit_collection) {
+      hit_start_time = std::min(it_hit.get().get_time_start(), hit_start_time);
+      hit_stop_time = std::max(it_hit.get().get_time_start(), hit_stop_time);
     }
   }
 
-  for (mctools::simulated_data::hit_handle_collection_type::const_iterator it_hit =
-           hit_collection.begin();
-       it_hit != hit_collection.end(); ++it_hit) {
-    const mctools::base_step_hit &a_step = it_hit->get();
+  for (const auto &it_hit : hit_collection) {
+    const mctools::base_step_hit &a_step = it_hit.get();
 
     // draw the Geiger avalanche path:
-    TPolyLine3D *gg_path = new TPolyLine3D;
+    auto *gg_path = new TPolyLine3D;
     _objects->Add(gg_path);
     gg_path->SetPoint(0, a_step.get_position_start().x(), a_step.get_position_start().y(),
                       a_step.get_position_start().z());
     gg_path->SetPoint(1, a_step.get_position_stop().x(), a_step.get_position_stop().y(),
                       a_step.get_position_stop().z());
 
-    const size_t time_percent =
+    const auto time_percent =
         (size_t)((TColor::GetNumberOfColors() - 1) * (a_step.get_time_start() - hit_start_time) /
                  (hit_stop_time - hit_start_time));
     const size_t color = geiger_with_gradient ? TColor::GetColorPalette(time_percent) : kSpring;
     gg_path->SetLineColor(color);
 
     // Store this value into cluster properties:
-    mctools::base_step_hit *mutable_hit = const_cast<mctools::base_step_hit *>(&(a_step));
+    auto *mutable_hit = const_cast<mctools::base_step_hit *>(&(a_step));
     datatools::properties &hit_properties = mutable_hit->grab_auxiliaries();
     const long pixel = TColor::Number2Pixel(color);
     const std::string hex_str = TColor::PixelAsHexString(pixel);
@@ -122,7 +118,9 @@ void tracker_hit_renderer::push_simulated_hits(const std::string &hit_category_)
 
     // Retrieve line width from properties if 'hit' is highlighted:
     size_t line_width = style_manager::get_instance().get_mc_line_width();
-    if (hit_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
+    if (hit_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+      line_width = 3;
+    }
     // hit_properties.update(browser_tracks::HIGHLIGHT_FLAG, false);
     gg_path->SetLineWidth(line_width);
 
@@ -176,14 +174,11 @@ void tracker_hit_renderer::push_simulated_hits(const std::string &hit_category_)
       gg_drift->SetLineWidth(line_width);
     }  // end of "show geiger drift circle" condition
   }    // end of step collection
-
-  return;
 }
 
 void tracker_hit_renderer::push_calibrated_hits() {
   const io::event_record &event = _server->get_event();
-  const snemo::datamodel::calibrated_data &calib_data =
-      event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
+  const auto &calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
   if (!calib_data.has_calibrated_tracker_hits()) {
     DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -200,55 +195,49 @@ void tracker_hit_renderer::push_calibrated_hits() {
     return;
   }
 
-  for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator it_hit =
-           ct_collection.begin();
-       it_hit != ct_collection.end(); ++it_hit) {
-    const snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit->get();
+  for (const auto &it_hit : ct_collection) {
+    const snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit.get();
     tracker_hit_renderer::_make_calibrated_geiger_hit(a_hit, false);
   }
-  return;
 }
 
 void tracker_hit_renderer::push_clustered_hits() {
   const io::event_record &event = _server->get_event();
-  const snemo::datamodel::tracker_clustering_data &tracker_clustered_data =
+  const auto &tracker_clustered_data =
       event.get<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
 
   const snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
       tracker_clustered_data.get_solutions();
-  for (snemo::datamodel::tracker_clustering_data::solution_col_type::const_iterator isolution =
-           cluster_solutions.begin();
-       isolution != cluster_solutions.end(); ++isolution) {
+  for (const auto &cluster_solution : cluster_solutions) {
     // Get current tracker solution:
-    const snemo::datamodel::tracker_clustering_solution &a_solution = isolution->get();
+    const snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.get();
 
     // Check solution properties:
     if (a_solution.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
-        !a_solution.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG))
+        !a_solution.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG)) {
       continue;
+    }
 
     // Get clusters stored in the current tracker solution:
     const snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
         a_solution.get_clusters();
 
-    for (snemo::datamodel::tracker_clustering_solution::cluster_col_type::const_iterator icluster =
-             clusters.begin();
-         icluster != clusters.end(); ++icluster) {
+    for (auto icluster = clusters.begin(); icluster != clusters.end(); ++icluster) {
       // Get current tracker cluster:
       const snemo::datamodel::tracker_cluster &a_cluster = icluster->get();
 
       // Check cluster properties:
       if (a_cluster.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
-          !a_cluster.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG))
+          !a_cluster.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG)) {
         continue;
+      }
 
       // Determine cluster color
       const size_t cluster_color =
           style_manager::get_instance().get_color(std::distance(clusters.begin(), icluster));
 
       // Store this value into cluster properties:
-      snemo::datamodel::tracker_cluster *mutable_cluster =
-          const_cast<snemo::datamodel::tracker_cluster *>(&(a_cluster));
+      auto *mutable_cluster = const_cast<snemo::datamodel::tracker_cluster *>(&(a_cluster));
       datatools::properties &cluster_properties = mutable_cluster->grab_auxiliaries();
       const long pixel = TColor::Number2Pixel(cluster_color);
       const std::string hex_str = TColor::PixelAsHexString(pixel);
@@ -258,14 +247,11 @@ void tracker_hit_renderer::push_clustered_hits() {
       const snemo::datamodel::calibrated_tracker_hit::collection_type &hits = a_cluster.get_hits();
 
       // Make a gradient color starting from color_solution:
-      for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator igg =
-               hits.begin();
-           igg != hits.end(); ++igg) {
-        const snemo::datamodel::calibrated_tracker_hit &a_gg_hit = igg->get();
+      for (const auto &hit : hits) {
+        const snemo::datamodel::calibrated_tracker_hit &a_gg_hit = hit.get();
 
         // Retrieve a mutable reference to calibrated_tracker_hit:
-        snemo::datamodel::calibrated_tracker_hit *mutable_hit =
-            const_cast<snemo::datamodel::calibrated_tracker_hit *>(&(a_gg_hit));
+        auto *mutable_hit = const_cast<snemo::datamodel::calibrated_tracker_hit *>(&(a_gg_hit));
         datatools::properties &gg_properties = mutable_hit->grab_auxiliaries();
 
         // Store current color to be used by calibrated_tracker_hit renderer:
@@ -281,14 +267,16 @@ void tracker_hit_renderer::push_clustered_hits() {
           const double dz = a_gg_hit.get_sigma_z();
           const double r = 22.0 / CLHEP::mm;
 
-          TMarker3DBox *hit_3d = new TMarker3DBox;
+          auto *hit_3d = new TMarker3DBox;
           _objects->Add(hit_3d);
           hit_3d->SetPosition(x, y, z);
           hit_3d->SetSize(r, r, dz);
           hit_3d->SetLineColor(cluster_color);
           // Retrieve line width from properties if 'hit' is highlighted:
           size_t line_width = 1;
-          if (gg_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
+          if (gg_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+            line_width = 3;
+          }
           // gg_properties.update(browser_tracks::HIGHLIGHT_FLAG, false);
           hit_3d->SetLineWidth(line_width);
         } else if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_CIRCLE)) {
@@ -297,55 +285,54 @@ void tracker_hit_renderer::push_clustered_hits() {
       }  // end of gg hits
     }    // end of cluster loop
   }      // end of solution loop
-
-  return;
 }
 
 void tracker_hit_renderer::push_fitted_tracks() {
   const io::event_record &event = _server->get_event();
-  const snemo::datamodel::tracker_trajectory_data &tracker_trajectory_data =
+  const auto &tracker_trajectory_data =
       event.get<snemo::datamodel::tracker_trajectory_data>(io::TTD_LABEL);
 
   const snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
       tracker_trajectory_data.get_solutions();
-  for (snemo::datamodel::tracker_trajectory_data::solution_col_type::const_iterator isolution =
-           trajectory_solutions.begin();
-       isolution != trajectory_solutions.end(); ++isolution) {
+  for (const auto &isolution : trajectory_solutions) {
     // Get current tracker trajectory solution:
-    const snemo::datamodel::tracker_trajectory_solution &a_solution = isolution->get();
+    const snemo::datamodel::tracker_trajectory_solution &a_solution = isolution.get();
 
 // DONT couple data model to view!
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Check solution properties:
     if (a_solution.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
-        !a_solution.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG))
+        !a_solution.get_auxiliaries().has_flag(browser_tracks::CHECKED_FLAG)) {
       continue;
+    }
 #pragma GCC diagnostic pop
 
     // Get trajectories stored in the current tracker trajectory solution:
     const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =
         a_solution.get_trajectories();
 
-    for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::const_iterator
-             itrajectory = trajectories.begin();
-         itrajectory != trajectories.end(); ++itrajectory) {
+    for (const auto &itrajectory : trajectories) {
       // Get current tracker trajectory:
-      const snemo::datamodel::tracker_trajectory &a_trajectory = itrajectory->get();
+      const snemo::datamodel::tracker_trajectory &a_trajectory = itrajectory.get();
 
       // Get trajectory properties:
       const datatools::properties &traj_properties = a_trajectory.get_auxiliaries();
 
       // Check if trajectory has to be shown or not:
       if (traj_properties.has_key(browser_tracks::CHECKED_FLAG)) {
-        if (!traj_properties.has_flag(browser_tracks::CHECKED_FLAG)) continue;
+        if (!traj_properties.has_flag(browser_tracks::CHECKED_FLAG)) {
+          continue;
+        }
       } else {
-        if (!traj_properties.has_flag("default")) continue;
+        if (!traj_properties.has_flag("default")) {
+          continue;
+        }
       }
 
       // Retrieve trajectory visual rendering:
       const snemo::datamodel::base_trajectory_pattern &a_pattern = a_trajectory.get_pattern();
-      const geomtools::i_wires_3d_rendering &iw3dr =
+      const auto &iw3dr =
           dynamic_cast<const geomtools::i_wires_3d_rendering &>(a_pattern.get_shape());
       TPolyLine3D *track = base_renderer::make_track(iw3dr);
       _objects->Add(track);
@@ -364,7 +351,9 @@ void tracker_hit_renderer::push_fitted_tracks() {
 
       // Retrieve line width from properties if 'track' is highlighted:
       size_t line_width = 1;
-      if (traj_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
+      if (traj_properties.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+        line_width = 3;
+      }
       track->SetLineWidth(line_width);
 
       // For delayed tracks such as alpha track, show the recalibrated
@@ -379,10 +368,8 @@ void tracker_hit_renderer::push_fitted_tracks() {
           const snemo::datamodel::calibrated_tracker_hit::collection_type &hits =
               a_cluster.get_hits();
 
-          for (snemo::datamodel::calibrated_tracker_hit::collection_type::const_iterator igg =
-                   hits.begin();
-               igg != hits.end(); ++igg) {
-            snemo::datamodel::calibrated_tracker_hit a_gg_hit_copy = igg->get();
+          for (const auto &igg : hits) {
+            snemo::datamodel::calibrated_tracker_hit a_gg_hit_copy = igg.get();
             // Recalibrate drift radius given fitted t0
             double new_r = datatools::invalid_real();
             double new_sigma_r = datatools::invalid_real();
@@ -406,8 +393,6 @@ void tracker_hit_renderer::push_fitted_tracks() {
 
     }  // end of trajectory loop
   }    // end of solution loop
-
-  return;
 }
 
 void tracker_hit_renderer::_make_calibrated_geiger_hit(
@@ -432,7 +417,9 @@ void tracker_hit_renderer::_make_calibrated_geiger_hit(
 
   // Retrieve line width from properties if 'hit' is highlighted:
   size_t line_width = style_manager::get_instance().get_mc_line_width();
-  if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) line_width = 3;
+  if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+    line_width = 3;
+  }
 
   int color = style_manager::get_instance().get_calibrated_data_color();
   if (show_cluster && aux.has_key(browser_tracks::COLOR_FLAG)) {
@@ -440,10 +427,11 @@ void tracker_hit_renderer::_make_calibrated_geiger_hit(
     aux.fetch(browser_tracks::COLOR_FLAG, hex_str);
     const options_manager &options_mgr = options_manager::get_instance();
     if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS) &&
-        options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_CIRCLE))
+        options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_CIRCLE)) {
       color = TColor::GetColor(hex_str.c_str());
+    }
   }
-  TPolyLine3D *gg_dz = new TPolyLine3D;
+  auto *gg_dz = new TPolyLine3D;
   _objects->Add(gg_dz);
   gg_dz->SetLineColor(color);
   gg_dz->SetLineWidth(line_width);
@@ -524,7 +512,6 @@ void tracker_hit_renderer::_make_calibrated_geiger_hit(
     gg_drift_max->SetLineColor(color);
     gg_drift_max->SetLineWidth(line_width);
   }
-  return;
 }
 
 }  // end of namespace view

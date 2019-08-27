@@ -48,14 +48,11 @@ namespace visualization {
 
 namespace view {
 
-void display_2d::set_view_type(const view_type vtype_) {
-  _2d_viewer_->set_view_type(vtype_);
-  return;
-}
+void display_2d::set_view_type(const view_type vtype_) { _2d_viewer_->set_view_type(vtype_); }
 
 // ctor:
 display_2d::display_2d(TGCompositeFrame* main_, io::event_server* server_, const bool switch_mode)
-    : _server_(server_), _2d_drawer_(0), _2d_viewer_(0) {
+    : _server_(server_), _2d_drawer_(nullptr), _2d_viewer_(nullptr) {
   const int width = main_->GetWidth();
   const int height = main_->GetHeight();
 
@@ -85,14 +82,15 @@ display_2d::display_2d(TGCompositeFrame* main_, io::event_server* server_, const
     const std::string view_str[n_view] = {" top view ", " side view ", " front view "};
 
     for (unsigned int i_view = 0; i_view < n_view; ++i_view) {
-      const view_type view_id = static_cast<view_type>(i_view);
+      const auto view_id = static_cast<view_type>(i_view);
 
-      TGRadioButton* view = new TGRadioButton(views, view_str[i_view].c_str(), view_id);
+      auto* view = new TGRadioButton(views, view_str[i_view].c_str(), view_id);
 
-      if (view_id == _2d_viewer_->get_view_type())
+      if (view_id == _2d_viewer_->get_view_type()) {
         view->SetState(kButtonDown);
-      else
+      } else {
         view->SetState(kButtonUp);
+      }
 
       view->Connect("Clicked()", "snemo::visualization::view::display_2d", this,
                     "process_option_buttons()");
@@ -100,56 +98,37 @@ display_2d::display_2d(TGCompositeFrame* main_, io::event_server* server_, const
 
     main_->AddFrame(views, new TGLayoutHints(kLHintsCenterX));
   }
-
-  return;
 }
 
 // dtor:
 display_2d::~display_2d() {
   this->clear();
 
-  if (_2d_viewer_) {
+  if (_2d_viewer_ != nullptr) {
     delete _2d_viewer_;
-    _2d_viewer_ = 0;
+    _2d_viewer_ = nullptr;
   }
-  return;
 }
 
-void display_2d::set_drawer(i_draw_manager* draw_manager_) {
-  _2d_drawer_ = draw_manager_;
-  return;
-}
+void display_2d::set_drawer(i_draw_manager* draw_manager_) { _2d_drawer_ = draw_manager_; }
 
-void display_2d::clear() {
-  _2d_viewer_->clear();
-  return;
-}
+void display_2d::clear() { _2d_viewer_->clear(); }
 
-void display_2d::reset() {
-  _2d_viewer_->reset();
-  return;
-}
+void display_2d::reset() { _2d_viewer_->reset(); }
 
-void display_2d::update_detector() {
-  _2d_viewer_->update_detector();
-  return;
-}
+void display_2d::update_detector() { _2d_viewer_->update_detector(); }
 
-void display_2d::update_scene() {
-  _2d_viewer_->update_scene(_2d_drawer_);
-  return;
-}
+void display_2d::update_scene() { _2d_viewer_->update_scene(_2d_drawer_); }
 
 void display_2d::process_option_buttons() {
-  TGButton* button = (TGButton*)gTQSender;
-  const view_type view_id = static_cast<view_type>(button->WidgetId());
+  auto* button = (TGButton*)gTQSender;
+  const auto view_id = static_cast<view_type>(button->WidgetId());
 
   set_view_type(view_id);
-  return;
 }
 
 void display_2d::handle_button_signals(const button_signals_type signal_) {
-  TCanvas* canvas = (TCanvas*)_2d_viewer_->get_canvas();
+  auto* canvas = (TCanvas*)_2d_viewer_->get_canvas();
 
   switch (signal_) {
     case PRINT_2D_AS_EPS: {

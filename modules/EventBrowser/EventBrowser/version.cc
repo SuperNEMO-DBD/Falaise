@@ -37,7 +37,7 @@ int version::get_minor() { return static_cast<int>(EVENTBROWSER_VERSION_MINOR); 
 int version::get_patch() { return static_cast<int>(EVENTBROWSER_VERSION_PATCH); }
 
 std::string version::get_version() {
-  static std::string version("");
+  static std::string version;
 
   if (version.empty()) {
     std::ostringstream stream;
@@ -50,15 +50,25 @@ std::string version::get_version() {
 }
 
 bool version::is_at_least(int major, int minor, int patch) {
-  if (EVENTBROWSER_VERSION_MAJOR < major) return false;
-  if (EVENTBROWSER_VERSION_MAJOR > major) return true;
-  if (EVENTBROWSER_VERSION_MINOR < minor) return false;
-  if (EVENTBROWSER_VERSION_MINOR > minor) return true;
-  if (EVENTBROWSER_VERSION_PATCH < patch) return false;
+  if (EVENTBROWSER_VERSION_MAJOR < major) {
+    return false;
+  }
+  if (EVENTBROWSER_VERSION_MAJOR > major) {
+    return true;
+  }
+  if (EVENTBROWSER_VERSION_MINOR < minor) {
+    return false;
+  }
+  if (EVENTBROWSER_VERSION_MINOR > minor) {
+    return true;
+  }
+  if (EVENTBROWSER_VERSION_PATCH < patch) {
+    return false;
+  }
   return true;
 }
 
-bool version::has_feature(const std::string&) {
+bool version::has_feature(const std::string& /*unused*/) {
   /// - If you want to add features, then the following implementation
   ///   provides one example based on string features cached in a set.
   ///

@@ -45,23 +45,13 @@ datatools::logger::priority options_manager::get_logging_priority() const {
 
 void options_manager::set_logging_priority(datatools::logger::priority p_) {
   _logging_priority_ = p_;
-  return;
 }
 
-options_manager::options_manager() {
-  this->set_defaults();
-  return;
-}
+options_manager::options_manager() { this->set_defaults(); }
 
-options_manager::~options_manager() {
-  reset();
-  return;
-}
+options_manager::~options_manager() { reset(); }
 
-void options_manager::reset() {
-  this->set_defaults();
-  return;
-}
+void options_manager::reset() { this->set_defaults(); }
 
 void options_manager::set_defaults() {
   _logging_priority_ = datatools::logger::PRIO_WARNING;
@@ -83,8 +73,6 @@ void options_manager::set_defaults() {
   _libraries_.clear();
 
   set_default_options();
-
-  return;
 }
 
 void options_manager::set_default_options() {
@@ -108,7 +96,6 @@ void options_manager::set_default_options() {
   _options_dictionnary_[DUMP_INTO_TOOLTIP] = true;
   _options_dictionnary_[DUMP_INTO_TERMINAL] = false;
   _options_dictionnary_[DUMP_INTO_WINDOW] = false;
-  return;
 }
 
 void options_manager::define_browser_options(
@@ -121,9 +108,15 @@ void options_manager::define_browser_options(
   bool parse_load_dll = true;
   bool parse_detector_config_file = true;
   // Inhibition of the parsinf for specific options:
-  if (flags_ & browser_opt_no_logging) parse_logging = false;
-  if (flags_ & browser_opt_no_dll_load) parse_load_dll = false;
-  if (flags_ & browser_opt_no_detector_config) parse_detector_config_file = false;
+  if ((flags_ & browser_opt_no_logging) != 0u) {
+    parse_logging = false;
+  }
+  if ((flags_ & browser_opt_no_dll_load) != 0u) {
+    parse_load_dll = false;
+  }
+  if ((flags_ & browser_opt_no_detector_config) != 0u) {
+    parse_detector_config_file = false;
+  }
 
   if (parse_logging) {
     easy_init("logging-priority,P",
@@ -161,8 +154,6 @@ void options_manager::define_browser_options(
     easy_init("load-dll,l", po::value<std::vector<std::string> >(&_libraries_)->value_name("name"),
               "set a DLL to be loaded.");
   }
-
-  return;
 }
 
 void options_manager::define_view_options(
@@ -219,8 +210,7 @@ void options_manager::define_view_options(
                                                ->value_name("flag"),
                                            "show particle tracks")
 
-      ;  // end of 'view options' description
-  return;
+      ;
 }
 
 // parse command line
@@ -347,7 +337,7 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
   /*** begin of opts/args parsing ***/
 
   // Fetch the opts/args :
-  if (vm.count("help")) {
+  if (vm.count("help") != 0u) {
     std::cout << "flvisualize -- ";
     std::cout << "A generic SuperNEMO event browser program" << std::endl;
     std::cout << std::endl;
@@ -364,19 +354,21 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
     return false;
   }
 
-  if (vm.count("auto-reading-delay")) {
+  if (vm.count("auto-reading-delay") != 0u) {
     _automatic_event_reading_ = true;
-    if (_automatic_event_reading_delay_ == 0) _automatic_event_reading_delay_ = 1;
+    if (_automatic_event_reading_delay_ == 0) {
+      _automatic_event_reading_delay_ = 1;
+    }
   }
 
-  if (vm.count("logging-priority")) {
+  if (vm.count("logging-priority") != 0u) {
     const std::string logging_label = vm["logging-priority"].as<std::string>();
     _logging_priority_ = datatools::logger::get_priority(logging_label);
     DT_THROW_IF(_logging_priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
                 "Invalid logging priority label '" << logging_label << "' !");
   }
 
-  if (vm.count("2d-display")) {
+  if (vm.count("2d-display") != 0u) {
     const std::string position = vm["2d-display"].as<std::string>();
     if (position == "left") {
       _2d_display_on_left_ = true;
@@ -393,7 +385,7 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
 
 int options_manager::apply_options(const boost::program_options::variables_map& vm_) {
   // Fetch the opts/args :
-  if (vm_.count("help")) {
+  if (vm_.count("help") != 0u) {
     // std::cout << "flvisualize -- ";
     // std::cout << "A generic SuperNEMO event browser program" << std::endl;
     // std::cout << std::endl;
@@ -413,19 +405,21 @@ int options_manager::apply_options(const boost::program_options::variables_map& 
     return -1;
   }
 
-  if (vm_.count("auto-reading-delay")) {
+  if (vm_.count("auto-reading-delay") != 0u) {
     _automatic_event_reading_ = true;
-    if (_automatic_event_reading_delay_ == 0) _automatic_event_reading_delay_ = 1;
+    if (_automatic_event_reading_delay_ == 0) {
+      _automatic_event_reading_delay_ = 1;
+    }
   }
 
-  if (vm_.count("logging-priority")) {
+  if (vm_.count("logging-priority") != 0u) {
     const std::string logging_label = vm_["logging-priority"].as<std::string>();
     _logging_priority_ = datatools::logger::get_priority(logging_label);
     DT_THROW_IF(_logging_priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
                 "Invalid logging priority label '" << logging_label << "' !");
   }
 
-  if (vm_.count("2d-display")) {
+  if (vm_.count("2d-display") != 0u) {
     const std::string position = vm_["2d-display"].as<std::string>();
     if (position == "left") {
       _2d_display_on_left_ = true;
@@ -458,25 +452,21 @@ void options_manager::print_examples(std::ostream& out_, const std::string& name
   out_ << " 3) Using special experimental setup with variant profile:" << std::endl;
   out_ << "    " << name_ << " \\" << std::endl;
   out_ << "      --verbose \\" << std::endl;
-  out_ << "      --experiment-setup \"urn:snemo:demonstrator:setup:1.0\" \\" << std::endl;
-  out_ << "      --variant-profile \"variant.profile\" \\" << std::endl;
+  out_ << R"(      --experiment-setup "urn:snemo:demonstrator:setup:1.0" \)" << std::endl;
+  out_ << R"(      --variant-profile "variant.profile" \)" << std::endl;
   out_ << "      --input-file <simulation/reconstruction file>";
   out_ << std::endl;
   out_ << std::endl;
   out_ << " See README for other running examples" << std::endl;
   out_ << std::endl;
-
-  return;
 }
 
 void options_manager::set_input_files(const std::vector<std::string>& input_files_) {
   _input_files_ = input_files_;
-  return;
 }
 
 void options_manager::add_input_file(const std::string& input_file_) {
   _input_files_.push_back(input_file_);
-  return;
 }
 
 const std::vector<std::string>& options_manager::get_input_files() const { return _input_files_; }
@@ -493,26 +483,22 @@ double options_manager::get_automatic_event_reading_delay() const {
 
 void options_manager::set_automatic_event_reading_mode(const bool test_) {
   _automatic_event_reading_ = test_;
-  return;
 }
 
 void options_manager::set_automatic_event_reading_delay(const unsigned int delay_) {
   _automatic_event_reading_delay_ = delay_;
-  return;
 }
 
 const std::string& options_manager::get_style_config_file() const { return _style_config_file_; }
 
 void options_manager::set_style_config_file(const std::string& config_file_) {
   _style_config_file_ = config_file_;
-  return;
 }
 
 const std::string& options_manager::get_cut_config_file() const { return _cut_config_file_; }
 
 void options_manager::set_cut_config_file(const std::string& config_file_) {
   _cut_config_file_ = config_file_;
-  return;
 }
 
 const std::string& options_manager::get_detector_config_file() const {
@@ -521,7 +507,6 @@ const std::string& options_manager::get_detector_config_file() const {
 
 void options_manager::set_detector_config_file(const std::string& config_file_) {
   _detector_config_file_ = config_file_;
-  return;
 }
 
 bool options_manager::is_2d_display_on_left() const { return _2d_display_on_left_; }
@@ -539,9 +524,11 @@ std::map<button_signals_type, bool>& options_manager::grab_options_dictionnary()
 }
 
 bool options_manager::get_option_flag(const button_signals_type signal_) const {
-  std::map<button_signals_type, bool>::const_iterator found = _options_dictionnary_.find(signal_);
+  auto found = _options_dictionnary_.find(signal_);
 
-  if (found == _options_dictionnary_.end()) return false;
+  if (found == _options_dictionnary_.end()) {
+    return false;
+  }
 
   return _options_dictionnary_.at(signal_);
 }

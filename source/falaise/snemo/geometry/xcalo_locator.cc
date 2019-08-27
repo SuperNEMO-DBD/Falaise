@@ -59,7 +59,9 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh1);
-  } else if (caloBlockShape->get_shape_name() == "intersection_3d") {
+  }
+
+  if (caloBlockShape->get_shape_name() == "intersection_3d") {
     // Example : 'calo_tapered_scin_box_model' case :
     const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*caloBlockShape);
     const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
@@ -73,10 +75,12 @@ const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
     DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
                 "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
     return dynamic_cast<const geomtools::box *>(&sh11);
-  } else if (caloBlockShape->get_shape_name() == "box") {
-    // Simple box case :
+  }
+
+  if (caloBlockShape->get_shape_name() == "box") {
     return dynamic_cast<const geomtools::box *>(caloBlockShape);
   }
+
   return nullptr;
 }
 }  // namespace
@@ -120,7 +124,7 @@ bool xcalo_locator::hasSubmodule(uint32_t side) const {
 
 uint32_t xcalo_locator::getModuleNumber() const { return moduleNumber_; }
 
-void xcalo_locator::setModuleNumber(uint32_t a_module_number) { moduleNumber_ = a_module_number; }
+void xcalo_locator::setModuleNumber(uint32_t id) { moduleNumber_ = id; }
 
 double xcalo_locator::blockWidth() const { return caloBlockBox_->get_x(); }
 
@@ -137,9 +141,12 @@ size_t xcalo_locator::numberOfColumns(uint32_t side, uint32_t wall) const {
               "Invalid wall number (" << wall << ">" << NWALLS_PER_SIDE << ")!");
   if (side == (uint32_t)side_t::BACK) {
     return backCaloBlock_X_[wall].size();
-  } else if (side == (uint32_t)side_t::FRONT) {
+  } 
+  
+  if (side == (uint32_t)side_t::FRONT) {
     return frontCaloBlock_X_[wall].size();
   }
+  
   DT_THROW(std::logic_error, "Invalid side number (" << side << ">= " << utils::NSIDES << ")!");
 }
 
@@ -148,9 +155,12 @@ size_t xcalo_locator::numberOfRows(uint32_t side, uint32_t wall) const {
               "Invalid wall number (" << wall << ">" << NWALLS_PER_SIDE << ")!");
   if (side == (uint32_t)side_t::BACK) {
     return backCaloBlock_Z_[wall].size();
-  } else if (side == (uint32_t)side_t::FRONT) {
+  } 
+  
+  if (side == (uint32_t)side_t::FRONT) {
     return frontCaloBlock_Z_[wall].size();
   }
+
   DT_THROW(std::logic_error, "Invalid side number (" << side << ">= " << utils::NSIDES << ")!");
 }
 

@@ -36,8 +36,8 @@
 #include "FLSimulateUtils.h"
 #include "falaise/exitcodes.h"
 #include "falaise/falaise.h"
-#include "falaise/version.h"
 #include "falaise/tags.h"
+#include "falaise/version.h"
 
 //----------------------------------------------------------------------
 // DECLARATIONS
@@ -160,13 +160,14 @@ void do_help(const boost::program_options::options_description& od) {
             << "      -i oldprofile.conf \\\n"
             << "      -s \"geometry:layout/if_basic/magnetic_field=false\" \\\n"
             << "      -o myprofile.conf \n\n";
-  return;
 }
 
 void do_help_simulation_setup(std::ostream& os) {
   std::map<std::string, std::string> m = ::FLSimulate::list_of_simulation_setups();
   std::clog << "List of supported simulation setups: ";
-  if (m.empty()) std::clog << "<empty>";
+  if (m.empty()) {
+    std::clog << "<empty>";
+  }
   std::clog << std::endl;
   for (const auto& entry : m) {
     os << entry.first << " : ";
@@ -177,7 +178,6 @@ void do_help_simulation_setup(std::ostream& os) {
     }
     os << std::endl;
   }
-  return;
 }
 
 void do_version(std::ostream& os, bool /* isVerbose */) {
@@ -193,54 +193,56 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
   // Bind command line parser to exposed parameters
   std::string verbosityLabel;
   // Application specific options:
+  // clang-format off
   bpo::options_description optDesc("Options");
   optDesc.add_options()("help,h", "print this help message")
 
-      ("help-simulation-setup", "print help on available simulation setups")
+    ("help-simulation-setup", "print help on available simulation setups")
 
-          ("version", "print version number")
+    ("version", "print version number")
 
-              ("verbosity,V", bpo::value<std::string>(&verbosityLabel)->value_name("level"),
-               "set the verbosity level")
+    ("verbosity,V", bpo::value<std::string>(&verbosityLabel)->value_name("level"),
+    "set the verbosity level")
 
-                  ("setup-tag,t",
-                   bpo::value<std::string>(&clArgs.simulationSetupUrn)
-                       ->value_name("urn")
-                       ->default_value(FLSimulate::default_simulation_setup()),
-                   "tag of the simulation setup on top of which the generated variant profile "
-                   "should be applied")
+    ("setup-tag,t",
+    bpo::value<std::string>(&clArgs.simulationSetupUrn)
+    ->value_name("urn")
+    ->default_value(FLSimulate::default_simulation_setup()),
+    "tag of the simulation setup on top of which the generated variant profile "
+    "should be applied")
 
-                      ("input-profile-tag,p",
-                       bpo::value<std::string>(&clArgs.inputVariantProfileUrn)->value_name("urn"),
-                       "tag of the input variant profile used as a base for the generated profile")
+    ("input-profile-tag,p",
+    bpo::value<std::string>(&clArgs.inputVariantProfileUrn)->value_name("urn"),
+    "tag of the input variant profile used as a base for the generated profile")
 
-                          ("input-profile,i",
-                           bpo::value<std::string>(&clArgs.inputVariantProfile)->value_name("file"),
-                           "file from which to load a variant profile used as a base for the "
-                           "generated profile")
+    ("input-profile,i",
+    bpo::value<std::string>(&clArgs.inputVariantProfile)->value_name("file"),
+    "file from which to load a variant profile used as a base for the "
+    "generated profile")
 
-                              ("setting,s",
-                               bpo::value<std::vector<std::string>>(&clArgs.inputVariantSettings)
-                                   ->value_name("setting"),
-                               "apply variant setting directives to the new profile           \n"
-                               "Example:                                                      \n"
-                               "\t--setting=\"geometry:layout=Basic\"                         \n"
-                               "\t--setting=\"geometry:layout/if_basic/magnetic_field=false\" \n")
+    ("setting,s",
+    bpo::value<std::vector<std::string>>(&clArgs.inputVariantSettings)
+    ->value_name("setting"),
+    "apply variant setting directives to the new profile           \n"
+    "Example:                                                      \n"
+    "\t--setting=\"geometry:layout=Basic\"                         \n"
+    "\t--setting=\"geometry:layout/if_basic/magnetic_field=false\" \n")
 
-                                  ("output-profile,o",
-                                   bpo::value<std::string>(&clArgs.outputVariantProfile)
-                                       ->value_name("file"),
-                                   "file in which to store the generated variant profile")
+    ("output-profile,o",
+    bpo::value<std::string>(&clArgs.outputVariantProfile)
+    ->value_name("file"),
+    "file in which to store the generated variant profile")
 
 #if DATATOOLS_WITH_QT_GUI == 1
-                                      ("gui", bpo::value<bool>()->zero_tokens(),
-                                       "activate the variant service's GUI from which to browse "
-                                       "and edit the variant profile")
+    ("gui", bpo::value<bool>()->zero_tokens(),
+    "activate the variant service's GUI from which to browse "
+    "and edit the variant profile")
 
-                                          ("no-gui", bpo::value<bool>()->zero_tokens(),
-                                           "deactivate the variant service's GUI")
+    ("no-gui", bpo::value<bool>()->zero_tokens(),
+    "deactivate the variant service's GUI")
 #endif  // DATATOOLS_WITH_QT_GUI == 1
-      ;
+  ;
+  // clang-format on
 
   // - Parse...
   bpo::variables_map vMap;
@@ -249,7 +251,8 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {
     // We need to handle help/version even if required_option thrown
-    if (!vMap.count("help") && !vMap.count("version") && !vMap.count("help-simulation-setup")) {
+    if (vMap.count("help") == 0u && vMap.count("version") == 0u &&
+        vMap.count("help-simulation-setup") == 0u) {
       std::cerr << "[OptionsException] " << e.what() << std::endl;
       throw FLSimulate::FLDialogOptionsError();
     }
@@ -259,24 +262,24 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
   }
 
   // Handle any non-bound options
-  if (vMap.count("help")) {
+  if (vMap.count("help") != 0u) {
     do_help(optDesc);
     throw FLSimulate::FLDialogHelpRequested();
   }
 
-  if (vMap.count("help-simulation-setup")) {
+  if (vMap.count("help-simulation-setup") != 0u) {
     do_help_simulation_setup(std::cout);
     throw FLSimulate::FLDialogHelpRequested();
   }
 
-  if (vMap.count("verbosity")) {
+  if (vMap.count("verbosity") != 0u) {
     clArgs.logLevel = datatools::logger::get_priority(verbosityLabel);
     if (clArgs.logLevel == datatools::logger::PRIO_UNDEFINED) {
       throw FLSimulate::FLDialogOptionsError();
     }
   }
 
-  if (vMap.count("input-profile-tag") && vMap.count("input-profile")) {
+  if (vMap.count("input-profile-tag") != 0u && vMap.count("input-profile") != 0u) {
     std::cerr << "[OptionsException] "
               << "Cannot use simultaneously '--input-profile-tag' and '--input-profile'"
               << std::endl;
@@ -284,21 +287,19 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
   }
 
 #if DATATOOLS_WITH_QT_GUI == 1
-  if (vMap.count("gui")) {
+  if (vMap.count("gui") != 0u) {
     clArgs.variantGui = true;
   }
 
-  if (vMap.count("no-gui")) {
+  if (vMap.count("no-gui") != 0u) {
     clArgs.variantGui = false;
   }
 #endif  // DATATOOLS_WITH_QT_GUI == 1
-
-  return;
 }
 
-void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgParameters) {
+void do_configure(int argc, char* argv[], FLSimulateConfigureParams& params) {
   // - Default Config
-  flSimCfgParameters = FLSimulateConfigureParams::makeDefault();
+  params = FLSimulateConfigureParams::makeDefault();
 
   // - CL Dialog Config
   FLSimulateConfigureCommandLine clArgs = FLSimulateConfigureCommandLine::makeDefault();
@@ -310,23 +311,22 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
     throw FLSimulate::FLConfigUserError{"bad command line input"};
   }
 
-  flSimCfgParameters.logLevel = clArgs.logLevel;
-  flSimCfgParameters.simulationSetupUrn = clArgs.simulationSetupUrn;
-  flSimCfgParameters.inputVariantProfileUrn = clArgs.inputVariantProfileUrn;
-  flSimCfgParameters.variantServiceConfig.profile_load = clArgs.inputVariantProfile;
-  flSimCfgParameters.variantServiceConfig.settings = clArgs.inputVariantSettings;
-  flSimCfgParameters.variantServiceConfig.profile_store = clArgs.outputVariantProfile;
+  params.logLevel = clArgs.logLevel;
+  params.simulationSetupUrn = clArgs.simulationSetupUrn;
+  params.inputVariantProfileUrn = clArgs.inputVariantProfileUrn;
+  params.variantServiceConfig.profile_load = clArgs.inputVariantProfile;
+  params.variantServiceConfig.settings = clArgs.inputVariantSettings;
+  params.variantServiceConfig.profile_store = clArgs.outputVariantProfile;
 #if DATATOOLS_WITH_QT_GUI == 1
   // Launch the variant GUI browser/editor:
-  flSimCfgParameters.variantServiceConfig.gui = clArgs.variantGui;
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel, "Using GUI : " << clArgs.variantGui);
+  params.variantServiceConfig.gui = clArgs.variantGui;
+  DT_LOG_DEBUG(params.logLevel, "Using GUI : " << clArgs.variantGui);
 #else
-  DT_LOG_WARNING(flSimCfgParameters.logLevel,
-                 "The current version of Falaise does not support GUI mode!");
+  DT_LOG_WARNING(params.logLevel, "The current version of Falaise does not support GUI mode!");
 #endif  // DATATOOLS_WITH_QT_GUI == 1
 
-  if (flSimCfgParameters.simulationSetupUrn.empty()) {
-    flSimCfgParameters.simulationSetupUrn = FLSimulate::default_simulation_setup();
+  if (params.simulationSetupUrn.empty()) {
+    params.simulationSetupUrn = FLSimulate::default_simulation_setup();
   }
 
   datatools::kernel& dtk = datatools::kernel::instance();
@@ -335,106 +335,98 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& flSimCfgPar
   datatools::urn_info variantConfigUrnInfo;
   // Check URN registration from the system URN query service:
   {
-    DT_THROW_IF(!dtkUrnQuery.check_urn_info(flSimCfgParameters.simulationSetupUrn,
+    DT_THROW_IF(!dtkUrnQuery.check_urn_info(params.simulationSetupUrn,
                                             falaise::tags::simulation_setup_category()),
-        std::logic_error,
-        "Cannot query simulation setup URN='" << flSimCfgParameters.simulationSetupUrn << "'!");
+                std::logic_error,
+                "Cannot query simulation setup URN='" << params.simulationSetupUrn << "'!");
   }
-  simSetupUrnInfo = dtkUrnQuery.get_urn_info(flSimCfgParameters.simulationSetupUrn);
+  simSetupUrnInfo = dtkUrnQuery.get_urn_info(params.simulationSetupUrn);
 
   // Variant setup:
-  if (flSimCfgParameters.variantConfigUrn.empty()) {
+  if (params.variantConfigUrn.empty()) {
     // Automatically determine the variants configuration component:
     if (simSetupUrnInfo.has_topic("variants") &&
         simSetupUrnInfo.get_components_by_topic("variants").size() == 1) {
-      flSimCfgParameters.variantConfigUrn = simSetupUrnInfo.get_component("variants");
+      params.variantConfigUrn = simSetupUrnInfo.get_component("variants");
     }
   }
-  if (!flSimCfgParameters.variantConfigUrn.empty()) {
+  if (!params.variantConfigUrn.empty()) {
     // Check URN registration from the system URN query service:
     {
-      DT_THROW_IF(
-                  !dtkUrnQuery.check_urn_info(flSimCfgParameters.variantConfigUrn,
+      DT_THROW_IF(!dtkUrnQuery.check_urn_info(params.variantConfigUrn,
                                               falaise::tags::variant_service_category()),
-          std::logic_error,
-          "Cannot query variant setup URN='" << flSimCfgParameters.variantConfigUrn << "'!");
+                  std::logic_error,
+                  "Cannot query variant setup URN='" << params.variantConfigUrn << "'!");
     }
-    variantConfigUrnInfo = dtkUrnQuery.get_urn_info(flSimCfgParameters.variantConfigUrn);
+    variantConfigUrnInfo = dtkUrnQuery.get_urn_info(params.variantConfigUrn);
 
     // Resolve variant configuration file:
     std::string conf_variants_category = "configuration";
     std::string conf_variants_mime;
     std::string conf_variants_path;
-    DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(flSimCfgParameters.variantConfigUrn,
-                                                 conf_variants_category, conf_variants_mime,
-                                                 conf_variants_path),
-                std::logic_error,
-                "Cannot resolve URN='" << flSimCfgParameters.variantConfigUrn << "'!");
-    flSimCfgParameters.variantServiceConfig.config_filename = conf_variants_path;
+    DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(params.variantConfigUrn, conf_variants_category,
+                                                 conf_variants_mime, conf_variants_path),
+                std::logic_error, "Cannot resolve URN='" << params.variantConfigUrn << "'!");
+    params.variantServiceConfig.config_filename = conf_variants_path;
   }
-  DT_THROW_IF(flSimCfgParameters.variantServiceConfig.config_filename.empty(), std::logic_error,
+  DT_THROW_IF(params.variantServiceConfig.config_filename.empty(), std::logic_error,
               "No variant service configuration path is set!");
 
   // No variant profile is set:
-  if (flSimCfgParameters.variantServiceConfig.profile_load.empty()) {
-    if (flSimCfgParameters.inputVariantProfileUrn.empty()) {
-      DT_LOG_DEBUG(flSimCfgParameters.logLevel, "No input variant profile URN is set.");
+  if (params.variantServiceConfig.profile_load.empty()) {
+    if (params.inputVariantProfileUrn.empty()) {
+      DT_LOG_DEBUG(params.logLevel, "No input variant profile URN is set.");
       // No variant profile URN is set:
       if (simSetupUrnInfo.is_valid()) {
-        DT_LOG_DEBUG(flSimCfgParameters.logLevel,
+        DT_LOG_DEBUG(params.logLevel,
                      "Trying to find a default one from the current simulation setup...");
         // Try to find a default one from the current variant setup:
         if (simSetupUrnInfo.has_topic("defvarprofile") &&
             simSetupUrnInfo.get_components_by_topic("defvarprofile").size() == 1) {
           // If the simulation setup URN implies a "services" component, fetch it!
-          flSimCfgParameters.inputVariantProfileUrn =
-              simSetupUrnInfo.get_component("defvarprofile");
-          DT_LOG_DEBUG(flSimCfgParameters.logLevel, "Using the default variant profile '"
-                                                     << flSimCfgParameters.inputVariantProfileUrn << "'"
-                                                     << " associated to simulation setup '"
-                                                     << simSetupUrnInfo.get_urn() << "'.");
+          params.inputVariantProfileUrn = simSetupUrnInfo.get_component("defvarprofile");
+          DT_LOG_DEBUG(params.logLevel, "Using the default variant profile '"
+                                            << params.inputVariantProfileUrn << "'"
+                                            << " associated to simulation setup '"
+                                            << simSetupUrnInfo.get_urn() << "'.");
         }
       }
     }
-    if (!flSimCfgParameters.inputVariantProfileUrn.empty()) {
+    if (!params.inputVariantProfileUrn.empty()) {
       // Determine the variant profile path from a blessed variant profile URN:
       std::string conf_variantsProfile_category = "configuration";
       std::string conf_variantsProfile_mime;
       std::string conf_variantsProfile_path;
       DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(
-                      flSimCfgParameters.inputVariantProfileUrn, conf_variantsProfile_category,
+                      params.inputVariantProfileUrn, conf_variantsProfile_category,
                       conf_variantsProfile_mime, conf_variantsProfile_path),
                   std::logic_error,
-                  "Cannot resolve variant profile URN='"
-                      << flSimCfgParameters.inputVariantProfileUrn << "'!");
-      flSimCfgParameters.variantServiceConfig.profile_load = conf_variantsProfile_path;
+                  "Cannot resolve variant profile URN='" << params.inputVariantProfileUrn << "'!");
+      params.variantServiceConfig.profile_load = conf_variantsProfile_path;
     }
   }
 
-  DT_THROW_IF(flSimCfgParameters.variantServiceConfig.profile_load.empty(), std::logic_error,
+  DT_THROW_IF(params.variantServiceConfig.profile_load.empty(), std::logic_error,
               "No variant service input profile path is set!");
 
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel,
-               "Simulation setup tag      : [" << flSimCfgParameters.simulationSetupUrn << ']');
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel,
+  DT_LOG_DEBUG(params.logLevel,
+               "Simulation setup tag      : [" << params.simulationSetupUrn << ']');
+  DT_LOG_DEBUG(params.logLevel,
                "Variant configuration tag : [" << variantConfigUrnInfo.get_urn() << ']');
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel,
-               "Variant configuration     : '"
-                   << flSimCfgParameters.variantServiceConfig.config_filename << "'");
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel,
-               "Input variant profile tag : [" << flSimCfgParameters.inputVariantProfileUrn << ']');
-  DT_LOG_DEBUG(flSimCfgParameters.logLevel,
-               "Input variant profile     : '"
-                   << flSimCfgParameters.variantServiceConfig.profile_load << "'");
-  return;
+  DT_LOG_DEBUG(params.logLevel, "Variant configuration     : '"
+                                    << params.variantServiceConfig.config_filename << "'");
+  DT_LOG_DEBUG(params.logLevel,
+               "Input variant profile tag : [" << params.inputVariantProfileUrn << ']');
+  DT_LOG_DEBUG(params.logLevel,
+               "Input variant profile     : '" << params.variantServiceConfig.profile_load << "'");
 }
 
 falaise::exit_code do_flsimulate_config(int argc, char* argv[]) {
   falaise::exit_code ret = falaise::EXIT_OK;
   // - Configure:
-  FLSimulateConfigureParams flSimCfgParameters;
+  FLSimulateConfigureParams params;
   try {
-    do_configure(argc, argv, flSimCfgParameters);
+    do_configure(argc, argv, params);
   } catch (FLSimulate::FLConfigDefaultError& e) {
     std::cerr << "Unable to configure core of flsimulate-configure" << std::endl;
     return falaise::EXIT_UNAVAILABLE;
@@ -446,18 +438,18 @@ falaise::exit_code do_flsimulate_config(int argc, char* argv[]) {
   }
 
   datatools::configuration::variant_service variantService;
-  if (!flSimCfgParameters.variantServiceConfig.logging.empty()) {
+  if (!params.variantServiceConfig.logging.empty()) {
     variantService.set_logging(
-        datatools::logger::get_priority(flSimCfgParameters.variantServiceConfig.logging));
+        datatools::logger::get_priority(params.variantServiceConfig.logging));
   }
   try {
-    if (flSimCfgParameters.variantServiceConfig.is_active()) {
-      variantService.configure(flSimCfgParameters.variantServiceConfig);
+    if (params.variantServiceConfig.is_active()) {
+      variantService.configure(params.variantServiceConfig);
       // Start and lock the variant service:
       variantService.start();
       // From this point, all other services and/or processing modules can
       // benefit of the variant service during their configuration steps.
-      if (flSimCfgParameters.variantServiceConfig.settings.size()) {
+      if (!params.variantServiceConfig.settings.empty()) {
         // The Variant service uses explicit settings:
         // Make sure we know the full list of effective variant settings corresponding to user
         // choice:
@@ -467,7 +459,7 @@ falaise::exit_code do_flsimulate_config(int argc, char* argv[]) {
             datatools::configuration::variant_repository::exporter::EXPORT_NOCLEAR);
         varRepExp.process(variantService.get_repository());
         // Update the list of *all* settings, not only those requested by the user:
-        flSimCfgParameters.variantServiceConfig.settings = varRepExp.get_settings();
+        params.variantServiceConfig.settings = varRepExp.get_settings();
       }
     }
   } catch (std::exception& e) {

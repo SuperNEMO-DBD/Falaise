@@ -252,11 +252,11 @@ class calo_locator : public geomtools::base_locator, public datatools::i_tree_du
   bool isWorldPointInBlock(const geomtools::vector_3d& worldPoint, uint32_t side, uint32_t column,
                            uint32_t row, double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
 
-  bool findBlockGID(const geomtools::vector_3d& world_position_, geomtools::geom_id& gid_,
+  bool findBlockGID(const geomtools::vector_3d& worldPoint, geomtools::geom_id& gid_,
                     double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
 
   // Interfaces from geomtools::i_locator :
-  virtual bool find_geom_id(const geomtools::vector_3d& world_position_, int type_,
+  virtual bool find_geom_id(const geomtools::vector_3d& worldPoint, int type_,
                             geomtools::geom_id& gid_,
                             double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
   /// Smart print

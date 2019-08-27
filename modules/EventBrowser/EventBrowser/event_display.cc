@@ -54,52 +54,44 @@ bool event_display::is_initialized() const { return _initialized_; }
 
 // ctor:
 event_display::event_display() {
-  _server_ = 0;
-  _status_ = 0;
-  _display_3d_ = 0;
-  _display_2d_ = 0;
-  _browser_tracks_ = 0;
-  _options_ = 0;
-  _selection_ = 0;
-  _draw_manager_ = 0;
-  _tabs_ = 0;
+  _server_ = nullptr;
+  _status_ = nullptr;
+  _display_3d_ = nullptr;
+  _display_2d_ = nullptr;
+  _browser_tracks_ = nullptr;
+  _options_ = nullptr;
+  _selection_ = nullptr;
+  _draw_manager_ = nullptr;
+  _tabs_ = nullptr;
   _full_2d_display_ = false;
-  _top_2d_ = 0;
-  _front_2d_ = 0;
-  _side_2d_ = 0;
+  _top_2d_ = nullptr;
+  _front_2d_ = nullptr;
+  _side_2d_ = nullptr;
   _initialized_ = false;
-  return;
 }
 
 // dtor:
 event_display::~event_display() {
   this->clear();
   this->reset();
-  return;
 }
 
-void event_display::set_full_2d_display(const bool full_) {
-  _full_2d_display_ = full_;
-  return;
-}
+void event_display::set_full_2d_display(const bool full_) { _full_2d_display_ = full_; }
 
 void event_display::set_event_server(io::event_server* server_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   _server_ = server_;
-  return;
 }
 
 void event_display::set_status_bar(view::status_bar* status_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   _status_ = status_;
-  return;
 }
 
 void event_display::initialize(TGCompositeFrame* main_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   this->_at_init_(main_);
   _initialized_ = true;
-  return;
 }
 
 void event_display::_at_init_(TGCompositeFrame* main_) {
@@ -113,10 +105,10 @@ void event_display::_at_init_(TGCompositeFrame* main_) {
       _draw_manager_ = new snemo_draw_manager(_server_);
       break;
 
-    // case detector::detector_manager::BIPO1:
-    // case detector::detector_manager::BIPO3:
-    //   _draw_manager_ = new bipo_draw_manager(_server_);
-    //   break;
+      // case detector::detector_manager::BIPO1:
+      // case detector::detector_manager::BIPO3:
+      //   _draw_manager_ = new bipo_draw_manager(_server_);
+      //   break;
 
     case detector::detector_manager::UNDEFINED:
     default:
@@ -128,7 +120,7 @@ void event_display::_at_init_(TGCompositeFrame* main_) {
       break;
   }
 
-  TGSplitFrame* main_frame = new TGSplitFrame(main_, main_->GetWidth(), main_->GetHeight());
+  auto* main_frame = new TGSplitFrame(main_, main_->GetWidth(), main_->GetHeight());
   if (_full_2d_display_) {
     main_frame->SplitHorizontal();
     main_->AddFrame(main_frame, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY));
@@ -202,13 +194,12 @@ void event_display::_at_init_(TGCompositeFrame* main_) {
     _selection_->set_status_bar(_status_);
     _selection_->initialize(selection_frame);
   }
-
-  return;
 }
 
 void event_display::clear() {
-  if (_draw_manager_) _draw_manager_->clear();
-  return;
+  if (_draw_manager_ != nullptr) {
+    _draw_manager_->clear();
+  }
 }
 
 void event_display::reset() {
@@ -216,46 +207,45 @@ void event_display::reset() {
 
   if (_full_2d_display_) {
     delete _top_2d_;
-    _top_2d_ = 0;
+    _top_2d_ = nullptr;
 
     delete _front_2d_;
-    _front_2d_ = 0;
+    _front_2d_ = nullptr;
 
     delete _side_2d_;
-    _side_2d_ = 0;
+    _side_2d_ = nullptr;
   } else {
     delete _display_3d_;
-    _display_3d_ = 0;
+    _display_3d_ = nullptr;
 
     delete _display_2d_;
-    _display_2d_ = 0;
+    _display_2d_ = nullptr;
 
     delete _browser_tracks_;
-    _browser_tracks_ = 0;
+    _browser_tracks_ = nullptr;
 
     delete _options_;
-    _options_ = 0;
+    _options_ = nullptr;
 
     delete _selection_;
-    _selection_ = 0;
+    _selection_ = nullptr;
 
     delete _tabs_;
-    _tabs_ = 0;
+    _tabs_ = nullptr;
   }
 
-  if (_draw_manager_) {
+  if (_draw_manager_ != nullptr) {
     delete _draw_manager_;
-    _draw_manager_ = 0;
+    _draw_manager_ = nullptr;
   }
 
   _initialized_ = false;
-  return;
 }
 
 void event_display::update(const bool reset_view_, const bool reset_track_) {
   this->clear();
   // No draw manager, no update
-  if (!_draw_manager_) {
+  if (_draw_manager_ == nullptr) {
     DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
                    "No event will be shown since no 'draw manager' has been set!");
     return;
@@ -267,13 +257,14 @@ void event_display::update(const bool reset_view_, const bool reset_track_) {
     _tab_is_uptodate_[OPTIONS_TAB] = false;
     _tab_is_uptodate_[TRACK_BROWSER_TAB] = !reset_track_;
 
-    const tab_id_index_type current_tab_id = (tab_id_index_type)_tabs_->GetCurrent();
+    const auto current_tab_id = (tab_id_index_type)_tabs_->GetCurrent();
     this->_update_tab_(current_tab_id, reset_view_);
 
-    if (reset_track_) _browser_tracks_->update();
+    if (reset_track_) {
+      _browser_tracks_->update();
+    }
   }
   this->_update_view_(reset_view_);
-  return;
 }
 
 void event_display::_update_tab_(const tab_id_index_type index_, const bool /*reset_view_*/) {
@@ -291,7 +282,6 @@ void event_display::_update_tab_(const tab_id_index_type index_, const bool /*re
     }
     _tab_is_uptodate_[index_] = true;
   }
-  return;
 }
 
 void event_display::_update_view_(const bool reset_view_) {
@@ -314,7 +304,6 @@ void event_display::_update_view_(const bool reset_view_) {
     _display_2d_->update_scene();
     _display_3d_->update_scene();
   }
-  return;
 }
 
 void event_display::show_all(const button_signals_type signal_) {
@@ -325,14 +314,16 @@ void event_display::show_all(const button_signals_type signal_) {
   this->clear();
 
   // Second: reset event server
-  if (_server_->is_opened()) _server_->rewind();
+  if (_server_->is_opened()) {
+    _server_->rewind();
+  }
 
   // Third: unset all over options after copying their values
   std::map<button_signals_type, bool>& option_dict = options_mgr.grab_options_dictionnary();
   std::map<button_signals_type, bool> tmp_option_dict(option_dict);
-  for (std::map<button_signals_type, bool>::iterator i = option_dict.begin();
-       i != option_dict.end(); ++i)
-    i->second = false;
+  for (auto& i : option_dict) {
+    i.second = false;
+  }
 
   switch (signal_) {
     case SHOW_ALL_VERTICES:
@@ -385,8 +376,6 @@ void event_display::show_all(const button_signals_type signal_) {
 
   // Get back to default options
   option_dict = tmp_option_dict;
-
-  return;
 }
 
 void event_display::handle_button_signals(const button_signals_type signal_,
@@ -420,7 +409,6 @@ void event_display::handle_button_signals(const button_signals_type signal_,
     default:
       break;
   }
-  return;
 }
 
 }  // end of namespace view

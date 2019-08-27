@@ -48,41 +48,28 @@ namespace view {
 
 bool base_renderer::is_initialized() const { return _initialized; }
 
-bool base_renderer::has_server() const { return _server != 0; }
+bool base_renderer::has_server() const { return _server != nullptr; }
 
-void base_renderer::set_server(const io::event_server* server_) {
-  _server = server_;
-  return;
-}
+void base_renderer::set_server(const io::event_server* server_) { _server = server_; }
 
-bool base_renderer::has_graphical_objects() const { return _objects != 0; }
+bool base_renderer::has_graphical_objects() const { return _objects != nullptr; }
 
-void base_renderer::set_graphical_objects(TObjArray* objects_) {
-  _objects = objects_;
-  return;
-}
+void base_renderer::set_graphical_objects(TObjArray* objects_) { _objects = objects_; }
 
-bool base_renderer::has_text_objects() const { return _text_objects != 0; }
+bool base_renderer::has_text_objects() const { return _text_objects != nullptr; }
 
-void base_renderer::set_text_objects(TObjArray* text_objects_) {
-  _text_objects = text_objects_;
-  return;
-}
+void base_renderer::set_text_objects(TObjArray* text_objects_) { _text_objects = text_objects_; }
 
 // ctor:
 base_renderer::base_renderer() {
   _initialized = false;
-  _server = 0;
-  _objects = 0;
-  _text_objects = 0;
-  return;
+  _server = nullptr;
+  _objects = nullptr;
+  _text_objects = nullptr;
 }
 
 // dtor:
-base_renderer::~base_renderer() {
-  this->reset();
-  return;
-}
+base_renderer::~base_renderer() { this->reset(); }
 
 void base_renderer::initialize(const io::event_server* server_, TObjArray* objects_,
                                TObjArray* text_objects_) {
@@ -91,25 +78,21 @@ void base_renderer::initialize(const io::event_server* server_, TObjArray* objec
   this->set_graphical_objects(objects_);
   this->set_text_objects(text_objects_);
   _initialized = true;
-  return;
 }
 
 void base_renderer::clear() {
-  for (geom_id_collection::const_iterator gid = _highlighted_geom_id.begin();
-       gid != _highlighted_geom_id.end(); ++gid) {
+  for (const auto& gid : _highlighted_geom_id) {
     detector::detector_manager& detector_mgr = detector::detector_manager::get_instance();
-    detector::i_volume* volume_hit = detector_mgr.grab_volume(*gid);
+    detector::i_volume* volume_hit = detector_mgr.grab_volume(gid);
     volume_hit->clear();
   }
   _highlighted_geom_id.clear();
-  return;
 }
 
 void base_renderer::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
   this->clear();
   _initialized = false;
-  return;
 }
 
 void base_renderer::highlight_geom_id(const geomtools::geom_id& gid_, const size_t color_,
@@ -133,18 +116,16 @@ void base_renderer::highlight_geom_id(const geomtools::geom_id& gid_, const size
   }
 
   if (text_.empty()) {
-    for (std::vector<geomtools::geom_id>::iterator igid = gid_list.begin(); igid != gid_list.end();
-         ++igid) {
-      detector::i_root_volume* volume_hit =
-          dynamic_cast<detector::i_root_volume*>(detector_mgr.grab_volume(*igid));
+    for (auto& igid : gid_list) {
+      auto* volume_hit = dynamic_cast<detector::i_root_volume*>(detector_mgr.grab_volume(igid));
       volume_hit->highlight(color_);
-      _highlighted_geom_id.insert(*igid);
+      _highlighted_geom_id.insert(igid);
     }
   } else {
     // Here we get the first element :
-    detector::i_root_volume* volume_hit =
+    auto* volume_hit =
         dynamic_cast<detector::i_root_volume*>(detector_mgr.grab_volume(gid_list.front()));
-    utils::root_utilities::TLatex3D* new_text_obj = new utils::root_utilities::TLatex3D;
+    auto* new_text_obj = new utils::root_utilities::TLatex3D;
     _text_objects->Add(new_text_obj);
     const geomtools::vector_3d& position = volume_hit->get_placement().get_translation();
     new_text_obj->SetX(position.x());
@@ -153,12 +134,11 @@ void base_renderer::highlight_geom_id(const geomtools::geom_id& gid_, const size
     new_text_obj->SetText(text_);
     new_text_obj->SetTextColor(color_);
   }
-  return;
 }
 
 TPolyMarker3D* base_renderer::make_polymarker(const geomtools::vector_3d& point_,
                                               const bool convert_) {
-  TPolyMarker3D* marker = new TPolyMarker3D;
+  auto* marker = new TPolyMarker3D;
   geomtools::vector_3d new_point = point_;
   if (convert_) {
     detector::detector_manager::get_instance().compute_world_coordinates(point_, new_point);
@@ -169,10 +149,9 @@ TPolyMarker3D* base_renderer::make_polymarker(const geomtools::vector_3d& point_
 
 TPolyLine3D* base_renderer::make_polyline(const geomtools::polyline_type& polyline_,
                                           const bool convert_) {
-  TPolyLine3D* polyline = new TPolyLine3D;
+  auto* polyline = new TPolyLine3D;
   size_t idx = 0;
-  for (geomtools::polyline_type::const_iterator i = polyline_.begin(); i != polyline_.end(); ++i) {
-    const geomtools::vector_3d& a_point = *i;
+  for (const auto& a_point : polyline_) {
     geomtools::vector_3d new_point = a_point;
     if (convert_) {
       detector::detector_manager::get_instance().compute_world_coordinates(a_point, new_point);
