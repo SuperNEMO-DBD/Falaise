@@ -22,9 +22,9 @@
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/base_hit.h>
 
-namespace snemo {
+namespace snreco {
 
-namespace datamodel {
+namespace detail {
 
 /// \brief A mock class to represent SuperNEMO raw tracker hit
 class mock_raw_tracker_hit : public geomtools::base_hit {
@@ -91,21 +91,22 @@ class mock_raw_tracker_hit : public geomtools::base_hit {
   void dump() const;
 
  private:
-  double _ref_time_{datatools::invalid_real()};  //!< Relative time of the hit in relation to the absolute timestamp of the
-                      //!< current event
+  double _ref_time_{datatools::invalid_real()};  //!< Relative time of the hit in relation to the
+                                                 //!< absolute timestamp of the current event
   double _sigma_ref_time_{datatools::invalid_real()};  //!< Relative time error
 
   // Geiger regime anode/cathodes drift times:
-  double _drift_time_{datatools::invalid_real()};         //!< Anode drift time
-  double _sigma_drift_time_{datatools::invalid_real()};   //!< Anode drift time error
-  double _top_time_{datatools::invalid_real()};           //!< Top cathode signal drift time
-  double _sigma_top_time_{datatools::invalid_real()};     //!< Top cathode signal drift time error
-  double _bottom_time_{datatools::invalid_real()};        //!< Bottom cathode signal drift time
-  double _sigma_bottom_time_{datatools::invalid_real()};  //!< Bottom cathode signal drift time error
+  double _drift_time_{datatools::invalid_real()};        //!< Anode drift time
+  double _sigma_drift_time_{datatools::invalid_real()};  //!< Anode drift time error
+  double _top_time_{datatools::invalid_real()};          //!< Top cathode signal drift time
+  double _sigma_top_time_{datatools::invalid_real()};    //!< Top cathode signal drift time error
+  double _bottom_time_{datatools::invalid_real()};       //!< Bottom cathode signal drift time
+  double _sigma_bottom_time_{
+      datatools::invalid_real()};  //!< Bottom cathode signal drift time error
 };
 
-}  // end of namespace datamodel
+}  // namespace detail
 
-}  // end of namespace snemo
+}  // namespace snreco
 
 #endif  // FALAISE_SNEMO_DATAMODEL_MOCK_RAW_TRACKER_HIT_H

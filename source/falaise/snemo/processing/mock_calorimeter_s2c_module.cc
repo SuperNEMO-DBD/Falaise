@@ -3,7 +3,7 @@
  */
 
 // Ourselves:
-#include <falaise/snemo/processing/mock_calorimeter_s2c_module.h>
+#include "mock_calorimeter_s2c_module.h"
 
 // Standard library:
 #include <sstream>

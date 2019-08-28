@@ -2,16 +2,16 @@
 // falaise/snemo/datamodels/mock_raw_tracker_hit.cc
 
 // Ourselves:
-#include <falaise/snemo/datamodels/mock_raw_tracker_hit.h>
+#include "mock_raw_tracker_hit.h"
 
 // Third party:
 // - Bayeux/datatools:
 #include <datatools/clhep_units.h>
 #include <datatools/utils.h>
 
-namespace snemo {
+namespace snreco {
 
-namespace datamodel {
+namespace detail {
 
 bool mock_raw_tracker_hit::is_ref_time_missing() const { return !datatools::is_valid(_ref_time_); }
 
@@ -142,6 +142,6 @@ void mock_raw_tracker_hit::dump() const {
   tree_dump(std::clog, "snemo::datamodel::mock_raw_tracker_hit");
 }
 
-}  // end of namespace datamodel
+}  // namespace detail
 
-}  // end of namespace snemo
+}  // namespace snreco

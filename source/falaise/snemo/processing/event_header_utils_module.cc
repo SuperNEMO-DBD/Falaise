@@ -3,7 +3,7 @@
  */
 
 // Ourselves:
-#include <falaise/snemo/processing/event_header_utils_module.h>
+#include "event_header_utils_module.h"
 
 // Third party:
 // // - Bayeux/datatools:
