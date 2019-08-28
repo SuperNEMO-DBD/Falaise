@@ -46,7 +46,7 @@ bool event_header::is_simulated() const { return _generation_ == GENERATION_SIMU
 
 void event_header::clear() {
   _properties_.clear();
-  _timestamp_.invalidate();
+  _timestamp_ = snemo::datamodel::timestamp{};
   _generation_ = GENERATION_INVALID;
   _id_.clear();
 }

@@ -32,10 +32,6 @@ bool timestamp::is_valid() const {
   return _seconds_ != INVALID_SECONDS && _picoseconds_ != INVALID_PICOSECONDS;
 }
 
-void timestamp::invalidate() {
-  _seconds_ = INVALID_SECONDS;
-  _picoseconds_ = INVALID_PICOSECONDS;
-}
 
 int timestamp::compare(const timestamp& ts_) const {
   DT_THROW_IF(!is_valid(), std::logic_error, "Invalid timestamp (this) !");

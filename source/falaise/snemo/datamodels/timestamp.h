@@ -63,9 +63,6 @@ class timestamp : public datatools::i_serializable {
   /// Check if the timestamp object is valid
   bool is_valid() const;
 
-  /// Invalidate the timestamp object
-  void invalidate();
-
   /// Convert timestamp to real value (explicit time unit)
   double to_real() const;
 
