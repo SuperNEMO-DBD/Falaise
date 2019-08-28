@@ -61,7 +61,7 @@ class options_manager : public utils::singleton<options_manager> {
   datatools::logger::priority get_logging_priority() const;
 
   /// Set the logging priority threshold
-  void set_logging_priority(datatools::logger::priority priority_);
+  void set_logging_priority(datatools::logger::priority p_);
 
   void reset();
 
@@ -83,7 +83,7 @@ class options_manager : public utils::singleton<options_manager> {
   void define_browser_options(boost::program_options::options_description& browser_options_,
                               uint32_t flags_ = 0);
 
-  void define_view_options(boost::program_options::options_description& view_options_,
+  void define_view_options(boost::program_options::options_description& viewer_options_,
                            uint32_t flags_ = 0);
 
   int apply_options(const boost::program_options::variables_map& vm_);

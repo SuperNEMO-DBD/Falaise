@@ -74,63 +74,56 @@ void event_browser::welcome() const {
             << "                                                   " << std::endl
             << "\tCompiled with ROOT v" << gROOT->GetVersion() << std::endl;
   std::cout << std::endl;
-  return;
 }
 
 // ctor:
 event_browser::event_browser(const TGWindow* window_, const unsigned int width_,
                              const unsigned int height_)
     : TGMainFrame(window_, width_, height_) {
-  _menu_ = 0;
-  _display_ = 0;
-  _full_2d_display_ = 0;
-  _status_ = 0;
-  _handlers_ = 0;
-  _tabs_ = 0;
-  _event_server_ = 0;
-  _thread_ctrl_ = 0;
+  _menu_ = nullptr;
+  _display_ = nullptr;
+  _full_2d_display_ = nullptr;
+  _status_ = nullptr;
+  _handlers_ = nullptr;
+  _tabs_ = nullptr;
+  _event_server_ = nullptr;
+  _thread_ctrl_ = nullptr;
   _initialized_ = false;
-  return;
 }
 
 // dtor:
-event_browser::~event_browser() {
-  this->reset();
-  return;
-}
+event_browser::~event_browser() { this->reset(); }
 
 void event_browser::initialize() {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   this->_at_init_();
   _initialized_ = true;
-  return;
 }
 
 void event_browser::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
   delete _event_server_;
-  _event_server_ = 0;
+  _event_server_ = nullptr;
 
   delete _display_;
-  _display_ = 0;
+  _display_ = nullptr;
 
-  if (_full_2d_display_) {
+  if (_full_2d_display_ != nullptr) {
     delete _full_2d_display_;
-    _full_2d_display_ = 0;
+    _full_2d_display_ = nullptr;
   }
 
   delete _status_;
-  _status_ = 0;
+  _status_ = nullptr;
   delete _handlers_;
-  _status_ = 0;
+  _status_ = nullptr;
 
   delete _tabs_;
-  _tabs_ = 0;
+  _tabs_ = nullptr;
   delete _menu_;
-  _menu_ = 0;
+  _menu_ = nullptr;
 
   _initialized_ = false;
-  return;
 }
 
 void event_browser::_at_init_() {
@@ -143,7 +136,6 @@ void event_browser::_at_init_() {
   // Initialize browser components
   this->initialize_gui();
   this->initialize_event_server();
-  return;
 }
 
 void event_browser::initialize_gui() {
@@ -199,17 +191,14 @@ void event_browser::initialize_gui() {
   this->MapSubwindows();
   this->Resize(this->GetDefaultSize());
   this->MapWindow();
-  return;
 }
 
 void event_browser::initialize_event_server() {
   const options_manager& options_mgr = options_manager::get_instance();
-  const std::vector<std::string> filenames = options_mgr.get_input_files();
+  const std::vector<std::string>& filenames = options_mgr.get_input_files();
   // Check here the existence of file
   std::vector<std::string> existing_files;
-  for (std::vector<std::string>::const_iterator it_file = filenames.begin();
-       it_file != filenames.end(); ++it_file) {
-    const std::string& a_file = *it_file;
+  for (const auto& a_file : filenames) {
     if (!boost::filesystem::exists(a_file)) {
       DT_LOG_WARNING(options_mgr.get_logging_priority(), a_file << " does not exist");
       continue;
@@ -225,7 +214,9 @@ void event_browser::initialize_event_server() {
 
   // Initialize event server
   io::event_server& server = *_event_server_;
-  if (server.is_initialized()) server.reset();
+  if (server.is_initialized()) {
+    server.reset();
+  }
   if (!server.initialize(existing_files)) {
     DT_LOG_WARNING(options_mgr.get_logging_priority(), "Cannot open data source!");
     return;
@@ -243,11 +234,13 @@ void event_browser::initialize_event_server() {
   // Window title
   std::ostringstream info;
   info << "SuperNEMO snvisualization - reading from: ";
-  if (existing_files.size() < 1) {
+  if (existing_files.empty()) {
     info << "unknown...";
   } else {
     info << existing_files[0];
-    if (existing_files.size() > 1) info << " (and others)";
+    if (existing_files.size() > 1) {
+      info << " (and others)";
+    }
   }
 
   this->SetWindowName(info.str().c_str());
@@ -258,20 +251,16 @@ void event_browser::initialize_event_server() {
   _status_->update(true);
 
   this->change_event(server.has_sequential_data() ? NEXT_EVENT : FIRST_EVENT);
-  return;
 }
 
-void event_browser::track_select() {
-  _display_->update(false, false);
-  return;
-}
+void event_browser::track_select() { _display_->update(false, false); }
 
 void event_browser::add_full_2d_view() {
-  if (_full_2d_display_) {
+  if (_full_2d_display_ != nullptr) {
     // Remove full 2D view
     _tabs_->RemoveTab(FULL_2D_DISPLAY);
     delete _full_2d_display_;
-    _full_2d_display_ = 0;
+    _full_2d_display_ = nullptr;
   } else {
     // Create a new frame
     TGCompositeFrame* full_2d_frame = _tabs_->AddTab("Full 2D View");
@@ -286,18 +275,18 @@ void event_browser::add_full_2d_view() {
   _tabs_->MapSubwindows();
   _tabs_->Layout();
   _tabs_->SetTab(FULL_2D_DISPLAY);
-  return;
 }
 
 void event_browser::update_browser(const bool reset_view_) {
   _tab_is_uptodate_[EVENT_DISPLAY] = false;
   _tab_is_uptodate_[FULL_2D_DISPLAY] = false;
   this->update_tab((tab_id_index_type)_tabs_->GetCurrent(), reset_view_);
-  return;
 }
 
 void event_browser::update_tab(const tab_id_index_type index_, const bool reset_view_) {
-  if (_tab_is_uptodate_[index_]) return;
+  if (_tab_is_uptodate_[index_]) {
+    return;
+  }
 
   _menu_->set_default_option(*_event_server_);
   switch (index_) {
@@ -311,7 +300,6 @@ void event_browser::update_tab(const tab_id_index_type index_, const bool reset_
       break;
   }
   _tab_is_uptodate_[index_] = true;
-  return;
 }
 
 void event_browser::update_menu(const button_signals_type signal_) {
@@ -346,7 +334,6 @@ void event_browser::update_menu(const button_signals_type signal_) {
       _menu_->update(signal_);
       break;
   }
-  return;
 }
 
 void event_browser::change_event(const button_signals_type signal_, const int event_selected_) {
@@ -355,7 +342,9 @@ void event_browser::change_event(const button_signals_type signal_, const int ev
 
   // Sequential and external mode only allow NEXT_EVENT signal
   if (_event_server_->has_sequential_data() || _event_server_->has_external_data()) {
-    if (signal_ != NEXT_EVENT) return;
+    if (signal_ != NEXT_EVENT) {
+      return;
+    }
   }
 
   // Event selection
@@ -376,8 +365,6 @@ void event_browser::change_event(const button_signals_type signal_, const int ev
   if (has_thread_ctrl()) {
     this->unlock_thread();
   }
-
-  return;
 }
 
 void event_browser::change_tab(const button_signals_type signal_) {
@@ -413,7 +400,6 @@ void event_browser::change_tab(const button_signals_type signal_) {
       }
     }
   }
-  return;
 }
 
 void event_browser::close_window() {
@@ -425,7 +411,6 @@ void event_browser::close_window() {
   } else {
     gApplication->Terminate();
   }
-  return;
 }
 
 bool event_browser::handle_key(Event_t* event_) { return _handlers_->handle_key(event_); }
@@ -436,13 +421,12 @@ bool event_browser::process_message(long msg_, long parm1_, long parm2_) {
 
 /*************************************************************/
 
-bool event_browser::has_thread_ctrl() const { return _thread_ctrl_ != 0; }
+bool event_browser::has_thread_ctrl() const { return _thread_ctrl_ != nullptr; }
 
 void event_browser::set_thread_ctrl(event_browser_ctrl& thread_ctrl_) {
   DT_THROW_IF(has_thread_ctrl(), std::logic_error,
               "Operation prohibited ! Event browser already got a 'thread ctrl' object !");
   _thread_ctrl_ = &thread_ctrl_;
-  return;
 }
 
 const event_browser_ctrl& event_browser::get_thread_ctrl() const {
@@ -514,7 +498,6 @@ void event_browser::unlock_thread() {
   if (must_abort_run) {
     stop_threading();
   }
-  return;
 }
 
 void event_browser::lock_thread() {
@@ -542,7 +525,6 @@ void event_browser::lock_thread() {
     DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
                  "Starting the ROOT browsing...");
   }
-  return;
 }
 
 void event_browser::wait() {
@@ -553,7 +535,6 @@ void event_browser::wait() {
       gSystem->ProcessEvents();
     }
   }
-  return;
 }
 
 void event_browser::start_threading() {
@@ -565,14 +546,12 @@ void event_browser::start_threading() {
   _menu_->set_default_option(*_event_server_);
   change_event(NEXT_EVENT);
   wait();
-  return;
 }
 
 void event_browser::stop_threading() {
   DT_THROW_IF(!has_thread_ctrl(), std::logic_error, "Event browser has no connected thread !");
   DT_LOG_NOTICE(options_manager::get_instance().get_logging_priority(), "Visualization stops !");
   //        close_window();
-  return;
 }
 
 }  // end of namespace view

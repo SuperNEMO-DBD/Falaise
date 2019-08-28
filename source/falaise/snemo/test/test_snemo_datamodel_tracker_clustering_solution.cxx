@@ -63,7 +63,6 @@ void draw_gg_hit(std::ostream& out_, const sdm::calibrated_tracker_hit& gg_hit_)
   hit_segm.setZ(-zdrift_err);
   geomtools::line_3d line(hit_segp, hit_segm);
   geomtools::gnuplot_draw::draw_line(out_, hit_pos, hit_rot, line);
-  return;
 }
 
 void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit& gg_hit_,
@@ -74,40 +73,39 @@ void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit&
   geomtools::rotation_3d hit_rot;
   hit_pos.setZ(hit_pos.x() + zdrift);
   double width = 42 * CLHEP::mm;
-  if (enlarged_) width += 2 * CLHEP::mm;
+  if (enlarged_) {
+    width += 2 * CLHEP::mm;
+  }
   geomtools::rectangle rect(width, width);
   geomtools::gnuplot_draw::draw_rectangle(out_, hit_pos, hit_rot, rect);
-  return;
 }
 
 void draw_gg_cluster(std::ostream& out_, const sdm::tracker_cluster& gg_cluster_,
                      bool enlarged_ = false, bool sep_ = true) {
-  for (int i = 0; i < (int)gg_cluster_.get_hits().size(); ++i) {
-    draw_gg_cluster_item(out_, gg_cluster_.get_hits()[i].get(), enlarged_);
+  for (const auto& i : gg_cluster_.get_hits()) {
+    draw_gg_cluster_item(out_, i.get(), enlarged_);
   }
   if (sep_) {
     out_ << std::endl << std::endl;
   }
-  return;
 }
 
 void draw_gg_cluster_solution(std::ostream& out_,
                               const sdm::tracker_clustering_solution& gg_cluster_solution_,
                               const std::string& mode_, bool sep_ = true) {
   if (mode_ == "clusters") {
-    for (int i = 0; i < (int)gg_cluster_solution_.get_clusters().size(); ++i) {
-      draw_gg_cluster(out_, gg_cluster_solution_.get_clusters()[i].get(), true, false);
+    for (const auto& i : gg_cluster_solution_.get_clusters()) {
+      draw_gg_cluster(out_, i.get(), true, false);
     }
   }
   if (mode_ == "unclustered_hits") {
-    for (int i = 0; i < (int)gg_cluster_solution_.get_unclustered_hits().size(); ++i) {
-      draw_gg_cluster_item(out_, gg_cluster_solution_.get_unclustered_hits()[i].get(), true);
+    for (const auto& i : gg_cluster_solution_.get_unclustered_hits()) {
+      draw_gg_cluster_item(out_, i.get(), true);
     }
   }
   if (sep_) {
     out_ << std::endl << std::endl;
   }
-  return;
 }
 
 int main(int argc_, char** argv_) {
@@ -121,7 +119,7 @@ int main(int argc_, char** argv_) {
     while (iarg < argc_) {
       std::string token = argv_[iarg];
       if (token[0] == '-') {
-        std::string option = token;
+        const std::string& option = token;
         if ((option == "--no-draw")) {
           draw = false;
         } else if ((option == "--draw")) {
@@ -130,7 +128,7 @@ int main(int argc_, char** argv_) {
           std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         { std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl; }
       }
       iarg++;
@@ -177,7 +175,9 @@ int main(int argc_, char** argv_) {
         draw_gg_hit(fvisu.grab(), gg_hit);
       }
     }
-    if (draw) fvisu.grab() << std::endl << std::endl;
+    if (draw) {
+      fvisu.grab() << std::endl << std::endl;
+    }
 
     // Create a handle on some tracker cluster :
     sdm::tracker_cluster::handle_type hTC0(new sdm::tracker_cluster);
@@ -290,5 +290,4 @@ void wait_for_key() {
   std::cin.ignore(std::cin.rdbuf()->in_avail());
   std::cin.get();
 #endif
-  return;
 }

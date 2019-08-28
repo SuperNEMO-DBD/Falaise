@@ -81,7 +81,7 @@ int main(int argc_, char** argv_) {
       const snemo::geometry::locator_plugin& lp =
           Geo.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
       // Set the Geiger cell locator :
-      gg_locator = dynamic_cast<const snemo::geometry::gg_locator*>(&(lp.get_gg_locator()));
+      gg_locator = dynamic_cast<const snemo::geometry::gg_locator*>(&(lp.geigerLocator()));
     }
 
     // The CAT module:

@@ -16,6 +16,8 @@
 #ifndef FALAISE_SNEMO_GEOMETRY_LOCATOR_PLUGIN_H
 #define FALAISE_SNEMO_GEOMETRY_LOCATOR_PLUGIN_H 1
 
+#include <memory>
+
 // Third party:
 // - Boost :
 #include <boost/cstdint.hpp>
@@ -39,76 +41,51 @@ class gveto_locator;
 /// \brief A geometry manager plugin with embedded SuperNEMO locators.
 class locator_plugin : public geomtools::manager::base_plugin {
  public:
-  typedef datatools::handle<geomtools::base_locator> locator_handle_type;
-
-  struct locator_entry_type {
-    std::string label;
-    std::string category_name;
-    int category_type;
-    uint32_t status;
-    locator_handle_type locator_handle;
-  };
-
-  typedef std::map<std::string, locator_entry_type> locator_dict_type;
-
-  /// Default constructor
-  locator_plugin();
-
-  /// Destructor
-  virtual ~locator_plugin();
-
   /// Main plugin initialization method
   virtual int initialize(const datatools::properties& config_,
                          const geomtools::manager::plugins_dict_type& plugins_,
-                         const datatools::service_dict_type& services_);
+                         const datatools::service_dict_type& services_) override;
 
   /// Plugin reset method
-  virtual int reset();
+  virtual int reset() override;
 
   /// Check if plugin is initialized
-  virtual bool is_initialized() const;
-
-  /// Returns a non-mutable reference to the dictionary of locators
-  const locator_dict_type& get_locators() const;
-
-  /// Returns a mutable reference to the dictionary of locators
-  locator_dict_type& grab_locators();
+  virtual bool is_initialized() const override;
 
   /// Check if geiger locator is available
-  bool has_gg_locator() const;
+  bool hasGeigerLocator() const;
 
   /// Check if calo locator is available
-  bool has_calo_locator() const;
+  bool hasCaloLocator() const;
 
   /// Check if xcalo locator is available
-  bool has_xcalo_locator() const;
+  bool hasXCaloLocator() const;
 
   /// Check if gveto locator is available
-  bool has_gveto_locator() const;
+  bool hasGVetoLocator() const;
 
   /// Returns a non-mutable reference to the geiger locator
-  const snemo::geometry::gg_locator& get_gg_locator() const;
+  const snemo::geometry::gg_locator& geigerLocator() const;
 
   /// Returns a non-mutable reference to the main wall locator
-  const snemo::geometry::calo_locator& get_calo_locator() const;
+  const snemo::geometry::calo_locator& caloLocator() const;
 
   /// Returns a non-mutable reference to the X wall locator
-  const snemo::geometry::xcalo_locator& get_xcalo_locator() const;
+  const snemo::geometry::xcalo_locator& xcaloLocator() const;
 
   /// Returns a non-mutable reference to the gamma veto locator
-  const snemo::geometry::gveto_locator& get_gveto_locator() const;
+  const snemo::geometry::gveto_locator& gvetoLocator() const;
 
  protected:
   /// Internal mapping build method
   void _build_locators(const datatools::properties& config_);
 
  private:
-  bool _initialized_;                                     //!< Initialization flag
-  locator_dict_type _locators_;                           //!< Locator dictionary
-  const snemo::geometry::gg_locator* _gg_locator_;        //!< Geiger locator
-  const snemo::geometry::calo_locator* _calo_locator_;    //!< Main wall locator
-  const snemo::geometry::xcalo_locator* _xcalo_locator_;  //!< X-wall locator
-  const snemo::geometry::gveto_locator* _gveto_locator_;  //!< gamma-veto locator
+  bool isInitialized_ = false;                                    //!< Initialization flag
+  std::unique_ptr<snemo::geometry::gg_locator> geigerLocator_;    //!< Geiger locator
+  std::unique_ptr<snemo::geometry::calo_locator> caloLocator_;    //!< Main wall locator
+  std::unique_ptr<snemo::geometry::xcalo_locator> xcaloLocator_;  //!< X-wall locator
+  std::unique_ptr<snemo::geometry::gveto_locator> gvetoLocator_;  //!< gamma-veto locator
 
   GEOMTOOLS_PLUGIN_REGISTRATION_INTERFACE(locator_plugin)
 };

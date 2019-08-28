@@ -49,25 +49,20 @@ const void* i_root_volume::get_volume() const {
 }
 
 // ctor:
-i_root_volume::i_root_volume(const std::string& name_, const std::string& category_) : i_volume() {
+i_root_volume::i_root_volume(const std::string& name_, const std::string& category_) {
   _name = name_;
   _category = category_;
-  _geo_volume = 0;
+  _geo_volume = nullptr;
   _initialized = false;
-  return;
 }
 
 // dtor:
-i_root_volume::~i_root_volume() {
-  this->reset();
-  return;
-}
+i_root_volume::~i_root_volume() { this->reset(); }
 
 void i_root_volume::initialize(const geomtools::geom_info& ginfo_) {
   _placement = ginfo_.get_world_placement();
   _construct(ginfo_.get_logical().get_shape());
   _initialized = true;
-  return;
 }
 
 void i_root_volume::update() {
@@ -75,12 +70,11 @@ void i_root_volume::update() {
 
   _color = style_mgr.get_volume_color(_category);
   _transparency = style_mgr.get_volume_transparency(_category);
-  _visibility = style_mgr.get_volume_visibility(_category) == VISIBLE ? true : false;
+  _visibility = style_mgr.get_volume_visibility(_category) == VISIBLE;
 
   if (is_initialized()) {
     this->clear();
   }
-  return;
 }
 
 void i_root_volume::clear() {
@@ -90,18 +84,16 @@ void i_root_volume::clear() {
   _geo_volume->SetLineWidth(1);
   _geo_volume->SetTransparency(_transparency);
   _geo_volume->SetVisibility(_visibility);
-  return;
 }
 
 void i_root_volume::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
-  if (_geo_volume) {
+  if (_geo_volume != nullptr) {
     delete _geo_volume;
-    _geo_volume = 0;
+    _geo_volume = nullptr;
   }
   _initialized = false;
-  return;
 }
 
 void i_root_volume::highlight(const size_t color_) {
@@ -109,7 +101,6 @@ void i_root_volume::highlight(const size_t color_) {
               "Volume '" << get_name() << "' is not initialized!");
   _highlight_color = color_;
   _highlight();
-  return;
 }
 
 void i_root_volume::_highlight() {
@@ -120,7 +111,6 @@ void i_root_volume::_highlight() {
   // data bank.
   // _geo_volume->SetVisibility(_visibility);
   _geo_volume->SetVisibility(true);
-  return;
 }
 
 void i_root_volume::tree_dump(std::ostream& out_, const std::string& title_,
@@ -159,13 +149,10 @@ void i_root_volume::tree_dump(std::ostream& out_, const std::string& title_,
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << get_placement().get_rotation() << " radians" << std::endl;
-
-  return;
 }
 
 void i_root_volume::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::i_root_volume");
-  return;
 }
 
 }  // end of namespace detector

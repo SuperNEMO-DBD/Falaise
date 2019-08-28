@@ -16,7 +16,7 @@
 #include "FLSimulateCommandLine.h"
 #include "FLSimulateErrors.h"
 #include "FLSimulateUtils.h"
-#include "falaise/config/property_reader.h"
+#include "falaise/property_set.h"
 #include "falaise/tags.h"
 
 namespace FLSimulate {
@@ -165,36 +165,33 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
 
     // Basic system:
     if (flSimConfig.has_key_with_meta("flsimulate", "flsimulate::section")) {
-      datatools::properties baseSystem = flSimConfig.get_section("flsimulate");
-      // Bind properties in this section to the relevant ones in params:
+      falaise::property_set baseSystem{flSimConfig.get_section("flsimulate")};
 
       // Number of simulated events:
-      flSimParameters.numberOfEvents = falaise::config::getValueOrDefault<int>(
-          baseSystem, "numberOfEvents", flSimParameters.numberOfEvents);
+      flSimParameters.numberOfEvents =
+          baseSystem.get<int>("numberOfEvents", flSimParameters.numberOfEvents);
 
       // Printing rate for events:
-      flSimParameters.simulationManagerParams.number_of_events_modulo =
-          falaise::config::getValueOrDefault<int>(
-              baseSystem, "moduloEvents",
-              flSimParameters.simulationManagerParams.number_of_events_modulo);
+      flSimParameters.simulationManagerParams.number_of_events_modulo = baseSystem.get<int>(
+          "moduloEvents", flSimParameters.simulationManagerParams.number_of_events_modulo);
 
       // Do simulation:
-      flSimParameters.doSimulation = falaise::config::getValueOrDefault<bool>(
-          baseSystem, "doSimulation", flSimParameters.doSimulation);
+      flSimParameters.doSimulation =
+          baseSystem.get<bool>("doSimulation", flSimParameters.doSimulation);
 
       // Do digitization:
-      flSimParameters.doDigitization = falaise::config::getValueOrDefault<bool>(
-          baseSystem, "doDigitization", flSimParameters.doDigitization);
+      flSimParameters.doDigitization =
+          baseSystem.get<bool>("doDigitization", flSimParameters.doDigitization);
     }
 
     // Simulation subsystem:
     if (flSimConfig.has_key_with_meta("flsimulate.simulation", "flsimulate::section")) {
-      datatools::properties simSubsystem = flSimConfig.get_section("flsimulate.simulation");
+      falaise::property_set simSubsystem{flSimConfig.get_section("flsimulate.simulation")};
       // Bind properties in this section to the relevant ones in params:
 
       // Simulation setup URN:
-      flSimParameters.simulationSetupUrn = falaise::config::getValueOrDefault<std::string>(
-          simSubsystem, "simulationSetupUrn", flSimParameters.simulationSetupUrn);
+      flSimParameters.simulationSetupUrn =
+          simSubsystem.get<std::string>("simulationSetupUrn", flSimParameters.simulationSetupUrn);
 
       DT_LOG_DEBUG(flSimParameters.logLevel,
                    "flSimParameters.simulationSetupUrn=" << flSimParameters.simulationSetupUrn);
@@ -208,8 +205,8 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "' simulation configuration parameter!");
       }
       flSimParameters.simulationManagerParams.manager_config_filename =
-          falaise::config::getValueOrDefault<std::string>(
-              simSubsystem, "simulationSetupConfig",
+          simSubsystem.get<std::string>(
+              "simulationSetupConfig",
               flSimParameters.simulationManagerParams.manager_config_filename);
 
       // File for loading internal PRNG's seeds:
@@ -219,10 +216,8 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "rngSeedFile"
                                                      << "' simulation configuration parameter!");
       }
-      flSimParameters.simulationManagerParams.input_prng_seeds_file =
-          falaise::config::getValueOrDefault<std::string>(
-              simSubsystem, "rngSeedFile",
-              flSimParameters.simulationManagerParams.input_prng_seeds_file);
+      flSimParameters.simulationManagerParams.input_prng_seeds_file = simSubsystem.get<falaise::path>(
+          "rngSeedFile", flSimParameters.simulationManagerParams.input_prng_seeds_file);
 
       if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
         if (flSimParameters.userProfile == "production") {
@@ -247,23 +242,22 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                        << "rngGeant4GeneratorSeed"
                                        << "' simulation configuration parameter!");
         }
-        flSimParameters.simulationManagerParams.eg_seed = falaise::config::getValueOrDefault<int>(
-            simSubsystem, "rngEventGeneratorSeed", flSimParameters.simulationManagerParams.eg_seed);
-        flSimParameters.simulationManagerParams.vg_seed = falaise::config::getValueOrDefault<int>(
-            simSubsystem, "rngVertexGeneratorSeed",
-            flSimParameters.simulationManagerParams.vg_seed);
-        flSimParameters.simulationManagerParams.shpf_seed = falaise::config::getValueOrDefault<int>(
-            simSubsystem, "rngHitProcessingGeneratorSeed",
-            flSimParameters.simulationManagerParams.shpf_seed);
-        flSimParameters.simulationManagerParams.mgr_seed = falaise::config::getValueOrDefault<int>(
-            simSubsystem, "rngGeant4GeneratorSeed",
-            flSimParameters.simulationManagerParams.mgr_seed);
+        flSimParameters.simulationManagerParams.eg_seed = simSubsystem.get<int>(
+            "rngEventGeneratorSeed", flSimParameters.simulationManagerParams.eg_seed);
+
+        flSimParameters.simulationManagerParams.vg_seed = simSubsystem.get<int>(
+            "rngVertexGeneratorSeed", flSimParameters.simulationManagerParams.vg_seed);
+
+        flSimParameters.simulationManagerParams.shpf_seed = simSubsystem.get<int>(
+            "rngHitProcessingGeneratorSeed", flSimParameters.simulationManagerParams.shpf_seed);
+
+        flSimParameters.simulationManagerParams.mgr_seed = simSubsystem.get<int>(
+            "rngGeant4GeneratorSeed", flSimParameters.simulationManagerParams.mgr_seed);
       }
 
       flSimParameters.simulationManagerParams.output_prng_seeds_file =
-          falaise::config::getValueOrDefault<std::string>(
-              simSubsystem, "rngSeedFileSave",
-              flSimParameters.simulationManagerParams.output_prng_seeds_file);
+          simSubsystem.get<std::string>(
+              "rngSeedFileSave", flSimParameters.simulationManagerParams.output_prng_seeds_file);
 
       // File for loading internal PRNG's states:
       if (flSimParameters.userProfile != "expert" && simSubsystem.has_key("inputRngStateFile")) {
@@ -273,37 +267,34 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "' simulation configuration parameter!");
       }
       flSimParameters.simulationManagerParams.input_prng_states_file =
-          falaise::config::getValueOrDefault<std::string>(
-              simSubsystem, "inputRngStateFile",
-              flSimParameters.simulationManagerParams.input_prng_states_file);
+          simSubsystem.get<std::string>(
+              "inputRngStateFile", flSimParameters.simulationManagerParams.input_prng_states_file);
 
       // File for saving internal PRNG's states:
       flSimParameters.simulationManagerParams.output_prng_states_file =
-          falaise::config::getValueOrDefault<std::string>(
-              simSubsystem, "outputRngStateFile",
+          simSubsystem.get<std::string>(
+              "outputRngStateFile",
               flSimParameters.simulationManagerParams.output_prng_states_file);
 
       // Saving rate for internal PRNG's states:
-      flSimParameters.simulationManagerParams.prng_states_save_modulo =
-          falaise::config::getValueOrDefault<int>(
-              simSubsystem, "rngStateModuloEvents",
-              flSimParameters.simulationManagerParams.prng_states_save_modulo);
+      flSimParameters.simulationManagerParams.prng_states_save_modulo = simSubsystem.get<int>(
+          "rngStateModuloEvents", flSimParameters.simulationManagerParams.prng_states_save_modulo);
     }
 
     // Digitization subsystem:
-    if (flSimConfig.has_key_with_meta("flsimulate.digitization", "flsimulate::section")) {
-      datatools::properties digiSubsystem = flSimConfig.get_section("flsimulate.digitization");
-      // Bind properties in this section to the relevant ones in params:
-    }
+    // if (flSimConfig.has_key_with_meta("flsimulate.digitization", "flsimulate::section")) {
+    //  datatools::properties digiSubsystem = flSimConfig.get_section("flsimulate.digitization");
+    // Bind properties in this section to the relevant ones in params:
+    //}
 
     // Variants subsystem:
     if (flSimConfig.has_key_with_meta("flsimulate.variantService", "flsimulate::section")) {
-      datatools::properties variantSubsystem = flSimConfig.get_section("flsimulate.variantService");
+      falaise::property_set variantSubsystem{flSimConfig.get_section("flsimulate.variantService")};
       // Bind properties to relevant ones on params
 
       // Variant configuration URN:
-      flSimParameters.variantConfigUrn = falaise::config::getValueOrDefault<std::string>(
-          variantSubsystem, "configUrn", flSimParameters.variantConfigUrn);
+      flSimParameters.variantConfigUrn =
+          variantSubsystem.get<std::string>("configUrn", flSimParameters.variantConfigUrn);
 
       // Variant configuration:
       if (flSimParameters.userProfile == "production" && variantSubsystem.has_key("config")) {
@@ -312,18 +303,16 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "config"
                                                      << "' variants configuration parameter!");
       }
-      flSimParameters.variantSubsystemParams.config_filename =
-          falaise::config::getValueOrDefault<std::string>(
-              variantSubsystem, "config", flSimParameters.variantSubsystemParams.config_filename);
+      flSimParameters.variantSubsystemParams.config_filename = variantSubsystem.get<std::string>(
+          "config", flSimParameters.variantSubsystemParams.config_filename);
 
       // Variant profile URN:
-      flSimParameters.variantProfileUrn = falaise::config::getValueOrDefault<std::string>(
-          variantSubsystem, "profileUrn", flSimParameters.variantProfileUrn);
+      flSimParameters.variantProfileUrn =
+          variantSubsystem.get<std::string>("profileUrn", flSimParameters.variantProfileUrn);
 
       // Variant profile:
-      flSimParameters.variantSubsystemParams.profile_load =
-          falaise::config::getValueOrDefault<std::string>(
-              variantSubsystem, "profile", flSimParameters.variantSubsystemParams.profile_load);
+      flSimParameters.variantSubsystemParams.profile_load = variantSubsystem.get<falaise::path>(
+          "profile", flSimParameters.variantSubsystemParams.profile_load);
 
       // Variant settings:
       if (flSimParameters.userProfile == "production" && variantSubsystem.has_key("settings")) {
@@ -333,17 +322,17 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "' variants configuration parameter!");
       }
       flSimParameters.variantSubsystemParams.settings =
-          falaise::config::getValueOrDefault<std::vector<std::string> >(
-              variantSubsystem, "settings", flSimParameters.variantSubsystemParams.settings);
+          variantSubsystem.get<std::vector<std::string>>(
+              "settings", flSimParameters.variantSubsystemParams.settings);
     }
 
     // Services subsystem:
     if (flSimConfig.has_key_with_meta("flsimulate.services", "flsimulate::section")) {
-      datatools::properties servicesSubsystem = flSimConfig.get_section("flsimulate.services");
+      falaise::property_set servicesSubsystem{flSimConfig.get_section("flsimulate.services")};
 
       // Services manager configuration URN:
-      flSimParameters.servicesSubsystemConfigUrn = falaise::config::getValueOrDefault<std::string>(
-          servicesSubsystem, "configUrn", flSimParameters.servicesSubsystemConfigUrn);
+      flSimParameters.servicesSubsystemConfigUrn = servicesSubsystem.get<std::string>(
+          "configUrn", flSimParameters.servicesSubsystemConfigUrn);
 
       // Services manager main configuration file:
       if (flSimParameters.userProfile == "production" && servicesSubsystem.has_key("config")) {
@@ -352,8 +341,8 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "config"
                                                      << "' services configuration parameter!");
       }
-      flSimParameters.servicesSubsystemConfig = falaise::config::getValueOrDefault<std::string>(
-          servicesSubsystem, "config", flSimParameters.servicesSubsystemConfig);
+      flSimParameters.servicesSubsystemConfig =
+          servicesSubsystem.get<std::string>("config", flSimParameters.servicesSubsystemConfig);
     }
 
   }  // !args.configScript.empty()

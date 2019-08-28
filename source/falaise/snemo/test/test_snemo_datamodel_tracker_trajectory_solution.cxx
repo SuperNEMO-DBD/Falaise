@@ -28,7 +28,6 @@ int main(/* int argc_, char ** argv_ */) {
     std::clog << "Test program for the 'snemo::datamodel::tracker_trajectory_solution' class."
               << std::endl;
 
-
     namespace sdm = snemo::datamodel;
 
     srand48(314159);
@@ -140,7 +139,7 @@ int main(/* int argc_, char ** argv_ */) {
     // Create a handle on some trajectory pattern :
     DATATOOLS_HANDLE_DECLARE(hLTP0, sdm::base_trajectory_pattern);
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP0;
-    sdm::line_trajectory_pattern* LTP = new sdm::line_trajectory_pattern;
+    auto* LTP = new sdm::line_trajectory_pattern;
     // access to the internal line model :
     LTP->get_segment().set_first(geomtools::vector_3d(3., 5., 7.));
     LTP->get_segment().set_last(geomtools::vector_3d(13., -5., 12.));
@@ -160,7 +159,7 @@ int main(/* int argc_, char ** argv_ */) {
     // Create a handle on some trajectory pattern :
     DATATOOLS_HANDLE_DECLARE(hLTP1, sdm::base_trajectory_pattern);
     // datatools::utils::handle<sdm::base_trajectory_pattern> hLTP1;
-    sdm::helix_trajectory_pattern* HTP = new sdm::helix_trajectory_pattern;
+    auto* HTP = new sdm::helix_trajectory_pattern;
     // access to the internal helix model :
     HTP->get_helix().set_radius(0.75 * CLHEP::m);
     HTP->get_helix().set_center(

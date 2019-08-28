@@ -69,7 +69,7 @@ int main(int argc_, char** argv_) {
       std::string token = argv_[iarg];
 
       if (token[0] == '-') {
-        std::string option = token;
+        const std::string& option = token;
         {
           if (option == "-D" || option == "--draw") {
             draw = true;
@@ -85,7 +85,7 @@ int main(int argc_, char** argv_) {
           }
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         {
           if (map_filename.empty()) {
             map_filename = argument;
@@ -105,11 +105,13 @@ int main(int argc_, char** argv_) {
     }
 
     snemo::geometry::mapped_magnetic_field mmf;
-    mmf.set_mapping_mode(snemo::geometry::mapped_magnetic_field::MM_IMPORT_CSV_MAP_0);
-    mmf.set_map_filename(map_filename);
-    mmf.set_zero_field_outside_map(true);
-    mmf.set_z_inverted(z_inverted);
-    if (trace) mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
+    mmf.setMapMode(snemo::geometry::mapped_magnetic_field::map_mode_t::IMPORT_CSV_MAP_0);
+    mmf.setMapFilename(map_filename);
+    mmf.setZeroFieldOutsideMap(true);
+    mmf.setInvertedZ(z_inverted);
+    if (trace) {
+      mmf.set_logging_priority(datatools::logger::PRIO_TRACE);
+    }
     mmf.initialize_simple();
 
     datatools::temp_file tmp_file;

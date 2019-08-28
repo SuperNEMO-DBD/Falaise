@@ -36,8 +36,8 @@
 #include <string>
 
 // Interfaces
-#include <datatools/i_tree_dump.h>
 #include <EventBrowser/utils/singleton.h>
+#include <datatools/i_tree_dump.h>
 
 #include <EventBrowser/detector/volume_model.h>
 

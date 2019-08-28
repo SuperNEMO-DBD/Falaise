@@ -55,7 +55,7 @@ class event_browser_ctrl;
 class event_browser_module : public dpp::base_module {
  public:
   /// Setting geometry manager
-  void set_geometry_manager(const geomtools::manager& gmgr_);
+  void set_geometry_manager(const geomtools::manager& geometry_manager_);
 
   /// Getting geometry manager
   const geomtools::manager& get_geometry_manager() const;
@@ -67,7 +67,7 @@ class event_browser_module : public dpp::base_module {
   virtual ~event_browser_module();
 
   /// Initialization
-  virtual void initialize(const datatools::properties& setup_,
+  virtual void initialize(const datatools::properties& config_,
                           datatools::service_manager& service_manager_,
                           dpp::module_handle_dict_type& module_dict_);
 
@@ -75,7 +75,7 @@ class event_browser_module : public dpp::base_module {
   virtual void reset();
 
   /// Data record processing
-  virtual process_status process(datatools::things& data_);
+  virtual process_status process(datatools::things& event_record_);
 
  protected:
   void _initialize_event_browser();

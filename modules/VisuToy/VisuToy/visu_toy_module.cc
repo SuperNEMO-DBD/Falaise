@@ -128,10 +128,7 @@ void visu_toy_module::initialize(const datatools::properties& setup_,
 
   // Geometry manager :
   if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::service_info::default_geometry_service_label();
-    if (setup_.has_key("Geo_label")) {
-      geo_label = setup_.fetch_string("Geo_label");
-    }
+    std::string geo_label = snemo::service_info::geometryServiceName();
     DT_THROW_IF(geo_label.empty(), std::logic_error,
                 "Module '" << get_name() << "' has no valid '"
                            << "Geo_label"

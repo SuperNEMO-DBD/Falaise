@@ -45,14 +45,14 @@ namespace visualization {
 namespace view {
 
 // ctor:
-calorimeter_hit_renderer::calorimeter_hit_renderer() : base_renderer() { return; }
+calorimeter_hit_renderer::calorimeter_hit_renderer() = default;
 
 // dtor:
-calorimeter_hit_renderer::~calorimeter_hit_renderer() { return; }
+calorimeter_hit_renderer::~calorimeter_hit_renderer() = default;
 
 void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_category_) {
   const io::event_record& event = _server->get_event();
-  const mctools::simulated_data& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   if (!sim_data.has_step_hits(hit_category_)) {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
@@ -68,10 +68,8 @@ void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_catego
     return;
   }
 
-  for (mctools::simulated_data::hit_handle_collection_type::const_iterator it_hit =
-           hit_collection.begin();
-       it_hit != hit_collection.end(); ++it_hit) {
-    const mctools::base_step_hit& a_hit = it_hit->get();
+  for (const auto& it_hit : hit_collection) {
+    const mctools::base_step_hit& a_hit = it_hit.get();
 
     const geomtools::vector_3d& pstart = a_hit.get_position_start();
     const geomtools::vector_3d& pstop = a_hit.get_position_stop();
@@ -82,7 +80,7 @@ void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_catego
 
     const geomtools::vector_3d pos = 0.5 * (pstart + pstop);
 
-    TMarker3DBox* step_3d = new TMarker3DBox;
+    auto* step_3d = new TMarker3DBox;
     _objects->Add(step_3d);
     step_3d->SetPosition(pos.x(), pos.y(), pos.z());
     step_3d->SetSize(dx, dy, dz);
@@ -99,12 +97,12 @@ void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_catego
     size_t line_width = style_manager::get_instance().get_mc_line_width();
     if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
       line_width = 3;
-      TPolyMarker3D* mark1 = new TPolyMarker3D;
+      auto* mark1 = new TPolyMarker3D;
       _objects->Add(mark1);
       mark1->SetMarkerColor(kRed);
       mark1->SetMarkerStyle(kCircle);
       mark1->SetPoint(0, pstart.x(), pstart.y(), pstart.z());
-      TPolyMarker3D* mark2 = new TPolyMarker3D;
+      auto* mark2 = new TPolyMarker3D;
       _objects->Add(mark2);
       mark2->SetMarkerColor(kRed);
       mark2->SetMarkerStyle(kCircle);
@@ -115,14 +113,11 @@ void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_catego
 
     this->highlight_geom_id(a_hit.get_geom_id(), kRed);
   }  // end of step collection
-
-  return;
 }
 
 void calorimeter_hit_renderer::push_calibrated_hits() {
   const io::event_record& event = _server->get_event();
-  const snemo::datamodel::calibrated_data& calib_data =
-      event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
+  const auto& calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
   if (!calib_data.has_calibrated_calorimeter_hits()) {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
@@ -139,10 +134,8 @@ void calorimeter_hit_renderer::push_calibrated_hits() {
     return;
   }
 
-  for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator it_hit =
-           cc_collection.begin();
-       it_hit != cc_collection.end(); ++it_hit) {
-    const snemo::datamodel::calibrated_calorimeter_hit& a_hit = it_hit->get();
+  for (const auto& it_hit : cc_collection) {
+    const snemo::datamodel::calibrated_calorimeter_hit& a_hit = it_hit.get();
 
     this->highlight_geom_id(a_hit.get_geom_id(),
                             style_manager::get_instance().get_calibrated_data_color());
@@ -165,7 +158,6 @@ void calorimeter_hit_renderer::push_calibrated_hits() {
                               style_manager::get_instance().get_calibrated_data_color(), oss.str());
     }
   }
-  return;
 }
 
 }  // end of namespace view

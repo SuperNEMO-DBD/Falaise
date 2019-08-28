@@ -8,11 +8,10 @@
 #include "boost/mpl/contains.hpp"
 #include "boost/mpl/vector.hpp"
 
-#include "falaise/config/path.h"
-#include "falaise/config/quantity.h"
+#include "falaise/path.h"
+#include "falaise/quantity.h"
 
 namespace falaise {
-namespace config {
 //! Exception thrown when requesting a key that is not in the property_set
 class missing_key_error : public std::logic_error {
   using std::logic_error::logic_error;
@@ -80,10 +79,10 @@ class wrong_type_error : public std::logic_error {
  *   - double
  *   - bool
  *   - std::string
- *   - @ref falaise::config::path
- *   - @ref falaise::config::quantity_t
+ *   - @ref falaise::path
+ *   - @ref falaise::quantity_t
  *     - Plus any type listed in @ref falaise_units
- *   - @ref falaise::config::property_set
+ *   - @ref falaise::property_set
  *   - std::vector<int>
  *   - std::vector<double>
  *   - std::vector<bool>
@@ -113,10 +112,10 @@ class wrong_type_error : public std::logic_error {
  * ```cpp
  * void configure_me(property_set const& ps) {
  *   // throws wrong_type_error if value at "foo" is not a path
- *   auto foo = ps.get<falaise::config::path>("foo");
+ *   auto foo = ps.get<falaise::path>("foo");
  *
  *   // throws wrong_type_error if value at bar is not a physical quantity with 'length' dimension
- *   auto bar = ps.get<falaise::config::length_t>("bar");
+ *   auto bar = ps.get<falaise::length_t>("bar");
  *
  *   ...
  * }
@@ -142,7 +141,7 @@ class wrong_type_error : public std::logic_error {
  * which will be stored using their subkey names:
  *
  * ```cpp
- * auto table = ps.get<falaise::config::property_set>("table");
+ * auto table = ps.get<falaise::property_set>("table");
  * auto foo = ps.get<std::string>("foo");
  * auto bar = ps.get<int>("bar);
  * ```
@@ -322,8 +321,8 @@ class property_set {
  private:
   //! List of types that property_set can hold
   using types_ =
-      boost::mpl::vector<int, double, bool, std::string, falaise::config::path,
-                         falaise::config::quantity, std::vector<int>, std::vector<double>,
+      boost::mpl::vector<int, double, bool, std::string, falaise::path,
+                         falaise::quantity, std::vector<int>, std::vector<double>,
                          std::vector<bool>, std::vector<std::string>>;
   template <typename T>
   struct can_hold_ {
@@ -331,7 +330,7 @@ class property_set {
   };
 
   template <typename T>
-  struct can_hold_<falaise::config::quantity_t<T>> {
+  struct can_hold_<falaise::quantity_t<T>> {
     typedef std::true_type type;
   };
 
@@ -363,10 +362,10 @@ class property_set {
   bool is_type_impl_(std::string const& key, const std::string&) const;
 
   //! Return true if value at key is a falaise::path
-  bool is_type_impl_(std::string const& key, const falaise::config::path&) const;
+  bool is_type_impl_(std::string const& key, const falaise::path&) const;
 
   //! Return true if value at key is a falaise::quantity
-  bool is_type_impl_(std::string const& key, const falaise::config::quantity&) const;
+  bool is_type_impl_(std::string const& key, const falaise::quantity&) const;
 
   //! Return true if value at key is a std::vector<int>
   bool is_type_impl_(std::string const& key, const std::vector<int>&) const;
@@ -395,22 +394,20 @@ class property_set {
   template <typename T>
   void get_impl_(std::string const& key, T& result) const;
 
-  //! Overload of put_impl_ for @ref falaise::config::quantity_t
+  //! Overload of put_impl_ for @ref falaise::quantity_t
   template <typename T>
-  void put_impl_(std::string const& key, falaise::config::quantity_t<T> const& value);
+  void put_impl_(std::string const& key, falaise::quantity_t<T> const& value);
 
-  //! Overload of get_impl_ for @ref falaise::config::quantity_t
+  //! Overload of get_impl_ for @ref falaise::quantity_t
   template <typename T>
-  void get_impl_(std::string const& key, falaise::config::quantity_t<T>& result) const;
+  void get_impl_(std::string const& key, falaise::quantity_t<T>& result) const;
 
   datatools::properties ps_;  //< underlying set of properties
 };
-}  // namespace config
 }  // namespace falaise
 
 // - Definitions for template functions
 namespace falaise {
-namespace config {
 template <typename T>
 T property_set::get(std::string const& key) const {
   if (!ps_.has_key(key)) {
@@ -515,21 +512,21 @@ void property_set::put_impl_(std::string const& key, T const& value) {
 
 //! Private specialization of put_impl_ for @ref path
 template <>
-inline void property_set::put_impl_(std::string const& key, falaise::config::path const& value) {
+inline void property_set::put_impl_(std::string const& key, falaise::path const& value) {
   ps_.store_path(key, value);
 }
 
 //! Private specialization of put_impl_ for @ref quantity
 template <>
 inline void property_set::put_impl_(std::string const& key,
-                                    falaise::config::quantity const& value) {
+                                    falaise::quantity const& value) {
   ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
 
 //! Private overload of put_impl_ for @ref quantity_t
 template <typename T>
-void property_set::put_impl_(std::string const& key, falaise::config::quantity_t<T> const& value) {
+void property_set::put_impl_(std::string const& key, falaise::quantity_t<T> const& value) {
   ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
@@ -542,14 +539,14 @@ void property_set::get_impl_(std::string const& key, T& result) const {
 
 // Private specialization of get_impl_ for @ref path type
 template <>
-inline void property_set::get_impl_(std::string const& key, falaise::config::path& result) const {
-  result = falaise::config::path{ps_.fetch_path(key)};
+inline void property_set::get_impl_(std::string const& key, falaise::path& result) const {
+  result = falaise::path{ps_.fetch_path(key)};
 }
 
 // Private specialization of get_impl_ for @ref units::quantity type
 template <>
 inline void property_set::get_impl_(std::string const& key,
-                                    falaise::config::quantity& result) const {
+                                    falaise::quantity& result) const {
   // Fetch with explicit unit gives value in CLHEP scale, so must
   // divide by the scaling factor for the symbol
   double rescaledValue =
@@ -559,7 +556,7 @@ inline void property_set::get_impl_(std::string const& key,
 
 // Overload for explicitly dimensioned quantities
 template <typename T>
-void property_set::get_impl_(std::string const& key, falaise::config::quantity_t<T>& result) const {
+void property_set::get_impl_(std::string const& key, falaise::quantity_t<T>& result) const {
   // fetch with explicit unit gives value in CLHEP scale, so must
   // divide it by the scaling factor for the symbol
   double rescaledValue =
@@ -574,7 +571,6 @@ void property_set::get_impl_(std::string const& key, falaise::config::quantity_t
  */
 void make_property_set(const std::string& filename, property_set& ps);
 
-}  // namespace config
 }  // namespace falaise
 
 #endif  // FALAISE_PROPERTY_SET_H

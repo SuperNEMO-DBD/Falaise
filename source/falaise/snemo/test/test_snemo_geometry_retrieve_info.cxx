@@ -50,13 +50,14 @@ int main(int argc_, char **argv_) {
     clog << "Test program for class 'geomtools::manager' from SuperNEMO geometry !" << endl;
 
     string manager_config_file;
-    
+
     if (manager_config_file.empty()) {
       manager_config_file = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
     }
     datatools::fetch_path_with_env(manager_config_file);
-    clog << datatools::io::devel << "Manager config. file : '" << manager_config_file << "'" << std::endl;
-    
+    clog << datatools::io::devel << "Manager config. file : '" << manager_config_file << "'"
+         << std::endl;
+
     // load properties from the configuration file:
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);
@@ -65,7 +66,7 @@ int main(int argc_, char **argv_) {
     my_manager.initialize(manager_config);
     my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
     my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
-    
+
     my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
 
     /* Partial view of the manager data model :
@@ -82,9 +83,8 @@ int main(int argc_, char **argv_) {
      */
     {
       // extract the geometry model associated to the "drift cell core" :
-      const geomtools::i_model *cell_core_model = 0;
-      geomtools::models_col_type::const_iterator found =
-          my_manager.get_factory().get_models().find("drift_cell_core.model");
+      const geomtools::i_model *cell_core_model = nullptr;
+      auto found = my_manager.get_factory().get_models().find("drift_cell_core.model");
       if (found == my_manager.get_factory().get_models().end()) {
         throw logic_error("You should have found the 'drift_cell_core' model here !");
       }
@@ -106,7 +106,7 @@ int main(int argc_, char **argv_) {
 
       // we know the concret shape class is a box, so we
       // cast it :
-      const geomtools::box &cell_core_box = dynamic_cast<const geomtools::box &>(cell_core_shape);
+      const auto &cell_core_box = dynamic_cast<const geomtools::box &>(cell_core_shape);
       clog << "... as a box..." << endl;
 
       double cell_core_length = cell_core_box.get_z();

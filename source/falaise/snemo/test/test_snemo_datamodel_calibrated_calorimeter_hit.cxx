@@ -57,12 +57,12 @@ int main(/* int argc_, char ** argv_ */) {
       my_calo_hit.set_energy(456. * CLHEP::keV);
       my_calo_hit.set_sigma_energy(37. * CLHEP::keV);
       my_calo_hit.tree_dump(std::clog, "Calibrated calorimeter hit");
-    }
+    }  // namespace sdm=snemo::datamodel;
 
     {
       // Create a vector of random calorimeter hits:
       srand48(314159);
-      typedef std::vector<sdm::calibrated_calorimeter_hit> hit_collection_type;
+      using hit_collection_type = std::vector<sdm::calibrated_calorimeter_hit>;
       hit_collection_type list_of_calo_hits;
       size_t nb_hits = 3;
       list_of_calo_hits.reserve(nb_hits);
@@ -89,7 +89,7 @@ int main(/* int argc_, char ** argv_ */) {
       }
 
       // Search for hits with min/max energy :
-      typedef datatools::smart_ref<sdm::calibrated_calorimeter_hit> smart_ref_type;
+      using smart_ref_type = datatools::smart_ref<sdm::calibrated_calorimeter_hit>;
       smart_ref_type emin_ch_ref;
       smart_ref_type emax_ch_ref;
       for (hit_collection_type::const_iterator i = list_of_calo_hits.begin();

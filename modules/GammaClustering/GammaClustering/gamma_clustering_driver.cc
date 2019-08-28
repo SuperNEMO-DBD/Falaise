@@ -17,8 +17,8 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -59,13 +59,14 @@ void gamma_clustering_driver::initialize(const datatools::properties& setup_) {
   this->snemo::processing::base_gamma_builder::_initialize(setup_);
 
   // Extract the setup of the base gamma builder :
-  falaise::config::property_set tmpPS{setup_};
-  auto ps = tmpPS.get<falaise::config::property_set>(get_id(),{});
+  falaise::property_set tmpPS{setup_};
+  auto ps = tmpPS.get<falaise::property_set>(get_id(), {});
 
-  timeRange_ = ps.get<falaise::config::time_t>("cluster_time_range",{6, "nanosecond"})();
+  timeRange_ = ps.get<falaise::time_t>("cluster_time_range", {6, "nanosecond"})();
   gridMask_ = ps.get<std::string>("cluster_grid_mask", "first");
-  minProbability_ = ps.get<falaise::config::fraction_t>("minimal_internal_probability", {1e-3, "percent"})();
-  minTimeResolution_ = ps.get<falaise::config::time_t>("sigma_time_good_calo", {2.5, "nanosecond"})();
+  minProbability_ =
+      ps.get<falaise::fraction_t>("minimal_internal_probability", {1e-3, "percent"})();
+  minTimeResolution_ = ps.get<falaise::time_t>("sigma_time_good_calo", {2.5, "nanosecond"})();
 
   _set_initialized(true);
 }
@@ -135,20 +136,20 @@ int gamma_clustering_driver::_process_algo(
       geomtools::vector_3d position;
       std::string label;
 
-      if (calo_locator.is_calo_block_in_current_module(a_gid)) {
-        calo_locator.get_block_position(a_gid, position);
+      if (calo_locator.isCaloBlockInThisModule(a_gid)) {
+        position = calo_locator.getBlockPosition(a_gid);
         const double offset = 45.5 * CLHEP::mm;
-        if (calo_locator.extract_side(a_gid) == snemo::geometry::utils::SIDE_BACK) {
+        if (calo_locator.getSideAddress(a_gid) == snemo::geometry::side_t::BACK) {
           position.setX(position.x() - offset);
         } else {
           position.setX(position.x() + offset);
         }
         label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
-      } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
-        xcalo_locator.get_block_position(a_gid, position);
+      } else if (xcalo_locator.isCaloBlockInThisModule(a_gid)) {
+        position = xcalo_locator.getBlockPosition(a_gid);
         label = snemo::datamodel::particle_track::vertex_on_x_calorimeter_label();
-      } else if (gveto_locator.is_calo_block_in_current_module(a_gid)) {
-        gveto_locator.get_block_position(a_gid, position);
+      } else if (gveto_locator.isCaloBlockInThisModule(a_gid)) {
+        position = gveto_locator.getBlockPosition(a_gid);
         label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
       } else {
         DT_THROW_IF(true, std::logic_error,
@@ -178,17 +179,17 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
   // Store the current calorimeter as registered one
   registered_calos_.push_back(a_gid);
 
-  uint8_t mask = snemo::geometry::utils::NEIGHBOUR_NONE;
+  uint8_t mask = snemo::geometry::grid_mask_t::NONE;
   if (gridMask_ == "first") {
-    mask = snemo::geometry::utils::NEIGHBOUR_FIRST;
+    mask = snemo::geometry::grid_mask_t::FIRST;
   } else if (gridMask_ == "second") {
-    mask = snemo::geometry::utils::NEIGHBOUR_FIRST | snemo::geometry::utils::NEIGHBOUR_SECOND;
+    mask = snemo::geometry::grid_mask_t::FIRST | snemo::geometry::grid_mask_t::SECOND;
   } else if (gridMask_ == "diagonal") {
-    mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+    mask = snemo::geometry::grid_mask_t::DIAG;
   } else if (gridMask_ == "side") {
-    mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+    mask = snemo::geometry::grid_mask_t::SIDE;
   } else if (gridMask_ == "none") {
-    mask = snemo::geometry::utils::NEIGHBOUR_NONE;
+    mask = snemo::geometry::grid_mask_t::NONE;
   } else {
     DT_THROW_IF(true, std::logic_error, "Unknown neighbour mask '" << gridMask_ << "' !")
   }
@@ -198,12 +199,12 @@ void gamma_clustering_driver::_get_geometrical_neighbours(
   const snemo::geometry::gveto_locator& gveto_locator = base_gamma_builder::get_gveto_locator();
   gid_list_type the_neighbours;
 
-  if (calo_locator.is_calo_block_in_current_module(a_gid)) {
-    calo_locator.get_neighbours_ids(a_gid, the_neighbours, mask);
-  } else if (xcalo_locator.is_calo_block_in_current_module(a_gid)) {
-    xcalo_locator.get_neighbours_ids(a_gid, the_neighbours, mask);
-  } else if (gveto_locator.is_calo_block_in_current_module(a_gid)) {
-    gveto_locator.get_neighbours_ids(a_gid, the_neighbours, mask);
+  if (calo_locator.isCaloBlockInThisModule(a_gid)) {
+    the_neighbours = calo_locator.getNeighbourGIDs(a_gid, mask);
+  } else if (xcalo_locator.isCaloBlockInThisModule(a_gid)) {
+    the_neighbours = xcalo_locator.getNeighbourGIDs(a_gid, mask);
+  } else if (gveto_locator.isCaloBlockInThisModule(a_gid)) {
+    the_neighbours = gveto_locator.getNeighbourGIDs(a_gid, mask);
   } else {
     DT_THROW_IF(true, std::logic_error,
                 "Current geom id '" << a_gid << "' does not match any scintillator block !");
@@ -370,12 +371,14 @@ void gamma_clustering_driver::_get_tof_association(
     while (merge_indices.count(i_cluster) != 0u) {
       const size_t i_next_cluster = merge_indices.at(i_cluster);
 
-      auto it1 = std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_cluster);
+      auto it1 =
+          std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_cluster);
       if (it1 != cluster_to_be_considered.end()) {
         cluster_to_be_considered.erase(it1);
       }
 
-      auto it2 = std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(), i_next_cluster);
+      auto it2 = std::find(cluster_to_be_considered.begin(), cluster_to_be_considered.end(),
+                           i_next_cluster);
       if (it2 != cluster_to_be_considered.end()) {
         cluster_to_be_considered.erase(it2);
       }
@@ -408,30 +411,30 @@ double gamma_clustering_driver::_get_tof_probability(
   geomtools::vector_3d head_position;
   const geomtools::geom_id& head_gid = head_end_calo_hit_.get_geom_id();
 
-  if (calo_locator.is_calo_block_in_current_module(head_gid)) {
-    calo_locator.get_block_position(head_gid, head_position);
-  } else if (xcalo_locator.is_calo_block_in_current_module(head_gid)) {
-    xcalo_locator.get_block_position(head_gid, head_position);
-  } else if (gveto_locator.is_calo_block_in_current_module(head_gid)) {
-    gveto_locator.get_block_position(head_gid, head_position);
+  if (calo_locator.isCaloBlockInThisModule(head_gid)) {
+    head_position = calo_locator.getBlockPosition(head_gid);
+  } else if (xcalo_locator.isCaloBlockInThisModule(head_gid)) {
+    head_position = xcalo_locator.getBlockPosition(head_gid);
+  } else if (gveto_locator.isCaloBlockInThisModule(head_gid)) {
+    head_position = gveto_locator.getBlockPosition(head_gid);
   } else {
-    DT_THROW_IF(true, std::logic_error,
-                "Current geom id '" << head_gid << "' does not match any scintillator block !");
+    DT_THROW(std::logic_error,
+             "Current geom id '" << head_gid << "' does not match any scintillator block !");
   }
 
   geomtools::vector_3d tail_position;
   const geomtools::geom_id& tail_gid = tail_begin_calo_hit_.get_geom_id();
 
-  if (calo_locator.is_calo_block_in_current_module(tail_gid)) {
-    calo_locator.get_block_position(tail_gid, tail_position);
-  } else if (xcalo_locator.is_calo_block_in_current_module(tail_gid)) {
-    xcalo_locator.get_block_position(tail_gid, tail_position);
-  } else if (gveto_locator.is_calo_block_in_current_module(tail_gid)) {
-    gveto_locator.get_block_position(tail_gid, tail_position);
-  } else
-    DT_THROW_IF(true, std::logic_error,
-                "Current geom id '" << tail_gid << "' does not match any scintillator block !");
-
+  if (calo_locator.isCaloBlockInThisModule(tail_gid)) {
+    tail_position = calo_locator.getBlockPosition(tail_gid);
+  } else if (xcalo_locator.isCaloBlockInThisModule(tail_gid)) {
+    tail_position = xcalo_locator.getBlockPosition(tail_gid);
+  } else if (gveto_locator.isCaloBlockInThisModule(tail_gid)) {
+    tail_position = gveto_locator.getBlockPosition(tail_gid);
+  } else {
+    DT_THROW(std::logic_error,
+             "Current geom id '" << tail_gid << "' does not match any scintillator block !");
+  }
   const double t1 = head_end_calo_hit_.get_time();
   const double t2 = tail_begin_calo_hit_.get_time();
   const double track_length = (head_position - tail_position).mag();
@@ -453,24 +456,24 @@ bool gamma_clustering_driver::_are_on_same_wall(
   const snemo::geometry::xcalo_locator& xcalo_locator = base_gamma_builder::get_xcalo_locator();
   const snemo::geometry::gveto_locator& gveto_locator = base_gamma_builder::get_gveto_locator();
 
-  if (calo_locator.is_calo_block_in_current_module(head_gid) &&
-      calo_locator.is_calo_block_in_current_module(tail_gid)) {
-    const size_t head_side = calo_locator.extract_side(head_gid);
-    const size_t tail_side = calo_locator.extract_side(tail_gid);
+  if (calo_locator.isCaloBlockInThisModule(head_gid) &&
+      calo_locator.isCaloBlockInThisModule(tail_gid)) {
+    const size_t head_side = calo_locator.getSideAddress(head_gid);
+    const size_t tail_side = calo_locator.getSideAddress(tail_gid);
     return head_side == tail_side;
   }
 
-  if (xcalo_locator.is_calo_block_in_current_module(head_gid) &&
-      xcalo_locator.is_calo_block_in_current_module(tail_gid)) {
-    const size_t head_wall = xcalo_locator.extract_wall(head_gid);
-    const size_t tail_wall = xcalo_locator.extract_wall(tail_gid);
+  if (xcalo_locator.isCaloBlockInThisModule(head_gid) &&
+      xcalo_locator.isCaloBlockInThisModule(tail_gid)) {
+    const size_t head_wall = xcalo_locator.getWallAddress(head_gid);
+    const size_t tail_wall = xcalo_locator.getWallAddress(tail_gid);
     return head_wall == tail_wall;
   }
 
-  if (gveto_locator.is_calo_block_in_current_module(head_gid) &&
-      gveto_locator.is_calo_block_in_current_module(tail_gid)) {
-    const size_t head_wall = gveto_locator.extract_wall(head_gid);
-    const size_t tail_wall = gveto_locator.extract_wall(tail_gid);
+  if (gveto_locator.isCaloBlockInThisModule(head_gid) &&
+      gveto_locator.isCaloBlockInThisModule(tail_gid)) {
+    const size_t head_wall = gveto_locator.getWallAddress(head_gid);
+    const size_t tail_wall = gveto_locator.getWallAddress(tail_gid);
     return head_wall == tail_wall;
   }
 

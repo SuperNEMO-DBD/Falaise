@@ -8,7 +8,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
@@ -35,16 +35,16 @@ snemo_drift_time_calibration::snemo_drift_time_calibration() {
 snemo_drift_time_calibration::~snemo_drift_time_calibration() { _gg_regime_.reset(); }
 
 double snemo_drift_time_calibration::get_max_cell_radius() const {
-  return _gg_regime_->get_rdiag();
+  return _gg_regime_->getMaximumRadius();
 }
 
 double snemo_drift_time_calibration::get_sensitive_cell_radius() const {
-  return _gg_regime_->get_rdiag();
+  return _gg_regime_->getMaximumRadius();
 }
 
 void snemo_drift_time_calibration::drift_time_to_radius(double time_, double& radius_,
                                                         double& sigma_radius_) const {
-  _gg_regime_->calibrate_drift_radius_from_drift_time(time_, radius_, sigma_radius_);
+  _gg_regime_->calibrateRadiusFromTime(time_, radius_, sigma_radius_);
 }
 
 void snemo_drift_time_calibration::radius_to_drift_time(double /* radius_ */, double& /* time_ */,
@@ -177,7 +177,7 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
   // Invoke initialization at parent level :
   this->snemo::processing::base_tracker_fitter::_initialize(setup_);
 
-  falaise::config::property_set ps{setup_};
+  falaise::property_set ps{setup_};
 
   _drift_time_calibration_label_ = ps.get<std::string>("drift_time_calibration_label", "snemo");
   auto fitting_models = ps.get<std::vector<std::string>>("fitting_models", {"line", "helix"});
@@ -241,7 +241,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
   // Retrieve geiger cell diameter from gg_locator (to be used
   // by trackfit algorithm)
-  const double gg_cell_diameter = get_gg_locator().get_cell_diameter() / CLHEP::mm;
+  const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;
 
   // Get cluster solutions:
   const snemo::datamodel::tracker_clustering_data::solution_col_type& cluster_solutions =

@@ -42,34 +42,34 @@ polycone_volume::polycone_volume(const std::string& name_, const std::string& ca
   _composite = false;
 
   _nbr_z_section_ = 0;
-  return;
 }
 
 // dtor:
-polycone_volume::~polycone_volume() { return; }
+polycone_volume::~polycone_volume() = default;
 
 void polycone_volume::_construct(const geomtools::i_shape_3d& shape_3d_) {
-  const geomtools::polycone& mpolycone = dynamic_cast<const geomtools::polycone&>(shape_3d_);
+  const auto& mpolycone = dynamic_cast<const geomtools::polycone&>(shape_3d_);
 
   _nbr_z_section_ = mpolycone.points().size();
 
   TGeoShape* geo_shape = utils::root_utilities::get_geo_shape(mpolycone);
   geo_shape->SetName(_name.c_str());
 
-  TGeoMaterial* material = new TGeoMaterial("Dummy");
-  TGeoMedium* medium = new TGeoMedium("Dummy", 1, material);
+  auto* material = new TGeoMaterial("Dummy");
+  auto* medium = new TGeoMedium("Dummy", 1, material);
 
   _geo_volume = new TGeoVolume(_name.c_str(), geo_shape, medium);
-  return;
 }
 
 void polycone_volume::tree_dump(std::ostream& out_, const std::string& title_,
                                 const std::string& indent_, bool inherit_) const {
   std::string indent;
-  if (!indent_.empty()) indent = indent_;
+  if (!indent_.empty()) {
+    indent = indent_;
+  }
   i_root_volume::tree_dump(out_, title_, indent_, true);
 
-  const TGeoPcon* pgcon = dynamic_cast<const TGeoPcon*>(_geo_volume->GetShape());
+  const auto* pgcon = dynamic_cast<const TGeoPcon*>(_geo_volume->GetShape());
 
   out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
        << "number of z sections : " << _nbr_z_section_ << std::endl;
@@ -86,12 +86,10 @@ void polycone_volume::tree_dump(std::ostream& out_, const std::string& title_,
     out_ << indent_oss.str() << "(z, rmin, rmax) = (" << pgcon->GetZ(iz) << ", "
          << pgcon->GetRmin(iz) << ", " << pgcon->GetRmax(iz) << ")" << std::endl;
   }
-  return;
 }
 
 void polycone_volume::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::polycone_volume");
-  return;
 }
 
 }  // end of namespace detector

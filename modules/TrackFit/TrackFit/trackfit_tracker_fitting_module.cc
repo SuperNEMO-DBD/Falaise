@@ -15,7 +15,7 @@
 #include <geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
@@ -79,7 +79,7 @@ void trackfit_tracker_fitting_module::initialize(const datatools::properties& co
 
   dpp::base_module::_common_initialize(config);
 
-  falaise::config::property_set ps{config};
+  falaise::property_set ps{config};
   TCDTag_ = ps.get<std::string>(
       "TCD_label", snemo::datamodel::data_info::default_tracker_clustering_data_label());
   TTDTag_ = ps.get<std::string>(

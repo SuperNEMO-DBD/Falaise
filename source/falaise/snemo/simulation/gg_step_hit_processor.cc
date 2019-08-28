@@ -16,6 +16,8 @@
 
 // This project:
 #include <falaise/snemo/datamodels/gg_track_utils.h>
+#include "falaise/property_set.h"
+#include "falaise/quantity.h"
 
 namespace snemo {
 
@@ -24,192 +26,137 @@ namespace simulation {
 MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_IMPLEMENT(gg_step_hit_processor,
                                                   "snemo::simulation::gg_step_hit_processor")
 
-bool gg_step_hit_processor::accept_external_rng() const { return true; }
+gg_step_hit_processor::gg_step_hit_processor() { _set_defaults(); }
 
-bool gg_step_hit_processor::has_external_rng() const { return _external_rng_ != nullptr; }
-
-void gg_step_hit_processor::set_external_rng(mygsl::rng &rng_) {
-  DT_LOG_NOTICE(get_logging_priority(),
-                "Processor '" << get_name() << "' now uses an external PRNG.");
-  _external_rng_ = &rng_;
-}
-
-const mygsl::rng &gg_step_hit_processor::get_rng() const {
-  if (has_external_rng()) {
-    return *_external_rng_;
-  }
-  return _rng_;
-}
-
-mygsl::rng &gg_step_hit_processor::grab_rng() {
-  if (has_external_rng()) {
-    return *_external_rng_;
-  }
-  return _rng_;
-}
+gg_step_hit_processor::~gg_step_hit_processor() { reset(); }
 
 void gg_step_hit_processor::_set_defaults() {
-  _mapping_ = nullptr;
-  _categories_ = nullptr;
-  _external_rng_ = nullptr;
-  _time_resolution_ = 25. * CLHEP::ns;
-  _mean_ionization_energy_ = 50. * CLHEP::eV;
-  datatools::invalidate(_fiducial_drift_radius_);
-  datatools::invalidate(_fiducial_drift_length_);
-  _use_continuous_ionization_ = false;
-  _compute_minimum_approach_position_ = false;
-  _store_track_infos_ = false;
-  _gg_cell_type_ = geomtools::geom_id::INVALID_TYPE;
-  _module_type_ = geomtools::geom_id::INVALID_TYPE;
-  _mapping_category_ = "";
-  _module_category_ = "module";
+  moduleCategory_ = "module";
+  mappingCategory_ = "";
+  timeResolution_ = 25. * CLHEP::ns;
+  fiducialCellRadius_ = datatools::invalid_real();
+  fiducialCellLength_ = datatools::invalid_real();
+  meanIonizationEnergy_ = 50. * CLHEP::eV;
+  useContinuousIonization_ = false;
+  computeMinimumApproachPosition_ = false;
+  storeTrackInfo_ = false;
+  externalRNG_ = nullptr;
+  geomIDMap_ = nullptr;
+  allCategoryIDs_ = nullptr;
+  geigerCellCategoryID_ = geomtools::geom_id::INVALID_TYPE;
+  moduleCategoryID_ = geomtools::geom_id::INVALID_TYPE;
 }
 
 void gg_step_hit_processor::reset() { _set_defaults(); }
 
-gg_step_hit_processor::~gg_step_hit_processor() {
-  if (_gg_cell_type_ != geomtools::geom_id::INVALID_TYPE) {
-  }
-  if (is_debug()) {
-    DT_LOG_DEBUG(get_logging_priority(), "CT1:");
-    _CT1_.tree_dump(std::clog, "", "[debug]: ");
-    DT_LOG_DEBUG(get_logging_priority(), "CT2:");
-    _CT2_.tree_dump(std::clog, "", "[debug]: ");
-  }
-  reset();
-}
-
-gg_step_hit_processor::gg_step_hit_processor() { _set_defaults(); }
-
-void gg_step_hit_processor::initialize(const ::datatools::properties &config_,
-                                       ::datatools::service_manager &service_mgr_) {
-  this->base_step_hit_processor::initialize(config_, service_mgr_);
-
+void gg_step_hit_processor::initialize(const ::datatools::properties &dps,
+                                       ::datatools::service_manager &services) {
+  this->base_step_hit_processor::initialize(dps, services);
   // The geometry manager is mandatory for this processor:
   DT_THROW_IF(_geom_manager == nullptr, std::logic_error, "Missing geometry manager !");
 
-  DT_LOG_DEBUG(get_logging_priority(), "Parsing setup properties...");
+  falaise::property_set ps{dps};
 
   // A sensitive category is mandatory for this processor,
   // i.e. the one defined for the target Geiger drift cell:
-  DT_THROW_IF(!config_.has_key("mapping.category"), std::logic_error,
-              "Missing 'mapping_category' string property !");
-  _mapping_category_ = config_.fetch_string("mapping.category");
-
-  if (config_.has_key("module.category")) {
-    _module_category_ = config_.fetch_string("module.category");
-  }
-
-  // force a continuous ionization along the step hit even for electrons :
-  if (config_.has_flag("use_continuous_ionization")) {
-    _use_continuous_ionization_ = true;
-  }
-
-  // compute the position of minimum approach to the wire :
-  if (config_.has_flag("compute_minimum_approach_position")) {
-    _compute_minimum_approach_position_ = true;
-  }
-
-  // store the track auxiliary properties from the original MC hits if any :
-  if (config_.has_flag("store_track_infos")) {
-    _store_track_infos_ = true;
-  }
+  mappingCategory_ = ps.get<std::string>("mapping.category");
+  moduleCategory_ = ps.get<std::string>("module.category", moduleCategory_);
+  useContinuousIonization_ = ps.get<bool>("use_continuous_ionization", useContinuousIonization_);
+  computeMinimumApproachPosition_ =
+      ps.get<bool>("compute_minimum_approach_position", computeMinimumApproachPosition_);
+  storeTrackInfo_ = ps.get<bool>("store_track_infos", storeTrackInfo_);
 
   // set the RNG:
   if (!has_external_rng()) {
-    int rng_seed = 12345;
-    if (config_.has_key("rng.seed")) {
-      rng_seed = config_.fetch_integer("rng.seed");
-    }
-    std::string rng_id = "mt19937";
-    if (config_.has_key("rng.id")) {
-      rng_id = config_.fetch_string("rng.id");
-    }
-    // initialize the embedded pseudo-random numbers generator:
-    _rng_.init(rng_id, rng_seed);
+    auto rng_id = ps.get<std::string>("rng.id", "mt19937");
+    auto rng_seed = ps.get<int>("rnd.seed", 12345);
+    localRNG_.init(rng_id, rng_seed);
   }
 
   // set the time resolution of the Geiger cell TDC measurement:
-  if (config_.has_key("time_resolution")) {
-    _time_resolution_ = config_.fetch_real_with_explicit_dimension("time_resolution", "time");
+  if (ps.has_key("time_resolution")) {
+    timeResolution_ = ps.get<falaise::time_t>("time_resolution")();
   }
 
   // set the fiducial drift radius of the Geiger cell:
-  if (config_.has_key("fiducial_drift_radius")) {
-    _fiducial_drift_radius_ =
-        config_.fetch_real_with_explicit_dimension("fiducial_drift_radius", "length");
+  if (ps.has_key("fiducial_drift_radius")) {
+    fiducialCellRadius_ = ps.get<falaise::length_t>("fiducial_drift_radius")();
   }
   // set the fiducial drift length of the Geiger cell:
-  if (config_.has_key("fiducial_drift_length")) {
-    _fiducial_drift_length_ =
-        config_.fetch_real_with_explicit_dimension("fiducial_drift_length", "length");
+  if (ps.has_key("fiducial_drift_length")) {
+    fiducialCellLength_ = ps.get<falaise::length_t>("fiducial_drift_length")();
   }
 
   // set the mean ionization energy in the tracking gas:
-  if (config_.has_key("mean_ionization_energy")) {
-    _mean_ionization_energy_ =
-        config_.fetch_real_with_explicit_dimension("mean_ionization_energy", "energy");
+  if (ps.has_key("mean_ionization_energy")) {
+    meanIonizationEnergy_ = ps.get<falaise::energy_t>("mean_ionization_energy")();
   }
 
   // pickup the ID mapping from the geometry manager:
-  _mapping_ = &_geom_manager->get_mapping();
+  geomIDMap_ = &_geom_manager->get_mapping();
 
   // check if the sensitive category is known:
-  _categories_ = &(_geom_manager->get_id_mgr().categories_by_name());
-  auto icat = _categories_->find(_mapping_category_);
-  DT_THROW_IF(icat == _categories_->end(), std::logic_error,
-              "Cannot find geometry ID category '" << _mapping_category_ << "' string property !");
+  allCategoryIDs_ = &(_geom_manager->get_id_mgr().categories_by_name());
+  auto icat = allCategoryIDs_->find(mappingCategory_);
+  DT_THROW_IF(icat == allCategoryIDs_->end(), std::logic_error,
+              "Cannot find geometry ID category '" << mappingCategory_ << "' string property !");
 
   // initialize the ID locators for this category of volumes:
-  _module_type_ = _categories_->find(_module_category_)->second.get_type();
-  _module_locator_.set_gmap(*_mapping_);
-  _module_locator_.set_logging_priority(get_logging_priority());
-  _module_locator_.initialize(_module_type_);
-  _gg_cell_type_ = _categories_->find(_mapping_category_)->second.get_type();
-  _gg_cell_locator_.set_gmap(*_mapping_);
-  _gg_cell_locator_.set_logging_priority(get_logging_priority());
-  _gg_cell_locator_.initialize(_gg_cell_type_);
+  moduleCategoryID_ = allCategoryIDs_->find(moduleCategory_)->second.get_type();
+  moduleLocator_.set_gmap(*geomIDMap_);
+  moduleLocator_.set_logging_priority(get_logging_priority());
+  moduleLocator_.initialize(moduleCategoryID_);
+  geigerCellCategoryID_ = allCategoryIDs_->find(mappingCategory_)->second.get_type();
+  geigerCellLocator_.set_gmap(*geomIDMap_);
+  geigerCellLocator_.set_logging_priority(get_logging_priority());
+  geigerCellLocator_.initialize(geigerCellCategoryID_);
 
-  if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-    DT_LOG_TRACE(get_logging_priority(), "mapping_category = " << _mapping_category_);
-    DT_LOG_TRACE(get_logging_priority(), "gg_cell_type     = " << _gg_cell_type_);
-    DT_LOG_TRACE(get_logging_priority(), "Module locator:");
-    _module_locator_.tree_dump(std::clog, "", "[trace]: ");
-    DT_LOG_TRACE(get_logging_priority(), "Geiger locator:");
-    _gg_cell_locator_.tree_dump(std::clog, "", "[trace]: ");
-  }
-  // if (_geom_manager->get_setup_label().find("snemo::") != std::string::npos) {
-  // if (_geom_manager->get_setup_label().substr(0, 7) == "snemo::") {
-  // Only for the 'snemo::demonstrator' setup:
   if (_geom_manager->get_setup_label() == "snemo::demonstrator") {
-    DT_LOG_TRACE(get_logging_priority(),
-                 "Fast locator for setup '" << _geom_manager->get_setup_label() << "'");
     // 2012-05-04 FM : to be discarded
+    // So can it be?
     {
-      _fast_gg_cell_locator_.set_geo_manager(*_geom_manager);
+      fastGeigerCellLocator_.set_geo_manager(*_geom_manager);
       const uint32_t module_number = 0;
-      DT_LOG_NOTICE(get_logging_priority(), "Use default module number " << module_number);
-      _fast_gg_cell_locator_.set_module_number(module_number);
-      _fast_gg_cell_locator_.initialize();
+      fastGeigerCellLocator_.setModuleNumber(module_number);
+      fastGeigerCellLocator_.initialize({});
     }
 
     // 2012-05-04 FM : now use the following
     {
-      const std::list<const geomtools::geom_info *> &module_infos = _module_locator_.get_ginfos();
+      const std::list<const geomtools::geom_info *> &module_infos = moduleLocator_.get_ginfos();
       for (auto ginfo : module_infos) {
         const uint32_t module_number = ginfo->get_geom_id().get(0);
-        DT_LOG_NOTICE(get_logging_priority(), "Found module #" << module_number);
         {
           snemo::geometry::gg_locator tmp_fggloc;
-          _fast_gg_cell_locators_per_module_[module_number] = tmp_fggloc;
+          perModuleFastGeigerLocators_[module_number] = tmp_fggloc;
         }
-        snemo::geometry::gg_locator &fggloc = _fast_gg_cell_locators_per_module_[module_number];
+        snemo::geometry::gg_locator &fggloc = perModuleFastGeigerLocators_[module_number];
         fggloc.set_geo_manager(*_geom_manager);
-        fggloc.set_module_number(module_number);
-        fggloc.initialize();
+        fggloc.setModuleNumber(module_number);
+        fggloc.initialize({});
       }
     }
   }
+}
+
+bool gg_step_hit_processor::accept_external_rng() const { return true; }
+
+bool gg_step_hit_processor::has_external_rng() const { return externalRNG_ != nullptr; }
+
+void gg_step_hit_processor::set_external_rng(mygsl::rng &rng_) { externalRNG_ = &rng_; }
+
+const mygsl::rng &gg_step_hit_processor::get_rng() const {
+  if (has_external_rng()) {
+    return *externalRNG_;
+  }
+  return localRNG_;
+}
+
+mygsl::rng &gg_step_hit_processor::get_rng() {
+  if (has_external_rng()) {
+    return *externalRNG_;
+  }
+  return localRNG_;
 }
 
 bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
@@ -233,18 +180,11 @@ bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
   // a 25 ns time window must be immediately compared to
   // keep only the one with minimal drift distance to the anode.
 
-  // 2011-05-27 FM : nothing to do for now
-  // if (gg_hit_.get_auxiliaries()
-  //     .has_flag(snemo::datamodel::gg_track::missing_geiger_hit_key()))
-  //   {
-  //     return true;
-  //   }
-
   // Check if the step hit time is comparable to
   // the Geiger hit time using a confidence time window
   // @ time resolution:
-  const double t1 = gg_hit_.get_time_start() - _time_resolution_;
-  const double t2 = gg_hit_.get_time_start() + _time_resolution_;
+  const double t1 = gg_hit_.get_time_start() - timeResolution_;
+  const double t2 = gg_hit_.get_time_start() + timeResolution_;
   const double ta = step_hit_.get_time_start();
   const double tb = step_hit_.get_time_stop();
   /*
@@ -303,32 +243,27 @@ bool gg_step_hit_processor::match_gg_hit(const mctools::base_step_hit &gg_hit_,
 }
 
 void gg_step_hit_processor::process(
-    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
-    ::mctools::simulated_data::hit_collection_type &the_plain_gg_hits) {
-  DT_LOG_TRACE_ENTERING(get_logging_priority());
-  _process(the_base_step_hits, (mctools::simulated_data::hit_handle_collection_type *)nullptr,
-           &the_plain_gg_hits);
-  DT_LOG_TRACE_EXITING(get_logging_priority());
+    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &baseStepHits,
+    ::mctools::simulated_data::hit_handle_collection_type &handleHits) {
+  _process(baseStepHits, &handleHits, (mctools::simulated_data::hit_collection_type *)nullptr);
 }
 
 void gg_step_hit_processor::process(
-    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &the_base_step_hits,
-    ::mctools::simulated_data::hit_handle_collection_type &the_gg_hits) {
-  _process(the_base_step_hits, &the_gg_hits,
-           (mctools::simulated_data::hit_collection_type *)nullptr);
+    const ::mctools::base_step_hit_processor::step_hit_ptr_collection_type &baseStepHits,
+    ::mctools::simulated_data::hit_collection_type &plainHits) {
+  _process(baseStepHits, (mctools::simulated_data::hit_handle_collection_type *)nullptr,
+           &plainHits);
 }
 
 void gg_step_hit_processor::_process(
-    const mctools::base_step_hit_processor::step_hit_ptr_collection_type &shpc_,
-    mctools::simulated_data::hit_handle_collection_type *gg_hits_,
-    mctools::simulated_data::hit_collection_type *plain_gg_hits_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
+    const mctools::base_step_hit_processor::step_hit_ptr_collection_type &hitPtrCollection,
+    mctools::simulated_data::hit_handle_collection_type *handleHits,
+    mctools::simulated_data::hit_collection_type *plainHits) {
   // Check the type of output collection (handles or plain hits) :
-  bool use_handles = false;
-  if (gg_hits_ != nullptr) {
-    use_handles = true;
-  } else if (plain_gg_hits_ == nullptr) {
+  bool useHandles = false;
+  if (handleHits != nullptr) {
+    useHandles = true;
+  } else if (plainHits == nullptr) {
     DT_THROW_IF(true, std::logic_error, "Missing hit collection type (NULL pointer) !");
   }
   mctools::base_step_hit *current_gg_hit = nullptr;
@@ -338,28 +273,18 @@ void gg_step_hit_processor::_process(
   // the position/time of the ion/electron pair creation closest to the
   // anode wire:
   // Prereservation :
-  if (use_handles) {
-    gg_hits_->reserve(100);
+  if (useHandles) {
+    handleHits->reserve(100);
   } else {
-    plain_gg_hits_->reserve(100);
+    plainHits->reserve(100);
   }
 
-  // Debug stuff:
-  size_t missing_hits_count = 0;
-  DT_LOG_TRACE(get_logging_priority(), "shpc.size = " << shpc_.size());
+  const double locator_tolerance = 0.1 * CLHEP::micrometer;
 
-  double locator_tolerance = 0.1 * CLHEP::micrometer;
-
-  for (auto ihit : shpc_) {
-    bool process_this_hit = false;
+  for (auto ihit : hitPtrCollection) {
     auto &the_step_hit = const_cast<mctools::base_step_hit &>(*ihit);
 
-    if (is_debug()) {
-      _CT1_.start();
-    }
     const double hit_energy_deposit = the_step_hit.get_energy_deposit();
-    // XXX
-    // if (hit_energy_deposit == 0) continue;
     const std::string &hit_particle_name = the_step_hit.get_particle_name();
     const double hit_time_start = the_step_hit.get_time_start();
     const double hit_time_stop = the_step_hit.get_time_stop();
@@ -367,69 +292,50 @@ void gg_step_hit_processor::_process(
     const geomtools::vector_3d &world_hit_pos_start = the_step_hit.get_position_start();
     const geomtools::vector_3d &world_hit_pos_stop = the_step_hit.get_position_stop();
     const geomtools::vector_3d &world_hit_momentum_start = the_step_hit.get_momentum_start();
-    if (!process_this_hit && hit_energy_deposit >= 0.0) {
-      process_this_hit = true;
-    }
+
+    // if (!process_this_hit && hit_energy_deposit >= 0.0) {
+    //  process_this_hit = true;
+    //}
     // Do not process neutral (non-ionizing) particles:
     if (hit_energy_deposit == 0.0) {
       if (hit_particle_name == "gamma") {
-        process_this_hit = false;
+        continue;
       }
       if (hit_particle_name == "neutron") {
-        process_this_hit = false;
+        continue;
       }
-    }
-    /*
-      if (! process_this_hit && hit_particle_name == "e-")
-      {
-      process_this_hit = true;
-      }
-      if (! process_this_hit && hit_particle_name == "alpha")
-      {
-      process_this_hit = true;
-      }
-      if (! process_this_hit && hit_particle_name == "e+")
-      {
-      process_this_hit = true;
-      }
-    */
-    DT_LOG_TRACE(get_logging_priority(), "process_this_hit = " << process_this_hit);
-    if (!process_this_hit) {
-      continue;
     }
 
     // locate the hit median position using a 'geom ID' locator:
     const geomtools::vector_3d world_hit_pos_median =
         0.5 * (world_hit_pos_start + world_hit_pos_stop);
     geomtools::geom_id gid;
-    if (!_fast_gg_cell_locators_per_module_.empty()) {
-      DT_LOG_TRACE(get_logging_priority(), "Using fast_gg_cell_locator per module...");
+    if (!perModuleFastGeigerLocators_.empty()) {
       const geomtools::geom_id &module_gid =
-          _module_locator_.get_geom_id(world_hit_pos_median, _module_type_);
+          moduleLocator_.get_geom_id(world_hit_pos_median, moduleCategoryID_);
       const uint32_t module_number = module_gid.get(0);
-      DT_THROW_IF(_fast_gg_cell_locators_per_module_.find(module_number) ==
-                      _fast_gg_cell_locators_per_module_.end(),
-                  std::logic_error,
-                  "Cannot find module number '" << module_number
-                                                << "' from the fast gg cell locator dictionary !");
+      DT_THROW_IF(
+          perModuleFastGeigerLocators_.find(module_number) == perModuleFastGeigerLocators_.end(),
+          std::logic_error,
+          "Cannot find module number '" << module_number
+                                        << "' from the fast gg cell locator dictionary !");
       // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
-      const bool find_success = _fast_gg_cell_locators_per_module_[module_number].find_cell_geom_id(
-          world_hit_pos_median, gid);
+      const bool find_success =
+          perModuleFastGeigerLocators_[module_number].findCellGID(world_hit_pos_median, gid);
       if (!find_success) {
         gid.invalidate();
       }
-    } else if (_fast_gg_cell_locator_.is_initialized()) {
-      DT_LOG_TRACE(get_logging_priority(), "Using fast_gg_cell_locator...");
+    } else if (fastGeigerCellLocator_.is_initialized()) {
       // 2012-06-05 FM : add 'find_cell_geom_id' method's returned value check:
       bool find_success =
-          _fast_gg_cell_locator_.find_cell_geom_id(world_hit_pos_median, gid, locator_tolerance);
+          fastGeigerCellLocator_.findCellGID(world_hit_pos_median, gid, locator_tolerance);
       if (!find_success) {
         gid.invalidate();
       }
     } else {
       // Fallback to a simple locator:
-      DT_LOG_TRACE(get_logging_priority(), "Using basic gg_cell_locator...");
-      gid = _gg_cell_locator_.get_geom_id(world_hit_pos_median, _gg_cell_type_, locator_tolerance);
+      gid = geigerCellLocator_.get_geom_id(world_hit_pos_median, geigerCellCategoryID_,
+                                           locator_tolerance);
     }
 
     if (!gid.is_valid()) {
@@ -442,7 +348,7 @@ void gg_step_hit_processor::_process(
       DT_LOG_ERROR(
           get_logging_priority(),
           "We skip this hit for one cannot locate it through the locator attached to the '"
-              << _mapping_category_ << "' !\n"
+              << mappingCategory_ << "' !\n"
               << "\t- This may be due to a malformed geometry locator used to locate the hit.\n"
               << "\t- This may be due to another mapping category registered in the current '"
               << _hit_category << "' hit category "
@@ -458,7 +364,7 @@ void gg_step_hit_processor::_process(
     // 2012-06-04 FM : added for debugging purpose :
     const geomtools::geom_info *ginfo_ptr = nullptr;
     try {
-      const geomtools::geom_info &ginfo = _gg_cell_locator_.get_geom_info(gid);
+      const geomtools::geom_info &ginfo = geigerCellLocator_.get_geom_info(gid);
       ginfo_ptr = &ginfo;
     } catch (std::exception &x) {
       DT_LOG_WARNING(get_logging_priority(),
@@ -489,7 +395,7 @@ void gg_step_hit_processor::_process(
     }
 
     // special behaviour is requested by user :
-    if (_use_continuous_ionization_) {
+    if (useContinuousIonization_) {
       randomize_first_ionisation = false;
       store_discrete = false;
     }
@@ -497,31 +403,22 @@ void gg_step_hit_processor::_process(
     // Define the time and position of the (first) ionization
     // nearest to the anodic wire and the impact position
     // on the Geiger avalanche on the wire:
-    double ionization_time_discrete;
-    geomtools::vector_3d ionization_world_pos_discrete;
+    double ionization_time_discrete = datatools::invalid_real();
+    geomtools::vector_3d ionization_world_pos_discrete = geomtools::invalid_vector_3d();
     geomtools::vector_3d ionization_world_momentum_discrete;  // 2011-12-08 FM: added
-    geomtools::vector_3d avalanche_impact_world_pos_discrete;
+    geomtools::vector_3d avalanche_impact_world_pos_discrete = geomtools::invalid_vector_3d();
     // ... initialized them as invalid:
-    datatools::invalidate(ionization_time_discrete);
-    geomtools::invalidate(ionization_world_pos_discrete);
-    geomtools::invalidate(avalanche_impact_world_pos_discrete);
 
-    double ionization_time_continuous;
-    geomtools::vector_3d ionization_world_pos_continuous;
+    double ionization_time_continuous = datatools::invalid_real();
+    geomtools::vector_3d ionization_world_pos_continuous = geomtools::invalid_vector_3d();
     geomtools::vector_3d ionization_world_momentum_continuous;  // 2011-12-08 FM: added
-    geomtools::vector_3d avalanche_impact_world_pos_continuous;
+    geomtools::vector_3d avalanche_impact_world_pos_continuous = geomtools::invalid_vector_3d();
     // ... initialized them as invalid:
-    datatools::invalidate(ionization_time_continuous);
-    geomtools::invalidate(ionization_world_pos_continuous);
-    geomtools::invalidate(avalanche_impact_world_pos_continuous);
 
     // Minimum approach :
-    double minimum_approach_time;
-    double minimum_approach_world_distance;
-    geomtools::vector_3d minimum_approach_world_pos;
-    datatools::invalidate(minimum_approach_time);
-    datatools::invalidate(minimum_approach_world_distance);
-    geomtools::invalidate(minimum_approach_world_pos);
+    double minimum_approach_time = datatools::invalid_real();
+    double minimum_approach_world_distance = datatools::invalid_real();
+    geomtools::vector_3d minimum_approach_world_pos = geomtools::invalid_vector_3d();
 
     /* Now we must compute the position and time of the first ionization process
      * along the step hit that is the closest to the anodic wire
@@ -551,7 +448,7 @@ void gg_step_hit_processor::_process(
       algo_discrete = false;
       algo_continuous = true;
     }
-    if (_compute_minimum_approach_position_) {
+    if (computeMinimumApproachPosition_) {
       algo_continuous = true;
     }
 
@@ -566,27 +463,16 @@ void gg_step_hit_processor::_process(
        */
 
       // mean number of first ionizations along the current step hit:
-      const double mean_ionizations = hit_energy_deposit / _mean_ionization_energy_;
+      const double mean_ionizations = hit_energy_deposit / meanIonizationEnergy_;
 
       // shoot the effective number of first ionizations:
-      const size_t number_of_ionizations = grab_rng().poisson(mean_ionizations);
-
-      DT_LOG_TRACE(get_logging_priority(), "Step hit #" << the_step_hit.get_hit_id());
-      DT_LOG_TRACE(get_logging_priority(), "  Particle = " << hit_particle_name);
-      DT_LOG_TRACE(get_logging_priority(), "  Hit energy deposit           = "
-                                               << hit_energy_deposit / CLHEP::keV << " keV");
-      DT_LOG_TRACE(get_logging_priority(), "  Mean number of ionizations   = "
-                                               << mean_ionizations << " ion/electron pairs");
-      DT_LOG_TRACE(get_logging_priority(), "  Random number of ionizations = "
-                                               << number_of_ionizations << " ion/electron pairs");
+      const size_t number_of_ionizations = get_rng().poisson(mean_ionizations);
 
       // the step hit 3D vector:
       geomtools::vector_3d step_dir = (cell_hit_pos_stop - cell_hit_pos_start);
 
       // the minimal drift distance for the current step hit:
-      double min_drift_distance;
-      // ... invalidated first:
-      datatools::invalidate(min_drift_distance);
+      double min_drift_distance = datatools::invalid_real();
 
       /* Scheme of the current step hit (XY view in DCCF)
        * and the generation of randomly distributed ion/pair
@@ -604,12 +490,10 @@ void gg_step_hit_processor::_process(
        *                            +
        *                             C (the cell center == origin in DCCF)
        */
-      // if (number_of_ionizations > 0) has_ionization = true;
-
       // loop on ionizations:
-      for (size_t ion = 0; ion < number_of_ionizations; ion++) {
+      for (size_t ion = 0; ion < number_of_ionizations; ++ion) {
         // shoot time and vertex:
-        const double ran = grab_rng().uniform();
+        const double ran = get_rng().uniform();
         const double ran_ionization_time = hit_time_start + ran * (hit_time_stop - hit_time_start);
         const geomtools::vector_3d ran_ionization_pos = cell_hit_pos_start + ran * step_dir;
 
@@ -626,9 +510,9 @@ void gg_step_hit_processor::_process(
         // Check if the ionization occurs in a fiducial cylinder (if requested):
 
         // In the drift cell XY plane:
-        if (datatools::is_valid(_fiducial_drift_radius_)) {
+        if (datatools::is_valid(fiducialCellRadius_)) {
           // not in the fiducial drift X-Y circular region:
-          if (drift_distance > _fiducial_drift_radius_) {
+          if (drift_distance > fiducialCellRadius_) {
             // drop this ion/electron pair which will not
             // produce a Geiger avalanche and thus is sterile:
             continue;
@@ -636,11 +520,11 @@ void gg_step_hit_processor::_process(
         }
 
         // Along the drift cell Z axis:
-        if (datatools::is_valid(_fiducial_drift_length_)) {
+        if (datatools::is_valid(fiducialCellLength_)) {
           // not in the fiducial drift Z longitudinal region:
           // drop this ion/electron pair which will not
           // produce a Geiger avalanche and thus is sterile.
-          if (std::abs(hit_z) > 0.5 * _fiducial_drift_length_) {
+          if (std::abs(hit_z) > 0.5 * fiducialCellLength_) {
             continue;
           }
         }
@@ -717,11 +601,11 @@ void gg_step_hit_processor::_process(
        */
 
       // If fiducial drift Z is defined:
-      if (datatools::is_valid(_fiducial_drift_length_)) {
+      if (datatools::is_valid(fiducialCellLength_)) {
         // approximation (could be refined but at the price of tricky geometrics):
         const double mean_hit_z = 0.5 * (cell_hit_pos_start.z() + cell_hit_pos_stop.z());
         // not in the fiducial drift Z longitudinal region:
-        if (std::abs(mean_hit_z) > 0.5 * _fiducial_drift_length_) {
+        if (std::abs(mean_hit_z) > 0.5 * fiducialCellLength_) {
           // consider this step as sterile
           // => no ionization is generated
           continue;  // skip to next step hit
@@ -729,7 +613,7 @@ void gg_step_hit_processor::_process(
       }
 
       // If fiducial drift radius is defined (XY plane),
-      if (datatools::is_valid(_fiducial_drift_radius_)) {
+      if (datatools::is_valid(fiducialCellRadius_)) {
         /* We recompute the effective boundaries of the step hit.
          * We must find the active part/segment of the
          * step hit segment that belongs to the circular fiducial
@@ -741,7 +625,7 @@ void gg_step_hit_processor::_process(
         geomtools::vector_2d effective_s1, effective_s2;
         geomtools::vector_2d cell_center(0., 0.);
         if (geomtools::intersection::find_intersection_segment_disk_2d(
-                s1, s2, cell_center, _fiducial_drift_radius_, effective_s1, effective_s2)) {
+                s1, s2, cell_center, fiducialCellRadius_, effective_s1, effective_s2)) {
           // update the fiducial part of the step hit segment:
           // this remove the part(s) of the step hit that lies
           // outside the drift region:
@@ -845,7 +729,7 @@ void gg_step_hit_processor::_process(
         }
       }
 
-      if (_compute_minimum_approach_position_) {
+      if (computeMinimumApproachPosition_) {
         minimum_approach_time = ionization_time_continuous;
         minimum_approach_world_pos = ionization_world_pos_continuous;
         minimum_approach_world_distance =
@@ -853,15 +737,10 @@ void gg_step_hit_processor::_process(
       }
     }  // end of if (algo_continuous)
 
-    double ionization_time;
-    geomtools::vector_3d ionization_world_pos;
-    geomtools::vector_3d ionization_world_momentum;  // 2011-12-08 FM: added
-    geomtools::vector_3d avalanche_impact_world_pos;
-    // ... initialized them as invalid:
-    datatools::invalidate(ionization_time);
-    geomtools::invalidate(ionization_world_pos);
-    geomtools::invalidate(ionization_world_momentum);
-    geomtools::invalidate(avalanche_impact_world_pos);
+    double ionization_time = datatools::invalid_real();
+    geomtools::vector_3d ionization_world_pos = geomtools::invalid_vector_3d();
+    geomtools::vector_3d ionization_world_momentum = geomtools::invalid_vector_3d();
+    geomtools::vector_3d avalanche_impact_world_pos = geomtools::invalid_vector_3d();
 
     if (algo_discrete && store_discrete) {
       // restore solution of the discrete ionization algo :
@@ -878,18 +757,8 @@ void gg_step_hit_processor::_process(
 
     // Give up with this step hit if no ion/electron pair
     // was generated somewhere in the drift cell volume:
-    bool do_stop_this_hit = false;
-    if (!datatools::is_valid(ionization_time) && !_compute_minimum_approach_position_) {
-      do_stop_this_hit = true;
-    }
-
-    // skip this hit :
-    if (do_stop_this_hit) {
+    if (!datatools::is_valid(ionization_time) && !computeMinimumApproachPosition_) {
       continue;
-    }
-
-    if (is_debug()) {
-      _CT1_.stop();
     }
 
     /* Now we try to merge the current step hit
@@ -898,9 +767,6 @@ void gg_step_hit_processor::_process(
      * that matches: same drift cell and compatible times.
      */
 
-    if (is_debug()) {
-      _CT2_.start();
-    }
     // For efficiency we first search a match with
     // the current Geiger hit (if any):
     mctools::base_step_hit *matching_gg = nullptr;
@@ -911,8 +777,8 @@ void gg_step_hit_processor::_process(
     }
     // else we scan the whole list of gg hits to find a match :
     if (matching_gg == nullptr) {
-      if (use_handles) {
-        for (auto &gg_hit : *gg_hits_) {
+      if (useHandles) {
+        for (auto &gg_hit : *handleHits) {
           if (!gg_hit.has_data()) {
             continue;
           }
@@ -924,7 +790,7 @@ void gg_step_hit_processor::_process(
           }
         }
       } else {
-        for (auto &matching_hit : *plain_gg_hits_) {
+        for (auto &matching_hit : *plainHits) {
           if (match_gg_hit(matching_hit, the_step_hit)) {
             // pick up the first matching gg hit :
             matching_gg = &matching_hit;
@@ -938,18 +804,18 @@ void gg_step_hit_processor::_process(
       // If the current step hit does not match any candidate
       // Geiger hit, we insert a new candidate Geiger hit:
 
-      if (use_handles) {
+      if (useHandles) {
         // pickup a hit from the pool and add it at the end
         // of the collection of hits (handles) :
-        add_new_hit(*gg_hits_);
+        add_new_hit(*handleHits);
         // get a reference to the GG hit :
-        current_gg_hit = &(gg_hits_->back().grab());
+        current_gg_hit = &(handleHits->back().grab());
       } else {
         // add a new hit in the plain collection :
         mctools::base_step_hit dummy;
-        plain_gg_hits_->push_back(dummy);
+        plainHits->push_back(dummy);
         // get a reference to the last inserted GG hit :
-        current_gg_hit = &(plain_gg_hits_->back());
+        current_gg_hit = &(plainHits->back());
       }
       // update the attributes of the hit :
       current_gg_hit->set_hit_id(gg_hit_count);
@@ -962,18 +828,12 @@ void gg_step_hit_processor::_process(
         // 2011-12-08 FM: record the momentum at ionization point
         current_gg_hit->set_momentum_start(ionization_world_momentum);
       } else {
-        if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-          DT_LOG_TRACE(get_logging_priority(),
-                       "Add '" << snemo::datamodel::gg_track::missing_geiger_hit_flag() << "'!");
-          missing_hits_count++;
-        }
         current_gg_hit->set_time_start(minimum_approach_time);
         current_gg_hit->grab_auxiliaries().store_flag(
             snemo::datamodel::gg_track::missing_geiger_hit_flag());
       }
 
-      if (_compute_minimum_approach_position_ &&
-          datatools::is_valid(minimum_approach_world_distance)) {
+      if (computeMinimumApproachPosition_ && datatools::is_valid(minimum_approach_world_distance)) {
         current_gg_hit->grab_auxiliaries().store(
             snemo::datamodel::gg_track::minimum_approach_distance_key(),
             minimum_approach_world_distance);
@@ -987,7 +847,7 @@ void gg_step_hit_processor::_process(
             minimum_approach_world_pos_vec);
       }
 
-      if (_store_track_infos_) {
+      if (storeTrackInfo_) {
         if (the_step_hit.has_track_id()) {
           current_gg_hit->grab_auxiliaries().store(mctools::track_utils::TRACK_ID_KEY,
                                                    the_step_hit.get_track_id());
@@ -1017,13 +877,6 @@ void gg_step_hit_processor::_process(
       if (current_gg_hit->get_auxiliaries().has_flag(
               snemo::datamodel::gg_track::missing_geiger_hit_flag())) {
         if (datatools::is_valid(ionization_time)) {
-          if (get_logging_priority() >= datatools::logger::PRIO_TRACE) {
-            DT_LOG_TRACE(get_logging_priority(),
-                         "Found ionization ! Remove '"
-                             << snemo::datamodel::gg_track::missing_geiger_hit_flag()
-                             << "' flag !");
-            missing_hits_count--;
-          }
           update = true;
           current_gg_hit->grab_auxiliaries().erase(
               snemo::datamodel::gg_track::missing_geiger_hit_flag());
@@ -1052,7 +905,7 @@ void gg_step_hit_processor::_process(
         // 2011-12-08 FM: record the momentum at ionization point
         current_gg_hit->set_momentum_start(ionization_world_momentum);
         current_gg_hit->set_time_start(ionization_time);
-        if (_store_track_infos_) {
+        if (storeTrackInfo_) {
           if (the_step_hit.has_track_id()) {
             current_gg_hit->grab_auxiliaries().update(mctools::track_utils::TRACK_ID_KEY,
                                                       the_step_hit.get_track_id());
@@ -1070,8 +923,7 @@ void gg_step_hit_processor::_process(
               mctools::track_utils::PRIMARY_PARTICLE_FLAG);
         }
       }
-      if (_compute_minimum_approach_position_ &&
-          datatools::is_valid(minimum_approach_world_distance)) {
+      if (computeMinimumApproachPosition_ && datatools::is_valid(minimum_approach_world_distance)) {
         if (!current_gg_hit->get_auxiliaries().has_key(
                 snemo::datamodel::gg_track::minimum_approach_distance_key())) {
           current_gg_hit->grab_auxiliaries().store(
@@ -1105,33 +957,23 @@ void gg_step_hit_processor::_process(
         }
       }
     }
-    if (is_debug()) {
-      _CT2_.stop();
-    }
   }  // end of the loop : for (i_step_hit_processor::step_hit_ptr_collection_type::const_iterator
      // ihit...
 
   // Purge the output collection of gg hits from hits with the 'missing_geiger_hit_flag()' :
-  if (_compute_minimum_approach_position_) {
-    if (missing_hits_count > 0) {
-      DT_LOG_TRACE(get_logging_priority(), "Missing hits count = " << missing_hits_count);
-    } else {
-      DT_LOG_TRACE(get_logging_priority(), "No count with missing hits left !");
-    }
-
-    _purge_gg_hits(gg_hits_, plain_gg_hits_);
+  if (computeMinimumApproachPosition_) {
+    _purge_gg_hits(handleHits, plainHits);
   }
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
 }
 
 void gg_step_hit_processor::_purge_gg_hits(
-    mctools::simulated_data::hit_handle_collection_type *gg_hits_,
-    mctools::simulated_data::hit_collection_type *plain_gg_hits_) {
+    mctools::simulated_data::hit_handle_collection_type *handleHits,
+    mctools::simulated_data::hit_collection_type *plainHits) {
   // Check the type of output collection (handles or plain hits) :
-  bool use_handles = false;
-  if (gg_hits_ != nullptr) {
-    use_handles = true;
-  } else if (plain_gg_hits_ == nullptr) {
+  bool useHandles = false;
+  if (handleHits != nullptr) {
+    useHandles = true;
+  } else if (plainHits == nullptr) {
     DT_THROW_IF(true, std::logic_error, "Missing hit collection type (NULL pointer) !");
   }
 
@@ -1141,15 +983,12 @@ void gg_step_hit_processor::_purge_gg_hits(
   datatools::mother_to_daughter_predicate<geomtools::base_hit, mctools::base_step_hit>
       kill_hit_pred_M2D(kill_hit_pred);
 
-  if (use_handles) {
-    for (auto &the_hit_handle : *gg_hits_) {
+  if (useHandles) {
+    for (auto &the_hit_handle : *handleHits) {
       if (the_hit_handle.has_data()) {
         mctools::base_step_hit &the_hit = the_hit_handle.grab();
         if (the_hit.grab_auxiliaries().has_flag(
                 snemo::datamodel::gg_track::missing_geiger_hit_flag())) {
-          DT_LOG_TRACE(get_logging_priority(),
-                       "Found a handle hit with '"
-                           << snemo::datamodel::gg_track::missing_geiger_hit_flag() << "' !");
           the_hit.grab_auxiliaries().store_flag(KILL_HIT_FLAG);
         }
       }
@@ -1157,28 +996,20 @@ void gg_step_hit_processor::_purge_gg_hits(
     // wrapper predicate :
     mctools::simulated_data::hit_handle_type::predicate_type handle_kill_hit_pred(
         kill_hit_pred_M2D);
-    auto new_end = std::remove_if(gg_hits_->begin(), gg_hits_->end(), handle_kill_hit_pred);
-    if (new_end != gg_hits_->end()) {
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Found some handle hits with the KILL_HIT_FLAG ! Kill them !");
-      gg_hits_->erase(new_end, gg_hits_->end());
+    auto new_end = std::remove_if(handleHits->begin(), handleHits->end(), handle_kill_hit_pred);
+    if (new_end != handleHits->end()) {
+      handleHits->erase(new_end, handleHits->end());
     }
   } else {
-    for (auto &the_hit : *plain_gg_hits_) {
+    for (auto &the_hit : *plainHits) {
       if (the_hit.get_auxiliaries().has_flag(
               snemo::datamodel::gg_track::missing_geiger_hit_flag())) {
-        DT_LOG_TRACE(get_logging_priority(),
-                     "Found a handle hit with '"
-                         << snemo::datamodel::gg_track::missing_geiger_hit_flag() << "' !");
         the_hit.grab_auxiliaries().store_flag(KILL_HIT_FLAG);
       }
     }
-    auto new_end =
-        std::remove_if(plain_gg_hits_->begin(), plain_gg_hits_->end(), kill_hit_pred_M2D);
-    if (new_end != plain_gg_hits_->end()) {
-      DT_LOG_TRACE(get_logging_priority(),
-                   "Found some plain hits with the KILL_HIT_FLAG ! Kill them !");
-      plain_gg_hits_->erase(new_end, plain_gg_hits_->end());
+    auto new_end = std::remove_if(plainHits->begin(), plainHits->end(), kill_hit_pred_M2D);
+    if (new_end != plainHits->end()) {
+      plainHits->erase(new_end, plainHits->end());
     }
   }
 }

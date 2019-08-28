@@ -47,11 +47,11 @@ class calorimeter_step_hit_processor : public mctools::calorimeter_step_hit_proc
                                         geomtools::geom_id& gid_) const;
 
   /// Main setup routine
-  virtual void initialize(const ::datatools::properties& config_,
-                          ::datatools::service_manager& service_mgr_);
+  virtual void initialize(const ::datatools::properties& config,
+                          ::datatools::service_manager& services);
 
  private:
-  const snemo::geometry::locator_plugin* _locator_plugin_;  //!< SuperNEMO Locator plugin
+  const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< SuperNEMO Locator plugin
 
   // Registration macro :
   MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE(calorimeter_step_hit_processor)

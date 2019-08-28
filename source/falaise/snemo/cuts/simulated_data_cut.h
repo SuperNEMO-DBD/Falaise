@@ -56,55 +56,56 @@ namespace cut {
 class simulated_data_cut : public cuts::i_cut {
  public:
   /// \brief The cut mode
-  enum mode_type {
-    MODE_UNDEFINED = 0,
-    MODE_FLAG = datatools::bit_mask::bit00,
-    MODE_HAS_HIT_CATEGORY = datatools::bit_mask::bit01,  // simulated_data::has_step_hits
-    MODE_RANGE_HIT_CATEGORY =
-        datatools::bit_mask::bit02,                     // simulated_data::get_number_of_step_hits
-    MODE_HAS_HIT_PROPERTY = datatools::bit_mask::bit03  //
+  struct mode_t {
+    enum mode_t_enum_ {
+      UNDEFINED = 0,
+      FLAG = datatools::bit_mask::bit00,
+      HAS_HIT_CATEGORY = datatools::bit_mask::bit01,    // simulated_data::has_step_hits
+      RANGE_HIT_CATEGORY = datatools::bit_mask::bit02,  // simulated_data::get_number_of_step_hits
+      HAS_HIT_PROPERTY = datatools::bit_mask::bit03     //
+    };
   };
 
-  /// Set the SD bank key
-  void set_SD_label(const std::string& SD_label_);
-
-  /// Return the SD bank key
-  const std::string& get_SD_label() const;
-
-  /// Return the cut mode
-  uint32_t get_mode() const;
-
-  /// Check mode MODE_FLAG:
-  bool is_mode_flag() const;
-
-  /// Check mode MODE_HAS_HIT_CATEGORY:
-  bool is_mode_has_hit_category() const;
-
-  /// Check mode MODE_RANGE_HIT_CATEGORY:
-  bool is_mode_range_hit_category() const;
-
-  /// Check mode MODE_HAS_HIT_PROPERTY:
-  bool is_mode_has_hit_property() const;
-
-  /// Set the name of cut mode MODE_FLAG
-  void set_flag_name(const std::string& flag_name_);
-
-  /// Return the name of cut mode MODE_FLAG
-  const std::string& get_flag_name() const;
-
   /// Constructor
-  simulated_data_cut(datatools::logger::priority logging_priority_ = datatools::logger::PRIO_FATAL);
+  simulated_data_cut(datatools::logger::priority lp = datatools::logger::PRIO_FATAL);
 
   /// Destructor
   virtual ~simulated_data_cut();
 
   /// Initilization
-  virtual void initialize(const datatools::properties& configuration_,
-                          datatools::service_manager& service_manager_,
-                          cuts::cut_handle_dict_type& cut_dict_);
+  virtual void initialize(const datatools::properties& dps,
+                          datatools::service_manager& services,
+                          cuts::cut_handle_dict_type& cuts);
 
   /// Reset
   virtual void reset();
+
+  /// Set the SD bank key
+  void setSDTag(const std::string& tag);
+
+  /// Return the SD bank key
+  const std::string& getSDTag() const;
+
+  /// Return the cut mode
+  uint32_t getCutMode() const;
+
+  /// Check mode MODE_FLAG:
+  bool cutsOnFlag() const;
+
+  /// Check mode MODE_HAS_HIT_CATEGORY:
+  bool cutsOnHitCategory() const;
+
+  /// Check mode MODE_RANGE_HIT_CATEGORY:
+  bool cutsOnHitCount() const;
+
+  /// Check mode MODE_HAS_HIT_PROPERTY:
+  bool cutsOnHitProperty() const;
+
+  /// Set the name of cut mode MODE_FLAG
+  void setFlagLabel(const std::string& label);
+
+  /// Return the name of cut mode MODE_FLAG
+  const std::string& getFlagLabel() const;
 
  protected:
   /// Default values
@@ -114,19 +115,18 @@ class simulated_data_cut : public cuts::i_cut {
   virtual int _accept();
 
  private:
-  std::string _SD_label_;  //!< Name of the "Simulated data" bank
-  uint32_t _mode_;         //!< Mode of the cut
+  std::string SDTag_;  //!< Name of the "Simulated data" bank
+  uint32_t cutMode_;   //!< Mode of the cut
 
-  std::string _flag_name_;  //!< Name of the boolean property in the simulated data
+  std::string flagLabel_;  //!< Name of the boolean property in the simulated data
 
-  std::string _hit_category_;    //!< Name of the hit category to be checked
-  int _hit_category_range_min_;  //!< Minimal number of hits in a category
-  int _hit_category_range_max_;  //!< Maximal number of hits in a category
+  std::string hitCategory_;  //!< Name of the hit category to be checked
+  int minHitCount_;          //!< Minimal number of hits in a category
+  int maxHitCount_;          //!< Maximal number of hits in a category
 
-  std::string _hit_property_logic_;  //!< Logic operation between property selection
-  typedef std::map<std::string, std::vector<std::string> > property_values_dict_type;
-  property_values_dict_type
-      _hit_property_values_;  //!< Values of the 'step_hit' property to look for
+  std::string hitPropertyLogic_;  //!< Logic operation between property selection
+  std::map<std::string, std::vector<std::string> >
+      hitPropertyMap_;  //!< Values of the 'step_hit' property to look for
 
   // Macro to automate the registration of the cut :
   CUT_REGISTRATION_INTERFACE(simulated_data_cut)

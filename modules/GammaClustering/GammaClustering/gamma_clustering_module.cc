@@ -35,8 +35,8 @@
 #include "falaise/snemo/datamodels/particle_track_data.h"
 #include "falaise/snemo/processing/module.h"
 
-#include "falaise/snemo/services/service_handle.h"
 #include "falaise/snemo/services/geometry.h"
+#include "falaise/snemo/services/service_handle.h"
 
 #include "GammaClustering/gamma_clustering_driver.h"
 
@@ -51,8 +51,7 @@ class gamma_clustering_module {
   gamma_clustering_module() = default;
 
   /// Construction with configuration
-  gamma_clustering_module(const falaise::config::property_set& ps,
-                          datatools::service_manager& services);
+  gamma_clustering_module(const falaise::property_set& ps, datatools::service_manager& services);
 
   /// Data record processing
   falaise::processing::status process(datatools::things& event);
@@ -63,12 +62,11 @@ class gamma_clustering_module {
   snemo::reconstruction::gamma_clustering_driver algo_;  //!< Handle fitter algorithm
 };
 
-gamma_clustering_module::gamma_clustering_module(const falaise::config::property_set& ps,
+gamma_clustering_module::gamma_clustering_module(const falaise::property_set& ps,
                                                  datatools::service_manager& services)
     : geoSVC_{services},
       PTD_tag_{ps.get<std::string>(
-          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())}
-      {
+          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())} {
   algo_.set_geometry_manager(*(geoSVC_.operator->()));
   algo_.initialize(ps);
 }

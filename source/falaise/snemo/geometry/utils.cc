@@ -27,7 +27,6 @@ namespace geometry {
 
 // static
 const unsigned int utils::NSIDES;
-const unsigned int utils::NSUBMODULES;
 
 // static
 const std::string& utils::side_back_label() {
@@ -55,12 +54,12 @@ bool utils::is_side_label_valid(const std::string& label_) {
 // static
 int utils::get_side_from_label(const std::string& label_) {
   if (label_ == side_back_label()) {
-    return SIDE_BACK;
+    return side_t::BACK;
   }
   if (label_ == side_front_label()) {
-    return SIDE_FRONT;
+    return side_t::FRONT;
   }
-  return SIDE_INVALID;
+  return side_t::INVALID;
 }
 
 }  // end of namespace geometry

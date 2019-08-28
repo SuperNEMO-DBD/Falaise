@@ -13,9 +13,10 @@ namespace flp = falaise::processing;
 class TrivialModule {
  public:
   TrivialModule() = default;
-  TrivialModule(falaise::config::property_set const&, datatools::service_manager&) : TrivialModule() {}
+  TrivialModule(falaise::property_set const& /*unused*/, datatools::service_manager& /*unused*/)
+      : TrivialModule() {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 };
 FALAISE_REGISTER_MODULE(TrivialModule)
 
@@ -23,15 +24,15 @@ FALAISE_REGISTER_MODULE(TrivialModule)
 class FooConfig {
  public:
   FooConfig() = default;
-  FooConfig(falaise::config::property_set const& p) { p.has_key("foo"); }
+  FooConfig(falaise::property_set const& p) { p.has_key("foo"); }
 };
 
 class FooModule {
  public:
   FooModule() = default;
-  FooModule(FooConfig const&, datatools::service_manager&) : FooModule() {}
+  FooModule(FooConfig const& /*unused*/, datatools::service_manager& /*unused*/) : FooModule() {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 };
 
 FALAISE_REGISTER_MODULE(FooModule)
@@ -39,10 +40,10 @@ FALAISE_REGISTER_MODULE(FooModule)
 class ModuleThatThrows {
  public:
   ModuleThatThrows() = default;
-  ModuleThatThrows(falaise::config::property_set const& ps, datatools::service_manager&)
-      : aprop(ps.get<std::string>("aprop")){}
+  ModuleThatThrows(falaise::property_set const& ps, datatools::service_manager& /*unused*/)
+      : aprop(ps.get<std::string>("aprop")) {}
 
-  flp::status process(datatools::things&) { return flp::status::PROCESS_OK; }
+  flp::status process(datatools::things& /*unused*/) { return flp::status::PROCESS_OK; }
 
  private:
   std::string aprop;
@@ -96,12 +97,13 @@ TEST_CASE("Initialization errors are handled") {
 
   SECTION("missing key error handled") {
     badConfig.store("missingkey", 42);
-    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever), falaise::processing::configuration_error);
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever),
+                      falaise::processing::configuration_error);
   }
 
   SECTION("wrong type key error handled") {
     badConfig.store("aprop", 42);
-    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever), falaise::processing::configuration_error);
+    REQUIRE_THROWS_AS(mod.initialize(badConfig, dummyServices, dummyWhatever),
+                      falaise::processing::configuration_error);
   }
 }
-

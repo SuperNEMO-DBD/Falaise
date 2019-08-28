@@ -30,8 +30,7 @@ void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
     gghit.set_delayed(false);
     gghit.set_bottom_cathode_missing(false);
     gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
+    geomtools::vector_3d cell_position = ggloc_.getCellPosition(gghit.get_geom_id());
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits_.push_back(hgghit);
@@ -53,8 +52,7 @@ void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
     gghit.set_delayed(false);
     gghit.set_bottom_cathode_missing(false);
     gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
+    geomtools::vector_3d cell_position = ggloc_.getCellPosition(gghit.get_geom_id());
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits_.push_back(hgghit);
@@ -76,8 +74,7 @@ void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
     gghit.set_delayed(false);
     gghit.set_bottom_cathode_missing(false);
     gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
+    geomtools::vector_3d cell_position = ggloc_.getCellPosition(gghit.get_geom_id());
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits_.push_back(hgghit);
@@ -99,8 +96,7 @@ void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
     gghit.set_delayed(false);
     gghit.set_bottom_cathode_missing(false);
     gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
+    geomtools::vector_3d cell_position = ggloc_.getCellPosition(gghit.get_geom_id());
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits_.push_back(hgghit);
@@ -121,8 +117,7 @@ void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
     gghit.set_delayed(false);
     gghit.set_bottom_cathode_missing(false);
     gghit.set_top_cathode_missing(false);
-    geomtools::vector_3d cell_position;
-    ggloc_.get_cell_position(gghit.get_geom_id(), cell_position);
+    geomtools::vector_3d cell_position = ggloc_.getCellPosition(gghit.get_geom_id());
     gghit.set_xy(cell_position.x(), cell_position.y());
     // gghit.tree_dump(std::clog, "Generated geiger hit: ");
     gghits_.push_back(hgghit);
@@ -192,7 +187,7 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
         // double er = clhit.get_sigma_r();
         geomtools::vector_3d hit_pos(x, y, z);
         geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                          ggloc_.get_cell_diameter(), ggloc_.get_cell_diameter(),
+                                          ggloc_.cellDiameter(), ggloc_.cellDiameter(),
                                           2 * ez);
       }
     }
@@ -209,7 +204,7 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
       // double er = uclhit.get_sigma_r();
       geomtools::vector_3d hit_pos(x, y, z);
       geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                        ggloc_.get_cell_diameter(), ggloc_.get_cell_diameter(),
+                                        ggloc_.cellDiameter(), ggloc_.cellDiameter(),
                                         2 * ez);
     }
   }

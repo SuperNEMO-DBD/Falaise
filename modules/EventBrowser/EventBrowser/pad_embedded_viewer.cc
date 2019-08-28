@@ -55,8 +55,8 @@ pad_embedded_viewer::pad_embedded_viewer(const std::string& name_, const TGFrame
                                          const unsigned int width_, const unsigned int height_,
                                          const view_dim_type view_dim_)
     : i_embedded_viewer(view_dim_), TRootEmbeddedCanvas(name_.c_str(), frame_, width_, height_) {
-  _objects_ = 0;
-  _text_objects_ = 0;
+  _objects_ = nullptr;
+  _text_objects_ = nullptr;
 
   const int vtype = style_manager::get_instance().get_startup_2d_view();
   _view_type_ = static_cast<view_type>(vtype);
@@ -71,16 +71,14 @@ pad_embedded_viewer::pad_embedded_viewer(const std::string& name_, const TGFrame
   _max_roi_bound_.SetXYZ(-std::numeric_limits<double>::infinity(),
                          -std::numeric_limits<double>::infinity(),
                          -std::numeric_limits<double>::infinity());
-  return;
 }
 
 // dtor:
-pad_embedded_viewer::~pad_embedded_viewer() { return; }
+pad_embedded_viewer::~pad_embedded_viewer() = default;
 
 void pad_embedded_viewer::clear() {
   this->get_canvas()->SetEditable(true);
   this->get_canvas()->Clear();
-  return;
 }
 
 void pad_embedded_viewer::reset() {
@@ -91,7 +89,9 @@ void pad_embedded_viewer::reset() {
   // objects in a canvas in order to get them as big as possible
   // Here we calculate the scale factor given the dimensions of
   // the detector and the size of the embedded canvas
-  if (_view_dim_type == VIEW_2D) this->_set_scale_factors_();
+  if (_view_dim_type == VIEW_2D) {
+    this->_set_scale_factors_();
+  }
 
   TCanvas* canvas = this->get_canvas();
 
@@ -99,11 +99,17 @@ void pad_embedded_viewer::reset() {
     case VIEW_2D: {
       canvas->GetView()->SetParallel();
 
-      if (_view_type_ == TOP_VIEW) canvas->GetView()->TopView();
-      if (_view_type_ == FRONT_VIEW) canvas->GetView()->Front();
-      if (_view_type_ == SIDE_VIEW) canvas->GetView()->RotateView(180.0, 90.0);
+      if (_view_type_ == TOP_VIEW) {
+        canvas->GetView()->TopView();
+      }
+      if (_view_type_ == FRONT_VIEW) {
+        canvas->GetView()->Front();
+      }
+      if (_view_type_ == SIDE_VIEW) {
+        canvas->GetView()->RotateView(180.0, 90.0);
+      }
       // TView::Side() shows the other side
-      if (options_manager::get_instance().get_option_flag(FOCUS_ROI) && _objects_) {
+      if (options_manager::get_instance().get_option_flag(FOCUS_ROI) && (_objects_ != nullptr)) {
         optimize_range(_get_minimal_roi_bound_(), _get_maximal_roi_bound_());
         _search_for_boundaries_done_ = false;
       } else {
@@ -127,14 +133,11 @@ void pad_embedded_viewer::reset() {
   this->_scale_text_();
   canvas->Modified();
   canvas->Update();
-
-  return;
 }
 
 void pad_embedded_viewer::set_view_type(const view_type view_type_) {
   _view_type_ = view_type_;
   this->reset();
-  return;
 }
 
 view_type pad_embedded_viewer::get_view_type() const { return _view_type_; }
@@ -157,8 +160,6 @@ void pad_embedded_viewer::update_detector() {
   canvas->SetEditable(false);
   canvas->Modified();
   canvas->Update();
-
-  return;
 }
 
 void pad_embedded_viewer::update_scene(i_draw_manager* drawer_) {
@@ -168,7 +169,7 @@ void pad_embedded_viewer::update_scene(i_draw_manager* drawer_) {
   canvas->SetEditable(true);
   canvas->SetFillColor(style_manager::get_instance().get_background_color());
 
-  if (drawer_) {
+  if (drawer_ != nullptr) {
     // if (_view_dim_type == VIEW_3D)
     //   {
     //     drawer_->draw_legend();
@@ -206,7 +207,6 @@ void pad_embedded_viewer::update_scene(i_draw_manager* drawer_) {
   canvas->SetEditable(false);
   canvas->Modified();
   canvas->Update();
-  return;
 }
 
 TCanvas* pad_embedded_viewer::get_canvas() {
@@ -218,17 +218,19 @@ TCanvas* pad_embedded_viewer::get_canvas() {
 TGFrame* pad_embedded_viewer::get_frame() { return this; }
 
 void pad_embedded_viewer::search_for_boundaries() {
-  if (!_objects_) return;
+  if (_objects_ == nullptr) {
+    return;
+  }
 
   TVector3& min_roi_bound = _grab_minimal_roi_bound_();
   TVector3& max_roi_bound = _grab_maximal_roi_bound_();
 
   TObjArrayIter iter(_objects_);
-  while (iter.Next()) {
+  while (iter.Next() != nullptr) {
     const TObject* a_object = *iter;
 
     if (a_object->IsA() == TPolyLine3D::Class()) {
-      const TPolyLine3D* pl3d = dynamic_cast<const TPolyLine3D*>(a_object);
+      const auto* pl3d = dynamic_cast<const TPolyLine3D*>(a_object);
 
       for (int i = 0; i < pl3d->Size(); ++i) {
         const double x = pl3d->GetP()[3 * i];
@@ -244,7 +246,7 @@ void pad_embedded_viewer::search_for_boundaries() {
     }
 
     if (a_object->IsA() == TPolyMarker3D::Class()) {
-      const TPolyMarker3D* pm3d = dynamic_cast<const TPolyMarker3D*>(a_object);
+      const auto* pm3d = dynamic_cast<const TPolyMarker3D*>(a_object);
 
       for (int i = 0; i < pm3d->Size(); ++i) {
         const double x = pm3d->GetP()[3 * i];
@@ -260,7 +262,7 @@ void pad_embedded_viewer::search_for_boundaries() {
     }
 
     if (a_object->IsA() == TMarker3DBox::Class()) {
-      const TMarker3DBox* m3d = dynamic_cast<const TMarker3DBox*>(a_object);
+      const auto* m3d = dynamic_cast<const TMarker3DBox*>(a_object);
       float x, y, z;
       m3d->GetPosition(x, y, z);
       float dx, dy, dz;
@@ -277,7 +279,6 @@ void pad_embedded_viewer::search_for_boundaries() {
   }
 
   _search_for_boundaries_done_ = true;
-  return;
 }
 
 void pad_embedded_viewer::optimize_range(const TVector3& min_bound_, const TVector3& max_bound_) {
@@ -326,7 +327,9 @@ void pad_embedded_viewer::optimize_range(const TVector3& min_bound_, const TVect
       xmax *= sf;
 
       // Sanity check
-      if ((xmin >= xmax) || (ymin >= ymax)) return;
+      if ((xmin >= xmax) || (ymin >= ymax)) {
+        return;
+      }
 
       //              canvas->Range(xmin, ymin, xmax, ymax);
 
@@ -335,15 +338,16 @@ void pad_embedded_viewer::optimize_range(const TVector3& min_bound_, const TVect
       const double ycenter = (ymax + ymin) / 2.0;
 
       double zoom_factor = 0.0;
-      if (!_text_objects_->GetEntriesFast()) {
+      if (_text_objects_->GetEntriesFast() == 0) {
         zoom_factor = 2.0;
       } else {
-        if (_view_type_ == TOP_VIEW)
+        if (_view_type_ == TOP_VIEW) {
           zoom_factor = 3.0;
-        else if (_view_type_ == FRONT_VIEW)
+        } else if (_view_type_ == FRONT_VIEW) {
           zoom_factor = 4.0;
-        else if (_view_type_ == SIDE_VIEW)
+        } else if (_view_type_ == SIDE_VIEW) {
           zoom_factor = 2.0;
+        }
       }
 
       const double xdown = xcenter - zoom_factor * std::fabs(xcenter - xmin);
@@ -363,7 +367,6 @@ void pad_embedded_viewer::optimize_range(const TVector3& min_bound_, const TVect
   canvas->Update();
 
   DT_LOG_TRACE(local_priority, "Exiting.");
-  return;
 }
 
 void pad_embedded_viewer::_set_pad_style_() const {
@@ -371,7 +374,7 @@ void pad_embedded_viewer::_set_pad_style_() const {
   gStyle->SetTitleX(0.1f);
   gStyle->SetTitleW(0.8f);
 
-  gStyle->SetPalette(1, 0);
+  gStyle->SetPalette(1, nullptr);
   gStyle->SetCanvasBorderMode(0);
   gStyle->SetPadBorderMode(0);
   gStyle->SetDrawBorder(0);
@@ -390,7 +393,6 @@ void pad_embedded_viewer::_set_pad_style_() const {
   gStyle->SetPadRightMargin(0.05);
   gStyle->SetPadTopMargin(0.05);
   gStyle->SetPadBottomMargin(0.15);
-  return;
 }
 
 const TVector3& pad_embedded_viewer::_get_minimal_roi_bound_() const { return _min_roi_bound_; }
@@ -422,8 +424,6 @@ void pad_embedded_viewer::_convert_pixel_to_pad_coordinates_(const int xpixel_, 
 
   xpad_ = xpixel_ * dx / width + xdown;
   ypad_ = (height - ypixel_) * dy / height + ydown;
-
-  return;
 }
 
 void pad_embedded_viewer::_convert_pixel_to_world_coordinates_(const int xpixel_, const int ypixel_,
@@ -453,8 +453,6 @@ void pad_embedded_viewer::_convert_pixel_to_world_coordinates_(const int xpixel_
     xworld_ = pw[1];
     yworld_ = pw[2];
   }
-
-  return;
 }
 
 void pad_embedded_viewer::_convert_world_to_pad_coordinates_(const double xworld_,
@@ -475,8 +473,6 @@ void pad_embedded_viewer::_convert_world_to_pad_coordinates_(const double xworld
 
   xpad_ = pn[0];
   ypad_ = pn[1];
-
-  return;
 }
 
 void pad_embedded_viewer::_set_scale_factors_() {
@@ -508,18 +504,19 @@ void pad_embedded_viewer::_set_scale_factors_() {
     _fudge_factors_[FRONT_VIEW] = 1.0;
     _fudge_factors_[SIDE_VIEW] = 1.0;
   }
-  return;
 }
 
 void pad_embedded_viewer::_scale_text_() {
   datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-  if (!_text_objects_) return;
+  if (_text_objects_ == nullptr) {
+    return;
+  }
 
   DT_LOG_TRACE(local_priority, "text objects address " << _text_objects_);
 
   TIter iter(_text_objects_);
   utils::root_utilities::TLatex3D* itext;
-  while ((itext = (utils::root_utilities::TLatex3D*)iter.Next())) {
+  while ((itext = (utils::root_utilities::TLatex3D*)iter.Next()) != nullptr) {
     DT_LOG_TRACE(local_priority, "text address " << itext << "world position (x, y, z) = ("
                                                  << itext->GetX() << ", " << itext->GetY() << ", "
                                                  << itext->GetZ() << ")");
@@ -527,10 +524,9 @@ void pad_embedded_viewer::_scale_text_() {
     // If same geom_id has text (FindObject compare geom_id
     // coordinates) then TLatex "splitline" function is used
     // to show both information
-    utils::root_utilities::TLatex3D* found =
-        (utils::root_utilities::TLatex3D*)_text_objects_->FindObject(itext);
+    auto* found = (utils::root_utilities::TLatex3D*)_text_objects_->FindObject(itext);
 
-    if (found) {
+    if (found != nullptr) {
       std::string str1 = found->GetText();
       std::string str2 = itext->GetText();
       std::ostringstream oss;
@@ -606,7 +602,6 @@ void pad_embedded_viewer::_scale_text_() {
       }
     }
   }
-  return;
 }
 
 bool pad_embedded_viewer::_handle_container_key(Event_t* event_) {
@@ -615,10 +610,12 @@ bool pad_embedded_viewer::_handle_container_key(Event_t* event_) {
 
   gVirtualX->LookupString(event_, tmp, sizeof(tmp), keysym);
 
-  if (event_->fType != kGKeyPress) return false;
+  if (event_->fType != kGKeyPress) {
+    return false;
+  }
 
   // Zoom factor must be between 1 and +inf !
-  if (event_->fState & kKeyControlMask) {
+  if ((event_->fState & kKeyControlMask) != 0u) {
     // Smooth zoom
     _zoom_factor_ = 1.1;
   } else {
@@ -626,12 +623,12 @@ bool pad_embedded_viewer::_handle_container_key(Event_t* event_) {
     _zoom_factor_ = 2.0;
   }
 
-  EKeySym key_pressed = (EKeySym)keysym;
+  auto key_pressed = (EKeySym)keysym;
 
   // +/- key perform zoom from the center of the view which is
   // different to what mouse wheel do by zooming arround the
   // mouse cursor position
-  if (event_->fState & kKeyShiftMask) {
+  if ((event_->fState & kKeyShiftMask) != 0u) {
     switch (key_pressed) {
       case kKey_Down:
       case kKey_Up:
@@ -710,7 +707,9 @@ bool pad_embedded_viewer::_handle_container_button(Event_t* event_) {
   const int y = event_->fY;
 
   // Handle mouse-wheel events first.
-  if (button > kButton3) return this->_handle_mouse_wheel(event_);
+  if (button > kButton3) {
+    return this->_handle_mouse_wheel(event_);
+  }
 
   // kButton1 : left   click
   // kButton2 : middle click
@@ -753,13 +752,19 @@ bool pad_embedded_viewer::_handle_container_double_click(Event_t* event_) {
   const int button = event_->fCode;
 
   // Discard event from mouse wheel
-  if (button > kButton3) return true;
+  if (button > kButton3) {
+    return true;
+  }
 
   const int x = event_->fX;
   const int y = event_->fY;
 
-  if (button == kButton1) return this->_zoom_to_position(x, y);
-  if (button == kButton2) this->reset();
+  if (button == kButton1) {
+    return this->_zoom_to_position(x, y);
+  }
+  if (button == kButton2) {
+    this->reset();
+  }
 
   return true;
 }
@@ -769,7 +774,7 @@ bool pad_embedded_viewer::_handle_mouse_wheel(Event_t* event_) {
   const int y = event_->fY;
 
   // Zoom factor must be between 1 and +inf !
-  if (event_->fState & kKeyControlMask) {
+  if ((event_->fState & kKeyControlMask) != 0u) {
     // Smooth zoom
     _zoom_factor_ = 1.1;
   } else {
@@ -884,7 +889,9 @@ bool pad_embedded_viewer::_move(const EKeySym key_pressed_) {
   // Adaptive zoom step
   const double deltaZoomX = fabs(xdown - xup) / 10.;
   const double deltaZoomY = fabs(ydown - yup) / 10.;
-  if (fabs(xdown - xup) < deltaZoomX || fabs(ydown - yup) < deltaZoomY) return false;
+  if (fabs(xdown - xup) < deltaZoomX || fabs(ydown - yup) < deltaZoomY) {
+    return false;
+  }
 
   switch (key_pressed_) {
     case kKey_Down:
@@ -926,7 +933,9 @@ bool pad_embedded_viewer::_rotate(const EKeySym key_pressed_) {
 
   TView* view = canvas->GetView();
 
-  if (!view) return false;
+  if (view == nullptr) {
+    return false;
+  }
 
   const double dangle = 10.;  // degree
 
@@ -950,7 +959,7 @@ bool pad_embedded_viewer::_rotate(const EKeySym key_pressed_) {
       break;
   }
 
-  view->RotateView(longitude, latitude, 0);
+  view->RotateView(longitude, latitude, nullptr);
 
   canvas->Modified();
   canvas->Update();
@@ -977,15 +986,15 @@ bool pad_embedded_viewer::_handle_input(const int event_, const int x_, const in
   // All coordinates transformation are from absolute to relative
   canvas->AbsCoordinates(true);
 
-  TView* view = (TView*)canvas->GetView();
+  auto* view = (TView*)canvas->GetView();
 
   switch (event_) {
     case kMouseMotion:
       break;
 
-    //*********************
-    // Perform translation
-    //*********************
+      //*********************
+      // Perform translation
+      //*********************
 
     case kButton1Down: {
       // _convert_pixel_to_pad_coordinate_ can not be used
@@ -1035,7 +1044,9 @@ bool pad_embedded_viewer::_handle_input(const int event_, const int x_, const in
     // Perform rotation
     //******************
     case kButton2Down: {
-      if (_view_dim_type != VIEW_3D) return false;
+      if (_view_dim_type != VIEW_3D) {
+        return false;
+      }
       canvas->SetCursor(kRotate);
       // remember position
       xmin = canvas->GetX1();
@@ -1055,7 +1066,9 @@ bool pad_embedded_viewer::_handle_input(const int event_, const int x_, const in
     }
 
     case kButton2Motion: {
-      if (_view_dim_type != VIEW_3D) return false;
+      if (_view_dim_type != VIEW_3D) {
+        return false;
+      }
       canvas->SetCursor(kRotate);
       x = canvas->PixeltoX(x_);
       y = canvas->PixeltoY(y_);
@@ -1076,7 +1089,9 @@ bool pad_embedded_viewer::_handle_input(const int event_, const int x_, const in
     }
 
     case kButton2Up: {
-      if (_view_dim_type != VIEW_3D) return false;
+      if (_view_dim_type != VIEW_3D) {
+        return false;
+      }
       // Recompute new view matrix and redraw
       psideg = view->GetPsi();
       view->SetView(newlongitude, newlatitude, psideg, irep);

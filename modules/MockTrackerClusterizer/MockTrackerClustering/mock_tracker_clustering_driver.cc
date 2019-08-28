@@ -119,10 +119,10 @@ int mock_tracker_clustering_driver::_process_algo(
 
     const snemo::geometry::gg_locator& gg_locator = get_gg_locator();
     const geomtools::geom_id& gg_hit_gid = a_gg_hit.get_geom_id();
-    DT_THROW_IF(!gg_locator.is_drift_cell_volume(gg_hit_gid), std::logic_error,
+    DT_THROW_IF(!gg_locator.isGeigerCell(gg_hit_gid), std::logic_error,
                 "Calibrated tracker hit can not be located inside detector !");
 
-    if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
+    if (!gg_locator.isGeigerCellInThisModule(gg_hit_gid)) {
       DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
       continue;
     }
@@ -168,13 +168,13 @@ bool mock_tracker_clustering_driver::are_neighbours(
   // Use Geiger locator for such research Warning: use integer
   // because uint32_t has strange behavior with absolute value
   // cmath::abs
-  const int hit1_side = gg_locator.extract_side(tracker_hit_id1_);
-  const int hit1_layer = gg_locator.extract_layer(tracker_hit_id1_);
-  const int hit1_row = gg_locator.extract_row(tracker_hit_id1_);
+  const int hit1_side = gg_locator.getSideAddress(tracker_hit_id1_);
+  const int hit1_layer = gg_locator.getLayerAddress(tracker_hit_id1_);
+  const int hit1_row = gg_locator.getRowAddress(tracker_hit_id1_);
 
-  const int hit2_side = gg_locator.extract_side(tracker_hit_id2_);
-  const int hit2_layer = gg_locator.extract_layer(tracker_hit_id2_);
-  const int hit2_row = gg_locator.extract_row(tracker_hit_id2_);
+  const int hit2_side = gg_locator.getSideAddress(tracker_hit_id2_);
+  const int hit2_layer = gg_locator.getLayerAddress(tracker_hit_id2_);
+  const int hit2_row = gg_locator.getRowAddress(tracker_hit_id2_);
 
   // Do not cross the foil
   if (hit1_side != hit2_side) return false;

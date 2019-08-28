@@ -28,10 +28,10 @@ namespace visualization {
 namespace view {
 
 // ctor:
-i_draw_manager::i_draw_manager() {}
+i_draw_manager::i_draw_manager() = default;
 
 // dtor:
-i_draw_manager::~i_draw_manager() {}
+i_draw_manager::~i_draw_manager() = default;
 
 }  // end of namespace view
 

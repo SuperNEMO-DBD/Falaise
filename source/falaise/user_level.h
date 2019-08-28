@@ -10,8 +10,8 @@
 // implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 // See the License for more information.
 
-#ifndef FALAISE_COMMON_USER_PROFILE_H
-#define FALAISE_COMMON_USER_PROFILE_H
+#ifndef FALAISE_USER_LEVEL_H
+#define FALAISE_USER_LEVEL_H
 
 // Standard Library:
 #include <set>
@@ -19,9 +19,7 @@
 
 namespace falaise {
 
-namespace common {
-
-//! Return the set of supported user profiles. User profiles offer differents
+//! Return the set of supported user levels. User levels offer differents
 //! guarantees on data production.
 //!
 //! Use case for Monte Carlo data production (FLSimulate):
@@ -44,13 +42,11 @@ namespace common {
 //!   This is the profile for production of 'blessed' Monte Carlo datasets. Only Monte Carlo
 //!   data produced with this mode should be accepted as official ones.
 //!
-const std::set<std::string>& supported_user_profiles();
-
-}  // namespace common
+const std::set<std::string>& validUserLevels();
 
 }  // namespace falaise
 
-#endif  // FALAISE_COMMON_USER_PROFILE_H
+#endif  // FALAISE_USER_LEVEL_H
 
 // Local Variables: --
 // mode: c++ --

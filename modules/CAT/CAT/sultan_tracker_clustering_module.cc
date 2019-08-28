@@ -15,7 +15,7 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
@@ -113,7 +113,7 @@ void sultan_tracker_clustering_module::initialize(
 
   namespace snedm = snemo::datamodel;
 
-  falaise::config::property_set ps{config};
+  falaise::property_set ps{config};
 
   CDTag_ = ps.get<std::string>("CD_label", snedm::data_info::default_calibrated_data_label());
   TCDTag_ =
@@ -236,26 +236,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
             "                                  \n");
   }
 
-  {
-    // Description of the 'Geo_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("Geo_label")
-        .set_terse_description("The label/name of the geometry service")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(
-            "This is the name of the service to be used as the \n"
-            "geometry service.                                 \n"
-            "This property is only used if no geometry manager \n"
-            "as been provided to the module.                   \n")
-        .set_default_value_string(snemo::service_info::default_geometry_service_label())
-        .add_example(
-            "Use an alternative name for the geometry service::  \n"
-            "                                                    \n"
-            "  Geo_label : string = \"geometry2\"                \n"
-            "                                                    \n");
-  }
-
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
       "Here is a full configuration example in the                          \n"
@@ -269,7 +249,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
       "  TPC.split_chamber            : boolean = 0                         \n"
       "  CD_label                     : string = \"CD\"                     \n"
       "  TCD_label                    : string = \"TCD\"                    \n"
-      "  Geo_label                    : string = \"geometry\"               \n"
       "  SULTAN.magnetic_field        : real   = 25 gauss                   \n"
       "  SULTAN.max_time              : real   = 5000.0 ms                  \n"
       "  SULTAN.Emin                  : real  = 120 keV                     \n"

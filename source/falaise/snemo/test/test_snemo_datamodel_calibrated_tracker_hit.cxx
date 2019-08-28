@@ -64,12 +64,12 @@ int main(/* int argc_, char ** argv_ */) {
       my_gg_hit.set_bottom_cathode_missing(false);
       my_gg_hit.set_top_cathode_missing(false);
       my_gg_hit.tree_dump(std::clog, "Calibrated tracker hit: ");
-    }
+    }  // namespace sdm=snemo::datamodel;
 
     {
       // create a list of random tracker hits:
       srand48(314159);
-      typedef std::vector<sdm::calibrated_tracker_hit> hit_collection_type;
+      using hit_collection_type = std::vector<sdm::calibrated_tracker_hit>;
       hit_collection_type list_of_gg_hits;
 
       int nb_hits = 10;
@@ -96,10 +96,11 @@ int main(/* int argc_, char ** argv_ */) {
         }
         if (drand48() < 0.1) {
           my_gg_hit.set_top_cathode_missing(true);
-          if (z_error > 2.0 * CLHEP::cm)
+          if (z_error > 2.0 * CLHEP::cm) {
             z_error = 150.0 * CLHEP::cm;
-          else
+          } else {
             z_error = 10.0 * CLHEP::cm;
+          }
         }
         if (drand48() < 0.2) {
           my_gg_hit.set_noisy(true);
@@ -116,7 +117,7 @@ int main(/* int argc_, char ** argv_ */) {
       }
 
       // search for hits with min/max anode drift radius:
-      typedef datatools::smart_ref<sdm::calibrated_tracker_hit> smart_ref_type;
+      using smart_ref_type = datatools::smart_ref<sdm::calibrated_tracker_hit>;
       smart_ref_type rmin_gg_ref;
       smart_ref_type rmax_gg_ref;
       for (hit_collection_type::const_iterator i = list_of_gg_hits.begin();

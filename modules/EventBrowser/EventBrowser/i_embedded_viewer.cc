@@ -28,12 +28,10 @@ namespace visualization {
 namespace view {
 
 // ctor:
-i_embedded_viewer::i_embedded_viewer(const view_dim_type view_dim_) : _view_dim_type(view_dim_) {
-  return;
-}
+i_embedded_viewer::i_embedded_viewer(const view_dim_type view_dim_) : _view_dim_type(view_dim_) {}
 
 // dtor:
-i_embedded_viewer::~i_embedded_viewer() { return; }
+i_embedded_viewer::~i_embedded_viewer() = default;
 
 }  // end of namespace view
 

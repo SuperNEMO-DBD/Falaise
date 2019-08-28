@@ -10,7 +10,7 @@
 #include "boost/metaparse/string.hpp"
 #include "boost/mpl/string.hpp"
 
-//! Register a dimension tag for use as a @ref falaise::config::quantity_t template parameter
+//! Register a dimension tag for use as a @ref falaise::quantity_t template parameter
 /*!
  * Expansion defines a struct for the tag, and a type alias for convenience
  * e.g.
@@ -32,23 +32,20 @@
  * Client code can then use the type alias directly, e.g.
  *
  * ```cpp
- * falaise::config::length_t x{3.14, "m"};
+ * falaise::length_t x{3.14, "m"};
  * ```
  *
  * \param Tag tag for the dimension, which must be known to @ref datatools::units::registry
  */
 #define FALAISE_ADD_DIMENSION_TAG(Tag)          \
   namespace falaise {                           \
-  namespace config {                            \
   struct Tag {                                  \
     typedef BOOST_METAPARSE_STRING(#Tag) label; \
   };                                            \
   using Tag##_t = quantity_t<Tag>;              \
-  }                                             \
   }
 
 namespace falaise {
-namespace config {
 //! Exception reporting wrong or incompatible dimensions
 class wrong_dimension_error : public std::logic_error {
   using std::logic_error::logic_error;
@@ -73,8 +70,8 @@ class unknown_unit_error : public std::logic_error {
  * converted to the internal CLHEP::Units numeric representation. For example:
  *
  * ```cpp
- * auto x = falaise::config::quantity{3.14, "m"}; // valid
- * auto y = falaise::config::quantity{4.13, "furlong"}; // throws, "furlong" not a known unit
+ * auto x = falaise::quantity{3.14, "m"}; // valid
+ * auto y = falaise::quantity{4.13, "furlong"}; // throws, "furlong" not a known unit
  *
  * double forCalc = x(); // value is 3.14*CLHEP::meter, so 3140.0
  * ```
@@ -99,7 +96,7 @@ class quantity {
   /*!
    * \param[in] value Numeric value in units of unit
    * \param[in] unit @ref datatools::units::unit tag
-   * \throws falaise::config::unknown_unit_error if unit is not supported by @ref datatools::units
+   * \throws falaise::unknown_unit_error if unit is not supported by @ref datatools::units
    */
   quantity(double value, std::string unit);
 
@@ -111,7 +108,7 @@ class quantity {
    * For example:
    *
    * ```cpp
-   * falaise::config::quantity q{3.14, "m"};
+   * falaise::quantity q{3.14, "m"};
    * double x = q();
    * std::cout << x << std::endl; // prints 3140.0
    * ```
@@ -125,7 +122,7 @@ class quantity {
    * For example:
    *
    * ```cpp
-   * falaise::config::quantity x{3.14, "m"};
+   * falaise::quantity x{3.14, "m"};
    * std::cout << x.value() << std::endl; // prints 3.14
    * ```
    *
@@ -137,7 +134,7 @@ class quantity {
    * For example:
    *
    * ```cpp
-   * falaise::config::quantity x{3.14, "m"};
+   * falaise::quantity x{3.14, "m"};
    * std::cout << x.value_in("mm") << std::endl; //prints 3140.0
    *
    * \throws bad_unit_error if supplied unit's dimension is different to
@@ -198,8 +195,8 @@ class quantity_t : public quantity {
   /*!
    * \param[in] value Numeric value
    * \param[in] unit @ref datatools::units::unit tag
-   * \throws falaise::config::unknown_unit_error if unit is not supported by @ref
-   * datatools::units::unit \throws falaise::config::wrong_dimension_error if unit's dimension does
+   * \throws falaise::unknown_unit_error if unit is not supported by @ref
+   * datatools::units::unit \throws falaise::wrong_dimension_error if unit's dimension does
    * not match the Dimension type parameter tag
    */
   quantity_t(double value, std::string const& unit) : quantity(value, unit) {
@@ -213,7 +210,7 @@ class quantity_t : public quantity {
   /*!
    * \tparam Dimension dimension tag for this quantity_t
    * \param[in] q quantity to copy from
-   * \throws falaise::config::wrong_dimension_error if dimension of q does not match the Dimension
+   * \throws falaise::wrong_dimension_error if dimension of q does not match the Dimension
    * tag
    */
   quantity_t(quantity const& q) : quantity_t(q.value(), q.unit()) {}
@@ -221,7 +218,6 @@ class quantity_t : public quantity {
   //! Destructor
   virtual ~quantity_t() = default;
 };
-}  // namespace config
 }  // namespace falaise
 
 /*! \defgroup falaise_units System of Units
@@ -229,12 +225,12 @@ class quantity_t : public quantity {
  *
  *  Physical units in Falaise are handled by a two level system. Parameters
  *  passed as configuration via @ref datatools::properties are handled by
- *  concrete classes of @ref falaise::config::quantity_t to enforce dimensional
+ *  concrete classes of @ref falaise::quantity_t to enforce dimensional
  *  correctness. For example:
  *
  *  ```cpp
  *  // Throws unless the "x" property was written as "x : real as length = VALUE LENGTHUNIT"
- *  auto x = ps.get<falaise::config::length_t>("x");
+ *  auto x = ps.get<falaise::length_t>("x");
  *  ```
  *
  *  Internal C++ code in Falaise or plugins treats physical units as raw
@@ -242,27 +238,27 @@ class quantity_t : public quantity {
  *  factors for numerical correctness. It is up to the developer to maintain
  *  the dimensional correctness of all calculations.
  *
- *  The concrete classes of @ref falaise::config::quantity_t listed can be
+ *  The concrete classes of @ref falaise::quantity_t listed can be
  *  converted to `double` values in the `CLHEP::Units` numeric system via
  *  the overloaded function call operator:
  *
  *  ```cpp
- *  falaise::config::length_t l{3.14, "m"};
+ *  falaise::length_t l{3.14, "m"};
  *  double x{l()}; // or double x = l();
  *  std::cout << x << std::endl; // Prints "3140.0"
  *  ```
  *
- *  It is recommended that you *only* use the @ref falaise::config::quantity_t
+ *  It is recommended that you *only* use the @ref falaise::quantity_t
  *  for parameter validation, storing extracted values in `double`s for actual
  *  calculation. The concrete types do not provide any dimensional analysis
  *  functionality, so the following will not compile:
  *
  *  ```cpp
- *  falaise::config::mass_t m{1.0,"kg"};
- *  falaise::config::acceleration_t a{1.0, "m/s2"};
+ *  falaise::mass_t m{1.0,"kg"};
+ *  falaise::acceleration_t a{1.0, "m/s2"};
  *
- *  falaise::config::force_t fa = m*a; // compile error;
- *  falaise::config::force_t fb = m()*a(); //compile error;
+ *  falaise::force_t fa = m*a; // compile error;
+ *  falaise::force_t fb = m()*a(); //compile error;
  *
  *  double fc = m()*a(); //o.k., dimensionless, but in CLHEP::Units scale
  *  ```
@@ -273,18 +269,18 @@ class quantity_t : public quantity {
  *  parameters to maintain dimensional correctness, but their values are
  *  guaranteed to be valid in `CLHEP::Units` system.
  *
- * \sa falaise::config::quantity_t
- * \sa falaise::config::property_set
+ * \sa falaise::quantity_t
+ * \sa falaise::property_set
  */
 
-/*! \class falaise::config::absorbed_dose_t
+/*! \class falaise::absorbed_dose_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `absorbed_dose` ([L2][T-2])
  *
  * A @ref absorbed_dose_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::absorbed_dose_t x{3.14, "TAG"};
+ * falaise::absorbed_dose_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -299,14 +295,14 @@ class quantity_t : public quantity {
  */
 FALAISE_ADD_DIMENSION_TAG(absorbed_dose)
 
-/*! \class falaise::config::acceleration_t
+/*! \class falaise::acceleration_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `acceleration` ([L][T-2])
  *
  * A @ref acceleration_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::acceleration_t x{3.14, "TAG"};
+ * falaise::acceleration_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -317,14 +313,14 @@ FALAISE_ADD_DIMENSION_TAG(absorbed_dose)
  */
 FALAISE_ADD_DIMENSION_TAG(acceleration)
 
-/*! \class falaise::config::activity_t
+/*! \class falaise::activity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `activity` ([T-1])
  *
  * A @ref activity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::activity_t x{3.14, "TAG"};
+ * falaise::activity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -348,14 +344,14 @@ FALAISE_ADD_DIMENSION_TAG(acceleration)
  */
 FALAISE_ADD_DIMENSION_TAG(activity)
 
-/*! \class falaise::config::amount_t
+/*! \class falaise::amount_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `amount` ([N])
  *
  * A @ref amount_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::amount_t x{3.14, "TAG"};
+ * falaise::amount_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -366,14 +362,14 @@ FALAISE_ADD_DIMENSION_TAG(activity)
  */
 FALAISE_ADD_DIMENSION_TAG(amount)
 
-/*! \class falaise::config::angle_t
+/*! \class falaise::angle_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `angle` ([1])
  *
  * A @ref angle_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::angle_t x{3.14, "TAG"};
+ * falaise::angle_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -393,14 +389,14 @@ FALAISE_ADD_DIMENSION_TAG(amount)
  */
 FALAISE_ADD_DIMENSION_TAG(angle)
 
-/*! \class falaise::config::angular_frequency_t
+/*! \class falaise::angular_frequency_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `angular_frequency` ([T-1])
  *
  * A @ref angular_frequency_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::angular_frequency_t x{3.14, "TAG"};
+ * falaise::angular_frequency_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -411,14 +407,14 @@ FALAISE_ADD_DIMENSION_TAG(angle)
  */
 FALAISE_ADD_DIMENSION_TAG(angular_frequency)
 
-/*! \class falaise::config::capacitance_t
+/*! \class falaise::capacitance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `capacitance` ([M-1][L-2][T4][I2])
  *
  * A @ref capacitance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::capacitance_t x{3.14, "TAG"};
+ * falaise::capacitance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -434,14 +430,14 @@ FALAISE_ADD_DIMENSION_TAG(angular_frequency)
  */
 FALAISE_ADD_DIMENSION_TAG(capacitance)
 
-/*! \class falaise::config::conductance_t
+/*! \class falaise::conductance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `conductance` ([M-1][L-2][T3][I2])
  *
  * A @ref conductance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::conductance_t x{3.14, "TAG"};
+ * falaise::conductance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -452,14 +448,14 @@ FALAISE_ADD_DIMENSION_TAG(capacitance)
  */
 FALAISE_ADD_DIMENSION_TAG(conductance)
 
-/*! \class falaise::config::conductivity_t
+/*! \class falaise::conductivity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `conductivity` ([M-2][L-2][T3][I2])
  *
  * A @ref conductivity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::conductivity_t x{3.14, "TAG"};
+ * falaise::conductivity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -470,14 +466,14 @@ FALAISE_ADD_DIMENSION_TAG(conductance)
  */
 FALAISE_ADD_DIMENSION_TAG(conductivity)
 
-/*! \class falaise::config::cross_section_t
+/*! \class falaise::cross_section_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `cross_section` ([L2])
  *
  * A @ref cross_section_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::cross_section_t x{3.14, "TAG"};
+ * falaise::cross_section_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -495,14 +491,14 @@ FALAISE_ADD_DIMENSION_TAG(conductivity)
  */
 FALAISE_ADD_DIMENSION_TAG(cross_section)
 
-/*! \class falaise::config::data_storage_t
+/*! \class falaise::data_storage_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `data_storage` ([1])
  *
  * A @ref data_storage_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::data_storage_t x{3.14, "TAG"};
+ * falaise::data_storage_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -546,14 +542,14 @@ FALAISE_ADD_DIMENSION_TAG(cross_section)
  */
 FALAISE_ADD_DIMENSION_TAG(data_storage)
 
-/*! \class falaise::config::data_transfer_rate_t
+/*! \class falaise::data_transfer_rate_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `data_transfer_rate` ([T-1])
  *
  * A @ref data_transfer_rate_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::data_transfer_rate_t x{3.14, "TAG"};
+ * falaise::data_transfer_rate_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -581,14 +577,14 @@ FALAISE_ADD_DIMENSION_TAG(data_storage)
  */
 FALAISE_ADD_DIMENSION_TAG(data_transfer_rate)
 
-/*! \class falaise::config::density_t
+/*! \class falaise::density_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `density` ([M][L-3])
  *
  * A @ref density_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::density_t x{3.14, "TAG"};
+ * falaise::density_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -604,14 +600,14 @@ FALAISE_ADD_DIMENSION_TAG(data_transfer_rate)
  */
 FALAISE_ADD_DIMENSION_TAG(density)
 
-/*! \class falaise::config::electric_charge_t
+/*! \class falaise::electric_charge_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_charge` ([T][I])
  *
  * A @ref electric_charge_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_charge_t x{3.14, "TAG"};
+ * falaise::electric_charge_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -627,14 +623,14 @@ FALAISE_ADD_DIMENSION_TAG(density)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_charge)
 
-/*! \class falaise::config::electric_current_t
+/*! \class falaise::electric_current_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_current` ([I])
  *
  * A @ref electric_current_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_current_t x{3.14, "TAG"};
+ * falaise::electric_current_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -652,14 +648,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_charge)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_current)
 
-/*! \class falaise::config::electric_displacement_field_t
+/*! \class falaise::electric_displacement_field_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_displacement_field` ([L-2][T][I])
  *
  * A @ref electric_displacement_field_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_displacement_field_t x{3.14, "TAG"};
+ * falaise::electric_displacement_field_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -670,14 +666,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_current)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_displacement_field)
 
-/*! \class falaise::config::electric_field_t
+/*! \class falaise::electric_field_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_field` ([M][L][T-3][I-1])
  *
  * A @ref electric_field_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_field_t x{3.14, "TAG"};
+ * falaise::electric_field_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -691,14 +687,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_displacement_field)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_field)
 
-/*! \class falaise::config::electric_flux_t
+/*! \class falaise::electric_flux_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_flux` ([M][L3][T-3][I-1])
  *
  * A @ref electric_flux_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_flux_t x{3.14, "TAG"};
+ * falaise::electric_flux_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -709,14 +705,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_field)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_flux)
 
-/*! \class falaise::config::electric_potential_t
+/*! \class falaise::electric_potential_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_potential` ([M][L2][T-3][I-1])
  *
  * A @ref electric_potential_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_potential_t x{3.14, "TAG"};
+ * falaise::electric_potential_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -731,14 +727,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_flux)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_potential)
 
-/*! \class falaise::config::electric_resistance_t
+/*! \class falaise::electric_resistance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_resistance` ([M][L2][T-3][I-2])
  *
  * A @ref electric_resistance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_resistance_t x{3.14, "TAG"};
+ * falaise::electric_resistance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -751,14 +747,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_potential)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_resistance)
 
-/*! \class falaise::config::electric_signal_integral_t
+/*! \class falaise::electric_signal_integral_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `electric_signal_integral` ([M][L2][T-2][I-1])
  *
  * A @ref electric_signal_integral_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::electric_signal_integral_t x{3.14, "TAG"};
+ * falaise::electric_signal_integral_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -769,14 +765,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_resistance)
  */
 FALAISE_ADD_DIMENSION_TAG(electric_signal_integral)
 
-/*! \class falaise::config::energy_t
+/*! \class falaise::energy_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `energy` ([M][L2][T-2])
  *
  * A @ref energy_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::energy_t x{3.14, "TAG"};
+ * falaise::energy_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -796,14 +792,14 @@ FALAISE_ADD_DIMENSION_TAG(electric_signal_integral)
  */
 FALAISE_ADD_DIMENSION_TAG(energy)
 
-/*! \class falaise::config::equivalent_dose_t
+/*! \class falaise::equivalent_dose_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `equivalent_dose` ([L2][T-2])
  *
  * A @ref equivalent_dose_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::equivalent_dose_t x{3.14, "TAG"};
+ * falaise::equivalent_dose_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -819,14 +815,14 @@ FALAISE_ADD_DIMENSION_TAG(energy)
  */
 FALAISE_ADD_DIMENSION_TAG(equivalent_dose)
 
-/*! \class falaise::config::force_t
+/*! \class falaise::force_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `force` ([M][L][T-2])
  *
  * A @ref force_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::force_t x{3.14, "TAG"};
+ * falaise::force_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -839,14 +835,14 @@ FALAISE_ADD_DIMENSION_TAG(equivalent_dose)
  */
 FALAISE_ADD_DIMENSION_TAG(force)
 
-/*! \class falaise::config::fraction_t
+/*! \class falaise::fraction_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `fraction` ([1])
  *
  * A @ref fraction_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::fraction_t x{3.14, "TAG"};
+ * falaise::fraction_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -862,14 +858,14 @@ FALAISE_ADD_DIMENSION_TAG(force)
  */
 FALAISE_ADD_DIMENSION_TAG(fraction)
 
-/*! \class falaise::config::frequency_t
+/*! \class falaise::frequency_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `frequency` ([T-1])
  *
  * A @ref frequency_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::frequency_t x{3.14, "TAG"};
+ * falaise::frequency_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -885,14 +881,14 @@ FALAISE_ADD_DIMENSION_TAG(fraction)
  */
 FALAISE_ADD_DIMENSION_TAG(frequency)
 
-/*! \class falaise::config::illuminance_t
+/*! \class falaise::illuminance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `illuminance` ()
  *
  * A @ref illuminance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::illuminance_t x{3.14, "TAG"};
+ * falaise::illuminance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -903,14 +899,14 @@ FALAISE_ADD_DIMENSION_TAG(frequency)
  */
 FALAISE_ADD_DIMENSION_TAG(illuminance)
 
-/*! \class falaise::config::inductance_t
+/*! \class falaise::inductance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `inductance` ([M][L2][T-2][I-2])
  *
  * A @ref inductance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::inductance_t x{3.14, "TAG"};
+ * falaise::inductance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -923,14 +919,14 @@ FALAISE_ADD_DIMENSION_TAG(illuminance)
  */
 FALAISE_ADD_DIMENSION_TAG(inductance)
 
-/*! \class falaise::config::length_t
+/*! \class falaise::length_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `length` ([L])
  *
  * A @ref length_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::length_t x{3.14, "TAG"};
+ * falaise::length_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -966,14 +962,14 @@ FALAISE_ADD_DIMENSION_TAG(inductance)
  */
 FALAISE_ADD_DIMENSION_TAG(length)
 
-/*! \class falaise::config::level_t
+/*! \class falaise::level_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `level` ([1])
  *
  * A @ref level_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::level_t x{3.14, "TAG"};
+ * falaise::level_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -986,14 +982,14 @@ FALAISE_ADD_DIMENSION_TAG(length)
  */
 FALAISE_ADD_DIMENSION_TAG(level)
 
-/*! \class falaise::config::luminance_t
+/*! \class falaise::luminance_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminance` ([L-2][J])
  *
  * A @ref luminance_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminance_t x{3.14, "TAG"};
+ * falaise::luminance_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1004,14 +1000,14 @@ FALAISE_ADD_DIMENSION_TAG(level)
  */
 FALAISE_ADD_DIMENSION_TAG(luminance)
 
-/*! \class falaise::config::luminous_energy_t
+/*! \class falaise::luminous_energy_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminous_energy` ()
  *
  * A @ref luminous_energy_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminous_energy_t x{3.14, "TAG"};
+ * falaise::luminous_energy_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1022,14 +1018,14 @@ FALAISE_ADD_DIMENSION_TAG(luminance)
  */
 FALAISE_ADD_DIMENSION_TAG(luminous_energy)
 
-/*! \class falaise::config::luminous_energy_density_t
+/*! \class falaise::luminous_energy_density_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminous_energy_density` ()
  *
  * A @ref luminous_energy_density_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminous_energy_density_t x{3.14, "TAG"};
+ * falaise::luminous_energy_density_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1040,14 +1036,14 @@ FALAISE_ADD_DIMENSION_TAG(luminous_energy)
  */
 FALAISE_ADD_DIMENSION_TAG(luminous_energy_density)
 
-/*! \class falaise::config::luminous_exposure_t
+/*! \class falaise::luminous_exposure_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminous_exposure` ()
  *
  * A @ref luminous_exposure_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminous_exposure_t x{3.14, "TAG"};
+ * falaise::luminous_exposure_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1058,14 +1054,14 @@ FALAISE_ADD_DIMENSION_TAG(luminous_energy_density)
  */
 FALAISE_ADD_DIMENSION_TAG(luminous_exposure)
 
-/*! \class falaise::config::luminous_flux_t
+/*! \class falaise::luminous_flux_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminous_flux` ()
  *
  * A @ref luminous_flux_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminous_flux_t x{3.14, "TAG"};
+ * falaise::luminous_flux_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1076,14 +1072,14 @@ FALAISE_ADD_DIMENSION_TAG(luminous_exposure)
  */
 FALAISE_ADD_DIMENSION_TAG(luminous_flux)
 
-/*! \class falaise::config::luminous_intensity_t
+/*! \class falaise::luminous_intensity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `luminous_intensity` ([J])
  *
  * A @ref luminous_intensity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::luminous_intensity_t x{3.14, "TAG"};
+ * falaise::luminous_intensity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1094,14 +1090,14 @@ FALAISE_ADD_DIMENSION_TAG(luminous_flux)
  */
 FALAISE_ADD_DIMENSION_TAG(luminous_intensity)
 
-/*! \class falaise::config::magnetic_field_strength_t
+/*! \class falaise::magnetic_field_strength_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `magnetic_field_strength` ([L-1][I])
  *
  * A @ref magnetic_field_strength_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::magnetic_field_strength_t x{3.14, "TAG"};
+ * falaise::magnetic_field_strength_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1112,14 +1108,14 @@ FALAISE_ADD_DIMENSION_TAG(luminous_intensity)
  */
 FALAISE_ADD_DIMENSION_TAG(magnetic_field_strength)
 
-/*! \class falaise::config::magnetic_flux_t
+/*! \class falaise::magnetic_flux_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `magnetic_flux` ([M][L2][T-2][I-1])
  *
  * A @ref magnetic_flux_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::magnetic_flux_t x{3.14, "TAG"};
+ * falaise::magnetic_flux_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1134,14 +1130,14 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_field_strength)
  */
 FALAISE_ADD_DIMENSION_TAG(magnetic_flux)
 
-/*! \class falaise::config::magnetic_flux_density_t
+/*! \class falaise::magnetic_flux_density_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `magnetic_flux_density` ([M][T-2][I-1])
  *
  * A @ref magnetic_flux_density_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::magnetic_flux_density_t x{3.14, "TAG"};
+ * falaise::magnetic_flux_density_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1158,14 +1154,14 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_flux)
  */
 FALAISE_ADD_DIMENSION_TAG(magnetic_flux_density)
 
-/*! \class falaise::config::mass_t
+/*! \class falaise::mass_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `mass` ([M])
  *
  * A @ref mass_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::mass_t x{3.14, "TAG"};
+ * falaise::mass_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1188,14 +1184,14 @@ FALAISE_ADD_DIMENSION_TAG(magnetic_flux_density)
  */
 FALAISE_ADD_DIMENSION_TAG(mass)
 
-/*! \class falaise::config::mass_activity_t
+/*! \class falaise::mass_activity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `mass_activity` ([M-1][T-1])
  *
  * A @ref mass_activity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::mass_activity_t x{3.14, "TAG"};
+ * falaise::mass_activity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1212,14 +1208,14 @@ FALAISE_ADD_DIMENSION_TAG(mass)
  */
 FALAISE_ADD_DIMENSION_TAG(mass_activity)
 
-/*! \class falaise::config::permeability_t
+/*! \class falaise::permeability_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `permeability` ([M][L][T-2][I-2])
  *
  * A @ref permeability_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::permeability_t x{3.14, "TAG"};
+ * falaise::permeability_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1230,14 +1226,14 @@ FALAISE_ADD_DIMENSION_TAG(mass_activity)
  */
 FALAISE_ADD_DIMENSION_TAG(permeability)
 
-/*! \class falaise::config::permittivity_t
+/*! \class falaise::permittivity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `permittivity` ([M-1][L-3][T4][I2])
  *
  * A @ref permittivity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::permittivity_t x{3.14, "TAG"};
+ * falaise::permittivity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1248,14 +1244,14 @@ FALAISE_ADD_DIMENSION_TAG(permeability)
  */
 FALAISE_ADD_DIMENSION_TAG(permittivity)
 
-/*! \class falaise::config::power_t
+/*! \class falaise::power_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `power` ([M][L2][T-3])
  *
  * A @ref power_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::power_t x{3.14, "TAG"};
+ * falaise::power_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1272,14 +1268,14 @@ FALAISE_ADD_DIMENSION_TAG(permittivity)
  */
 FALAISE_ADD_DIMENSION_TAG(power)
 
-/*! \class falaise::config::pressure_t
+/*! \class falaise::pressure_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `pressure` ([M][L-1][T-2])
  *
  * A @ref pressure_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::pressure_t x{3.14, "TAG"};
+ * falaise::pressure_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1305,14 +1301,14 @@ FALAISE_ADD_DIMENSION_TAG(power)
  */
 FALAISE_ADD_DIMENSION_TAG(pressure)
 
-/*! \class falaise::config::procedure_defined_t
+/*! \class falaise::procedure_defined_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `procedure_defined` ([?])
  *
  * A @ref procedure_defined_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::procedure_defined_t x{3.14, "TAG"};
+ * falaise::procedure_defined_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1325,14 +1321,14 @@ FALAISE_ADD_DIMENSION_TAG(pressure)
  */
 FALAISE_ADD_DIMENSION_TAG(procedure_defined)
 
-/*! \class falaise::config::resistivity_t
+/*! \class falaise::resistivity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `resistivity` ([M][L3][T-3][I-2])
  *
  * A @ref resistivity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::resistivity_t x{3.14, "TAG"};
+ * falaise::resistivity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1343,14 +1339,14 @@ FALAISE_ADD_DIMENSION_TAG(procedure_defined)
  */
 FALAISE_ADD_DIMENSION_TAG(resistivity)
 
-/*! \class falaise::config::solid_angle_t
+/*! \class falaise::solid_angle_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `solid_angle` ([1])
  *
  * A @ref solid_angle_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::solid_angle_t x{3.14, "TAG"};
+ * falaise::solid_angle_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1369,14 +1365,14 @@ FALAISE_ADD_DIMENSION_TAG(resistivity)
  */
 FALAISE_ADD_DIMENSION_TAG(solid_angle)
 
-/*! \class falaise::config::surface_t
+/*! \class falaise::surface_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `surface` ([L2])
  *
  * A @ref surface_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::surface_t x{3.14, "TAG"};
+ * falaise::surface_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1395,14 +1391,14 @@ FALAISE_ADD_DIMENSION_TAG(solid_angle)
  */
 FALAISE_ADD_DIMENSION_TAG(surface)
 
-/*! \class falaise::config::surface_activity_t
+/*! \class falaise::surface_activity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `surface_activity` ([L-2][T-1])
  *
  * A @ref surface_activity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::surface_activity_t x{3.14, "TAG"};
+ * falaise::surface_activity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1419,14 +1415,14 @@ FALAISE_ADD_DIMENSION_TAG(surface)
  */
 FALAISE_ADD_DIMENSION_TAG(surface_activity)
 
-/*! \class falaise::config::surface_density_t
+/*! \class falaise::surface_density_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `surface_density` ([M][L-2])
  *
  * A @ref surface_density_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::surface_density_t x{3.14, "TAG"};
+ * falaise::surface_density_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1438,14 +1434,14 @@ FALAISE_ADD_DIMENSION_TAG(surface_activity)
  */
 FALAISE_ADD_DIMENSION_TAG(surface_density)
 
-/*! \class falaise::config::surface_tension_t
+/*! \class falaise::surface_tension_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `surface_tension` ([M][T-2])
  *
  * A @ref surface_tension_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::surface_tension_t x{3.14, "TAG"};
+ * falaise::surface_tension_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1457,14 +1453,14 @@ FALAISE_ADD_DIMENSION_TAG(surface_density)
  */
 FALAISE_ADD_DIMENSION_TAG(surface_tension)
 
-/*! \class falaise::config::temperature_t
+/*! \class falaise::temperature_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `temperature` ([theta])
  *
  * A @ref temperature_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::temperature_t x{3.14, "TAG"};
+ * falaise::temperature_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1477,14 +1473,14 @@ FALAISE_ADD_DIMENSION_TAG(surface_tension)
  */
 FALAISE_ADD_DIMENSION_TAG(temperature)
 
-/*! \class falaise::config::time_t
+/*! \class falaise::time_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `time` ([T])
  *
  * A @ref time_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::time_t x{3.14, "TAG"};
+ * falaise::time_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1504,14 +1500,14 @@ FALAISE_ADD_DIMENSION_TAG(temperature)
  */
 FALAISE_ADD_DIMENSION_TAG(time)
 
-/*! \class falaise::config::velocity_t
+/*! \class falaise::velocity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `velocity` ([L][T-1])
  *
  * A @ref velocity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::velocity_t x{3.14, "TAG"};
+ * falaise::velocity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1538,14 +1534,14 @@ FALAISE_ADD_DIMENSION_TAG(time)
  */
 FALAISE_ADD_DIMENSION_TAG(velocity)
 
-/*! \class falaise::config::volume_t
+/*! \class falaise::volume_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `volume` ([L3])
  *
  * A @ref volume_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::volume_t x{3.14, "TAG"};
+ * falaise::volume_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1574,14 +1570,14 @@ FALAISE_ADD_DIMENSION_TAG(velocity)
  */
 FALAISE_ADD_DIMENSION_TAG(volume)
 
-/*! \class falaise::config::volume_activity_t
+/*! \class falaise::volume_activity_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `volume_activity` ([L-3][T-1])
  *
  * A @ref volume_activity_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::volume_activity_t x{3.14, "TAG"};
+ * falaise::volume_activity_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:
@@ -1598,14 +1594,14 @@ FALAISE_ADD_DIMENSION_TAG(volume)
  */
 FALAISE_ADD_DIMENSION_TAG(volume_activity)
 
-/*! \class falaise::config::wave_number_t
+/*! \class falaise::wave_number_t
  *  \ingroup falaise_units
  *  \brief quantity for values with dimension tag `wave_number` ([L-1])
  *
  * A @ref wave_number_t value may be constructed using, for example
  *
  * ```cpp
- * falaise::config::wave_number_t x{3.14, "TAG"};
+ * falaise::wave_number_t x{3.14, "TAG"};
  * ```
  *
  * where `TAG` is one of the following valid unit tags:

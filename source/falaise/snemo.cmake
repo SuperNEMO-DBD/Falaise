@@ -64,6 +64,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_fitter.h
   snemo/processing/module.h
   snemo/processing/base_gamma_builder.h
+  snemo/processing/detail/GeigerTimePartitioner.h
 
   snemo/services/services.h
   snemo/services/service_traits.h
@@ -73,12 +74,6 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
-  snemo/cuts/calibrated_data_cut.h
-  snemo/cuts/tracker_clustering_data_cut.h
-  snemo/cuts/tracker_trajectory_data_cut.h
-  snemo/cuts/particle_track_data_cut.h
-
-  snemo/cuts/particle_track_cut.h
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -120,6 +115,14 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/base_gamma_builder.cc
+  snemo/processing/detail/GeigerTimePartitioner.cc
+  snemo/processing/detail/testing/gg_hit.h
+  snemo/processing/detail/testing/gg_hit.cc
+  snemo/processing/detail/testing/event_generator.h
+  snemo/processing/detail/testing/event_display.h
+  snemo/processing/detail/testing/event_display.tpp
+  snemo/processing/detail/testing/event_generator.cc
+  snemo/processing/detail/testing/event_display.cc
 
   snemo/services/services.cc
 
@@ -129,11 +132,6 @@ list(APPEND FalaiseLibrary_SOURCES
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
-  snemo/cuts/calibrated_data_cut.cc
-  snemo/cuts/tracker_clustering_data_cut.cc
-  snemo/cuts/tracker_trajectory_data_cut.cc
-  snemo/cuts/particle_track_data_cut.cc
-  snemo/cuts/particle_track_cut.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
@@ -160,5 +158,5 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
 
-  snemo/test/test_snemo_cut_particle_track_cut.cxx
+  snemo/processing/detail/testing/test_trackerpreclustering.cxx
   )

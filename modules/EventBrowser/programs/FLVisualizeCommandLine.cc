@@ -9,9 +9,9 @@
 #include <bayeux/version.h>
 
 // This project:
-#include <falaise/falaise.h>
 #include <EventBrowser/detector/detector_manager.h>
 #include <EventBrowser/view/options_manager.h>
+#include <falaise/falaise.h>
 #include <falaise/version.h>
 
 namespace FLVisualize {
@@ -45,7 +45,6 @@ void do_version(std::ostream& os, bool isVerbose) {
        << "* Boost   : " << BOOST_VERSION << "\n"
        << "\n\n";
   }
-  return;
 }
 
 //! Handle printing of help message to screen
@@ -58,7 +57,6 @@ void do_help(const bpo::options_description& od) {
             << od << "\n";
   std::cout << "Examples:\n";
   sv::view::options_manager::get_instance().print_examples(std::cout, "flvisualize", "");
-  return;
 }
 
 //! Handle command line argument dialog
@@ -163,7 +161,7 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {
     // We need to handle help/version even if required_option thrown
-    if (!vMap.count("help") && !vMap.count("version")) {
+    if ((vMap.count("help") == 0u) && (vMap.count("version") == 0u)) {
       std::cerr << "[OptionsException] " << e.what() << std::endl;
       throw FLDialogOptionsError();
     }
@@ -173,17 +171,17 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
   }
 
   // Handle any non-bound options
-  if (vMap.count("help")) {
+  if (vMap.count("help") != 0u) {
     do_help(optPublic);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("version")) {
+  if (vMap.count("version") != 0u) {
     do_version(std::cout, true);
     throw FLDialogHelpRequested();
   }
 
-  if (vMap.count("variant-config")) {
+  if (vMap.count("variant-config") != 0u) {
     std::string vc = vMap["variant-config"].as<std::string>();
     if (boost::algorithm::starts_with(vc, "urn:")) {
       params_.variantConfigUrn = vc;
@@ -192,7 +190,7 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
     }
   }
 
-  if (vMap.count("variant-profile")) {
+  if (vMap.count("variant-profile") != 0u) {
     std::string vp = vMap["variant-profile"].as<std::string>();
     if (boost::algorithm::starts_with(vp, "urn:")) {
       params_.variantProfileUrn = vp;
@@ -201,7 +199,7 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
     }
   }
 
-  if (vMap.count("services-config")) {
+  if (vMap.count("services-config") != 0u) {
     std::string sc = vMap["services-config"].as<std::string>();
     if (boost::algorithm::starts_with(sc, "urn:")) {
       params_.servicesConfigUrn = sc;
@@ -211,7 +209,7 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
   }
 
   // Handle logging, which can't be bound yet
-  if (vMap.count("logging-priority")) {
+  if (vMap.count("logging-priority") != 0u) {
     std::string loggingLabel = vMap["logging-priority"].as<std::string>();
     datatools::logger::priority prio = datatools::logger::get_priority(loggingLabel);
     if (prio != datatools::logger::PRIO_UNDEFINED) {
@@ -246,7 +244,6 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
   }
 
   DT_LOG_TRACE_EXITING(params_.logLevel);
-  return;
 }
 
 }  // namespace FLVisualize

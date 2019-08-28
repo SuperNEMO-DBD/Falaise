@@ -22,7 +22,7 @@ struct io_data_config {
   std::string out;
 };
 
-void test_1(const io_data_config& cfg_);
+void test_1(const io_data_config& config_);
 
 int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
@@ -37,7 +37,7 @@ int main(int argc_, char** argv_) {
       while (iarg < argc_) {
         std::string token = argv_[iarg];
         if (token[0] == '-') {
-          std::string option = token;
+          const std::string& option = token;
           if (option == "-i") {
             conf.in = argv_[++iarg];
           } else if (option == "-o") {
@@ -47,7 +47,7 @@ int main(int argc_, char** argv_) {
                       << std::endl;
           }
         } else {
-          std::string argument = token;
+          const std::string& argument = token;
           {
             std::clog << datatools::io::warning << "ignoring argument '" << argument << "'!"
                       << std::endl;
@@ -123,7 +123,9 @@ void test_1(const io_data_config& config_) {
   datatools::things event_record;
   std::size_t counter = 0;
   while (true) {
-    if (in_mod.is_terminated()) break;
+    if (in_mod.is_terminated()) {
+      break;
+    }
     dpp::base_module::process_status pStatus = in_mod.process(event_record);
     if (pStatus != dpp::base_module::PROCESS_OK) {
       std::clog << "test_1: in_mod break\n";
@@ -140,5 +142,4 @@ void test_1(const io_data_config& config_) {
   }
   std::clog << "test_1: Event record counter = " << counter << "\n";
   std::clog << "test_1: Exiting.\n";
-  return;
 }

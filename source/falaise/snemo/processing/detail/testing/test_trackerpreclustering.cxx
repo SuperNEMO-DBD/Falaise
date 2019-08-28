@@ -18,8 +18,8 @@
 // This project:
 #include "event_display.h"
 #include "event_generator.h"
+#include "falaise/snemo/processing/detail/GeigerTimePartitioner.h"
 #include "gg_hit.h"
-#include <TrackerPreClustering/pre_clusterizer.h>
 
 void wait_for_key();
 
@@ -28,7 +28,6 @@ int main(int argc_, char** argv_) {
   try {
     std::clog << "Test program for the 'TrackerPreClustering' algorithm." << std::endl;
 
-    bool debug = false;
     bool draw = false;
     bool process_prompt = true;
     bool process_delayed = true;
@@ -37,10 +36,8 @@ int main(int argc_, char** argv_) {
     while (iarg < argc_) {
       std::string token = argv_[iarg];
       if (token[0] == '-') {
-        std::string option = token;
-        if ((option == "-d") || (option == "--debug")) {
-          debug = true;
-        } else if ((option == "-D") || (option == "--draw")) {
+        const std::string& option = token;
+        if ((option == "-D") || (option == "--draw")) {
           draw = true;
         } else if ((option == "-P")) {
           process_prompt = false;
@@ -52,34 +49,15 @@ int main(int argc_, char** argv_) {
           std::clog << "warning: ignoring option '" << option << "'!" << std::endl;
         }
       } else {
-        std::string argument = token;
+        const std::string& argument = token;
         { std::clog << "warning: ignoring argument '" << argument << "'!" << std::endl; }
       }
       iarg++;
     }
 
     // The main pre-clustering algorithm :
-    TrackerPreClustering::pre_clusterizer PC;
-
-    // The algorithm's configuration parameters :
-    TrackerPreClustering::setup_data PC_config;
-    if (debug) PC_config.logging = datatools::logger::PRIO_DEBUG;
-    PC_config.cell_size = 44.0 * CLHEP::mm;
-    PC_config.delayed_hit_cluster_time = 10.0 * CLHEP::microsecond;
-    PC_config.processing_prompt_hits = process_prompt;
-    PC_config.processing_delayed_hits = process_delayed;
-    PC_config.split_chamber = split_chamber;
-
-    // Check :
-    if (!PC_config.check()) {
-      std::ostringstream message;
-      message << "TrackerPreClustering: "
-              << "Invalid setup data : " << PC_config.get_last_error_message();
-      throw std::logic_error(message.str());
-    }
-
-    // Configure the algorithm :
-    PC.initialize(PC_config);
+    snreco::detail::GeigerTimePartitioner PC(10.0 * CLHEP::microsecond, process_prompt,
+                                             process_delayed, split_chamber);
 
     // Generate fake hits :
     TrackerPreClustering::event_generator EG;
@@ -95,35 +73,22 @@ int main(int argc_, char** argv_) {
     // Event loop :
     for (unsigned int ievent = 0; ievent < 20; ievent++) {
       std::clog << "Processing event #" << ievent << "..." << std::endl;
-      typedef TrackerPreClustering::gg_hit hit_type;
-      TrackerPreClustering::input_data<hit_type> idata;
-      TrackerPreClustering::output_data<hit_type> odata;
+      using hit_type = TrackerPreClustering::gg_hit;
+      snreco::detail::GeigerHitPtrCollection<hit_type> idata;
 
-      EG.shoot_event(idata.hits);
-      std::clog << "NOTICE: Event #" << ievent << " has " << idata.hits.size() << " hits."
-                << std::endl;
-      if (!idata.check()) {
-        std::clog << "ERROR: Invalid pre-clustering input data for event #" << ievent << ": "
-                  << idata.get_last_error_message() << std::endl;
-        continue;
-      }
+      EG.shoot_event(idata);
+      std::clog << "NOTICE: Event #" << ievent << " has " << idata.size() << " hits." << std::endl;
 
-      int status = PC.process<hit_type>(idata, odata);
-      if (status != TrackerPreClustering::pre_clusterizer::OK) {
-        std::clog << "ERROR: Pre-clustering failed for event #" << ievent << "! " << std::endl;
-      }
-
-      odata.dump(std::clog);
+      snreco::detail::GeigerHitTimePartition<hit_type> odata = PC.partition(idata);
 
       if (draw) {
         // all input hits :
         std::string fgghits_name = "__gg_hits.data";
         {
           std::ofstream fgghits(fgghits_name.c_str());
-          ED.display_gg_hits<hit_type>(fgghits, idata.hits,
-                                       TrackerPreClustering::event_display::prompt);
+          ED.display_gg_hits<hit_type>(fgghits, idata, TrackerPreClustering::event_display::prompt);
           fgghits << std::endl << std::endl;
-          ED.display_gg_hits<hit_type>(fgghits, idata.hits,
+          ED.display_gg_hits<hit_type>(fgghits, idata,
                                        TrackerPreClustering::event_display::delayed);
           fgghits << std::endl << std::endl;
         }
@@ -131,7 +96,7 @@ int main(int argc_, char** argv_) {
         std::string figghits_name = "__igg_hits.data";
         {
           std::ofstream figghits(figghits_name.c_str());
-          ED.display_cluster<hit_type>(figghits, odata.ignored_hits,
+          ED.display_cluster<hit_type>(figghits, odata.ignoredHits,
                                        TrackerPreClustering::event_display::prompt |
                                            TrackerPreClustering::event_display::delayed);
         }
@@ -139,8 +104,8 @@ int main(int argc_, char** argv_) {
         std::string fpcluster_name = "__pcluster.data";
         {
           std::ofstream fpcluster(fpcluster_name.c_str());
-          for (unsigned int i = 0; i < odata.prompt_clusters.size(); i++) {
-            ED.display_cluster<hit_type>(fpcluster, odata.prompt_clusters[i],
+          for (const auto& promptCluster : odata.promptClusters) {
+            ED.display_cluster<hit_type>(fpcluster, promptCluster,
                                          TrackerPreClustering::event_display::prompt);
             fpcluster << std::endl << std::endl;
           }
@@ -149,8 +114,8 @@ int main(int argc_, char** argv_) {
         std::string fdcluster_name = "__dcluster.data";
         {
           std::ofstream fdcluster(fdcluster_name.c_str());
-          for (unsigned int i = 0; i < odata.delayed_clusters.size(); i++) {
-            ED.display_cluster<hit_type>(fdcluster, odata.delayed_clusters[i],
+          for (const auto& delayedCluster : odata.delayedClusters) {
+            ED.display_cluster<hit_type>(fdcluster, delayedCluster,
                                          TrackerPreClustering::event_display::delayed);
             fdcluster << std::endl << std::endl;
           }
@@ -173,17 +138,17 @@ int main(int argc_, char** argv_) {
         gp_command << "plot ";
         gp_command << "'" << fgghits_name << "' index 0 title 'prompt hits' with lines lt 3";
         gp_command << ", '" << fgghits_name << "' index 1 title 'delayed hits' with lines lt 4";
-        if (odata.ignored_hits.size() > 0) {
+        if (!odata.ignoredHits.empty()) {
           gp_command << ", '" << figghits_name << "' index 0 title 'ignored hits' with lines lt 7";
         }
-        for (unsigned int i = 0; i < odata.prompt_clusters.size(); i++) {
+        for (unsigned int i = 0; i < odata.promptClusters.size(); i++) {
           gp_command << ", '" << fpcluster_name << "' index " << i
                      << " title 'prompt time cluster #" << i << "' with lines lt " << (2 + i);
         }
-        for (unsigned int i = 0; i < odata.delayed_clusters.size(); i++) {
+        for (unsigned int i = 0; i < odata.delayedClusters.size(); i++) {
           gp_command << ", '" << fdcluster_name << "' index " << i
                      << " title 'delayed time cluster #" << i << "' with lines lt "
-                     << (2 + odata.prompt_clusters.size() + i);
+                     << (2 + odata.promptClusters.size() + i);
         }
         gp_command << "\n";
         gp_command << "pause -1 'Hit [Enter]...' ;\n";
@@ -193,16 +158,6 @@ int main(int argc_, char** argv_) {
         g1.cmd(gp_command.str());
         g1.showonscreen();
         wait_for_key();
-        // std::ostringstream cmd;
-        // cmd << TRACKERPRECLUSTERING_GNUPLOT_EXECUTABLE << ' ' << "__display.gp";
-        // if(debug) {
-        //   std::cerr << "DEBUG: system : '" << cmd.str() << "'" << std::endl;
-        // }
-        // int ret = system(cmd.str().c_str());
-        // if(ret != 0) {
-        //   std::cerr << "WARNING: Cannot draw the event !" << std::endl;
-        //   draw = false;
-        // }
         unlink(fdisplaygp_name.c_str());
         unlink(fgghits_name.c_str());
         unlink(figghits_name.c_str());
@@ -230,5 +185,4 @@ void wait_for_key() {
   std::cin.ignore(std::cin.rdbuf()->in_avail());
   std::cin.get();
 #endif
-  return;
 }

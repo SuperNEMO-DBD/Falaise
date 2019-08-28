@@ -12,8 +12,8 @@
 #include <bayeux/geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 
 #include <falaise/snemo/datamodels/particle_track_data.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -68,19 +68,19 @@ const std::string& base_gamma_builder::get_id() const { return id_; }
 const snemo::geometry::calo_locator& base_gamma_builder::get_calo_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_calo_locator();
+  return geoLocator_->caloLocator();
 }
 
 const snemo::geometry::xcalo_locator& base_gamma_builder::get_xcalo_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_xcalo_locator();
+  return geoLocator_->xcaloLocator();
 }
 
 const snemo::geometry::gveto_locator& base_gamma_builder::get_gveto_locator() const {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Driver '" << get_id() << "' is not initialized !");
-  return geoLocator_->get_gveto_locator();
+  return geoLocator_->gvetoLocator();
 }
 
 bool base_gamma_builder::is_initialized() const { return isInitialized_; }
@@ -95,8 +95,8 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
               "Geometry manager is not initialized !");
 
   // Extract the setup of the base gamma builder :
-  falaise::config::property_set localSetup{setup_};
-  auto ps = localSetup.get<falaise::config::property_set>("BGB", {});
+  falaise::property_set localSetup{setup_};
+  auto ps = localSetup.get<falaise::property_set>("BGB", {});
 
   // Logging priority
   auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
@@ -117,14 +117,14 @@ void base_gamma_builder::_initialize(const datatools::properties& setup_) {
   // Extrapolation on the source foil given charged particle
   extrapolateFoilVertex_ = ps.get<bool>("add_foil_vertex_extrapolation", true);
   if (extrapolateFoilVertex_) {
-    minFoilVertexProbability_ = ps.get<falaise::config::fraction_t>(
+    minFoilVertexProbability_ = ps.get<falaise::fraction_t>(
         "add_foil_vertex_extrapolation.minimal_probability", {1.0, "percent"})();
   }
 
   // Search for gamma from e+/e- annihilation
   tagAnnihilationGamma_ = ps.get<bool>("add_gamma_from_annihilation", false);
   if (tagAnnihilationGamma_) {
-    minAnnihilationGammaProbability_ = ps.get<falaise::config::fraction_t>(
+    minAnnihilationGammaProbability_ = ps.get<falaise::fraction_t>(
         "add_gamma_from_annihilation.minimal_probability", {1.0, "percent"})();
   }
 }
@@ -342,19 +342,18 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           std::string a_label;
           const geomtools::geom_id& a_gid = a_calo_hit->get_geom_id();
 
-          if (get_calo_locator().is_calo_block_in_current_module(a_gid)) {
-            get_calo_locator().get_block_position(a_gid, a_block_position);
+          if (get_calo_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_calo_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_main_calorimeter_label();
-          } else if (get_xcalo_locator().is_calo_block_in_current_module(a_gid)) {
-            get_xcalo_locator().get_block_position(a_gid, a_block_position);
+          } else if (get_xcalo_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_xcalo_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_x_calorimeter_label();
-          } else if (get_gveto_locator().is_calo_block_in_current_module(a_gid)) {
-            get_gveto_locator().get_block_position(a_gid, a_block_position);
+          } else if (get_gveto_locator().isCaloBlockInThisModule(a_gid)) {
+            a_block_position = get_gveto_locator().getBlockPosition(a_gid);
             a_label = snemo::datamodel::particle_track::vertex_on_gamma_veto_label();
           } else {
-            DT_THROW_IF(
-                true, std::logic_error,
-                "Current geom id '" << a_gid << "' does not match any scintillator block !");
+            DT_THROW(std::logic_error,
+                     "Current geom id '" << a_gid << "' does not match any scintillator block !");
           }
 
           const double track_length = (a_block_position - a_spot->get_position()).mag();

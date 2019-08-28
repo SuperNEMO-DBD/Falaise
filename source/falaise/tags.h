@@ -26,42 +26,26 @@
 
 namespace falaise {
 
-  namespace tags {
+namespace tags {
 
-    const std::string & experiment_category();
+const std::string& experiment_category();
 
-    const std::string & experimental_setup_category();
+const std::string& experimental_setup_category();
 
-    const std::string & geometry_setup_category();
+const std::string& geometry_setup_category();
 
-    const std::string & device_setup_category();
+const std::string& simulation_setup_category();
 
-    const std::string & electronics_setup_category();
+const std::string& reconstruction_setup_category();
 
-    const std::string & cms_setup_category();
+const std::string& variant_service_category();
 
-    const std::string & simulation_setup_category();
+const std::string& services_category();
 
-    const std::string & reconstruction_setup_category();
+const std::string& generic_configuration_category();
 
-    const std::string & variant_service_category();
+}  // namespace tags
 
-    const std::string & services_category();
+}  // namespace falaise
 
-    const std::string & generic_configuration_category();
-
-    const std::string & generic_data_category();
-
-    const std::string & generic_image_category();
-
-    const std::string & software_category();
-
-    const std::string & firmware_category();
-
-    const std::string & hardware_category();
-
-  } // namespace tags
-
-} // namespace falaise
-
-#endif // FALAISE_TAGS_H
+#endif  // FALAISE_TAGS_H

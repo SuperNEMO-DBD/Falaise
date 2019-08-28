@@ -46,6 +46,9 @@
 // - Bayeux/geomtools:
 #include <geomtools/utils.h>
 
+#include <falaise/property_set.h>
+
+namespace {
 // http://stackoverflow.com/questions/6089231/getting-std-ifstream-to-handle-lf-cr-and-crlf
 std::istream& safe_getline(std::istream& in_, std::string& out_) {
   out_.clear();
@@ -78,40 +81,29 @@ std::istream& safe_getline(std::istream& in_, std::string& out_) {
   }
 }
 
-namespace snemo {
-
-namespace geometry {
-
-// Registration instantiation macro :
-EMFIELD_REGISTRATION_IMPLEMENT(mapped_magnetic_field, "snemo::geometry::mapped_magnetic_field")
-
 /// \brief Private working data for MM_IMPORT_CSV_MAP_0 mode
-struct csv_map_0_type {
+struct csv_map_0_t {
  public:
-  csv_map_0_type();
-  void init();
-  void load();
-  void dump(std::ostream& /*out_*/ = std::clog) const;
+  csv_map_0_t() = default;
+  csv_map_0_t(std::string mapfile) : map_filename{std::move(mapfile)} { load(map_filename); }
+  void load(const std::string& mapfile);
   void reset();
-  int interpolate(const ::geomtools::vector_3d& position_,
-                  ::geomtools::vector_3d& magnetic_field_) const;
-  int compute(const ::geomtools::vector_3d& position_,
-              ::geomtools::vector_3d& magnetic_field_) const;
+  int interpolate(const geomtools::vector_3d& position, geomtools::vector_3d& magnetic_field) const;
+  int compute(const geomtools::vector_3d& position, geomtools::vector_3d& magnetic_field) const;
 
  public:
   // Configuration:
   std::string map_filename;
-  datatools::logger::priority logging;
-  double length_unit;
-  double mag_field_unit;
+  double length_unit = CLHEP::meter;
+  double mag_field_unit = datatools::units::milli() * CLHEP::gauss;
   // Header:
-  unsigned int nx;
-  unsigned int ny;
-  unsigned int nz;
-  geomtools::vector_3d origin;
-  double dx;
-  double dy;
-  double dz;
+  unsigned int nx = 0;
+  unsigned int ny = 0;
+  unsigned int nz = 0;
+  geomtools::vector_3d origin = geomtools::invalid_vector_3d();
+  double dx = datatools::invalid_real();
+  double dy = datatools::invalid_real();
+  double dz = datatools::invalid_real();
   // Mapped B-field:
   using vd = std::vector<int>;
   using vvd = std::vector<vd>;
@@ -120,226 +112,39 @@ struct csv_map_0_type {
   vvvvd bmap;
 };
 
-csv_map_0_type::csv_map_0_type() {
-  length_unit = CLHEP::meter;
-  mag_field_unit = datatools::units::milli() * CLHEP::gauss;
-  nx = 0;
-  ny = 0;
-  nz = 0;
-  geomtools::invalidate(origin);
-  datatools::invalidate(dx);
-  datatools::invalidate(dy);
-  datatools::invalidate(dz);
-}
-
-void csv_map_0_type::reset() {
+void csv_map_0_t::reset() {
   bmap.clear();
   nx = 0;
   ny = 0;
   nz = 0;
-  geomtools::invalidate(origin);
-  datatools::invalidate(dx);
-  datatools::invalidate(dy);
-  datatools::invalidate(dz);
+  origin = geomtools::invalid_vector_3d();
+  dx = datatools::invalid_real();
+  dy = datatools::invalid_real();
+  dz = datatools::invalid_real();
 }
 
-void csv_map_0_type::dump(std::ostream& out_) const {
-  out_ << "mapped_magnetic_field: mode 'MM_IMPORT_CSV_MAP_0' \n";
-  out_ << "  nx = " << nx << '\n';
-  out_ << "  ny = " << ny << '\n';
-  out_ << "  nz = " << nz << '\n';
-  out_ << "  Origin = " << origin / CLHEP::mm << " mm" << '\n';
-  out_ << "  dx = " << dx / CLHEP::mm << " mm" << '\n';
-  out_ << "  dy = " << dy / CLHEP::mm << " mm" << '\n';
-  out_ << "  dz = " << dz / CLHEP::mm << " mm" << '\n';
-}
-
-/// \brief Private working data
-struct mapped_magnetic_field::_work_type {
-  _work_type();
-  ~_work_type();
-  void reset();
-  csv_map_0_type csv_map_0_data;
-};
-
-mapped_magnetic_field::_work_type::_work_type() = default;
-
-mapped_magnetic_field::_work_type::~_work_type() { reset(); }
-
-void mapped_magnetic_field::_work_type::reset() { csv_map_0_data.reset(); }
-
-void mapped_magnetic_field::_set_defaults() {
-  _mapping_mode_ = MM_INVALID;
-  _zero_field_outside_map_ = true;
-  _z_inverted_ = false;
-}
-
-mapped_magnetic_field::mapped_magnetic_field(uint32_t flags_)
-    : ::emfield::base_electromagnetic_field(flags_) {
-  _set_defaults();
-}
-
-mapped_magnetic_field::~mapped_magnetic_field() {
-  if (is_initialized()) {
-    reset();
-  }
-}
-
-void mapped_magnetic_field::set_map_filename(const std::string& mfn_) {
-  DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the map source filename !");
-  _map_filename_ = mfn_;
-}
-
-void mapped_magnetic_field::set_mapping_mode(mapping_mode_type mm_) {
-  DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the magnetic field value !");
-  _mapping_mode_ = mm_;
-}
-
-void mapped_magnetic_field::set_zero_field_outside_map(bool f_) { _zero_field_outside_map_ = f_; }
-
-bool mapped_magnetic_field::is_zero_field_outside_map() const { return _zero_field_outside_map_; }
-
-void mapped_magnetic_field::set_z_inverted(bool f_) { _z_inverted_ = f_; }
-
-bool mapped_magnetic_field::is_z_inverted() const { return _z_inverted_; }
-
-void mapped_magnetic_field::initialize(const ::datatools::properties& config_,
-                                       ::datatools::service_manager& service_manager_,
-                                       base_electromagnetic_field::field_dict_type& fields_) {
-  DT_THROW_IF(is_initialized(), std::logic_error, "Field is already initialized !");
-
-  // Fetch configuration parameters:
-  base_electromagnetic_field::_parse_basic_parameters(config_, service_manager_, fields_);
-  _set_electric_field(false);
-  _set_magnetic_field(true);
-  _set_magnetic_field_is_time_dependent(false);
-
-  if (_mapping_mode_ == MM_INVALID) {
-    DT_THROW_IF(!config_.has_key("mapping_mode"), std::logic_error,
-                "Missing 'mapping_mode' configuration property!");
-    const std::string& mm_str = config_.fetch_string("mapping_mode");
-    if (mm_str == "import_csv_map_0") {
-      set_mapping_mode(MM_IMPORT_CSV_MAP_0);
-    } else {
-      DT_THROW(std::logic_error, "Invalid mapping mode '" << mm_str << "'!");
-    }
-  }
-
-  if (_map_filename_.empty()) {
-    DT_THROW_IF(!config_.has_key("map_file"), std::logic_error,
-                "Missing 'map_file' configuration property!");
-    const std::string& mf_str = config_.fetch_string("map_file");
-    DT_THROW_IF(mf_str.empty(), std::logic_error, "Empty map file name!");
-    set_map_filename(mf_str);
-  }
-
-  if (config_.has_key("zero_field_outside_map")) {
-    bool zfom = config_.fetch_boolean("zero_field_outside_map");
-    set_zero_field_outside_map(zfom);
-  }
-
-  if (config_.has_key("z_inverted")) {
-    bool z_inverted = config_.fetch_boolean("z_inverted");
-    set_z_inverted(z_inverted);
-  }
-
-  // Private initialization:
-  _work_.reset(new _work_type);
-
-  if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
-    _work_->csv_map_0_data.logging = get_logging_priority();
-    _work_->csv_map_0_data.map_filename = _map_filename_;
-    _work_->csv_map_0_data.init();
-  }
-
-  _set_initialized(true);
-}
-
-void mapped_magnetic_field::reset() {
-  DT_THROW_IF(!is_initialized(), std::logic_error, "Cannot reset the mapped magnetic field !");
-  _set_initialized(false);
-  // Private reset:
-  if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
-    _work_->csv_map_0_data.reset();
-  }
-  _work_.reset();
-  _map_filename_.clear();
-  _set_defaults();
-  this->base_electromagnetic_field::_set_defaults();
-}
-
-void mapped_magnetic_field::tree_dump(std::ostream& out_, const std::string& title_,
-                                      const std::string& indent_, bool inherit_) const {
-  this->base_electromagnetic_field::tree_dump(out_, title_, indent_, true);
-
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Mapping mode : " << _mapping_mode_
-       << std::endl;
-
-  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Map file : '"
-       << _map_filename_ << std::endl;
-}
-
-int mapped_magnetic_field::compute_electric_field(const geomtools::vector_3d& /* position_ */,
-                                                  double /* time_ */,
-                                                  geomtools::vector_3d& electric_field_) const {
-  geomtools::invalidate(electric_field_);
-  return STATUS_ERROR;
-}
-
-int mapped_magnetic_field::compute_magnetic_field(const ::geomtools::vector_3d& position_,
-                                                  double /* time_ */,
-                                                  ::geomtools::vector_3d& magnetic_field_) const {
-  int status = STATUS_ERROR;
-  if (_mapping_mode_ == MM_IMPORT_CSV_MAP_0) {
-    status = _work_->csv_map_0_data.compute(position_, magnetic_field_);
-    if (_z_inverted_) {
-      double Bz = -magnetic_field_.z();
-      magnetic_field_.setZ(Bz);
-    }
-    if (status != STATUS_SUCCESS) {
-      if (_zero_field_outside_map_) {
-        magnetic_field_.set(0., 0., 0.);
-        status = STATUS_SUCCESS;
-      }
-    }
-  }
-  DT_LOG_DEBUG(get_logging_priority(),
-               "Magnetic field values = " << magnetic_field_ / CLHEP::gauss << " gauss");
-  return status;
-}
-
-void csv_map_0_type::init() { load(); }
-
-void csv_map_0_type::load() {
-  DT_LOG_TRACE_ENTERING(logging);
-  std::string mfn = map_filename;
+void csv_map_0_t::load(const std::string& mapfile) {
+  std::string mfn = mapfile;
   datatools::fetch_path_with_env(mfn);
   DT_THROW_IF(!boost::filesystem::exists(mfn), std::runtime_error,
               "File '" << mfn << "' does not exist!");
   std::ifstream fin(mfn.c_str());
   DT_THROW_IF(!fin, std::runtime_error, "Cannot open file '" << map_filename << "'!");
 
-  DT_LOG_TRACE(logging, "Loading B map header...");
+  map_filename = mapfile;
+  this->reset();
   {
     // Read header line:
     std::string header_line;
     safe_getline(fin, header_line);
-    DT_LOG_TRACE(logging, "header_line = '" << header_line << "'");
     DT_THROW_IF(!fin, std::runtime_error, "Cannot read map file header!");
-    // std::cerr << "DEVEL: TEST 1" << std::endl;
 
     std::vector<std::string> htokens;
     boost::split(htokens, header_line, boost::is_any_of(","));
-    // std::cerr << "DEVEL: TEST 2: htokens.size() = " << htokens.size() << std::endl;
-
     DT_THROW_IF(htokens.size() != 9, std::logic_error, "Invalid header line format!");
-    // std::cerr << "DEVEL: TEST 3" << std::endl;
     nx = boost::lexical_cast<unsigned int>(htokens[0]);
-    DT_LOG_TRACE(logging, " nx = [" << nx << "]");
     ny = boost::lexical_cast<unsigned int>(htokens[1]);
-    DT_LOG_TRACE(logging, " ny = [" << ny << "]");
     nz = boost::lexical_cast<unsigned int>(htokens[2]);
-    DT_LOG_TRACE(logging, " nz = [" << nz << "]");
 
     double x0(0.0), y0(0.0), z0(0.0);
     x0 = boost::lexical_cast<double>(htokens[3]);
@@ -349,59 +154,42 @@ void csv_map_0_type::load() {
     dx = boost::lexical_cast<double>(htokens[6]) * length_unit;
     dy = boost::lexical_cast<double>(htokens[7]) * length_unit;
     dz = boost::lexical_cast<double>(htokens[8]) * length_unit;
-    if (logging >= datatools::logger::PRIO_DEBUG) {
-      dump(std::clog);
-    }
   }
 
-  DT_LOG_TRACE(logging, "Loading B  map...");
   {
     // Read map:
-    csv_map_0_type::vvvvd& bb = bmap;
+    csv_map_0_t::vvvvd& bb = bmap;
     bb.reserve(3);
     for (size_t ax = 0; ax < 3; ax++) {
-      if (ax == 0) {
-        DT_LOG_TRACE(logging, "Loading Bx table...");
-      } else if (ax == 1) {
-        DT_LOG_TRACE(logging, "Loading By table...");
-      } else if (ax == 2) {
-        DT_LOG_TRACE(logging, "Loading Bz table...");
-      }
       {
-        csv_map_0_type::vvvd dummy;
+        csv_map_0_t::vvvd dummy;
         bb.push_back(dummy);
       }
-      csv_map_0_type::vvvd& bxyz = bb.back();
+      csv_map_0_t::vvvd& bxyz = bb.back();
       bxyz.reserve(nz);
       for (size_t iz = 0; iz < nz; iz++) {
-        DT_LOG_TRACE(logging, "  Scanning iz=" << iz);
         {
-          csv_map_0_type::vvd dummy;
+          csv_map_0_t::vvd dummy;
           bxyz.push_back(dummy);
         }
-        csv_map_0_type::vvd& bxy = bxyz.back();
+        csv_map_0_t::vvd& bxy = bxyz.back();
         bxy.reserve(ny);
         for (size_t iy = 0; iy < ny; iy++) {
-          DT_LOG_TRACE(logging, "    Scanning iy=" << iy);
           std::string bmap_line;
           safe_getline(fin, bmap_line);
-          DT_LOG_TRACE(logging,
-                       "    iz=[" << iz << "] iy=[" << iy << "] : B-line = '" << bmap_line << "'");
           std::vector<std::string> btokens;
           boost::split(btokens, bmap_line, boost::is_any_of(","));
-          DT_LOG_TRACE(logging, "    btokens.size = [" << btokens.size() << "]");
           DT_THROW_IF(btokens.size() != nx + 3, std::logic_error, "Invalid B-line format!");
           auto axi = boost::lexical_cast<unsigned int>(btokens[0]);
           auto iyi = boost::lexical_cast<unsigned int>(btokens[1]);
           auto izi = boost::lexical_cast<unsigned int>(btokens[2]);
-          DT_LOG_TRACE(logging, "    axi=[" << axi << "] iyi=[" << iyi << "] izi=[" << izi << "] ");
           DT_THROW_IF(axi != ax || iyi != iy || izi != iz, std::logic_error,
                       "Invalid B map line format!");
           {
-            csv_map_0_type::vd dummy;
+            csv_map_0_t::vd dummy;
             bxy.push_back(dummy);
           }
-          csv_map_0_type::vd& xdata = bxy.back();
+          csv_map_0_t::vd& xdata = bxy.back();
           xdata.reserve(btokens.size() - 3);
           for (size_t ix = 3; ix < btokens.size(); ix++) {
             xdata.push_back(boost::lexical_cast<int>(btokens[ix]));
@@ -410,32 +198,25 @@ void csv_map_0_type::load() {
       }
     }
   }
-
-  DT_LOG_TRACE_EXITING(logging);
 }
 
-int csv_map_0_type::interpolate(const ::geomtools::vector_3d& position_,
-                                ::geomtools::vector_3d& magnetic_field_) const {
+int csv_map_0_t::interpolate(const geomtools::vector_3d& position_,
+                             geomtools::vector_3d& magnetic_field) const {
   double xu = (position_.x() - origin.x()) / dx;
   double yu = (position_.y() - origin.y()) / dy;
   double zu = (position_.z() - origin.z()) / dz;
-  DT_LOG_DEBUG(logging, "xu=[" << xu << "] yu=[" << yu << "] zu=[" << zu << "]");
   int ixl = (int)xu;
   int iyl = (int)yu;
   int izl = (int)zu;
-  DT_LOG_DEBUG(logging, "ixl=[" << ixl << "] iyl=[" << iyl << "] izl=[" << izl << "]");
   double fx = xu - ixl;
   double fy = yu - iyl;
   double fz = zu - izl;
   double gx = 1.0 - fx;
   double gy = 1.0 - fy;
   double gz = 1.0 - fz;
-  DT_LOG_DEBUG(logging, "  fx=[" << fx << "] fy=[" << fy << "] fz=[" << fz << "]");
-  DT_LOG_DEBUG(logging, "  gx=[" << gx << "] gy=[" << gy << "] gz=[" << gz << "]");
   const vvvvd& bb = bmap;
   if (ixl >= 0 && ixl < (int)(nx - 1) && iyl >= 0 && iyl < (int)(ny - 1) && izl >= 0 &&
       izl < (int)(nz - 1)) {
-    DT_LOG_DEBUG(logging, "TEST...");
     for (int ax = 0; ax < 3; ax++) {
       const vvvd& b3d = bb[ax];
       int b000 = b3d[izl][iyl][ixl];
@@ -446,10 +227,6 @@ int csv_map_0_type::interpolate(const ::geomtools::vector_3d& position_,
       int b011 = b3d[izl + 1][iyl + 1][ixl];
       int b101 = b3d[izl + 1][iyl][ixl + 1];
       int b111 = b3d[izl + 1][iyl + 1][ixl + 1];
-      DT_LOG_DEBUG(logging, "  b000=[" << b000 << "] b100=[" << b100 << "] b010=[" << b010
-                                       << "] b001=[" << b001 << "]");
-      DT_LOG_DEBUG(logging, "  b110=[" << b110 << "] b011=[" << b011 << "] b101=[" << b101
-                                       << "] b111=[" << b111 << "]");
       double bf00 = gx * b000 + fx * b100;
       double bf10 = gx * b010 + fx * b110;
       double bff0 = gy * bf00 + fy * bf10;
@@ -457,27 +234,26 @@ int csv_map_0_type::interpolate(const ::geomtools::vector_3d& position_,
       double bf11 = gx * b011 + fx * b111;
       double bff1 = gy * bf01 + fy * bf11;
       double bfff = gz * bff0 + fz * bff1;
-      magnetic_field_[ax] = bfff;
+      magnetic_field[ax] = bfff;
     }
   } else {
-    geomtools::invalidate(magnetic_field_);
-    return mapped_magnetic_field::STATUS_ERROR;
+    geomtools::invalidate(magnetic_field);
+    return snemo::geometry::mapped_magnetic_field::STATUS_ERROR;
   }
 
-  return mapped_magnetic_field::STATUS_SUCCESS;
+  return snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS;
 }
 
-int csv_map_0_type::compute(const ::geomtools::vector_3d& position_,
-                            ::geomtools::vector_3d& magnetic_field_) const {
-  DT_LOG_DEBUG(logging, "Position = " << position_ / CLHEP::cm << " cm");
-  geomtools::invalidate(magnetic_field_);
+int csv_map_0_t::compute(const ::geomtools::vector_3d& position,
+                         ::geomtools::vector_3d& magnetic_field) const {
+  geomtools::invalidate(magnetic_field);
   // the coordinate system has its origin in the centre of the source foil.
   // X is in the horizontal direction within the foil.
   // Y is in the vertical direction within the foil.
   // Z is perpendicular to X and Y to make a right-handed cartesian system.
-  double x = position_.y();
-  double y = position_.z();
-  double z = position_.x();
+  double x = position.y();
+  double y = position.z();
+  double z = position.x();
   int mx[3];
   mx[0] = 1;
   mx[1] = 1;
@@ -500,24 +276,143 @@ int csv_map_0_type::compute(const ::geomtools::vector_3d& position_,
   if (z < 0.0) {
     mz[2] *= -1;
   }
-  ::geomtools::vector_3d bb;
-  ::geomtools::vector_3d pos_ppp(std::abs(x), std::abs(y), std::abs(z));
-  DT_LOG_DEBUG(logging, "Position = " << pos_ppp / CLHEP::cm << " cm");
+  geomtools::vector_3d bb;
+  geomtools::vector_3d pos_ppp(std::abs(x), std::abs(y), std::abs(z));
   int status = interpolate(pos_ppp, bb);
-  if (status == mapped_magnetic_field::STATUS_SUCCESS) {
-    DT_LOG_DEBUG(logging, "B-field interpolation success!");
+  if (status == snemo::geometry::mapped_magnetic_field::STATUS_SUCCESS) {
     double b[3];
     for (int ax = 0; ax < 3; ax++) {
       b[ax] = bb[ax] * mx[ax] * my[ax] * mz[ax];
     }
-    magnetic_field_[0] = b[2] * mag_field_unit;
-    magnetic_field_[1] = b[0] * mag_field_unit;
-    magnetic_field_[2] = b[1] * mag_field_unit;
-  } else {
-    // Position is out of interpolation domain:
-    DT_LOG_DEBUG(logging, "B-field interpolation failed!");
+    magnetic_field[0] = b[2] * mag_field_unit;
+    magnetic_field[1] = b[0] * mag_field_unit;
+    magnetic_field[2] = b[1] * mag_field_unit;
   }
   return status;
+}
+
+}  // namespace
+
+namespace snemo {
+
+namespace geometry {
+
+/// \brief Private working data
+struct mapped_magnetic_field::MapImpl {
+  MapImpl(const std::string& mapfile) : map{mapfile} {};
+  ~MapImpl() = default;
+  csv_map_0_t map;
+};
+
+// Registration instantiation macro :
+EMFIELD_REGISTRATION_IMPLEMENT(mapped_magnetic_field, "snemo::geometry::mapped_magnetic_field")
+
+mapped_magnetic_field::mapped_magnetic_field(uint32_t flags)
+    : emfield::base_electromagnetic_field(flags) {
+  _set_defaults();
+}
+
+mapped_magnetic_field::~mapped_magnetic_field() {
+  // Because Bayeux base classes are insane...
+  reset();
+}
+
+void mapped_magnetic_field::_set_defaults() {
+  mapMode_ = map_mode_t::INVALID;
+  zeroFieldOutsideMap_ = true;
+  invertFieldAlongZ_ = false;
+}
+
+void mapped_magnetic_field::reset() {
+  _set_initialized(false);
+  fieldMap_.reset();
+  mapFile_.clear();
+  _set_defaults();
+  this->base_electromagnetic_field::_set_defaults();
+}
+
+void mapped_magnetic_field::initialize(const datatools::properties& config_,
+                                       datatools::service_manager& service_manager_,
+                                       base_electromagnetic_field::field_dict_type& fields_) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Field is already initialized !");
+
+  // Fetch configuration parameters:
+  base_electromagnetic_field::_parse_basic_parameters(config_, service_manager_, fields_);
+  _set_electric_field(false);
+  _set_magnetic_field(true);
+  _set_magnetic_field_is_time_dependent(false);
+
+  falaise::property_set ps{config_};
+
+  auto modeStr = ps.get<std::string>("mapping_mode", "import_csv_map_0");
+  if (modeStr == "import_csv_map_0") {
+    mapMode_ = map_mode_t::IMPORT_CSV_MAP_0;
+  } else {
+    DT_THROW(std::logic_error, "Invalid mapping mode '" << modeStr << "'!");
+  }
+
+  mapFile_ = ps.get<std::string>("map_file", mapFile_);
+  // if (mapMode_ == map_mode_t::IMPORT_CSV_MAP_0) { // Useless as this is the only mode
+  fieldMap_.reset(new MapImpl{mapFile_});
+  //}
+
+  zeroFieldOutsideMap_ = ps.get<bool>("zero_field_outside_map", zeroFieldOutsideMap_);
+  invertFieldAlongZ_ = ps.get<bool>("z_inverted", invertFieldAlongZ_);
+
+  _set_initialized(true);
+}
+
+void mapped_magnetic_field::setMapFilename(const std::string& mfn) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the map source filename !");
+  mapFile_ = mfn;
+}
+
+void mapped_magnetic_field::setMapMode(map_mode_t mm) {
+  DT_THROW_IF(is_initialized(), std::logic_error, "Cannot change the mapping mode!");
+  mapMode_ = mm;
+}
+
+void mapped_magnetic_field::setZeroFieldOutsideMap(bool flag) { zeroFieldOutsideMap_ = flag; }
+
+void mapped_magnetic_field::setInvertedZ(bool flag) { invertFieldAlongZ_ = flag; }
+
+int mapped_magnetic_field::compute_electric_field(const geomtools::vector_3d& /* position_ */,
+                                                  double /* time_ */,
+                                                  geomtools::vector_3d& efield) const {
+  geomtools::invalidate(efield);
+  return STATUS_ERROR;
+}
+
+int mapped_magnetic_field::compute_magnetic_field(const ::geomtools::vector_3d& position_,
+                                                  double /* time_ */,
+                                                  ::geomtools::vector_3d& magnetic_field) const {
+  int status = STATUS_ERROR;
+  if (mapMode_ == map_mode_t::IMPORT_CSV_MAP_0) {
+    status = fieldMap_->map.compute(position_, magnetic_field);
+    if (invertFieldAlongZ_) {
+      double Bz = -magnetic_field.z();
+      magnetic_field.setZ(Bz);
+    }
+    if (status != STATUS_SUCCESS) {
+      if (zeroFieldOutsideMap_) {
+        magnetic_field.set(0., 0., 0.);
+        status = STATUS_SUCCESS;
+      }
+    }
+  }
+  return status;
+}
+
+void mapped_magnetic_field::tree_dump(std::ostream& out, const std::string& title,
+                                      const std::string& indent, bool inherit) const {
+  this->base_electromagnetic_field::tree_dump(out, title, indent, true);
+
+  out << indent << datatools::i_tree_dumpable::tag
+      << "Mapping mode : " << static_cast<std::underlying_type<map_mode_t>::type>(mapMode_)
+      << std::endl;
+
+  out << indent << datatools::i_tree_dumpable::inherit_tag(inherit) << "Map file : '" << mapFile_
+      << std::endl;
 }
 
 }  // end of namespace geometry

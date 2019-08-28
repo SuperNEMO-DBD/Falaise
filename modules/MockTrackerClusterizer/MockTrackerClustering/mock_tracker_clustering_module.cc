@@ -132,7 +132,7 @@ void mock_tracker_clustering_module::initialize(const datatools::properties& set
 
   // Geometry manager :
   if (_geometry_manager_ == 0) {
-    std::string geo_label = snemo::service_info::default_geometry_service_label();
+    std::string geo_label = snemo::service_info::geometryServiceName();
     if (setup_.has_key("Geo_label")) {
       geo_label = setup_.fetch_string("Geo_label");
     }
@@ -295,26 +295,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
             "                                  \n");
   }
 
-  {
-    // Description of the 'Geo_label' configuration property :
-    datatools::configuration_property_description& cpd = ocd_.add_property_info();
-    cpd.set_name_pattern("Geo_label")
-        .set_terse_description("The label/name of the geometry service")
-        .set_traits(datatools::TYPE_STRING)
-        .set_mandatory(false)
-        .set_long_description(
-            "This is the name of the service to be used as the \n"
-            "geometry service.                                 \n"
-            "This property is only used if no geometry manager \n"
-            "as been provided to the module.                   \n")
-        .set_default_value_string(snemo::service_info::default_geometry_service_label())
-        .add_example(
-            "Use an alternative name for the geometry service:: \n"
-            "                                                   \n"
-            "  Geo_label : string = \"geometry2\"               \n"
-            "                                                   \n");
-  }
-
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
       "Here is a full configuration example in the ``datatools::properties``\n"
@@ -331,7 +311,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
       "  MTC.max_sum_distance         : integer = 2                         \n"
       "  CD_label                     : string = \"CD\"                     \n"
       "  TCD_label                    : string = \"TCD\"                    \n"
-      "  Geo_label                    : string = \"geometry\"               \n"
       "                                                                     \n"
       // "                                                                     \n"
       // "                                                                     \n"

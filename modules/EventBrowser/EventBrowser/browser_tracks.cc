@@ -71,12 +71,12 @@ namespace view {
 
 class TGListTreeItemStdPlus : public TGListTreeItemStd {
  public:
-  TGListTreeItemStdPlus(const char *name_ = 0, browser_tracks *bt_ = 0,
-                        const TGPicture *open_pic_ = 0, const TGPicture *close_pic_ = 0,
-                        const bool checked_ = false);
-  virtual ~TGListTreeItemStdPlus();
+  TGListTreeItemStdPlus(const char *name_ = nullptr, browser_tracks *bt_ = nullptr,
+                        const TGPicture *open_pic_ = nullptr, const TGPicture *close_pic_ = nullptr,
+                        bool checked_ = false);
+  ~TGListTreeItemStdPlus() override;
 
-  virtual void CheckChildren(TGListTreeItem *item, Bool_t state);
+  void CheckChildren(TGListTreeItem *item, Bool_t state) override;
 
  private:
   browser_tracks *fBrowser;
@@ -85,45 +85,46 @@ class TGListTreeItemStdPlus : public TGListTreeItemStd {
 TGListTreeItemStdPlus::TGListTreeItemStdPlus(const char *name_, browser_tracks *bt_,
                                              const TGPicture *open_pic_,
                                              const TGPicture *close_pic_, const bool checked_)
-    : TGListTreeItemStd(gClient, name_, open_pic_, close_pic_, checked_), fBrowser(bt_) {
-  return;
-}
+    : TGListTreeItemStd(gClient, name_, open_pic_, close_pic_, checked_), fBrowser(bt_) {}
 
-TGListTreeItemStdPlus::~TGListTreeItemStdPlus() { return; }
+TGListTreeItemStdPlus::~TGListTreeItemStdPlus() = default;
 
 void TGListTreeItemStdPlus::CheckChildren(TGListTreeItem *item, Bool_t state) {
   // Code a bit hacked from default TGListTreeItemStd in order
   // to only check 'default' trajectory and not everything
-  if (!item) return;
+  if (item == nullptr) {
+    return;
+  }
 
-  while (item) {
+  while (item != nullptr) {
     if (state) {
       if (!item->IsChecked()) {
         const int id = (intptr_t)item->GetUserData();
         // Check item only if 'default' key is active
-        if (id < 0 && fBrowser) {
+        if (id < 0 && (fBrowser != nullptr)) {
           // Search in which dictionnary the item comes from:
           datatools::properties *properties = fBrowser->get_item_properties(id);
 
-          if (properties->has_flag("default"))
+          if (properties->has_flag("default")) {
             item->CheckItem(true);
-          else
+          } else {
             properties->update(browser_tracks::CHECKED_FLAG, false);
+          }
         } else {
           item->CheckItem();
         }
       }
     } else {
-      if (item->IsChecked()) item->Toggle();
+      if (item->IsChecked()) {
+        item->Toggle();
+      }
     }
-    if (item->GetFirstChild()) {
+    if (item->GetFirstChild() != nullptr) {
       CheckChildren(item->GetFirstChild(), state);
     }
     item->UpdateState();
     item = item->GetNextSibling();
   }
-
-  return;
 }
 
 //______________________________________________________________________________
@@ -138,30 +139,27 @@ bool browser_tracks::is_initialized() const { return _initialized_; }
 browser_tracks::browser_tracks(TGCompositeFrame *main_, io::event_server *server_) {
   _initialized_ = false;
   _server_ = server_;
-  _browser_ = 0;
-  _main_ = 0;
+  _browser_ = nullptr;
+  _main_ = nullptr;
   this->_at_init_(main_);
-  return;
 }
 
 // dtor:
 browser_tracks::~browser_tracks() {
   this->reset();
 
-  for (std::map<std::string, const TGPicture *>::iterator i_pict = _icons_.begin();
-       i_pict != _icons_.end(); ++i_pict)
-    delete _icons_[i_pict->first];
+  for (auto &_icon : _icons_) {
+    delete _icons_[_icon.first];
+  }
 
   delete _tracks_list_box_;
 
   _main_->Cleanup();
-  return;
 }
 
 void browser_tracks::initialize(TGCompositeFrame *main_) {
   this->_at_init_(main_);
   _initialized_ = true;
-  return;
 }
 
 void browser_tracks::_at_init_(TGCompositeFrame *main_) {
@@ -174,25 +172,24 @@ void browser_tracks::_at_init_(TGCompositeFrame *main_) {
   // connect button with action. In order to instantiate
   // properly the number of parent, one has to count how many
   // frames have been instantiated until here
-  TGCompositeFrame *parent = (TGCompositeFrame *)_main_->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent();
+  auto *parent = (TGCompositeFrame *)_main_->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent();
 
   _browser_ = dynamic_cast<event_browser *>(parent);
   DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
 
   this->_at_construct_();
-  return;
 }
 
 void browser_tracks::_at_construct_() {
   const int width = _main_->GetWidth();
   const int height = _main_->GetHeight();
 
-  TGCanvas *canvas = new TGCanvas(_main_, width, height);
+  auto *canvas = new TGCanvas(_main_, width, height);
   _tracks_list_box_ = new TGListTree(canvas, kHorizontalFrame);
 
   _main_->AddFrame(canvas, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY | kLHintsBottom));
@@ -204,28 +201,21 @@ void browser_tracks::_at_construct_() {
   _tracks_list_box_->Connect("DoubleClicked(TGListTreeItem *,Int_t)",
                              "snemo::visualization::view::browser_tracks", this,
                              "item_selected(TGListTreeItem *,int)");
-
-  return;
 }
 
 void browser_tracks::clear() {
-  for (std::vector<TGListTreeItem *>::iterator item = _item_list_.begin();
-       item != _item_list_.end(); ++item)
-    _tracks_list_box_->DeleteItem(*item);
+  for (auto &item : _item_list_) {
+    _tracks_list_box_->DeleteItem(item);
+  }
 
   _item_list_.clear();
 
   _item_id_ = 0;
   _properties_dictionnary_.clear();
   _base_hit_dictionnary_.clear();
-
-  return;
 }
 
-void browser_tracks::reset() {
-  this->clear();
-  return;
-}
+void browser_tracks::reset() { this->clear(); }
 
 void browser_tracks::update() {
   this->clear();
@@ -245,8 +235,6 @@ void browser_tracks::update() {
 
   _tracks_list_box_->MapSubwindows();
   _main_->GetClient()->NeedRedraw(_tracks_list_box_);
-
-  return;
 }
 
 void browser_tracks::_update_event_header() {
@@ -262,8 +250,7 @@ void browser_tracks::_update_event_header() {
   if (!event.has(io::EH_LABEL)) {
     label << "Event #" << _server_->get_current_event_number();
   } else {
-    const snemo::datamodel::event_header &eh =
-        event.get<snemo::datamodel::event_header>(io::EH_LABEL);
+    const auto &eh = event.get<snemo::datamodel::event_header>(io::EH_LABEL);
 
     label << "Run #" << eh.get_id().get_run_number() << " - "
           << "Event #" << eh.get_id().get_event_number();
@@ -276,8 +263,8 @@ void browser_tracks::_update_event_header() {
   }
 
   // Add 'event_header' information as top item:
-  _top_item_ = _tracks_list_box_->AddItem(0, label.str().c_str(), _get_colored_icon_("ofolder"),
-                                          _get_colored_icon_("folder"));
+  _top_item_ = _tracks_list_box_->AddItem(
+      nullptr, label.str().c_str(), _get_colored_icon_("ofolder"), _get_colored_icon_("folder"));
   _item_list_.push_back(_top_item_);
   _top_item_->SetCheckBox(false);
   _top_item_->SetUserData((void *)(intptr_t)++_item_id_);
@@ -287,7 +274,6 @@ void browser_tracks::_update_event_header() {
     _top_item_->SetTipText("Double click to expand event record");
   }
   _tracks_list_box_->OpenItem(_top_item_);
-  return;
 }
 
 void browser_tracks::_update_simulated_data() {
@@ -299,12 +285,15 @@ void browser_tracks::_update_simulated_data() {
   io::event_record &event = _server_->grab_event();
 
   // 'simulated_data' availability:
-  if (!event.has(io::SD_LABEL)) return;
-
-  mctools::simulated_data &sd = event.grab<mctools::simulated_data>(io::SD_LABEL);
-
-  if (!options_mgr.get_option_flag(SHOW_MC_VERTEX) && !options_mgr.get_option_flag(SHOW_MC_HITS))
+  if (!event.has(io::SD_LABEL)) {
     return;
+  }
+
+  auto &sd = event.grab<mctools::simulated_data>(io::SD_LABEL);
+
+  if (!options_mgr.get_option_flag(SHOW_MC_VERTEX) && !options_mgr.get_option_flag(SHOW_MC_HITS)) {
+    return;
+  }
 
   // Add 'simulated_data' folder as sub item:
   const std::string data_bank_name = "Simulated data (" + io::SD_LABEL + ")";
@@ -340,16 +329,15 @@ void browser_tracks::_update_simulated_data() {
 
     genbb::primary_event::particles_col_type &particles = pevent.grab_particles();
 
-    for (genbb::primary_event::particles_col_type::iterator ip = particles.begin();
-         ip != particles.end(); ++ip) {
+    for (auto &particle : particles) {
       std::ostringstream label;
       label.precision(3);
       label.setf(std::ios::fixed, std::ios::floatfield);
-      label << ip->get_particle_label() << " particle: E = ";
-      utils::root_utilities::get_prettified_energy(label, ip->get_kinetic_energy());
+      label << particle.get_particle_label() << " particle: E = ";
+      utils::root_utilities::get_prettified_energy(label, particle.get_kinetic_energy());
       label << ", t = ";
-      utils::root_utilities::get_prettified_time(label, ip->get_time());
-      label << " - (px, py, pz) = " << ip->get_momentum() / CLHEP::MeV << " MeV, "
+      utils::root_utilities::get_prettified_time(label, particle.get_time());
+      label << " - (px, py, pz) = " << particle.get_momentum() / CLHEP::MeV << " MeV, "
             << "(x, y, z) = ";
       if (sd.has_vertex()) {
         label << sd.get_vertex() / CLHEP::mm << " mm";
@@ -361,13 +349,13 @@ void browser_tracks::_update_simulated_data() {
       TGListTreeItem *item_particle = _tracks_list_box_->AddItem(
           item_primary_event, label.str().c_str(), _get_colored_icon_("vertex", hex_str, true),
           _get_colored_icon_("vertex", hex_str));
-      item_particle->SetCheckBox(ip->has_generation_id());
+      item_particle->SetCheckBox(particle.has_generation_id());
       item_particle->SetUserData((void *)(intptr_t) - (++icheck_id));
       // _properties_dictionnary_[-icheck_id] = &(pevent.grab_auxiliaries());
-      _properties_dictionnary_[-icheck_id] = &(ip->grab_auxiliaries());
+      _properties_dictionnary_[-icheck_id] = &(particle.grab_auxiliaries());
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        ip->tree_dump(tip_text);
+        particle.tree_dump(tip_text);
       } else {
         tip_text << "Double click to highlight track "
                  << "and to dump info on terminal";
@@ -382,7 +370,7 @@ void browser_tracks::_update_simulated_data() {
     std::vector<std::string> visual_categories;
     sd.get_step_hits_categories(visual_categories,
                                 mctools::simulated_data::HIT_CATEGORY_TYPE_PREFIX, "__visu.tracks");
-    typedef std::pair<size_t, TGListTreeItem *> entry_type;
+    using entry_type = std::pair<size_t, TGListTreeItem *>;
     std::map<int, entry_type> item_tracks;
     if (!visual_categories.empty()) {
       TGListTreeItem *item_mc_tracks =
@@ -396,33 +384,36 @@ void browser_tracks::_update_simulated_data() {
                                      _get_colored_icon_("ofolder"), _get_colored_icon_("folder"));
       item_mc_highlight_step_hits->SetCheckBox(false);
       item_mc_highlight_step_hits->SetUserData((void *)(intptr_t)++icheck_id);
-      for (size_t icat = 0; icat < visual_categories.size(); ++icat) {
-        const std::string &category = visual_categories[icat];
+      for (const auto &category : visual_categories) {
         if (sd.has_step_hits(category)) {
           mctools::simulated_data::hit_handle_collection_type &hit_collection =
               sd.grab_step_hits(category);
-          for (mctools::simulated_data::hit_handle_collection_type::iterator it_hit =
-                   hit_collection.begin();
-               it_hit != hit_collection.end(); ++it_hit) {
-            mctools::base_step_hit &a_step = it_hit->grab();
+          for (auto &it_hit : hit_collection) {
+            mctools::base_step_hit &a_step = it_hit.grab();
             datatools::properties &a_auxiliaries = a_step.grab_auxiliaries();
 
             std::string name = a_step.get_particle_name();
-            if (name == "e-") name = "electron";
-            if (name == "e+") name = "positron";
+            if (name == "e-") {
+              name = "electron";
+            }
+            if (name == "e+") {
+              name = "positron";
+            }
             const size_t color = style_manager::get_instance().get_particle_color(name);
             const std::string hex_str = utils::root_utilities::get_hex_color(color);
-            TGListTreeItem *item = 0;
+            TGListTreeItem *item = nullptr;
             if (a_auxiliaries.has_flag(mctools::hit_utils::HIT_VISU_HIGHLIGHTED_KEY)) {
               item = item_mc_highlight_step_hits;
             } else {
               const int a_track_id = a_step.get_track_id();
-              if (!item_tracks.count(a_track_id)) {
+              if (item_tracks.count(a_track_id) == 0u) {
                 std::ostringstream track_label;
                 track_label.precision(3);
                 track_label.setf(std::ios::fixed, std::ios::floatfield);
                 track_label << a_step.get_particle_name() << " track";
-                if (a_step.is_primary_particle()) track_label << " (primary)";
+                if (a_step.is_primary_particle()) {
+                  track_label << " (primary)";
+                }
                 item = _tracks_list_box_->AddItem(item_mc_tracks, track_label.str().c_str(),
                                                   _get_colored_icon_("track", hex_str),
                                                   _get_colored_icon_("track", hex_str));
@@ -467,9 +458,8 @@ void browser_tracks::_update_simulated_data() {
         }
       }
       // Update item text following the number of hits found
-      for (std::map<int, entry_type>::iterator i = item_tracks.begin(); i != item_tracks.end();
-           ++i) {
-        entry_type a_entry = i->second;
+      for (auto &item_track : item_tracks) {
+        entry_type a_entry = item_track.second;
         const size_t count = a_entry.first;
         TGListTreeItem *item = a_entry.second;
         std::ostringstream oss;
@@ -478,7 +468,9 @@ void browser_tracks::_update_simulated_data() {
           oss << " - no hits";
         } else {
           oss << " - " << count << " hit";
-          if (count > 1) oss << "s";
+          if (count > 1) {
+            oss << "s";
+          }
         }
         item->SetText(oss.str().c_str());
       }
@@ -490,7 +482,9 @@ void browser_tracks::_update_simulated_data() {
         oss << " - no tracks";
       } else {
         oss << " - " << count << " track";
-        if (count > 1) oss << "s";
+        if (count > 1) {
+          oss << "s";
+        }
       }
       item_mc_tracks->SetText(oss.str().c_str());
     }
@@ -517,18 +511,20 @@ void browser_tracks::_update_simulated_data() {
 
         // 2015/07/07 XG: Remove Geiger energy deposit since it is treated
         // in a particular way
-        if (a_calo_name == "gg") continue;
+        if (a_calo_name == "gg") {
+          continue;
+        }
 
-        if (!sd.has_step_hits(a_calo_name)) continue;
+        if (!sd.has_step_hits(a_calo_name)) {
+          continue;
+        }
 
         mctools::simulated_data::hit_handle_collection_type &hit_collection =
             sd.grab_step_hits(a_calo_name);
         ihit += hit_collection.size();
 
-        for (mctools::simulated_data::hit_handle_collection_type::iterator it_hit =
-                 hit_collection.begin();
-             it_hit != hit_collection.end(); ++it_hit) {
-          mctools::base_step_hit &a_step = it_hit->grab();
+        for (auto &it_hit : hit_collection) {
+          mctools::base_step_hit &a_step = it_hit.grab();
 
           std::string hex_str;
           if (a_step.get_auxiliaries().has_key(COLOR_FLAG)) {
@@ -579,10 +575,8 @@ void browser_tracks::_update_simulated_data() {
         mctools::simulated_data::hit_handle_collection_type &hit_collection =
             sd.grab_step_hits("gg");
 
-        for (mctools::simulated_data::hit_handle_collection_type::iterator it_hit =
-                 hit_collection.begin();
-             it_hit != hit_collection.end(); ++it_hit) {
-          mctools::base_step_hit &a_step = it_hit->grab();
+        for (auto &it_hit : hit_collection) {
+          mctools::base_step_hit &a_step = it_hit.grab();
 
           // If color is available, add a color box close to the item:
           std::string hex_str;
@@ -621,8 +615,6 @@ void browser_tracks::_update_simulated_data() {
       }
     }  // end of SHOW_MC_TRACKER_HITS
   }    // end of SHOW_MC_HITS
-
-  return;
 }
 
 void browser_tracks::_update_calibrated_data() {
@@ -632,13 +624,16 @@ void browser_tracks::_update_calibrated_data() {
   io::event_record &event = _server_->grab_event();
 
   // 'calibrated_data' availability:
-  if (!event.has(io::CD_LABEL)) return;
+  if (!event.has(io::CD_LABEL)) {
+    return;
+  }
 
-  snemo::datamodel::calibrated_data &cd =
-      event.grab<snemo::datamodel::calibrated_data>(io::CD_LABEL);
+  auto &cd = event.grab<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
   const options_manager &options_mgr = options_manager::get_instance();
-  if (!options_mgr.get_option_flag(SHOW_CALIBRATED_HITS)) return;
+  if (!options_mgr.get_option_flag(SHOW_CALIBRATED_HITS)) {
+    return;
+  }
 
   // Add 'calibrated_data' folder as sub item:
   const std::string data_bank_name = "Calibrated data (" + io::CD_LABEL + ")";
@@ -670,10 +665,8 @@ void browser_tracks::_update_calibrated_data() {
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
         cd.calibrated_calorimeter_hits();
 
-    for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator it_hit =
-             cc_collection.begin();
-         it_hit != cc_collection.end(); ++it_hit) {
-      snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit->grab();
+    for (auto &it_hit : cc_collection) {
+      snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
       std::string hex_str;
       if (a_hit.get_auxiliaries().has_key(COLOR_FLAG)) {
@@ -685,8 +678,9 @@ void browser_tracks::_update_calibrated_data() {
       std::ostringstream label_hit;
       label_hit.precision(3);
       label_hit.setf(std::ios::fixed, std::ios::floatfield);
-      if (a_hit.get_auxiliaries().has_key("category"))
+      if (a_hit.get_auxiliaries().has_key("category")) {
         label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
+      }
       label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
       utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(),
                                                    a_hit.get_sigma_energy());
@@ -729,10 +723,8 @@ void browser_tracks::_update_calibrated_data() {
     snemo::datamodel::calibrated_data::tracker_hit_collection_type &ct_collection =
         cd.calibrated_tracker_hits();
 
-    for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::iterator it_hit =
-             ct_collection.begin();
-         it_hit != ct_collection.end(); ++it_hit) {
-      snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit->grab();
+    for (auto &it_hit : ct_collection) {
+      snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit.grab();
 
       // Add subsubitem:
       std::ostringstream label_hit;
@@ -764,8 +756,6 @@ void browser_tracks::_update_calibrated_data() {
     ihit == 0 ? oss << " - no hits" : oss << " - " << ihit << " hits";
     item_tracker->SetText(oss.str().c_str());
   }  // end of tracker info
-
-  return;
 }
 
 void browser_tracks::_update_tracker_clustering_data() {
@@ -775,13 +765,16 @@ void browser_tracks::_update_tracker_clustering_data() {
   io::event_record &event = _server_->grab_event();
 
   // 'tracker_clustering_data' availability:
-  if (!event.has(io::TCD_LABEL)) return;
+  if (!event.has(io::TCD_LABEL)) {
+    return;
+  }
 
-  snemo::datamodel::tracker_clustering_data &tcd =
-      event.grab<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
+  auto &tcd = event.grab<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
 
   const options_manager &options_mgr = options_manager::get_instance();
-  if (!options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS)) return;
+  if (!options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS)) {
+    return;
+  }
 
   // Identifiant for item dictionnary:
   int &icheck_id = _item_id_;
@@ -810,11 +803,9 @@ void browser_tracks::_update_tracker_clustering_data() {
 
   snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
       tcd.get_solutions();
-  for (snemo::datamodel::tracker_clustering_data::solution_col_type::iterator isolution =
-           cluster_solutions.begin();
-       isolution != cluster_solutions.end(); ++isolution) {
+  for (auto &cluster_solution : cluster_solutions) {
     // Get current tracker solution:
-    snemo::datamodel::tracker_clustering_solution &a_solution = isolution->grab();
+    snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.grab();
 
     // Add item:
     std::ostringstream label_solution;
@@ -842,8 +833,9 @@ void browser_tracks::_update_tracker_clustering_data() {
     // Get solution auxiliaries:
     datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
 
-    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+    }
 
     // Update properties dictionnary:
     _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
@@ -851,11 +843,9 @@ void browser_tracks::_update_tracker_clustering_data() {
     // Get clusters stored in the current tracker solution:
     snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
         a_solution.get_clusters();
-    for (snemo::datamodel::tracker_clustering_solution::cluster_col_type::iterator icluster =
-             clusters.begin();
-         icluster != clusters.end(); ++icluster) {
+    for (auto &cluster : clusters) {
       // Get current tracker cluster:
-      snemo::datamodel::tracker_cluster &a_cluster = icluster->grab();
+      snemo::datamodel::tracker_cluster &a_cluster = cluster.grab();
 
       // Add subitem:
       std::ostringstream label_cluster;
@@ -880,8 +870,9 @@ void browser_tracks::_update_tracker_clustering_data() {
       // Get cluster auxiliaries:
       datatools::properties &aa_auxiliaries = a_cluster.grab_auxiliaries();
 
-      if (aa_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+      if (aa_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
         item_cluster->CheckItem(aa_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+      }
 
       // Update base hit dictionnary:
       _base_hit_dictionnary_[icheck_id] = &(a_cluster);
@@ -898,7 +889,7 @@ void browser_tracks::_update_tracker_clustering_data() {
                                 _get_colored_icon_("cluster", hex_str));
 
       // Get tracker hits stored in the current tracker cluster:
-      for (auto& a_gg_hit : a_cluster.get_hits()) {
+      for (auto &a_gg_hit : a_cluster.get_hits()) {
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
@@ -924,8 +915,6 @@ void browser_tracks::_update_tracker_clustering_data() {
       }
     }  // end of cluster loop
   }    // end of solution loop
-
-  return;
 }
 
 void browser_tracks::_update_tracker_trajectory_data() {
@@ -935,13 +924,16 @@ void browser_tracks::_update_tracker_trajectory_data() {
   io::event_record &event = _server_->grab_event();
 
   // 'tracker_trajectory_data' availability:
-  if (!event.has(io::TTD_LABEL)) return;
+  if (!event.has(io::TTD_LABEL)) {
+    return;
+  }
 
-  snemo::datamodel::tracker_trajectory_data &ttd =
-      event.grab<snemo::datamodel::tracker_trajectory_data>(io::TTD_LABEL);
+  auto &ttd = event.grab<snemo::datamodel::tracker_trajectory_data>(io::TTD_LABEL);
 
   const options_manager &options_mgr = options_manager::get_instance();
-  if (!options_mgr.get_option_flag(SHOW_TRACKER_TRAJECTORIES)) return;
+  if (!options_mgr.get_option_flag(SHOW_TRACKER_TRAJECTORIES)) {
+    return;
+  }
 
   // Identifiant for item dictionnary:
   int &icheck_id = _item_id_;
@@ -965,15 +957,15 @@ void browser_tracks::_update_tracker_trajectory_data() {
   }
   item_tracker_trajectory->SetTipText(tip_text.str().c_str());
 
-  if (!ttd.has_solutions()) return;
+  if (!ttd.has_solutions()) {
+    return;
+  }
 
   snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
       ttd.get_solutions();
-  for (snemo::datamodel::tracker_trajectory_data::solution_col_type::iterator isolution =
-           trajectory_solutions.begin();
-       isolution != trajectory_solutions.end(); ++isolution) {
+  for (auto &trajectory_solution : trajectory_solutions) {
     // Get current tracker solution:
-    snemo::datamodel::tracker_trajectory_solution &a_solution = isolution->grab();
+    snemo::datamodel::tracker_trajectory_solution &a_solution = trajectory_solution.grab();
 
     // Add item:
     std::ostringstream label_solution;
@@ -1006,26 +998,25 @@ void browser_tracks::_update_tracker_trajectory_data() {
     datatools::properties &a_auxiliaries = a_solution.get_auxiliaries();
 #pragma GCC diagnostic pop
 
-    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+    }
 
     // Update properties dictionnary:
     _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
 
     // Prepare folder for helix pattern:
-    TGListTreeItem *item_helix_solution = 0;
+    TGListTreeItem *item_helix_solution = nullptr;
 
     // Prepare folder for line pattern:
-    TGListTreeItem *item_line_solution = 0;
+    TGListTreeItem *item_line_solution = nullptr;
 
     // Get trajectories stored in the current tracker trajectory solution:
     snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =
         a_solution.grab_trajectories();
-    for (snemo::datamodel::tracker_trajectory_solution::trajectory_col_type::iterator itrajectory =
-             trajectories.begin();
-         itrajectory != trajectories.end(); ++itrajectory) {
+    for (auto &trajectorie : trajectories) {
       // Get current tracker trajectory:
-      snemo::datamodel::tracker_trajectory &a_trajectory = itrajectory->grab();
+      snemo::datamodel::tracker_trajectory &a_trajectory = trajectorie.grab();
 
       // Determine trajectory color by getting cluster color:
       std::string hex_str;
@@ -1062,11 +1053,11 @@ void browser_tracks::_update_tracker_trajectory_data() {
         is_default = true;
       }
 
-      TGListTreeItem *item_trajectory = 0;
+      TGListTreeItem *item_trajectory = nullptr;
       if (a_trajectory.get_pattern().get_pattern_id() ==
           snemo::datamodel::helix_trajectory_pattern::pattern_id()) {
         // First time instantiate it
-        if (!item_helix_solution) {
+        if (item_helix_solution == nullptr) {
           item_helix_solution =
               new TGListTreeItemStdPlus("Helix trajectories", this, _get_colored_icon_("ofolder"),
                                         _get_colored_icon_("folder"),
@@ -1074,8 +1065,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
           _tracks_list_box_->AddItem(item_solution, item_helix_solution);
           // _tracks_list_box_->OpenItem(item_helix_solution);
           item_helix_solution->SetUserData((void *)(intptr_t)++icheck_id);
-          if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+          if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
             item_helix_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+          }
           _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
         }
 
@@ -1085,7 +1077,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
       } else if (a_trajectory.get_pattern().get_pattern_id() ==
                  snemo::datamodel::line_trajectory_pattern::pattern_id()) {
         // First time instantiate it
-        if (!item_line_solution) {
+        if (item_line_solution == nullptr) {
           const bool checked = true;
           item_line_solution =
               new TGListTreeItemStdPlus("Line trajectories", this, _get_colored_icon_("ofolder"),
@@ -1093,8 +1085,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
           _tracks_list_box_->AddItem(item_solution, item_line_solution);
           // _tracks_list_box_->OpenItem(item_line_solution);
           item_line_solution->SetUserData((void *)(intptr_t)++icheck_id);
-          if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+          if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
             item_line_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+          }
           _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
         }
 
@@ -1103,7 +1096,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
             _get_colored_icon_("line", hex_str, true), _get_colored_icon_("line", hex_str));
       }
 
-      if (!item_trajectory) continue;
+      if (item_trajectory == nullptr) {
+        continue;
+      }
 
       item_trajectory->SetCheckBox(true);
       if (is_default) {
@@ -1128,8 +1123,6 @@ void browser_tracks::_update_tracker_trajectory_data() {
       }
     }  // end of trajectory loop
   }    // end of solution loop
-
-  return;
 }
 
 void browser_tracks::_update_particle_track_data() {
@@ -1139,13 +1132,16 @@ void browser_tracks::_update_particle_track_data() {
   io::event_record &event = _server_->grab_event();
 
   // 'tracker_trajectory_data' availability:
-  if (!event.has(io::PTD_LABEL)) return;
+  if (!event.has(io::PTD_LABEL)) {
+    return;
+  }
 
-  snemo::datamodel::particle_track_data &ptd =
-      event.grab<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
+  auto &ptd = event.grab<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
 
   const options_manager &options_mgr = options_manager::get_instance();
-  if (!options_mgr.get_option_flag(SHOW_PARTICLE_TRACKS)) return;
+  if (!options_mgr.get_option_flag(SHOW_PARTICLE_TRACKS)) {
+    return;
+  }
 
   // Identifiant for item dictionnary:
   int &icheck_id = _item_id_;
@@ -1172,18 +1168,17 @@ void browser_tracks::_update_particle_track_data() {
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
         ptd.grab_non_associated_calorimeters();
 
-    for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator it_hit =
-             cc_collection.begin();
-         it_hit != cc_collection.end(); ++it_hit) {
-      snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit->grab();
+    for (auto &it_hit : cc_collection) {
+      snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
       // Add subsubitem:
       std::ostringstream label_hit;
       label_hit.precision(3);
       label_hit.setf(std::ios::fixed, std::ios::floatfield);
       label_hit << "Unassociated ";
-      if (a_hit.get_auxiliaries().has_key("category"))
+      if (a_hit.get_auxiliaries().has_key("category")) {
         label_hit << a_hit.get_auxiliaries().fetch_string("category") << " block ";
+      }
       label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
       utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(),
                                                    a_hit.get_sigma_energy());
@@ -1211,14 +1206,14 @@ void browser_tracks::_update_particle_track_data() {
     }
   }
 
-  if (!ptd.has_particles()) return;
+  if (!ptd.has_particles()) {
+    return;
+  }
 
   snemo::datamodel::particle_track_data::particle_collection_type &particles = ptd.grab_particles();
-  for (snemo::datamodel::particle_track_data::particle_collection_type::iterator iparticle =
-           particles.begin();
-       iparticle != particles.end(); ++iparticle) {
+  for (auto &particle : particles) {
     // Get current particle track:
-    snemo::datamodel::particle_track &a_particle = iparticle->grab();
+    snemo::datamodel::particle_track &a_particle = particle.grab();
 
     // Add item:
     size_t item_color = 0;
@@ -1258,8 +1253,9 @@ void browser_tracks::_update_particle_track_data() {
       a_particle.tree_dump(tip_text);
       item_particle->SetTipText(tip_text.str().c_str());
     }
-    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG))
+    if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
       item_particle->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+    }
 
     // Update base hit dictionnary:
     _base_hit_dictionnary_[-icheck_id] = &(a_particle);
@@ -1270,9 +1266,8 @@ void browser_tracks::_update_particle_track_data() {
     // Get associated vertices
     if (a_particle.has_vertices()) {
       snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.get_vertices();
-      for (snemo::datamodel::particle_track::vertex_collection_type::iterator ivtx = vts.begin();
-           ivtx != vts.end(); ++ivtx) {
-        geomtools::blur_spot &a_vertex = ivtx->grab();
+      for (auto &vt : vts) {
+        geomtools::blur_spot &a_vertex = vt.grab();
 
         std::ostringstream label;
         label << "Vertex on ";
@@ -1318,17 +1313,16 @@ void browser_tracks::_update_particle_track_data() {
       snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
           a_particle.get_associated_calorimeter_hits();
 
-      for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::iterator it_hit =
-               cc_collection.begin();
-           it_hit != cc_collection.end(); ++it_hit) {
-        snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit->grab();
+      for (auto &it_hit : cc_collection) {
+        snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
         label_hit.setf(std::ios::fixed, std::ios::floatfield);
-        if (a_hit.get_auxiliaries().has_key("category"))
+        if (a_hit.get_auxiliaries().has_key("category")) {
           label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
+        }
         label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
         utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(),
                                                      a_hit.get_sigma_energy());
@@ -1354,15 +1348,14 @@ void browser_tracks::_update_particle_track_data() {
       }  // end of associated calorimeter hits
     }    // end of calorimeter hits check
   }      // end of particle loop
-  return;
 }
 
 datatools::properties *browser_tracks::get_item_properties(const int id_) {
   // Search in which dictionnary the item comes from:
-  datatools::properties *properties = 0;
+  datatools::properties *properties = nullptr;
   {
     // First looking in 'properties' dictionnary:
-    std::map<int, datatools::properties *>::iterator found = _properties_dictionnary_.find(id_);
+    auto found = _properties_dictionnary_.find(id_);
 
     if (found != _properties_dictionnary_.end()) {
       properties = found->second;
@@ -1371,7 +1364,7 @@ datatools::properties *browser_tracks::get_item_properties(const int id_) {
 
   {
     // Then looking in 'base_hit' dictionnary:
-    std::map<int, geomtools::base_hit *>::iterator found = _base_hit_dictionnary_.find(id_);
+    auto found = _base_hit_dictionnary_.find(id_);
 
     if (found != _base_hit_dictionnary_.end()) {
       properties = &(found->second->grab_auxiliaries());
@@ -1382,13 +1375,13 @@ datatools::properties *browser_tracks::get_item_properties(const int id_) {
 
 geomtools::base_hit *browser_tracks::get_base_hit(const int id_) {
   // First looking in 'properties' dictionnary:
-  std::map<int, geomtools::base_hit *>::iterator found = _base_hit_dictionnary_.find(id_);
+  auto found = _base_hit_dictionnary_.find(id_);
 
   if (found != _base_hit_dictionnary_.end()) {
     return found->second;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void browser_tracks::item_checked(TObject *object_, bool is_checked_) {
@@ -1398,24 +1391,29 @@ void browser_tracks::item_checked(TObject *object_, bool is_checked_) {
   datatools::properties *properties = get_item_properties(i);
 
   // Non referenced item id:
-  if (!properties) return;
+  if (properties == nullptr) {
+    return;
+  }
 
   properties->update(CHECKED_FLAG, is_checked_);
 
   _browser_->track_select();
-  return;
 }
 
 void browser_tracks::item_selected(TGListTreeItem *item_, int /*button_*/) {
   const int i = (intptr_t)item_->GetUserData();
 
   // Positive id means nothing to do:
-  if (i > 0) return;
+  if (i > 0) {
+    return;
+  }
 
   // Search in which dictionnary the item comes from:
   datatools::properties *properties = get_item_properties(i);
   // Non referenced item id:
-  if (!properties) return;
+  if (properties == nullptr) {
+    return;
+  }
 
   properties->update(HIGHLIGHT_FLAG, !properties->has_flag(HIGHLIGHT_FLAG));
 
@@ -1423,11 +1421,12 @@ void browser_tracks::item_selected(TGListTreeItem *item_, int /*button_*/) {
     // Dump info on terminal
     geomtools::base_hit *bh = get_base_hit(i);
 
-    if (bh) bh->dump();
+    if (bh != nullptr) {
+      bh->dump();
+    }
   }
 
   _browser_->track_select();
-  return;
 }
 
 const TGPicture *browser_tracks::_get_colored_icon_(const std::string &icon_type_,
@@ -1440,39 +1439,44 @@ const TGPicture *browser_tracks::_get_colored_icon_(const std::string &icon_type
 
   std::map<std::string, const TGPicture *>::const_iterator found = _icons_.find(icon_name);
 
-  if (found != _icons_.end()) return found->second;
+  if (found != _icons_.end()) {
+    return found->second;
+  }
 
   // Otherwise create new entry:
-  const char **xpm = 0;
-  if (icon_type_ == "vertex")
+  const char **xpm = nullptr;
+  if (icon_type_ == "vertex") {
     xpm = xpm_vertex;
-  else if (icon_type_ == "calorimeter")
+  } else if (icon_type_ == "calorimeter") {
     xpm = xpm_calorimeter;
-  else if (icon_type_ == "geiger")
+  } else if (icon_type_ == "geiger") {
     xpm = xpm_geiger;
-  else if (icon_type_ == "cluster")
+  } else if (icon_type_ == "cluster") {
     xpm = xpm_cluster;
-  else if (icon_type_ == "helix")
+  } else if (icon_type_ == "helix") {
     xpm = xpm_helix;
-  else if (icon_type_ == "line")
+  } else if (icon_type_ == "line") {
     xpm = xpm_line;
-  else if (icon_type_ == "step")
+  } else if (icon_type_ == "step") {
     xpm = xpm_step;
-  else if (icon_type_ == "track")
+  } else if (icon_type_ == "track") {
     xpm = xpm_track;
-  else if (icon_type_ == "flag")
+  } else if (icon_type_ == "flag") {
     xpm = xpm_flag;
-  else if (icon_type_ == "folder")
+  } else if (icon_type_ == "folder") {
     xpm = xpm_folder;
-  else if (icon_type_ == "ofolder")
+  } else if (icon_type_ == "ofolder") {
     xpm = xpm_ofolder;
-  else
-    return 0;
+  } else {
+    return nullptr;
+  }
 
   // Change color:
   if (icon_type_ != "folder" && icon_type_ != "ofolder") {
     std::string color = "#303030";
-    if (!hex_color_.empty()) color = hex_color_;
+    if (!hex_color_.empty()) {
+      color = hex_color_;
+    }
     if (reverse_color_) {
       const std::string bg = ". c " + color;
       xpm[1] = bg.c_str();

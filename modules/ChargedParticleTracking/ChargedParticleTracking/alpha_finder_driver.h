@@ -41,7 +41,7 @@
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/clhep.h>
 // - Falaise:
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_tracker_hit.h>
 
 namespace datatools {
@@ -77,7 +77,7 @@ class alpha_finder_driver {
   // Constructor:
   alpha_finder_driver() = default;
 
-  alpha_finder_driver(const falaise::config::property_set& ps, const geomtools::manager* gm);
+  alpha_finder_driver(const falaise::property_set& ps, const geomtools::manager* gm);
 
   /// Destructor:
   ~alpha_finder_driver() = default;

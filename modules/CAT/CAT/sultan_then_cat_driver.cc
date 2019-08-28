@@ -257,9 +257,9 @@ void sultan_then_cat_driver::initialize(const datatools::properties& setup_) {
   _CAT_setup_.num_blocks = 1;
   _CAT_setup_.planes_per_block.clear();
   _CAT_setup_.planes_per_block.push_back(_CAT_setup_.num_blocks);
-  _CAT_setup_.planes_per_block.at(0) = get_gg_locator().get_number_of_layers(0);
-  _CAT_setup_.num_cells_per_plane = get_gg_locator().get_number_of_rows(0);
-  _CAT_setup_.cell_size = get_gg_locator().get_cell_diameter();
+  _CAT_setup_.planes_per_block.at(0) = get_gg_locator().numberOfLayers(0);
+  _CAT_setup_.num_cells_per_plane = get_gg_locator().numberOfRows(0);
+  _CAT_setup_.cell_size = get_gg_locator().cellDiameter();
 
   // hard-coded values of bfield and chamber size
   _CAT_setup_.bfield = 0.0025;
@@ -292,9 +292,9 @@ void sultan_then_cat_driver::initialize(const datatools::properties& setup_) {
                   "Found locator plugin named '" << locator_plugin_name << "'");
     const auto& lp = geo_mgr.get_plugin<snemo::geometry::locator_plugin>(locator_plugin_name);
     // Set the calo cell locator :
-    _calo_locator_ = &(lp.get_calo_locator());
-    _xcalo_locator_ = &(lp.get_xcalo_locator());
-    _gveto_locator_ = &(lp.get_gveto_locator());
+    _calo_locator_ = &(lp.caloLocator());
+    _xcalo_locator_ = &(lp.xcaloLocator());
+    _gveto_locator_ = &(lp.gvetoLocator());
   }
   if (get_logging_priority() >= datatools::logger::PRIO_DEBUG) {
     DT_LOG_DEBUG(get_logging_priority(), "Calo locator :");
@@ -309,9 +309,9 @@ void sultan_then_cat_driver::initialize(const datatools::properties& setup_) {
   _SULTAN_setup_.num_blocks = 1;
   _SULTAN_setup_.planes_per_block.clear();
   _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
-  const size_t nlayers = get_gg_locator().get_number_of_layers(0);
-  const size_t nrows = get_gg_locator().get_number_of_rows(0);
-  const double cell_diameter = get_gg_locator().get_cell_diameter();
+  const size_t nlayers = get_gg_locator().numberOfLayers(0);
+  const size_t nrows = get_gg_locator().numberOfRows(0);
+  const double cell_diameter = get_gg_locator().cellDiameter();
   _SULTAN_setup_.planes_per_block.at(0) = nlayers;
   _SULTAN_setup_.num_cells_per_plane = nrows;
   _SULTAN_setup_.cell_distance = cell_diameter;
@@ -325,7 +325,7 @@ void sultan_then_cat_driver::initialize(const datatools::properties& setup_) {
   _SULTAN_setup_.bfield = _magfield_ / CLHEP::tesla;
   _SULTAN_setup_.xsize = 0.5 * nrows * cell_diameter;
   _SULTAN_setup_.ysize = 0.5 * nlayers * cell_diameter;
-  _SULTAN_setup_.zsize = 0.5 * get_gg_locator().get_cell_length();
+  _SULTAN_setup_.zsize = 0.5 * get_gg_locator().cellLength();
 
   // Check the validity of the CAT setup data :
   DT_THROW_IF(!_CAT_setup_.check(), std::logic_error,
@@ -678,27 +678,18 @@ int sultan_then_cat_driver::_process_algo(
     // Check the geometry ID as a Geiger cell :
     const snemo::geometry::gg_locator& gg_locator = get_gg_locator();
     const geomtools::geom_id& gg_hit_gid = snemo_gg_hit.get_geom_id();
-    DT_THROW_IF(!gg_locator.is_drift_cell_volume(gg_hit_gid), std::logic_error,
+    DT_THROW_IF(!gg_locator.isGeigerCell(gg_hit_gid), std::logic_error,
                 "Calibrated tracker hit can not be located inside detector !");
 
-    if (!gg_locator.is_drift_cell_volume_in_current_module(gg_hit_gid)) {
+    if (!gg_locator.isGeigerCellInThisModule(gg_hit_gid)) {
       DT_LOG_DEBUG(get_logging_priority(), "Current Geiger cell is not in the module!");
       continue;
     }
 
-    /*	  int gg_hit_type = snemo_gg_hit.get_geom_id ().get_type ();
-    if (gg_hit_type != _gg_cell_geom_type_)
-      {
-        ostringstream message;
-        message << "snemo::processing::sultan_then_cat_driver::_process_algo: "
-                << "Not the proper type of geometry category for a Geiger hit !";
-        throw logic_error (message.str ());
-      }
-    */
     // Extract the numbering scheme of the cell from its geom ID :
-    const int side = gg_locator.extract_side(gg_hit_gid);
-    const int layer = gg_locator.extract_layer(gg_hit_gid);
-    const int row = gg_locator.extract_row(gg_hit_gid);
+    const int side = gg_locator.getSideAddress(gg_hit_gid);
+    const int layer = gg_locator.getLayerAddress(gg_hit_gid);
+    const int row = gg_locator.getRowAddress(gg_hit_gid);
 
     // Translate into the SULTAN's numbering scheme :
     // -1 : negative X side; +1 : positive X side
@@ -794,32 +785,32 @@ int sultan_then_cat_driver::_process_algo(
       st::experimental_vector norm(0., 0., 0., 0., 0., 0.);
       geomtools::vector_3d block_position;
       // Extract the numbering scheme of the scin block from its geom ID :
-      if (_calo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
-        _calo_locator_->get_block_position(a_calo_hit_gid, block_position);
-        width = _calo_locator_->get_block_width();
-        height = _calo_locator_->get_block_height();
-        thickness = _calo_locator_->get_block_thickness();
-        column = _calo_locator_->extract_column(a_calo_hit_gid);
-        side = _calo_locator_->extract_side(a_calo_hit_gid);
-        const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1 : -1;
+      if (_calo_locator_->isCaloBlockInThisModule(a_calo_hit_gid)) {
+        block_position = _calo_locator_->getBlockPosition(a_calo_hit_gid);
+        width = _calo_locator_->blockWidth();
+        height = _calo_locator_->blockHeight();
+        thickness = _calo_locator_->blockThickness();
+        column = _calo_locator_->getColumnAddress(a_calo_hit_gid);
+        side = _calo_locator_->getSideAddress(a_calo_hit_gid);
+        const int side_number = (side == snemo::geometry::side_t::BACK) ? 1 : -1;
         norm.set_x(st::experimental_double((double)side_number, 0.));
-      } else if (_xcalo_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
-        _xcalo_locator_->get_block_position(a_calo_hit_gid, block_position);
-        width = _xcalo_locator_->get_block_width();
-        height = _xcalo_locator_->get_block_height();
-        thickness = _xcalo_locator_->get_block_thickness();
-        column = _xcalo_locator_->extract_column(a_calo_hit_gid);
-        side = _xcalo_locator_->extract_side(a_calo_hit_gid);
-        const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1 : -1;
+      } else if (_xcalo_locator_->isCaloBlockInThisModule(a_calo_hit_gid)) {
+        block_position = _xcalo_locator_->getBlockPosition(a_calo_hit_gid);
+        width = _xcalo_locator_->blockWidth();
+        height = _xcalo_locator_->blockHeight();
+        thickness = _xcalo_locator_->blockThickness();
+        column = _xcalo_locator_->getColumnAddress(a_calo_hit_gid);
+        side = _xcalo_locator_->getSideAddress(a_calo_hit_gid);
+        const int side_number = (side == snemo::geometry::side_t::BACK) ? 1 : -1;
         norm.set_y(st::experimental_double((double)side_number, 0.));
-      } else if (_gveto_locator_->is_calo_block_in_current_module(a_calo_hit_gid)) {
-        _gveto_locator_->get_block_position(a_calo_hit_gid, block_position);
-        width = _gveto_locator_->get_block_width();
-        height = _gveto_locator_->get_block_height();
-        thickness = _gveto_locator_->get_block_thickness();
-        column = _gveto_locator_->extract_column(a_calo_hit_gid);
-        side = _xcalo_locator_->extract_side(a_calo_hit_gid);
-        const int side_number = (side == snemo::geometry::utils::SIDE_BACK) ? 1 : -1;
+      } else if (_gveto_locator_->isCaloBlockInThisModule(a_calo_hit_gid)) {
+        block_position = _gveto_locator_->getBlockPosition(a_calo_hit_gid);
+        width = _gveto_locator_->blockWidth();
+        height = _gveto_locator_->blockHeight();
+        thickness = _gveto_locator_->blockThickness();
+        column = _gveto_locator_->getColumnAddress(a_calo_hit_gid);
+        side = _gveto_locator_->getSideAddress(a_calo_hit_gid);
+        const int side_number = (side == snemo::geometry::side_t::BACK) ? 1 : -1;
         norm.set_z(st::experimental_double((double)side_number, 0.));
       }
 

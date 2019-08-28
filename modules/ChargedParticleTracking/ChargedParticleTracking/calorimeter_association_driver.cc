@@ -14,7 +14,7 @@
 #include <geomtools/manager.h>
 
 // This project (Falaise):
-#include <falaise/config/quantity.h>
+#include <falaise/quantity.h>
 
 #include <falaise/snemo/datamodels/particle_track.h>
 #include <falaise/snemo/geometry/calo_locator.h>
@@ -65,13 +65,13 @@ const geomtools::manager& calorimeter_association_driver::geoManager() const {
 
 /// Initialize the driver through configuration properties
 calorimeter_association_driver::calorimeter_association_driver(
-    const falaise::config::property_set& ps, const geomtools::manager* gm) {
+    const falaise::property_set& ps, const geomtools::manager* gm) {
   logPriority_ =
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   geoManager_ = gm;
   auto lpname = ps.get<std::string>("locator_plugin_name", "");
   geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), lpname);
-  matchTolerance_ = ps.get<falaise::config::length_t>("matching_tolerance", {50, "mm"})();
+  matchTolerance_ = ps.get<falaise::length_t>("matching_tolerance", {50, "mm"})();
 }
 
 void calorimeter_association_driver::process(
@@ -107,9 +107,9 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
   //                     |-------
   //
   // Set the calorimeter locators :
-  const snemo::geometry::calo_locator& calo_locator = geoLocator_->get_calo_locator();
-  const snemo::geometry::xcalo_locator& xcalo_locator = geoLocator_->get_xcalo_locator();
-  const snemo::geometry::gveto_locator& gveto_locator = geoLocator_->get_gveto_locator();
+  const snemo::geometry::calo_locator& calo_locator = geoLocator_->caloLocator();
+  const snemo::geometry::xcalo_locator& xcalo_locator = geoLocator_->xcaloLocator();
+  const snemo::geometry::gveto_locator& gveto_locator = geoLocator_->gvetoLocator();
   // Get a list of neighbouring calorimeter hits
   std::set<geomtools::geom_id> list_of_neighbours;
 
@@ -118,12 +118,12 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
     const geomtools::geom_id& a_current_gid = i_calo_hit.get_geom_id();
 
     std::vector<geomtools::geom_id> neighbour_ids;
-    if (calo_locator.is_calo_block_in_current_module(a_current_gid)) {
-      calo_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
-    } else if (xcalo_locator.is_calo_block_in_current_module(a_current_gid)) {
-      xcalo_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
-    } else if (gveto_locator.is_calo_block_in_current_module(a_current_gid)) {
-      gveto_locator.get_neighbours_ids(a_current_gid, neighbour_ids);
+    if (calo_locator.isCaloBlockInThisModule(a_current_gid)) {
+      neighbour_ids = calo_locator.getNeighbourGIDs(a_current_gid);
+    } else if (xcalo_locator.isCaloBlockInThisModule(a_current_gid)) {
+      neighbour_ids = xcalo_locator.getNeighbourGIDs(a_current_gid);
+    } else if (gveto_locator.isCaloBlockInThisModule(a_current_gid)) {
+      neighbour_ids = gveto_locator.getNeighbourGIDs(a_current_gid);
     }
 
     for (auto jcalo = std::next(icalo); jcalo != calorimeter_hits_.end(); ++jcalo) {
@@ -178,12 +178,12 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
           // Compute distance to calorimeter center
           geomtools::vector_3d calo_position = geomtools::invalid_vector_3d();
 
-          if (calo_locator.is_calo_block_in_current_module(a_gid)) {
-            calo_locator.get_block_position(a_gid, calo_position);
-          } else if (xcalo_locator.is_calo_block_in_current_module(a_current_gid)) {
-            xcalo_locator.get_block_position(a_gid, calo_position);
-          } else if (gveto_locator.is_calo_block_in_current_module(a_current_gid)) {
-            gveto_locator.get_block_position(a_gid, calo_position);
+          if (calo_locator.isCaloBlockInThisModule(a_gid)) {
+            calo_position = calo_locator.getBlockPosition(a_gid);
+          } else if (xcalo_locator.isCaloBlockInThisModule(a_current_gid)) {
+            calo_position = xcalo_locator.getBlockPosition(a_gid);
+          } else if (gveto_locator.isCaloBlockInThisModule(a_current_gid)) {
+            calo_position = gveto_locator.getBlockPosition(a_gid);
           }
           const double distance = (calo_position - a_vertex->get_position()).mag();
           calo_collection.insert(std::make_pair(distance, a_calo_hit));

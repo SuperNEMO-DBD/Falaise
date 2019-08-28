@@ -28,11 +28,9 @@ namespace visualization {
 namespace detector {
 
 volume_model::volume_model()
-    : _composite(false), _color(0), _highlight_color(0), _transparency(0), _visibility(false) {
-  return;
-}
+    : _composite(false), _color(0), _highlight_color(0), _transparency(0), _visibility(false) {}
 
-volume_model::~volume_model() { return; }
+volume_model::~volume_model() = default;
 
 const std::string& volume_model::get_name() const { return _name; }
 
@@ -45,10 +43,10 @@ const geomtools::placement& volume_model::get_placement() const { return _placem
 bool volume_model::is_composite() const { return _composite; }
 
 // ctor:
-i_volume::i_volume() { return; }
+i_volume::i_volume() = default;
 
 // dtor:
-i_volume::~i_volume() { return; }
+i_volume::~i_volume() = default;
 
 }  // end of namespace detector
 

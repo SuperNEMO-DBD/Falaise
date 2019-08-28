@@ -34,25 +34,24 @@ DPP_MODULE_REGISTRATION_IMPLEMENT(event_browser_module,
                                   "snemo::visualization::view::event_browser_module")
 
 void event_browser_module::set_geometry_manager(const geomtools::manager &geometry_manager_) {
-  DT_THROW_IF(_geometry_manager_ != 0 && _geometry_manager_->is_initialized(), std::logic_error,
-              "Embedded geometry manager is already initialized !");
+  DT_THROW_IF(_geometry_manager_ != nullptr && _geometry_manager_->is_initialized(),
+              std::logic_error, "Embedded geometry manager is already initialized !");
   _geometry_manager_ = &geometry_manager_;
-  return;
 }
 
 // Constructor :
 event_browser_module::event_browser_module(datatools::logger::priority logging_priority_)
     : dpp::base_module(logging_priority_) {
-  _geometry_manager_ = 0;
-  _event_browser_ = 0;
-  _event_browser_ctrl_ = 0;
-  return;
+  _geometry_manager_ = nullptr;
+  _event_browser_ = nullptr;
+  _event_browser_ctrl_ = nullptr;
 }
 
 // Destructor :
 event_browser_module::~event_browser_module() {
-  if (is_initialized()) event_browser_module::reset();
-  return;
+  if (is_initialized()) {
+    event_browser_module::reset();
+  }
 }
 
 // Initialization :
@@ -64,11 +63,8 @@ void event_browser_module::initialize(const datatools::properties &config_,
 
   this->base_module::_common_initialize(config_);
 
-  std::string geo_label = snemo::service_info::default_geometry_service_label();
-  if (config_.has_key("Geo_label")) {
-    geo_label = config_.fetch_string("Geo_label");
-  }
-  if (_geometry_manager_ == 0) {
+  std::string geo_label = snemo::service_info::geometryServiceName();
+  if (_geometry_manager_ == nullptr) {
     // Access to the Geometry Service :
     DT_THROW_IF(geo_label.empty(), std::logic_error,
                 "Module '" << get_name() << "' has no valid 'Geo_label' property !");
@@ -77,13 +73,12 @@ void event_browser_module::initialize(const datatools::properties &config_,
                 std::logic_error,
                 "Module '" << get_name() << "' has no '" << geo_label << "' service !");
     // Fetch a reference to the geometry service :
-    const geomtools::geometry_service &Geo =
-        service_manager_.get<geomtools::geometry_service>(geo_label);
+    const auto &Geo = service_manager_.get<geomtools::geometry_service>(geo_label);
     // Request for a reference to the geometry manager and installation
     // in the simulation manager :
     set_geometry_manager(Geo.get_geom_manager());
   }
-  DT_THROW_IF(_geometry_manager_ == 0, std::logic_error, "Missing geometry manager !");
+  DT_THROW_IF(_geometry_manager_ == nullptr, std::logic_error, "Missing geometry manager !");
 
   // Event browser settings
   if (config_.has_key("browser.logging.priority")) {
@@ -105,7 +100,6 @@ void event_browser_module::initialize(const datatools::properties &config_,
 
   // Initialization stops here.
   _set_initialized(true);
-  return;
 }
 
 // Reset :
@@ -114,24 +108,23 @@ void event_browser_module::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is not initialized !");
 
-  if (_event_browser_ctrl_ != 0) {
+  if (_event_browser_ctrl_ != nullptr) {
     // Destruction of the thread synchronization object :
     _event_browser_ctrl_->set_stop_requested();
     delete _event_browser_ctrl_;
-    _event_browser_ctrl_ = 0;
+    _event_browser_ctrl_ = nullptr;
   }
 
   // Destroy internal resources :
   _terminate_event_browser();
 
   // Blank the module with default neutral values :
-  _geometry_manager_ = 0;
+  _geometry_manager_ = nullptr;
   _Geo_label_ = "";
 
   _set_initialized(false);
 
   DT_LOG_TRACE(get_logging_priority(), "Exiting...");
-  return;
 }
 
 // Processing :
@@ -152,7 +145,7 @@ void event_browser_module::_initialize_event_browser() {
   detector_mgr.construct();
 
   // Allocate the ROOT application :
-  new TApplication("ROOT application", 0, 0);
+  new TApplication("ROOT application", nullptr, nullptr);
 
   // Allocate the event browser :
   // Get the screen dimensions
@@ -173,7 +166,7 @@ void event_browser_module::_initialize_event_browser() {
   _event_browser_->grab_event_server().set_external(true);
 
   // Install an event controler in the browser:
-  if (_event_browser_ctrl_ == 0) {
+  if (_event_browser_ctrl_ == nullptr) {
     DT_LOG_TRACE(get_logging_priority(), "Allocating the 'event_browser_ctrl' object...");
     _event_browser_ctrl_ = new event_browser_ctrl(*_event_browser_);
     DT_LOG_TRACE(get_logging_priority(), "Install the 'event_browser_ctrl' object "
@@ -181,14 +174,12 @@ void event_browser_module::_initialize_event_browser() {
     _event_browser_->set_thread_ctrl(*_event_browser_ctrl_);
     DT_LOG_TRACE(get_logging_priority(), "New 'event_browser_ctrl' object is allocated.");
   }
-
-  return;
 }
 
 void event_browser_module::_terminate_event_browser() {
-  if (_event_browser_ctrl_ != 0) {
+  if (_event_browser_ctrl_ != nullptr) {
     delete _event_browser_ctrl_;
-    _event_browser_ctrl_ = 0;
+    _event_browser_ctrl_ = nullptr;
   }
 
   // ! This is done by ROOT and its memory management
@@ -197,8 +188,6 @@ void event_browser_module::_terminate_event_browser() {
   //     delete _event_browser_;
   //     _event_browser_ = 0;
   //   }
-
-  return;
 }
 
 dpp::base_module::process_status event_browser_module::_show_event(
@@ -214,7 +203,7 @@ dpp::base_module::process_status event_browser_module::_show_event(
       DT_LOG_TRACE(get_logging_priority(), "Acquire the event control lock...");
       boost::mutex::scoped_lock lock(*_event_browser_ctrl_->event_mutex);
 
-      if (_event_browser_ctrl_->browser_thread == 0) {
+      if (_event_browser_ctrl_->browser_thread == nullptr) {
         DT_LOG_TRACE(get_logging_priority(),
                      "Starting the ROOT application from its own thread...");
         _event_browser_ctrl_->start();

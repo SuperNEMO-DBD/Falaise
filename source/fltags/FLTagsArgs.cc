@@ -16,7 +16,7 @@
 #include "FLTagsCommandLine.h"
 #include "FLTagsErrors.h"
 #include "FLTagsUtils.h"
-#include "falaise/config/property_reader.h"
+#include "falaise/property_set.h"
 
 namespace FLTags {
 
@@ -96,7 +96,7 @@ void do_postprocess(FLTagsArgs& flTagsParameters) {
   }
 
   DT_LOG_TRACE_EXITING(flTagsParameters.logLevel);
-  }
+}
 
 void FLTagsArgs::print(std::ostream& out_) const {
   static const std::string tag("|-- ");

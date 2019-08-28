@@ -151,25 +151,25 @@ void cosmic_muon_generator::reset() {
   _at_reset_();
 }
 
-void cosmic_muon_generator::initialize(const datatools::properties& config_,
-                                       datatools::service_manager& /*service_manager_*/,
-                                       ::genbb::detail::pg_dict_type& /*dictionary_*/) {
+void cosmic_muon_generator::initialize(const datatools::properties& dps,
+                                       datatools::service_manager& /* unused */,
+                                       genbb::detail::pg_dict_type& /* unused */) {
   DT_THROW_IF(_initialized_, std::logic_error,
               "Operation prohibited ! Object is already initialized !");
 
-  _initialize_base(config_);
+  _initialize_base(dps);
 
   if (!has_external_random()) {
-    DT_THROW_IF(!config_.has_key("seed"), std::logic_error,
+    DT_THROW_IF(!dps.has_key("seed"), std::logic_error,
                 "Missing 'seed' property for particle generator '" << get_name() << "' !");
-    long seed = config_.fetch_integer("seed");
+    long seed = dps.fetch_integer("seed");
     DT_THROW_IF(seed < 0, std::logic_error,
                 "Invalid seed value (>=0) for particle generator '" << get_name() << "' !");
     _seed_ = seed;
   }
 
-  if (config_.has_key("mode")) {
-    std::string mode_str = config_.fetch_string("mode");
+  if (dps.has_key("mode")) {
+    std::string mode_str = dps.fetch_string("mode");
     if (mode_str == "sea_level") {
       set_mode(MODE_SEA_LEVEL);
     } else if (mode_str == "underground") {
@@ -182,9 +182,9 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
 
   if (_mode_ == MODE_SEA_LEVEL) {
     DT_THROW_IF(
-        !config_.has_key("sea_level.mode"), std::logic_error,
+        !dps.has_key("sea_level.mode"), std::logic_error,
         "Missing 'sea_level.mode' property  for particle generator '" << get_name() << "' !");
-    std::string mode_str = config_.fetch_string("sea_level.mode");
+    std::string mode_str = dps.fetch_string("sea_level.mode");
     if (mode_str == "toy") {
       _sea_level_mode_ = SEA_LEVEL_TOY;
     } else if (mode_str == "pdg") {
@@ -196,25 +196,25 @@ void cosmic_muon_generator::initialize(const datatools::properties& config_,
     }
 
     if (_sea_level_mode_ == SEA_LEVEL_TOY) {
-      if (config_.has_key("sea_level_toy.energy_mean")) {
+      if (dps.has_key("sea_level_toy.energy_mean")) {
         _sea_level_toy_setup_.energy_mean =
-            config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_mean", "energy");
+            dps.fetch_real_with_explicit_dimension("sea_level_toy.energy_mean", "energy");
       }
-      if (config_.has_key("sea_level_toy.energy_sigma")) {
+      if (dps.has_key("sea_level_toy.energy_sigma")) {
         _sea_level_toy_setup_.energy_sigma =
-            config_.fetch_real_with_explicit_dimension("sea_level_toy.energy_sigma", "energy");
+            dps.fetch_real_with_explicit_dimension("sea_level_toy.energy_sigma", "energy");
       }
-      if (config_.has_key("sea_level_toy.maximum_theta")) {
+      if (dps.has_key("sea_level_toy.maximum_theta")) {
         _sea_level_toy_setup_.maximum_theta =
-            config_.fetch_real_with_explicit_dimension("sea_level_toy.maximum_theta", "angle");
+            dps.fetch_real_with_explicit_dimension("sea_level_toy.maximum_theta", "angle");
         DT_THROW_IF(_sea_level_toy_setup_.maximum_theta < 0.0 ||
                         _sea_level_toy_setup_.maximum_theta > 90.0 * CLHEP::degree,
                     std::range_error,
                     "Invalid 'sea_level_toy.maximum_theta' value for particle generator '"
                         << get_name() << "' !");
       }
-      if (config_.has_key("sea_level_toy.muon_ratio")) {
-        _sea_level_toy_setup_.muon_ratio = config_.fetch_real("sea_level_toy.muon_ratio");
+      if (dps.has_key("sea_level_toy.muon_ratio")) {
+        _sea_level_toy_setup_.muon_ratio = dps.fetch_real("sea_level_toy.muon_ratio");
         DT_THROW_IF(_sea_level_toy_setup_.muon_ratio < 0.0, std::logic_error,
                     "Invalid 'sea_level_toy.muon_ratio' value for particle generator '"
                         << get_name() << "'!");

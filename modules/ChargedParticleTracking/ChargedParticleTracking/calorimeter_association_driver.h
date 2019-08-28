@@ -35,7 +35,7 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 
 // this project
-#include <falaise/config/property_set.h>
+#include <falaise/property_set.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 
 namespace datatools {
@@ -86,7 +86,7 @@ class calorimeter_association_driver {
   calorimeter_association_driver() = default;
 
   /// Construct from configuration and geometry
-  calorimeter_association_driver(const falaise::config::property_set& ps,
+  calorimeter_association_driver(const falaise::property_set& ps,
                                  const geomtools::manager* gm);
 
   /// Destructor

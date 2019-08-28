@@ -158,7 +158,6 @@ struct toy_display_driver {
   double zoom_range_xyz;
   int module_number_;
   geomtools::placement module_placement_;
-  snemo::geometry::gg_locator module_gg_locator_;
 
   // Only in 'snemo::demonstrator' setup :
   uint32_t calorimeter_block_type;

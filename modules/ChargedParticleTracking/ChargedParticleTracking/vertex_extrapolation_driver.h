@@ -34,7 +34,7 @@
 #define FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H 1
 
 // This project
-#include "falaise/config/property_set.h"
+#include "falaise/property_set.h"
 #include "falaise/snemo/datamodels/particle_track.h"
 
 namespace geomtools {
@@ -66,7 +66,7 @@ class vertex_extrapolation_driver {
   vertex_extrapolation_driver() = default;
 
   /// Initialize the driver through configuration properties
-  vertex_extrapolation_driver(const falaise::config::property_set& ps,
+  vertex_extrapolation_driver(const falaise::property_set& ps,
                               const geomtools::manager* gm);
 
   // Destructor

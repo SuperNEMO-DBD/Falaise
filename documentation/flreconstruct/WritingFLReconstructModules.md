@@ -55,7 +55,7 @@ The class must implement:
 
 - A default constructor
 - A non-default constructor taking parameters:
-  - `falaise::config::property_set const&`, the configuration supplied to the module by the pipeline script
+  - `falaise::property_set const&`, the configuration supplied to the module by the pipeline script
   - `datatools::service_manager&`, `flreconstruct`'s service provider
 - A public member function `process` taking a single `datatools::things&` input
   parameter, and returning a @ref falaise::processing::status enumeration.
@@ -66,7 +66,7 @@ also become a string that can be used to create a module of this type in
 an `flreconstruct` pipeline script.
 
 The non-default constructor is responsible for initializing the module using,
-if required, the information supplied in the @ref falaise::config::property_set
+if required, the information supplied in the @ref falaise::property_set
 and @ref datatools::service_manager objects. Our basic module doesn't require
 any configuration or service information so we simply ignore these arguments.
 Later tutorials will cover [module configuration](@ref minimalconfigurablemodule)
@@ -369,11 +369,11 @@ The key changes are:
 
 1. `std::string` data member `message`
 2. Use of the data member in the `process` member function
-3. Use of the falaise::config::property_set instance `ps` passed to the user-defined
+3. Use of the falaise::property_set instance `ps` passed to the user-defined
 constructor to extract configuration information
 
 Here, `message` is our configurable parameter, and is initialized in the `MyModule` constructor
-using the @ref falaise::config::property_set::get member function. We supply `std::string` as
+using the @ref falaise::property_set::get member function. We supply `std::string` as
 the template argument as that is the type we need, and `message` as the parameter ID to extract.
 This ID does not have to match the name of the data member, but it is useful to do so for clarity.
 
@@ -393,7 +393,7 @@ If you've made the changes as above, simply rebuild!
 Configuring MyModule from the Pipeline Script {#minimalconfigurablemodulescript}
 ----------------------------------------------
 In the preceding section, we saw that module configuration is passed to
-a module through an instance of the @ref falaise::config::property_set class.
+a module through an instance of the @ref falaise::property_set class.
 This instance is created by `flreconstruct` for the module from the
 properties, if any, supplied in the section of the pipeline script
 defining the module. To begin with, we can use the pipeline script from
@@ -403,7 +403,7 @@ earlier to run the configurable module, simply adding the required string parame
 \include flreconstruct/MyModuleConfigurable/MyModulePipeline.conf
 
 The key name `message` and its type must match that looked for by `MyModule`'s constructor
-in the supplied @ref falaise::config::property_set. Allowed key/types and their mappings to C++
+in the supplied @ref falaise::property_set. Allowed key/types and their mappings to C++
 types are documented in [a later section](@ref configurationbestpractices).
 The script can be run in `flreconstruct` as before:
 
@@ -446,7 +446,7 @@ You should see each event being dumped, with the dumped info being
 bracketed by the output from each `MyModule` instance, each with
 different values of the message parameter.
 
-Both `flreconstruct` and @ref falaise::config::property_set work together to check that needed parameters
+Both `flreconstruct` and @ref falaise::property_set work together to check that needed parameters
 are supplied and of the correct type. For example, if we *did not* supply the `message`
 parameter:
 
@@ -502,7 +502,7 @@ are broken down into smaller chunks, so you should consider refactoring
 complex modules into smaller orthogonal units.
 
 An important restriction on configurable parameters is that they can only
-be of types understood by @ref falaise::config::property_set and the underlying
+be of types understood by @ref falaise::property_set and the underlying
 @ref datatools::properties configuration language.
 
 
@@ -516,9 +516,9 @@ be of types understood by @ref falaise::config::property_set and the underlying
 | `std::vector<int>`                 | `auto x = ps.get<std::vector<int>>("key");`              | key : int[2] = 1 2                |
 | `std::vector<double>`              | `auto x = ps.get<std::vector<double>>("key");`           | key : real[2] = 3.14 4.13         |
 | `std::vector<bool>`                | `auto x = ps.get<std::vector<bool>>("key");`             | key : bool[2] = true false        |
-| @ref falaise::config::path         | `auto x = ps.get<falaise::config::path>("key");`         | key : string as path = "/tmp/foo" |
-| @ref falaise::config::quantity_t   | `auto x = ps.get<falaise::config::length_t>("key");`     | key : real as length = 3.14 mm    |
-| @ref falaise::config::property_set | `auto x = ps.get<falaise::config::property_set>("key");` | _see below_                       |
+| @ref falaise::path         | `auto x = ps.get<falaise::path>("key");`         | key : string as path = "/tmp/foo" |
+| @ref falaise::quantity_t   | `auto x = ps.get<falaise::length_t>("key");`     | key : real as length = 3.14 mm    |
+| @ref falaise::property_set | `auto x = ps.get<falaise::property_set>("key");` | _see below_                       |
 
 The last item handles the case of nested configurations, for example
 
@@ -530,7 +530,7 @@ b.x : int = 2
 b.y : int = 4
 ```
 
-The keys can be extracted individually from the resultant @ref falaise::config::property_set, e.g.
+The keys can be extracted individually from the resultant @ref falaise::property_set, e.g.
 
 ```cpp
 auto x = ps.get<int>("a.x");
@@ -540,8 +540,8 @@ However, nested configurations typically imply structured data, with periods ind
 Each level can be extracted into its own set of properties, e.g.
 
 ```cpp
-auto a = ps.get<falaise::config::property_set>("a"); // a now holds key-values x=1, y=3
-auto b = ps.get<falaise::config::property_set>("b"); // b now holds key-values x=2, y=4
+auto a = ps.get<falaise::property_set>("a"); // a now holds key-values x=1, y=3
+auto b = ps.get<falaise::property_set>("b"); // b now holds key-values x=2, y=4
 ```
 
 with subsequent handling as required. A restriction on nesting is that it _cannot_ support
@@ -556,7 +556,7 @@ a.x : real = 3.14
 as the key "a" is ambiguous. You should not use this form in any case as it generally
 indicates bad design.
 
-When using @ref falaise::config::property_set, you have several methods to _validate_
+When using @ref falaise::property_set, you have several methods to _validate_
 the configuration supplied to your module. By _validation_, we mean checking the configuration
 supplies:
 
@@ -566,7 +566,7 @@ supplies:
 
 All configuration and validation must be handled in the module's constructor, with exceptions
 thrown if an validation check fails. The first two checks can be handled automatically by
-@ref falaise::config::property_set through its `get` member functions.
+@ref falaise::property_set through its `get` member functions.
 
 Parameters may be _required_, i.e. there is no sensible default, or _optional_, i.e. where we
 may wish to adjust the default. A required parameter is validated for
@@ -575,7 +575,7 @@ existence and correct type by the single parameter `get` member function, e.g.
 ```cpp
 class MyModule {
  public:
-  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+  MyModule(falaise::property_set const& ps, datatools::service_manager&)
    : message( ps.get<std::string>("message") )
   {}
   // other code omitted
@@ -592,7 +592,7 @@ An optional parameter is validated in the same way, but we use the two parameter
 ```cpp
 class MyModule {
  public:
-  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+  MyModule(falaise::property_set const& ps, datatools::service_manager&)
    : myparam( ps.get<int>("myparam", 42) )
   {}
   // other code omitted
@@ -615,7 +615,7 @@ that must be even, we could validate this via:
 ```cpp
 class MyModule {
  public:
-  MyModule(falaise::config::property_set const& ps, datatools::service_manager&)
+  MyModule(falaise::property_set const& ps, datatools::service_manager&)
    : myparam( ps.get<int>("myparam") )
   {
     if(myparam%2 != 0) {

@@ -23,7 +23,7 @@
 #include "FLReconstructErrors.h"
 #include "FLReconstructResources.h"
 #include "FLReconstructUtils.h"
-#include "falaise/common/user_profile.h"
+#include "falaise/user_level.h"
 #include "falaise/detail/falaise_sys.h"
 #include "falaise/resource.h"
 #include "falaise/version.h"
@@ -119,26 +119,20 @@ void do_help_module(std::ostream& os, const std::string& module) {
 
 //! Print list of standard pipeline configurations to supplied ostream
 void do_help_pipeline_list(std::ostream& os) {
-  datatools::logger::priority logging =
-      falaise::detail::falaise_sys::const_instance().get_logging();
   datatools::kernel& dtk = ::datatools::kernel::instance();
   if (dtk.has_urn_query()) {
     const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
-    if (datatools::logger::is_debug(logging)) {
-      dtkUrnQuery.tree_dump(std::cerr, "Bayeux/datatools's kernel URN query service:", "[debug] ");
-    }
     std::vector<std::string> flsim_urn_infos;
     if (dtkUrnQuery.find_urn_info(flsim_urn_infos, falaise::detail::falaise_sys::fl_setup_db_name(),
                                   "(urn:)([^:]*)(:)([^:]*)(:reconstruction:)([^:]*)(:pipeline)",
                                   "recsetup")) {
-      std::clog << "List of supported reconstruction pipeline:" << std::endl;
+      os << "List of supported reconstruction pipeline:" << std::endl;
       for (const auto& flsim_urn_info : flsim_urn_infos) {
         const datatools::urn_info& ui = dtkUrnQuery.get_urn_info(flsim_urn_info);
         os << ui.get_urn() << " : " << ui.get_description() << std::endl;
       }
     } else {
-      DT_LOG_WARNING(logging,
-                     "Could not find any reconstruction setup from the global URN query service.");
+      std::cerr << "Could not find any reconstruction setup from the global URN query service." << std::endl;
     }
   }
 }
@@ -257,7 +251,7 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
     }
   }
 
-  if (falaise::common::supported_user_profiles().count(clArgs.userProfile) == 0u) {
+  if (falaise::validUserLevels().count(clArgs.userProfile) == 0u) {
     do_error(std::cerr, "Invalid user profile '" + clArgs.userProfile + "'!");
     return DIALOG_ERROR;
   }

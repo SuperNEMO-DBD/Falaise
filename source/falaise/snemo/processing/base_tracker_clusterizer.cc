@@ -16,8 +16,8 @@
 #include <geomtools/manager.h>
 
 // This project:
-#include <falaise/config/property_set.h>
-#include <falaise/config/quantity.h>
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/locator_helpers.h>
@@ -47,8 +47,7 @@ void base_tracker_clusterizer::_reset() {
 
   // Clear working arrays:
   _clear_working_arrays();
-  tpcConfig_.reset();
-  preClusterer_.reset();
+  preClusterer_ = snreco::detail::GeigerTimePartitioner{};
   cellSelector_.reset();
 
   // Reset configuration params:
@@ -60,9 +59,9 @@ datatools::logger::priority base_tracker_clusterizer::get_logging_priority() con
 }
 
 void base_tracker_clusterizer::set_logging_priority(datatools::logger::priority priority_) {
-   DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
+  DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
               "Invalid logging priority level !");
-   _logging_priority = priority_;
+  _logging_priority = priority_;
 }
 
 const std::string &base_tracker_clusterizer::get_id() const { return id_; }
@@ -82,8 +81,8 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
               "Geometry manager is not initialized !");
 
   // Extract the setup of the base tracker fitter :
-  falaise::config::property_set localPS{setup_};
-  auto ps = localPS.get<falaise::config::property_set>("BTC", {});
+  falaise::property_set localPS{setup_};
+  auto ps = localPS.get<falaise::property_set>("BTC", {});
 
   // Logging priority:
   auto lp = datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
@@ -92,7 +91,7 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
   // Get the Geiger cell locator from geometry plugins :
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   auto snLocator = snemo::geometry::getSNemoLocator(get_geometry_manager(), locator_plugin_name);
-  geigerLocator_ = &(snLocator->get_gg_locator());
+  geigerLocator_ = &(snLocator->geigerLocator());
 
   // Cell geom_id mask
   auto cell_id_mask_rules = ps.get<std::string>("cell_id_mask_rules", "");
@@ -101,23 +100,11 @@ void base_tracker_clusterizer::_initialize(const datatools::properties &setup_) 
     cellSelector_.initialize(cell_id_mask_rules);
   }
 
-
-  // Configure TrackerPreClustering :
-  // derived:
-  tpcConfig_.logging = get_logging_priority();
-  tpcConfig_.cell_size = get_gg_locator().get_cell_diameter();
-  // configurable:
-  tpcConfig_.delayed_hit_cluster_time =
-      ps.get<falaise::config::time_t>("TPC.delayed_hit_cluster_time", {10.0, "microsecond"})();
-  tpcConfig_.processing_prompt_hits = ps.get<bool>("TPC.processing_prompt_hits", true);
-  tpcConfig_.processing_delayed_hits = ps.get<bool>("TPC.processing_delayed_hits", true);
-  tpcConfig_.split_chamber = ps.get<bool>("TPC.split_chamber", false);
-  // Check :
-  DT_THROW_IF(!tpcConfig_.check(), std::logic_error,
-              "Invalid TrackerPreClustering setup data : " << tpcConfig_.get_last_error_message());
-
-  // Configure the algorithm :
-  preClusterer_.initialize(tpcConfig_);
+  // Configure time partitioning :
+  preClusterer_ = snreco::detail::GeigerTimePartitioner(
+      ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time", {10.0, "microsecond"})(),
+      ps.get<bool>("TPC.processing_prompt_hits", true),
+      ps.get<bool>("TPC.processing_delayed_hits", true), ps.get<bool>("TPC.split_chamber", false));
 }
 
 void base_tracker_clusterizer::_clear_working_arrays() {
@@ -148,39 +135,9 @@ int base_tracker_clusterizer::_prepare_process(
     const base_tracker_clusterizer::hit_collection_type &gg_hits,
     const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
     snemo::datamodel::tracker_clustering_data & /* clustering_ */) {
-  /****************
-   * Locate cells *
-   ****************/
-  // Ensure the hits have registered X/Y position :
-  for (const hit_handle_type &gg_handle : gg_hits) {
-    if (!gg_handle.has_data()) {
-      continue;
-    }
-    // Retain use of get because of the const-cast below (to be purged at some
-    // point...
-    const snemo::datamodel::calibrated_tracker_hit &sncore_gg_hit = gg_handle.get();
-    const geomtools::geom_id &gid = sncore_gg_hit.get_geom_id();
-    // Check if X/Y position of the cell is recorded in the event :
-    if (!sncore_gg_hit.has_xy()) {
-      // if not, we do it :
-      geomtools::vector_3d hit_pos;
-      get_gg_locator().get_cell_position(gid, hit_pos);
-      {
-        // locally break the const-ness of the hit to store the X/Y doublet :
-        auto &mutable_sncore_gg_hit =
-            const_cast<snemo::datamodel::calibrated_tracker_hit &>(sncore_gg_hit);
-        mutable_sncore_gg_hit.set_xy(hit_pos.x(), hit_pos.y());
-      }
-    }
-  }
-
-  /********************
-   * Pre-clusterizing *
-   ********************/
-
   // Input data
-  TrackerPreClustering::input_data<hit_type> idata;
-  idata.hits.reserve(gg_hits.size());
+  snreco::detail::GeigerHitPtrCollection<hit_type> idata;
+  idata.reserve(gg_hits.size());
   std::map<const hit_type *, hit_handle_type> pre_cluster_mapping;
 
   // Fill the TrackerPreClustering input data model :
@@ -193,46 +150,39 @@ int base_tracker_clusterizer::_prepare_process(
     if (cellSelector_.is_initialized() && !cellSelector_.match(gid)) {
       continue;
     }
-    idata.hits.push_back(&(*gg_handle));
+    idata.push_back(&(*gg_handle));
     // Mapping between both data models (what, What, WHAT?) :
     pre_cluster_mapping[&(*gg_handle)] = gg_handle;
   }
 
-  // TrackerPreClustering output data :
-  TrackerPreClustering::output_data<hit_type> odata;
-
   // Invoke pre-clusterizing algo :
-  int status = preClusterer_.process<hit_type>(idata, odata);
-  if (status != TrackerPreClustering::pre_clusterizer::OK) {
-    DT_LOG_ERROR(get_logging_priority(), "Pre-clusterization has failed !");
-    return 1;
-  }
+  snreco::detail::GeigerHitTimePartition<hit_type> odata = preClusterer_.partition(idata);
 
   // Repopulate the collections of pre-clusters :
 
   // Ignored hits :
-  ignoredHits_.reserve(odata.ignored_hits.size());
-  for (const auto& ignored_hit : odata.ignored_hits) {
+  ignoredHits_.reserve(odata.ignoredHits.size());
+  for (const auto &ignored_hit : odata.ignoredHits) {
     ignoredHits_.push_back(pre_cluster_mapping[ignored_hit]);
   }
 
   // Prompt time clusters :
-  promptClusters_.reserve(odata.prompt_clusters.size());
-  for (const auto& prompt_cluster : odata.prompt_clusters) {
+  promptClusters_.reserve(odata.promptClusters.size());
+  for (const auto &prompt_cluster : odata.promptClusters) {
     hit_collection_type hc;
     hc.reserve(prompt_cluster.size());
-    for(const auto& hit : prompt_cluster) {
+    for (const auto &hit : prompt_cluster) {
       hc.push_back(pre_cluster_mapping[hit]);
     }
     promptClusters_.push_back(std::move(hc));
   }
 
   // Delayed time clusters :
-  delayedClusters_.reserve(odata.delayed_clusters.size());
-  for (const auto& delayed_cluster : odata.delayed_clusters) {
+  delayedClusters_.reserve(odata.delayedClusters.size());
+  for (const auto &delayed_cluster : odata.delayedClusters) {
     hit_collection_type hc;
     hc.reserve(delayed_cluster.size());
-    for (const auto& ihit : delayed_cluster) {
+    for (const auto &ihit : delayed_cluster) {
       hc.push_back(pre_cluster_mapping[ihit]);
     }
     delayedClusters_.push_back(std::move(hc));
@@ -296,7 +246,7 @@ int base_tracker_clusterizer::process(
   prompt_work_clusterings.reserve(2);
 
   // Process prompt time-clusters :
-  if (tpcConfig_.processing_prompt_hits) {
+  if (preClusterer_.classifiesPromptHits()) {
     // Invoke the clustering algorithms on each prompt clusters :
     for (const hit_collection_type &prompt_clusters : promptClusters_) {
       prompt_work_clusterings.emplace_back(snedm::tracker_clustering_data{});
@@ -372,7 +322,7 @@ int base_tracker_clusterizer::process(
   }
 
   // Process delayed time-clusters :
-  if (tpcConfig_.processing_delayed_hits) {
+  if (preClusterer_.classifiesDelayedHits()) {
     std::vector<snedm::tracker_clustering_data> delayed_work_clusterings;
     // Process delayed time-clusters :
     {
@@ -562,6 +512,6 @@ void base_tracker_clusterizer::ocd_support(datatools::object_configuration_descr
   }
 }
 
-}  // end of namespace processing
+}  // namespace processing
 
 }  // end of namespace snemo

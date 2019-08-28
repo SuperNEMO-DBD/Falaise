@@ -11,7 +11,7 @@
 // This Project:
 #include "FLSimulateErrors.h"
 #include "FLSimulateUtils.h"
-#include "falaise/common/user_profile.h"
+#include "falaise/user_level.h"
 #include "falaise/detail/falaise_sys.h"
 #include "falaise/version.h"
 
@@ -208,7 +208,7 @@ void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
     }
   }
 
-  if (falaise::common::supported_user_profiles().count(clArgs.userProfile) == 0u) {
+  if (falaise::validUserLevels().count(clArgs.userProfile) == 0u) {
     DT_THROW(FLDialogOptionsError, "Invalid user profile '" << clArgs.userProfile << "'");
   }
 }

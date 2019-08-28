@@ -37,7 +37,7 @@ namespace visualization {
 namespace view {
 
 // ctor:
-snemo_draw_manager::snemo_draw_manager(const io::event_server* server_) : i_draw_manager() {
+snemo_draw_manager::snemo_draw_manager(const io::event_server* server_) {
   _server_ = server_;
 
   _objects_ = new TObjArray(1000);
@@ -49,15 +49,10 @@ snemo_draw_manager::snemo_draw_manager(const io::event_server* server_) : i_draw
   _calorimeter_hit_renderer_.initialize(_server_, _objects_, _text_objects_);
   _tracker_hit_renderer_.initialize(_server_, _objects_, _text_objects_);
   _visual_track_renderer_.initialize(_server_, _objects_, _text_objects_);
-
-  return;
 }
 
 // dtor:
-snemo_draw_manager::~snemo_draw_manager() {
-  this->snemo_draw_manager::reset();
-  return;
-}
+snemo_draw_manager::~snemo_draw_manager() { this->snemo_draw_manager::reset(); }
 
 TObjArray* snemo_draw_manager::get_objects() { return _objects_; }
 
@@ -71,73 +66,62 @@ void snemo_draw_manager::update() {
   }
 
   // Add 'simulated_data' objects:
-  if (_server_->get_event().has(io::SD_LABEL))
+  if (_server_->get_event().has(io::SD_LABEL)) {
     this->_add_simulated_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no simulated data");
   }
 
   // Add 'calibrated_data' objects:
-  if (_server_->get_event().has(io::CD_LABEL))
+  if (_server_->get_event().has(io::CD_LABEL)) {
     this->_add_calibrated_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no calibrated data");
   }
 
   // Add 'tracker_clustering_data' objects:
-  if (_server_->get_event().has(io::TCD_LABEL))
+  if (_server_->get_event().has(io::TCD_LABEL)) {
     this->_add_tracker_clustering_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no tracker clustering data");
   }
 
   // Add 'tracker_trajectory_data' objects:
-  if (_server_->get_event().has(io::TTD_LABEL))
+  if (_server_->get_event().has(io::TTD_LABEL)) {
     this->_add_tracker_trajectory_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no tracker trajectory data");
   }
 
   // Add 'tracker_trajectory_data' objects:
-  if (_server_->get_event().has(io::PTD_LABEL))
+  if (_server_->get_event().has(io::PTD_LABEL)) {
     this->_add_particle_track_data();
-  else {
+  } else {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no particle track data");
   }
-
-  return;
 }
 
-void snemo_draw_manager::draw() {
-  _objects_->Draw();
-  //        _text_objects_->Draw();
-  return;
-}
+void snemo_draw_manager::draw() { _objects_->Draw(); }
 
-void snemo_draw_manager::draw_text() {
-  _text_objects_->Draw();
-  return;
-}
+void snemo_draw_manager::draw_text() { _text_objects_->Draw(); }
 
 void snemo_draw_manager::reset() {
   this->snemo_draw_manager::clear();
 
-  if (_objects_) delete _objects_;
-  _objects_ = 0;
+  delete _objects_;
+  _objects_ = nullptr;
 
-  if (_text_objects_) delete _text_objects_;
-  _text_objects_ = 0;
+  delete _text_objects_;
+  _text_objects_ = nullptr;
 
   _calorimeter_hit_renderer_.reset();
   _tracker_hit_renderer_.reset();
   _visual_track_renderer_.reset();
-
-  return;
 }
 
 void snemo_draw_manager::clear() {
@@ -147,7 +131,6 @@ void snemo_draw_manager::clear() {
 
   _objects_->Delete();
   _text_objects_->Delete();
-  return;
 }
 
 /***************************************************
@@ -157,21 +140,23 @@ void snemo_draw_manager::clear() {
 void snemo_draw_manager::_add_simulated_data() {
   const options_manager& options_mgr = options_manager::get_instance();
 
-  if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) this->_add_simulated_vertex_();
+  if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) {
+    this->_add_simulated_vertex_();
+  }
 
-  if (options_mgr.get_option_flag(SHOW_MC_HITS)) this->_add_simulated_hits_();
+  if (options_mgr.get_option_flag(SHOW_MC_HITS)) {
+    this->_add_simulated_hits_();
+  }
 
   if (options_mgr.get_option_flag(SHOW_MC_TRACKS)) {
     _visual_track_renderer_.push_mc_tracks();
     _visual_track_renderer_.push_mc_legend();
   }
-
-  return;
 }
 
 void snemo_draw_manager::_add_simulated_vertex_() {
   const io::event_record& event = _server_->get_event();
-  const mctools::simulated_data& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
+  const auto& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
   if (!sim_data.has_vertex()) {
     DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
@@ -190,9 +175,7 @@ void snemo_draw_manager::_add_simulated_vertex_() {
   const mctools::simulated_data::primary_event_type& pevent = sim_data.get_primary_event();
   const genbb::primary_event::particles_col_type& particles = pevent.get_particles();
 
-  for (genbb::primary_event::particles_col_type::const_iterator ip = particles.begin();
-       ip != particles.end(); ++ip) {
-    const genbb::primary_particle& a_primary = *ip;
+  for (const auto& a_primary : particles) {
     if (a_primary.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
       TPolyMarker3D* vertex_3d = base_renderer::make_polymarker(sim_vertex);
       _objects_->Add(vertex_3d);
@@ -201,7 +184,6 @@ void snemo_draw_manager::_add_simulated_vertex_() {
       break;
     }
   }
-  return;
 }
 
 void snemo_draw_manager::_add_simulated_hits_() {
@@ -221,8 +203,6 @@ void snemo_draw_manager::_add_simulated_hits_() {
   if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
     _tracker_hit_renderer_.push_simulated_hits("gg");
   }
-
-  return;
 }
 
 /****************************************************
@@ -235,7 +215,6 @@ void snemo_draw_manager::_add_calibrated_data() {
     _calorimeter_hit_renderer_.push_calibrated_hits();
     _tracker_hit_renderer_.push_calibrated_hits();
   }
-  return;
 }
 
 /************************************************************
@@ -247,8 +226,6 @@ void snemo_draw_manager::_add_tracker_clustering_data() {
   if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS)) {
     _tracker_hit_renderer_.push_clustered_hits();
   }
-
-  return;
 }
 
 /************************************************************
@@ -260,8 +237,6 @@ void snemo_draw_manager::_add_tracker_trajectory_data() {
   if (options_mgr.get_option_flag(SHOW_TRACKER_TRAJECTORIES)) {
     _tracker_hit_renderer_.push_fitted_tracks();
   }
-
-  return;
 }
 
 /********************************************************
@@ -273,8 +248,6 @@ void snemo_draw_manager::_add_particle_track_data() {
   if (options_mgr.get_option_flag(SHOW_PARTICLE_TRACKS)) {
     _visual_track_renderer_.push_reconstructed_tracks();
   }
-
-  return;
 }
 
 }  // end of namespace view

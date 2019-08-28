@@ -29,18 +29,18 @@ set(FalaiseLibrary_HEADERS
   falaise.h
   resource.h
   version.h.in
-  config/path.h
-  config/property_reader.h
-  config/property_set.h
-  config/quantity.h
+  path.h
+  property_set.h
+  quantity.h
   tags.h
+  user_level.h
   detail/falaise_sys.h
+  metadata_utils.h
 )
 
 #-----------------------------------------------------------------------
 # Declare sources
 #
-configure_file(falaise.cc.in  falaise.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
 
 # - Generate binreloc header/source with mangled names, ensuring first
@@ -51,28 +51,25 @@ configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 
 set(FalaiseLibrary_SOURCES
   version.cc
-  ${CMAKE_CURRENT_BINARY_DIR}/falaise.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
-  config/path.cpp
-  config/property_reader.cc
-  config/property_set.cpp
-  config/quantity.cpp
+  path.cpp
+  property_set.cpp
+  quantity.cpp
   tags.cc
+  user_level.cc
   detail/falaise_sys.cc
- )
+  metadata_utils.cc
+  falaise.cc
+  )
 
 set(FalaiseLibrary_TESTS)
 set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
-#   to various setups (snemo, bipo3...)
-include(common.cmake)
-include(app.cmake)
+#   to various setups
 include(snemo.cmake)
-#include(bipo3.cmake)
-include(TrackerPreClustering.cmake)
 
 # - Publish headers
 foreach(_hdrin ${FalaiseLibrary_HEADERS})
@@ -153,7 +150,6 @@ if(FALAISE_ENABLE_TESTING)
     test/test_falaise_tags.cxx
    )
   list(APPEND FalaiseLibrary_TESTS_CATCH
-    test/test_property_reader.cxx
     test/test_falaise_version.cxx
     test/test_path.cxx
     test/test_property_set.cxx

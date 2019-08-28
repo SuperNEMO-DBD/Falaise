@@ -118,7 +118,7 @@ class base_renderer {
                                     const bool convert_ = false);
 
   /// Build a polyline from an track
-  static TPolyLine3D* make_track(const geomtools::i_wires_3d_rendering& wires_,
+  static TPolyLine3D* make_track(const geomtools::i_wires_3d_rendering& iw3dr_,
                                  const bool convert_ = false);
 
  protected:

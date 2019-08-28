@@ -57,7 +57,7 @@ namespace view {
 
 // ctor:
 display_3d::display_3d(TGCompositeFrame *main_, io::event_server *server_)
-    : _server_(server_), _3d_drawer_(0), _3d_viewer_(0) {
+    : _server_(server_), _3d_drawer_(nullptr), _3d_viewer_(nullptr) {
   const int width = main_->GetWidth();
   const int height = main_->GetHeight();
 
@@ -73,23 +73,6 @@ display_3d::display_3d(TGCompositeFrame *main_, io::event_server *server_)
         new pad_embedded_viewer("3DPlot", main_, width, height, i_embedded_viewer::VIEW_3D);
 
   main_->AddFrame(_3d_viewer_->get_frame(), new TGLayoutHints(kLHintsExpandX | kLHintsExpandY));
-
-  // TGHorizontalFrame* hzoom = new TGHorizontalFrame (main_,
-  //                                                   static_cast<int> (0.99*width),
-  //                                                   static_cast<int> (0.38*height));
-
-  // main_->AddFrame (hzoom, new TGLayoutHints (kLHintsExpandX, 3, 3, 3, 3));
-
-  // hzoom->AddFrame (new TGLabel (hzoom, "Zoom to: "),
-  //                  new TGLayoutHints (kLHintsCenterY, 1, 1, 1, 1));
-
-  // TGComboBox* area_list = new TGComboBox (hzoom, AREA_ZOOM_LIST);
-  // hzoom->AddFrame (area_list,
-  //                  new TGLayoutHints (kLHintsCenterY|kLHintsLeft, 1, 1, 1, 1));
-  // area_list->Resize (static_cast<int> (0.2*width), 20);
-  // detList->Associate(theBrowser);
-
-  return;
 }
 
 // dtor:
@@ -97,36 +80,20 @@ display_3d::~display_3d() {
   this->clear();
 
   delete _3d_viewer_;
-  return;
 }
 
-void display_3d::set_drawer(i_draw_manager *draw_manager_) {
-  _3d_drawer_ = draw_manager_;
-  return;
-}
+void display_3d::set_drawer(i_draw_manager *draw_manager_) { _3d_drawer_ = draw_manager_; }
 
-void display_3d::clear() {
-  _3d_viewer_->clear();
-  return;
-}
+void display_3d::clear() { _3d_viewer_->clear(); }
 
-void display_3d::reset() {
-  _3d_viewer_->reset();
-  return;
-}
+void display_3d::reset() { _3d_viewer_->reset(); }
 
-void display_3d::update_detector() {
-  _3d_viewer_->update_detector();
-  return;
-}
+void display_3d::update_detector() { _3d_viewer_->update_detector(); }
 
-void display_3d::update_scene() {
-  _3d_viewer_->update_scene(_3d_drawer_);
-  return;
-}
+void display_3d::update_scene() { _3d_viewer_->update_scene(_3d_drawer_); }
 
 void display_3d::handle_button_signals(const button_signals_type signal_) {
-  TCanvas *canvas = (TCanvas *)_3d_viewer_->get_canvas();
+  auto *canvas = (TCanvas *)_3d_viewer_->get_canvas();
 
   switch (signal_) {
     case VIEW_X3D:

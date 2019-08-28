@@ -59,23 +59,17 @@ using namespace std;
 void test1(geomtools::manager& mgr_) {
   clog << "********** test1..." << endl;
   try {
-    snemo::geometry::calo_locator badCL(mgr_, 666);
+    snemo::geometry::calo_locator badCL(666, mgr_, {});
   } catch (exception& x) {
     cerr << "ERROR: test1: As expected, there is no way to use a calo_locator for module #666 !"
          << endl;
   }
-  return;
 }
 
 void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.set_block_part(snemo::geometry::calo_locator::DEFAULT_BLOCK_PART);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
   size_t counts = 0;
   ofstream f1, f2;
   if (a_file) {
@@ -92,7 +86,9 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
     geomtools::geom_id gid;
     CL.find_geom_id(hit_pos, 1302, gid);
@@ -113,7 +109,6 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts (calo_locator) = " << counts << endl;
-  return;
 }
 
 void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
@@ -138,9 +133,11 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
     double z = dim * (-1 + 2 * drand48());
     z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) clog << "#i = " << i << endl;
+    if ((i % 10000) == 0) {
+      clog << "#i = " << i << endl;
+    }
     CT.resume();
-    geomtools::geom_id gid = calo_locator.get_geom_id(hit_pos, calo_block_type);
+    const geomtools::geom_id& gid = calo_locator.get_geom_id(hit_pos, calo_block_type);
     CT.pause();
     if (a_file) {
       if ((i % 100) == 0) {
@@ -158,33 +155,26 @@ void test3(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   CT.stop();
   CT.tree_dump(clog);
   clog << "Counts (smart_id_locator)  = " << counts << endl;
-  return;
 }
 
 void test4(geomtools::manager& a_mgr) {
   clog << "********** test4..." << endl;
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
 
-  clog << "Number of sides = " << CL.get_number_of_sides() << endl;
+  clog << "Number of sides = " << CL.numberOfSides() << endl;
 
-  clog << "Number of columns = " << CL.get_number_of_columns(0) << endl;
+  clog << "Number of columns = " << CL.numberOfColumns(0) << endl;
 
-  clog << "Number of rows = " << CL.get_number_of_rows(0) << endl;
+  clog << "Number of rows = " << CL.numberOfRows(0) << endl;
 
-  clog << "Number of neighbours [0,0,0] = " << CL.get_number_of_neighbours(0, 0, 0) << endl;
+  clog << "Number of neighbours [0,0,0] = " << CL.countNeighbours(0, 0, 0) << endl;
 
-  clog << "Number of neighbours [0,0,19] = " << CL.get_number_of_neighbours(0, 0, 19) << endl;
+  clog << "Number of neighbours [0,0,19] = " << CL.countNeighbours(0, 0, 19) << endl;
 
-  clog << "Number of neighbours [0,0,5] = " << CL.get_number_of_neighbours(0, 0, 5) << endl;
+  clog << "Number of neighbours [0,0,5] = " << CL.countNeighbours(0, 0, 5) << endl;
 
-  clog << "Number of neighbours [0,6,154] = " << CL.get_number_of_neighbours(0, 6, 154) << endl;
-
-  return;
+  clog << "Number of neighbours [0,6,154] = " << CL.countNeighbours(0, 6, 154) << endl;
 }
 
 void test5(geomtools::manager& a_mgr) {
@@ -193,85 +183,81 @@ void test5(geomtools::manager& a_mgr) {
    * Validated 2011-04-13 FM.
    *
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
 
   vector<geomtools::geom_id> ids;
   for (uint32_t side = 0; side < 2; side++) {
     {
-      CL.get_neighbours_ids(side, 0, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,0] (with first)=" << ids.size() << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 0, ids, snemo::geometry::utils::NEIGHBOUR_DIAG);
+      ids = CL.getNeighbourGIDs(side, 0, 0, snemo::geometry::grid_mask_t::DIAG);
       clog << "Neighbour blocks for block [" << side << ",0,0] (with diagonal)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,0] (with first)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 7, 0, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 7, 0, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",7,0] (with first)=" << ids.size() << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 7, 4, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 7, 4, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",7,4] (with first)=" << ids.size() << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,12] (with first)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,12] (with first)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
       try {
-        CL.get_neighbours_ids(side, 0, 14, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+        ids = CL.getNeighbourGIDs(side, 0, 14, snemo::geometry::grid_mask_t::FIRST);
       } catch (exception& x) {
         cerr << "ERROR: test5: As expected, block [" << side << ",0,14] is not valid !" << endl
              << endl;
@@ -279,36 +265,34 @@ void test5(geomtools::manager& a_mgr) {
     }
 
     {
-      CL.get_neighbours_ids(side, 19, 6, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 19, 6, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",19,6] (with first)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 4, 12, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 4, 12, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",4,12] (with first)=" << ids.size()
            << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
 
     {
-      CL.get_neighbours_ids(side, 0, 4, ids, snemo::geometry::utils::NEIGHBOUR_FIRST);
+      ids = CL.getNeighbourGIDs(side, 0, 4, snemo::geometry::grid_mask_t::FIRST);
       clog << "Neighbour blocks for block [" << side << ",0,4] (with first)=" << ids.size() << endl;
-      for (int i = 0; i < (int)ids.size(); i++) {
-        clog << ids[i] << ' ';
+      for (const auto& id : ids) {
+        clog << id << ' ';
       }
       clog << endl << endl;
     }
   }
-
-  return;
 }
 
 void test6(geomtools::manager& a_mgr, bool draw_) {
@@ -317,26 +301,12 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
    * Validated 2011-05-08 FM.
    *
    */
-  int32_t my_module_number = 0;
-  snemo::geometry::calo_locator CL;
-  CL.set_geo_manager(a_mgr);
-  CL.set_module_number(my_module_number);
-  CL.set_block_part(1);  // Front part of the scintillator block
-  CL.initialize();
-  CL.dump(clog);
+  uint32_t my_module_number = 0;
+  snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}, 1};
 
-  snemo::geometry::calo_locator CL_back;
-  CL_back.set_geo_manager(a_mgr);
-  CL_back.set_module_number(my_module_number);
-  CL_back.set_block_part(0);  // Back part of the scintillator block
-  CL_back.initialize();
-  CL_back.dump(clog);
+  snemo::geometry::calo_locator CL_back{my_module_number, a_mgr, {}, 0};
 
-  snemo::geometry::gg_locator GGL;
-  GGL.set_geo_manager(a_mgr);
-  GGL.set_module_number(my_module_number);
-  GGL.initialize();
-  GGL.dump(clog);
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
 
   datatools::version_id geom_mgr_setup_vid;
   a_mgr.fetch_setup_version_id(geom_mgr_setup_vid);
@@ -456,14 +426,14 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
           if (spurious) {
             // add spurious hit in one neighbour block :
             vector<geomtools::geom_id> neighbour_ids;
-            int neighbours_mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+            int neighbours_mask = snemo::geometry::grid_mask_t::DIAG;
             if (hit_id.get(1) == 0) {
-              neighbours_mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+              neighbours_mask = snemo::geometry::grid_mask_t::SIDE;
             }
 
-            CL.get_neighbours_ids(hit_id, neighbour_ids, neighbours_mask);
-            for (int in = 0; in < (int)neighbour_ids.size(); ++in) {
-              hit_ids.push_back(neighbour_ids[in]);
+            neighbour_ids = CL.getNeighbourGIDs(hit_id, neighbours_mask);
+            for (const auto& neighbour_id : neighbour_ids) {
+              hit_ids.push_back(neighbour_id);
             }
           }
         }
@@ -549,11 +519,11 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     {
       const geomtools::geom_map::ginfo_ptr_collection_type& source_ginfo_array =
           the_mapping.get_ginfo_collection_with_type(source_volume_type);
-      if (source_ginfo_array.size() == 0) {
+      if (source_ginfo_array.empty()) {
         clog << "No source volumes are mapped with type '" << source_volume_type << "' !" << endl;
       }
-      for (int i = 0; i < (int)source_ginfo_array.size(); i++) {
-        const geomtools::geom_info& a_geom_info = *source_ginfo_array[i];
+      for (auto i : source_ginfo_array) {
+        const geomtools::geom_info& a_geom_info = *i;
         //    const geomtools::geom_info & a_geom_info = the_mapping.get_geom_info (a_id);
         const geomtools::placement& a_placement = a_geom_info.get_world_placement();
         const geomtools::logical_volume& plog = a_geom_info.get_logical();
@@ -567,14 +537,14 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
       // Draw some arbitrary scintillator blocks:
       // uint32_t side = 1;
       vector<geomtools::geom_id> neighbour_ids;
-      int neighbours_mask = snemo::geometry::utils::NEIGHBOUR_DIAG;
+      int neighbours_mask = snemo::geometry::grid_mask_t::DIAG;
       geomtools::geom_id gid1;
       gid1.set_type(scin_block_type);
-      gid1.set_address(my_module_number, 0, 4, 3);
-      if (CL.is_block_partitioned()) {
-        gid1.set(CL.get_part_address_index(), 1);
-      }
-      CL.get_neighbours_ids(gid1, neighbour_ids, neighbours_mask);
+      gid1.set_address(my_module_number, 0, 4, 3, 1);
+      // if (CL.isBlockPartitioned()) {
+      //  gid1.set(CL.get_part_address_index(), 1);
+      //}
+      neighbour_ids = CL.getNeighbourGIDs(gid1, neighbours_mask);
       for (vector<geomtools::geom_id>::const_iterator i = neighbour_ids.begin();
            i != neighbour_ids.end(); i++) {
         const geomtools::geom_info& a_geom_info = the_mapping.get_geom_info(*i);
@@ -584,14 +554,14 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
         clog << "Scintillator block geometry info: " << a_geom_info << endl;
         geomtools::gnuplot_draw::draw(fout1.out(), a_placement, a_shape);
       }
-      neighbours_mask = snemo::geometry::utils::NEIGHBOUR_SIDE;
+      neighbours_mask = snemo::geometry::grid_mask_t::SIDE;
       geomtools::geom_id gid2;
       gid2.set_type(scin_block_type);
-      gid2.set_address(my_module_number, 1, 17, 9);
-      if (CL.is_block_partitioned()) {
-        gid2.set(CL.get_part_address_index(), 1);
-      }
-      CL.get_neighbours_ids(gid2, neighbour_ids, neighbours_mask);
+      gid2.set_address(my_module_number, 1, 17, 9, 1);
+      // if (CL.isBlockPartitioned()) {
+      //  gid2.set(CL.get_part_address_index(), 1);
+      //}
+      neighbour_ids = CL.getNeighbourGIDs(gid2, neighbours_mask);
       for (vector<geomtools::geom_id>::const_iterator i = neighbour_ids.begin();
            i != neighbour_ids.end(); i++) {
         const geomtools::geom_info& a_geom_info = the_mapping.get_geom_info(*i);
@@ -668,8 +638,6 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
     }
 
   }  // Draw
-
-  return;
 }
 
 int main(int argc_, char** argv_) {
@@ -698,7 +666,7 @@ int main(int argc_, char** argv_) {
       string token = argv_[iarg];
 
       if (token[0] == '-') {
-        string option = token;
+        const string& option = token;
         if ((option == "-d") || (option == "--debug")) {
           debug = true;
         } else if ((option == "-D") || (option == "--devel")) {
@@ -745,7 +713,7 @@ int main(int argc_, char** argv_) {
           clog << datatools::io::warning << "ignoring option '" << option << "'!" << endl;
         }
       } else {
-        string argument = token;
+        const string& argument = token;
         {
           if (manager_config_file.empty()) {
             manager_config_file = argument;
@@ -768,9 +736,15 @@ int main(int argc_, char** argv_) {
     datatools::properties manager_config;
     datatools::properties::read_config(manager_config_file, manager_config);
     geomtools::manager my_manager;
-    if (verbose) my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
-    if (debug) my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
-    if (devel) my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
+    if (verbose) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_NOTICE);
+    }
+    if (debug) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_DEBUG);
+    }
+    if (devel) {
+      my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
+    }
     if (with_mapping) {
       // prepare mapping configuration with a limited set
       // of geometry categories:
@@ -786,20 +760,20 @@ int main(int argc_, char** argv_) {
       // define a set of geometry categories to be mapped
       // through the embedded mapping system:
       vector<string> only_categories;
-      only_categories.push_back("hall");
-      only_categories.push_back("module");
-      only_categories.push_back("source_pad");
-      only_categories.push_back("source_strip");
-      only_categories.push_back("tracker_submodule");
-      only_categories.push_back("tracker_volume");
-      only_categories.push_back("drift_cell_core");
-      only_categories.push_back("xcalo_block");
-      only_categories.push_back("xcalo_wrapper");
-      only_categories.push_back("gveto_block");
-      only_categories.push_back("gveto_wrapper");
-      only_categories.push_back("calorimeter_submodule");
-      only_categories.push_back("calorimeter_block");
-      only_categories.push_back("calorimeter_wrapper");
+      only_categories.emplace_back("hall");
+      only_categories.emplace_back("module");
+      only_categories.emplace_back("source_pad");
+      only_categories.emplace_back("source_strip");
+      only_categories.emplace_back("tracker_submodule");
+      only_categories.emplace_back("tracker_volume");
+      only_categories.emplace_back("drift_cell_core");
+      only_categories.emplace_back("xcalo_block");
+      only_categories.emplace_back("xcalo_wrapper");
+      only_categories.emplace_back("gveto_block");
+      only_categories.emplace_back("gveto_wrapper");
+      only_categories.emplace_back("calorimeter_submodule");
+      only_categories.emplace_back("calorimeter_block");
+      only_categories.emplace_back("calorimeter_wrapper");
 
       // set the 'only' property:
       manager_config.update("mapping.only_categories", only_categories);

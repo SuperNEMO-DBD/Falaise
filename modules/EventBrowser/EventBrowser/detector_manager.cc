@@ -70,35 +70,39 @@ detector_manager::setup_label_type detector_manager::get_setup_label() const {
 const std::string &detector_manager::get_setup_label_name() const { return _setup_label_name_; }
 
 bool detector_manager::is_special_volume(const std::string &volume_name_) const {
-  std::vector<std::string>::const_iterator name_iter =
+  auto name_iter =
       std::find(_special_volume_name_.begin(), _special_volume_name_.end(), volume_name_);
-  return (name_iter != _special_volume_name_.end() ? true : false);
+  return (name_iter != _special_volume_name_.end());
 }
 
 i_volume *detector_manager::grab_volume(const geomtools::geom_id &id_) {
-  i_volume *volume = 0;
-  volume_dict_type::iterator volume_iter = _volumes_.find(id_);
+  i_volume *volume = nullptr;
+  auto volume_iter = _volumes_.find(id_);
 
-  if (volume_iter != _volumes_.end()) volume = volume_iter->second;
+  if (volume_iter != _volumes_.end()) {
+    volume = volume_iter->second;
+  }
   return volume;
 }
 
 const i_volume *detector_manager::get_volume(const geomtools::geom_id &id_) const {
-  i_volume *volume = 0;
-  volume_dict_type::const_iterator volume_iter = _volumes_.find(id_);
+  i_volume *volume = nullptr;
+  auto volume_iter = _volumes_.find(id_);
 
-  if (volume_iter != _volumes_.end()) volume = volume_iter->second;
+  if (volume_iter != _volumes_.end()) {
+    volume = volume_iter->second;
+  }
   return volume;
 }
 
 void detector_manager::get_matching_ids(const geomtools::geom_id &id_,
                                         std::vector<geomtools::geom_id> &vids_) const {
-  for (volume_dict_type::const_iterator ivolume = _volumes_.begin(); ivolume != _volumes_.end();
-       ++ivolume) {
-    const geomtools::geom_id &gid = ivolume->first;
-    if (geomtools::geom_id::match(gid, id_)) vids_.push_back(gid);
+  for (const auto &_volume : _volumes_) {
+    const geomtools::geom_id &gid = _volume.first;
+    if (geomtools::geom_id::match(gid, id_)) {
+      vids_.push_back(gid);
+    }
   }
-  return;
 }
 
 std::string detector_manager::get_volume_name(const geomtools::geom_id &id_) const {
@@ -107,7 +111,7 @@ std::string detector_manager::get_volume_name(const geomtools::geom_id &id_) con
 
 std::string detector_manager::get_volume_category(const geomtools::geom_id &id_) const {
   const geomtools::id_mgr &mgr = _geo_manager_->get_id_mgr();
-  std::string volume_category = "";
+  std::string volume_category;
 
   if (mgr.has_category_info(id_.get_type())) {
     const geomtools::id_mgr::category_info &c_info = mgr.get_category_info(id_.get_type());
@@ -123,7 +127,6 @@ bool detector_manager::has_external_geometry_manager() const {
 void detector_manager::set_external_geometry_manager(geomtools::manager &geometry_manager_) {
   _has_external_geometry_manager_ = true;
   _geo_manager_ = &geometry_manager_;
-  return;
 }
 
 geomtools::manager &detector_manager::grab_geometry_manager() { return *_geo_manager_; }
@@ -142,12 +145,11 @@ detector_manager::detector_manager() {
   _setup_label_ = SNEMO;
   _has_external_geometry_manager_ = false;
   _geo_manager_config_file_ = "";
-  _geo_manager_ = 0;
-  _world_volume_ = 0;
+  _geo_manager_ = nullptr;
+  _world_volume_ = nullptr;
   _world_length_ = 0.0;
   _world_width_ = 0.0;
   _world_height_ = 0.0;
-  return;
 }
 
 // dtor:
@@ -155,21 +157,18 @@ detector_manager::~detector_manager() {
   if (is_initialized()) {
     this->reset();
   }
-  return;
 }
 
 void detector_manager::initialize(const std::string &geo_manager_config_file_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   this->_at_init_(geo_manager_config_file_);
   _initialized_ = true;
-  return;
 }
 
 void detector_manager::construct() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
   this->_at_construct_();
   _constructed_ = true;
-  return;
 }
 
 void detector_manager::update() {
@@ -177,7 +176,6 @@ void detector_manager::update() {
        ++it_volume) {
     it_volume->second->update();
   }
-  return;
 }
 
 void detector_manager::draw() {
@@ -193,35 +191,33 @@ void detector_manager::draw() {
     const i_volume &a_volume = *(it_volume->second);
 
     // Discard other type of volume
-    if (a_volume.get_type() != "special") continue;
+    if (a_volume.get_type() != "special") {
+      continue;
+    }
 
     // ROOT volumes
-    const special_volume &a_special_volume = dynamic_cast<const special_volume &>(a_volume);
+    const auto &a_special_volume = dynamic_cast<const special_volume &>(a_volume);
     a_special_volume.draw();
   }
-  return;
 }
 
 void detector_manager::reset() {
   DT_THROW_IF(!is_initialized(), std::logic_error, "Not initialized !");
 
   if (!has_external_geometry_manager()) {
-    if (_geo_manager_) {
+    if (_geo_manager_ != nullptr) {
       delete _geo_manager_;
-      _geo_manager_ = 0;
+      _geo_manager_ = nullptr;
     }
   }
 
-  if (gGeoManager) {
-    delete gGeoManager;
-  }
+  delete gGeoManager;
 
   _volumes_.clear();
   _special_volume_name_.clear();
 
   _constructed_ = false;
   _initialized_ = false;
-  return;
 }
 
 void detector_manager::tree_dump(std::ostream &out_, const std::string &title_,
@@ -243,7 +239,7 @@ void detector_manager::tree_dump(std::ostream &out_, const std::string &title_,
   out_ << indent << datatools::i_tree_dumpable::tag << "Setup       : " << _setup_label_name_
        << std::endl;
 
-  if (_world_volume_) {
+  if (_world_volume_ != nullptr) {
     out_ << indent << datatools::i_tree_dumpable::tag << "World volume : " << std::endl;
     std::ostringstream indent_oss;
     indent_oss << indent;
@@ -261,10 +257,10 @@ void detector_manager::tree_dump(std::ostream &out_, const std::string &title_,
 
   out_ << indent << datatools::i_tree_dumpable::tag
        << "Special volumes : " << _special_volume_name_.size() << std::endl;
-  for (std::vector<std::string>::const_iterator it_volume = _special_volume_name_.begin();
-       it_volume != _special_volume_name_.end(); ++it_volume) {
+  for (auto it_volume = _special_volume_name_.begin(); it_volume != _special_volume_name_.end();
+       ++it_volume) {
     std::ostringstream indent_oss;
-    std::vector<std::string>::const_iterator jt_volume = it_volume;
+    auto jt_volume = it_volume;
     if (++jt_volume == _special_volume_name_.end()) {
       indent_oss << indent << datatools::i_tree_dumpable::last_skip_tag;
       out_ << indent << datatools::i_tree_dumpable::last_tag;
@@ -278,10 +274,9 @@ void detector_manager::tree_dump(std::ostream &out_, const std::string &title_,
 
   out_ << indent << datatools::i_tree_dumpable::tag << "Attached volumes : " << _volumes_.size()
        << std::endl;
-  for (volume_dict_type::const_iterator it_volume = _volumes_.begin(); it_volume != _volumes_.end();
-       ++it_volume) {
+  for (auto it_volume = _volumes_.begin(); it_volume != _volumes_.end(); ++it_volume) {
     std::ostringstream indent_oss;
-    volume_dict_type::const_iterator jt_volume = it_volume;
+    auto jt_volume = it_volume;
     if (++jt_volume == _volumes_.end()) {
       indent_oss << indent << datatools::i_tree_dumpable::last_skip_tag;
       out_ << indent << datatools::i_tree_dumpable::last_tag;
@@ -293,24 +288,21 @@ void detector_manager::tree_dump(std::ostream &out_, const std::string &title_,
     indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
     it_volume->second->tree_dump(out_, "", indent_oss.str());
   }
-  return;
 }
 
 void detector_manager::dump() const {
   this->tree_dump(std::clog, "snemo::visualization::detector::detector_manager");
-  return;
 }
 
 void detector_manager::compute_world_coordinates(const geomtools::vector_3d &mother_pos_,
                                                  geomtools::vector_3d &world_pos_) const {
-  if (!_module_placement_) {
+  if (_module_placement_ == nullptr) {
     DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
                    "No 'module' placement setup !");
     world_pos_ = mother_pos_;
   } else {
     _module_placement_->child_to_mother(mother_pos_, world_pos_);
   }
-  return;
 }
 
 void detector_manager::_at_init_(const std::string &geo_manager_config_file_) {
@@ -354,7 +346,6 @@ void detector_manager::_at_init_(const std::string &geo_manager_config_file_) {
     }
   }
   this->_read_detector_config_();
-  return;
 }
 
 void detector_manager::_at_construct_() {
@@ -362,8 +353,8 @@ void detector_manager::_at_construct_() {
   this->_set_world_dimensions_();
 
   // building world volume by ROOT
-  _world_volume_ = gGeoManager->MakeBox("World Volume", 0, _world_length_ / 2., _world_width_ / 2.,
-                                        _world_height_ / 2.);
+  _world_volume_ = gGeoManager->MakeBox("World Volume", nullptr, _world_length_ / 2.,
+                                        _world_width_ / 2., _world_height_ / 2.);
   _world_volume_->SetVisibility(false);
 
   // setting world volume for ROOT Geo Manager
@@ -381,7 +372,6 @@ void detector_manager::_at_construct_() {
                  "Detector manager dump:");
     this->tree_dump(std::clog);
   }
-  return;
 }
 
 void detector_manager::_read_detector_config_() {
@@ -415,7 +405,7 @@ void detector_manager::_read_detector_config_() {
     _setup_label_ = BIPO1;
   } else if (_setup_label_name_ == "bipo3") {
     _setup_label_ = BIPO3;
-    _special_volume_name_.push_back("light_guide.category");
+    _special_volume_name_.emplace_back("light_guide.category");
   } else if (_setup_label_name_ == "snemo::tracker_commissioning") {
     _setup_label_ = TRACKER_COMMISSIONING;
   } else if (_setup_label_name_ == "snemo::demonstrator") {
@@ -433,7 +423,9 @@ void detector_manager::_read_detector_config_() {
 
   // Load the given style file in order to get the activated detectors
   view::style_manager &style_mgr = view::style_manager::get_instance();
-  if (style_mgr.is_initialized()) style_mgr.reset();
+  if (style_mgr.is_initialized()) {
+    style_mgr.reset();
+  }
   style_mgr.set_setup_label(_setup_label_name_);
   const std::string &style_config_file =
       view::options_manager::get_instance().get_style_config_file();
@@ -460,9 +452,8 @@ void detector_manager::_read_detector_config_() {
 
     const geomtools::id_mgr::categories_by_name_col_type &categories =
         gmgr.get_id_mgr().categories_by_name();
-    for (geomtools::id_mgr::categories_by_name_col_type::const_iterator icat = categories.begin();
-         icat != categories.end(); ++icat) {
-      const std::string &a_category = icat->first;
+    for (const auto &categorie : categories) {
+      const std::string &a_category = categorie.first;
       only_categories.push_back(a_category);
       view::style_manager::volume_properties dummy;
       volumes[a_category] = dummy;
@@ -503,10 +494,8 @@ void detector_manager::_read_detector_config_() {
                                           << "has been associated with the geometry map !");
     }
 
-    for (std::list<const geomtools::geom_info *>::const_iterator iptr_ginfo =
-             geom_info_list.begin();
-         iptr_ginfo != geom_info_list.end(); ++iptr_ginfo) {
-      const geomtools::geom_info &ginfo = **iptr_ginfo;
+    for (auto iptr_ginfo : geom_info_list) {
+      const geomtools::geom_info &ginfo = *iptr_ginfo;
       this->_set_volume_(ginfo);
 
       // Save 'module' placement for later coordinates conversion
@@ -515,7 +504,6 @@ void detector_manager::_read_detector_config_() {
       }
     }  // end of geo_info
   }    // end of enabled categories
-  return;
 }
 
 void detector_manager::_set_categories_(std::vector<std::string> &only_categories_) const {
@@ -526,10 +514,10 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
 
   // first get them from style file
   if (!volumes.empty()) {
-    for (std::map<std::string, view::style_manager::volume_properties>::iterator it_volume =
-             volumes.begin();
-         it_volume != volumes.end(); ++it_volume) {
-      if (it_volume->second._visibility_ == DISABLE) continue;
+    for (auto it_volume = volumes.begin(); it_volume != volumes.end(); ++it_volume) {
+      if (it_volume->second._visibility_ == DISABLE) {
+        continue;
+      }
       DT_LOG_DEBUG(view::options_manager::get_instance().get_logging_priority(),
                    "Add '" << it_volume->first << "' category");
       only_categories_.push_back(it_volume->first);
@@ -541,11 +529,11 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
         case SNEMO:
         case SNEMO_DEMONSTRATOR:
         case TRACKER_COMMISSIONING:
-          only_categories_.push_back("module");
+          only_categories_.emplace_back("module");
           volumes["module"]._visibility_ = VISIBLE;
           break;
         case TEST_BENCH:
-          only_categories_.push_back("calo_light_line");
+          only_categories_.emplace_back("calo_light_line");
           volumes["calo_light_line"]._visibility_ = VISIBLE;
           break;
         default:
@@ -557,41 +545,41 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
     // then it behaves like the following
     switch (_setup_label_) {
       case TRACKER_COMMISSIONING:
-        only_categories_.push_back("hall");
-        only_categories_.push_back("module");
-        only_categories_.push_back("mu_trigger");
-        only_categories_.push_back("drift_cell_core");
+        only_categories_.emplace_back("hall");
+        only_categories_.emplace_back("module");
+        only_categories_.emplace_back("mu_trigger");
+        only_categories_.emplace_back("drift_cell_core");
         break;
       case SNEMO:
       case SNEMO_DEMONSTRATOR:
-        only_categories_.push_back("hall");
+        only_categories_.emplace_back("hall");
         // only_categories_.push_back("external_shield");
-        only_categories_.push_back("module");
+        only_categories_.emplace_back("module");
         // only_categories_.push_back("source_submodule");
-        only_categories_.push_back("source_strip");
-        only_categories_.push_back("source_pad");
+        only_categories_.emplace_back("source_strip");
+        only_categories_.emplace_back("source_pad");
         // only_categories_.push_back("source_calibration_track");
         // only_categories_.push_back("source_calibration_carrier");
-        only_categories_.push_back("source_calibration_spot");
-        only_categories_.push_back("source_like_plate");
-        only_categories_.push_back("commissioning_source_spot");
-        only_categories_.push_back("drift_cell_core");
-        only_categories_.push_back("xcalo_block");
-        only_categories_.push_back("gveto_block");
-        only_categories_.push_back("calorimeter_block");
+        only_categories_.emplace_back("source_calibration_spot");
+        only_categories_.emplace_back("source_like_plate");
+        only_categories_.emplace_back("commissioning_source_spot");
+        only_categories_.emplace_back("drift_cell_core");
+        only_categories_.emplace_back("xcalo_block");
+        only_categories_.emplace_back("gveto_block");
+        only_categories_.emplace_back("calorimeter_block");
         break;
       case TEST_BENCH:
-        only_categories_.push_back("calo_light_line");
-        only_categories_.push_back("scin_block");
-        only_categories_.push_back("absorber");
-        only_categories_.push_back("diaphragm");
-        only_categories_.push_back("air_gap");
-        only_categories_.push_back("test_source");
+        only_categories_.emplace_back("calo_light_line");
+        only_categories_.emplace_back("scin_block");
+        only_categories_.emplace_back("absorber");
+        only_categories_.emplace_back("diaphragm");
+        only_categories_.emplace_back("air_gap");
+        only_categories_.emplace_back("test_source");
         break;
       case BIPO1:
       case BIPO3:
-        only_categories_.push_back("scin_block");
-        only_categories_.push_back("source");
+        only_categories_.emplace_back("scin_block");
+        only_categories_.emplace_back("source");
         //            only_categories_.push_back("bipo3_module");
         break;
       default:
@@ -600,10 +588,10 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
 
     // adding the default detectors to detector_to_show list
     for (std::vector<std::string>::const_iterator it_category = only_categories_.begin();
-         it_category != only_categories_.end(); ++it_category)
+         it_category != only_categories_.end(); ++it_category) {
       volumes[*it_category]._visibility_ = VISIBLE;
+    }
   }
-  return;
 }
 
 void detector_manager::_set_volume_(const geomtools::geom_info &ginfo_) {
@@ -644,16 +632,16 @@ void detector_manager::_set_volume_(const geomtools::geom_info &ginfo_) {
   DT_LOG_DEBUG(
       view::options_manager::get_instance().get_logging_priority(),
       "Volume '" << volume_name << " with category '" << volume_category << "' has been added");
-  return;
 }
 
 void detector_manager::_add_volumes_() {
-  for (volume_dict_type::iterator it_volume = _volumes_.begin(); it_volume != _volumes_.end();
-       ++it_volume) {
-    i_volume &a_volume = *(it_volume->second);
+  for (auto &_volume : _volumes_) {
+    i_volume &a_volume = *(_volume.second);
 
     // Discard special volume
-    if (a_volume.get_type() == "special") continue;
+    if (a_volume.get_type() == "special") {
+      continue;
+    }
 
     const geomtools::placement &placement = a_volume.get_placement();
     const geomtools::vector_3d &position = placement.get_translation();
@@ -665,8 +653,8 @@ void detector_manager::_add_volumes_() {
                           placement.get_delta() / CLHEP::degree + 90.0);
 
     // ROOT volumes
-    i_root_volume &a_root_volume = dynamic_cast<i_root_volume &>(a_volume);
-    TGeoVolume *gvolume = static_cast<TGeoVolume *>(a_root_volume.grab_volume());
+    auto &a_root_volume = dynamic_cast<i_root_volume &>(a_volume);
+    auto *gvolume = static_cast<TGeoVolume *>(a_root_volume.grab_volume());
 
     // sanity check
     DT_THROW_IF(
@@ -679,7 +667,6 @@ void detector_manager::_add_volumes_() {
     // To be continued ...
     _world_volume_->AddNodeOverlap(gvolume, 1, new TGeoCombiTrans(translation, rotation));
   }
-  return;
 }
 
 void detector_manager::_set_world_dimensions_() {
@@ -693,10 +680,8 @@ void detector_manager::_set_world_dimensions_() {
   volume_locator.set_gmap(mapping);
   volume_locator.initialize(volume_type);
 
-  for (std::list<const geomtools::geom_info *>::const_iterator iptr_ginfo =
-           volume_locator.get_ginfos().begin();
-       iptr_ginfo != volume_locator.get_ginfos().end(); ++iptr_ginfo) {
-    const geomtools::geom_info &ginfo = **iptr_ginfo;
+  for (auto iptr_ginfo : volume_locator.get_ginfos()) {
+    const geomtools::geom_info &ginfo = *iptr_ginfo;
 
     const geomtools::logical_volume &a_log = ginfo.get_logical();
     const geomtools::i_shape_3d &a_shape = a_log.get_shape();
@@ -704,7 +689,7 @@ void detector_manager::_set_world_dimensions_() {
     const std::string &shape_name = a_shape.get_shape_name();
 
     if (shape_name == "box") {
-      const geomtools::box &mbox = dynamic_cast<const geomtools::box &>(a_shape);
+      const auto &mbox = dynamic_cast<const geomtools::box &>(a_shape);
 
       _world_length_ = mbox.get_x();
       _world_width_ = mbox.get_y();
@@ -721,8 +706,6 @@ void detector_manager::_set_world_dimensions_() {
   _world_length_ *= boundary;
   _world_width_ *= boundary;
   _world_height_ *= boundary;
-
-  return;
 }
 
 }  // end of namespace detector

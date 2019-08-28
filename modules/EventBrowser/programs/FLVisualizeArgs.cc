@@ -11,11 +11,11 @@
 #include <bayeux/dpp/input_module.h>
 
 // This project:
-#include <falaise/app/metadata_utils.h>
-#include <falaise/tags.h>
-#include <EventBrowser/detector/detector_manager.h>
-#include <EventBrowser/view/options_manager.h>
+#include "EventBrowser/detector/detector_manager.h"
+#include "EventBrowser/view/options_manager.h"
 #include "FLVisualizeCommandLine.h"
+#include "falaise/metadata_utils.h"
+#include "falaise/tags.h"
 
 namespace FLVisualize {
 
@@ -65,7 +65,6 @@ void FLVisualizeArgs::print(std::ostream& out_) const {
   out_ << tag << "inputMetadataFile    = " << inputMetadataFile << std::endl;
   out_ << tag << "inputFile            = " << inputFile << std::endl;
   out_ << last_tag << "inputMetadata        = [" << inputMetadata.size() << ']' << std::endl;
-  return;
 }
 
 void do_postprocess_input_metadata(FLVisualizeArgs& flVisParameters) {
@@ -140,7 +139,6 @@ void do_postprocess_input_metadata(FLVisualizeArgs& flVisParameters) {
   }  // End of settings.
 
   DT_LOG_TRACE_EXITING(flVisParameters.logLevel);
-  return;
 }
 
 // static
@@ -203,7 +201,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                                                 << flVisParameters.experimentalSetupUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = falaise::tags::experimental_setup_category();
+      const std::string& conf_category = falaise::tags::experimental_setup_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flVisParameters.experimentalSetupUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flVisParameters.experimentalSetupUrn << "'!");
@@ -234,7 +232,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                   "Services configuration URN='" << flVisParameters.servicesConfigUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = falaise::tags::services_category();
+      const std::string& conf_category = falaise::tags::services_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(servicesConfigUrn, conf_category), std::logic_error,
                   "Cannot query URN='" << servicesConfigUrn << "'!");
     }
@@ -267,7 +265,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
       geometryConfigUrn = servicesConfigUrnInfo.get_component("geometry");
       // Check URN registration from the system URN query service:
       {
-        std::string conf_category = falaise::tags::geometry_setup_category();
+        const std::string& conf_category = falaise::tags::geometry_setup_category();
         DT_THROW_IF(!dtkUrnQuery.check_urn_info(geometryConfigUrn, conf_category), std::logic_error,
                     "Cannot query URN='" << geometryConfigUrn << "'!");
       }
@@ -331,7 +329,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
                   "Variant configuration URN='" << variantConfigUrn << "'...");
     // Check URN registration from the system URN query service:
     {
-      std::string conf_category = falaise::tags::variant_service_category();
+      const std::string& conf_category = falaise::tags::variant_service_category();
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(flVisParameters.variantConfigUrn, conf_category),
                   std::logic_error,
                   "Cannot query URN='" << flVisParameters.variantConfigUrn << "'!");
@@ -423,7 +421,6 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
   }
 
   DT_LOG_TRACE_EXITING(flVisParameters.logLevel);
-  return;
 }
 
 //! Parse command line arguments to configure the simulation parameters
@@ -449,7 +446,6 @@ void do_configure(int argc_, char* argv_[], FLVisualizeArgs& flVisParameters) {
   if (datatools::logger::is_notice(flVisParameters.logLevel)) {
     flVisParameters.print(std::cerr);
   }
-  return;
 }
 
 }  // namespace FLVisualize

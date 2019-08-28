@@ -6,17 +6,17 @@
 
 namespace snemo {
 
-const std::string& service_info::default_metadata_service_label() {
+const std::string& service_info::metadataServiceName() {
   static std::string lbl("metadata");
   return lbl;
 }
 
-const std::string& service_info::default_geometry_service_label() {
+const std::string& service_info::geometryServiceName() {
   static std::string lbl("geometry");
   return lbl;
 }
 
-const std::string& service_info::default_cut_service_label() {
+const std::string& service_info::cutServiceName() {
   static std::string lbl("cuts");
   return lbl;
 }

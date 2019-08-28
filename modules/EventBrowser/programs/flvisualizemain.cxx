@@ -74,7 +74,7 @@ int main(int argc_, char *argv_[]) {
   // Really seems to require use of env var rather than gSystem include paths...
   char *rIncludePath = getenv("ROOT_INCLUDE_PATH");
 
-  if (rIncludePath) {
+  if (rIncludePath != nullptr) {
     std::string ourPath(falaise::get_plugin_dir());
     std::string oldPath(rIncludePath);
     std::string newPath = ourPath + ":" + oldPath;
@@ -140,7 +140,7 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
     // Open a root application
     DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
     int narg = 1;
-    TApplication *my_application = new TApplication("ROOT Application", &narg, argv_);
+    auto *my_application = new TApplication("ROOT Application", &narg, argv_);
 
     // Get the screen dimensions
     int position_x, position_y;
@@ -154,8 +154,7 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
     const int width = int(scale_factor * screen_width);
 
     // The event_browser* is autodestructive!!! NEVER delete manually!!
-    sv::view::event_browser *my_event_browser =
-        new sv::view::event_browser(gClient->GetRoot(), width, height);
+    auto *my_event_browser = new sv::view::event_browser(gClient->GetRoot(), width, height);
     my_event_browser->initialize();
     my_application->Run(true);
 

@@ -16,19 +16,16 @@ namespace visualization {
 
 namespace view {
 
-void event_browser_ctrl::set_event_browser(event_browser& browser_) {
-  browser = &browser_;
-  return;
-}
+void event_browser_ctrl::set_event_browser(event_browser& browser_) { browser = &browser_; }
 
 event_browser_ctrl::event_browser_ctrl(event_browser& browser_, size_t max_counts_) {
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Entering...");
 
   // test
-  browser = 0;
-  browser_thread = 0;
-  event_mutex = 0;
-  event_available_condition = 0;
+  browser = nullptr;
+  browser_thread = nullptr;
+  event_mutex = nullptr;
+  event_available_condition = nullptr;
 
   event_availability_status = event_browser_ctrl::NOT_AVAILABLE_FOR_ROOT;
   stop_requested = false;
@@ -41,39 +38,37 @@ event_browser_ctrl::event_browser_ctrl(event_browser& browser_, size_t max_count
   event_available_condition = new boost::condition;
 
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Exiting.");
-  return;
 }
 
 event_browser_ctrl::~event_browser_ctrl() {
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Entering...");
   set_stop_requested();
-  if (event_mutex != 0) {
+  if (event_mutex != nullptr) {
     DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
                  "Acquire the event control lock...");
     boost::mutex::scoped_lock lock(*event_mutex);
     event_availability_status = event_browser_ctrl::ABORT;
     event_available_condition->notify_one();
   }
-  if (browser_thread != 0) {
+  if (browser_thread != nullptr) {
     browser_thread->join();
   }
 
-  if (event_available_condition != 0) {
+  if (event_available_condition != nullptr) {
     delete event_available_condition;
-    event_available_condition = 0;
+    event_available_condition = nullptr;
   }
-  if (event_mutex != 0) {
+  if (event_mutex != nullptr) {
     delete event_mutex;
-    event_mutex = 0;
+    event_mutex = nullptr;
   }
 
-  if (browser_thread) {
+  if (browser_thread != nullptr) {
     delete browser_thread;
-    browser_thread = 0;
+    browser_thread = nullptr;
   }
-  browser = 0;
+  browser = nullptr;
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Exiting.");
-  return;
 }
 
 void event_browser_ctrl::start() {
@@ -85,7 +80,6 @@ void event_browser_ctrl::start() {
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(),
                "Event browser thread is allocated...");
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Exiting.");
-  return;
 }
 
 void event_browser_ctrl::start_browsing_event() {
@@ -100,13 +94,9 @@ void event_browser_ctrl::start_browsing_event() {
   }
   browser->start_threading();
   DT_LOG_TRACE(options_manager::get_instance().get_logging_priority(), "Exiting.");
-  return;
 }
 
-void event_browser_ctrl::set_stop_requested() {
-  stop_requested = true;
-  return;
-}
+void event_browser_ctrl::set_stop_requested() { stop_requested = true; }
 
 bool event_browser_ctrl::is_stop_requested() const { return stop_requested; }
 

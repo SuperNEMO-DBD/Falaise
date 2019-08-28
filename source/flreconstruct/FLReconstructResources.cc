@@ -38,7 +38,7 @@ namespace FLReconstruct {
 
 //! Define defaults and type for lookup table of experiment control/configuration files
 struct ExperimentLookup {
-  typedef std::map<std::string, std::string> Table;
+  using Table = std::map<std::string, std::string>;
 
   /// Return resource path in table for given experiment
   /// Returns empty string if not found
@@ -60,8 +60,7 @@ ExperimentLookup::Table constructLookupPipelineTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)("", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
       "default", "snemo/demonstrator/reconstruction/official-1.0.0.conf")(
-      "demonstrator", "snemo/demonstrator/reconstruction/official-1.0.0.conf")("bipo3", "");
-
+      "demonstrator", "snemo/demonstrator/reconstruction/official-1.0.0.conf");
   return a;
 }
 
@@ -70,9 +69,7 @@ ExperimentLookup::Table constructLookupVariantsConfigTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)("", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
       "default", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")(
-      "demonstrator", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf")("bipo3",
-                                                                                        "");
-  ;
+      "demonstrator", "snemo/demonstrator/geant4_control/Geant4VariantRepository.conf");
   return a;
 }
 
@@ -81,8 +78,7 @@ ExperimentLookup::Table constructLookupVariantsDefaultProfileTable() {
   ExperimentLookup::Table a;
   boost::assign::insert(a)("", "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
       "default", "snemo/demonstrator/profiles/demonstrator-simulation.profile")(
-      "demonstrator", "snemo/demonstrator/profiles/demonstrator-simulation.profile")("bipo3", "");
-  ;
+      "demonstrator", "snemo/demonstrator/profiles/demonstrator-simulation.profile");
   return a;
 }
 

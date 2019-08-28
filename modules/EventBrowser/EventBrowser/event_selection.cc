@@ -103,11 +103,11 @@ class base_widget {
 class selection_widget : public base_widget {
  public:
   selection_widget(event_selection *selection_);
-  virtual void initialize();
-  virtual void set_state();
-  virtual bool get_state() const;
-  virtual void build(TGCompositeFrame *frame_);
-  virtual std::string get_cut_name();
+  void initialize() override;
+  void set_state() override;
+  bool get_state() const override;
+  void build(TGCompositeFrame *frame_) override;
+  std::string get_cut_name() override;
 
  private:
   TGRadioButton *_or_button_;
@@ -119,11 +119,11 @@ class selection_widget : public base_widget {
 class complex_selection_widget : public base_widget {
  public:
   complex_selection_widget(event_selection *selection_);
-  virtual void initialize();
-  virtual void set_state();
-  virtual bool get_state() const;
-  virtual void build(TGCompositeFrame *frame_);
-  virtual std::string get_cut_name();
+  void initialize() override;
+  void set_state() override;
+  bool get_state() const override;
+  void build(TGCompositeFrame *frame_) override;
+  std::string get_cut_name() override;
 
  private:
   TGCheckButton *_enable_;
@@ -134,11 +134,11 @@ class complex_selection_widget : public base_widget {
 class event_header_selection_widget : public base_widget {
  public:
   event_header_selection_widget(event_selection *selection_);
-  virtual void initialize();
-  virtual void set_state();
-  virtual bool get_state() const;
-  virtual void build(TGCompositeFrame *frame_);
-  virtual std::string get_cut_name();
+  void initialize() override;
+  void set_state() override;
+  bool get_state() const override;
+  void build(TGCompositeFrame *frame_) override;
+  std::string get_cut_name() override;
 
  private:
   TGCheckButton *_enable_;
@@ -160,27 +160,22 @@ class event_header_selection_widget : public base_widget {
 //   TGTextEntry * _hit_category_;
 // };
 
-base_widget::base_widget(event_selection *selection_, int id_) : _selection(selection_), _id(id_) {
-  return;
-}
+base_widget::base_widget(event_selection *selection_, int id_) : _selection(selection_), _id(id_) {}
 
-base_widget::~base_widget() { return; }
+base_widget::~base_widget() = default;
 
 int base_widget::id() { return _id; }
 
 selection_widget::selection_widget(event_selection *selection_)
-    : base_widget(selection_, ENABLE_LOGIC_SELECTION) {
-  return;
-}
+    : base_widget(selection_, ENABLE_LOGIC_SELECTION) {}
 
 void selection_widget::initialize() {
   _or_button_->SetOn(false);
   _and_button_->SetOn(true);
   _xor_button_->SetOn(false);
-  return;
 }
 
-void selection_widget::set_state() { return; }
+void selection_widget::set_state() {}
 
 bool selection_widget::get_state() const {
   // Always return false since there is no activation check box associated
@@ -204,7 +199,6 @@ void selection_widget::build(TGCompositeFrame *frame_) {
 
   // Initialize values
   initialize();
-  return;
 }
 
 std::string selection_widget::get_cut_name() {
@@ -222,7 +216,7 @@ std::string selection_widget::get_cut_name() {
   // Instantiate cut if needed
   cuts::cut_manager &a_cut_mgr = _selection->grab_cut_manager();
   cuts::cut_handle_dict_type &the_cuts = a_cut_mgr.get_cuts();
-  cuts::cut_handle_dict_type::iterator found = the_cuts.find(cut_name);
+  auto found = the_cuts.find(cut_name);
   DT_THROW_IF(found == the_cuts.end(), std::logic_error,
               "Cut '" << cut_name << "' has not been registered !");
   found = the_cuts.find(cut_name);
@@ -237,9 +231,7 @@ std::string selection_widget::get_cut_name() {
 }
 
 complex_selection_widget::complex_selection_widget(event_selection *selection_)
-    : base_widget(selection_, ENABLE_COMPLEX_SELECTION) {
-  return;
-}
+    : base_widget(selection_, ENABLE_COMPLEX_SELECTION) {}
 
 void complex_selection_widget::initialize() {
   _enable_->SetState(kButtonUp);
@@ -261,13 +253,11 @@ void complex_selection_widget::initialize() {
     _combo_->SetEnabled(true);
   }
   _combo_->Select(0);
-  return;
 }
 
 void complex_selection_widget::set_state() {
   bool enable = _enable_->IsDown();
   _combo_->SetEnabled(enable);
-  return;
 }
 
 bool complex_selection_widget::get_state() const {
@@ -278,7 +268,7 @@ bool complex_selection_widget::get_state() const {
 }
 
 void complex_selection_widget::build(TGCompositeFrame *frame_) {
-  TGGroupFrame *gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
+  auto *gframe = new TGGroupFrame(frame_, "      Complex cuts", kVerticalFrame);
   gframe->SetTitlePos(TGGroupFrame::kLeft);
   frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
   _enable_ = new TGCheckButton(gframe, "", ENABLE_COMPLEX_SELECTION);
@@ -286,7 +276,7 @@ void complex_selection_widget::build(TGCompositeFrame *frame_) {
                     "process()");
   gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
 
-  TGCompositeFrame *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
+  auto *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
   gframe->AddFrame(cframe);
 
   _combo_ = new TGComboBox(cframe, COMBO_SELECTION);
@@ -297,25 +287,24 @@ void complex_selection_widget::build(TGCompositeFrame *frame_) {
       _combo_,
       new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX | kLHintsExpandY, 2, 2, 2, 2));
   initialize();
-  return;
 }
 
 std::string complex_selection_widget::get_cut_name() {
-  if (!_enable_->IsDown()) return {};  // empty string
+  if (!_enable_->IsDown()) {
+    return {};  // empty string
+  }
 
   std::string cut_label;
   if (_combo_->GetSelected() != 0) {
-    TGTextLBEntry *tgt = (TGTextLBEntry *)_combo_->GetSelectedEntry();
+    auto *tgt = (TGTextLBEntry *)_combo_->GetSelectedEntry();
     cut_label = tgt->GetText()->GetString();
   }
 
   return cut_label;
-}
+}  // namespace view
 
 event_header_selection_widget::event_header_selection_widget(event_selection *selection_)
-    : base_widget(selection_, ENABLE_EH_SELECTION) {
-  return;
-}
+    : base_widget(selection_, ENABLE_EH_SELECTION) {}
 
 void event_header_selection_widget::initialize() {
   _enable_->SetState(kButtonUp);
@@ -343,7 +332,6 @@ void event_header_selection_widget::set_state() {
   _run_id_max_->SetState(enable);
   _event_id_min_->SetState(enable);
   _event_id_max_->SetState(enable);
-  return;
 }
 
 bool event_header_selection_widget::get_state() const {
@@ -355,9 +343,9 @@ bool event_header_selection_widget::get_state() const {
 
 void event_header_selection_widget::build(TGCompositeFrame *frame_) {
   // Layout for positionning frame
-  TGLayoutHints *field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight, 2, 2, 20, 2);
-  TGLayoutHints *label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2);
-  TGGroupFrame *gframe = new TGGroupFrame(frame_, "      Event header cut", kVerticalFrame);
+  auto *field_layout = new TGLayoutHints(kLHintsTop | kLHintsRight, 2, 2, 20, 2);
+  auto *label_layout = new TGLayoutHints(kLHintsTop | kLHintsLeft, 2, 2, 2, 2);
+  auto *gframe = new TGGroupFrame(frame_, "      Event header cut", kVerticalFrame);
   gframe->SetTitlePos(TGGroupFrame::kLeft);
   frame_->AddFrame(gframe, new TGLayoutHints(kLHintsTop | kLHintsLeft, 3, 3, 3, 3));
 
@@ -368,7 +356,7 @@ void event_header_selection_widget::build(TGCompositeFrame *frame_) {
   gframe->AddFrame(_enable_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 0, 0, -15, 0));
 
   {
-    TGCompositeFrame *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
+    auto *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
     gframe->AddFrame(cframe);
     cframe->AddFrame(new TGLabel(cframe, "Run ID (min - max):"), label_layout);
     _run_id_max_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_RUN_NUMBER, 10, -1,
@@ -383,7 +371,7 @@ void event_header_selection_widget::build(TGCompositeFrame *frame_) {
     cframe->AddFrame(_run_id_min_, field_layout);
   }
   {
-    TGCompositeFrame *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
+    auto *cframe = new TGCompositeFrame(gframe, 200, 1, kHorizontalFrame | kFixedWidth);
     gframe->AddFrame(cframe);
     cframe->AddFrame(new TGLabel(cframe, "Event ID (min - max):"), label_layout);
     _event_id_max_ = new TGNumberEntry(cframe, datatools::event_id::INVALID_EVENT_NUMBER, 10, -1,
@@ -400,15 +388,16 @@ void event_header_selection_widget::build(TGCompositeFrame *frame_) {
 
   // Initialize values
   initialize();
-  return;
 }
 
 std::string event_header_selection_widget::get_cut_name() {
-  if (!_enable_->IsDown()) return {};  // empty string
+  if (!_enable_->IsDown()) {
+    return {};
+  }
 
   cuts::cut_manager &a_cut_mgr = _selection->grab_cut_manager();
   cuts::cut_handle_dict_type &the_cuts = a_cut_mgr.get_cuts();
-  cuts::cut_handle_dict_type::iterator found = the_cuts.find(eh_cut_label());
+  auto found = the_cuts.find(eh_cut_label());
   DT_THROW_IF(found == the_cuts.end(), std::logic_error,
               "Cut '" << eh_cut_label() << "' has not been registered !");
 
@@ -427,10 +416,12 @@ std::string event_header_selection_widget::get_cut_name() {
   if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER ||
       run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
     cuts_prop.update_flag("mode.run_number");
-    if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER)
+    if (run_number_selected_min != datatools::event_id::INVALID_RUN_NUMBER) {
       cuts_prop.update_integer("run_number.min", run_number_selected_min);
-    if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER)
+    }
+    if (run_number_selected_max != datatools::event_id::INVALID_RUN_NUMBER) {
       cuts_prop.update_integer("run_number.max", run_number_selected_max);
+    }
     cut_updated = true;
   }
   // Event number
@@ -439,10 +430,12 @@ std::string event_header_selection_widget::get_cut_name() {
   if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER ||
       event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
     cuts_prop.update_flag("mode.event_number");
-    if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER)
+    if (event_number_selected_min != datatools::event_id::INVALID_EVENT_NUMBER) {
       cuts_prop.update_integer("event_number.min", event_number_selected_min);
-    if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER)
+    }
+    if (event_number_selected_max != datatools::event_id::INVALID_EVENT_NUMBER) {
       cuts_prop.update_integer("event_number.max", event_number_selected_max);
+    }
     cut_updated = true;
   }
 
@@ -517,47 +510,41 @@ bool event_selection::is_selection_enable() const { return _selection_enable_; }
 
 // ctor:
 event_selection::event_selection() {
-  _main_ = 0;
-  _server_ = 0;
-  _browser_ = 0;
-  _status_ = 0;
-  _cut_manager_ = 0;
+  _main_ = nullptr;
+  _server_ = nullptr;
+  _browser_ = nullptr;
+  _status_ = nullptr;
+  _cut_manager_ = nullptr;
   _initialized_ = false;
   _selection_enable_ = false;
   _initial_event_id_ = 0;
-  return;
 }
 
 // dtor:
-event_selection::~event_selection() {
-  this->reset();
-  return;
-}
+event_selection::~event_selection() { this->reset(); }
 
 void event_selection::set_event_server(io::event_server *server_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   _server_ = server_;
-  return;
 }
 
 io::event_server &event_selection::get_event_server() const {
-  DT_THROW_IF(_server_ == 0, std::logic_error, "Event server is not set !");
+  DT_THROW_IF(_server_ == nullptr, std::logic_error, "Event server is not set !");
   return *_server_;
 }
 
 void event_selection::set_status_bar(view::status_bar *status_) {
   DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
   _status_ = status_;
-  return;
 }
 
 const cuts::cut_manager &event_selection::get_cut_manager() const {
-  DT_THROW_IF(_cut_manager_ == 0, std::logic_error, "Cut manager is not set !");
+  DT_THROW_IF(_cut_manager_ == nullptr, std::logic_error, "Cut manager is not set !");
   return *_cut_manager_;
 }
 
 cuts::cut_manager &event_selection::grab_cut_manager() {
-  DT_THROW_IF(_cut_manager_ == 0, std::logic_error, "Cut manager is not set !");
+  DT_THROW_IF(_cut_manager_ == nullptr, std::logic_error, "Cut manager is not set !");
   return *_cut_manager_;
 }
 
@@ -570,12 +557,12 @@ void event_selection::initialize(TGCompositeFrame *main_) {
   _main_->SetCleanup(kDeepCleanup);
 
   // Get pointer to browser for button connections
-  TGCompositeFrame *parent = (TGCompositeFrame *)_main_->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent()
-                                 ->GetParent();
+  auto *parent = (TGCompositeFrame *)_main_->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent()
+                     ->GetParent();
   _browser_ = dynamic_cast<event_browser *>(parent);
   DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
 
@@ -584,30 +571,30 @@ void event_selection::initialize(TGCompositeFrame *main_) {
   this->_install_cut_manager_();
 
   _initialized_ = true;
-  return;
 }
 
 void event_selection::reset() {
-  if (_cut_manager_) {
-    delete _cut_manager_;
-  }
-  _cut_manager_ = 0;
-  return;
+  delete _cut_manager_;
+
+  _cut_manager_ = nullptr;
 }
 
 void event_selection::process() {
-  TGButton *button = static_cast<TGButton *>(gTQSender);
+  auto *button = static_cast<TGButton *>(gTQSender);
   const unsigned int id = button->WidgetId();
 
   if (id == LOAD_SELECTION) {
     const std::string dir = falaise::get_resource_dir();
     TString directory(dir.c_str());
     TGFileInfo file_info;
-    const char *config_file_types[] = {"Config. file", "*.conf", "All files", "*", 0, 0};
+    const char *config_file_types[] = {"Config. file", "*.conf", "All files", "*",
+                                       nullptr,        nullptr};
     file_info.fFileTypes = config_file_types;
     file_info.fIniDir = StrDup(directory.Data());
     new TGFileDialog(gClient->GetRoot(), _browser_, kFDOpen, &file_info);
-    if (!file_info.fFilename) return;
+    if (file_info.fFilename == nullptr) {
+      return;
+    }
 
     std::string file_name = file_info.fFilename;
     std::string file_type = file_info.fFileTypes[file_info.fFileTypeIdx + 1];
@@ -624,8 +611,8 @@ void event_selection::process() {
     this->reset();
     this->_install_cut_manager_();
   } else if (id == RESET_SELECTION) {
-    for (widget_collection_type::iterator i = _widgets_.begin(); i != _widgets_.end(); ++i) {
-      i->second->initialize();
+    for (auto &_widget : _widgets_) {
+      _widget.second->initialize();
     }
 
     _server_->clear_selection();
@@ -648,7 +635,7 @@ void event_selection::process() {
     return;
   }
 
-  widget_collection_type::iterator found = _widgets_.find(id);
+  auto found = _widgets_.find(id);
   if (found != _widgets_.end()) {
     found->second->set_state();
   }
@@ -662,7 +649,6 @@ void event_selection::process() {
   }
   _update_button_->SetState(kButtonDisabled);
   _selection_enable_ = false;
-  return;
 }
 
 void event_selection::select_events(const button_signals_type signal_, const int event_selected_) {
@@ -682,7 +668,9 @@ void event_selection::select_events(const button_signals_type signal_, const int
   button_signals_type the_signal = signal_;
 
   int current_event_id = the_server.get_current_event_number();
-  if (event_selected_ != -1) current_event_id = event_selected_;
+  if (event_selected_ != -1) {
+    current_event_id = event_selected_;
+  }
 
   bool is_selected = false;
   while (!is_selected) {
@@ -719,8 +707,12 @@ void event_selection::select_events(const button_signals_type signal_, const int
         is_selected = true;
       } else {
         _server_->remove_event(current_event_id);
-        if (the_signal == FIRST_EVENT) the_signal = NEXT_EVENT;
-        if (the_signal == LAST_EVENT) the_signal = PREVIOUS_EVENT;
+        if (the_signal == FIRST_EVENT) {
+          the_signal = NEXT_EVENT;
+        }
+        if (the_signal == LAST_EVENT) {
+          the_signal = PREVIOUS_EVENT;
+        }
       }
 
       // No more events to look for
@@ -742,21 +734,21 @@ void event_selection::select_events(const button_signals_type signal_, const int
   }
 
   // Update buttons given avalaible banks
-  for (auto &i : _widgets_) i.second->set_state();
+  for (auto &i : _widgets_) {
+    i.second->set_state();
+  }
 
   // Update status bar
   _status_->update(is_selection_enable(), is_selection_enable());
   _status_->update_buttons(signal_);
-
-  return;
 }
 
 void event_selection::_build_() {
   // Add buttons to save, reset and apply selection
-  TGVerticalFrame *vframe = new TGVerticalFrame(_main_);
+  auto *vframe = new TGVerticalFrame(_main_);
   _main_->AddFrame(vframe, new TGLayoutHints(kLHintsBottom | kLHintsRight, 10, 10, 10, 10));
 
-  TGHorizontalFrame *hframe = new TGHorizontalFrame(vframe);
+  auto *hframe = new TGHorizontalFrame(vframe);
   vframe->AddFrame(hframe);
 
   _load_button_ = new TGTextButton(hframe, "Load selection file", LOAD_SELECTION);
@@ -795,7 +787,6 @@ void event_selection::_build_() {
   for (auto &i : _widgets_) {
     i.second->build(_main_);
   }
-  return;
 }
 
 bool event_selection::_check_cuts_() {
@@ -824,9 +815,13 @@ bool event_selection::_check_cuts_() {
 void event_selection::_build_cuts_() {
   std::vector<std::string> cut_lists;
   for (auto &a_widget : _widgets_) {
-    if (a_widget.first == ENABLE_LOGIC_SELECTION) continue;
+    if (a_widget.first == ENABLE_LOGIC_SELECTION) {
+      continue;
+    }
     const std::string a_cut_name = a_widget.second->get_cut_name();
-    if (!a_cut_name.empty()) cut_lists.push_back(a_cut_name);
+    if (!a_cut_name.empty()) {
+      cut_lists.push_back(a_cut_name);
+    }
   }
 
   if (cut_lists.empty()) {
@@ -838,12 +833,11 @@ void event_selection::_build_cuts_() {
 
   _current_cut_name_ = _widgets_[ENABLE_LOGIC_SELECTION]->get_cut_name();
   cuts::cut_handle_dict_type &the_cuts = _cut_manager_->get_cuts();
-  cuts::cut_handle_dict_type::iterator found = the_cuts.find(_current_cut_name_);
+  auto found = the_cuts.find(_current_cut_name_);
   datatools::properties &cuts_prop = found->second.grab_cut_config();
   cuts_prop.update("cuts", cut_lists);
 
   _selection_enable_ = true;
-  return;
 }
 
 void event_selection::_install_cut_manager_() {
@@ -869,10 +863,9 @@ void event_selection::_install_cut_manager_() {
     _cut_manager_->tree_dump(std::clog);
   }
 
-  for (widget_collection_type::iterator i = _widgets_.begin(); i != _widgets_.end(); ++i) {
-    i->second->initialize();
+  for (auto &_widget : _widgets_) {
+    _widget.second->initialize();
   }
-  return;
 }
 
 void event_selection::_install_private_cuts_() {
@@ -905,13 +898,11 @@ void event_selection::_install_private_cuts_() {
     cuts_prop.store_string("SD_label", io::SD_LABEL);
     _cut_manager_->load_cut(sd_cut_label(), "snemo::cut::simulated_data_cut", cuts_prop);
   }
-
-  return;
 }
 
-}  // end of namespace view
+}  // namespace view
 
-}  // end of namespace visualization
+}  // namespace visualization
 
 }  // end of namespace snemo
 

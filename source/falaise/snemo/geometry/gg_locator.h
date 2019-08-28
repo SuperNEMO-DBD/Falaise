@@ -43,6 +43,7 @@
 #include <geomtools/i_locator.h>
 
 // This project:
+#include <falaise/property_set.h>
 #include <falaise/snemo/geometry/utils.h>
 
 /** forward declaration */
@@ -61,258 +62,227 @@ namespace geometry {
 /// \brief Fast locator class for SuperNEMO drift chamber volumes
 class gg_locator : public geomtools::base_locator, public datatools::i_tree_dumpable {
  public:
-  /// Check intialization flag
-  virtual bool is_initialized() const;
-
-  /// Constructor
+  /// Strictly speaking, this constructs an invalid object, but cannot for now workaround
+  /// heavy use elsewhere.
   gg_locator();
 
   /// Constructor
-  gg_locator(const ::geomtools::manager& mgr_, uint32_t module_number_);
+  gg_locator(uint32_t moduleID, const geomtools::manager& geoMgr, const falaise::property_set& ps);
 
   /// Destructor
-  virtual ~gg_locator();
+  virtual ~gg_locator() = default;
 
   /// Reset
   virtual void reset();
 
   /// Initialize
-  virtual void initialize(const datatools::properties& config_);
+  virtual void initialize(const datatools::properties& ps);
 
-  /// Initialize
-  void initialize();
+  /// Check intialization flag
+  virtual bool is_initialized() const;
 
-  // Interfaces from geomtools::i_locator :
-  virtual bool find_geom_id(const geomtools::vector_3d& world_position_, int type_,
-                            geomtools::geom_id& gid_,
-                            double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+  // ATTRIBUTES
 
-  bool find_cell_geom_id(const geomtools::vector_3d& world_position_, geomtools::geom_id& gid_,
-                         double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
-
- protected:
-  /**
-   */
-  bool _find_cell_geom_id(const geomtools::vector_3d& in_module_position_, geomtools::geom_id& gid_,
-                          double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE);
-
- public:
   /**! @return the number of the module (>=0).
    */
-  uint32_t get_module_number() const;
+  uint32_t getModuleNumber() const;
 
   /**! @return set the number of the module for this locator.
    */
-  void set_module_number(uint32_t module_number_);
-
-  /**! @return the diameter of a cell.
-   */
-  double get_cell_diameter() const;
-
-  /**! @return the length of a cell (including the base and cathode ring).
-   */
-  double get_cell_length() const;
-
-  /**! @return the length of anode wires.
-   */
-  double get_anode_wire_length() const;
-
-  /**! @return the diameter of anode wires.
-   */
-  double get_anode_wire_diameter() const;
-
-  /**! @return the diameter of field wires.
-   */
-  double get_field_wire_length() const;
-
-  /**! @return the length field wires.
-   */
-  double get_field_wire_diameter() const;
-
-  /**! @return the number of sides on the tracking chamber.
-   */
-  size_t get_number_of_sides() const;
+  void setModuleNumber(uint32_t number);
 
   /**! @return true if the submodule at given side is present
    */
-  bool has_submodules(uint32_t side_) const;
+  bool hasSubmodules(uint32_t side) const;
+
+  /**! @return the number of sides on the tracking chamber.
+   */
+  size_t numberOfSides() const;
 
   /**! @return the number of drift cells layers in one side of the tracking chamber.
    */
-  size_t get_number_of_layers(uint32_t side_) const;
+  size_t numberOfLayers(uint32_t side) const;
 
   /**! @return the number of drift cells rows in one side of the tracking chamber.
    */
-  size_t get_number_of_rows(uint32_t side_) const;
+  size_t numberOfRows(uint32_t side) const;
 
-  /**! @return the X-position of a cell for specific side and layer (in module coordinate system).
+  /**! @return the diameter of a cell.
    */
-  double get_layer_x(uint32_t side_, uint32_t layer_) const;
+  double cellDiameter() const;
 
-  /**! @return the Y-position of a cell for specific side and row (in module coordinate system.
+  /**! @return the length of a cell (including the base and cathode ring).
    */
-  double get_row_y(uint32_t side_, uint32_t row_) const;
+  double cellLength() const;
 
-  /**! Compute the position of a cell for specific side, layer and row (in module coordinate
-   * system).
+  /**! @return the length of anode wires.
    */
-  void compute_cell_position(uint32_t side_, uint32_t layer_, uint32_t row_,
-                             geomtools::vector_3d& module_position_) const;
+  double anodeWireLength() const;
 
-  /**! @return the position of a cell for specific side, layer and row (in module coordinate
-   * system).
+  /**! @return the diameter of anode wires.
    */
-  geomtools::vector_3d get_cell_position(uint32_t side_, uint32_t layer_, uint32_t row_) const;
+  double anodeWireDiameter() const;
 
-  /** Tranform a world coordinate system position to the corresponding module coordinate system
-   * position.
+  /**! @return the length of field wires.
    */
-  void transform_world_to_module(const geomtools::vector_3d& world_position_,
-                                 geomtools::vector_3d& module_position_) const;
+  double fieldWireLength() const;
 
-  /** Tranform a module coordinate system position to the corresponding world coordinate system
-   * position.
+  /**! @return the field wire diameter.
    */
-  void transform_module_to_world(const geomtools::vector_3d& module_position_,
-                                 geomtools::vector_3d& world_position_) const;
+  double fieldWireDiameter() const;
 
-  /** Check if a world coordinate system position is in the module virtual volume (its bounding
-   * envelope).
+  // CALCULATORS
+
+  /**! @return the module address component of the gid
    */
-  bool is_world_position_in_module(const geomtools::vector_3d& world_position_,
-                                   double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+  uint32_t getModuleAddress(const geomtools::geom_id& gid) const;
 
-  /** Check if a module coordinate system position is in the module virtual volume (its bounding
-   * envelope).
+  /**! @return the side address component of the gid
    */
-  bool is_in_module(const geomtools::vector_3d& module_position_,
-                    double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+  uint32_t getSideAddress(const geomtools::geom_id& gid) const;
 
-  /** Check if a module coordinate system position is in a specific cell virtual volume (its
-   * bounding envelope).
+  /**! @return the layer address component of the gid
    */
-  bool is_in_cell(const geomtools::vector_3d& module_position_, uint32_t side_, uint32_t layer_,
-                  uint32_t row_, double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
+  uint32_t getLayerAddress(const geomtools::geom_id& gid) const;
 
-  /** Check if a world coordinate system position is in a specific cell virtual volume (its bounding
-   * envelope).
+  /**! @return the row address component of the gid
    */
-  bool is_world_position_in_cell(const geomtools::vector_3d& world_position_, uint32_t side_,
-                                 uint32_t layer_, uint32_t row_,
-                                 double tolerance_ = GEOMTOOLS_PROPER_TOLERANCE) const;
-
-  /** Given a cell at specific side, layer and row, returns the number of neighbouring cells.
-   * If asked, cells on the layer==0 on any side of the chamber are associated to cells on the other
-   * side of the source plane.
-   */
-  size_t get_number_of_neighbours(uint32_t side_, uint32_t layer_, uint32_t row_,
-                                  bool other_side_ = false) const;
-
-  /** Given a cell with a specific geometry ID, returns the number of neighbouring cells.
-   */
-  size_t get_number_of_neighbours(const geomtools::geom_id& gid_, bool other_side_ = false) const;
-
-  /** Given a cell at specific side, layer and row, compute the array of geometry IDs for associated
-   * neighbouring cells.
-   */
-  void get_neighbours_ids(uint32_t side_, uint32_t layer_, uint32_t row_,
-                          std::vector<geomtools::geom_id>& ids_, bool other_side_ = false) const;
-
-  /** Given a cell with a specific geometry IDs, compute the array of geometry IDs for associated
-   * neighbouring cells.
-   */
-  void get_neighbours_ids(const geomtools::geom_id& gid_, std::vector<geomtools::geom_id>& ids_,
-                          bool other_side_ = false) const;
-
-  /** Given a cell with a specific geometry IDs, compute its position in the module coordinate
-   * system.
-   */
-  void get_cell_position(const geomtools::geom_id& gid_, geomtools::vector_3d& position_) const;
-
-  /** Given a cell with a specific side, layer and row, compute its position in the module
-   * coordinate system.
-   */
-  void get_cell_position(uint32_t side_, uint32_t layer_, uint32_t row_,
-                         geomtools::vector_3d& position_) const;
-
-  uint32_t extract_module(const geomtools::geom_id& gid_) const;
-
-  uint32_t extract_side(const geomtools::geom_id& gid) const;
-
-  uint32_t extract_layer(const geomtools::geom_id& gid_) const;
-
-  uint32_t extract_row(const geomtools::geom_id& gid_) const;
+  uint32_t getRowAddress(const geomtools::geom_id& gid) const;
 
   /** @arg a_gid the GID to be checked.
    *  @return true if the GID corresponds to a Geiger cell's drift volume.
    */
-  bool is_drift_cell_volume(const geomtools::geom_id& gid_) const;
+  bool isGeigerCell(const geomtools::geom_id& gid) const;
 
   /** @arg a_gid the GID to be checked
    *  @return true if the GID corresponds to a Geiger cell's drift volume in the
    *  module number associated to the locator.
    */
-  bool is_drift_cell_volume_in_current_module(const geomtools::geom_id& gid_) const;
+  bool isGeigerCellInThisModule(const geomtools::geom_id& gid) const;
+
+  /** Given a cell at specific side, layer and row, returns the number of neighbouring cells.
+   * If asked, cells on the layer==0 on any side of the chamber are associated to cells on the other
+   * side of the source plane.
+   */
+  size_t countNeighbours(uint32_t side, uint32_t layer, uint32_t row,
+                         bool acrossFoil = false) const;
+
+  /** Given a cell with a specific geometry ID, returns the number of neighbouring cells.
+   */
+  size_t countNeighbours(const geomtools::geom_id& gid, bool acrossFoil = false) const;
+
+  /** Given a cell at specific side, layer and row, compute the array of geometry IDs for associated
+   * neighbouring cells.
+   */
+  std::vector<geomtools::geom_id> getNeighbourGIDs(uint32_t side, uint32_t layer, uint32_t row,
+                                                   bool acrossFoil = false) const;
+
+  /** Given a cell with a specific geometry IDs, compute the array of geometry IDs for associated
+   * neighbouring cells.
+   */
+  std::vector<geomtools::geom_id> getNeighbourGIDs(const geomtools::geom_id& gid,
+                                                   bool acrossFoil = false) const;
+
+  /**! @return the X-position of a cell for specific side and layer (in module coordinate system).
+   */
+  double getXCoordOfLayer(uint32_t side, uint32_t layer) const;
+
+  /**! @return the Y-position of a cell for specific side and row (in module coordinate system.
+   */
+  double getYCoordOfRow(uint32_t side, uint32_t row) const;
+
+  /**! Return the position of a cell for specific side, layer and row (in module coordinate
+   * system).
+   */
+  geomtools::vector_3d getCellPosition(uint32_t side, uint32_t layer, uint32_t row) const;
+
+  /** Given a cell with a specific geometry ID, return its position in the module coordinate
+   * system.
+   */
+  geomtools::vector_3d getCellPosition(const geomtools::geom_id& gid) const;
+
+  /** Tranform a world coordinate system position to the corresponding module coordinate system
+   * position.
+   */
+  geomtools::vector_3d transformWorldToModule(const geomtools::vector_3d& worldPoint) const;
+
+  /** Tranform a module coordinate system position to the corresponding world coordinate system
+   * position.
+   */
+  geomtools::vector_3d transformModuleToWorld(const geomtools::vector_3d& modulePoint) const;
+
+  /** Check if a world coordinate system position is in the module virtual volume (its bounding
+   * envelope).
+   */
+  bool isWorldPointInModule(const geomtools::vector_3d& worldPoint,
+                            double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
+
+  /** Check if a world coordinate system position is in a specific cell virtual volume (its bounding
+   * envelope).
+   */
+  bool isWorldPointInCell(const geomtools::vector_3d& worldPoint, uint32_t side, uint32_t layer,
+                          uint32_t row, double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
+
+  /** Check if a module coordinate system position is in the module virtual volume (its bounding
+   * envelope).
+   */
+  bool isPointInModule(const geomtools::vector_3d& modulePoint,
+                       double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
+
+  /** Check if a module coordinate system position is in a specific cell virtual volume (its
+   * bounding envelope).
+   */
+  bool isPointInCell(const geomtools::vector_3d& modulePoint, uint32_t side, uint32_t layer,
+                     uint32_t row, double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
+
+  bool findCellGID(const geomtools::vector_3d& worldPoint, geomtools::geom_id& gid,
+                   double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
+
+  // Interfaces from geomtools::i_locator :
+  // Not clear that we ever use this class through the i_locator/base_locator
+  // interface, so utility vague at the moment
+  virtual bool find_geom_id(const geomtools::vector_3d& worldPoint, int type,
+                            geomtools::geom_id& gid,
+                            double tolerance = GEOMTOOLS_PROPER_TOLERANCE) const;
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
-
-  /// Dump
-  void dump(std::ostream& out_ = std::clog) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool inherit = false) const;
 
  protected:
-  /** Protected construction method. */
-  void _construct();
-
   /// Set default values
-  void _set_defaults();
+  void set_defaults_();
 
-  /// Hack trace
-  void _hack_trace();
+  /** Protected construction method. */
+  void construct_();
 
  private:
-  bool _initialized_;
+  bool isInitialized_;
 
-  std::string _module_category_;
-  std::string _tracker_volume_category_;
-  std::string _tracker_layer_category_;
-  std::string _drift_cell_volume_category_;
+  uint32_t moduleNumber_;
 
-  int _module_index_;
-  int _side_index_;
-  int _layer_index_;
-  int _row_index_;
+  uint32_t cellGIDType_;
+  int moduleAddressIndex_;
+  int sideAddressIndex_;
+  int layerAddressIndex_;
+  int rowAddressIndex_;
 
-  uint32_t _module_type_;
-  uint32_t _tracker_volume_type_;
-  uint32_t _tracker_layer_type_;
-  uint32_t _cell_type_;
-  uint32_t _module_number_;
-  const geomtools::mapping* _mapping_;
-  const geomtools::id_mgr* _id_manager_;
+  const geomtools::mapping* geomMapping_;
+  const geomtools::placement* moduleWorldPlacement_;
+  const geomtools::box* moduleBoxShape_;
+  const geomtools::box* cellBoxShape_;
 
-  const geomtools::geom_info* _module_ginfo_;
-  const geomtools::placement* _module_world_placement_;
-  const geomtools::box* _module_box_;
-  const geomtools::box* _cell_box_;
-
-  std::vector<double> _back_cell_x_;
-  std::vector<double> _front_cell_x_;
-  std::vector<double> _back_cell_y_;
-  std::vector<double> _front_cell_y_;
-  double _anode_wire_length_;
-  double _anode_wire_diameter_;
-  double _field_wire_length_;
-  double _field_wire_diameter_;
-
-  int _module_address_index_;
-  int _side_address_index_;
-  int _layer_address_index_;
-  int _row_address_index_;
+  std::vector<double> backCellX_;
+  std::vector<double> backCellY_;
+  std::vector<double> frontCellX_;
+  std::vector<double> frontCellY_;
+  double anodeWireLength_;
+  double anodeWireDiameter_;
+  double fieldWireLength_;
+  double fieldWireDiameter_;
 
   // Submodules are present :
-  bool _submodules_[2];
+  bool submodules_[2];
 };
 
 }  // end of namespace geometry

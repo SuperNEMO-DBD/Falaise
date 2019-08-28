@@ -59,27 +59,25 @@ const unsigned int g__binded_keys[] = {
 const unsigned int g__nbr_binded_keys = sizeof(g__binded_keys) / sizeof(unsigned int);
 
 // ctor:
-signal_handling::signal_handling(TGMainFrame* main_) : _browser_(0) {
+signal_handling::signal_handling(TGMainFrame* main_) : _browser_(nullptr) {
   // get pointer to browser for button connections
   _browser_ = dynamic_cast<event_browser*>(main_);
   DT_THROW_IF(!_browser_, std::logic_error, "Event_browser can't be cast from frame!");
 
   // define keyboard strokes to be handled by the event_browser_options
-  for (unsigned int i_key = 0; i_key < g__nbr_binded_keys; ++i_key) {
-    _browser_->BindKey((const TGWindow*)_browser_,
-                       gVirtualX->KeysymToKeycode(g__binded_keys[i_key]), kAnyModifier);
+  for (unsigned int g__binded_key : g__binded_keys) {
+    _browser_->BindKey((const TGWindow*)_browser_, gVirtualX->KeysymToKeycode(g__binded_key),
+                       kAnyModifier);
   }
-  return;
 }
 
 // dtor:
 signal_handling::~signal_handling() {
   // remove binding of keys
-  for (unsigned int i_key = 0; i_key < g__nbr_binded_keys; ++i_key) {
-    _browser_->RemoveBind((const TGWindow*)_browser_,
-                          gVirtualX->KeysymToKeycode(g__binded_keys[i_key]), kAnyModifier);
+  for (unsigned int g__binded_key : g__binded_keys) {
+    _browser_->RemoveBind((const TGWindow*)_browser_, gVirtualX->KeysymToKeycode(g__binded_key),
+                          kAnyModifier);
   }
-  return;
 }
 
 bool signal_handling::handle_key(Event_t* event_) {
@@ -87,11 +85,13 @@ bool signal_handling::handle_key(Event_t* event_) {
   unsigned int keysym;
   gVirtualX->LookupString(event_, tmp, sizeof(tmp), keysym);
 
-  if (event_->fType != kGKeyPress) return false;
+  if (event_->fType != kGKeyPress) {
+    return false;
+  }
 
-  EKeySym key_pressed = (EKeySym)keysym;
+  auto key_pressed = (EKeySym)keysym;
 
-  if (event_->fState & kKeyControlMask) {
+  if ((event_->fState & kKeyControlMask) != 0u) {
     switch (key_pressed) {
       case kKey_PageDown:
         _browser_->change_tab(PREVIOUS_TAB);
@@ -191,7 +191,6 @@ void signal_handling::_process_button_(const button_signals_type signal_) {
     default:
       break;
   }
-  return;
 }
 
 void signal_handling::_process_menu_(const button_signals_type signal_) {
@@ -203,10 +202,10 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
       TGFileInfo file_info;
       file_info.fIniDir = StrDup(directory.Data());
       new TGFileDialog(gClient->GetRoot(), _browser_, kFDOpen, &file_info);
-      if (file_info.fFilename) {
+      if (file_info.fFilename != nullptr) {
         options_manager::get_instance().set_default_options();
         std::vector<std::string> tmp;
-        tmp.push_back(std::string(file_info.fFilename));
+        tmp.emplace_back(file_info.fFilename);
         options_manager::get_instance().set_input_files(tmp);
         _browser_->initialize_event_server();
       }
@@ -242,12 +241,14 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
                                          "*.xml",
                                          "All files",
                                          "*",
-                                         0,
-                                         0};
+                                         nullptr,
+                                         nullptr};
       file_info.fFileTypes = config_file_types;
       file_info.fIniDir = StrDup(directory.Data());
       new TGFileDialog(gClient->GetRoot(), _browser_, kFDSave, &file_info);
-      if (!file_info.fFilename) break;
+      if (file_info.fFilename == nullptr) {
+        break;
+      }
 
       std::string file_name = file_info.fFilename;
       std::string file_type = file_info.fFileTypes[file_info.fFileTypeIdx + 1];
@@ -264,11 +265,12 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
       const std::string dir = falaise::get_resource_dir();
       TString directory(dir.c_str());
       TGFileInfo file_info;
-      const char* config_file_types[] = {"Geometry config files", "*.conf", "All files", "*", 0, 0};
+      const char* config_file_types[] = {
+          "Geometry config files", "*.conf", "All files", "*", nullptr, nullptr};
       file_info.fFileTypes = config_file_types;
       file_info.fIniDir = StrDup(directory.Data());
       new TGFileDialog(gClient->GetRoot(), _browser_, kFDOpen, &file_info);
-      if (file_info.fFilename) {
+      if (file_info.fFilename != nullptr) {
         // options_manager & options_mgr = options_manager::get_instance ();
         // options_mgr.set_detector_config_file (file_info.fFilename);
         detector::detector_manager& detector_mgr = detector::detector_manager::get_instance();
@@ -282,11 +284,11 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
       const std::string dir = falaise::get_resource_dir() + "/modules/EventBrowser/styles";
       TString directory(dir.c_str());
       TGFileInfo file_info;
-      const char* style_file_types[] = {"Style files", "*.sty", "All files", "*", 0, 0};
+      const char* style_file_types[] = {"Style files", "*.sty", "All files", "*", nullptr, nullptr};
       file_info.fFileTypes = style_file_types;
       file_info.fIniDir = StrDup(directory.Data());
       new TGFileDialog(gClient->GetRoot(), _browser_, kFDOpen, &file_info);
-      if (file_info.fFilename) {
+      if (file_info.fFilename != nullptr) {
         style_manager& style_mgr = style_manager::get_instance();
         style_mgr.reset();
         style_mgr.initialize(file_info.fFilename);
@@ -342,7 +344,6 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
       _process_menu_options_(signal_);
       break;
   }
-  return;
 }
 
 void signal_handling::_process_menu_options_(const button_signals_type signal_) {
@@ -350,15 +351,18 @@ void signal_handling::_process_menu_options_(const button_signals_type signal_) 
   const options_manager& options_mgr = options_manager::get_instance();
   const std::map<button_signals_type, bool>& option_dict = options_mgr.get_options_dictionnary();
 
-  if (option_dict.find(signal_) == option_dict.end()) return;
+  if (option_dict.find(signal_) == option_dict.end()) {
+    return;
+  }
 
   _browser_->update_menu(signal_);
   bool reset_view = false;
 
-  if (signal_ == FOCUS_ROI) reset_view = true;
+  if (signal_ == FOCUS_ROI) {
+    reset_view = true;
+  }
 
   _browser_->update_browser(reset_view);
-  return;
 }
 
 }  // end of namespace view
