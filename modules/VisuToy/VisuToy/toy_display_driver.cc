@@ -601,7 +601,7 @@ void toy_display_driver::generate_SD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
   // Simulated data :
-  const std::string &SD_label = snemo::datamodel::data_info::default_simulated_data_label();
+  const std::string &SD_label = snedm::labels::simulated_data();
   if (get_current_event_record_().has(SD_label)) {
     DT_LOG_DEBUG(logging_priority, "has SIMULATED_DATA_LABEL !");
     DT_THROW_IF(!get_current_event_record_().is_a<mctools::simulated_data>(SD_label),
@@ -1097,7 +1097,7 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
 
-  const std::string &CD_label = snemo::datamodel::data_info::default_calibrated_data_label();
+  const std::string &CD_label = snedm::labels::calibrated_data();
   if (get_current_event_record_().has(CD_label)) {
     DT_LOG_DEBUG(logging_priority, "has CALIBRATED_DATA_LABEL !");
     DT_THROW_IF(!get_current_event_record_().is_a<snemo::datamodel::calibrated_data>(CD_label),
@@ -1438,8 +1438,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
   double cell_diameter = 44.0 * CLHEP::mm;
-  const std::string &TCD_label =
-      snemo::datamodel::data_info::default_tracker_clustering_data_label();
+  const std::string &TCD_label = snedm::labels::tracker_clustering_data();
   if (get_current_event_record_().has(TCD_label)) {
     DT_LOG_DEBUG(logging_priority, "has TRACKER_CLUSTERING_DATA_LABEL !");
     DT_THROW_IF(
@@ -1534,8 +1533,7 @@ void toy_display_driver::generate_TTD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
 
-  const std::string &TTD_label =
-      snemo::datamodel::data_info::default_tracker_trajectory_data_label();
+  const std::string &TTD_label = snedm::labels::tracker_trajectory_data();
   if (get_current_event_record_().has(TTD_label)) {
     DT_LOG_DEBUG(logging_priority, "has TRACKER_TRAJECTORY_DATA_LABEL !");
     DT_THROW_IF(
@@ -2862,31 +2860,28 @@ void toy_display_driver::cmd_dump(datatools::things &a_data) {
   const sdm::tracker_trajectory_data *ttd_ptr = 0;
   const sdm::particle_track_data *ptd_ptr = 0;
 
-  if (a_data.has(sdm::data_info::default_event_header_label())) {
-    eh_ptr = &(a_data.get<sdm::event_header>(sdm::data_info::default_event_header_label()));
+  if (a_data.has(snedm::labels::event_header())) {
+    eh_ptr = &(a_data.get<sdm::event_header>(snedm::labels::event_header()));
   }
 
-  if (a_data.has(sdm::data_info::default_simulated_data_label())) {
-    sd_ptr = &(a_data.get<mctools::simulated_data>(sdm::data_info::default_simulated_data_label()));
+  if (a_data.has(snedm::labels::simulated_data())) {
+    sd_ptr = &(a_data.get<mctools::simulated_data>(snedm::labels::simulated_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_calibrated_data_label())) {
-    cd_ptr = &(a_data.get<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label()));
+  if (a_data.has(snedm::labels::calibrated_data())) {
+    cd_ptr = &(a_data.get<sdm::calibrated_data>(snedm::labels::calibrated_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_tracker_clustering_data_label())) {
-    tcd_ptr = &(a_data.get<sdm::tracker_clustering_data>(
-        sdm::data_info::default_tracker_clustering_data_label()));
+  if (a_data.has(snedm::labels::tracker_clustering_data())) {
+    tcd_ptr = &(a_data.get<sdm::tracker_clustering_data>(snedm::labels::tracker_clustering_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_tracker_trajectory_data_label())) {
-    ttd_ptr = &(a_data.get<sdm::tracker_trajectory_data>(
-        sdm::data_info::default_tracker_trajectory_data_label()));
+  if (a_data.has(snedm::labels::tracker_trajectory_data())) {
+    ttd_ptr = &(a_data.get<sdm::tracker_trajectory_data>(snedm::labels::tracker_trajectory_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_particle_track_data_label())) {
-    ptd_ptr = &(
-        a_data.get<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label()));
+  if (a_data.has(snedm::labels::particle_track_data())) {
+    ptd_ptr = &(a_data.get<sdm::particle_track_data>(snedm::labels::particle_track_data()));
   }
 
   if (eh_ptr != 0) {

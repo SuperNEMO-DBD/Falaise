@@ -80,10 +80,8 @@ void trackfit_tracker_fitting_module::initialize(const datatools::properties& co
   dpp::base_module::_common_initialize(config);
 
   falaise::property_set ps{config};
-  TCDTag_ = ps.get<std::string>(
-      "TCD_label", snemo::datamodel::data_info::default_tracker_clustering_data_label());
-  TTDTag_ = ps.get<std::string>(
-      "TTD_label", snemo::datamodel::data_info::default_tracker_trajectory_data_label());
+  TCDTag_ = ps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
+  TTDTag_ = ps.get<std::string>("TTD_label", snedm::labels::tracker_trajectory_data());
 
   snemo::service_handle<snemo::geometry_svc> geoSVC{services};
   set_geometry_manager(*(geoSVC.operator->()));
@@ -125,7 +123,7 @@ dpp::base_module::process_status trackfit_tracker_fitting_module::process(
   const auto& inputClusters = event.get<snedm::tracker_clustering_data>(TCDTag_);
 
   // Check tracker trajectory data
-  auto& outputTrajectories = snedm::getOrAddToEvent<snedm::tracker_trajectory_data>(TTDTag_, event);
+  auto& outputTrajectories = ::snedm::getOrAddToEvent<snedm::tracker_trajectory_data>(TTDTag_, event);
   if (outputTrajectories.has_solutions()) {
     DT_LOG_WARNING(get_logging_priority(),
                    "Event bank '" << TTDTag_ << "' already has processed tracker trajectory data");
@@ -180,7 +178,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::trackfit_tracker_fitting_
             "This is the name of the bank to be used as    \n"
             "the source of input clusters of tracker hits. \n")
         .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_clustering_data_label())
+            snedm::labels::tracker_clustering_data())
         .add_example(
             "Use an alternative name for the 'tracker clustering data' bank:: \n"
             "                                  \n"
@@ -199,7 +197,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::trackfit_tracker_fitting_
             "This is the name of the bank to be used as \n"
             "the sink of output tracker trajectories.   \n")
         .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_trajectory_data_label())
+            snedm::labels::tracker_trajectory_data())
         .add_example(
             "Use an alternative name for the 'tracker trajectory data' bank:: \n"
             "                                  \n"

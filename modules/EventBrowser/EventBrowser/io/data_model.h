@@ -50,22 +50,22 @@ namespace io {
 typedef datatools::things event_record;
 
 // event header
-const std::string EH_LABEL = snemo::datamodel::data_info::default_event_header_label();
+const std::string EH_LABEL = snedm::labels::event_header();
 
 // simulated stuff
-const std::string SD_LABEL = snemo::datamodel::data_info::default_simulated_data_label();
+const std::string SD_LABEL = snedm::labels::simulated_data();
 
 // calibrated stuff
-const std::string CD_LABEL = snemo::datamodel::data_info::default_calibrated_data_label();
+const std::string CD_LABEL = snedm::labels::calibrated_data();
 
 // tracker clustering stuff
-const std::string TCD_LABEL = snemo::datamodel::data_info::default_tracker_clustering_data_label();
+const std::string TCD_LABEL = snedm::labels::tracker_clustering_data();
 
 // tracker trajectory stuff
-const std::string TTD_LABEL = snemo::datamodel::data_info::default_tracker_trajectory_data_label();
+const std::string TTD_LABEL = snedm::labels::tracker_trajectory_data();
 
 // particle track stuff
-const std::string PTD_LABEL = snemo::datamodel::data_info::default_particle_track_data_label();
+const std::string PTD_LABEL = snedm::labels::particle_track_data();
 
 }  // end of namespace io
 

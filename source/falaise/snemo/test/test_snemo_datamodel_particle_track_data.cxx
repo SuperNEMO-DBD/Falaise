@@ -78,11 +78,10 @@ int main(/*int argc_, char ** argv_*/) {
     hPT0.get().tree_dump(std::clog, "Particle track : ");
 
     // Event record :
-    sdm::event_record ER;
+    snedm::event_record ER;
 
     // Particle track data bank :
-    auto& PTD =
-        ER.add<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label());
+    auto& PTD = ER.add<sdm::particle_track_data>(snedm::labels::particle_track_data());
     PTD.add_particle(hPT0);
     PTD.tree_dump(std::clog, "Particle track data :");
 

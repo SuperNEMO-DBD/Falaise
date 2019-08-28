@@ -8,19 +8,18 @@
 
 #include <bayeux/datatools/things.h>
 
-namespace snemo {
-namespace datamodel {
+namespace snedm {
 //! Event record type definition
 using event_record = datatools::things;
 
 //! Get or add instance of T at supplied key in event record
-  /*!
-   * \tparam T type of value to be retrieved or added
-   * \param[in] key key for value to find
-   * \param[in] event event record to search in
-   * \returns reference to value held at key
-   * \throws datatools::bad_things_cast if value at key is not of type T
-   */
+/*!
+ * \tparam T type of value to be retrieved or added
+ * \param[in] key key for value to find
+ * \param[in] event event record to search in
+ * \returns reference to value held at key
+ * \throws datatools::bad_things_cast if value at key is not of type T
+ */
 template <typename T>
 T& getOrAddToEvent(std::string const& key, event_record& event) {
   if (event.has(key)) {
@@ -29,7 +28,6 @@ T& getOrAddToEvent(std::string const& key, event_record& event) {
   return event.add<T>(key);
 }
 
-}  // namespace datamodels
-}  // namespace snemo
+}  // namespace snedm
 
 #endif

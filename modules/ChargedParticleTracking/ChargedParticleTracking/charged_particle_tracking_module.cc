@@ -38,10 +38,9 @@ DPP_MODULE_REGISTRATION_IMPLEMENT(charged_particle_tracking_module,
                                   "snemo::reconstruction::charged_particle_tracking_module")
 
 void charged_particle_tracking_module::_set_defaults() {
-  using sdmi = snemo::datamodel::data_info;
-  CDTag_ = sdmi::default_calibrated_data_label();
-  TTDTag_ = sdmi::default_tracker_trajectory_data_label();
-  PTDTag_ = sdmi::default_particle_track_data_label();
+  CDTag_ = snedm::labels::calibrated_data();
+  TTDTag_ = snedm::labels::tracker_trajectory_data();
+  PTDTag_ = snedm::labels::particle_track_data();
 
   geoManager_ = snemo::service_handle<snemo::geometry_svc>{};
 
@@ -56,7 +55,6 @@ void charged_particle_tracking_module::initialize(
     dpp::module_handle_dict_type& /* module_dict_ */) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
-  using sdmi = snemo::datamodel::data_info;
   namespace snreco = snemo::reconstruction;
 
   using VertexExtrapolator = snreco::vertex_extrapolation_driver;
@@ -68,9 +66,9 @@ void charged_particle_tracking_module::initialize(
 
   falaise::property_set ps{setup_};
 
-  CDTag_ = ps.get<std::string>("CD_label", sdmi::default_calibrated_data_label());
-  TTDTag_ = ps.get<std::string>("TTD_label", sdmi::default_tracker_trajectory_data_label());
-  PTDTag_ = ps.get<std::string>("PTD_label", sdmi::default_particle_track_data_label());
+  CDTag_ = ps.get<std::string>("CD_label", snedm::labels::calibrated_data());
+  TTDTag_ = ps.get<std::string>("TTD_label", snedm::labels::tracker_trajectory_data());
+  PTDTag_ = ps.get<std::string>("PTD_label", snedm::labels::particle_track_data());
 
   // Geometry manager :
   geoManager_ = snemo::service_handle<snemo::geometry_svc>{service_manager_};
@@ -135,7 +133,7 @@ dpp::base_module::process_status charged_particle_tracking_module::process(
 
   // Create or reset output bank
   auto the_particle_track_data =
-      snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, data_record_);
+      ::snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, data_record_);
   the_particle_track_data.reset();
 
   // Main processing method :
@@ -308,7 +306,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
         .set_long_description(
             "This is the name of the bank to be used  \n"
             "as the source of input calorimeter hits. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the \n"
             "'calibrated data' bank::        \n"
@@ -328,7 +326,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
             "This is the name of the bank to be used      \n"
             "as the source of input tracker trajectories. \n")
         .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_trajectory_data_label())
+            snedm::labels::tracker_trajectory_data())
         .add_example(
             "Use an alternative name for the  \n"
             "'tracker trajectory data' bank:: \n"
@@ -347,7 +345,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
         .set_long_description(
             "This is the name of the bank to be used as \n"
             "the sink of output particle tracks.        \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_particle_track_data_label())
+        .set_default_value_string(snedm::labels::particle_track_data())
         .add_example(
             "Use an alternative name for the \n"
             "'particle track data' bank::    \n"

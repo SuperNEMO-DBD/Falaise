@@ -70,7 +70,6 @@ void sultan_tracker_clustering_module::reset() {
   _set_defaults();
 }
 
-
 void sultan_tracker_clustering_module::set_cd_label(const std::string& cdl_) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
@@ -102,22 +101,18 @@ void sultan_tracker_clustering_module::set_geometry_manager(const geomtools::man
               std::logic_error, "Setup label '" << setup_label << "' is not supported !");
 }
 
-
-void sultan_tracker_clustering_module::initialize(
-    const datatools::properties& config, datatools::service_manager& services,
-    dpp::module_handle_dict_type& /* unused */) {
+void sultan_tracker_clustering_module::initialize(const datatools::properties& config,
+                                                  datatools::service_manager& services,
+                                                  dpp::module_handle_dict_type& /* unused */) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
 
   dpp::base_module::_common_initialize(config);
 
-  namespace snedm = snemo::datamodel;
-
   falaise::property_set ps{config};
 
-  CDTag_ = ps.get<std::string>("CD_label", snedm::data_info::default_calibrated_data_label());
-  TCDTag_ =
-      ps.get<std::string>("TCD_label", snedm::data_info::default_tracker_clustering_data_label());
+  CDTag_ = ps.get<std::string>("CD_label", snedm::labels::calibrated_data());
+  TCDTag_ = ps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
 
   // Geometry manager :
   if (geoManager_ == nullptr) {
@@ -128,8 +123,8 @@ void sultan_tracker_clustering_module::initialize(
   // Clustering algorithm :
   sultanAlgo_.reset(new sultan_driver);
   DT_THROW_IF(!sultanAlgo_, std::logic_error,
-              "Module '" << get_name() << "' could not instantiate the '" << sultan_driver::SULTAN_ID
-                         << "' tracker clusterizer algorithm !");
+              "Module '" << get_name() << "' could not instantiate the '"
+                         << sultan_driver::SULTAN_ID << "' tracker clusterizer algorithm !");
 
   // Initialize the clustering driver :
   sultanAlgo_->set_geometry_manager(get_geometry_manager());
@@ -137,8 +132,6 @@ void sultan_tracker_clustering_module::initialize(
 
   _set_initialized(true);
 }
-
-
 
 // Processing :
 dpp::base_module::process_status sultan_tracker_clustering_module::process(
@@ -154,7 +147,7 @@ dpp::base_module::process_status sultan_tracker_clustering_module::process(
   const auto& calibratedData = event.get<snedm::calibrated_data>(CDTag_);
 
   // Get or create output data
-  auto& clusteringData = snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
+  auto& clusteringData = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
 
   if (clusteringData.has_solutions()) {
     DT_LOG_WARNING(get_logging_priority(),
@@ -197,7 +190,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
     std::ostringstream ldesc;
     ldesc << "This is the name of the bank to be used \n"
           << "as the source of input tracker hits.    \n"
-          << "Default value is: \"" << snemo::datamodel::data_info::default_calibrated_data_label()
+          << "Default value is: \"" << snedm::labels::calibrated_data()
           << "\".  \n";
     // Description of the 'CD_label' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
@@ -206,7 +199,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
         .set_long_description(ldesc.str())
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the 'calibrated data' bank:: \n"
             "                                \n"
@@ -219,7 +212,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
     ldesc << "This is the name of the bank to be used \n"
           << "as the sink of output clusters of tracker hits.    \n"
           << "Default value is: \""
-          << snemo::datamodel::data_info::default_tracker_clustering_data_label() << "\".  \n";
+          << snedm::labels::tracker_clustering_data() << "\".  \n";
     // Description of the 'TCD_label' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
     cpd.set_name_pattern("TCD_label")
@@ -228,7 +221,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::sultan_tracker_clustering
         .set_mandatory(false)
         .set_long_description(ldesc.str())
         .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_clustering_data_label())
+            snedm::labels::tracker_clustering_data())
         .add_example(
             "Use an alternative name for the 'tracker clustering data' bank:: \n"
             "                                  \n"

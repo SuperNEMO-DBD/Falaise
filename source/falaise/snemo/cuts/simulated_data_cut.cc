@@ -51,8 +51,7 @@ void simulated_data_cut::initialize(const datatools::properties& dps,
 
   falaise::property_set ps{dps};
 
-  SDTag_ =
-      ps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
+  SDTag_ = ps.get<std::string>("SD_label", snedm::labels::simulated_data());
 
   if (ps.has_key("mode.flag")) {
     cutMode_ |= mode_t::FLAG;
@@ -92,7 +91,6 @@ void simulated_data_cut::initialize(const datatools::properties& dps,
 
   this->i_cut::_set_initialized(true);
 }
-
 
 void simulated_data_cut::setSDTag(const std::string& tag) { SDTag_ = tag; }
 
@@ -255,7 +253,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::cut::simulated_data_cut, ocd_) {
     cpd.set_name_pattern("SD_label")
         .set_terse_description("The name of the Simulated Data bank")
         .set_traits(datatools::TYPE_STRING)
-        .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
+        .set_default_value_string(snedm::labels::simulated_data())
         .add_example(
             "Set the default value::                          \n"
             "                                                 \n"

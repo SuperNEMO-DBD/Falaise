@@ -42,9 +42,9 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   falaise::property_set fps{ps};
 
   sdInputTag =
-      fps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
+      fps.get<std::string>("SD_label", snedm::labels::simulated_data());
   cdOutputTag = fps.get<std::string>("CD_label",
-                                     snemo::datamodel::data_info::default_calibrated_data_label());
+                                     snedm::labels::calibrated_data());
 
   // Initialize the embedded random number generator:
   int random_seed = fps.get<int>("random.seed", 12345);
@@ -91,7 +91,7 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
   // May, or may not, have it depending on if we run before or after
   // other calibrators
   auto& calibratedData =
-      snemo::datamodel::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
+      snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
 
   // Always rewrite hits....
   calibratedData.calibrated_calorimeter_hits().clear();
@@ -308,7 +308,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
         .set_long_description(
             "This is the name of the bank to be used   \n"
             "as the input simulated calorimeter hits.  \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
+        .set_default_value_string(snedm::labels::simulated_data())
         .add_example(
             "Use an alternative name for the 'simulated data' bank:: \n"
             "                                \n"
@@ -326,7 +326,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
         .set_long_description(
             "This is the name of the bank to be used    \n"
             "as the output calibrated calorimeter hits. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the 'calibrated data' bank:: \n"
             "                                \n"
