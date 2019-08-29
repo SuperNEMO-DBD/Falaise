@@ -69,7 +69,7 @@ void particle_track_data::clear() {
 }
 
 void particle_track_data::tree_dump(std::ostream& out_, const std::string& title_,
-                                    const std::string& indent_, bool inherit_) const {
+                                    const std::string& indent_, bool /*inherit_*/) const {
   if (!title_.empty()) {
     out_ << indent_ << title_ << std::endl;
   }

@@ -56,7 +56,7 @@ namespace view {
 const unsigned int g__binded_keys[] = {
     kKey_Escape,  kKey_PageDown, kKey_PageUp, kKey_Home, kKey_End, kKey_Space, kKey_Tab,
     kKey_Backtab, kKey_P,        kKey_A,      kKey_D,    kKey_o,   kKey_r};
-const unsigned int g__nbr_binded_keys = sizeof(g__binded_keys) / sizeof(unsigned int);
+//const unsigned int g__nbr_binded_keys = sizeof(g__binded_keys) / sizeof(unsigned int);
 
 // ctor:
 signal_handling::signal_handling(TGMainFrame* main_) : _browser_(nullptr) {
