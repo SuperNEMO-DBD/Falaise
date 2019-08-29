@@ -27,9 +27,6 @@ namespace datamodel {
 /// \brief A cluster of Geiger calibrated hits referenced by handles
 class tracker_cluster : public geomtools::base_hit {
  public:
-  /// Handle on tracker cluster
-  typedef datatools::handle<tracker_cluster> handle_type;
-
   /// Flag for a auxiliary property
   static const std::string& delayed_cluster_flag();
 
@@ -58,10 +55,10 @@ class tracker_cluster : public geomtools::base_hit {
   void invalidate_cluster_id();
 
   /// Return a mutable reference on the container of handles on calibrated tracker hits
-  calibrated_tracker_hit::collection_type& get_hits();
+  TrackerHitHdlCollection& get_hits();
 
   /// Return a non mutable reference on the container of handles on calibrated tracker hits
-  const calibrated_tracker_hit::collection_type& get_hits() const;
+  const TrackerHitHdlCollection& get_hits() const;
 
   /// Return the number of hits in the cluster
   unsigned int get_number_of_hits() const;
@@ -80,10 +77,17 @@ class tracker_cluster : public geomtools::base_hit {
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  calibrated_tracker_hit::collection_type _hits_;  //!< Collection of Geiger hit handles
+  TrackerHitHdlCollection _hits_;  //!< Collection of Geiger hit handles
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+using TrackerCluster = tracker_cluster;
+using TrackerClusterCollection = std::vector<TrackerCluster>;
+
+using TrackerClusterHdl = datatools::handle<TrackerCluster>;
+using TrackerClusterHdlCollection = std::vector<TrackerClusterHdl>;
+
 
 }  // end of namespace datamodel
 

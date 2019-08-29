@@ -148,19 +148,19 @@ class particle_track : public geomtools::base_hit {
   void detach_trajectory();
 
   /// Attach a trajectory by handle
-  void set_trajectory_handle(const tracker_trajectory::handle_type &trajectory_handle_);
+  void set_trajectory_handle(const TrackerTrajectoryHdl &trajectory_handle_);
 
   /// Return a mutable reference on the trajectory handle
-  tracker_trajectory::handle_type &get_trajectory_handle();
+  TrackerTrajectoryHdl &get_trajectory_handle();
 
   /// Return a non mutable reference on the trajectory handle
-  const tracker_trajectory::handle_type &get_trajectory_handle() const;
+  const TrackerTrajectoryHdl &get_trajectory_handle() const;
 
   /// Return a mutable reference on the trajectory
-  tracker_trajectory &get_trajectory();
+  TrackerTrajectory &get_trajectory();
 
   /// Return a non mutable reference on the trajectory
-  const tracker_trajectory &get_trajectory() const;
+  const TrackerTrajectory &get_trajectory() const;
 
   /// Check if there are some vertices along the fitted trajectory
   bool has_vertices() const;
@@ -203,9 +203,9 @@ class particle_track : public geomtools::base_hit {
                          const std::string &indent_ = "", bool inherit_ = false) const;
 
  private:
-  charge_type _charge_from_source_{invalid};       //!< Particle charge
-  tracker_trajectory::handle_type _trajectory_{};  //!< Handle to the fitted trajectory
-  vertex_collection_type _vertices_{};             //!< Collection of vertices
+  charge_type _charge_from_source_{invalid};  //!< Particle charge
+  TrackerTrajectoryHdl _trajectory_{};        //!< Handle to the fitted trajectory
+  vertex_collection_type _vertices_{};        //!< Collection of vertices
   CalorimeterHitHdlCollection
       _associated_calorimeter_hits_{};  //!< Collection of associated calorimeter hits
 

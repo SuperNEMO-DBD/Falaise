@@ -140,14 +140,14 @@ bool particle_track::has_trajectory() const { return _trajectory_.has_data(); }
 
 void particle_track::detach_trajectory() { _trajectory_.reset(); }
 
-tracker_trajectory::handle_type& particle_track::get_trajectory_handle() { return _trajectory_; }
+TrackerTrajectoryHdl& particle_track::get_trajectory_handle() { return _trajectory_; }
 
-const tracker_trajectory::handle_type& particle_track::get_trajectory_handle() const {
+const TrackerTrajectoryHdl& particle_track::get_trajectory_handle() const {
   return _trajectory_;
 }
 
 void particle_track::set_trajectory_handle(
-    const tracker_trajectory::handle_type& trajectory_handle_) {
+    const TrackerTrajectoryHdl& trajectory_handle_) {
   _trajectory_ = trajectory_handle_;
 }
 

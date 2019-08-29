@@ -71,7 +71,7 @@ class base_tracker_clusterizer {
  public:
   // Typedefs
   using hit_type = snemo::datamodel::calibrated_tracker_hit;
-  using hit_handle_type = snemo::datamodel::calibrated_tracker_hit::handle_type;
+  using hit_handle_type = snemo::datamodel::TrackerHitHdl;
   using hit_collection_type = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
   using calo_hit_collection_type =
       snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;

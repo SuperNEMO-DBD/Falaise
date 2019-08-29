@@ -60,15 +60,14 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   }
 
   // A fake clustering solution:
-  snemo::datamodel::tracker_clustering_solution::handle_type htcs(
+  snemo::datamodel::TrackerClusteringSolutionHdl htcs(
       new snemo::datamodel::tracker_clustering_solution);
   snemo::datamodel::tracker_clustering_solution &tcs = htcs.grab();
   tcs.set_solution_id(0);
   tcs.get_auxiliaries().store_flag("mock");
 
   // Add a cluster:
-  snemo::datamodel::tracker_clustering_solution::cluster_handle_type htc0(
-      new snemo::datamodel::tracker_cluster);
+  snemo::datamodel::TrackerClusterHdl htc0(new snemo::datamodel::tracker_cluster);
   snemo::datamodel::tracker_cluster &tc0 = htc0.grab();
   htc0.grab().grab_auxiliaries().store_flag("mock");
   htc0.grab().set_cluster_id(0);
@@ -104,8 +103,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   }
 
   // Add another cluster:
-  snemo::datamodel::tracker_clustering_solution::cluster_handle_type htc1(
-      new snemo::datamodel::tracker_cluster);
+  snemo::datamodel::TrackerClusterHdl htc1(new snemo::datamodel::tracker_cluster);
   snemo::datamodel::tracker_cluster &tc1 = htc1.grab();
   htc1.grab().grab_auxiliaries().store_flag("mock");
   htc1.grab().set_cluster_id(1);
@@ -166,8 +164,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   }
 
   // Yet another cluster:
-  snemo::datamodel::tracker_clustering_solution::cluster_handle_type htc2(
-      new snemo::datamodel::tracker_cluster);
+  snemo::datamodel::TrackerClusterHdl htc2(new snemo::datamodel::tracker_cluster);
   snemo::datamodel::tracker_cluster &tc2 = htc2.grab();
   htc2->grab_auxiliaries().store_flag("mock");
   htc2->set_cluster_id(2);
@@ -267,11 +264,10 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
     const sdm::tracker_clustering_solution &tcd_sol = tcd_.get_default_solution();
     tcd_sol.tree_dump(std::cerr, "Clustering solution: ", "DEVEL: ");
     for (int i = 0; i < (int)tcd_sol.get_clusters().size(); i++) {
-      const sdm::tracker_clustering_solution::cluster_handle_type &hcluster =
-          tcd_sol.get_clusters()[i];
+      const sdm::TrackerClusterHdl &hcluster = tcd_sol.get_clusters()[i];
       const sdm::tracker_cluster &cluster = hcluster.get();
       // cluster.tree_dump(std::cerr, "Cluster: ", "DEVEL: ");
-      const sdm::calibrated_tracker_hit::collection_type &clhits = cluster.get_hits();
+      const sdm::TrackerHitHdlCollection &clhits = cluster.get_hits();
       if (i == 0) CC.set_color_code(geomtools::color::COLOR_RED);
       if (i == 1) CC.set_color_code(geomtools::color::COLOR_GREEN);
       if (i == 2) CC.set_color_code(geomtools::color::COLOR_MAGENTA);
@@ -288,9 +284,8 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
         // double r  = clhit.get_r();
         // double er = clhit.get_sigma_r();
         geomtools::vector_3d hit_pos(x, y, z);
-        geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                          ggloc_.cellDiameter(), ggloc_.cellDiameter(),
-                                          2 * ez);
+        geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity, ggloc_.cellDiameter(),
+                                          ggloc_.cellDiameter(), 2 * ez);
       }
     }
     CC.set_color_code(geomtools::color::COLOR_BLACK);
@@ -305,9 +300,8 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
       // double r  = uclhit.get_r();
       // double er = uclhit.get_sigma_r();
       geomtools::vector_3d hit_pos(x, y, z);
-      geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                        ggloc_.cellDiameter(), ggloc_.cellDiameter(),
-                                        2 * ez);
+      geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity, ggloc_.cellDiameter(),
+                                        ggloc_.cellDiameter(), 2 * ez);
     }
   }
 
@@ -315,10 +309,9 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
   if (ttd_.has_default_solution()) {
     double chi2r_max = 10.0;
     const sdm::tracker_trajectory_solution &ttd_sol = ttd_.get_default_solution();
-    const sdm::tracker_trajectory_solution::trajectory_col_type &trajectories =
-        ttd_sol.get_trajectories();
+    const sdm::TrackerTrajectoryHdlCollection &trajectories = ttd_sol.get_trajectories();
     for (int i = 0; i < (int)trajectories.size(); i++) {
-      const sdm::tracker_trajectory_solution::trajectory_handle_type &htraj = trajectories[i];
+      const sdm::TrackerTrajectoryHdl &htraj = trajectories[i];
       const sdm::tracker_trajectory &traj = htraj.get();
       double chi2 = traj.get_auxiliaries().fetch_real("chi2");
       size_t ndof = traj.get_auxiliaries().fetch_integer("ndof");

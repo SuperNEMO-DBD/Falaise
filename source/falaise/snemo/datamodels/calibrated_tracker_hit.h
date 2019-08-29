@@ -47,12 +47,6 @@ class calibrated_tracker_hit : public geomtools::base_hit {
     fake = datatools::bit_mask::bit07
   };
 
-  /// Alias for a handle on a calibrated tracker hit
-  typedef datatools::handle<calibrated_tracker_hit> handle_type;
-
-  /// Alias for a collection of handles on calibrated tracker hits
-  typedef std::vector<handle_type> collection_type;
-
   /// Return the hit ID
   int32_t get_id() const;
 
@@ -207,15 +201,19 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   bool _get_trait_bit(uint32_t mask_) const;
 
  private:
-  uint32_t _traits_{0x0};                                 //!< Bitset for special traits
-  double _r_{datatools::invalid_real()};                  //!< Transverse drift distance within the cell coordinates system
-  double _sigma_r_{datatools::invalid_real()};            //!< Transverse drift distance error
-  double _z_{datatools::invalid_real()};                  //!< Longitudinal position within the cell coordinates system
-  double _sigma_z_{datatools::invalid_real()};            //!< Longitudinal position error
-  double _x_{datatools::invalid_real()};                  //!< X position of the anode wire within the module coordinates system
-  double _y_{datatools::invalid_real()};                  //!< Y position of the anode wire within the module coordinates system
-  double _delayed_time_{datatools::invalid_real()};       //!< Delayed reference time
-  double _delayed_time_error_{datatools::invalid_real()}; //!< Delayed reference time error
+  uint32_t _traits_{0x0};  //!< Bitset for special traits
+  double _r_{
+      datatools::invalid_real()};  //!< Transverse drift distance within the cell coordinates system
+  double _sigma_r_{datatools::invalid_real()};  //!< Transverse drift distance error
+  double _z_{
+      datatools::invalid_real()};  //!< Longitudinal position within the cell coordinates system
+  double _sigma_z_{datatools::invalid_real()};  //!< Longitudinal position error
+  double _x_{datatools::invalid_real()};        //!< X position of the anode wire within the module
+                                                //!< coordinates system
+  double _y_{datatools::invalid_real()};        //!< Y position of the anode wire within the module
+                                                //!< coordinates system
+  double _delayed_time_{datatools::invalid_real()};        //!< Delayed reference time
+  double _delayed_time_error_{datatools::invalid_real()};  //!< Delayed reference time error
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
@@ -224,6 +222,17 @@ class calibrated_tracker_hit : public geomtools::base_hit {
 struct compare_tracker_hit_by_delayed_time {
   bool operator()(const calibrated_tracker_hit& hit_i_, const calibrated_tracker_hit& hit_j_) const;
 };
+
+/// Alias for a handle on a calibrated tracker hit
+//typedef datatools::handle<calibrated_tracker_hit> handle_type;
+/// Alias for a collection of handles on calibrated tracker hits
+//typedef std::vector<handle_type> collection_type;
+
+using TrackerHit = calibrated_tracker_hit;
+using TrackerHitCollection = std::vector<TrackerHit>;
+
+using TrackerHitHdl = datatools::handle<TrackerHit>;
+using TrackerHitHdlCollection = std::vector<TrackerHitHdl>;
 
 }  // end of namespace datamodel
 

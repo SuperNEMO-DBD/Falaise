@@ -87,20 +87,8 @@ namespace datamodel {
  */
 class tracker_clustering_solution : public datatools::i_serializable {
  public:
-  /// Handle on tracker cluster
-  typedef tracker_cluster::handle_type cluster_handle_type;
-
-  /// Collection of handles on tracker clusters
-  typedef std::vector<cluster_handle_type> cluster_col_type;
-
-  /// Handle on tracker cluster solution
-  typedef datatools::handle<tracker_clustering_solution> handle_type;
-
-  /// Collection of calibrated hit handles
-  typedef calibrated_tracker_hit::collection_type hit_collection_type;
-
   /// Dictionary of hit/cluster belonging
-  typedef std::map<int32_t, cluster_col_type> hit_belonging_col_type;
+  typedef std::map<int32_t, TrackerClusterHdlCollection> hit_belonging_col_type;
 
   /// Check if there is a valid solution ID
   bool has_solution_id() const;
@@ -115,26 +103,26 @@ class tracker_clustering_solution : public datatools::i_serializable {
   void invalidate_solution_id();
 
   /// Return a mutable reference on the container of auxiliary properties
-  datatools::properties& get_auxiliaries();
+  datatools::properties &get_auxiliaries();
 
   /// Return a non mutable reference on the container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
+  const datatools::properties &get_auxiliaries() const;
 
   /// Return a mutable reference on the container of clusters
-  cluster_col_type& get_clusters();
+  TrackerClusterHdlCollection &get_clusters();
 
   /// Return a non mutable reference on the container of clusters
-  const cluster_col_type& get_clusters() const;
+  const TrackerClusterHdlCollection &get_clusters() const;
 
   /// Check if there is some unclustered hits
   bool has_unclustered_hits() const;
 
   /// Return a mutable reference on the container of handles on unclustered calibrated tracker hits
-  hit_collection_type& get_unclustered_hits();
+  TrackerHitHdlCollection &get_unclustered_hits();
 
   /// Return a non mutable reference on the container of handles on unclustered calibrated tracker
   /// hits
-  const hit_collection_type& get_unclustered_hits() const;
+  const TrackerHitHdlCollection &get_unclustered_hits() const;
 
   /// Empty the contents of the tracker cluster solution
   void clear();
@@ -192,16 +180,24 @@ class tracker_clustering_solution : public datatools::i_serializable {
                                       tracker_clustering_solution &target_);
 
  private:
-  int32_t _solution_id_{-1};                   //!< Unique solution ID
-  cluster_col_type _clusters_{};             //!< Collection of handles on prompt Geiger hits clusters
-  hit_collection_type _unclustered_hits_{};  //!< Collection of handles on unclustered Geiger hits
-  datatools::properties _auxiliaries_{};     //!< List of auxiliary properties
+  int32_t _solution_id_{-1};  //!< Unique solution ID
+  TrackerClusterHdlCollection
+      _clusters_{};  //!< Collection of handles on prompt Geiger hits clusters
+  TrackerHitHdlCollection
+      _unclustered_hits_{};               //!< Collection of handles on unclustered Geiger hits
+  datatools::properties _auxiliaries_{};  //!< List of auxiliary properties
 
   // Non persistent information :
   hit_belonging_col_type _hit_belonging_{};  //!< List of clusters for each clustered hits
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+using TrackerClusteringSolution = tracker_clustering_solution;
+using TrackerClusteringSolutionCollection = std::vector<TrackerClusteringSolution>;
+
+using TrackerClusteringSolutionHdl = datatools::handle<TrackerClusteringSolution>;
+using TrackerClusteringSolutionHdlCollection = std::vector<TrackerClusteringSolutionHdl>;
 
 }  // end of namespace datamodel
 

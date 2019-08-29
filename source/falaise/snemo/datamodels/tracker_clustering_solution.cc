@@ -34,22 +34,17 @@ bool tracker_clustering_solution::has_unclustered_hits() const {
   return !_unclustered_hits_.empty();
 }
 
-tracker_clustering_solution::hit_collection_type &
-tracker_clustering_solution::get_unclustered_hits() {
+TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() {
   return _unclustered_hits_;
 }
 
-const tracker_clustering_solution::hit_collection_type &
-tracker_clustering_solution::get_unclustered_hits() const {
+const TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() const {
   return _unclustered_hits_;
 }
 
-tracker_clustering_solution::cluster_col_type &tracker_clustering_solution::get_clusters() {
-  return _clusters_;
-}
+TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() { return _clusters_; }
 
-const tracker_clustering_solution::cluster_col_type &tracker_clustering_solution::get_clusters()
-    const {
+const TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() const {
   return _clusters_;
 }
 
@@ -197,7 +192,7 @@ void tracker_clustering_solution::compute_hit_belonging_from_solution(
 
       if (hbc_.find(hit_id) == hbc_.end()) {
         {
-          cluster_col_type dummy_col;
+          TrackerClusterHdlCollection dummy_col;
           hbc_[hit_id] = dummy_col;
         }
         hbc_[hit_id].push_back(the_cluster);
@@ -227,7 +222,7 @@ int tracker_clustering_solution::copy_one_solution_in_one(
   int max_cluster_id = -1;
 
   if (!tgt_clusters.empty()) {
-    auto id_comp = [](const cluster_handle_type &a, const cluster_handle_type &b) {
+    auto id_comp = [](const TrackerClusterHdl &a, const TrackerClusterHdl &b) {
       return a->get_cluster_id() < b->get_cluster_id();
     };
 
@@ -296,7 +291,7 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
       // Pickup a cluster from the solution:
       const tracker_cluster &a_cluster = rsol.get_clusters().at(icluster_source).get();
       // Create a new cluster:
-      tracker_cluster::handle_type hcl(new tracker_cluster);
+      auto hcl = datatools::make_handle<tracker_cluster>();
       tracker_cluster &cl = hcl.grab();
       // Copy the original cluster into the new one:
       cl = a_cluster;

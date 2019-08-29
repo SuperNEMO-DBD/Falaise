@@ -33,7 +33,6 @@ const std::string& tracker_clustering_data::clusterizer_id_key() {
 }
 // ----- ABOVE TO BE MOVED -----
 
-
 bool tracker_clustering_data::has_solutions() const { return get_number_of_solutions() > 0; }
 
 size_t tracker_clustering_data::get_number_of_solutions() const { return _solutions_.size(); }
@@ -42,11 +41,11 @@ const tracker_clustering_solution& tracker_clustering_data::get_solution(int i_)
   return *(_solutions_.at(i_));
 }
 
-void tracker_clustering_data::add_solution(
-    const tracker_clustering_solution::handle_type& solution_handle_, bool default_solution_) {
+void tracker_clustering_data::add_solution(const TrackerClusteringSolutionHdl& solution_handle_,
+                                           bool default_solution_) {
   DT_THROW_IF(!solution_handle_, std::logic_error, "Cannot store a null handle !");
 
-  for(const auto& addr : _solutions_) {
+  for (const auto& addr : _solutions_) {
     DT_THROW_IF(&(*addr) == &(*solution_handle_), std::logic_error,
                 "Duplicated solutions is not allowed!");
   }
@@ -56,9 +55,7 @@ void tracker_clustering_data::add_solution(
   }
 }
 
-void tracker_clustering_data::invalidate_solutions() {
-  _solutions_.clear();
-}
+void tracker_clustering_data::invalidate_solutions() { _solutions_.clear(); }
 
 bool tracker_clustering_data::has_default_solution() const { return _default_solution_.has_data(); }
 
@@ -76,21 +73,17 @@ void tracker_clustering_data::set_default_solution(int index_) {
   _default_solution_ = _solutions_.at(index_);
 }
 
-void tracker_clustering_data::invalidate_default_solution() {
-  _default_solution_.reset();
-}
+void tracker_clustering_data::invalidate_default_solution() { _default_solution_.reset(); }
 
-tracker_clustering_data::solution_col_type& tracker_clustering_data::get_solutions() {
+TrackerClusteringSolutionHdlCollection& tracker_clustering_data::get_solutions() {
   return _solutions_;
 }
 
-const tracker_clustering_data::solution_col_type& tracker_clustering_data::get_solutions() const {
+const TrackerClusteringSolutionHdlCollection& tracker_clustering_data::get_solutions() const {
   return _solutions_;
 }
 
-void tracker_clustering_data::reset() {
-  this->clear();
-}
+void tracker_clustering_data::reset() { this->clear(); }
 
 void tracker_clustering_data::clear() {
   invalidate_solutions();

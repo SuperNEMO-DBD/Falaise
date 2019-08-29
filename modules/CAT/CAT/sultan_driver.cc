@@ -269,8 +269,8 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
     _xcalo_locator_ = &(lp.xcaloLocator());
     _gveto_locator_ = &(lp.gvetoLocator());
   }
- 
-   // Geometry description :
+
+  // Geometry description :
   _SULTAN_setup_.num_blocks = 1;
   _SULTAN_setup_.planes_per_block.clear();
   _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
@@ -304,8 +304,6 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
 
   _set_initialized(true);
 }
-
-
 
 // Main clustering method
 int sultan_driver::_process_algo(
@@ -517,7 +515,7 @@ int sultan_driver::_process_algo(
 
   for (const auto& ts : tss) {
     // Add a new solution :
-    sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
+    sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
     clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
@@ -534,9 +532,9 @@ int sultan_driver::_process_algo(
         continue;
       }
       // Append a new cluster :
-      sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
+      sdm::TrackerClusterHdl tch(new sdm::tracker_cluster);
       clustering_solution.get_clusters().push_back(tch);
-      sdm::tracker_cluster::handle_type& cluster_handle = clustering_solution.get_clusters().back();
+      sdm::TrackerClusterHdl& cluster_handle = clustering_solution.get_clusters().back();
       cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
       const st::experimental_helix& seq_helix = the_sequence.get_helix();
 

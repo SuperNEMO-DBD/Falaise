@@ -165,11 +165,10 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
     const sdm::tracker_clustering_solution& tcd_sol = tcd_.get_default_solution();
     tcd_sol.tree_dump(std::cerr, "Clustering solution: ", "DEVEL: ");
     for (int i = 0; i < (int)tcd_sol.get_clusters().size(); i++) {
-      const sdm::tracker_clustering_solution::cluster_handle_type& hcluster =
-          tcd_sol.get_clusters()[i];
+      const sdm::TrackerClusterHdl& hcluster = tcd_sol.get_clusters()[i];
       const sdm::tracker_cluster& cluster = hcluster.get();
       // cluster.tree_dump(std::cerr, "Cluster: ", "DEVEL: ");
-      const sdm::calibrated_tracker_hit::collection_type& clhits = cluster.get_hits();
+      const sdm::TrackerHitHdlCollection& clhits = cluster.get_hits();
       if (i == 0) CC.set_color_code(geomtools::color::COLOR_RED);
       if (i == 1) CC.set_color_code(geomtools::color::COLOR_GREEN);
       if (i == 2) CC.set_color_code(geomtools::color::COLOR_MAGENTA);
@@ -186,9 +185,8 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
         // double r  = clhit.get_r();
         // double er = clhit.get_sigma_r();
         geomtools::vector_3d hit_pos(x, y, z);
-        geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                          ggloc_.cellDiameter(), ggloc_.cellDiameter(),
-                                          2 * ez);
+        geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity, ggloc_.cellDiameter(),
+                                          ggloc_.cellDiameter(), 2 * ez);
       }
     }
     CC.set_color_code(geomtools::color::COLOR_BLACK);
@@ -203,9 +201,8 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
       // double r  = uclhit.get_r();
       // double er = uclhit.get_sigma_r();
       geomtools::vector_3d hit_pos(x, y, z);
-      geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity,
-                                        ggloc_.cellDiameter(), ggloc_.cellDiameter(),
-                                        2 * ez);
+      geomtools::gnuplot_draw::draw_box(tmp_file.out(), hit_pos, identity, ggloc_.cellDiameter(),
+                                        ggloc_.cellDiameter(), 2 * ez);
     }
   }
 

@@ -39,7 +39,7 @@ int main(/* int argc_, char ** argv_ */) {
      *************************/
 
     // Populate a collection of handles on Geiger hits :
-    sdm::calibrated_tracker_hit::collection_type hits;
+    sdm::TrackerHitHdlCollection hits;
     for (int i = 0; i < 18; ++i) {
       DATATOOLS_HANDLE_DECLARE_NEW(hgg_hit, sdm::calibrated_tracker_hit);
       DATATOOLS_HANDLE_GRAB_REF(gg_hit, hgg_hit, sdm::calibrated_tracker_hit);

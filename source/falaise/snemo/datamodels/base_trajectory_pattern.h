@@ -51,6 +51,9 @@ class base_trajectory_pattern : public datatools::i_serializable {
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 
+using TrajectoryPattern = base_trajectory_pattern;
+using TrajectoryPatternHdl = datatools::handle<TrajectoryPattern>;
+
 }  // end of namespace datamodel
 
 }  // end of namespace snemo

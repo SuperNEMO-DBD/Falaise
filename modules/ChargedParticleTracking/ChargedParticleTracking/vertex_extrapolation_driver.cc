@@ -20,9 +20,9 @@
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
-#include <falaise/snemo/geometry/locator_helpers.h>
 
 namespace snemo {
 
@@ -422,7 +422,7 @@ void vertex_extrapolation_driver::_check_vertices_(
   _use_vertices_[snedm::particle_track::vertex_on_gamma_veto_label()] = false;
 
   const snedm::tracker_cluster &a_cluster = trajectory_.get_cluster();
-  const snedm::calibrated_tracker_hit::collection_type &the_hits = a_cluster.get_hits();
+  const snedm::TrackerHitHdlCollection &the_hits = a_cluster.get_hits();
   for (const datatools::handle<snedm::calibrated_tracker_hit> a_hit : the_hits) {
     const geomtools::geom_id &a_gid = a_hit->get_geom_id();
 

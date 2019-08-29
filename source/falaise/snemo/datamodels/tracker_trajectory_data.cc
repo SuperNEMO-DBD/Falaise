@@ -12,16 +12,15 @@ bool tracker_trajectory_data::has_solutions() const { return get_number_of_solut
 
 size_t tracker_trajectory_data::get_number_of_solutions() const { return _solutions_.size(); }
 
-
 const tracker_trajectory_solution& tracker_trajectory_data::get_solution(size_t index) const {
   return _solutions_.at(index).get();
 }
 
-void tracker_trajectory_data::add_solution(
-    const tracker_trajectory_solution::handle_type& solution_handle_, bool default_solution_) {
+void tracker_trajectory_data::add_solution(const TrackerTrajectorySolutionHdl& solution_handle_,
+                                           bool default_solution_) {
   DT_THROW_IF(!solution_handle_, std::logic_error, "Cannot store a null handle !");
 
-  for(const auto& addr : _solutions_) {
+  for (const auto& addr : _solutions_) {
     DT_THROW_IF(&*addr == &*solution_handle_, std::logic_error,
                 "Duplicated solutions is not allowed!");
   }
@@ -31,9 +30,7 @@ void tracker_trajectory_data::add_solution(
   }
 }
 
-void tracker_trajectory_data::invalidate_solutions() {
-  _solutions_.clear();
-}
+void tracker_trajectory_data::invalidate_solutions() { _solutions_.clear(); }
 
 bool tracker_trajectory_data::has_default_solution() const { return _default_solution_.has_data(); }
 
@@ -47,21 +44,17 @@ void tracker_trajectory_data::set_default_solution(size_t index) {
   _default_solution_ = _solutions_.at(index);
 }
 
-void tracker_trajectory_data::invalidate_default_solution() {
-  _default_solution_.reset();
-}
+void tracker_trajectory_data::invalidate_default_solution() { _default_solution_.reset(); }
 
-tracker_trajectory_data::solution_col_type& tracker_trajectory_data::get_solutions() {
+TrackerTrajectorySolutionHdlCollection& tracker_trajectory_data::get_solutions() {
   return _solutions_;
 }
 
-const tracker_trajectory_data::solution_col_type& tracker_trajectory_data::get_solutions() const {
+const TrackerTrajectorySolutionHdlCollection& tracker_trajectory_data::get_solutions() const {
   return _solutions_;
 }
 
-void tracker_trajectory_data::reset() {
-  this->clear();
-}
+void tracker_trajectory_data::reset() { this->clear(); }
 
 void tracker_trajectory_data::clear() {
   invalidate_solutions();

@@ -39,9 +39,9 @@ void tracker_cluster::set_cluster_id(int32_t cluster_id_) { set_hit_id(cluster_i
 
 void tracker_cluster::invalidate_cluster_id() { invalidate_hit_id(); }
 
-calibrated_tracker_hit::collection_type& tracker_cluster::get_hits() { return _hits_; }
+TrackerHitHdlCollection& tracker_cluster::get_hits() { return _hits_; }
 
-const calibrated_tracker_hit::collection_type& tracker_cluster::get_hits() const { return _hits_; }
+const TrackerHitHdlCollection& tracker_cluster::get_hits() const { return _hits_; }
 
 void tracker_cluster::reset() { this->clear(); }
 

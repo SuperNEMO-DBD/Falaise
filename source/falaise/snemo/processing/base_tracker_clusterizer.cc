@@ -374,7 +374,7 @@ int base_tracker_clusterizer::process(
 
   const bool merge_prompt_delayed_solutions = true;
   if (merge_prompt_delayed_solutions) {
-    snedm::tracker_clustering_data::solution_col_type &the_solutions = clustering_.get_solutions();
+    snedm::TrackerClusteringSolutionHdlCollection &the_solutions = clustering_.get_solutions();
     for (auto isol = the_solutions.begin(); isol != the_solutions.end(); ++isol) {
       snedm::tracker_clustering_solution &sol_prompt = *(*isol);
       datatools::properties &aux_prompt = sol_prompt.get_auxiliaries();

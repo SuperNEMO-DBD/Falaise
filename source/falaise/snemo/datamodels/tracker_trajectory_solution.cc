@@ -31,9 +31,7 @@ void tracker_trajectory_solution::set_solution_id(int32_t solution_id_) {
   }
 }
 
-void tracker_trajectory_solution::invalidate_solution_id() {
-  _solution_id_ = -1;
-}
+void tracker_trajectory_solution::invalidate_solution_id() { _solution_id_ = -1; }
 
 /*** Reference clustering solution ***/
 
@@ -42,7 +40,7 @@ tracker_clustering_solution& tracker_trajectory_solution::grab_clustering_soluti
 }
 
 void tracker_trajectory_solution::set_clustering_solution(
-    const tracker_trajectory_solution::handle_clustering_solution_type& clustering_solution_) {
+    const TrackerClusteringSolutionHdl& clustering_solution_) {
   _clustering_solution_ = clustering_solution_;
 }
 
@@ -62,19 +60,15 @@ bool tracker_trajectory_solution::has_unfitted_clusters() const {
   return !_unfitted_clusters_.empty();
 }
 
-tracker_trajectory_solution::cluster_col_type&
-tracker_trajectory_solution::grab_unfitted_clusters() {
+TrackerClusterHdlCollection& tracker_trajectory_solution::grab_unfitted_clusters() {
   return _unfitted_clusters_;
 }
 
-const tracker_trajectory_solution::cluster_col_type&
-tracker_trajectory_solution::get_unfitted_clusters() const {
+const TrackerClusterHdlCollection& tracker_trajectory_solution::get_unfitted_clusters() const {
   return _unfitted_clusters_;
 }
 
-void tracker_trajectory_solution::invalidate_unfitted_clusters() {
-  _unfitted_clusters_.clear();
-}
+void tracker_trajectory_solution::invalidate_unfitted_clusters() { _unfitted_clusters_.clear(); }
 
 datatools::properties& tracker_trajectory_solution::get_auxiliaries() { return _auxiliaries_; }
 
@@ -84,22 +78,17 @@ const datatools::properties& tracker_trajectory_solution::get_auxiliaries() cons
 
 bool tracker_trajectory_solution::has_trajectories() const { return !_trajectories_.empty(); }
 
-tracker_trajectory_solution::trajectory_col_type& tracker_trajectory_solution::grab_trajectories() {
+TrackerTrajectoryHdlCollection& tracker_trajectory_solution::grab_trajectories() {
   return _trajectories_;
 }
 
-const tracker_trajectory_solution::trajectory_col_type&
-tracker_trajectory_solution::get_trajectories() const {
+const TrackerTrajectoryHdlCollection& tracker_trajectory_solution::get_trajectories() const {
   return _trajectories_;
 }
 
-void tracker_trajectory_solution::invalidate_trajectories() {
-  _trajectories_.clear();
-}
+void tracker_trajectory_solution::invalidate_trajectories() { _trajectories_.clear(); }
 
-void tracker_trajectory_solution::reset() {
-  this->clear();
-}
+void tracker_trajectory_solution::reset() { this->clear(); }
 
 void tracker_trajectory_solution::clear() {
   invalidate_solution_id();

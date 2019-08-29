@@ -28,21 +28,6 @@ namespace datamodel {
 /// A trajectory of Geiger calibrated hits referenced by handles
 class tracker_trajectory : public geomtools::base_hit {
  public:
-  /// Handle on tracker trajectory
-  typedef datatools::handle<tracker_trajectory> handle_type;
-
-  /// Handle on tracker cluster
-  typedef tracker_cluster::handle_type handle_cluster;
-
-  /// Collection of handles on tracker clusters
-  typedef std::vector<handle_cluster> clusters_collection_type;
-
-  /// Handle on trajectory pattern
-  typedef datatools::handle<base_trajectory_pattern> handle_pattern;
-
-  /// Collection of handles of calibrated tracker hit
-  typedef calibrated_tracker_hit::collection_type orphans_collection_type;
-
   /// Check if there is a valid trajectory ID
   bool has_trajectory_id() const;
 
@@ -62,13 +47,13 @@ class tracker_trajectory : public geomtools::base_hit {
   void detach_cluster();
 
   /// Attach a cluster by handle
-  void set_cluster_handle(const handle_cluster& cluster_handle_);
+  void set_cluster_handle(const TrackerClusterHdl& cluster_handle_);
 
   /// Return a mutable reference on the cluster handle
-  handle_cluster& get_cluster_handle();
+  TrackerClusterHdl& get_cluster_handle();
 
   /// Return a non mutable reference on the cluster handle
-  const handle_cluster& get_cluster_handle() const;
+  const TrackerClusterHdl& get_cluster_handle() const;
 
   /// Return a mutable reference on the cluster
   tracker_cluster& get_cluster();
@@ -83,19 +68,19 @@ class tracker_trajectory : public geomtools::base_hit {
   void detach_pattern();
 
   /// Attach a pattern by handle
-  void set_pattern_handle(const handle_pattern& pattern_handle_);
+  void set_pattern_handle(const TrajectoryPatternHdl& pattern_handle_);
 
   /// Return a mutable reference on the pattern handle
-  handle_pattern& get_pattern_handle();
+  TrajectoryPatternHdl& get_pattern_handle();
 
   /// Return a non mutable reference on the pattern handle
-  const handle_pattern& get_pattern_handle() const;
+  const TrajectoryPatternHdl& get_pattern_handle() const;
 
   /// Return a mutable reference on the pattern
-  base_trajectory_pattern& get_pattern();
+  TrajectoryPattern& get_pattern();
 
   /// Return a non mutable reference on the pattern
-  const base_trajectory_pattern& get_pattern() const;
+  const TrajectoryPattern& get_pattern() const;
 
   /// Reset the tracker trajectory (see clear)
   void reset();
@@ -108,12 +93,23 @@ class tracker_trajectory : public geomtools::base_hit {
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  handle_cluster _cluster_;           ///< Handle to the fitted cluster
-  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles (retained only for serialization back-compatibility)
-  handle_pattern _pattern_;           ///< Handle to a trajectory fitted pattern
+  /// Collection of handles of calibrated tracker hit
+  typedef TrackerHitHdlCollection orphans_collection_type;
+
+  TrackerClusterHdl _cluster_;        ///< Handle to the fitted cluster
+  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles (retained only
+                                      ///< for serialization back-compatibility)
+  TrajectoryPatternHdl _pattern_;     ///< Handle to a trajectory fitted pattern
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Handle on tracker trajectory
+using TrackerTrajectory = tracker_trajectory;
+using TrackerTrajectoryCollection = std::vector<TrackerTrajectory>;
+
+using TrackerTrajectoryHdl = datatools::handle<TrackerTrajectory>;
+using TrackerTrajectoryHdlCollection = std::vector<TrackerTrajectoryHdl>;
 
 }  // end of namespace datamodel
 

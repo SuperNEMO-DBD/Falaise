@@ -354,7 +354,6 @@ void sultan_then_cat_driver::initialize(const datatools::properties& setup_) {
   _set_initialized(true);
 }
 
-
 CAT::topology::cell sultan_then_cat_driver::fill_CAT_hit_from_SULTAN_hit(
     SULTAN::topology::cell sc) {
   ///   SULTAN coordinate system ----->   CAT coordinate system
@@ -899,7 +898,7 @@ int sultan_then_cat_driver::_process_algo(
 
   for (const auto& ts : tss) {
     // Add a new solution :
-    sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
+    sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
     clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
@@ -931,11 +930,10 @@ int sultan_then_cat_driver::_process_algo(
         // A CAT cluster with more than one hit/cell (node) :
         {
           // Append a new cluster :
-          sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
+          sdm::TrackerClusterHdl tch(new sdm::tracker_cluster);
           clustering_solution.get_clusters().push_back(tch);
         }
-        sdm::tracker_cluster::handle_type& cluster_handle =
-            clustering_solution.get_clusters().back();
+        sdm::TrackerClusterHdl& cluster_handle = clustering_solution.get_clusters().back();
         cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
         const ct::helix& seq_helix = isequence->get_helix();
 

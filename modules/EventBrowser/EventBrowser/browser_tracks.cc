@@ -801,8 +801,7 @@ void browser_tracks::_update_tracker_clustering_data() {
     item_tracker_cluster->SetTipText(tip_text.str().c_str());
   }
 
-  snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
-      tcd.get_solutions();
+  snemo::datamodel::TrackerClusteringSolutionHdlCollection &cluster_solutions = tcd.get_solutions();
   for (auto &cluster_solution : cluster_solutions) {
     // Get current tracker solution:
     snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.grab();
@@ -841,8 +840,7 @@ void browser_tracks::_update_tracker_clustering_data() {
     _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
 
     // Get clusters stored in the current tracker solution:
-    snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
-        a_solution.get_clusters();
+    snemo::datamodel::TrackerClusterHdlCollection &clusters = a_solution.get_clusters();
     for (auto &cluster : clusters) {
       // Get current tracker cluster:
       snemo::datamodel::tracker_cluster &a_cluster = cluster.grab();
@@ -961,7 +959,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
     return;
   }
 
-  snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
+  snemo::datamodel::TrackerTrajectorySolutionHdlCollection &trajectory_solutions =
       ttd.get_solutions();
   for (auto &trajectory_solution : trajectory_solutions) {
     // Get current tracker solution:
@@ -1012,8 +1010,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
     TGListTreeItem *item_line_solution = nullptr;
 
     // Get trajectories stored in the current tracker trajectory solution:
-    snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =
-        a_solution.grab_trajectories();
+    snemo::datamodel::TrackerTrajectoryHdlCollection &trajectories = a_solution.grab_trajectories();
     for (auto &trajectorie : trajectories) {
       // Get current tracker trajectory:
       snemo::datamodel::tracker_trajectory &a_trajectory = trajectorie.grab();
@@ -1205,7 +1202,6 @@ void browser_tracks::_update_particle_track_data() {
       }
     }
   }
-
 
   for (auto &particle : ptd.particles()) {
     // Get current particle track:

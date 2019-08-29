@@ -242,8 +242,6 @@ void cat_driver::initialize(const datatools::properties& setup_) {
   _set_initialized(true);
 }
 
-
-
 /// Main clustering method
 int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
                               const base_tracker_clusterizer::calo_hit_collection_type& calo_hits_,
@@ -460,7 +458,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
       ihs.second = 0;
     }
 
-    sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
+    sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
     clustering_.add_solution(htcs, true);
     clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
@@ -481,11 +479,10 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         // A CAT cluster with more than one hit/cell(node) :
         {
           // Append a new cluster :
-          sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
+          sdm::TrackerClusterHdl tch(new sdm::tracker_cluster);
           clustering_solution.get_clusters().push_back(tch);
         }
-        sdm::tracker_cluster::handle_type& cluster_handle =
-            clustering_solution.get_clusters().back();
+        sdm::TrackerClusterHdl& cluster_handle = clustering_solution.get_clusters().back();
         cluster_handle->set_cluster_id(clustering_solution.get_clusters().size() - 1);
         if (_store_result_as_properties_) {
           // 2012/06/28 XG : Adding

@@ -206,7 +206,7 @@ void tracker_hit_renderer::push_clustered_hits() {
   const auto &tracker_clustered_data =
       event.get<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
 
-  const snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
+  const snemo::datamodel::TrackerClusteringSolutionHdlCollection &cluster_solutions =
       tracker_clustered_data.get_solutions();
   for (const auto &cluster_solution : cluster_solutions) {
     // Get current tracker solution:
@@ -219,8 +219,7 @@ void tracker_hit_renderer::push_clustered_hits() {
     }
 
     // Get clusters stored in the current tracker solution:
-    const snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
-        a_solution.get_clusters();
+    const snemo::datamodel::TrackerClusterHdlCollection &clusters = a_solution.get_clusters();
 
     for (auto icluster = clusters.begin(); icluster != clusters.end(); ++icluster) {
       // Get current tracker cluster:
@@ -244,7 +243,7 @@ void tracker_hit_renderer::push_clustered_hits() {
       cluster_properties.update(browser_tracks::COLOR_FLAG, hex_str);
 
       // Get tracker hits stored in the current tracker cluster:
-      const snemo::datamodel::calibrated_tracker_hit::collection_type &hits = a_cluster.get_hits();
+      const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.get_hits();
 
       // Make a gradient color starting from color_solution:
       for (const auto &hit : hits) {
@@ -292,7 +291,7 @@ void tracker_hit_renderer::push_fitted_tracks() {
   const auto &tracker_trajectory_data =
       event.get<snemo::datamodel::tracker_trajectory_data>(io::TTD_LABEL);
 
-  const snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
+  const snemo::datamodel::TrackerTrajectorySolutionHdlCollection &trajectory_solutions =
       tracker_trajectory_data.get_solutions();
   for (const auto &isolution : trajectory_solutions) {
     // Get current tracker trajectory solution:
@@ -309,7 +308,7 @@ void tracker_hit_renderer::push_fitted_tracks() {
 #pragma GCC diagnostic pop
 
     // Get trajectories stored in the current tracker trajectory solution:
-    const snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =
+    const snemo::datamodel::TrackerTrajectoryHdlCollection &trajectories =
         a_solution.get_trajectories();
 
     for (const auto &itrajectory : trajectories) {
@@ -365,8 +364,7 @@ void tracker_hit_renderer::push_fitted_tracks() {
         if (a_trajectory.has_cluster()) {
           const snemo::datamodel::tracker_cluster &a_cluster = a_trajectory.get_cluster();
           // Get tracker hits stored in the current tracker cluster:
-          const snemo::datamodel::calibrated_tracker_hit::collection_type &hits =
-              a_cluster.get_hits();
+          const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.get_hits();
 
           for (const auto &igg : hits) {
             snemo::datamodel::calibrated_tracker_hit a_gg_hit_copy = igg.get();

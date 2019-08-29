@@ -34,14 +34,12 @@ mock_tracker_clustering_driver::mock_tracker_clustering_driver()
   _max_row_distance_ = 2;
   _max_layer_distance_ = 2;
   _max_sum_distance_ = 0;
-  return;
 }
 
 mock_tracker_clustering_driver::~mock_tracker_clustering_driver() {
   if (is_initialized()) {
     this->mock_tracker_clustering_driver::reset();
   }
-  return;
 }
 
 // Initialize the driver through configuration properties
@@ -71,7 +69,6 @@ void mock_tracker_clustering_driver::initialize(const datatools::properties& set
               "At least one maximum layer/row/sum distance must be non zero !");
 
   _set_initialized(true);
-  return;
 }
 
 // Reset the clusterizer
@@ -83,20 +80,7 @@ void mock_tracker_clustering_driver::reset() {
   _max_layer_distance_ = 2;
   _max_sum_distance_ = 0;
   this->snemo::processing::base_tracker_clusterizer::_reset();
-  return;
 }
-
-// int mock_tracker_clustering_driver::_prepare_process (const
-// base_tracker_clusterizer::hit_collection_type & gg_hits_,
-//                                                       const
-//                                                       base_tracker_clusterizer::calo_hit_collection_type
-//                                                       & calo_hits_,
-//                                                       snemo::datamodel::tracker_clustering_data &
-//                                                       clustering_)
-// {
-//   base_tracker_clusterizer::_prepare_process(gg_hits_, calo_hits_, clustering_);
-//   return 0;
-// }
 
 // Main clustering method
 int mock_tracker_clustering_driver::_process_algo(
@@ -106,10 +90,10 @@ int mock_tracker_clustering_driver::_process_algo(
   namespace sdm = snemo::datamodel;
 
   // Filling a unique tracker clustering solution:
-  sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
+  sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
   sdm::tracker_clustering_solution& tc_solution = htcs.grab();
   tc_solution.get_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
-                                               MTC_ID);
+                                              MTC_ID);
 
   // GG hit loop :
   sdm::calibrated_tracker_hit previous_gg_hit = gg_hits_.begin()->get();
@@ -130,15 +114,14 @@ int mock_tracker_clustering_driver::_process_algo(
     if (!are_neighbours(a_gg_hit.get_geom_id(), previous_gg_hit.get_geom_id())) {
       DT_LOG_TRACE(get_logging_priority(), "New track found !");
       // Create a tracker cluster handle:
-      sdm::tracker_cluster::handle_type ht_cluster(new sdm::tracker_cluster);
+      sdm::TrackerClusterHdl ht_cluster(new sdm::tracker_cluster);
       ht_cluster.grab().set_cluster_id(tc_solution.get_clusters().size());
       tc_solution.get_clusters().push_back(ht_cluster);
     }
 
     // Continue to fill the current track
-    sdm::tracker_cluster::handle_type& cluster_handle = tc_solution.get_clusters().back();
-    DT_LOG_TRACE(get_logging_priority(),
-                 "Current cluster id " << cluster_handle->get_cluster_id());
+    sdm::TrackerClusterHdl& cluster_handle = tc_solution.get_clusters().back();
+    DT_LOG_TRACE(get_logging_priority(), "Current cluster id " << cluster_handle->get_cluster_id());
     cluster_handle->get_hits().push_back(*igg);
     // hits_ids.insert(a_gg_hit.get_hit_id());
     previous_gg_hit = a_gg_hit;

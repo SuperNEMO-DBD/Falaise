@@ -128,8 +128,7 @@ dpp::base_module::process_status charged_particle_tracking_module::process(
 
   // Get required input products
   const auto& the_calibrated_data = event.get<snedm::calibrated_data>(CDTag_);
-  const auto& the_tracker_trajectory_data =
-      event.get<snedm::tracker_trajectory_data>(TTDTag_);
+  const auto& the_tracker_trajectory_data = event.get<snedm::tracker_trajectory_data>(TTDTag_);
 
   // Create or reset output bank
   auto the_particle_track_data =
@@ -159,8 +158,7 @@ void charged_particle_tracking_module::_process(
 
   const snedm::tracker_trajectory_solution& a_solution =
       tracker_trajectory_data_.get_default_solution();
-  const snedm::tracker_trajectory_solution::trajectory_col_type& trajectories =
-      a_solution.get_trajectories();
+  const snedm::TrackerTrajectoryHdlCollection& trajectories = a_solution.get_trajectories();
 
   for (const datatools::handle<snedm::tracker_trajectory> a_trajectory : trajectories) {
     // Look into properties to find the default

@@ -147,9 +147,6 @@ class tracker_clustering_data : public datatools::i_serializable,
   static const std::string& clusterizer_id_key();
   // ----- ABOVE ARE NOT RELEVANT TO THIS CLASS ----
 
-  /// Collection of handles on tracker clustering solutions
-  typedef std::vector<tracker_clustering_solution::handle_type> solution_col_type;
-
   /// Check if there are some clustering solutions
   bool has_solutions() const;
 
@@ -157,7 +154,7 @@ class tracker_clustering_data : public datatools::i_serializable,
   size_t get_number_of_solutions() const;
 
   /// Add a clustering solution
-  void add_solution(const tracker_clustering_solution::handle_type& handle_,
+  void add_solution(const TrackerClusteringSolutionHdl& handle_,
                     bool default_solution_ = false);
 
   /// Return a non mutable reference to a clustering solution by index
@@ -170,10 +167,10 @@ class tracker_clustering_data : public datatools::i_serializable,
   bool has_default_solution() const;
 
   /// Return the non mutable reference to the collection of clustering solutions
-  const tracker_clustering_data::solution_col_type& get_solutions() const;
+  const TrackerClusteringSolutionHdlCollection& get_solutions() const;
 
   /// Return the mutable reference to the collection of clustering solutions
-  tracker_clustering_data::solution_col_type& get_solutions();
+  TrackerClusteringSolutionHdlCollection& get_solutions();
 
   /// Return a non mutable reference to the default clustering solution is any
   const tracker_clustering_solution& get_default_solution() const;
@@ -201,10 +198,11 @@ class tracker_clustering_data : public datatools::i_serializable,
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  solution_col_type _solutions_{};  //!< Collection of Geiger cluster solution handles
-  tracker_clustering_solution::handle_type
-      _default_solution_{};               //!< Handle to the default/best solution
-  datatools::properties _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)
+  TrackerClusteringSolutionHdlCollection
+      _solutions_{};  //!< Collection of Geiger cluster solution handles
+  TrackerClusteringSolutionHdl _default_solution_{};  //!< Handle to the default/best solution
+  datatools::properties
+      _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 

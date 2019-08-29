@@ -1455,8 +1455,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
       size_t cluster_count = 0;
       for (int i = 0; i < (int)the_tcs.get_clusters().size(); ++i) {
         const snemo::datamodel::tracker_cluster &the_cluster = the_tcs.get_clusters()[i].get();
-        const snemo::datamodel::calibrated_tracker_hit::collection_type &clhits =
-            the_cluster.get_hits();
+        const snemo::datamodel::TrackerHitHdlCollection &clhits = the_cluster.get_hits();
         // int test1 = geomtools::color::COLOR_TEST;
         // geomtools::color::code_type code = geomtools::color:: COLOR_MAGENTA;
         // geomtools::color::COLOR_MAGENTA;
@@ -1495,8 +1494,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
       }
 
       // Unclustered hits:
-      const snemo::datamodel::calibrated_tracker_hit::collection_type &the_uhits =
-          the_tcs.get_unclustered_hits();
+      const snemo::datamodel::TrackerHitHdlCollection &the_uhits = the_tcs.get_unclustered_hits();
       for (int i = 0; i < (int)the_uhits.size(); ++i) {
         const snemo::datamodel::calibrated_tracker_hit &uclhit = the_uhits[i].get();
         // Produce tracker unclustered hits rendering data

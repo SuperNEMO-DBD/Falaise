@@ -20,13 +20,13 @@
 #include <datatools/properties.h>
 
 // This project:
+#include <falaise/snemo/datamodels/tracker_clustering_solution.h>
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 
 namespace snemo {
 
 namespace datamodel {
 
-class tracker_clustering_solution;
 class tracker_cluster;
 
 /// \brief A collection of tracker clusters , solution of a trajectory algorithm
@@ -34,24 +34,6 @@ class tracker_trajectory_solution : public datatools::i_serializable,
                                     public datatools::i_tree_dumpable,
                                     public datatools::i_clear {
  public:
-  /// Handle on tracker cluster
-  typedef tracker_trajectory::handle_type trajectory_handle_type;
-
-  /// Collection of handles on tracker clusters
-  typedef std::vector<trajectory_handle_type> trajectory_col_type;
-
-  /// Handle on tracker cluster solution
-  typedef datatools::handle<tracker_clustering_solution> handle_clustering_solution_type;
-
-  /// Handle on tracker trajectory solution
-  typedef datatools::handle<tracker_trajectory_solution> handle_type;
-
-  /// Handle on tracker cluster
-  typedef datatools::handle<tracker_cluster> cluster_handle_type;
-
-  /// Collection of handles on tracker clusters
-  typedef std::vector<cluster_handle_type> cluster_col_type;
-
   /// Reset the tracker cluster solution
   void reset();
 
@@ -75,7 +57,7 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   bool has_clustering_solution() const;
 
   /// Set the reference clustering solution
-  void set_clustering_solution(const handle_clustering_solution_type& clustering_solution_);
+  void set_clustering_solution(const TrackerClusteringSolutionHdl& clustering_solution_);
 
   /// Reset the reference clustering solution
   void invalidate_clustering_solution();
@@ -86,14 +68,14 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   /// Return a non mutable reference on the reference clustering solution
   const tracker_clustering_solution& get_clustering_solution() const;
 
-   /// Check if there is trajectories
+  /// Check if there is trajectories
   bool has_trajectories() const;
 
   /// Return a mutable reference on the container of trajectories
-  trajectory_col_type& grab_trajectories();
+  TrackerTrajectoryHdlCollection& grab_trajectories();
 
   /// Return a non mutable reference on the container of trajectories
-  const trajectory_col_type& get_trajectories() const;
+  const TrackerTrajectoryHdlCollection& get_trajectories() const;
 
   /// Reset the trajectories
   void invalidate_trajectories();
@@ -102,10 +84,10 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   bool has_unfitted_clusters() const;
 
   /// Return a mutable reference on the container of handles on unfitted clusters
-  cluster_col_type& grab_unfitted_clusters();
+  TrackerClusterHdlCollection& grab_unfitted_clusters();
 
   /// Return a non mutable reference on the container of handles on unfitted clusters
-  const cluster_col_type& get_unfitted_clusters() const;
+  const TrackerClusterHdlCollection& get_unfitted_clusters() const;
 
   /// Reset the unfitted clusters
   void invalidate_unfitted_clusters();
@@ -126,16 +108,24 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   ///\deprecated properties should not be used in core data types
   const datatools::properties& get_auxiliaries() const __attribute__((deprecated));
 
-private:
-  int32_t _solution_id_ = -1;                                  //!< Unique solution ID
-  handle_clustering_solution_type _clustering_solution_;  //!< The reference clustering solution
-  trajectory_col_type
+ private:
+  int32_t _solution_id_ = -1;                          //!< Unique solution ID
+  TrackerClusteringSolutionHdl _clustering_solution_;  //!< The reference clustering solution
+  TrackerTrajectoryHdlCollection
       _trajectories_;  //!< Collection of handles on trajectories associated to clusters
-  cluster_col_type _unfitted_clusters_;  //!< Collection of handles on unfitted clusters
-  datatools::properties _auxiliaries_;   //!< List of auxiliary properties
+  TrackerClusterHdlCollection _unfitted_clusters_;  //!< Collection of handles on unfitted clusters
+  datatools::properties _auxiliaries_;              //!< List of auxiliary properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Handle on tracker trajectory solution
+//typedef datatools::handle<tracker_trajectory_solution> handle_type;
+using TrackerTrajectorySolution = tracker_trajectory_solution;
+using TrackerTrajectorySolutionCollection = std::vector<TrackerTrajectorySolution>;
+
+using TrackerTrajectorySolutionHdl = datatools::handle<TrackerTrajectorySolution>;
+using TrackerTrajectorySolutionHdlCollection = std::vector<TrackerTrajectorySolutionHdl>;
 
 }  // end of namespace datamodel
 
