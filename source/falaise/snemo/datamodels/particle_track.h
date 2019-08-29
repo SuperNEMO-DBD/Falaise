@@ -123,9 +123,6 @@ class particle_track : public geomtools::base_hit {
   /// Collection of vertex spots
   typedef std::vector<handle_spot> vertex_collection_type;
 
-  /// Handle on particle track
-  typedef datatools::handle<particle_track> handle_type;
-
   /// Check if there is a valid track ID
   bool has_track_id() const;
 
@@ -214,6 +211,13 @@ class particle_track : public geomtools::base_hit {
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Handle on particle track
+using Particle = particle_track;
+using ParticleHdl = datatools::handle<Particle>;
+
+using ParticleCollection = std::vector<Particle>;
+using ParticleHdlCollection = std::vector<ParticleHdl>;
 
 }  // end of namespace datamodel
 

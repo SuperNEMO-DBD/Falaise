@@ -121,20 +121,20 @@ charged_particle_tracking_module::~charged_particle_tracking_module() {
 
 // Processing :
 dpp::base_module::process_status charged_particle_tracking_module::process(
-    datatools::things& data_record_) {
+    datatools::things& event) {
   DT_THROW_IF(!is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is not initialized !");
   namespace snedm = snemo::datamodel;
 
   // Get required input products
-  const auto& the_calibrated_data = data_record_.get<snedm::calibrated_data>(CDTag_);
+  const auto& the_calibrated_data = event.get<snedm::calibrated_data>(CDTag_);
   const auto& the_tracker_trajectory_data =
-      data_record_.get<snedm::tracker_trajectory_data>(TTDTag_);
+      event.get<snedm::tracker_trajectory_data>(TTDTag_);
 
   // Create or reset output bank
   auto the_particle_track_data =
-      ::snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, data_record_);
-  the_particle_track_data.reset();
+      ::snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, event);
+  the_particle_track_data.clear();
 
   // Main processing method :
   this->_process(the_calibrated_data, the_tracker_trajectory_data, the_particle_track_data);
@@ -152,7 +152,7 @@ void charged_particle_tracking_module::_process(
   if (!tracker_trajectory_data_.has_default_solution()) {
     // Fill non associated calorimeter hits
     for (const auto& chit : calibrated_data_.calibrated_calorimeter_hits()) {
-      particle_track_data_.grab_non_associated_calorimeters().push_back(chit);
+      particle_track_data_.isolatedCalorimeters().push_back(chit);
     }
     return;
   }
@@ -175,8 +175,8 @@ void charged_particle_tracking_module::_process(
     // Add a new particle_track
     auto hPT = datatools::make_handle<snedm::particle_track>();
     hPT->set_trajectory_handle(a_trajectory);
-    hPT->set_track_id(particle_track_data_.get_number_of_particles());
-    particle_track_data_.add_particle(hPT);
+    hPT->set_track_id(particle_track_data_.numberOfParticles());
+    particle_track_data_.insertParticle(hPT);
 
     // Compute particle charge
     if (CCAlgo_) {
@@ -203,7 +203,7 @@ void charged_particle_tracking_module::_post_process(
     snemo::datamodel::particle_track_data& particle_track_data_) {
   namespace snedm = snemo::datamodel;
   // Grab non associated calorimeters :
-  if (!particle_track_data_.has_non_associated_calorimeters()) {
+  if (!particle_track_data_.hasIsolatedCalorimeters()) {
     geomtools::base_hit::has_flag_predicate asso_pred(calorimeter_utils::associated_flag());
     geomtools::base_hit::negates_predicate not_asso_pred(asso_pred);
     // Wrapper predicates :
@@ -216,7 +216,7 @@ void charged_particle_tracking_module::_post_process(
     // The below might be better with copy_if and back_inserter?
     auto ihit = std::find_if(chits.begin(), chits.end(), pred_via_handle);
     while (ihit != chits.end()) {
-      particle_track_data_.grab_non_associated_calorimeters().push_back(*ihit);
+      particle_track_data_.isolatedCalorimeters().push_back(*ihit);
       ihit = std::find_if(++ihit, chits.end(), pred_via_handle);
     }
   }
@@ -227,7 +227,7 @@ void charged_particle_tracking_module::_post_process(
   const snedm::calibrated_data::tracker_hit_collection_type& thits =
       calibrated_data_.calibrated_tracker_hits();
   snedm::calibrated_data::calorimeter_hit_collection_type& chits =
-      particle_track_data_.grab_non_associated_calorimeters();
+      particle_track_data_.isolatedCalorimeters();
 
   for (datatools::handle<snedm::calibrated_calorimeter_hit>& a_calo_hit : chits) {
     const bool has_neighbors =
@@ -325,8 +325,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::charged_particle_tracking
         .set_long_description(
             "This is the name of the bank to be used      \n"
             "as the source of input tracker trajectories. \n")
-        .set_default_value_string(
-            snedm::labels::tracker_trajectory_data())
+        .set_default_value_string(snedm::labels::tracker_trajectory_data())
         .add_example(
             "Use an alternative name for the  \n"
             "'tracker trajectory data' bank:: \n"

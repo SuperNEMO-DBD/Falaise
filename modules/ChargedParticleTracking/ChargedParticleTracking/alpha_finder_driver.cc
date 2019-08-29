@@ -106,9 +106,8 @@ void alpha_finder_driver::_find_delayed_unfitted_cluster_(
     this->_find_short_track_(delayed_gg_hits, a_solution, particle_track_data_);
 
     // Add tracker cluster handle to trajectory
-    if (particle_track_data_.has_particles()) {
-      snedm::particle_track_data::particle_collection_type &particles =
-          particle_track_data_.grab_particles();
+    if (particle_track_data_.hasParticles()) {
+      snedm::ParticleHdlCollection &particles = particle_track_data_.particles();
       datatools::handle<snedm::particle_track> &a_particle = particles.back();
       const datatools::properties &aux = a_particle->get_auxiliaries();
       if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle->has_trajectory()) {
@@ -284,8 +283,7 @@ void alpha_finder_driver::_find_short_track_(
       this->_build_alpha_particle_track_(hits, associated_vertex, particle_track_data_);
 
       // Add special tracker cluster handle to trajectory
-      snedm::particle_track_data::particle_collection_type &particles =
-          particle_track_data_.grab_particles();
+      snedm::ParticleHdlCollection &particles = particle_track_data_.particles();
       snedm::particle_track &a_particle = particles.back().grab();
       const datatools::properties &aux = a_particle.get_auxiliaries();
       if (aux.has_flag(alpha_finder_driver::short_alpha_key()) && a_particle.has_trajectory()) {
@@ -322,12 +320,12 @@ void alpha_finder_driver::_build_alpha_particle_track_(
 
   // Add short alpha particle track
   auto a_short_alpha = datatools::make_handle<snedm::particle_track>();
-  a_short_alpha->set_track_id(particle_track_data_.get_number_of_particles());
+  a_short_alpha->set_track_id(particle_track_data_.numberOfParticles());
   a_short_alpha->set_charge(snedm::particle_track::undefined);
 
   a_short_alpha->grab_auxiliaries().store_flag(alpha_finder_driver::short_alpha_key());
 
-  particle_track_data_.add_particle(a_short_alpha);
+  particle_track_data_.insertParticle(a_short_alpha);
 
   // "Fit" short alpha trajectory
   geomtools::vector_3d last_vertex = geomtools::invalid_vector_3d();

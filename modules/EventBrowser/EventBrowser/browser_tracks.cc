@@ -1164,9 +1164,9 @@ void browser_tracks::_update_particle_track_data() {
     item_particle_track_data->SetTipText(tip_text.str().c_str());
   }
   // Add unassociated calorimeter hits info
-  if (ptd.has_non_associated_calorimeters()) {
+  if (ptd.hasIsolatedCalorimeters()) {
     snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-        ptd.grab_non_associated_calorimeters();
+        ptd.isolatedCalorimeters();
 
     for (auto &it_hit : cc_collection) {
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
@@ -1206,12 +1206,8 @@ void browser_tracks::_update_particle_track_data() {
     }
   }
 
-  if (!ptd.has_particles()) {
-    return;
-  }
 
-  snemo::datamodel::particle_track_data::particle_collection_type &particles = ptd.grab_particles();
-  for (auto &particle : particles) {
+  for (auto &particle : ptd.particles()) {
     // Get current particle track:
     snemo::datamodel::particle_track &a_particle = particle.grab();
 

@@ -210,21 +210,20 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
                                       snemo::datamodel::particle_track_data& ptd_) {
   // Add the ignored hits to the list of non associated calorimeters
   // ptd_.reset_non_associated_calorimeters();
-  auto& calos = ptd_.grab_non_associated_calorimeters();
+  auto& calos = ptd_.isolatedCalorimeters();
   calos.assign(ignoredHits_.begin(), ignoredHits_.end());
 
   // Given charged particle then process gammas
-  snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
-  ptd_.fetch_particles(gamma_particles, snemo::datamodel::particle_track::NEUTRAL);
+  snemo::datamodel::ParticleHdlCollection gamma_particles =
+      ptd_.getParticlesByCharge(snemo::datamodel::particle_track::NEUTRAL);
   if (gamma_particles.empty()) {
     DT_LOG_DEBUG(get_logging_priority(), "No gamma particles have been found !");
     return 0;
   }
 
-  snemo::datamodel::particle_track_data::particle_collection_type charged_particles;
-  ptd_.fetch_particles(charged_particles, snemo::datamodel::particle_track::NEGATIVE |
-                                              snemo::datamodel::particle_track::POSITIVE |
-                                              snemo::datamodel::particle_track::UNDEFINED);
+  snemo::datamodel::ParticleHdlCollection charged_particles = ptd_.getParticlesByCharge(
+      snemo::datamodel::particle_track::NEGATIVE | snemo::datamodel::particle_track::POSITIVE |
+      snemo::datamodel::particle_track::UNDEFINED);
   if (charged_particles.empty()) {
     DT_LOG_DEBUG(get_logging_priority(), "No charged particles have been found !");
     return 0;

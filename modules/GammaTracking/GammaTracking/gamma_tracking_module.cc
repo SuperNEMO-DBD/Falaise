@@ -73,7 +73,7 @@ gamma_tracking_module::gamma_tracking_module(const falaise::property_set& ps,
 falaise::processing::status gamma_tracking_module::process(datatools::things& event) {
   auto& ptd = snedm::getOrAddToEvent<snemo::datamodel::particle_track_data>(PTD_tag_, event);
 
-  algo_.process(ptd.get_non_associated_calorimeters(), ptd);
+  algo_.process(ptd.isolatedCalorimeters(), ptd);
   return falaise::processing::status::PROCESS_SUCCESS;
 }
 

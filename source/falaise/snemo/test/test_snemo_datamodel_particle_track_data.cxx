@@ -82,33 +82,21 @@ int main(/*int argc_, char ** argv_*/) {
 
     // Particle track data bank :
     auto& PTD = ER.add<sdm::particle_track_data>(snedm::labels::particle_track_data());
-    PTD.add_particle(hPT0);
+    PTD.insertParticle(hPT0);
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any
-    sdm::particle_track_data::particle_collection_type electrons;
-    const size_t nelectrons = PTD.fetch_particles(electrons, sdm::particle_track::negative);
-    std::clog << "Number of particles = " << PTD.get_number_of_particles() << std::endl;
-    std::clog << "Number of electrons = " << nelectrons << std::endl;
+    sdm::ParticleHdlCollection electrons = PTD.getParticlesByCharge(sdm::particle_track::negative);
+    std::clog << "Number of particles = " << PTD.numberOfParticles() << std::endl;
+    std::clog << "Number of electrons = " << electrons.size() << std::endl;
 
     // Adding other particles
     for (size_t i = 0; i < 10; i++) {
       datatools::handle<sdm::particle_track> hPT;
       hPT.reset(new sdm::particle_track);
-      hPT.grab().set_track_id(i);
-      PTD.add_particle(hPT);
+      hPT->set_track_id(i);
+      PTD.insertParticle(hPT);
     }
-    std::clog << "Number of particles (before removing) = " << PTD.get_number_of_particles()
-              << std::endl;
-    // Create a list of particle index to remove
-    std::vector<size_t> indexes;
-    indexes.push_back(3);
-    indexes.push_back(5);
-    indexes.push_back(1);
-    PTD.remove_particles(indexes);
-    std::clog << "Number of particles (after removing) = " << PTD.get_number_of_particles()
-              << std::endl;
-    PTD.tree_dump(std::clog, "Particle track data after cleaning:");
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;

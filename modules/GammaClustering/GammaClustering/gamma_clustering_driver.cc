@@ -113,8 +113,8 @@ int gamma_clustering_driver::_process_algo(
   // Set new particles within 'particle track data' container
   for (const auto& a_cluster : the_reconstructed_gammas) {
     auto hPT = datatools::make_handle<snemo::datamodel::particle_track>();
-    ptd_.add_particle(hPT);
-    hPT->set_track_id(ptd_.get_number_of_particles());
+    ptd_.insertParticle(hPT);
+    hPT->set_track_id(ptd_.numberOfParticles());
     hPT->set_charge(snemo::datamodel::particle_track::neutral);
 
     for (const auto& j : a_cluster) {
