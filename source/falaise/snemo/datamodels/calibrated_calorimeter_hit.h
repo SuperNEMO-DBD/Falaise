@@ -44,12 +44,6 @@ namespace datamodel {
 /// \brief Model of a calibrated calorimeter hit
 class calibrated_calorimeter_hit : public geomtools::base_hit {
  public:
-  /// Handle of calibrated calorimeter hit
-  typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
-
-  /// Collection of handles of calibrated calorimeter hit
-  typedef std::vector<handle_type> collection_type;
-
   /// Return the time associated to the hit
   double get_time() const;
 
@@ -84,17 +78,24 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
-  /// Basic print
-  void dump() const;
-
  private:
-  double _energy_{datatools::invalid_real()};       //!< Energy associated to the hit
-  double _sigma_energy_{datatools::invalid_real()}; //!< Error on the energy associated to the hit
-  double _time_{datatools::invalid_real()};         //!< Time associated to the hit
-  double _sigma_time_{datatools::invalid_real()};   //!< Error on the time associated to the hit
+  double _energy_{datatools::invalid_real()};        //!< Energy associated to the hit
+  double _sigma_energy_{datatools::invalid_real()};  //!< Error on the energy associated to the hit
+  double _time_{datatools::invalid_real()};          //!< Time associated to the hit
+  double _sigma_time_{datatools::invalid_real()};    //!< Error on the time associated to the hit
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Handle of calibrated calorimeter hit
+// typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
+/// Collection of handles of calibrated calorimeter hit
+// typedef std::vector<handle_type> collection_type;
+using CalorimeterHit = calibrated_calorimeter_hit;
+using CalorimeterHitCollection = std::vector<CalorimeterHit>;
+
+using CalorimeterHitHdl = datatools::handle<CalorimeterHit>;
+using CalorimeterHitHdlCollection = std::vector<CalorimeterHitHdl>;
 
 }  // end of namespace datamodel
 

@@ -187,10 +187,10 @@ class particle_track : public geomtools::base_hit {
   void reset_associated_calorimeter_hits();
 
   /// Return a mutable reference on the collection of associated calorimeter hits (handles)
-  calibrated_calorimeter_hit::collection_type &get_associated_calorimeter_hits();
+  CalorimeterHitHdlCollection &get_associated_calorimeter_hits();
 
   /// Return a non mutable reference on the collection of associated calorimeter hits (handles)
-  const calibrated_calorimeter_hit::collection_type &get_associated_calorimeter_hits() const;
+  const CalorimeterHitHdlCollection &get_associated_calorimeter_hits() const;
 
   /// Empty the contents of the particle track
   void clear();
@@ -203,10 +203,10 @@ class particle_track : public geomtools::base_hit {
                          const std::string &indent_ = "", bool inherit_ = false) const;
 
  private:
-  charge_type _charge_from_source_{invalid};              //!< Particle charge
+  charge_type _charge_from_source_{invalid};       //!< Particle charge
   tracker_trajectory::handle_type _trajectory_{};  //!< Handle to the fitted trajectory
   vertex_collection_type _vertices_{};             //!< Collection of vertices
-  calibrated_calorimeter_hit::collection_type
+  CalorimeterHitHdlCollection
       _associated_calorimeter_hits_{};  //!< Collection of associated calorimeter hits
 
   DATATOOLS_SERIALIZATION_DECLARATION()

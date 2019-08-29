@@ -292,7 +292,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double gamma_time_th = gamma_track_length / CLHEP::c_light;
 
           // Assume particle are electron/positron
-          const snemo::datamodel::calibrated_calorimeter_hit::collection_type& the_calorimeters =
+          const snemo::datamodel::CalorimeterHitHdlCollection& the_calorimeters =
               a_particle->get_associated_calorimeter_hits();
           // Only take care of the first associated calorimeter
           const auto& a_calo_hit = the_calorimeters.front();
@@ -366,7 +366,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           if (int_prob > int_prob_limit) {
             // Do not add the calorimeter hit from the charged particle to
             // the list of calorimeter hits of the gamma particle
-            // snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits =
+            // snemo::datamodel::CalorimeterHitHdlCollection & hits =
             // a_gamma.grab_associated_calorimeter_hits(); hits.insert(hits.begin(),
             // the_calorimeters.front());
             auto hBSv = datatools::make_handle<geomtools::blur_spot>();

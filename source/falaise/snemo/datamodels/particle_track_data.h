@@ -65,10 +65,10 @@ class particle_track_data : public datatools::i_serializable,
   bool hasIsolatedCalorimeters() const;
 
   /// Return a non mutable reference to non associated calorimeters
-  const calibrated_calorimeter_hit::collection_type& isolatedCalorimeters() const;
+  const CalorimeterHitHdlCollection& isolatedCalorimeters() const;
 
   /// Return a mutable reference to non associated calorimeters
-  calibrated_calorimeter_hit::collection_type& isolatedCalorimeters();
+  CalorimeterHitHdlCollection& isolatedCalorimeters();
 
   /// Reset the non associated calorimeters
   void clearIsolatedCalorimeters();
@@ -82,9 +82,10 @@ class particle_track_data : public datatools::i_serializable,
 
  private:
   ParticleHdlCollection _particles_;  //!< Collection of particle track handles
-  calibrated_calorimeter_hit::collection_type
-      _non_associated_calorimeters_;    //!< Collection of calorimeter hit handles
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties (retained for serialization back compatibility)
+  CalorimeterHitHdlCollection
+      _non_associated_calorimeters_;  //!< Collection of calorimeter hit handles
+  datatools::properties
+      _auxiliaries_;  //!< Auxiliary properties (retained for serialization back compatibility)
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

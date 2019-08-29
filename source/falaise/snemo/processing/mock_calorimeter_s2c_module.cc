@@ -41,10 +41,8 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   this->base_module::_common_initialize(ps);
   falaise::property_set fps{ps};
 
-  sdInputTag =
-      fps.get<std::string>("SD_label", snedm::labels::simulated_data());
-  cdOutputTag = fps.get<std::string>("CD_label",
-                                     snedm::labels::calibrated_data());
+  sdInputTag = fps.get<std::string>("SD_label", snedm::labels::simulated_data());
+  cdOutputTag = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());
 
   // Initialize the embedded random number generator:
   int random_seed = fps.get<int>("random.seed", 12345);
@@ -134,7 +132,7 @@ void mock_calorimeter_s2c_module::digitizeHits(
 
       // Extract the corresponding geom ID:
       auto& geomID = a_calo_mc_hit->get_geom_id();
-      using CCHitHdl = snemo::datamodel::calibrated_calorimeter_hit::collection_type::value_type;
+      using CCHitHdl = snemo::datamodel::CalorimeterHitHdlCollection::value_type;
 
       auto found = std::find_if(calohits.rbegin(), calohits.rend(), [&geomID](CCHitHdl const& x) {
         return x->get_geom_id() == geomID;

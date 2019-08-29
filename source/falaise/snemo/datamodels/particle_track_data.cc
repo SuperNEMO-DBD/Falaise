@@ -50,11 +50,11 @@ bool particle_track_data::hasIsolatedCalorimeters() const {
   return !_non_associated_calorimeters_.empty();
 }
 
-calibrated_calorimeter_hit::collection_type& particle_track_data::isolatedCalorimeters() {
+CalorimeterHitHdlCollection& particle_track_data::isolatedCalorimeters() {
   return _non_associated_calorimeters_;
 }
 
-const calibrated_calorimeter_hit::collection_type& particle_track_data::isolatedCalorimeters()
+const CalorimeterHitHdlCollection& particle_track_data::isolatedCalorimeters()
     const {
   return _non_associated_calorimeters_;
 }

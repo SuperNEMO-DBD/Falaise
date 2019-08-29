@@ -19,9 +19,9 @@
 #include <falaise/snemo/datamodels/particle_track.h>
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
-#include <falaise/snemo/geometry/locator_helpers.h>
 
 namespace snemo {
 
@@ -64,8 +64,8 @@ const geomtools::manager& calorimeter_association_driver::geoManager() const {
 }
 
 /// Initialize the driver through configuration properties
-calorimeter_association_driver::calorimeter_association_driver(
-    const falaise::property_set& ps, const geomtools::manager* gm) {
+calorimeter_association_driver::calorimeter_association_driver(const falaise::property_set& ps,
+                                                               const geomtools::manager* gm) {
   logPriority_ =
       datatools::logger::get_priority(ps.get<std::string>("logging.priority", "warning"));
   geoManager_ = gm;
@@ -150,7 +150,7 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
     }
 
     // Look for matching calorimeters
-    using calo_collection_type = std::map<double, snedm::calibrated_calorimeter_hit::handle_type>;
+    using calo_collection_type = std::map<double, snedm::CalorimeterHitHdl>;
 
     calo_collection_type calo_collection;
 

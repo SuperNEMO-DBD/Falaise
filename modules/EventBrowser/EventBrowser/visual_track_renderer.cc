@@ -215,8 +215,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
   // Show non-associated calorimeters
   if (pt_data.hasIsolatedCalorimeters()) {
-    const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
-        pt_data.isolatedCalorimeters();
+    const snemo::datamodel::CalorimeterHitHdlCollection &calos = pt_data.isolatedCalorimeters();
     for (const auto &calo : calos) {
       const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
       const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
@@ -309,7 +308,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
     // Show associated calorimeters
     if (a_particle.has_associated_calorimeter_hits()) {
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
+      const snemo::datamodel::CalorimeterHitHdlCollection &calos =
           a_particle.get_associated_calorimeter_hits();
       for (const auto &calo : calos) {
         const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();

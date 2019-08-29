@@ -203,11 +203,11 @@ bool particle_track::has_associated_calorimeter_hits() const {
 
 void particle_track::reset_associated_calorimeter_hits() { _associated_calorimeter_hits_.clear(); }
 
-calibrated_calorimeter_hit::collection_type& particle_track::get_associated_calorimeter_hits() {
+CalorimeterHitHdlCollection& particle_track::get_associated_calorimeter_hits() {
   return _associated_calorimeter_hits_;
 }
 
-const calibrated_calorimeter_hit::collection_type& particle_track::get_associated_calorimeter_hits()
+const CalorimeterHitHdlCollection& particle_track::get_associated_calorimeter_hits()
     const {
   return _associated_calorimeter_hits_;
 }

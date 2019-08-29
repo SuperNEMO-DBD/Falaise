@@ -73,10 +73,6 @@ void calibrated_calorimeter_hit::tree_dump(std::ostream& out_, const std::string
        << "Sigma(energy) : " << _sigma_energy_ / CLHEP::keV << " keV" << std::endl;
 }
 
-void calibrated_calorimeter_hit::dump() const {
-  this->tree_dump(std::clog, "snemo::datamodel::calibrated_calorimeter_hit");
-}
-
 }  // end of namespace datamodel
 
 }  // end of namespace snemo

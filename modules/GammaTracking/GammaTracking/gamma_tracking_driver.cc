@@ -124,8 +124,7 @@ int gamma_tracking_driver::_process_algo(
     // List of associated calorimeters
     for (const int calo_id : a_list) {
       // Set calorimeter association
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type& cch =
-          ptd_.isolatedCalorimeters();
+      const snemo::datamodel::CalorimeterHitHdlCollection& cch = ptd_.isolatedCalorimeters();
       geomtools::base_hit::has_hit_id_predicate hit_pred(calo_id);
       datatools::mother_to_daughter_predicate<geomtools::base_hit,
                                               snemo::datamodel::calibrated_calorimeter_hit>
