@@ -1109,17 +1109,15 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated tracker hits:
     {
-      snemo::datamodel::calibrated_data::tracker_hit_collection_type &CTHC =
-          the_cd.calibrated_tracker_hits();
+      snemo::datamodel::TrackerHitHdlCollection &CTHC = the_cd.calibrated_tracker_hits();
       if (CTHC.size()) {
         // Normal hits :
         {
           const std::string hit_category = "CD.tracker";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1178,10 +1176,9 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
         {
           const std::string hit_category = "CD.tracker_delayed";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1238,10 +1235,9 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
         {
           const std::string hit_category = "CD.tracker_noisy";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1298,15 +1294,13 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // Draw the calibrated calorimeter hits:
     if (setup_label == snemo_demo_label()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &CCHC =
-          the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calibrated_calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.calorimeter";
         size_t hit_count = 0;
-        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator i =
-                 CCHC.begin();
+        for (snemo::datamodel::CalorimeterHitHdlCollection::const_iterator i = CCHC.begin();
              i != CCHC.end(); i++) {
-          const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type &the_handle = *i;
+          const snemo::datamodel::CalorimeterHitHdl &the_handle = *i;
           if (!the_handle.has_data()) continue;
           const snemo::datamodel::calibrated_calorimeter_hit &CCH = the_handle.get();
 
@@ -1379,15 +1373,13 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated muon trigger hits:
     if (setup_label == snemo_tc_label()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &CCHC =
-          the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calibrated_calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.muon_trigger";
         size_t hit_count = 0;
-        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator i =
-                 CCHC.begin();
+        for (snemo::datamodel::CalorimeterHitHdlCollection::const_iterator i = CCHC.begin();
              i != CCHC.end(); i++) {
-          const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type &the_handle = *i;
+          const snemo::datamodel::CalorimeterHitHdl &the_handle = *i;
           if (!the_handle.has_data()) continue;
           const snemo::datamodel::calibrated_calorimeter_hit &CCH = the_handle.get();
 
@@ -1469,7 +1461,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
 
         // Produce tracker cluster rendering data for each hit in the current cluster:
         for (int j = 0; j < (int)clhits.size(); j++) {
-          const snemo::datamodel::calibrated_data::tracker_hit_handle_type &hclhit = clhits[j];
+          const snemo::datamodel::TrackerHitHdl &hclhit = clhits[j];
           const snemo::datamodel::calibrated_tracker_hit &clhit = hclhit.get();
           double x = clhit.get_x();
           double y = clhit.get_y();

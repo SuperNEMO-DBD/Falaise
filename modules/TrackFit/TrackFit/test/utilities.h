@@ -8,11 +8,11 @@
 #include <falaise/snemo/geometry/gg_locator.h>
 
 void generate_tcd(const snemo::geometry::gg_locator& ggloc_,
-                  snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_,
+                  snemo::datamodel::TrackerHitHdlCollection& gghits_,
                   snemo::datamodel::tracker_clustering_data& tcd_);
 
 void display_event(const snemo::geometry::gg_locator& ggloc_,
-                   const snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_,
+                   const snemo::datamodel::TrackerHitHdlCollection& gghits_,
                    const snemo::datamodel::tracker_clustering_data& tcd_,
                    const snemo::datamodel::tracker_trajectory_data& ttd_);
 

@@ -209,7 +209,7 @@ void charged_particle_tracking_module::_post_process(
         pred_M2D(not_asso_pred);
     datatools::handle_predicate<snedm::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
 
-    const snedm::calibrated_data::calorimeter_hit_collection_type& chits =
+    const snedm::CalorimeterHitHdlCollection& chits =
         calibrated_data_.calibrated_calorimeter_hits();
     // The below might be better with copy_if and back_inserter?
     auto ihit = std::find_if(chits.begin(), chits.end(), pred_via_handle);
@@ -222,10 +222,8 @@ void charged_particle_tracking_module::_post_process(
   // 2015/12/02 XG: Also look if the non associated calorimeters are
   // isolated i.e. without Geiger cells in front or not: tag them
   // consequently
-  const snedm::calibrated_data::tracker_hit_collection_type& thits =
-      calibrated_data_.calibrated_tracker_hits();
-  snedm::calibrated_data::calorimeter_hit_collection_type& chits =
-      particle_track_data_.isolatedCalorimeters();
+  const snedm::TrackerHitHdlCollection& thits = calibrated_data_.calibrated_tracker_hits();
+  snedm::CalorimeterHitHdlCollection& chits = particle_track_data_.isolatedCalorimeters();
 
   for (datatools::handle<snedm::calibrated_calorimeter_hit>& a_calo_hit : chits) {
     const bool has_neighbors =

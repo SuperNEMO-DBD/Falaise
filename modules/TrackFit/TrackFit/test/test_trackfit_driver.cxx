@@ -93,7 +93,7 @@ int main(int argc_, char** argv_) {
     // Event loop:
     for (int i = 0; i < 3; i++) {
       std::clog << "Processing event #" << i << "\n";
-      snemo::datamodel::calibrated_data::tracker_hit_collection_type CTH;
+      snemo::datamodel::TrackerHitHdlCollection CTH;
       snemo::datamodel::tracker_clustering_data TCD;
       generate_tcd(*gg_locator, CTH, TCD);
       snemo::datamodel::tracker_trajectory_data TTD;

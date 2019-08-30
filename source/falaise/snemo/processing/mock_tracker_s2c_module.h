@@ -68,7 +68,7 @@ class mock_tracker_s2c_module : public dpp::base_module {
   // Rationalized typenames
   using sim_tracker_hit_col_t = mctools::simulated_data::hit_handle_collection_type;
   using raw_tracker_hit_col_t = std::list<snreco::detail::mock_raw_tracker_hit>;
-  using cal_tracker_hit_col_t = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
+  using cal_tracker_hit_col_t = snemo::datamodel::TrackerHitHdlCollection;
 
   /// Digitize tracker hits
   raw_tracker_hit_col_t digitizeHits_(const sim_tracker_hit_col_t& steps);

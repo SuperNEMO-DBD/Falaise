@@ -86,8 +86,7 @@ class calorimeter_association_driver {
   calorimeter_association_driver() = default;
 
   /// Construct from configuration and geometry
-  calorimeter_association_driver(const falaise::property_set& ps,
-                                 const geomtools::manager* gm);
+  calorimeter_association_driver(const falaise::property_set& ps, const geomtools::manager* gm);
 
   /// Destructor
   ~calorimeter_association_driver() = default;
@@ -105,9 +104,8 @@ class calorimeter_association_driver {
   calorimeter_association_driver& operator=(calorimeter_association_driver&&) = default;
 
   /// Main driver method
-  void process(
-      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calorimeter_hits_,
-      snemo::datamodel::particle_track& particle_);
+  void process(const snemo::datamodel::CalorimeterHitHdlCollection& calorimeter_hits_,
+               snemo::datamodel::particle_track& particle_);
 
   /// OCD support:
   static void init_ocd(datatools::object_configuration_description& ocd_);
@@ -118,7 +116,7 @@ class calorimeter_association_driver {
 
   /// Find matching calorimeters:
   void _measure_matching_calorimeters_(
-      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calorimeter_hits_,
+      const snemo::datamodel::CalorimeterHitHdlCollection& calorimeter_hits_,
       snemo::datamodel::particle_track& particle_);
 
  private:

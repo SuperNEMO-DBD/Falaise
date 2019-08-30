@@ -50,8 +50,7 @@ class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder {
   typedef std::vector<geomtools::geom_id> gid_list_type;
 
   /// Typedef for time ordered calorimeter hits aka. gamma cluster
-  typedef std::map<double, const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type>
-      cluster_type;
+  typedef std::map<double, const snemo::datamodel::CalorimeterHitHdl> cluster_type;
 
   /// Typedef for collection of clusters
   typedef std::vector<cluster_type> cluster_collection_type;
@@ -85,8 +84,8 @@ class gamma_clustering_driver : public ::snemo::processing::base_gamma_builder {
   /// Get calorimeter neighbours given teh current calorimeter hit
   virtual void _get_geometrical_neighbours(
       const snemo::datamodel::calibrated_calorimeter_hit& hit_,
-      const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_,
-      cluster_type& cluster_, gid_list_type& registered_calos_) const;
+      const snemo::datamodel::CalorimeterHitHdlCollection& hits_, cluster_type& cluster_,
+      gid_list_type& registered_calos_) const;
 
   /// Split calorimeter cluster given a cluster time range value
   virtual void _get_time_neighbours(cluster_type& cluster_,

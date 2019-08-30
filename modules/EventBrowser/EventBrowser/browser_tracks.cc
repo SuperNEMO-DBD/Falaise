@@ -662,8 +662,7 @@ void browser_tracks::_update_calibrated_data() {
     item_calorimeter->SetCheckBox(false);
     item_calorimeter->SetUserData((void *)(intptr_t)++icheck_id);
 
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-        cd.calibrated_calorimeter_hits();
+    snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = cd.calibrated_calorimeter_hits();
 
     for (auto &it_hit : cc_collection) {
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
@@ -720,8 +719,7 @@ void browser_tracks::_update_calibrated_data() {
     item_tracker->SetCheckBox(false);
     item_tracker->SetUserData((void *)(intptr_t)++icheck_id);
 
-    snemo::datamodel::calibrated_data::tracker_hit_collection_type &ct_collection =
-        cd.calibrated_tracker_hits();
+    snemo::datamodel::TrackerHitHdlCollection &ct_collection = cd.calibrated_tracker_hits();
 
     for (auto &it_hit : ct_collection) {
       snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit.grab();
@@ -1162,8 +1160,7 @@ void browser_tracks::_update_particle_track_data() {
   }
   // Add unassociated calorimeter hits info
   if (ptd.hasIsolatedCalorimeters()) {
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-        ptd.isolatedCalorimeters();
+    snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = ptd.isolatedCalorimeters();
 
     for (auto &it_hit : cc_collection) {
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
@@ -1302,7 +1299,7 @@ void browser_tracks::_update_particle_track_data() {
 
     // Get associated calorimeter
     if (a_particle.has_associated_calorimeter_hits()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
+      snemo::datamodel::CalorimeterHitHdlCollection &cc_collection =
           a_particle.get_associated_calorimeter_hits();
 
       for (auto &it_hit : cc_collection) {

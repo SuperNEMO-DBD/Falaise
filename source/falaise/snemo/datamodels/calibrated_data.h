@@ -45,18 +45,6 @@ class calibrated_data : public datatools::i_serializable,
                         public datatools::i_tree_dumpable,
                         public datatools::i_clear {
  public:
-  /// Handle to a calibrated tracker hit
-  typedef datatools::handle<calibrated_tracker_hit> tracker_hit_handle_type;
-
-  /// Handle to a calibrated calorimeter hit
-  typedef datatools::handle<calibrated_calorimeter_hit> calorimeter_hit_handle_type;
-
-  /// Collection of handles on calibrated tracker hits
-  typedef std::vector<tracker_hit_handle_type> tracker_hit_collection_type;
-
-  /// Collection of handles on calibrated calorimeter hits
-  typedef std::vector<calorimeter_hit_handle_type> calorimeter_hit_collection_type;
-
   /// Check if there are some hits
   bool has_data() const;
 
@@ -67,10 +55,10 @@ class calibrated_data : public datatools::i_serializable,
   void reset_calibrated_calorimeter_hits();
 
   /// Return the const collection of calorimeter hits
-  const calorimeter_hit_collection_type& calibrated_calorimeter_hits() const;
+  const CalorimeterHitHdlCollection& calibrated_calorimeter_hits() const;
 
   /// Return the mutable collection of calorimeter hits
-  calorimeter_hit_collection_type& calibrated_calorimeter_hits();
+  CalorimeterHitHdlCollection& calibrated_calorimeter_hits();
 
   /// Check if there are some calibrated tracker hits
   bool has_calibrated_tracker_hits() const;
@@ -79,10 +67,10 @@ class calibrated_data : public datatools::i_serializable,
   void reset_calibrated_tracker_hits();
 
   /// Return the const collection of tracker hits
-  const tracker_hit_collection_type& calibrated_tracker_hits() const;
+  const TrackerHitHdlCollection& calibrated_tracker_hits() const;
 
   /// Return the mutable collection of tracker hits
-  tracker_hit_collection_type& calibrated_tracker_hits();
+  TrackerHitHdlCollection& calibrated_tracker_hits();
 
   /// Return the const container of properties
   const datatools::properties& get_properties() const;
@@ -101,10 +89,10 @@ class calibrated_data : public datatools::i_serializable,
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  calorimeter_hit_collection_type
-      _calibrated_calorimeter_hits_;  //!< Collection of calibrated calorimeter hits
-  tracker_hit_collection_type _calibrated_tracker_hits_;  //!< Collection of calibrated tracker hits
-  datatools::properties _properties_;                     //!< Auxiliary properties
+  CalorimeterHitHdlCollection
+      _calibrated_calorimeter_hits_;                  //!< Collection of calibrated calorimeter hits
+  TrackerHitHdlCollection _calibrated_tracker_hits_;  //!< Collection of calibrated tracker hits
+  datatools::properties _properties_;                 //!< Auxiliary properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

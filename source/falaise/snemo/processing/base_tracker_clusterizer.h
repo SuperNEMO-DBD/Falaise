@@ -72,9 +72,8 @@ class base_tracker_clusterizer {
   // Typedefs
   using hit_type = snemo::datamodel::calibrated_tracker_hit;
   using hit_handle_type = snemo::datamodel::TrackerHitHdl;
-  using hit_collection_type = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
-  using calo_hit_collection_type =
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+  using hit_collection_type = snemo::datamodel::TrackerHitHdlCollection;
+  using calo_hit_collection_type = snemo::datamodel::CalorimeterHitHdlCollection;
 
   /// Default constructor
   base_tracker_clusterizer(const std::string &name = "anonymous");
@@ -168,11 +167,11 @@ class base_tracker_clusterizer {
   datatools::logger::priority _logging_priority;  /// Logging priority
 
  private:
-  bool isInitialized_;                                //!< Initialization status
-  std::string id_;                                    //!< Identifier of the clusterizer algorithm
-  const geomtools::manager *geoManager_;              //!< The SuperNEMO geometry manager
-  const snemo::geometry::gg_locator *geigerLocator_;  //!< Locator for geiger cells
-  geomtools::id_selector cellSelector_;               //!< A selector of GIDs
+  bool isInitialized_;                                  //!< Initialization status
+  std::string id_;                                      //!< Identifier of the clusterizer algorithm
+  const geomtools::manager *geoManager_;                //!< The SuperNEMO geometry manager
+  const snemo::geometry::gg_locator *geigerLocator_;    //!< Locator for geiger cells
+  geomtools::id_selector cellSelector_;                 //!< A selector of GIDs
   snreco::detail::GeigerTimePartitioner preClusterer_;  //!< The time-clustering algorithm
 
   // Internal work space:

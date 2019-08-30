@@ -19,14 +19,13 @@
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 
 void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
-                  snemo::datamodel::calibrated_data::tracker_hit_collection_type &gghits_,
+                  snemo::datamodel::TrackerHitHdlCollection &gghits_,
                   snemo::datamodel::tracker_clustering_data &tcd_) {
-  snemo::datamodel::calibrated_data::tracker_hit_collection_type &gghits = gghits_;
+  snemo::datamodel::TrackerHitHdlCollection &gghits = gghits_;
 
   // A collection of fake Geiger hits:
   for (int i = 0; i < 9; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
-        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::TrackerHitHdl hgghit(new snemo::datamodel::calibrated_tracker_hit);
     snemo::datamodel::calibrated_tracker_hit &gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_auxiliaries().store_flag("mock");
@@ -72,14 +71,13 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   htc0.grab().grab_auxiliaries().store_flag("mock");
   htc0.grab().set_cluster_id(0);
   for (int i = 0; i < (int)gghits.size(); i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
+    snemo::datamodel::TrackerHitHdl &gghit = gghits[i];
     tc0.get_hits().push_back(gghit);
   }
 
   // Another fake track:
   for (int i = 0; i < 6; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
-        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::TrackerHitHdl hgghit(new snemo::datamodel::calibrated_tracker_hit);
     snemo::datamodel::calibrated_tracker_hit &gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_auxiliaries().store_flag("mock");
@@ -108,7 +106,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   htc1.grab().grab_auxiliaries().store_flag("mock");
   htc1.grab().set_cluster_id(1);
   for (int i = 0; i < (int)gghits.size(); i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
+    snemo::datamodel::TrackerHitHdl &gghit = gghits[i];
     if (gghit->get_auxiliaries().has_key("cluster_id")) {
       if (gghit->get_auxiliaries().fetch_integer("cluster_id") == 1) {
         tc1.get_hits().push_back(gghit);
@@ -118,8 +116,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
 
   // Yet another fake track:
   for (int i = 0; i < 7; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
-        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::TrackerHitHdl hgghit(new snemo::datamodel::calibrated_tracker_hit);
     snemo::datamodel::calibrated_tracker_hit &gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_auxiliaries().store_flag("mock");
@@ -169,7 +166,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   htc2->grab_auxiliaries().store_flag("mock");
   htc2->set_cluster_id(2);
   for (int i = 0; i < (int)gghits.size(); i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type &gghit = gghits[i];
+    snemo::datamodel::TrackerHitHdl &gghit = gghits[i];
     if (gghit->get_auxiliaries().has_key("cluster_id")) {
       if (gghit->get_auxiliaries().fetch_integer("cluster_id") == 2) {
         tc2.get_hits().push_back(gghit);
@@ -179,8 +176,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
 
   // Add random fake hits
   for (int i = 0; i < 3; i++) {
-    snemo::datamodel::calibrated_data::tracker_hit_handle_type hgghit(
-        new snemo::datamodel::calibrated_tracker_hit);
+    snemo::datamodel::TrackerHitHdl hgghit(new snemo::datamodel::calibrated_tracker_hit);
     snemo::datamodel::calibrated_tracker_hit &gghit = hgghit.grab();
     gghit.set_hit_id(i);
     gghit.grab_auxiliaries().store_flag("mock");
@@ -220,7 +216,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
 }
 
 void display_event(const snemo::geometry::gg_locator &ggloc_,
-                   const snemo::datamodel::calibrated_data::tracker_hit_collection_type &gghits_,
+                   const snemo::datamodel::TrackerHitHdlCollection &gghits_,
                    const snemo::datamodel::tracker_clustering_data &tcd_,
                    const snemo::datamodel::tracker_trajectory_data &ttd_) {
   namespace sdm = snemo::datamodel;
@@ -228,7 +224,7 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
   tmp_file.set_remove_at_destroy(true);
   tmp_file.create("/tmp", ".yaca_drawer_");
 
-  const sdm::calibrated_data::tracker_hit_collection_type &gghits = gghits_;
+  const sdm::TrackerHitHdlCollection &gghits = gghits_;
 
   // No rotation
   geomtools::rotation_3d identity;
@@ -243,7 +239,7 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
 
   // Draw hits:
   for (int i = 0; i < (int)gghits.size(); i++) {
-    const sdm::calibrated_data::tracker_hit_handle_type &hgghit = gghits[i];
+    const sdm::TrackerHitHdl &hgghit = gghits[i];
     const sdm::calibrated_tracker_hit &gghit = hgghit.get();
     double x = gghit.get_x();
     double y = gghit.get_y();
@@ -275,7 +271,7 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
       if (i == 4) CC.set_color_code(geomtools::color::COLOR_ORANGE);
       if (i > 4) CC.set_color_code(geomtools::color::COLOR_BLUE);
       for (int j = 0; j < (int)clhits.size(); j++) {
-        const sdm::calibrated_data::tracker_hit_handle_type &hclhit = clhits[j];
+        const sdm::TrackerHitHdl &hclhit = clhits[j];
         const sdm::calibrated_tracker_hit &clhit = hclhit.get();
         double x = clhit.get_x();
         double y = clhit.get_y();
@@ -290,8 +286,7 @@ void display_event(const snemo::geometry::gg_locator &ggloc_,
     }
     CC.set_color_code(geomtools::color::COLOR_BLACK);
     for (int j = 0; j < (int)tcd_sol.get_unclustered_hits().size(); j++) {
-      const sdm::calibrated_data::tracker_hit_handle_type &huclhit =
-          tcd_sol.get_unclustered_hits()[j];
+      const sdm::TrackerHitHdl &huclhit = tcd_sol.get_unclustered_hits()[j];
       const sdm::calibrated_tracker_hit &uclhit = huclhit.get();
       double x = uclhit.get_x();
       double y = uclhit.get_y();

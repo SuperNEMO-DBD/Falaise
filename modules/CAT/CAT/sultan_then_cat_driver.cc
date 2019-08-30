@@ -662,10 +662,10 @@ int sultan_then_cat_driver::_process_algo(
   size_t ihit = 0;
 
   // Hit accounting :
-  std::map<int, sdm::calibrated_data::tracker_hit_handle_type> gg_hits_mapping;
+  std::map<int, sdm::TrackerHitHdl> gg_hits_mapping;
 
   // GG hit loop :
-  BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
+  BOOST_FOREACH (const sdm::TrackerHitHdl& gg_handle, gg_hits_) {
     // Skip NULL handle :
     if (!gg_handle.has_data()) {
       continue;
@@ -751,7 +751,7 @@ int sultan_then_cat_driver::_process_algo(
   // Take into account calo hits:
   _SULTAN_input_.calo_cells.clear();
   // Calo hit accounting :
-  std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+  std::map<int, sdm::CalorimeterHitHdl> calo_hits_mapping;
   std::map<int, int> gg_hits_status;
   bool conserve_clustering_from_removal_of_cells = true;
   if (_process_calo_hits_) {
@@ -762,8 +762,7 @@ int sultan_then_cat_driver::_process_algo(
     size_t jhit = 0;
 
     // CALO hit loop :
-    BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
-                   calo_hits_) {
+    BOOST_FOREACH (const sdm::CalorimeterHitHdl& calo_handle, calo_hits_) {
       // Skip NULL handle :
       if (!calo_handle.has_data()) {
         continue;

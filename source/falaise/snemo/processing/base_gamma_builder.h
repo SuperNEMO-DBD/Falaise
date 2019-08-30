@@ -68,7 +68,7 @@ namespace processing {
 class base_gamma_builder {
  public:
   /// Typedef to calibrated calorimeter hits
-  using hit_collection_type = snemo::datamodel::calibrated_data::calorimeter_hit_collection_type;
+  using hit_collection_type = snemo::datamodel::CalorimeterHitHdlCollection;
 
   /// Default constructor
   base_gamma_builder(const std::string &name = "anonymous");

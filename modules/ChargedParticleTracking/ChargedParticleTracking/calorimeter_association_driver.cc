@@ -75,13 +75,13 @@ calorimeter_association_driver::calorimeter_association_driver(const falaise::pr
 }
 
 void calorimeter_association_driver::process(
-    const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calorimeter_hits_,
+    const snemo::datamodel::CalorimeterHitHdlCollection& calorimeter_hits_,
     snemo::datamodel::particle_track& particle_) {
   this->_measure_matching_calorimeters_(calorimeter_hits_, particle_);
 }
 
 void calorimeter_association_driver::_measure_matching_calorimeters_(
-    const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calorimeter_hits_,
+    const snemo::datamodel::CalorimeterHitHdlCollection& calorimeter_hits_,
     snemo::datamodel::particle_track& particle_) {
   namespace snedm = snemo::datamodel;
 

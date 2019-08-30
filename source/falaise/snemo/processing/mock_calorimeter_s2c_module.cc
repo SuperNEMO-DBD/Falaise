@@ -104,7 +104,7 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
 // and build the final list of calibrated 'calorimeter' hits
 void mock_calorimeter_s2c_module::digitizeHits(
     const mctools::simulated_data& simdata,
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
+    snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
   uint32_t calibrated_calorimeter_hit_id = 0;
 
   // Loop over all 'calorimeter hit' categories:
@@ -204,7 +204,7 @@ void mock_calorimeter_s2c_module::digitizeHits(
 
 // Calibrate calorimeter hits from digitization informations:
 void mock_calorimeter_s2c_module::calibrateHits(
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
+    snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
   for (auto& theCaloHit : calohits) {
     // Setting category in order to get the correct energy resolution:
     // first recover the calorimeter category
@@ -231,7 +231,7 @@ void mock_calorimeter_s2c_module::calibrateHits(
 
 // Select calorimeter hit following trigger conditions
 void mock_calorimeter_s2c_module::triggerHits(
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
+    snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
   bool high_threshold = false;
   for (auto& theCaloHit : calohits) {
     // Setting category in order to get the correct trigger parameters:
@@ -266,7 +266,7 @@ void mock_calorimeter_s2c_module::triggerHits(
 
 void mock_calorimeter_s2c_module::process_impl(
     const mctools::simulated_data& simdata,
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits) {
+    snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
   digitizeHits(simdata, calohits);
   calibrateHits(calohits);
   triggerHits(calohits);

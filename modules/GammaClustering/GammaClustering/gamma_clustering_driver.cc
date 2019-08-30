@@ -166,8 +166,8 @@ int gamma_clustering_driver::_process_algo(
 
 void gamma_clustering_driver::_get_geometrical_neighbours(
     const snemo::datamodel::calibrated_calorimeter_hit& hit_,
-    const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_,
-    cluster_type& cluster_, gid_list_type& registered_calos_) const {
+    const snemo::datamodel::CalorimeterHitHdlCollection& hits_, cluster_type& cluster_,
+    gid_list_type& registered_calos_) const {
   const geomtools::geom_id& a_gid = hit_.get_geom_id();
 
   // If already clustered then skip it

@@ -23,12 +23,11 @@ bool calibrated_data::has_calibrated_calorimeter_hits() const {
   return !_calibrated_calorimeter_hits_.empty();
 }
 
-const calibrated_data::calorimeter_hit_collection_type&
-calibrated_data::calibrated_calorimeter_hits() const {
+const CalorimeterHitHdlCollection& calibrated_data::calibrated_calorimeter_hits() const {
   return _calibrated_calorimeter_hits_;
 }
 
-calibrated_data::calorimeter_hit_collection_type& calibrated_data::calibrated_calorimeter_hits() {
+CalorimeterHitHdlCollection& calibrated_data::calibrated_calorimeter_hits() {
   return _calibrated_calorimeter_hits_;
 }
 
@@ -36,12 +35,11 @@ bool calibrated_data::has_calibrated_tracker_hits() const {
   return !_calibrated_tracker_hits_.empty();
 }
 
-const calibrated_data::tracker_hit_collection_type& calibrated_data::calibrated_tracker_hits()
-    const {
+const TrackerHitHdlCollection& calibrated_data::calibrated_tracker_hits() const {
   return _calibrated_tracker_hits_;
 }
 
-calibrated_data::tracker_hit_collection_type& calibrated_data::calibrated_tracker_hits() {
+TrackerHitHdlCollection& calibrated_data::calibrated_tracker_hits() {
   return _calibrated_tracker_hits_;
 }
 

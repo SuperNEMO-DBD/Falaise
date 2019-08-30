@@ -202,7 +202,7 @@ int main(int argc_, char** argv_) {
     auto& TCD = ER.add<sdm::tracker_clustering_data>(snedm::labels::tracker_clustering_data());
 
     // Get a reference to the collection of calibrated Geiger hits from the 'CD' bank :
-    sdm::calibrated_data::tracker_hit_collection_type& gg_hits = CD.calibrated_tracker_hits();
+    sdm::TrackerHitHdlCollection& gg_hits = CD.calibrated_tracker_hits();
 
     // Create a handle on some tracker cluster :
     sdm::TrackerClusterHdl hTC0(new sdm::tracker_cluster);

@@ -125,7 +125,7 @@ void calorimeter_hit_renderer::push_calibrated_hits() {
     return;
   }
 
-  const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& cc_collection =
+  const snemo::datamodel::CalorimeterHitHdlCollection& cc_collection =
       calib_data.calibrated_calorimeter_hits();
 
   if (cc_collection.empty()) {

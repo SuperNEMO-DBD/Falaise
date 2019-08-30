@@ -257,11 +257,11 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   size_t ihit = 0;
 
   // Hit accounting :
-  std::map<int, sdm::calibrated_data::tracker_hit_handle_type> hits_mapping;
+  std::map<int, sdm::TrackerHitHdl> hits_mapping;
   std::map<int, int> hits_status;
 
   // GG hit loop :
-  BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
+  BOOST_FOREACH (const sdm::TrackerHitHdl& gg_handle, gg_hits_) {
     // Skip NULL handle :
     if (!gg_handle) {
       continue;
@@ -344,7 +344,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   // Take into account calo hits:
   _CAT_input_.calo_cells.clear();
   // Calo hit accounting :
-  std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+  std::map<int, sdm::CalorimeterHitHdl> calo_hits_mapping;
   if (_process_calo_hits_) {
     if (_CAT_input_.calo_cells.capacity() < calo_hits_.size()) {
       _CAT_input_.calo_cells.reserve(calo_hits_.size());
@@ -353,8 +353,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     size_t jhit = 0;
 
     // CALO hit loop :
-    BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
-                   calo_hits_) {
+    BOOST_FOREACH (const sdm::CalorimeterHitHdl& calo_handle, calo_hits_) {
       // Skip NULL handle :
       if (!calo_handle.has_data()) {
         continue;

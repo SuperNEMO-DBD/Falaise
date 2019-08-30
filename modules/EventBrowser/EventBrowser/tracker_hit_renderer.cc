@@ -186,7 +186,7 @@ void tracker_hit_renderer::push_calibrated_hits() {
     return;
   }
 
-  const snemo::datamodel::calibrated_data::tracker_hit_collection_type &ct_collection =
+  const snemo::datamodel::TrackerHitHdlCollection &ct_collection =
       calib_data.calibrated_tracker_hits();
 
   if (ct_collection.empty()) {

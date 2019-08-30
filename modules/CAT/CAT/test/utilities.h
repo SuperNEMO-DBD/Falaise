@@ -7,10 +7,10 @@
 #include <falaise/snemo/geometry/gg_locator.h>
 
 void generate_gg_hits(const snemo::geometry::gg_locator& ggloc_,
-                      snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_);
+                      snemo::datamodel::TrackerHitHdlCollection& gghits_);
 
 void display_event(const snemo::geometry::gg_locator& ggloc_,
-                   const snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits_,
+                   const snemo::datamodel::TrackerHitHdlCollection& gghits_,
                    const snemo::datamodel::tracker_clustering_data& tcd_);
 
 #endif  // FALAISE_CAT_PLUGIN_UTILITIES_H
