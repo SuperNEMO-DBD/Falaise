@@ -109,7 +109,7 @@ bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id
       continue;
     }
 
-    for (const auto &the_hit : the_cluster->get_hits()) {
+    for (const auto &the_hit : the_cluster->hits()) {
       if (!the_hit.has_data()) {
         continue;
       }
@@ -152,7 +152,7 @@ bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
         }
       }
       // Traverse all hits in the current cluster :
-      for (const auto &the_hit : the_cluster->get_hits()) {
+      for (const auto &the_hit : the_cluster->hits()) {
         if (the_hit.has_data()) {
           if (the_hit->get_hit_id() == hit_id_) {
             return true;
@@ -183,7 +183,7 @@ void tracker_clustering_solution::compute_hit_belonging_from_solution(
       continue;
     }
 
-    for (const auto &the_hit : the_cluster->get_hits()) {
+    for (const auto &the_hit : the_cluster->hits()) {
       if (!the_hit.has_data()) {
         continue;
       }
@@ -298,7 +298,7 @@ int tracker_clustering_solution::merge_two_solutions_in_ones(
       // But give it an unique Id:
       cl.set_cluster_id(max_cluster_id + icluster_source + 1);  // target_.grab_clusters().size());
       // Record the hit Ids in the check set for this source:
-      for (auto &iclustered_hit : cl.get_hits()) {
+      for (auto &iclustered_hit : cl.hits()) {
         int hit_id = iclustered_hit.get().get_hit_id();
         check_hits[source].insert(hit_id);
       }

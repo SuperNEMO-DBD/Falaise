@@ -92,8 +92,6 @@ int mock_tracker_clustering_driver::_process_algo(
   // Filling a unique tracker clustering solution:
   sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
   sdm::tracker_clustering_solution& tc_solution = htcs.grab();
-  tc_solution.get_auxiliaries().update_string(sdm::tracker_clustering_data::clusterizer_id_key(),
-                                              MTC_ID);
 
   // GG hit loop :
   sdm::calibrated_tracker_hit previous_gg_hit = gg_hits_.begin()->get();
@@ -122,19 +120,19 @@ int mock_tracker_clustering_driver::_process_algo(
     // Continue to fill the current track
     sdm::TrackerClusterHdl& cluster_handle = tc_solution.get_clusters().back();
     DT_LOG_TRACE(get_logging_priority(), "Current cluster id " << cluster_handle->get_cluster_id());
-    cluster_handle->get_hits().push_back(*igg);
+    cluster_handle->hits().push_back(*igg);
     // hits_ids.insert(a_gg_hit.get_hit_id());
     previous_gg_hit = a_gg_hit;
   }
 
   // Set a unique Id to this solution:
-  tc_solution.set_solution_id(clustering_.get_number_of_solutions());
+  tc_solution.set_solution_id(clustering_.size());
 
   if (get_logging_priority() >= datatools::logger::PRIO_TRACE)
     tc_solution.tree_dump(std::clog, "Mock Tracker Clustering solution: ", "DEVEL: ");
 
   // Add the solution as the default one:
-  clustering_.add_solution(htcs, true);
+  clustering_.push_back(htcs, true);
 
   return 0;
 }

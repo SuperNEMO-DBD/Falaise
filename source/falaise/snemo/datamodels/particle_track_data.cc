@@ -29,15 +29,14 @@ ParticleHdlCollection particle_track_data::getParticlesByCharge(const uint32_t c
   ParticleHdlCollection selection;
 
   for (const auto& a_particle : particles()) {
-    // const particle_track::handle_type& a_particle = *i;
-    const bool has_negative_charge = ((charge & particle_track::NEGATIVE) != 0u) &&
-                                     particle_track::particle_has_negative_charge(*a_particle);
-    const bool has_positive_charge = ((charge & particle_track::POSITIVE) != 0u) &&
-                                     particle_track::particle_has_positive_charge(*a_particle);
-    const bool has_undefined_charge = ((charge & particle_track::UNDEFINED) != 0u) &&
-                                      particle_track::particle_has_undefined_charge(*a_particle);
-    const bool has_neutral_charge = ((charge & particle_track::NEUTRAL) != 0u) &&
-                                    particle_track::particle_has_neutral_charge(*a_particle);
+    const bool has_negative_charge =
+        ((charge & particle_track::NEGATIVE) != 0u) && particle_has_negative_charge(*a_particle);
+    const bool has_positive_charge =
+        ((charge & particle_track::POSITIVE) != 0u) && particle_has_positive_charge(*a_particle);
+    const bool has_undefined_charge =
+        ((charge & particle_track::UNDEFINED) != 0u) && particle_has_undefined_charge(*a_particle);
+    const bool has_neutral_charge =
+        ((charge & particle_track::NEUTRAL) != 0u) && particle_has_neutral_charge(*a_particle);
 
     if (has_negative_charge || has_positive_charge || has_undefined_charge || has_neutral_charge) {
       selection.push_back(a_particle);
@@ -54,14 +53,11 @@ CalorimeterHitHdlCollection& particle_track_data::isolatedCalorimeters() {
   return _non_associated_calorimeters_;
 }
 
-const CalorimeterHitHdlCollection& particle_track_data::isolatedCalorimeters()
-    const {
+const CalorimeterHitHdlCollection& particle_track_data::isolatedCalorimeters() const {
   return _non_associated_calorimeters_;
 }
 
-void particle_track_data::clearIsolatedCalorimeters() {
-  _non_associated_calorimeters_.clear();
-}
+void particle_track_data::clearIsolatedCalorimeters() { _non_associated_calorimeters_.clear(); }
 
 void particle_track_data::clear() {
   _particles_.clear();

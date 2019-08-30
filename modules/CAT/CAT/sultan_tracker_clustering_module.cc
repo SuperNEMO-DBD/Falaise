@@ -148,12 +148,7 @@ dpp::base_module::process_status sultan_tracker_clustering_module::process(
 
   // Get or create output data
   auto& clusteringData = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
-
-  if (clusteringData.has_solutions()) {
-    DT_LOG_WARNING(get_logging_priority(),
-                   "Module " << get_name() << " resetting solutions in bank " << TCDTag_)
-    clusteringData.reset();
-  }
+  clusteringData.clear();
 
   // Main processing method :
   _process(calibratedData, clusteringData);

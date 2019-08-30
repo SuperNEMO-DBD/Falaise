@@ -85,7 +85,7 @@ void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit&
 
 void draw_gg_cluster(std::ostream& out_, const sdm::tracker_cluster& gg_cluster_,
                      bool enlarged_ = false, bool sep_ = true) {
-  for (const auto& i : gg_cluster_.get_hits()) {
+  for (const auto& i : gg_cluster_.hits()) {
     draw_gg_cluster_item(out_, i.get(), enlarged_);
   }
   if (sep_) {
@@ -209,16 +209,16 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.get_hits().push_back(gg_hits[0]);
-    TC0.get_hits().push_back(gg_hits[1]);
-    TC0.get_hits().push_back(gg_hits[2]);
-    TC0.get_hits().push_back(gg_hits[3]);
-    TC0.get_hits().push_back(gg_hits[4]);
-    TC0.get_hits().push_back(gg_hits[5]);
-    TC0.get_hits().push_back(gg_hits[6]);
-    TC0.get_hits().push_back(gg_hits[7]);
-    TC0.get_hits().push_back(gg_hits[8]);
-    TC0.get_hits().push_back(gg_hits[9]);
+    TC0.hits().push_back(gg_hits[0]);
+    TC0.hits().push_back(gg_hits[1]);
+    TC0.hits().push_back(gg_hits[2]);
+    TC0.hits().push_back(gg_hits[3]);
+    TC0.hits().push_back(gg_hits[4]);
+    TC0.hits().push_back(gg_hits[5]);
+    TC0.hits().push_back(gg_hits[6]);
+    TC0.hits().push_back(gg_hits[7]);
+    TC0.hits().push_back(gg_hits[8]);
+    TC0.hits().push_back(gg_hits[9]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -232,12 +232,12 @@ int main(int argc_, char** argv_) {
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.get_hits().push_back(gg_hits[10]);
-    TC1.get_hits().push_back(gg_hits[11]);
-    TC1.get_hits().push_back(gg_hits[12]);
-    TC1.get_hits().push_back(gg_hits[13]);
-    TC1.get_hits().push_back(gg_hits[14]);
-    TC1.get_hits().push_back(gg_hits[15]);
+    TC1.hits().push_back(gg_hits[10]);
+    TC1.hits().push_back(gg_hits[11]);
+    TC1.hits().push_back(gg_hits[12]);
+    TC1.hits().push_back(gg_hits[13]);
+    TC1.hits().push_back(gg_hits[14]);
+    TC1.hits().push_back(gg_hits[15]);
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -270,7 +270,7 @@ int main(int argc_, char** argv_) {
       draw_gg_clustering_solution(fvisu.grab(), TCS0, "unclustered_hits");
     }
 
-    TCD.add_solution(hTCS0, true);
+    TCD.push_back(hTCS0, true);
     TCD.tree_dump(std::clog, "Tracker clustering data('TCD') : ");
     std::clog << std::endl;
 

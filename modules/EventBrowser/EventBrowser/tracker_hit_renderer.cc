@@ -206,9 +206,7 @@ void tracker_hit_renderer::push_clustered_hits() {
   const auto &tracker_clustered_data =
       event.get<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
 
-  const snemo::datamodel::TrackerClusteringSolutionHdlCollection &cluster_solutions =
-      tracker_clustered_data.get_solutions();
-  for (const auto &cluster_solution : cluster_solutions) {
+  for (const auto &cluster_solution : tracker_clustered_data.solutions()) {
     // Get current tracker solution:
     const snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.get();
 
@@ -243,7 +241,7 @@ void tracker_hit_renderer::push_clustered_hits() {
       cluster_properties.update(browser_tracks::COLOR_FLAG, hex_str);
 
       // Get tracker hits stored in the current tracker cluster:
-      const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.get_hits();
+      const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.hits();
 
       // Make a gradient color starting from color_solution:
       for (const auto &hit : hits) {
@@ -364,7 +362,7 @@ void tracker_hit_renderer::push_fitted_tracks() {
         if (a_trajectory.has_cluster()) {
           const snemo::datamodel::tracker_cluster &a_cluster = a_trajectory.get_cluster();
           // Get tracker hits stored in the current tracker cluster:
-          const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.get_hits();
+          const snemo::datamodel::TrackerHitHdlCollection &hits = a_cluster.hits();
 
           for (const auto &igg : hits) {
             snemo::datamodel::calibrated_tracker_hit a_gg_hit_copy = igg.get();

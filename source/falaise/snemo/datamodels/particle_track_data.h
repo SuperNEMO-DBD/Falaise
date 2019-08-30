@@ -84,6 +84,7 @@ class particle_track_data : public datatools::i_serializable,
   ParticleHdlCollection _particles_;  //!< Collection of particle track handles
   CalorimeterHitHdlCollection
       _non_associated_calorimeters_;  //!< Collection of calorimeter hit handles
+
   datatools::properties
       _auxiliaries_;  //!< Auxiliary properties (retained for serialization back compatibility)
 

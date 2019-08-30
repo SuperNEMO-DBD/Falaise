@@ -54,11 +54,11 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.get_hits().push_back(hits[0]);
-    TC0.get_hits().push_back(hits[1]);
-    TC0.get_hits().push_back(hits[2]);
-    TC0.get_hits().push_back(hits[3]);
-    TC0.get_hits().push_back(hits[4]);
+    TC0.hits().push_back(hits[0]);
+    TC0.hits().push_back(hits[1]);
+    TC0.hits().push_back(hits[2]);
+    TC0.hits().push_back(hits[3]);
+    TC0.hits().push_back(hits[4]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -77,7 +77,7 @@ int main(/* int argc_, char ** argv_ */) {
       hLTP0.reset(LTP);
 
       sdm::tracker_trajectory TJ0;
-      TJ0.set_trajectory_id(0);
+      TJ0.set_id(0);
       TJ0.set_cluster_handle(hTC0);
       TJ0.set_pattern_handle(hLTP0);
       TJ0.grab_auxiliaries().store_flag("test");

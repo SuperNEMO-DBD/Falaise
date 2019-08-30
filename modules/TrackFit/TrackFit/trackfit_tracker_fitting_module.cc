@@ -140,8 +140,7 @@ void trackfit_tracker_fitting_module::_process(
     const snemo::datamodel::tracker_clustering_data& clusters,
     snemo::datamodel::tracker_trajectory_data& trajectories) {
   // Process isolated tracks using external resource:
-  if (!clusters.has_solutions()) {
-    DT_LOG_TRACE(get_logging_priority(), "No clustered solution to be fitted");
+  if (clusters.empty()) {
     return;
   }
 

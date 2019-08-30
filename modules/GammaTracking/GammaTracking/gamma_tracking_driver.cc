@@ -118,7 +118,7 @@ int gamma_tracking_driver::_process_algo(
   for (const auto& a_list : gamma_tracks) {
     auto hPT = datatools::make_handle<snemo::datamodel::particle_track>();
     hPT->set_track_id(ptd_.numberOfParticles());
-    hPT->set_charge(snemo::datamodel::particle_track::neutral);
+    hPT->set_charge(snemo::datamodel::particle_track::NEUTRAL);
     ptd_.insertParticle(hPT);
 
     // List of associated calorimeters

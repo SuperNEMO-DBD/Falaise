@@ -253,13 +253,13 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
     // Get color from charge
     size_t color = 0;
-    if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+    if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
       color = style_manager::get_instance().get_particle_color("gamma");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::negative) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::NEGATIVE) {
       color = style_manager::get_instance().get_particle_color("electron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::positive) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::POSITIVE) {
       color = style_manager::get_instance().get_particle_color("positron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::undefined) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::UNDEFINED) {
       color = style_manager::get_instance().get_particle_color("alpha");
     }
 
@@ -285,7 +285,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
       }  // end of vertex list
 
       // Gamma tracks
-      if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+      if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
         geomtools::polyline_type vtces;
         for (const auto &ivtx : vtx) {
           vtces.push_back(ivtx.get().get_position());

@@ -72,12 +72,6 @@ class calibrated_data : public datatools::i_serializable,
   /// Return the mutable collection of tracker hits
   TrackerHitHdlCollection& calibrated_tracker_hits();
 
-  /// Return the const container of properties
-  const datatools::properties& get_properties() const;
-
-  /// Return the mutable container of properties
-  datatools::properties& grab_properties();
-
   /// Reset
   void reset();
 
@@ -92,7 +86,9 @@ class calibrated_data : public datatools::i_serializable,
   CalorimeterHitHdlCollection
       _calibrated_calorimeter_hits_;                  //!< Collection of calibrated calorimeter hits
   TrackerHitHdlCollection _calibrated_tracker_hits_;  //!< Collection of calibrated tracker hits
-  datatools::properties _properties_;                 //!< Auxiliary properties
+
+  datatools::properties
+      _properties_;  //!< Auxiliary properties (only retained for serialization compat)
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

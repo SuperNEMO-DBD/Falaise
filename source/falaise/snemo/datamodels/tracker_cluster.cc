@@ -3,6 +3,13 @@
 // Ourselves:
 #include <falaise/snemo/datamodels/tracker_cluster.h>
 
+namespace {
+const std::string& delayed_cluster_flag() {
+  static const std::string _flag("delayed");
+  return _flag;
+}
+}  // namespace
+
 namespace snemo {
 
 namespace datamodel {
@@ -11,51 +18,33 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_cluster,
                                                   "snemo::datamodel::tracker_cluster")
 
-// static
-const std::string& tracker_cluster::delayed_cluster_flag() {
-  static const std::string _flag("delayed");
-  return _flag;
-}
-
 bool tracker_cluster::is_delayed() const {
-  return get_auxiliaries().has_flag(tracker_cluster::delayed_cluster_flag());
+  return get_auxiliaries().has_flag(delayed_cluster_flag());
 }
 
 bool tracker_cluster::is_prompt() const { return !is_delayed(); }
 
-void tracker_cluster::make_delayed() {
-  grab_auxiliaries().update_flag(tracker_cluster::delayed_cluster_flag());
-}
+void tracker_cluster::make_delayed() { grab_auxiliaries().update_flag(delayed_cluster_flag()); }
 
-void tracker_cluster::make_prompt() {
-  grab_auxiliaries().unset_flag(tracker_cluster::delayed_cluster_flag());
-}
-
-bool tracker_cluster::has_cluster_id() const { return has_hit_id(); }
+void tracker_cluster::make_prompt() { grab_auxiliaries().unset_flag(delayed_cluster_flag()); }
 
 int tracker_cluster::get_cluster_id() const { return get_hit_id(); }
 
 void tracker_cluster::set_cluster_id(int32_t cluster_id_) { set_hit_id(cluster_id_); }
 
-void tracker_cluster::invalidate_cluster_id() { invalidate_hit_id(); }
+TrackerHitHdlCollection& tracker_cluster::hits() { return _hits_; }
 
-TrackerHitHdlCollection& tracker_cluster::get_hits() { return _hits_; }
-
-const TrackerHitHdlCollection& tracker_cluster::get_hits() const { return _hits_; }
-
-void tracker_cluster::reset() { this->clear(); }
+const TrackerHitHdlCollection& tracker_cluster::hits() const { return _hits_; }
 
 void tracker_cluster::clear() {
   _hits_.clear();
   base_hit::clear();
 }
 
-unsigned int tracker_cluster::get_number_of_hits() const { return _hits_.size(); }
+size_t tracker_cluster::size() const { return _hits_.size(); }
 
-const calibrated_tracker_hit& tracker_cluster::get_hit(int i_) const {
-  DT_THROW_IF(i_ < 0 || i_ >= (int)_hits_.size(), std::range_error,
-              "Invalid clustered hit index (" << i_ << ") !");
-  return *(_hits_[i_]);
+const calibrated_tracker_hit& tracker_cluster::at(size_t index) const {
+  return *(_hits_.at(index));
 }
 
 void tracker_cluster::tree_dump(std::ostream& out_, const std::string& title_,

@@ -242,7 +242,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
 
   // Get cluster solutions:
   const snemo::datamodel::TrackerClusteringSolutionHdlCollection& cluster_solutions =
-      clustering_.get_solutions();
+      clustering_.solutions();
 
   for (const datatools::handle<snemo::datamodel::tracker_clustering_solution>& a_cluster_solution :
        cluster_solutions) {
@@ -258,7 +258,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
 
     for (const datatools::handle<snemo::datamodel::tracker_cluster>& a_cluster : clusters) {
       // Get tracker hits stored in the current tracker cluster:
-      const snemo::datamodel::TrackerHitHdlCollection& hits = a_cluster->get_hits();
+      const snemo::datamodel::TrackerHitHdlCollection& hits = a_cluster->hits();
 
       // Home made Geiger hit model for 'trackfit':
       TrackFit::gg_hits_col gg_hits;
@@ -319,13 +319,13 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
                                                     h_trajectory->grab_geom_id());
 
         // Create new 'tracker_pattern' handle:
-        // Needs to be polymorphic, check that make_handle supports this
+        // Needs to be polymorphic, check that make_handle supports this as make_unique does
         snemo::datamodel::TrajectoryPatternHdl h_pattern;
         auto htp = new snemo::datamodel::helix_trajectory_pattern;
         h_pattern.reset(htp);
 
         // Set cluster and pattern handle to tracker_trajectory:
-        h_trajectory->set_trajectory_id(a_trajectory_solution->get_trajectories().size());
+        h_trajectory->set_id(a_trajectory_solution->get_trajectories().size());
         h_trajectory->set_cluster_handle(a_cluster);
         h_trajectory->set_pattern_handle(h_pattern);
         h_trajectory->grab_auxiliaries().store_real("chi2", pow(a_fit_solution.chi, 2));
@@ -371,7 +371,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         h_pattern.reset(ltp);
 
         // Set cluster and pattern handle to tracker_trajectory:
-        h_trajectory->set_trajectory_id(a_trajectory_solution->get_trajectories().size());
+        h_trajectory->set_id(a_trajectory_solution->get_trajectories().size());
         h_trajectory->set_cluster_handle(a_cluster);
         h_trajectory->set_pattern_handle(h_pattern);
         h_trajectory->grab_auxiliaries().store_real("chi2", pow(a_fit_solution.chi, 2));

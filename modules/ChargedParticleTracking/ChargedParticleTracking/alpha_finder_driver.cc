@@ -98,7 +98,7 @@ void alpha_finder_driver::_find_delayed_unfitted_cluster_(
       return;
     }
 
-    const snedm::TrackerHitHdlCollection &delayed_gg_hits = a_delayed_cluster->get_hits();
+    const snedm::TrackerHitHdlCollection &delayed_gg_hits = a_delayed_cluster->hits();
 
     geomtools::vector_3d associated_vertex = geomtools::invalid_vector_3d();
 
@@ -192,7 +192,7 @@ void alpha_finder_driver::_find_short_track_(
         continue;
       }
 
-      const snedm::TrackerHitHdlCollection &prompt_gg_hits = a_prompt_cluster.get_hits();
+      const snedm::TrackerHitHdlCollection &prompt_gg_hits = a_prompt_cluster.hits();
       for (const datatools::handle<snedm::calibrated_tracker_hit> &a_prompt_gg_hit :
            prompt_gg_hits) {
         const geomtools::vector_2d a_prompt_position(a_prompt_gg_hit->get_x(),
@@ -273,7 +273,7 @@ void alpha_finder_driver::_find_short_track_(
       // to the particle track trajectory
       auto a_cluster = datatools::make_handle<snedm::tracker_cluster>();
       a_cluster->make_delayed();
-      auto &hits = a_cluster->get_hits();
+      auto &hits = a_cluster->hits();
       hits.push_back(*ihit);
 
       // Build a new particle track
@@ -318,7 +318,7 @@ void alpha_finder_driver::_build_alpha_particle_track_(
   // Add short alpha particle track
   auto a_short_alpha = datatools::make_handle<snedm::particle_track>();
   a_short_alpha->set_track_id(particle_track_data_.numberOfParticles());
-  a_short_alpha->set_charge(snedm::particle_track::undefined);
+  a_short_alpha->set_charge(snedm::particle_track::UNDEFINED);
 
   a_short_alpha->grab_auxiliaries().store_flag(alpha_finder_driver::short_alpha_key());
 

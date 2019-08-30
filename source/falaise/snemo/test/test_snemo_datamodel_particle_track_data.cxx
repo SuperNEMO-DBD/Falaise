@@ -31,11 +31,11 @@ int main(/*int argc_, char ** argv_*/) {
 
     datatools::handle<sdm::tracker_trajectory> hTJ0;
     hTJ0.reset(new sdm::tracker_trajectory);
-    hTJ0.grab().set_trajectory_id(0);
-    hTJ0.grab().set_pattern_handle(hLTP0);
-    hTJ0.grab().grab_auxiliaries().store_flag("test");
-    hTJ0.grab().grab_auxiliaries().store("chi2", 0.234);
-    hTJ0.get().tree_dump(std::clog, "Tracker trajectory : ");
+    hTJ0->set_id(0);
+    hTJ0->set_pattern_handle(hLTP0);
+    hTJ0->grab_auxiliaries().store_flag("test");
+    hTJ0->grab_auxiliaries().store("chi2", 0.234);
+    hTJ0->tree_dump(std::clog, "Tracker trajectory : ");
 
     // Create a handle of fake vertices :
     datatools::handle<geomtools::blur_spot> hV0;
@@ -70,7 +70,7 @@ int main(/*int argc_, char ** argv_*/) {
     datatools::handle<sdm::particle_track> hPT0;
     hPT0.reset(new sdm::particle_track);
     hPT0.grab().set_track_id(0);
-    hPT0.grab().set_charge(sdm::particle_track::positive);
+    hPT0.grab().set_charge(sdm::particle_track::POSITIVE);
     hPT0.grab().set_trajectory_handle(hTJ0);
     hPT0.grab().get_vertices().push_back(hV0);
     hPT0.grab().get_vertices().push_back(hV1);
@@ -86,7 +86,7 @@ int main(/*int argc_, char ** argv_*/) {
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any
-    sdm::ParticleHdlCollection electrons = PTD.getParticlesByCharge(sdm::particle_track::negative);
+    sdm::ParticleHdlCollection electrons = PTD.getParticlesByCharge(sdm::particle_track::NEGATIVE);
     std::clog << "Number of particles = " << PTD.numberOfParticles() << std::endl;
     std::clog << "Number of electrons = " << electrons.size() << std::endl;
 

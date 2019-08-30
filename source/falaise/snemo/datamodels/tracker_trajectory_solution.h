@@ -100,6 +100,9 @@ class tracker_trajectory_solution : public datatools::i_serializable,
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
   /*** Auxiliaries ***/
+  // These are marked as deprecated to warn/fail compilation if they are used
+  // NOT removed because the EventBrowser uses them, and is very tightly coupled
+  // so cannot be removed just yet...
   /// Return a mutable reference on the container of auxiliary properties
   ///\deprecated properties should not be used in core data types
   datatools::properties& get_auxiliaries() __attribute__((deprecated));

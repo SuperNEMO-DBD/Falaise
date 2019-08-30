@@ -799,8 +799,7 @@ void browser_tracks::_update_tracker_clustering_data() {
     item_tracker_cluster->SetTipText(tip_text.str().c_str());
   }
 
-  snemo::datamodel::TrackerClusteringSolutionHdlCollection &cluster_solutions = tcd.get_solutions();
-  for (auto &cluster_solution : cluster_solutions) {
+  for (auto &cluster_solution : tcd.solutions()) {
     // Get current tracker solution:
     snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.grab();
 
@@ -809,8 +808,8 @@ void browser_tracks::_update_tracker_clustering_data() {
     label_solution << "Solution #" << a_solution.get_solution_id() << " - "
                    << a_solution.get_unclustered_hits().size() << " unclustered hit"
                    << (a_solution.get_unclustered_hits().size() > 1 ? "s" : "");
-    if (tcd.has_default_solution()) {
-      if (&a_solution == &(tcd.get_default_solution())) {
+    if (tcd.has_default()) {
+      if (&a_solution == &(tcd.get_default())) {
         label_solution << " - default";
       }
     }
@@ -846,7 +845,7 @@ void browser_tracks::_update_tracker_clustering_data() {
       // Add subitem:
       std::ostringstream label_cluster;
       label_cluster << "Cluster #" << a_cluster.get_cluster_id() << " "
-                    << "(" << a_cluster.get_hits().size() << " hits) ";
+                    << "(" << a_cluster.size() << " hits) ";
       if (a_cluster.is_prompt()) {
         label_cluster << "- prompt";
       } else {
@@ -885,7 +884,7 @@ void browser_tracks::_update_tracker_clustering_data() {
                                 _get_colored_icon_("cluster", hex_str));
 
       // Get tracker hits stored in the current tracker cluster:
-      for (auto &a_gg_hit : a_cluster.get_hits()) {
+      for (auto &a_gg_hit : a_cluster.hits()) {
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
@@ -988,6 +987,8 @@ void browser_tracks::_update_tracker_trajectory_data() {
     item_solution->SetUserData((void *)(intptr_t)++icheck_id);
 
 // DONT couple data model to view
+// THIS IS THE ONLY PLACE PROPERTIES OF TRACKER_TRAJECTORY_SOLUTION ARE USED,
+// BUT IT'S SO TIGHTLY COUPLED I CANT FIX IT WITHOUT MAJOR SURGERY
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Get solution auxiliaries:
@@ -1208,16 +1209,16 @@ void browser_tracks::_update_particle_track_data() {
     size_t item_color = 0;
     std::ostringstream label_particle;
     label_particle << "Particle #" << a_particle.get_track_id();
-    if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+    if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
       label_particle << " - neutral charged particle";
       item_color = style_manager::get_instance().get_particle_color("gamma");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::negative) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::NEGATIVE) {
       label_particle << " - negative charged particle";
       item_color = style_manager::get_instance().get_particle_color("electron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::positive) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::POSITIVE) {
       label_particle << " - positive charged particle";
       item_color = style_manager::get_instance().get_particle_color("positron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::undefined) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::UNDEFINED) {
       label_particle << " - undefined charged particle";
       item_color = style_manager::get_instance().get_particle_color("alpha");
     }

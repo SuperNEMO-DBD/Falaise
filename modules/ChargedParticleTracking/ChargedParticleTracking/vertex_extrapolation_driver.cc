@@ -422,7 +422,7 @@ void vertex_extrapolation_driver::_check_vertices_(
   _use_vertices_[snedm::particle_track::vertex_on_gamma_veto_label()] = false;
 
   const snedm::tracker_cluster &a_cluster = trajectory_.get_cluster();
-  const snedm::TrackerHitHdlCollection &the_hits = a_cluster.get_hits();
+  const snedm::TrackerHitHdlCollection &the_hits = a_cluster.hits();
   for (const datatools::handle<snedm::calibrated_tracker_hit> a_hit : the_hits) {
     const geomtools::geom_id &a_gid = a_hit->get_geom_id();
 

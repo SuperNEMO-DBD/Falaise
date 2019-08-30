@@ -897,13 +897,10 @@ int sultan_then_cat_driver::_process_algo(
 
   for (const auto& ts : tss) {
     // Add a new solution :
-    sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
-    clustering_.add_solution(htcs, true);
-    clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
-    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.get_auxiliaries().update_string(
-        sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_THEN_CAT_ID);
-
+    auto htcs = datatools::make_handle<sdm::TrackerClusteringSolution>();
+    clustering_.push_back(htcs, true);
+    clustering_.get_default().set_solution_id(clustering_.size() - 1);
+    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default();
     clustering_solution.get_auxiliaries().update_string("TRACKER", "CAT");
 
     // Analyse the sequentiator output :
@@ -1161,7 +1158,7 @@ int sultan_then_cat_driver::_process_algo(
         for (int i = 0; i < (int)seqsz; i++) {
           const ct::node& a_node = a_sequence.nodes()[i];
           int hit_id = a_node.c().id();
-          cluster_handle->get_hits().push_back(gg_hits_mapping[hit_id]);
+          cluster_handle->hits().push_back(gg_hits_mapping[hit_id]);
           gg_hits_status[hit_id] = 1;
 
           const double xt = a_node.ep().x().value();

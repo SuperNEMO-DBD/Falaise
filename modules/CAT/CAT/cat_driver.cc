@@ -457,12 +457,10 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
       ihs.second = 0;
     }
 
-    sdm::TrackerClusteringSolutionHdl htcs(new sdm::tracker_clustering_solution);
-    clustering_.add_solution(htcs, true);
-    clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
-    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.get_auxiliaries().update_string(
-        sdm::tracker_clustering_data::clusterizer_id_key(), CAT_ID);
+    auto htcs = datatools::make_handle<sdm::TrackerClusteringSolution>();
+    clustering_.push_back(htcs, true);
+    clustering_.get_default().set_solution_id(clustering_.size() - 1);
+    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default();
 
     // Analyse the sequentiator output :
     const std::vector<CAT::topology::sequence>& the_sequences = iscenario.sequences();
@@ -672,7 +670,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         for (int i = 0; i < (int)seqsz; i++) {
           const CAT::topology::node& a_node = a_sequence.nodes()[i];
           const int hit_id = a_node.c().id();
-          cluster_handle->get_hits().push_back(hits_mapping[hit_id]);
+          cluster_handle->hits().push_back(hits_mapping[hit_id]);
           hits_status[hit_id] = 1;
 
           if (_store_result_as_properties_) {

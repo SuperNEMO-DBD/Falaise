@@ -204,11 +204,11 @@ dpp::base_module::process_status mock_tracker_clustering_module::process(
     ptr_cluster_data = &(data_record_.grab<snemo::datamodel::tracker_clustering_data>(_TCD_label_));
   }
   snemo::datamodel::tracker_clustering_data& the_clustering_data = *ptr_cluster_data;
-  if (the_clustering_data.has_solutions()) {
+  if (!the_clustering_data.empty()) {
     DT_THROW_IF(abort_at_former_output, std::logic_error,
                 "Already has processed tracker clustering data !");
     if (!preserve_former_output) {
-      the_clustering_data.reset();
+      the_clustering_data.clear();
     }
   }
 
@@ -285,8 +285,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
         .set_long_description(
             "This is the name of the bank to be used as   \n"
             "the sink of output clusters of tracker hits. \n")
-        .set_default_value_string(
-            snedm::labels::tracker_clustering_data())
+        .set_default_value_string(snedm::labels::tracker_clustering_data())
         .add_example(
             "Use an alternative name for the   \n"
             "'tracker clustering data' bank::  \n"

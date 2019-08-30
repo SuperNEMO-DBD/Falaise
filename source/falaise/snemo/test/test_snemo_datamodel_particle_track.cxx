@@ -30,11 +30,11 @@ int main(/* int argc_, char ** argv_ */) {
 
     datatools::handle<sdm::tracker_trajectory> hTJ0;
     hTJ0.reset(new sdm::tracker_trajectory);
-    hTJ0.grab().set_trajectory_id(0);
-    hTJ0.grab().set_pattern_handle(hLTP0);
-    hTJ0.grab().grab_auxiliaries().store_flag("test");
-    hTJ0.grab().grab_auxiliaries().store("chi2", 0.234);
-    hTJ0.get().tree_dump(std::clog, "Tracker trajectory : ");
+    hTJ0->set_id(0);
+    hTJ0->set_pattern_handle(hLTP0);
+    hTJ0->grab_auxiliaries().store_flag("test");
+    hTJ0->grab_auxiliaries().store("chi2", 0.234);
+    hTJ0->tree_dump(std::clog, "Tracker trajectory : ");
 
     // Create a handle of fake vertices :
     datatools::handle<geomtools::blur_spot> hV0;
@@ -69,7 +69,7 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::particle_track PT0;
     PT0.set_track_id(0);
     PT0.set_trajectory_handle(hTJ0);
-    PT0.set_charge(sdm::particle_track::positive);
+    PT0.set_charge(sdm::particle_track::POSITIVE);
     PT0.get_vertices().push_back(hV0);
     PT0.get_vertices().push_back(hV1);
     PT0.grab_auxiliaries().store_flag("fake_electron");

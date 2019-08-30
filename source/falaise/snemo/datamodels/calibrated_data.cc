@@ -43,10 +43,6 @@ TrackerHitHdlCollection& calibrated_data::calibrated_tracker_hits() {
   return _calibrated_tracker_hits_;
 }
 
-const datatools::properties& calibrated_data::get_properties() const { return _properties_; }
-
-datatools::properties& calibrated_data::grab_properties() { return _properties_; }
-
 void calibrated_data::reset_calibrated_calorimeter_hits() { _calibrated_calorimeter_hits_.clear(); }
 
 void calibrated_data::reset_calibrated_tracker_hits() { _calibrated_tracker_hits_.clear(); }
@@ -63,21 +59,6 @@ void calibrated_data::tree_dump(std::ostream& out_, const std::string& title_,
                                 const std::string& indent_, bool inherit_) const {
   if (!title_.empty()) {
     out_ << indent_ << title_ << std::endl;
-  }
-
-  // Properties:
-  {
-    out_ << indent_ << datatools::i_tree_dumpable::tag << "Properties : ";
-    if (_properties_.empty()) {
-      out_ << "<empty>";
-    }
-    out_ << std::endl;
-    {
-      std::ostringstream indent_oss;
-      indent_oss << indent_;
-      indent_oss << datatools::i_tree_dumpable::skip_tag;
-      _properties_.tree_dump(out_, "", indent_oss.str());
-    }
   }
 
   // Calibrated calorimeter hits:

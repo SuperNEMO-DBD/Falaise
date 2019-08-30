@@ -156,14 +156,14 @@ void display_event(const snemo::geometry::gg_locator& ggloc_,
                                        hit_pos + geomtools::vector_3d(0, 0, -ez));
   }
 
-  if (tcd_.has_default_solution()) {
-    const sdm::tracker_clustering_solution& tcd_sol = tcd_.get_default_solution();
+  if (tcd_.has_default()) {
+    const sdm::tracker_clustering_solution& tcd_sol = tcd_.get_default();
     tcd_sol.tree_dump(std::cerr, "Clustering solution: ", "DEVEL: ");
     for (int i = 0; i < (int)tcd_sol.get_clusters().size(); i++) {
       const sdm::TrackerClusterHdl& hcluster = tcd_sol.get_clusters()[i];
       const sdm::tracker_cluster& cluster = hcluster.get();
       // cluster.tree_dump(std::cerr, "Cluster: ", "DEVEL: ");
-      const sdm::TrackerHitHdlCollection& clhits = cluster.get_hits();
+      const sdm::TrackerHitHdlCollection& clhits = cluster.hits();
       if (i == 0) CC.set_color_code(geomtools::color::COLOR_RED);
       if (i == 1) CC.set_color_code(geomtools::color::COLOR_GREEN);
       if (i == 2) CC.set_color_code(geomtools::color::COLOR_MAGENTA);

@@ -115,7 +115,7 @@ int gamma_clustering_driver::_process_algo(
     auto hPT = datatools::make_handle<snemo::datamodel::particle_track>();
     ptd_.insertParticle(hPT);
     hPT->set_track_id(ptd_.numberOfParticles());
-    hPT->set_charge(snemo::datamodel::particle_track::neutral);
+    hPT->set_charge(snemo::datamodel::particle_track::NEUTRAL);
 
     for (const auto& j : a_cluster) {
       const snemo::datamodel::calibrated_calorimeter_hit& a_calo_hit = *(j.second);

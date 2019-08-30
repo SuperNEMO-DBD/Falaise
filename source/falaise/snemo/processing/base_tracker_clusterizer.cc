@@ -23,6 +23,34 @@
 #include <falaise/snemo/geometry/locator_helpers.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 
+namespace {
+// These are used to mark properties, but ARE NOT NEEDED/USED ELSEWHERE, so to be removed
+const std::string &prompt_key() {
+  static const std::string _key("prompt");
+  return _key;
+}
+
+// static
+const std::string &delayed_key() {
+  static const std::string _key("delayed");
+  return _key;
+}
+
+// static
+const std::string &delayed_id_key() {
+  static const std::string _key("delayed.id");
+  return _key;
+}
+
+// static
+const std::string &clusterizer_id_key() {
+  static const std::string _key("clusterizer.id");
+  return _key;
+}
+// ----- ABOVE TO BE MOVED -----
+
+}  // namespace
+
 namespace snemo {
 
 namespace processing {
@@ -196,10 +224,10 @@ void base_tracker_clusterizer::_post_process_collect_unclustered_hits(
   namespace snedm = snemo::datamodel;
 
   for (datatools::handle<snedm::tracker_clustering_solution> &the_solution :
-       clustering_.get_solutions()) {
+       clustering_.solutions()) {
     std::set<int> clustered_hit_ids;
     for (datatools::handle<snedm::tracker_cluster> &the_cluster : the_solution->get_clusters()) {
-      for (datatools::handle<snedm::calibrated_tracker_hit> &the_hit : the_cluster->get_hits()) {
+      for (datatools::handle<snedm::calibrated_tracker_hit> &the_hit : the_cluster->hits()) {
         clustered_hit_ids.insert(the_hit->get_hit_id());
       }
     }
@@ -232,7 +260,7 @@ int base_tracker_clusterizer::process(
               "Clusterizer '" << id_ << "' is not initialized !");
   _clear_working_arrays();
 
-  clustering_.invalidate_solutions();
+  clustering_.clear();
 
   // Run pre-processing based on time-coincidence to determine what are prompt hits,
   // what are candidate clusters of delayed hits :
@@ -264,32 +292,25 @@ int base_tracker_clusterizer::process(
       // In this case, only one clustering algorithm has been performed on
       // only one side of the tracking chamber or on both sides in a single shot:
       snedm::tracker_clustering_data &prompt_cd = prompt_work_clusterings[0];
-      clustering_.get_solutions().reserve(prompt_cd.get_number_of_solutions());
+      clustering_.solutions().reserve(prompt_cd.size());
 
-      for (size_t isol = 0; isol < prompt_cd.get_number_of_solutions(); isol++) {
+      for (size_t isol = 0; isol < prompt_cd.size(); isol++) {
         auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
         h_tc_sol->set_solution_id(isol);
-        h_tc_sol->get_auxiliaries().store_flag(snedm::tracker_clustering_data::prompt_key());
-        const snedm::tracker_clustering_solution &prompt_sol = prompt_cd.get_solution(isol);
+        h_tc_sol->get_auxiliaries().store_flag(prompt_key());
+        const snedm::tracker_clustering_solution &prompt_sol = prompt_cd.at(isol);
         snedm::tracker_clustering_solution::copy_one_solution_in_one(prompt_sol, *h_tc_sol);
+        h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
 
-        if (prompt_sol.get_auxiliaries().has_key(
-                snedm::tracker_clustering_data::clusterizer_id_key())) {
-          h_tc_sol->get_auxiliaries().store_string(
-              snedm::tracker_clustering_data::clusterizer_id_key(),
-              prompt_sol.get_auxiliaries().fetch_string(
-                  snedm::tracker_clustering_data::clusterizer_id_key()));
-        }
-
-        clustering_.add_solution(h_tc_sol);
+        clustering_.push_back(h_tc_sol);
       }
     } else if (promptClusters_.size() == 2) {
       // We merge the two clusterings in as many as solutions are needed to take into
       // account the combinatory with both sides of the source:
       snedm::tracker_clustering_data &prompt_cd0 = prompt_work_clusterings[0];
       snedm::tracker_clustering_data &prompt_cd1 = prompt_work_clusterings[1];
-      unsigned int nb_prompt_sol0 = prompt_cd0.get_number_of_solutions();
-      unsigned int nb_prompt_sol1 = prompt_cd1.get_number_of_solutions();
+      unsigned int nb_prompt_sol0 = prompt_cd0.size();
+      unsigned int nb_prompt_sol1 = prompt_cd1.size();
       unsigned int nb_sols = nb_prompt_sol0 * nb_prompt_sol1;
 
       // Build all combinaisons of solutions from solutions found from both sides
@@ -297,22 +318,16 @@ int base_tracker_clusterizer::process(
       for (size_t isol = 0; isol < nb_sols; ++isol) {
         auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
         h_tc_sol->set_solution_id(isol);
-        h_tc_sol->get_auxiliaries().store_flag(snedm::tracker_clustering_data::prompt_key());
+        h_tc_sol->get_auxiliaries().store_flag(prompt_key());
         int isol0 = isol % nb_prompt_sol0;
         int isol1 = isol / nb_prompt_sol0;
-        const snedm::tracker_clustering_solution &prompt_sol0 = prompt_cd0.get_solution(isol0);
-        const snedm::tracker_clustering_solution &prompt_sol1 = prompt_cd1.get_solution(isol1);
+        const snedm::tracker_clustering_solution &prompt_sol0 = prompt_cd0.at(isol0);
+        const snedm::tracker_clustering_solution &prompt_sol1 = prompt_cd1.at(isol1);
         snedm::tracker_clustering_solution::merge_two_solutions_in_ones(prompt_sol0, prompt_sol1,
                                                                         *h_tc_sol);
-        if (prompt_sol0.get_auxiliaries().has_key(
-                snedm::tracker_clustering_data::clusterizer_id_key())) {
-          h_tc_sol->get_auxiliaries().store_string(
-              snedm::tracker_clustering_data::clusterizer_id_key(),
-              prompt_sol0.get_auxiliaries().fetch_string(
-                  snedm::tracker_clustering_data::clusterizer_id_key()));
-        }
 
-        clustering_.add_solution(h_tc_sol);
+        h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
+        clustering_.push_back(h_tc_sol);
       }
 
     } else {
@@ -341,45 +356,37 @@ int base_tracker_clusterizer::process(
     for (size_t idelayed_clustering = 0; idelayed_clustering < delayed_work_clusterings.size();
          idelayed_clustering++) {
       snedm::tracker_clustering_data &delayed_cd = delayed_work_clusterings[idelayed_clustering];
-      for (size_t idelayed_sol = 0; idelayed_sol < delayed_cd.get_number_of_solutions();
-           idelayed_sol++) {
+      for (size_t idelayed_sol = 0; idelayed_sol < delayed_cd.size(); idelayed_sol++) {
         // Extract the solution from the clustering result:
-        const snedm::tracker_clustering_solution &delayed_sol =
-            delayed_cd.get_solution(idelayed_sol);
+        const snedm::tracker_clustering_solution &delayed_sol = delayed_cd.at(idelayed_sol);
         // Create a new clustering solution
         auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
         // Give it an unique solution id:
-        h_tc_sol->set_solution_id(clustering_.get_solutions().size() + idelayed_sol);
+        h_tc_sol->set_solution_id(clustering_.size() + idelayed_sol);
         // Record the delayed time-cluster unique Idd solution:
-        h_tc_sol->get_auxiliaries().store_integer(snedm::tracker_clustering_data::delayed_id_key(),
-                                                  idelayed_clustering);
+        h_tc_sol->get_auxiliaries().store_integer(delayed_id_key(), idelayed_clustering);
         snedm::tracker_clustering_solution::copy_one_solution_in_one(delayed_sol, *h_tc_sol);
-        if (delayed_sol.get_auxiliaries().has_key(
-                snedm::tracker_clustering_data::clusterizer_id_key())) {
-          h_tc_sol->get_auxiliaries().store_string(
-              snedm::tracker_clustering_data::clusterizer_id_key(),
-              delayed_sol.get_auxiliaries().fetch_string(
-                  snedm::tracker_clustering_data::clusterizer_id_key()));
-        }
-        // Flag it as a delayed clustering solution:
-        h_tc_sol->get_auxiliaries().store_flag(snedm::tracker_clustering_data::delayed_key());
+
+        h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
+       // Flag it as a delayed clustering solution:
+        h_tc_sol->get_auxiliaries().store_flag(delayed_key());
         for (datatools::handle<snedm::tracker_cluster> &icluster : h_tc_sol->get_clusters()) {
           icluster->make_delayed();
         }
 
-        clustering_.add_solution(h_tc_sol);
+        clustering_.push_back(h_tc_sol);
       }
     }
   }
 
   const bool merge_prompt_delayed_solutions = true;
   if (merge_prompt_delayed_solutions) {
-    snedm::TrackerClusteringSolutionHdlCollection &the_solutions = clustering_.get_solutions();
+    snedm::TrackerClusteringSolutionHdlCollection &the_solutions = clustering_.solutions();
     for (auto isol = the_solutions.begin(); isol != the_solutions.end(); ++isol) {
       snedm::tracker_clustering_solution &sol_prompt = *(*isol);
       datatools::properties &aux_prompt = sol_prompt.get_auxiliaries();
 
-      if (!aux_prompt.has_flag(snedm::tracker_clustering_data::prompt_key())) {
+      if (!aux_prompt.has_flag(prompt_key())) {
         continue;
       }
 
@@ -387,17 +394,17 @@ int base_tracker_clusterizer::process(
         snedm::tracker_clustering_solution &sol_delayed = *(*jsol);
         datatools::properties &aux_delayed = sol_delayed.get_auxiliaries();
 
-        if (!aux_delayed.has_flag(snedm::tracker_clustering_data::delayed_key())) {
+        if (!aux_delayed.has_flag(delayed_key())) {
           continue;
         }
 
-        aux_prompt.unset_flag(snedm::tracker_clustering_data::prompt_key());
+        aux_prompt.unset_flag(prompt_key());
         snedm::tracker_clustering_solution::copy_one_solution_in_one(sol_delayed, sol_prompt);
       }
     }
     // Delete all delayed solutions (use erase(remove_if)?)
     for (auto isol = the_solutions.begin(); isol != the_solutions.end(); /*++isol*/) {
-      if ((*isol)->get_auxiliaries().has_flag(snedm::tracker_clustering_data::delayed_key())) {
+      if ((*isol)->get_auxiliaries().has_flag(delayed_key())) {
         isol = the_solutions.erase(isol);
       } else {
         ++isol;

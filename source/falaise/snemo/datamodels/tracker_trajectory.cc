@@ -14,26 +14,18 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory,
                                                   "snemo::datamodel::tracker_trajectory")
 
-bool tracker_trajectory::has_trajectory_id() const { return has_hit_id(); }
+bool tracker_trajectory::has_id() const { return has_hit_id(); }
 
-int tracker_trajectory::get_trajectory_id() const { return get_hit_id(); }
+int tracker_trajectory::get_id() const { return get_hit_id(); }
 
-void tracker_trajectory::set_trajectory_id(int trajectory_id_) { set_hit_id(trajectory_id_); }
-
-void tracker_trajectory::invalidate_trajectory_id() { invalidate_hit_id(); }
+void tracker_trajectory::set_id(int trajectory_id_) { set_hit_id(trajectory_id_); }
 
 bool tracker_trajectory::has_cluster() const { return _cluster_.has_data(); }
 
 void tracker_trajectory::detach_cluster() { _cluster_.reset(); }
 
-TrackerClusterHdl& tracker_trajectory::get_cluster_handle() { return _cluster_; }
-
-const TrackerClusterHdl& tracker_trajectory::get_cluster_handle() const {
-  return _cluster_;
-}
-
-void tracker_trajectory::set_cluster_handle(const TrackerClusterHdl& cluster_handle_) {
-  _cluster_ = cluster_handle_;
+void tracker_trajectory::set_cluster_handle(const TrackerClusterHdl& cluster) {
+  _cluster_ = cluster;
 }
 
 tracker_cluster& tracker_trajectory::get_cluster() { return *_cluster_; }
@@ -42,21 +34,15 @@ const tracker_cluster& tracker_trajectory::get_cluster() const { return *_cluste
 
 bool tracker_trajectory::has_pattern() const { return _pattern_.has_data(); }
 
-void tracker_trajectory::set_pattern_handle(const TrajectoryPatternHdl& pattern_handle_) {
-  _pattern_ = pattern_handle_;
+void tracker_trajectory::set_pattern_handle(const TrajectoryPatternHdl& pattern) {
+  _pattern_ = pattern;
 }
 
 void tracker_trajectory::detach_pattern() { _pattern_.reset(); }
 
-TrajectoryPatternHdl& tracker_trajectory::get_pattern_handle() { return _pattern_; }
-
-const TrajectoryPatternHdl& tracker_trajectory::get_pattern_handle() const { return _pattern_; }
-
 TrajectoryPattern& tracker_trajectory::get_pattern() { return *_pattern_; }
 
 const TrajectoryPattern& tracker_trajectory::get_pattern() const { return *_pattern_; }
-
-void tracker_trajectory::reset() { this->clear(); }
 
 void tracker_trajectory::clear() {
   detach_pattern();
@@ -78,15 +64,15 @@ void tracker_trajectory::tree_dump(std::ostream& out_, const std::string& title_
   out_ << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::tag << "Pattern : ";
-  if (!has_pattern()) {
-    out_ << "<none>";
-  } else {
+  if (has_pattern()) {
     out_ << "'" << _pattern_->get_pattern_id() << "'";
+  } else {
+    out_ << "<none>";
   }
   out_ << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
-       << "Trajectory ID  : " << get_trajectory_id() << std::endl;
+       << "Trajectory ID  : " << get_id() << std::endl;
 }
 
 }  // end of namespace datamodel

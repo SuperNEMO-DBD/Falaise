@@ -7,24 +7,24 @@ namespace snemo {
 
 namespace datamodel {
 
-bool particle_track::particle_has(const particle_track& pt_, charge_type charge_) {
+bool particle_has(const Particle& pt_, Particle::charge_type charge_) {
   return pt_.get_charge() == charge_;
 }
 
-bool particle_track::particle_has_negative_charge(const particle_track& pt_) {
-  return particle_has(pt_, NEGATIVE);
+bool particle_has_negative_charge(const Particle& pt_) {
+  return particle_has(pt_, Particle::NEGATIVE);
 }
 
-bool particle_track::particle_has_positive_charge(const particle_track& pt_) {
-  return particle_has(pt_, POSITIVE);
+bool particle_has_positive_charge(const Particle& pt_) {
+  return particle_has(pt_, Particle::POSITIVE);
 }
 
-bool particle_track::particle_has_undefined_charge(const particle_track& pt_) {
-  return particle_has(pt_, UNDEFINED);
+bool particle_has_undefined_charge(const Particle& pt_) {
+  return particle_has(pt_, Particle::UNDEFINED);
 }
 
-bool particle_track::particle_has_neutral_charge(const particle_track& pt_) {
-  return particle_has(pt_, NEUTRAL);
+bool particle_has_neutral_charge(const Particle& pt_) {
+  return particle_has(pt_, Particle::NEUTRAL);
 }
 
 const std::string& particle_track::vertex_type_key() {
@@ -219,7 +219,7 @@ void particle_track::clear() {
   reset_associated_calorimeter_hits();
   detach_trajectory();
   base_hit::clear();
-  _charge_from_source_ = invalid;
+  _charge_from_source_ = UNDEFINED;
 }
 
 void particle_track::tree_dump(std::ostream& out_, const std::string& title_,
@@ -231,20 +231,20 @@ void particle_track::tree_dump(std::ostream& out_, const std::string& title_,
 
   out_ << indent_ << datatools::i_tree_dumpable::tag << "Trajectory : ";
   if (has_trajectory()) {
-    out_ << _trajectory_.get().get_trajectory_id();
+    out_ << _trajectory_->get_id();
   } else {
     out_ << "<No>";
   }
   out_ << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::tag << "Particle charge : ";
-  if (get_charge() == invalid) {
+  if (get_charge() == UNDEFINED) {
     out_ << "invalid";
-  } else if (get_charge() == negative) {
+  } else if (get_charge() == NEGATIVE) {
     out_ << "negative";
-  } else if (get_charge() == positive) {
+  } else if (get_charge() == POSITIVE) {
     out_ << "positive";
-  } else if (get_charge() == neutral) {
+  } else if (get_charge() == NEUTRAL) {
     out_ << "neutral";
   }
   out_ << std::endl;

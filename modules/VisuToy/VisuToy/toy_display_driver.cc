@@ -1440,14 +1440,14 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
             << TCD_label << "' but which is not a 'tracker_clustering_data' instance !");
     snemo::datamodel::tracker_clustering_data &the_tcd =
         get_current_event_record_().grab<snemo::datamodel::tracker_clustering_data>(TCD_label);
-    if (the_tcd.has_default_solution()) {
+    if (the_tcd.has_default()) {
       // Color context:
       geomtools::color::context &CC = geomtools::gnuplot_draw::color_context();
-      const snemo::datamodel::tracker_clustering_solution &the_tcs = the_tcd.get_default_solution();
+      const snemo::datamodel::tracker_clustering_solution &the_tcs = the_tcd.get_default();
       size_t cluster_count = 0;
       for (int i = 0; i < (int)the_tcs.get_clusters().size(); ++i) {
         const snemo::datamodel::tracker_cluster &the_cluster = the_tcs.get_clusters()[i].get();
-        const snemo::datamodel::TrackerHitHdlCollection &clhits = the_cluster.get_hits();
+        const snemo::datamodel::TrackerHitHdlCollection &clhits = the_cluster.hits();
         // int test1 = geomtools::color::COLOR_TEST;
         // geomtools::color::code_type code = geomtools::color:: COLOR_MAGENTA;
         // geomtools::color::COLOR_MAGENTA;

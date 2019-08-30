@@ -35,32 +35,11 @@ class particle_track : public geomtools::base_hit {
  public:
   /// Electric charge enumeration
   enum charge_type {
-    INVALID = 0x0,
-    invalid = INVALID,
     UNDEFINED = datatools::bit_mask::bit00,  /// Particle with undefined charge
-    undefined = UNDEFINED,
-    NEUTRAL = datatools::bit_mask::bit01,  /// Neutral particle
-    neutral = NEUTRAL,
-    POSITIVE = datatools::bit_mask::bit02,  /// Positively charged particle
-    positive = POSITIVE,
-    NEGATIVE = datatools::bit_mask::bit03,  /// Negatively charged particle
-    negative = NEGATIVE
+    NEUTRAL = datatools::bit_mask::bit01,    /// Neutral particle
+    POSITIVE = datatools::bit_mask::bit02,   /// Positively charged particle
+    NEGATIVE = datatools::bit_mask::bit03,   /// Negatively charged particle
   };
-
-  /// Check a particle charge type
-  static bool particle_has(const particle_track &, charge_type);
-
-  /// Check a particle is electron
-  static bool particle_has_negative_charge(const particle_track &);
-
-  /// Check a particle is positron
-  static bool particle_has_positive_charge(const particle_track &);
-
-  /// Check a particle is alpha
-  static bool particle_has_undefined_charge(const particle_track &);
-
-  /// Check a particle is gamma
-  static bool particle_has_neutral_charge(const particle_track &);
 
   /// Vertex flags
   enum vertex_type {
@@ -203,9 +182,9 @@ class particle_track : public geomtools::base_hit {
                          const std::string &indent_ = "", bool inherit_ = false) const;
 
  private:
-  charge_type _charge_from_source_{invalid};  //!< Particle charge
-  TrackerTrajectoryHdl _trajectory_{};        //!< Handle to the fitted trajectory
-  vertex_collection_type _vertices_{};        //!< Collection of vertices
+  charge_type _charge_from_source_{UNDEFINED};  //!< Particle charge
+  TrackerTrajectoryHdl _trajectory_{};          //!< Handle to the fitted trajectory
+  vertex_collection_type _vertices_{};          //!< Collection of vertices
   CalorimeterHitHdlCollection
       _associated_calorimeter_hits_{};  //!< Collection of associated calorimeter hits
 
@@ -218,6 +197,22 @@ using ParticleHdl = datatools::handle<Particle>;
 
 using ParticleCollection = std::vector<Particle>;
 using ParticleHdlCollection = std::vector<ParticleHdl>;
+
+// Free functions
+/// Check a particle charge type
+bool particle_has(const Particle &, Particle::charge_type);
+
+/// Check a particle is electron
+bool particle_has_negative_charge(const Particle &);
+
+/// Checck a particle is positron
+bool particle_has_positive_charge(const Particle &);
+
+/// Check a particle is alpha
+bool particle_has_undefined_charge(const Particle &);
+
+/// Check a particle is gamma
+bool particle_has_neutral_charge(const Particle &);
 
 }  // end of namespace datamodel
 

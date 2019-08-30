@@ -130,68 +130,38 @@ class tracker_clustering_data : public datatools::i_serializable,
                                 public datatools::i_tree_dumpable,
                                 public datatools::i_clear {
  public:
-  // s'Far as I can tell, these statics are ONLY used by base_tracker_clusterizer
-  // They therefore make zero sense here (more to the point DONT STORE IN PROPERTIES)
-  // ----- NOT RELEVANT TO THIS CLASS -----
-  /// Key for the boolean property associated to prompt clustering solutions
-  static const std::string& prompt_key();
-
-  /// Key for the boolean property associated to delayed clustering solutions
-  static const std::string& delayed_key();
-
-  /// Key for the integer property associated to delayed clustering solutions
-  static const std::string& delayed_id_key();
-
-  /// Key for the string Id property documenting the clustering algorithm used to build a given
-  /// clustering solution
-  static const std::string& clusterizer_id_key();
-  // ----- ABOVE ARE NOT RELEVANT TO THIS CLASS ----
-
   /// Check if there are some clustering solutions
-  bool has_solutions() const;
+  bool empty() const;
 
   /// Returns the number of solutions
-  size_t get_number_of_solutions() const;
+  size_t size() const;
 
   /// Add a clustering solution
-  void add_solution(const TrackerClusteringSolutionHdl& handle_,
-                    bool default_solution_ = false);
+  void push_back(const TrackerClusteringSolutionHdl& solution, bool isDefault = false);
 
   /// Return a non mutable reference to a clustering solution by index
-  const tracker_clustering_solution& get_solution(int i_) const;
+  const tracker_clustering_solution& at(size_t index) const;
 
   /// Reset the clustering solutions
-  void invalidate_solutions();
+  virtual void clear();
 
   /// Check if there is some default clustering solution
-  bool has_default_solution() const;
+  bool has_default() const;
 
   /// Return the non mutable reference to the collection of clustering solutions
-  const TrackerClusteringSolutionHdlCollection& get_solutions() const;
+  const TrackerClusteringSolutionHdlCollection& solutions() const;
 
   /// Return the mutable reference to the collection of clustering solutions
-  TrackerClusteringSolutionHdlCollection& get_solutions();
+  TrackerClusteringSolutionHdlCollection& solutions();
 
   /// Return a non mutable reference to the default clustering solution is any
-  const tracker_clustering_solution& get_default_solution() const;
+  const tracker_clustering_solution& get_default() const;
 
   /// Return a mutable reference to the default clustering solution is any
-  tracker_clustering_solution& get_default_solution();
-
-  /// Reset the default clustering solution is any
-  void invalidate_default_solution();
+  tracker_clustering_solution& get_default();
 
   /// Set the default clustering solution
-  void set_default_solution(int index_);
-
-  /// Reset the internals
-  void reset();
-
-  /// Check if the object has a valid internal structure
-  bool is_valid() const;
-
-  /// Clear the object
-  virtual void clear();
+  void set_default(size_t index);
 
   /// Smart print
   virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
@@ -201,6 +171,7 @@ class tracker_clustering_data : public datatools::i_serializable,
   TrackerClusteringSolutionHdlCollection
       _solutions_{};  //!< Collection of Geiger cluster solution handles
   TrackerClusteringSolutionHdl _default_solution_{};  //!< Handle to the default/best solution
+
   datatools::properties
       _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)
   DATATOOLS_SERIALIZATION_DECLARATION()
