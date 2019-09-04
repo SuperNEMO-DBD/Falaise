@@ -110,7 +110,7 @@ dpp::base_module::process_status mock_tracker_s2c_module::process(datatools::thi
 
     auto& currentCalData =
         snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
-    cal_tracker_hit_col_t& calTrackerHits = currentCalData.calibrated_tracker_hits();
+    cal_tracker_hit_col_t& calTrackerHits = currentCalData.tracker_hits();
 
     calTrackerHits = process_(simTrackerHits);
   }

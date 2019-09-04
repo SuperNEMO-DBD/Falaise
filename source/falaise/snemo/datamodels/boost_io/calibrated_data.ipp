@@ -28,8 +28,8 @@ void calibrated_data::serialize(Archive& ar, const unsigned int version) {
   if (version > 0) {
     ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
   }
-  ar& boost::serialization::make_nvp("calibrated_calorimeter_hits", _calibrated_calorimeter_hits_);
-  ar& boost::serialization::make_nvp("calibrated_tracker_hits", _calibrated_tracker_hits_);
+  ar& boost::serialization::make_nvp("calibrated_calorimeter_hits", calorimeter_hits_);
+  ar& boost::serialization::make_nvp("calibrated_tracker_hits", tracker_hits_);
   ar& boost::serialization::make_nvp("properties", _properties_);
 }
 

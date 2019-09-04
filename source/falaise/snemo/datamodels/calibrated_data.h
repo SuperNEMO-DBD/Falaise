@@ -45,35 +45,17 @@ class calibrated_data : public datatools::i_serializable,
                         public datatools::i_tree_dumpable,
                         public datatools::i_clear {
  public:
-  /// Check if there are some hits
-  bool has_data() const;
-
-  /// Check if there are some calibrated calorimeter hits
-  bool has_calibrated_calorimeter_hits() const;
-
-  /// Reset the collection of calorimeter hits
-  void reset_calibrated_calorimeter_hits();
-
   /// Return the const collection of calorimeter hits
-  const CalorimeterHitHdlCollection& calibrated_calorimeter_hits() const;
+  const CalorimeterHitHdlCollection& calorimeter_hits() const;
 
   /// Return the mutable collection of calorimeter hits
-  CalorimeterHitHdlCollection& calibrated_calorimeter_hits();
-
-  /// Check if there are some calibrated tracker hits
-  bool has_calibrated_tracker_hits() const;
-
-  /// Reset the collection of tracker hits
-  void reset_calibrated_tracker_hits();
+  CalorimeterHitHdlCollection& calorimeter_hits();
 
   /// Return the const collection of tracker hits
-  const TrackerHitHdlCollection& calibrated_tracker_hits() const;
+  const TrackerHitHdlCollection& tracker_hits() const;
 
   /// Return the mutable collection of tracker hits
-  TrackerHitHdlCollection& calibrated_tracker_hits();
-
-  /// Reset
-  void reset();
+  TrackerHitHdlCollection& tracker_hits();
 
   /// Clear attributes
   virtual void clear();
@@ -83,9 +65,8 @@ class calibrated_data : public datatools::i_serializable,
                          const std::string& indent_ = "", bool inherit_ = false) const;
 
  private:
-  CalorimeterHitHdlCollection
-      _calibrated_calorimeter_hits_;                  //!< Collection of calibrated calorimeter hits
-  TrackerHitHdlCollection _calibrated_tracker_hits_;  //!< Collection of calibrated tracker hits
+  CalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of calibrated calorimeter hits
+  TrackerHitHdlCollection tracker_hits_;          //!< Collection of calibrated tracker hits
 
   datatools::properties
       _properties_;  //!< Auxiliary properties (only retained for serialization compat)

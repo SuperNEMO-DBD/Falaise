@@ -92,10 +92,10 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
       snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
 
   // Always rewrite hits....
-  calibratedData.calibrated_calorimeter_hits().clear();
+  calibratedData.calorimeter_hits().clear();
 
   // Main processing method :
-  process_impl(simulatedData, calibratedData.calibrated_calorimeter_hits());
+  process_impl(simulatedData, calibratedData.calorimeter_hits());
 
   return dpp::base_module::PROCESS_SUCCESS;
 }

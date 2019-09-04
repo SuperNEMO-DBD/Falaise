@@ -159,8 +159,8 @@ void sultan_tracker_clustering_module::_process(
     const snemo::datamodel::calibrated_data& calib_data,
     snemo::datamodel::tracker_clustering_data& clustering_data) {
   // Process the clusterizer driver :
-  sultanAlgo_->process(calib_data.calibrated_tracker_hits(),
-                       calib_data.calibrated_calorimeter_hits(), clustering_data);
+  sultanAlgo_->process(calib_data.tracker_hits(),
+                       calib_data.calorimeter_hits(), clustering_data);
 }
 
 }  // end of namespace reconstruction

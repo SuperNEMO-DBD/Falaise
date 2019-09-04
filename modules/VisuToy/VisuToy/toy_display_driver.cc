@@ -1109,7 +1109,7 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated tracker hits:
     {
-      snemo::datamodel::TrackerHitHdlCollection &CTHC = the_cd.calibrated_tracker_hits();
+      snemo::datamodel::TrackerHitHdlCollection &CTHC = the_cd.tracker_hits();
       if (CTHC.size()) {
         // Normal hits :
         {
@@ -1294,7 +1294,7 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // Draw the calibrated calorimeter hits:
     if (setup_label == snemo_demo_label()) {
-      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.calorimeter";
         size_t hit_count = 0;
@@ -1373,7 +1373,7 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated muon trigger hits:
     if (setup_label == snemo_tc_label()) {
-      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.muon_trigger";
         size_t hit_count = 0;

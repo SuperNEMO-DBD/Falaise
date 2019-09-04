@@ -150,7 +150,7 @@ void charged_particle_tracking_module::_process(
 
   if (!tracker_trajectory_data_.has_default_solution()) {
     // Fill non associated calorimeter hits
-    for (const auto& chit : calibrated_data_.calibrated_calorimeter_hits()) {
+    for (const auto& chit : calibrated_data_.calorimeter_hits()) {
       particle_track_data_.isolatedCalorimeters().push_back(chit);
     }
     return;
@@ -186,7 +186,7 @@ void charged_particle_tracking_module::_process(
     }
     // Associate vertices to calorimeter hits
     if (CAAlgo_) {
-      CAAlgo_->process(calibrated_data_.calibrated_calorimeter_hits(), *hPT);
+      CAAlgo_->process(calibrated_data_.calorimeter_hits(), *hPT);
     }
   }
 
@@ -210,7 +210,7 @@ void charged_particle_tracking_module::_post_process(
     datatools::handle_predicate<snedm::calibrated_calorimeter_hit> pred_via_handle(pred_M2D);
 
     const snedm::CalorimeterHitHdlCollection& chits =
-        calibrated_data_.calibrated_calorimeter_hits();
+        calibrated_data_.calorimeter_hits();
     // The below might be better with copy_if and back_inserter?
     auto ihit = std::find_if(chits.begin(), chits.end(), pred_via_handle);
     while (ihit != chits.end()) {
@@ -222,7 +222,7 @@ void charged_particle_tracking_module::_post_process(
   // 2015/12/02 XG: Also look if the non associated calorimeters are
   // isolated i.e. without Geiger cells in front or not: tag them
   // consequently
-  const snedm::TrackerHitHdlCollection& thits = calibrated_data_.calibrated_tracker_hits();
+  const snedm::TrackerHitHdlCollection& thits = calibrated_data_.tracker_hits();
   snedm::CalorimeterHitHdlCollection& chits = particle_track_data_.isolatedCalorimeters();
 
   for (datatools::handle<snedm::calibrated_calorimeter_hit>& a_calo_hit : chits) {

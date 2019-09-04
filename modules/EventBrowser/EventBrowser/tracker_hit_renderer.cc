@@ -180,14 +180,7 @@ void tracker_hit_renderer::push_calibrated_hits() {
   const io::event_record &event = _server->get_event();
   const auto &calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
-  if (!calib_data.has_calibrated_tracker_hits()) {
-    DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
-                       "Event has no calibrated tracker hits");
-    return;
-  }
-
-  const snemo::datamodel::TrackerHitHdlCollection &ct_collection =
-      calib_data.calibrated_tracker_hits();
+  const snemo::datamodel::TrackerHitHdlCollection &ct_collection = calib_data.tracker_hits();
 
   if (ct_collection.empty()) {
     DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),

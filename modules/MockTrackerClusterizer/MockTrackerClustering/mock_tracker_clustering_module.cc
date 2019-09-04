@@ -225,14 +225,8 @@ dpp::base_module::process_status mock_tracker_clustering_module::process(
 void mock_tracker_clustering_module::_process(
     const snemo::datamodel::calibrated_data& calib_data_,
     snemo::datamodel::tracker_clustering_data& clustering_data_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
   // Process the clusterizer driver :
-  _driver_.get()->process(calib_data_.calibrated_tracker_hits(),
-                          calib_data_.calibrated_calorimeter_hits(), clustering_data_);
-
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
+  _driver_->process(calib_data_.tracker_hits(), calib_data_.calorimeter_hits(), clustering_data_);
 }
 
 }  // namespace reconstruction
