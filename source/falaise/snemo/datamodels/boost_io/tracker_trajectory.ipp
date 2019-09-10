@@ -27,9 +27,9 @@ namespace datamodel {
 template <class Archive>
 void tracker_trajectory::serialize(Archive& ar, const unsigned int /* version */) {
   ar& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-  ar& boost::serialization::make_nvp("cluster", _cluster_);
-  ar& boost::serialization::make_nvp("orphans", _orphans_);
-  ar& boost::serialization::make_nvp("pattern", _pattern_);
+  ar& boost::serialization::make_nvp("cluster", cluster_);
+  ar& boost::serialization::make_nvp("orphans", orphans_);
+  ar& boost::serialization::make_nvp("pattern", pattern_);
 }
 
 }  // end of namespace datamodel

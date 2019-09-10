@@ -65,8 +65,8 @@ class tracker_trajectory : public geomtools::base_hit {
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
   /// Detach the cluster
@@ -74,12 +74,12 @@ class tracker_trajectory : public geomtools::base_hit {
   /// Detach the pattern
   void detach_pattern();
 
-  TrackerClusterHdl _cluster_;     ///< Handle to the fitted cluster
-  TrajectoryPatternHdl _pattern_;  ///< Handle to a trajectory fitted pattern
+  TrackerClusterHdl cluster_;     ///< Handle to the fitted cluster
+  TrajectoryPatternHdl pattern_;  ///< Handle to a trajectory fitted pattern
 
   /// Collection of handles of calibrated tracker hit
   typedef TrackerHitHdlCollection orphans_collection_type;
-  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles (retained only
+  orphans_collection_type orphans_;  ///< Collection of orphan Geiger hit handles (retained only
                                       ///< for serialization back-compatibility)
 
   DATATOOLS_SERIALIZATION_DECLARATION()
