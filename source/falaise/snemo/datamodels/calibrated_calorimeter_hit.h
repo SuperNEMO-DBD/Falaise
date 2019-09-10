@@ -75,14 +75,14 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   void invalidate();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  double _energy_{datatools::invalid_real()};        //!< Energy associated to the hit
-  double _sigma_energy_{datatools::invalid_real()};  //!< Error on the energy associated to the hit
-  double _time_{datatools::invalid_real()};          //!< Time associated to the hit
-  double _sigma_time_{datatools::invalid_real()};    //!< Error on the time associated to the hit
+  double energy_{datatools::invalid_real()};        //!< Energy associated to the hit
+  double sigma_energy_{datatools::invalid_real()};  //!< Error on the energy associated to the hit
+  double time_{datatools::invalid_real()};          //!< Time associated to the hit
+  double sigma_time_{datatools::invalid_real()};    //!< Error on the time associated to the hit
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
