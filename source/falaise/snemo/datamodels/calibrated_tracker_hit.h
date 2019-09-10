@@ -114,7 +114,7 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   double get_anode_time() const;
 
   /// Interface to deal with trait bits
-  bool get_trait_bit(uint32_t mask_) const;
+  bool get_trait_bit(uint32_t trait) const;
 
   /// Check if the hit is marked as noisy
   bool is_noisy() const;
@@ -141,7 +141,7 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   double get_delayed_time_error() const;
 
   /// Set the hit as delayed and store its referece delayed time and associated error
-  void set_delayed_time(double ref_delayed_time_, double ref_delayed_time_error_ = 0.0);
+  void set_delayed_time(double time, double error = 0.0);
 
   /// Check if the hit is not marked as delayed
   bool is_prompt() const;
@@ -189,44 +189,39 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   virtual void clear();
 
   /// Smart print method
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool inherit = false) const;
 
-  /// Shortcut for the smart print method
-  void dump() const;
 
  protected:
-  void _set_trait_bit(bool value_, uint32_t mask_);
-
-  bool _get_trait_bit(uint32_t mask_) const;
+  void set_trait_bit(bool value, uint32_t mask);
 
  private:
-  uint32_t _traits_{0x0};  //!< Bitset for special traits
-  double _r_{
-      datatools::invalid_real()};  //!< Transverse drift distance within the cell coordinates system
-  double _sigma_r_{datatools::invalid_real()};  //!< Transverse drift distance error
-  double _z_{
+  uint32_t traits_{0x0};                       //!< Bitset for special traits
+  double r_{datatools::invalid_real()};        //!< Transverse drift distance
+  double sigma_r_{datatools::invalid_real()};  //!< Transverse drift distance error
+  double z_{
       datatools::invalid_real()};  //!< Longitudinal position within the cell coordinates system
-  double _sigma_z_{datatools::invalid_real()};  //!< Longitudinal position error
-  double _x_{datatools::invalid_real()};        //!< X position of the anode wire within the module
-                                                //!< coordinates system
-  double _y_{datatools::invalid_real()};        //!< Y position of the anode wire within the module
-                                                //!< coordinates system
-  double _delayed_time_{datatools::invalid_real()};        //!< Delayed reference time
-  double _delayed_time_error_{datatools::invalid_real()};  //!< Delayed reference time error
+  double sigma_z_{datatools::invalid_real()};  //!< Longitudinal position error
+  double x_{datatools::invalid_real()};        //!< X position of the anode wire within the module
+                                               //!< coordinates system
+  double y_{datatools::invalid_real()};        //!< Y position of the anode wire within the module
+                                               //!< coordinates system
+  double delayed_time_{datatools::invalid_real()};        //!< Delayed reference time
+  double delayed_time_error_{datatools::invalid_real()};  //!< Delayed reference time error
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 
 /// Functor that compares hits by delayed time
 struct compare_tracker_hit_by_delayed_time {
-  bool operator()(const calibrated_tracker_hit& hit_i_, const calibrated_tracker_hit& hit_j_) const;
+  bool operator()(const calibrated_tracker_hit& lhs, const calibrated_tracker_hit& rhs) const;
 };
 
 /// Alias for a handle on a calibrated tracker hit
-//typedef datatools::handle<calibrated_tracker_hit> handle_type;
+// typedef datatools::handle<calibrated_tracker_hit> handle_type;
 /// Alias for a collection of handles on calibrated tracker hits
-//typedef std::vector<handle_type> collection_type;
+// typedef std::vector<handle_type> collection_type;
 
 using TrackerHit = calibrated_tracker_hit;
 using TrackerHitCollection = std::vector<TrackerHit>;
