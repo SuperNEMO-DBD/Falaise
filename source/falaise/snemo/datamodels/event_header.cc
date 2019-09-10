@@ -10,88 +10,70 @@ namespace datamodel {
 // Serial tag for datatools::i_serializable interface :
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header, "snemo::datamodel::event_header")
 
-const datatools::event_id& event_header::get_id() const { return _id_; }
+const datatools::event_id& event_header::get_id() const { return id_; }
 
-datatools::event_id& event_header::get_id() { return _id_; }
+datatools::event_id& event_header::get_id() { return id_; }
 
-void event_header::set_id(const datatools::event_id& id_) {
-  _id_ = id_;
-}
+void event_header::set_id(const datatools::event_id& id) { id_ = id; }
 
-const datatools::properties& event_header::get_properties() const { return _properties_; }
+const datatools::properties& event_header::get_properties() const { return properties_; }
 
-datatools::properties& event_header::get_properties() { return _properties_; }
+datatools::properties& event_header::get_properties() { return properties_; }
 
-void event_header::set_properties(const datatools::properties& properties_) {
-  _properties_ = properties_;
-}
+void event_header::set_properties(const datatools::properties& pset) { properties_ = pset; }
 
-const snemo::datamodel::timestamp& event_header::get_timestamp() const { return _timestamp_; }
+const snemo::datamodel::timestamp& event_header::get_timestamp() const { return timestamp_; }
 
-snemo::datamodel::timestamp& event_header::get_timestamp() { return _timestamp_; }
+snemo::datamodel::timestamp& event_header::get_timestamp() { return timestamp_; }
 
-void event_header::set_timestamp(const snemo::datamodel::timestamp& timestamp_) {
-  _timestamp_ = timestamp_;
-}
+void event_header::set_timestamp(const snemo::datamodel::timestamp& ts) { timestamp_ = ts; }
 
-event_header::generation_type event_header::get_generation() const { return _generation_; }
+event_header::generation_type event_header::get_generation() const { return generation_; }
 
-void event_header::set_generation(generation_type generation_) {
-  _generation_ = generation_;
-}
+void event_header::set_generation(generation_type gen) { generation_ = gen; }
 
-bool event_header::is_real() const { return _generation_ == GENERATION_REAL; }
+bool event_header::is_real() const { return generation_ == GENERATION_REAL; }
 
-bool event_header::is_simulated() const { return _generation_ == GENERATION_SIMULATED; }
+bool event_header::is_simulated() const { return generation_ == GENERATION_SIMULATED; }
 
 void event_header::clear() {
-  _properties_.clear();
-  _timestamp_ = snemo::datamodel::timestamp{};
-  _generation_ = GENERATION_INVALID;
-  _id_.clear();
+  properties_.clear();
+  timestamp_ = snemo::datamodel::timestamp{};
+  generation_ = GENERATION_INVALID;
+  id_.clear();
 }
 
-void event_header::tree_dump(std::ostream& out_, const std::string& title_,
-                             const std::string& indent_, bool inherit_) const {
-  if (!title_.empty()) {
-    out_ << indent_ << title_ << std::endl;
+void event_header::tree_dump(std::ostream& out, const std::string& title, const std::string& indent,
+                             bool is_last) const {
+  if (!title.empty()) {
+    out << indent << title << std::endl;
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Id : " << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Id : " << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent_;
-    indent_oss << datatools::i_tree_dumpable::skip_tag;
-    _id_.tree_dump(out_, "", indent_oss.str());
+    indent_oss << indent << datatools::i_tree_dumpable::skip_tag;
+    id_.tree_dump(out, "", indent_oss.str());
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Timestamp : " << _timestamp_ << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Timestamp : " << timestamp_ << std::endl;
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Properties : ";
-  if (_properties_.empty()) {
-    out_ << "<empty>";
-  }
-  out_ << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "Properties : " << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent_;
-    indent_oss << datatools::i_tree_dumpable::skip_tag;
-    _properties_.tree_dump(out_, "", indent_oss.str());
+    indent_oss << indent << datatools::i_tree_dumpable::skip_tag;
+    properties_.tree_dump(out, "", indent_oss.str());
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
-       << "Generation : " << _generation_;
+  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last)
+      << "Generation : " << generation_;
   if (is_simulated()) {
-    out_ << ' ' << "[simulated]";
+    out << ' ' << "[simulated]";
   }
   if (is_real()) {
-    out_ << ' ' << "[real]";
+    out << ' ' << "[real]";
   }
-  out_ << std::endl;
-}
-
-void event_header::dump() const {
-  tree_dump(std::clog, event_header::SERIAL_TAG);
+  out << std::endl;
 }
 
 }  // end of namespace datamodel

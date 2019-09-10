@@ -88,17 +88,14 @@ class event_header : public datatools::i_serializable,
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
-                         const std::string &indent_ = "", bool inherit_ = false) const;
-
-  /// Basic print
-  void dump() const;
+  virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
+                         const std::string &indent = "", bool is_last = false) const;
 
  private:
-  datatools::event_id _id_{};                 //!< Run/Event ID
-  generation_type _generation_{GENERATION_INVALID};             //!< Generation flag
-  snemo::datamodel::timestamp _timestamp_{};  //!< Reference time of the event
-  datatools::properties _properties_{};       //!< Dictionary of properties
+  datatools::event_id id_{};                        //!< Run/Event ID
+  generation_type generation_{GENERATION_INVALID};  //!< Generation flag
+  snemo::datamodel::timestamp timestamp_{};         //!< Reference time of the event
+  datatools::properties properties_{};              //!< Dictionary of properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
