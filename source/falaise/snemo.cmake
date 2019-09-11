@@ -66,6 +66,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/service_traits.h
   snemo/services/service_handle.h
   snemo/services/geometry.h
+  snemo/services/hello_world.h
   snemo/services/histogram.h
 
   snemo/cuts/event_header_cut.h
@@ -126,6 +127,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_display.cc
 
   snemo/services/services.cc
+  snemo/services/hello_world.cc
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
@@ -144,6 +146,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_event_record.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
+  snemo/test/test_service_external.cxx
   snemo/test/test_snemo_datamodel_event_header.cxx
   snemo/test/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
   snemo/test/test_snemo_datamodel_calibrated_tracker_hit.cxx

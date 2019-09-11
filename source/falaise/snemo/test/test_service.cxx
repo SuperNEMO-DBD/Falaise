@@ -3,6 +3,7 @@
 
 #include "falaise/snemo/services/geometry.h"
 #include "falaise/snemo/services/histogram.h"
+#include "falaise/snemo/services/hello_world.h"
 #include "falaise/snemo/services/service_handle.h"
 
 #include "bayeux/datatools/multi_properties.h"
@@ -37,6 +38,7 @@ TEST_CASE("Construction from good services works", "") {
       .store_path("manager.configuration_file",
                   "@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
   config.add_section("histogram", "dpp::histogram_service");
+  config.add_section("hello_world_svc", "snemo::hello_world_svc");
 
   dummyServices.load(config);
   dummyServices.initialize();
@@ -49,5 +51,11 @@ TEST_CASE("Construction from good services works", "") {
   SECTION("direct service works") {
     snemo::service_handle<snemo::histogram> x{dummyServices};
     REQUIRE_NOTHROW(x->has_output_files());
+  }
+
+  SECTION("builtin service works") {
+    snemo::service_handle<snemo::hello_world_svc> x{dummyServices};
+    REQUIRE_NOTHROW(x->is_initialized());
+    REQUIRE(x->say_hello("Falaise") == std::string("Hello Falaise"));
   }
 }

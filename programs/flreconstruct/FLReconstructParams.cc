@@ -4,12 +4,6 @@
 namespace FLReconstruct {
 
 // static
-const std::string& FLReconstructParams::default_file_for_output_metadata() {
-  static const std::string _f("__flreconstruct-metadata.log");
-  return _f;
-}
-
-// static
 FLReconstructParams FLReconstructParams::makeDefault() {
   FLReconstructParams params;
 
@@ -41,17 +35,10 @@ FLReconstructParams FLReconstructParams::makeDefault() {
   params.inputMetadataFile = "";
   params.inputFile = "";
   params.outputMetadataFile = "";
-  params.embeddedMetadata = true;
   params.outputFile = "";
   params.inputMetadata.reset();
   params.inputMetadata.set_key_label("name");
   params.inputMetadata.set_meta_label("type");
-
-  // // Additional informations:
-  // params.dataType              = "";
-  // params.dataSubtype           = "";
-  // params.requiredInputBanks.clear();
-  // params.expectedOutputBanks.clear();
 
   // Additional services:
 
@@ -91,8 +78,6 @@ void FLReconstructParams::print(std::ostream& out_) const {
   out_ << tag << "inputMetadataFile            = " << inputMetadataFile << std::endl;
   out_ << tag << "inputFile                    = " << inputFile << std::endl;
   out_ << tag << "outputMetadataFile           = " << outputMetadataFile << std::endl;
-  out_ << tag << "embeddedMetadata             = " << std::boolalpha << embeddedMetadata
-       << std::endl;
   out_ << last_tag << "outputFile                   = " << outputFile << std::endl;
 }
 
