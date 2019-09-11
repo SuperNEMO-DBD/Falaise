@@ -41,7 +41,7 @@ void calibrated_data::tree_dump(std::ostream& out, const std::string& title,
 
   auto printTrackerHit = [&](const TrackerHitHdl& x) {
     out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
-        << ", Type : " << (x->is_prompt() ? "prompt" : "delayed") << std::endl;
+        << ", Type : " << (x->is_prompt() ? "prompt" : "delayed") << ")" << std::endl;
   };
 
   if (!title.empty()) {
@@ -51,26 +51,29 @@ void calibrated_data::tree_dump(std::ostream& out, const std::string& title,
   // Calibrated calorimeter hits:
   out << indent << datatools::i_tree_dumpable::tag << "CalorimeterHits[" << calorimeter_hits_.size()
       << "]:" << std::endl;
-
-  std::for_each(
-      calorimeter_hits_.begin(), --calorimeter_hits_.end(), [&](const CalorimeterHitHdl& x) {
-        out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::tag;
-        printCaloHit(x);
-      });
-  out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag;
-  printCaloHit(calorimeter_hits_.back());
+  if (!calorimeter_hits_.empty()) {
+    std::for_each(
+        calorimeter_hits_.begin(), --calorimeter_hits_.end(), [&](const CalorimeterHitHdl& x) {
+          out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::tag;
+          printCaloHit(x);
+        });
+    out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag;
+    printCaloHit(calorimeter_hits_.back());
+  }
 
   // Calibrated tracker hits:
   out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "TrackerHits["
       << tracker_hits_.size() << "]:" << std::endl;
-  std::for_each(tracker_hits_.begin(), --tracker_hits_.end(), [&](const TrackerHitHdl& x) {
+  if (!tracker_hits_.empty()) {
+    std::for_each(tracker_hits_.begin(), --tracker_hits_.end(), [&](const TrackerHitHdl& x) {
+      out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
+          << datatools::i_tree_dumpable::tag;
+      printTrackerHit(x);
+    });
     out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
-        << datatools::i_tree_dumpable::tag;
-    printTrackerHit(x);
-  });
-  out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
-      << datatools::i_tree_dumpable::last_tag;
-  printTrackerHit(tracker_hits_.back());
+        << datatools::i_tree_dumpable::last_tag;
+    printTrackerHit(tracker_hits_.back());
+  }
 }
 
 }  // end of namespace datamodel
