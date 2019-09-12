@@ -76,23 +76,6 @@ using TrackerClusterCollection = std::vector<TrackerCluster>;
 using TrackerClusterHdl = datatools::handle<TrackerCluster>;
 using TrackerClusterHdlCollection = std::vector<TrackerClusterHdl>;
 
-/*
-inline auto begin(TrackerCluster& tc) -> decltype(tc.hits().begin()) {
-  return tc.hits().begin();
-}
-
-inline auto begin(const TrackerCluster& tc) -> decltype(tc.hits().begin()) {
-  return tc.hits().begin();
-}
-
-inline auto end(TrackerCluster& tc) -> decltype(tc.hits().end()) {
-  return tc.hits().end();
-}
-
-inline auto end(const TrackerCluster& tc) -> decltype(tc.hits().end()) {
-  return tc.hits().end();
-}
-*/
 }  // end of namespace datamodel
 
 }  // end of namespace snemo

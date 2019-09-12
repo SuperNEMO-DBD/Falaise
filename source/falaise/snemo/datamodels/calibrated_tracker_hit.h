@@ -96,7 +96,7 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   bool has_xy() const;
 
   /// Set the X/Y position of the center of the cell in the module coordinates system
-  void set_xy(double x_, double y_);
+  void set_xy(double x, double y);
 
   /// Invalidate X/Y position of the center of the cell
   void invalidate_xy();

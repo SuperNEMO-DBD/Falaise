@@ -171,8 +171,7 @@ class tracker_clustering_data : public datatools::i_serializable,
   TrackerClusteringSolutionHdlCollection solutions_{};  //!< Collection of Geiger cluster solutions
   TrackerClusteringSolutionHdl default_{};              //!< Handle to the default solution
 
-  datatools::properties
-      _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)
+  datatools::properties _auxiliaries_{};  // unused, kept for backward serialization compatibility
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 

@@ -65,13 +65,12 @@ void event_header::tree_dump(std::ostream& out, const std::string& title, const 
     properties_.tree_dump(out, "", indent_oss.str());
   }
 
-  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last)
-      << "Generation : " << generation_;
+  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "Generation : ";
   if (is_simulated()) {
-    out << ' ' << "[simulated]";
+    out << "simulated";
   }
   if (is_real()) {
-    out << ' ' << "[real]";
+    out << "real";
   }
   out << std::endl;
 }

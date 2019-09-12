@@ -215,12 +215,12 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
   // Given charged particle then process gammas
   snemo::datamodel::ParticleHdlCollection gamma_particles =
-      ptd_.getParticlesByCharge(snemo::datamodel::particle_track::NEUTRAL);
+      get_particles_by_charge(ptd_, snemo::datamodel::particle_track::NEUTRAL);
   if (gamma_particles.empty()) {
     return 0;
   }
 
-  snemo::datamodel::ParticleHdlCollection charged_particles = ptd_.getParticlesByCharge(
+  snemo::datamodel::ParticleHdlCollection charged_particles = get_particles_by_charge(ptd_,
       snemo::datamodel::particle_track::NEGATIVE | snemo::datamodel::particle_track::POSITIVE |
       snemo::datamodel::particle_track::UNDEFINED);
   if (charged_particles.empty()) {

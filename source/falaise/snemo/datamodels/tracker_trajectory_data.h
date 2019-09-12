@@ -79,8 +79,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
       solutions_;                         //!< Collection of tracker trajectory solutions
   TrackerTrajectorySolutionHdl default_;  //!< The default/best solution
 
-  datatools::properties
-      _auxiliaries_;  //!< Auxiliary properties (retained for back compatibility with serialization)
+  datatools::properties _auxiliaries_;  // unused, retained for serialization backward compatibility
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 

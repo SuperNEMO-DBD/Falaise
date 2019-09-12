@@ -7,6 +7,26 @@ namespace snemo {
 
 namespace datamodel {
 
+ParticleHdlCollection get_particles_by_charge(const particle_track_data& ptd, uint32_t charge_types) {
+  ParticleHdlCollection selection;
+
+  for (const auto& a_particle : ptd.particles()) {
+    const bool has_negative_charge =
+        ((charge_types & particle_track::NEGATIVE) != 0u) && particle_has_negative_charge(*a_particle);
+    const bool has_positive_charge =
+        ((charge_types & particle_track::POSITIVE) != 0u) && particle_has_positive_charge(*a_particle);
+    const bool has_undefined_charge =
+        ((charge_types & particle_track::UNDEFINED) != 0u) && particle_has_undefined_charge(*a_particle);
+    const bool has_neutral_charge =
+        ((charge_types & particle_track::NEUTRAL) != 0u) && particle_has_neutral_charge(*a_particle);
+
+    if (has_negative_charge || has_positive_charge || has_undefined_charge || has_neutral_charge) {
+      selection.push_back(a_particle);
+    }
+  }
+  return selection;
+}
+
 bool particle_track_data::hasParticles() const { return !particles_.empty(); }
 
 size_t particle_track_data::numberOfParticles() const { return particles_.size(); }
@@ -25,25 +45,6 @@ const ParticleHdlCollection& particle_track_data::particles() const { return par
 
 void particle_track_data::clearParticles() { particles_.clear(); }
 
-ParticleHdlCollection particle_track_data::getParticlesByCharge(const uint32_t charge_types) const {
-  ParticleHdlCollection selection;
-
-  for (const auto& a_particle : particles()) {
-    const bool has_negative_charge =
-        ((charge_types & particle_track::NEGATIVE) != 0u) && particle_has_negative_charge(*a_particle);
-    const bool has_positive_charge =
-        ((charge_types & particle_track::POSITIVE) != 0u) && particle_has_positive_charge(*a_particle);
-    const bool has_undefined_charge =
-        ((charge_types & particle_track::UNDEFINED) != 0u) && particle_has_undefined_charge(*a_particle);
-    const bool has_neutral_charge =
-        ((charge_types & particle_track::NEUTRAL) != 0u) && particle_has_neutral_charge(*a_particle);
-
-    if (has_negative_charge || has_positive_charge || has_undefined_charge || has_neutral_charge) {
-      selection.push_back(a_particle);
-    }
-  }
-  return selection;
-}
 
 bool particle_track_data::hasIsolatedCalorimeters() const {
   return !isolated_calorimeters_.empty();

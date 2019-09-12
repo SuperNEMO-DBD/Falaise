@@ -58,10 +58,6 @@ class particle_track_data : public datatools::i_serializable,
   /// Reset the particle tracks
   void clearParticles();
 
-  /// Retrieve particles given their charge
-  /// TODO: Refactor into free function/functor
-  ParticleHdlCollection getParticlesByCharge(const uint32_t charge_types) const;
-
   /// Check if there are some non associated calorimeters
   bool hasIsolatedCalorimeters() const;
 
@@ -85,11 +81,14 @@ class particle_track_data : public datatools::i_serializable,
   ParticleHdlCollection particles_;                    //!< Collection of particle track handles
   CalorimeterHitHdlCollection isolated_calorimeters_;  //!< Collection of calorimeter hit handles
 
-  datatools::properties
-      _auxiliaries_;  //!< Auxiliary properties (retained for serialization back compatibility)
+  datatools::properties _auxiliaries_;  // unused, retained for serialization back compatibility
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Retrieve particles given their charge
+ParticleHdlCollection get_particles_by_charge(const particle_track_data& ptd,
+                                              uint32_t charge_types);
 
 }  // end of namespace datamodel
 

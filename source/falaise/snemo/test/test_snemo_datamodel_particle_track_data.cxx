@@ -86,7 +86,7 @@ int main(/*int argc_, char ** argv_*/) {
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any
-    sdm::ParticleHdlCollection electrons = PTD.getParticlesByCharge(sdm::particle_track::NEGATIVE);
+    sdm::ParticleHdlCollection electrons = get_particles_by_charge(PTD, sdm::particle_track::NEGATIVE);
     std::clog << "Number of particles = " << PTD.numberOfParticles() << std::endl;
     std::clog << "Number of electrons = " << electrons.size() << std::endl;
 
