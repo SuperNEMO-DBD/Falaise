@@ -61,11 +61,11 @@ class tracker_cluster : public geomtools::base_hit {
   void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  TrackerHitHdlCollection _hits_;  //!< Collection of Geiger hit handles
+  TrackerHitHdlCollection hits_;  //!< Collection of Geiger hit handles
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

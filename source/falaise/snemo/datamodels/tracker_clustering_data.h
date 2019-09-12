@@ -164,13 +164,12 @@ class tracker_clustering_data : public datatools::i_serializable,
   void set_default(size_t index);
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  TrackerClusteringSolutionHdlCollection
-      _solutions_{};  //!< Collection of Geiger cluster solution handles
-  TrackerClusteringSolutionHdl _default_solution_{};  //!< Handle to the default/best solution
+  TrackerClusteringSolutionHdlCollection solutions_{};  //!< Collection of Geiger cluster solutions
+  TrackerClusteringSolutionHdl default_{};              //!< Handle to the default solution
 
   datatools::properties
       _auxiliaries_{};  //!< Auxiliary properties (maintained for backward serialization compat)

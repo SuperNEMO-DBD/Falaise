@@ -30,40 +30,40 @@ void tracker_cluster::make_prompt() { grab_auxiliaries().unset_flag(delayed_clus
 
 int tracker_cluster::get_cluster_id() const { return get_hit_id(); }
 
-void tracker_cluster::set_cluster_id(int32_t cluster_id_) { set_hit_id(cluster_id_); }
+void tracker_cluster::set_cluster_id(int32_t id) { set_hit_id(id); }
 
-TrackerHitHdlCollection& tracker_cluster::hits() { return _hits_; }
+TrackerHitHdlCollection& tracker_cluster::hits() { return hits_; }
 
-const TrackerHitHdlCollection& tracker_cluster::hits() const { return _hits_; }
+const TrackerHitHdlCollection& tracker_cluster::hits() const { return hits_; }
 
 void tracker_cluster::clear() {
-  _hits_.clear();
+  hits_.clear();
   base_hit::clear();
 }
 
-size_t tracker_cluster::size() const { return _hits_.size(); }
+size_t tracker_cluster::size() const { return hits_.size(); }
 
 const calibrated_tracker_hit& tracker_cluster::at(size_t index) const {
-  return *(_hits_.at(index));
+  return *(hits_.at(index));
 }
 
-void tracker_cluster::tree_dump(std::ostream& out_, const std::string& title_,
-                                const std::string& indent_, bool inherit_) const {
-  base_hit::tree_dump(out_, title_, indent_, true);
+void tracker_cluster::tree_dump(std::ostream& out, const std::string& title,
+                                const std::string& indent, bool is_last) const {
+  base_hit::tree_dump(out, title, indent, true);
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Hit(s) : " << _hits_.size() << std::endl;
-  for (int i = 0; i < (int)_hits_.size(); i++) {
-    const calibrated_tracker_hit& gg_calib_hit = _hits_.at(i).get();
-    out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
-    if (i + 1 == (int)_hits_.size()) {
-      out_ << datatools::i_tree_dumpable::last_tag;
+  out << indent << datatools::i_tree_dumpable::tag << "Hits[" << hits_.size() << "]:" << std::endl;
+  for (size_t i = 0; i < hits_.size(); ++i) {
+    //const calibrated_tracker_hit& gg_calib_hit = hits_.at(i).get();
+    out << indent << datatools::i_tree_dumpable::skip_tag;
+    if (i + 1 == hits_.size()) {
+      out << datatools::i_tree_dumpable::last_tag;
     } else {
-      out_ << datatools::i_tree_dumpable::tag;
+      out << datatools::i_tree_dumpable::tag;
     }
-    out_ << "Hit #" << i << " : Id=" << gg_calib_hit.get_hit_id()
-         << " GID=" << gg_calib_hit.get_geom_id() << std::endl;
+    out << "Hit[" << i << "] : (Id : " << hits_[i]->get_hit_id()
+         << ", GID : " << hits_[i]->get_geom_id() << ")" << std::endl;
   }
-  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
+  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last)
        << "Cluster ID  : " << get_cluster_id() << std::endl;
 }
 

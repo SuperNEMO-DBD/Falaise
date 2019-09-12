@@ -112,18 +112,17 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   const datatools::properties& get_auxiliaries() const __attribute__((deprecated));
 
  private:
-  int32_t _solution_id_ = -1;                          //!< Unique solution ID
-  TrackerClusteringSolutionHdl _clustering_solution_;  //!< The reference clustering solution
-  TrackerTrajectoryHdlCollection
-      _trajectories_;  //!< Collection of handles on trajectories associated to clusters
-  TrackerClusterHdlCollection _unfitted_clusters_;  //!< Collection of handles on unfitted clusters
-  datatools::properties _auxiliaries_;              //!< List of auxiliary properties
+  int32_t id_ = -1;                              //!< Unique solution ID
+  TrackerClusteringSolutionHdl solutions_;       //!< The reference clustering solution
+  TrackerTrajectoryHdlCollection trajectories_;  //!< Trajectories associated to clusters
+  TrackerClusterHdlCollection unfitted_;         //!< Unfitted clusters
+  datatools::properties _auxiliaries_;           //!< List of auxiliary properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
 
 /// Handle on tracker trajectory solution
-//typedef datatools::handle<tracker_trajectory_solution> handle_type;
+// typedef datatools::handle<tracker_trajectory_solution> handle_type;
 using TrackerTrajectorySolution = tracker_trajectory_solution;
 using TrackerTrajectorySolutionCollection = std::vector<TrackerTrajectorySolution>;
 

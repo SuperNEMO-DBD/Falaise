@@ -130,10 +130,6 @@ class tracker_clustering_solution : public datatools::i_serializable {
   /// Reset the tracker cluster solution(see clear)
   void reset();
 
-  /// Smart print
-  virtual void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
-                         const std::string &indent_ = "", bool inherit_ = false) const;
-
   /// Compute hit belonging
   void compute_hit_belonging();
 
@@ -165,6 +161,10 @@ class tracker_clustering_solution : public datatools::i_serializable {
   /// Test if some hit belonging information is available
   bool has_hit_belonging() const;
 
+  /// Smart print
+  virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
+                         const std::string &indent = "", bool inherit = false) const;
+
   /// Compute the hit belonging informations from a given clustering solution
   static void compute_hit_belonging_from_solution(const tracker_clustering_solution &tcs_,
                                                   hit_belonging_col_type &hbc_);
@@ -180,15 +180,13 @@ class tracker_clustering_solution : public datatools::i_serializable {
                                       tracker_clustering_solution &target_);
 
  private:
-  int32_t _solution_id_{-1};  //!< Unique solution ID
-  TrackerClusterHdlCollection
-      _clusters_{};  //!< Collection of handles on prompt Geiger hits clusters
-  TrackerHitHdlCollection
-      _unclustered_hits_{};               //!< Collection of handles on unclustered Geiger hits
-  datatools::properties _auxiliaries_{};  //!< List of auxiliary properties
+  int32_t id_{-1};                              //!< Unique solution ID
+  TrackerClusterHdlCollection clusters_{};      //!< Collection of Tracker hit clusters
+  TrackerHitHdlCollection unclustered_hits_{};  //!< Collection of unclustered Trackernja hits
+  datatools::properties auxiliaries_{};         //!< List of auxiliary properties
 
   // Non persistent information :
-  hit_belonging_col_type _hit_belonging_{};  //!< List of clusters for each clustered hits
+  hit_belonging_col_type hit_belonging_{};  //!< List of clusters for each clustered hits
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

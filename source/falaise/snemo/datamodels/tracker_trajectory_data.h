@@ -71,13 +71,13 @@ class tracker_trajectory_data : public datatools::i_serializable,
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
   TrackerTrajectorySolutionHdlCollection
-      _solutions_;  //!< Collection of tracker trajectory solution handles
-  TrackerTrajectorySolutionHdl _default_solution_;  //!< Handle to the default/best solution
+      solutions_;                         //!< Collection of tracker trajectory solutions
+  TrackerTrajectorySolutionHdl default_;  //!< The default/best solution
 
   datatools::properties
       _auxiliaries_;  //!< Auxiliary properties (retained for back compatibility with serialization)

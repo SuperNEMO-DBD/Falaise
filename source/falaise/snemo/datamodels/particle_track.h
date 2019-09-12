@@ -109,13 +109,13 @@ class particle_track : public geomtools::base_hit {
   int get_track_id() const;
 
   /// Set the track ID
-  void set_track_id(int32_t track_id_);
+  void set_track_id(int32_t id);
 
   /// Invalidate the track ID
   void invalidate_track_id();
 
   //// Set particle charge
-  void set_charge(charge_type charge_);
+  void set_charge(charge_type charge);
 
   /// Get particle charge
   charge_type get_charge() const;
@@ -127,7 +127,7 @@ class particle_track : public geomtools::base_hit {
   void detach_trajectory();
 
   /// Attach a trajectory by handle
-  void set_trajectory_handle(const TrackerTrajectoryHdl &trajectory_handle_);
+  void set_trajectory_handle(const TrackerTrajectoryHdl &trajectory);
 
   /// Return a mutable reference on the trajectory handle
   TrackerTrajectoryHdl &get_trajectory_handle();
@@ -145,7 +145,7 @@ class particle_track : public geomtools::base_hit {
   bool has_vertices() const;
 
   /// Reset the collection of vertices
-  void reset_vertices();
+  void clear_vertices();
 
   /// Return a mutable reference on the collection of vertices (handles)
   vertex_collection_type &get_vertices();
@@ -153,17 +153,11 @@ class particle_track : public geomtools::base_hit {
   /// Return a non mutable reference on the collection of vertices (handles)
   const vertex_collection_type &get_vertices() const;
 
-  /// Function to return the number of vertices found given a 'vertex' flag
-  /// bits. The list of vertices can be retrieved, the 'clear' option
-  /// meaning that the list will be cleaned before pushing new vertex spot.
-  size_t fetch_vertices(vertex_collection_type &vertices_, const uint32_t flags_,
-                        const bool clear_ = false) const;
-
   /// Check if there are some associated calorimeter hits
   bool has_associated_calorimeter_hits() const;
 
   /// Reset the collection of associated calorimeter hits
-  void reset_associated_calorimeter_hits();
+  void clear_associated_calorimeter_hits();
 
   /// Return a mutable reference on the collection of associated calorimeter hits (handles)
   CalorimeterHitHdlCollection &get_associated_calorimeter_hits();
@@ -174,19 +168,16 @@ class particle_track : public geomtools::base_hit {
   /// Empty the contents of the particle track
   void clear();
 
-  /// Reset the particle track (see clear)
-  void reset();
-
   /// Smart print
-  virtual void tree_dump(std::ostream &out = std::clog, const std::string &title_ = "",
-                         const std::string &indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
+                         const std::string &indent = "", bool is_last = false) const;
 
  private:
-  charge_type _charge_from_source_{UNDEFINED};  //!< Particle charge
-  TrackerTrajectoryHdl _trajectory_{};          //!< Handle to the fitted trajectory
-  vertex_collection_type _vertices_{};          //!< Collection of vertices
+  charge_type charge_from_source_{UNDEFINED};  //!< Particle charge
+  TrackerTrajectoryHdl trajectory_{};          //!< Handle to the fitted trajectory
+  vertex_collection_type vertices_{};          //!< Collection of vertices
   CalorimeterHitHdlCollection
-      _associated_calorimeter_hits_{};  //!< Collection of associated calorimeter hits
+      associated_calorimeters_{};  //! Calorimeter hits associated with the Particle
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
@@ -213,6 +204,30 @@ bool particle_has_undefined_charge(const Particle &);
 
 /// Check a particle is gamma
 bool particle_has_neutral_charge(const Particle &);
+
+// Check if a vertex matches a given type
+inline bool vertex_matches(const Particle::handle_spot &vtx, const int32_t vertex_flags) {
+  std::vector<Particle::vertex_type> vertex_types{
+      Particle::VERTEX_ON_SOURCE_FOIL,      Particle::VERTEX_ON_SOURCE_FOIL,
+      Particle::VERTEX_ON_MAIN_CALORIMETER, Particle::VERTEX_ON_X_CALORIMETER,
+      Particle::VERTEX_ON_GAMMA_VETO,       Particle::VERTEX_ON_WIRE};
+  for (const auto &vtx_type : vertex_types) {
+    if (((vertex_flags & vtx_type) != 0u) && Particle::vertex_is(*vtx, vtx_type)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/// Check a particle has a vertex matching the input flags
+inline bool particle_has_vertex(const Particle &p, const int32_t vertex_flags) {
+  for (const auto &vtx : p.get_vertices()) {
+    if (vertex_matches(vtx, vertex_flags)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 }  // end of namespace datamodel
 

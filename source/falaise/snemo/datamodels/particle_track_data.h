@@ -47,7 +47,7 @@ class particle_track_data : public datatools::i_serializable,
   size_t numberOfParticles() const;
 
   /// Add a particle track
-  void insertParticle(const ParticleHdl& handle_);
+  void insertParticle(const ParticleHdl& particle);
 
   /// Return a mutable reference to particles
   ParticleHdlCollection& particles();
@@ -59,7 +59,8 @@ class particle_track_data : public datatools::i_serializable,
   void clearParticles();
 
   /// Retrieve particles given their charge
-  ParticleHdlCollection getParticlesByCharge(const uint32_t flags_) const;
+  /// TODO: Refactor into free function/functor
+  ParticleHdlCollection getParticlesByCharge(const uint32_t charge_types) const;
 
   /// Check if there are some non associated calorimeters
   bool hasIsolatedCalorimeters() const;
@@ -77,13 +78,12 @@ class particle_track_data : public datatools::i_serializable,
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  ParticleHdlCollection _particles_;  //!< Collection of particle track handles
-  CalorimeterHitHdlCollection
-      _non_associated_calorimeters_;  //!< Collection of calorimeter hit handles
+  ParticleHdlCollection particles_;                    //!< Collection of particle track handles
+  CalorimeterHitHdlCollection isolated_calorimeters_;  //!< Collection of calorimeter hit handles
 
   datatools::properties
       _auxiliaries_;  //!< Auxiliary properties (retained for serialization back compatibility)

@@ -24,10 +24,10 @@ namespace datamodel {
 template <class Archive>
 void particle_track::serialize(Archive& ar_, const unsigned int /*version_*/) {
   ar_& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-  ar_& boost::serialization::make_nvp("charge_from_source", _charge_from_source_);
-  ar_& boost::serialization::make_nvp("trajectory", _trajectory_);
-  ar_& boost::serialization::make_nvp("vertices", _vertices_);
-  ar_& boost::serialization::make_nvp("associated_calorimeter_hits", _associated_calorimeter_hits_);
+  ar_& boost::serialization::make_nvp("charge_from_source", charge_from_source_);
+  ar_& boost::serialization::make_nvp("trajectory", trajectory_);
+  ar_& boost::serialization::make_nvp("vertices", vertices_);
+  ar_& boost::serialization::make_nvp("associated_calorimeter_hits", associated_calorimeters_);
 }
 
 }  // end of namespace datamodel

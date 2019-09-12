@@ -217,7 +217,6 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
   snemo::datamodel::ParticleHdlCollection gamma_particles =
       ptd_.getParticlesByCharge(snemo::datamodel::particle_track::NEUTRAL);
   if (gamma_particles.empty()) {
-    DT_LOG_DEBUG(get_logging_priority(), "No gamma particles have been found !");
     return 0;
   }
 
@@ -225,7 +224,6 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
       snemo::datamodel::particle_track::NEGATIVE | snemo::datamodel::particle_track::POSITIVE |
       snemo::datamodel::particle_track::UNDEFINED);
   if (charged_particles.empty()) {
-    DT_LOG_DEBUG(get_logging_priority(), "No charged particles have been found !");
     return 0;
   }
 
@@ -237,12 +235,16 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
     for (auto& a_gamma : gamma_particles) {
       snemo::datamodel::particle_track::vertex_collection_type the_vertices_2;
-      a_gamma->fetch_vertices(the_vertices_2,
-                              snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
-                                  snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
-                                  snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
+      for (const auto& vtx : a_gamma->get_vertices()) {
+        if (snemo::datamodel::vertex_matches(
+                vtx, snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
+                         snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
+                         snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO)) {
+          the_vertices_2.push_back(vtx);
+        }
+      }
+
       if (the_vertices_2.empty()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Gamma track has no vertices associated !");
         continue;
       }
 
@@ -280,8 +282,12 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double particle_track_length = a_shape.get_length();
 
           snemo::datamodel::particle_track::vertex_collection_type vertices;
-          a_particle->fetch_vertices(vertices,
-                                     snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
+          for(const auto& vtx : a_particle->get_vertices()) {
+            if(snemo::datamodel::vertex_matches(vtx, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL)) {
+              vertices.push_back(vtx);
+            }
+          }
+
           if (vertices.empty()) {
             continue;
           }

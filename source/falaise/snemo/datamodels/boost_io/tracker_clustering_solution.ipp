@@ -28,13 +28,13 @@ namespace datamodel {
 template <class Archive>
 void tracker_clustering_solution::serialize(Archive& ar_, const unsigned int /* version_ */) {
   ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  ar_& boost::serialization::make_nvp("solution_id", _solution_id_);
-  ar_& boost::serialization::make_nvp("clusters", _clusters_);
+  ar_& boost::serialization::make_nvp("solution_id", id_);
+  ar_& boost::serialization::make_nvp("clusters", clusters_);
   // if (version_ > 0) {
   //   ar_ & boost::serialization::make_nvp("delayed_clusters", _delayed__clusters_);
   // }
-  ar_& boost::serialization::make_nvp("unclustered_hits", _unclustered_hits_);
-  ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
+  ar_& boost::serialization::make_nvp("unclustered_hits", unclustered_hits_);
+  ar_& boost::serialization::make_nvp("auxiliaries", auxiliaries_);
 }
 
 }  // end of namespace datamodel

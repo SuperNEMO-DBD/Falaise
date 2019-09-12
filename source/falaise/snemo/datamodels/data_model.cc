@@ -21,26 +21,6 @@ const std::string& labels::simulated_data() {
   return lbl;
 }
 
-const std::string& labels::simulated_signal_data() {
-  static std::string lbl("SSD");
-  return lbl;
-}
-
-const std::string& labels::simulated_digitized_data() {
-  static std::string lbl("SDD");
-  return lbl;
-}
-
-const std::string& labels::raw_data() {
-  static std::string lbl("RD");
-  return lbl;
-}
-
-const std::string& labels::unified_digitized_data() {
-  static std::string lbl("UDD");
-  return lbl;
-}
-
 const std::string& labels::calibrated_data() {
   static std::string lbl("CD");
   return lbl;

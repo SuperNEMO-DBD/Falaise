@@ -37,18 +37,6 @@ class labels {
   /// default string label/name for the 'simulated data'
   static const std::string& simulated_data();
 
-  /// default string label/name for the 'simulated signal data'
-  static const std::string& simulated_signal_data();
-
-  /// default string label/name for the 'simulated digitized data'
-  static const std::string& simulated_digitized_data();
-
-  /// default string label/name for the 'raw data'
-  static const std::string& raw_data();
-
-  /// default string label/name for the 'unified data'
-  static const std::string& unified_digitized_data();
-
   /// default string label/name for the 'calibrated data'
   static const std::string& calibrated_data();
 

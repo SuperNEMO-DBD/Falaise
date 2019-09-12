@@ -27,8 +27,8 @@ namespace datamodel {
 template <class Archive>
 void tracker_trajectory_data::serialize(Archive& ar_, const unsigned int /* version_ */) {
   ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  ar_& boost::serialization::make_nvp("solutions", _solutions_);
-  ar_& boost::serialization::make_nvp("default_solution", _default_solution_);
+  ar_& boost::serialization::make_nvp("solutions", solutions_);
+  ar_& boost::serialization::make_nvp("default_solution", default_);
   ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
 }
 

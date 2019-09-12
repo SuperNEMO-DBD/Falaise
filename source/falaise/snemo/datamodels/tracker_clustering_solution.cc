@@ -10,70 +10,70 @@ namespace snemo {
 
 namespace datamodel {
 
-bool tracker_clustering_solution::has_solution_id() const { return _solution_id_ >= 0; }
+bool tracker_clustering_solution::has_solution_id() const { return id_ >= 0; }
 
-int tracker_clustering_solution::get_solution_id() const { return _solution_id_; }
+int tracker_clustering_solution::get_solution_id() const { return id_; }
 
-void tracker_clustering_solution::set_solution_id(int32_t solution_id_) {
-  if (solution_id_ >= 0) {
-    _solution_id_ = solution_id_;
+void tracker_clustering_solution::set_solution_id(int32_t id) {
+  if (id >= 0) {
+    id_ = id;
   } else {
     invalidate_solution_id();
   }
 }
 
-void tracker_clustering_solution::invalidate_solution_id() { _solution_id_ = -1; }
+void tracker_clustering_solution::invalidate_solution_id() { id_ = -1; }
 
-datatools::properties &tracker_clustering_solution::get_auxiliaries() { return _auxiliaries_; }
+datatools::properties &tracker_clustering_solution::get_auxiliaries() { return auxiliaries_; }
 
 const datatools::properties &tracker_clustering_solution::get_auxiliaries() const {
-  return _auxiliaries_;
+  return auxiliaries_;
 }
 
 bool tracker_clustering_solution::has_unclustered_hits() const {
-  return !_unclustered_hits_.empty();
+  return !unclustered_hits_.empty();
 }
 
 TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() {
-  return _unclustered_hits_;
+  return unclustered_hits_;
 }
 
 const TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() const {
-  return _unclustered_hits_;
+  return unclustered_hits_;
 }
 
-TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() { return _clusters_; }
+TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() { return clusters_; }
 
 const TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() const {
-  return _clusters_;
+  return clusters_;
 }
 
 void tracker_clustering_solution::reset() { this->clear(); }
 
 void tracker_clustering_solution::clear() {
   reset_hit_belonging();
-  _clusters_.clear();
-  _unclustered_hits_.clear();
+  clusters_.clear();
+  unclustered_hits_.clear();
   invalidate_solution_id();
-  _auxiliaries_.clear();
+  auxiliaries_.clear();
 }
 
-bool tracker_clustering_solution::hit_belongs_to_cluster(const calibrated_tracker_hit &hit_,
-                                                         const tracker_cluster &cluster_) const {
-  return hit_belongs_to_cluster(hit_.get_hit_id(), cluster_.get_cluster_id());
+bool tracker_clustering_solution::hit_belongs_to_cluster(const calibrated_tracker_hit &hit,
+                                                         const tracker_cluster &cluster) const {
+  return hit_belongs_to_cluster(hit.get_hit_id(), cluster.get_cluster_id());
 }
 
-bool tracker_clustering_solution::hit_is_clustered(const calibrated_tracker_hit &hit_) const {
-  return hit_is_clustered(hit_.get_hit_id());
+bool tracker_clustering_solution::hit_is_clustered(const calibrated_tracker_hit &hit) const {
+  return hit_is_clustered(hit.get_hit_id());
 }
 
 bool tracker_clustering_solution::hit_is_clustered(int32_t hit_id_) const {
-  if (!_hit_belonging_.empty()) {
-    auto found = _hit_belonging_.find(hit_id_);
-    return found != _hit_belonging_.end() && !found->second.empty();
+  if (!hit_belonging_.empty()) {
+    auto found = hit_belonging_.find(hit_id_);
+    return found != hit_belonging_.end() && !found->second.empty();
   }
 
-  for (const auto &ihit : _unclustered_hits_) {
+  for (const auto &ihit : unclustered_hits_) {
     if (!ihit.has_data()) {
       continue;
     }
@@ -85,26 +85,26 @@ bool tracker_clustering_solution::hit_is_clustered(int32_t hit_id_) const {
 }
 
 bool tracker_clustering_solution::hit_belongs_to_several_clusters(
-    const calibrated_tracker_hit &hit_) const {
-  return hit_belongs_to_several_clusters(hit_.get_hit_id());
+    const calibrated_tracker_hit &hit) const {
+  return hit_belongs_to_several_clusters(hit.get_hit_id());
 }
 
 bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id_) const {
   // If available, use the' hit_belonging' collection :
-  if (!_hit_belonging_.empty()) {
-    auto found = _hit_belonging_.find(hit_id_);
-    return found != _hit_belonging_.end() && found->second.size() > 1;
+  if (!hit_belonging_.empty()) {
+    auto found = hit_belonging_.find(hit_id_);
+    return found != hit_belonging_.end() && found->second.size() > 1;
   }
 
   // Shortcut :
-  if (_clusters_.size() < 2) {
+  if (clusters_.size() < 2) {
     return false;
   }
 
   // Traverse all clusters to count belongings for this hit
   // TODO: Review use of has_data, since a cluster by definition should have valid data
   int cluster_counter = 0;
-  for (const auto &the_cluster : _clusters_) {
+  for (const auto &the_cluster : clusters_) {
     if (!the_cluster.has_data()) {
       continue;
     }
@@ -126,9 +126,9 @@ bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id
 bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
                                                          int32_t cluster_id_) const {
   // If available, use the' hit_belonging' collection :
-  if (!_hit_belonging_.empty()) {
-    auto found_iter = _hit_belonging_.find(hit_id_);
-    if (found_iter == _hit_belonging_.end()) {
+  if (!hit_belonging_.empty()) {
+    auto found_iter = hit_belonging_.find(hit_id_);
+    if (found_iter == hit_belonging_.end()) {
       return false;
     }
 
@@ -141,11 +141,11 @@ bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
     }
   } else {
     // Shortcut :
-    if (_clusters_.empty()) {
+    if (clusters_.empty()) {
       return false;
     }
     // Traverse all clusters to detect belongings for this hit :
-    for (const auto &the_cluster : _clusters_) {
+    for (const auto &the_cluster : clusters_) {
       if (the_cluster.has_data()) {
         if (the_cluster->get_cluster_id() != cluster_id_) {
           continue;
@@ -166,12 +166,12 @@ bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
 
 const tracker_clustering_solution::hit_belonging_col_type &
 tracker_clustering_solution::get_hit_belonging() const {
-  return _hit_belonging_;
+  return hit_belonging_;
 }
 
-void tracker_clustering_solution::reset_hit_belonging() { _hit_belonging_.clear(); }
+void tracker_clustering_solution::reset_hit_belonging() { hit_belonging_.clear(); }
 
-bool tracker_clustering_solution::has_hit_belonging() const { return !_hit_belonging_.empty(); }
+bool tracker_clustering_solution::has_hit_belonging() const { return !hit_belonging_.empty(); }
 
 // static
 void tracker_clustering_solution::compute_hit_belonging_from_solution(
@@ -202,7 +202,7 @@ void tracker_clustering_solution::compute_hit_belonging_from_solution(
 }
 
 void tracker_clustering_solution::compute_hit_belonging() {
-  compute_hit_belonging_from_solution(*this, _hit_belonging_);
+  compute_hit_belonging_from_solution(*this, hit_belonging_);
 }
 
 // static
@@ -333,8 +333,7 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
     out_ << indent_ << title_ << std::endl;
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Solution ID  : " << _solution_id_
-       << std::endl;
+  out_ << indent_ << datatools::i_tree_dumpable::tag << "Solution ID  : " << id_ << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::tag << "Cluster(s)   : " << get_clusters().size()
        << std::endl;
@@ -357,12 +356,12 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
   {
     int hit_index = 0;
     out_ << indent_ << datatools::i_tree_dumpable::tag
-         << "Unclustered hit(s) : " << _unclustered_hits_.size() << std::endl;
-    for (auto i = _unclustered_hits_.begin(); i != _unclustered_hits_.end(); i++) {
+         << "Unclustered hit(s) : " << unclustered_hits_.size() << std::endl;
+    for (auto i = unclustered_hits_.begin(); i != unclustered_hits_.end(); i++) {
       out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
       auto j = i;
       j++;
-      if (j == _unclustered_hits_.end()) {
+      if (j == unclustered_hits_.end()) {
         out_ << datatools::i_tree_dumpable::last_tag;
       } else {
         out_ << datatools::i_tree_dumpable::tag;
@@ -375,10 +374,10 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
   }
 
   out_ << indent_ << datatools::i_tree_dumpable::tag
-       << "Hits belonging : " << _hit_belonging_.size() << std::endl;
+       << "Hits belonging : " << hit_belonging_.size() << std::endl;
 
   out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
-  if (_auxiliaries_.empty()) {
+  if (auxiliaries_.empty()) {
     out_ << "<empty>";
   }
   out_ << std::endl;
@@ -386,7 +385,7 @@ void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::strin
     std::ostringstream indent_oss;
     indent_oss << indent_;
     indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
-    _auxiliaries_.tree_dump(out_, "", indent_oss.str());
+    auxiliaries_.tree_dump(out_, "", indent_oss.str());
   }
 }
 

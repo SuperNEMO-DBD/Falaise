@@ -19,56 +19,51 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_trajectory_solution,
                                                   "snemo::datamodel::tracker_trajectory_solution")
 
-bool tracker_trajectory_solution::has_solution_id() const { return _solution_id_ >= 0; }
+bool tracker_trajectory_solution::has_solution_id() const { return id_ >= 0; }
 
-int tracker_trajectory_solution::get_solution_id() const { return _solution_id_; }
+int tracker_trajectory_solution::get_solution_id() const { return id_; }
 
-void tracker_trajectory_solution::set_solution_id(int32_t solution_id_) {
-  if (solution_id_ >= 0) {
-    _solution_id_ = solution_id_;
+void tracker_trajectory_solution::set_solution_id(int32_t id) {
+  if (id >= 0) {
+    id_ = id;
   } else {
     invalidate_solution_id();
   }
 }
 
-void tracker_trajectory_solution::invalidate_solution_id() { _solution_id_ = -1; }
+void tracker_trajectory_solution::invalidate_solution_id() { id_ = -1; }
 
 /*** Reference clustering solution ***/
 
 tracker_clustering_solution& tracker_trajectory_solution::grab_clustering_solution() {
-  return _clustering_solution_.grab();
+  return solutions_.grab();
 }
 
-void tracker_trajectory_solution::set_clustering_solution(
-    const TrackerClusteringSolutionHdl& clustering_solution_) {
-  _clustering_solution_ = clustering_solution_;
+void tracker_trajectory_solution::set_clustering_solution(const TrackerClusteringSolutionHdl& s) {
+  solutions_ = s;
 }
 
 const tracker_clustering_solution& tracker_trajectory_solution::get_clustering_solution() const {
-  return _clustering_solution_.get();
+  return solutions_.get();
 }
 
-bool tracker_trajectory_solution::has_clustering_solution() const {
-  return _clustering_solution_.has_data();
-}
+bool tracker_trajectory_solution::has_clustering_solution() const { return solutions_.has_data(); }
 
-void tracker_trajectory_solution::invalidate_clustering_solution() {
-  _clustering_solution_.reset();
-}
+void tracker_trajectory_solution::invalidate_clustering_solution() { solutions_.reset(); }
 
 bool tracker_trajectory_solution::has_unfitted_clusters() const {
-  return !_unfitted_clusters_.empty();
+  return !unfitted_.empty();
 }
 
 TrackerClusterHdlCollection& tracker_trajectory_solution::grab_unfitted_clusters() {
-  return _unfitted_clusters_;
+  return unfitted_;
 }
 
 const TrackerClusterHdlCollection& tracker_trajectory_solution::get_unfitted_clusters() const {
-  return _unfitted_clusters_;
+  return unfitted_;
 }
 
-void tracker_trajectory_solution::invalidate_unfitted_clusters() { _unfitted_clusters_.clear(); }
+void tracker_trajectory_solution::invalidate_unfitted_clusters() { unfitted_.clear(); }
 
 datatools::properties& tracker_trajectory_solution::get_auxiliaries() { return _auxiliaries_; }
 
@@ -76,17 +71,17 @@ const datatools::properties& tracker_trajectory_solution::get_auxiliaries() cons
   return _auxiliaries_;
 }
 
-bool tracker_trajectory_solution::has_trajectories() const { return !_trajectories_.empty(); }
+bool tracker_trajectory_solution::has_trajectories() const { return !trajectories_.empty(); }
 
 TrackerTrajectoryHdlCollection& tracker_trajectory_solution::grab_trajectories() {
-  return _trajectories_;
+  return trajectories_;
 }
 
 const TrackerTrajectoryHdlCollection& tracker_trajectory_solution::get_trajectories() const {
-  return _trajectories_;
+  return trajectories_;
 }
 
-void tracker_trajectory_solution::invalidate_trajectories() { _trajectories_.clear(); }
+void tracker_trajectory_solution::invalidate_trajectories() { trajectories_.clear(); }
 
 void tracker_trajectory_solution::reset() { this->clear(); }
 
@@ -98,57 +93,68 @@ void tracker_trajectory_solution::clear() {
   _auxiliaries_.clear();
 }
 
-void tracker_trajectory_solution::tree_dump(std::ostream& out_, const std::string& title_,
-                                            const std::string& indent_, bool inherit_) const {
-  if (!title_.empty()) {
-    out_ << indent_ << title_ << std::endl;
+void tracker_trajectory_solution::tree_dump(std::ostream& out, const std::string& title,
+                                            const std::string& indent, bool is_last) const {
+  if (!title.empty()) {
+    out << indent << title << std::endl;
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Solution ID  : " << _solution_id_
-       << std::endl;
+  // make_tag
+  // make_skip_tag
+  // make_last_tag
+  // make_last_skip_tag
+  // make_inherit_tag
+  // make_inherit_skip_tag
+  std::string tag = indent + datatools::i_tree_dumpable::tags::item();
+  std::string skip_tag = indent + datatools::i_tree_dumpable::tags::skip_item();
+  std::string last_tag = indent + datatools::i_tree_dumpable::tags::last_item();
+  std::string last_skip_tag = indent + datatools::i_tree_dumpable::tags::last_skip_item();
+  // Last two are functions of indent and is_last;
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Reference clustering solution : ";
+  out << indent << datatools::i_tree_dumpable::tag << "Solution ID  : " << id_ << std::endl;
+
+  out << indent << datatools::i_tree_dumpable::tag << "Reference clustering solution : ";
   if (has_clustering_solution()) {
-    out_ << _clustering_solution_->get_solution_id();
+    out << solutions_->get_solution_id();
   } else {
-    out_ << "<none>";
+    out << "<none>";
   }
-  out_ << std::endl;
+  out << std::endl;
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag << "Trajectories : " << _trajectories_.size()
+  out << indent << datatools::i_tree_dumpable::tag << "Trajectories : " << trajectories_.size()
        << std::endl;
-  for (size_t i = 0; i < _trajectories_.size(); i++) {
-    const datatools::handle<tracker_trajectory>& htraj = _trajectories_.at(i);
+  for (size_t i = 0; i < trajectories_.size(); i++) {
+    const datatools::handle<tracker_trajectory>& htraj = trajectories_.at(i);
     const tracker_trajectory& traj = htraj.get();
-    out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
+    out << indent << datatools::i_tree_dumpable::skip_tag;
     std::ostringstream indent2_oss;
-    indent2_oss << indent_ << datatools::i_tree_dumpable::skip_tag;
+    indent2_oss << indent << datatools::i_tree_dumpable::skip_tag;
     size_t j = i;
     j++;
-    if (j == _trajectories_.size()) {
-      out_ << datatools::i_tree_dumpable::last_tag;
+    if (j == trajectories_.size()) {
+      out << datatools::i_tree_dumpable::last_tag;
       indent2_oss << datatools::i_tree_dumpable::last_skip_tag;
     } else {
-      out_ << datatools::i_tree_dumpable::tag;
+      out << datatools::i_tree_dumpable::tag;
       indent2_oss << datatools::i_tree_dumpable::skip_tag;
     }
-    out_ << "Trajectory #" << i << " : " << std::endl;
-    traj.tree_dump(out_, "", indent2_oss.str());
+    out << "Trajectory #" << i << " : " << std::endl;
+    traj.tree_dump(out, "", indent2_oss.str());
   }
 
-  out_ << indent_ << datatools::i_tree_dumpable::tag
-       << "Unfitted clusters : " << _unfitted_clusters_.size() << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag
+       << "Unfitted clusters : " << unfitted_.size() << std::endl;
 
-  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
+  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "Auxiliaries : ";
   if (_auxiliaries_.empty()) {
-    out_ << "<empty>";
+    out << "<empty>";
   }
-  out_ << std::endl;
+  out << std::endl;
   {
     std::ostringstream indent_oss;
-    indent_oss << indent_;
-    indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
-    _auxiliaries_.tree_dump(out_, "", indent_oss.str());
+    indent_oss << indent;
+    indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(is_last);
+    _auxiliaries_.tree_dump(out, "", indent_oss.str());
   }
 }
 
