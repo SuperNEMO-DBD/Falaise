@@ -41,15 +41,14 @@ class base_trajectory_pattern : public datatools::i_serializable {
   /// Return the reference to the 1D shape associated to the trajectory
   virtual const geomtools::i_shape_1d& get_shape() const = 0;
 
- protected:
-  /// Set the pattern ID
-  void _set_pattern_id(const std::string& pattern_id_);
-
  private:
   std::string _pattern_id_{""};  //!< The pattern identifier
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+using TrajectoryPattern = base_trajectory_pattern;
+using TrajectoryPatternHdl = datatools::handle<TrajectoryPattern>;
 
 }  // end of namespace datamodel
 

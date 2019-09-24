@@ -210,23 +210,20 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
                                       snemo::datamodel::particle_track_data& ptd_) {
   // Add the ignored hits to the list of non associated calorimeters
   // ptd_.reset_non_associated_calorimeters();
-  auto& calos = ptd_.grab_non_associated_calorimeters();
+  auto& calos = ptd_.isolatedCalorimeters();
   calos.assign(ignoredHits_.begin(), ignoredHits_.end());
 
   // Given charged particle then process gammas
-  snemo::datamodel::particle_track_data::particle_collection_type gamma_particles;
-  ptd_.fetch_particles(gamma_particles, snemo::datamodel::particle_track::NEUTRAL);
+  snemo::datamodel::ParticleHdlCollection gamma_particles =
+      get_particles_by_charge(ptd_, snemo::datamodel::particle_track::NEUTRAL);
   if (gamma_particles.empty()) {
-    DT_LOG_DEBUG(get_logging_priority(), "No gamma particles have been found !");
     return 0;
   }
 
-  snemo::datamodel::particle_track_data::particle_collection_type charged_particles;
-  ptd_.fetch_particles(charged_particles, snemo::datamodel::particle_track::NEGATIVE |
-                                              snemo::datamodel::particle_track::POSITIVE |
-                                              snemo::datamodel::particle_track::UNDEFINED);
+  snemo::datamodel::ParticleHdlCollection charged_particles = get_particles_by_charge(ptd_,
+      snemo::datamodel::particle_track::NEGATIVE | snemo::datamodel::particle_track::POSITIVE |
+      snemo::datamodel::particle_track::UNDEFINED);
   if (charged_particles.empty()) {
-    DT_LOG_DEBUG(get_logging_priority(), "No charged particles have been found !");
     return 0;
   }
 
@@ -238,12 +235,16 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
 
     for (auto& a_gamma : gamma_particles) {
       snemo::datamodel::particle_track::vertex_collection_type the_vertices_2;
-      a_gamma->fetch_vertices(the_vertices_2,
-                              snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
-                                  snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
-                                  snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO);
+      for (const auto& vtx : a_gamma->get_vertices()) {
+        if (snemo::datamodel::vertex_matches(
+                vtx, snemo::datamodel::particle_track::VERTEX_ON_MAIN_CALORIMETER |
+                         snemo::datamodel::particle_track::VERTEX_ON_X_CALORIMETER |
+                         snemo::datamodel::particle_track::VERTEX_ON_GAMMA_VETO)) {
+          the_vertices_2.push_back(vtx);
+        }
+      }
+
       if (the_vertices_2.empty()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Gamma track has no vertices associated !");
         continue;
       }
 
@@ -281,8 +282,12 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double particle_track_length = a_shape.get_length();
 
           snemo::datamodel::particle_track::vertex_collection_type vertices;
-          a_particle->fetch_vertices(vertices,
-                                     snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL);
+          for(const auto& vtx : a_particle->get_vertices()) {
+            if(snemo::datamodel::vertex_matches(vtx, snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL)) {
+              vertices.push_back(vtx);
+            }
+          }
+
           if (vertices.empty()) {
             continue;
           }
@@ -293,7 +298,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           const double gamma_time_th = gamma_track_length / CLHEP::c_light;
 
           // Assume particle are electron/positron
-          const snemo::datamodel::calibrated_calorimeter_hit::collection_type& the_calorimeters =
+          const snemo::datamodel::CalorimeterHitHdlCollection& the_calorimeters =
               a_particle->get_associated_calorimeter_hits();
           // Only take care of the first associated calorimeter
           const auto& a_calo_hit = the_calorimeters.front();
@@ -367,7 +372,7 @@ int base_gamma_builder::_post_process(const base_gamma_builder::hit_collection_t
           if (int_prob > int_prob_limit) {
             // Do not add the calorimeter hit from the charged particle to
             // the list of calorimeter hits of the gamma particle
-            // snemo::datamodel::calibrated_calorimeter_hit::collection_type & hits =
+            // snemo::datamodel::CalorimeterHitHdlCollection & hits =
             // a_gamma.grab_associated_calorimeter_hits(); hits.insert(hits.begin(),
             // the_calorimeters.front());
             auto hBSv = datatools::make_handle<geomtools::blur_spot>();

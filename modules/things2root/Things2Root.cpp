@@ -546,9 +546,8 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     const snemo::datamodel::calibrated_data& CD =
         workItem.get<snemo::datamodel::calibrated_data>("CD");
     //      std::clog << "In process: found CD data bank " << std::endl;
-    tracker_.nohits_ = CD.calibrated_tracker_hits().size();
-    BOOST_FOREACH (const snemo::datamodel::calibrated_data::tracker_hit_handle_type& gg_handle,
-                   CD.calibrated_tracker_hits()) {
+    tracker_.nohits_ = CD.tracker_hits().size();
+    BOOST_FOREACH (const snemo::datamodel::TrackerHitHdl& gg_handle, CD.tracker_hits()) {
       if (!gg_handle.has_data()) continue;
 
       const snemo::datamodel::calibrated_tracker_hit& sncore_gg_hit = gg_handle.get();
@@ -594,10 +593,9 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     tracker_.truetrackid_ = &ws_->trackertruetrackid;
     tracker_.trueparenttrackid_ = &ws_->trackertrueparenttrackid;
 
-    calo_.nohits_ = CD.calibrated_calorimeter_hits().size();
-    BOOST_FOREACH (
-        const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type& the_calo_hit_handle,
-        CD.calibrated_calorimeter_hits()) {
+    calo_.nohits_ = CD.calorimeter_hits().size();
+    BOOST_FOREACH (const snemo::datamodel::CalorimeterHitHdl& the_calo_hit_handle,
+                   CD.calorimeter_hits()) {
       if (!the_calo_hit_handle.has_data()) continue;
 
       const snemo::datamodel::calibrated_calorimeter_hit& the_calo_hit = the_calo_hit_handle.get();

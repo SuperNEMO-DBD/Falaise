@@ -109,7 +109,6 @@ const TrackFit::gg_hits_col& trackfit_driver::get_hits_referential() const {
 
 TrackFit::gg_hits_col& trackfit_driver::grab_hits_referential() { return _gg_hits_referential_; }
 
-
 // Constructor
 trackfit_driver::trackfit_driver()
     : snemo::processing::base_tracker_fitter(trackfit_driver::trackfit_id()) {
@@ -234,8 +233,6 @@ void trackfit_driver::_install_drift_time_calibration_driver_() {
   }
 }
 
-
-
 // Main fitting method
 int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_data& clustering_,
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
@@ -244,8 +241,8 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
   const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;
 
   // Get cluster solutions:
-  const snemo::datamodel::tracker_clustering_data::solution_col_type& cluster_solutions =
-      clustering_.get_solutions();
+  const snemo::datamodel::TrackerClusteringSolutionHdlCollection& cluster_solutions =
+      clustering_.solutions();
 
   for (const datatools::handle<snemo::datamodel::tracker_clustering_solution>& a_cluster_solution :
        cluster_solutions) {
@@ -256,12 +253,12 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
     a_trajectory_solution->set_clustering_solution(a_cluster_solution);
 
     // Get clusters stored in the current tracker solution:
-    const snemo::datamodel::tracker_clustering_solution::cluster_col_type& clusters =
+    const snemo::datamodel::TrackerClusterHdlCollection& clusters =
         a_cluster_solution->get_clusters();
 
     for (const datatools::handle<snemo::datamodel::tracker_cluster>& a_cluster : clusters) {
       // Get tracker hits stored in the current tracker cluster:
-      const snemo::datamodel::calibrated_tracker_hit::collection_type& hits = a_cluster->get_hits();
+      const snemo::datamodel::TrackerHitHdlCollection& hits = a_cluster->hits();
 
       // Home made Geiger hit model for 'trackfit':
       TrackFit::gg_hits_col gg_hits;
@@ -322,13 +319,13 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
                                                     h_trajectory->grab_geom_id());
 
         // Create new 'tracker_pattern' handle:
-        // Needs to be polymorphic, check that make_handle supports this
-        snemo::datamodel::tracker_trajectory::handle_pattern h_pattern;
+        // Needs to be polymorphic, check that make_handle supports this as make_unique does
+        snemo::datamodel::TrajectoryPatternHdl h_pattern;
         auto htp = new snemo::datamodel::helix_trajectory_pattern;
         h_pattern.reset(htp);
 
         // Set cluster and pattern handle to tracker_trajectory:
-        h_trajectory->set_trajectory_id(a_trajectory_solution->get_trajectories().size());
+        h_trajectory->set_id(a_trajectory_solution->get_trajectories().size());
         h_trajectory->set_cluster_handle(a_cluster);
         h_trajectory->set_pattern_handle(h_pattern);
         h_trajectory->grab_auxiliaries().store_real("chi2", pow(a_fit_solution.chi, 2));
@@ -369,12 +366,12 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
                                                     h_trajectory->grab_geom_id());
 
         // Create new 'tracker_pattern' handle:
-        snemo::datamodel::tracker_trajectory::handle_pattern h_pattern;
+        snemo::datamodel::TrajectoryPatternHdl h_pattern;
         auto ltp = new snemo::datamodel::line_trajectory_pattern;
         h_pattern.reset(ltp);
 
         // Set cluster and pattern handle to tracker_trajectory:
-        h_trajectory->set_trajectory_id(a_trajectory_solution->get_trajectories().size());
+        h_trajectory->set_id(a_trajectory_solution->get_trajectories().size());
         h_trajectory->set_cluster_handle(a_cluster);
         h_trajectory->set_pattern_handle(h_pattern);
         h_trajectory->grab_auxiliaries().store_real("chi2", pow(a_fit_solution.chi, 2));
@@ -392,7 +389,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
       }
 
       if (!helix_fit_succeed && !line_fit_succeed) {
-        snemo::datamodel::tracker_trajectory_solution::cluster_col_type& cct =
+        snemo::datamodel::TrackerClusterHdlCollection& cct =
             a_trajectory_solution->grab_unfitted_clusters();
         cct.push_back(a_cluster);
       }

@@ -22,8 +22,8 @@ void timestamp::serialize(Archive& ar_, const unsigned int version_) {
   if (version_ > 0) {
     ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
   }
-  ar_& boost::serialization::make_nvp("seconds", _seconds_);
-  ar_& boost::serialization::make_nvp("picoseconds", _picoseconds_);
+  ar_& boost::serialization::make_nvp("seconds", seconds_);
+  ar_& boost::serialization::make_nvp("picoseconds", picoseconds_);
 }
 
 }  // end of namespace datamodel

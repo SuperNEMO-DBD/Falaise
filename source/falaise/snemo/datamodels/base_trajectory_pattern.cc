@@ -20,10 +20,6 @@ bool base_trajectory_pattern::has_pattern_id() const { return !_pattern_id_.empt
 
 const std::string& base_trajectory_pattern::get_pattern_id() const { return _pattern_id_; }
 
-void base_trajectory_pattern::_set_pattern_id(const std::string& pattern_id_) {
-  _pattern_id_ = pattern_id_;
-}
-
 }  // end of namespace datamodel
 
 }  // end of namespace snemo

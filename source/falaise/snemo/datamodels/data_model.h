@@ -22,49 +22,33 @@
 // - Bayeux/datatools:
 #include <falaise/snemo/datamodels/event.h>
 
-namespace snemo {
+namespace snedm {
 
-namespace datamodel {
-
-class data_info {
+class labels {
  public:
   /// Return the default string label/name for the 'event record'
-  static const std::string& default_event_record_label();
+  static const std::string& event_record();
 
   // Data bank standard labels/names :
 
   /// default string label/name for the 'event header'
-  static const std::string& default_event_header_label();
+  static const std::string& event_header();
 
   /// default string label/name for the 'simulated data'
-  static const std::string& default_simulated_data_label();
-
-  /// default string label/name for the 'simulated signal data'
-  static const std::string& default_simulated_signal_data_label();
-
-  /// default string label/name for the 'simulated digitized data'
-  static const std::string& default_simulated_digitized_data_label();
-
-  /// default string label/name for the 'raw data'
-  static const std::string& default_raw_data_label();
-
-  /// default string label/name for the 'unified data'
-  static const std::string& default_unified_digitized_data_label();
+  static const std::string& simulated_data();
 
   /// default string label/name for the 'calibrated data'
-  static const std::string& default_calibrated_data_label();
+  static const std::string& calibrated_data();
 
   /// default string label/name for the 'tracker clustering data'
-  static const std::string& default_tracker_clustering_data_label();
+  static const std::string& tracker_clustering_data();
 
   /// Return the default string label/name for the 'tracker trajectory data'
-  static const std::string& default_tracker_trajectory_data_label();
+  static const std::string& tracker_trajectory_data();
 
   /// Return the default string label/name for the 'particle track data'
-  static const std::string& default_particle_track_data_label();
+  static const std::string& particle_track_data();
 };
-
-}  // end of namespace datamodel
 
 }  // end of namespace snemo
 

@@ -33,9 +33,6 @@ class tracker_trajectory_data : public datatools::i_serializable,
                                 public datatools::i_tree_dumpable,
                                 public datatools::i_clear {
  public:
-  /// Collection of handles on tracker trajectory solutions
-  typedef std::vector<tracker_trajectory_solution::handle_type> solution_col_type;
-
   /// Check if there are some trajectory solutions
   bool has_solutions() const;
 
@@ -43,8 +40,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
   size_t get_number_of_solutions() const;
 
   /// Add a trajectory solution
-  void add_solution(const tracker_trajectory_solution::handle_type& handle_,
-                    bool default_solution_ = false);
+  void add_solution(const TrackerTrajectorySolutionHdl& solution, bool is_default = false);
 
   /// Return a non mutable reference to a trajectory solution by index
   const tracker_trajectory_solution& get_solution(size_t index) const;
@@ -55,9 +51,9 @@ class tracker_trajectory_data : public datatools::i_serializable,
   /// Check if there is some default trajectory solution
   bool has_default_solution() const;
 
-  const tracker_trajectory_data::solution_col_type& get_solutions() const;
+  const TrackerTrajectorySolutionHdlCollection& get_solutions() const;
 
-  tracker_trajectory_data::solution_col_type& get_solutions();
+  TrackerTrajectorySolutionHdlCollection& get_solutions();
 
   /// Return a non mutable reference to the default trajectory solution is any
   const tracker_trajectory_solution& get_default_solution() const;
@@ -75,14 +71,15 @@ class tracker_trajectory_data : public datatools::i_serializable,
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  solution_col_type _solutions_;  //!< Collection of tracker trajectory solution handles
-  tracker_trajectory_solution::handle_type
-      _default_solution_;               //!< Handle to the default/best solution
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties (retained for back compatibility with serialization)
+  TrackerTrajectorySolutionHdlCollection
+      solutions_;                         //!< Collection of tracker trajectory solutions
+  TrackerTrajectorySolutionHdl default_;  //!< The default/best solution
+
+  datatools::properties _auxiliaries_;  // unused, retained for serialization backward compatibility
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 

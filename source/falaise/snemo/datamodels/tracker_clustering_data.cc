@@ -7,127 +7,78 @@ namespace snemo {
 
 namespace datamodel {
 
-// ----- BELOW TO BE MOVED -----
-// static
-const std::string& tracker_clustering_data::prompt_key() {
-  static const std::string _key("prompt");
-  return _key;
+bool tracker_clustering_data::empty() const { return solutions_.empty(); }
+
+size_t tracker_clustering_data::size() const { return solutions_.size(); }
+
+const tracker_clustering_solution& tracker_clustering_data::at(size_t index) const {
+  return *(solutions_.at(index));
 }
 
-// static
-const std::string& tracker_clustering_data::delayed_key() {
-  static const std::string _key("delayed");
-  return _key;
-}
+void tracker_clustering_data::push_back(const TrackerClusteringSolutionHdl& solution,
+                                        bool isDefault) {
+  DT_THROW_IF(!solution, std::logic_error, "Cannot store a null handle !");
 
-// static
-const std::string& tracker_clustering_data::delayed_id_key() {
-  static const std::string _key("delayed.id");
-  return _key;
-}
-
-// static
-const std::string& tracker_clustering_data::clusterizer_id_key() {
-  static const std::string _key("clusterizer.id");
-  return _key;
-}
-// ----- ABOVE TO BE MOVED -----
-
-
-bool tracker_clustering_data::has_solutions() const { return get_number_of_solutions() > 0; }
-
-size_t tracker_clustering_data::get_number_of_solutions() const { return _solutions_.size(); }
-
-const tracker_clustering_solution& tracker_clustering_data::get_solution(int i_) const {
-  return *(_solutions_.at(i_));
-}
-
-void tracker_clustering_data::add_solution(
-    const tracker_clustering_solution::handle_type& solution_handle_, bool default_solution_) {
-  DT_THROW_IF(!solution_handle_, std::logic_error, "Cannot store a null handle !");
-
-  for(const auto& addr : _solutions_) {
-    DT_THROW_IF(&(*addr) == &(*solution_handle_), std::logic_error,
-                "Duplicated solutions is not allowed!");
+  for (const auto& addr : solutions_) {
+    DT_THROW_IF(&(*addr) == &(*solution), std::logic_error, "Duplicated solutions is not allowed!");
   }
-  _solutions_.push_back(solution_handle_);
-  if (default_solution_ || _solutions_.size() == 1) {
-    _default_solution_ = solution_handle_;
+  solutions_.push_back(solution);
+  if (isDefault || solutions_.size() == 1) {
+    default_ = solution;
   }
 }
 
-void tracker_clustering_data::invalidate_solutions() {
-  _solutions_.clear();
+bool tracker_clustering_data::has_default() const { return default_; }
+
+tracker_clustering_solution& tracker_clustering_data::get_default() {
+  DT_THROW_IF(empty(), std::logic_error, "No default solution is available !");
+  return *default_;
 }
 
-bool tracker_clustering_data::has_default_solution() const { return _default_solution_.has_data(); }
-
-tracker_clustering_solution& tracker_clustering_data::get_default_solution() {
-  DT_THROW_IF(!has_default_solution(), std::logic_error, "No default solution is available !");
-  return *_default_solution_;
+const tracker_clustering_solution& tracker_clustering_data::get_default() const {
+  DT_THROW_IF(empty(), std::logic_error, "No default solution is available !");
+  return *default_;
 }
 
-const tracker_clustering_solution& tracker_clustering_data::get_default_solution() const {
-  DT_THROW_IF(!has_default_solution(), std::logic_error, "No default solution is available !");
-  return *_default_solution_;
-}
+void tracker_clustering_data::set_default(size_t index_) { default_ = solutions_.at(index_); }
 
-void tracker_clustering_data::set_default_solution(int index_) {
-  _default_solution_ = _solutions_.at(index_);
-}
+TrackerClusteringSolutionHdlCollection& tracker_clustering_data::solutions() { return solutions_; }
 
-void tracker_clustering_data::invalidate_default_solution() {
-  _default_solution_.reset();
-}
-
-tracker_clustering_data::solution_col_type& tracker_clustering_data::get_solutions() {
-  return _solutions_;
-}
-
-const tracker_clustering_data::solution_col_type& tracker_clustering_data::get_solutions() const {
-  return _solutions_;
-}
-
-void tracker_clustering_data::reset() {
-  this->clear();
+const TrackerClusteringSolutionHdlCollection& tracker_clustering_data::solutions() const {
+  return solutions_;
 }
 
 void tracker_clustering_data::clear() {
-  invalidate_solutions();
-  invalidate_default_solution();
+  solutions_.clear();
+  default_ = TrackerClusteringSolutionHdl{};
   _auxiliaries_.clear();
 }
 
-void tracker_clustering_data::tree_dump(std::ostream& out_, const std::string& title_,
-                                        const std::string& indent_, bool /*inherit_*/) const {
-  std::string indent;
-  if (!indent_.empty()) {
-    indent = indent_;
-  }
-  if (!title_.empty()) {
-    out_ << indent << title_ << std::endl;
+void tracker_clustering_data::tree_dump(std::ostream& out, const std::string& title,
+                                        const std::string& indent, bool /*inherit_*/) const {
+  if (!title.empty()) {
+    out << indent << title << std::endl;
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag << "Solution(s) : " << _solutions_.size()
-       << std::endl;
-  for (int i = 0; i < (int)get_number_of_solutions(); i++) {
-    const tracker_clustering_solution& tcsol = get_solution(i);
+  out << indent << datatools::i_tree_dumpable::tag << "Solutions[" << solutions_.size() << "]: "
+      << std::endl;
+  for (size_t i = 0; i < size(); i++) {
     std::ostringstream indent2;
-    out_ << indent << datatools::i_tree_dumpable::skip_tag;
+    out << indent << datatools::i_tree_dumpable::skip_tag;
     indent2 << indent << datatools::i_tree_dumpable::skip_tag;
-    if (i == (int)_solutions_.size() - 1) {
-      out_ << datatools::i_tree_dumpable::last_tag;
+    if (i == size() - 1) {
+      out << datatools::i_tree_dumpable::last_tag;
       indent2 << datatools::i_tree_dumpable::last_skip_tag;
     } else {
-      out_ << datatools::i_tree_dumpable::tag;
+      out << datatools::i_tree_dumpable::tag;
       indent2 << datatools::i_tree_dumpable::skip_tag;
     }
-    out_ << "Solution #" << i << " : " << std::endl;
-    tcsol.tree_dump(out_, "", indent2.str());
+    out << "Solution #" << i << " : " << std::endl;
+    at(i).tree_dump(out, "", indent2.str());
   }
 
-  out_ << indent << datatools::i_tree_dumpable::tag
-       << "Default solution : " << (!_default_solution_ ? "No" : "Yes") << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag
+      << "Default solution : " << (default_ ? "Yes" : "No") << std::endl;
 }
 
 // Serial tag for datatools::serialization::i_serializable interface :

@@ -65,17 +65,17 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
  private:
   /// Digitize calorimeter hits
   void digitizeHits(const mctools::simulated_data& simdata,
-                    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+                    snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
   /// Calibrate calorimeter hits (energy/time resolution spread)
-  void calibrateHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void calibrateHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
   /// Apply basic trigger filter
-  void triggerHits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+  void triggerHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
   /// Main process function
   void process_impl(const mctools::simulated_data& simdata,
-                    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& calohits);
+                    snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
  private:
   mygsl::rng RNG_{};                     //!< PRN generator

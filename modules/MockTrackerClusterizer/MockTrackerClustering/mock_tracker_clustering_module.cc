@@ -117,7 +117,7 @@ void mock_tracker_clustering_module::initialize(const datatools::properties& set
   }
   // Default label:
   if (_CD_label_.empty()) {
-    _CD_label_ = snemo::datamodel::data_info::default_calibrated_data_label();
+    _CD_label_ = snedm::labels::calibrated_data();
   }
 
   if (_TCD_label_.empty()) {
@@ -127,7 +127,7 @@ void mock_tracker_clustering_module::initialize(const datatools::properties& set
   }
   // Default label:
   if (_TCD_label_.empty()) {
-    _TCD_label_ = snemo::datamodel::data_info::default_tracker_clustering_data_label();
+    _TCD_label_ = snedm::labels::tracker_clustering_data();
   }
 
   // Geometry manager :
@@ -204,11 +204,11 @@ dpp::base_module::process_status mock_tracker_clustering_module::process(
     ptr_cluster_data = &(data_record_.grab<snemo::datamodel::tracker_clustering_data>(_TCD_label_));
   }
   snemo::datamodel::tracker_clustering_data& the_clustering_data = *ptr_cluster_data;
-  if (the_clustering_data.has_solutions()) {
+  if (!the_clustering_data.empty()) {
     DT_THROW_IF(abort_at_former_output, std::logic_error,
                 "Already has processed tracker clustering data !");
     if (!preserve_former_output) {
-      the_clustering_data.reset();
+      the_clustering_data.clear();
     }
   }
 
@@ -225,14 +225,8 @@ dpp::base_module::process_status mock_tracker_clustering_module::process(
 void mock_tracker_clustering_module::_process(
     const snemo::datamodel::calibrated_data& calib_data_,
     snemo::datamodel::tracker_clustering_data& clustering_data_) {
-  DT_LOG_TRACE(get_logging_priority(), "Entering...");
-
   // Process the clusterizer driver :
-  _driver_.get()->process(calib_data_.calibrated_tracker_hits(),
-                          calib_data_.calibrated_calorimeter_hits(), clustering_data_);
-
-  DT_LOG_TRACE(get_logging_priority(), "Exiting.");
-  return;
+  _driver_->process(calib_data_.tracker_hits(), calib_data_.calorimeter_hits(), clustering_data_);
 }
 
 }  // namespace reconstruction
@@ -266,7 +260,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
         .set_long_description(
             "This is the name of the bank to be used \n"
             "as the source of input tracker hits.    \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the \n"
             "'calibrated data' bank::        \n"
@@ -285,8 +279,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::mock_tracker_clustering_m
         .set_long_description(
             "This is the name of the bank to be used as   \n"
             "the sink of output clusters of tracker hits. \n")
-        .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_clustering_data_label())
+        .set_default_value_string(snedm::labels::tracker_clustering_data())
         .add_example(
             "Use an alternative name for the   \n"
             "'tracker clustering data' bank::  \n"

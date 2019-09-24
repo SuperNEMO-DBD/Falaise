@@ -242,8 +242,6 @@ void cat_driver::initialize(const datatools::properties& setup_) {
   _set_initialized(true);
 }
 
-
-
 /// Main clustering method
 int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_type& gg_hits_,
                               const base_tracker_clusterizer::calo_hit_collection_type& calo_hits_,
@@ -259,11 +257,11 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   size_t ihit = 0;
 
   // Hit accounting :
-  std::map<int, sdm::calibrated_data::tracker_hit_handle_type> hits_mapping;
+  std::map<int, sdm::TrackerHitHdl> hits_mapping;
   std::map<int, int> hits_status;
 
   // GG hit loop :
-  BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
+  BOOST_FOREACH (const sdm::TrackerHitHdl& gg_handle, gg_hits_) {
     // Skip NULL handle :
     if (!gg_handle) {
       continue;
@@ -346,7 +344,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
   // Take into account calo hits:
   _CAT_input_.calo_cells.clear();
   // Calo hit accounting :
-  std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+  std::map<int, sdm::CalorimeterHitHdl> calo_hits_mapping;
   if (_process_calo_hits_) {
     if (_CAT_input_.calo_cells.capacity() < calo_hits_.size()) {
       _CAT_input_.calo_cells.reserve(calo_hits_.size());
@@ -355,8 +353,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     size_t jhit = 0;
 
     // CALO hit loop :
-    BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
-                   calo_hits_) {
+    BOOST_FOREACH (const sdm::CalorimeterHitHdl& calo_handle, calo_hits_) {
       // Skip NULL handle :
       if (!calo_handle.has_data()) {
         continue;
@@ -460,12 +457,10 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
       ihs.second = 0;
     }
 
-    sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
-    clustering_.add_solution(htcs, true);
-    clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
-    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.get_auxiliaries().update_string(
-        sdm::tracker_clustering_data::clusterizer_id_key(), CAT_ID);
+    auto htcs = datatools::make_handle<sdm::TrackerClusteringSolution>();
+    clustering_.push_back(htcs, true);
+    clustering_.get_default().set_solution_id(clustering_.size() - 1);
+    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default();
 
     // Analyse the sequentiator output :
     const std::vector<CAT::topology::sequence>& the_sequences = iscenario.sequences();
@@ -481,11 +476,10 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         // A CAT cluster with more than one hit/cell(node) :
         {
           // Append a new cluster :
-          sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
+          sdm::TrackerClusterHdl tch(new sdm::tracker_cluster);
           clustering_solution.get_clusters().push_back(tch);
         }
-        sdm::tracker_cluster::handle_type& cluster_handle =
-            clustering_solution.get_clusters().back();
+        sdm::TrackerClusterHdl& cluster_handle = clustering_solution.get_clusters().back();
         cluster_handle->set_cluster_id(clustering_solution.get_clusters().size() - 1);
         if (_store_result_as_properties_) {
           // 2012/06/28 XG : Adding
@@ -676,7 +670,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
         for (int i = 0; i < (int)seqsz; i++) {
           const CAT::topology::node& a_node = a_sequence.nodes()[i];
           const int hit_id = a_node.c().id();
-          cluster_handle->get_hits().push_back(hits_mapping[hit_id]);
+          cluster_handle->hits().push_back(hits_mapping[hit_id]);
           hits_status[hit_id] = 1;
 
           if (_store_result_as_properties_) {

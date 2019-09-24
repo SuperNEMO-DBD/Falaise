@@ -82,7 +82,7 @@ void draw_gg_cluster_item(std::ostream& out_, const sdm::calibrated_tracker_hit&
 
 void draw_gg_cluster(std::ostream& out_, const sdm::tracker_cluster& gg_cluster_,
                      bool enlarged_ = false, bool sep_ = true) {
-  for (const auto& i : gg_cluster_.get_hits()) {
+  for (const auto& i : gg_cluster_.hits()) {
     draw_gg_cluster_item(out_, i.get(), enlarged_);
   }
   if (sep_) {
@@ -143,9 +143,9 @@ int main(int argc_, char** argv_) {
     }
 
     // Populate a collection of handles on Geiger hits :
-    sdm::calibrated_tracker_hit::collection_type hits;
+    sdm::TrackerHitHdlCollection hits;
     for (int i = 0; i < 18; ++i) {
-      sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
+      sdm::TrackerHitHdl h(new sdm::calibrated_tracker_hit);
       sdm::calibrated_tracker_hit& gg_hit = h.grab();
       gg_hit.set_hit_id(i);
       geomtools::geom_id gid;
@@ -180,20 +180,20 @@ int main(int argc_, char** argv_) {
     }
 
     // Create a handle on some tracker cluster :
-    sdm::tracker_cluster::handle_type hTC0(new sdm::tracker_cluster);
+    sdm::TrackerClusterHdl hTC0(new sdm::tracker_cluster);
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.get_hits().push_back(hits[0]);
-    TC0.get_hits().push_back(hits[1]);
-    TC0.get_hits().push_back(hits[2]);
-    TC0.get_hits().push_back(hits[3]);
-    TC0.get_hits().push_back(hits[4]);
-    TC0.get_hits().push_back(hits[5]);
-    TC0.get_hits().push_back(hits[6]);
-    TC0.get_hits().push_back(hits[7]);
-    TC0.get_hits().push_back(hits[8]);
-    TC0.get_hits().push_back(hits[9]);
+    TC0.hits().push_back(hits[0]);
+    TC0.hits().push_back(hits[1]);
+    TC0.hits().push_back(hits[2]);
+    TC0.hits().push_back(hits[3]);
+    TC0.hits().push_back(hits[4]);
+    TC0.hits().push_back(hits[5]);
+    TC0.hits().push_back(hits[6]);
+    TC0.hits().push_back(hits[7]);
+    TC0.hits().push_back(hits[8]);
+    TC0.hits().push_back(hits[9]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -205,16 +205,16 @@ int main(int argc_, char** argv_) {
     }
 
     // Create another handle on some other tracker cluster :
-    sdm::tracker_cluster::handle_type hTC1(new sdm::tracker_cluster);
+    sdm::TrackerClusterHdl hTC1(new sdm::tracker_cluster);
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.get_hits().push_back(hits[10]);
-    TC1.get_hits().push_back(hits[11]);
-    TC1.get_hits().push_back(hits[12]);
-    TC1.get_hits().push_back(hits[13]);
-    TC1.get_hits().push_back(hits[14]);
-    TC1.get_hits().push_back(hits[15]);
+    TC1.hits().push_back(hits[10]);
+    TC1.hits().push_back(hits[11]);
+    TC1.hits().push_back(hits[12]);
+    TC1.hits().push_back(hits[13]);
+    TC1.hits().push_back(hits[14]);
+    TC1.hits().push_back(hits[15]);
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -225,7 +225,7 @@ int main(int argc_, char** argv_) {
       draw_gg_cluster(fvisu.grab(), TC1);
     }
 
-    sdm::tracker_clustering_solution::handle_type hTCS0(new sdm::tracker_clustering_solution);
+    sdm::TrackerClusteringSolutionHdl hTCS0(new sdm::tracker_clustering_solution);
     sdm::tracker_clustering_solution& TCS0 = hTCS0.grab();
     TCS0.set_solution_id(0);
     TCS0.get_auxiliaries().store("weighting.chi2", 3.2546);

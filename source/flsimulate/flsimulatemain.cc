@@ -298,7 +298,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     // Simulation module:
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
-    std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
+    std::string sd_label = snedm::labels::simulated_data();
     std::string geo_label = snemo::service_info::geometryServiceName();
     flSimModule.set_sd_label(sd_label);
     flSimModule.set_geo_label(geo_label);
@@ -354,7 +354,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
 
       // Add the event header bank
       auto &eventHeader = workItem.add<snemo::datamodel::event_header>(
-          snemo::datamodel::data_info::default_event_header_label(), "Event Header Bank");
+          snedm::labels::event_header(), "Event Header Bank");
       eventHeader.set_generation(snemo::datamodel::event_header::GENERATION_SIMULATED);
       datatools::event_id eventID{datatools::event_id::ANY_RUN_NUMBER, static_cast<int>(i)};
       eventHeader.set_id(eventID);

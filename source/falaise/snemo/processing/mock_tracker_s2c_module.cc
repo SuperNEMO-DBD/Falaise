@@ -3,7 +3,7 @@
  */
 
 // Ourselves:
-#include <falaise/snemo/processing/mock_tracker_s2c_module.h>
+#include "mock_tracker_s2c_module.h"
 
 // Standard library:
 #include <sstream>
@@ -25,6 +25,7 @@
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/services/services.h>
+#include "detail/mock_raw_tracker_hit.h"
 #include "falaise/property_set.h"
 #include "falaise/quantity.h"
 
@@ -46,10 +47,8 @@ void mock_tracker_s2c_module::initialize(const datatools::properties& ps,
 
   falaise::property_set fps{ps};
 
-  sdInputTag =
-      fps.get<std::string>("SD_label", snemo::datamodel::data_info::default_simulated_data_label());
-  cdOutputTag = fps.get<std::string>("CD_label",
-                                     snemo::datamodel::data_info::default_calibrated_data_label());
+  sdInputTag = fps.get<std::string>("SD_label", snedm::labels::simulated_data());
+  cdOutputTag = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());
 
   geoManager = snemo::service_handle<snemo::geometry_svc>{services};
 
@@ -110,8 +109,8 @@ dpp::base_module::process_status mock_tracker_s2c_module::process(datatools::thi
     sim_tracker_hit_col_t const& simTrackerHits = simulatedData.get_step_hits(_hit_category_);
 
     auto& currentCalData =
-        snemo::datamodel::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
-    cal_tracker_hit_col_t& calTrackerHits = currentCalData.calibrated_tracker_hits();
+        snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(cdOutputTag, event);
+    cal_tracker_hit_col_t& calTrackerHits = currentCalData.tracker_hits();
 
     calTrackerHits = process_(simTrackerHits);
   }
@@ -174,8 +173,7 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
 
     /*** Anode TDC ***/
     // randomize the expected Geiger drift time:
-    const double expected_drift_time =
-        _geiger_.getRandomTimeGivenRadius(RNG_, drift_distance);
+    const double expected_drift_time = _geiger_.getRandomTimeGivenRadius(RNG_, drift_distance);
     const double anode_time = ionization_time + expected_drift_time;
     const double sigma_anode_time = _geiger_.getAnodeTimeResolution(anode_time);
 
@@ -213,8 +211,8 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
     auto found = std::find_if(rawTrackerDigits.begin(), rawTrackerDigits.end(), pred_has_gid);
     if (found == rawTrackerDigits.end()) {
       // This geom_id is not used by any previous tracker hit: we create a new tracker hit !
-      rawTrackerDigits.emplace_back(snemo::datamodel::mock_raw_tracker_hit{});
-      snemo::datamodel::mock_raw_tracker_hit& new_raw_tracker_hit = rawTrackerDigits.back();
+      rawTrackerDigits.emplace_back(snreco::detail::mock_raw_tracker_hit{});
+      snreco::detail::mock_raw_tracker_hit& new_raw_tracker_hit = rawTrackerDigits.back();
 
       // assign a hit ID and the geometry ID to the hit:
       new_raw_tracker_hit.set_hit_id(raw_tracker_hit_id);
@@ -250,7 +248,7 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
       }
     } else {
       // This geom_id is already used by some previous tracker hit: we update this hit !
-      snemo::datamodel::mock_raw_tracker_hit& some_raw_tracker_hit = *found;
+      snreco::detail::mock_raw_tracker_hit& some_raw_tracker_hit = *found;
 
       if (datatools::is_valid(anode_time)) {
         if (anode_time < some_raw_tracker_hit.get_drift_time()) {
@@ -478,7 +476,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
         .set_long_description(
             "This is the name of the bank to be used    \n"
             "as the output calibrated calorimeter hits. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_simulated_data_label())
+        .set_default_value_string(snedm::labels::simulated_data())
         .add_example(
             "Use an alternative name for the 'simulated data' bank:: \n"
             "                                \n"
@@ -496,7 +494,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_tracker_s2c_module, ocd_
         .set_long_description(
             "This is the name of the bank to be used  \n"
             "as the input simulated calorimeter hits. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the 'calibrated data' bank:: \n"
             "                                \n"

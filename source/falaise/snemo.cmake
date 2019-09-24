@@ -11,7 +11,6 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/gg_track_utils.h
   snemo/datamodels/helix_trajectory_pattern.h
   snemo/datamodels/line_trajectory_pattern.h
-  snemo/datamodels/mock_raw_tracker_hit.h
   snemo/datamodels/particle_track.h
   snemo/datamodels/particle_track_data.h
   snemo/datamodels/polyline_trajectory_pattern.h
@@ -55,11 +54,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/simulation/gg_step_hit_processor.h
   snemo/simulation/calorimeter_step_hit_processor.h
 
-  snemo/processing/event_header_utils_module.h
   snemo/processing/calorimeter_regime.h
   snemo/processing/geiger_regime.h
-  snemo/processing/mock_calorimeter_s2c_module.h
-  snemo/processing/mock_tracker_s2c_module.h
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
   snemo/processing/module.h
@@ -94,7 +90,6 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/tracker_trajectory_data.cc
   snemo/datamodels/particle_track.cc
   snemo/datamodels/particle_track_data.cc
-  snemo/datamodels/mock_raw_tracker_hit.cc
   snemo/datamodels/data_model.cc
   snemo/datamodels/boost_io/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
@@ -108,13 +103,18 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/mapped_magnetic_field.cc
 
   snemo/processing/event_header_utils_module.cc
+  snemo/processing/event_header_utils_module.h
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
   snemo/processing/mock_calorimeter_s2c_module.cc
+  snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_tracker_s2c_module.cc
+  snemo/processing/mock_tracker_s2c_module.h
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/base_gamma_builder.cc
+  snemo/processing/detail/mock_raw_tracker_hit.h
+  snemo/processing/detail/mock_raw_tracker_hit.cc
   snemo/processing/detail/GeigerTimePartitioner.cc
   snemo/processing/detail/testing/gg_hit.h
   snemo/processing/detail/testing/gg_hit.cc

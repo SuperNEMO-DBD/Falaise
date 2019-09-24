@@ -27,12 +27,6 @@ namespace datamodel {
 /// \brief A cluster of Geiger calibrated hits referenced by handles
 class tracker_cluster : public geomtools::base_hit {
  public:
-  /// Handle on tracker cluster
-  typedef datatools::handle<tracker_cluster> handle_type;
-
-  /// Flag for a auxiliary property
-  static const std::string& delayed_cluster_flag();
-
   /// Check if the cluster is associated to delayed hits
   bool is_delayed() const;
 
@@ -45,45 +39,42 @@ class tracker_cluster : public geomtools::base_hit {
   /// Mark the cluster as associated to prompt hits
   void make_prompt();
 
-  /// Check if there is a valid cluster ID
-  bool has_cluster_id() const;
-
   /// Get the cluster ID
   int get_cluster_id() const;
 
   /// Set the cluster ID
   void set_cluster_id(int32_t);
 
-  /// Invalidate the cluster ID
-  void invalidate_cluster_id();
-
   /// Return a mutable reference on the container of handles on calibrated tracker hits
-  calibrated_tracker_hit::collection_type& get_hits();
+  TrackerHitHdlCollection& hits();
 
   /// Return a non mutable reference on the container of handles on calibrated tracker hits
-  const calibrated_tracker_hit::collection_type& get_hits() const;
+  const TrackerHitHdlCollection& hits() const;
 
   /// Return the number of hits in the cluster
-  unsigned int get_number_of_hits() const;
+  size_t size() const;
 
   /// Return a non mutable reference on the calibrated tracker hit given its index
-  const calibrated_tracker_hit& get_hit(int i_) const;
+  const calibrated_tracker_hit& at(size_t index) const;
 
   /// Reset/invalidate the contents of the tracker cluster
   void clear();
 
-  /// Reset/invalidate the tracker cluster(see clear)
-  void reset();
-
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  calibrated_tracker_hit::collection_type _hits_;  //!< Collection of Geiger hit handles
+  TrackerHitHdlCollection hits_;  //!< Collection of Geiger hit handles
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+using TrackerCluster = tracker_cluster;
+using TrackerClusterCollection = std::vector<TrackerCluster>;
+
+using TrackerClusterHdl = datatools::handle<TrackerCluster>;
+using TrackerClusterHdlCollection = std::vector<TrackerClusterHdl>;
 
 }  // end of namespace datamodel
 

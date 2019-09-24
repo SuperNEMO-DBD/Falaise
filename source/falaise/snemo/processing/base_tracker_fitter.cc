@@ -130,7 +130,7 @@ int base_tracker_fitter::_post_process(snemo::datamodel::tracker_trajectory_data
 
     // Define a map with index based on chi2 value : first elements are the
     // best fitted tracks
-    using chi2_dict_type = std::map<double, snemo::datamodel::tracker_trajectory::handle_type>;
+    using chi2_dict_type = std::map<double, snemo::datamodel::TrackerTrajectoryHdl>;
     using trajectory_dict_type = std::map<int32_t, chi2_dict_type>;
     trajectory_dict_type vtrajs;
 

@@ -44,7 +44,7 @@ void charge_computation_driver::process(const snemo::datamodel::tracker_trajecto
   const snedm::base_trajectory_pattern &a_track_pattern = trajectory_.get_pattern();
 
   if (a_track_pattern.get_pattern_id() == snedm::line_trajectory_pattern::pattern_id()) {
-    particle_.set_charge(snedm::particle_track::undefined);
+    particle_.set_charge(snedm::particle_track::UNDEFINED);
     return;
   }
 
@@ -69,9 +69,9 @@ void charge_computation_driver::process(const snemo::datamodel::tracker_trajecto
   }
 
   if (a_charge < 0) {
-    particle_.set_charge(snedm::particle_track::negative);
+    particle_.set_charge(snedm::particle_track::NEGATIVE);
   } else {
-    particle_.set_charge(snedm::particle_track::positive);
+    particle_.set_charge(snedm::particle_track::POSITIVE);
   }
 }
 

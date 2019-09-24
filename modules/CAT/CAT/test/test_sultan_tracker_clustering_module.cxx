@@ -104,10 +104,8 @@ int main(int argc_, char** argv_) {
     for (int i = 0; i < 3; i++) {
       std::clog << "Processing event #" << i << "\n";
       datatools::things eventRecord;
-      snemo::datamodel::calibrated_data& CD =
-          eventRecord.add<snemo::datamodel::calibrated_data>("CD");
-      snemo::datamodel::calibrated_data::tracker_hit_collection_type& gghits =
-          CD.calibrated_tracker_hits();
+      auto& CD = eventRecord.add<snemo::datamodel::calibrated_data>("CD");
+      snemo::datamodel::TrackerHitHdlCollection& gghits = CD.tracker_hits();
       generate_gg_hits(*gg_locator, gghits);
       dpp::base_module::process_status status = SULTANmod.process(eventRecord);
       if (status != 0) {

@@ -3,7 +3,7 @@
  */
 
 // Ourselves:
-#include <falaise/snemo/processing/event_header_utils_module.h>
+#include "event_header_utils_module.h"
 
 // Third party:
 // // - Bayeux/datatools:
@@ -117,7 +117,7 @@ void event_header_utils_module::reset() {
 void event_header_utils_module::_set_defaults() {
   _mode_ = MODE_INVALID;
 
-  _add_header_bank_label_ = snemo::datamodel::data_info::default_event_header_label();
+  _add_header_bank_label_ = snedm::labels::event_header();
   _add_header_gentype_ = snemo::datamodel::event_header::GENERATION_INVALID;
   _add_header_update_ = false;
   _add_header_run_number_ = 0;
@@ -216,7 +216,7 @@ void event_header_utils_module::_process_add_header(datatools::things& data_reco
   // Store GENBB event weight
   if (ah_is_simulated()) {
     if (_add_header_use_genbb_weight_ || _add_header_use_genbb_label_) {
-      const std::string sd_label = snemo::datamodel::data_info::default_simulated_data_label();
+      const std::string sd_label = snedm::labels::simulated_data();
       DT_THROW_IF(!data_record_.has(sd_label), std::logic_error,
                   "Event record has no '" << sd_label << "' bank!");
       const auto& the_simulated_data = data_record_.get<mctools::simulated_data>(sd_label);
@@ -282,7 +282,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module, oc
         .set_long_description(
             "This is the name of the bank to be used \n"
             "to store the event header informations. \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_event_header_label())
+        .set_default_value_string(snedm::labels::event_header())
         .add_example(
             "Use an alternative name for the 'event_ header' bank:: \n"
             "                                                       \n"
@@ -313,7 +313,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::event_header_utils_module, oc
         .set_traits(datatools::TYPE_STRING)
         .set_mandatory(false)
         .set_long_description(R"(This is the type of generation ("real" or "simulated"))")
-        .set_default_value_string(snemo::datamodel::data_info::default_event_header_label())
+        .set_default_value_string(snedm::labels::event_header())
         .add_example(
             "Indicate simulated event:: \n"
             "                                                       \n"

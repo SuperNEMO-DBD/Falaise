@@ -31,11 +31,11 @@ int main(/*int argc_, char ** argv_*/) {
 
     datatools::handle<sdm::tracker_trajectory> hTJ0;
     hTJ0.reset(new sdm::tracker_trajectory);
-    hTJ0.grab().set_trajectory_id(0);
-    hTJ0.grab().set_pattern_handle(hLTP0);
-    hTJ0.grab().grab_auxiliaries().store_flag("test");
-    hTJ0.grab().grab_auxiliaries().store("chi2", 0.234);
-    hTJ0.get().tree_dump(std::clog, "Tracker trajectory : ");
+    hTJ0->set_id(0);
+    hTJ0->set_pattern_handle(hLTP0);
+    hTJ0->grab_auxiliaries().store_flag("test");
+    hTJ0->grab_auxiliaries().store("chi2", 0.234);
+    hTJ0->tree_dump(std::clog, "Tracker trajectory : ");
 
     // Create a handle of fake vertices :
     datatools::handle<geomtools::blur_spot> hV0;
@@ -70,7 +70,7 @@ int main(/*int argc_, char ** argv_*/) {
     datatools::handle<sdm::particle_track> hPT0;
     hPT0.reset(new sdm::particle_track);
     hPT0.grab().set_track_id(0);
-    hPT0.grab().set_charge(sdm::particle_track::positive);
+    hPT0.grab().set_charge(sdm::particle_track::POSITIVE);
     hPT0.grab().set_trajectory_handle(hTJ0);
     hPT0.grab().get_vertices().push_back(hV0);
     hPT0.grab().get_vertices().push_back(hV1);
@@ -78,38 +78,25 @@ int main(/*int argc_, char ** argv_*/) {
     hPT0.get().tree_dump(std::clog, "Particle track : ");
 
     // Event record :
-    sdm::event_record ER;
+    snedm::event_record ER;
 
     // Particle track data bank :
-    auto& PTD =
-        ER.add<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label());
-    PTD.add_particle(hPT0);
+    auto& PTD = ER.add<sdm::particle_track_data>(snedm::labels::particle_track_data());
+    PTD.insertParticle(hPT0);
     PTD.tree_dump(std::clog, "Particle track data :");
 
     // Retrieve electrons if any
-    sdm::particle_track_data::particle_collection_type electrons;
-    const size_t nelectrons = PTD.fetch_particles(electrons, sdm::particle_track::negative);
-    std::clog << "Number of particles = " << PTD.get_number_of_particles() << std::endl;
-    std::clog << "Number of electrons = " << nelectrons << std::endl;
+    sdm::ParticleHdlCollection electrons = get_particles_by_charge(PTD, sdm::particle_track::NEGATIVE);
+    std::clog << "Number of particles = " << PTD.numberOfParticles() << std::endl;
+    std::clog << "Number of electrons = " << electrons.size() << std::endl;
 
     // Adding other particles
     for (size_t i = 0; i < 10; i++) {
       datatools::handle<sdm::particle_track> hPT;
       hPT.reset(new sdm::particle_track);
-      hPT.grab().set_track_id(i);
-      PTD.add_particle(hPT);
+      hPT->set_track_id(i);
+      PTD.insertParticle(hPT);
     }
-    std::clog << "Number of particles (before removing) = " << PTD.get_number_of_particles()
-              << std::endl;
-    // Create a list of particle index to remove
-    std::vector<size_t> indexes;
-    indexes.push_back(3);
-    indexes.push_back(5);
-    indexes.push_back(1);
-    PTD.remove_particles(indexes);
-    std::clog << "Number of particles (after removing) = " << PTD.get_number_of_particles()
-              << std::endl;
-    PTD.tree_dump(std::clog, "Particle track data after cleaning:");
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
     error_code = EXIT_FAILURE;

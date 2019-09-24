@@ -39,7 +39,7 @@ int main(/* int argc_, char ** argv_ */) {
      *************************/
 
     // Populate a collection of handles on Geiger hits :
-    sdm::calibrated_tracker_hit::collection_type hits;
+    sdm::TrackerHitHdlCollection hits;
     for (int i = 0; i < 18; ++i) {
       DATATOOLS_HANDLE_DECLARE_NEW(hgg_hit, sdm::calibrated_tracker_hit);
       DATATOOLS_HANDLE_GRAB_REF(gg_hit, hgg_hit, sdm::calibrated_tracker_hit);
@@ -79,11 +79,11 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC0 = hTC0.get();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.get_hits().push_back(hits.at(0));
-    TC0.get_hits().push_back(hits.at(1));
-    TC0.get_hits().push_back(hits.at(2));
-    TC0.get_hits().push_back(hits.at(3));
-    TC0.get_hits().push_back(hits.at(4));
+    TC0.hits().push_back(hits.at(0));
+    TC0.hits().push_back(hits.at(1));
+    TC0.hits().push_back(hits.at(2));
+    TC0.hits().push_back(hits.at(3));
+    TC0.hits().push_back(hits.at(4));
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -98,12 +98,12 @@ int main(/* int argc_, char ** argv_ */) {
     // tracker_cluster & TC1 = hTC1.get();
     TC1.set_cluster_id(1);
     TC1.make_prompt();
-    TC1.get_hits().push_back(hits.at(10));
-    TC1.get_hits().push_back(hits.at(11));
-    TC1.get_hits().push_back(hits.at(12));
-    TC1.get_hits().push_back(hits.at(13));
-    TC1.get_hits().push_back(hits.at(14));
-    TC1.get_hits().push_back(hits.at(15));
+    TC1.hits().push_back(hits.at(10));
+    TC1.hits().push_back(hits.at(11));
+    TC1.hits().push_back(hits.at(12));
+    TC1.hits().push_back(hits.at(13));
+    TC1.hits().push_back(hits.at(14));
+    TC1.hits().push_back(hits.at(15));
     TC1.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;
@@ -149,7 +149,7 @@ int main(/* int argc_, char ** argv_ */) {
     DATATOOLS_HANDLE_GRAB_REF(TJ0, hTJ0, sdm::tracker_trajectory);
     // datatools::utils::handle<sdm::tracker_trajectory> hTJ0(new sdm::tracker_trajectory);
     // tracker_trajectory & TJ0 = hTJ0.get();
-    TJ0.set_trajectory_id(0);
+    TJ0.set_id(0);
     TJ0.set_cluster_handle(hTC0);
     TJ0.set_pattern_handle(hLTP0);
     TJ0.grab_auxiliaries().store_flag("line");
@@ -173,7 +173,7 @@ int main(/* int argc_, char ** argv_ */) {
     DATATOOLS_HANDLE_GRAB_REF(TJ1, hTJ1, sdm::tracker_trajectory);
     // datatools::utils::handle<tracker_trajectory> hTJ1(new sdm::tracker_trajectory);
     // tracker_trajectory & TJ1 = hTJ1.get();
-    TJ1.set_trajectory_id(0);
+    TJ1.set_id(0);
     TJ1.set_cluster_handle(hTC1);
     TJ1.set_pattern_handle(hLTP1);
     TJ1.grab_auxiliaries().store_flag("helix");

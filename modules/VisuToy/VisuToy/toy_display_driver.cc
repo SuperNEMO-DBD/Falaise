@@ -601,7 +601,7 @@ void toy_display_driver::generate_SD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
   // Simulated data :
-  const std::string &SD_label = snemo::datamodel::data_info::default_simulated_data_label();
+  const std::string &SD_label = snedm::labels::simulated_data();
   if (get_current_event_record_().has(SD_label)) {
     DT_LOG_DEBUG(logging_priority, "has SIMULATED_DATA_LABEL !");
     DT_THROW_IF(!get_current_event_record_().is_a<mctools::simulated_data>(SD_label),
@@ -1097,7 +1097,7 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
 
-  const std::string &CD_label = snemo::datamodel::data_info::default_calibrated_data_label();
+  const std::string &CD_label = snedm::labels::calibrated_data();
   if (get_current_event_record_().has(CD_label)) {
     DT_LOG_DEBUG(logging_priority, "has CALIBRATED_DATA_LABEL !");
     DT_THROW_IF(!get_current_event_record_().is_a<snemo::datamodel::calibrated_data>(CD_label),
@@ -1109,17 +1109,15 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated tracker hits:
     {
-      snemo::datamodel::calibrated_data::tracker_hit_collection_type &CTHC =
-          the_cd.calibrated_tracker_hits();
+      snemo::datamodel::TrackerHitHdlCollection &CTHC = the_cd.tracker_hits();
       if (CTHC.size()) {
         // Normal hits :
         {
           const std::string hit_category = "CD.tracker";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1178,10 +1176,9 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
         {
           const std::string hit_category = "CD.tracker_delayed";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1238,10 +1235,9 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
         {
           const std::string hit_category = "CD.tracker_noisy";
           size_t hit_count = 0;
-          for (snemo::datamodel::calibrated_data::tracker_hit_collection_type::const_iterator i =
-                   CTHC.begin();
+          for (snemo::datamodel::TrackerHitHdlCollection::const_iterator i = CTHC.begin();
                i != CTHC.end(); i++) {
-            const snemo::datamodel::calibrated_data::tracker_hit_handle_type &the_handle = *i;
+            const snemo::datamodel::TrackerHitHdl &the_handle = *i;
             if (!the_handle.has_data()) continue;
             const snemo::datamodel::calibrated_tracker_hit &CTH = the_handle.get();
 
@@ -1298,15 +1294,13 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // Draw the calibrated calorimeter hits:
     if (setup_label == snemo_demo_label()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &CCHC =
-          the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.calorimeter";
         size_t hit_count = 0;
-        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator i =
-                 CCHC.begin();
+        for (snemo::datamodel::CalorimeterHitHdlCollection::const_iterator i = CCHC.begin();
              i != CCHC.end(); i++) {
-          const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type &the_handle = *i;
+          const snemo::datamodel::CalorimeterHitHdl &the_handle = *i;
           if (!the_handle.has_data()) continue;
           const snemo::datamodel::calibrated_calorimeter_hit &CCH = the_handle.get();
 
@@ -1379,15 +1373,13 @@ void toy_display_driver::generate_CD_data_(std::ostream &out_, int &index_) {
 
     // draw the calibrated muon trigger hits:
     if (setup_label == snemo_tc_label()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &CCHC =
-          the_cd.calibrated_calorimeter_hits();
+      snemo::datamodel::CalorimeterHitHdlCollection &CCHC = the_cd.calorimeter_hits();
       if (CCHC.size()) {
         const std::string hit_category = "CD.muon_trigger";
         size_t hit_count = 0;
-        for (snemo::datamodel::calibrated_data::calorimeter_hit_collection_type::const_iterator i =
-                 CCHC.begin();
+        for (snemo::datamodel::CalorimeterHitHdlCollection::const_iterator i = CCHC.begin();
              i != CCHC.end(); i++) {
-          const snemo::datamodel::calibrated_data::calorimeter_hit_handle_type &the_handle = *i;
+          const snemo::datamodel::CalorimeterHitHdl &the_handle = *i;
           if (!the_handle.has_data()) continue;
           const snemo::datamodel::calibrated_calorimeter_hit &CCH = the_handle.get();
 
@@ -1438,8 +1430,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
   double cell_diameter = 44.0 * CLHEP::mm;
-  const std::string &TCD_label =
-      snemo::datamodel::data_info::default_tracker_clustering_data_label();
+  const std::string &TCD_label = snedm::labels::tracker_clustering_data();
   if (get_current_event_record_().has(TCD_label)) {
     DT_LOG_DEBUG(logging_priority, "has TRACKER_CLUSTERING_DATA_LABEL !");
     DT_THROW_IF(
@@ -1449,15 +1440,14 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
             << TCD_label << "' but which is not a 'tracker_clustering_data' instance !");
     snemo::datamodel::tracker_clustering_data &the_tcd =
         get_current_event_record_().grab<snemo::datamodel::tracker_clustering_data>(TCD_label);
-    if (the_tcd.has_default_solution()) {
+    if (the_tcd.has_default()) {
       // Color context:
       geomtools::color::context &CC = geomtools::gnuplot_draw::color_context();
-      const snemo::datamodel::tracker_clustering_solution &the_tcs = the_tcd.get_default_solution();
+      const snemo::datamodel::tracker_clustering_solution &the_tcs = the_tcd.get_default();
       size_t cluster_count = 0;
       for (int i = 0; i < (int)the_tcs.get_clusters().size(); ++i) {
         const snemo::datamodel::tracker_cluster &the_cluster = the_tcs.get_clusters()[i].get();
-        const snemo::datamodel::calibrated_tracker_hit::collection_type &clhits =
-            the_cluster.get_hits();
+        const snemo::datamodel::TrackerHitHdlCollection &clhits = the_cluster.hits();
         // int test1 = geomtools::color::COLOR_TEST;
         // geomtools::color::code_type code = geomtools::color:: COLOR_MAGENTA;
         // geomtools::color::COLOR_MAGENTA;
@@ -1471,7 +1461,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
 
         // Produce tracker cluster rendering data for each hit in the current cluster:
         for (int j = 0; j < (int)clhits.size(); j++) {
-          const snemo::datamodel::calibrated_data::tracker_hit_handle_type &hclhit = clhits[j];
+          const snemo::datamodel::TrackerHitHdl &hclhit = clhits[j];
           const snemo::datamodel::calibrated_tracker_hit &clhit = hclhit.get();
           double x = clhit.get_x();
           double y = clhit.get_y();
@@ -1496,8 +1486,7 @@ void toy_display_driver::generate_TCD_data_(std::ostream &out_, int &index_) {
       }
 
       // Unclustered hits:
-      const snemo::datamodel::calibrated_tracker_hit::collection_type &the_uhits =
-          the_tcs.get_unclustered_hits();
+      const snemo::datamodel::TrackerHitHdlCollection &the_uhits = the_tcs.get_unclustered_hits();
       for (int i = 0; i < (int)the_uhits.size(); ++i) {
         const snemo::datamodel::calibrated_tracker_hit &uclhit = the_uhits[i].get();
         // Produce tracker unclustered hits rendering data
@@ -1534,8 +1523,7 @@ void toy_display_driver::generate_TTD_data_(std::ostream &out_, int &index_) {
   int index = index_;
   const std::string setup_label = gmgr->get_setup_label();
 
-  const std::string &TTD_label =
-      snemo::datamodel::data_info::default_tracker_trajectory_data_label();
+  const std::string &TTD_label = snedm::labels::tracker_trajectory_data();
   if (get_current_event_record_().has(TTD_label)) {
     DT_LOG_DEBUG(logging_priority, "has TRACKER_TRAJECTORY_DATA_LABEL !");
     DT_THROW_IF(
@@ -2862,31 +2850,28 @@ void toy_display_driver::cmd_dump(datatools::things &a_data) {
   const sdm::tracker_trajectory_data *ttd_ptr = 0;
   const sdm::particle_track_data *ptd_ptr = 0;
 
-  if (a_data.has(sdm::data_info::default_event_header_label())) {
-    eh_ptr = &(a_data.get<sdm::event_header>(sdm::data_info::default_event_header_label()));
+  if (a_data.has(snedm::labels::event_header())) {
+    eh_ptr = &(a_data.get<sdm::event_header>(snedm::labels::event_header()));
   }
 
-  if (a_data.has(sdm::data_info::default_simulated_data_label())) {
-    sd_ptr = &(a_data.get<mctools::simulated_data>(sdm::data_info::default_simulated_data_label()));
+  if (a_data.has(snedm::labels::simulated_data())) {
+    sd_ptr = &(a_data.get<mctools::simulated_data>(snedm::labels::simulated_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_calibrated_data_label())) {
-    cd_ptr = &(a_data.get<sdm::calibrated_data>(sdm::data_info::default_calibrated_data_label()));
+  if (a_data.has(snedm::labels::calibrated_data())) {
+    cd_ptr = &(a_data.get<sdm::calibrated_data>(snedm::labels::calibrated_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_tracker_clustering_data_label())) {
-    tcd_ptr = &(a_data.get<sdm::tracker_clustering_data>(
-        sdm::data_info::default_tracker_clustering_data_label()));
+  if (a_data.has(snedm::labels::tracker_clustering_data())) {
+    tcd_ptr = &(a_data.get<sdm::tracker_clustering_data>(snedm::labels::tracker_clustering_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_tracker_trajectory_data_label())) {
-    ttd_ptr = &(a_data.get<sdm::tracker_trajectory_data>(
-        sdm::data_info::default_tracker_trajectory_data_label()));
+  if (a_data.has(snedm::labels::tracker_trajectory_data())) {
+    ttd_ptr = &(a_data.get<sdm::tracker_trajectory_data>(snedm::labels::tracker_trajectory_data()));
   }
 
-  if (a_data.has(sdm::data_info::default_particle_track_data_label())) {
-    ptd_ptr = &(
-        a_data.get<sdm::particle_track_data>(sdm::data_info::default_particle_track_data_label()));
+  if (a_data.has(snedm::labels::particle_track_data())) {
+    ptd_ptr = &(a_data.get<sdm::particle_track_data>(snedm::labels::particle_track_data()));
   }
 
   if (eh_ptr != 0) {

@@ -30,11 +30,11 @@ int main(/* int argc_, char ** argv_ */) {
 
     datatools::handle<sdm::tracker_trajectory> hTJ0;
     hTJ0.reset(new sdm::tracker_trajectory);
-    hTJ0.grab().set_trajectory_id(0);
-    hTJ0.grab().set_pattern_handle(hLTP0);
-    hTJ0.grab().grab_auxiliaries().store_flag("test");
-    hTJ0.grab().grab_auxiliaries().store("chi2", 0.234);
-    hTJ0.get().tree_dump(std::clog, "Tracker trajectory : ");
+    hTJ0->set_id(0);
+    hTJ0->set_pattern_handle(hLTP0);
+    hTJ0->grab_auxiliaries().store_flag("test");
+    hTJ0->grab_auxiliaries().store("chi2", 0.234);
+    hTJ0->tree_dump(std::clog, "Tracker trajectory : ");
 
     // Create a handle of fake vertices :
     datatools::handle<geomtools::blur_spot> hV0;
@@ -69,34 +69,11 @@ int main(/* int argc_, char ** argv_ */) {
     sdm::particle_track PT0;
     PT0.set_track_id(0);
     PT0.set_trajectory_handle(hTJ0);
-    PT0.set_charge(sdm::particle_track::positive);
+    PT0.set_charge(sdm::particle_track::POSITIVE);
     PT0.get_vertices().push_back(hV0);
     PT0.get_vertices().push_back(hV1);
     PT0.grab_auxiliaries().store_flag("fake_electron");
     PT0.tree_dump(std::clog, "Particle track : ");
-
-    // Retrieve a subset of vertices
-    sdm::particle_track::vertex_collection_type vertices;
-    {
-      const size_t nvtx = PT0.fetch_vertices(vertices, sdm::particle_track::VERTEX_ON_SOURCE_FOIL);
-      std::clog << "Number of vertices on the source foil = " << nvtx << std::endl;
-      std::clog << "Total number of vertices = " << vertices.size() << std::endl;
-    }
-    {
-      const size_t nvtx =
-          PT0.fetch_vertices(vertices, sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER);
-      std::clog << "Number of vertices on the main calorimeter = " << nvtx << std::endl;
-      std::clog << "Total number of vertices = " << vertices.size() << std::endl;
-    }
-    {
-      const size_t nvtx = PT0.fetch_vertices(vertices,
-                                             sdm::particle_track::VERTEX_ON_MAIN_CALORIMETER |
-                                                 sdm::particle_track::VERTEX_ON_SOURCE_FOIL,
-                                             true);
-      std::clog << "Number of vertices on the source foil & the main calorimeter = " << nvtx
-                << std::endl;
-      std::clog << "Total number of vertices = " << vertices.size() << std::endl;
-    }
 
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;

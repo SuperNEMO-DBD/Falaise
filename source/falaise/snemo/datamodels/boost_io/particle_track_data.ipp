@@ -25,8 +25,8 @@ namespace datamodel {
 template <class Archive>
 void particle_track_data::serialize(Archive& ar_, const unsigned int /*version_*/) {
   ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  ar_& boost::serialization::make_nvp("particles", _particles_);
-  ar_& boost::serialization::make_nvp("non_associated_calorimeters", _non_associated_calorimeters_);
+  ar_& boost::serialization::make_nvp("particles", particles_);
+  ar_& boost::serialization::make_nvp("non_associated_calorimeters", isolated_calorimeters_);
   ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
 }
 

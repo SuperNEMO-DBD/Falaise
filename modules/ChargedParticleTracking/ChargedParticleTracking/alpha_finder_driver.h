@@ -109,21 +109,20 @@ class alpha_finder_driver {
       snemo::datamodel::particle_track_data& particle_track_data_);
 
   /// Dedicated method to find short track
-  void _find_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
+  void _find_short_track_(const snemo::datamodel::TrackerHitHdlCollection& hits_,
                           const snemo::datamodel::tracker_trajectory_solution& solution_,
                           snemo::datamodel::particle_track_data& particle_track_data_,
                           const bool hits_from_cluster = true);
 
   /// Dedicated method to "fit" short track
-  void _fit_short_track_(const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
+  void _fit_short_track_(const snemo::datamodel::TrackerHitHdlCollection& hits_,
                          const geomtools::vector_3d& first_vertex_,
                          geomtools::vector_3d& last_vertex_);
 
   /// Add a new short alpha particle track
-  void _build_alpha_particle_track_(
-      const snemo::datamodel::calibrated_tracker_hit::collection_type& hits_,
-      const geomtools::vector_3d& first_vertex_,
-      snemo::datamodel::particle_track_data& particle_track_data_);
+  void _build_alpha_particle_track_(const snemo::datamodel::TrackerHitHdlCollection& hits_,
+                                    const geomtools::vector_3d& first_vertex_,
+                                    snemo::datamodel::particle_track_data& particle_track_data_);
 
  private:
   datatools::logger::priority logPriority_ = datatools::logger::PRIO_WARNING;  //<! Logging flag

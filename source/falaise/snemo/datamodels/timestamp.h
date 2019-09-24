@@ -35,18 +35,17 @@ class timestamp : public datatools::i_serializable {
   timestamp() = default;
 
   /// Overloaded constructor
-  timestamp(int64_t sec_, int64_t picosec_)
-      : datatools::i_serializable{}, _seconds_{sec_}, _picoseconds_{picosec_} {}
+  timestamp(int64_t s, int64_t ps)
+      : datatools::i_serializable{}, seconds_{s}, picoseconds_{ps} {}
 
   /// Destructor
   virtual ~timestamp() = default;
 
   /// Copy/Move operations to get Ro5
-  timestamp(const timestamp&) = default;
-  timestamp& operator=(const timestamp&) = default; 
-  timestamp(timestamp&&) = default;
-  timestamp& operator=(timestamp&&) = default;
-
+  timestamp(const timestamp &) = default;
+  timestamp &operator=(const timestamp &) = default;
+  timestamp(timestamp &&) = default;
+  timestamp &operator=(timestamp &&) = default;
 
   /// Return the number of seconds
   int64_t get_seconds() const;
@@ -62,9 +61,6 @@ class timestamp : public datatools::i_serializable {
 
   /// Check if the timestamp object is valid
   bool is_valid() const;
-
-  /// Invalidate the timestamp object
-  void invalidate();
 
   /// Convert timestamp to real value (explicit time unit)
   double to_real() const;
@@ -91,9 +87,9 @@ class timestamp : public datatools::i_serializable {
   int compare(const timestamp &) const;
   static const int64_t INVALID_SECONDS;
   static const int64_t INVALID_PICOSECONDS;
-  
-  int64_t _seconds_{INVALID_SECONDS};          //!< Number of seconds
-  int64_t _picoseconds_{INVALID_PICOSECONDS};  //!< Number of picoseconds
+
+  int64_t seconds_{INVALID_SECONDS};          //!< Number of seconds
+  int64_t picoseconds_{INVALID_PICOSECONDS};  //!< Number of picoseconds
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

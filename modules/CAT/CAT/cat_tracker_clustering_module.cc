@@ -106,13 +106,10 @@ void cat_tracker_clustering_module::initialize(const datatools::properties& conf
               "Module '" << get_name() << "' is already initialized ! ");
   dpp::base_module::_common_initialize(config);
 
-  namespace snedm = snemo::datamodel;
-
   falaise::property_set ps{config};
 
-  CDTag_ = ps.get<std::string>("CD_label", snedm::data_info::default_calibrated_data_label());
-  TCDTag_ =
-      ps.get<std::string>("TCD_label", snedm::data_info::default_tracker_clustering_data_label());
+  CDTag_ = ps.get<std::string>("CD_label", snedm::labels::calibrated_data());
+  TCDTag_ = ps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
 
   // Geometry manager :
   if (geoManager_ == nullptr) {
@@ -143,13 +140,8 @@ dpp::base_module::process_status cat_tracker_clustering_module::process(datatool
   const auto& calibratedData = event.get<snedm::calibrated_data>(CDTag_);
 
   // Get or create output data
-  auto& clusteringData = snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
-
-  if (clusteringData.has_solutions()) {
-    DT_LOG_WARNING(get_logging_priority(),
-                   "Module " << get_name() << " resetting solutions in bank " << TCDTag_)
-    clusteringData.reset();
-  }
+  auto& clusteringData = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
+  clusteringData.clear();
 
   // Main processing method :
   _process(calibratedData, clusteringData);
@@ -161,7 +153,7 @@ void cat_tracker_clustering_module::_process(
     const snemo::datamodel::calibrated_data& calib_data,
     snemo::datamodel::tracker_clustering_data& clustering_data) {
   // Process the clusterizer driver :
-  catAlgo_->process(calib_data.calibrated_tracker_hits(), calib_data.calibrated_calorimeter_hits(),
+  catAlgo_->process(calib_data.tracker_hits(), calib_data.calorimeter_hits(),
                     clustering_data);
 }
 
@@ -193,7 +185,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
         .set_long_description(
             "This is the name of the bank to be used \n"
             "as the source of input tracker hits.    \n")
-        .set_default_value_string(snemo::datamodel::data_info::default_calibrated_data_label())
+        .set_default_value_string(snedm::labels::calibrated_data())
         .add_example(
             "Use an alternative name for the 'calibrated data' bank:: \n"
             "                                \n"
@@ -211,8 +203,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::cat_tracker_clustering_mo
         .set_long_description(
             "This is the name of the bank to be used as   \n"
             "the sink of output clusters of tracker hits. \n")
-        .set_default_value_string(
-            snemo::datamodel::data_info::default_tracker_clustering_data_label())
+        .set_default_value_string(snedm::labels::tracker_clustering_data())
         .add_example(
             "Use an alternative name for the 'tracker clustering data' bank:: \n"
             "                                  \n"

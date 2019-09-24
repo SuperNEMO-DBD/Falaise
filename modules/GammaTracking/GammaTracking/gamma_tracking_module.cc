@@ -65,16 +65,15 @@ class gamma_tracking_module {
 gamma_tracking_module::gamma_tracking_module(const falaise::property_set& ps,
                                              datatools::service_manager& services)
     : geoSVC_{services},
-      PTD_tag_{ps.get<std::string>(
-          "PTD_label", snemo::datamodel::data_info::default_particle_track_data_label())} {
+      PTD_tag_{ps.get<std::string>("PTD_label", snedm::labels::particle_track_data())} {
   algo_.set_geometry_manager(*(geoSVC_.operator->()));
   algo_.initialize(ps);
 }
 
 falaise::processing::status gamma_tracking_module::process(datatools::things& event) {
-  auto& ptd =
-      snemo::datamodel::getOrAddToEvent<snemo::datamodel::particle_track_data>(PTD_tag_, event);
-  algo_.process(ptd.get_non_associated_calorimeters(), ptd);
+  auto& ptd = snedm::getOrAddToEvent<snemo::datamodel::particle_track_data>(PTD_tag_, event);
+
+  algo_.process(ptd.isolatedCalorimeters(), ptd);
   return falaise::processing::status::PROCESS_SUCCESS;
 }
 

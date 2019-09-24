@@ -15,110 +15,64 @@ namespace datamodel {
 DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(calibrated_data,
                                                   "snemo::datamodel::calibrated_data")
 
-bool calibrated_data::has_data() const {
-  return has_calibrated_calorimeter_hits() || has_calibrated_tracker_hits();
+const CalorimeterHitHdlCollection& calibrated_data::calorimeter_hits() const {
+  return calorimeter_hits_;
 }
 
-bool calibrated_data::has_calibrated_calorimeter_hits() const {
-  return !_calibrated_calorimeter_hits_.empty();
-}
+CalorimeterHitHdlCollection& calibrated_data::calorimeter_hits() { return calorimeter_hits_; }
 
-const calibrated_data::calorimeter_hit_collection_type&
-calibrated_data::calibrated_calorimeter_hits() const {
-  return _calibrated_calorimeter_hits_;
-}
+const TrackerHitHdlCollection& calibrated_data::tracker_hits() const { return tracker_hits_; }
 
-calibrated_data::calorimeter_hit_collection_type& calibrated_data::calibrated_calorimeter_hits() {
-  return _calibrated_calorimeter_hits_;
-}
+TrackerHitHdlCollection& calibrated_data::tracker_hits() { return tracker_hits_; }
 
-bool calibrated_data::has_calibrated_tracker_hits() const {
-  return !_calibrated_tracker_hits_.empty();
-}
-
-const calibrated_data::tracker_hit_collection_type& calibrated_data::calibrated_tracker_hits()
-    const {
-  return _calibrated_tracker_hits_;
-}
-
-calibrated_data::tracker_hit_collection_type& calibrated_data::calibrated_tracker_hits() {
-  return _calibrated_tracker_hits_;
-}
-
-const datatools::properties& calibrated_data::get_properties() const { return _properties_; }
-
-datatools::properties& calibrated_data::grab_properties() { return _properties_; }
-
-void calibrated_data::reset_calibrated_calorimeter_hits() { _calibrated_calorimeter_hits_.clear(); }
-
-void calibrated_data::reset_calibrated_tracker_hits() { _calibrated_tracker_hits_.clear(); }
-
-void calibrated_data::reset() {
-  reset_calibrated_calorimeter_hits();
-  reset_calibrated_tracker_hits();
+void calibrated_data::clear() {
+  calorimeter_hits_.clear();
+  tracker_hits_.clear();
   _properties_.clear();
 }
 
-void calibrated_data::clear() { reset(); }
+void calibrated_data::tree_dump(std::ostream& out, const std::string& title,
+                                const std::string& indent, bool is_last) const {
+  auto printCaloHit = [&](const CalorimeterHitHdl& x) {
+    out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
+        << ", Energy : " << x->get_energy() / CLHEP::keV << " keV"
+        << ", Time : " << x->get_time() / CLHEP::ns << " ns)" << std::endl;
+  };
 
-void calibrated_data::tree_dump(std::ostream& out_, const std::string& title_,
-                                const std::string& indent_, bool inherit_) const {
-  if (!title_.empty()) {
-    out_ << indent_ << title_ << std::endl;
-  }
+  auto printTrackerHit = [&](const TrackerHitHdl& x) {
+    out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
+        << ", Type : " << (x->is_prompt() ? "prompt" : "delayed") << ")" << std::endl;
+  };
 
-  // Properties:
-  {
-    out_ << indent_ << datatools::i_tree_dumpable::tag << "Properties : ";
-    if (_properties_.empty()) {
-      out_ << "<empty>";
-    }
-    out_ << std::endl;
-    {
-      std::ostringstream indent_oss;
-      indent_oss << indent_;
-      indent_oss << datatools::i_tree_dumpable::skip_tag;
-      _properties_.tree_dump(out_, "", indent_oss.str());
-    }
+  if (!title.empty()) {
+    out << indent << title << std::endl;
   }
 
   // Calibrated calorimeter hits:
-  out_ << indent_ << datatools::i_tree_dumpable::tag;
-  out_ << "Calibrated calorimeter hits: " << _calibrated_calorimeter_hits_.size() << std::endl;
-  for (size_t i = 0; i < _calibrated_calorimeter_hits_.size(); i++) {
-    const calibrated_calorimeter_hit& calo_calib_hit = _calibrated_calorimeter_hits_.at(i).get();
-    out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
-    if (i + 1 == _calibrated_calorimeter_hits_.size()) {
-      out_ << datatools::i_tree_dumpable::last_tag;
-    } else {
-      out_ << datatools::i_tree_dumpable::tag;
-    }
-    out_ << "Hit #" << i << " : Id=" << calo_calib_hit.get_hit_id()
-         << " GID=" << calo_calib_hit.get_geom_id()
-         << " E=" << calo_calib_hit.get_energy() / CLHEP::keV << " keV"
-         << " t=" << calo_calib_hit.get_time() / CLHEP::ns << " ns" << std::endl;
+  out << indent << datatools::i_tree_dumpable::tag << "CalorimeterHits[" << calorimeter_hits_.size()
+      << "]:" << std::endl;
+  if (!calorimeter_hits_.empty()) {
+    std::for_each(
+        calorimeter_hits_.begin(), --calorimeter_hits_.end(), [&](const CalorimeterHitHdl& x) {
+          out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::tag;
+          printCaloHit(x);
+        });
+    out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag;
+    printCaloHit(calorimeter_hits_.back());
   }
 
   // Calibrated tracker hits:
-  out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_);
-  out_ << "Calibrated tracker hits: " << _calibrated_tracker_hits_.size() << std::endl;
-  for (size_t i = 0; i < _calibrated_tracker_hits_.size(); i++) {
-    const calibrated_tracker_hit& tracker_calib_hit = _calibrated_tracker_hits_.at(i).get();
-    out_ << indent_ << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
-    if (i + 1 == _calibrated_tracker_hits_.size()) {
-      out_ << datatools::i_tree_dumpable::last_tag;
-    } else {
-      out_ << datatools::i_tree_dumpable::tag;
-    }
-    out_ << "Hit #" << i << " : Id=" << tracker_calib_hit.get_hit_id()
-         << " GID=" << tracker_calib_hit.get_geom_id() << ' ';
-    if (tracker_calib_hit.is_prompt()) {
-      out_ << "[prompt]";
-    }
-    if (tracker_calib_hit.is_delayed()) {
-      out_ << "[delayed]";
-    }
-    out_ << std::endl;
+  out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "TrackerHits["
+      << tracker_hits_.size() << "]:" << std::endl;
+  if (!tracker_hits_.empty()) {
+    std::for_each(tracker_hits_.begin(), --tracker_hits_.end(), [&](const TrackerHitHdl& x) {
+      out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
+          << datatools::i_tree_dumpable::tag;
+      printTrackerHit(x);
+    });
+    out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
+        << datatools::i_tree_dumpable::last_tag;
+    printTrackerHit(tracker_hits_.back());
   }
 }
 

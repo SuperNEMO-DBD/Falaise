@@ -29,15 +29,19 @@
 
 // This project :
 #include <falaise/snemo/datamodels/calibrated_data.h>
-#include <falaise/snemo/datamodels/mock_raw_tracker_hit.h>
 #include <falaise/snemo/processing/geiger_regime.h>
-#include <falaise/snemo/services/service_handle.h>
 #include <falaise/snemo/services/geometry.h>
-
+#include <falaise/snemo/services/service_handle.h>
 
 namespace geomtools {
 class manager;
 }
+
+namespace snreco {
+namespace detail {
+class mock_raw_tracker_hit;
+}
+}  // namespace snreco
 
 namespace snemo {
 
@@ -63,8 +67,8 @@ class mock_tracker_s2c_module : public dpp::base_module {
  private:
   // Rationalized typenames
   using sim_tracker_hit_col_t = mctools::simulated_data::hit_handle_collection_type;
-  using raw_tracker_hit_col_t = std::list<snemo::datamodel::mock_raw_tracker_hit>;
-  using cal_tracker_hit_col_t = snemo::datamodel::calibrated_data::tracker_hit_collection_type;
+  using raw_tracker_hit_col_t = std::list<snreco::detail::mock_raw_tracker_hit>;
+  using cal_tracker_hit_col_t = snemo::datamodel::TrackerHitHdlCollection;
 
   /// Digitize tracker hits
   raw_tracker_hit_col_t digitizeHits_(const sim_tracker_hit_col_t& steps);
@@ -76,10 +80,10 @@ class mock_tracker_s2c_module : public dpp::base_module {
   cal_tracker_hit_col_t process_(const sim_tracker_hit_col_t& hits);
 
   snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
-  std::string _module_category_{};                //!< The geometry category of the SuperNEMO module
-  std::string _hit_category_{};                   //!< The category of the input Geiger hits
-  geiger_regime _geiger_{};                       //!< Geiger regime tools
-  mygsl::rng RNG_{};                              //!< internal PRN generator
+  std::string _module_category_{};  //!< The geometry category of the SuperNEMO module
+  std::string _hit_category_{};     //!< The category of the input Geiger hits
+  geiger_regime _geiger_{};         //!< Geiger regime tools
+  mygsl::rng RNG_{};                //!< internal PRN generator
   double _peripheral_drift_time_threshold_{
       datatools::invalid_real_double()};  //!< Peripheral drift time threshold
   double _delayed_drift_time_threshold_{

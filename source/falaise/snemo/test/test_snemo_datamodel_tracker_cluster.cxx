@@ -23,9 +23,9 @@ int main(/* int argc_, char ** argv_ */) {
     srand48(314159);
 
     // Populate a collection of handles on Geiger hits :
-    sdm::calibrated_tracker_hit::collection_type hits;
+    sdm::TrackerHitHdlCollection hits;
     for (int i = 0; i < 10; ++i) {
-      sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
+      sdm::TrackerHitHdl h(new sdm::calibrated_tracker_hit);
       sdm::calibrated_tracker_hit& gg_hit = h.grab();
       gg_hit.set_hit_id(i);
       geomtools::geom_id gid;
@@ -46,15 +46,15 @@ int main(/* int argc_, char ** argv_ */) {
     }
 
     // Create a handle on some tracker cluster :
-    sdm::tracker_cluster::handle_type hTC1(new sdm::tracker_cluster);
+    sdm::TrackerClusterHdl hTC1(new sdm::tracker_cluster);
     sdm::tracker_cluster& TC1 = hTC1.grab();
     TC1.set_cluster_id(0);
     TC1.make_prompt();
-    TC1.get_hits().push_back(hits[0]);
-    TC1.get_hits().push_back(hits[1]);
-    TC1.get_hits().push_back(hits[2]);
-    TC1.get_hits().push_back(hits[3]);
-    TC1.get_hits().push_back(hits[4]);
+    TC1.hits().push_back(hits[0]);
+    TC1.hits().push_back(hits[1]);
+    TC1.hits().push_back(hits[2]);
+    TC1.hits().push_back(hits[3]);
+    TC1.hits().push_back(hits[4]);
     TC1.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -63,14 +63,14 @@ int main(/* int argc_, char ** argv_ */) {
     }
 
     // Create another handle on some othertracker cluster :
-    sdm::tracker_cluster::handle_type hTC2(new sdm::tracker_cluster);
+    sdm::TrackerClusterHdl hTC2(new sdm::tracker_cluster);
     sdm::tracker_cluster& TC2 = hTC2.grab();
     TC2.set_cluster_id(1);
     TC2.make_prompt();
-    TC2.get_hits().push_back(hits[6]);
-    TC2.get_hits().push_back(hits[7]);
-    TC2.get_hits().push_back(hits[8]);
-    TC2.get_hits().push_back(hits[9]);
+    TC2.hits().push_back(hits[6]);
+    TC2.hits().push_back(hits[7]);
+    TC2.hits().push_back(hits[8]);
+    TC2.hits().push_back(hits[9]);
     TC2.grab_auxiliaries().store("display.color", "red");
     {
       std::ostringstream title;

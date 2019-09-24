@@ -27,9 +27,9 @@ int main(/* int argc_, char ** argv_ */) {
     srand48(314159);
 
     // Populate a collection of handles on Geiger hits :
-    sdm::calibrated_tracker_hit::collection_type hits;
+    sdm::TrackerHitHdlCollection hits;
     for (int i = 0; i < 10; ++i) {
-      sdm::calibrated_tracker_hit::handle_type h(new sdm::calibrated_tracker_hit);
+      sdm::TrackerHitHdl h(new sdm::calibrated_tracker_hit);
       sdm::calibrated_tracker_hit& gg_hit = h.grab();
       gg_hit.set_hit_id(i);
       geomtools::geom_id gid;
@@ -50,15 +50,15 @@ int main(/* int argc_, char ** argv_ */) {
     }
 
     // Create a handle on some tracker cluster :
-    sdm::tracker_cluster::handle_type hTC0(new sdm::tracker_cluster);
+    sdm::TrackerClusterHdl hTC0(new sdm::tracker_cluster);
     sdm::tracker_cluster& TC0 = hTC0.grab();
     TC0.set_cluster_id(0);
     TC0.make_prompt();
-    TC0.get_hits().push_back(hits[0]);
-    TC0.get_hits().push_back(hits[1]);
-    TC0.get_hits().push_back(hits[2]);
-    TC0.get_hits().push_back(hits[3]);
-    TC0.get_hits().push_back(hits[4]);
+    TC0.hits().push_back(hits[0]);
+    TC0.hits().push_back(hits[1]);
+    TC0.hits().push_back(hits[2]);
+    TC0.hits().push_back(hits[3]);
+    TC0.hits().push_back(hits[4]);
     TC0.grab_auxiliaries().store("display.color", "blue");
     {
       std::ostringstream title;
@@ -77,7 +77,7 @@ int main(/* int argc_, char ** argv_ */) {
       hLTP0.reset(LTP);
 
       sdm::tracker_trajectory TJ0;
-      TJ0.set_trajectory_id(0);
+      TJ0.set_id(0);
       TJ0.set_cluster_handle(hTC0);
       TJ0.set_pattern_handle(hLTP0);
       TJ0.grab_auxiliaries().store_flag("test");

@@ -119,14 +119,8 @@ void calorimeter_hit_renderer::push_calibrated_hits() {
   const io::event_record& event = _server->get_event();
   const auto& calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
-  if (!calib_data.has_calibrated_calorimeter_hits()) {
-    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
-                 "Event has no calibrated calorimeter hits");
-    return;
-  }
-
-  const snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& cc_collection =
-      calib_data.calibrated_calorimeter_hits();
+  const snemo::datamodel::CalorimeterHitHdlCollection& cc_collection =
+      calib_data.calorimeter_hits();
 
   if (cc_collection.empty()) {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),

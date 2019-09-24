@@ -28,10 +28,10 @@ void event_header::serialize(Archive& ar_, const unsigned int version_) {
   if (version_ > 0) {
     ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
   }
-  ar_& boost::serialization::make_nvp("id", _id_);
-  ar_& boost::serialization::make_nvp("generation", _generation_);
-  ar_& boost::serialization::make_nvp("timestamp", _timestamp_);
-  ar_& boost::serialization::make_nvp("properties", _properties_);
+  ar_& boost::serialization::make_nvp("id", id_);
+  ar_& boost::serialization::make_nvp("generation", generation_);
+  ar_& boost::serialization::make_nvp("timestamp", timestamp_);
+  ar_& boost::serialization::make_nvp("properties", properties_);
 }
 
 }  // end of namespace datamodel

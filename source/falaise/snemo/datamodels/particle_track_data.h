@@ -34,81 +34,61 @@ namespace snemo {
 namespace datamodel {
 
 /// \brief SuperNEMO particle track model
-//  To be done...
+//  Just a composition of a vector of particle_tracks and a vector of isolated calorimeter hits
+//  TODO: split, or implement as pure dumb struct
 class particle_track_data : public datatools::i_serializable,
                             public datatools::i_tree_dumpable,
                             public datatools::i_clear {
  public:
-  /// Collection of handles on particle tracks
-  typedef std::vector<particle_track::handle_type> particle_collection_type;
-
   /// Check if there are some particles
-  bool has_particles() const;
+  bool hasParticles() const;
 
   /// Returns the number of particle
-  size_t get_number_of_particles() const;
+  size_t numberOfParticles() const;
 
   /// Add a particle track
-  void add_particle(const particle_track::handle_type& handle_);
-
-  /// Return a non mutable reference to a particle by index
-  const particle_track& get_particle(size_t index_) const;
+  void insertParticle(const ParticleHdl& particle);
 
   /// Return a mutable reference to particles
-  particle_collection_type& grab_particles();
+  ParticleHdlCollection& particles();
 
   /// Return a non mutable reference to particles
-  const particle_collection_type& get_particles() const;
-
-  /// Remove a particle given its index
-  void remove_particle(size_t index_);
-
-  /// Remove particles given a list of indexes
-  void remove_particles(std::vector<size_t>& indexes_);
+  const ParticleHdlCollection& particles() const;
 
   /// Reset the particle tracks
-  void invalidate_particles();
-
-  /// Retrieve particles given their charge
-  size_t fetch_particles(particle_collection_type& particles_, const uint32_t flags_,
-                         const bool clear_ = false) const;
+  void clearParticles();
 
   /// Check if there are some non associated calorimeters
-  bool has_non_associated_calorimeters() const;
+  bool hasIsolatedCalorimeters() const;
 
   /// Return a non mutable reference to non associated calorimeters
-  const calibrated_calorimeter_hit::collection_type& get_non_associated_calorimeters() const;
+  const CalorimeterHitHdlCollection& isolatedCalorimeters() const;
 
   /// Return a mutable reference to non associated calorimeters
-  calibrated_calorimeter_hit::collection_type& grab_non_associated_calorimeters();
+  CalorimeterHitHdlCollection& isolatedCalorimeters();
 
   /// Reset the non associated calorimeters
-  void reset_non_associated_calorimeters();
-
-  /// Reset the internals
-  void reset();
-
-  /// Check if the object has a valid internal structure
-  bool is_valid() const;
-
-  /// Return const reference container of auxiliary properties
-  const datatools::properties& get_auxiliaries() const;
+  void clearIsolatedCalorimeters();
 
   /// Clear the object
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  particle_collection_type _particles_;  //!< Collection of particle track handles
-  calibrated_calorimeter_hit::collection_type
-      _non_associated_calorimeters_;    //!< Collection of calorimeter hit handles
-  datatools::properties _auxiliaries_;  //!< Auxiliary properties
+  ParticleHdlCollection particles_;                    //!< Collection of particle track handles
+  CalorimeterHitHdlCollection isolated_calorimeters_;  //!< Collection of calorimeter hit handles
+
+  datatools::properties _auxiliaries_;  // unused, retained for serialization back compatibility
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Retrieve particles given their charge
+ParticleHdlCollection get_particles_by_charge(const particle_track_data& ptd,
+                                              uint32_t charge_types);
 
 }  // end of namespace datamodel
 

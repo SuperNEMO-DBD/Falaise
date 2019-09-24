@@ -117,15 +117,14 @@ int gamma_tracking_driver::_process_algo(
 
   for (const auto& a_list : gamma_tracks) {
     auto hPT = datatools::make_handle<snemo::datamodel::particle_track>();
-    hPT->set_track_id(ptd_.get_number_of_particles());
-    hPT->set_charge(snemo::datamodel::particle_track::neutral);
-    ptd_.add_particle(hPT);
+    hPT->set_track_id(ptd_.numberOfParticles());
+    hPT->set_charge(snemo::datamodel::particle_track::NEUTRAL);
+    ptd_.insertParticle(hPT);
 
     // List of associated calorimeters
     for (const int calo_id : a_list) {
       // Set calorimeter association
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type& cch =
-          ptd_.get_non_associated_calorimeters();
+      const snemo::datamodel::CalorimeterHitHdlCollection& cch = ptd_.isolatedCalorimeters();
       geomtools::base_hit::has_hit_id_predicate hit_pred(calo_id);
       datatools::mother_to_daughter_predicate<geomtools::base_hit,
                                               snemo::datamodel::calibrated_calorimeter_hit>

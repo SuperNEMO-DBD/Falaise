@@ -28,47 +28,20 @@ namespace datamodel {
 /// A trajectory of Geiger calibrated hits referenced by handles
 class tracker_trajectory : public geomtools::base_hit {
  public:
-  /// Handle on tracker trajectory
-  typedef datatools::handle<tracker_trajectory> handle_type;
-
-  /// Handle on tracker cluster
-  typedef tracker_cluster::handle_type handle_cluster;
-
-  /// Collection of handles on tracker clusters
-  typedef std::vector<handle_cluster> clusters_collection_type;
-
-  /// Handle on trajectory pattern
-  typedef datatools::handle<base_trajectory_pattern> handle_pattern;
-
-  /// Collection of handles of calibrated tracker hit
-  typedef calibrated_tracker_hit::collection_type orphans_collection_type;
-
   /// Check if there is a valid trajectory ID
-  bool has_trajectory_id() const;
+  bool has_id() const;
 
   /// Get the trajectory ID
-  int get_trajectory_id() const;
+  int get_id() const;
 
   /// Set the trajectory ID
-  void set_trajectory_id(int32_t);
-
-  /// Invalidate the trajectory ID
-  void invalidate_trajectory_id();
+  void set_id(int32_t);
 
   /// Check if the cluster is present
   bool has_cluster() const;
 
-  /// Detach the cluster
-  void detach_cluster();
-
   /// Attach a cluster by handle
-  void set_cluster_handle(const handle_cluster& cluster_handle_);
-
-  /// Return a mutable reference on the cluster handle
-  handle_cluster& get_cluster_handle();
-
-  /// Return a non mutable reference on the cluster handle
-  const handle_cluster& get_cluster_handle() const;
+  void set_cluster_handle(const TrackerClusterHdl& cluster);
 
   /// Return a mutable reference on the cluster
   tracker_cluster& get_cluster();
@@ -79,41 +52,45 @@ class tracker_trajectory : public geomtools::base_hit {
   /// Check if the pattern is present
   bool has_pattern() const;
 
-  /// Detach the pattern
-  void detach_pattern();
-
   /// Attach a pattern by handle
-  void set_pattern_handle(const handle_pattern& pattern_handle_);
-
-  /// Return a mutable reference on the pattern handle
-  handle_pattern& get_pattern_handle();
-
-  /// Return a non mutable reference on the pattern handle
-  const handle_pattern& get_pattern_handle() const;
+  void set_pattern_handle(const TrajectoryPatternHdl& pattern);
 
   /// Return a mutable reference on the pattern
-  base_trajectory_pattern& get_pattern();
+  TrajectoryPattern& get_pattern();
 
   /// Return a non mutable reference on the pattern
-  const base_trajectory_pattern& get_pattern() const;
-
-  /// Reset the tracker trajectory (see clear)
-  void reset();
+  const TrajectoryPattern& get_pattern() const;
 
   /// Empty the contents of the tracker trajectory
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
  private:
-  handle_cluster _cluster_;           ///< Handle to the fitted cluster
-  orphans_collection_type _orphans_;  ///< Collection of orphan Geiger hit handles (retained only for serialization back-compatibility)
-  handle_pattern _pattern_;           ///< Handle to a trajectory fitted pattern
+  /// Detach the cluster
+  void detach_cluster();
+  /// Detach the pattern
+  void detach_pattern();
+
+  TrackerClusterHdl cluster_;     ///< Handle to the fitted cluster
+  TrajectoryPatternHdl pattern_;  ///< Handle to a trajectory fitted pattern
+
+  /// Collection of handles of calibrated tracker hit
+  typedef TrackerHitHdlCollection orphans_collection_type;
+  orphans_collection_type orphans_;  ///< Collection of orphan Geiger hit handles (retained only
+                                      ///< for serialization back-compatibility)
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
+
+/// Handle on tracker trajectory
+using TrackerTrajectory = tracker_trajectory;
+using TrackerTrajectoryCollection = std::vector<TrackerTrajectory>;
+
+using TrackerTrajectoryHdl = datatools::handle<TrackerTrajectory>;
+using TrackerTrajectoryHdlCollection = std::vector<TrackerTrajectoryHdl>;
 
 }  // end of namespace datamodel
 

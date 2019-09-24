@@ -662,8 +662,7 @@ void browser_tracks::_update_calibrated_data() {
     item_calorimeter->SetCheckBox(false);
     item_calorimeter->SetUserData((void *)(intptr_t)++icheck_id);
 
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-        cd.calibrated_calorimeter_hits();
+    snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = cd.calorimeter_hits();
 
     for (auto &it_hit : cc_collection) {
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
@@ -720,8 +719,7 @@ void browser_tracks::_update_calibrated_data() {
     item_tracker->SetCheckBox(false);
     item_tracker->SetUserData((void *)(intptr_t)++icheck_id);
 
-    snemo::datamodel::calibrated_data::tracker_hit_collection_type &ct_collection =
-        cd.calibrated_tracker_hits();
+    snemo::datamodel::TrackerHitHdlCollection &ct_collection = cd.tracker_hits();
 
     for (auto &it_hit : ct_collection) {
       snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit.grab();
@@ -801,9 +799,7 @@ void browser_tracks::_update_tracker_clustering_data() {
     item_tracker_cluster->SetTipText(tip_text.str().c_str());
   }
 
-  snemo::datamodel::tracker_clustering_data::solution_col_type &cluster_solutions =
-      tcd.get_solutions();
-  for (auto &cluster_solution : cluster_solutions) {
+  for (auto &cluster_solution : tcd.solutions()) {
     // Get current tracker solution:
     snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.grab();
 
@@ -812,8 +808,8 @@ void browser_tracks::_update_tracker_clustering_data() {
     label_solution << "Solution #" << a_solution.get_solution_id() << " - "
                    << a_solution.get_unclustered_hits().size() << " unclustered hit"
                    << (a_solution.get_unclustered_hits().size() > 1 ? "s" : "");
-    if (tcd.has_default_solution()) {
-      if (&a_solution == &(tcd.get_default_solution())) {
+    if (tcd.has_default()) {
+      if (&a_solution == &(tcd.get_default())) {
         label_solution << " - default";
       }
     }
@@ -841,8 +837,7 @@ void browser_tracks::_update_tracker_clustering_data() {
     _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
 
     // Get clusters stored in the current tracker solution:
-    snemo::datamodel::tracker_clustering_solution::cluster_col_type &clusters =
-        a_solution.get_clusters();
+    snemo::datamodel::TrackerClusterHdlCollection &clusters = a_solution.get_clusters();
     for (auto &cluster : clusters) {
       // Get current tracker cluster:
       snemo::datamodel::tracker_cluster &a_cluster = cluster.grab();
@@ -850,7 +845,7 @@ void browser_tracks::_update_tracker_clustering_data() {
       // Add subitem:
       std::ostringstream label_cluster;
       label_cluster << "Cluster #" << a_cluster.get_cluster_id() << " "
-                    << "(" << a_cluster.get_hits().size() << " hits) ";
+                    << "(" << a_cluster.size() << " hits) ";
       if (a_cluster.is_prompt()) {
         label_cluster << "- prompt";
       } else {
@@ -889,7 +884,7 @@ void browser_tracks::_update_tracker_clustering_data() {
                                 _get_colored_icon_("cluster", hex_str));
 
       // Get tracker hits stored in the current tracker cluster:
-      for (auto &a_gg_hit : a_cluster.get_hits()) {
+      for (auto &a_gg_hit : a_cluster.hits()) {
         // Add subsubitem:
         std::ostringstream label_hit;
         label_hit.precision(3);
@@ -961,7 +956,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
     return;
   }
 
-  snemo::datamodel::tracker_trajectory_data::solution_col_type &trajectory_solutions =
+  snemo::datamodel::TrackerTrajectorySolutionHdlCollection &trajectory_solutions =
       ttd.get_solutions();
   for (auto &trajectory_solution : trajectory_solutions) {
     // Get current tracker solution:
@@ -992,6 +987,8 @@ void browser_tracks::_update_tracker_trajectory_data() {
     item_solution->SetUserData((void *)(intptr_t)++icheck_id);
 
 // DONT couple data model to view
+// THIS IS THE ONLY PLACE PROPERTIES OF TRACKER_TRAJECTORY_SOLUTION ARE USED,
+// BUT IT'S SO TIGHTLY COUPLED I CANT FIX IT WITHOUT MAJOR SURGERY
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     // Get solution auxiliaries:
@@ -1012,8 +1009,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
     TGListTreeItem *item_line_solution = nullptr;
 
     // Get trajectories stored in the current tracker trajectory solution:
-    snemo::datamodel::tracker_trajectory_solution::trajectory_col_type &trajectories =
-        a_solution.grab_trajectories();
+    snemo::datamodel::TrackerTrajectoryHdlCollection &trajectories = a_solution.grab_trajectories();
     for (auto &trajectorie : trajectories) {
       // Get current tracker trajectory:
       snemo::datamodel::tracker_trajectory &a_trajectory = trajectorie.grab();
@@ -1164,9 +1160,8 @@ void browser_tracks::_update_particle_track_data() {
     item_particle_track_data->SetTipText(tip_text.str().c_str());
   }
   // Add unassociated calorimeter hits info
-  if (ptd.has_non_associated_calorimeters()) {
-    snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
-        ptd.grab_non_associated_calorimeters();
+  if (ptd.hasIsolatedCalorimeters()) {
+    snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = ptd.isolatedCalorimeters();
 
     for (auto &it_hit : cc_collection) {
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
@@ -1206,12 +1201,7 @@ void browser_tracks::_update_particle_track_data() {
     }
   }
 
-  if (!ptd.has_particles()) {
-    return;
-  }
-
-  snemo::datamodel::particle_track_data::particle_collection_type &particles = ptd.grab_particles();
-  for (auto &particle : particles) {
+  for (auto &particle : ptd.particles()) {
     // Get current particle track:
     snemo::datamodel::particle_track &a_particle = particle.grab();
 
@@ -1219,16 +1209,16 @@ void browser_tracks::_update_particle_track_data() {
     size_t item_color = 0;
     std::ostringstream label_particle;
     label_particle << "Particle #" << a_particle.get_track_id();
-    if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+    if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
       label_particle << " - neutral charged particle";
       item_color = style_manager::get_instance().get_particle_color("gamma");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::negative) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::NEGATIVE) {
       label_particle << " - negative charged particle";
       item_color = style_manager::get_instance().get_particle_color("electron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::positive) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::POSITIVE) {
       label_particle << " - positive charged particle";
       item_color = style_manager::get_instance().get_particle_color("positron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::undefined) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::UNDEFINED) {
       label_particle << " - undefined charged particle";
       item_color = style_manager::get_instance().get_particle_color("alpha");
     }
@@ -1310,7 +1300,7 @@ void browser_tracks::_update_particle_track_data() {
 
     // Get associated calorimeter
     if (a_particle.has_associated_calorimeter_hits()) {
-      snemo::datamodel::calibrated_data::calorimeter_hit_collection_type &cc_collection =
+      snemo::datamodel::CalorimeterHitHdlCollection &cc_collection =
           a_particle.get_associated_calorimeter_hits();
 
       for (auto &it_hit : cc_collection) {

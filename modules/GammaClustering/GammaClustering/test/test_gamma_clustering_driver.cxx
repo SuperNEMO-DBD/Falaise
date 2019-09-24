@@ -17,7 +17,7 @@
 
 #include <GammaClustering/gamma_clustering_driver.h>
 
-void generate_hits(snemo::datamodel::calibrated_data::calorimeter_hit_collection_type& hits_) {
+void generate_hits(snemo::datamodel::CalorimeterHitHdlCollection& hits_) {
   namespace sdm = snemo::datamodel;
 
   // Fake cluster
@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
     std::clog << "Use GC driver with default configuration" << std::endl;
     {
       // Fake calorimeter hits :
-      sdm::calibrated_data::calorimeter_hit_collection_type hits;
+      sdm::CalorimeterHitHdlCollection hits;
       generate_hits(hits);
       // Particle track data bank :
       sdm::particle_track_data PTD;
@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
     std::clog << "Use GC driver only in 'cluster' mode" << std::endl;
     {
       // Fake calorimeter hits :
-      sdm::calibrated_data::calorimeter_hit_collection_type hits;
+      sdm::CalorimeterHitHdlCollection hits;
       generate_hits(hits);
       // Particle track data bank :
       sdm::particle_track_data PTD;

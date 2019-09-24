@@ -207,16 +207,15 @@ void visual_track_renderer::push_reconstructed_tracks() {
   const io::event_record &event = _server->get_event();
   const auto &pt_data = event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
 
-  if (!pt_data.has_particles()) {
+  if (!pt_data.hasParticles()) {
     DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
                  "Event has no reconstructed particles");
     return;
   }
 
   // Show non-associated calorimeters
-  if (pt_data.has_non_associated_calorimeters()) {
-    const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
-        pt_data.get_non_associated_calorimeters();
+  if (pt_data.hasIsolatedCalorimeters()) {
+    const snemo::datamodel::CalorimeterHitHdlCollection &calos = pt_data.isolatedCalorimeters();
     for (const auto &calo : calos) {
       const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
       const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
@@ -244,9 +243,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
                  "No calorimeter hits unassociated to particle track");
   }
 
-  const snemo::datamodel::particle_track_data::particle_collection_type &particles =
-      pt_data.get_particles();
-  for (const auto &particle : particles) {
+  for (const auto &particle : pt_data.particles()) {
     const snemo::datamodel::particle_track &a_particle = particle.get();
 
     if (a_particle.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
@@ -256,13 +253,13 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
     // Get color from charge
     size_t color = 0;
-    if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+    if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
       color = style_manager::get_instance().get_particle_color("gamma");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::negative) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::NEGATIVE) {
       color = style_manager::get_instance().get_particle_color("electron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::positive) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::POSITIVE) {
       color = style_manager::get_instance().get_particle_color("positron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::undefined) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::UNDEFINED) {
       color = style_manager::get_instance().get_particle_color("alpha");
     }
 
@@ -288,7 +285,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
       }  // end of vertex list
 
       // Gamma tracks
-      if (a_particle.get_charge() == snemo::datamodel::particle_track::neutral) {
+      if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
         geomtools::polyline_type vtces;
         for (const auto &ivtx : vtx) {
           vtces.push_back(ivtx.get().get_position());
@@ -311,7 +308,7 @@ void visual_track_renderer::push_reconstructed_tracks() {
 
     // Show associated calorimeters
     if (a_particle.has_associated_calorimeter_hits()) {
-      const snemo::datamodel::calibrated_calorimeter_hit::collection_type &calos =
+      const snemo::datamodel::CalorimeterHitHdlCollection &calos =
           a_particle.get_associated_calorimeter_hits();
       for (const auto &calo : calos) {
         const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();

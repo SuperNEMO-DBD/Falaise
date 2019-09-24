@@ -269,8 +269,8 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
     _xcalo_locator_ = &(lp.xcaloLocator());
     _gveto_locator_ = &(lp.gvetoLocator());
   }
- 
-   // Geometry description :
+
+  // Geometry description :
   _SULTAN_setup_.num_blocks = 1;
   _SULTAN_setup_.planes_per_block.clear();
   _SULTAN_setup_.planes_per_block.push_back(_SULTAN_setup_.num_blocks);
@@ -305,8 +305,6 @@ void sultan_driver::initialize(const datatools::properties& setup_) {
   _set_initialized(true);
 }
 
-
-
 // Main clustering method
 int sultan_driver::_process_algo(
     const base_tracker_clusterizer::hit_collection_type& gg_hits_,
@@ -324,10 +322,10 @@ int sultan_driver::_process_algo(
   size_t ihit = 0;
 
   // Hit accounting :
-  std::map<int, sdm::calibrated_data::tracker_hit_handle_type> gg_hits_mapping;
+  std::map<int, sdm::TrackerHitHdl> gg_hits_mapping;
 
   // GG hit loop :
-  BOOST_FOREACH (const sdm::calibrated_data::tracker_hit_handle_type& gg_handle, gg_hits_) {
+  BOOST_FOREACH (const sdm::TrackerHitHdl& gg_handle, gg_hits_) {
     // Skip NULL handle :
     if (!gg_handle.has_data()) {
       continue;
@@ -408,7 +406,7 @@ int sultan_driver::_process_algo(
   // Take into account calo hits:
   _SULTAN_input_.calo_cells.clear();
   // Calo hit accounting :
-  std::map<int, sdm::calibrated_data::calorimeter_hit_handle_type> calo_hits_mapping;
+  std::map<int, sdm::CalorimeterHitHdl> calo_hits_mapping;
   if (_process_calo_hits_) {
     if (_SULTAN_input_.calo_cells.capacity() < calo_hits_.size()) {
       _SULTAN_input_.calo_cells.reserve(calo_hits_.size());
@@ -417,8 +415,7 @@ int sultan_driver::_process_algo(
 
     size_t jhit = 0;
     // CALO hit loop :
-    BOOST_FOREACH (const sdm::calibrated_data::calorimeter_hit_handle_type& calo_handle,
-                   calo_hits_) {
+    BOOST_FOREACH (const sdm::CalorimeterHitHdl& calo_handle, calo_hits_) {
       // Skip NULL handle :
       if (!calo_handle.has_data()) {
         continue;
@@ -517,12 +514,10 @@ int sultan_driver::_process_algo(
 
   for (const auto& ts : tss) {
     // Add a new solution :
-    sdm::tracker_clustering_solution::handle_type htcs(new sdm::tracker_clustering_solution);
-    clustering_.add_solution(htcs, true);
-    clustering_.get_default_solution().set_solution_id(clustering_.get_number_of_solutions() - 1);
-    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default_solution();
-    clustering_solution.get_auxiliaries().update_string(
-        sdm::tracker_clustering_data::clusterizer_id_key(), SULTAN_ID);
+    auto htcs = datatools::make_handle<sdm::TrackerClusteringSolution>();
+    clustering_.push_back(htcs, true);
+    clustering_.get_default().set_solution_id(clustering_.size() - 1);
+    sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default();
 
     const std::vector<st::sequence>& the_sequences = ts.sequences();
 
@@ -534,9 +529,9 @@ int sultan_driver::_process_algo(
         continue;
       }
       // Append a new cluster :
-      sdm::tracker_cluster::handle_type tch(new sdm::tracker_cluster);
+      sdm::TrackerClusterHdl tch(new sdm::tracker_cluster);
       clustering_solution.get_clusters().push_back(tch);
-      sdm::tracker_cluster::handle_type& cluster_handle = clustering_solution.get_clusters().back();
+      sdm::TrackerClusterHdl& cluster_handle = clustering_solution.get_clusters().back();
       cluster_handle.grab().set_cluster_id(clustering_solution.get_clusters().size() - 1);
       const st::experimental_helix& seq_helix = the_sequence.get_helix();
 
@@ -555,7 +550,7 @@ int sultan_driver::_process_algo(
       for (size_t i = 0; i < seqsz; i++) {
         const st::node& a_node = a_sequence.nodes()[i];
         int hit_id = a_node.c().id();
-        cluster_handle->get_hits().push_back(gg_hits_mapping[hit_id]);
+        cluster_handle->hits().push_back(gg_hits_mapping[hit_id]);
         DT_LOG_DEBUG(get_logging_priority(), "Add tracker hit with id #" << hit_id);
 
         const double xt = a_node.ep().x().value();

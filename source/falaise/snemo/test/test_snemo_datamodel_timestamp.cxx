@@ -15,27 +15,6 @@ TEST_CASE("Timestamps are correctly constructed", "[falaise][datamodel]") {
   REQUIRE(t2.is_valid());
 }
 
-TEST_CASE("Timestamps can be validated/invalidated", "[falaise][datamodel]") {
-  snemo::datamodel::timestamp t1;
-  REQUIRE_FALSE(t1.is_valid());
-
-  SECTION("Invalidate does not change validity") {
-    t1.invalidate();
-    REQUIRE_FALSE(t1.is_valid());
-  }
-
-  SECTION("Setting invalid makes timestamp invalid") {
-    t1.invalidate();
-    REQUIRE_FALSE(t1.is_valid());
-  }
-
-  SECTION("Timestamps can be reset to valid") {
-    t1.invalidate();
-    t1.set_seconds(1);
-    t1.set_picoseconds(1);
-    REQUIRE(t1.is_valid());
-  }
-}
 
 TEST_CASE("Timestamps can be copied and compared", "[falaise][datamodel]") {
   snemo::datamodel::timestamp t1{12345, 678910};
@@ -45,7 +24,6 @@ TEST_CASE("Timestamps can be copied and compared", "[falaise][datamodel]") {
   snemo::datamodel::timestamp t2_pico{12345, 678911};
 
   snemo::datamodel::timestamp tInvalid;
-  tInvalid.invalidate();
 
   REQUIRE(t1 == t1_copy);
   REQUIRE(t1 < t2_sec);
@@ -62,7 +40,6 @@ TEST_CASE("Timestamps can be read from/written to strings", "[falaise][datamodel
   std::string t1String{"[12345:678910]"};
 
   snemo::datamodel::timestamp tInvalid;
-  tInvalid.invalidate();
   std::string tStringInvalid{"[?:?]"};
 
   std::string tStringValue{"[54321:987654321]"};
