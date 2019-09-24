@@ -40,7 +40,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
   size_t get_number_of_solutions() const;
 
   /// Add a trajectory solution
-  void add_solution(const TrackerTrajectorySolutionHdl& handle_, bool default_solution_ = false);
+  void add_solution(const TrackerTrajectorySolutionHdl& solution, bool is_default = false);
 
   /// Return a non mutable reference to a trajectory solution by index
   const tracker_trajectory_solution& get_solution(size_t index) const;

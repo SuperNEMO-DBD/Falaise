@@ -57,7 +57,7 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   bool has_clustering_solution() const;
 
   /// Set the reference clustering solution
-  void set_clustering_solution(const TrackerClusteringSolutionHdl& clustering_solution_);
+  void set_clustering_solution(const TrackerClusteringSolutionHdl& s);
 
   /// Reset the reference clustering solution
   void invalidate_clustering_solution();
@@ -96,8 +96,8 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   virtual void clear();
 
   /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const;
 
   /*** Auxiliaries ***/
   // These are marked as deprecated to warn/fail compilation if they are used

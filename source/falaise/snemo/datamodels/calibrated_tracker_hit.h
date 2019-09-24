@@ -190,11 +190,11 @@ class calibrated_tracker_hit : public geomtools::base_hit {
 
   /// Smart print method
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool inherit = false) const;
+                         const std::string& indent = "", bool is_last = false) const;
 
 
  protected:
-  void set_trait_bit(bool value, uint32_t mask);
+  void set_trait_bit(bool value, uint32_t trait);
 
  private:
   uint32_t traits_{0x0};                       //!< Bitset for special traits
