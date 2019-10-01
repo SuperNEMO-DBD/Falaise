@@ -26,8 +26,6 @@ Contents:
  * Modules:
 
     * ``things2root/`` : a module that builds a Root tree from Falaise data models (ntuplizer)
-    * ``MockTrackerClusterizer/`` : a module that builds clusters of tracker hits
-      as track candidates for particle trajectory fitting
     * ``CAT/`` : The CAT and SULTAN modules that build clusters of tracker hits
       as track candidates for particle trajectory fitting
     * ``TrackFit/`` : a module that fits clusters of tracker hits with
