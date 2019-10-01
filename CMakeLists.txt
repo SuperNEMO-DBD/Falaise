@@ -155,6 +155,8 @@ install(
 #-----------------------------------------------------------------------
 # - Plugins/modules installation - Must come last because they must find
 # Falaise, so require the config/targets file to have been generated
+# Also programs whilst migrating FLVisualize
+add_subdirectory(programs)
 add_subdirectory(modules)
 
 #-----------------------------------------------------------------------
