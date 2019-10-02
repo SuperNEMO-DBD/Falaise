@@ -109,10 +109,11 @@ set(FalaiseEventBrowserPlugin_DICT_HEADERS
 # - Generate ROOT headers
 set(__EVENTBROWSER_MODULE_ARG MODULE Falaise_EventBrowser)
 
-# Also have to haxor CMAKE_INSTALL_LIBDIR because we can't disable
+# Have to haxor CMAKE_INSTALL_LIBDIR and Output Dir because we can't disable
 # install of pcm/rootmap files...)
 set(CMAKE_INSTALL_LIBDIR_OLD "${CMAKE_INSTALL_LIBDIR}")
 set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}/Falaise/modules")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Falaise/modules")
 
 # Have to explicitly include the header path
 include_directories("${PROJECT_SOURCE_DIR}")

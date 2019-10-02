@@ -32,13 +32,13 @@
 //----------------------------------------------------------------------
 // - Compile Time API
 //! Major version number of EventBrowser
-#define EVENTBROWSER_VERSION_MAJOR @FalaiseEventBrowserPlugin_VERSION_MAJOR@
+#define EVENTBROWSER_VERSION_MAJOR @FLVisualize_VERSION_MAJOR@
 
 //! Minor version number of EventBrowser
-#define EVENTBROWSER_VERSION_MINOR @FalaiseEventBrowserPlugin_VERSION_MINOR@
+#define EVENTBROWSER_VERSION_MINOR @FLVisualize_VERSION_MINOR@
 
 //! Patch version number of EventBrowser
-#define EVENTBROWSER_VERSION_PATCH @FalaiseEventBrowserPlugin_VERSION_PATCH@
+#define EVENTBROWSER_VERSION_PATCH @FLVisualize_VERSION_PATCH@
 
 //! Encode EventBrowser to ordered integer available at compile time
 #define EVENTBROWSER_ENCODE_VERSION(major, minor, patch) \
@@ -51,7 +51,7 @@
 
 //! String encoded full version number, e.g. "1.2.3", available at compile time
 #define EVENTBROWSER_LIB_VERSION                                        \
-  "@FalaiseEventBrowserPlugin_VERSION@.@FalaiseEventBrowserPlugin_VERSION_MINOR@.@FalaiseEventBrowserPlugin_VERSION_PATCH"
+  "@FLVisualize_VERSION@.@FLVisualize_VERSION_MINOR@.@FLVisualize_VERSION_PATCH"
 
 //! Check current version >= (major, minor, patch) at compile time
 #define EVENTBROWSER_IS_AT_LEAST(major, minor, patch) \
