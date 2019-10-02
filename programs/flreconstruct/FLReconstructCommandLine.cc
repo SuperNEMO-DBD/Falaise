@@ -21,8 +21,6 @@
 
 // This project
 #include "FLReconstructErrors.h"
-#include "FLReconstructResources.h"
-#include "FLReconstructUtils.h"
 #include "falaise/user_level.h"
 #include "falaise/detail/falaise_sys.h"
 #include "falaise/resource.h"
