@@ -75,7 +75,6 @@
 #include "FLSimulateArgs.h"
 // #include "FLSimulateCommandLine.h"
 #include "FLSimulateErrors.h"
-#include "FLSimulateResources.h"
 
 namespace FLSimulate {
 
