@@ -33,16 +33,6 @@
 #
 add_subdirectory(falaise)
 
-#-----------------------------------------------------------------------
-# Apps
-# - Simulation
-add_subdirectory(flsimulate)
-
-# - Reconstruction
-add_subdirectory(flreconstruct)
-
-# - Tags
-add_subdirectory(fltags)
 
 #-----------------------------------------------------------------------
 # Manual
