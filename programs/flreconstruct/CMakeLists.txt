@@ -34,16 +34,12 @@ add_executable(flreconstruct
   FLReconstructPipeline.cc
   FLReconstructImpl.h
   FLReconstructImpl.cc
-  FLReconstructResources.h
-  FLReconstructResources.cc
   FLReconstructParams.h
   FLReconstructParams.cc
   FLReconstructCommandLine.h
   FLReconstructCommandLine.cc
   FLReconstructErrors.h
   FLReconstructErrors.cc
-  FLReconstructUtils.h
-  FLReconstructUtils.cc
 )
 target_include_directories(flreconstruct PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}

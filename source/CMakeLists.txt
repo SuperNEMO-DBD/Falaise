@@ -22,27 +22,10 @@
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
-# Core configuration
-#
-#include_directories(${FALAISE_BUILDPRODUCT_DIR}/include)
-#include_directories(${FALAISE_BUILDPRODUCT_DIR}/include/falaise)
-#include_directories(${Bayeux_INCLUDE_DIRS})
-
-#-----------------------------------------------------------------------
 # Library
 #
 add_subdirectory(falaise)
 
-#-----------------------------------------------------------------------
-# Apps
-# - Simulation
-add_subdirectory(flsimulate)
-
-# - Reconstruction
-add_subdirectory(flreconstruct)
-
-# - Tags
-add_subdirectory(fltags)
 
 #-----------------------------------------------------------------------
 # Manual

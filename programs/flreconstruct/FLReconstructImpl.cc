@@ -21,7 +21,6 @@
 // This Project
 #include "FLReconstructCommandLine.h"
 #include "FLReconstructParams.h"
-#include "FLReconstructUtils.h"
 #include "falaise/exitcodes.h"
 #include "falaise/metadata_utils.h"
 #include "falaise/property_set.h"
