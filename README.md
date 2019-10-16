@@ -12,7 +12,9 @@ experiment](http://nemo.in2p3.fr). The three main components are
 
 - `flreconstruct`: the main reconstruction application.
 
-A pipeline architecture is used in which the pipeline stages
+- `flvisualize`: the event/detector geometry display application
+
+A pipeline architecture is used for `flreconstruct` in which the pipeline stages
 may be configured and added to at runtime via a plugin system.
 Code for pipeline stages is stored in the ``modules`` subdirectory
 with each module (or set of modules) having its own directory.
@@ -20,7 +22,7 @@ with each module (or set of modules) having its own directory.
 Additional modules from external sources and individual contribution
 can be used too.
 
-# Getting Falaise
+# Getting and Using Falaise
 ## Quickstart
 We recommend installing Falaise and its requirements as documented on our [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew).
 Build-from-source and [Docker](https://www.docker.com)/[Singularity](https://www.sylabs.io/singularity/)
@@ -47,7 +49,7 @@ Once installed and setup, consult the [online documentation](https://supernemo-d
 for a full guide to running `flsimulate`, `flreconstruct`, and writing new plugin modules.
 
 
-## Building, Testing and Installing from Source
+## Developing, Building, Testing and Installing from Source
 To get the source code, either download a release tarball or to get the latest development,
 do
 
@@ -55,7 +57,9 @@ do
 $ git clone https://github.com/supernemo-dbd/Falaise.git Falaise.git
 ```
 
-To build Falaise, do
+If you are building and testing Falaise for new developments (see [CONTRIBUTING.md](CONTRIBUTING.md),
+it's recommended to run the following inside a `snemo-shell` session so that `cmake` and the correct
+build environment are pre-configured. To build Falaise, do
 
 ```
 $ mkdir Falaise.build
@@ -95,6 +99,8 @@ successful build, unit tests can be run using the `test` target:
 ```
 $ make test
 ```
+
+This will run each test in sequence and provide a report of successes and failures.
 
 On completion of the build, the Falaise programs, libraries and documentation are available
 for use under a POSIX-style hierarchy under the `BuildProducts` subdirectory of
@@ -141,19 +147,19 @@ present:
   - Supported Linux systems: CentOS7, Ubuntu 16.04/18.04LTS
   - Other Linux distributions are known to work, but are not
     officially supported. However, patches are welcome to resolve encountered issues!
-  - Suported macOS systems: 10.12/13/14 (Sierra/High Sierra/Mojave)
-- GCC (>= 7), Clang (>=6) or Xcode >= 9
+  - Suported macOS systems: 10.13/14 (High Sierra/Mojave, 10.15/Catalina in progress)
+- GCC (>= 7), Clang (>=6) or Xcode >= 10
 - [CMake](https://cmake.org) 3.12 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.3.1 or higher
-- [Boost](https:/boost.org) 1.63.0/1.69.0 only
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.4.1 or higher
+- [Boost](https:/boost.org) 1.69.0 only
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
 - [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
 - [GSL](http://www.gnu.org/s/gsl) 2 or higher
 - [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 only
 - [Geant4](http://geant4.cern.ch) 9.6.4 only
    - with GDML support enabled
-- [ROOT](http://root.cern.ch) 6.10 or higher
+- [ROOT](http://root.cern.ch) 6.16 or higher
 
 Falaise requires use of the C++11 or higher standard, so all of the above packages
 and their C++ dependencies must be built/installed using this standard. This is
@@ -166,12 +172,12 @@ above, either as build-from-source or as Docker/Singularity Images.
 # Getting Help
 
 If you have problems, questions, ideas or suggestions on Falaise or
-any of its submodules, [raise an issue](https://supernemo-dbd.github.io/Falaise/issues).
+any of its submodules, [just raise this on the project board](https://supernemo-dbd.github.io/Falaise/issues).
 
 # Contributing to Falaise
 
 Please see the [Contribution Guide](https://github.com/SuperNEMO-DBD/Falaise/blob/develop/CONTRIBUTING.md#)
-
+for a detailed guide.
 
 # Naming
 Falaise is named thus because [Falaise is the town in Normandy](http://en.wikipedia.org/wiki/Falaise,_Calvados) where William
