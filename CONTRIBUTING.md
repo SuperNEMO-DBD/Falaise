@@ -455,20 +455,23 @@ to be submitted as a GitHub [Pull Request]().
 to the authoritative Falaise repository for full testing and integration.
 
 ### Submitting your Topic Branch
+Ensure your Topic Branch is pushed to your Fork on GitHub with all commits you want to submit.
+To submit the Topic Branch as a Pull Request, go to the authoritative repository,
+and follow the GitHub Help guide on [Creating a pull request from a fork](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork),
+ensuring that:
 
-1. Ensure your Topic Branch is pushed to your fork on GitHub with all commits you want to submit
-2. **WIP**
+- At Step 4 you select the **base fork** as `SuperNEMO-DBD/Falaise``, and `base` is `develop`
+- At Step 5 you select the **head fork** as yours (i.e. `YOUR_GITHUB_ID/Falaise`) and the `compare`
+  as your Topic Branch.
+- At Step 6 you fill out the details:
+  - `Title` must  include a short description, e.g. `Fix Issue #1234`
+  - `Description` should be filled in with an overview of, and motivation for, the proposed changes
+    - If the Pull Request provides an implementation/fix for an Issue, you can cross-reference
+      to the Issue using a [GitHub Autolink](https://help.github.com/en/articles/autolinked-references-and-urls#issues-and-pull-requests)
+    - You can also use [mark the Issue for closure](https://help.github.com/en/articles/closing-issues-using-keywords) if the Pull Request will resolve it
 
-This last step will take you to the main `New Pull Request`` form that allows you to declare details about
-the Pull Request. There are several pieces of information required that **you must provide accurate details for**:
 
-- `Title` must  include a short description, e.g. `Fix Issue #1234`
-- `Description` should be filled in with an overview of, and motivation for, the proposed changes
-  - If the Pull Request provides an implementation/fix for an Issue, you can use LINK to
-    link the Pull Request to the Issue. This will close the Issue automatically when the Pull Request
-    is merged.
-
-Finally, click on the `Submit Pull Request` button, which will take you to the review and
+Finally, click on the `Create pull request` button, which will set it up take you to the review and
 integration page for your new Pull Request. This page is used to manage and track progress
 of the Topic Branch through the review and test process.
 
