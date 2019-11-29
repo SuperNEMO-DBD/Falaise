@@ -111,8 +111,13 @@ TEST_CASE("Retriever interfaces work", "") {
 
   REQUIRE(ps.get<double>("table.x") == Approx(4.13));
 
+<<<<<<< HEAD
   REQUIRE_THROWS_AS(ps.get<falaise::path>("flatstring"), falaise::wrong_type_error);
   REQUIRE_NOTHROW(ps.get<falaise::path>("apath"));
+=======
+  REQUIRE_THROWS_AS(ps.get<falaise::config::path>("flatstring"), falaise::config::wrong_type_error);
+  REQUIRE_NOTHROW(ps.get<falaise::config::path>("apath"));
+>>>>>>> v4.0.2
 }
 
 TEST_CASE("Insertion/Erase interfaces work", "") {
@@ -120,7 +125,11 @@ TEST_CASE("Insertion/Erase interfaces work", "") {
   ps.put("foo", 1);
 
   SECTION("putting the same key throws existing_key_error") {
+<<<<<<< HEAD
     REQUIRE_THROWS_AS(ps.put("foo", 1), falaise::existing_key_error);
+=======
+    REQUIRE_THROWS_AS(ps.put("foo", 1), falaise::config::existing_key_error);
+>>>>>>> v4.0.2
   }
 
   SECTION("replacing an existing key/value works") {
@@ -135,8 +144,13 @@ TEST_CASE("Insertion/Erase interfaces work", "") {
     ps.put("ascalar", 1234);
     ps.put("avector", std::vector<int>{1, 2, 3, 4});
 
+<<<<<<< HEAD
     REQUIRE_THROWS_AS(ps.get<std::vector<int>>("ascalar"), falaise::wrong_type_error);
     REQUIRE_THROWS_AS(ps.get<int>("avector"), falaise::wrong_type_error);
+=======
+    REQUIRE_THROWS_AS(ps.get<std::vector<int>>("ascalar"), falaise::config::wrong_type_error);
+    REQUIRE_THROWS_AS(ps.get<int>("avector"), falaise::config::wrong_type_error);
+>>>>>>> v4.0.2
   }
 
   SECTION("putting values as subkeys works") {
@@ -158,6 +172,7 @@ TEST_CASE("Path type put/get specialization works", "") {
     ps.put("my_relpath", relpth);
     ps.put("my_abspath", abspth);
 
+<<<<<<< HEAD
     REQUIRE(ps.get<falaise::path>("my_relpath") == relpth);
     REQUIRE_THROWS_AS(ps.get<std::string>("my_relpath"), falaise::wrong_type_error);
 
@@ -168,6 +183,18 @@ TEST_CASE("Path type put/get specialization works", "") {
   SECTION("env vars are expanded on get") {
     ps.put("home", falaise::path{"$HOME"});
     REQUIRE(ps.get<falaise::path>("home") == getenv("HOME"));
+=======
+    REQUIRE(ps.get<falaise::config::path>("my_relpath") == relpth);
+    REQUIRE_THROWS_AS(ps.get<std::string>("my_relpath"), falaise::config::wrong_type_error);
+
+    REQUIRE(ps.get<falaise::config::path>("my_abspath") == abspth);
+    REQUIRE_THROWS_AS(ps.get<std::string>("my_abspath"), falaise::config::wrong_type_error);
+  }
+
+  SECTION("env vars are expanded on get") {
+    ps.put("home", falaise::config::path{"$HOME"});
+    REQUIRE(ps.get<falaise::config::path>("home") == getenv("HOME"));
+>>>>>>> v4.0.2
   }
 }
 
@@ -177,6 +204,7 @@ TEST_CASE("Quantity type put/get specialization works", "") {
   ps.put("quantity", falaise::quantity{4.13, "m"});
   ps.put("amass", falaise::mass_t{4.13, "kg"});
 
+<<<<<<< HEAD
   REQUIRE_THROWS_AS(ps.get<falaise::quantity>("number"), falaise::wrong_type_error);
   REQUIRE_THROWS_AS(ps.get<double>("quantity"), falaise::wrong_type_error);
 
@@ -189,12 +217,33 @@ TEST_CASE("Quantity type put/get specialization works", "") {
   REQUIRE(q.unit() == "m");
   REQUIRE(q.dimension() == "length");
   REQUIRE(q() == Approx(4.13 * CLHEP::m));
+=======
+  REQUIRE_THROWS_AS(ps.get<falaise::config::quantity>("number"), falaise::config::wrong_type_error);
+  REQUIRE_THROWS_AS(ps.get<double>("quantity"), falaise::config::wrong_type_error);
+
+  REQUIRE(ps.get<falaise::config::quantity>("quantity").value() == Approx(4.13));
+  REQUIRE(ps.get<falaise::config::quantity>("quantity").unit() == "m");
+
+  falaise::config::length_t q;
+  SECTION("Check valid extraction") {
+    REQUIRE_NOTHROW(q = ps.get<falaise::config::length_t>("quantity"));
+    REQUIRE(q.value() == Approx(4.13));
+    REQUIRE(q.unit() == "m");
+    REQUIRE(q.dimension() == "length");
+    REQUIRE(q() == Approx(4.13 * CLHEP::m));
+  }
+
+  SECTION("Check mismatched quantities throws") {
+    REQUIRE_THROWS_AS(q = ps.get<falaise::config::length_t>("amass"), falaise::config::wrong_dimension_error);
+  }
+>>>>>>> v4.0.2
 }
 
 TEST_CASE("property_set type put/get specialization works", "") {
   falaise::property_set ps{makeTableLikeProperties()};
 
   SECTION("can only create table from pure tables") {
+<<<<<<< HEAD
     REQUIRE_THROWS_AS(auto notATable = ps.get<falaise::property_set>("myprop"),
                       falaise::wrong_type_error);
     REQUIRE_THROWS_AS(auto badTable = ps.get<falaise::property_set>("mix_table"),
@@ -203,12 +252,26 @@ TEST_CASE("property_set type put/get specialization works", "") {
 
   SECTION("tables must have correct size") {
     falaise::property_set goodTable = ps.get<falaise::property_set>("pure_table");
+=======
+    REQUIRE_THROWS_AS(auto notATable = ps.get<falaise::config::property_set>("myprop"),
+                      falaise::config::wrong_type_error);
+    REQUIRE_THROWS_AS(auto badTable = ps.get<falaise::config::property_set>("mix_table"),
+                      falaise::config::wrong_type_error);
+  }
+
+  SECTION("tables must have correct size") {
+    falaise::config::property_set goodTable = ps.get<falaise::config::property_set>("pure_table");
+>>>>>>> v4.0.2
     REQUIRE(goodTable.get_names().size() == 6);
     REQUIRE(ps.has_key("pure_table.x"));
   }
 
   SECTION("subtables can be extracted directly") {
+<<<<<<< HEAD
     auto subTable = ps.get<falaise::property_set>("pure_table.sub_table");
+=======
+    auto subTable = ps.get<falaise::config::property_set>("pure_table.sub_table");
+>>>>>>> v4.0.2
     REQUIRE(subTable.get_names().size() == 3);
     REQUIRE(subTable.get<int>("x") == 111);
     REQUIRE(subTable.get<int>("y") == 222);
@@ -216,8 +279,13 @@ TEST_CASE("property_set type put/get specialization works", "") {
   }
 
   SECTION("subtables can be extracted indirectly") {
+<<<<<<< HEAD
     auto firstTable = ps.get<falaise::property_set>("pure_table");
     auto secondTable = firstTable.get<falaise::property_set>("sub_table");
+=======
+    auto firstTable = ps.get<falaise::config::property_set>("pure_table");
+    auto secondTable = firstTable.get<falaise::config::property_set>("sub_table");
+>>>>>>> v4.0.2
     REQUIRE(secondTable.get_names().size() == 3);
     REQUIRE(secondTable.get<int>("x") == 111);
     REQUIRE(secondTable.get<int>("y") == 222);
@@ -240,10 +308,17 @@ TEST_CASE("property_set type put/get specialization works", "") {
     REQUIRE(ps.has_key("sub.baz"));
     REQUIRE(ps.has_key("sub.bob"));
 
+<<<<<<< HEAD
     REQUIRE_THROWS_AS(ps.put("pure_table", newSub), falaise::existing_key_error);
     REQUIRE_NOTHROW(ps.put_or_replace("pure_table", newSub));
 
     auto newPs = ps.get<falaise::property_set>("pure_table");
+=======
+    REQUIRE_THROWS_AS(ps.put("pure_table", newSub), falaise::config::existing_key_error);
+    REQUIRE_NOTHROW(ps.put_or_replace("pure_table", newSub));
+
+    auto newPs = ps.get<falaise::config::property_set>("pure_table");
+>>>>>>> v4.0.2
     REQUIRE_FALSE(newPs.has_key("x"));
     REQUIRE_FALSE(newPs.is_key_to_property_set("sub_table"));
     REQUIRE(newPs.has_key("baz"));
@@ -257,7 +332,11 @@ TEST_CASE("Creation from file works", "") {
   datatools::properties tmp{makeSampleProperties()};
   datatools::properties::write_config(fname, tmp);
 
+<<<<<<< HEAD
   falaise::property_set ps;
+=======
+  falaise::config::property_set ps;
+>>>>>>> v4.0.2
   REQUIRE_NOTHROW(make_property_set(fname, ps));
   REQUIRE_FALSE(ps.is_empty());
 
@@ -301,7 +380,11 @@ TEST_CASE("Check datatools::properties interface", "") {
   double cFactor{0.0};
   bool hasLabel = datatools::units::find_unit(ps.get_unit_symbol("alength"), cFactor, unit_label);
   if (hasLabel) {
+<<<<<<< HEAD
     std::cout << "length has label: " << unit_label << std::endl;
+=======
+   std::cout << "length has label: " << unit_label << std::endl;
+>>>>>>> v4.0.2
   }
 
   // All dimensions known
