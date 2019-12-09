@@ -191,3 +191,12 @@ set_tests_properties(flsimulate-feature-pr75-validation
 
 set_falaise_test_environment(flsimulate-feature-pr75-validation)
 
+# - Flsimulate Bi207 calibration source
+# - Variant profile is given : flsimulate-script-Bi207_source_calibration.profile
+add_test(NAME flsimulate-script-Bi207_source_calibration-run
+  COMMAND flsimulate
+          -d "Bi207_source_calibration@${CMAKE_CURRENT_BINARY_DIR}"
+          -d "Bi207sourcecalibrationvariant@${CMAKE_CURRENT_SOURCE_DIR}/"
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-script-Bi207_source_calibration.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-script-Bi207_source_calibration.brio"
+  )
+set_falaise_test_environment(flsimulate-script-Bi207_source_calibration-run)
