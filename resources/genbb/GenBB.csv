@@ -45,6 +45,7 @@ Pb214 : Pb-214 decay : Background :
 Ra226 : Ra-226 decay : Background : 
 Co60 : Co-60 decay : Calibration : 
 Bi207 : Bi-207 decay : Calibration : 
+calibBi207 : Bi-207 decay with time slicing : Calibration : 
 Am241 : Am-241 decay : Calibration : 
 Na22 : Na-22 decay : Calibration : 
 Mn54 : Mn-54 decay : Calibration : 
