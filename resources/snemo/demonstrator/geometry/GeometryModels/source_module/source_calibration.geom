@@ -1,6 +1,7 @@
 # @falaise:snemo/demonstrator/geometry/GeometryModels/source_module/source_calibration.geom
 # References:
-# - DocDB-2875
+# - DocDB-2875 (old)
+# - DocDB-4816
 
 ############################################################################
 #
@@ -16,7 +17,7 @@
 [name="source_calibration_spot.model" type="geomtools::simple_shaped_model"]
   #@config The description of the calibration source spot (Bi207)
   shape_type : string  = "cylinder"
-    r : real as length = 5.0 mm
+    r : real as length = 2.0 mm
     z : real as length = 1.0 um
   material.ref : string = "basic::mylar"
   visibility.color : string  = "red"
@@ -82,7 +83,7 @@
   z      : real as length =  4.1 mm
   x_hole : real as length = 13.0 mm
   y_hole : real as length =  8.0 mm
-  material.ref : string  = "basic::polyethylene"
+  material.ref : string  = "basic::copper"
   visibility.color : string  = "blue"
 
 
