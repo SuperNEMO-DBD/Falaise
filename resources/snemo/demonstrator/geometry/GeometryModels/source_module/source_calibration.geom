@@ -17,7 +17,7 @@
 [name="source_calibration_spot.model" type="geomtools::simple_shaped_model"]
   #@config The description of the calibration source spot (Bi207)
   shape_type : string  = "cylinder"
-    r : real as length = 2.0 mm
+    r : real as length = 1.0 mm
     z : real as length = 1.0 um
   material.ref : string = "basic::mylar"
   visibility.color : string  = "red"
