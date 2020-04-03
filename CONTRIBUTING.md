@@ -9,7 +9,7 @@ a standardized workflow is enforced for submission of new code via
 Git and GitHub Pull Requests.
 
 If you have any issues with or questions about this workflow, don't
-hesitate to raise these via a new topic on the Issues Board at https://github.com/supernemp-dbd/falaise/issues.
+hesitate to raise these via a new topic on the Issues Board at https://github.com/supernemo-dbd/falaise/issues.
 
 # Basic Tools
 ## Git
@@ -397,7 +397,7 @@ from the foo tool was fixed.
 
 The commit message should say *why* something was changed, not *what* was changed
 (so it’s not necessary to list changes by filename). You can also cross-reference
-GitHub Issues and Pull Requests using [GitHub Markdown References](),
+GitHub Issues and Pull Requests using [GitHub Markdown References](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax),
 which can help to keep track of developments and progress.
 
 Git is a distributed version control system, so all of the commits made so far
@@ -452,7 +452,7 @@ To submit the Topic Branch as a Pull Request, go to the authoritative repository
 and follow the GitHub Help guide on [Creating a pull request from a fork](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork),
 ensuring that:
 
-- At Step 4 you select the **base fork** as `SuperNEMO-DBD/Falaise``, and `base` is `develop`
+- At Step 4 you select the **base fork** as `SuperNEMO-DBD/Falaise`, and `base` is `develop`
 - At Step 5 you select the **head fork** as yours (i.e. `YOUR_GITHUB_ID/Falaise`) and the `compare`
   as your Topic Branch.
 - At Step 6 you fill out the details:
@@ -573,7 +573,7 @@ and during its submission as a Pull Request by the main developer.
 For example, let's say I've created a Topic Branch `super-new-feature` and
 published it on my Fork:
 
-```
+```console
 me> git checkout -b super-new-feature
 ... edit, test, edit ...
 me> git push -u origin super-new-feature
@@ -589,7 +589,7 @@ you> git remote add me https://github.com/<MY_GITHUB_ID>/Falaise.git
 
 then fetch and checkout the `super-new-feature` branch
 
-```
+```console
 you> git fetch me
 ... checkout my branch
 you> git checkout me/super-new-feature
@@ -609,10 +609,10 @@ changes, and merge them into my branch:
 ```console
 ... in my local clone ...
 me> git remote add you https://github.com/<YOUR_GITHUB_ID>/Falaise.git
-$ git fetch you
+me> git fetch you
 ... ensure I'm on my version of the branch
-$ git checkout super-new-feature
-$ git merge you/super-new-feature
+me> git checkout super-new-feature
+me> git merge you/super-new-feature
 ```
 
 
