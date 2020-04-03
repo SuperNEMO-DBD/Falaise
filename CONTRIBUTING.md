@@ -41,14 +41,11 @@ command line, [several GUIs are available](https://git-scm.com/downloads/guis/)
 allowing viewing and/or interaction with local and remote repositories.
 
 ## GitHub
-SuperNEMO use [GitHub](https://github.com) to host the authoritative repository
-for Falaise and developer Forks. Here, "authoritative"
-means the Collaboration's main repository containing the current development line
-of Falaise and from which approved and validated releases are made.
+SuperNEMO uses [GitHub](https://github.com) to host the authoritative repository
+for Falaise and developer Forks. Here, "authoritative" means the Collaboration's main
+repository containing the current development line of Falaise and from which approved and validated releases are made.
 
-GitHub's [help pages](https://help.github.com/)
-provide a good guide and overall reference to GitHub.
-[Getting Started With GitHub](https://help.github.com/en/categories/getting-started-with-github)
+GitHub's [help pages](https://help.github.com/) provide a good guide and overall reference to GitHub. [Getting Started With GitHub](https://help.github.com/en/categories/getting-started-with-github)
 covers most of the major topics in more detail. In particular,
 the following three guides will help you get started with:
 
@@ -68,11 +65,10 @@ System and software requirements, plus instructions on how to compile and test
 Falaise are described in the main [README](README.md)
 
 - [C++](http://isocpp.org) as primary language
+- [CMake](https://cmake.org) for building, running tests and installing
 - [Catch](https://github.com/philsquared/Catch) for C++ unit testing
 - [Doxygen](http://www.doxygen.org) plus [Markdown](https://www.stack.nl/~dimitri/doxygen/manual/markdown.html) for API and Reference Documentation
-- [CMake](https://cmake.org) for building, running tests and installing
 
-**WIP**
 
 # Falaise Git Workflow
 ## Basic Git Configuration
@@ -117,7 +113,7 @@ change directory into it and run:
 
 ``` console
 $ git config --local user.name "Your Name"
-$ git config --local user.email "your.name@cern.ch"
+$ git config --local user.email "your.name@domain.xyz"
 ```
 
 These settings will then only apply to this clone of Falaise.
@@ -126,10 +122,10 @@ The above settings are the minimum required for using Falaise's Git/GitHub
 Workflow.
 
 ## Fork the Main Repository
-The main Falaise git repository is https://github.com/supernemo-dbd/falaise. Follow that link and then
-create your own copy of the repository by pressing the `Fork` button on the project’s front page
-(usually in the top right hand corner). If you are presented with a number of *group options* when
-you start to fork, pick your personal account.
+The main Falaise git repository is https://github.com/supernemo-dbd/falaise. Follow that link
+and then create your own copy of the repository by pressing the `Fork` button on the
+project’s front page (usually in the top right hand corner). If you are presented with a number
+of *group options* when you start to fork, pick your personal account.
 
 You now have your own personal copy of the Falaise code on GitHub that you can use to clone
 from, and publish to, for your own developments. You will also be unperturbed by other developers
@@ -146,8 +142,8 @@ new Releases.
 
 ## Clone the Forked Repository Locally
 You now have a GitHub fork of your own, but this is used primarily for sharing your changes
-with others. To make a change you need a local working copy on your computer(s) that you can edit yourself. In git
-this is done by *cloning* your fork.
+with others. To make a change you need a local working copy on your computer(s) that you can
+edit yourself. In git this is done by *cloning* your fork.
 
 The `git clone` command requires a URL pointing to the repository you want to clone, in
 this case your fork. If you have set up [SSH keys for your GitHub account](https://help.github.com/en/articles/connecting-to-github-with-ssh),
@@ -158,18 +154,15 @@ $ git clone git@github.com:[YOUR_GITHUB_ID]/falaise.git
   ... output ...
 ```
 
-This will give you a Local Clone of your fork under a `falaise` subdirectory of the directory where you run this command.
-GitHub also offers an HTTPS URL for cloning, but we recommend SSH keys
-for your own repositories for ease and security. We'll see the HTTPS URL
-in use in the next section when we come to connect the authoritative repo
-as a remote, where we only require read access.
+This will give you a Local Clone of your fork under a `falaise` subdirectory of the directory
+where you run this command. GitHub also offers an HTTPS URL for cloning, but we recommend SSH keys
+for your own repositories for ease and security. We'll see the HTTPS URL in use in the next section when we come to connect the authoritative repo as a remote, where we only require read access.
 
 ## Add the Authoritative Repository as a Remote
 
 The tip (or `HEAD`) of the `develop` branch of the **authoritative** Falaise repository, https://github.com/supernemo-dbd/falaise,
-always has the latest tested and approved code. Your local developments therefore need to be able to
-start from, and track the changes on, this (See also `Create and Manage a Topic Branch` below).
-We enable this by adding the authoritative repository to our Local Clone as a *remote*:
+always has the latest tested and approved code. Your local developments therefore need to be
+able to start from, and track the changes on, this (See also `Create and Manage a Topic Branch` below). We enable this by adding the authoritative repository to our Local Clone as a *remote*:
 
 ``` console
 $ cd falaise
@@ -207,9 +200,8 @@ $ git push origin develop
 $ git checkout -b topic-name develop
 ```
 
-
-Why the `checkout`, `fetch`, `rebase`, and `push` operations first?
-As noted above, your fork and local clone are independent copies of the main Falaise git repository.
+Why the `checkout`, `fetch`, `rebase`, and `push` operations first? As noted above, your fork
+and local clone are independent copies of the main Falaise git repository.
 GitHub keeps a record of this to help in book-keeping and making Pull Requests, but
 it *does not* automatically update your fork or clone with any changes made to the main
 repository such as updates to branches or new tags. These commands ensure that
@@ -249,15 +241,15 @@ $ git branch
 
 You can switch between branches at any point using the `git checkout` command
 
-.. code-block:: console
-
-  $ git checkout develop
-  Switched to branch 'develop'
-  $ git branch
-  ...
-  * develop
-    my-topic
-  ...
+```console
+$ git checkout develop
+Switched to branch 'develop'
+$ git branch
+...
+* develop
+  my-topic
+...
+```
 
 You can also list branches present on the remote repositories using the `-a` flag
 to `git branch`:
@@ -281,8 +273,8 @@ $ git push -u origin my-topic-branch
 ```
 
 the `-u` flag is only required the first time you `push` your branch and
-associates the local Topic Branch with one of the same name on GitHub (or sets up your local branch to
-"track" that on your fork).
+associates the local Topic Branch with one of the same name on GitHub (or sets up your
+local branch to "track" that on your fork).
 
 If you develop on several machines (e.g. Desktop and Laptop), simply repeat the above process
 to create Local Clones on them. If you have created and published a
@@ -299,10 +291,10 @@ $ git branch -a
 remotes/origin/my-topic-branch
 ...
 $ git checkout -t origin/my-topic-branch
+```
 
 Git will checkout and "track" your Topic Branch, so you can work on and
 share changes between as many clones as you require.
-
 
 
 ### Local Development Cycle
@@ -340,8 +332,8 @@ during the development process so:
 We strongly recommend that you *commit early, commit often* for every coherent,
 compilable piece of the overall topic you are working on. Git commits code in two phases:
 
-1. You add changed files to a staging area with git add
-2. You commit the staging area with git commit
+1. You add changed files to a staging area with `git add`
+2. You commit the staging area with `git commit`
 
 ```console
 # ... assuming you are in the git repository
@@ -409,7 +401,7 @@ GitHub Issues and Pull Requests using [GitHub Markdown References](),
 which can help to keep track of developments and progress.
 
 Git is a distributed version control system, so all of the commits made so far
-are only present in your local working copy. If you haven't published your Topic Branch
+are *only present in your local working copy*. If you haven't published your Topic Branch
 already on your fork on GitHub, as documented earlier, use `git push`:
 
 ```console
@@ -451,7 +443,7 @@ as described in the [GitHub tutorial](https://help.github.com/articles/resolving
 
 ## Making a Pull Request
 Once you have developed the Topic Branch to your satisfaction, it needs
-to be submitted as a GitHub [Pull Request]().
+to be submitted as a GitHub [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests).
 to the authoritative Falaise repository for full testing and integration.
 
 ### Submitting your Topic Branch
@@ -479,7 +471,7 @@ of the Topic Branch through the review and test process.
 ### Merge Request Review and Testing
 
 After submitting your Topic Branch as a Pull Request it is tested and reviewed, this
-process being managed through its page on GitHub under https://github.com/supernemo-dbd/falaise/pull_requests.
+process being managed through [the Pull Requests page for Falaise](https://github.com/supernemo-dbd/falaise/pull_requests).
 This page lists all in progress Pull Requests, so simply find yours by the `Title`
 you entered for it. The page for your Pull Request is basically a thread of comments to which
 collaborators and you can post on to discuss its status and progress through review
@@ -495,12 +487,10 @@ The stages of review and testing are listed below:
 
 It's important to note these steps are iterative and that you can update your Topic Branch
 to address any issues identified. You should not close the Pull Request or delete the
-associated Topic Branch in response to failures or requests for changes. The workflow aims to gradually tune and
-improve the code responsively without requiring a start from scratch.
+associated Topic Branch in response to failures or requests for changes. The workflow aims
+to gradually tune and improve the code responsively without requiring a start from scratch.
 Generally, Pull Requests are *only* closed without a merge to the `develop` branch if
 the work reaches a dead-end or a better solution to the topic is identified.
-
-
 
 ### Finishing Up
 After your Pull Request is accepted and merged to the authoritative repository's `develop` branch,
@@ -594,7 +584,7 @@ as a new remote of your Local Clone:
 
 ```console
 ... in your local clone ...
-you> git remote add me https://github.com/me/Falaise.git
+you> git remote add me https://github.com/<MY_GITHUB_ID>/Falaise.git
 ```
 
 then fetch and checkout the `super-new-feature` branch
@@ -618,7 +608,7 @@ changes, and merge them into my branch:
 
 ```console
 ... in my local clone ...
-me> git remote add you https://github.com/you/Falaise.git
+me> git remote add you https://github.com/<YOUR_GITHUB_ID>/Falaise.git
 $ git fetch you
 ... ensure I'm on my version of the branch
 $ git checkout super-new-feature
@@ -626,7 +616,7 @@ $ git merge you/super-new-feature
 ```
 
 
-## WIP: Reviewing Pull Requests Locally
+## Reviewing Pull Requests Locally
 If you are a Pull Request reviewer, then changes can be reviewed and commented on
 directly through the [GitHub review interface](https://help.github.com/articles/about-pull-request-reviews/).
 This is useful to comment on higher level aspects like naming, style and design.
@@ -738,7 +728,8 @@ $ git branch --delete --force name-of-topic
 ### C++
 - [Official ISO C++ Site](https://isocpp.org)
 - [cppreference](http://en.cppreference.com/w/)
-- [Catch](https://github.com/philsquared/Catch) Unit Testing [Tutorial](https://github.com/philsquared/Catch/blob/master/docs/tutorial.md) and [Reference](https://github.com/philsquared/Catch/blob/master/docs/Readme.md) Guides
+- [CPP Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+- [Catch](https://github.com/catchorg/Catch2) Unit Testing [Tutorial](https://github.com/catchorg/Catch2/blob/master/docs/tutorial.md) and [Reference](https://github.com/catchorg/Catch/blob/master/docs/Readme.md) Guides
 
 ### CMake
 - [Core CMake Documentation](https://cmake.org/documentation/)
