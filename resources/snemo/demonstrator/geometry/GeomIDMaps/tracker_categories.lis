@@ -61,7 +61,7 @@
 [category="xcalo_wrapper" type="1233"]
   inherits : string   = "xcalo_optical_module"
 
-[category="xcalo_pmt" type="1234"]
+[category="xcalo_pmt" type="1236"]
   inherits : string   = "xcalo_optical_module"
 
 [category="xcalo_pmt_glass" type="1235"]
