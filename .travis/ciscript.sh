@@ -26,9 +26,22 @@ rm -Rf build && mkdir build
 cd build
 
 # Configure, assuming presence of Ninja tool
-cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" -DFALAISE_ENABLE_TESTING=ON -GNinja $PROJECTDIR
+cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" \
+      -DFALAISE_ENABLE_TESTING=ON \
+      -DCMAKE_INSTALL_LIBDIR=lib \
+      -GNinja \
+      $PROJECTDIR
 # Build using Ninja to auto-parallelize
 ninja
 # Run tests - rerunning any that fail in verbose mode
 ctest || ctest -VV --rerun-failed
+
+# On Linux, check install time behaviour of programs
+if [ `uname` == "Linux" ] ; then
+  DESTDIR=$PWD/test-install ninja install
+  # Print rpaths
+  readelf -d $PWD/test-install/usr/local/lib/Falaise/modules/libFalaise_EventBrowser.so
+  # Execute flvisualize help to be sure...
+  $PWD/test-install/usr/local/bin/flvisualize --help
+fi
 

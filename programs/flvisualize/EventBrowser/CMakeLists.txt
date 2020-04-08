@@ -219,6 +219,8 @@ target_link_libraries(Falaise_EventBrowser
   ${Boost_LIBRARIES}
   ${ROOT_LIBRARIES}
   )
+# Because it's loaded, make sure its RPATH can find dependencies
+set_target_properties(Falaise_EventBrowser PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 
 if(APPLE)
   set_target_properties(Falaise_EventBrowser
@@ -228,7 +230,6 @@ endif()
 
 # Install it:
 install(TARGETS Falaise_EventBrowser DESTINATION ${CMAKE_INSTALL_LIBDIR}/Falaise/modules)
-
 # Also have to install the headers for the dictionary so that Cling can use them
 # at Runtime.
 install(FILES ${FalaiseEventBrowserPlugin_DICT_HEADERS}
