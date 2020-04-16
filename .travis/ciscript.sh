@@ -31,8 +31,8 @@ cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" \
       -DCMAKE_INSTALL_LIBDIR=lib \
       -GNinja \
       $PROJECTDIR
-# Build using Ninja to auto-parallelize
-ninja
+# Build using Ninja to auto-parallelize with verbosity
+ninja -v
 # Run tests - rerunning any that fail in verbose mode
 ctest || ctest -VV --rerun-failed
 
