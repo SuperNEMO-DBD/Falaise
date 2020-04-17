@@ -1,7 +1,7 @@
 #ifndef FALAISE_PROPERTY_SET_H
 #define FALAISE_PROPERTY_SET_H
 
-#include <exception>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include "bayeux/datatools/properties.h"

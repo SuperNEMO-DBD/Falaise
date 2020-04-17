@@ -3,7 +3,7 @@
 #ifndef FALAISE_QUANTITY_H
 #define FALAISE_QUANTITY_H
 
-#include <exception>
+#include <stdexcept>
 #include "CLHEP/Units/PhysicalConstants.h"
 #include "CLHEP/Units/SystemOfUnits.h"
 #include "bayeux/datatools/units.h"

@@ -1,7 +1,7 @@
 #ifndef FALAISE_PATH_H
 #define FALAISE_PATH_H
 
-#include <exception>
+#include <stdexcept>
 #include <ostream>
 #include <string>
 
@@ -27,7 +27,7 @@ class invalid_path_error : public std::logic_error {
  * explicit paths allowing users to validate that a @ref property_set value
  * is a true path. It is nothing more than a simple holder of the std::string for
  * the absolute path and may be used as:
- * 
+ *
  * ```cpp
  * void configure_me(property_set const& ps) {
  *   auto p = ps.get<falaise::path>("mypath"); // throws if "mypath" is not a path value
