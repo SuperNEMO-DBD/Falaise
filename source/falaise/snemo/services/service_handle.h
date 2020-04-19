@@ -3,7 +3,7 @@
 #ifndef SERVICE_HANDLE_HH
 #define SERVICE_HANDLE_HH
 
-#include <exception>
+#include <stdexcept>
 
 #include "bayeux/datatools/service_manager.h"
 #include "falaise/snemo/services/service_traits.h"
