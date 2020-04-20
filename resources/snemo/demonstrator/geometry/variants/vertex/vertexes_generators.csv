@@ -21,6 +21,7 @@ pmt_xcalo_glass_bulk_it_tunnel : Vertex generation from the bulk volume of the X
 pmt_xcalo_glass_bulk_fr_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, mountain : OpticalModule :
 pmt_xcalo_glass_bulk_fr_tunnel : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, tunnel : OpticalModule :
 pmt_xcalo_gveto_glass_bulk : Vertex generation from the bulk volume of all XCALO/GVETO PMT glass : OpticalModule : 
+pmt_glass_bulk : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator : OpticalModule :
 calo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks : OpticalModule : 
 xcalo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks : OpticalModule : 
 gveto_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all gamma veto scintillator blocks : OpticalModule : 
