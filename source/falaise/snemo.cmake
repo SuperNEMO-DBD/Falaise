@@ -101,6 +101,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/locator_plugin.cc
   snemo/geometry/utils.cc
   snemo/geometry/mapped_magnetic_field.cc
+  snemo/geometry/private/categories.h
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/event_header_utils_module.h
