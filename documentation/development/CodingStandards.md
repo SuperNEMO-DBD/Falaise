@@ -12,6 +12,8 @@ key guidelines when writing code for Falaise are
 - **readability** (clarity of intent)
 - **C++ standard compliance** (reliability)
 
+This guide is unapologetically "do as we say, not as we do", so fixes
+to improve standardization are very welcome!
 
 Consistency
 -----------
@@ -34,12 +36,14 @@ will run the tool over all source code and apply the formatting automatically.
 
 Readability
 -----------
-Prefer `snake_case` for typenames and namespaces. Prefer `camel_case` for
-variables, class member functions and class data members. Use `camel_case_` for
+Keep names concise. Prefer `snake_case` for typenames and namespaces unless names are long (and then you should prefer to clarify the name!). Prefer `camelCase` for
+variables and class member functions. Prefer `camelCase_` for
 class data members to distinguish them from input variables or function calls.
 
+Avoid
+
 Use meaningful and concise names for variables and types. For example,
-even though we're physicists, `speed_of_light` is a more meaningful variable name
+even though we're physicists, `speedOfLight` is a more meaningful variable name
 than `c`. Conciseness helps readability, and is especially important
 as `snake_case` is less readable to the human eye and `adds_one_underscore_extra_per_word`.
 
@@ -47,8 +51,8 @@ as `snake_case` is less readable to the human eye and `adds_one_underscore_extra
 C++ Standard Compliance
 -----------------------
 Your code must be fully compliant with the C++11 standard. No C++14/17
-constructs are permitted in core Falaise. The migration to C++14/7 is
-expected in Falaise 4.
+constructs are permitted in core Falaise. The migration to C++17 is
+expected in Falaise 5.
 
 No compiler vendor extensions are permitted, e.g. "-std=gnu++11".
 
