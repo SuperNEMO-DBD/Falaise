@@ -225,7 +225,7 @@
     internal_item.placement.light_guide     : string = "0 0 126.75 (mm)"
     internal_item.model.light_guide         : string = "xwall_light_guide_outer.model"
     internal_item.placement.pmt             : string = "0 0 29.75 (mm)"
-    internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.model"
+    internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594_bis.model"
     internal_item.placement.pmt_base        : string = "0 0 -74.25 (mm)"
     internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
   visibility.hidden_envelope      : boolean = true
@@ -256,7 +256,7 @@
     internal_item.placement.light_guide     : string = "0 0 126.75 (mm)"
     internal_item.model.light_guide         : string = "xwall_light_guide_outer.model"
     internal_item.placement.pmt             : string = "0 0 29.75 (mm)"
-    internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594.model"
+    internal_item.model.pmt                 : string = "tracker.PMT_HAMAMATSU_R6594_bis.model"
     internal_item.placement.pmt_base        : string = "0 0 -74.25 (mm)"
     internal_item.model.pmt_base            : string = "tracker.PMT_HAMAMATSU_R6594.base.model"
   visibility.hidden_envelope      : boolean = true

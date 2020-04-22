@@ -30,4 +30,20 @@
   visibility.hidden_envelope  : boolean = true
   visibility.color            : string  = "cyan"
   visibility.daughters.hidden : boolean = true
+  mapping.filled.daughter_id.bulb : string = "[gveto_pmt_glass]"
 
+
+[name="tracker.PMT_HAMAMATSU_R6594_bis.model" type="geomtools::simple_shaped_model"]
+  #@config The configuration parameters for the PMT glass bulb and its contents
+  length_unit : string = "mm"
+  shape_type  : string = "polycone"
+  build_mode  : string = "datafile"
+  datafile    : string = "@falaise:geometry/PMT/hamamatsu_R6594_shape.data"
+  filled_mode : string = "by_envelope"
+  filled_label : string = "bulb"
+  material.ref : string = "glass"
+  material.filled.ref : string = "vacuum"
+  visibility.hidden_envelope  : boolean = true
+  visibility.color            : string  = "cyan"
+  visibility.daughters.hidden : boolean = true
+  mapping.filled.daughter_id.bulb : string = "[xcalo_pmt_glass]"
