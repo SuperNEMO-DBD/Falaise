@@ -37,7 +37,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.logLevel = datatools::logger::PRIO_ERROR;
   params.userProfile = "normal";
   params.numberOfEvents = 1;
-  params.doSimulation = true;
   // Identification of the experimental setup:
   params.experimentalSetupUrn = "";
 
@@ -155,10 +154,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       // Printing rate for events:
       flSimParameters.simulationManagerParams.number_of_events_modulo = baseSystem.get<int>(
           "moduloEvents", flSimParameters.simulationManagerParams.number_of_events_modulo);
-
-      // Do simulation:
-      flSimParameters.doSimulation =
-          baseSystem.get<bool>("doSimulation", flSimParameters.doSimulation);
     }
 
     // Simulation subsystem:
@@ -521,7 +516,6 @@ void FLSimulateArgs::print(std::ostream& out_) const {
        << std::endl;
   out_ << tag << "userProfile                = " << userProfile << std::endl;
   out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
-  out_ << tag << "doSimulation               = " << std::boolalpha << doSimulation << std::endl;
   out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
   out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
   out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename

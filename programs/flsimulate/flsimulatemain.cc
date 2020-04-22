@@ -133,31 +133,27 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
   system_props.store_integer("numberOfEvents", flSimParameters.numberOfEvents,
                              "Number of simulated events");
 
-  system_props.store_boolean("doSimulation", flSimParameters.doSimulation, "Activate simulation");
-
   if (!flSimParameters.experimentalSetupUrn.empty()) {
     system_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
                               "Experimental setup URN");
   }
 
-  if (flSimParameters.doSimulation) {
-    // Simulation section:
-    datatools::properties &simulation_props =
-        flSimMetadata.add_section("flsimulate.simulation", "flsimulate::section");
-    simulation_props.set_description("Simulation setup parameters");
+  // Simulation section:
+  datatools::properties &simulation_props =
+      flSimMetadata.add_section("flsimulate.simulation", "flsimulate::section");
+  simulation_props.set_description("Simulation setup parameters");
 
-    if (!flSimParameters.simulationSetupUrn.empty()) {
-      simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
-                                    "Simulation setup URN");
-    } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      simulation_props.store_path("simulationSetupConfig",
-                                  flSimParameters.simulationManagerParams.manager_config_filename,
-                                  "Simulation manager configuration file");
-    }
-    if (!flSimParameters.rngSeeding.empty()) {
-      // Saving effective initial seeds for PRNGs:
-      simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
-    }
+  if (!flSimParameters.simulationSetupUrn.empty()) {
+    simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
+                                  "Simulation setup URN");
+  } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+    simulation_props.store_path("simulationSetupConfig",
+                                flSimParameters.simulationManagerParams.manager_config_filename,
+                                "Simulation manager configuration file");
+  }
+  if (!flSimParameters.rngSeeding.empty()) {
+    // Saving effective initial seeds for PRNGs:
+    simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
   }
 
   // Variants section:
