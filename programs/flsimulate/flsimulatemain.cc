@@ -252,31 +252,28 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   falaise::exit_code code = falaise::EXIT_OK;
   try {
     // Setup services:
-    datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
     std::string services_config_file = flSimParameters.servicesSubsystemConfig;
     datatools::fetch_path_with_env(services_config_file);
     datatools::properties services_config;
     services_config.read_configuration(services_config_file);
+
+    datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
     services.initialize(services_config);
 
     // Simulation module:
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
-    std::string sd_label = snedm::labels::simulated_data();
-    std::string geo_label = snemo::service_info::geometryServiceName();
-    flSimModule.set_sd_label(sd_label);
-    flSimModule.set_geo_label(geo_label);
+    flSimModule.set_sd_label(snedm::labels::simulated_data());
+    flSimModule.set_geo_label(snemo::service_info::geometryServiceName());
     flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
     flSimModule.initialize_simple_with_service(services);
-    if (flSimModule.is_initialized()) {
-      // Fetch effective seeds' value after simulation module initialization
-      // because the embedded PRNG seed manager makes the final choice of
-      // initial seeds.
-      std::ostringstream rngSeedingOut;
-      rngSeedingOut << flSimModule.get_seed_manager();
-      flSimParameters.rngSeeding = rngSeedingOut.str();
-      DT_LOG_DEBUG(flSimParameters.logLevel, "PRNG seeding = " << flSimParameters.rngSeeding);
-    }
+
+    // Fetch effective seeds' value after simulation module initialization
+    // because the embedded PRNG seed manager makes the final choice of
+    // initial seeds.
+    std::ostringstream rngSeedingOut;
+    rngSeedingOut << flSimModule.get_seed_manager();
+    flSimParameters.rngSeeding = rngSeedingOut.str();
 
     // Output metadata management:
     datatools::multi_properties flSimMetadata("name", "type",
@@ -290,7 +287,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.outputFile);
-    // Push the metadata in the metadata store:
+    // Push the metadata to the output store:
     datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
     metadataStore = flSimMetadata;
     simOutput.initialize_simple();
@@ -332,9 +329,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   }
 
   // Terminate the variant service:
-  if (variantService.is_started()) {
-    variantService.stop();
-  }
+  variantService.stop();
 
   return code;
 }

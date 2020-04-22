@@ -113,13 +113,7 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                   "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
       if (theTopic.empty()) {
         theTopic = datatools::library_info::default_topic_label();
-        DT_LOG_DEBUG(flSimParameters.logLevel,
-                     "Using default path registration topic: " << theTopic);
       }
-      DT_LOG_DEBUG(flSimParameters.logLevel, "Path registration: " << mountDirective);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Library name : " << theLibname);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Topic        : " << theTopic);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Path         : " << thePath);
       try {
         dtklLibInfo.path_registration(theLibname, theTopic, thePath, false);
       } catch (std::exception& error) {
@@ -135,10 +129,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
     std::string configScript = args.configScript;
     datatools::fetch_path_with_env(configScript);
     flSimConfig.read(configScript);
-    DT_LOG_DEBUG(flSimParameters.logLevel, "Simulation Configuration:");
-    if (datatools::logger::is_debug(flSimParameters.logLevel)) {
-      flSimConfig.tree_dump(std::cerr, "", "[debug] ");
-    }
 
     // Now extract and bind values as needed
     // Caution: some parameters are only available for specific user profile
@@ -164,9 +154,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       // Simulation setup URN:
       flSimParameters.simulationSetupUrn =
           simSubsystem.get<std::string>("simulationSetupUrn", flSimParameters.simulationSetupUrn);
-
-      DT_LOG_DEBUG(flSimParameters.logLevel,
-                   "flSimParameters.simulationSetupUrn=" << flSimParameters.simulationSetupUrn);
 
       // Simulation manager main configuration file:
       if (flSimParameters.userProfile == "production" &&
@@ -318,7 +305,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
 }
 
 void do_postprocess(FLSimulateArgs& flSimParameters) {
-  DT_LOG_TRACE_ENTERING(flSimParameters.logLevel);
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
@@ -452,22 +438,14 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
                                         << flSimParameters.variantSubsystemParams.profile_load
                                         << "'!");
   } else {
-    DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile is set.");
     if (flSimParameters.variantProfileUrn.empty()) {
-      DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile URN is set.");
       // No variant profile URN is set:
       if (simSetupUrnInfo.is_valid()) {
-        DT_LOG_DEBUG(flSimParameters.logLevel,
-                     "Trying to find a default one from the current simulation setup...");
         // Try to find a default one from the current variant setup:
         if (simSetupUrnInfo.has_topic("defvarprofile") &&
             simSetupUrnInfo.get_components_by_topic("defvarprofile").size() == 1) {
           // If the simulation setup URN implies a "services" component, fetch it!
           flSimParameters.variantProfileUrn = simSetupUrnInfo.get_component("defvarprofile");
-          DT_LOG_DEBUG(flSimParameters.logLevel, "Using the default variant profile '"
-                                                     << flSimParameters.variantProfileUrn << "'"
-                                                     << " associated to simulation setup '"
-                                                     << simSetupUrnInfo.get_urn() << "'.");
         }
       }
     }

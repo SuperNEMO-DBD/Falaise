@@ -375,20 +375,13 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& params) {
   // No variant profile is set:
   if (params.variantServiceConfig.profile_load.empty()) {
     if (params.inputVariantProfileUrn.empty()) {
-      DT_LOG_DEBUG(params.logLevel, "No input variant profile URN is set.");
       // No variant profile URN is set:
       if (simSetupUrnInfo.is_valid()) {
-        DT_LOG_DEBUG(params.logLevel,
-                     "Trying to find a default one from the current simulation setup...");
         // Try to find a default one from the current variant setup:
         if (simSetupUrnInfo.has_topic("defvarprofile") &&
             simSetupUrnInfo.get_components_by_topic("defvarprofile").size() == 1) {
           // If the simulation setup URN implies a "services" component, fetch it!
           params.inputVariantProfileUrn = simSetupUrnInfo.get_component("defvarprofile");
-          DT_LOG_DEBUG(params.logLevel, "Using the default variant profile '"
-                                            << params.inputVariantProfileUrn << "'"
-                                            << " associated to simulation setup '"
-                                            << simSetupUrnInfo.get_urn() << "'.");
         }
       }
     }
@@ -405,20 +398,6 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& params) {
       params.variantServiceConfig.profile_load = conf_variantsProfile_path;
     }
   }
-
-  DT_THROW_IF(params.variantServiceConfig.profile_load.empty(), std::logic_error,
-              "No variant service input profile path is set!");
-
-  DT_LOG_DEBUG(params.logLevel,
-               "Simulation setup tag      : [" << params.simulationSetupUrn << ']');
-  DT_LOG_DEBUG(params.logLevel,
-               "Variant configuration tag : [" << variantConfigUrnInfo.get_urn() << ']');
-  DT_LOG_DEBUG(params.logLevel, "Variant configuration     : '"
-                                    << params.variantServiceConfig.config_filename << "'");
-  DT_LOG_DEBUG(params.logLevel,
-               "Input variant profile tag : [" << params.inputVariantProfileUrn << ']');
-  DT_LOG_DEBUG(params.logLevel,
-               "Input variant profile     : '" << params.variantServiceConfig.profile_load << "'");
 }
 
 falaise::exit_code do_flsimulate_config(int argc, char* argv[]) {
@@ -469,9 +448,7 @@ falaise::exit_code do_flsimulate_config(int argc, char* argv[]) {
   }
 
   // Terminate the variant service:
-  if (variantService.is_started()) {
-    variantService.stop();
-  }
+  variantService.stop();
 
   return ret;
 }
