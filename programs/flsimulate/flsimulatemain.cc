@@ -135,9 +135,6 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
 
   system_props.store_boolean("doSimulation", flSimParameters.doSimulation, "Activate simulation");
 
-  system_props.store_boolean("doDigitization", flSimParameters.doDigitization,
-                             "Activate digitization");
-
   if (!flSimParameters.experimentalSetupUrn.empty()) {
     system_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
                               "Experimental setup URN");
@@ -145,12 +142,6 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
 
   system_props.store_boolean("embeddedMetadata", flSimParameters.embeddedMetadata,
                              "Metadata embedding flag");
-
-  // Remove timestamp from metadata:
-  // boost::posix_time::ptime start_run_timestamp =
-  // boost::posix_time::second_clock::universal_time(); system_props.store_string("timestamp",
-  //                           boost::posix_time::to_iso_string(start_run_timestamp),
-  //                           "Run start timestamp");
 
   if (flSimParameters.doSimulation) {
     // Simulation section:
@@ -170,25 +161,6 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
       // Saving effective initial seeds for PRNGs:
       simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
     }
-  }
-
-  if (flSimParameters.doDigitization) {
-    // Digitization section:
-    datatools::properties &digitization_props =
-        flSimMetadata.add_section("flsimulate.digitization", "flsimulate::section");
-    digitization_props.set_description("Digitization setup parameters");
-
-    // Not implemented yet.
-
-    // if (!flSimParameters.digitizationSetupUrn.empty()) {
-    //   digitization_props.store_string("digitizationSetupUrn",
-    //                                        flSimParameters.digitizationSetupUrn,
-    //                                        "Digitization setup URN");
-    // } else if (!flSimParameters.digitizationSetupConfig.empty()) {
-    //   digitization_props.store_path("digitizationSetupConfig",
-    //                                      flSimParameters.digitizationSetupConfig,
-    //                                      "Digitization manager configuration file");
-    // }
   }
 
   // Variants section:
@@ -313,11 +285,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
       DT_LOG_DEBUG(flSimParameters.logLevel, "PRNG seeding = " << flSimParameters.rngSeeding);
     }
 
-    // Digitization module:
-    if (flSimParameters.doDigitization) {
-      DT_THROW(std::logic_error, "Digitization is not supported yet!");
-    }
-
     // Output metadata management:
     datatools::multi_properties flSimMetadata("name", "type",
                                               "Metadata associated to a flsimulate run");
@@ -369,8 +336,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
         std::cerr << "flsimulate : Output module failed" << std::endl;
         code = falaise::EXIT_UNAVAILABLE;
       }
-
-      // Here we will process optional ASB+Digitization+terminal output modules
 
       if (code != falaise::EXIT_OK) {
         break;

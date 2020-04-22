@@ -44,9 +44,6 @@ struct FLSimulateArgs {
   mctools::g4::manager_parameters
       simulationManagerParams;  //!< Parameters for the Geant4 simulation manager
 
-  // Digitization module setup:
-  std::string digitizationSetupUrn;  //!< The URN of the digitization module setup
-
   // Variants support:
   std::string variantConfigUrn;   //!< Variants configuration URN
   std::string variantProfileUrn;  //!< Variants profile URN

@@ -44,7 +44,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.userProfile = "normal";
   params.numberOfEvents = 1;
   params.doSimulation = true;
-  params.doDigitization = false;
   // Identification of the experimental setup:
   params.experimentalSetupUrn = "";
 
@@ -178,10 +177,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       // Do simulation:
       flSimParameters.doSimulation =
           baseSystem.get<bool>("doSimulation", flSimParameters.doSimulation);
-
-      // Do digitization:
-      flSimParameters.doDigitization =
-          baseSystem.get<bool>("doDigitization", flSimParameters.doDigitization);
     }
 
     // Simulation subsystem:
@@ -280,12 +275,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       flSimParameters.simulationManagerParams.prng_states_save_modulo = simSubsystem.get<int>(
           "rngStateModuloEvents", flSimParameters.simulationManagerParams.prng_states_save_modulo);
     }
-
-    // Digitization subsystem:
-    // if (flSimConfig.has_key_with_meta("flsimulate.digitization", "flsimulate::section")) {
-    //  datatools::properties digiSubsystem = flSimConfig.get_section("flsimulate.digitization");
-    // Bind properties in this section to the relevant ones in params:
-    //}
 
     // Variants subsystem:
     if (flSimConfig.has_key_with_meta("flsimulate.variantService", "flsimulate::section")) {
@@ -569,15 +558,12 @@ void FLSimulateArgs::print(std::ostream& out_) const {
   out_ << tag << "userProfile                = " << userProfile << std::endl;
   out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
   out_ << tag << "doSimulation               = " << std::boolalpha << doSimulation << std::endl;
-  out_ << tag << "doDigitization             = " << std::boolalpha << doDigitization << std::endl;
   out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
   out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
   out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename
        << std::endl;
   out_ << tag << "saveRngSeeding             = " << std::boolalpha << saveRngSeeding << std::endl;
   out_ << tag << "rngSeeding                 = " << rngSeeding << std::endl;
-  out_ << tag << "digitizationSetupUrn       = "
-       << (digitizationSetupUrn.empty() ? "<not used>" : digitizationSetupUrn) << std::endl;
   out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
   out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
   out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename
