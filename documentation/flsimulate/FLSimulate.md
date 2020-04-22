@@ -94,12 +94,6 @@ Options:
                                        Examples:
                                          -c "simu.conf"
                                          -c "${WORKER_DIR}/config/simu1.conf"
-  -m [ --output-metadata-file ] file   file in which to store metadata
-                                       Example:
-                                         -m "simu.meta"
-  -E [ --embedded-metadata ] flag (=1) flag to (de)activate recording of
-                                       metadata in the simulation results
-                                       output file
   -o [ --output-file ] file            file in which to store simulation
                                        results
                                        Examples:
@@ -1160,18 +1154,13 @@ Note also that FLSimulate automatically computes some metadata besides
 the simulated events.  These metadata are stored by default within the
 output data file itself.  These metadata  can be reused in the context
 of  the  data reconstruction  or  other  analysis  tools. It  is  also
-possible  to  save the  metadata  container  within a  human  readable
-companion file  (using the `datatools::multi_properties` format) using
-the `--output-metadata-file` switch. Example:
+possible to dump the metadata stored in a Falaise `.brio` file using
+the `brio_file_dumper` program, e.g.
 
 ~~~~~
-$ flsimulate -c simu.conf -o example.brio --output-metadata-file example.meta
+$ brio_file_dumper -f example.brio
 ...
 ~~~~~
-
-In case the user  does not choose to store the  metadata in the output
-data  file and  no  explicit  external metadata  file  is selected,  a
-default one is generated with name `__flsimulate-metadata.log`.
 
 Output metadata {#usingflsimulate_outputmetadata}
 ===============
@@ -1184,12 +1173,8 @@ simulation, digitization,  variants, services...) in the  same way the
 configuration script is organized. This  enables the off line check of
 the simulation parameters.
 
-As mentionned above,  metadata is saved by default in  the output data
-file, through some kind of header (XML) or parallel branch (BRIO).  If
-asked on  the command line (`-m`  or `--output-metadata-file` switch),
-FLSimulate also saves metadata using the `datatools::multi_properties`
-format   in   an   external   companion   file   (default   name   is:
-`__flsimulate-metadata.log`).
+As mentionned above,  metadata is saved by in  the output data
+file, through some kind of header (XML) or parallel branch (BRIO).
 
 User profiles {#usingflsimulate_userprofiles}
 =============

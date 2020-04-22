@@ -140,9 +140,6 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
                               "Experimental setup URN");
   }
 
-  system_props.store_boolean("embeddedMetadata", flSimParameters.embeddedMetadata,
-                             "Metadata embedding flag");
-
   if (flSimParameters.doSimulation) {
     // Simulation section:
     datatools::properties &simulation_props =
@@ -157,7 +154,7 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
                                   flSimParameters.simulationManagerParams.manager_config_filename,
                                   "Simulation manager configuration file");
     }
-    if (flSimParameters.saveRngSeeding && !flSimParameters.rngSeeding.empty()) {
+    if (!flSimParameters.rngSeeding.empty()) {
       // Saving effective initial seeds for PRNGs:
       simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
     }
@@ -293,22 +290,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
       flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug]: ");
     }
 
-    if (!flSimParameters.outputMetadataFile.empty()) {
-      std::string fMetadata = flSimParameters.outputMetadataFile;
-      datatools::fetch_path_with_env(fMetadata);
-      flSimMetadata.write(fMetadata);
-    }
-
     // Simulation output module:
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.outputFile);
-    // Metadata management:
-    if (flSimParameters.embeddedMetadata) {
-      // Push the metadata in the metadata store:
-      datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
-      metadataStore = flSimMetadata;
-    }
+    // Push the metadata in the metadata store:
+    datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
+    metadataStore = flSimMetadata;
     simOutput.initialize_simple();
 
     // Manual Event loop....

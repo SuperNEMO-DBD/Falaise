@@ -22,12 +22,6 @@
 namespace FLSimulate {
 
 // static
-const std::string& FLSimulateArgs::default_file_for_output_metadata() {
-  static const std::string _f("__flsimulate-metadata.log");
-  return _f;
-}
-
-// static
 const std::string& FLSimulateArgs::default_file_for_seeds() {
   static const std::string _f("__flsimulate-seeds.log");
   return _f;
@@ -66,7 +60,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.simulationManagerParams.mgr_seed =
       mygsl::random_utils::SEED_AUTO;  // PRNG for the Geant4 engine itself
   params.simulationManagerParams.output_profiles_activation_rule = "";
-  params.saveRngSeeding = true;
   params.rngSeeding = "";
 
   // Variants support:
@@ -80,8 +73,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.servicesSubsystemConfig = "";
 
   // I/O control:
-  params.outputMetadataFile = "";
-  params.embeddedMetadata = true;
   params.outputFile = "";
 
   return params;
@@ -104,8 +95,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
   // Feed input from command line to params
   flSimParameters.logLevel = args.logLevel;
   flSimParameters.userProfile = args.userProfile;
-  flSimParameters.outputMetadataFile = args.outputMetadataFile;
-  flSimParameters.embeddedMetadata = args.embeddedMetadata;
   flSimParameters.outputFile = args.outputFile;
   flSimParameters.mountPoints = args.mountPoints;
 
@@ -138,13 +127,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
         DT_THROW(FLConfigUserError, "Cannot apply directory mount directive '"
                                         << mountDirective << "': " << error.what());
       }
-    }
-  }
-
-  if (!flSimParameters.embeddedMetadata) {
-    if (flSimParameters.outputMetadataFile.empty()) {
-      // Force a default metadata log file:
-      flSimParameters.outputMetadataFile = FLSimulateArgs::default_file_for_output_metadata();
     }
   }
 
@@ -211,8 +193,9 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "rngSeedFile"
                                                      << "' simulation configuration parameter!");
       }
-      flSimParameters.simulationManagerParams.input_prng_seeds_file = simSubsystem.get<falaise::path>(
-          "rngSeedFile", flSimParameters.simulationManagerParams.input_prng_seeds_file);
+      flSimParameters.simulationManagerParams.input_prng_seeds_file =
+          simSubsystem.get<falaise::path>(
+              "rngSeedFile", flSimParameters.simulationManagerParams.input_prng_seeds_file);
 
       if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
         if (flSimParameters.userProfile == "production") {
@@ -344,16 +327,6 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
-  if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
-    if (!flSimParameters.saveRngSeeding &&
-        flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
-      // Make sure PRNG seeds are stored in a default log file if
-      // seeds are not stored in metadata:
-      flSimParameters.simulationManagerParams.output_prng_seeds_file =
-          FLSimulateArgs::default_file_for_seeds();
-    }
-  }
-
   // Propagate verbosity to variant service:
   flSimParameters.variantSubsystemParams.logging =
       datatools::logger::get_priority_label(flSimParameters.logLevel);
@@ -375,13 +348,6 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
 
     } else {
       DT_THROW(std::logic_error, "Missing simulation setup configuration file!");
-
-      //   // Default simulation setup:
-      //   if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      //     flSimParameters.simulationSetupUrn = default_simulation_setup();
-      //     DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" <<
-      //     flSimParameters.simulationSetupUrn << "'.");
-      //   }
     }
   }
 
@@ -544,8 +510,6 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
   if (datatools::logger::is_debug(flSimParameters.logLevel)) {
     flSimParameters.print(std::cerr);
   }
-
-  DT_LOG_TRACE_EXITING(flSimParameters.logLevel);
 }
 
 void FLSimulateArgs::print(std::ostream& out_) const {
@@ -562,7 +526,6 @@ void FLSimulateArgs::print(std::ostream& out_) const {
   out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
   out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename
        << std::endl;
-  out_ << tag << "saveRngSeeding             = " << std::boolalpha << saveRngSeeding << std::endl;
   out_ << tag << "rngSeeding                 = " << rngSeeding << std::endl;
   out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
   out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
@@ -572,8 +535,6 @@ void FLSimulateArgs::print(std::ostream& out_) const {
        << std::endl;
   out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
   out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
-  out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
-  out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
   out_ << last_tag << "outputFile                 = " << outputFile << std::endl;
 }
 

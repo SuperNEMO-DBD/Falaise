@@ -56,9 +56,6 @@ struct FLSimulateArgs {
   std::string servicesSubsystemConfig;     //!< The main configuration file for the service manager
 
   // Simulation control:
-  std::string outputMetadataFile;  //!< Output metadata file
-  bool embeddedMetadata;           //!< Flag to embed metadata in the output data file
-  bool saveRngSeeding;             //!< Flag to save PRNG seeds in metadata
   std::string rngSeeding;          //!< PRNG seed initialization
   std::string outputFile;          //!< Output data file for the output module
 
@@ -69,9 +66,6 @@ struct FLSimulateArgs {
 
   // Print:
   void print(std::ostream &) const;
-
-  // Return the default file for output metadata
-  static const std::string &default_file_for_output_metadata();
 
   // Return the default file output metadata file
   static const std::string &default_file_for_seeds();
