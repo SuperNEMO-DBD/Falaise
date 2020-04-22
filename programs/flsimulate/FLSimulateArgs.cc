@@ -65,7 +65,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.variantConfigUrn = "";
   params.variantProfileUrn = "";
   params.variantSubsystemParams.config_filename = "";
-  params.saveVariantSettings = true;
 
   // Service support:
   params.servicesSubsystemConfigUrn = "";
@@ -314,20 +313,7 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
 
   if (flSimParameters.simulationSetupUrn.empty()) {
     // Check for hardcoded path to the main simulation setup configuration file:
-    if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      // Only for 'expert' of 'normal' user profiles.
-
-      // Variant configuration:
-      if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration file is provided!");
-      }
-
-      // Services configuration:
-      if (flSimParameters.servicesSubsystemConfig.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration file is provided!");
-      }
-
-    } else {
+    if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
       DT_THROW(std::logic_error, "Missing simulation setup configuration file!");
     }
   }
@@ -464,21 +450,6 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
     }
   }
 
-  if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-    DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration is provided.");
-  } else {
-    if (flSimParameters.variantSubsystemParams.profile_load.empty()) {
-      DT_LOG_WARNING(flSimParameters.logLevel, "No variant profile is provided.");
-    } else {
-      // Additional variants settings may be allowed but *must* be compatible
-      // with selected variants config and optional variants profile.
-    }
-  }
-
-  if (flSimParameters.servicesSubsystemConfig.empty()) {
-    DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration is provided.");
-  }
-
   // Print:
   if (datatools::logger::is_debug(flSimParameters.logLevel)) {
     flSimParameters.print(std::cerr);
@@ -502,8 +473,6 @@ void FLSimulateArgs::print(std::ostream& out_) const {
   out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
   out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
   out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename
-       << std::endl;
-  out_ << tag << "saveVariantSettings        = " << std::boolalpha << saveVariantSettings
        << std::endl;
   out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
   out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;

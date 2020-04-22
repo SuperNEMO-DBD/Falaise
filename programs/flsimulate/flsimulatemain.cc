@@ -177,8 +177,7 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
                               "Variants profile path");
   }
 
-  if (flSimParameters.saveVariantSettings &&
-      !flSimParameters.variantSubsystemParams.settings.empty()) {
+  if (flSimParameters.variantSubsystemParams.settings.empty()) {
     // Saving effective list of variant settings:
     variants_props.store("settings", flSimParameters.variantSubsystemParams.settings,
                          "Effective variants settings");

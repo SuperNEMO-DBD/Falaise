@@ -45,7 +45,6 @@ struct FLSimulateArgs {
   // Variants support:
   std::string variantConfigUrn;   //!< Variants configuration URN
   std::string variantProfileUrn;  //!< Variants profile URN
-  bool saveVariantSettings;       //!< Flag to save effective variant settings in metadata
   datatools::configuration::variant_service::config
       variantSubsystemParams;  //!< Variants configuration parameters
 
