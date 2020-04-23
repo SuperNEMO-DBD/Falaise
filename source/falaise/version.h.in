@@ -93,11 +93,6 @@ static int get_minor();
 //! Return the patch version number of falaise, e.g., 3 for '1.2.3'
 static int get_patch();
 
-//! Return the current revision number
-//! \deprecated since 3.1
-//! \see get_commit()
-static int get_revision() __attribute__((deprecated));
-
 //! Return the first eight characters of the current Git HEAD hash
 static std::string get_commit();
 

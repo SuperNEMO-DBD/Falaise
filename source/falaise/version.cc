@@ -24,19 +24,12 @@
 // Standard Library
 #include <sstream>
 
-// Third Party
-// - A
-
-// This Project
-
 namespace falaise {
 int version::get_major() { return static_cast<int>(FALAISE_VERSION_MAJOR); }
 
 int version::get_minor() { return static_cast<int>(FALAISE_VERSION_MINOR); }
 
 int version::get_patch() { return static_cast<int>(FALAISE_VERSION_PATCH); }
-
-int version::get_revision() { return static_cast<int>(FALAISE_VERSION_REVISION); }
 
 std::string version::get_commit() {
   static std::string revision{FALAISE_VERSION_COMMIT};
