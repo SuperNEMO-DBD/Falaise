@@ -22,7 +22,8 @@
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/multi_properties.h"
-#include "bayeux/mctools/g4/manager_parameters.h"
+
+#include "mctools/g4/manager_parameters.h"
 
 namespace FLSimulate {
 

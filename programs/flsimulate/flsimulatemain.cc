@@ -57,11 +57,12 @@
 #include "bayeux/datatools/urn_to_path_resolver_service.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
-#include "bayeux/mctools/g4/manager_parameters.h"
-#include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mygsl/random_utils.h"
 #include "bayeux/mygsl/seed_manager.h"
 #include "bayeux/version.h"
+
+#include "mctools/g4/manager_parameters.h"
+#include "mctools/g4/simulation_module.h"
 
 // This Project
 #include "falaise/exitcodes.h"

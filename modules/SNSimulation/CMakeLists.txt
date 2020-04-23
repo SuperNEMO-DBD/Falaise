@@ -4,11 +4,11 @@ project(SNSimulation)
 find_package(Geant4 REQUIRED gdml)
 find_package(Boost REQUIRED thread)
 if(Geant4_DATASETS)
-    set(MCTOOLS_G4_DATA_ASSIGNMENTS)
-    foreach(_ds ${Geant4_DATASETS})
-      list(APPEND MCTOOLS_G4_DATA_ASSIGNMENTS "(\"${Geant4_DATASET_${_ds}_ENVVAR}\", \"${Geant4_DATASET_${_ds}_PATH}\")")
-    endforeach()
-    string(REPLACE ";" "" MCTOOLS_G4_DATA_ASSIGNMENTS ${MCTOOLS_G4_DATA_ASSIGNMENTS})
+  set(MCTOOLS_G4_DATA_ASSIGNMENTS)
+  foreach(_ds ${Geant4_DATASETS})
+    list(APPEND MCTOOLS_G4_DATA_ASSIGNMENTS "(\"${Geant4_DATASET_${_ds}_ENVVAR}\", \"${Geant4_DATASET_${_ds}_PATH}\")")
+  endforeach()
+  string(REPLACE ";" "" MCTOOLS_G4_DATA_ASSIGNMENTS ${MCTOOLS_G4_DATA_ASSIGNMENTS})
 endif()
 
 configure_file(mctools/g4/data_libraries.h.in mctools/g4/data_libraries.h @ONLY)
@@ -81,14 +81,14 @@ add_library(SNSimulation SHARED
   src/tracking_action.cc
   src/processes/em_extra_models.cc
   src/processes/em_model_factory.cc
-  src/processes/utils.cc
-  )
+  src/processes/utils.cc)
 
-  target_include_directories(SNSimulation PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-    ${Geant4_INCLUDE_DIRS}
-    )
+add_library(SNSimulation::SNSimulation ALIAS SNSimulation)
+
+target_include_directories(SNSimulation PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  ${Geant4_INCLUDE_DIRS})
 
 # Hack - strip "-D" flag as we should only supply the def names
 set(SNSimulation_DEFINITIONS)
@@ -98,5 +98,4 @@ foreach(_def ${Geant4_DEFINITIONS})
 endforeach()
 
 set_target_properties(SNSimulation PROPERTIES COMPILE_DEFINITIONS "${SNSimulation_DEFINITIONS}")
-
 target_link_libraries(SNSimulation PUBLIC Bayeux::Bayeux ${Geant4_LIBRARIES} Boost::thread)
