@@ -30,7 +30,7 @@ namespace mctools {
 
   namespace g4 {
 
-    bool electromagnetic_field::has_name() const
+    auto electromagnetic_field::has_name() const -> bool
     {
       return ! _name_.empty();
     }
@@ -38,10 +38,9 @@ namespace mctools {
     void electromagnetic_field::set_name(const std::string & name_)
     {
       _name_ = name_;
-      return;
-    }
+   }
 
-    const std::string & electromagnetic_field::get_name() const
+    auto electromagnetic_field::get_name() const -> const std::string &
     {
       return _name_;
     }
@@ -49,38 +48,36 @@ namespace mctools {
     void electromagnetic_field::set_field_check_pos_time(bool c_)
     {
       _field_check_pos_time_ = c_;
-      return;
-    }
+   }
 
-    bool electromagnetic_field::is_field_check_pos_time() const
+    auto electromagnetic_field::is_field_check_pos_time() const -> bool
     {
       return _field_check_pos_time_;
     }
 
-    bool electromagnetic_field::is_initialized() const
+    auto electromagnetic_field::is_initialized() const -> bool
     {
       return _initialized_;
     }
 
-    bool electromagnetic_field::has_field() const
+    auto electromagnetic_field::has_field() const -> bool
     {
-      return _field_ != 0;
+      return _field_ != nullptr;
     }
 
     void electromagnetic_field::set_field(const emfield::base_electromagnetic_field & f_)
     {
       _field_ = &f_;
-      return;
-    }
+   }
 
-    const emfield::base_electromagnetic_field &
-    electromagnetic_field::get_field() const
+    auto
+    electromagnetic_field::get_field() const -> const emfield::base_electromagnetic_field &
     {
       DT_THROW_IF (! has_field(), std::logic_error, "No electromagnetic field !");
       return *_field_;
     }
 
-    bool electromagnetic_field::is_active() const
+    auto electromagnetic_field::is_active() const -> bool
     {
       return has_field();
     }
@@ -90,8 +87,7 @@ namespace mctools {
       _field_check_pos_time_ = true;
       geomtools::invalidate(_standalone_constant_mag_field_);
       geomtools::invalidate(_standalone_constant_electric_field_);
-      return;
-    }
+   }
 
     void electromagnetic_field::reset()
     {
@@ -100,34 +96,29 @@ namespace mctools {
 
       _initialized_ = false;
       _name_.clear();
-      _field_ = 0;
+      _field_ = nullptr;
       _set_defaults();
-
-      return;
-    }
+   }
 
     electromagnetic_field::electromagnetic_field()
     {
       _initialized_ = false;
-      _field_ = 0;
+      _field_ = nullptr;
       _set_defaults();
-      return;
-    }
+   }
 
     electromagnetic_field::~electromagnetic_field()
     {
       if (_initialized_) {
         reset();
       }
-      return;
-    }
+         }
 
     void electromagnetic_field::initialize()
     {
       datatools::properties empty;
       initialize(empty);
-      return;
-    }
+   }
 
     void electromagnetic_field::initialize(const datatools::properties & config_)
     {
@@ -278,14 +269,13 @@ namespace mctools {
       }
 
       _initialized_ = true;
-      return;
-    }
+   }
 
     // G4 interface:
-    G4bool electromagnetic_field::DoesFieldChangeEnergy() const
+    auto electromagnetic_field::DoesFieldChangeEnergy() const -> G4bool
     {
       G4bool val = true;
-      if (_field_ != 0) {
+      if (_field_ != nullptr) {
         if (_field_->is_magnetic_field()) {
           val = false;
         }
@@ -313,7 +303,7 @@ namespace mctools {
       em_field_[EMFIELD_EX] = 0.0;
       em_field_[EMFIELD_EY] = 0.0;
       em_field_[EMFIELD_EZ] = 0.0;
-      if (_field_ != 0) {
+      if (_field_ != nullptr) {
         geomtools::vector_3d pos(position_[POSTIME_X], position_[POSTIME_Y], position_[POSTIME_Z]);
         double time = position_[POSTIME_T];
         DT_LOG_TRACE(_logprio(), "Compute electromagnetic field at position/time "
@@ -363,8 +353,7 @@ namespace mctools {
         em_field_[EMFIELD_EZ] = _standalone_constant_electric_field_.z();
       }
       DT_LOG_TRACE(_logprio(), "Exiting GetFieldValue for Geant4 electromagnetic field '" << get_name() << "'.");
-      return;
-    }
+         }
 
     void electromagnetic_field::dump(std::ostream & out_) const
     {
@@ -382,8 +371,7 @@ namespace mctools {
         out_ << "|-- Electromagnetic field         : " << _field_ << std::endl;
       }
       out_ << "`-- Check field pos/time   : " << _field_check_pos_time_ << std::endl;
-      return;
-    }
+   }
 
   } // end of namespace g4
 

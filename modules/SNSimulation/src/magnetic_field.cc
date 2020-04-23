@@ -32,7 +32,7 @@ namespace mctools {
 
   namespace g4 {
 
-    bool magnetic_field::has_name() const
+    auto magnetic_field::has_name() const -> bool
     {
       return ! _name_.empty();
     }
@@ -40,10 +40,9 @@ namespace mctools {
     void magnetic_field::set_name(const std::string & name_)
     {
       _name_ = name_;
-      return;
-    }
+   }
 
-    const std::string & magnetic_field::get_name() const
+    auto magnetic_field::get_name() const -> const std::string &
     {
       return _name_;
     }
@@ -51,56 +50,53 @@ namespace mctools {
     void magnetic_field::set_field_check_pos_time(bool c_)
     {
       _field_check_pos_time_ = c_;
-      return;
-    }
+   }
 
-    bool magnetic_field::is_field_check_pos_time() const
+    auto magnetic_field::is_field_check_pos_time() const -> bool
     {
       return _field_check_pos_time_;
     }
 
-    bool magnetic_field::is_initialized() const
+    auto magnetic_field::is_initialized() const -> bool
     {
       return _initialized_;
     }
 
-    bool magnetic_field::has_field() const
+    auto magnetic_field::has_field() const -> bool
     {
-      return _field_ != 0;
+      return _field_ != nullptr;
     }
 
-    bool magnetic_field::has_mag_field() const
+    auto magnetic_field::has_mag_field() const -> bool
     {
-      return _field_ != 0;
+      return _field_ != nullptr;
     }
 
     void magnetic_field::set_mag_field(const emfield::base_electromagnetic_field & mf_)
     {
       _field_ = &mf_;
-      return;
-    }
+   }
 
     void magnetic_field::set_field(const emfield::base_electromagnetic_field & mf_)
     {
       _field_ = &mf_;
-      return;
-    }
+   }
 
-    const emfield::base_electromagnetic_field &
-    magnetic_field::get_field() const
+    auto
+    magnetic_field::get_field() const -> const emfield::base_electromagnetic_field &
     {
       DT_THROW_IF (! has_field(), std::logic_error, "No field !");
       return *_field_;
     }
 
-    const emfield::base_electromagnetic_field &
-    magnetic_field::get_mag_field() const
+    auto
+    magnetic_field::get_mag_field() const -> const emfield::base_electromagnetic_field &
     {
       DT_THROW_IF (! has_mag_field(), std::logic_error, "No magnetic field !");
       return *_field_;
     }
 
-    bool magnetic_field::is_active() const
+    auto magnetic_field::is_active() const -> bool
     {
       return has_mag_field();
     }
@@ -109,31 +105,27 @@ namespace mctools {
     {
       _field_check_pos_time_ = true;
       geomtools::invalidate(_standalone_constant_field_);
-      return;
-    }
+   }
 
     magnetic_field::magnetic_field()
     {
       _initialized_ = false;
-      _field_ = 0;
+      _field_ = nullptr;
       _set_defaults();
-      return;
-    }
+   }
 
     magnetic_field::~magnetic_field()
     {
       if (_initialized_) {
         reset();
       }
-      return;
-    }
+         }
 
     void magnetic_field::initialize()
     {
       datatools::properties empty;
       initialize(empty);
-      return;
-    }
+   }
 
     void magnetic_field::initialize(const datatools::properties & config_)
     {
@@ -259,8 +251,7 @@ namespace mctools {
       }
 
       _initialized_ = true;
-      return;
-    }
+   }
 
     void magnetic_field::reset()
     {
@@ -269,11 +260,9 @@ namespace mctools {
 
       _initialized_ = false;
       _name_.clear();
-      _field_ = 0;
+      _field_ = nullptr;
       _set_defaults();
-
-      return;
-    }
+   }
 
     // G4 interface:
     void magnetic_field::GetFieldValue(const double position_[4],
@@ -286,7 +275,7 @@ namespace mctools {
       b_field_[EMFIELD_BX] = 0.0;
       b_field_[EMFIELD_BY] = 0.0;
       b_field_[EMFIELD_BZ] = 0.0;
-      if (_field_ != 0) {
+      if (_field_ != nullptr) {
         DT_LOG_TRACE(_logprio(), "Compute magnetic field for Geant4 magnetic field '" << get_name() << "'...");
         // DT_LOG_TRACE(datatools::logger::PRIO_ALWAYS, "Compute magnetic field for Geant4 magnetic field '" << get_name() << "'...");
         geomtools::vector_3d pos(position_[POSTIME_X], position_[POSTIME_Y], position_[POSTIME_Z]);
@@ -318,8 +307,7 @@ namespace mctools {
         b_field_[EMFIELD_BZ] = _standalone_constant_field_.z();
       }
       DT_LOG_TRACE(_logprio(), "Exiting GetFieldValue for Geant4 magnetic field '" << get_name() << "'.");
-      return;
-    }
+         }
 
     void magnetic_field::dump(std::ostream & out_) const
     {
@@ -333,8 +321,7 @@ namespace mctools {
         out_ << "|-- Magnetic field         : " << _field_ << std::endl;
       }
       out_ << "`-- Check field pos/time   : " << _field_check_pos_time_ << std::endl;
-      return;
-    }
+   }
 
   } // end of namespace g4
 

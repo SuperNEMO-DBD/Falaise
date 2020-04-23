@@ -68,7 +68,7 @@ class simulation_module : public dpp::base_module {
   const std::string& get_sd_label() const;
 
   /// Set the reference to an external geometry manager
-  void set_geometry_manager(const geomtools::manager& gm);
+  void set_geometry_manager(const geomtools::manager& geometry_manager_);
 
   /// Set the simulation manager parameters
   void set_geant4_parameters(const manager_parameters& params);

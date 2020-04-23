@@ -38,8 +38,7 @@ namespace mctools {
     {
       _dumped_ = false;
       _number_of_steps_ = 0;
-      return;
-    }
+   }
 
     stepping_action::~stepping_action()
     {
@@ -48,16 +47,14 @@ namespace mctools {
       //      << _number_of_steps_
       //      << endl;
       reset();
-      return;
-    }
+   }
 
     void stepping_action::set_dumped(bool d_)
     {
       _dumped_ = d_;
-      return;
-    }
+   }
 
-    bool stepping_action::is_dumped() const
+    auto stepping_action::is_dumped() const -> bool
     {
       return _dumped_;
     }
@@ -71,24 +68,21 @@ namespace mctools {
         set_dumped(config_.fetch_boolean("dumped"));
       }
 
-      return;
-    }
+         }
 
     void stepping_action::reset()
     {
       _dumped_ = false;
-      return;
-    }
+   }
 
     void stepping_action::UserSteppingAction(const G4Step * g4_step_)
     {
       DT_LOG_TRACE_ENTERING(_logprio());
       this->_stepping_action_base(g4_step_);
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
-    std::string stepping_action::g4_track_status_to_label(G4TrackStatus track_status_)
+    auto stepping_action::g4_track_status_to_label(G4TrackStatus track_status_) -> std::string
     {
       switch(track_status_) {
       case fAlive: return "alive"; // Continue the tracking
@@ -106,7 +100,7 @@ namespace mctools {
       }
     }
 
-    std::string stepping_action::g4_step_status_to_label(G4StepStatus step_status_)
+    auto stepping_action::g4_step_status_to_label(G4StepStatus step_status_) -> std::string
     {
       switch(step_status_) {
       case fWorldBoundary:         return "world_boundary";
@@ -128,7 +122,7 @@ namespace mctools {
       }
     }
 
-    std::string stepping_action::g4_stepping_control_to_label(G4SteppingControl stepping_control_)
+    auto stepping_action::g4_stepping_control_to_label(G4SteppingControl stepping_control_) -> std::string
     {
       switch(stepping_control_) {
       case NormalCondition: return "normal_condition";
@@ -161,8 +155,8 @@ namespace mctools {
         G4double dynamic_particle_charge  = dynamic_particle->GetCharge();
 
         const G4ParticleDefinition * particle = track->GetParticleDefinition();
-        G4String particle_name     = particle->GetParticleName();
-        G4ThreeVector position     = track->GetPosition();
+        const G4String& particle_name     = particle->GetParticleName();
+        const G4ThreeVector& position     = track->GetPosition();
         // G4double track_global_time = track->GetGlobalTime();
         // G4double track_local_time  = track->GetLocalTime();
         // G4double track_proper_time = track->GetProperTime();
@@ -234,8 +228,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
   } // end of namespace g4
 

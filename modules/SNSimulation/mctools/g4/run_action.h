@@ -107,7 +107,7 @@ namespace mctools {
       void set_output_data_bank_label(const std::string &);
 
       /// Set the full path of the output file
-      void set_output_file(const std::string & filename_);
+      void set_output_file(const std::string & a_filename);
 
       /// Check if the date save flag is set
       bool save_data() const;
@@ -155,13 +155,13 @@ namespace mctools {
       void register_event_action(event_action &);
 
       /// Initialize from a collection of configuration properties
-      void initialize(const datatools::properties & config_);
+      void initialize(const datatools::properties & a_config);
 
       /// Reset
       void reset();
 
       /// Basic print
-      void dump(std::ostream & out_ = std::clog) const;
+      void dump(std::ostream & a_out = std::clog) const;
 
       /// Store event data
       void store_data(const mctools::simulated_data & esd_);

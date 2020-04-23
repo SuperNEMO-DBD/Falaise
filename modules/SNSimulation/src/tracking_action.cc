@@ -34,21 +34,16 @@ namespace mctools {
   namespace g4 {
 
     tracking_action::tracking_action()
-    {
-      return;
-    }
+    = default;
 
     tracking_action::~tracking_action()
-    {
-      return;
-    }
+    = default;
 
     void tracking_action::initialize(const datatools::properties & config_)
     {
       // Parsing configuration properties:
       loggable_support::_initialize_logging_support(config_);
-      return;
-    }
+   }
 
     void tracking_action::PreUserTrackingAction(const G4Track * /*track_*/)
     {
@@ -60,16 +55,14 @@ namespace mctools {
         CLHEP::Hep3Vector position = track_->GetPosition();
       */
 
-      return;
-    }
+         }
 
     void tracking_action::PostUserTrackingAction(const G4Track* /*track_*/)
     {
       //G4int             track_id = track_->GetTrackID();
       //CLHEP::Hep3Vector position = track_->GetPosition();
 
-      return;
-    }
+         }
 
   } // end of namespace g4
 

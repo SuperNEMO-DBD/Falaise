@@ -67,7 +67,7 @@ namespace mctools {
 
   namespace g4 {
 
-    bool primary_generator::is_initialized() const
+    auto primary_generator::is_initialized() const -> bool
     {
       return _initialized_;
     }
@@ -76,36 +76,32 @@ namespace mctools {
     {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       _run_action_ = &run_action_;
-      return;
-    }
+   }
 
     void primary_generator::set_event_action(mctools::g4::event_action & event_action_)
     {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       _event_action_ = &event_action_;
-      return;
-    }
+   }
 
-    bool primary_generator::has_vertex_generator() const
+    auto primary_generator::has_vertex_generator() const -> bool
     {
-      return _vertex_generator_ != 0;
+      return _vertex_generator_ != nullptr;
     }
 
     void primary_generator::set_vertex_generator(::genvtx::i_vertex_generator & vertex_generator_)
     {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       _vertex_generator_ = &vertex_generator_;
-      return;
-    }
+   }
 
     void primary_generator::set_event_generator(::genbb::i_genbb & event_generator_)
     {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       _event_generator_ = &event_generator_;
-      return;
-    }
+   }
 
-    size_t primary_generator::get_event_counter() const
+    auto primary_generator::get_event_counter() const -> size_t
     {
       return _event_counter_;
     }
@@ -113,35 +109,31 @@ namespace mctools {
     void primary_generator::reset_event_counter()
     {
       _event_counter_ = 0;
-      return;
-    }
+   }
 
     void primary_generator::_set_defaults()
     {
       reset_event_counter();
-      return;
-    }
+   }
 
     primary_generator::primary_generator()
     {
       _initialized_ = false;
-      _run_action_ = 0;
-      _event_action_ = 0;
-      _vertex_generator_ = 0;
-      _event_generator_ = 0;
-      _particle_gun_ = 0;
+      _run_action_ = nullptr;
+      _event_action_ = nullptr;
+      _vertex_generator_ = nullptr;
+      _event_generator_ = nullptr;
+      _particle_gun_ = nullptr;
       _event_counter_ = 0;
       _set_defaults();
-      return;
-    }
+   }
 
     primary_generator::~primary_generator()
     {
       if (_initialized_) {
         reset();
       }
-      return;
-    }
+         }
 
     void primary_generator::_check()
     {
@@ -163,8 +155,7 @@ namespace mctools {
                     RunMustBeAborted,
                     "Event generator manager is not initialized !");
       }
-      return;
-    }
+         }
 
     void primary_generator::initialize(const datatools::properties & config_)
     {
@@ -181,8 +172,7 @@ namespace mctools {
       if (config_.has_key("particle_names_map")) {
         std::vector<std::string> names;
         config_.fetch("particle_names_map", names);
-        for (size_t i = 0; i < names.size(); i++) {
-          const std::string & mapping_entry = names[i];
+        for (const auto & mapping_entry : names) {
           std::vector<std::string> tokens;
           boost::split (tokens, mapping_entry, boost::is_any_of("="));
           DT_THROW_IF(tokens.size() != 2, std::logic_error,
@@ -214,7 +204,7 @@ namespace mctools {
       }
 
       // Checks:
-      if (_run_action_ == 0) {
+      if (_run_action_ == nullptr) {
         G4Exception ("mctools::g4::primary_generator::initialize",
                      "InitializationError",
                      RunMustBeAborted,
@@ -234,19 +224,19 @@ namespace mctools {
       }
 
       // Checks:
-      if (_event_action_ == 0) {
+      if (_event_action_ == nullptr) {
         G4Exception("mctools::g4::primary_generator::initialize",
                     "InitializationError",
                     RunMustBeAborted,
                     "Missing event action !");
       }
-      if (_event_generator_ == 0) {
+      if (_event_generator_ == nullptr) {
         G4Exception("mctools::g4::primary_generator::initialize",
                     "InitializationError",
                     RunMustBeAborted,
                     "Missing event generator !");
       }
-      if (_vertex_generator_ == 0) {
+      if (_vertex_generator_ == nullptr) {
         DT_LOG_WARNING(_logprio(), "No vertex generator is provided !");
       }
       _check();
@@ -254,8 +244,7 @@ namespace mctools {
       _particle_gun_ = new G4ParticleGun(n_particle);
 
       _initialized_ = true;
-      return;
-    }
+   }
 
     void primary_generator::reset()
     {
@@ -273,18 +262,17 @@ namespace mctools {
       }
 
       // Destroy the gun:
-      if (_particle_gun_ != 0) {
+      if (_particle_gun_ != nullptr) {
         delete _particle_gun_;
-        _particle_gun_ = 0;
+        _particle_gun_ = nullptr;
       }
-      _run_action_ = 0;
-      _event_action_ = 0;
-      _event_generator_ = 0;
-      _vertex_generator_ = 0;
+      _run_action_ = nullptr;
+      _event_action_ = nullptr;
+      _event_generator_ = nullptr;
+      _vertex_generator_ = nullptr;
       _set_defaults();
       _initialized_ = false;
-      return;
-    }
+   }
 
     void primary_generator::GeneratePrimaries(G4Event * g4_event_)
     {
@@ -308,7 +296,7 @@ namespace mctools {
       geomtools::invalidate(_current_vertex_);
       datatools::invalidate(_current_time_);
       if (! geomtools::is_valid(_current_vertex_)) {
-        if (_vertex_generator_ != 0) {
+        if (_vertex_generator_ != nullptr) {
           _generate_vertex();
         }
       }
@@ -316,8 +304,7 @@ namespace mctools {
       _generate_event(g4_event_);
       // Increment the event counter:
       _event_counter_++;
-      return;
-    }
+   }
 
     void primary_generator::_generate_vertex()
     {
@@ -355,8 +342,7 @@ namespace mctools {
         _event_action_->grab_event_data().set_time(_current_time_);
       }
 
-      return;
-    }
+         }
 
     void primary_generator::_generate_event(G4Event * g4_event_)
     {
@@ -433,7 +419,7 @@ namespace mctools {
 
       // Loop on particles:
       size_t particle_counter = 0;
-      for (::genbb::primary_event::particles_col_type::const_iterator i
+      for (auto i
              = current_generated_event.get_particles().begin();
            i != current_generated_event.get_particles().end();
            i++, particle_counter++) {
@@ -442,7 +428,7 @@ namespace mctools {
           // After some 'primary event bias', we don't track this primary particle:
           continue;
         }
-        const std::string genbb_particle_label = genbb_particle.get_particle_label();
+        const std::string& genbb_particle_label = genbb_particle.get_particle_label();
         DT_LOG_DEBUG(get_logging_priority(), "Primary particle [#" << particle_counter << "] label = '" << genbb_particle_label << "'");
 
         /* Note:
@@ -453,7 +439,7 @@ namespace mctools {
          *  ...
          */
         G4String g4_particle_name; // = get_g4_particle_name_from_genbb_particle(genbb_particle);
-        G4ParticleDefinition * g4_particle = 0;
+        G4ParticleDefinition * g4_particle = nullptr;
 
         double particle_mass = datatools::invalid_real();
         if (genbb_particle.mass_is_known()) {
@@ -465,7 +451,7 @@ namespace mctools {
           // Support for particle PDG encoding: NOT USABLE YET FOR NOW BECAUSE THIS INTERFACE
           // NEEDS MORE WORKS.
           g4_particle = particle_table->FindParticle(genbb_particle.get_pdg_code());
-          if (g4_particle == 0) {
+          if (g4_particle == nullptr) {
             std::ostringstream message;
             message << "genbb's nucleus particle with PDG code='"
                     << genbb_particle.get_pdg_code()
@@ -591,7 +577,7 @@ namespace mctools {
             }
             // Make it a G4 particle:
             g4_particle = particle_table->FindParticle(g4_particle_name);
-            if (g4_particle == 0) {
+            if (g4_particle == nullptr) {
               std::ostringstream message;
               message << "mctools::g4::primary_generator::_generate_event: "
                       << "Particle named '" << g4_particle_name << "' is not defined within the Geant4 framework !";
@@ -703,10 +689,9 @@ namespace mctools {
         }
       } // Particle loop
 
-      return;
-    }
+         }
 
-    std::string primary_generator::get_g4_particle_name_from_genbb_particle(const ::genbb::primary_particle & p_) const
+    auto primary_generator::get_g4_particle_name_from_genbb_particle(const ::genbb::primary_particle & p_) const -> std::string
     {
       if (p_.is_gamma()) {
         return "gamma";
@@ -756,7 +741,7 @@ namespace mctools {
       // the GENBB particle label:
       const std::string & part_label = p_.get_particle_label();
       // and use a lookup table kindly provided by the user:
-      std::map<std::string, std::string>::const_iterator found
+      auto found
         = _particle_names_map_.find(part_label);
       if (found != _particle_names_map_.end()) {
         return found->second;

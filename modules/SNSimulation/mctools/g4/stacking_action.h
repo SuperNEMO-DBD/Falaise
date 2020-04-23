@@ -55,7 +55,7 @@ namespace mctools {
       void initialize (const datatools::properties & config_);
 
       // Geant4 interface :
-      virtual G4ClassificationOfNewTrack ClassifyNewTrack (const G4Track * track_);
+      virtual G4ClassificationOfNewTrack ClassifyNewTrack (const G4Track * a_track);
 
       // Geant4 interface :
       virtual void NewStage ();

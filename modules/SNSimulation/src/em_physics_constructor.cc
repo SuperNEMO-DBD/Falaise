@@ -137,22 +137,22 @@ namespace mctools {
       pixe = pixe_;
     }
 
-    bool em_physics_constructor::region_deexcitation_type::is_activated() const
+    auto em_physics_constructor::region_deexcitation_type::is_activated() const -> bool
     {
       return fluorescence || auger || pixe;
     }
 
-    bool em_physics_constructor::region_deexcitation_type::is_fluorescence() const
+    auto em_physics_constructor::region_deexcitation_type::is_fluorescence() const -> bool
     {
       return fluorescence;
     }
 
-    bool em_physics_constructor::region_deexcitation_type::is_auger() const
+    auto em_physics_constructor::region_deexcitation_type::is_auger() const -> bool
     {
       return auger;
     }
 
-    bool em_physics_constructor::region_deexcitation_type::is_pixe() const
+    auto em_physics_constructor::region_deexcitation_type::is_pixe() const -> bool
     {
       return pixe;
     }
@@ -172,48 +172,46 @@ namespace mctools {
     const std::string em_physics_constructor::EM_PIXE_ELECTRON_MODEL_PROTON_ANALYTICAL = "Analytical";
     const std::string em_physics_constructor::EM_PIXE_ELECTRON_MODEL_PROTON_EMPIRICAL  = "Empirical";
 
-    const std::string & em_physics_constructor::get_em_model() const
+    auto em_physics_constructor::get_em_model() const -> const std::string &
     {
       return _em_model_;
     }
 
-    bool em_physics_constructor::is_em_standard() const
+    auto em_physics_constructor::is_em_standard() const -> bool
     {
       return _em_model_ == EM_MODEL_STANDARD;
     }
 
-    bool em_physics_constructor::is_em_low_energy_livermore() const
+    auto em_physics_constructor::is_em_low_energy_livermore() const -> bool
     {
       return _em_model_ == EM_MODEL_LOW_ENERGY_LIVERMORE;
     }
 
-    bool em_physics_constructor::is_em_low_energy_penelope() const
+    auto em_physics_constructor::is_em_low_energy_penelope() const -> bool
     {
       return _em_model_ == EM_MODEL_LOW_ENERGY_PENELOPE;
     }
 
-    em_physics_constructor::em_physics_constructor() : base_physics_constructor()
+    em_physics_constructor::em_physics_constructor()  
     {
       this->em_physics_constructor::_set_defaults();
       SetPhysicsName("electromagnetic");
       SetPhysicsType(1);
-      return;
-    }
+   }
 
     em_physics_constructor::~em_physics_constructor()
     {
       if (is_initialized()) {
         this->em_physics_constructor::reset();
       }
-      return;
-    }
+         }
 
-    em_physics_constructor::_work_type_ & em_physics_constructor::_grab_work_()
+    auto em_physics_constructor::_grab_work_() -> em_physics_constructor::_work_type_ &
     {
-      if (_work_.get() == 0) {
+      if (_work_.get() == nullptr) {
         _work_.reset(new _work_type_);
       }
-      return *_work_.get();
+      return *_work_;
     }
 
     void em_physics_constructor::initialize(const datatools::properties & config_,
@@ -368,8 +366,7 @@ namespace mctools {
         config_.fetch("em.deexcitation.regions", deexcitation_regions);
       }
 
-      for (size_t i  = 0; i < deexcitation_regions.size(); i++) {
-        const std::string & region_name = deexcitation_regions[i];
+      for (const auto & region_name : deexcitation_regions) {
         region_deexcitation_type rd(false,false,false);
         std::ostringstream region_fluo_key;
         region_fluo_key << "em.deexcitation.regions." << region_name << ".fluorescence";
@@ -502,8 +499,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::_setup_em_extra_models_configurator(const datatools::properties & config_)
     {
@@ -530,8 +526,7 @@ namespace mctools {
       if (extra_models_config.has_key("labels")) {
         std::vector<std::string> em_xmodel_labels;
         extra_models_config.fetch("labels", em_xmodel_labels);
-        for (int i = 0; i < (int) em_xmodel_labels.size(); i++) {
-          const std::string & em_xmodel_label = em_xmodel_labels[i];
+        for (const auto & em_xmodel_label : em_xmodel_labels) {
           std::ostringstream em_xmodel_prefix;
           em_xmodel_prefix << em_xmodel_label << '.';
           datatools::properties extra_model_config;
@@ -573,8 +568,7 @@ namespace mctools {
       */
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::_set_defaults()
     {
@@ -630,9 +624,7 @@ namespace mctools {
 
       // EM extra models:
       _em_using_extra_models_ = false;
-
-      return;
-    }
+   }
 
     void em_physics_constructor::reset()
     {
@@ -649,8 +641,7 @@ namespace mctools {
       this->base_physics_constructor::_reset();
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void em_physics_constructor::tree_dump(std::ostream & out_,
                                            const std::string & title_,
@@ -659,7 +650,8 @@ namespace mctools {
     {
       this->base_physics_constructor::tree_dump(out_, title_, indent_, true);
       std::string indent;
-      if (! indent_.empty()) indent = indent_;
+      if (! indent_.empty()) { indent = indent_;
+}
 
       // EM model:
       out_ << indent << datatools::i_tree_dumpable::tag
@@ -760,13 +752,13 @@ namespace mctools {
            << datatools::i_tree_dumpable::last_tag
            << "Atomic deexcitation per region : " << std::endl;
 
-      for (std::map<std::string, region_deexcitation_type>::const_iterator i
+      for (auto i
              = _em_regions_deexcitation_.begin();
            i != _em_regions_deexcitation_.end();
            i++) {
         out_ << indent << datatools::i_tree_dumpable::skip_tag
              << datatools::i_tree_dumpable::last_skip_tag;
-        std::map<std::string, region_deexcitation_type>::const_iterator j = i;
+        auto j = i;
         j++;
         if (j++ == _em_regions_deexcitation_.end()) {
           out_ << datatools::i_tree_dumpable::last_tag;
@@ -842,9 +834,7 @@ namespace mctools {
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Using EM extra models : "
            << (_em_using_extra_models_ ? "Yes" : "No") << std::endl;
-
-      return;
-    }
+   }
 
     void em_physics_constructor::ConstructParticle()
     {
@@ -877,8 +867,7 @@ namespace mctools {
       */
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::ConstructProcess()
     {
@@ -888,7 +877,7 @@ namespace mctools {
 
       this->em_physics_constructor::_ConstructEMProcess();
 
-      if (_em_fluorescence_ || _em_auger_ || _em_pixe_ || _em_regions_deexcitation_.size() > 0) {
+      if (_em_fluorescence_ || _em_auger_ || _em_pixe_ || !_em_regions_deexcitation_.empty()) {
         DT_LOG_NOTICE(_logprio(), "Activating EM deexcitation...");
         this->em_physics_constructor::_ConstructEMDeexcitation();
       }
@@ -898,8 +887,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::_ConstructExtraModels()
     {
@@ -928,8 +916,7 @@ namespace mctools {
       _grab_work_().em_configurator.AddModels();
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::_ConstructEMDeexcitation()
     {
@@ -975,7 +962,7 @@ namespace mctools {
         const std::string & region_name = i->first;
         const region_deexcitation_type & rd = i->second;
         G4Region * a_region = G4RegionStore::GetInstance()->GetRegion(region_name);
-        DT_THROW_IF(a_region == 0, std::logic_error,
+        DT_THROW_IF(a_region == nullptr, std::logic_error,
                     "Cannot find region named '" << region_name
                     << "' to apply de-excitation processes !");
         DT_LOG_NOTICE(_logprio(), "Activating EM deexcitation for region '" << region_name << "' :"
@@ -994,8 +981,7 @@ namespace mctools {
       // de->SetPIXE(true);
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_physics_constructor::_ConstructEMProcess()
     {
@@ -1012,7 +998,7 @@ namespace mctools {
         G4ParticleDefinition * particle = theParticleIterator->value();
 #endif
         G4ProcessManager     * pmanager = particle->GetProcessManager();
-        G4String particle_name = particle->GetParticleName();
+        const G4String& particle_name = particle->GetParticleName();
 
         DT_LOG_NOTICE(_logprio(), "Set electromagnetic processes for '" << particle_name << "'");
 
@@ -1022,23 +1008,23 @@ namespace mctools {
            ***********/
           int process_rank = 0;
 
-          G4RayleighScattering * the_rayleigh_scattering = 0;
+          G4RayleighScattering * the_rayleigh_scattering = nullptr;
           if (_em_gamma_rayleigh_scattering_) {
             the_rayleigh_scattering = new G4RayleighScattering();
           }
-          G4PhotoElectricEffect * the_photoelectric_effect = 0;
+          G4PhotoElectricEffect * the_photoelectric_effect = nullptr;
           if (_em_gamma_photo_electric_) {
             the_photoelectric_effect = new G4PhotoElectricEffect();
           }
-          G4ComptonScattering   * the_compton_scattering = 0;
+          G4ComptonScattering   * the_compton_scattering = nullptr;
           if (_em_gamma_compton_scattering_) {
             the_compton_scattering = new G4ComptonScattering();
           }
-          G4GammaConversion     * the_gamma_conversion = 0;
+          G4GammaConversion     * the_gamma_conversion = nullptr;
           if (_em_gamma_conversion_) {
             the_gamma_conversion = new G4GammaConversion();
           }
-          G4GammaConversionToMuons * the_gamma_conversion_to_muons = 0;
+          G4GammaConversionToMuons * the_gamma_conversion_to_muons = nullptr;
           if (_em_gamma_conversion_to_muons_) {
             the_gamma_conversion_to_muons = new G4GammaConversionToMuons();
           }
@@ -1046,29 +1032,29 @@ namespace mctools {
           if (is_em_low_energy_livermore()) {
             // Livermore:
 
-            if (the_rayleigh_scattering) {
-              G4LivermoreRayleighModel * the_livermore_rayleigh_model
+            if (the_rayleigh_scattering != nullptr) {
+              auto * the_livermore_rayleigh_model
                 = new G4LivermoreRayleighModel();
               the_rayleigh_scattering->SetEmModel(the_livermore_rayleigh_model);
               DT_LOG_NOTICE(_logprio(), "Setup Livermore Rayleigh scattering model for '" << particle_name << "'");
             }
 
-            if (the_photoelectric_effect) {
-              G4LivermorePhotoElectricModel* the_livermore_photoelectric_model
+            if (the_photoelectric_effect != nullptr) {
+              auto* the_livermore_photoelectric_model
                 = new G4LivermorePhotoElectricModel();
               the_photoelectric_effect->SetEmModel(the_livermore_photoelectric_model);
               DT_LOG_NOTICE(_logprio(), "Setup Livermore photoelectric effect model for '" << particle_name << "'");
             }
 
-            if (the_compton_scattering) {
-              G4LivermoreComptonModel* the_livermore_compton_model
+            if (the_compton_scattering != nullptr) {
+              auto* the_livermore_compton_model
                 = new G4LivermoreComptonModel();
               the_compton_scattering->SetEmModel(the_livermore_compton_model);
               DT_LOG_NOTICE(_logprio(), "Setup Livermore Compton scattering model for '" << particle_name << "'");
             }
 
-            if (the_gamma_conversion) {
-              G4LivermoreGammaConversionModel* the_livermore_gamma_conversion_model
+            if (the_gamma_conversion != nullptr) {
+              auto* the_livermore_gamma_conversion_model
                 = new G4LivermoreGammaConversionModel();
               the_gamma_conversion->SetEmModel(the_livermore_gamma_conversion_model);
               DT_LOG_NOTICE(_logprio(), "Setup Livermore conversion model for '" << particle_name << "'");
@@ -1077,29 +1063,29 @@ namespace mctools {
           } else if (is_em_low_energy_penelope()) {
             // Penelope:
 
-            if (the_rayleigh_scattering) {
-              G4PenelopeRayleighModel * the_penelope_rayleigh_model
+            if (the_rayleigh_scattering != nullptr) {
+              auto * the_penelope_rayleigh_model
                 = new G4PenelopeRayleighModel();
               the_rayleigh_scattering->SetEmModel(the_penelope_rayleigh_model);
               DT_LOG_NOTICE(_logprio(), "Setup Penelope Rayleigh scattering model for '" << particle_name << "'");
             }
 
-            if (the_photoelectric_effect) {
-              G4PenelopePhotoElectricModel* the_penelope_photoelectric_model
+            if (the_photoelectric_effect != nullptr) {
+              auto* the_penelope_photoelectric_model
                 = new G4PenelopePhotoElectricModel();
               the_photoelectric_effect->SetEmModel(the_penelope_photoelectric_model);
               DT_LOG_NOTICE(_logprio(), "Setup Penelope photoelectric effect model for '" << particle_name << "'");
             }
 
-            if (the_compton_scattering) {
-              G4PenelopeComptonModel* the_penelope_compton_model
+            if (the_compton_scattering != nullptr) {
+              auto* the_penelope_compton_model
                 = new G4PenelopeComptonModel();
               the_compton_scattering->SetEmModel(the_penelope_compton_model);
               DT_LOG_NOTICE(_logprio(), "Setup Penelope Compton scattering model for '" << particle_name << "'");
             }
 
-            if (the_gamma_conversion) {
-              G4PenelopeGammaConversionModel* the_penelope_gamma_conversion_model
+            if (the_gamma_conversion != nullptr) {
+              auto* the_penelope_gamma_conversion_model
                 = new G4PenelopeGammaConversionModel();
               the_gamma_conversion->SetEmModel(the_penelope_gamma_conversion_model);
               DT_LOG_NOTICE(_logprio(), "Setup Penelope conversion model for '" << particle_name << "'");
@@ -1107,23 +1093,23 @@ namespace mctools {
 
           }
 
-          if (the_rayleigh_scattering) {
+          if (the_rayleigh_scattering != nullptr) {
             DT_LOG_NOTICE(_logprio(), "Add Rayleigh scattering for '" << particle_name << "'");
             pmanager->AddDiscreteProcess(the_rayleigh_scattering);
           }
-          if (the_photoelectric_effect) {
+          if (the_photoelectric_effect != nullptr) {
             DT_LOG_NOTICE(_logprio(), "Add photoelectric effect for '" << particle_name << "'");
             pmanager->AddDiscreteProcess(the_photoelectric_effect);
           }
-          if (the_compton_scattering) {
+          if (the_compton_scattering != nullptr) {
             DT_LOG_NOTICE(_logprio(), "Add Compton scattering for '" << particle_name << "'");
             pmanager->AddDiscreteProcess(the_compton_scattering);
           }
-          if (the_gamma_conversion) {
+          if (the_gamma_conversion != nullptr) {
             DT_LOG_NOTICE(_logprio(), "Add conversion for '" << particle_name << "'");
             pmanager->AddDiscreteProcess(the_gamma_conversion);
           }
-          if (the_gamma_conversion_to_muons) {
+          if (the_gamma_conversion_to_muons != nullptr) {
             DT_LOG_NOTICE(_logprio(), "Add conversion to muons for '" << particle_name << "'");
             pmanager->AddDiscreteProcess(the_gamma_conversion_to_muons);
           }
@@ -1148,7 +1134,7 @@ namespace mctools {
 
           if (_em_electron_multiple_scattering_) {
             // Multiple scattering:
-            G4eMultipleScattering * the_electron_multiple_scattering = new G4eMultipleScattering();
+            auto * the_electron_multiple_scattering = new G4eMultipleScattering();
             // Setting the FacRange to 0.005 instead of default value 0.2
             the_electron_multiple_scattering->SetRangeFactor(_em_electron_ms_range_factor_);
             //??? the_electron_multiple_scattering->SetStepLimitType(fUseDistanceToBoundary);
@@ -1159,21 +1145,21 @@ namespace mctools {
 
           if (_em_electron_ionization_) {
             // Ionization:
-            G4eIonisation * the_e_ionization = new G4eIonisation();
+            auto * the_e_ionization = new G4eIonisation();
             if (is_em_low_energy_livermore()) {
               // Livermore:
               if (particle_name == "e-"){
-                G4LivermoreIonisationModel* the_livermore_ionization_model
+                auto* the_livermore_ionization_model
                   = new G4LivermoreIonisationModel();
                 the_e_ionization->SetEmModel(the_livermore_ionization_model);
               } else if (particle_name == "e+"){
-                G4PenelopeIonisationModel* the_penelope_ionization_model
+                auto* the_penelope_ionization_model
                   = new G4PenelopeIonisationModel();
                 the_e_ionization->SetEmModel(the_penelope_ionization_model);
               }
             } else if (is_em_low_energy_penelope()) {
               // Penelope:
-              G4PenelopeIonisationModel* the_penelope_ionization_model
+              auto* the_penelope_ionization_model
                 = new G4PenelopeIonisationModel();
               the_e_ionization->SetEmModel(the_penelope_ionization_model);
             }
@@ -1184,21 +1170,21 @@ namespace mctools {
 
           if (_em_electron_bremsstrahlung_) {
             // Bremsstrahlung:
-            G4eBremsstrahlung * the_e_bremsstrahlung = new G4eBremsstrahlung();
+            auto * the_e_bremsstrahlung = new G4eBremsstrahlung();
             if (is_em_low_energy_livermore()) {
               // Livermore:
               if (particle_name == "e-"){
-                G4LivermoreBremsstrahlungModel * the_livermore_bremsstrahlung_model
+                auto * the_livermore_bremsstrahlung_model
                   = new G4LivermoreBremsstrahlungModel();
                 the_e_bremsstrahlung->SetEmModel(the_livermore_bremsstrahlung_model);
               } else if (particle_name == "e+"){
-                G4PenelopeBremsstrahlungModel* the_penelope_bremsstrahlung_model
+                auto* the_penelope_bremsstrahlung_model
                   = new G4PenelopeBremsstrahlungModel();
                 the_e_bremsstrahlung->SetEmModel(the_penelope_bremsstrahlung_model);
               }
             } else if (is_em_low_energy_penelope()) {
               // Penelope:
-              G4PenelopeBremsstrahlungModel* the_penelope_bremsstrahlung_model
+              auto* the_penelope_bremsstrahlung_model
                 = new G4PenelopeBremsstrahlungModel();
               the_e_bremsstrahlung->SetEmModel(the_penelope_bremsstrahlung_model);
             }
@@ -1209,9 +1195,9 @@ namespace mctools {
 
           if (particle_name == "e+" && _em_positron_annihilation_) {
             // e+ annihilation:
-            G4eplusAnnihilation * the_positron_annihilation = new G4eplusAnnihilation();
+            auto * the_positron_annihilation = new G4eplusAnnihilation();
             if (is_em_low_energy_penelope()) {
-              G4PenelopeAnnihilationModel * the_penelope_annihilation_model
+              auto * the_penelope_annihilation_model
                 = new G4PenelopeAnnihilationModel();
               the_positron_annihilation->SetEmModel(the_penelope_annihilation_model);
             }
@@ -1242,7 +1228,7 @@ namespace mctools {
            *   Ions   *
            ************/
           if (_em_ion_multiple_scattering_) {
-            G4hMultipleScattering * the_ion_multiple_scattering = new G4hMultipleScattering();
+            auto * the_ion_multiple_scattering = new G4hMultipleScattering();
             ++process_rank;
             DT_LOG_NOTICE(_logprio(), "Add hadron multiple scattering for '" << particle_name << "'");
             pmanager->AddProcess(the_ion_multiple_scattering , -1, process_rank, process_rank);
@@ -1251,7 +1237,7 @@ namespace mctools {
           if (_em_ion_ionization_) {
             // use G4alphaIonisation for alpha...
 
-            G4ionIonisation * the_ion_ionization = new G4ionIonisation();
+            auto * the_ion_ionization = new G4ionIonisation();
             if (_logprio() >= datatools::logger::PRIO_TRACE) {
               the_ion_ionization->SetVerboseLevel(2);
             } else if (_logprio() >= datatools::logger::PRIO_WARNING) {
@@ -1284,15 +1270,15 @@ namespace mctools {
             // effective_charge_in_gas = false;
             if (effective_charge_in_gas) {
               // This is the default behaviour of the G4ionIonisation class:
-              G4BraggIonModel * bragg_ion_model = new G4BraggIonModel;
+              auto * bragg_ion_model = new G4BraggIonModel;
               the_ion_ionization->SetEmModel(bragg_ion_model, 1);
-              G4BetheBlochModel * bethe_bloch_model = new G4BetheBlochModel;
+              auto * bethe_bloch_model = new G4BetheBlochModel;
               the_ion_ionization->SetEmModel(bethe_bloch_model, 2);
             } else {
               DT_LOG_DEBUG(_logprio(), "Using special ion ionization model in gas...");
-              G4BraggIonGasModel * bragg_ion_model = new G4BraggIonGasModel;
+              auto * bragg_ion_model = new G4BraggIonGasModel;
               the_ion_ionization->SetEmModel(bragg_ion_model, 1);
-              G4BetheBlochIonGasModel * bethe_bloch_model = new G4BetheBlochIonGasModel;
+              auto * bethe_bloch_model = new G4BetheBlochIonGasModel;
               the_ion_ionization->SetEmModel(bethe_bloch_model, 2);
             }
 
@@ -1394,8 +1380,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
   } // end of namespace g4
 

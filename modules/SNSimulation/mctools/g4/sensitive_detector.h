@@ -75,7 +75,7 @@ namespace mctools {
       bool has_manager() const;
 
       /// Set the Geant4 manage
-      void set_manager(manager & mgr_);
+      void set_manager(manager & manager_);
 
       /// Set the flag to track the gammas
       void set_track_gamma(bool);
@@ -156,10 +156,10 @@ namespace mctools {
       mctools::base_step_hit_processor & grab_hit_processor(const std::string & name_);
 
       /// Build the name of a collection of hits from the name of the sensitive category
-      static std::string make_hit_collection_name(const std::string & sensitive_category_);
+      static std::string make_hit_collection_name(const std::string & name_);
 
       /// Constructor
-      sensitive_detector(const std::string & name_);
+      sensitive_detector(const std::string & sensitive_category_);
 
       /// Desctructor
       virtual ~sensitive_detector();

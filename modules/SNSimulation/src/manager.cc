@@ -106,37 +106,37 @@ namespace mctools {
     const uint32_t manager::NO_LIMIT;
     const uint32_t manager::DEFAULT_PRNG_STATES_SAVE_MODULO;
 
-    const std::string & manager::g4_manager_label()
+    auto manager::g4_manager_label() -> const std::string &
     {
       static const std::string _s("MGR");
       return _s;
     }
 
-    const std::string & manager::vertex_generator_label()
+    auto manager::vertex_generator_label() -> const std::string &
     {
       static const std::string _s("VG");
       return _s;
     }
 
-    const std::string & manager::event_generator_label()
+    auto manager::event_generator_label() -> const std::string &
     {
       static const std::string _s("EG");
       return _s;
     }
 
-    const std::string & manager::shpf_label()
+    auto manager::shpf_label() -> const std::string &
     {
       static const std::string _s("SHPF");
       return _s;
     }
 
-    const std::string & manager::default_prng_id()
+    auto manager::default_prng_id() -> const std::string &
     {
       static const std::string _s("taus2");
       return _s;
     }
 
-    const std::string & manager::default_prng_states_file()
+    auto manager::default_prng_states_file() -> const std::string &
     {
       static const std::string _s("mctools_g4_prng_states.data");
       return _s;
@@ -188,18 +188,18 @@ namespace mctools {
       DT_LOG_NOTICE(_logprio(),"Simulation stops !");
     }
 
-    bool manager::is_initialized() const {
+    auto manager::is_initialized() const -> bool {
       return _initialized_;
     }
 
-    bool manager::is_automatic() const {
+    auto manager::is_automatic() const -> bool {
       return is_batch() && _g4_macro_.empty();
     }
 
     //----------------------------------------------------------------------
     // Simulation Initializations (Geometry/Physics, possibly via services)
     //----------------------------------------------------------------------
-    bool manager::has_service_manager() const {
+    auto manager::has_service_manager() const -> bool {
       return _service_manager_ != nullptr;
     }
 
@@ -208,19 +208,19 @@ namespace mctools {
       _service_manager_ = &sm;
     }
 
-    datatools::service_manager & manager::grab_service_manager() {
+    auto manager::grab_service_manager() -> datatools::service_manager & {
       DT_THROW_IF(_service_manager_ == nullptr, std::logic_error,
                   "No service manager is available !");
       return *_service_manager_;
     }
 
-    const datatools::service_manager & manager::get_service_manager() const {
+    auto manager::get_service_manager() const -> const datatools::service_manager & {
       DT_THROW_IF(_service_manager_ == nullptr, std::logic_error,
                   "No service manager is available !");
       return *_service_manager_;
     }
 
-    bool manager::has_external_geom_manager() const {
+    auto manager::has_external_geom_manager() const -> bool {
       return _external_geom_manager_ != nullptr;
     }
 
@@ -236,7 +236,7 @@ namespace mctools {
       _external_geom_manager_ = &gm;
     }
 
-    const geomtools::manager & manager::get_geom_manager() const {
+    auto manager::get_geom_manager() const -> const geomtools::manager & {
       if (has_external_geom_manager()) {
         DT_THROW_IF(! _external_geom_manager_->is_initialized(),
                     std::logic_error,
@@ -263,19 +263,19 @@ namespace mctools {
       _eg_prng_seed_ = seed_;
     }
 
-    const genbb::manager& manager::get_eg_manager() const {
+    auto manager::get_eg_manager() const -> const genbb::manager& {
       return _eg_manager_;
     }
 
-    genbb::manager& manager::grab_eg_manager() {
+    auto manager::grab_eg_manager() -> genbb::manager& {
       return _eg_manager_;
     }
 
-    bool manager::has_event_generator() const {
-      return _event_generator_ != 0;
+    auto manager::has_event_generator() const -> bool {
+      return _event_generator_ != nullptr;
     }
 
-    const genbb::i_genbb& manager::get_event_generator() const {
+    auto manager::get_event_generator() const -> const genbb::i_genbb& {
       DT_THROW_IF(!this->has_event_generator(),
                   std::logic_error,
                   "No event generator is available !");
@@ -294,32 +294,32 @@ namespace mctools {
       _vg_prng_seed_ = seed_;
     }
 
-    const genvtx::manager& manager::get_vg_manager() const {
+    auto manager::get_vg_manager() const -> const genvtx::manager& {
       return _vg_manager_;
     }
 
-    genvtx::manager& manager::grab_vg_manager() {
+    auto manager::grab_vg_manager() -> genvtx::manager& {
       return _vg_manager_;
     }
 
-    bool manager::has_vertex_generator() const {
-      return _vertex_generator_ != 0;
+    auto manager::has_vertex_generator() const -> bool {
+      return _vertex_generator_ != nullptr;
     }
 
-    const genvtx::i_vertex_generator& manager::get_vertex_generator() const {
+    auto manager::get_vertex_generator() const -> const genvtx::i_vertex_generator& {
       DT_THROW_IF(!this->has_vertex_generator(),
                   std::logic_error,
                   "No vertex generator is available !");
       return *_vertex_generator_;
     }
 
-    event_action& manager::grab_user_event_action() {
+    auto manager::grab_user_event_action() -> event_action& {
       DT_THROW_IF(! _initialized_, std::logic_error, "Manager is not initialized !");
       return *_user_event_action_;
     }
 
 
-    uint32_t manager::get_number_of_events() const {
+    auto manager::get_number_of_events() const -> uint32_t {
       return _number_of_events_;
     }
 
@@ -339,11 +339,11 @@ namespace mctools {
     }
 
 
-    bool manager::has_number_of_events_modulo() const {
+    auto manager::has_number_of_events_modulo() const -> bool {
       return _number_of_events_modulo_ > run_action::NUMBER_OF_EVENTS_MODULO_NONE;
     }
 
-    int manager::get_number_of_events_modulo() const {
+    auto manager::get_number_of_events_modulo() const -> int {
       return _number_of_events_modulo_;
     }
 
@@ -360,29 +360,31 @@ namespace mctools {
       _use_run_header_footer_ = a_use_run_header_footer;
     }
 
-    bool manager::using_run_header_footer() const {
+    auto manager::using_run_header_footer() const -> bool {
       return _use_run_header_footer_;
     }
 
-    bool manager::is_batch() const {
+    auto manager::is_batch() const -> bool {
       return ! is_interactive();
     }
 
-    bool manager::is_interactive() const {
+    auto manager::is_interactive() const -> bool {
       return _interactive_;
     }
 
     void manager::set_interactive(bool new_value_) {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       _interactive_ = new_value_;
-      if (! _interactive_) _g4_visualization_ = false;
+      if (! _interactive_) { _g4_visualization_ = false;
+}
     }
 
     void manager::set_g4_visualization(bool new_value_) {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
 #ifdef G4VIS_USE
       _g4_visualization_ = new_value_;
-      if (_g4_visualization_) _interactive_ = true;
+      if (_g4_visualization_) { _interactive_ = true;
+}
 #else // ! G4VIS_USE
       _g4_visualization_ = false;
       if (new_value_) {
@@ -391,16 +393,16 @@ namespace mctools {
 #endif // G4VIS_USE
     }
 
-    bool manager::has_g4_visualization() const {
+    auto manager::has_g4_visualization() const -> bool {
       return is_interactive() && _g4_visualization_;
     }
 
 
-    bool manager::has_g4_macro() const {
+    auto manager::has_g4_macro() const -> bool {
       return ! _g4_macro_.empty();
     }
 
-    const std::string& manager::get_g4_macro() const {
+    auto manager::get_g4_macro() const -> const std::string& {
       return _g4_macro_;
     }
 
@@ -413,19 +415,19 @@ namespace mctools {
       _use_track_history_ = use;
     }
 
-    bool manager::has_track_history() const {
+    auto manager::has_track_history() const -> bool {
       return _use_track_history_;
     }
 
-    const track_history& manager::get_track_history() const {
+    auto manager::get_track_history() const -> const track_history& {
       return _track_history_;
     }
 
-    track_history& manager::grab_track_history() {
+    auto manager::grab_track_history() -> track_history& {
       return _track_history_;
     }
 
-    bool manager::forbids_private_hits() const {
+    auto manager::forbids_private_hits() const -> bool {
       return _forbid_private_hits_;
     }
 
@@ -439,7 +441,7 @@ namespace mctools {
       _dont_save_no_sensitive_hit_events_ = a_dont_save;
     }
 
-    bool manager::dont_save_no_sensitive_hit_events() const {
+    auto manager::dont_save_no_sensitive_hit_events() const -> bool {
       return _dont_save_no_sensitive_hit_events_;
     }
 
@@ -447,8 +449,8 @@ namespace mctools {
     //----------------------------------------------------------------------
     // Multithreaded Control
     //----------------------------------------------------------------------
-    bool manager::has_simulation_ctrl() const {
-      return _simulation_ctrl_ != 0;
+    auto manager::has_simulation_ctrl() const -> bool {
+      return _simulation_ctrl_ != nullptr;
     }
 
     void manager::set_simulation_ctrl(simulation_ctrl& a_simulation_ctrl) {
@@ -461,17 +463,17 @@ namespace mctools {
 
     void manager::reset_simulation_ctrl() {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
-      _simulation_ctrl_ = 0;
+      _simulation_ctrl_ = nullptr;
     }
 
-    const simulation_ctrl& manager::get_simulation_ctrl() const {
+    auto manager::get_simulation_ctrl() const -> const simulation_ctrl& {
       DT_THROW_IF(! has_simulation_ctrl(),
                   std::logic_error,
                   "Manager has no 'simulation ctrl' object !");
       return *_simulation_ctrl_;
     }
 
-    simulation_ctrl& manager::grab_simulation_ctrl() {
+    auto manager::grab_simulation_ctrl() -> simulation_ctrl& {
       DT_THROW_IF(! has_simulation_ctrl(),
                   std::logic_error,
                   "Manager has no 'simulation ctrl' object !");
@@ -481,48 +483,48 @@ namespace mctools {
     //----------------------------------------------------------------------
     // Random number (over)control
     //----------------------------------------------------------------------
-    mygsl::rng& manager::grab_vg_prng() {
+    auto manager::grab_vg_prng() -> mygsl::rng& {
       return _vg_prng_;
     }
 
-    mygsl::rng& manager::grab_eg_prng() {
+    auto manager::grab_eg_prng() -> mygsl::rng& {
       return _eg_prng_;
     }
 
-    mygsl::rng& manager::grab_shpf_prng() {
+    auto manager::grab_shpf_prng() -> mygsl::rng& {
       return _shpf_prng_;
     }
 
-    const mygsl::rng& manager::get_mgr_prng() const {
+    auto manager::get_mgr_prng() const -> const mygsl::rng& {
       return _mgr_prng_;
     }
 
-    mygsl::rng& manager::grab_mgr_prng() {
+    auto manager::grab_mgr_prng() -> mygsl::rng& {
       return _mgr_prng_;
     }
 
-    const g4_prng& manager::get_g4_prng() const {
+    auto manager::get_g4_prng() const -> const g4_prng& {
       return _g4_prng_;
     }
 
-    g4_prng& manager::grab_g4_prng() {
+    auto manager::grab_g4_prng() -> g4_prng& {
       return _g4_prng_;
     }
 
 
-    const mygsl::seed_manager& manager::get_seed_manager() const {
+    auto manager::get_seed_manager() const -> const mygsl::seed_manager& {
       return _seed_manager_;
     }
 
-    mygsl::seed_manager& manager::grab_seed_manager() {
+    auto manager::grab_seed_manager() -> mygsl::seed_manager& {
       return _seed_manager_;
     }
 
-    const mygsl::prng_state_manager& manager::get_state_manager() const {
+    auto manager::get_state_manager() const -> const mygsl::prng_state_manager& {
       return _prng_state_manager_;
     }
 
-    mygsl::prng_state_manager& manager::grab_state_manager() {
+    auto manager::grab_state_manager() -> mygsl::prng_state_manager& {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
       return _prng_state_manager_;
     }
@@ -541,7 +543,8 @@ namespace mctools {
       _shpf_prng_.to_buffer(_prng_state_manager_.get_state(shpf_label()).state_buffer);
 
       _prng_state_manager_.increment_counter(get_prng_state_save_modulo());
-      if (is_debug()) _prng_state_manager_.dump(std::clog);
+      if (is_debug()) { _prng_state_manager_.dump(std::clog);
+}
       _prng_state_manager_.store();
     }
 
@@ -556,11 +559,11 @@ namespace mctools {
       _prng_state_save_modulo_ = a_modulo;
     }
 
-    int manager::get_prng_state_save_modulo() const {
+    auto manager::get_prng_state_save_modulo() const -> int {
       return _prng_state_save_modulo_;
     }
 
-    bool manager::has_prng_state_save_modulo() const {
+    auto manager::has_prng_state_save_modulo() const -> bool {
       return _prng_state_save_modulo_ > 0;
     }
 
@@ -573,11 +576,11 @@ namespace mctools {
       _input_prng_seeds_file_ = "";
     }
 
-    bool manager::has_input_prng_seeds_file() const {
+    auto manager::has_input_prng_seeds_file() const -> bool {
       return ! _input_prng_seeds_file_.empty();
     }
 
-    const std::string& manager::get_input_prng_seeds_file() const {
+    auto manager::get_input_prng_seeds_file() const -> const std::string& {
       return _input_prng_seeds_file_;
     }
 
@@ -585,11 +588,11 @@ namespace mctools {
       _input_prng_seeds_file_ = fn_;
     }
 
-    bool manager::has_output_prng_seeds_file() const {
+    auto manager::has_output_prng_seeds_file() const -> bool {
       return ! _output_prng_seeds_file_.empty();
     }
 
-    const std::string& manager::get_output_prng_seeds_file() const {
+    auto manager::get_output_prng_seeds_file() const -> const std::string& {
       return _output_prng_seeds_file_;
     }
 
@@ -601,11 +604,11 @@ namespace mctools {
       _output_prng_states_file_ = "";
     }
 
-    const std::string & manager::get_output_prng_states_file() const {
+    auto manager::get_output_prng_states_file() const -> const std::string & {
       return _output_prng_states_file_;
     }
 
-    bool manager::has_output_prng_states_file() const {
+    auto manager::has_output_prng_states_file() const -> bool {
       return ! _output_prng_states_file_.empty();
     }
 
@@ -617,11 +620,11 @@ namespace mctools {
       _input_prng_states_file_ = "";
     }
 
-    const std::string & manager::get_input_prng_states_file() const {
+    auto manager::get_input_prng_states_file() const -> const std::string & {
       return _input_prng_states_file_;
     }
 
-    bool manager::has_input_prng_states_file() const {
+    auto manager::has_input_prng_states_file() const -> bool {
       return ! _input_prng_states_file_.empty();
     }
 
@@ -643,15 +646,15 @@ namespace mctools {
       }
     }
 
-    bool manager::has_mgr_prng_seed() const {
+    auto manager::has_mgr_prng_seed() const -> bool {
       return _mgr_prng_seed_ != mygsl::random_utils::SEED_INVALID;
     }
 
-    int manager::get_mgr_prng_seed() const {
+    auto manager::get_mgr_prng_seed() const -> int {
       return _mgr_prng_seed_;
     }
 
-    bool manager::has_init_seed_method() const {
+    auto manager::has_init_seed_method() const -> bool {
       return !_init_seed_method_.empty();
     }
 
@@ -659,7 +662,7 @@ namespace mctools {
       _init_seed_method_ = method_;
     }
 
-    const std::string & manager::get_init_seed_method() const {
+    auto manager::get_init_seed_method() const -> const std::string & {
       return _init_seed_method_;
     }
 
@@ -694,7 +697,7 @@ namespace mctools {
                   "Cannot set output data bank label with the plain output data format!");
     }
 
-    io_utils::data_format_type manager::get_output_data_format() const {
+    auto manager::get_output_data_format() const -> io_utils::data_format_type {
       return _output_data_format_;
     }
 
@@ -702,7 +705,7 @@ namespace mctools {
       _output_data_file_ = fn_;
     }
 
-    bool manager::using_time_stat() const {
+    auto manager::using_time_stat() const -> bool {
       return _use_time_stat_;
     }
 
@@ -711,18 +714,18 @@ namespace mctools {
       _use_time_stat_ = new_value_;
     }
 
-    const manager::CT_map & manager::get_CT_map() const {
+    auto manager::get_CT_map() const -> const manager::CT_map & {
       return _CTs_;
     }
 
-    manager::CT_map& manager::grab_CT_map() {
+    auto manager::grab_CT_map() -> manager::CT_map& {
       return _CTs_;
     }
 
     //----------------------------------------------------------------------
     // Output Profiles
     //----------------------------------------------------------------------
-    bool manager::has_supported_output_profile(const std::string & profile_id_) const {
+    auto manager::has_supported_output_profile(const std::string & profile_id_) const -> bool {
       return _supported_output_profile_ids_.find(profile_id_) != _supported_output_profile_ids_.end();
     }
 
@@ -746,15 +749,15 @@ namespace mctools {
       DT_LOG_NOTICE(_logprio(), "Output profile '" << profile_id << "' is supported.");
     }
 
-    const std::map<std::string, std::string>& manager::get_supported_output_profiles() const {
+    auto manager::get_supported_output_profiles() const -> const std::map<std::string, std::string>& {
       return _supported_output_profile_ids_;
     }
 
-    bool manager::has_activated_output_profiles() const {
-      return _activated_output_profile_ids_.size() > 0;
+    auto manager::has_activated_output_profiles() const -> bool {
+      return !_activated_output_profile_ids_.empty();
     }
 
-    bool manager::has_activated_output_profile(const std::string& id) const {
+    auto manager::has_activated_output_profile(const std::string& id) const -> bool {
       return _activated_output_profile_ids_.count(id) == 1;
     }
 
@@ -781,7 +784,8 @@ namespace mctools {
 
     void manager::apply_output_profiles_activation_rule(const std::string& rule) {
       DT_THROW_IF(_initialized_, std::logic_error, "Operation prohibited ! Manager is locked !");
-      if (rule.empty()) return;
+      if (rule.empty()) { return;
+}
       std::vector<std::string> activated_output_profile_ids;
       boost::split(activated_output_profile_ids, rule, boost::is_any_of("+"));
       for (size_t i {0}; i < activated_output_profile_ids.size(); ++i) {
@@ -797,7 +801,7 @@ namespace mctools {
       }
     }
 
-    const std::set<std::string>& manager::get_activated_output_profile_ids() const {
+    auto manager::get_activated_output_profile_ids() const -> const std::set<std::string>& {
       return _activated_output_profile_ids_;
     }
 
@@ -813,7 +817,8 @@ namespace mctools {
                             const std::string& title,
                             const std::string& iIndent) const {
       std::string indent;
-      if (!iIndent.empty()) indent = iIndent;
+      if (!iIndent.empty()) { indent = iIndent;
+}
       if (!title.empty()) {
         os << indent << title << std::endl;
       }
@@ -838,7 +843,7 @@ namespace mctools {
          << _output_prng_states_file_ << "' " << std::endl;
       os << indent << "|-- Supported output profiles = ";
 
-      if (_supported_output_profile_ids_.size()) {
+      if (static_cast<unsigned int>(!_supported_output_profile_ids_.empty()) != 0U) {
         os << _supported_output_profile_ids_.size() << std::endl;
       } else {
         os << "<none>" << std::endl;
@@ -859,7 +864,7 @@ namespace mctools {
       }
 
       os << indent << "|-- Activated output profiles = ";
-      if (_activated_output_profile_ids_.size()) {
+      if (static_cast<unsigned int>(!_activated_output_profile_ids_.empty()) != 0U) {
         os << _activated_output_profile_ids_.size() << std::endl;
       } else {
         os << "<none>" << std::endl;
@@ -968,26 +973,24 @@ namespace mctools {
 
     void manager::reset_impl() {
       if (_use_time_stat_) {
-        for (CT_map::iterator i = _CTs_.begin();
-             i != _CTs_.end();
-             i++) {
-          i->second.tree_dump(std::clog, i->first);
-          i->second.reset();
+        for (auto & _CT : _CTs_) {
+          _CT.second.tree_dump(std::clog, _CT.first);
+          _CT.second.reset();
         }
       }
 
 #ifdef G4VIS_USE
-      if (_g4_vis_manager_) {
+      if (_g4_vis_manager_ != nullptr) {
         delete _g4_vis_manager_;
         _g4_vis_manager_ = nullptr;
       }
 #endif
-      if (_g4_run_manager_) {
+      if (_g4_run_manager_ != nullptr) {
         delete _g4_run_manager_;
         _g4_run_manager_ = nullptr;
       }
 
-      if (_g4_stepping_verbosity_) {
+      if (_g4_stepping_verbosity_ != nullptr) {
         delete _g4_stepping_verbosity_;
         _g4_stepping_verbosity_ = nullptr;
       }
@@ -1030,7 +1033,7 @@ namespace mctools {
         DT_LOG_NOTICE(_logprio(), "Entering interactive mode...");
 #ifdef G4VIS_USE
         if (has_g4_visualization()) {
-          if (_g4_vis_manager_) {
+          if (_g4_vis_manager_ != nullptr) {
             //_g4_vis_manager_->SetVerboseLevel("quiet");
           }
         }
@@ -1057,7 +1060,7 @@ namespace mctools {
 
 #ifdef G4VIS_USE
         if (has_g4_visualization()) {
-          if (_g4_vis_manager_) {
+          if (_g4_vis_manager_ != nullptr) {
             //_g4_vis_manager_->SetVerboseLevel("quiet");
           }
         }
@@ -1290,8 +1293,7 @@ namespace mctools {
           DT_LOG_TRACE(_logprio(), "Fetch supported output profiles yet...");
           std::vector<std::string> sops;
           manager_config.fetch("output_profiles", sops);
-          for (int i = 0; i < (int) sops.size(); i++) {
-            const std::string & profile_id = sops[i];
+          for (const auto & profile_id : sops) {
             std::ostringstream key_oss;
             key_oss << "output_profiles." << profile_id << ".description";
             std::string profile_description;
@@ -1505,7 +1507,8 @@ namespace mctools {
       _user_physics_list_->initialize(physics_list_config);
       _g4_run_manager_->SetUserInitialization(_user_physics_list_);
       DT_LOG_DEBUG(_logprio(), "Physics list: ");
-      if (is_debug()) _user_physics_list_->tree_dump(std::clog);
+      if (is_debug()) { _user_physics_list_->tree_dump(std::clog);
+}
     }
 
     void manager::_init_run_action() {

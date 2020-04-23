@@ -21,10 +21,10 @@ namespace mctools {
 namespace g4 {
 simulation_ctrl::simulation_ctrl(manager& a_simulation_manager,
                                  uint32_t a_max_counts) {
-  simulation_manager = 0;
-  simulation_thread = 0;
-  event_mutex = 0;
-  event_available_condition = 0;
+  simulation_manager = nullptr;
+  simulation_thread = nullptr;
+  event_mutex = nullptr;
+  event_available_condition = nullptr;
   event_availability_status = simulation_ctrl::NOT_AVAILABLE_FOR_G4;
   stop_requested = false;
   counts = 0;
@@ -36,28 +36,28 @@ simulation_ctrl::simulation_ctrl(manager& a_simulation_manager,
 
 simulation_ctrl::~simulation_ctrl() {
   stop_requested = true;
-  if (event_mutex != 0) {
+  if (event_mutex != nullptr) {
     boost::mutex::scoped_lock lock(*event_mutex);
     stop_requested = true;
     event_availability_status = simulation_ctrl::ABORT;
     event_available_condition->notify_one();
   }
-  if(simulation_thread != 0) {
+  if(simulation_thread != nullptr) {
     simulation_thread->join();
   }
-  if (event_available_condition != 0) {
+  if (event_available_condition != nullptr) {
     delete event_available_condition;
-    event_available_condition = 0;
+    event_available_condition = nullptr;
   }
-  if (event_mutex != 0) {
+  if (event_mutex != nullptr) {
     delete event_mutex;
-    event_mutex = 0;
+    event_mutex = nullptr;
   }
-  if (simulation_thread) {
+  if (simulation_thread != nullptr) {
     delete simulation_thread;
-    simulation_thread = 0;
+    simulation_thread = nullptr;
   }
-  simulation_manager = 0;
+  simulation_manager = nullptr;
 }
 
 void simulation_ctrl::set_simulation_manager(manager & a_simulation_manager) {
@@ -82,7 +82,7 @@ void simulation_ctrl::set_stop_requested() {
   stop_requested = true;
 }
 
-bool simulation_ctrl::is_stop_requested() const {
+auto simulation_ctrl::is_stop_requested() const -> bool {
   return stop_requested;
 }
 

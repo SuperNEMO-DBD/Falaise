@@ -27,14 +27,12 @@ namespace mctools {
     manager_parameters::manager_parameters()
     {
       set_defaults();
-      return;
-    }
+   }
 
     void manager_parameters::reset()
     {
       set_defaults();
-      return;
-    }
+   }
 
     void manager_parameters::tree_dump(std::ostream & out_,
                                        const std::string & title_,
@@ -77,8 +75,7 @@ namespace mctools {
       out_ << indent << datatools::i_tree_dumpable::tag << "forbid_private_hits = " << forbid_private_hits << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag << "dont_save_no_sensitive_hit_events = " << dont_save_no_sensitive_hit_events << std::endl;
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "use_run_header_footer = " << use_run_header_footer << std::endl;
-      return;
-    }
+   }
 
     void manager_parameters::set_defaults()
     {
@@ -111,8 +108,7 @@ namespace mctools {
       this->forbid_private_hits = false;
       this->dont_save_no_sensitive_hit_events = false;
       this->use_run_header_footer = false;
-      return;
-    }
+   }
 
     void manager_parameters::setup(const manager_parameters & a_params,
                                    manager & a_manager)
@@ -268,8 +264,7 @@ namespace mctools {
       a_manager.initialize(the_configuration);
       DT_LOG_NOTICE(a_manager.get_logging_priority (),
                     "Simulation manager has been configured and initialized.");
-      return;
-    }
+         }
 
   } // end of namespace g4
 

@@ -92,14 +92,14 @@ namespace mctools {
       void SetChargeMomentumMass(G4double particle_charge_, // in e+ units
                                  G4double particle_momentum_,
                                  G4double particle_mass_);
-      
+
 #if G4VERSION_NUMBER >= 1000
       // New signature for this virtual method in Geant 4.10.X
       void SetChargeMomentumMass(G4ChargeState particle_charge_, // with charge attribute in e+ units
                                  G4double particle_momentum_,
                                  G4double particle_mass_);
 #endif
-      
+
       /// Set the magnetic anomaly of the particle
       void set_anomaly(double a_);
 

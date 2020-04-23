@@ -72,18 +72,16 @@ namespace mctools {
       em_model_factory::em_model_factory()
       {
         _initialized_ = false;
-        return;
-      }
+     }
 
       em_model_factory::~em_model_factory()
       {
         if (is_initialized()) {
           reset();
         }
-        return;
-      }
+             }
 
-      bool em_model_factory::is_initialized() const
+      auto em_model_factory::is_initialized() const -> bool
       {
         return _initialized_;
       }
@@ -94,50 +92,48 @@ namespace mctools {
                     "EM model factory is already initialized!");
         _registration();
         _initialized_ = true;
-        return;
-      }
+     }
 
       void em_model_factory::reset()
       {
         DT_THROW_IF(!is_initialized(), std::logic_error,
                     "EM model factory is not initialized!");
         _initialized_ = false;
-        return;
-      }
+     }
 
-      bool em_model_factory::has_model_type(const std::string & model_type_id_) const
+      auto em_model_factory::has_model_type(const std::string & model_type_id_) const -> bool
       {
         return _reg_.has(model_type_id_);
       }
 
-      G4VEmModel *
+      auto
       em_model_factory::create_model(const std::string & model_type_id_,
-                                     const std::string & model_name_)
+                                     const std::string & model_name_) -> G4VEmModel *
       {
         datatools::properties dummy;
         return create_model(model_type_id_, model_name_, dummy);
       }
 
-      G4VEmModel *
+      auto
       em_model_factory::create_model(const std::string & model_type_id_,
                                      const std::string & model_name_,
-                                     const datatools::properties & model_config_)
+                                     const datatools::properties & model_config_) -> G4VEmModel *
       {
         DT_THROW_IF(!is_initialized(), std::logic_error,
                     "EM model factory is not initialized!");
-        G4VEmModel * model = 0;
+        G4VEmModel * model = nullptr;
 
         model = _create_model(model_type_id_, model_name_, model_config_);
 
         return model;
       }
 
-      G4VEmModel *
+      auto
       em_model_factory::_create_model(const std::string & model_type_id_,
                                       const std::string & model_name_,
-                                      const datatools::properties & /* model_config_ */)
+                                      const datatools::properties & /* model_config_ */) -> G4VEmModel *
       {
-        G4VEmModel * model = 0;
+        G4VEmModel * model = nullptr;
 
         if (_reg_.has(model_type_id_)) {
           const fact_reg_type::factory_type & f = _reg_.get(model_type_id_);
@@ -153,32 +149,20 @@ namespace mctools {
                                                  const std::string & name_)
       {
         const G4String * g4name = &model_.GetName();
-        G4String * mutable_g4name = const_cast<G4String *>(g4name);
+        auto * mutable_g4name = const_cast<G4String *>(g4name);
         *mutable_g4name = name_;
-        return;
-      }
+     }
 
       void em_model_factory::_registration()
       {
         _registration_base();
         _registration_standard();
-        // _registration_lowenergy();
-        // _registration_highenergy();
-        // _registration_pii();
-        // _registration_muons();
-        // _registration_polarisation();
-        // _registration_xrays();
-        // _registration_dna();
-
-        return;
-      }
+     }
 
       void em_model_factory::_registration_base()
       {
         _reg_.registration<G4DummyModel>("Dummy");
-        // , boost::factory<G4DummyModel*>(), typeid(G4DummyModel));
-        return;
-      }
+     }
 
       void em_model_factory::_registration_standard()
       {
@@ -249,25 +233,22 @@ namespace mctools {
         _reg_.registration<G4ICRU49NuclearStoppingModel>("ICRU49NuclearStopping");
         _reg_.registration<G4PEEffectFluoModel>("PEEffectFluo");
         _reg_.registration<G4eSingleCoulombScatteringModel>("eSingleCoulombScattering");
-        // End of list of standard EM models.
-
-        return;
-      }
+     }
 
       // static
-      const em_model_factory & em_model_factory::get_instance()
+      auto em_model_factory::get_instance() -> const em_model_factory &
       {
         return const_cast<em_model_factory &>(_instance_());
       }
 
       // static
-      em_model_factory & em_model_factory::grab_instance()
+      auto em_model_factory::grab_instance() -> em_model_factory &
       {
         return _instance_();
       }
 
       // static
-      em_model_factory & em_model_factory::_instance_()
+      auto em_model_factory::_instance_() -> em_model_factory &
       {
         static boost::scoped_ptr<em_model_factory> _fact;
         if (! _fact) {

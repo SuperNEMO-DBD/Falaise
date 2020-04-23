@@ -42,7 +42,7 @@ namespace mctools {
     const size_t sensitive_detector::DEFAULT_HIT_BUFFER_CAPACITY;
     const double sensitive_detector::DEFAULT_MAJOR_TRACK_MINIMUM_ENERGY = 10. * CLHEP::keV;
 
-    bool sensitive_detector::is_drop_zero_energy_deposit_steps() const
+    auto sensitive_detector::is_drop_zero_energy_deposit_steps() const -> bool
     {
       return _drop_zero_energy_deposit_steps_;
     }
@@ -50,28 +50,24 @@ namespace mctools {
     void sensitive_detector::set_drop_zero_energy_deposit_steps(bool drop_)
     {
       _drop_zero_energy_deposit_steps_ = drop_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_track_gamma(bool track_gamma_)
     {
       _track_gamma_ = track_gamma_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_track_optical_photon(bool track_op_)
     {
       _track_optical_photon_ = track_op_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_track_neutron(bool track_neutron_)
     {
       _track_neutron_ = track_neutron_;
-      return;
-    }
+   }
 
-    bool sensitive_detector::has_manager() const
+    auto sensitive_detector::has_manager() const -> bool
     {
       return _manager_ != nullptr;
     }
@@ -79,17 +75,16 @@ namespace mctools {
     void sensitive_detector::set_manager(manager & manager_)
     {
       _manager_ = &manager_;
-      return;
-    }
+   }
 
-    const datatools::properties &
-    sensitive_detector::get_auxiliaries() const
+    auto
+    sensitive_detector::get_auxiliaries() const -> const datatools::properties &
     {
       return _aux_;
     }
 
-    datatools::properties &
-    sensitive_detector::grab_auxiliaries()
+    auto
+    sensitive_detector::grab_auxiliaries() -> datatools::properties &
     {
       return _aux_;
     }
@@ -97,82 +92,69 @@ namespace mctools {
     void sensitive_detector::set_record_delta_ray_from_alpha(bool flag_)
     {
       _record_delta_ray_from_alpha_ = flag_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_track_id(bool record_)
     {
       _record_track_id_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_step_length(bool record_)
     {
       _record_step_length_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_primary_particle(bool record_)
     {
       _record_primary_particle_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_major_track(bool record_)
     {
       _record_major_track_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_major_track_minimum_energy(double major_)
     {
       _major_track_minimum_energy_ = major_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_creator_process(bool record_)
     {
       _record_creator_process_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_creator_category(bool record_)
     {
       _record_creator_category_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_material(bool record_)
     {
       _record_material_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_sensitive_category(bool record_)
     {
       _record_sensitive_category_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_momentum(bool record_)
     {
       _record_momentum_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_kinetic_energy(bool record_)
     {
       _record_kinetic_energy_ = record_;
-      return;
-    }
+   }
 
     void sensitive_detector::set_record_boundaries(bool record_)
     {
       _record_boundaries_ = record_;
-      return;
-    }
+   }
 
-    int sensitive_detector::get_HCID() const
+    auto sensitive_detector::get_HCID() const -> int
     {
       return _HCID_;
     }
@@ -180,25 +162,24 @@ namespace mctools {
     void sensitive_detector::set_HCID(int new_value_)
     {
       _HCID_ = new_value_;
-      return;
-    }
+   }
 
-    sensitive_detector::hit_processor_dict_type &
-    sensitive_detector::grab_hit_processors()
+    auto
+    sensitive_detector::grab_hit_processors() -> sensitive_detector::hit_processor_dict_type &
     {
       return _hit_processors_;
     }
 
-    const sensitive_detector::hit_processor_dict_type &
-    sensitive_detector::get_hit_processors() const
+    auto
+    sensitive_detector::get_hit_processors() const -> const sensitive_detector::hit_processor_dict_type &
     {
       return _hit_processors_;
     }
 
-    mctools::base_step_hit_processor &
-    sensitive_detector::grab_hit_processor(const std::string & name_)
+    auto
+    sensitive_detector::grab_hit_processor(const std::string & name_) -> mctools::base_step_hit_processor &
     {
-      hit_processor_dict_type::iterator found = _hit_processors_.find(name_);
+      auto found = _hit_processors_.find(name_);
       DT_THROW_IF (found == _hit_processors_.end(),
                    std::logic_error, "No '" << name_ << "' hit processor !");
       return *found->second;
@@ -212,10 +193,9 @@ namespace mctools {
                    "This sensitive detector '" << _sensitive_category_
                    << "' already has a '" << name_ << "' hit processor !");
       _hit_processors_[name_] = &shp_;
-      return;
-    }
+   }
 
-    bool sensitive_detector::has_hit_processor(const std::string & name_) const
+    auto sensitive_detector::has_hit_processor(const std::string & name_) const -> bool
     {
       return (_hit_processors_.find(name_) != _hit_processors_.end());
     }
@@ -231,16 +211,15 @@ namespace mctools {
         return;
       }
       _attached_logical_volumes_.push_back(log_volume_name_);
-      return;
-    }
+   }
 
-    std::list<std::string> &
-    sensitive_detector::grab_attached_logical_volumes()
+    auto
+    sensitive_detector::grab_attached_logical_volumes() -> std::list<std::string> &
     {
       return _attached_logical_volumes_;
     }
 
-    std::string sensitive_detector::make_hit_collection_name(const std::string & name_)
+    auto sensitive_detector::make_hit_collection_name(const std::string & name_) -> std::string
     {
       std::ostringstream oss;
       oss << name_ << ".hit_collection";
@@ -250,20 +229,19 @@ namespace mctools {
     void sensitive_detector::set_record_g4_volume_properties(bool flag_)
     {
       _record_g4_volume_properties_ = flag_;
-      return;
-    }
+   }
 
-    bool sensitive_detector::is_record_g4_volume_properties() const
+    auto sensitive_detector::is_record_g4_volume_properties() const -> bool
     {
       return _record_g4_volume_properties_;
     }
 
-    const std::string & sensitive_detector::get_sensitive_category() const
+    auto sensitive_detector::get_sensitive_category() const -> const std::string &
     {
       return _sensitive_category_;
     }
 
-    unsigned int sensitive_detector::get_hits_buffer_capacity() const
+    auto sensitive_detector::get_hits_buffer_capacity() const -> unsigned int
     {
       return _hits_buffer_capacity_;
     }
@@ -273,8 +251,7 @@ namespace mctools {
       if (capacity_ > 0) {
         _hits_buffer_capacity_ = capacity_;
       }
-      return;
-    }
+         }
 
     void sensitive_detector::configure(const datatools::properties & config_)
     {
@@ -284,8 +261,7 @@ namespace mctools {
       std::vector<std::string> logical_volumes;
       if (config_.has_key("sensitive.volumes")) {
         config_.fetch("sensitive.volumes", logical_volumes);
-        for (int i = 0; i < (int) logical_volumes.size(); i++) {
-          const std::string & lvname = logical_volumes[i];
+        for (const auto & lvname : logical_volumes) {
           attach_logical_volume(lvname);
         }
       }
@@ -438,7 +414,7 @@ namespace mctools {
                        "Invalid buffer size for sensitive detector '"
                        << _sensitive_category_
                        << "' !");
-          const unsigned int capacity = (unsigned int) cap;
+          const auto capacity = (unsigned int) cap;
           if (capacity > 0) {
             set_hits_buffer_capacity(capacity);
           }
@@ -480,8 +456,7 @@ namespace mctools {
         set_track_neutron(flag);
       }
 
-      return;
-    }
+         }
 
     void sensitive_detector::_set_defaults()
     {
@@ -506,10 +481,7 @@ namespace mctools {
       _hits_buffer_capacity_           = DEFAULT_HIT_BUFFER_CAPACITY;
 
       // G4 Stuff:
-      _HCID_ = -1; // Initialized with an invalid value
-
-      return;
-    }
+      _HCID_ = -1;    }
 
     // ctor:
     sensitive_detector::sensitive_detector(const std::string & sensitive_category_)
@@ -532,8 +504,7 @@ namespace mctools {
       G4String HCname;
       HCname = sensitive_detector::make_hit_collection_name(_sensitive_category_).c_str();
       collectionName.insert(HCname);
-      return;
-    }
+   }
 
     sensitive_detector::~sensitive_detector()
     {
@@ -544,8 +515,7 @@ namespace mctools {
         delete _hits_collection_;
         _hits_collection_ = nullptr;
       }
-      return;
-    }
+         }
 
     void sensitive_detector::clear()
     {
@@ -557,13 +527,12 @@ namespace mctools {
       if (_hits_collection_ != nullptr) {
         _hits_collection_->grab_hits().clear();
       }
-      return;
-    }
+         }
 
     void sensitive_detector::Initialize(G4HCofThisEvent * /*some_hit_collections_*/)
     {
       // First pass, initialize the buffer :
-      if (_hits_buffer_.size() == 0) {
+      if (_hits_buffer_.empty()) {
         _hits_buffer_.reserve(_hits_buffer_capacity_);
         // pre-allocate some hits :
         for (int i = 0; i <(int) _hits_buffer_capacity_; i++) {
@@ -605,8 +574,7 @@ namespace mctools {
         // Ask the manager...
         _manager_->set_use_track_history(true);
       }
-      return;
-    }
+         }
 
     void sensitive_detector::EndOfEvent(G4HCofThisEvent * some_hit_collections_)
     {
@@ -640,29 +608,10 @@ namespace mctools {
       // clear tracks infos for this event:
       _track_info_ptr_ = nullptr;
       _parent_track_info_ptr_ = nullptr;
+   }
 
-      // BUGFIX? FM+AC 2014/09/05: should not be done here but in the event_action(to be validated)
-      //_manager_->grab_track_history().reset();
-
-      /*
-        if ( _verbose > 1 )
-        {
-        sensitive_hits_collection * HC_tmp = nullptr;
-        HC_tmp =(sensitive_hits_collection * )( some_hit_collections->GetHC(_HCID));
-        for (unsigned int i = 0; i < HC_tmp->GetSize(); i++ )
-        {
-        clog << "DEBUG: sensitive_detector::EndOfEvent: "
-        << "hit collection(" << i
-        << ") is " << HC_tmp->GetVector()->at(i)
-        << "." << endl;
-        }
-        }
-      */
-      return;
-    }
-
-    G4bool sensitive_detector::ProcessHits(G4Step * step_,
-                                           G4TouchableHistory * /*touchable_history_*/)
+    auto sensitive_detector::ProcessHits(G4Step * step_,
+                                           G4TouchableHistory * /*touchable_history_*/) -> G4bool
     {
       DT_LOG_TRACE(_logprio(),"Entering...");
       const bool do_process_hits = true;
@@ -678,9 +627,11 @@ namespace mctools {
       if (energy_deposit <= 1.e-10 * CLHEP::keV) {
         bool quit = true;
         if (step_->GetTrack()->GetDefinition() == G4Gamma::GammaDefinition()) {
-          if (_track_gamma_) quit = false;
+          if (_track_gamma_) { quit = false;
+}
         } else if (step_->GetTrack()->GetDefinition() == G4Neutron::NeutronDefinition()) {
-          if (_track_neutron_) quit = false;
+          if (_track_neutron_) { quit = false;
+}
           //} else if (step_->GetTrack()->GetDefinition() == G4Neutron::OpticalPhotonDefinition()) {
           //if (_track_optical_photon_) quit = false;
         } else if (!_drop_zero_energy_deposit_steps_) {
@@ -729,7 +680,7 @@ namespace mctools {
             ti.set_id(track_id);
             ti.set_parent_id(parent_track_id);
             ti.set_particle_name(track_particle_name);
-            if (step_->GetTrack()->GetCreatorProcess()) {
+            if (step_->GetTrack()->GetCreatorProcess() != nullptr) {
               const std::string & process_name
                 = step_->GetTrack()->GetCreatorProcess()->GetProcessName();
               ti.set_creator_process_name(process_name);
@@ -937,7 +888,8 @@ namespace mctools {
                                        bool /*inherit_*/) const
     {
       std::string indent;
-      if (! indent_.empty()) indent = indent_;
+      if (! indent_.empty()) { indent = indent_;
+}
       if (! title_.empty()) {
         out_ << indent << title_ << std::endl;
       }
@@ -949,11 +901,11 @@ namespace mctools {
       {
         out_ << indent << datatools::i_tree_dumpable::tag
              << "Attached logical volumes    : " << _attached_logical_volumes_.size() << std::endl;
-        for (std::list<std::string>::const_iterator
+        for (auto
                ilog = _attached_logical_volumes_.begin();
              ilog != _attached_logical_volumes_.end(); ++ilog) {
           out_ << indent << datatools::i_tree_dumpable::skip_tag;
-          std::list<std::string>::const_iterator jlog = ilog;
+          auto jlog = ilog;
           if (++jlog == _attached_logical_volumes_.end()) {
             out_ << datatools::i_tree_dumpable::last_tag;
           } else {
@@ -1029,14 +981,16 @@ namespace mctools {
 
         out_ << indent << datatools::i_tree_dumpable::tag
              << "Track info pointer          : ";
-        if (_track_info_ptr_ != nullptr) out_ << _track_info_ptr_;
-        else                       out_ << "Not allocated";
+        if (_track_info_ptr_ != nullptr) { out_ << _track_info_ptr_;
+        } else {                       out_ << "Not allocated";
+}
         out_ << std::endl;
 
         out_ << indent << datatools::i_tree_dumpable::tag
              << "Parent track info pointer   : ";
-        if (_parent_track_info_ptr_ != nullptr) out_ << _parent_track_info_ptr_;
-        else                              out_ << "Not allocated";
+        if (_parent_track_info_ptr_ != nullptr) { out_ << _parent_track_info_ptr_;
+        } else {                              out_ << "Not allocated";
+}
         out_ << std::endl;
 
         out_ << indent << datatools::i_tree_dumpable::tag
@@ -1061,11 +1015,11 @@ namespace mctools {
         out_ << indent << datatools::i_tree_dumpable::last_tag
              << "Step hit processors         : ";
 
-        if (_hit_processors_.size() == 0) {
+        if (_hit_processors_.empty()) {
           out_ << "No" << std::endl;
         } else {
           out_ << _hit_processors_.size() << std::endl;
-          for (hit_processor_dict_type::const_iterator ihp
+          for (auto ihp
                  = _hit_processors_.begin();
                ihp != _hit_processors_.end();
                ++ihp) {
@@ -1073,7 +1027,7 @@ namespace mctools {
             mctools::base_step_hit_processor * hp = ihp->second;
 
             out_ << indent << datatools::i_tree_dumpable::last_skip_tag;
-            hit_processor_dict_type::const_iterator jhp = ihp;
+            auto jhp = ihp;
             if (++jhp == _hit_processors_.end()) {
               out_ << datatools::i_tree_dumpable::last_tag;
             } else {
@@ -1086,8 +1040,7 @@ namespace mctools {
           }
         }
       }
-      return;
-    }
+         }
 
   } // end of namespace g4
 

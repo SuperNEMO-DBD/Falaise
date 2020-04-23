@@ -53,7 +53,7 @@ namespace mctools {
       void _ConstructMesons();
       void _ConstructBaryons();
       void _ConstructIons();
-      void _ConstructUserLimits();
+      static void _ConstructUserLimits();
 
       void _set_defaults();
 

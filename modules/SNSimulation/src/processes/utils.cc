@@ -13,7 +13,7 @@ namespace mctools {
 
     namespace processes {
 
-      std::string process_type_to_label(G4ProcessType type_)
+      auto process_type_to_label(G4ProcessType type_) -> std::string
       {
         switch (type_) {
         case fNotDefined         : return std::string("undefined");
@@ -31,23 +31,34 @@ namespace mctools {
         }
       }
 
-      G4ProcessType label_to_process_type(const std::string & label_)
+      auto label_to_process_type(const std::string & label_) -> G4ProcessType
       {
-        if (label_ == process_type_to_label(fNotDefined)) return fNotDefined;
-        if (label_ == process_type_to_label(fTransportation)) return fTransportation;
-        if (label_ == process_type_to_label(fElectromagnetic)) return fElectromagnetic;
-        if (label_ == process_type_to_label(fOptical)) return fOptical;
-        if (label_ == process_type_to_label(fHadronic)) return fHadronic;
-        if (label_ == process_type_to_label(fPhotolepton_hadron)) return fPhotolepton_hadron;
-        if (label_ == process_type_to_label(fDecay)) return fDecay;
-        if (label_ == process_type_to_label(fGeneral)) return fGeneral;
-        if (label_ == process_type_to_label(fParameterisation)) return fParameterisation;
-        if (label_ == process_type_to_label(fUserDefined)) return fUserDefined;
-        if (label_ == process_type_to_label(fParallel)) return fParallel;
+        if (label_ == process_type_to_label(fNotDefined)) { return fNotDefined;
+}
+        if (label_ == process_type_to_label(fTransportation)) { return fTransportation;
+}
+        if (label_ == process_type_to_label(fElectromagnetic)) { return fElectromagnetic;
+}
+        if (label_ == process_type_to_label(fOptical)) { return fOptical;
+}
+        if (label_ == process_type_to_label(fHadronic)) { return fHadronic;
+}
+        if (label_ == process_type_to_label(fPhotolepton_hadron)) { return fPhotolepton_hadron;
+}
+        if (label_ == process_type_to_label(fDecay)) { return fDecay;
+}
+        if (label_ == process_type_to_label(fGeneral)) { return fGeneral;
+}
+        if (label_ == process_type_to_label(fParameterisation)) { return fParameterisation;
+}
+        if (label_ == process_type_to_label(fUserDefined)) { return fUserDefined;
+}
+        if (label_ == process_type_to_label(fParallel)) { return fParallel;
+}
         return fNotDefined;
       }
 
-      std::string em_process_subtype_to_label(int type_)
+      auto em_process_subtype_to_label(int type_) -> std::string
       {
         switch (type_) {
         case fCoulombScattering     : return std::string("coulomb_scattering");
@@ -72,26 +83,44 @@ namespace mctools {
         }
       }
 
-      int label_to_em_process_subtype(const std::string & label_)
+      auto label_to_em_process_subtype(const std::string & label_) -> int
       {
-        if (label_ == em_process_subtype_to_label(fCoulombScattering)) return fCoulombScattering;
-        if (label_ == em_process_subtype_to_label(fIonisation)) return fIonisation;
-        if (label_ == em_process_subtype_to_label(fBremsstrahlung)) return fBremsstrahlung;
-        if (label_ == em_process_subtype_to_label(fPairProdByCharged)) return fPairProdByCharged;
-        if (label_ == em_process_subtype_to_label(fAnnihilation)) return fAnnihilation;
-        if (label_ == em_process_subtype_to_label(fAnnihilationToMuMu)) return fAnnihilationToMuMu;
-        if (label_ == em_process_subtype_to_label(fAnnihilationToHadrons)) return fAnnihilationToHadrons;
-        if (label_ == em_process_subtype_to_label(fNuclearStopping)) return fNuclearStopping;
-        if (label_ == em_process_subtype_to_label(fMultipleScattering)) return fMultipleScattering;
-        if (label_ == em_process_subtype_to_label(fRayleigh)) return fRayleigh;
-        if (label_ == em_process_subtype_to_label(fPhotoElectricEffect)) return fPhotoElectricEffect;
-        if (label_ == em_process_subtype_to_label(fComptonScattering)) return fComptonScattering;
-        if (label_ == em_process_subtype_to_label(fGammaConversion)) return fGammaConversion;
-        if (label_ == em_process_subtype_to_label(fGammaConversionToMuMu)) return fGammaConversionToMuMu;
-        if (label_ == em_process_subtype_to_label(fCerenkov)) return fCerenkov;
-        if (label_ == em_process_subtype_to_label(fScintillation)) return fScintillation;
-        if (label_ == em_process_subtype_to_label(fSynchrotronRadiation)) return fSynchrotronRadiation;
-        if (label_ == em_process_subtype_to_label(fTransitionRadiation)) return fTransitionRadiation;
+        if (label_ == em_process_subtype_to_label(fCoulombScattering)) { return fCoulombScattering;
+}
+        if (label_ == em_process_subtype_to_label(fIonisation)) { return fIonisation;
+}
+        if (label_ == em_process_subtype_to_label(fBremsstrahlung)) { return fBremsstrahlung;
+}
+        if (label_ == em_process_subtype_to_label(fPairProdByCharged)) { return fPairProdByCharged;
+}
+        if (label_ == em_process_subtype_to_label(fAnnihilation)) { return fAnnihilation;
+}
+        if (label_ == em_process_subtype_to_label(fAnnihilationToMuMu)) { return fAnnihilationToMuMu;
+}
+        if (label_ == em_process_subtype_to_label(fAnnihilationToHadrons)) { return fAnnihilationToHadrons;
+}
+        if (label_ == em_process_subtype_to_label(fNuclearStopping)) { return fNuclearStopping;
+}
+        if (label_ == em_process_subtype_to_label(fMultipleScattering)) { return fMultipleScattering;
+}
+        if (label_ == em_process_subtype_to_label(fRayleigh)) { return fRayleigh;
+}
+        if (label_ == em_process_subtype_to_label(fPhotoElectricEffect)) { return fPhotoElectricEffect;
+}
+        if (label_ == em_process_subtype_to_label(fComptonScattering)) { return fComptonScattering;
+}
+        if (label_ == em_process_subtype_to_label(fGammaConversion)) { return fGammaConversion;
+}
+        if (label_ == em_process_subtype_to_label(fGammaConversionToMuMu)) { return fGammaConversionToMuMu;
+}
+        if (label_ == em_process_subtype_to_label(fCerenkov)) { return fCerenkov;
+}
+        if (label_ == em_process_subtype_to_label(fScintillation)) { return fScintillation;
+}
+        if (label_ == em_process_subtype_to_label(fSynchrotronRadiation)) { return fSynchrotronRadiation;
+}
+        if (label_ == em_process_subtype_to_label(fTransitionRadiation)) { return fTransitionRadiation;
+}
         return -1;
       }
 

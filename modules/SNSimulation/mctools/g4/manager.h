@@ -138,7 +138,7 @@ namespace mctools {
       virtual ~manager();
 
       /// Initialize the Geant4 manager
-      void initialize(const datatools::multi_properties& mp_);
+      void initialize(const datatools::multi_properties& multi_config_);
 
       /// Reset the Geant4 manager
       void reset();
@@ -260,7 +260,7 @@ namespace mctools {
       const std::string& get_g4_macro() const;
 
       /// Set the Geant4 macro
-      void set_g4_macro(const std::string& macroFile);
+      void set_g4_macro(const std::string& g4_macro_);
 
       // Track history management:
       /// (De)Activate the track history object
@@ -391,7 +391,7 @@ namespace mctools {
       int get_mgr_prng_seed() const;
 
       /// Set the seed of the G4 simulation engine
-      void set_mgr_prng_seed(int seed);
+      void set_mgr_prng_seed(int rseed_);
 
       /// Set the seed for the Step Hit Processor Factory's PRNG
       void set_shpf_prng_seed(int);
@@ -452,22 +452,22 @@ namespace mctools {
       bool has_activated_output_profiles() const;
 
       /// Check if a given output profile is activated
-      bool has_activated_output_profile(const std::string & profile_id_) const;
+      bool has_activated_output_profile(const std::string & id) const;
 
       /// Activate a given output profile
-      void activate_output_profile(const std::string & profile_id_);
+      void activate_output_profile(const std::string & id);
 
       /// Deactivate a given output profile
-      void deactivate_output_profile(const std::string & profile_id_);
+      void deactivate_output_profile(const std::string & id);
 
       /// Set the activation rule for output profiles
       void set_output_profiles_activation_rule(const std::string & rule_);
 
       /// Apply activation rule for output profile
-      void apply_output_profiles_activation_rule(const std::string & output_profiles_activation_rule_);
+      void apply_output_profiles_activation_rule(const std::string & rule);
 
       /// Build the list of output profiles' Ids
-      void fetch_activated_output_profile_ids(std::vector<std::string> & activated_output_profile_ids_) const;
+      void fetch_activated_output_profile_ids(std::vector<std::string> & ids) const;
 
       /// Return the set of activated output profiles' Ids
       const std::set<std::string>& get_activated_output_profile_ids() const;
@@ -479,9 +479,9 @@ namespace mctools {
       void dump(std::ostream & = std::clog) const;
 
       /// Basic print
-      void dump_base(std::ostream & out_ = std::clog,
+      void dump_base(std::ostream & os = std::clog,
                      const std::string & title_ = "",
-                     const std::string & indent_ = "") const;
+                     const std::string & iIndent = "") const;
 
     protected:
       /// Initialization actions

@@ -65,7 +65,7 @@ namespace mctools {
 
       /// Initialize
       void initialize(const datatools::properties &,
-                      const geomtools::manager * geo_manager_ = 0);
+                      const geomtools::manager * geom_manager_ = 0);
 
       /// Check if the region is active (has effective logical volumes)
       bool is_active() const;

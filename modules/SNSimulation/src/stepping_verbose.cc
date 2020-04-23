@@ -25,12 +25,10 @@ namespace mctools {
   namespace g4 {
 
     stepping_verbose::stepping_verbose ()
-    {
-    }
+    = default;
 
     stepping_verbose::~stepping_verbose ()
-    {
-    }
+    = default;
 
     void stepping_verbose::StepInfo ()
     {
@@ -40,7 +38,8 @@ namespace mctools {
 
       if (verboseLevel >= 1)
         {
-          if (verboseLevel >= 4) VerboseTrack ();
+          if (verboseLevel >= 4) { VerboseTrack ();
+}
           if (verboseLevel >= 3) {
             std::clog << std::endl;
             std::clog << "mctools::g4::stepping_verbose::StepInfo " << std::endl
@@ -68,7 +67,7 @@ namespace mctools {
                     << "  ";
 
           // if (fStepStatus != fWorldBoundary){
-          if (fTrack->GetNextVolume () != 0)
+          if (fTrack->GetNextVolume () != nullptr)
             {
               std::clog << std::setw (20) << fTrack->GetVolume ()->GetName ();
             }
@@ -79,7 +78,7 @@ namespace mctools {
 
           std::clog << std::setw (10) << fTrack->GetMaterial ()->GetName ();
 
-          if (fStep->GetPostStepPoint ()->GetProcessDefinedStep () != NULL)
+          if (fStep->GetPostStepPoint ()->GetProcessDefinedStep () != nullptr)
             {
               std::clog << "  "
                         << std::setw (10) << fStep->GetPostStepPoint ()->GetProcessDefinedStep ()
@@ -136,8 +135,7 @@ namespace mctools {
             }
         }
       std::clog.precision (saved_precision);
-      return;
-    }
+   }
 
 
     void stepping_verbose::TrackingStarted ()
@@ -169,7 +167,7 @@ namespace mctools {
                     << std::setw (6) << G4BestUnit (fTrack->GetTrackLength (), "Length")
                     << "  ";
 
-          if (fTrack->GetNextVolume () != 0)
+          if (fTrack->GetNextVolume () != nullptr)
             {
               std::clog << std::setw (10) << fTrack->GetVolume ()->GetName ();
             }
@@ -182,8 +180,7 @@ namespace mctools {
           std::clog << std::endl;
         }
       std::clog.precision (saved_precision);
-      return;
-    }
+   }
 
   } // end of namespace g4
 

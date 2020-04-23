@@ -60,8 +60,8 @@ namespace mctools {
   namespace g4 {
 
     // static
-    std::string
-    em_field_g4_stuff::label_from_stepper(stepper_type s_)
+    auto
+    em_field_g4_stuff::label_from_stepper(stepper_type s_) -> std::string
     {
       switch (s_) {
       case STEPPER_CASHKARP_RKF45 :
@@ -95,16 +95,16 @@ namespace mctools {
     }
 
     // static
-    em_field_g4_stuff::stepper_type
-    em_field_g4_stuff::stepper_from_label(const std::string & label_)
+    auto
+    em_field_g4_stuff::stepper_from_label(const std::string & label_) -> em_field_g4_stuff::stepper_type
     {
       if (label_ == label_from_stepper(STEPPER_CASHKARP_RKF45)) {
         return STEPPER_CASHKARP_RKF45;
-      } else if (label_ == label_from_stepper(STEPPER_CLASSICAL_RK4)) {
+      } if (label_ == label_from_stepper(STEPPER_CLASSICAL_RK4)) {
         return STEPPER_CLASSICAL_RK4;
-      } else if (label_ == label_from_stepper(STEPPER_EXPLICIT_EULER)) {
+      } if (label_ == label_from_stepper(STEPPER_EXPLICIT_EULER)) {
         return STEPPER_EXPLICIT_EULER;
-      } else if (label_ == label_from_stepper(STEPPER_IMPLICIT_EULER)) {
+      } if (label_ == label_from_stepper(STEPPER_IMPLICIT_EULER)) {
         return STEPPER_IMPLICIT_EULER;
       } else if (label_ == label_from_stepper(STEPPER_SIMPLE_HEUM)) {
         return STEPPER_SIMPLE_HEUM;
@@ -137,49 +137,48 @@ namespace mctools {
       datatools::invalidate(_eps_max_);
       _spin_ = false;
       _propagate_to_daughters_ = true;
-      return;
-    }
+   }
 
     void em_field_g4_stuff::set_g4_magnetic_field(magnetic_field * bfield_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Geant4 EM field stuff is already initialized !");
-      DT_THROW_IF(_eb_field_ != 0, std::logic_error,
+      DT_THROW_IF(_eb_field_ != nullptr, std::logic_error,
                   "General electromagnetic field is already set!");
       _b_field_ = bfield_;
-      return;
-    }
+   }
 
     void em_field_g4_stuff::set_g4_electromagnetic_field(electromagnetic_field * ebfield_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Geant4 EM field stuff is already initialized !");
-      DT_THROW_IF(_b_field_ != 0, std::logic_error,
+      DT_THROW_IF(_b_field_ != nullptr, std::logic_error,
                   "Pure magnetic field is already set!");
       _eb_field_ = ebfield_;
-      return;
-    }
+   }
 
-    bool em_field_g4_stuff::has_g4_field() const
+    auto em_field_g4_stuff::has_g4_field() const -> bool
     {
-      return _b_field_ != 0 || _eb_field_ != 0;
+      return _b_field_ != nullptr || _eb_field_ != nullptr;
     }
 
-    bool em_field_g4_stuff::is_pure_magnetic_g4_field() const
+    auto em_field_g4_stuff::is_pure_magnetic_g4_field() const -> bool
     {
-      return _b_field_ != 0;
+      return _b_field_ != nullptr;
     }
 
-    bool em_field_g4_stuff::is_general_electromagnetic_g4_field() const
+    auto em_field_g4_stuff::is_general_electromagnetic_g4_field() const -> bool
     {
-      return _eb_field_ != 0;
+      return _eb_field_ != nullptr;
     }
 
-    std::string em_field_g4_stuff::get_g4_field_name() const
+    auto em_field_g4_stuff::get_g4_field_name() const -> std::string
     {
       DT_THROW_IF(!has_g4_field(), std::logic_error, "No G4 EM field is set!");
-      if (_b_field_) return _b_field_->get_name();
-      if (_eb_field_) return _eb_field_->get_name();
+      if (_b_field_ != nullptr) { return _b_field_->get_name();
+}
+      if (_eb_field_ != nullptr) { return _eb_field_->get_name();
+}
       return "";
     }
 
@@ -187,26 +186,24 @@ namespace mctools {
     {
       _initialized_ = false;
       _set_defaults();
-      _b_field_ = 0;
-      _eb_field_ = 0;
-      _equation_ = 0;
-      _field_manager_ = 0;
-      _field_propagator_ = 0;
-      _field_stepper_ = 0;
-      _chord_finder_ = 0;
-      _integration_driver_ = 0;
-      return;
-    }
+      _b_field_ = nullptr;
+      _eb_field_ = nullptr;
+      _equation_ = nullptr;
+      _field_manager_ = nullptr;
+      _field_propagator_ = nullptr;
+      _field_stepper_ = nullptr;
+      _chord_finder_ = nullptr;
+      _integration_driver_ = nullptr;
+   }
 
     em_field_g4_stuff::~em_field_g4_stuff()
     {
       if (is_initialized()) {
         reset();
       }
-      return;
-    }
+         }
 
-    bool em_field_g4_stuff::is_initialized() const
+    auto em_field_g4_stuff::is_initialized() const -> bool
     {
       return _initialized_;
     }
@@ -215,8 +212,7 @@ namespace mctools {
     {
       datatools::properties empty;
       initialize(empty);
-      return;
-    }
+   }
 
     void em_field_g4_stuff::initialize(const datatools::properties & config_)
     {
@@ -225,7 +221,7 @@ namespace mctools {
 
       loggable_support::_initialize_logging_support(config_);
 
-      DT_THROW_IF(_b_field_ == 0 && _eb_field_ == 0,
+      DT_THROW_IF(_b_field_ == nullptr && _eb_field_ == nullptr,
                   std::logic_error,
                   "No G4 EM field was defined!");
 
@@ -339,16 +335,15 @@ namespace mctools {
       _at_init();
 
       _initialized_ = true;
-      return;
-    }
+   }
 
     void em_field_g4_stuff::_at_init()
     {
       DT_LOG_TRACE(_logprio(), "Entering...");
 
       bool with_spin = is_spin();
-      if (_eb_field_) {
-        em_field_equation_of_motion * eqom = new em_field_equation_of_motion(_eb_field_);
+      if (_eb_field_ != nullptr) {
+        auto * eqom = new em_field_equation_of_motion(_eb_field_);
         eqom->set_logging_priority(_logprio());
         eqom->set_with_spin(with_spin);
         eqom->set_only_magnetic(false);
@@ -363,8 +358,8 @@ namespace mctools {
           _equation_ = new G4EqMagElectricField(_eb_field_);
         }
         */
-      } else if (_b_field_) {
-        em_field_equation_of_motion * eqom = new em_field_equation_of_motion(_b_field_);
+      } else if (_b_field_ != nullptr) {
+        auto * eqom = new em_field_equation_of_motion(_b_field_);
         eqom->set_logging_priority(_logprio());
         eqom->set_with_spin(with_spin);
         eqom->set_only_magnetic(true);
@@ -482,12 +477,12 @@ namespace mctools {
                                            _field_stepper_);
       }
       */
-      DT_THROW_IF(_chord_finder_ == 0, std::logic_error, "Missing chord finder!");
+      DT_THROW_IF(_chord_finder_ == nullptr, std::logic_error, "Missing chord finder!");
       _chord_finder_->SetDeltaChord(delta_chord);
 
       // Create a field manager ():
-      _field_manager_ = new G4FieldManager((G4Field*) 0,
-                                           (G4ChordFinder*) 0,
+      _field_manager_ = new G4FieldManager((G4Field*) nullptr,
+                                           (G4ChordFinder*) nullptr,
                                            false);
       DT_LOG_DEBUG(_logprio(), "Create a field manager");
 
@@ -495,11 +490,11 @@ namespace mctools {
         G4TransportationManager::GetTransportationManager();
       _field_propagator_ = transport_mgr->GetPropagatorInField();
 
-      if (_eb_field_) {
+      if (_eb_field_ != nullptr) {
         DT_LOG_DEBUG(_logprio(), "Set a general E-B field");
         _field_manager_->SetDetectorField(_eb_field_);
         _field_manager_->SetFieldChangesEnergy(true);
-      } else if (_b_field_) {
+      } else if (_b_field_ != nullptr) {
         DT_LOG_DEBUG(_logprio(), "Set a pure B field");
         _field_manager_->SetDetectorField(_b_field_);
         _field_manager_->SetFieldChangesEnergy(false);
@@ -527,8 +522,7 @@ namespace mctools {
       _field_manager_->SetMaximumEpsilonStep(eps_max);
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void em_field_g4_stuff::reset()
     {
@@ -538,64 +532,63 @@ namespace mctools {
       _initialized_ = false;
 
       // 1)
-      if (_field_manager_) {
+      if (_field_manager_ != nullptr) {
         DT_LOG_TRACE(_logprio(), "Deleting the field manager...");
         delete _field_manager_;
         DT_LOG_TRACE(_logprio(), "Deleting the field manager... done.");
-        _field_manager_ = 0;
+        _field_manager_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the field manager... done.");
       }
       // 2)
-      if (_chord_finder_) {
+      if (_chord_finder_ != nullptr) {
         DT_LOG_TRACE(_logprio(), "Deleting the chord finder...");
         delete _chord_finder_;
         DT_LOG_TRACE(_logprio(), "Deleting the chord finder... done.");
-        _chord_finder_ = 0;
+        _chord_finder_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the chord finder... done.");
       }
       // 3)
-      if (_integration_driver_) {
-        _integration_driver_ = 0;
+      if (_integration_driver_ != nullptr) {
+        _integration_driver_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the integration driver... done.");
       }
       // 4)
-      if (_field_stepper_) {
+      if (_field_stepper_ != nullptr) {
         DT_LOG_TRACE(_logprio(), "Deleting the field stepper...");
         delete _field_stepper_;
         DT_LOG_TRACE(_logprio(), "Deleting the field stepper... done.");
-        _field_stepper_ = 0;
+        _field_stepper_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the field stepper... done.");
       }
       // 5)
-      if (_equation_) {
+      if (_equation_ != nullptr) {
         // DT_LOG_TRACE(_logprio(), "Deleting the equation of motion...");
         // delete _equation_;
         // DT_LOG_TRACE(_logprio(), "Deleting the equation of motion... done.");
-        _equation_ = 0;
+        _equation_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the equation of motion... done.");
       }
       // 6)
-      if (_field_propagator_) {
-        _field_propagator_ = 0;
+      if (_field_propagator_ != nullptr) {
+        _field_propagator_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the field propagator... done.");
       }
       // 7)
-      if (_b_field_) {
-        _b_field_ = 0;
+      if (_b_field_ != nullptr) {
+        _b_field_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the pure B field... done.");
       }
-      if (_eb_field_) {
-        _eb_field_ = 0;
+      if (_eb_field_ != nullptr) {
+        _eb_field_ = nullptr;
         DT_LOG_TRACE(_logprio(), "Null the general EM field... done.");
       }
 
        _set_defaults();
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
 
-    em_field_g4_stuff::stepper_type em_field_g4_stuff::get_stepper_type() const
+    auto em_field_g4_stuff::get_stepper_type() const -> em_field_g4_stuff::stepper_type
     {
       return _stepper_type_;
     }
@@ -603,10 +596,9 @@ namespace mctools {
     void em_field_g4_stuff::set_stepper_type(stepper_type t_)
     {
       _stepper_type_ = t_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_min_step() const
+    auto em_field_g4_stuff::get_min_step() const -> double
     {
       return _min_step_;
     }
@@ -614,10 +606,9 @@ namespace mctools {
     void em_field_g4_stuff::set_min_step(double s_)
     {
       _min_step_ = s_;
-      return;
-    }
+   }
 
-    bool em_field_g4_stuff::is_spin() const
+    auto em_field_g4_stuff::is_spin() const -> bool
     {
       return _spin_;
     }
@@ -625,10 +616,9 @@ namespace mctools {
     void em_field_g4_stuff::set_spin(bool spin_)
     {
       _spin_ = spin_;
-      return;
-    }
+   }
 
-    bool em_field_g4_stuff::is_propagate_to_daughters() const
+    auto em_field_g4_stuff::is_propagate_to_daughters() const -> bool
     {
       return _propagate_to_daughters_;
     }
@@ -636,10 +626,9 @@ namespace mctools {
     void em_field_g4_stuff::set_propagate_to_daughters(bool ptd_)
     {
       _propagate_to_daughters_ = ptd_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_delta_chord() const
+    auto em_field_g4_stuff::get_delta_chord() const -> double
     {
       return _delta_chord_;
     }
@@ -647,10 +636,9 @@ namespace mctools {
     void em_field_g4_stuff::set_delta_chord(double c_)
     {
       _delta_chord_ = c_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_delta_one_step() const
+    auto em_field_g4_stuff::get_delta_one_step() const -> double
     {
       return _delta_one_step_;
     }
@@ -658,10 +646,9 @@ namespace mctools {
     void em_field_g4_stuff::set_delta_one_step(double os_)
     {
       _delta_one_step_ = os_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_delta_intersection() const
+    auto em_field_g4_stuff::get_delta_intersection() const -> double
     {
       return _delta_intersection_;
     }
@@ -669,10 +656,9 @@ namespace mctools {
     void em_field_g4_stuff::set_delta_intersection(double di_)
     {
       _delta_intersection_ = di_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_eps_min() const
+    auto em_field_g4_stuff::get_eps_min() const -> double
     {
       return _eps_min_;
     }
@@ -680,10 +666,9 @@ namespace mctools {
     void em_field_g4_stuff::set_eps_min(double e_)
     {
       _eps_min_ = e_;
-      return;
-    }
+   }
 
-    double em_field_g4_stuff::get_eps_max() const
+    auto em_field_g4_stuff::get_eps_max() const -> double
     {
       return _eps_max_;
     }
@@ -691,10 +676,9 @@ namespace mctools {
     void em_field_g4_stuff::set_eps_max(double e_)
     {
       _eps_max_ = e_;
-      return;
-    }
+   }
 
-    G4FieldManager * em_field_g4_stuff::grab_field_manager()
+    auto em_field_g4_stuff::grab_field_manager() -> G4FieldManager *
     {
       DT_THROW_IF (! is_initialized(),std::logic_error,
                    "Geant4 EM field internal is not initialized !");
@@ -767,9 +751,7 @@ namespace mctools {
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Initialized           : " << (is_initialized() ? "Yes": "No") << "" << std::endl;
-
-      return;
-    }
+   }
 
   } // end of namespace g4
 

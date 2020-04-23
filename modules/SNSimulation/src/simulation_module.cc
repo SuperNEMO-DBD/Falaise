@@ -39,16 +39,17 @@ simulation_module::simulation_module (datatools::logger::priority logging_priori
   : dpp::base_module(logging_priority) {
   geometryServiceName_ = "";
   simdataBankName_ = "";
-  geometryManagerRef_ = 0;
-  geant4Simulation_ = 0;
-  geant4SimulationController_ = 0;
+  geometryManagerRef_ = nullptr;
+  geant4Simulation_ = nullptr;
+  geant4SimulationController_ = nullptr;
 }
 
 // Destructor :
 simulation_module::~simulation_module () {
   // Make sure all internal resources are terminated
   // before destruction :
-  if (is_initialized()) reset();
+  if (is_initialized()) { reset();
+}
 }
 
 // Initialization :
@@ -192,7 +193,7 @@ void simulation_module::initialize(const datatools::properties& config_,
 
   // Initialization starts here :
 
-  if (geometryManagerRef_ == 0)  {
+  if (geometryManagerRef_ == nullptr)  {
     // Access to the Geometry Service :
     DT_THROW_IF (geometryServiceName_.empty (), std::logic_error,
                  "Module '" << get_name ()
@@ -200,7 +201,7 @@ void simulation_module::initialize(const datatools::properties& config_,
     if (service_manager_.has(geometryServiceName_)
         && service_manager_.is_a<geomtools::geometry_service>(geometryServiceName_)) {
       // Fetch a reference to the geometry service :
-      geomtools::geometry_service & Geo
+      auto & Geo
           = service_manager_.grab<geomtools::geometry_service>(geometryServiceName_);
       // Request for a reference to the geometry manager and installation
       // in the simulation manager :
@@ -212,7 +213,7 @@ void simulation_module::initialize(const datatools::properties& config_,
     }
   }
 
-  DT_THROW_IF (geometryManagerRef_ == 0, std::logic_error, "Missing geometry manager !");
+  DT_THROW_IF (geometryManagerRef_ == nullptr, std::logic_error, "Missing geometry manager !");
 
   if (simdataBankName_.empty()) {
     // Use the default label for the 'simulated data' bank :
@@ -231,25 +232,25 @@ void simulation_module::reset() {
 
   _set_initialized (false);
 
-  if(geant4SimulationController_ != 0) {
+  if(geant4SimulationController_ != nullptr) {
     // Destruction of the thread synchronization object :
     geant4SimulationController_->set_stop_requested();
     delete geant4SimulationController_;
-    geant4SimulationController_ = 0;
+    geant4SimulationController_ = nullptr;
   }
 
   // Destroy internal resources :
   _terminate_manager();
 
   // Blank the module with default neutral values :
-  geometryManagerRef_ = 0;
+  geometryManagerRef_ = nullptr;
   simdataBankName_  = "";
   geometryServiceName_ = "";
 }
 
 // Processing :
-dpp::base_module::process_status
-simulation_module::process(datatools::things & event_record_) {
+auto
+simulation_module::process(datatools::things & event_record_) -> dpp::base_module::process_status {
   DT_THROW_IF (!this->is_initialized (), std::logic_error,
                "Module '" << get_name () << "' is not initialized !");
   int status = this->_simulate_event(event_record_);
@@ -263,7 +264,7 @@ void simulation_module::set_geo_label(const std::string & geo_) {
   geometryServiceName_ = geo_;
 }
 
-const std::string & simulation_module::get_geo_label() const {
+auto simulation_module::get_geo_label() const -> const std::string & {
   return geometryServiceName_;
 }
 
@@ -273,13 +274,13 @@ void simulation_module::set_sd_label(const std::string & sd_) {
   simdataBankName_ = sd_;
 }
 
-const std::string & simulation_module::get_sd_label() const {
+auto simulation_module::get_sd_label() const -> const std::string & {
   return simdataBankName_;
 }
 
 
 void simulation_module::set_geometry_manager(const geomtools::manager & geometry_manager_) {
-  DT_THROW_IF (geometryManagerRef_ != 0 && geometryManagerRef_->is_initialized (),
+  DT_THROW_IF (geometryManagerRef_ != nullptr && geometryManagerRef_->is_initialized (),
                std::logic_error,
                "Embedded geometry manager is already initialized !");
   geometryManagerRef_ = &geometry_manager_;
@@ -291,18 +292,18 @@ void simulation_module::set_geant4_parameters(const manager_parameters & params_
   geant4Parameters_ = params_;
 }
 
-const manager_parameters& simulation_module::get_geant4_parameters() const {
+auto simulation_module::get_geant4_parameters() const -> const manager_parameters& {
   return geant4Parameters_;
 }
 
-const mygsl::seed_manager& simulation_module::get_seed_manager() const
+auto simulation_module::get_seed_manager() const -> const mygsl::seed_manager&
 {
   DT_THROW_IF (!is_initialized (), std::logic_error,
                "Module '" << get_name () << "' is not initialized !");
   return geant4Simulation_->get_seed_manager();
 }
 
-const mygsl::prng_state_manager& simulation_module::get_state_manager() const
+auto simulation_module::get_state_manager() const -> const mygsl::prng_state_manager&
 {
   DT_THROW_IF (!is_initialized (), std::logic_error,
                "Module '" << get_name () << "' is not initialized !");
@@ -322,7 +323,7 @@ void simulation_module::_initialize_manager(datatools::service_manager& smgr_) {
   geant4Simulation_->set_external_geom_manager(*geometryManagerRef_);
 
   // Install a simulation controler in the manager :
-  if(geant4SimulationController_ == 0) {
+  if(geant4SimulationController_ == nullptr) {
     geant4SimulationController_ = new simulation_ctrl(*geant4Simulation_);
     geant4Simulation_->set_simulation_ctrl(*geant4SimulationController_);
   }
@@ -333,20 +334,20 @@ void simulation_module::_initialize_manager(datatools::service_manager& smgr_) {
 }
 
 void simulation_module::_terminate_manager() {
-  if (geant4SimulationController_ != 0) {
+  if (geant4SimulationController_ != nullptr) {
     delete geant4SimulationController_;
-    geant4SimulationController_ = 0;
+    geant4SimulationController_ = nullptr;
   }
 
-  if (geant4Simulation_ !=  0) {
+  if (geant4Simulation_ !=  nullptr) {
     delete geant4Simulation_;
-    geant4Simulation_ = 0;
+    geant4Simulation_ = nullptr;
   }
 
   geant4Parameters_.reset ();
 }
 
-int simulation_module::_simulate_event(datatools::things& workItem) {
+auto simulation_module::_simulate_event(datatools::things& workItem) -> int {
   // Bank name must be unique
   DT_THROW_IF(workItem.has(simdataBankName_),
               std::runtime_error,
@@ -361,7 +362,7 @@ int simulation_module::_simulate_event(datatools::things& workItem) {
                    "Acquire the event control lock...");
       boost::mutex::scoped_lock lock(*geant4SimulationController_->event_mutex);
 
-      if (geant4SimulationController_->simulation_thread == 0) {
+      if (geant4SimulationController_->simulation_thread == nullptr) {
         DT_LOG_TRACE(get_logging_priority(),
                      "Starting the G4 simulation manager from its own thread...");
         geant4SimulationController_->start();

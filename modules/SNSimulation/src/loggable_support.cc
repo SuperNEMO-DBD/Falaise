@@ -21,21 +21,19 @@ namespace mctools {
     }
 
     loggable_support::~loggable_support()
-    {
-      return;
-    }
+    = default;
 
     loggable_support::loggable_support(datatools::logger::priority p)
     {
       _logging_priority = p;
     }
 
-    datatools::logger::priority loggable_support::_logprio() const
+    auto loggable_support::_logprio() const -> datatools::logger::priority
     {
       return _logging_priority;
     }
 
-    datatools::logger::priority loggable_support::get_logging_priority() const
+    auto loggable_support::get_logging_priority() const -> datatools::logger::priority
     {
       return _logging_priority;
     }
@@ -51,7 +49,7 @@ namespace mctools {
       }
     }
 
-    bool loggable_support::is_debug () const
+    auto loggable_support::is_debug () const -> bool
     {
       return _logging_priority >= datatools::logger::PRIO_DEBUG;
     }
@@ -67,7 +65,7 @@ namespace mctools {
       }
     }
 
-    bool loggable_support::is_verbose () const
+    auto loggable_support::is_verbose () const -> bool
     {
       return _logging_priority >= datatools::logger::PRIO_NOTICE;
     }
@@ -90,8 +88,7 @@ namespace mctools {
     {
       set_logging_priority(datatools::logger::extract_logging_configuration(config_,
                                                                             datatools::logger::PRIO_FATAL));
-      return;
-    }
+   }
 
   } // end of namespace g4
 

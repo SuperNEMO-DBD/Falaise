@@ -80,13 +80,13 @@ namespace mctools {
       run_action & grab_run_action();
 
       /// Constructor
-      event_action(run_action & a_run_action, const detector_construction & a_dctor);
+      event_action(run_action & run_action_, const detector_construction & dctor_);
 
       /// Destructor
       virtual ~event_action();
 
       /// Initialization from a set of configuration parameters
-      void initialize(const ::datatools::properties & a_config);
+      void initialize(const ::datatools::properties & config_);
 
       /// Reset
       void reset();
@@ -100,10 +100,10 @@ namespace mctools {
     private:
 
       /// Action performed at initialization
-      void _at_init_();
+      static void _at_init_();
 
       /// Action performed at reset
-      void _at_reset_();
+      static void _at_reset_();
 
       /// Action performed at end of event
       void _process_sensitive_hits_(const G4Event * event_, bool & save_this_event_);
@@ -112,7 +112,7 @@ namespace mctools {
       void _save_data_();
 
       /// Action performed at end of event
-      void _clear_hits_collections_(const G4Event *);
+      static void _clear_hits_collections_(const G4Event *);
 
       /// Action performed at end of event for multithreaded run
       void _mt_control_();

@@ -48,8 +48,7 @@ namespace mctools {
       datatools::invalidate(electron);
       datatools::invalidate(positron);
       datatools::invalidate(proton);
-      return;
-    }
+   }
 
     physics_list::production_cuts_info::production_cuts_info(double all_value_)
     {
@@ -57,8 +56,7 @@ namespace mctools {
       electron = all_value_;
       positron = all_value_;
       proton   = all_value_;
-      return;
-    }
+   }
 
     physics_list::production_cuts_info::production_cuts_info(double gamma_value_, double electron_value_, double positron_value_, double proton_value_)
     {
@@ -70,18 +68,21 @@ namespace mctools {
       electron = electron_value_;
       positron = positron_value_;
       proton   = proton_value_;
-      return;
-    }
+   }
 
     void physics_list::production_cuts_info::initialize(double default_cut_gamma_,
                                                         double default_cut_electron_,
                                                         double default_cut_positron_,
                                                         double default_cut_proton_)
     {
-      if (! datatools::is_valid(gamma))    gamma    = default_cut_gamma_;
-      if (! datatools::is_valid(electron)) electron = default_cut_electron_;
-      if (! datatools::is_valid(positron)) positron = default_cut_positron_;
-      if (! datatools::is_valid(proton))   proton   = default_cut_proton_;
+      if (! datatools::is_valid(gamma)) {    gamma    = default_cut_gamma_;
+}
+      if (! datatools::is_valid(electron)) { electron = default_cut_electron_;
+}
+      if (! datatools::is_valid(positron)) { positron = default_cut_positron_;
+}
+      if (! datatools::is_valid(proton)) {   proton   = default_cut_proton_;
+}
 
       DT_THROW_IF(datatools::is_valid(gamma) && gamma <= 0.0, std::domain_error,
                   "Invalid production cut for gamma (" << gamma << ") !");
@@ -91,45 +92,42 @@ namespace mctools {
                   "Invalid production cut for positron (" << positron << ") !");
       DT_THROW_IF(datatools::is_valid(proton) && proton <= 0.0, std::domain_error,
                   "Invalid production cut for proton (" << proton << ") !");
-      return;
-    }
+         }
 
     // *** physics_list *** //
 
-    bool physics_list::has_geant4_physics_list () const
+    auto physics_list::has_geant4_physics_list () const -> bool
     {
-      return _geant4_physics_list_.get() != 0;
+      return _geant4_physics_list_.get() != nullptr;
     }
 
-    const G4VModularPhysicsList & physics_list::get_geant4_physics_list() const
-    {
-      DT_THROW_IF(! _geant4_physics_list_, std::logic_error,
-                  "No Geant4 physics list is defined !");
-      return *_geant4_physics_list_.get();
-    }
-
-    G4VModularPhysicsList & physics_list::grab_geant4_physics_list()
+    auto physics_list::get_geant4_physics_list() const -> const G4VModularPhysicsList &
     {
       DT_THROW_IF(! _geant4_physics_list_, std::logic_error,
                   "No Geant4 physics list is defined !");
-      return *_geant4_physics_list_.get();
+      return *_geant4_physics_list_;
     }
 
-    physics_list::physics_list() : G4VModularPhysicsList ()
+    auto physics_list::grab_geant4_physics_list() -> G4VModularPhysicsList &
+    {
+      DT_THROW_IF(! _geant4_physics_list_, std::logic_error,
+                  "No Geant4 physics list is defined !");
+      return *_geant4_physics_list_;
+    }
+
+    physics_list::physics_list()  
     {
       _initialized_ = false;
-      _geant4_physics_list_.reset(0);
+      _geant4_physics_list_.reset(nullptr);
       this->_set_defaults();
-      return;
-    }
+   }
 
     physics_list::~physics_list ()
     {
       if (_geant4_physics_list_) {
         _geant4_physics_list_.reset();
       }
-      return;
-    }
+         }
 
     void physics_list::_set_defaults ()
     {
@@ -142,30 +140,28 @@ namespace mctools {
       _production_cuts_values_.electron = _production_cuts_default_value_;
       _production_cuts_values_.positron = _production_cuts_default_value_;
       _production_cuts_values_.gamma    = _production_cuts_default_value_;
+   }
 
-      return;
-    }
-
-    const physics_constructor_dict_type &
-    physics_list::get_physics_constructors() const
+    auto
+    physics_list::get_physics_constructors() const -> const physics_constructor_dict_type &
     {
       return _physics_constructors_;
     }
 
-    physics_constructor_dict_type &
-    physics_list::grab_physics_constructors()
+    auto
+    physics_list::grab_physics_constructors() -> physics_constructor_dict_type &
     {
       return _physics_constructors_;
     }
 
-    bool physics_list::has_physics_constructor(const std::string & pc_name_) const
+    auto physics_list::has_physics_constructor(const std::string & pc_name_) const -> bool
     {
-      physics_constructor_dict_type::const_iterator pc_found = _physics_constructors_.find(pc_name_);
+      auto pc_found = _physics_constructors_.find(pc_name_);
       return pc_found != _physics_constructors_.end() && pc_found->second.handle;
     }
 
-    const base_physics_constructor &
-    physics_list::get_physics_constructor(const std::string & pc_name_)
+    auto
+    physics_list::get_physics_constructor(const std::string & pc_name_) -> const base_physics_constructor &
     {
       physics_constructor_dict_type::const_iterator pc_found = _physics_constructors_.find(pc_name_);
       DT_THROW_IF(pc_found == _physics_constructors_.end(),
@@ -195,9 +191,10 @@ namespace mctools {
         config_.tree_dump(std::cerr);
       }
       // Set G4VUserPhysicsList verbosity
-      if (_logprio() < datatools::logger::PRIO_NOTICE)     SetVerboseLevel(VERBOSITY_SILENT);
-      else if (_logprio() < datatools::logger::PRIO_DEBUG) SetVerboseLevel(VERBOSITY_WARNING);
-      else                                                 SetVerboseLevel(VERBOSITY_MORE);
+      if (_logprio() < datatools::logger::PRIO_NOTICE) {     SetVerboseLevel(VERBOSITY_SILENT);
+      } else if (_logprio() < datatools::logger::PRIO_DEBUG) { SetVerboseLevel(VERBOSITY_WARNING);
+      } else {                                                 SetVerboseLevel(VERBOSITY_MORE);
+}
 
       // *********************** Geant4 physics list *************************** //
 
@@ -223,12 +220,11 @@ namespace mctools {
           config_.fetch("physics_constructors.names", physics_constructors_names);
         }
 
-        DT_THROW_IF(physics_constructors_names.size() == 0,
+        DT_THROW_IF(physics_constructors_names.empty(),
                     std::logic_error,
                     "No physics constructor is provided !");
 
-        for (size_t i = 0; i < physics_constructors_names.size(); i++) {
-          const std::string & pc_name = physics_constructors_names[i];
+        for (const auto & pc_name : physics_constructors_names) {
           DT_THROW_IF(pc_name.empty(), std::logic_error,
                       "Empty physics constructor name !");
           std::ostringstream pc_id_key;
@@ -282,7 +278,7 @@ namespace mctools {
             const base_physics_constructor::factory_register_type::factory_type & the_factory
               = _factory_register_.get(pce.id);
             base_physics_constructor * pc = the_factory ();
-            DT_THROW_IF (pc == 0,
+            DT_THROW_IF (pc == nullptr,
                          std::logic_error,
                          "Creation of '" <<pce.name << "' physics constructor of type '"
                          << pce.id << "' failed !");
@@ -309,7 +305,7 @@ namespace mctools {
       config_.export_and_rename_starting_with(pc_config, "production_cuts.", "");
 
       // Warning for users:
-      if (pc_config.size() > 0 && !_using_production_cuts_) {
+      if (!pc_config.empty() && !_using_production_cuts_) {
         DT_LOG_WARNING(_logprio(), "Your configuration has 'production_cuts' related parameters but 'using_production_cuts' is not activated!");
       }
 
@@ -335,14 +331,16 @@ namespace mctools {
         // Production cuts low edge energy :
         if (config_.has_key("production_cuts.low_energy")) {
           _production_cuts_low_energy_ = config_.fetch_real("production_cuts.low_energy");
-          if (! config_.has_explicit_unit("production_cuts.low_energy")) _production_cuts_low_energy_ *= eunit;
+          if (! config_.has_explicit_unit("production_cuts.low_energy")) { _production_cuts_low_energy_ *= eunit;
+}
         }
         DT_LOG_NOTICE(_logprio(), "Production cuts low edge energy: " << _production_cuts_low_energy_ / CLHEP::eV << " eV");
 
         // Production cuts high edge energy :
         if (config_.has_key ("production_cuts.high_energy")) {
           _production_cuts_high_energy_ = config_.fetch_real("production_cuts.high_energy");
-          if (! config_.has_explicit_unit("production_cuts.high_energy")) _production_cuts_high_energy_ *= eunit;
+          if (! config_.has_explicit_unit("production_cuts.high_energy")) { _production_cuts_high_energy_ *= eunit;
+}
         }
         DT_LOG_NOTICE(_logprio(), "Production cuts high edge energy: " << _production_cuts_high_energy_ / CLHEP::MeV << " MeV");
 
@@ -402,14 +400,13 @@ namespace mctools {
         if (config_.has_key("production_cuts.regions")) {
           config_.fetch("production_cuts.regions", regions);
 
-          for (int i = 0; i < (int) regions.size(); i++) {
-            const std::string & region_label = regions[i];
+          for (const auto & region_label : regions) {
             production_cuts_info pc_info;
             pc_info.gamma    = _production_cuts_values_.gamma;
             pc_info.electron = _production_cuts_values_.electron;
             pc_info.positron = _production_cuts_values_.positron;
             pc_info.proton   = _production_cuts_values_.proton;
-            int checked = false;
+            int checked = 0;
             // try all particles first:
             std::ostringstream key_ss;
             key_ss << "production_cuts.regions." << region_label << ".all";
@@ -423,7 +420,7 @@ namespace mctools {
               pc_info.electron = all_production_cut;
               pc_info.positron = all_production_cut;
               pc_info.proton   = all_production_cut;
-              checked = true;
+              checked = 1;
             } else {
               // try gamma:
               {
@@ -436,7 +433,7 @@ namespace mctools {
                     gamma_production_cut *= lunit;
                   }
                   pc_info.gamma = gamma_production_cut;
-                  checked = true;
+                  checked = 1;
                 }
               }
               // try electron:
@@ -450,7 +447,7 @@ namespace mctools {
                     electron_production_cut *= lunit;
                   }
                   pc_info.electron = electron_production_cut;
-                  checked = true;
+                  checked = 1;
                 }
               }
               // try positron:
@@ -464,7 +461,7 @@ namespace mctools {
                     positron_production_cut *= lunit;
                   }
                   pc_info.positron = positron_production_cut;
-                  checked = true;
+                  checked = 1;
                 }
               }
               // try proton:
@@ -478,7 +475,7 @@ namespace mctools {
                     proton_production_cut *= lunit;
                   }
                   pc_info.proton = proton_production_cut;
-                  checked = true;
+                  checked = 1;
                 }
               }
             }
@@ -499,7 +496,7 @@ namespace mctools {
                  = _production_cuts_per_region_.begin();
                i != _production_cuts_per_region_.end();
                i++) {
-            std::map<std::string, production_cuts_info>::const_iterator j = i;
+            auto j = i;
             j++;
             if (j == _production_cuts_per_region_.end()) {
               std::clog << "`-- ";
@@ -526,15 +523,14 @@ namespace mctools {
       _initialized_ = true;
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::_register_physics_constructors()
     {
       DT_LOG_TRACE_ENTERING(_logprio());
       DT_THROW_IF(_initialized_, std::logic_error, "Already initialized !");
 
-      for (physics_constructor_dict_type::iterator i = _physics_constructors_.begin();
+      for (auto i = _physics_constructors_.begin();
            i != _physics_constructors_.end();
            i++) {
         physics_constructor_entry & pc_entry = i->second;
@@ -548,8 +544,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::reset()
     {
@@ -559,7 +554,7 @@ namespace mctools {
       _initialized_ = false;
 
       if (has_geant4_physics_list()) {
-        _geant4_physics_list_.reset(0);
+        _geant4_physics_list_.reset(nullptr);
         _geant4_physics_list_name_.clear();
       } else {
         _physics_constructors_.clear();
@@ -568,8 +563,7 @@ namespace mctools {
       _set_defaults();
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::ConstructParticle()
     {
@@ -582,8 +576,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::ConstructProcess()
     {
@@ -601,8 +594,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::SetCuts()
     {
@@ -615,8 +607,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
 
     void physics_list::_SetCuts()
@@ -665,8 +656,8 @@ namespace mctools {
           const std::string & region_name = i->first;
           const production_cuts_info & pc_info = i->second;
           G4Region * a_region = G4RegionStore::GetInstance()->GetRegion(region_name);
-          if (a_region != 0) {
-            G4ProductionCuts * a_region_cuts = new G4ProductionCuts;
+          if (a_region != nullptr) {
+            auto * a_region_cuts = new G4ProductionCuts;
             a_region_cuts->SetProductionCut(pc_info.gamma,    G4ProductionCuts::GetIndex("gamma"));
             a_region_cuts->SetProductionCut(pc_info.electron, G4ProductionCuts::GetIndex("e-"));
             a_region_cuts->SetProductionCut(pc_info.positron, G4ProductionCuts::GetIndex("e+"));
@@ -684,8 +675,7 @@ namespace mctools {
         DumpCutValuesTable();
       }
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void physics_list::tree_dump(std::ostream & out_,
                                  const std::string & title_,
@@ -693,7 +683,8 @@ namespace mctools {
                                  bool inherit_) const
     {
       std::string indent;
-      if (! indent_.empty()) indent = indent_;
+      if (! indent_.empty()) { indent = indent_;
+}
       if (! title_.empty()) {
         out_ << indent << title_ << std::endl;
       }
@@ -711,17 +702,17 @@ namespace mctools {
       // Physics constructors:
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Physics constructors : ";
-      if (_physics_constructors_.size() == 0) {
+      if (_physics_constructors_.empty()) {
         out_ << "None";
       }
       out_ << std::endl;
-      for (physics_constructor_dict_type::const_iterator i
+      for (auto i
              = _physics_constructors_.begin();
            i != _physics_constructors_.end();
            i++) {
         const physics_constructor_entry & pc_entry = i->second;
         out_ << indent << datatools::i_tree_dumpable::skip_tag;
-        physics_constructor_dict_type::const_iterator j = i;
+        auto j = i;
         j++;
         std::ostringstream indent2;
         indent2 << indent << datatools::i_tree_dumpable::skip_tag;
@@ -734,7 +725,7 @@ namespace mctools {
         }
         out_ << "'" << pc_entry.name << "' of type '" <<  pc_entry.id << "' (status=" << pc_entry.status << ")";
         out_ << std::endl;
-        if (pc_entry.status & physics_constructor_entry::STATUS_CREATED) {
+        if ((pc_entry.status & physics_constructor_entry::STATUS_CREATED) != 0U) {
           pc_entry.get_physics_constructor().tree_dump(out_, "", indent2.str());
         }
       }
@@ -761,11 +752,11 @@ namespace mctools {
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Regions cuts                 : "
            << (!_production_cuts_per_region_.empty() ? "Yes" : "No") << std::endl;
-      for (std::map<std::string, production_cuts_info>::const_iterator i = _production_cuts_per_region_.begin();
+      for (auto i = _production_cuts_per_region_.begin();
            i != _production_cuts_per_region_.end();
            i++) {
         out_ << indent << datatools::i_tree_dumpable::skip_tag;
-        std::map<std::string, production_cuts_info>::const_iterator j = i;
+        auto j = i;
         j++;
         if (j == _production_cuts_per_region_.end()) {
           out_ << datatools::i_tree_dumpable::last_tag;
@@ -782,9 +773,7 @@ namespace mctools {
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Logging priority             : "
            << datatools::logger::get_priority_label(_logprio()) << std::endl;
-
-      return;
-    }
+   }
 
   } // end of namespace g4
 
@@ -840,8 +829,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list,ocd_)
        << "] (``G4PhysListFactory`` class) : \n"
        << "                                                                      \n";
     G4PhysListFactory f;
-    for (size_t i = 0; i < f.AvailablePhysLists().size(); i++) {
-      ld << " * ``\"" <<   f.AvailablePhysLists()[i] << "\"`` \n";
+    for (const auto & i : f.AvailablePhysLists()) {
+      ld << " * ``\"" <<   i << "\"`` \n";
     }
     ld << "                                                                      \n";
     ld << "See also: http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/useCases.shtml \n";

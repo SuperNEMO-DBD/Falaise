@@ -76,37 +76,34 @@ namespace mctools {
     };
 
     run_action::io_work_type::io_work_type()
-    {
-      return;
-    }
+    = default;
 
     run_action::io_work_type::~io_work_type()
     {
-      if (writer.get() != 0) {
+      if (writer.get() != nullptr) {
         writer.reset();
       }
-      if (brio_writer.get() != 0) {
+      if (brio_writer.get() != nullptr) {
         brio_writer.reset();
       }
-      if (data_record.get() != 0) {
+      if (data_record.get() != nullptr) {
         data_record.reset();
       }
-      if (out_module.get() != 0) {
+      if (out_module.get() != nullptr) {
         out_module.reset();
       }
-      return;
-    }
+         }
 
     // static
     const int run_action::NUMBER_OF_EVENTS_MODULO_NONE;
     const int run_action::NUMBER_OF_EVENTS_MODULO_DEFAULT;
 
-    bool run_action::is_initialized() const
+    auto run_action::is_initialized() const -> bool
     {
       return _initialized_;
     }
 
-    bool run_action::using_run_header_footer() const
+    auto run_action::using_run_header_footer() const -> bool
     {
       return _use_run_header_footer_;
     }
@@ -115,25 +112,24 @@ namespace mctools {
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Object is locked !");
       _use_run_header_footer_ = a_new_value;
-      return;
-    }
+   }
 
-    manager & run_action::grab_manager()
+    auto run_action::grab_manager() -> manager &
     {
       return *_manager_;
     }
 
-    const manager & run_action::get_manager() const
+    auto run_action::get_manager() const -> const manager &
     {
       return *_manager_;
     }
 
-    bool run_action::save_data() const
+    auto run_action::save_data() const -> bool
     {
       return _save_data_;
     }
 
-    bool run_action::has_number_of_events_modulo() const
+    auto run_action::has_number_of_events_modulo() const -> bool
     {
       return _number_of_events_modulo_ > NUMBER_OF_EVENTS_MODULO_NONE;
     }
@@ -145,20 +141,19 @@ namespace mctools {
       } else {
         _number_of_events_modulo_ = modulo_;
       }
-      return;
-    }
+         }
 
-    int run_action::get_number_of_events_modulo() const
+    auto run_action::get_number_of_events_modulo() const -> int
     {
       return _number_of_events_modulo_;
     }
 
-    int32_t run_action::get_number_of_saved_events() const
+    auto run_action::get_number_of_saved_events() const -> int32_t
     {
       return _number_of_saved_events_;
     }
 
-    int32_t run_action::get_number_of_processed_events() const
+    auto run_action::get_number_of_processed_events() const -> int32_t
     {
       return _number_of_processed_events_;
     }
@@ -166,33 +161,28 @@ namespace mctools {
     void run_action::increment_number_of_processed_events()
     {
       _number_of_processed_events_++;
-      return;
-    }
+   }
 
     void run_action::increment_number_of_saved_events()
     {
       _number_of_saved_events_++;
-      return;
-    }
+   }
 
     void run_action::reset_number_of_saved_events()
     {
       _number_of_saved_events_ = 0;
-      return;
-    }
+   }
 
     void run_action::reset_number_of_processed_events()
     {
       _number_of_processed_events_ = 0;
-      return;
-    }
+   }
 
     void run_action::set_output_data_format(io_utils::data_format_type odf_)
     {
       _output_data_format_ = odf_;
       _save_data_ = true;
-      return;
-    }
+   }
 
     void run_action::set_output_data_bank_label(const std::string & bl_)
     {
@@ -202,8 +192,7 @@ namespace mctools {
       DT_THROW_IF(_output_data_format_ != io_utils::DATA_FORMAT_BANK, std::logic_error,
                   "Cannot set output data bank label with the plain output data format!");
       _output_data_bank_label_ = bl_;
-      return;
-    }
+   }
 
     void run_action::set_output_file(const std::string & a_filename)
     {
@@ -211,55 +200,54 @@ namespace mctools {
                    "Cannot change output  file name ! Object is locked !");
       _output_file_ = a_filename;
       _save_data_ = true;
-      return;
-    }
+   }
 
-    bool run_action::has_out_module() const
+    auto run_action::has_out_module() const -> bool
     {
-      return _io_work_.get() != 0 && _io_work_->out_module.get() != 0;
+      return _io_work_.get() != nullptr && _io_work_->out_module.get() != nullptr;
     }
 
-    const dpp::output_module & run_action::get_out_module() const
-    {
-      DT_THROW_IF(!has_out_module(), std::logic_error, "Run action has no embedded output module!");
-      return *(_io_work_->out_module.get());
-    }
-
-    dpp::output_module & run_action::grab_out_module()
+    auto run_action::get_out_module() const -> const dpp::output_module &
     {
       DT_THROW_IF(!has_out_module(), std::logic_error, "Run action has no embedded output module!");
       return *(_io_work_->out_module.get());
     }
 
-    bool run_action::has_brio_writer() const
+    auto run_action::grab_out_module() -> dpp::output_module &
     {
-      return _io_work_.get() != 0 && _io_work_->brio_writer.get() != 0;
+      DT_THROW_IF(!has_out_module(), std::logic_error, "Run action has no embedded output module!");
+      return *(_io_work_->out_module.get());
     }
 
-    const brio::writer & run_action::get_brio_writer() const
+    auto run_action::has_brio_writer() const -> bool
+    {
+      return _io_work_.get() != nullptr && _io_work_->brio_writer.get() != nullptr;
+    }
+
+    auto run_action::get_brio_writer() const -> const brio::writer &
     {
       DT_THROW_IF(!has_brio_writer(), std::logic_error, "Run action has no embedded brio writer!");
       return *(_io_work_->brio_writer.get());
     }
 
-    brio::writer & run_action::grab_brio_writer()
+    auto run_action::grab_brio_writer() -> brio::writer &
     {
       DT_THROW_IF(!has_brio_writer(), std::logic_error, "Run action has no embedded brio writer!");
       return *(_io_work_->brio_writer.get());
     }
 
-    bool run_action::has_writer() const
+    auto run_action::has_writer() const -> bool
     {
-      return _io_work_.get() != 0 && _io_work_->writer.get() != 0;
+      return _io_work_.get() != nullptr && _io_work_->writer.get() != nullptr;
     }
 
-    datatools::data_writer & run_action::grab_writer()
+    auto run_action::grab_writer() -> datatools::data_writer &
     {
       DT_THROW_IF(!has_writer(), std::logic_error, "Run action has no embedded writer!");
       return *(_io_work_->writer.get());
     }
 
-    const datatools::data_writer & run_action::get_writer() const
+    auto run_action::get_writer() const -> const datatools::data_writer &
     {
       DT_THROW_IF(!has_writer(), std::logic_error, "Run action has no embedded writer!");
       return *(_io_work_->writer.get());
@@ -278,43 +266,38 @@ namespace mctools {
       _output_file_format_                    = "ascii";
       _output_file_compression_               = "gzip";
       _output_file_                           = "";
-      _manager_                               = 0;
-      _event_action_                          = 0;
+      _manager_                               = nullptr;
+      _event_action_                          = nullptr;
       _brio_general_info_store_label_         = io_utils::GENERAL_INFO_STORE;
       _brio_plain_simulated_data_store_label_ = io_utils::PLAIN_SIMULATED_DATA_STORE;
-      return;
-    }
+   }
 
     run_action::run_action(manager & a_mgr)
     {
       _initialized_ = false;
       _set_default();
       _manager_ = &a_mgr;
-      return;
-    }
+   }
 
     run_action::~run_action()
     {
       if (_initialized_) {
         reset();
       }
-      return;
-    }
+         }
 
     void run_action::register_event_action(event_action & event_action_)
     {
       _event_action_ = &event_action_;
-      return;
-    }
+   }
 
     void run_action::reset()
     {
-      _event_action_ = 0;
-      if (_io_work_.get() != 0) {
+      _event_action_ = nullptr;
+      if (_io_work_.get() != nullptr) {
         _io_work_.reset();
       }
-      return;
-    }
+         }
 
     void run_action::initialize(const datatools::properties & a_config)
     {
@@ -387,9 +370,10 @@ namespace mctools {
           if (format == "brio" || format == "trio") {
             using_brio = true;
             ok = true;
-          } else if (format == "xml") ok = true;
-          else if (format == "binary") ok = true;
-          else if (format == "ascii") ok = true;
+          } else if (format == "xml") { ok = true;
+          } else if (format == "binary") { ok = true;
+          } else if (format == "ascii") { ok = true;
+}
           if (ok) {
             _output_file_format_ = format;
           } else {
@@ -400,9 +384,10 @@ namespace mctools {
         if (! using_brio && a_config.has_key("file.compression")) {
           std::string compression = a_config.fetch_string("file.compression");
           bool ok = false;
-          if (compression == "none") ok = true;
-          else if (compression == "gzip") ok = true;
-          else if (compression == "bzip2") ok = true;
+          if (compression == "none") { ok = true;
+          } else if (compression == "gzip") { ok = true;
+          } else if (compression == "bzip2") { ok = true;
+}
           if (ok) {
             _output_file_compression_ = compression;
           } else {
@@ -419,8 +404,7 @@ namespace mctools {
       _io_work_.reset(new io_work_type);
 
       _initialized_ = true;
-      return;
-    }
+   }
 
     void run_action::dump(std::ostream & a_out) const
     {
@@ -433,8 +417,7 @@ namespace mctools {
       a_out << "|-- Output file format  : '"  << _output_file_format_ << "'" << std::endl;
       a_out << "|-- Output compression  : '"  << _output_file_compression_ << "'" << std::endl;
       a_out << "`-- Output file         : '"  << _output_file_ << "'" << std::endl;
-      return;
-    }
+   }
 
     void run_action::_build_run_header()
     {
@@ -443,15 +426,14 @@ namespace mctools {
       const mygsl::seed_manager & the_seed_manager = _manager_->get_seed_manager();
       std::vector<std::string> seed_labels;
       the_seed_manager.get_labels(seed_labels);
-      for (int i = 0; i <(int) seed_labels.size(); i++) {
-        int32_t seed = the_seed_manager.get_seed(seed_labels[i]);
+      for (const auto & seed_label : seed_labels) {
+        int32_t seed = the_seed_manager.get_seed(seed_label);
         std::ostringstream seed_key;
-        seed_key << "seed." << seed_labels[i];
+        seed_key << "seed." << seed_label;
         _run_header_.store(seed_key.str(), seed);
       }
 
-      return;
-    }
+         }
 
     void run_action::_build_run_footer()
     {
@@ -464,8 +446,7 @@ namespace mctools {
       if (_save_data_) {
         DT_LOG_NOTICE(_logprio(), "Number of saved events = " << _number_of_saved_events_);
       }
-      return;
-    }
+         }
 
     void run_action::BeginOfRunAction(const G4Run* a_run)
     {
@@ -564,7 +545,7 @@ namespace mctools {
           _io_work_->out_module.reset(new dpp::output_module);
           _io_work_->data_record.reset(new datatools::things);
           datatools::things & event_data = *(_io_work_->data_record.get());
-          mctools::simulated_data & SD =
+          auto & SD =
             event_data.add<mctools::simulated_data>(_output_data_bank_label_);
           _event_action_->set_external_event_data(SD);
           _io_work_->out_module->set_single_output_file(output_file_name);
@@ -601,7 +582,8 @@ namespace mctools {
             _io_work_->brio_writer.reset(new brio::writer);
             DT_LOG_NOTICE(_logprio(), "Opening brio serialization output data file '" << output_file_name << "'...");
             DT_LOG_DEBUG(_logprio(), "Brio writer is opened: '" << _io_work_->brio_writer->is_opened() << "'...");
-            if (_io_work_->brio_writer->is_locked()) _io_work_->brio_writer->unlock();
+            if (_io_work_->brio_writer->is_locked()) { _io_work_->brio_writer->unlock();
+}
             _io_work_->brio_writer->set_existing_file_protected(_output_file_preserve_);
             _io_work_->brio_writer->open(output_file_name);
             DT_LOG_NOTICE(_logprio(), "Output data file '" << output_file_name << "' is open.");
@@ -633,7 +615,7 @@ namespace mctools {
         }
       } // _save_data_
 
-      if (G4VVisManager::GetConcreteInstance()) {
+      if (G4VVisManager::GetConcreteInstance() != nullptr) {
         G4UImanager * UI = G4UImanager::GetUIpointer();
         UI->ApplyCommand("/vis/scene/notifyHandlers");
       }
@@ -642,8 +624,7 @@ namespace mctools {
         grab_manager().grab_CT_map()["RA"].start();
       }
       DT_LOG_NOTICE(_logprio(),"Run #" << a_run->GetRunID() << " is started.");
-      return;
-    }
+         }
 
     void run_action::EndOfRunAction(const G4Run * a_run)
     {
@@ -701,19 +682,17 @@ namespace mctools {
         }
       }
 
-      if (G4VVisManager::GetConcreteInstance()) {
+      if (G4VVisManager::GetConcreteInstance() != nullptr) {
         G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/update");
       }
 
       DT_LOG_NOTICE(_logprio(),"Run #" << a_run->GetRunID() << " is stopped.");
-      return;
-    }
+         }
 
     void run_action::store_data(const mctools::simulated_data & esd_)
     {
       _store_data(esd_);
-      return;
-    }
+   }
 
     void run_action::_store_data(const mctools::simulated_data & esd_)
     {
@@ -738,7 +717,7 @@ namespace mctools {
       // Then check 'dpp::output_module' :
       if (this->has_out_module()) {
         if (_io_work_->out_module->is_initialized()) {
-          if (_io_work_->data_record.get() != 0) {
+          if (_io_work_->data_record.get() != nullptr) {
             dpp::base_module::process_status ps =
               _io_work_->out_module->process(*(_io_work_->data_record.get()));
             if (ps != dpp::base_module::PROCESS_OK) {
@@ -753,8 +732,7 @@ namespace mctools {
       }
 
       increment_number_of_saved_events();
-      return;
-    }
+   }
 
   } // end of namespace g4
 

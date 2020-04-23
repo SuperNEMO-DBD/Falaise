@@ -29,18 +29,16 @@ namespace mctools {
     region_info::region_info()
     {
       _initialized_ = false;
-      return;
-    }
+   }
 
     region_info::~region_info()
     {
       if (is_initialized()) {
         reset();
       }
-      return;
-    }
+         }
 
-    bool region_info::is_initialized() const
+    auto region_info::is_initialized() const -> bool
     {
       return _initialized_;
     }
@@ -52,9 +50,7 @@ namespace mctools {
       _initialized_ = false;
       _logical_ids_.clear();
       this->datatools::enriched_base::clear();
-
-      return;
-    }
+   }
 
     void region_info::initialize(const datatools::properties & config_,
                                  const geomtools::manager * geom_manager_)
@@ -69,8 +65,7 @@ namespace mctools {
       if (config_.has_key("volumes")) {
         std::vector<std::string> the_log_volumes;
         config_.fetch("volumes", the_log_volumes);
-        for (size_t i = 0; i < the_log_volumes.size(); i++) {
-          const std::string & log_name = the_log_volumes[i];
+        for (const auto & log_name : the_log_volumes) {
           if (log_name != "world.log") {
             add_logical_volume(log_name);
           }
@@ -147,12 +142,10 @@ namespace mctools {
           // Attempt to access to some embedded material manager from the geometry manager:
           std::string materials_plugin_name;
           DT_LOG_DEBUG(get_logging_priority(), "Trying to find a materials plugin associated to the geometry manager...");
-          typedef geomtools::manager::plugins_dict_type dict_type;
+          using dict_type = geomtools::manager::plugins_dict_type;
           const dict_type & plugins = geom_manager_->get_plugins();
-          for (dict_type::const_iterator ip = plugins.begin();
-               ip != plugins.end();
-               ip++){
-            const std::string & plugin_name = ip->first;
+          for (const auto & plugin : plugins){
+            const std::string & plugin_name = plugin.first;
             if (geom_manager_->is_plugin_a<geomtools::materials_plugin>(plugin_name)) {
               materials_plugin_name = plugin_name;
               break;
@@ -162,23 +155,20 @@ namespace mctools {
           if (geom_manager_->has_plugin(materials_plugin_name)
               && geom_manager_->is_plugin_a<geomtools::materials_plugin>(materials_plugin_name)) {
             DT_LOG_NOTICE(get_logging_priority(), "Found materials plugin named '" << materials_plugin_name << "'");
-            const geomtools::materials_plugin & mgp
+            const auto & mgp
               = geom_manager_->get_plugin<geomtools::materials_plugin>(materials_plugin_name);
             const materials::manager & mat_mgr = mgp.get_manager();
             mat_mgr_ref = &mat_mgr;
           }
-          DT_THROW_IF ((use_density_range || use_state) && mat_mgr_ref == 0,std::logic_error,
+          DT_THROW_IF ((use_density_range || use_state) && mat_mgr_ref == nullptr,std::logic_error,
                        "Cannot find any material plugin in the geometry manager !");
         }
 
         // Search for logical volumes with specific traits:
-        for (geomtools::logical_volume::dict_type::const_iterator ilogical
-               = geom_manager_->get_factory().get_logicals().begin();
-             ilogical != geom_manager_->get_factory().get_logicals().end();
-             ++ilogical) {
+        for (const auto & ilogical : geom_manager_->get_factory().get_logicals()) {
           // Get a reference to the associated logical volume :
-          const std::string &               log_name = ilogical->first;         
-          const geomtools::logical_volume & log      = *(ilogical->second);
+          const std::string &               log_name = ilogical.first;         
+          const geomtools::logical_volume & log      = *(ilogical.second);
           bool add_it = false;
 
           // Process regex on logical volume names:
@@ -200,8 +190,7 @@ namespace mctools {
           if (! mr.empty()) {
             if (use_materials) {
               // Check is a listed material matched the one in the logical volume:
-              for (size_t i = 0; i < requested_material_refs.size(); i++) {
-                const std::string & material_ref = requested_material_refs[i];
+              for (const auto & material_ref : requested_material_refs) {
                 if (mr == material_ref) {
                   if (log.get_name() != "world.log") {
                     add_it = true;
@@ -254,8 +243,7 @@ namespace mctools {
         // std::cerr << "DEVEL: Region '" << get_name() << "' : checking excluded volumes..." << std::endl;
         std::vector<std::string> excluded_volumes;
         config_.fetch("volumes.excluded", excluded_volumes);
-        for (size_t i = 0; i < excluded_volumes.size(); i++) {
-          const std::string & log_name = excluded_volumes[i];
+        for (const auto & log_name : excluded_volumes) {
           // std::cerr << "DEVEL: Region '" << get_name() << "' : processing excluded volume '" << log_name << "' ..." << std::endl;
           if (has_logical_volume(log_name)) {
             // std::cerr << "DEVEL: Region '" << get_name() << "' : removing logical '" << log_name << "'..." << std::endl;
@@ -267,7 +255,7 @@ namespace mctools {
       }
       // config_.tree_dump(std::cerr, "Region info config: ", "DEVEL: ");
 
-      DT_THROW_IF(_logical_ids_.size() == 0,
+      DT_THROW_IF(_logical_ids_.empty(),
                   std::logic_error,
                   "The region '" << get_name() << "' has no logical volumes !");
       
@@ -281,12 +269,11 @@ namespace mctools {
       */
 
       _initialized_ = true;
-      return;
-    }
+   }
 
-    bool region_info::is_active() const
+    auto region_info::is_active() const -> bool
     {
-      return is_initialized() && _logical_ids_.size();
+      return is_initialized() && (static_cast<unsigned int>(!_logical_ids_.empty()) != 0U);
     }
 
     void region_info::add_logical_volume(const std::string & logical_id_, bool allow_duplicate_)
@@ -295,8 +282,7 @@ namespace mctools {
                   std::logic_error,
                   "Logical volume '" << logical_id_ << "' already belong to the region '" << get_name() << "'!");
       _logical_ids_.insert(logical_id_);
-      return;
-    }
+   }
 
     void region_info::remove_logical_volume(const std::string & logical_id_)
 
@@ -304,20 +290,19 @@ namespace mctools {
       DT_THROW_IF(! has_logical_volume(logical_id_), std::logic_error,
                   "Region '" << get_name() << "' has no logical volume named '" << logical_id_ << "'!");
       _logical_ids_.erase(logical_id_);
-      return;
-    }
+   }
 
-    bool region_info::has_logical_volume(const std::string & logical_id_) const
+    auto region_info::has_logical_volume(const std::string & logical_id_) const -> bool
     {
       return _logical_ids_.count(logical_id_) > 0;
     }
 
-    const std::set<std::string> & region_info::get_logical_ids() const
+    auto region_info::get_logical_ids() const -> const std::set<std::string> &
     {
       return _logical_ids_;
     }
 
-    std::set<std::string> & region_info::grab_logical_ids()
+    auto region_info::grab_logical_ids() -> std::set<std::string> &
     {
       return _logical_ids_;
     }
@@ -331,16 +316,16 @@ namespace mctools {
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Logical volumes : ";
-      if (_logical_ids_.size()) {
+      if (static_cast<unsigned int>(!_logical_ids_.empty()) != 0U) {
         out_ << '[' << _logical_ids_.size() << ']';
       } else {
         out_ << "<none>";
       }
       out_ << std::endl;
-      for (std::set<std::string>::const_iterator i = _logical_ids_.begin();
+      for (auto i = _logical_ids_.begin();
            i != _logical_ids_.end();
            i++) {
-        std::set<std::string>::const_iterator j = i;
+        auto j = i;
         j++;
         out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
         if (j == _logical_ids_.end()) {
@@ -353,52 +338,46 @@ namespace mctools {
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Initialized : " << (is_initialized() ? "Yes": "No") << "" << std::endl;
-
-      return;
-    }
+   }
 
     // Regions setup
 
     regions_setup::regions_setup()
     {
-      _geom_manager_ = 0;
-      return;
-    }
+      _geom_manager_ = nullptr;
+   }
 
     regions_setup::~regions_setup()
     {
       reset();
-      return;
-    }
+   }
 
     void regions_setup::set_geometry_manager(const geomtools::manager & geom_mgr_)
     {
       _geom_manager_ = &geom_mgr_;
-      return;
-    }
+   }
 
-    const geomtools::manager & regions_setup::get_geometry_manager() const
+    auto regions_setup::get_geometry_manager() const -> const geomtools::manager &
     {
-      DT_THROW_IF(_geom_manager_ == 0, std::logic_error, "No geoemtry manager is referenced!");
+      DT_THROW_IF(_geom_manager_ == nullptr, std::logic_error, "No geoemtry manager is referenced!");
       return *_geom_manager_;
     }
 
-    bool regions_setup::has_region(const std::string & region_id_) const
+    auto regions_setup::has_region(const std::string & region_id_) const -> bool
     {
       return _region_infos_.find(region_id_) != _region_infos_.end();
     }
 
     void regions_setup::initialize(const datatools::properties & config_)
     {
-      DT_THROW_IF(_geom_manager_ == 0, std::logic_error,
+      DT_THROW_IF(_geom_manager_ == nullptr, std::logic_error,
                   "Missing referenced geometry manager!");
 
       std::vector<std::string> regions;
       if (config_.has_key("regions.names")) {
         config_.fetch("regions.names", regions);
       }
-      for (unsigned int i = 0; i < regions.size(); ++i) {
-        const std::string & the_region_name = regions[i];
+      for (const auto & the_region_name : regions) {
         DT_THROW_IF(_region_infos_.find(the_region_name) != _region_infos_.end(),
                     std::logic_error,
                     "Duplicate region '" << the_region_name << "'!");
@@ -419,10 +398,9 @@ namespace mctools {
        }
       datatools::command::returned_info cri = _check();
       DT_THROW_IF(cri.is_failure(), std::logic_error, cri.get_error_message());
-      return;
-    }
+         }
 
-    datatools::command::returned_info regions_setup::_check()
+    auto regions_setup::_check() -> datatools::command::returned_info
     {
       datatools::command::returned_info cri;
       std::set<std::string> associated_logicals;
@@ -431,10 +409,7 @@ namespace mctools {
            i != _region_infos_.end();
            i++) {
         const std::string & the_region_name = i->first;
-        for (std::set<std::string>::const_iterator j = i->second.get_logical_ids().begin();
-             j != i->second.get_logical_ids().end();
-             j++) {
-          const std::string & log_id = *j;
+        for (const auto & log_id : i->second.get_logical_ids()) {
           if (associated_logicals.count(log_id) > 0) {
             // Logical volume already belongs to another region:
             DT_COMMAND_RETURNED_ERROR(cri, datatools::command::CEC_FAILURE,
@@ -445,7 +420,8 @@ namespace mctools {
           associated_logicals.insert(log_id);
           logical_to_region_associations[log_id] = the_region_name;
         }
-        if (cri.is_failure()) break;
+        if (cri.is_failure()) { break;
+}
       }
       return cri;
     }
@@ -453,16 +429,15 @@ namespace mctools {
     void regions_setup::reset()
     {
       _region_infos_.clear();
-      _geom_manager_ = 0;
-      return;
-    }
+      _geom_manager_ = nullptr;
+   }
 
-    const region_infos_dict_type & regions_setup::get_region_infos() const
+    auto regions_setup::get_region_infos() const -> const region_infos_dict_type &
     {
       return _region_infos_;
     }
 
-    region_infos_dict_type & regions_setup::grab_region_infos()
+    auto regions_setup::grab_region_infos() -> region_infos_dict_type &
     {
       return _region_infos_;
     }
@@ -478,16 +453,16 @@ namespace mctools {
 
       out_ << indent_ << datatools::i_tree_dumpable::tag
            << "Region infos: ";
-      if (_region_infos_.size()) {
+      if (static_cast<unsigned int>(!_region_infos_.empty()) != 0U) {
         out_ << '[' << _region_infos_.size() << ']';
       } else {
         out_ << "<none>";
       }
       out_ << std::endl;
-      for (region_infos_dict_type::const_iterator i = _region_infos_.begin();
+      for (auto i = _region_infos_.begin();
            i != _region_infos_.end();
            i++) {
-        region_infos_dict_type::const_iterator j = i;
+        auto j = i;
         j++;
         out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
         std::ostringstream indent2;
@@ -515,9 +490,7 @@ namespace mctools {
 
       out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Geometry manager: " << "[@" << _geom_manager_ << "]" << std::endl;
-
-      return;
-    }
+   }
 
     /*
     // static

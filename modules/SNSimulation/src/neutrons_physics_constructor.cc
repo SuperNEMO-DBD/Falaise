@@ -128,21 +128,19 @@ namespace mctools {
                                                                "mctools::g4::neutrons_physics_constructor")
 
     // *** neutrons_physics_constructor *** //
-    neutrons_physics_constructor::neutrons_physics_constructor () : base_physics_constructor ()
+    neutrons_physics_constructor::neutrons_physics_constructor ()  
     {
       this->neutrons_physics_constructor::_set_defaults ();
       SetPhysicsName("neutrons");
       SetPhysicsType(2);
-      return;
-    }
+   }
 
     neutrons_physics_constructor::~neutrons_physics_constructor ()
     {
       if (is_initialized()) {
         this->neutrons_physics_constructor::reset();
       }
-      return;
-    }
+         }
 
     void neutrons_physics_constructor::initialize (const datatools::properties & config_,
                                                    physics_constructor_dict_type & /*dict_*/)
@@ -213,8 +211,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void neutrons_physics_constructor::_set_defaults ()
     {
@@ -227,8 +224,7 @@ namespace mctools {
       _use_protons_elastic_process_    = true;
       _use_electrons_hadronic_process_ = true;
       _use_gammas_hadronic_process_    = true;
-      return;
-    }
+   }
 
     void neutrons_physics_constructor::reset ()
     {
@@ -241,8 +237,7 @@ namespace mctools {
       this->base_physics_constructor::_reset();
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void neutrons_physics_constructor::tree_dump (std::ostream & out_,
                                                   const std::string & title_,
@@ -251,7 +246,8 @@ namespace mctools {
     {
       this->base_physics_constructor::tree_dump(out_, title_, indent_, true);
       std::string indent;
-      if (! indent_.empty ()) indent = indent_;
+      if (! indent_.empty ()) { indent = indent_;
+}
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Use high-energy process        : "
@@ -280,8 +276,7 @@ namespace mctools {
       out_ << indent << datatools::i_tree_dumpable::last_tag
            << "Use gammas hadronic process    : "
            << (_use_gammas_hadronic_process_ ? "Yes" : "No") << std::endl;
-      return;
-    }
+   }
 
     void neutrons_physics_constructor::ConstructParticle ()
     {
@@ -290,8 +285,7 @@ namespace mctools {
       G4Electron::ElectronDefinition();
       G4Proton::ProtonDefinition();
       G4Neutron::NeutronDefinition();
-      return;
-    }
+   }
 
     void neutrons_physics_constructor::ConstructProcess ()
     {
@@ -299,29 +293,29 @@ namespace mctools {
       DT_THROW_IF (! is_initialized(), std::logic_error, "Not initialized !");
 
       // standard part - elastic - all hadrons but neutrons
-      G4HadronElastic * hadrons_elastic_model
+      auto * hadrons_elastic_model
         = new G4HadronElastic();
-      G4HadronElasticProcess * hadrons_elastic_process
+      auto * hadrons_elastic_process
         = new G4HadronElasticProcess();
       hadrons_elastic_process->RegisterMe (hadrons_elastic_model);
 
       // High-energy model for p, n
-      G4TheoFSGenerator * QGSP_model
+      auto * QGSP_model
         = new G4TheoFSGenerator ("QGSP");
-      G4GeneratorPrecompoundInterface * the_cascade
+      auto * the_cascade
         = new G4GeneratorPrecompoundInterface();
-      G4ExcitationHandler * the_handler
+      auto * the_handler
         = new G4ExcitationHandler();
-      G4PreCompoundModel * the_pre_equilib
+      auto * the_pre_equilib
         = new G4PreCompoundModel(the_handler);
       the_cascade->SetDeExcitation(the_pre_equilib);
       QGSP_model->SetTransport(the_cascade);
 
-      G4QGSMFragmentation * QGSM_fragmentation
+      auto * QGSM_fragmentation
         = new G4QGSMFragmentation();
-      G4ExcitedStringDecay * the_string_decay
+      auto * the_string_decay
         = new G4ExcitedStringDecay(QGSM_fragmentation);
-      G4QGSModel<G4QGSParticipants> * the_string_model
+      auto * the_string_model
         = new G4QGSModel<G4QGSParticipants>;
       the_string_model->SetFragmentationModel (the_string_decay);
       QGSP_model->SetHighEnergyGenerator (the_string_model);
@@ -331,7 +325,7 @@ namespace mctools {
 #endif
 
       // High-energy model for photons
-      G4TheoFSGenerator * the_HE_model
+      auto * the_HE_model
                        = new G4TheoFSGenerator();
       the_string_model = new G4QGSModel<G4QGSParticipants>;
       the_HE_model->SetTransport(the_cascade);
@@ -349,22 +343,22 @@ namespace mctools {
         {
           G4ParticleDefinition * particle = theParticleIterator->value();
           G4ProcessManager     * pmanager = particle->GetProcessManager();
-          G4String               pname    = particle->GetParticleName();
+          const G4String&               pname    = particle->GetParticleName();
 
           // neutrons
           if (pname == "neutron") {
             // inelastic process
             if (_use_neutrons_inelastic_process_) {
-              G4NeutronInelasticProcess * the_neutron_inelastic_process
+              auto * the_neutron_inelastic_process
                 = new G4NeutronInelasticProcess();
 
-              G4CascadeInterface * the_bertini_model = 0;
+              G4CascadeInterface * the_bertini_model = nullptr;
               if (_use_HE_) {
                 the_bertini_model = new G4CascadeInterface();
                 the_bertini_model->SetMinEnergy (19.9*CLHEP::MeV);
                 the_bertini_model->SetMaxEnergy (9.9*CLHEP::GeV);
               }
-              G4NeutronHPInelastic * the_low_energy_neutron_inelastic_model
+              auto * the_low_energy_neutron_inelastic_model
                 = new G4NeutronHPInelastic();
               the_low_energy_neutron_inelastic_model->SetMaxEnergy (20.*CLHEP::MeV);
                   
@@ -377,31 +371,35 @@ namespace mctools {
               }
 #endif
                   
-              G4NeutronHPInelasticData * the_HP_inelastic_data
+              auto * the_HP_inelastic_data
                 = new G4NeutronHPInelasticData();
               the_neutron_inelastic_process->AddDataSet(the_HP_inelastic_data);
 
-              if (_use_HE_) QGSP_model->SetMinEnergy (11.9*CLHEP::GeV);
+              if (_use_HE_) { QGSP_model->SetMinEnergy (11.9*CLHEP::GeV);
+}
 
-              if (_use_HE_) the_neutron_inelastic_process->RegisterMe (QGSP_model);
-              if (_use_HE_) the_neutron_inelastic_process->RegisterMe (the_bertini_model);
+              if (_use_HE_) { the_neutron_inelastic_process->RegisterMe (QGSP_model);
+}
+              if (_use_HE_) { the_neutron_inelastic_process->RegisterMe (the_bertini_model);
+}
               the_neutron_inelastic_process->RegisterMe(the_low_energy_neutron_inelastic_model);
 #if G4VERSION_NUMBER < 1000
-              if (_use_HE_) the_neutron_inelastic_process->RegisterMe(the_intermediate_energy_neutron_inelastic_model);
+              if (_use_HE_) { the_neutron_inelastic_process->RegisterMe(the_intermediate_energy_neutron_inelastic_model);
+}
 #endif
               pmanager->AddDiscreteProcess (the_neutron_inelastic_process);
             }
             // elastic process
             if (_use_neutrons_elastic_process_) {
-              G4HadronElasticProcess * the_neutron_elastic_process
+              auto * the_neutron_elastic_process
                 = new G4HadronElasticProcess();
 #if G4VERSION_NUMBER < 1000
-              G4NeutronHPorLElasticModel * the_neutron_elastic_model
+              auto * the_neutron_elastic_model
                 = new G4NeutronHPorLElasticModel();
               the_neutron_elastic_model->SetMinEnergy (4.*CLHEP::eV);
               the_neutron_elastic_model->SetMaxEnergy (20*CLHEP::MeV);
 #endif
-              G4NeutronHPThermalScattering * the_neutron_thermal_elastic_model
+              auto * the_neutron_thermal_elastic_model
                 = new G4NeutronHPThermalScattering();
               the_neutron_thermal_elastic_model->SetMaxEnergy (4.*CLHEP::eV);
 
@@ -414,9 +412,9 @@ namespace mctools {
               }
 #endif
 
-              G4NeutronHPElasticData * the_HP_elastic_data
+              auto * the_HP_elastic_data
                 = new G4NeutronHPElasticData();
-              G4NeutronHPThermalScatteringData * the_HP_thermal_scattering_data
+              auto * the_HP_thermal_scattering_data
                 = new G4NeutronHPThermalScatteringData();
 #if G4VERSION_NUMBER < 1000
               the_neutron_elastic_process->AddDataSet (the_neutron_elastic_model->GiveHPXSectionDataSet());
@@ -426,22 +424,23 @@ namespace mctools {
               the_neutron_elastic_process->RegisterMe(the_neutron_thermal_elastic_model);
 #if G4VERSION_NUMBER < 1000
               the_neutron_elastic_process->RegisterMe(the_neutron_elastic_model);
-              if (_use_HE_) the_neutron_elastic_process->RegisterMe(the_high_energy_neutron_elastic_model);
+              if (_use_HE_) { the_neutron_elastic_process->RegisterMe(the_high_energy_neutron_elastic_model);
+}
 #endif
               pmanager->AddDiscreteProcess( the_neutron_elastic_process );
             }
             // capture
             if (_use_neutrons_capture_) {
-              G4HadronCaptureProcess * the_neutron_capture_process
+              auto * the_neutron_capture_process
                 = new G4HadronCaptureProcess();
-              G4NeutronHPCaptureData * the_HP_capture_data
+              auto * the_HP_capture_data
                 = new G4NeutronHPCaptureData();
-              G4NeutronHPCapture * the_neutron_capture_model
+              auto * the_neutron_capture_model
                 = new G4NeutronHPCapture();
               the_neutron_capture_process->AddDataSet (the_HP_capture_data);
               the_neutron_capture_process->RegisterMe (the_neutron_capture_model);
 #if G4VERSION_NUMBER < 1000
-              G4LCapture * the_capture_model = new G4LCapture();
+              auto * the_capture_model = new G4LCapture();
               the_capture_model->SetMinEnergy (19.9*CLHEP::MeV);
               the_capture_model->SetMaxEnergy (20.*CLHEP::TeV);
               the_neutron_capture_process->RegisterMe (the_capture_model);
@@ -450,13 +449,13 @@ namespace mctools {
             }
             // fission
             if (_use_neutrons_fission_) {
-              G4HadronFissionProcess * the_neutron_fission_process
+              auto * the_neutron_fission_process
                 = new G4HadronFissionProcess();
-              G4NeutronHPFission * the_neutron_fission_model
+              auto * the_neutron_fission_model
                 = new G4NeutronHPFission();
-              G4NeutronHPFissionData * the_fission_data
+              auto * the_fission_data
                 = new G4NeutronHPFissionData();
-              G4LFission * the_fission_model
+              auto * the_fission_model
                 = new G4LFission();
               the_fission_model->SetMinEnergy (19.9*CLHEP::MeV);
               the_fission_model->SetMaxEnergy (20.*CLHEP::TeV);
@@ -472,9 +471,9 @@ namespace mctools {
           if (pname == "proton") {
             // inelastic process
             if (_use_protons_inelastic_process_) {
-              G4ProtonInelasticProcess * the_proton_inelastic_process
+              auto * the_proton_inelastic_process
                 = new G4ProtonInelasticProcess();
-              G4CascadeInterface * the_bertini_model = new G4CascadeInterface();
+              auto * the_bertini_model = new G4CascadeInterface();
               the_bertini_model->SetMinEnergy (0.*CLHEP::MeV);
               the_bertini_model->SetMaxEnergy (10.*CLHEP::GeV);
 #if G4VERSION_NUMBER < 1000
@@ -487,10 +486,12 @@ namespace mctools {
               }
 #endif
 
-              if (_use_HE_) the_proton_inelastic_process->RegisterMe (QGSP_model);
+              if (_use_HE_) { the_proton_inelastic_process->RegisterMe (QGSP_model);
+}
               the_proton_inelastic_process->RegisterMe (the_bertini_model);
 #if G4VERSION_NUMBER < 1000
-              if (_use_HE_) the_proton_inelastic_process->RegisterMe (the_high_energy_proton_inelastic_model);
+              if (_use_HE_) { the_proton_inelastic_process->RegisterMe (the_high_energy_proton_inelastic_model);
+}
 #endif
               pmanager->AddDiscreteProcess (the_proton_inelastic_process);
             }
@@ -503,10 +504,10 @@ namespace mctools {
           // electrons
           if (pname == "e-") {
             if (_use_electrons_hadronic_process_) {
-              G4ElectronNuclearProcess * the_electron_inelastic_process
+              auto * the_electron_inelastic_process
                 = new G4ElectronNuclearProcess();
 #if G4VERSION_NUMBER < 1000           
-              G4ElectroNuclearReaction * the_electron_nuclear_reaction
+              auto * the_electron_nuclear_reaction
                 = new G4ElectroNuclearReaction();
               the_electron_inelastic_process->RegisterMe(the_electron_nuclear_reaction);
 #endif
@@ -517,10 +518,10 @@ namespace mctools {
           // gamma
           if (pname == "gamma") {
             if (_use_gammas_hadronic_process_) {
-              G4PhotoNuclearProcess * the_gamma_hadron_process
+              auto * the_gamma_hadron_process
                 = new G4PhotoNuclearProcess();
 #if G4VERSION_NUMBER < 1000           
-              G4GammaNuclearReaction * the_gamma_nuclear_reaction
+              auto * the_gamma_nuclear_reaction
                 = new G4GammaNuclearReaction();
               the_gamma_nuclear_reaction->SetMaxEnergy(3.5*CLHEP::GeV);
               the_gamma_hadron_process->RegisterMe (the_gamma_nuclear_reaction);
@@ -530,8 +531,7 @@ namespace mctools {
             }
           }
         }
-      return;
-    }
+         }
 
 
     // static
@@ -693,8 +693,7 @@ namespace mctools {
                        )
           ;
       }
-      return;
-    }
+         }
 
   } // end of namespace g4
 

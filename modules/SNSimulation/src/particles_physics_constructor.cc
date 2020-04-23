@@ -176,21 +176,19 @@ namespace mctools {
                                                                "mctools::g4::particles_physics_constructor")
 
 
-    particles_physics_constructor::particles_physics_constructor () : base_physics_constructor ()
+    particles_physics_constructor::particles_physics_constructor ()  
     {
       this->particles_physics_constructor::_set_defaults ();
       SetPhysicsName("particles");
       SetPhysicsType(0);
-      return;
-    }
+   }
 
     particles_physics_constructor::~particles_physics_constructor ()
     {
       if (is_initialized()) {
         this->particles_physics_constructor::reset();
       }
-      return;
-    }
+         }
 
     void particles_physics_constructor::_set_defaults ()
     {
@@ -218,9 +216,7 @@ namespace mctools {
       _he3_as_generic_ion_           = false;
       _use_light_anti_nuclei_        = false;
       _use_generic_ion_              = true;
-
-      return;
-    }
+   }
 
     void particles_physics_constructor::initialize (const datatools::properties & config_,
                                                     physics_constructor_dict_type & /*dict_*/)
@@ -325,8 +321,7 @@ namespace mctools {
 
       _set_initialized(true);
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void particles_physics_constructor::reset ()
     {
@@ -340,8 +335,7 @@ namespace mctools {
       this->base_physics_constructor::_reset();
 
       DT_LOG_TRACE(_logprio(), "Exiting.");
-      return;
-    }
+         }
 
     void particles_physics_constructor::tree_dump (std::ostream & out_,
                                                    const std::string & title_,
@@ -350,7 +344,8 @@ namespace mctools {
     {
       this->base_physics_constructor::tree_dump(out_, title_, indent_, true);
       std::string indent;
-      if (! indent_.empty ()) indent = indent_;
+      if (! indent_.empty ()) { indent = indent_;
+}
 
       out_ << indent << datatools::i_tree_dumpable::tag
            << "Use geantinos                : " << (_use_geantinos_ ? "Yes" : "No") << std::endl;
@@ -393,9 +388,7 @@ namespace mctools {
 
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_)
            << "Use generic ion              : " << (_use_generic_ion_ ? "Yes" : "No") << std::endl;
-
-      return;
-    }
+   }
 
 
     void particles_physics_constructor::ConstructParticle ()
@@ -421,9 +414,7 @@ namespace mctools {
 
       // ions
       _ConstructIons ();
-
-      return;
-    }
+   }
 
     // Extracted from:
     // G4IonConstructor ion_constructor;
@@ -454,8 +445,7 @@ namespace mctools {
       }
 
 
-      return;
-    }
+         }
 
 
     void particles_physics_constructor::_ConstructBosons ()
@@ -474,8 +464,7 @@ namespace mctools {
         G4OpticalPhoton::OpticalPhotonDefinition ();
       }
 
-      return;
-    }
+         }
 
     void particles_physics_constructor::_ConstructLeptons ()
     {
@@ -510,8 +499,7 @@ namespace mctools {
         G4AntiNeutrinoTau::AntiNeutrinoTauDefinition();
       }
 
-      return;
-    }
+         }
 
 
     void particles_physics_constructor::_ConstructMesons ()
@@ -561,8 +549,7 @@ namespace mctools {
 #endif // G4VERSION_NUMBER == 960
 
       }
-      return;
-    }
+         }
 
 
     void particles_physics_constructor::_ConstructBaryons ()
@@ -640,14 +627,12 @@ namespace mctools {
         DT_LOG_WARNING(_logprio(), "Geant4 version " << G4VERSION_NUMBER << " does not support bottom anti-baryons.");
 #endif // G4VERSION_NUMBER == 960
       }
-      return;
-    }
+         }
 
     void particles_physics_constructor::_ConstructUserLimits ()
     {
 
-      return;
-    }
+         }
 
   } // end of namespace g4
 

@@ -40,16 +40,14 @@ namespace mctools {
 
     stacking_action::stacking_action ()
     {
-      _g4_navigator_ = 0;
+      _g4_navigator_ = nullptr;
       _kill_secondary_particles_ = false;
-      return;
-    }
+   }
 
     stacking_action::~stacking_action ()
     {
-      _g4_navigator_ = 0;
-      return;
-    }
+      _g4_navigator_ = nullptr;
+   }
 
     void stacking_action::initialize (const datatools::properties & config_)
     {
@@ -70,10 +68,9 @@ namespace mctools {
       }
 
       _g4_navigator_ = G4TransportationManager::GetTransportationManager ()->GetNavigatorForTracking ();
-      return;
-    }
+   }
 
-    G4ClassificationOfNewTrack stacking_action::ClassifyNewTrack (const G4Track * a_track)
+    auto stacking_action::ClassifyNewTrack (const G4Track * a_track) -> G4ClassificationOfNewTrack
     {
       DT_LOG_TRACE(_logprio(), "Entering...");
 
@@ -81,29 +78,29 @@ namespace mctools {
 
       // If the vector of `secondary particle killer logical volumes' is still empty
       // we fill it :
-      if ((_killer_volume_names_.size () > 0) && (_killer_volumes_.size () == 0)) {
+      if ((!_killer_volume_names_.empty()) && (_killer_volumes_.empty())) {
         G4LogicalVolumeStore * g4_lv_store = G4LogicalVolumeStore::GetInstance ();
-        for (int i = 0; i < (int) _killer_volume_names_.size (); i++) {
+        for (const auto & _killer_volume_name : _killer_volume_names_) {
           std::ostringstream added_volume_name;
-          added_volume_name << _killer_volume_names_[i];
+          added_volume_name << _killer_volume_name;
           G4String g4_log_name = added_volume_name.str ().c_str ();
           G4LogicalVolume * g4_volume_log = g4_lv_store->GetVolume (g4_log_name, false);
-          DT_THROW_IF (g4_volume_log == 0, std::logic_error,"Logical volume '" << g4_log_name << "' does not exists !");
+          DT_THROW_IF (g4_volume_log == nullptr, std::logic_error,"Logical volume '" << g4_log_name << "' does not exists !");
           DT_LOG_NOTICE(_logprio(), "Add a secondary particle killer logical volume '" << g4_log_name << "'.");
           _killer_volumes_.push_back (g4_volume_log);
         }
       }
 
-      if ((_killer_material_names_.size () > 0) && (_killer_materials_.size () == 0)) {
+      if ((!_killer_material_names_.empty()) && (_killer_materials_.empty())) {
         //G4LogicalVolumeStore * g4_lv_store = G4LogicalVolumeStore::GetInstance ();
-        for (int i = 0; i < (int) _killer_material_names_.size (); i++) {
+        for (const auto & _killer_material_name : _killer_material_names_) {
           std::ostringstream added_material_name;
-          added_material_name << _killer_material_names_[i];
+          added_material_name << _killer_material_name;
           std::string stmp = added_material_name.str ();
           boost::algorithm::replace_all (stmp, ":", "_"); // a trick for GDML does not support ':' in (XML) names.
           G4String g4_material_name = stmp.c_str ();
           G4Material * g4_material = G4Material::GetMaterial (g4_material_name, false);
-          DT_THROW_IF (g4_material == 0, std::logic_error, "Material '" << g4_material_name << "' does not exists !");
+          DT_THROW_IF (g4_material == nullptr, std::logic_error, "Material '" << g4_material_name << "' does not exists !");
           DT_LOG_NOTICE(_logprio(), "Add a secondary particle killer material '" << g4_material_name << "'");
           _killer_materials_.push_back (g4_material);
         }
@@ -128,17 +125,17 @@ namespace mctools {
 
       bool kill = false;
       if (_kill_secondary_particles_ && ( a_track->GetParentID () > 0 )) {
-        G4ThreeVector pos = a_track->GetPosition ();
-        G4VPhysicalVolume * g4_volume_phys = _g4_navigator_->LocateGlobalPointAndSetup (pos, NULL, false);
+        const G4ThreeVector& pos = a_track->GetPosition ();
+        G4VPhysicalVolume * g4_volume_phys = _g4_navigator_->LocateGlobalPointAndSetup (pos, nullptr, false);
         G4LogicalVolume * g4_volume_log = g4_volume_phys->GetLogicalVolume ();
         // std::cerr << "DEVEL: mctools::g4::stacking::ClassifyNewTrack: g4_volume_log = '"
         //        << g4_volume_log->GetName () << "'" << endl;
 
         // Kill by material :
         if (! kill) {
-          if (g4_volume_log != 0) {
+          if (g4_volume_log != nullptr) {
             G4Material * g4_material = g4_volume_log->GetMaterial();
-            if (g4_material != 0) {
+            if (g4_material != nullptr) {
               // Killing every particle generated in some specific materials :
               if (find (_killer_materials_.begin (),
                         _killer_materials_.end (),
@@ -163,7 +160,7 @@ namespace mctools {
 
         // Kill by volume :
         if (! kill) {
-          if (g4_volume_log != 0) {
+          if (g4_volume_log != nullptr) {
             // Killing every particle generated in some specific volumes :
             if (find (_killer_volumes_.begin (),
                       _killer_volumes_.end (),
@@ -191,13 +188,11 @@ namespace mctools {
 
     void stacking_action::NewStage ()
     {
-      return;
-    }
+         }
 
     void stacking_action::PrepareNewEvent ()
     {
-      return;
-    }
+         }
 
   } // end of namespace g4
 

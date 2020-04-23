@@ -48,35 +48,36 @@ namespace mctools {
 
   namespace g4 {
 
-    const run_action & event_action::get_run_action () const
+    auto event_action::get_run_action () const -> const run_action &
     {
       return *_run_action_;
     }
 
-    run_action & event_action::grab_run_action ()
+    auto event_action::grab_run_action () -> run_action &
     {
       return *_run_action_;
     }
 
-    const ::mctools::simulated_data & event_action::get_event_data () const
+    auto event_action::get_event_data () const -> const ::mctools::simulated_data &
     {
-      if (_external_event_data_ != 0) return *_external_event_data_;
+      if (_external_event_data_ != nullptr) { return *_external_event_data_;
+}
       return _event_data_;
     }
 
-    ::mctools::simulated_data & event_action::grab_event_data ()
+    auto event_action::grab_event_data () -> ::mctools::simulated_data &
     {
-      if (_external_event_data_ != 0) return *_external_event_data_;
+      if (_external_event_data_ != nullptr) { return *_external_event_data_;
+}
       return _event_data_;
     }
 
     void event_action::set_external_event_data (::mctools::simulated_data & a_external_event_data)
     {
       _external_event_data_ = &a_external_event_data;
-      return;
-    }
+   }
 
-    bool event_action::is_initialized () const
+    auto event_action::is_initialized () const -> bool
     {
       return _initialized_;
     }
@@ -93,9 +94,8 @@ namespace mctools {
       _detector_construction_ = &dctor_;
       _aborted_event_         = false;
       _killed_event_          = false;
-      _external_event_data_   = 0;
-      return;
-    }
+      _external_event_data_   = nullptr;
+   }
 
     event_action::~event_action ()
     {
@@ -103,8 +103,7 @@ namespace mctools {
         reset ();
       }
       DT_LOG_TRACE(_logprio(), "Done.");
-      return;
-    }
+         }
 
     void event_action::reset ()
     {
@@ -112,18 +111,15 @@ namespace mctools {
       _initialized_ = false;
       _at_reset_();
       _save_only_tracked_events_ = true;
-      return;
-    }
+   }
 
     void event_action::_at_init_ ()
     {
-      return;
-    }
+         }
 
     void event_action::_at_reset_ ()
     {
-      return;
-    }
+         }
 
     void event_action::initialize (const datatools::properties & config_)
     {
@@ -154,15 +150,14 @@ namespace mctools {
       _at_init_();
 
       _initialized_ = true;
-      return;
-    }
+   }
 
-    bool event_action::is_save_only_tracked_events() const
+    auto event_action::is_save_only_tracked_events() const -> bool
     {
       return _save_only_tracked_events_;
     }
 
-    bool event_action::is_aborted_event () const
+    auto event_action::is_aborted_event () const -> bool
     {
       return _aborted_event_;
     }
@@ -170,10 +165,9 @@ namespace mctools {
     void event_action::set_aborted_event (bool a_)
     {
       _aborted_event_ = a_;
-      return;
-    }
+   }
 
-    bool event_action::is_killed_event () const
+    auto event_action::is_killed_event () const -> bool
     {
       return _killed_event_;
     }
@@ -181,8 +175,7 @@ namespace mctools {
     void event_action::set_killed_event (bool k_)
     {
       _killed_event_ = k_;
-      return;
-    }
+   }
 
     void event_action::BeginOfEventAction (const G4Event * event_)
     {
@@ -229,7 +222,7 @@ namespace mctools {
         if (const_mgr.has_prng_state_save_modulo()) {
           DT_LOG_DEBUG(_logprio(), "Record PRNG states for event #" << event_id);
           if ((event_id % const_mgr.get_prng_state_save_modulo()) == 0) {
-            manager * mgr = const_cast<manager *>(&const_mgr);
+            auto * mgr = const_cast<manager *>(&const_mgr);
             mgr->record_current_prng_states();
           }
         }
@@ -247,8 +240,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void event_action::EndOfEventAction (const G4Event * event_)
     {
@@ -278,12 +270,13 @@ namespace mctools {
           G4TrajectoryContainer * trajectory_col
             = event_->GetTrajectoryContainer();
           int n_trajectories = 0;
-          if (trajectory_col) n_trajectories = trajectory_col->entries();
+          if (trajectory_col != nullptr) { n_trajectories = trajectory_col->entries();
+}
 
           // extract the trajectories and draw them:
-          if (G4VVisManager::GetConcreteInstance()) {
+          if (G4VVisManager::GetConcreteInstance() != nullptr) {
             for (int i = 0; i < n_trajectories; i++) {
-              G4Trajectory* trj
+              auto* trj
                 = (G4Trajectory*) ((*(event_->GetTrajectoryContainer()))[i]);
               trj->DrawTrajectory();
             }
@@ -324,8 +317,7 @@ namespace mctools {
       _mt_control_();
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    } // EndOfEventAction
+         } // EndOfEventAction
 
     void event_action::_mt_control_()
     {
@@ -384,15 +376,13 @@ namespace mctools {
       if (must_abort_run) {
         G4RunManager::GetRunManager()->AbortRun();
       }
-      return;
-    }
+         }
 
     void event_action::_save_data_()
     {
       // Store the event if run action has this ability:
       _run_action_->store_data(get_event_data());
-      return;
-    }
+   }
 
     void event_action::_clear_hits_collections_(const G4Event* event_)
     {
@@ -406,16 +396,15 @@ namespace mctools {
       //}
       for (int i = 0; i < (int) HCE->GetCapacity(); i++) {
         G4VHitsCollection * hcol = HCE->GetHC(i);
-        if (hcol != 0) {
+        if (hcol != nullptr) {
           // clog << datatools::io::devel
           //           << "event_action::EndOfEventAction: Detach '"
           //           << hcol->GetName () << "' hits collection"
           //           << endl;
-          HCE->AddHitsCollection(i, 0);
+          HCE->AddHitsCollection(i, nullptr);
         }
       }
-      return;
-    }
+         }
 
     void event_action::_process_sensitive_hits_(const G4Event* event_, bool & save_this_event_)
     {
@@ -429,7 +418,7 @@ namespace mctools {
       DT_LOG_DEBUG(_logprio(), "List of sensitive hit collections : ");
       for (int i = 0; i < (int) HCE->GetCapacity(); i++ ) {
         G4VHitsCollection * hc = HCE->GetHC(i);
-        if (hc != 0) {
+        if (hc != nullptr) {
           DT_LOG_DEBUG(_logprio(), "Hit collection '" << hc->GetName()
                        << "' for sensitive detector '" << hc->GetSDname()<< "' @ " << hc);
         }
@@ -443,7 +432,7 @@ namespace mctools {
       DT_LOG_DEBUG(_logprio(), "List of sensitive hit collections : ");
       for (int i = 0; i < (int) HCE->GetCapacity(); i++ ) {
         G4VHitsCollection * hc = HCE->GetHC(i);
-        if (hc != 0) {
+        if (hc != nullptr) {
           DT_LOG_DEBUG(_logprio(), "Hit collection '" << hc->GetName()
                        << "' for sensitive detector '" << hc->GetSDname()<< "' @ " << hc);
         }
@@ -451,18 +440,15 @@ namespace mctools {
 
       // Loop on the dictionnary of sensitive detectors:
       int public_sensitive_category_counter = 0;
-      for (detector_construction::sensitive_detector_dict_type::const_iterator iSD
-             = _detector_construction_->get_sensitive_detectors().begin();
-           iSD != _detector_construction_->get_sensitive_detectors().end();
-           iSD++) {
-        const std::string & sensitive_category = iSD->first;
-        sensitive_detector & the_detector = *iSD->second;
+      for (const auto & iSD : _detector_construction_->get_sensitive_detectors()) {
+        const std::string & sensitive_category = iSD.first;
+        sensitive_detector & the_detector = *iSD.second;
 
         DT_LOG_DEBUG(_logprio(), "Processing hits from sensitive detector '"
                      << sensitive_category << "'...");
         // sensitive_detector::make_hit_collection_name (sensitive_category)
         G4VHitsCollection * the_hits_collection = HCE->GetHC(the_detector.get_HCID());
-        if (the_hits_collection == 0) {
+        if (the_hits_collection == nullptr) {
           DT_LOG_DEBUG(_logprio(),
                        "No hit to process from sensitive detector '"
                        << sensitive_category << "'...");
@@ -481,7 +467,7 @@ namespace mctools {
           public_sensitive_category_counter++;
         }
 
-        sensitive_hit_collection * SHC
+        auto * SHC
           = dynamic_cast<sensitive_hit_collection *> (the_hits_collection);
         DT_LOG_DEBUG(_logprio(), "Collection has " << SHC->GetSize () << " hits.");
 
@@ -490,7 +476,7 @@ namespace mctools {
          * processors associated to a single sensitive detector.
          */
         //_phits_.clear ();
-        if (the_detector.get_hit_processors ().size () > 0) {
+        if (!the_detector.get_hit_processors ().empty()) {
           // Collect a 'phits' vector of pointers on 'base step hits':
           ::mctools::base_step_hit_processor::step_hit_ptr_collection_type phits;
           // 2011-04-05 FM : this should accelerate the process a little bit :
@@ -502,16 +488,13 @@ namespace mctools {
           // 'phits' is used as the input of the 'process' method
           // from each processor attached to the sensitive
           // category/detector:
-          for (sensitive_detector::hit_processor_dict_type::iterator iproc
-                 = the_detector.grab_hit_processors ().begin ();
-               iproc != the_detector.grab_hit_processors ().end ();
-               iproc++) {
+          for (auto & iproc : the_detector.grab_hit_processors ()) {
             /*
               const string & hit_proc_name = iproc->first;
               cerr << "DEVEL: " << "mctools::g4::event_action::EndOfEventAction: "
               << "hit_proc_name = `" << hit_proc_name << "'" << endl;
             */
-            ::mctools::base_step_hit_processor * hit_proc = iproc->second;
+            ::mctools::base_step_hit_processor * hit_proc = iproc.second;
             hit_proc->process(phits, grab_event_data ());
           }
         } else {
@@ -530,8 +513,7 @@ namespace mctools {
         _run_action_->grab_manager().grab_CT_map ()["HP"].stop ();
       }
 
-      return;
-    }
+         }
 
   } // end of namespace g4
 

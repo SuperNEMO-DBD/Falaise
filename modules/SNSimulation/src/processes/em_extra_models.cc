@@ -30,18 +30,16 @@ namespace mctools {
       {
         _initialized_ = false;
         _set_defaults();
-        return;
-      }
+     }
 
       em_extra_model::~em_extra_model()
       {
         if (is_initialized()) {
           reset();
         }
-        return;
-      }
+             }
 
-      bool em_extra_model::is_initialized() const
+      auto em_extra_model::is_initialized() const -> bool
       {
         return _initialized_;
       }
@@ -50,8 +48,7 @@ namespace mctools {
       {
         datatools::properties dummy;
         initialize(dummy);
-        return;
-      }
+     }
 
       void em_extra_model::initialize(const datatools::properties & config_)
       {
@@ -141,8 +138,7 @@ namespace mctools {
         }
 
         _initialized_ = true;
-        return;
-      }
+     }
 
       void em_extra_model::reset()
       {
@@ -154,22 +150,20 @@ namespace mctools {
         _model_name_.clear();
         _region_name_.clear();
         _set_defaults();
-        return;
-      }
+     }
 
       void em_extra_model::_set_defaults()
       {
         _energy_min_ = datatools::invalid_real();
         _energy_max_ = datatools::invalid_real();
-        return;
-      }
+     }
 
       // static
-      bool em_extra_model::validate_g4_model_type_id(std::string & model_type_id_)
+      auto em_extra_model::validate_g4_model_type_id(std::string & model_type_id_) -> bool
       {
         std::string mtid = model_type_id_;
         bool valid = false;
-        if (mtid == "") {
+        if (mtid.empty()) {
           mtid = "Dummy";
           valid = true;
         } else {
@@ -188,20 +182,20 @@ namespace mctools {
       }
 
       // static
-      bool em_extra_model::validate_g4_region_name(std::string & region_name_)
+      auto em_extra_model::validate_g4_region_name(std::string & region_name_) -> bool
       {
         std::string r = region_name_;
         bool valid = false;
-        if (r == "" || r == "world" || r == "World") {
+        if (r.empty() || r == "world" || r == "World") {
           r = "DefaultRegionForTheWorld";
           valid = true;
         } else {
           G4RegionStore * region_store = G4RegionStore::GetInstance();
-          if (region_store->size() == 0) {
+          if (region_store->empty()) {
             DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, "Geant4 region store is empty!");
           } else {
             G4Region * region = region_store->GetRegion(r, true);
-            if (region != 0) {
+            if (region != nullptr) {
               valid = true;
             }
           }
@@ -213,11 +207,11 @@ namespace mctools {
       }
 
       // static
-      bool em_extra_model::validate_g4_particle_name(std::string & particle_name_)
+      auto em_extra_model::validate_g4_particle_name(std::string & particle_name_) -> bool
       {
         std::string n = particle_name_;
         bool valid = false;
-        if (particle_name_ == ""
+        if (particle_name_.empty()
             || particle_name_ == "*"
             || particle_name_ == "all"
             || particle_name_ == "ALL") {
@@ -255,10 +249,9 @@ namespace mctools {
                       "Geant4 particle name '" << n << "' is not valid!");
         }
         _particle_name_ = n;
-        return;
-      }
+     }
 
-      const std::string & em_extra_model::get_particle_name() const
+      auto em_extra_model::get_particle_name() const -> const std::string &
       {
         return _particle_name_;
       }
@@ -266,10 +259,9 @@ namespace mctools {
       void em_extra_model::set_process_name(const std::string & name_)
       {
         _process_name_ = name_;
-        return;
-      }
+     }
 
-      const std::string & em_extra_model::get_process_name() const
+      auto em_extra_model::get_process_name() const -> const std::string &
       {
         return _process_name_;
       }
@@ -277,10 +269,9 @@ namespace mctools {
       void em_extra_model::set_model_type_id(const std::string & model_type_id_)
       {
         _model_type_id_ = model_type_id_;
-        return;
-      }
+     }
 
-      const std::string & em_extra_model::get_model_type_id() const
+      auto em_extra_model::get_model_type_id() const -> const std::string &
       {
         return _model_type_id_;
       }
@@ -288,10 +279,9 @@ namespace mctools {
       void em_extra_model::set_model_name(const std::string & name_)
       {
         _model_name_ = name_;
-        return;
-      }
+     }
 
-      const std::string & em_extra_model::get_model_name() const
+      auto em_extra_model::get_model_name() const -> const std::string &
       {
         return _model_name_;
       }
@@ -304,10 +294,9 @@ namespace mctools {
                       "Geant4 region name '" << r << "' is not valid!");
         }
         _region_name_ = r;
-        return;
-      }
+     }
 
-      const std::string & em_extra_model::get_region_name() const
+      auto em_extra_model::get_region_name() const -> const std::string &
       {
         return _region_name_;
       }
@@ -316,10 +305,9 @@ namespace mctools {
       {
         DT_THROW_IF(e_ < 0.0, std::domain_error, "Invalid minimum energy!");
         _energy_min_ = e_;
-        return;
-      }
+     }
 
-      double em_extra_model::get_energy_min() const
+      auto em_extra_model::get_energy_min() const -> double
       {
         return _energy_min_;
       }
@@ -328,10 +316,9 @@ namespace mctools {
       {
         DT_THROW_IF(e_ < 0.0, std::domain_error, "Invalid maximum energy!");
         _energy_max_ = e_;
-        return;
-      }
+     }
 
-      double em_extra_model::get_energy_max() const
+      auto em_extra_model::get_energy_max() const -> double
       {
         return _energy_max_;
       }
@@ -373,9 +360,7 @@ namespace mctools {
 
         out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_)
              << "Initialized       : " << (is_initialized() ? "Yes": "No") << std::endl;
-
-        return;
-      }
+     }
 
       void em_extra_model::apply_to_g4(G4EmConfigurator & em_config_,
                                        em_model_factory & em_mod_fact_) const
@@ -413,7 +398,7 @@ namespace mctools {
         DT_LOG_NOTICE(get_logging_priority(), "Model name : '" << model_name << "'");
 
         // Region:
-        std::string region_name = "";
+        std::string region_name;
         if (! _region_name_.empty()) {
           region_name = _region_name_;
         }
@@ -434,8 +419,8 @@ namespace mctools {
         DT_LOG_NOTICE(get_logging_priority(), "Energy min : " << emin / CLHEP::MeV << " [MeV]");
         DT_LOG_NOTICE(get_logging_priority(), "Energy max : " << emax / CLHEP::MeV << " [MeV]");
 
-        G4VEmModel * model = 0;
-        G4VEmFluctuationModel * fluct_model = 0;
+        G4VEmModel * model = nullptr;
+        G4VEmFluctuationModel * fluct_model = nullptr;
 
         DT_LOG_DEBUG(get_logging_priority(), "Allocating EM extra model...");
         model = em_mod_fact_.create_model(model_type_id, model_name);
@@ -448,8 +433,7 @@ namespace mctools {
                                    emax,
                                    fluct_model
                                    );
-        return;
-      }
+     }
 
     } // end of namespace processes
 

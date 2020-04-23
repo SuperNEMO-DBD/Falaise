@@ -12,12 +12,12 @@ namespace mctools {
 
   namespace g4 {
 
-    const base_step_hit & sensitive_hit::get_hit_data() const
+    auto sensitive_hit::get_hit_data() const -> const base_step_hit &
     {
       return _hit_data_;
     }
 
-    base_step_hit & sensitive_hit::grab_hit_data()
+    auto sensitive_hit::grab_hit_data() -> base_step_hit &
     {
       return _hit_data_;
     }
@@ -25,8 +25,7 @@ namespace mctools {
     void sensitive_hit::reset()
     {
       _hit_data_.reset();
-      return;
-    }
+   }
 
   } // end of namespace g4
 

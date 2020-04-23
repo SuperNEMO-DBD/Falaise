@@ -37,7 +37,7 @@ namespace mctools {
 
       sensitive_hit_collection () = default;
 
-      sensitive_hit_collection (G4String a_detector_name, G4String a_collection_name);
+      sensitive_hit_collection (const G4String& a_detector_name, const G4String& a_collection_name);
 
       virtual ~sensitive_hit_collection () = default;
 

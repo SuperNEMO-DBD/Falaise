@@ -48,7 +48,7 @@ namespace mctools {
         em_model_factory();
 
         /// Destructor
-        ~em_model_factory();
+        virtual ~em_model_factory();
 
         /// Check initialization
         bool is_initialized() const;

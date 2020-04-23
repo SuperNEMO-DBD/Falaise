@@ -43,13 +43,13 @@ class simulation_ctrl : public loggable_support {
 
  public :
   /// Constructor
-  simulation_ctrl(manager& simulation_manager_, uint32_t max_counts_ = 0);
+  simulation_ctrl(manager& a_simulation_manager, uint32_t a_max_counts = 0);
 
   /// Destructor
   ~simulation_ctrl();
 
   /// Set the Geant4 simulation manager
-  void set_simulation_manager(manager & simulation_manager_);
+  void set_simulation_manager(manager & a_simulation_manager);
 
   /// Start
   void start();

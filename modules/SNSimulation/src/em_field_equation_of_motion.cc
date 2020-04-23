@@ -37,8 +37,7 @@ namespace mctools {
       _energy_ = datatools::invalid_real();
       _gamma_ = datatools::invalid_real();
       _beta_ = datatools::invalid_real();
-      return;
-    }
+   }
 
     /*
     void em_field_equation_of_motion::initialize(const datatools::properties & config_)
@@ -62,24 +61,16 @@ namespace mctools {
       //           << "Entering..."
       //           << std::endl;
       _set_defaults();
-      return;
-    }
+   }
 
-    em_field_equation_of_motion::~em_field_equation_of_motion()
-    {
-      // std::cerr << "DEVEL: " << "mctools::g4::em_field_equation_of_motion::DTOR: "
-      //           << "Entering..."
-      //           << std::endl;
-      return;
-    }
+    em_field_equation_of_motion::~em_field_equation_of_motion() = default;
 
     void em_field_equation_of_motion::set_anomaly(double a_)
     {
       _anomaly_ = a_;
-      return;
-    }
+   }
 
-    double em_field_equation_of_motion::get_anomaly() const
+    auto em_field_equation_of_motion::get_anomaly() const -> double
     {
       return _anomaly_;
     }
@@ -87,27 +78,25 @@ namespace mctools {
     void em_field_equation_of_motion::set_with_spin(bool ws_)
     {
       _with_spin_ = ws_;
-      return;
-    }
+   }
 
     void em_field_equation_of_motion::set_only_magnetic(bool om_)
     {
       _only_magnetic_ = om_;
-      return;
-    }
+   }
 
-    bool em_field_equation_of_motion::is_only_magnetic() const
+    auto em_field_equation_of_motion::is_only_magnetic() const -> bool
     {
       return _only_magnetic_;
     }
 
-    bool em_field_equation_of_motion::is_with_spin() const
+    auto em_field_equation_of_motion::is_with_spin() const -> bool
     {
       return _with_spin_;
     }
 
 #if G4VERSION_NUMBER >= 1000
-    void em_field_equation_of_motion::SetChargeMomentumMass(G4ChargeState particle_charge_state_, 
+    void em_field_equation_of_motion::SetChargeMomentumMass(G4ChargeState particle_charge_state_,
                                                             G4double particle_momentum_,
                                                             G4double particle_mass_)
     {
@@ -151,8 +140,7 @@ namespace mctools {
       // if (_charge_ == 0.) SetAnomaly(neutron_magnetic_anomaly);
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
     void em_field_equation_of_motion::EvaluateRhsGivenB(const G4double y_[],
                                                         const G4double field_[6],
@@ -232,8 +220,7 @@ namespace mctools {
       }
 
       DT_LOG_TRACE_EXITING(_logprio());
-      return;
-    }
+         }
 
   } // end of namespace g4
 
