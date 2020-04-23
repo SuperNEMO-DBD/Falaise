@@ -10,7 +10,9 @@ TEST_CASE("compile/run time versions match", "") {
 }
 
 TEST_CASE("compile/run time git state matches", "") {
-  REQUIRE(falaise::version::get_commit() == FALAISE_VERSION_COMMIT);
+  #define TFV_AS_STR(var) #var
+  #define XTFV_AS_STR(val) TFV_AS_STR(val)
+  REQUIRE(falaise::version::get_commit() == XTFV_AS_STR(FALAISE_VERSION_COMMIT));
 
 #ifdef FALAISE_VERSION_IS_DIRTY
   bool expectedDirty{true};

@@ -24,6 +24,7 @@
 # Configure library
 #
 configure_file(version.h.in version.h @ONLY)
+configure_file(version.cc.in version.cc @ONLY)
 configure_file(resource.cc.in resource.cc @ONLY)
 
 # - Generate binreloc header/source with mangled names, ensuring first
@@ -51,7 +52,7 @@ set(FalaiseLibrary_HEADERS
 )
 
 set(FalaiseLibrary_SOURCES
-  version.cc
+  ${CMAKE_CURRENT_BINARY_DIR}/version.cc
   ${CMAKE_CURRENT_BINARY_DIR}/resource.cc
   ${CMAKE_CURRENT_BINARY_DIR}/falaise_binreloc.h
   falaise_binreloc.c
@@ -71,13 +72,6 @@ set(FalaiseLibrary_TESTS_CATCH)
 # - Declare headers, sources and test programs specific
 #   to various setups
 include(snemo.cmake)
-
-# - Publish headers
-#foreach(_hdrin ${FalaiseLibrary_HEADERS})
-#  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
-#  configure_file(${_hdrin} ${PROJECT_BUILD_INCLUDEDIR}/falaise/${_hdrout} @ONLY)
-#endforeach()
-
 
 #-----------------------------------------------------------------------
 # Build/Link Library
@@ -158,6 +152,11 @@ if(FALAISE_ENABLE_TESTING)
     test/test_property_set.cxx
     test/test_quantity.cxx
     )
+  # Testing version is sensitive to compile definitions, so match them
+  set_property(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/test/test_falaise_version.cxx
+    APPEND PROPERTY COMPILE_DEFINITIONS
+      FALAISE_VERSION_COMMIT=${Falaise_GIT_HASH_SHORT}
+      $<$<BOOL:${FALAISE_VERSION_IS_DIRTY}>:FALAISE_VERSION_IS_DIRTY>)
 endif()
 
 #-----------------------------------------------------------------------

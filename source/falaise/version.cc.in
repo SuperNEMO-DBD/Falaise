@@ -24,6 +24,13 @@
 // Standard Library
 #include <sstream>
 
+//! First 8 characters of the current Git HEAD hash, empty outside a working
+//  copy.
+#define FALAISE_VERSION_COMMIT "@Falaise_GIT_HASH_SHORT@"
+
+//! Defined if this build has uncommited changes
+#cmakedefine FALAISE_VERSION_IS_DIRTY
+
 namespace falaise {
 int version::get_major() { return static_cast<int>(FALAISE_VERSION_MAJOR); }
 

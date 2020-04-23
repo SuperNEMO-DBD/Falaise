@@ -46,18 +46,6 @@
 //! Patch version number of falaise
 #define FALAISE_VERSION_PATCH @Falaise_VERSION_PATCH@
 
-//! Current revision/build number of falaise, 0 for a release
-//! \deprecated Since 3.1
-//! \see FALAISE_VERSION_COMMIT
-#define FALAISE_VERSION_REVISION -1
-
-//! First 8 characters of the current Git HEAD hash, empty outside a working
-//  copy.
-#define FALAISE_VERSION_COMMIT "@Falaise_GIT_HASH_SHORT@"
-
-//! Defined if this build has uncommited changes
-#cmakedefine01 FALAISE_VERSION_IS_DIRTY
-
 //! Encode falaise to ordered integer available at compile time
 #define FALAISE_ENCODE_VERSION(major, minor, patch) ( \
         ((major) * 10000) \
