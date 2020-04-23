@@ -19,8 +19,7 @@
 
 namespace mctools {
 namespace g4 {
-simulation_ctrl::simulation_ctrl(manager& a_simulation_manager,
-                                 uint32_t a_max_counts) {
+simulation_ctrl::simulation_ctrl(manager& a_simulation_manager, uint32_t a_max_counts) {
   simulation_manager = nullptr;
   simulation_thread = nullptr;
   event_mutex = nullptr;
@@ -42,7 +41,7 @@ simulation_ctrl::~simulation_ctrl() {
     event_availability_status = simulation_ctrl::ABORT;
     event_available_condition->notify_one();
   }
-  if(simulation_thread != nullptr) {
+  if (simulation_thread != nullptr) {
     simulation_thread->join();
   }
   if (event_available_condition != nullptr) {
@@ -60,31 +59,27 @@ simulation_ctrl::~simulation_ctrl() {
   simulation_manager = nullptr;
 }
 
-void simulation_ctrl::set_simulation_manager(manager & a_simulation_manager) {
+void simulation_ctrl::set_simulation_manager(manager& a_simulation_manager) {
   simulation_manager = &a_simulation_manager;
 }
 
 void simulation_ctrl::start() {
-  simulation_thread = new boost::thread(boost::bind (&simulation_ctrl::start_simulation_run, this));
+  simulation_thread = new boost::thread(boost::bind(&simulation_ctrl::start_simulation_run, this));
 }
 
 void simulation_ctrl::start_simulation_run() {
   {
-    boost::mutex::scoped_lock lock (*event_mutex);
+    boost::mutex::scoped_lock lock(*event_mutex);
     while (event_availability_status == simulation_ctrl::NOT_AVAILABLE_FOR_G4) {
       event_available_condition->wait(*event_mutex);
     }
   }
-  simulation_manager->run_simulation ();
+  simulation_manager->run_simulation();
 }
 
-void simulation_ctrl::set_stop_requested() {
-  stop_requested = true;
-}
+void simulation_ctrl::set_stop_requested() { stop_requested = true; }
 
-auto simulation_ctrl::is_stop_requested() const -> bool {
-  return stop_requested;
-}
+auto simulation_ctrl::is_stop_requested() const -> bool { return stop_requested; }
 
 }  // end of namespace g4
 }  // end of namespace mctools

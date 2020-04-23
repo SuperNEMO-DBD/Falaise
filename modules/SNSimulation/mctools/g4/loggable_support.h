@@ -12,58 +12,53 @@
 #include <datatools/logger.h>
 
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    /// \brief Base class with logging support
-    class loggable_support {
+/// \brief Base class with logging support
+class loggable_support {
+ public:
+  /// Default constructor
+  loggable_support();
 
-    public:
+  /// Constructor from logging priority level
+  explicit loggable_support(datatools::logger::priority);
 
-      /// Default constructor
-      loggable_support();
+  datatools::logger::priority get_logging_priority() const;
 
-      /// Constructor from logging priority level
-      explicit loggable_support(datatools::logger::priority);
+  /// Destructor
+  virtual ~loggable_support();
 
-      datatools::logger::priority get_logging_priority() const;
+  void set_logging_priority(const std::string &priority_label_);
 
-      /// Destructor
-      virtual ~loggable_support();
+  void set_logging_priority(datatools::logger::priority);
 
-      void set_logging_priority(const std::string & priority_label_);
+  bool is_debug() const;
 
-      void set_logging_priority(datatools::logger::priority);
+  void set_debug(bool);
 
-      bool is_debug () const;
+  bool is_verbose() const;
 
-      void set_debug (bool);
+  void set_verbose(bool);
 
-      bool is_verbose () const;
+ protected:
+  void _initialize_logging_support(const datatools::properties &);
 
-      void set_verbose (bool);
+  datatools::logger::priority _logprio() const;
 
-    protected:
+ protected:
+  datatools::logger::priority _logging_priority;  //!< Logging priority threshold
+};
 
-      void _initialize_logging_support(const datatools::properties &);
+}  // end of namespace g4
 
-      datatools::logger::priority _logprio() const;
+}  // end of namespace mctools
 
-    protected:
-
-      datatools::logger::priority _logging_priority; //!< Logging priority threshold
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
-
-#endif // MCTOOLS_G4_LOGGABLE_SUPPORT_H
+#endif  // MCTOOLS_G4_LOGGABLE_SUPPORT_H
 
 // Local Variables: --
 // mode: c++ --

@@ -15,8 +15,8 @@
 // Third party:
 // - Bayeux/dpp :
 #include <dpp/base_module.h>
-#include <mygsl/seed_manager.h>
 #include <mygsl/prng_state_manager.h>
+#include <mygsl/seed_manager.h>
 
 // This project:
 #include <mctools/g4/manager_parameters.h>
@@ -24,7 +24,7 @@
 namespace geomtools {
 // Forward declaration :
 class manager;
-}
+}  // namespace geomtools
 
 namespace mctools {
 // Forward declaration :
@@ -45,24 +45,24 @@ class simulation_module : public dpp::base_module {
   virtual ~simulation_module();
 
   /// Initialization
-  virtual void initialize(const datatools::properties & /* config_ */,
-                          datatools::service_manager & /* service_mgr_ */,
-                          dpp::module_handle_dict_type & /* modules_map_ */);
+  virtual void initialize(const datatools::properties& /* config_ */,
+                          datatools::service_manager& /* service_mgr_ */,
+                          dpp::module_handle_dict_type& /* modules_map_ */);
 
   /// Reset
   virtual void reset();
 
   /// Read/Process/Fill/Delete data
-  virtual dpp::base_module::process_status process(datatools::things & /* event_record_ */);
+  virtual dpp::base_module::process_status process(datatools::things& /* event_record_ */);
 
   /// Set the geometry service label (only used if no geometry manager is provided)
-  void set_geo_label(const std::string &);
+  void set_geo_label(const std::string&);
 
   /// Get the geometry service label (only used if no geometry manager is provided)
   const std::string& get_geo_label() const;
 
   /// Set the SD bank label
-  void set_sd_label(const std::string &);
+  void set_sd_label(const std::string&);
 
   /// Get the SD bank label
   const std::string& get_sd_label() const;
@@ -82,22 +82,24 @@ class simulation_module : public dpp::base_module {
   /// Return a non mutable reference to the manager of PRNG's states
   const mygsl::prng_state_manager& get_state_manager() const;
 
- protected :
-  void _initialize_manager(datatools::service_manager & /* smgr_ */);
+ protected:
+  void _initialize_manager(datatools::service_manager& /* smgr_ */);
 
   void _terminate_manager();
 
-  int _simulate_event(datatools::things & /* event_record_ */);
+  int _simulate_event(datatools::things& /* event_record_ */);
 
  private:
-  std::string geometryServiceName_; //!< The label of the Geometry service to be accessed
-  std::string simdataBankName_;     //!< The label of the 'simulated_data' bank in the event record
+  std::string geometryServiceName_;  //!< The label of the Geometry service to be accessed
+  std::string simdataBankName_;      //!< The label of the 'simulated_data' bank in the event record
 
-  const geomtools::manager* geometryManagerRef_; //!< Non-mutable reference to the geometry manager
+  const geomtools::manager* geometryManagerRef_;  //!< Non-mutable reference to the geometry manager
 
-  manager_parameters geant4Parameters_;           //!< The configuration parameters for the GEANT4 simulation manager
-  manager*           geant4Simulation_;           //!< The embedded GEANT4 simulation manager
-  simulation_ctrl*   geant4SimulationController_; //!< The embedded control object for thread synchronization
+  manager_parameters
+      geant4Parameters_;       //!< The configuration parameters for the GEANT4 simulation manager
+  manager* geant4Simulation_;  //!< The embedded GEANT4 simulation manager
+  simulation_ctrl*
+      geant4SimulationController_;  //!< The embedded control object for thread synchronization
 
   // Registration of the module :
   DPP_MODULE_REGISTRATION_INTERFACE(simulation_module)
@@ -111,7 +113,7 @@ class simulation_module : public dpp::base_module {
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(mctools::g4::simulation_module)
 
-#endif // MCTOOLS_G4_SIMULATION_MODULE_H
+#endif  // MCTOOLS_G4_SIMULATION_MODULE_H
 
 /*
 ** Local Variables: --

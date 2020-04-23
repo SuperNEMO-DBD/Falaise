@@ -23,82 +23,76 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Geant4:
-#include <G4UserSteppingAction.hh>
-#include <G4TrackStatus.hh>
-#include <G4SteppingControl.hh>
 #include <G4StepStatus.hh>
+#include <G4SteppingControl.hh>
+#include <G4TrackStatus.hh>
+#include <G4UserSteppingAction.hh>
 
 // This project:
 #include <mctools/g4/loggable_support.h>
 
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    /// \brief Stepping action using the Geant4 interface
-    class stepping_action : public G4UserSteppingAction,
-                            public loggable_support
-    {
-    public:
+/// \brief Stepping action using the Geant4 interface
+class stepping_action : public G4UserSteppingAction, public loggable_support {
+ public:
+  /// Constructor
+  stepping_action();
 
-      /// Constructor
-      stepping_action();
+  /// Destructor
+  virtual ~stepping_action();
 
-      /// Destructor
-      virtual ~stepping_action();
+  /// Initialize
+  void initialize(const datatools::properties &config_);
 
-      /// Initialize
-      void initialize(const datatools::properties & config_);
+  /// Reset
+  void reset();
 
-      /// Reset
-      void reset();
+  /// Set dumped flag
+  void set_dumped(bool);
 
-      /// Set dumped flag
-      void set_dumped(bool);
+  /// Check dumped flag
+  bool is_dumped() const;
 
-      /// Check dumped flag
-      bool is_dumped() const;
+  /// Main stepping action for the Geant4 interface
+  void UserSteppingAction(const G4Step *);
 
-      /// Main stepping action for the Geant4 interface
-      void UserSteppingAction(const G4Step *);
+  /// Convert a Geant4 track status to a printable string
+  static std::string g4_track_status_to_label(G4TrackStatus);
 
-      /// Convert a Geant4 track status to a printable string
-      static std::string g4_track_status_to_label(G4TrackStatus);
+  /// Convert a Geant4 stepping control to a printable string
+  static std::string g4_stepping_control_to_label(G4SteppingControl);
 
-      /// Convert a Geant4 stepping control to a printable string
-      static std::string g4_stepping_control_to_label(G4SteppingControl);
+  /// Convert a Geant4 step status to a printable string
+  static std::string g4_step_status_to_label(G4StepStatus);
 
-      /// Convert a Geant4 step status to a printable string
-      static std::string g4_step_status_to_label(G4StepStatus);
+ protected:
+  /// Embedded stepping action
+  virtual void _stepping_action_base(const G4Step *);
 
-    protected:
+ private:
+  // Configuration:
+  bool _dumped_;  ///< Activation flag for dump
 
-      /// Embedded stepping action
-      virtual void _stepping_action_base(const G4Step *);
+  // Working data:
+  uint32_t _number_of_steps_;  ///< Counter for steps
+};
 
-    private:
+}  // end of namespace g4
 
-      // Configuration:
-      bool _dumped_; ///< Activation flag for dump
-
-      // Working data:
-      uint32_t _number_of_steps_; ///< Counter for steps
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
+}  // end of namespace mctools
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(mctools::g4::stepping_action)
 
-#endif // MCTOOLS_G4_STEPPING_ACTION_H
+#endif  // MCTOOLS_G4_STEPPING_ACTION_H
 
 /*
 ** Local Variables: --

@@ -17,32 +17,29 @@
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    /// \brief Stepping verbose support using the Geant4 interface
-    class stepping_verbose: public G4SteppingVerbose
-    {
-    public:
+/// \brief Stepping verbose support using the Geant4 interface
+class stepping_verbose : public G4SteppingVerbose {
+ public:
+  /// Constructor
+  stepping_verbose();
 
-      /// Constructor
-      stepping_verbose ();
+  /// Destructor
+  virtual ~stepping_verbose();
 
-      /// Destructor
-      virtual ~stepping_verbose ();
+  /// Geant4 interface
+  void StepInfo();
 
-      /// Geant4 interface
-      void StepInfo ();
+  /// Geant4 interface
+  void TrackingStarted();
+};
 
-      /// Geant4 interface
-      void TrackingStarted ();
+}  // end of namespace g4
 
-    };
+}  // namespace mctools
 
-  } // end of namespace g4
-
-} // end of namespace snemo
-
-#endif // MCTOOLS_G4_STEPPING_VERBOSE_H
+#endif  // MCTOOLS_G4_STEPPING_VERBOSE_H
 
 /*
 ** Local Variables: --

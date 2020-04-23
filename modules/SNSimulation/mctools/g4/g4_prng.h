@@ -40,58 +40,54 @@
 #include <CLHEP/Random/RandomEngine.h>
 
 namespace mygsl {
-  class rng;
+class rng;
 }
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    class g4_prng : public CLHEP::HepRandomEngine
-    {
-    public:
+class g4_prng : public CLHEP::HepRandomEngine {
+ public:
+  static const int SEED_INVALID = -1;
+  static const int SEED_TIME = 0;
 
-      static const int SEED_INVALID = -1;
-      static const int SEED_TIME    = 0;
+  /// Constructor
+  g4_prng();
 
-      /// Constructor
-      g4_prng ();
+  /// Constructor
+  g4_prng(mygsl::rng&);
 
-      /// Constructor
-      g4_prng (mygsl::rng &);
+  /// Destructor
+  virtual ~g4_prng();
 
-      /// Destructor
-      virtual ~g4_prng ();
+  void set_random(mygsl::rng& rng_);
 
-      void set_random (mygsl::rng & rng_);
+  virtual double flat();
 
-      virtual double flat ();
+  virtual void flatArray(const int size, double* vect);
 
-      virtual void flatArray (const int size, double* vect);
+  virtual void setSeed(long seed, int dummy_ = 0);
 
-      virtual void setSeed (long seed, int dummy_ = 0);
+  virtual void setSeeds(const long* seeds, int index_ = -1);
 
-      virtual void setSeeds (const long * seeds, int index_ = -1);
+  virtual void saveStatus(const char filename[] = "G4PRNG.conf") const;
 
-      virtual void saveStatus ( const char filename[] = "G4PRNG.conf") const;
+  virtual void restoreStatus(const char filename[] = "G4PRNG.conf");
 
-      virtual void restoreStatus ( const char filename[] = "G4PRNG.conf" );
+  virtual void showStatus() const;
 
-      virtual void showStatus () const;
+  virtual std::string name() const;
 
-      virtual std::string name () const;
+ private:
+  int _random_seed_;     /// Random seed
+  mygsl::rng* _random_;  /// Handle to an external mygsl's PRNG
+};
 
-    private:
-
-      int          _random_seed_; /// Random seed
-      mygsl::rng * _random_;      /// Handle to an external mygsl's PRNG
-
-    };
-
-  }  // end of namespace g4
+}  // end of namespace g4
 
 }  // end of namespace mctools
 
-#endif // MCTOOLS_G4_G4_PRNG_H
+#endif  // MCTOOLS_G4_G4_PRNG_H
 
 /*
 ** Local Variables: --

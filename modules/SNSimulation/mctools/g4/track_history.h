@@ -34,108 +34,98 @@
 #define MCTOOLS_G4_TRACK_HISTORY_H 1
 
 // Standard library:
-#include <string>
 #include <map>
+#include <string>
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    /// \brief Recording of tracks history
-    class track_history
-    {
-    public:
+/// \brief Recording of tracks history
+class track_history {
+ public:
+  /// \brief Recording of informations about a single track
+  class track_info {
+   public:
+    /// Undefined Id for a track (parent track Id is 0 for a primary track)
+    static const int TRACK_ID_UNSET = 0;
 
-      /// \brief Recording of informations about a single track
-      class track_info
-      {
-      public:
+   public:
+    int get_id() const;
 
-        /// Undefined Id for a track (parent track Id is 0 for a primary track)
-        static const int TRACK_ID_UNSET = 0;
+    void set_id(const int id_);
 
-      public:
+    int get_parent_id() const;
 
-        int get_id() const;
+    void set_parent_id(const int id_);
 
-        void set_id(const int id_);
+    bool is_primary() const;
 
-        int get_parent_id() const;
+    const std::string& get_particle_name() const;
 
-        void set_parent_id(const int id_);
+    void set_particle_name(const std::string& name_);
 
-        bool is_primary() const;
+    const std::string& get_creator_process_name() const;
 
-        const std::string & get_particle_name() const;
+    void set_creator_process_name(const std::string& name_);
 
-        void set_particle_name(const std::string & name_);
+    /// \deprecated
+    const std::string& get_creator_sensitive_category() const;
 
-        const std::string & get_creator_process_name() const;
+    /// \deprecated
+    void set_creator_sensitive_category(const std::string& category_);
 
-        void set_creator_process_name(const std::string & name_);
+    /// Constructor
+    track_info();
 
-        /// \deprecated
-        const std::string & get_creator_sensitive_category() const;
+    /// Destructor
+    ~track_info();
 
-        /// \deprecated
-        void set_creator_sensitive_category(const std::string & category_);
+    /// Reset
+    void reset();
 
-        /// Constructor
-        track_info();
+   private:
+    int _id_;                                  //!< G4 particle id
+    int _parent_id_;                           //!< G4 parent id (if any)
+    std::string _particle_name_;               //!< G4 particle name
+    std::string _creator_process_name_;        //!< G4 creation process name
+    std::string _creator_sensitive_category_;  //!< SNG4 sensitive category (obsolete)
+  };
 
-        /// Destructor
-        ~track_info();
+ public:
+  /// Dictionary type of track info
+  typedef std::map<int, track_info> track_info_dict_type;
 
-        /// Reset
-        void reset();
+  const track_info_dict_type& get_track_infos() const;
 
-      private:
+  track_info_dict_type& grab_track_infos();
 
-        int         _id_;                   //!< G4 particle id
-        int         _parent_id_;            //!< G4 parent id (if any)
-        std::string _particle_name_;        //!< G4 particle name
-        std::string _creator_process_name_; //!< G4 creation process name
-        std::string _creator_sensitive_category_; //!< SNG4 sensitive category (obsolete)
+  bool has_track_info(const int id_) const;
 
-      };
+  const track_info& get_track_info(const int id_) const;
 
-    public:
+  track_info& grab_track_info(const int id_);
 
-      /// Dictionary type of track info
-      typedef std::map<int, track_info> track_info_dict_type;
+  void add_track_info(const int id_, const track_info& tinfo_);
 
-      const track_info_dict_type & get_track_infos() const;
+  /// Constructor
+  track_history();
 
-      track_info_dict_type & grab_track_infos();
+  /// Destructor
+  ~track_history();
 
-      bool has_track_info(const int id_) const;
+  /// Reset the track history object
+  void reset();
 
-      const track_info & get_track_info(const int id_) const;
+ private:
+  track_info_dict_type _track_infos_;  //!< Dictionary of track informations
+};
 
-      track_info & grab_track_info(const int id_);
+}  // end of namespace g4
 
-      void add_track_info(const int id_, const track_info & tinfo_);
+}  // end of namespace mctools
 
-      /// Constructor
-      track_history();
-
-      /// Destructor
-      ~track_history();
-
-      /// Reset the track history object
-      void reset();
-
-    private:
-
-      track_info_dict_type _track_infos_; //!< Dictionary of track informations
-
-    };
-
-  } // end of namespace g4
-
-}// end of namespace mctools
-
-#endif // MCTOOLS_G4_TRACK_HISTORY_H
+#endif  // MCTOOLS_G4_TRACK_HISTORY_H
 
 /*
 ** Local Variables: --

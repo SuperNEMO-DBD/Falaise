@@ -99,3 +99,4 @@ endforeach()
 
 set_target_properties(SNSimulation PROPERTIES COMPILE_DEFINITIONS "${SNSimulation_DEFINITIONS}")
 target_link_libraries(SNSimulation PUBLIC Bayeux::Bayeux ${Geant4_LIBRARIES} Boost::thread)
+target_clang_format(SNSimulation)

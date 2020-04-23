@@ -21,130 +21,126 @@
 #include <G4UserEventAction.hh>
 
 // This project:
-#include <mctools/simulated_data.h>
 #include <mctools/base_step_hit_processor.h>
 #include <mctools/g4/loggable_support.h>
+#include <mctools/simulated_data.h>
 
 namespace datatools {
-  // Forward declaration:
-  class properties;
-}
+// Forward declaration:
+class properties;
+}  // namespace datatools
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    // Forward declarations:
-    class run_action;
-    class detector_construction;
+// Forward declarations:
+class run_action;
+class detector_construction;
 
-    /// \brief Geant4 event action interface class
-    class event_action : public G4UserEventAction,
-                         public loggable_support
-    {
-    public:
+/// \brief Geant4 event action interface class
+class event_action : public G4UserEventAction, public loggable_support {
+ public:
+  // typedef ::mctools::simulated_data sim_data_type;
 
-      // typedef ::mctools::simulated_data sim_data_type;
+  /// Check initialization flag
+  bool is_initialized() const;
 
-      /// Check initialization flag
-      bool is_initialized() const;
+  /// Check aborted event flag
+  bool is_aborted_event() const;
 
-      /// Check aborted event flag
-      bool is_aborted_event() const;
+  /// Set aborted event flag
+  void set_aborted_event(bool = true);
 
-      /// Set aborted event flag
-      void set_aborted_event(bool = true);
+  /// Check akilled event flag
+  bool is_killed_event() const;
 
-      /// Check akilled event flag
-      bool is_killed_event() const;
+  /// Set killed event flag
+  void set_killed_event(bool = true);
 
-      /// Set killed event flag
-      void set_killed_event(bool = true);
+  /// Set external event data
+  void set_external_event_data(::mctools::simulated_data &a_external_event_data);
 
-      /// Set external event data
-      void set_external_event_data(::mctools::simulated_data & a_external_event_data);
+  /// Set the flag to save only tracked/unkilled events
+  bool is_save_only_tracked_events() const;
 
-      /// Set the flag to save only tracked/unkilled events
-      bool is_save_only_tracked_events() const;
+  /// Return non mutable event data
+  const ::mctools::simulated_data &get_event_data() const;
 
-      /// Return non mutable event data
-      const ::mctools::simulated_data & get_event_data() const;
+  /// Return mutable event data
+  ::mctools::simulated_data &grab_event_data();
 
-      /// Return mutable event data
-      ::mctools::simulated_data & grab_event_data();
+  /// Return non mutable run action
+  const run_action &get_run_action() const;
 
-      /// Return non mutable run action
-      const run_action & get_run_action() const;
+  /// Return mutable run action
+  run_action &grab_run_action();
 
-      /// Return mutable run action
-      run_action & grab_run_action();
+  /// Constructor
+  event_action(run_action &run_action_, const detector_construction &dctor_);
 
-      /// Constructor
-      event_action(run_action & run_action_, const detector_construction & dctor_);
+  /// Destructor
+  virtual ~event_action();
 
-      /// Destructor
-      virtual ~event_action();
+  /// Initialization from a set of configuration parameters
+  void initialize(const ::datatools::properties &config_);
 
-      /// Initialization from a set of configuration parameters
-      void initialize(const ::datatools::properties & config_);
+  /// Reset
+  void reset();
 
-      /// Reset
-      void reset();
+  // Geant4 interface :
 
-      // Geant4 interface :
+  void BeginOfEventAction(const G4Event *);
 
-      void BeginOfEventAction(const G4Event *);
+  void EndOfEventAction(const G4Event *);
 
-      void EndOfEventAction(const G4Event *);
+ private:
+  /// Action performed at initialization
+  static void _at_init_();
 
-    private:
+  /// Action performed at reset
+  static void _at_reset_();
 
-      /// Action performed at initialization
-      static void _at_init_();
+  /// Action performed at end of event
+  void _process_sensitive_hits_(const G4Event *event_, bool &save_this_event_);
 
-      /// Action performed at reset
-      static void _at_reset_();
+  /// Action performed at end of event
+  void _save_data_();
 
-      /// Action performed at end of event
-      void _process_sensitive_hits_(const G4Event * event_, bool & save_this_event_);
+  /// Action performed at end of event
+  static void _clear_hits_collections_(const G4Event *);
 
-      /// Action performed at end of event
-      void _save_data_();
+  /// Action performed at end of event for multithreaded run
+  void _mt_control_();
 
-      /// Action performed at end of event
-      static void _clear_hits_collections_(const G4Event *);
+ private:
+  // Management:
+  bool _initialized_;  //!< Initialization flag
 
-      /// Action performed at end of event for multithreaded run
-      void _mt_control_();
+  // Configuration:
+  bool _save_only_tracked_events_;  //!< Flag to save only tracked/unkilled event
 
-    private:
+  // Working data:
+  const detector_construction *_detector_construction_;  //!< Handle to the G4 detector construction
+  run_action *_run_action_;                              //!< Handle to the G4 run action
+  ::mctools::simulated_data _event_data_;                //!< Embedded simulated event model
+  ::mctools::simulated_data
+      *_external_event_data_;  //!< Handle to an external simulated event model
+  bool _aborted_event_;        //!< Flag to abort the current event
+  bool _killed_event_;         //!< Flag to kill the current event
+  ::mctools::base_step_hit_processor::step_hit_ptr_collection_type
+      _phits_;  //!< Collection of step hit processors
+};
 
-      // Management:
-      bool                          _initialized_; //!< Initialization flag
+}  // end of namespace g4
 
-      // Configuration:
-      bool _save_only_tracked_events_; //!< Flag to save only tracked/unkilled event
-
-      // Working data:
-      const detector_construction * _detector_construction_; //!< Handle to the G4 detector construction
-      run_action *                  _run_action_; //!< Handle to the G4 run action
-      ::mctools::simulated_data     _event_data_; //!< Embedded simulated event model
-      ::mctools::simulated_data   * _external_event_data_; //!< Handle to an external simulated event model
-      bool                          _aborted_event_; //!< Flag to abort the current event
-      bool                          _killed_event_; //!< Flag to kill the current event
-      ::mctools::base_step_hit_processor::step_hit_ptr_collection_type _phits_; //!< Collection of step hit processors
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
+}  // end of namespace mctools
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(mctools::g4::event_action)
 
-#endif // MCTOOLS_G4_EVENT_ACTION_H
+#endif  // MCTOOLS_G4_EVENT_ACTION_H
 
 /*
 ** Local Variables: --

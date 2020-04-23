@@ -33,120 +33,114 @@
 
 // Forward class declarations:
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace geomtools {
-  class manager;
+class manager;
 }
 
 namespace emfield {
-  class base_electromagnetic_field;
-  class electromagnetic_field_manager;
-}
+class base_electromagnetic_field;
+class electromagnetic_field_manager;
+}  // namespace emfield
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    class detector_construction;
+class detector_construction;
 
-    /// \brief Electromagnetic field using the Geant4 interface
-    class electromagnetic_field : \
-      //public G4MagneticField,
-      public G4ElectroMagneticField,
-      public loggable_support
-    {
-    public:
+/// \brief Electromagnetic field using the Geant4 interface
+class electromagnetic_field :  // public G4MagneticField,
+                               public G4ElectroMagneticField,
+                               public loggable_support {
+ public:
+  /// \brief Field mode
+  enum standalone_field_mode {
+    STANDALONE_UNDEFINED = 0,
+    STANDALONE_MAGNETIC_FIELD = 1,
+    STANDALONE_ELECTRIC_FIELD = 2
+  };
 
-      /// \brief Field mode
-      enum standalone_field_mode {
-        STANDALONE_UNDEFINED      = 0,
-        STANDALONE_MAGNETIC_FIELD = 1,
-        STANDALONE_ELECTRIC_FIELD = 2
-      };
+  // typedef std::map<uint32_t, double> field_map_type;
 
-      // typedef std::map<uint32_t, double> field_map_type;
+  /// Check initialization status
+  bool is_initialized() const;
 
-      /// Check initialization status
-      bool is_initialized() const;
+  /// Check active status
+  bool is_active() const;
 
-      /// Check active status
-      bool is_active() const;
+  /// Check if the name is defined
+  bool has_name() const;
 
-      /// Check if the name is defined
-      bool has_name() const;
+  /// Set the name
+  void set_name(const std::string &name_);
 
-      /// Set the name
-      void set_name(const std::string & name_);
+  /// Return the name
+  const std::string &get_name() const;
 
-      /// Return the name
-      const std::string & get_name() const;
+  /// Set the flag for checking position and time
+  void set_field_check_pos_time(bool);
 
-      /// Set the flag for checking position and time
-      void set_field_check_pos_time(bool);
+  /// Check the flag for checking position and time
+  bool is_field_check_pos_time() const;
 
-      /// Check the flag for checking position and time
-      bool is_field_check_pos_time() const;
+  /// Check if the field is defined
+  bool has_field() const;
 
-      /// Check if the field is defined
-      bool has_field() const;
+  /// Set the field
+  void set_field(const emfield::base_electromagnetic_field &);
 
-      /// Set the field
-      void set_field(const emfield::base_electromagnetic_field &);
+  /// Return the field
+  const emfield::base_electromagnetic_field &get_field() const;
 
-      /// Return the field
-      const emfield::base_electromagnetic_field & get_field() const;
+  /// Default constructor
+  electromagnetic_field();
 
-      /// Default constructor
-      electromagnetic_field();
+  /// Destructor
+  virtual ~electromagnetic_field();
 
-      /// Destructor
-      virtual ~electromagnetic_field();
+  /// Initialization
+  void initialize(const datatools::properties &config_);
 
-      /// Initialization
-      void initialize(const datatools::properties & config_);
+  /// Initialization
+  void initialize();
 
-      /// Initialization
-      void initialize();
+  /// Reset
+  void reset();
 
-      /// Reset
-      void reset();
+  /// Print
+  void dump(std::ostream &out_ = std::clog) const;
 
-      /// Print
-      void dump(std::ostream & out_ = std::clog) const;
+  // G4 interface:
 
-      // G4 interface:
+  /// Return the field value at given position/time
+  void GetFieldValue(const double position_[4], double *em_field_) const;
 
-      /// Return the field value at given position/time
-      void GetFieldValue(const double position_[4], double * em_field_) const;
+  /// Check if the field changes the energy
+  virtual G4bool DoesFieldChangeEnergy() const;
 
-      /// Check if the field changes the energy
-      virtual G4bool DoesFieldChangeEnergy() const;
+ protected:
+  /// Set default attributes values
+  void _set_defaults();
 
-    protected:
+ private:
+  bool _initialized_;                                    //!< Initialization flag
+  std::string _name_;                                    //!< Name
+  const emfield::base_electromagnetic_field *_field_;    //!< Handle to the electromagnetic field
+  bool _field_check_pos_time_;                           //!< Flag for checking position/time
+  geomtools::vector_3d _standalone_constant_mag_field_;  //!< Standalone uniform magnetic field
+  geomtools::vector_3d _standalone_constant_electric_field_;  //!< Standalone uniform electric field
 
-      /// Set default attributes values
-      void _set_defaults();
+  friend class detector_construction;
+};
 
-    private:
+}  // end of namespace g4
 
-      bool                                        _initialized_; //!< Initialization flag
-      std::string                                 _name_; //!< Name
-      const emfield::base_electromagnetic_field * _field_; //!< Handle to the electromagnetic field
-      bool                                        _field_check_pos_time_; //!< Flag for checking position/time
-      geomtools::vector_3d                        _standalone_constant_mag_field_; //!< Standalone uniform magnetic field
-      geomtools::vector_3d                        _standalone_constant_electric_field_; //!< Standalone uniform electric field
+}  // end of namespace mctools
 
-      friend class detector_construction;
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
-
-#endif // MCTOOLS_G4_ELECTROMAGNETIC_FIELD_H
+#endif  // MCTOOLS_G4_ELECTROMAGNETIC_FIELD_H
 
 /*
 ** Local Variables: --

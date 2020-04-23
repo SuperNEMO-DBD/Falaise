@@ -25,25 +25,25 @@
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    namespace processes {
+namespace processes {
 
-      std::string process_type_to_label(G4ProcessType);
+std::string process_type_to_label(G4ProcessType);
 
-      G4ProcessType label_to_process_type(const std::string & label_);
+G4ProcessType label_to_process_type(const std::string& label_);
 
-      std::string em_process_subtype_to_label(int);
+std::string em_process_subtype_to_label(int);
 
-      int label_to_em_process_subtype(const std::string & label_);
+int label_to_em_process_subtype(const std::string& label_);
 
-    } // end of namespace processes
+}  // end of namespace processes
 
-  } // end of namespace g4
+}  // end of namespace g4
 
-} // end of namespace mctools
+}  // end of namespace mctools
 
-#endif // MCTOOLS_G4_PROCESSES_UTILS_H
+#endif  // MCTOOLS_G4_PROCESSES_UTILS_H
 
 /*
 ** Local Variables: --

@@ -32,57 +32,52 @@ class G4Navigator;
 class G4Material;
 
 namespace datatools {
-  class properties;
+class properties;
 }
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    /// \brief Stacking action using the Geant4 interface
-    class stacking_action : public G4UserStackingAction,
-                            public loggable_support
-    {
-    public:
+/// \brief Stacking action using the Geant4 interface
+class stacking_action : public G4UserStackingAction, public loggable_support {
+ public:
+  /// Constructor
+  stacking_action();
 
-      /// Constructor
-      stacking_action ();
+  /// Destructor
+  virtual ~stacking_action();
 
-      /// Destructor
-      virtual ~stacking_action ();
+  /// Initialize
+  void initialize(const datatools::properties &config_);
 
-      /// Initialize
-      void initialize (const datatools::properties & config_);
+  // Geant4 interface :
+  virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track *a_track);
 
-      // Geant4 interface :
-      virtual G4ClassificationOfNewTrack ClassifyNewTrack (const G4Track * a_track);
+  // Geant4 interface :
+  virtual void NewStage();
 
-      // Geant4 interface :
-      virtual void NewStage ();
+  // Geant4 interface :
+  virtual void PrepareNewEvent();
 
-      // Geant4 interface :
-      virtual void PrepareNewEvent ();
+ private:
+  G4Navigator *_g4_navigator_;
+  bool _kill_secondary_particles_;
+  std::vector<std::string> _killer_volume_names_;
+  std::vector<G4LogicalVolume *> _killer_volumes_;
+  std::vector<std::string> _killer_material_names_;
+  std::vector<G4Material *> _killer_materials_;
+};
 
-    private:
+}  // end of namespace g4
 
-      G4Navigator *                  _g4_navigator_;
-      bool                           _kill_secondary_particles_;
-      std::vector<std::string>       _killer_volume_names_;
-      std::vector<G4LogicalVolume *> _killer_volumes_;
-      std::vector<std::string>       _killer_material_names_;
-      std::vector<G4Material *>      _killer_materials_;
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
+}  // end of namespace mctools
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(mctools::g4::stacking_action)
 
-#endif // MCTOOLS_G4_STACKING_ACTION_H
+#endif  // MCTOOLS_G4_STACKING_ACTION_H
 
 /*
 ** Local Variables: --

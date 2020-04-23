@@ -21,75 +21,67 @@
 
 namespace mctools {
 
-  namespace g4 {
+namespace g4 {
 
-    class particles_physics_constructor : public base_physics_constructor
-    {
-    public:
+class particles_physics_constructor : public base_physics_constructor {
+ public:
+  particles_physics_constructor();
 
-      particles_physics_constructor ();
+  virtual ~particles_physics_constructor();
 
-      virtual ~particles_physics_constructor ();
+  virtual void initialize(const datatools::properties& config_,
+                          physics_constructor_dict_type& dict_);
 
-      virtual void initialize (const datatools::properties & config_,
-                               physics_constructor_dict_type & dict_);
+  virtual void reset();
 
-      virtual void reset ();
+  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
+                         const std::string& indent_ = "", bool inherit_ = false) const;
 
-      virtual void tree_dump (std::ostream      & out_    = std::clog,
-                              const std::string & title_  = "",
-                              const std::string & indent_ = "",
-                              bool inherit_               = false) const;
+  /// Particles construction Geant4 interface :
+  virtual void ConstructParticle();
 
+ protected:
+  // these methods construct particles
+  void _ConstructBosons();
+  void _ConstructLeptons();
+  void _ConstructMesons();
+  void _ConstructBaryons();
+  void _ConstructIons();
+  static void _ConstructUserLimits();
 
-      /// Particles construction Geant4 interface :
-      virtual void ConstructParticle ();
+  void _set_defaults();
 
-    protected:
+ private:
+  // Particles:
+  bool _use_geantinos_;
+  bool _use_optical_photons_;
+  bool _use_muon_leptons_;
+  bool _use_tau_leptons_;
+  bool _use_light_mesons_;
+  bool _use_charm_mesons_;
+  bool _use_bottom_mesons_;
+  bool _use_nucleons_;
+  bool _use_strange_baryons_;
+  bool _use_charm_baryons_;
+  bool _use_bottom_baryons_;
+  bool _use_light_nuclei_;
+  bool _he3_as_generic_ion_;
+  bool _use_light_anti_nuclei_;
+  bool _use_generic_ion_;
 
-      // these methods construct particles
-      void _ConstructBosons();
-      void _ConstructLeptons();
-      void _ConstructMesons();
-      void _ConstructBaryons();
-      void _ConstructIons();
-      static void _ConstructUserLimits();
+  DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_INTERFACE(base_physics_constructor,
+                                                       particles_physics_constructor)
+};
 
-      void _set_defaults();
+}  // end of namespace g4
 
-    private:
-
-      // Particles:
-      bool        _use_geantinos_;
-      bool        _use_optical_photons_;
-      bool        _use_muon_leptons_;
-      bool        _use_tau_leptons_;
-      bool        _use_light_mesons_;
-      bool        _use_charm_mesons_;
-      bool        _use_bottom_mesons_;
-      bool        _use_nucleons_;
-      bool        _use_strange_baryons_;
-      bool        _use_charm_baryons_;
-      bool        _use_bottom_baryons_;
-      bool        _use_light_nuclei_;
-      bool        _he3_as_generic_ion_;
-      bool        _use_light_anti_nuclei_;
-      bool        _use_generic_ion_;
-
-      DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_INTERFACE (base_physics_constructor,
-                                                            particles_physics_constructor)
-
-    };
-
-  } // end of namespace g4
-
-} // end of namespace mctools
+}  // end of namespace mctools
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(mctools::g4::particles_physics_constructor)
 
-#endif // MCTOOLS_G4_PARTICLES_PHYSICS_CONSTRUCTOR_H
+#endif  // MCTOOLS_G4_PARTICLES_PHYSICS_CONSTRUCTOR_H
 
 /*
 ** Local Variables: --
