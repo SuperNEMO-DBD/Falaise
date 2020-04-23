@@ -23,12 +23,24 @@
 #-----------------------------------------------------------------------
 # Configure library
 #
+configure_file(version.h.in version.h @ONLY)
+configure_file(resource.cc.in resource.cc @ONLY)
 
+# - Generate binreloc header/source with mangled names, ensuring first
+# character(s) are a valid for a C identifier
+string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
+set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
+configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
+
+
+#-----------------------------------------------------------------------
+# Declare sources
+#
 set(FalaiseLibrary_HEADERS
+  ${CMAKE_CURRENT_BINARY_DIR}/version.h
   exitcodes.h
   falaise.h
   resource.h
-  version.h.in
   path.h
   property_set.h
   quantity.h
@@ -37,17 +49,6 @@ set(FalaiseLibrary_HEADERS
   detail/falaise_sys.h
   metadata_utils.h
 )
-
-#-----------------------------------------------------------------------
-# Declare sources
-#
-configure_file(resource.cc.in resource.cc @ONLY)
-
-# - Generate binreloc header/source with mangled names, ensuring first
-# character(s) are a valid for a C identifier
-string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
-set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
-configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 
 set(FalaiseLibrary_SOURCES
   version.cc
@@ -72,10 +73,10 @@ set(FalaiseLibrary_TESTS_CATCH)
 include(snemo.cmake)
 
 # - Publish headers
-foreach(_hdrin ${FalaiseLibrary_HEADERS})
-  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
-  configure_file(${_hdrin} ${PROJECT_BUILD_INCLUDEDIR}/falaise/${_hdrout} @ONLY)
-endforeach()
+#foreach(_hdrin ${FalaiseLibrary_HEADERS})
+#  string(REGEX REPLACE "\\.in$" "" _hdrout "${_hdrin}")
+#  configure_file(${_hdrin} ${PROJECT_BUILD_INCLUDEDIR}/falaise/${_hdrout} @ONLY)
+#endforeach()
 
 
 #-----------------------------------------------------------------------
@@ -85,11 +86,10 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
 target_include_directories(Falaise PUBLIC
-  $<BUILD_INTERFACE:${FALAISE_BUILD_INCLUDEDIR}>
-  $<BUILD_INTERFACE:${PROJECT_BUILD_INCLUDEDIR}/falaise>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/falaise>
   )
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
 target_clang_format(Falaise)
@@ -139,8 +139,11 @@ install(TARGETS Falaise FalaiseModule
   )
 
 # - Install public headers (preliminary)
-install(DIRECTORY ${FALAISE_BUILD_INCLUDEDIR}/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_BINARY_DIR}/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/falaise
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.ipp"
+  PATTERN "CMakeFiles" EXCLUDE
+  PATTERN "test" EXCLUDE
   )
 
 if(FALAISE_ENABLE_TESTING)
