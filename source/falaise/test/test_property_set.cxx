@@ -252,6 +252,12 @@ TEST_CASE("property_set type put/get specialization works", "") {
   }
 }
 
+TEST_CASE("Integer put/get specializations work", "") {
+  // Properties only stores int, but allow put/get to supply
+  // other int types provided value is within numeric_limits.
+  REQUIRE(false);
+}
+
 TEST_CASE("Creation from file works", "") {
   std::string fname{"kakhjbfdkb.conf"};
   datatools::properties tmp{makeSampleProperties()};
@@ -269,6 +275,11 @@ TEST_CASE("Creation from file works", "") {
   }
 
   remove(fname.c_str());
+}
+
+TEST_CASE("Creation from istream works", "") {
+  // So we're not constrained by filesystem
+  REQUIRE(false);
 }
 
 // Use the below as examples of how datatools::properties
