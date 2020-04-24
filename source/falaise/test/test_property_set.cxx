@@ -113,6 +113,15 @@ TEST_CASE("Retriever interfaces work", "") {
 
   REQUIRE_THROWS_AS(ps.get<falaise::path>("flatstring"), falaise::wrong_type_error);
   REQUIRE_NOTHROW(ps.get<falaise::path>("apath"));
+
+  // Provide easy defaulting interfaces to handle the self default case
+  // x = 2;
+  // x = ps.get<T>("key", x);
+  // Post-conditions are:
+  // - x = 2 if "key" not in pset
+  // - x = value of key if key exists and of right type
+  // - throws wrong_type if key exists and not type of x
+  REQUIRE(false);
 }
 
 TEST_CASE("Insertion/Erase interfaces work", "") {
