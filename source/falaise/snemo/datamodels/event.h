@@ -4,9 +4,11 @@
 #ifndef FALAISE_SNEMO_DATAMODELS_EVENT_H
 #define FALAISE_SNEMO_DATAMODELS_EVENT_H
 
-#include <string>
-#include <stdexcept>
 #include <bayeux/datatools/things.h>
+
+#include <stdexcept>
+#include <string>
+#include <type_traits>
 
 namespace snedm {
 //! Event record type definition
@@ -26,6 +28,8 @@ class existing_product_key : public std::logic_error {
  */
 template <typename T>
 T& getOrAddToEvent(std::string const& key, event_record& event) {
+  static_assert(std::is_base_of<datatools::i_serializable, T>::value,
+                "snedm::event_record can only store types derived from datatools::i_serializable");
   if (event.has(key)) {
     return event.grab<T>(key);
   }
@@ -36,15 +40,20 @@ T& getOrAddToEvent(std::string const& key, event_record& event) {
 /*!
  * \tparam T type of value to be added
  * \param[in] key key for value
- * \param[in] event event record to add the value to
+ * \param[in] event snedm::event_record to add the value to
  * \returns reference to created value held at key
  * \throws snedm::existing_product_key if key already exists
  */
 template <typename T>
 T& addToEvent(std::string const& key, event_record& event) {
+  static_assert(std::is_base_of<datatools::i_serializable, T>::value,
+                "snedm::event_record can only store types derived from datatools::i_serializable");
   if (event.has(key)) {
-    throw existing_product_key{"snedm:event_record '" + event.get_name() + "' already holds product '" + key + "'"};
+    throw existing_product_key{"snedm:event_record '" + event.get_name() +
+                               "' already holds product '" + key + "'"};
   }
+  // add will throw if the product exists, but check
+  // explicitly to raise a clearer exception
   return event.add<T>(key);
 }
 
