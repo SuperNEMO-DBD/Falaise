@@ -26,6 +26,8 @@ namespace falaise {
 
 template <int32_t lower_bound, int32_t upper_bound>
 class bounded_int {
+  static_assert(lower_bound != upper_bound, "bounds cannot be equal, use a named constant instead");
+  static_assert(lower_bound < upper_bound, "lower_bound must be less than upper_bound");
  public:
   bounded_int() = default;
   bounded_int(int32_t x) : value_{x} {

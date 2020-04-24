@@ -9,6 +9,14 @@ TEST_CASE("Raw bounded construction", "") {
   REQUIRE(x.max() == 42);
 }
 
+// To be refactored once we find a good method for
+// testing compile time constraints
+//TEST_CASE("Compile time bounds checking", "") {
+//  // Should not be able to compile these!
+//  falaise::bounded_int<2,1> x{};
+//  falaise::bounded_int<5,5> y{};
+//}
+
 TEST_CASE("Out of bounds construction", "") {
   using address = falaise::bounded_int<0,119>;
 
