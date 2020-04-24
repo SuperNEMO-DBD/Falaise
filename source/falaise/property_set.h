@@ -1,6 +1,7 @@
 #ifndef FALAISE_PROPERTY_SET_H
 #define FALAISE_PROPERTY_SET_H
 
+#include <ios>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -71,6 +72,15 @@ class wrong_type_error : public std::logic_error {
  *   // ... use ps ...
  * }
  * ```
+ *
+ * or from any input stream, e.g
+ *
+ * ```
+ * void example(std::istream& is) {
+ *   falaise::property_set ps{};
+ *   falaise::make_property_set(is, ps);
+ *   // ... use ps ...
+ * }
  *
  * Storage and retrieval of parameters is typesafe in the sense that:
  *
@@ -570,6 +580,13 @@ void property_set::get_impl_(std::string const& key, falaise::quantity_t<T>& res
  * \param ps property_set to fill with data
  */
 void make_property_set(const std::string& filename, property_set& ps);
+
+//! Construct a property_set from a std::istream
+/*!
+ * \param is stream from which to read data
+ * \param ps  property_set to fill with data
+ */
+void make_property_set(std::istream& is, property_set& ps);
 
 }  // namespace falaise
 

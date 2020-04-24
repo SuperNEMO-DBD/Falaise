@@ -3,6 +3,7 @@
 #include "falaise/property_set.h"
 
 #include <cstdio>
+#include <sstream>
 #include "bayeux/datatools/clhep_units.h"
 #include "bayeux/datatools/units.h"
 
@@ -287,8 +288,21 @@ TEST_CASE("Creation from file works", "") {
 }
 
 TEST_CASE("Creation from istream works", "") {
-  // So we're not constrained by filesystem
-  REQUIRE(false);
+  // Creation from file exercises ifstream case
+  // Use stringstream here
+  const char* psRaw = R"ps(
+    x : integer = 2
+    y : string = "hello"
+  )ps";
+  std::istringstream iss{psRaw};
+
+  falaise::property_set ps;
+  REQUIRE_NOTHROW(make_property_set(iss, ps));
+
+  auto names = ps.get_names();
+  REQUIRE(names.size() == 2);
+  REQUIRE(ps.get<int>("x") == 2);
+  REQUIRE(ps.get<std::string>("y") == "hello");
 }
 
 // Use the below as examples of how datatools::properties
