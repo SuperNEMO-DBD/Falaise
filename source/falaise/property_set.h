@@ -60,14 +60,23 @@ class wrong_type_error : public std::logic_error {
  * ps.put("a",2);
  *
  * // Get the integer
- * int x = ps.get<int>("a");
+ * auto x = ps.get<int>("a");
  *
  * // Replace the integer with a double
- * ps.put("a",3.14);
+ * ps.put_or_replace("a",3.14);
  *
  * // Get a string, setting a default value in case key "b" doesn't exist
  * std::string s = ps.get<std::string>("b", "hello");
  * std::cout << s << std::endl; // prints "hello"
+ *
+ * // Assign value a variable only if key exists
+ * std::string myDefault = "foo";
+ * ps.assign_if("nonexistent", myDefault);
+ * std::cout << myDefault << std::endl; // prints "foo"
+ *
+ * ps.put("myDef", "bar");
+ * ps.assign_if("myDef", myDefault);
+ * std::cout << myDefault << std::endl; // prints "bar"
  * ```
  *
  * or it can be constructed from an existing instance of @ref datatools::properties
@@ -120,7 +129,7 @@ class wrong_type_error : public std::logic_error {
  *   will be thrown if you try to retrieve a value with a different type, e.g
  *   ``` cpp
  *   ps.put("a", 2);
- *   double x = ps.get<double>("a"); // throws wrong_type_error
+ *   auto x = ps.get<double>("a"); // throws wrong_type_error
  *   ```
  *
  * Support for @ref path and @ref quantity_t is provided to support validation
@@ -310,6 +319,19 @@ class property_set {
   template <typename T>
   T get(std::string const& key, T const& default_value) const;
 
+  //! Assign the value held at a key to an input parameter of type T if the key exists
+  //! and holds T
+  /*!
+   * \tparam T type of value to be assigned
+   * \param[in] key key for value to find
+   * \param[in,out] parameter reference to variable to assign value
+   * \throw wrong_type_error if key is found and associated value is not type T
+   * \post parameter has value stored at key if key exists and of matching type, unmodified
+   *       otherwise
+   */
+  template <typename T>
+  void assign_if(std::string const& key, T& parameter) const;
+
   //! Convert back to datatools::properties
   operator datatools::properties() const;
 
@@ -349,10 +371,9 @@ class property_set {
 
  private:
   //! List of types that property_set can hold
-  using types_ =
-      boost::mpl::vector<int, double, bool, std::string, falaise::path,
-                         falaise::quantity, std::vector<int>, std::vector<double>,
-                         std::vector<bool>, std::vector<std::string>>;
+  using types_ = boost::mpl::vector<int, double, bool, std::string, falaise::path,
+                                    falaise::quantity, std::vector<int>, std::vector<double>,
+                                    std::vector<bool>, std::vector<std::string>>;
   template <typename T>
   struct can_hold_ {
     typedef typename boost::mpl::contains<types_, T>::type type;
@@ -485,6 +506,16 @@ inline property_set property_set::get(std::string const& key,
 }
 
 template <typename T>
+void property_set::assign_if(std::string const& key, T& parameter) const {
+  if (ps_.has_key(key)) {
+    if (!is_type_<T>(key)) {
+      throw wrong_type_error("value at '" + key + "' is not of requested type");
+    }
+    get_impl_(key, parameter);
+  }
+}
+
+template <typename T>
 void property_set::put(std::string const& key, T const& value) {
   static_assert(can_hold_t_<T>::value, "property_set cannot hold values of type T");
   // Check directly to use our clearer exception type
@@ -547,8 +578,7 @@ inline void property_set::put_impl_(std::string const& key, falaise::path const&
 
 //! Private specialization of put_impl_ for @ref quantity
 template <>
-inline void property_set::put_impl_(std::string const& key,
-                                    falaise::quantity const& value) {
+inline void property_set::put_impl_(std::string const& key, falaise::quantity const& value) {
   ps_.store_with_explicit_unit(key, value());
   ps_.set_unit_symbol(key, value.unit());
 }
@@ -574,8 +604,7 @@ inline void property_set::get_impl_(std::string const& key, falaise::path& resul
 
 // Private specialization of get_impl_ for @ref units::quantity type
 template <>
-inline void property_set::get_impl_(std::string const& key,
-                                    falaise::quantity& result) const {
+inline void property_set::get_impl_(std::string const& key, falaise::quantity& result) const {
   // Fetch with explicit unit gives value in CLHEP scale, so must
   // divide by the scaling factor for the symbol
   double rescaledValue =

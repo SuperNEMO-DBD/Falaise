@@ -122,7 +122,20 @@ TEST_CASE("Retriever interfaces work", "") {
   // - x = 2 if "key" not in pset
   // - x = value of key if key exists and of right type
   // - throws wrong_type if key exists and not type of x
-  REQUIRE(false);
+  const int kMyDefault = 415627;
+  int myDefault = kMyDefault;
+  SECTION("No assignment when key does not exist") {
+    REQUIRE_NOTHROW(ps.assign_if("thiskeydoesnotexists", myDefault));
+    REQUIRE(myDefault == kMyDefault);
+  }
+  SECTION("Attempted assignment with mismatched types throws") {
+    REQUIRE_THROWS_AS(ps.assign_if("baz", myDefault), falaise::wrong_type_error);
+    REQUIRE(myDefault == kMyDefault);
+  }
+  SECTION("Assignment succeeds on matching key and type") {
+    REQUIRE_NOTHROW(ps.assign_if("foo", myDefault));
+    REQUIRE(myDefault == ps.get<int>("foo"));
+  }
 }
 
 TEST_CASE("Insertion/Erase interfaces work", "") {
