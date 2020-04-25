@@ -47,6 +47,12 @@ class wrong_type_error : public std::logic_error {
   using std::logic_error::logic_error;
 };
 
+//! Exception thrown when extracted value does not requirements of a predicate
+//! function
+class unmet_predicate_error : public std::logic_error {
+  using std::logic_error::logic_error;
+};
+
 //! Class holding a set of key-value properties
 /*!
  * Provides a convenient adaptor interface over datatools::properties,
@@ -215,6 +221,39 @@ class wrong_type_error : public std::logic_error {
  * }
  * ```
  *
+ * Limited validation of extracted values is available through the @ref get_if and @ref assign_if
+ * interfaces. These forms allow a value meeting the [UnaryPredicate](https://en.cppreference.com/w/cpp/named_req/Predicate)
+ * concept to be supplied that can validate the value as needed. For example:
+ *
+ * ```cpp
+ * // Use a lambda as simple example, but any callable taking value and returning bool works
+ * auto int_predicate = [](const int x) {
+ *   // Return true if the value is between 0 and 8
+ *   return (x >= 0) && (x <= 8);
+ * }
+ *
+ * falaise::property_set ps;
+ * ps.put("good", 5);
+ * ps.put("bad", -4);
+ *
+ * // Required key forms
+ * auto good = ps.get_if<int>("good", int_predicate); // fine, good = 5
+ * auto bad = ps.get_if<int>("bad", int_predicate); // throws falaise::unmet_predicate_error exception
+ *
+ * // Optional key forms
+ * auto goodDefault = ps.get_if<int>("nokey", 2, int_predicate); // fine
+ * auto badDefault = ps.get_if<int>("good", 293, int_predicate); // throws, default value must meet constraint!
+ * auto badValue = ps.get_if<int>("bad", 6, int_predicate); // throws, default is good, value is bad!
+ *
+ * // Assign_if forms
+ * int myParam = 2;
+ * ps.assign_if("nokey", myParam, int_predicate); // fine, myParam is 2
+ * ps.assign_if("good", myParam, int_predicate); //fine, myParam is now 5
+ * ps.assign_if("bad", myParam, int_predicate); //throws, myParam is still 5
+ * int myParam = 84632;
+ * ps.assign_if("anykey", myParam, int_predicate); //throws, myParam must meet constraint!
+ * ```
+ *
  * Combined, these various ways of using property_set allow simple and reliable usage
  * for configuration and configuration validation in Falaise modules.
  *
@@ -308,6 +347,21 @@ class property_set {
   template <typename T>
   T get(std::string const& key) const;
 
+  //! Return the value of type T held at supplied key if it meets a constraint
+  /*!
+   * \tparam T type of value to be returned
+   * \tparam UnaryPredicate callable taking a value of T and returning bool
+   * \param[in] key key for value to find
+   * \param[in] p predicate to validate value with
+   * \returns value held at key
+   * \throw missing_key_error if key is not found
+   * \throw wrong_type_error if value at key is not of type T
+   * \throw unmet_predicate_error id p(value) returns false
+   */
+  template <typename T, typename UnaryPredicate>
+  T get_if(std::string const& key, UnaryPredicate p) const;
+
+
   //! Return the value of type T associated with key, or a default if the key is
   //!  not present
   /*!
@@ -318,6 +372,21 @@ class property_set {
    */
   template <typename T>
   T get(std::string const& key, T const& default_value) const;
+
+  //! Return the value of type T held at supplied key, or a default value, if both meet a constraint
+  /*!
+   * \tparam T type of value to be returned
+   * \tparam UnaryPredicate callable taking a value of T and returning bool
+   * \param[in] key key for value to find
+   * \param[in] default_value value to return if key is not found
+   * \param[in] p predicate to validate values with
+   * \returns value held at key
+   * \throw missing_key_error if key is not found
+   * \throw wrong_type_error if value at key is not of type T
+   * \throw unmet_predicate_error if p returns false for default or extracted value
+   */
+  template <typename T, typename UnaryPredicate>
+  T get_if(std::string const& key, T const& default_value, UnaryPredicate p) const;
 
   //! Assign the value held at a key to an input parameter of type T if the key exists
   //! and holds T
@@ -331,6 +400,21 @@ class property_set {
    */
   template <typename T>
   void assign_if(std::string const& key, T& parameter) const;
+
+  //! Assign the value held at a key to an input parameter of type T if the key exists
+  //! , holds T, and meets a constraint
+  /*!
+   * \tparam T type of value to be assigned
+   * \tparam UnaryPredicate callable taking a value of T and returning bool
+   * \param[in] key key for value to find
+   * \param[in,out] parameter reference to variable to assign value
+   * \param[in] p predicate to validate values with
+   * \throw wrong_type_error if key is found and associated value is not type T
+   * \post parameter has value stored at key if key exists, of matching type, and meets contraint, unmodified
+   *       otherwise
+   */
+   template <typename T, typename UnaryPredicate>
+  void assign_if(std::string const& key, T& parameter, UnaryPredicate p) const;
 
   //! Convert back to datatools::properties
   operator datatools::properties() const;
@@ -483,6 +567,15 @@ inline property_set property_set::get(std::string const& key) const {
   return property_set{tmp};
 }
 
+template <typename T, typename UnaryPredicate>
+T property_set::get_if(std::string const& key, UnaryPredicate p) const {
+  T result = get<T>(key);
+  if (p(result)) {
+    return result;
+  }
+  throw unmet_predicate_error("value at '" + key + "' failed to meet supplied constraint");
+}
+
 template <typename T>
 T property_set::get(std::string const& key, T const& default_value) const {
   T result{default_value};
@@ -493,6 +586,19 @@ T property_set::get(std::string const& key, T const& default_value) const {
     get_impl_(key, result);
   }
   return result;
+}
+
+template <typename T, typename UnaryPredicate>
+T property_set::get_if(std::string const& key, T const& default_value, UnaryPredicate p) const {
+  // Precondition, because parameter itself may be invalid
+  if (!p(default_value)) {
+    throw unmet_predicate_error("supplied default_value failed to meet supplied constraint");
+  }
+  T result = get<T>(key, default_value);
+  if (p(result)) {
+    return result;
+  }
+  throw unmet_predicate_error("value at '" + key + "' failed to meet supplied constraint");
 }
 
 // Specialization of get for @ref property_set
@@ -508,10 +614,26 @@ inline property_set property_set::get(std::string const& key,
 template <typename T>
 void property_set::assign_if(std::string const& key, T& parameter) const {
   if (ps_.has_key(key)) {
-    if (!is_type_<T>(key)) {
-      throw wrong_type_error("value at '" + key + "' is not of requested type");
+    parameter = get<T>(key);
+  }
+}
+
+template <typename T, typename UnaryPredicate>
+void property_set::assign_if(std::string const& key, T& parameter, UnaryPredicate p) const {
+  // Precondition, because parameter itself may be invalid
+  if (!p(parameter)) {
+    throw unmet_predicate_error("supplied input parameter to assign_if failed to meet supplied constraint");
+  }
+
+  // We don't can't non-predicate assign_if because that immediately modifies the parameter
+  if (ps_.has_key(key)) {
+    auto tmp = get<T>(key);
+    // Postcondition
+    if (p(tmp)) {
+      parameter = tmp;
+      return;
     }
-    get_impl_(key, parameter);
+    throw unmet_predicate_error("value at '" + key + "' failed to meet supplied constraint");
   }
 }
 

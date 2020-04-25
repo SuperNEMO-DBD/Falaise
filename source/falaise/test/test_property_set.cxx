@@ -275,10 +275,52 @@ TEST_CASE("property_set type put/get specialization works", "") {
   }
 }
 
-TEST_CASE("Integer put/get specializations work", "") {
-  // Properties only stores int, but allow put/get to supply
-  // other int types provided value is within numeric_limits.
-  REQUIRE(false);
+TEST_CASE("Parameter validation works", "") {
+  auto int_predicate = [](const int x) {
+    return (0 <= x) && (x <= 8);
+  };
+
+  falaise::property_set integrals;
+  integrals.put("in_bound", 5);
+  integrals.put("out_bound", -4);
+
+  // Required key forms
+  REQUIRE(integrals.get_if<int>("in_bound", int_predicate) == 5);
+  REQUIRE_THROWS_AS(integrals.get_if<int>("out_bound", int_predicate), falaise::unmet_predicate_error);
+  REQUIRE_THROWS_AS(integrals.get_if<int>("badkey", int_predicate), falaise::missing_key_error);
+
+  // Default value forms
+  // No key, good default is fine
+  REQUIRE(integrals.get_if<int>("badkey", 3, int_predicate) == 3);
+  // Good key, bad default must throw
+  REQUIRE_THROWS_AS(integrals.get_if<int>("in_bound", -4, int_predicate), falaise::unmet_predicate_error);
+  // Bad key, good default must throw
+  REQUIRE_THROWS_AS(integrals.get_if<int>("out_bound", 2, int_predicate), falaise::unmet_predicate_error);
+
+  // Assign_if forms
+  int myGoodParam = 7;
+  int myBadParam = 9;
+
+  // Extracting no key must no modify parameter
+  REQUIRE_NOTHROW(integrals.assign_if("nokey", myGoodParam, int_predicate));
+  REQUIRE(myGoodParam == 7);
+
+  // Extracting a bad value must throw and not modify
+  REQUIRE_THROWS_AS(integrals.assign_if("out_bound", myGoodParam, int_predicate), falaise::unmet_predicate_error);
+  REQUIRE(myGoodParam == 7);
+
+  // Supplying a bad value and a good key must throw and not modify
+  REQUIRE_THROWS_AS(integrals.assign_if("in_bound", myBadParam, int_predicate), falaise::unmet_predicate_error);
+  REQUIRE(myBadParam == 9);
+
+  // Good parameter and good key must correctly modify and not throw
+  REQUIRE_NOTHROW(integrals.assign_if("in_bound", myGoodParam, int_predicate));
+  REQUIRE(myGoodParam == integrals.get<int>("in_bound"));
+  // Investigate if we can make the following work with constraints:
+  //uint16_t x;
+  //integrals.assign_if("int32_t", x);
+  //x = integrals.get<uint16_t>("int32_t");
+
 }
 
 TEST_CASE("Creation from file works", "") {
