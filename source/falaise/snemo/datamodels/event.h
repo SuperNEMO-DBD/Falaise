@@ -1,4 +1,4 @@
-/// \file falaise/snemo/datatmodels/event.h
+/// \file falaise/snemo/datamodels/event.h
 /// \brief Event type and free functions
 
 #ifndef FALAISE_SNEMO_DATAMODELS_EVENT_H

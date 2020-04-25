@@ -1,4 +1,4 @@
-//! \file  falaise/app/metadata_utils.h
+//! \file  falaise/metadata_utils.h
 //! \brief Utilities for accessing metadata
 //
 // Copyright (c) 2017 by François Mauger <mauger@lpccaen.in2p3.fr>

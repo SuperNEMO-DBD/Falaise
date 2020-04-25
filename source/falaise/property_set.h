@@ -1,3 +1,21 @@
+//! \file falaise/property_set.h
+// Copyright (c) 2020 by Ben Morgan <Ben.Morgan@warwick.ac.uk>
+// Copyright (c) 2020 by The University of Warwick
+//
+// This file is part of Falaise.
+//
+// Falaise is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Falaise is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef FALAISE_PROPERTY_SET_H
 #define FALAISE_PROPERTY_SET_H
 
@@ -29,7 +47,7 @@ class wrong_type_error : public std::logic_error {
   using std::logic_error::logic_error;
 };
 
-//! \brief Class holding a set of key-value properties
+//! Class holding a set of key-value properties
 /*!
  * Provides a convenient adaptor interface over datatools::properties,
  * targeted at developers of modules for Falaise needing key-value storage
@@ -75,12 +93,13 @@ class wrong_type_error : public std::logic_error {
  *
  * or from any input stream, e.g
  *
- * ```
+ * ```cpp
  * void example(std::istream& is) {
  *   falaise::property_set ps{};
  *   falaise::make_property_set(is, ps);
  *   // ... use ps ...
  * }
+ * ```
  *
  * Storage and retrieval of parameters is typesafe in the sense that:
  *
