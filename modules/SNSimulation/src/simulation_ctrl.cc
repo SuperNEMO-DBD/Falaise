@@ -12,7 +12,7 @@
 // - Boost:
 #include <boost/bind.hpp>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
+#include <bayeux/datatools/exception.h>
 
 // This project:
 #include <snsim/manager.h>

@@ -44,11 +44,11 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/logger.h>
-#include <datatools/properties.h>
-#include <datatools/units.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/units.h>
+#include <bayeux/datatools/utils.h>
 
 // This project:
 #include <snsim/electromagnetic_field.h>

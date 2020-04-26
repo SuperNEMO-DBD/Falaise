@@ -11,17 +11,17 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/clhep_units.h>
-#include <datatools/exception.h>
-#include <datatools/properties.h>
-#include <datatools/units.h>
+#include <bayeux/datatools/clhep_units.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/units.h>
 // - Bayeux/geomtools:
-#include <geomtools/manager.h>
-#include <geomtools/utils.h>
+#include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/utils.h>
 // - Bayeux/emfield:
-#include <emfield/base_electromagnetic_field.h>
-#include <emfield/electromagnetic_field_manager.h>
-#include <emfield/emfield_geom_plugin.h>
+#include <bayeux/emfield/base_electromagnetic_field.h>
+#include <bayeux/emfield/electromagnetic_field_manager.h>
+#include <bayeux/emfield/emfield_geom_plugin.h>
 
 // This project:
 #include <snsim/em_field_g4_utils.h>

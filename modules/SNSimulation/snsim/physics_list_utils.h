@@ -15,8 +15,8 @@
 // - Boost :
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools :
-#include <datatools/handle.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/handle.h>
+#include <bayeux/datatools/properties.h>
 // - Geant4 :
 #include <G4BuilderType.hh>
 #include <G4VModularPhysicsList.hh>

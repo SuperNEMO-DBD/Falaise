@@ -10,8 +10,8 @@
 // - Boost:
 #include <boost/algorithm/string/replace.hpp>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/properties.h>
 // - Geant4:
 #include <globals.hh>
 

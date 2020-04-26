@@ -21,7 +21,7 @@
 #include <G4VHit.hh>
 
 // This project:
-#include <mctools/base_step_hit.h>
+#include <bayeux/mctools/base_step_hit.h>
 
 namespace snsim {
 

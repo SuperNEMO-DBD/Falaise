@@ -23,7 +23,7 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/geomtools :
-#include <geomtools/smart_id_locator.h>
+#include <bayeux/geomtools/smart_id_locator.h>
 // - Geant4:
 #include <G4MagneticField.hh>
 

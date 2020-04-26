@@ -30,17 +30,17 @@
 #include <G4VVisManager.hh>
 #include <G4ios.hh>
 // - Bayeux/datatools:
-#include <datatools/ioutils.h>
-#include <datatools/properties.ipp>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/properties.ipp>
 
 // This project:
-#include <mctools/biasing/primary_event_bias.h>
+#include <bayeux/mctools/biasing/primary_event_bias.h>
 #include <snsim/detector_construction.h>
 #include <snsim/manager.h>
 #include <snsim/run_action.h>
 #include <snsim/sensitive_detector.h>
 #include <snsim/simulation_ctrl.h>
-#include <mctools/simulated_data.ipp>
+#include <bayeux/mctools/simulated_data.ipp>
 
 namespace snsim {
 

@@ -4,9 +4,9 @@
 #include <snsim/biasing_manager.h>
 
 // - Bayeux/datatools :
-#include <datatools/exception.h>
-#include <datatools/properties.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/utils.h>
 
 // This project:
 #include <snsim/detector_construction.h>

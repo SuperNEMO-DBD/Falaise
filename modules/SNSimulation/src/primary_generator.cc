@@ -18,14 +18,14 @@
 // - Boost:
 #include <boost/algorithm/string.hpp>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/i_tree_dump.h>
-#include <datatools/properties.h>
-#include <datatools/units.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/units.h>
 // - Bayeux/genbb_help:
-#include <genbb_help/i_genbb.h>
+#include <bayeux/genbb_help/i_genbb.h>
 // - Bayeux/genvtx:
-#include <genvtx/i_vertex_generator.h>
+#include <bayeux/genvtx/i_vertex_generator.h>
 
 // G4 Stuff:
 #include <G4ParticleDefinition.hh>
@@ -58,7 +58,7 @@
 #endif
 
 // This project:
-#include <mctools/biasing/primary_event_bias.h>
+#include <bayeux/mctools/biasing/primary_event_bias.h>
 #include <snsim/event_action.h>
 #include <snsim/manager.h>
 #include <snsim/run_action.h>

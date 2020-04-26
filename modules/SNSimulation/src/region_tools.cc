@@ -13,14 +13,14 @@
 #include <G4LogicalVolumeStore.hh>
 #include <G4RegionStore.hh>
 // - Bayeux/datatools :
-#include <datatools/detail/command_macros.h>
-#include <datatools/exception.h>
-#include <datatools/properties.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/detail/command_macros.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/utils.h>
 // - Bayeux/materials :
 #include <materials/manager.h>
 // - Bayeux/geomtools :
-#include <geomtools/materials_plugin.h>
+#include <bayeux/geomtools/materials_plugin.h>
 
 namespace snsim {
 

@@ -53,7 +53,7 @@ class tracking_action : public G4UserTrackingAction, public loggable_support {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::tracking_action)
 
 #endif  // SNSIM_TRACKING_ACTION_H

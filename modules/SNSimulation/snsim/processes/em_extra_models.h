@@ -18,8 +18,8 @@
 
 // Third party:
 // Bayeux/datatools:
-#include <datatools/enriched_base.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/enriched_base.h>
+#include <bayeux/datatools/properties.h>
 
 class G4EmConfigurator;
 
@@ -155,7 +155,7 @@ class em_extra_model : public datatools::enriched_base {
 }  // namespace snsim
 
 // /// OCD support : interface
-// #include <datatools/ocd_macros.h>
+// #include <bayeux/datatools/ocd_macros.h>
 // DOCD_CLASS_DECLARATION(mctools::g4::processes::em_extra_models)
 
 #endif  // SNSIM_PROCESSES_EM_EXTRA_MODELS_H

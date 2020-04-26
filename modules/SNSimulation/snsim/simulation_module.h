@@ -14,9 +14,9 @@
 
 // Third party:
 // - Bayeux/dpp :
-#include <dpp/base_module.h>
-#include <mygsl/prng_state_manager.h>
-#include <mygsl/seed_manager.h>
+#include <bayeux/dpp/base_module.h>
+#include <bayeux/mygsl/prng_state_manager.h>
+#include <bayeux/mygsl/seed_manager.h>
 
 // This project:
 #include <snsim/manager_parameters.h>
@@ -107,7 +107,7 @@ class simulation_module : public dpp::base_module {
 }  // namespace snsim
 
 // Object configuration description (OCD) support :
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::simulation_module)
 
 #endif  // SNSIM_SIMULATION_MODULE_H

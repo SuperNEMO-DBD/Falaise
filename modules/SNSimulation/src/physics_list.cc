@@ -13,11 +13,11 @@
 // - Boost:
 #include <boost/algorithm/string/predicate.hpp>
 // - Bayeux/datatools:
-#include <datatools/clhep_units.h>
-#include <datatools/exception.h>
-#include <datatools/ioutils.h>
-#include <datatools/properties.h>
-#include <datatools/units.h>
+#include <bayeux/datatools/clhep_units.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/units.h>
 // - Geant4 :
 #include <G4UnitsTable.hh>
 #include <G4Version.hh>

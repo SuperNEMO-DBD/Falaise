@@ -12,27 +12,27 @@
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 // - Bayeux/datatools :
-#include <datatools/exception.h>
-#include <datatools/ioutils.h>
-#include <datatools/logger.h>
-#include <datatools/units.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/units.h>
+#include <bayeux/datatools/utils.h>
 // - Bayeux/mygsl :
-#include <mygsl/random_utils.h>
+#include <bayeux/mygsl/random_utils.h>
 // - Bayeux/geomtools :
-#include <geomtools/color.h>
-#include <geomtools/gdml_export.h>
-#include <geomtools/manager.h>
-#include <geomtools/materials_plugin.h>
-#include <geomtools/materials_utils.h>
-#include <geomtools/resource.h>
-#include <geomtools/sensitive.h>
-#include <geomtools/visibility.h>
+#include <bayeux/geomtools/color.h>
+#include <bayeux/geomtools/gdml_export.h>
+#include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/materials_plugin.h>
+#include <bayeux/geomtools/materials_utils.h>
+#include <bayeux/geomtools/resource.h>
+#include <bayeux/geomtools/sensitive.h>
+#include <bayeux/geomtools/visibility.h>
 // - Bayeux/emfield :
-#include <emfield/base_electromagnetic_field.h>
-#include <emfield/electromagnetic_field_manager.h>
-#include <emfield/emfield_geom_plugin.h>
-#include <emfield/geom_map.h>
+#include <bayeux/emfield/base_electromagnetic_field.h>
+#include <bayeux/emfield/electromagnetic_field_manager.h>
+#include <bayeux/emfield/emfield_geom_plugin.h>
+#include <bayeux/emfield/geom_map.h>
 
 // G4 stuff:
 #ifdef __clang__

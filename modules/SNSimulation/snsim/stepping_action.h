@@ -85,7 +85,7 @@ class stepping_action : public G4UserSteppingAction, public loggable_support {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::stepping_action)
 
 #endif  // SNSIM_STEPPING_ACTION_H

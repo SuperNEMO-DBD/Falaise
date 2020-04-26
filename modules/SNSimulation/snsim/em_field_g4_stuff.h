@@ -21,7 +21,7 @@
 
 // Third party:
 // - Bayeux/datatools :
-#include <datatools/i_tree_dump.h>
+#include <bayeux/datatools/i_tree_dump.h>
 
 class G4EquationOfMotion;
 class G4FieldManager;

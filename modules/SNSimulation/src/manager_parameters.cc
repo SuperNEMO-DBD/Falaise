@@ -8,17 +8,17 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/ioutils.h>
-#include <datatools/logger.h>
-#include <datatools/utils.h>
-// #include <datatools/configuration/io.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/utils.h>
+// #include <bayeux/datatools/configuration/io.h>
 // - Bayeux/mygsl:
-#include <mygsl/random_utils.h>
+#include <bayeux/mygsl/random_utils.h>
 
 // This project:
+#include <bayeux/mctools/utils.h>
 #include <snsim/manager.h>
-#include <mctools/utils.h>
 
 namespace snsim {
 

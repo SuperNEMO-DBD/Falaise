@@ -11,8 +11,8 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/ioutils.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/properties.h>
 // - Geant4:
 #include <globals.hh>
 // For C++11 compatibility, remove once Bayeux is C++11 Geant4 10.2 only

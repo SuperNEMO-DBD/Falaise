@@ -42,23 +42,23 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools :
-#include <datatools/logger.h>
-#include <datatools/time_tools.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/time_tools.h>
 // - Bayeux/mygsl :
-#include <mygsl/prng_state_manager.h>
-#include <mygsl/rng.h>
-#include <mygsl/seed_manager.h>
+#include <bayeux/mygsl/prng_state_manager.h>
+#include <bayeux/mygsl/rng.h>
+#include <bayeux/mygsl/seed_manager.h>
 // - Bayeux/geomtools :
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/manager.h>
 // - Bayeux/genvtx :
-#include <genvtx/manager.h>
+#include <bayeux/genvtx/manager.h>
 // - Bayeux/genbb_help :
-#include <genbb_help/manager.h>
+#include <bayeux/genbb_help/manager.h>
 
 // This project:
+#include <bayeux/mctools/mctools_config.h>
+#include <bayeux/mctools/utils.h>
 #include <snsim/loggable_support.h>
-#include <mctools/mctools_config.h>
-#include <mctools/utils.h>
 
 namespace genvtx {
 class manager;
@@ -659,7 +659,7 @@ class manager : public loggable_support {
  * OCD support : interface *
  ***************************/
 
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::manager)
 
 #endif  // SNSIM_MANAGER_H

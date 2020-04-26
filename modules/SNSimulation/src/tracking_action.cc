@@ -8,7 +8,7 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/properties.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/mctools:
 #include <snsim/tracking_action.h>
 // - Geant4:

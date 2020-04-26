@@ -11,16 +11,16 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/ioutils.h>
-#include <datatools/properties.h>
-#include <datatools/service_manager.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/service_manager.h>
+#include <bayeux/datatools/utils.h>
 // - Bayeux/geomtools:
-#include <geomtools/geometry_service.h>
+#include <bayeux/geomtools/geometry_service.h>
 // - Bayeux/mctools:
-#include <mctools/simulated_data.h>
-#include <mctools/utils.h>
+#include <bayeux/mctools/simulated_data.h>
+#include <bayeux/mctools/utils.h>
 
 // This project:
 #include <snsim/event_action.h>

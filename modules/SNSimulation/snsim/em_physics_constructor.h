@@ -205,7 +205,7 @@ class em_physics_constructor : public base_physics_constructor {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::em_physics_constructor)
 
 #endif  // SNSIM_EM_PHYSICS_CONSTRUCTOR_H

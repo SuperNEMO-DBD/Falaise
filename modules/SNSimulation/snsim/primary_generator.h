@@ -26,7 +26,7 @@
 // - Geant4
 #include <G4VUserPrimaryGeneratorAction.hh>
 // - Bayeux/geomtools:
-#include <geomtools/utils.h>
+#include <bayeux/geomtools/utils.h>
 
 // This project:
 #include <snsim/loggable_support.h>
@@ -135,7 +135,7 @@ class primary_generator : public G4VUserPrimaryGeneratorAction, public loggable_
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::primary_generator)
 
 #endif  // SNSIM_PRIMARY_GENERATOR_H

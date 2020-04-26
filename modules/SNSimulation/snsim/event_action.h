@@ -21,9 +21,9 @@
 #include <G4UserEventAction.hh>
 
 // This project:
-#include <mctools/base_step_hit_processor.h>
+#include <bayeux/mctools/base_step_hit_processor.h>
+#include <bayeux/mctools/simulated_data.h>
 #include <snsim/loggable_support.h>
-#include <mctools/simulated_data.h>
 
 namespace datatools {
 // Forward declaration:
@@ -132,7 +132,7 @@ class event_action : public G4UserEventAction, public loggable_support {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::event_action)
 
 #endif  // SNSIM_EVENT_ACTION_H

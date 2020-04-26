@@ -24,7 +24,7 @@
 // - Boost:
 #include <boost/scoped_ptr.hpp>
 // - Bayeux/datatools :
-#include <datatools/i_tree_dump.h>
+#include <bayeux/datatools/i_tree_dump.h>
 // - Geant4:
 #include "G4VModularPhysicsList.hh"
 
@@ -168,7 +168,7 @@ class physics_list : public G4VModularPhysicsList,
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::physics_list)
 
 #endif  // SNSIM_PHYSICS_LIST_H

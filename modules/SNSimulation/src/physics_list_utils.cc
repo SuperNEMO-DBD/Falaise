@@ -5,8 +5,8 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/utils.h>
 
 // This project:
 #include <snsim/base_physics_constructor.h>

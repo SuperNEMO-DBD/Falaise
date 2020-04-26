@@ -15,24 +15,24 @@
 #include <boost/filesystem.hpp>
 #include <boost/thread/mutex.hpp>
 // - Bayeux/datatools:
-#include <datatools/io_factory.h>
-#include <datatools/multi_properties.h>
-#include <datatools/properties.h>
-#include <datatools/things.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/io_factory.h>
+#include <bayeux/datatools/multi_properties.h>
+#include <bayeux/datatools/properties.h>
+#include <bayeux/datatools/things.h>
+#include <bayeux/datatools/utils.h>
 // - Bayeux/brio :
-#include <brio/writer.h>
+#include <bayeux/brio/writer.h>
 // - Bayeux/mygsl:
-#include <mygsl/seed_manager.h>
+#include <bayeux/mygsl/seed_manager.h>
 // - Bayeux/geomtools:
-#include <geomtools/geomtools_config.h>
+#include <bayeux/geomtools/geomtools_config.h>
 // - Bayeux/dpp:
-#include <dpp/dpp_config.h>
-#include <dpp/output_module.h>
+#include <bayeux/dpp/dpp_config.h>
+#include <bayeux/dpp/output_module.h>
 // - Bayeux/genbb_help:
-#include <genbb_help/genbb_help_config.h>
+#include <bayeux/genbb_help/genbb_help_config.h>
 // - Bayeux/genvtx:
-#include <genvtx/genvtx_config.h>
+#include <bayeux/genvtx/genvtx_config.h>
 // - Geant4:
 #include <G4Run.hh>
 #include <globals.hh>
@@ -52,12 +52,12 @@
 #include <G4ios.hh>
 
 // This project:
+#include <bayeux/mctools/mctools_config.h>
+#include <bayeux/mctools/simulated_data.h>
+#include <bayeux/mctools/utils.h>
 #include <snsim/event_action.h>
 #include <snsim/manager.h>
 #include <snsim/simulation_ctrl.h>
-#include <mctools/mctools_config.h>
-#include <mctools/simulated_data.h>
-#include <mctools/utils.h>
 
 namespace snsim {
 

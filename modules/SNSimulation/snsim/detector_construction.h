@@ -26,17 +26,17 @@
 // - Boost :
 #include <boost/scoped_ptr.hpp>
 // - Bayeux/datatools :
-#include <datatools/multi_properties.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/multi_properties.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/mygsl :
-#include <mygsl/rng.h>
+#include <bayeux/mygsl/rng.h>
 // G4 stuff:
 #include <G4VUserDetectorConstruction.hh>
 
 // This project:
+#include <bayeux/mctools/step_hit_processor_factory.h>
 #include <snsim/loggable_support.h>
 #include <snsim/region_tools.h>
-#include <mctools/step_hit_processor_factory.h>
 
 class G4UserLimits;
 class G4VisAttributes;
@@ -245,7 +245,7 @@ class detector_construction : public G4VUserDetectorConstruction, public loggabl
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::detector_construction)
 
 #endif  // SNSIM_DETECTOR_CONSTRUCTION_H

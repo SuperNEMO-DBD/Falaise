@@ -24,16 +24,16 @@
 #include <boost/cstdint.hpp>
 #include <boost/scoped_ptr.hpp>
 // - Bayeux/datatools :
-#include <datatools/io_factory.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/io_factory.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/brio :
-#include <brio/writer.h>
+#include <bayeux/brio/writer.h>
 // - Geant4 :
 #include <G4UserRunAction.hh>
 
 // This project:
+#include <bayeux/mctools/utils.h>
 #include <snsim/loggable_support.h>
-#include <mctools/utils.h>
 
 namespace datatools {
 class data_writer;
@@ -216,7 +216,7 @@ class run_action : public G4UserRunAction, public loggable_support {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::run_action)
 
 #endif  // SNSIM_RUN_ACTION_H

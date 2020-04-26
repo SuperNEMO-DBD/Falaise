@@ -23,7 +23,7 @@
 // Geant4:
 #include <G4VEmModel.hh>
 // Bayeux/datatools:
-#include <datatools/properties.h>
+#include <bayeux/datatools/properties.h>
 
 namespace snsim {
 

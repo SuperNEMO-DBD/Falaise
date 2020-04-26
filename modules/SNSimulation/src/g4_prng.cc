@@ -24,9 +24,9 @@
 
 // Third party:
 // - Bayeux/datatools:
-#include <datatools/logger.h>
+#include <bayeux/datatools/logger.h>
 // - Bayeux/mygsl:
-#include <mygsl/rng.h>
+#include <bayeux/mygsl/rng.h>
 
 namespace snsim {
 

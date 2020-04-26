@@ -15,15 +15,15 @@
 // - Boost:
 #include <boost/algorithm/string.hpp>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
+#include <bayeux/datatools/exception.h>
 // - Bayeux/geomtools:
-#include <geomtools/material.h>
-#include <geomtools/sensitive.h>
+#include <bayeux/geomtools/material.h>
+#include <bayeux/geomtools/sensitive.h>
 
 // This project:
+#include <bayeux/mctools/utils.h>
 #include <snsim/manager.h>
 #include <snsim/sensitive_detector.h>
-#include <mctools/utils.h>
 
 // G4 stuff:
 #include <G4Gamma.hh>

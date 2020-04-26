@@ -42,7 +42,7 @@
 #include <boost/cstdint.hpp>
 
 // This project:
-#include <mctools/utils.h>
+#include <bayeux/mctools/utils.h>
 
 namespace snsim {
 

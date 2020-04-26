@@ -60,8 +60,8 @@
 #include <G4eeToTwoGammaModel.hh>
 
 // Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/utils.h>
 
 namespace snsim {
 

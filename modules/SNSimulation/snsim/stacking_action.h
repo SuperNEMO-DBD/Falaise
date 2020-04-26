@@ -70,7 +70,7 @@ class stacking_action : public G4UserStackingAction, public loggable_support {
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::stacking_action)
 
 #endif  // SNSIM_STACKING_ACTION_H

@@ -26,7 +26,7 @@
 // - Boost:
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools :
-#include <datatools/properties.h>
+#include <bayeux/datatools/properties.h>
 
 // For C++11 support, remove once Bayeux is c++11/Geant4 10.2 only
 #ifdef __clang__
@@ -39,7 +39,7 @@
 #endif
 
 // This project:
-#include <mctools/base_step_hit_processor.h>
+#include <bayeux/mctools/base_step_hit_processor.h>
 #include <snsim/loggable_support.h>
 #include <snsim/sensitive_hit.h>
 #include <snsim/sensitive_hit_collection.h>
@@ -241,7 +241,7 @@ class sensitive_detector : public G4VSensitiveDetector, public loggable_support 
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::sensitive_detector)
 
 #endif  // SNSIM_SENSITIVE_DETECTOR_H

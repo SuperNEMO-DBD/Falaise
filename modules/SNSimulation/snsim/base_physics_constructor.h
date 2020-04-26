@@ -20,8 +20,8 @@
 
 // Third party:
 // - Bayeux/datatools :
-#include <datatools/factory_macros.h>
-#include <datatools/i_tree_dump.h>
+#include <bayeux/datatools/factory_macros.h>
+#include <bayeux/datatools/i_tree_dump.h>
 // - Geant4
 #include <G4VPhysicsConstructor.hh>
 #include <globals.hh>

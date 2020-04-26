@@ -9,7 +9,7 @@
 
 // Third party:
 // - Bayeux/datatools :
-#include <datatools/logger.h>
+#include <bayeux/datatools/logger.h>
 
 namespace datatools {
 class properties;

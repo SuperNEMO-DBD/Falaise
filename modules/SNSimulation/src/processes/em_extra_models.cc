@@ -13,9 +13,9 @@
 #include <G4VEmModel.hh>
 
 // Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/logger.h>
-#include <datatools/utils.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/utils.h>
 
 // This project:
 #include <snsim/processes/em_model_factory.h>

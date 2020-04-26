@@ -39,17 +39,17 @@
 // - CLHEP:
 #include <CLHEP/Random/Random.h>
 // - Bayeux/datatools:
-#include <datatools/exception.h>
-#include <datatools/ioutils.h>
-#include <datatools/multi_properties.h>
-#include <datatools/service_manager.h>
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/ioutils.h>
+#include <bayeux/datatools/multi_properties.h>
+#include <bayeux/datatools/service_manager.h>
 // - Bayeux/mygsl:
-#include <mygsl/random_utils.h>
+#include <bayeux/mygsl/random_utils.h>
 // - Bayeux/genvtx:
-#include <genvtx/i_vertex_generator.h>
+#include <bayeux/genvtx/i_vertex_generator.h>
 // - Bayeux/genbb_help:
-#include <genbb_help/i_genbb.h>
-#include <genbb_help/manager.h>
+#include <bayeux/genbb_help/i_genbb.h>
+#include <bayeux/genbb_help/manager.h>
 
 // This project:
 #include <snsim/data_libraries.h>

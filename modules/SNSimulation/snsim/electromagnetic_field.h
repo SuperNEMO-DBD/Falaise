@@ -26,7 +26,7 @@
 #include <G4ElectroMagneticField.hh>
 #include <G4MagneticField.hh>
 // - Bayeux/geomtools :
-#include <geomtools/smart_id_locator.h>
+#include <bayeux/geomtools/smart_id_locator.h>
 
 // This project:
 #include <snsim/loggable_support.h>

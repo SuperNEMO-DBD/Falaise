@@ -7,7 +7,7 @@
 // - CLHEP:
 #include <CLHEP/Vector/ThreeVector.h>
 // - Bayeux/datatools:
-#include <datatools/utils.h>
+#include <bayeux/datatools/utils.h>
 // - Geant4:
 #include <G4PhysicalConstants.hh>
 #include <G4SystemOfUnits.hh>

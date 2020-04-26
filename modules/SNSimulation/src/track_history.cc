@@ -9,7 +9,7 @@
 
 // Third party:
 // - bayeux/datatools:
-#include <datatools/exception.h>
+#include <bayeux/datatools/exception.h>
 
 namespace snsim {
 

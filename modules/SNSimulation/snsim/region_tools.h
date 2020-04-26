@@ -24,12 +24,12 @@
 
 // Third party:
 // - Bayeux/datatools :
-#include <datatools/command_utils.h>
-#include <datatools/enriched_base.h>
-#include <datatools/i_tree_dump.h>
-#include <datatools/properties.h>
+#include <bayeux/datatools/command_utils.h>
+#include <bayeux/datatools/enriched_base.h>
+#include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/properties.h>
 // - Bayeux/geomtools :
-#include <geomtools/manager.h>
+#include <bayeux/geomtools/manager.h>
 
 namespace snsim {
 
@@ -148,7 +148,7 @@ class base_region_user_info : public G4VUserRegionInformation
 }  // namespace snsim
 
 /// OCD support : interface
-#include <datatools/ocd_macros.h>
+#include <bayeux/datatools/ocd_macros.h>
 DOCD_CLASS_DECLARATION(snsim::region_info)
 
 #endif  // SNSIM_REGION_TOOLS_H
