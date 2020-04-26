@@ -39,6 +39,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-long-long"
 #pragma clang diagnostic ignored "-Wdeprecated-register"
+#pragma clang diagnostic ignored "-Wshadow"
 #endif
 #include <G4ChordFinder.hh>
 #include <G4Color.hh>
