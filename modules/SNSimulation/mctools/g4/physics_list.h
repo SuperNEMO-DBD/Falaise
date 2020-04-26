@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PHYSICS_LIST_H
-#define MCTOOLS_G4_PHYSICS_LIST_H 1
+#ifndef SNSIM_PHYSICS_LIST_H
+#define SNSIM_PHYSICS_LIST_H 1
 
 // Standard library:
 #include <map>
@@ -37,9 +37,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Physics list
 class physics_list : public G4VModularPhysicsList,
@@ -167,15 +165,13 @@ class physics_list : public G4VModularPhysicsList,
       _physics_constructors_;  //!< The embedded dictionnary of physics constructors
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::physics_list)
+DOCD_CLASS_DECLARATION(snsim::physics_list)
 
-#endif  // MCTOOLS_G4_PHYSICS_LIST_H
+#endif  // SNSIM_PHYSICS_LIST_H
 
 /*
 ** Local Variables: --

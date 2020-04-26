@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_EM_FIELD_G4_STUFF_H
-#define MCTOOLS_G4_EM_FIELD_G4_STUFF_H
+#ifndef SNSIM_EM_FIELD_G4_STUFF_H
+#define SNSIM_EM_FIELD_G4_STUFF_H
 
 // This project:
 #include <mctools/g4/loggable_support.h>
@@ -35,9 +35,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward class declarations:
 class magnetic_field;
@@ -193,11 +191,9 @@ class em_field_g4_stuff : public datatools::i_tree_dumpable, public loggable_sup
   G4FieldManager* _field_manager_;          //!< Field manager      (deleted by this object)
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_EM_FIELD_G4_STUFF_H
+#endif  // SNSIM_EM_FIELD_G4_STUFF_H
 
 /*
 ** Local Variables: --

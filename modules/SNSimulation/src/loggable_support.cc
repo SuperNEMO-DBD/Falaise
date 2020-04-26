@@ -11,9 +11,7 @@
 #include <datatools/exception.h>
 #include <datatools/properties.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 loggable_support::loggable_support() { _logging_priority = datatools::logger::PRIO_FATAL; }
 
@@ -71,6 +69,4 @@ void loggable_support::_initialize_logging_support(const datatools::properties& 
       datatools::logger::extract_logging_configuration(config_, datatools::logger::PRIO_FATAL));
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

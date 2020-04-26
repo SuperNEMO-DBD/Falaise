@@ -7,9 +7,7 @@
 // - Geant4:
 #include <G4EmProcessSubType.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -182,6 +180,4 @@ auto label_to_em_process_subtype(const std::string& label_) -> int {
 
 }  // end of namespace processes
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

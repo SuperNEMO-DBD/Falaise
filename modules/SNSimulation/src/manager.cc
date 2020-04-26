@@ -93,8 +93,7 @@
 #include "G4VisExecutive.hh"
 #endif  // G4VIS_USE
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
 
 //----------------------------------------------------------------------
 // Static constanst settings
@@ -150,12 +149,12 @@ manager::manager() {
 }
 
 manager::~manager() {
-  // std::cerr << "DEVEL: mctools::g4::manager::DTOR: Entering..." << std::endl;
+  // std::cerr << "DEVEL: snsim::manager::DTOR: Entering..." << std::endl;
   if (_initialized_) {
-    // std::cerr << "DEVEL: mctools::g4::manager::DTOR: Reset..." << std::endl;
+    // std::cerr << "DEVEL: snsim::manager::DTOR: Reset..." << std::endl;
     reset();
   }
-  // std::cerr << "DEVEL: mctools::g4::manager::DTOR: Exiting." << std::endl;
+  // std::cerr << "DEVEL: snsim::manager::DTOR: Exiting." << std::endl;
 }
 
 void manager::initialize(const datatools::multi_properties& multi_config_) {
@@ -166,12 +165,12 @@ void manager::initialize(const datatools::multi_properties& multi_config_) {
 }
 
 void manager::reset() {
-  // std::cerr << "DEVEL: mctools::g4::manager::reset: Entering..." << std::endl;
+  // std::cerr << "DEVEL: snsim::manager::reset: Entering..." << std::endl;
   DT_THROW_IF(!_initialized_, std::logic_error, "Manager is not initialized !");
   _initialized_ = false;
   this->reset_impl();
   _init_defaults();
-  // std::cerr << "DEVEL: mctools::g4::manager::reset: Exiting." << std::endl;
+  // std::cerr << "DEVEL: snsim::manager::reset: Exiting." << std::endl;
 }
 
 void manager::run_simulation() {
@@ -554,33 +553,35 @@ auto manager::get_init_seed_method() const -> const std::string& { return _init_
 // I/O (over)control
 //----------------------------------------------------------------------
 void manager::set_output_data_format_by_label(const std::string& ff_) {
-  io_utils::data_format_type df = io_utils::label_to_data_format(ff_);
-  DT_THROW_IF(df == io_utils::DATA_FORMAT_INVALID, std::logic_error,
+  mctools::io_utils::data_format_type df = mctools::io_utils::label_to_data_format(ff_);
+  DT_THROW_IF(df == mctools::io_utils::DATA_FORMAT_INVALID, std::logic_error,
               "Invalid output data format '" << ff_ << "'!");
   set_output_data_format(df);
 }
 
-void manager::reset_output_data_format() { _output_data_format_ = io_utils::DATA_FORMAT_INVALID; }
+void manager::reset_output_data_format() {
+  _output_data_format_ = mctools::io_utils::DATA_FORMAT_INVALID;
+}
 
-void manager::set_output_data_format(io_utils::data_format_type of_) {
+void manager::set_output_data_format(mctools::io_utils::data_format_type of_) {
   _output_data_format_ = of_;
-  if (_output_data_format_ == io_utils::DATA_FORMAT_BANK) {
+  if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_BANK) {
     if (_output_data_bank_label_.empty()) {
-      set_output_data_bank_label(event_utils::event_default_simulated_data_label());
+      set_output_data_bank_label(mctools::event_utils::event_default_simulated_data_label());
     }
   }
 }
 
 void manager::set_output_data_bank_label(const std::string& bl_) {
   _output_data_bank_label_ = bl_;
-  if (_output_data_format_ != io_utils::DATA_FORMAT_INVALID) {
-    set_output_data_format(io_utils::DATA_FORMAT_BANK);
+  if (_output_data_format_ != mctools::io_utils::DATA_FORMAT_INVALID) {
+    set_output_data_format(mctools::io_utils::DATA_FORMAT_BANK);
   }
-  DT_THROW_IF(_output_data_format_ != io_utils::DATA_FORMAT_BANK, std::logic_error,
+  DT_THROW_IF(_output_data_format_ != mctools::io_utils::DATA_FORMAT_BANK, std::logic_error,
               "Cannot set output data bank label with the plain output data format!");
 }
 
-auto manager::get_output_data_format() const -> io_utils::data_format_type {
+auto manager::get_output_data_format() const -> mctools::io_utils::data_format_type {
   return _output_data_format_;
 }
 
@@ -679,7 +680,7 @@ auto manager::get_activated_output_profile_ids() const -> const std::set<std::st
 //----------------------------------------------------------------------
 // Dump-To-Stream
 //----------------------------------------------------------------------
-void manager::dump(std::ostream& os) const { dump_base(os, "mctools::g4::manager: ", ""); }
+void manager::dump(std::ostream& os) const { dump_base(os, "snsim::manager: ", ""); }
 
 void manager::dump_base(std::ostream& os, const std::string& title,
                         const std::string& iIndent) const {
@@ -881,7 +882,7 @@ void manager::run_simulation_impl() {
     if (!boost::filesystem::exists(g4_macro)) {
       std::ostringstream message;
       message << "Macro '" << g4_macro << "' does not exist !";
-      G4Exception("mctools::g4::manager::_at_run_simulation", "FileError", RunMustBeAborted,
+      G4Exception("snsim::manager::_at_run_simulation", "FileError", RunMustBeAborted,
                   message.str().c_str());
     }
   }
@@ -1013,7 +1014,7 @@ void manager::_init_defaults() {
   _input_prng_seeds_file_ = "";
   _output_prng_seeds_file_ = "";
 
-  _output_data_format_ = io_utils::DATA_FORMAT_INVALID;
+  _output_data_format_ = mctools::io_utils::DATA_FORMAT_INVALID;
   _output_data_bank_label_ = "";
 
   _interactive_ = false;
@@ -1357,11 +1358,11 @@ void manager::_init_run_action() {
   const datatools::properties& run_action_config =
       _multi_config_->get("run_action").get_properties();
   _user_run_action_ = new run_action(*this);
-  if (_output_data_format_ == io_utils::DATA_FORMAT_INVALID) {
-    _output_data_format_ = io_utils::DATA_FORMAT_PLAIN;
+  if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_INVALID) {
+    _output_data_format_ = mctools::io_utils::DATA_FORMAT_PLAIN;
   }
   _user_run_action_->set_output_data_format(_output_data_format_);
-  if (_output_data_format_ == io_utils::DATA_FORMAT_BANK) {
+  if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_BANK) {
     _user_run_action_->set_output_data_bank_label(_output_data_bank_label_);
   }
   if (!_output_data_file_.empty()) {
@@ -1637,15 +1638,15 @@ void manager::_init_time_stat() {
   // Time statistics for "Event generation" :
   _CTs_["EG"] = CT_type{};
 }
-}  // end of namespace g4
-}  // end of namespace mctools
+
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::manager, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::manager");
+  ocd_.set_class_name("snsim::manager");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation manager class");
@@ -1743,7 +1744,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
             "                                                                        \n"
             "This property is not taken into account if the                          \n"
             "*number of events* attributes has been set previously through           \n"
-            "the ``mctools::g4::manager::set_number_of_events(...)`` method.         \n"
+            "the ``snsim::manager::set_number_of_events(...)`` method.         \n"
             "                                                                        \n")
         .add_example(
             "Set a specific number of events to simulate: ::   \n"
@@ -1764,7 +1765,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
         .set_long_description(
             "This property is not taken into account if some supported               \n"
             "output profiles have already been set in the simulation manager,        \n"
-            "through the ``mctools::g4::manager::add_supported_output_profile(...)`` \n"
+            "through the ``snsim::manager::add_supported_output_profile(...)`` \n"
             "method.                                                                 \n")
         .add_example(
             "Define some supported output profiles: ::                       \n"
@@ -1787,7 +1788,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
         .set_long_description(
             "Each supported output profile can be associated to a description.       \n"
             "output profiles have already been set in the simulation manager,        \n"
-            "through the ``mctools::g4::manager::add_supported_output_profile(...)`` \n"
+            "through the ``snsim::manager::add_supported_output_profile(...)`` \n"
             "method.                                                                 \n")
         .add_example(
             "Describe the supported output profiles: ::                      \n"
@@ -1814,8 +1815,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
         .set_long_description(
             "This property is not taken into account if some                               \n"
             "output profiles have already been activated in the simulation manager,        \n"
-            "through the ``mctools::g4::manager::activate_output_profile(...)`` or the     \n"
-            "``mctools::g4::manager::apply_output_profiles_activation_rule(...)`` methods. \n")
+            "through the ``snsim::manager::activate_output_profile(...)`` or the     \n"
+            "``snsim::manager::apply_output_profiles_activation_rule(...)`` methods. \n")
         .add_example(
             "Activate two output profiles from the list of supported ones: ::\n"
             "                                                                \n"
@@ -1838,7 +1839,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
         .set_mandatory(false)
         // .set_long_description("This property is not taken into account if the \n"
         //                       "*number of events* attributes has been set previously through \n"
-        //                       "the ``mctools::g4::manager::set_number_of_events(...)`` method.
+        //                       "the ``snsim::manager::set_number_of_events(...)`` method.
         //                       \n" " \n"
         //                       )
         .add_example(
@@ -1860,7 +1861,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
         .set_long_description(
             "This property is not taken into account if a Geant4 *macro*             \n"
             "has already been set by the simulation manager, through                 \n"
-            "the ``mctools::g4::manager::set_g4_macro(...)`` method.                 \n"
+            "the ``snsim::manager::set_g4_macro(...)`` method.                 \n"
             "                                                                        \n")
         .add_example(
             "Set the name of a Geant4 macro: ::                              \n"
@@ -1887,7 +1888,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
             "                                                                        \n"
             "This property is not taken into account if an external                  \n"
             "*geometry manager* is used by the simulation manager, through           \n"
-            "the ``mctools::g4::manager::set_external_geom_manager(...)`` method.    \n"
+            "the ``snsim::manager::set_external_geom_manager(...)`` method.    \n"
             "                                                                        \n");
   }
 
@@ -1971,49 +1972,49 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
       "  [name=\"detector_construction\"]                                    \n"
       "  #@config Parameters for the detector construction                   \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::detector_construction``  \n"
+      "  # See OCD support for class ``snsim::detector_construction``  \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"physics_list\"]                                             \n"
       "  #@config Parameters for the physics list                            \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::physics_list``           \n"
+      "  # See OCD support for class ``snsim::physics_list``           \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"run_action\"]                                               \n"
       "  #@config Parameters for the run action                              \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::run_action``             \n"
+      "  # See OCD support for class ``snsim::run_action``             \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"event_action\"]                                             \n"
       "  #@config Parameters for the event action                            \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::event_action``           \n"
+      "  # See OCD support for class ``snsim::event_action``           \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"primary_generator_action\"]                                 \n"
       "  #@config Parameters for the primary generator action                \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::primary_generator``      \n"
+      "  # See OCD support for class ``snsim::primary_generator``      \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"tracking_action\"]                                          \n"
       "  #@config Parameters for the tracking action                         \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::tracking_action``        \n"
+      "  # See OCD support for class ``snsim::tracking_action``        \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"stepping_action\"]                                          \n"
       "  #@config Parameters for the stepping action                         \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::stepping_action``        \n"
+      "  # See OCD support for class ``snsim::stepping_action``        \n"
       "                                                                      \n"
       "                                                                      \n"
       "  [name=\"stacking_action\"]                                          \n"
       "  #@config Parameters for the stacking action                         \n"
       "                                                                      \n"
-      "  # See OCD support for class ``mctools::g4::stacking_action``        \n"
+      "  # See OCD support for class ``snsim::stacking_action``        \n"
       "                                                                      \n");
 
   /** Set the validation support flag :
@@ -2032,5 +2033,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::manager, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::manager' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::manager, "mctools::g4::manager")
+// Registration macro for class 'snsim::manager' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::manager, "snsim::manager")

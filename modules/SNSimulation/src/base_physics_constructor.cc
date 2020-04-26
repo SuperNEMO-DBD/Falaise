@@ -10,9 +10,7 @@
 #include <datatools/exception.h>
 #include <datatools/properties.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 auto g4_builder_type_to_label(int bt_) -> std::string {
   switch (bt_) {
@@ -71,7 +69,7 @@ auto label_to_g4_builder_type(const std::string& label_) -> int {
 }
 
 DATATOOLS_FACTORY_SYSTEM_REGISTER_IMPLEMENTATION(base_physics_constructor,
-                                                 "mctools::g4::base_physics_constructor/__system__")
+                                                 "snsim::base_physics_constructor/__system__")
 
 auto base_physics_constructor::is_initialized() const -> bool { return _initialized_; }
 
@@ -156,6 +154,4 @@ void base_physics_constructor::tree_dump(std::ostream& out_, const std::string& 
        << "Initialized           : " << (is_initialized() ? "Yes" : "No") << "" << std::endl;
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

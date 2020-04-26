@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_MANAGER_PARAMETERS_H
-#define MCTOOLS_G4_MANAGER_PARAMETERS_H 1
+#ifndef SNSIM_MANAGER_PARAMETERS_H
+#define SNSIM_MANAGER_PARAMETERS_H 1
 
 // Standard library:
 #include <iostream>
@@ -44,9 +44,7 @@
 // This project:
 #include <mctools/utils.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 class manager;
 
@@ -102,11 +100,9 @@ struct manager_parameters {
   static void setup(const manager_parameters& a_params, manager& a_manager);
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_MANAGER_PARAMETERS_H
+#endif  // SNSIM_MANAGER_PARAMETERS_H
 
 /*
 ** Local Variables: --

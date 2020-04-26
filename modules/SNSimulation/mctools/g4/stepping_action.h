@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_STEPPING_ACTION_H
-#define MCTOOLS_G4_STEPPING_ACTION_H 1
+#ifndef SNSIM_STEPPING_ACTION_H
+#define SNSIM_STEPPING_ACTION_H 1
 
 // Standard library:
 #include <string>
@@ -35,9 +35,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Stepping action using the Geant4 interface
 class stepping_action : public G4UserSteppingAction, public loggable_support {
@@ -84,15 +82,13 @@ class stepping_action : public G4UserSteppingAction, public loggable_support {
   uint32_t _number_of_steps_;  ///< Counter for steps
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::stepping_action)
+DOCD_CLASS_DECLARATION(snsim::stepping_action)
 
-#endif  // MCTOOLS_G4_STEPPING_ACTION_H
+#endif  // SNSIM_STEPPING_ACTION_H
 
 /*
 ** Local Variables: --

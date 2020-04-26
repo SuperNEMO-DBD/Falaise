@@ -13,15 +13,13 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PARTICLES_PHYSICS_CONSTRUCTOR_H
-#define MCTOOLS_G4_PARTICLES_PHYSICS_CONSTRUCTOR_H 1
+#ifndef SNSIM_PARTICLES_PHYSICS_CONSTRUCTOR_H
+#define SNSIM_PARTICLES_PHYSICS_CONSTRUCTOR_H 1
 
 // This project:
 #include <mctools/g4/base_physics_constructor.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 class particles_physics_constructor : public base_physics_constructor {
  public:
@@ -73,15 +71,13 @@ class particles_physics_constructor : public base_physics_constructor {
                                                        particles_physics_constructor)
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::particles_physics_constructor)
+DOCD_CLASS_DECLARATION(snsim::particles_physics_constructor)
 
-#endif  // MCTOOLS_G4_PARTICLES_PHYSICS_CONSTRUCTOR_H
+#endif  // SNSIM_PARTICLES_PHYSICS_CONSTRUCTOR_H
 
 /*
 ** Local Variables: --

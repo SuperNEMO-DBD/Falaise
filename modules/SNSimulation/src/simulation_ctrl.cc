@@ -17,8 +17,8 @@
 // This project:
 #include <mctools/g4/manager.h>
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
+
 simulation_ctrl::simulation_ctrl(manager& a_simulation_manager, uint32_t a_max_counts) {
   simulation_manager = nullptr;
   simulation_thread = nullptr;
@@ -81,8 +81,7 @@ void simulation_ctrl::set_stop_requested() { stop_requested = true; }
 
 auto simulation_ctrl::is_stop_requested() const -> bool { return stop_requested; }
 
-}  // end of namespace g4
-}  // end of namespace mctools
+}  // namespace snsim
 
 /*
 ** Local Variables: --

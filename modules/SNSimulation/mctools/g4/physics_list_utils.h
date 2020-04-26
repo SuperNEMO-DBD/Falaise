@@ -4,8 +4,8 @@
  * Last modified: 2013-07-04
  */
 
-#ifndef MCTOOLS_G4_PHYSICS_LIST_UTILS_H
-#define MCTOOLS_G4_PHYSICS_LIST_UTILS_H 1
+#ifndef SNSIM_PHYSICS_LIST_UTILS_H
+#define SNSIM_PHYSICS_LIST_UTILS_H 1
 
 // Standard library:
 #include <map>
@@ -22,9 +22,7 @@
 #include <G4VModularPhysicsList.hh>
 #include <G4VPhysicsConstructor.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward class declaration:
 class base_physics_constructor;
@@ -96,11 +94,9 @@ struct user_limits_info {
   double track_min_range;
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_PHYSICS_LIST_UTILS_H
+#endif  // SNSIM_PHYSICS_LIST_UTILS_H
 
 /*
 ** Local Variables: --

@@ -42,7 +42,7 @@ struct FLSimulateArgs {
 
   // Simulation module setup:
   std::string simulationSetupUrn;  //!< The URN of the simulation engine setup
-  mctools::g4::manager_parameters
+  snsim::manager_parameters
       simulationManagerParams;  //!< Parameters for the Geant4 simulation manager
 
   // Digitization module setup:

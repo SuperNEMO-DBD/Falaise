@@ -29,9 +29,7 @@
 #include <G4Track.hh>
 #include <G4UnitsTable.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 tracking_action::tracking_action() = default;
 
@@ -57,16 +55,14 @@ void tracking_action::PostUserTrackingAction(const G4Track* /*track_*/) {
   // CLHEP::Hep3Vector position = track_->GetPosition();
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::tracking_action, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::tracking_action, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::tracking_action");
+  ocd_.set_class_name("snsim::tracking_action");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation optional tracking action");
@@ -122,5 +118,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::tracking_action, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::manager' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::tracking_action, "mctools::g4::tracking_action")
+// Registration macro for class 'snsim::manager' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::tracking_action, "snsim::tracking_action")

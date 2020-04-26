@@ -22,9 +22,7 @@
 // - Bayeux/geomtools :
 #include <geomtools/materials_plugin.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 region_info::region_info() { _initialized_ = false; }
 
@@ -466,16 +464,15 @@ return valid;
 }
 
 */
-}  // end of namespace g4
 
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::region_info, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::region_info, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::region_info");
+  ocd_.set_class_name("snsim::region_info");
 
   // The class terse description :
   ocd_.set_class_description("The description of a Geant4 region attached to the virtual geometry");
@@ -559,5 +556,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::region_info, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::region_info' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::region_info, "mctools::g4::region_info")
+// Registration macro for class 'snsim::region_info' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::region_info, "snsim::region_info")

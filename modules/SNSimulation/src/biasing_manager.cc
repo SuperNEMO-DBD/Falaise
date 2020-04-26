@@ -11,9 +11,7 @@
 // This project:
 #include <mctools/g4/detector_construction.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 biasing_manager::biasing_manager() { _set_default(); }
 
@@ -45,6 +43,4 @@ void biasing_manager::reset() {
   _initialized_ = false;
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

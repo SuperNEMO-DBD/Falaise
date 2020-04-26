@@ -120,13 +120,11 @@
   inelastic, capture and fission below energies of 20 MeV
 */
 
-namespace mctools {
+namespace snsim {
 
-namespace g4 {
-
-DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_IMPLEMENTATION(
-    base_physics_constructor, neutrons_physics_constructor,
-    "mctools::g4::neutrons_physics_constructor")
+DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_IMPLEMENTATION(base_physics_constructor,
+                                                          neutrons_physics_constructor,
+                                                          "snsim::neutrons_physics_constructor")
 
 // *** neutrons_physics_constructor *** //
 neutrons_physics_constructor::neutrons_physics_constructor() {
@@ -504,7 +502,7 @@ void neutrons_physics_constructor::ConstructProcess() {
 // static
 void neutrons_physics_constructor::init_ocd(datatools::object_configuration_description& ocd_) {
   // Inherits configuration properties from its base class:
-  // ::mctools::g4::base_physics_constructor::init_ocd(ocd_);
+  // ::snsim::base_physics_constructor::init_ocd(ocd_);
 
   {
     // Description of the 'neutrons.use_high_energy_process' configuration property :
@@ -642,12 +640,10 @@ void neutrons_physics_constructor::init_ocd(datatools::object_configuration_desc
   }
 }
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::neutrons_physics_constructor, ocd_) {
-  ocd_.set_class_name("mctools::g4::neutrons_physics_constructor");
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::snsim::neutrons_physics_constructor, ocd_) {
+  ocd_.set_class_name("snsim::neutrons_physics_constructor");
   ocd_.set_class_description(
       "The Geant4 simulation manager embedded nuclear neutrons physics list");
   ocd_.set_class_library("mctools_g4");
@@ -655,7 +651,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::neutrons_physics_constructor, ocd
       "The Geant4 simulation manager class embedded \n"
       "nuclear neutrons physics list.               \n");
 
-  ::mctools::g4::neutrons_physics_constructor::init_ocd(ocd_);
+  ::snsim::neutrons_physics_constructor::init_ocd(ocd_);
 
   ocd_.set_configuration_hints("Not available yet                    \n");
   ocd_.set_validation_support(true);
@@ -665,6 +661,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::neutrons_physics_constructor, ocd
 
 DOCD_CLASS_IMPLEMENT_LOAD_END()
 
-// Registration macro for class 'mctools::g4::neutrons_physics_constructor' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::neutrons_physics_constructor,
-                               "mctools::g4::neutrons_physics_constructor")
+// Registration macro for class 'snsim::neutrons_physics_constructor' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::neutrons_physics_constructor,
+                               "snsim::neutrons_physics_constructor")

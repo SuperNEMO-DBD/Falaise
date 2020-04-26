@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_MAGNETIC_FIELD_H
-#define MCTOOLS_G4_MAGNETIC_FIELD_H 1
+#ifndef SNSIM_MAGNETIC_FIELD_H
+#define SNSIM_MAGNETIC_FIELD_H 1
 
 // Standard library:
 #include <map>
@@ -43,9 +43,7 @@ class base_electromagnetic_field;
 class electromagnetic_field_manager;
 }  // namespace emfield
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 class detector_construction;
 
@@ -128,11 +126,9 @@ class magnetic_field : public G4MagneticField, public loggable_support {
   friend class detector_construction;
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_MAGNETIC_FIELD_H
+#endif  // SNSIM_MAGNETIC_FIELD_H
 
 /*
 ** Local Variables: --

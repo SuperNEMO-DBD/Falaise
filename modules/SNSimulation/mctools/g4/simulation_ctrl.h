@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_SIMULATION_CTRL_H
-#define MCTOOLS_G4_SIMULATION_CTRL_H 1
+#ifndef SNSIM_SIMULATION_CTRL_H
+#define SNSIM_SIMULATION_CTRL_H 1
 
 // Third party:
 // - Boost :
@@ -22,8 +22,7 @@
 // This project:
 #include <mctools/g4/loggable_support.h>
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
 
 // Forward declarations
 class manager;
@@ -70,10 +69,10 @@ class simulation_ctrl : public loggable_support {
   uint32_t counts;
   uint32_t max_counts;
 };
-}  // end of namespace g4
-}  // end of namespace mctools
 
-#endif  // MCTOOLS_G4_SIMULATION_CTRL_H
+}  // namespace snsim
+
+#endif  // SNSIM_SIMULATION_CTRL_H
 
 /*
 ** Local Variables: --

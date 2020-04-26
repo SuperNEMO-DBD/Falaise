@@ -59,8 +59,7 @@
 #include <mctools/simulated_data.h>
 #include <mctools/utils.h>
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
 
 //! \brief PIMPL-ized I/O working resources:
 struct run_action::io_work_type {
@@ -139,16 +138,16 @@ void run_action::reset_number_of_saved_events() { _number_of_saved_events_ = 0; 
 
 void run_action::reset_number_of_processed_events() { _number_of_processed_events_ = 0; }
 
-void run_action::set_output_data_format(io_utils::data_format_type odf_) {
+void run_action::set_output_data_format(mctools::io_utils::data_format_type odf_) {
   _output_data_format_ = odf_;
   _save_data_ = true;
 }
 
 void run_action::set_output_data_bank_label(const std::string& bl_) {
-  if (_output_data_format_ != io_utils::DATA_FORMAT_INVALID) {
-    set_output_data_format(io_utils::DATA_FORMAT_BANK);
+  if (_output_data_format_ != mctools::io_utils::DATA_FORMAT_INVALID) {
+    set_output_data_format(mctools::io_utils::DATA_FORMAT_BANK);
   }
-  DT_THROW_IF(_output_data_format_ != io_utils::DATA_FORMAT_BANK, std::logic_error,
+  DT_THROW_IF(_output_data_format_ != mctools::io_utils::DATA_FORMAT_BANK, std::logic_error,
               "Cannot set output data bank label with the plain output data format!");
   _output_data_bank_label_ = bl_;
 }
@@ -207,7 +206,7 @@ void run_action::_set_default() {
   _number_of_processed_events_ = 0;
   _number_of_events_modulo_ = NUMBER_OF_EVENTS_MODULO_NONE;
   _save_data_ = false;
-  _output_data_format_ = io_utils::DATA_FORMAT_INVALID;
+  _output_data_format_ = mctools::io_utils::DATA_FORMAT_INVALID;
   _output_file_preserve_ = true;
   _output_file_dir_ = ".";
   _output_file_prefix_ = "mctools_g4_";
@@ -216,8 +215,8 @@ void run_action::_set_default() {
   _output_file_ = "";
   _manager_ = nullptr;
   _event_action_ = nullptr;
-  _brio_general_info_store_label_ = io_utils::GENERAL_INFO_STORE;
-  _brio_plain_simulated_data_store_label_ = io_utils::PLAIN_SIMULATED_DATA_STORE;
+  _brio_general_info_store_label_ = mctools::io_utils::GENERAL_INFO_STORE;
+  _brio_plain_simulated_data_store_label_ = mctools::io_utils::PLAIN_SIMULATED_DATA_STORE;
 }
 
 run_action::run_action(manager& a_mgr) {
@@ -267,11 +266,12 @@ void run_action::initialize(const datatools::properties& a_config) {
   }
 
   if (_save_data_) {
-    if (_output_data_format_ == io_utils::DATA_FORMAT_INVALID) {
+    if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_INVALID) {
       if (a_config.has_key("file.data_format")) {
         const std::string& data_format_label = a_config.fetch_string("file.data_format");
-        io_utils::data_format_type data_format = io_utils::label_to_data_format(data_format_label);
-        DT_THROW_IF(data_format == io_utils::DATA_FORMAT_INVALID, std::logic_error,
+        mctools::io_utils::data_format_type data_format =
+            mctools::io_utils::label_to_data_format(data_format_label);
+        DT_THROW_IF(data_format == mctools::io_utils::DATA_FORMAT_INVALID, std::logic_error,
                     "Invalid data format '" << data_format_label << "'!");
         set_output_data_format(data_format);
       }
@@ -366,7 +366,7 @@ void run_action::dump(std::ostream& a_out) const {
 }
 
 void run_action::_build_run_header() {
-  _run_header_.set_description("mctools::g4 run header");
+  _run_header_.set_description("snsim run header");
 
   const mygsl::seed_manager& the_seed_manager = _manager_->get_seed_manager();
   std::vector<std::string> seed_labels;
@@ -380,7 +380,7 @@ void run_action::_build_run_header() {
 }
 
 void run_action::_build_run_footer() {
-  _run_footer_.set_description("mctools::g4 run footer");
+  _run_footer_.set_description("snsim run footer");
 
   _run_footer_.store("number_of_processed_events", _number_of_processed_events_);
   _run_footer_.store("number_of_saved_events", _number_of_saved_events_);
@@ -478,7 +478,7 @@ void run_action::BeginOfRunAction(const G4Run* a_run) {
     }
 
     std::string output_file_name = _output_file_;
-    if (_output_data_format_ == io_utils::DATA_FORMAT_BANK) {
+    if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_BANK) {
       DT_LOG_DEBUG(_logprio(), "Initializing the 'bank' data format...");
       // Bank data format:
       // Instantiate an output module:
@@ -587,7 +587,7 @@ void run_action::EndOfRunAction(const G4Run* a_run) {
   // Close the data writer:
   if (_save_data_) {
     DT_LOG_DEBUG(_logprio(), "Closing the data writer for run #" << a_run->GetRunID() << "...");
-    if (_output_data_format_ == io_utils::DATA_FORMAT_BANK) {
+    if (_output_data_format_ == mctools::io_utils::DATA_FORMAT_BANK) {
       // Bank data format:
       if (has_out_module()) {
         if (_io_work_->out_module->is_initialized()) {
@@ -674,16 +674,14 @@ void run_action::_store_data(const mctools::simulated_data& esd_) {
   increment_number_of_saved_events();
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::run_action, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::run_action");
+  ocd_.set_class_name("snsim::run_action");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation mandatory run action");
@@ -754,7 +752,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
             "This flag may be activated when the Geant4 simulation         \n"
             "engine is used from the ``g4_production`` executable.         \n"
             "This flag must be deactivated when the Geant4 simulation      \n"
-            "engine is used from the ``mctools::g4::simulation_module``    \n"
+            "engine is used from the ``snsim::simulation_module``    \n"
             "class through a data processing pipeline because in this case \n"
             "the pipeline generally implements its own I/O mechanisms.     \n");
   }
@@ -790,7 +788,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
         .set_long_description(
             "This property is not taken into account if the *output file*  \n"
             "attribute has already been set by a previous  call to the     \n"
-            "``mctools::g4::run_action::set_output_file(..;)`` method.     \n"
+            "``snsim::run_action::set_output_file(..;)`` method.     \n"
             "                                                              \n"
             "Example::                                                     \n"
             "                                                              \n"
@@ -818,7 +816,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
         .set_long_description(
             "This property is not taken into account if the *output file*  \n"
             "attribute has already been set by a previous  call to the     \n"
-            "``mctools::g4::run_action::set_output_file(..;)`` method or   \n"
+            "``snsim::run_action::set_output_file(..;)`` method or   \n"
             "by the ``file.directory`` property.                           \n"
             "                                                              \n"
             "Example::                                                     \n"
@@ -837,7 +835,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
         .set_long_description(
             "This property is not taken into account if the *output file*  \n"
             "attribute has already been set by a previous  call to the     \n"
-            "``mctools::g4::run_action::set_output_file(..;)`` method or   \n"
+            "``snsim::run_action::set_output_file(..;)`` method or   \n"
             "by the ``file.directory`` property.                           \n"
             "                                                              \n"
             "Example::                                                     \n"
@@ -858,7 +856,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
         .set_long_description(
             "This property is not taken into account if the *output file*  \n"
             "attribute has already been set by a previous  call to the     \n"
-            "``mctools::g4::run_action::set_output_file(..;)`` method or   \n"
+            "``snsim::run_action::set_output_file(..;)`` method or   \n"
             "by the ``file.directory`` property.                           \n"
             "                                                              \n"
             "Allowed values:                                               \n"
@@ -885,7 +883,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
         .set_long_description(
             "This property is not taken into account if the *output file*  \n"
             "attribute has already been set by a previous  call to the     \n"
-            "``mctools::g4::run_action::set_output_file(..;)`` method or   \n"
+            "``snsim::run_action::set_output_file(..;)`` method or   \n"
             "by the ``file.directory`` property.                           \n"
             "                                                              \n"
             "This property is not taken into account for Brio format which \n"
@@ -967,5 +965,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::run_action, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::manager' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::run_action, "mctools::g4::run_action")
+// Registration macro for class 'snsim::manager' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::run_action, "snsim::run_action")

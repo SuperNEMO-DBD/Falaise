@@ -20,9 +20,7 @@
 #include "G4UnitsTable.hh"
 #include "G4VTouchable.hh"
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 stepping_verbose::stepping_verbose() = default;
 
@@ -39,7 +37,7 @@ void stepping_verbose::StepInfo() {
     }
     if (verboseLevel >= 3) {
       std::clog << std::endl;
-      std::clog << "mctools::g4::stepping_verbose::StepInfo " << std::endl
+      std::clog << "snsim::stepping_verbose::StepInfo " << std::endl
                 << std::setw(6) << "Step num" << std::setw(6) << "X"
                 << "    " << std::setw(6) << "Y"
                 << "    " << std::setw(6) << "Z"
@@ -143,6 +141,4 @@ void stepping_verbose::TrackingStarted() {
   std::clog.precision(saved_precision);
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

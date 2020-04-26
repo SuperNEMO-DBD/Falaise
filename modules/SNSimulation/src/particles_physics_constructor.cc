@@ -166,13 +166,11 @@
 #include <G4AntiHe3.hh>
 #include <G4AntiTriton.hh>
 
-namespace mctools {
+namespace snsim {
 
-namespace g4 {
-
-DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_IMPLEMENTATION(
-    base_physics_constructor, particles_physics_constructor,
-    "mctools::g4::particles_physics_constructor")
+DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_IMPLEMENTATION(base_physics_constructor,
+                                                          particles_physics_constructor,
+                                                          "snsim::particles_physics_constructor")
 
 particles_physics_constructor::particles_physics_constructor() {
   this->particles_physics_constructor::_set_defaults();
@@ -608,16 +606,14 @@ void particles_physics_constructor::_ConstructBaryons() {
 
 void particles_physics_constructor::_ConstructUserLimits() {}
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::particles_physics_constructor, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::particles_physics_constructor, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::particles_physics_constructor");
+  ocd_.set_class_name("snsim::particles_physics_constructor");
 
   // The class terse description :
   ocd_.set_class_description(
@@ -845,7 +841,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::particles_physics_constructor, ocd_
 
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
-      "The configuration of a ``mctools::g4::particles_physics_constructor``  \n"
+      "The configuration of a ``snsim::particles_physics_constructor``  \n"
       "object can be provided through a ``datatools::properties`` object.     \n"
       "                                                                       \n"
       "A typical sample file is::                                             \n"
@@ -877,6 +873,6 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::particles_physics_constructor, ocd_
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::particles_physics_constructor' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::particles_physics_constructor,
-                               "mctools::g4::particles_physics_constructor")
+// Registration macro for class 'snsim::particles_physics_constructor' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::particles_physics_constructor,
+                               "snsim::particles_physics_constructor")

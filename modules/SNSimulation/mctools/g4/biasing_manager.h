@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_BIASING_MANAGER_H
-#define MCTOOLS_G4_BIASING_MANAGER_H 1
+#ifndef SNSIM_BIASING_MANAGER_H
+#define SNSIM_BIASING_MANAGER_H 1
 
 // Standard library:
 #include <string>
@@ -31,9 +31,7 @@ namespace datatools {
 class properties;
 }  // namespace datatools
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward declaration:
 class detector_construction;
@@ -67,11 +65,9 @@ class biasing_manager {
   detector_construction *_dc_;  //!< Handle to the parent detector construction
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_BIASING_MANAGER_H
+#endif  // SNSIM_BIASING_MANAGER_H
 
 /*
 ** Local Variables: --

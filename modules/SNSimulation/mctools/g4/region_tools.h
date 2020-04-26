@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_REGION_TOOLS_H
-#define MCTOOLS_G4_REGION_TOOLS_H
+#ifndef SNSIM_REGION_TOOLS_H
+#define SNSIM_REGION_TOOLS_H
 
 // Standard library:
 #include <iostream>
@@ -31,9 +31,7 @@
 // - Bayeux/geomtools :
 #include <geomtools/manager.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Description of a region
 ///
@@ -147,15 +145,13 @@ class base_region_user_info : public G4VUserRegionInformation
 };
 */
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::region_info)
+DOCD_CLASS_DECLARATION(snsim::region_info)
 
-#endif  // MCTOOLS_G4_REGION_TOOLS_H
+#endif  // SNSIM_REGION_TOOLS_H
 
 /*
 ** Local Variables: --

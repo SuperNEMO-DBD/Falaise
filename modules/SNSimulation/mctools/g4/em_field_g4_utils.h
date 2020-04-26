@@ -13,12 +13,10 @@
  *
  */
 
-#ifndef MCTOOLS_G4_EM_FIELD_G4_UTILS_H
-#define MCTOOLS_G4_EM_FIELD_G4_UTILS_H
+#ifndef SNSIM_EM_FIELD_G4_UTILS_H
+#define SNSIM_EM_FIELD_G4_UTILS_H
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 enum position_time_index {
   POSTIME_X = 0,  //!< Index of the X coordinate
@@ -36,11 +34,9 @@ enum emfield_index {
   EMFIELD_EZ = 5   //!< Index of the Ez coordinate
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_EM_FIELD_G4_UTILS_H
+#endif  // SNSIM_EM_FIELD_G4_UTILS_H
 
 /*
 ** Local Variables: --

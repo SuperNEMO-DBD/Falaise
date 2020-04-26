@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_SENSITIVE_HIT_COLLECTION_H
-#define MCTOOLS_G4_SENSITIVE_HIT_COLLECTION_H 1
+#ifndef SNSIM_SENSITIVE_HIT_COLLECTION_H
+#define SNSIM_SENSITIVE_HIT_COLLECTION_H 1
 
 // Standard library:
 #include <vector>
@@ -23,9 +23,7 @@
 // - Geant4
 #include <G4VHitsCollection.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 class sensitive_hit;
 
@@ -63,11 +61,9 @@ class sensitive_hit_collection : public G4VHitsCollection {
   hit_collection_type _hits;
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_SENSITIVE_HIT_COLLECTION_H
+#endif  // SNSIM_SENSITIVE_HIT_COLLECTION_H
 
 /*
 ** Local Variables: --

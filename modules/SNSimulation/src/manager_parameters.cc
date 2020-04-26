@@ -20,9 +20,7 @@
 #include <mctools/g4/manager.h>
 #include <mctools/utils.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 manager_parameters::manager_parameters() { set_defaults(); }
 
@@ -98,7 +96,7 @@ void manager_parameters::set_defaults() {
   this->interactive = false;
   this->g4_macro.clear();
   this->g4_visu = false;
-  this->number_of_events = mctools::g4::manager::NO_LIMIT;
+  this->number_of_events = snsim::manager::NO_LIMIT;
   this->number_of_events_modulo = 0;  // 0 == not used
   this->input_prng_states_file.clear();
   this->output_prng_states_file.clear();
@@ -161,26 +159,25 @@ void manager_parameters::setup(const manager_parameters& a_params, manager& a_ma
   // PRNG seeding :
   if (a_params.mgr_seed != mygsl::random_utils::SEED_INVALID) {
     // register the G4 manager seed :
-    a_manager.grab_seed_manager().update_seed(mctools::g4::manager::g4_manager_label(),
+    a_manager.grab_seed_manager().update_seed(snsim::manager::g4_manager_label(),
                                               a_params.mgr_seed);
   }
 
   if (a_params.vg_seed != mygsl::random_utils::SEED_INVALID) {
     // register the vertex generator's seed :
-    a_manager.grab_seed_manager().update_seed(mctools::g4::manager::vertex_generator_label(),
+    a_manager.grab_seed_manager().update_seed(snsim::manager::vertex_generator_label(),
                                               a_params.vg_seed);
   }
 
   if (a_params.eg_seed != mygsl::random_utils::SEED_INVALID) {
     // register the event generator's seed :
-    a_manager.grab_seed_manager().update_seed(mctools::g4::manager::event_generator_label(),
+    a_manager.grab_seed_manager().update_seed(snsim::manager::event_generator_label(),
                                               a_params.eg_seed);
   }
 
   if (a_params.shpf_seed != mygsl::random_utils::SEED_INVALID) {
     // register the SHPF PRNG's seed :
-    a_manager.grab_seed_manager().update_seed(mctools::g4::manager::shpf_label(),
-                                              a_params.shpf_seed);
+    a_manager.grab_seed_manager().update_seed(snsim::manager::shpf_label(), a_params.shpf_seed);
   }
 
   if (!a_params.input_prng_seeds_file.empty()) {
@@ -203,7 +200,7 @@ void manager_parameters::setup(const manager_parameters& a_params, manager& a_ma
     a_manager.set_output_data_format_by_label(a_params.output_data_format);
   }
 
-  if (a_manager.get_output_data_format() == io_utils::DATA_FORMAT_BANK) {
+  if (a_manager.get_output_data_format() == mctools::io_utils::DATA_FORMAT_BANK) {
     if (!a_params.output_data_bank_label.empty()) {
       a_manager.set_output_data_bank_label(a_params.output_data_bank_label);
     }
@@ -223,7 +220,7 @@ void manager_parameters::setup(const manager_parameters& a_params, manager& a_ma
     a_manager.set_event_generator_name(a_params.eg_name);
   }
 
-  if (a_params.number_of_events <= mctools::g4::manager::NO_LIMIT) {
+  if (a_params.number_of_events <= snsim::manager::NO_LIMIT) {
     a_manager.set_number_of_events(a_params.number_of_events);
   }
 
@@ -270,6 +267,4 @@ void manager_parameters::setup(const manager_parameters& a_params, manager& a_ma
                 "Simulation manager has been configured and initialized.");
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

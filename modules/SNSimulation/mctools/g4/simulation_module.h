@@ -9,8 +9,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_SIMULATION_MODULE_H
-#define MCTOOLS_G4_SIMULATION_MODULE_H 1
+#ifndef SNSIM_SIMULATION_MODULE_H
+#define SNSIM_SIMULATION_MODULE_H 1
 
 // Third party:
 // - Bayeux/dpp :
@@ -26,11 +26,10 @@ namespace geomtools {
 class manager;
 }  // namespace geomtools
 
-namespace mctools {
+namespace snsim {
 // Forward declaration :
 class simulated_data;
 
-namespace g4 {
 // Foward declarations
 class manager;
 class simulation_ctrl;
@@ -105,15 +104,13 @@ class simulation_module : public dpp::base_module {
   DPP_MODULE_REGISTRATION_INTERFACE(simulation_module)
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 // Object configuration description (OCD) support :
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::simulation_module)
+DOCD_CLASS_DECLARATION(snsim::simulation_module)
 
-#endif  // MCTOOLS_G4_SIMULATION_MODULE_H
+#endif  // SNSIM_SIMULATION_MODULE_H
 
 /*
 ** Local Variables: --

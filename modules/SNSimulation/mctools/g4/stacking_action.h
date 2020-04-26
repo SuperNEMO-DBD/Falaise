@@ -12,8 +12,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_STACKING_ACTION_H
-#define MCTOOLS_G4_STACKING_ACTION_H 1
+#ifndef SNSIM_STACKING_ACTION_H
+#define SNSIM_STACKING_ACTION_H 1
 
 // Standard library:
 #include <string>
@@ -35,9 +35,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Stacking action using the Geant4 interface
 class stacking_action : public G4UserStackingAction, public loggable_support {
@@ -69,15 +67,13 @@ class stacking_action : public G4UserStackingAction, public loggable_support {
   std::vector<G4Material *> _killer_materials_;
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::stacking_action)
+DOCD_CLASS_DECLARATION(snsim::stacking_action)
 
-#endif  // MCTOOLS_G4_STACKING_ACTION_H
+#endif  // SNSIM_STACKING_ACTION_H
 
 /*
 ** Local Variables: --

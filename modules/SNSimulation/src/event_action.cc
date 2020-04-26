@@ -42,29 +42,27 @@
 #include <mctools/g4/simulation_ctrl.h>
 #include <mctools/simulated_data.ipp>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 auto event_action::get_run_action() const -> const run_action& { return *_run_action_; }
 
 auto event_action::grab_run_action() -> run_action& { return *_run_action_; }
 
-auto event_action::get_event_data() const -> const ::mctools::simulated_data& {
+auto event_action::get_event_data() const -> const mctools::simulated_data& {
   if (_external_event_data_ != nullptr) {
     return *_external_event_data_;
   }
   return _event_data_;
 }
 
-auto event_action::grab_event_data() -> ::mctools::simulated_data& {
+auto event_action::grab_event_data() -> mctools::simulated_data& {
   if (_external_event_data_ != nullptr) {
     return *_external_event_data_;
   }
   return _event_data_;
 }
 
-void event_action::set_external_event_data(::mctools::simulated_data& a_external_event_data) {
+void event_action::set_external_event_data(mctools::simulated_data& a_external_event_data) {
   _external_event_data_ = &a_external_event_data;
 }
 
@@ -109,12 +107,12 @@ void event_action::initialize(const datatools::properties& config_) {
   if (config_.has_key("event_model.hit_collection_type")) {
     const std::string event_model_collection_type =
         config_.fetch_string("event_model.hit_collection_type");
-    ::mctools::simulated_data& event_data = this->grab_event_data();
+    mctools::simulated_data& event_data = this->grab_event_data();
     event_data.reset_collection_type();
     if (event_model_collection_type == "plain") {
-      event_data.set_collection_type(::mctools::simulated_data::PLAIN_HIT_COLLECTION_TYPE);
+      event_data.set_collection_type(mctools::simulated_data::PLAIN_HIT_COLLECTION_TYPE);
     } else if (event_model_collection_type == "handle") {
-      event_data.set_collection_type(::mctools::simulated_data::HANDLE_HIT_COLLECTION_TYPE);
+      event_data.set_collection_type(mctools::simulated_data::HANDLE_HIT_COLLECTION_TYPE);
     } else {
       DT_THROW_IF(true, std::logic_error,
                   "Invalid hit collection type '" << event_model_collection_type << "' !");
@@ -447,7 +445,7 @@ void event_action::_process_sensitive_hits_(const G4Event* event_, bool& save_th
       for (auto& iproc : the_detector.grab_hit_processors()) {
         /*
           const string & hit_proc_name = iproc->first;
-          cerr << "DEVEL: " << "mctools::g4::event_action::EndOfEventAction: "
+          cerr << "DEVEL: " << "snsim::event_action::EndOfEventAction: "
           << "hit_proc_name = `" << hit_proc_name << "'" << endl;
         */
         ::mctools::base_step_hit_processor* hit_proc = iproc.second;
@@ -471,16 +469,14 @@ void event_action::_process_sensitive_hits_(const G4Event* event_, bool& save_th
   }
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::event_action, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::event_action, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::event_action");
+  ocd_.set_class_name("snsim::event_action");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation mandatory event action");
@@ -511,5 +507,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::event_action, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::event_action' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::event_action, "mctools::g4::event_action")
+// Registration macro for class 'snsim::event_action' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::event_action, "snsim::event_action")

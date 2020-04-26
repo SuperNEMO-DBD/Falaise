@@ -28,9 +28,7 @@
 // - Bayeux/mygsl:
 #include <mygsl/rng.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 const int g4_prng::SEED_INVALID;
 const int g4_prng::SEED_TIME;
@@ -78,11 +76,9 @@ void g4_prng::showStatus() const {
   std::clog << std::endl;
 }
 
-auto g4_prng::name() const -> std::string { return "mctools::g4::g4_prng"; }
+auto g4_prng::name() const -> std::string { return "snsim::g4_prng"; }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /*
 ** Local Variables: --

@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_DETECTOR_CONSTRUCTION_H
-#define MCTOOLS_G4_DETECTOR_CONSTRUCTION_H 1
+#ifndef SNSIM_DETECTOR_CONSTRUCTION_H
+#define SNSIM_DETECTOR_CONSTRUCTION_H 1
 
 // Standard library:
 #include <map>
@@ -52,9 +52,7 @@ class base_electromagnetic_field;
 class emfield_geom_plugin;
 }  // namespace emfield
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward declarations:
 class manager;
@@ -244,15 +242,13 @@ class detector_construction : public G4VUserDetectorConstruction, public loggabl
   boost::scoped_ptr<biasing_manager> _biasing_manager_;  //!< Biaising manager
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::detector_construction)
+DOCD_CLASS_DECLARATION(snsim::detector_construction)
 
-#endif  // MCTOOLS_G4_DETECTOR_CONSTRUCTION_H
+#endif  // SNSIM_DETECTOR_CONSTRUCTION_H
 
 /*
 ** Local Variables: --

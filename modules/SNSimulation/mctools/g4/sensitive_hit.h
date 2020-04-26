@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_SENSITIVE_HIT_H
-#define MCTOOLS_G4_SENSITIVE_HIT_H 1
+#ifndef SNSIM_SENSITIVE_HIT_H
+#define SNSIM_SENSITIVE_HIT_H 1
 
 // Third party:
 // - Geant4
@@ -23,9 +23,7 @@
 // This project:
 #include <mctools/base_step_hit.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief A sensitive hit using the Geant4 interface with an embedded base step hit
 class sensitive_hit : public G4VHit {
@@ -61,11 +59,9 @@ class sensitive_hit : public G4VHit {
   mctools::base_step_hit _hit_data_;  //!< Basic MC step hit data
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_SENSITIVE_HIT_H
+#endif  // SNSIM_SENSITIVE_HIT_H
 
 /*
 ** Local Variables: --

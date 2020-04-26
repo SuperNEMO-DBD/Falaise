@@ -63,9 +63,7 @@
 #include <datatools/exception.h>
 #include <datatools/utils.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -231,6 +229,4 @@ auto em_model_factory::_instance_() -> em_model_factory & {
 
 }  // end of namespace processes
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

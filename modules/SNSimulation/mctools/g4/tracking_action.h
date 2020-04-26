@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_TRACKING_ACTION_H
-#define MCTOOLS_G4_TRACKING_ACTION_H 1
+#ifndef SNSIM_TRACKING_ACTION_H
+#define SNSIM_TRACKING_ACTION_H 1
 
 // Third party:
 // - Boost:
@@ -29,9 +29,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Tracking action using the Geant4 interface
 class tracking_action : public G4UserTrackingAction, public loggable_support {
@@ -52,15 +50,13 @@ class tracking_action : public G4UserTrackingAction, public loggable_support {
   virtual void PostUserTrackingAction(const G4Track*);
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::tracking_action)
+DOCD_CLASS_DECLARATION(snsim::tracking_action)
 
-#endif  // MCTOOLS_G4_TRACKING_ACTION_H
+#endif  // SNSIM_TRACKING_ACTION_H
 
 // Local Variables: --
 // mode: c++ --

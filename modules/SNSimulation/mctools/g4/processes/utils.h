@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PROCESSES_UTILS_H
-#define MCTOOLS_G4_PROCESSES_UTILS_H
+#ifndef SNSIM_PROCESSES_UTILS_H
+#define SNSIM_PROCESSES_UTILS_H
 
 // Standard Library:
 #include <string>
@@ -23,9 +23,7 @@
 // - Geant4:
 #include <G4ProcessType.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -39,11 +37,9 @@ int label_to_em_process_subtype(const std::string& label_);
 
 }  // end of namespace processes
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_PROCESSES_UTILS_H
+#endif  // SNSIM_PROCESSES_UTILS_H
 
 /*
 ** Local Variables: --

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_SENSITIVE_DETECTOR_H
-#define MCTOOLS_G4_SENSITIVE_DETECTOR_H 1
+#ifndef SNSIM_SENSITIVE_DETECTOR_H
+#define SNSIM_SENSITIVE_DETECTOR_H 1
 
 // Standard library:
 #include <list>
@@ -47,9 +47,7 @@
 
 class G4Step;
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward declaration:
 class manager;
@@ -240,15 +238,13 @@ class sensitive_detector : public G4VSensitiveDetector, public loggable_support 
   uint32_t _number_of_sensitive_steps_;  //!< Counter for processed hits
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::sensitive_detector)
+DOCD_CLASS_DECLARATION(snsim::sensitive_detector)
 
-#endif  // MCTOOLS_G4_SENSITIVE_DETECTOR_H
+#endif  // SNSIM_SENSITIVE_DETECTOR_H
 
 /*
 ** Local Variables: --

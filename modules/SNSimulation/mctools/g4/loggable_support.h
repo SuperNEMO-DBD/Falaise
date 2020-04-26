@@ -4,8 +4,8 @@
  * Last modified : 2013-06-03
  */
 
-#ifndef MCTOOLS_G4_LOGGABLE_SUPPORT_H
-#define MCTOOLS_G4_LOGGABLE_SUPPORT_H 1
+#ifndef SNSIM_LOGGABLE_SUPPORT_H
+#define SNSIM_LOGGABLE_SUPPORT_H 1
 
 // Third party:
 // - Bayeux/datatools :
@@ -15,9 +15,7 @@ namespace datatools {
 class properties;
 }
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Base class with logging support
 class loggable_support {
@@ -54,11 +52,9 @@ class loggable_support {
   datatools::logger::priority _logging_priority;  //!< Logging priority threshold
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_LOGGABLE_SUPPORT_H
+#endif  // SNSIM_LOGGABLE_SUPPORT_H
 
 // Local Variables: --
 // mode: c++ --

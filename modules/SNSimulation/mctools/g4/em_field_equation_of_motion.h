@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_EM_FIELD_EQUATION_OF_MOTION_H
-#define MCTOOLS_G4_EM_FIELD_EQUATION_OF_MOTION_H
+#ifndef SNSIM_EM_FIELD_EQUATION_OF_MOTION_H
+#define SNSIM_EM_FIELD_EQUATION_OF_MOTION_H
 
 // Third party:
 // - Geant4:
@@ -26,9 +26,7 @@
 
 class G4Field;
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief EM field equation of motion
 ///
@@ -134,11 +132,9 @@ class em_field_equation_of_motion : public G4EquationOfMotion, public loggable_s
   double _beta_;
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_EM_FIELD_EQUATION_OF_MOTION_H
+#endif  // SNSIM_EM_FIELD_EQUATION_OF_MOTION_H
 
 // Local Variables: --
 // mode: c++ --

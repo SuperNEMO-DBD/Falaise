@@ -36,9 +36,7 @@
 #include <G4StepLimiterBuilder.hh>
 #endif
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // *** physics_list::production_cuts_info *** //
 
@@ -168,10 +166,9 @@ void physics_list::initialize(const datatools::properties& config_) {
 
   loggable_support::_initialize_logging_support(config_);
 
-  _factory_register_.set_label("mctools::g4::physics_list/factory");
+  _factory_register_.set_label("snsim::physics_list/factory");
   _factory_register_.set_logging_priority(_logprio());
-  _factory_register_.import(
-      DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(mctools::g4::base_physics_constructor));
+  _factory_register_.import(DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(snsim::base_physics_constructor));
 
   DT_LOG_DEBUG(_logprio(), "Physics list configuration : ");
   if (_logprio() >= datatools::logger::PRIO_DEBUG) {
@@ -745,16 +742,14 @@ void physics_list::tree_dump(std::ostream& out_, const std::string& title_,
        << std::endl;
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::physics_list, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::physics_list");
+  ocd_.set_class_name("snsim::physics_list");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation manager embedded physics list");
@@ -766,7 +761,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list, ocd_) {
   ocd_.set_class_documentation(
       "The Geant4 simulation manager class embedded               \n"
       "physics list.                                              \n"
-      "The ``mctools::g4::physics_list`` enables to:              \n"
+      "The ``snsim::physics_list`` enables to:              \n"
       "                                                           \n"
       " * use an official physics list published                  \n"
       "   by the Geant4 API.                                      \n"
@@ -850,9 +845,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list, ocd_) {
             "                                                                            \n"
             " physics_constructors.names : string[2] = \"particles\" \"electromagnetic\" \n"
             " physics_constructors.particles.id : string = \\                            \n"
-            "    \"mctools::g4::particles_physics_constructor\"                          \n"
+            "    \"snsim::particles_physics_constructor\"                          \n"
             " physics_constructors.electromagnetic.id : string = \\                      \n"
-            "    \"mctools::g4::em_physics_constructor\"                                 \n"
+            "    \"snsim::em_physics_constructor\"                                 \n"
             "                                                                            \n");
   }
 
@@ -1132,9 +1127,9 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list, ocd_) {
       "  logging.priority    : string = \"fatal\"         \n"
       "  physics_constructors.names : string[2] = \"particles\" \"em\" \n"
       "  physics_constructors.particles.id     : string = "
-      "\"mctools::g4::particles_physics_constructor\" \n"
+      "\"snsim::particles_physics_constructor\" \n"
       "  physics_constructors.particles.config : string = \"particles.def\" \n"
-      "  physics_constructors.em.id            : string = \"mctools::g4::em_physics_constructor\" "
+      "  physics_constructors.em.id            : string = \"snsim::em_physics_constructor\" "
       "\n"
       "  physics_constructors.em.config        : string = \"em.def\" \n"
 
@@ -1153,5 +1148,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::physics_list, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::physics_list' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::physics_list, "mctools::g4::physics_list")
+// Registration macro for class 'snsim::physics_list' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::physics_list, "snsim::physics_list")

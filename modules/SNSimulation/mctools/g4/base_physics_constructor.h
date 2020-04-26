@@ -11,8 +11,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_BASE_PHYSICS_CONSTRUCTOR_H
-#define MCTOOLS_G4_BASE_PHYSICS_CONSTRUCTOR_H 1
+#ifndef SNSIM_BASE_PHYSICS_CONSTRUCTOR_H
+#define SNSIM_BASE_PHYSICS_CONSTRUCTOR_H 1
 
 // Standard library:
 #include <map>
@@ -30,9 +30,7 @@
 #include <mctools/g4/loggable_support.h>
 #include <mctools/g4/physics_list_utils.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward class declaration:
 class physics_list;
@@ -114,11 +112,9 @@ class base_physics_constructor : public G4VPhysicsConstructor,
   friend class physics_list;
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_BASE_PHYSICS_CONSTRUCTOR_H
+#endif  // SNSIM_BASE_PHYSICS_CONSTRUCTOR_H
 
 /*
 ** Local Variables: --

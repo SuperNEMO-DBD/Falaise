@@ -11,9 +11,7 @@
 // - bayeux/datatools:
 #include <datatools/exception.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // static
 const int track_history::track_info::TRACK_ID_UNSET;
@@ -97,9 +95,7 @@ track_history::~track_history() { reset(); }
 
 void track_history::reset() { _track_infos_.clear(); }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /*
 ** Local Variables: --

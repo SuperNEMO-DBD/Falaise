@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PROCESSES_EM_MODEL_FACTORY_H
-#define MCTOOLS_G4_PROCESSES_EM_MODEL_FACTORY_H
+#ifndef SNSIM_PROCESSES_EM_MODEL_FACTORY_H
+#define SNSIM_PROCESSES_EM_MODEL_FACTORY_H
 
 // Standard Library:
 #include <string>
@@ -25,9 +25,7 @@
 // Bayeux/datatools:
 #include <datatools/properties.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -99,11 +97,9 @@ class em_model_factory {
 
 }  // end of namespace processes
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_PROCESSES_EM_MODEL_FACTORY_H
+#endif  // SNSIM_PROCESSES_EM_MODEL_FACTORY_H
 
 /*
 ** Local Variables: --

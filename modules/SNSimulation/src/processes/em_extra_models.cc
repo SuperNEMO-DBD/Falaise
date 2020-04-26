@@ -20,9 +20,7 @@
 // This project:
 #include <mctools/g4/processes/em_model_factory.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -376,6 +374,4 @@ void em_extra_model::apply_to_g4(G4EmConfigurator& em_config_,
 
 }  // end of namespace processes
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

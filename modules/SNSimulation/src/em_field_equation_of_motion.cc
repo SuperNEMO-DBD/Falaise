@@ -17,9 +17,7 @@
 #include <mctools/g4/em_field_g4_stuff.h>
 #include <mctools/g4/em_field_g4_utils.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 void em_field_equation_of_motion::_set_defaults() {
   _with_spin_ = false;
@@ -55,7 +53,7 @@ void em_field_equation_of_motion::reset()
 
 em_field_equation_of_motion::em_field_equation_of_motion(G4Field* em_field_)
     : G4EquationOfMotion(em_field_) {
-  // std::cerr << "DEVEL: " << "mctools::g4::em_field_equation_of_motion::CTOR: "
+  // std::cerr << "DEVEL: " << "snsim::em_field_equation_of_motion::CTOR: "
   //           << "Entering..."
   //           << std::endl;
   _set_defaults();
@@ -195,6 +193,4 @@ void em_field_equation_of_motion::EvaluateRhsGivenB(const G4double y_[], const G
   DT_LOG_TRACE_EXITING(_logprio());
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

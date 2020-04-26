@@ -15,8 +15,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_EM_PHYSICS_CONSTRUCTOR_H
-#define MCTOOLS_G4_EM_PHYSICS_CONSTRUCTOR_H 1
+#ifndef SNSIM_EM_PHYSICS_CONSTRUCTOR_H
+#define SNSIM_EM_PHYSICS_CONSTRUCTOR_H 1
 
 // This project:
 #include <mctools/g4/base_physics_constructor.h>
@@ -25,9 +25,7 @@
 // - Boost:
 #include <boost/scoped_ptr.hpp>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Geant4 physics constructor for electromagnetic processes
 class em_physics_constructor : public base_physics_constructor {
@@ -204,15 +202,13 @@ class em_physics_constructor : public base_physics_constructor {
                                                        em_physics_constructor)
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::em_physics_constructor)
+DOCD_CLASS_DECLARATION(snsim::em_physics_constructor)
 
-#endif  // MCTOOLS_G4_EM_PHYSICS_CONSTRUCTOR_H
+#endif  // SNSIM_EM_PHYSICS_CONSTRUCTOR_H
 
 /*
 ** Local Variables: --

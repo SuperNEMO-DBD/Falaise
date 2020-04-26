@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PRIMARY_GENERATOR_H
-#define MCTOOLS_G4_PRIMARY_GENERATOR_H
+#ifndef SNSIM_PRIMARY_GENERATOR_H
+#define SNSIM_PRIMARY_GENERATOR_H
 
 // Standard library:
 #include <map>
@@ -48,12 +48,12 @@ class i_vertex_generator;
 }
 
 namespace mctools {
-
 namespace biasing {
 class primary_event_bias;
 }
+}  // namespace mctools
 
-namespace g4 {
+namespace snsim {
 
 // Forward declarations:
 class run_action;
@@ -66,10 +66,10 @@ class primary_generator : public G4VUserPrimaryGeneratorAction, public loggable_
   bool is_initialized() const;
 
   /// Set the run action object
-  void set_run_action(mctools::g4::run_action &run_action_);
+  void set_run_action(snsim::run_action &run_action_);
 
   /// Set the event action object
-  void set_event_action(mctools::g4::event_action &event_action_);
+  void set_event_action(snsim::event_action &event_action_);
 
   /// Check if a vertex generator is defined
   bool has_vertex_generator() const;
@@ -132,15 +132,13 @@ class primary_generator : public G4VUserPrimaryGeneratorAction, public loggable_
       _bias_;  //!< Handle to a primary event bias algorithm
 };
 
-}  // namespace g4
-
-}  // namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::primary_generator)
+DOCD_CLASS_DECLARATION(snsim::primary_generator)
 
-#endif  // MCTOOLS_G4_PRIMARY_GENERATOR_H
+#endif  // SNSIM_PRIMARY_GENERATOR_H
 
 /*
 ** Local Variables: --

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_EVENT_ACTION_H
-#define MCTOOLS_G4_EVENT_ACTION_H 1
+#ifndef SNSIM_EVENT_ACTION_H
+#define SNSIM_EVENT_ACTION_H 1
 
 // Third party:
 // - Geant4:
@@ -30,9 +30,7 @@ namespace datatools {
 class properties;
 }  // namespace datatools
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // Forward declarations:
 class run_action;
@@ -59,16 +57,16 @@ class event_action : public G4UserEventAction, public loggable_support {
   void set_killed_event(bool = true);
 
   /// Set external event data
-  void set_external_event_data(::mctools::simulated_data &a_external_event_data);
+  void set_external_event_data(mctools::simulated_data &a_external_event_data);
 
   /// Set the flag to save only tracked/unkilled events
   bool is_save_only_tracked_events() const;
 
   /// Return non mutable event data
-  const ::mctools::simulated_data &get_event_data() const;
+  const mctools::simulated_data &get_event_data() const;
 
   /// Return mutable event data
-  ::mctools::simulated_data &grab_event_data();
+  mctools::simulated_data &grab_event_data();
 
   /// Return non mutable run action
   const run_action &get_run_action() const;
@@ -123,24 +121,21 @@ class event_action : public G4UserEventAction, public loggable_support {
   // Working data:
   const detector_construction *_detector_construction_;  //!< Handle to the G4 detector construction
   run_action *_run_action_;                              //!< Handle to the G4 run action
-  ::mctools::simulated_data _event_data_;                //!< Embedded simulated event model
-  ::mctools::simulated_data
-      *_external_event_data_;  //!< Handle to an external simulated event model
-  bool _aborted_event_;        //!< Flag to abort the current event
-  bool _killed_event_;         //!< Flag to kill the current event
-  ::mctools::base_step_hit_processor::step_hit_ptr_collection_type
+  mctools::simulated_data _event_data_;                  //!< Embedded simulated event model
+  mctools::simulated_data *_external_event_data_;  //!< Handle to an external simulated event model
+  bool _aborted_event_;                            //!< Flag to abort the current event
+  bool _killed_event_;                             //!< Flag to kill the current event
+  mctools::base_step_hit_processor::step_hit_ptr_collection_type
       _phits_;  //!< Collection of step hit processors
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::event_action)
+DOCD_CLASS_DECLARATION(snsim::event_action)
 
-#endif  // MCTOOLS_G4_EVENT_ACTION_H
+#endif  // SNSIM_EVENT_ACTION_H
 
 /*
 ** Local Variables: --

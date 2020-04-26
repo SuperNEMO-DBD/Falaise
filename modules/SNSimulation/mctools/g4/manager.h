@@ -30,8 +30,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_MANAGER_H
-#define MCTOOLS_G4_MANAGER_H 1
+#ifndef SNSIM_MANAGER_H
+#define SNSIM_MANAGER_H 1
 
 // Standard library:
 #include <map>
@@ -94,8 +94,8 @@ class multi_properties;
 class service_manager;
 }  // namespace datatools
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
+
 // Forward declarations
 class run_action;
 class event_action;
@@ -416,13 +416,13 @@ class manager : public loggable_support {
   void reset_output_data_format();
 
   /// Set the output data file format
-  void set_output_data_format(io_utils::data_format_type);
+  void set_output_data_format(mctools::io_utils::data_format_type);
 
   /// Set the output data bank label(for "bank" output format only)
   void set_output_data_bank_label(const std::string&);
 
   /// Return the output data file format
-  io_utils::data_format_type get_output_data_format() const;
+  mctools::io_utils::data_format_type get_output_data_format() const;
 
   /// Set the output data file name
   void set_output_data_file(const std::string&);
@@ -604,14 +604,14 @@ class manager : public loggable_support {
   G4UImanager* _g4_UI_ = nullptr;  //!< Geant4 UI manager
 
   // User specified G4 interfaces :
-  mctools::g4::detector_construction* _user_detector_construction_ = nullptr;
-  mctools::g4::physics_list* _user_physics_list_ = nullptr;
-  mctools::g4::primary_generator* _user_primary_generator_ = nullptr;
-  mctools::g4::run_action* _user_run_action_ = nullptr;
-  mctools::g4::event_action* _user_event_action_ = nullptr;
-  mctools::g4::tracking_action* _user_tracking_action_ = nullptr;
-  mctools::g4::stepping_action* _user_stepping_action_ = nullptr;
-  mctools::g4::stacking_action* _user_stacking_action_ = nullptr;
+  snsim::detector_construction* _user_detector_construction_ = nullptr;
+  snsim::physics_list* _user_physics_list_ = nullptr;
+  snsim::primary_generator* _user_primary_generator_ = nullptr;
+  snsim::run_action* _user_run_action_ = nullptr;
+  snsim::event_action* _user_event_action_ = nullptr;
+  snsim::tracking_action* _user_tracking_action_ = nullptr;
+  snsim::stepping_action* _user_stepping_action_ = nullptr;
+  snsim::stacking_action* _user_stacking_action_ = nullptr;
 
 #ifdef G4VIS_USE
   // G4 visualization, if you choose to have it!
@@ -635,7 +635,7 @@ class manager : public loggable_support {
   std::string _output_prng_seeds_file_;   //!< Output filename for storage of PRNG seeds
   std::string _input_prng_states_file_;   //!< Input filename for loading of PRNG internal states
   std::string _output_prng_states_file_;  //!< Output filename for storage of PRNG internal states
-  io_utils::data_format_type
+  mctools::io_utils::data_format_type
       _output_data_format_;              //!< The data format of the output file ("plain" or "bank")
   std::string _output_data_bank_label_;  //!< The label of the data bank used to store simulated
                                          //!< data ("bank" format only)
@@ -653,17 +653,16 @@ class manager : public loggable_support {
   CT_map _CTs_;                              //!< CPU time statistics
 };
 
-}  // end of namespace g4
-}  // end of namespace mctools
+}  // namespace snsim
 
 /***************************
  * OCD support : interface *
  ***************************/
 
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::manager)
+DOCD_CLASS_DECLARATION(snsim::manager)
 
-#endif  // MCTOOLS_G4_MANAGER_H
+#endif  // SNSIM_MANAGER_H
 
 // Local Variables: --
 // mode: c++ --

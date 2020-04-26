@@ -27,11 +27,10 @@
 #include <mctools/g4/manager.h>
 #include <mctools/g4/simulation_ctrl.h>
 
-namespace mctools {
-namespace g4 {
+namespace snsim {
 
 // Registration instantiation macro :
-DPP_MODULE_REGISTRATION_IMPLEMENT(simulation_module, "mctools::g4::simulation_module")
+DPP_MODULE_REGISTRATION_IMPLEMENT(simulation_module, "snsim::simulation_module")
 
 // Constructor :
 simulation_module::simulation_module(datatools::logger::priority logging_priority)
@@ -74,7 +73,7 @@ void simulation_module::initialize(const datatools::properties& config_,
     }
   }
 
-  // Special setup parameters for the mctools::g4 simulation manager :
+  // Special setup parameters for the snsim simulation manager :
 
   // Force non-interactive parameters:
   geant4Parameters_.interactive = false;
@@ -313,7 +312,7 @@ void simulation_module::_initialize_manager(datatools::service_manager& smgr_) {
   }
 
   // Setup :
-  mctools::g4::manager_parameters::setup(geant4Parameters_, *geant4Simulation_);
+  snsim::manager_parameters::setup(geant4Parameters_, *geant4Simulation_);
 }
 
 void simulation_module::_terminate_manager() {
@@ -372,17 +371,17 @@ auto simulation_module::_simulate_event(datatools::things& workItem) -> int {
   }
   return 0;
 }
-}  // end of namespace g4
-}  // end of namespace mctools
 
-// OCD support for class 'mctools::g4::simulation_module' :
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::simulation_module, ocd_) {
-  ocd_.set_class_name("mctools::g4::simulation_module");
+}  // namespace snsim
+
+// OCD support for class 'snsim::simulation_module' :
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::simulation_module, ocd_) {
+  ocd_.set_class_name("snsim::simulation_module");
   ocd_.set_class_library("mctools_g4");
   ocd_.set_class_description("A module to generate Monte-Carlo events through the Geant4 library");
 
   ocd_.set_configuration_hints(
-      "A ``mctools::g4::simulation_module`` object can be setup with the    \n"
+      "A ``snsim::simulation_module`` object can be setup with the    \n"
       "following syntax in a ``datatools::multi_properties`` configuration  \n"
       "file, typically from a module manager object.                        \n"
       "                                                                     \n"
@@ -392,7 +391,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::simulation_module, ocd_) {
       "  #@key_label   \"name\"                                             \n"
       "  #@meta_label  \"type\"                                             \n"
       "                                                                     \n"
-      "  [name=\"g4sim\" type=\"mctools::g4::simulation_module\"]           \n"
+      "  [name=\"g4sim\" type=\"snsim::simulation_module\"]           \n"
       "  #@config A Geant4 simulation module                                \n"
       "  foo : string = \"bar\"                                             \n"
       "                                                                     \n");
@@ -402,7 +401,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(::mctools::g4::simulation_module, ocd_) {
   return;
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()
-DOCD_CLASS_SYSTEM_REGISTRATION(::mctools::g4::simulation_module, "mctools::g4::simulation_module")
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::simulation_module, "snsim::simulation_module")
 
 /*
 ** Local Variables: --

@@ -30,16 +30,14 @@
  *
  */
 
-#ifndef MCTOOLS_G4_TRACK_HISTORY_H
-#define MCTOOLS_G4_TRACK_HISTORY_H 1
+#ifndef SNSIM_TRACK_HISTORY_H
+#define SNSIM_TRACK_HISTORY_H 1
 
 // Standard library:
 #include <map>
 #include <string>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Recording of tracks history
 class track_history {
@@ -121,11 +119,9 @@ class track_history {
   track_info_dict_type _track_infos_;  //!< Dictionary of track informations
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_TRACK_HISTORY_H
+#endif  // SNSIM_TRACK_HISTORY_H
 
 /*
 ** Local Variables: --

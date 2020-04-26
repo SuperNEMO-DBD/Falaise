@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_PROCESSES_EM_EXTRA_MODELS_H
-#define MCTOOLS_G4_PROCESSES_EM_EXTRA_MODELS_H
+#ifndef SNSIM_PROCESSES_EM_EXTRA_MODELS_H
+#define SNSIM_PROCESSES_EM_EXTRA_MODELS_H
 
 // Third party:
 // Bayeux/datatools:
@@ -23,9 +23,7 @@
 
 class G4EmConfigurator;
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 namespace processes {
 
@@ -154,15 +152,13 @@ class em_extra_model : public datatools::enriched_base {
 
 }  // end of namespace processes
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 // /// OCD support : interface
 // #include <datatools/ocd_macros.h>
 // DOCD_CLASS_DECLARATION(mctools::g4::processes::em_extra_models)
 
-#endif  // MCTOOLS_G4_PROCESSES_EM_EXTRA_MODELS_H
+#endif  // SNSIM_PROCESSES_EM_EXTRA_MODELS_H
 
 /*
 ** Local Variables: --

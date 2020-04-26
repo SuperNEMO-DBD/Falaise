@@ -11,9 +11,7 @@
 // This project:
 #include <mctools/g4/base_physics_constructor.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 auto get_builder_type_label(G4BuilderType type_) -> std::string {
   if (type_ == bTransportation) {
@@ -148,6 +146,4 @@ void user_limits_info::make_track_limitation(double track_max_length_, double tr
   track_min_range = track_min_range_;
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

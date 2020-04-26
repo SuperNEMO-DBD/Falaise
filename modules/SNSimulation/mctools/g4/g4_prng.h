@@ -28,8 +28,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_G4_PRNG_H
-#define MCTOOLS_G4_G4_PRNG_H 1
+#ifndef SNSIM_G4_PRNG_H
+#define SNSIM_G4_PRNG_H 1
 
 // Standard library:
 #include <iostream>
@@ -42,9 +42,7 @@
 namespace mygsl {
 class rng;
 }
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 class g4_prng : public CLHEP::HepRandomEngine {
  public:
@@ -83,11 +81,9 @@ class g4_prng : public CLHEP::HepRandomEngine {
   mygsl::rng* _random_;  /// Handle to an external mygsl's PRNG
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // end of namespace mctools
-
-#endif  // MCTOOLS_G4_G4_PRNG_H
+#endif  // SNSIM_G4_PRNG_H
 
 /*
 ** Local Variables: --

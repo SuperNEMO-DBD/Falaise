@@ -6,9 +6,7 @@
 // This project:
 #include <mctools/g4/sensitive_hit.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 sensitive_hit_collection::sensitive_hit_collection(const G4String& a_detector_name,
                                                    const G4String& a_collection_name)
@@ -31,6 +29,4 @@ auto sensitive_hit_collection::GetHit(size_t a_index) const -> G4VHit* { return 
 
 auto sensitive_hit_collection::GetSize() const -> size_t { return _hits.size(); }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

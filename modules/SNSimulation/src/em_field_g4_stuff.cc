@@ -55,9 +55,7 @@
 #include <mctools/g4/em_field_equation_of_motion.h>
 #include <mctools/g4/magnetic_field.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // static
 auto em_field_g4_stuff::label_from_stepper(stepper_type s_) -> std::string {
@@ -663,6 +661,4 @@ void em_field_g4_stuff::tree_dump(std::ostream& out_, const std::string& title_,
        << "Initialized           : " << (is_initialized() ? "Yes" : "No") << "" << std::endl;
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim

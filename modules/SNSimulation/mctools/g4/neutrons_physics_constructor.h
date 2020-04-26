@@ -13,15 +13,13 @@
  *
  */
 
-#ifndef MCTOOLS_G4_NEUTRONS_PHYSICS_CONSTRUCTOR_H
-#define MCTOOLS_G4_NEUTRONS_PHYSICS_CONSTRUCTOR_H 1
+#ifndef SNSIM_NEUTRONS_PHYSICS_CONSTRUCTOR_H
+#define SNSIM_NEUTRONS_PHYSICS_CONSTRUCTOR_H 1
 
 // This project:
 #include <mctools/g4/base_physics_constructor.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Physics constructor dedicated to neutrons
 class neutrons_physics_constructor : public base_physics_constructor {
@@ -72,15 +70,13 @@ class neutrons_physics_constructor : public base_physics_constructor {
                                                        neutrons_physics_constructor)
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::neutrons_physics_constructor)
+DOCD_CLASS_DECLARATION(snsim::neutrons_physics_constructor)
 
-#endif  // MCTOOLS_G4_NEUTRONS_PHYSICS_CONSTRUCTOR_H
+#endif  // SNSIM_NEUTRONS_PHYSICS_CONSTRUCTOR_H
 
 // Local Variables: --
 // mode: c++ --

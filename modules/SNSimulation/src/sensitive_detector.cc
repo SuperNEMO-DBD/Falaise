@@ -34,9 +34,7 @@
 #include <G4ThreeVector.hh>
 #include <G4VProcess.hh>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 // static
 const size_t sensitive_detector::DEFAULT_HIT_BUFFER_CAPACITY;
@@ -199,7 +197,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record track id
     const std::string trkid_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_TRACK_ID);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_TRACK_ID);
     if (config_.has_flag(trkid_key)) {
       // this method enables the sensitive detector to record the track ID
       // as an auxiliary properties of the step hit
@@ -210,7 +208,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record boundaries
     const std::string trkid_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_BOUNDARIES);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_BOUNDARIES);
     if (config_.has_flag(trkid_key)) {
       // this method enables the sensitive detector to record the boundary flags
       // as an auxiliary properties of the step hit
@@ -221,7 +219,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record primary particle flag
     const std::string pp_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_PRIMARY_PARTICLE);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_PRIMARY_PARTICLE);
     if (config_.has_flag(pp_key)) {
       // this method enables the sensitive detector to record a dedicated flag
       // as an auxiliary properties of the step hit to flag a primary track
@@ -232,7 +230,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record alpha quenching flag
     const std::string aq_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_ALPHA_QUENCHING);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_ALPHA_QUENCHING);
     if (config_.has_flag(aq_key)) {
       // this method enables to add a special flag to the step hit
       // for delta rays produced along the track of alpha particles;
@@ -253,15 +251,15 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record major track
     const std::string rmt_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_MAJOR_TRACK);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_MAJOR_TRACK);
     if (config_.has_flag(rmt_key)) {
       set_record_major_track(true);
     }
   }
 
   {
-    const std::string mtme_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_MAJOR_TRACK_MINIMUM_ENERGY);
+    const std::string mtme_key = geomtools::sensitive::make_key(
+        mctools::sensitive_utils::SENSITIVE_MAJOR_TRACK_MINIMUM_ENERGY);
     if (config_.has_key(mtme_key)) {
       const double e_min = config_.fetch_real(mtme_key) * CLHEP::keV;
       DT_THROW_IF(e_min < 0, std::logic_error,
@@ -274,7 +272,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record creator process
     const std::string record_creator_process_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_CREATOR_PROCESS);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_CREATOR_PROCESS);
     if (config_.has_flag(record_creator_process_key)) {
       set_record_creator_process(true);
     }
@@ -283,7 +281,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record sensitive category where particle is created
     const std::string record_creator_category_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_CREATOR_CATEGORY);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_CREATOR_CATEGORY);
     if (config_.has_flag(record_creator_category_key)) {
       set_record_creator_category(true);
     }
@@ -292,7 +290,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // 2011-08-26 FM: new option : 'record material'
     const std::string record_material_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_MATERIAL);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_MATERIAL);
     if (config_.has_flag(record_material_key)) {
       set_record_material(true);
     }
@@ -300,8 +298,8 @@ void sensitive_detector::configure(const datatools::properties& config_) {
 
   {
     // 2011-08-26 FM: new option : 'record sensitive category'
-    const std::string record_sensitive_category_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_SENSITIVE_CATEGORY);
+    const std::string record_sensitive_category_key = geomtools::sensitive::make_key(
+        mctools::sensitive_utils::SENSITIVE_RECORD_SENSITIVE_CATEGORY);
     if (config_.has_flag(record_sensitive_category_key)) {
       set_record_sensitive_category(true);
     }
@@ -310,7 +308,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record momentum
     const std::string record_momentum_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_MOMENTUM);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_MOMENTUM);
     if (config_.has_flag(record_momentum_key)) {
       set_record_momentum(true);
     }
@@ -319,7 +317,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record kinetic energy
     const std::string record_kinetic_energy_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_KINETIC_ENERGY);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_KINETIC_ENERGY);
     if (config_.has_flag(record_kinetic_energy_key)) {
       set_record_kinetic_energy(true);
     }
@@ -328,7 +326,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   {
     // Record true step length
     const std::string record_step_length_key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_RECORD_STEP_LENGTH);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_RECORD_STEP_LENGTH);
     if (config_.has_flag(record_step_length_key)) {
       set_record_step_length(true);
     }
@@ -336,7 +334,7 @@ void sensitive_detector::configure(const datatools::properties& config_) {
 
   {
     const std::string key =
-        geomtools::sensitive::make_key(sensitive_utils::SENSITIVE_HITS_BUFFER_CAPACITY);
+        geomtools::sensitive::make_key(mctools::sensitive_utils::SENSITIVE_HITS_BUFFER_CAPACITY);
     if (config_.has_key(key)) {
       const int cap = config_.fetch_integer(key);
       DT_THROW_IF(cap < 0, std::logic_error,
@@ -349,37 +347,40 @@ void sensitive_detector::configure(const datatools::properties& config_) {
   }
 
   // Drop steps with no energy deposit
-  if (geomtools::sensitive::has_key(config_, sensitive_utils::SENSITIVE_DROP_ZERO_ENERGY_DEPOSIT)) {
+  if (geomtools::sensitive::has_key(config_,
+                                    mctools::sensitive_utils::SENSITIVE_DROP_ZERO_ENERGY_DEPOSIT)) {
     const bool flag = geomtools::sensitive::has_flag(
-        config_, sensitive_utils::SENSITIVE_DROP_ZERO_ENERGY_DEPOSIT);
+        config_, mctools::sensitive_utils::SENSITIVE_DROP_ZERO_ENERGY_DEPOSIT);
     set_drop_zero_energy_deposit_steps(flag);
   }
 
   // Storing Geant4 volume properties
-  if (geomtools::sensitive::has_key(config_, sensitive_utils::SENSITIVE_RECORD_G4_VOLUME_INFOS)) {
-    const bool flag =
-        geomtools::sensitive::has_flag(config_, sensitive_utils::SENSITIVE_RECORD_G4_VOLUME_INFOS);
+  if (geomtools::sensitive::has_key(config_,
+                                    mctools::sensitive_utils::SENSITIVE_RECORD_G4_VOLUME_INFOS)) {
+    const bool flag = geomtools::sensitive::has_flag(
+        config_, mctools::sensitive_utils::SENSITIVE_RECORD_G4_VOLUME_INFOS);
     set_record_g4_volume_properties(flag);
   }
 
   // Tracking gamma
-  if (geomtools::sensitive::has_key(config_, sensitive_utils::SENSITIVE_TRACK_GAMMA)) {
+  if (geomtools::sensitive::has_key(config_, mctools::sensitive_utils::SENSITIVE_TRACK_GAMMA)) {
     const bool flag =
-        geomtools::sensitive::has_flag(config_, sensitive_utils::SENSITIVE_TRACK_GAMMA);
+        geomtools::sensitive::has_flag(config_, mctools::sensitive_utils::SENSITIVE_TRACK_GAMMA);
     set_track_gamma(flag);
   }
 
   // Tracking optical photon
-  if (geomtools::sensitive::has_key(config_, sensitive_utils::SENSITIVE_TRACK_OPTICAL_PHOTON)) {
-    const bool flag =
-        geomtools::sensitive::has_flag(config_, sensitive_utils::SENSITIVE_TRACK_OPTICAL_PHOTON);
+  if (geomtools::sensitive::has_key(config_,
+                                    mctools::sensitive_utils::SENSITIVE_TRACK_OPTICAL_PHOTON)) {
+    const bool flag = geomtools::sensitive::has_flag(
+        config_, mctools::sensitive_utils::SENSITIVE_TRACK_OPTICAL_PHOTON);
     set_track_optical_photon(flag);
   }
 
   // Tracking neutron:
-  if (geomtools::sensitive::has_key(config_, sensitive_utils::SENSITIVE_TRACK_NEUTRON)) {
+  if (geomtools::sensitive::has_key(config_, mctools::sensitive_utils::SENSITIVE_TRACK_NEUTRON)) {
     const bool flag =
-        geomtools::sensitive::has_flag(config_, sensitive_utils::SENSITIVE_TRACK_NEUTRON);
+        geomtools::sensitive::has_flag(config_, mctools::sensitive_utils::SENSITIVE_TRACK_NEUTRON);
     set_track_neutron(flag);
   }
 }
@@ -945,16 +946,14 @@ void sensitive_detector::tree_dump(std::ostream& out_, const std::string& title_
   }
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::sensitive_detector, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::sensitive_detector, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::sensitive_detector");
+  ocd_.set_class_name("snsim::sensitive_detector");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 virtual sensitive detector");
@@ -1344,5 +1343,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::sensitive_detector, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::sensitive_detector' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::sensitive_detector, "mctools::g4::sensitive_detector")
+// Registration macro for class 'snsim::sensitive_detector' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::sensitive_detector, "snsim::sensitive_detector")

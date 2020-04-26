@@ -34,9 +34,7 @@
 // This project:
 #include <mctools/g4/stacking_action.h>
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 stacking_action::stacking_action() {
   _g4_navigator_ = nullptr;
@@ -126,7 +124,7 @@ auto stacking_action::ClassifyNewTrack(const G4Track* a_track) -> G4Classificati
     G4VPhysicalVolume* g4_volume_phys =
         _g4_navigator_->LocateGlobalPointAndSetup(pos, nullptr, false);
     G4LogicalVolume* g4_volume_log = g4_volume_phys->GetLogicalVolume();
-    // std::cerr << "DEVEL: mctools::g4::stacking::ClassifyNewTrack: g4_volume_log = '"
+    // std::cerr << "DEVEL: snsim::stacking::ClassifyNewTrack: g4_volume_log = '"
     //        << g4_volume_log->GetName () << "'" << endl;
 
     // Kill by material :
@@ -185,16 +183,14 @@ void stacking_action::NewStage() {}
 
 void stacking_action::PrepareNewEvent() {}
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::stacking_action, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::stacking_action, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::stacking_action");
+  ocd_.set_class_name("snsim::stacking_action");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation optional stacking action");
@@ -313,5 +309,5 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::stacking_action, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::manager' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::stacking_action, "mctools::g4::stacking_action")
+// Registration macro for class 'snsim::manager' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::stacking_action, "snsim::stacking_action")

@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef MCTOOLS_G4_RUN_ACTION_H
-#define MCTOOLS_G4_RUN_ACTION_H 1
+#ifndef SNSIM_RUN_ACTION_H
+#define SNSIM_RUN_ACTION_H 1
 
 // Standard library:
 #include <string>
@@ -44,12 +44,11 @@ class writer;
 namespace dpp {
 class output_module;
 }
-
 namespace mctools {
-
 class simulated_data;
+}
 
-namespace g4 {
+namespace snsim {
 
 // Forward declaration
 class manager;
@@ -98,7 +97,7 @@ class run_action : public G4UserRunAction, public loggable_support {
   void reset_number_of_saved_events();
 
   /// Set the output data format
-  void set_output_data_format(io_utils::data_format_type);
+  void set_output_data_format(mctools::io_utils::data_format_type);
 
   /// Set the output data bank label
   void set_output_data_bank_label(const std::string &);
@@ -195,7 +194,7 @@ class run_action : public G4UserRunAction, public loggable_support {
 
   // I/O :
   bool _save_data_ = false;  //!< Flag to save event data
-  io_utils::data_format_type
+  mctools::io_utils::data_format_type
       _output_data_format_;              //!< The data format of the output file ("plain" or "bank")
   std::string _output_data_bank_label_;  //!< The label of the data bank used to store simulated
                                          //!< data ("bank" format only)
@@ -214,15 +213,13 @@ class run_action : public G4UserRunAction, public loggable_support {
   boost::scoped_ptr<io_work_type> _io_work_;  //!< I/O
 };
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /// OCD support : interface
 #include <datatools/ocd_macros.h>
-DOCD_CLASS_DECLARATION(mctools::g4::run_action)
+DOCD_CLASS_DECLARATION(snsim::run_action)
 
-#endif  // MCTOOLS_G4_RUN_ACTION_H
+#endif  // SNSIM_RUN_ACTION_H
 
 /*
 ** Local Variables: --

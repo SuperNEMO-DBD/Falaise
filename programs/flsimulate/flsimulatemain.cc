@@ -296,7 +296,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     services.initialize(services_config);
 
     // Simulation module:
-    mctools::g4::simulation_module flSimModule;
+    snsim::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
     std::string sd_label = snedm::labels::simulated_data();
     std::string geo_label = snemo::service_info::geometryServiceName();

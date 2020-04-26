@@ -30,9 +30,7 @@
 #include "G4UnitsTable.hh"
 #include "G4VTouchable.hh"
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 stepping_action::stepping_action() {
   _dumped_ = false;
@@ -230,16 +228,14 @@ void stepping_action::_stepping_action_base(const G4Step* g4_step_) {
   DT_LOG_TRACE(_logprio(), "Exiting.");
 }
 
-}  // end of namespace g4
-
-}  // end of namespace mctools
+}  // namespace snsim
 
 /** Opening macro for implementation
  *  This macro must be used outside of any namespace.
  */
-DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::stepping_action, ocd_) {
+DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snsim::stepping_action, ocd_) {
   // The class name :
-  ocd_.set_class_name("mctools::g4::stepping_action");
+  ocd_.set_class_name("snsim::stepping_action");
 
   // The class terse description :
   ocd_.set_class_description("The Geant4 simulation optional stepping action");
@@ -295,8 +291,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(mctools::g4::stepping_action, ocd_) {
 }
 DOCD_CLASS_IMPLEMENT_LOAD_END()  // Closing macro for implementation
 
-// Registration macro for class 'mctools::g4::manager' :
-DOCD_CLASS_SYSTEM_REGISTRATION(mctools::g4::stepping_action, "mctools::g4::stepping_action")
+// Registration macro for class 'snsim::manager' :
+DOCD_CLASS_SYSTEM_REGISTRATION(snsim::stepping_action, "snsim::stepping_action")
 
 /*
 // Code sample that may be useful but care must be taken with the

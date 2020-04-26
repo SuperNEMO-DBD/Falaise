@@ -1,7 +1,7 @@
 /// \file mctools/stepping_verbose.h
 
-#ifndef MCTOOLS_G4_STEPPING_VERBOSE_H
-#define MCTOOLS_G4_STEPPING_VERBOSE_H 1
+#ifndef SNSIM_STEPPING_VERBOSE_H
+#define SNSIM_STEPPING_VERBOSE_H 1
 
 // Third party:
 // - Geant4:
@@ -15,9 +15,7 @@
 #pragma clang diagnostic pop
 #endif
 
-namespace mctools {
-
-namespace g4 {
+namespace snsim {
 
 /// \brief Stepping verbose support using the Geant4 interface
 class stepping_verbose : public G4SteppingVerbose {
@@ -35,11 +33,9 @@ class stepping_verbose : public G4SteppingVerbose {
   void TrackingStarted();
 };
 
-}  // end of namespace g4
+}  // namespace snsim
 
-}  // namespace mctools
-
-#endif  // MCTOOLS_G4_STEPPING_VERBOSE_H
+#endif  // SNSIM_STEPPING_VERBOSE_H
 
 /*
 ** Local Variables: --
