@@ -10,7 +10,7 @@
 // - Bayeux/datatools:
 #include <datatools/properties.h>
 // - Bayeux/mctools:
-#include <mctools/g4/tracking_action.h>
+#include <snsim/tracking_action.h>
 // - Geant4:
 #include <globals.hh>
 

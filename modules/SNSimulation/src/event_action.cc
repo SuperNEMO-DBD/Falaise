@@ -1,7 +1,7 @@
 // event_action.cc
 
 // Ourselves:
-#include <mctools/g4/event_action.h>
+#include <snsim/event_action.h>
 
 // Standard library:
 #include <cstdlib>
@@ -35,11 +35,11 @@
 
 // This project:
 #include <mctools/biasing/primary_event_bias.h>
-#include <mctools/g4/detector_construction.h>
-#include <mctools/g4/manager.h>
-#include <mctools/g4/run_action.h>
-#include <mctools/g4/sensitive_detector.h>
-#include <mctools/g4/simulation_ctrl.h>
+#include <snsim/detector_construction.h>
+#include <snsim/manager.h>
+#include <snsim/run_action.h>
+#include <snsim/sensitive_detector.h>
+#include <snsim/simulation_ctrl.h>
 #include <mctools/simulated_data.ipp>
 
 namespace snsim {

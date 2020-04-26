@@ -1,7 +1,7 @@
 // utils.cc
 
 // Ourselves:
-#include <mctools/g4/processes/utils.h>
+#include <snsim/processes/utils.h>
 
 // Third party:
 // - Geant4:

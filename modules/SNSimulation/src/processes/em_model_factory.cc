@@ -1,7 +1,7 @@
 // em_model_factory.cc
 
 // Ourselves:
-#include <mctools/g4/processes/em_model_factory.h>
+#include <snsim/processes/em_model_factory.h>
 
 // Third party:
 // Geant4:

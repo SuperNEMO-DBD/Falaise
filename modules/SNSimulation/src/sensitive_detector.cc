@@ -21,8 +21,8 @@
 #include <geomtools/sensitive.h>
 
 // This project:
-#include <mctools/g4/manager.h>
-#include <mctools/g4/sensitive_detector.h>
+#include <snsim/manager.h>
+#include <snsim/sensitive_detector.h>
 #include <mctools/utils.h>
 
 // G4 stuff:

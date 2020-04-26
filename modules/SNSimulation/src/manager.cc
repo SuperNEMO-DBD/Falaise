@@ -1,4 +1,4 @@
-/// \file mctools/g4/manager.cc
+/// \file snsim/manager.cc
 /*
  * Copyright (C) 2011-2016 Francois Mauger <mauger@lpccaen.in2p3.fr>
  *
@@ -20,7 +20,7 @@
  */
 
 // Ourselves:
-#include <mctools/g4/manager.h>
+#include <snsim/manager.h>
 
 // Standard library:
 #include <cstdlib>
@@ -52,16 +52,16 @@
 #include <genbb_help/manager.h>
 
 // This project:
-#include <mctools/g4/data_libraries.h>
-#include <mctools/g4/detector_construction.h>
-#include <mctools/g4/event_action.h>
-#include <mctools/g4/physics_list.h>
-#include <mctools/g4/primary_generator.h>
-#include <mctools/g4/run_action.h>
-#include <mctools/g4/simulation_ctrl.h>
-#include <mctools/g4/stacking_action.h>
-#include <mctools/g4/stepping_action.h>
-#include <mctools/g4/tracking_action.h>
+#include <snsim/data_libraries.h>
+#include <snsim/detector_construction.h>
+#include <snsim/event_action.h>
+#include <snsim/physics_list.h>
+#include <snsim/primary_generator.h>
+#include <snsim/run_action.h>
+#include <snsim/simulation_ctrl.h>
+#include <snsim/stacking_action.h>
+#include <snsim/stepping_action.h>
+#include <snsim/tracking_action.h>
 
 // G4 stuff:
 #include <G4ParticleDefinition.hh>

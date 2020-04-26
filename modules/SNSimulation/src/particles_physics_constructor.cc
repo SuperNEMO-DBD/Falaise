@@ -1,7 +1,7 @@
 // particles_physics_constructor.cc
 
 // Ourselves:
-#include <mctools/g4/particles_physics_constructor.h>
+#include <snsim/particles_physics_constructor.h>
 
 // Standard library:
 #include <iostream>

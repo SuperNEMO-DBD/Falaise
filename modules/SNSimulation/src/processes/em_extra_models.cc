@@ -1,7 +1,7 @@
 // em_extra_models.cc
 
 // Ourselves:
-#include <mctools/g4/processes/em_extra_models.h>
+#include <snsim/processes/em_extra_models.h>
 
 // Third party:
 // Geant4:
@@ -18,7 +18,7 @@
 #include <datatools/utils.h>
 
 // This project:
-#include <mctools/g4/processes/em_model_factory.h>
+#include <snsim/processes/em_model_factory.h>
 
 namespace snsim {
 

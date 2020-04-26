@@ -5,7 +5,7 @@
  */
 
 // Ourselves:
-#include <mctools/g4/em_physics_constructor.h>
+#include <snsim/em_physics_constructor.h>
 
 // Standard library:
 #include <iostream>
@@ -98,8 +98,8 @@
 #include "G4UAtomicDeexcitation.hh"
 
 // This project:
-#include <mctools/g4/processes/em_extra_models.h>
-#include <mctools/g4/processes/em_model_factory.h>
+#include <snsim/processes/em_extra_models.h>
+#include <snsim/processes/em_model_factory.h>
 
 namespace snsim {
 

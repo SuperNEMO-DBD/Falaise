@@ -20,7 +20,7 @@
  */
 
 // Ourselves:
-#include <mctools/g4/g4_prng.h>
+#include <snsim/g4_prng.h>
 
 // Third party:
 // - Bayeux/datatools:

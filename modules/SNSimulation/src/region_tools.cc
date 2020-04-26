@@ -1,7 +1,7 @@
 /// \file mctools/region_tools.cc
 
 // Ourselves:
-#include <mctools/g4/region_tools.h>
+#include <snsim/region_tools.h>
 
 // Standard library:
 #include <sstream>

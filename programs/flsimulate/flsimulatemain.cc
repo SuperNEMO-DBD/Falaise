@@ -61,8 +61,8 @@
 #include "bayeux/mygsl/seed_manager.h"
 #include "bayeux/version.h"
 
-#include "mctools/g4/manager_parameters.h"
-#include "mctools/g4/simulation_module.h"
+#include "snsim/manager_parameters.h"
+#include "snsim/simulation_module.h"
 
 // This Project
 #include "falaise/exitcodes.h"

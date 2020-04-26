@@ -6,7 +6,7 @@
 #include <stdexcept>
 
 // Ourselves:
-#include <mctools/g4/sensitive_hit.h>
+#include <snsim/sensitive_hit.h>
 
 namespace snsim {
 

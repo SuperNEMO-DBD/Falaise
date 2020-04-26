@@ -1,7 +1,7 @@
 /// \file mctools/detector_construction.cc
 
 // Ourselves:
-#include <mctools/g4/detector_construction.h>
+#include <snsim/detector_construction.h>
 
 // Standard library:
 #include <clocale>
@@ -56,12 +56,12 @@
 #pragma clang diagnostic pop
 #endif
 // This project:
-#include <mctools/g4/biasing_manager.h>
-#include <mctools/g4/electromagnetic_field.h>
-#include <mctools/g4/em_field_g4_stuff.h>
-#include <mctools/g4/magnetic_field.h>
-#include <mctools/g4/manager.h>
-#include <mctools/g4/sensitive_detector.h>
+#include <snsim/biasing_manager.h>
+#include <snsim/electromagnetic_field.h>
+#include <snsim/em_field_g4_stuff.h>
+#include <snsim/magnetic_field.h>
+#include <snsim/manager.h>
+#include <snsim/sensitive_detector.h>
 
 namespace snsim {
 

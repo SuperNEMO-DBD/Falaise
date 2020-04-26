@@ -1,7 +1,7 @@
 // magnetic_field.cc
 
 // Ourselves:
-#include <mctools/g4/magnetic_field.h>
+#include <snsim/magnetic_field.h>
 
 // Standard library:
 #include <sstream>
@@ -26,7 +26,7 @@
 #include <emfield/emfield_geom_plugin.h>
 
 // This project:
-#include <mctools/g4/em_field_g4_utils.h>
+#include <snsim/em_field_g4_utils.h>
 
 namespace snsim {
 

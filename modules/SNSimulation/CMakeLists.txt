@@ -11,43 +11,43 @@ if(Geant4_DATASETS)
   string(REPLACE ";" "" MCTOOLS_G4_DATA_ASSIGNMENTS ${MCTOOLS_G4_DATA_ASSIGNMENTS})
 endif()
 
-configure_file(mctools/g4/data_libraries.h.in mctools/g4/data_libraries.h @ONLY)
+configure_file(snsim/data_libraries.h.in snsim/data_libraries.h @ONLY)
 
 add_library(SNSimulation SHARED
-  mctools/g4/base_physics_constructor.h
-  mctools/g4/biasing_manager.h
-  mctools/g4/detector_construction.h
-  mctools/g4/electromagnetic_field.h
-  mctools/g4/em_field_equation_of_motion.h
-  mctools/g4/em_field_g4_stuff.h
-  mctools/g4/em_field_g4_utils.h
-  mctools/g4/em_physics_constructor.h
-  mctools/g4/event_action.h
-  mctools/g4/g4_prng.h
-  mctools/g4/loggable_support.h
-  mctools/g4/magnetic_field.h
-  mctools/g4/manager.h
-  mctools/g4/manager_parameters.h
-  mctools/g4/neutrons_physics_constructor.h
-  mctools/g4/particles_physics_constructor.h
-  mctools/g4/physics_list.h
-  mctools/g4/physics_list_utils.h
-  mctools/g4/primary_generator.h
-  mctools/g4/region_tools.h
-  mctools/g4/run_action.h
-  mctools/g4/sensitive_detector.h
-  mctools/g4/sensitive_hit.h
-  mctools/g4/sensitive_hit_collection.h
-  mctools/g4/simulation_ctrl.h
-  mctools/g4/simulation_module.h
-  mctools/g4/stacking_action.h
-  mctools/g4/stepping_action.h
-  mctools/g4/stepping_verbose.h
-  mctools/g4/track_history.h
-  mctools/g4/tracking_action.h
-  mctools/g4/processes/em_extra_models.h
-  mctools/g4/processes/em_model_factory.h
-  mctools/g4/processes/utils.h
+  snsim/base_physics_constructor.h
+  snsim/biasing_manager.h
+  snsim/detector_construction.h
+  snsim/electromagnetic_field.h
+  snsim/em_field_equation_of_motion.h
+  snsim/em_field_g4_stuff.h
+  snsim/em_field_g4_utils.h
+  snsim/em_physics_constructor.h
+  snsim/event_action.h
+  snsim/g4_prng.h
+  snsim/loggable_support.h
+  snsim/magnetic_field.h
+  snsim/manager.h
+  snsim/manager_parameters.h
+  snsim/neutrons_physics_constructor.h
+  snsim/particles_physics_constructor.h
+  snsim/physics_list.h
+  snsim/physics_list_utils.h
+  snsim/primary_generator.h
+  snsim/region_tools.h
+  snsim/run_action.h
+  snsim/sensitive_detector.h
+  snsim/sensitive_hit.h
+  snsim/sensitive_hit_collection.h
+  snsim/simulation_ctrl.h
+  snsim/simulation_module.h
+  snsim/stacking_action.h
+  snsim/stepping_action.h
+  snsim/stepping_verbose.h
+  snsim/track_history.h
+  snsim/tracking_action.h
+  snsim/processes/em_extra_models.h
+  snsim/processes/em_model_factory.h
+  snsim/processes/utils.h
 
   src/base_physics_constructor.cc
   src/biasing_manager.cc

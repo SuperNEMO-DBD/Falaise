@@ -23,7 +23,7 @@
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/multi_properties.h"
 
-#include "mctools/g4/manager_parameters.h"
+#include "snsim/manager_parameters.h"
 
 namespace FLSimulate {
 

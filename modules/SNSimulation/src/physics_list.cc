@@ -4,7 +4,7 @@
 /// http://geant4.cern.ch/support/proc_mod_catalog/physics_lists/useCases.shtml
 
 // Ourselves:
-#include <mctools/g4/physics_list.h>
+#include <snsim/physics_list.h>
 
 // Standard library:
 #include <stdexcept>

@@ -1,7 +1,7 @@
 // base_physics_constructor.cc
 
 // Ourselves:
-#include <mctools/g4/base_physics_constructor.h>
+#include <snsim/base_physics_constructor.h>
 
 // Third party:
 // - Geant4:

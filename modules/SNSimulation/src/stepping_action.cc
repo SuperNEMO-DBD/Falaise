@@ -1,7 +1,7 @@
 // stepping_action.cc
 
 // Ourselves:
-#include <mctools/g4/stepping_action.h>
+#include <snsim/stepping_action.h>
 
 // Standard library:
 #include <cstdlib>

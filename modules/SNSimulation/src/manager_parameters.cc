@@ -1,7 +1,7 @@
-/// \file mctools/g4/manager_parameters.cc
+/// \file snsim/manager_parameters.cc
 
 // Ourselves:
-#include <mctools/g4/manager_parameters.h>
+#include <snsim/manager_parameters.h>
 
 // Third party:
 // - Boost:
@@ -17,7 +17,7 @@
 #include <mygsl/random_utils.h>
 
 // This project:
-#include <mctools/g4/manager.h>
+#include <snsim/manager.h>
 #include <mctools/utils.h>
 
 namespace snsim {

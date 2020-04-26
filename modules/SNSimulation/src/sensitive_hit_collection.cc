@@ -1,10 +1,10 @@
 // sensitive_hit_collection.cc
 
 // Ourselves:
-#include <mctools/g4/sensitive_hit_collection.h>
+#include <snsim/sensitive_hit_collection.h>
 
 // This project:
-#include <mctools/g4/sensitive_hit.h>
+#include <snsim/sensitive_hit.h>
 
 namespace snsim {
 

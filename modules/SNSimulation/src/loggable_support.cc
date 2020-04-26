@@ -1,7 +1,7 @@
 // loggable_support.cc
 
 // Ourselves:
-#include <mctools/g4/loggable_support.h>
+#include <snsim/loggable_support.h>
 
 // Standard library:
 #include <string>

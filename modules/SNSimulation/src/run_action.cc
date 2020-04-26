@@ -1,7 +1,7 @@
 // run_action.cc
 
 // Ourselves:
-#include <mctools/g4/run_action.h>
+#include <snsim/run_action.h>
 
 // Standard library:
 #include <cstdlib>
@@ -52,9 +52,9 @@
 #include <G4ios.hh>
 
 // This project:
-#include <mctools/g4/event_action.h>
-#include <mctools/g4/manager.h>
-#include <mctools/g4/simulation_ctrl.h>
+#include <snsim/event_action.h>
+#include <snsim/manager.h>
+#include <snsim/simulation_ctrl.h>
 #include <mctools/mctools_config.h>
 #include <mctools/simulated_data.h>
 #include <mctools/utils.h>

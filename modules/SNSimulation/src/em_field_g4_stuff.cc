@@ -1,7 +1,7 @@
 // em_field_g4_stuff.cc
 
 // Ourselves:
-#include <mctools/g4/em_field_g4_stuff.h>
+#include <snsim/em_field_g4_stuff.h>
 
 // Third party:
 // - Geant4:
@@ -51,9 +51,9 @@
 #include <datatools/utils.h>
 
 // This project:
-#include <mctools/g4/electromagnetic_field.h>
-#include <mctools/g4/em_field_equation_of_motion.h>
-#include <mctools/g4/magnetic_field.h>
+#include <snsim/electromagnetic_field.h>
+#include <snsim/em_field_equation_of_motion.h>
+#include <snsim/magnetic_field.h>
 
 namespace snsim {
 

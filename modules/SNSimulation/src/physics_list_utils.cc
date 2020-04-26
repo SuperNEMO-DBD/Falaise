@@ -1,7 +1,7 @@
 // physics_list_utils.cc
 
 // Ourselves:
-#include <mctools/g4/physics_list_utils.h>
+#include <snsim/physics_list_utils.h>
 
 // Third party:
 // - Bayeux/datatools:
@@ -9,7 +9,7 @@
 #include <datatools/utils.h>
 
 // This project:
-#include <mctools/g4/base_physics_constructor.h>
+#include <snsim/base_physics_constructor.h>
 
 namespace snsim {
 

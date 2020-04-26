@@ -1,7 +1,7 @@
 /* simulation_module.cc */
 
 // Ourselves:
-#include <mctools/g4/simulation_module.h>
+#include <snsim/simulation_module.h>
 
 // Standard library:
 #include <iostream>
@@ -23,9 +23,9 @@
 #include <mctools/utils.h>
 
 // This project:
-#include <mctools/g4/event_action.h>
-#include <mctools/g4/manager.h>
-#include <mctools/g4/simulation_ctrl.h>
+#include <snsim/event_action.h>
+#include <snsim/manager.h>
+#include <snsim/simulation_ctrl.h>
 
 namespace snsim {
 

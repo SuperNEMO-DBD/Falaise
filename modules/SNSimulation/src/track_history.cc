@@ -1,7 +1,7 @@
 // track_history.cc
 
 // Ourselves:
-#include <mctools/g4/track_history.h>
+#include <snsim/track_history.h>
 
 // Standard library:
 #include <sstream>

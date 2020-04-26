@@ -32,7 +32,7 @@
 #include <G4VPhysicalVolume.hh>
 
 // This project:
-#include <mctools/g4/stacking_action.h>
+#include <snsim/stacking_action.h>
 
 namespace snsim {
 

@@ -1,7 +1,7 @@
 // electromagnetic_field.cc
 
 // Ourselves:
-#include <mctools/g4/electromagnetic_field.h>
+#include <snsim/electromagnetic_field.h>
 
 // Standard library:
 #include <sstream>
@@ -24,7 +24,7 @@
 #include <emfield/emfield_geom_plugin.h>
 
 // This project:
-#include <mctools/g4/em_field_g4_utils.h>
+#include <snsim/em_field_g4_utils.h>
 
 namespace snsim {
 

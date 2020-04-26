@@ -1,7 +1,7 @@
 // neutrons_physics_constructor.cc
 
 // Ourselves:
-#include <mctools/g4/neutrons_physics_constructor.h>
+#include <snsim/neutrons_physics_constructor.h>
 
 // Standard library:
 #include <iostream>

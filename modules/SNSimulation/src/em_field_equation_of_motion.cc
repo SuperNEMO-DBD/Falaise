@@ -1,7 +1,7 @@
 // em_field_equation_of_motion.cc
 
 // Ourselves:
-#include <mctools/g4/em_field_equation_of_motion.h>
+#include <snsim/em_field_equation_of_motion.h>
 
 // Third party:
 // - CLHEP:
@@ -14,8 +14,8 @@
 #include <G4ThreeVector.hh>
 
 // This project:
-#include <mctools/g4/em_field_g4_stuff.h>
-#include <mctools/g4/em_field_g4_utils.h>
+#include <snsim/em_field_g4_stuff.h>
+#include <snsim/em_field_g4_utils.h>
 
 namespace snsim {
 
