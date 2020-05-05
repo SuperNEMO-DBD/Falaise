@@ -1,5 +1,16 @@
 // No clang-format in linkdefs!
 // clang-format off
+#include "falaise/snemo/view/event_browser_signals.h"
+#include "falaise/snemo/view/view_models.h"
+#include "falaise/snemo/view/event_browser.h"
+#include "falaise/snemo/view/display_3d.h"
+#include "falaise/snemo/view/display_2d.h"
+#include "falaise/snemo/view/display_options.h"
+#include "falaise/snemo/view/browser_tracks.h"
+#include "falaise/snemo/view/event_selection.h"
+#include "falaise/snemo/view/progress_bar.h"
+#include "falaise/snemo/view/status_bar.h"
+
 #ifdef __CINT__
 
 #pragma link off all globals;

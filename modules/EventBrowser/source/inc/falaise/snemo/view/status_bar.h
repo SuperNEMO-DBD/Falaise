@@ -100,8 +100,8 @@ class status_bar {
 
   io::event_server* _server_;  //!< Event server reference
 
-  TGComboBox* _event_list_;            //!< Event list combo box
   TGNumberEntryField* _goto_event_;    //!< Goto event number box
+  TGNumberEntryField* _total_event_;   //!< Total event number box
   TGPictureButton* _button_first_;     //!< First event button
   TGPictureButton* _button_previous_;  //!< Previous event button
   TGPictureButton* _button_next_;      //!< Next event button
