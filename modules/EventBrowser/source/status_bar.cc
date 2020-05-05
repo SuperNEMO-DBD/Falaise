@@ -85,22 +85,28 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
   main_->AddFrame(main_frame,
                   new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX, 3, 3, 3, 3));
 
-  // A combo box for the events
-  _event_list_ = new TGComboBox(main_frame, STATUS_BAR);
-  _event_list_->Resize(int(0.5 * width), 20);
-  _event_list_->Associate(main_);
-  main_frame->AddFrame(_event_list_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 1, 1, 1, 1));
-
   // Goto event number
-  main_frame->AddFrame(new TGLabel(main_frame, "Goto event"),
+  main_frame->AddFrame(new TGLabel(main_frame, "Event Number :"),
                        new TGLayoutHints(kLHintsTop | kLHintsLeft, 10, 10, 2, 2));
   _goto_event_ = new TGNumberEntryField(main_frame, GOTO_EVENT, 0, TGNumberFormat::kNESInteger,
                                         TGNumberFormat::kNEAPositive);
-  _goto_event_->Resize(int(0.05 * width), 20);
+  _goto_event_->Resize(int(0.1 * width), 20);
   _goto_event_->Associate(main_);
   _goto_event_->Connect("ReturnPressed()", "snemo::visualization::view::status_bar", this,
                         "process()");
   main_frame->AddFrame(_goto_event_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 1, 5, 1, 1));
+
+  // Total event number
+  main_frame->AddFrame(new TGLabel(main_frame, " / "),
+                       new TGLayoutHints(kLHintsTop | kLHintsLeft, 10, 10, 2, 2));
+  _total_event_ = new TGNumberEntryField(main_frame, -1, 0, TGNumberFormat::kNESInteger,
+                                         TGNumberFormat::kNEAPositive);
+  _total_event_->Resize(int(0.1 * width), 20);
+  _total_event_->Associate(main_);
+ 	_total_event_->SetEnabled(false);
+  _total_event_->Connect("ReturnPressed()", "snemo::visualization::view::status_bar", this,
+                         "process()");
+  main_frame->AddFrame(_total_event_, new TGLayoutHints(kLHintsTop | kLHintsLeft, 1, 5, 1, 1));
 
   // Navigation buttons
   _button_first_ = new TGPictureButton(main_frame, gClient->GetPicture("first_t.xpm"), FIRST_EVENT);
@@ -126,18 +132,8 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
 }
 
 void status_bar::reset() {
-  io::event_server& server = *_server_;
-
-  // clear list
-  _event_list_->RemoveAll();
-  _event_list_->SetEnabled(true);
-
-  if (!server.is_opened()) {
-    _event_list_->AddEntry(" +++ NO EVENT LOADED +++ ", 0);
-    _event_list_->Select(0);
-    _event_list_->SetEnabled(false);
-  }
-
+  _goto_event_->SetNumber(0);
+  _total_event_->SetNumber(0);
   this->reset_buttons();
   return;
 }
@@ -156,10 +152,6 @@ void status_bar::update(const bool reset_, const bool disable_) {
     if (server.has_external_data()) {
       status << " +++ EXTERNAL PROCESSING +++ ";
     }
-    _event_list_->RemoveAll();
-    _event_list_->AddEntry(status.str().c_str(), 0);
-    _event_list_->Select(0);
-    _event_list_->SetEnabled(false);
     _goto_event_->SetEnabled(false);
     return;
   }
@@ -169,24 +161,11 @@ void status_bar::update(const bool reset_, const bool disable_) {
     const io::event_server::event_selection_list_type& event_selection_list =
         server.get_event_selection();
     if (event_selection_list.empty()) {
-      _event_list_->AddEntry(" +++ NO EVENT MATCHED SELECTION +++ ", 0);
-      _event_list_->Select(0);
     } else {
-      for (io::event_server::event_selection_list_type::const_iterator i_selection =
-               event_selection_list.begin();
-           i_selection != event_selection_list.end(); ++i_selection) {
-        const size_t ievent = *i_selection;
-        const size_t total = server.get_number_of_events() - 1;
-        std::ostringstream label;
-        label << "event #" << ievent << "/" << total << " ("
-              << (total > 0 ? int(double(ievent) / total * 100) : 100) << "% complete)";
-        _event_list_->AddEntry(label.str().c_str(), ievent);
-      }
+      _total_event_->SetNumber(server.get_number_of_events()-1);
     }
   }
-
-  _event_list_->SetEnabled(!disable_);
-  _event_list_->Select(server.get_current_event_number());
+  _goto_event_->SetNumber(server.get_current_event_number());
   _goto_event_->SetEnabled(!disable_);
   return;
 }
@@ -263,7 +242,6 @@ void status_bar::process() {
     DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
                    "Event number (#" << a_nbr << ") larger than the total number of events !");
   } else {
-    _event_list_->Select(a_nbr);
     _server_->set_current_event_number(a_nbr);
   }
   return;
