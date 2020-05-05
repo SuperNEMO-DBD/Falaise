@@ -125,7 +125,6 @@ else()
   # Root 6.12 requires additional include path
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
   root_generate_dictionary(event_browser_dict
-    "${FalaiseEventBrowserPlugin_DICT_HEADERS}"
     ${__EVENTBROWSER_MODULE_ARG}
     LINKDEF "${PROJECT_SOURCE_DIR}/source/inc/falaise/snemo/view/event_browser_linkdef.h"
     OPTIONS "-noIncludePaths"
