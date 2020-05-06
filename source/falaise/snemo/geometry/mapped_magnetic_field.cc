@@ -351,7 +351,7 @@ void mapped_magnetic_field::initialize(const datatools::properties& config_,
     DT_THROW(std::logic_error, "Invalid mapping mode '" << modeStr << "'!");
   }
 
-  mapFile_ = ps.get<std::string>("map_file", mapFile_);
+  mapFile_ = ps.get<falaise::path>("map_file", mapFile_);
   // if (mapMode_ == map_mode_t::IMPORT_CSV_MAP_0) { // Useless as this is the only mode
   fieldMap_.reset(new MapImpl{mapFile_});
   //}
