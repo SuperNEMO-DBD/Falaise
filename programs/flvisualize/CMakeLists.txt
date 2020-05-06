@@ -17,6 +17,15 @@ project(FLVisualize VERSION 3.0.0)
 set(Boost_COMPONENTS thread program_options)
 find_package(Boost 1.55 REQUIRED ${Boost_COMPONENTS})
 
+
+# - Qt5 support
+find_package (Qt5Core)
+find_package (Qt5Widgets)
+find_package (Qt5PrintSupport)
+
+
+
+
 # - ROOT
 set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
 find_package(ROOT 6.12 REQUIRED ${ROOT_COMPONENTS})

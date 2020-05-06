@@ -1,3 +1,6 @@
+# -*- mode: conf-unix; -*-
+
+
 #@description The definitions for variant parameters related to the geometry of the demonstrator module
 #@key_label   "name"
 #@meta_label  "type"

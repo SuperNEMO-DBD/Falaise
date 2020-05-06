@@ -26,6 +26,13 @@
 find_package(Boost 1.60 REQUIRED program_options filesystem system)
 find_package(Geant4 REQUIRED)
 
+
+find_package (Qt5Core)
+find_package (Qt5Widgets)
+find_package (Qt5PrintSupport)
+
+
+
 #-----------------------------------------------------------------------
 # Build command line app
 # - Compile/Link

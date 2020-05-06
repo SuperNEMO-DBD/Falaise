@@ -1,3 +1,8 @@
+snemo_full_copper_mass_bulk : Vertex generation from the bulk of Copper foils : RealSource : 
+snemo_full_foils_mass_bulk : Vertex generation from the surface of all source pads : RealSource : 
+snemo_full_foils_se82_bulk : Vertex generation from the bulk of all Se82 source pads : RealSource : 
+snemo_full_copper_surface : Vertex generation from the surface of Copper foils : RealSource : 
+snemo_full_source_surface : Vertex generation from the surface of all source pads : RealSource : 
 pmt_5inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper : OpticalModule : 
 pmt_8inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper : OpticalModule : 
 pmt_main_wall_glass_bulk : Vertex generation from the bulk volume of all source pads : OpticalModule : 

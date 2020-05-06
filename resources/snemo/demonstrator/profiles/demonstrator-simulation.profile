@@ -9,15 +9,13 @@ layout/if_basic/magnetic_field = true
 layout/if_basic/magnetic_field/is_active/type = "UniformVertical"
 layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss
 layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = "+z"
-layout/if_basic/source_layout = "Basic"
-layout/if_basic/source_layout/if_basic/thickness = 250 um
-layout/if_basic/source_layout/if_basic/material = "Se82"
+layout/if_basic/source_layout = "Realistic"
 layout/if_basic/source_calibration = false
 layout/if_basic/shielding = true
 calo_film_thickness = 25 um
 
 [registry="vertexes"]
-generator = "source_pads_bulk"
+generator = "snemo_full_foils_mass_bulk"
 
 [registry="primary_events"]
 generator = "Se82.2nubb"

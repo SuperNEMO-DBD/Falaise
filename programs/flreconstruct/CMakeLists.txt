@@ -25,6 +25,14 @@
 # - Bit hacky for now
 find_package(Boost 1.60 REQUIRED program_options)
 
+
+
+find_package (Qt5Core)
+find_package (Qt5Widgets)
+find_package (Qt5PrintSupport)
+
+
+
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
