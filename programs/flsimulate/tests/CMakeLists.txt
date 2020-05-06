@@ -211,3 +211,10 @@ add_test(NAME flsimulate-script-xwall_gveto_pmt_glass-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-script-xwall_gveto_pmt_glass.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-script-xwall_gveto_pmt_glass.brio"
   )
 set_falaise_test_environment(flsimulate-script-Bi207_source_calibration-run)
+
+# - Flsimulate issue #198, and tests that mapped magnetic field can be used
+add_test(NAME flsimulate-issue198-run
+  COMMAND flsimulate
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue198.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue198.brio"
+  )
+set_falaise_test_environment(flsimulate-issue198-run)
