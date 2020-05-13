@@ -191,10 +191,10 @@ string.enumerated.size    : integer = 2
 string.enumerated_1.value : string = "Basic"
 
 # The list of supported values:
-string.enumerated_0.value : string = "Realistic"
+string.enumerated_0.value : string = "RealSource"
 
 #@description The default value
-string.default            : string = "Realistic"
+string.default            : string = "RealSource"
 
 #@description List of variants
 variants                  : string[2] = "if_realistic" "if_basic" 
