@@ -454,13 +454,13 @@ double gveto_locator::getXCoordOfColumn(uint32_t side, uint32_t wall, uint32_t c
 
   if (side == (uint32_t)side_t::BACK) {
     DT_THROW_IF(
-        column >= backCaloBlock_X_[wall].size(), std::out_of_range,
-        "Invalid column number(" << column << ">" << backCaloBlock_X_[wall].size() - 1 << ")!");
+        column >= backCaloBlock_Y_[wall].size(), std::out_of_range,
+        "Invalid column number(" << column << ">" << backCaloBlock_Y_[wall].size() - 1 << ")!");
     return backCaloBlock_X_[wall][column];
   }
   DT_THROW_IF(
-      column >= frontCaloBlock_X_[wall].size(), std::out_of_range,
-      "Invalid column number(" << column << ">" << frontCaloBlock_X_[wall].size() - 1 << ")!");
+      column >= frontCaloBlock_Y_[wall].size(), std::out_of_range,
+      "Invalid column number(" << column << ">" << frontCaloBlock_Y_[wall].size() - 1 << ")!");
   return frontCaloBlock_X_[wall][column];
 }
 
