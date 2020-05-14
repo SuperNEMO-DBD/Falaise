@@ -40,7 +40,7 @@ length_unit        : string  = "cm"
 y                  : real    = 12.5  # cm
 z                  : real    = 250.0  # cm
 x                  : real as length = 74.0 um
-material.ref       : string  = "snemo::copper"
+material.ref       : string  = "basic::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
@@ -3678,7 +3678,7 @@ length_unit        : string  = "cm"
 y                  : real    = 12.5  # cm
 z                  : real    = 250.0  # cm
 x                  : real as length = 74.0 um
-material.ref       : string  = "snemo::copper"
+material.ref       : string  = "basic::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
