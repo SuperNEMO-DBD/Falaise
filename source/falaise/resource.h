@@ -13,6 +13,10 @@
 //!          Falaise library, allowing relocation of the Falaise
 //!          package after installation.
 //!
+//!          The resource path may be overridden by an environment variable for testing
+//!          purposes, and the use of the environment override may be
+//!          queried.
+//!
 //!          If your application uses resources from Falaise,
 //!          you must call the falaise::init_resources function
 //!          before trying to access resources.
@@ -59,17 +63,24 @@ class UnknownResourceException : public std::runtime_error {
   UnknownResourceException(const std::string& msg) : std::runtime_error(msg) {}
 };
 
+//! Name of environment variable that can be set to override root resource path
+constexpr char kResourceOverrideVarName[] = "FALAISE_RESOURCE_DIR";
+
 //! Initialize the library resource paths
 //! \throw ResourceInitializationException when library cannot self locate
 void init_resources();
 
 //! Return URL, i.e. a path, to the  base directory where resource files are installed
+//! It may be overiden at runtime by the FALAISE_RESOURCE_DIR environment variable
 std::string get_resource_dir();
 
 //! Return URL, i.e. a path, to named resource
 std::string get_resource(const std::string& rname);
 
-//!//! Return URL, i.e. a path, to the  base directory where plugin DLL files are installed
+//! Return true if the resource directory is overidden from the environment
+bool resources_overidden();
+
+//! Return URL, i.e. a path, to the  base directory where plugin DLL files are installed
 std::string get_plugin_dir();
 
 //! Return URL, i.e. a path, to named resource

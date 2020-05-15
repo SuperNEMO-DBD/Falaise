@@ -73,6 +73,18 @@ endif()
 option(FALAISE_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
 if(FALAISE_ENABLE_TESTING)
   enable_testing()
+
+  # Common testing environment
+  set(_falaise_TEST_ENVIRONMENT
+  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
+  )
+
+  macro(set_falaise_test_environment _tname)
+    set_property(TEST ${_tname}
+      APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+    )
+  endmacro()
 endif()
 
 #-----------------------------------------------------------------------
@@ -102,9 +114,8 @@ if(FALAISE_WITH_DOCS)
 endif()
 
 #-----------------------------------------------------------------------
-# Copy/Install resources
+# Install resources
 #
-file(COPY resources/ DESTINATION "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}")
 install(DIRECTORY resources/
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
   )

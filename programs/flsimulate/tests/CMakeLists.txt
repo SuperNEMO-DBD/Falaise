@@ -1,17 +1,5 @@
 #.rst: Build/run tests for flsimulate{-configure}
 # Scripts are taken from documentation
-# TODO: crosslink these so there is one set that can
-#       evolve together.
-set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
-  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
-  )
-macro(set_falaise_test_environment _tname)
-  set_property(TEST ${_tname}
-    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
-    )
-endmacro()
-
 
 # Basic smoke test of default behaviour
 # - write single event of default setup to output file
@@ -210,7 +198,7 @@ add_test(NAME flsimulate-script-xwall_gveto_pmt_glass-run
           -d "xwallgvetopmtglassvariant@${CMAKE_CURRENT_SOURCE_DIR}/"
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-script-xwall_gveto_pmt_glass.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-script-xwall_gveto_pmt_glass.brio"
   )
-set_falaise_test_environment(flsimulate-script-Bi207_source_calibration-run)
+set_falaise_test_environment(flsimulate-script-xwall_gveto_pmt_glass-run)
 
 # - Flsimulate issue #198, and tests that mapped magnetic field can be used
 add_test(NAME flsimulate-issue198-run
