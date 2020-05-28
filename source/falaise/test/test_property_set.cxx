@@ -71,6 +71,11 @@ TEST_CASE("Observer interfaces work", "") {
   SECTION("properties are correctly identified") {
     REQUIRE(ps.has_key("myprop"));
     REQUIRE(ps.is_key_to_property("myprop"));
+
+    REQUIRE(ps.is_key_to<std::string>("myprop"));
+    REQUIRE_FALSE(ps.is_key_to<int>("myprop"));
+    REQUIRE_FALSE(ps.is_key_to<std::string>("notpresent"));
+
     REQUIRE_FALSE(ps.is_key_to_property("notpresent"));
     REQUIRE_FALSE(ps.is_key_to_sequence("myprop"));
   }

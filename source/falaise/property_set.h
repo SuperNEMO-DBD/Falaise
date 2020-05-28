@@ -57,7 +57,44 @@ class unmet_predicate_error : public std::logic_error {
 /*!
  * Provides a convenient adaptor interface over datatools::properties,
  * targeted at developers of modules for Falaise needing key-value storage
- * and validation of input parameters. It may be used directly as
+ * and validation of input parameters. For example, say we program a module
+ * that requires two parameters, or properties, to implement its processing:
+ *
+ * * ```cpp
+ * class MyModule
+ * {
+ *   public:
+ *     MyModule(falaise::property_set const& config, datatools::service_manager& services){
+ *       firstParam = config.get<int>("firstParam");
+ *       secondParam = config.get<double>("secondParam");
+ *     }
+ *
+ *     falaise::processing::status process(datatools::things&) {
+ *       std::cout << firstParam * secondParam << std::endl;
+ *       ...
+ *     }
+ *
+ *   private:
+ *     int firstParam = 1;
+ *     double secondParam = 3.14;
+ * };
+ *
+ * Users of this module can change the `firstParam` and `secondParam` properties when
+ * using it in `flreconstruct` by configuring it in their pipeline script:
+ *
+ * ```
+ * [name="MyModule", type="MyModule"]
+ * firstParam : int = 2
+ * secondParam : real = 4.13
+ * ```
+ *
+ * The module would then print "8.26" when the `process` member function is called. In particular,
+ * it allows module authors to validate this user supplied input as needed to ensure correct
+ * running of the module. As detailed below, this may include required vs optional values, type
+ * checking, and value checking.
+ *
+ *
+ * A property_set may be created and used directly as
  *
  * ```cpp
  * falaise::property_set ps{};
@@ -77,6 +114,11 @@ class unmet_predicate_error : public std::logic_error {
  *
  * // Assign value a variable only if key exists
  * std::string myDefault = "foo";
+ *
+ * // o.k....
+ * myDefault = ps.get<std::string>("nonexistent", myDefault);
+ *
+ * // better...
  * ps.assign_if("nonexistent", myDefault);
  * std::cout << myDefault << std::endl; // prints "foo"
  *
@@ -134,8 +176,13 @@ class unmet_predicate_error : public std::logic_error {
  * - You can only @ref get values of the above types, and a @ref wrong_type_error
  *   will be thrown if you try to retrieve a value with a different type, e.g
  *   ``` cpp
- *   ps.put("a", 2);
+ *   ps.put("a", 2); // an integer by type inference (2. or 2.0 would be double)
  *   auto x = ps.get<double>("a"); // throws wrong_type_error
+ *
+ *   // Or you can check manually
+ *   if (ps.is_key_to<int>("a")) {
+ *     std::cout << "is int\n"; // prints "is int"
+ *   }
  *   ```
  *
  * Support for @ref path and @ref quantity_t is provided to support validation
@@ -165,6 +212,8 @@ class unmet_predicate_error : public std::logic_error {
  * }
  * ```
  *
+ * A full list of available quantity types is provided in the documentation for @ref quantity_t
+ *
  * Support for @ref put and @ref get of @ref property_set values is provided to
  * support @ref datatools::properties constructs of the form:
  *
@@ -186,8 +235,8 @@ class unmet_predicate_error : public std::logic_error {
  *
  * ```cpp
  * auto table = ps.get<falaise::property_set>("table");
- * auto foo = ps.get<std::string>("foo");
- * auto bar = ps.get<int>("bar);
+ * auto foo = table.get<std::string>("foo");
+ * auto bar = table.get<int>("bar);
  * ```
  *
  * This can be extended to further levels of nesting if required. However,
@@ -201,13 +250,22 @@ class unmet_predicate_error : public std::logic_error {
  *
  * are not considered get-able as `property_set`s. This is due to the ambiguity
  * of the `table` key which @ref property_set regards as an atomic property
- * of type `std::string`. Here, the `table.x` and table.y` keys can be extracted
- * only via their fully qualified keys. It is therefore strongly recommended that
+ * of type `std::string`. Trying to extract the above `table` key as a `property_set`
+ * would result in a `wrong_type_error` exception:
+ *
+ *
+ * ```cpp
+ * // throws falaise::wrong_type_error
+ * auto table = ps.get<falaise::property_set>("table");
+ * ```
+ *
+ * The `table.x` and table.y` keys in the example can only be extracted
+ * via these fully qualified keys. It is therefore strongly recommended that
  * you structure your configuration in the "pure table" form above for clarity
  * and ease of use.
  *
- * The default value form of @ref get can be used to implement optional configuration, for
- * example
+ * The default value form of @ref get or the @ref assign_if member function can be used to
+ * implement optional configuration, for example
  *
  * ```cpp
  * void configure_me(property_set const& ps) {
@@ -217,13 +275,23 @@ class unmet_predicate_error : public std::logic_error {
  *   // sets optionalParam to the value held at "answer", or 42 if ps doesn't have an "answer" key
  *   auto optionalParam = ps.get<int>("answer",42);
  *
+ *   // In many use cases, we may already have a parameter set to its default value
+ *   // e.g. class member initialization. We could write...
+ *   int defaultParameter = 42;
+ *   defaultParameter = ps.get<int>("answer", defaultParameter);
+ *
+ *   // ... but assign_if allows the clearer form
+ *   ps.assign_if("answer", defaultParameter);
+ *
  *   ...
  * }
  * ```
  *
  * Limited validation of extracted values is available through the @ref get_if and @ref assign_if
  * interfaces. These forms allow a value meeting the [UnaryPredicate](https://en.cppreference.com/w/cpp/named_req/Predicate)
- * concept to be supplied that can validate the value as needed. For example:
+ * concept to be supplied that can validate the value as needed. Falaise does not supply
+ * any checks "out the box", but they are easy to write as lambdas, free functions, or
+ * function objects. For example:
  *
  * ```cpp
  * // Use a lambda as simple example, but any callable taking value and returning bool works
@@ -288,16 +356,39 @@ class property_set {
    */
   bool has_key(std::string const& key) const;
 
+  //! Returns true if the supplied key holds a value of type T
+  /*!
+   * \tparam T type of value to be returned
+   * \param[in] key key for value to find
+   * \returns true if key exists and holds value of type T
+   */
+  template <typename T>
+  bool is_key_to(std::string const& key) const;
+
   //! Returns true if the key's value is a property/atom
   /*!
+   * Examples of property/atom definitions are:
+   *
+   * ```
+   * x : int = 1
+   * y : string = "a b c"
+   * ```
+   *
    * A nested key, e.g. `foo.bar`, may be supplied.
    *
    * \param[in] key name of the key to check
    */
   bool is_key_to_property(std::string const& key) const;
 
-  //! Returns true if the keys's value is sequence
+  //! Returns true if the keys's value is a sequence (array) of values
   /*!
+   * Examples of sequences are:
+   *
+   * ```
+   * x : int[4] = 1, 2, 3, 4
+   * y : real[2] = 3.14, 4.13
+   * ```
+   *
    * A nested key, e.g. `foo.bar`, may be supplied.
    *
    * \param[in] key name of the key to check
@@ -542,6 +633,11 @@ class property_set {
 
 // - Definitions for template functions
 namespace falaise {
+template <typename T>
+bool property_set::is_key_to(std::string const& key) const {
+  return is_type_<T>(key);
+}
+
 template <typename T>
 T property_set::get(std::string const& key) const {
   if (!ps_.has_key(key)) {
