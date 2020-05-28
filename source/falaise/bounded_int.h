@@ -24,16 +24,16 @@
 #include <exception>
 
 namespace falaise {
-//! \brief Class representing an integral value with strict bounds
+//! \brief Class representing an integer value with strict bounds
 /*!
  * \tparam lower_bound Inclusive lower bound on value
  * \tparam upper_bound Inclusive upper bound on value
  *
  * Provides a convenience class for integral values with strict bounds that
  * cannot overflow. The canonical use case in Falaise is indices for tracker
- * layers and columns, [0,8] and [0,111] respectively. These bounds do not line
+ * layers and columns, [0,8] and [0,112] respectively. These bounds do not line
  * up with the range of any builtin integral type, and builtin types are
- * vunerable to overflow/underflow. Instead of having to write code that checks
+ * vulnerable to overflow/underflow. Instead of having to write code that checks
  * bounds explicitly everytime we use an builtin integral :
  *
  * ```cpp
@@ -59,10 +59,13 @@ namespace falaise {
  * layer_index_t good{1}; // fine
  * layer_index_t bad{9};  // throws std::out_of_range
  *
+ * // Implicit conversion fron int32_t to layer_index_t
+ * // If you pass a regular integer to a function that takes
+ * // a bounded_int it will check the bounds for you an throw
+ * // an exception if the value is out of bounds
  * int32_t works{2};
  * int32_t fails{-1};
  *
- * // Implicit conversion fron int32_t to layer_index_t
  * example(works); // fine
  * example(fails); // throws std::out_of_range
  * ```
@@ -77,14 +80,14 @@ namespace falaise {
  * named constant.
  *
  * bounded_int can be converted back to int32_t and any integral type that's implicitly
- * convertible form int32_t:
+ * convertible from int32_t:
  *
  * ```cpp
  * bounded_int<0,8> x{2};
  * int32_t y = x; // y = 2
  * ```
  *
- * However, there is no checking for over/uinderflow in these cases.
+ * However, there is no checking for over/underflow in these cases.
  */
 template <int32_t lower_bound, int32_t upper_bound>
 class bounded_int {
