@@ -6,20 +6,21 @@ on:
 
 jobs:
   build-and-test:
+    # Linux builds are Docker based, so our GitHub VM must be ubuntu
     runs-on: ubuntu-latest
-    container: supernemo/falaise-centos7-base:develop
+    # Strategy is over each image
+    strategy:
+      matrix:
+        image: [supernemo/falaise-centos7-base:develop, supernemo/falaise-ubuntu1804-base:develop]
     steps:
       # Manually pull/start image/container due to its permission/USER.
-      #- name: Pull Falaise Base Image
-      #  run: docker pull supernemo/falaise-centos7-base:develop
-      #- name: Create Docker Container
-      #  run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE supernemo/falaise-centos7-base:develop 
+      - name: Pull Falaise Base Image
+        run: docker pull ${{ matrix.image }}
+      - name: Create Docker Container
+        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE ${{ matrix.image }} 
       # Now the actual build...
       - uses: actions/checkout@v2
-      - name: Build in container
-        run: $GITHUB_WORKSPACE/.travis/ciscript.sh
-      #- name: Do build
-      #  run: |
-      #    $GITHUB_WORKSPACE/.travis/ciscript.sh
-     #     # docker exec builder $GITHUB_WORKSPACE/.travis/ciscript.sh
+      - name: Configure, build, and test
+        run: |
+          docker exec builder $GITHUB_WORKSPACE/.travis/ciscript.sh
         
