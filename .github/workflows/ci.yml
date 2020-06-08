@@ -11,13 +11,13 @@ jobs:
     # Strategy is over each image
     strategy:
       matrix:
-        image: [supernemo/falaise-centos7-base:develop, supernemo/falaise-ubuntu1804-base:develop]
+        builder_image: ["supernemo/falaise-centos7-base:develop", "supernemo/falaise-ubuntu1804-base:develop"]
     steps:
       # Manually pull/start image/container due to its permission/USER.
       - name: Pull Falaise Base Image
-        run: docker pull ${{ matrix.image }}
+        run: docker pull ${{ matrix.builder_image }}
       - name: Create Docker Container
-        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE ${{ matrix.image }} 
+        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE ${{ matrix.builder_image }} 
       # Now the actual build...
       - uses: actions/checkout@v2
       - name: Configure, build, and test
