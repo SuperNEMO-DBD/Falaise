@@ -1,5 +1,5 @@
 #!/bin/bash
-# Wrap configure/build/test steps on Travis-CI into a script
+# Wrap configure/build/test steps on GitHub Actions into a script
 
 # Set(ings):
 # - Echo each command to stdout
@@ -12,7 +12,7 @@ export USER=`whoami`
 
 # Find ourselves
 SELFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PROJECTDIR="$(dirname "${SELFDIR}")"
+PROJECTDIR="$(dirname $(dirname "${SELFDIR}"))"
 
 # On Linux, check for brew'd GCC
 if [ `uname` == "Linux" ] ; then
