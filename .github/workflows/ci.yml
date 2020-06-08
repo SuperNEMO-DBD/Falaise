@@ -4,17 +4,18 @@ on:
   pull_request:
     branches: [ develop ]
 
-build-and-test:
-  runs-on: ubuntu-latest
-  steps:
-    # Manually pull/start image/container due to its permission/USER.
-    - name: Pull Falaise Base Image
-      run: docker pull supernemo/falaise-centos7-base:develop
-    - name: Create Docker Container
-      run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE supernemo/falaise-centos7-base:develop 
-    # Now the actual build...
-    - uses: actions/checkout@v2
-    - name: Check our environment
-      run: |
-        docker exec builder $GITHUB_WORKSPACE/.travis/ciscript.sh
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      # Manually pull/start image/container due to its permission/USER.
+      - name: Pull Falaise Base Image
+        run: docker pull supernemo/falaise-centos7-base:develop
+      - name: Create Docker Container
+        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE supernemo/falaise-centos7-base:develop 
+      # Now the actual build...
+      - uses: actions/checkout@v2
+      - name: Check our environment
+        run: |
+          docker exec builder $GITHUB_WORKSPACE/.travis/ciscript.sh
         
