@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # Strategy is over each image
     strategy:
+      fail-fast: false
       matrix:
         builder_image: ["supernemo/falaise-centos7-base:develop", "supernemo/falaise-ubuntu1804-base:develop", "supernemo/falaise-ubuntu2004-base:develop"]
     steps:
