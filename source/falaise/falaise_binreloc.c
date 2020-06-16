@@ -196,7 +196,7 @@ static char *_br_find_exe(BrInitError *error) {
   path = strchr(line, '/');
 
   /* Sanity check. */
-  if (strstr(line, " r-xp ") == NULL || path == NULL) {
+  if ((strstr(line, " r-xp ") == NULL && strstr(line, " r--p ") == NULL) || path == NULL) {
     fclose(f);
     free(line);
     if (error) *error = BR_INIT_ERROR_INVALID_MAPS;
@@ -255,7 +255,7 @@ static char *_br_find_exe_for_symbol(const void *symbol, BrInitError *error) {
     if (fgets(line, SIZE, f) == NULL) break;
 
     /* Sanity check. */
-    if (strstr(line, " r-xp ") == NULL || strchr(line, '/') == NULL) continue;
+    if ((strstr(line, " r-xp ") == NULL && strstr(line, " r--p ") == NULL) || strchr(line, '/') == NULL) continue;
 
     /* Parse line. */
     start_addr = line;
