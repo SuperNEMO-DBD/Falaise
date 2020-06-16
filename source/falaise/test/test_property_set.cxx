@@ -195,10 +195,8 @@ TEST_CASE("property_set type put/get specialization works", "") {
   falaise::property_set ps{makeTableLikeProperties()};
 
   SECTION("can only create table from pure tables") {
-    REQUIRE_THROWS_AS(auto notATable = ps.get<falaise::property_set>("myprop"),
-                      falaise::wrong_type_error);
-    REQUIRE_THROWS_AS(auto badTable = ps.get<falaise::property_set>("mix_table"),
-                      falaise::wrong_type_error);
+    REQUIRE_THROWS_AS(ps.get<falaise::property_set>("myprop"), falaise::wrong_type_error);
+    REQUIRE_THROWS_AS(ps.get<falaise::property_set>("mix_table"), falaise::wrong_type_error);
   }
 
   SECTION("tables must have correct size") {
@@ -305,8 +303,8 @@ TEST_CASE("Check datatools::properties interface", "") {
   }
 
   // All dimensions known
-  std::vector<std::string> dims{};
-  size_t N = datatools::units::registered_unit_dimension_labels(dims);
+  //std::vector<std::string> dims{};
+  //size_t N = datatools::units::registered_unit_dimension_labels(dims);
   // for (auto& d : dims) {
   // std::cout << d << "\n";
   //}

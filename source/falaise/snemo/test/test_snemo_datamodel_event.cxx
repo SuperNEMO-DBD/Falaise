@@ -17,7 +17,7 @@ TEST_CASE("getOrAddToEvent free function works", "[falaise][datamodel]") {
   using timestamp = snemo::datamodel::timestamp;
 
   SECTION("Get on an empty event creates 1 entry") {
-    REQUIRE_NOTHROW(auto& t0 = snedm::getOrAddToEvent<timestamp>("first", e));
+    REQUIRE_NOTHROW(snedm::getOrAddToEvent<timestamp>("first", e));
     REQUIRE(e.size() == 1);
     REQUIRE(e.has("first"));
     REQUIRE(e.is_a<timestamp>("first"));
@@ -25,16 +25,16 @@ TEST_CASE("getOrAddToEvent free function works", "[falaise][datamodel]") {
 
   SECTION("Get on a prefilled event gets the same object") {
     auto& t0 = snedm::getOrAddToEvent<timestamp>("first", e);
-    REQUIRE_NOTHROW(auto& t1 = snedm::getOrAddToEvent<timestamp>("first", e));
+    REQUIRE_NOTHROW(snedm::getOrAddToEvent<timestamp>("first", e));
     REQUIRE(e.size() == 1);
     auto& t1 = snedm::getOrAddToEvent<timestamp>("first", e);
     REQUIRE(&t0 == &t1);
   }
 
   SECTION("Getting on different type throws bad_things_cast") {
-    auto& t0 = snedm::getOrAddToEvent<timestamp>("first", e);
+    snedm::getOrAddToEvent<timestamp>("first", e);
 
-    REQUIRE_THROWS_AS(auto& t1 = snedm::getOrAddToEvent<datatools::things>("first", e),
+    REQUIRE_THROWS_AS(snedm::getOrAddToEvent<datatools::things>("first", e),
                       datatools::bad_things_cast);
   }
 }

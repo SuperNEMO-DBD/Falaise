@@ -14,11 +14,19 @@ export USER=`whoami`
 SELFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECTDIR="$(dirname $(dirname "${SELFDIR}"))"
 
-# On Linux, check for brew'd GCC
+# Compiler selection
 if [ `uname` == "Linux" ] ; then
+  # GCC 7 is default
   export CC=gcc-7
   export CXX=g++-7
   export FC=gfortran-7
+
+  # GCC 9 on Ubuntu 20.04
+  if [ -e "/usr/bin/gcc-9" ] ; then
+    export CC=gcc-9
+    export CXX=g++-9
+    export FC=gfortran-9
+  fi
 fi
 
 # Create build directory, deleting if present
@@ -31,8 +39,10 @@ cmake -DCMAKE_PREFIX_PATH="$(brew --prefix);$(brew --prefix qt5-base)" \
       -DCMAKE_INSTALL_LIBDIR=lib \
       -GNinja \
       $PROJECTDIR
+
 # Build using Ninja to auto-parallelize
 ninja
+
 # Run tests - rerunning any that fail in verbose mode
 ctest || ctest -VV --rerun-failed
 

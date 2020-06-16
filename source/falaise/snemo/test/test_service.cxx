@@ -17,7 +17,7 @@ TEST_CASE("Construction from bad services fails", "") {
   datatools::service_manager dummyServices{};
 
   SECTION("non-existant service throws") {
-    REQUIRE_THROWS_AS(snemo::service_handle<snemo::geometry_svc> x{dummyServices},
+    REQUIRE_THROWS_AS((snemo::service_handle<snemo::geometry_svc>{dummyServices}),
                       snemo::missing_service_error);
   }
 
@@ -25,7 +25,7 @@ TEST_CASE("Construction from bad services fails", "") {
     datatools::multi_properties config;
     config.add_section("geometry", "dpp::histogram_service");
     dummyServices.load(config);
-    REQUIRE_THROWS_AS(snemo::service_handle<snemo::geometry_svc> x{dummyServices},
+    REQUIRE_THROWS_AS(snemo::service_handle<snemo::geometry_svc>{dummyServices},
                       snemo::bad_service_type);
   }
 }

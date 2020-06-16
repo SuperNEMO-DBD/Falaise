@@ -7,7 +7,7 @@
 TEST_CASE("Raw quantity construction", "") {
   falaise::quantity x{};
   REQUIRE(x() == 0.0);
-  REQUIRE_THROWS_AS(falaise::quantity y(3.14, "furlong"), falaise::unknown_unit_error);
+  REQUIRE_THROWS_AS(falaise::quantity(3.14, "furlong"), falaise::unknown_unit_error);
 }
 
 TEST_CASE("Raw quantity conversion", "") {
@@ -20,8 +20,8 @@ TEST_CASE("Raw quantity conversion", "") {
 }
 
 TEST_CASE("Explicit dimensions construction", "") {
-  REQUIRE_THROWS_AS(falaise::mass_t ma(3.14, "km"), falaise::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::mass_t mb(3.14, "foo"), falaise::unknown_unit_error);
+  REQUIRE_THROWS_AS(falaise::mass_t(3.14, "km"), falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS(falaise::mass_t(3.14, "foo"), falaise::unknown_unit_error);
 
   // Default construction has to have a sensible defaults!
   falaise::length_t l{};
@@ -32,8 +32,8 @@ TEST_CASE("Explicit dimensions construction", "") {
   falaise::length_t u{3.14, "m"};
   falaise::energy_t e;
   REQUIRE_THROWS_AS(e = u, falaise::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::energy_t e2 = u, falaise::wrong_dimension_error);
-  REQUIRE_THROWS_AS(falaise::mass_t v(u), falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS([&](){falaise::energy_t e2 = u;}(), falaise::wrong_dimension_error);
+  REQUIRE_THROWS_AS(falaise::mass_t(u), falaise::wrong_dimension_error);
 }
 
 TEST_CASE("Explicit dimension conversions", "") {
@@ -47,7 +47,7 @@ void foo() {
   // TEST_CASE("Doxygenate known dimensions/units", "") {
   // All dimensions known
   std::vector<std::string> dims{};
-  size_t N = datatools::units::registered_unit_dimension_labels(dims);
+  datatools::units::registered_unit_dimension_labels(dims);
 
   const auto& r = datatools::units::registry::system_registry();
 
