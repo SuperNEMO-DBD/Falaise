@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file falaise/snemo/datamodels/mock_raw_tracker_hit.h
+/// \file falaise/snemo/processing/detail/mock_raw_tracker_hit.h
 /* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-03-15
  * Last modified: 2014-01-30

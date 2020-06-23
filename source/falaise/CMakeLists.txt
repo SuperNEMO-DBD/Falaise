@@ -39,6 +39,7 @@ configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 #
 set(FalaiseLibrary_HEADERS
   ${CMAKE_CURRENT_BINARY_DIR}/version.h
+  bounded_int.h
   exitcodes.h
   falaise.h
   resource.h
@@ -148,6 +149,7 @@ if(FALAISE_ENABLE_TESTING)
    )
   list(APPEND FalaiseLibrary_TESTS_CATCH
     test/test_falaise_version.cxx
+    test/test_bounded_int.cxx
     test/test_path.cxx
     test/test_property_set.cxx
     test/test_quantity.cxx

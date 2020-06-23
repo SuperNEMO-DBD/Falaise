@@ -3,6 +3,7 @@
 #include "falaise/property_set.h"
 
 #include <cstdio>
+#include <sstream>
 #include "bayeux/datatools/clhep_units.h"
 #include "bayeux/datatools/units.h"
 
@@ -70,6 +71,11 @@ TEST_CASE("Observer interfaces work", "") {
   SECTION("properties are correctly identified") {
     REQUIRE(ps.has_key("myprop"));
     REQUIRE(ps.is_key_to_property("myprop"));
+
+    REQUIRE(ps.is_key_to<std::string>("myprop"));
+    REQUIRE_FALSE(ps.is_key_to<int>("myprop"));
+    REQUIRE_FALSE(ps.is_key_to<std::string>("notpresent"));
+
     REQUIRE_FALSE(ps.is_key_to_property("notpresent"));
     REQUIRE_FALSE(ps.is_key_to_sequence("myprop"));
   }
@@ -113,6 +119,28 @@ TEST_CASE("Retriever interfaces work", "") {
 
   REQUIRE_THROWS_AS(ps.get<falaise::path>("flatstring"), falaise::wrong_type_error);
   REQUIRE_NOTHROW(ps.get<falaise::path>("apath"));
+
+  // Provide easy defaulting interfaces to handle the self default case
+  // x = 2;
+  // x = ps.get<T>("key", x);
+  // Post-conditions are:
+  // - x = 2 if "key" not in pset
+  // - x = value of key if key exists and of right type
+  // - throws wrong_type if key exists and not type of x
+  const int kMyDefault = 415627;
+  int myDefault = kMyDefault;
+  SECTION("No assignment when key does not exist") {
+    REQUIRE_NOTHROW(ps.assign_if("thiskeydoesnotexists", myDefault));
+    REQUIRE(myDefault == kMyDefault);
+  }
+  SECTION("Attempted assignment with mismatched types throws") {
+    REQUIRE_THROWS_AS(ps.assign_if("baz", myDefault), falaise::wrong_type_error);
+    REQUIRE(myDefault == kMyDefault);
+  }
+  SECTION("Assignment succeeds on matching key and type") {
+    REQUIRE_NOTHROW(ps.assign_if("foo", myDefault));
+    REQUIRE(myDefault == ps.get<int>("foo"));
+  }
 }
 
 TEST_CASE("Insertion/Erase interfaces work", "") {
@@ -250,6 +278,54 @@ TEST_CASE("property_set type put/get specialization works", "") {
   }
 }
 
+TEST_CASE("Parameter validation works", "") {
+  auto int_predicate = [](const int x) {
+    return (0 <= x) && (x <= 8);
+  };
+
+  falaise::property_set integrals;
+  integrals.put("in_bound", 5);
+  integrals.put("out_bound", -4);
+
+  // Required key forms
+  REQUIRE(integrals.get_if<int>("in_bound", int_predicate) == 5);
+  REQUIRE_THROWS_AS(integrals.get_if<int>("out_bound", int_predicate), falaise::unmet_predicate_error);
+  REQUIRE_THROWS_AS(integrals.get_if<int>("badkey", int_predicate), falaise::missing_key_error);
+
+  // Default value forms
+  // No key, good default is fine
+  REQUIRE(integrals.get_if<int>("badkey", 3, int_predicate) == 3);
+  // Good key, bad default must throw
+  REQUIRE_THROWS_AS(integrals.get_if<int>("in_bound", -4, int_predicate), falaise::unmet_predicate_error);
+  // Bad key, good default must throw
+  REQUIRE_THROWS_AS(integrals.get_if<int>("out_bound", 2, int_predicate), falaise::unmet_predicate_error);
+
+  // Assign_if forms
+  int myGoodParam = 7;
+  int myBadParam = 9;
+
+  // Extracting no key must no modify parameter
+  REQUIRE_NOTHROW(integrals.assign_if("nokey", myGoodParam, int_predicate));
+  REQUIRE(myGoodParam == 7);
+
+  // Extracting a bad value must throw and not modify
+  REQUIRE_THROWS_AS(integrals.assign_if("out_bound", myGoodParam, int_predicate), falaise::unmet_predicate_error);
+  REQUIRE(myGoodParam == 7);
+
+  // Supplying a bad value and a good key must throw and not modify
+  REQUIRE_THROWS_AS(integrals.assign_if("in_bound", myBadParam, int_predicate), falaise::unmet_predicate_error);
+  REQUIRE(myBadParam == 9);
+
+  // Good parameter and good key must correctly modify and not throw
+  REQUIRE_NOTHROW(integrals.assign_if("in_bound", myGoodParam, int_predicate));
+  REQUIRE(myGoodParam == integrals.get<int>("in_bound"));
+  // Investigate if we can make the following work with constraints:
+  //uint16_t x;
+  //integrals.assign_if("int32_t", x);
+  //x = integrals.get<uint16_t>("int32_t");
+
+}
+
 TEST_CASE("Creation from file works", "") {
   std::string fname{"kakhjbfdkb.conf"};
   datatools::properties tmp{makeSampleProperties()};
@@ -267,6 +343,24 @@ TEST_CASE("Creation from file works", "") {
   }
 
   remove(fname.c_str());
+}
+
+TEST_CASE("Creation from istream works", "") {
+  // Creation from file exercises ifstream case
+  // Use stringstream here
+  const char* psRaw = R"ps(
+    x : integer = 2
+    y : string = "hello"
+  )ps";
+  std::istringstream iss{psRaw};
+
+  falaise::property_set ps;
+  REQUIRE_NOTHROW(make_property_set(iss, ps));
+
+  auto names = ps.get_names();
+  REQUIRE(names.size() == 2);
+  REQUIRE(ps.get<int>("x") == 2);
+  REQUIRE(ps.get<std::string>("y") == "hello");
 }
 
 // Use the below as examples of how datatools::properties

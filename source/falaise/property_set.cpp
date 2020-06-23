@@ -1,5 +1,7 @@
 #include "property_set.h"
 
+#include <fstream>
+
 namespace falaise {
 property_set::property_set(datatools::properties const& ps) : ps_(ps) {}
 
@@ -67,8 +69,7 @@ bool property_set::is_type_impl_(std::string const& key, const std::string& /*un
   return ps_.is_string(key) && (!ps_.is_explicit_path(key)) && ps_.is_scalar(key);
 }
 
-bool property_set::is_type_impl_(std::string const& key,
-                                 const falaise::path& /*unused*/) const {
+bool property_set::is_type_impl_(std::string const& key, const falaise::path& /*unused*/) const {
   return ps_.is_explicit_path(key) && ps_.is_scalar(key);
 }
 
@@ -101,8 +102,14 @@ bool property_set::is_type_impl_(std::string const& key,
 }
 
 void make_property_set(const std::string& filename, property_set& ps) {
+  std::ifstream fs{filename.c_str()};
+  make_property_set(fs, ps);
+}
+
+void make_property_set(std::istream& is, property_set& ps) {
   datatools::properties tmp{};
-  datatools::properties::read_config(filename, tmp);
+  datatools::properties::config reader{};
+  reader.read(is, tmp);
   ps = tmp;
 }
 }  // namespace falaise

@@ -184,7 +184,7 @@ class xcalo_locator : public geomtools::base_locator, public datatools::i_tree_d
    */
   double getXCoordOfColumn(uint32_t side, uint32_t wall, uint32_t column) const;
 
-  /**! @RETURN THE Z-POSITION OF A BLOCK FOR SPECIFIC SIDE, WALL AND ROW (IN MODULE COORDINATE
+  /**! @return the S-position of a block for specific side, wall and row (in module coordinate
    * system).
    */
   double getZCoordOfRow(uint32_t side, uint32_t wall, uint32_t row) const;

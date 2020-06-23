@@ -1,3 +1,21 @@
+//! \file falaise/path.h
+// Copyright (c) 2020 by Ben Morgan <Ben.Morgan@warwick.ac.uk>
+// Copyright (c) 2020 by The University of Warwick
+//
+// This file is part of Falaise.
+//
+// Falaise is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Falaise is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Falaise.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef FALAISE_PATH_H
 #define FALAISE_PATH_H
 
@@ -11,7 +29,7 @@ class invalid_path_error : public std::logic_error {
   using std::logic_error::logic_error;
 };
 
-//! Class representing a filesystem path as held by a @ref property_set
+//! Class representing a filesystem path as held by a falaise::property_set
 /*!
  * Filesystem paths can be defined in datatools::properties syntax as:
  *
@@ -24,7 +42,7 @@ class invalid_path_error : public std::logic_error {
  * the resolved absolute path.
  *
  * @ref path provides a simple type to distinguish raw `std::string` from
- * explicit paths allowing users to validate that a @ref property_set value
+ * explicit paths allowing users to validate that a falaise::property_set value
  * is a true path. It is nothing more than a simple holder of the std::string for
  * the absolute path and may be used as:
  *
