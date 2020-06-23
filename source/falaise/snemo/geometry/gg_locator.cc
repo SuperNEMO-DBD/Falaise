@@ -21,6 +21,8 @@
 // Ourselves:
 #include <falaise/snemo/geometry/gg_locator.h>
 
+#include "private/categories.h"
+
 // Standard library:
 #include <stdexcept>
 
@@ -33,16 +35,6 @@
 #include <geomtools/box.h>
 #include <geomtools/cylinder.h>
 #include <geomtools/manager.h>
-
-namespace {
-// NB: These must be matched to the entries appearing in the relevant
-// geometry mapping resource files!
-// At present, no clear direction on who has priority here: code or resources
-const char kModuleGIDCategory[] = "module";
-const char kTrackerVolumeGIDCategory[] = "tracker_volume";
-// const char kTrackerLayerGIDCategory[] = "tracker_layer";
-const char kDriftCellGIDCategory[] = "drift_cell_core";
-}  // namespace
 
 namespace snemo {
 
@@ -705,16 +697,16 @@ void gg_locator::construct_() {
   const geomtools::id_mgr &idManager = get_geo_manager().get_id_mgr();
 
   const geomtools::id_mgr::category_info &cellCatInfo =
-      idManager.get_category_info(kDriftCellGIDCategory);
+      idManager.get_category_info(detail::kDriftCellGIDCategory);
   cellGIDType_ = cellCatInfo.get_type();
 
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
   for (const std::string &subaddress : {"module", "side", "layer", "row"}) {
-    DT_THROW_IF(
-        !cellCatInfo.has_subaddress(subaddress), std::logic_error,
-        "Category '" << kDriftCellGIDCategory << "' has no subaddress '" << subaddress << "'");
+    DT_THROW_IF(!cellCatInfo.has_subaddress(subaddress), std::logic_error,
+                "Category '" << detail::kDriftCellGIDCategory << "' has no subaddress '"
+                             << subaddress << "'");
   }
 
   moduleAddressIndex_ = cellCatInfo.get_subaddress_index("module");
@@ -724,7 +716,7 @@ void gg_locator::construct_() {
 
   geomMapping_ = &get_geo_manager().get_mapping();
 
-  uint32_t moduleGIDType = idManager.get_category_type(kModuleGIDCategory);
+  uint32_t moduleGIDType = idManager.get_category_type(detail::kModuleGIDCategory);
   const geomtools::geom_id moduleGID(moduleGIDType, moduleNumber_);
   const geomtools::geom_info &moduleGeomInfo = geomMapping_->get_geom_info(moduleGID);
   const geomtools::i_shape_3d *moduleShape = &moduleGeomInfo.get_logical().get_shape();
@@ -734,7 +726,7 @@ void gg_locator::construct_() {
   moduleWorldPlacement_ = &moduleGeomInfo.get_world_placement();
 
   // Search for tracker submodules :
-  uint32_t trackerVolumeGIDType = idManager.get_category_type(kTrackerVolumeGIDCategory);
+  uint32_t trackerVolumeGIDType = idManager.get_category_type(detail::kTrackerVolumeGIDCategory);
   geomtools::geom_id side_gid;
   side_gid.set_type(trackerVolumeGIDType);
   uint32_t ref_side = geomtools::geom_id::INVALID_ADDRESS;

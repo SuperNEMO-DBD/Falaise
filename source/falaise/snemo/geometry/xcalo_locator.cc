@@ -21,6 +21,8 @@
 // Ourselves:
 #include <falaise/snemo/geometry/xcalo_locator.h>
 
+#include "private/categories.h"
+
 // Standard library:
 #include <stdexcept>
 
@@ -37,53 +39,6 @@
 
 // This project:
 #include <falaise/snemo/geometry/utils.h>
-
-namespace {
-// NB: These must be matched to the entries appearing in the relevant
-// geometry mapping resource files!
-// At present, no clear direction on who has priority here: code or resources
-const char kModuleGIDCategory[] = "module";
-const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
-const char kXCaloBlockGIDCategory[] = "xcalo_block";
-const char kXCaloWrapperGIDCategory[] = "xcalo_wrapper";
-
-//! Given the geom_info for a calorimeter block, return the underlying box object
-//  Not entirely clear why this is needed: review what's in resource files...
-const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
-  const geomtools::i_shape_3d *caloBlockShape = &blockGI.get_logical().get_shape();
-  if (caloBlockShape->get_shape_name() == "subtraction_3d") {
-    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(*caloBlockShape);
-    // Example : 'calo_scin_box_model' case :
-    const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_s3d.get_shape1();
-    const geomtools::i_shape_3d &sh1 = sht1.get_shape();
-    DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
-                "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
-    return dynamic_cast<const geomtools::box *>(&sh1);
-  }
-
-  if (caloBlockShape->get_shape_name() == "intersection_3d") {
-    // Example : 'calo_tapered_scin_box_model' case :
-    const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*caloBlockShape);
-    const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
-    const geomtools::i_shape_3d &sh1 = sht1.get_shape();
-    DT_THROW_IF(sh1.get_shape_name() != "subtraction_3d", std::logic_error,
-                "Do not support non-subtraction_3d shaped block with ID = " << blockGI.get_geom_id()
-                                                                            << " !");
-    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
-    const geomtools::i_composite_shape_3d::shape_type &sht11 = ref_s3d.get_shape1();
-    const geomtools::i_shape_3d &sh11 = sht11.get_shape();
-    DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
-                "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
-    return dynamic_cast<const geomtools::box *>(&sh11);
-  }
-
-  if (caloBlockShape->get_shape_name() == "box") {
-    return dynamic_cast<const geomtools::box *>(caloBlockShape);
-  }
-
-  return nullptr;
-}
-}  // namespace
 
 namespace snemo {
 
@@ -141,12 +96,12 @@ size_t xcalo_locator::numberOfColumns(uint32_t side, uint32_t wall) const {
               "Invalid wall number (" << wall << ">" << NWALLS_PER_SIDE << ")!");
   if (side == (uint32_t)side_t::BACK) {
     return backCaloBlock_X_[wall].size();
-  } 
-  
+  }
+
   if (side == (uint32_t)side_t::FRONT) {
     return frontCaloBlock_X_[wall].size();
   }
-  
+
   DT_THROW(std::logic_error, "Invalid side number (" << side << ">= " << utils::NSIDES << ")!");
 }
 
@@ -155,8 +110,8 @@ size_t xcalo_locator::numberOfRows(uint32_t side, uint32_t wall) const {
               "Invalid wall number (" << wall << ">" << NWALLS_PER_SIDE << ")!");
   if (side == (uint32_t)side_t::BACK) {
     return backCaloBlock_Z_[wall].size();
-  } 
-  
+  }
+
   if (side == (uint32_t)side_t::FRONT) {
     return frontCaloBlock_Z_[wall].size();
   }
@@ -927,14 +882,14 @@ void xcalo_locator::construct_() {
   geomMapping_ = &get_geo_manager().get_mapping();
   const geomtools::id_mgr &idManager = get_geo_manager().get_id_mgr();
 
-  uint32_t moduleGIDType = idManager.get_category_type(kModuleGIDCategory);
-  uint32_t trackerSubmoduleGIDType = idManager.get_category_type(kTrackerSubmoduleGIDCategory);
-  uint32_t caloBlockWrapperGIDType = idManager.get_category_type(kXCaloWrapperGIDCategory);
+  uint32_t moduleGIDType = idManager.get_category_type(detail::kModuleGIDCategory);
+  uint32_t trackerSubmoduleGIDType = idManager.get_category_type(detail::kTrackerSubmoduleGIDCategory);
+  uint32_t caloBlockWrapperGIDType = idManager.get_category_type(detail::kXCaloWrapperGIDCategory);
 
   // Analyse the layout of the calo block's geometry category :
-  caloBlockGIDType_ = idManager.get_category_type(kXCaloBlockGIDCategory);
+  caloBlockGIDType_ = idManager.get_category_type(detail::kXCaloBlockGIDCategory);
   const geomtools::id_mgr::category_info &block_ci =
-      idManager.get_category_info(kXCaloBlockGIDCategory);
+      idManager.get_category_info(detail::kXCaloBlockGIDCategory);
 
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
@@ -942,7 +897,7 @@ void xcalo_locator::construct_() {
   for (const std::string &subaddress : {"module", "side", "wall", "column", "row"}) {
     DT_THROW_IF(
         !block_ci.has_subaddress(subaddress), std::logic_error,
-        "Category '" << kXCaloBlockGIDCategory << "' has no subaddress '" << subaddress << "'");
+        "Category '" << detail::kXCaloBlockGIDCategory << "' has no subaddress '" << subaddress << "'");
   }
   moduleAddressIndex_ = block_ci.get_subaddress_index("module");
   sideAddressIndex_ = block_ci.get_subaddress_index("side");
@@ -998,7 +953,7 @@ void xcalo_locator::construct_() {
     }
 
     const geomtools::geom_info &block_ginfo = geomMapping_->get_geom_info(block_gid);
-    caloBlockBox_ = getBlockBox(block_ginfo);
+    caloBlockBox_ = detail::getBlockBox(block_ginfo);
     DT_THROW_IF(caloBlockBox_ == nullptr, std::logic_error,
                 "Cannot extract the shape from block with ID = " << block_gid << " !");
   }
