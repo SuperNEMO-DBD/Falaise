@@ -43,6 +43,7 @@ int main(int argc_, char** argv_) {
   } catch (...) {
     cerr << "unexpected error!" << endl;
   }
+  falaise::terminate();
   return error_code;
 }
 
