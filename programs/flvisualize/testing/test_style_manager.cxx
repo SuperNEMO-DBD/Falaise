@@ -8,11 +8,14 @@
 #include <stdexcept>
 #include <string>
 
-#include <falaise/snemo/view/style_manager.h>
+#include <falaise/falaise.h>
+#include <falaise/resource.h>
+#include <EventBrowser/view/style_manager.h>
 
 using namespace std;
 
-int main() {
+int main(int argc_, char** argv_) {
+  falaise::initialize(argc_, argv_);
   int error_code = EXIT_FAILURE;
   try {
     namespace svv = snemo::visualization::view;

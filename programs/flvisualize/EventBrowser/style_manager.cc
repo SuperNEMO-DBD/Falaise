@@ -290,7 +290,7 @@ void style_manager::_read_style_file_(const std::string& style_filename_) {
                    "Nor setup label neither filename given");
       return;
     }
-    _filename_ = falaise::get_resource_dir() + "/EventBrowser/styles/" + _setup_label_ +
+    _filename_ = falaise::get_data_root_dir() + "/flvisualize/styles/" + _setup_label_ +
                  "_default.sty";
     // Replace double semi colon with underscore
     const size_t start_semi_colon = _filename_.find("::");

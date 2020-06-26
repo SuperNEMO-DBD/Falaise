@@ -70,7 +70,7 @@ constexpr char kResourceOverrideVarName[] = "FALAISE_RESOURCE_DIR";
 //! \throw ResourceInitializationException when library cannot self locate
 void init_resources();
 
-//! Return URL, i.e. a path, to the  base directory where resource files are installed
+//! Return URL, i.e. a path, to the base directory where resource files are installed
 //! It may be overiden at runtime by the FALAISE_RESOURCE_DIR environment variable
 std::string get_resource_dir();
 
@@ -80,11 +80,14 @@ std::string get_resource(const std::string& rname);
 //! Return true if the resource directory is overidden from the environment
 bool resources_overidden();
 
-//! Return URL, i.e. a path, to the  base directory where plugin DLL files are installed
+//! Return URL, i.e. a path, to the base directory where plugin DLL files are installed
 std::string get_plugin_dir();
 
 //! Return URL, i.e. a path, to named resource
 std::string get_plugin(const std::string& rname);
+
+//! Return URL, i.e. a path, to the root data directory for Falaise
+std::string get_data_root_dir();
 
 }  // namespace falaise
 

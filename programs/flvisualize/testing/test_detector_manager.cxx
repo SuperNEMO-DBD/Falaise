@@ -10,7 +10,7 @@
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
-#include <falaise/snemo/detector/detector_manager.h>
+#include <EventBrowser/detector/detector_manager.h>
 
 int main(int argc_, char** argv_) {
   using namespace snemo::visualization::detector;

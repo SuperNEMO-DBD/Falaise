@@ -33,7 +33,7 @@ endif()
 add_subdirectory(EventBrowser)
 add_subdirectory(programs)
 
-if(Falaise_ENABLE_TESTING)
+if(FALAISE_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(testing)
 endif()
@@ -49,7 +49,7 @@ set(FLVISUALIZE_STYLE_FILES
   styles/snemo_tracker_commissioning_default.sty
 )
 foreach(_stylefile ${FLVISUALIZE_STYLE_FILES})
-  configure_file(${_stylefile} "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/EventBrowser/${_stylefile}" COPYONLY)
+  configure_file(${_stylefile} "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_TAG}/flvisualize/${_stylefile}" COPYONLY)
 endforeach()
 
 # - end of top level CMakeLists.txt for EventBrowser project.
