@@ -113,3 +113,14 @@ add_test(NAME flreconstruct-fix-issue8-validation
   )
 set_falaise_test_environment(flreconstruct-fix-issue8-validation)
 
+# - Validation of Issue #201 fix
+# 1. Need a module to test contents of PTD bank
+add_library(TestIssue201 SHARED issue201/TestIssue201.cc)
+target_link_libraries(TestIssue201 Falaise)
+set_target_properties(TestIssue201 PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_PLUGINDIR}")
+# 2. Run test as script to generate deterministic sim/reco file
+add_test(NAME flreconstruct-fix-issue-201
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+set_falaise_test_environment(flreconstruct-fix-issue-201)
