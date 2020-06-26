@@ -71,20 +71,21 @@ endif()
 # Configure testing if required
 #
 option(FALAISE_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
-if(FALAISE_ENABLE_TESTING)
-  enable_testing()
 
-  # Common testing environment
-  set(_falaise_TEST_ENVIRONMENT
+# Common testing environment
+set(_falaise_TEST_ENVIRONMENT
   "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
   "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
   )
 
-  macro(set_falaise_test_environment _tname)
-    set_property(TEST ${_tname}
-      APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
-    )
-  endmacro()
+macro(set_falaise_test_environment _tname)
+  set_property(TEST ${_tname}
+    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+  )
+endmacro()
+
+if(FALAISE_ENABLE_TESTING)
+  enable_testing()
 endif()
 
 #-----------------------------------------------------------------------

@@ -197,6 +197,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       }
       if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
         DT_LOG_FATAL(flRecParameters.logLevel, "Failed to read data record from input source");
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
 
@@ -212,12 +213,15 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       // This is a very conservative approach, but it is compatible with the default behaviour of
       // the bxdpp_processing executable.
       if (pStatus == dpp::base_module::PROCESS_FATAL) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
       if (pStatus == dpp::base_module::PROCESS_ERROR) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
       if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
 
@@ -234,6 +238,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
         pStatus = recOutputHandle->process(workItem);
         if (pStatus != dpp::base_module::PROCESS_OK) {
           DT_LOG_FATAL(flRecParameters.logLevel, "Failed to write data record to output sink");
+          code = falaise::EXIT_UNAVAILABLE;
           break;
         }
       }
