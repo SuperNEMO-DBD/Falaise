@@ -21,12 +21,12 @@ TEST_CASE("Out of bounds construction", "") {
   using address = falaise::bounded_int<0, 119>;
 
   // Must be able to construct at bounds
-  REQUIRE_NOTHROW(address good{0});
-  REQUIRE_NOTHROW(address good{119});
+  REQUIRE_NOTHROW(address{0});
+  REQUIRE_NOTHROW(address{119});
 
   // Out of bounds must throw
-  REQUIRE_THROWS_AS(address bad{-1}, std::out_of_range);
-  REQUIRE_THROWS_AS(address bad{120}, std::out_of_range);
+  REQUIRE_THROWS_AS(address{-1}, std::out_of_range);
+  REQUIRE_THROWS_AS(address{120}, std::out_of_range);
 }
 
 TEST_CASE("Assignment operators work", "") {

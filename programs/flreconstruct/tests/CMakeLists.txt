@@ -1,14 +1,5 @@
 #.rst: Build and Run flreconstruct tests
 #
-set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
-  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
-  )
-macro(set_falaise_test_environment _tname)
-  set_property(TEST ${_tname}
-    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
-    )
-endmacro()
 
 # Test of FHiCL style properties
 add_executable(testFhiclProperties testFhiclProperties.cc)
@@ -20,7 +11,7 @@ set_target_properties(testFhiclProperties
 target_link_libraries(testFhiclProperties FLCatch Bayeux::Bayeux Boost::boost)
 target_clang_format(testFhiclProperties)
 add_test(NAME falaise-testFhiclProperties COMMAND testFhiclProperties)
-
+set_falaise_test_environment(falaise-testFhiclProperties)
 
 # Tests of flreconstruct require an input file, so create a "test fixture"
 # file using flsimulate
