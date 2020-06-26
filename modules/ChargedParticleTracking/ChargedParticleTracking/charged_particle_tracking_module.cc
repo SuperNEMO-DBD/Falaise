@@ -131,7 +131,7 @@ dpp::base_module::process_status charged_particle_tracking_module::process(
   const auto& the_tracker_trajectory_data = event.get<snedm::tracker_trajectory_data>(TTDTag_);
 
   // Create or reset output bank
-  auto the_particle_track_data =
+  auto& the_particle_track_data =
       ::snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, event);
   the_particle_track_data.clear();
 
