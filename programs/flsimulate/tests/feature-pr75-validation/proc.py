@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 
+import sys
 
-f = open("_work.d/run-feature-pr75-validation/calo_de.data")
+fldata = "_work.d/run-feature-pr75-validation/calo_de.data"
+if len(sys.argv) > 0 :
+    fldata = sys.argv[1]
+
+f = open(fldata, "r")
 lines = f.readlines()
 
 n=0
