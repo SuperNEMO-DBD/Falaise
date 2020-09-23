@@ -69,6 +69,11 @@ Falaise are described in the main [README](README.md)
 - [Catch](https://github.com/philsquared/Catch) for C++ unit testing
 - [Doxygen](http://www.doxygen.org) plus [Markdown](https://www.stack.nl/~dimitri/doxygen/manual/markdown.html) for API and Reference Documentation
 
+## Core Dependencies of Falaise
+Falaise uses several external packages to provide physics and data structure functionality.
+To build and test Falaise, you will require an install of these on the machine you intend
+to develop on. There are several ways to do this, and these are fully documented in the main
+[README.md](README.md) document.
 
 # Falaise Git Workflow
 ## Basic Git Configuration
