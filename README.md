@@ -28,9 +28,10 @@ We recommend installing Falaise and its requirements as documented on our
 [fork of Homebrew](https://github.com/SuperNEMO-DBD/brew). By default this will
 install the latest stable release of Falaise. All releases with details of the changes
 introduced are listed on the [GitHub Releases page](https://github.com/SuperNEMO-DBD/Falaise/releases).
-For production and general work, you should only use a **stable release** (i.e. a git tag). These are _not_
-guaranteed to be bug free, but have passed all known/implemented tests at the time of their
-release (i.e. no known bugs at that time), with physics related features validated to the same level. If you wish to develop
+For production and general work, you should only use a **stable release** (i.e. a git tag using a version
+number such as `v4.0.3`). These are _not_ guaranteed to be bug free, but have passed all
+known/implemented tests at the time of their release (i.e. no known bugs at that time), with physics
+related features validated to the same level. If you wish to develop
 Falaise, e.g. find and fix a bug, or add new functionality, then you should start this work
 from the `develop` branch and build Falaise from source as detailed later in this document.
 The `develop` branch is used to integrate fixes and new functionality, and whilst it is tested
