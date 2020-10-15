@@ -92,7 +92,7 @@ void alpha_finder_driver::_find_delayed_unfitted_cluster_(
   const snedm::TrackerClusterHdlCollection &the_unfitted_clusters =
       a_solution.get_unfitted_clusters();
   // Loop on all the unfitted cluster
-  for (const datatools::handle<snedm::tracker_cluster> a_delayed_cluster : the_unfitted_clusters) {
+  for (const datatools::handle<snedm::tracker_cluster>& a_delayed_cluster : the_unfitted_clusters) {
     // The unfitted cluster has to be delayed
     if (!a_delayed_cluster->is_delayed()) {
       return;
