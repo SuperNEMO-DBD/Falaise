@@ -235,21 +235,6 @@ inline bool compare_string(const std::string& s, const std::string& s2) {
   return caso;
 }
 
-//! return a const char* from a string
-/**
- *\ingroup util
- */
-inline const char* skin(std::string str) {
-  std::ostringstream s;
-
-  std::string::const_iterator p = str.begin() + 1;
-  while (p < str.end() - 1) {
-    s << *p;
-    p++;
-  }
-
-  return s.str().c_str();
-}
 
 /// square
 /**
