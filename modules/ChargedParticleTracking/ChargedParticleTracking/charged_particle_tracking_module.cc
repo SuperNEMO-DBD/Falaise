@@ -160,7 +160,7 @@ void charged_particle_tracking_module::_process(
       tracker_trajectory_data_.get_default_solution();
   const snedm::TrackerTrajectoryHdlCollection& trajectories = a_solution.get_trajectories();
 
-  for (const datatools::handle<snedm::tracker_trajectory> a_trajectory : trajectories) {
+  for (const datatools::handle<snedm::tracker_trajectory>& a_trajectory : trajectories) {
     // Look into properties to find the default
     // trajectory. Here, default means the one with the best
     // chi2. This flag is set by the 'fitting' module.

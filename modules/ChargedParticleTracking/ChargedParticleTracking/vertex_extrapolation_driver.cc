@@ -423,7 +423,7 @@ void vertex_extrapolation_driver::_check_vertices_(
 
   const snedm::tracker_cluster &a_cluster = trajectory_.get_cluster();
   const snedm::TrackerHitHdlCollection &the_hits = a_cluster.hits();
-  for (const datatools::handle<snedm::calibrated_tracker_hit> a_hit : the_hits) {
+  for (const datatools::handle<snedm::calibrated_tracker_hit>& a_hit : the_hits) {
     const geomtools::geom_id &a_gid = a_hit->get_geom_id();
 
     // Extract layer
