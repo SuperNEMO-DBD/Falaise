@@ -51,19 +51,7 @@ struct FLReconstructParams {
   std::string inputMetadataFile;   //!< Input metadata file
   std::string inputFile;           //!< Input data file for the input module
   std::string outputMetadataFile;  //!< Output metadata file
-  bool embeddedMetadata;           //!< Flag to embed metadata in the output data file
   std::string outputFile;          //!< Output data file for the output module
-
-  // // Description of the data to be processed by the FLReconstruct script:
-  // std::string dataType;              //!< The type of data ("Real", "MC")
-  // std::string dataSubtype;           //!< Additional data subtype/flavour ("Blinded",
-  // "Calibration", "Commissioning")
-  // // For strict checking of the input/output data models:
-  // std::vector<std::string>  requiredInputBanks;  //!< Required input data banks ("SD", "UDD"...)
-  // std::vector<std::string>  expectedOutputBanks; //!< Expected output data banks ("SSD", "SDD",
-  // "EH", "UDD", "CD", "TCD", "TTD", "PTD", "PID"...)
-
-  // Working data:
 
   // Plugin dedicated service:
   datatools::multi_properties userLibConfig;  //!< Main configuration file for plugins loader
@@ -84,9 +72,6 @@ struct FLReconstructParams {
 
   // Print:
   void print(std::ostream &) const;
-
-  // Return the default file for output metadata
-  static const std::string &default_file_for_output_metadata();
 };
 
 }  // namespace FLReconstruct
