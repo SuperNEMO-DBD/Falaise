@@ -104,7 +104,7 @@ std::string hello_world_svc::say_hello(const std::string& to_who) const {
 }
 
 }  // namespace snemo
-```
+~~~~~
 
 The `DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT` macro must be placed in the global namespace
 with the fully qualified name of your service to complete the registration/integration mechanism.
@@ -124,4 +124,3 @@ Simply add the `.h` and `.cc` files to the `FalaiseLibrary_HEADERS` and `Falaise
 CMake variables in `source/falaise/snemo/snemo.cmake`. If your implementation requires use of
 a new external library, please raise an Issue on GitHub to discuss this first. New dependencies
 require review before they will be approved to be used in Falaise.
-
