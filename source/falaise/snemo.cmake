@@ -58,7 +58,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/geiger_regime.h
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
+  snemo/processing/filter.h
   snemo/processing/module.h
+  snemo/processing/types.h
   snemo/processing/base_gamma_builder.h
   snemo/processing/detail/GeigerTimePartitioner.h
 
@@ -143,6 +145,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_datamodel_event.cxx
   snemo/test/test_snemo_datamodel_timestamp.cxx
   snemo/test/test_snemo_geometry_gveto_locator_2.cxx
+  snemo/test/test_filter.cxx
   snemo/test/test_module.cxx
   snemo/test/test_service.cxx
   snemo/test/test_dead_cells_service.cxx
