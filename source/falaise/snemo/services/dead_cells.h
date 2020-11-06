@@ -1,5 +1,5 @@
 //! \file falaise/snemo/services/dead_cells.h
-//! \brief Dead Cells service in SuperNEMO
+//! \brief Tracker Dead Cells service in SuperNEMO
 //
 // more doxygen to come...
 //
@@ -23,7 +23,8 @@
 #include "falaise/bounded_int.h"
 
 namespace snemo {
-  
+
+  // data member for the possible statuses of a cell  
   enum status {
     good = 0,            // good working cell
     dead = 1,            // dead cells with dead anode
@@ -32,6 +33,7 @@ namespace snemo {
     other = 4            // other
   };
 
+  // data member defining a cell structure
   class cell_id {
   public:
     using side_id = falaise::bounded_int<0,1>;
@@ -39,6 +41,7 @@ namespace snemo {
     using column_id = falaise::bounded_int<0,112>;
     using status_id = falaise::bounded_int<0,4>;
 
+    // constructors
     cell_id(side_id s, layer_id l, column_id c){  // use this to search for the status of a cell
       SetCell(s,l,c);
     }
@@ -47,6 +50,7 @@ namespace snemo {
       SetCell(s,l,c,st);
     }
     
+    // functions
     void SetCell(side_id s, layer_id l, column_id c){  // use this to search for the status of a cell
       side_ = s;
       layer_ = l;
@@ -60,7 +64,7 @@ namespace snemo {
       status_ = st;
     }
 
-    // accessors:
+    // accessors
     int GetSide(){
       return side_;
     }
@@ -77,7 +81,6 @@ namespace snemo {
       return status_;
     }
 
-
   private:
     side_id side_;
     layer_id layer_;
@@ -87,15 +90,19 @@ namespace snemo {
   
   class dead_cells_svc : public datatools::base_service {
   public:
+
+    // Vector with list of Bad cells to be filled by the function LoadCells()
+    std::vector<cell_id> cells;    
     
     // Inherited pure virtual member functions that must be overridden
     int initialize(const datatools::properties&, datatools::service_dict_type&) override;
     int reset() override;
     bool is_initialized() const override;
     
-    // Actual implementation of the Dead Cells service interface
-    // have left (side,layer,column) parameters option just for convenience)
+    // Actual implementation of the Dead Cells service interfaces
+    // have left the (side,layer,column) parameters option just for convenience
     int LoadCells(std::string deadcells_filename);
+
     int CellStatus(cell_id cell, int run_number);
     int CellStatus(int side, int layer, int column, int run_number);
     bool isABadCell(cell_id cell, int run_number);

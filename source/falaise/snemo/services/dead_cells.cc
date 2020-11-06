@@ -8,11 +8,9 @@ DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(snemo::dead_cells_svc, "snemo::dead_cel
 
 namespace snemo {
 
-  std::vector<cell_id> cells;  // vector with list of Bad cells to be filled
-
   int dead_cells_svc::initialize(const datatools::properties&, datatools::service_dict_type&) {
     // Where you configure the service if it needs/allows it
-    // Establish the connection to the CDB
+    // Establish the connection to the CDB?
     return 0;
   }
   
@@ -29,8 +27,9 @@ namespace snemo {
   }
 
   int dead_cells_svc::LoadCells(std::string deadcells_filename) {
-    // Creates a vector of _ONLY_ Bad cells (e.g reading from a DB or from a file like now)
-    // cells not included in the vector are considered to be Good
+    // Creates a vector of _ONLY_ Bad cells (e.g reading from a DB or from a file like now);
+    // cells not included in the vector are considered to be Good;
+    // the vector here created can be independently accessed
     try {
       std::ifstream infile(deadcells_filename);
       int side, layer, column, status;
@@ -40,10 +39,10 @@ namespace snemo {
 	cells.push_back(c);
 
       }
-      std::cout << "Read " << cells.size() << " dead cells" << std::endl;
+      std::cout << "Read " << cells.size() << " bad cells" << std::endl;
     }
     catch (std::logic_error& e) {
-      std::cerr << "Problem in the list of dead cells " << e.what() << std::endl;
+      std::cerr << "Problem in the file with the list of bad cells " << e.what() << std::endl;
     };
 
     return 0;
@@ -51,11 +50,11 @@ namespace snemo {
 
   int dead_cells_svc::CellStatus(cell_id cell, int run_number) {
     
-    if ( run_number != 0 ) // leave this like this to be used, since will be a DB IOC thing
+    if ( run_number != 0 ) // left like this to be used, since will be a DB IOV thing
       // search for the specific cell in the vector
       for(cell_id c : cells) {
 	if ( (c.GetSide()==cell.GetSide()) && (c.GetLayer()==cell.GetLayer()) && (c.GetColumn()==cell.GetColumn()) )
-	  return c.GetStatus(); // Bad cell
+	  return c.GetStatus(); // Bad cell, present in the vector
       }
         
     return status::good; // Good cell, because not present in the vector
@@ -82,9 +81,7 @@ namespace snemo {
   }
 
   bool dead_cells_svc::isAGoodCell(cell_id cell, int run_number) {
-
     return !isABadCell(cell, run_number);
-
   }
   
   bool dead_cells_svc::isAGoodCell(int side, int layer, int column, int run_number) {
