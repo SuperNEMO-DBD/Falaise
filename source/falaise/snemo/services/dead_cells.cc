@@ -33,11 +33,14 @@ namespace snemo {
 
     try {
       std::ifstream infile(deadcells_filename);
+      if(infile.fail())
+	throw std::string("Bad cells file does not exist");
+
       int side, layer, column, status;
       // I assume here that the `status` is saved as `int`, therefore the switch
       
       while (infile >> side >> layer >> column >> status){
-	cell_status cs = cell_status::good;
+	cell_status cs = cell_status::good;  // if is not in the file is good
 	switch(status) {
 	case 1: cs = cell_status::dead; break;
 	case 2: cs = cell_status::cathode_ground_top; break;
@@ -45,6 +48,10 @@ namespace snemo {
 	case 4: cs = cell_status::cathode_ground_both; break;
 	case 5: cs = cell_status::cathode_cathode; break;
 	case 6: cs = cell_status::other; break;
+	default:  std::cout << "Wrong status value present in the file for cell (" \
+			    << side << "," << layer << "," << column << "): " << status \
+			    << ". Stopping reading here." << std::endl;  // any other value is wrong, better stop here and check the file
+	  return 1;
 	}  
 
 	cell_id c(side, layer, column, cs);

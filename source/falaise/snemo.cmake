@@ -145,6 +145,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_geometry_gveto_locator_2.cxx
   snemo/test/test_module.cxx
   snemo/test/test_service.cxx
+  snemo/test/test_dead_cells_service.cxx
   snemo/test/test_event_record.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
