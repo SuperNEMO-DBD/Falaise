@@ -18,8 +18,19 @@ TEST_CASE("Construction from good services works", "") {
   SECTION("dead cells service works") {
     snemo::service_handle<snemo::dead_cells_svc> x{dummyServices};
     REQUIRE_NOTHROW(x->is_initialized());
-    REQUIRE_NOTHROW(x->LoadCells("../../share/Falaise-4.0.3/resources/snemo/demonstrator/test_dead_cells.txt"));
-    REQUIRE(x->LoadCells("../../share/Falaise-4.0.3/resources/snemo/demonstrator/test_dead_cells.txt") == 0);
+
+    std::string test_file;
+    test_file += std::getenv("FALAISE_TESTING_DIR");
+    test_file += "/samples/test_dead_cells.txt";
+    std::ifstream infile(test_file);
+    if(infile.fail() == true) {
+      std::cout << std::string("Test file not present") << std::endl;
+    }
+    REQUIRE(infile.good());
+    std::cout << "Using test file: " << test_file << std::endl;
+
+    REQUIRE_NOTHROW(x->LoadCells(test_file));
+    REQUIRE(x->LoadCells(test_file) == 0);
     REQUIRE(x->CellStatus(1,1,1,100) == snemo::cell_status::good);
     REQUIRE(x->CellStatus(0,2,4,100) == snemo::cell_status::dead);
     REQUIRE(x->CellStatus(0,3,5,100) == snemo::cell_status::cathode_ground_top);
