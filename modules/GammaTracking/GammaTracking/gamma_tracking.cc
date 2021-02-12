@@ -49,6 +49,35 @@ gamma_tracking::gamma_tracking(const gamma_tracking &gt_) {
   }
 }
 
+gamma_tracking &gamma_tracking::operator=(const gamma_tracking &gt_) {
+  this->reset();
+  _initialized_ = gt_._initialized_;
+  _logging_priority_ = gt_._logging_priority_;
+  _absolute_ = gt_._absolute_;
+  _extern_ = gt_._extern_;
+  _max_ = gt_._max_;
+  _min_prob_ = gt_._min_prob_;
+  _starts_ = gt_._starts_;
+  _serie_ = gt_._serie_;
+  _min_chi2_ = gt_._min_chi2_;
+
+  for (auto mit = gt_._chi2_.begin(); mit != gt_._chi2_.end(); ++mit) {
+    auto it = std::find(_serie_.begin(), _serie_.end(), *(mit->first));
+    if (it != _serie_.end()) {
+      _chi2_[&(*it)] = mit->second;
+    }
+  }
+
+  for (auto mit = gt_._proba_.begin(); mit != gt_._proba_.end(); ++mit) {
+    auto it = std::find(_serie_.begin(), _serie_.end(), *(mit->first));
+    if (it != _serie_.end()) {
+      _proba_[&(*it)] = mit->second;
+    }
+  }
+
+  return *this;
+}
+
 gamma_tracking::~gamma_tracking() {
   if (is_initialized()) {
     reset();
@@ -150,7 +179,7 @@ void gamma_tracking::add_chi2(int number1_, int number2_, double chi2_) {
 
 void gamma_tracking::add_start(int number_) {
   bool its_inside = false;
-  for (auto& rit : _serie_) {
+  for (auto &rit : _serie_) {
     its_inside = is_inside(rit, number_);
   }
 

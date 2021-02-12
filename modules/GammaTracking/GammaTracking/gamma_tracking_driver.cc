@@ -73,7 +73,7 @@ int gamma_tracking_driver::_prepare_process(
   for (const auto& a_calo_hit : calo_hits_) {
     // TODO: Why this awkward way?
     // Instead: Create the new hit, then as last step emplace it.
-    the_gamma_calos.insert(std::make_pair(a_calo_hit->get_hit_id(), gt::event::calorimeter_hit{}));
+    the_gamma_calos.insert(std::make_pair(a_calo_hit->get_hit_id(), gt::event::calorimeter_hit()));
     gt::event::calorimeter_hit& new_calo_hit = the_gamma_calos[a_calo_hit->get_hit_id()];
 
     const geomtools::geom_id& a_gid = a_calo_hit->get_geom_id();

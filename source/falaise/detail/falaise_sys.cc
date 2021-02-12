@@ -138,7 +138,7 @@ void falaise_sys::_libinfo_registration_() {
   // the official registered resource path above through the 'datatools::fetch_path_with_env'
   // function:
   falaise_lib_infos.store_string(datatools::library_info::keys::env_resource_dir(),
-                                 "FALAISE_RESOURCE_DIR");
+                                 kResourceOverrideVarName);
 
   // Register the Falaise plugin path in the datatools' kernel:
   falaise_lib_infos.store_string(datatools::library_info::keys::install_plugin_lib_dir(),

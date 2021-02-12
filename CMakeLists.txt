@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "4.0.2")
+project(Falaise VERSION "4.0.3")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -71,6 +71,19 @@ endif()
 # Configure testing if required
 #
 option(FALAISE_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
+
+# Common testing environment
+set(_falaise_TEST_ENVIRONMENT
+  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
+  )
+
+macro(set_falaise_test_environment _tname)
+  set_property(TEST ${_tname}
+    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+  )
+endmacro()
+
 if(FALAISE_ENABLE_TESTING)
   enable_testing()
 endif()
@@ -102,12 +115,27 @@ if(FALAISE_WITH_DOCS)
 endif()
 
 #-----------------------------------------------------------------------
-# Copy/Install resources
+# Install resources
 #
-file(COPY resources/ DESTINATION "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}")
+# Build tree
+# This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR
+# to be set.
+add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+  COMMENT "Symlinking Falaise resources into build directory"
+  )
+add_custom_target(PublishResources ALL DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR})
+
+# Install tree
 install(DIRECTORY resources/
   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
   )
+install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
+  # Exclude resources symlink
+  PATTERN "${PROJECT_RESOURCE_DIR}" EXCLUDE
+  )
+
 
 #-----------------------------------------------------------------------
 # - CMake Support files
@@ -158,11 +186,5 @@ install(
 # Also programs whilst migrating FLVisualize
 add_subdirectory(programs)
 add_subdirectory(modules)
-
-#-----------------------------------------------------------------------
-# - Install published resources and documentation
-install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
-  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
-  )
 
 # - end

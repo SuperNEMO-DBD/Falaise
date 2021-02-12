@@ -46,18 +46,6 @@
 //! Patch version number of falaise
 #define FALAISE_VERSION_PATCH @Falaise_VERSION_PATCH@
 
-//! Current revision/build number of falaise, 0 for a release
-//! \deprecated Since 3.1
-//! \see FALAISE_VERSION_COMMIT
-#define FALAISE_VERSION_REVISION -1
-
-//! First 8 characters of the current Git HEAD hash, empty outside a working
-//  copy.
-#define FALAISE_VERSION_COMMIT "@Falaise_GIT_HASH_SHORT@"
-
-//! Defined if this build has uncommited changes
-#cmakedefine01 FALAISE_VERSION_IS_DIRTY
-
 //! Encode falaise to ordered integer available at compile time
 #define FALAISE_ENCODE_VERSION(major, minor, patch) ( \
         ((major) * 10000) \
@@ -92,11 +80,6 @@ static int get_minor();
 
 //! Return the patch version number of falaise, e.g., 3 for '1.2.3'
 static int get_patch();
-
-//! Return the current revision number
-//! \deprecated since 3.1
-//! \see get_commit()
-static int get_revision() __attribute__((deprecated));
 
 //! Return the first eight characters of the current Git HEAD hash
 static std::string get_commit();

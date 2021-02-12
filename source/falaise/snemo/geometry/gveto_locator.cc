@@ -23,6 +23,8 @@
 // Ourselves:
 #include <falaise/snemo/geometry/gveto_locator.h>
 
+#include "private/categories.h"
+
 // Standard library:
 #include <stdexcept>
 
@@ -36,55 +38,6 @@
 #include <geomtools/intersection_3d.h>
 #include <geomtools/manager.h>
 #include <geomtools/subtraction_3d.h>
-
-namespace {
-// NB: These must be matched to the entries appearing in the relevant
-// geometry mapping resource files!
-// At present, no clear direction on who has priority here: code or resources
-const char kModuleGIDCategory[] = "module";
-const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
-const char kGammaVetoBlockGIDCategory[] = "gveto_block";
-const char kGammaVetoWrapperGIDCategory[] = "gveto_wrapper";
-
-//! Given the geom_info for a calorimeter block, return the underlying box object
-//  Not entirely clear why this is needed: review what's in resource files...
-const geomtools::box *getBlockBox(const geomtools::geom_info &blockGI) {
-  const geomtools::i_shape_3d *caloBlockShape = &blockGI.get_logical().get_shape();
-  if (caloBlockShape->get_shape_name() == "subtraction_3d") {
-    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(*caloBlockShape);
-    // Example : 'calo_scin_box_model' case :
-    const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_s3d.get_shape1();
-    const geomtools::i_shape_3d &sh1 = sht1.get_shape();
-    DT_THROW_IF(sh1.get_shape_name() != "box", std::logic_error,
-                "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
-    return dynamic_cast<const geomtools::box *>(&sh1);
-  }
-
-  if (caloBlockShape->get_shape_name() == "intersection_3d") {
-    // Example : 'calo_tapered_scin_box_model' case :
-    const auto &ref_i3d = dynamic_cast<const geomtools::intersection_3d &>(*caloBlockShape);
-    const geomtools::i_composite_shape_3d::shape_type &sht1 = ref_i3d.get_shape1();
-    const geomtools::i_shape_3d &sh1 = sht1.get_shape();
-    DT_THROW_IF(sh1.get_shape_name() != "subtraction_3d", std::logic_error,
-                "Do not support non-subtraction_3d shaped block with ID = " << blockGI.get_geom_id()
-                                                                            << " !");
-    const auto &ref_s3d = dynamic_cast<const geomtools::subtraction_3d &>(sh1);
-    const geomtools::i_composite_shape_3d::shape_type &sht11 = ref_s3d.get_shape1();
-    const geomtools::i_shape_3d &sh11 = sht11.get_shape();
-    DT_THROW_IF(sh11.get_shape_name() != "box", std::logic_error,
-                "Do not support non-box shaped block with ID = " << blockGI.get_geom_id() << " !");
-    return dynamic_cast<const geomtools::box *>(&sh11);
-  }
-
-  if (caloBlockShape->get_shape_name() == "box") {
-    // Simple box case :
-    return dynamic_cast<const geomtools::box *>(caloBlockShape);
-  }
-
-  return nullptr;
-}
-
-}  // namespace
 
 namespace snemo {
 
@@ -454,13 +407,13 @@ double gveto_locator::getXCoordOfColumn(uint32_t side, uint32_t wall, uint32_t c
 
   if (side == (uint32_t)side_t::BACK) {
     DT_THROW_IF(
-        column >= backCaloBlock_X_[wall].size(), std::out_of_range,
-        "Invalid column number(" << column << ">" << backCaloBlock_X_[wall].size() - 1 << ")!");
+        column >= backCaloBlock_Y_[wall].size(), std::out_of_range,
+        "Invalid column number(" << column << ">" << backCaloBlock_Y_[wall].size() - 1 << ")!");
     return backCaloBlock_X_[wall][column];
   }
   DT_THROW_IF(
-      column >= frontCaloBlock_X_[wall].size(), std::out_of_range,
-      "Invalid column number(" << column << ">" << frontCaloBlock_X_[wall].size() - 1 << ")!");
+      column >= frontCaloBlock_Y_[wall].size(), std::out_of_range,
+      "Invalid column number(" << column << ">" << frontCaloBlock_Y_[wall].size() - 1 << ")!");
   return frontCaloBlock_X_[wall][column];
 }
 
@@ -831,22 +784,23 @@ void gveto_locator::construct_() {
   geomMapping_ = &get_geo_manager().get_mapping();
   const geomtools::id_mgr &idManager = get_geo_manager().get_id_mgr();
 
-  const uint32_t moduleGIDType = idManager.get_category_type(kModuleGIDCategory);
+  const uint32_t moduleGIDType = idManager.get_category_type(detail::kModuleGIDCategory);
   const uint32_t trackerSubmoduleGIDType =
-      idManager.get_category_type(kTrackerSubmoduleGIDCategory);
-  const uint32_t gvetoWrapperGIDType = idManager.get_category_type(kGammaVetoWrapperGIDCategory);
+      idManager.get_category_type(detail::kTrackerSubmoduleGIDCategory);
+  const uint32_t gvetoWrapperGIDType =
+      idManager.get_category_type(detail::kGammaVetoWrapperGIDCategory);
 
-  caloBlockGIDType_ = idManager.get_category_type(kGammaVetoBlockGIDCategory);
+  caloBlockGIDType_ = idManager.get_category_type(detail::kGammaVetoBlockGIDCategory);
   const geomtools::id_mgr::category_info &block_ci =
-      idManager.get_category_info(kGammaVetoBlockGIDCategory);
+      idManager.get_category_info(detail::kGammaVetoBlockGIDCategory);
 
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
   for (const std::string &subaddress : {"module", "side", "wall", "column"}) {
-    DT_THROW_IF(
-        !block_ci.has_subaddress(subaddress), std::logic_error,
-        "Category '" << kGammaVetoBlockGIDCategory << "' has no subaddress '" << subaddress << "'");
+    DT_THROW_IF(!block_ci.has_subaddress(subaddress), std::logic_error,
+                "Category '" << detail::kGammaVetoBlockGIDCategory << "' has no subaddress '"
+                             << subaddress << "'");
   }
 
   moduleAddressIndex_ = block_ci.get_subaddress_index("module");
@@ -902,7 +856,7 @@ void gveto_locator::construct_() {
     }
 
     const geomtools::geom_info &blockBoxGeomInfo = geomMapping_->get_geom_info(caloBlockBoxGID);
-    caloBlockBox_ = getBlockBox(blockBoxGeomInfo);
+    caloBlockBox_ = detail::getBlockBox(blockBoxGeomInfo);
     DT_THROW_IF(caloBlockBox_ == nullptr, std::logic_error,
                 "Cannot extract the shape from block with ID = " << caloBlockBoxGID << " !");
   }

@@ -1,4 +1,4 @@
-//! \file falaise/common/user_profile.h - User profile
+//! \file falaise/user_level.h - User profile
 //
 // Copyright (c) 2017 by François Mauger <mauger@lpccaen.in2p3.fr>
 // Copyright (c) 2017 by Université de Caen Normandie

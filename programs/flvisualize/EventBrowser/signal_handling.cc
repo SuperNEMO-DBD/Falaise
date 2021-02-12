@@ -281,7 +281,7 @@ void signal_handling::_process_menu_(const button_signals_type signal_) {
       }
     } break;
     case LOAD_STYLE: {
-      const std::string dir = falaise::get_resource_dir() + "/EventBrowser/styles";
+      const std::string dir = falaise::get_data_root_dir() + "/flvisualize/styles";
       TString directory(dir.c_str());
       TGFileInfo file_info;
       const char* style_file_types[] = {"Style files", "*.sty", "All files", "*", nullptr, nullptr};

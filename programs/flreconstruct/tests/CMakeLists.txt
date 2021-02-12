@@ -1,14 +1,5 @@
 #.rst: Build and Run flreconstruct tests
 #
-set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
-  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
-  )
-macro(set_falaise_test_environment _tname)
-  set_property(TEST ${_tname}
-    APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
-    )
-endmacro()
 
 # Test of FHiCL style properties
 add_executable(testFhiclProperties testFhiclProperties.cc)
@@ -20,7 +11,7 @@ set_target_properties(testFhiclProperties
 target_link_libraries(testFhiclProperties FLCatch Bayeux::Bayeux Boost::boost)
 target_clang_format(testFhiclProperties)
 add_test(NAME falaise-testFhiclProperties COMMAND testFhiclProperties)
-
+set_falaise_test_environment(falaise-testFhiclProperties)
 
 # Tests of flreconstruct require an input file, so create a "test fixture"
 # file using flsimulate
@@ -122,3 +113,14 @@ add_test(NAME flreconstruct-fix-issue8-validation
   )
 set_falaise_test_environment(flreconstruct-fix-issue8-validation)
 
+# - Validation of Issue #201 fix
+# 1. Need a module to test contents of PTD bank
+add_library(TestIssue201 SHARED issue201/TestIssue201.cc)
+target_link_libraries(TestIssue201 Falaise)
+set_target_properties(TestIssue201 PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_PLUGINDIR}")
+# 2. Run test as script to generate deterministic sim/reco file
+add_test(NAME flreconstruct-fix-issue-201
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+set_falaise_test_environment(flreconstruct-fix-issue-201)

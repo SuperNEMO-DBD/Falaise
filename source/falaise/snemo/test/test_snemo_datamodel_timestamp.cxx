@@ -29,7 +29,7 @@ TEST_CASE("Timestamps can be copied and compared", "[falaise][datamodel]") {
   REQUIRE(t1 < t2_sec);
   REQUIRE(t2_pico > t1);
 
-  REQUIRE_THROWS(bool res = (t1 == tInvalid));
+  REQUIRE_THROWS(t1 == tInvalid);
 }
 
 TEST_CASE("Timestamps can be read from/written to strings", "[falaise][datamodel]") {

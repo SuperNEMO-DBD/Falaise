@@ -131,7 +131,7 @@ dpp::base_module::process_status charged_particle_tracking_module::process(
   const auto& the_tracker_trajectory_data = event.get<snedm::tracker_trajectory_data>(TTDTag_);
 
   // Create or reset output bank
-  auto the_particle_track_data =
+  auto& the_particle_track_data =
       ::snedm::getOrAddToEvent<snedm::particle_track_data>(PTDTag_, event);
   the_particle_track_data.clear();
 
@@ -160,7 +160,7 @@ void charged_particle_tracking_module::_process(
       tracker_trajectory_data_.get_default_solution();
   const snedm::TrackerTrajectoryHdlCollection& trajectories = a_solution.get_trajectories();
 
-  for (const datatools::handle<snedm::tracker_trajectory> a_trajectory : trajectories) {
+  for (const datatools::handle<snedm::tracker_trajectory>& a_trajectory : trajectories) {
     // Look into properties to find the default
     // trajectory. Here, default means the one with the best
     // chi2. This flag is set by the 'fitting' module.

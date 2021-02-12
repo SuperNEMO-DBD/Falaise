@@ -584,7 +584,7 @@ void display_options::save_style_settings() {
   int typeidx = distance(file_format.begin(), it) * 2;
   bool overwr = false;
 
-  const std::string default_dir = falaise::get_resource_dir() + "/EventBrowser/styles";
+  const std::string default_dir = falaise::get_data_root_dir() + "/flvisualize/styles";
   TGFileInfo file_info;
   file_info.fFileTypes = save_as_types;
   file_info.fIniDir = StrDup(default_dir.c_str());

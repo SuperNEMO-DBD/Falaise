@@ -87,13 +87,19 @@ namespace {
     return errMsg;
   }
 
-  //! Return relative path from application directory to root of resource dir
+  //! Return relative path from library directory to root of resource dir
   std::string relativePathToResourceDir() {
     return "@FALAISE_LIBDIR_TO_RESOURCEDIR@";
   }
-  //! Return relative path from application directory to root of plugin/module DLL dir
+
+  //! Return relative path from library directory to root of plugin/module DLL dir
   std::string relativePathToPluginLibDir() {
     return "@FALAISE_LIBDIR_TO_PLUGINDIR@";
+  }
+
+  //! Return relative path from library directory to root of data dir
+  std::string relativePathToDataRootDir() {
+    return "@FALAISE_LIBDIR_TO_DATAROOTDIR@";
   }
 
   std::string getLibraryDir() {
@@ -123,8 +129,14 @@ namespace falaise {
   }
 
   std::string get_resource_dir() {
-    boost::filesystem::path tmpPath(getLibraryDir());
-    tmpPath /= relativePathToResourceDir();
+    boost::filesystem::path tmpPath;
+    if (const char* envPath = std::getenv(kResourceOverrideVarName)) {
+      tmpPath = envPath;
+    }
+    else {
+      tmpPath = getLibraryDir();
+      tmpPath /= relativePathToResourceDir();
+    }
     boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
     return absPath.string();
   }
@@ -145,6 +157,10 @@ namespace falaise {
                 << expectedResource << "'");
     // TODO: Check readability?
     return expectedResource.string();
+  }
+
+  bool resources_overriden() {
+    return std::getenv(kResourceOverrideVarName) == nullptr;
   }
 
   std::string get_plugin_dir() {
@@ -172,4 +188,11 @@ namespace falaise {
     return expectedResource.string();
   }
 
+  //! Return URL, i.e. a path, to the root data directory for Falaise
+  std::string get_data_root_dir() {
+    boost::filesystem::path tmpPath(getLibraryDir());
+    tmpPath /= relativePathToDataRootDir();
+    boost::filesystem::path absPath = boost::filesystem::canonical(tmpPath);
+    return absPath.string();
+  }
 } // namespace falaise

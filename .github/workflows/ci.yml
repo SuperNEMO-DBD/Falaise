@@ -1,0 +1,26 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-and-test:
+    # Linux builds are Docker based, so our GitHub VM must be ubuntu
+    runs-on: ubuntu-latest
+    # Strategy is over each image
+    strategy:
+      fail-fast: false
+      matrix:
+        builder_image: ["supernemo/falaise-centos7-base:develop", "supernemo/falaise-ubuntu1804-base:develop", "supernemo/falaise-ubuntu2004-base:develop"]
+    steps:
+      # Manually pull/start image/container due to its permission/USER.
+      - name: Pull Falaise Base Image
+        run: docker pull ${{ matrix.builder_image }}
+      - name: Create Docker Container
+        run: docker run -itd --name builder -v $GITHUB_WORKSPACE:$GITHUB_WORKSPACE ${{ matrix.builder_image }}
+      # Now the actual build...
+      - uses: actions/checkout@v2
+      - name: Configure, build, and test
+        run: |
+          docker exec builder $GITHUB_WORKSPACE/.github/workflows/ciscript.sh

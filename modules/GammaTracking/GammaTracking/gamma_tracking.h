@@ -60,6 +60,9 @@ class gamma_tracking {
   /// Copy constructor
   gamma_tracking(const gamma_tracking&);
 
+  /// Copy Assignment
+  gamma_tracking& operator=(const gamma_tracking&);
+
   /// Default destructor
   ~gamma_tracking();
 

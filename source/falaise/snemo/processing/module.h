@@ -2,7 +2,7 @@
 #ifndef FALAISE_SNEMO_PROCESSING_MODULE_H
 #define FALAISE_SNEMO_PROCESSING_MODULE_H
 
-#include <exception>
+#include <stdexcept>
 #include <type_traits>
 
 #include <bayeux/datatools/properties.h>

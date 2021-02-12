@@ -64,19 +64,11 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   flRecParameters.inputMetadataFile = clArgs.inputMetadataFile;
   flRecParameters.inputFile = clArgs.inputFile;
   flRecParameters.outputMetadataFile = clArgs.outputMetadataFile;
-  flRecParameters.embeddedMetadata = clArgs.embeddedMetadata;
   flRecParameters.outputFile = clArgs.outputFile;
 
   if (flRecParameters.userProfile.empty()) {
     // Force a default user profile:
     flRecParameters.userProfile = "normal";
-  }
-
-  if (!flRecParameters.embeddedMetadata) {
-    if (flRecParameters.outputMetadataFile.empty()) {
-      // Force a default metadata log file:
-      flRecParameters.outputMetadataFile = FLReconstructParams::default_file_for_output_metadata();
-    }
   }
 
   // Parse the FLReconstruct pipeline script:
@@ -107,24 +99,6 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
     // Printing rate for events:
     flRecParameters.userProfile =
         basicSystem.get<std::string>("userprofile", flRecParameters.userProfile);
-
-    // // Unused for now:
-    // flRecParameters.dataType
-    //   = falaise::getValueOrDefault<std::string>(basicSystem,
-    //                                                         "dataType",
-    //                                                         flRecParameters.dataType);
-    // flRecParameters.dataSubtype
-    //   = falaise::getValueOrDefault<std::string>(basicSystem,
-    //                                                         "dataSubtype",
-    //                                                         flRecParameters.dataSubtype);
-    // flRecParameters.requiredInputBanks
-    //   = falaise::getValueOrDefault<std::vector<std::string> >(basicSystem,
-    //                                                                       "requiredInputBanks",
-    //                                                                       flRecParameters.requiredInputBanks);
-    // flRecParameters.expectedOutputBanks
-    //   = falaise::getValueOrDefault<std::vector<std::string> >(basicSystem,
-    //                                                                       "expectedOutputBanks",
-    //                                                                       flRecParameters.expectedOutputBanks);
   }
 
   // Fetch variant service configuration:
@@ -175,18 +149,7 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
 
       for (const std::string& plugin_name : pList) {
         auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
-
-        // datatools::properties& pSection =
-        //    flRecParameters.userLibConfig.add_section(plugin_name, std::string{});
-
-        // userFLPlugins.export_and_rename_starting_with(pSection, plugin_name + ".", "");
-
-        // pSection.store_flag("autoload");
         pSection.put("autoload", true);
-
-        // - Default, search plugin DLL in the falaise plugin install directory:
-        // if (!pSection.has_key("directory")) {
-        //  pSection.store_string("directory", "@falaise.plugins:");
         if (!pSection.has_key("directory")) {
           pSection.put("directory", std::string{"@falaise.plugins:"});
         }
@@ -570,9 +533,6 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
                               "The version of the reconstruction application");
 
     system_props.store_string("userProfile", flRecParameters.userProfile, "User profile");
-
-    system_props.store_boolean("embeddedMetadata", flRecParameters.embeddedMetadata,
-                               "Metadata embedding flag");
 
     if (flRecParameters.numberOfEvents > 0) {
       system_props.store_integer("numberOfEvents", flRecParameters.numberOfEvents,

@@ -43,7 +43,6 @@ struct FLReconstructCommandLine {
   std::string inputMetadataFile;         //!< Path for loading metadata
   std::string inputFile;                 //!< Path for the input module
   std::string outputMetadataFile;        //!< Path for saving metadata
-  bool embeddedMetadata;                 //!< Flag to embed metadata in the output data file
   std::string outputFile;                //!< Path for the output module
 
   //! Build a default arguments set:

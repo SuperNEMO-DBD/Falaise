@@ -31,9 +31,8 @@ namespace FLReconstruct {
 
 //! Configure and run the pipeline
 falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
-  DT_LOG_TRACE_ENTERING(flRecParameters.logLevel);
-
-  // Variants support:
+  // Variants support set up first because all other services will
+  // rely on it.
   datatools::configuration::variant_service variantService;
   if (!flRecParameters.variantSubsystemParams.logging.empty()) {
     variantService.set_logging(
@@ -42,12 +41,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
   try {
     if (flRecParameters.variantSubsystemParams.is_active()) {
       variantService.configure(flRecParameters.variantSubsystemParams);
-      // Start and lock the variant service:
-      DT_LOG_DEBUG(flRecParameters.logLevel, "Starting the variants service...");
       variantService.start();
-      DT_LOG_DEBUG(flRecParameters.logLevel, "Variants service is started.");
-      // From this point, all other services and/or processing modules can benefit
-      // of the variant service during their configuration steps.
     }
   } catch (std::exception& e) {
     std::cerr << "flreconstruct : Variant service threw exception" << std::endl;
@@ -62,7 +56,6 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     datatools::library_loader libLoader(flRecParameters.userLibConfig);
 
     // Setup services:
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Starting reconstruction services...");
     uint32_t servicesFlags = datatools::service_manager::BLANK;
     servicesFlags |= datatools::service_manager::ALLOW_DYNAMIC_SERVICES;
     datatools::service_manager recServices("flReconstructionServices",
@@ -77,26 +70,21 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     } else {
       recServices.initialize();
     }
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Reconstruction services are started.");
     if (datatools::logger::is_debug(flRecParameters.logLevel)) {
       recServices.tree_dump(std::cerr, "Reconstruction services: ", "[debug] ");
     }
 
     // Make sure some core services are setup and started (geometry, electronics, database...):
     falaise::exit_code safeServicesCode = ensure_core_services(flRecParameters, recServices);
-    if (safeServicesCode != falaise::EXIT_OK) {
-      DT_THROW(std::logic_error, "Cannot start core services!");
-      ;
-    }
+    DT_THROW_IF(safeServicesCode != falaise::EXIT_OK, std::logic_error,
+                "Cannot start core services!");
 
     // - Start up the module manager
     // Dual strategy here
     //  - If they supplied a script, use that, otherwise default to
     //  a single dump module.
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Configuring the module manager...");
     std::unique_ptr<dpp::module_manager> moduleManager(new dpp::module_manager);
     moduleManager->set_service_manager(recServices);
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Service manager is now plugged in the module manager.");
 
     // Configure the modules themselves
     if (!flRecParameters.modulesConfig.empty()) {
@@ -113,11 +101,9 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     datatools::library_loader altLibLoader;
     // Load a Things2Root module in the manager before initialization
     if (!flRecParameters.outputFile.empty()) {
-      DT_LOG_DEBUG(flRecParameters.logLevel, "Configuring the output module...");
       if (boost::algorithm::ends_with(flRecParameters.outputFile, ".root")) {
         std::string pluginPath = falaise::get_plugin_dir();
         altLibLoader.load("Things2Root", pluginPath);
-        DT_LOG_DEBUG(flRecParameters.logLevel, "using ROOT format for output");
         datatools::properties t2rConfig;
         t2rConfig.store("output_file", flRecParameters.outputFile);
         moduleManager->load_module("t2rRecOutput", "Things2Root", t2rConfig);
@@ -129,18 +115,11 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
 
     // Input module...
     std::unique_ptr<dpp::input_module> recInput(new dpp::input_module);
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Configuring the input module...");
     recInput->set_logging_priority(flRecParameters.logLevel);
     recInput->set_single_input_file(flRecParameters.inputFile);
     recInput->initialize_simple();
 
-    DT_LOG_DEBUG(flRecParameters.logLevel,
-                 "Number of entries  = " << recInput->get_source().get_number_of_entries());
-    DT_LOG_DEBUG(flRecParameters.logLevel,
-                 "Number of metadata = " << recInput->get_source().get_number_of_metadata());
-
     // Output metadata management:
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Building output metadata...");
     datatools::multi_properties flRecMetadata("name", "type",
                                               "Metadata associated to a flreconstruct run");
     do_metadata(flRecParameters, flRecMetadata);
@@ -168,13 +147,8 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       flRecOutput.reset(new dpp::output_module);
       flRecOutput->set_name("FLReconstructOutput");
       flRecOutput->set_single_output_file(flRecParameters.outputFile);
-      // Metadata management:
-      // Fetch the metadata to be stored through the output module
-      if (flRecParameters.embeddedMetadata) {
-        datatools::multi_properties& metadataStore = flRecOutput->grab_metadata_store();
-        // Copy metadata from the input module
-        metadataStore = flRecMetadata;
-      }
+      datatools::multi_properties& metadataStore = flRecOutput->grab_metadata_store();
+      metadataStore = flRecMetadata;
       flRecOutput->initialize_simple();
       recOutputHandle = flRecOutput.get();
     }
@@ -197,27 +171,29 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       }
       if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
         DT_LOG_FATAL(flRecParameters.logLevel, "Failed to read data record from input source");
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
 
-      // Check pre-conditions on event model (requiredInputBanks) ?
-
       // Feed through pipeline
       dpp::base_module::process_status pStatus = pipeline->process(workItem);
-      DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
-                  "Bug!!! Module '" << pipeline->get_name()
-                                    << "' did not return a valid processing status!");
+      DT_THROW_IF(
+          pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
+          "Module '" << pipeline->get_name() << "' did not return a valid processing status!");
 
       // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
       // This is a very conservative approach, but it is compatible with the default behaviour of
       // the bxdpp_processing executable.
       if (pStatus == dpp::base_module::PROCESS_FATAL) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
       if (pStatus == dpp::base_module::PROCESS_ERROR) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
       if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
+        code = falaise::EXIT_UNAVAILABLE;
         break;
       }
 
@@ -234,6 +210,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
         pStatus = recOutputHandle->process(workItem);
         if (pStatus != dpp::base_module::PROCESS_OK) {
           DT_LOG_FATAL(flRecParameters.logLevel, "Failed to write data record to output sink");
+          code = falaise::EXIT_UNAVAILABLE;
           break;
         }
       }
@@ -258,9 +235,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
       moduleManager.reset();
     }
 
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Stopping reconstruction services...");
     recServices.reset();
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Reconstruction services are stopped");
 
   } catch (std::exception& e) {
     std::cerr << "flreconstruct : Setup/run of simulation threw exception" << std::endl;
@@ -270,17 +245,13 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
 
   if (variantService.is_started()) {
     // Terminate the variant service:
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Stopping the variants service...");
     variantService.stop();
-    DT_LOG_DEBUG(flRecParameters.logLevel, "Variants service is stopped.");
   }
-  DT_LOG_TRACE_EXITING(flRecParameters.logLevel);
   return code;  // falaise::EXIT_OK;
 }
 
 falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
                                         datatools::service_manager& recServices) {
-  DT_LOG_TRACE_ENTERING(recParams.logLevel);
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
@@ -317,11 +288,6 @@ falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
     }
   }
 
-  // Electronics:
-
-  // Database:
-
-  DT_LOG_TRACE_EXITING(recParams.logLevel);
   return falaise::EXIT_OK;
 }
 

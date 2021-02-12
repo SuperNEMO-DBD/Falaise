@@ -29,7 +29,7 @@ TEST_CASE("Copying works", "") {
 TEST_CASE("Invalid path errors are reported", "") {
   REQUIRE_THROWS_AS(falaise::path{"$ABADENVVARTHATSHOULDNOTEXIST"}, falaise::invalid_path_error);
   REQUIRE_THROWS_AS(falaise::path{"/path/with spaces"}, falaise::invalid_path_error);
-  REQUIRE_THROWS_AS(falaise::path c = {"/has/an/inval*dchar"}, falaise::invalid_path_error);
+  REQUIRE_THROWS_AS(falaise::path{"/has/an/inval*dchar"}, falaise::invalid_path_error);
 }
 
 TEST_CASE("Implicit conversions work", "") {

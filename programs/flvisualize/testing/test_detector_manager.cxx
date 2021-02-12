@@ -10,7 +10,7 @@
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
-#include <falaise/snemo/detector/detector_manager.h>
+#include <EventBrowser/detector/detector_manager.h>
 
 int main(int argc_, char** argv_) {
   using namespace snemo::visualization::detector;
@@ -24,20 +24,7 @@ int main(int argc_, char** argv_) {
     detector_manager& my_detector_manager = detector_manager::get_instance();
     {
       const string detector_config_file =
-          falaise::get_resource_dir() + "/config/snemo/demonstrator/geometry/3.0/manager.conf";
-      my_detector_manager.initialize(detector_config_file);
-      my_detector_manager.construct();
-      my_detector_manager.dump();
-    }
-
-    // Reset the detector manager and load another one
-    {
-      const std::string detector_config_file =
-          falaise::get_resource_dir() +
-          "/config/snemo/tracker_commissioning/geometry/1.0/manager.conf";
-      if (my_detector_manager.is_initialized()) {
-        my_detector_manager.reset();
-      }
+          falaise::get_resource_dir() + "/snemo/demonstrator/geometry/GeometryManager.conf";
       my_detector_manager.initialize(detector_config_file);
       my_detector_manager.construct();
       my_detector_manager.dump();
