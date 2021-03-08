@@ -60,6 +60,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_fitter.h
   snemo/processing/filter.h
   snemo/processing/module.h
+  snemo/processing/black_hole_module.h
   snemo/processing/types.h
   snemo/processing/base_gamma_builder.h
   snemo/processing/detail/GeigerTimePartitioner.h
@@ -115,6 +116,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_tracker_s2c_module.cc
   snemo/processing/mock_tracker_s2c_module.h
+  snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/base_gamma_builder.cc

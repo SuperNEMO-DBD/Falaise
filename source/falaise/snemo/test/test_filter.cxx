@@ -48,6 +48,7 @@ dpp::module_manager makeModuleManager() {
   datatools::multi_properties m("name", "type");
   m.add("YesBranch", "YesBranch", {});
   m.add("NoBranch", "NoBranch", {});
+  m.add("BlackHole", "falaise::processing::black_hole_module", {});
   dpp::module_manager foo;
   foo.load_modules(m);
   foo.initialize_simple();
@@ -117,5 +118,22 @@ TEST_CASE("Branches are chosen correctly", "") {
     dummyConfig.store("yes_or_no", false);
     REQUIRE_NOTHROW(mod.initialize(dummyConfig, dummyServices, foo.get_modules()));
     REQUIRE(mod.process(dummyData) == flp::status::PROCESS_INVALID);
+  }
+}
+
+TEST_CASE("black_hole_module filter helper works", "") {
+  datatools::service_manager dummyServices{};
+  dpp::module_manager foo = makeModuleManager();
+  flp::filter<TrivialFilter> mod;
+  datatools::properties dummyConfig{};
+  dummyConfig.store("on_accept", "YesBranch");
+  dummyConfig.store("on_reject", "BlackHole");
+
+  datatools::things dummyData;
+
+  SECTION("Black hole branch returns correct processing status") {
+    dummyConfig.store("yes_or_no", false);
+    REQUIRE_NOTHROW(mod.initialize(dummyConfig, dummyServices, foo.get_modules()));
+    REQUIRE(mod.process(dummyData) == flp::status::PROCESS_STOP);
   }
 }
