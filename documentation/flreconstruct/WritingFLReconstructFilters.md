@@ -13,24 +13,23 @@ of FLReconstruct covered in [The FLReconstruct Application](@ref usingflreconstr
 FLReconstruct uses a [pipeline pattern](http://en.wikipedia.org/wiki/Pipeline_%28software%29) to process events. You can view this as a production line with each stage on the line
 performing some operation on the event. In a previous tutorial, we saw
 how to [implement modules that read/write data from/to the event](@ref writingflreconstructmodules).
-These "processing" modules are not the only operation that can be performed,
-and in this tutorial we will cover _filters_, a module that can accept or reject
+These "processing" modules are not the only operation that can be performed
+on events, and in this tutorial we will cover _filters_, a type of module that can accept or reject
 events for further processing based on event data, covering
 
-1. Writing a basic C++ filter class
+1. Writing a basic C++ filter module
 2. Scripting use of the filter by FLReconstruct
 
 Like processing modules, _filters_ are compiled into shared libraries and
 loaded by `flreconstruct` at runtime, and may be made user configurable from
 pipeline scripts. These topics are already covered in detail in the
-[processing module tutorial](@ref writingflreconstructmodules) and are identical
-for _filters_, so please refer back to that for full details.
+[processing module tutorial](@ref writingflreconstructmodules) and are identical for _filters_, so please refer back to that for full details.
 
-Using event data to accept or reject it in a filter is deferred to [a later tutorial](@ref workingwitheventrecords).
+Using event data to accept or reject the event in a filter is deferred to [a later tutorial](@ref workingwitheventrecords).
 
 Implementing a Minimal flreconstruct Filter {#minimalfilter}
 ===========================================
-Creating the Module Source Code {#minimalfilter_sources}
+Creating the Filter Source Code {#minimalfilter_sources}
 -------------------------------
 We begin by creating an empty directory to hold the source code for
 our example filter, which we'll name "MyFilter"
@@ -67,17 +66,17 @@ an `flreconstruct` pipeline script.
 
 The non-default constructor is responsible for initializing the filter using,
 if required, the information supplied in the @ref falaise::property_set
-and @ref datatools::service_manager objects. To illustrate the behaviour of filters,
-`MyFilter` takes a simple boolean switch to make it accept or reject all events.
-See the main module tutorial for full details of [implementing and using configurable
+and @ref datatools::service_manager objects. We don't use this in `MyFilter`
+to keep things simple, but filters can be configured just as processing
+modules are as shown in the [tutorial on implementing and using configurable
 parameters](@ref minimalconfigurablemodule}).
 
 The `filter` member function performs the actual operation on the event, which is
 represented by a @ref datatools::things instance. It is passed via const reference
-because `filter` must only read data from the event. As noted above, [a later tutorial](@ref workingwitheventrecords)
-will cover the interface and use of @ref datatools::things.
-We therefore don't do anything with the event, and simply return the value of
-our `yesOrNo_` parameter.
+because a filter only ever needs to read data from the event. As noted above, [a later tutorial](@ref workingwitheventrecords)
+will cover the interface and use of @ref datatools::things to read data from
+the event. Instead of using the event data, we simply keep a count of
+the number of events processed and reject any that have an odd numbered count.
 
 Building and Running a Loadable Shared Library for a Filter
 ------------------------------------------------------------
@@ -109,21 +108,26 @@ All filters provide and require two `string` parameters:
 - `on_accept`: name of the module events **accepted** by the filter should be passed to
 - `on_reject`: name of the module events **rejected** by the filter should be passed to
 
-In the above example, we have set `on_accept` to be a simple `dpp::dump_module` to print
-the event to screen. The `on_reject` module is the Falaise builtin @ref falaise::processing::black_hole_module.
-This filter simply stops all processing on the event and does **not** write it to any output file.
-It is intended for typical "cut flow" work where events rejected by a filter are no longer
-of any interest. However, the `on_reject` module can be any other module or filter, allowing
-you to build up detailed event processing workflows.
+In the above example, we have set both `on_accept` and `on_reject` to be
+simple `dpp::dump_module`s to print events to screen. The `indent` parameter is different for each module so you can see in the printout
+which path the event flowed down, and you should see these alternate for
+each event as the counter goes from odd to even and back again. If you
+write the pipeline results to and output `.brio` file, you will still
+have to all events written to file.
 
-If you try running an `flsimulate` output file with the above script, all events will be dumped to screen.
-To see the effect of the different processing paths that filters can use, try changing its
-`yes_or_no` parameter to `false`:
+To implement removal of events from the pipeline and hence output file,
+a special builtin module @ref falaise::processing::black_hole_module is
+provided. This can be placed on one branch of a filter where it will simply
+stop any further processing of events that flow into it, including their
+output to file. Running the following script:
 
 \include flreconstruct/MyFilter/MyFilterPipeline2.conf
 
-Now no events will be printed, and if you try writing to an output `.brio` file, it will contain
-no events.
+and outputing the results to a `.brio` file will only store events in the
+file that are accepted by the filter. @ref falaise::processing::black_hole_module
+is intended for typical "cut flow" work where events rejected by a filter are no longer of any interest. However, the `on_reject` module can be any other module or filter, allowing
+you to build up detailed event processing workflows.
+
 
 Next Steps
 ==========

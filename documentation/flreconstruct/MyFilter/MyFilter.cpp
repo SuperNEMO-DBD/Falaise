@@ -3,17 +3,18 @@
 
 class MyFilter {
  public:
-  MyModule() = default;
+  MyFilter() = default;
 
-  MyFilter(falaise::property_set const& ps, datatools::service_manager& /*services*/)
-      : yesOrNo_(ps.get<bool>("yes_or_no")) {}
+  MyFilter(falaise::property_set const& /*ps*/, datatools::service_manager& /*services*/){}
 
-  bool filter(datatools::things& /*workItem*/) {
-    return yesOrNo_;
+  bool filter(const datatools::things& /*workItem*/) {
+    bool isOddEvent = (counter_ % 2 != 0);
+    counter_++;
+    return isOddEvent;
   }
 
- private:
-  bool yesOrNo_ = true;
+  private:
+    size_t counter_ = 0;
 };
 
-FALAISE_REGISTER_FILTER(MyFilter);
+FALAISE_REGISTER_FILTER(MyFilter)
