@@ -89,11 +89,11 @@ your choice:
 
 With these in place, to get set up on your local system to develop Falaise you should then:
 
-1. Create your own Fork of the SuperNEMO-DBD/Falaise repository on GitHub
+1. Create your own Fork of the [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise) repository on GitHub
 2. Clone your Fork to your local system
 3. Build and test Falaise
 4. Start developing and testing on a _Topic Branch_
-5. Submit your _Topic Branch_ to SuperNEMO-DBD/Falaise as a Pull Request
+5. Submit your _Topic Branch_ to [SuperNEMO-DBD/Falaise](https://github.com/SuperNEMO-DBD/Falaise) as a Pull Request
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for comprehensive guides and cheatsheets on this workflow. Here,
 we will quickly demonstrate steps 2 and 3.
@@ -101,7 +101,7 @@ we will quickly demonstrate steps 2 and 3.
 To get the source code from your Fork of Falaise locally, simply clone it:
 
 ```
-$ git clone https://github.com/<yourgithubid>Falaise.git Falaise.git
+$ git clone https://github.com/<yourgithubid>/Falaise.git Falaise.git
 ```
 
 With the source code cloned, it can be configured and compiled by doing:
