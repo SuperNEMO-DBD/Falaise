@@ -326,7 +326,16 @@ Be careful with `rebase` after you have pushed your Topic Branch to your Fork
 as `rebase` changes the commit history. We'll discuss how to handle this later.
 
 You should also frequently check that your changes compile and pass needed tests.
-Please consult the main [README](README.md) for complete details on configuration, build, and testing options.
+Please consult the main [README](README.md) for complete details on configuration, build, and testing options,
+but in short, make sure you do:
+
+```
+$ mkdir my-topic-branch.build
+$ cd my-topic-branch.build
+$ cmake -DFALAISE_ENABLE_TESTING=ON ../Falaise.git
+$ make -jN
+$ ctest -VV -jN
+```
 
 Do remember that you have the power of a local git repository at your fingertips
 during the development process so:
@@ -486,7 +495,7 @@ online in the Pull Request comments to keep everyone in the loop on changes.
 
 The stages of review and testing are listed below:
 
-1. Automatic Travis-CI Build and Test against latest `develop`
+1. Automatic Build and Test against latest `develop`
 2. Code Fixes and Review
 3. Acceptance and merge to `develop`
 
@@ -661,6 +670,19 @@ $ git fetch upstream
 $ git rebase upstream/develop
 $ git push origin develop
 $ git checkout -b name-of-topic
+```
+
+### Building and Testing a Topic Branch
+``` console
+$ mkdir name-of-topic.build
+$ cd name-of-topic.build
+$ cmake -DFALAISE_ENABLE_TESTING=ON ../Falaise.git
+$ make -jN
+$ ctest -VV -jN
+... make some edits ...
+$ make -jN
+$ ctest -VV -jN
+... edit/repeat ...
 ```
 
 ### Developing a Topic Branch Locally
