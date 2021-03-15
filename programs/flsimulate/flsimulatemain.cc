@@ -57,11 +57,12 @@
 #include "bayeux/datatools/urn_to_path_resolver_service.h"
 #include "bayeux/dpp/output_module.h"
 #include "bayeux/geomtools/manager.h"
-#include "bayeux/mctools/g4/manager_parameters.h"
-#include "bayeux/mctools/g4/simulation_module.h"
 #include "bayeux/mygsl/random_utils.h"
 #include "bayeux/mygsl/seed_manager.h"
 #include "bayeux/version.h"
+
+#include "snsim/manager_parameters.h"
+#include "snsim/simulation_module.h"
 
 // This Project
 #include "falaise/exitcodes.h"
@@ -295,7 +296,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     services.initialize(services_config);
 
     // Simulation module:
-    mctools::g4::simulation_module flSimModule;
+    snsim::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
     std::string sd_label = snedm::labels::simulated_data();
     std::string geo_label = snemo::service_info::geometryServiceName();

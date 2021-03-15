@@ -1,0 +1,75 @@
+//! \file    mctools/g4/data_libraries.h
+//! \brief   Configure the Geant4 data libraries
+//! \details Geant4 physics models use several architecture independent
+//!          data files for cross-sections and other process dependent
+//!          information. Geant4 determines the root location of each
+//!          data source via environment variables whose value is
+//!          the absolute path to the resource.
+//!          We can generally determine the path to these files at
+//!          MCTools configure time, so provide an interface that can be
+//!          used to set up the environment inside the application,
+//!          unless it is already set.
+//!          NB: This file is not part of the public interface
+//
+// This file is part of MCTools.
+//
+// MCTools is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// MCTools is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with MCTools.  If not, see <http://www.gnu.org/licenses/>.
+
+#ifndef MCTOOLS_G4_DATA_LIBRARIES_H
+#define MCTOOLS_G4_DATA_LIBRARIES_H
+
+// Standard Library
+#include <cstdlib>
+
+// Third Party
+// - Boost
+#include <boost/assign/list_inserter.hpp>
+
+// This Project
+
+namespace {
+class geant4_data_library {
+ public:
+
+ public:
+  geant4_data_library() : map_() {
+    boost::assign::insert(map_)@MCTOOLS_G4_DATA_ASSIGNMENTS@;
+  }
+
+  ~geant4_data_library() {}
+
+  void configure_data() const {
+    DLMap::const_iterator iter(map_.begin());
+    DLMap::const_iterator end(map_.end());
+
+    for(; iter!=end; ++iter) {
+      setenv((*iter).first.c_str(),(*iter).second.c_str(),0);
+    }
+  }
+
+ private:
+  typedef std::map<std::string,std::string> DLMap;
+  DLMap map_;
+};
+}
+
+#endif // MCTOOLS_G4_DATA_LIBRARIES_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

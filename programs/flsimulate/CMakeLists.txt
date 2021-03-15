@@ -47,9 +47,8 @@ target_include_directories(flsimulate PRIVATE
 target_link_libraries(flsimulate
   Falaise
   Bayeux::Bayeux
-  Bayeux::Bayeux_mctools_geant4
+  SNSimulation::SNSimulation
   ${Boost_LIBRARIES}
-  ${Geant4_LIBRARIES}
   )
 target_clang_format(flsimulate)
 
