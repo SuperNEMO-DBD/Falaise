@@ -1,3 +1,4 @@
+# Generator name : Generator description : Generator variant group : Local variant condition (optional)
 pmt_5inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper : OpticalModule : 
 pmt_8inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper : OpticalModule : 
 pmt_main_wall_glass_bulk : Vertex generation from the bulk volume of all source pads : OpticalModule : 
@@ -31,7 +32,7 @@ gveto_wrapper_surface : Vertex generation from the surface of the wrapper of all
 calo_8inch_front_scin_bulk : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
 calo_8inch_back_scin_bulk : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
 calo_8inch_scin_bulk : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
-calo_5inch_front_scin_bulk : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
+calo_5inch_front_scin_bulk : Vertex generation from the bulk volume of the front partvolume of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
 calo_5inch_back_scin_bulk : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
 calo_5inch_scin_bulk : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
 experimental_hall_surface : Vertex generation from all internal surfaces of the experimental hall : Hall : 
@@ -39,12 +40,6 @@ experimental_hall_roof : Vertex generation from the top surface (roof) of the ex
 experimental_hall_bulk : Vertex generation from the bulk volume (air) of the experimental hall : Hall : 
 experimental_hall_ground_bulk : Vertex generation from the bulk volume of the experimental hall's ground : Hall : 
 experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
-source_pads_internal_bulk : Vertex generation from the bulk volume of all inner source pads : Source : 
-source_pads_external_bulk : Vertex generation from the bulk volume of all outer source pads : Source : 
-source_pads_bulk : Vertex generation from the bulk volume of all source pads : Source : 
-source_pads_internal_surface : Vertex generation from the surface of all inner source pads : Source : 
-source_pads_external_surface : Vertex generation from the surface of all outer source pads : Source : 
-source_pads_surface : Vertex generation from the surface of all source pads : Source : 
 shielding_bottom_bulk : Vertex generation from the bulk volume of the bottom shielding wall : Shielding : 
 shielding_top_bulk : Vertex generation from the bulk volume of the top shielding wall : Shielding : 
 shielding_left_right_bulk : Vertex generation from the bulk volume of the left/right shielding walls : Shielding : 
@@ -59,4 +54,411 @@ source_calibration_all_spots : Vertex generation from the bulk volume of all sou
 source_calibration_single_spot : Vertex generation from the bulk volume of all source calibration spots : Calibration : if_source_calibration_single_spot
 commissioning_all_spots : Vertex generation from from a commissioning spot : HalfCommissioning : 
 commissioning_single_spot : Vertex generation from from a commissioning spot : HalfCommissioning : if_half_commissioning_single_spot
-free_spot : Vertex generation from an arbitrary spot in the geometry :  : if_free_spot
+free_spot : Vertex generation from an arbitrary spot in the geometry : Free : if_free_spot
+# Basic source pads bulk generators:
+source_pads_internal_bulk : Vertex generation from the bulk volume of all inner source pads : SourceFoilBasic : 
+source_pads_external_bulk : Vertex generation from the bulk volume of all outer source pads : SourceFoilBasic : 
+source_pads_bulk : Vertex generation from the bulk volume of all source pads : SourceFoilBasic : 
+# Basic source pads bsurface generators:
+source_pads_internal_surface : Vertex generation from the surface of all inner source pads : SourceFoilBasic : 
+source_pads_external_surface : Vertex generation from the surface of all outer source pads : SourceFoilBasic : 
+source_pads_surface : Vertex generation from the surface of all source pads : SourceFoilBasic : 
+# Realistic flat source pads bulk generators:
+real_flat_source_strip_0_pad_0_bulk : Vertex generation from the bulk volume of the realistic flat source strip 0 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_1_pad_0_bulk : Vertex generation from the bulk volume of the realistic flat source strip 1 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_2_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 2 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_3_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 3 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_4_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 4 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_5_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 5 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_6_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 6 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_7_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 7 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_8_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 8 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_9_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 9 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_10_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 10 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_11_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 11 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_12_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 12 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_13_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 13 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_14_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 14 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_15_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 15 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_16_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 16 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_17_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 17 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_18_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 18 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 19 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 20 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 21 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 22 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 23 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 24 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 25 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 26 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 27 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 28 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 29 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 30 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 31 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 32 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_1_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_2_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_3_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_4_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_5_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_6_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_7_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 33 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_34_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 34 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_35_pad_0_bulk  : Vertex generation from the bulk volume of the realistic flat source strip 35 pad 0 : SourceFoilRealisticFlat :
+# Realistic flat source pads surface generators:
+real_flat_source_strip_0_pad_0_surface : Vertex generation from the surface of the realistic flat source strip 0 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_1_pad_0_surface : Vertex generation from the surface of the realistic flat source strip 1 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_2_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 2 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_3_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 3 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_4_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 4 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_5_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 5 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_6_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 6 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_7_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 7 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_8_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 8 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_9_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 9 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_10_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 10 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_11_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 11 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_12_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 12 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_13_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 13 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_14_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 14 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_15_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 15 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_16_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 16 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_17_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 17 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_18_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 18 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 19 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 20 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 21 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 22 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 23 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 24 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 25 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 26 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 27 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 28 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 29 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 30 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 31 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 32 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_1_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 1 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_2_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 2 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_3_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 3 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_4_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 4 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_5_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 5 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_6_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 6 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_pad_7_surface  : Vertex generation from the surface of the realistic flat source strip 33 pad 7 : SourceFoilRealisticFlat :
+real_flat_source_strip_34_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 34 pad 0 : SourceFoilRealisticFlat :
+real_flat_source_strip_35_pad_0_surface  : Vertex generation from the surface of the realistic flat source strip 35 pad 0 : SourceFoilRealisticFlat :
+# Realistic flat source strips bulk generators for mass contamination with radioisotopes:
+real_flat_source_strip_0_bulk  : Vertex generation from the bulk volume of source strip 0   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_1_bulk  : Vertex generation from the bulk volume of source strip 1   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_2_bulk  : Vertex generation from the bulk volume of source strip 2   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_3_bulk  : Vertex generation from the bulk volume of source strip 3   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_4_bulk  : Vertex generation from the bulk volume of source strip 4   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_5_bulk  : Vertex generation from the bulk volume of source strip 5   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_6_bulk  : Vertex generation from the bulk volume of source strip 6   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_7_bulk  : Vertex generation from the bulk volume of source strip 7   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_8_bulk  : Vertex generation from the bulk volume of source strip 8   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_9_bulk  : Vertex generation from the bulk volume of source strip 9   (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_10_bulk : Vertex generation from the bulk volume of source strip 10  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_11_bulk : Vertex generation from the bulk volume of source strip 11  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_12_bulk : Vertex generation from the bulk volume of source strip 12  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_13_bulk : Vertex generation from the bulk volume of source strip 13  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_14_bulk : Vertex generation from the bulk volume of source strip 14  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_15_bulk : Vertex generation from the bulk volume of source strip 15  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_16_bulk : Vertex generation from the bulk volume of source strip 16  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_17_bulk : Vertex generation from the bulk volume of source strip 17  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_18_bulk : Vertex generation from the bulk volume of source strip 18  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_19_bulk : Vertex generation from the bulk volume of source strip 19  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_20_bulk : Vertex generation from the bulk volume of source strip 20  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_21_bulk : Vertex generation from the bulk volume of source strip 21  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_22_bulk : Vertex generation from the bulk volume of source strip 22  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_23_bulk : Vertex generation from the bulk volume of source strip 23  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_24_bulk : Vertex generation from the bulk volume of source strip 24  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_25_bulk : Vertex generation from the bulk volume of source strip 25  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_26_bulk : Vertex generation from the bulk volume of source strip 26  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_27_bulk : Vertex generation from the bulk volume of source strip 27  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_28_bulk : Vertex generation from the bulk volume of source strip 28  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_29_bulk : Vertex generation from the bulk volume of source strip 29  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_30_bulk : Vertex generation from the bulk volume of source strip 30  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_31_bulk : Vertex generation from the bulk volume of source strip 31  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_32_bulk : Vertex generation from the bulk volume of source strip 32  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_33_bulk : Vertex generation from the bulk volume of source strip 33  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_34_bulk : Vertex generation from the bulk volume of source strip 34  (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_strip_35_bulk : Vertex generation from the bulk volume of source strip 35  (for mass contamination) : SourceFoilRealisticFlat :
+# Realistic flat source strips surface generators:
+real_flat_source_strip_0_surface  : Vertex generation from the surface of source strip 0  : SourceFoilRealisticFlat :
+real_flat_source_strip_1_surface  : Vertex generation from the surface of source strip 1  : SourceFoilRealisticFlat :
+real_flat_source_strip_2_surface  : Vertex generation from the surface of source strip 2  : SourceFoilRealisticFlat :
+real_flat_source_strip_3_surface  : Vertex generation from the surface of source strip 3  : SourceFoilRealisticFlat :
+real_flat_source_strip_4_surface  : Vertex generation from the surface of source strip 4  : SourceFoilRealisticFlat :
+real_flat_source_strip_5_surface  : Vertex generation from the surface of source strip 5  : SourceFoilRealisticFlat :
+real_flat_source_strip_6_surface  : Vertex generation from the surface of source strip 6  : SourceFoilRealisticFlat :
+real_flat_source_strip_7_surface  : Vertex generation from the surface of source strip 7  : SourceFoilRealisticFlat :
+real_flat_source_strip_8_surface  : Vertex generation from the surface of source strip 8  : SourceFoilRealisticFlat :
+real_flat_source_strip_9_surface  : Vertex generation from the surface of source strip 9  : SourceFoilRealisticFlat :
+real_flat_source_strip_10_surface : Vertex generation from the surface of source strip 10 : SourceFoilRealisticFlat :
+real_flat_source_strip_11_surface : Vertex generation from the surface of source strip 11 : SourceFoilRealisticFlat :
+real_flat_source_strip_12_surface : Vertex generation from the surface of source strip 12 : SourceFoilRealisticFlat :
+real_flat_source_strip_13_surface : Vertex generation from the surface of source strip 13 : SourceFoilRealisticFlat :
+real_flat_source_strip_14_surface : Vertex generation from the surface of source strip 14 : SourceFoilRealisticFlat :
+real_flat_source_strip_15_surface : Vertex generation from the surface of source strip 15 : SourceFoilRealisticFlat :
+real_flat_source_strip_16_surface : Vertex generation from the surface of source strip 16 : SourceFoilRealisticFlat :
+real_flat_source_strip_17_surface : Vertex generation from the surface of source strip 17 : SourceFoilRealisticFlat :
+real_flat_source_strip_18_surface : Vertex generation from the surface of source strip 18 : SourceFoilRealisticFlat :
+real_flat_source_strip_19_surface : Vertex generation from the surface of source strip 19 : SourceFoilRealisticFlat :
+real_flat_source_strip_20_surface : Vertex generation from the surface of source strip 20 : SourceFoilRealisticFlat :
+real_flat_source_strip_21_surface : Vertex generation from the surface of source strip 21 : SourceFoilRealisticFlat :
+real_flat_source_strip_22_surface : Vertex generation from the surface of source strip 22 : SourceFoilRealisticFlat :
+real_flat_source_strip_23_surface : Vertex generation from the surface of source strip 23 : SourceFoilRealisticFlat :
+real_flat_source_strip_24_surface : Vertex generation from the surface of source strip 24 : SourceFoilRealisticFlat :
+real_flat_source_strip_25_surface : Vertex generation from the surface of source strip 25 : SourceFoilRealisticFlat :
+real_flat_source_strip_26_surface : Vertex generation from the surface of source strip 26 : SourceFoilRealisticFlat :
+real_flat_source_strip_27_surface : Vertex generation from the surface of source strip 27 : SourceFoilRealisticFlat :
+real_flat_source_strip_28_surface : Vertex generation from the surface of source strip 28 : SourceFoilRealisticFlat :
+real_flat_source_strip_29_surface : Vertex generation from the surface of source strip 29 : SourceFoilRealisticFlat :
+real_flat_source_strip_30_surface : Vertex generation from the surface of source strip 30 : SourceFoilRealisticFlat :
+real_flat_source_strip_31_surface : Vertex generation from the surface of source strip 31 : SourceFoilRealisticFlat :
+real_flat_source_strip_32_surface : Vertex generation from the surface of source strip 32 : SourceFoilRealisticFlat :
+real_flat_source_strip_33_surface : Vertex generation from the surface of source strip 33 : SourceFoilRealisticFlat :
+real_flat_source_strip_34_surface : Vertex generation from the surface of source strip 34 : SourceFoilRealisticFlat :
+real_flat_source_strip_35_surface : Vertex generation from the surface of source strip 35 : SourceFoilRealisticFlat :
+#  Realistic flat strip bulk generator for Se82 DBD
+real_flat_source_strip_1_se82_bulk  : Vertex generation from the bulk volume of source strip 1   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_2_se82_bulk  : Vertex generation from the bulk volume of source strip 2   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_3_se82_bulk  : Vertex generation from the bulk volume of source strip 3   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_4_se82_bulk  : Vertex generation from the bulk volume of source strip 4   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_5_se82_bulk  : Vertex generation from the bulk volume of source strip 5   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_6_se82_bulk  : Vertex generation from the bulk volume of source strip 6   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_7_se82_bulk  : Vertex generation from the bulk volume of source strip 7   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_8_se82_bulk  : Vertex generation from the bulk volume of source strip 8   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_9_se82_bulk  : Vertex generation from the bulk volume of source strip 9   (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_10_se82_bulk : Vertex generation from the bulk volume of source strip 10  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_11_se82_bulk : Vertex generation from the bulk volume of source strip 11  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_12_se82_bulk : Vertex generation from the bulk volume of source strip 12  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_13_se82_bulk : Vertex generation from the bulk volume of source strip 13  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_14_se82_bulk : Vertex generation from the bulk volume of source strip 14  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_15_se82_bulk : Vertex generation from the bulk volume of source strip 15  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_16_se82_bulk : Vertex generation from the bulk volume of source strip 16  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_17_se82_bulk : Vertex generation from the bulk volume of source strip 17  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_18_se82_bulk : Vertex generation from the bulk volume of source strip 18  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_19_se82_bulk : Vertex generation from the bulk volume of source strip 19  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_20_se82_bulk : Vertex generation from the bulk volume of source strip 20  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_21_se82_bulk : Vertex generation from the bulk volume of source strip 21  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_22_se82_bulk : Vertex generation from the bulk volume of source strip 22  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_23_se82_bulk : Vertex generation from the bulk volume of source strip 23  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_24_se82_bulk : Vertex generation from the bulk volume of source strip 24  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_25_se82_bulk : Vertex generation from the bulk volume of source strip 25  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_26_se82_bulk : Vertex generation from the bulk volume of source strip 26  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_27_se82_bulk : Vertex generation from the bulk volume of source strip 27  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_28_se82_bulk : Vertex generation from the bulk volume of source strip 28  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_29_se82_bulk : Vertex generation from the bulk volume of source strip 29  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_30_se82_bulk : Vertex generation from the bulk volume of source strip 30  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_31_se82_bulk : Vertex generation from the bulk volume of source strip 31  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_32_se82_bulk : Vertex generation from the bulk volume of source strip 32  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_33_se82_bulk : Vertex generation from the bulk volume of source strip 33  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_34_se82_bulk : Vertex generation from the bulk volume of source strip 34  (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+# Realistic flat full source generators:
+real_flat_source_full_copper_mass_bulk : Vertex generation from the bulk volume of all Copper foils (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_full_copper_surface   : Vertex generation from the surface of all Copper foils (for surface contamination) : SourceFoilRealisticFlat :
+real_flat_source_full_foils_mass_bulk  : Vertex generation from the bulk volume of all source pads (for mass contamination) : SourceFoilRealisticFlat :
+real_flat_source_full_foils_surface    : Vertex generation from the surface of all source pads (for surface contamination) : SourceFoilRealisticFlat :
+real_flat_source_full_foils_se82_bulk  : Vertex generation from the bulk volume of all Se82 pads (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd
