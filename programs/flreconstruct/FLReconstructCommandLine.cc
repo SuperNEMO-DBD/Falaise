@@ -39,7 +39,6 @@ FLReconstructCommandLine FLReconstructCommandLine::makeDefault() {
   frArgs.pipelineScript = "";
   frArgs.inputMetadataFile = "";
   frArgs.outputMetadataFile = "";  // "flreconstruct.mdata" ?
-  frArgs.embeddedMetadata = true;
   frArgs.inputFile = "";
   frArgs.outputFile = "";
   return frArgs;
@@ -141,10 +140,8 @@ void do_load_plugins(datatools::library_loader& libLoader) {
   // explicitly list for now...
   libLoader.load("Falaise_CAT", pluginPath);
   libLoader.load("Falaise_ChargedParticleTracking", pluginPath);
-  libLoader.load("Falaise_MockTrackerClusterizer", pluginPath);
   libLoader.load("TrackFit", pluginPath);
   libLoader.load("Falaise_TrackFit", pluginPath);
-  libLoader.load("Falaise_VisuToy", pluginPath);
   libLoader.load("Things2Root", pluginPath);
 }
 
@@ -181,10 +178,6 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
 
     ("output-metadata-file,m", bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
       "file in which to store metadata")
-
-    ("embedded-metadata,E", bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
-      "flag to (de)activate recording of metadata in the reconstruction "
-      "results output file")
 
     ("pipeline,p", bpo::value<std::string>(&clArgs.pipelineScript)->value_name("file"),
       "pipeline script")

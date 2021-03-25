@@ -132,7 +132,7 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
   const geomtools::mapping& the_mapping = geoManager->get_mapping();
 
   // Loop on Geiger step hits:
-  for (auto const& step : steps | boost::adaptors::indexed(0)) {
+  for (auto const step : steps | boost::adaptors::indexed(0)) {
     // Does work, but wait for C++17 structured bindings!
     // boost::tie(a_tracker_hit, raw_tracker_hit_id) = hit;
     auto& a_tracker_hit = step.value();
@@ -308,7 +308,7 @@ mock_tracker_s2c_module::cal_tracker_hit_col_t mock_tracker_s2c_module::calibrat
   const geomtools::placement* module_placement = nullptr;
 
   // Loop on raw tracker hits:
-  for (auto const& hit : digits | boost::adaptors::indexed(0)) {
+  for (auto const hit : digits | boost::adaptors::indexed(0)) {
     // Does work, but wait for C++17 structured bindings!
     // boost::tie(a_tracker_hit, raw_tracker_hit_id) = hit;
     auto& the_raw_tracker_hit = hit.value();

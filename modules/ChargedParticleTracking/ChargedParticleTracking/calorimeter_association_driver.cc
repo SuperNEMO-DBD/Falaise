@@ -154,7 +154,7 @@ void calorimeter_association_driver::_measure_matching_calorimeters_(
 
     calo_collection_type calo_collection;
 
-    for (const datatools::handle<snedm::calibrated_calorimeter_hit> a_calo_hit :
+    for (const datatools::handle<snedm::calibrated_calorimeter_hit>& a_calo_hit :
          calorimeter_hits_) {
       const geomtools::geom_id& a_current_gid = a_calo_hit->get_geom_id();
 

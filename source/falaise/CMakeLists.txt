@@ -154,11 +154,12 @@ if(FALAISE_ENABLE_TESTING)
     test/test_property_set.cxx
     test/test_quantity.cxx
     )
+
   # Testing version is sensitive to compile definitions, so match them
   set_property(SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/test/test_falaise_version.cxx
-    APPEND PROPERTY COMPILE_DEFINITIONS
-      FALAISE_VERSION_COMMIT=${Falaise_GIT_HASH_SHORT}
-      $<$<BOOL:${FALAISE_VERSION_IS_DIRTY}>:FALAISE_VERSION_IS_DIRTY>)
+  APPEND PROPERTY COMPILE_DEFINITIONS
+    FALAISE_VERSION_COMMIT=${Falaise_GIT_HASH_SHORT}
+    $<$<BOOL:${FALAISE_VERSION_IS_DIRTY}>:FALAISE_VERSION_IS_DIRTY>)
 endif()
 
 #-----------------------------------------------------------------------

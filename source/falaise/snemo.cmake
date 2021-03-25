@@ -58,7 +58,10 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/geiger_regime.h
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
+  snemo/processing/filter.h
   snemo/processing/module.h
+  snemo/processing/black_hole_module.h
+  snemo/processing/types.h
   snemo/processing/base_gamma_builder.h
   snemo/processing/detail/GeigerTimePartitioner.h
 
@@ -66,6 +69,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/service_traits.h
   snemo/services/service_handle.h
   snemo/services/geometry.h
+  snemo/services/hello_world.h
+  snemo/services/dead_cells.h
   snemo/services/histogram.h
 
   snemo/cuts/event_header_cut.h
@@ -111,6 +116,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_tracker_s2c_module.cc
   snemo/processing/mock_tracker_s2c_module.h
+  snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/base_gamma_builder.cc
@@ -126,6 +132,8 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_display.cc
 
   snemo/services/services.cc
+  snemo/services/hello_world.cc
+  snemo/services/dead_cells.cc
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
@@ -139,11 +147,14 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_datamodel_event.cxx
   snemo/test/test_snemo_datamodel_timestamp.cxx
   snemo/test/test_snemo_geometry_gveto_locator_2.cxx
+  snemo/test/test_filter.cxx
   snemo/test/test_module.cxx
   snemo/test/test_service.cxx
+  snemo/test/test_dead_cells_service.cxx
   snemo/test/test_event_record.cxx
   )
 list(APPEND FalaiseLibrary_TESTS
+  snemo/test/test_service_external.cxx
   snemo/test/test_snemo_datamodel_event_header.cxx
   snemo/test/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
   snemo/test/test_snemo_datamodel_calibrated_tracker_hit.cxx
