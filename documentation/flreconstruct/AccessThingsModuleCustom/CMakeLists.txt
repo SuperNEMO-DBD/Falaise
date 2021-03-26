@@ -11,10 +11,8 @@ find_package(Falaise REQUIRED)
 
 # Build a dynamic library from our sources
 add_library(AccessThingsModule SHARED
-  AccessThingsModule.h
   AccessThingsModule.cpp
-  MyDataType.h
-  MyDataType.cpp
+  #? MyNewDataType.{h,cpp}?
   )
 
 # Link it to the FalaiseModule library
