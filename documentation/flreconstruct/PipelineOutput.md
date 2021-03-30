@@ -7,6 +7,8 @@ FLReconstruct Pipeline Output {#flreconstructpipelineoutput}
 Introduction {#flreconstructpipelineoutput_introduction}
 ============
 
+Simplify and clarify, probably split into general and specific parts.
+
 The  current  official  reconstruction pipeline  consists  in  several
 steps, each responsible of  the elaboration of additional informations
 stored  in dedicated  banks  in  the event  record.   We  saw in
