@@ -15,7 +15,7 @@
   stacked.number_of_items : integer = 5
   #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
     stacked.model_0   : string = "snemo_strip_0.model" # Position  0 (Copper)
-    stacked.model_2   : string = "snemo_strip_31.model" # Position  1
+    stacked.model_2   : string = "snemo_strip_31.model" # Position  1 
     stacked.model_4   : string = "snemo_strip_4.model" # Position  2
   #@variant_endif
 
