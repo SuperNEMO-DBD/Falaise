@@ -9,7 +9,7 @@
 shape_type         : string  = "box"
 x                  : real as length =   12.0 um 
 y                  : real as length =    125 mm
-z                  : real as length =  425.0 mm
+z                  : real as length =  430.0 mm
 material.ref       : string  = "basic::mylar"
 visibility.hidden  : boolean = false
 visibility.color   : string = "cyan"
@@ -28,17 +28,19 @@ visibility.color   : string  = "cyan"
 [name="snemo_foil_0_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 12.5  # cm
-z                  : real    = 250.0  # cm
+y                  : real    = 12.2  # cm
+z                  : real    = 249.0  # cm
 x                  : real as length = 74.0 um
 material.ref       : string  = "basic::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
+# Private communication with Andrea
+
 #########################################################################
 [name="snemo_source_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
-x                  : real    =   43.0 um
+x                  : real    =   74.0 um
 y                  : real    =   12.5 cm
 z                  : real    = 3350.0 mm
 material.ref       : string  = "tracking_gas"
@@ -720,6 +722,8 @@ visibility.color   : string  = "magenta"
 
 #########################################################################
 [name="snemo_source_17.model" type="geomtools::stacked_model"]
+
+#@description ITEP-10
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
