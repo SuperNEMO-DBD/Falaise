@@ -22,7 +22,8 @@ introductions to using and extending the core applications:
   - [Customizing the pipeline](@ref writingflreconstructpipelinescripts) for `flreconstruct`.
   - [Writing event processing modules](@ref writingflreconstructmodules) for `flreconstruct`.
   - [Writing event filtering modules](@ref writingflreconstructfilters) for `flreconstruct`.
-   - [Working with Run/Event Data in plugin modules](@ref workingwitheventrecords).
+  - [Working with Run/Event Data in plugin modules](@ref workingwitheventrecords).
+  - [Updating and Adding Data Model Classes](@ref working_with_data_objects).
   - [Using Services to access metadata](@ref usingservices).
 - [FLVisualize](@ref usingflvisualize) guide for viewing simulated and reconstructed data.
 

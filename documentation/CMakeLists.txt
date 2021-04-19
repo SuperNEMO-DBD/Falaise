@@ -79,6 +79,7 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/WritingFLReconstructModules.md
   flreconstruct/WritingFLReconstructFilters.md
   flreconstruct/WorkingWithEventRecords.md
+  flreconstruct/WorkingWithDataObjects.md
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
