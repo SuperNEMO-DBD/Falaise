@@ -40,7 +40,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
-x                  : real    =   74.0 um
+x                  : real    =   1.0 cm
 y                  : real    =   12.5 cm
 z                  : real    = 3350.0 mm
 material.ref       : string  = "tracking_gas"
