@@ -9,7 +9,7 @@
 shape_type         : string  = "box"
 x                  : real as length =   12.0 um 
 y                  : real as length =    125 mm
-z                  : real as length =  425.0 mm
+z                  : real as length =  430.0 mm
 material.ref       : string  = "basic::mylar"
 visibility.hidden  : boolean = false
 visibility.color   : string = "cyan"
@@ -28,17 +28,19 @@ visibility.color   : string  = "cyan"
 [name="snemo_foil_0_pad_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
 length_unit        : string  = "cm"
-y                  : real    = 12.5  # cm
-z                  : real    = 250.0  # cm
+y                  : real    = 12.2  # cm
+z                  : real    = 249.0  # cm
 x                  : real as length = 74.0 um
 material.ref       : string  = "basic::copper"
 visibility.hidden  : boolean = 0
 visibility.color   : string  = "magenta"
 
+# Private communication with Andrea
+
 #########################################################################
 [name="snemo_source_0.model" type="geomtools::simple_shaped_model"]
 shape_type         : string  = "box"
-x                  : real    =   43.0 um
+x                  : real    =   1.0 cm
 y                  : real    =   12.5 cm
 z                  : real    = 3350.0 mm
 material.ref       : string  = "tracking_gas"
@@ -81,7 +83,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_1.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-4
+#@config LAPP-ITEP-4
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -121,7 +123,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_2.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-5
+#@config LAPP-ITEP-5
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -161,7 +163,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_3.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-6
+#@config LAPP-ITEP-6
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -201,7 +203,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_4.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-7
+#@config LAPP-ITEP-7
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -241,7 +243,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_5.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-1
+#@config LAPP-ITEP-1
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -281,7 +283,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_6.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-2
+#@config LAPP-ITEP-2
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -321,7 +323,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_7.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-3
+#@config LAPP-ITEP-3
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -361,7 +363,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_8.model" type="geomtools::stacked_model"]
 
-#@description ITEP-1
+#@config ITEP-1
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -401,7 +403,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_9.model" type="geomtools::stacked_model"]
 
-#@description ITEP-2
+#@config ITEP-2
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -441,7 +443,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_10.model" type="geomtools::stacked_model"]
 
-#@description ITEP-3
+#@config ITEP-3
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -481,7 +483,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_11.model" type="geomtools::stacked_model"]
 
-#@description ITEP-4
+#@config ITEP-4
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -521,7 +523,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_12.model" type="geomtools::stacked_model"]
 
-#@description ITEP-5
+#@config ITEP-5
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -561,7 +563,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_13.model" type="geomtools::stacked_model"]
 
-#@description ITEP-6
+#@config ITEP-6
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -601,7 +603,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_14.model" type="geomtools::stacked_model"]
 
-#@description ITEP-7
+#@config ITEP-7
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -641,7 +643,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_15.model" type="geomtools::stacked_model"]
 
-#@description ITEP-8
+#@config ITEP-8
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -681,7 +683,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_16.model" type="geomtools::stacked_model"]
 
-#@description ITEP-9
+#@config ITEP-9
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -720,6 +722,8 @@ visibility.color   : string  = "magenta"
 
 #########################################################################
 [name="snemo_source_17.model" type="geomtools::stacked_model"]
+
+#@config ITEP-10
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -759,7 +763,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_18.model" type="geomtools::stacked_model"]
 
-#@description ITEP-11
+#@config ITEP-11
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
@@ -876,7 +880,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_19.model" type="geomtools::stacked_model"]
 
-#@description LAPP-7
+#@config LAPP-7
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1022,7 +1026,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_20.model" type="geomtools::stacked_model"]
 
-#@description LAPP-10
+#@config LAPP-10
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1168,7 +1172,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_21.model" type="geomtools::stacked_model"]
 
-#@description LAPP-11
+#@config LAPP-11
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1315,7 +1319,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_22.model" type="geomtools::stacked_model"]
 
-#@description LAPP-12
+#@config LAPP-12
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1462,7 +1466,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_23.model" type="geomtools::stacked_model"]
 
-#@description LAPP-17
+#@config LAPP-17
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1608,7 +1612,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_24.model" type="geomtools::stacked_model"]
 
-#@description LAPP-19
+#@config LAPP-19
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1754,7 +1758,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_25.model" type="geomtools::stacked_model"]
 
-#@description LAPP-13
+#@config LAPP-13
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -1900,7 +1904,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_26.model" type="geomtools::stacked_model"]
 
-#@description LAPP-14
+#@config LAPP-14
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2046,7 +2050,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_27.model" type="geomtools::stacked_model"]
 
-#@description LAPP-15
+#@config LAPP-15
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2192,7 +2196,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_28.model" type="geomtools::stacked_model"]
 
-#@description LAPP-16
+#@config LAPP-16
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2338,7 +2342,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_29.model" type="geomtools::stacked_model"]
 
-#@description LAPP-18
+#@config LAPP-18
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2484,7 +2488,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_30.model" type="geomtools::stacked_model"]
 
-#@description LAPP-6
+#@config LAPP-6
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2630,7 +2634,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_31.model" type="geomtools::stacked_model"]
 
-#@description LAPP-8
+#@config LAPP-8
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2776,7 +2780,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_32.model" type="geomtools::stacked_model"]
 
-#@description LAPP-9
+#@config LAPP-9
 
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
@@ -2923,7 +2927,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_33.model" type="geomtools::stacked_model"]
 
-#@description LAPP-20
+#@config LAPP-20
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 8
@@ -2992,7 +2996,7 @@ visibility.color   : string  = "magenta"
 #########################################################################
 [name="snemo_source_34.model" type="geomtools::stacked_model"]
 
-#@description LAPP-ITEP-21
+#@config LAPP-ITEP-21
 material.ref            : string = "tracking_gas"
 stacked.axis            : string = "z"
 stacked.number_of_items : integer = 1
