@@ -62,8 +62,8 @@ commissioning_single_spot : Vertex generation from from a commissioning spot : H
 free_spot : Vertex generation from an arbitrary spot in the geometry :  : if_free_spot
 real_flat_source_full_copper_mass_bulk : Vertex generation from the bulk of all Copper foils : SourceFoilRealisticFlat : 
 real_flat_source_full_foils_mass_bulk : Vertex generation from the bulk of all source pads (for mass contamination) : SourceFoilRealisticFlat : 
-real_flat_source_full_foils_se82_bulk : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process) : SourceFoilRealisticFlat : 
-real_flat_source_full_copper_surface : Vertex generation from the surface of all Copper foils : SourceFoilRealisticFlat : 
+real_flat_source_full_foils_se82_bulk : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_full_copper_surface : Vertex generation from the surface of all Copper foils : SourceFoilRealisticFlat :
 real_flat_source_full_foils_surface : Vertex generation from the surface of all source pads : SourceFoilRealisticFlat : 
 real_flat_source_strip_0_surface : Vertex generation from the surface of source strip 0 : SourceFoilRealisticFlat : 
 real_flat_source_strip_34_surface : Vertex generation from the surface of source strip 34 : SourceFoilRealisticFlat : 
@@ -137,40 +137,40 @@ real_flat_source_strip_4_bulk : Vertex generation from the bulk volume of source
 real_flat_source_strip_5_bulk : Vertex generation from the bulk volume of source strip 5 : SourceFoilRealisticFlat : 
 real_flat_source_strip_28_bulk : Vertex generation from the bulk volume of source strip 28 : SourceFoilRealisticFlat : 
 real_flat_source_strip_35_bulk : Vertex generation from the bulk volume of source strip 35 : SourceFoilRealisticFlat : 
-real_flat_source_strip_34_se82_bulk : Vertex generation from the bulk volume of source strip 34 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_32_se82_bulk : Vertex generation from the bulk volume of source strip 32 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_33_se82_bulk : Vertex generation from the bulk volume of source strip 33 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_2_se82_bulk : Vertex generation from the bulk volume of source strip 2 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_31_se82_bulk : Vertex generation from the bulk volume of source strip 31 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_8_se82_bulk : Vertex generation from the bulk volume of source strip 8 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_3_se82_bulk : Vertex generation from the bulk volume of source strip 3 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_27_se82_bulk : Vertex generation from the bulk volume of source strip 27 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_26_se82_bulk : Vertex generation from the bulk volume of source strip 26 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_25_se82_bulk : Vertex generation from the bulk volume of source strip 25 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_24_se82_bulk : Vertex generation from the bulk volume of source strip 24 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_23_se82_bulk : Vertex generation from the bulk volume of source strip 23 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_22_se82_bulk : Vertex generation from the bulk volume of source strip 22 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_21_se82_bulk : Vertex generation from the bulk volume of source strip 21 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_20_se82_bulk : Vertex generation from the bulk volume of source strip 20 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_15_se82_bulk : Vertex generation from the bulk volume of source strip 15 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_14_se82_bulk : Vertex generation from the bulk volume of source strip 14 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_9_se82_bulk : Vertex generation from the bulk volume of source strip 9 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_19_se82_bulk : Vertex generation from the bulk volume of source strip 19 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_16_se82_bulk : Vertex generation from the bulk volume of source strip 16 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_13_se82_bulk : Vertex generation from the bulk volume of source strip 13 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_18_se82_bulk : Vertex generation from the bulk volume of source strip 18 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_11_se82_bulk : Vertex generation from the bulk volume of source strip 11 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_12_se82_bulk : Vertex generation from the bulk volume of source strip 12 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_7_se82_bulk : Vertex generation from the bulk volume of source strip 7 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_6_se82_bulk : Vertex generation from the bulk volume of source strip 6 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_29_se82_bulk : Vertex generation from the bulk volume of source strip 29 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_10_se82_bulk : Vertex generation from the bulk volume of source strip 10 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_17_se82_bulk : Vertex generation from the bulk volume of source strip 17 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_30_se82_bulk : Vertex generation from the bulk volume of source strip 30 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_1_se82_bulk : Vertex generation from the bulk volume of source strip 1 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_4_se82_bulk : Vertex generation from the bulk volume of source strip 4 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_5_se82_bulk : Vertex generation from the bulk volume of source strip 5 (Se82 DBD) : SourceFoilRealisticFlat : 
-real_flat_source_strip_28_se82_bulk : Vertex generation from the bulk volume of source strip 28 (Se82 DBD) : SourceFoilRealisticFlat : 
+real_flat_source_strip_34_se82_bulk : Vertex generation from the bulk volume of source strip 34 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_32_se82_bulk : Vertex generation from the bulk volume of source strip 32 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_33_se82_bulk : Vertex generation from the bulk volume of source strip 33 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_2_se82_bulk : Vertex generation from the bulk volume of source strip 2 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_31_se82_bulk : Vertex generation from the bulk volume of source strip 31 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_8_se82_bulk : Vertex generation from the bulk volume of source strip 8 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_3_se82_bulk : Vertex generation from the bulk volume of source strip 3 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_27_se82_bulk : Vertex generation from the bulk volume of source strip 27 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_26_se82_bulk : Vertex generation from the bulk volume of source strip 26 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_25_se82_bulk : Vertex generation from the bulk volume of source strip 25 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_24_se82_bulk : Vertex generation from the bulk volume of source strip 24 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_23_se82_bulk : Vertex generation from the bulk volume of source strip 23 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_22_se82_bulk : Vertex generation from the bulk volume of source strip 22 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_21_se82_bulk : Vertex generation from the bulk volume of source strip 21 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_20_se82_bulk : Vertex generation from the bulk volume of source strip 20 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_15_se82_bulk : Vertex generation from the bulk volume of source strip 15 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_14_se82_bulk : Vertex generation from the bulk volume of source strip 14 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_9_se82_bulk : Vertex generation from the bulk volume of source strip 9 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_19_se82_bulk : Vertex generation from the bulk volume of source strip 19 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_16_se82_bulk : Vertex generation from the bulk volume of source strip 16 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_13_se82_bulk : Vertex generation from the bulk volume of source strip 13 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd 
+real_flat_source_strip_18_se82_bulk : Vertex generation from the bulk volume of source strip 18 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_11_se82_bulk : Vertex generation from the bulk volume of source strip 11 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_12_se82_bulk : Vertex generation from the bulk volume of source strip 12 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_7_se82_bulk : Vertex generation from the bulk volume of source strip 7 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_6_se82_bulk : Vertex generation from the bulk volume of source strip 6 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_29_se82_bulk : Vertex generation from the bulk volume of source strip 29 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_10_se82_bulk : Vertex generation from the bulk volume of source strip 10 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_17_se82_bulk : Vertex generation from the bulk volume of source strip 17 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_30_se82_bulk : Vertex generation from the bulk volume of source strip 30 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_1_se82_bulk : Vertex generation from the bulk volume of source strip 1 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_4_se82_bulk : Vertex generation from the bulk volume of source strip 4 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_5_se82_bulk : Vertex generation from the bulk volume of source strip 5 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
+real_flat_source_strip_28_se82_bulk : Vertex generation from the bulk volume of source strip 28 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd
 real_flat_source_strip_0_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_0_pad_0_surface : SourceFoilRealisticFlat : 
 real_flat_source_strip_34_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_34_pad_0_surface : SourceFoilRealisticFlat : 
 real_flat_source_strip_32_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_32_pad_0_surface : SourceFoilRealisticFlat : 
