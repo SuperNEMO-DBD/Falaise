@@ -25,8 +25,9 @@ custom pipeline module,
 
 1. Reading data from the @ref datatools::things instance
 2. Writing builtin objects to the instance
-3. (DEPRECATED) Implementing custom objects for storage in @ref datatools::things
 
+The topic of changing existing, or adding new, data model objects
+for storage in @ref datatools::things is covered in [another tutorial](@ref working_with_data_objects).
 
 Reading Event Data {#workingwitheventrecords_things_readingdata}
 ==================
@@ -153,11 +154,9 @@ You should see that the `PostProcess` stage results in output containing
 the information written into the `ATMProperties` bank.
 
 
-Implementing Custom Objects for Storage in datatools::things {#things_customdata}
-============================================================
-**Please note that this section is now deprecated as Falaise is
-migrating to a full [ROOT](https://root.cern.ch)-based serialization
-system. During this migration phase, requests for new data types must
-be made via [Issues on Falaise's GitHub](https:/github.com/supernemo-dbd/Falaise/issues).
-The legacy documentation may be consulted online.**
+Next Steps {#things_customdata}
+==============================
+The above covers the basics of reading/writing objects to event records. If the
+builtin data objects do not cover what you need, or you need to add additional
+items to a builtin model, the [following tutorial covers how to do this](@ref working_with_data_objects).
 

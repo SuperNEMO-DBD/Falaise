@@ -47,6 +47,7 @@
 #        :
 #
 [name="source_external_multipad.basic.model" type="geomtools::replicated_model"]
+  #@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
   replicated.axis            : string = "z"
   replicated.number_of_items : integer = 8
   replicated.model           : string = "source_external_pad.basic.model"
@@ -89,6 +90,7 @@
 #        :
 #
 [name="source_internal_multipad.basic.model" type="geomtools::replicated_model"]
+  #@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
   replicated.axis            : string = "z"
   replicated.number_of_items : integer = 8
   replicated.model           : string = "source_internal_pad.basic.model"
@@ -126,6 +128,7 @@
 #               :
 #
 [name="source_internal_strip.basic.model" type="geomtools::stacked_model"]
+  #@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
   stacked.axis            : string = "x"
   stacked.number_of_items : integer = 3
     stacked.model_0 : string = "source_internal_film.basic.model"
@@ -163,6 +166,7 @@
 #               :
 #
 [name="source_external_strip.basic.model" type="geomtools::stacked_model"]
+  #@variant_section_only geometry:layout/if_basic/source_layout/if_basic|true
   stacked.axis            : string = "x"
   stacked.number_of_items : integer = 3
     stacked.model_0 : string = "source_external_film.basic.model"

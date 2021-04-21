@@ -1,3 +1,4 @@
+# -*- mode: conf-unix; -*-
 # Source layer #
 # Description of source blocks geometry for 'basic' source layout
 [name="source_strip_gap.model" type="geomtools::simple_shaped_model"]
@@ -12,17 +13,17 @@
 [name="source_strip_block_0.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 5
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0   : string = "snemo_strip_0.model" # Position  0 (Copper)
+    stacked.model_2   : string = "snemo_strip_31.model" # Position  1 
+    stacked.model_4   : string = "snemo_strip_4.model" # Position  2
+  #@variant_endif
+
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0 : string = "source_external_strip.basic.model"
     stacked.model_2 : string = "source_internal_strip.basic.model"
     stacked.model_4 : string = "source_internal_strip.basic.model"
   #@variant_endif
-# Future: advanced description of the source strips
-# #@variant_if geometry:layout/if_basic/source_layout/if_simple|true
-# stacked.model_0   : string = "source_external_strip.simple.model"
-# stacked.model_2   : string = "source_internal_strip.simple.model"
-# stacked.model_4   : string = "source_internal_strip.simple.model"
-# #@variant_endif
   stacked.model_1 : string = "source_strip_gap.model"
   stacked.model_3 : string = "source_strip_gap.model"
   stacked.label_0 : string = "strip_0"
@@ -41,6 +42,15 @@
 [name="source_strip_block_1.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 11
+
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0  : string = "snemo_strip_7.model"  # Position  3
+    stacked.model_2  : string = "snemo_strip_32.model"  # Position  4
+    stacked.model_4  : string = "snemo_strip_33.model"  # Position  5
+    stacked.model_6  : string = "snemo_strip_26.model"  # Position  6
+    stacked.model_8  : string = "snemo_strip_25.model"  # Position  7
+    stacked.model_10 : string = "snemo_strip_6.model"  # Position  8
+  #@variant_endif
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0  : string = "source_internal_strip.basic.model"
     stacked.model_2  : string = "source_internal_strip.basic.model"
@@ -79,6 +89,16 @@
 [name="source_strip_block_2.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 11
+
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0  : string = "snemo_strip_18.model"  # Position  9
+    stacked.model_2  : string = "snemo_strip_28.model" # Position 10
+    stacked.model_4  : string = "snemo_strip_23.model" # Position 11
+    stacked.model_6  : string = "snemo_strip_24.model" # Position 12
+    stacked.model_8  : string = "snemo_strip_21.model" # Position 13
+    stacked.model_10 : string = "snemo_strip_17.model" # Position 14
+  #@variant_endif
+
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0  : string = "source_internal_strip.basic.model"
     stacked.model_2  : string = "source_internal_strip.basic.model"
@@ -117,6 +137,15 @@
 [name="source_strip_block_3.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 11
+
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0  : string = "snemo_strip_16.model" # Position 15
+    stacked.model_2  : string = "snemo_strip_20.model" # Position 16
+    stacked.model_4  : string = "snemo_strip_29.model" # Position 17
+    stacked.model_6  : string = "snemo_strip_22.model" # Position 18
+    stacked.model_8  : string = "snemo_strip_19.model" # Position 19
+    stacked.model_10 : string = "snemo_strip_15.model" # Position 20
+  #@variant_endif
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0  : string = "source_internal_strip.basic.model"
     stacked.model_2  : string = "source_internal_strip.basic.model"
@@ -155,6 +184,14 @@
 [name="source_strip_block_4.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 11
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0  : string = "snemo_strip_14.model" # Position 21
+    stacked.model_2  : string = "snemo_strip_13.model" # Position 22
+    stacked.model_4  : string = "snemo_strip_12.model" # Position 23
+    stacked.model_6  : string = "snemo_strip_11.model" # Position 24
+    stacked.model_8  : string = "snemo_strip_10.model" # Position 25
+    stacked.model_10 : string = "snemo_strip_9.model" # Position 26
+  #@variant_endif
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0  : string = "source_internal_strip.basic.model"
     stacked.model_2  : string = "source_internal_strip.basic.model"
@@ -193,6 +230,15 @@
 [name="source_strip_block_5.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 11
+
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0  : string = "snemo_strip_8.model" # Position 27
+    stacked.model_2  : string = "snemo_strip_34.model" # Position 28
+    stacked.model_4  : string = "snemo_strip_27.model" # Position 29
+    stacked.model_6  : string = "snemo_strip_30.model" # Position 30
+    stacked.model_8  : string = "snemo_strip_5.model" # Position 31
+    stacked.model_10 : string = "snemo_strip_2.model" # Position 32
+  #@variant_endif
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0  : string = "source_internal_strip.basic.model"
     stacked.model_2  : string = "source_internal_strip.basic.model"
@@ -231,6 +277,12 @@
 [name="source_strip_block_6.model" type="geomtools::stacked_model"]
   stacked.axis            : string = "y"
   stacked.number_of_items : integer = 5
+
+  #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
+    stacked.model_0   : string = "snemo_strip_3.model" # Position 33
+    stacked.model_2   : string = "snemo_strip_1.model" # Position 34
+    stacked.model_4   : string = "snemo_strip_35.model" # Position 35 (Copper)
+  #@variant_endif
   #@variant_if geometry:layout/if_basic/source_layout/if_basic|true
     stacked.model_0 : string = "source_internal_strip.basic.model"
     stacked.model_2 : string = "source_internal_strip.basic.model"
