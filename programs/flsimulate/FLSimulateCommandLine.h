@@ -34,8 +34,6 @@ struct FLSimulateCommandLine {
   std::string userProfile;               //!< User profile
   std::vector<std::string> mountPoints;  //!< Directory mount directives
   std::string configScript;              //!< Path to configuration script
-  std::string outputMetadataFile;        //!< Path for saving metadata
-  bool embeddedMetadata;                 //!< Flag to embed metadata in the output data file
   std::string outputFile;                //!< Path for the output module
   static FLSimulateCommandLine makeDefault();
 };

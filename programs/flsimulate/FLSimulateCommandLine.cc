@@ -24,8 +24,6 @@ FLSimulateCommandLine FLSimulateCommandLine::makeDefault() {
   FLSimulateCommandLine flClarg;
   flClarg.logLevel = datatools::logger::PRIO_ERROR;
   flClarg.configScript = "";
-  flClarg.outputMetadataFile = "";
-  flClarg.embeddedMetadata = true;
   flClarg.outputFile = "";
   flClarg.userProfile = "normal";
   return flClarg;
@@ -139,21 +137,12 @@ void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
       "Example: \n"
       "  -d \"nemoprod@/etc/nemoprod/config\" \n"
       "  -d \"nemoprod.data@/data/nemoprod/runs\"")
-    
+
     ("config,c", bpo::value<std::string>(&clArgs.configScript)->value_name("file"),
       "configuration script for simulation\n"
       "Examples: \n"
       "  -c \"simu.conf\" \n"
       "  -c \"${WORKER_DIR}/config/simu1.conf\"")
-
-    ("output-metadata-file,m", bpo::value<std::string>(&clArgs.outputMetadataFile)->value_name("file"),
-      "file in which to store metadata\n"
-      "Example:\n"
-      "  -m \"simu.meta\"")
-
-    ("embedded-metadata,E", bpo::value<bool>(&clArgs.embeddedMetadata)->value_name("flag")->default_value(true),
-      "flag to (de)activate recording of metadata in the "
-      "simulation results output file")
 
     ("output-file,o", bpo::value<std::string>(&clArgs.outputFile)->required()->value_name("file"),
       "file in which to store simulation results\n"

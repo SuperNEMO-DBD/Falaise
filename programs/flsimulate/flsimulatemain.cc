@@ -133,62 +133,27 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
   system_props.store_integer("numberOfEvents", flSimParameters.numberOfEvents,
                              "Number of simulated events");
 
-  system_props.store_boolean("doSimulation", flSimParameters.doSimulation, "Activate simulation");
-
-  system_props.store_boolean("doDigitization", flSimParameters.doDigitization,
-                             "Activate digitization");
-
   if (!flSimParameters.experimentalSetupUrn.empty()) {
     system_props.store_string("experimentalSetupUrn", flSimParameters.experimentalSetupUrn,
                               "Experimental setup URN");
   }
 
-  system_props.store_boolean("embeddedMetadata", flSimParameters.embeddedMetadata,
-                             "Metadata embedding flag");
+  // Simulation section:
+  datatools::properties &simulation_props =
+      flSimMetadata.add_section("flsimulate.simulation", "flsimulate::section");
+  simulation_props.set_description("Simulation setup parameters");
 
-  // Remove timestamp from metadata:
-  // boost::posix_time::ptime start_run_timestamp =
-  // boost::posix_time::second_clock::universal_time(); system_props.store_string("timestamp",
-  //                           boost::posix_time::to_iso_string(start_run_timestamp),
-  //                           "Run start timestamp");
-
-  if (flSimParameters.doSimulation) {
-    // Simulation section:
-    datatools::properties &simulation_props =
-        flSimMetadata.add_section("flsimulate.simulation", "flsimulate::section");
-    simulation_props.set_description("Simulation setup parameters");
-
-    if (!flSimParameters.simulationSetupUrn.empty()) {
-      simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
-                                    "Simulation setup URN");
-    } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      simulation_props.store_path("simulationSetupConfig",
-                                  flSimParameters.simulationManagerParams.manager_config_filename,
-                                  "Simulation manager configuration file");
-    }
-    if (flSimParameters.saveRngSeeding && !flSimParameters.rngSeeding.empty()) {
-      // Saving effective initial seeds for PRNGs:
-      simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
-    }
+  if (!flSimParameters.simulationSetupUrn.empty()) {
+    simulation_props.store_string("simulationSetupUrn", flSimParameters.simulationSetupUrn,
+                                  "Simulation setup URN");
+  } else if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
+    simulation_props.store_path("simulationSetupConfig",
+                                flSimParameters.simulationManagerParams.manager_config_filename,
+                                "Simulation manager configuration file");
   }
-
-  if (flSimParameters.doDigitization) {
-    // Digitization section:
-    datatools::properties &digitization_props =
-        flSimMetadata.add_section("flsimulate.digitization", "flsimulate::section");
-    digitization_props.set_description("Digitization setup parameters");
-
-    // Not implemented yet.
-
-    // if (!flSimParameters.digitizationSetupUrn.empty()) {
-    //   digitization_props.store_string("digitizationSetupUrn",
-    //                                        flSimParameters.digitizationSetupUrn,
-    //                                        "Digitization setup URN");
-    // } else if (!flSimParameters.digitizationSetupConfig.empty()) {
-    //   digitization_props.store_path("digitizationSetupConfig",
-    //                                      flSimParameters.digitizationSetupConfig,
-    //                                      "Digitization manager configuration file");
-    // }
+  if (!flSimParameters.rngSeeding.empty()) {
+    // Saving effective initial seeds for PRNGs:
+    simulation_props.store_string("rngSeeding", flSimParameters.rngSeeding, "PRNG initial seeds");
   }
 
   // Variants section:
@@ -212,8 +177,7 @@ falaise::exit_code do_metadata(const FLSimulateArgs &flSimParameters,
                               "Variants profile path");
   }
 
-  if (flSimParameters.saveVariantSettings &&
-      !flSimParameters.variantSubsystemParams.settings.empty()) {
+  if (flSimParameters.variantSubsystemParams.settings.empty()) {
     // Saving effective list of variant settings:
     variants_props.store("settings", flSimParameters.variantSubsystemParams.settings,
                          "Effective variants settings");
@@ -287,36 +251,28 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   falaise::exit_code code = falaise::EXIT_OK;
   try {
     // Setup services:
-    datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
     std::string services_config_file = flSimParameters.servicesSubsystemConfig;
     datatools::fetch_path_with_env(services_config_file);
     datatools::properties services_config;
     services_config.read_configuration(services_config_file);
+
+    datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
     services.initialize(services_config);
 
     // Simulation module:
     mctools::g4::simulation_module flSimModule;
     flSimModule.set_name("G4SimulationModule");
-    std::string sd_label = snedm::labels::simulated_data();
-    std::string geo_label = snemo::service_info::geometryServiceName();
-    flSimModule.set_sd_label(sd_label);
-    flSimModule.set_geo_label(geo_label);
+    flSimModule.set_sd_label(snedm::labels::simulated_data());
+    flSimModule.set_geo_label(snemo::service_info::geometryServiceName());
     flSimModule.set_geant4_parameters(flSimParameters.simulationManagerParams);
     flSimModule.initialize_simple_with_service(services);
-    if (flSimModule.is_initialized()) {
-      // Fetch effective seeds' value after simulation module initialization
-      // because the embedded PRNG seed manager makes the final choice of
-      // initial seeds.
-      std::ostringstream rngSeedingOut;
-      rngSeedingOut << flSimModule.get_seed_manager();
-      flSimParameters.rngSeeding = rngSeedingOut.str();
-      DT_LOG_DEBUG(flSimParameters.logLevel, "PRNG seeding = " << flSimParameters.rngSeeding);
-    }
 
-    // Digitization module:
-    if (flSimParameters.doDigitization) {
-      DT_THROW(std::logic_error, "Digitization is not supported yet!");
-    }
+    // Fetch effective seeds' value after simulation module initialization
+    // because the embedded PRNG seed manager makes the final choice of
+    // initial seeds.
+    std::ostringstream rngSeedingOut;
+    rngSeedingOut << flSimModule.get_seed_manager();
+    flSimParameters.rngSeeding = rngSeedingOut.str();
 
     // Output metadata management:
     datatools::multi_properties flSimMetadata("name", "type",
@@ -326,22 +282,13 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
       flSimMetadata.tree_dump(std::cerr, "Simulation metadata: ", "[debug]: ");
     }
 
-    if (!flSimParameters.outputMetadataFile.empty()) {
-      std::string fMetadata = flSimParameters.outputMetadataFile;
-      datatools::fetch_path_with_env(fMetadata);
-      flSimMetadata.write(fMetadata);
-    }
-
     // Simulation output module:
     dpp::output_module simOutput;
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.outputFile);
-    // Metadata management:
-    if (flSimParameters.embeddedMetadata) {
-      // Push the metadata in the metadata store:
-      datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
-      metadataStore = flSimMetadata;
-    }
+    // Push the metadata to the output store:
+    datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
+    metadataStore = flSimMetadata;
     simOutput.initialize_simple();
 
     // Manual Event loop....
@@ -370,8 +317,6 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
         code = falaise::EXIT_UNAVAILABLE;
       }
 
-      // Here we will process optional ASB+Digitization+terminal output modules
-
       if (code != falaise::EXIT_OK) {
         break;
       }
@@ -383,9 +328,7 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   }
 
   // Terminate the variant service:
-  if (variantService.is_started()) {
-    variantService.stop();
-  }
+  variantService.stop();
 
   return code;
 }

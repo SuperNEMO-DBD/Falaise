@@ -22,12 +22,6 @@
 namespace FLSimulate {
 
 // static
-const std::string& FLSimulateArgs::default_file_for_output_metadata() {
-  static const std::string _f("__flsimulate-metadata.log");
-  return _f;
-}
-
-// static
 const std::string& FLSimulateArgs::default_file_for_seeds() {
   static const std::string _f("__flsimulate-seeds.log");
   return _f;
@@ -43,8 +37,6 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.logLevel = datatools::logger::PRIO_ERROR;
   params.userProfile = "normal";
   params.numberOfEvents = 1;
-  params.doSimulation = true;
-  params.doDigitization = false;
   // Identification of the experimental setup:
   params.experimentalSetupUrn = "";
 
@@ -67,22 +59,18 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.simulationManagerParams.mgr_seed =
       mygsl::random_utils::SEED_AUTO;  // PRNG for the Geant4 engine itself
   params.simulationManagerParams.output_profiles_activation_rule = "";
-  params.saveRngSeeding = true;
   params.rngSeeding = "";
 
   // Variants support:
   params.variantConfigUrn = "";
   params.variantProfileUrn = "";
   params.variantSubsystemParams.config_filename = "";
-  params.saveVariantSettings = true;
 
   // Service support:
   params.servicesSubsystemConfigUrn = "";
   params.servicesSubsystemConfig = "";
 
   // I/O control:
-  params.outputMetadataFile = "";
-  params.embeddedMetadata = true;
   params.outputFile = "";
 
   return params;
@@ -105,8 +93,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
   // Feed input from command line to params
   flSimParameters.logLevel = args.logLevel;
   flSimParameters.userProfile = args.userProfile;
-  flSimParameters.outputMetadataFile = args.outputMetadataFile;
-  flSimParameters.embeddedMetadata = args.embeddedMetadata;
   flSimParameters.outputFile = args.outputFile;
   flSimParameters.mountPoints = args.mountPoints;
 
@@ -126,13 +112,7 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                   "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
       if (theTopic.empty()) {
         theTopic = datatools::library_info::default_topic_label();
-        DT_LOG_DEBUG(flSimParameters.logLevel,
-                     "Using default path registration topic: " << theTopic);
       }
-      DT_LOG_DEBUG(flSimParameters.logLevel, "Path registration: " << mountDirective);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Library name : " << theLibname);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Topic        : " << theTopic);
-      DT_LOG_DEBUG(flSimParameters.logLevel, "  Path         : " << thePath);
       try {
         dtklLibInfo.path_registration(theLibname, theTopic, thePath, false);
       } catch (std::exception& error) {
@@ -142,23 +122,12 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
     }
   }
 
-  if (!flSimParameters.embeddedMetadata) {
-    if (flSimParameters.outputMetadataFile.empty()) {
-      // Force a default metadata log file:
-      flSimParameters.outputMetadataFile = FLSimulateArgs::default_file_for_output_metadata();
-    }
-  }
-
   // If a script was supplied, use that to override params
   if (!args.configScript.empty()) {
     datatools::multi_properties flSimConfig("name", "type");
     std::string configScript = args.configScript;
     datatools::fetch_path_with_env(configScript);
     flSimConfig.read(configScript);
-    DT_LOG_DEBUG(flSimParameters.logLevel, "Simulation Configuration:");
-    if (datatools::logger::is_debug(flSimParameters.logLevel)) {
-      flSimConfig.tree_dump(std::cerr, "", "[debug] ");
-    }
 
     // Now extract and bind values as needed
     // Caution: some parameters are only available for specific user profile
@@ -174,14 +143,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       // Printing rate for events:
       flSimParameters.simulationManagerParams.number_of_events_modulo = baseSystem.get<int>(
           "moduloEvents", flSimParameters.simulationManagerParams.number_of_events_modulo);
-
-      // Do simulation:
-      flSimParameters.doSimulation =
-          baseSystem.get<bool>("doSimulation", flSimParameters.doSimulation);
-
-      // Do digitization:
-      flSimParameters.doDigitization =
-          baseSystem.get<bool>("doDigitization", flSimParameters.doDigitization);
     }
 
     // Simulation subsystem:
@@ -192,9 +153,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       // Simulation setup URN:
       flSimParameters.simulationSetupUrn =
           simSubsystem.get<std::string>("simulationSetupUrn", flSimParameters.simulationSetupUrn);
-
-      DT_LOG_DEBUG(flSimParameters.logLevel,
-                   "flSimParameters.simulationSetupUrn=" << flSimParameters.simulationSetupUrn);
 
       // Simulation manager main configuration file:
       if (flSimParameters.userProfile == "production" &&
@@ -216,8 +174,9 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
                                                      << "rngSeedFile"
                                                      << "' simulation configuration parameter!");
       }
-      flSimParameters.simulationManagerParams.input_prng_seeds_file = simSubsystem.get<falaise::path>(
-          "rngSeedFile", flSimParameters.simulationManagerParams.input_prng_seeds_file);
+      flSimParameters.simulationManagerParams.input_prng_seeds_file =
+          simSubsystem.get<falaise::path>(
+              "rngSeedFile", flSimParameters.simulationManagerParams.input_prng_seeds_file);
 
       if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
         if (flSimParameters.userProfile == "production") {
@@ -280,12 +239,6 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       flSimParameters.simulationManagerParams.prng_states_save_modulo = simSubsystem.get<int>(
           "rngStateModuloEvents", flSimParameters.simulationManagerParams.prng_states_save_modulo);
     }
-
-    // Digitization subsystem:
-    // if (flSimConfig.has_key_with_meta("flsimulate.digitization", "flsimulate::section")) {
-    //  datatools::properties digiSubsystem = flSimConfig.get_section("flsimulate.digitization");
-    // Bind properties in this section to the relevant ones in params:
-    //}
 
     // Variants subsystem:
     if (flSimConfig.has_key_with_meta("flsimulate.variantService", "flsimulate::section")) {
@@ -351,19 +304,8 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
 }
 
 void do_postprocess(FLSimulateArgs& flSimParameters) {
-  DT_LOG_TRACE_ENTERING(flSimParameters.logLevel);
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
-
-  if (flSimParameters.simulationManagerParams.input_prng_seeds_file.empty()) {
-    if (!flSimParameters.saveRngSeeding &&
-        flSimParameters.simulationManagerParams.output_prng_seeds_file.empty()) {
-      // Make sure PRNG seeds are stored in a default log file if
-      // seeds are not stored in metadata:
-      flSimParameters.simulationManagerParams.output_prng_seeds_file =
-          FLSimulateArgs::default_file_for_seeds();
-    }
-  }
 
   // Propagate verbosity to variant service:
   flSimParameters.variantSubsystemParams.logging =
@@ -371,28 +313,8 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
 
   if (flSimParameters.simulationSetupUrn.empty()) {
     // Check for hardcoded path to the main simulation setup configuration file:
-    if (!flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      // Only for 'expert' of 'normal' user profiles.
-
-      // Variant configuration:
-      if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration file is provided!");
-      }
-
-      // Services configuration:
-      if (flSimParameters.servicesSubsystemConfig.empty()) {
-        DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration file is provided!");
-      }
-
-    } else {
+    if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
       DT_THROW(std::logic_error, "Missing simulation setup configuration file!");
-
-      //   // Default simulation setup:
-      //   if (flSimParameters.simulationManagerParams.manager_config_filename.empty()) {
-      //     flSimParameters.simulationSetupUrn = default_simulation_setup();
-      //     DT_LOG_WARNING(flSimParameters.logLevel, "Use default simulation setup '" <<
-      //     flSimParameters.simulationSetupUrn << "'.");
-      //   }
     }
   }
 
@@ -502,22 +424,14 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
                                         << flSimParameters.variantSubsystemParams.profile_load
                                         << "'!");
   } else {
-    DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile is set.");
     if (flSimParameters.variantProfileUrn.empty()) {
-      DT_LOG_DEBUG(flSimParameters.logLevel, "No variant profile URN is set.");
       // No variant profile URN is set:
       if (simSetupUrnInfo.is_valid()) {
-        DT_LOG_DEBUG(flSimParameters.logLevel,
-                     "Trying to find a default one from the current simulation setup...");
         // Try to find a default one from the current variant setup:
         if (simSetupUrnInfo.has_topic("defvarprofile") &&
             simSetupUrnInfo.get_components_by_topic("defvarprofile").size() == 1) {
           // If the simulation setup URN implies a "services" component, fetch it!
           flSimParameters.variantProfileUrn = simSetupUrnInfo.get_component("defvarprofile");
-          DT_LOG_DEBUG(flSimParameters.logLevel, "Using the default variant profile '"
-                                                     << flSimParameters.variantProfileUrn << "'"
-                                                     << " associated to simulation setup '"
-                                                     << simSetupUrnInfo.get_urn() << "'.");
         }
       }
     }
@@ -536,27 +450,10 @@ void do_postprocess(FLSimulateArgs& flSimParameters) {
     }
   }
 
-  if (flSimParameters.variantSubsystemParams.config_filename.empty()) {
-    DT_LOG_WARNING(flSimParameters.logLevel, "No variant configuration is provided.");
-  } else {
-    if (flSimParameters.variantSubsystemParams.profile_load.empty()) {
-      DT_LOG_WARNING(flSimParameters.logLevel, "No variant profile is provided.");
-    } else {
-      // Additional variants settings may be allowed but *must* be compatible
-      // with selected variants config and optional variants profile.
-    }
-  }
-
-  if (flSimParameters.servicesSubsystemConfig.empty()) {
-    DT_LOG_WARNING(flSimParameters.logLevel, "No services configuration is provided.");
-  }
-
   // Print:
   if (datatools::logger::is_debug(flSimParameters.logLevel)) {
     flSimParameters.print(std::cerr);
   }
-
-  DT_LOG_TRACE_EXITING(flSimParameters.logLevel);
 }
 
 void FLSimulateArgs::print(std::ostream& out_) const {
@@ -568,26 +465,17 @@ void FLSimulateArgs::print(std::ostream& out_) const {
        << std::endl;
   out_ << tag << "userProfile                = " << userProfile << std::endl;
   out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
-  out_ << tag << "doSimulation               = " << std::boolalpha << doSimulation << std::endl;
-  out_ << tag << "doDigitization             = " << std::boolalpha << doDigitization << std::endl;
   out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;
   out_ << tag << "simulationSetupUrn         = " << simulationSetupUrn << std::endl;
   out_ << tag << "simulationSetupConfig      = " << simulationManagerParams.manager_config_filename
        << std::endl;
-  out_ << tag << "saveRngSeeding             = " << std::boolalpha << saveRngSeeding << std::endl;
   out_ << tag << "rngSeeding                 = " << rngSeeding << std::endl;
-  out_ << tag << "digitizationSetupUrn       = "
-       << (digitizationSetupUrn.empty() ? "<not used>" : digitizationSetupUrn) << std::endl;
   out_ << tag << "variantConfigUrn           = " << variantConfigUrn << std::endl;
   out_ << tag << "variantProfileUrn          = " << variantProfileUrn << std::endl;
   out_ << tag << "variantSubsystemParams     = " << variantSubsystemParams.config_filename
        << std::endl;
-  out_ << tag << "saveVariantSettings        = " << std::boolalpha << saveVariantSettings
-       << std::endl;
   out_ << tag << "servicesSubsystemConfigUrn = " << servicesSubsystemConfigUrn << std::endl;
   out_ << tag << "servicesSubsystemConfig    = " << servicesSubsystemConfig << std::endl;
-  out_ << tag << "outputMetadataFile         = " << outputMetadataFile << std::endl;
-  out_ << tag << "embeddedMetadata           = " << std::boolalpha << embeddedMetadata << std::endl;
   out_ << last_tag << "outputFile                 = " << outputFile << std::endl;
 }
 
