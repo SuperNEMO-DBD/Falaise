@@ -32,6 +32,24 @@ namespace processing {
 DPP_MODULE_REGISTRATION_IMPLEMENT(mock_calorimeter_s2c_module,
                                   "snemo::processing::mock_calorimeter_s2c_module")
 
+void mock_calorimeter_s2c_module::set_geom_manager(const geomtools::manager& gmgr_) {
+  DT_THROW_IF(is_initialized(), std::logic_error,
+              "Module '" << get_name() << "' is already initialized ! ");
+  geoManager = &gmgr_;
+
+  // Check setup label:
+  const std::string& setup_label = geoManager->get_setup_label();
+  DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
+              std::logic_error, "Setup label '" << setup_label << "' is not supported !");
+  return;
+}
+
+const geomtools::manager& mock_calorimeter_s2c_module::get_geom_manager() const {
+  DT_THROW_IF(!is_initialized(), std::logic_error,
+              "Module '" << get_name() << "' is not initialized ! ");
+  return *geoManager;
+}
+
 void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
                                              datatools::service_manager& /*unused*/,
                                              dpp::module_handle_dict_type& /*unused*/) {

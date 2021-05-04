@@ -52,6 +52,12 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
   // Because dpp::base_module is insane
   virtual ~mock_calorimeter_s2c_module() { this->reset(); }
 
+  /// Setting geometry manager
+  void set_geom_manager(const geomtools::manager& gmgr_);
+
+  /// Getting geometry manager
+  const geomtools::manager& get_geom_manager() const;
+
   /// Initialization
   virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
                           dpp::module_handle_dict_type& /*unused*/);
@@ -78,6 +84,7 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
                     snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
  private:
+  const geomtools::manager* geoManager;  //!< The geometry manager
   mygsl::rng RNG_{};                     //!< PRN generator
   std::vector<std::string> caloTypes{};  //!< Calorimeter hit categories
   typedef std::map<std::string, CalorimeterModel> CaloModelMap;
