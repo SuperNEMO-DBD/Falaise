@@ -99,7 +99,6 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
   double timeWindow{100. * CLHEP::ns};  //!< Time width of a calo cluster
   bool quenchAlphas{true};              //!< Flag to (dis)activate the alpha quenching
   bool assocMCHitId{false};             //!< The flag to reference MC true hit
-  bool _alpha_quenching_;                             //!< Flag to (dis)activate the alpha quenching
   std::vector<double> _uniformity_correction_parameters_mwall_8inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 8"
   std::vector<double> _uniformity_correction_parameters_mwall_5inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 5"
   std::vector<double> _uniformity_correction_parameters_xwall_{1,1};       //!< Polynomial parameters for the uniformity correction for XWall
