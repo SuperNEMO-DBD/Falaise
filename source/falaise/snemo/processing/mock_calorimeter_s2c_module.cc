@@ -32,26 +32,8 @@ namespace processing {
 DPP_MODULE_REGISTRATION_IMPLEMENT(mock_calorimeter_s2c_module,
                                   "snemo::processing::mock_calorimeter_s2c_module")
 
-void mock_calorimeter_s2c_module::set_geom_manager(const geomtools::manager& gmgr_) {
-  DT_THROW_IF(is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is already initialized ! ");
-  geoManager = &gmgr_;
-
-  // Check setup label:
-  const std::string& setup_label = geoManager->get_setup_label();
-  DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
-              std::logic_error, "Setup label '" << setup_label << "' is not supported !");
-  return;
-}
-
-const geomtools::manager& mock_calorimeter_s2c_module::get_geom_manager() const {
-  DT_THROW_IF(!is_initialized(), std::logic_error,
-              "Module '" << get_name() << "' is not initialized ! ");
-  return *geoManager;
-}
-
 void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
-                                             datatools::service_manager& /*unused*/,
+                                             datatools::service_manager& sm,
                                              dpp::module_handle_dict_type& /*unused*/) {
   DT_THROW_IF(is_initialized(), std::logic_error,
               "Module '" << get_name() << "' is already initialized ! ");
@@ -62,6 +44,8 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   sdInputTag = fps.get<std::string>("SD_label", snedm::labels::simulated_data());
   cdOutputTag = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());
 
+  geoManager = snemo::service_handle<snemo::geometry_svc>{sm};
+
   // Initialize the embedded random number generator:
   int random_seed = fps.get<int>("random.seed", 12345);
   std::string random_id = fps.get<std::string>("random.id", "mt19937");
@@ -71,9 +55,12 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   caloTypes = fps.get<std::vector<std::string>>("hit_categories", {"calo", "xcalo", "gveto"});
 
   caloModels = {};
-  for (const std::string& calo : caloTypes) {
-    auto caloPS = fps.get<falaise::property_set>(calo, falaise::property_set{});
-    caloModels.emplace(std::make_pair(calo, CalorimeterModel{caloPS}));
+
+  // Initialize the calorimeter regime utility from the database
+  if (ps.has_key("calorimeter_regime_database_path")) {
+    std::string _calorimeter_regime_database_path_ = ps.fetch_string("calorimeter_regime_database_path");
+    datatools::fetch_path_with_env(_calorimeter_regime_database_path_);
+    this->parse_calorimeter_regime_database(_calorimeter_regime_database_path_);
   }
 
   // Setup trigger time
@@ -89,6 +76,77 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
 }
 
 void mock_calorimeter_s2c_module::reset() { this->base_module::_set_initialized(false); }
+
+void mock_calorimeter_s2c_module::parse_calorimeter_regime_database(const std::string & database_path_)
+{
+  DT_LOG_DEBUG(get_logging_priority(), "parsing file: " <<  database_path_);
+  std::ifstream database_file_ (database_path_.c_str());
+
+  // Remove first line (header)
+  std::string a_line_;
+  std::getline(database_file_, a_line_);
+
+  while ( std::getline(database_file_, a_line_) ) {
+
+    std::stringstream a_stream (a_line_);
+
+    // Retrieve each field separated by "\t"
+    std::string a_field_;
+    std::vector<std::string> stream_fields_;
+    while ( std::getline(a_stream, a_field_, '\t') ) {
+      stream_fields_.push_back(a_field_);
+    }
+
+    // field 0 : geom_id
+    std::string a_geomid_string_ = stream_fields_[0];
+    // database_file_ >> a_geomid_string_;
+    DT_LOG_DEBUG(get_logging_priority(), "read '" << a_geomid_string_ << "'");
+
+    std::istringstream a_geomid_iss (a_geomid_string_);
+    geomtools::geom_id a_geomid_;
+    a_geomid_iss >> a_geomid_;
+
+    // Make sure geom_id is syntaxically valid
+    DT_THROW_IF(!a_geomid_.is_valid(), std::logic_error, "geom_id syntax of '" << a_geomid_iss.str() << "' is not valid !");
+
+    // main wall geom_id need an additional depth '*'
+    if (a_geomid_.get_type() == 1302)
+      a_geomid_.set_any(a_geomid_.get_depth());
+
+    // field1: energy resolution
+    falaise::fraction_t a_fwhm_value_ {datatools::units::get_value_with_unit(stream_fields_[1])/CLHEP::perCent, "%"};
+
+    // field2/field3: high/low energy threshold
+    falaise::energy_t a_ht_value_   {datatools::units::get_value_with_unit(stream_fields_[2])/CLHEP::keV, "keV"};
+    falaise::energy_t a_lt_value_   {datatools::units::get_value_with_unit(stream_fields_[3])/CLHEP::keV, "keV"};
+
+    // field4: alpha quenching parameters
+    datatools::properties::data::vdouble some_alpha_quenching_pars_;
+    std::istringstream alpha_quenching_iss (stream_fields_[4]);
+    for (int par = 0; par < 3 ; ++par) {
+      double a_alpha_quenching_par;
+      alpha_quenching_iss >> a_alpha_quenching_par;
+      some_alpha_quenching_pars_.push_back(a_alpha_quenching_par);
+    }
+
+    // field5: scintillator relaxation time
+    falaise::time_t a_sc_relax_time_ {datatools::units::get_value_with_unit(stream_fields_[5])/CLHEP::ns, "ns"};
+
+    falaise::property_set a_calorimeter_regime_ps;
+    a_calorimeter_regime_ps.put("energy.resolution",     a_fwhm_value_);
+    a_calorimeter_regime_ps.put("energy.high_threshold", a_ht_value_);
+    a_calorimeter_regime_ps.put("energy.low_threshold",  a_lt_value_);
+    a_calorimeter_regime_ps.put("alpha_quenching_parameters",   some_alpha_quenching_pars_);
+    a_calorimeter_regime_ps.put("scintillator_relaxation_time", a_sc_relax_time_);
+
+    // create and store this regim in the model map
+    CalorimeterModel a_calorimeter_regime_ (a_calorimeter_regime_ps);
+    caloModels[a_geomid_] = a_calorimeter_regime_;
+
+  }
+
+  DT_LOG_DEBUG(get_logging_priority(), "parsing file end");
+}
 
 // Processing :
 dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools::things& event) {
@@ -118,6 +176,12 @@ dpp::base_module::process_status mock_calorimeter_s2c_module::process(datatools:
   return dpp::base_module::PROCESS_SUCCESS;
 }
 
+const CalorimeterModel& mock_calorimeter_s2c_module::get_calorimeter_regime(const geomtools::geom_id & gid)
+{
+  DT_THROW_IF(caloModels.find(gid) == caloModels.end(), std::logic_error, "Missing calorimeter regime for '" << gid << "' !");
+  return caloModels.at(gid);
+}
+
 // Here collect the 'calorimeter' raw hits from the simulation data source
 // and build the final list of calibrated 'calorimeter' hits
 void mock_calorimeter_s2c_module::digitizeHits(
@@ -125,19 +189,25 @@ void mock_calorimeter_s2c_module::digitizeHits(
     snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
   uint32_t calibrated_calorimeter_hit_id = 0;
 
-  // Loop over all 'calorimeter hit' categories:
-  for (const auto& calo : caloModels) {
-    auto& theCaloID = calo.first;
+  for (const auto& caloType : caloTypes) {
 
-    if (!simdata.has_step_hits(theCaloID)) {
+    if (!simdata.has_step_hits(caloType)) {
       continue;
     }
 
     // Loop over per-category hits
-    auto& mcHits = simdata.get_step_hits(theCaloID);
-    auto& theCaloModel = calo.second;
+    auto& mcHits = simdata.get_step_hits(caloType);
+
+    // auto& theCaloModel = calo.second;
 
     for (auto& a_calo_mc_hit : mcHits) {
+
+      // Extract the corresponding geom ID:
+      auto& geomID = a_calo_mc_hit->get_geom_id();
+
+      // Retrieve the calorimeter regime
+      auto& theCaloModel = this->get_calorimeter_regime(geomID);
+
       // Quench energy if it's an Alpha particle
       double energyDeposit = a_calo_mc_hit->get_energy_deposit();
 
@@ -148,8 +218,6 @@ void mock_calorimeter_s2c_module::digitizeHits(
       // Get the step hit time start:
       const double step_hit_time_start = a_calo_mc_hit->get_time_start();
 
-      // Extract the corresponding geom ID:
-      auto& geomID = a_calo_mc_hit->get_geom_id();
       using CCHitHdl = snemo::datamodel::CalorimeterHitHdlCollection::value_type;
 
       auto found = std::find_if(calohits.rbegin(), calohits.rend(), [&geomID](CCHitHdl const& x) {
@@ -169,7 +237,7 @@ void mock_calorimeter_s2c_module::digitizeHits(
         newHit->set_energy(energyDeposit);
 
         // Add a properties to ease the final calibration
-        newHit->grab_auxiliaries().store("category", theCaloID);
+        newHit->grab_auxiliaries().store("category", caloType);
 
         // 2012-09-17 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
@@ -226,8 +294,8 @@ void mock_calorimeter_s2c_module::calibrateHits(
   for (auto& theCaloHit : calohits) {
     // Setting category in order to get the correct energy resolution:
     // first recover the calorimeter category
-    const std::string& category_name = theCaloHit->get_auxiliaries().fetch_string("category");
-    const CalorimeterModel& the_calo_regime = caloModels.at(category_name);
+    const geomtools::geom_id& geomID = theCaloHit->get_geom_id();
+    const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
 
     // Compute a random 'experimental' energy taking into account
     // the expected energy resolution of the calorimeter hit:
@@ -254,8 +322,8 @@ void mock_calorimeter_s2c_module::triggerHits(
   for (auto& theCaloHit : calohits) {
     // Setting category in order to get the correct trigger parameters:
     // first recover the calorimeter category
-    const std::string& category_name = theCaloHit->get_auxiliaries().fetch_string("category");
-    const CalorimeterModel& the_calo_regime = caloModels.at(category_name);
+    const geomtools::geom_id& geomID = theCaloHit->get_geom_id();
+    const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
     const double energy = theCaloHit->get_energy();
     if (the_calo_regime.aboveHighThreshold(energy)) {
       high_threshold = true;
@@ -267,8 +335,8 @@ void mock_calorimeter_s2c_module::triggerHits(
     // Search and erase for low threshold hits:
     // Awkward because we have to handle all hit categories together
     for (auto iCheckedHit = calohits.begin(); iCheckedHit != calohits.end(); /**/) {
-      const std::string& category_name = (*iCheckedHit)->get_auxiliaries().fetch_string("category");
-      const CalorimeterModel& the_calo_regime = caloModels.at(category_name);
+      const geomtools::geom_id& geomID = (*iCheckedHit)->get_geom_id();
+      const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
       const double energy = (*iCheckedHit)->get_energy();
       // If energy hit is too low then remove calorimeter hit
       if (!the_calo_regime.aboveLowThreshold(energy)) {

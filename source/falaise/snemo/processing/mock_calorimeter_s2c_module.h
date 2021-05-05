@@ -34,6 +34,9 @@
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/processing/calorimeter_regime.h>
 
+#include <falaise/snemo/services/geometry.h>
+#include <falaise/snemo/services/service_handle.h>
+
 namespace geomtools {
 class manager;
 }
@@ -52,18 +55,17 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
   // Because dpp::base_module is insane
   virtual ~mock_calorimeter_s2c_module() { this->reset(); }
 
-  /// Setting geometry manager
-  void set_geom_manager(const geomtools::manager& gmgr_);
-
-  /// Getting geometry manager
-  const geomtools::manager& get_geom_manager() const;
-
   /// Initialization
   virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
                           dpp::module_handle_dict_type& /*unused*/);
 
   /// Reset
   virtual void reset();
+
+  /// Parse calorimeter regime database file
+  void parse_calorimeter_regime_database(const std::string & database_path_);
+
+  const CalorimeterModel& get_calorimeter_regime(const geomtools::geom_id & gid);
 
   /// Data record processing
   virtual process_status process(datatools::things& event);
@@ -84,10 +86,10 @@ class mock_calorimeter_s2c_module : public dpp::base_module {
                     snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
  private:
-  const geomtools::manager* geoManager;  //!< The geometry manager
+  snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
   mygsl::rng RNG_{};                     //!< PRN generator
   std::vector<std::string> caloTypes{};  //!< Calorimeter hit categories
-  typedef std::map<std::string, CalorimeterModel> CaloModelMap;
+  typedef std::map<geomtools::geom_id, CalorimeterModel> CaloModelMap;
   CaloModelMap caloModels{};            //!< Calorimeter regime tools
   std::string sdInputTag{};             //!< The label of the simulated data bank
   std::string cdOutputTag{};            //!< The label of the calibrated data bank
