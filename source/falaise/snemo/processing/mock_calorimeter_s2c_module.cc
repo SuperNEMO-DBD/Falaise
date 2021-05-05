@@ -4,6 +4,7 @@
 
 // Ourselves:
 #include "mock_calorimeter_s2c_module.h"
+#include "mock_calorimeter_s2c_module_utils.h"
 
 // Standard library:
 #include <sstream>
@@ -63,6 +64,34 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
     this->parse_calorimeter_regime_database(_calorimeter_regime_database_path_);
   }
 
+  // Initialize the pol3d parameters for MWall 8"
+  if (ps.has_key("pol3d_parameters_mwall_8inch_path")) {
+    std::string _pol3d_parameters_mwall_8inch_path_ = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
+    datatools::fetch_path_with_env(_pol3d_parameters_mwall_8inch_path_);
+    _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_8inch_path_);
+  }
+
+  // Initialize the pol3d parameters for MWall 5"
+  if (ps.has_key("pol3d_parameters_mwall_5inch_path")) {
+    std::string _pol3d_parameters_mwall_5inch_path_ = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
+    datatools::fetch_path_with_env(_pol3d_parameters_mwall_5inch_path_);
+    _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_5inch_path_);
+  }
+
+  // Initialize the pol3d parameters for XWall
+  if (ps.has_key("pol3d_parameters_xwall_path")) {
+    std::string _pol3d_parameters_xwall_path_ = ps.fetch_string("pol3d_parameters_xwall_path");
+    datatools::fetch_path_with_env(_pol3d_parameters_xwall_path_);
+    _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(_pol3d_parameters_xwall_path_);
+  }
+
+  // Initialize the pol3d parameters for GVeto
+  if (ps.has_key("pol3d_parameters_gveto_path")) {
+    std::string _pol3d_parameters_gveto_path_ = ps.fetch_string("pol3d_parameters_gveto_path");
+    datatools::fetch_path_with_env(_pol3d_parameters_gveto_path_);
+    _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(_pol3d_parameters_gveto_path_);
+  }
+
   // Setup trigger time
   timeWindow = fps.get<falaise::time_t>("cluster_time_width", {100., "ns"})();
 
@@ -79,12 +108,13 @@ void mock_calorimeter_s2c_module::reset() { this->base_module::_set_initialized(
 
 void mock_calorimeter_s2c_module::parse_calorimeter_regime_database(const std::string & database_path_)
 {
-  DT_LOG_DEBUG(get_logging_priority(), "parsing file: " <<  database_path_);
   std::ifstream database_file_ (database_path_.c_str());
 
   // Remove first line (header)
   std::string a_line_;
   std::getline(database_file_, a_line_);
+
+  int nb_lines = 0;
 
   while ( std::getline(database_file_, a_line_) ) {
 
@@ -143,9 +173,25 @@ void mock_calorimeter_s2c_module::parse_calorimeter_regime_database(const std::s
     CalorimeterModel a_calorimeter_regime_ (a_calorimeter_regime_ps);
     caloModels[a_geomid_] = a_calorimeter_regime_;
 
+    nb_lines++;
   }
 
-  DT_LOG_DEBUG(get_logging_priority(), "parsing file end");
+  DT_LOG_NOTICE(get_logging_priority(), "parsed " << nb_lines << " entries in " <<  database_path_);
+}
+
+std::vector<double> mock_calorimeter_s2c_module::parse_pol3d_parameters(const std::string & parameters_path)
+{
+  std::ifstream parameters_file_ (parameters_path.c_str());
+
+  double par, par_err;
+  std::vector<double> parameters;
+
+  while(parameters_file_ >> par >> par_err)
+    parameters.push_back(par);
+
+  DT_LOG_NOTICE(get_logging_priority(), "parsed " << parameters.size() << " params in " <<  parameters_path);
+
+  return parameters;
 }
 
 // Processing :
@@ -215,6 +261,79 @@ void mock_calorimeter_s2c_module::digitizeHits(
         energyDeposit = theCaloModel.quenchAlphaParticle(energyDeposit);
       }
 
+      // Compute non-linearity correction factor
+      double birksCerenkovCorrectionFactor = 1.0;
+
+      // handle only e- (e- and gamma's Compton) and e+
+      if ((a_calo_mc_hit->get_particle_name() == "e-") || (a_calo_mc_hit->get_particle_name() == "e+"))
+	{
+	  // currently hard coded correction ... -> to switch into parameters in conf file
+	  birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
+
+	  // correction is negative bellow 2.5 keV ...
+	  if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
+	}
+
+      // Compute uniformity correction factor
+      double uniformityCorrectionFactor = 1.0;
+
+      // retrieve energy deposit position and compute average one
+      geomtools::vector_3d  _position_start_ = a_calo_mc_hit->get_position_start();
+      geomtools::vector_3d  _position_stop_  = a_calo_mc_hit->get_position_stop();
+      geomtools::vector_3d  _position_mean_ = 0.5 * (_position_start_ + _position_stop_);
+
+      // In case of main wall, we want to retrieve the ID of the
+      // front scintillator (part with step) with [AAAA:B:C:D:E:1]
+      geomtools::geom_id a_scin_gid = a_calo_mc_hit->get_geom_id();
+      if (a_scin_gid.get_type() == 1302) a_scin_gid.set(4, 1);
+
+      const geomtools::mapping   & mapping = geoManager->get_mapping();
+      const geomtools::geom_info & a_block_ginfo  = mapping.get_geom_info (a_scin_gid);
+      const geomtools::placement & a_block_world_placement = a_block_ginfo.get_world_placement();
+
+      // translate mean position of energy deposit in scintillator frame
+      geomtools::placement _position_mean_block_;
+      a_block_world_placement.relocate(_position_mean_, _position_mean_block_);
+
+      geomtools::vector_3d _vector_sc_ = _position_mean_block_.get_translation();
+
+      const double _position_x =  (_vector_sc_.x());
+      const double _position_y =  (_vector_sc_.y());
+      const double _position_z = -(_vector_sc_.z());
+
+      double _position_xyz[3] = {_position_y, -_position_x, _position_z};
+
+      // Retrieve uniformity correction
+      switch (a_scin_gid.get_type()) {
+
+      case 1302: // M-wall
+	_position_xyz[2] += 15.50000001; // add half height of scintillator
+	if (std::abs(_position_z) < 1500.)
+	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
+	else
+	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
+	break;
+
+      case 1232: // X-wall
+	_position_xyz[2] += 75.10000001; // add half height of scintillator
+	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
+	break;
+
+      case 1252: // V-wall
+	_position_xyz[2] += 75.10000001;
+	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
+	break;
+
+      default:
+	DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
+      }
+
+
+      DT_LOG_DEBUG(get_logging_priority(), "step_hit of " << energyDeposit/CLHEP::MeV << " MeV in " << a_scin_gid
+		   << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
+		   << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
+
+
       // Get the step hit time start:
       const double step_hit_time_start = a_calo_mc_hit->get_time_start();
 
@@ -236,8 +355,17 @@ void mock_calorimeter_s2c_module::digitizeHits(
         newHit->set_time(step_hit_time_start);
         newHit->set_energy(energyDeposit);
 
+        // Grab auxiliaries
+	datatools::properties & newHitProperties = newHit->grab_auxiliaries();
+
         // Add a properties to ease the final calibration
-        newHit->grab_auxiliaries().store("category", caloType);
+        newHitProperties.store("category", caloType);
+
+	// Store energy deposit details
+	newHitProperties.store("edep",     energyDeposit);
+	newHitProperties.store("edep_u",   energyDeposit * uniformityCorrectionFactor);
+	newHitProperties.store("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+	newHitProperties.store("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
 
         // 2012-09-17 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
@@ -253,26 +381,30 @@ void mock_calorimeter_s2c_module::digitizeHits(
         auto& existingHit = *found;
 
         // Grab auxiliaries :
-        datatools::properties& cc_prop = existingHit->grab_auxiliaries();
+        datatools::properties& existingHitProperties = existingHit->grab_auxiliaries();
 
         // 2012-07-26 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
-          cc_prop.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY, a_calo_mc_hit->get_hit_id());
+          existingHitProperties.update(mctools::hit_utils::HIT_MC_HIT_ID_KEY, a_calo_mc_hit->get_hit_id());
         }
 
         // Check time between clusters
         const double delta_time = step_hit_time_start - existingHit->get_time();
         // cluster arriving too late : do not care of it
         if (delta_time > timeWindow) {
-          cc_prop.update_flag("pile_up");
+          existingHitProperties.update_flag("pile_up");
           continue;
         }
 
         // Cluster coming before : it becomes the new one
         if (delta_time < -timeWindow) {
-          cc_prop.update_flag("pile_up");
+          existingHitProperties.update_flag("pile_up");
           existingHit->set_time(step_hit_time_start);
           existingHit->set_energy(energyDeposit);
+	  existingHitProperties.update("edep",     energyDeposit);
+	  existingHitProperties.update("edep_u",   energyDeposit * uniformityCorrectionFactor);
+	  existingHitProperties.update("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+	  existingHitProperties.update("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
           continue;
         }
 
@@ -280,9 +412,28 @@ void mock_calorimeter_s2c_module::digitizeHits(
         const double calo_time = std::min(step_hit_time_start, existingHit->get_time());
         existingHit->set_time(calo_time);
 
+	double calo_energy;
+
         // Sum energies
-        const double calo_energy = energyDeposit + existingHit->get_energy();
+        calo_energy = energyDeposit + existingHit->get_energy();
         existingHit->set_energy(calo_energy);
+
+	// Sum energy deposit details
+	existingHitProperties.fetch("edep", calo_energy);
+	calo_energy += energyDeposit;
+	existingHitProperties.update("edep", calo_energy);
+
+	existingHitProperties.fetch("edep_u", calo_energy);
+	calo_energy += energyDeposit * uniformityCorrectionFactor;
+	existingHitProperties.update("edep_u", calo_energy);
+
+	existingHitProperties.fetch("edep_bc", calo_energy);
+	calo_energy += energyDeposit * birksCerenkovCorrectionFactor;
+	existingHitProperties.update("edep_bc", calo_energy);
+
+	existingHitProperties.fetch("edep_bcu", calo_energy);
+	calo_energy += energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor;
+	existingHitProperties.update("edep_bcu", calo_energy);
       }
     }  // loop over hits
   }    // loop over hit category
@@ -299,11 +450,34 @@ void mock_calorimeter_s2c_module::calibrateHits(
 
     // Compute a random 'experimental' energy taking into account
     // the expected energy resolution of the calorimeter hit:
-    const double energy = theCaloHit->get_energy();
-    const double measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
-    const double measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
+    double energy = theCaloHit->get_energy();
+    double measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
+    double measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
     theCaloHit->set_energy(measuredEnergy);
     theCaloHit->set_sigma_energy(measuredEnergySigma);
+
+    // repeat the same for energy deposit details
+    datatools::properties& caloHitProperties = theCaloHit->grab_auxiliaries();
+    caloHitProperties.store("evis", measuredEnergy);
+    caloHitProperties.store("sigma_evis", measuredEnergySigma);
+
+    caloHitProperties.fetch("edep_u", energy);
+    measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
+    measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
+    caloHitProperties.store("evis_u", measuredEnergy);
+    caloHitProperties.store("sigma_evis_u", measuredEnergySigma);
+
+    caloHitProperties.fetch("edep_bc", energy);
+    measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
+    measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
+    caloHitProperties.store("evis_bc", measuredEnergy);
+    caloHitProperties.store("sigma_evis_bc", measuredEnergySigma);
+
+    caloHitProperties.fetch("edep_bcu", energy);
+    measuredEnergy = the_calo_regime.smearEnergy(RNG_, energy);
+    measuredEnergySigma = the_calo_regime.getSigmaEnergy(measuredEnergy);
+    caloHitProperties.store("evis_bcu", measuredEnergy);
+    caloHitProperties.store("sigma_evis_bcu", measuredEnergySigma);
 
     // Compute a random 'experimental' time taking into account
     // the expected time resolution of the calorimeter hit:
