@@ -298,7 +298,7 @@ option(${PROJECT_NAME_UC}_COMPILER_ERROR_ON_WARNING "Turn warnings into errors" 
 mark_as_advanced(${PROJECT_NAME_UC}_COMPILER_ERROR_ON_WARNING)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|(Apple)+Clang")
-  set(PROJECT_CXX_FLAGS "-Wall -Wextra -Wshadow -pedantic")
+  set(PROJECT_CXX_FLAGS "-Wall -Wextra -Wshadow -pedantic -Wimplicit-fallthrough=0")
 
   # Disable specific warnings on GCC (-Wlong-long/pedantic) because Root source code (Rtypes.h)
   # makes use of unsupported type by ISO C++ 98 ([unsigned] long long int) and
