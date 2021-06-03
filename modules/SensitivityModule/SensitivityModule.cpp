@@ -1,7 +1,7 @@
 #include "SensitivityModule.h"
 const double highEnergyLimit=0.150;// 150 keV
 const double lowEnergyLimit=0.050; // 50 keV
-const double electronMass=0.5109989461; // From pdg
+//const double electronMass=0.5109989461; // From pdg
 const double speedOfLight=299792458 * 1e-9 * 1000; // Millimeters per nanosecond
 
 int mainWallHitType=1302;
@@ -189,30 +189,30 @@ SensitivityModule::process(datatools::things& workItem) {
   bool passesTwoClusters=false;
   bool passesTwoTracks=false;
   bool passesAssociatedCalorimeters=false;
-  uint numberOfElectrons=0;
+  //uint numberOfElectrons=0;
   uint numberOfGammas=0;
   double totalCalorimeterEnergy=0;
   double higherElectronEnergy=0;
   double lowerElectronEnergy=0;
   int verticesOnFoil=0;
   int verticesInTracker=0;
-  int firstVerticesOnFoil=0;
+  //int firstVerticesOnFoil=0;
   double timeDelay=-1;
   bool is2electron=false;
   bool is1electron=false;
   double internalProbability=-1;
-  double internalChiSquared=-1;
-  double externalChiSquared=-1;
+  //double internalChiSquared=-1;
+  //double externalChiSquared=-1;
   double externalProbability=-1;
   double foilProjectedExternalProbability=-1;
   double foilProjectedInternalProbability=-1;
   bool is1e1gamma=false;
   bool is1engamma=false;
   bool is1e1alpha=false;
-  double electrongammaInternalProbability=-1;
-  double electrongammaExternalProbability=-1;
-  double electrongammaProjInternalProb=-1;
-  double electrongammaProjExternalProb=-1;
+  //double electrongammaInternalProbability=-1;
+  //double electrongammaExternalProbability=-1;
+  //double electrongammaProjInternalProb=-1;
+  //double electrongammaProjExternalProb=-1;
   double higherTrueEnergy=0;
   double lowerTrueEnergy=0;
   double totalTrueEnergy=0;
@@ -223,20 +223,20 @@ SensitivityModule::process(datatools::things& workItem) {
   double  trueVertexZ=-9999;
   int clusterCount=0;
   int trackCount=0;
-  int alphaCount=0;
+  //int alphaCount=0;
   int delayedHitCount=0;
   int foilAlphaCount=0;
-  int associatedTrackCount=0;
+  //int associatedTrackCount=0;
   int smallClusterCount=0;
-  double delayedClusterHitCount=0;
-  double trackLengthAlpha=0;
-  double projectedTrackLengthAlpha=0;
-  double maxAlphaTime=-1;
+  //double delayedClusterHitCount=0;
+  //double trackLengthAlpha=0;
+  //double projectedTrackLengthAlpha=0;
+  //double maxAlphaTime=-1;
   int caloHitCount=0;
-  int foilVertexCount=0;
+  //int foilVertexCount=0;
   double highestGammaEnergy=0;
   double edgemostVertex=0;
-  double distanceBetweenFoilGeigerCell=30.838;
+  //double distanceBetweenFoilGeigerCell=30.838;
 
   std::vector<snemo::datamodel::particle_track> gammaCandidates;
   std::vector<snemo::datamodel::particle_track> electronCandidates;
@@ -280,12 +280,12 @@ SensitivityModule::process(datatools::things& workItem) {
   TVector3 gammaDirection; // We are only calculating this for the highest-energy gamma right now
   gammaDirection.SetXYZ(0,0,0);
 
-  double angleBetweenTracks;
-  bool sameSideOfFoil=false;
-  bool edgemostJoinedElectron=false;
+  //double angleBetweenTracks;
+  //bool sameSideOfFoil=false;
+  //bool edgemostJoinedElectron=false;
   double projectionDistanceXY=0;
 
-  uint highEnergyIndex = 0;
+  //uint highEnergyIndex = 0;
   // Grab calibrated data bank
   // Calibrated data will only be present in reconstructed files,
   // so wrap in a try block
@@ -599,7 +599,7 @@ SensitivityModule::process(datatools::things& workItem) {
         trueVertexZ= simData.get_vertex().z();
         mctools::simulated_data::primary_event_type primaryEvent=simData.get_primary_event ();
 
-        for (int i=0;i<primaryEvent.get_number_of_particles();i++)// should be 2 particles for 0nubb
+        for (size_t i=0;i<primaryEvent.get_number_of_particles();++i)// should be 2 particles for 0nubb
         {
           genbb::primary_particle trueParticle= primaryEvent.get_particle(i);
           double energy=trueParticle.get_kinetic_energy();
@@ -667,14 +667,14 @@ SensitivityModule::process(datatools::things& workItem) {
 
   // "First" track is the higher energy one
   //uint highEnergyIndex =(calorimeterEnergy[0]>calorimeterEnergy[1] ? 0:1);
-  uint lowEnergyIndex = 1-highEnergyIndex;
+  //uint lowEnergyIndex = 1-highEnergyIndex;
 
 
   // And the new vertex vectors - we can rely on these all being the same size of vectors as we populate them all together
 
 
 
-  for (int i=0;i<electronVertices.size();i++)
+  for (size_t i=0;i<electronVertices.size();i++)
   {
     sensitivity_.electron_vertex_x_.push_back(electronVertices.at(i).X());
     sensitivity_.electron_vertex_y_.push_back(electronVertices.at(i).Y());
@@ -687,7 +687,7 @@ SensitivityModule::process(datatools::things& workItem) {
     sensitivity_.electron_dir_z_.push_back(electronDirections.at(i).Z());
   }
 
-  for (int i=0;i<alphaVertices.size();i++)
+  for (size_t i=0;i<alphaVertices.size();i++)
   {
     sensitivity_.alpha_vertex_x_.push_back(alphaVertices.at(i).X());
     sensitivity_.alpha_vertex_y_.push_back(alphaVertices.at(i).Y());
@@ -880,7 +880,7 @@ void SensitivityModule::CalculateProbabilities(double &internalProbability, doub
 }
 
 // Calculate probabilities for an internal (both particles from the foil) and external (calo 1 -> foil -> calo 2) topology
-void SensitivityModule::CalculateProbabilities(double &internalProbability, double &externalProbability, double *calorimeterEnergies,  double *betas, double *trackLengths, double *calorimeterTimes, double *totalTimeVariances )
+void SensitivityModule::CalculateProbabilities(double &internalProbability, double &externalProbability, double* /*calorimeterEnergies*/,  double *betas, double *trackLengths, double *calorimeterTimes, double *totalTimeVariances )
 {
   double theoreticalTimeOfFlight[2];
   double internalEmissionTime[2];
@@ -898,7 +898,7 @@ void SensitivityModule::CalculateProbabilities(double &internalProbability, doub
   // so time between the calo hits should be Time of flight 1 - Time of flight 2
 
   internalChiSquared = pow((internalEmissionTime[0] - internalEmissionTime[1]) ,2) / (totalTimeVariances[0] + totalTimeVariances[1]) ;
-  double integralForProbability=0;
+  //double integralForProbability=0;
   internalProbability=this->ProbabilityFromChiSquared(internalChiSquared);
 
   // Calculate external probability: one particle travels to foil then the other travels from foil
@@ -917,7 +917,7 @@ void SensitivityModule::CalculateProbabilities(double &internalProbability, doub
 template <typename T>
 void SensitivityModule::InsertAt(T toInsert, std::vector<T> &vec, int position)
 {
-  if (position>vec.size() || position==-1 )
+  if (position>static_cast<int>(vec.size()) || position==-1 )
   {
     vec.push_back(toInsert);
     return;
@@ -936,7 +936,7 @@ void SensitivityModule::PopulateWallVectors(std::vector<int> &calotypes, std::ve
   mainVec.clear();
   xVec.clear();
   vetoVec.clear();
-  for (int i=0;i<calotypes.size();i++)
+  for (size_t i=0;i<calotypes.size();i++)
   {
     mainVec.push_back(calotypes.at(i)==mainWallHitType);
     xVec.push_back(calotypes.at(i)==xWallHitType);

@@ -9,7 +9,7 @@
 [name="flreconstruct.plugins" type="flreconstruct::section"]
 plugins : string[1] = "SensitivityModule"
 # Adjust this path if you put the lib elsewhere
-SensitivityModule.directory : string = "@PROJECT_BINARY_DIR@"
+#SensitivityModule.directory : string = "@PROJECT_BINARY_DIR@"
 
 # - Pipeline configuration
 # Must define "pipeline" as this is the module flreconstruct will use

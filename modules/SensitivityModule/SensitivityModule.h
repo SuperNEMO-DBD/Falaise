@@ -208,6 +208,6 @@ class SensitivityModule : public dpp::base_module {
 
   // Macro which automatically creates the interface needed
   // to enable the module to be loaded at runtime
-  DPP_MODULE_REGISTRATION_INTERFACE(SensitivityModule);
+  DPP_MODULE_REGISTRATION_INTERFACE(SensitivityModule)
 };
 #endif // TESTMODULE_HH
