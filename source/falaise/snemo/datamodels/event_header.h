@@ -85,11 +85,11 @@ class event_header : public datatools::i_serializable,
   bool is_simulated() const;
 
   /// Clear the event header internal data
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                         const std::string &indent = "", bool is_last = false) const;
+                         const std::string &indent = "", bool is_last = false) const override;
 
  private:
   datatools::event_id id_{};                        //!< Run/Event ID

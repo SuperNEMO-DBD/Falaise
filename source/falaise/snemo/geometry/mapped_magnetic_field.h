@@ -61,22 +61,22 @@ class mapped_magnetic_field : public ::emfield::base_electromagnetic_field {
 
   /// Initialization
   virtual void initialize(const datatools::properties &, datatools::service_manager &,
-                          emfield::base_electromagnetic_field::field_dict_type &);
+                          emfield::base_electromagnetic_field::field_dict_type &) override;
 
   /// Reset
-  virtual void reset();
+  virtual void reset() override;
 
   /// Compute electric field
   virtual int compute_electric_field(const geomtools::vector_3d &position, double time,
-                                     geomtools::vector_3d &efield) const;
+                                     geomtools::vector_3d &efield) const override;
 
   /// Compute magnetic field
   virtual int compute_magnetic_field(const geomtools::vector_3d &position, double time,
-                                     geomtools::vector_3d &magnetic_field) const;
+                                     geomtools::vector_3d &magnetic_field) const override;
 
   /// Smart print
   virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                         const std::string &indent = "", bool inherit = false) const;
+                         const std::string &indent = "", bool inherit = false) const override;
 
   /// Set the map source filename
   void setMapFilename(const std::string &);

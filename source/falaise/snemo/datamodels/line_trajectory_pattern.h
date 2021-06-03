@@ -39,7 +39,7 @@ class line_trajectory_pattern : public base_trajectory_pattern {
   const geomtools::line_3d& get_segment() const;
 
   /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const;
+  virtual const geomtools::i_shape_1d& get_shape() const override;
 
  private:
   geomtools::line_3d _segment_{};  //!< The line/segment embedded model

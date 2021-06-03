@@ -166,11 +166,11 @@ class particle_track : public geomtools::base_hit {
   const CalorimeterHitHdlCollection &get_associated_calorimeter_hits() const;
 
   /// Empty the contents of the particle track
-  void clear();
+  void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                         const std::string &indent = "", bool is_last = false) const;
+                         const std::string &indent = "", bool is_last = false) const override;
 
  private:
   charge_type charge_from_source_{UNDEFINED};  //!< Particle charge
