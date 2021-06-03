@@ -3,7 +3,7 @@
 using namespace std;
 
 TrackDetails::TrackDetails()
-{};
+{}
 
 TrackDetails::TrackDetails(const geomtools::manager* geometry_manager, snemo::datamodel::particle_track track)
 {
