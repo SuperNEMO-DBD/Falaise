@@ -9,7 +9,9 @@ int xWallHitType=1232;
 int gammaVetoHitType=1252;
 
 using namespace std;
-DPP_MODULE_REGISTRATION_IMPLEMENT(SensitivityModule,"SensitivityModule");
+
+DPP_MODULE_REGISTRATION_IMPLEMENT(SensitivityModule,"SensitivityModule")
+
 SensitivityModule::SensitivityModule() : dpp::base_module()
 {
   filename_output_="sensitivity.root";
