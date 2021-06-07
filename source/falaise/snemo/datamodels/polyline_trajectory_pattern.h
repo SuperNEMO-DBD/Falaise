@@ -39,7 +39,7 @@ class polyline_trajectory_pattern : public base_trajectory_pattern {
   const geomtools::polyline_3d& get_path() const;
 
   /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const;
+  virtual const geomtools::i_shape_1d& get_shape() const override;
 
  private:
   geomtools::polyline_3d _path_{};  //!< The polyline path embedded model

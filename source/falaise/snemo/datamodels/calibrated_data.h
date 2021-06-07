@@ -58,11 +58,11 @@ class calibrated_data : public datatools::i_serializable,
   TrackerHitHdlCollection& tracker_hits();
 
   /// Clear attributes
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   CalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of calibrated calorimeter hits

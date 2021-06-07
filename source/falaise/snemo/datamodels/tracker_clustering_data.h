@@ -143,7 +143,7 @@ class tracker_clustering_data : public datatools::i_serializable,
   const tracker_clustering_solution& at(size_t index) const;
 
   /// Reset the clustering solutions
-  virtual void clear();
+  virtual void clear() override;
 
   /// Check if there is some default clustering solution
   bool has_default() const;
@@ -165,7 +165,7 @@ class tracker_clustering_data : public datatools::i_serializable,
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   TrackerClusteringSolutionHdlCollection solutions_{};  //!< Collection of Geiger cluster solutions

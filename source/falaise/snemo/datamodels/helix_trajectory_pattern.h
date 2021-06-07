@@ -42,7 +42,7 @@ class helix_trajectory_pattern : public base_trajectory_pattern {
   const geomtools::helix_3d& get_helix() const;
 
   /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const;
+  virtual const geomtools::i_shape_1d& get_shape() const override;
 
  private:
   geomtools::helix_3d _helix_{};  //!< The helix embedded model

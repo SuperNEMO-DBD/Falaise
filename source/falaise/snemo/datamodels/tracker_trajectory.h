@@ -62,11 +62,11 @@ class tracker_trajectory : public geomtools::base_hit {
   const TrajectoryPattern& get_pattern() const;
 
   /// Empty the contents of the tracker trajectory
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   /// Detach the cluster

@@ -79,10 +79,10 @@ class event_header_cut : public cuts::i_cut {
   /// Initilization
   virtual void initialize(const datatools::properties& dps,
                           datatools::service_manager& services,
-                          cuts::cut_handle_dict_type& cuts);
+                          cuts::cut_handle_dict_type& cuts) override;
 
   /// Reset
-  virtual void reset();
+  virtual void reset() override;
 
   /// Set the 'Event header' bank label/name
   void setEventHeaderTag(const std::string& tag);
@@ -124,7 +124,7 @@ class event_header_cut : public cuts::i_cut {
   void _set_defaults();
 
   /// Selection
-  virtual int _accept();
+  virtual int _accept() override;
 
  private:
   std::string eventHeaderTag_;  //!< Name of the "Event header" bank
