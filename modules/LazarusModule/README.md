@@ -2,7 +2,7 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/S._Apollinare_Nuovo_Resurr_Lazzaro.jpg/436px-S._Apollinare_Nuovo_Resurr_Lazzaro.jpg" alt="drawing" width="200"/>
 
-*Paolo Franchini 2020* - p.franchini@imperial.ac.uk
+*Paolo Franchini 2021* - p.franchini@imperial.ac.uk
 
 ---
 
@@ -14,7 +14,7 @@ The list could have been randomly generated from the Dead Cells Module or create
 Input: simulated data with CD bank. \
 Output: simulated data with CD bank, to be used in a full reconstruction.
 
-## Build:
+## Build (TO BE UPDATED):
 ```
 git clone https://github.com/pfranchini/SuperNEMO-LazarusModule
 mkdir SuperNEMO-LazarusModule.build
