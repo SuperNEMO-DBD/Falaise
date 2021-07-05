@@ -1,0 +1,28 @@
+# - Configuration Metadata
+#@description Chain pipeline using a single custom module
+#@key_label   "name"
+#@meta_label  "type"
+
+# - Custom modules
+# The "flreconstruct.plugins" section to tell flreconstruct what
+# to load and from where.
+[name="flreconstruct.plugins" type="flreconstruct::section"]
+plugins : string[1] = "DeadCellsModule"
+# Adjust this path if you put the lib elsewhere
+DeadCellsModule.directory : string = "/home/hep/pfranchi/SuperNEMO/SuperNEMO-DeadCellsModule.build"
+
+# - Pipeline configuration
+# Must define "pipeline" as this is the module flreconstruct will use
+# Make it use our custom module by setting the'type' key to the string we
+# used as the second argument to the macro
+# At present, it takes no configuration, so it suffices to define it
+[name="pipeline" type="dpp::chain_module"]
+modules : string[1] = "DeadCells"
+
+# - Module configuration:
+[name="DeadCells" type="DeadCellsModule"]
+filename_out : string = "XXXXX"
+random : boolean = true
+N_dead_cells : integer = YYYYY
+#dead_cells : string = "list_shorts.txt"
+
