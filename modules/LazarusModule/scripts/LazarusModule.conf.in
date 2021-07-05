@@ -1,0 +1,28 @@
+# Paolo Franchini 2020 - p.franchini@imperial.ac.uk
+
+# - Configuration Metadata
+#@description Chain pipeline using a single custom module
+#@key_label   "name"
+#@meta_label  "type"
+
+# - Custom modules
+# The "flreconstruct.plugins" section to tell flreconstruct what
+# to load and from where.
+[name="flreconstruct.plugins" type="flreconstruct::section"]
+plugins : string[1] = "LazarusModule"
+# Adjust this path if you put the lib elsewhere
+LazarusModule.directory : string = "/home/hep/pfranchi/SuperNEMO/SuperNEMO-LazarusModule.build"
+
+# - Pipeline configuration
+# Must define "pipeline" as this is the module flreconstruct will use
+# Make it use our custom module by setting the'type' key to the string we
+# used as the second argument to the macro
+# At present, it takes no configuration, so it suffices to define it
+[name="pipeline" type="dpp::chain_module"]
+modules : string[1] = "Lazarus"
+
+# - Module configuration:
+[name="Lazarus" type="LazarusModule"]
+filename_out : string[1] = "XXXXX"
+dead_cells : string[1] = "YYYYY"
+method : string[1] = "BETWEEN" # method for the resuscitation (NONE, ALL, NEAR, BETWEEN) 
