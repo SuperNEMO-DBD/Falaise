@@ -180,6 +180,16 @@ set_tests_properties(flsimulate-feature-pr75-validation
 set_falaise_test_environment(flsimulate-feature-pr75-validation)
 
 # - Flsimulate Bi207 calibration source
+# - Validation of issue #69 fix
+# - Variant profile is given : flsimulate-script-calibBi207_source_calibration.profile
+add_test(NAME flsimulate-script-calibBi207_source_calibration-run
+  COMMAND flsimulate
+          -d "calibBi207_source_calibration@${CMAKE_CURRENT_BINARY_DIR}"
+          -d "calibBi207sourcecalibrationvariant@${CMAKE_CURRENT_SOURCE_DIR}/"
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-script-calibBi207_source_calibration.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-script-calibBi207_source_calibration.brio"
+  )
+set_falaise_test_environment(flsimulate-script-calibBi207_source_calibration-run)
+
 # - Variant profile is given : flsimulate-script-Bi207_source_calibration.profile
 add_test(NAME flsimulate-script-Bi207_source_calibration-run
   COMMAND flsimulate
@@ -188,7 +198,6 @@ add_test(NAME flsimulate-script-Bi207_source_calibration-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-script-Bi207_source_calibration.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-script-Bi207_source_calibration.brio"
   )
 set_falaise_test_environment(flsimulate-script-Bi207_source_calibration-run)
-
 
 # - Flsimulate XWall-GVeto PMT glass bulk
 # - Variant profile is given : flsimulate-script-xwall_gveto_pmt_glass.profile
@@ -206,3 +215,4 @@ add_test(NAME flsimulate-issue198-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue198.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue198.brio"
   )
 set_falaise_test_environment(flsimulate-issue198-run)
+
