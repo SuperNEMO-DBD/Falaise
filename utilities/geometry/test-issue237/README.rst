@@ -249,11 +249,8 @@ Generation of the SDS calibration source model (vertexes only on sources in trac
   .. image:: check_sds_vertexes_1.jpg
      :width: 70%
   ..
-
-.. raw:: pdf
-	 
-   PageBreak
-..
-
+	      
+Vertex generator setup
+======================
 
 .. end
