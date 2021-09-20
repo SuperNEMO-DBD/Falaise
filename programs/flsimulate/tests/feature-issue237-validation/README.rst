@@ -10,5 +10,4 @@ individual Bi207 activities.
 The scripts test the ``Bi207`` primary event generators on top of a specific selection
 of calibration source tracks.
 
-
 .. end
