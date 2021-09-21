@@ -52,10 +52,8 @@ internal_item.placement.source_0_0    : string  = "0 0 0 (mm) "
 internal_item.model.top_film          : string  = "short_film.realistic.model"
 internal_item.placement.top_film      : string  = "0 0 +1460 (mm) "
 visibility.color  : string = "green"
-# # Mapping the source foil from its parent category :
+# Mapping the source foil from its parent category :
 mapping.daughter_id.source_0_0 : string = "[source_pad:pad=0]"
-#mapping.daughter_id.bottom_film  : string = "[source_strip_film:film=0]"
-#mapping.daughter_id.top_film  : string = "[source_strip_film:film=1]"	
 
 #########################################################################
 [name="snemo_strip_0.model" type="geomtools::stacked_model"]
@@ -65,9 +63,8 @@ stacked.model_0  : string = "snemo_source_0.model"
 stacked.label_0  : string = "source"
 material.ref     : string = "tracking_gas"
 visibility.color : string = "green"
-# # Mapping the daughter volumes :
-# mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
-# mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
+# Mapping the daughter volumes :
+# mapping.daughter_id.source  : string = "[source_strip]"
 
 ##########################################################################
 [name="snemo_foil_1_pad_0.model" type="geomtools::simple_shaped_model"]
@@ -107,6 +104,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -147,6 +145,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -187,6 +186,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -227,6 +227,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -267,6 +268,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -307,6 +309,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -347,6 +350,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -387,6 +391,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -427,6 +432,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -467,6 +473,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -507,6 +514,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -547,6 +555,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -587,6 +596,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -627,6 +637,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -667,6 +678,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -707,6 +719,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -747,6 +760,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -787,6 +801,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -933,6 +948,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1079,6 +1095,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1226,6 +1243,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1372,6 +1390,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1519,6 +1538,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1665,6 +1685,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1811,6 +1832,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -1957,6 +1979,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2103,6 +2126,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2249,6 +2273,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2395,6 +2420,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2541,6 +2567,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2687,6 +2714,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2834,6 +2862,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -2980,6 +3009,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 #########################################################################
@@ -3020,6 +3050,7 @@ material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
 # Mapping the daughter volumes :
 mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+# mapping.daughter_id.source     : string = "[source_strip]"
 mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 ##########################################################################
@@ -3045,15 +3076,13 @@ internal_item.labels : string[3] = "bottom_film" "source_35_0" "top_film"
 # Describe the internal items :
 internal_item.model.bottom_film       : string  = "short_film.realistic.model"
 internal_item.placement.bottom_film   : string  = "0 0 -1460 (mm) "
-internal_item.model.source_35_0        : string  = "snemo_foil_35_pad_0.model"
-internal_item.placement.source_35_0    : string  = "0 0 0 (mm) "
+internal_item.model.source_35_0       : string  = "snemo_foil_35_pad_0.model"
+internal_item.placement.source_35_0   : string  = "0 0 0 (mm) "
 internal_item.model.top_film          : string  = "short_film.realistic.model"
 internal_item.placement.top_film      : string  = "0 0 +1460 (mm) "
 visibility.color  : string = "green"
 # Mapping the source foil from its parent category :
 mapping.daughter_id.source_35_0 : string = "[source_pad:pad=0]"
-#mapping.daughter_id.bottom_film  : string = "[source_strip_film:film=0]"
-#mapping.daughter_id.top_film  : string = "[source_strip_film:film=1]"	
 
 #########################################################################
 [name="snemo_strip_35.model" type="geomtools::stacked_model"]
@@ -3063,8 +3092,7 @@ stacked.model_0  : string = "snemo_source_35.model"
 stacked.label_0  : string = "source"
 material.ref      : string = "tracking_gas"
 visibility.color  : string = "green"
-# # Mapping the daughter volumes :
-# mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
-# mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
+# Mapping the daughter volumes :
+# mapping.daughter_id.source     : string = "[source_strip]"
 
 # end

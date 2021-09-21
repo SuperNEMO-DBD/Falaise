@@ -9,15 +9,15 @@
   extends : string    = "source_submodule"
   by      : string[1] = "strip"
 
-[category="source_strip" type="1102"]
-  inherits : string   = "source_strip_path"
+# [category="source_strip" type="1102"]
+#   inherits : string   = "source_strip_path"
 
 [category="source_strip_film" type="1120"]
-  extends : string    = "source_strip"
+  extends : string    = "source_strip_path"
   by      : string[1] = "film"
 
 [category="source_pad" type="1130"]
-  extends : string    = "source_strip"
+  extends : string    = "source_strip_path"
   by      : string[1] = "pad"
 
 [category="source_calibration_track" type="1103"]
