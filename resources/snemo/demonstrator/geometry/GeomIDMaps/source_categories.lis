@@ -1,3 +1,4 @@
+# -*- mode: conf-unix; -*-
 #@description A sample list of geometry ID categories/types for source submodule
 #@key_label   "category"
 #@meta_label  "type"
@@ -9,16 +10,23 @@
   extends : string    = "source_submodule"
   by      : string[1] = "strip"
 
-# [category="source_strip" type="1102"]
-#   inherits : string   = "source_strip_path"
+[category="source_strip" type="1102"]
+  inherits : string = "source_strip_path"
 
 [category="source_strip_film" type="1120"]
-  extends : string    = "source_strip_path"
-  by      : string[1] = "film"
+  extends : string    = "source_strip"
+  by      : string[1] = "film" 
 
 [category="source_pad" type="1130"]
-  extends : string    = "source_strip_path"
+  extends : string    = "source_strip"
   by      : string[1] = "pad"
+
+[category="source_pad_bulk" type="1131"]
+  inherits : string = "source_pad"
+
+[category="source_pad_film" type="1132"]
+  extends : string    = "source_pad"
+  by      : string[1] = "film"
 
 [category="source_calibration_track" type="1103"]
   extends : string    = "source_submodule"
@@ -31,3 +39,4 @@
 [category="source_calibration_spot" type="1112"]
   inherits : string   = "source_calibration_carrier"
 
+# end
