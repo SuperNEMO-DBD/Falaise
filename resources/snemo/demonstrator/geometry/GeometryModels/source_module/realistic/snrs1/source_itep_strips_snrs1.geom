@@ -10,7 +10,7 @@
 ######################################################################################################
 [name="snemo_strip_3_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 3 pad 0 geometry model 
+#@config Strip 3 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 3
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -35,7 +35,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_3_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_3_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -61,7 +61,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_8_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 8 pad 0 geometry model 
+#@config Strip 8 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 8
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -86,7 +86,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_8_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_8_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -112,7 +112,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_9_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 9 pad 0 geometry model 
+#@config Strip 9 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 9
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -137,7 +137,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_9_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_9_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -163,7 +163,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_14_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 14 pad 0 geometry model 
+#@config Strip 14 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 14
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -188,7 +188,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_14_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_14_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -214,7 +214,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_15_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 15 pad 0 geometry model 
+#@config Strip 15 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 15
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -239,7 +239,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_15_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_15_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -265,7 +265,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_20_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 20 pad 0 geometry model 
+#@config Strip 20 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 20
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -290,7 +290,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_20_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_20_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -316,7 +316,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_21_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 21 pad 0 geometry model 
+#@config Strip 21 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 21
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -341,7 +341,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_21_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_21_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -367,7 +367,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_22_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 22 pad 0 geometry model 
+#@config Strip 22 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 22
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -392,7 +392,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_22_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_22_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -418,7 +418,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_23_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 23 pad 0 geometry model 
+#@config Strip 23 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 23
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -443,7 +443,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_23_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_23_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -469,7 +469,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_24_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 24 pad 0 geometry model 
+#@config Strip 24 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 24
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -494,7 +494,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_24_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_24_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -520,7 +520,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_25_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 25 pad 0 geometry model 
+#@config Strip 25 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 25
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -545,7 +545,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_25_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_25_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -571,7 +571,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_26_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 26 pad 0 geometry model 
+#@config Strip 26 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 26
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -596,7 +596,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_26_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_26_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -622,7 +622,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_27_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 27 pad 0 geometry model 
+#@config Strip 27 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 27
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -647,7 +647,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_27_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_27_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -673,7 +673,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_28_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 28 pad 0 geometry model 
+#@config Strip 28 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 28
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -698,7 +698,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_28_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_28_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -724,7 +724,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_31_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 31 pad 0 geometry model 
+#@config Strip 31 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 31
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -749,7 +749,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_31_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_31_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -775,7 +775,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_32_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 32 pad 0 geometry model 
+#@config Strip 32 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 32
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -800,7 +800,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_32_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_32_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -826,7 +826,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_33_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 33 pad 0 geometry model 
+#@config Strip 33 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 33
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -851,7 +851,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_33_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_33_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 
@@ -877,7 +877,7 @@ mapping.daughter_id.strip      : string = "[source_strip]"
 ######################################################################################################
 [name="snemo_strip_34_pad_0.snrs1.model" type="snrs::mesh_pad_model"]
 #@variant_block_only geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-#@config Strip 34 pad 0 geometry model 
+#@config Strip 34 pad 0 geometry model (SNRS1 model)
 strip_id : integer = 34
 visibility.hidden            : boolean = false
 visibility.color             : string = "green"
@@ -902,7 +902,7 @@ y            : real as length = 135.5 mm
 z            : real as length = 2700.0 mm
 material.ref : string = "tracking_gas"
 internal_item.labels          : string[1] =  "pad0"
-internal_item.model.pad0      : string = "snemo_strip_34_pad.snrs1.model"
+internal_item.model.pad0      : string = "snemo_strip_34_pad_0.snrs1.model"
 internal_item.placement.pad0  : string = "0 0 0 (mm) "
 mapping.daughter_id.pad0      : string = "[source_pad:pad=0]"
 

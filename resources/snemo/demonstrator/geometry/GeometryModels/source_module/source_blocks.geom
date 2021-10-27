@@ -1,6 +1,7 @@
 # -*- mode: conf-unix; -*-
-# Source layer #
-# Description of source blocks geometry for 'basic' source layout
+# Source module:
+# Description of source blocks geometry for various source layouts
+
 [name="source_strip_gap.model" type="geomtools::simple_shaped_model"]
   shape_type : string  = "box"
     x : real as length =   58.0 mm
@@ -8,30 +9,6 @@
     z : real as length = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "cyan"
-
-[name="source_external_strip_path.model" type="geomtools::simple_shaped_model"]
-  shape_type : string  = "box"
-    x : real as length =   58.0 mm
-    y : real as length =  125.5 mm
-    z : real as length = 3350.0 mm
-  material.ref : string  = "tracking_gas"
-  visibility.color : string  = "cyan"
-  internal_item.labels          : string[1] =  "strip"
-  internal_item.model.strip     : string = "snemo_strip_@STRIPID@_pad.realistic.model"
-  internal_item.placement.strip : string = "0 0 0 (mm) "
-  mapping.daughter_id.strip     : string = "[source_pad:pad=0]"
-
-[name="source_internal_strip_path.model" type="geomtools::simple_shaped_model"]
-  shape_type : string  = "box"
-    x : real as length =   58.0 mm
-    y : real as length =  135.5 mm
-    z : real as length = 3350.0 mm
-  material.ref : string  = "tracking_gas"
-  visibility.color : string  = "cyan"
-  internal_item.labels          : string[1] =  "strip"
-  internal_item.model.strip     : string = "snemo_strip_@STRIPID@_pad.realistic.model"
-  internal_item.placement.strip : string = "0 0 0 (mm) "
-  mapping.daughter_id.strip     : string = "[source_pad:pad=0]"
 
 
 ###########
@@ -344,19 +321,19 @@
   
     stacked.model_4  : string = "snemo_strip_path_29.flat.model"  # Position 29
     stacked.model_6  : string = "snemo_strip_path_30.flat.model"  # Position 30
-     
-    #@variant_if geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-      stacked.model_0  : string = "snemo_strip_path_27.snrs1.model" # Position 27
-      stacked.model_2  : string = "snemo_strip_path_28.snrs1.model" # Position 28
-      stacked.model_8  : string = "snemo_strip_path_31.snrs1.model" # Position 31
-      stacked.model_10 : string = "snemo_strip_path_32.snrs1.model" # Position 32
-    #@variant_endif
     
     #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
       stacked.model_0  : string = "snemo_strip_path_27.flat.model"  # Position 27
       stacked.model_2  : string = "snemo_strip_path_28.flat.model"  # Position 28
       stacked.model_8  : string = "snemo_strip_path_31.flat.model"  # Position 31
       stacked.model_10 : string = "snemo_strip_path_32.flat.model"  # Position 32
+    #@variant_endif
+     
+    #@variant_if geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
+      stacked.model_0  : string = "snemo_strip_path_27.snrs1.model" # Position 27
+      stacked.model_2  : string = "snemo_strip_path_28.snrs1.model" # Position 28
+      stacked.model_8  : string = "snemo_strip_path_31.snrs1.model" # Position 31
+      stacked.model_10 : string = "snemo_strip_path_32.snrs1.model" # Position 32
     #@variant_endif
 
   #@variant_endif
@@ -404,14 +381,14 @@
   
   #@variant_if !geometry:layout/if_basic/source_layout/if_basic|true
 
-    #@variant_if geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
-      stacked.model_0 : string = "snemo_strip_path_33.snrs1.model" # Position 33
-      stacked.model_2 : string = "snemo_strip_path_34.snrs1.model" # Position 34
-    #@variant_endif
-
     #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
       stacked.model_0 : string = "snemo_strip_path_33.flat.model"  # Position 33
       stacked.model_2 : string = "snemo_strip_path_34.flat.model"  # Position 34
+    #@variant_endif
+
+    #@variant_if geometry:layout/if_basic/source_layout/if_realistic_snrs1|false
+      stacked.model_0 : string = "snemo_strip_path_33.snrs1.model" # Position 33
+      stacked.model_2 : string = "snemo_strip_path_34.snrs1.model" # Position 34
     #@variant_endif
 
     stacked.model_4 : string = "snemo_strip_path_35.realistic.model" # Position 35 (Copper)
