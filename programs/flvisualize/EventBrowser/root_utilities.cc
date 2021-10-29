@@ -39,6 +39,9 @@
 #include <TGeoPcon.h>
 #include <TGeoSphere.h>
 #include <TGeoTube.h>
+// Only with ROOT > 6.16
+// #include <TGeoTessellated.h>
+// #include <TGeoVector3.h>
 #include <TObjArray.h>
 #include <TPolyLine3D.h>
 #include <TROOT.h>
@@ -53,6 +56,7 @@
 #include <geomtools/i_composite_shape_3d.h>
 #include <geomtools/polycone.h>
 #include <geomtools/sphere.h>
+// #include <geomtools/tessellation.h>
 
 namespace snemo {
 
@@ -512,6 +516,19 @@ TGeoShape *root_utilities::get_geo_shape(const geomtools::i_shape_3d &shape_3d_)
       );
     }
     shape = dynamic_cast<TGeoShape *>(polycone);
+    /*
+  } else if (shape_name == "tessellated") {
+    const auto &mtessella = dynamic_cast<const geomtools::tessellated_solid &>(shape_3d_);
+
+    auto *tessella = new TGeoTessellated;
+    const geomtools:tessellated_solid::facets_col_type & theFacets = mtessella.facets();
+    for (const auto & facetIter : theFacets) {
+      unsigned int f34Index = facetIter.first;
+      geomtools::tessellated_solid::facet34 f34 = facetIter.second;
+      
+    }
+    shape = dynamic_cast<TGeoShape *>(tessella);
+    */
   } else {
     DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
                  shape_name << "' not yet implemented !");
@@ -526,12 +543,16 @@ std::string root_utilities::get_unique_geo_name() {
   oss << "unique_name_" << g_geo_id++;
   return oss.str();
 }
+  
 
 TObjArray *root_utilities::wires_to_root_draw(const geomtools::vector_3d &position_,
                                               const geomtools::rotation_3d &rotation_,
                                               const geomtools::i_shape_3d &shape_) {
   TObjArray *obj_array = nullptr;
+
+  
   if (shape_.has_wires_drawer()) {
+    // std::cerr << "*** devel *** root_utilities::wires_to_root_draw: '" << shape_.get_shape_name() << "'\n";
     obj_array = new TObjArray(100);
 
     // Retrieve wires drawer
@@ -550,7 +571,8 @@ TObjArray *root_utilities::wires_to_root_draw(const geomtools::vector_3d &positi
     }
   } else {
     DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
-                   "No 'i_wires_3d_rendering' has been defined !");
+                   "No 'i_wires_3d_rendering' has been defined in shape named '" << shape_.get_shape_name() << "'!");
+    // std::cerr << "*** devel *** root_utilities::wires_to_root_draw: no wire rendering for shape '" << shape_.get_shape_name() << "'\n";
   }
 
   return obj_array;

@@ -23,6 +23,8 @@
 #include <EventBrowser/utils/root_utilities.h>
 
 #include <geomtools/geom_info.h>
+#include <geomtools/tessellation.h>
+#include <geomtools/i_wires_drawer.h>
 
 #include <TObjArray.h>
 #include <TPolyLine3D.h>
@@ -33,21 +35,58 @@ namespace visualization {
 
 namespace detector {
 
+/// \brief Special wires 3D rendering
+struct tessellated_wires_drawer
+  : public geomtools::i_wires_drawer<geomtools::tessellated_solid>
+{
+  tessellated_wires_drawer(const geomtools::tessellated_solid & tessella_)
+    : geomtools::i_wires_drawer<geomtools::tessellated_solid>(tessella_)
+  {
+  }
+  
+  ~tessellated_wires_drawer() = default;
+
+  void generate_wires_self(geomtools::wires_type & wires_, uint32_t options_ = 0) const override
+  {
+    get().generate_wires_self(wires_, options_);
+  }
+  
+};
+
 bool special_volume::has_objects() const { return _objects_ != nullptr; }
 
-// ctor:
 special_volume::special_volume(const std::string &name_, const std::string &category_)
     : i_root_volume(name_, category_), _objects_(nullptr) {
+  // std::cerr << "*** devel *** special_volume::ctor : name = '"
+  //           << name_ << "' category = '"
+  //           << category_ << "'\n";
   _type = "special";
   _composite = false;
 }
 
-// dtor:
 special_volume::~special_volume() { this->reset(); }
 
 void special_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
+  // std::cerr << "*** devel *** special_volume::_construct : for shape type = '"
+  //           << shape_3d_.get_shape_name() << "'\n";
+
+  if (shape_3d_.get_shape_name() == "tessellated") {
+    // shape_3d_.tree_dump(std::cerr, "special_volume::_construct: tessellated: ", "*** devel *** ");
+    // std::cerr << "*** devel *** special_volume::_construct : installing a 3D-wires renderer in shape = '"
+    //           << shape_3d_.get_shape_name() << "'\n";
+    
+    // Remark: This is not that elegant for we would prefer to use a drawer not embedded to the shape itself (break shape's constness)
+    _shape_ = &shape_3d_;
+    // Installing a dedicated wire drawer associated to this shape:
+    _wires_drawer_ = new tessellated_wires_drawer(dynamic_cast<const geomtools::tessellated_solid&>(shape_3d_));
+    const geomtools::i_object_3d & constObj = dynamic_cast<const geomtools::i_object_3d&>(shape_3d_);
+    geomtools::i_object_3d & obj = const_cast<geomtools::i_object_3d &>(constObj);
+    obj.set_wires_drawer(*_wires_drawer_);
+  } 
+  
   _objects_ = utils::root_utilities::wires_to_root_draw(get_placement().get_translation(),
-                                                        get_placement().get_rotation(), shape_3d_);
+                                                        get_placement().get_rotation(),
+                                                        shape_3d_);
 }
 
 void special_volume::clear() {
@@ -68,9 +107,18 @@ void special_volume::clear() {
 }
 
 void special_volume::reset() {
+  if (_wires_drawer_ != nullptr) {
+    // Detach the wires drawer from the referenced shape
+    if (_shape_ != nullptr) {
+      const_cast<geomtools::i_shape_3d *>(_shape_)->reset_wires_drawer();
+    }
+    // Then destroy it
+    delete _wires_drawer_;
+    _wires_drawer_ = nullptr;
+  }
   _objects_->Delete();
-
   _objects_ = nullptr;
+  _shape_ = nullptr;
   _initialized = false;
 }
 
@@ -80,8 +128,12 @@ void special_volume::_highlight() {
 }
 
 void special_volume::draw() const {
+  // std::cerr << "*** devel *** special_volume::draw() : name='" << get_name() << "'\n";
   if (has_objects()) {
+    // std::cerr << "*** devel *** special_volume::draw() : " << "drawing objects..." << '\n';
     _objects_->Draw();
+  } else {
+    // std::cerr << "*** devel *** special_volume::draw() : " << "no object to draw." << '\n';
   }
 }
 

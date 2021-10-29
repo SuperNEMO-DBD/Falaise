@@ -48,6 +48,7 @@ set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
   detector/special_volume.h
   detector/sphere_volume.h
   detector/tube_volume.h
+  # detector/tessellated_volume.h # Not ready for ROOT 6.16/00
   io/boost_access.h
   io/brio_access.h
   io/data_model.h
@@ -161,6 +162,7 @@ set(FalaiseEventBrowserPlugin_SOURCES
   special_volume.cc
   sphere_volume.cc
   tube_volume.cc
+  # tessellated_volume.cc # Not ready for ROOT 6.16/00
   boost_access.cc
   brio_access.cc
   event_server.cc
