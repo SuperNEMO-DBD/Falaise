@@ -85,6 +85,11 @@ FLSimulateArgs FLSimulateArgs::makeDefault() {
   params.embeddedMetadata = true;
   params.outputFile = "";
 
+  // Plugins management:
+  params.userLibConfig.reset();
+  params.userLibConfig.set_key_label("name");
+  params.userLibConfig.set_meta_label("filename");
+
   return params;
 }
 
@@ -109,7 +114,7 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
   flSimParameters.embeddedMetadata = args.embeddedMetadata;
   flSimParameters.outputFile = args.outputFile;
   flSimParameters.mountPoints = args.mountPoints;
-
+ 
   if (static_cast<unsigned int>(!flSimParameters.mountPoints.empty()) != 0u) {
     // Apply mount points as soon as possible, because manually set file path below
     // may use this mechanism to locate files:
@@ -122,6 +127,8 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
       std::string errMsg;
       bool parsed = datatools::library_info::parse_path_registration_directive(
           mountDirective, theLibname, theTopic, thePath, errMsg);
+      DT_LOG_DEBUG(flSimParameters.logLevel, "Mount directive: '" << mountDirective << "'");
+      // DT_LOG_DEBUG(flSimParameters.logLevel, "theLibname: " << theLibname);
       DT_THROW_IF(!parsed, FLConfigUserError,
                   "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
       if (theTopic.empty()) {
@@ -163,6 +170,60 @@ void do_configure(int argc, char* argv[], FLSimulateArgs& flSimParameters) {
     // Now extract and bind values as needed
     // Caution: some parameters are only available for specific user profile
 
+    // Fetch plugins configuration:
+    std::cerr << "[devel] Fetch plugins configuration...\n";
+    if (flSimConfig.has_key_with_meta("flsimulate.plugins", "flsimulate::section")) {
+      try {
+        std::cerr << "[devel] Go fetch !\n";
+        falaise::property_set userFLPlugins{flSimConfig.get_section("flsimulate.plugins")};
+        flSimConfig.remove("flsimulate.plugins");
+
+        auto pList = userFLPlugins.get<std::vector<std::string>>("plugins", {});
+        for (const std::string& plugin_name : pList) {
+          std::cerr << "[devel] => plugin '" << plugin_name << "'\n";
+          auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
+          pSection.put("autoload", true);
+          if (pSection.has_key("directory")) {
+            std::cerr << "[devel]   => key '" << "directory" << "'\n";
+            auto libdirPath = pSection.get<falaise::path>("directory");
+            std::cerr << "[devel]   => libdirPath = '" << libdirPath << "'\n";
+            std::string libdir(libdirPath);
+            std::cerr << "[devel]   => libdir = '" << libdir << "'\n";
+            datatools::fetch_path_with_env(libdir);
+            std::cerr << "[devel]   => libdir = '" << libdir << "' (resolved)\n";
+            falaise::path resolvedLibdirPath{libdir};
+            pSection.put_or_replace<falaise::path>("directory", resolvedLibdirPath);
+          }
+          
+          // if (pSection.has_key("filename")) {
+          //   std::string libfilename = pSection.get<falaise::path>("filename");
+          //   datatools::fetch_path_with_env(libfilename);
+          //   pSection.put_or_replace<falaise::path>("filename", libfilename);          
+          // }
+          
+          // if (pSection.has_key("full_path")) {
+          //   std::string libfullpath = pSection.get<falaise::path>("full_path");
+          //   datatools::fetch_path_with_env(libfullpath);
+          //   pSection.put_or_replace<falaise::path>("full_path", libfullpath);         
+          // }
+          
+          if (!pSection.has_key("directory")) {
+            pSection.put("directory", std::string{"@falaise.plugins:"});
+          }
+          datatools::properties backProps{pSection};
+          backProps.tree_dump(std::cerr, "Plugin section '" + plugin_name + "' : ", "[devel] ");
+        
+          flSimParameters.userLibConfig.add(plugin_name, "", pSection);
+        }
+        
+      } catch (std::logic_error& e) {
+        DT_LOG_ERROR(flSimParameters.logLevel, e.what());
+        // do nothing for now because we can't distinguish errors, and
+        // upcoming instantiation of library loader will handle
+        // any syntax errors in the properties
+      }
+    }
+ 
     // Basic system:
     if (flSimConfig.has_key_with_meta("flsimulate", "flsimulate::section")) {
       falaise::property_set baseSystem{flSimConfig.get_section("flsimulate")};
