@@ -13,10 +13,10 @@
 // Compiled in, so should always be present,
 class builtin_service : public datatools::base_service {
  public:
-  virtual int initialize(const datatools::properties&, datatools::service_dict_type&) {return 0;}
-  virtual int reset() { return 0;}
+  virtual int initialize(const datatools::properties&, datatools::service_dict_type&) override {return 0;}
+  virtual int reset() override { return 0;}
 
-  virtual bool is_initialized() const { return false; }
+  virtual bool is_initialized() const override { return false; }
 
   void builtin_impl() { std::cout << "builtin_impl" << std::endl; }
 

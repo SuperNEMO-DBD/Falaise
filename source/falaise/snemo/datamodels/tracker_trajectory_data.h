@@ -68,11 +68,11 @@ class tracker_trajectory_data : public datatools::i_serializable,
   void reset();
 
   /// Clear the object
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   TrackerTrajectorySolutionHdlCollection
