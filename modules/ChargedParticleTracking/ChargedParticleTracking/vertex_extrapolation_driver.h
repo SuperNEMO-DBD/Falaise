@@ -26,16 +26,23 @@
  *   A driver class that extrapolate track vertices on source foil and
  *   calorimeter walls.
  *
- * History:
- *
  */
 
 #ifndef FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
 #define FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H 1
 
+// Standard library:
+#include <vector>
+// Third party:
+// - Bayeux:
+#include "bayeux/datatools/clhep_units.h"
+#include "bayeux/geomtools/face_intercept_info.h"
+
 // This project
 #include "falaise/property_set.h"
 #include "falaise/snemo/datamodels/particle_track.h"
+#include "falaise/snemo/datamodels/line_trajectory_pattern.h"
+#include "falaise/snemo/datamodels/helix_trajectory_pattern.h"
 
 namespace geomtools {
 class manager;
@@ -81,6 +88,22 @@ class vertex_extrapolation_driver {
   void process(const snemo::datamodel::tracker_trajectory& trajectory_,
                snemo::datamodel::particle_track& particle_);
 
+  /// Data structure for vertex
+  struct vertex_info
+  {
+    geomtools::geom_id gid;
+    geomtools::face_intercept_info face_intercept;
+    void print(std::ostream & out_, const std::string & indent_ = "") const;
+  };
+
+  /// Compute vertex on source from a line trajectory
+  void line_trajectory_source_intercept(const snemo::datamodel::line_trajectory_pattern & line_traj_,
+                                        std::vector<vertex_info> & vertexes_) const;
+
+  /// Compute vertex on source from a helix trajectory
+  void helix_trajectory_source_intercept(const snemo::datamodel::helix_trajectory_pattern & helix_traj_,
+                                         std::vector<vertex_info> & vertexes_) const;
+  
   /// OCD support:
   static void init_ocd(datatools::object_configuration_description& ocd_);
 
@@ -100,6 +123,17 @@ class vertex_extrapolation_driver {
   const geomtools::manager* geoManager_ = nullptr;               //!< The SuperNEMO geometry manager
   const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< The SuperNEMO locator plugin
   std::map<std::string, bool> _use_vertices_ = {};               //!< Vertices reliability
+  uint32_t _module_id_ = 0;
+  bool _use_deformed_source_strips_ = false;
+  uint32_t _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _sourceStripGids_;
+  uint32_t _sourcePadType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _sourcePadGids_;
+  uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _sourcePadBulkGids_;
+  std::vector<bool> _deformed_strip_ids_;
+  double _intercept_tolerance_ = 1.0 * CLHEP::mm;
+
 };
 
 }  // end of namespace reconstruction

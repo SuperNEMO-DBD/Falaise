@@ -11,6 +11,7 @@
 #include <datatools/properties.h>
 // - Bayeux/geomtools:
 #include <geomtools/manager.h>
+#include <geomtools/i_shape_3d.h>
 
 // This project (Falaise):
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
@@ -46,6 +47,54 @@ vertex_extrapolation_driver::vertex_extrapolation_driver(const falaise::property
   geoManager_ = gm;
   auto locator_plugin_name = ps.get<std::string>("locator_plugin_name", "");
   geoLocator_ = snemo::geometry::getSNemoLocator(geoManager(), locator_plugin_name);
+  const geomtools::mapping & geoMapping = geoManager().get_mapping();
+  const geomtools::id_mgr & geoIdMgr = geoManager().get_id_mgr();
+  // const geomtools::geom_info_dict_type & geoInfos = geoMapping.get_geom_infos();
+
+  // Identify source strips:
+  _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
+  if (geoIdMgr.has_category_info("source_strip")) {
+    _sourceStripType_ = geoIdMgr.get_category_info("source_strip").get_type();
+    geomtools::geom_id sourceStripGidPattern(_sourceStripType_,
+                                             _module_id_,
+                                             geomtools::geom_id::ANY_ADDRESS);
+    geoMapping.compute_matching_geom_id(sourceStripGidPattern, _sourceStripGids_);
+  }
+  DT_LOG_DEBUG(logPriority_, "Found " << _sourceStripGids_.size() << " source strips");
+  
+  // Identify source pads:
+  _sourcePadType_ = geomtools::geom_id::INVALID_TYPE;
+  if (geoIdMgr.has_category_info("source_pad")) {
+    _sourcePadType_ = geoIdMgr.get_category_info("source_pad").get_type();
+    geomtools::geom_id sourcePadGidPattern(_sourcePadType_,
+                                           _module_id_,
+                                           geomtools::geom_id::ANY_ADDRESS,
+                                           geomtools::geom_id::ANY_ADDRESS);
+    geoMapping.compute_matching_geom_id(sourcePadGidPattern, _sourcePadGids_);
+  }
+  DT_LOG_DEBUG(logPriority_, "Found " << _sourcePadGids_.size() << " source pads");
+
+  // Identify source pad bulks (deformed pads from SNRS):
+  _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
+  if (geoIdMgr.has_category_info("source_pad_bulk")) {
+    // Only detected for the SNRS deformed source strips:
+    _sourcePadBulkType_ = geoIdMgr.get_category_info("source_pad_bulk").get_type();
+    geomtools::geom_id sourcePadBulkGidPattern(_sourcePadBulkType_,
+                                               _module_id_,
+                                               geomtools::geom_id::ANY_ADDRESS,
+                                               geomtools::geom_id::ANY_ADDRESS);
+    geoMapping.compute_matching_geom_id(sourcePadBulkGidPattern, _sourcePadBulkGids_);
+  }
+  DT_LOG_DEBUG(logPriority_, "Found " << _sourcePadBulkGids_.size() << " source pad bulks");
+
+  if (_sourcePadBulkGids_.size()) {
+    _use_deformed_source_strips_ = true;
+    DT_LOG_DEBUG(logPriority_, "Using deformed source strips.");
+    // for (const geomtools::geom_id & padBulkGid : _sourcePadBulkGids_) {
+    // }
+  }
+  
+  return;
 }
 
 void vertex_extrapolation_driver::process(const snemo::datamodel::tracker_trajectory &trajectory_,
@@ -53,6 +102,170 @@ void vertex_extrapolation_driver::process(const snemo::datamodel::tracker_trajec
   this->_measure_vertices_(trajectory_, particle_.get_vertices());
 }
 
+void vertex_extrapolation_driver::line_trajectory_source_intercept(const snemo::datamodel::line_trajectory_pattern & line_traj_,
+                                                                   std::vector<vertex_info> & vertexes_) const
+{
+  DT_LOG_DEBUG(logPriority_, "\nSearch line intercepts: ");
+  vertexes_.clear();
+  std::vector<vertex_info> srcStripVertexes;
+  std::vector<vertex_info> srcPadVertexes;
+  std::vector<vertex_info> srcPadBulkVertexes;
+  std::vector<vertex_info> srcVertexes;
+
+  const geomtools::line_3d & line    = line_traj_.get_segment();
+  geomtools::vector_3d first = line.get_first();
+  geomtools::vector_3d last  = line.get_last();
+  if (std::abs(first.x()) > std::abs(last.x())) {
+    std::swap(first, last);
+  }
+  const geomtools::vector_3d direction = (first - last).unit();
+  
+  for (uint32_t i = 0; i < _sourceStripGids_.size(); i++) {
+    const geomtools::geom_id & sourceStripGid = _sourceStripGids_[i];
+    DT_LOG_DEBUG(logPriority_, "  Source strip GID : " << sourceStripGid);
+    uint32_t sourceStripId = sourceStripGid.get(1);
+    DT_LOG_DEBUG(logPriority_, "  \nSearching intercept on strip #" << sourceStripId);
+    const geomtools::geom_info  & sourceStripGinfo     = geoManager().get_mapping().get_geom_info(sourceStripGid);
+    const geomtools::logical_volume & sourceStripLog   = sourceStripGinfo.get_logical();
+    const geomtools::i_shape_3d & sourceStripShape     = sourceStripLog.get_shape();
+    const geomtools::placement  & sourceStripPlacement = sourceStripGinfo.get_world_placement();
+    geomtools::vector_3d srcStripFirst;
+    sourceStripPlacement.mother_to_child(line.get_first(), srcStripFirst);
+    geomtools::vector_3d srcStripDirection; //= (srcFirst - srcLast).unit();
+    sourceStripPlacement.mother_to_child_direction(direction, srcStripDirection);
+    DT_LOG_DEBUG(logPriority_, "  First point : " << geomtools::to_xyz(srcStripFirst) );
+    DT_LOG_DEBUG(logPriority_, "  Direction   : " << geomtools::to_xyz(srcStripDirection) );
+    DT_LOG_DEBUG(logPriority_, "  Source strip shape  : '" << sourceStripShape.get_shape_name() << "'");
+    DT_LOG_DEBUG(logPriority_, "  Intercept tolerance : " << _intercept_tolerance_ / CLHEP::mm << " mm");
+    geomtools::face_intercept_info srcStripFii;
+    bool success = sourceStripShape.find_intercept(srcStripFirst, srcStripDirection, srcStripFii, _intercept_tolerance_);
+    if (! success) {
+      continue;
+    }
+    DT_LOG_DEBUG(logPriority_, "  \nFound intercept on strip #" << sourceStripId);
+    geomtools::vector_3d srcStripImpact = srcStripFii.get_impact();
+    geomtools::vector_3d srcStripWorldimpact;
+    sourceStripPlacement.child_to_mother(srcStripImpact, srcStripWorldimpact);
+    srcStripFii.set_impact(srcStripWorldimpact);
+    vertex_info vtxInfo;
+    vtxInfo.gid = sourceStripGid;
+    vtxInfo.face_intercept = srcStripFii;
+ 
+    // Search intercept on daughter pad volumes:
+    // bool has_pads = false;
+    // bool has_pad_intercept = false;
+    for (uint32_t j = 0; j < _sourcePadGids_.size(); j++) {
+      const geomtools::geom_id & sourcePadGid = _sourcePadGids_[j];
+      // DT_LOG_DEBUG(logPriority_, "  Source pad GID : " << sourcePadGid);
+      if (sourcePadGid.get(1) != sourceStripId) {
+        /// Reject pads in other strips:
+        continue;
+      }
+      uint32_t sourcePadId = sourcePadGid.get(2);
+      DT_LOG_DEBUG(logPriority_, "  Searching intercept on pad #" << sourcePadId << " in strip #" << sourceStripId);
+      const geomtools::geom_info  & sourcePadGinfo     = geoManager().get_mapping().get_geom_info(sourcePadGid);
+      const geomtools::logical_volume & sourcePadLog   = sourcePadGinfo.get_logical();
+      const geomtools::i_shape_3d & sourcePadShape     = sourcePadLog.get_shape();
+      const geomtools::placement  & sourcePadPlacement = sourcePadGinfo.get_world_placement();
+      geomtools::vector_3d srcPadFirst;
+      sourcePadPlacement.mother_to_child(line.get_first(), srcPadFirst);
+      geomtools::vector_3d srcPadDirection;
+      sourcePadPlacement.mother_to_child_direction(direction, srcPadDirection);
+      DT_LOG_DEBUG(logPriority_, "  First point : " << geomtools::to_xyz(srcPadFirst) );
+      DT_LOG_DEBUG(logPriority_, "  Direction   : " << geomtools::to_xyz(srcPadDirection) );
+      DT_LOG_DEBUG(logPriority_, "  Source pad shape : '" << sourcePadShape.get_shape_name() << "'");
+      geomtools::face_intercept_info srcPadFii;
+      success = sourcePadShape.find_intercept(srcPadFirst, srcPadDirection, srcPadFii, _intercept_tolerance_);
+      if (! success) {
+        continue;
+      }
+      DT_LOG_DEBUG(logPriority_, "  Found intercept on pad #" << sourcePadId);
+      geomtools::vector_3d srcPadImpact = srcPadFii.get_impact();
+      geomtools::vector_3d srcPadWorldimpact;
+      sourcePadPlacement.child_to_mother(srcPadImpact, srcPadWorldimpact);
+      srcPadFii.set_impact(srcPadWorldimpact);
+      vertex_info padVtxInfo;
+      padVtxInfo.gid = sourcePadGid;
+      padVtxInfo.face_intercept = srcPadFii;
+
+      // Search intercept on daughter pad bulk volumes:
+      // bool bulk_intercept = false;
+      bool candidate_bulk = false;
+      for (uint32_t k = 0; k < _sourcePadBulkGids_.size(); k++) {
+        const geomtools::geom_id & sourcePadBulkGid = _sourcePadBulkGids_[k];
+        // DT_LOG_DEBUG(logPriority_, "  Source pad bulk GID : " << sourcePadBulkGid);
+        if (sourcePadBulkGid.get(1) != sourceStripId or sourcePadBulkGid.get(2) != sourcePadId ) {
+          /// Reject pad bulks in other strips and pads:
+          continue;
+        }
+        candidate_bulk = true;
+        DT_LOG_DEBUG(logPriority_, "    Searching intercept on pad bulk #" << sourcePadId << " in strip #" << sourceStripId);
+        const geomtools::geom_info  & sourcePadBulkGinfo  = geoManager().get_mapping().get_geom_info(sourcePadBulkGid);
+        const geomtools::logical_volume & sourcePadBulkLog   = sourcePadBulkGinfo.get_logical();
+        const geomtools::i_shape_3d & sourcePadBulkShape     = sourcePadBulkLog.get_shape();
+        const geomtools::placement  & sourcePadBulkPlacement = sourcePadBulkGinfo.get_world_placement();
+        geomtools::vector_3d srcPadBulkFirst;
+        sourcePadBulkPlacement.mother_to_child(line.get_first(), srcPadBulkFirst);
+        geomtools::vector_3d srcPadBulkDirection;
+        sourcePadBulkPlacement.mother_to_child_direction(direction, srcPadBulkDirection);
+        DT_LOG_DEBUG(logPriority_, "    First point : " << geomtools::to_xyz(srcPadBulkFirst) );
+        DT_LOG_DEBUG(logPriority_, "    Direction   : " << geomtools::to_xyz(srcPadBulkDirection) );
+        DT_LOG_DEBUG(logPriority_, "    Source pad bulk shape : '" << sourcePadBulkShape.get_shape_name() << "'");
+        geomtools::face_intercept_info srcPadBulkFii;
+        success = sourcePadBulkShape.find_intercept(srcPadBulkFirst, srcPadBulkDirection, srcPadBulkFii, _intercept_tolerance_);
+        if (! success) {
+          continue;
+        }
+        DT_LOG_DEBUG(logPriority_, "    Found intercept on pad bulk #" << sourcePadId);
+        geomtools::vector_3d srcPadBulkImpact = srcPadBulkFii.get_impact();
+        geomtools::vector_3d srcPadBulkWorldimpact;
+        sourcePadPlacement.child_to_mother(srcPadBulkImpact, srcPadBulkWorldimpact);
+        srcPadBulkFii.set_impact(srcPadBulkWorldimpact);
+        vertex_info padBulkVtxInfo;
+        padBulkVtxInfo.gid = sourcePadBulkGid;
+        padBulkVtxInfo.face_intercept = srcPadBulkFii;
+        srcVertexes.push_back(padBulkVtxInfo);
+        // bulk_intercept = true;
+      }
+      if (! candidate_bulk) { // and ! bulk_intercept) {
+        // Validate pad intercept if no candidate bulk
+        srcVertexes.push_back(padVtxInfo);
+      }
+    }   
+  }
+
+  int closestIndex = -1;
+  double closestDist = datatools::invalid_real();
+  for (unsigned int i = 0; i < srcVertexes.size(); i++) {
+    const vertex_info & vtxInfo = srcVertexes[i];
+    double dist = (vtxInfo.face_intercept.get_impact() - first).mag();
+    if (closestIndex == -1 or dist < closestDist) {
+      closestIndex = i;
+      closestDist = dist;
+    }
+  }
+  if (closestIndex >= 0) {
+    vertexes_.push_back(srcVertexes[closestIndex]);
+  }
+  
+  return;
+}
+
+void vertex_extrapolation_driver::vertex_info::print(std::ostream & out_, const std::string & indent_) const
+{
+  out_ << indent_ << "|-- GID = " << gid << '\n';
+  out_ << indent_ << "`-- Face intercept : " << '\n';
+  face_intercept.print(out_, indent_ + "    ");
+  return;
+}
+ 
+void vertex_extrapolation_driver::helix_trajectory_source_intercept(const snemo::datamodel::helix_trajectory_pattern & /* helix_traj_ */,
+                                                                    std::vector<vertex_info> & vertexes_) const
+{
+  vertexes_.clear();
+  return;
+}
+  
 void vertex_extrapolation_driver::_measure_vertices_(
     const snemo::datamodel::tracker_trajectory &trajectory_,
     snemo::datamodel::particle_track::vertex_collection_type &vertices_) {
@@ -100,10 +313,12 @@ void vertex_extrapolation_driver::_measure_vertices_(
   // Add a property into 'blur_spot' auxiliaries to refer to the hit calo:
   std::string calo_category_flag;
 
+  DT_LOG_DEBUG(logPriority_, "Pattern ID : '" << a_pattern_id << "'");
+
   // ----- Start of line pattern handling
   if (a_pattern_id == snedm::line_trajectory_pattern::pattern_id()) {
     const auto &ltp = dynamic_cast<const snedm::line_trajectory_pattern &>(a_track_pattern);
-    const geomtools::line_3d &a_line = ltp.get_segment();
+    const geomtools::line_3d   &a_line = ltp.get_segment();
     const geomtools::vector_3d &first = a_line.get_first();
     const geomtools::vector_3d &last = a_line.get_last();
     const geomtools::vector_3d direction = first - last;
@@ -111,20 +326,44 @@ void vertex_extrapolation_driver::_measure_vertices_(
     // Calculate intersection on each geometric object
     using vertex_list_type = std::map<geomtools::vector_3d, std::string>;
     vertex_list_type vtxlist;
-    // Source foil:
-    {
-      const double x = 0.0 * CLHEP::mm;
-      const double y = direction.y() / direction.x() * (x - first.x()) + first.y();
-      const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
 
-      // Extrapolated vertex:
-      const geomtools::vector_3d a_vertex(x, y, z);
-      vtxlist.insert(
-          std::make_pair(a_vertex, snedm::particle_track::vertex_on_source_foil_label()));
+    bool find_on_source = true;
+    bool find_on_calo   = true;
+    bool find_on_xwalls = true;
+    bool find_on_gveto  = true;
+
+    // Vertex on source strips:
+    if (find_on_source) {
+      
+      std::vector<vertex_info> vertexes;
+      line_trajectory_source_intercept(ltp, vertexes);
+      DT_LOG_DEBUG(logPriority_, "vertexes = " << vertexes.size());
+      for (const auto & v : vertexes) {
+        DT_LOG_DEBUG(logPriority_, "Source strip vertexes:");
+        if (datatools::logger::is_debug(logPriority_)) {
+          v.print(std::cerr);
+        }
+      }
+      if (vertexes.size()) {
+        // Extrapolated vertex:
+        const geomtools::vector_3d & a_vertex = vertexes[0].face_intercept.get_impact();
+        vtxlist.insert(std::make_pair(a_vertex, snedm::particle_track::vertex_on_source_foil_label())); 
+      }
+      
+      // // Extrapolation on flat source foils:
+      // {
+      //   const double x = 0.0 * CLHEP::mm;
+      //   const double y = direction.y() / direction.x() * (x - first.x()) + first.y();
+      //   const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
+
+      //   // Extrapolated vertex:
+      //   const geomtools::vector_3d a_vertex(x, y, z);
+      //   vtxlist.insert(std::make_pair(a_vertex, snedm::particle_track::vertex_on_source_foil_label()));
+      // }
     }
 
     // Calorimeter walls:
-    {
+    if (find_on_calo) {
       for (const double x : xcalo_bd) {
         const double y = direction.y() / direction.x() * (x - first.x()) + first.y();
         const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
@@ -137,7 +376,7 @@ void vertex_extrapolation_driver::_measure_vertices_(
     }
 
     // Calorimeter on xwalls
-    {
+    if (find_on_xwalls) {
       for (const double y : ycalo_bd) {
         const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
         const double x = direction.x() / direction.y() * (y - first.y()) + first.x();
@@ -150,7 +389,7 @@ void vertex_extrapolation_driver::_measure_vertices_(
     }
 
     // Calorimeter on gveto
-    {
+    if (find_on_gveto) {
       for (const double z : zcalo_bd) {
         const double y = direction.y() / direction.z() * (z - first.z()) + first.y();
         const double x = direction.x() / direction.y() * (y - first.y()) + first.x();
@@ -205,8 +444,9 @@ void vertex_extrapolation_driver::_measure_vertices_(
           std::make_pair(snedm::particle_track::vertex_on_wire_label(), a_line.get_last()));
     }
   }  // ----- end of line pattern handling
+
   // ---- start of helix pattern handling
-  else if (a_pattern_id == snedm::helix_trajectory_pattern::pattern_id()) {
+  if (a_pattern_id == snedm::helix_trajectory_pattern::pattern_id()) {
     const auto &htp = dynamic_cast<const snedm::helix_trajectory_pattern &>(a_track_pattern);
     const geomtools::helix_3d &a_helix = htp.get_helix();
     const geomtools::vector_3d &hcenter = a_helix.get_center();
