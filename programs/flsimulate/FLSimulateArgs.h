@@ -16,6 +16,7 @@
 
 // Standard Library:
 #include <string>
+#include <vector>
 
 // Third Party
 // - Bayeux
