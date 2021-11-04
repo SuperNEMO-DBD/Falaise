@@ -293,26 +293,14 @@ Simulation
 
 #. Run flsimulate (we need to locate the SNRS library):
 
-
-.. code:: shell
-
-   $ export snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
-   $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ export snrsInstallLibDir="$(snrs-config --libdir)"
-   $ flsimulate \
-     -c utilities/geometry/test-snrs-integration1/simu.conf \
-     -o run_1.xml
-..
-
-or 
-
 .. code:: shell
 
    $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
    $ falaiseVersion="4.0.3"
    $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
    $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ flsimulate -V "debug"  \
+   $ flsimulate \
+     -V "debug"  \
      --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
      -c utilities/geometry/test-snrs-integration1/simu.conf \
      -o run_1.xml
@@ -342,6 +330,54 @@ or
    ..
 
 
-  
+Reconstruction
+==============
+
+
+#. Run flsimulate (no magnetic field):
+
+.. code:: shell
+
+   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+   $ falaiseVersion="4.0.3"
+   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+   $ PATH=${snrsInstallDir}/bin:${PATH}
+   $ flsimulate \
+     -V "debug"  \
+     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
+     -c utilities/geometry/test-snrs-integration1/simu_c.conf \
+     -o run_1.data.gz
+   $ flvisualize \
+     --load-dll "snrs@${snrsInstallDir}/lib" \
+     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
+     --input-file "run_1.data.gz"
+..
+
+#. Create a reconstruction configuration file ``reco_c.conf``:
+
+.. code:: 
+
+   
+..
+
+#. Run reconstruction:
+   
+.. code:: shell
+
+   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+   $ falaiseVersion="4.0.3"
+   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+   $ PATH=${snrsInstallDir}/bin:${PATH}
+   $ flreconstruct \
+     -V "debug"  \
+     -d "snrsLoader.libraries@$(snrs-config --libdir)" \
+     -p utilities/geometry/test-snrs-integration1/reco_c.conf \
+     -i run_1.data.gz \
+     -o run_1-reco.data.gz
+   $ flvisualize \
+     --load-dll "snrs@${snrsInstallDir}/lib" \
+     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
+     --input-file "run_1-reco.data.gz"
+..  
 .. end
    

@@ -1,8 +1,9 @@
 /// \file falaise/snemo/datamodels/particle_track.h
 /* Author (s) : Mathieu Bongrand <bongrand@lal.in2p3.fr>
  *              Xavier  Garrido  <garrido@lal.in2p3.fr>
+ *              Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-04-17
- * Last modified: 2014-06-03
+ * Last modified: 2021-11x-03
  *
  * Description: A particle track represents the physical interpretation of a
  * trajectory fitted from a cluster of tracker hits or from a gamma tracking
@@ -35,10 +36,10 @@ class particle_track : public geomtools::base_hit {
  public:
   /// Electric charge enumeration
   enum charge_type {
-    UNDEFINED = datatools::bit_mask::bit00,  /// Particle with undefined charge
-    NEUTRAL = datatools::bit_mask::bit01,    /// Neutral particle
-    POSITIVE = datatools::bit_mask::bit02,   /// Positively charged particle
-    NEGATIVE = datatools::bit_mask::bit03,   /// Negatively charged particle
+    UNDEFINED = datatools::bit_mask::bit00,  ///< Particle with undefined charge
+    NEUTRAL   = datatools::bit_mask::bit01,  ///< Neutral particle
+    POSITIVE  = datatools::bit_mask::bit02,  ///< Positively charged particle
+    NEGATIVE  = datatools::bit_mask::bit03,  ///< Negatively charged particle
   };
 
   /// Vertex flags
@@ -48,7 +49,8 @@ class particle_track : public geomtools::base_hit {
     VERTEX_ON_MAIN_CALORIMETER = datatools::bit_mask::bit01,
     VERTEX_ON_X_CALORIMETER = datatools::bit_mask::bit02,
     VERTEX_ON_GAMMA_VETO = datatools::bit_mask::bit03,
-    VERTEX_ON_WIRE = datatools::bit_mask::bit04
+    VERTEX_ON_WIRE = datatools::bit_mask::bit04,
+    VERTEX_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05
   };
 
   /// Key for the vertex type property
@@ -78,6 +80,9 @@ class particle_track : public geomtools::base_hit {
   /// Associated 'VERTEX_ON_WIRE' flag for auxiliary property
   static const std::string &vertex_on_wire_label();
 
+  /// Associated 'VERTEX_ON_CALIBRATION_SOURCE' flag for auxiliary property
+  static const std::string &vertex_on_calibration_source_label();
+
   /// Check a vertex type
   static bool vertex_is(const geomtools::blur_spot &, vertex_type);
 
@@ -95,6 +100,9 @@ class particle_track : public geomtools::base_hit {
 
   /// Check a vertex on wire
   static bool vertex_is_on_wire(const geomtools::blur_spot &);
+
+  /// Check a vertex on calibration source
+  static bool vertex_is_on_calibration_source(const geomtools::blur_spot &);
 
   /// Handle on vertex spot
   typedef datatools::handle<geomtools::blur_spot> handle_spot;
@@ -173,11 +181,11 @@ class particle_track : public geomtools::base_hit {
                          const std::string &indent = "", bool is_last = false) const override;
 
  private:
-  charge_type charge_from_source_{UNDEFINED};  //!< Particle charge
-  TrackerTrajectoryHdl trajectory_{};          //!< Handle to the fitted trajectory
-  vertex_collection_type vertices_{};          //!< Collection of vertices
+  charge_type charge_from_source_{UNDEFINED};  ///< Particle charge
+  TrackerTrajectoryHdl trajectory_{};          ///< Handle to the fitted trajectory
+  vertex_collection_type vertices_{};          ///< Collection of vertices
   CalorimeterHitHdlCollection
-      associated_calorimeters_{};  //! Calorimeter hits associated with the Particle
+      associated_calorimeters_{};  ///< Calorimeter hits associated with the Particle
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
@@ -208,9 +216,12 @@ bool particle_has_neutral_charge(const Particle &);
 // Check if a vertex matches a given type
 inline bool vertex_matches(const Particle::handle_spot &vtx, const int32_t vertex_flags) {
   std::vector<Particle::vertex_type> vertex_types{
-      Particle::VERTEX_ON_SOURCE_FOIL,      Particle::VERTEX_ON_SOURCE_FOIL,
-      Particle::VERTEX_ON_MAIN_CALORIMETER, Particle::VERTEX_ON_X_CALORIMETER,
-      Particle::VERTEX_ON_GAMMA_VETO,       Particle::VERTEX_ON_WIRE};
+      Particle::VERTEX_ON_SOURCE_FOIL,
+      Particle::VERTEX_ON_MAIN_CALORIMETER,
+      Particle::VERTEX_ON_X_CALORIMETER,
+      Particle::VERTEX_ON_GAMMA_VETO,
+      Particle::VERTEX_ON_WIRE,
+      Particle::VERTEX_ON_CALIBRATION_SOURCE};
   for (const auto &vtx_type : vertex_types) {
     if (((vertex_flags & vtx_type) != 0u) && Particle::vertex_is(*vtx, vtx_type)) {
       return true;

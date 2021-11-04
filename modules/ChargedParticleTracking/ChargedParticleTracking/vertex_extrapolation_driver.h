@@ -2,9 +2,10 @@
 /* Author(s)     : Sophie Blondel <blondel@lal.in2p3.fr>
                    Xavier Garrido <garrido@lal.in2p3.fr>
  * Creation date : 2012-11-13
- * Last modified : 2014-06-05
+ * Last modified : 2021-11-03
  *
  * Copyright (C) 2012-2014 Xavier Garrido <garrido@lal.in2p3.fr>
+ * Copyright (C) 2021 François Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,21 +89,37 @@ class vertex_extrapolation_driver {
   void process(const snemo::datamodel::tracker_trajectory& trajectory_,
                snemo::datamodel::particle_track& particle_);
 
+  static const int FROM_LAST  = 0; ///< Extrapolation from the last position of the trajectory pattern
+  static const int FROM_FIRST = 1; ///< Extrapolation from the first position of the trajectory pattern
+
   /// Data structure for vertex
   struct vertex_info
   {
+    snemo::datamodel::particle_track::vertex_type type = snemo::datamodel::particle_track::VERTEX_NONE;
+    int from = -1;
     geomtools::geom_id gid;
     geomtools::face_intercept_info face_intercept;
+    double tolerance = datatools::invalid_real();
     void print(std::ostream & out_, const std::string & indent_ = "") const;
   };
+  typedef std::vector<vertex_info> vertex_info_list;
 
-  /// Compute vertex on source from a line trajectory
-  void line_trajectory_source_intercept(const snemo::datamodel::line_trajectory_pattern & line_traj_,
-                                        std::vector<vertex_info> & vertexes_) const;
+  /// Compute vertex on source element from a line trajectory
+  void line_trajectory_source_intercept(std::vector<vertex_info> & vertexes_,
+                                        const snemo::datamodel::line_trajectory_pattern & line_traj_,
+                                        uint32_t track_side_,
+                                        bool from_last_only_ = false) const;
+
+  /// Compute vertex on some calo blocks from a line trajectory
+  void line_trajectory_calo_intercept(std::vector<vertex_info> & vertexes_,
+                                      const snemo::datamodel::line_trajectory_pattern & line_traj_,
+                                      uint32_t track_side_,
+                                      bool from_last_only_ = false) const;
 
   /// Compute vertex on source from a helix trajectory
-  void helix_trajectory_source_intercept(const snemo::datamodel::helix_trajectory_pattern & helix_traj_,
-                                         std::vector<vertex_info> & vertexes_) const;
+  void helix_trajectory_source_intercept(std::vector<vertex_info> & vertexes_,
+                                         const snemo::datamodel::helix_trajectory_pattern & helix_traj_,
+                                         uint32_t track_side_) const;
   
   /// OCD support:
   static void init_ocd(datatools::object_configuration_description& ocd_);
@@ -112,7 +129,8 @@ class vertex_extrapolation_driver {
   const geomtools::manager& geoManager() const;
 
   /// Check reliability of vertices extrapolation given Geiger cells
-  void _check_vertices_(const snemo::datamodel::tracker_trajectory& trajectory_);
+  void _check_vertices_(const snemo::datamodel::tracker_trajectory& trajectory_,
+                        std::map<std::string, bool> & use_vertices_);
 
   /// Measure vertices on the calorimeter walls and source foil
   void _measure_vertices_(const snemo::datamodel::tracker_trajectory& trajectory_,
@@ -122,8 +140,10 @@ class vertex_extrapolation_driver {
   datatools::logger::priority logPriority_ = datatools::logger::PRIO_WARNING;  //!< Logging priority
   const geomtools::manager* geoManager_ = nullptr;               //!< The SuperNEMO geometry manager
   const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< The SuperNEMO locator plugin
-  std::map<std::string, bool> _use_vertices_ = {};               //!< Vertices reliability
+  double _intercept_tolerance_ = 1.0 * CLHEP::mm;                //!< Tolerance for finintersection 
   uint32_t _module_id_ = 0;
+
+  // Registered source strips/pads/ pad bulks/calibration spots:
   bool _use_deformed_source_strips_ = false;
   uint32_t _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
   std::vector<geomtools::geom_id> _sourceStripGids_;
@@ -131,8 +151,16 @@ class vertex_extrapolation_driver {
   std::vector<geomtools::geom_id> _sourcePadGids_;
   uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
   std::vector<geomtools::geom_id> _sourcePadBulkGids_;
-  std::vector<bool> _deformed_strip_ids_;
-  double _intercept_tolerance_ = 1.0 * CLHEP::mm;
+  uint32_t _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _sourceCalibrationSpotGids_;
+  
+  // Registered calorimeter blocks:
+  uint32_t _caloBlockType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _caloBlockGids_;
+  uint32_t _xcaloBlockType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _xcaloBlockGids_;
+  uint32_t _gvetoBlockType_ = geomtools::geom_id::INVALID_TYPE;
+  std::vector<geomtools::geom_id> _gvetoBlockGids_;
 
 };
 

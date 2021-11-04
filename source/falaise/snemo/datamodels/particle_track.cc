@@ -38,6 +38,8 @@ const std::string& particle_track::vertex_type_to_label(vertex_type v) {
       return vertex_on_gamma_veto_label();
     case VERTEX_ON_WIRE:
       return vertex_on_wire_label();
+    case VERTEX_ON_CALIBRATION_SOURCE:
+      return vertex_on_calibration_source_label();
     default:
       return vertex_none_label();
   }
@@ -59,6 +61,9 @@ particle_track::vertex_type particle_track::label_to_vertex_type(const std::stri
   if (label == vertex_on_wire_label()) {
     return VERTEX_ON_WIRE;
   }
+  if (label == vertex_on_calibration_source_label()) {
+    return VERTEX_ON_CALIBRATION_SOURCE;
+  }
   return VERTEX_NONE;
 }
 
@@ -69,6 +74,11 @@ const std::string& particle_track::vertex_none_label() {
 
 const std::string& particle_track::vertex_on_wire_label() {
   static const std::string _flag("wire");
+  return _flag;
+}
+
+const std::string& particle_track::vertex_on_calibration_source_label() {
+  static const std::string _flag("calibration_source");
   return _flag;
 }
 
@@ -118,6 +128,10 @@ bool particle_track::vertex_is_on_gamma_veto(const geomtools::blur_spot& vtx) {
 
 bool particle_track::vertex_is_on_wire(const geomtools::blur_spot& vtx) {
   return vertex_is(vtx, VERTEX_ON_WIRE);
+}
+
+bool particle_track::vertex_is_on_calibration_source(const geomtools::blur_spot& vtx) {
+  return vertex_is(vtx, VERTEX_ON_CALIBRATION_SOURCE);
 }
 
 bool particle_track::has_track_id() const { return has_hit_id(); }
