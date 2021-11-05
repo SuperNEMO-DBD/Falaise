@@ -197,6 +197,7 @@ void vertex_extrapolation_driver::vertex_info::print(std::ostream & out_, const 
   for (int iFrom = FROM_LAST; iFrom <= FROM_FIRST; iFrom++) {
     geomtools::vector_3d first = line.get_first();
     geomtools::vector_3d last  = line.get_last();
+    geomtools::vector_3d refPoint = 0.5 * (first + last);
     if (iFrom == FROM_FIRST) {
       if (from_last_only_) break;
       std::swap(first, last);
@@ -225,13 +226,15 @@ void vertex_extrapolation_driver::vertex_info::print(std::ostream & out_, const 
         const geomtools::placement  & blockPlacement = blockGinfo.get_world_placement();
         geomtools::vector_3d blockLast;
         blockPlacement.mother_to_child(last, blockLast);
+        geomtools::vector_3d blockRefPoint;
+        blockPlacement.mother_to_child(refPoint, blockRefPoint);
         geomtools::vector_3d blockDirection;
         blockPlacement.mother_to_child_direction(direction, blockDirection);
         DT_LOG_DEBUG(logPriority_, "    Last point  : " << geomtools::to_xyz(blockLast) );
         DT_LOG_DEBUG(logPriority_, "    Direction   : " << geomtools::to_xyz(blockDirection) );
         DT_LOG_DEBUG(logPriority_, "    Block shape : '" << blockShape.get_shape_name() << "'");
         geomtools::face_intercept_info blockFii;
-        bool success = blockShape.find_intercept(blockLast, blockDirection, blockFii, _intercept_tolerance_);
+        bool success = blockShape.find_intercept(blockRefPoint, blockDirection, blockFii, _intercept_tolerance_);
         if (success) {
           DT_LOG_DEBUG(logPriority_, "    Found intercept on calo block #" << blockGid);
           geomtools::vector_3d blockImpact = blockFii.get_impact();
@@ -267,10 +270,10 @@ void vertex_extrapolation_driver::vertex_info::print(std::ostream & out_, const 
   
 void vertex_extrapolation_driver::line_trajectory_source_intercept(vertex_info_list & vertexes_,
                                                                    const snemo::datamodel::line_trajectory_pattern & line_traj_,
-                                                                   uint32_t track_side_,
+                                                                   uint32_t /*track_side_*/,
                                                                    bool from_last_only_) const
 {
-  DT_LOG_DEBUG(logPriority_, "\nSearch line intercepts on source elements: ");
+  DT_LOG_DEBUG(logPriority_, "Search line intercepts on source elements: ");
   vertexes_.clear();
   const geomtools::line_3d & line = line_traj_.get_segment();
   std::vector<vertex_info> srcStripVertexes;
@@ -282,6 +285,7 @@ void vertex_extrapolation_driver::line_trajectory_source_intercept(vertex_info_l
   for (int iFrom = FROM_LAST; iFrom <= FROM_FIRST; iFrom++) {
     geomtools::vector_3d first = line.get_first();
     geomtools::vector_3d last  = line.get_last();
+    geomtools::vector_3d refPoint = 0.5 * (first + last);
     if (iFrom == FROM_FIRST) {
       if (from_last_only_) break;
       std::swap(first, last);
@@ -292,7 +296,7 @@ void vertex_extrapolation_driver::line_trajectory_source_intercept(vertex_info_l
       const geomtools::geom_id & sourceStripGid = _sourceStripGids_[iStrip];
       DT_LOG_DEBUG(logPriority_, "  Source strip GID : " << sourceStripGid);
       uint32_t sourceStripId = sourceStripGid.get(1);
-      if (sourceStripGid.get(0) != _module_id_ or sourceStripGid.get(1) != track_side_) {
+      if (sourceStripGid.get(0) != _module_id_) { // or sourceStripGid.get(1) != track_side_) {
         /// Reject pads in other side:
         continue;
       }
@@ -302,7 +306,9 @@ void vertex_extrapolation_driver::line_trajectory_source_intercept(vertex_info_l
       const geomtools::i_shape_3d & sourceStripShape     = sourceStripLog.get_shape();
       const geomtools::placement  & sourceStripPlacement = sourceStripGinfo.get_world_placement();
       geomtools::vector_3d srcStripLast;
+      geomtools::vector_3d srcStripRefPoint;
       sourceStripPlacement.mother_to_child(last, srcStripLast);
+      sourceStripPlacement.mother_to_child(refPoint, srcStripRefPoint);
       geomtools::vector_3d srcStripDirection;
       sourceStripPlacement.mother_to_child_direction(direction, srcStripDirection);
       DT_LOG_DEBUG(logPriority_, "  Last point  : " << geomtools::to_xyz(srcStripLast) );
@@ -310,7 +316,7 @@ void vertex_extrapolation_driver::line_trajectory_source_intercept(vertex_info_l
       DT_LOG_DEBUG(logPriority_, "  Source strip shape  : '" << sourceStripShape.get_shape_name() << "'");
       DT_LOG_DEBUG(logPriority_, "  Intercept tolerance : " << _intercept_tolerance_ / CLHEP::mm << " mm");
       geomtools::face_intercept_info srcStripFii;
-      bool success = sourceStripShape.find_intercept(srcStripLast, srcStripDirection, srcStripFii, _intercept_tolerance_);
+      bool success = sourceStripShape.find_intercept(srcStripRefPoint, srcStripDirection, srcStripFii, _intercept_tolerance_);
       if (! success) {
         continue;
       }
@@ -526,8 +532,7 @@ void vertex_extrapolation_driver::_measure_vertices_(
     bool find_on_calo   = true;
 
     // Vertex on source strips:
-    if (find_on_source) {
-      
+    if (find_on_source) {      
       vertex_info_list sourceVertexes;
       line_trajectory_source_intercept(sourceVertexes, ltp, trackSide);
       DT_LOG_DEBUG(logPriority_, "Source vertexes = " << sourceVertexes.size());
@@ -542,20 +547,7 @@ void vertex_extrapolation_driver::_measure_vertices_(
         for (const auto & sv : sourceVertexes) {
           vertice_infos.push_back(sv);
         }
-        // const geomtools::vector_3d & a_vertex = sourceVertexes[0].face_intercept.get_impact();
-        // vtxlist.insert(std::make_pair(a_vertex, snedm::particle_track::vertex_on_source_foil_label()));
-        // vertice_infos.push_back(sourceVertexes[0]);
       }
-      
-      // // Extrapolation on flat source foils:
-      // {
-      //   const double x = 0.0 * CLHEP::mm;
-      //   const double y = direction.y() / direction.x() * (x - first.x()) + first.y();
-      //   const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
-      //   // Extrapolated vertex:
-      //   const geomtools::vector_3d a_vertex(x, y, z);
-      //   vtxlist.insert(std::make_pair(a_vertex, snedm::particle_track::vertex_on_source_foil_label()));
-      // }
     }
 
     if (find_on_calo) {
@@ -573,53 +565,8 @@ void vertex_extrapolation_driver::_measure_vertices_(
         for (const auto & cv : caloVertexes) {
           vertice_infos.push_back(cv);
         }
-        // vertice_infos.push_back(caloVertexes[0]);
       }
     }
-    
-    /*    
-    // Calorimeter walls:
-    if (find_on_calo) {
-      vertex_info_list caloVertexes;
-      line_trajectory_calo_intercept(ltp, caloVertexes);
-
-      for (const double x : xcalo_bd) {
-        const double y = direction.y() / direction.x() * (x - first.x()) + first.y();
-        const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
-
-        // Extrapolated vertex
-        const geomtools::vector_3d a_vertex(x, y, z);
-        vtxlist.insert(
-            std::make_pair(a_vertex, snedm::particle_track::vertex_on_main_calorimeter_label()));
-      }
-    }
-
-    // Calorimeter on xwalls
-    if (find_on_xwalls) {
-      for (const double y : ycalo_bd) {
-        const double z = direction.z() / direction.y() * (y - first.y()) + first.z();
-        const double x = direction.x() / direction.y() * (y - first.y()) + first.x();
-
-        // Extrapolate vertex
-        const geomtools::vector_3d a_vertex(x, y, z);
-        vtxlist.insert(
-            std::make_pair(a_vertex, snedm::particle_track::vertex_on_x_calorimeter_label()));
-      }
-    }
-
-    // Calorimeter on gveto
-    if (find_on_gveto) {
-      for (const double z : zcalo_bd) {
-        const double y = direction.y() / direction.z() * (z - first.z()) + first.y();
-        const double x = direction.x() / direction.y() * (y - first.y()) + first.x();
-
-        // Extrapolate vertex
-        const geomtools::vector_3d a_vertex(x, y, z);
-        vtxlist.insert(
-            std::make_pair(a_vertex, snedm::particle_track::vertex_on_gamma_veto_label()));
-      }
-    }
-    */
 
     /*
     // This *looks* like it finds the two vertices closest to the end points of
