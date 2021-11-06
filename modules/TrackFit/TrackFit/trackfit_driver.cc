@@ -179,7 +179,7 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
   std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
 
   falaise::property_set ps{setup_};
-  _vertex_max_distance_ = ps.get<falaise::length_t>("vertex_max_distance", 0.5 * CLHEP::mm);
+  _vertex_max_distance_ = ps.get<falaise::length_t>("vertex_max_distance", {0.5, "mm"})();
   _drift_time_calibration_label_ = ps.get<std::string>("drift_time_calibration_label", "snemo");
   auto fitting_models = ps.get<std::vector<std::string>>("fitting_models", {"line", "helix"});
 
