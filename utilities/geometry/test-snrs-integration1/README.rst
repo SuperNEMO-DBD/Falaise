@@ -24,7 +24,16 @@ Tests
   
 #. Setup Falaise
 #. Cd in the Falaise source directory
-#. Configure a variant simulation setup using the realistic SNRS1 model:
+#. Configure a variant simulation setup using the realistic flat source model and an uniform vertical magnetic field:
+
+   .. code:: shell
+	     
+      $ flsimulate-configure -o utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_a.conf
+      $ cat utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_a.conf
+      ...
+   ..
+
+#. Configure a variant simulation setup using the realistic SNRS1 model and an uniform vertical magnetic field:
 
    .. code:: shell
 	     
@@ -333,6 +342,18 @@ Simulation
 Reconstruction
 ==============
 
+No mag field
+------------
+
+#. Configure a variant simulation setup using the realistic SNRS1 model and no magnetic field:
+
+   .. code:: shell
+	     
+      $ flsimulate-configure -o utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf
+      $ cat utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf
+      ...
+   ..
+ 
 
 #. Run flsimulate (no magnetic field):
 
@@ -346,11 +367,11 @@ Reconstruction
      -V "debug"  \
      --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
      -c utilities/geometry/test-snrs-integration1/simu_c.conf \
-     -o run_1.data.gz
+     -o run_1c.data.gz
    $ flvisualize \
      --load-dll "snrs@${snrsInstallDir}/lib" \
      --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
-     --input-file "run_1.data.gz"
+     --input-file "run_1c.data.gz"
 ..
 
 #. Create a reconstruction configuration file ``reco_c.conf``:
@@ -372,12 +393,73 @@ Reconstruction
      -V "debug"  \
      -d "snrsLoader.libraries@$(snrs-config --libdir)" \
      -p utilities/geometry/test-snrs-integration1/reco_c.conf \
-     -i run_1.data.gz \
-     -o run_1-reco.data.gz
+     -i run_1c.data.gz \
+     -o run_1c-reco.data.gz
    $ flvisualize \
      --load-dll "snrs@${snrsInstallDir}/lib" \
      --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
-     --input-file "run_1-reco.data.gz"
+     --input-file "run_1c-reco.data.gz"
 ..  
+
+With mag field
+---------------
+
+#. Use the variant simulation setup using the realistic SNRS1 model and a vertical magnetic field:
+
+   .. code:: shell
+	     
+      $ cat utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf
+      $ cat utilities/geometry/test-snrs-integration1/simu_b.conf
+      ...
+   ..
+ 
+
+#. Run flsimulate (no magnetic field):
+
+   .. code:: shell
+	     
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flsimulate \
+	     -V "debug"  \
+	     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -c utilities/geometry/test-snrs-integration1/simu_b.conf \
+	     -o run_1b.data.gz
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
+	     --input-file "run_1b.data.gz"
+   ..
+
+#. Create a reconstruction configuration file ``reco_b.conf``:
+
+   .. code:: 
+
+      $ cat utilities/geometry/test-snrs-integration1/reco_b.conf
+   ..
+
+#. Run reconstruction:
+   
+   .. code:: shell
+	     
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flreconstruct \
+	     -V "debug"  \
+	     -d "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -p utilities/geometry/test-snrs-integration1/reco_b.conf \
+	     -i run_1b.data.gz \
+	     -o run_1b-reco.data.gz
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
+	     --input-file "run_1b-reco.data.gz"
+   ..  
+
+
 .. end
    

@@ -3,7 +3,7 @@
  *              Xavier  Garrido  <garrido@lal.in2p3.fr>
  *              Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-04-17
- * Last modified: 2021-11x-03
+ * Last modified: 2021-11-03
  *
  * Description: A particle track represents the physical interpretation of a
  * trajectory fitted from a cluster of tracker hits or from a gamma tracking
