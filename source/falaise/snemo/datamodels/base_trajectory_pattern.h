@@ -15,6 +15,7 @@
 // Third party:
 // - Bayeux
 #include <bayeux/datatools/i_serializable.h>
+#include <bayeux/datatools/i_tree_dump.h>
 #include <bayeux/geomtools/i_shape_1d.h>
 
 namespace snemo {
@@ -22,7 +23,10 @@ namespace snemo {
 namespace datamodel {
 
 /// \brief The base class of fitted trajectory pattern
-class base_trajectory_pattern : public datatools::i_serializable {
+class base_trajectory_pattern
+  : public datatools::i_serializable
+  , public datatools::i_tree_dumpable
+{
  public:
   /// Constructors
   base_trajectory_pattern() = default;
@@ -40,6 +44,9 @@ class base_trajectory_pattern : public datatools::i_serializable {
 
   /// Return the reference to the 1D shape associated to the trajectory
   virtual const geomtools::i_shape_1d& get_shape() const = 0;
+
+  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   std::string _pattern_id_{""};  //!< The pattern identifier

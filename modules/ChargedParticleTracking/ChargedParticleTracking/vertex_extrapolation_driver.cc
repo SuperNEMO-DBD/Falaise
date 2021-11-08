@@ -525,8 +525,8 @@ namespace snemo {
                 padBulkVtxInfo.from = iFrom;
                 padBulkVtxInfo.gid = sourcePadBulkGid;
                 padBulkVtxInfo.face_intercept = srcPadBulkFii;
-                padBulkVtxInfo.distance =  (srcPadBulkWorldImpact - refPoint).mag();
-                padBulkVtxInfo.distance_xy =  (srcPadBulkWorldImpact - refPoint).perp();
+                padBulkVtxInfo.distance = (srcPadBulkWorldImpact - refPoint).mag();
+                padBulkVtxInfo.distance_xy = (srcPadBulkWorldImpact - refPoint).perp();
                 padBulkVtxInfo.tolerance = _intercept_tolerance_;
                 DT_LOG_DEBUG(logPrio, "  ======> add padBulkVtxInfo");
                 srcVertexes.push_back(padBulkVtxInfo);
@@ -575,7 +575,7 @@ namespace snemo {
             calibrationSpotVtxInfo.from = iFrom;
             calibrationSpotVtxInfo.gid = sourceCalibrationSpotGid;
             calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotFii;
-            calibrationSpotVtxInfo.distance = (srcCalibrationSpotWorldImpact - refPoint).mag();;
+            calibrationSpotVtxInfo.distance = (srcCalibrationSpotWorldImpact - refPoint).mag();
             calibrationSpotVtxInfo.distance_xy = (srcCalibrationSpotWorldImpact - refPoint).perp();
             calibrationSpotVtxInfo.tolerance = _intercept_tolerance_;
             srcVertexes.push_back(calibrationSpotVtxInfo);
@@ -604,7 +604,7 @@ namespace snemo {
                                                                         uint32_t from_mask_) const
     {
       datatools::logger::priority logPrio = logPriority_;
-      logPrio = datatools::logger::PRIO_DEBUG;
+      // logPrio = datatools::logger::PRIO_DEBUG;
       DT_LOG_DEBUG(logPrio, "Search helix intercepts on source elements from mask = " << from_mask_);
       vertexes_.clear();
       const geomtools::helix_3d & helix = helix_traj_.get_helix();
@@ -1121,17 +1121,17 @@ namespace snemo {
         auto spot = datatools::make_handle<geomtools::blur_spot>();
         spot->set_hit_id(vertices_.size());
         spot->set_geom_id(vtxInfo.gid);
-        spot->grab_auxiliaries().update("from",
+        spot->grab_auxiliaries().store(snedm::particle_track::vertex_from_key(),
                                         snemo::geometry::vertex_info::from_to_label(vtxInfo.from));
-        spot->grab_auxiliaries().update(snedm::particle_track::vertex_type_key(),
+        spot->grab_auxiliaries().store(snedm::particle_track::vertex_type_key(),
                                         snedm::particle_track::vertex_type_to_label(vtxInfo.type));
         if (datatools::is_valid(vtxInfo.distance)) {
-          spot->grab_auxiliaries().update("distance",
-                                          vtxInfo.distance);
+          spot->grab_auxiliaries().store_with_explicit_unit(snedm::particle_track::vertex_distance_key(), vtxInfo.distance);
+          spot->grab_auxiliaries().set_unit_symbol(snedm::particle_track::vertex_distance_key(), "mm");
         }
         if (datatools::is_valid(vtxInfo.distance_xy)) {
-          spot->grab_auxiliaries().update("distance_xy",
-                                          vtxInfo.distance_xy);
+          spot->grab_auxiliaries().store_with_explicit_unit(snedm::particle_track::vertex_distance_xy_key(), vtxInfo.distance_xy);
+          spot->grab_auxiliaries().set_unit_symbol(snedm::particle_track::vertex_distance_xy_key(), "mm");
         }
         spot->set_blur_dimension(geomtools::blur_spot::dimension_three);
         spot->set_position(vtxInfo.face_intercept.get_impact());

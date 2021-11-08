@@ -108,8 +108,6 @@ namespace snemo {
                                          snemo::geometry::vertex_info::from_bit_type from_bit_)
     {
       ei_.reset();
-      datatools::invalidate(ei_.extrapolated_length);
-      datatools::invalidate(ei_.extrapolated_xy_length);
       double hStep   = _helix_.get_step();
       double hRadius = _helix_.get_radius();
       double initDeltaT = _step_ / hypot(hStep, 2 * M_PI * hRadius);
@@ -117,13 +115,13 @@ namespace snemo {
       DT_LOG_DEBUG(_verbosity_, "initDeltaT = " << initDeltaT);
       DT_LOG_DEBUG(_verbosity_, "helix t1   = " << _helix_.get_t1());
       DT_LOG_DEBUG(_verbosity_, "helix t2   = " << _helix_.get_t2());
-      double currentT = _helix_.get_t2();
+      double currentT = _helix_.get_t2(); // default : from last
       if (from_bit_ == snemo::geometry::vertex_info::FROM_FIRST_BIT) {
-        DT_LOG_DEBUG(_verbosity_, "From first point");
+        DT_LOG_DEBUG(_verbosity_, "From 'first' point");
         currentT = _helix_.get_t1();
-        initDeltaT *= -1;
+        initDeltaT *= -1; // Backward curvilinear abscissa
       } else {
-        DT_LOG_DEBUG(_verbosity_, "From last point");
+        DT_LOG_DEBUG(_verbosity_, "From 'last' point");
       }
       int      deltaTFactor = 1;
       uint16_t niters = 0;
@@ -142,9 +140,6 @@ namespace snemo {
         geomtools::vector_3d refPoint     = _helix_.get_point(currentT);
         geomtools::vector_3d refPostPoint = _helix_.get_point(currentT + deltaT);
         geomtools::vector_3d direction = (refPostPoint - refPoint).unit();
-        // DT_LOG_DEBUG(_verbosity_, "refPoint     =" << geomtools::to_xyz(refPoint));
-        // DT_LOG_DEBUG(_verbosity_, "refPostPoint =" << geomtools::to_xyz(refPostPoint));
-        // DT_LOG_DEBUG(_verbosity_, "direction    =" << geomtools::to_xyz(direction));
         // Work in the shape reference frame
         geomtools::vector_3d shapeRefPoint;
         geomtools::vector_3d shapeRefPostPoint;
@@ -172,6 +167,7 @@ namespace snemo {
               if (impactDiff < _precision_) {
                 DT_LOG_DEBUG(_verbosity_, "Break loop because of intercept was found in requested precision.");
                 extrapolated_length += impactDist;
+                extrapolated_xy_length += (shapeImpact - shapeRefPoint).perp();
                 break;
               }
             }
@@ -194,13 +190,11 @@ namespace snemo {
           refPoint = refPostPoint;
           currentT += deltaT;
           extrapolated_length += _step_ / deltaTFactor;
-          extrapolated_xy_length += 2 * M_PI * deltaT * hRadius;
-          // if (! geomtools::is_valid(shapeLastImpact)) {
-            // Relax the step factor:
-            if (deltaTFactor > 1) {
-              deltaTFactor /= 2;
-            }
-          // }
+          extrapolated_xy_length += 2 * M_PI * std::abs(deltaT) * hRadius;
+          // Relax the step factor:
+          if (deltaTFactor > 1) {
+            deltaTFactor /= 2;
+          }
         } else {
           DT_LOG_DEBUG(_verbosity_, "  Restep with a reduced step...");
           deltaTFactor *= 2;

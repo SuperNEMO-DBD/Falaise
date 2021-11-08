@@ -53,7 +53,16 @@ class particle_track : public geomtools::base_hit {
     VERTEX_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05
   };
 
-  /// Key for the vertex type property
+  /// Key for the vertex 'from' property
+  static const std::string &vertex_from_key();
+
+  /// Key for the vertex 'distance' property
+  static const std::string &vertex_distance_key();
+
+  /// Key for the vertex 'distance_xy' property
+  static const std::string &vertex_distance_xy_key();
+
+  /// Key for the vertex 'type' property
   static const std::string &vertex_type_key();
 
   /// Return the label from the vertex type

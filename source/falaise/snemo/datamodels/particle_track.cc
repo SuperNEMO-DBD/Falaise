@@ -21,6 +21,21 @@ bool particle_has_undefined_charge(const Particle& p) {
 
 bool particle_has_neutral_charge(const Particle& p) { return particle_has(p, Particle::NEUTRAL); }
 
+const std::string& particle_track::vertex_from_key() {
+  static const std::string _flag("vertex.from");
+  return _flag;
+}
+
+const std::string& particle_track::vertex_distance_key() {
+  static const std::string _flag("vertex.distance");
+  return _flag;
+}
+
+const std::string& particle_track::vertex_distance_xy_key() {
+  static const std::string _flag("vertex.distance_xy");
+  return _flag;
+}
+
 const std::string& particle_track::vertex_type_key() {
   static const std::string _flag("vertex.type");
   return _flag;
