@@ -16,6 +16,7 @@
 // - Bayeux
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/bit_mask.h>
 #include <bayeux/geomtools/i_shape_1d.h>
 
 namespace snemo {
@@ -28,6 +29,15 @@ class base_trajectory_pattern
   , public datatools::i_tree_dumpable
 {
  public:
+
+  enum direction_type
+    {
+     DIRECTION_NONE     = 0,
+     DIRECTION_BACKWARD = datatools::bit_mask::bit01,
+     DIRECTION_FORWARD  = datatools::bit_mask::bit00,
+     DIRECTION_BOTH     = DIRECTION_FORWARD | DIRECTION_BACKWARD
+    };
+  
   /// Constructors
   base_trajectory_pattern() = default;
 
@@ -45,8 +55,25 @@ class base_trajectory_pattern
   /// Return the reference to the 1D shape associated to the trajectory
   virtual const geomtools::i_shape_1d& get_shape() const = 0;
 
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+  virtual geomtools::vector_3d get_first() const = 0;
+
+  virtual geomtools::vector_3d get_first_direction() const = 0;
+
+  virtual geomtools::vector_3d get_last() const = 0;
+
+  virtual geomtools::vector_3d get_last_direction() const = 0;
+
+  virtual unsigned int number_of_kinks() const = 0;
+  
+  virtual geomtools::vector_3d get_kink(unsigned int kink_index_) const = 0;
+ 
+  virtual geomtools::vector_3d get_kink_direction(unsigned int kink_index_,
+                                                  direction_type dir_) const = 0;
+  
+  virtual void tree_dump(std::ostream& out = std::clog,
+                         const std::string& title = "",
+                         const std::string& indent = "",
+                         bool inherit_ = false) const override;
 
  private:
   std::string _pattern_id_{""};  //!< The pattern identifier
