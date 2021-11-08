@@ -49,6 +49,15 @@ namespace snemo {
     class helix_intercept
     {
     public:
+
+      /// \brief Extrapolation result
+      struct extrapolation_info
+      {
+        void reset();
+        geomtools::face_intercept_info fii; ///< Face intercept info object
+        double extrapolated_length = datatools::invalid_real(); ///< Length of the extrapolated path along the helix
+        double extrapolated_xy_length = datatools::invalid_real(); ///< Length of the extrapolated path along the helix (XY-projection)
+      };
      
       helix_intercept(const geomtools::helix_3d & h_,
                       const geomtools::i_shape_3d & sh_,
@@ -57,22 +66,21 @@ namespace snemo {
                       double precision_ = datatools::invalid_real(),
                       datatools::logger::priority verbosity_ = datatools::logger::PRIO_FATAL);
 
-      bool find_intercept(geomtools::face_intercept_info & fii_,
-                          double & extrapolated_length_, 
+      bool find_intercept(extrapolation_info & ei_,
                           snemo::geometry::vertex_info::from_bit_type from_bit_);
       
     private:
 
       void _init_();
       
-      datatools::logger::priority _verbosity_ = datatools::logger::PRIO_FATAL;
-      const geomtools::helix_3d & _helix_;
-      const geomtools::i_shape_3d & _shape_;
-      geomtools::placement _shape_placement_;
-      double _step_ = datatools::invalid_real();
-      double _precision_ = datatools::invalid_real();
-      uint16_t _max_niter_ = 100;
-      double _max_extrapolated_xy_length_ = datatools::invalid_real();
+      datatools::logger::priority _verbosity_ = datatools::logger::PRIO_FATAL; ///< Verbosity
+      const geomtools::helix_3d & _helix_; ///< Reference to the helix pattern
+      const geomtools::i_shape_3d & _shape_; ///< Reference to the shape on which the intercept is searched for
+      geomtools::placement _shape_placement_; ///< Placement of the shape
+      double _step_ = datatools::invalid_real(); ///< Maximal step length of the search algorithm
+      double _precision_ = datatools::invalid_real(); ///< Precision of the vertex (criterion for convergence)
+      uint16_t _max_niter_ = 100; ///< Maximum number of iterations
+      double _max_extrapolated_xy_length_ = datatools::invalid_real(); ///< Maximum extrapolated length on the XY plane
 
     };
 

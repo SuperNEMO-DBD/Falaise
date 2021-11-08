@@ -141,7 +141,7 @@ namespace snemo {
       double _finder_step_ =  2.0 * CLHEP::cm;                       //!< Step length of the finder algorithms
       uint32_t _module_id_ = 0;
 
-      // Registered source strips/pads/ pad bulks/calibration spots:
+      // Registered source strips/pads/pad bulks/calibration spots:
       bool _use_deformed_source_strips_ = false;
       uint32_t _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourceStripGids_;

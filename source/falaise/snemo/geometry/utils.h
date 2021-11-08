@@ -129,6 +129,7 @@ namespace snemo {
       geomtools::geom_id gid;
       geomtools::face_intercept_info face_intercept;
       double distance = datatools::invalid_real();
+      double distance_xy = datatools::invalid_real();
       double tolerance = datatools::invalid_real();
       void print(std::ostream & out_, const std::string & indent_ = "") const;
     };

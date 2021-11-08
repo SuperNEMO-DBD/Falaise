@@ -28,6 +28,14 @@
 namespace snemo {
 
   namespace geometry {
+
+    void helix_intercept::extrapolation_info::reset()
+    {
+      fii.reset();
+      extrapolated_length = datatools::invalid_real();
+      extrapolated_xy_length = datatools::invalid_real();
+      return;
+    }
     
     helix_intercept::helix_intercept(const geomtools::helix_3d & h_,
                                      const geomtools::i_shape_3d & sh_,
@@ -89,19 +97,19 @@ namespace snemo {
       if (_precision_ >= _step_) {
         DT_THROW(std::logic_error, "Precision is larger than step!");
       }
-      _max_extrapolated_xy_length_ = 10.0 * CLHEP::cm;
+      _max_extrapolated_xy_length_ = 50.0 * CLHEP::cm;
       DT_LOG_DEBUG(_verbosity_, "Step = " << _step_ / CLHEP::mm << " mm");
       DT_LOG_DEBUG(_verbosity_, "Precision = " << _precision_ / CLHEP::mm << " mm");
       DT_LOG_DEBUG(_verbosity_, "Max extrapolated XY length = " << _max_extrapolated_xy_length_ / CLHEP::cm << " cm");
       return;
     }
  
-    bool helix_intercept::find_intercept(geomtools::face_intercept_info & fii_,
-                                         double & extrapolated_length_,
+    bool helix_intercept::find_intercept(extrapolation_info & ei_,
                                          snemo::geometry::vertex_info::from_bit_type from_bit_)
     {
-      fii_.reset();
-      datatools::invalidate(extrapolated_length_);
+      ei_.reset();
+      datatools::invalidate(ei_.extrapolated_length);
+      datatools::invalidate(ei_.extrapolated_xy_length);
       double hStep   = _helix_.get_step();
       double hRadius = _helix_.get_radius();
       double initDeltaT = _step_ / hypot(hStep, 2 * M_PI * hRadius);
@@ -214,19 +222,20 @@ namespace snemo {
         }
       } // while
       if (shapeFii.is_valid()) {
-        fii_.set_face_id(shapeFii.get_face_id());
+        ei_.fii.set_face_id(shapeFii.get_face_id());
         geomtools::vector_3d impact;
         _shape_placement_.child_to_mother(shapeFii.get_impact(), impact);
-        fii_.set_impact(impact);
+        ei_.fii.set_impact(impact);
+        ei_.extrapolated_length = extrapolated_length;
+        ei_.extrapolated_xy_length = extrapolated_xy_length;
         DT_LOG_DEBUG(_verbosity_, "Exit on success: ");
-        fii_.print(std::cerr, "[debug] ");
-        extrapolated_length_ = extrapolated_length;
-        DT_LOG_DEBUG(_verbosity_, "  - extrapolated length    = " << extrapolated_length_ / CLHEP::mm << " mm");
+        ei_.fii.print(std::cerr, "[debug] ");
+        DT_LOG_DEBUG(_verbosity_, "  - extrapolated length    = " << extrapolated_length / CLHEP::mm << " mm");
         DT_LOG_DEBUG(_verbosity_, "  - extrapolated XY length = " << extrapolated_xy_length / CLHEP::mm << " mm");
       } else {
         DT_LOG_DEBUG(_verbosity_, "Exit on failure.");
       }
-      return fii_.is_valid();
+      return ei_.fii.is_valid();
     }
     
   }  // namespace geometry

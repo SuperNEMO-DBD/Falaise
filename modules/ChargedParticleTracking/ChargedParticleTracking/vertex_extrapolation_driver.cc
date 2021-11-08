@@ -218,18 +218,18 @@ namespace snemo {
                                                              _intercept_tolerance_,
                                                              logPrio);
             DT_LOG_DEBUG(logPrio, "    Block shape : '" << blockShape.get_shape_name() << "'");
-            geomtools::face_intercept_info blockFii;
-            double blockExtrapolatedLength;
-            bool success = hBlockIntercept.find_intercept(blockFii, blockExtrapolatedLength, from_bit);
+            snemo::geometry::helix_intercept::extrapolation_info blockEi;
+            bool success = hBlockIntercept.find_intercept(blockEi, from_bit);
             if (success) {
               DT_LOG_DEBUG(logPrio, "    Found helix intercept on calo block #" << blockGid
-                           << " at distance = " << blockExtrapolatedLength / CLHEP::cm << " cm");
+                           << " at distance = " << blockEi.extrapolated_length / CLHEP::cm << " cm");
               vertex_info blockVtxInfo;
               blockVtxInfo.type = vtxType;
               blockVtxInfo.from = iFrom;
               blockVtxInfo.gid = blockGid;
-              blockVtxInfo.face_intercept = blockFii;
-              blockVtxInfo.distance = blockExtrapolatedLength;
+              blockVtxInfo.face_intercept = blockEi.fii;
+              blockVtxInfo.distance = blockEi.extrapolated_length;
+              blockVtxInfo.distance_xy = blockEi.extrapolated_xy_length;
               blockVtxInfo.tolerance = _intercept_tolerance_;
               caloVertexes[iFrom].push_back(blockVtxInfo);
               if (datatools::logger::is_debug(logPrio)) {
@@ -348,6 +348,7 @@ namespace snemo {
               blockVtxInfo.gid = blockGid;
               blockVtxInfo.face_intercept = blockFii;
               blockVtxInfo.distance = (blockWorldImpact - refPoint).mag();
+              blockVtxInfo.distance_xy = (blockWorldImpact - refPoint).perp();
               blockVtxInfo.tolerance = _intercept_tolerance_;
               caloVertexes[iFrom].push_back(blockVtxInfo);
               if (datatools::logger::is_debug(logPrio)) {
@@ -481,6 +482,7 @@ namespace snemo {
               padVtxInfo.gid = sourcePadGid;
               padVtxInfo.face_intercept = srcPadFii;
               padVtxInfo.distance = (srcPadWorldImpact - refPoint).mag();
+              padVtxInfo.distance_xy = (srcPadWorldImpact - refPoint).perp();
               padVtxInfo.tolerance = _intercept_tolerance_;
               // Search intercept on daughter pad bulk volumes:
               bool candidate_bulk = false;
@@ -524,6 +526,7 @@ namespace snemo {
                 padBulkVtxInfo.gid = sourcePadBulkGid;
                 padBulkVtxInfo.face_intercept = srcPadBulkFii;
                 padBulkVtxInfo.distance =  (srcPadBulkWorldImpact - refPoint).mag();
+                padBulkVtxInfo.distance_xy =  (srcPadBulkWorldImpact - refPoint).perp();
                 padBulkVtxInfo.tolerance = _intercept_tolerance_;
                 DT_LOG_DEBUG(logPrio, "  ======> add padBulkVtxInfo");
                 srcVertexes.push_back(padBulkVtxInfo);
@@ -572,7 +575,8 @@ namespace snemo {
             calibrationSpotVtxInfo.from = iFrom;
             calibrationSpotVtxInfo.gid = sourceCalibrationSpotGid;
             calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotFii;
-            calibrationSpotVtxInfo.distance =  (srcCalibrationSpotWorldImpact - refPoint).mag();;
+            calibrationSpotVtxInfo.distance = (srcCalibrationSpotWorldImpact - refPoint).mag();;
+            calibrationSpotVtxInfo.distance_xy = (srcCalibrationSpotWorldImpact - refPoint).perp();
             calibrationSpotVtxInfo.tolerance = _intercept_tolerance_;
             srcVertexes.push_back(calibrationSpotVtxInfo);
           }
@@ -641,18 +645,17 @@ namespace snemo {
                                                              _finder_step_,
                                                              _intercept_tolerance_,
                                                              logPrio);
-            geomtools::face_intercept_info srcStripFii;
-            double srcStripExtrapolatedLength;
-            bool success = hStripIntercept.find_intercept(srcStripFii, srcStripExtrapolatedLength, from_bit);
+            snemo::geometry::helix_intercept::extrapolation_info srcStripEi;
+            bool success = hStripIntercept.find_intercept(srcStripEi, from_bit);
             if (! success) {
               // No intersection with the strip volume: no chance to intersect a pad ! We give up.
               continue;
             }
             DT_LOG_DEBUG(logPrio, "  ===> Found helix intercept on strip #" << sourceStripId);
-            geomtools::vector_3d srcStripImpact = srcStripFii.get_impact();
+            geomtools::vector_3d srcStripImpact = srcStripEi.fii.get_impact();
             geomtools::vector_3d srcStripWorldImpact;
             // sourceStripPlacement.child_to_mother(srcStripImpact, srcStripWorldImpact);
-            srcStripFii.set_impact(srcStripWorldImpact);
+            srcStripEi.fii.set_impact(srcStripWorldImpact);
             // Search intercept on daughter pad volumes:
             for (uint32_t j = 0; j < _sourcePadGids_.size(); j++) {
               const geomtools::geom_id & sourcePadGid = _sourcePadGids_[j];
@@ -673,21 +676,21 @@ namespace snemo {
                                                              _finder_step_,
                                                              _intercept_tolerance_,
                                                              logPrio);
-              geomtools::face_intercept_info srcPadFii;
-              double srcPadExtrapolatedLength;
-              success = hPadIntercept.find_intercept(srcPadFii, srcPadExtrapolatedLength, from_bit);
+              snemo::geometry::helix_intercept::extrapolation_info srcPadEi;
+              success = hPadIntercept.find_intercept(srcPadEi, from_bit);
               if (! success) {
                 DT_LOG_DEBUG(logPrio, "  ===> Give up strip #" << sourceStripId);
                 continue;
               }
               DT_LOG_DEBUG(logPrio, "  ===> Found helix intercept on pad #" << sourcePadId
-                           << " at " << geomtools::to_xyz(srcPadFii.get_impact()));
+                           << " at " << geomtools::to_xyz(srcPadEi.fii.get_impact()));
               vertex_info padVtxInfo;
               padVtxInfo.type = snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL;
               padVtxInfo.from = iFrom;
               padVtxInfo.gid = sourcePadGid;
-              padVtxInfo.face_intercept = srcPadFii;
-              padVtxInfo.distance = srcPadExtrapolatedLength;
+              padVtxInfo.face_intercept = srcPadEi.fii;
+              padVtxInfo.distance = srcPadEi.extrapolated_length;
+              padVtxInfo.distance_xy = srcPadEi.extrapolated_xy_length;
               padVtxInfo.tolerance = _intercept_tolerance_;
               // Search intercept on daughter pad bulk volumes:
               bool candidate_bulk = false;
@@ -710,23 +713,22 @@ namespace snemo {
                                                                    _finder_step_,
                                                                    _intercept_tolerance_,
                                                                    logPrio);
-                geomtools::face_intercept_info srcPadBulkFii;
-                double srcPadBulkExtrapolatedLength;
-                success = hPadBulkIntercept.find_intercept(srcPadBulkFii,
-                                                           srcPadBulkExtrapolatedLength,
+                snemo::geometry::helix_intercept::extrapolation_info srcPadBulkEi;
+                success = hPadBulkIntercept.find_intercept(srcPadBulkEi,
                                                            from_bit);
                 if (! success) {
                   DT_LOG_DEBUG(logPrio, "  ===> Give up strip/pad = " << sourceStripId << '/' << sourcePadId);
                   continue;
                 }
                 DT_LOG_DEBUG(logPrio, "  ===> Found helix intercept on pad bulk #" << sourcePadId
-                             << " at " << geomtools::to_xyz(srcPadBulkFii.get_impact()));
+                             << " at " << geomtools::to_xyz(srcPadBulkEi.fii.get_impact()));
                 vertex_info padBulkVtxInfo;
                 padBulkVtxInfo.type = snemo::datamodel::particle_track::VERTEX_ON_SOURCE_FOIL;
                 padBulkVtxInfo.from = iFrom;
                 padBulkVtxInfo.gid = sourcePadBulkGid;
-                padBulkVtxInfo.face_intercept = srcPadBulkFii;
-                padBulkVtxInfo.distance = srcPadBulkExtrapolatedLength;
+                padBulkVtxInfo.face_intercept = srcPadBulkEi.fii;
+                padBulkVtxInfo.distance = srcPadBulkEi.extrapolated_length;
+                padBulkVtxInfo.distance_xy = srcPadBulkEi.extrapolated_xy_length;
                 padBulkVtxInfo.tolerance = _intercept_tolerance_;
                 DT_LOG_DEBUG(logPrio, "  ======> add padBulkVtxInfo");
                 srcVertexes.push_back(padBulkVtxInfo);
@@ -755,24 +757,24 @@ namespace snemo {
                                                                        _finder_step_,
                                                                        _intercept_tolerance_,
                                                                        logPrio);
-            geomtools::face_intercept_info srcCalibrationSpotFii;
-            double srcCalibrationSpotExtrapolatedLength;
-            bool success = hCalibrationSpotIntercept.find_intercept(srcCalibrationSpotFii, srcCalibrationSpotExtrapolatedLength, from_bit);
+            snemo::geometry::helix_intercept::extrapolation_info srcCalibrationSpotEi;
+            bool success = hCalibrationSpotIntercept.find_intercept(srcCalibrationSpotEi, from_bit);
             if (! success) {
               DT_LOG_DEBUG(logPrio, "  ===> Give up calibration source");
               continue;
             }
             DT_LOG_DEBUG(logPrio, " ===> Found line intercept on calibration source spot #" << sourceCalibrationSpotGid);
-            geomtools::vector_3d srcCalibrationSpotImpact = srcCalibrationSpotFii.get_impact();
+            geomtools::vector_3d srcCalibrationSpotImpact = srcCalibrationSpotEi.fii.get_impact();
             geomtools::vector_3d srcCalibrationSpotWorldImpact;
             sourceCalibrationSpotPlacement.child_to_mother(srcCalibrationSpotImpact, srcCalibrationSpotWorldImpact);
-            srcCalibrationSpotFii.set_impact(srcCalibrationSpotWorldImpact);
+            srcCalibrationSpotEi.fii.set_impact(srcCalibrationSpotWorldImpact);
             vertex_info calibrationSpotVtxInfo;
             calibrationSpotVtxInfo.type = snemo::datamodel::particle_track::VERTEX_ON_CALIBRATION_SOURCE;
             calibrationSpotVtxInfo.from = iFrom;
             calibrationSpotVtxInfo.gid = sourceCalibrationSpotGid;
-            calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotFii;
-            calibrationSpotVtxInfo.distance = srcCalibrationSpotExtrapolatedLength;
+            calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotEi.fii;
+            calibrationSpotVtxInfo.distance = srcCalibrationSpotEi.extrapolated_length;
+            calibrationSpotVtxInfo.distance_xy = srcCalibrationSpotEi.extrapolated_xy_length;
             calibrationSpotVtxInfo.tolerance = _intercept_tolerance_;
             srcVertexes.push_back(calibrationSpotVtxInfo);
           }
@@ -820,7 +822,6 @@ namespace snemo {
       // const snemo::geometry::calo_locator &calo_locator = geoLocator_->caloLocator();
       // const snemo::geometry::xcalo_locator &xcalo_locator = geoLocator_->xcaloLocator();
       // const snemo::geometry::gveto_locator &gveto_locator = geoLocator_->gvetoLocator();
-
       // const double xcalo_bd[2] = {calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::BACK),
       //                             calo_locator.getXCoordOfWallWindow(snemo::geometry::side_t::FRONT)};
       // const double ycalo_bd[2] = {
@@ -834,7 +835,7 @@ namespace snemo {
       _use_vertices_.clear();
       this->_check_vertices_(trajectory_, _use_vertices_);
 
-      // Look first if trajectory pattern is an helix or not:
+      // Look first if the trajectory pattern is an helix or a line:
       const snedm::base_trajectory_pattern &a_track_pattern = trajectory_.get_pattern();
       const std::string &a_pattern_id = a_track_pattern.get_pattern_id();
 
@@ -1124,8 +1125,14 @@ namespace snemo {
                                         snemo::geometry::vertex_info::from_to_label(vtxInfo.from));
         spot->grab_auxiliaries().update(snedm::particle_track::vertex_type_key(),
                                         snedm::particle_track::vertex_type_to_label(vtxInfo.type));
-        spot->grab_auxiliaries().update("distance",
-                                        vtxInfo.distance);
+        if (datatools::is_valid(vtxInfo.distance)) {
+          spot->grab_auxiliaries().update("distance",
+                                          vtxInfo.distance);
+        }
+        if (datatools::is_valid(vtxInfo.distance_xy)) {
+          spot->grab_auxiliaries().update("distance_xy",
+                                          vtxInfo.distance_xy);
+        }
         spot->set_blur_dimension(geomtools::blur_spot::dimension_three);
         spot->set_position(vtxInfo.face_intercept.get_impact());
         spot->set_errors(vtxInfo.tolerance);

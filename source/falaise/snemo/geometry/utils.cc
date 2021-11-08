@@ -82,8 +82,9 @@ namespace snemo {
       out_ << indent_ << "|-- GID = " << gid << '\n';
       out_ << indent_ << "|-- Face intercept : " << '\n';
       face_intercept.print(out_, indent_ + "|   ");
-      out_ << indent_ << "|-- Distance  : " << distance / CLHEP::cm << " cm" << '\n';
-      out_ << indent_ << "`-- Tolerance : " << tolerance / CLHEP::mm << " mm" << '\n';
+      out_ << indent_ << "|-- Distance    : " << distance / CLHEP::cm << " cm" << '\n';
+      out_ << indent_ << "|-- Distance_xy : " << distance_xy / CLHEP::cm << " cm" << '\n';
+      out_ << indent_ << "`-- Tolerance   : " << tolerance / CLHEP::mm << " mm" << '\n';
       return;
     }
 
