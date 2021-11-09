@@ -139,7 +139,9 @@ namespace snemo {
       const snemo::geometry::locator_plugin* geoLocator_ = nullptr;  //!< The SuperNEMO locator plugin
       double _intercept_tolerance_ = 1.0 * CLHEP::mm;                //!< Tolerance for finintersection
       double _finder_step_ =  2.0 * CLHEP::cm;                       //!< Step length of the finder algorithms
-      uint32_t _module_id_ = 0;
+      uint32_t _module_id_ = 0;                                      //!< Force module ID
+      double _max_calo_extrapolation_xy_length_ = 15.0 * CLHEP::cm;         //!< Maximum length of the extrapolation on calo block in XY plane 
+      double _max_source_extrapolation_xy_length_ = 30.0 * CLHEP::cm;       //!< Maximum length of the extrapolation on source element in XY plane
 
       // Registered source strips/pads/pad bulks/calibration spots:
       bool _use_deformed_source_strips_ = false;
