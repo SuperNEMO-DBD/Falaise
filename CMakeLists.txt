@@ -101,8 +101,11 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.4.1)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.0)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
+
+# # Hack for Boost 1.69:
+# set(PROJECT_CXX_FLAGS "${PROJECT_CXX_FLAGS} -Wno-error=pedantic")
 
 #-----------------------------------------------------------------------
 # Build the subdirectories as required
