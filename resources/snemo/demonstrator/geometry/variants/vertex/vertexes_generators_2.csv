@@ -3,15 +3,15 @@ pmt_8inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 8inc
 pmt_main_wall_glass_bulk : Vertex generation from the bulk volume of all source pads : OpticalModule : 
 pmt_glass_bulk : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator : OpticalModule : 
 pmt_gveto_glass_bulk : Vertex generation from the bulk volume of the GVETO PMT glass : OpticalModule : 
-pmt_gveto_glass_bulk_it_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom : OpticalModule : 
-pmt_gveto_glass_bulk_it_top : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, top : OpticalModule : 
-pmt_gveto_glass_bulk_fr_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, bottom : OpticalModule : 
-pmt_gveto_glass_bulk_fr_top : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, top : OpticalModule : 
+pmt_gveto_glass_bulk_it_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom : OpticalModule : : rank=second
+pmt_gveto_glass_bulk_it_top : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, top : OpticalModule : : rank=second
+pmt_gveto_glass_bulk_fr_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, bottom : OpticalModule : : rank=second 
+pmt_gveto_glass_bulk_fr_top : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, top : OpticalModule : : rank=second 
 pmt_xcalo_glass_bulk : Vertex generation from the bulk volume of the XCALO PMT glass : OpticalModule : 
-pmt_xcalo_glass_bulk_it_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, mountain : OpticalModule : 
-pmt_xcalo_glass_bulk_it_tunnel : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, tunnel : OpticalModule : 
-pmt_xcalo_glass_bulk_fr_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, mountain : OpticalModule : 
-pmt_xcalo_glass_bulk_fr_tunnel : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, tunnel : OpticalModule : 
+pmt_xcalo_glass_bulk_it_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, mountain : OpticalModule : : rank=second 
+pmt_xcalo_glass_bulk_it_tunnel : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, tunnel : OpticalModule : : rank=second 
+pmt_xcalo_glass_bulk_fr_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, mountain : OpticalModule : : rank=second 
+pmt_xcalo_glass_bulk_fr_tunnel : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, tunnel : OpticalModule : : rank=second 
 pmt_xcalo_gveto_glass_bulk : Vertex generation from the bulk volume of all XCALO/GVETO PMT glass : OpticalModule : 
 calo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks : OpticalModule : 
 xcalo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks : OpticalModule : 
@@ -30,33 +30,33 @@ anode_wire_surface : Vertex generation from the surface of all anode wires : Tra
 field_wire_bulk : Vertex generation from the bulk volume of all field wires : Tracker : 
 field_wire_surface : Vertex generation from the surface of all field wires : Tracker : 
 feedthrough_pins_bulk_all_spots : Vertex generation from the bulk volume of all tracker feedthrough pins : Tracker : 
-feedthrough_pins_bulk_side_0_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top : Tracker0 : 
-feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker0 : 
-feedthrough_pins_bulk_side_1_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top : Tracker1 : 
-feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker1 : 
+feedthrough_pins_bulk_side_0_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top : Tracker0 : : rank=second 
+feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker0 : : rank=second 
+feedthrough_pins_bulk_side_1_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top : Tracker1 : : rank=second 
+feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker1 : : rank=second 
 experimental_hall_surface : Vertex generation from all internal surfaces of the experimental hall : Hall : 
 experimental_hall_roof : Vertex generation from the top surface (roof) of the experimental hall : Hall : 
 experimental_hall_bulk : Vertex generation from the bulk volume (air) of the experimental hall : Hall : 
 experimental_hall_ground_bulk : Vertex generation from the bulk volume of the experimental hall's ground : Hall : 
 experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
-source_pads_internal_bulk : Vertex generation from the bulk volume of all inner source pads : SourceFoilBasic : 
-source_pads_external_bulk : Vertex generation from the bulk volume of all outer source pads : SourceFoilBasic : 
-source_pads_bulk : Vertex generation from the bulk volume of all source pads : SourceFoilBasic : 
-source_pads_internal_surface : Vertex generation from the surface of all inner source pads : SourceFoilBasic : 
-source_pads_external_surface : Vertex generation from the surface of all outer source pads : SourceFoilBasic : 
-source_pads_surface : Vertex generation from the surface of all source pads : SourceFoilBasic : 
-shielding_bottom_bulk : Vertex generation from the bulk volume of the bottom shielding wall : Shielding : 
-shielding_top_bulk : Vertex generation from the bulk volume of the top shielding wall : Shielding : 
-shielding_left_right_bulk : Vertex generation from the bulk volume of the left/right shielding walls : Shielding : 
-shielding_back_front_bulk : Vertex generation from the bulk volume of the back/front shielding walls : Shielding : 
+source_pads_internal_bulk : Vertex generation from the bulk volume of all inner source pads : SourceFoilBasic : : rank=second 
+source_pads_external_bulk : Vertex generation from the bulk volume of all outer source pads : SourceFoilBasic : : rank=second 
+source_pads_bulk : Vertex generation from the bulk volume of all source pads : SourceFoilBasic : : rank=highlight 
+source_pads_internal_surface : Vertex generation from the surface of all inner source pads : SourceFoilBasic : : rank=second 
+source_pads_external_surface : Vertex generation from the surface of all outer source pads : SourceFoilBasic : : rank=second 
+source_pads_surface : Vertex generation from the surface of all source pads : SourceFoilBasic : : rank=highlight  
+shielding_bottom_bulk : Vertex generation from the bulk volume of the bottom shielding wall : Shielding : : rank=second  
+shielding_top_bulk : Vertex generation from the bulk volume of the top shielding wall : Shielding : : rank=second  
+shielding_left_right_bulk : Vertex generation from the bulk volume of the left/right shielding walls : Shielding : : rank=second  
+shielding_back_front_bulk : Vertex generation from the bulk volume of the back/front shielding walls : Shielding :  : rank=second 
 shielding_all_bulk : Vertex generation from the bulk volume of all shielding walls : Shielding : 
-shielding_bottom_internal_surface : Vertex generation from the internal surface of the bottom shielding wall : Shielding : 
-shielding_top_internal_surface : Vertex generation from the internal surface of the top shielding wall : Shielding : 
-shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : Shielding : 
-shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : Shielding : 
+shielding_bottom_internal_surface : Vertex generation from the internal surface of the bottom shielding wall : Shielding : : rank=second  
+shielding_top_internal_surface : Vertex generation from the internal surface of the top shielding wall : Shielding : : rank=second  
+shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : Shielding : : rank=second  
+shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : Shielding : : rank=second  
 shielding_all_internal_surfaces : Vertex generation from internal surfaces of the all shielding  walls : Shielding : 
-source_calibration_all_spots : Vertex generation from the bulk volume of all source calibration spots : Calibration : 
-source_calibration_single_spot : Vertex generation from the bulk volume of all source calibration spots : Calibration : if_source_calibration_single_spot :
+source_calibration_all_spots : Vertex generation from the bulk volume of all source calibration spots : Calibration : : rank=highlight  
+source_calibration_single_spot : Vertex generation from the bulk volume of all source calibration spots : Calibration : if_source_calibration_single_spot : : rank=second 
 commissioning_all_spots : Vertex generation from from a commissioning spot : HalfCommissioning : 
 commissioning_single_spot : Vertex generation from from a commissioning spot : HalfCommissioning : if_half_commissioning_single_spot :
 free_spot : Vertex generation from an arbitrary spot in the geometry :  : if_free_spot :
@@ -64,12 +64,12 @@ real_flat_source_full_copper_mass_bulk : Vertex generation from the bulk of all 
 real_flat_source_full_copper_surface : Vertex generation from the surface of all Copper foils : SourceFoilRealistic : 
 strip_0_bulk : Vertex generation from the bulk volume of source strip 0 : SourceFoilRealistic : 
 strip_0_surface : Vertex generation from the surface of source strip 0 : SourceFoilRealistic : 
-real_flat_source_strip_0_pad_0_bulk : Vertex generation from the bulk of the SuperNEMO source strip 0 pad 0 : SourceFoilRealistic : 
-real_flat_source_strip_0_pad_0_surface : Vertex generation from the surface of the SuperNEMO source strip 0 pad 0 : SourceFoilRealistic : 
+real_flat_source_strip_0_pad_0_bulk : Vertex generation from the bulk of the SuperNEMO source strip 0 pad 0 : SourceFoilRealistic : : rank=second 
+real_flat_source_strip_0_pad_0_surface : Vertex generation from the surface of the SuperNEMO source strip 0 pad 0 : SourceFoilRealistic : : rank=second 
 strip_35_bulk : Vertex generation from the bulk volume of source strip 35 : SourceFoilRealistic : 
 strip_35_surface : Vertex generation from the surface of source strip 35 : SourceFoilRealistic : 
-real_flat_source_strip_35_pad_0_bulk : Vertex generation from the bulk of the strip 35 pad 0 : SourceFoilRealistic : 
-real_flat_source_strip_35_pad_0_surface : Vertex generation from the surface of the strip 35 pad 0 : SourceFoilRealistic : 
+real_flat_source_strip_35_pad_0_bulk : Vertex generation from the bulk of the strip 35 pad 0 : SourceFoilRealistic : : rank=second 
+real_flat_source_strip_35_pad_0_surface : Vertex generation from the surface of the strip 35 pad 0 : SourceFoilRealistic : : rank=second 
 real_flat_source_full_foils_mass_bulk : Vertex generation from the bulk of all source pads (for mass contamination) : SourceFoilRealistic/Flat : : rank=highlight
 real_flat_source_full_foils_se82_bulk : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process) : SourceFoilRealistic/Flat :  if_source_of_se82_dbd : rank=highlight 
 real_flat_source_full_foils_surface : Vertex generation from the surface of all source pads : SourceFoilRealistic/Flat : : rank=highlight 
