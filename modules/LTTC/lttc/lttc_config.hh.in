@@ -1,0 +1,19 @@
+/** \file lttc/lttc_config.hh
+ * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Creation date: 2021-11-16
+ * Last modified: 2021-11-16
+ */
+
+#ifndef FALAISE_LTTC_PLUGIN_CONFIG_HH
+#define FALAISE_LTTC_PLUGIN_CONFIG_HH 1
+
+namespace lttc {
+
+  // #cmakedefine01 LTTCC_WITH_XXX
+
+
+}  // namespace lttc
+
+#endif // FALAISE_LTTC_PLUGIN_CONFIG_HH
+
+// end of lttc_config.h
