@@ -14,32 +14,61 @@
 
 namespace lttc {
 
+  dbscan_clusterizer::dbscan_clusterizer(const input_data & input_,
+                                         const config & cfg_)
+  {
+    input = &input_;
+    cfg = cfg_;
+    noisy.assign(input->trmap->sorted_bins.size(), false);
+    sbins2clusters.assign(input->trmap->sorted_bins.size(), -1);
+    nclusters = 0;
+    for (int sbin_index = 0; sbin_index < (int) input->trmap->sorted_bins.size(); sbin_index++) {
+      bins2sbins[input->trmap->sorted_bins[sbin_index]] = sbin_index;
+    }
+    DT_LOG_DEBUG(cfg.logging, "Reverse map bins2sbin size=" << bins2sbins.size());
+    for (auto p : bins2sbins) {
+      DT_LOG_DEBUG(cfg.logging, "  idxBin=" << p.first << " -> " << p.second);
+    }
+    DT_LOG_DEBUG(cfg.logging, "  ");
+    return;
+  }
+
+  bool dbscan_clusterizer::is_visited(int sbin_index_) const
+  {
+    return sbins2clusters[sbin_index_] >= 0 or noisy[sbin_index_];
+  }
+
+  bool dbscan_clusterizer::is_unvisited(int sbin_index_) const
+  {
+    return ! is_visited(sbin_index_);
+  }
+
   void dbscan_clusterizer::epsilon_neighbourhood(int sbin_index_,
                                                  std::set<int> & pts_) const
   {
     pts_.clear();
-    double eps = epsilon;
+    double eps = cfg.epsilon;
     // eps = 4.0;
-    DT_LOG_DEBUG(logging, "eps=" << eps);
-    DT_LOG_DEBUG(logging, "sbin_index =" << sbin_index_);
+    DT_LOG_DEBUG(cfg.logging, "eps=" << eps);
+    DT_LOG_DEBUG(cfg.logging, "sbin_index =" << sbin_index_);
     DT_THROW_IF((sbin_index_ < 0) || (sbin_index_ >= (int) input->trmap->sorted_bins.size()),
                 std::range_error,
                 "Invalid sbin index!");
     int binIndex = input->trmap->sorted_bins[sbin_index_];
-    DT_LOG_DEBUG(logging, "binIndex =" << binIndex);
+    DT_LOG_DEBUG(cfg.logging, "binIndex =" << binIndex);
     int iBin = -1; 
     int jBin = -1;
     if (!input->trmap->tr_bin_index_to_t_r_indexes(binIndex, iBin, jBin)) {
       return;
     }
-    DT_LOG_DEBUG(logging, "iBin =" << iBin);
-    DT_LOG_DEBUG(logging, "jBin =" << jBin);
+    DT_LOG_DEBUG(cfg.logging, "iBin =" << iBin);
+    DT_LOG_DEBUG(cfg.logging, "jBin =" << jBin);
     double t = input->trmap->index_to_t(iBin);
     double r = input->trmap->index_to_r(jBin);
-    DT_LOG_DEBUG(logging, "t =" << t);
-    DT_LOG_DEBUG(logging, "r =" << r);
+    DT_LOG_DEBUG(cfg.logging, "t =" << t);
+    DT_LOG_DEBUG(cfg.logging, "r =" << r);
     int max_dist = (int) (eps + 1);
-    DT_LOG_DEBUG(logging, "max_dist =" << max_dist);
+    DT_LOG_DEBUG(cfg.logging, "max_dist =" << max_dist);
     //
     //   :           :           :
     //   :<---eps--->:<---eps--->:
@@ -62,93 +91,35 @@ namespace lttc {
     //
     //
     for (int i = iBin - max_dist; i <= iBin + max_dist; i++) {
-      DT_LOG_DEBUG(logging, "check i=" << i);
+      DT_LOG_DEBUG(cfg.logging, "check i=" << i);
       int di = i-iBin;
       if ((i < 0) || (i >= (int) input->trmap->nt)) {
-        DT_LOG_DEBUG(logging, "i=" << i << " is out of map");
+        DT_LOG_DEBUG(cfg.logging, "i=" << i << " is out of map");
         continue;
       }
       for (int j = jBin - max_dist; j <= jBin + max_dist; j++) {
         int dj = j-jBin;
-        DT_LOG_DEBUG(logging, "check j=" << j);
+        DT_LOG_DEBUG(cfg.logging, "check j=" << j);
         if ((j < 0) || (j >= (int) input->trmap->nr)) {
-          DT_LOG_DEBUG(logging, "j=" << j << " is out of map");
+          DT_LOG_DEBUG(cfg.logging, "j=" << j << " is out of map");
           continue;
         }
         double dist_ij = std::sqrt(di * di + dj * dj);
-        DT_LOG_DEBUG(logging, "dist_ij=" << dist_ij);
+        DT_LOG_DEBUG(cfg.logging, "dist_ij=" << dist_ij);
         if (dist_ij > eps) {
-          DT_LOG_DEBUG(logging, "(i,j)=(" << i << ',' << j << ") is too far");
+          DT_LOG_DEBUG(cfg.logging, "(i,j)=(" << i << ',' << j << ") is too far");
           continue;
         }
         int neighbourIndex = input->trmap->t_r_indexes_to_tr_bin_index(i, j);
         auto found = bins2sbins.find(neighbourIndex);
         if (found == bins2sbins.end()) {
-          DT_LOG_DEBUG(logging, "Not found in valid sorted hits");
+          DT_LOG_DEBUG(cfg.logging, "Not found in valid sorted hits");
           continue;
         }
         int neighbourSindex = found->second;
-        DT_LOG_DEBUG(logging, "insert neighbour @ sindex=" << neighbourSindex);
+        DT_LOG_DEBUG(cfg.logging, "insert neighbour @ sindex=" << neighbourSindex);
         pts_.insert(neighbourSindex);
       }
-    }
-    return;
-  }
-
-  bool dbscan_clusterizer::is_visited(int sbin_index_) const
-  {
-    return sbins2clusters[sbin_index_] >= 0 or noisy[sbin_index_];
-  }
-
-  bool dbscan_clusterizer::is_unvisited(int sbin_index_) const
-  {
-    return ! is_visited(sbin_index_);
-  }
-
-  dbscan_clusterizer::dbscan_clusterizer(const input_data & input_,
-                                         double eps_,
-                                         size_t min_pts_)
-  {
-    input = &input_;
-    epsilon = eps_;
-    min_pts = min_pts_;
-    noisy.assign(input->trmap->sorted_bins.size(), false);
-    // visited.assign(input->trmap->sorted_bins.size(), false);
-    sbins2clusters.assign(input->trmap->sorted_bins.size(), -1);
-    nclusters = 0;
-    for (int sbin_index = 0; sbin_index < (int) input->trmap->sorted_bins.size(); sbin_index++) {
-      bins2sbins[input->trmap->sorted_bins[sbin_index]] = sbin_index;
-    }
-    DT_LOG_DEBUG(logging, "Reverse map bins2sbin size=" << bins2sbins.size());
-    for (auto p : bins2sbins) {
-      DT_LOG_DEBUG(logging, "  idxBin=" << p.first << " -> " << p.second);
-    }
-    DT_LOG_DEBUG(logging, "  ");
-    return;
-  }
-
-  void dbscan_clusterizer::draw_step1(std::ostream & out_,
-                                      int sbin_index_,
-                                      const std::set<int> & pts_) const
-  {
-    for (auto sbinIndex : pts_) {
-      int binIndex = input->trmap->sorted_bins[sbinIndex];
-      int iBin = -1; 
-      int jBin = -1;
-      if (!input->trmap->tr_bin_index_to_t_r_indexes(binIndex, iBin, jBin)) {
-        return;
-      }
-      double t = input->trmap->index_to_t(iBin);
-      double r = input->trmap->index_to_r(jBin);
-      int    tag = 0;
-      double height = input->trmap->bins[binIndex];
-      if (sbin_index_ == sbinIndex) tag = 1;
-      out_ << t - 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
-      out_ << t - 0.5 * input->trmap->dt << ' ' << r + 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
-      out_ << t + 0.5 * input->trmap->dt << ' ' << r + 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
-      out_ << t + 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
-      out_ << t - 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
-      out_ << '\n';
     }
     return;
   }
@@ -175,7 +146,7 @@ namespace lttc {
       noisy[Q] = false;
       std::set<int> N;
       epsilon_neighbourhood(Q, N);
-      if (N.size() >= min_pts) {
+      if (N.size() >= cfg.min_pts) {
         for (auto pt : N) {
           S.insert(pt);
         }
@@ -192,14 +163,14 @@ namespace lttc {
       if (is_visited(sbin_index)) continue;
       std::set<int> N;
       epsilon_neighbourhood(sbin_index, N);
-      if (datatools::logger::is_debug(logging)) {
-        DT_LOG_DEBUG(logging, "neighbour_sbins.size()=" << N.size());
+      if (datatools::logger::is_debug(cfg.logging)) {
+        DT_LOG_DEBUG(cfg.logging, "neighbour_sbins.size()=" << N.size());
         std::string fname = "dbscan-" + std::to_string(sbin_index) + ".data";
         std::ofstream fout(fname.c_str());
         fout << "#@dbscan_clusterizer::run: " << '\n';
         draw_step1(fout, sbin_index, N); 
       }
-      if (N.size() < min_pts) {
+      if (N.size() < cfg.min_pts) {
         noisy[sbin_index] = true;
         continue;
       } 
@@ -215,20 +186,20 @@ namespace lttc {
       output_.clusters.push_back(c);
     }
     for (int isbin = 0; isbin < (int) sbins2clusters.size(); isbin++) {
-      int cid = sbins2clusters[isbin];
-      if (cid == -1) {
+      int clusterId = sbins2clusters[isbin];
+      if (clusterId == -1) {
         output_.unclustered.insert(isbin);
       } else {
-        output_.clusters[cid].sbins.insert(isbin);
+        output_.clusters[clusterId].sbins.insert(isbin);
         int ibin = input->trmap->sorted_bins[isbin];
         double height = input->trmap->bins[ibin];
-        if (height > output_.clusters[cid].max_height) {
-          output_.clusters[cid].max_height = height;
-          output_.clusters[cid].max_sbin = isbin;
+        if (height > output_.clusters[clusterId].max_height) {
+          output_.clusters[clusterId].max_height = height;
+          output_.clusters[clusterId].max_sbin = isbin;
         }
       }
     }
-    if (datatools::logger::is_debug(logging)) {
+    if (datatools::logger::is_debug(cfg.logging)) {
       output_.print(std::cerr, *input);
     }
     return;
@@ -265,10 +236,35 @@ namespace lttc {
     return;
   }
 
+  void dbscan_clusterizer::draw_step1(std::ostream & out_,
+                                      int sbin_index_,
+                                      const std::set<int> & pts_) const
+  {
+    for (auto sbinIndex : pts_) {
+      int binIndex = input->trmap->sorted_bins[sbinIndex];
+      int iBin = -1; 
+      int jBin = -1;
+      if (!input->trmap->tr_bin_index_to_t_r_indexes(binIndex, iBin, jBin)) {
+        return;
+      }
+      double t = input->trmap->index_to_t(iBin);
+      double r = input->trmap->index_to_r(jBin);
+      int    tag = 0;
+      double height = input->trmap->bins[binIndex];
+      if (sbin_index_ == sbinIndex) tag = 1;
+      out_ << t - 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
+      out_ << t - 0.5 * input->trmap->dt << ' ' << r + 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
+      out_ << t + 0.5 * input->trmap->dt << ' ' << r + 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
+      out_ << t + 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
+      out_ << t - 0.5 * input->trmap->dt << ' ' << r - 0.5 * input->trmap->dr << ' ' << height << ' ' << tag << '\n';
+      out_ << '\n';
+    }
+    return;
+  }
+
   void dbscan_clusterizer::output_data::draw(std::ostream & out_, const input_data & input_) const
   {
     out_ << "#@unclustered-sbins=" << unclustered.size() << '\n';
-    // for (int sbinIndex = 0; sbinIndex < (int) unclustered.size(); sbinIndex++) {
     for (auto sbinIndex : unclustered) {
       int binIndex = input_.trmap->sorted_bins[sbinIndex];
       int iBin = -1; 
@@ -285,7 +281,7 @@ namespace lttc {
       out_ << t - 0.5 * input_.trmap->dt << ' ' << r - 0.5 * input_.trmap->dr << ' ' << height << ' ' << tag << '\n';
       out_ << '\n';
     }
-      out_ << "#@end-of-unclustered-sbins" << '\n';
+    out_ << "#@end-of-unclustered-sbins" << '\n';
     out_ << '\n';
 
     for (int ic = 0; ic < (int) clusters.size(); ic++) {

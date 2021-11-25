@@ -115,7 +115,7 @@ namespace lttc {
       tracker_hit & foundHit = *found;
       if (foundHit.drift_radius > hit_.drift_radius) {
         // override the previous hit at this cell
-        std::cerr << "[devel] tracker_hit_collection::add_hit: Overriding an existing hit!\n";
+        // std::cerr << "[devel] tracker_hit_collection::add_hit: Overriding an existing hit!\n";
         foundHit = hit_;
       } else {
         success = false;
@@ -123,7 +123,7 @@ namespace lttc {
       newHit = false;
     }
     if (newHit) {
-      std::cerr << "[devel] tracker_hit_collection::add_hit: New hit #" << hit_.id << "!\n";
+      // std::cerr << "[devel] tracker_hit_collection::add_hit: New hit #" << hit_.id << "!\n";
       this->push_back(hit_);
     }
     return success;

@@ -96,7 +96,29 @@ namespace lttc {
     ymax = +dy / 2;   
     return;
   }
+  
+  tracker::tracker(const tracker_conditions & trackconds_)
+    : tracker()
+  {
+    set_tracker_conditions(trackconds_);
+  }
 
+  bool tracker::has_tracker_conditions() const
+  {
+    return _trackconds_ != nullptr;
+  }
+  
+  void tracker::set_tracker_conditions(const tracker_conditions & trackconds_)
+  {
+    _trackconds_ = &trackconds_;
+  }
+  
+  const tracker_conditions & tracker::get_tracker_conditions() const
+  {
+    DT_THROW_IF(_trackconds_ == nullptr, std::logic_error, "No tracker conditions!");
+    return *_trackconds_;
+  }
+ 
   bool tracker::contains(const point & p_) const
   {
     if (p_.x() <= -xmax) return false;
@@ -171,6 +193,12 @@ namespace lttc {
       out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
       out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
       out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
+      out_ << '\n';
+      out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
+      out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
+      out_ << '\n';
+      out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
+      out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
       out_ << '\n';
       counter++;
     }

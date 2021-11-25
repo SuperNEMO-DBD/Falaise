@@ -12,11 +12,21 @@
 #include <sstream>
 #include <iomanip>
 
+// Third party:
+#include <datatools/utils.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_cdf.h>
+
 // This project:
 #include <lttc/dbscan_clusterizer.hh>
 #include <lttc/rectangle.hh>
 
 namespace lttc {
+
+  // static
+  const size_t lttc_algo::DEFAULT_TNBINS;
+  // static
+  const size_t lttc_algo::DEFAULT_RNBINS;
 
   lttc_algo::lttc_algo(const tracker & sntracker_,
                        const config & cfg_)
@@ -36,14 +46,14 @@ namespace lttc {
     id.clear();
     sorted_bins.clear();
     bins.clear();
-    tmin = 0.0;
-    tmax = M_PI; 
+    tmin = 0.0 * CLHEP::radian;
+    tmax = M_PI * CLHEP::radian; 
     rmin =  std::numeric_limits<double>::infinity();
     rmax = -std::numeric_limits<double>::infinity();
     nt = 0;
     nr = 0;
-    dt = 0.01;
-    dr = 1.0;
+    dt = 0.01 * CLHEP::radian;
+    dr = 1.0 * CLHEP::mm;
     return;
   }
  
@@ -88,13 +98,14 @@ namespace lttc {
   datatools::logger::priority lttc_algo::map_type::fill_bin_ctrl::logging =  datatools::logger::PRIO_FATAL;
 
   
-  void lttc_algo::map_type::fill_bin(int it0_, int ir0_, double gauss_threshold_)
+  void lttc_algo::map_type::fill_bin(int it0_, int ir0_, double gauss_threshold_, double weight_)
   {
+    double weight = weight_;
     if (gauss_threshold_ <= 0.0) {
       int itr0 = t_r_indexes_to_tr_bin_index(it0_, ir0_);
       if (itr0 >= 0) {
         // if (fill_bin_ctrl::debug) std::cerr << "[debug] lttc_algo::map_type::fill_bin: itr0 = " << itr0 << '\n';    
-        bins[itr0] += 1.0;
+        bins[itr0] += weight;
       }
     } else {
       if (it0_ < 0) return;
@@ -130,7 +141,7 @@ namespace lttc {
           double rr = index_to_r(ir);
           int itr = t_r_indexes_to_tr_bin_index(it, ir);
           if (itr >= 0) {
-            double g = fgauss(tt, rr);
+            double g = weight * fgauss(tt, rr);
             DT_LOG_DEBUG(fill_bin_ctrl::logging,
                          "it=" << it << "/" << itmax << " ir=" << ir << "/" << irmax
                          << " => itr=" << itr << " => g=" << g << " [" << (g >= gauss_threshold_ ? "yes" : "no") << "]");
@@ -147,9 +158,10 @@ namespace lttc {
   void lttc_algo::map_type::build_sorted_bins()
   {
     DT_LOG_DEBUG(logging, "bins.size = " << bins.size());
+    // Default fill the array of sorted bins: 
     sorted_bins.assign(bins.size(), 0);
     std::iota(sorted_bins.begin(), sorted_bins.end(), 0);
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size());
+    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [unsorted]");
     std::sort(sorted_bins.begin(),
               sorted_bins.end(),
               [&](const int & ibin1, const std::size_t & ibin2)
@@ -162,12 +174,12 @@ namespace lttc {
                                         [&](int index_) {
                                           double value = bins[index_];
                                           // if (debug) std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins[lambda2]: index=" << index_ << " -> value = " << value << '\n';
-                                          return (value < 0.0000001);
+                                          return (value < 1e-7);
                                         }
                                         );
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [unsorted]");
+    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [sorted]");
     sorted_bins.erase(last_non_zero, sorted_bins.end());
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [final]");
+    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [final=sorted & unzeroed]");
     // std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins: sorted_bins.size = " << sorted_bins.size() << " [final]" << '\n'; 
     // for (int i = 0; i < sorted_bins.size(); i++) {
     //   std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins: sorted_bins[" << i << "] = " << sorted_bins[i]
@@ -193,7 +205,7 @@ namespace lttc {
     size_t nbins_non_null = 0;
     size_t nbins_under_threshold = 0;
     for (int i = 0; i < (int) bins.size(); i++) {
-      if (bins[i] > 0) {
+      if (bins[i] > 0.0) {
         nbins_non_null++;
         if (bins[i] < t_) {
           bins[i] = 0.0;
@@ -207,14 +219,7 @@ namespace lttc {
       std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins non_null        = " << nbins_non_null << '\n';
       std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins under threshold = " << nbins_under_threshold << '\n';
       std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins over threshold  = " << (nbins_non_null - nbins_under_threshold) << '\n';
-     }
-   return;
-  }
-
-  lttc_algo::map_type::~map_type()
-  {
-    sorted_bins.clear();
-    bins.clear();
+    }
     return;
   }
 
@@ -290,7 +295,14 @@ namespace lttc {
     DT_LOG_DEBUG(cfg.logging, "Computing step1 map bounds...");
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const tracker_hit & h = indata->hits[ihit];
-      point cellCenter = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      if (sntracker->has_tracker_conditions()) {
+        // This hit is invalidated because the hit cell is considered dead:
+        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
+          continue;
+        }
+      }
+      point cellCenter = sntracker->cell_position(cid);
       double x = cellCenter.x();
       double y = cellCenter.y();
       double r1 = std::abs(x) + std::abs(y) + sntracker->rcell; 
@@ -304,52 +316,90 @@ namespace lttc {
     double rrange = step1.trmap.rmax - step1.trmap.rmin;
     DT_LOG_DEBUG(cfg.logging, "  trange = " << trange);
     DT_LOG_DEBUG(cfg.logging, "  rrange = " << rrange);
-    DT_LOG_DEBUG(cfg.logging, "Settting step1 map histogram...");
+    DT_LOG_DEBUG(cfg.logging, "Setting step1 map histogram...");
     step1.trmap.nt = cfg.step1_ntbins;
     step1.trmap.nr = cfg.step1_nrbins;
     step1.trmap.dt = trange / step1.trmap.nt;
     step1.trmap.dr = rrange / step1.trmap.nr;
     DT_LOG_DEBUG(cfg.logging, "  step1.trmap.nt = " << step1.trmap.nt);
     DT_LOG_DEBUG(cfg.logging, "  step1.trmap.nr = " << step1.trmap.nr);
+    // Zeroes the map:
     step1.trmap.bins.assign(step1.trmap.nt * step1.trmap.nr, 0.0);
     DT_LOG_DEBUG(cfg.logging, "  step1.trmap.nbins = " << step1.trmap.bins.size());
-
     DT_LOG_DEBUG(cfg.logging, "Processing hits...");
+    std::unique_ptr< std::ofstream> pfstep1bins;
+    if (datatools::logger::is_debug(cfg.logging)) {
+      pfstep1bins.reset(new std::ofstream(cfg.draw_prefix + "hits-lt.data"));
+    }
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const tracker_hit & h = indata->hits[ihit];
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      if (pfstep1bins) {
+        *pfstep1bins << "#@hit-lt#" << ihit << "@" << cid << '\n';
+      }
+      if (sntracker->has_tracker_conditions()) {
+        // This hit is invalidated because the hit cell is considered dead:
+        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
+          continue;
+        }
+      }
       if (!can_process_hit(ihit)) {
         DT_LOG_DEBUG(cfg.logging, "Hit #" << ihit << " cannot be processed");
         continue;
       }
-      DT_LOG_DEBUG(cfg.logging, "Processing hit #" << ihit << "...");
-      point cellCenter = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+      DT_LOG_DEBUG(cfg.logging, "Processing hit #" << ihit << " at cell " << cid);
+      point cellCenter = sntracker->cell_position(cid);
       double x = cellCenter.x();
       double y = cellCenter.y();
       double r = h.drift_radius;
+      // double errR = h.drift_radius;
       legendre_transform lt(x, y, r);
+      // legendre_transform ltUp(x, y, r + errR);
+      // legendre_transform ltDown(x, y, std::max(0.25 * errR, r - errR));
       for (int itheta = 0; itheta < (int) step1.trmap.nt; itheta++) {
         // Center of the bin #itheta:
         double theta = step1.trmap.tmin + (itheta + 0.5) * step1.trmap.dt;
         ltr_type ltr = lt.eval(theta);
+        // ltr_type ltrUp = ltUp.eval(theta);
+        // ltr_type ltrDown = ltDown.eval(theta);
         // r-concave:
         double r1 = ltr.concave;
         int ir1 = step1.trmap.r_to_index(r1);
-        step1.trmap.fill_bin(itheta, ir1);
+        step1.trmap.fill_bin(itheta, ir1, map_type::no_gauss_kernel, 1.0);
+        // double r1Up = ltrUp.concave;
+        // int ir1Up = step1.trmap.r_to_index(r1Up);
+        // step1.trmap.fill_bin(itheta, ir1Up, map_type::no_gauss_kernel, 0.5);
+        // double r1Down = ltrDown.concave;
+        // int ir1Down = step1.trmap.r_to_index(r1Down);
+        // step1.trmap.fill_bin(itheta, ir1Down, map_type::no_gauss_kernel, 0.5);
+        
         // r-convex:
         double r2 = ltr.convex;
         int ir2 = step1.trmap.r_to_index(r2);
-        step1.trmap.fill_bin(itheta, ir2);
+        step1.trmap.fill_bin(itheta, ir2, map_type::no_gauss_kernel);
+        // double r2Up = ltrUp.convex;
+        // int ir2Up = step1.trmap.r_to_index(r2Up);
+        // step1.trmap.fill_bin(itheta, ir2Up, map_type::no_gauss_kernel, 0.5);
+        // double r2Down = ltrDown.convex;
+        // int ir2Down = step1.trmap.r_to_index(r2Down);
+        // step1.trmap.fill_bin(itheta, ir2Down, map_type::no_gauss_kernel, 0.5);
+        if (pfstep1bins) {
+          *pfstep1bins << theta << ' ' << r1 << ' ' << r2 << ' ' << ihit << '\n';
+        }
       }
-      
+      if (pfstep1bins) {
+        *pfstep1bins << '\n';
+      }
     }
     step1.trmap.apply_threshold(cfg.step1_track_threshold);
-    step1.trmap.build_sorted_bins();
-    
+    step1.trmap.build_sorted_bins();   
     cluster_finder clusterFinder(step1.trmap);
     clusterFinder.find(step1.clustering);
     DT_LOG_DEBUG(cfg.logging, "step1.clustering.clusters    = " << step1.clustering.clusters.size() << " clusters");
     DT_LOG_DEBUG(cfg.logging, "step1.clustering.unclustered = " << step1.clustering.unclustered.size());
-    
+    if (datatools::logger::is_debug(cfg.logging)) {
+      step1.clustering.print(std::cerr, "[debug] ",step1.trmap);
+    }
     return;
   }
 
@@ -374,20 +424,19 @@ namespace lttc {
     irmin = -1;
     irmax = -1;
     t_step = std::numeric_limits<double>::quiet_NaN();  
-    t_min = std::numeric_limits<double>::quiet_NaN(); 
-    t_max = std::numeric_limits<double>::quiet_NaN(); 
-    r_min = std::numeric_limits<double>::quiet_NaN(); 
+    t_min  = std::numeric_limits<double>::quiet_NaN(); 
+    t_max  = std::numeric_limits<double>::quiet_NaN(); 
+    r_min  = std::numeric_limits<double>::quiet_NaN(); 
     r_step = std::numeric_limits<double>::quiet_NaN();  
-    r_max = std::numeric_limits<double>::quiet_NaN(); 
+    r_max  = std::numeric_limits<double>::quiet_NaN(); 
     nbins_over_threshold = 0;
-    hits_per_bin_ratio = std::numeric_limits<double>::quiet_NaN(); 
+    hits_per_bin_ratio   = std::numeric_limits<double>::quiet_NaN(); 
     t_mean = std::numeric_limits<double>::quiet_NaN(); 
     r_mean = std::numeric_limits<double>::quiet_NaN(); 
     t_err  = std::numeric_limits<double>::quiet_NaN(); 
     r_err  = std::numeric_limits<double>::quiet_NaN(); 
     bins.clear();
     line_data.clear();
-
     return;
   }
 
@@ -413,6 +462,8 @@ namespace lttc {
     } else {
       if (height_ >= peak_height) {
         peak_bin_index = ibin_;
+        peak_tbin = itbin_;
+        peak_rbin = irbin_;
         peak_height = height_;
         threshold_height = 0.7 * peak_height;
       }
@@ -422,13 +473,6 @@ namespace lttc {
       if (irbin_ > irmax) irmax = irbin_;
       bins[ibin_] = height_;
     }
-    return;
-  }
-
-  lttc_algo::cluster::~cluster()
-  {
-    // std::cerr << "*** DEVEL *** cluster #" << id << " with bins size = " << bins.size() << std::endl;
-    bins.clear();
     return;
   }
   
@@ -489,7 +533,6 @@ namespace lttc {
         }
       }
     } 
-    
     return (overlapping_nbins * 1.0 / nbins1) > 0.7;
   }
 
@@ -516,7 +559,7 @@ namespace lttc {
     out_ << indent_ << "|-- r_mean +/- r_err = " << r_mean << " +/- " << r_err << '\n';
     out_ << indent_ << "|-- #bins = " << bins.size() << '\n';
     out_ << indent_ << "`-- Line data: " << '\n';
-    if (line_data.a == line_data.a) {
+    if (line_data.is_valid()) {
       line_data.print(out_, indent_ + "    ");
     }
     return;
@@ -571,14 +614,20 @@ namespace lttc {
     out_ << t_min + teps << ' '
          << r_min + reps << ' ' << tag << '\n';
     out_ << '\n';
+    teps = 0.075 * dt;
+    reps = 0.075 * dr;
+    out_ << t_min + teps << ' '
+         << r_min + reps << ' ' << tag << '\n';
+    out_ << t_max - teps<< ' '
+         << r_min + reps << ' ' << tag << '\n';
+    out_ << t_max - teps<< ' '
+         << r_max - reps << ' ' << tag << '\n';
+    out_ << t_min + teps<< ' '
+         << r_max - reps << ' ' << tag << '\n';
+    out_ << t_min + teps << ' '
+         << r_min + reps << ' ' << tag << '\n';
+    out_ << '\n';
     out_ << "#@end-of-cluster=#" << id << '\n';
-    return;
-  }
-
-  lttc_algo::clustering_data::~clustering_data()
-  {
-    clusters.clear();
-    unclustered.clear();
     return;
   }
 
@@ -661,38 +710,36 @@ namespace lttc {
    return;
   }
 
-  lttc_algo::cluster_finder::cluster_finder(const map_type & trmap_)
+  lttc_algo::cluster_finder::cluster_finder(const map_type & trmap_, datatools::logger::priority logging_)
   {
+    logging = logging_;
     trmap = &trmap_;
-    return;
-  }
-
-  lttc_algo::cluster_finder::~cluster_finder()
-  {
-    trmap = nullptr;
     return;
   }
 
   void lttc_algo::cluster_finder::find(clustering_data & clustering_)
   {
-    dbscan_clusterizer::input_data input;
-    dbscan_clusterizer::output_data output;
-    input.trmap = trmap;
-    double epsilon = 2.5;
-    size_t min_pts = 3;
-    dbscan_clusterizer dbScan(input, epsilon, min_pts);
-    // dbScan.debug = true;
-    dbScan.run(output);
+    dbscan_clusterizer::input_data inputDbScan;
+    inputDbScan.trmap = trmap;
+    dbscan_clusterizer::output_data outputDbScan;
+    dbscan_clusterizer::config      cfgDbScan;
+    cfgDbScan.logging = datatools::logger::PRIO_FATAL;
+    if (datatools::logger::is_debug(logging)) cfgDbScan.logging = datatools::logger::PRIO_DEBUG;
+    cfgDbScan.epsilon = 2.5;
+    cfgDbScan.epsilon = 1.5;
+    cfgDbScan.min_pts = 3;
+    dbscan_clusterizer dbScan(inputDbScan, cfgDbScan);
+    // dbScan.logging = datatools::logger::PRIO_DEBUG;
+    dbScan.run(outputDbScan);
     {
       std::ofstream fout("dbscan_output.data");
       fout << "#@dbscan-output" << '\n';
-      output.draw(fout, input);
+      outputDbScan.draw(fout, inputDbScan);
       fout << '\n';
     }
-
     // Build the list of step-1 unclustered bins from DBSCAN output:
-    if (debug) std::cerr << "[debug] lttc_algo::cluster_finder::find: Collecting unclustered bins..." << '\n';
-    for (auto isbin : output.unclustered) {
+    DT_LOG_DEBUG(logging, "Collecting unclustered bins...");
+    for (auto isbin : outputDbScan.unclustered) {
       int ibin = trmap->sorted_bins[isbin];
       // int tBin = -1; 
       // int rBin = -1;
@@ -701,29 +748,29 @@ namespace lttc {
     }
     
     // Build the list of step-1 clusters from DBSCAN output:
-    if (debug) std::cerr << "[debug] lttc_algo::cluster_finder::find: Collecting clusters..." << '\n';
-    for (int ic = 0; ic < (int) output.clusters.size(); ic++) {
+    DT_LOG_DEBUG(logging, "Collecting clusters...");
+    for (int ic = 0; ic < (int) outputDbScan.clusters.size(); ic++) {
+      DT_LOG_DEBUG(logging, "Add a new cluster...");
       {
-        cluster dummy;
-        dummy.id = output.clusters[ic].id;
-        clustering_.clusters.push_back(dummy);
+        cluster newCluster;
+        newCluster.id = outputDbScan.clusters[ic].id;
+        clustering_.clusters.push_back(newCluster);
       }
-      if (debug) std::cerr << "[debug] lttc_algo::cluster_finder::find: Add a new cluster..." << '\n';
       cluster & cl = clustering_.clusters.back();
-      for (int isbin : output.clusters[ic].sbins) {
-        int iBin = trmap->sorted_bins[isbin];
-        int tBin = -1; 
+      for (int isbin : outputDbScan.clusters[ic].sbins) {
+        int iMapBin = trmap->sorted_bins[isbin];
+        int thetaBin = -1; 
         int rBin = -1;
-        trmap->tr_bin_index_to_t_r_indexes(iBin, tBin, rBin);
-        double hBin = trmap->bins[iBin];
-        cl.add_bin(iBin, tBin, rBin, hBin);
+        trmap->tr_bin_index_to_t_r_indexes(iMapBin, thetaBin, rBin);
+        double heightBin = trmap->bins[iMapBin];
+        cl.add_bin(iMapBin, thetaBin, rBin, heightBin); 
       }
       // Number of bins over threshold:
       size_t binsOverThresholdCounter = 0;
       for (const auto & p : cl.bins) {
         // int iBin = p.first;
-        double hBin = p.second;
-        if (hBin >= cl.threshold_height) { 
+        double heightBin = p.second;
+        if (heightBin >= cl.threshold_height) { 
           binsOverThresholdCounter++;
         }
       }
@@ -743,14 +790,14 @@ namespace lttc {
       double t2sum = 0.0;
       double r2sum = 0.0;
       for (const auto & p : cl.bins) {
-        int iBin = p.first;
-        double hBin = p.second;
-        if (hBin < cl.threshold_height) continue;
-        int tBin = -1; 
+        int iMapBin = p.first;
+        double heightBin = p.second;
+        if (heightBin < cl.threshold_height) continue;
+        int thetaBin = -1; 
         int rBin = -1;
-        trmap->tr_bin_index_to_t_r_indexes(iBin, tBin, rBin);
+        trmap->tr_bin_index_to_t_r_indexes(iMapBin, thetaBin, rBin);
         // Center of the bin:
-        double t = trmap->index_to_t(tBin) + 0.5 * trmap->dt;
+        double t = trmap->index_to_t(thetaBin) + 0.5 * trmap->dt;
         double r = trmap->index_to_r(rBin) + 0.5 * trmap->dr;
         if (t < cl.t_min) cl.t_min = t;
         if (t > cl.t_max) cl.t_max = t;
@@ -760,7 +807,7 @@ namespace lttc {
         t2sum += t * t;
         rsum  += r;
         r2sum += r * r;
-        cl.hits_per_bin_ratio += hBin;
+        cl.hits_per_bin_ratio += heightBin;
       }
       cl.t_min -= 0.5 * trmap->dt;
       cl.t_max += 0.5 * trmap->dt;
@@ -775,7 +822,6 @@ namespace lttc {
       if (cl.t_err < 0.5 * trmap->dt) cl.t_err = 0.5 * trmap->dt;
       cl.r_err = std::sqrt(r2sum - cl.r_mean * cl.r_mean);
       if (cl.r_err < 0.5 * trmap->dr) cl.r_err = 0.5 * trmap->dr;
-
       /*
       double ct = std::cos(cl.t_mean);
       double st = std::sin(cl.t_mean);
@@ -800,9 +846,7 @@ namespace lttc {
         cl.line.py = p / pn;
       }
       */
-    
     }
-
     std::sort(clustering_.clusters.begin(),
               clustering_.clusters.end(),
               compare_by_ratio);
@@ -824,10 +868,17 @@ namespace lttc {
     double dR = 0.0;
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const auto & h = indata->hits[ihit];
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      if (sntracker->has_tracker_conditions()) {
+        // This hit is invalidated because the hit cell is considered dead:
+        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
+          continue;
+        }
+      }
       if (!can_process_hit(ihit)) {
         continue;
       }
-      point cellCenter = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+      point cellCenter = sntracker->cell_position(cid);
       double R_err = h.drift_radius_err;
       DT_LOG_DEBUG(cfg.logging, "R_err = " << R_err);
       if (R_err > dR) {
@@ -848,7 +899,7 @@ namespace lttc {
     for (int ic = 0; ic < (int) ncl; ic++) {
       const cluster & cl = step1.clustering.clusters[ic];
       DT_LOG_DEBUG(cfg.logging, "Processing cluster #" << ic << " with " << cl.bins.size() << " bins");
-      DT_LOG_DEBUG(cfg.logging, "hits_per_bin_ratio=" << cl.hits_per_bin_ratio);
+      DT_LOG_DEBUG(cfg.logging, "  hits_per_bin_ratio=" << cl.hits_per_bin_ratio);
       {
         trc_data dummy;
         step2.trmaps.push_back(dummy);
@@ -858,16 +909,8 @@ namespace lttc {
       cltrmap.id = "step2-" + std::to_string(ic);
       cltrmap.dr = dR;
       cltrmap.dt = cfg.step2_delta_theta; 
-      DT_LOG_DEBUG(cfg.logging, "dt = " << cltrmap.dt);
-      DT_LOG_DEBUG(cfg.logging, "dr = " << cltrmap.dr);
-      // double trange = step1.trmap.index_to_t(cl.itmax) - step1.trmap.index_to_t(cl.itmin) + step1.trmap.dt + 0.5 * cltrmap.dt;
-      // double rrange = step1.trmap.index_to_r(cl.irmax) - step1.trmap.index_to_r(cl.irmin) + step1.trmap.dr + 0.5 * cltrmap.dr;
-      // cltrmap.nt = (size_t) (trange / cltrmap.dt);
-      // cltrmap.nr = (size_t) (rrange / cltrmap.dr);
-      // cltrmap.tmin = step1.trmap.index_to_t(cl.itmin);
-      // cltrmap.tmax = cltrmap.tmin + cltrmap.nt * cltrmap.dt;
-      // cltrmap.rmin = step1.trmap.index_to_r(cl.irmin);
-      // cltrmap.rmax = cltrmap.rmin + cltrmap.nr * cltrmap.dr;
+      DT_LOG_DEBUG(cfg.logging, "  dt = " << cltrmap.dt);
+      DT_LOG_DEBUG(cfg.logging, "  dr = " << cltrmap.dr);
       double trange = cl.t_max - cl.t_min + 0.5 * cltrmap.dt;
       double rrange = cl.r_max - cl.r_min + 0.5 * cltrmap.dr;
       cltrmap.nt = (size_t) (trange / cltrmap.dt);
@@ -876,78 +919,64 @@ namespace lttc {
       cltrmap.tmax = cltrmap.tmin + cltrmap.nt * cltrmap.dt;
       cltrmap.rmin = cl.r_min - 0.25 * cltrmap.dr;
       cltrmap.rmax = cltrmap.rmin + cltrmap.nr * cltrmap.dr;
-      DT_LOG_DEBUG(cfg.logging, "nt = " << cltrmap.nt);
-      DT_LOG_DEBUG(cfg.logging, "nr = " << cltrmap.nr);
-      DT_LOG_DEBUG(cfg.logging, "tmin:tmax = " << cltrmap.tmin << ':' << cltrmap.tmax);
-      DT_LOG_DEBUG(cfg.logging, "rmin:rmax = " << cltrmap.rmin << ':' << cltrmap.rmax);
+      DT_LOG_DEBUG(cfg.logging, "  nt = " << cltrmap.nt);
+      DT_LOG_DEBUG(cfg.logging, "  nr = " << cltrmap.nr);
+      DT_LOG_DEBUG(cfg.logging, "  tmin:tmax = " << cltrmap.tmin << ':' << cltrmap.tmax);
+      DT_LOG_DEBUG(cfg.logging, "  rmin:rmax = " << cltrmap.rmin << ':' << cltrmap.rmax);
       cltrmap.bins.assign(cltrmap.nt * cltrmap.nr, 0.0);
-      DT_LOG_DEBUG(cfg.logging, "cltrmap.bins.size = " << cltrmap.bins.size());
+      DT_LOG_DEBUG(cfg.logging, "  cltrmap.bins.size = " << cltrmap.bins.size());
       int hcount = 0;
-      DT_LOG_DEBUG(cfg.logging, "Filling histogram for " << indata->hits.size() << " hits...");
+      DT_LOG_DEBUG(cfg.logging, "  Filling histogram for " << indata->hits.size() << " hits...");
       for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
         const auto & h = indata->hits[ihit];
+        cell_id cid(h.side_id, h.layer_id, h.row_id);
+        if (sntracker->has_tracker_conditions()) {
+          // This hit is invalidated because the hit cell is considered dead:
+          if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
+            DT_LOG_DEBUG(cfg.logging, "    Dead cell hit #" << ihit << "...");
+            continue;
+          }
+        }
         if (!can_process_hit(ihit)) {
-          DT_LOG_DEBUG(cfg.logging, "Do not processing hit #" << ihit << "...");
+          DT_LOG_DEBUG(cfg.logging, "    Do not processing hit #" << ihit << "...");
           continue;
         } else {
-          DT_LOG_DEBUG(cfg.logging, "Processing hit #" << ihit << "...");
+          DT_LOG_DEBUG(cfg.logging, "    Processing hit #" << ihit << "...");
         }
-        // for (const auto & h : indata->hits) {
-        // if (cfg.debug) std::cerr << "[debug] lttc_algo::step2_run:   hit #" << hcount << '\n';
-        point cellCenter = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+        point cellCenter = sntracker->cell_position(cid);
         double x = cellCenter.x();
         double y = cellCenter.y() ;
         double r = h.drift_radius;
         legendre_transform lt(x, y, r);
         for (int itheta = 0; itheta < (int) cltrmap.nt; itheta++) {
           double gt = cfg.step2_gauss_threshold;
-          // if (hcount>6) {
-          //   gt = 0.0;
-          // }
-          // if (hcount==5) {
-          //   fill_bin_ctrl::debug = true;
-          // } else {
-          //   fill_bin_ctrl::debug = false;
-          // }
-          // if (cfg.debug) std::cerr << "[debug] lttc_algo::step2_run:     itheta=" << itheta << " (and nr=" << cltrmap.nr << ")" << '\n';
           // Center of bin #itheta:
           double theta = cltrmap.tmin + (itheta + 0.5) * cltrmap.dt;
           ltr_type ltr = lt.eval(theta);
-          // if (cfg.debug) {
-          //   std::cerr << "[debug] lttc_algo::step2_run:     theta=" << theta << " ltr.concave=" << ltr.concave << " ltr.convex=" << ltr.convex << "" << '\n';
-          // }
           // r-concave:
           double r1 = ltr.concave;
           int ir1 = cltrmap.r_to_index(r1);
-          // if (cfg.debug) {
-          //   std::cerr << "[debug] lttc_algo::step2_run:     r1=" << r1 << " ir1=" << ir1 << '\n';
-          // }
           cltrmap.fill_bin(itheta, ir1, gt);
           // r-convex:
           double r2 = ltr.convex;
           int ir2 = cltrmap.r_to_index(r2);
-          // if (cfg.debug) {
-          //   std::cerr << "[debug] lttc_algo::step2_run:     r2=" << r2 << " ir2=" << ir2 << '\n';
-          // }
-          // gt = 0.0;
-          cltrmap.fill_bin(itheta, ir2, gt); 
-         
+          cltrmap.fill_bin(itheta, ir2, gt);        
         }
         hcount++;
       }
-      DT_LOG_DEBUG(cfg.logging, "Filling histogram... Done.");
+      DT_LOG_DEBUG(cfg.logging, "  Filling histogram... Done.");
       cltrmap.apply_threshold(cfg.step2_track_threshold);
       cltrmap.build_sorted_bins();
-      DT_LOG_DEBUG(cfg.logging, "Cluster t-r map : ");
+      DT_LOG_DEBUG(cfg.logging, "  Cluster t-r map : ");
       if (datatools::logger::is_debug(cfg.logging)) {
-        cltrmap.print(std::cerr, "[debug] lttc_algo::step2_run:   ");
+        cltrmap.print(std::cerr, "[debug]    ");
       }
       cluster_finder clusterFinder(cltrmap);
       clusterFinder.find(trc2.clustering);
       nsubclusters += trc2.clustering.clusters.size();
-      DT_LOG_DEBUG(cfg.logging, "step2 => clustering.clusters  = " << trc2.clustering.clusters.size() << " sub-clusters");
-      DT_LOG_DEBUG(cfg.logging, "step2 => clustering.unclustered = " << trc2.clustering.unclustered.size());
-      DT_LOG_DEBUG(cfg.logging, "End of cluster #" << ic);
+      DT_LOG_DEBUG(cfg.logging, "  step2 => clustering.clusters  = " << trc2.clustering.clusters.size() << " sub-clusters");
+      DT_LOG_DEBUG(cfg.logging, "  step2 => clustering.unclustered = " << trc2.clustering.unclustered.size());
+      DT_LOG_DEBUG(cfg.logging, "  End of cluster #" << ic);
     }
     DT_LOG_DEBUG(cfg.logging, "The first " << ncl << " clusters have been processed.");
     DT_LOG_DEBUG(cfg.logging, "" << nsubclusters << " sub-clusters have been found.");
@@ -982,21 +1011,40 @@ namespace lttc {
     }
       
     // Collect all clusters from all clustering regions/histograms:
-    for (int i1 = 0; i1 < (int) step2.trmaps.size(); i1++) {
-      trc_data & trc1 = step2.trmaps[i1];
-      const map_type & trmap1 = trc1.trmap;
-      clustering_data & cld1 = trc1.clustering;
-      for (int icl1 = 0; icl1 < (int) cld1.clusters.size(); icl1++) {
-        cluster & cl1 = cld1.clusters[icl1];
-        cl1.line_data = line::make_from_theta_r(cl1.t_mean, cl1.r_mean);
-        trc_ref tref;
-        tref.ptrmap = &trmap1;
-        tref.pcluster = &cl1;
-        step2.clusters.push_back(tref);
+    {
+      // And also recompute a general step-2 cluster ID then build the line parameters;
+      int subClusterID=0;
+      for (int i1 = 0; i1 < (int) step2.trmaps.size(); i1++) {
+        trc_data & trc1 = step2.trmaps[i1];
+        const map_type & trmap1 = trc1.trmap;
+        clustering_data & cld1 = trc1.clustering;
+        for (int icl1 = 0; icl1 < (int) cld1.clusters.size(); icl1++) {
+          cluster & cl1 = cld1.clusters[icl1];
+          cl1.id = subClusterID;          
+          DT_LOG_DEBUG(cfg.logging, "Sub-cluster #" << icl1 << " from region " << i1 << " has ID=" << cl1.id);    
+          cl1.line_data = line::make_from_theta_r(cl1.t_mean, cl1.r_mean);
+          // double tPeak = trmap1.index_to_t(cl1.peak_tbin);
+          // double rPeak = trmap1.index_to_r(cl1.peak_rbin);
+          // cl1.line_data = line::make_from_theta_r(tPeak, rPeak);
+          trc_ref tref;
+          tref.ptrmap = &trmap1;
+          tref.pcluster = &cl1;
+          step2.clusters.push_back(tref);
+          subClusterID++;
+        }
       }
     }
+    // Sort clusters per 'hits/bin ratio':
     std::sort(step2.clusters.begin(), step2.clusters.end());
     DT_LOG_DEBUG(cfg.logging, "Number of sorted step-2 clusters: " << step2.clusters.size());
+    for (int i = 0; i < (int) step2.clusters.size(); i++) {
+      const trc_ref & trcRef = step2.clusters[i];
+      const cluster & cl = *trcRef.pcluster;
+      if (datatools::logger::is_debug(cfg.logging)) {
+        DT_LOG_DEBUG(cfg.logging, "Step-2 cluster #" << i << " : ");
+        cl.print(std::cerr, "[debug] ");
+      } 
+    }
     DT_LOG_DEBUG(cfg.logging, "Exiting.");
     return;
   }
@@ -1014,8 +1062,10 @@ namespace lttc {
       // const map_type & trmap1 = trc1.trmap;
       const clustering_data & cld1 = trc1.clustering;
       out_ << indent_ << "|   ";
+      bool last_region = false;
       if ((i1 + 1) == (int) trmaps.size()) {
         out_ << "`-- ";
+        last_region = true;
       } else {
         out_ << "|-- ";
       }
@@ -1024,7 +1074,16 @@ namespace lttc {
            << '\n';
       for (int icl1 = 0; icl1 < (int) cld1.clusters.size(); icl1++) {
         const cluster & cl1 = cld1.clusters[icl1];
-        cl1.print(out_, indent_ + "|   ");
+        out_ << indent_ << "|   ";
+        if (last_region) out_ << "    ";
+        else out_ << "|   ";
+        if ((icl1 + 1) == (int) cld1.clusters.size()) {
+          out_ << "`-- ";
+        } else {
+          out_ << "|-- ";
+        }
+        out_ << "Cluster[" << icl1 << "] with ID=" << cl1.id << " : " << std::endl;
+        // cl1.print(out_, indent_ + "|   ");
       }
     }
     out_ << indent_ << "`-- Total clusters : " << clusters.size() << '\n';
@@ -1056,48 +1115,158 @@ namespace lttc {
     DT_LOG_DEBUG(cfg.logging, "#nhits=" << indata->hits.size());
     DT_LOG_DEBUG(cfg.logging, "#nclusters=" << step2.clusters.size());
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
-      // const tracker_hit & h = indata->hits[ihit];
-      for (int icl = 0; icl < (int) step2.clusters.size(); icl++) {
-        if (!can_process_hit(ihit)) {
-          step3.HC[ihit][icl] = -1;
-        } else {
-          step3.HC[ihit][icl] = 0;
-        }
-      }
-    }
-    
-    for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const tracker_hit & h = indata->hits[ihit];
-      if (!can_process_hit(ihit)) {
-        continue;
-      }
-      std::set<int> mcls;
-      point cellCenter = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
-      // double x = cellCenter.x();
-      // double y = cellCenter.y() ;
-      double r = h.drift_radius;
-      double r_err = h.drift_radius_err;
-      for (int icl = 0; icl < (int) step2.clusters.size(); icl++) {
-        // const auto & trmap = *step2.clusters[icl].ptrmap;
-        const auto & cl    = *step2.clusters[icl].pcluster;
-        const auto & ln    = cl.line_data;
-        double dist = ln.distance(cellCenter);
-        double dtest = std::numeric_limits<double>::quiet_NaN();
-        double dminus = std::abs(dist - r);
-        double dplus  = dist + r;
-        dtest = std::min(dminus, dplus);
-        bool match = false;
-        if (dtest < cfg.step3_nsigma * r_err) {
-          match = true;
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      bool dead_cell = false;
+      bool can_process = true;
+      if (sntracker->has_tracker_conditions()) {
+        // This hit is invalidated because the hit cell is considered dead:
+        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
+          dead_cell = true;
         }
-        if (match) {
-          DT_LOG_DEBUG(cfg.logging, "Hit #" << ihit << " @[" << h.side_id << "," << h.layer_id << "," << h.row_id << "] match cluster #" << icl);
-          mcls.insert(icl);
-          step3.HC[ihit][icl] = 1;
+      }
+      if (!can_process_hit(ihit)) {
+        can_process = false;
+      }
+      for (int icl = 0; icl < (int) step2.clusters.size(); icl++) {
+        if (dead_cell) {
+          step3.HC[ihit][icl].association_status = HCAS_NOT_VALID;
+        } else {
+          if (!can_process) {
+            step3.HC[ihit][icl].association_status = HCAS_NOT_ASSOCIABLE;
+          } else {
+            step3.HC[ihit][icl].association_status = HCAS_NOT_ASSOCIATED;
+          }
         }
       }
     }
     
+    DT_LOG_DEBUG(cfg.logging, "Compute the hit-to-clusters HC association table...");
+    for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
+      DT_LOG_DEBUG(cfg.logging, "===== ihit #" << ihit << " =====");
+      const tracker_hit & h = indata->hits[ihit];
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      // C :
+      point cellCenter = sntracker->cell_position(cid);
+      double r = h.drift_radius;
+      double rErr = h.drift_radius_err;
+      DT_LOG_DEBUG(cfg.logging, "r    = " << r / CLHEP::mm << " mm");
+      DT_LOG_DEBUG(cfg.logging, "rErr = " << rErr / CLHEP::mm << " mm");
+      for (int icl = 0; icl < (int) step2.clusters.size(); icl++) {
+        if (step3.HC[ihit][icl].association_status != HCAS_NOT_ASSOCIATED) {
+          continue;
+        }
+        DT_LOG_DEBUG(cfg.logging, "=> Check with cluster #" << icl);
+        // const auto & trmap = *step2.clusters[icl].ptrmap;
+        const auto & thisCluster = *step2.clusters[icl].pcluster;
+        const auto & clusterLine = thisCluster.line_data;
+        fitted_line clusterFitLine;
+        clusterFitLine.theta = clusterLine.get_theta();
+        clusterFitLine.r = clusterLine.get_r();
+        clusterFitLine.theta_err = thisCluster.t_err;
+        clusterFitLine.r_err = thisCluster.r_err;
+        /*                         
+         *                       fitproj :
+         *    cell       \     :  _____  :<--fitline
+         *   center        \   : /     \ : 
+         *     C            |T :/   P   \:
+         *  ---+---->-------+---:---+----:----
+         *      r-dir       |  :\   .   /:
+         *     <---------->/.  : `-----' :
+         *        drift   / .  :    .    :
+         *       radius     .       .
+         *                  .<----->.
+         *                  .residual (in chi2 sigma unit)
+         */
+        fitted_point fitLineProj;
+        orthogonal_projection_to_fitted_line(clusterFitLine, cellCenter, fitLineProj);
+        // P :
+        point fitLineProjCenter(fitLineProj.x, fitLineProj.y);
+        vector2 CP = fitLineProjCenter - cellCenter;
+        vector2 radiusDir = CP.unit();
+        // T :
+        point hitTangentPoint = cellCenter + radiusDir * r;
+        // vector2 CT = hitTangentPoint - cellCenter;
+        double distToLine = (fitLineProjCenter - hitTangentPoint).mag();
+        double nsigma = datatools::invalid_real();
+        if (fitLineProj.inside(hitTangentPoint, 5.0)) {
+          nsigma = 4.5;
+          if (fitLineProj.inside(hitTangentPoint, 4.0)) {
+            nsigma = 3.5;
+            if (fitLineProj.inside(hitTangentPoint, 3.0)) {
+              nsigma = 2.5;
+              if (fitLineProj.inside(hitTangentPoint, 2.0)) {
+                nsigma = 1.5;
+                if (fitLineProj.inside(hitTangentPoint, 1.0)) {
+                  nsigma = 0.5;
+                }
+              }
+            }
+          }
+        }
+        DT_LOG_DEBUG(cfg.logging, "  distToLine = " << distToLine / CLHEP::mm << " mm");
+        DT_LOG_DEBUG(cfg.logging, "  nsigma = " << nsigma);
+        double residual = datatools::invalid_real();
+        double chi2 = datatools::invalid_real();
+        bool match = false;
+        if (datatools::is_valid(nsigma)) {
+          residual = nsigma;
+          if (CP < r) residual *= -1.0;
+          chi2 = gsl_pow_2(residual);
+          DT_LOG_DEBUG(cfg.logging, "  residual = " << residual);
+          DT_LOG_DEBUG(cfg.logging, "  chi2     = " << chi2);
+          DT_LOG_DEBUG(cfg.logging, "  checking hit/cluster match with cfg.step3_nsigma=" << cfg.step3_nsigma);
+          if (std::abs(residual) <= cfg.step3_nsigma) {
+            match = true;
+          }
+        }
+        step3.HC[ihit][icl].distance = distToLine;
+        step3.HC[ihit][icl].residual = residual;
+        step3.HC[ihit][icl].chi2     = chi2;
+        if (match) {
+          DT_LOG_DEBUG(cfg.logging, "  -> hit #" << ihit << " @[" << h.side_id << "," << h.layer_id << "," << h.row_id << "] match cluster #" << icl);
+          step3.HC[ihit][icl].association_status = HCAS_ASSOCIATED;
+          step3.HC[ihit][icl].node = fitLineProj;
+        }
+      }
+    }
+    
+    DT_LOG_DEBUG(cfg.logging, "Compute the clusters quality CQ array...");
+    step3.CQ.reserve(step2.clusters.size());
+    for (int icl = 0; icl < (int) step2.clusters.size(); icl++) {
+      {
+        cluster_quality_data newCqData;
+        step3.CQ.push_back(newCqData);
+      }
+      cluster_quality_data & cqData = step3.CQ.back();
+      cqData.nhits = 0;
+      for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
+        const hit_cluster_association_data & hca = step3.HC[ihit][icl];
+        if (hca.association_status == HCAS_ASSOCIATED) {
+          if (! datatools::is_valid(cqData.sumChi2)) {
+            cqData.sumChi2 = 0.0;
+          }
+          if (! datatools::is_valid(cqData.noOutliersSumChi2)) {
+            cqData.noOutliersSumChi2 = 0.0;
+          }
+          cqData.nhits++;
+          cqData.ndof++;
+          cqData.sumChi2 += hca.chi2;
+          cqData.hits.insert(ihit);
+          if (std::abs(hca.residual) > cfg.step3_nsigma_outliers) {
+            cqData.outliers.insert(ihit);
+          } else {
+            cqData.noOutliersNdof++;
+            cqData.noOutliersSumChi2 += hca.chi2;      
+          }
+        }
+      }
+      if (cqData.nhits) { 
+        cqData.ndof = cqData.nhits;
+        cqData.pvalue = gsl_cdf_chisq_Q(cqData.sumChi2, cqData.ndof);
+        cqData.noOutliersPvalue = gsl_cdf_chisq_Q(cqData.noOutliersSumChi2, cqData.noOutliersNdof);
+      }
+   }
     return;
   }
 
@@ -1123,7 +1292,7 @@ namespace lttc {
   }
 
   // static
-  void lttc_algo::print_hc(const int_array2_type & hc_,
+  void lttc_algo::print_hc(const hit_cluster_association_array_type & hc_,
                           std::ostream & out_,
                           const std::string & indent_)
   {
@@ -1141,12 +1310,117 @@ namespace lttc {
       out_ << std::setfill('0') << std::setw(4);
       out_ << std::right << ihit << " : ";
       for (int icl = 0; icl < (int) nclusters; icl++) {
-        if (hc_[ihit][icl] < 0) out_ << '-';
-        else out_ << hc_[ihit][icl];
+        if (hc_[ihit][icl].association_status == HCAS_NOT_VALID) out_ << '!';
+        else if (hc_[ihit][icl].association_status == HCAS_NOT_ASSOCIABLE) out_ << '-';
+        else if (hc_[ihit][icl].association_status == HCAS_NOT_ASSOCIATED) out_ << '0';
+        else out_ << "1";
         out_ << "    ";
       }
       out_ << '\n';
     }
+    return;
+  }
+
+  // static
+  std::string lttc_algo::to_string(missing_cell_reason_type why_)
+  {
+    switch(why_) {
+    case MCR_NO_TRIGGER : return std::string("no-trigger");
+    case MCR_DEAD_CELL  : return std::string("dead-cell");
+    case MCR_BUSY_CELL  : return std::string("busy-cell");
+    case MCR_OTHER_TRACK : return std::string("other-track");
+    default:
+      break;
+    }
+    return std::string("undefined");
+  }
+
+  // friend
+  std::ostream & operator<<(std::ostream & out_, const lttc_algo::cluster_missing_hit_data & cmh_)
+  {
+    out_ << "{cell-id=" << cmh_.cid << ",why=" << lttc_algo::to_string(cmh_.why) << '}';
+    return out_;
+  }
+  
+  void lttc_algo::cluster_quality_data::print(std::ostream & out_, const std::string & indent_) const
+  {
+    out_ << indent_ << "|-- " << "Nhits : " << nhits << '\n';
+    out_ << indent_ << "|-- " << "Chi2 sum : " << sumChi2 << '\n';
+    out_ << indent_ << "|-- " << "ndof     : " << ndof << '\n';
+    out_ << indent_ << "|-- " << "P-value  : " << pvalue << '\n';
+    out_ << indent_ << "|-- " << "Chi2 sum : " << noOutliersSumChi2 << " (no outliers)" << '\n';
+    out_ << indent_ << "|-- " << "ndof     : " << noOutliersNdof << " (no outliers)" << '\n';
+    out_ << indent_ << "|-- " << "P-value  : " << noOutliersPvalue << " (no outliers)" << '\n';
+    out_ << indent_ << "|-- " << "Hits     : " << hits.size() << '\n';
+    out_ << indent_ << "|   " << "`-- ";
+    out_ << '{';
+    {
+      int hitCounter=0;
+      for (auto ihit: hits) {
+        out_ << ihit;
+        hitCounter++;
+        if (hitCounter != (int) hits.size()) out_ << ", ";
+      }
+    }
+    out_ << '}';
+    out_ << '\n';
+    out_ << indent_ << "|-- " << "Outliers : " << outliers.size() << '\n';
+    out_ << indent_ << "|   " << "`-- ";
+    out_ << '{';
+    {
+      int outlierCounter=0;
+      for (auto outlier: outliers) {
+        out_ << outlier;
+        outlierCounter++;
+        if (outlierCounter != (int) outliers.size()) out_ << ", ";
+      }
+    }
+    out_ << '}';
+    out_ << '\n';
+    out_ << indent_ << "`-- " << "Missing hits : " << missing_hits.size() << '\n';
+    {
+      for (int i = 0; i < (int) missing_hits.size(); i++) {
+        out_ << indent_ << "    ";
+        if ((i + 1) == (int) missing_hits.size()) {
+          out_ << "`-- ";
+        } else {
+          out_ << "|-- ";
+        }
+        out_ << "#" << i << " : " << missing_hits[i] << '\n';
+      }
+    }
+    return;
+  }
+
+  // static
+  void lttc_algo::print_cq(const cluster_quality_array_type & cq_,
+                           std::ostream & out_,
+                           const std::string & indent_)
+  {
+    size_t nclusters = cq_.size();
+    for (int icl = 0; icl < (int) nclusters; icl++) {
+      out_ << indent_;
+      if ((icl + 1) == (int) nclusters) {
+        out_ << "`-- ";
+      } else {
+        out_ << "|-- ";
+      }
+      out_ << "Cluster ";
+      out_ << std::setfill('0') << std::setw(4);
+      out_ << std::right << icl << std::setfill(' ');
+      out_ << " : Chi2=" << std::setw(8) << std::setprecision(5) << cq_[icl].sumChi2
+           << " ndof=" << cq_[icl].ndof
+           << " pvalue=" << cq_[icl].pvalue
+           << " outliers[" << cq_[icl].outliers.size() << "]={";
+      int outlierCounter=0;
+      for (auto outlier: cq_[icl].outliers) {
+        out_ << outlier;
+        outlierCounter++;
+        if (outlierCounter != (int) cq_[icl].outliers.size()) out_ << ", ";
+      }
+      out_ << '}';
+      out_ << '\n';
+     }    
     return;
   }
   
@@ -1156,6 +1430,8 @@ namespace lttc {
     // size_t nclusters = HC.shape()[1];
     out_ << indent_ << "|-- HC : " << '\n';
     print_hc(HC, out_, indent_ + "|   ");
+    out_ << indent_ << "|-- CQ : " << '\n';
+    print_cq(CQ, out_, indent_ + "|   ");
     out_ << indent_ << "`-- end" << '\n';
 
     /*
@@ -1188,8 +1464,37 @@ namespace lttc {
 
   void lttc_algo::step3_data::clear()
   {
-    HC = int_array2_type(boost::extents[1][1]);
+    HC = hit_cluster_association_array_type(boost::extents[1][1]);
     return;
+  }
+
+  // static
+  std::string lttc_algo::to_string(hit_cluster_association_status_type hcas_)
+  {
+    switch(hcas_) {
+    case HCAS_NOT_ASSOCIABLE  : return std::string("not-associable");
+    case HCAS_NOT_ASSOCIATED  : return std::string("not-associated");
+    case HCAS_ASSOCIATED : return std::string("associated");
+    default: break;
+    }
+    return std::string("invalid");
+  }
+ 
+  // friend
+  std::ostream & operator<<(std::ostream & out_, const lttc_algo::hit_cluster_association_data & hca_)
+  {
+    out_ << "{status=" << lttc_algo::to_string(hca_.association_status)
+         << ",distance=" << hca_.distance / CLHEP::mm << " mm"
+         << ",residual=" << hca_.residual
+         << ",chi2=" << hca_.chi2
+         << ",node=";
+    if (datatools::is_valid(hca_.node.x)) {
+      out_ << "yes";
+    } else {
+      out_ << "no";
+    }
+    out_ << '}';
+    return out_;
   }
 
   void lttc_algo::loop_data::clear()
@@ -1214,12 +1519,88 @@ namespace lttc {
    return;
   }
 
+  void lttc_algo::compute_cluster_missing_hits(int /* icl_ */, hit_cluster_data & hit_cluster_)
+  {
+    // const step1_data & step1 = current_loop->step1;
+    // const step2_data & step2 = current_loop->step2;
+    const step3_data & step3 = current_loop->step3;
+    auto workingHC = step3.HC;
+    auto workingCQ = step3.CQ;
+    std::vector<cluster_missing_hit_data> & missingHits = hit_cluster_.quality.missing_hits;
+    missingHits.clear();
+
+    // Line case:
+    if (hit_cluster_.line_data.is_valid()) {
+      int far_hit_1 = hit_cluster_.far_hit_1;
+      int far_hit_2 = hit_cluster_.far_hit_2;
+      const fitted_line & line_data = hit_cluster_.line_data;
+      const tracker_hit_collection & hits = indata->hits;
+      const tracker_hit & h1 = hits[far_hit_1];
+      const tracker_hit & h2 = hits[far_hit_2];
+      cell_id cid1(h1.side_id, h1.layer_id, h1.row_id);
+      cell_id cid2(h2.side_id, h2.layer_id, h2.row_id);
+      int minLayer = std::min(h1.layer_id, h2.layer_id);
+      int maxLayer = std::max(h1.layer_id, h2.layer_id);
+      int minRow = std::min(h1.row_id, h2.row_id);
+      int maxRow = std::max(h1.row_id, h2.row_id);
+      // point cellCenter1 = sntracker->cell_position(cid1);
+      // point cellCenter2 = sntracker->cell_position(cid2);
+      // const hit_cluster_association_data & hClAssoc1 = workingHC[far_hit_1][icl_];
+      // const hit_cluster_association_data & hClAssoc2 = workingHC[far_hit_2][icl_];
+      // const fitted_point & vertex1 = hClAssoc1.node;
+      // const fitted_point & vertex2 = hClAssoc2.node;
+
+      // Check for cells in a fiducial rectangle between the ending hits
+      for (int iLayer = minLayer; iLayer <= maxLayer; iLayer++) {
+        for (int iRow = minRow; iRow <= maxRow; iRow++) {
+          cell_id cid(hit_cluster_.side, iLayer, iRow);
+          // Skip the ending hits:
+          if (cid == cid1) continue;
+          if (cid == cid2) continue;
+          point cellCenter = sntracker->cell_position(cid);
+          double expectedDist = datatools::invalid_real();
+          double expectedDistErr = datatools::invalid_real();
+          distance_to_fitted_line(line_data, cellCenter, expectedDist, expectedDistErr);
+          if (expectedDist > sntracker->rcell) continue;
+          // This is a candidate cell:
+          if (sntracker->has_tracker_conditions()) {
+            const tracker_conditions & trkConds = sntracker->get_tracker_conditions();
+            if (trkConds.has_dead_cell(cid)) {
+              cluster_missing_hit_data cmh;
+              cmh.cid = cid;
+              cmh.why = MCR_DEAD_CELL;
+              missingHits.push_back(cmh);
+            } else if (hit_cells.count(cid) > 0) {
+              int hitWithThisCell = hit_cells.find(cid)->second;
+              if (hit_cluster_.hits.count(hitWithThisCell) == 0) {
+                cluster_missing_hit_data cmh;
+                cmh.cid = cid;
+                cmh.why = MCR_OTHER_TRACK;
+                missingHits.push_back(cmh);        
+              }
+            } else if (hit_cells.count(cid) == 0) {
+              cluster_missing_hit_data cmh;
+              cmh.cid = cid;
+              cmh.why = MCR_NO_TRIGGER;
+              missingHits.push_back(cmh);          
+            }
+          }     
+        }
+      }
+    } else {
+      DT_LOG_DEBUG(cfg.logging, "No missing cells can be computed!");
+    }
+    return;
+  }
+
   void lttc_algo::update_hit_clustering()
   {
+    DT_LOG_DEBUG(cfg.logging, "Entering...");
     // const step1_data & step1 = current_loop->step1;
     const step2_data & step2 = current_loop->step2;
     const step3_data & step3 = current_loop->step3;
     auto workingHC = step3.HC;
+    auto workingCQ = step3.CQ;
     size_t nhits = workingHC.shape()[0];
     size_t nclusters = workingHC.shape()[1];
     std::vector<size_t> cluster_stats;
@@ -1228,18 +1609,21 @@ namespace lttc {
     cluster_status.assign(nclusters, 0);
     for (int icl = 0; icl < (int) nclusters; icl++) {
       for (int ihit = 0; ihit < (int) nhits; ihit++) {
-        if (workingHC[ihit][icl] == -1) continue;
-        if (workingHC[ihit][icl] > 0) {
+        hit_cluster_association_data & hcadi = workingHC[ihit][icl];
+        if (hcadi.association_status == HCAS_NOT_VALID) continue;
+        if (hcadi.association_status == HCAS_NOT_ASSOCIABLE) continue;
+        if (hcadi.association_status == HCAS_ASSOCIATED) {
           cluster_stats[icl]++;
-          for (int icl2 = icl+1; icl2 <  (int) nclusters; icl2++) {
-            workingHC[ihit][icl2] = 0;
-          }
+          // XXX do not do that ! let hits associated to several clusters
+          // for (int icl2 = icl+1; icl2 <  (int) nclusters; icl2++) {
+          //   workingHC[ihit][icl2].association_status = HCAS_NOT_ASSOCIATED;
+          // }
         }
       }
       DT_LOG_DEBUG(cfg.logging, "cluster #" << icl << " has " << cluster_stats[icl] << " hits");
       if (cluster_stats[icl] < 3) {
         cluster_status[icl] |= hit_clustering_data::CQ_CRIT_STAT;
-        DT_LOG_DEBUG(cfg.logging, "cluster #" << icl << " has critical stat");
+        DT_LOG_DEBUG(cfg.logging, " -> cluster #" << icl << " has critical stat");
       } else {
         // double hpbr = step2.clusters[icl].pcluster->hits_per_bin_ratio;
         // double nhlow = hpbr - std::sqrt(hpbr);
@@ -1279,19 +1663,28 @@ namespace lttc {
       hit_cluster_data & new_cluster = outdata->hit_clustering.clusters.back();
       new_cluster.id = outdata->hit_clustering.clusters.size() - 1;
       new_cluster.flags = 0;
-      new_cluster.line_data = pcluster->line_data;
+      new_cluster.quality = workingCQ[icl];
+      new_cluster.line_data.theta = pcluster->line_data.get_theta();
+      new_cluster.line_data.r = pcluster->line_data.get_r();
+      new_cluster.line_data.theta_err = pcluster->t_err;
+      new_cluster.line_data.r_err = pcluster->r_err;
       for (int ihit = 0; ihit < (int) nhits; ihit++) {
-        if (workingHC[ihit][icl] < 0) {
-          continue;
-        }
-        if (workingHC[ihit][icl] > 0) {
+        hit_cluster_association_data & hcadi = workingHC[ihit][icl];
+        if (hcadi.association_status == HCAS_NOT_VALID) continue;
+        if (hcadi.association_status == HCAS_NOT_ASSOCIABLE) continue;
+        if (hcadi.association_status == HCAS_ASSOCIATED) {
           new_cluster.add_hit(ihit, *this);
-           outdata->hit_clustering.unclustered_hits.erase(ihit);
+          new_cluster.hit_associations[ihit] = hcadi;
+          outdata->hit_clustering.unclustered_hits.erase(ihit);
+          // XXX questionable
           // Tag clusterized hits to be removed : 
-          removed_hits[ihit] = new_cluster.id;
+          // removed_hits[ihit] = new_cluster.id;
         } 
       }
+      compute_cluster_missing_hits(icl, new_cluster);
     }
+    DT_LOG_DEBUG(cfg.logging, "Clusters are done : ");
+    outdata->hit_clustering.print(std::cerr, "[debug] ");
 
     if (datatools::logger::is_debug(cfg.logging)) {
       print_hc(workingHC, std::cerr, "[debug] Stage 2> ");
@@ -1300,6 +1693,7 @@ namespace lttc {
       std::getline(std::cin, resp);
     }
     
+    DT_LOG_DEBUG(cfg.logging, "Exiting.");
     return;
   }
 
@@ -1323,7 +1717,8 @@ namespace lttc {
       point cellPos = sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
       for (int icl = 0; icl < (int)  outdata->hit_clustering.clusters.size(); icl++) {
         hit_cluster_data & hcl =  outdata->hit_clustering.clusters[icl];
-        const line & cline = hcl.line_data;
+        // const line & cline = hcl.line_data;
+        line cline = line::make_from_theta_r(hcl.line_data.theta, hcl.line_data.r);
         double rdist = cline.distance(cellPos);
         // bool associated = false;
         if (rdist < (h.drift_radius + 3 * h.drift_radius_err))  {
@@ -1354,19 +1749,30 @@ namespace lttc {
 
   void lttc_algo::terminate_loops()
   {
+    /// XXX
     associate_unclustered_hits();
     return;
   }
   
   void lttc_algo::hit_cluster_data::add_hit(int ihit_, const lttc_algo & algo_)
   {
+    const tracker_hit & h = algo_.indata->hits[ihit_];
     if (hits.size() == 0) {
+      side = h.side_id;
+      if (h.delayed) {
+        delayed = true;
+      }
       far_hit_1 = ihit_;
       far_hit_2 = ihit_;
     } else {
+      DT_THROW_IF(h.delayed != delayed,
+                  std::logic_error,
+                  "Cannot add hit #" << ihit_ << " with unmatching delayed flag in cluster ID=" << id << '!');
+      DT_THROW_IF(h.side_id != side,
+                  std::logic_error,
+                  "Cannot add hit #" << ihit_ << " with unmatching side " << h.side_id << " in cluster ID=" << id << " at side " << side << '!');
       const tracker_hit & h1 = algo_.indata->hits[far_hit_1]; 
       const tracker_hit & h2 = algo_.indata->hits[far_hit_2];
-      const tracker_hit & h  = algo_.indata->hits[ihit_];
       point cellPos1 = algo_.sntracker->cell_position(h1.side_id, h1.layer_id, h1.row_id);
       point cellPos2 = algo_.sntracker->cell_position(h2.side_id, h2.layer_id, h2.row_id);
       point cellPos  = algo_.sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
@@ -1384,9 +1790,11 @@ namespace lttc {
   }
 
   void lttc_algo::hit_cluster_data::print(std::ostream & out_,
-                                         const std::string & indent_) const
+                                          const std::string & indent_) const
   {
     out_ << indent_ << "|-- " << "ID : " << id << '\n';
+    out_ << indent_ << "|-- " << "Side : " << side << '\n';
+    out_ << indent_ << "|-- " << "Delayed : " << std::boolalpha << delayed << '\n';
     out_ << indent_ << "|-- " << "Flags : " << flags << '\n';
     out_ << indent_ << "|-- " << "Hits : " << hits.size();
     if (hits.size()) {
@@ -1400,10 +1808,32 @@ namespace lttc {
       }
     }
     out_ << '\n';
+    out_ << indent_ << "|-- " << "Quality : \n";
+    quality.print(out_, indent_ + "|   ");
+    
+    out_ << indent_ << "|-- " << "Hit associations : " << hit_associations.size() << '\n';
+    {
+      int haCount = 0;
+      for (const auto & ha : hit_associations) {
+        out_ << indent_ << "|   ";
+        if ((haCount+1) == (int) hit_associations.size()) {
+          out_ << "`-- ";
+        } else {
+          out_ << "|-- ";
+        }
+        out_ << "Hit #" << ha.first << " : " << ha.second << '\n';
+        haCount++;
+      }
+    }
+    
     out_ << indent_ << "|-- " << "Far hit 1 : " << far_hit_1 << '\n';
     out_ << indent_ << "|-- " << "Far hit 2 : " << far_hit_2 << '\n';
-    out_ << indent_ << "`-- " << "Line data : " << '\n';
-    line_data.print(out_, indent_ + "    ");
+    if (line_data.is_valid()) {
+      out_ << indent_ << "`-- " << "Line data : " << '\n';
+      line_data.print(out_, indent_ + "    ");
+    } else {
+      out_ << indent_ << "`-- " << "No track fit pattern" << '\n';
+    }
     return;
   }
      
@@ -1443,11 +1873,18 @@ namespace lttc {
     }
     return;
   }
+
+  void lttc_algo::hit_clustering_data::clear()
+  {
+    clusters.clear();
+    unclustered_hits.clear();
+    return;
+  }
      
   void lttc_algo::hit_clustering_data::draw(std::ostream & out_, const lttc_algo & algo_) const
   {
-    double ercell = algo_.sntracker->rcell - 2.0;
-    double ercell2 = algo_.sntracker->rcell - 8.0;
+    double ercell = algo_.sntracker->rcell - 2.0 * CLHEP::mm;
+    double ercell2 = algo_.sntracker->rcell - 8.0 * CLHEP::mm;
     out_ << "#@unclustered_hits=" << unclustered_hits.size() << '\n';
     if (unclustered_hits.size()) {
       for (const auto & ihit : unclustered_hits) {
@@ -1470,7 +1907,9 @@ namespace lttc {
       out_ << "#@hit_cluster#=" << icl << '\n';
       for (auto ihit : hcl.hits) {
         const tracker_hit & h = algo_.indata->hits[ihit];
-        point cellPos = algo_.sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+        cell_id cid(h.side_id, h.layer_id, h.row_id);
+        out_ << "#@=>hit_cell_id#=" << cid << '\n';
+        point cellPos = algo_.sntracker->cell_position(cid);
         out_ << cellPos.x() - ercell << ' ' << cellPos.y() - ercell << ' ' << 1+icl << '\n';
         out_ << cellPos.x() - ercell << ' ' << cellPos.y() + ercell << ' ' << 1+icl << '\n';
         out_ << cellPos.x() + ercell << ' ' << cellPos.y() + ercell << ' ' << 1+icl << '\n';
@@ -1485,13 +1924,21 @@ namespace lttc {
           out_ << cellPos.x() - ercell2 << ' ' << cellPos.y() - ercell2 << ' ' << 1+icl << '\n';
           out_ << '\n';
         }
+        const hit_cluster_association_data & hcai = hcl.hit_associations.find(ihit)->second;
+        const fitted_point & nodei = hcai.node;
+        if (nodei.is_valid()) {
+          out_ << "#@=>hit_node" << '\n';
+          nodei.draw(out_, 1.0, false, 1+icl);
+          nodei.draw(out_, 2.0, true, 1+icl);
+        }
       }
       {
-        const auto & ld = hcl.line_data;
+        const fitted_line & ld = hcl.line_data;
+        line ld2 = line::make_from_theta_r(ld.theta, ld.r);
         polyline ld_samples;
-        double t1 = -500.0;
-        double t2 = +500.0;
-        ld.generate_samples(t1, t2, ld_samples);
+        double t1 = -1500.0;
+        double t2 = +1500.0;
+        ld2.generate_samples(t1, t2, ld_samples);
         draw_polyline(out_, ld_samples, 1+icl);
         // out_ << '\n';
       }
@@ -1568,6 +2015,12 @@ namespace lttc {
   {
     DT_LOG_DEBUG(cfg.logging, "Set input data...");
     indata = &indata_;
+    hit_cells.clear();
+    for (int ihit= 0; ihit < (int) indata->hits.size(); ihit++) {
+      const tracker_hit & h = indata->hits[ihit];
+      cell_id cid(h.side_id, h.layer_id, h.row_id);
+      hit_cells[cid] = ihit;
+    }
     removed_hits.clear();
     removed_hits.assign(indata->hits.size(), -1);
     return;
@@ -1591,33 +2044,21 @@ namespace lttc {
   void lttc_algo::process(const input_data & indata_, output_data & outdata_)
   {
     DT_LOG_DEBUG(cfg.logging, "Entering...");
-    _clear_processing_data_();
-    _set_input_data_(indata_);
+    this->_clear_processing_data_();
+    this->_set_input_data_(indata_);
     outdata = &outdata_;
 
-    ltcAlgo.init_loops();
-    int iloops = 0;
+    this->init_loops();
+    int iloop = 0;
+    int max_nloops = 1;
     bool go_loops = true;
 
     while (go_loops) {
-      std::string fprefix = "lttc_algo-loop_" + std::to_string(iloops);
+      std::string fprefix = cfg.draw_prefix + "loop_" + std::to_string(iloop) + "-";
       size_t old_nclusters = outdata->hit_clustering.clusters.size();
-
-      {
-        std::ofstream fhits(fprefix + "-hits.data");
-        for (int ihit = 0; ihit < (int) evt.hits.size(); ihit++) {
-          const auto & h = indata->.hits[ihit];
-          if (!ltcAlgo.can_process_hit(ihit)) {
-            continue;
-          }
-          fhits << "#@hit\n";
-          h.draw(fhits);
-        }
-        fhits << '\n';
-      }
-      
+     
       std::clog << "Running loop... \n";
-      ltcAlgo.run_loop();
+      this->run_loop();
       std::clog << "Done.\n";
 
       size_t new_nclusters = outdata->hit_clustering.clusters.size();
@@ -1632,31 +2073,113 @@ namespace lttc {
         std::clog << "Step-1: Map:\n";
         last_loop.step1.trmap.print(std::clog);
       }
-     
-      {
-        std::ofstream fstep1bins(fprefix + "-step1-bins.data");   
+
+      bool do_loop_draw = false;
+      if (cfg.draw) {
+        do_loop_draw = true;
+        if (iloop < cfg.loop_draw_nmin) {
+          do_loop_draw = false;
+        } else if (cfg.loop_draw_nmax >= 0) {
+          if (iloop > cfg.loop_draw_nmax) {
+            do_loop_draw = false;
+          }
+        }
+      }
+      
+      if (do_loop_draw) {
+        std::ofstream fstep1bins(fprefix + "step1-bins.data");   
         fstep1bins << "#@step1-bins=" << last_loop.step1.trmap.bins.size() << "\n";
         last_loop.step1.trmap.draw_bins(fstep1bins);
         fstep1bins << '\n';
       }
 
-    
-/// XXX
+      if (print_it) {
+        for (int iSbin = 0; iSbin < (int) last_loop.step1.trmap.sorted_bins.size(); iSbin++) {
+          int idxBin = last_loop.step1.trmap.sorted_bins[iSbin];
+          int iBin, jBin;
+          last_loop.step1.trmap.tr_bin_index_to_t_r_indexes(idxBin, iBin, jBin);
+          std::clog << "Sorted bin #" << iSbin << " => bin #" << idxBin
+                    << " @(" << iBin << ',' << jBin << ") =>height="
+                    << last_loop.step1.trmap.bins[idxBin] << std::endl;
+          if (iSbin > 10) {
+            std::clog << "..." << '\n';
+            break;
+          }
+        }
+      }
+  
+      if (print_it) {
+        std::clog << "\nStep-1 : Clustering data:\n";
+        last_loop.step1.clustering.print(std::clog, "", last_loop.step1.trmap);
+        std::clog << '\n';
+      }
+  
+      if (do_loop_draw) {
+        std::ofstream fstep1sbins(fprefix + "step1-sorted-bins.data");   
+        fstep1sbins << "#@step1-sorted-bins=" << last_loop.step1.trmap.sorted_bins.size() << "\n";
+        last_loop.step1.trmap.draw_sorted_bins(fstep1sbins, 0.0);
+        fstep1sbins << '\n';
 
+        std::ofstream fstep1clustering(fprefix + "step1-clustering.data");
+        last_loop.step1.clustering.draw(fstep1clustering, last_loop.step1.trmap);
+        fstep1clustering << '\n';
 
+        std::ofstream fstep2sbins(fprefix + "step2-sorted-bins.data");   
+        for (int i = 0; i < (int) last_loop.step2.trmaps.size(); i++) {
+          const auto & trmap = last_loop.step2.trmaps[i].trmap;
+          fstep2sbins << "#@step2-sorted-bins-cluster[" << i << "]="
+                      << trmap.sorted_bins.size() << "\n";
+          trmap.draw_sorted_bins(fstep2sbins, 0.0);
+          fstep2sbins << '\n';
+        }
 
+        std::ofstream fstep2clustering(fprefix + "step2-clustering.data");   
+        for (int i = 0; i < (int) last_loop.step2.trmaps.size(); i++) {
+          const auto & trmap = last_loop.step2.trmaps[i].trmap;
+          const auto & clg = last_loop.step2.trmaps[i].clustering;
+          clg.draw(fstep2clustering, trmap);
+          fstep2clustering << '\n';
+        }
+
+        std::ofstream fstep2lines(fprefix + "step2-lines.data");
+        for (int i = 0; i < (int) last_loop.step2.clusters.size(); i++) {
+          // const auto & trmap = *last_loop.step2.clusters[i].ptrmap;
+          const auto & cl    = *last_loop.step2.clusters[i].pcluster;
+          const auto & ln    = cl.line_data;
+          polyline ln_samples;
+          ln.generate_samples(-500.0, +500.0, ln_samples);
+          fstep2lines << "#@step2-lines" << '\n';
+          draw_polyline(fstep2lines, ln_samples);
+          fstep2lines << '\n';
+          fstep2lines << '\n';
+        }     
+      }
+
+      std::clog << "Last loop #" << iloop << " : " << '\n';
+      last_loop.print(std::clog);
+      std::clog << '\n';
+      std::clog << "Current hit clustering : \n";
+      this->outdata->hit_clustering.print(std::cerr, "");
       
       if (datatools::logger::is_debug(cfg.logging)) {
-        std::clog << "End of loop #" << iloops << std::endl;
+        std::clog << "End of loop #" << iloop << std::endl;
+        std::clog << "Hit [Enter]" << std::endl;
         std::string resp;
         std::getline(std::cin, resp);
       }
-      iloops++;
-      
+      iloop++;
+      if (iloop == max_nloops) {
+        break;
+      }
     }
-    terminate_loops();
+    this->terminate_loops();
+   
+    if (cfg.draw) {
+      std::ofstream finalHitClustering(cfg.draw_prefix + "hit_clustering.data");
+      this->outdata->hit_clustering.draw(finalHitClustering, *this);
+    }
     
-    _build_output_data_();
+    this->_build_output_data_();
     DT_LOG_DEBUG(cfg.logging, "Exiting.");
     return;
   }

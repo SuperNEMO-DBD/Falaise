@@ -3,6 +3,8 @@ set(FalaiseLttcPlugin_TESTS
   test-point.cxx
   test-triplet.cxx
   test-line.cxx
+  test-line-2.cxx
+  test-line-3.cxx
   test-circle.cxx
   test-kinked_curve.cxx
   test-track_simulator.cxx

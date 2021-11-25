@@ -28,6 +28,14 @@ namespace lttc {
     {
       const lttc_algo::map_type * trmap = nullptr; ///< Step-1 2D-histogram in theta-r space
     };
+ 
+    /// \brief Configuration parameters
+    struct config
+    {
+      datatools::logger::priority logging = datatools::logger::PRIO_FATAL; 
+      double epsilon = 2.5;
+      size_t min_pts = 3;
+    };
 
     /// \brief Cluster
     struct cluster
@@ -40,19 +48,20 @@ namespace lttc {
        
     /// \brief Output data
     struct output_data
-    {
+    {     
+      void print(std::ostream & out_, const input_data & input_) const;
+      void draw(std::ostream & out_, const input_data & input_) const;
+      // Attributes:
       std::vector<cluster> clusters;    ///< List of clusters
       std::set<int>        unclustered; ///< List of unclustered (sorted) bins
-      
-      void print(std::ostream & out_, const input_data & input_) const;
-
-      void draw(std::ostream & out_, const input_data & input_) const;
-
     };
- 
+    
     dbscan_clusterizer(const input_data & input_,
-                       double eps_ = 2.5,
-                       size_t min_pts_ = 3);
+                       const config & cfg_);
+
+    bool is_visited(int sbin_index_) const;
+ 
+    bool is_unvisited(int sbin_index_) const;
 
     void epsilon_neighbourhood(int sbin_index_,
                                std::set<int> & pts_) const;
@@ -64,24 +73,18 @@ namespace lttc {
                     int sbin_index_,
                     const std::set<int> & pts_) const;
 
-    bool is_visited(int sbin_index_) const;
- 
-    bool is_unvisited(int sbin_index_) const;
-
     void run(output_data & output_);
     
   public:
     
-    datatools::logger::priority logging = datatools::logger::PRIO_FATAL; 
-    const input_data * input = nullptr;
-    double epsilon = 2.5;
-    size_t min_pts = 3;
+    const input_data * input = nullptr; ///< Handle to input data
+    config cfg; ///< Configuration
 
     // Working data:
-    size_t             nclusters = 0;
-    std::vector<bool>  noisy;
-    std::vector<int>   sbins2clusters;
-    std::map<int, int> bins2sbins;
+    size_t             nclusters = 0; ///< Current number of clusters
+    std::vector<bool>  noisy; ///< Array of noisy flags for clusters
+    std::vector<int>   sbins2clusters; ///< Sorted bins to clusters map
+    std::map<int, int> bins2sbins; ///< Bins to sorted bins map
     
   };
     

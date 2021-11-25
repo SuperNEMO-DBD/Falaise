@@ -24,6 +24,7 @@ list(APPEND FalaiseLttcPlugin_HEADERS
   lttc/point.hh
   lttc/triplet.hh
   lttc/line.hh
+  lttc/segment.hh
   lttc/rectangle.hh
   lttc/circle.hh
   lttc/translated_curve.hh
@@ -46,6 +47,7 @@ list(APPEND FalaiseLttcPlugin_SOURCES
   lttc/point.cc
   lttc/triplet.cc
   lttc/line.cc
+  lttc/segment.cc
   lttc/rectangle.cc
   lttc/circle.cc
   lttc/translated_curve.cc

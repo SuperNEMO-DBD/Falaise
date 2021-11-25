@@ -47,9 +47,11 @@ namespace lttc {
       point lstart(x0, y0);
       vector2 ldir(ux, uy);
       line l(lstart, ldir);
-      double t1 = 0.0;
-      double t2 = t;
-      polyline lsamples;
+      // double t1 = 0.0;
+      // double t2 = t;
+      double t1 = -t;
+      double t2 = 0.0;
+       polyline lsamples;
       if (_cfg_.kinked_trajectory && ud01(generator_) < _cfg_.kinked_prob) {
         double kinkAngle = (5.0 + 30.0 * ud01(generator_)) * CLHEP::degree;
         if (ud01(generator_) < 0.5) kinkAngle *= -1;

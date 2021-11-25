@@ -1,3 +1,4 @@
+
 #ifndef FALAISE_LTTC_PLUGIN_POINT_HH
 #define FALAISE_LTTC_PLUGIN_POINT_HH
 
@@ -6,7 +7,8 @@
 #include <vector>
 
 // Third party:
-// - Bayeux/geomtools :
+// - Bayeux :
+#include <datatools/utils.h>
 #include <geomtools/utils.h>
 
 namespace lttc {
@@ -31,6 +33,22 @@ namespace lttc {
   std::ostream & operator<<(std::ostream & out_, const polyline & pl_);
 
   void draw_polyline(std::ostream & out_, const polyline & pl_, int tag_ = 0);
+
+  /// \brief Fitted point
+  struct fitted_point
+  {
+    double x = datatools::invalid_real();     ///< X coordinate
+    double y = datatools::invalid_real();     ///< Y coordinate
+    double x_err = datatools::invalid_real(); ///< Error on X coordinate
+    double y_err = datatools::invalid_real(); ///< Error on Y coordinate
+    double angle = 0.0; ///< Angle of the main axis w/r to the x-axis
+
+    bool is_valid() const;
+    void reset();
+    void draw(std::ostream & out_, double nsigma_ = 1.0, bool no_cross_ = false, int tag_ = 0) const;
+    bool inside(const point & p_, double nsigma_ = 1.0) const;
+    
+  };
   
 } // namespace lttc
 

@@ -30,6 +30,7 @@ namespace lttc {
       track_shape_type track_shape = TRACK_SHAPE_LINE;
       bool kinked_trajectory = false;
       double kinked_prob = 1.0;
+      // int side = 1.0;
     };
     
     track_simulator(const tracker & sntracker_, const config & cfg_);

@@ -76,11 +76,15 @@ namespace lttc {
     std::set<cell_id> _dead_cells_; ///< List of dead cells    
   };
  
-  /// \brief Tracker geometry
+  /// \brief Tracker geometry description and more
   struct tracker
   {
   public:
     tracker();
+    tracker(const tracker_conditions & trackconds_);
+    bool has_tracker_conditions() const;
+    void set_tracker_conditions(const tracker_conditions & trackconds_);
+    const tracker_conditions & get_tracker_conditions() const;
     bool locate(const point & p_, cell_id & id_) const;
     bool locate(const point & p_, int & iside_, int & ilayer_, int & irow_) const;   
     bool locate(double x_, double y_, int & iside_, int & ilayer_, int & irow_) const;
@@ -96,11 +100,13 @@ namespace lttc {
     double source_xskip = 30.0 * CLHEP::mm;
     double calo_xskip   = 10.0 * CLHEP::mm;
     double xcalo_yskip  = 10.0 * CLHEP::mm;
+    double hcell  = 2700.0 * CLHEP::mm;
     double xmin   = 0.0;
     double xmax   = 0.0;
     double ymin   = 0.0;
     double ymax   = 0.0;
-    double hcell  = 2700.0 * CLHEP::mm;
+  private:
+    const tracker_conditions * _trackconds_ = nullptr;
   };
 
   struct tracker_conditions_drawer
