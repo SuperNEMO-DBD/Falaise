@@ -1,3 +1,5 @@
+# $ a2ps --columns=2 --chars-per-line=180 b.log -o b.ps
+
 iloop=0
 
 set grid
@@ -166,7 +168,18 @@ plot [-500.0:500.0][-1000:1000] \
      "test-lttc_algo-hit_clustering.data" index 5 using 1:2 title "Cluster #4" with lines lw 1.25 lc rgb "cyan"  , \
      "test-lttc_algo-hit_clustering.data" index 6 using 1:2 title "Cluster #5" with lines lw 1.25 lc rgb "orange", \
      "test-lttc_algo-hit_clustering.data" index 7 using 1:2 title "Cluster #6" with lines lw 1.25 lc rgb "brown" , \
-     "test-lttc_algo-hit_clustering.data" index 8 using 1:2 title "Cluster #7" with lines lw 1.25 lc rgb "grey" 
+     "test-lttc_algo-hit_clustering.data" index 8 using 1:2 title "Cluster #7" with lines lw 1.25 lc rgb "grey"  , \
+     "test-lttc_algo-hit_clustering.data" index 9 using 1:2 title "Cluster #8" with lines lw 1.25 lc rgb "grey"  , \
+     "test-lttc_algo-hit_clustering.data" index 10 using 1:2 title "Cluster #9" with lines lw 1.25 lc rgb "grey"   , \
+     "test-lttc_algo-hit_clustering.data" index 11 using 1:2 title "Cluster #10" with lines lw 1.25 lc rgb "grey" 
+pause -1 "Hit [Enter]..."
+
+plot [-500.0:500.0][-1000:1000] \
+     "test-lttc_algo-tracker-geometry.data"   title "Tracker" with lines, \
+     "test-lttc_algo-tracker-dead-cells.data" title "Dead cells" with lines lt 7 lw 2, \
+     "test-lttc_algo-tracks.data"             title "Event tracks" with lines lt 6 , \
+     "test-lttc_algo-hits.data"               title "Event hits" with lines lw 1 , \
+     "test-lttc_algo-clustering_tracks.data"  using 1:2:3 title "Cluster track paths"  with lines lw 1 lc rgb variable
 pause -1 "Hit [Enter]..."
 
 # end

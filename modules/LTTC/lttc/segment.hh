@@ -13,7 +13,7 @@
 
 namespace lttc {
 
-  /// \brief Segment in 2D space
+  /// \brief Segment in 2D space (non zero length)
   struct segment 
   {
   
@@ -30,6 +30,8 @@ namespace lttc {
     const point & get_first() const;
 
     const point & get_last() const;
+
+    double get_length() const;
 
     const line & get_line() const;
 

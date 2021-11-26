@@ -309,6 +309,8 @@ namespace lttc {
     /// \brief Information about cluster quality 
     struct cluster_quality_data
     {
+      double get_effective_pvalue() const;
+      unsigned int get_effective_number_of_missing_hits() const;
       void print(std::ostream & out_, const std::string & indent_ = "") const;
       // Attributes:
       int    nhits   = 0;
@@ -348,16 +350,21 @@ namespace lttc {
     /**********************
      * Final data product *
      **********************/
-    
-    // /// \brief Final cluster data
-    // struct cluster_data
-    // {
-    //   trc_ref       ref;
-    //   std::set<int> hits;
-    // };
 
     typedef std::map<int, hit_cluster_association_data> hit_cluster_association_map_type;
 
+    struct track_path_vertex
+    {
+      int hit; ///< Hit ID
+      fitted_point node; ///< Contact point of the track with the hit cell
+    };
+
+    struct track_path_data
+    {
+      void draw(std::ostream & out_, int tag_ = 0) const; 
+      std::vector<track_path_vertex> vertexes;
+    };
+       
     /// \brief Hit cluster working data
     struct hit_cluster_data
     {
@@ -366,6 +373,10 @@ namespace lttc {
          FLAG_DISCARDED   = datatools::bit_mask::bit00,
          FLAG_DEGENERATED = datatools::bit_mask::bit01
         };
+
+      /// Build a candidate track path using the LT cluster geometrical information
+      /// (hit-cluster nodes)
+      void build_track_path(track_path_data & track_path_) const;
       void add_hit(int ihit_, const lttc_algo & algo_);
       void print(std::ostream & out_, const std::string & indent_ = "") const;
       // Attributes:
@@ -376,9 +387,12 @@ namespace lttc {
       std::set<int> hits; ///< Hits addressed through their hit index
       cluster_quality_data quality;
       hit_cluster_association_map_type hit_associations;
-      int           far_hit_1 = -1;
-      int           far_hit_2 = -1;
+      int           end_hit_1 = -1;
+      int           end_hit_2 = -1;
       fitted_line   line_data;
+      std::set<int> twins; ///< Set of other clusters with the same liste of hits but different line params (degenerated)
+      std::vector<int> track_ordered_hits; ///< Array of hit indexes ordered along the track from the end hit #1 to end hit #2
+      
     };
     
     /// \brief Hit clustering working data
@@ -394,11 +408,16 @@ namespace lttc {
       void clear();
       // Attributes:
       std::vector<hit_cluster_data> clusters; ///< Array of clusters
+      std::set<int> degenerated_clusters;     ///< List of degenerated clusters
       std::set<int> unclustered_hits;         ///< List of unclustered hit by index     
     };
     
-    void compute_cluster_missing_hits(int icl_, hit_cluster_data & hit_cluster_);
-   
+    void compute_cluster_missing_hits(hit_cluster_data & hit_cluster_);
+
+    void detect_degenerated_clusters();
+
+    void build_cluster_ordered_hits();
+    
     void update_hit_clustering();
 
     void enrich_clusters();
