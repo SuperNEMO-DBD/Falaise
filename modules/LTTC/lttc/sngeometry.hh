@@ -1,7 +1,7 @@
 /** \file lttc/sngeometry.h
  * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2021-11-16
- * Last modified: 2021-11-16
+ * Last modified: 2021-12-15
  *
  * Copyright (C) 2021 François Mauger <mauger@lpccaen.in2p3.fr>
  *
@@ -41,6 +41,7 @@
 
 // This project:
 #include <lttc/point.hh>
+#include <lttc/rectangle.hh>
 
 namespace lttc {
  
@@ -50,9 +51,23 @@ namespace lttc {
   public:
     cell_id() = default;
     cell_id(int side_, int layer_, int row_);
+    bool is_valid() const;
     int side() const;
     int layer() const;
     int row() const;
+    /// \brief Compute some ortho-distance between 2 valid cell IDs on the same side
+    ///
+    /// cell #1                          dist(cell#1,cell#2) == 5
+    ///    *---->+---->+---->+
+    ///       1     2     3  | 4
+    ///                      v
+    ///                      +
+    ///                      | 5
+    ///                      v
+    ///                      *
+    ///                   cell_2
+    ///
+    int distance(const cell_id & other_) const;
     bool operator<(const cell_id & id_) const;
     bool operator==(const cell_id & id_) const;
     friend std::ostream & operator<<(std::ostream & out_, const cell_id & cid_);
@@ -80,18 +95,27 @@ namespace lttc {
   struct tracker
   {
   public:
+
     tracker();
     tracker(const tracker_conditions & trackconds_);
     bool has_tracker_conditions() const;
     void set_tracker_conditions(const tracker_conditions & trackconds_);
     const tracker_conditions & get_tracker_conditions() const;
-    bool locate(const point & p_, cell_id & id_) const;
-    bool locate(const point & p_, int & iside_, int & ilayer_, int & irow_) const;   
+    bool locate(const point2 & p_, cell_id & id_) const;
+    bool locate(const point2 & p_, int & iside_, int & ilayer_, int & irow_) const;   
     bool locate(double x_, double y_, int & iside_, int & ilayer_, int & irow_) const;
-    bool contains(const point & p_) const;   
-    point cell_position(int iside_, int ilayer_, int irow_) const;   
-    point cell_position(const cell_id & id_) const;   
+    bool contains(const point2 & p_) const;   
+    point2 cell_position(int iside_, int ilayer_, int irow_) const;   
+    point2 cell_position(const cell_id & id_) const;   
+    bool cell_contains(const cell_id & id_,
+                       const point2 & p_,
+                       double tolerance_) const;
+    rectangle cell_rectangle(const cell_id & id_) const;
     void draw(std::ostream & out_) const;
+    // Return the list of cell IDs intersected by a linear segment
+    bool intersect_segment(const point2 & p1_, const point2 & p2_,
+                           std::set<cell_id> & cids_) const;
+    
   public:
     size_t nsides  = 2;
     size_t nlayers = 9;
@@ -105,6 +129,10 @@ namespace lttc {
     double xmax   = 0.0;
     double ymin   = 0.0;
     double ymax   = 0.0;
+    rectangle halfCells[2];
+    
+    // Internally computed:
+    double dcell;
   private:
     const tracker_conditions * _trackconds_ = nullptr;
   };

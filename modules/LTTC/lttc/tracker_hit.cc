@@ -148,16 +148,29 @@ namespace lttc {
   void tracker_hit_drawer::draw(std::ostream & out_, uint32_t /* flags_ */)
   {
     cell_id cid(_hit_.side_id, _hit_.layer_id, _hit_.row_id);
-    point cellPos = _trk_.cell_position(cid);
+    double z = _hit_.z;
+    double z_err = _hit_.z_err;
+    point2 cellPos = _trk_.cell_position(cid);
+    point3 hitPos(cellPos.x(), cellPos.y(), z);
     out_ << "#@tracker-hit-" << _hit_.id << '\n';
     circle hitDriftRing1(cellPos, _hit_.drift_radius - _hit_.drift_radius_err);
     circle hitDriftRing2(cellPos, _hit_.drift_radius + _hit_.drift_radius_err);
-    polyline hitDriftRing1Pl;
-    polyline hitDriftRing2Pl;
-    hitDriftRing1.generate_samples(0.0, 1.0, hitDriftRing1Pl);
-    hitDriftRing2.generate_samples(0.0, 1.0, hitDriftRing2Pl);
-    draw_polyline(out_, hitDriftRing1Pl);
-    draw_polyline(out_, hitDriftRing2Pl);
+    polyline2 hitDriftRing1Pl;
+    polyline2 hitDriftRing2Pl;
+    hitDriftRing1.generate_samples(0.0, hitDriftRing1.r() * M_PI * 2, hitDriftRing1Pl);
+    hitDriftRing2.generate_samples(0.0, hitDriftRing2.r() * M_PI * 2, hitDriftRing2Pl);
+    polyline3 hitDriftRing1Pl3;
+    polyline3 hitDriftRing2Pl3;
+    hitDriftRing1Pl3.from_2d(hitDriftRing1Pl, z);           
+    hitDriftRing2Pl3.from_2d(hitDriftRing2Pl, z);           
+    draw_polyline(out_, hitDriftRing1Pl3);
+    draw_polyline(out_, hitDriftRing2Pl3);
+    point3 botHitPos(cellPos.x(), cellPos.y(), z - z_err);
+    point3 topHitPos(cellPos.x(), cellPos.y(), z + z_err);
+    draw_point(out_, botHitPos);
+    draw_point(out_, topHitPos);
+    out_ << std::endl;
+    return;
   }
 
 } // end of namespace lttc

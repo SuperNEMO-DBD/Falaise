@@ -13,43 +13,54 @@
 
 namespace lttc {
 
-  typedef geomtools::vector_2d point;
+  typedef geomtools::vector_2d point2;
   typedef geomtools::vector_2d vector2;
-  typedef std::vector<point>   polyline;
 
-  void clear(point & p_);
+  typedef geomtools::vector_3d point3;
+  typedef geomtools::vector_3d vector3;
 
-  point barycenter(const point & p1_, double w1_, const point & p2_, double w2_);
+  point3 to_3d(const point2 & p2_, double z_ = 0.0);
+
+  point2 to_2d(const point3 & p3_);
+
+  void clear(point2 & p_);
+
+  void clear(point3 & p_);
+
+  point2 barycenter(const point2 & p1_, double w1_, const point2 & p2_, double w2_);
+
+  point3 barycenter(const point3 & p1_, double w1_, const point3 & p2_, double w2_);
   
-  point middle(const point & p1_, const point & p2_);
+  point2 middle(const point2 & p1_, const point2 & p2_);
+  
+  point3 middle(const point3 & p1_, const point3 & p2_);
  
-  bool are_aligned(const point & p1_,
-                   const point & p2_,
-                   const point & p3_,
+  bool are_aligned(const point2 & p1_,
+                   const point2 & p2_,
+                   const point2 & p3_,
                    double tolerance_= 1e-14);
 
-  void draw_point(std::ostream & out_, const point & p_, int tag_ = 0, bool endl_ = true);
+  void draw_point(std::ostream & out_, const point2 & p_, int tag_ = 0, bool endl_ = true);
 
-  std::ostream & operator<<(std::ostream & out_, const polyline & pl_);
-
-  void draw_polyline(std::ostream & out_, const polyline & pl_, int tag_ = 0);
-
-  /// \brief Fitted point
-  struct fitted_point
+  void draw_point(std::ostream & out_, const point3 & p_, int tag_ = 0, bool endl_ = true);
+ 
+  struct polyline2 : public std::vector<point2>
   {
-    double x = datatools::invalid_real();     ///< X coordinate
-    double y = datatools::invalid_real();     ///< Y coordinate
-    double x_err = datatools::invalid_real(); ///< Error on X coordinate
-    double y_err = datatools::invalid_real(); ///< Error on Y coordinate
-    double angle = 0.0; ///< Angle of the main axis w/r to the x-axis
-
-    bool is_valid() const;
-    void reset();
-    void draw(std::ostream & out_, double nsigma_ = 1.0, bool no_cross_ = false, int tag_ = 0) const;
-    bool inside(const point & p_, double nsigma_ = 1.0) const;
-    
+    std::vector<double> s; ///< Curvilinear coordinates associated to each point
+    void clear();
   };
-  
+
+  void draw_polyline(std::ostream & out_, const polyline2 & pl_, int tag_ = 0);
+ 
+  struct polyline3 : public std::vector<point3>
+  {
+    std::vector<double> s; ///< Curvilinear coordinates associated to each point
+    void from_2d(const polyline2 & pl2_, double z_);
+    void clear();
+  };
+
+  void draw_polyline(std::ostream & out_, const polyline3 & pl_, int tag_ = 0);
+
 } // namespace lttc
 
 #endif // FALAISE_LTTC_PLUGIN_POINT_HH

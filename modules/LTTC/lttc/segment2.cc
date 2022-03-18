@@ -1,4 +1,4 @@
-#include <lttc/segment.hh>
+#include <lttc/segment2.hh>
 
 // Standard library:
 #include <cmath>
@@ -14,58 +14,58 @@
 
 namespace lttc {
 
-  segment::segment()
+  segment2::segment2()
   {
     geomtools::invalidate(_first_);
     geomtools::invalidate(_last_);
     datatools::invalidate(_length_);
   }
  
-  segment::segment(const point & first_, const point & last_)
+  segment2::segment2(const point2 & first_, const point2 & last_)
   {
     set(first_, last_);
     return;
   }
   
-  bool segment::is_valid() const
+  bool segment2::is_valid() const
   {
     if (not geomtools::is_valid(_first_)) return false;
     if (not geomtools::is_valid(_last_)) return false;
     return true;
   }
 
-  void segment::set(const point & first_, const point & last_)
+  void segment2::set(const point2 & first_, const point2 & last_)
   {
     double l = (_last_ - _first_).mag();
     DT_THROW_IF(l == 0, std::logic_error, "First and last ends are equal!");
     _first_ = first_;
     _last_ = last_;
-    _line_ = line::make_from_start_stop(first_, last_ - first_);
+    _line_ = line2::make_from_start_stop(first_, last_ - first_);
     _length_ = l;
     return;
   }
 
-  const point & segment::get_first() const
+  const point2 & segment2::get_first() const
   {
     return _first_;
   }
 
-  const point & segment::get_last() const
+  const point2 & segment2::get_last() const
   {
     return _first_;
   }
 
-  double segment::get_length() const
+  double segment2::get_length() const
   {
     return _length_;
   }
 
-  const line & segment::get_line() const
+  const line2 & segment2::get_line() const
   {
     return _line_;
   }
 
-  void segment::reset()
+  void segment2::reset()
   {
     geomtools::invalidate(_first_);
     geomtools::invalidate(_last_);
@@ -74,7 +74,7 @@ namespace lttc {
     return;
   }
 
-  bool segment::contains(const point & pos_, double tolerance_) const
+  bool segment2::contains(const point2 & pos_, double tolerance_) const
   {
     double tolerance = tolerance_;
     if (tolerance <= 0.0) {

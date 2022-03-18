@@ -6,6 +6,10 @@
 // Third party:
 // - Bayeux/datatools :
 #include <datatools/exception.h>
+#include <datatools/logger.h>
+
+// This project:
+#include <lttc/line2.hh>
 
 namespace lttc {
 
@@ -30,6 +34,22 @@ namespace lttc {
   int cell_id::row() const
   {
     return _row_;
+  }
+  
+  bool cell_id::is_valid() const
+  {
+    if (_side_ < 0 or _side_ > 1) return false;
+    if (_layer_ < 0 or _layer_ > 8) return false;
+    if (_row_ < 0 or _row_ > 112) return false;
+    return true;
+  }
+
+  int cell_id::distance(const cell_id & other_) const
+  {
+    if (!is_valid()) return -1;
+    if (!other_.is_valid()) return -1;
+    if (_side_ != other_._side_) return -1;
+    return std::abs(_layer_ - other_._layer_) + std::abs(_row_ - other_._row_);
   }
   
   bool cell_id::operator<(const cell_id & id_) const
@@ -89,11 +109,19 @@ namespace lttc {
  
   tracker::tracker()
   {
+    dcell = 2 * rcell;
     xmin = 0.0;
-    xmax = source_xskip + nlayers * 2 * rcell + calo_xskip;
-    double dy =  2 * xcalo_yskip + nrows * 2 * rcell;
+    xmax = source_xskip + nlayers * dcell + calo_xskip;
+    double dy =  2 * xcalo_yskip + nrows * dcell;
     ymin = -dy / 2;
-    ymax = +dy / 2;   
+    ymax = +dy / 2;
+    std::cerr << "lttc::tracker::ctor: building rects...\n";
+    halfCells[0] = rectangle(point2(-source_xskip - nlayers * dcell, -0.5 * nrows * dcell),
+                             point2(-source_xskip, +0.5 * nrows * dcell));
+    std::cerr << "lttc::tracker::ctor: rect 0 OK \n";
+    halfCells[1] = rectangle(point2(source_xskip, -0.5 * nrows * dcell),
+                             point2(source_xskip + nlayers * dcell, +0.5 * nrows * dcell));
+    std::cerr << "lttc::tracker::ctor: rect 1 OK\n";
     return;
   }
   
@@ -119,7 +147,7 @@ namespace lttc {
     return *_trackconds_;
   }
  
-  bool tracker::contains(const point & p_) const
+  bool tracker::contains(const point2 & p_) const
   {
     if (p_.x() <= -xmax) return false;
     if (p_.x() >= xmax) return false;
@@ -128,7 +156,7 @@ namespace lttc {
     return true;
   }
 
-  bool tracker::locate(const point & p_, cell_id & id_) const
+  bool tracker::locate(const point2 & p_, cell_id & id_) const
   {
     int s, l, r;
     bool success = locate(p_, s, l, r);
@@ -136,12 +164,25 @@ namespace lttc {
     return success;
   }
  
-  bool tracker::locate(const point & p_, int & side_, int & layer_, int & row_) const
+  bool tracker::locate(const point2 & p_, int & side_, int & layer_, int & row_) const
   {
     return locate(p_.x(), p_.y(), side_, layer_, row_);
   }
 
-  point tracker::cell_position(int side_, int layer_, int row_) const
+  rectangle tracker::cell_rectangle(const cell_id & id_) const
+  {
+    point2 cellCenter = cell_position(id_);
+    return rectangle(point2(cellCenter.x() - rcell, cellCenter.y() - rcell),
+                     point2(cellCenter.x() + rcell, cellCenter.y() + rcell));                
+  }
+
+  bool tracker::cell_contains(const cell_id & cid_, const point2 & p_, double tolerance_) const
+  {
+    rectangle cellRect = cell_rectangle(cid_);
+    return cellRect.contains(p_, tolerance_);
+  }
+
+  point2 tracker::cell_position(int side_, int layer_, int row_) const
   {
     double x, y;
     x = xmin + source_xskip + rcell * ( 1 + 2 * layer_);
@@ -149,10 +190,10 @@ namespace lttc {
       x *= -1;
     }
     y = ymin + xcalo_yskip  + rcell * ( 1 + 2 * row_);
-    return point(x, y);
+    return point2(x, y);
   }
 
-  point tracker::cell_position(const cell_id & id_) const
+  point2 tracker::cell_position(const cell_id & id_) const
   {
     return cell_position(id_.side(), id_.layer(), id_.row());
   }
@@ -170,8 +211,8 @@ namespace lttc {
     if (absx > xmax - calo_xskip) return false;
     if (y_ < ymin + xcalo_yskip) return false;
     if (y_ > ymax - xcalo_yskip) return false;
-    layer_ = (int) ((absx - xmin - source_xskip) / (2 * rcell));
-    row_   = (int) ((y_ - ymin - xcalo_yskip)  / (2 * rcell));
+    layer_ = (int) ((absx - xmin - source_xskip) / dcell);
+    row_   = (int) ((y_ - ymin - xcalo_yskip)  / dcell);
     return true;
   }
 
@@ -186,7 +227,7 @@ namespace lttc {
   {
     int counter = 0;
     for (const auto & cid : _trkcond_.get_dead_cells()) {
-      point cellPos = _trk_.cell_position(cid);
+      point2 cellPos = _trk_.cell_position(cid);
       out_ << "#@tracker-conditions=dead-cell-" << counter << '\n';
       out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
       out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
@@ -227,28 +268,150 @@ namespace lttc {
     out_ << _trk_.xmax << ' ' << _trk_.ymin << '\n';
     out_ << _trk_.xmin << ' ' << _trk_.ymin << '\n';
     out_ << '\n';
-    
+
+    out_ << "#@what=cells\n";
+    for (size_t iside = 0; iside < _trk_.nsides; iside++) {
+      for (size_t irow = 0; irow < _trk_.nrows; irow++) {
+        for (size_t ilayer = 0; ilayer < _trk_.nlayers; ilayer++) {
+          cell_id cid(iside, ilayer, irow);
+          point2 cellPos = _trk_.cell_position(cid);
+          out_ << "#@tracker-cells=" << cid << '\n';
+          out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
+          out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
+          out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() + _trk_.rcell << '\n';
+          out_ << cellPos.x() + _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
+          out_ << cellPos.x() - _trk_.rcell << ' ' <<  cellPos.y() - _trk_.rcell << '\n';
+          out_ << '\n';
+          out_ << cellPos.x() << ' ' <<  cellPos.y() - 0.1 * _trk_.rcell << '\n';
+          out_ << cellPos.x() << ' ' <<  cellPos.y() + 0.1 * _trk_.rcell << '\n';
+          out_ << '\n';
+          out_ << cellPos.x() - 0.1 * _trk_.rcell << ' ' <<  cellPos.y() << '\n';
+          out_ << cellPos.x() + 0.1 * _trk_.rcell << ' ' <<  cellPos.y() << '\n';
+          out_ << '\n';
+        }
+      }
+    }
+    /*
     out_ << "#@what=cells-horizontal\n";
     for (size_t iside = 0; iside <= _trk_.nsides; iside++) {
       int xsgn = 1;
       if (iside == 0) xsgn = -1;
       for (size_t irow = 0; irow <= _trk_.nrows; irow++) {
         double y1 = _trk_.ymin + _trk_.xcalo_yskip + irow * 2 * _trk_.rcell;
-        out_ << xsgn * (_trk_.xmin + _trk_.source_xskip) << ' ' << y1 << '\n';
-        out_ << xsgn * (_trk_.xmax - _trk_.calo_xskip) << ' ' << y1 << '\n';
+        double x1 = _trk_.xmin + _trk_.source_xskip;
+        double x2 = _trk_.xmax - _trk_.calo_xskip;
+        out_ << xsgn * x1 << ' ' << y1 << '\n';
+        if (irow==0) {
+          out_ << xsgn * (0.5*(x1+x2)) << ' ' << y1 << '\n';
+        }
+        out_ << xsgn * x2 << ' ' << y1 << '\n';
         out_ << '\n';
       }
     
       out_ << "#@what=cells-vertical\n";
       for (size_t ilayer = 0; ilayer <= _trk_.nlayers; ilayer++) {
         double x1 = xsgn * (_trk_.xmin + _trk_.source_xskip + ilayer * 2 * _trk_.rcell);
-        out_ << x1  << ' ' << _trk_.ymin + _trk_.xcalo_yskip << '\n';
-        out_ << x1 << ' ' << _trk_.ymax - _trk_.xcalo_yskip << '\n';
+        double y1 = _trk_.ymin + _trk_.xcalo_yskip;
+        double y2 = _trk_.ymax - _trk_.xcalo_yskip;
+        out_ << x1  << ' ' << y1 << '\n';
+        if (ilayer==0) {
+          out_ << x1  << ' ' << (0.5*(y1+y2)) << '\n';
+        }
+        out_ << x1 << ' ' << y2 << '\n';
         out_ << '\n';
       }
-     }
-    out_ << '\n';
+    }
+    */
+    // out_ << '\n';
     return;
+  }
+
+  bool tracker::intersect_segment(const point2 & p1_,
+                                  const point2 & p2_,
+                                  std::set<cell_id> & cids_) const
+  {
+    datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+    // logging = datatools::logger::PRIO_DEBUG;
+    DT_LOG_DEBUG(logging, "Entering...");
+    cids_.clear();
+    double tolerance = 0.1 * CLHEP::mm;
+    line2 line = line2::make_from_start_stop(p1_, p2_);
+    DT_LOG_DEBUG(logging, "Line to be intersected :");
+    if (datatools::logger::is_debug(logging)) {
+      line.print(std::cerr, "[debug] ");
+    }
+    for (int iSide = 0; iSide < 2; iSide++) {
+      DT_LOG_DEBUG(logging, "Side " << iSide);
+      // Search in both sides of the source plane:
+      point2 first = p1_;
+      point2 last = p2_;
+      if (! this->halfCells[iSide].contains(first, tolerance)) {
+        vector2 dir = p2_ - p1_;
+        point2 best;
+        geomtools::invalidate(best);
+        double bestDist;
+        datatools::plus_infinity(bestDist);
+        point2 root;
+        if (this->halfCells[iSide].unique_intersection(first, dir, root, tolerance)) {
+          double dist = (root - first).mag();
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = root;
+          }
+        }
+        if (not geomtools::is_valid(best)) {
+          continue;
+        }
+        first = best;
+      }
+      if (! this->halfCells[iSide].contains(last, tolerance)) {
+        vector2 dir = p1_ - p2_;
+        point2 best;
+        geomtools::invalidate(best);
+        double bestDist;
+        datatools::plus_infinity(bestDist);
+        point2 root;
+        if (this->halfCells[iSide].unique_intersection(last, dir, root, tolerance)) {
+          double dist = (root - last).mag();
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = root;
+          }
+        }
+        if (not geomtools::is_valid(best)) {
+          continue;
+        }
+        last = best;
+      }
+      cell_id firstCid;
+      cell_id lastCid;
+      this->locate(first, firstCid);
+      this->locate(last, lastCid);
+      int minLayer = std::min(firstCid.layer(), lastCid.layer());
+      int maxLayer = std::max(firstCid.layer(), lastCid.layer());
+      int minRow = std::min(firstCid.row(), lastCid.row());
+      int maxRow = std::max(firstCid.row(), lastCid.row());
+      if (datatools::logger::is_debug(logging)) {
+        std::cerr << "[debug] ltts::tracker::intersect_segment: iSide=" << iSide << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment:   minLayer=" << minLayer << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment:   maxLayer=" << maxLayer << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment:   minRow=" << minRow << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment:   maxRow=" << maxRow << '\n';
+      }
+      // Check for cells in a fiducial rectangle between the ending hits
+      for (int iLayer = minLayer; iLayer <= maxLayer; iLayer++) {
+        for (int iRow = minRow; iRow <= maxRow; iRow++) {
+          cell_id cid(iSide, iLayer, iRow);
+          point2 cellCenter = this->cell_position(cid);
+          point2 nearestPointOnLine = line.orthogonal_projection(cellCenter);
+          if (this->cell_contains(cid, nearestPointOnLine, tolerance)) {
+            cids_.insert(cid);
+          }
+        }
+      }
+    }
+    DT_LOG_DEBUG(logging, "Exiting.");
+    return cids_.size() > 0;
   }
 
 } // end of namespace lttc

@@ -24,6 +24,7 @@ namespace lttc {
     {
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       double drift_radius_err = 0.15 * CLHEP::mm;
+      double z_err = 10.0 * CLHEP::mm;
       bool add_noisy_hits = false;
       std::size_t nb_noisy_hits = 3;
     };
@@ -33,7 +34,7 @@ namespace lttc {
     ~hit_simulator() = default;
 
     void generate_hits(std::default_random_engine & generator_,
-                       const track & sntrack_,
+                       const track3 & track_,
                        tracker_hit_collection & hits_) const;
 
     void generate_noisy_hits(std::default_random_engine & generator_,

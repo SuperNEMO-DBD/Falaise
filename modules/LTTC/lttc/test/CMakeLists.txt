@@ -2,13 +2,18 @@
 set(FalaiseLttcPlugin_TESTS
   test-point.cxx
   test-triplet.cxx
+  # test-triplet_tools.cxx
   test-line.cxx
   test-line-2.cxx
   test-line-3.cxx
   test-circle.cxx
+  test-rectangle.cxx
   test-kinked_curve.cxx
+  test-sngeometry.cxx
   test-track_simulator.cxx
   test-hit_simulator.cxx
+  # test-value_with_error.cxx
+  test-uhistogram.cxx
   test-lttc_algo.cxx
   )
 

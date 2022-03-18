@@ -90,7 +90,6 @@ namespace lttc {
     bool add_hit(const tracker_hit & hit_);
     int max_hit_id() const;
     void print(std::ostream & out_) const;
-    
   };
   
   struct tracker_hit_drawer

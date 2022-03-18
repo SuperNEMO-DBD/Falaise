@@ -4,7 +4,7 @@
 #include <cmath>
 
 // This project:
-#include <lttc/line.hh>
+#include <lttc/line2.hh>
 
 // Third party:
 // - Bayeux :
@@ -13,7 +13,7 @@
 
 namespace lttc {
 
-  circle::circle(const point & center_, double r_)
+  circle::circle(const point2 & center_, double r_)
   {
     _center_ = center_;
     _r_ = r_;
@@ -31,8 +31,15 @@ namespace lttc {
   {
     return datatools::is_valid(_r_) && geomtools::is_valid(_center_);
   }
+
+  void circle::invalidate()
+  {
+    geomtools::invalidate(_center_);
+    _r_ = datatools::invalid_real();
+    return;
+  }
  
-  const point & circle::center() const
+  const point2 & circle::center() const
   {
     return _center_;
   }
@@ -42,7 +49,7 @@ namespace lttc {
     return _r_;
   }
 
-  void circle::set_center(const point & c_)
+  void circle::set_center(const point2 & c_)
   {
     _center_ = c_;
     return;
@@ -63,14 +70,17 @@ namespace lttc {
     return std::tuple<double,double>(rconcave, rconvex);
   }
 
-  void circle::compute(double t_, point & vtx_) const
+  void circle::compute(double s_, point2 & vtx_) const
   {
-    vtx_.setX(_center_.x() + _r_ * std::cos(2 * M_PI * t_));
-    vtx_.setY(_center_.y() + _r_ * std::sin(2 * M_PI * t_));
+    // vtx_.setX(_center_.x() + _r_ * std::cos(2 * M_PI * t_));
+    // vtx_.setY(_center_.y() + _r_ * std::sin(2 * M_PI * t_));
+    double theta = s_ / _r_;
+    vtx_.setX(_center_.x() + _r_ * std::cos(theta));
+    vtx_.setY(_center_.y() + _r_ * std::sin(theta));
     return;    
   }
 
-  double circle::dist(const point & p_) const
+  double circle::dist(const point2 & p_) const
   {
     vector2 cp = p_ - _center_;
     double mcp = cp.mag();
@@ -80,25 +90,29 @@ namespace lttc {
     return mcp - _r_;
   }
 
-  void circle::generate_samples(double t1_, double t2_, polyline & samples_) const
+  void circle::generate_samples(double s1_, double s2_, polyline2 & samples_, size_t nsamples_) const
   {
-    double tstep = 0.0005;
-    for (double t = t1_; t <= t2_ + 0.5 * tstep; t += tstep) {
-      point p;
-      this->compute(t, p);
+    samples_.clear();
+    double sa = std::min(s1_,s2_);
+    double sb = std::max(s1_,s2_);
+    double sstep = (sb - sa) / nsamples_;
+    for (double s = sa; s <= sb + 0.5 * sstep; s += sstep) {
+      point2 p;
+      this->compute(s, p);
       samples_.push_back(p);
+      samples_.s.push_back(s);
     }    
     return;
   }
   
   // static
-  circle circle::make_circle(const triplet & t_)
+  circle circle::make_circle(const triplet2 & t_)
   {
     return make_circle(t_.p1, t_.p2, t_.p3);
   }
   
   // static
-  circle circle::make_circle(const point & p1_, const point & p2_, const point & p3_)
+  circle circle::make_circle(const point2 & p1_, const point2 & p2_, const point2 & p3_)
   {
     datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
     // logging = datatools::logger::PRIO_DEBUG;
@@ -109,9 +123,9 @@ namespace lttc {
     double d12 = (p2_ - p1_).mag2();
     double d23 = (p3_ - p2_).mag2();
     double d31 = (p1_ - p3_).mag2();
-    const point * pfirst  = &p1_;
-    const point * plast   = &p2_;
-    const point * pmiddle = &p3_;
+    const point2 * pfirst  = &p1_;
+    const point2 * plast   = &p2_;
+    const point2 * pmiddle = &p3_;
     double dmax = d12;
     std::string dLabel = "1-2";
     DT_LOG_DEBUG(logging, "d12  = " << d12);
@@ -135,21 +149,21 @@ namespace lttc {
     DT_LOG_DEBUG(logging, "  pfirst  = " << *pfirst);
     DT_LOG_DEBUG(logging, "  pmiddle = " << *pmiddle);
     DT_LOG_DEBUG(logging, "  plast   = " << *plast);
-    line lFM = lttc::line::make_from_start_stop(*pfirst, *pmiddle);
+    line2 lFM = lttc::line2::make_from_start_stop(*pfirst, *pmiddle);
     // std::cerr << "*** devel *** FM:\n";
     // lFM.print(std::cerr);
-    line lML = lttc::line::make_from_start_stop(*pmiddle, *plast);
+    line2 lML = lttc::line2::make_from_start_stop(*pmiddle, *plast);
     // std::cerr << "*** devel *** ML:\n";
     // lML.print(std::cerr);
-    point intersectionFML;
-    point midFM = middle(*pfirst, *pmiddle);
-    point midML = middle(*plast,  *pmiddle);
+    point2 intersectionFML;
+    point2 midFM = middle(*pfirst, *pmiddle);
+    point2 midML = middle(*plast,  *pmiddle);
     DT_LOG_DEBUG(logging, "midFM=" << midFM);
     DT_LOG_DEBUG(logging, "midML=" << midML);
-    line plFM = lFM.make_perp(midFM);
+    line2 plFM = lFM.make_perp(midFM);
     // std::cerr << "*** devel *** perp(FM):\n";
     // plFM.print(std::cerr);
-    line plML = lML.make_perp(midML);
+    line2 plML = lML.make_perp(midML);
     // std::cerr << "*** devel *** perp(ML):\n";
     // plML.print(std::cerr);
     DT_THROW_IF(!plFM.unique_intersection(plML, intersectionFML),
@@ -159,6 +173,18 @@ namespace lttc {
     DT_LOG_DEBUG(logging, "intersectionFML=" << intersectionFML);
     DT_LOG_DEBUG(logging, "Rest=" << Rest);
     return circle(intersectionFML, Rest);
+  }
+
+  // static
+  bool circle::build_circle(const point2 & p1_, const point2 & p2_, const point2 & p3_, circle & c_)
+  {
+    c_.invalidate();
+    try {
+      circle c = make_circle(p1_, p2_, p3_);
+      c_ = c;
+    } catch (std::exception &) {
+    }
+    return c_.is_valid();
   }
 
 } // namespace lttc 

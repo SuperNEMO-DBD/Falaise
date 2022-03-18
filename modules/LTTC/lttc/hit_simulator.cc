@@ -47,6 +47,9 @@ namespace lttc {
             continue;
           }
         }
+        if (iside == 0) {
+          continue;
+        }
         DT_LOG_DEBUG(cfg.logging, "Add a new hit @(" << ilayer << ',' << irow << ")");
         hits_.add_hit(h);
       }
@@ -54,30 +57,40 @@ namespace lttc {
   }
   
   void hit_simulator::generate_hits(std::default_random_engine & generator_,
-                                    const track & trk_,
+                                    const track3 & trk_,
                                     tracker_hit_collection & hits_) const
   {
     int lastId = hits_.max_hit_id();
-    for (const auto & p : trk_.pl) {
+    // XXX
+    polyline3 pl3;
+    trk_.make(pl3);
+    DT_LOG_DEBUG(cfg.logging, "pl3.size=" << pl3.size());
+    for (int ip = 0; ip <(int) pl3.size(); ip++) {
+      const point3 & p = pl3[ip];
+      const point2 & p2 = trk_.pl[ip];
       int iside;
       int ilayer;
       int irow;
-      if (sntracker->locate(p, iside, ilayer, irow)) {
+      if (sntracker->locate(p2, iside, ilayer, irow)) {
         DT_LOG_DEBUG(cfg.logging, "ilayer=" << ilayer);
         DT_LOG_DEBUG(cfg.logging, "irow=" << irow);
-        point cellCenter = sntracker->cell_position(iside, ilayer, irow);
+        point2 cellCenter = sntracker->cell_position(iside, ilayer, irow);
         DT_LOG_DEBUG(cfg.logging, "cellCenter=" << cellCenter);
-        double dist = (p - cellCenter).mag();
+        double dist = (p2 - cellCenter).mag();
         DT_LOG_DEBUG(cfg.logging, "dist=" << dist);
         if (dist >= sntracker->rcell) {
           continue;
         }
+        if (iside == 0) {
+          continue;
+        }
         double drift_radius_err = cfg.drift_radius_err;
+        // drift_radius_err *= 1.0;
         std::normal_distribution<double> distribution(dist, drift_radius_err);
         double drift_radius = distribution(generator_);
         DT_LOG_DEBUG(cfg.logging, "drift_radius=" << drift_radius);
-        double z = 0.0;
-        double zErr = 0.0;
+        double z = p.z();
+        double zErr = cfg.z_err;
         bool delayed = false;
         int hitId = lastId + 1;
         tracker_hit h(hitId, iside, ilayer, irow, drift_radius, drift_radius_err, z, zErr, delayed);
@@ -92,7 +105,6 @@ namespace lttc {
           DT_LOG_DEBUG(cfg.logging, "==> Hit collection size is now : " << hits_.size());
           lastId = hitId;
         }
-        DT_LOG_DEBUG(cfg.logging, "==> Hit collection size is now : " << hits_.size());
       }
     }
     

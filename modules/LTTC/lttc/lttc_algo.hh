@@ -21,22 +21,35 @@
 #include <lttc/tracker_hit.hh>
 #include <lttc/legendre_transform_tools.hh>
 #include <lttc/sngeometry.hh>
-#include <lttc/line.hh>
+#include <lttc/line2.hh>
+#include <lttc/fitted_line2.hh>
+#include <lttc/track_path_tools.hh>
+#include <lttc/lttc_utils.hh>
+#include <lttc/lttc_algo_circle.hh>
 
 namespace lttc {
 
   /// \brief Legendre transform tracker clustering algorithm
   struct lttc_algo
   {
-    
-    static const size_t DEFAULT_TNBINS = 1000;
-    static const size_t DEFAULT_RNBINS = 1000;
+  public:
+    static const size_t DEFAULT_TNBINS = 1000; ///< Default number of bins in theta space
+    static const size_t DEFAULT_RNBINS = 1000; ///< Default number of bins in r space
 
+    /// \brief Clustering mode
     enum mode_type
       {
-       MODE_LINE   = 0,
-       MODE_CIRCLE = 1
+       MODE_LINE   = 0, ///< Line clustering
+       MODE_CIRCLE = 1  ///< Helix clustering
       };
+
+    /// \brief Configuration specific to circular track identification
+    struct circle_config
+    {
+      double epsilon    = 1e-5 * CLHEP::cm;
+      double min_radius = 20.0 * CLHEP::cm;
+      int max_cell_dist = 9;
+    };
     
     /// \brief Configuration
     struct config
@@ -50,13 +63,25 @@ namespace lttc {
       size_t step1_ntbins         = DEFAULT_TNBINS;
       size_t step1_nrbins         = DEFAULT_RNBINS;
       double step1_track_threshold = 2.9;    ///< Rejection threshold on minimal number of tracks in a step1 map's bin
-      double step2_max_nlines      = 6;      ///< Process only the best 6 ranked candidate clusters
+      double step2_max_nlines      = 10;     ///< Process only the best 10 ranked candidate clusters
       double step2_delta_theta     = 1.5e-3 * CLHEP::radian; ///< (unit: radian)
       double step2_delta_r         = 0.2 * CLHEP::mm; 
       double step2_gauss_threshold = 0.05;   ///< Probability threshold for the Gauss kernel
       double step2_track_threshold = 3.0;    ///< Rejection threshold on number of tracks
       double step3_nsigma          = 3.0;    ///< 
-      double step3_nsigma_outliers = 2.0;    ///< 
+      double step3_nsigma_outliers = 2.0;    ///< Distance threshold for identifying an outlier in the XY plane
+      double step3_min_pvalue      = 0.05;   ///< Minimum pvalue for the cluster (not taking into account outliers)
+      double step3_max_missing_hits = 2;     ///< Maximum number of missing hits along the cluster curve
+      double step3_nsigma_z         = 3.0;   ///< Matching distance threshold for identifying good hits in the Z-slope analysis
+      double step3_nsigma_z_outliers = 2.0;   ///< Distance threshold for identifying an outliers in the Z-slope analysis
+      // double step3_node_match_tolerance = 3.0;  ///< Tolerance to detect equal clusters
+      double step3_node_match_tolerance = 1.0 * CLHEP::mm; ///< Distance tolerance to detect equal clusters with corresponding nodes
+      // int    step3_kink_max_cell_ortho_distance = 3;  ///< Cell grid distance tolerance for candidate two-arms clusters for a kinked track
+      double step3_kink_max_cell_distance = 67.0 * CLHEP::mm;  ///< End-to-end distance tolerance for candidate two-arms clusters for a kinked track
+      double step3_kink_z_min_pvalue = 0.05;  ///< Minimum pvalue for kinked tracks matching along the z axis
+      double max_kink_xy_angle = 60.0 * CLHEP::degree;  ///< Maximum kink angle in the XY plane
+
+      circle_config circ_cfg; ///< Specific configuration for circular track reconstruction
     };
 
     lttc_algo(const tracker & sntracker_, const config & cfg_);
@@ -132,12 +157,11 @@ namespace lttc {
       size_t nt = 0;    ///< Number of theta bins
       size_t nr = 0;    ///< Number of r bins
       double dt = 0.01 * CLHEP::radian; ///< Theta step
-      double dr = 1.0 * CLHEP::mm   ;  ///< r step
-      std::vector<double> bins;        ///< (2D-)array of bins with height
-      std::vector<int>    sorted_bins; ///< Sorted bins referenced by their index in the 'bins' 2D-array 
+      double dr = 1.0 * CLHEP::mm;      ///< r step
+      std::vector<double> bins;         ///< (2D-)array of bins with height
+      std::vector<int>    sorted_bins;  ///< Sorted bins referenced by their index in the 'bins' 2D-array 
       
     }; // struct map_type
-
       
     /// \brief Cluster of bins in Legendre t-r space
     struct cluster
@@ -176,7 +200,7 @@ namespace lttc {
       double t_err  = std::numeric_limits<double>::quiet_NaN(); 
       double r_err  = std::numeric_limits<double>::quiet_NaN(); 
       std::map<int, double> bins; ///< Bins in this cluster with their height
-      line line_data; ///< Parametrization of the 'best' line
+      line2 line_data; ///< Parametrization of the 'best' line in XY-plane
     };
 
     /// Compare two clusters with respect to their 'hits per bin' ratios
@@ -282,35 +306,68 @@ namespace lttc {
       double distance = std::numeric_limits<double>::quiet_NaN(); ///< Distance to the cluster's line (XY-plane)
       double residual = std::numeric_limits<double>::quiet_NaN(); ///< Normalized residual (for heteroscedasticity check later)
       double chi2 = std::numeric_limits<double>::quiet_NaN();     ///< Pearson chi2-term
-      fitted_point node; ///< Contact spot of the hit with the line of the cluster
+      fitted_point2 node; ///< Contact spot of the hit with the line of the cluster
       friend std::ostream & operator<<(std::ostream & out_, const hit_cluster_association_data & hca_);
     };
     typedef boost::multi_array<hit_cluster_association_data, 2> hit_cluster_association_array_type;
+   
+    static const size_t MIN_NUMBER_OF_HITS_IN_CLUSTER = 3;
 
-    enum missing_cell_reason_type
+    enum cluster_quality_flags
       {
-       MCR_UNDEFINED   = 0,  ///< Undefined reason
-       MCR_NO_TRIGGER  = 1,  ///< No trigger as expected
-       MCR_DEAD_CELL   = 2,  ///< Dead cell
-       MCR_BUSY_CELL   = 3,  ///< Busy cell (dead time)
-       MCR_OTHER_TRACK = 4   ///< Cell hit by another track
+       CQ_LOW_STAT  = 0x1, ///< Cluster with low number of hit cells
+       CQ_CRIT_STAT = 0x2, ///< Cluster with less than 3 hit cells
+       CQ_SHORT_ARM = 0x4  ///< Critical 2-hits clusters but in neigbour cells
       };
-
-    /// \brief Information about a missing hit 
-    struct cluster_missing_hit_data
-    {
-      cell_id cid;
-      missing_cell_reason_type why;
-      friend std::ostream & operator<<(std::ostream & out_, const cluster_missing_hit_data & cmh_);
+    
+    static void print_hc(const hit_cluster_association_array_type & hc_,
+                         std::ostream & out_,
+                         const std::string & indent_ = "");
+    
+    /// \brief Step-3 working data
+    struct step3_data
+    { 
+      void clear();
+      void print(std::ostream & out_, const std::string & indent_ = "") const;
+      // Attributes
+      hit_cluster_association_array_type HC; ///< Hit-to-cluster association array
     };
 
-    static std::string to_string(missing_cell_reason_type why_);
-    
+    /// Step 3
+    void step3_run();
+
+    /**********************
+     * Final data product *
+     **********************/
+
+    typedef std::map<int, hit_cluster_association_data> hit_cluster_association_map_type;
+
+    enum cluster_quality_rank
+      {
+       CQR_UNDEFINED = -1,
+       CQR_GOOD = 0,
+       CQR_POOR = 1,
+       CQR_BAD  = 2
+      };
+
     /// \brief Information about cluster quality 
     struct cluster_quality_data
     {
       double get_effective_pvalue() const;
       unsigned int get_effective_number_of_missing_hits() const;
+      bool is_good() const
+      {
+        return rank == CQR_GOOD;
+      }
+      bool is_poor() const
+      {
+        return rank == CQR_POOR;
+      }
+      bool is_bad() const
+      {
+        return rank == CQR_BAD;
+      }
+      void clear();
       void print(std::ostream & out_, const std::string & indent_ = "") const;
       // Attributes:
       int    nhits   = 0;
@@ -323,106 +380,178 @@ namespace lttc {
       std::set<int> hits;
       std::set<int> outliers;
       std::vector<cluster_missing_hit_data> missing_hits;
-    };
-    typedef std::vector<cluster_quality_data> cluster_quality_array_type;
- 
-    static void print_hc(const hit_cluster_association_array_type & hc_,
-                         std::ostream & out_,
-                         const std::string & indent_ = "");
-
-    static void print_cq(const cluster_quality_array_type & cq_,
-                         std::ostream & out_,
-                         const std::string & indent_ = "");
-    
-    /// \brief Step-3 working data
-    struct step3_data
-    { 
-      void clear();
-      void print(std::ostream & out_, const std::string & indent_ = "") const;
-      // Attributes
-      hit_cluster_association_array_type HC; ///< Hit-to-cluster association array
-      cluster_quality_array_type         CQ; ///< Cluster quality
+      cluster_quality_rank rank = CQR_UNDEFINED;
     };
 
-    /// Step 3
-    void step3_run();
-
-    /**********************
-     * Final data product *
-     **********************/
-
-    typedef std::map<int, hit_cluster_association_data> hit_cluster_association_map_type;
-
-    struct track_path_vertex
-    {
-      int hit; ///< Hit ID
-      fitted_point node; ///< Contact point of the track with the hit cell
-    };
-
-    struct track_path_data
-    {
-      void draw(std::ostream & out_, int tag_ = 0) const; 
-      std::vector<track_path_vertex> vertexes;
-    };
-       
     /// \brief Hit cluster working data
     struct hit_cluster_data
     {
+      /// \brief Some management flags
       enum flag_type
         {
-         FLAG_DISCARDED   = datatools::bit_mask::bit00,
-         FLAG_DEGENERATED = datatools::bit_mask::bit01
+         FLAG_DISCARDED = datatools::bit_mask::bit00
         };
-
-      /// Build a candidate track path using the LT cluster geometrical information
-      /// (hit-cluster nodes)
-      void build_track_path(track_path_data & track_path_) const;
-      void add_hit(int ihit_, const lttc_algo & algo_);
-      void print(std::ostream & out_, const std::string & indent_ = "") const;
-      // Attributes:
-      int           id      = -1;
-      int           side    = -1;
-      bool          delayed = false;
-      uint32_t      flags   = 0;
-      std::set<int> hits; ///< Hits addressed through their hit index
-      cluster_quality_data quality;
-      hit_cluster_association_map_type hit_associations;
-      int           end_hit_1 = -1;
-      int           end_hit_2 = -1;
-      fitted_line   line_data;
-      std::set<int> twins; ///< Set of other clusters with the same liste of hits but different line params (degenerated)
-      std::vector<int> track_ordered_hits; ///< Array of hit indexes ordered along the track from the end hit #1 to end hit #2
       
+      /// \brief This cluster is flagged as discarded because it is redundant or of bad quality
+      bool is_discarded() const;
+      /// \brief Check if the cluster has twin clusters which share exactly the same list of hits
+      bool has_twins() const;
+      /// \brief Check if the cluster is absolutely distinct from another cluster (no common hit)
+      bool is_distinct_of(int icluster_) const;
+      void print(std::ostream & out_, const std::string & indent_ = "") const;
+
+      // Attributes:
+      int           step3_id = -1; ///< Cluster ID from the original map
+      int           id      = -1; ///< Unique cluster ID
+      uint32_t      flags   = 0; ///< Special flags
+      std::set<int> excluded_hits; ///< List of excluded/trimmed hits (by index) 
+      
+      int           side    = -1; ///< Tracker side 0/1
+      bool          delayed = false; ///< Delayed cluster flag
+      std::set<int> hits; ///< Hits addressed through their hit index
+      cluster_quality_data quality; ///< Quality data
+      hit_cluster_association_map_type hit_associations; ///< Hit association data
+      std::set<int> twins; ///< Set of other clusters with the same list of hits but typically different line parameters (degenerated)
+      std::set<int> superset_of; ///< Set of other clusters of which the list of hits is included in this cluster
+      std::set<int> subset_of; ///< Set of other clusters of which the list of hits includes this cluster
+      std::set<int> overlap_with; ///< Set of other clusters this cluster overlaps with
+      std::vector<int> track_ordered_hits; ///< Array of hit indexes ordered along the track from the end hit #0 (first) to end hit #1 (last)
+      int           end_hit_0 = -1; ///< First hit along the curve
+      int           end_hit_1 = -1; ///< Last hit along the curve
+      track_path_data track_path;
+      fitted_line2   line_data; ///< Fitted line data
+    };
+    
+    void cluster_add_hit(const int ihit_, hit_cluster_data & hc_);
+
+    void compute_cluster_hits(hit_cluster_data & hc_);
+
+    void compute_cluster_quality_fit(hit_cluster_data & hc_);
+
+    void compute_cluster_quality_missing_hits(hit_cluster_data & hc_);
+
+    void compute_cluster_quality_rank(hit_cluster_data & hc_);
+
+    void compute_cluster_ordered_hits(hit_cluster_data & hc_);
+
+    /// Build a candidate track path using the LT cluster's geometrical information
+    /// (hit-cluster nodes, in XY plane)
+    void compute_cluster_track_path(hit_cluster_data & hc_);
+
+    // void compute_cluster_quality(const int icluster_);
+
+    // void compute_cluster_association(const int icluster_,
+    //                                  hit_cluster_data & hc_);
+  
+    // \brief Kinked track identified from two connected clusters
+    struct kinked_track_data
+    {
+      enum from_type
+        {
+         FROM_NONE  = -1, ///< Not located kink with ecpedt to the track
+         FROM_FIRST =  0, ///< Kink is on the first end side of the track
+         FROM_LAST  =  1  ///< Kink is on the last end side of the track
+        };
+      void print(std::ostream & out_, const std::string & indent_ = "") const;
+      void draw(std::ostream & out_, int tag_ = 0) const;
+      // Attributes:
+      int       id = -1; ///< Unique ID
+      int       first_cluster  = -1; ///< Index of the first cluster
+      int       second_cluster = -1; ///< Index of the second cluster
+      from_type first_cluster_from  = FROM_NONE;
+      from_type second_cluster_from = FROM_NONE;
+      point2    kink; ///< 2D-location of the kink (intercept)
+      cell_id   kink_cell_id; ///< Cell ID where the kink is located (optional)
+      point2    first_cluster_vertex; ///< 2D-location of the first cluster's end
+      point2    second_cluster_vertex; ///< 2D-location of the second cluster's end
+      double    z_first = datatools::invalid_real(); ///< Z-coordinate of the first cluster's end
+      double    z_first_err = datatools::invalid_real(); ///< Error on Z-coordinate of the first cluster's end
+      double    z_second = datatools::invalid_real(); ///< Z-coordinate of the second cluster's end
+      double    z_second_err = datatools::invalid_real(); ///< Error on Z-coordinate of the second cluster's end
+      double    z = datatools::invalid_real(); ///< Z-coordinate of the kink
+      double    z_err = datatools::invalid_real(); ///< Error on the Z-coordinate of the kink
+      double    z_pvalue = datatools::invalid_real(); ///< P-value
     };
     
     /// \brief Hit clustering working data
     struct hit_clustering_data
     {
-      enum cluster_quality_flags
-        {
-         CQ_LOW_STAT  = 0x1,
-         CQ_CRIT_STAT = 0x2      
-        };
       void print(std::ostream & out_, const std::string & indent_ = "") const;
       void draw(std::ostream & out_, const lttc_algo & algo_) const;
       void clear();
+      bool is_unclustered_hit(int ihit_) const;
       // Attributes:
       std::vector<hit_cluster_data> clusters; ///< Array of clusters
       std::set<int> degenerated_clusters;     ///< List of degenerated clusters
-      std::set<int> unclustered_hits;         ///< List of unclustered hit by index     
+      std::vector<kinked_track_data> kinked_tracks; ///< Array of candidate kinked tracks
+      std::map<int, std::set<int>> hit_clustering_map; ///< Set of clusters associated to each hit
+      std::set<int> unclustered_hits;         ///< List of unclustered hit by index
     };
+
+    // The following methods are called in this order from the below 'create_hit_clustering' method:
+ 
+    void clusters_build_ordered_hits();
+ 
+    void clusters_detect_relationships();
+ 
+    void clusters_detect_twins();
+
+    void clusters_detect_curve_degenerated();
+
+    void clusters_detect_contained();
+
+    void clusters_detect_overlapping();
+
+    void clusters_build_track_paths();
+
+    void clusters_build_ranks();
+
+    // Compute a list of clusters that have some spurious end hits that lie
+    // too far in the XY plane or along the Z axis
+    // with respect to the other hits positions:
+    //
+    // Example in the horizontal XY plane (Legendre transform fit in the horizontal XY-plane) :
+    //
+    //  Y
+    // ^ 
+    // : o <-- this one is too far  
+    // :       from these ones
+    // :             |
+    // :       o     v        o
+    // :        O O          O 0
+    // :           o O     O o
+    // :               o O 
+    // :               
+    // +----------------------------> X
+    //
+    // Example in the vertical SZ plane (curvilinar coordinate vs vertical linear fit) :
+    //
+    //   Z
+    // ^ 
+    // : o <-- this one is too far  
+    // :       from these ones
+    // :             |
+    // :             v  
+    // :        o O
+    // :           o O
+    // :             O o 
+    // :               O o
+    // +-----------------------> S
+    //
+    std::set<int> clusters_find_n_far_one();
+
+    void clusters_search_short_arms();
+
+    void clusters_search_kinked();
+ 
+    void clusters_trim();
     
-    void compute_cluster_missing_hits(hit_cluster_data & hit_cluster_);
-
-    void detect_degenerated_clusters();
-
-    void build_cluster_ordered_hits();
-    
-    void update_hit_clustering();
-
-    void enrich_clusters();
+    void create_hit_clustering();
 
     void associate_unclustered_hits();
+
+    // Not used
+    void enrich_clusters();
 
     struct loop_data
     {
@@ -462,8 +591,8 @@ namespace lttc {
   private:
     
     void _clear_processing_data_();
-
-    void _set_input_data_(const input_data & indata_);
+   
+    void _prepare_working_data_();
     
     void _build_output_data_();
 
@@ -475,14 +604,18 @@ namespace lttc {
 
     // Work:
     const input_data *  indata = nullptr;  ///< Current input data
-    std::map<cell_id, int> hit_cells;      ///< Map of hit cells
-    std::vector<int>    removed_hits;      ///< Status of the hits (-1 : to be processed, >= 0 : already processed and clusterized)
     output_data      *  outdata = nullptr; ///< Current output data
-    
+
+    // Working data:
+    lttc_algo_circle lac; ///< Specific algorithm for circular tracks
+    std::map<cell_id, int> hit_cells;      ///< Map of hit cells
+    // UNUSED : 
+    std::vector<int>    removed_hits;      ///< Status of the hits (-1 : to be processed, >= 0 : already processed and clusterized)    
     size_t               loop_counter = 0;
     loop_data *          current_loop = nullptr;
     std::list<loop_data> loops;
-    
+    std::map<int,std::set<int>> clusters_to_be_removed_hits; ///< Hits to be removed from clusters
+
   }; // struct lttc_algo
 
 } // namespace lttc 

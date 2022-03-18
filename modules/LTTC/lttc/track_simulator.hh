@@ -30,6 +30,11 @@ namespace lttc {
       track_shape_type track_shape = TRACK_SHAPE_LINE;
       bool kinked_trajectory = false;
       double kinked_prob = 1.0;
+      unsigned long zseed = 1;
+      double z0_min = -500.0 * CLHEP::mm;
+      double z0_max = +500.0 * CLHEP::mm;
+      double alpha_min = -50 * CLHEP::degree;
+      double alpha_max = +50 * CLHEP::degree;
       // int side = 1.0;
     };
     
@@ -37,8 +42,10 @@ namespace lttc {
     
     ~track_simulator() = default;
 
-    void shoot(std::default_random_engine & generator_, track & trk_);
+    void shoot(std::default_random_engine & generator_, track2 & trk_);
 
+    void shoot3(std::default_random_engine & generator_, const track2 & trk2_, track3 & trk3_);
+    
   private:
     
     const tracker * _sntracker_ = nullptr;

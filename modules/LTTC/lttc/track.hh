@@ -3,14 +3,20 @@
 
 // Standard library:
 #include <vector>
+#include <set>
 #include <iostream>
+
+// Third party:
+// - Bayeux/datatools :
+#include <datatools/utils.h>
 
 // This project:
 #include <lttc/point.hh>
 
 namespace lttc {
-  
-  struct track
+
+  /// \brief Track in XY-plane
+  struct track2
   {
     enum flags_type
       {
@@ -19,20 +25,46 @@ namespace lttc {
        KINK   = 0x4
       };
     
-    track() = default;
-    
-    track(int id_, const polyline & pl_, const uint32_t flags_ = 0);
-
+    track2() = default;
+ 
     void draw(std::ostream & out_) const;
-    
-    int      id = -1;
-    uint32_t flags = 0;
-    polyline pl;
-    point    kink;
+ 
+    void print(std::ostream & out_, const std::string & indent_ = "", bool inherit_ = false) const;
+   
+    int       id = -1;
+    uint32_t  flags = 0;
+    polyline2 pl;
+    std::set<int> cuts;
+    double    s_start = datatools::invalid_real();
+    double    s_stop = datatools::invalid_real();
+    point2    kink{datatools::invalid_real(), datatools::invalid_real()};
+    double    s_kink = datatools::invalid_real();
    
   };
 
-  typedef std::vector<track> track_collection;
+  typedef track2 track;
+  typedef std::vector<track2> track2_collection;
+
+  /// \brief Track in 3D
+  struct track3
+    : public track2
+  {
+    track3() = default;
+
+    static void make_from_xy_track(const track2 & trk_, track3 & trk3_,
+                                   double zstart_, double alpha_);
+
+    void draw(std::ostream & out_) const;
+
+    void make(polyline3 & p3_) const;
+
+    void print(std::ostream & out_, const std::string & indent_ = "", bool inherit_ = false) const;
+    
+    // Atributes:
+    std::vector<double> z;
+    double z_kink = datatools::invalid_real();
+    
+  };
   
 } // namespace lttc 
 
