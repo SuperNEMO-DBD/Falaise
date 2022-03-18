@@ -20,16 +20,18 @@ configure_file(lttc/lttc_config.hh.in ${PROJECT_BINARY_DIR}/lttc/lttc_config.hh 
 # - Headers:
 list(APPEND FalaiseLttcPlugin_HEADERS
   ${PROJECT_BINARY_DIR}/lttc/lttc_config.hh
-  lttc/i_curve.hh
+  lttc/i_curve2.hh
   lttc/point.hh
-  lttc/triplet.hh
-  lttc/line.hh
-  lttc/segment.hh
+  lttc/fitted_point2.hh
+  lttc/triplet2.hh
+  lttc/line2.hh
+  lttc/fitted_line2.hh
+  lttc/segment2.hh
   lttc/rectangle.hh
   lttc/circle.hh
-  lttc/translated_curve.hh
-  lttc/rotated_curve.hh
-  lttc/kinked_curve.cc
+  lttc/translated_curve2.hh
+  lttc/rotated_curve2.hh
+  lttc/kinked_curve2.cc
   lttc/sngeometry.hh
   lttc/tracker_hit.hh
   lttc/track.hh
@@ -37,7 +39,14 @@ list(APPEND FalaiseLttcPlugin_HEADERS
   lttc/hit_simulator.hh
   lttc/legendre_transform_tools.hh
   lttc/dbscan_clusterizer.hh
+  lttc/track_path_tools.hh
+  lttc/lttc_utils.hh
+  lttc/missing_hits_finder.hh
+  lttc/tangent_circle_3x1.hh
+  # lttc/value_with_error.hh
+  lttc/uhistogram.hh
   lttc/lttc_algo.hh
+  lttc/lttc_algo_circle.hh
   # lttc/lttc_driver.hh
   # lttc/lttc_tracker_clustering_module.hh
 )
@@ -45,14 +54,16 @@ list(APPEND FalaiseLttcPlugin_HEADERS
 # - Sources:
 list(APPEND FalaiseLttcPlugin_SOURCES
   lttc/point.cc
-  lttc/triplet.cc
-  lttc/line.cc
-  lttc/segment.cc
+  lttc/fitted_point2.cc
+  lttc/triplet2.cc
+  lttc/line2.cc
+  lttc/fitted_line2.cc
+  lttc/segment2.cc
   lttc/rectangle.cc
   lttc/circle.cc
-  lttc/translated_curve.cc
-  lttc/rotated_curve.cc
-  lttc/kinked_curve.cc
+  lttc/translated_curve2.cc
+  lttc/rotated_curve2.cc
+  lttc/kinked_curve2.cc
   lttc/sngeometry.cc
   lttc/tracker_hit.cc
   lttc/track.cc
@@ -60,7 +71,14 @@ list(APPEND FalaiseLttcPlugin_SOURCES
   lttc/hit_simulator.cc
   lttc/legendre_transform_tools.cc
   lttc/dbscan_clusterizer.cc
+  lttc/track_path_tools.cc
+  lttc/lttc_utils.cc
+  lttc/missing_hits_finder.cc
+  lttc/tangent_circle_3x1.cc
+  # lttc/value_with_error.cc
+  lttc/uhistogram.cc
   lttc/lttc_algo.cc
+  lttc/lttc_algo_circle.cc
   # lttc/lttc_driver.cc
   # lttc/lttc_tracker_clustering_module.cc
   )
