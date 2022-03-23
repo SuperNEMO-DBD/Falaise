@@ -4,6 +4,8 @@ add_subdirectory(flsimulate)
 add_subdirectory(flreconstruct)
 add_subdirectory(fltags)
 
+add_subdirectory(brio_file_dumper)
+
 # - To allow modules to be developed independently, point
 # them to the current Bayeux/Falaise
 # To be replaced with the "Falaise::Falaise + overidden find_package" trick
