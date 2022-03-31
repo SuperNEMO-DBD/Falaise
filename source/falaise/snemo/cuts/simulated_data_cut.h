@@ -75,10 +75,10 @@ class simulated_data_cut : public cuts::i_cut {
   /// Initilization
   virtual void initialize(const datatools::properties& dps,
                           datatools::service_manager& services,
-                          cuts::cut_handle_dict_type& cuts);
+                          cuts::cut_handle_dict_type& cuts) override;
 
   /// Reset
-  virtual void reset();
+  virtual void reset() override;
 
   /// Set the SD bank key
   void setSDTag(const std::string& tag);
@@ -112,7 +112,7 @@ class simulated_data_cut : public cuts::i_cut {
   void _set_defaults();
 
   /// Selection
-  virtual int _accept();
+  virtual int _accept() override;
 
  private:
   std::string SDTag_;  //!< Name of the "Simulated data" bank

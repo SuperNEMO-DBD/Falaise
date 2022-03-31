@@ -1,62 +1,472 @@
-pmt_5inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper : OpticalModule : 
-pmt_8inch_main_wall_glass_bulk : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper : OpticalModule : 
-pmt_main_wall_glass_bulk : Vertex generation from the bulk volume of all source pads : OpticalModule : 
-anode_wire_bulk : Vertex generation from the bulk volume of all anode wires : Tracker : 
-anode_wire_surface : Vertex generation from the surface of all anode wires : Tracker : 
-field_wire_bulk : Vertex generation from the bulk volume of all field wires : Tracker : 
-field_wire_surface : Vertex generation from the surface of all field wires : Tracker : 
-feedthrough_pins_bulk_all_spots : Vertex generation from the bulk volume of all tracker feedthrough pins : Tracker : 
-feedthrough_pins_bulk_side_0_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top : Tracker0 : 
-feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker0 : 
-feedthrough_pins_bulk_side_1_top : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top : Tracker1 : 
-feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker1 :
-pmt_gveto_glass_bulk : Vertex generation from the bulk volume of the GVETO PMT glass : OpticalModule : 
-pmt_gveto_glass_bulk_it_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom : OpticalModule :
-pmt_gveto_glass_bulk_it_top : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, top : OpticalModule :
-pmt_gveto_glass_bulk_fr_bottom : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, bottom : OpticalModule :
-pmt_gveto_glass_bulk_fr_top : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, top : OpticalModule :
-pmt_xcalo_glass_bulk : Vertex generation from the bulk volume of the XCALO PMT glass : OpticalModule :
-pmt_xcalo_glass_bulk_it_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, mountain : OpticalModule :
-pmt_xcalo_glass_bulk_it_tunnel : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, tunnel : OpticalModule :
-pmt_xcalo_glass_bulk_fr_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, mountain : OpticalModule :
-pmt_xcalo_glass_bulk_fr_tunnel : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, tunnel : OpticalModule :
-pmt_xcalo_gveto_glass_bulk : Vertex generation from the bulk volume of all XCALO/GVETO PMT glass : OpticalModule : 
-pmt_glass_bulk : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator : OpticalModule :
-calo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks : OpticalModule : 
-xcalo_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks : OpticalModule : 
-gveto_wrapper_bulk : Vertex generation from the bulk volume of the wrapper of all gamma veto scintillator blocks : OpticalModule : 
-calo_wrapper_surface : Vertex generation from the surface of the wrapper of all main calorimeter scintillator blocks : OpticalModule : 
-xcalo_wrapper_surface : Vertex generation from the surface of the wrapper of all X-wall calorimeter scintillator blocks : OpticalModule : 
-gveto_wrapper_surface : Vertex generation from the surface of the wrapper of all gamma veto scintillator blocks : OpticalModule : 
-calo_8inch_front_scin_bulk : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
-calo_8inch_back_scin_bulk : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
-calo_8inch_scin_bulk : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 
-calo_5inch_front_scin_bulk : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
-calo_5inch_back_scin_bulk : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
-calo_5inch_scin_bulk : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule : 
-experimental_hall_surface : Vertex generation from all internal surfaces of the experimental hall : Hall : 
-experimental_hall_roof : Vertex generation from the top surface (roof) of the experimental hall : Hall : 
-experimental_hall_bulk : Vertex generation from the bulk volume (air) of the experimental hall : Hall : 
-experimental_hall_ground_bulk : Vertex generation from the bulk volume of the experimental hall's ground : Hall : 
-experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
-source_pads_internal_bulk : Vertex generation from the bulk volume of all inner source pads : Source : 
-source_pads_external_bulk : Vertex generation from the bulk volume of all outer source pads : Source : 
-source_pads_bulk : Vertex generation from the bulk volume of all source pads : Source : 
-source_pads_internal_surface : Vertex generation from the surface of all inner source pads : Source : 
-source_pads_external_surface : Vertex generation from the surface of all outer source pads : Source : 
-source_pads_surface : Vertex generation from the surface of all source pads : Source : 
-shielding_bottom_bulk : Vertex generation from the bulk volume of the bottom shielding wall : Shielding : 
-shielding_top_bulk : Vertex generation from the bulk volume of the top shielding wall : Shielding : 
-shielding_left_right_bulk : Vertex generation from the bulk volume of the left/right shielding walls : Shielding : 
-shielding_back_front_bulk : Vertex generation from the bulk volume of the back/front shielding walls : Shielding : 
-shielding_all_bulk : Vertex generation from the bulk volume of all shielding walls : Shielding : 
-shielding_bottom_internal_surface : Vertex generation from the internal surface of the bottom shielding wall : Shielding : 
-shielding_top_internal_surface : Vertex generation from the internal surface of the top shielding wall : Shielding : 
-shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : Shielding : 
-shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : Shielding : 
-shielding_all_internal_surfaces : Vertex generation from internal surfaces of the all shielding  walls : Shielding : 
-source_calibration_all_spots : Vertex generation from the bulk volume of all source calibration spots : Calibration : 
-source_calibration_single_spot : Vertex generation from the bulk volume of all source calibration spots : Calibration : if_source_calibration_single_spot
-commissioning_all_spots : Vertex generation from from a commissioning spot : HalfCommissioning : 
-commissioning_single_spot : Vertex generation from from a commissioning spot : HalfCommissioning : if_half_commissioning_single_spot
-free_spot : Vertex generation from an arbitrary spot in the geometry :  : if_free_spot
+# List of supported values for the vertex generator variant paramater and associated directives
+
+pmt_5inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper                                       : OpticalModule :  : rank=second
+pmt_8inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper                                        : OpticalModule :  : rank=second
+pmt_main_wall_glass_bulk         : Vertex generation from the bulk volume of all source pads                                                         : OpticalModule : 
+pmt_glass_bulk                   : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator                             : OpticalModule : 
+pmt_gveto_glass_bulk             : Vertex generation from the bulk volume of the GVETO PMT glass                                                     : OpticalModule : 
+pmt_gveto_glass_bulk_it_bottom   : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom                           : OpticalModule :  : rank=second
+pmt_gveto_glass_bulk_it_top      : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, top                              : OpticalModule :  : rank=second
+pmt_gveto_glass_bulk_fr_bottom   : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, bottom                            : OpticalModule :  : rank=second
+pmt_gveto_glass_bulk_fr_top      : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, top                               : OpticalModule :  : rank=second
+pmt_xcalo_glass_bulk             : Vertex generation from the bulk volume of the XCALO PMT glass                                                     : OpticalModule : 
+pmt_xcalo_glass_bulk_it_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, mountain                         : OpticalModule :   : rank=second
+pmt_xcalo_glass_bulk_it_tunnel   : Vertex generation from the bulk volume of the XCALO PMT glass on Italian side 0, tunnel                           : OpticalModule :   : rank=second
+pmt_xcalo_glass_bulk_fr_mountain : Vertex generation from the bulk volume of the XCALO PMT glass on French side 1, mountain                          : OpticalModule :   : rank=second
+pmt_xcalo_glass_bulk_fr_tunnel   : Vertex generation from the bulk volume of the GVETO PMT glass on French side 1, tunnel                            : OpticalModule :   : rank=second
+pmt_xcalo_gveto_glass_bulk       : Vertex generation from the bulk volume of all XCALO/GVETO PMT glass                                               : OpticalModule : 
+calo_wrapper_bulk                : Vertex generation from the bulk volume of the wrapper of all main calorimeter scintillator blocks                 : OpticalModule : 
+xcalo_wrapper_bulk               : Vertex generation from the bulk volume of the wrapper of all X-wall calorimeter scintillator blocks               : OpticalModule : 
+gveto_wrapper_bulk               : Vertex generation from the bulk volume of the wrapper of all gamma veto scintillator blocks                       : OpticalModule : 
+calo_wrapper_surface             : Vertex generation from the surface of the wrapper of all main calorimeter scintillator blocks                     : OpticalModule : 
+xcalo_wrapper_surface            : Vertex generation from the surface of the wrapper of all X-wall calorimeter scintillator blocks                   : OpticalModule : 
+gveto_wrapper_surface            : Vertex generation from the surface of the wrapper of all gamma veto scintillator blocks                           : OpticalModule : 
+calo_8inch_front_scin_bulk       : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule :  : rank=second
+calo_8inch_back_scin_bulk        : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 8'' PMT  : OpticalModule :  : rank=second
+calo_8inch_scin_bulk             : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 8'' PMT                   : OpticalModule :  : rank=second
+calo_5inch_front_scin_bulk       : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 5'' PMT : OpticalModule :  : rank=second
+calo_5inch_back_scin_bulk        : Vertex generation from the bulk volume of the back part of all main calorimeter scintillator blocks with 5'' PMT  : OpticalModule :  : rank=second
+calo_5inch_scin_bulk             : Vertex generation from the bulk volume of all main calorimeter scintillator blocks with 5'' PMT                   : OpticalModule :  : rank=second
+
+anode_wire_bulk                     : Vertex generation from the bulk volume of all anode wires                                : Tracker : 
+anode_wire_surface                  : Vertex generation from the surface of all anode wires                                    : Tracker : : rank=second 
+field_wire_bulk                     : Vertex generation from the bulk volume of all field wires                                : Tracker : 
+field_wire_surface                  : Vertex generation from the surface of all field wires                                    : Tracker : 
+feedthrough_pins_bulk_all_spots     : Vertex generation from the bulk volume of all tracker feedthrough pins                   : Tracker : : rank=second
+
+feedthrough_pins_bulk_side_0_top    : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, top    : Tracker0 :  : rank=second
+feedthrough_pins_bulk_side_0_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 0, bottom : Tracker0 :  : rank=second
+feedthrough_pins_bulk_side_1_top    : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, top    : Tracker1 :  : rank=second
+feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of the tracker feedthrough pins on side 1, bottom : Tracker1 :  : rank=second
+
+experimental_hall_surface      : Vertex generation from all internal surfaces of the experimental hall            : Hall : 
+experimental_hall_roof         : Vertex generation from the top surface (roof) of the experimental hall           : Hall :   : rank=second
+experimental_hall_bulk         : Vertex generation from the bulk volume (air) of the experimental hall            : Hall :   : rank=second
+experimental_hall_ground_bulk  : Vertex generation from the bulk volume of the experimental hall's ground         : Hall :   : rank=second
+experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall :   : rank=second
+
+source_pads_internal_bulk             : Vertex generation from the bulk volume of all inner source pads          : SourceFoilBasic :   : rank=second
+source_pads_external_bulk             : Vertex generation from the bulk volume of all outer source pads          : SourceFoilBasic :   : rank=second
+source_pads_bulk                      : Vertex generation from the bulk volume of all source pads                : SourceFoilBasic : 
+source_pads_internal_surface          : Vertex generation from the surface of all inner source pads              : SourceFoilBasic :   : rank=second
+source_pads_external_surface          : Vertex generation from the surface of all outer source pads              : SourceFoilBasic :   : rank=second
+source_pads_surface                   : Vertex generation from the surface of all source pads                    : SourceFoilBasic :
+
+shielding_bottom_bulk                 : Vertex generation from the bulk volume of the bottom shielding wall            : Shielding :   : rank=second
+shielding_top_bulk                    : Vertex generation from the bulk volume of the top shielding wall               : Shielding :   : rank=second
+shielding_left_right_bulk             : Vertex generation from the bulk volume of the left/right shielding walls       : Shielding :   : rank=second
+shielding_back_front_bulk             : Vertex generation from the bulk volume of the back/front shielding walls       : Shielding :   : rank=second
+shielding_all_bulk                    : Vertex generation from the bulk volume of all shielding walls                  : Shielding : 
+shielding_bottom_internal_surface     : Vertex generation from the internal surface of the bottom shielding wall       : Shielding :   : rank=second
+shielding_top_internal_surface        : Vertex generation from the internal surface of the top shielding wall          : Shielding :   : rank=second
+shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : Shielding :   : rank=second
+shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : Shielding :   : rank=second
+shielding_all_internal_surfaces       : Vertex generation from internal surfaces of the all shielding  walls           : Shielding :
+
+source_calibration_all_spots          : Vertex generation from the bulk volume of all source calibration spots         : Calibration           : 
+source_calibration_single_spot        : Vertex generation from the bulk volume of all source calibration spots         : Calibration           : if_source_calibration_single_spot
+
+commissioning_all_spots               : Vertex generation from from a commissioning spot                               : HalfCommissioning     : 
+commissioning_single_spot             : Vertex generation from from a commissioning spot                               : HalfCommissioning     : if_half_commissioning_single_spot
+
+free_spot                             : Vertex generation from an arbitrary spot in the geometry                       :                       : if_free_spot
+
+real_flat_source_full_copper_mass_bulk : Vertex generation from the bulk of all Copper foils                          : SourceFoilRealisticFlat :                       : rank=second
+real_flat_source_full_foils_mass_bulk  : Vertex generation from the bulk of all source pads (for mass contamination)  : SourceFoilRealisticFlat :                       : rank=first
+real_flat_source_full_foils_se82_bulk  : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process)      : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=highlight
+real_flat_source_full_copper_surface   : Vertex generation from the surface of all Copper foils                       : SourceFoilRealisticFlat :                       : rank=second
+real_flat_source_full_foils_surface    : Vertex generation from the surface of all source pads                        : SourceFoilRealisticFlat :                       : rank=first
+real_flat_source_strip_0_surface  : Vertex generation from the surface of source strip 0      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_1_surface  : Vertex generation from the surface of source strip 1      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_2_surface  : Vertex generation from the surface of source strip 2      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_3_surface  : Vertex generation from the surface of source strip 3      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_4_surface  : Vertex generation from the surface of source strip 4      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_5_surface  : Vertex generation from the surface of source strip 5      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_6_surface  : Vertex generation from the surface of source strip 6      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_7_surface  : Vertex generation from the surface of source strip 7      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_8_surface  : Vertex generation from the surface of source strip 8      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_9_surface  : Vertex generation from the surface of source strip 9      : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_10_surface : Vertex generation from the surface of source strip 10     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_11_surface : Vertex generation from the surface of source strip 11     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_12_surface : Vertex generation from the surface of source strip 12     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_13_surface : Vertex generation from the surface of source strip 13     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_14_surface : Vertex generation from the surface of source strip 14     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_15_surface : Vertex generation from the surface of source strip 15     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_16_surface : Vertex generation from the surface of source strip 16     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_17_surface : Vertex generation from the surface of source strip 17     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_18_surface : Vertex generation from the surface of source strip 18     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_19_surface : Vertex generation from the surface of source strip 19     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_20_surface : Vertex generation from the surface of source strip 20     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_21_surface : Vertex generation from the surface of source strip 21     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_22_surface : Vertex generation from the surface of source strip 22     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_23_surface : Vertex generation from the surface of source strip 23     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_24_surface : Vertex generation from the surface of source strip 24     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_25_surface : Vertex generation from the surface of source strip 25     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_26_surface : Vertex generation from the surface of source strip 26     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_27_surface : Vertex generation from the surface of source strip 27     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_28_surface : Vertex generation from the surface of source strip 28     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_29_surface : Vertex generation from the surface of source strip 29     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_30_surface : Vertex generation from the surface of source strip 30     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_31_surface : Vertex generation from the surface of source strip 31     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_32_surface : Vertex generation from the surface of source strip 32     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_33_surface : Vertex generation from the surface of source strip 33     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_34_surface : Vertex generation from the surface of source strip 34     : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_35_surface : Vertex generation from the surface of source strip 35     : SourceFoilRealisticFlat :  : rank=second
+
+real_flat_source_strip_0_bulk     : Vertex generation from the bulk volume of source strip 0  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_1_bulk     : Vertex generation from the bulk volume of source strip 1  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_2_bulk     : Vertex generation from the bulk volume of source strip 2  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_3_bulk     : Vertex generation from the bulk volume of source strip 3  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_4_bulk     : Vertex generation from the bulk volume of source strip 4  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_5_bulk     : Vertex generation from the bulk volume of source strip 5  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_6_bulk     : Vertex generation from the bulk volume of source strip 6  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_7_bulk     : Vertex generation from the bulk volume of source strip 7  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_8_bulk     : Vertex generation from the bulk volume of source strip 8  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_9_bulk     : Vertex generation from the bulk volume of source strip 9  : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_10_bulk    : Vertex generation from the bulk volume of source strip 10 : SourceFoilRealisticFlat :  : rank=second 
+real_flat_source_strip_11_bulk    : Vertex generation from the bulk volume of source strip 11 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_12_bulk    : Vertex generation from the bulk volume of source strip 12 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_13_bulk    : Vertex generation from the bulk volume of source strip 13 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_14_bulk    : Vertex generation from the bulk volume of source strip 14 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_15_bulk    : Vertex generation from the bulk volume of source strip 15 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_16_bulk    : Vertex generation from the bulk volume of source strip 16 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_17_bulk    : Vertex generation from the bulk volume of source strip 17 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_18_bulk    : Vertex generation from the bulk volume of source strip 18 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_19_bulk    : Vertex generation from the bulk volume of source strip 19 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_20_bulk    : Vertex generation from the bulk volume of source strip 20 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_21_bulk    : Vertex generation from the bulk volume of source strip 21 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_22_bulk    : Vertex generation from the bulk volume of source strip 22 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_23_bulk    : Vertex generation from the bulk volume of source strip 23 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_24_bulk    : Vertex generation from the bulk volume of source strip 24 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_25_bulk    : Vertex generation from the bulk volume of source strip 25 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_26_bulk    : Vertex generation from the bulk volume of source strip 26 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_27_bulk    : Vertex generation from the bulk volume of source strip 27 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_28_bulk    : Vertex generation from the bulk volume of source strip 28 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_29_bulk    : Vertex generation from the bulk volume of source strip 29 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_30_bulk    : Vertex generation from the bulk volume of source strip 30 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_31_bulk    : Vertex generation from the bulk volume of source strip 31 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_32_bulk    : Vertex generation from the bulk volume of source strip 32 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_33_bulk    : Vertex generation from the bulk volume of source strip 33 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_34_bulk    : Vertex generation from the bulk volume of source strip 34 : SourceFoilRealisticFlat :  : rank=second
+real_flat_source_strip_35_bulk    : Vertex generation from the bulk volume of source strip 35 : SourceFoilRealisticFlat : : rank=second
+
+real_flat_source_strip_34_se82_bulk : Vertex generation from the bulk volume of source strip 34 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_32_se82_bulk : Vertex generation from the bulk volume of source strip 32 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_33_se82_bulk : Vertex generation from the bulk volume of source strip 33 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_2_se82_bulk  : Vertex generation from the bulk volume of source strip 2 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_31_se82_bulk : Vertex generation from the bulk volume of source strip 31 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_8_se82_bulk  : Vertex generation from the bulk volume of source strip 8 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_3_se82_bulk  : Vertex generation from the bulk volume of source strip 3 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_27_se82_bulk : Vertex generation from the bulk volume of source strip 27 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_26_se82_bulk : Vertex generation from the bulk volume of source strip 26 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_25_se82_bulk : Vertex generation from the bulk volume of source strip 25 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_24_se82_bulk : Vertex generation from the bulk volume of source strip 24 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_23_se82_bulk : Vertex generation from the bulk volume of source strip 23 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_22_se82_bulk : Vertex generation from the bulk volume of source strip 22 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_21_se82_bulk : Vertex generation from the bulk volume of source strip 21 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_20_se82_bulk : Vertex generation from the bulk volume of source strip 20 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_15_se82_bulk : Vertex generation from the bulk volume of source strip 15 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_14_se82_bulk : Vertex generation from the bulk volume of source strip 14 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_9_se82_bulk  : Vertex generation from the bulk volume of source strip 9 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_19_se82_bulk : Vertex generation from the bulk volume of source strip 19 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_16_se82_bulk : Vertex generation from the bulk volume of source strip 16 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_13_se82_bulk : Vertex generation from the bulk volume of source strip 13 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_18_se82_bulk : Vertex generation from the bulk volume of source strip 18 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_11_se82_bulk : Vertex generation from the bulk volume of source strip 11 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_12_se82_bulk : Vertex generation from the bulk volume of source strip 12 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_7_se82_bulk  : Vertex generation from the bulk volume of source strip 7 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_6_se82_bulk  : Vertex generation from the bulk volume of source strip 6 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_10_se82_bulk : Vertex generation from the bulk volume of source strip 10 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_17_se82_bulk : Vertex generation from the bulk volume of source strip 17 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_1_se82_bulk  : Vertex generation from the bulk volume of source strip 1 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_4_se82_bulk  : Vertex generation from the bulk volume of source strip 4 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_5_se82_bulk  : Vertex generation from the bulk volume of source strip 5 (Se82 DBD)  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_28_se82_bulk : Vertex generation from the bulk volume of source strip 28 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_29_se82_bulk : Vertex generation from the bulk volume of source strip 29 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+real_flat_source_strip_30_se82_bulk : Vertex generation from the bulk volume of source strip 30 (Se82 DBD) : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=second
+
+real_flat_source_strip_0_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_0_pad_0_surface  : SourceFoilRealisticFlat : : rank=third
+real_flat_source_strip_34_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_34_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_32_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_32_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_33_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_33_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_2_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_2_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_31_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_31_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_8_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_8_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_3_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_3_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_27_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_27_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_26_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_26_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_25_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_25_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_24_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_24_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_23_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_23_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_22_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_22_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_21_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_21_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_20_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_20_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_15_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_15_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_14_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_14_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_9_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_9_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_19_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_19_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_16_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_16_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_13_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_13_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_18_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_18_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_11_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_11_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_12_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_12_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_7_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_7_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_6_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_6_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_5_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_5_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_4_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_4_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_3_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_3_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_2_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_2_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_1_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_1_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_7_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_7_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_7_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_7_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_6_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_6_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_5_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_5_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_4_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_4_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_3_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_3_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_2_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_2_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_1_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_1_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_6_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_6_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_29_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_29_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_10_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_10_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_17_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_17_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_7_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_7_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_6_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_6_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_5_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_5_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_4_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_4_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_3_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_3_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_2_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_2_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_1_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_1_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_30_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_30_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_7_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_7_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_6_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_6_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_5_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_5_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_4_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_4_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_3_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_3_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_2_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_2_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_1_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_1_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_1_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_1_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_7_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_7_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_6_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_6_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_5_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_5_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_4_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_4_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_3_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_3_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_2_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_2_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_1_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_1_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_4_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_4_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_7_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_7_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_6_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_6_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_5_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_5_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_4_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_4_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_3_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_3_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_2_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_2_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_1_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_1_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_5_pad_0_surface  : Vertex generation from the surface of the snemo_source_strip_5_pad_0_surface  : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_28_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_28_pad_0_surface : SourceFoilRealisticFlat : : rank=third 
+real_flat_source_strip_35_pad_0_surface : Vertex generation from the surface of the snemo_source_strip_35_pad_0_surface : SourceFoilRealisticFlat : : rank=third
+
+real_flat_source_strip_0_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_0_pad_0_bulk  : SourceFoilRealisticFlat :                       : rank=third
+real_flat_source_strip_1_pad_7_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_7_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_6_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_6_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_5_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_5_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_4_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_4_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_3_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_3_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_2_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_2_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_1_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_1_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_1_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_1_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_2_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_2_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_3_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_3_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_7_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_7_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_6_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_6_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_5_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_5_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_4_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_4_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_3_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_3_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_2_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_2_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_1_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_1_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_4_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_4_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_7_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_7_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_6_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_6_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_5_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_5_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_4_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_4_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_3_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_3_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_2_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_2_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_1_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_1_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_5_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_5_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_7_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_7_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_6_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_6_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_5_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_5_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_4_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_4_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_3_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_3_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_2_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_2_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_1_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_1_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_6_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_6_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_7_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_7_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_6_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_6_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_5_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_5_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_4_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_4_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_3_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_3_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_2_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_2_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_1_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_1_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_7_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_7_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_8_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_8_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_9_pad_0_bulk  : Vertex generation from the bulk of the snemo_source_strip_9_pad_0_bulk  : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_10_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_10_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_11_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_11_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_12_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_12_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_13_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_13_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_14_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_14_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_15_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_15_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_16_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_16_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_17_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_17_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_18_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_18_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_19_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_19_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_20_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_20_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_21_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_21_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_22_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_22_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_23_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_23_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_24_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_24_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_25_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_25_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_26_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_26_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_27_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_27_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_28_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_28_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_29_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_29_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_7_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_7_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_6_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_6_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_5_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_5_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_4_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_4_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_3_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_3_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_2_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_2_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_1_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_1_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_30_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_30_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_31_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_31_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_32_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_32_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_33_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_33_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_34_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_34_pad_0_bulk : SourceFoilRealisticFlat : if_source_of_se82_dbd : rank=third
+real_flat_source_strip_35_pad_0_bulk : Vertex generation from the bulk of the snemo_source_strip_35_pad_0_bulk : SourceFoilRealisticFlat :                       : rank=third
+
+# end

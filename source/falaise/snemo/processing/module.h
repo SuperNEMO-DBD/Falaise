@@ -10,22 +10,10 @@
 #include <bayeux/dpp/base_module.h>
 
 #include "falaise/property_set.h"
+#include "falaise/snemo/processing/types.h"
 
 namespace falaise {
 namespace processing {
-//! Enumeration for module to indicate processing success/failure/other
-using status = dpp::base_module::process_status;
-
-//! Exception thrown if configuration overwrites reserved keys
-class reserved_key_error : public std::logic_error {
-  using std::logic_error::logic_error;
-};
-
-//! Exception thrown if module fails configuration
-class configuration_error : public std::logic_error {
-  using std::logic_error::logic_error;
-};
-
 //! \brief A DPP module wrapping a simple processing algorithm
 /*!
  * Modules in Falaise's DPP pipeline are concrete classes of @ref dpp::base_module.

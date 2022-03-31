@@ -1,38 +1,23 @@
-#include "AccessThingsModule.h"
+// Interface from Falaise
+#include "falaise/snemo/processing/module.h"
 
-#include <boost/foreach.hpp>
+// #include "MyNewDataType.h"
 
-#include "bayeux/mctools/simulated_data.h"
+class AccessThingsModule {
+ public:
+  AccessThingsModule() = default;
 
-#include "MyDataType.h"
+  AccessThingsModule(falaise::property_set const& /*ps*/,
+                     datatools::service_manager& /*services*/) {}
 
-DPP_MODULE_REGISTRATION_IMPLEMENT(AccessThingsModule,"AccessThingsModule");
+  // Process event
+  falaise::processing::status process(datatools::things& event) {
+    // Add our custom type to the event
+    //MyNewDataType & atmCounter = workItem.add<MyNewDataType>("ATMCounter");
+    //atmCounter.increment()
 
-AccessThingsModule::AccessThingsModule() : dpp::base_module()
-{}
+    return falaise::processing::status::PROCESS_OK;
+  }
+};
 
-AccessThingsModule::~AccessThingsModule() {
-  this->reset();
-}
-
-void AccessThingsModule::initialize(const datatools::properties& /*myConfig*/,
-                          datatools::service_manager& /*flServices*/,
-                          dpp::module_handle_dict_type& /*moduleDict*/) {
-  this->_set_initialized(true);
-}
-
-//! [AccessThingsModule::Process]
-dpp::base_module::process_status AccessThingsModule::process(
-    datatools::things& workItem) {
-  // Add our custom type to the item
-  MyDataType & atmCounter = workItem.add<MyDataType>("ATMCounter");
-  atmCounter.increment();
-
-  return PROCESS_OK;
-
-}
-//! [AccessThingsModule::Process]
-
-void AccessThingsModule::reset() {
-  this->_set_initialized(false);
-}
+FALAISE_REGISTER_MODULE(AccessThingsModule)

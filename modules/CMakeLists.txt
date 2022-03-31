@@ -17,4 +17,4 @@ add_subdirectory(ChargedParticleTracking)
 add_subdirectory(GammaTracking)
 add_subdirectory(GammaClustering)
 add_subdirectory(things2root)
-
+add_subdirectory(SensitivityModule)

@@ -77,7 +77,9 @@ set(FALAISE_MARKDOWN_DOCS
   flreconstruct/SupportedFLReconstructModules.md
   flreconstruct/UsingMockCalibration.md
   flreconstruct/WritingFLReconstructModules.md
+  flreconstruct/WritingFLReconstructFilters.md
   flreconstruct/WorkingWithEventRecords.md
+  flreconstruct/WorkingWithDataObjects.md
   flreconstruct/UsingServices.md
   flreconstruct/DocumentingFLReconstructModules.md
   flvisualize/FLVisualize.md
