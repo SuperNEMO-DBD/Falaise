@@ -10,11 +10,12 @@
   # 2. CAT clusterization of tracker hits
   # 3. TrackFit-ting tracker cluster hits
   # 4. Reconstruct charged particle tracks
-  modules : string[4] = \
+  modules : string[5] = \
     "MockCalibration" \
     "CATTrackerClusterizer" \
     "TrackFit" \
-    "ChargedParticleTracker"
+    "ChargedParticleTracker" \
+    "GammaClusterizer"
 
 
 [name="MockCalibration" type="dpp::chain_module"]
@@ -25,6 +26,7 @@
   #@config A mock tracker calibration module
   random.seed  : integer = 12345
   store_mc_hit_id : boolean = 1
+  delayed_drift_time_threshold    : real as time = 13.0 microsecond
 
 [name="CalibrateCalorimeters" type="snemo::processing::mock_calorimeter_s2c_module"]
   #@config A mock calorimeter calibration module
@@ -32,31 +34,31 @@
   random.seed : integer = 12345
   store_mc_hit_id : boolean = 1
   hit_categories     : string[3]  = "calo" "xcalo" "gveto"
-    calo.energy.resolution      : real as fraction = 8  %
-    calo.alpha_quenching_parameters  : real[3] = 77.4 0.639 2.34
-    calo.energy.low_threshold   : real as energy =  50 keV
-    calo.energy.high_threshold  : real as energy = 150 keV
-    calo.scintillator_relaxation_time  : real as time = 6.0 ns
 
-    xcalo.energy.resolution     : real as fraction = 12 %
-    xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34
-    xcalo.energy.low_threshold  : real as energy =  50 keV
-    xcalo.energy.high_threshold : real as energy = 150 keV
-    xcalo.scintillator_relaxation_time : real as time = 6.0 ns
+  calorimeter_regime_database_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db"
 
-    gveto.energy.resolution     : real as fraction = 15 %
-    gveto.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34
-    gveto.energy.low_threshold  : real as energy =  50 keV
-    gveto.energy.high_threshold : real as energy = 150 keV
-    gveto.scintillator_relaxation_time : real as time = 6.0 ns
+  pol3d_parameters_mwall_8inch_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db"
+  pol3d_parameters_mwall_5inch_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db"
+  pol3d_parameters_xwall_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db"
+  pol3d_parameters_gveto_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db"
+
 
 [name="CATTrackerClusterizer" type="snemo::reconstruction::cat_tracker_clustering_module"]
   #@config Parameters for the Cellular Automaton Tracking algorithm (CAT)
   Geo_label  : string  = "geometry"
+  TPC.delayed_hit_cluster_time : real = 13 us
   TPC.processing_prompt_hits : boolean = 1
   TPC.processing_delayed_hits : boolean = 0
   TPC.split_chamber : boolean = 0
-  CAT.magnetic_field        : real    = 25 gauss
+
+  #@variant_if    geometry:layout/if_basic/magnetic_field/is_active|true
+    #@variant_only geometry:layout/if_basic/magnetic_field/is_active/type/is_uniform_vertical|true
+      CAT.magnetic_field : real = @variant(geometry:layout/if_basic/magnetic_field/is_active/type/is_uniform_vertical/magnitude|25 gauss)
+  #@variant_endif geometry:layout/if_basic/magnetic_field/is_active
+
+  #@variant_if    geometry:layout/if_basic/magnetic_field/is_inactive|false
+    CAT.magnetic_field : real = 0 gauss
+  #@variant_endif geometry:layout/if_basic/magnetic_field/is_inactive
 
 [name="TrackFit" type="snemo::reconstruction::trackfit_tracker_fitting_module"]
   #@config Parameters for the TrackFit algorithm
@@ -72,4 +74,7 @@
   #@config Parameters for the Charged Particle Tracking module
   Geo_label : string  = "geometry"
   drivers : string[3] = "VED" "CCD" "CAD"
+    AFD.minimal_delayed_time : real as time = 13 us
 
+[name="GammaClusterizer" type="snemo::reconstruction::gamma_clustering_module"]
+  #@config Parameters for GammaClustering
