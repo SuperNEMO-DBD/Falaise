@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 
+do_batch_basic=true
+csv_target="new_vertexes_generators.csv"
 csv_target="_test_vertexes_generators.csv"
 if [ -f ${csv_target} ]; then
     rm -f  ${csv_target}
 fi
 touch ${csv_target}
-
-do_batch_basic=true
 
 if [ ${do_batch_basic} = true ]; then
 
@@ -70,6 +70,29 @@ for rsvcf in ${real_snrs1_vg_conf_files} ; do
        >> ${csv_target}
 done
 
-exit 0
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_spots_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
 
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_0_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_1_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_2_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_3_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_4_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_5_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_all_tracks_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+exit 0
 # end

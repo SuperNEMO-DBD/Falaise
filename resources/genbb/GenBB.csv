@@ -1,87 +1,133 @@
-Ca48.0nubb   : Neutrinoless double beta decay of Ca-48, 0nubb(mn) : DBD/Ca48 : : rank=highlight 
-Ca48.2nubb   : Two neutrino double beta decay of Ca-48, 2nubb     : DBD/Ca48 : :  
-Ca48.0nubbM1 : Neutrinoless double beta decay of Ca-48, 0nubbM1   : DBD/Ca48 : :  
-Ca48.0nubbM2 : Neutrinoless double beta decay of Ca-48, 0nubbM2   : DBD/Ca48 : :  
-Ca48.2nubb_2.9MeV         : Two neutrino double beta decay of Ca-48, 2nubb (E > 2.9 MeV)                 : DBD/Ca48 : : rank=second 
+# This file contains the list of primary particles generators supported
+# by the Falaise simulation setup as implemented in the Bayeux-basesd
+# variant configuration system.
+#
+# Format:
+# * Blank lines and lines starting with '#' are ignored.
+# * CSV layout:
+#   - Column 1 : name of the primary particles generator
+#   - Column 2 : single line description of the primary particles generator
+#   - Column 3 : name of the variant group of options for setting long range deopendencies in the general variant system
+#   - Column 4 : local variant triggered by the generator if selected
+#   - Column 5 : metadata (specification of the display rank for the GUI)
+#
+# Some specific *variant groups* ("DBD/Se82", "Background", "Calibration"...)
+# are thus specified (third column) in order to define long range dependencies between
+# variant options in distinct variant registries ("geometry", "primaries") and also
+# help the layout of the GUI.
+# 
+# The fourth column contains the name of the local variant (if any) which is
+# automatically triggered by the selection of the generator.
+#
+# In some case, a specific rank (fifth column) is provided for the variant GUI.
+#
+# The list is splitted with different informal blocks of various topics (DBD, Background...).
+
+############################
+# BxDecay0 - DBD processes #
+############################
+
+### Ca48 ###
+Ca48.0nubb                : Neutrinoless double beta decay of Ca-48, 0nubb(mn)                           : DBD/Ca48 : : rank=second
 Ca48.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Ca48 : : rank=second 
 Ca48.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Ca-48, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Ca48 : : rank=second 
+Ca48.2nubb                : Two neutrino double beta decay of Ca-48, 2nubb                               : DBD/Ca48 : : rank=second
+Ca48.2nubb_2.9MeV         : Two neutrino double beta decay of Ca-48, 2nubb (E > 2.9 MeV)                 : DBD/Ca48 : : rank=second 
+Ca48.0nubbM1              : Neutrinoless double beta decay of Ca-48, 0nubbM1                             : DBD/Ca48 : : rank=second 
+Ca48.0nubbM2              : Neutrinoless double beta decay of Ca-48, 0nubbM2                             : DBD/Ca48 : : rank=second 
 
-Se82.0nubb   : Neutrinoless double beta decay of Se-82, 0nubb(mn) : DBD/Se82 :  : rank=highlight
-Se82.2nubb   : Two neutrino double beta decay of Se-82, 2nubb     : DBD/Se82 :  : rank=highlight
-Se82.0nubbM1 : Neutrinoless double beta decay of Se-82, 0nubbM1   : DBD/Se82 : 
-Se82.0nubbM2 : Neutrinoless double beta decay of Se-82, 0nubbM2   : DBD/Se82 : 
-Se82.2nubb_2MeV           : Two neutrino double beta decay of Se-82, 2nubb                               : DBD/Se82 :  : 
-Se82.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Se82 :  : 
-Se82.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Se82 :  : 
+### Se82 ###
+Se82.0nubb                : Neutrinoless double beta decay of Se-82, 0nubb(mn) : DBD/Se82 : : rank=highlight
+Se82.0nubb_rhc_lambda     : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Se82 : : rank=first  
+Se82.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Se-82, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Se82 : : rank=first  
+Se82.2nubb                : Two neutrino double beta decay of Se-82, 2nubb     : DBD/Se82 : : rank=highlight 
+Se82.0nubbM1              : Neutrinoless double beta decay of Se-82, 0nubbM1   : DBD/Se82 : : rank=highlight 
+Se82.0nubbM2              : Neutrinoless double beta decay of Se-82, 0nubbM2   : DBD/Se82 : : rank=first
+Se82.2nubb_2MeV           : Two neutrino double beta decay of Se-82, 2nubb     : DBD/Se82 : : rank=first
 
-Mo100.0nubb   : Neutrinoless double beta decay of Mo-100, 0nubb(mn) : DBD/Mo100 : : rank=second 
-Mo100.2nubb   : Two neutrino double beta decay of Mo-100, 2nubb     : DBD/Mo100 : : rank=second
-Mo100.0nubbM1 : Neutrinoless double beta decay of Mo-100, 0nubbM1   : DBD/Mo100 : : rank=second
-Mo100.0nubbM2 : Neutrinoless double beta decay of Mo-100, 0nubbM2   : DBD/Mo100 : : 
-Mo100.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Mo100 :  : rank=second 
-Mo100.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Mo100 :  : rank=second
+### Mo100 ###
+Mo100.0nubb                : Neutrinoless double beta decay of Mo-100, 0nubb(mn) : DBD/Mo100 : : rank=second 
+Mo100.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Mo100 : : rank=second 
+Mo100.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Mo100 : : rank=second 
+Mo100.2nubb                : Two neutrino double beta decay of Mo-100, 2nubb     : DBD/Mo100 : : rank=second
+Mo100.0nubbM1              : Neutrinoless double beta decay of Mo-100, 0nubbM1   : DBD/Mo100 : : rank=second
+Mo100.0nubbM2              : Neutrinoless double beta decay of Mo-100, 0nubbM2   : DBD/Mo100 : : rank=second
 
-Nd150.0nubb   : Neutrinoless double beta decay of Nd-150, 0nubb(mn) : DBD/Nd150 : : rank=highlight 
-Nd150.2nubb   : Two neutrino double beta decay of Nd-150, 2nubb     : DBD/Nd150 : : 
-Nd150.0nubbM1 : Neutrinoless double beta decay of Nd-150, 0nubbM1   : DBD/Nd150 : : 
-Nd150.0nubbM2 : Neutrinoless double beta decay of Nd-150, 0nubbM2   : DBD/Nd150 : : 
-Nd150.2nubb_2.2MeV         : Two neutrino double beta decay of Nd-150, 2nubb (E > 2.2 MeV)                 : DBD/Nd150 : 
-Nd150.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Nd150 : 
-Nd150.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Nd150 : 
+### Sn124 ###
+Sn124.0nubb   : Neutrinoless double beta decay of Sn-124, 0nubb(mn) : DBD/Sn124 : : rank=second 
+Sn124.2nubb   : Two neutrino double beta decay of Sn-124, 2nubb     : DBD/Sn124 : : rank=second 
 
-Sn124.0nubb : Neutrinoless double beta decay of Sn-124, 0nubb(mn) : DBD/Sn124 : : rank=second
-Sn124.2nubb : Two neutrino double beta decay of Sn-124, 2nubb     : DBD/Sn124 : : rank=second
+### Nd150 ###
+Nd150.0nubb                : Neutrinoless double beta decay of Nd-150, 0nubb(mn)                           : DBD/Nd150 : : rank=second
+Nd150.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Nd150 : : rank=second 
+Nd150.0nubb_rhc_lambda_0_2 : Neutrinoless double beta decay of Nd-150, 0nubb(rhc-lambda) 0+ -> 0+, 2+ {N*} : DBD/Nd150 : : rank=second
+Nd150.2nubb                : Two neutrino double beta decay of Nd-150, 2nubb                               : DBD/Nd150 : : rank=second
+Nd150.2nubb_2.2MeV         : Two neutrino double beta decay of Nd-150, 2nubb (E > 2.2 MeV)                 : DBD/Nd150 : : rank=second
+Nd150.0nubbM1              : Neutrinoless double beta decay of Nd-150, 0nubbM1                             : DBD/Nd150 : : rank=second
+Nd150.0nubbM2              : Neutrinoless double beta decay of Nd-150, 0nubbM2                             : DBD/Nd150 : : rank=second
 
-Ac228 : Ac-228 decay : Background : :
-Th234 : Th-234 decay : Background : :
-Tl207 : Tl-207 decay : Background : :
-Tl208 : Tl-208 decay : Background : : rank=highlight
-Bi214 : Bi-214 decay : Background : : rank=highlight
-Bi212 : Bi-212 decay : Background : :
-Bi210 : Bi-210 decay : Background : :
-Bi214_Po214 : Bi-214/Po-214 decay : Background : : rank=highlight 
-Bi212_Po212 : Bi-212/Po-212 decay : Background : : rank=highlight
-Pa234m      : Pa-234m decay       : Background : : rank=second
-K40   : K-40 decay   : Background : : rank=highlight
-Y90   : Y-90 decay   : Background : : rank=second
-Sr90  : Sr-90 decay  : Background : : rank=second
-Pa231 : Pa-231 decay : Background : : rank=second
+##########################
+# BxDecay0 - Backgrounds #
+##########################
+
+### Radiocontaminants ###
+Ac228 : Ac-228 decay : Background : : rank=second 
+Th234 : Th-234 decay : Background : : rank=second 
+Tl207 : Tl-207 decay : Background : : rank=second 
+Tl208 : Tl-208 decay : Background : 
+Bi214 : Bi-214 decay : Background : 
+Bi212 : Bi-212 decay : Background : : rank=second 
+Bi210 : Bi-210 decay : Background : : rank=second
+Bi214_Po214 : Bi-214/Po-214 decay : Background : 
+Bi212_Po212 : Bi-212/Po-212 decay : Background : 
+Pa234m : Pa-234m decay : Background : 
+K40   : K-40 decay   : Background : 
+Y90   : Y-90 decay   : Background : 
+Sr90  : Sr-90 decay  : Background : 
+Pa231 : Pa-231 decay : Background : : rank=second 
 Eu152 : Eu-152 decay : Background : : rank=second
-Eu154 : Eu-154 decay : Background : : rank=second
-Pb210 : Pb-210 decay : Background : : rank=second
+Eu154 : Eu-154 decay : Background : : rank=second 
+Pb210 : Pb-210 decay : Background : 
 Pb211 : Pb-211 decay : Background : : rank=second
 Pb212 : Pb-212 decay : Background : : rank=second
 Pb214 : Pb-214 decay : Background : : rank=second
 Ra226 : Ra-226 decay : Background : : rank=second
 Rh106 : Rh106 decay  : Background : : rank=second
+Cs137 : Cs-137 decay : Background : : rank=second
 
-Co60  : Co-60 decay  : Calibration : :
-Bi207 : Bi-207 decay : Calibration : : rank=highlight
-Am241 : Am-241 decay : Calibration : : rank=second
-Na22  : Na-22 decay  : Calibration : : rank=first
+### Calibration sources ###
+Bi207 : Bi-207 decay : Calibration : : rank=highlight 
+Na22  : Na-22 decay  : Calibration : : rank=second
 Mn54  : Mn-54 decay  : Calibration : : rank=second
-Cs137 : Cs-137 decay : Calibration : : rank=second
+Co60  : Co-60 decay  : Calibration : : rank=second 
+Am241 : Am-241 decay : Calibration : : rank=second
 
-electron.20keV  : Electron with monokinetic energy @ 20 keV  : Miscellaneous : : rank=second
-electron.50keV  : Electron with monokinetic energy @ 50 keV  : Miscellaneous : : rank=second
-electron.100keV : Electron with monokinetic energy @ 100 keV : Miscellaneous : : rank=second
-electron.200keV : Electron with monokinetic energy @ 200 keV : Miscellaneous : : rank=second
-electron.500keV : Electron with monokinetic energy @ 500 keV : Miscellaneous : : rank=second
-electron.1MeV   : Electron with monokinetic energy @ 1 MeV   : Miscellaneous : :
-electron.2MeV   : Electron with monokinetic energy @ 2 MeV   : Miscellaneous : : rank=second
-electron.3MeV   : Electron with monokinetic energy @ 3 MeV   : Miscellaneous : : rank=second
-electron.50-2000keV_flat : Electron with energy in the [50keV-2MeV] range : Miscellaneous : : rank=second
+##############################
+# Genbb - Special generators #
+##############################
 
-gamma.20keV   : Gamma with monokinetic energy @ 20 keV    : Miscellaneous : : rank=second
-gamma.50keV   : Gamma with monokinetic energy @ 50 keV    : Miscellaneous : : rank=second
+### Single particles ###
+electron.20keV  : Electron with monokinetic energy @ 20 keV  : Miscellaneous : : rank=second 
+electron.50keV  : Electron with monokinetic energy @ 50 keV  : Miscellaneous : : rank=second  
+electron.100keV : Electron with monokinetic energy @ 100 keV : Miscellaneous : : rank=second 
+electron.200keV : Electron with monokinetic energy @ 200 keV : Miscellaneous : : rank=second 
+electron.500keV : Electron with monokinetic energy @ 500 keV : Miscellaneous : : rank=second 
+electron.1MeV   : Electron with monokinetic energy @ 1 MeV   : Miscellaneous : : rank=first 
+electron.2MeV   : Electron with monokinetic energy @ 2 MeV   : Miscellaneous : : rank=second 
+electron.3MeV   : Electron with monokinetic energy @ 3 MeV   : Miscellaneous : : rank=second 
+electron.50-2000keV_flat : Electron with energy in the [50keV-2MeV] range : Miscellaneous : : rank=second 
+gamma.20keV   : Gamma with monokinetic energy @ 20 keV    : Miscellaneous : : rank=second 
+gamma.50keV   : Gamma with monokinetic energy @ 50 keV    : Miscellaneous : : rank=second 
 gamma.100keV  : Gamma with monokinetic energy @ 100 keV   : Miscellaneous : : rank=second 
-gamma.500keV  : Gamma with monokinetic energy @ 500 keV   : Miscellaneous : : rank=second
-gamma.1MeV    : Gamma with monokinetic energy @ 1 MeV     : Miscellaneous : : rank=second
-gamma.2MeV    : Gamma with monokinetic energy @ 2 MeV     : Miscellaneous : : rank=second
-gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous : :
+gamma.500keV  : Gamma with monokinetic energy @ 500 keV   : Miscellaneous : : rank=second 
+gamma.1MeV    : Gamma with monokinetic energy @ 1 MeV     : Miscellaneous : : rank=first 
+gamma.2MeV    : Gamma with monokinetic energy @ 2 MeV     : Miscellaneous : : rank=second 
+gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous : : 
 
-versatile_generator      : Single particle generator with monokinetic energy       : User : if_versatile      : rank=second
-flat_versatile_generator : Single particle generator with flat energy distribution : User : if_flat_versatile : rank=second
-tweakable_generator      : Broadly tweakable single particle generator             : User : if_tweakable      : rank=highlight
+### Generic generators ###
+# Note: The selection of such parametric particles generators triggers the choice of additional options
+versatile_generator      : Single particle generator with monokinetic energy       : User : if_versatile      : rank=second 
+flat_versatile_generator : Single particle generator with flat energy distribution : User : if_flat_versatile : rank=second 
+tweakable_generator      : Broadly tweakable single particle generator             : User : if_tweakable      : rank=second 
 
 # end
