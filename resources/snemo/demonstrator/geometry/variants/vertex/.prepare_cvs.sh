@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
 
-csv_target="vertexes_generators.csv"
+csv_target="new_vertexes_generators.csv"
 
-bxextract_table_of_objects -i ../../VertexModels//om_pmt_bulk_vg.conf  --group "OpticalModule" -G\
+if [ -f ${csv_target} ]; then
+    rm -f ${csv_target}
+fi
+touch ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/om_pmt_bulk_vg.conf  --group "OpticalModule" -G\
    >> ${csv_target}
 
 bxextract_table_of_objects -i ../../VertexModels/tracker_vg.conf \
@@ -51,3 +56,26 @@ bxextract_table_of_objects -i ../../VertexModels/realistic_flat_source_pads_surf
 bxextract_table_of_objects -i ../../VertexModels/realistic_flat_source_pads_bulk_vg.conf --group "SourceFoilRealisticFlat" -G \
        >> ${csv_target}
 
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_spots_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_0_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_1_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_2_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_3_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_4_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_track_5_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
+
+bxextract_table_of_objects -i ../../VertexModels/sds_bi207_calibration_source_all_tracks_vg.conf --group "CalibrationSDS" -G \
+       >> ${csv_target}
