@@ -64,7 +64,7 @@ void charge_computation_driver::process(const snemo::datamodel::tracker_trajecto
 
   int a_charge = (is_negative ? -1 : +1);
   a_charge *= magneticFieldDirection_;
-  if (chargeFromSource_) {
+  if (!chargeFromSource_) {
     a_charge *= -1;
   }
 
