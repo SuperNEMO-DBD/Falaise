@@ -180,17 +180,17 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   void set_fake(bool);
 
   /// Check if minimal calibration informations are present to consider the hit as valid and usable
-  bool is_valid() const;
+  bool is_valid() const override;
 
   /// Invalidate calibration informations stored in the hit
-  void invalidate();
+  void invalidate() override;
 
   /// Invalidate calibration informations stored in the hit
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print method
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
 
  protected:

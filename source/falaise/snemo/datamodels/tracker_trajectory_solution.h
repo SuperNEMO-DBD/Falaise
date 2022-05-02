@@ -93,11 +93,11 @@ class tracker_trajectory_solution : public datatools::i_serializable,
   void invalidate_unfitted_clusters();
 
   /// Empty the contents of the tracker trajectories solution
-  virtual void clear();
+  virtual void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
   /*** Auxiliaries ***/
   // These are marked as deprecated to warn/fail compilation if they are used

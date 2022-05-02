@@ -103,7 +103,7 @@ Co60  : Co-60 decay  : Calibration : : rank=second
 Am241 : Am-241 decay : Calibration : : rank=second
 
 ##############################
-# Genbb - Special genarators #
+# Genbb - Special generators #
 ##############################
 
 ### Single particles ###

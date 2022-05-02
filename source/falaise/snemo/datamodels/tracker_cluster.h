@@ -58,11 +58,11 @@ class tracker_cluster : public geomtools::base_hit {
   const calibrated_tracker_hit& at(size_t index) const;
 
   /// Reset/invalidate the contents of the tracker cluster
-  void clear();
+  void clear() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   TrackerHitHdlCollection hits_;  //!< Collection of Geiger hit handles

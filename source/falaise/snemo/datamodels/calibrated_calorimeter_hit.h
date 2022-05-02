@@ -69,14 +69,14 @@ class calibrated_calorimeter_hit : public geomtools::base_hit {
   void set_sigma_energy(double);
 
   /// Check if the internal data of the hit are valid
-  bool is_valid() const;
+  bool is_valid() const override;
 
   /// Invalidate the internal data of hit
-  void invalidate();
+  void invalidate() override;
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const;
+                         const std::string& indent = "", bool is_last = false) const override;
 
  private:
   double energy_{datatools::invalid_real()};        //!< Energy associated to the hit
