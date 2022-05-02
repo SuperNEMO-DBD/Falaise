@@ -24,7 +24,8 @@ Tests
   
 #. Setup Falaise
 #. Cd in the Falaise source directory
-#. Configure a variant simulation setup using the realistic flat source model and an uniform vertical magnetic field:
+#. Configure  a  variant simulation  setup  using  the realistic  flat
+   source model and an uniform vertical magnetic field:
 
    .. code:: shell
 	     
@@ -33,7 +34,8 @@ Tests
       ...
    ..
 
-#. Configure a variant simulation setup using the realistic SNRS1 model and an uniform vertical magnetic field:
+#. Configure  a variant  simulation  setup using  the realistic  SNRS1
+   model and an uniform vertical magnetic field:
 
    .. code:: shell
 	     
@@ -281,43 +283,43 @@ Simulation
 
 #. Create a simulation configuration file ``simu.conf``:
 
-.. code:: 
+   .. code:: 
 	  
-   [name="flsimulate" type="flsimulate::section"]
-   numberOfEvents : integer = 10
+      [name="flsimulate" type="flsimulate::section"]
+      numberOfEvents : integer = 10
 
-   [name="flsimulate.simulation" type="flsimulate::section"]
-   rngEventGeneratorSeed         : integer = 314159
-   rngVertexGeneratorSeed        : integer = 765432
-   rngGeant4GeneratorSeed        : integer = 123456
-   rngHitProcessingGeneratorSeed : integer = 987654
+      [name="flsimulate.simulation" type="flsimulate::section"]
+      rngEventGeneratorSeed         : integer = 314159
+      rngVertexGeneratorSeed        : integer = 765432
+      rngGeant4GeneratorSeed        : integer = 123456
+      rngHitProcessingGeneratorSeed : integer = 987654
 
-   [name="flsimulate.variantService" type="flsimulate::section"]
-   profile : string as path = "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf"
+      [name="flsimulate.variantService" type="flsimulate::section"]
+      profile : string as path = "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf"
 
-   [name="flsimulate.plugins" type="flsimulate::section"]
-   plugins : string[1] = "snrs"
-   snrs.directory : string as path = "@snrsLoader.libraries:"
-..
+      [name="flsimulate.plugins" type="flsimulate::section"]
+      plugins : string[1] = "snrs"
+      snrs.directory : string as path = "@snrsLoader.libraries:"
+   ..
 
 #. Run flsimulate (we need to locate the SNRS library):
 
-.. code:: shell
+   .. code:: shell
 
-   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
-   $ falaiseVersion="4.0.3"
-   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
-   $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ flsimulate \
-     -V "debug"  \
-     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
-     -c utilities/geometry/test-snrs-integration1/simu.conf \
-     -o run_1.xml
-   $ flvisualize \
-     --load-dll "snrs@${snrsInstallDir}/lib" \
-     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
-     --input-file "run_1.xml"
-..
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flsimulate \
+	     -V "debug"  \
+	     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -c utilities/geometry/test-snrs-integration1/simu.conf \
+	     -o run_1.xml
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
+	     --input-file "run_1.xml"
+   ..
 
 .. raw:: pdf
    
