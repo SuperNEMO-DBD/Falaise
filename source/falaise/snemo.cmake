@@ -75,6 +75,18 @@ list(APPEND FalaiseLibrary_HEADERS
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
+
+  snemo/time/time_utils.h
+ 
+  snemo/physics_model/base_activity_model.h
+  snemo/physics_model/constant_activity_model.h
+  snemo/physics_model/sliced_activity_model.h
+
+  # snemo/rc/rc_utils.h
+  snemo/rc/run_description.h
+  snemo/rc/run_list.h
+  snemo/rc/base_event.h
+  snemo/rc/run_event.h
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -141,6 +153,18 @@ list(APPEND FalaiseLibrary_SOURCES
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
+
+  snemo/time/time_utils.cc
+
+  snemo/physics_model/base_activity_model.cc
+  snemo/physics_model/constant_activity_model.cc
+  snemo/physics_model/sliced_activity_model.cc
+
+  snemo/rc/run_description.cc
+  snemo/rc/run_list.cc
+  snemo/rc/base_event.cc
+  snemo/rc/run_event.cc
+ 
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
@@ -153,6 +177,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_dead_cells_service.cxx
   snemo/test/test_event_record.cxx
   )
+
 list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_service_external.cxx
   snemo/test/test_snemo_datamodel_event_header.cxx
@@ -171,6 +196,14 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_retrieve_info.cxx
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
+  snemo/test/test_snemo_time_time_utils.cxx
+  snemo/test/test_snemo_rc_run_description.cxx
+  snemo/test/test_snemo_rc_run_list.cxx
+  snemo/test/test_snemo_rc_run_event.cxx
+  snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
+  
   )
+
+# - end

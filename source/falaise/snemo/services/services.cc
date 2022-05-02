@@ -21,4 +21,9 @@ const std::string& service_info::cutServiceName() {
   return lbl;
 }
 
+const std::string& service_info::rcServiceName() {
+  static std::string lbl("RC");
+  return lbl;
+}
+
 }  // end of namespace snemo
