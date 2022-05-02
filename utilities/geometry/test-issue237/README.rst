@@ -46,7 +46,7 @@ Tests
 
    .. code:: shell
 
-      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop-237"
       $ falaiseVersion="4.0.3"
       $ bxgeomtools_inspector \
           --logging "debug" \
@@ -159,11 +159,11 @@ Tests
 	  --visu-spot-size "0.1 mm" \
 	  --visu-output-file "vertices_legacy_bi207-visu-dd.data.gz"
       $ gnuplot
-      gnuplot> splot 'vertices.data'
+      gnuplot> splot 'vertices_legacy_bi207.data'
       gnuplot> set xrange [-1000:+1000]
       gnuplot> set yrange [-2500:+2500]
       gnuplot> set zrange [-1500:+1500]
-      gnuplot> splot 'vertices.data'
+      gnuplot> splot 'vertices_legacy_bi207.data'
       gnuplot> quit
       $ bxgeomtools_inspector \
           --logging "debug" \
@@ -223,7 +223,7 @@ Detail of the vertexes generated from a specific source spot:
       gnuplot> set xrange [-1000:+1000]
       gnuplot> set yrange [-2500:+2500]
       gnuplot> set zrange [-1500:+1500]
-      gnuplot> splot 'vertices.data'
+      gnuplot> splot 'vertices_sds.data'
       gnuplot> quit
       $ bxgeomtools_inspector \
           --logging "debug" \
@@ -249,8 +249,5 @@ Generation of the SDS calibration source model (vertexes only on sources in trac
   .. image:: check_sds_vertexes_1.jpg
      :width: 70%
   ..
-	      
-Vertex generator setup
-======================
 
 .. end
