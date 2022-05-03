@@ -5,6 +5,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/calibrated_calorimeter_hit.h
   snemo/datamodels/calibrated_data.h
   snemo/datamodels/calibrated_tracker_hit.h
+  snemo/datamodels/precalibrated_calorimeter_hit.h
+  snemo/datamodels/precalibrated_data.h
+  snemo/datamodels/precalibrated_tracker_hit.h
   snemo/datamodels/data_model.h
   snemo/datamodels/event.h
   snemo/datamodels/event_header.h
@@ -26,6 +29,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp
   snemo/datamodels/boost_io/calibrated_data.ipp
   snemo/datamodels/boost_io/calibrated_tracker_hit.ipp
+  snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp
+  snemo/datamodels/boost_io/precalibrated_data.ipp
+  snemo/datamodels/boost_io/precalibrated_tracker_hit.ipp
   snemo/datamodels/boost_io/event_header.ipp
   snemo/datamodels/boost_io/helix_trajectory_pattern.ipp
   snemo/datamodels/boost_io/line_trajectory_pattern.ipp
@@ -83,6 +89,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/calibrated_calorimeter_hit.cc
   snemo/datamodels/calibrated_tracker_hit.cc
   snemo/datamodels/calibrated_data.cc
+  snemo/datamodels/precalibrated_calorimeter_hit.cc
+  snemo/datamodels/precalibrated_tracker_hit.cc
+  snemo/datamodels/precalibrated_data.cc
   snemo/datamodels/tracker_cluster.cc
   snemo/datamodels/tracker_clustering_solution.cc
   snemo/datamodels/tracker_clustering_data.cc
@@ -158,6 +167,8 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_event_header.cxx
   snemo/test/test_snemo_datamodel_calibrated_calorimeter_hit.cxx
   snemo/test/test_snemo_datamodel_calibrated_tracker_hit.cxx
+  snemo/test/test_snemo_datamodel_precalibrated_calorimeter_hit.cxx
+  snemo/test/test_snemo_datamodel_precalibrated_tracker_hit.cxx
   snemo/test/test_snemo_datamodel_tracker_cluster.cxx
   snemo/test/test_snemo_datamodel_tracker_clustering_data.cxx
   snemo/test/test_snemo_datamodel_tracker_clustering_solution.cxx
