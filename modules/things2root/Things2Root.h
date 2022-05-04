@@ -50,6 +50,10 @@ typedef struct TrackerEventStorage {
   std::vector<double>* sigmar_;
   std::vector<double>* delayed_time_;
   std::vector<double>* delayed_time_error_;
+  std::vector<bool>* is_delayed_;
+  std::vector<bool>* is_noisy_;
+  std::vector<bool>* is_bottom_cathode_missing_;
+  std::vector<bool>* is_top_cathode_missing_;
   std::vector<int>* truehitid_;
   std::vector<int>* truetrackid_;
   std::vector<int>* trueparenttrackid_;
@@ -69,6 +73,10 @@ TrackerEventStorage()
     sigmar_(0),
     delayed_time_(0),
     delayed_time_error_(0),
+    is_delayed_(0),
+    is_noisy_(0),
+    is_bottom_cathode_missing_(0),
+    is_top_cathode_missing_(0),
     truehitid_(0),
     truetrackid_(0),
     trueparenttrackid_(0) {}

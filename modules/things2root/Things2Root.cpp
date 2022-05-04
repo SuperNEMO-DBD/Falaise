@@ -43,6 +43,10 @@ struct Things2Root::working_space {
   std::vector<double> trackersigmar;
   std::vector<double> trackerdelayedtime;
   std::vector<double> trackerdelayedtimeerror;
+  std::vector<bool> isdelayed;
+  std::vector<bool> isnoisy;
+  std::vector<bool> isbottomcathodemissing;
+  std::vector<bool> istopcathodemissing;
   std::vector<int> trackertruehitid;
   std::vector<int> trackertruetrackid;
   std::vector<int> trackertrueparenttrackid;
@@ -117,9 +121,13 @@ void Things2Root::working_space::clear() {
   trackersigmar.clear();
   trackerdelayedtime.clear();
   trackerdelayedtimeerror.clear();
+  isdelayed.clear();
+  isnoisy.clear();
+  isbottomcathodemissing.clear();
+  istopcathodemissing.clear();
   trackertruehitid.clear();
   trackertruetrackid.clear();
-  trackertrueparenttrackid.clear();
+  trackertrueparenttrackid.clear()  ;
 
   // clear calibrated calorimeter data
   caloid.clear();
@@ -251,6 +259,10 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("tracker.sigmar", &tracker_.sigmar_);
   tree_->Branch("tracker.delayedtime", &tracker_.delayed_time_);
   tree_->Branch("tracker.delayedtimeerror", &tracker_.delayed_time_error_);
+  tree_->Branch("tracker.isdelayed", &tracker_.is_delayed_);
+  tree_->Branch("tracker.isnoisy", &tracker_.is_noisy_);
+  tree_->Branch("tracker.isbottomcathodemissing", &tracker_.is_bottom_cathode_missing_);
+  tree_->Branch("tracker.istopcathodemissing", &tracker_.is_top_cathode_missing_);
   tree_->Branch("tracker.truehitid", &tracker_.truehitid_);
 
   // calibrated calorimeter data
@@ -571,7 +583,12 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       ws_->trackersigmar.push_back(sncore_gg_hit.get_sigma_r());
       ws_->trackerdelayedtime.push_back(sncore_gg_hit.get_delayed_time());
       ws_->trackerdelayedtimeerror.push_back(sncore_gg_hit.get_delayed_time_error());
+      ws_->isdelayed.push_back(sncore_gg_hit.is_delayed());
+      ws_->isnoisy.push_back(sncore_gg_hit.is_noisy());
+      ws_->isbottomcathodemissing.push_back(sncore_gg_hit.is_bottom_cathode_missing());
+      ws_->istopcathodemissing.push_back(sncore_gg_hit.is_top_cathode_missing());
       ws_->trackertruehitid.push_back(sncore_gg_hit.get_id());
+
       // special infos about truth tracks:
       int truth_track_id = -1;
       if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::TRACK_ID_KEY)) {
@@ -599,6 +616,10 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     tracker_.sigmar_ = &ws_->trackersigmar;
     tracker_.delayed_time_ = &ws_->trackerdelayedtime;
     tracker_.delayed_time_error_ = &ws_->trackerdelayedtimeerror;
+    tracker_.is_delayed_ = &ws_->isdelayed;
+    tracker_.is_noisy_ = &ws_->isnoisy;
+    tracker_.is_bottom_cathode_missing_ = &ws_->isbottomcathodemissing;
+    tracker_.is_top_cathode_missing_ = &ws_->istopcathodemissing;
     tracker_.truehitid_ = &ws_->trackertruehitid;
     tracker_.truetrackid_ = &ws_->trackertruetrackid;
     tracker_.trueparenttrackid_ = &ws_->trackertrueparenttrackid;
