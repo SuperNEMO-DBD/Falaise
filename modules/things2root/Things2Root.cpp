@@ -41,6 +41,8 @@ struct Things2Root::working_space {
   std::vector<double> trackersigmaz;
   std::vector<double> trackerr;
   std::vector<double> trackersigmar;
+  std::vector<double> trackerdelayedtime;
+  std::vector<double> trackerdelayedtimeerror;
   std::vector<int> trackertruehitid;
   std::vector<int> trackertruetrackid;
   std::vector<int> trackertrueparenttrackid;
@@ -113,6 +115,8 @@ void Things2Root::working_space::clear() {
   trackersigmaz.clear();
   trackerr.clear();
   trackersigmar.clear();
+  trackerdelayedtime.clear();
+  trackerdelayedtimeerror.clear();
   trackertruehitid.clear();
   trackertruetrackid.clear();
   trackertrueparenttrackid.clear();
@@ -245,6 +249,8 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("tracker.sigmaz", &tracker_.sigmaz_);
   tree_->Branch("tracker.r", &tracker_.r_);
   tree_->Branch("tracker.sigmar", &tracker_.sigmar_);
+  tree_->Branch("tracker.delayedtime", &tracker_.delayed_time_);
+  tree_->Branch("tracker.delayedtimeerror", &tracker_.delayed_time_error_);
   tree_->Branch("tracker.truehitid", &tracker_.truehitid_);
 
   // calibrated calorimeter data
@@ -563,6 +569,8 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       ws_->trackersigmaz.push_back(sncore_gg_hit.get_sigma_z());
       ws_->trackerr.push_back(sncore_gg_hit.get_r());
       ws_->trackersigmar.push_back(sncore_gg_hit.get_sigma_r());
+      ws_->trackerdelayedtime.push_back(sncore_gg_hit.get_delayed_time());
+      ws_->trackerdelayedtimeerror.push_back(sncore_gg_hit.get_delayed_time_error());
       ws_->trackertruehitid.push_back(sncore_gg_hit.get_id());
       // special infos about truth tracks:
       int truth_track_id = -1;
@@ -589,6 +597,8 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     tracker_.sigmaz_ = &ws_->trackersigmaz;
     tracker_.r_ = &ws_->trackerr;
     tracker_.sigmar_ = &ws_->trackersigmar;
+    tracker_.delayed_time_ = &ws_->trackerdelayedtime;
+    tracker_.delayed_time_error_ = &ws_->trackerdelayedtimeerror;
     tracker_.truehitid_ = &ws_->trackertruehitid;
     tracker_.truetrackid_ = &ws_->trackertruetrackid;
     tracker_.trueparenttrackid_ = &ws_->trackertrueparenttrackid;
