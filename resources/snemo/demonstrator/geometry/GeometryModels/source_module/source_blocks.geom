@@ -26,9 +26,9 @@
   #@variant_endif
 
   #@variant_if !geometry:layout/if_basic/source_layout/if_basic|false
-    stacked.model_0   : string = "snemo_strip_path_0.realistic.model" # Position  0 (Copper)
-    stacked.model_2   : string = "snemo_strip_path_1.flat.model"      # Position  1 
-    stacked.model_4   : string = "snemo_strip_path_2.flat.model"      # Position  2
+    stacked.model_0 : string = "snemo_strip_path_0.realistic.model" # Position  0 (Copper)
+    stacked.model_2 : string = "snemo_strip_path_1.flat.model"      # Position  1 
+    stacked.model_4 : string = "snemo_strip_path_2.flat.model"      # Position  2
   #@variant_endif
   
   stacked.model_1 : string = "source_strip_gap.model"
@@ -379,7 +379,7 @@
     stacked.model_4 : string = "source_external_strip.basic.model"
   #@variant_endif
   
-  #@variant_if !geometry:layout/if_basic/source_layout/if_basic|true
+  #@variant_if !geometry:layout/if_basic/source_layout/if_basic|false
 
     #@variant_if geometry:layout/if_basic/source_layout/if_realistic_flat|false
       stacked.model_0 : string = "snemo_strip_path_33.flat.model"  # Position 33
@@ -391,6 +391,7 @@
       stacked.model_2 : string = "snemo_strip_path_34.snrs1.model" # Position 34
     #@variant_endif
 
+    # Common last Copper strip:
     stacked.model_4 : string = "snemo_strip_path_35.realistic.model" # Position 35 (Copper)
 
   #@variant_endif
