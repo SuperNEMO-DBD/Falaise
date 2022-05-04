@@ -175,8 +175,8 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
 
   // Invoke initialization at parent level :
   this->snemo::processing::base_tracker_fitter::_initialize(setup_);
-  std::cerr << "*** devel *** trackfit_driver::initialize:\n";
-  std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
+  // std::cerr << "*** devel *** trackfit_driver::initialize:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
 
   falaise::property_set ps{setup_};
   _vertex_max_distance_ = ps.get<falaise::length_t>("vertex_max_distance", {0.5, "mm"})();
