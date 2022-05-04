@@ -4,6 +4,12 @@ Testing solution to Falaise SNRS integration
 
 :author: F.Mauger
 :date: 2021-10-20
+
+       
+Note (2022-05-04, FM) : These are guidelines used to test the SNRS library within Falaise.
+The SNRS library is now supposed to be linked by Falaise so there is no need
+to dynamically load it anymore when running flsimulate...
+
        
 Geometry setup 
 ==============
