@@ -21,12 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor,
  * Boston, MA 02110-1301, USA.
  *
- *
  * Description:
  *
  *   Module for Geiger hits fitting
- *
- * History:
  *
  */
 
@@ -38,8 +35,6 @@
 // Third party:
 // - Bayeux/dpp :
 #include <dpp/base_module.h>
-
-
 
 namespace geomtools {
 class manager;

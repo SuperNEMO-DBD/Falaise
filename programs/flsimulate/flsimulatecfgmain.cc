@@ -78,7 +78,7 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
 
 //! \brief Collect all needed configuration parameters in one data structure
 struct FLSimulateConfigureParams {
-  datatools::logger::priority logLevel;  //!< Logging priority threshold
+  datatools::logger::priority logLevel; //!< Logging priority threshold
   std::string simulationSetupUrn;
   std::string inputVariantProfileUrn;
   std::string variantConfigUrn;

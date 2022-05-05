@@ -137,6 +137,7 @@ void do_cldialog(int argc, char* argv[], FLSimulateCommandLine& clArgs) {
     ("mount-directory,d", bpo::value<std::vector<std::string>>(&clArgs.mountPoints)->value_name("rule"),
       "register directories' mount points\n"
       "Example: \n"
+      "  -d \"snrs.libraries@/opt/sw/snrs/lib\" \n"
       "  -d \"nemoprod@/etc/nemoprod/config\" \n"
       "  -d \"nemoprod.data@/data/nemoprod/runs\"")
     

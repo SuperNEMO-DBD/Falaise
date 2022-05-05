@@ -122,13 +122,12 @@ gamma.100keV  : Gamma with monokinetic energy @ 100 keV   : Miscellaneous : : ra
 gamma.500keV  : Gamma with monokinetic energy @ 500 keV   : Miscellaneous : : rank=second 
 gamma.1MeV    : Gamma with monokinetic energy @ 1 MeV     : Miscellaneous : : rank=first 
 gamma.2MeV    : Gamma with monokinetic energy @ 2 MeV     : Miscellaneous : : rank=second 
-gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous : 
+gamma.2615keV : Gamma with monokinetic energy @ 2.615 MeV : Miscellaneous : : 
 
 ### Generic generators ###
 # Note: The selection of such parametric particles generators triggers the choice of additional options
 versatile_generator      : Single particle generator with monokinetic energy       : User : if_versatile      : rank=second 
 flat_versatile_generator : Single particle generator with flat energy distribution : User : if_flat_versatile : rank=second 
 tweakable_generator      : Broadly tweakable single particle generator             : User : if_tweakable      : rank=second 
-
 
 # end

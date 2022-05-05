@@ -77,12 +77,13 @@ your choice:
 - [Git](https://git-scm.com)
 - [CMake](https://cmake.org) 3.12 or higher
 - [Doxygen](http://www.doxygen.org) 1.8 or higher
-- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.4.1 or higher
-- [Boost](https:/boost.org) 1.69.0 **only**
+- [Bayeux](https://github.com/SuperNEMO-DBD/Bayeux) 3.5 or higher
+- [SNRS](https://github.com/SuperNEMO-DBD/SNRS) 1.1 or higher
+- [Boost](https:/boost.org) 1.69.0 or higher
   - Must provide `program_options`, `thread`, `serialization`, `filesystem` and `system` components
-- [Camp](https://github.com/tegesoft/camp) 0.7.1 or higher
-- [GSL](http://www.gnu.org/s/gsl) 2 or higher
-- [CLHEP](http://proj-clhep.web.cern.ch) 2.1.3.1 only
+- [Camp](https://github.com/tegesoft/camp) 0.8.4 or higher
+- [GSL](http://www.gnu.org/s/gsl) 2.4 or higher
+- [CLHEP](http://proj-clhep.web.cern.ch) 2.1.4.2 only
 - [Geant4](http://geant4.cern.ch) 9.6.4 only
    - with GDML support enabled
 - [ROOT](http://root.cern.ch) 6.16 or higher

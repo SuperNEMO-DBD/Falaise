@@ -49,6 +49,7 @@
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/kernel.h"
 #include "bayeux/datatools/multi_properties.h"
+#include "bayeux/datatools/library_loader.h"
 #include "bayeux/datatools/service_manager.h"
 #include "bayeux/datatools/things.h"
 #include "bayeux/datatools/urn.h"
@@ -286,6 +287,9 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
   // - Run:
   falaise::exit_code code = falaise::EXIT_OK;
   try {
+    // Library loader:
+    datatools::library_loader libLoader(flSimParameters.userLibConfig);
+    
     // Setup services:
     datatools::service_manager services("flSimulationServices", "SuperNEMO Simulation Services");
     std::string services_config_file = flSimParameters.servicesSubsystemConfig;
