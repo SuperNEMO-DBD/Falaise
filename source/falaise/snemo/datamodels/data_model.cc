@@ -22,7 +22,7 @@ const std::string& labels::simulated_data() {
 }
 
 const std::string& labels::precalibrated_data() {
-  static std::string lbl("PCD");
+  static std::string lbl("pCD");
   return lbl;
 }
 

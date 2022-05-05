@@ -8,7 +8,7 @@
  * License:
  *
  * Description:
- *   Precalibrated calorimeter hit
+ *   Precalibrated calorimeter hit.
  *
  * History:
  *
@@ -33,9 +33,92 @@ namespace snemo {
 
     /// \brief Model of a precalibrated calorimeter hit
     class precalibrated_calorimeter_hit : public geomtools::base_hit {
+
     public:
-      // /// Return the time associated to the hit
-      // double get_time() const;
+
+      /// Return the amplitude associated to the hit
+      double get_amplitude() const;
+
+      /// Set the amplitude associated to the hit
+      void set_amplitude(double);
+
+      /// Check if the amplitude is valid
+      bool has_amplitude() const;
+
+      /// Reset the amplitude
+      void reset_amplitude();
+
+      /// Return the charge associated to the hit
+      double get_charge() const;
+
+      /// Set the charge associated to the hit
+      void set_charge(double);
+
+      /// Check if the charge is valid
+      bool has_charge() const;
+
+      /// Reset the charge
+      void reset_charge();
+
+      /// Return the time associated to the hit
+      double get_time() const;
+
+      /// Set the time associated to the hit
+      void set_time(double);
+
+      /// Check if the time is valid
+      bool has_time() const;
+
+      /// Reset the time
+      void reset_time();
+
+      /// Return the baseline associated to the hit
+      double get_baseline() const;
+
+      /// Set the baseline associated to the hit
+      void set_baseline(double);
+
+      /// Check if the baseline is valid
+      bool has_baseline() const;
+
+      /// Reset the baseline
+      void reset_baseline();
+
+      /// Return the rising_time associated to the hit
+      double get_rising_time() const;
+
+      /// Set the rising_time associated to the hit
+      void set_rising_time(double);
+
+      /// Check if the rising_time is valid
+      bool has_rising_time() const;
+
+      /// Reset the rising_time
+      void reset_rising_time();
+
+      /// Return the falling_time associated to the hit
+      double get_falling_time() const;
+
+      /// Set the falling_time associated to the hit
+      void set_falling_time(double);
+
+      /// Check if the falling_time is valid
+      bool has_falling_time() const;
+
+      /// Reset the falling_time
+      void reset_falling_time();
+
+      /// Return the width associated to the hit
+      double get_width() const;
+
+      /// Set the width associated to the hit
+      void set_width(double);
+
+      /// Check if the width is valid
+      bool has_width() const;
+
+      /// Reset the width
+      void reset_width();
 
       /// Check if the internal data of the hit are valid
       bool is_valid() const override;
@@ -48,43 +131,20 @@ namespace snemo {
                              const std::string& indent = "", bool is_last = false) const override;
 
 
-      struct reconstructed_pulse {
-
-      public:
-
-        /// Return the energy associated to the hit
-        double get_amplitude() const;
-
-        /// Set the energy associated to the hit
-        void set_amplitude(double);
-
-        /// Check if the amplitude is valid
-        bool has_amplitude() const;
-
-        /// Reset the amplitude
-        void reset_amplitude();
-
-
-
-      private:
-        double amplitude_{datatools::invalid_real()};    //!< Amplitude associated to the pulse
-        double charge_{datatools::invalid_real()};       //!< Charge associated to the pulse
-        double time_{datatools::invalid_real()};         //!< Time (in ns) associated to the pulse
-        double baseline_{datatools::invalid_real()};     //!< Baseline (in ns) associated to the pulse
-        double rising_time_{datatools::invalid_real()};  //!< Rising time (in ns) associated to the pulse
-        double falling_time_{datatools::invalid_real()}; //!< Falling time (in ns) associated to the pulse
-        double width_{datatools::invalid_real()};        //!< Width of the pulse
-      };
-
     private:
 
-      std::vector<reconstructed_pulse>  reco_pulses_models_; // Same pulse in a calo hit but different reconstruction models,  [0] of each vector -> direct from RED fwmeasurements
-
+      double _amplitude_{datatools::invalid_real()};    //!< Amplitude associated to the pulse
+      double _charge_{datatools::invalid_real()};       //!< Charge associated to the pulse
+      double _time_{datatools::invalid_real()};         //!< Time associated to the pulse
+      double _baseline_{datatools::invalid_real()};     //!< Baseline associated to the pulse
+      double _rising_time_{datatools::invalid_real()};  //!< Rising time associated to the pulse
+      double _falling_time_{datatools::invalid_real()}; //!< Falling time associated to the pulse
+      double _width_{datatools::invalid_real()};        //!< Width of the pulse
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-    /// Handle of precalibrated calorimeter hit
+    /// Alias for a handle of precalibrated calorimeter hit
     // typedef datatools::handle<precalibrated_calorimeter_hit> handle_type;
     /// Collection of handles of precalibrated calorimeter hit
     // typedef std::vector<handle_type> collection_type;

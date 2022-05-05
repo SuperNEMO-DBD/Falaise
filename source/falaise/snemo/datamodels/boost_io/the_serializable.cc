@@ -49,8 +49,7 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::event_header)
  ***************************************************/
 
 #include <falaise/snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
-snemo::datamodel::precalibrated_calorimeter_hit)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_calorimeter_hit)
 
 /***********************************************
  * snemo::datamodel::precalibrated_tracker_hit *
@@ -72,8 +71,7 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_data)
  ************************************************/
 
 #include <falaise/snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(
-snemo::datamodel::calibrated_calorimeter_hit)
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_calorimeter_hit)
 
 /********************************************
  * snemo::datamodel::calibrated_tracker_hit *
