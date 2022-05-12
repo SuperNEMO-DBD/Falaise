@@ -23,6 +23,7 @@
 
 // Bayeux:
 #include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/properties.h>
 
 // This project:
 #include <falaise/snemo/time/time_utils.h>
@@ -45,6 +46,8 @@ namespace snemo {
 
     std::ostream & operator<<(std::ostream & out_, run_category run_cat_);
 
+    run_category from_string(const std::string & label_);
+    
     /// \brief Run description
     class run_description
       : public datatools::i_tree_dumpable
@@ -60,11 +63,10 @@ namespace snemo {
       bool is_valid() const;
 
       void reset();
+
+      void set_run_id(std::int32_t id_);
       
-      inline std::int32_t run_id() const
-      {
-        return _run_id_;
-      }
+      std::int32_t run_id() const;
 
       static run_description make(std::int32_t run_id_,
                                   run_category run_cat_,
@@ -120,7 +122,9 @@ namespace snemo {
       /// Smart print
       virtual void print_tree(std::ostream & out_ = std::clog,
                               const boost::property_tree::ptree & options_ = empty_options()) const override;
-                  
+
+      void load(const datatools::properties & config_);
+      
     private:
 
       std::int32_t _run_id_ = INVALID_RUN_ID;

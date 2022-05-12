@@ -9,30 +9,16 @@
 // This project:
 #include <falaise/snemo/rc/run_description.h>
 
+void test1();
+void test2();
+
 int main(int /* argc_ */, char** /* argv_ */)
 {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::rc::run_description'!" << std::endl;
-
-    namespace snrc = snemo::rc;
-    namespace snt = snemo::time;
-    snt::time_point runStart(snt::date(2022, 5, 27), snt::hours(2));
-    snt::time_duration runDuration =
-      snt::hours(4) + snt::minutes(23) + snt::seconds(42);
-    snt::time_point runStop = runStart + runDuration;
-    snt::time_period runPeriod(runStart, runStop);
-    
-    snrc::run_description runDesc = snrc::run_description::make(42,
-                                                                snrc::run_category::TEST,
-                                                                runPeriod,
-                                                                1234);
-    runDesc.add_break(snt::minutes(35), snt::minutes(12));
-    runDesc.add_break(snt::hours(1) + snt::minutes(17),
-                      snt::minutes(17));
-                       
-    runDesc.print_tree(std::clog);
-
+    test1();
+    test2();
     std::clog << "The end." << std::endl;
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
@@ -43,4 +29,44 @@ int main(int /* argc_ */, char** /* argv_ */)
     error_code = EXIT_FAILURE;
   }
   return (error_code);
+}
+
+void test1()
+{
+  namespace snrc = snemo::rc;
+  namespace snt = snemo::time;
+  snt::time_point runStart(snt::date(2022, 5, 27), snt::hours(2));
+  snt::time_duration runDuration =
+    snt::hours(4) + snt::minutes(23) + snt::seconds(42);
+  snt::time_point runStop = runStart + runDuration;
+  snt::time_period runPeriod(runStart, runStop);
+    
+  snrc::run_description runDesc = snrc::run_description::make(42,
+                                                              snrc::run_category::TEST,
+                                                              runPeriod,
+                                                              1234);
+  runDesc.add_break(snt::minutes(35), snt::minutes(12));
+  runDesc.add_break(snt::hours(1) + snt::minutes(17),
+                    snt::minutes(17));
+                       
+  runDesc.print_tree(std::clog);
+  return;
+}
+
+void test2()
+{
+  namespace snrc = snemo::rc;
+  namespace snt = snemo::time;
+  snrc::run_description runDesc;
+  runDesc.set_run_id(42);
+  datatools::properties runDescConfig;
+  runDescConfig.store("category", "commissioning");
+  runDescConfig.store("period", "[2022-05-27 02:00:00/2022-05-27 06:23:42]");
+  runDescConfig.store("number_of_events", 1234);
+  runDescConfig.store("number_of_breaks", 2);
+  runDescConfig.store("break0.period", "[2022-05-27 02:35:00/2022-05-27 02:47]");
+  runDescConfig.store("break1.period", "[2022-05-27 04:04:00/2022-05-27 04:21]");
+  runDesc.load(runDescConfig);
+  runDesc.print_tree(std::clog);
+  return;
 }

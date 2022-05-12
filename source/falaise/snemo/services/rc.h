@@ -19,6 +19,10 @@ namespace snemo {
   {
   };
 
+  namespace rc {
+    class run_list;
+  }
+
   /// \brief Running conditions service
   class rc_svc
     : public datatools::base_service
@@ -28,13 +32,16 @@ namespace snemo {
     rc_svc() = default;
 
     virtual ~rc_svc() = default;
+
+    bool is_initialized() const override;
     
-    int initialize(const datatools::properties &, datatools::service_dict_type &) override;
+    int initialize(const datatools::properties &,
+                   datatools::service_dict_type &) override;
     
     int reset() override;
 
-    bool is_initialized() const override;
-
+    const run_list & get_run_list() const;
+    
   private:
 
     bool _initialized_ = false;

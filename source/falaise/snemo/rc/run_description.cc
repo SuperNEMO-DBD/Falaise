@@ -16,6 +16,18 @@ namespace snemo {
 
   namespace rc {
 
+    run_category from_string(const std::string & label_)
+    {
+      if (label_ == "test") return run_category::TEST;
+      if (label_ == "commissioning") return run_category::COMMISSIONING;
+      if (label_ == "production") return run_category::PRODUCTION;
+      if (label_ == "calibration1") return run_category::CALIBRATION_1;
+      if (label_ == "calibration2") return run_category::CALIBRATION_2;
+      if (label_ == "calibration3") return run_category::CALIBRATION_3;
+      if (label_ == "calibration4") return run_category::CALIBRATION_4;
+      return run_category::INDETERMINATE;
+    }
+
     std::ostream & operator<<(std::ostream & out_, run_category run_cat_)
     {
       switch (run_cat_) {
@@ -45,6 +57,19 @@ namespace snemo {
         break;
       }
       return out_;
+    }
+
+    void run_description::set_run_id(std::int32_t id_)
+    {
+      DT_THROW_IF(id_ < INVALID_RUN_ID, std::domain_error,
+                  "Invalid run ID '" << id_ << "'!");
+      _run_id_ = id_;
+      return;
+    }
+  
+    std::int32_t run_description::run_id() const
+    {
+      return _run_id_;
     }
 
     // run_description::run_description()
@@ -121,6 +146,51 @@ namespace snemo {
         if (pause.contains(timestamp_)) return false;
       }
       return true;
+    }
+
+    void run_description::load(const datatools::properties & config_)
+    {
+      if (config_.has_key("category")) {
+        std::string catLabel = config_.fetch_string("category");
+        run_category rc = from_string(catLabel);
+        DT_THROW_IF(rc == run_category::INDETERMINATE, std::logic_error,
+                    "Invalid run category label '" << catLabel << "'!");
+        _category_ = rc;
+      }
+      DT_THROW_IF(_category_ == run_category::INDETERMINATE,
+                  std::logic_error,
+                  "Run category is not set!");
+      
+      if (config_.has_key("period")) {
+        std::string periodRepr = config_.fetch_string("period");
+        auto runPeriod = time::time_period_from_string(periodRepr);
+        DT_THROW_IF(not time::is_valid(runPeriod), std::logic_error,
+                    "Invalid run period '" << periodRepr << "'!");
+        _period_ = runPeriod;
+      }
+      DT_THROW_IF(not time::is_valid(_period_), std::logic_error,
+                  "Run period is not set!");
+
+      if (config_.has_key("number_of_events")) {
+        std::uint32_t number_of_events = config_.fetch_positive_integer("number_of_events");
+        _number_of_events_ = number_of_events;
+      }
+
+      if (config_.has_key("number_of_breaks")) {
+        std::uint32_t number_of_breaks = config_.fetch_positive_integer("number_of_breaks");
+        for (std::uint32_t iBreak = 0; iBreak < number_of_breaks; iBreak++) {
+          std::string breakPeriodKey = "break" + std::to_string(iBreak) + ".period";
+          DT_THROW_IF(not config_.has_key(breakPeriodKey), std::logic_error,
+                      "Missing run break period '" << breakPeriodKey << "'!");
+          std::string breakPeriodRepr = config_.fetch_string(breakPeriodKey);
+          auto breakPeriod = time::time_period_from_string(breakPeriodRepr);
+          DT_THROW_IF(not time::is_valid(breakPeriod), std::logic_error,
+                      "Invalid run break period '" << breakPeriodRepr << "'!");
+          add_break(breakPeriod);
+        }
+      }
+      
+      return;
     }
      
     // virtual

@@ -16,6 +16,7 @@
 // - Bayeux
 #include <bayeux/datatools/i_serializable.h>
 #include <bayeux/geomtools/i_shape_1d.h>
+#include <bayeux/datatools/handle.h>
 
 namespace snemo {
 
