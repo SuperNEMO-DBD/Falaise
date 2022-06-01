@@ -3,7 +3,7 @@
  * Creation date: 2022-04-28
  * Last modified: 2022-04-28
  *
- * Description: Slided activity model
+ * Description: Sliced activity model
  */
 
 #ifndef FALAISE_SNEMO_PHYSICS_MODEL_SLICED_ACTIVITY_MODEL_H
@@ -39,6 +39,7 @@ namespace snemo {
       virtual void reset() override;
       virtual bool validate_time_point(const time::time_point & p_) const override;
       virtual double compute_activity(const time::time_point & p_) const override;
+      virtual time::time_period time_span() const override;
 
       void set_time_slice(const time::time_period & time_slice_);
       const time::time_period & time_slice() const;
@@ -48,7 +49,7 @@ namespace snemo {
     private:
 
       bool _initialized_ = false;
-      time::time_period _time_slice_ = time::time_period( time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time));
+      time::time_period _time_slice_ = time::invalid_period(); //time_period( time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time));
       const base_activity_model * _model_handle_ = nullptr;
 
       DATATOOLS_FACTORY_SYSTEM_AUTO_REGISTRATION_INTERFACE(base_activity_model, sliced_activity_model)

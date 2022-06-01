@@ -8,8 +8,6 @@
  *
  *   SuperNEMO service utility
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_SERVICES_H
@@ -21,8 +19,11 @@
 namespace snemo {
 
 /// \brief Service infomation
-class service_info {
+class service_info
+{
+  
  public:
+  
   /// Return the default string label/name for the 'global metadata' service
   static const std::string& metadataServiceName();
 
@@ -32,8 +33,15 @@ class service_info {
   /// Return the default string label/name for the 'cuts' service
   static const std::string& cutServiceName();
 
-  /// Return the default string label/name for the 'running conditions' service
-  static const std::string& rcServiceName();
+  /// Return the default string label/name for the 'db' service
+  static const std::string& dbServiceName();
+
+  /// Return the default string label/name for the 'tracker cell status' service
+  static const std::string& trackerCellStatusServiceName();
+
+  /// Return the default string label/name for the 'calorimeter OM status' service
+  static const std::string& calorimeterOmStatusServiceName();
+
 };
 
 }  // end of namespace snemo

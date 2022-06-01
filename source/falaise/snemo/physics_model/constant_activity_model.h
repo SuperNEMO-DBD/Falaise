@@ -31,6 +31,8 @@ namespace snemo {
       virtual void reset() override;
       virtual bool validate_time_point(const time::time_point & p_) const override;
       virtual double compute_activity(const time::time_point & p_) const override;
+      virtual time::time_period time_span() const override;
+
 
       double activity() const;
 

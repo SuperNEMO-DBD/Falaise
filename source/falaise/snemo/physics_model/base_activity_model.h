@@ -41,8 +41,8 @@ namespace snemo {
                                               const std::string & model_name_);
 
     void add_model(activity_model_dict_type & models_,
-                  const std::string & model_name_,
-                   const  activity_model_ptr_type & model_ptr_);
+                   const std::string & model_name_,
+                   const activity_model_ptr_type & model_ptr_);
     
     /// \brief Base class for all activity models
     class base_activity_model
@@ -55,6 +55,7 @@ namespace snemo {
       virtual void reset() = 0;
       virtual bool validate_time_point(const time::time_point & p_) const = 0;
       virtual double compute_activity(const time::time_point & p_) const = 0;
+      virtual time::time_period time_span() const = 0;
 
       void initialize_standalone(const datatools::properties & config_);
       void initialize_simple();

@@ -29,9 +29,9 @@ namespace snemo {
   {
   public:
 
-    rc_svc() = default;
+    rc_svc();
 
-    virtual ~rc_svc() = default;
+    virtual ~rc_svc();
 
     bool is_initialized() const override;
     
@@ -40,20 +40,29 @@ namespace snemo {
     
     int reset() override;
 
-    const run_list & get_run_list() const;
+    /**
+     *  Run list:
+     *
+     *        run-42   run-43     run-44
+     *    ---[------)-[-------)--[-------)------> t
+     *       t1    t2 t3     t4  t5     t6
+     *
+     *
+     */
+    const rc::run_list & get_run_list() const;
     
   private:
 
     bool _initialized_ = false;
     struct pimpl_type;
-    std::unique_ptr<pimpl_type> pimpl_;
+    std::unique_ptr<pimpl_type> _pimpl_; // XXX
     
-    DATATOOLS_SERVICE_REGISTRATION_INTERFACE(rc_svc);
+    DATATOOLS_SERVICE_REGISTRATION_INTERFACE(rc_svc)
     
   };
 
   template <>
-    struct service_traits<rc_svc> {
+  struct service_traits<rc_svc> {
     using label_type = BOOST_METAPARSE_STRING("rc_svc");
     using service_type = rc_svc;
     using instance_type = service_type;

@@ -12,6 +12,8 @@
 // Boost:
 #include <boost/date_time/gregorian/gregorian.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/gregorian/greg_serialize.hpp>
+#include <boost/date_time/posix_time/time_serialize.hpp>
 
 // Bayeux:
 #include <bayeux/datatools/exception.h>
@@ -33,6 +35,10 @@ namespace snemo {
     using boost::gregorian::date_period    ;
     using boost::gregorian::days           ;
     using boost::date_time::not_a_date_time;
+    using boost::date_time::neg_infin;
+    using boost::date_time::pos_infin;
+    using boost::date_time::max_date_time;
+    using boost::date_time::min_date_time;
     using boost::gregorian::date_facet;
     using boost::posix_time::time_facet;
     using boost::gregorian::date_input_facet;
@@ -58,7 +64,15 @@ namespace snemo {
 
     std::string to_string(const time_duration & td_);
 
-    std::string to_string(const time_period & tp_);
+    enum time_period_format_type
+      {
+       TIME_PERIOD_FORMAT_INCLUDE_LAST   = 0, ///< [begin/last]
+       TIME_PERIOD_FORMAT_EXCLUDE_END    = 1, ///< [begin/end)
+       TIME_PERIOD_FORMAT_BEGIN_DURATION = 2, ///< {begin+duration}
+       TIME_PERIOD_FORMAT_DEFAULT = TIME_PERIOD_FORMAT_INCLUDE_LAST
+      };
+    
+    std::string to_string(const time_period & tp_, const time_period_format_type format_ = TIME_PERIOD_FORMAT_DEFAULT);
  
     time_point time_point_from_string(const std::string & repr_);
  

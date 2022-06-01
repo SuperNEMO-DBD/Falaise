@@ -20,6 +20,7 @@
 
 // Bayeux:
 #include <bayeux/datatools/i_tree_dump.h>
+#include <bayeux/datatools/multi_properties.h>
 
 // This project:
 #include <falaise/snemo/rc/run_description.h>
@@ -74,6 +75,8 @@ namespace snemo {
       /// Smart print
       virtual void print_tree(std::ostream & out_ = std::clog,
                               const boost::property_tree::ptree & options_ = empty_options()) const override;
+
+      void load(const datatools::multi_properties & mconfig_);
 
       void build_run_ids(std::set<std::int32_t> & run_ids_) const;
      

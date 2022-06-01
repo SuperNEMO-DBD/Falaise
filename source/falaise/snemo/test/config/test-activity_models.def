@@ -1,0 +1,42 @@
+#@key_label "name"
+#@meta_label "type"
+
+[name="constant_1Bq" type="snemo::physics_model::constant_activity_model"]
+activity : real as activity = 1.0 Bq
+
+[name="constant_1mBq" type="snemo::physics_model::constant_activity_model"]
+activity : real as activity = 1.0 mBq
+
+[name="constant_3mBq" type="snemo::physics_model::scaled_activity_model"]
+model : string = "constant_1mBq"
+scale_factor : real = 3.0
+
+[name="constant_3mBq-2022-january" type="snemo::physics_model::sliced_activity_model"]
+model : string = "constant_3mBq"
+slice.period : string = "[2022-01-01 00:00:00/2022-02-01 00:00:00)"
+
+[name="radon_222-10mBq-from-2022-january" type="snemo::physics_model::decaying_activity_model"]
+starting_time  : string = "2022-01-01 00:00:00"
+starting_activity : real as activity = 4.0 mBq
+half_life      : real as time = 3.8235 day
+
+[name="week_by_week-2022-january" type="snemo::physics_model::per_period_activity_model"]
+number_of_slices : integer = 5
+
+slice_0.period   : string = "[2022-01-01 00:00:00/2022-01-08 00:00:00)"
+slice_0.activity : real as activity = 2.5 mBq
+
+slice_1.period   : string = "[2022-01-08 00:00:00/2022-01-15 00:00:00)"
+slice_1.activity : real as activity = 1.9 mBq
+
+slice_2.period   : string = "[2022-01-15 00:00:00/2022-01-22 00:00:00)"
+slice_2.activity : real as activity = 1.95 mBq
+
+slice_3.period   : string = "[2022-01-22 00:00:00/2022-01-29 00:00:00)"
+slice_3.activity : real as activity = 1.5 mBq
+
+slice_4.period   : string = "[2022-01-29 00:00:00/2022-02-28 00:00:00)"
+slice_4.model    : string = "radon_222-10mBq-from-2022-january"
+
+
+# end

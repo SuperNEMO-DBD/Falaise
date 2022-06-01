@@ -88,34 +88,22 @@ namespace snemo {
         return _period_.end();
       }
   
-      inline time::time_duration duration() const
-      {
-        time::time_duration rd =  _period_.length();
-        for (const auto & aBreak : _breaks_) {
-          rd -= aBreak.length();
-        }
-        return rd;
-      }
+      time::time_duration duration() const;
  
-      inline std::uint32_t number_of_events() const
-      {
-        return _number_of_events_;
-      }
+      std::uint32_t number_of_events() const;
 
-      inline bool has_breaks() const
-      {
-        return _breaks_.size();
-      }
+      bool has_breaks() const;
  
       void add_break(const time::time_period & break_);
  
       void add_break(const time::time_duration & break_shift_,
                      const time::time_duration & break_duration_);
 
-      inline const std::vector<time::time_period> & breaks() const
-      {
-        return _breaks_;
-      }
+      bool has_slices() const;
+
+      const std::vector<time::time_period> & slices() const;
+ 
+      const std::vector<time::time_period> & breaks() const;
       
       bool contains(const time::time_point & timestamp_) const;
 
@@ -127,10 +115,14 @@ namespace snemo {
       
     private:
 
+      void _sync_();
+      
       std::int32_t _run_id_ = INVALID_RUN_ID;
       run_category _category_ = run_category::INDETERMINATE;
-      time::time_period _period_{time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time)};
+      time::time_period _period_{time::time_point(time::not_a_date_time),
+                                 time::time_point(time::not_a_date_time)};
       std::vector<time::time_period> _breaks_;
+      std::vector<time::time_period> _slices_;
       std::uint32_t _number_of_events_ = 0;
 
     };

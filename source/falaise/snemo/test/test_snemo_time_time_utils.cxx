@@ -37,6 +37,8 @@ int main(int /* argc_ */, char** /* argv_ */)
     std::cout << "Input run duration : " << snt::to_string(runDuration) << std::endl;
     std::string runPeriodRepr("[2022-05-27 02:13:42.678000/2022-05-27 03:16:59.801000]");
     runPeriod = snt::time_period_from_string(runPeriodRepr);
+    DT_THROW_IF(not snt::is_valid(runPeriod), std::logic_error,
+                "Invalid run period '" << runPeriod  << "'!");
     std::cout << "Input run period : " << snt::to_string(runPeriod) << std::endl;
  
     std::clog << "The end." << std::endl;

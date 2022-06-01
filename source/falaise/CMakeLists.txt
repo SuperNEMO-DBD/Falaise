@@ -170,7 +170,10 @@ endif()
 set(_falaise_TEST_ENVIRONMENT
   "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
   "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test"
+  "FALAISE_SNEMO_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/snemo/test"
   )
+message( STATUS "_falaise_TEST_ENVIRONMENT='${_falaise_TEST_ENVIRONMENT}'")
+
 if(FALAISE_ENABLE_TESTING)
   # - CATCH TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS_CATCH})
@@ -184,7 +187,7 @@ if(FALAISE_ENABLE_TESTING)
     target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
-      APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+      PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
       )
     # - For now, dump them into the testing output directory
     set_target_properties(${_testname}
@@ -197,14 +200,18 @@ if(FALAISE_ENABLE_TESTING)
 
   # - OLDSTYLE TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS})
+    message( STATUS "OLDSTYLE TEST: ${_testsource}")
+    message( STATUS "  _testsource='${_testsource}'")
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaise-${_testname}")
+    message( STATUS "  _testname='${_testname}'")
+    message( STATUS "  _falaise_TEST_ENVIRONMENT='${_falaise_TEST_ENVIRONMENT}'")
     add_executable(${_testname} ${_testsource})
     target_link_libraries(${_testname}
       PUBLIC Falaise
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
       )
-    target_clang_format(${_testname})
+    # target_clang_format(${_testname})
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}

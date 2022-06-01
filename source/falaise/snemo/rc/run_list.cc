@@ -2,7 +2,7 @@
 ///
 /// Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
 /// Creation date: 2022-04-27
-/// Last modified: 2022-04-27
+/// Last modified: 2022-05-16
 ///
 
 // Ourselves:
@@ -86,10 +86,14 @@ namespace snemo {
     
     void run_list::build_run_ids(std::set<std::int32_t> & run_ids_) const
     {
+      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+      // logging = datatools::logger::PRIO_DEBUG;
       run_ids_.clear();
       for (const auto & rd : _runs_) {
+        DT_LOG_DEBUG(logging, "Run ID=" << rd.first);
         run_ids_.insert(rd.first);
       }
+      DT_LOG_DEBUG(logging, "#runs=" << run_ids_.size());
       return;
     }
     
@@ -150,17 +154,16 @@ namespace snemo {
       }
       
       out_ << popts.indent << tag
-           << "Runs : " << std::endl;
+           << "Run descriptions : " << std::endl;
       unsigned int rdCount = 0;
       for (const auto & rd : _runs_) {
         out_ << popts.indent << skip_tag;
         if (rdCount + 1 < _runs_.size()) {
-          out_ << popts.indent << tag;
+          out_ << tag;
         } else { 
-          out_ << popts.indent << last_tag;
+          out_ << last_tag;
         }
-        out_ << "Run " << rd.first
-             << std::endl;
+        out_ << "Run " << rd.first << std::endl;
         {
           boost::property_tree::ptree runOpts;
           std::ostringstream indentItem;
@@ -178,12 +181,12 @@ namespace snemo {
 
       out_ << popts.indent << tag
            << "Span : "
-           << boost::posix_time::to_simple_string(span())
+           << time::to_string(span(), time::TIME_PERIOD_FORMAT_EXCLUDE_END)
            << std::endl;
 
       out_ << popts.indent << tag
            << "Duration : "
-           << boost::posix_time::to_simple_string(duration()) << " (=" << time::to_quantity(duration()) / CLHEP::second << " s)"
+           << time::to_string(duration()) << " (=" << time::to_quantity(duration()) / CLHEP::second << " s)"
            << std::endl;
  
       out_ << popts.indent << tag
@@ -196,6 +199,35 @@ namespace snemo {
            << _last_run_id_
            << std::endl;
     
+      return;
+    }
+
+    void run_list::load(const datatools::multi_properties & mconfig_)
+    {
+      bool devel = false;
+      DT_THROW_IF(mconfig_.has_key_label() and mconfig_.get_key_label() != "run", std::logic_error,
+                  "Invalid key label '" << mconfig_.get_key_label() << "'! Should be 'run'!");
+      DT_THROW_IF(mconfig_.has_meta_label() and mconfig_.get_meta_label() != "type", std::logic_error,
+                  "Invalid meta label '" << mconfig_.get_meta_label() << "'! Should be 'type'!");
+      const datatools::multi_properties::entries_ordered_col_type & oentries = mconfig_.ordered_entries();
+      if (devel) std::cerr << "[devel] run_list::load: #entries = " << oentries.size() << '\n';
+      for (const datatools::multi_properties::entry * oe : oentries) {
+        const std::string & runIdStr = oe->get_key();
+        if (devel) std::cerr << "[devel] run_list::load: runIdStr = " << runIdStr << '\n';
+        if (oe->has_meta()) {
+          const std::string & runMeta = oe->get_meta();
+          DT_THROW_IF(runMeta != "snemo::rc::run_description", std::logic_error,
+                      "Invalid meta '" << runMeta << "'! Should be 'snemo::rc::run_description'!");  
+        }
+        std::istringstream iss(runIdStr);
+        std::int32_t runId = run_description::INVALID_RUN_ID;
+        iss >> runId;
+        const datatools::properties & runDescConfig = oe->get_properties();
+        run_description runDesc;
+        runDesc.set_run_id(runId);
+        runDesc.load(runDescConfig);
+        add_run(runDesc);
+      }
       return;
     }
     

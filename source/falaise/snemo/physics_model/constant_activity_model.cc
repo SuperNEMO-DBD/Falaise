@@ -73,6 +73,13 @@ namespace snemo {
       _activity_ = a_;
       return;
     }
+
+    time::time_period constant_activity_model::time_span() const
+    {
+      time::time_point t1 = time::neg_infin;
+      time::time_point t2 = time::pos_infin;
+      return time::time_period(t1, t2);
+    }
                          
   }  // end of namespace physics_model
 
