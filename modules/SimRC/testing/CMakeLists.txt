@@ -39,29 +39,33 @@ add_test(NAME testSimRC_simrc
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   ) 
 
-# - Apply RC then reconstruct
-add_test(NAME testSimRC_nosimrc
-  COMMAND flreconstruct
-  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/nosimrc.conf
-  -i testSimRC-simulate.brio
-  -o testSimRC-simulate-norc.brio
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  ) 
+#############################################################
+# 2022-06-01 FM :
+# For developers only : uncomment the following tests to activate the visualization
+# 
+# # - Apply RC then reconstruct
+# add_test(NAME testSimRC_nosimrc
+#   COMMAND flreconstruct
+#   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/nosimrc.conf
+#   -i testSimRC-simulate.brio
+#   -o testSimRC-simulate-norc.brio
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#   ) 
 
-# - Apply RC then reconstruct
-add_test(NAME testSimRC_visurc
-  COMMAND flvisualize
-  -i testSimRC-simulate-rc.brio
-  -f simu.profile
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
+# # - Apply RC then reconstruct
+# add_test(NAME testSimRC_visurc
+#   COMMAND flvisualize
+#   -i testSimRC-simulate-rc.brio
+#   -f simu.profile
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#   )
 
-# - Apply RC then reconstruct
-add_test(NAME testSimRC_visunorc
-  COMMAND flvisualize
-  -i testSimRC-simulate-norc.brio
-  -f simu.profile
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+# # - Apply RC then reconstruct
+# add_test(NAME testSimRC_visunorc
+#   COMMAND flvisualize
+#   -i testSimRC-simulate-norc.brio
+#   -f simu.profile
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 
 # end
