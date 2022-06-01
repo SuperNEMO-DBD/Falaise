@@ -4,12 +4,14 @@
 #include "simrc_module.hpp"
 
 // Standard library:
+#include <iostream>
 #include <sstream>
 #include <stdexcept>
 
 // Third party:
 // - Bayeux/datatools:
 #include <datatools/service_manager.h>
+#include <datatools/logger.h>
 // - Bayeux/geomtools:
 #include <geomtools/geometry_service.h>
 #include <geomtools/manager.h>
@@ -21,15 +23,14 @@
 #include <falaise/property_set.h>
 #include <falaise/snemo/services/service_handle.h>
 #include <falaise/snemo/services/geometry.h>
+#include <falaise/resource.h>
 
 namespace snemo {
 
   namespace simulation {
 
     // Registration instantiation macro :
-    DPP_MODULE_REGISTRATION_IMPLEMENT(simrc_module,
-                                      "snemo::simulation::simrc_module")
-
+    DPP_MODULE_REGISTRATION_IMPLEMENT(simrc_module, "snemo::simulation::simrc_module")
 
     // Constructor :
     simrc_module::simrc_module(datatools::logger::priority logging_priority_)
@@ -83,11 +84,57 @@ namespace snemo {
       dpp::base_module::_common_initialize(config_);
 
       falaise::property_set ps{config_};
+      _EHTag_ = ps.get<std::string>("EH_label", snedm::labels::event_header());
       _SDTag_ = ps.get<std::string>("SD_label", snedm::labels::simulated_data());
 
       snemo::service_handle<snemo::geometry_svc> geoSVC{services_};
       set_geometry_manager(*(geoSVC.operator->()));
       _caloTypes_ = {"calo", "xcalo", "gveto"};
+      _ggType_ = "gg";
+ 
+      snemo::service_handle<snemo::tracker_cell_status_service> cellStatusSVC{services_};
+      snemo::service_handle<snemo::calorimeter_om_status_service> omStatusSVC{services_};
+     
+      if (config_.has_key("timestamp_event")) {
+        _event_timestamping_ = config_.fetch_boolean("timestamp_event");
+      }
+      
+      if (config_.has_key("tag_tracker_cell")) {
+        _tracker_cell_tag_ = config_.fetch_boolean("tag_tracker_cell");
+      }
+
+      if (config_.has_key("tag_calorimeter_om")) {
+        _calorimeter_om_tag_ = config_.fetch_boolean("tag_calorimeter_om");
+      }
+      
+      if (_event_timestamping_) {
+        DT_LOG_DEBUG(get_logging_priority(), "Activate MC event timestamping");
+        _event_timestamper_ = std::make_unique<event_timestamper>();
+        datatools::properties eventTimestamperConfig;
+        config_.export_and_rename_starting_with(eventTimestamperConfig, "event_timestamper.", "");
+        _event_timestamper_->initialize(eventTimestamperConfig);
+      }
+
+      if (_tracker_cell_tag_) {
+        DT_LOG_DEBUG(get_logging_priority(), "Activate MC event tracker cell tagging");
+        _tracker_cell_tagger_ = std::make_unique<tracker_cell_tagger>();
+        datatools::properties cellTaggerConfig;
+        config_.export_and_rename_starting_with(cellTaggerConfig, "tracker_cell_tagger.", "");
+        _tracker_cell_tagger_->set_geometry_manager(*_geoManager_);
+        _tracker_cell_tagger_->set_tracker_cell_status_service(*(cellStatusSVC.operator->()));
+        _tracker_cell_tagger_->initialize(cellTaggerConfig);
+      }
+      
+      if (_calorimeter_om_tag_) {
+        DT_LOG_DEBUG(get_logging_priority(), "Activate MC event calorimeter OM tagging");
+        _calorimeter_om_tagger_ = std::make_unique<calorimeter_om_tagger>();
+        datatools::properties omTaggerConfig;
+        config_.export_and_rename_starting_with(omTaggerConfig, "calorimeter_om_tagger.", "");
+        _calorimeter_om_tagger_->set_geometry_manager(*_geoManager_);
+        _calorimeter_om_tagger_->set_calorimeter_om_status_service(*(omStatusSVC.operator->()));
+        _calorimeter_om_tagger_->initialize(omTaggerConfig);
+      }
+  
       _set_initialized(true);
       return;
     }
@@ -97,20 +144,30 @@ namespace snemo {
       DT_THROW_IF(!is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is not initialized !");
       _set_initialized(false);
-      // Reset the dead OM tagger :
-      // if (_deadOmTagger_) {
-      //        if (deadOmTagger_->is_initialized()) {
-      //          _deadOmTagger_->reset();
-      //        }
-      //        _deadOmTagger_.reset();
-      // }
-      // Reset the dead cell tagger :
-      // if (_deadCellTagger_) {
-      //        if (_deadCellTagger_->is_initialized()) {
-      //          _deadCellTagger_->reset();
-      //        }
-      //        _deadCellTagger_.reset();
-      // }
+      
+      if (_event_timestamper_) {
+        if (_event_timestamper_->is_initialized()) {
+          _event_timestamper_->reset();
+        }
+        _event_timestamper_.reset();
+      }
+
+      // Reset the calo OM tagger :
+      if (_calorimeter_om_tagger_) {
+        if (_calorimeter_om_tagger_->is_initialized()) {
+          _calorimeter_om_tagger_->reset();
+        }
+        _calorimeter_om_tagger_.reset();
+      }
+      
+      // Reset the tracker cell tagger :
+      if (_tracker_cell_tagger_) {
+        if (_tracker_cell_tagger_->is_initialized()) {
+          _tracker_cell_tagger_->reset();
+        }
+        _tracker_cell_tagger_.reset();
+      }
+
       _set_defaults();
       return;
     }
@@ -119,47 +176,41 @@ namespace snemo {
     {
       DT_THROW_IF(!is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is not initialized !");
+     
+      // Check event header:
+      if (!event_.has(_EHTag_)) {
+        DT_THROW(std::logic_error, "Missing event header data to be processed !");
+      }
+      snemo::datamodel::event_header & eh = event_.grab<snemo::datamodel::event_header>(_EHTag_);
        
-      // Check tracker clustering data
+      // Check simulated data:
       if (!event_.has(_SDTag_)) {
-        DT_THROW_IF(true, std::logic_error, "Missing simulated data to be processed !");
+        DT_THROW(std::logic_error, "Missing simulated data to be processed !");
       }
       mctools::simulated_data & sd = event_.grab<mctools::simulated_data>(_SDTag_);
       
       // Main processing method :
-      _process_impl(sd);
+      _process_impl(eh, sd);
       
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
-    void simrc_module::_process_impl(mctools::simulated_data & sd_)
+    void simrc_module::_process_impl(snemo::datamodel::event_header & eh_,
+                                     mctools::simulated_data & sd_)
     {
-      // Loop over all 'calorimeter hit' categories :
-      for (const std::string & caloType : _caloTypes_) {
-        if (!sd_.has_step_hits(caloType)) {
-          continue;
-        }
-        auto & mcHits = sd_.grab_step_hits(caloType);
-        for (auto & caloMcHit : mcHits) {
-          // const geomtools::geom_id & geomID = caloMcHit->get_geom_id();
-          if (true) { 
-            caloMcHit->grab_auxiliaries().store_flag("snemo.rc.off");
-          }
-        }
+  
+      if (_event_timestamper_) {
+        _event_timestamper_->process(eh_);
       }
-      
-      // 'tracker hit' category :
-      static const std::string ggType{"gg"};
-      if (sd_.has_step_hits(ggType)) {
-        auto & mcHits = sd_.grab_step_hits(ggType);
-        for (auto & trackerMcHit : mcHits) {
-          // const geomtools::geom_id & geomID = trackerMcHit->get_geom_id();
-          if (true) { 
-            trackerMcHit->grab_auxiliaries().store_flag("snemo.rc.off");
-          }
-        }       
+
+      if (_tracker_cell_tagger_) {
+        _tracker_cell_tagger_->process(eh_, sd_);
       }
-      
+
+      if (_calorimeter_om_tagger_) {
+        _calorimeter_om_tagger_->process(eh_, sd_);
+      }
+        
       return;
     }
 

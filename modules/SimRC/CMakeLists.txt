@@ -6,8 +6,15 @@ project(FalaiseSimRCPlugin)
 
 # Build a dynamic library from our sources
 add_library(Falaise_SimRC SHARED
+  snsimrc/event_timestamper.hpp
+  snsimrc/event_timestamper.cpp
+  snsimrc/tracker_cell_tagger.hpp
+  snsimrc/tracker_cell_tagger.cpp
+  snsimrc/calorimeter_om_tagger.hpp
+  snsimrc/calorimeter_om_tagger.cpp
   snsimrc/simrc_module.hpp
   snsimrc/simrc_module.cpp
+  snsimrc/simrc_plugin.cpp
   )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -39,27 +46,17 @@ endif()
 # Install Targets
 install(TARGETS Falaise_SimRC DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
-
-
-# # Test support:
-# option(FalaiseSimRCPlugin_ENABLE_TESTING "Build unit testing system for FalaiseSimRCPlugin" ON)
-# if(FalaiseSimRCPluginPlugin_ENABLE_TESTING)
-#   enable_testing()
-#   add_subdirectory(testing)
-# endif()
-
-
-# Configure example pipeline script for use from the build dir
-# configure_file("SimRCExample.conf.in" "SimRCModuleExample.conf" @ONLY)
-
-# Add a basic test of reading a brio file output by the
-# standard pipeline
-# enable_testing()
-# - Simulate
-# add_test(NAME testSimRC_simulate
-#   COMMAND flsimulate -o test-simulate.brio
-#   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+# install(FILES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/SimRC/config/activity_model_factory.conf
+#   ${CMAKE_CURRENT_SOURCE_DIR}/SimRC/config/activity_models.conf
+#   DESTINATION
 #   )
 
+# Test support:
+option(FalaiseSimRCPlugin_ENABLE_TESTING "Build unit testing system for FalaiseSimRCPlugin" ON)
+if(FalaiseSimRCPlugin_ENABLE_TESTING)
+  enable_testing()
+  add_subdirectory(testing)
+endif()
 
 # - end

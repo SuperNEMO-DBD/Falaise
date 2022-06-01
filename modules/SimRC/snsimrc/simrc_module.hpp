@@ -12,6 +12,10 @@
 // - Bayeux/dpp :
 #include <dpp/base_module.h>
 
+#include "event_timestamper.hpp"
+#include "tracker_cell_tagger.hpp"
+#include "calorimeter_om_tagger.hpp"
+
 namespace geomtools {
   class manager;
 }
@@ -56,7 +60,8 @@ namespace snemo {
     protected:
       
       /// Method  to process and generate trajectory data
-      void _process_impl(mctools::simulated_data & simdata_);
+      void _process_impl(snemo::datamodel::event_header & eh_,
+                         mctools::simulated_data & sd_);
 
       /// Give default values to specific class members.
       void _set_defaults();
@@ -64,14 +69,18 @@ namespace snemo {
     private:
       
       const geomtools::manager * _geoManager_ = nullptr; ///< The geometry manager
-      std::string _SDTag_ = "SD"; ///< The label of the input SD bank
+      std::string _EHTag_ = "EH"; ///< The label of the input EH bank (event header)
+      std::string _SDTag_ = "SD"; ///< The label of the input SD bank (simulated data)
+      
       std::vector<std::string> _caloTypes_{}; ///< Calorimeter hit categories
-
-      // /// Handle to the embedded dead-OM tagger
-      // std::unique_ptr<snemo::processing::dead_om_tagger> _deadOmTagger_;
-      // /// Handle to the embedded dead-cell tagger
-      // std::unique_ptr<snemo::processing::dead_cell_tagger> _deadCellTagger_;
-
+      std::string _ggType_;
+      bool _event_timestamping_ = true;
+      bool _tracker_cell_tag_ = true;
+      bool _calorimeter_om_tag_ = true;
+      std::unique_ptr<snemo::simulation::event_timestamper> _event_timestamper_;
+      std::unique_ptr<snemo::simulation::tracker_cell_tagger> _tracker_cell_tagger_;
+      std::unique_ptr<snemo::simulation::calorimeter_om_tagger> _calorimeter_om_tagger_;
+ 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(simrc_module)
       
