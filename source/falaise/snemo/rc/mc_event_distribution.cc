@@ -21,34 +21,156 @@ namespace snemo {
 
   namespace rc {
 
-    mc_event_distribution::mc_event_distribution(const run_statistics & run_stats_,
-                                                 std::uint32_t nb_events_,
-                                                 unsigned long seed_,
+    mc_event_distribution::reader::reader(std::string filepath_, std::uint32_t nb_events_)
+    {
+      _fin_ = std::ifstream(filepath_);
+      DT_THROW_IF(!_fin_, std::runtime_error, "Cannot open input file '" << filepath_ << "'!");
+      _filepath_ = filepath_;
+      // Parse and check header:
+      {
+        std::string line;
+        std::getline(_fin_, line);
+        if (line != "!falaise::simrc::mc-event-timestamps") {
+          DT_THROW(std::logic_error, "Input file '" << filepath_ << "' is not a MC event timestamps file!");
+        }
+      }
+      {
+        std::string line;
+        std::getline(_fin_, line);
+        std::istringstream liness(line);
+        std::uint32_t nbOfTimestamps = 0;
+        liness >> nbOfTimestamps;
+        if (! liness) {
+          DT_THROW(std::logic_error, "Cannot parse the number of MC event timestamps from input file '" << filepath_ << "'!");
+        }
+        DT_THROW_IF(nbOfTimestamps != nb_events_, std::logic_error, "Number of stored timestamps (=" << nbOfTimestamps << ") does not match the requested number of timestamps (=" << nb_events_ << ")!")
+      }
+      _nb_events_ = nb_events_;
+      _fin_ >> std::ws;
+      if (_fin_.eof()) {
+        _terminated_ = true;
+      }
+      return;
+    }
+    
+    bool mc_event_distribution::reader::is_terminated() const
+    {
+      return _terminated_;
+    }
+    
+    void mc_event_distribution::reader::read(event_rc_timestamping & ts_)
+    {
+      DT_THROW_IF(is_terminated(), std::logic_error, "Event timestamp reader is temrinated!")
+      std::string line;
+      std::getline(_fin_, line);
+      if (line.empty()) {
+        DT_THROW(std::logic_error, "Cannot fetch a new line!");
+      }
+      std::istringstream liness(line);
+      std::int32_t eventCounter = -1;
+      std::int32_t runId = -1;
+      time::time_point decayTimestamp;
+      liness >> eventCounter >> runId >> std::ws;
+      if (!liness) {
+        DT_THROW(std::logic_error, "Invalid format for next decay timestamping record ('" << line << "')!");
+      }
+      if (runId < 0) {
+        DT_THROW(std::logic_error, "Invalid run ID value (" << runId << ")!");
+      }
+      std::string timestampRepr;
+      std::getline(liness, timestampRepr);
+      decayTimestamp = time::time_point_from_string(timestampRepr);
+      if (not time::is_valid(decayTimestamp)) {
+        DT_THROW(std::logic_error, "Invalid format for timestamp ('" << timestampRepr << "')!");
+      }
+      ts_.run_id = runId;
+      ts_.decay_time = decayTimestamp;
+      _counter_++;
+      _fin_ >> std::ws;
+      if (_fin_.eof()) {
+        _terminated_ = true;
+      }
+      return;
+    }
+    
+    mc_event_distribution::writer::writer(std::string filepath_, std::uint32_t nb_events_)
+      : _fout_(filepath_)
+    {
+      DT_THROW_IF(!_fout_, std::runtime_error, "Cannot open output file '" << filepath_ << "'!");
+      _fout_ << "!falaise::simrc::mc-event-timestamps" << '\n';
+      _fout_ << nb_events_ << '\n';
+      return;
+    }
+    
+    void mc_event_distribution::writer::write(const event_rc_timestamping & ts_) 
+    {
+      _fout_ << _counter_ << ' ' << ts_.run_id << ' ' << time::to_string(ts_.decay_time) << '\n';
+      _counter_++;
+      return;
+    }
+
+    mc_event_distribution::mc_event_distribution(std::uint32_t nb_events_,
                                                  datatools::logger::priority logging_)
     {
-      DT_THROW_IF(! run_stats_.is_initialized(), std::logic_error,
-                  "Run statistics is not initialized!");
-      DT_THROW_IF(nb_events_ == 0, std::logic_error, "Invalid zero number of events!");
-      _logging_ = logging_;
-      _run_stats_ = &run_stats_;
+      _logging_ = logging_;      
       _nb_events_ = nb_events_;
-      if (seed_ > 0) {
-        _seed_ = seed_;
-      }
-      if (_seed_ > 0) {
-        DT_LOG_DEBUG(_logging_, "Using stochastic engine");
-        _T_ = gsl_rng_taus;
-        _prng_ = gsl_rng_alloc(_T_);
-        gsl_rng_set(_prng_, (unsigned long int) _seed_);
-      } else {
-        DT_LOG_DEBUG(_logging_, "Using deterministic engine");
-      }
-      _precompute_();
       return;
+    }
+
+    // static
+    std::unique_ptr<mc_event_distribution>
+    mc_event_distribution::make_regular_sampling(const run_statistics & run_stats_,
+                                                 std::uint32_t nb_events_,
+                                                 datatools::logger::priority logging_)
+    {
+      DT_LOG_DEBUG(logging_, "Make a regular non-stochastic sampler");
+      auto u = std::make_unique<mc_event_distribution>(nb_events_, logging_);
+      u->_run_stats_ = &run_stats_;
+      u->_seed_ = 0;
+      u->_precompute_sampling_();
+      return u;
+    }
+
+    // static
+    std::unique_ptr<mc_event_distribution>
+    mc_event_distribution::make_random_sampling(const run_statistics & run_stats_,
+                                                std::uint32_t nb_events_,
+                                                unsigned long seed_,
+                                                datatools::logger::priority logging_)
+    {
+      DT_LOG_DEBUG(logging_, "Make a stochastic sampler");
+      auto u = std::make_unique<mc_event_distribution>(nb_events_, logging_);
+      u->_run_stats_ = &run_stats_;
+      DT_THROW_IF(seed_ == 0, std::logic_error, "Invalid random seed!");
+      u->_seed_ = seed_;
+      u->_T_ = gsl_rng_taus;
+      u->_prng_ = gsl_rng_alloc(u->_T_);
+      gsl_rng_set(u->_prng_, (unsigned long int) u->_seed_);
+      u->_precompute_sampling_();
+      return u;
+    }
+
+    // static
+    std::unique_ptr<mc_event_distribution>
+    mc_event_distribution::make_from_file(std::uint32_t nb_events_,
+                                          const std::string & path_,
+                                          datatools::logger::priority logging_)
+    {
+      DT_LOG_DEBUG(logging_, "Make a sampling from pre-computed file");
+      auto u = std::make_unique<mc_event_distribution>(nb_events_, logging_);
+      std::string timestampsPath(path_);
+      datatools::fetch_path_with_env(timestampsPath);
+      u->_reader_.reset(new reader(timestampsPath, nb_events_));
+      u->_parsed_next_decay_.run_id = -1;
+      u->_load_next_decay_from_file_();     
+      return u;      
     }
 
     mc_event_distribution::~mc_event_distribution()
     {
+      if (_reader_) {
+        _reader_.reset();
+      }
       if (_prng_ != nullptr) {
         gsl_rng_free(_prng_);
         _T_ = nullptr;
@@ -56,7 +178,7 @@ namespace snemo {
       return;
     }
  
-    void mc_event_distribution::_precompute_()
+    void mc_event_distribution::_precompute_sampling_()
     {
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       logging = _logging_;
@@ -162,12 +284,41 @@ namespace snemo {
 
     bool mc_event_distribution::has_next_decay() const
     {
-      if (_current_decay_index_ == _nb_events_) return false;
+      if (_reader_) {
+        // Reader mode:
+        if (_parsed_next_decay_.run_id == -1) return false;
+      } else {
+        // Sampling modes (random, regular)
+        if (_current_decay_index_ == _nb_events_) return false;
+      }
       return true;
     }
-     
-    mc_event_distribution::event_rc_timing mc_event_distribution::next_decay()
+   
+    void mc_event_distribution::_load_next_decay_from_file_()
     {
+      DT_THROW_IF(! _reader_, std::logic_error, "No input file reader is defined!");
+      DT_THROW_IF(_reader_->is_terminated(), std::logic_error, "Reader is terminated!");
+      _reader_->read(_parsed_next_decay_);
+      return;
+    }
+      
+    mc_event_distribution::event_rc_timestamping mc_event_distribution::next_decay()
+    {
+      if (_reader_) {
+        DT_THROW_IF(_parsed_next_decay_.run_id == -1, std::logic_error,
+                    "All decay timestamps have been consumed from the file!");
+        event_rc_timestamping decayRec;
+        decayRec.run_id = _parsed_next_decay_.run_id;
+        decayRec.decay_time = _parsed_next_decay_.decay_time;
+        _parsed_next_decay_.run_id = -1;
+        _parsed_next_decay_.decay_time = time::invalid_point();
+        if (not _reader_->is_terminated()) {
+          _load_next_decay_from_file_();
+        }
+        // Update:
+        _current_decay_index_++;
+        return decayRec;
+      }
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       logging = _logging_;
       DT_THROW_IF(_current_decay_index_ == _nb_events_, std::logic_error,
@@ -177,7 +328,7 @@ namespace snemo {
       DT_LOG_DEBUG(logging, "currentRunId=" << currentRunId);
       const time::time_point & decayTime
         = dpr.decay_timestamps[_current_decay_index_in_run_];
-      event_rc_timing decayRec;
+      event_rc_timestamping decayRec;
       decayRec.run_id = currentRunId;
       decayRec.decay_time = decayTime;
       // Update:
@@ -206,57 +357,63 @@ namespace snemo {
            << _nb_events_
            << std::endl;
 
-      out_ << popts.indent << tag
-           << "Number of MC decays per run: "
-            << std::endl;
-      {
-        std::uint32_t count = 0;
-        for (std::uint32_t nDecays : _nb_decays_per_run_) {
-          out_ << popts.indent << skip_tag;
-          if (count + 1 == _nb_decays_per_run_.size()) {
-            out_ << popts.indent << last_tag;
-          } else {
-            out_ << popts.indent << tag;
+      if (_reader_) {      
+        out_ << popts.indent << tag
+             << "Use input file for precomputed event timestamps"
+             << std::endl;
+      } else {
+        out_ << popts.indent << tag
+             << "Number of MC decays per run: "
+             << std::endl;
+        {
+          std::uint32_t count = 0;
+          for (std::uint32_t nDecays : _nb_decays_per_run_) {
+            out_ << popts.indent << skip_tag;
+            if (count + 1 == _nb_decays_per_run_.size()) {
+              out_ << popts.indent << last_tag;
+            } else {
+              out_ << popts.indent << tag;
+            }
+            out_ << "#decays : " << nDecays;
+            out_ << std::endl;
+            count++; 
           }
-          out_ << "#decays : " << nDecays;
-          out_ << std::endl;
-          count++; 
+        }
+        out_ << popts.indent << tag
+             << "Seed : "
+             << _seed_
+             << std::endl;
+      
+        out_ << popts.indent << tag
+             << "PRNG : "
+             << _prng_
+             << std::endl;
+      
+        out_ << popts.indent << tag
+             << "Per run data: "
+             << std::endl;
+        {
+          std::uint32_t count = 0;
+          for (const data_per_run & prd : _per_run_data_) {
+            out_ << popts.indent << skip_tag;
+            if (count + 1 == _per_run_data_.size()) {
+              out_ << popts.indent << last_tag;
+            } else {
+              out_ << popts.indent << tag;
+            }
+            out_ << "Run #" << prd.run_id << " : " << prd.decay_timestamps.size() << " decay times = [" ;
+            if (prd.decay_timestamps.size() > 0) {
+              out_ << time::to_string(prd.decay_timestamps.front());
+            }
+            if (prd.decay_timestamps.size() > 1) {
+              out_ << " ... " << time::to_string(prd.decay_timestamps.back());
+            }
+            out_ << ']' << std::endl;
+            count++; 
+          }
         }
       }
-      out_ << popts.indent << tag
-           << "Seed : "
-           << _seed_
-           << std::endl;
       
-      out_ << popts.indent << tag
-           << "PRNG : "
-           << _prng_
-           << std::endl;
-      
-      out_ << popts.indent << tag
-           << "Per run data: "
-            << std::endl;
-      {
-        std::uint32_t count = 0;
-        for (const data_per_run & prd : _per_run_data_) {
-          out_ << popts.indent << skip_tag;
-          if (count + 1 == _per_run_data_.size()) {
-            out_ << popts.indent << last_tag;
-          } else {
-            out_ << popts.indent << tag;
-          }
-          out_ << "Run #" << prd.run_id << " : " << prd.decay_timestamps.size() << " decay times = [" ;
-          if (prd.decay_timestamps.size() > 0) {
-            out_ << time::to_string(prd.decay_timestamps.front());
-          }
-          if (prd.decay_timestamps.size() > 1) {
-            out_ << " ... " << time::to_string(prd.decay_timestamps.back());
-          }
-          out_ << ']' << std::endl;
-          count++; 
-        }
-      }
-    
       out_ << popts.indent << tag
            << "Current run index    = " << _current_run_index_
            << std::endl;

@@ -15,6 +15,8 @@ add_library(Falaise_SimRC SHARED
   snsimrc/simrc_module.hpp
   snsimrc/simrc_module.cpp
   snsimrc/simrc_plugin.cpp
+  snsimrc/simrc_lib.cpp
+  snsimrc/simrc_lib.hpp
   )
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -51,6 +53,8 @@ install(TARGETS Falaise_SimRC DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 #   ${CMAKE_CURRENT_SOURCE_DIR}/SimRC/config/activity_models.conf
 #   DESTINATION
 #   )
+
+add_subdirectory(programs)
 
 # Test support:
 option(FalaiseSimRCPlugin_ENABLE_TESTING "Build unit testing system for FalaiseSimRCPlugin" ON)

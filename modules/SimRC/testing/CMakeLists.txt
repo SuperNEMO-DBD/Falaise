@@ -15,6 +15,7 @@ set(_SimRCTestConfFiles
   "activity_model_factory.conf"
   "activity_models.conf"
   "runs.lis"
+  "mc_event_timestamps.lis"
   )
 
 foreach(_file ${_SimRCTestConfFiles})
@@ -29,13 +30,31 @@ add_test(NAME testSimRC_simulate
   -m testSimRC-simulate-meta.xml
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
-
+ 
 # - Apply RC then reconstruct
 add_test(NAME testSimRC_simrc
   COMMAND flreconstruct
   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc.conf
   -i testSimRC-simulate.brio
   -o testSimRC-simulate-rc.brio
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  ) 
+
+# - Simulate
+add_test(NAME testSimRC_simulate2
+  COMMAND flsimulate
+  -c ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simu2.conf
+  -o testSimRC-simulate2.brio
+  -m testSimRC-simulate-meta2.xml
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
+# - Apply RC then reconstruct
+add_test(NAME testSimRC_simrc2
+  COMMAND flreconstruct
+  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc2.conf
+  -i testSimRC-simulate2.brio
+  -o testSimRC-simulate-rc2.brio
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   ) 
 
@@ -66,6 +85,6 @@ add_test(NAME testSimRC_simrc
 #   -i testSimRC-simulate-norc.brio
 #   -f simu.profile
 #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
+# )
 
 # end

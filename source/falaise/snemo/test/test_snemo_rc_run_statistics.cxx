@@ -141,19 +141,24 @@ void test1()
 
   
   std::uint32_t nbEvents = 10000;
-  long randomSeed = 3141591;
+  unsigned long randomSeed = 3141591;
   randomSeed = 0;
   datatools::logger::priority logging = datatools::logger::PRIO_DEBUG;
-  snrc::mc_event_distribution mcEventDist(runStats, nbEvents, randomSeed, logging);
+  std::unique_ptr<snrc::mc_event_distribution> mcEventDist;
+  if (randomSeed == 0) {
+    snrc::mc_event_distribution::make_regular_sampling(runStats, nbEvents, logging);
+  } else {
+    snrc::mc_event_distribution::make_random_sampling(runStats, nbEvents, randomSeed, logging);
+  }
   std::clog << "\nMC event distribution: " << '\n';
-  mcEventDist.print_tree(std::clog);
-  std::clog << mcEventDist.has_next_decay() << '\n';
-  // while (mcEventDist.has_next_decay()) {
-  //   auto decay = mcEventDist.next_decay();
-  //   std::int32_t runId = decay.run_id;
-  //   snt::time_point decayTime = decay.decay_time;
-  //   std::clog << "Run #" << runId << " DecayTime=" << snt::to_string(decayTime) << '\n';
-  // }
+  mcEventDist->print_tree(std::clog);
+  std::clog << mcEventDist->has_next_decay() << '\n';
+  while (mcEventDist->has_next_decay()) {
+    auto decay = mcEventDist->next_decay();
+    std::int32_t runId = decay.run_id;
+    snt::time_point decayTime = decay.decay_time;
+    std::clog << "Run #" << runId << " DecayTime=" << snt::to_string(decayTime) << '\n';
+  }
   
   return;
 }
