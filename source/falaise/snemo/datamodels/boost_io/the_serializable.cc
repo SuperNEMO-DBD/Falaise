@@ -44,6 +44,29 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::timest
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::event_header)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::event_header)
 
+/************************************************
+ * snemo::datamodel::calorimeter_digitized_hit *
+ ************************************************/
+
+#include <falaise/snemo/datamodels/boost_io/calorimeter_digitized_hit.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calorimeter_digitized_hit)
+
+/********************************************
+ * snemo::datamodel::tracker_digitized_hit *
+ ********************************************/
+
+#include <falaise/snemo/datamodels/boost_io/calibrated_tracker_hit.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_digitized_hit)
+
+/*************************************
+ * snemo::datamodel::raw_event_data *
+ *************************************/
+
+#include <falaise/snemo/datamodels/boost_io/raw_event_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_event_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::raw_event_data)
+
+
 /***************************************************
  * snemo::datamodel::precalibrated_calorimeter_hit *
  ***************************************************/
