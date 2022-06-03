@@ -85,6 +85,8 @@ namespace snemo {
       void process(snemo::datamodel::event_header & eh_);
 
       snemo::rc::mc_event_distribution & mcEventDistribution();
+
+      const snemo::rc::run_list & run_list() const;
       
     private:
 

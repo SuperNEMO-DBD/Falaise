@@ -1,4 +1,5 @@
 # - CMake build script for Falaise flsimrc_timestamper app
+message(STATUS "==============> flsimrc_timestamper")
 
 #-----------------------------------------------------------------------
 # Copyright (c) 2022 by François Mauger <mauger@lpccaen.in2p3.fr>
@@ -68,5 +69,54 @@ install(TARGETS flsimrc-timestamper
   EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
+
+if(FALAISE_ENABLE_TESTING)
+  set(_SimRCTimestamperTestConfFiles
+    "activity_model_factory.conf"
+    "activity_models.conf"
+    )
+  
+  foreach(_file ${_SimRCTimestamperTestConfFiles})
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${_file}" "${CMAKE_CURRENT_BINARY_DIR}/${_file}" COPYONLY)
+  endforeach()
+
+  add_test(NAME testSimRC_timestamper_regular
+    COMMAND flsimrc-timestamper
+    -V debug
+    -n 1000
+    -o timestamps-regular.lis
+    -g "regular"
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    ) 
+
+  add_test(NAME testSimRC_timestamper_random
+    COMMAND flsimrc-timestamper
+    -V debug
+    -n 1000
+    -o timestamps-random.lis
+    -g "random"
+    -s 314159
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    ) 
+
+  add_test(NAME testSimRC_timestamper_random_exp
+    COMMAND flsimrc-timestamper
+    -V debug
+    -n 10000
+    -f "activity_model_factory.conf"
+    -a "decaying-from-2023-01-01"
+    -o "timestamps-random-exp.lis"
+    -q "times-random-exp.lis"
+    -g "random"
+    -s 314159
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    ) 
+
+  add_test(NAME testSimRC_timestamper_random_exp_post
+    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/test.bash
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    ) 
+
+endif(FALAISE_ENABLE_TESTING)
 
 # - end

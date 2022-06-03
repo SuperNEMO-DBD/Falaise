@@ -59,19 +59,25 @@ namespace FLSimRC {
 
       ("number-of-events,n",
        bpo::value<uint32_t>(&params_.number_of_mc_events)->value_name("number"),
-       "number of MC events to be timestamped")
+       "number of MC events to be timestamped (integer > 0)")
 
       ("event-timestamps-file,o",
        bpo::value<std::string>(&params_.event_timestamps_path)->value_name("file"),
        "file in which to store MC events' generated timestamps")
 
+      ("event-times-file,q",
+       bpo::value<std::string>(&params_.event_times_path)->value_name("file"),
+       "file in which to store generated time quantities")
+
       ("timestamp-generation-mode,g",
-       bpo::value<std::string>(&params_.timestamp_generation_mode)->value_name("label"),
-       "timestamp generation mode")
+       bpo::value<std::string>(&params_.timestamp_generation_mode)
+       ->value_name("label")
+       ->default_value("regular"),
+       "timestamp generation mode (supported: 'regular', 'random'")
 
       ("timestamp-generation-random-seed,s",
        bpo::value<unsigned long>(&params_.timestamp_generation_random_seed)->value_name("number"),
-       "timestamp generation mode")
+       "seed for the timestamp random generation mode (integer >0)")
       
     ;
     // clang-format on
@@ -117,10 +123,12 @@ namespace FLSimRC {
         std::cerr << "flsimrc-timestamper : " << "Invalid timestamp generation mode '" + params_.timestamp_generation_mode + "'!\n";
         return falaise::EXIT_ERROR;
       }
+    } else {
+      params_.timestamp_generation_mode = "regular";
     }
 
     if (params_.timestamp_generation_mode == "random") {
-      if (vMap.count("timestamp_generation_random_seed") == 0u) {
+      if (vMap.count("timestamp-generation-random-seed") == 0u) {
         std::cerr << "flsimrc-timestamper : " << "Missing timestamp generation random seed!\n";
         return falaise::EXIT_ERROR;
       } else {

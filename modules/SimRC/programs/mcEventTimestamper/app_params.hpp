@@ -31,6 +31,9 @@ namespace FLSimRC {
     /// Path to the output file with MC events' generated timestamps
     std::string event_timestamps_path;
 
+    /// Path to the output file with MC events' generated time quantity
+    std::string event_times_path;
+
     /// Timestamp generation mode (random, regular)
     std::string timestamp_generation_mode;
 

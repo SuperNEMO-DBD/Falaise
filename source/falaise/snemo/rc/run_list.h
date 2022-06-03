@@ -71,6 +71,11 @@ namespace snemo {
       {
         return _last_run_id_;
       }
+
+      const std::map<std::int32_t, run_description> & runs() const
+      {
+        return _runs_;
+      }
       
       /// Smart print
       virtual void print_tree(std::ostream & out_ = std::clog,

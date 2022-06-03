@@ -86,7 +86,7 @@ namespace snemo {
       class writer
       {
       public:
-        writer(std::string filepath_, std::uint32_t nb_events_);
+        writer(std::string filepath_, std::uint32_t nb_timestamps_);
         void write(const event_rc_timestamping &);
 
       private:
@@ -97,12 +97,13 @@ namespace snemo {
       class reader
       {
       public:
-        reader(std::string filepath_, std::uint32_t nb_events_);
+        reader(std::string filepath_, std::uint32_t nb_timestamps_);
+        ~reader();
         void read(event_rc_timestamping &);
         bool is_terminated() const;
       private:
         std::string _filepath_;
-        std::uint32_t _nb_events_;
+        std::uint32_t _nb_timestamps_;
         int _counter_ = 0;
         std::ifstream _fin_;
         bool _terminated_ = false;

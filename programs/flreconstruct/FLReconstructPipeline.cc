@@ -8,6 +8,7 @@
 // Third Party
 // - Boost
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 // - Bayeux
 #include <bayeux/datatools/kernel.h>
 #include <bayeux/datatools/urn_query_service.h>
@@ -116,7 +117,13 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     // Input module...
     std::unique_ptr<dpp::input_module> recInput(new dpp::input_module);
     recInput->set_logging_priority(flRecParameters.logLevel);
-    recInput->set_single_input_file(flRecParameters.inputFile);
+    std::string inFile(flRecParameters.inputFile);
+    datatools::fetch_path_with_env(inFile);
+    if (not boost::filesystem::exists(inFile)) {
+      DT_LOG_FATAL(flRecParameters.logLevel, "Input file '" << inFile << "' does not exist!");
+      return falaise::EXIT_UNAVAILABLE;
+    }
+    recInput->set_single_input_file(inFile);
     recInput->initialize_simple();
 
     // Output metadata management:
@@ -160,13 +167,15 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     }
 
     // - Now the actual event loop
-    DT_LOG_DEBUG(flRecParameters.logLevel, "begin event loop");
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Begin event loop");
     datatools::things workItem;
     std::size_t eventCounter = 0;
     while (true) {
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==========> Pipeline loop for event #" << eventCounter);
       // Prepare and read work
       workItem.clear();
       if (recInput->is_terminated()) {
+        DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
         break;
       }
       if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
@@ -224,7 +233,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
         break;
       }
     }
-    DT_LOG_DEBUG(flRecParameters.logLevel, "event loop completed");
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Event loop completed");
 
     // - MUST delete the module manager BEFORE the library loader clears
     // in case the manager is holding resources created from a shared lib
@@ -247,7 +256,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     // Terminate the variant service:
     variantService.stop();
   }
-  return code;  // falaise::EXIT_OK;
+  return code; // falaise::EXIT_OK;
 }
 
 falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,

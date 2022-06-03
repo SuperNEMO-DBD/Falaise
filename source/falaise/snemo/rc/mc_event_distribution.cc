@@ -21,7 +21,7 @@ namespace snemo {
 
   namespace rc {
 
-    mc_event_distribution::reader::reader(std::string filepath_, std::uint32_t nb_events_)
+    mc_event_distribution::reader::reader(std::string filepath_, std::uint32_t nb_timestamps_)
     {
       _fin_ = std::ifstream(filepath_);
       DT_THROW_IF(!_fin_, std::runtime_error, "Cannot open input file '" << filepath_ << "'!");
@@ -31,7 +31,8 @@ namespace snemo {
         std::string line;
         std::getline(_fin_, line);
         if (line != "!falaise::simrc::mc-event-timestamps") {
-          DT_THROW(std::logic_error, "Input file '" << filepath_ << "' is not a MC event timestamps file!");
+          DT_THROW(std::logic_error,
+                   "Input file '" << filepath_ << "' is not a MC event timestamps file!");
         }
       }
       {
@@ -41,16 +42,27 @@ namespace snemo {
         std::uint32_t nbOfTimestamps = 0;
         liness >> nbOfTimestamps;
         if (! liness) {
-          DT_THROW(std::logic_error, "Cannot parse the number of MC event timestamps from input file '" << filepath_ << "'!");
+          DT_THROW(std::logic_error,
+                   "Cannot parse the number of MC event timestamps from input file '"
+                   << filepath_ << "'!");
         }
-        DT_THROW_IF(nbOfTimestamps != nb_events_, std::logic_error, "Number of stored timestamps (=" << nbOfTimestamps << ") does not match the requested number of timestamps (=" << nb_events_ << ")!")
+        DT_THROW_IF(nbOfTimestamps != nb_timestamps_, std::logic_error,
+                    "Number of stored timestamps (=" << nbOfTimestamps
+                    << ") does not match the requested number of timestamps (="
+                    << nb_timestamps_ << ")!")
       }
-      _nb_events_ = nb_events_;
+      _nb_timestamps_ = nb_timestamps_;
+      DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Nb timestamps = " << _nb_timestamps_);
       _fin_ >> std::ws;
       if (_fin_.eof()) {
         _terminated_ = true;
       }
       return;
+    }
+
+    mc_event_distribution::reader::~reader()
+    {
+      DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Destroying the reader...");
     }
     
     bool mc_event_distribution::reader::is_terminated() const
@@ -93,12 +105,12 @@ namespace snemo {
       return;
     }
     
-    mc_event_distribution::writer::writer(std::string filepath_, std::uint32_t nb_events_)
+    mc_event_distribution::writer::writer(std::string filepath_, std::uint32_t nb_timestamps_)
       : _fout_(filepath_)
     {
       DT_THROW_IF(!_fout_, std::runtime_error, "Cannot open output file '" << filepath_ << "'!");
       _fout_ << "!falaise::simrc::mc-event-timestamps" << '\n';
-      _fout_ << nb_events_ << '\n';
+      _fout_ << nb_timestamps_ << '\n';
       return;
     }
     
@@ -128,6 +140,7 @@ namespace snemo {
       u->_run_stats_ = &run_stats_;
       u->_seed_ = 0;
       u->_precompute_sampling_();
+      DT_LOG_DEBUG(logging_, "Delivering the non-stochastic sampler");
       return u;
     }
 
@@ -147,6 +160,7 @@ namespace snemo {
       u->_prng_ = gsl_rng_alloc(u->_T_);
       gsl_rng_set(u->_prng_, (unsigned long int) u->_seed_);
       u->_precompute_sampling_();
+      DT_LOG_DEBUG(logging_, "Delivering the stochastic sampler");
       return u;
     }
 
@@ -222,7 +236,11 @@ namespace snemo {
       const std::vector<snemo::rc::run_statistics::record_type> & runRecords
         = _run_stats_->records();
       std::string frandomFilename = "decay_times.data";
-      std::ofstream frandom(frandomFilename);
+      std::unique_ptr<std::ofstream> frandomPtr;
+      bool traceDecayTimes = false; // Developpers only
+      if (traceDecayTimes) {
+        frandomPtr = std::make_unique<std::ofstream>(frandomFilename);
+      }
       for (unsigned int iRec = 0; iRec < nbRuns; iRec++) {
         const auto & runRec = runRecords[iRec];
         auto runId = runRec.run_id;
@@ -275,10 +293,17 @@ namespace snemo {
         for (auto decayTime : decayTimes) {
           _per_run_data_[iRec].run_id = runId;
           _per_run_data_[iRec].decay_timestamps.emplace_back(decayTime);
-          frandom << time::to_quantity(decayTime - refTime) / CLHEP::microsecond << " " << runId << '\n';
+          if (frandomPtr) {
+            *frandomPtr << time::to_quantity(decayTime - refTime) / CLHEP::microsecond << " " << runId << '\n';
+          }
         }
+        DT_LOG_DEBUG(logging, "Array size : " << _per_run_data_[iRec].decay_timestamps.size());   
       }
-      frandom.close();
+      if (frandomPtr) {
+        frandomPtr->close();
+        frandomPtr.reset();
+      }
+      DT_LOG_DEBUG(logging, "Pre-computing is done for " << _per_run_data_.size() << " runs.");   
       return;
     }
 
@@ -288,8 +313,13 @@ namespace snemo {
         // Reader mode:
         if (_parsed_next_decay_.run_id == -1) return false;
       } else {
+        DT_LOG_DEBUG(_logging_, "Current decay index = " << _current_decay_index_);   
+        DT_LOG_DEBUG(_logging_, "Nb events = " << _nb_events_);   
         // Sampling modes (random, regular)
-        if (_current_decay_index_ == _nb_events_) return false;
+        if (_current_decay_index_ == _nb_events_) {
+          DT_LOG_DEBUG(_logging_, " => no next decay!");   
+          return false;
+        }
       }
       return true;
     }
@@ -304,10 +334,10 @@ namespace snemo {
       
     mc_event_distribution::event_rc_timestamping mc_event_distribution::next_decay()
     {
+      event_rc_timestamping decayRec;
       if (_reader_) {
         DT_THROW_IF(_parsed_next_decay_.run_id == -1, std::logic_error,
                     "All decay timestamps have been consumed from the file!");
-        event_rc_timestamping decayRec;
         decayRec.run_id = _parsed_next_decay_.run_id;
         decayRec.decay_time = _parsed_next_decay_.decay_time;
         _parsed_next_decay_.run_id = -1;
@@ -318,26 +348,44 @@ namespace snemo {
         // Update:
         _current_decay_index_++;
         return decayRec;
-      }
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      logging = _logging_;
-      DT_THROW_IF(_current_decay_index_ == _nb_events_, std::logic_error,
-                  "All decay timestamps have been consumed!");
-      const data_per_run & dpr = _per_run_data_[_current_run_index_];
-      std::int32_t currentRunId = dpr.run_id;
-      DT_LOG_DEBUG(logging, "currentRunId=" << currentRunId);
-      const time::time_point & decayTime
-        = dpr.decay_timestamps[_current_decay_index_in_run_];
-      event_rc_timestamping decayRec;
-      decayRec.run_id = currentRunId;
-      decayRec.decay_time = decayTime;
-      // Update:
-      _current_decay_index_++;
-      _current_decay_index_in_run_++;
-      if (_current_decay_index_in_run_ == _nb_decays_per_run_[_current_run_index_]) {
-        DT_LOG_DEBUG(logging, "Run increment after " << _current_decay_index_in_run_ << " decays!");
-        _current_run_index_++;
-        _current_decay_index_in_run_ = 0;
+      } else {
+        datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+        logging = _logging_;
+        DT_LOG_DEBUG(logging, "_current_decay_index_ =" << _current_decay_index_);
+        DT_LOG_DEBUG(logging, "_nb_events_           =" << _nb_events_);
+        DT_THROW_IF(_current_decay_index_ == _nb_events_, std::logic_error,
+                    "All decay timestamps have been consumed!");
+        DT_LOG_DEBUG(logging, "_per_run_data_.size_  =" << _per_run_data_.size());
+        DT_LOG_DEBUG(logging, "_current_run_index_   =" << _current_run_index_);
+        const data_per_run & dpr = _per_run_data_[_current_run_index_];
+        std::int32_t currentRunId = dpr.run_id;
+        DT_LOG_DEBUG(logging, "currentRunId=" << currentRunId);
+        DT_LOG_DEBUG(logging, "  #decay timestamps=" << dpr.decay_timestamps.size());
+        const time::time_point & decayTime
+          = dpr.decay_timestamps[_current_decay_index_in_run_];
+        decayRec.run_id = currentRunId;
+        decayRec.decay_time = decayTime;
+        // Update:
+        _current_decay_index_++;
+        _current_decay_index_in_run_++;
+        if (_current_decay_index_in_run_ == _nb_decays_per_run_[_current_run_index_]) {
+          DT_LOG_DEBUG(logging, "Run increment after " << _current_decay_index_in_run_ << " decays!");
+          do {
+            // We search the next run from which we have some precomputed timestamps:
+            _current_run_index_++;
+            const data_per_run & newDpr = _per_run_data_[_current_run_index_];
+            if (newDpr.decay_timestamps.size() > 0) {
+              DT_LOG_DEBUG(logging, "New run has timestamps");
+              break;
+            }
+            if (_current_run_index_ == (int) _per_run_data_.size()) {
+              // No more runs:
+              break;
+            }
+          } while (true);
+          _current_decay_index_in_run_ = 0;
+        }
+        DT_LOG_DEBUG(logging, "End of next_decay");
       }
       return decayRec;
     }

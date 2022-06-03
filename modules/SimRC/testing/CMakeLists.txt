@@ -22,12 +22,21 @@ foreach(_file ${_SimRCTestConfFiles})
   configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${_file}" "${CMAKE_CURRENT_BINARY_DIR}/${_file}" COPYONLY)
 endforeach()
 
-# - Simulate
+# - Simulate 100 events
 add_test(NAME testSimRC_simulate
   COMMAND flsimulate
   -c ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simu.conf
-  -o testSimRC-simulate.brio
+  -o testSimRC-sd.brio
   -m testSimRC-simulate-meta.xml
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  )
+
+# - Simulate 1000 events
+add_test(NAME testSimRC_simulate2
+  COMMAND flsimulate
+  -c ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simu2.conf
+  -o testSimRC-sd2.brio
+  -m testSimRC-simulate-meta2.xml
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
  
@@ -35,28 +44,42 @@ add_test(NAME testSimRC_simulate
 add_test(NAME testSimRC_simrc
   COMMAND flreconstruct
   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc.conf
-  -i testSimRC-simulate.brio
-  -o testSimRC-simulate-rc.brio
+  -i testSimRC-sd.brio
+  -o testSimRC-rec-rc.brio
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   ) 
-
-# - Simulate
-add_test(NAME testSimRC_simulate2
-  COMMAND flsimulate
-  -c ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simu2.conf
-  -o testSimRC-simulate2.brio
-  -m testSimRC-simulate-meta2.xml
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  )
+set_tests_properties(testSimRC_simrc PROPERTIES DEPENDS testSimRC_simulate)
 
 # - Apply RC then reconstruct
 add_test(NAME testSimRC_simrc2
   COMMAND flreconstruct
+  -V debug
   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc2.conf
-  -i testSimRC-simulate2.brio
-  -o testSimRC-simulate-rc2.brio
+  -i testSimRC-sd2.brio
+  -o testSimRC-rec-rc2.brio
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   ) 
+set_tests_properties(testSimRC_simrc2 PROPERTIES DEPENDS testSimRC_simulate2)
+
+add_test(NAME testSimRC_simrc3
+  COMMAND flreconstruct
+  -V debug
+  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc3.conf
+  -i testSimRC-sd.brio
+  -o testSimRC-rec-rc3.brio
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  ) 
+set_tests_properties(testSimRC_simrc3 PROPERTIES DEPENDS testSimRC_simulate)
+
+add_test(NAME testSimRC_simrc4
+  COMMAND flreconstruct
+  -V debug
+  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc4.conf
+  -i testSimRC-sd.brio
+  -o testSimRC-rec-rc4.brio
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  ) 
+set_tests_properties(testSimRC_simrc4 PROPERTIES DEPENDS testSimRC_simulate)
 
 #############################################################
 # 2022-06-01 FM :

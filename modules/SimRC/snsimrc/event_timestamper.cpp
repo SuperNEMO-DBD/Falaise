@@ -17,7 +17,7 @@ namespace snemo {
     {
       return;
     }
-
+ 
     bool event_timestamper::is_initialized() const
     {
       return _initialized_;
@@ -68,12 +68,12 @@ namespace snemo {
           }
         }
         if (_runList_->is_empty()) {
-          DT_LOG_DEBUG(_logging_, "Falling back to an unique long 30-months run...");
+          DT_LOG_DEBUG(_logging_, "Falling back to a default unique long 30-months run...");
           snemo::rc::run_description longRunDesc
             = snemo::rc::run_description::make(0,
                                                snemo::rc::run_category::PRODUCTION,
                                                time::time_period_from_string("[2023-01-01 00:00:00/2025-07-01 00:00:00)"),
-                                               nbEvents); // Here 'nbEvent' is a dummy value (unused)
+                                               nbEvents); // Here 'nbEvents' is a dummy value (unused)
           _runList_->add_run(longRunDesc);
         }
 
@@ -82,7 +82,8 @@ namespace snemo {
         if (config_.has_key("activity_model_factory.config")) {
           activityModelFactoryConfigFilename = config_.fetch_string("activity_model_factory.config");
           datatools::fetch_path_with_env(activityModelFactoryConfigFilename);
-          DT_LOG_DEBUG(_logging_, "Configuring activity model factory from '" << activityModelFactoryConfigFilename << "'...");
+          DT_LOG_DEBUG(_logging_, "Configuring activity model factory from '"
+                       << activityModelFactoryConfigFilename << "'...");
           datatools::properties activityModelFactoryConfig;
           activityModelFactoryConfig.read_configuration(activityModelFactoryConfigFilename);
           _actModelFactory_.initialize(activityModelFactoryConfig);
@@ -150,6 +151,7 @@ namespace snemo {
             = snemo::rc::mc_event_distribution::make_regular_sampling(*_mcRunStatistics_, nbRequiredTimestamps);
         }
       } else {
+        DT_LOG_DEBUG(_logging_, "Loading precomputed timestamps from file '" << timestampsFilePath << "'");
         // Timestamp sampling is loaded from a file of precomputed timestamps:
         _mcEventDistribution_
           = snemo::rc::mc_event_distribution::make_from_file(nbRequiredTimestamps, timestampsFilePath);
@@ -157,7 +159,7 @@ namespace snemo {
       
       if (datatools::logger::is_debug(_logging_)) {
         boost::property_tree::ptree popts;
-        popts.put("title", "MC event distribution: ");
+        DT_LOG_DEBUG(_logging_,"MC event distribution: ");
         popts.put("indent", "[debug] ");
         _mcEventDistribution_->print_tree(std::cerr, popts);
       }
@@ -168,6 +170,7 @@ namespace snemo {
      
     void event_timestamper::reset()
     {
+      DT_LOG_DEBUG(_logging_,"Resetting the event timestamper...");
       DT_THROW_IF(not is_initialized(), std::logic_error,
                   "Event timestamper is not initialized!");
       _mcEventDistribution_.reset();
@@ -183,15 +186,24 @@ namespace snemo {
 
     snemo::rc::mc_event_distribution & event_timestamper::mcEventDistribution()
     {
+      DT_THROW_IF(not is_initialized(),
+                  std::logic_error, "No MC event distribution! Event timestamper is not initialized!");
       return *_mcEventDistribution_;
     }
 
-    void event_timestamper::process(snemo::datamodel::event_header & eh_)
+    const snemo::rc::run_list & event_timestamper::run_list() const
     {
+      DT_THROW_IF(not is_initialized(),
+                  std::logic_error, "No run list! Event timestamper is not initialized!");
+      return *_runList_;
+    }
+
+    void event_timestamper::process(snemo::datamodel::event_header & eh_)
+    { 
+      DT_LOG_DEBUG(_logging_, "Processing...");
       if (eh_.get_generation() != snemo::datamodel::event_header::GENERATION_SIMULATED) {
         DT_THROW(std::logic_error, "Event record is not a simulated event!");
       }
-      // DT_THROW(std::logic_error, "Booom !");
       if (_current_timestamping_reuse_loop_ == 0) {
         DT_LOG_DEBUG(_logging_, "Pickup a new timestamp");
         DT_THROW_IF(not _mcEventDistribution_->has_next_decay(),
@@ -215,9 +227,9 @@ namespace snemo {
         DT_LOG_DEBUG(_logging_, "Reached reused limit -> need a new entry");
         _current_timestamping_reuse_loop_ = 0;
       }
-      if (_counter_ == 13) {
-        // DT_THROW(std::logic_error, "Booom !");
-      }
+      // if (_counter_ == 13) {
+      //   // DT_THROW(std::logic_error, "Booom !");
+      // }
       return;
     }
         

@@ -157,6 +157,16 @@ namespace FLSimRC {
 
     std::string eventTimestampsPath(params_.event_timestamps_path);
     datatools::fetch_path_with_env(eventTimestampsPath);
+
+    std::unique_ptr<std::ofstream> fTimesOut;
+    if (!params_.event_times_path.empty()) {
+      DT_LOG_DEBUG(params_.log_level, "Store generated times in file '" << params_.event_times_path << "'");
+      std::string eventTimesPath(params_.event_times_path);
+      datatools::fetch_path_with_env(eventTimesPath);
+      fTimesOut = std::make_unique<std::ofstream>(eventTimesPath);
+    }
+    
+    snemo::time::time_point refTime = eventTimestamper.run_list().span().begin();
     {
       snemo::rc::mc_event_distribution::writer timestampsWriter(eventTimestampsPath,
                                                                 params_.number_of_mc_events);    
@@ -164,7 +174,15 @@ namespace FLSimRC {
       while (mcEventDistribution.has_next_decay()) {
         auto evenRcTiming = mcEventDistribution.next_decay();
         timestampsWriter.write(evenRcTiming);
+        if (fTimesOut){
+          *fTimesOut << snemo::time::to_quantity(evenRcTiming.decay_time - refTime) / CLHEP::second << " " << evenRcTiming.run_id << '\n';
+        }
       }
+    }
+
+    if (fTimesOut) {
+      fTimesOut->close();
+      fTimesOut.reset();
     }
     
     eventTimestamper.reset();

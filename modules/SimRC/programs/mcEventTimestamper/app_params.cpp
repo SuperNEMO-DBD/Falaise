@@ -13,6 +13,7 @@ namespace FLSimRC {
     acl.run_list_path.clear();
     acl.number_of_mc_events = 0;
     acl.event_timestamps_path.clear();
+    acl.event_times_path.clear();
     acl.timestamp_generation_mode = "regular";
     acl.timestamp_generation_random_seed = 0;
     return acl;
