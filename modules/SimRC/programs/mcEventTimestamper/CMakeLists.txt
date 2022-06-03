@@ -112,10 +112,10 @@ if(FALAISE_ENABLE_TESTING)
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     ) 
 
-  add_test(NAME testSimRC_timestamper_random_exp_post
-    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/test.bash
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    ) 
+  # add_test(NAME testSimRC_timestamper_random_exp_post
+  #   COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/test.bash
+  #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+  #   ) 
 
 endif(FALAISE_ENABLE_TESTING)
 
