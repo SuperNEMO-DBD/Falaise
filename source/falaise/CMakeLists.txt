@@ -80,13 +80,16 @@ include(snemo.cmake)
 add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
+include_directories(${Falaise_SNRS_INC_PATH})
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
+message(STATUS "Falaise_SNRS_LIB_PATH='${Falaise_SNRS_LIB_PATH}'")
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
+target_link_libraries(Falaise PUBLIC ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
 target_clang_format(Falaise)
 
 # - Rpath it
@@ -97,7 +100,7 @@ set_target_properties(Falaise PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${
 
 if(UNIX AND NOT APPLE)
   set_target_properties(Falaise
-    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR};${Falaise_SNRS_LIB_PATH}"
     )
 endif()
 

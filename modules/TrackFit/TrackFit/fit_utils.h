@@ -24,7 +24,6 @@
  *
  * Description:
  *   Some fit utilities
- * History:
  *
  */
 
@@ -125,9 +124,9 @@ class fit_utils {
   virtual ~fit_utils();
 
  private:
-  bool _debug_;                    /// Debug flag
-  double _vicinity_factor_;        /// Vicinity factor
-  datatools::properties _config_;  /// Configuration parameters
+  bool _debug_;                    ///< Debug flag
+  double _vicinity_factor_;        ///< Vicinity factor
+  datatools::properties _config_;  ///< Configuration parameters
 };
 
 }  // end of namespace TrackFit

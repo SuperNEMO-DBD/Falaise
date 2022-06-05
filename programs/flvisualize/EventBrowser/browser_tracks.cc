@@ -50,6 +50,9 @@
 #include <TMath.h>
 #include <TSystem.h>
 
+// - GSL:
+// #include <gsl/gsl_sf.h>
+
 // - Bayeux/mctools:
 #include <mctools/utils.h>
 // - Bayeux/geomtools:
@@ -1032,8 +1035,10 @@ void browser_tracks::_update_tracker_trajectory_data() {
         const double chi2 = properties.fetch_real("chi2");
         const size_t ndof = properties.fetch_integer("ndof");
         label_trajectory << " - chi2/ndf = " << std::setprecision(2) << std::fixed << chi2 << "/"
-                         << std::setprecision(0) << ndof << std::setprecision(2) << std::fixed
-                         << ", p = " << TMath::Prob(chi2, ndof);
+                         << std::setprecision(0) << ndof << std::setprecision(5) << std::fixed
+                         << ", p = " << TMath::Prob(chi2, ndof)
+          // << ", p(GSL) = " << gsl_sf_gamma_inc_Q(ndof/2, chi2/2)
+          ;
       }
       if (properties.has_key("t0")) {
         const double t0 = properties.fetch_real("t0");
@@ -1258,7 +1263,6 @@ void browser_tracks::_update_particle_track_data() {
       snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.get_vertices();
       for (auto &vt : vts) {
         geomtools::blur_spot &a_vertex = vt.grab();
-
         std::ostringstream label;
         label << "Vertex on ";
         if (snemo::datamodel::particle_track::vertex_is_on_source_foil(a_vertex)) {
@@ -1271,8 +1275,12 @@ void browser_tracks::_update_particle_track_data() {
           label << "gamma veto - ";
         } else if (snemo::datamodel::particle_track::vertex_is_on_wire(a_vertex)) {
           label << "wire - ";
+        } else if (snemo::datamodel::particle_track::vertex_is_on_source_foil(a_vertex)) {
+          label << "foil - ";
+        } else if (snemo::datamodel::particle_track::vertex_is_on_calibration_source(a_vertex)) {
+          label << "calibration source - ";
         } else {
-          label << "unkown part of the detector -";
+          label << "unknown part of the detector -";
         }
         label << "(x, y, z) = ";
         label.precision(3);

@@ -12,7 +12,6 @@
 // - Bayeux
 #include <bayeux/datatools/kernel.h>
 #include <bayeux/datatools/urn_query_service.h>
-#include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/library_loader.h"
 #include "bayeux/datatools/service_manager.h"
 #include "bayeux/dpp/base_module.h"
@@ -32,23 +31,6 @@ namespace FLReconstruct {
 
 //! Configure and run the pipeline
 falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
-  // Variants support set up first because all other services will
-  // rely on it.
-  datatools::configuration::variant_service variantService;
-  if (!flRecParameters.variantSubsystemParams.logging.empty()) {
-    variantService.set_logging(
-        datatools::logger::get_priority(flRecParameters.variantSubsystemParams.logging));
-  }
-  try {
-    if (flRecParameters.variantSubsystemParams.is_active()) {
-      variantService.configure(flRecParameters.variantSubsystemParams);
-      variantService.start();
-    }
-  } catch (std::exception& e) {
-    std::cerr << "flreconstruct : Variant service threw exception" << std::endl;
-    std::cerr << e.what() << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
-  }
 
   // - Run:
   falaise::exit_code code = falaise::EXIT_OK;
@@ -251,7 +233,7 @@ falaise::exit_code do_pipeline(const FLReconstructParams& flRecParameters) {
     std::cerr << e.what() << std::endl;
     code = falaise::EXIT_UNAVAILABLE;
   }
-
+  
   if (variantService.is_started()) {
     // Terminate the variant service:
     variantService.stop();
@@ -276,13 +258,13 @@ falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
         expSetupUrnInfo.get_components_by_topic("geometry").size() == 1) {
       geometrySetupUrn = expSetupUrnInfo.get_component("geometry");
       // Resolve geometry file:
-      std::string conf_variants_category = "configuration";
-      std::string conf_variants_mime;
-      std::string conf_variants_path;
-      DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(geometrySetupUrn, conf_variants_category,
-                                                   conf_variants_mime, conf_variants_path),
+      std::string conf_geometry_category = "configuration";
+      std::string conf_geometry_mime;
+      std::string conf_geometry_path;
+      DT_THROW_IF(!dtkUrnQuery.resolve_urn_to_path(geometrySetupUrn, conf_geometry_category,
+                                                   conf_geometry_mime, conf_geometry_path),
                   std::logic_error, "Cannot resolve URN='" << geometrySetupUrn << "'!");
-      geometrySetupConfig = conf_variants_path;
+      geometrySetupConfig = conf_geometry_path;
       // No Geometry service was found from the service manager.
       // We try to setup one with the proper configuration.
       datatools::multi_properties geoServiceConfig("name", "type");

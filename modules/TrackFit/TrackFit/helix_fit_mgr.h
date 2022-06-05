@@ -58,11 +58,11 @@ struct helix_fit_params {
   /// \brief Index associated to each parameter of the helix fit
   enum param_index_type {
     PARAM_INDEX_INVALID = -1,
-    PARAM_INDEX_X0 = 0,   /// Index of the X0 free parameter
-    PARAM_INDEX_Y0 = 1,   /// Index of the Y0 free parameter
-    PARAM_INDEX_Z0 = 2,   /// Index of the Z0 free parameter
-    PARAM_INDEX_R = 3,    /// Index of the R free parameter
-    PARAM_INDEX_STEP = 4  /// Index of the STEP free parameter
+    PARAM_INDEX_X0 = 0,   ///< Index of the X0 free parameter
+    PARAM_INDEX_Y0 = 1,   ///< Index of the Y0 free parameter
+    PARAM_INDEX_Z0 = 2,   ///< Index of the Z0 free parameter
+    PARAM_INDEX_R = 3,    ///< Index of the R free parameter
+    PARAM_INDEX_STEP = 4  ///< Index of the STEP free parameter
   };
 
   /// Check if the quality is available
@@ -91,16 +91,16 @@ struct helix_fit_params {
                  const std::string &indent_ = "", bool inherit_ = false) const;
 
   // Attributes:
-  int quality;        /// Quality flag of the initial guess
-  double x0;          /// X position of the center of the fitted helix
-  double y0;          /// Y position of the center of the fitted helix
-  double z0;          /// Z position of the center of the fitted helix
-  double r;           /// Radius of the fitted helix
-  double step;        /// Step of the fitted helix
-  bool has_angles;    /// Flag for angles
-  double angle_1;     /// Start angle
-  double angle_2;     /// Stop angle
-  double start_time;  /// Reference time (default = 0, set by user)
+  int quality;        ///< Quality flag of the initial guess
+  double x0;          ///< X position of the center of the fitted helix
+  double y0;          ///< Y position of the center of the fitted helix
+  double z0;          ///< Z position of the center of the fitted helix
+  double r;           ///< Radius of the fitted helix
+  double step;        ///< Step of the fitted helix
+  bool has_angles;    ///< Flag for angles
+  double angle_1;     ///< Start angle
+  double angle_2;     ///< Stop angle
+  double start_time;  ///< Reference time (default = 0, set by user)
 };
 
 /// \brief Input data for the helix fit
@@ -114,13 +114,13 @@ struct helix_fit_data {
   /// Reset
   void reset();
   // Attributes:
-  bool using_first;         /// Use first flag (default = false)
-  bool using_last;          /// Use last flag (default = false)
-  bool using_drift_time;    /// Use drift time (default = false)
-  double start_time;        /// Reference time for all hits
-  const gg_hits_col *hits;  /// Collection of Geiger hits
+  bool using_first;         ///< Use first flag (default = false)
+  bool using_last;          ///< Use last flag (default = false)
+  bool using_drift_time;    ///< Use drift time (default = false)
+  double start_time;        ///< Reference time for all hits
+  const gg_hits_col *hits;  ///< Collection of Geiger hits
   const i_drift_time_calibration
-      *calibration;  /// Handle to the drift time to radius calibration object
+      *calibration;  ///< Handle to the drift time to radius calibration object
 };
 
 /// \brief The solution of the helix fit
@@ -140,44 +140,42 @@ struct helix_fit_solution : public helix_fit_params {
                  const std::string &indent_ = "", bool inherit_ = false) const;
 
   // Attributes:
-  bool ok;                            /// Status if the solution
-  double err_x0;                      /// Error on the X position
-  double err_y0;                      /// Error on the Y position
-  double err_z0;                      /// Error on the Z position
-  double err_r;                       /// Error on the radius
-  double err_step;                    /// Error on the step
-  double chi;                         /// Chi value
-  size_t ndof;                        /// Number of degrees of freedom
-  size_t niter;                       /// Number of iterations of the fit
-  datatools::properties auxiliaries;  /// Auxiliary properties
+  bool ok;                            ///< Status if the solution
+  double err_x0;                      ///< Error on the X position
+  double err_y0;                      ///< Error on the Y position
+  double err_z0;                      ///< Error on the Z position
+  double err_r;                       ///< Error on the radius
+  double err_step;                    ///< Error on the step
+  double chi;                         ///< Chi value
+  size_t ndof;                        ///< Number of degrees of freedom
+  size_t niter;                       ///< Number of iterations of the fit
+  datatools::properties auxiliaries;  ///< Auxiliary properties
 };
 
 /// \brief Parameters of the residual function
 struct helix_fit_residual_function_param {
   /// \brief Type of residuals
   enum residual_type {
-    RESIDUAL_INVALID = -1,  /// Invalid value
-    RESIDUAL_ALPHA =
-        0,  /// Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
-    RESIDUAL_BETA = 1  /// Identifier of the 'beta' residuals (computed along the Z Geiger plasma
-                       /// propagation axis)
+    RESIDUAL_INVALID = -1,  ///< Invalid value
+    RESIDUAL_ALPHA   =  0,  ///< Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
+    RESIDUAL_BETA    =  1   ///< Identifier of the 'beta' residuals (computed along the Z Geiger plasma propagation axis)
   };
 
   /// Default constructor
   helix_fit_residual_function_param();
 
   // Attributes:
-  bool using_first;                                    /// Use the first flag
-  bool using_last;                                     /// Use the last flag
-  bool using_drift_time;                               /// Use the drift time
-  int mode;                                            /// Mode
-  int residual_type;                                   /// Type of residual
-  bool first;                                          /// First flag
-  bool last;                                           /// Last flag
-  double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi;  /// Data points
-  double start_time;                                   /// Reference time (fixed)
-  double x0, y0, z0, r, step;                          /// Free parameters
-  const i_drift_time_calibration *dtc;  /// Handle to the drift time to radius calibration
+  bool using_first;                                    ///< Use the first flag
+  bool using_last;                                     ///< Use the last flag
+  bool using_drift_time;                               ///< Use the drift time
+  int mode;                                            ///< Mode
+  int residual_type;                                   ///< Type of residual
+  bool first;                                          ///< First flag
+  bool last;                                           ///< Last flag
+  double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi;  ///< Data points
+  double start_time;                                   ///< Reference time (fixed)
+  double x0, y0, z0, r, step;                          ///< Free parameters
+  const i_drift_time_calibration *dtc;  ///< Handle to the drift time to radius calibration
 };
 
 /// \brief Manager of the helix fit
@@ -185,9 +183,9 @@ class helix_fit_mgr : boost::noncopyable {
  public:
   /// \brief Constants
   struct constants {
-    static unsigned int default_fit_max_iter();  /// Default maximum number of iterations of the fit
-    static double default_fit_eps();             /// Default tolerance of the fit
-    static unsigned int min_number_of_hits();    /// Minimum number of hits to perform the fit
+    static unsigned int default_fit_max_iter();  ///< Default maximum number of iterations of the fit
+    static double default_fit_eps();             ///< Default tolerance of the fit
+    static unsigned int min_number_of_hits();    ///< Minimum number of hits to perform the fit
   };
 
   /// Set the logging priority threshold
@@ -296,14 +294,14 @@ class helix_fit_mgr : boost::noncopyable {
      *                         |
      */
     enum guess_mode_type {
-      GUESS_MODE_BBB = 0,  // Bottom-Bottom-Bottom guess
-      GUESS_MODE_BBT = 1,  // Bottom-Bottom-Top guess
-      GUESS_MODE_BTB = 2,  // Bottom-Top-Bottom guess
-      GUESS_MODE_BTT = 3,  // Bottom-Top-Top guess
-      GUESS_MODE_TBB = 4,  // Top-Bottom-Bottom guess
-      GUESS_MODE_TBT = 5,  // Top-Bottom-Top guess
-      GUESS_MODE_TTB = 6,  // Top-Top-Bottom guess
-      GUESS_MODE_TTT = 7   // Top-Top-Top guess
+      GUESS_MODE_BBB = 0,  ///< Bottom-Bottom-Bottom guess
+      GUESS_MODE_BBT = 1,  ///< Bottom-Bottom-Top guess
+      GUESS_MODE_BTB = 2,  ///< Bottom-Top-Bottom guess
+      GUESS_MODE_BTT = 3,  ///< Bottom-Top-Top guess
+      GUESS_MODE_TBB = 4,  ///< Top-Bottom-Bottom guess
+      GUESS_MODE_TBT = 5,  ///< Top-Bottom-Top guess
+      GUESS_MODE_TTB = 6,  ///< Top-Top-Bottom guess
+      GUESS_MODE_TTT = 7   ///< Top-Top-Top guess
     };
 
     /// Return the label from a guess mode
@@ -327,12 +325,12 @@ class helix_fit_mgr : boost::noncopyable {
     void _set_defaults();
 
    private:
-    datatools::logger::priority _logging_priority_;  /// Logging priority threshold
-    bool _use_max_radius_;                           /// Flag to use the maximum radius
-    double _max_radius_factor_;                      /// Factor for maximum radius
-    bool _use_guess_trust_;                          /// Flag to use guess trust
-    int _guess_trust_mode_;                          /// Mode for guess trust
-    bool _fit_delayed_clusters_;                     /// Flag to fit delayed clusters
+    datatools::logger::priority _logging_priority_;  ///< Logging priority threshold
+    bool _use_max_radius_;                           ///< Flag to use the maximum radius
+    double _max_radius_factor_;                      ///< Factor for maximum radius
+    bool _use_guess_trust_;                          ///< Flag to use guess trust
+    int _guess_trust_mode_;                          ///< Mode for guess trust
+    bool _fit_delayed_clusters_;                     ///< Flag to fit delayed clusters
   };
 
   /// Compute residual (GSL interface)
@@ -372,37 +370,37 @@ class helix_fit_mgr : boost::noncopyable {
   void _set_defaults_();
 
  private:
-  datatools::logger::priority _logging_priority_;  /// Logging priority threshold
+  datatools::logger::priority _logging_priority_;  ///< Logging priority threshold
 
-  bool _initialized_;  /// Initialization flag
+  bool _initialized_;  ///< Initialization flag
 
   // GSL multifit stuff:
-  size_t _fit_npoints_;                             /// Number of points
-  size_t _fit_npars_;                               /// Number of fitted parameters
-  gsl_multifit_fdfsolver *_fit_mf_fdf_solver_;      /// GSL solver
-  gsl_multifit_function_fdf _fit_mf_fdf_function_;  /// GSL fit function
-  gsl_vector_view _fit_vview_;  /// GSL view for the internal vector of fit parameters
-  double _fit_x_init_[helix_fit_params::HELIX_FIT_FIXED_START_TIME_NOPARS];  /// Parameters for the
-                                                                             /// fitted helix
-  size_t _fit_iter_;          /// Current number of fit iterations
-  double _fit_eps_;           /// Fit tolerance
-  size_t _fit_max_iter_;      /// Maximum number of fit iterations
-  gsl_matrix *_fit_covar_;    /// Covariance matrix of the fit
-  int _fit_status_;           /// Current fit status
-  helix_fit_data _fit_data_;  /// Fit data for an helix
+  size_t _fit_npoints_;                             ///< Number of points
+  size_t _fit_npars_;                               ///< Number of fitted parameters
+  gsl_multifit_fdfsolver *_fit_mf_fdf_solver_;      ///< GSL solver
+  gsl_multifit_function_fdf _fit_mf_fdf_function_;  ///< GSL fit function
+  gsl_vector_view _fit_vview_;  ///< GSL view for the internal vector of fit parameters
+  double _fit_x_init_[helix_fit_params::HELIX_FIT_FIXED_START_TIME_NOPARS];  ///< Parameters for the
+                                                                             ///< fitted helix
+  size_t _fit_iter_;          ///< Current number of fit iterations
+  double _fit_eps_;           ///< Fit tolerance
+  size_t _fit_max_iter_;      ///< Maximum number of fit iterations
+  gsl_matrix *_fit_covar_;    ///< Covariance matrix of the fit
+  int _fit_status_;           ///< Current fit status
+  helix_fit_data _fit_data_;  ///< Fit data for an helix
 
-  bool _using_last_;       /// Flag to use the 'last' flag of hits
-  bool _using_first_;      /// Flag to use the 'first' flag of hits
-  bool _using_drift_time_; /** Flag to use the 'drift time' of hits combined to a calibration object
-                            * in place of the pre-calibrarion drift radius. This mode uses a
-                            * on-the-fly time-to-radius calibration.
-                            */
-  const gg_hits_col *_hits_;                      /// Handle to the input collection of Geiger hits
-  const i_drift_time_calibration *_calibration_;  /// Handle to the calibration object
-  double _t0_;                                    /// Reference delay time (==0 set by user)
-  bool _step_print_status_;       /// Flag to print the status of the fit at each step
-  bool _step_draw_;               /// Flag to display the fit status at each step
-  helix_fit_solution _solution_;  /// Embedded solution of the fit
+  bool _using_last_;       ///< Flag to use the 'last' flag of hits
+  bool _using_first_;      ///< Flag to use the 'first' flag of hits
+  /// Flag to use the 'drift time' of hits combined to a calibration object
+  /// in place of the pre-calibrarion drift radius. This mode uses a
+  /// on-the-fly time-to-radius calibration.
+  bool _using_drift_time_;
+  const gg_hits_col *_hits_;                      ///< Handle to the input collection of Geiger hits
+  const i_drift_time_calibration *_calibration_;  ///< Handle to the calibration object
+  double _t0_;                                    ///< Reference delay time (==0 set by user)
+  bool _step_print_status_;       ///< Flag to print the status of the fit at each step
+  bool _step_draw_;               ///< Flag to display the fit status at each step
+  helix_fit_solution _solution_;  ///< Embedded solution of the fit
 };
 
 }  // end of namespace TrackFit
