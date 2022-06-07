@@ -18,6 +18,7 @@
 // Standard Library:
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 // Third Party
 // - Boost
@@ -39,6 +40,7 @@ struct FLReconstructCommandLine {
   datatools::logger::priority logLevel;  //!< Verbosity level
   uint32_t moduloEvents;                 //!< Event modulo
   std::string userProfile;               //!< User profile
+  std::vector<std::string> mountPoints;  //!< Directory mount directives
   std::string pipelineScript;            //!< Path of the processing pipeline configuration script
   std::string inputMetadataFile;         //!< Path for loading metadata
   std::string inputFile;                 //!< Path for the input module

@@ -1,6 +1,4 @@
-# Source pad #
-# 2016-05-12 FM+GO: NOT READY YET !!! waiting for inputs from LAPP...
-# LAPP source pads' geometry
+# Simplified LAPP-style source pad models
 
 [name="source_external_pad_lapp.model" type="geomtools::simple_shaped_model"]
   shape_type : string  = "box"

@@ -1,0 +1,83 @@
+# -*- mode: conf-unix; -*-
+# Author : Y.Lemière, F.Mauger
+# Date   : April 2020, September 2021
+
+#@description A list of vertex generators
+#@key_label   "name"
+#@meta_label  "type"
+
+##############################################################################
+
+[name="real_flat_source_strip_@STRIPID@_se82_bulk" type="genvtx::combined_vg"]
+        
+####@variant_section_only geometry:layout/if_basic/source_layout/if_realistic_flat|false
+        
+#@config Vertex generation from the bulk volume of SuperNEMO source strip @STRIPID@ (Se82 DBD);group=SourceFoilRealistic;rank=second
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+    
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+        
+#@description Vertex generator names
+generators : string[8] = \
+  "real_flat_source_strip_@STRIPID@_pad_0_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_1_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_2_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_3_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_4_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_5_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_6_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_7_bulk" 
+    
+# Absolute weights of combined generators:
+# weighting factors are computed from the effective Se masses (should be the mass of enriched Se82 for weighting DBD processes)
+generators.real_flat_source_strip_@STRIPID@_pad_0_bulk.absolute_weight : real = @STRIPSEMASS0@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_1_bulk.absolute_weight : real = @STRIPSEMASS1@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_2_bulk.absolute_weight : real = @STRIPSEMASS2@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_3_bulk.absolute_weight : real = @STRIPSEMASS3@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_4_bulk.absolute_weight : real = @STRIPSEMASS4@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_5_bulk.absolute_weight : real = @STRIPSEMASS5@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_6_bulk.absolute_weight : real = @STRIPSEMASS6@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_7_bulk.absolute_weight : real = @STRIPSEMASS7@ # grams
+
+
+#########################################################################
+
+[name="real_flat_source_strip_@STRIPID@_bulk" type="genvtx::combined_vg"]
+        
+####@variant_section_only geometry:layout/if_basic/source_layout/if_realistic_flat|false
+        
+#@config Vertex generation from the bulk volume of SuperNEMO source strip @STRIPID@ (total mass);group=SourceFoilRealistic;rank=second
+
+#@description Logging priority
+logging.priority  : string = "fatal"
+    
+#@description Geometry version requirement (not working with version lower than 4.0)
+geometry.setup_requirement : string = "snemo::demonstrator(>=4)"
+        
+#@description Vertex generator names
+generators : string[8] = \
+  "real_flat_source_strip_@STRIPID@_pad_0_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_1_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_2_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_3_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_4_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_5_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_6_bulk" \
+  "real_flat_source_strip_@STRIPID@_pad_7_bulk" 
+    
+# Absolute weights of combined generators:
+# weighting factors are computed from the total source masses (for background weighting)
+generators.real_flat_source_strip_@STRIPID@_pad_0_bulk.absolute_weight : real = @STRIPTOTALMASS0@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_1_bulk.absolute_weight : real = @STRIPTOTALMASS1@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_2_bulk.absolute_weight : real = @STRIPTOTALMASS2@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_3_bulk.absolute_weight : real = @STRIPTOTALMASS3@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_4_bulk.absolute_weight : real = @STRIPTOTALMASS4@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_5_bulk.absolute_weight : real = @STRIPTOTALMASS5@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_6_bulk.absolute_weight : real = @STRIPTOTALMASS6@ # grams
+generators.real_flat_source_strip_@STRIPID@_pad_7_bulk.absolute_weight : real = @STRIPTOTALMASS7@ # grams
+
+
+# end

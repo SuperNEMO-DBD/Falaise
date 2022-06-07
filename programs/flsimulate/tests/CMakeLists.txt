@@ -176,7 +176,6 @@ add_test(NAME flsimulate-feature-pr75-validation
   )
 set_tests_properties(flsimulate-feature-pr75-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
-
 set_falaise_test_environment(flsimulate-feature-pr75-validation)
 
 # - Flsimulate Bi207 calibration source
@@ -206,3 +205,26 @@ add_test(NAME flsimulate-issue198-run
           -c "${CMAKE_CURRENT_SOURCE_DIR}/flsimulate-issue198.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/issue198.brio"
   )
 set_falaise_test_environment(flsimulate-issue198-run)
+
+# Tests dedicated to the validation of fixes
+# - Validation of feature issue #237
+add_test(NAME flsimulate-feature-issue237-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation"
+  )
+set_tests_properties(flsimulate-feature-issue237-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+
+set_falaise_test_environment(flsimulate-feature-issue237-validation)
+
+# Tests dedicated to the validation of fixes
+# - Validation of feature issue #241
+add_test(NAME flsimulate-feature-issue241-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation"
+  )
+set_tests_properties(flsimulate-feature-issue241-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-issue241-validation)

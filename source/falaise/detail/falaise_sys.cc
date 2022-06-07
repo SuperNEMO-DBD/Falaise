@@ -14,6 +14,7 @@
 #include <datatools/library_info.h>
 #include <datatools/urn_db_service.h>
 #include <datatools/urn_to_path_resolver_service.h>
+#include <snrs/snrs.hpp>
 
 // This project;
 #include "falaise/resource.h"
@@ -42,6 +43,8 @@ falaise_sys::falaise_sys() {
   DT_THROW_IF(falaise_sys::_instance_ != nullptr, std::logic_error,
               "Falaise system singleton is already set!");
   falaise_sys::_instance_ = this;
+  // Force link with the SNRS library:
+  snrs::loadMe(); 
 }
 
 falaise_sys::~falaise_sys() {
@@ -149,6 +152,20 @@ void falaise_sys::_libinfo_registration_() {
   // function:
   falaise_lib_infos.store_string(datatools::library_info::keys::env_plugin_lib_dir(),
                                  "FALAISE_PLUGIN_LIB_DIR");
+
+  // // SNRS:
+  // DT_THROW_IF(lib_info_reg.has("libsnrs"), std::logic_error, "The SNRS library is already registered !");
+  // datatools::properties &libsnrs_lib_infos
+  //   = lib_info_reg.registration("libsnrs",
+  //                               "The SNRS library provides geometry models for SuperNEMO Realistic Sources for Falaise.",
+  //                               FALAISE_SNRS_VERSION);
+  // // Register the SNRS library path in the datatools' kernel:
+  // libsnrs_lib_infos.store_string(datatools::library_info::keys::install_lib_dir(),
+  //                                FALAISE_SNRS_LIBDIR);
+  // // Register the SNRS resource path in the datatools' kernel:
+  // libsnrs_lib_infos.store_string(datatools::library_info::keys::install_resource_dir(),
+  //                                FALAISE_SNRS_RESOURCEDIR);
+  
 }
 
 void falaise_sys::_libinfo_deregistration_() {
@@ -160,6 +177,11 @@ void falaise_sys::_libinfo_deregistration_() {
 
       // Unregistration of all registered submodules from the kernel's
       // library info register:
+
+      // if (lib_info_reg.has("libsnrs")) {
+      //   lib_info_reg.unregistration("libsnrs");
+      // }
+      
       if (lib_info_reg.has("falaise")) {
         lib_info_reg.unregistration("falaise");
       }

@@ -49,6 +49,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/locator_helpers.h
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
+  snemo/geometry/helix_intercept.h
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
@@ -130,6 +131,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/utils.cc
   snemo/geometry/mapped_magnetic_field.cc
   snemo/geometry/private/categories.h
+  snemo/geometry/helix_intercept.cc
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/event_header_utils_module.h

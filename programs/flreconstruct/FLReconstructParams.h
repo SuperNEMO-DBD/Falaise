@@ -17,6 +17,7 @@
 
 // Standard Library:
 #include <string>
+#include <vector>
 
 // Third Party
 // - Bayeux
@@ -31,6 +32,7 @@ struct FLReconstructParams {
   // Application specific parameters:
   datatools::logger::priority logLevel;  //!< Logging priority threshold
   std::string userProfile;               //!< User profile
+  std::vector<std::string> mountPoints;  //!< Directory mount directives
   unsigned int numberOfEvents;           //!< Number of events to be processed in the pipeline
   unsigned int moduloEvents;             //!< Number of events progress modulo
 
