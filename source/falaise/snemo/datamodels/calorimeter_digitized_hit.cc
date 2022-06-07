@@ -58,6 +58,8 @@ namespace snemo {
       popts.configure_from(options_);
 
       if (popts.title.length()) {
+// #include <falaise/snemo/datamodels/sncabling_bridge.h>
+// #include <falaise/snemo/datamodels/snfee_bridge.h>
         out_ << popts.indent << popts.title << std::endl;
       }
 
@@ -267,31 +269,31 @@ namespace snemo {
       return _origin_.is_valid();
     }
 
-    bool calorimeter_digitized_hit::has_om_id() const
-    {
-      return _om_id_.is_valid();
-    }
+    // bool calorimeter_digitized_hit::has_om_id() const
+    // {
+    //   return _om_id_.is_valid();
+    // }
+    //
+    // void calorimeter_digitized_hit::reset_om_id()
+    // {
+    //   _store_unset(STORE_DIGIFLAGS_OM_ID);
+    //   _om_id_.invalidate();
+    //   return;
+    // }
+    //
+    // void calorimeter_digitized_hit::set_om_id(const sncabling::om_id & id_)
+    // {
+    //   _store_set(STORE_DIGIFLAGS_OM_ID);
+    //   _om_id_ = id_;
+    //   return;
+    // }
+    //
+    // const sncabling::om_id & calorimeter_digitized_hit::get_om_id() const
+    // {
+    //   return _om_id_;
+    // }
 
-    void calorimeter_digitized_hit::reset_om_id()
-    {
-      _store_unset(STORE_DIGIFLAGS_OM_ID);
-      _om_id_.invalidate();
-      return;
-    }
-
-    void calorimeter_digitized_hit::set_om_id(const sncabling::om_id & id_)
-    {
-      _store_set(STORE_DIGIFLAGS_OM_ID);
-      _om_id_ = id_;
-      return;
-    }
-
-    const sncabling::om_id & calorimeter_digitized_hit::get_om_id() const
-    {
-      return _om_id_;
-    }
-
-    void calorimeter_digitized_hit::set_reference_time(const timestamp & reftime_)
+    void calorimeter_digitized_hit::set_reference_time(const int64_t & reftime_)
     {
       DT_THROW_IF(not reftime_.is_clock_160MHz(),
                   std::logic_error,
@@ -300,7 +302,7 @@ namespace snemo {
       return;
     }
 
-    const timestamp & calorimeter_digitized_hit::get_reference_time() const
+    const int64_t & calorimeter_digitized_hit::get_reference_time() const
     {
       return _reference_time_;
     }

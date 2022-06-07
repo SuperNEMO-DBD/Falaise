@@ -27,8 +27,8 @@
 #include <geomtools/base_hit.h>
 
 // This project:
-#include <falaise/snemo/datamodels/sncabling_bridge.h>
-#include <falaise/snemo/datamodels/snfee_bridge.h>
+#include <falaise/snemo/datamodels/timestamp.h>
+#include <falaise/snemo/datamodels/red_utils.h>
 
 namespace snemo {
 
@@ -69,7 +69,7 @@ namespace snemo {
       static const uint16_t ANODE_R3 = 3; ///< Anode timestamp with first high positive threshold (HPT)
       static const uint16_t ANODE_R4 = 4; ///< Anode timestamp with second high positive threshold (HPT)
 
-      /// \brief Set of Geiger times (48 bits @ 80MHz clock) and optionally their respective  RTD origins
+      /// \brief Set of Geiger times optionally their respective  RTD origins
       class gg_times
         : public datatools::i_tree_dumpable
       {
@@ -83,33 +83,33 @@ namespace snemo {
         const rtd_origin & get_anode_origin(uint16_t) const;
         void set_anode_origin(uint16_t, const rtd_origin &);
         bool has_anode_time(uint16_t) const;
-        void set_anode_time(uint16_t, const timestamp &);
-        const timestamp & get_anode_time(uint16_t) const;
+        void set_anode_time(uint16_t, const int64_t &);
+        const int64_t & get_anode_time(uint16_t) const;
 
         bool has_bottom_cathode_origin() const;
         const rtd_origin & get_bottom_cathode_origin() const;
         void set_bottom_cathode_origin(const rtd_origin &);
         bool has_bottom_cathode_time() const;
-        void set_bottom_cathode_time(const timestamp &);
-        const timestamp & get_bottom_cathode_time() const;
+        void set_bottom_cathode_time(const int64_t &);
+        const int64_t & get_bottom_cathode_time() const;
 
         bool has_top_cathode_origin() const;
         const rtd_origin & get_top_cathode_origin() const;
         void set_top_cathode_origin(const rtd_origin &);
         bool has_top_cathode_time() const;
-        void set_top_cathode_time(const timestamp &);
-        const timestamp & get_top_cathode_time() const;
+        void set_top_cathode_time(const int64_t &);
+        const int64_t & get_top_cathode_time() const;
         void print_tree(std::ostream & out_ = std::clog,
                         const boost::property_tree::ptree & options_ = empty_options()) const override;
 
       private:
 
         rtd_origin _anode_origins_[5];
-        timestamp  _anode_times_[5];
+        int64_t  _anode_times_[5];
         rtd_origin _bottom_cathode_origin_;
-        timestamp  _bottom_cathode_time_;
+        int64_t  _bottom_cathode_time_;
         rtd_origin _top_cathode_origin_;
-        timestamp  _top_cathode_time_;
+        int64_t  _top_cathode_time_;
 
         BOOST_SERIALIZATION_BASIC_DECLARATION()
 
@@ -122,10 +122,11 @@ namespace snemo {
       gg_times & add_times();
       std::vector<gg_times> & grab_times();
 
-      bool has_cell_id() const;
-      void set_cell_id(const sncabling::gg_cell_id & id_);
-      void reset_cell_id();
-      const sncabling::gg_cell_id & get_cell_id() const;
+      // Use geom_id() form geomtools::base_hit
+      // bool has_cell_id() const;
+      // void set_cell_id(const sncabling::gg_cell_id & id_);
+      // void reset_cell_id();
+      // const sncabling::gg_cell_id & get_cell_id() const;
 
       bool is_valid() const override;
       void invalidate() override;
@@ -147,7 +148,7 @@ namespace snemo {
     private:
 
       std::vector<gg_times> _times_;    ///< 48 bits used at 80 MHz
-      sncabling::gg_cell_id _cell_id_;  ///< RTD Geiger cell identifier from SNCabling
+      // sncabling::gg_cell_id _cell_id_;  ///< RTD Geiger cell identifier from SNCabling
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

@@ -29,8 +29,8 @@
 #include <geomtools/base_hit.h>
 
 // This project:
-#include <falaise/snemo/datamodels/sncabling_bridge.h>
-#include <falaise/snemo/datamodels/snfee_bridge.h>
+#include <falaise/snemo/datamodels/timestamp.h>
+#include <falaise/snemo/datamodels/red_utils.h>
 
 namespace snemo {
 
@@ -70,8 +70,8 @@ namespace snemo {
       calorimeter_digitized_hit() = default;
       virtual ~calorimeter_digitized_hit() = default;
 
-      const timestamp & get_reference_time() const;
-      void set_reference_time(const timestamp & reftime_);
+      const int64_t & get_reference_time() const;
+      void set_reference_time(const int64_t & reftime_);
 
       const std::vector<int16_t> & get_waveform() const;
       std::vector<int16_t> & grab_waveform();
@@ -91,7 +91,6 @@ namespace snemo {
          STORE_DIGIFLAGS_FWMEAS_RISING_CELL     = datatools::bit_mask::bit08,
          STORE_DIGIFLAGS_FWMEAS_FALLING_CELL    = datatools::bit_mask::bit09,
          STORE_DIGIFLAGS_ORIGIN                 = datatools::bit_mask::bit10,
-         STORE_DIGIFLAGS_OM_ID                  = datatools::bit_mask::bit11
         };
 
       /// \brief Special firmware features: measurements on waveform/peak candidate
@@ -161,10 +160,11 @@ namespace snemo {
       void set_origin(const rtd_origin &);
       void reset_origin();
 
-      bool has_om_id() const;
-      void set_om_id(const sncabling::om_id & om_id_);
-      void reset_om_id();
-      const sncabling::om_id & get_om_id() const;
+      // Use geom_id() form geomtools::base_hit
+      // bool has_om_id() const;
+      // void set_om_id(const sncabling::om_id & om_id_);
+      // void reset_om_id();
+      // const sncabling::om_id & get_om_id() const;
 
       /// Smart print
       ///
@@ -183,21 +183,18 @@ namespace snemo {
     private:
 
       // Mandatory attributes:
-      // timestamp            _reference_time_; ///< Reference time of the hit (40MHz main clock)
       int64_t              _timestamp_;         ///< Timestamp of the hit (40MHz main clock)
       bool                 _low_threshold_only_ = false; ///< Flag for low threshold only
       bool                 _high_threshold_ = false; ///< Flag for high threshold
       uint16_t             _fcr_ = INVALID_FCR;  ///< First cell read (10 bits)
-      // Add-on (2022-02-11):
       uint16_t             _lt_trigger_counter_ = 0; ///< useful for off-line monitoring
-      // Add-on (2022-02-11):
       uint32_t             _lt_time_counter_ = 0;  ///< useful for off-line monitoring
       std::vector<int16_t> _waveform_; ///< Digitized signal sampling array
 
       // Possibly not available attributes:
       fw_measurements_type _fwmeas_;   ///< Firmware measurements
       rtd_origin           _origin_;   ///< RTD origin of the hit
-      sncabling::om_id     _om_id_;    ///< Identifier of the optical module
+      // sncabling::om_id     _om_id_;    ///< Identifier of the optical module
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

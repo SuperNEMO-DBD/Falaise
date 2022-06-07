@@ -29,7 +29,7 @@ namespace snemo {
       ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       ar_ & boost::serialization::make_nvp("run_id",   _run_id_);
       ar_ & boost::serialization::make_nvp("event_id", _event_id_);
-      ar_ & boost::serialization::make_nvp("reference_time", _reference_time_);
+      ar_ & boost::serialization::make_nvp("reference_timestamp", _reference_timestamp_);
       ar_ & boost::serialization::make_nvp("calorimeter_digitized_hits", _calorimeter_digitized_hits_);
       ar_ & boost::serialization::make_nvp("tracker_digitized_hits", _tracker_digitized_hits_);
       ar_ & boost::serialization::make_nvp("origin_trigger_ids", _origin_trigger_ids_);

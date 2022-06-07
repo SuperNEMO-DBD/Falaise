@@ -55,7 +55,7 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calori
  * snemo::datamodel::tracker_digitized_hit *
  ********************************************/
 
-#include <falaise/snemo/datamodels/boost_io/calibrated_tracker_hit.ipp>
+#include <falaise/snemo/datamodels/boost_io/tracker_digitized_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_digitized_hit)
 
 /*************************************

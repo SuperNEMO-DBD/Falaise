@@ -52,7 +52,7 @@ namespace snemo {
       ar_ & boost::serialization::make_nvp("geomtools__base_hit",
                                            boost::serialization::base_object<geomtools::base_hit>(*this));
       ar_ & boost::serialization::make_nvp("times", _times_);
-      ar_ & boost::serialization::make_nvp("cell_id", _cell_id_);
+      // ar_ & boost::serialization::make_nvp("cell_id", _cell_id_);
       return;
     }
 

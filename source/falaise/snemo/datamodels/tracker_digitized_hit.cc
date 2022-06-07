@@ -73,13 +73,13 @@ namespace snemo {
 
     void tracker_digitized_hit::gg_times::invalidate()
     {
-      _anode_times_[ANODE_R0].invalidate();
-      _anode_times_[ANODE_R1].invalidate();
-      _anode_times_[ANODE_R2].invalidate();
-      _anode_times_[ANODE_R3].invalidate();
-      _anode_times_[ANODE_R4].invalidate();
-      _bottom_cathode_time_.invalidate();
-      _top_cathode_time_.invalidate();
+      _anode_times_[ANODE_R0] = INVALID_TIME_TICKS();
+      _anode_times_[ANODE_R1] = INVALID_TIME_TICKS();
+      _anode_times_[ANODE_R2] = INVALID_TIME_TICKS();
+      _anode_times_[ANODE_R3] = INVALID_TIME_TICKS();
+      _anode_times_[ANODE_R4] = INVALID_TIME_TICKS();
+      _bottom_cathode_time_ = INVALID_TIME_TICKS();
+      _top_cathode_time_ = INVALID_TIME_TICKS();
 
       _anode_origins_[ANODE_R0].invalidate();
       _anode_origins_[ANODE_R1].invalidate();
@@ -116,17 +116,14 @@ namespace snemo {
       return _anode_times_[rank_].is_valid();
     }
 
-    void tracker_digitized_hit::gg_times::set_anode_time(uint16_t rank_, const timestamp & ts_)
+    void tracker_digitized_hit::gg_times::set_anode_time(uint16_t rank_, const int64_t & ts_)
     {
       DT_THROW_IF(rank_ >= 5, std::range_error, "Invalid anode time rank!");
-      DT_THROW_IF(not ts_.is_clock_80MHz(),
-                  std::logic_error,
-                  "Invalid tracker clock!");
       _anode_times_[rank_] = ts_;
       return;
     }
 
-    const timestamp & tracker_digitized_hit::gg_times::get_anode_time(uint16_t rank_) const
+    const int64_t & tracker_digitized_hit::gg_times::get_anode_time(uint16_t rank_) const
     {
       DT_THROW_IF(rank_ >= 5, std::range_error, "Invalid anode time rank!");
       return _anode_times_[rank_];
@@ -154,14 +151,13 @@ namespace snemo {
       return _bottom_cathode_time_.is_valid();
     }
 
-    void tracker_digitized_hit::gg_times::set_bottom_cathode_time(const timestamp & ts_)
+    void tracker_digitized_hit::gg_times::set_bottom_cathode_time(const int64_t & ts_)
     {
-      DT_THROW_IF(not ts_.is_clock_80MHz(), std::logic_error, "Invalid tracker clock!");
       _bottom_cathode_time_ = ts_;
       return;
     }
 
-    const timestamp & tracker_digitized_hit::gg_times::get_bottom_cathode_time() const
+    const int64_t & tracker_digitized_hit::gg_times::get_bottom_cathode_time() const
     {
       return _bottom_cathode_time_;
     }
@@ -188,14 +184,13 @@ namespace snemo {
       return _top_cathode_time_.is_valid();
     }
 
-    void tracker_digitized_hit::gg_times::set_top_cathode_time(const timestamp & ts_)
+    void tracker_digitized_hit::gg_times::set_top_cathode_time(const int64_t & ts_)
     {
-      DT_THROW_IF(not ts_.is_clock_80MHz(), std::logic_error, "Invalid tracker clock!");
       _top_cathode_time_ = ts_;
       return;
     }
 
-    const timestamp & tracker_digitized_hit::gg_times::get_top_cathode_time() const
+    const int64_t & tracker_digitized_hit::gg_times::get_top_cathode_time() const
     {
       return _top_cathode_time_;
     }
@@ -238,7 +233,7 @@ namespace snemo {
       out_ << popts.indent << tag
            << "Anode times : " << std::endl;
       for (int i = 0; i < 5; i++) {
-        const timestamp & ts = _anode_times_[i];
+        const int64_t & ts = _anode_times_[i];
         out_ << popts.indent << skip_tag;
         if (i == 4) {
           out_ << last_tag;
@@ -292,28 +287,28 @@ namespace snemo {
     }
 
     /*** tracker_digitized_hit ***/
-
-    bool tracker_digitized_hit::has_cell_id() const
-    {
-      return _cell_id_.is_valid();
-    }
-
-    void tracker_digitized_hit::set_cell_id(const sncabling::gg_cell_id & id_)
-    {
-      _cell_id_ = id_;
-      return;
-    }
-
-    void tracker_digitized_hit::reset_cell_id()
-    {
-      _cell_id_.invalidate();
-      return;
-    }
-
-    const sncabling::gg_cell_id & tracker_digitized_hit::get_cell_id() const
-    {
-      return _cell_id_;
-    }
+    //
+    // bool tracker_digitized_hit::has_cell_id() const
+    // {
+    //   return _cell_id_.is_valid();
+    // }
+    //
+    // void tracker_digitized_hit::set_cell_id(const sncabling::gg_cell_id & id_)
+    // {
+    //   _cell_id_ = id_;
+    //   return;
+    // }
+    //
+    // void tracker_digitized_hit::reset_cell_id()
+    // {
+    //   _cell_id_.invalidate();
+    //   return;
+    // }
+    //
+    // const sncabling::gg_cell_id & tracker_digitized_hit::get_cell_id() const
+    // {
+    //   return _cell_id_;
+    // }
 
     const std::vector<tracker_digitized_hit::gg_times> & tracker_digitized_hit::get_times() const
     {
