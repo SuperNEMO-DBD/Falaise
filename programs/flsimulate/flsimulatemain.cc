@@ -48,6 +48,7 @@
 #include "bayeux/bayeux.h"
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/kernel.h"
+#include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/datatools/service_manager.h"
 #include "bayeux/datatools/things.h"
@@ -337,9 +338,11 @@ falaise::exit_code do_flsimulate(int argc, char *argv[]) {
     simOutput.set_name("FLSimulateOutput");
     simOutput.set_single_output_file(flSimParameters.outputFile);
     // Metadata management:
+    // datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+    // logging = datatools::logger::PRIO_DEBUG;
     if (flSimParameters.embeddedMetadata) {
       // Push the metadata in the metadata store:
-      datatools::multi_properties &metadataStore = simOutput.grab_metadata_store();
+      datatools::multi_properties & metadataStore = simOutput.grab_metadata_store();
       metadataStore = flSimMetadata;
     }
     simOutput.initialize_simple();
