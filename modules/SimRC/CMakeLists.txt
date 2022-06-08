@@ -14,7 +14,7 @@ add_library(Falaise_SimRC SHARED
   snsimrc/calorimeter_om_tagger.cpp
   snsimrc/simrc_module.hpp
   snsimrc/simrc_module.cpp
-  snsimrc/simrc_plugin.cpp
+  # snsimrc/simrc_plugin.cpp
   snsimrc/simrc_lib.cpp
   snsimrc/simrc_lib.hpp
   )
@@ -48,11 +48,13 @@ endif()
 # Install Targets
 install(TARGETS Falaise_SimRC DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
-# install(FILES
-#   ${CMAKE_CURRENT_SOURCE_DIR}/SimRC/config/activity_model_factory.conf
-#   ${CMAKE_CURRENT_SOURCE_DIR}/SimRC/config/activity_models.conf
-#   DESTINATION
-#   )
+add_custom_target(Falaise_SimRC_Resources ALL
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/modules/SimRC/config"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/config/activity_model_factory.conf" "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/modules/SimRC/"
+  COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/config/activity_models.conf" "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/modules/SimRC/"
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/config/activity_model_factory.conf ${CMAKE_CURRENT_SOURCE_DIR}/config/activity_models.conf
+  COMMENT "Copying Falaise SimRC plugin's config files into Falaise build directory"
+  )
 
 add_subdirectory(programs)
 

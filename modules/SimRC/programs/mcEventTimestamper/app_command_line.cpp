@@ -7,6 +7,10 @@
 #include "falaise/version.h"
 
 namespace FLSimRC {
+  
+  cl_help_signal::cl_help_signal() : std::logic_error("command line help requested") {}
+
+  cl_help_signal::~cl_help_signal() {}
 
   //! Handle printing of version information to given ostream
   void do_version(std::ostream & out_)
@@ -27,6 +31,8 @@ namespace FLSimRC {
     out_ << "Usage:\n"
        << "  flsimrc-timestamper [options]\n"
        << od_ << "\n";
+    out_ << "Example:\n\n";
+    out_ << "  flsimrc-timestamper -n 100000 -o event_timestamps.lis \n\n";
   }
   
   int do_cldialog(int argc_, char * argv_[], app_params & params_)
@@ -90,18 +96,19 @@ namespace FLSimRC {
     } catch (const bpo::required_option & e) {
       // We need to handle help/version even if required_option thrown
       if ((vMap.count("help") == 0u)) {
-        std::cerr << "flsimrc : " << e.what() << "\n";
+        std::cerr << "flsimrc-timestamper : " << e.what() << "\n";
         return falaise::EXIT_OK;
       }
     } catch (const std::exception & e) {
-      std::cerr << "flsimrc : " << e.what() << "\n";
+      std::cerr << "flsimrc-timestamper : " << e.what() << "\n";
       return falaise::EXIT_ERROR;
     }
 
     // Handle any non-bound options
     if (vMap.count("help") != 0u) {
       do_help(std::cout, optDesc);
-      return falaise::EXIT_OK;
+      cl_help_signal clHelpSignal;
+      throw clHelpSignal;
     }
 
     if (vMap.count("version") != 0u) {

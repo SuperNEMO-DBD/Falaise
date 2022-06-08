@@ -1,5 +1,5 @@
 # - CMake build script for Falaise flsimrc_timestamper app
-message(STATUS "==============> flsimrc_timestamper")
+# message(STATUS "==============> flsimrc_timestamper")
 
 #-----------------------------------------------------------------------
 # Copyright (c) 2022 by François Mauger <mauger@lpccaen.in2p3.fr>
@@ -42,10 +42,10 @@ target_include_directories(flsimrc-timestamper PRIVATE
   )
 target_compile_definitions(flsimrc-timestamper PRIVATE ENABLE_BINRELOC)
 target_link_libraries(flsimrc-timestamper
+  Falaise_SimRC
   Falaise
   Bayeux::Bayeux
   Boost::program_options
-  Falaise_SimRC
   )
 target_clang_format(flsimrc-timestamper)
 
@@ -54,13 +54,13 @@ set_target_properties(flsimrc-timestamper PROPERTIES INSTALL_RPATH_USE_LINK_PATH
 
 if(UNIX AND NOT APPLE)
   set_target_properties(flsimrc-timestamper
-    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR};\$ORIGIN/../${CMAKE_INSTALL_PLUGINDIR}"
     )
 elseif(APPLE)
   # Temporary setting - needs testing
   set_target_properties(flsimrc-timestamper
     PROPERTIES
-    INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
+    INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR};@loader_path/../${CMAKE_INSTALL_PLUGINDIR}"
     )
 endif()
 

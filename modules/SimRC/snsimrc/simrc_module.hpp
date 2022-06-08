@@ -86,13 +86,13 @@ namespace snemo {
       
     };
     
-  }  // end of namespace simulation
+  } // end of namespace simulation
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // @arg snemo::simulation::simrc_module the name the registered class
 DOCD_CLASS_DECLARATION(snemo::simulation::simrc_module)
 
-#endif  // FALAISE_SIMRC_PLUGIN_SIMRC_MODULE_HPP
+#endif // FALAISE_SIMRC_PLUGIN_SIMRC_MODULE_HPP

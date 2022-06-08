@@ -18,7 +18,8 @@ namespace {
     {
       DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Initialization of the SimRC plugin");
       if (datatools::kernel::is_instantiated()) {
-        snsimrc::simrc_initialize();
+       DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Initializing SimRC...");
+       snsimrc::simrc_initialize();
       }
       return;
     }
@@ -26,6 +27,7 @@ namespace {
     {
       DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Termination of the SimRC plugin");
       if (datatools::kernel::is_instantiated()) {
+        DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Terminating SimRC...");
         snsimrc::simrc_terminate();
       }
       return;

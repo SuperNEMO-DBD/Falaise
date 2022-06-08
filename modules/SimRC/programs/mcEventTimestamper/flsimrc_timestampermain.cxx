@@ -21,6 +21,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <exception>
 
 // Third Party:
 #include <bayeux/datatools/exception.h>
@@ -53,7 +54,8 @@ namespace FLSimRC {
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
-int main(int argc_, char * argv_[]) {
+int main(int argc_, char * argv_[])
+{
   falaise::initialize(argc_, argv_);
   snsimrc::simrc_initialize();
   
@@ -74,20 +76,22 @@ namespace FLSimRC {
     try {
       do_configure(argc_, argv_, appParams);
       DT_LOG_DEBUG(appParams.log_level, "flsimrc timestamper is configured.");
+    } catch (cl_help_signal & signal) {
+      return falaise::EXIT_OK;
     } catch (std::exception & error) {
       std::cerr << "flsimrc-timestamper : User configuration error: " << error.what() << std::endl;
       return falaise::EXIT_ERROR;
     }
-    
-    // - Run
+
     falaise::exit_code code = falaise::EXIT_OK;
+    // - Run
     try {
       do_run(appParams);
     } catch (std::exception & error) {
       std::cerr << "flsimrc-timestamper : Run error: " << error.what() << std::endl;
       return falaise::EXIT_ERROR;
     }
-
+    
     return code;
   }
 
@@ -100,6 +104,8 @@ namespace FLSimRC {
       if (errorCode != falaise::EXIT_OK) {
         throw std::logic_error("bad command line input");
       }
+    } catch (cl_help_signal & s) {
+      throw s;
     } catch (std::exception & e) {
       throw e;
     }
