@@ -249,7 +249,7 @@ Examples
 ===========
 
 
-Some possible pipeline configurations using SimRC are available form the ``testing``  directory.
+Some possible pipeline configurations using SimRC are available from the ``testing``  directory.
       
 .. end
    
