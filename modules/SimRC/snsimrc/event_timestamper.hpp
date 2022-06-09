@@ -95,7 +95,7 @@ namespace snemo {
       datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL; ///< Verbosity
 
       // Configuration:
-      std::unique_ptr<snemo::rc::run_list> _runList_; ///< The list if runs
+      std::unique_ptr<snemo::rc::run_list> _runList_; ///< The list of runs
       snemo::physics_model::activity_model_factory _actModelFactory_; ///< The factory for activity models
       snemo::physics_model::activity_model_ptr_type _mcActivityModel_; ///< The selected activity model
       std::unique_ptr<snemo::rc::run_statistics> _mcRunStatistics_; ///< Statistics data computed from the models above

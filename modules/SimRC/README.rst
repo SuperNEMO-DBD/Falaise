@@ -5,11 +5,14 @@ SimRC - Simulated Running Conditions
 :authors: F.Mauger
 :date: 2022-06-09
 
-The  Simulated Running  Conditions  module allows  to apply  realistic
+The  SimRC (*Simulated Running  Conditions*)  module allows  to apply  realistic
 running  conditions  to idealized  simulated  events  produced by  the
-flsimulate program.
+``flsimulate'' program. It consists in  the first processing module to
+be  applied to  simulated events before digitization,  calibration and
+reconstruction modules.
 
-It is based on several fundamental actions:
+SimRC  is  based  on  several  fundamental  actions  embedded  in  the
+following drivers:
 
 - **event timestamping**  : each simulated  event is associated  to an
   unique timestamp distributed along running periods (using a specific
@@ -17,26 +20,38 @@ It is based on several fundamental actions:
   the  simulated decays  (by  default, we  use  a *constant  activity*
   model).
   
-  - It is possible to  select a list of runs,  to use a single
-    default  run of  30  months (nominal  exposure  for the  SuperNEMO
-    demonstrator experiment)
+  - It is possible to  select a list of runs described in a file.
+    By default, this driver uses a single
+    default  ideal  30  months run starting on 2023-01-01 at 00:00:00
+    (nominal  exposure  for the  SuperNEMO demonstrator experiment)
   - It  is possible  to define  an  *activity model*  with a  changing
-    activity value  depending on  different running  periods (example:
-    can be useful for modeling  unstable radon activity in the tracker
-    gas). Several activity models are provided in Falaise (*constant*,
-    *constant  per   period*,  *exponential   decay*),  more   can  be
-    implemented.
+    activity  value  depending  on different  running  periods.   This
+    feature can  be used for  modeling unstable radon activity  in the
+    tracker gas for  example. Several activity models  are provided in
+    Falaise (*constant*, *constant  per period*, *exponential decay*),
+    more can be implemented.
+
+    If not  specified, a default  constant activity model is  used and
+    the decay event  timestamps are sampled as if the  activity of the
+    simulated decaying isotope was constant along the selected running
+    period.
   
 - **tracker cell status  tagging** : the simulated  truth tracker hits
   are tagged with a specific  status that informs if the corresponding
   cell is dead, off, has no anode or cathode signal(s)...  This status
   depends on  the current running  period the event  timestamp belongs
-  to.
+  to. A dedicated  service (``snemo::tracker_cell_status_service'') is
+  responsible of  the accouting of tracker  cells status. It can  use a
+  local file  as well as  a database  access to implement  the tracker
+  cell status timetable.
 - **calorimeter OM status tagging**  : the simulated truth calorimeter
   hits  (main wall,  X-calon gamma  veto) are  tagged with  a specific
   status that  informs if the  corresponding OM is dead,  off...  This
   status depends  on the  current running  period the  event timestamp
-  belongs to.
+  belongs          to.           A          dedicated          service
+  (``snemo::calorimeter_om_status_service'')  is  responsible  of  the
+  accouting  of OMs  status. It  can use  a local  file as  well as  a
+  database access to implement the calorimeter OM status timetable.
        
 The SimRC modules uses several new classes implemented in Falaise:
 
@@ -223,5 +238,12 @@ in ``files'' mode and used in the SimRC module for ``SD'' data.
 More options are available, see the online help ``flsimrc-timestamper --help''.
 
 
+Architecture and workflow of the module
+===========================================
+
+.. image:: doc/images/arch-1.png
+   :width: 100%
+
+      
 .. end
    
