@@ -7,7 +7,7 @@ SimRC - Simulated Running Conditions
 
 The  SimRC (*Simulated Running  Conditions*)  module allows  to apply  realistic
 running  conditions  to idealized  simulated  events  produced by  the
-``flsimulate'' program. It consists in  the first processing module to
+``flsimulate`` program. It consists in  the first processing module to
 be  applied to  simulated events before digitization,  calibration and
 reconstruction modules.
 
@@ -40,7 +40,7 @@ following drivers:
   are tagged with a specific  status that informs if the corresponding
   cell is dead, off, has no anode or cathode signal(s)...  This status
   depends on  the current running  period the event  timestamp belongs
-  to. A dedicated  service (``snemo::tracker_cell_status_service'') is
+  to. A dedicated  service (``snemo::tracker_cell_status_service``) is
   responsible of  the accouting of tracker  cells status. It can  use a
   local file  as well as  a database  access to implement  the tracker
   cell status timetable.
@@ -49,7 +49,7 @@ following drivers:
   status that  informs if the  corresponding OM is dead,  off...  This
   status depends  on the  current running  period the  event timestamp
   belongs          to.           A          dedicated          service
-  (``snemo::calorimeter_om_status_service'')  is  responsible  of  the
+  (``snemo::calorimeter_om_status_service``)  is  responsible  of  the
   accouting  of OMs  status. It  can use  a local  file as  well as  a
   database access to implement the calorimeter OM status timetable.
        
@@ -65,11 +65,11 @@ Usage
 =====
 
 
-The SimRC module  can be used within a  ``flreconstruct'' pipeline for
+The SimRC module  can be used within a  ``flreconstruct`` pipeline for
 simulated data.  It  must be placed at the first  position of the list
 of modules because it aims to tag the SD bank in each simulated event.
 
-The SimRC plugin must be loaded from the ``flreconstruct'' configuration script:
+The SimRC plugin must be loaded from the ``flreconstruct`` configuration script:
 
 .. code::
 
@@ -79,7 +79,7 @@ The SimRC plugin must be loaded from the ``flreconstruct'' configuration script:
      "Falaise_SimRC"
 ..
 
-Then the pipeline is setup with a front ``SimRC'' module:
+Then the pipeline is setup with a front ``SimRC`` module:
 
 .. code::
 
@@ -145,8 +145,8 @@ events.
    tag_calorimeter_om : boolean = true
 ..
 
-The ``SimRC'' module makes use of the  ``snemo::tracker_cell_status_service``
-and ``snemo::calorimeter_om_status_service'' services. Both must be configured
+The ``SimRC`` module makes use of the  ``snemo::tracker_cell_status_service``
+and ``snemo::calorimeter_om_status_service`` services. Both must be configured
 from a dedicated section:
 
 
@@ -157,7 +157,7 @@ from a dedicated section:
    config : string = "services.conf"
 ..
 
-where ``service.conf'' typically contains:
+where ``service.conf`` typically contains:
 
 .. code::
    
@@ -232,10 +232,10 @@ The generated file use the following format :
   - Final token : event timestamp
 
 The generated file can then be loaded by the ``snemo::tracker_cell_status_service`` class
-in ``files'' mode and used in the SimRC module for ``SD'' data.
+in ``files`` mode and used in the SimRC module for ``SD`` data.
 
     
-More options are available, see the online help ``flsimrc-timestamper --help''.
+More options are available, see the online help ``flsimrc-timestamper --help``.
 
 
 Architecture and workflow of the module
@@ -244,6 +244,12 @@ Architecture and workflow of the module
 .. image:: doc/images/arch-1.png
    :width: 100%
 
+
+Examples
+===========
+
+
+Some possible pipeline configurations using SimRC are available form the ``testing``  directory.
       
 .. end
    
