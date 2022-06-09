@@ -1,5 +1,5 @@
-# - CMake build script for Falaise flsimrc_timestamper app
-# message(STATUS "==============> flsimrc_timestamper")
+# - CMake build script for Falaise flsimrc_mkcellstatuslist app
+# message(STATUS "==============> flsimrc_mkcellstatuslist")
 
 #-----------------------------------------------------------------------
 # Copyright (c) 2022 by François Mauger <mauger@lpccaen.in2p3.fr>
@@ -29,93 +29,53 @@ find_package(Boost 1.60 REQUIRED program_options)
 #-----------------------------------------------------------------------
 # Compile/Link App
 #
-add_executable(flsimrc-timestamper
-  app_params.hpp
-  app_params.cpp
-  app_command_line.hpp
-  app_command_line.cpp
-  flsimrc_timestampermain.cxx
+add_executable(flsimrc-mkcellstatuslist
+  make_cell_status_lists.cxx
   )
-target_include_directories(flsimrc-timestamper PRIVATE
+target_include_directories(flsimrc-mkcellstatuslist PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   )
-# target_compile_definitions(flsimrc-timestamper PRIVATE ENABLE_BINRELOC)
-target_link_libraries(flsimrc-timestamper
-  Falaise_SimRC
+target_link_libraries(flsimrc-mkcellstatuslist
   Falaise
   Bayeux::Bayeux
   Boost::program_options
   )
-target_clang_format(flsimrc-timestamper)
+target_clang_format(flsimrc-mkcellstatuslist)
 
 # - Ensure link to internal and external deps
-set_target_properties(flsimrc-timestamper PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+set_target_properties(flsimrc-mkcellstatuslist PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 
 if(UNIX AND NOT APPLE)
-  set_target_properties(flsimrc-timestamper
+  set_target_properties(flsimrc-mkcellstatuslist
     PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR};\$ORIGIN/../${CMAKE_INSTALL_PLUGINDIR}"
     )
 elseif(APPLE)
   # Temporary setting - needs testing
-  set_target_properties(flsimrc-timestamper
+  set_target_properties(flsimrc-mkcellstatuslist
     PROPERTIES
     INSTALL_RPATH "@loader_path/../${CMAKE_INSTALL_LIBDIR};@loader_path/../${CMAKE_INSTALL_PLUGINDIR}"
     )
 endif()
 
 # - Install it
-install(TARGETS flsimrc-timestamper
+install(TARGETS flsimrc-mkcellstatuslist
   EXPORT FalaiseTargets
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
 
 if(FALAISE_ENABLE_TESTING)
-  set(_SimRCTimestamperTestConfFiles
-    "activity_model_factory.conf"
-    "activity_models.conf"
-    )
-  
-  foreach(_file ${_SimRCTimestamperTestConfFiles})
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${_file}" "${CMAKE_CURRENT_BINARY_DIR}/${_file}" COPYONLY)
-  endforeach()
 
-  add_test(NAME testSimRC_timestamper_regular
-    COMMAND flsimrc-timestamper
-    -V debug
-    -n 1000
-    -o timestamps-regular.lis
-    -g "regular"
+  add_test(NAME testSimRC_mkcellstatuslist_1
+    COMMAND flsimrc-mkcellstatuslist
+    -V "debug"
+    -d "0.1.1"
+    -o "1.3.5"
+    -o "*.*.15"
+    -o "*.*.16"
+    -l "traker_cell_status.lis"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     ) 
-
-  add_test(NAME testSimRC_timestamper_random
-    COMMAND flsimrc-timestamper
-    -V debug
-    -n 1000
-    -o timestamps-random.lis
-    -g "random"
-    -s 314159
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    ) 
-
-  add_test(NAME testSimRC_timestamper_random_exp
-    COMMAND flsimrc-timestamper
-    -V debug
-    -n 10000
-    -f "activity_model_factory.conf"
-    -a "decaying-from-2023-01-01"
-    -o "timestamps-random-exp.lis"
-    -q "times-random-exp.lis"
-    -g "random"
-    -s 314159
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    ) 
-
-  # add_test(NAME testSimRC_timestamper_random_exp_post
-  #   COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/test.bash
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  #   ) 
 
 endif(FALAISE_ENABLE_TESTING)
 

@@ -97,7 +97,7 @@ namespace FLSimRC {
       // We need to handle help/version even if required_option thrown
       if ((vMap.count("help") == 0u)) {
         std::cerr << "flsimrc-timestamper : " << e.what() << "\n";
-        return falaise::EXIT_OK;
+        return falaise::EXIT_ERROR;
       }
     } catch (const std::exception & e) {
       std::cerr << "flsimrc-timestamper : " << e.what() << "\n";
