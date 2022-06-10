@@ -319,7 +319,7 @@ calibrated because they fall out of the *active* region og the tracker
 ============================================================ =============================================================
 
 
-Fast test
+Quick test
 ==========
 
 .. code::
