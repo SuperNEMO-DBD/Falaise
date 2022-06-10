@@ -92,8 +92,8 @@ namespace snemo {
       _caloTypes_ = {"calo", "xcalo", "gveto"};
       _ggType_ = "gg";
  
-      snemo::service_handle<snemo::tracker_cell_status_service> cellStatusService{services_};
-      snemo::service_handle<snemo::calorimeter_om_status_service> omStatusService{services_};
+      // snemo::service_handle<snemo::tracker_cell_status_service> cellStatusService{services_};
+      // snemo::service_handle<snemo::calorimeter_om_status_service> omStatusService{services_};
      
       if (config_.has_key("timestamp_event")) {
         _event_timestamping_ = config_.fetch_boolean("timestamp_event");
@@ -121,6 +121,7 @@ namespace snemo {
         datatools::properties cellTaggerConfig;
         config_.export_and_rename_starting_with(cellTaggerConfig, "tracker_cell_tagger.", "");
         _tracker_cell_tagger_->set_geometry_manager(*_geoManager_);
+        snemo::service_handle<snemo::tracker_cell_status_service> cellStatusService{services_};
         _tracker_cell_tagger_->set_tracker_cell_status_service(*(cellStatusService.operator->()));
         _tracker_cell_tagger_->initialize(cellTaggerConfig);
       }
@@ -131,6 +132,7 @@ namespace snemo {
         datatools::properties omTaggerConfig;
         config_.export_and_rename_starting_with(omTaggerConfig, "calorimeter_om_tagger.", "");
         _calorimeter_om_tagger_->set_geometry_manager(*_geoManager_);
+        snemo::service_handle<snemo::calorimeter_om_status_service> omStatusService{services_};
         _calorimeter_om_tagger_->set_calorimeter_om_status_service(*(omStatusService.operator->()));
         _calorimeter_om_tagger_->initialize(omTaggerConfig);
       }
