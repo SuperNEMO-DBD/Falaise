@@ -319,6 +319,57 @@ calibrated because they fall out of the *active* region og the tracker
 ============================================================ =============================================================
 
 
+Fast test
+==========
+
+.. code::
+
+   $ flsimulate-configure \
+	  --no-gui \
+	  -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
+	  -s "vertexes:generator=field_wire_surface" \
+	  -s "primary_events:generator=Bi214_Po214" \
+          -o simu.profile
+   $ echo "{EG=1; MGR=2; SHPF=3; VG=4}" > simu.seeds
+   $ flsimulate -c simu.conf -o simu.brio
+   $ flreconstruct -p reco.conf -i simu.brio -o reco.brio 
+..
+
+Extract from the *dump* module :
+
+.. code::
+   
+   Event record: 
+   |-- Bank 'CD' : "snemo::datamodel::calibrated_data"
+   |   |-- CalorimeterHits[1]:
+   |   |   `-- (Id : 0, GID : [1302:0.1.9.4.*], Energy : 770.168 keV, Time : 2.56591 ns)
+   |   `-- TrackerHits[13]:
+   |       |-- (Id : 0, GID : [1204:0.1.3.46], Type : delayed [time=18.989553 us])
+   |       |-- (Id : 1, GID : [1204:0.1.2.46], Type : delayed [time=19.028453 us])
+   |       |-- (Id : 2, GID : [1204:0.1.1.46], Type : delayed [time=18.781432 us])
+   |       |-- (Id : 3, GID : [1204:0.1.0.46], Type : delayed [time=18.678961 us])
+   |       |-- (Id : 4, GID : [1204:0.1.4.46], Type : prompt)
+   |       |-- (Id : 5, GID : [1204:0.1.5.47], Type : prompt)
+   |       |-- (Id : 6, GID : [1204:0.1.5.48], Type : prompt)
+   |       |-- (Id : 7, GID : [1204:0.1.6.48], Type : prompt)
+   |       |-- (Id : 8, GID : [1204:0.1.6.49], Type : prompt)
+   |       |-- (Id : 9, GID : [1204:0.1.7.49], Type : prompt)
+   |       |-- (Id : 10, GID : [1204:0.1.7.50], Type : prompt)
+   |       |-- (Id : 11, GID : [1204:0.1.8.51], Type : prompt)
+   |       `-- (Id : 12, GID : [1204:0.1.8.52], Type : prompt)
+   |-- Bank 'EH' : "snemo::datamodel::event_header"
+   |   |-- Id : 
+   |   |   |-- Run number   : -2
+   |   |   `-- Event number : 35
+   |   |-- Timestamp : none
+   |   |-- MC run ID : 0
+   |   |-- MC timestamp : 2023-Jan-04 05:42:08.640000
+   |   |-- Properties : 
+   |   |   `-- <no property>
+   |   `-- Generation : simulated
+   :
+..
+
 .. end
 
    
