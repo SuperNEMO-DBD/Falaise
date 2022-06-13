@@ -58,40 +58,47 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
 
   caloModels = {};
 
-  // Initialize the calorimeter regime utility from the database
-  if (ps.has_key("calorimeter_regime_database_path")) {
-    std::string _calorimeter_regime_database_path_ = ps.fetch_string("calorimeter_regime_database_path");
-    datatools::fetch_path_with_env(_calorimeter_regime_database_path_);
-    this->parse_calorimeter_regime_database(_calorimeter_regime_database_path_);
-  }
+  // 2022-06-13 FM : use default paths for regime and fit DB files
 
-  // Initialize the pol3d parameters for MWall 8"
-  if (ps.has_key("pol3d_parameters_mwall_8inch_path")) {
-    std::string _pol3d_parameters_mwall_8inch_path_ = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_mwall_8inch_path_);
-    _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_8inch_path_);
+  // Initialize the calorimeter regime utility from the database
+  std::string calorimeter_regime_database_path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db";
+  if (ps.has_key("calorimeter_regime_database_path")) {
+    calorimeter_regime_database_path = ps.fetch_string("calorimeter_regime_database_path");
   }
+  datatools::fetch_path_with_env(calorimeter_regime_database_path);
+  this->parse_calorimeter_regime_database(calorimeter_regime_database_path);
+  
+  // Initialize the pol3d parameters for MWall 8"
+  std::string pol3d_parameters_mwall_8inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db";
+  if (ps.has_key("pol3d_parameters_mwall_8inch_path")) {
+    pol3d_parameters_mwall_8inch_path = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
+  }
+  datatools::fetch_path_with_env(pol3d_parameters_mwall_8inch_path);
+  _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_8inch_path);
 
   // Initialize the pol3d parameters for MWall 5"
+  std::string pol3d_parameters_mwall_5inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db";
   if (ps.has_key("pol3d_parameters_mwall_5inch_path")) {
-    std::string _pol3d_parameters_mwall_5inch_path_ = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_mwall_5inch_path_);
-    _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_5inch_path_);
+    pol3d_parameters_mwall_5inch_path = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_mwall_5inch_path);
+  _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_5inch_path);
 
   // Initialize the pol3d parameters for XWall
+  std::string pol3d_parameters_xwall_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db";
   if (ps.has_key("pol3d_parameters_xwall_path")) {
-    std::string _pol3d_parameters_xwall_path_ = ps.fetch_string("pol3d_parameters_xwall_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_xwall_path_);
-    _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(_pol3d_parameters_xwall_path_);
+    pol3d_parameters_xwall_path = ps.fetch_string("pol3d_parameters_xwall_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_xwall_path);
+  _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(pol3d_parameters_xwall_path);
 
   // Initialize the pol3d parameters for GVeto
+  std::string pol3d_parameters_gveto_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db";
   if (ps.has_key("pol3d_parameters_gveto_path")) {
-    std::string _pol3d_parameters_gveto_path_ = ps.fetch_string("pol3d_parameters_gveto_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_gveto_path_);
-    _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(_pol3d_parameters_gveto_path_);
+    pol3d_parameters_gveto_path = ps.fetch_string("pol3d_parameters_gveto_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_gveto_path);
+  _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(pol3d_parameters_gveto_path);
 
   // Setup trigger time
   timeWindow = fps.get<falaise::time_t>("cluster_time_width", {100., "ns"})();
@@ -281,13 +288,13 @@ void mock_calorimeter_s2c_module::digitizeHits(
 
       // handle only e- (e- and gamma's Compton) and e+
       if ((a_calo_mc_hit->get_particle_name() == "e-") || (a_calo_mc_hit->get_particle_name() == "e+"))
-	{
-	  // currently hard coded correction ... -> to switch into parameters in conf file
-	  birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
+        {
+          // currently hard coded correction ... -> to switch into parameters in conf file
+          birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
 
-	  // correction is negative bellow 2.5 keV ...
-	  if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
-	}
+          // correction is negative bellow 2.5 keV ...
+          if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
+        }
 
       // Compute uniformity correction factor
       double uniformityCorrectionFactor = 1.0;
@@ -322,31 +329,31 @@ void mock_calorimeter_s2c_module::digitizeHits(
       switch (a_scin_gid.get_type()) {
 
       case 1302: // M-wall
-	_position_xyz[2] += 15.50000001; // add half height of scintillator
-	if (std::abs(_position_z) < 1500.)
-	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
-	else
-	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
-	break;
+        _position_xyz[2] += 15.50000001; // add half height of scintillator
+        if (std::abs(_position_z) < 1500.)
+          uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
+        else
+          uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
+        break;
 
       case 1232: // X-wall
-	_position_xyz[2] += 75.10000001; // add half height of scintillator
-	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
-	break;
+        _position_xyz[2] += 75.10000001; // add half height of scintillator
+        uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
+        break;
 
       case 1252: // V-wall
-	_position_xyz[2] += 75.10000001;
-	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
-	break;
+        _position_xyz[2] += 75.10000001;
+        uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
+        break;
 
       default:
-	DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
+        DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
       }
 
 
       DT_LOG_DEBUG(get_logging_priority(), "step_hit of " << energyDeposit/CLHEP::MeV << " MeV in " << a_scin_gid
-		   << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
-		   << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
+                   << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
+                   << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
 
 
       // Get the step hit time start:
@@ -371,16 +378,16 @@ void mock_calorimeter_s2c_module::digitizeHits(
         newHit->set_energy(energyDeposit);
 
         // Grab auxiliaries
-	datatools::properties & newHitProperties = newHit->grab_auxiliaries();
+        datatools::properties & newHitProperties = newHit->grab_auxiliaries();
 
         // Add a properties to ease the final calibration
         newHitProperties.store("category", caloType);
 
-	// Store energy deposit details
-	newHitProperties.store("edep",     energyDeposit);
-	newHitProperties.store("edep_u",   energyDeposit * uniformityCorrectionFactor);
-	newHitProperties.store("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
-	newHitProperties.store("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
+        // Store energy deposit details
+        newHitProperties.store("edep",     energyDeposit);
+        newHitProperties.store("edep_u",   energyDeposit * uniformityCorrectionFactor);
+        newHitProperties.store("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+        newHitProperties.store("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
 
         // 2012-09-17 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
@@ -416,10 +423,10 @@ void mock_calorimeter_s2c_module::digitizeHits(
           existingHitProperties.update_flag("pile_up");
           existingHit->set_time(step_hit_time_start);
           existingHit->set_energy(energyDeposit);
-	  existingHitProperties.update("edep",     energyDeposit);
-	  existingHitProperties.update("edep_u",   energyDeposit * uniformityCorrectionFactor);
-	  existingHitProperties.update("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
-	  existingHitProperties.update("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
+          existingHitProperties.update("edep",     energyDeposit);
+          existingHitProperties.update("edep_u",   energyDeposit * uniformityCorrectionFactor);
+          existingHitProperties.update("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+          existingHitProperties.update("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
           continue;
         }
 
@@ -427,28 +434,28 @@ void mock_calorimeter_s2c_module::digitizeHits(
         const double calo_time = std::min(step_hit_time_start, existingHit->get_time());
         existingHit->set_time(calo_time);
 
-	double calo_energy;
+        double calo_energy;
 
         // Sum energies
         calo_energy = energyDeposit + existingHit->get_energy();
         existingHit->set_energy(calo_energy);
 
-	// Sum energy deposit details
-	existingHitProperties.fetch("edep", calo_energy);
-	calo_energy += energyDeposit;
-	existingHitProperties.update("edep", calo_energy);
+        // Sum energy deposit details
+        existingHitProperties.fetch("edep", calo_energy);
+        calo_energy += energyDeposit;
+        existingHitProperties.update("edep", calo_energy);
 
-	existingHitProperties.fetch("edep_u", calo_energy);
-	calo_energy += energyDeposit * uniformityCorrectionFactor;
-	existingHitProperties.update("edep_u", calo_energy);
+        existingHitProperties.fetch("edep_u", calo_energy);
+        calo_energy += energyDeposit * uniformityCorrectionFactor;
+        existingHitProperties.update("edep_u", calo_energy);
 
-	existingHitProperties.fetch("edep_bc", calo_energy);
-	calo_energy += energyDeposit * birksCerenkovCorrectionFactor;
-	existingHitProperties.update("edep_bc", calo_energy);
+        existingHitProperties.fetch("edep_bc", calo_energy);
+        calo_energy += energyDeposit * birksCerenkovCorrectionFactor;
+        existingHitProperties.update("edep_bc", calo_energy);
 
-	existingHitProperties.fetch("edep_bcu", calo_energy);
-	calo_energy += energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor;
-	existingHitProperties.update("edep_bcu", calo_energy);
+        existingHitProperties.fetch("edep_bcu", calo_energy);
+        calo_energy += energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor;
+        existingHitProperties.update("edep_bcu", calo_energy);
       }
     }  // loop over hits
   }    // loop over hit category
@@ -677,6 +684,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
             "                                 \n");
   }
 
+  /*
   {
     // Description of the 'hit_categories' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
@@ -712,7 +720,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
             "  ...                                                           \n"
             "                                                                \n");
   }
-
+  */
+  
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
       "Here is a full configuration example in the                    \n"
@@ -727,21 +736,28 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
       "  alpha_quenching    : boolean = 1                             \n"
       "  store_mc_hit_id    : boolean = 0                             \n"
       "                                                               \n"
-      "  hit_categories     : string[2] = \"calo\" \"xcalo\"          \n"
-      "                                                               \n"
-      "  calo.energy.resolution     : real as fraction = 8 %          \n"
-      "  calo.energy.low_threshold  : real as energy = 50 keV         \n"
-      "  calo.energy.high_threshold : real as energy = 150 keV        \n"
-      "  calo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
-      "  calo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34  \n"
-      "                                                               \n"
-      "  xcalo.energy.resolution     : real as fraction = 12 %        \n"
-      "  xcalo.energy.low_threshold  : real as energy = 50 keV        \n"
-      "  xcalo.energy.high_threshold : real as energy = 150 keV       \n"
-      "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns   \n"
-      "  xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34 \n"
+      "  hit_categories     : string[2] = \"calo\" \"xcalo\" \"gveto\" \n"
+      "  calorimeter_regime_database_path  : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db\" \n"
+      "  pol3d_parameters_mwall_8inch_path : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db\" \n"
+      "  pol3d_parameters_mwall_5inch_path : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db\" \n"
+      "  pol3d_parameters_xwall_path       : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db\" \n"
+      "  pol3d_parameters_gveto_path       : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db\" \n"
       "                                                              \n");
-
+      /*
+       // Old version per OM types:
+        "  calo.energy.resolution     : real as fraction = 8 %          \n"
+        "  calo.energy.low_threshold  : real as energy = 50 keV         \n"
+        "  calo.energy.high_threshold : real as energy = 150 keV        \n"
+        "  calo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
+        "  calo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34  \n"
+        "                                                               \n"
+        "  xcalo.energy.resolution     : real as fraction = 12 %        \n"
+        "  xcalo.energy.low_threshold  : real as energy = 50 keV        \n"
+        "  xcalo.energy.high_threshold : real as energy = 150 keV       \n"
+        "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns   \n"
+        "  xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34 \n"
+      */
+  
   ocd_.set_validation_support(true);
   ocd_.lock();
   return;

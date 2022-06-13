@@ -65,6 +65,10 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/types.h
   snemo/processing/base_gamma_builder.h
   snemo/processing/detail/GeigerTimePartitioner.h
+  snemo/processing/event_header_utils_module.h
+  snemo/processing/mock_calorimeter_s2c_module.h
+  snemo/processing/mock_calorimeter_s2c_module_utils.h
+  snemo/processing/mock_tracker_s2c_module.h
 
   snemo/services/services.h
   snemo/services/service_traits.h
@@ -134,18 +138,16 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/helix_intercept.cc
 
   snemo/processing/event_header_utils_module.cc
-  snemo/processing/event_header_utils_module.h
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
   snemo/processing/mock_calorimeter_s2c_module.cc
-  snemo/processing/mock_calorimeter_s2c_module.h
+  snemo/processing/mock_calorimeter_s2c_module_utils.cc
   snemo/processing/mock_tracker_s2c_module.cc
-  snemo/processing/mock_tracker_s2c_module.h
+   snemo/processing/detail/mock_raw_tracker_hit.h
   snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
   snemo/processing/base_gamma_builder.cc
-  snemo/processing/detail/mock_raw_tracker_hit.h
   snemo/processing/detail/mock_raw_tracker_hit.cc
   snemo/processing/detail/GeigerTimePartitioner.cc
   snemo/processing/detail/testing/gg_hit.h
