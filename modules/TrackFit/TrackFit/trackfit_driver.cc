@@ -175,9 +175,11 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
 
   // Invoke initialization at parent level :
   this->snemo::processing::base_tracker_fitter::_initialize(setup_);
+  // std::cerr << "*** devel *** trackfit_driver::initialize:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
 
   falaise::property_set ps{setup_};
-
+  _vertex_max_distance_ = ps.get<falaise::length_t>("vertex_max_distance", {0.5, "mm"})();
   _drift_time_calibration_label_ = ps.get<std::string>("drift_time_calibration_label", "snemo");
   auto fitting_models = ps.get<std::vector<std::string>>("fitting_models", {"line", "helix"});
 
@@ -236,6 +238,8 @@ void trackfit_driver::_install_drift_time_calibration_driver_() {
 // Main fitting method
 int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_data& clustering_,
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
+  // std::cerr << "*** devel *** trackfit_driver::_process_algo:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
   // Retrieve geiger cell diameter from gg_locator (to be used
   // by trackfit algorithm)
   const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;
@@ -294,6 +298,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
       // Helix fit solutions:
       std::list<TrackFit::helix_fit_solution> helix_solutions;
       if (use_helix_fit()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Using Helix Fit...");
         this->do_helix_fit(gg_hits, helix_solutions);
       }
 
@@ -302,11 +307,9 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         if (!a_fit_solution.ok) {
           continue;
         }
-        helix_fit_succeed = true;
 
         // Create new 'tracker_trajectory' handle:
         auto h_trajectory = datatools::make_handle<snemo::datamodel::tracker_trajectory>();
-        a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
 
         // 2012/05/11 XG : this work if all cells are clusterized on
         // the same side. If clusterizer algorithms puts together
@@ -334,16 +337,52 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
             "guess", a_fit_solution.auxiliaries.fetch_string("guess"));
 
         const geomtools::vector_3d center(a_fit_solution.x0, a_fit_solution.y0, a_fit_solution.z0);
-        htp->get_helix().set_center(center);
-        htp->get_helix().set_radius(a_fit_solution.r);
-        htp->get_helix().set_step(a_fit_solution.step);
-        htp->get_helix().set_angle1(a_fit_solution.angle_1);
-        htp->get_helix().set_angle2(a_fit_solution.angle_2);
+        geomtools::helix_3d& h3d = htp->get_helix();
+        h3d.set_center(center);
+        h3d.set_radius(a_fit_solution.r);
+        h3d.set_step(a_fit_solution.step);
+        h3d.set_angle1(a_fit_solution.angle_1);
+        h3d.set_angle2(a_fit_solution.angle_2);
+        if (datatools::logger::is_debug(get_logging_priority())) {
+          h3d.tree_dump(std::cerr, "*** New helix : ", "[debug] ");
+        }
+        // Only save the new helix pattern if it is enough different of the previous fitted ones
+        bool save_it = true;
+        geomtools::vector_3d h1 = h3d.get_first();
+        geomtools::vector_3d h2 = h3d.get_point(0.5 * (h3d.get_t1() + h3d.get_t2()));
+        geomtools::vector_3d h3 = h3d.get_last();
+        const double max_dist2 = _vertex_max_distance_ * _vertex_max_distance_;
+        for (const auto & h_trajectory_saved : a_trajectory_solution->get_trajectories()) {
+          const auto & pattern_saved = h_trajectory_saved->get_pattern();
+          if (pattern_saved.get_pattern_id() != "helix") continue;
+          const geomtools::helix_3d& h3d_saved =
+            dynamic_cast<const snemo::datamodel::helix_trajectory_pattern&>(pattern_saved).get_helix();
+          if (datatools::logger::is_debug(get_logging_priority())) {
+            h3d_saved.tree_dump(std::cerr, "*** Saved helix : ", "[debug] ");
+          }
+          geomtools::vector_3d h1_saved = h3d_saved.get_first();
+          geomtools::vector_3d h2_saved = h3d_saved.get_point(0.5 * (h3d_saved.get_t1() + h3d_saved.get_t2()));
+          geomtools::vector_3d h3_saved = h3d_saved.get_last();
+          auto deltaFirst  = h1 - h1_saved;
+          auto deltaMedium = h2 - h2_saved;
+          auto deltaLast   = h3 - h3_saved;
+          if ((deltaFirst.mag2() < max_dist2)
+              and (deltaMedium.mag2() < max_dist2)
+              and (deltaLast.mag2() < max_dist2)) {
+            save_it = false;
+            DT_LOG_DEBUG(get_logging_priority(), "Do not save this helix fit solution (already found)!");
+          }
+        }        
+        if (save_it) {
+          helix_fit_succeed = true; // At least one helix fit was successful
+          a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
+        }
       }
 
       // Line fit solutions:
       std::list<TrackFit::line_fit_solution> line_solutions;
       if (use_line_fit()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Using Line Fit...");
         this->do_line_fit(gg_hits, line_solutions);
       }
 
@@ -352,11 +391,9 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         if (!a_fit_solution.ok) {
           continue;
         }
-        line_fit_succeed = true;
-
+ 
         // Create new 'tracker_trajectory' handle:
         auto h_trajectory = datatools::make_handle<snemo::datamodel::tracker_trajectory>();
-        a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
 
         // Set trajectory geom_id using the first geiger
         // hit of the associated cluster
@@ -374,7 +411,7 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         h_trajectory->set_id(a_trajectory_solution->get_trajectories().size());
         h_trajectory->set_cluster_handle(a_cluster);
         h_trajectory->set_pattern_handle(h_pattern);
-        h_trajectory->grab_auxiliaries().store_real("chi2", pow(a_fit_solution.chi, 2));
+        h_trajectory->grab_auxiliaries().store_real("chi2", std::pow(a_fit_solution.chi, 2));
         h_trajectory->grab_auxiliaries().store_integer("ndof", a_fit_solution.ndof);
         h_trajectory->grab_auxiliaries().store_string(
             "guess", a_fit_solution.auxiliaries.fetch_string("guess"));
@@ -386,6 +423,33 @@ int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_da
         geomtools::line_3d& l3d = ltp->get_segment();
         TrackFit::line_fit_mgr::convert_solution(this->get_hits_referential(), a_fit_solution,
                                                  this->get_working_referential(), l3d);
+        // throw std::runtime_error("********** Blamo! ************");
+        if (datatools::logger::is_debug(get_logging_priority())) {
+          l3d.tree_dump(std::cerr, "*** New line : ", "[debug] ");
+        }
+        // Only save the new line pattern if it is enough different of the previous fitted ones
+        bool save_it = true;
+        const double max_dist2 = _vertex_max_distance_ * _vertex_max_distance_;
+        for (const auto & h_trajectory_saved : a_trajectory_solution->get_trajectories()) {
+          const auto & pattern_saved = h_trajectory_saved->get_pattern();
+          if (pattern_saved.get_pattern_id() != "line") continue;
+          const geomtools::line_3d& l3d_saved =
+            dynamic_cast<const snemo::datamodel::line_trajectory_pattern&>(pattern_saved).get_segment();
+          if (datatools::logger::is_debug(get_logging_priority())) {
+            l3d_saved.tree_dump(std::cerr, "*** Saved line : ", "[debug] ");
+          }
+          auto deltaFirst = l3d.get_first() - l3d_saved.get_first();
+          auto deltaLast = l3d.get_last() - l3d_saved.get_last();
+          if ((deltaFirst.mag2() < max_dist2) and (deltaLast.mag2() < max_dist2)) {
+            save_it = false;
+            DT_LOG_DEBUG(get_logging_priority(), "Do not save this line fit solution (already found)!");
+          }
+        }
+        
+        if (save_it) {
+          line_fit_succeed = true; // At least one line fit was successful
+          a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
+        }
       }
 
       if (!helix_fit_succeed && !line_fit_succeed) {
@@ -525,7 +589,6 @@ void trackfit_driver::_compute_line_fit_solutions_(
 
     if (lfm.get_solution().ok) {
       TrackFit::line_fit_solution& the_solution = lfm.grab_solution();
-
       // Store initial guess as properties:
       the_solution.auxiliaries.store_string("guess", iguess.first);
       solutions_.push_back(the_solution);
@@ -533,6 +596,26 @@ void trackfit_driver::_compute_line_fit_solutions_(
     lfm.reset();
   }
 }
+
+// void trackfit_driver::_remove_duplicated_line_fit_solutions_(std::list<TrackFit::line_fit_solution>& solutions_)
+// {
+//   uint32_t nSol = solutions_.size();
+//   std::set<uint32_t> toBeRemoved;
+//   uint32_t iSol = 0;
+//   for (std::list<TrackFit::line_fit_solution>::const_iterator it1 = solutions_.begin();
+//        it1 != solutions_.end();
+//        it1++) {
+//     const TrackFit::line_fit_solution & lfSol1 = *it1;
+//     std::list<TrackFit::line_fit_solution>::const_iterator it2 = it1;
+//     it2++;
+//     for (std::list<TrackFit::line_fit_solution>::const_iterator it2;
+//          it2 != solutions_.end();
+//          it2++) {
+//       const TrackFit::line_fit_solution & lfSol2 = *it2;    
+//     }
+//   }
+// }
+
 
 }  // end of namespace reconstruction
 

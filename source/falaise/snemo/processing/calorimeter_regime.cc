@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/processing/CalorimeterModel.cc
+/** \file falaise/snemo/processing/calorimeter_regime.cc
  */
 
 // Ourselves:

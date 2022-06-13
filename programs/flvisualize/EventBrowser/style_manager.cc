@@ -309,6 +309,8 @@ void style_manager::_read_style_file_(const std::string& style_filename_) {
   DT_LOG_NOTICE(options_manager::get_instance().get_logging_priority(), "Opened " << _filename_);
 
   // Get multiproperties:
+  DT_LOG_NOTICE(options_manager::get_instance().get_logging_priority(),
+                "Loading style file '" << _filename_ << "'...");
   datatools::multi_properties configuration("name", "");
   configuration.read(_filename_);
   if (options_manager::get_instance().get_logging_priority() >= datatools::logger::PRIO_DEBUG) {

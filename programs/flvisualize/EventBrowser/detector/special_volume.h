@@ -28,14 +28,13 @@
  *  light guide : Volume is only shown as wired line using gnuplot
  *  rendering from geomtools/sngeometry
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPECIAL_VOLUME_H
 #define FALAISE_SNEMO_VISUALIZATION_DETECTOR_SPECIAL_VOLUME_H 1
 
 #include <EventBrowser/detector/i_root_volume.h>
+#include <geomtools/i_wires_3d_rendering.h>
 
 class TObjArray;
 
@@ -84,6 +83,8 @@ class special_volume : public i_root_volume {
 
  private:
   TObjArray* _objects_;  //<! ROOT object array
+  const geomtools::i_shape_3d * _shape_ = nullptr;
+  geomtools::i_wires_3d_rendering * _wires_drawer_ = nullptr;
 };
 
 }  // end of namespace detector

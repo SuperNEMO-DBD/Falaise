@@ -17,8 +17,8 @@
 //
 // Copyright (c) 2013-2014 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013-2014 by The University of Warwick
-// Copyright (c) 2016-2017 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2016-2017 by Université de Caen Normandie
+// Copyright (c) 2016-2021 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2016-2021 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -55,6 +55,7 @@
 #include "FLReconstructImpl.h"
 #include "FLReconstructParams.h"
 #include "FLReconstructPipeline.h"
+#include "FLReconstructApplication.h"
 #include "falaise/exitcodes.h"
 #include "falaise/falaise.h"
 
@@ -84,11 +85,13 @@ namespace FLReconstruct {
 
 //! Perform reconstruction using command line args as given
 falaise::exit_code do_flreconstruct(int argc, char* argv[]) {
+  FLReconstructApplication flRecApp;
+
   // - Configure
-  FLReconstructParams flRecParameters;
+  FLReconstructParams & flRecParameters = flRecApp.parameters;
   try {
     // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
-    do_configure(argc, argv, flRecParameters);
+    do_configure(argc, argv, flRecApp);
     DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
   } catch (FLConfigDefaultError& e) {
     std::cerr << "Unable to configure core of flreconstruct" << std::endl;
@@ -102,10 +105,12 @@ falaise::exit_code do_flreconstruct(int argc, char* argv[]) {
 
   // - Run
   falaise::exit_code code = falaise::EXIT_OK;
-
   DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
   code = do_pipeline(flRecParameters);
   DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
+
+  // Terminate:
+  do_terminate(flRecApp);
 
   return code;
 }

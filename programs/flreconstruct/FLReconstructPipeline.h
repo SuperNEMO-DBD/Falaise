@@ -34,7 +34,7 @@ falaise::exit_code ensure_core_services(const FLReconstructParams& recParams,
 
 }  // namespace FLReconstruct
 
-#endif  // FLRECONSTRUCTPARAMS_H
+#endif  // FLRECONSTRUCTPIPELINE_H
 
 // Local Variables: --
 // mode: c++ --

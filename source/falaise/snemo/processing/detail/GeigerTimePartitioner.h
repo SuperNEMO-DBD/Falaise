@@ -109,11 +109,11 @@ class GeigerTimePartitioner {
 
  private:
   double maxDelayedHitTimeGap_ =
-      10.0 * CLHEP::microsecond;     /// Delayed hit cluster time window (embedded time units)
-  bool classifyPromptHits_ = true;   /// Activation of the processing of prompt hits
-  bool classifyDelayedHits_ = true;  /// Activation of the processing of delayed hits
-  bool isSplitChamber_ = true;  /// Split the chamber in two half-chambers to classify the hits and
-                                /// time-clusters
+      10.0 * CLHEP::microsecond;     ///< Delayed hit cluster time window (embedded time units)
+  bool classifyPromptHits_ = true;   ///< Activation of the processing of prompt hits
+  bool classifyDelayedHits_ = true;  ///< Activation of the processing of delayed hits
+  /// Split the chamber in two half-chambers to classify the hits and time-clusters
+  bool isSplitChamber_ = true; 
 };
 
 /// A functor for handle on tracker hits that perform a comparison by delayed time

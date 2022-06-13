@@ -21,8 +21,8 @@
  * Boston, MA 02110-1301, USA.
  *
  * Description:
+ *   Base class for tracker clusterize algorithms
  *
- * History:
  */
 #ifndef FALAISE_SNEMO_PROCESSING_BASE_TRACKER_CLUSTERIZER_H
 #define FALAISE_SNEMO_PROCESSING_BASE_TRACKER_CLUSTERIZER_H 1
