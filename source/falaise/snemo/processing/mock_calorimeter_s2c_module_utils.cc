@@ -3,9 +3,27 @@
 // Ourselves:
 #include "mock_calorimeter_s2c_module_utils.h"
 
+// Standard library:
+#include <cstdint>
+
 namespace snemo {
 
   namespace processing {
+
+    enum pol3d_power_type : std::uint8_t
+      {
+       POL3D_POW0,
+       POL3D_POW1,
+       POL3D_POW2,
+       POL3D_POW3,
+       POL3D_POW4,
+       POL3D_POW5,
+       POL3D_POW6,
+       POL3D_POW7,
+       POL3D_POW8,
+       POL3D_POW9,
+       POL3D_POW10
+      };
 
     double pol3d (const double *x, const double *p) {
 
@@ -15,9 +33,10 @@ namespace snemo {
 
       double value = 0;
 
-      switch ((int) (p[0])) {
+      auto power = static_cast<pol3d_power_type>(p[0]);
+      switch (power) {
 
-      case 10:
+      case POL3D_POW10:
         value += p[224]*X*X*X*X*X*X*X*X*X*X + p[225]*Y*Y*Y*Y*Y*Y*Y*Y*Y*Y + p[226]*Z*Z*Z*Z*Z*Z*Z*Z*Z*Z;
 
         value += p[227]*X*X*X*X*X*X*X*X*X*Y + p[228]*X*X*X*X*X*X*X*X*X*Z + p[229]*Y*Y*Y*Y*Y*Y*Y*Y*Y*X \
@@ -45,7 +64,7 @@ namespace snemo {
           + p[281]*Z*Z*Z*Z*Z*X*X*X*X*X + p[282]*Z*Z*Z*Z*Z*X*X*X*X*Y + p[283]*Z*Z*Z*Z*Z*X*X*X*Y*Y \
           + p[284]*Z*Z*Z*Z*Z*X*X*Y*Y*Y + p[285]*Z*Z*Z*Z*Z*X*Y*Y*Y*Y + p[286]*Z*Z*Z*Z*Z*Y*Y*Y*Y*Y;
       
-      case 9:
+      case POL3D_POW9:
         value += p[167]*X*X*X*X*X*X*X*X*X + p[168]*Y*Y*Y*Y*Y*Y*Y*Y*Y + p[169]*Z*Z*Z*Z*Z*Z*Z*Z*Z;
 
         value += p[170]*X*X*X*X*X*X*X*X*Y + p[171]*X*X*X*X*X*X*X*X*Z + p[172]*Y*Y*Y*Y*Y*Y*Y*Y*X \
@@ -71,7 +90,7 @@ namespace snemo {
           + p[218]*Y*Y*Y*Y*X*X*Z*Z*Z + p[219]*Y*Y*Y*Y*X*Z*Z*Z*Z + p[220]*Z*Z*Z*Z*X*X*X*X*Y \
           + p[221]*Z*Z*Z*Z*X*X*X*Y*Y + p[222]*Z*Z*Z*Z*X*X*Y*Y*Y + p[223]*Z*Z*Z*Z*X*Y*Y*Y*Y;
 
-      case 8:
+      case POL3D_POW8:
         value += p[121]*X*X*X*X*X*X*X*X + p[122]*Y*Y*Y*Y*Y*Y*Y*Y + p[123]*Z*Z*Z*Z*Z*Z*Z*Z;
 
         value += p[124]*X*X*X*X*X*X*X*Y + p[125]*X*X*X*X*X*X*X*Z + p[126]*Y*Y*Y*Y*Y*Y*Y*X \
@@ -94,7 +113,7 @@ namespace snemo {
 
         value += p[164]*X*X*X*Y*Y*Y*Z*Z + p[165]*X*X*X*Y*Y*Z*Z*Z + p[166]*Y*Y*Y*X*X*Z*Z*Z;
 
-      case 7:
+      case POL3D_POW7:
         value += p[86]*X*X*X*X*X*X*X + p[87]*Y*Y*Y*Y*Y*Y*Y + p[88]*Z*Z*Z*Z*Z*Z*Z;
 
         value += p[89]*X*X*X*X*X*X*Y + p[90]*X*X*X*X*X*X*Z + p[91]*Y*Y*Y*Y*Y*Y*X \
@@ -112,7 +131,7 @@ namespace snemo {
         value += p[116]*X*X*X*Y*Y*Y*Z + p[117]*X*X*X*Z*Z*Z*Y + p[118]*X*X*X*Z*Z*Y*Y \
           + p[119]*Y*Y*Y*Z*Z*Z*X + p[120]*Y*Y*Y*X*X*Z*Z + p[121]*Z*Z*Z*Y*Y*X*X;
 
-      case 6:
+      case POL3D_POW6:
         value += p[58]*X*X*X*X*X*X + p[59]*Y*Y*Y*Y*Y*Y + p[60]*Z*Z*Z*Z*Z*Z;
 
         value += p[61]*X*X*X*X*X*Y + p[62]*X*X*X*X*X*Z + p[63]*Y*Y*Y*Y*Y*X \
@@ -128,7 +147,7 @@ namespace snemo {
 
         value += p[85]*X*X*Y*Y*Z*Z;
 
-      case 5:
+      case POL3D_POW5:
         value += p[36]*X*X*X*X*X + p[37]*Y*Y*Y*Y*Y + p[38]*Z*Z*Z*Z*Z;
 
         value += p[39]*X*X*X*X*Y + p[40]*X*X*X*X*Z + p[41]*Y*Y*Y*Y*X \
@@ -141,7 +160,7 @@ namespace snemo {
         value += p[54]*X*X*Y*Y*Z + p[55]*X*X*Z*Z*Y \
           + p[56]*Y*Y*Z*Z*X + p[57]*Z*Z*Y*Y*X;
 
-      case 4:
+      case POL3D_POW4:
         value += p[21]*X*X*X*X + p[22]*Y*Y*Y*Y + p[23]*Z*Z*Z*Z;
 
         value += p[24]*X*X*X*Y + p[25]*X*X*X*Z + p[26]*Y*Y*Y*X 
@@ -150,7 +169,7 @@ namespace snemo {
         value += p[30]*X*X*Y*Z + p[31]*X*X*Y*Y + p[32]*X*X*Z*Z \
           + p[33]*Y*Y*X*Z + p[34]*Y*Y*Z*Z + p[35]*Z*Z*Y*X;
 
-      case 3:
+      case POL3D_POW3:
         value += p[11]*X*X*X + p[12]*Y*Y*Y + p[13]*Z*Z*Z;
 
         value += p[14]*X*X*Y + p[15]*X*X*Z + p[16]*Y*Y*X \
@@ -158,15 +177,15 @@ namespace snemo {
 
         value += p[20]*X*Y*Z;
 
-      case 2:
+      case POL3D_POW2:
         value += p[5]*X*X + p[6]*Y*Y + p[7]*Z*Z;
 
         value += p[8]*X*Y + p[9]*X*Z + p[10]*Y*Z;
 
-      case 1:
+      case POL3D_POW1:
         value += p[2]*X + p[3]*Y + p[4]*Z;
 
-      case 0:
+      case POL3D_POW0:
         value += p[1];
 
       }

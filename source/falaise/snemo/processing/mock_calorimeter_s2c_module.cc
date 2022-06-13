@@ -59,39 +59,44 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   caloModels = {};
 
   // Initialize the calorimeter regime utility from the database
+  std::string calorimeter_regime_database_path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db";
   if (ps.has_key("calorimeter_regime_database_path")) {
-    std::string _calorimeter_regime_database_path_ = ps.fetch_string("calorimeter_regime_database_path");
-    datatools::fetch_path_with_env(_calorimeter_regime_database_path_);
-    this->parse_calorimeter_regime_database(_calorimeter_regime_database_path_);
+    calorimeter_regime_database_path = ps.fetch_string("calorimeter_regime_database_path");
   }
+  datatools::fetch_path_with_env(calorimeter_regime_database_path);
+  this->parse_calorimeter_regime_database(calorimeter_regime_database_path);
 
   // Initialize the pol3d parameters for MWall 8"
+  std::string pol3d_parameters_mwall_8inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db";
   if (ps.has_key("pol3d_parameters_mwall_8inch_path")) {
-    std::string _pol3d_parameters_mwall_8inch_path_ = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_mwall_8inch_path_);
-    _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_8inch_path_);
+    pol3d_parameters_mwall_8inch_path = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_mwall_8inch_path);
+  _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_8inch_path);
 
   // Initialize the pol3d parameters for MWall 5"
+  std::string pol3d_parameters_mwall_5inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db";
   if (ps.has_key("pol3d_parameters_mwall_5inch_path")) {
-    std::string _pol3d_parameters_mwall_5inch_path_ = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_mwall_5inch_path_);
-    _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(_pol3d_parameters_mwall_5inch_path_);
+    pol3d_parameters_mwall_5inch_path = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_mwall_5inch_path);
+  _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_5inch_path);
 
   // Initialize the pol3d parameters for XWall
+  std::string pol3d_parameters_xwall_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db";
   if (ps.has_key("pol3d_parameters_xwall_path")) {
-    std::string _pol3d_parameters_xwall_path_ = ps.fetch_string("pol3d_parameters_xwall_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_xwall_path_);
-    _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(_pol3d_parameters_xwall_path_);
+    pol3d_parameters_xwall_path = ps.fetch_string("pol3d_parameters_xwall_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_xwall_path);
+  _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(pol3d_parameters_xwall_path);
 
   // Initialize the pol3d parameters for GVeto
+  std::string pol3d_parameters_gveto_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db";
   if (ps.has_key("pol3d_parameters_gveto_path")) {
-    std::string _pol3d_parameters_gveto_path_ = ps.fetch_string("pol3d_parameters_gveto_path");
-    datatools::fetch_path_with_env(_pol3d_parameters_gveto_path_);
-    _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(_pol3d_parameters_gveto_path_);
+    pol3d_parameters_gveto_path = ps.fetch_string("pol3d_parameters_gveto_path");
   }
+  datatools::fetch_path_with_env(pol3d_parameters_gveto_path);
+  _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(pol3d_parameters_gveto_path);
 
   // Setup trigger time
   timeWindow = fps.get<falaise::time_t>("cluster_time_width", {100., "ns"})();
@@ -677,6 +682,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
             "                                 \n");
   }
 
+  /*
   {
     // Description of the 'hit_categories' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
@@ -712,7 +718,8 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
             "  ...                                                           \n"
             "                                                                \n");
   }
-
+  */
+  
   // Additionnal configuration hints :
   ocd_.set_configuration_hints(
       "Here is a full configuration example in the                    \n"
@@ -727,21 +734,28 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::mock_calorimeter_s2c_module, 
       "  alpha_quenching    : boolean = 1                             \n"
       "  store_mc_hit_id    : boolean = 0                             \n"
       "                                                               \n"
-      "  hit_categories     : string[2] = \"calo\" \"xcalo\"          \n"
-      "                                                               \n"
-      "  calo.energy.resolution     : real as fraction = 8 %          \n"
-      "  calo.energy.low_threshold  : real as energy = 50 keV         \n"
-      "  calo.energy.high_threshold : real as energy = 150 keV        \n"
-      "  calo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
-      "  calo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34  \n"
-      "                                                               \n"
-      "  xcalo.energy.resolution     : real as fraction = 12 %        \n"
-      "  xcalo.energy.low_threshold  : real as energy = 50 keV        \n"
-      "  xcalo.energy.high_threshold : real as energy = 150 keV       \n"
-      "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns   \n"
-      "  xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34 \n"
+      "  hit_categories     : string[2] = \"calo\" \"xcalo\" \"gveto\" \n"
+      "  calorimeter_regime_database_path  : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db\" \n"
+      "  pol3d_parameters_mwall_8inch_path : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db\" \n"
+      "  pol3d_parameters_mwall_5inch_path : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db\" \n"
+      "  pol3d_parameters_xwall_path       : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db\" \n"
+      "  pol3d_parameters_gveto_path       : string as path = \"@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db\" \n"
       "                                                              \n");
-
+      /*
+       // Old version per OM types:
+        "  calo.energy.resolution     : real as fraction = 8 %          \n"
+        "  calo.energy.low_threshold  : real as energy = 50 keV         \n"
+        "  calo.energy.high_threshold : real as energy = 150 keV        \n"
+        "  calo.scintillator_relaxation_time : real as time = 6.0 ns    \n"
+        "  calo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34  \n"
+        "                                                               \n"
+        "  xcalo.energy.resolution     : real as fraction = 12 %        \n"
+        "  xcalo.energy.low_threshold  : real as energy = 50 keV        \n"
+        "  xcalo.energy.high_threshold : real as energy = 150 keV       \n"
+        "  xcalo.scintillator_relaxation_time : real as time = 6.0 ns   \n"
+        "  xcalo.alpha_quenching_parameters : real[3] = 77.4 0.639 2.34 \n"
+      */
+  
   ocd_.set_validation_support(true);
   ocd_.lock();
   return;
