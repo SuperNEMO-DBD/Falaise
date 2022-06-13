@@ -19,6 +19,7 @@
 #include <bayeux/datatools/bit_mask.h>
 #include <bayeux/datatools/handle.h>
 #include <bayeux/geomtools/i_shape_1d.h>
+#include <bayeux/datatools/handle.h>
 
 namespace snemo {
 

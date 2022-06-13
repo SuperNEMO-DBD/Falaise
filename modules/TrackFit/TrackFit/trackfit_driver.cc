@@ -238,8 +238,8 @@ void trackfit_driver::_install_drift_time_calibration_driver_() {
 // Main fitting method
 int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_data& clustering_,
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
-  std::cerr << "*** devel *** trackfit_driver::_process_algo:\n";
-  std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
+  // std::cerr << "*** devel *** trackfit_driver::_process_algo:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
   // Retrieve geiger cell diameter from gg_locator (to be used
   // by trackfit algorithm)
   const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;

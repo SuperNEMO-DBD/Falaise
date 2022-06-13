@@ -644,7 +644,7 @@ T property_set::get(std::string const& key) const {
     throw missing_key_error("property_set does not hold a key '" + key + "'");
   }
   if (!is_type_<T>(key)) {
-    throw wrong_type_error("value at '" + key + "' is not of requested type");
+    throw wrong_type_error("value at '" + key + "' is not of requested type '" + typeid(T).name() + "'");
   }
 
   T result;
@@ -677,7 +677,7 @@ T property_set::get(std::string const& key, T const& default_value) const {
   T result{default_value};
   if (ps_.has_key(key)) {
     if (!is_type_<T>(key)) {
-      throw wrong_type_error("value at '" + key + "' is not of requested type");
+      throw wrong_type_error("value at '" + key + "' is not of requested type '" + typeid(T).name() + "'");
     }
     get_impl_(key, result);
   }

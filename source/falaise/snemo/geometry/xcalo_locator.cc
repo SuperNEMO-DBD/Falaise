@@ -146,6 +146,10 @@ uint32_t xcalo_locator::getPartAddress(const geomtools::geom_id &gid) const {
   return geomtools::geom_id::INVALID_ADDRESS;
 }
 
+bool xcalo_locator::isCaloOM(const geomtools::geom_id &gid) const {
+  return gid.get_type() == caloOMGIDType_;
+}
+
 bool xcalo_locator::isCaloBlock(const geomtools::geom_id &gid) const {
   return gid.get_type() == caloBlockGIDType_;
 }

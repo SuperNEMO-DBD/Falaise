@@ -102,7 +102,7 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.5.1)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.3)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 
 # Depends on SNRS (https://github.com/SuperNEMO-DBD/SNRS)
@@ -171,19 +171,22 @@ endif()
 # This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR
 # to be set.
 add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
-  COMMENT "Symlinking Falaise resources into build directory"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+  COMMENT "Copying Falaise resources directory into build directory"
   )
 add_custom_target(PublishResources ALL DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR})
 
 # Install tree
-install(DIRECTORY resources/
-  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
-  )
+# install(DIRECTORY resources/
+#   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
+#   )
+# message( STATUS "=========> dir='${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}'")
+# message( STATUS "=========> PROJECT_BUILD_DATAROOTDIR='${PROJECT_BUILD_DATAROOTDIR}'")
+# message( STATUS "=========> CMAKE_INSTALL_DATAROOTDIR='${CMAKE_INSTALL_DATAROOTDIR}'")
 install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   # Exclude resources symlink
-  PATTERN "${PROJECT_RESOURCE_DIR}" EXCLUDE
+  # PATTERN "${PROJECT_RESOURCE_DIR}" EXCLUDE
   )
 
 
