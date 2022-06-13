@@ -73,13 +73,13 @@ namespace snemo {
 
     void tracker_digitized_hit::gg_times::invalidate()
     {
-      _anode_times_[ANODE_R0] = INVALID_TIME_TICKS();
-      _anode_times_[ANODE_R1] = INVALID_TIME_TICKS();
-      _anode_times_[ANODE_R2] = INVALID_TIME_TICKS();
-      _anode_times_[ANODE_R3] = INVALID_TIME_TICKS();
-      _anode_times_[ANODE_R4] = INVALID_TIME_TICKS();
-      _bottom_cathode_time_ = INVALID_TIME_TICKS();
-      _top_cathode_time_ = INVALID_TIME_TICKS();
+      _anode_times_[ANODE_R0] = INVALID_TIME_TICKS;
+      _anode_times_[ANODE_R1] = INVALID_TIME_TICKS;
+      _anode_times_[ANODE_R2] = INVALID_TIME_TICKS;
+      _anode_times_[ANODE_R3] = INVALID_TIME_TICKS;
+      _anode_times_[ANODE_R4] = INVALID_TIME_TICKS;
+      _bottom_cathode_time_ = INVALID_TIME_TICKS;
+      _top_cathode_time_ = INVALID_TIME_TICKS;
 
       _anode_origins_[ANODE_R0].invalidate();
       _anode_origins_[ANODE_R1].invalidate();
@@ -113,7 +113,8 @@ namespace snemo {
     bool tracker_digitized_hit::gg_times::has_anode_time(uint16_t rank_) const
     {
       DT_THROW_IF(rank_ >= 5, std::range_error, "Invalid anode time rank!");
-      return _anode_times_[rank_].is_valid();
+      if (_anode_times_[rank_] == INVALID_TIME_TICKS) return false;
+      return true;
     }
 
     void tracker_digitized_hit::gg_times::set_anode_time(uint16_t rank_, const int64_t & ts_)
@@ -148,7 +149,8 @@ namespace snemo {
 
     bool tracker_digitized_hit::gg_times::has_bottom_cathode_time() const
     {
-      return _bottom_cathode_time_.is_valid();
+      if (_bottom_cathode_time_ == INVALID_TIME_TICKS) return false;
+      return true;
     }
 
     void tracker_digitized_hit::gg_times::set_bottom_cathode_time(const int64_t & ts_)
@@ -181,7 +183,8 @@ namespace snemo {
 
     bool tracker_digitized_hit::gg_times::has_top_cathode_time() const
     {
-      return _top_cathode_time_.is_valid();
+      if (_top_cathode_time_ == INVALID_TIME_TICKS) return false;
+      return true;
     }
 
     void tracker_digitized_hit::gg_times::set_top_cathode_time(const int64_t & ts_)
@@ -241,7 +244,7 @@ namespace snemo {
           out_ << tag;
         }
         out_ << "R" << i << " : ";
-        if (ts.is_valid()) {
+        if (ts != INVALID_TIME_TICKS) {
           out_ << ts;
         } else  {
           out_ << "undefined";
@@ -259,7 +262,7 @@ namespace snemo {
 
       out_ << popts.indent << tag
            << "Bottom cathode time : ";
-      if (_bottom_cathode_time_.is_valid()) {
+      if (has_bottom_cathode_time()) {
         out_ << _bottom_cathode_time_;
       } else  {
         out_ << "undefined";
@@ -276,7 +279,7 @@ namespace snemo {
 
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Top cathode time : ";
-      if (_top_cathode_time_.is_valid()) {
+      if (has_top_cathode_time()) {
         out_ << _top_cathode_time_;
       } else  {
         out_ << "undefined";
@@ -285,30 +288,6 @@ namespace snemo {
 
       return;
     }
-
-    /*** tracker_digitized_hit ***/
-    //
-    // bool tracker_digitized_hit::has_cell_id() const
-    // {
-    //   return _cell_id_.is_valid();
-    // }
-    //
-    // void tracker_digitized_hit::set_cell_id(const sncabling::gg_cell_id & id_)
-    // {
-    //   _cell_id_ = id_;
-    //   return;
-    // }
-    //
-    // void tracker_digitized_hit::reset_cell_id()
-    // {
-    //   _cell_id_.invalidate();
-    //   return;
-    // }
-    //
-    // const sncabling::gg_cell_id & tracker_digitized_hit::get_cell_id() const
-    // {
-    //   return _cell_id_;
-    // }
 
     const std::vector<tracker_digitized_hit::gg_times> & tracker_digitized_hit::get_times() const
     {
@@ -338,7 +317,6 @@ namespace snemo {
     void tracker_digitized_hit::invalidate()
     {
       this->geomtools::base_hit::invalidate();
-      _cell_id_.invalidate();
       _times_.clear();
       return;
     }
@@ -374,9 +352,6 @@ namespace snemo {
           _times_[i].print_tree(out_, opts2);
         }
       }
-
-      out_ << popts.indent << tag
-           << "Cell ID : [" << _cell_id_.to_label().to_string() << ']' << std::endl;
 
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Valid : " << std::boolalpha << is_valid() << std::endl;

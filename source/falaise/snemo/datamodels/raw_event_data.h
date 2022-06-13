@@ -35,6 +35,7 @@
 // This project:
 #include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
 #include <falaise/snemo/datamodels/tracker_digitized_hit.h>
+#include <falaise/snemo/datamodels/red_utils.h>
 
 namespace snemo {
 
@@ -92,24 +93,33 @@ namespace snemo {
       //! Add the origin trigger IDs
       void add_origin_trigger_id(int32_t tid_);
 
-      //! Return the reference of the collection of the calorimeter digitized hit
-      const std::vector<calorimeter_digitized_hit> & get_calorimeter_hits() const;
-
+      //! Reset the origin trigger IDs
       void reset_origin_trigger_id();
 
+      //! Return the const collection of calorimeter digitized hits
+      const CalorimeterDigiHitHdlCollection & get_calorimeter_hits() const;
+
+      //! Return the mutable collection of calorimeter digitized hits
+      CalorimeterDigiHitHdlCollection & grab_calorimeter_hits();
+
+      //! Add a calorimeter hit to the collection of calorimeter digitized hits
       calorimeter_digitized_hit & add_calorimeter_hit();
 
-      std::vector<calorimeter_digitized_hit> & grab_calorimeter_hits();
+      //! Return the const collection of tracker digitized hits
+      const TrackerDigiHitHdlCollection & get_tracker_hits() const;
 
-      const std::vector<tracker_digitized_hit> & get_tracker_hits() const;
+      //! Return the mutable collection of tracker digitized hits
+      TrackerDigiHitHdlCollection & grab_tracker_hits();
 
+      //! Add a tracker hit to the collection of tracker digitized hits
       tracker_digitized_hit & add_tracker_hit();
-
-      std::vector<tracker_digitized_hit> & grab_tracker_hits();
 
       const datatools::properties & get_auxiliaries() const;
 
       datatools::properties & grab_auxiliaries();
+
+      /// Clear attributes
+      virtual void clear() override;
 
       /// Smart print
       ///
@@ -123,15 +133,15 @@ namespace snemo {
       /// rawEventData.print_tree(std::clog, poptions);
       /// \endcode
       virtual void print_tree(std::ostream & out_ = std::clog,
-                              const boost::property_tree::ptree & options_ = empty_options()) const;
+                       const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
 
       int32_t _run_id_ = INVALID_RUN_ID; ///< Run ID
       int32_t _event_id_ = INVALID_EVENT_ID; ///< Event ID
       int64_t _reference_timestamp_; ///< Reference timestamp in the run timestamp frame
-      std::vector<calorimeter_digitized_hit> _calorimeter_digitized_hits_; ///< Collection of calorimeter digitized hits
-      std::vector<tracker_digitized_hit> _tracker_digitized_hits_; ///< Collection of tracker digitized hits
+      CalorimeterDigiHitHdlCollection _calorimeter_digitized_hits_; ///< Collection of calorimeter digitized hits
+      TrackerDigiHitHdlCollection _tracker_digitized_hits_; ///< Collection of tracker digitized hits
       std::set<int32_t> _origin_trigger_ids_; ///< Set of RTD trigger IDs used to build this event
       datatools::properties _auxiliaries_;
 
@@ -143,4 +153,16 @@ namespace snemo {
 
 } // namespace snemo
 
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::raw_event_data,
+                        "snemo::datamodel::raw_event_data")
+
 #endif // FALAISE_SNEMO_DATAMODELS_RAW_EVENT_DATA_H
+
+/*
+** Local Variables: --
+** mode: c++ --
+** c-file-style: "gnu" --
+** tab-width: 2 --
+** End: --
+*/

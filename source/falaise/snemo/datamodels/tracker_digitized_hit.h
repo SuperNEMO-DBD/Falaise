@@ -22,6 +22,7 @@
 
 // Third party:
 // - Bayeux:
+#include <datatools/handle.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/i_serializable.h>
 #include <geomtools/base_hit.h>
@@ -47,6 +48,7 @@ namespace snemo {
       public:
 
         rtd_origin() = default;
+        virtual ~rtd_origin() = default;
         rtd_origin(int32_t hit_number_, int32_t trigger_id_);
         int32_t get_hit_number() const;
         int32_t get_trigger_id() const;
@@ -76,6 +78,7 @@ namespace snemo {
       public:
 
         gg_times() = default;
+        virtual ~gg_times() = default;
 
         void invalidate();
 
@@ -153,6 +156,12 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
+
+    using TrackerDigiHit = tracker_digitized_hit;
+    using TrackerDigiHitCollection = std::vector<TrackerDigiHit>;
+
+    using TrackerDigiHitHdl = datatools::handle<TrackerDigiHit>;
+    using TrackerDigiHitHdlCollection = std::vector<TrackerDigiHitHdl>;
 
   } // namespace datamodel
 

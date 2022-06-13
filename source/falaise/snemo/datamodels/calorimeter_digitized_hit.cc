@@ -1,9 +1,9 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodel/calorimeter_digitized_hit.cc
+/** \file falaise/snemo/datamodels/calorimeter_digitized_hit.cc
 */
 
 // Ourselves
-#include <falaise/snemo/datamodel/calorimeter_digitized_hit.h>
+#include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
 
 // Third party:
 // - Bayeux/datatools
@@ -269,42 +269,15 @@ namespace snemo {
       return _origin_.is_valid();
     }
 
-    // bool calorimeter_digitized_hit::has_om_id() const
-    // {
-    //   return _om_id_.is_valid();
-    // }
-    //
-    // void calorimeter_digitized_hit::reset_om_id()
-    // {
-    //   _store_unset(STORE_DIGIFLAGS_OM_ID);
-    //   _om_id_.invalidate();
-    //   return;
-    // }
-    //
-    // void calorimeter_digitized_hit::set_om_id(const sncabling::om_id & id_)
-    // {
-    //   _store_set(STORE_DIGIFLAGS_OM_ID);
-    //   _om_id_ = id_;
-    //   return;
-    // }
-    //
-    // const sncabling::om_id & calorimeter_digitized_hit::get_om_id() const
-    // {
-    //   return _om_id_;
-    // }
-
-    void calorimeter_digitized_hit::set_reference_time(const int64_t & reftime_)
+    void calorimeter_digitized_hit::set_timestamp(const int64_t & timestamp_)
     {
-      DT_THROW_IF(not reftime_.is_clock_160MHz(),
-                  std::logic_error,
-                  "Invalid calorimeter clock!")
-        _reference_time_ = reftime_;
+      _timestamp_ = timestamp_;
       return;
     }
 
-    const int64_t & calorimeter_digitized_hit::get_reference_time() const
+    const int64_t & calorimeter_digitized_hit::get_timestamp() const
     {
-      return _reference_time_;
+      return _timestamp_;
     }
 
     void calorimeter_digitized_hit::set_fcr(uint16_t fcr_)
@@ -354,7 +327,7 @@ namespace snemo {
     bool calorimeter_digitized_hit::is_valid() const
     {
       if (not this->geomtools::base_hit::is_valid()) return true;
-      if (not _reference_time_.is_valid()) return false;
+      if (_timestamp_ == INVALID_TIME_TICKS) return false;
       if (_fcr_ == INVALID_FCR) return false;
       // No invalid value for 'lt_time_counter'
       if (_waveform_.size() == 0) return false;
@@ -364,7 +337,7 @@ namespace snemo {
     void calorimeter_digitized_hit::invalidate()
     {
       this->geomtools::base_hit::invalidate();
-      _reference_time_.invalidate();
+      _timestamp_ = INVALID_TIME_TICKS;
       _low_threshold_only_ = false;
       _high_threshold_ = false;
       _fcr_ = INVALID_FCR;
@@ -376,7 +349,6 @@ namespace snemo {
       reset_fwmeas_rising_cell();
       reset_fwmeas_falling_cell();
       reset_origin();
-      reset_om_id();
       return;
     }
 
@@ -391,7 +363,7 @@ namespace snemo {
                                             base_print_options::force_inheritance(options_));
 
       out_ << popts.indent << tag
-           << "Reference time : " << _reference_time_ << std::endl;
+           << "Timestamp : " << _timestamp_ << std::endl;
 
       out_ << popts.indent << tag
            << "Low threshold only : " << std::boolalpha << _low_threshold_only_ << std::endl;
@@ -448,9 +420,6 @@ namespace snemo {
         opts2.put("indent", popts.indent + "|   ");
         _origin_.print_tree(out_, opts2);
       }
-
-      out_ << popts.indent << tag
-           << "OM ID : [" << _om_id_.to_label().to_string() << ']' << std::endl;
 
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Valid : " << std::boolalpha << is_valid() << std::endl;

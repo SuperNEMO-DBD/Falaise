@@ -22,6 +22,7 @@
 
 // Third party:
 // - Bayeux:
+#include <datatools/handle.h>
 #include <datatools/i_tree_dump.h>
 #include <datatools/i_serializable.h>
 #include <datatools/bit_mask.h>
@@ -49,6 +50,7 @@ namespace snemo {
       public:
 
         rtd_origin() = default;
+        virtual ~rtd_origin() = default;
         rtd_origin(int32_t hit_number_,
                    int32_t trigger_id_);
         int32_t get_hit_number() const;
@@ -70,8 +72,8 @@ namespace snemo {
       calorimeter_digitized_hit() = default;
       virtual ~calorimeter_digitized_hit() = default;
 
-      const int64_t & get_reference_time() const;
-      void set_reference_time(const int64_t & reftime_);
+      const int64_t & get_timestamp() const;
+      void set_timestamp(const int64_t & timestamp_);
 
       const std::vector<int16_t> & get_waveform() const;
       std::vector<int16_t> & grab_waveform();
@@ -160,12 +162,6 @@ namespace snemo {
       void set_origin(const rtd_origin &);
       void reset_origin();
 
-      // Use geom_id() form geomtools::base_hit
-      // bool has_om_id() const;
-      // void set_om_id(const sncabling::om_id & om_id_);
-      // void reset_om_id();
-      // const sncabling::om_id & get_om_id() const;
-
       /// Smart print
       ///
       /// Usage:
@@ -199,6 +195,16 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
+
+    /// Handle of calibrated calorimeter hit
+    // typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
+    /// Collection of handles of calibrated calorimeter hit
+    // typedef std::vector<handle_type> collection_type;
+    using CalorimeterDigiHit = calorimeter_digitized_hit;
+    using CalorimeterDigiHitCollection = std::vector<CalorimeterDigiHit>;
+
+    using CalorimeterDigiHitHdl = datatools::handle<CalorimeterDigiHit>;
+    using CalorimeterDigiHitHdlCollection = std::vector<CalorimeterDigiHitHdl>;
 
   } // namespace datamodel
 

@@ -33,7 +33,7 @@ namespace snemo {
     {
       _run_id_ = INVALID_EVENT_ID;
       _event_id_ = INVALID_EVENT_ID;
-      _reference_timestamp_.invalidate();
+      _reference_timestamp_  = INVALID_TIME_TICKS;
       _calorimeter_digitized_hits_.clear();
       _tracker_digitized_hits_.clear();
       _origin_trigger_ids_.clear();
@@ -74,19 +74,17 @@ namespace snemo {
 
     bool raw_event_data::has_reference_timestamp() const
     {
-      return _reference_timestamp_.is_valid();
+      if(_reference_timestamp_ == INVALID_TIME_TICKS) return false;
+      return true;
     }
 
-    const int64_t & raw_event_data::get_reference_timestamp() const
+    int64_t raw_event_data::get_reference_timestamp() const
     {
       return _reference_timestamp_;
     }
 
     void raw_event_data::set_reference_timestamp(const int64_t & ref_timestamp_)
     {
-      DT_THROW_IF(not ref_timestamp_.is_clock_40MHz(),
-                  std::logic_error,
-                  "Invalid event main clock!")
       _reference_timestamp_ = ref_timestamp_;
       return;
     }
@@ -108,7 +106,12 @@ namespace snemo {
       return;
     }
 
-    const std::vector<calorimeter_digitized_hit> & raw_event_data::get_calorimeter_digitized_hits() const
+    const CalorimeterDigiHitHdlCollection & raw_event_data::get_calorimeter_hits() const
+    {
+      return _calorimeter_digitized_hits_;
+    }
+
+    CalorimeterDigiHitHdlCollection & raw_event_data::grab_calorimeter_hits()
     {
       return _calorimeter_digitized_hits_;
     }
@@ -117,20 +120,21 @@ namespace snemo {
     {
       int32_t newHitId = 0;
       if (_calorimeter_digitized_hits_.size()) {
-        newHitId = _calorimeter_digitized_hits_.back().get_hit_id() + 1;
+        newHitId = _calorimeter_digitized_hits_.back().get().get_hit_id() + 1;
       }
-      calorimeter_digitized_hit newHit;
-      newHit.set_hit_id(newHitId);
+      auto newHit = datatools::make_handle<snemo::datamodel::calorimeter_digitized_hit>();
+      newHit->set_hit_id(newHitId);
       _calorimeter_digitized_hits_.push_back(newHit);
-      return _calorimeter_digitized_hits_.back();
+
+      return _calorimeter_digitized_hits_.back().grab();
     }
 
-    std::vector<calorimeter_digitized_hit> & raw_event_data::grab_calorimeter_digitized_hits()
+    const TrackerDigiHitHdlCollection & raw_event_data::get_tracker_hits() const
     {
-      return _calorimeter_digitized_hits_;
+      return _tracker_digitized_hits_;
     }
 
-    const std::vector<tracker_digitized_hit> & raw_event_data::get_tracker_digitized_hits() const
+    TrackerDigiHitHdlCollection & raw_event_data::grab_tracker_hits()
     {
       return _tracker_digitized_hits_;
     }
@@ -139,17 +143,13 @@ namespace snemo {
     {
       int32_t newHitId = 0;
       if (_tracker_digitized_hits_.size()) {
-        newHitId = _tracker_digitized_hits_.back().get_hit_id() + 1;
+        newHitId = _tracker_digitized_hits_.back().get().get_hit_id() + 1;
       }
-      tracker_digitized_hit newHit;
-      newHit.set_hit_id(newHitId);
+      auto newHit = datatools::make_handle<snemo::datamodel::tracker_digitized_hit>();
+      newHit->set_hit_id(newHitId);
       _tracker_digitized_hits_.push_back(newHit);
-      return _tracker_digitized_hits_.back();
-    }
 
-    std::vector<tracker_digitized_hit> & raw_event_data::grab_tracker_digitized_hits()
-    {
-      return _tracker_digitized_hits_;
+      return _tracker_digitized_hits_.back().grab();
     }
 
     const datatools::properties & raw_event_data::get_auxiliaries() const
@@ -161,6 +161,17 @@ namespace snemo {
     {
       return _auxiliaries_;
     }
+
+    // virtual
+    void raw_event_data::clear()
+    {
+       _run_id_ = INVALID_RUN_ID;
+       _event_id_ = INVALID_EVENT_ID;
+       _calorimeter_digitized_hits_.clear();
+       _tracker_digitized_hits_.clear();
+       _auxiliaries_.clear();
+    }
+
 
     // virtual
     void raw_event_data::print_tree(std::ostream & out_,
@@ -200,7 +211,7 @@ namespace snemo {
           out_ << '\n';
           boost::property_tree::ptree opts2;
           opts2.put("indent", sindent2.str());
-          _calorimeter_digitized_hits_[i].print_tree(out_, opts2);
+          _calorimeter_digitized_hits_[i].get().print_tree(out_, opts2);
         }
       }
 
@@ -222,7 +233,7 @@ namespace snemo {
           out_ << '\n';
           boost::property_tree::ptree opts2;
           opts2.put("indent", sindent2.str());
-          _tracker_digitized_hits_[i].print_tree(out_, opts2);
+          _tracker_digitized_hits_[i].get().print_tree(out_, opts2);
         }
       }
 

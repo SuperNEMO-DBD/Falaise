@@ -11,34 +11,33 @@
 #include <bayeux/datatools/io_factory.h>
 
 // This project:
-#include <snemo/datamodels/raw_event_data.h>
-#include <snemo/datamodels/raw_event_data-serial.h>
+#include <falaise/snemo/datamodels/raw_event_data.h>
+// #include <snemo/datamodels/raw_event_data-serial.h>
 
 int main(/* int argc_, char ** argv_ */)
 {
   int error_code = EXIT_SUCCESS;
   try {
     std::clog << "Test program for class 'snemo::datamodel::raw_event_data'!" << std::endl;
-    
+
     namespace sdm = snemo::datamodel;
 
     {
+      // sdm::raw_event_data & rawEvent;
       sdm::raw_event_data rawEvent;
       rawEvent.set_run_id(1);
       rawEvent.set_event_id(42);
-      rawEvent.set_reference_time(snfee::data::timestamp(snfee::data::CLOCK_40MHz, 666));
+      rawEvent.set_reference_timestamp(666);
       rawEvent.add_origin_trigger_id(234);
       rawEvent.add_origin_trigger_id(235);
       rawEvent.add_origin_trigger_id(236);
-      
+
       // Add calo digi hits:
       {
-        sdm::calo_digitized_hit & caloDigiHit = rawEvent.add_calo_hit(); 
-        sncabling::om_id omId(sncabling::OM_MAIN, 0, 9, 4);
-        geomtools::geom_id geomId;
-        sdm::sncabling_bridge::convert_to_geom_id(omId, geomId);
+        sdm::calorimeter_digitized_hit & caloDigiHit = rawEvent.add_calorimeter_hit();
+        geomtools::geom_id geomId(1302, 0, 9, 4);
         caloDigiHit.set_geom_id(geomId);
-        caloDigiHit.set_reference_time(snfee::data::timestamp(snfee::data::CLOCK_160MHz, 1234567));
+        caloDigiHit.set_timestamp(1234567);
         std::vector<int16_t> & wf = caloDigiHit.grab_waveform();
         wf.assign(1024, 700);
         for (int i = 120; i < 200; i++) {
@@ -49,17 +48,14 @@ int main(/* int argc_, char ** argv_ */)
         caloDigiHit.set_fcr(132);
         caloDigiHit.set_fwmeas_baseline(234);
         caloDigiHit.set_fwmeas_charge(54321);
-        caloDigiHit.set_origin(sdm::calo_digitized_hit::rtd_origin(234, 213223));
-        caloDigiHit.set_om_id(omId);
+        caloDigiHit.set_origin(sdm::calorimeter_digitized_hit::rtd_origin(234, 213223));
       }
-      
+
       {
-        sdm::calo_digitized_hit & caloDigiHit = rawEvent.add_calo_hit(); 
-        sncabling::om_id omId(sncabling::OM_MAIN, 1, 3, 7);
-        geomtools::geom_id geomId;
-        sdm::sncabling_bridge::convert_to_geom_id(omId, geomId);
+        sdm::calorimeter_digitized_hit & caloDigiHit = rawEvent.add_calorimeter_hit();
+        geomtools::geom_id geomId(1302, 1, 3, 7);;
         caloDigiHit.set_geom_id(geomId);
-        caloDigiHit.set_reference_time(snfee::data::timestamp(snfee::data::CLOCK_160MHz, 1234568));
+        caloDigiHit.set_timestamp(1234568);
         std::vector<int16_t> & wf = caloDigiHit.grab_waveform();
         wf.assign(1024, 704);
         for (int i = 110; i < 235; i++) {
@@ -69,57 +65,59 @@ int main(/* int argc_, char ** argv_ */)
         caloDigiHit.set_fcr(432);
         caloDigiHit.set_fwmeas_baseline(7041);
         caloDigiHit.set_fwmeas_charge(54321);
-        caloDigiHit.set_origin(sdm::calo_digitized_hit::rtd_origin(234, 213223));
-        caloDigiHit.set_om_id(omId);
+        caloDigiHit.set_origin(sdm::calorimeter_digitized_hit::rtd_origin(234, 213223));
       }
-      
+
       // Add tracker digi hits:
       {
-        sdm::tracker_digitized_hit & trackerDigiHit = rawEvent.add_tracker_hit(); 
-        sncabling::gg_cell_id cellId(0, 7, 52);
-        geomtools::geom_id geomId;
-        sdm::sncabling_bridge::convert_to_geom_id(cellId, geomId);
-        trackerDigiHit.set_geom_id(geomId);    
+        sdm::tracker_digitized_hit & trackerDigiHit = rawEvent.add_tracker_hit();
+        geomtools::geom_id geomId(0, 7, 52);;
+        trackerDigiHit.set_geom_id(geomId);
         {
           // Add a set of Geiger times:
           sdm::tracker_digitized_hit::gg_times newTimes;
           newTimes.set_anode_origin(sdm::tracker_digitized_hit::ANODE_R0,
                                     sdm::tracker_digitized_hit::rtd_origin(234, 213134));
-          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R0,
-                                  snfee::data::timestamp(snfee::data::CLOCK_80MHz, 1234567));
+          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R0, 1234567);
+
           newTimes.set_anode_origin(sdm::tracker_digitized_hit::ANODE_R1,
-                                    sdm::tracker_digitized_hit::rtd_origin(235, 213133));
-          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R1,
-                                  snfee::data::timestamp(snfee::data::CLOCK_80MHz, 1234733));
+                                    sdm::tracker_digitized_hit::rtd_origin(237, 213134));
+          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R1, 1234733);
+
+          newTimes.set_anode_origin(sdm::tracker_digitized_hit::ANODE_R2,
+                                    sdm::tracker_digitized_hit::rtd_origin(243, 213134));
+          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R2, 1234856);
+
           newTimes.set_anode_origin(sdm::tracker_digitized_hit::ANODE_R3,
-                                    sdm::tracker_digitized_hit::rtd_origin(236, 213134));
-          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R3,
-                                  snfee::data::timestamp(snfee::data::CLOCK_80MHz, 1234912));
+                                    sdm::tracker_digitized_hit::rtd_origin(247, 213134));
+          newTimes.set_anode_time(sdm::tracker_digitized_hit::ANODE_R3, 1234912);
+
           newTimes.set_bottom_cathode_origin(sdm::tracker_digitized_hit::rtd_origin(234, 213135));
-          newTimes.set_bottom_cathode_time(snfee::data::timestamp(snfee::data::CLOCK_80MHz,1234852));
-          newTimes.set_top_cathode_origin(sdm::tracker_digitized_hit::rtd_origin(236, 213134));
-          newTimes.set_top_cathode_time(snfee::data::timestamp(snfee::data::CLOCK_80MHz,1234907));
+          newTimes.set_bottom_cathode_time(1234852);
+
+          newTimes.set_top_cathode_origin(sdm::tracker_digitized_hit::rtd_origin(232, 213134));
+          newTimes.set_top_cathode_time(1234907);
+
           trackerDigiHit.grab_times().push_back(newTimes);
         }
-        trackerDigiHit.set_cell_id(cellId);    
         rawEvent.grab_auxiliaries().store_flag("mock");
         rawEvent.grab_auxiliaries().store("type", "simulated");
         rawEvent.grab_auxiliaries().store("the_answer", 42);
       }
-      
+
       {
         boost::property_tree::ptree options;
         options.put("title", "Raw event data: ");
         rawEvent.print_tree(std::clog, options);
       }
-      
+
       {
         datatools::data_writer xout("test_raw_event_data.xml",
                                     datatools::using_multi_archives);
         xout.store(rawEvent);
       }
     }
-    
+
     {
       sdm::raw_event_data rawEvent;
       datatools::data_reader xin("test_raw_event_data.xml",
@@ -141,4 +139,3 @@ int main(/* int argc_, char ** argv_ */)
   }
   return (error_code);
 }
-

@@ -10,6 +10,8 @@
 #define FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H 1
 
 // Third party:
+// - Bayeux/datatools:
+#include <datatools/handle.h>
 // - Bayeux/geomtools:
 #include <geomtools/polyline_3d.h>
 
