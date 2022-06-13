@@ -21,19 +21,19 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-template <class Archive>
-void precalibrated_data::serialize(Archive& ar, const unsigned int version) {
-  if (version > 0) {
-    ar& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
-  }
-  ar& boost::serialization::make_nvp("precalibrated_calorimeter_hits", calorimeter_hits_);
-  ar& boost::serialization::make_nvp("precalibrated_tracker_hits", tracker_hits_);
-  ar& boost::serialization::make_nvp("properties", _properties_);
-}
+    template <class Archive>
+    void precalibrated_data::serialize(Archive& ar_, const unsigned int version) {
+      if (version > 0) {
+	ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
+      }
+      ar_ & boost::serialization::make_nvp("precalibrated_calorimeter_hits", calorimeter_hits_);
+      ar_ & boost::serialization::make_nvp("precalibrated_tracker_hits", tracker_hits_);
+      ar_ & boost::serialization::make_nvp("properties", _properties_);
+    }
 
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 
