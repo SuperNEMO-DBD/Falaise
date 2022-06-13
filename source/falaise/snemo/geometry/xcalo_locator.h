@@ -140,6 +140,8 @@ class xcalo_locator : public geomtools::base_locator, public datatools::i_tree_d
 
   uint32_t getPartAddress(const geomtools::geom_id& gid) const;
 
+  bool isCaloOM(const geomtools::geom_id& gid) const;
+
   bool isCaloBlock(const geomtools::geom_id& gid) const;
 
   bool isCaloBlockInThisModule(const geomtools::geom_id& gid) const;
@@ -272,6 +274,7 @@ class xcalo_locator : public geomtools::base_locator, public datatools::i_tree_d
 
   // Block GID addressing :
   bool blocksArePartitioned_;
+  uint32_t caloOMGIDType_;
   uint32_t caloBlockGIDType_;
   int moduleAddressIndex_;
   int sideAddressIndex_;
@@ -281,10 +284,10 @@ class xcalo_locator : public geomtools::base_locator, public datatools::i_tree_d
   int partAddressIndex_;
 
   // Running values :
-  const geomtools::mapping* geomMapping_;
-  const geomtools::placement* moduleWorldPlacement_;
-  const geomtools::box* moduleBox_;
-  const geomtools::box* caloBlockBox_;
+  const geomtools::mapping* geomMapping_ = nullptr;
+  const geomtools::placement* moduleWorldPlacement_ = nullptr;
+  const geomtools::box* moduleBox_ = nullptr;
+  const geomtools::box* caloBlockBox_ = nullptr;
 
   bool submodules_[2];
   double blockWall_Y_[2][NWALLS_PER_SIDE];

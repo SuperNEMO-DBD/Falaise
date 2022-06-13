@@ -28,6 +28,7 @@
 #include "detail/mock_raw_tracker_hit.h"
 #include "falaise/property_set.h"
 #include "falaise/quantity.h"
+#include <falaise/snemo/rc/tracker_cell_status.h>
 
 namespace snemo {
 
@@ -133,10 +134,25 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
 
   // Loop on Geiger step hits:
   for (auto const step : steps | boost::adaptors::indexed(0)) {
+
+    
     // Does work, but wait for C++17 structured bindings!
     // boost::tie(a_tracker_hit, raw_tracker_hit_id) = hit;
     auto& a_tracker_hit = step.value();
     uint32_t const& raw_tracker_hit_id = step.index();
+    // 2022-05-28 FM : Take into account RC applied to MC hits:
+    const datatools::properties & mcHitAuxiliaries = a_tracker_hit->get_auxiliaries();
+    std::uint32_t cellStatus = snemo::rc::tracker_cell_status::CELL_GOOD;
+    if (mcHitAuxiliaries.has_key("snemo.rc.tracker_cell_status")) {
+      cellStatus = mcHitAuxiliaries.fetch_integer("snemo.rc.tracker_cell_status");
+    }
+      // Ignore hits on dead/off cells:
+    if (cellStatus & snemo::rc::tracker_cell_status::CELL_DEAD) {
+      continue;
+    }
+    if (cellStatus & snemo::rc::tracker_cell_status::CELL_OFF) {
+      continue;
+    }
 
     int true_tracker_hit_id = a_tracker_hit->get_hit_id();
     int true_tracker_truth_track_id = a_tracker_hit->get_track_id();
@@ -161,11 +177,14 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
 
     // true drift distance:
     const double drift_distance = (avalanche_impact_world_pos - ionization_world_pos).mag();
-    const double anode_efficiency = _geiger_.getAnodeEfficiency(drift_distance);
-    const double r = RNG_.uniform();
-    if (r > anode_efficiency) {
-      // This hit is lost due to anode signal inefficiency:
-      continue;
+    double anode_efficiency = _geiger_.getAnodeEfficiency(drift_distance);
+    if (not (cellStatus & snemo::rc::tracker_cell_status::CELL_NO_ANODE)) {
+      // 2022-05-28 FM : Take into account RC applied to MC hits:
+      const double r = RNG_.uniform();
+      if (r > anode_efficiency) {
+        // This hit is lost due to anode signal inefficiency:
+        continue;
+      }
     }
 
     // the time of the ion/electron pair creation:
@@ -183,27 +202,33 @@ mock_tracker_s2c_module::raw_tracker_hit_col_t mock_tracker_s2c_module::digitize
     double top_cathode_time{datatools::invalid_real_double()};
     const double sigma_cathode_time = _geiger_.getCathodeTimeResolution();
     size_t missing_cathodes = 2;
-    const double r1 = RNG_.uniform();
-    if (r1 < cathode_efficiency) {
-      const double l_bottom = longitudinal_position + 0.5 * _geiger_.getCellLength();
-      const double mean_bottom_cathode_time = l_bottom / _geiger_.getPlasmaSpeed();
-      const double sigma_bottom_cathode_time = 0.0;
-      bottom_cathode_time = RNG_.gaussian(mean_bottom_cathode_time, sigma_bottom_cathode_time);
-      if (bottom_cathode_time < 0.0) {
-        bottom_cathode_time = 0.0;
+    if (not (cellStatus & snemo::rc::tracker_cell_status::CELL_NO_BOTTOM_CATHODE)) {
+      // 2022-05-28 FM : Take into account RC applied to MC hits:
+      const double r1 = RNG_.uniform();
+      if (r1 < cathode_efficiency) {
+        const double l_bottom = longitudinal_position + 0.5 * _geiger_.getCellLength();
+        const double mean_bottom_cathode_time = l_bottom / _geiger_.getPlasmaSpeed();
+        const double sigma_bottom_cathode_time = 0.0;
+        bottom_cathode_time = RNG_.gaussian(mean_bottom_cathode_time, sigma_bottom_cathode_time);
+        if (bottom_cathode_time < 0.0) {
+          bottom_cathode_time = 0.0;
+        }
+        missing_cathodes--;
       }
-      missing_cathodes--;
     }
-    const double r2 = RNG_.uniform();
-    if (r2 < cathode_efficiency) {
-      const double l_top = 0.5 * _geiger_.getCellLength() - longitudinal_position;
-      const double mean_top_cathode_time = l_top / _geiger_.getPlasmaSpeed();
-      const double sigma_top_cathode_time = 0.0;
-      top_cathode_time = RNG_.gaussian(mean_top_cathode_time, sigma_top_cathode_time);
-      if (top_cathode_time < 0.0) {
-        top_cathode_time = 0.0;
+    if (not (cellStatus & snemo::rc::tracker_cell_status::CELL_NO_TOP_CATHODE)) {
+      // 2022-05-28 FM : Take into account RC applied to MC hits:
+      const double r2 = RNG_.uniform();
+      if (r2 < cathode_efficiency) {
+        const double l_top = 0.5 * _geiger_.getCellLength() - longitudinal_position;
+        const double mean_top_cathode_time = l_top / _geiger_.getPlasmaSpeed();
+        const double sigma_top_cathode_time = 0.0;
+        top_cathode_time = RNG_.gaussian(mean_top_cathode_time, sigma_top_cathode_time);
+        if (top_cathode_time < 0.0) {
+          top_cathode_time = 0.0;
+        }
+        missing_cathodes--;
       }
-      missing_cathodes--;
     }
 
     // find if some tracker hit already uses this geom ID:

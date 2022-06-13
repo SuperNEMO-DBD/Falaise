@@ -18,6 +18,7 @@
 
 // This project:
 #include <falaise/snemo/datamodels/boost_io/timestamp.ipp>
+#include <falaise/snemo/time/time_utils.h>
 
 namespace snemo {
 
@@ -32,6 +33,16 @@ void event_header::serialize(Archive& ar_, const unsigned int version_) {
   ar_& boost::serialization::make_nvp("generation", generation_);
   ar_& boost::serialization::make_nvp("timestamp", timestamp_);
   ar_& boost::serialization::make_nvp("properties", properties_);
+  if (version_ >= 2) {
+    ar_& boost::serialization::make_nvp("mc_run_id", mc_run_id_);
+    ar_& boost::serialization::make_nvp("mc_timestamp", mc_timestamp_);
+  } else {
+    // version <= 1:
+    if (Archive::is_loading::value) {
+      mc_run_id_ = -1;
+      mc_timestamp_ = time::invalid_point();
+    }
+  }
 }
 
 }  // end of namespace datamodel

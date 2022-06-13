@@ -21,6 +21,11 @@ const std::string& labels::simulated_data() {
   return lbl;
 }
 
+const std::string& labels::precalibrated_data() {
+  static std::string lbl("pCD");
+  return lbl;
+}
+
 const std::string& labels::calibrated_data() {
   static std::string lbl("CD");
   return lbl;

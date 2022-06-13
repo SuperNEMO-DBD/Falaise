@@ -4,6 +4,12 @@ Testing solution to Falaise SNRS integration
 
 :author: F.Mauger
 :date: 2021-10-20
+
+       
+Note (2022-05-04, FM) : These are guidelines used to test the SNRS library within Falaise.
+The SNRS library is now supposed to be linked by Falaise so there is no need
+to dynamically load it anymore when running flsimulate...
+
        
 Geometry setup 
 ==============
@@ -24,7 +30,8 @@ Tests
   
 #. Setup Falaise
 #. Cd in the Falaise source directory
-#. Configure a variant simulation setup using the realistic flat source model and an uniform vertical magnetic field:
+#. Configure  a  variant simulation  setup  using  the realistic  flat
+   source model and an uniform vertical magnetic field:
 
    .. code:: shell
 	     
@@ -33,7 +40,8 @@ Tests
       ...
    ..
 
-#. Configure a variant simulation setup using the realistic SNRS1 model and an uniform vertical magnetic field:
+#. Configure  a variant  simulation  setup using  the realistic  SNRS1
+   model and an uniform vertical magnetic field:
 
    .. code:: shell
 	     
@@ -281,43 +289,43 @@ Simulation
 
 #. Create a simulation configuration file ``simu.conf``:
 
-.. code:: 
+   .. code:: 
 	  
-   [name="flsimulate" type="flsimulate::section"]
-   numberOfEvents : integer = 10
+      [name="flsimulate" type="flsimulate::section"]
+      numberOfEvents : integer = 10
 
-   [name="flsimulate.simulation" type="flsimulate::section"]
-   rngEventGeneratorSeed         : integer = 314159
-   rngVertexGeneratorSeed        : integer = 765432
-   rngGeant4GeneratorSeed        : integer = 123456
-   rngHitProcessingGeneratorSeed : integer = 987654
+      [name="flsimulate.simulation" type="flsimulate::section"]
+      rngEventGeneratorSeed         : integer = 314159
+      rngVertexGeneratorSeed        : integer = 765432
+      rngGeant4GeneratorSeed        : integer = 123456
+      rngHitProcessingGeneratorSeed : integer = 987654
 
-   [name="flsimulate.variantService" type="flsimulate::section"]
-   profile : string as path = "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf"
+      [name="flsimulate.variantService" type="flsimulate::section"]
+      profile : string as path = "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf"
 
-   [name="flsimulate.plugins" type="flsimulate::section"]
-   plugins : string[1] = "snrs"
-   snrs.directory : string as path = "@snrsLoader.libraries:"
-..
+      [name="flsimulate.plugins" type="flsimulate::section"]
+      plugins : string[1] = "snrs"
+      snrs.directory : string as path = "@snrsLoader.libraries:"
+   ..
 
 #. Run flsimulate (we need to locate the SNRS library):
 
-.. code:: shell
+   .. code:: shell
 
-   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
-   $ falaiseVersion="4.0.3"
-   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
-   $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ flsimulate \
-     -V "debug"  \
-     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
-     -c utilities/geometry/test-snrs-integration1/simu.conf \
-     -o run_1.xml
-   $ flvisualize \
-     --load-dll "snrs@${snrsInstallDir}/lib" \
-     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
-     --input-file "run_1.xml"
-..
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flsimulate \
+	     -V "debug"  \
+	     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -c utilities/geometry/test-snrs-integration1/simu.conf \
+	     -o run_1.xml
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_b.conf" \
+	     --input-file "run_1.xml"
+   ..
 
 .. raw:: pdf
    
@@ -357,49 +365,48 @@ No mag field
 
 #. Run flsimulate (no magnetic field):
 
-.. code:: shell
+   .. code:: shell
 
-   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
-   $ falaiseVersion="4.0.3"
-   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
-   $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ flsimulate \
-     -V "debug"  \
-     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
-     -c utilities/geometry/test-snrs-integration1/simu_c.conf \
-     -o run_1c.data.gz
-   $ flvisualize \
-     --load-dll "snrs@${snrsInstallDir}/lib" \
-     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
-     --input-file "run_1c.data.gz"
-..
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flsimulate \
+	     -V "debug"  \
+	     --mount-directory "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -c utilities/geometry/test-snrs-integration1/simu_c.conf \
+	     -o run_1c.data.gz
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
+	     --input-file "run_1c.data.gz"
+   ..
 
 #. Create a reconstruction configuration file ``reco_c.conf``:
 
-.. code:: 
+   .. code:: 
 
-   
-..
+      ..
 
 #. Run reconstruction:
    
-.. code:: shell
+   .. code:: shell
 
-   $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
-   $ falaiseVersion="4.0.3"
-   $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
-   $ PATH=${snrsInstallDir}/bin:${PATH}
-   $ flreconstruct \
-     -V "debug"  \
-     -d "snrsLoader.libraries@$(snrs-config --libdir)" \
-     -p utilities/geometry/test-snrs-integration1/reco_c.conf \
-     -i run_1c.data.gz \
-     -o run_1c-reco.data.gz
-   $ flvisualize \
-     --load-dll "snrs@${snrsInstallDir}/lib" \
-     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
-     --input-file "run_1c-reco.data.gz"
-..  
+      $ falaiseInstallDir="/opt/sw/Falaise/install/develop"
+      $ falaiseVersion="4.0.3"
+      $ snrsInstallDir="/opt/sw/SuperNEMO-DBD/SNRS/install-pro"
+      $ PATH=${snrsInstallDir}/bin:${PATH}
+      $ flreconstruct \
+	     -V "debug"  \
+	     -d "snrsLoader.libraries@$(snrs-config --libdir)" \
+	     -p utilities/geometry/test-snrs-integration1/reco_c.conf \
+	     -i run_1c.data.gz \
+	     -o run_1c-reco.data.gz
+      $ flvisualize \
+	     --load-dll "snrs@${snrsInstallDir}/lib" \
+	     --variant-profile "utilities/geometry/test-snrs-integration1/snemo_geom_test_snrs1_c.conf" \
+	     --input-file "run_1c-reco.data.gz"
+   ..  
 
 With mag field
 ---------------

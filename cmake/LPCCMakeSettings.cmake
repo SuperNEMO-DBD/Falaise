@@ -148,7 +148,7 @@
 #
 #   - Compile projects against this C++ Standard. Allowed values are
 #     ``11`` (default), ``14``, ``17`` (CMake > 3.7) , and ``20`` (CMake > 3.11).
-#
+# 
 
 #-----------------------------------------------------------------------
 # "Header guard"

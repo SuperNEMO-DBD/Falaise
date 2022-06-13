@@ -429,7 +429,14 @@ uint32_t gg_locator::getRowAddress(const geomtools::geom_id &gid) const {
 }
 
 bool gg_locator::isGeigerCell(const geomtools::geom_id &gid) const {
-  return gid.get_type() == cellGIDType_;
+  if (gid.get_type() != cellGIDType_) return false;
+  unsigned int moduleId = gid.get(0); 
+  if (moduleId != moduleNumber_) return false;
+  unsigned int sideId = gid.get(1); 
+  if (sideId >= numberOfSides()) return false;
+  if (gid.get(2) >= numberOfLayers(sideId)) return false;
+  if (gid.get(3) >= numberOfRows(sideId)) return false;
+  return true;
 }
 
 bool gg_locator::isGeigerCellInThisModule(const geomtools::geom_id &gid) const {

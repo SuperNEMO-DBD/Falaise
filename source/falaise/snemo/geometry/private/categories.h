@@ -18,16 +18,19 @@ const char kModuleGIDCategory[] = "module";
 
 // Veto Calorimeters
 const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
+const char kGammaVetoOMGIDCategory[] = "gveto_optical_module";
 const char kGammaVetoBlockGIDCategory[] = "gveto_block";
 const char kGammaVetoWrapperGIDCategory[] = "gveto_wrapper";
 
 // Calorimeter
 const char kCaloSubmoduleGIDCategory[] = "calorimeter_submodule";
+const char kCaloOMGIDCategory[] = "calorimeter_optical_module";
 const char kCaloBlockGIDCategory[] = "calorimeter_block";
 const char kCaloWrapperGIDCategory[] = "calorimeter_wrapper";
 
 // XWall Calorimter
 // const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
+const char kXCaloOMGIDCategory[] = "xcalo_optical_module";
 const char kXCaloBlockGIDCategory[] = "xcalo_block";
 const char kXCaloWrapperGIDCategory[] = "xcalo_wrapper";
 

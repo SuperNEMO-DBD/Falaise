@@ -175,8 +175,8 @@ void trackfit_driver::initialize(const datatools::properties& setup_) {
 
   // Invoke initialization at parent level :
   this->snemo::processing::base_tracker_fitter::_initialize(setup_);
-  std::cerr << "*** devel *** trackfit_driver::initialize:\n";
-  std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
+  // std::cerr << "*** devel *** trackfit_driver::initialize:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
 
   falaise::property_set ps{setup_};
   _vertex_max_distance_ = ps.get<falaise::length_t>("vertex_max_distance", {0.5, "mm"})();
@@ -238,8 +238,8 @@ void trackfit_driver::_install_drift_time_calibration_driver_() {
 // Main fitting method
 int trackfit_driver::_process_algo(const snemo::datamodel::tracker_clustering_data& clustering_,
                                    snemo::datamodel::tracker_trajectory_data& trajectory_) {
-  std::cerr << "*** devel *** trackfit_driver::_process_algo:\n";
-  std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
+  // std::cerr << "*** devel *** trackfit_driver::_process_algo:\n";
+  // std::cerr << "     log.prio = " << datatools::logger::get_priority_label(get_logging_priority()) << " \n";
   // Retrieve geiger cell diameter from gg_locator (to be used
   // by trackfit algorithm)
   const double gg_cell_diameter = get_gg_locator().cellDiameter() / CLHEP::mm;

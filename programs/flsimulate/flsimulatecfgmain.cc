@@ -25,6 +25,7 @@
 // - Boost
 #include "boost/program_options.hpp"
 // - Bayeux
+#include <bayeux/version.h>
 #include <bayeux/datatools/urn_query_service.h>
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/kernel.h"
@@ -56,6 +57,10 @@ struct FLSimulateConfigureCommandLine {
 #if DATATOOLS_WITH_QT_GUI == 1
   bool variantGui;
 #endif  // DATATOOLS_WITH_QT_GUI == 1
+#if BAYEUX_VERSION >= 30405 
+  bool uiMutableAtStart = false;
+  bool uiHideSecondariesAtStart = false;
+#endif // BAYEUX_VERSION >= 30405
   static FLSimulateConfigureCommandLine makeDefault();
 };
 
@@ -240,6 +245,16 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
 
     ("no-gui", bpo::value<bool>()->zero_tokens(),
     "deactivate the variant service's GUI")
+    
+#if BAYEUX_VERSION >= 30405 
+    // New feature (issue #233) with Bayeux 3.4.5
+    ("ui-mutable-at-start,M", bpo::value<bool>()->zero_tokens(),
+    "start the variant UI in writable mode")
+
+    ("ui-hide-secondaries-at-start,H", bpo::value<bool>()->zero_tokens(),
+    "start the variant UI hiding parameters' secondary choices (if applicable)")
+#endif //BAYEUX_VERSION >= 30405 
+
 #endif  // DATATOOLS_WITH_QT_GUI == 1
   ;
   // clang-format on
@@ -294,7 +309,17 @@ void do_cldialog(int argc, char* argv[], FLSimulateConfigureCommandLine& clArgs)
   if (vMap.count("no-gui") != 0u) {
     clArgs.variantGui = false;
   }
+  
 #endif  // DATATOOLS_WITH_QT_GUI == 1
+#if BAYEUX_VERSION >= 30405 
+  if (vMap.count("ui-mutable-at-start") != 0u) {
+    clArgs.uiMutableAtStart = true;
+  }
+
+  if (vMap.count("ui-hide-secondaries-at-start") != 0u) {
+    clArgs.uiHideSecondariesAtStart = true;
+  }
+#endif // BAYEUX_VERSION >= 30405 
 }
 
 void do_configure(int argc, char* argv[], FLSimulateConfigureParams& params) {
@@ -324,6 +349,11 @@ void do_configure(int argc, char* argv[], FLSimulateConfigureParams& params) {
 #else
   DT_LOG_WARNING(params.logLevel, "The current version of Falaise does not support GUI mode!");
 #endif  // DATATOOLS_WITH_QT_GUI == 1
+  
+#if BAYEUX_VERSION >= 30405 
+  params.variantServiceConfig.ui_writable_at_start = clArgs.uiMutableAtStart;
+  params.variantServiceConfig.ui_inhibit_secondary_choices = clArgs.uiHideSecondariesAtStart;
+#endif // BAYEUX_VERSION >= 30405 
 
   if (params.simulationSetupUrn.empty()) {
     params.simulationSetupUrn = FLSimulate::default_simulation_setup();

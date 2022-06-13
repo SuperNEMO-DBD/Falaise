@@ -23,6 +23,12 @@
 #  $ ./run.sh [--work-dir /tmp/${USER}/fltest-feature-pr65] [--visu]
 #
 
+pythonExe=$(which python)
+if [ -z "${pythonExe}" ]; then
+    echo >&2 "[error] Cannot find Python executable! Abort!"
+    exit 1    
+fi
+
 echo >&2 "[debug] PATH = '${PATH}'"
 
 label="run-feature-pr75-validation"
@@ -57,7 +63,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ -z "${work_dir}" ]; then
-    work_dir="_work.d"
+    work_dir="_tmp_work.d"
 fi
 if [ -z "${cfg_dir}" ]; then
     cfg_dir="."
@@ -79,8 +85,14 @@ function my_exit()
 	echo >&2 "[error] $@"
     fi
     if [ -d ${FLWORKDIR} ]; then
+	echo >&2 "[info] remove work dir '${FLWORKDIR}'"
     	rm -fr ${FLWORKDIR}
     fi
+    if [ -L _work.d ]; then
+	echo >&2 "[info] remove symlink '_work.d'"
+    	rm -fr _work.d
+    fi
+    
     exit ${error_code}
 }
 
@@ -91,6 +103,7 @@ fi
 
 if [ ! -d ${FLWORKDIR} ]; then
     mkdir -p ${FLWORKDIR}
+    ln -s ${FLWORKDIR} _work.d
 fi
 
 step1=1
@@ -127,7 +140,7 @@ if [ $step1 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python proc.py)
+    mean_energy_keV=$(python ${cfg_dir}/proc.py)
     if [ ${mean_energy_keV} -lt 900 ]; then
 	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
     else
@@ -166,7 +179,7 @@ if [ $step2 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python proc.py)
+    mean_energy_keV=$(python ${cfg_dir}/proc.py)
     if [ ${mean_energy_keV} -lt 3500 ]; then
 	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
     else
@@ -217,7 +230,7 @@ if [ $step3 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python proc.py)
+    mean_energy_keV=$(python ${cfg_dir}/proc.py)
     echo >&2 "[info] 'calo' mean energy = ${mean_energy_keV} keV"
     if [ ${mean_energy_keV} -lt 9000 ]; then
 	echo >&2 "[warning] flsimulate output file does not record enough energy in 'calo' hits!"

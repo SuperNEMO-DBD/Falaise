@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "4.0.3")
+project(Falaise VERSION "4.1.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -96,13 +96,60 @@ option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
 #-----------------------------------------------------------------------
 # Bayeux is the main external dependency, and we know it will additionally
 # search for and provide compatible versions of:
-#
+# - CLHEP
+# - CAMP
 # - Boost
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.5.0)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.3)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
+
+# Depends on SNRS (https://github.com/SuperNEMO-DBD/SNRS)
+set(FALAISE_SNRS_MIN_VERSION 1.1)
+find_program(FalaiseSnrsConfigExe snrs-config DOC "Path to the snrs-config utility" REQUIRED)
+if (NOT FalaiseSnrsConfigExe)
+  message(FATAL_ERROR "The SNRS package was not located on this system")
+endif()
+execute_process(COMMAND ${FalaiseSnrsConfigExe} --libdir
+  OUTPUT_VARIABLE FalaiseSnrsLibPath
+  ERROR_VARIABLE FalaiseSnrsConfigError
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (FalaiseSnrsConfigError)
+  message(FATAL_ERROR "Failed to determine SNRS library path: ${FalaiseSnrsConfigError}")
+endif()
+execute_process(COMMAND ${FalaiseSnrsConfigExe} --incdir
+  OUTPUT_VARIABLE FalaiseSnrsIncPath
+  ERROR_VARIABLE FalaiseSnrsConfigError
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (FalaiseSnrsConfigError)
+  message(FATAL_ERROR "Failed to determine SNRS include path: ${FalaiseSnrsConfigError}")
+endif()
+execute_process(COMMAND ${FalaiseSnrsConfigExe} --resourcedir
+  OUTPUT_VARIABLE FalaiseSnrsResourcePath
+  ERROR_VARIABLE FalaiseSnrsConfigError
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (FalaiseSnrsConfigError)
+  message(FATAL_ERROR "Failed to determine SNRS resource files path: ${FalaiseSnrsConfigError}")
+endif()
+execute_process(COMMAND ${FalaiseSnrsConfigExe} --version
+  OUTPUT_VARIABLE FalaiseSnrsVersion
+  ERROR_VARIABLE FalaiseSnrsConfigError
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+if (FalaiseSnrsConfigError)
+  message(FATAL_ERROR "Failed to determine SNRS version: ${FalaiseSnrsConfigError}")
+endif()
+if (FalaiseSnrsVersion VERSION_LESS ${FALAISE_SNRS_MIN_VERSION})
+  message(FATAL_ERROR "SNRS version ${FalaiseSnrsVersion} is not supported")
+endif()
+message( STATUS "SNRS version : ${FalaiseSnrsVersion}")
+message( STATUS "SNRS library is loadable from '${FalaiseSnrsLibPath}'")
+message( STATUS "SNRS' header from '${FalaiseSnrsIncPath}'")
+message( STATUS "SNRS resource files are loadable from '${FalaiseSnrsResourcePath}'")
+set(Falaise_SNRS_INC_PATH ${FalaiseSnrsIncPath})
+set(Falaise_SNRS_LIB_PATH ${FalaiseSnrsLibPath})
+set(Falaise_SNRS_RESOURCE_PATH ${FalaiseSnrsResourcePath})
+set(Falaise_SNRS_VERSION ${FalaiseSnrsVersion})
 
 # # Hack for Boost 1.69:
 # set(PROJECT_CXX_FLAGS "${PROJECT_CXX_FLAGS} -Wno-error=pedantic")
@@ -124,19 +171,22 @@ endif()
 # This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR
 # to be set.
 add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
-  COMMENT "Symlinking Falaise resources into build directory"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+  COMMENT "Copying Falaise resources directory into build directory"
   )
 add_custom_target(PublishResources ALL DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR})
 
 # Install tree
-install(DIRECTORY resources/
-  DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
-  )
+# install(DIRECTORY resources/
+#   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
+#   )
+# message( STATUS "=========> dir='${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}'")
+# message( STATUS "=========> PROJECT_BUILD_DATAROOTDIR='${PROJECT_BUILD_DATAROOTDIR}'")
+# message( STATUS "=========> CMAKE_INSTALL_DATAROOTDIR='${CMAKE_INSTALL_DATAROOTDIR}'")
 install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   # Exclude resources symlink
-  PATTERN "${PROJECT_RESOURCE_DIR}" EXCLUDE
+  # PATTERN "${PROJECT_RESOURCE_DIR}" EXCLUDE
   )
 
 

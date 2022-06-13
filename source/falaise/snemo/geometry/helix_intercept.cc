@@ -223,7 +223,9 @@ namespace snemo {
         ei_.extrapolated_length = extrapolated_length;
         ei_.extrapolated_xy_length = extrapolated_xy_length;
         DT_LOG_DEBUG(_verbosity_, "Exit on success: ");
-        ei_.fii.print(std::cerr, "[debug] ");
+        if (datatools::logger::is_debug(_verbosity_)) {
+          ei_.fii.print(std::cerr, "[debug] ");
+        }
         DT_LOG_DEBUG(_verbosity_, "  - extrapolated length    = " << extrapolated_length / CLHEP::mm << " mm");
         DT_LOG_DEBUG(_verbosity_, "  - extrapolated XY length = " << extrapolated_xy_length / CLHEP::mm << " mm");
       } else {
