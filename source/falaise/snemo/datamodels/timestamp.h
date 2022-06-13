@@ -4,13 +4,11 @@
  * Creation date: 2010-03-15
  * Last modified: 2014-01-27
  *
- * License:
+ * License: GPL3.0
  *
  * Description:
  *
  *   High resolution timestamp
- *
- * History:
  *
  */
 

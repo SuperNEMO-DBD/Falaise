@@ -14,6 +14,8 @@
 TEST_CASE("Exercise Issue 199", "") {
   datatools::service_manager dummyServices{};
   datatools::multi_properties config;
+  config.set_key_label("name");
+  config.set_meta_label("type");
   config.add_section("geometry", "geomtools::geometry_service")
       .store_path("manager.configuration_file",
                   "@falaise:snemo/demonstrator/geometry/GeometryManager.conf");

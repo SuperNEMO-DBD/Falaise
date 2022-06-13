@@ -41,7 +41,7 @@ void calibrated_data::tree_dump(std::ostream& out, const std::string& title,
 
   auto printTrackerHit = [&](const TrackerHitHdl& x) {
     out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
-        << ", Type : " << (x->is_prompt() ? "prompt" : "delayed") << ")" << std::endl;
+        << ", Type : " << (x->is_prompt() ? "prompt" : "delayed [time=" + std::to_string(x->get_delayed_time() / CLHEP::microsecond) + " us]" ) << ")" << std::endl;
   };
 
   if (!title.empty()) {

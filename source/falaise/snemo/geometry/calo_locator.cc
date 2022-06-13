@@ -144,6 +144,10 @@ bool calo_locator::isCaloBlock(const geomtools::geom_id &gid) const {
   return gid.get_type() == caloBlockGIDType_;
 }
 
+bool calo_locator::isCaloOM(const geomtools::geom_id &gid) const {
+  return gid.get_type() == caloOMGIDType_;
+}
+
 bool calo_locator::isCaloBlockInThisModule(const geomtools::geom_id &gid) const {
   return isCaloBlock(gid) && (getModuleAddress(gid) == moduleNumber_);
 }
@@ -759,6 +763,7 @@ void calo_locator::tree_dump(std::ostream &out, const std::string &title, const 
       << std::endl;
   out << indent << itag << "Manager @                  = " << &get_geo_manager() << std::endl;
   out << indent << itag << "Mapping @                  = " << geomMapping_ << std::endl;
+  out << indent << itag << "Calorimeter OM type        = " << caloOMGIDType_ << std::endl;
   out << indent << itag << "Calorimeter block type     = " << caloBlockGIDType_ << std::endl;
   out << indent << itag << "Block partitioned          = " << blocksArePartitioned_ << std::endl;
   if (isBlockPartitioned()) {
@@ -837,6 +842,7 @@ void calo_locator::set_defaults_() {
   blockPart_ = geomtools::geom_id::INVALID_ADDRESS;
   blocksArePartitioned_ = false;
 
+  caloOMGIDType_ = geomtools::geom_id::INVALID_TYPE;
   caloBlockGIDType_ = geomtools::geom_id::INVALID_TYPE;
   moduleAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
   sideAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
@@ -872,6 +878,7 @@ void calo_locator::construct_() {
   uint32_t caloWrapperGIDType = idManager.get_category_type(detail::kCaloWrapperGIDCategory);
 
   // Analyse the layout of the calo block's geometry category :
+  caloOMGIDType_ = idManager.get_category_type(detail::kCaloOMGIDCategory);
   caloBlockGIDType_ = idManager.get_category_type(detail::kCaloBlockGIDCategory);
   const geomtools::id_mgr::category_info &block_ci =
       idManager.get_category_info(detail::kCaloBlockGIDCategory);

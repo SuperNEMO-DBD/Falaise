@@ -67,6 +67,12 @@
         FALAISE_ENCODE_VERSION(major,minor,patch))
 //clang-format on
 
+// Specific macros for SNRS support:
+#define FALAISE_SNRS_VERSION     "@Falaise_SNRS_VERSION@"
+#define FALAISE_SNRS_INCLUDEDIR  "@Falaise_SNRS_INC_PATH@"
+#define FALAISE_SNRS_LIBDIR      "@Falaise_SNRS_LIB_PATH@"
+#define FALAISE_SNRS_RESOURCEDIR "@Falaise_SNRS_RESOURCE_PATH@"
+
 //----------------------------------------------------------------------
 // Runtime API
 namespace falaise {

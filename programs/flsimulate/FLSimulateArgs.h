@@ -16,6 +16,7 @@
 
 // Standard Library:
 #include <string>
+#include <vector>
 
 // Third Party
 // - Bayeux
@@ -33,6 +34,9 @@ struct FLSimulateArgs {
   std::string userProfile;               //!< User profile
   std::vector<std::string> mountPoints;  //!< Directory mount directives
   unsigned int numberOfEvents;           //!< Number of events to be processed in the pipeline
+
+  // Plugin dedicated service:
+  datatools::multi_properties userLibConfig; //!< Main configuration for plugins loader
 
   bool doSimulation;                 //!< Simulation flag
   bool doDigitization;               //!< Digitization flag

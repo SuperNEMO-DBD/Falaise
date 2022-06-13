@@ -56,7 +56,7 @@ void do_version(std::ostream& os, bool isVerbose) {
   os << "flreconstruct " << falaise::version::get_version() << commitInfo << "\n";
   if (isVerbose) {
     os << "\n"
-       << "Copyright (C) 2013-2017 SuperNEMO Collaboration\n\n"
+       << "Copyright (C) 2013-2021 SuperNEMO Collaboration\n\n"
        << "flreconstruct uses the following external libraries:\n"
        << "* Falaise : " << falaise::version::get_version() << commitInfo << "\n"
        << "* Bayeux  : " << bayeux::version::get_version() << "\n"
@@ -172,6 +172,13 @@ FLDialogState do_cldialog(int argc, char* argv[], FLReconstructCommandLine& clAr
 
     ("user-profile,u", bpo::value<std::string>(&clArgs.userProfile)->value_name("name")->default_value("normal"),
       R"(set the user profile ("expert", "normal", "production"))")
+
+    ("mount-directory,d", bpo::value<std::vector<std::string>>(&clArgs.mountPoints)->value_name("rule"),
+      "register directories' mount points\n"
+      "Example: \n"
+      "  -d \"snrs.libraries@/opt/sw/snrs/lib\" \n"
+      "  -d \"nemoprod@/etc/nemoprod/config\" \n"
+      "  -d \"nemoprod.data@/data/nemoprod/runs\"")
 
     ("input-metadata-file,M", bpo::value<std::string>(&clArgs.inputMetadataFile)->value_name("file"),
       "file from which to load metadata")

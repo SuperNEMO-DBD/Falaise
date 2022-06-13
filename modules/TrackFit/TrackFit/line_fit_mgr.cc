@@ -1132,8 +1132,8 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
       }
     }
   }
-  dmax_p = dmax_pos / sin(sol_.theta) / cos(sol_.phi);
-  dmax_n = dmax_neg / sin(sol_.theta) / cos(sol_.phi);
+  dmax_p = dmax_pos / std::sin(sol_.theta) / std::cos(sol_.phi);
+  dmax_n = dmax_neg / std::sin(sol_.theta) / std::cos(sol_.phi);
   geomtools::vector_3d first = Od - dmax_n * dir;
   geomtools::vector_3d last = Od + dmax_p * dir;
   geomtools::vector_3d Ofirst(i_neg->get_x(), i_neg->get_y(), i_neg->get_z());

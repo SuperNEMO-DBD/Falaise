@@ -24,8 +24,6 @@
  *
  *   A driver class that wraps the TrackFit tracker fitting algorithm.
  *
- * History:
- *
  */
 
 #ifndef FALAISE_TRACKFIT_PLUGIN_SNEMO_RECONSTRUCTION_TRACKFIT_DRIVER_H
@@ -40,6 +38,8 @@
 // Third party:
 // - Boost:
 #include <boost/scoped_ptr.hpp>
+// - Bayeux/datatools:
+#include <bayeux/datatools/clhep_units.h>
 
 // Falaise:
 #include <falaise/snemo/processing/base_tracker_fitter.h>
@@ -92,8 +92,8 @@ class snemo_drift_time_calibration : public TrackFit::i_drift_time_calibration {
 class trackfit_driver : public ::snemo::processing::base_tracker_fitter {
  public:
   enum fit_mode_type {
-    HELIX = 0,  /// Helix fit
-    LINEAR = 1  /// Linear fit
+    HELIX = 0,  ///< Helix fit
+    LINEAR = 1  ///< Linear fit
   };
 
   typedef std::map<std::string, TrackFit::helix_fit_params> helix_guess_dict_type;
@@ -187,24 +187,30 @@ class trackfit_driver : public ::snemo::processing::base_tracker_fitter {
                                     const line_guess_dict_type& guesses_,
                                     std::list<TrackFit::line_fit_solution>& solutions_);
 
+  // /// Remove duplicated 'line' fit solutions 
+  // void _remove_duplicated_line_fit_solutions_(std::list<TrackFit::line_fit_solution>& solutions_);
+
+  
+
  private:
-  uint32_t _trackfit_flag_;                    /// Special flags for trackfit algorithm
-  std::string _drift_time_calibration_label_;  /// Drift time calibration driver label
-  boost::scoped_ptr<TrackFit::i_drift_time_calibration> _dtc_;  /// Drift time calibration driver
+  uint32_t _trackfit_flag_;                    ///< Special flags for trackfit algorithm
+  std::string _drift_time_calibration_label_;  ///< Drift time calibration driver label
+  boost::scoped_ptr<TrackFit::i_drift_time_calibration> _dtc_;  ///< Drift time calibration driver
+  double _vertex_max_distance_ = 0.5 * CLHEP::mm; ///< Tolerance for comparison of fitted trajectroy patterns (used to remove duplicated trajectories that have been fitted from different guesses)
 
   // Specific to line fit:
-  bool _use_line_fit_;                                      /// Flag to use 'line' fit
-  TrackFit::line_fit_mgr::guess_utils _line_guess_driver_;  /// Guess driver for line fit
-  std::map<std::string, int> _line_guess_dict_;             /// Guess dictionary for 'line' fit
-  datatools::properties _line_fit_setup_;                   /// Setup for the 'line' fit algorithm
-  TrackFit::gg_hits_col _gg_hits_referential_;  /// Geiger hits in the best frame ('line' fit)
-  geomtools::placement* _working_referential_;  /// Working referential ('line' fit)
+  bool _use_line_fit_;                                      ///< Flag to use 'line' fit
+  TrackFit::line_fit_mgr::guess_utils _line_guess_driver_;  ///< Guess driver for line fit
+  std::map<std::string, int> _line_guess_dict_;             ///< Guess dictionary for 'line' fit
+  datatools::properties _line_fit_setup_;                   ///< Setup for the 'line' fit algorithm
+  TrackFit::gg_hits_col _gg_hits_referential_;  ///< Geiger hits in the best frame ('line' fit)
+  geomtools::placement* _working_referential_;  ///< Working referential ('line' fit)
 
   // Specific to helix fit:
-  bool _use_helix_fit_;                                       /// Use 'helix' fit
-  TrackFit::helix_fit_mgr::guess_utils _helix_guess_driver_;  /// Guess driver for helix fit
-  std::map<std::string, int> _helix_guess_dict_;              /// Guess dictionary for 'helix' fit
-  datatools::properties _helix_fit_setup_;  /// Setup for the 'helix' fit algorithm
+  bool _use_helix_fit_;                                       ///< Use 'helix' fit
+  TrackFit::helix_fit_mgr::guess_utils _helix_guess_driver_;  ///< Guess driver for helix fit
+  std::map<std::string, int> _helix_guess_dict_;              ///< Guess dictionary for 'helix' fit
+  datatools::properties _helix_fit_setup_;  ///< Setup for the 'helix' fit algorithm
 };
 
 }  // end of namespace reconstruction

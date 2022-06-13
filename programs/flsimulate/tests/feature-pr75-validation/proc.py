@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-f = open("_work.d/run-feature-pr75-validation/calo_de.data")
+f = open("_work.d/calo_de.data")
 lines = f.readlines()
 
 n=0

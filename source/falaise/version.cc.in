@@ -32,6 +32,7 @@
 #cmakedefine FALAISE_VERSION_IS_DIRTY
 
 namespace falaise {
+
 int version::get_major() { return static_cast<int>(FALAISE_VERSION_MAJOR); }
 
 int version::get_minor() { return static_cast<int>(FALAISE_VERSION_MINOR); }
