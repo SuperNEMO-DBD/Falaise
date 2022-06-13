@@ -21,22 +21,22 @@ namespace snemo {
 
     /// Serialization method
     template <class Archive>
-    void precalibrated_calorimeter_hit::serialize(Archive& ar, const unsigned int /* version */) {
-      ar& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-      ar& boost::serialization::make_nvp("amplitude", _amplitude_);
-      ar& boost::serialization::make_nvp("sigma_amplitude", _sigma_amplitude_);
-      ar& boost::serialization::make_nvp("charge", _charge_);
-      ar& boost::serialization::make_nvp("sigma_charge", _sigma_charge_);
-      ar& boost::serialization::make_nvp("time", _time_);
-      ar& boost::serialization::make_nvp("sigma_time", _sigma_time_);
-      ar& boost::serialization::make_nvp("baseline", _baseline_);
-      ar& boost::serialization::make_nvp("sigma_baseline", _sigma_baseline_);
-      ar& boost::serialization::make_nvp("rising_time", _rising_time_);
-      ar& boost::serialization::make_nvp("sigma_rising_time", _sigma_rising_time_);
-      ar& boost::serialization::make_nvp("falling_time", _falling_time_);
-      ar& boost::serialization::make_nvp("sigma_falling_time", _sigma_falling_time_);
-      ar& boost::serialization::make_nvp("width", _width_);
-      ar& boost::serialization::make_nvp("sigma_width", _sigma_width_);
+    void precalibrated_calorimeter_hit::serialize(Archive& ar_, const unsigned int /* version */) {
+      ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
+      ar_ & boost::serialization::make_nvp("amplitude", _amplitude_);
+      ar_ & boost::serialization::make_nvp("sigma_amplitude", _sigma_amplitude_);
+      ar_ & boost::serialization::make_nvp("charge", _charge_);
+      ar_ & boost::serialization::make_nvp("sigma_charge", _sigma_charge_);
+      ar_ & boost::serialization::make_nvp("time", _time_);
+      ar_ & boost::serialization::make_nvp("sigma_time", _sigma_time_);
+      ar_ & boost::serialization::make_nvp("baseline", _baseline_);
+      ar_ & boost::serialization::make_nvp("sigma_baseline", _sigma_baseline_);
+      ar_ & boost::serialization::make_nvp("rising_time", _rising_time_);
+      ar_ & boost::serialization::make_nvp("sigma_rising_time", _sigma_rising_time_);
+      ar_ & boost::serialization::make_nvp("falling_time", _falling_time_);
+      ar_ & boost::serialization::make_nvp("sigma_falling_time", _sigma_falling_time_);
+      ar_ & boost::serialization::make_nvp("width", _width_);
+      ar_ & boost::serialization::make_nvp("sigma_width", _sigma_width_);
 
     }
 
