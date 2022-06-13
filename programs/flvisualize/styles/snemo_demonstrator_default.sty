@@ -21,13 +21,14 @@ color_palette : string[7] = "#FF4136" "#0074D9" "#2ECC40" "#FFDC00" "#FF851B" \
 [name="geometry_settings"]
 
 #@description List of volumes to take care
-volume_category_list : string[7] = "module"            \
+volume_category_list : string[8] = "module"            \
                                    "calorimeter_block" \
                                    "calorimeter_pmt"   \
                                    "xcalo_block"       \
                                    "gveto_block"       \
                                    "drift_cell_core"   \
-                                   "source_pad"
+                                   "source_pad"        \
+                                   "source_pad_bulk"
 
 #@description Volume visibility (visible/invisible/disable)
 module.visibility                   : string = "invisible"
@@ -37,6 +38,7 @@ xcalo_block.visibility              : string = "invisible"
 gveto_block.visibility              : string = "invisible"
 drift_cell_core.visibility          : string = "visible"
 source_pad.visibility               : string = "visible"
+source_pad_bulk.visibility          : string = "visible"
 
 #@description Volume color
 module.color            : string = "#FF0000"
@@ -45,7 +47,10 @@ calorimeter_pmt.color   : string = "#444444"
 xcalo_block.color       : string = "#444444"
 gveto_block.color       : string = "#444444"
 drift_cell_core.color   : string = "#222222"
-source_pad.color        : string = "#003366"
+# source_pad.color        : string = "#65513E"
+# source_pad_bulk.color   : string = "#65513E"
+source_pad.color        : string = "#9872b9"
+source_pad_bulk.color   : string = "#9872b9"
 
 #########################################################
 

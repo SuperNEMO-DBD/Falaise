@@ -14,22 +14,24 @@
 namespace snemo {
 
   //! Data member for the possible statuses of a cell
-  enum class cell_status {
-    good = 0,                     /**< good working cell */
-      dead = 1,                   /**< dead cell with dead anode */
-      cathode_ground_top = 2,     /**< top cathode-to-ground short */
-      cathode_ground_bottom = 3,  /**< bottom cathode-to-ground short */
-      cathode_ground_both = 4,    /**< top and bottom cathodes-to-ground short */
-      cathode_cathode = 5,        /**< cathode-to-cathode short */
-      other = 6                   /**< other problem */
-  };
+  enum class cell_status
+    {
+     good = 0,                     /**< good working cell */
+     dead = 1,                   /**< dead cell with dead anode */
+     cathode_ground_top = 2,     /**< top cathode-to-ground short */
+     cathode_ground_bottom = 3,  /**< bottom cathode-to-ground short */
+     cathode_ground_both = 4,    /**< top and bottom cathodes-to-ground short */
+     cathode_cathode = 5,        /**< cathode-to-cathode short */
+     other = 6                   /**< other problem */
+    };
 
   //! Data member defining a cell structure and its accessors
-  class cell_id {
+  class cell_id
+  {
   public:
 
     //! Side of the Tracker [0,1]
-    using side_id = falaise::bounded_int<0,1>;                                                                                                                      
+    using side_id = falaise::bounded_int<0,1>;
     //! Index of the layer of cells in the Tracker [0..8]
     using layer_id = falaise::bounded_int<0,8>;  
     //! Index of the column of cells in the Tracker [0..112]
@@ -93,12 +95,12 @@ namespace snemo {
    *
    * Class used to provide a Falaise service for the problematic (bad) cells in the SuperNEMO Tracker.
    * The status of Trackers Geiger cells with problems will be stored
-   * in the CDB. Reconstrucion modules can use this information.
+   * in the CDB. Reconstruction modules can use this information.
    * Each cell is defined by its coordinates (side,layer,column) and
    * has a fixed status assigned depending on the encountered problem.
    * The IOV of the status will be defined knowing the unique run number.
    * The class defines the data structure used to describe a cell and
-   * includes funtions to get informations about the status of a specific cell.
+   * includes functions to get informations about the status of a specific cell.
    * A vector of cells is created which can be used in Falaise for other purposes.
    *
    * At the moment the bad cells are read from a column based text file
@@ -122,7 +124,9 @@ namespace snemo {
    * std::cout << "Is 0,2,4 a dead cell?: " << DC_SVC->isADeadCell(cid,100) << std::endl;
    * ```
    */
-  class dead_cells_svc : public datatools::base_service {
+  class dead_cells_svc
+    : public datatools::base_service
+  {
   public:
 
     // Inherited pure virtual member functions that must be overridden
@@ -175,17 +179,18 @@ namespace snemo {
     std::vector<cell_id> cells;    
 
     DATATOOLS_SERVICE_REGISTRATION_INTERFACE(dead_cells_svc)
-      };
+  };
 
   //! Falaise service template  
   template <>
-    struct service_traits<dead_cells_svc> {
+  struct service_traits<dead_cells_svc>
+  {
     using label_type = BOOST_METAPARSE_STRING("dead_cells_svc");
     using service_type = dead_cells_svc;
     using instance_type = service_type;
     static instance_type* get(service_type& sm) { return &sm; }
   };
 
-}  // namespace snemo
+} // namespace snemo
 
 #endif  // SNEMO_DEAD_CELLS_SVC_HH

@@ -59,8 +59,11 @@ void tracker_trajectory::tree_dump(std::ostream& out, const std::string& title,
       << (has_cluster() ? std::to_string(cluster_->get_cluster_id()) : "<none>")
       << std::endl;
   out << indent << datatools::i_tree_dumpable::tag << "Pattern : "
-      << (has_pattern() ? pattern_->get_pattern_id() : "<none>")
+      << (has_pattern() ? ("'" + pattern_->get_pattern_id() + "'") : "<none>")
       << std::endl;
+  if (has_pattern()) {
+    pattern_->tree_dump(out, "", indent + tags::skip_item());
+  }
   out << indent << datatools::i_tree_dumpable::inherit_tag(is_last)
       << "Trajectory ID  : " << get_id() << std::endl;
 }

@@ -50,6 +50,6 @@ class labels {
   static const std::string& particle_track_data();
 };
 
-}  // end of namespace snemo
+}  // end of namespace snedm
 
 #endif  // FALAISE_SNEMO_DATAMODEL_DATA_MODEL_H

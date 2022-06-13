@@ -167,25 +167,36 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+  
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1281 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -861 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -434 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +427 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +848 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1272 (mm) / y +90 (degree) "
+ 
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track0/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1281 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -861 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -434 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +427 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +848 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1272 (mm) / y +90 (degree) "
+ 
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -193,7 +204,9 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
+ 
 
 [name="source_calibration_track_1.model" type="geomtools::simple_shaped_model"]
   shape_type : string  = "box"
@@ -202,25 +215,36 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+  
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1276 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -842 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -424 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +433 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +853 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1280 (mm) / y +90 (degree) "
+ 
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track1/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1276 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -842 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -424 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +433 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +853 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1280 (mm) / y +90 (degree) "
+ 
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -228,7 +252,9 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
+
 
 [name="source_calibration_track_2.model" type="geomtools::simple_shaped_model"]
   shape_type : string  = "box"
@@ -237,25 +263,36 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1279 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -841 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -422 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +436 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +857 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1282 (mm) / y +90 (degree) "
+
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track2/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1279 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -841 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -422 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +436 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +857 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1282 (mm) / y +90 (degree) "
+ 
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -263,7 +300,9 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
+
 
 [name="source_calibration_track_3.model" type="geomtools::simple_shaped_model"]
   shape_type : string  = "box"
@@ -272,25 +311,36 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+  
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1270 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -848 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -418 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +431 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +856 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1279 (mm) / y +90 (degree) "
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track3/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1270 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -848 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -418 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +431 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +856 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1279 (mm) / y +90 (degree) "
+
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -298,6 +348,7 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
 
 [name="source_calibration_track_4.model" type="geomtools::simple_shaped_model"]
@@ -307,25 +358,35 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1275 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -848 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -424 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +428 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +854 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1284 (mm) / y +90 (degree) "
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track4/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1275 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -848 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -424 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +428 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +854 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1284 (mm) / y +90 (degree) "
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -333,6 +394,7 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
 
 [name="source_calibration_track_5.model" type="geomtools::simple_shaped_model"]
@@ -342,25 +404,36 @@
     z : real = 3350.0 mm
   material.ref : string  = "tracking_gas"
   visibility.color : string  = "grey"
+
+  ## #@variant_devel
   #@variant_if geometry:layout/if_basic/source_calibration/is_active|false
+  
     # Seven Bi207 calibration source carriers are set in the track only if
     # the "geometry:layout/if_basic/source_calibration/is_active" variant
     # is active.
-    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3"  "source_4" "source_5" "source_6"
-      internal_item.model.source_0     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_0 : string  = "0 0 -1277 (mm) / y +90 (degree) "
-      internal_item.model.source_1     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_1 : string  = "0 0  -852 (mm) / y +90 (degree) "
-      internal_item.model.source_2     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_2 : string  = "0 0  -426 (mm) / y +90 (degree) "
-      internal_item.model.source_3     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
-      internal_item.model.source_4     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_4 : string  = "0 0  +422 (mm) / y +90 (degree) "
-      internal_item.model.source_5     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_5 : string  = "0 0  +850 (mm) / y +90 (degree) "
-      internal_item.model.source_6     : string  = "source_calibration_carrier.model"
-      internal_item.placement.source_6 : string  = "0 0 +1278 (mm) / y +90 (degree) "
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_bi207|true
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    #@variant_if geometry:layout/if_basic/source_calibration/is_active/type/if_sds/track5/is_active|false
+    internal_item.labels : string[7] = "source_0" "source_1" "source_2" "source_3" "source_4" "source_5" "source_6"
+    #@variant_endif
+    
+    internal_item.model.source_0     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_0 : string  = "0 0 -1277 (mm) / y +90 (degree) "
+    internal_item.model.source_1     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_1 : string  = "0 0  -852 (mm) / y +90 (degree) "
+    internal_item.model.source_2     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_2 : string  = "0 0  -426 (mm) / y +90 (degree) "
+    internal_item.model.source_3     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_3 : string  = "0 0     0 (mm) / y +90 (degree) "
+    internal_item.model.source_4     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_4 : string  = "0 0  +422 (mm) / y +90 (degree) "
+    internal_item.model.source_5     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_5 : string  = "0 0  +850 (mm) / y +90 (degree) "
+    internal_item.model.source_6     : string  = "source_calibration_carrier.model"
+    internal_item.placement.source_6 : string  = "0 0 +1278 (mm) / y +90 (degree) "
     mapping.daughter_id.source_0 : string = "[source_calibration_carrier:position=0]"
     mapping.daughter_id.source_1 : string = "[source_calibration_carrier:position=1]"
     mapping.daughter_id.source_2 : string = "[source_calibration_carrier:position=2]"
@@ -368,6 +441,9 @@
     mapping.daughter_id.source_4 : string = "[source_calibration_carrier:position=4]"
     mapping.daughter_id.source_5 : string = "[source_calibration_carrier:position=5]"
     mapping.daughter_id.source_6 : string = "[source_calibration_carrier:position=6]"
+    
   #@variant_endif
+
+# end
 
 

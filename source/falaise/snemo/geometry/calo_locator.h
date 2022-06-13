@@ -157,6 +157,8 @@ class calo_locator : public geomtools::base_locator, public datatools::i_tree_du
 
   uint32_t getPartAddress(const geomtools::geom_id& gid) const;
 
+  bool isCaloOM(const geomtools::geom_id& gid) const;
+
   bool isCaloBlock(const geomtools::geom_id& gid) const;
 
   bool isCaloBlockInThisModule(const geomtools::geom_id& gid) const;
@@ -284,16 +286,17 @@ class calo_locator : public geomtools::base_locator, public datatools::i_tree_du
   // Block GID addressing :
   bool blocksArePartitioned_;
   uint32_t caloBlockGIDType_;
+  uint32_t caloOMGIDType_;
   int moduleAddressIndex_;
   int sideAddressIndex_;
   int columnAddressIndex_;
   int rowAddressIndex_;
   int partAddressIndex_;
 
-  const geomtools::mapping* geomMapping_;
-  const geomtools::placement* moduleWorldPlacement_;
-  const geomtools::box* moduleBox_;
-  const geomtools::box* caloBlockBox_;
+  const geomtools::mapping* geomMapping_ = nullptr;
+  const geomtools::placement* moduleWorldPlacement_ = nullptr;
+  const geomtools::box* moduleBox_ = nullptr;
+  const geomtools::box* caloBlockBox_ = nullptr;
 
   bool submodules_[2];
   double blockWall_X_[2];

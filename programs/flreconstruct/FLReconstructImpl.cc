@@ -9,6 +9,7 @@
 // Third Party
 // - Bayeux
 #include <bayeux/datatools/kernel.h>
+#include <bayeux/datatools/library_info.h>
 #include <bayeux/datatools/urn.h>
 #include <bayeux/datatools/urn_query_service.h>
 #include "bayeux/bayeux.h"
@@ -31,7 +32,8 @@
 namespace FLReconstruct {
 
 ///! Parse command line arguments to configure the reconstruction parameters
-void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) {
+void do_configure(int argc, char* argv[], FLReconstructApplication& flRecApp) {
+  FLReconstructParams & flRecParameters = flRecApp.parameters;
   // - Default Config
   flRecParameters = FLReconstructParams::makeDefault();
 
@@ -65,176 +67,239 @@ void do_configure(int argc, char* argv[], FLReconstructParams& flRecParameters) 
   flRecParameters.inputFile = clArgs.inputFile;
   flRecParameters.outputMetadataFile = clArgs.outputMetadataFile;
   flRecParameters.outputFile = clArgs.outputFile;
+  flRecParameters.mountPoints = clArgs.mountPoints;
 
+  if (static_cast<unsigned int>(!flRecParameters.mountPoints.empty()) != 0u) {
+    // Apply mount points as soon as possible, because manually set file path below
+    // may use this mechanism to locate files:
+    datatools::kernel& dtk = datatools::kernel::instance();
+    datatools::library_info& dtklLibInfo = dtk.grab_library_info_register();
+    for (const std::string& mountDirective : flRecParameters.mountPoints) {
+      std::string theLibname;
+      std::string theTopic;
+      std::string thePath;
+      std::string errMsg;
+      bool parsed = datatools::library_info::parse_path_registration_directive(
+          mountDirective, theLibname, theTopic, thePath, errMsg);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "Mount directive: '" << mountDirective << "'");
+      // DT_LOG_DEBUG(flSimParameters.logLevel, "theLibname: " << theLibname);
+      DT_THROW_IF(!parsed, FLConfigUserError,
+                  "Cannot parse directory mount directive '" << mountDirective << "' : " << errMsg);
+      if (theTopic.empty()) {
+        theTopic = datatools::library_info::default_topic_label();
+        DT_LOG_DEBUG(flRecParameters.logLevel,
+                     "Using default path registration topic: " << theTopic);
+      }
+      DT_LOG_DEBUG(flRecParameters.logLevel, "Path registration: " << mountDirective);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "  Library name : " << theLibname);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "  Topic        : " << theTopic);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "  Path         : " << thePath);
+      try {
+        dtklLibInfo.path_registration(theLibname, theTopic, thePath, false);
+      } catch (std::exception& error) {
+        DT_THROW(FLConfigUserError, "Cannot apply directory mount directive '"
+                                        << mountDirective << "': " << error.what());
+      }
+    }
+  }
+  
   if (flRecParameters.userProfile.empty()) {
     // Force a default user profile:
     flRecParameters.userProfile = "normal";
   }
 
-  // Parse the FLReconstruct pipeline script:
-  datatools::multi_properties flRecConfig("name", "type");
-  if (!clArgs.pipelineScript.empty()) {
-    std::string pipelineScript = clArgs.pipelineScript;
-    datatools::fetch_path_with_env(pipelineScript);
-    flRecConfig.read(pipelineScript);
-  }
+  // First parsing pass of the FLReconstruct pipeline script:
+  {
+    DT_LOG_DEBUG(flRecParameters.logLevel, "First parsing pass of the FLReconstruct pipeline script...");
+    datatools::multi_properties flRecConfig("name", "type");
+    if (!clArgs.pipelineScript.empty()) {
+      std::string pipelineScript = clArgs.pipelineScript;
+      datatools::fetch_path_with_env(pipelineScript);
+      flRecConfig.read(pipelineScript);
+    }
+    if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+      flRecConfig.tree_dump(std::cerr, "flRecConfig: ", "[debug] ");
+    }
+    // Fetch basic configuration from the script:
+    if (flRecConfig.has_key_with_meta("flreconstruct", "flreconstruct::section")) {
+      // Reconstruction basic subsystem:
+      falaise::property_set basicSystem{flRecConfig.get_section("flreconstruct")};
+      flRecConfig.remove("flreconstruct");
 
-  // Fetch basic configuration from the script:
-  if (flRecConfig.has_key_with_meta("flreconstruct", "flreconstruct::section")) {
-    // Reconstruction basic subsystem:
-    falaise::property_set basicSystem{flRecConfig.get_section("flreconstruct")};
-    flRecConfig.remove("flreconstruct");
-
-    // Fetch the experimental setup URN:
-    flRecParameters.experimentalSetupUrn =
+      // Fetch the experimental setup URN:
+      flRecParameters.experimentalSetupUrn =
         basicSystem.get<std::string>("experimentalSetupURN", flRecParameters.experimentalSetupUrn);
-    // Number of events to be processed:
-    flRecParameters.numberOfEvents =
+      // Number of events to be processed:
+      flRecParameters.numberOfEvents =
         basicSystem.get<int>("numberOfEvents", flRecParameters.numberOfEvents);
 
-    // Printing rate for events:
-    flRecParameters.moduloEvents =
+      // Printing rate for events:
+      flRecParameters.moduloEvents =
         basicSystem.get<int>("moduloEvents", flRecParameters.moduloEvents);
 
-    // Printing rate for events:
-    flRecParameters.userProfile =
+      // Printing rate for events:
+      flRecParameters.userProfile =
         basicSystem.get<std::string>("userprofile", flRecParameters.userProfile);
-  }
+    }
 
-  // Fetch variant service configuration:
-  if (flRecConfig.has_key_with_meta("flreconstruct.variantService", "flreconstruct::section")) {
-    falaise::property_set variantSubsystem{flRecConfig.get_section("flreconstruct.variantService")};
-
-    // Variant configuration URN:
-    flRecParameters.variantConfigUrn =
+    // Process input metadata:
+    do_postprocess_input_metadata(flRecParameters);
+ 
+    // Fetch variant service configuration:
+    if (flRecConfig.has_key_with_meta("flreconstruct.variantService", "flreconstruct::section")) {
+      falaise::property_set variantSubsystem{flRecConfig.get_section("flreconstruct.variantService")};
+      DT_LOG_DEBUG(flRecParameters.logLevel, "Variant config: \n" << variantSubsystem.to_string());
+      
+      // Variant configuration URN:
+      flRecParameters.variantConfigUrn =
         variantSubsystem.get<std::string>("configUrn", flRecParameters.variantConfigUrn);
+      std::cerr << "*** devel *** variantConfigUrn: " << flRecParameters.variantConfigUrn << '\n';
 
-    // Variant configuration:
-    if (flRecParameters.userProfile == "production" && variantSubsystem.has_key("config")) {
-      DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
-                                                   << "does not allow to use the '"
-                                                   << "config"
-                                                   << "' variants configuration parameter!");
-    }
-    flRecParameters.variantSubsystemParams.config_filename = variantSubsystem.get<std::string>(
-        "config", flRecParameters.variantSubsystemParams.config_filename);
-
-    // Variant profile URN:
-    flRecParameters.variantProfileUrn =
-        variantSubsystem.get<std::string>("profileUrn", flRecParameters.variantProfileUrn);
-
-    // Variant profile:
-    flRecParameters.variantSubsystemParams.profile_load = variantSubsystem.get<falaise::path>(
-        "profile", flRecParameters.variantSubsystemParams.profile_load);
-
-    // Variant settings:
-    if (flRecParameters.userProfile != "expert" && variantSubsystem.has_key("settings")) {
-      DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
-                                                   << "does not allow to use the '"
-                                                   << "settings"
-                                                   << "' variants configuration parameter!");
-    }
-    flRecParameters.variantSubsystemParams.settings =
-        variantSubsystem.get<std::vector<std::string>>(
-            "settings", flRecParameters.variantSubsystemParams.settings);
-  }
-
-  // Fetch plugins configuration:
-  if (flRecConfig.has_key_with_meta("flreconstruct.plugins", "flreconstruct::section")) {
-    try {
-      falaise::property_set userFLPlugins{flRecConfig.get_section("flreconstruct.plugins")};
-      flRecConfig.remove("flreconstruct.plugins");
-
-      auto pList = userFLPlugins.get<std::vector<std::string>>("plugins", {});
-
-      for (const std::string& plugin_name : pList) {
-        auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
-        pSection.put("autoload", true);
-        if (!pSection.has_key("directory")) {
-          pSection.put("directory", std::string{"@falaise.plugins:"});
-        }
-
-        flRecParameters.userLibConfig.add(plugin_name, "", pSection);
+      // Variant configuration:
+      if (flRecParameters.userProfile == "production" && variantSubsystem.has_key("config")) {
+        DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
+                 << "does not allow to use the '"
+                 << "config"
+                 << "' variants configuration parameter!");
       }
-    } catch (std::logic_error& e) {
-      DT_LOG_ERROR(flRecParameters.logLevel, e.what());
-      // do nothing for now because we can't distinguish errors, and
-      // upcoming instantiation of library loader will handle
-      // any syntax errors in the properties
+      flRecParameters.variantSubsystemParams.config_filename =
+        variantSubsystem.get<std::string>("config", flRecParameters.variantSubsystemParams.config_filename);
+
+      // Variant profile URN:
+      flRecParameters.variantProfileUrn =
+        variantSubsystem.get<std::string>("profileUrn", flRecParameters.variantProfileUrn);
+      DT_LOG_DEBUG(flRecParameters.logLevel, " -> variantProfileUrn=" << flRecParameters.variantProfileUrn);
+      
+      // Variant profile:
+      flRecParameters.variantSubsystemParams.profile_load =
+        variantSubsystem.get<falaise::path>("profile", flRecParameters.variantSubsystemParams.profile_load);
+      DT_LOG_DEBUG(flRecParameters.logLevel, " -> variant/profile_load=" << flRecParameters.variantSubsystemParams.profile_load);
+
+      // Variant settings:
+      if (flRecParameters.userProfile != "expert" && variantSubsystem.has_key("settings")) {
+        DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
+                 << "does not allow to use the '"
+                 << "settings"
+                 << "' variants configuration parameter!");
+      }
+      flRecParameters.variantSubsystemParams.settings =
+        variantSubsystem.get<std::vector<std::string>>(
+                                                       "settings", flRecParameters.variantSubsystemParams.settings);
     }
   }
 
-  // Fetch services configuration:
-  if (flRecConfig.has_key_with_meta("flreconstruct.services", "flreconstruct::section")) {
-    falaise::property_set servicesSubsystem{flRecConfig.get_section("flreconstruct.services")};
-    flRecConfig.remove("flreconstruct.services");
-
-    // Services manager configuration URN:
-    flRecParameters.servicesSubsystemConfigUrn =
-        servicesSubsystem.get<std::string>("configUrn", flRecParameters.servicesSubsystemConfigUrn);
-
-    // Services manager main configuration file:
-    if (flRecParameters.userProfile == "production" && servicesSubsystem.has_key("config")) {
-      // User profile 'production' must used official registered services configuration:
-      DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
-                                                   << "does not allow to use the '"
-                                                   << "config"
-                                                   << "' services configuration parameter!");
-    }
-    flRecParameters.servicesSubsystemConfig =
-        servicesSubsystem.get<std::string>("config", flRecParameters.servicesSubsystemConfig);
-  }
-
-  // Fetch pipeline configuration:
-  if (flRecConfig.has_key_with_meta("flreconstruct.pipeline", "flreconstruct::section")) {
-    falaise::property_set pipelineSubsystem{flRecConfig.get_section("flreconstruct.pipeline")};
-    flRecConfig.remove("flreconstruct.pipeline");
-
-    if (datatools::logger::is_debug(flRecParameters.logLevel)) {
-      std::cerr << "Pipeline subsystem: \n" << pipelineSubsystem.to_string() << std::endl;
-    }
-
-    flRecParameters.reconstructionPipelineUrn =
-        pipelineSubsystem.get<std::string>("configUrn", flRecParameters.reconstructionPipelineUrn);
-
-    flRecParameters.reconstructionPipelineConfig =
-        pipelineSubsystem.get<std::string>("config", flRecParameters.reconstructionPipelineConfig);
-
-    flRecParameters.reconstructionPipelineModule =
-        pipelineSubsystem.get<std::string>("module", flRecParameters.reconstructionPipelineModule);
-  }
+  // Variants support set up first because all other services will
+  // rely on it.
+  DT_LOG_DEBUG(flRecParameters.logLevel, "Configure variant subsystem...");
+  do_configure_variant(flRecApp);
 
   {
-    // In principle all "flreconstruct::section"(s) of interest should have
-    // been processed now.
-    // Clean the flRecConfig from unused sections of type "flreconstruct::section":
-    std::vector<std::string> section_keys = flRecConfig.keys();
-    std::vector<std::string> unused_section_keys;
-    for (const auto& section_key : section_keys) {
-      if (flRecConfig.has_key_with_meta(section_key, "flreconstruct::section")) {
-        DT_LOG_ERROR(flRecParameters.logLevel, "Found an unused flreconstruct section named '"
-                                                   << section_key << "'! We will discard it!");
-        unused_section_keys.push_back(section_key);
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Second parsing pass of the FLReconstruct pipeline script...");
+    // Second parsing pass of the FLReconstruct pipeline script:
+    datatools::multi_properties flRecConfig("name", "type");
+    if (!clArgs.pipelineScript.empty()) {
+      std::string pipelineScript = clArgs.pipelineScript;
+      datatools::fetch_path_with_env(pipelineScript);
+      flRecConfig.read(pipelineScript);
+    }
+  
+    // Fetch plugins configuration:
+    if (flRecConfig.has_key_with_meta("flreconstruct.plugins", "flreconstruct::section")) {
+      try {
+        falaise::property_set userFLPlugins{flRecConfig.get_section("flreconstruct.plugins")};
+        flRecConfig.remove("flreconstruct.plugins");
+
+        auto pList = userFLPlugins.get<std::vector<std::string>>("plugins", {});
+
+        for (const std::string& plugin_name : pList) {
+          auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
+          pSection.put("autoload", true);
+          if (!pSection.has_key("directory")) {
+            pSection.put("directory", std::string{"@falaise.plugins:"});
+          }
+
+          flRecParameters.userLibConfig.add(plugin_name, "", pSection);
+        }
+      } catch (std::logic_error& e) {
+        DT_LOG_ERROR(flRecParameters.logLevel, e.what());
+        // do nothing for now because we can't distinguish errors, and
+        // upcoming instantiation of library loader will handle
+        // any syntax errors in the properties
       }
     }
-    for (std::size_t i = 0; i < unused_section_keys.size(); i++) {
-      flRecConfig.remove(unused_section_keys[i]);
-      DT_LOG_ERROR(flRecParameters.logLevel, "Unused flreconstruct section named '"
-                                                 << section_keys[i] << "' has been removed.");
+
+    // Fetch services configuration:
+    if (flRecConfig.has_key_with_meta("flreconstruct.services", "flreconstruct::section")) {
+      falaise::property_set servicesSubsystem{flRecConfig.get_section("flreconstruct.services")};
+      flRecConfig.remove("flreconstruct.services");
+
+      // Services manager configuration URN:
+      flRecParameters.servicesSubsystemConfigUrn =
+        servicesSubsystem.get<std::string>("configUrn", flRecParameters.servicesSubsystemConfigUrn);
+
+      // Services manager main configuration file:
+      if (flRecParameters.userProfile == "production" && servicesSubsystem.has_key("config")) {
+        // User profile 'production' must used official registered services configuration:
+        DT_THROW(FLConfigUserError, "User profile '" << flRecParameters.userProfile << "' "
+                 << "does not allow to use the '"
+                 << "config"
+                 << "' services configuration parameter!");
+      }
+      flRecParameters.servicesSubsystemConfig =
+        servicesSubsystem.get<std::string>("config", flRecParameters.servicesSubsystemConfig);
     }
+
+    // Fetch pipeline configuration:
+    if (flRecConfig.has_key_with_meta("flreconstruct.pipeline", "flreconstruct::section")) {
+      falaise::property_set pipelineSubsystem{flRecConfig.get_section("flreconstruct.pipeline")};
+      flRecConfig.remove("flreconstruct.pipeline");
+
+      if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+        std::cerr << "Pipeline subsystem: \n" << pipelineSubsystem.to_string() << std::endl;
+      }
+
+      flRecParameters.reconstructionPipelineUrn =
+        pipelineSubsystem.get<std::string>("configUrn", flRecParameters.reconstructionPipelineUrn);
+
+      flRecParameters.reconstructionPipelineConfig =
+        pipelineSubsystem.get<std::string>("config", flRecParameters.reconstructionPipelineConfig);
+
+      flRecParameters.reconstructionPipelineModule =
+        pipelineSubsystem.get<std::string>("module", flRecParameters.reconstructionPipelineModule);
+    }
+  
+    {
+      // In principle all "flreconstruct::section"(s) of interest should have
+      // been processed now.
+      // Clean the flRecConfig from unused sections of type "flreconstruct::section":
+      std::vector<std::string> section_keys = flRecConfig.keys();
+      std::vector<std::string> unused_section_keys;
+      for (const auto& section_key : section_keys) {
+        if (flRecConfig.has_key_with_meta(section_key, "flreconstruct::section")) {
+          DT_LOG_ERROR(flRecParameters.logLevel, "Found an unused flreconstruct section named '"
+                       << section_key << "'! We will discard it!");
+          unused_section_keys.push_back(section_key);
+        }
+      }
+      for (std::size_t i = 0; i < unused_section_keys.size(); i++) {
+        flRecConfig.remove(unused_section_keys[i]);
+        DT_LOG_ERROR(flRecParameters.logLevel, "Unused flreconstruct section named '"
+                     << section_keys[i] << "' has been removed.");
+      }
+    }
+
+    // Check for allowed inline modules:
+    if (flRecParameters.userProfile == "production" && !flRecConfig.empty()) {
+      DT_THROW(FLConfigUserError, "User profile '"
+               << flRecParameters.userProfile << "' "
+               << "does not allow the definitions of inline modules!");
+    }
+
+    // From this point, no other section than inline processing pipeline modules definitions
+    // should be present in the script. So we fetch modules configuration:
+    flRecParameters.modulesConfig = flRecConfig;
   }
-
-  // Check for allowed inline modules:
-  if (flRecParameters.userProfile == "production" && !flRecConfig.empty()) {
-    DT_THROW(FLConfigUserError, "User profile '"
-                                    << flRecParameters.userProfile << "' "
-                                    << "does not allow the definitions of inline modules!");
-  }
-
-  // From this point, no other section than inline processing pipeline modules definitions
-  // should be present in the script. So we fetch modules configuration:
-  flRecParameters.modulesConfig = flRecConfig;
-
+  
   do_postprocess(flRecParameters);
 }
 
@@ -256,9 +321,9 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
     // No metadata is available. Do nothing.
     // Probably we should handle this path in the future.
   }
-  if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+  //if (datatools::logger::is_debug(flRecParameters.logLevel)) {
     flRecParameters.inputMetadata.tree_dump(std::cerr, "Input metadata: ", "[debug] ");
-  }
+    //}
 
   // Input metadata of interest:
   falaise::app::metadata_input iMeta;
@@ -323,12 +388,133 @@ void do_postprocess_input_metadata(FLReconstructParams& flRecParameters) {
   }  // End of settings.
 }
 
+void do_configure_variant(FLReconstructApplication &recApplication) {
+  datatools::kernel& dtk = datatools::kernel::instance();
+  const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
+
+  FLReconstructParams & flRecParameters = recApplication.parameters;
+
+  if (flRecParameters.experimentalSetupUrn.empty()) {
+    // If experimental setup URN is not set..
+    DT_LOG_NOTICE(flRecParameters.logLevel, "No experimental setup identifier (URN) is set.");
+
+    // Variants service configuration can be hardcoded:
+    if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
+      DT_LOG_NOTICE(flRecParameters.logLevel,
+                    "Using a manually set variant service configuration file : '"
+                    << flRecParameters.variantSubsystemParams.config_filename << "'");
+    }
+  }
+  
+  // The experimental setup URN is set, we try to extract automatically the path of the
+  // components associated to it (variants)
+  if (!flRecParameters.experimentalSetupUrn.empty()) {
+    DT_LOG_DEBUG(flRecParameters.logLevel, " -> experimentalSetupUrn=" << flRecParameters.experimentalSetupUrn);
+    // Check URN registration from the system URN query service:
+    {
+      const std::string& conf_category = falaise::tags::experimental_setup_category();
+      DT_THROW_IF(!dtkUrnQuery.check_urn_info(flRecParameters.experimentalSetupUrn, conf_category),
+                  std::logic_error,
+                  "Cannot query URN='" << flRecParameters.experimentalSetupUrn << "'!");
+    }
+    const datatools::urn_info& expSetupUrnInfo =
+        dtkUrnQuery.get_urn_info(flRecParameters.experimentalSetupUrn);
+    if (datatools::logger::is_debug(flRecParameters.logLevel)) {
+      expSetupUrnInfo.tree_dump(std::cerr, "expSetupUrnInfo", "[debug] ");
+    }
+    
+    // Variants:
+    // Automatically determine the variants configuration component:
+    std::string variantConfigUrn;
+    if (expSetupUrnInfo.has_topic("variants")) {
+      const std::vector<std::string> & vv =  expSetupUrnInfo.get_components_by_topic("variants");
+      for (const std::string & v : vv) {
+        DT_LOG_DEBUG(flRecParameters.logLevel, "   -> Variant '" << v << "'");    
+      }
+      if (vv.size() == 1) {
+        DT_LOG_DEBUG(flRecParameters.logLevel, " -> Found 'variants' component");
+        variantConfigUrn = expSetupUrnInfo.get_component("variants");
+      }
+    }
+    DT_LOG_DEBUG(flRecParameters.logLevel, " -> variantConfigUrn='" << variantConfigUrn << "'");
+    DT_LOG_DEBUG(flRecParameters.logLevel, " -> params.variantConfigUrn='" << flRecParameters.variantConfigUrn << "'");
+    
+    if (!flRecParameters.variantConfigUrn.empty()) {
+      DT_THROW_IF(flRecParameters.variantConfigUrn != variantConfigUrn, std::logic_error,
+                  "Variant config URN='" << flRecParameters.variantConfigUrn << "' does not match "
+                                         << "the automatically resolved URN='" << variantConfigUrn
+                                         << "' from experimental setup '"
+                                         << flRecParameters.experimentalSetupUrn << "'!");
+    } else {
+      flRecParameters.variantConfigUrn = variantConfigUrn;
+    }
+    if (!flRecParameters.variantConfigUrn.empty()) {
+      // Resolve variants file:
+      std::string conf_variants_category = "configuration";
+      std::string conf_variants_mime;
+      std::string conf_variants_path;
+      DT_THROW_IF(
+          !dtkUrnQuery.resolve_urn_to_path(flRecParameters.variantConfigUrn, conf_variants_category,
+                                           conf_variants_mime, conf_variants_path),
+          std::logic_error, "Cannot resolve URN='" << flRecParameters.variantConfigUrn << "'!");
+      flRecParameters.variantSubsystemParams.config_filename = conf_variants_path;
+    }
+  }
+
+  // Variants profile:
+  if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
+    // Force the variant profile path:
+    DT_THROW_IF(!flRecParameters.variantProfileUrn.empty(), std::logic_error,
+                "Required variants profile URN='"
+                    << flRecParameters.variantProfileUrn << "' "
+                    << "conflicts with required variants profile path='"
+                    << flRecParameters.variantSubsystemParams.profile_load << "'!");
+  } else if (!flRecParameters.variantProfileUrn.empty()) {
+    // Determine the variant profile path from a blessed variant profile URN:
+    std::string conf_variantsProfile_category = "configuration";
+    std::string conf_variantsProfile_mime;
+    std::string conf_variantsProfile_path;
+    DT_THROW_IF(
+        !dtkUrnQuery.resolve_urn_to_path(flRecParameters.variantProfileUrn,
+                                         conf_variantsProfile_category, conf_variantsProfile_mime,
+                                         conf_variantsProfile_path),
+        std::logic_error,
+        "Cannot resolve variants profile URN='" << flRecParameters.variantProfileUrn << "'!");
+    flRecParameters.variantSubsystemParams.profile_load = conf_variantsProfile_path;
+  }
+
+  // Warnings:
+  if (flRecParameters.variantSubsystemParams.config_filename.empty()) {
+    DT_LOG_WARNING(flRecParameters.logLevel, "No variants configuration is provided.");
+  } else {
+    if (flRecParameters.variantSubsystemParams.profile_load.empty()) {
+      DT_LOG_WARNING(flRecParameters.logLevel, "No variants profile is provided.");
+    }
+  }
+
+  // Start the variant service:
+  datatools::configuration::variant_service & variantService = recApplication.variantService;
+  if (!flRecParameters.variantSubsystemParams.logging.empty()) {
+    variantService.set_logging(
+        datatools::logger::get_priority(flRecParameters.variantSubsystemParams.logging));
+  }
+  if (flRecParameters.variantSubsystemParams.is_active()) {
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Starting the variant service...");
+    variantService.configure(flRecParameters.variantSubsystemParams);
+    variantService.start();
+  } else {
+    DT_LOG_WARNING(flRecParameters.logLevel, "Do not start the variant service!");
+  }
+  
+  return;  
+}
+
 void do_postprocess(FLReconstructParams& flRecParameters) {
   datatools::kernel& dtk = datatools::kernel::instance();
   const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 
   // Process input metadata:
-  do_postprocess_input_metadata(flRecParameters);
+  // do_postprocess_input_metadata(flRecParameters);
 
   if (!flRecParameters.reconstructionPipelineUrn.empty()) {
     // Check URN registration from the system URN query service:
@@ -370,19 +556,13 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
     // If experimental setup URN is not set..
     DT_LOG_NOTICE(flRecParameters.logLevel, "No experimental setup identifier (URN) is set.");
 
-    // Variants service configuration can be hardcoded:
-    if (!flRecParameters.variantSubsystemParams.config_filename.empty()) {
-      DT_LOG_NOTICE(flRecParameters.logLevel,
-                    "Using a manually set variant service configuration file.");
-    }
-
     // Services configuration must be hardcoded (typically with at least the geometry service):
     DT_THROW_IF(flRecParameters.servicesSubsystemConfig.empty(), std::logic_error,
                 "Missing services configuration file!");
   }
 
   // The experimental setup URN is set, we try to extract automatically the path of the
-  // components associated to it (variants, services...)
+  // components associated to it (services)
   if (!flRecParameters.experimentalSetupUrn.empty()) {
     // Check URN registration from the system URN query service:
     {
@@ -393,34 +573,6 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
     }
     const datatools::urn_info& expSetupUrnInfo =
         dtkUrnQuery.get_urn_info(flRecParameters.experimentalSetupUrn);
-
-    // Variants:
-    // Automatically determine the variants configuration component:
-    std::string variantConfigUrn;
-    if (expSetupUrnInfo.has_topic("variants") &&
-        expSetupUrnInfo.get_components_by_topic("variants").size() == 1) {
-      variantConfigUrn = expSetupUrnInfo.get_component("variants");
-    }
-    if (!flRecParameters.variantConfigUrn.empty()) {
-      DT_THROW_IF(flRecParameters.variantConfigUrn != variantConfigUrn, std::logic_error,
-                  "Variant config URN='" << flRecParameters.variantConfigUrn << "' does not match "
-                                         << "the automatically resolved URN='" << variantConfigUrn
-                                         << "' from experimental setup '"
-                                         << flRecParameters.experimentalSetupUrn << "'!");
-    } else {
-      flRecParameters.variantConfigUrn = variantConfigUrn;
-    }
-    if (!flRecParameters.variantConfigUrn.empty()) {
-      // Resolve variants file:
-      std::string conf_variants_category = "configuration";
-      std::string conf_variants_mime;
-      std::string conf_variants_path;
-      DT_THROW_IF(
-          !dtkUrnQuery.resolve_urn_to_path(flRecParameters.variantConfigUrn, conf_variants_category,
-                                           conf_variants_mime, conf_variants_path),
-          std::logic_error, "Cannot resolve URN='" << flRecParameters.variantConfigUrn << "'!");
-      flRecParameters.variantSubsystemParams.config_filename = conf_variants_path;
-    }
 
     // Services:
     if (!flRecParameters.servicesSubsystemConfig.empty()) {
@@ -463,37 +615,6 @@ void do_postprocess(FLReconstructParams& flRecParameters) {
                     "Cannot resolve URN='" << flRecParameters.servicesSubsystemConfigUrn << "'!");
         flRecParameters.servicesSubsystemConfig = conf_services_path;
       }
-    }
-  }
-
-  // Variants profile:
-  if (!flRecParameters.variantSubsystemParams.profile_load.empty()) {
-    // Force the variant profile path:
-    DT_THROW_IF(!flRecParameters.variantProfileUrn.empty(), std::logic_error,
-                "Required variants profile URN='"
-                    << flRecParameters.variantProfileUrn << "' "
-                    << "conflicts with required variants profile path='"
-                    << flRecParameters.variantSubsystemParams.profile_load << "'!");
-  } else if (!flRecParameters.variantProfileUrn.empty()) {
-    // Determine the variant profile path from a blessed variant profile URN:
-    std::string conf_variantsProfile_category = "configuration";
-    std::string conf_variantsProfile_mime;
-    std::string conf_variantsProfile_path;
-    DT_THROW_IF(
-        !dtkUrnQuery.resolve_urn_to_path(flRecParameters.variantProfileUrn,
-                                         conf_variantsProfile_category, conf_variantsProfile_mime,
-                                         conf_variantsProfile_path),
-        std::logic_error,
-        "Cannot resolve variants profile URN='" << flRecParameters.variantProfileUrn << "'!");
-    flRecParameters.variantSubsystemParams.profile_load = conf_variantsProfile_path;
-  }
-
-  // Warnings:
-  if (flRecParameters.variantSubsystemParams.config_filename.empty()) {
-    DT_LOG_WARNING(flRecParameters.logLevel, "No variants configuration is provided.");
-  } else {
-    if (flRecParameters.variantSubsystemParams.profile_load.empty()) {
-      DT_LOG_WARNING(flRecParameters.logLevel, "No variants profile is provided.");
     }
   }
 
@@ -612,4 +733,15 @@ falaise::exit_code do_metadata(const FLReconstructParams& flRecParameters,
   return code;
 }
 
+void do_terminate_variant(FLReconstructApplication &recApplication) {
+  if (recApplication.variantService.is_started()) {
+    // Terminate the variant service:
+    recApplication.variantService.stop();
+  }
+}
+ 
+void do_terminate(FLReconstructApplication &recApplication) {
+  do_terminate_variant(recApplication);
+}
+  
 }  // namespace FLReconstruct

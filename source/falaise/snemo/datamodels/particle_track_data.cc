@@ -66,7 +66,7 @@ void particle_track_data::clear() {
 }
 
 void particle_track_data::tree_dump(std::ostream& out, const std::string& title,
-                                    const std::string& indent, bool /*inherit_*/) const {
+                                    const std::string& indent, bool inherit_) const {
   if (!title.empty()) {
     out << indent << title << std::endl;
   }
@@ -90,13 +90,13 @@ void particle_track_data::tree_dump(std::ostream& out, const std::string& title,
   }
 
   const auto& the_calos = isolatedCalorimeters();
-  out << indent << datatools::i_tree_dumpable::tag
+  out << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) 
       << "Isolated calorimeter(s) : " << the_calos.size() << std::endl;
   for (size_t i = 0; i < the_calos.size(); i++) {
     const calibrated_calorimeter_hit& a_calo_hit = the_calos.at(i).get();
     std::ostringstream indent2;
-    out << indent << datatools::i_tree_dumpable::skip_tag;
-    indent2 << indent << datatools::i_tree_dumpable::skip_tag;
+    out << indent << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
+    indent2 << indent << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
     if (i == the_calos.size() - 1) {
       out << datatools::i_tree_dumpable::last_tag;
       indent2 << datatools::i_tree_dumpable::last_skip_tag;

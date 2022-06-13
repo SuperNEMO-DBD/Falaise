@@ -126,6 +126,10 @@ uint32_t gveto_locator::getPartAddress(const geomtools::geom_id &gid) const {
   return geomtools::geom_id::INVALID_ADDRESS;
 }
 
+bool gveto_locator::isCaloOM(const geomtools::geom_id &gid) const {
+  return gid.get_type() == caloOMGIDType_;
+}
+
 bool gveto_locator::isCaloBlock(const geomtools::geom_id &gid) const {
   return gid.get_type() == caloBlockGIDType_;
 }

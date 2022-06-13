@@ -29,6 +29,9 @@ class TestIssue201 {
   }
 
  private:
-  std::vector<size_t> ptdCounts_ = {1, 5, 1, 4, 3, 2, 1, 1, 1, 0};
+  // 2022-04-22 FM : Former expected number of particle count was:
+  // std::vector<size_t> ptdCounts_ = {1, 5, 1, 4, 3, 2, 1, 1, 1, 0};
+  // Updated list of expectations:
+  std::vector<size_t> ptdCounts_ = {1, 3, 6, 1, 1, 3, 3, 1, 1, 4};
 };
 FALAISE_REGISTER_MODULE(TestIssue201)

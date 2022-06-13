@@ -30,6 +30,7 @@ find_package(Boost 1.60 REQUIRED program_options)
 #
 add_executable(flreconstruct
   flreconstructmain.cc
+  FLReconstructApplication.h
   FLReconstructPipeline.h
   FLReconstructPipeline.cc
   FLReconstructImpl.h

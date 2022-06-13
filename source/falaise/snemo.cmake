@@ -49,6 +49,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/locator_helpers.h
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
+  snemo/geometry/helix_intercept.h
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
@@ -72,9 +73,32 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/hello_world.h
   snemo/services/dead_cells.h
   snemo/services/histogram.h
+  snemo/services/db_service.h 
+  snemo/services/tracker_cell_status_service.h
+  snemo/services/calorimeter_om_status_service.h
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
+
+  snemo/time/time_utils.h
+ 
+  snemo/physics_model/base_activity_model.h
+  snemo/physics_model/constant_activity_model.h
+  snemo/physics_model/scaled_activity_model.h
+  snemo/physics_model/sliced_activity_model.h
+  snemo/physics_model/decaying_activity_model.h
+  snemo/physics_model/per_period_activity_model.h
+  snemo/physics_model/activity_model_factory.h
+
+  snemo/rc/run_description.h
+  snemo/rc/run_list.h
+  snemo/rc/base_event.h
+  snemo/rc/run_event.h
+  snemo/rc/run_statistics.h
+  snemo/rc/mc_event_distribution.h
+  snemo/rc/tracker_cell_status.h
+  snemo/rc/calorimeter_om_status.h
+  
   )
 
 list(APPEND FalaiseLibrary_SOURCES
@@ -107,6 +131,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/utils.cc
   snemo/geometry/mapped_magnetic_field.cc
   snemo/geometry/private/categories.h
+  snemo/geometry/helix_intercept.cc
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/event_header_utils_module.h
@@ -134,6 +159,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/services/services.cc
   snemo/services/hello_world.cc
   snemo/services/dead_cells.cc
+  snemo/services/db_service.cc
+  snemo/services/tracker_cell_status_service.cc
+  snemo/services/calorimeter_om_status_service.cc
 
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
@@ -141,6 +169,26 @@ list(APPEND FalaiseLibrary_SOURCES
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
+
+  snemo/time/time_utils.cc
+
+  snemo/physics_model/base_activity_model.cc
+  snemo/physics_model/constant_activity_model.cc
+  snemo/physics_model/scaled_activity_model.cc
+  snemo/physics_model/sliced_activity_model.cc
+  snemo/physics_model/decaying_activity_model.cc
+  snemo/physics_model/per_period_activity_model.cc
+  snemo/physics_model/activity_model_factory.cc
+
+  snemo/rc/run_description.cc
+  snemo/rc/run_list.cc
+  snemo/rc/base_event.cc
+  snemo/rc/run_event.cc
+  snemo/rc/run_statistics.cc
+  snemo/rc/mc_event_distribution.cc
+  snemo/rc/tracker_cell_status.cc
+  snemo/rc/calorimeter_om_status.cc
+
   )
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
@@ -153,6 +201,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_dead_cells_service.cxx
   snemo/test/test_event_record.cxx
   )
+
 list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_service_external.cxx
   snemo/test/test_snemo_datamodel_event_header.cxx
@@ -171,6 +220,22 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_retrieve_info.cxx
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
+  snemo/test/test_snemo_time_time_utils.cxx
+  snemo/test/test_snemo_rc_run_description.cxx
+  snemo/test/test_snemo_rc_run_list.cxx
+  snemo/test/test_snemo_rc_run_event.cxx
+  snemo/test/test_snemo_rc_run_statistics.cxx
+  snemo/test/test_snemo_rc_tracker_cell_status.cxx
+  snemo/test/test_snemo_rc_calorimeter_om_status.cxx
+  snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
+  snemo/test/test_snemo_physics_model_per_period_activity_model.cxx
+  snemo/test/test_snemo_physics_model_activity_model_factory.cxx
+  snemo/test/test_snemo_services_tracker_cell_status_service.cxx
+  snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
+  # snemo/test/test_snemo_service_rc.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
+  
   )
+
+# - end

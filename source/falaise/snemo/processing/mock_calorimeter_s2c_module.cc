@@ -24,6 +24,7 @@
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/services/services.h>
+#include <falaise/snemo/rc/calorimeter_om_status.h>
 
 namespace snemo {
 
@@ -253,6 +254,20 @@ void mock_calorimeter_s2c_module::digitizeHits(
 
       // Retrieve the calorimeter regime
       auto& theCaloModel = this->get_calorimeter_regime(geomID);
+
+      // 2022-05-31 FM : Take into account RC applied to MC hits:
+      const datatools::properties & mcHitAuxiliaries = a_calo_mc_hit->get_auxiliaries();
+      std::uint32_t omStatus = snemo::rc::calorimeter_om_status::OM_GOOD;
+      if (mcHitAuxiliaries.has_key("snemo.rc.calorimeter_om_status")) {
+        omStatus = mcHitAuxiliaries.fetch_integer("snemo.rc.calorimeter_om_status");
+      }
+      // Ignore hits on dead/off OMs:
+      if (omStatus & snemo::rc::calorimeter_om_status::OM_DEAD) {
+        continue;
+      }
+      if (omStatus & snemo::rc::calorimeter_om_status::OM_OFF) {
+        continue;
+      }
 
       // Quench energy if it's an Alpha particle
       double energyDeposit = a_calo_mc_hit->get_energy_deposit();
