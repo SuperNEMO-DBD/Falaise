@@ -281,13 +281,13 @@ void mock_calorimeter_s2c_module::digitizeHits(
 
       // handle only e- (e- and gamma's Compton) and e+
       if ((a_calo_mc_hit->get_particle_name() == "e-") || (a_calo_mc_hit->get_particle_name() == "e+"))
-	{
-	  // currently hard coded correction ... -> to switch into parameters in conf file
-	  birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
+        {
+          // currently hard coded correction ... -> to switch into parameters in conf file
+          birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
 
-	  // correction is negative bellow 2.5 keV ...
-	  if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
-	}
+          // correction is negative bellow 2.5 keV ...
+          if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
+        }
 
       // Compute uniformity correction factor
       double uniformityCorrectionFactor = 1.0;
@@ -322,31 +322,31 @@ void mock_calorimeter_s2c_module::digitizeHits(
       switch (a_scin_gid.get_type()) {
 
       case 1302: // M-wall
-	_position_xyz[2] += 15.50000001; // add half height of scintillator
-	if (std::abs(_position_z) < 1500.)
-	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
-	else
-	  uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
-	break;
+        _position_xyz[2] += 15.50000001; // add half height of scintillator
+        if (std::abs(_position_z) < 1500.)
+          uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
+        else
+          uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
+        break;
 
       case 1232: // X-wall
-	_position_xyz[2] += 75.10000001; // add half height of scintillator
-	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
-	break;
+        _position_xyz[2] += 75.10000001; // add half height of scintillator
+        uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
+        break;
 
       case 1252: // V-wall
-	_position_xyz[2] += 75.10000001;
-	uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
-	break;
+        _position_xyz[2] += 75.10000001;
+        uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
+        break;
 
       default:
-	DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
+        DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
       }
 
 
       DT_LOG_DEBUG(get_logging_priority(), "step_hit of " << energyDeposit/CLHEP::MeV << " MeV in " << a_scin_gid
-		   << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
-		   << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
+                   << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
+                   << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
 
 
       // Get the step hit time start:
@@ -371,16 +371,16 @@ void mock_calorimeter_s2c_module::digitizeHits(
         newHit->set_energy(energyDeposit);
 
         // Grab auxiliaries
-	datatools::properties & newHitProperties = newHit->grab_auxiliaries();
+        datatools::properties & newHitProperties = newHit->grab_auxiliaries();
 
         // Add a properties to ease the final calibration
         newHitProperties.store("category", caloType);
 
-	// Store energy deposit details
-	newHitProperties.store("edep",     energyDeposit);
-	newHitProperties.store("edep_u",   energyDeposit * uniformityCorrectionFactor);
-	newHitProperties.store("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
-	newHitProperties.store("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
+        // Store energy deposit details
+        newHitProperties.store("edep",     energyDeposit);
+        newHitProperties.store("edep_u",   energyDeposit * uniformityCorrectionFactor);
+        newHitProperties.store("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+        newHitProperties.store("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
 
         // 2012-09-17 FM : support reference to the MC true hit ID
         if (assocMCHitId) {
@@ -416,10 +416,10 @@ void mock_calorimeter_s2c_module::digitizeHits(
           existingHitProperties.update_flag("pile_up");
           existingHit->set_time(step_hit_time_start);
           existingHit->set_energy(energyDeposit);
-	  existingHitProperties.update("edep",     energyDeposit);
-	  existingHitProperties.update("edep_u",   energyDeposit * uniformityCorrectionFactor);
-	  existingHitProperties.update("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
-	  existingHitProperties.update("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
+          existingHitProperties.update("edep",     energyDeposit);
+          existingHitProperties.update("edep_u",   energyDeposit * uniformityCorrectionFactor);
+          existingHitProperties.update("edep_bc",  energyDeposit * birksCerenkovCorrectionFactor);
+          existingHitProperties.update("edep_bcu", energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor);
           continue;
         }
 
@@ -427,28 +427,28 @@ void mock_calorimeter_s2c_module::digitizeHits(
         const double calo_time = std::min(step_hit_time_start, existingHit->get_time());
         existingHit->set_time(calo_time);
 
-	double calo_energy;
+        double calo_energy;
 
         // Sum energies
         calo_energy = energyDeposit + existingHit->get_energy();
         existingHit->set_energy(calo_energy);
 
-	// Sum energy deposit details
-	existingHitProperties.fetch("edep", calo_energy);
-	calo_energy += energyDeposit;
-	existingHitProperties.update("edep", calo_energy);
+        // Sum energy deposit details
+        existingHitProperties.fetch("edep", calo_energy);
+        calo_energy += energyDeposit;
+        existingHitProperties.update("edep", calo_energy);
 
-	existingHitProperties.fetch("edep_u", calo_energy);
-	calo_energy += energyDeposit * uniformityCorrectionFactor;
-	existingHitProperties.update("edep_u", calo_energy);
+        existingHitProperties.fetch("edep_u", calo_energy);
+        calo_energy += energyDeposit * uniformityCorrectionFactor;
+        existingHitProperties.update("edep_u", calo_energy);
 
-	existingHitProperties.fetch("edep_bc", calo_energy);
-	calo_energy += energyDeposit * birksCerenkovCorrectionFactor;
-	existingHitProperties.update("edep_bc", calo_energy);
+        existingHitProperties.fetch("edep_bc", calo_energy);
+        calo_energy += energyDeposit * birksCerenkovCorrectionFactor;
+        existingHitProperties.update("edep_bc", calo_energy);
 
-	existingHitProperties.fetch("edep_bcu", calo_energy);
-	calo_energy += energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor;
-	existingHitProperties.update("edep_bcu", calo_energy);
+        existingHitProperties.fetch("edep_bcu", calo_energy);
+        calo_energy += energyDeposit * birksCerenkovCorrectionFactor * uniformityCorrectionFactor;
+        existingHitProperties.update("edep_bcu", calo_energy);
       }
     }  // loop over hits
   }    // loop over hit category
