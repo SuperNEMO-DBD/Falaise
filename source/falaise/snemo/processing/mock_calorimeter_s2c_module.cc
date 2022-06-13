@@ -58,6 +58,8 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
 
   caloModels = {};
 
+  // 2022-06-13 FM : use default paths for regime and fit DB files
+
   // Initialize the calorimeter regime utility from the database
   std::string calorimeter_regime_database_path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db";
   if (ps.has_key("calorimeter_regime_database_path")) {
@@ -65,7 +67,7 @@ void mock_calorimeter_s2c_module::initialize(const datatools::properties& ps,
   }
   datatools::fetch_path_with_env(calorimeter_regime_database_path);
   this->parse_calorimeter_regime_database(calorimeter_regime_database_path);
-
+  
   // Initialize the pol3d parameters for MWall 8"
   std::string pol3d_parameters_mwall_8inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db";
   if (ps.has_key("pol3d_parameters_mwall_8inch_path")) {
