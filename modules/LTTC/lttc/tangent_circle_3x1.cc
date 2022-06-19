@@ -5,6 +5,7 @@
 #include <datatools/clhep_units.h>
 
 namespace lttc {
+  
   namespace gergonne {
 
     // https://fr.wikipedia.org/wiki/Cercle_circonscrit_%C3%A0_un_triangle
@@ -206,7 +207,6 @@ namespace lttc {
     }
  
   } // namespace gergonne
-
   
   tangent_circle_3x1::tangent_circle_3x1(const config_type & cfg_)
   {

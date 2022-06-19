@@ -11,7 +11,7 @@
 #include <datatools/utils.h>
 
 // This project:
-#include <lttc/point.hh>
+#include <falaise/geometry/point.hh>
 
 namespace lttc {
 
@@ -33,11 +33,11 @@ namespace lttc {
    
     int       id = -1;
     uint32_t  flags = 0;
-    polyline2 pl;
+    falaise::geometry::polyline2 pl;
     std::set<int> cuts;
     double    s_start = datatools::invalid_real();
     double    s_stop = datatools::invalid_real();
-    point2    kink{datatools::invalid_real(), datatools::invalid_real()};
+    falaise::geometry::point2    kink{datatools::invalid_real(), datatools::invalid_real()};
     double    s_kink = datatools::invalid_real();
    
   };
@@ -56,7 +56,7 @@ namespace lttc {
 
     void draw(std::ostream & out_) const;
 
-    void make(polyline3 & p3_) const;
+    void make(falaise::geometry::polyline3 & p3_) const;
 
     void print(std::ostream & out_, const std::string & indent_ = "", bool inherit_ = false) const;
     

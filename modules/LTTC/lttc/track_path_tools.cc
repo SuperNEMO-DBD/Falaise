@@ -19,6 +19,12 @@
 
 namespace lttc {
 
+  using falaise::geometry::point2;
+  using falaise::geometry::vector2;
+  using falaise::geometry::point3;
+  using falaise::geometry::fitted_point2;
+  using falaise::geometry::line2;
+ 
   size_t track_path_data::size() const
   {
     return vertexes.size();

@@ -11,8 +11,8 @@
 #include <mygsl/histogram.h>
 
 // This project:
-#include <lttc/point.hh>
-#include <lttc/triplet2.hh>
+#include <falaise/geometry/point.hh>
+#include <falaise/geometry/triplet2.hh>
 #include <lttc/uhistogram.hh>
 
 namespace lttc {
@@ -26,7 +26,7 @@ namespace lttc {
 
     struct circle_data_type
     {
-      point2 center;
+      falaise::geometry::point2 center;
       double radius = datatools::invalid_real();
     };
       
@@ -40,7 +40,7 @@ namespace lttc {
     struct hit_triplet_circle_type
     {
       int triplet_id = -1;
-      triplet2 contacts;
+      falaise::geometry::triplet2 contacts;
       circle_data_type circle_data;
 
       void print(std::ostream & out_) const;
@@ -65,7 +65,7 @@ namespace lttc {
    
     // Work:
     const lttc_algo * lttc = nullptr; ///< Parent algo
-    hit_triplet_col hit_triplets;
+    hit_triplet_col hit_triplets; ///< Collection of triplets of input hits
     hit_triplet_circle_col hit_triplet_circles;
     hit_triplet_circle_col hit_triplet_blured_circles;
     uhistogram hr;

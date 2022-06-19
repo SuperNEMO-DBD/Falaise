@@ -8,9 +8,17 @@
 #include <geomtools/utils.h>
 
 // This project:
-#include <lttc/rectangle.hh>
+#include <falaise/geometry/rectangle.hh>
 
 namespace lttc {
+
+  using falaise::geometry::point2;
+  using falaise::geometry::vector2;
+  using falaise::geometry::point3;
+  using falaise::geometry::polyline2;
+  using falaise::geometry::draw_polyline;
+  using falaise::geometry::polyline3;
+  using falaise::geometry::rectangle;
 
   void track2::draw(std::ostream & out_) const
   {

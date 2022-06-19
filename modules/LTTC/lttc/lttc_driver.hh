@@ -31,78 +31,80 @@
 
 // Standard library:
 #include <string>
+#include <memory>
 
 // This project
 #include <falaise/snemo/processing/base_tracker_clusterizer.h>
-#include <lttc/lttc_interface.hh>
+#include <falaise/snemo/services/tracker_cell_status_service.h>
+#include <falaise/snemo/processing/detector_description.h>
+
+// This project
+#include <lttc/lttc_algo.hh>
 
 // Forward declaration :
 namespace datatools {
   class properties;
 }
 
-namespace snemo {
+namespace lttc {
 
-  namespace geometry {
-    class calo_locator;
-    class xcalo_locator;
-    class gveto_locator;
-  }  // namespace geometry
+  /// Driver for the Lttc clustering algorithms
+  class lttc_driver
+    : public ::snemo::processing::base_tracker_clusterizer
+  {
+  public:
+    static const std::string LTTC_ID;  ///< The LTTC string identifier
 
-  namespace reconstruction {
+    /// Default constructor
+    lttc_driver();
 
-    /// Driver for the Lttc clustering algorithms
-    class lttc_driver
-      : public ::snemo::processing::base_tracker_clusterizer
-    {
-    public:
-      static const std::string LTTC_ID;  /// The LTTC string identifier
+    /// Destructor
+    virtual ~lttc_driver();
 
-      /// Default constructor
-      lttc_driver();
+    /// Setting detector description 
+    void set_detector_description(const snemo::processing::detector_description & dd_);
 
-      /// Destructor
-      virtual ~lttc_driver();
+    /// Getting detector description
+    const snemo::processing::detector_description & get_detector_description() const;
 
-      /// Initialize the clusterizer through configuration properties
-      virtual void initialize(const datatools::properties& setup_);
+    /// Getting specific feature about the tracker 
+    const tracker & get_sntracker() const;
+    
+    /// Initialize the clusterizer through configuration properties
+    virtual void initialize(const datatools::properties & setup_) override;
 
-      /// Reset the clusterizer
-      virtual void reset();
+    /// Reset the clusterizer
+    virtual void reset() override;
 
-      /// OCD support:
-      static void init_ocd(datatools::object_configuration_description& ocd_);
+    /// OCD support:
+    static void init_ocd(datatools::object_configuration_description & ocd_);
 
-    protected:
-      /// Set default attributes
-      void _set_defaults();
+  protected:
+    /// Set default attributes
+    void _set_defaults();
 
-      /// Main clustering method
-      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                snemo::datamodel::tracker_clustering_data & clustering_);
+    /// Main clustering method
+    virtual int _process_algo(const snemo::processing::base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                              const snemo::processing::base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                              snemo::datamodel::tracker_clustering_data & clustering_) override;
 
-    private:
-      // lttc::setup_data _lttc_setup_;         ///< Configuration data
-      // lttc::input_data _lttc_input_;         ///< Input data
-      // lttc::output_data _lttc_output_;       ///< Output data
-      // lttc::clusterizer _CAT_clusterizer_;   //< Lttc clusterizer
- 
-      // Geometry locators
-      const snemo::geometry::calo_locator*  _calo_locator_ = nullptr; ///< main wall calorimeter locator
-      const snemo::geometry::xcalo_locator* _xcalo_locator_ = nullptr; ///< X-wall calorimeter locator
-      const snemo::geometry::gveto_locator* _gveto_locator_ = nullptr;
+  private:
       
-    };
+    lttc_algo::config _lttc_config_; ///< Configuration data
+    snemo::processing::detector_description _detector_desc_; ///< Pseudo-service for detector description (greometry, RC...)
+    // Working data:
+    std::unique_ptr<lttc_algo> _clusterizer_; ///< Lttc clusterizer
+    lttc_algo::input_data  _lttc_input_; ///< Input data
+    lttc_algo::output_data _lttc_output_; ///< Output data
 
-  }  // end of namespace reconstruction
+  };
 
-}  // end of namespace snemo
+}  // end of namespace lttc
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
-DOCD_CLASS_DECLARATION(snemo::reconstruction::lttc_driver)
+DOCD_CLASS_DECLARATION(lttc::lttc_driver)
 
 #endif // FALAISE_LTTC_PLUGIN_LTTC_DRIVER_HH
 

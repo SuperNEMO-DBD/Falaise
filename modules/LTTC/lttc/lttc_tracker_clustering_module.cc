@@ -36,125 +36,200 @@ namespace snemo {
                                       "snemo::reconstruction::lttc_tracker_clustering_module")
 
     // Constructor :
-    lttc_tracker_clustering_module::lttc_tracker_clustering_module(datatools::logger::priority p)
-    : dpp::base_module(p) {
+    lttc_tracker_clustering_module::lttc_tracker_clustering_module(datatools::logger::priority p_)
+    : dpp::base_module(p_)
+    {
       _set_defaults();
     }
 
     // Destructor :
-    lttc_tracker_clustering_module::~lttc_tracker_clustering_module() {
+    lttc_tracker_clustering_module::~lttc_tracker_clustering_module()
+    {
       if (is_initialized()) {
         lttc_tracker_clustering_module::reset();
       }
     }
 
-    void lttc_tracker_clustering_module::set_cd_label(const std::string& cd) {
+    void lttc_tracker_clustering_module::_set_defaults()
+    {
+      _EH_tag_ = "EH";
+      _CD_tag_ = "CD";
+      _TCD_tag_ = "TCD";
+      _clusterizer_driver_.reset();
+    }
+
+    void lttc_tracker_clustering_module::set_eh_label(const std::string & eh_)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is already initialized ! ");
-      CDTag_ = cd;
+      _EH_tag_ = eh_;
     }
 
-    void lttc_tracker_clustering_module::reset() {
-      DT_THROW_IF(!is_initialized(), std::logic_error,
-                  "Module '" << get_name() << "' is not initialized !");
-      _set_initialized(false);
-      // Reset the clusterizer driver :
-      if (lttcAlgo_) {
-        if (lttcAlgo_->is_initialized()) {
-          lttcAlgo_->reset();
-        }
-        lttcAlgo_.reset();
-      }
-      _set_defaults();
+    const std::string& lttc_tracker_clustering_module::get_eh_label() const
+    {
+      return _EH_tag_;
     }
 
-    void lttc_tracker_clustering_module::_set_defaults() {
-      geoManager_ = nullptr;
-      CDTag_.clear();
-      TCDTag_.clear();
-      lttcAlgo_.reset(nullptr);
-    }
-
-    const std::string& lttc_tracker_clustering_module::get_cd_label() const { return CDTag_; }
-
-    void lttc_tracker_clustering_module::set_tcd_label(const std::string& tc) {
+    void lttc_tracker_clustering_module::set_cd_label(const std::string & cd_)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is already initialized ! ");
-      TCDTag_ = tc;
+      _CD_tag_ = cd_;
     }
 
-    const std::string& lttc_tracker_clustering_module::get_tcd_label() const { return TCDTag_; }
-
-    const geomtools::manager& lttc_tracker_clustering_module::get_geometry_manager() const {
-      return *geoManager_;
+    const std::string& lttc_tracker_clustering_module::get_cd_label() const
+    {
+      return _CD_tag_;
     }
 
-    void lttc_tracker_clustering_module::set_geometry_manager(const geomtools::manager& gm) {
+    void lttc_tracker_clustering_module::set_tcd_label(const std::string & tc_)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is already initialized ! ");
-      // Check setup label:
-      const std::string& setup_label = gm.get_setup_label();
-      DT_THROW_IF(setup_label != "snemo::demonstrator" && setup_label != "snemo::tracker_commissioning",
-                  std::logic_error, "Setup label '" << setup_label << "' is not supported !");
-      geoManager_ = &gm;
+      _TCD_tag_ = tc_;
     }
 
-    void lttc_tracker_clustering_module::initialize(const datatools::properties& config,
-                                                    datatools::service_manager& services,
-                                                    dpp::module_handle_dict_type& /* unused */) {
+    const std::string& lttc_tracker_clustering_module::get_tcd_label() const
+    {
+      return _TCD_tag_;
+    }
+
+    const snemo::processing::detector_description &
+    lttc_tracker_clustering_module::get_detector_description() const
+    {
+      return _detector_desc_;
+    }
+
+    void lttc_tracker_clustering_module::initialize(const datatools::properties & config_,
+                                                    datatools::service_manager & services_,
+                                                    dpp::module_handle_dict_type & /* unused */)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is already initialized ! ");
-      dpp::base_module::_common_initialize(config);
+      dpp::base_module::_common_initialize(config_);
 
-      falaise::property_set ps{config};
+      falaise::property_set ps{config_};
 
-      CDTag_ = ps.get<std::string>("CD_label", snedm::labels::calibrated_data());
-      TCDTag_ = ps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
+      _EH_tag_ = ps.get<std::string>("EH_label", snedm::labels::event_header());
+      _CD_tag_ = ps.get<std::string>("CD_label", snedm::labels::calibrated_data());
+      _TCD_tag_ = ps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
 
       // Geometry manager :
-      if (geoManager_ == nullptr) {
-        snemo::service_handle<snemo::geometry_svc> geoSVC{services};
-        set_geometry_manager(*(geoSVC.operator->()));
+      if (not _detector_desc_.has_geometry_manager()) {
+        snemo::service_handle<snemo::geometry_svc> geoSVC{services_};
+        _detector_desc_.set_geometry_manager(*(geoSVC.operator->()));
+      }
+
+      // Tracker cell status service :
+      if (not _detector_desc_.has_cell_status_service()) {
+        snemo::service_handle<snemo::tracker_cell_status_service> cellStatusSVC{services_};
+        _detector_desc_.set_cell_status_service(*(cellStatusSVC.operator->()));
       }
 
       // Clustering algorithm :
       // Initialize the clustering driver :
-      lttcAlgo_.reset(new lttc_driver);
-      DT_THROW_IF(!lttcAlgo_, std::logic_error,
-                  "Module '" << get_name() << "' could not instantiate the '" << lttc_driver::LTTC_ID
-                  << "' tracker clusterizer algorithm !");
-      lttcAlgo_->set_geometry_manager(get_geometry_manager());
-      lttcAlgo_->initialize(config);
+      _clusterizer_driver_ = std::make_unique<lttc::lttc_driver>();
+      {
+        // Specific to LTTC driver:
+        lttc::lttc_driver * lttcDriver = dynamic_cast<lttc::lttc_driver *>(_clusterizer_driver_.get());
+        DT_THROW_IF(! lttcDriver, std::logic_error,
+                    "Module '" << get_name() << "' could not instantiate the '" << lttc::lttc_driver::LTTC_ID
+                    << "' tracker clusterizer algorithm !");
+        lttcDriver->set_detector_description(get_detector_description());
+      }
+      _clusterizer_driver_->initialize(config_);
+      
       _set_initialized(true);
     }
 
+    void lttc_tracker_clustering_module::reset()
+    {
+      DT_THROW_IF(!is_initialized(), std::logic_error,
+                  "Module '" << get_name() << "' is not initialized !");
+      _set_initialized(false);
+      // Reset the clusterizer driver :
+      if (_clusterizer_driver_) {
+        if (_clusterizer_driver_->is_initialized()) {
+          _clusterizer_driver_->reset();
+        }
+        _clusterizer_driver_.reset();
+      }
+      _set_defaults();
+    }
+
     // Processing :
-    dpp::base_module::process_status lttc_tracker_clustering_module::process(datatools::things& event) {
+    dpp::base_module::process_status
+    lttc_tracker_clustering_module::process(datatools::things & event_)
+    {
       DT_THROW_IF(!is_initialized(), std::logic_error,
                   "Module '" << get_name() << "' is not initialized !");
       namespace snedm = snemo::datamodel;
-      // Get input data or fail
-      if (!event.has(CDTag_)) {
-        DT_THROW_IF(true, std::logic_error, "Missing calibrated data to be processed !");
+      if (datatools::logger::is_debug(get_logging_priority())) {
+        std::cerr << "[debug] *********************************" << '\n';
+        std::cerr << "[debug] *        NEW LTTC EVENT         *" << '\n';
+        std::cerr << "[debug] *********************************" << '\n';
       }
-      const auto& calibratedData = event.get<snedm::calibrated_data>(CDTag_);
+      
+     // Get event_header or fail
+      if (!event_.has(_EH_tag_)) {
+        DT_THROW(std::logic_error, "Missing event header to be processed !");
+      }
+      const auto & eventHeader = event_.get<snedm::event_header>(_EH_tag_);
+      // Get input data or fail
+      if (!event_.has(_CD_tag_)) {
+        DT_THROW(std::logic_error, "Missing calibrated data to be processed !");
+      }
+      const auto & calibratedData = event_.get<snedm::calibrated_data>(_CD_tag_);
 
       // Get or create output data
-      auto& clusteringData = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(TCDTag_, event);
+      auto & clusteringData = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(_TCD_tag_, event_);
       clusteringData.clear();
 
       // Main processing method :
-      _process(calibratedData, clusteringData);
+      _process(eventHeader, calibratedData, clusteringData);
+
+      if (datatools::logger::is_debug(get_logging_priority())) {
+        std::cerr << "[debug] *********************************" << '\n';
+        std::cerr << "[debug] *      END OF LTTC EVENT        *" << '\n';
+        std::cerr << "[debug] *********************************" << '\n' << '\n';
+      }
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
-    void lttc_tracker_clustering_module::_process(
-                                                  const snemo::datamodel::calibrated_data& calib_data,
-                                                  snemo::datamodel::tracker_clustering_data& clustering_data) {
+    void lttc_tracker_clustering_module::_process(const snemo::datamodel::event_header & event_header_,
+                                                  const snemo::datamodel::calibrated_data & calib_data_,
+                                                  snemo::datamodel::tracker_clustering_data & clustering_data_)
+    {
+      DT_LOG_DEBUG(get_logging_priority(), "Entering...");
+      if (event_header_.is_simulated()) {
+        if (event_header_.has_mc_timestamp()) {
+          DT_LOG_DEBUG(get_logging_priority(), "Simulated event has a MC timestamp");
+        }
+      }
+
+      if (calib_data_.tracker_hits().size() == 0) {
+        DT_LOG_DEBUG(get_logging_priority(), "Calibrated data has not tracker hits!");
+      } else {
+        DT_LOG_DEBUG(get_logging_priority(), "Calibrated data has " << calib_data_.tracker_hits().size() << " tracker hits!");
+      }
+  
+      if (clustering_data_.solutions().size() == 0) {
+        DT_LOG_DEBUG(get_logging_priority(), "Tracker clustering data has no solutions yet!");
+      }
+      
+      if (event_header_.has_mc_timestamp()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Assign the event timestamp to the LTTC clusterizer driver");
+       _clusterizer_driver_->set_event_timestamp(event_header_.get_mc_timestamp());
+      }
+      
       // Process the clusterizer driver :
-      lttcAlgo_->process(calib_data.tracker_hits(), calib_data.calorimeter_hits(),
-                         clustering_data);
+      DT_LOG_DEBUG(get_logging_priority(), "Run the LTTC clusterizer driver");
+      _clusterizer_driver_->process(calib_data_.tracker_hits(),
+                                    calib_data_.calorimeter_hits(),
+                                    clustering_data_);
+      
+      DT_LOG_DEBUG(get_logging_priority(), "Exiting...");
     }
 
   }  // namespace reconstruction
@@ -173,7 +248,25 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::lttc_tracker_clustering_m
   dpp::base_module::common_ocd(ocd_);
 
   // Invoke specific OCD support from the driver class:
-  ::snemo::reconstruction::lttc_driver::init_ocd(ocd_);
+  // ::snemo::reconstruction::lttc_driver::init_ocd(ocd_);
+
+  {
+    // Description of the 'EH_label' configuration property :
+    datatools::configuration_property_description& cpd = ocd_.add_property_info();
+    cpd.set_name_pattern("EH_label")
+      .set_terse_description("The label/name of the 'event_header' bank")
+      .set_traits(datatools::TYPE_STRING)
+      .set_mandatory(false)
+      .set_long_description(
+                            "This is the name of the bank to be used \n"
+                            "as the event header.    \n")
+      .set_default_value_string(snedm::labels::event_header())
+      .add_example(
+                   "Use an alternative name for the 'event_header' bank:: \n"
+                   "                                \n"
+                   "  EH_label : string = \"EH2\"   \n"
+                   "                                \n");
+  }
 
   {
     // Description of the 'CD_label' configuration property :
@@ -219,9 +312,10 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::reconstruction::lttc_tracker_clustering_m
                                "  TC.logging.priority          : string = \"fatal\"                  \n"
                                "  TC.locator_plugin_name       : string = \"locators_driver\"        \n"
                                "  TPC.delayed_hit_cluster_time : real as time = 10 us                \n"
-                               "  TPC.processing_prompt_hits   : boolean = 1                         \n"
-                               "  TPC.processing_delayed_hits  : boolean = 1                         \n"
+                               "  TPC.processing_prompt_hits   : boolean = true                      \n"
+                               "  TPC.processing_delayed_hits  : boolean = true                      \n"
                                "  TPC.split_chamber            : boolean = 0                         \n"
+                               "  EH_label                     : string = \"EH\"                     \n"
                                "  CD_label                     : string = \"CD\"                     \n"
                                "  TCD_label                    : string = \"TCD\"                    \n"
                                "  LTTC.dummy                   : boolean = true                      \n"

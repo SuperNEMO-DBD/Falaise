@@ -19,270 +19,77 @@
 #include <gsl/gsl_statistics_double.h>
 #include <gsl/gsl_fit.h>
 
+// Falaise:
+#include <falaise/geometry/rectangle.hh>
+
 // This project:
 #include <lttc/dbscan_clusterizer.hh>
-#include <lttc/rectangle.hh>
 #include <lttc/missing_hits_finder.hh>
 
 namespace lttc {
+
+  using falaise::geometry::point2;
+  using falaise::geometry::point3;
+  using falaise::geometry::vector2;
+  using falaise::geometry::fitted_point2;
+  using falaise::geometry::line2;
+  using falaise::geometry::fitted_line2;
+  using falaise::geometry::rectangle;
+  using falaise::geometry::polyline2;
 
   // static
   const size_t lttc_algo::DEFAULT_TNBINS;
   
   // static
   const size_t lttc_algo::DEFAULT_RNBINS;
-  lttc_algo::lttc_algo(const tracker & sntracker_, const config & cfg_)
+
+  lttc_algo::lttc_algo(const snemo::processing::detector_description & det_desc_, const config & cfg_)
   {
-    sntracker = &sntracker_;
+    detector_desc = &det_desc_;
+    sntracker = std::make_unique<tracker>(detector_desc->get_gg_locator());
     cfg = cfg_;
     return;
   }
-  
+   
   lttc_algo::~lttc_algo()
   {
     return;
   }
 
-  void lttc_algo::map_type::clear()
+  const  snemo::processing::detector_description & lttc_algo::get_detector_desc() const
   {
-    id.clear();
-    sorted_bins.clear();
-    bins.clear();
-    tmin = 0.0 * CLHEP::radian;
-    tmax = M_PI * CLHEP::radian; 
-    rmin =  std::numeric_limits<double>::infinity();
-    rmax = -std::numeric_limits<double>::infinity();
-    nt = 0;
-    nr = 0;
-    dt = 0.01 * CLHEP::radian;
-    dr = 1.0 * CLHEP::mm;
-    return;
+    return *detector_desc;
+  }
+  
+  const tracker & lttc_algo::get_sntracker() const
+  {
+    return *sntracker;
   }
  
-  int lttc_algo::map_type::r_to_index(double r_) const
+  bool lttc_algo::validate_cell(const cell_id & cid_) const
   {
-    if (r_ < rmin) return -1;
-    if (r_ >= rmax) return -1;
-    return (int) ((r_ - rmin) / dr);
-  }
-  
-  int lttc_algo::map_type::t_to_index(double t_) const
-  {
-    if (t_ < tmin) return -1;
-    if (t_ >= tmax) return -1;
-    return (int) ((t_ - tmin) / dt);
-  }
-
-  int lttc_algo::map_type::t_r_indexes_to_tr_bin_index(int t_index_, int r_index_) const
-  {
-    if (t_index_ < 0) return -1;
-    if (t_index_ >= (int) nt) return -1;
-    if (r_index_ < 0) return -1;
-    if (r_index_ >= (int) nr) return -1;
-    int ibin = r_index_ * nt + t_index_;
-    return ibin;
-  }
-
-  bool lttc_algo::map_type::tr_bin_index_to_t_r_indexes(int bin_index_,
-                                                        int & t_index_, int & r_index_) const
-  {
-    t_index_ = -1;
-    r_index_ = -1;
-    if ((bin_index_ < 0) || (bin_index_ >= (int) bins.size())) {
-      return false;
-    }
-    t_index_ = bin_index_ % nt;
-    r_index_ = bin_index_ / nt;
-    return (t_index_ > -1) && (r_index_ > -1);
-  }
-
-  datatools::logger::priority lttc_algo::map_type::fill_bin_ctrl::logging = datatools::logger::PRIO_FATAL;
-  
-  void lttc_algo::map_type::fill_bin(int it0_, int ir0_, double gauss_threshold_, double weight_)
-  {
-    double weight = weight_;
-    if (gauss_threshold_ <= 0.0) {
-      int itr0 = t_r_indexes_to_tr_bin_index(it0_, ir0_);
-      if (itr0 >= 0) {
-        // if (fill_bin_ctrl::debug) std::cerr << "[debug] lttc_algo::map_type::fill_bin: itr0 = " << itr0 << '\n';    
-        bins[itr0] += weight;
+    static const int moduleId = 0;
+    if (detector_desc->has_cell_status_service() and snemo::time::is_valid(indata->timestamp)) {
+      geomtools::geom_id gid( detector_desc->get_gg_locator().cellGIDType(), moduleId, cid_.side(), cid_.layer(), cid_.row());
+      std::uint32_t cellStatus = detector_desc->get_cell_status_service().get_cell_status(gid, indata->timestamp);
+      if (snemo::rc::tracker_cell_status::is_dead(cellStatus)) {
+        return false;
       }
-    } else {
-      if (it0_ < 0) return;
-      if (it0_ >= (int) nt) return;
-      if (ir0_ < 0) return;
-      if (ir0_ >= (int) nr) return;
-      double Dt = dt * std::sqrt(-2 * std::log(gauss_threshold_));
-      double Dr = dr * std::sqrt(-2 * std::log(gauss_threshold_));
-      int Di_t  = (int) (Dt / dt);
-      int Di_r  = (int) (Dr / dr);
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "it0  = " << it0_);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "ir0  = " << ir0_);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "Di_t = " << Di_t);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "Di_r = " << Di_r);
-      int itmin = it0_ - Di_t;
-      if (itmin < 0) itmin = 0;
-      int itmax = it0_ + Di_t;
-      if (itmax >= (int) nt) itmax = nt - 1;
-      int irmin = ir0_ - Di_r;
-      if (irmin < 0) irmin = 0;
-      int irmax = ir0_ + Di_r;
-      if (irmax >= (int) nr) irmax = nr - 1;
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "itmin = " << itmin);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "itmax = " << itmax);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "irmin = " << irmin);    
-      DT_LOG_DEBUG(fill_bin_ctrl::logging, "irmax = " << irmax);
-      double t0 = index_to_t(it0_);
-      double r0 = index_to_r(ir0_);
-      lt_gauss_func fgauss(t0, dt, r0, dr);
-      for (int it = itmin; it <= itmax; it++) {
-        double tt = index_to_t(it);
-        for (int ir = irmin; ir <= irmax; ir++) {
-          double rr = index_to_r(ir);
-          int itr = t_r_indexes_to_tr_bin_index(it, ir);
-          if (itr >= 0) {
-            double g = weight * fgauss(tt, rr);
-            DT_LOG_DEBUG(fill_bin_ctrl::logging,
-                         "it=" << it << "/" << itmax << " ir=" << ir << "/" << irmax
-                         << " => itr=" << itr << " => g=" << g << " [" << (g >= gauss_threshold_ ? "yes" : "no") << "]");
-            if (g >= gauss_threshold_) {
-              bins[itr] += g;
-            }
-          }
-        } 
+      if (snemo::rc::tracker_cell_status::is_off(cellStatus)) {
+        return false;
+      }
+      if (snemo::rc::tracker_cell_status::is_no_anode(cellStatus)) {
+        return false;
       }
     }
-    return;
-  }
-
-  void lttc_algo::map_type::build_sorted_bins()
-  {
-    DT_LOG_DEBUG(logging, "bins.size = " << bins.size());
-    // Default fill the array of sorted bins: 
-    sorted_bins.assign(bins.size(), 0);
-    std::iota(sorted_bins.begin(), sorted_bins.end(), 0);
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [unsorted]");
-    std::sort(sorted_bins.begin(),
-              sorted_bins.end(),
-              [&](const int & ibin1, const std::size_t & ibin2)
-              {
-                return bins[ibin1] > bins[ibin2];
-              }
-              );
-    auto last_non_zero = std::remove_if(sorted_bins.begin(),
-                                        sorted_bins.end(),
-                                        [&](int index_) {
-                                          double value = bins[index_];
-                                          // if (debug) std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins[lambda2]: index=" << index_ << " -> value = " << value << '\n';
-                                          return (value < 1e-7);
-                                        }
-                                        );
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [sorted]");
-    sorted_bins.erase(last_non_zero, sorted_bins.end());
-    DT_LOG_DEBUG(logging, "sorted_bins.size = " << sorted_bins.size() << " [final=sorted & unzeroed]");
-    // std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins: sorted_bins.size = " << sorted_bins.size() << " [final]" << '\n'; 
-    // for (int i = 0; i < sorted_bins.size(); i++) {
-    //   std::cerr << "[debug] lttc_algo::map_type::build_sorted_bins: sorted_bins[" << i << "] = " << sorted_bins[i]
-    //             << " with value=" << bins[sorted_bins[i]] << '\n';
-    // }           
-    //  }
-    return;
-  }
-  
-  double lttc_algo::map_type::index_to_t(int it_) const
-  {
-    return tmin + it_ * dt;
-  }
-  
-  double lttc_algo::map_type::index_to_r(int ir_) const
-  {
-    return rmin + ir_ * dr;
-  }
-
-  void lttc_algo::map_type::apply_threshold(double t_)
-  {
-    bool local_debug = false;
-    size_t nbins_non_null = 0;
-    size_t nbins_under_threshold = 0;
-    for (int i = 0; i < (int) bins.size(); i++) {
-      if (bins[i] > 0.0) {
-        nbins_non_null++;
-        if (bins[i] < t_) {
-          bins[i] = 0.0;
-          nbins_under_threshold++;
-        }
+    if (sntracker != nullptr and sntracker->has_tracker_conditions()) {
+      if (sntracker->get_tracker_conditions().has_dead_cell(cid_)) {
+        return false;
       }
     }
-    local_debug = true;
-    if (local_debug) {
-      std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins                 = " << bins.size() << '\n';
-      std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins non_null        = " << nbins_non_null << '\n';
-      std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins under threshold = " << nbins_under_threshold << '\n';
-      std::cerr << "[debug] lttc_algo::map_type::apply_threshold: #bins over threshold  = " << (nbins_non_null - nbins_under_threshold) << '\n';
-    }
-    return;
+    return true;
   }
-
-  void lttc_algo::map_type::draw_bins(std::ostream & out_) const
-  {
-    for (int it = 0; it < (int) nt; it++) {
-      out_ << "#@theta=" << index_to_t(it) << '\n';
-      for (int ir = 0; ir < (int) nr; ir++) {
-        int ibin = t_r_indexes_to_tr_bin_index(it, ir);
-        double val = bins[ibin];
-        out_ << index_to_t(it) + 0.5 * dt << ' ' << index_to_r(ir) + 0.5 * dr << ' ' << val << '\n';
-      }
-      out_ << '\n';
-    }
-    return;
-  }
-
-  void lttc_algo::map_type::draw_sorted_bins(std::ostream & out_, double threshold_) const
-  {
-    bool local_debug = false;
-    for (int i = 0; i < (int) sorted_bins.size(); i++) {
-      int tr_bin = sorted_bins[i];
-      int t_index = -1;
-      int r_index = -1;
-      tr_bin_index_to_t_r_indexes(tr_bin, t_index, r_index);
-      double t = index_to_t(t_index);
-      double r = index_to_r(r_index);
-      if (local_debug) {
-        std::cerr << "[debug] lttc_algo::map_type::draw_sorted_bins: t_index = " << t_index << '\n';
-        std::cerr << "[debug] lttc_algo::map_type::draw_sorted_bins: r_index = " << r_index << '\n';
-        // std::cerr << "[debug] lttc_algo::map_type::draw_sorted_bins: t = " << t << '\n';
-        // std::cerr << "[debug] lttc_algo::map_type::draw_sorted_bins: r = " << r << '\n';
-        std::cerr << "[debug] lttc_algo::map_type::draw_sorted_bins: value   = " << bins[tr_bin] << '\n';
-      }
-      double val = bins[tr_bin];
-      if (val >= threshold_) {
-        out_ << t + 0.5 * dt << ' ' << r + 0.5 * dr << ' ' << val << '\n';
-      }
-    }
-    return;
-  }
-
-  void lttc_algo::map_type::print(std::ostream & out_, const std::string & indent_) const
-  {
-    out_ << indent_ << "|-- " << "id    = '" << id << "'" << '\n';
-    out_ << indent_ << "|-- " << "tmin  = " << tmin << " [rad]" << '\n';
-    out_ << indent_ << "|-- " << "tmax  = " << tmax << " [rad]" << '\n';
-    out_ << indent_ << "|-- " << "rmin  = " << rmin << " [mm]" << '\n';
-    out_ << indent_ << "|-- " << "rmax  = " << rmax << " [mm]" << '\n';
-    out_ << indent_ << "|-- " << "nt    = " << nt << " [theta bins]" << '\n';
-    out_ << indent_ << "|-- " << "nr    = " << nr << " [r bins]" << '\n';
-    out_ << indent_ << "|-- " << "dt    = " << dt << " [rad]" << '\n';
-    out_ << indent_ << "|-- " << "dr    = " << dr << " [mm]" << '\n';
-    out_ << indent_ << "|-- " << "nbins = " << nt * nr << " [bins]" << '\n';
-    out_ << indent_ << "|-- " << "bins.size()        = " << bins.size() << " [bins]" << '\n';
-    out_ << indent_ << "`-- " << "sorted_bins.size() = " << sorted_bins.size() << " [bins]" << '\n';
-    if (sorted_bins.size()) {
-      out_ << indent_ << "    " << "|-- " << "first sorted bin @" << sorted_bins.front() << " with " << bins[sorted_bins.front()] << " hits" << '\n';
-      out_ << indent_ << "    " << "`-- " << "last  sorted bin @" << sorted_bins.back()  << " with " << bins[sorted_bins.back()] << " hits" << '\n';
-    }
-    return;
-  }
-
+ 
   void lttc_algo::step1_run()
   {
     step1_data & step1 = current_loop->step1;
@@ -292,20 +99,18 @@ namespace lttc {
     step1.trmap.tmax = M_PI;
     step1.trmap.rmin =  std::numeric_limits<double>::infinity();
     step1.trmap.rmax = -std::numeric_limits<double>::infinity();
+    const double rcell = detector_desc->get_gg_locator().cellRadius();
     DT_LOG_DEBUG(cfg.logging, "Computing step1 map bounds...");
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const tracker_hit & h = indata->hits[ihit];
       cell_id cid(h.side_id, h.layer_id, h.row_id);
-      if (sntracker->has_tracker_conditions()) {
-        // This hit is invalidated because the hit cell is considered dead:
-        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
-          continue;
-        }
+      if (not validate_cell(cid)) {
+        continue;
       }
-      point2 cellCenter = sntracker->cell_position(cid);
+      point2 cellCenter(h.x, h.y);
       double x = cellCenter.x();
       double y = cellCenter.y();
-      double r1 = std::abs(x) + std::abs(y) + sntracker->rcell; 
+      double r1 = std::abs(x) + std::abs(y) + rcell; 
       double r2 = -r1;
       if (step1.trmap.rmax < r1) step1.trmap.rmax = r1;
       if (step1.trmap.rmin > r2) step1.trmap.rmin = r2;
@@ -337,18 +142,15 @@ namespace lttc {
       if (pfstep1bins) {
         *pfstep1bins << "#@hit-lt#" << ihit << "@" << cid << '\n';
       }
-      if (sntracker->has_tracker_conditions()) {
-        // This hit is invalidated because the hit cell is considered dead:
-        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
-          continue;
-        }
+      if (! validate_cell(cid)) {
+        continue;
       }
       if (!can_process_hit(ihit)) {
         DT_LOG_DEBUG(cfg.logging, "Hit #" << ihit << " cannot be processed");
         continue;
       }
       DT_LOG_DEBUG(cfg.logging, "Processing hit #" << ihit << " at cell " << cid);
-      point2 cellCenter = sntracker->cell_position(cid);
+      point2 cellCenter(h.x, h.y);
       double x = cellCenter.x();
       double y = cellCenter.y();
       double r = h.drift_radius;
@@ -365,24 +167,24 @@ namespace lttc {
         // r-concave:
         double r1 = ltr.concave;
         int ir1 = step1.trmap.r_to_index(r1);
-        step1.trmap.fill_bin(itheta, ir1, map_type::no_gauss_kernel, 1.0);
+        step1.trmap.fill_bin(itheta, ir1, rt_map::no_gauss_kernel, 1.0);
         // double r1Up = ltrUp.concave;
         // int ir1Up = step1.trmap.r_to_index(r1Up);
-        // step1.trmap.fill_bin(itheta, ir1Up, map_type::no_gauss_kernel, 0.5);
+        // step1.trmap.fill_bin(itheta, ir1Up, rt_map::no_gauss_kernel, 0.5);
         // double r1Down = ltrDown.concave;
         // int ir1Down = step1.trmap.r_to_index(r1Down);
-        // step1.trmap.fill_bin(itheta, ir1Down, map_type::no_gauss_kernel, 0.5);
+        // step1.trmap.fill_bin(itheta, ir1Down, rt_map::no_gauss_kernel, 0.5);
         
         // r-convex:
         double r2 = ltr.convex;
         int ir2 = step1.trmap.r_to_index(r2);
-        step1.trmap.fill_bin(itheta, ir2, map_type::no_gauss_kernel);
+        step1.trmap.fill_bin(itheta, ir2, rt_map::no_gauss_kernel);
         // double r2Up = ltrUp.convex;
         // int ir2Up = step1.trmap.r_to_index(r2Up);
-        // step1.trmap.fill_bin(itheta, ir2Up, map_type::no_gauss_kernel, 0.5);
+        // step1.trmap.fill_bin(itheta, ir2Up, rt_map::no_gauss_kernel, 0.5);
         // double r2Down = ltrDown.convex;
         // int ir2Down = step1.trmap.r_to_index(r2Down);
-        // step1.trmap.fill_bin(itheta, ir2Down, map_type::no_gauss_kernel, 0.5);
+        // step1.trmap.fill_bin(itheta, ir2Down, rt_map::no_gauss_kernel, 0.5);
         if (pfstep1bins) {
           *pfstep1bins << theta << ' ' << r1 << ' ' << r2 << ' ' << ihit << '\n';
         }
@@ -495,8 +297,8 @@ namespace lttc {
   }
 
   // static   
-  bool lttc_algo::cluster_overlap(const cluster & cl1_, const map_type & trmap1_,
-                                  const cluster & cl2_, const map_type & trmap2_)
+  bool lttc_algo::cluster_overlap(const cluster & cl1_, const rt_map & trmap1_,
+                                  const cluster & cl2_, const rt_map & trmap2_)
   {
     datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
     if (&cl1_ == &cl2_) return false;
@@ -566,7 +368,7 @@ namespace lttc {
   }
 
   void lttc_algo::cluster::draw(std::ostream & out_,
-                                const map_type & trmap_) const
+                                const rt_map & trmap_) const
   {
     double hdt = 0.5 * trmap_.dt;
     double hdr = 0.5 * trmap_.dr;
@@ -632,7 +434,7 @@ namespace lttc {
   }
 
   void lttc_algo::clustering_data::draw(std::ostream & out_,
-                                        const map_type & trmap_) const
+                                        const rt_map & trmap_) const
   {
     double dt = trmap_.dt;
     double dr = trmap_.dr;
@@ -673,7 +475,7 @@ namespace lttc {
 
   void lttc_algo::clustering_data::print(std::ostream & out_,
                                         const std::string & indent_,
-                                        const map_type & trmap_) const
+                                        const rt_map & trmap_) const
   {
     // out_ << "|-- #ignored bins = " << unclustered.size() << '\n';
     
@@ -710,7 +512,7 @@ namespace lttc {
    return;
   }
 
-  lttc_algo::cluster_finder::cluster_finder(const map_type & trmap_, datatools::logger::priority logging_)
+  lttc_algo::cluster_finder::cluster_finder(const rt_map & trmap_, datatools::logger::priority logging_)
   {
     logging = logging_;
     trmap = &trmap_;
@@ -869,16 +671,13 @@ namespace lttc {
     for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
       const auto & h = indata->hits[ihit];
       cell_id cid(h.side_id, h.layer_id, h.row_id);
-      if (sntracker->has_tracker_conditions()) {
-        // This hit is invalidated because the hit cell is considered dead:
-        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
-          continue;
-        }
+      if (not validate_cell(cid)) {
+        continue;
       }
       if (!can_process_hit(ihit)) {
         continue;
       }
-      point2 cellCenter = sntracker->cell_position(cid);
+      point2 cellCenter(h.x, h.y);
       double R_err = h.drift_radius_err;
       DT_LOG_DEBUG(cfg.logging, "R_err = " << R_err);
       if (R_err > dR) {
@@ -907,7 +706,7 @@ namespace lttc {
         step2.trmaps.push_back(dummy);
       }
       trc_data & trc2 = step2.trmaps.back();
-      map_type & cltrmap = trc2.trmap;
+      rt_map & cltrmap = trc2.trmap;
       cltrmap.id = "step2-" + std::to_string(ic);
       cltrmap.dr = dR;
       cltrmap.dt = cfg.step2_delta_theta; 
@@ -932,12 +731,8 @@ namespace lttc {
       for (int ihit = 0; ihit < (int) indata->hits.size(); ihit++) {
         const auto & h = indata->hits[ihit];
         cell_id cid(h.side_id, h.layer_id, h.row_id);
-        if (sntracker->has_tracker_conditions()) {
-          // This hit is invalidated because the hit cell is considered dead:
-          if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
-            DT_LOG_DEBUG(cfg.logging, "    Dead cell hit #" << ihit << "...");
-            continue;
-          }
+        if (not validate_cell(cid)) {
+          continue;
         }
         if (!can_process_hit(ihit)) {
           DT_LOG_DEBUG(cfg.logging, "    Do not process hit #" << ihit << "...");
@@ -945,7 +740,7 @@ namespace lttc {
         } else {
           // DT_LOG_DEBUG(cfg.logging, "    Processing hit #" << ihit << "...");
         }
-        point2 cellCenter = sntracker->cell_position(cid);
+        point2 cellCenter(h.x, h.y);
         double x = cellCenter.x();
         double y = cellCenter.y() ;
         double r = h.drift_radius;
@@ -989,7 +784,7 @@ namespace lttc {
       for (int i1 = 0; i1 < (int) step2.trmaps.size(); i1++) {
         DT_LOG_DEBUG(cfg.logging, "trmap #" << i1);
         const trc_data & trc1 = step2.trmaps[i1];
-        const map_type & trmap1 = trc1.trmap;
+        const rt_map & trmap1 = trc1.trmap;
         const clustering_data & cld1 = trc1.clustering;
         for (int icl1 = 0; icl1 < (int) cld1.clusters.size(); icl1++) {
           const cluster & cl1 = cld1.clusters[icl1];
@@ -997,7 +792,7 @@ namespace lttc {
           for (int i2 = 0; i2 < (int) step2.trmaps.size(); i2++) {
             if (i1 == i2) continue;
             const trc_data & trc2 = step2.trmaps[i2];
-            const map_type & trmap2 = trc2.trmap;
+            const rt_map & trmap2 = trc2.trmap;
             const clustering_data & cld2 = trc2.clustering;
             for (int icl2 = 0; icl2 < (int) cld2.clusters.size(); icl2++) {
               const cluster & cl2 = cld2.clusters[icl2];
@@ -1018,7 +813,7 @@ namespace lttc {
       int subClusterID=0;
       for (int i1 = 0; i1 < (int) step2.trmaps.size(); i1++) {
         trc_data & trc1 = step2.trmaps[i1];
-        const map_type & trmap1 = trc1.trmap;
+        const rt_map & trmap1 = trc1.trmap;
         clustering_data & cld1 = trc1.clustering;
         for (int icl1 = 0; icl1 < (int) cld1.clusters.size(); icl1++) {
           cluster & cl1 = cld1.clusters[icl1];
@@ -1061,7 +856,7 @@ namespace lttc {
     out_ << indent_ << "|-- Clustering regions : " << trmaps.size() << '\n';
     for (int i1 = 0; i1 < (int) trmaps.size(); i1++) {
       const trc_data & trc1 = trmaps[i1];
-      // const map_type & trmap1 = trc1.trmap;
+      // const rt_map & trmap1 = trc1.trmap;
       const clustering_data & cld1 = trc1.clustering;
       out_ << indent_ << "|   ";
       bool last_region = false;
@@ -1121,11 +916,8 @@ namespace lttc {
       cell_id cid(h.side_id, h.layer_id, h.row_id);
       bool dead_cell = false;
       bool can_process = true;
-      if (sntracker->has_tracker_conditions()) {
-        // This hit is invalidated because the hit cell is considered dead:
-        if (sntracker->get_tracker_conditions().has_dead_cell(cid)) {
-          dead_cell = true;
-        }
+      if (not validate_cell(cid)) {
+        continue;
       }
       if (!can_process_hit(ihit)) {
         can_process = false;
@@ -1149,7 +941,7 @@ namespace lttc {
       const tracker_hit & h = indata->hits[ihit];
       cell_id cid(h.side_id, h.layer_id, h.row_id);
       // C :
-      point2 cellCenter = sntracker->cell_position(cid);
+      point2 cellCenter(h.x, h.y);
       double r = h.drift_radius;
       double rErr = h.drift_radius_err;
       DT_LOG_DEBUG(cfg.logging, "r    = " << r / CLHEP::mm << " mm");
@@ -1247,6 +1039,7 @@ namespace lttc {
     hc_.hits.clear();
     size_t nHits = workingHC.shape()[0];
     for (int iHit = 0; iHit < (int) nHits; iHit++) {
+      DT_LOG_DEBUG(cfg.logging, "iHit=" << iHit);
       if (! outdata->hit_clustering.hit_clustering_map.count(iHit)) {
         std::set<int> emptySet;
         outdata->hit_clustering.hit_clustering_map[iHit] = emptySet;
@@ -1697,14 +1490,20 @@ namespace lttc {
 
   void lttc_algo::compute_cluster_ordered_hits(hit_cluster_data & hc_)
   {
+    // XXX
     DT_LOG_DEBUG(cfg.logging, "Entering...");
     hc_.track_ordered_hits.clear();
     hc_.track_ordered_hits.reserve(hc_.hits.size());
     std::set<int> remainingHits = hc_.hits;
+    DT_LOG_DEBUG(cfg.logging, "#remainingHits = " << remainingHits.size());
     if (hc_.line_data.is_valid()) {
+      DT_LOG_DEBUG(cfg.logging, "Valid line data");
       int iFirstHit = hc_.end_hit_0;
       int iLastHit  = hc_.end_hit_1;
+      DT_LOG_DEBUG(cfg.logging, "iFirstHit   = " << iFirstHit);
+      DT_LOG_DEBUG(cfg.logging, "iLastHit    = " << iLastHit);
       int iCurrentHit = iFirstHit;
+      DT_LOG_DEBUG(cfg.logging, "iCurrentHit = " << iCurrentHit);
       fitted_point2 currentNode = hc_.hit_associations.find(iCurrentHit)->second.node;
       point2 currentVertex(currentNode.x, currentNode.y);
       while (remainingHits.size() > 1) {
@@ -1717,7 +1516,7 @@ namespace lttc {
           const fitted_point2 & theNode = hc_.hit_associations.find(iHit)->second.node;
           point2 theVertex(theNode.x, theNode.y);
           double nodeDist = (theVertex - currentVertex).mag();
-          if (nodeDist < minDist) {
+          if (nodeDist <= minDist) {
             minDist = nodeDist;
             iNextHit = iHit;
           }
@@ -1765,8 +1564,10 @@ namespace lttc {
       cell_id cid2 = h2.get_cell_id();
       DT_LOG_DEBUG(cfg.logging, "  cid1=" << cid1);
       DT_LOG_DEBUG(cfg.logging, "  cid2=" << cid2);
-      point2 cellCenter1 = sntracker->cell_position(cid1);
-      point2 cellCenter2 = sntracker->cell_position(cid2);
+      // point2 cellCenter1 = sntracker->cell_position(cid1);
+      // point2 cellCenter2 = sntracker->cell_position(cid2);
+      point2 cellCenter1(h1.x, h1.y); // = sntracker->cell_position(cid1);
+      point2 cellCenter2(h2.x, h2.y); // = sntracker->cell_position(cid2);
       fitted_point2 proj1;
       DT_LOG_DEBUG(cfg.logging, "  cellCenter1=" << cellCenter1);
       DT_LOG_DEBUG(cfg.logging, "  cellCenter2=" << cellCenter2);
@@ -1777,7 +1578,12 @@ namespace lttc {
       point2 nearestPointOnLine2 = proj2.center();
       DT_LOG_DEBUG(cfg.logging, "  nearestPointOnLine1=" << nearestPointOnLine1);
       DT_LOG_DEBUG(cfg.logging, "  nearestPointOnLine2=" << nearestPointOnLine2);
-      missing_hits_finder mhf(*sntracker, indata->hits, hit_cells, hit_cluster_.hits);
+      DT_LOG_DEBUG(cfg.logging, "  dist1=" << (nearestPointOnLine1 - cellCenter1).mag());
+      DT_LOG_DEBUG(cfg.logging, "  dist2=" << (nearestPointOnLine2 - cellCenter2).mag());      
+      missing_hits_finder mhf(*this,
+                              indata->hits,
+                              hit_cells,
+                              hit_cluster_.hits);
       mhf.logging = cfg.logging;
       mhf.find(nearestPointOnLine1, nearestPointOnLine2, missingHits);
       DT_LOG_DEBUG(cfg.logging, "  Found " << missingHits.size() << " missing hits for linear cluster ID=" << hit_cluster_.id);
@@ -1944,7 +1750,7 @@ namespace lttc {
     }
 
     if (datatools::logger::is_debug(cfg.logging)) {
-      std::cerr << "[debug] Clusters status:" << '\n';
+      std::cerr << "[debug] Clusters quality status:" << '\n';
       for (int icl = 0; icl < (int) nclusters; icl++) {
         std::cerr << "[debug] Cluster #" << icl << " : status=" << cluster_status[icl] << '\n';
       }
@@ -1993,7 +1799,12 @@ namespace lttc {
       compute_cluster_hits(new_cluster);
       compute_cluster_quality_fit(new_cluster);
       compute_cluster_quality_missing_hits(new_cluster);
+      if (datatools::logger::is_debug(cfg.logging)) {
+        std::cerr << "[debug] New step-3 cluster:\n";
+        new_cluster.print(std::cerr, "[debug] ");
+      }
     }
+    DT_LOG_DEBUG(cfg.logging, "# step-3 clusters so far = " << outdata->hit_clustering.clusters.size());
     bool reprocessClusters = true;
     std::set<int> clustersToBeTrimmed;
     size_t loopCounter = 0;
@@ -2049,9 +1860,9 @@ namespace lttc {
 
     // if (datatools::logger::is_debug(cfg.logging)) {
     //   print_hc(workingHC, std::cerr, "[debug] Stage 2> ");
-    //   std::cerr << "Wait..." << std::endl;
-    //   std::string resp;
-    //   std::getline(std::cin, resp);
+    //   // std::cerr << "Wait..." << std::endl;
+    //   // std::string resp;
+    //   // std::getline(std::cin, resp);
     // }
     
     DT_LOG_DEBUG(cfg.logging, "Exiting.");
@@ -2188,6 +1999,7 @@ namespace lttc {
   {
     DT_LOG_DEBUG(cfg.logging, "Entering...");
     std::set<int> clustersToBeTrimmed;
+    const double dcell = detector_desc->get_gg_locator().cellDiameter();
     for (int iCluster = 0; iCluster < (int) outdata->hit_clustering.clusters.size(); iCluster++) {
       hit_cluster_data & hcl = outdata->hit_clustering.clusters[iCluster];
       cluster_quality_data & cqData = hcl.quality;
@@ -2205,7 +2017,7 @@ namespace lttc {
         const track_path_vertex & secondVertex = trackPath.vertexes[1];
         // Distance in the XY plane:
         double distFirst = secondVertex.sxy - firstVertex.sxy;
-        if (distFirst > 4 * sntracker->dcell) {
+        if (distFirst > 4 * dcell) {
           removeFirst = true;
         }
         
@@ -2216,7 +2028,7 @@ namespace lttc {
         const track_path_vertex & lastButOneVertex = trackPath.vertexes[nHits-2];
         // Distance in the XY plane:
         double distLast = lastVertex.sxy - lastButOneVertex.sxy;
-        if (distLast > 4 * sntracker->dcell) {
+        if (distLast > 4 * dcell) {
           removeLast = true;
         }
       }
@@ -2325,9 +2137,9 @@ namespace lttc {
       std::tuple<point3, double> first3 = trackPath.first3();
       std::tuple<point3, double> last3  = trackPath.last3();
       cell_id firstCellId;
-      sntracker->locate(first, firstCellId);
+      sntracker->locate(first, firstCellId); // XXX
       cell_id lastCellId;
-      sntracker->locate(last, lastCellId);
+      sntracker->locate(last, lastCellId); // XXX
       DT_LOG_DEBUG(cfg.logging, "firstCellId=" << firstCellId);
       DT_LOG_DEBUG(cfg.logging, "lastCellId=" << lastCellId);
       for (int iCluster2 = iCluster + 1; iCluster2 < (int) HCD.clusters.size(); iCluster2++) {
@@ -2418,7 +2230,10 @@ namespace lttc {
           std::vector<cluster_missing_hit_data> missingHitsA;
           std::vector<cluster_missing_hit_data> missingHitsB;
           if (clusterIntercept.pattern & TPIB_AF) {
-            missing_hits_finder mhf(*sntracker, indata->hits, hit_cells, hci.hits);
+            missing_hits_finder mhf(*this,
+                                    indata->hits,
+                                    hit_cells,
+                                    hci.hits);
             mhf.logging = cfg.logging;
             mhf.find(first, clusterIntercept.intercept, missingHitsA);
             DT_LOG_DEBUG(cfg.logging, "  Found " << missingHitsA.size()
@@ -2429,7 +2244,10 @@ namespace lttc {
             kinkedTrackData.z_first     = std::get<0>(first3).z();
             kinkedTrackData.z_first_err = std::get<1>(first3);
           } else if (clusterIntercept.pattern & TPIB_AL) {
-            missing_hits_finder mhf(*sntracker, indata->hits, hit_cells, hci.hits);
+            missing_hits_finder mhf(*this,
+                                    indata->hits,
+                                    hit_cells,
+                                    hci.hits);
             mhf.logging = cfg.logging;
             mhf.find(last, clusterIntercept.intercept, missingHitsA);
             DT_LOG_DEBUG(cfg.logging, "  Found " << missingHitsA.size()
@@ -2445,7 +2263,10 @@ namespace lttc {
             continue;
           }
           if (clusterIntercept.pattern & TPIB_BF) {
-            missing_hits_finder mhf(*sntracker, indata->hits, hit_cells, oHci.hits);
+            missing_hits_finder mhf(*this,
+                                    indata->hits,
+                                    hit_cells,
+                                    oHci.hits);
             mhf.logging = cfg.logging;
             mhf.find(oFirst, clusterIntercept.intercept, missingHitsB);
             DT_LOG_DEBUG(cfg.logging, "  Found " << missingHitsB.size()
@@ -2456,7 +2277,10 @@ namespace lttc {
             kinkedTrackData.z_second     = std::get<0>(oFirst3).z();
             kinkedTrackData.z_second_err = std::get<1>(oFirst3);
          } else if (clusterIntercept.pattern & TPIB_BL) {
-            missing_hits_finder mhf(*sntracker, indata->hits, hit_cells, oHci.hits);
+            missing_hits_finder mhf(*this,
+                                    indata->hits,
+                                    hit_cells,
+                                    oHci.hits);
             mhf.logging = cfg.logging;
             mhf.find(oLast, clusterIntercept.intercept, missingHitsB);
             DT_LOG_DEBUG(cfg.logging, "  Found " << missingHitsB.size()
@@ -2718,9 +2542,9 @@ namespace lttc {
                   << " in cluster ID=" << hc_.id << " at side " << hc_.side << '!');
       const tracker_hit & h1 = indata->hits[hc_.end_hit_0]; 
       const tracker_hit & h2 = indata->hits[hc_.end_hit_1];
-      point2 cellPos1 = sntracker->cell_position(h1.side_id, h1.layer_id, h1.row_id);
-      point2 cellPos2 = sntracker->cell_position(h2.side_id, h2.layer_id, h2.row_id);
-      point2 cellPos  = sntracker->cell_position(aHit.side_id, aHit.layer_id, aHit.row_id);
+      point2 cellPos1(h1.x, h1.y); // = sntracker->cell_position(h1.side_id, h1.layer_id, h1.row_id);
+      point2 cellPos2(h2.x, h2.y); // = sntracker->cell_position(h2.side_id, h2.layer_id, h2.row_id);
+      point2 cellPos(aHit.x, aHit.y); // = sntracker->cell_position(aHit.side_id, aHit.layer_id, aHit.row_id);
       double d12 = std::hypot(cellPos2.x() - cellPos1.x(), cellPos2.y() - cellPos1.y());
       double d1 = std::hypot(cellPos.x() - cellPos1.x(), cellPos.y() - cellPos1.y());
       double d2 = std::hypot(cellPos.x() - cellPos2.x(), cellPos.y() - cellPos2.y());
@@ -3053,14 +2877,15 @@ namespace lttc {
   {
     double skip1 = 2.0 * CLHEP::mm;
     // double skip2 = 4.0 * CLHEP::mm;
-    double ercell = algo_.sntracker->rcell - skip1;
-    // double ercell2 = algo_.sntracker->rcell - skip2;
+    const double rcell = algo_.detector_desc->get_gg_locator().cellRadius();
+    double ercell = rcell - skip1;
+    // double ercell2 = rcell - skip2;
     out_ << "#@unclustered_hits=" << unclustered_hits.size() << '\n';
     if (unclustered_hits.size()) {
       size_t count = 0;
       for (const auto & ihit : unclustered_hits) {
         const tracker_hit & h = algo_.indata->hits[ihit];
-        point2 cellPos = algo_.sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
+        point2 cellPos(h.x, h.y); // = algo_.sntracker->cell_position(h.side_id, h.layer_id, h.row_id);
         out_ << cellPos.x() - ercell << ' ' << cellPos.y() - ercell << ' ' << h.z << '\n';
         if (count == 0) {
           out_ << cellPos.x() - ercell << ' ' << cellPos.y() - ercell << ' ' << h.z << '\n';
@@ -3104,8 +2929,8 @@ namespace lttc {
         const tracker_hit & h = algo_.indata->hits[ihit];
         cell_id cid(h.side_id, h.layer_id, h.row_id);
         out_ << "#@=>hit_cell_id#=" << cid << '\n';
-        point2  cellPos = algo_.sntracker->cell_position(cid);
-        double dimcell  = algo_.sntracker->rcell - (iskip * 1.0 * CLHEP::mm) - skip1;
+        point2 cellPos(h.x, h.y); // = algo_.sntracker->cell_position(cid);
+        double dimcell  = algo_.detector_desc->get_gg_locator().cellRadius() - (iskip * 1.0 * CLHEP::mm) - skip1;
         out_ << cellPos.x() - dimcell << ' ' << cellPos.y() - dimcell << ' ' << h.z << ' ' << icl << '\n';
         out_ << cellPos.x() - dimcell << ' ' << cellPos.y() + dimcell << ' ' << h.z << ' ' << icl << '\n';
         out_ << cellPos.x() + dimcell << ' ' << cellPos.y() + dimcell << ' ' << h.z << ' ' << icl << '\n';
@@ -3202,6 +3027,13 @@ namespace lttc {
       DT_LOG_DEBUG(cfg.logging, " ==================== Step-3 =========================");
       step3_run();
       DT_LOG_DEBUG(cfg.logging, " ==================== Step-3 Done ====================");
+
+      if (datatools::logger::is_debug(cfg.logging)) {
+        print_hc(current_loop->step3.HC, std::cerr, "[debug] ");
+        // std::cerr << "Wait..." << std::endl;
+        // std::string resp;
+        // std::getline(std::cin, resp);
+      }
       
       create_hit_clustering();
       
@@ -3270,14 +3102,16 @@ namespace lttc {
     bool go_loops = true;
 
     while (go_loops) {
+      DT_LOG_DEBUG(cfg.logging, "Entering #loop=" << iloop);
       std::string fprefix = cfg.draw_prefix + "loop_" + std::to_string(iloop) + "-";
       size_t old_nclusters = outdata->hit_clustering.clusters.size();
      
-      std::clog << "Running loop... \n";
+      DT_LOG_DEBUG(cfg.logging, "Running loop...");
       this->run_loop();
-      std::clog << "Done.\n";
+      DT_LOG_DEBUG(cfg.logging, "Loop done.");
 
       size_t new_nclusters = outdata->hit_clustering.clusters.size();
+      DT_LOG_DEBUG(cfg.logging, "#clusters=" << new_nclusters);
       if ((new_nclusters == old_nclusters) or (outdata->hit_clustering.unclustered_hits.size() < 3)) {
         go_loops = false;
       }

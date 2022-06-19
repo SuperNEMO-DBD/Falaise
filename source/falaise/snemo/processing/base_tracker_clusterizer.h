@@ -41,6 +41,7 @@
 
 // Falaise:
 #include "falaise/snemo/datamodels/calibrated_data.h"
+#include "falaise/snemo/time/time_utils.h"
 
 // Falaise module:
 #include "falaise/snemo/processing/detail/GeigerTimePartitioner.h"
@@ -124,9 +125,19 @@ class base_tracker_clusterizer {
   static void ocd_support(datatools::object_configuration_description &,
                           const std::string &prefix_ = "");
 
+  // Manage the timestamp associated to processed events
+  
+  bool has_event_timestamp() const;
+  
+  const snemo::time::time_point & get_event_timestamp() const;
+
+  void set_event_timestamp(const snemo::time::time_point &);
+
+  void reset_event_timestamp();
+
  protected:
   /// Initialize the clusterizer through configuration properties
-  void _initialize(const datatools::properties &setup_);
+  void _initialize(const datatools::properties & setup_);
 
   /// Reset the clusterizer
   void _reset();
@@ -139,7 +150,7 @@ class base_tracker_clusterizer {
 
   /// Set the initialization flag
   void _set_initialized(bool);
-
+  
   /// Prepare cluster for processing
   virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type &gg_hits_,
                                const base_tracker_clusterizer::calo_hit_collection_type &calo_hits_,
@@ -175,6 +186,7 @@ class base_tracker_clusterizer {
   snreco::detail::GeigerTimePartitioner preClusterer_;  //!< The time-clustering algorithm
 
   // Internal work space:
+  snemo::time::time_point eventTimestamp_ = time::invalid_point() ; //!< Current event timestamp
   hit_collection_type ignoredHits_;  //!< Hits not used as input for any clustering algorithm
   std::vector<hit_collection_type> promptClusters_;   //!< Clusters of only prompt hits
   std::vector<hit_collection_type> delayedClusters_;  //!< Clusters of only delayed hits

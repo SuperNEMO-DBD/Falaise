@@ -11,7 +11,6 @@ namespace lttc {
 
   // #cmakedefine01 LTTCC_WITH_XXX
 
-
 }  // namespace lttc
 
 #endif // FALAISE_LTTC_PLUGIN_CONFIG_HH

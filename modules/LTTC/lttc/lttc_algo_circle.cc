@@ -9,13 +9,19 @@
 // Third party:
 #include <mygsl/mean.h>
 
+// Falaise:
+#include <falaise/geometry/point.hh>
+
 // This project:
+#include <lttc/tracker_hit.hh>
 #include <lttc/lttc_algo.hh>
-#include <lttc/point.hh>
 #include <lttc/tangent_circle_3x1.hh>
 
 namespace lttc {
-  
+
+  using falaise::geometry::point2;
+  using falaise::geometry::vector2;
+
   void lttc_algo_circle::hit_triplet_circle_type::print(std::ostream & out_) const
   {
     out_ << "|-- Triplet ID = " << triplet_id << '\n';
@@ -31,23 +37,18 @@ namespace lttc {
   {
     DT_LOG_DEBUG(lttc->cfg.logging, "Entering...");
     const lttc_algo::input_data & indata = *lttc->indata;
-    const auto * sntracker = lttc->sntracker;   
+    // const tracker * sntracker = lttc->sntracker.get();   
     for (uint32_t ihit = 0; ihit < indata.hits.size(); ihit++) {
       const tracker_hit & hit1 = indata.hits[ihit];
       cell_id cid1(hit1.side_id, hit1.layer_id, hit1.row_id);
-      if (sntracker->has_tracker_conditions()) {
-        // This hit is invalidated because the hit cell is considered dead:
-        if (sntracker->get_tracker_conditions().has_dead_cell(cid1)) {
-          continue;
-        }
+      if (not lttc->validate_cell(cid1)) {
+        continue;
       }
       for (uint32_t jhit = ihit+1; jhit < indata.hits.size(); jhit++) {
         const tracker_hit & hit2 = indata.hits[jhit];
         cell_id cid2(hit2.side_id, hit2.layer_id, hit2.row_id);
-        if (sntracker->has_tracker_conditions()) {
-          if (sntracker->get_tracker_conditions().has_dead_cell(cid2)) {
+        if (not lttc->validate_cell(cid2)) {
             continue;
-          }
         }
         if (hit2.side_id != hit1.side_id) {
           continue;
@@ -55,10 +56,8 @@ namespace lttc {
         for (uint32_t khit = jhit+1; khit < indata.hits.size(); khit++) {
           const tracker_hit & hit3 = indata.hits[khit];
           cell_id cid3(hit3.side_id, hit3.layer_id, hit3.row_id);
-          if (sntracker->has_tracker_conditions()) {
-            if (sntracker->get_tracker_conditions().has_dead_cell(cid3)) {
-              continue;
-            }
+          if (not lttc->validate_cell(cid3)) {
+            continue;
           }
           if (hit3.side_id != hit1.side_id) {
             continue;
@@ -80,6 +79,7 @@ namespace lttc {
   void lttc_algo_circle::terminate()
   {
     DT_LOG_DEBUG(lttc->cfg.logging, "Entering...");
+    hit_triplet_blured_circles.clear();
     hit_triplet_circles.clear();
     hit_triplets.clear();
     DT_LOG_DEBUG(lttc->cfg.logging, "Exiting.");
@@ -101,7 +101,7 @@ namespace lttc {
   {
     DT_LOG_DEBUG(lttc->cfg.logging, "Entering...");
     const lttc_algo::input_data & indata = *lttc->indata;
-    const auto * sntracker = lttc->sntracker;   
+    // const tracker * sntracker = lttc->sntracker.get();   
 
     tangent_circle_3x1::config_type config;
     config.debug   = false; // datatools::logger::is_debug(lttc->cfg.logging);
@@ -144,9 +144,9 @@ namespace lttc {
       double r0 = hit0.drift_radius;
       double r1 = hit1.drift_radius;
       double r2 = hit2.drift_radius;
-      point2 pos0 = sntracker->cell_position(cid0);
-      point2 pos1 = sntracker->cell_position(cid1);
-      point2 pos2 = sntracker->cell_position(cid2);
+      point2 pos0(hit0.x, hit0.y); // = sntracker->cell_position(cid0);
+      point2 pos1(hit1.x, hit1.y); // = sntracker->cell_position(cid1);
+      point2 pos2(hit2.x, hit2.y); // = sntracker->cell_position(cid2);
       c0.p.x = pos0.x();
       c0.p.y = pos0.y();
       c0.r   = r0;
@@ -195,7 +195,7 @@ namespace lttc {
   {
     DT_LOG_DEBUG(lttc->cfg.logging, "Entering...");
     const lttc_algo::input_data & indata = *lttc->indata;
-    const auto * sntracker = lttc->sntracker;
+    // const tracker * sntracker = lttc->sntracker.get();
     int htcCount = 0;
     for (const auto & htc : hit_triplet_circles) {
       DT_LOG_DEBUG(lttc->cfg.logging, "Processing hit triplet circle #" << htcCount);   
@@ -210,9 +210,9 @@ namespace lttc {
       // double r1 = hit1.drift_radius;
       // double r2 = hit2.drift_radius;
       // double r3 = hit3.drift_radius;
-      point2 pos1 = sntracker->cell_position(cid1);
-      point2 pos2 = sntracker->cell_position(cid2);
-      point2 pos3 = sntracker->cell_position(cid3);
+      point2 pos1(hit1.x, hit1.y); // = sntracker->cell_position(cid1);
+      point2 pos2(hit2.x, hit2.y); // = sntracker->cell_position(cid2);
+      point2 pos3(hit3.x, hit3.y); // = sntracker->cell_position(cid3);
       point2 center = htc.circle_data.center;
       double radius = htc.circle_data.radius;
       mygsl::arithmetic_mean meanR1MR2;

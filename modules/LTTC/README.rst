@@ -7,8 +7,8 @@ SuperNEMO reconstruction pipeline.
 It  uses the Legendre Transform Tracker Clustering  (Lttc) algorithm
 by  F. Mauger, a  library
 dedicated to  the clustering of  tracker Geiger hits in  the SuperNEMO
-experiment.
+experiment and track reconstruction for charged particles (e-, e+, alpha)
 
 One clustering algorithm is available:
 
- * ``Lttc`` : the Legendre Transform Tracker Clustering algorithm
+ * ``lttc`` : the Legendre Transform Tracker Clustering algorithm

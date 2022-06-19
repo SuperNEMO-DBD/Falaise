@@ -40,8 +40,9 @@
 #include <geomtools/utils.h>
 
 // This project:
-#include <lttc/point.hh>
-#include <lttc/rectangle.hh>
+#include <falaise/geometry/point.hh>
+#include <falaise/geometry/rectangle.hh>
+#include <falaise/snemo/geometry/gg_locator.h>
 
 namespace lttc {
  
@@ -96,45 +97,48 @@ namespace lttc {
   {
   public:
 
-    tracker();
-    tracker(const tracker_conditions & trackconds_);
+    tracker(const snemo::geometry::gg_locator & locator_);
+    tracker(const snemo::geometry::gg_locator & locator_,
+            const tracker_conditions & trackconds_);
     bool has_tracker_conditions() const;
     void set_tracker_conditions(const tracker_conditions & trackconds_);
     const tracker_conditions & get_tracker_conditions() const;
-    bool locate(const point2 & p_, cell_id & id_) const;
-    bool locate(const point2 & p_, int & iside_, int & ilayer_, int & irow_) const;   
+    bool locate(const falaise::geometry::point2 & p_, cell_id & id_) const;
+    bool locate(const falaise::geometry::point2 & p_, int & iside_, int & ilayer_, int & irow_) const;   
     bool locate(double x_, double y_, int & iside_, int & ilayer_, int & irow_) const;
-    bool contains(const point2 & p_) const;   
-    point2 cell_position(int iside_, int ilayer_, int irow_) const;   
-    point2 cell_position(const cell_id & id_) const;   
+    bool contains(const falaise::geometry::point2 & p_) const;   
+    falaise::geometry::point2 cell_position(int iside_, int ilayer_, int irow_) const;   
+    falaise::geometry::point2 cell_position(const cell_id & id_) const;   
     bool cell_contains(const cell_id & id_,
-                       const point2 & p_,
+                       const falaise::geometry::point2 & p_,
                        double tolerance_) const;
-    rectangle cell_rectangle(const cell_id & id_) const;
+    falaise::geometry::rectangle cell_rectangle(const cell_id & id_) const;
     void draw(std::ostream & out_) const;
-    // Return the list of cell IDs intersected by a linear segment
-    bool intersect_segment(const point2 & p1_, const point2 & p2_,
-                           std::set<cell_id> & cids_) const;
     
-  public:
-    size_t nsides  = 2;
-    size_t nlayers = 9;
-    size_t nrows   = 113;
-    double rcell   = 22.0 * CLHEP::mm;
-    double source_xskip = 30.0 * CLHEP::mm;
-    double calo_xskip   = 10.0 * CLHEP::mm;
-    double xcalo_yskip  = 10.0 * CLHEP::mm;
-    double hcell  = 2700.0 * CLHEP::mm;
+    // Build the list of cell IDs intersected by a linear segment
+    bool intersect_segment(const falaise::geometry::point2 & p1_,
+                           const falaise::geometry::point2 & p2_,
+                           std::set<cell_id> & cids_) const;
+
+  private:
+    
+    const snemo::geometry::gg_locator * _locator_ = nullptr;
+    const tracker_conditions * _trackconds_ = nullptr;
+     
+  public: 
+
+    size_t nsides  = 0;
+    size_t nlayers = 0;
+    size_t nrows   = 0;
+    double rcell   = 0.0;
+    double dcell   = 0.0;
+    double hcell  = 0.0;
     double xmin   = 0.0;
     double xmax   = 0.0;
     double ymin   = 0.0;
     double ymax   = 0.0;
-    rectangle halfCells[2];
+    falaise::geometry::rectangle halfCells[2];
     
-    // Internally computed:
-    double dcell;
-  private:
-    const tracker_conditions * _trackconds_ = nullptr;
   };
 
   struct tracker_conditions_drawer

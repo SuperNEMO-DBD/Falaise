@@ -52,6 +52,8 @@ namespace lttc {
                 int row_id_,
                 double drift_radius_,
                 double drift_radius_err_,
+                double x_,
+                double y_,
                 double z_,
                 double z_err_,
                 bool delayed_ = false);
@@ -77,12 +79,15 @@ namespace lttc {
     int row_id = -1;
     double drift_radius = std::numeric_limits<double>::quiet_NaN();
     double drift_radius_err = std::numeric_limits<double>::quiet_NaN();
+    double x = std::numeric_limits<double>::quiet_NaN();
+    double y = std::numeric_limits<double>::quiet_NaN();
     double z = std::numeric_limits<double>::quiet_NaN();
     double z_err = std::numeric_limits<double>::quiet_NaN();
     bool delayed = false;
     
   };
 
+  /// \brief Ordered and indexed collection of tracker hits
   struct tracker_hit_collection : public std::vector<tracker_hit>
   {
     bool has_hit_with_id(int id_) const;

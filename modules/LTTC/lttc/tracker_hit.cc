@@ -10,18 +10,28 @@
 // - Bayeux/datatools :
 #include <datatools/exception.h>
 #include <datatools/utils.h>
+#include <datatools/clhep_units.h>
 
 // This project:
-#include <lttc/circle.hh>
+#include <falaise/geometry/circle.hh>
 
 namespace lttc {
 
+  using falaise::geometry::point2;
+  using falaise::geometry::point3;
+  using falaise::geometry::circle;
+  using falaise::geometry::polyline2;
+  using falaise::geometry::polyline3;
+  using falaise::geometry::draw_point;
+  
   tracker_hit::tracker_hit(int id_,
                            int side_id_,
                            int layer_id_,
                            int row_id_,
                            double drift_radius_,
                            double drift_radius_err_,
+                           double x_,
+                           double y_,
                            double z_,
                            double z_err_,
                            bool delayed_)
@@ -36,6 +46,8 @@ namespace lttc {
     row_id = row_id_;
     drift_radius = drift_radius_;
     drift_radius_err = drift_radius_err_;
+    x = x_;
+    y = y_;
     z = z_;
     z_err = z_err_;
     delayed = delayed_;
@@ -49,6 +61,8 @@ namespace lttc {
     row_id = -1;
     drift_radius = std::numeric_limits<double>::quiet_NaN();
     drift_radius_err = std::numeric_limits<double>::quiet_NaN();
+    x = std::numeric_limits<double>::quiet_NaN();
+    y = std::numeric_limits<double>::quiet_NaN();
     z = std::numeric_limits<double>::quiet_NaN();
     z_err = std::numeric_limits<double>::quiet_NaN();
     delayed = false;
@@ -60,10 +74,12 @@ namespace lttc {
     if (side_id < 0) return false;
     if (layer_id < 0) return false;
     if (row_id < 0) return false;
-    if (datatools::is_valid(drift_radius)) return false;
-    if (datatools::is_valid(drift_radius_err)) return false;
-    if (datatools::is_valid(z)) return false;
-    if (datatools::is_valid(z_err)) return false;
+    if (! datatools::is_valid(drift_radius)) return false;
+    if (! datatools::is_valid(drift_radius_err)) return false;
+    if (! datatools::is_valid(x)) return false;
+    if (! datatools::is_valid(y)) return false;
+    if (! datatools::is_valid(z)) return false;
+    if (! datatools::is_valid(z_err)) return false;
     return true;
   }
 
@@ -75,6 +91,8 @@ namespace lttc {
     out_ << "|-- " << "Row = " << row_id << '\n';
     out_ << "|-- " << "Drift radius = " << drift_radius / CLHEP::mm << " mm" << '\n';
     out_ << "|-- " << "Drift radius error = " << drift_radius_err / CLHEP::mm << " mm" << '\n';
+    out_ << "|-- " << "X = " << x / CLHEP::mm << " mm" << '\n';
+    out_ << "|-- " << "Y = " << y / CLHEP::mm << " mm" << '\n';
     out_ << "|-- " << "Z = " << z / CLHEP::mm << " mm" << '\n';
     out_ << "|-- " << "Z error = " << z_err / CLHEP::mm << " mm" << '\n';
     out_ << "`-- " << "Delayed = " << std::boolalpha << delayed << '\n';
@@ -150,7 +168,8 @@ namespace lttc {
     cell_id cid(_hit_.side_id, _hit_.layer_id, _hit_.row_id);
     double z = _hit_.z;
     double z_err = _hit_.z_err;
-    point2 cellPos = _trk_.cell_position(cid);
+    // point2 cellPos = _trk_.cell_position(cid);
+    point2 cellPos(_hit_.x, _hit_.y);
     point3 hitPos(cellPos.x(), cellPos.y(), z);
     out_ << "#@tracker-hit-" << _hit_.id << '\n';
     circle hitDriftRing1(cellPos, _hit_.drift_radius - _hit_.drift_radius_err);

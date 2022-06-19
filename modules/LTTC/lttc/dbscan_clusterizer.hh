@@ -10,11 +10,10 @@
 
 // Third party:
 // - Bayeux/datatools :
-#include <datatools/logger.h>
+#include <bayeux/datatools/logger.h>
 
 // This project:
-// #include <lttc/legendre_transform_tools.hh>
-#include <lttc/lttc_algo.hh>
+#include <lttc/rt_map.hh>
   
 namespace lttc {
   
@@ -26,7 +25,7 @@ namespace lttc {
     /// \brief Input data
     struct input_data
     {
-      const lttc_algo::map_type * trmap = nullptr; ///< Step-1 2D-histogram in theta-r space
+      const rt_map * trmap = nullptr; ///< Step-1 2D-histogram in theta-r space
     };
  
     /// \brief Configuration parameters

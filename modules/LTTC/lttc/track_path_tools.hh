@@ -12,11 +12,11 @@
 #include <bayeux/datatools/logger.h>
 
 // This project:
-#include <lttc/i_curve2.hh>
-#include <lttc/point.hh>
-#include <lttc/line2.hh>
-#include <lttc/triplet2.hh>
-#include <lttc/fitted_point2.hh>
+#include <falaise/geometry/i_curve2.hh>
+#include <falaise/geometry/point.hh>
+#include <falaise/geometry/line2.hh>
+#include <falaise/geometry/triplet2.hh>
+#include <falaise/geometry/fitted_point2.hh>
 
 namespace lttc {
 
@@ -24,7 +24,7 @@ namespace lttc {
   struct track_path_vertex
   {
     int hit_index = -1;      ///< Hit index
-    fitted_point2 node; ///< Contact point of the track with the hit cell (XY-plane)
+    falaise::geometry::fitted_point2 node; ///< Contact point of the track with the hit cell (XY-plane)
     double sxy   = datatools::invalid_real(); ///< Curvilinear abscissa on the horizontal  XY plane
     double z     = datatools::invalid_real(); ///< Vertical position
     double z_err = datatools::invalid_real(); ///< Error on vertical position
@@ -59,15 +59,15 @@ namespace lttc {
     /// \brief Number of point along the track
     size_t size() const;
     /// \brief First point in the XY-plane along the track
-    const fitted_point2 & first() const;
+    const falaise::geometry::fitted_point2 & first() const;
     /// \brief Last point in the XY-plane along the track
-    const fitted_point2 & last() const;
+    const falaise::geometry::fitted_point2 & last() const;
     /// \brief Vertex by index in the 3D-space along the track
-    std::tuple<point3, double> vertex3(int i_) const;
+    std::tuple<falaise::geometry::point3, double> vertex3(int i_) const;
     /// \brief First point in the 3D-space along the track
-    std::tuple<point3, double> first3() const;
+    std::tuple<falaise::geometry::point3, double> first3() const;
     /// \brief Last point in the 3D-space along the track
-    std::tuple<point3, double> last3() const;
+    std::tuple<falaise::geometry::point3, double> last3() const;
     /// Compute the Z statistics given a threshold (in sigma unit, default: 2.0)
     /// for the identification of outlier track path segments
     // void compute_z_statistics(double z_bad_threshold_, double z_outlier_threshold_);
@@ -168,7 +168,7 @@ namespace lttc {
   struct track_path_intercept
   {
     uint16_t pattern;
-    point2   intercept;
+    falaise::geometry::point2   intercept;
     double   s_first  = datatools::invalid_real(); ///< Curvilinear abscissa of the intercept with respect to the track path 1
     double   s_second = datatools::invalid_real(); ///< Curvilinear abscissa of the intercept with respect to the track path 2
     // bool     before_first = false;

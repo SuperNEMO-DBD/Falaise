@@ -11,8 +11,10 @@
 #include <datatools/clhep_units.h>
 
 namespace lttc {
+  
   namespace gergonne {
-    
+
+    /// \brief Point of the plane with cartesian coordinates
     struct point
     {
       double x = std::numeric_limits<double>::quiet_NaN();
@@ -41,16 +43,18 @@ namespace lttc {
       }
     };
 
+    /// \brief Triplet of indexed point in the plane
     struct triplet
     {
       int   indexes[3]; ///< Hit indexes
       point p[3]; ///< Contact points associated to hits
     };
 
+    /// \brief Circle in the plane
     struct circle
     {
-      point  p;
-      double r = std::numeric_limits<double>::quiet_NaN();
+      point  p; ///< Center
+      double r = std::numeric_limits<double>::quiet_NaN(); ///< Radius
   
       inline bool is_valid() const
       {
@@ -137,6 +141,7 @@ namespace lttc {
       bool flags[3];
     };
 
+    // List of four 3-contact configuration to be considered while solving the Appolonois problem 
     static const std::vector<contact_config> & contact_configs()
     {
       static const std::vector<contact_config> _cfgs{{true, true, true},

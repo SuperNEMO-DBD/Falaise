@@ -9,10 +9,15 @@
 #include <datatools/logger.h>
 
 // This project:
-#include <lttc/line2.hh>
+#include <falaise/geometry/line2.hh>
 
 namespace lttc {
 
+  using falaise::geometry::point2;
+  using falaise::geometry::vector2;
+  using falaise::geometry::rectangle;
+  using falaise::geometry::line2;
+    
   cell_id::cell_id(int side_, int layer_, int row_)
     : _side_(side_)
     , _layer_(layer_)
@@ -107,30 +112,34 @@ namespace lttc {
     return;
   }
  
-  tracker::tracker()
+  tracker::tracker(const snemo::geometry::gg_locator & locator_)
   {
-    dcell = 2 * rcell;
-    xmin = 0.0;
-    xmax = source_xskip + nlayers * dcell + calo_xskip;
-    double dy =  2 * xcalo_yskip + nrows * dcell;
-    ymin = -dy / 2;
-    ymax = +dy / 2;
-    std::cerr << "lttc::tracker::ctor: building rects...\n";
-    halfCells[0] = rectangle(point2(-source_xskip - nlayers * dcell, -0.5 * nrows * dcell),
-                             point2(-source_xskip, +0.5 * nrows * dcell));
-    std::cerr << "lttc::tracker::ctor: rect 0 OK \n";
-    halfCells[1] = rectangle(point2(source_xskip, -0.5 * nrows * dcell),
-                             point2(source_xskip + nlayers * dcell, +0.5 * nrows * dcell));
-    std::cerr << "lttc::tracker::ctor: rect 1 OK\n";
+    _locator_ = &locator_;
+    nsides = _locator_->numberOfSides();
+    nlayers = _locator_->numberOfLayers(0);
+    nrows = _locator_->numberOfRows(0);
+    rcell = _locator_->cellRadius();
+    dcell = _locator_->cellDiameter();
+    hcell = _locator_->cellLength();
+    xmin = _locator_->getXCoordOfLayer(1, 0) - rcell;
+    xmax = _locator_->getXCoordOfLayer(1, nlayers - 1) + rcell;
+    ymax = _locator_->getYCoordOfRow(1, nrows - 1) + rcell;
+    ymin = -ymax;
+    //std::cerr << "lttc::tracker::ctor: building rects...\n";
+    halfCells[0] = rectangle(point2(-xmax, ymin), point2(-xmin, ymax));
+    //std::cerr << "lttc::tracker::ctor: rect 0 OK \n";
+    halfCells[1] = rectangle(point2(xmin, ymin), point2(xmax, ymax));
+    // std::cerr << "lttc::tracker::ctor: rect 1 OK\n";
     return;
   }
-  
-  tracker::tracker(const tracker_conditions & trackconds_)
-    : tracker()
+
+  tracker::tracker(const snemo::geometry::gg_locator & locator_,
+                   const tracker_conditions & trackconds_)
+    : tracker(locator_)
   {
     set_tracker_conditions(trackconds_);
   }
-
+ 
   bool tracker::has_tracker_conditions() const
   {
     return _trackconds_ != nullptr;
@@ -184,13 +193,8 @@ namespace lttc {
 
   point2 tracker::cell_position(int side_, int layer_, int row_) const
   {
-    double x, y;
-    x = xmin + source_xskip + rcell * ( 1 + 2 * layer_);
-    if (side_ == 0) {
-      x *= -1;
-    }
-    y = ymin + xcalo_yskip  + rcell * ( 1 + 2 * row_);
-    return point2(x, y);
+    auto pos = _locator_->getCellPosition(side_, layer_, row_);
+    return point2(pos.x(), pos.y());
   }
 
   point2 tracker::cell_position(const cell_id & id_) const
@@ -201,19 +205,16 @@ namespace lttc {
   bool tracker::locate(double x_, double y_,
                        int & side_, int & layer_, int & row_) const
   {
-    side_ = -1;
-    layer_ = -1;
-    row_ = -1;
-    if (x_ < 0.0) side_ = 0;
-    else side_ = 1;
-    double absx = std::abs(x_);
-    if (absx < xmin + source_xskip) return false;
-    if (absx > xmax - calo_xskip) return false;
-    if (y_ < ymin + xcalo_yskip) return false;
-    if (y_ > ymax - xcalo_yskip) return false;
-    layer_ = (int) ((absx - xmin - source_xskip) / dcell);
-    row_   = (int) ((y_ - ymin - xcalo_yskip)  / dcell);
-    return true;
+    geomtools::vector_3d pos(x_, y_, 0.0);
+    geomtools::geom_id gid;
+    double tolerance = 0.1 * CLHEP::mm;
+    if (_locator_->findCellGID(pos, gid, tolerance)) { 
+      side_  = _locator_->getSideAddress(gid);
+      layer_ = _locator_->getLayerAddress(gid);
+      row_   = _locator_->getRowAddress(gid);
+      return true;
+    }
+    return false;
   }
 
   tracker_conditions_drawer::tracker_conditions_drawer(const tracker_conditions & trkcond_,
@@ -340,12 +341,13 @@ namespace lttc {
     if (datatools::logger::is_debug(logging)) {
       line.print(std::cerr, "[debug] ");
     }
+    // Search in both sides of the source plane:
     for (int iSide = 0; iSide < 2; iSide++) {
       DT_LOG_DEBUG(logging, "Side " << iSide);
-      // Search in both sides of the source plane:
       point2 first = p1_;
       point2 last = p2_;
       if (! this->halfCells[iSide].contains(first, tolerance)) {
+        DT_LOG_DEBUG(logging, "First is not in this half!");
         vector2 dir = p2_ - p1_;
         point2 best;
         geomtools::invalidate(best);
@@ -365,6 +367,7 @@ namespace lttc {
         first = best;
       }
       if (! this->halfCells[iSide].contains(last, tolerance)) {
+        DT_LOG_DEBUG(logging, "Last is not in this half!");
         vector2 dir = p1_ - p2_;
         point2 best;
         geomtools::invalidate(best);
@@ -392,6 +395,10 @@ namespace lttc {
       int minRow = std::min(firstCid.row(), lastCid.row());
       int maxRow = std::max(firstCid.row(), lastCid.row());
       if (datatools::logger::is_debug(logging)) {
+        std::cerr << "[debug] ltts::tracker::intersect_segment: first =" << first << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment: last  =" << last << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment: firstCid =" << firstCid << '\n';
+        std::cerr << "[debug] ltts::tracker::intersect_segment: lastCid  =" << lastCid << '\n';
         std::cerr << "[debug] ltts::tracker::intersect_segment: iSide=" << iSide << '\n';
         std::cerr << "[debug] ltts::tracker::intersect_segment:   minLayer=" << minLayer << '\n';
         std::cerr << "[debug] ltts::tracker::intersect_segment:   maxLayer=" << maxLayer << '\n';
