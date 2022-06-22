@@ -1,5 +1,5 @@
 // This project:
-#include <falaise/snemo/datamodels/raw_event_data.h>
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
 
 // Third party:
 // - Bayeux:
@@ -9,10 +9,10 @@ namespace snemo {
 
   namespace datamodel {
 
-    DATATOOLS_SERIALIZATION_IMPLEMENTATION(raw_event_data,
-                                           "snemo::datamodel::raw_event_data")
+    DATATOOLS_SERIALIZATION_IMPLEMENTATION(unified_digitized_data,
+                                           "snemo::datamodel::unified_digitized_data")
 
-    bool raw_event_data::is_valid() const
+    bool unified_digitized_data::is_valid() const
     {
       if (!has_run_id()) {
         return false;
@@ -29,7 +29,7 @@ namespace snemo {
       return true;
     }
 
-    void raw_event_data::invalidate()
+    void unified_digitized_data::invalidate()
     {
       _run_id_ = INVALID_EVENT_ID;
       _event_id_ = INVALID_EVENT_ID;
@@ -40,83 +40,83 @@ namespace snemo {
       return;
     }
 
-    bool raw_event_data::has_run_id() const
+    bool unified_digitized_data::has_run_id() const
     {
       return _run_id_ != INVALID_RUN_ID;
     }
 
-    int32_t raw_event_data::get_run_id() const
+    int32_t unified_digitized_data::get_run_id() const
     {
       return _run_id_;
     }
 
-    void raw_event_data::set_run_id(const int32_t rid_)
+    void unified_digitized_data::set_run_id(const int32_t rid_)
     {
       _run_id_ = rid_;
       return;
     }
 
-    bool raw_event_data::has_event_id() const
+    bool unified_digitized_data::has_event_id() const
     {
       return _event_id_ != INVALID_EVENT_ID;
     }
 
-    int32_t raw_event_data::get_event_id() const
+    int32_t unified_digitized_data::get_event_id() const
     {
       return _event_id_;
     }
 
-    void raw_event_data::set_event_id(const int32_t tid_)
+    void unified_digitized_data::set_event_id(const int32_t tid_)
     {
       _event_id_ = tid_;
       return;
     }
 
-    bool raw_event_data::has_reference_timestamp() const
+    bool unified_digitized_data::has_reference_timestamp() const
     {
       if(_reference_timestamp_ == INVALID_TIME_TICKS) return false;
       return true;
     }
 
-    int64_t raw_event_data::get_reference_timestamp() const
+    int64_t unified_digitized_data::get_reference_timestamp() const
     {
       return _reference_timestamp_;
     }
 
-    void raw_event_data::set_reference_timestamp(const int64_t & ref_timestamp_)
+    void unified_digitized_data::set_reference_timestamp(const int64_t & ref_timestamp_)
     {
       _reference_timestamp_ = ref_timestamp_;
       return;
     }
 
-    const std::set<int32_t> & raw_event_data::get_origin_trigger_ids() const
+    const std::set<int32_t> & unified_digitized_data::get_origin_trigger_ids() const
     {
       return _origin_trigger_ids_;
     }
 
-    void raw_event_data::add_origin_trigger_id(int32_t tid_)
+    void unified_digitized_data::add_origin_trigger_id(int32_t tid_)
     {
       _origin_trigger_ids_.insert(tid_);
       return;
     }
 
-    void raw_event_data::reset_origin_trigger_id()
+    void unified_digitized_data::reset_origin_trigger_id()
     {
       _origin_trigger_ids_.clear();
       return;
     }
 
-    const CalorimeterDigiHitHdlCollection & raw_event_data::get_calorimeter_hits() const
+    const CalorimeterDigiHitHdlCollection & unified_digitized_data::get_calorimeter_hits() const
     {
       return _calorimeter_digitized_hits_;
     }
 
-    CalorimeterDigiHitHdlCollection & raw_event_data::grab_calorimeter_hits()
+    CalorimeterDigiHitHdlCollection & unified_digitized_data::grab_calorimeter_hits()
     {
       return _calorimeter_digitized_hits_;
     }
 
-    calorimeter_digitized_hit & raw_event_data::add_calorimeter_hit()
+    calorimeter_digitized_hit & unified_digitized_data::add_calorimeter_hit()
     {
       int32_t newHitId = 0;
       if (_calorimeter_digitized_hits_.size()) {
@@ -129,17 +129,17 @@ namespace snemo {
       return _calorimeter_digitized_hits_.back().grab();
     }
 
-    const TrackerDigiHitHdlCollection & raw_event_data::get_tracker_hits() const
+    const TrackerDigiHitHdlCollection & unified_digitized_data::get_tracker_hits() const
     {
       return _tracker_digitized_hits_;
     }
 
-    TrackerDigiHitHdlCollection & raw_event_data::grab_tracker_hits()
+    TrackerDigiHitHdlCollection & unified_digitized_data::grab_tracker_hits()
     {
       return _tracker_digitized_hits_;
     }
 
-    tracker_digitized_hit & raw_event_data::add_tracker_hit()
+    tracker_digitized_hit & unified_digitized_data::add_tracker_hit()
     {
       int32_t newHitId = 0;
       if (_tracker_digitized_hits_.size()) {
@@ -152,30 +152,30 @@ namespace snemo {
       return _tracker_digitized_hits_.back().grab();
     }
 
-    const datatools::properties & raw_event_data::get_auxiliaries() const
+    const datatools::properties & unified_digitized_data::get_auxiliaries() const
     {
       return _auxiliaries_;
     }
 
-    datatools::properties & raw_event_data::grab_auxiliaries()
+    datatools::properties & unified_digitized_data::grab_auxiliaries()
     {
       return _auxiliaries_;
     }
 
     // virtual
-    void raw_event_data::clear()
+    void unified_digitized_data::clear()
     {
-       _run_id_ = INVALID_RUN_ID;
-       _event_id_ = INVALID_EVENT_ID;
-       _calorimeter_digitized_hits_.clear();
-       _tracker_digitized_hits_.clear();
-       _auxiliaries_.clear();
+      _run_id_ = INVALID_RUN_ID;
+      _event_id_ = INVALID_EVENT_ID;
+      _calorimeter_digitized_hits_.clear();
+      _tracker_digitized_hits_.clear();
+      _auxiliaries_.clear();
     }
 
 
     // virtual
-    void raw_event_data::print_tree(std::ostream & out_,
-                                    const boost::property_tree::ptree & options_) const
+    void unified_digitized_data::print_tree(std::ostream & out_,
+                                            const boost::property_tree::ptree & options_) const
     {
       base_print_options popts;
       popts.configure_from(options_);

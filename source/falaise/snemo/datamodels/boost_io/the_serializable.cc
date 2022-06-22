@@ -59,12 +59,12 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calori
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_digitized_hit)
 
 /*************************************
- * snemo::datamodel::raw_event_data *
+ * snemo::datamodel::unified_digitized_data *
  *************************************/
 
-#include <falaise/snemo/datamodels/boost_io/raw_event_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::raw_event_data)
-BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::raw_event_data)
+#include <falaise/snemo/datamodels/boost_io/unified_digitized_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::unified_digitized_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::unified_digitized_data)
 
 
 /***************************************************
@@ -146,7 +146,7 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracke
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_solution)
 #include <falaise/snemo/datamodels/boost_io/tracker_trajectory_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_data)
-  BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
 
 /*****************************************
  * snemo::datamodel::particle_track_data *

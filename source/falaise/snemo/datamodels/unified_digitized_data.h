@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file  falaise/snemo/datamodels/raw_event_data_hit.h
+/// \file  falaise/snemo/datamodels/unified_digitized_data_hit.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  *                Guillaume Oliviero <goliviero@ucl.ac.uk>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
@@ -8,14 +8,14 @@
  *
  * Description:
  *
- *  The Raw Event Data (RED) digitized datamodel.
+ *  The Unified Digitized Data (UDD) datamodel.
  *  It contains a collection of a calorimeter digitized hit and a collection of a tracker digitized hit.
  *
  * History:
  *
  */
-#ifndef FALAISE_SNEMO_DATAMODELS_RAW_EVENT_DATA_H
-#define FALAISE_SNEMO_DATAMODELS_RAW_EVENT_DATA_H 1
+#ifndef FALAISE_SNEMO_DATAMODELS_UNIFIED_DIGITIZED_DATA_H
+#define FALAISE_SNEMO_DATAMODELS_UNIFIED_DIGITIZED_DATA_H 1
 
 // Standard Library:
 #include <iostream>
@@ -41,18 +41,18 @@ namespace snemo {
 
   namespace datamodel {
 
-    /// \brief SuperNEMO raw event data (RED)
-    class raw_event_data : public datatools::i_serializable,
-                           public datatools::i_tree_dumpable,
-                           public datatools::i_clear
+    /// \brief SuperNEMO Unified Digitized data (UDD)
+    class unified_digitized_data : public datatools::i_serializable,
+                                   public datatools::i_tree_dumpable,
+                                   public datatools::i_clear
     {
     public:
 
       /// Default constructor
-      raw_event_data() = default;
+      unified_digitized_data() = default;
 
       /// Destructor
-      virtual ~raw_event_data() = default;
+      virtual ~unified_digitized_data() = default;
 
       /// Check if the data record is complete
       bool is_valid() const;
@@ -125,15 +125,15 @@ namespace snemo {
       ///
       /// Usage:
       /// \code
-      /// snfee::data::raw_trigger_data rawEventData
+      /// snemo::datamodel::unified_digitized_data udd
       /// ...
       /// boost::property_tree::ptree poptions;
-      /// poptions.put("title", "Raw Event Data:");
+      /// poptions.put("title", "Unified Digitized Data:");
       /// poptions.put("indent", ">>> ");
-      /// rawEventData.print_tree(std::clog, poptions);
+      /// udd.print_tree(std::clog, poptions);
       /// \endcode
       virtual void print_tree(std::ostream & out_ = std::clog,
-                       const boost::property_tree::ptree & options_ = empty_options()) const override;
+                              const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
 
@@ -154,10 +154,10 @@ namespace snemo {
 } // namespace snemo
 
 #include <boost/serialization/export.hpp>
-BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::raw_event_data,
-                        "snemo::datamodel::raw_event_data")
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::unified_digitized_data,
+                        "snemo::datamodel::unified_digitized_data")
 
-#endif // FALAISE_SNEMO_DATAMODELS_RAW_EVENT_DATA_H
+#endif // FALAISE_SNEMO_DATAMODELS_UNIFIED_DIGITIZED_DATA_H
 
 /*
 ** Local Variables: --

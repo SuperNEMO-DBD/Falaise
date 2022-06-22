@@ -1,4 +1,4 @@
-// test_raw_event_data.cxx
+// test_unified_digitized_data.cxx
 
 // Standard library:
 #include <cstdlib>
@@ -11,30 +11,29 @@
 #include <bayeux/datatools/io_factory.h>
 
 // This project:
-#include <falaise/snemo/datamodels/raw_event_data.h>
-// #include <snemo/datamodels/raw_event_data-serial.h>
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
 
 int main(/* int argc_, char ** argv_ */)
 {
   int error_code = EXIT_SUCCESS;
   try {
-    std::clog << "Test program for class 'snemo::datamodel::raw_event_data'!" << std::endl;
+    std::clog << "Test program for class 'snemo::datamodel::unified_digitized_data'!" << std::endl;
 
     namespace sdm = snemo::datamodel;
 
     {
-      // sdm::raw_event_data & rawEvent;
-      sdm::raw_event_data rawEvent;
-      rawEvent.set_run_id(1);
-      rawEvent.set_event_id(42);
-      rawEvent.set_reference_timestamp(666);
-      rawEvent.add_origin_trigger_id(234);
-      rawEvent.add_origin_trigger_id(235);
-      rawEvent.add_origin_trigger_id(236);
+      // sdm::unified_digitized_data & unifiedEvent;
+      sdm::unified_digitized_data unifiedEvent;
+      unifiedEvent.set_run_id(1);
+      unifiedEvent.set_event_id(42);
+      unifiedEvent.set_reference_timestamp(666);
+      unifiedEvent.add_origin_trigger_id(234);
+      unifiedEvent.add_origin_trigger_id(235);
+      unifiedEvent.add_origin_trigger_id(236);
 
       // Add calo digi hits:
       {
-        sdm::calorimeter_digitized_hit & caloDigiHit = rawEvent.add_calorimeter_hit();
+        sdm::calorimeter_digitized_hit & caloDigiHit = unifiedEvent.add_calorimeter_hit();
         geomtools::geom_id geomId(1302, 0, 9, 4);
         caloDigiHit.set_geom_id(geomId);
         caloDigiHit.set_timestamp(1234567);
@@ -52,7 +51,7 @@ int main(/* int argc_, char ** argv_ */)
       }
 
       {
-        sdm::calorimeter_digitized_hit & caloDigiHit = rawEvent.add_calorimeter_hit();
+        sdm::calorimeter_digitized_hit & caloDigiHit = unifiedEvent.add_calorimeter_hit();
         geomtools::geom_id geomId(1302, 1, 3, 7);;
         caloDigiHit.set_geom_id(geomId);
         caloDigiHit.set_timestamp(1234568);
@@ -70,7 +69,7 @@ int main(/* int argc_, char ** argv_ */)
 
       // Add tracker digi hits:
       {
-        sdm::tracker_digitized_hit & trackerDigiHit = rawEvent.add_tracker_hit();
+        sdm::tracker_digitized_hit & trackerDigiHit = unifiedEvent.add_tracker_hit();
         geomtools::geom_id geomId(0, 7, 52);;
         trackerDigiHit.set_geom_id(geomId);
         {
@@ -100,31 +99,31 @@ int main(/* int argc_, char ** argv_ */)
 
           trackerDigiHit.grab_times().push_back(newTimes);
         }
-        rawEvent.grab_auxiliaries().store_flag("mock");
-        rawEvent.grab_auxiliaries().store("type", "simulated");
-        rawEvent.grab_auxiliaries().store("the_answer", 42);
+        unifiedEvent.grab_auxiliaries().store_flag("mock");
+        unifiedEvent.grab_auxiliaries().store("type", "simulated");
+        unifiedEvent.grab_auxiliaries().store("the_answer", 42);
       }
 
       {
         boost::property_tree::ptree options;
-        options.put("title", "Raw event data: ");
-        rawEvent.print_tree(std::clog, options);
+        options.put("title", "Unified digitizedh event data: ");
+        unifiedEvent.print_tree(std::clog, options);
       }
 
       {
-        datatools::data_writer xout("test_raw_event_data.xml",
+        datatools::data_writer xout("test_unified_digitized_data.xml",
                                     datatools::using_multi_archives);
-        xout.store(rawEvent);
+        xout.store(unifiedEvent);
       }
     }
 
     {
-      sdm::raw_event_data rawEvent;
-      datatools::data_reader xin("test_raw_event_data.xml",
+      sdm::unified_digitized_data unifiedEvent;
+      datatools::data_reader xin("test_unified_digitized_data.xml",
                                  datatools::using_multi_archives);
-      xin.load(rawEvent);
-      std::clog << "A raw event (from XML file):\n";
-      rawEvent.print_tree(std::clog);
+      xin.load(unifiedEvent);
+      std::clog << "A unified digitized event (from XML file):\n";
+      unifiedEvent.print_tree(std::clog);
       std::clog << "\n";
     }
 

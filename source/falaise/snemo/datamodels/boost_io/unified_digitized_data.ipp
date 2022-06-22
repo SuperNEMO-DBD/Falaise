@@ -1,11 +1,11 @@
 // -*- mode: c++ ; -*-
-/// \file falaise/snemo/datamodels/raw_event_data.ipp
+/// \file falaise/snemo/datamodels/unified_digitized_data.ipp
 
-#ifndef FALAISE_SNEMO_DATAMODEL_RAW_EVENT_DATA_IPP
-#define FALAISE_SNEMO_DATAMODEL_RAW_EVENT_DATA_IPP 1
+#ifndef FALAISE_SNEMO_DATAMODEL_UNIFIED_DIGITIZED_DATA_IPP
+#define FALAISE_SNEMO_DATAMODEL_UNIFIED_DIGITIZED_DATA_IPP 1
 
 // Ourselves:
-#include <falaise/snemo/datamodels/raw_event_data.h>
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
 
 // Third party:
 // - Boost:
@@ -24,7 +24,7 @@ namespace snemo {
   namespace datamodel {
 
     template <class Archive>
-    void raw_event_data::serialize(Archive & ar_, const unsigned int /* version */)
+    void unified_digitized_data::serialize(Archive & ar_, const unsigned int /* version */)
     {
       ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       ar_ & boost::serialization::make_nvp("run_id",   _run_id_);
@@ -41,4 +41,4 @@ namespace snemo {
 
 } // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_DATAMODEL_RAW_EVENT_DATA_IPP
+#endif  // FALAISE_SNEMO_DATAMODEL_UNIFIED_DIGITIZED_DATA_IPP
