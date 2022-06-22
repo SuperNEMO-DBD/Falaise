@@ -44,6 +44,28 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::timest
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::event_header)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::event_header)
 
+/***************************************************
+ * snemo::datamodel::precalibrated_calorimeter_hit *
+ ***************************************************/
+
+#include <falaise/snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_calorimeter_hit)
+
+/***********************************************
+ * snemo::datamodel::precalibrated_tracker_hit *
+ ***********************************************/
+
+#include <falaise/snemo/datamodels/boost_io/precalibrated_tracker_hit.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_tracker_hit)
+
+/****************************************
+ * snemo::datamodel::precalibrated_data *
+ ****************************************/
+
+#include <falaise/snemo/datamodels/boost_io/precalibrated_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_data)
+
 /************************************************
  * snemo::datamodel::calorimeter_digitized_hit *
  ************************************************/
@@ -146,7 +168,7 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracke
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_solution)
 #include <falaise/snemo/datamodels/boost_io/tracker_trajectory_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_data)
-BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
+  BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::tracker_trajectory_data)
 
 /*****************************************
  * snemo::datamodel::particle_track_data *
