@@ -168,6 +168,12 @@ namespace snemo {
       return _auxiliaries_;
     }
 
+    void set_auxiliaries(const datatools::properties & aux_)
+    {
+      _auxiliaries_ = aux_;
+      return;
+    }
+
     // virtual
     void unified_digitized_data::clear()
     {

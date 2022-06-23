@@ -117,9 +117,14 @@ namespace snemo {
       //! Add a tracker hit to the collection of tracker digitized hits
       tracker_digitized_hit & add_tracker_hit();
 
+      //! Return the const datatools auxiliaries
       const datatools::properties & get_auxiliaries() const;
 
+      //! Return the mutable datatools auxiliaries
       datatools::properties & grab_auxiliaries();
+
+      //! Set the datatools auxiliaries
+      void set_auxiliaries(const datatools::properties & aux_);
 
       /// Clear attributes
       virtual void clear() override;
