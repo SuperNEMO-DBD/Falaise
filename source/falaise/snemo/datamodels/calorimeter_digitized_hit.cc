@@ -324,6 +324,12 @@ namespace snemo {
       return _waveform_;
     }
 
+    void set_waveform(std::vector<int16_t> & wf_)
+    {
+      _waveform_ = wf_;
+      return;
+    }
+
     bool calorimeter_digitized_hit::is_valid() const
     {
       if (not this->geomtools::base_hit::is_valid()) return true;

@@ -72,13 +72,28 @@ namespace snemo {
       calorimeter_digitized_hit() = default;
       virtual ~calorimeter_digitized_hit() = default;
 
+      /// Return the timestamp associated to the hit
       const int64_t & get_timestamp() const;
+
+      /// Set the timestamp associated to the hit
       void set_timestamp(const int64_t & timestamp_);
 
+      /// Return the waveform associated to the hit
       const std::vector<int16_t> & get_waveform() const;
+
+      /// Return the mutable waveform associated to the hit
       std::vector<int16_t> & grab_waveform();
 
+      /// Set the waveform associated to the hit
+      void set_waveform(std::vector<int16_t> & wf_);
+
+      /// Check if the hit has a waveform
+      bool has_waveform() const;
+
+      /// Check if the internal data of the hit are valid
       bool is_valid() const override;
+
+      /// Invalidate the internal data of hit
       void invalidate() override;
 
       // \brief Bit flags of various digitization features
@@ -106,60 +121,120 @@ namespace snemo {
         int32_t falling_cell = 0;
       };
 
-      bool is_low_threshold_only() const;
+      /// Check the status of the low threshold only boolean
+      bool is_low_threshold_only() const;\
+
+      /// Set the low threshold only boolean
       void set_low_threshold_only(bool);
 
+      /// Check the status of the high threshold boolean
       bool is_high_threshold() const;
+
+      /// Set the high threshold boolean
       void set_high_threshold(bool);
 
       static const uint16_t INVALID_FCR = 0xFFFF;
 
+      /// Set the First Cell Read (FCR)
       void set_fcr(uint16_t);
+
+      /// Return the First Cell Read (FCR)
       uint16_t get_fcr() const;
 
-      // Add-on (2022-02-11):
+      /// Set the Low Threshold counter
       void set_lt_trigger_counter(uint16_t);
+
+      /// Return the Low Threshold counter
       uint16_t get_lt_trigger_counter() const;
 
-      // Add-on (2022-02-11):
+      /// Set the Low Threshold time counter
       void set_lt_time_counter(uint32_t);
+
+      /// Return the Low Threshold time counter
       uint32_t get_lt_time_counter() const;
 
-      bool has_waveform() const;
-
+      /// Check if the hit has a firmware measurement baseline
       bool has_fwmeas_baseline() const;
+
+      /// Set the firmware measurement baseline
       void set_fwmeas_baseline(int16_t);
+
+      /// Reset the firmware measurement baseline
       void reset_fwmeas_baseline();
+
+      /// Return the firmware measurement baseline
       int16_t get_fwmeas_baseline() const;
 
+      /// Check if the hit has a firmware measurement peak amplitude
       bool has_fwmeas_peak_amplitude() const;
+
+      /// Set the firmware measurement peak amplitude
       void set_fwmeas_peak_amplitude(int16_t);
+
+      /// Reset the firmware measurement peak amplitude
       void reset_fwmeas_peak_amplitude();
+
+      /// Return the firmware measurement peak amplitude
       int16_t get_fwmeas_peak_amplitude() const;
 
+      /// Check if the hit has a firmware measurement peak cell
       bool has_fwmeas_peak_cell() const;
+
+      /// Set the firmware measurement peak cell
       void set_fwmeas_peak_cell(int16_t);
+
+      /// Reset the firmware measurement peak cell
       void reset_fwmeas_peak_cell();
+
+      /// Return the firmware measurement peak cell
       int16_t get_fwmeas_peak_cell() const;
 
+      /// Check if the hit has a firmware measurement charge
       bool has_fwmeas_charge() const;
+
+      /// Set the firmware measurement charge
       void set_fwmeas_charge(int32_t);
+
+      /// Reset the firmware measurement charge
       void reset_fwmeas_charge();
+
+      /// Return the firmware measurement charge
       int32_t get_fwmeas_charge() const;
 
+      /// Check if the hit has a firmware measurement rising cell
       bool has_fwmeas_rising_cell() const;
+
+      /// Set the firmware measurement rising cell
       void set_fwmeas_rising_cell(int32_t);
+
+      /// Reset the firmware measurement rising cell
       void reset_fwmeas_rising_cell();
+
+      /// Return the firmware measurement rising cell
       int32_t get_fwmeas_rising_cell() const;
 
+      /// Check if the hit has a firmware measurement falling cell
       bool has_fwmeas_falling_cell() const;
+
+      /// Set the firmware measurement falling cell
       void set_fwmeas_falling_cell(int32_t);
+
+      /// Reset the firmware measurement falling cell
       void reset_fwmeas_falling_cell();
+
+      /// Return the firmware measurement falling cell
       int32_t get_fwmeas_falling_cell() const;
 
+      /// Check if the hit has a RTD origin
       bool has_origin() const;
-      const rtd_origin & get_origin() const;
+
+      /// Set the RTD oigin
       void set_origin(const rtd_origin &);
+
+      /// Return the RTD oigin
+      const rtd_origin & get_origin() const;
+
+      /// Reset the RTD origin
       void reset_origin();
 
       /// Smart print
