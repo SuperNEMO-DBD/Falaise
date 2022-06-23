@@ -90,6 +90,9 @@ namespace snemo {
       //! Get the origin trigger IDs
       const std::set<int32_t> & get_origin_trigger_ids() const;
 
+      //! Set the list of origin trigger IDs
+      void set_origin_trigger_ids(const std::set<int32_t> & tids_);
+
       //! Add the origin trigger IDs
       void add_origin_trigger_id(int32_t tid_);
 

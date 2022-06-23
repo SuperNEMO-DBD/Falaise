@@ -94,6 +94,12 @@ namespace snemo {
       return _origin_trigger_ids_;
     }
 
+    void set_origin_trigger_ids(const std::set<int32_t> & tids_)
+    {
+      _origin_trigger_ids_ = tids_;
+      return;
+    }
+
     void unified_digitized_data::add_origin_trigger_id(int32_t tid_)
     {
       _origin_trigger_ids_.insert(tid_);
