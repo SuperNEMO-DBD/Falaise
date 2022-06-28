@@ -241,10 +241,10 @@ namespace snemo {
       ///
       /// Usage:
       /// \code
-      /// snfee::data::calorimeter_digitized_hit caloDigiHit
+      /// snemo::datamodel::calorimeter_digitized_hit caloDigiHit
       /// ...
       /// boost::property_tree::ptree poptions;
-      /// poptions.put("title", "Calo Digi Hit:");
+      /// poptions.put("title", "Calorimeter Digitized Hit:");
       /// poptions.put("indent", ">>> ");
       /// caloDigiHit.print_tree(std::clog, poptions);
       /// \endcode
@@ -265,16 +265,12 @@ namespace snemo {
       // Possibly not available attributes:
       fw_measurements_type _fwmeas_;   ///< Firmware measurements
       rtd_origin           _origin_;   ///< RTD origin of the hit
-      // sncabling::om_id     _om_id_;    ///< Identifier of the optical module
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 
-    /// Handle of calibrated calorimeter hit
-    // typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
-    /// Collection of handles of calibrated calorimeter hit
-    // typedef std::vector<handle_type> collection_type;
+    /// Handle and collection of handles of calorimeter digitized hit
     using CalorimeterDigiHit = calorimeter_digitized_hit;
     using CalorimeterDigiHitCollection = std::vector<CalorimeterDigiHit>;
 

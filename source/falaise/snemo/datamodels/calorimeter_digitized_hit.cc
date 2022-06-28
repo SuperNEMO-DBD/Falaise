@@ -324,7 +324,7 @@ namespace snemo {
       return _waveform_;
     }
 
-    void set_waveform(std::vector<int16_t> & wf_)
+    void calorimeter_digitized_hit::set_waveform(std::vector<int16_t> & wf_)
     {
       _waveform_ = wf_;
       return;

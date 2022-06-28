@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodels/precalibrated_calorimeter_hit.cc
+/// \file falaise/snemo/datamodels/precalibrated_calorimeter_hit.cc
 
 // Ourselves
 #include <falaise/snemo/datamodels/precalibrated_calorimeter_hit.h>

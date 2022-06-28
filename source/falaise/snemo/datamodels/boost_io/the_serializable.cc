@@ -89,28 +89,6 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::unifie
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::unified_digitized_data)
 
 
-/***************************************************
- * snemo::datamodel::precalibrated_calorimeter_hit *
- ***************************************************/
-
-#include <falaise/snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_calorimeter_hit)
-
-/***********************************************
- * snemo::datamodel::precalibrated_tracker_hit *
- ***********************************************/
-
-#include <falaise/snemo/datamodels/boost_io/precalibrated_tracker_hit.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_tracker_hit)
-
-/****************************************
- * snemo::datamodel::precalibrated_data *
- ****************************************/
-
-#include <falaise/snemo/datamodels/boost_io/precalibrated_data.ipp>
-DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_data)
-BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_data)
-
 /************************************************
  * snemo::datamodel::calibrated_calorimeter_hit *
  ************************************************/

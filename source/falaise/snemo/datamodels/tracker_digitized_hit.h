@@ -121,27 +121,29 @@ namespace snemo {
       tracker_digitized_hit() = default;
       virtual ~tracker_digitized_hit() = default;
 
+      /// Return the list of timestamps associated to the Geiger hit
       const std::vector<gg_times> & get_times() const;
+
+      /// Add Geiger timestamps
       gg_times & add_times();
+
+      /// Return the mutable list of timestamps associated to the Geiger hit
       std::vector<gg_times> & grab_times();
 
-      // Use geom_id() form geomtools::base_hit
-      // bool has_cell_id() const;
-      // void set_cell_id(const sncabling::gg_cell_id & id_);
-      // void reset_cell_id();
-      // const sncabling::gg_cell_id & get_cell_id() const;
-
+      /// Check if the internal data of the hit are valid
       bool is_valid() const override;
+
+      /// Invalidate the internal data of hit
       void invalidate() override;
 
       /// Smart print
       ///
       /// Usage:
       /// \code
-      /// snfee::data::calo_digitized_hit caloDigiHit
+      /// snemo::datamodel::tracker_digitized_hit caloDigiHit
       /// ...
       /// boost::property_tree::ptree poptions;
-      /// poptions.put("title", "Calo Digi Hit:");
+      /// poptions.put("title", "Tracker Digitized Hit:");
       /// poptions.put("indent", ">>> ");
       /// caloDigiHit.print_tree(std::clog, poptions);
       /// \endcode
@@ -150,13 +152,13 @@ namespace snemo {
 
     private:
 
-      std::vector<gg_times> _times_;    ///< 48 bits used at 80 MHz
-      // sncabling::gg_cell_id _cell_id_;  ///< RTD Geiger cell identifier from SNCabling
+      std::vector<gg_times> _times_; ///< 48 bits used at 80 MHz
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 
     };
 
+    /// Handle and collection of handles of tracker digitized hit
     using TrackerDigiHit = tracker_digitized_hit;
     using TrackerDigiHitCollection = std::vector<TrackerDigiHit>;
 

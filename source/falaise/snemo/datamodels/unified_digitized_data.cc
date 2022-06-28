@@ -1,3 +1,6 @@
+// -*- mode: c++ ; -*-
+/// \file falaise/snemo/datamodels/unified_digitized_data.cc
+
 // This project:
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 
@@ -94,7 +97,7 @@ namespace snemo {
       return _origin_trigger_ids_;
     }
 
-    void set_origin_trigger_ids(const std::set<int32_t> & tids_)
+    void unified_digitized_data::set_origin_trigger_ids(const std::set<int32_t> & tids_)
     {
       _origin_trigger_ids_ = tids_;
       return;
@@ -168,7 +171,7 @@ namespace snemo {
       return _auxiliaries_;
     }
 
-    void set_auxiliaries(const datatools::properties & aux_)
+    void unified_digitized_data::set_auxiliaries(const datatools::properties & aux_)
     {
       _auxiliaries_ = aux_;
       return;
