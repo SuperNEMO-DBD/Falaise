@@ -106,7 +106,7 @@ int main(/* int argc_, char ** argv_ */)
 
       {
         boost::property_tree::ptree options;
-        options.put("title", "Unified digitizedh event data: ");
+        options.put("title", "Unified digitized event data: ");
         unifiedEvent.print_tree(std::clog, options);
       }
 
