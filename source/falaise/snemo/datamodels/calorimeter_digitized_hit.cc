@@ -96,11 +96,6 @@ namespace snemo {
       return;
     }
 
-    bool calorimeter_digitized_hit::has_waveform() const
-    {
-      return _store_check(STORE_DIGIFLAGS_WAVEFORM);
-    }
-
     bool calorimeter_digitized_hit::has_fwmeas_baseline() const
     {
       return _store_check(STORE_DIGIFLAGS_FWMEAS_BASELINE);
@@ -252,8 +247,8 @@ namespace snemo {
 
     void calorimeter_digitized_hit::set_origin(const rtd_origin & orig_)
     {
-      _store_set(STORE_DIGIFLAGS_ORIGIN);
       _origin_ = orig_;
+      _store_set(STORE_DIGIFLAGS_ORIGIN);
       return;
     }
 
@@ -324,10 +319,23 @@ namespace snemo {
       return _waveform_;
     }
 
+    void calorimeter_digitized_hit::reset_waveform()
+    {
+      _waveform_.clear();
+      _store_unset(STORE_DIGIFLAGS_WAVEFORM);
+      return;
+    }
+
     void calorimeter_digitized_hit::set_waveform(std::vector<int16_t> & wf_)
     {
       _waveform_ = wf_;
+      _store_set(STORE_DIGIFLAGS_WAVEFORM);
       return;
+    }
+
+    bool calorimeter_digitized_hit::has_waveform() const
+    {
+      return _store_check(STORE_DIGIFLAGS_WAVEFORM);
     }
 
     bool calorimeter_digitized_hit::is_valid() const
@@ -336,7 +344,11 @@ namespace snemo {
       if (_timestamp_ == INVALID_TIME_TICKS) return false;
       if (_fcr_ == INVALID_FCR) return false;
       // No invalid value for 'lt_time_counter'
-      if (_waveform_.size() == 0) return false;
+
+      // GO 07/22: Can a calo digi hit be valid even if the waveform is empty ?
+      // Sometimes we will have runs without calo waveforms, doesn't mean the hit is not valid
+      // Not valid only if store bit is activated and waveform is actually empty
+      if (has_waveform() && _waveform_.size() == 0) return false;
       return true;
     }
 
@@ -347,7 +359,7 @@ namespace snemo {
       _low_threshold_only_ = false;
       _high_threshold_ = false;
       _fcr_ = INVALID_FCR;
-      _waveform_.clear();
+      reset_waveform();
       reset_fwmeas_baseline();
       reset_fwmeas_peak_amplitude();
       reset_fwmeas_peak_cell();

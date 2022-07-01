@@ -87,6 +87,9 @@ namespace snemo {
       /// Set the waveform associated to the hit
       void set_waveform(std::vector<int16_t> & wf_);
 
+      /// Clear the waveform associated to the hit
+      void reset_waveform();
+
       /// Check if the hit has a waveform
       bool has_waveform() const;
 
