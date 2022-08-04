@@ -710,7 +710,10 @@ void gg_locator::construct_() {
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
-  for (const std::string &subaddress : {"module", "side", "layer", "row"}) {
+  for (const std::string &subaddress : {std::string("module"),
+																				std::string("side"),
+																				std::string("layer"),
+																				std::string("row")}) {
     DT_THROW_IF(!cellCatInfo.has_subaddress(subaddress), std::logic_error,
                 "Category '" << detail::kDriftCellGIDCategory << "' has no subaddress '"
                              << subaddress << "'");
