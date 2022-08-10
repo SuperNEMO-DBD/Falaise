@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
 /// \file falaise/snemo/datamodels/precalibrated_data.h
-/* Author(s) :    Guillaume Oliviero <goliviero@ucl.ac.uk>
+/* Author(s) :    Guillaume Oliviero <g.oliviero@ucl.ac.uk>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
  * Last modified: 2022-05-03

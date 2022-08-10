@@ -1,7 +1,7 @@
 // -*- mode: c++ ; -*-
 /// \file  falaise/snemo/datamodels/tracker_digitized_hit.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
- *                Guillaume Oliviero <goliviero@ucl.ac.uk>
+ *                Guillaume Oliviero <g.oliviero@ucl.ac.uk>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
  * Last modified: 2022-05-13
