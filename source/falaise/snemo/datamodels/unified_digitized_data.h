@@ -35,7 +35,7 @@
 // This project:
 #include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
 #include <falaise/snemo/datamodels/tracker_digitized_hit.h>
-#include <falaise/snemo/datamodels/red_utils.h>
+#include <falaise/snemo/datamodels/udd_utils.h>
 
 namespace snemo {
 

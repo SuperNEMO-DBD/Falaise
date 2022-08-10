@@ -29,13 +29,13 @@
 
 // This project:
 #include <falaise/snemo/datamodels/timestamp.h>
-#include <falaise/snemo/datamodels/red_utils.h>
+#include <falaise/snemo/datamodels/udd_utils.h>
 
 namespace snemo {
 
   namespace datamodel {
 
-    /// \brief Tracker raw digitized hit
+    /// \brief Tracker digitized hit
     class tracker_digitized_hit
       : public geomtools::base_hit
     {

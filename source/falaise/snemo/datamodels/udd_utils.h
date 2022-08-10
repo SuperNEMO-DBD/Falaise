@@ -1,21 +1,21 @@
 // -*- mode: c++ ; -*-
-/// \file  falaise/snemo/datamodels/red_utils.h
+/// \file  falaise/snemo/datamodels/udd_utils.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  *                Guillaume Oliviero <goliviero@ucl.ac.uk>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-06-07
- * Last modified: 2022-06-07
+ * Last modified: 2022-08-10
  *
  * Description:
  *
- *   SuperNEMO Falaise Raw Event Data utils
+ *   SuperNEMO Falaise Unified Digitized Data utils
  *
  * History:
  *
  */
 
-#ifndef FALAISE_SNEMO_DATAMODELS_RED_UTILS_H
-#define FALAISE_SNEMO_DATAMODELS_RED_UTILS_H 1
+#ifndef FALAISE_SNEMO_DATAMODELS_UDD_UTILS_H
+#define FALAISE_SNEMO_DATAMODELS_UDD_UTILS_H 1
 
 namespace snemo {
 
@@ -60,4 +60,4 @@ namespace snemo {
 
 } // namespace snemo
 
-#endif // FALAISE_SNEMO_DATAMODELS_RED_UTILS_H
+#endif // FALAISE_SNEMO_DATAMODELS_UDD_UTILS_H

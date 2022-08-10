@@ -5,6 +5,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/calibrated_calorimeter_hit.h
   snemo/datamodels/calibrated_data.h
   snemo/datamodels/calibrated_tracker_hit.h
+  snemo/datamodels/udd_utils.h
   snemo/datamodels/precalibrated_calorimeter_hit.h
   snemo/datamodels/precalibrated_data.h
   snemo/datamodels/precalibrated_tracker_hit.h
