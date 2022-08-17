@@ -19,6 +19,7 @@
 #include "bayeux/mctools/simulated_data.h"
 
 // - Falaise
+#include "falaise/snemo/datamodels/unified_digitized_data.h"
 #include "falaise/snemo/datamodels/calibrated_data.h"
 #include "falaise/snemo/datamodels/event_header.h"
 
@@ -33,6 +34,7 @@ typedef struct HeaderEventStorage {
   int date_;
   int runtype_;
   bool simulated_;
+  bool real_;
 } headereventstorage;
 
 typedef struct TrackerEventStorage {

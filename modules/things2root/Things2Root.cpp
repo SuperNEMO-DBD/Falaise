@@ -243,6 +243,7 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("header.date", &header_.date_);
   tree_->Branch("header.runtype", &header_.runtype_);
   tree_->Branch("header.simulated", &header_.simulated_);
+  tree_->Branch("header.real", &header_.real_);
 
   // calibrated tracker data
   tree_->Branch("tracker.nohits", &tracker_.nohits_);
@@ -683,6 +684,7 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     header_.date_ = 0;
     header_.runtype_ = 0;
     header_.simulated_ = (EH.is_simulated() ? true : false);
+    header_.real_ = (EH.is_real() ? true : false);
   }
 
   tree_->Fill();
