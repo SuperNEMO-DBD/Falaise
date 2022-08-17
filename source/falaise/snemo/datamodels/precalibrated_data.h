@@ -9,7 +9,7 @@
  *
  * Description:
  *
- *   SuperNEMO preprecalibrated data model
+ *   SuperNEMO precalibrated data model
  *
  *
  * History:

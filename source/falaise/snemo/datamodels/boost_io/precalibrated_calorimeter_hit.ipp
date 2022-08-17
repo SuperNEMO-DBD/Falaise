@@ -35,8 +35,8 @@ namespace snemo {
       ar_ & boost::serialization::make_nvp("sigma_rising_time", _sigma_rising_time_);
       ar_ & boost::serialization::make_nvp("falling_time", _falling_time_);
       ar_ & boost::serialization::make_nvp("sigma_falling_time", _sigma_falling_time_);
-      ar_ & boost::serialization::make_nvp("width", _width_);
-      ar_ & boost::serialization::make_nvp("sigma_width", _sigma_width_);
+      ar_ & boost::serialization::make_nvp("time_width", _time_width_);
+      ar_ & boost::serialization::make_nvp("sigma_time_width", _sigma_time_width_);
 
     }
 

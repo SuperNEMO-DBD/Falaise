@@ -161,26 +161,26 @@ namespace snemo {
       /// Reset the error on the falling time
       void reset_sigma_falling_time();
 
-      /// Return the width associated to the hit
-      double get_width() const;
+      /// Return the time width associated to the hit
+      double get_time_width() const;
 
-      /// Set the width associated to the hit
-      void set_width(double);
+      /// Set the time width associated to the hit
+      void set_time_width(double);
 
-      /// Check if the width is valid
-      bool has_width() const;
+      /// Check if the time width is valid
+      bool has_time_width() const;
 
-      /// Reset the width
-      void reset_width();
+      /// Reset the time width
+      void reset_time_width();
 
-      /// Return the error on the width associated to the hit
-      double get_sigma_width() const;
+      /// Return the error on the time width associated to the hit
+      double get_sigma_time_width() const;
 
-      /// Set the error on the width associated to the hit
-      void set_sigma_width(double);
+      /// Set the error on the time width associated to the hit
+      void set_sigma_time_width(double);
 
-      /// Reset the error on the width
-      void reset_sigma_width();
+      /// Reset the error on the time width
+      void reset_sigma_time_width();
 
       /// Check if the internal data of the hit are valid
       bool is_valid() const override;
@@ -207,8 +207,8 @@ namespace snemo {
       double _sigma_rising_time_{datatools::invalid_real()};  //!< Error on the rising time associated to the hit
       double _falling_time_{datatools::invalid_real()};       //!< Falling time associated to the hit
       double _sigma_falling_time_{datatools::invalid_real()}; //!< Error on the falling time associated to the hit
-      double _width_{datatools::invalid_real()};              //!< Width of the hit
-      double _sigma_width_{datatools::invalid_real()};        //!< Error on the width of the hit
+      double _time_width_{datatools::invalid_real()};         //!< Time width of the hit
+      double _sigma_time_width_{datatools::invalid_real()};   //!< Error on the time width of the hit
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
