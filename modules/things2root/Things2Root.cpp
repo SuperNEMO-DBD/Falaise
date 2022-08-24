@@ -64,6 +64,42 @@ struct Things2Root::working_space {
   std::vector<double> calosigmaenergy;
   std::vector<int> calotype;
 
+  // Digitized calorimeter data
+  std::vector<int> digicaloid;
+  std::vector<int> digicalotype;
+  std::vector<int> digicalomodule;
+  std::vector<int> digicaloside;
+  std::vector<int> digicalocolumn;
+  std::vector<int> digicalorow;
+  std::vector<int> digicalowall;
+  std::vector<int> digicalotimestamp;
+  std::vector<bool> digicalolto;
+  std::vector<bool> digicaloht;
+  std::vector<int> digicalofcr;
+  std::vector<int> digicalolttriggercounter;
+  std::vector<int> digicaloltimecounter;
+  std::vector<std::vector<int> > digicalowaveform;
+  std::vector<int> digicalobaseline;
+  std::vector<int> digicalopeakamplitude;
+  std::vector<int> digicalopeakcell;
+  std::vector<int> digicalocharge;
+  std::vector<int> digicalorisingcell;
+  std::vector<int> digicalofallingcell;
+
+  // Digitized tracker data
+  std::vector<int> digitrackerid;
+  std::vector<int> digitrackermodule;
+  std::vector<int> digitrackerside;
+  std::vector<int> digitrackerlayer;
+  std::vector<int> digitrackercolumn;
+  std::vector<std::vector<int> > digitrackeranodetimestampR0;
+  std::vector<std::vector<int> > digitrackeranodetimestampR1;
+  std::vector<std::vector<int> > digitrackeranodetimestampR2;
+  std::vector<std::vector<int> > digitrackeranodetimestampR3;
+  std::vector<std::vector<int> > digitrackeranodetimestampR4;
+  std::vector<std::vector<int> > digitrackerbottomcathodetimestamp;
+  std::vector<std::vector<int> > digitrackertopcathodetimestamp;
+
   // for true gg hits
   std::vector<int> truetrackerid;
   std::vector<int> truetrackermodule;
@@ -141,6 +177,42 @@ void Things2Root::working_space::clear() {
   caloenergy.clear();
   calosigmaenergy.clear();
   calotype.clear();
+
+  // Clear digitized calorimeter data
+  digicaloid.clear();
+  digicalotype.clear();
+  digicalomodule.clear();
+  digicaloside.clear();
+  digicalocolumn.clear();
+  digicalorow.clear();
+  digicalowall.clear();
+  digicalotimestamp.clear();
+  digicalolto.clear();
+  digicaloht.clear();
+  digicalofcr.clear();
+  digicalolttriggercounter.clear();
+  digicaloltimecounter.clear();
+  digicalowaveform.clear();
+  digicalobaseline.clear();
+  digicalopeakamplitude.clear();
+  digicalopeakcell.clear();
+  digicalocharge.clear();
+  digicalorisingcell.clear();
+  digicalofallingcell.clear();
+
+  // Clear digitized tracker data
+  digitrackerid.clear();
+  digitrackermodule.clear();
+  digitrackerside.clear();
+  digitrackerlayer.clear();
+  digitrackercolumn.clear();
+  digitrackeranodetimestampR0.clear();
+  digitrackeranodetimestampR1.clear();
+  digitrackeranodetimestampR2.clear();
+  digitrackeranodetimestampR3.clear();
+  digitrackeranodetimestampR4.clear();
+  digitrackerbottomcathodetimestamp.clear();
+  digitrackertopcathodetimestamp.clear();
 
   // clear true gg hits
   truetrackerid.clear();
@@ -280,6 +352,42 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("calo.sigmaenergy", &calo_.sigmaenergy_);
   tree_->Branch("calo.type", &calo_.type_);
 
+  // digitized calorimeter data
+  tree_->Branch("digicalo.nohits", &digicalo_.nohits_);
+  tree_->Branch("digicalo.id", &digicalo_.id_);
+  tree_->Branch("digicalo.module", &digicalo_.module_);
+  tree_->Branch("digicalo.side", &digicalo_.side_);
+  tree_->Branch("digicalo.column", &digicalo_.column_);
+  tree_->Branch("digicalo.row", &digicalo_.row_);
+  tree_->Branch("digicalo.timestamp", &digicalo_.timestamp_);
+  tree_->Branch("digicalo.lowthresholdonly", &digicalo_.low_threshold_only_);
+  tree_->Branch("digicalo.highthreshold", &digicalo_.high_threshold_);
+  tree_->Branch("digicalo.fcr", &digicalo_.fcr_);
+  tree_->Branch("digicalo.lttriggercounter", &digicalo_.lt_trigger_counter_);
+  tree_->Branch("digicalo.lttimecounter", &digicalo_.lt_time_counter_);
+  tree_->Branch("digicalo.waveform", &digicalo_.waveform_);
+  tree_->Branch("digicalo.baseline", &digicalo_.baseline_);
+  tree_->Branch("digicalo.peakamplitude", &digicalo_.peak_amplitude_);
+  tree_->Branch("digicalo.peakcell", &digicalo_.peak_cell_);
+  tree_->Branch("digicalo.charge", &digicalo_.charge_);
+  tree_->Branch("digicalo.rising_cell", &digicalo_.rising_cell_);
+  tree_->Branch("digicalo.falling_cell", &digicalo_.falling_cell_);
+
+  // digitized tracker data
+  tree_->Branch("digitracker.nohits", &digitracker_.nohits_);
+  tree_->Branch("digitracker.id", &digitracker_.id_);
+  tree_->Branch("digitracker.module", &digitracker_.module_);
+  tree_->Branch("digitracker.side", &digitracker_.side_);
+  tree_->Branch("digitracker.layer", &digitracker_.layer_);
+  tree_->Branch("digitracker.column", &digitracker_.column_);
+  tree_->Branch("digitracker.anodetimestampR0", &digitracker_.anode_timestamp_R0_);
+  tree_->Branch("digitracker.anodetimestampR1", &digitracker_.anode_timestamp_R1_);
+  tree_->Branch("digitracker.anodetimestampR2", &digitracker_.anode_timestamp_R2_);
+  tree_->Branch("digitracker.anodetimestampR3", &digitracker_.anode_timestamp_R3_);
+  tree_->Branch("digitracker.anodetimestampR4", &digitracker_.anode_timestamp_R4_);
+  tree_->Branch("digitracker.bottomcathodetimestamp", &digitracker_.bottom_cathode_timestamp_);
+  tree_->Branch("digitracker.topcathodetimestamp", &digitracker_.top_cathode_timestamp_);
+
   // truth tracker data
   tree_->Branch("truetracker.nohits", &truetracker_.nohits_);
   tree_->Branch("truetracker.id", &truetracker_.id_);
@@ -382,20 +490,20 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
 
       // this needs the geometry manager
       static int gid_gg_module_index = geometry_manager_->get_id_mgr()
-                                           .get_category_info("drift_cell_core")
-                                           .get_subaddress_index("module");
+        .get_category_info("drift_cell_core")
+        .get_subaddress_index("module");
 
       static int gid_gg_side_index = geometry_manager_->get_id_mgr()
-                                         .get_category_info("drift_cell_core")
-                                         .get_subaddress_index("side");
+        .get_category_info("drift_cell_core")
+        .get_subaddress_index("side");
 
       static int gid_gg_layer_index = geometry_manager_->get_id_mgr()
-                                          .get_category_info("drift_cell_core")
-                                          .get_subaddress_index("layer");
+        .get_category_info("drift_cell_core")
+        .get_subaddress_index("layer");
 
       static int gid_gg_row_index = geometry_manager_->get_id_mgr()
-                                        .get_category_info("drift_cell_core")
-                                        .get_subaddress_index("row");
+        .get_category_info("drift_cell_core")
+        .get_subaddress_index("row");
 
       // this is the event loop
       for (int i = 0; i < nggtruehits; ++i) {
@@ -442,17 +550,17 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         const mctools::base_step_hit& the_scin_hit = SD.get_step_hit("calorimeter", ihit);
 
         static int gid_calo_module_index = geometry_manager_->get_id_mgr()
-                                               .get_category_info("calorimeter_block")
-                                               .get_subaddress_index("module");
+          .get_category_info("calorimeter_block")
+          .get_subaddress_index("module");
         static int gid_calo_side_index = geometry_manager_->get_id_mgr()
-                                             .get_category_info("calorimeter_block")
-                                             .get_subaddress_index("side");
+          .get_category_info("calorimeter_block")
+          .get_subaddress_index("side");
         static int gid_calo_column_index = geometry_manager_->get_id_mgr()
-                                               .get_category_info("calorimeter_block")
-                                               .get_subaddress_index("column");
+          .get_category_info("calorimeter_block")
+          .get_subaddress_index("column");
         static int gid_calo_row_index = geometry_manager_->get_id_mgr()
-                                            .get_category_info("calorimeter_block")
-                                            .get_subaddress_index("row");
+          .get_category_info("calorimeter_block")
+          .get_subaddress_index("row");
 
         ws_->truecaloid.push_back(the_scin_hit.get_hit_id());
         ws_->truecalox.push_back(the_scin_hit.get_position_start().x() / CLHEP::cm);
@@ -476,20 +584,20 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         const mctools::base_step_hit& the_scin_hit = SD.get_step_hit("xcalo", ihit);
 
         static int gid_xcalo_module_index = geometry_manager_->get_id_mgr()
-                                                .get_category_info("xcalo_block")
-                                                .get_subaddress_index("module");
+          .get_category_info("xcalo_block")
+          .get_subaddress_index("module");
         static int gid_xcalo_side_index = geometry_manager_->get_id_mgr()
-                                              .get_category_info("xcalo_block")
-                                              .get_subaddress_index("side");
+          .get_category_info("xcalo_block")
+          .get_subaddress_index("side");
         static int gid_xcalo_wall_index = geometry_manager_->get_id_mgr()
-                                              .get_category_info("xcalo_block")
-                                              .get_subaddress_index("wall");
+          .get_category_info("xcalo_block")
+          .get_subaddress_index("wall");
         static int gid_xcalo_column_index = geometry_manager_->get_id_mgr()
-                                                .get_category_info("xcalo_block")
-                                                .get_subaddress_index("column");
+          .get_category_info("xcalo_block")
+          .get_subaddress_index("column");
         static int gid_xcalo_row_index = geometry_manager_->get_id_mgr()
-                                             .get_category_info("xcalo_block")
-                                             .get_subaddress_index("row");
+          .get_category_info("xcalo_block")
+          .get_subaddress_index("row");
         ws_->truecaloid.push_back(the_scin_hit.get_hit_id());
 
         ws_->truecalox.push_back(the_scin_hit.get_position_start().x() / CLHEP::cm);
@@ -513,17 +621,17 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         const mctools::base_step_hit& the_scin_hit = SD.get_step_hit("gveto", ihit);
 
         static int gid_gveto_module_index = geometry_manager_->get_id_mgr()
-                                                .get_category_info("gveto_block")
-                                                .get_subaddress_index("module");
+          .get_category_info("gveto_block")
+          .get_subaddress_index("module");
         static int gid_gveto_side_index = geometry_manager_->get_id_mgr()
-                                              .get_category_info("gveto_block")
-                                              .get_subaddress_index("side");
+          .get_category_info("gveto_block")
+          .get_subaddress_index("side");
         static int gid_gveto_wall_index = geometry_manager_->get_id_mgr()
-                                              .get_category_info("gveto_block")
-                                              .get_subaddress_index("wall");
+          .get_category_info("gveto_block")
+          .get_subaddress_index("wall");
         static int gid_gveto_column_index = geometry_manager_->get_id_mgr()
-                                                .get_category_info("gveto_block")
-                                                .get_subaddress_index("column");
+          .get_category_info("gveto_block")
+          .get_subaddress_index("column");
 
         ws_->truecaloid.push_back(the_scin_hit.get_hit_id());
         ws_->truecalox.push_back(the_scin_hit.get_position_start().x() / CLHEP::cm);
@@ -555,6 +663,129 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     truecalo_.energy_ = &ws_->truecaloenergy;
   }
 
+
+  // look for unified digitized data
+  if (workItem.has("UDD")) {
+    // Geometry categories for the scintillator blocks:
+    unsigned int calo_geom_type = 1302;
+    unsigned int xcalo_geom_type = 1232;
+    unsigned int gveto_geom_type = 1252;
+
+    const snemo::datamodel::calibrated_data& CD =
+      workItem.get<snemo::datamodel::calibrated_data>("CD");
+    //      std::clog << "In process: found CD data bank " << std::endl;
+    tracker_.nohits_ = CD.tracker_hits().size();
+    BOOST_FOREACH (const snemo::datamodel::TrackerHitHdl& gg_handle, CD.tracker_hits()) {
+      if (!gg_handle.has_data()) continue;
+
+
+      const snemo::datamodel::calibrated_tracker_hit& sncore_gg_hit = gg_handle.get();
+
+      ws_->trackerid.push_back(sncore_gg_hit.get_hit_id());
+      ws_->trackermodule.push_back(sncore_gg_hit.get_geom_id().get(0));
+      ws_->trackerside.push_back(sncore_gg_hit.get_geom_id().get(1));
+      ws_->trackerlayer.push_back(sncore_gg_hit.get_geom_id().get(2));
+      ws_->trackercolumn.push_back(sncore_gg_hit.get_geom_id().get(3));
+      ws_->trackerx.push_back(sncore_gg_hit.get_x());
+      ws_->trackery.push_back(sncore_gg_hit.get_y());
+      ws_->trackerz.push_back(sncore_gg_hit.get_z());
+      ws_->trackersigmaz.push_back(sncore_gg_hit.get_sigma_z());
+      ws_->trackerr.push_back(sncore_gg_hit.get_r());
+      ws_->trackersigmar.push_back(sncore_gg_hit.get_sigma_r());
+      ws_->trackerdelayedtime.push_back(sncore_gg_hit.get_delayed_time());
+      ws_->trackerdelayedtimeerror.push_back(sncore_gg_hit.get_delayed_time_error());
+      ws_->isdelayed.push_back(sncore_gg_hit.is_delayed());
+      ws_->isnoisy.push_back(sncore_gg_hit.is_noisy());
+      ws_->isbottomcathodemissing.push_back(sncore_gg_hit.is_bottom_cathode_missing());
+      ws_->istopcathodemissing.push_back(sncore_gg_hit.is_top_cathode_missing());
+      ws_->trackertruehitid.push_back(sncore_gg_hit.get_id());
+
+      // special infos about truth tracks:
+      int truth_track_id = -1;
+      if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::TRACK_ID_KEY)) {
+        truth_track_id =
+          sncore_gg_hit.get_auxiliaries().fetch_integer(mctools::track_utils::TRACK_ID_KEY);
+      }
+      ws_->trackertruetrackid.push_back(truth_track_id);
+      int truth_parent_track_id = -1;
+      if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::PARENT_TRACK_ID_KEY)) {
+        truth_parent_track_id = sncore_gg_hit.get_auxiliaries().fetch_integer(
+                                                                              mctools::track_utils::PARENT_TRACK_ID_KEY);
+      }
+      ws_->trackertrueparenttrackid.push_back(truth_parent_track_id);
+    }
+    tracker_.id_ = &ws_->trackerid;
+    tracker_.module_ = &ws_->trackermodule;
+    tracker_.side_ = &ws_->trackerside;
+    tracker_.layer_ = &ws_->trackerlayer;
+    tracker_.column_ = &ws_->trackercolumn;
+    tracker_.x_ = &ws_->trackerx;
+    tracker_.y_ = &ws_->trackery;
+    tracker_.z_ = &ws_->trackerz;
+    tracker_.sigmaz_ = &ws_->trackersigmaz;
+    tracker_.r_ = &ws_->trackerr;
+    tracker_.sigmar_ = &ws_->trackersigmar;
+    tracker_.delayed_time_ = &ws_->trackerdelayedtime;
+    tracker_.delayed_time_error_ = &ws_->trackerdelayedtimeerror;
+    tracker_.is_delayed_ = &ws_->isdelayed;
+    tracker_.is_noisy_ = &ws_->isnoisy;
+    tracker_.is_bottom_cathode_missing_ = &ws_->isbottomcathodemissing;
+    tracker_.is_top_cathode_missing_ = &ws_->istopcathodemissing;
+    tracker_.truehitid_ = &ws_->trackertruehitid;
+    tracker_.truetrackid_ = &ws_->trackertruetrackid;
+    tracker_.trueparenttrackid_ = &ws_->trackertrueparenttrackid;
+
+    calo_.nohits_ = CD.calorimeter_hits().size();
+    BOOST_FOREACH (const snemo::datamodel::CalorimeterHitHdl& the_calo_hit_handle,
+                   CD.calorimeter_hits()) {
+      if (!the_calo_hit_handle.has_data()) continue;
+
+      const snemo::datamodel::calibrated_calorimeter_hit& the_calo_hit = the_calo_hit_handle.get();
+
+      ws_->caloid.push_back(the_calo_hit.get_hit_id());
+      ws_->calomodule.push_back(the_calo_hit.get_geom_id().get(0));
+      ws_->caloside.push_back(the_calo_hit.get_geom_id().get(1));
+
+      if (the_calo_hit.get_geom_id().get_type() == calo_geom_type) {
+        // CALO
+        ws_->calowall.push_back(0);
+        ws_->calocolumn.push_back(the_calo_hit.get_geom_id().get(2));
+        ws_->calorow.push_back(the_calo_hit.get_geom_id().get(3));
+        ws_->calotype.push_back(0);
+      }
+      if (the_calo_hit.get_geom_id().get_type() == xcalo_geom_type) {
+        // XCALO
+        ws_->calowall.push_back(the_calo_hit.get_geom_id().get(2));
+        ws_->calocolumn.push_back(the_calo_hit.get_geom_id().get(3));
+        ws_->calorow.push_back(the_calo_hit.get_geom_id().get(0));
+        ws_->calotype.push_back(1);
+      }
+      if (the_calo_hit.get_geom_id().get_type() == gveto_geom_type) {
+        // GVETO
+        ws_->calowall.push_back(the_calo_hit.get_geom_id().get(2));
+        ws_->calocolumn.push_back(the_calo_hit.get_geom_id().get(3));
+        ws_->calorow.push_back(0);
+        ws_->calotype.push_back(2);
+      }
+
+      ws_->calotime.push_back(the_calo_hit.get_time());
+      ws_->calosigmatime.push_back(the_calo_hit.get_sigma_time());
+      ws_->caloenergy.push_back(the_calo_hit.get_energy());
+      ws_->calosigmaenergy.push_back(the_calo_hit.get_sigma_energy());
+    }
+    calo_.id_ = &ws_->caloid;
+    calo_.type_ = &ws_->calotype;
+    calo_.module_ = &ws_->calomodule;
+    calo_.side_ = &ws_->caloside;
+    calo_.column_ = &ws_->calocolumn;
+    calo_.row_ = &ws_->calorow;
+    calo_.wall_ = &ws_->calowall;
+  }
+
+
+
+
+
   // look for calibrated data
   if (workItem.has("CD")) {
     // Geometry categories for the scintillator blocks:
@@ -563,7 +794,7 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     unsigned int gveto_geom_type = 1252;
 
     const snemo::datamodel::calibrated_data& CD =
-        workItem.get<snemo::datamodel::calibrated_data>("CD");
+      workItem.get<snemo::datamodel::calibrated_data>("CD");
     //      std::clog << "In process: found CD data bank " << std::endl;
     tracker_.nohits_ = CD.tracker_hits().size();
     BOOST_FOREACH (const snemo::datamodel::TrackerHitHdl& gg_handle, CD.tracker_hits()) {
@@ -594,13 +825,13 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       int truth_track_id = -1;
       if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::TRACK_ID_KEY)) {
         truth_track_id =
-            sncore_gg_hit.get_auxiliaries().fetch_integer(mctools::track_utils::TRACK_ID_KEY);
+          sncore_gg_hit.get_auxiliaries().fetch_integer(mctools::track_utils::TRACK_ID_KEY);
       }
       ws_->trackertruetrackid.push_back(truth_track_id);
       int truth_parent_track_id = -1;
       if (sncore_gg_hit.get_auxiliaries().has_key(mctools::track_utils::PARENT_TRACK_ID_KEY)) {
         truth_parent_track_id = sncore_gg_hit.get_auxiliaries().fetch_integer(
-            mctools::track_utils::PARENT_TRACK_ID_KEY);
+                                                                              mctools::track_utils::PARENT_TRACK_ID_KEY);
       }
       ws_->trackertrueparenttrackid.push_back(truth_parent_track_id);
     }
