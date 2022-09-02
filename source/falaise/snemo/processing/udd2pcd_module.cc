@@ -175,7 +175,19 @@ namespace snemo {
 
 
         // FILL ALL pCD TRACKER TIMES WITH UDD TRACKER TIMESTAMPS
+        // How to deal with vector of gg_times ?
 
+        // a_udd_tracker_hit
+
+        // new_pcd_tracker->set_reference_time();
+        // new_pcd_tracker->set_anodic_drift_time();
+        // new_pcd_tracker->sigma_anodic_drift_time();
+        // new_pcd_tracker->set_bottom_cathode_drift_time();
+        // new_pcd_tracker->sigma_bottom_cathode_drift_time();
+        // new_pcd_tracker->set_top_cathode_drift_time();
+        // new_pcd_tracker->sigma_top_cathode_drift_time();
+        //
+        // new_pcd_tracker->set_delayed();
 
 
         tracker_hits_.push_back(new_pcd_tracker);
