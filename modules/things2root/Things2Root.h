@@ -20,6 +20,7 @@
 
 // - Falaise
 #include "falaise/snemo/datamodels/unified_digitized_data.h"
+#include "falaise/snemo/datamodels/precalibrated_data.h"
 #include "falaise/snemo/datamodels/calibrated_data.h"
 #include "falaise/snemo/datamodels/event_header.h"
 
@@ -112,6 +113,91 @@ typedef struct CaloEventStorage {
       energy_(0),
       sigmaenergy_(0) {}
 } caloeventstorage;
+
+typedef struct PreCalibCaloEventStorage {
+  int nohits_;
+  std::vector<int>* id_;
+  std::vector<int>* type_;
+  std::vector<int>* module_;
+  std::vector<int>* side_;
+  std::vector<int>* column_;
+  std::vector<int>* row_;
+  std::vector<int>* wall_;
+  std::vector<double>* amplitude_;
+  std::vector<double>* sigma_amplitude_;
+  std::vector<double>* charge_;
+  std::vector<double>* sigma_charge_;
+  std::vector<double>* time_;
+  std::vector<double>* sigma_time_;
+  std::vector<double>* baseline_;
+  std::vector<double>* sigma_baseline_;
+  std::vector<double>* rising_time_;
+  std::vector<double>* sigma_rising_time_;
+  std::vector<double>* falling_time_;
+  std::vector<double>* sigma_falling_time_;
+  std::vector<double>* time_width_;
+  std::vector<double>* sigma_time_width_;
+
+  PreCalibCaloEventStorage()
+    : nohits_(0),
+      id_(0),
+      type_(0),
+      module_(0),
+      side_(0),
+      column_(0),
+      row_(0),
+      wall_(0),
+      amplitude_(0),
+      sigma_amplitude_(0),
+      charge_(0),
+      sigma_charge_(0),
+      time_(0),
+      sigma_time_(0),
+      baseline_(0),
+      sigma_baseline_(0),
+      rising_time_(0),
+      sigma_rising_time_(0),
+      falling_time_(0),
+      sigma_falling_time_(0),
+      time_width_(0),
+      sigma_time_width_(0) {}
+
+} PreCalibCaloEventStorage;
+
+typedef struct PreCalibTrackerEventStorage {
+  int nohits_;
+  std::vector<int>* id_;
+  std::vector<int>* type_;
+  std::vector<int>* module_;
+  std::vector<int>* side_;
+  std::vector<int>* layer_;
+  std::vector<int>* column_;
+  std::vector<double>* reference_time_;
+  std::vector<double>* anodic_drift_time_;
+  std::vector<double>* sigma_anodic_drift_time_;
+  std::vector<double>* bottom_cathode_drift_time_;
+  std::vector<double>* sigma_bottom_cathode_drift_time_;
+  std::vector<double>* top_cathode_drift_time_;
+  std::vector<double>* sigma_top_cathode_drift_time_;
+  std::vector<bool>*   is_delayed_;
+
+  PreCalibTrackerEventStorage()
+    : nohits_(0),
+      id_(0),
+      module_(0),
+      side_(0),
+      layer_(0),
+      column_(0),
+      reference_time_(0),
+      anodic_drift_time_(0),
+      sigma_anodic_drift_time_(0),
+      bottom_cathode_drift_time_(0),
+      sigma_bottom_cathode_drift_time_(0),
+      top_cathode_drift_time_(0),
+      sigma_top_cathode_drift_time_(0),
+      is_delayed_(0) {}
+
+} PreCalibTrackerEventStorage;
 
 typedef struct DigiCaloEventStorage {
   int nohits_;
@@ -312,17 +398,20 @@ private:
   TFile* hfile_;
   TTree* tree_;
 
-  TrueCaloStorage truecalo_;          // see typedefs
-  TrueTrackerStorage truetracker_;    // see typedefs
-  TrueVertexStorage truevertex_;      // see typedefs
-  TrueParticleStorage trueparticle_;  // see typedefs
+  TrueCaloStorage     truecalo_;     // see typedefs
+  TrueTrackerStorage  truetracker_;  // see typedefs
+  TrueVertexStorage   truevertex_;   // see typedefs
+  TrueParticleStorage trueparticle_; // see typedefs
 
-  HeaderEventStorage header_;   // see typedefs
+  HeaderEventStorage  header_;  // see typedefs
   TrackerEventStorage tracker_; // see typedefs
-  CaloEventStorage calo_;       // see typedefs
+  CaloEventStorage    calo_;    // see typedefs
 
-  DigiCaloEventStorage digicalo_;       // see typedefs
+  DigiCaloEventStorage    digicalo_;    // see typedefs
   DigiTrackerEventStorage digitracker_; // see typedefs
+
+  PreCalibCaloEventStorage    pcdcalo_;    // see typedefs
+  PreCalibTrackerEventStorage pcdtracker_; // see typedefs
 
   // Forward declaration for PIMPL:
   struct working_space;
