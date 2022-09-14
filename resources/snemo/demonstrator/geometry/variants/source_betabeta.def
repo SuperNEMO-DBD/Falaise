@@ -69,6 +69,18 @@
     parameters.material.description  : string = "The material of the source foil"
 
 
+[name="source_betabeta.realistic.VM" type="variant"]
+  #@config A variant model describing the realistic layout of the SN betabeta source
+  display_name       : string = "DBD source realistic layout"
+  terse_description  : string = "The configuration parameters for the DBD source realistic layout"
+
+
+[name="source_betabeta.realistic_snrs_1.VM" type="variant"]
+  #@config A variant model describing the realistic layout of the SN betabeta source using the SNRS model with deformed ITEP-style foils
+  display_name       : string = "DBD source realistic SNRS layout"
+  terse_description  : string = "The configuration parameters for the DBD source realistic SNRS layout"
+
+
 [name="source_betabeta.layout.PM" type="parameter"]
   #@config A parameter model describing the layout of the DBD source foil
   display_name       : string = "Source layout"
@@ -77,12 +89,20 @@
     variable.mode : string = "enumeration"
   type : string = "string"
     string.default : string = "Basic"
-    string.enumerated.size : integer = 1
-      string.enumerated_0.value : string = "Basic"
+    string.enumerated.size : integer = 3
+      string.enumerated_0.value   : string = "Basic"
       string.enumerated_0.variant : string = "if_basic"
-  variants : string[1] = "if_basic"
+      string.enumerated_1.value   : string = "RealisticFlat"
+      string.enumerated_1.variant : string = "if_realistic_flat"
+      string.enumerated_2.value   : string = "RealisticSNRS1"
+      string.enumerated_2.variant : string = "if_realistic_snrs1"
+  variants : string[3] = "if_basic" "if_realistic_flat" "if_realistic_snrs1"
     variants.if_basic.model       : string = "source_betabeta.basic.VM"
     variants.if_basic.description : string = "Set of parameters for basic beta-beta source layout"
+    variants.if_realistic_flat.model        : string = "source_betabeta.realistic.VM"
+    variants.if_realistic_flat.description  : string = "Set of parameters for realistic flat beta-beta source layout"
+    variants.if_realistic_snrs1.model       : string = "source_betabeta.realistic_snrs_1.VM"
+    variants.if_realistic_snrs1.description : string = "Set of parameters for realistic beta-beta source layout using SNRS model 1 (deformed ITEP-foils)"
 
 
 [name="source_betabeta.VM" type="variant"]

@@ -21,4 +21,19 @@ const std::string& service_info::cutServiceName() {
   return lbl;
 }
 
+const std::string& service_info::dbServiceName() {
+  static std::string lbl("db");
+  return lbl;
+}
+
+const std::string& service_info::trackerCellStatusServiceName() {
+  static std::string lbl("trackerCellStatus");
+  return lbl;
+}
+
+const std::string& service_info::calorimeterOmStatusServiceName() {
+  static std::string lbl("calorimeterOmStatus");
+  return lbl;
+}
+
 }  // end of namespace snemo

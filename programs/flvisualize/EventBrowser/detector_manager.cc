@@ -30,6 +30,8 @@
 #include <EventBrowser/detector/special_volume.h>
 #include <EventBrowser/detector/sphere_volume.h>
 #include <EventBrowser/detector/tube_volume.h>
+/// Only with ROOT version > 6.16 ???
+/// #include <EventBrowser/detector/tessellated_volume.h>
 
 #include <EventBrowser/view/options_manager.h>
 #include <EventBrowser/view/style_manager.h>
@@ -112,7 +114,6 @@ std::string detector_manager::get_volume_name(const geomtools::geom_id &id_) con
 std::string detector_manager::get_volume_category(const geomtools::geom_id &id_) const {
   const geomtools::id_mgr &mgr = _geo_manager_->get_id_mgr();
   std::string volume_category;
-
   if (mgr.has_category_info(id_.get_type())) {
     const geomtools::id_mgr::category_info &c_info = mgr.get_category_info(id_.get_type());
     volume_category = c_info.get_category();
@@ -410,6 +411,9 @@ void detector_manager::_read_detector_config_() {
     _setup_label_ = TRACKER_COMMISSIONING;
   } else if (_setup_label_name_ == "snemo::demonstrator") {
     _setup_label_ = SNEMO_DEMONSTRATOR;
+    // XXX
+    _special_volume_name_.emplace_back("source_pad_bulk");
+    _special_volume_name_.emplace_back("source_pad_film");
   } else if (_setup_label_name_ == "hpge") {
     _setup_label_ = HPGE;
   } else {
@@ -558,7 +562,8 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
         // only_categories_.push_back("source_submodule");
         only_categories_.emplace_back("source_strip");
         only_categories_.emplace_back("source_pad");
-        // only_categories_.push_back("source_calibration_track");
+        only_categories_.emplace_back("source_pad_bulk");
+        only_categories_.push_back("source_calibration_track");
         // only_categories_.push_back("source_calibration_carrier");
         only_categories_.emplace_back("source_calibration_spot");
         only_categories_.emplace_back("source_like_plate");
@@ -596,18 +601,35 @@ void detector_manager::_set_categories_(std::vector<std::string> &only_categorie
 
 void detector_manager::_set_volume_(const geomtools::geom_info &ginfo_) {
   const geomtools::geom_id &volume_id = ginfo_.get_id();
+  // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_id='" << volume_id << "'\n";
 
   const std::string volume_name = this->get_volume_name(volume_id);
   const std::string volume_category = this->get_volume_category(volume_id);
+  // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_name='" << volume_name << "'\n";
+  // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_category='" << volume_category << "'\n";
 
   const geomtools::logical_volume &a_log = ginfo_.get_logical();
   const geomtools::i_shape_3d &a_shape = a_log.get_shape();
   const std::string &shape_name = a_shape.get_shape_name();
-
+  // std::cerr << "*** devel *** detector_manager::_set_volume_() : shape_name='" << shape_name << "'\n";
+  
+  // if (! is_special_volume(volume_category)) {
+  //   DT_LOG_INFORMATION(view::options_manager::get_instance().get_logging_priority(),
+  //                      "'" << volume_category << "' is not a special volume !");
+  //   std::cerr << "*** devel *** detector_manager::_set_volume_() : "
+  //             << "shape_name='" << shape_name << "' of category '"
+  //             << volume_category << "' is not a special volume\n";
+  // }
   if (is_special_volume(volume_category)) {
     DT_LOG_INFORMATION(view::options_manager::get_instance().get_logging_priority(),
                        "'" << volume_category << "' is a special volume !");
-    _volumes_[volume_id] = new special_volume(volume_name, volume_category);
+    // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_id='" << volume_id << "'\n";
+    // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_name='" << volume_name << "'\n";
+    // std::cerr << "*** devel *** detector_manager::_set_volume_() : volume_category='" << volume_category << "'\n";
+    // std::cerr << "*** devel *** detector_manager::_set_volume_() : "
+    //           << "shape_name='" << shape_name << "' of category '"
+    //           << volume_category << "' is a special volume\n";
+     _volumes_[volume_id] = new special_volume(volume_name, volume_category);
   } else if (a_shape.is_composite()) {
     _volumes_[volume_id] = new composite_volume(volume_name, volume_category);
   } else if (shape_name == "box") {
@@ -620,6 +642,8 @@ void detector_manager::_set_volume_(const geomtools::geom_info &ginfo_) {
     _volumes_[volume_id] = new sphere_volume(volume_name, volume_category);
   } else if (shape_name == "polycone") {
     _volumes_[volume_id] = new polycone_volume(volume_name, volume_category);
+  // } else if (shape_name == "tessellated") {
+  //   _volumes_[volume_id] = new tessellated_volume(volume_name, volume_category);
   } else {
     DT_LOG_ERROR(view::options_manager::get_instance().get_logging_priority(),
                  shape_name << "' not yet implemented for '" << volume_category << "' volume");

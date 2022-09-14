@@ -42,7 +42,22 @@ class helix_trajectory_pattern : public base_trajectory_pattern {
   const geomtools::helix_3d& get_helix() const;
 
   /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const;
+  virtual const geomtools::i_shape_1d& get_shape() const override;
+
+  geomtools::vector_3d get_first() const override;
+
+  geomtools::vector_3d get_first_direction() const override;
+
+  geomtools::vector_3d get_last() const override;
+
+  geomtools::vector_3d get_last_direction() const override;
+
+  unsigned int number_of_kinks() const override;
+  
+  geomtools::vector_3d get_kink(unsigned int kink_index_) const override;
+
+  geomtools::vector_3d get_kink_direction(unsigned int kink_index_,
+                                          direction_type dir_) const override;
 
  private:
   geomtools::helix_3d _helix_{};  //!< The helix embedded model

@@ -104,6 +104,36 @@ set_tests_properties(flreconstruct-custom-multimodule-pipeline PROPERTIES
   )
 set_falaise_test_environment(flreconstruct-custom-multimodule-pipeline)
 
+# Test basic event filtering
+add_library(FilterTests SHARED filters/FilterTests.cc)
+target_link_libraries(FilterTests Falaise)
+set_target_properties(FilterTests PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_PLUGINDIR}")
+
+set(FLRECONSTRUCT_FILTERS_SIM_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-filters-sim-fixture.brio")
+set(FLRECONSTRUCT_FILTERS_FILT_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-filters-filt-fixture.brio")
+
+add_test(NAME flreconstruct-filter-fixture
+  COMMAND flsimulate
+          -c "${CMAKE_CURRENT_SOURCE_DIR}/filters/sim.conf"
+          -o "${FLRECONSTRUCT_FILTERS_SIM_FIXTURE_FILE}")
+set_falaise_test_environment(flreconstruct-filter-fixture)
+
+add_test(NAME flreconstruct-filter-do-filter
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FILTERS_SIM_FIXTURE_FILE}
+          -p "${CMAKE_CURRENT_SOURCE_DIR}/filters/filter_events.conf"
+          -o ${FLRECONSTRUCT_FILTERS_FILT_FIXTURE_FILE})
+set_tests_properties(flreconstruct-filter-do-filter PROPERTIES
+          DEPENDS flreconstruct-filter-fixture)
+set_falaise_test_environment(flreconstruct-filter-do-filter)
+
+add_test(NAME flreconstruct-filter-check-filter
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FILTERS_FILT_FIXTURE_FILE}
+          -p "${CMAKE_CURRENT_SOURCE_DIR}/filters/check_filtering.conf")
+set_tests_properties(flreconstruct-filter-check-filter PROPERTIES
+          DEPENDS flreconstruct-filter-do-filter)
+set_falaise_test_environment(flreconstruct-filter-check-filter)
+
+
 # Tests dedicated to the validation of fixes
 # - Validation of issue #8 fix
 add_test(NAME flreconstruct-fix-issue8-validation

@@ -2,7 +2,7 @@
 /// \file falaise/snemo/datamodels/data_model.h
 /* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2011-03-21
- * Last modified: 2014-02-27
+ * Last modified: 2022-05-03
  *
  * Description:
  *
@@ -37,6 +37,9 @@ class labels {
   /// default string label/name for the 'simulated data'
   static const std::string& simulated_data();
 
+  /// default string label/name for the 'precalibrated data'
+  static const std::string& precalibrated_data();
+
   /// default string label/name for the 'calibrated data'
   static const std::string& calibrated_data();
 
@@ -50,6 +53,6 @@ class labels {
   static const std::string& particle_track_data();
 };
 
-}  // end of namespace snemo
+}  // end of namespace snedm
 
 #endif  // FALAISE_SNEMO_DATAMODEL_DATA_MODEL_H

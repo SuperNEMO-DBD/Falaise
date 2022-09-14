@@ -62,11 +62,11 @@ struct line_fit_params {
   /// \brief Index associated to each parameter of the line fit
   enum param_index_type {
     PARAM_INDEX_INVALID = -1,
-    PARAM_INDEX_Z0 = 0,     /// Index of the Z0 free parameter
-    PARAM_INDEX_Y0 = 1,     /// Index of the Y0 free parameter
-    PARAM_INDEX_PHI = 2,    /// Index of the PHI free parameter
-    PARAM_INDEX_THETA = 3,  /// Index of the THETA free parameter
-    PARAM_INDEX_T0 = 4      /// Index of the T0 free parameter (if used)
+    PARAM_INDEX_Z0 = 0,     ///< Index of the Z0 free parameter
+    PARAM_INDEX_Y0 = 1,     ///< Index of the Y0 free parameter
+    PARAM_INDEX_PHI = 2,    ///< Index of the PHI free parameter
+    PARAM_INDEX_THETA = 3,  ///< Index of the THETA free parameter
+    PARAM_INDEX_T0 = 4      ///< Index of the T0 free parameter (if used)
   };
 
   /// Constructor
@@ -82,11 +82,11 @@ struct line_fit_params {
   void draw(std::ostream &out_, double length_) const;
 
   // Attributes:
-  double y0;     /// Y coordinate of the reference point of the fitted line
-  double z0;     /// Z coordinate of the reference point of the fitted line
-  double phi;    /// Phi angle of the direction of the fitted line
-  double theta;  /// Theta angle of the direction of the fitted line
-  double t0;     /// Reference time (default = 0, set by user)
+  double y0;     ///< Y coordinate of the reference point of the fitted line
+  double z0;     ///< Z coordinate of the reference point of the fitted line
+  double phi;    ///< Phi angle of the direction of the fitted line
+  double theta;  ///< Theta angle of the direction of the fitted line
+  double t0;     ///< Reference time (default = 0, set by user)
 };
 
 /// \brief Input data for the line fit
@@ -99,13 +99,13 @@ struct line_fit_data {
   void reset();
 
   // Attributes:
-  bool using_first;         /// Use first flag (default = false)
-  bool using_last;          /// Use last flag (default = false)
-  bool using_drift_time;    /// Use drift time (default = false)
-  bool fit_start_time;      /// Flag to also fit the reference time
-  const gg_hits_col *hits;  /// Collection of Geiger hits
+  bool using_first;         ///< Use first flag (default = false)
+  bool using_last;          ///< Use last flag (default = false)
+  bool using_drift_time;    ///< Use drift time (default = false)
+  bool fit_start_time;      ///< Flag to also fit the reference time
+  const gg_hits_col *hits;  ///< Collection of Geiger hits
   const i_drift_time_calibration
-      *calibration;  /// Handle to the drift time to radius calibration object
+      *calibration;  ///< Handle to the drift time to radius calibration object
 };
 
 /// \brief The solution of the line fit
@@ -124,45 +124,45 @@ struct line_fit_solution : public line_fit_params {
   void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
                  const std::string &indent_ = "", bool inherit_ = false) const;
   // Attributes:
-  bool ok;                            /// Status if the solution
-  double err_t0;                      /// Error on the T0 (if used)
-  double err_y0;                      /// Error on the Y0
-  double err_z0;                      /// Error on the Z0
-  double err_phi;                     /// Error on phi
-  double err_theta;                   /// Error on theta
-  double chi;                         /// Chi value
-  size_t ndof;                        /// Number of degrees of freedom
-  size_t niter;                       /// Number of iterations of the fit
-  datatools::properties auxiliaries;  /// Auxiliary properties
+  bool ok;                            ///< Status if the solution
+  double err_t0;                      ///< Error on the T0 (if used)
+  double err_y0;                      ///< Error on the Y0
+  double err_z0;                      ///< Error on the Z0
+  double err_phi;                     ///< Error on phi
+  double err_theta;                   ///< Error on theta
+  double chi;                         ///< Chi value
+  size_t ndof;                        ///< Number of degrees of freedom
+  size_t niter;                       ///< Number of iterations of the fit
+  datatools::properties auxiliaries;  ///< Auxiliary properties
 };
 
 /// \brief Parameters of the residual function
 struct line_fit_residual_function_param {
   /// \brief Type of residuals
   enum residual_type {
-    RESIDUAL_INVALID = -1,  /// Invalid value
+    RESIDUAL_INVALID = -1,  ///< Invalid value
     RESIDUAL_ALPHA =
-        0,  /// Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
-    RESIDUAL_BETA = 1  /// Identifier of the 'beta' residuals (computed along the Z Geiger plasma
-                       /// propagation axis)
+        0,  ///< Identifier of the 'alpha' residuals (computed in the XY Geiger drift plane)
+    RESIDUAL_BETA = 1  ///< Identifier of the 'beta' residuals (computed along the Z Geiger plasma
+                       ///< propagation axis)
   };
 
   /// Default constructor
   line_fit_residual_function_param();
 
   // Attributes:
-  bool using_first;                                    /// Use the first flag
-  bool using_last;                                     /// Use the last flag
-  bool using_drift_time;                               /// Use the drift time
-  bool fit_start_time;                                 /// Fit the start time
-  int mode;                                            /// Mode
-  int residual_type;                                   /// Type of residual
-  bool first;                                          /// First flag
-  bool last;                                           /// Last flag
-  double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi;  /// Data points
-  double t0;                            /// Reference time (eventually a free paramter)
-  double y0, z0, phi, theta;            /// Free parameters
-  const i_drift_time_calibration *dtc;  /// Handle to the drift time to radius calibration
+  bool using_first;                                    ///< Use the first flag
+  bool using_last;                                     ///< Use the last flag
+  bool using_drift_time;                               ///< Use the drift time
+  bool fit_start_time;                                 ///< Fit the start time
+  int mode;                                            ///< Mode
+  int residual_type;                                   ///< Type of residual
+  bool first;                                          ///< First flag
+  bool last;                                           ///< Last flag
+  double xi, yi, zi, szi, ti, ti_min, ri, dri, rmaxi;  ///< Data points
+  double t0;                            ///< Reference time (eventually a free paramter)
+  double y0, z0, phi, theta;            ///< Free parameters
+  const i_drift_time_calibration *dtc;  ///< Handle to the drift time to radius calibration
 };
 
 /// \brief Manager of the line fit
@@ -170,9 +170,9 @@ class line_fit_mgr : boost::noncopyable {
  public:
   /// \brief Constants
   struct constants {
-    static unsigned int default_fit_max_iter();  /// Default maximum number of iterations of the fit
-    static double default_fit_eps();             /// Default tolerance of the fit
-    static unsigned int min_number_of_hits();    /// Minimum number of hits to perform the fit
+    static unsigned int default_fit_max_iter();  ///< Default maximum number of iterations of the fit
+    static double default_fit_eps();             ///< Default tolerance of the fit
+    static unsigned int min_number_of_hits();    ///< Minimum number of hits to perform the fit
   };
 
   /// Set the logging priority threshold
@@ -305,12 +305,12 @@ class line_fit_mgr : boost::noncopyable {
     void _set_defaults();
 
    private:
-    datatools::logger::priority _logging_priority_;  /// Logging priority threshold
-    bool _use_max_radius_;                           /// Flag to use the maximum radius
-    double _max_radius_factor_;                      /// Factor for maximum radius
-    bool _use_guess_trust_;                          /// Flag to use guess trust
-    int _guess_trust_mode_;                          /// Mode for guess trust
-    bool _fit_delayed_clusters_;                     /// Flag to fit delayed clusters
+    datatools::logger::priority _logging_priority_;  ///< Logging priority threshold
+    bool _use_max_radius_;                           ///< Flag to use the maximum radius
+    double _max_radius_factor_;                      ///< Factor for maximum radius
+    bool _use_guess_trust_;                          ///< Flag to use guess trust
+    int _guess_trust_mode_;                          ///< Mode for guess trust
+    bool _fit_delayed_clusters_;                     ///< Flag to fit delayed clusters
   };
 
   /// Compute the best reference frame
@@ -362,37 +362,37 @@ class line_fit_mgr : boost::noncopyable {
   void _set_defaults_();
 
  private:
-  datatools::logger::priority _logging_priority_;  /// Logging priority threshold
+  datatools::logger::priority _logging_priority_;  ///< Logging priority threshold
 
-  bool _initialized_;  /// Initialization flag
+  bool _initialized_;  ///< Initialization flag
 
   // GSL multifit stuff:
-  size_t _fit_npoints_;                             /// Number of points
-  size_t _fit_npars_;                               /// Number of fitted parameters
-  gsl_multifit_fdfsolver *_fit_mf_fdf_solver_;      /// GSL solver
-  gsl_multifit_function_fdf _fit_mf_fdf_function_;  /// GSL fit function
-  gsl_vector_view _fit_vview_;  /// GSL view for the internal vector of fit parameters
-  double _fit_x_init_[line_fit_params::LINE_FIT_NOPARS];  /// Parameters for the fitted line
-  size_t _fit_iter_;                                      /// Current number of fit iterations
-  double _fit_eps_;                                       /// Fit tolerance
-  size_t _fit_max_iter_;                                  /// Maximum number of fit iterations
-  gsl_matrix *_fit_covar_;                                /// Covariance matrix of the fit
-  int _fit_status_;                                       /// Current fit status
-  line_fit_data _fit_data_;                               /// Fit data for a line
+  size_t _fit_npoints_;                             ///< Number of points
+  size_t _fit_npars_;                               ///< Number of fitted parameters
+  gsl_multifit_fdfsolver *_fit_mf_fdf_solver_;      ///< GSL solver
+  gsl_multifit_function_fdf _fit_mf_fdf_function_;  ///< GSL fit function
+  gsl_vector_view _fit_vview_;  ///< GSL view for the internal vector of fit parameters
+  double _fit_x_init_[line_fit_params::LINE_FIT_NOPARS];  ///< Parameters for the fitted line
+  size_t _fit_iter_;                                      ///< Current number of fit iterations
+  double _fit_eps_;                                       ///< Fit tolerance
+  size_t _fit_max_iter_;                                  ///< Maximum number of fit iterations
+  gsl_matrix *_fit_covar_;                                ///< Covariance matrix of the fit
+  int _fit_status_;                                       ///< Current fit status
+  line_fit_data _fit_data_;                               ///< Fit data for a line
 
-  bool _using_last_;       /// Flag to use the 'last' flag of hits
-  bool _using_first_;      /// Flag to use the 'first' flag of hits
+  bool _using_last_;       ///< Flag to use the 'last' flag of hits
+  bool _using_first_;      ///< Flag to use the 'first' flag of hits
   bool _using_drift_time_; /** Flag to use the 'drift time' of hits combined to a calibration object
                             * in place of the pre-calibrarion drift radius. This mode uses a
                             * on-the-fly time-to-radius calibration.
                             */
-  bool _fit_start_time_;   /// Flag to also consider the reference time as a free parameter
-  const gg_hits_col *_hits_;                      /// Handle to the input collection of Geiger hits
-  const i_drift_time_calibration *_calibration_;  /// Handle to the calibration object
-  double _t0_;                                    /// Reference delay time (==0 set by user)
-  bool _step_print_status_;      /// Flag to print the status of the fit at each step
-  bool _step_draw_;              /// Flag to display the fit status at each step
-  line_fit_solution _solution_;  /// Embedded solution of the fit
+  bool _fit_start_time_;   ///< Flag to also consider the reference time as a free parameter
+  const gg_hits_col *_hits_;                      ///< Handle to the input collection of Geiger hits
+  const i_drift_time_calibration *_calibration_;  ///< Handle to the calibration object
+  double _t0_;                                    ///< Reference delay time (==0 set by user)
+  bool _step_print_status_;      ///< Flag to print the status of the fit at each step
+  bool _step_draw_;              ///< Flag to display the fit status at each step
+  line_fit_solution _solution_;  ///< Embedded solution of the fit
 };
 
 }  // end of namespace TrackFit

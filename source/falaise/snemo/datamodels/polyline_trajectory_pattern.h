@@ -39,10 +39,25 @@ class polyline_trajectory_pattern : public base_trajectory_pattern {
   const geomtools::polyline_3d& get_path() const;
 
   /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const;
+  virtual const geomtools::i_shape_1d& get_shape() const override;
 
+  geomtools::vector_3d get_first() const override;
+
+  geomtools::vector_3d get_first_direction() const override;
+
+  geomtools::vector_3d get_last() const override;
+
+  geomtools::vector_3d get_last_direction() const override;
+
+  unsigned int number_of_kinks() const override;
+  
+  geomtools::vector_3d get_kink(unsigned int kink_index_) const override;
+
+  geomtools::vector_3d get_kink_direction(unsigned int kink_index_,
+                                          direction_type dir_) const override;
+ 
  private:
-  geomtools::polyline_3d _path_{};  //!< The polyline path embedded model
+  geomtools::polyline_3d _path_{}; //!< The polyline path embedded model
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };
