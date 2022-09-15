@@ -972,15 +972,15 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       if (pcd_calo_hit.get_geom_id().get_type() == calo_geom_type) {
         // CALO
         ws_->pcdcalowall.push_back(0);
-        ws_->pcdcalocolumn.push_back(pcd_hit.get_geom_id().get(2));
-        ws_->pcdcalorow.push_back(pcd_hit.get_geom_id().get(3));
+        ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(2));
+        ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(3));
         ws_->pcdcalotype.push_back(0);
       }
       if (pcd_calo_hit.get_geom_id().get_type() == xcalo_geom_type) {
         // XCALO
-        ws_->pcdcalowall.push_back(pcd_hit.get_geom_id().get(2));
-        ws_->pcdcalocolumn.push_back(pcd_hit.get_geom_id().get(3));
-        ws_->pcdcalorow.push_back(pcd_hit.get_geom_id().get(0));
+        ws_->pcdcalowall.push_back(pcd_calo_hit.get_geom_id().get(2));
+        ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(3));
+        ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(0));
         ws_->pcdcalotype.push_back(1);
       }
       if (pcd_calo_hit.get_geom_id().get_type() == gveto_geom_type) {
@@ -991,20 +991,20 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         ws_->pcdcalotype.push_back(2);
       }
 
-      ws_.>pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());
-      ws_.>pcdcalosigmaamplitude.push_back(pcd_calo_hit.get_sigma_amplitude());
-      ws_.>pcdcalocharge.push_back(pcd_calo_hit.get_charge());
-      ws_.>pcdcalosigmacharge.push_back(pcd_calo_hit.get_sigma_charge());
-      ws_.>pcdcalotime.push_back(pcd_calo_hit.get_time());
-      ws_.>pcdcalosigmatime.push_back(pcd_calo_hit.get_sigma_time());
-      ws_.>pcdcalobaseline.push_back(pcd_calo_hit.get_baseline());
-      ws_.>pcdcalosigmabaseline.push_back(pcd_calo_hit.get_sigma_baseline());
-      ws_.>pcdcalorisingtime.push_back(pcd_calo_hit.get_rising_time());
-      ws_.>pcdcalosigmarisingtime.push_back(pcd_calo_hit.get_sigma_rising_time());
-      ws_.>pcdcalofallingtime.push_back(pcd_calo_hit.get_falling_time());
-      ws_.>pcdcalosigmafallingtime.push_back(pcd_calo_hit.get_sigma_falling_time());
-      ws_.>pcdcalotimewidth.push_back(pcd_calo_hit.get_time_width());
-      ws_.>pcdcalosigmatimewidth.push_back(pcd_calo_hit.get_sigma_time_width());
+      ws_->pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());
+      ws_->pcdcalosigmaamplitude.push_back(pcd_calo_hit.get_sigma_amplitude());
+      ws_->pcdcalocharge.push_back(pcd_calo_hit.get_charge());
+      ws_->pcdcalosigmacharge.push_back(pcd_calo_hit.get_sigma_charge());
+      ws_->pcdcalotime.push_back(pcd_calo_hit.get_time());
+      ws_->pcdcalosigmatime.push_back(pcd_calo_hit.get_sigma_time());
+      ws_->pcdcalobaseline.push_back(pcd_calo_hit.get_baseline());
+      ws_->pcdcalosigmabaseline.push_back(pcd_calo_hit.get_sigma_baseline());
+      ws_->pcdcalorisingtime.push_back(pcd_calo_hit.get_rising_time());
+      ws_->pcdcalosigmarisingtime.push_back(pcd_calo_hit.get_sigma_rising_time());
+      ws_->pcdcalofallingtime.push_back(pcd_calo_hit.get_falling_time());
+      ws_->pcdcalosigmafallingtime.push_back(pcd_calo_hit.get_sigma_falling_time());
+      ws_->pcdcalotimewidth.push_back(pcd_calo_hit.get_time_width());
+      ws_->pcdcalosigmatimewidth.push_back(pcd_calo_hit.get_sigma_time_width());
     }
 
     pcdcalo_.id_ = &ws_->pcdcaloid;
@@ -1014,22 +1014,21 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     pcdcalo_.column_ = &ws_->pcdcalocolumn;
     pcdcalo_.row_ = &ws_->pcdcalorow;
     pcdcalo_.wall_ = &ws_->pcdcalowall;
-    pcdcalo_.amplitude_ = &ws_.>pcdcaloamplitude;
-    pcdcalo_.sigma_amplitude_ = &ws_.>pcdcalosigmaamplitude;
-    pcdcalo_.charge_ = &ws_.>pcdcalocharge;
-    pcdcalo_.sigma_charge_ = &ws_.>pcdcalosigmacharge;
-    pcdcalo_.time_ = &ws_.>pcdcalotime;
-    pcdcalo_.sigma_time_ = &ws_.>pcdcalosigmatime;
-    pcdcalo_.baseline_ = &ws_.>pcdcalobaseline;
-    pcdcalo_.sigma_baseline_ = &ws_.>pcdcalosigmabaseline;
-    pcdcalo_.rising_time_ = &ws_.>pcdcalorisingtime;
-    pcdcalo_.sigma_rising_time_ = &ws_.>pcdcalosigmarisingtime;
-    pcdcalo_.falling_time_ = &ws_.>pcdcalofallingtime;
-    pcdcalo_.sigma_falling_time_ = &ws_.>pcdcalosigmafallingtime;
-    pcdcalo_.time_width_ = &ws_.>pcdcalotimewidth;
-    pcdcalo_.sigma_time_width_ = &ws_.>pcdcalosigmatimewidth;
-
-  }
+    pcdcalo_.amplitude_ = &ws_->pcdcaloamplitude;
+    pcdcalo_.sigma_amplitude_ = &ws_->pcdcalosigmaamplitude;
+    pcdcalo_.charge_ = &ws_->pcdcalocharge;
+    pcdcalo_.sigma_charge_ = &ws_->pcdcalosigmacharge;
+    pcdcalo_.time_ = &ws_->pcdcalotime;
+    pcdcalo_.sigma_time_ = &ws_->pcdcalosigmatime;
+    pcdcalo_.baseline_ = &ws_->pcdcalobaseline;
+    pcdcalo_.sigma_baseline_ = &ws_->pcdcalosigmabaseline;
+    pcdcalo_.rising_time_ = &ws_->pcdcalorisingtime;
+    pcdcalo_.sigma_rising_time_ = &ws_->pcdcalosigmarisingtime;
+    pcdcalo_.falling_time_ = &ws_->pcdcalofallingtime;
+    pcdcalo_.sigma_falling_time_ = &ws_->pcdcalosigmafallingtime;
+    pcdcalo_.time_width_ = &ws_->pcdcalotimewidth;
+    pcdcalo_.sigma_time_width_ = &ws_->pcdcalosigmatimewidth;
+  } 
 
 
   // look for calibrated data
