@@ -11,6 +11,12 @@ set(FalaiseLttcPlugin_TESTS
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 if(FalaiseLttcPlugin_ENABLE_TESTING)
+  # set(_falaise_TEST_ENVIRONMENT
+  #   "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  #   # "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test"
+  #   # "FALAISE_SNEMO_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/snemo/test"
+  #   # "FALAISE_GEOMETRY_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/geometry/testing"
+  #   )
   foreach(_testsource ${FalaiseLttcPlugin_TESTS})
     get_filename_component(_testname "${_testsource}" NAME_WE)
     set(_testname "falaiselttcplugin-${_testname}")
@@ -22,6 +28,9 @@ if(FalaiseLttcPlugin_ENABLE_TESTING)
     endif()
     add_test(NAME ${_testname} COMMAND ${_testname})
     set_falaise_test_environment(${_testname})
+    # set_property(TEST ${_testname}
+    #   APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
+    #   )
 
     # - For now, dump them into the testing output directory
     set_target_properties(${_testname}

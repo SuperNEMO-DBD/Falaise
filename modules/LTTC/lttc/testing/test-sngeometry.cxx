@@ -7,6 +7,7 @@
 #include <chrono>
 
 // Falaise:
+#include <falaise/falaise.h>
 #include <falaise/snemo/geometry/manager.h>
 #include <falaise/snemo/processing/detector_description.h>
 
@@ -16,7 +17,7 @@
 int main(void)
 {
   int code = EXIT_SUCCESS;
-
+  falaise::initialize();
   try {
     std::ofstream fout("test-sngeometry.data");
 
@@ -51,12 +52,6 @@ int main(void)
         fout << cellPos.x() + rcell << ' ' <<  cellPos.y() - rcell << '\n';
         fout << cellPos.x() - rcell << ' ' <<  cellPos.y() - rcell << '\n';
         fout << '\n';
-        // fout << cellPos.x() - rcell << ' ' <<  cellPos.y() - rcell << '\n';
-        // fout << cellPos.x() + rcell << ' ' <<  cellPos.y() + rcell << '\n';
-        // fout << '\n';
-        // fout << cellPos.x() - rcell << ' ' <<  cellPos.y() + rcell << '\n';
-        // fout << cellPos.x() + rcell << ' ' <<  cellPos.y() - rcell << '\n';
-        // fout << '\n';
       }
     }
     fout << '\n';
@@ -68,5 +63,6 @@ int main(void)
     std::cerr << "error: " << err.what() << std::endl;
     code = EXIT_FAILURE;
   }
+  falaise::terminate();
   return code;
 }
