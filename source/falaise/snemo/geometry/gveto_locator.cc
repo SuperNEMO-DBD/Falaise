@@ -801,7 +801,7 @@ void gveto_locator::construct_() {
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
-  for (const std::string &subaddress : {"module", "side", "wall", "column"}) {
+  for (const std::string subaddress : {"module", "side", "wall", "column"}) {
     DT_THROW_IF(!block_ci.has_subaddress(subaddress), std::logic_error,
                 "Category '" << detail::kGammaVetoBlockGIDCategory << "' has no subaddress '"
                              << subaddress << "'");

@@ -32,6 +32,7 @@ namespace bpo = boost::program_options;
 #include <TApplication.h>
 #include <TROOT.h>
 #include <TSystem.h>
+#include <TVirtualX.h>
 // - Bayeux/datatools:
 #include <bayeux/bayeux.h>
 #include <bayeux/datatools/ioutils.h>
