@@ -238,3 +238,13 @@ add_test(NAME flsimulate-feature-issue241-validation
 set_tests_properties(flsimulate-feature-issue241-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 set_falaise_test_environment(flsimulate-feature-issue241-validation)
+
+# - Validation of feature argon tracking gas
+add_test(NAME flsimulate-feature-argon-gas-validation
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas"
+  )
+set_tests_properties(flsimulate-feature-argon-gas-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-argon-gas-validation)
