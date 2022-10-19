@@ -7,6 +7,7 @@ digraph falaise_geometry_config_principles {
   labeljust="l";
   fontsize="20";
   fontname="bold";
+  
   {
     fontsize="16";
     fontname="normal";
