@@ -36,6 +36,7 @@ decaysResourcesSubdir="snemo/demonstrator/decays"
 simulationResourcesSubdir="snemo/demonstrator/simulation"
 vertexResourcesSubdir="snemo/demonstrator/vertex"
 geometryResourcesSubdir="snemo/demonstrator/geometry"
+workDir="$(pwd)/_work.d"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
 if [ ! -d ${falaiseBuildDir} ]; then
@@ -96,7 +97,7 @@ if [ $? -ne 0 ]; then
     echo >&2 "[error] Bayeux variant inspector failed !"
     exit 1
 fi
-exit 0
+# exit 0
 reset
 
 cat >&2 <<EOF
@@ -107,92 +108,38 @@ Geant4 production
 
 EOF
 
+if [ ! -d ${workDir} ]; then
+    mkdir -p ${workDir}
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] Work dir not created!"
+	exit 1
+    fi
+fi
 bxg4_production \
-    --logging-priority "trace" \
+    --logging-priority "fatal" \
     --datatools::logging "trace" \
     --load-dll "Falaise@${falaiseLibDir}" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
     --variant-config "@falaise:${simulationResourcesSubdir}/variants/${simulationVariantVersion}/SimulationVariantRepository.conf" \
     --variant-load "${simulationProfile}" \
     --batch \
-    --config @falaise:${simulationResourcesSubdir}/${simulationVersion/Simulationmanager.conf \
+    --config "@falaise:${simulationResourcesSubdir}/${simulationVersion}/SimulationManager.conf" \
     --vertex-generator-seed 0 \
     --event-generator-seed 0  \
     --g4-manager-seed 0       \
     --shpf-seed 0             \
-    --output-prng-seeds-file "/tmp/mc_g4_production.seeds" \
-    --output-prng-states-file "/tmp/mc_g4_production.states" \
+    --output-prng-seeds-file "${workDir}/mc_g4_production.seeds" \
+    --output-prng-states-file "${workDir}/mc_g4_production.states" \
     --number-of-events 10 \
     --number-of-events-modulo 1 \
-    --output-data-file "/tmp/_falaise_simulation.xml.gz" \
+    --output-data-file "${workDir}/falaise_simulation.xml.gz" \
     --output-data-format "bank" \
     --output-data-bank name "SD"
 if [ $? -ne 0 ]; then
-    echo >&2 "[error] Bayeux genvtx production failed !"
+    echo >&2 "[error] Bayeux Geant4 production failed !"
     exit 1
 fi
 
-# exit 0
-#######################
-# bxgenvtx_production \
-#     --logging "fatal" \
-#     --load-dll "Falaise@${falaiseLibDir}" \
-#     --datatools::logging "fatal" \
-#     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-#     --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-#     --variant-load "${vertexProfile}" \
-#     --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
-#     --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
-#     --shoot \
-#     --vertex-generator "${vertexGenerator}" \
-#     --number-of-vertices 10000 \
-#     --prng-seed 314159 \
-#     --vertex-modulo 1000 \
-#     --output-file "vertexes.data" \
-#     --visu \
-#     --visu-spot-size "2.0 mm" \
-#     --visu-spot-color "green" \
-#     --visu-max-counts 10000 \
-#     --visu-view "yz" \
-#     --visu-object "[1100:0]" \
-#     --visu-output \
-#     --visu-output-file "vertexes-dd.data" \    
-#     > ${vertexGenList}
-# if [ $? -ne 0 ]; then
-#     echo >&2 "[error] Bayeux genvtx production failed !"
-#     exit 1
-# fi
-
-# cat >&2 <<EOF
-
-# EOF
-
-# # geomVtxScript="geom.macro"
-# # cat > ${geomVtxScript} <<EOF
-# # load_display_data vertexes vertexes-dd.data
-# # display -xy [1100:0]
-# # display -3d --with-display-data --output "vertexes_on_foils.pdf" [1100:0]
-# # EOF
-# # cat ${geomVtxScript}
-
-# bxgeomtools_inspector \
-#     --logging "fatal" \
-#     --datatools::logging "fatal" \
-#     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-#     --load-dll "Falaise@${falaiseLibDir}" \
-#     --interactive \
-#     --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-#     --variant-load "${vertexProfile}" \
-#     --manager-config "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" 
-# if [ $? -ne 0 ]; then
-#     echo >&2 "[error] Bayeux geomtools inspector failed !"
-#     exit 1
-# fi
-
-# ls -l vertexes_on_foils.pdf
-# --variant-config "@falaise:${geometryResourcesSubdir}/variants/${geometryVariantVersion}/GeometryVariantRepository.conf" 
-# --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" 
-# --variant-load "${vertexProfile}" 
 
 
 exit 0
