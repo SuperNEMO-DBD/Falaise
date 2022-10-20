@@ -18,10 +18,11 @@ else
     vertexGenerator="free_spot"
 fi
 primaryGenerator="Co60"
+workDir="$(pwd)/_work.d"
 
 simulationResourcesDir="$(pwd)"
 falaiseResourcesDir="${simulationResourcesDir}/../../.."
-simulationProfile="$(pwd)/simulation.profile"
+simulationProfile="${workDir}/simulation.profile"
 origPwd="$(pwd)"
 if [ ! -d ${falaiseResourcesDir} ]; then
     echo >&2 "[error] Directory does not exist '${falaiseResourcesDir}' !"
@@ -36,7 +37,6 @@ decaysResourcesSubdir="snemo/demonstrator/decays"
 simulationResourcesSubdir="snemo/demonstrator/simulation"
 vertexResourcesSubdir="snemo/demonstrator/vertex"
 geometryResourcesSubdir="snemo/demonstrator/geometry"
-workDir="$(pwd)/_work.d"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
 if [ ! -d ${falaiseBuildDir} ]; then
