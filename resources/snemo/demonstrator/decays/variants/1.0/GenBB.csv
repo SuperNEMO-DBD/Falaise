@@ -74,20 +74,20 @@ Nd150.0nubbM2              : Neutrinoless double beta decay of Nd-150, 0nubbM2  
 Ac228 : Ac-228 decay : Background : : rank=second 
 Th234 : Th-234 decay : Background : : rank=second 
 Tl207 : Tl-207 decay : Background : : rank=second 
-Tl208 : Tl-208 decay : Background : 
-Bi214 : Bi-214 decay : Background : 
+Tl208 : Tl-208 decay : Background : :
+Bi214 : Bi-214 decay : Background : :
 Bi212 : Bi-212 decay : Background : : rank=second 
 Bi210 : Bi-210 decay : Background : : rank=second
-Bi214_Po214 : Bi-214/Po-214 decay : Background : 
-Bi212_Po212 : Bi-212/Po-212 decay : Background : 
+Bi214_Po214 : Bi-214/Po-214 decay : Background : :
+Bi212_Po212 : Bi-212/Po-212 decay : Background : :
 Pa234m : Pa-234m decay : Background : 
-K40   : K-40 decay   : Background : 
-Y90   : Y-90 decay   : Background : 
-Sr90  : Sr-90 decay  : Background : 
+K40   : K-40 decay   : Background : :
+Y90   : Y-90 decay   : Background : :
+Sr90  : Sr-90 decay  : Background : :
 Pa231 : Pa-231 decay : Background : : rank=second 
 Eu152 : Eu-152 decay : Background : : rank=second
 Eu154 : Eu-154 decay : Background : : rank=second 
-Pb210 : Pb-210 decay : Background : 
+Pb210 : Pb-210 decay : Background : :
 Pb211 : Pb-211 decay : Background : : rank=second
 Pb212 : Pb-212 decay : Background : : rank=second
 Pb214 : Pb-214 decay : Background : : rank=second
@@ -97,7 +97,7 @@ Cs137 : Cs-137 decay : Background : : rank=second
 
 ### Calibration sources ###
 calibBi207 : Bi-207 decay (with time slicing) : Calibration : : rank=highlight 
-Bi207 : Bi-207 decay (without time slicing) : Calibration : rank=second
+Bi207 : Bi-207 decay (without time slicing) : Calibration : : rank=second
 Na22  : Na-22 decay  : Calibration : : rank=second
 Mn54  : Mn-54 decay  : Calibration : : rank=second
 Co60  : Co-60 decay  : Calibration : : rank=second 
