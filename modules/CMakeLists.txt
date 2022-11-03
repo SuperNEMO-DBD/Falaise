@@ -12,6 +12,7 @@ set(Falaise_DIR "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_CMAKEDIR}/${FALAISE_TAG
 
 # Modules
 add_subdirectory(CAT)
+# add_subdirectory(LTTC)
 add_subdirectory(TrackFit)
 add_subdirectory(ChargedParticleTracking)
 add_subdirectory(GammaTracking)

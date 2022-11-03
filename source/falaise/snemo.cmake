@@ -63,6 +63,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
   snemo/geometry/helix_intercept.h
+  snemo/geometry/manager.h
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
@@ -73,6 +74,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
   snemo/processing/filter.h
+  snemo/processing/detector_description.h
   snemo/processing/module.h
   snemo/processing/black_hole_module.h
   snemo/processing/types.h
@@ -156,6 +158,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/mapped_magnetic_field.cc
   snemo/geometry/private/categories.h
   snemo/geometry/helix_intercept.cc
+  snemo/geometry/manager.cc
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc

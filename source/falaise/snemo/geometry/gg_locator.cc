@@ -63,11 +63,19 @@ void gg_locator::initialize(const datatools::properties &ps) {
 }
 
 // ----- ACCESSORS AND CALCULATIONS -----
+
+uint32_t gg_locator::cellGIDType() const
+{
+  return cellGIDType_;
+}
+  
 void gg_locator::setModuleNumber(uint32_t number) { moduleNumber_ = number; }
 
 uint32_t gg_locator::getModuleNumber() const { return moduleNumber_; }
 
 double gg_locator::cellDiameter() const { return cellBoxShape_->get_x(); }
+
+double gg_locator::cellRadius() const { return 0.5 * cellBoxShape_->get_x(); }
 
 double gg_locator::cellLength() const { return cellBoxShape_->get_z(); }
 
@@ -486,18 +494,24 @@ bool gg_locator::isWorldPointInModule(const geomtools::vector_3d &worldPoint,
 
 bool gg_locator::find_geom_id(const geomtools::vector_3d &worldPoint, int type,
                               geomtools::geom_id &gid, double tolerance) const {
+  datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
+  logging = datatools::logger::PRIO_DEBUG;
   DT_THROW_IF(type != (int)cellGIDType_, std::logic_error, "Only works with type " << cellGIDType_);
   gid.invalidate();
+  DT_LOG_DEBUG(logging, "worldPoint = " << worldPoint);
   geomtools::vector_3d modulePoint = transformWorldToModule(worldPoint);
+  DT_LOG_DEBUG(logging, "modulePoint = " << modulePoint);
 
   if (!moduleBoxShape_->is_inside(modulePoint, tolerance)) {
+    DT_LOG_DEBUG(logging, "not in module bix shape!");
     return false;
   }
 
   // If inside the module, check in detail
   if (tolerance == GEOMTOOLS_PROPER_TOLERANCE) {
     tolerance = cellBoxShape_->get_tolerance();
-  }
+    DT_LOG_DEBUG(logging, "using cell box shape proper tolerance=" << tolerance / CLHEP::mm << " mm");
+   }
 
   gid.invalidate();
   gid.set_type(cellGIDType_);
@@ -513,6 +527,7 @@ bool gg_locator::find_geom_id(const geomtools::vector_3d &worldPoint, int type,
 
   if (std::abs(z) < (cellBoxShape_->get_half_z() + 0.5 * tolerance)) {
     gid.set(moduleAddressIndex_, moduleNumber_);
+    DT_LOG_DEBUG(logging, " z ok : gid=" << gid);
     const double y = modulePoint.y();
     const double x = modulePoint.x();
     double first_cell_x;
@@ -552,28 +567,35 @@ bool gg_locator::find_geom_id(const geomtools::vector_3d &worldPoint, int type,
       }
     }
     if (side_number == geomtools::geom_id::INVALID_ADDRESS) {
+      DT_LOG_DEBUG(logging, "invalid  side");
       gid.invalidate();
       return false;
     }
     gid.set(sideAddressIndex_, side_number);
+    DT_LOG_DEBUG(logging, " side ok : gid=" << gid);
     const int ix = (int)(((x - first_cell_x) / cell_delta_x) + 0.5);
     if ((ix >= 0) && (ix < (int)nlayers)) {
       layer_number = ix;
     }
     gid.set(layerAddressIndex_, layer_number);
+    DT_LOG_DEBUG(logging, " layer ok : gid=" << gid);
     const int iy = (int)(((y - first_cell_y) / cell_delta_y) + 0.5);
     if ((iy >= 0) && (iy < (int)nrows)) {
       cell_number = iy;
     }
     gid.set(rowAddressIndex_, cell_number);
+    DT_LOG_DEBUG(logging, " row ok : gid=" << gid);
     if (gid.is_valid()) {
+      DT_LOG_DEBUG(logging, " gid ok : gid=" << gid);
       const geomtools::geom_info *ginfo_ptr = geomMapping_->get_geom_info_ptr(gid);
       if (ginfo_ptr == nullptr) {
+        DT_LOG_DEBUG(logging, " gid not mapped");
         gid.invalidate();
         return false;
       }
       geomtools::vector_3d inWorldPoint = transformModuleToWorld(modulePoint);
       if (geomtools::mapping::check_inside(*ginfo_ptr, inWorldPoint, tolerance, true)) {
+        DT_LOG_DEBUG(logging, " gid post-validation");
         return true;
       }
     }
@@ -710,7 +732,7 @@ void gg_locator::construct_() {
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
-  for (const std::string &subaddress : {"module", "side", "layer", "row"}) {
+  for (const std::string subaddress : {"module", "side", "layer", "row"}) {
     DT_THROW_IF(!cellCatInfo.has_subaddress(subaddress), std::logic_error,
                 "Category '" << detail::kDriftCellGIDCategory << "' has no subaddress '"
                              << subaddress << "'");
