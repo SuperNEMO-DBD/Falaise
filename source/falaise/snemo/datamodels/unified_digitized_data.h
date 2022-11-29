@@ -1,7 +1,7 @@
 // -*- mode: c++ ; -*-
 /// \file  falaise/snemo/datamodels/unified_digitized_data_hit.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
- *                Guillaume Oliviero <g.oliviero@ucl.ac.uk>
+ *                Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
  * Last modified: 2022-05-13
