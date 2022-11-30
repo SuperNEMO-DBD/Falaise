@@ -488,10 +488,12 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   // digitized calorimeter data
   tree_->Branch("digicalo.nohits", &digicalo_.nohits_);
   tree_->Branch("digicalo.id", &digicalo_.id_);
+  tree_->Branch("digicalo.type", &digicalo_.type_);
   tree_->Branch("digicalo.module", &digicalo_.module_);
   tree_->Branch("digicalo.side", &digicalo_.side_);
   tree_->Branch("digicalo.column", &digicalo_.column_);
   tree_->Branch("digicalo.row", &digicalo_.row_);
+  tree_->Branch("digicalo.wall", &digicalo_.wall_);
   tree_->Branch("digicalo.timestamp", &digicalo_.timestamp_);
   tree_->Branch("digicalo.lowthresholdonly", &digicalo_.low_threshold_only_);
   tree_->Branch("digicalo.highthreshold", &digicalo_.high_threshold_);
@@ -569,6 +571,11 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
   unsigned int calo_geom_type = 1302;
   unsigned int xcalo_geom_type = 1232;
   unsigned int gveto_geom_type = 1252;
+
+
+  unsigned int digi_calo_geom_type = 1301;
+  unsigned int digi_xcalo_geom_type = 1231;
+  unsigned int digi_gveto_geom_type = 1251;
 
   // Access the workItem
   if (workItem.has("SD")) {
@@ -853,29 +860,25 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       const snemo::datamodel::calorimeter_digitized_hit& digi_calo_hit = calo_handle.get();
 
       ws_->digicaloid.push_back(digi_calo_hit.get_hit_id());
+      ws_->digicalotype.push_back(digi_calo_hit.get_geom_id().get_type());
       ws_->digicalomodule.push_back(digi_calo_hit.get_geom_id().get(0));
       ws_->digicaloside.push_back(digi_calo_hit.get_geom_id().get(1));
 
-      if (digi_calo_hit.get_geom_id().get_type() == calo_geom_type) {
+      if (digi_calo_hit.get_geom_id().get_type() == digi_calo_geom_type) {
         // CALO
-        ws_->digicalowall.push_back(0);
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalorow.push_back(digi_calo_hit.get_geom_id().get(3));
-        ws_->digicalotype.push_back(0);
       }
-      if (digi_calo_hit.get_geom_id().get_type() == xcalo_geom_type) {
+      if (digi_calo_hit.get_geom_id().get_type() == digi_xcalo_geom_type) {
         // XCALO
         ws_->digicalowall.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(3));
-        ws_->digicalorow.push_back(digi_calo_hit.get_geom_id().get(0));
-        ws_->digicalotype.push_back(1);
+        ws_->digicalorow.push_back(digi_calo_hit.get_geom_id().get(4));
       }
-      if (digi_calo_hit.get_geom_id().get_type() == gveto_geom_type) {
+      if (digi_calo_hit.get_geom_id().get_type() == digi_gveto_geom_type) {
         // GVETO
         ws_->digicalowall.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(3));
-        ws_->digicalorow.push_back(0);
-        ws_->digicalotype.push_back(2);
       }
 
       ws_->digicalotimestamp.push_back(digi_calo_hit.get_timestamp());
@@ -966,29 +969,25 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       const snemo::datamodel::precalibrated_calorimeter_hit& pcd_calo_hit = calo_handle.get();
 
       ws_->pcdcaloid.push_back(pcd_calo_hit.get_hit_id());
+      ws_->pcdcalotype.push_back(pcd_calo_hit.get_geom_id().get_type());
       ws_->pcdcalomodule.push_back(pcd_calo_hit.get_geom_id().get(0));
       ws_->pcdcaloside.push_back(pcd_calo_hit.get_geom_id().get(1));
 
-      if (pcd_calo_hit.get_geom_id().get_type() == calo_geom_type) {
+      if (pcd_calo_hit.get_geom_id().get_type() == digi_calo_geom_type) {
         // CALO
-        ws_->pcdcalowall.push_back(0);
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(3));
-        ws_->pcdcalotype.push_back(0);
       }
       if (pcd_calo_hit.get_geom_id().get_type() == xcalo_geom_type) {
         // XCALO
         ws_->pcdcalowall.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(3));
-        ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(0));
-        ws_->pcdcalotype.push_back(1);
+        ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(4));
       }
       if (pcd_calo_hit.get_geom_id().get_type() == gveto_geom_type) {
         // GVETO
         ws_->pcdcalowall.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(3));
-        ws_->pcdcalorow.push_back(0);
-        ws_->pcdcalotype.push_back(2);
       }
 
       ws_->pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());
@@ -1028,7 +1027,7 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     pcdcalo_.sigma_falling_time_ = &ws_->pcdcalosigmafallingtime;
     pcdcalo_.time_width_ = &ws_->pcdcalotimewidth;
     pcdcalo_.sigma_time_width_ = &ws_->pcdcalosigmatimewidth;
-  } 
+  }
 
 
   // look for calibrated data
