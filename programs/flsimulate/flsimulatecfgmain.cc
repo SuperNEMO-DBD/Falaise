@@ -166,15 +166,15 @@ namespace FLSimulateConfig {
     std::cout << "  $ flsimulate-configure -o myprofile.conf \n\n";
     std::cout << "  $ flsimulate-configure \\\n"
               << "      -t \"" << FLSimulate::default_simulation_setup() << "\" \\\n"
-              << "      -o myprofile.conf \n\n";
+              << "      -o refprofile.conf \n\n";
     std::cout << "  $ flsimulate-configure \\\n"
               << "      --no-gui \\\n"
               << "      -t \"" << FLSimulate::default_simulation_setup() << "\" \\\n"
               << "      -v \"" << FLSimulate::default_variant_service_setup() << "\" \\\n"
-              << "      -i oldprofile.conf \\\n"
+              << "      -i refprofile.conf \\\n"
               << "      -s \"geometry:layout/if_basic/magnetic_field=false\" \\\n"
-              << "      -s \"geometry:layout/if_basic/magnetic_field=false\" \\\n"
-              << "      -o myprofile.conf \n\n";
+              << "      -s \"geometry:layout/if_basic/source_layout=RealisticFlat\" \\\n"
+              << "      -o newprofile.conf \n\n";
     return;
   }
 
