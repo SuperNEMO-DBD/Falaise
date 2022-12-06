@@ -47,6 +47,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
 
 
+  snemo/geometry/config.h
   snemo/geometry/utils.h
   snemo/geometry/calo_locator.h
   snemo/geometry/xcalo_locator.h
@@ -58,10 +59,12 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/helix_intercept.h
   snemo/geometry/manager.h
 
+  snemo/simulation/config.h
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
   snemo/simulation/calorimeter_step_hit_processor.h
 
+  snemo/processing/config.h
   snemo/processing/calorimeter_regime.h
   snemo/processing/geiger_regime.h
   snemo/processing/base_tracker_clusterizer.h
@@ -86,6 +89,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/dead_cells.h
   snemo/services/histogram.h
   snemo/services/db_service.h 
+  snemo/services/run_info_service.h
   snemo/services/tracker_cell_status_service.h
   snemo/services/calorimeter_om_status_service.h
 
@@ -138,6 +142,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/boost_io/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
 
+  snemo/geometry/config.cc
   snemo/geometry/calo_locator.cc
   snemo/geometry/xcalo_locator.cc
   snemo/geometry/gg_locator.cc
@@ -149,13 +154,14 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/helix_intercept.cc
   snemo/geometry/manager.cc
 
+  snemo/processing/config.cc
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
   snemo/processing/mock_calorimeter_s2c_module.cc
   snemo/processing/mock_calorimeter_s2c_module_utils.cc
   snemo/processing/mock_tracker_s2c_module.cc
-   snemo/processing/detail/mock_raw_tracker_hit.h
+  snemo/processing/detail/mock_raw_tracker_hit.h
   snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
@@ -174,9 +180,11 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/services/hello_world.cc
   snemo/services/dead_cells.cc
   snemo/services/db_service.cc
+  snemo/services/run_info_service.cc
   snemo/services/tracker_cell_status_service.cc
   snemo/services/calorimeter_om_status_service.cc
 
+  snemo/simulation/config.cc
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
   snemo/simulation/calorimeter_step_hit_processor.cc
@@ -246,6 +254,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
   snemo/test/test_snemo_physics_model_per_period_activity_model.cxx
   snemo/test/test_snemo_physics_model_activity_model_factory.cxx
+  snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
   # snemo/test/test_snemo_service_rc.cxx

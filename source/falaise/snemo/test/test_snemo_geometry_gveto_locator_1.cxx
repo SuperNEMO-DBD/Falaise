@@ -53,6 +53,7 @@
 #include <falaise/falaise.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/config.h>
 
 using namespace std;
 
@@ -611,7 +612,8 @@ int main(int argc_, char** argv_) {
     bool do_test6 = true;
 
     if (manager_config_file.empty()) {
-      manager_config_file = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
+      // manager_config_file = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
+      manager_config_file = snemo::geometry::default_geometry_tag();
     }
     datatools::fetch_path_with_env(manager_config_file);
     clog << datatools::io::notice << "Manager config. file : '" << manager_config_file << "'"

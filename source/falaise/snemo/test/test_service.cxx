@@ -5,6 +5,7 @@
 #include "falaise/snemo/services/histogram.h"
 #include "falaise/snemo/services/hello_world.h"
 #include "falaise/snemo/services/service_handle.h"
+#include "falaise/snemo/geometry/config.h"
 
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/datatools/service_manager.h"
@@ -35,8 +36,9 @@ TEST_CASE("Construction from good services works", "") {
   datatools::service_manager dummyServices{};
   datatools::multi_properties config;
   config.add_section("geometry", "geomtools::geometry_service")
-      .store_path("manager.configuration_file",
-                  "@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
+    .store_path("manager.configuration_file",
+                snemo::geometry::default_geometry_tag());
+  // "@falaise:snemo/demonstrator/geometry/5.0/GeometryManager.conf"
   config.add_section("histogram", "dpp::histogram_service");
   config.add_section("hello_world_svc", "snemo::hello_world_svc");
 

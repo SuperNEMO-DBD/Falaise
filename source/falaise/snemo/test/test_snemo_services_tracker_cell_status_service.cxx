@@ -38,7 +38,7 @@ void test1()
   std::clog << "\nTest 1:\n";
  
   geomtools::manager geoMgr;
-  std::string geoMgrConfigFile("@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
+  std::string geoMgrConfigFile("@falaise:snemo/demonstrator/geometry/5.0/GeometryManager.conf");
   datatools::fetch_path_with_env(geoMgrConfigFile);
   datatools::properties geoMgrConfig;
   geoMgrConfig.read_configuration(geoMgrConfigFile);
@@ -55,6 +55,7 @@ void test1()
   cellService.set_geometry_manager(geoMgr);
   cellService.set_logging_priority(datatools::logger::PRIO_DEBUG);
   cellService.initialize_standalone(cellServiceConfig);
+  cellService.print_tree(std::clog);
 
   namespace snt = snemo::time;
   {

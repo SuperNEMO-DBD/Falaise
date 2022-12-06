@@ -100,7 +100,7 @@ int main(int argc_, char** argv_) {
 
     if (map_filename.empty()) {
       map_filename =
-          "@falaise:snemo/demonstrator/geometry/GeometryPlugins/MagneticField/data/csv_map_0/"
+          "@falaise:snemo/demonstrator/geometry/data/MagneticField/csv_map_0/"
           "MapSmoothPlusDetail.csv";
     }
 

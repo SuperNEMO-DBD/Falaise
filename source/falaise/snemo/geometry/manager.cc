@@ -8,6 +8,8 @@
 #include <datatools/utils.h>
 #include <datatools/properties.h>
 
+#include <falaise/snemo/geometry/config.h>
+
 namespace snemo {
 
   namespace geometry {
@@ -17,7 +19,8 @@ namespace snemo {
       if (gmgr_.is_initialized()) {
         gmgr_.reset();
       }
-      std::string managerConfigFile = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
+      // std::string managerConfigFile = "@falaise:snemo/demonstrator/geometry/5.0/GeometryManager.conf";
+      std::string managerConfigFile = default_geometry_tag();
       datatools::fetch_path_with_env(managerConfigFile);
       datatools::properties managerConfig;
       datatools::properties::read_config(managerConfigFile, managerConfig);
@@ -32,7 +35,7 @@ namespace snemo {
       return mgr;
     }
     
-  }  // end of namespace geometry
+  } // end of namespace geometry
 
-}  // end of namespace snemo
+} // end of namespace snemo
 

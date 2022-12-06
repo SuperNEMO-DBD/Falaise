@@ -73,6 +73,12 @@
 #define FALAISE_SNRS_LIBDIR      "@Falaise_SNRS_LIB_PATH@"
 #define FALAISE_SNRS_RESOURCEDIR "@Falaise_SNRS_RESOURCE_PATH@"
 
+// Specific macros for configuration tag support:
+#define FALAISE_DEFAULT_GEOMETRY_TAG "@FALAISE_DEFAULT_GEOMETRY_TAG@"
+#define FALAISE_DEFAULT_SETUP_TAG "@FALAISE_DEFAULT_SETUP_TAG@"
+#define FALAISE_DEFAULT_SIMULATION_TAG "@FALAISE_DEFAULT_SIMULATION_TAG@"
+#define FALAISE_DEFAULT_RECONSTRUCTION_TAG "@FALAISE_DEFAULT_RECONSTRUCTION_TAG@"
+
 //----------------------------------------------------------------------
 // Runtime API
 namespace falaise {

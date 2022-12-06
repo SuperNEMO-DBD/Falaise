@@ -3,7 +3,7 @@
  * Creation date: 2022-04-28
  * Last modified: 2022-04-28
  *
- * Description: Sliced activity model
+ * Description: Per period activity model
  */
 
 #ifndef FALAISE_SNEMO_PHYSICS_MODEL_PER_PERIOD_ACTIVITY_MODEL_H

@@ -67,10 +67,11 @@ namespace snemo {
 
       event_rc_timestamping next_decay();
 
+      /// Repartition of decays during a single run
       struct data_per_run
       {
-        std::int32_t run_id = -1;
-        std::vector<time::time_point> decay_timestamps;
+        run_id_type run_id = -1; ///< Run ID
+        std::vector<time::time_point> decay_timestamps; ///< List of decay timestamps
       };
 
       inline std::uint32_t get_current_decay_index() const
@@ -103,7 +104,7 @@ namespace snemo {
         bool is_terminated() const;
       private:
         std::string _filepath_;
-        std::uint32_t _nb_timestamps_;
+        std::uint32_t _nb_timestamps_ = 0;
         int _counter_ = 0;
         std::ifstream _fin_;
         bool _terminated_ = false;
@@ -134,7 +135,7 @@ namespace snemo {
       // - Random and regular modes: 
       std::vector<std::uint32_t> _nb_decays_per_run_;
       std::vector<data_per_run> _per_run_data_;
-      std::int32_t  _current_run_index_ = -1;
+      run_id_type  _current_run_index_ = -1;
       std::uint32_t _current_decay_index_ = 0;
       std::uint32_t _current_decay_index_in_run_ = 0;
          

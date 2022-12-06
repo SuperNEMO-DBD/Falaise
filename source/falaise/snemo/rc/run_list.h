@@ -45,16 +45,16 @@ namespace snemo {
         return _runs_.size() == 0;
       }
 
-      inline bool size() const
+      inline std::size_t size() const
       {
         return _runs_.size();
       }
 
       void reset();
 
-      bool has_run(std::int32_t run_id_) const;
+      bool has_run(const run_id_type run_id_) const;
       
-      const run_description & get_run(std::int32_t run_id_) const;
+      const run_description & get_run(const run_id_type run_id_) const;
 
       void add_run(const run_description & rd_);
 
@@ -62,17 +62,17 @@ namespace snemo {
   
       time::time_period span() const;
 
-      inline std::uint32_t number_of_events() const
+      inline std::size_t number_of_events() const
       {
         return _number_of_events_;
       }
    
-      inline std::int32_t last_run_id() const
+      inline run_id_type last_run_id() const
       {
         return _last_run_id_;
       }
 
-      const std::map<std::int32_t, run_description> & runs() const
+      const std::map<run_id_type, run_description> & runs() const
       {
         return _runs_;
       }
@@ -83,7 +83,7 @@ namespace snemo {
 
       void load(const datatools::multi_properties & mconfig_);
 
-      void build_run_ids(std::set<std::int32_t> & run_ids_) const;
+      void build_run_ids(std::set<run_id_type> & run_ids_) const;
      
       bool contains(const time::time_point & timestamp_) const;
      
@@ -101,11 +101,11 @@ namespace snemo {
       
     private:
       
-      std::map<std::int32_t, run_description> _runs_;
-      time::time_period _span_{time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time)};
-      time::time_duration _duration_{time::not_a_date_time};
-      std::uint32_t _number_of_events_ = 0;
-      std::int32_t _last_run_id_ = -1;
+      std::map<run_id_type, run_description> _runs_; ///< Map of run descriptions (key is the run ID)
+      time::time_period _span_{time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time)}; ///< Time span containing the list of runs
+      time::time_duration _duration_{time::not_a_date_time}; ///< Total duration of all runs
+      std::size_t _number_of_events_ = 0; ///< Total number of events
+      run_id_type _last_run_id_ = -1; ///< ID of the last registered run
 
     };
    

@@ -76,6 +76,10 @@ namespace snemo {
     
     const history_type & get_histories() const;
     
+    //! Smart print
+    void print_tree(std::ostream & out_ = std::clog,
+                    const boost::property_tree::ptree & options_ = empty_options()) const override;
+ 
   private:
 
     void _init_mode_db_(const datatools::properties &);

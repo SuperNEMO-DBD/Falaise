@@ -30,6 +30,12 @@ class service_info
   /// Return the default string label/name for the 'geometry' service
   static const std::string& geometryServiceName();
 
+  /// Return the default string label/name for the 'context' service
+  static const std::string& contextServiceName();
+
+  /// Return the default string label/name for the 'run_info' service
+  static const std::string& runInfoServiceName();
+
   /// Return the default string label/name for the 'cuts' service
   static const std::string& cutServiceName();
 

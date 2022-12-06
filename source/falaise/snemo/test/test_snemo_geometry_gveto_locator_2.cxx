@@ -3,6 +3,7 @@
 
 #include "falaise/snemo/services/geometry.h"
 #include "falaise/snemo/services/service_handle.h"
+#include "falaise/snemo/geometry/config.h"
 #include "falaise/snemo/geometry/gveto_locator.h"
 #include "falaise/snemo/geometry/locator_plugin.h"
 #include "falaise/snemo/geometry/locator_helpers.h"
@@ -13,12 +14,15 @@
 
 TEST_CASE("Exercise Issue 199", "") {
   datatools::service_manager dummyServices{};
-  datatools::multi_properties config;
+  datatools::multi_properties config;              
   config.set_key_label("name");
   config.set_meta_label("type");
+  // config.add_section("geometry", "geomtools::geometry_service")
+  //     .store_path("manager.configuration_file",
+  //                 "@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
   config.add_section("geometry", "geomtools::geometry_service")
       .store_path("manager.configuration_file",
-                  "@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
+                  snemo::geometry::default_geometry_tag());
   dummyServices.load(config);
   dummyServices.initialize();
   snemo::service_handle<snemo::geometry_svc> gs{dummyServices};
