@@ -1,0 +1,20 @@
+
+[urn="urn:snemo:demonstrator:geometry:default" category="varprofile"]
+  description              : string    = "Default geometry setup for the SuperNEMO demonstrator"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_GEOMETRY_TAG@"
+
+[urn="urn:snemo:demonstrator:setup:default" category="varprofile"]
+  description              : string    = "Default experimental setup for the SuperNEMO demonstrator model"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_SETUP_TAG@"
+
+[urn="urn:snemo:demonstrator:simulation:default" category="varprofile"]
+  description              : string    = "Default simulation setup for the SuperNEMO demonstrator"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_SIMULATION_TAG@"
+
+[urn="urn:snemo:demonstrator:reconstruction:default" category="varprofile"]
+  description              : string    = "Default simulation setup for the SuperNEMO demonstrator"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_RECONSTRUCTION_TAG@"

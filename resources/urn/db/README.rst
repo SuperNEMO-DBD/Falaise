@@ -2,15 +2,46 @@
 Registered tags
 ===================================
 
+File contents
+================
+
+* ``experiment_urns.conf`` : Definition of the URNs associated to Falaise managed experiments.
+
+  - Contains URN item of the ``"experiment"`` category.
+  - Currently contains only one URN item for the SuperNEMO demonstrator experiment.
+  
+* ``snemo_geometry_urns.conf`` : Definition of different versions of the geometry configuration.
+
+  - Contains URN items of the ``"geomsetup"`` category associated to URN items of the ``"variants"``,
+    ``"varprofile"`` and ``"services"`` categories.
+  
+* ``snemo_setup_urns.conf`` : Definition of different versions of the experimental setup.
+
+  -  An experimental setup is typically defined by a geometry setup and possibly by a
+     hardware setup (electronics, control system...)
+  - Contains URN items of the ``"expsetup"`` category associated to URN items of the ``"variants"``,
+    ``"varprofile"`` and ``"services"`` categories.
+  
+* ``snemo_simulation_urns.conf`` : Definition of different versions of the simulation setup.
+
+  -  Contains URN items of the ``"simsetup"`` category associated to URN items of the ``"variants"``,
+    ``"varprofile"``,  ``"configuration"`` and  ``"services"`` categories.
+  
+* ``snemo_reconstruction_urns.conf`` : Definition of different versions of the reconstruction setup.
+
+  - Contains URN items of the ``"recsetup"`` category associated to URN items of the ``"variants"``,
+    ``"varprofile"``,  ``"configuration"`` and  ``"services"`` categories.
+ 
+
 
 Categories of URN tags
 ======================
 
-Supported categories of various published tags:
+Supported categories of various published URN tags:
 
 * ``experiment`` : identifier/tag   associated  to   an  experiment
-  (example: BiPo3, SuperNEMO demonstrator)
-* ``geosetup`` : identifier/tag associated to a geometry setup
+  (example: ``"BiPo3"``, ``"SuperNEMO demonstrator"``)
+* ``geomsetup`` : identifier/tag associated to a geometry setup
 * ``expsetup`` : identifier/tag associated to an experimental setup
 * ``simsetup`` : identifier/tag associated to a simulation setup
 * ``recsetup`` : identifier/tag associated to a reconstruction setup
@@ -37,9 +68,9 @@ also have two specific topics relative to *variants* support:
  * ``varprofiles`` :  the topic  for the  list of  *official* variant
    profiles registered within the setup and associated to the variant
    service used by the setup.
- * ``defvarprofile``  :  the topic  for  the  unique *default*  variant
-   profile (typically  an alias  of one published in  the list  of *official*
-   variant profiles).
+ * ``defvarprofile``  : the  topic  for the  unique *default*  variant
+   profile (typically an alias of a published variant profile from the
+   list of *official* variant profiles).
 
 
 Examples
