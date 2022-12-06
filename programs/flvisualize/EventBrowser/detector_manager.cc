@@ -44,6 +44,7 @@
 #include <bayeux/geomtools/smart_id_locator.h>
 
 // - Falaise:
+#include <falaise/snemo/geometry/config.h>
 #include <falaise/resource.h>
 
 // Standard libraries:
@@ -329,17 +330,11 @@ void detector_manager::_at_init_(const std::string &geo_manager_config_file_) {
       if (!geo_manager_config_file.empty()) {
         _geo_manager_config_file_ = geo_manager_config_file;
       } else {
-        // Otherwise, use SuperNEMO/demonstrator config 4.0
-        // const std::string resource_dir  = falaise::get_resource_dir();
-        // const std::string setup_name    = "snemo/demonstrator";
-        // const std::string setup_version = "4.0";
-        // _geo_manager_config_file_ = resource_dir + "/config/"
-        //   + setup_name + "/geometry/" + setup_version + "/manager.conf";
+        // Otherwise, use SuperNEMO/demonstrator config 5.0
         // DT_LOG_NOTICE(view::options_manager::get_instance().get_logging_priority(),
         //               "Use default SuperNEMO/demonstrator config i.e. " << setup_name << " "
         //               << "version " << setup_version);
-
-        _geo_manager_config_file_ = "urn:snemo:demonstrator:geometry:4.0";
+        _geo_manager_config_file_ = snemo::geometry::default_geometry_tag();
         DT_LOG_NOTICE(
             view::options_manager::get_instance().get_logging_priority(),
             "Use default SuperNEMO/demonstrator config tag : " << _geo_manager_config_file_);

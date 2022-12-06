@@ -452,7 +452,7 @@ void options_manager::print_examples(std::ostream& out_, const std::string& name
   out_ << " 3) Using special experimental setup with variant profile:" << std::endl;
   out_ << "    " << name_ << " \\" << std::endl;
   out_ << "      --verbose \\" << std::endl;
-  out_ << R"(      --experiment-setup "urn:snemo:demonstrator:setup:1.0" \)" << std::endl;
+  out_ << R"(      --experiment-setup "urn:snemo:demonstrator:setup:2.0" \)" << std::endl;
   out_ << R"(      --variant-profile "variant.profile" \)" << std::endl;
   out_ << "      --input-file <simulation/reconstruction file>";
   out_ << std::endl;
