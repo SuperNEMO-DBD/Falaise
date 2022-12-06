@@ -131,7 +131,8 @@ struct Things2Root::working_space {
   std::vector<uint16_t> digicalofcr;
   std::vector<uint16_t> digicalolttriggercounter;
   std::vector<uint32_t> digicaloltimecounter;
-  std::vector<std::vector<int16_t> > digicalowaveform;
+  // std::vector<int16_t> digicalowaveform[NSAMPLES_CALO_WAVEFORM];
+  std::vector<std::vector<int16_t> >digicalowaveform;
   std::vector<int16_t> digicalobaseline;
   std::vector<int16_t> digicalopeakamplitude;
   std::vector<int16_t> digicalopeakcell;
@@ -285,6 +286,9 @@ void Things2Root::working_space::clear() {
   digicalolttriggercounter.clear();
   digicaloltimecounter.clear();
   digicalowaveform.clear();
+  // for (std::size_t i = 0; i < NSAMPLES_CALO_WAVEFORM; i++){
+  //   digicalowaveform[i].clear();
+  // }
   digicalobaseline.clear();
   digicalopeakamplitude.clear();
   digicalopeakcell.clear();
@@ -571,7 +575,6 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
   unsigned int calo_geom_type = 1302;
   unsigned int xcalo_geom_type = 1232;
   unsigned int gveto_geom_type = 1252;
-
 
   unsigned int digi_calo_geom_type = 1301;
   unsigned int digi_xcalo_geom_type = 1231;
@@ -860,25 +863,29 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       const snemo::datamodel::calorimeter_digitized_hit& digi_calo_hit = calo_handle.get();
 
       ws_->digicaloid.push_back(digi_calo_hit.get_hit_id());
-      ws_->digicalotype.push_back(digi_calo_hit.get_geom_id().get_type());
       ws_->digicalomodule.push_back(digi_calo_hit.get_geom_id().get(0));
       ws_->digicaloside.push_back(digi_calo_hit.get_geom_id().get(1));
 
       if (digi_calo_hit.get_geom_id().get_type() == digi_calo_geom_type) {
         // CALO
+        ws_->digicalotype.push_back(0);
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalorow.push_back(digi_calo_hit.get_geom_id().get(3));
+        ws_->digicalowall.push_back(INVALID_CALO_VALUE);
       }
       if (digi_calo_hit.get_geom_id().get_type() == digi_xcalo_geom_type) {
         // XCALO
+        ws_->digicalotype.push_back(1);
         ws_->digicalowall.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(3));
         ws_->digicalorow.push_back(digi_calo_hit.get_geom_id().get(4));
       }
       if (digi_calo_hit.get_geom_id().get_type() == digi_gveto_geom_type) {
         // GVETO
+        ws_->digicalotype.push_back(2);
         ws_->digicalowall.push_back(digi_calo_hit.get_geom_id().get(2));
         ws_->digicalocolumn.push_back(digi_calo_hit.get_geom_id().get(3));
+        ws_->digicalorow.push_back(INVALID_CALO_VALUE);
       }
 
       ws_->digicalotimestamp.push_back(digi_calo_hit.get_timestamp());
@@ -888,6 +895,9 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       ws_->digicalolttriggercounter.push_back(digi_calo_hit.get_lt_trigger_counter());
       ws_->digicaloltimecounter.push_back(digi_calo_hit.get_lt_time_counter());
       ws_->digicalowaveform.push_back(digi_calo_hit.get_waveform());
+      // for (std::size_t i = 0; i < NSAMPLES_CALO_WAVEFORM; i++){
+      //   ws_->digicalowaveform[i].push_back(digi_calo_hit.get_waveform()[i]);
+      // }
       ws_->digicalobaseline.push_back(digi_calo_hit.get_fwmeas_baseline());
       ws_->digicalopeakamplitude.push_back(digi_calo_hit.get_fwmeas_peak_amplitude());
       ws_->digicalopeakcell.push_back(digi_calo_hit.get_fwmeas_peak_cell());
@@ -911,6 +921,9 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     digicalo_.lt_trigger_counter_ = &ws_-> digicalolttriggercounter;
     digicalo_.lt_time_counter_    = &ws_-> digicaloltimecounter;
     digicalo_.waveform_           = &ws_-> digicalowaveform;
+    // for (std::size_t i = 0; i < NSAMPLES_CALO_WAVEFORM; i++){
+    //   digicalo_.waveform_[i] = &ws_-> digicalowaveform[i];
+    // }
     digicalo_.baseline_           = &ws_-> digicalobaseline;
     digicalo_.peak_amplitude_     = &ws_-> digicalopeakamplitude;
     digicalo_.peak_cell_          = &ws_-> digicalopeakcell;
@@ -969,25 +982,29 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       const snemo::datamodel::precalibrated_calorimeter_hit& pcd_calo_hit = calo_handle.get();
 
       ws_->pcdcaloid.push_back(pcd_calo_hit.get_hit_id());
-      ws_->pcdcalotype.push_back(pcd_calo_hit.get_geom_id().get_type());
       ws_->pcdcalomodule.push_back(pcd_calo_hit.get_geom_id().get(0));
       ws_->pcdcaloside.push_back(pcd_calo_hit.get_geom_id().get(1));
 
       if (pcd_calo_hit.get_geom_id().get_type() == digi_calo_geom_type) {
         // CALO
+        ws_->pcdcalotype.push_back(0);
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(3));
+        ws_->pcdcalowall.push_back(INVALID_CALO_VALUE);
       }
       if (pcd_calo_hit.get_geom_id().get_type() == xcalo_geom_type) {
         // XCALO
+        ws_->pcdcalotype.push_back(1);
         ws_->pcdcalowall.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(3));
         ws_->pcdcalorow.push_back(pcd_calo_hit.get_geom_id().get(4));
       }
       if (pcd_calo_hit.get_geom_id().get_type() == gveto_geom_type) {
         // GVETO
+        ws_->pcdcalotype.push_back(2);
         ws_->pcdcalowall.push_back(pcd_calo_hit.get_geom_id().get(2));
         ws_->pcdcalocolumn.push_back(pcd_calo_hit.get_geom_id().get(3));
+        ws_->pcdcalorow.push_back(INVALID_CALO_VALUE);
       }
 
       ws_->pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());

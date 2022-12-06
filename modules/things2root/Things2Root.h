@@ -28,6 +28,14 @@
 class TTree;
 class TFile;
 
+#ifdef __MAKECINT__
+#pragma link C++ class std::vector<std::vector<int16_t> >+;
+#endif
+//#pragma link C++ class vector<vector<float> >+;
+
+static const int INVALID_CALO_VALUE = -1;
+static const int NSAMPLES_CALO_WAVEFORM = 1024;
+
 // This Project
 typedef struct HeaderEventStorage {
   int runnumber_;
@@ -215,6 +223,7 @@ typedef struct DigiCaloEventStorage {
   std::vector<uint16_t>* lt_trigger_counter_;
   std::vector<uint32_t>* lt_time_counter_;
   std::vector<std::vector<int16_t> >* waveform_;
+  // std::vector<int16_t>* waveform_[NSAMPLES_CALO_WAVEFORM];
   std::vector<int16_t>* baseline_;
   std::vector<int16_t>* peak_amplitude_;
   std::vector<int16_t>* peak_cell_;
