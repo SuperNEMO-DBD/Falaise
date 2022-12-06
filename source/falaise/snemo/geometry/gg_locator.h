@@ -24,8 +24,6 @@
  *
  *   Geiger cell locator for one module of the SuperNEMO detector
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_GEOMETRY_GG_LOCATOR_H
@@ -60,7 +58,9 @@ namespace snemo {
 namespace geometry {
 
 /// \brief Fast locator class for SuperNEMO drift chamber volumes
-class gg_locator : public geomtools::base_locator, public datatools::i_tree_dumpable {
+class gg_locator
+  : public geomtools::base_locator, public datatools::i_tree_dumpable
+{
  public:
   /// Strictly speaking, this constructs an invalid object, but cannot for now workaround
   /// heavy use elsewhere.
@@ -111,6 +111,10 @@ class gg_locator : public geomtools::base_locator, public datatools::i_tree_dump
    */
   double cellDiameter() const;
 
+  /**! @return the radius of a cell.
+   */
+  double cellRadius() const;
+
   /**! @return the length of a cell (including the base and cathode ring).
    */
   double cellLength() const;
@@ -131,6 +135,8 @@ class gg_locator : public geomtools::base_locator, public datatools::i_tree_dump
    */
   double fieldWireDiameter() const;
 
+  uint32_t cellGIDType() const;
+  
   // CALCULATORS
 
   /**! @return the module address component of the gid
@@ -267,10 +273,10 @@ class gg_locator : public geomtools::base_locator, public datatools::i_tree_dump
   int layerAddressIndex_;
   int rowAddressIndex_;
 
-  const geomtools::mapping* geomMapping_;
-  const geomtools::placement* moduleWorldPlacement_;
-  const geomtools::box* moduleBoxShape_;
-  const geomtools::box* cellBoxShape_;
+  const geomtools::mapping* geomMapping_ = nullptr;
+  const geomtools::placement* moduleWorldPlacement_ = nullptr;
+  const geomtools::box* moduleBoxShape_ = nullptr;
+  const geomtools::box* cellBoxShape_ = nullptr;
 
   std::vector<double> backCellX_;
   std::vector<double> backCellY_;

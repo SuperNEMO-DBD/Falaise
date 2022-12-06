@@ -26,6 +26,7 @@
 #include <EventBrowser/io/event_server.h>
 
 #include <TTimer.h>
+#include <TVirtualX.h>
 
 #include <iostream>
 #include <set>

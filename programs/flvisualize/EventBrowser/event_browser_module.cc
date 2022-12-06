@@ -14,6 +14,7 @@
 // Third party:
 // - ROOT
 #include <TApplication.h>
+#include <TVirtualX.h>
 // - Bayeux/datatools:
 #include <datatools/service_manager.h>
 // - Bayeux/geomtools:

@@ -20,7 +20,9 @@ find_package(Boost 1.55 REQUIRED ${Boost_COMPONENTS})
 # - ROOT
 set(ROOT_COMPONENTS Gui Geom GeomPainter Physics Graf3d)
 find_package(ROOT 6.12 REQUIRED ${ROOT_COMPONENTS})
-include(${ROOT_DIR}/modules/RootNewMacros.cmake)
+if (EXISTS ${ROOT_DIR}/modules/RootNewMacros.cmake)
+  include(${ROOT_DIR}/modules/RootNewMacros.cmake)
+endif()
 
 #-----------------------------------------------------------------------
 # Build the submodules as required

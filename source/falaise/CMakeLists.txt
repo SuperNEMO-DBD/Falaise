@@ -72,6 +72,7 @@ set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
 #   to various setups
+include(geometry.cmake)
 include(snemo.cmake)
 
 #-----------------------------------------------------------------------
@@ -174,6 +175,7 @@ set(_falaise_TEST_ENVIRONMENT
   "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
   "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test"
   "FALAISE_SNEMO_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/snemo/test"
+  "FALAISE_GEOMETRY_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/geometry/testing"
   )
 message( STATUS "_falaise_TEST_ENVIRONMENT='${_falaise_TEST_ENVIRONMENT}'")
 
@@ -226,4 +228,7 @@ if(FALAISE_ENABLE_TESTING)
       ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
       )
   endforeach()
+
+  include(geometry_tests.cmake)
+  
 endif()

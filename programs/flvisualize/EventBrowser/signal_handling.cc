@@ -44,6 +44,7 @@
 #include <TGWidget.h>
 #include <TROOT.h>
 #include <TSystem.h>
+#include <TVirtualX.h>
 // - Falaise
 #include <falaise/resource.h>
 

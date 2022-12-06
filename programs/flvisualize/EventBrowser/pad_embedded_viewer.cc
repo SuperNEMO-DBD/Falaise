@@ -39,7 +39,7 @@
 #include <TObjArray.h>
 #include <TStyle.h>
 #include <TView.h>
-
+#include <TVirtualX.h>
 #include <TMarker3DBox.h>
 #include <TPolyLine3D.h>
 #include <TPolyMarker3D.h>
