@@ -320,7 +320,7 @@ namespace FLReconstruct {
                    << "' services configuration parameter!");
         }
         flRecParameters.servicesSubsystemConfig =
-          servicesSubsystem.get<std::string>("config", flRecParameters.servicesSubsystemConfig);
+          servicesSubsystem.get<falaise::path>("config", flRecParameters.servicesSubsystemConfig);
         DT_LOG_DEBUG(flRecParameters.logLevel,
                      "FLReconstruct services management config file = '" << flRecParameters.servicesSubsystemConfig << "'");
  
@@ -345,7 +345,7 @@ namespace FLReconstruct {
                      "FLReconstruct pipeline config URN = '" << flRecParameters.reconstructionPipelineUrn << "'");
 
         flRecParameters.reconstructionPipelineConfig =
-          pipelineSubsystem.get<std::string>("config", flRecParameters.reconstructionPipelineConfig);
+          pipelineSubsystem.get<falaise::path>("config", flRecParameters.reconstructionPipelineConfig);
         DT_LOG_DEBUG(flRecParameters.logLevel,
                      "FLReconstruct pipeline config file = '" << flRecParameters.reconstructionPipelineConfig << "'");
 
@@ -398,6 +398,7 @@ namespace FLReconstruct {
 
   void do_postprocess_input_metadata(FLReconstructParams & flRecParameters_)
   {
+    DT_LOG_DEBUG(flRecParameters_.logLevel, "Collect input metadata from input files");
     // Collect input metadata from input files:
     // we first try from some input metadata companion file, if provided,
     // then from the input data file itself, in case it contains metadata records.
@@ -435,7 +436,7 @@ namespace FLReconstruct {
     } // End of using input metadata
 
     // Try to fetch the experimental setup URN
-    if (!iMeta.experimentalSetupUrn.empty()) {
+    if (! iMeta.experimentalSetupUrn.empty()) {
       DT_LOG_NOTICE(flRecParameters_.logLevel,
                     "Experimental setup identifier (URN) from the input metadata is '"
                     << iMeta.experimentalSetupUrn << "'.");
@@ -471,6 +472,7 @@ namespace FLReconstruct {
                     << iMeta.experimentalSetupUrn
                     << "' extracted from input metadata!");
       }
+      
     } // End of checks.
 
     // Settings:
@@ -483,6 +485,7 @@ namespace FLReconstruct {
                       << "' from input metadata.");
       }
     } // End of settings.
+    DT_LOG_DEBUG(flRecParameters_.logLevel, "Done.");
     return;
   }
 
