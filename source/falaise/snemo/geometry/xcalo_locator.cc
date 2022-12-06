@@ -887,7 +887,8 @@ void xcalo_locator::construct_() {
   const geomtools::id_mgr &idManager = get_geo_manager().get_id_mgr();
 
   uint32_t moduleGIDType = idManager.get_category_type(detail::kModuleGIDCategory);
-  uint32_t trackerSubmoduleGIDType = idManager.get_category_type(detail::kTrackerSubmoduleGIDCategory);
+  uint32_t trackerSubmoduleGIDType =
+      idManager.get_category_type(detail::kTrackerSubmoduleGIDCategory);
   uint32_t caloBlockWrapperGIDType = idManager.get_category_type(detail::kXCaloWrapperGIDCategory);
 
   // Analyse the layout of the calo block's geometry category :
@@ -898,10 +899,13 @@ void xcalo_locator::construct_() {
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
-  for (const std::string subaddress : {"module", "side", "wall", "column", "row"}) {
-    DT_THROW_IF(
-        !block_ci.has_subaddress(subaddress), std::logic_error,
-        "Category '" << detail::kXCaloBlockGIDCategory << "' has no subaddress '" << subaddress << "'");
+
+  for (const std::string &subaddress :
+       {std::string("module"), std::string("side"), std::string("wall"), std::string("column"),
+        std::string("row")}) {
+    DT_THROW_IF(!block_ci.has_subaddress(subaddress), std::logic_error,
+                "Category '" << detail::kXCaloBlockGIDCategory << "' has no subaddress '"
+                             << subaddress << "'");
   }
   moduleAddressIndex_ = block_ci.get_subaddress_index("module");
   sideAddressIndex_ = block_ci.get_subaddress_index("side");
