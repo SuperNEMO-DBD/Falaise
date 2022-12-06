@@ -1,0 +1,59 @@
+subgraph clusterUrn_Decays {
+  label="Decays";
+  fontname="bold";
+  bgcolor="lightyellow"; 
+
+  subgraph clusterUrn_Decays_Variants_1_0 {
+    fontname="bold";
+    label="Variants";
+    bgcolor="white"; 
+		
+    /**************************************************/
+    Decays_Variants_1_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:decays:variants:1.0</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category: varregistry</td></tr>
+      <tr><td PORT="PATH" bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+  };
+  
+  subgraph clusterUrn_Decays_Variants_Service_1_0 {
+    label="Decays Variants Service";
+    bgcolor="white";
+ 		
+    /**************************************************/
+    Decays_Variants_Service_1_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"       bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:decays:variants:service:1.0</td></tr>
+      <tr><td                   bgcolor="lightgrey"  align="left"  >category: varservice</td></tr>
+      <tr><td PORT="VARREG"                          align="right" >registries : varregistry*</td></tr>
+      <tr><td PORT="VARPROFS"                        align="right" >profiles : varprofile*</td></tr>
+      <tr><td PORT="DEFVARPROF"                      align="right" >defprofile : varprofile</td></tr>
+      <tr><td PORT="PATH"       bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+  };
+    
+  Decays_Variants_Service_1_0:VARREG     -> Decays_Variants_1_0:MAIN;
+
+  subgraph clusterUrn_Decays_Config_1_4 {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+
+    /**************************************************/
+    Decays_1_4 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:decays:1.4</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: decaysetup</td></tr>
+      <tr><td PORT="VARIANTS"                    align="right" >variants : varservice*</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+  };
+    
+  Decays_1_4:VARIANTS -> Decays_Variants_Service_1_0:MAIN[ color="magenta"; ];
+
+};

@@ -1,0 +1,40 @@
+subgraph clusterPath_Setup_2_0 {
+	label=""
+	shape="folder";
+	newrank=true;
+	
+	subgraph clusterPath_Setup_Variants_2_0 {
+	
+	/********************************************************************************/
+	Setup_2_0_Path [ shape="tab"; fontname="Courier"; label = <
+			   <table border="1">
+			   <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/setup/2.0/SetupManager.conf</td></tr>
+			   <tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+			   <tr><td bgcolor="magenta" PORT="DEPS" align="right">dependencies</td></tr>
+			   </table>
+			   >; ];
+	
+	// Geometry_5_0_Path:DEPS -> Geometry_5_0_GeomIDMaps_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+	// Geometry_5_0_Path:DEPS -> Geometry_5_0_Plugins_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+	// Geometry_5_0_Path:DEPS -> Geometry_5_0_Models_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+
+	};
+	
+	
+	/****************************************************************************************************/
+	Setup_2_0_Services_Path [ shape="tab"; fontname="Courier"; label = <
+				 <table border="1">
+				 <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/setup/2.0/SetupServices.conf</td></tr>
+				 <tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+				 <tr><td bgcolor="magenta" PORT="DEPS" align="right">dependencies</td></tr>
+				 </table>
+				 >; ];
+
+	Setup_5_0_Services_Path:DEPS -> Setup_5_0_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+}
+    
+Setup_2_0:PATH                     -> Setup_2_0_Path:MAIN;
+Setup_2_0_Services:PATH            -> Setup_2_0_Services_Path:MAIN;
+Setup_Variants_2_0:PATH            -> Setup_Variants_2_0_Path:MAIN;
+// Setup_Variants_2_0_DefProfile:PATH -> Setup_Variants_2_0_Profile_1_Path:MAIN;
+// Setup_Variants_2_0_Profile_1:PATH  -> Setup_Variants_2_0_Profile_1_Path:MAIN;

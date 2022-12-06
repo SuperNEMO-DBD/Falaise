@@ -1,0 +1,22 @@
+
+subgraph clusterUrn_Experiment {
+  label="Experiment";
+  fontname="bold";
+  bgcolor="lightyellow"; 
+  bgcolor="lightyellow"; 
+
+  subgraph clusterUrn_Experiment_Config {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+	
+    /**************************************************/
+    ExperimentSuperNEMO [ shape="plain"; fontname="Courier"; label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"      align="left" >urn:snemo:demonstrator</td></tr>
+      <tr><td             bgcolor="lightgrey" align="left" >category: experiment</td></tr>
+    </table>
+    >; ];
+  };
+    
+};

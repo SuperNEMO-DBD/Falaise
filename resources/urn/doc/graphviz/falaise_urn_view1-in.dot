@@ -1,0 +1,51 @@
+// -*- mode: graphviz-dot; -*-
+
+digraph falaise_urn_view1
+{
+  layout="dot";
+  // layout="fdp";
+  label = "Falaise URN scheme";
+  labelloc = "t";
+  fontname="bold";
+  // rankdir="TB";
+  rankdir="RL";
+  // concentrate="true";
+  headclip="true"; 
+  tailclip="true"; 
+  graph [bgcolor="white" color="black"; splines="polyline"; ];
+  // node  [shape="record" color="black" fillcolor="white" style="filled"]
+  // edge  [style="filled" color="blue"]
+  
+  edge [ style="filled"; color="blue"; penwidth=2;/*headclip="true"; tailclip="true"; */ ];
+
+  subgraph {
+    // rank="same";	  
+    include(falaise_urn_experiment.dot)
+     
+    include(falaise_urn_geometry-5.0.dot)
+  };
+
+  // rank="same";
+  include(falaise_urn_setup-2.0.dot)
+  subgraph {
+    //rank="same";
+  
+    include(falaise_urn_decays-1.4.dot)
+  
+    include(falaise_urn_vertex-5.0.dot)
+
+    include(falaise_urn_simulation-2.4.dot)
+  };
+
+
+  subgraph {
+
+    include(falaise_urn_reconstruction-3.0.dot)
+  };
+
+  subgraph {
+
+    include(falaise_urn-5.0.0.dot)
+  };
+		
+}

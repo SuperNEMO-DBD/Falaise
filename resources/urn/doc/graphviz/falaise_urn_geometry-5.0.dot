@@ -1,0 +1,102 @@
+subgraph clusterUrn_Geometry {
+  label="Geometry";
+  fontname="bold";
+  bgcolor="lightyellow"; 
+  
+  subgraph clusterUrn_Geometry_Variants_2_0 {
+    fontname="bold";
+    label="Variants";
+    bgcolor="white"; 
+ 		
+    /**************************************************/
+    Geometry_Variants_2_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:variants:2.0</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category: varregistry</td></tr>
+      <tr><td PORT="PATH" bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+  };
+
+  subgraph clusterUrn_Geometry_Variants_Service_2_0 {
+    label="Geometry Variants Service";
+    bgcolor="white"; 
+ 
+    /**************************************************/
+    Geometry_Variants_Service_2_0_Profile_1 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"     bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:variants:service:2.0:profiles:basic-1.0</td></tr>  
+      <tr><td                 bgcolor="lightgrey"  align="left"  >category: varprofile</td></tr>
+      <tr><td PORT="PATH"     bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+    
+    /**************************************************/
+    Geometry_Variants_Service_2_0_DefProfile [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:variants:service:2.0:profiles:default</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category: varprofile</td></tr>
+      <tr><td PORT="ALIAS"                     align="right" >alias_of : varprofile</td></tr>
+    </table>
+    >; ];
+		
+    /**************************************************/
+    Geometry_Variants_Service_2_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"       bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:variants:service:2.0</td></tr>
+      <tr><td                   bgcolor="lightgrey"  align="left"  >category: varservice</td></tr>
+      <tr><td PORT="VARREG"                          align="right" >registries : varregistry*</td></tr>
+      <tr><td PORT="VARPROFS"                        align="right" >profiles : varprofile*</td></tr>
+      <tr><td PORT="DEFVARPROF"                      align="right" >defprofile : varprofile</td></tr>
+      <tr><td PORT="PATH"       bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+    
+    Geometry_Variants_Service_2_0_DefProfile:ALIAS:w -> Geometry_Variants_Service_2_0_Profile_1:MAIN:e;
+    Geometry_Variants_Service_2_0:VARPROFS:w         -> Geometry_Variants_Service_2_0_Profile_1:MAIN:e;
+    Geometry_Variants_Service_2_0:DEFVARPROF:w       -> Geometry_Variants_Service_2_0_DefProfile:MAIN:e;
+
+  };
+ 
+  subgraph clusterUrn_Geometry_Config_5_0 {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+
+    /**************************************************/
+    Geometry_5_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:5.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: geomsetup</td></tr>
+      <tr><td PORT="EXP"                         align="right" >experiment : experiment</td></tr>
+      <tr><td PORT="VARIANTS"                    align="right" >variants : varservice*</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+  };
+ 
+  subgraph clusterUrn_Geometry_Services_5_0 {
+    fontname="bold";
+    label="Services";
+    bgcolor="white"; 
+
+    /**************************************************/
+    Geometry_5_0_Services [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"  bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:geometry:5.0:services</td></tr>
+      <tr><td              bgcolor="lightgrey"  align="left"  >category: services</td></tr>
+      <tr><td PORT="GEOM"                       align="right" >geometry : geomsetup</td></tr>
+      <tr><td PORT="PATH"  bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+  };
+
+  Geometry_Variants_Service_2_0:VARREG -> Geometry_Variants_2_0:MAIN:e;
+  Geometry_5_0:VARIANTS                -> Geometry_Variants_Service_2_0:MAIN:e[ color="magenta"; ];
+  Geometry_5_0_Services:GEOM           -> Geometry_5_0:MAIN:e; 
+
+};
+
+Geometry_5_0:EXP:w -> ExperimentSuperNEMO:MAIN:e;
