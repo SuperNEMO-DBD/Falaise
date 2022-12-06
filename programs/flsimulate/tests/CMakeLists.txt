@@ -37,7 +37,7 @@ endforeach()
 add_test(NAME flsimulate-example-2-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
@@ -58,7 +58,7 @@ set_falaise_test_environment(flsimulate-example-2-run)
 add_test(NAME flsimulate-example-3-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
@@ -82,7 +82,7 @@ set_falaise_test_environment(flsimulate-example-3-run)
 add_test(NAME flsimulate-example-4-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=calo_8inch_scin_bulk"
           -s "primary_events:generator=versatile_generator"

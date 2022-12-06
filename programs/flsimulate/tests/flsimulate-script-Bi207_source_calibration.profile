@@ -16,6 +16,7 @@ layout/if_basic/source_calibration = true
 layout/if_basic/source_calibration/is_active/type = "Bi207"
 layout/if_basic/shielding = true
 calo_film_thickness = 25 um
+tracking_gas_material = "Nemo3"
 
 [registry="vertexes"]
 generator = "source_pads_bulk"

@@ -9,21 +9,17 @@ layout/if_basic/magnetic_field=true
 layout/if_basic/magnetic_field/is_active/type="UniformVertical"
 layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude=25 gauss
 layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction="+z"
-layout/if_basic/source_layout="Basic"
-layout/if_basic/source_layout/if_basic/thickness=250 um
-layout/if_basic/source_layout/if_basic/material="Se82"
+layout/if_basic/source_layout="RealisticFlat"
 layout/if_basic/source_calibration=false
 layout/if_basic/shielding=true
 calo_film_thickness=25 um
 tracking_gas_material = "Nemo3"
 
 [registry="vertexes"]
-generator="calo_5inch_scin_bulk"
+generator="real_flat_source_full_foils_se82_bulk"
 
 [registry="primary_events"]
-generator="versatile_generator"
-generator/if_versatile/particle="gamma"
-generator/if_versatile/energy=4000 keV
+generator="Se82.2nubb"
 
 [registry="simulation"]
 physics_mode="Constructors"

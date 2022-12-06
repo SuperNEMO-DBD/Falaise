@@ -120,7 +120,6 @@ if [ $step1 -eq 1 ]; then
 EOF
     echo >&2 "[info] Running flsimulate-configure..."
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
 			 -s "vertexes:generator=real_flat_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
@@ -162,7 +161,6 @@ if [ $step2 -eq 1 ]; then
 EOF
     echo >&2 "[info] Running flsimulate-configure..."
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
 			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
@@ -217,7 +215,6 @@ EOF
 
     echo >&2 "[info] Running flsimulate-configure..."
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "geometry:layout/if_basic/magnetic_field=false" \
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
 			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \

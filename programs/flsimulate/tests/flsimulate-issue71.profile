@@ -15,6 +15,7 @@ layout/if_basic/source_layout/if_basic/material = "Sn124"
 layout/if_basic/source_calibration = false
 layout/if_basic/shielding = true
 calo_film_thickness = 25 um
+tracking_gas_material = "Nemo3"
 
 [registry="vertexes"]
 generator = "pmt_main_wall_glass_bulk"

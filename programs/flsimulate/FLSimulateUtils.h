@@ -19,11 +19,17 @@
 
 namespace FLSimulate {
 
-// Return the default simulation setup for the current Falaise release
-std::string default_simulation_setup();
+  // Return the default simulation setup for the current Falaise release
+  std::string default_simulation_setup();
 
-// Return the list of registered simulation setups for the current Falaise release
-std::map<std::string, std::string> list_of_simulation_setups();
+  // Return the list of registered simulation setups for the current Falaise release
+  std::map<std::string, std::string> list_of_simulation_setups();
+
+  // Return the default simulation variant service for the current Falaise release
+  std::string default_variant_service_setup();
+
+  // Return the default path for simulation output variant profile
+  std::string output_variant_profile_default_path();
 
 }  // namespace FLSimulate
 

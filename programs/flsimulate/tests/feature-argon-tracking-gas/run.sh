@@ -32,7 +32,7 @@ fi
 echo >&2 "[debug] PATH = '${PATH}'"
 
 label="run-feature-argon-tracking-gas"
-with_visu=1
+with_visu=0
 work_dir=""
 cfg_dir=""
 step1=0

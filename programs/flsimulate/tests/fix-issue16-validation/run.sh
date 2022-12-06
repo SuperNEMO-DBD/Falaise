@@ -94,8 +94,8 @@ if [ ! -d ${FLWORKDIR} ]; then
 fi
 
 echo >&2 "[info] Running flsimulate-configure..."
+###    -t "urn:snemo:demonstrator:simulation:2.4" 
 flsimulate-configure --no-gui \
-    -t "urn:snemo:demonstrator:simulation:2.1" \
     -s "vertexes:generator=source_pads_bulk" \
     -s "primary_events:generator=Se82.0nubb" \
     -s "simulation:output_profile=source_details" \
