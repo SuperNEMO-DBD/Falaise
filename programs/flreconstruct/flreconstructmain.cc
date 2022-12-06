@@ -1,4 +1,4 @@
-//! \file    flsimulatemain.cc
+//! \file    flreconstructmain.cc
 //! \brief   Main program for flreconstruct command line application
 //! \details Configure, setup and run the bayeux::dpp based pipeline
 //!          reconstruction of SuperNEMO data.
@@ -17,8 +17,8 @@
 //
 // Copyright (c) 2013-2014 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013-2014 by The University of Warwick
-// Copyright (c) 2016-2021 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2016-2021 by Université de Caen Normandie
+// Copyright (c) 2016-2022 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2016-2022 by Université de Caen Normandie
 //
 // This file is part of Falaise.
 //
@@ -45,10 +45,6 @@
 
 // - Boost
 #include "boost/program_options.hpp"
-// #include "boost/version.hpp"
-// #include "boost/foreach.hpp"
-// #include "boost/filesystem.hpp"
-// #include "boost/algorithm/string/predicate.hpp"
 
 // This Project
 #include "FLReconstructErrors.h"
@@ -61,21 +57,22 @@
 
 namespace FLReconstruct {
 
-//! Perform reconstruction using command line args as given
-falaise::exit_code do_flreconstruct(int argc, char* argv[]);
+  //! Perform reconstruction using command line args as given
+  falaise::exit_code do_flreconstruct(int argc_, char* argv_[]);
 
 }  // end of namespace FLReconstruct
 
 //----------------------------------------------------------------------
 // MAIN PROGRAM
 //----------------------------------------------------------------------
-int main(int argc, char* argv[]) {
-  falaise::initialize(argc, argv);
+int main(int argc_, char* argv_[])
+{
+  falaise::initialize(argc_, argv_);
 
   // - Do the reconstruction
   // Ideally, exceptions SHOULD NOT propagate out of this - the error
   // code should be enough, but might want a catch all...
-  falaise::exit_code ret = FLReconstruct::do_flreconstruct(argc, argv);
+  falaise::exit_code ret = FLReconstruct::do_flreconstruct(argc_, argv_);
 
   falaise::terminate();
   return ret;
@@ -83,36 +80,37 @@ int main(int argc, char* argv[]) {
 
 namespace FLReconstruct {
 
-//! Perform reconstruction using command line args as given
-falaise::exit_code do_flreconstruct(int argc, char* argv[]) {
-  FLReconstructApplication flRecApp;
+  //! Perform reconstruction using command line args as given
+  falaise::exit_code do_flreconstruct(int argc_, char * argv_[])
+  {
+    FLReconstructApplication flRecApp;
 
-  // - Configure
-  FLReconstructParams & flRecParameters = flRecApp.parameters;
-  try {
-    // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
-    do_configure(argc, argv, flRecApp);
-    DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
-  } catch (FLConfigDefaultError& e) {
-    std::cerr << "Unable to configure core of flreconstruct" << std::endl;
-    return falaise::EXIT_UNAVAILABLE;
-  } catch (FLConfigHelpHandled& e) {
-    return falaise::EXIT_OK;
-  } catch (FLConfigUserError& e) {
-    std::cerr << "User configuration error: " << e.what() << std::endl;
-    return falaise::EXIT_USAGE;
+    // - Configure
+    FLReconstructParams & flRecParameters = flRecApp.parameters;
+    try {
+      // DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "Configuring the flreconstruct pipeline...");
+      do_configure(argc_, argv_, flRecApp);
+      DT_LOG_DEBUG(flRecParameters.logLevel, "flreconstruct pipeline is configured.");
+    } catch (FLConfigDefaultError& e) {
+      std::cerr << "Unable to configure core of flreconstruct" << std::endl;
+      return falaise::EXIT_UNAVAILABLE;
+    } catch (FLConfigHelpHandled& e) {
+      return falaise::EXIT_OK;
+    } catch (FLConfigUserError& e) {
+      std::cerr << "User configuration error: " << e.what() << std::endl;
+      return falaise::EXIT_USAGE;
+    }
+
+    // - Run
+    falaise::exit_code code = falaise::EXIT_OK;
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
+    code = do_pipeline(flRecParameters);
+    DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
+
+    // Terminate:
+    do_terminate(flRecApp);
+
+    return code;
   }
 
-  // - Run
-  falaise::exit_code code = falaise::EXIT_OK;
-  DT_LOG_DEBUG(flRecParameters.logLevel, "Running the pipeline...");
-  code = do_pipeline(flRecParameters);
-  DT_LOG_DEBUG(flRecParameters.logLevel, "Pipeline is done with code=" << code);
-
-  // Terminate:
-  do_terminate(flRecApp);
-
-  return code;
-}
-
-}  // end of namespace FLReconstruct
+} // end of namespace FLReconstruct

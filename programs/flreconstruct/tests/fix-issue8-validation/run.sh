@@ -103,7 +103,6 @@ fi
 
 echo >&2 "[info] Running flsimulate-configure..."
 flsimulate-configure --no-gui \
-    -t "urn:snemo:demonstrator:simulation:2.1" \
     -s "geometry:layout/if_basic/magnetic_field=${with_magfield}" \
     -s "vertexes:generator=source_pads_bulk" \
     -s "primary_events:generator=Se82.0nubb" \

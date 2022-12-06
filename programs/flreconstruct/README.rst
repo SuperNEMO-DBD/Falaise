@@ -5,10 +5,10 @@ Falaise Reconstruction Application
 What's Here
 ===========
 
-The main application for reconstruction of raw data from SuperNEMO.
-It takes input from the detector/simulation and outputs reconstructed
-events.
-Any code specific to the reconstruction application goes here as well.
+The main  application for  reconstruction of  real or  simulation data
+from  SuperNEMO.   It takes  input  from  the detector/simulation  and
+outputs reconstructed events.  Any code specific to the reconstruction
+application goes here as well.
 
 How to Use It
 =============
