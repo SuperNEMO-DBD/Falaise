@@ -1,4 +1,4 @@
-Welcome to the Falaise Documentation {#mainpage}
+Welcome to the Falaise Documentation {#falaise_doc_mainpage}
 ====================================
 Falaise is the software system for the SuperNEMO experiment. These
 pages document the usage of the core applications, together with guides

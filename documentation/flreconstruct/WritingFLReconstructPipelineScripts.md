@@ -242,7 +242,7 @@ numberOfEvents : integer = 10000
 ~~~~~~
 
 
-How to run a mock calibration on simulated events {#usingflreconstruct_mockcalibalgo}
+How to run a mock calibration on simulated events {#usingflreconstruct_mockcalibalgo2}
 -------------------------------------------------
 
 When we generate simulated events  with FLSimulate, the so-called `SD`
@@ -422,7 +422,7 @@ scintillator block  are also computed  (with respect to  the arbitrary
 decay time set by the simulation engine).
 
 
-How to run a tracking algorithm on simulated events {#usingflreconstruct_trackfitalgo}
+How to run a tracking algorithm on simulated events {#usingflreconstruct_trackfitalgo2}
 ---------------------------------------------------
 
 Now we know how to perform the calibration step, we are interested in the reconstruction
@@ -517,7 +517,7 @@ associated to a calorimeter block.
 ![A simulated event with reconstructed tracker clusters and fitted tracks](@ref flr_qs_trackfit_event.png)
 
 
-To do {#usingflreconstruct_todo}
+To do {#usingflreconstruct_todo2}
 -----
 
 Document more reconstruction steps:
