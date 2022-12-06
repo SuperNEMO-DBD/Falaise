@@ -24,75 +24,75 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief A class to handle time stamp
-class timestamp : public datatools::i_serializable {
- public:
-  /// Constructor
-  timestamp() = default;
+    /// \brief A class to handle time stamp
+    class timestamp : public datatools::i_serializable {
+    public:
+      /// Constructor
+      timestamp() = default;
 
-  /// Overloaded constructor
-  timestamp(int64_t s, int64_t ps)
-      : datatools::i_serializable{}, seconds_{s}, picoseconds_{ps} {}
+      /// Overloaded constructor
+      timestamp(int64_t s, int64_t ps)
+        : datatools::i_serializable{}, seconds_{s}, picoseconds_{ps} {}
 
-  /// Destructor
-  virtual ~timestamp() = default;
+      /// Destructor
+      virtual ~timestamp() = default;
 
-  /// Copy/Move operations to get Ro5
-  timestamp(const timestamp &) = default;
-  timestamp &operator=(const timestamp &) = default;
-  timestamp(timestamp &&) = default;
-  timestamp &operator=(timestamp &&) = default;
+      /// Copy/Move operations to get Ro5
+      timestamp(const timestamp &) = default;
+      timestamp &operator=(const timestamp &) = default;
+      timestamp(timestamp &&) = default;
+      timestamp &operator=(timestamp &&) = default;
 
-  /// Return the number of seconds
-  int64_t get_seconds() const;
+      /// Return the number of seconds
+      int64_t get_seconds() const;
 
-  /// Set the number of seconds
-  void set_seconds(int64_t);
+      /// Set the number of seconds
+      void set_seconds(int64_t);
 
-  /// Return the number of picoseconds
-  int64_t get_picoseconds() const;
+      /// Return the number of picoseconds
+      int64_t get_picoseconds() const;
 
-  /// Set the number of picoseconds
-  void set_picoseconds(int64_t);
+      /// Set the number of picoseconds
+      void set_picoseconds(int64_t);
 
-  /// Check if the timestamp object is valid
-  bool is_valid() const;
+      /// Check if the timestamp object is valid
+      bool is_valid() const;
 
-  /// Convert timestamp to real value (explicit time unit)
-  double to_real() const;
+      /// Convert timestamp to real value (explicit time unit)
+      double to_real() const;
 
-  /// Format time stamp as string object and return it
-  std::string to_string() const;
+      /// Format time stamp as string object and return it
+      std::string to_string() const;
 
-  /// Format time stamp as string object and return it as reference
-  void to_string(std::string &) const;
+      /// Format time stamp as string object and return it as reference
+      void to_string(std::string &) const;
 
-  /// Parse time from string object and set the timestamp object accordingly
-  void from_string(const std::string &);
+      /// Parse time from string object and set the timestamp object accordingly
+      void from_string(const std::string &);
 
-  friend bool operator==(const timestamp &, const timestamp &);
-  friend bool operator<(const timestamp &, const timestamp &);
-  friend bool operator>(const timestamp &, const timestamp &);
-  friend bool operator<=(const timestamp &, const timestamp &);
-  friend bool operator>=(const timestamp &, const timestamp &);
-  friend std::ostream &operator<<(std::ostream &, const timestamp &);
-  friend std::istream &operator>>(std::istream &, timestamp &);
+      friend bool operator==(const timestamp &, const timestamp &);
+      friend bool operator<(const timestamp &, const timestamp &);
+      friend bool operator>(const timestamp &, const timestamp &);
+      friend bool operator<=(const timestamp &, const timestamp &);
+      friend bool operator>=(const timestamp &, const timestamp &);
+      friend std::ostream &operator<<(std::ostream &, const timestamp &);
+      friend std::istream &operator>>(std::istream &, timestamp &);
 
- private:
-  /// Compare with another timestamp
-  int compare(const timestamp &) const;
-  static const int64_t INVALID_SECONDS;
-  static const int64_t INVALID_PICOSECONDS;
+    private:
+      /// Compare with another timestamp
+      int compare(const timestamp &) const;
+      static const int64_t INVALID_SECONDS;
+      static const int64_t INVALID_PICOSECONDS;
 
-  int64_t seconds_{INVALID_SECONDS};          //!< Number of seconds
-  int64_t picoseconds_{INVALID_PICOSECONDS};  //!< Number of picoseconds
+      int64_t seconds_{INVALID_SECONDS};          //!< Number of seconds
+      int64_t picoseconds_{INVALID_PICOSECONDS};  //!< Number of picoseconds
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+      DATATOOLS_SERIALIZATION_DECLARATION()
+    };
 
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

@@ -1,6 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/datamodel/precalibrated_calorimeter_hit.cc
- */
+/// \file falaise/snemo/datamodels/precalibrated_calorimeter_hit.cc
 
 // Ourselves
 #include <falaise/snemo/datamodels/precalibrated_calorimeter_hit.h>
@@ -251,42 +250,42 @@ namespace snemo {
       return;
     }
 
-    double precalibrated_calorimeter_hit::get_width() const
+    double precalibrated_calorimeter_hit::get_time_width() const
     {
-      return _width_;
+      return _time_width_;
     }
 
-    bool precalibrated_calorimeter_hit::has_width() const
+    bool precalibrated_calorimeter_hit::has_time_width() const
     {
-      return !datatools::is_valid(_width_);
+      return !datatools::is_valid(_time_width_);
     }
 
-    void precalibrated_calorimeter_hit::set_width(double width_)
+    void precalibrated_calorimeter_hit::set_time_width(double time_width_)
     {
-      _width_ = width_;
+      _time_width_ = time_width_;
       return;
     }
 
-    void precalibrated_calorimeter_hit::reset_width()
+    void precalibrated_calorimeter_hit::reset_time_width()
     {
-      _width_ = datatools::invalid_real();
+      _time_width_ = datatools::invalid_real();
       return;
     }
 
-    double precalibrated_calorimeter_hit::get_sigma_width() const
+    double precalibrated_calorimeter_hit::get_sigma_time_width() const
     {
-      return _sigma_width_;
+      return _sigma_time_width_;
     }
 
-    void precalibrated_calorimeter_hit::set_sigma_width(double sigma_width_)
+    void precalibrated_calorimeter_hit::set_sigma_time_width(double sigma_time_width_)
     {
-      _sigma_width_ = sigma_width_;
+      _sigma_time_width_ = sigma_time_width_;
       return;
     }
 
-    void precalibrated_calorimeter_hit::reset_sigma_width()
+    void precalibrated_calorimeter_hit::reset_sigma_time_width()
     {
-      _sigma_width_ = datatools::invalid_real();
+      _sigma_time_width_ = datatools::invalid_real();
       return;
     }
 
@@ -311,8 +310,8 @@ namespace snemo {
       datatools::invalidate(_sigma_rising_time_);
       datatools::invalidate(_falling_time_);
       datatools::invalidate(_sigma_falling_time_);
-      datatools::invalidate(_width_);
-      datatools::invalidate(_sigma_width_);
+      datatools::invalidate(_time_width_);
+      datatools::invalidate(_sigma_time_width_);
     }
 
     void precalibrated_calorimeter_hit::tree_dump(std::ostream& out, const std::string& title,
@@ -331,8 +330,8 @@ namespace snemo {
           << indent << datatools::i_tree_dumpable::tag << "Sigma(rising time) : " << _sigma_rising_time_ / CLHEP::nanosecond << " ns\n"
           << indent << datatools::i_tree_dumpable::tag << "Falling time : " << _falling_time_ / CLHEP::nanosecond << " ns\n"
           << indent << datatools::i_tree_dumpable::tag << "Sigma(falling time) : " << _sigma_falling_time_ / CLHEP::nanosecond << " ns\n"
-          << indent << datatools::i_tree_dumpable::tag << "Width : " << _width_ / CLHEP::nanosecond << " ns\n"
-          << indent << datatools::i_tree_dumpable::tag << "Sigma(width) : " << _sigma_width_ / CLHEP::nanosecond << " ns" << std::endl;
+          << indent << datatools::i_tree_dumpable::tag << "Time width : " << _time_width_ / CLHEP::nanosecond << " ns\n"
+          << indent << datatools::i_tree_dumpable::tag << "Sigma(time width) : " << _sigma_time_width_ / CLHEP::nanosecond << " ns" << std::endl;
 
     }
 

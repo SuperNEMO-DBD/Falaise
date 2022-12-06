@@ -1,6 +1,6 @@
 // -*- mode: c++ ; -*-
 /// \file falaise/snemo/datamodels/precalibrated_tracker_hit.h
-/* Author(s) :    Guillaume Oliviero <goliviero@ucl.ac.uk>
+/* Author(s) :    Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
  * Last modified: 2022-05-13
