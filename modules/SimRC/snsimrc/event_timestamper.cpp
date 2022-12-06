@@ -23,6 +23,12 @@ namespace snemo {
       return _initialized_;
     }
 
+    void event_timestamper::set_run_info_service(const snemo::run_info_service & run_info_svr_)
+    {
+      _runInfos_ = &run_info_svr_;
+      return;
+    }
+
     void event_timestamper::initialize(const datatools::properties & config_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error,
@@ -48,35 +54,45 @@ namespace snemo {
       }
       DT_THROW_IF(_timestamp_reuse_factor_ < 1, std::domain_error, "Invalid timestamp reuse factor!");
                     
-      std::uint32_t nbRequiredTimestamps = nbEvents / _timestamp_reuse_factor_;
-      DT_THROW_IF(nbRequiredTimestamps < 1, std::domain_error, "Invalid number of required timestamps!");
+      std::uint32_t nbGeneratedTimestamps = nbEvents;
+
+      if (_timestamp_reuse_factor_ > 1) {
+        nbGeneratedTimestamps = nbEvents / _timestamp_reuse_factor_;
+      }
+      // 2022-11-30 FM: should we add this strict test (maybe a problem if the number of events is not kind (prime...))
+      // DT_THROW_IF(nbEvents % _timestamp_reuse_factor_ != 0, std::logic_error,
+      //             "Invalid timestamp reuse factor (must be a divisor of the number of events)!");
+      DT_THROW_IF(nbGeneratedTimestamps < 1, std::domain_error, "Invalid number of required timestamps!");
 
       if (timestampsFilePath.empty()) {
         // Timestamp sampling is computed from the run list and an activity model:
-        std::vector<std::string> runListFilenames;
-        if (config_.has_key("run_lists")) {
-          config_.fetch("run_lists", runListFilenames);
-        }
-        _runList_ = std::make_unique<snemo::rc::run_list>();
-        if (! runListFilenames.empty()) {
-          for (std::string runListFilename : runListFilenames) {
-            datatools::fetch_path_with_env(runListFilename);
-            DT_LOG_DEBUG(_logging_, "Loading run list from '" << runListFilename << "'...");
-            datatools::multi_properties runListCfg("run", "type");
-            runListCfg.read(runListFilename);
-            _runList_->load(runListCfg);
+        // If no run_info service is available:
+        if (_runInfos_ == nullptr or _runInfos_->get_run_list().size() == 0) {
+          // Build a local run list
+          std::vector<std::string> runListFilenames;
+          if (config_.has_key("run_lists")) {
+            config_.fetch("run_lists", runListFilenames);
+          }
+          _runList_ = std::make_unique<snemo::rc::run_list>();
+          if (! runListFilenames.empty()) {
+            for (std::string runListFilename : runListFilenames) {
+              datatools::fetch_path_with_env(runListFilename);
+              DT_LOG_DEBUG(_logging_, "Loading run list from '" << runListFilename << "'...");
+              datatools::multi_properties runListCfg("run", "type");
+              runListCfg.read(runListFilename);
+              _runList_->load(runListCfg);
+            }
+          }
+          if (_runList_->is_empty()) {
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "No provided runs! Falling back to a default unique long 30-months run...");
+            snemo::rc::run_description longRunDesc
+              = snemo::rc::run_description::make(0,
+                                                 snemo::rc::run_category::PRODUCTION,
+                                                 time::time_period_from_string("[2023-01-01 00:00:00/2025-07-01 00:00:00)"),
+                                                 nbEvents); // Here 'nbEvents' is a dummy value (unused)
+            _runList_->add_run(longRunDesc);
           }
         }
-        if (_runList_->is_empty()) {
-          DT_LOG_DEBUG(_logging_, "Falling back to a default unique long 30-months run...");
-          snemo::rc::run_description longRunDesc
-            = snemo::rc::run_description::make(0,
-                                               snemo::rc::run_category::PRODUCTION,
-                                               time::time_period_from_string("[2023-01-01 00:00:00/2025-07-01 00:00:00)"),
-                                               nbEvents); // Here 'nbEvents' is a dummy value (unused)
-          _runList_->add_run(longRunDesc);
-        }
-
         std::string activityModelFactoryConfigFilename;
         std::vector<std::string> activityModelFilenames;
         if (config_.has_key("activity_model_factory.config")) {
@@ -102,7 +118,7 @@ namespace snemo {
         }
 
         if (! _mcActivityModel_) {
-          DT_LOG_DEBUG(_logging_, "Falling back to constant activity model...");
+          DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "No provided activity model! Falling back to constant activity model...");
           _mcActivityModel_ = std::make_shared<snemo::physics_model::constant_activity_model>();
           dynamic_cast<snemo::physics_model::constant_activity_model*>(_mcActivityModel_.get())->set_activity(10e-3 * CLHEP::becquerel);      
           datatools::properties dummyCfg;
@@ -112,7 +128,7 @@ namespace snemo {
 
         _mcRunStatistics_ = std::make_unique<snemo::rc::run_statistics>();
         _mcRunStatistics_->set_logging(_logging_);
-        _mcRunStatistics_->set_runs(*_runList_);
+        _mcRunStatistics_->set_runs(_run_list_());
         _mcRunStatistics_->set_activity_model(*_mcActivityModel_);
         snemo::time::time_duration timeStep = snemo::time::invalid_duration();
         if (config_.has_key("run_statistics.time_step")) {
@@ -144,17 +160,18 @@ namespace snemo {
         if (randomSeed > 0) {
           _mcEventDistribution_
             = snemo::rc::mc_event_distribution::make_random_sampling(*_mcRunStatistics_,
-                                                                     nbRequiredTimestamps,
+                                                                     nbGeneratedTimestamps,
                                                                      randomSeed);
         } else {
           _mcEventDistribution_
-            = snemo::rc::mc_event_distribution::make_regular_sampling(*_mcRunStatistics_, nbRequiredTimestamps);
+            = snemo::rc::mc_event_distribution::make_regular_sampling(*_mcRunStatistics_,
+                                                                      nbGeneratedTimestamps);
         }
       } else {
         DT_LOG_DEBUG(_logging_, "Loading precomputed timestamps from file '" << timestampsFilePath << "'");
         // Timestamp sampling is loaded from a file of precomputed timestamps:
         _mcEventDistribution_
-          = snemo::rc::mc_event_distribution::make_from_file(nbRequiredTimestamps, timestampsFilePath);
+          = snemo::rc::mc_event_distribution::make_from_file(nbGeneratedTimestamps, timestampsFilePath);
       }
       
       if (datatools::logger::is_debug(_logging_)) {
@@ -179,12 +196,13 @@ namespace snemo {
       if (_actModelFactory_.is_initialized()) {
         _actModelFactory_.reset();
       }
+      _runInfos_ = nullptr;
       _runList_.reset();
       _initialized_ = false;
       return;
     }
 
-    snemo::rc::mc_event_distribution & event_timestamper::mcEventDistribution()
+    snemo::rc::mc_event_distribution & event_timestamper::mc_event_distribution()
     {
       DT_THROW_IF(not is_initialized(),
                   std::logic_error, "No MC event distribution! Event timestamper is not initialized!");
@@ -195,6 +213,14 @@ namespace snemo {
     {
       DT_THROW_IF(not is_initialized(),
                   std::logic_error, "No run list! Event timestamper is not initialized!");
+      return _run_list_();
+    }
+
+    const snemo::rc::run_list & event_timestamper::_run_list_() const
+    {
+      if (_runInfos_ != nullptr) {
+        return _runInfos_->get_run_list();
+      }
       return *_runList_;
     }
 

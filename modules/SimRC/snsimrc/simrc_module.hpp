@@ -15,6 +15,7 @@
 #include "event_timestamper.hpp"
 #include "tracker_cell_tagger.hpp"
 #include "calorimeter_om_tagger.hpp"
+#include <falaise/snemo/services/run_info_service.h>
 
 namespace geomtools {
   class manager;
@@ -69,8 +70,10 @@ namespace snemo {
     private:
       
       const geomtools::manager * _geoManager_ = nullptr; ///< The geometry manager
-      std::string _EHTag_ = "EH"; ///< The label of the input EH bank (event header)
-      std::string _SDTag_ = "SD"; ///< The label of the input SD bank (simulated data)
+      std::string _runInfoServiceName_;
+      const snemo::run_info_service * _runInfos_ = nullptr; ///< The run info service
+      std::string _EHTag_; ///< The label of the input EH bank (event header)
+      std::string _SDTag_; ///< The label of the input SD bank (simulated data)
       
       std::vector<std::string> _caloTypes_{}; ///< Calorimeter hit categories
       std::string _ggType_;

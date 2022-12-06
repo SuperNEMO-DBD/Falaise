@@ -130,6 +130,7 @@ namespace FLSimRC {
  
   void do_run(const app_params & params_)
   {
+    DT_LOG_TRACE_ENTERING(datatools::logger::PRIO_TRACE);
     // datatools::library_loader libLoader;
     // std::string pluginPath = falaise::get_plugin_dir();
     // libLoader.load("Falaise_XXX", pluginPath);
@@ -158,25 +159,28 @@ namespace FLSimRC {
       eventTimestamperConfig.store_integer("random_seed", (int) params_.timestamp_generation_random_seed);
     }
     
+    DT_LOG_TRACE(params_.log_level, "Instance of event timestamper");
     snemo::simulation::event_timestamper eventTimestamper;
     eventTimestamper.initialize(eventTimestamperConfig);
+    DT_LOG_TRACE(params_.log_level, "... initialized.");
 
     std::string eventTimestampsPath(params_.event_timestamps_path);
     datatools::fetch_path_with_env(eventTimestampsPath);
 
     std::unique_ptr<std::ofstream> fTimesOut;
-    if (!params_.event_times_path.empty()) {
-      DT_LOG_DEBUG(params_.log_level, "Store generated times in file '" << params_.event_times_path << "'");
+    if (! params_.event_times_path.empty()) {
+      DT_LOG_DEBUG(params_.log_level,
+                   "Store generated times in file '" << params_.event_times_path << "'");
       std::string eventTimesPath(params_.event_times_path);
       datatools::fetch_path_with_env(eventTimesPath);
       fTimesOut = std::make_unique<std::ofstream>(eventTimesPath);
     }
-    
+
     snemo::time::time_point refTime = eventTimestamper.run_list().span().begin();
     {
       snemo::rc::mc_event_distribution::writer timestampsWriter(eventTimestampsPath,
                                                                 params_.number_of_mc_events);    
-      auto & mcEventDistribution = eventTimestamper.mcEventDistribution();
+      auto & mcEventDistribution = eventTimestamper.mc_event_distribution();
       while (mcEventDistribution.has_next_decay()) {
         auto evenRcTiming = mcEventDistribution.next_decay();
         timestampsWriter.write(evenRcTiming);

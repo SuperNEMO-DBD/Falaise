@@ -1,5 +1,5 @@
-!falaise::simrc::mc-event-timestamps
-100
+#!falaise::simrc::mc-event-timestamps
+#@ntimestamps=100
 0 0 2023-01-05 13:26:24
 1 0 2023-01-14 16:19:12
 2 0 2023-01-23 19:12:00

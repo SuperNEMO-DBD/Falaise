@@ -24,6 +24,7 @@
 #include <falaise/snemo/services/service_handle.h>
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/resource.h>
+#include <falaise/snemo/services/services.h>
 
 namespace snemo {
 
@@ -52,6 +53,9 @@ namespace snemo {
     void simrc_module::_set_defaults()
     {
       _geoManager_ = nullptr;
+      _runInfos_ = nullptr;
+      _runInfoServiceName_.clear();
+      _EHTag_.clear();
       _SDTag_.clear();
       return;
     }
@@ -91,7 +95,15 @@ namespace snemo {
       set_geometry_manager(*(geoService.operator->()));
       _caloTypes_ = {"calo", "xcalo", "gveto"};
       _ggType_ = "gg";
- 
+
+      // Search for a service named 'run_info"
+      _runInfoServiceName_ = ps.get<std::string>("run_info_label", snemo::service_info::runInfoServiceName());
+      if (services_.has(_runInfoServiceName_) and services_.is_a<snemo::run_info_service>(_runInfoServiceName_)) {
+        _runInfos_ = &services_.get<snemo::run_info_service>(_runInfoServiceName_);
+      }
+     
+      // snemo::service_handle<snemo::run_info_service> runInfoService{services_};
+      // _runInfos_ = runInfoService.operator->();
       // snemo::service_handle<snemo::tracker_cell_status_service> cellStatusService{services_};
       // snemo::service_handle<snemo::calorimeter_om_status_service> omStatusService{services_};
      
@@ -110,6 +122,11 @@ namespace snemo {
       if (_event_timestamping_) {
         DT_LOG_DEBUG(get_logging_priority(), "Activate MC event timestamping");
         _event_timestamper_ = std::make_unique<event_timestamper>();
+        if (_runInfos_ != nullptr) {
+          // Use the run info service from the event timestamper
+         DT_LOG_DEBUG(get_logging_priority(), "MC event timestamping uses the run_info service");
+         _event_timestamper_->set_run_info_service(*_runInfos_);
+        }
         datatools::properties eventTimestamperConfig;
         config_.export_and_rename_starting_with(eventTimestamperConfig, "event_timestamper.", "");
         _event_timestamper_->initialize(eventTimestamperConfig);
@@ -122,6 +139,7 @@ namespace snemo {
         config_.export_and_rename_starting_with(cellTaggerConfig, "tracker_cell_tagger.", "");
         _tracker_cell_tagger_->set_geometry_manager(*_geoManager_);
         snemo::service_handle<snemo::tracker_cell_status_service> cellStatusService{services_};
+         DT_LOG_DEBUG(get_logging_priority(), "MC event tracker cell tagging uses the cell status service");
         _tracker_cell_tagger_->set_tracker_cell_status_service(*(cellStatusService.operator->()));
         _tracker_cell_tagger_->initialize(cellTaggerConfig);
       }
@@ -133,6 +151,7 @@ namespace snemo {
         config_.export_and_rename_starting_with(omTaggerConfig, "calorimeter_om_tagger.", "");
         _calorimeter_om_tagger_->set_geometry_manager(*_geoManager_);
         snemo::service_handle<snemo::calorimeter_om_status_service> omStatusService{services_};
+         DT_LOG_DEBUG(get_logging_priority(), "MC event calorimeter om tagging uses the om status service");
         _calorimeter_om_tagger_->set_calorimeter_om_status_service(*(omStatusService.operator->()));
         _calorimeter_om_tagger_->initialize(omTaggerConfig);
       }
