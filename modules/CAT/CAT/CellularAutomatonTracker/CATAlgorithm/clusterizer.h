@@ -49,32 +49,33 @@ class clusterizer {
 
  public:
   bool initialize(void);
-  bool initialize(const mybhep::sstore& store, const mybhep::gstore& gs,
-                  mybhep::EventManager2* eman = 0);
+  bool initialize(const mybhep::sstore & store,
+                  const mybhep::gstore & gs,
+                  mybhep::EventManager2 * eman = nullptr);
   void initializeHistos(void);
-  bool execute(mybhep::event& evt, int ievent);
+  bool execute(mybhep::event & evt, int ievent);
   bool finalize();
   void finalizeHistos(void);
-  void FillYPositions(mybhep::event& evt);
-  void FillYPositions(mybhep::particle* p);
-  void FillYPosition(mybhep::hit* h);
-  void FillTrueVertexes(mybhep::event& evt);
-  void FillTrueVertexes(mybhep::particle* p);
-  void FillHistos(mybhep::event& evt);
-  bool read_event(mybhep::event& evt, topology::tracked_data& tracked_data_);
-  bool prepare_event(topology::tracked_data& tracked_data_);
-  void read_true_sequences(mybhep::event& evt);
-  void read_nemo_sequences(mybhep::event& evt);
+  void FillYPositions(mybhep::event & evt);
+  void FillYPositions(mybhep::particle * p);
+  void FillYPosition(mybhep::hit * h);
+  void FillTrueVertexes(mybhep::event & evt);
+  void FillTrueVertexes(mybhep::particle * p);
+  void FillHistos(mybhep::event & evt);
+  bool read_event(mybhep::event & evt, topology::tracked_data & tracked_data_);
+  bool prepare_event(topology::tracked_data & tracked_data_);
+  void read_true_sequences(mybhep::event & evt);
+  void read_nemo_sequences(mybhep::event & evt);
   void read_true_sequences();
   void read_nemo_sequences();
   void print_cells(void) const;
   void print_calos(void) const;
-  void clusterize(topology::tracked_data& tracked_data_);
-  void clusterize_after_sultan(topology::tracked_data& tracked_data_);
+  void clusterize(topology::tracked_data & tracked_data_);
+  void clusterize_after_sultan(topology::tracked_data & tracked_data_);
   void print_clusters(void) const;
   void print_true_sequences(void) const;
   void print_nemo_sequences(void) const;
-  void readDstProper(const mybhep::sstore& global, mybhep::EventManager2* eman);
+  void readDstProper(const mybhep::sstore & global, mybhep::EventManager2 * eman);
   void readDstProper();
   void GenerateWires(void);
   double long_resolution(double Z, double d[3]) const;
@@ -102,18 +103,18 @@ class clusterizer {
 
  protected:
   void fill_fast_information();
-  void fill_fast_information(mybhep::event& evt);
-  void fill_fast_information(mybhep::particle* p);
-  void fill_fast_information(mybhep::hit* h);
-  int cell_side(const topology::cell& c);
-  size_t near_level(const topology::cell& c1, const topology::cell& c2);
-  std::vector<topology::cell> get_near_cells(const topology::cell& c);
+  void fill_fast_information(mybhep::event & evt);
+  void fill_fast_information(mybhep::particle * p);
+  void fill_fast_information(mybhep::hit * h);
+  int cell_side(const topology::cell & c);
+  size_t near_level(const topology::cell & c1, const topology::cell & c2);
+  std::vector<topology::cell> get_near_cells(const topology::cell & c);
   void setup_cells();
   void setup_clusters();
-  topology::calorimeter_hit make_calo_hit(const mybhep::hit& ahit, size_t id);
-  int get_effective_layer(const mybhep::hit& hit);
-  bool select_true_tracks(topology::tracked_data& __tracked_data);
-  void make_plots(topology::tracked_data& __tracked_data);
+  topology::calorimeter_hit make_calo_hit(const mybhep::hit & ahit, size_t id);
+  int get_effective_layer(const mybhep::hit & hit);
+  bool select_true_tracks(topology::tracked_data & __tracked_data);
+  void make_plots(topology::tracked_data & __tracked_data);
 
  protected:
   //  NHistoManager2 hman;
