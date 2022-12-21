@@ -140,12 +140,12 @@ namespace snemo {
       ///
       /// Usage:
       /// \code
-      /// snemo::datamodel::tracker_digitized_hit caloDigiHit
+      /// snemo::datamodel::tracker_digitized_hit trackDigiHit
       /// ...
       /// boost::property_tree::ptree poptions;
       /// poptions.put("title", "Tracker Digitized Hit:");
       /// poptions.put("indent", ">>> ");
-      /// caloDigiHit.print_tree(std::clog, poptions);
+      /// trackDigiHit.print_tree(std::clog, poptions);
       /// \endcode
       void print_tree(std::ostream & out_ = std::clog,
                       const boost::property_tree::ptree & options_ = empty_options()) const override;

@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file  falaise/snemo/datamodels/unified_digitized_data_hit.h
+/// \file  falaise/snemo/datamodels/unified_digitized_data.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  *                Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
@@ -9,7 +9,8 @@
  * Description:
  *
  *  The Unified Digitized Data (UDD) datamodel.
- *  It contains a collection of a calorimeter digitized hit and a collection of a tracker digitized hit.
+ *  It contains a trigger digitized hit, a collection of calorimeter digitized
+ *  hits and a collection of tracker digitized hits.
  *
  * History:
  *
@@ -33,6 +34,7 @@
 #include <datatools/properties.h>
 
 // This project:
+#include <falaise/snemo/datamodels/trigger_digitized_hit.h>
 #include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
 #include <falaise/snemo/datamodels/tracker_digitized_hit.h>
 #include <falaise/snemo/datamodels/udd_utils.h>
