@@ -72,13 +72,11 @@ namespace snemo {
 
     bool trigger_digitized_hit::is_valid() const
     {
-      if (not this->geomtools::base_hit::is_valid()) return true;
       return true;
     }
 
     void trigger_digitized_hit::invalidate()
     {
-      this->geomtools::base_hit::invalidate();
       return;
     }
 
@@ -88,9 +86,6 @@ namespace snemo {
     {
       base_print_options popts;
       popts.configure_from(options_);
-
-      this->geomtools::base_hit::print_tree(out_,
-                                            base_print_options::force_inheritance(options_));
 
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Valid : " << std::boolalpha << is_valid() << std::endl;

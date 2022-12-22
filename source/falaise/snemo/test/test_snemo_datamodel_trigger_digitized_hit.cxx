@@ -22,9 +22,6 @@ int main(/* int argc_, char ** argv_ */) {
 
     {
       sdm::trigger_digitized_hit triggerDigiHit;
-      triggerDigiHit.set_hit_id(42);
-      geomtools::geom_id geomId(0, 7, 52);;
-      triggerDigiHit.set_geom_id(geomId);
 
       std::clog << "A trigger digitized (raw) hit:\n";
       triggerDigiHit.print_tree(std::clog);

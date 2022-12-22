@@ -12,8 +12,6 @@
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/geomtools:
-#include <geomtools/base_hit.ipp>
 
 namespace snemo {
 
@@ -31,12 +29,10 @@ namespace snemo {
 
     /// Serialization method
     template <class Archive>
-    void trigger_digitized_hit::serialize(Archive & ar_,
+    void trigger_digitized_hit::serialize(Archive & /* ar_ */,
                                           const unsigned int /* version */)
     {
-      // Inherit from the 'base_hit' mother class:
-      ar_ & boost::serialization::make_nvp("geomtools__base_hit",
-                                           boost::serialization::base_object<geomtools::base_hit>(*this));
+      //ar_ & DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       return;
     }
 

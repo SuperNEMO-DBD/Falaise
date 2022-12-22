@@ -1,10 +1,10 @@
 // -*- mode: c++ ; -*-
-/// \file  falaise/snemo/datamodels/tracker_digitized_hit.h
+/// \file  falaise/snemo/datamodels/trigger_digitized_hit.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  *                Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
- * Creation date: 2022-05-03
- * Last modified: 2022-05-13
+ * Creation date: 2022-12-21
+ * Last modified: 2022-12-22
  *
  * Description:
  *
@@ -36,8 +36,8 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief Trigger digitized hit
-    class trigger_digitized_hit
-      : public geomtools::base_hit
+    class trigger_digitized_hit : public datatools::i_serializable,
+                                  public datatools::i_tree_dumpable
     {
     public:
 
@@ -69,10 +69,10 @@ namespace snemo {
       virtual ~trigger_digitized_hit() = default;
 
       /// Check if the internal data of the hit are valid
-      bool is_valid() const override;
+      bool is_valid() const;
 
       /// Invalidate the internal data of hit
-      void invalidate() override;
+      void invalidate();
 
       /// Smart print
       ///
@@ -86,7 +86,7 @@ namespace snemo {
       /// trigDigiHit.print_tree(std::clog, poptions);
       /// \endcode
       void print_tree(std::ostream & out_ = std::clog,
-                      const boost::property_tree::ptree & options_ = empty_options()) const override;
+                      const boost::property_tree::ptree & options_ = empty_options()) const;
 
     private:
 
