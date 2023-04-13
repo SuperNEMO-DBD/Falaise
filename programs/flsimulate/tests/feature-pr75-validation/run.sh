@@ -23,7 +23,7 @@
 #  $ ./run.sh [--work-dir /tmp/${USER}/fltest-feature-pr65] [--visu]
 #
 
-pythonExe=$(which python)
+pythonExe=$(which python3)
 if [ -z "${pythonExe}" ]; then
     echo >&2 "[error] Cannot find Python executable! Abort!"
     exit 1    

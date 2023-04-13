@@ -151,6 +151,12 @@ set(Falaise_SNRS_LIB_PATH ${FalaiseSnrsLibPath})
 set(Falaise_SNRS_RESOURCE_PATH ${FalaiseSnrsResourcePath})
 set(Falaise_SNRS_VERSION ${FalaiseSnrsVersion})
 
+# Depends on Python3 for some tests
+find_program(Python3Exe python3 DOC "Path to the python3 program" REQUIRED)
+if (NOT Python3Exe)
+  message(FATAL_ERROR "The python3 executable was not located on this system")
+endif()
+
 # # Hack for Boost 1.69:
 # set(PROJECT_CXX_FLAGS "${PROJECT_CXX_FLAGS} -Wno-error=pedantic")
 

@@ -5,9 +5,13 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/calibrated_calorimeter_hit.h
   snemo/datamodels/calibrated_data.h
   snemo/datamodels/calibrated_tracker_hit.h
+  snemo/datamodels/udd_utils.h
   snemo/datamodels/precalibrated_calorimeter_hit.h
   snemo/datamodels/precalibrated_data.h
   snemo/datamodels/precalibrated_tracker_hit.h
+  snemo/datamodels/calorimeter_digitized_hit.h
+  snemo/datamodels/unified_digitized_data.h
+  snemo/datamodels/tracker_digitized_hit.h
   snemo/datamodels/data_model.h
   snemo/datamodels/event.h
   snemo/datamodels/event_header.h
@@ -32,6 +36,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp
   snemo/datamodels/boost_io/precalibrated_data.ipp
   snemo/datamodels/boost_io/precalibrated_tracker_hit.ipp
+  snemo/datamodels/boost_io/calorimeter_digitized_hit.ipp
+  snemo/datamodels/boost_io/unified_digitized_data.ipp
+  snemo/datamodels/boost_io/tracker_digitized_hit.ipp
   snemo/datamodels/boost_io/event_header.ipp
   snemo/datamodels/boost_io/helix_trajectory_pattern.ipp
   snemo/datamodels/boost_io/line_trajectory_pattern.ipp
@@ -56,6 +63,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/locator_plugin.h
   snemo/geometry/mapped_magnetic_field.h
   snemo/geometry/helix_intercept.h
+  snemo/geometry/manager.h
 
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
@@ -66,6 +74,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
   snemo/processing/filter.h
+  snemo/processing/detector_description.h
   snemo/processing/module.h
   snemo/processing/black_hole_module.h
   snemo/processing/types.h
@@ -83,7 +92,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/hello_world.h
   snemo/services/dead_cells.h
   snemo/services/histogram.h
-  snemo/services/db_service.h 
+  snemo/services/db_service.h
   snemo/services/tracker_cell_status_service.h
   snemo/services/calorimeter_om_status_service.h
 
@@ -91,7 +100,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/cuts/simulated_data_cut.h
 
   snemo/time/time_utils.h
- 
+
   snemo/physics_model/base_activity_model.h
   snemo/physics_model/constant_activity_model.h
   snemo/physics_model/scaled_activity_model.h
@@ -108,8 +117,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/rc/mc_event_distribution.h
   snemo/rc/tracker_cell_status.h
   snemo/rc/calorimeter_om_status.h
-  
-  )
+
+)
 
 list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/timestamp.cc
@@ -117,6 +126,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/calibrated_calorimeter_hit.cc
   snemo/datamodels/calibrated_tracker_hit.cc
   snemo/datamodels/calibrated_data.cc
+  snemo/datamodels/calorimeter_digitized_hit.cc
+  snemo/datamodels/unified_digitized_data.cc
+  snemo/datamodels/tracker_digitized_hit.cc
   snemo/datamodels/precalibrated_calorimeter_hit.cc
   snemo/datamodels/precalibrated_tracker_hit.cc
   snemo/datamodels/precalibrated_data.cc
@@ -145,6 +157,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/mapped_magnetic_field.cc
   snemo/geometry/private/categories.h
   snemo/geometry/helix_intercept.cc
+  snemo/geometry/manager.cc
 
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
@@ -152,7 +165,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/mock_calorimeter_s2c_module.cc
   snemo/processing/mock_calorimeter_s2c_module_utils.cc
   snemo/processing/mock_tracker_s2c_module.cc
-   snemo/processing/detail/mock_raw_tracker_hit.h
+  snemo/processing/detail/mock_raw_tracker_hit.h
   snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
@@ -200,7 +213,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/rc/tracker_cell_status.cc
   snemo/rc/calorimeter_om_status.cc
 
-  )
+)
 
 list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_snemo_datamodel_event.cxx
@@ -211,7 +224,7 @@ list(APPEND FalaiseLibrary_TESTS_CATCH
   snemo/test/test_service.cxx
   snemo/test/test_dead_cells_service.cxx
   snemo/test/test_event_record.cxx
-  )
+)
 
 list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_service_external.cxx
@@ -220,6 +233,9 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_calibrated_tracker_hit.cxx
   snemo/test/test_snemo_datamodel_precalibrated_calorimeter_hit.cxx
   snemo/test/test_snemo_datamodel_precalibrated_tracker_hit.cxx
+  snemo/test/test_snemo_datamodel_calorimeter_digitized_hit.cxx
+  snemo/test/test_snemo_datamodel_tracker_digitized_hit.cxx
+  snemo/test/test_snemo_datamodel_unified_digitized_data.cxx
   snemo/test/test_snemo_datamodel_tracker_cluster.cxx
   snemo/test/test_snemo_datamodel_tracker_clustering_data.cxx
   snemo/test/test_snemo_datamodel_tracker_clustering_solution.cxx
@@ -248,7 +264,7 @@ list(APPEND FalaiseLibrary_TESTS
   # snemo/test/test_snemo_service_rc.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
-  
-  )
+
+)
 
 # - end

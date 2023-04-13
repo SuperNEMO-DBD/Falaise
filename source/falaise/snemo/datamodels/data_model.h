@@ -37,6 +37,9 @@ class labels {
   /// default string label/name for the 'simulated data'
   static const std::string& simulated_data();
 
+  /// default string label/name for the 'unified digitized data'
+  static const std::string& unified_digitized_data();
+
   /// default string label/name for the 'precalibrated data'
   static const std::string& precalibrated_data();
 
