@@ -66,10 +66,10 @@ namespace snemo {
       double Y8 = Y4*Y4;
       double Z8 = Z4*Z4;
       double X9 = X5*X4;
-      double Y9 = Y5*X4;
+      double Y9 = Y5*Y4;
       double Z9 = Z5*Z4;
       double X10 = X5*X5;
-      double Y10 = Y5*X5;
+      double Y10 = Y5*Y5;
       double Z10 = Z5*Z5;
       auto power = static_cast<pol3d_power_type>(p[0]);
       switch (power) {
