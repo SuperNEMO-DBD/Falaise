@@ -115,6 +115,58 @@ void calorimeter_hit_renderer::push_simulated_hits(const std::string& hit_catego
   }  // end of step collection
 }
 
+void calorimeter_hit_renderer::push_digitized_hits() {
+  const io::event_record& event = _server->get_event();
+  const auto& digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+  const snemo::datamodel::CalorimeterDigiHitHdlCollection& dc_collection =
+		digi_data.get_calorimeter_hits();
+
+  if (dc_collection.empty()) {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "No digitized calorimeter hits");
+    return;
+  }
+
+  for (const auto& it_hit : dc_collection) {
+    const snemo::datamodel::calorimeter_digitized_hit& a_hit = it_hit.get();
+
+		// Show only HT or LT hit
+		const bool is_ht = a_hit.is_high_threshold();
+		const bool is_lt = a_hit.is_low_threshold_only();
+
+		if (!(is_ht || is_lt))
+			continue;
+
+		geomtools::geom_id a_geom_id = a_hit.get_geom_id();
+		// add +1 on type
+		a_geom_id.set_type(a_geom_id.get_type()+1);
+
+		if (a_geom_id.get_type() == 1302)
+			// append .* in case of MW
+			a_geom_id.set_any(a_geom_id.get_depth());
+
+		this->highlight_geom_id(a_geom_id, style_manager::get_instance().get_digitized_data_color());
+
+    if (options_manager::get_instance().get_option_flag(SHOW_DIGITIZED_INFO)) {
+
+			// show TDC ? waveform ?
+			// const int64_t tdc = a_hit.get_timestamp();
+
+      std::ostringstream oss;
+      if (is_ht)
+				oss << "HT";
+			else if (is_lt)
+				oss << "LT";
+
+      this->highlight_geom_id(a_geom_id, style_manager::get_instance().get_digitized_data_color(), oss.str());
+    }
+
+		else
+			this->highlight_geom_id(a_geom_id, style_manager::get_instance().get_digitized_data_color());
+  }
+}
+
 void calorimeter_hit_renderer::push_calibrated_hits() {
   const io::event_record& event = _server->get_event();
   const auto& calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);

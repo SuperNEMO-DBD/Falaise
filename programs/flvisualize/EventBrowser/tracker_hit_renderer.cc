@@ -176,6 +176,24 @@ void tracker_hit_renderer::push_simulated_hits(const std::string &hit_category_)
   }    // end of step collection
 }
 
+void tracker_hit_renderer::push_digitized_hits() {
+  const io::event_record &event = _server->get_event();
+  const auto &digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+	const snemo::datamodel::TrackerDigiHitHdlCollection &dt_collection = digi_data.get_tracker_hits();
+
+  if (dt_collection.empty()) {
+    DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                       "No digitized tracker hits");
+    return;
+  }
+
+  for (const auto &it_hit : dt_collection) {
+    const snemo::datamodel::tracker_digitized_hit &a_hit = it_hit.get();
+    tracker_hit_renderer::_make_digitized_geiger_hit(a_hit);
+  }
+}
+
 void tracker_hit_renderer::push_calibrated_hits() {
   const io::event_record &event = _server->get_event();
   const auto &calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
@@ -382,6 +400,62 @@ void tracker_hit_renderer::push_fitted_tracks() {
 
     }  // end of trajectory loop
   }    // end of solution loop
+}
+
+void tracker_hit_renderer::_make_digitized_geiger_hit(
+    const snemo::datamodel::tracker_digitized_hit &hit_) {
+
+	geomtools::geom_id gid = hit_.get_geom_id();
+
+  // Compute the position of the anode impact in the drift cell coordinates reference frame:
+
+	const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+  const geomtools::manager & geom_manager = detector_mgr.get_geometry_manager();
+  const geomtools::mapping & geom_mapping = geom_manager.get_mapping();
+	const geomtools::geom_info & ginfo = geom_mapping.get_geom_info(gid);
+
+	geomtools::vector_3d cell_self_pos (0.0, 0.0, 0.0);
+	geomtools::vector_3d cell_world_pos;
+	ginfo.get_world_placement().child_to_mother(cell_self_pos, cell_world_pos);
+
+	// geomtools::vector_3d cell_module_pos;
+	// module_placement->mother_to_child(cell_world_pos, cell_module_pos);
+
+  // geomtools::vector_3d cell_module_pos(gid.get_x(), gid.get_y(), gid.get_z());
+  // geomtools::vector_3d cell_world_pos;
+  // detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
+  // Get (x, y) position of triggered cell
+
+  const double x = cell_world_pos.getX();
+  const double y = cell_world_pos.getY();
+  const double z = cell_world_pos.getZ();
+
+	const bool has_anode = hit_.get_times().front().has_anode_time(snemo::datamodel::tracker_digitized_hit::ANODE_R0);
+	// const bool has_bottom_cathode = hit_.has_bottom_cathode_time();
+	// const bool has_top_cathode = hit_.has_top_cathode_time();
+
+	if (has_anode) {
+
+    const double r = 22.0 / CLHEP::mm;  // hit_.get_r();
+
+    geomtools::polyline_type points;
+    points.push_back(geomtools::vector_3d(x + r, y + r, z));
+    points.push_back(geomtools::vector_3d(x + r, y - r, z));
+    points.push_back(geomtools::vector_3d(x - r, y - r, z));
+    points.push_back(geomtools::vector_3d(x - r, y + r, z));
+    points.push_back(geomtools::vector_3d(x + r, y + r, z));
+
+    TPolyLine3D *gg_square = base_renderer::make_polyline(points);
+    _objects->Add(gg_square);
+
+		int color = style_manager::get_instance().get_digitized_data_color();
+    gg_square->SetLineColor(color);
+
+		// size_t line_width = style_manager::get_instance().get_mc_line_width();
+    // gg_square->SetLineWidth(line_width);
+
+	}
 }
 
 void tracker_hit_renderer::_make_calibrated_geiger_hit(

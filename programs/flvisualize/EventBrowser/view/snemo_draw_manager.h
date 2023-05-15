@@ -88,6 +88,9 @@ class snemo_draw_manager : public i_draw_manager {
   /// Add 'simulated_data' bank objects
   void _add_simulated_data();
 
+  /// Add 'unified_digitized_data' bank objects
+  void _add_digitized_data();
+
   /// Add 'calibrated_data' bank objects
   void _add_calibrated_data();
 

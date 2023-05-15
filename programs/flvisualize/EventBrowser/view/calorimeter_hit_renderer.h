@@ -57,6 +57,9 @@ class calorimeter_hit_renderer : public base_renderer {
   /// Build simulated calorimeter hits
   void push_simulated_hits(const std::string& hit_category_ = "");
 
+  /// Build digitized calorimeter hits
+  void push_digitized_hits();
+
   /// Build calibrated calorimeter hits
   void push_calibrated_hits();
 };

@@ -188,6 +188,7 @@ void event_server::dump_event(std::ostream& out_, const std::string& title_,
                               const std::string& indent_) const {
   const snemo::datamodel::event_header* eh_ptr = nullptr;
   const mctools::simulated_data* sd_ptr = nullptr;
+  const snemo::datamodel::unified_digitized_data* udd_ptr = nullptr;
   const snemo::datamodel::calibrated_data* cd_ptr = nullptr;
   const snemo::datamodel::tracker_clustering_data* tc_ptr = nullptr;
   const snemo::datamodel::tracker_trajectory_data* tt_ptr = nullptr;
@@ -198,6 +199,9 @@ void event_server::dump_event(std::ostream& out_, const std::string& title_,
   }
   if (_event_->has(SD_LABEL)) {
     sd_ptr = &(_event_->get<mctools::simulated_data>(SD_LABEL));
+  }
+  if (_event_->has(UDD_LABEL)) {
+    udd_ptr = &(_event_->get<snemo::datamodel::unified_digitized_data>(UDD_LABEL));
   }
   if (_event_->has(CD_LABEL)) {
     cd_ptr = &(_event_->get<snemo::datamodel::calibrated_data>(CD_LABEL));
@@ -224,6 +228,12 @@ void event_server::dump_event(std::ostream& out_, const std::string& title_,
     sd_ptr->tree_dump(out_, "Simulated data", indent_);
   } else {
     out_ << indent_ << "No simulated data." << std::endl;
+  }
+
+  if (udd_ptr != nullptr) {
+    udd_ptr->tree_dump(out_, "Unified digitized data", indent_);
+  } else {
+    out_ << indent_ << "No unified digitized data." << std::endl;
   }
 
   if (cd_ptr != nullptr) {

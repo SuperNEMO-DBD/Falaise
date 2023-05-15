@@ -125,6 +125,9 @@ class browser_tracks {
   /// Update simulated data bank
   void _update_simulated_data();
 
+  /// Update digitized data bank
+  void _update_digitized_data();
+
   /// Update calibrated data bank
   void _update_calibrated_data();
 
