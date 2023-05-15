@@ -1,6 +1,5 @@
 // No clang-format in linkdefs!
 // clang-format off
-#include "Things2Root.h"
 
 #pragma link off all globals;
 #pragma link off all classes;
