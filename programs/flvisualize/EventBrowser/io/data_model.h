@@ -32,6 +32,7 @@
 #ifndef FALAISE_SNEMO_VISUALIZATION_IO_DATA_MODEL_H
 #define FALAISE_SNEMO_VISUALIZATION_IO_DATA_MODEL_H 1
 
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/event_header.h>
@@ -54,6 +55,9 @@ const std::string EH_LABEL = snedm::labels::event_header();
 
 // simulated stuff
 const std::string SD_LABEL = snedm::labels::simulated_data();
+
+// unified digitized stuff
+const std::string UDD_LABEL = snedm::labels::unified_digitized_data();
 
 // calibrated stuff
 const std::string CD_LABEL = snedm::labels::calibrated_data();

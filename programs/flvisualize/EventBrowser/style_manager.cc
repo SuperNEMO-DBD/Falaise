@@ -87,6 +87,8 @@ void style_manager::set_mc_line_width(const size_t width_) { _mc_line_width_ = w
 
 size_t style_manager::get_mc_line_width() const { return _mc_line_width_; }
 
+size_t style_manager::get_digitized_data_color() const { return _digitized_data_color_; }
+
 size_t style_manager::get_calibrated_data_color() const { return _calibrated_data_color_; }
 
 bool style_manager::has_color_palette() const { return !_color_palette_.empty(); }
@@ -243,8 +245,8 @@ void style_manager::_set_default_() {
   _mc_line_style_ = kSolid;
   _mc_line_style_ = 1;
 
+  _digitized_data_color_ = kGray;
   _calibrated_data_color_ = kGray;
-
   _undefined_particle_color_ = kGray;
 
   _save_directory_ = ".";
@@ -463,6 +465,11 @@ void style_manager::_set_miscellaneous_(const datatools::properties& config_) {
 
   if (config_.has_key("mc_line_width")) {
     _mc_line_width_ = config_.fetch_integer("mc_line_width");
+  }
+
+  if (config_.has_key("digitized_data_color")) {
+    _digitized_data_color_ =
+        utils::root_utilities::get_color_value("digitized_data_color", config_);
   }
 
   if (config_.has_key("calibrated_data_color")) {

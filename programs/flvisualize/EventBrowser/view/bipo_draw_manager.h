@@ -67,12 +67,16 @@ class bipo_draw_manager : public i_draw_manager {
 
  protected:
   void _add_simulated_data();
+  void _add_digitized_data();
   void _add_calibrated_data();
 
  private:
   void _add_simulated_vertex_();
   void _add_simulated_hits_();
   void _add_simulated_tracks_();
+
+  void _add_digitized_hits_();
+  void _add_digitized_info_();
 
   void _add_calibrated_hits_();
   void _add_calibrated_info_();

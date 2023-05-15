@@ -253,6 +253,10 @@ event_browser_menu::event_browser_menu(TGCompositeFrame *main_) {
   menu_options->AddPopupPlus("Show simu. hits", sim_hits_submenu, SHOW_MC_HITS);
   menu_options->AddSeparator();
 
+  menu_options->AddEntry("Show digi. hits", SHOW_DIGITIZED_HITS);
+  menu_options->AddEntry("Show digi. info", SHOW_DIGITIZED_INFO);
+  menu_options->AddSeparator();
+
   menu_options->AddEntry("Show calib. hits", SHOW_CALIBRATED_HITS);
   menu_options->AddEntry("Show calib. info", SHOW_CALIBRATED_INFO);
   menu_options->AddSeparator();
@@ -377,6 +381,8 @@ void event_browser_menu::set_default_option(const io::event_server &server_) {
     disable_option(SHOW_MC_VERTEX);
     disable_option(SHOW_MC_HITS);
     disable_option(SHOW_MC_TRACKS);
+    disable_option(SHOW_DIGITIZED_HITS);
+    disable_option(SHOW_DIGITIZED_INFO);
     disable_option(SHOW_CALIBRATED_HITS);
     disable_option(SHOW_CALIBRATED_INFO);
     disable_option(SHOW_TRACKER_CLUSTERED_HITS);
@@ -386,6 +392,11 @@ void event_browser_menu::set_default_option(const io::event_server &server_) {
       disable_option(SHOW_MC_VERTEX);
       disable_option(SHOW_MC_HITS);
       disable_option(SHOW_MC_TRACKS);
+    }
+
+    if (!server_.get_event().has(io::UDD_LABEL)) {
+      disable_option(SHOW_DIGITIZED_HITS);
+      disable_option(SHOW_DIGITIZED_INFO);
     }
 
     if (!server_.get_event().has(io::CD_LABEL)) {

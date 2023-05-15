@@ -85,6 +85,8 @@ void options_manager::set_default_options() {
   _options_dictionnary_[SHOW_MC_HITS] = true;
   _options_dictionnary_[SHOW_MC_CALORIMETER_HITS] = true;
   _options_dictionnary_[SHOW_MC_TRACKER_HITS] = true;
+  _options_dictionnary_[SHOW_DIGITIZED_HITS] = true;
+  _options_dictionnary_[SHOW_DIGITIZED_INFO] = true;
   _options_dictionnary_[SHOW_CALIBRATED_HITS] = true;
   _options_dictionnary_[SHOW_CALIBRATED_INFO] = true;
   _options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS] = true;
@@ -181,6 +183,16 @@ void options_manager::define_view_options(
                       ("show-simulated-hits",
                        po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
                        "show simulated hits")
+
+                          ("show-digitized-hits",
+                           po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])
+                               ->value_name("flag"),
+                           "show digitized hits")
+
+                              ("show-digitized-info",
+                               po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])
+                                   ->value_name("flag"),
+                               "show digitized info")
 
                           ("show-calibrated-hits",
                            po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])
@@ -286,6 +298,16 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
                       ("show-simulated-hits",
                        po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
                        "show simulated hits")
+
+                          ("show-digitized-hits",
+                           po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])
+                               ->value_name("flag"),
+                           "show digitized hits")
+
+                              ("show-digitized-info",
+                               po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])
+                                   ->value_name("flag"),
+                               "show digitized info")
 
                           ("show-calibrated-hits",
                            po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])

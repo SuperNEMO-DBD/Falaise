@@ -80,6 +80,14 @@ void bipo_draw_manager::update() {
                  "Event has no simulated data");
   }
 
+  // Add 'digitized_data' objects:
+  if (_server_->get_event().has(io::CD_LABEL))
+    this->_add_digitized_data();
+  else {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "Event has no digitized data");
+  }
+
   // Add 'calibrated_data' objects:
   if (_server_->get_event().has(io::CD_LABEL))
     this->_add_calibrated_data();
@@ -184,6 +192,30 @@ void bipo_draw_manager::_add_simulated_hits_() {
 void bipo_draw_manager::_add_simulated_tracks_() {
   _visual_track_renderer_->push_mc_tracks("__visu.tracks");
   _visual_track_renderer_->push_mc_legend();
+  return;
+}
+
+/****************************************************
+ *  Filling objects from the 'digitized_data' bank *
+ ****************************************************/
+
+void bipo_draw_manager::_add_digitized_data() {
+  const options_manager& options_mgr = options_manager::get_instance();
+
+  if (options_mgr.get_option_flag(SHOW_DIGITIZED_HITS)) this->_add_digitized_hits_();
+
+  if (options_mgr.get_option_flag(SHOW_DIGITIZED_INFO)) this->_add_digitized_info_();
+
+  return;
+}
+
+void bipo_draw_manager::_add_digitized_hits_() {
+  _calorimeter_hit_renderer_->push_digitized_hits();
+  return;
+}
+
+void bipo_draw_manager::_add_digitized_info_() {
+  _calorimeter_hit_renderer_->push_digitized_info();
   return;
 }
 

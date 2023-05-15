@@ -73,6 +73,14 @@ void snemo_draw_manager::update() {
                  "Event has no simulated data");
   }
 
+  // Add 'unified_digitized_data' objects:
+  if (_server_->get_event().has(io::UDD_LABEL)) {
+    this->_add_digitized_data();
+  } else {
+    DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+                 "Event has no digitized data");
+  }
+
   // Add 'calibrated_data' objects:
   if (_server_->get_event().has(io::CD_LABEL)) {
     this->_add_calibrated_data();
@@ -202,6 +210,18 @@ void snemo_draw_manager::_add_simulated_hits_() {
 
   if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
     _tracker_hit_renderer_.push_simulated_hits("gg");
+  }
+}
+
+/***************************************************
+ *  Filling objects from the 'unified_digitized_data' bank *
+ ***************************************************/
+
+void snemo_draw_manager::_add_digitized_data() {
+  const options_manager& options_mgr = options_manager::get_instance();
+  if (options_mgr.get_option_flag(SHOW_DIGITIZED_HITS)) {
+    _calorimeter_hit_renderer_.push_digitized_hits();
+    _tracker_hit_renderer_.push_digitized_hits();
   }
 }
 
