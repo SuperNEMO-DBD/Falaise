@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "4.1.0")
+project(Falaise VERSION "5.0.0")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -72,11 +72,13 @@ endif()
 #
 option(FALAISE_ENABLE_TESTING "Build unit testing system for Falaise" OFF)
 
+set(_falaise_TEST_RESOURCE_DIR "${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}")
 # Common testing environment
 set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${PROJECT_SOURCE_DIR}/resources"
+  "FALAISE_RESOURCE_DIR=${_falaise_TEST_RESOURCE_DIR}" 
   "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
   )
+message(STATUS "_falaise_TEST_ENVIRONMENT = ${_falaise_TEST_ENVIRONMENT}")
 
 macro(set_falaise_test_environment _tname)
   set_property(TEST ${_tname}
@@ -92,6 +94,10 @@ endif()
 # Optional build of documentation
 #
 option(FALAISE_WITH_DOCS "Build documentation for Falaise" ON)
+set(Falaise_WITH_DOCS 0)
+if (FALAISE_WITH_DOCS)
+  set(Falaise_WITH_DOCS 1)
+endif(FALAISE_WITH_DOCS)
 
 #-----------------------------------------------------------------------
 # Bayeux is the main external dependency, and we know it will additionally
@@ -164,6 +170,14 @@ endif()
 # Build the subdirectories as required
 #
 add_subdirectory(utilities)
+
+# This version of Falaise uses defines configuration paths 
+# for various modelling topics:
+set(FALAISE_DEFAULT_GEOMETRY_TAG "urn:snemo:demonstrator:geometry:5.0")
+set(FALAISE_DEFAULT_SETUP_TAG "urn:snemo:demonstrator:setup:2.0")
+set(FALAISE_DEFAULT_SIMULATION_TAG "urn:snemo:demonstrator:simulation:2.4")
+set(FALAISE_DEFAULT_RECONSTRUCTION_TAG "urn:snemo:demonstrator:reconstruction:3.0")
+
 add_subdirectory(source)
 
 if(FALAISE_WITH_DOCS)
@@ -173,22 +187,30 @@ endif()
 #-----------------------------------------------------------------------
 # Install resources
 #
+# add_subdirectory(resources)
 # Build tree
 # This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR
 # to be set.
-add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_LIST_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+# add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+#   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
+#   COMMENT "Copying Falaise resources directory into build directory"
+#   )
+add_custom_target(FalaiseResourcesCopyResourceDir ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
   COMMENT "Copying Falaise resources directory into build directory"
   )
-add_custom_target(PublishResources ALL DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR})
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/resources/urn/db/falaise.conf.in
+  ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/urn/db/falaise.conf @ONLY)
+
+# Clean template config files:
+add_custom_target(FalaiseResourcesCleanUrnDbFalaiseConf ALL
+  COMMAND ${CMAKE_COMMAND} -E rm -f ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/urn/db/falaise.conf.in
+  DEPENDS FalaiseResourcesCopyResourceDir) 
+
+add_custom_target(FalaiseResourcesPublishResourceDir ALL
+  DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR} )
 
 # Install tree
-# install(DIRECTORY resources/
-#   DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}"
-#   )
-# message( STATUS "=========> dir='${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}'")
-# message( STATUS "=========> PROJECT_BUILD_DATAROOTDIR='${PROJECT_BUILD_DATAROOTDIR}'")
-# message( STATUS "=========> CMAKE_INSTALL_DATAROOTDIR='${CMAKE_INSTALL_DATAROOTDIR}'")
 install(DIRECTORY ${PROJECT_BUILD_DATAROOTDIR}/
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}
   # Exclude resources symlink
@@ -245,5 +267,14 @@ install(
 # Also programs whilst migrating FLVisualize
 add_subdirectory(programs)
 add_subdirectory(modules)
+
+configure_file(
+  cmake/falaise-config.in
+  ${PROJECT_BINARY_DIR}/falaise-config
+  @ONLY)
+
+install(PROGRAMS ${PROJECT_BINARY_DIR}/falaise-config
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
 
 # - end

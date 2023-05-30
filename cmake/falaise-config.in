@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# -*- mode: shell; -*-
+
+# findFlsimConfigExe=$(which flsimulate-configure)
+# if [ ! -x ${findFlsimConfigExe} ]; then
+#   echo >&2 "[error] Cannot local 'flsimulate-configure' ! Falaise seems not to be installed or setup!"
+#   exit 1
+# fi
+
+falaise_version="@PROJECT_VERSION@"
+falaise_install_prefix="@CMAKE_INSTALL_PREFIX@"
+falaise_bin_dir="${falaise_install_prefix}/bin"
+falaise_inc_dir="${falaise_install_prefix}/include"
+falaise_lib_dir="${falaise_install_prefix}/lib"
+falaise_dataroot_dir="${falaise_install_prefix}/share/@FALAISE_TAG@"
+falaise_with_doc=@Falaise_WITH_DOCS@
+if [ ${falaise_with_doc} -eq 1 ]; then
+  falaise_doc_dir="${falaise_dataroot_dir}/Documentation"
+fi	
+falaise_resource_dir="${falaise_dataroot_dir}/resources"
+falaise_cmake_dir="${falaise_lib_dir}/cmake/@FALAISE_TAG@"
+falaise_default_geometry_tag="@FALAISE_DEFAULT_GEOMETRY_TAG@"
+falaise_default_setup_tag="@FALAISE_DEFAULT_SETUP_TAG@"
+falaise_default_simulation_tag="@FALAISE_DEFAULT_SIMULATION_TAG@"
+falaise_default_reconstruction_tag="@FALAISE_DEFAULT_RECONSTRUCTION_TAG@"
+
+option="$1"
+shift 1
+
+function app_usage()
+{
+
+    cat <<EOF
+falaise-config - Print informations about the Falaise package
+
+Usage:  falaise-config [OPTION]
+
+Options:
+
+  --help         Print this help
+  --prefix       Print the installation prefix
+  --version      Print the Falaise version
+  --incdir       Print the installation path for headers
+  --bindir       Print the installation path for binaries
+  --libdir       Print the installation path for libraries
+  --resourcedir  Print the installation path for resource files
+  --cmakedir     Print the installation path for CMake config files
+  --withdoc      Print 1 is documentation is installed, else 0
+  --default-geometry-setup  Print the tag of the default geometry setup
+  --default-setup  Print the tag of the default experimental setup 
+  --default-simulation-setup  Print the tag of the default simulation setup
+  --default-reconstruction-setup  Print the tag of the default reconstruction setup
+EOF
+    if [ ${falaise_with_doc} -eq 1 ]; then
+      cat <<EOF
+  --docdir       Print the installation path for documentation files (optional)
+EOF
+    fi
+    cat <<EOF
+    
+Notice:  When loaded, the Falaise library registers itself in the Bayeux's kernel
+under the name 'falaise'.
+
+EOF
+    return 0
+}
+
+if [ "x${option}" = "x--help" -o "x${option}" = "x-h" ]; then
+   app_usage
+elif [ "x${option}" = "x--prefix" ]; then
+   echo ${falaise_install_prefix}
+elif [ "x${option}" = "x--version" ]; then
+   echo ${falaise_version}
+elif [ "x${option}" = "x--incdir" ]; then
+   echo ${falaise_inc_dir}
+elif [ "x${option}" = "x--bindir" ]; then
+   echo ${falaise_bin_dir}
+elif [ "x${option}" = "x--libdir" ]; then
+   echo ${falaise_lib_dir}
+elif [ "x${option}" = "x--scriptdir" ]; then
+   echo ${falaise_script_dir}
+elif [ "x${option}" = "x--resourcedir" ]; then
+   echo ${falaise_resource_dir}
+elif [ "x${option}" = "x--cmakedir" ]; then
+   echo ${falaise_cmake_dir}
+elif [ "x${option}" = "x--default-geometry-setup" ]; then
+   echo ${falaise_default_geometry_tag}
+elif [ "x${option}" = "x--default-setup" ]; then
+   echo ${falaise_default_setup_tag}
+elif [ "x${option}" = "x--default-simulation-setup" ]; then
+   echo ${falaise_default_simulation_tag}
+elif [ "x${option}" = "x--default-reconstruction-setup" ]; then
+   echo ${falaise_default_reconstruction_tag}
+elif [ "x${option}" = "x--withdoc" ]; then
+   echo ${falaise_with_doc}
+else
+  parsedOption=false
+  if [ ${falaise_with_doc} -eq 1 ]; then
+    if [ "x${option}" = "x--docdir" ]; then
+      echo ${falaise_doc_dir}
+      parsedOption=true
+    fi	
+  fi
+  if [ ${parsedOption} = false ]; then
+    echo >&2 "[error] Invalid option '${option}'!"
+    app_usage
+    exit 1
+  fi
+fi
+
+exit 0
+
