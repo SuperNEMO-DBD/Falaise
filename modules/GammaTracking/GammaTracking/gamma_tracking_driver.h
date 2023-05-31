@@ -24,8 +24,6 @@
  *
  *   A driver class that wraps the GammaTracking algorithm.
  *
- * History:
- *
  */
 
 #ifndef FALAISE_GAMMA_TRACKING_PLUGIN_SNEMO_RECONSTRUCTION_GAMMA_TRACKING_DRIVER_H
@@ -42,48 +40,50 @@
 
 namespace snemo {
 
-namespace reconstruction {
+  namespace reconstruction {
 
-/// Driver for the gamma tracking algorithms
-class gamma_tracking_driver : public ::snemo::processing::base_gamma_builder {
- public:
-  /// Dedicated algorithm id
-  static const std::string& gamma_tracking_id();
+    /// Driver for the gamma tracking algorithms
+    class gamma_tracking_driver
+      : public ::snemo::processing::base_gamma_builder
+    {
+    public:
+      /// Dedicated algorithm id
+      static const std::string & gamma_tracking_id();
 
-  /// Constructor
-  gamma_tracking_driver();
+      /// Constructor
+      gamma_tracking_driver();
 
-  /// Destructor
-  virtual ~gamma_tracking_driver();
+      /// Destructor
+      virtual ~gamma_tracking_driver();
 
-  /// Initialize the gamma tracker through configuration properties
-  virtual void initialize(const datatools::properties& setup_);
+      /// Initialize the gamma tracker through configuration properties
+      virtual void initialize(const datatools::properties & setup_);
 
-  /// Reset the clusterizer
-  virtual void reset();
+      /// Reset the clusterizer
+      virtual void reset();
 
-  /// OCD support:
-  static void init_ocd(datatools::object_configuration_description& ocd_);
+      /// OCD support:
+      static void init_ocd(datatools::object_configuration_description & ocd_);
 
- protected:
-  /// Set default values to class members
-  void _set_defaults();
+    protected:
+      /// Set default values to class members
+      void _set_defaults();
 
-  /// Prepare cluster for processing
-  virtual int _prepare_process(const base_gamma_builder::hit_collection_type& calo_hits_,
-                               snemo::datamodel::particle_track_data& ptd_);
+      /// Prepare cluster for processing
+      virtual int _prepare_process(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                   snemo::datamodel::particle_track_data & ptd_);
 
-  /// Main tracking method
-  virtual int _process_algo(const base_gamma_builder::hit_collection_type& calo_hits_,
-                            snemo::datamodel::particle_track_data& ptd_);
+      /// Main tracking method
+      virtual int _process_algo(const base_gamma_builder::hit_collection_type & calo_hits_,
+                                snemo::datamodel::particle_track_data & ptd_);
 
- private:
-  gt::gamma_tracking gtAlgo_;  //!< The Gamma Tracking algorithm
-};
+    private:
+      gt::gamma_tracking gtAlgo_; //!< The Gamma Tracking algorithm
+    };
 
-}  // end of namespace reconstruction
+  } // end of namespace reconstruction
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 // Declare the OCD interface of the module
 #include <datatools/ocd_macros.h>

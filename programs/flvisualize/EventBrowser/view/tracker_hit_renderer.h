@@ -26,8 +26,6 @@
  *
  *  Dedicated tracker hit renderer
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_VISUALIZATION_VIEW_TRACKER_HIT_RENDERER_H
@@ -43,42 +41,44 @@
 
 namespace snemo {
 
-namespace visualization {
+  namespace visualization {
 
-namespace view {
+    namespace view {
 
-/// \brief A dedicated renderer for tracker hits
-class tracker_hit_renderer : public base_renderer {
- public:
-  /// Default constructor
-  tracker_hit_renderer();
+      /// \brief A dedicated renderer for tracker hits
+      class tracker_hit_renderer
+        : public base_renderer
+      {
+      public:
+        /// Default constructor
+        tracker_hit_renderer();
 
-  /// Destructor
-  virtual ~tracker_hit_renderer();
+        /// Destructor
+        virtual ~tracker_hit_renderer();
 
-  /// Add objects from simulated hits
-  void push_simulated_hits(const std::string& hit_category_ = "");
+        /// Add objects from simulated hits
+        void push_simulated_hits(const std::string & hit_category_ = "");
 
-  /// Add objects from calibrated hits
-  void push_calibrated_hits();
+        /// Add objects from calibrated hits
+        void push_calibrated_hits();
 
-  /// Add objects from clustered hits
-  void push_clustered_hits();
+        /// Add objects from clustered hits
+        void push_clustered_hits();
 
-  /// Add objects from fitted hits
-  void push_fitted_tracks();
+        /// Add objects from fitted hits
+        void push_fitted_tracks();
 
- protected:
-  /// Special method to show calibrated geiger hit
-  void _make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit& hit_,
-                                   const bool show_cluster = false);
-};
+      protected:
+        /// Special method to show calibrated geiger hit
+        void _make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
+                                         const bool show_cluster = false);
+      };
 
-}  // end of namespace view
+    } // end of namespace view
 
-}  // end of namespace visualization
+  } // end of namespace visualization
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #endif  // FALAISE_SNEMO_VISUALIZATION_VIEW_TRACKER_HIT_RENDERER_H
 

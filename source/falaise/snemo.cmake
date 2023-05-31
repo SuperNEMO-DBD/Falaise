@@ -18,9 +18,11 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/particle_track_data.h
   snemo/datamodels/polyline_trajectory_pattern.h
   snemo/datamodels/timestamp.h
+  snemo/datamodels/vertex_utils.h
   snemo/datamodels/tracker_cluster.h
   snemo/datamodels/tracker_clustering_data.h
   snemo/datamodels/tracker_clustering_solution.h
+  snemo/datamodels/track_fitting_utils.h
   snemo/datamodels/tracker_trajectory.h
   snemo/datamodels/tracker_trajectory_data.h
   snemo/datamodels/tracker_trajectory_solution.h
@@ -35,6 +37,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/event_header.ipp
   snemo/datamodels/boost_io/helix_trajectory_pattern.ipp
   snemo/datamodels/boost_io/line_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/vertex_utils.ipp
   snemo/datamodels/boost_io/particle_track.ipp
   snemo/datamodels/boost_io/particle_track_data.ipp
   snemo/datamodels/boost_io/polyline_trajectory_pattern.ipp
@@ -42,10 +45,10 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/tracker_cluster.ipp
   snemo/datamodels/boost_io/tracker_clustering_data.ipp
   snemo/datamodels/boost_io/tracker_clustering_solution.ipp
+  snemo/datamodels/boost_io/track_fitting_utils.ipp
   snemo/datamodels/boost_io/tracker_trajectory.ipp
   snemo/datamodels/boost_io/tracker_trajectory_data.ipp
   snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
-
 
   snemo/geometry/config.h
   snemo/geometry/utils.h
@@ -133,6 +136,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/line_trajectory_pattern.cc
   snemo/datamodels/polyline_trajectory_pattern.cc
   snemo/datamodels/helix_trajectory_pattern.cc
+  snemo/datamodels/track_fitting_utils.cc
   snemo/datamodels/tracker_trajectory.cc
   snemo/datamodels/tracker_trajectory_solution.cc
   snemo/datamodels/tracker_trajectory_data.cc
@@ -141,6 +145,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/data_model.cc
   snemo/datamodels/boost_io/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
+  snemo/datamodels/vertex_utils.cc
 
   snemo/geometry/config.cc
   snemo/geometry/calo_locator.cc

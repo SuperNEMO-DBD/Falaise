@@ -5,16 +5,17 @@ using namespace std;
 TrackDetails::TrackDetails()
 {}
 
-TrackDetails::TrackDetails(const geomtools::manager* geometry_manager, snemo::datamodel::particle_track track)
+TrackDetails::TrackDetails(const geomtools::manager * geometry_manager,
+                           snemo::datamodel::particle_track track)
 {
-
   foilmostVertex_.SetXYZ(-9999,-9999,-9999);
   direction_.SetXYZ(-9999,-9999,-9999);
   projectedVertex_.SetXYZ(-9999,-9999,-9999);
   this->Initialize(geometry_manager, track);
 }
 
-void TrackDetails::Initialize(const geomtools::manager* geometry_manager, snemo::datamodel::particle_track track)
+void TrackDetails::Initialize(const geomtools::manager * geometry_manager,
+                              snemo::datamodel::particle_track track)
 {
   geometry_manager_= geometry_manager;
   track_=track;
@@ -32,33 +33,33 @@ bool TrackDetails::Initialize()
   charge_=(int)track_.get_charge();
   // Populate everything you can about the track
   switch (charge_)
-  {
-    case snemo::datamodel::particle_track::NEUTRAL:
     {
-      particleType_=GAMMA;
-      PopulateCaloHits();
-      return true;
-    } // end case neutral (gammas)
+    case snemo::datamodel::particle_track::CHARGE_NEUTRAL:
+      {
+        particleType_=GAMMA;
+        PopulateCaloHits();
+        return true;
+      } // end case neutral (gammas)
 
-    // Any of these will make a track
-    case snemo::datamodel::particle_track::POSITIVE:
-    case snemo::datamodel::particle_track::NEGATIVE:
-    case snemo::datamodel::particle_track::UNDEFINED: // Used for straight tracks
-    makesTrack_=true;
-    break;
+      // Any of these will make a track
+    case snemo::datamodel::particle_track::CHARGE_POSITIVE:
+    case snemo::datamodel::particle_track::CHARGE_NEGATIVE:
+    case snemo::datamodel::particle_track::CHARGE_UNDEFINED: // Used for straight tracks
+      makesTrack_=true;
+      break;
     default:
-    {
-      particleType_= UNKNOWN; // Nothing we can do here so we are done
-      return false;
-    }
-  }//end switch
+      {
+        particleType_= UNKNOWN; // Nothing we can do here so we are done
+        return false;
+      }
+    }//end switch
 
 
   if (!track_.has_trajectory())
-  {
-    particleType_=UNKNOWN;
-    return false;
-  }
+    {
+      particleType_=UNKNOWN;
+      return false;
+    }
 
   // Now we have only charged particles remaining there are a few things we can do:
   // Identify electron candidates
@@ -69,18 +70,18 @@ bool TrackDetails::Initialize()
   const snemo::datamodel::tracker_cluster & the_cluster = the_trajectory.get_cluster();
 
   // Number of hits and lengths of track
-  #ifdef NEW_DATAMODEL_API
+#ifdef NEW_DATAMODEL_API
   trackerHitCount_ = the_cluster.size(); // Currently a track only contains 1 cluster
-  #else
+#else
   trackerHitCount_ = the_cluster.get_number_of_hits();
-  #endif
+#endif
   trackLength_ = the_trajectory.get_pattern().get_shape().get_length();
 
   if (trackLength_ == 0.0)
-  {
-    particleType_= UNKNOWN;
-    return false;
-  }
+    {
+      particleType_= UNKNOWN;
+      return false;
+    }
 
   // Get details about the vertex position
   vertexInTracker_ = SetFoilmostVertex();
@@ -88,32 +89,32 @@ bool TrackDetails::Initialize()
   if (SetDirection()) SetProjectedVertex(); // Can't project if no direction!
 
   // ALPHA candidates are undefined charge particles associated with a delayed hit and no associated hit
-  if (track_.get_charge()==snemo::datamodel::particle_track::UNDEFINED && !track_.has_associated_calorimeter_hits() && the_cluster.is_delayed()>0)
-  {
-    particleType_=ALPHA;
+  if (track_.get_charge()==snemo::datamodel::particle_track::CHARGE_UNDEFINED && !track_.has_associated_calorimeter_hits() && the_cluster.is_delayed()>0)
+    {
+      particleType_=ALPHA;
 
-    #ifdef NEW_DATAMODEL_API
-    const snemo::datamodel::TrackerHitHdlCollection& trackerHits = the_cluster.hits();
-    #else
-    const snemo::datamodel::calibrated_tracker_hit::collection_type& trackerHits = the_cluster.get_hits();
-    #endif
+#ifdef NEW_DATAMODEL_API
+      const snemo::datamodel::TrackerHitHdlCollection& trackerHits = the_cluster.hits();
+#else
+      const snemo::datamodel::calibrated_tracker_hit::collection_type& trackerHits = the_cluster.get_hits();
+#endif
 
-    // iterate only once, we only want the first hit
-    for (const auto& iHit : trackerHits) {
-      const snemo::datamodel::calibrated_tracker_hit& a_delayed_gg_hit = iHit.get();
-      delayTime_ = (a_delayed_gg_hit.get_delayed_time());
+      // iterate only once, we only want the first hit
+      for (const auto& iHit : trackerHits) {
+        const snemo::datamodel::calibrated_tracker_hit& a_delayed_gg_hit = iHit.get();
+        delayTime_ = (a_delayed_gg_hit.get_delayed_time());
+      }
+
+      return true;
     }
-
-    return true;
-  }
   // ELECTRON candidates are prompt and have an associated calorimeter hit. No charge requirement as yet
   else if (the_cluster.is_delayed()<=0 && track_.has_associated_calorimeter_hits())
-  {
-    particleType_=ELECTRON;
-    charge_= track_.get_charge();
-    PopulateCaloHits(); // As it has an associated hit, we can calculate the hit fractions
-    return true;
-  }
+    {
+      particleType_=ELECTRON;
+      charge_= track_.get_charge();
+      PopulateCaloHits(); // As it has an associated hit, we can calculate the hit fractions
+      return true;
+    }
 
 
   return false; // Not an alpha or an electron, what could it be?
@@ -167,17 +168,17 @@ bool TrackDetails::GenerateAlphaProjections(TrackDetails *electronTrack)
   std::vector<TVector3> vertexPositionDelayedHit;
 
   //want to store the vector position of the delayed hit
-  #ifdef NEW_DATAMODEL_API
+#ifdef NEW_DATAMODEL_API
   const snemo::datamodel::TrackerHitHdlCollection& trackerHits = the_cluster.hits();
-  #else
+#else
   const snemo::datamodel::calibrated_tracker_hit::collection_type& trackerHits = the_cluster.get_hits();
-  #endif
+#endif
 
   for (const auto& iHit : trackerHits) {
     const snemo::datamodel::calibrated_tracker_hit& a_delayed_gg_hit = iHit.get();
-      TVector3 delayedHitPos;
-      delayedHitPos.SetXYZ(a_delayed_gg_hit.get_x(), a_delayed_gg_hit.get_y(), a_delayed_gg_hit.get_z());
-      vertexPositionDelayedHit.push_back(delayedHitPos);
+    TVector3 delayedHitPos;
+    delayedHitPos.SetXYZ(a_delayed_gg_hit.get_x(), a_delayed_gg_hit.get_y(), a_delayed_gg_hit.get_z());
+    vertexPositionDelayedHit.push_back(delayedHitPos);
   }
 
   // Here we want to examine the number of hits in the alpha, then find different alpha lengths for each category
@@ -225,17 +226,17 @@ double TrackDetails::GetTotalTimeVariance(double thisTrackLength)
 {
   double totalTimeVariance = 0;
   if (IsElectron())
-  {
-    double theoreticalTimeOfFlight=thisTrackLength/ (GetBeta() * LIGHT_SPEED);
-    totalTimeVariance = pow(timeSigma_,2)
-    + pow(energySigma_,2)
-    * pow((theoreticalTimeOfFlight*ELECTRON_MASS*ELECTRON_MASS),2)
-    / pow( (energy_ * (energy_+ELECTRON_MASS) * (energy_+ 2 * ELECTRON_MASS) ),2);
-  }
+    {
+      double theoreticalTimeOfFlight=thisTrackLength/ (GetBeta() * LIGHT_SPEED);
+      totalTimeVariance = pow(timeSigma_,2)
+        + pow(energySigma_,2)
+        * pow((theoreticalTimeOfFlight*ELECTRON_MASS*ELECTRON_MASS),2)
+        / pow( (energy_ * (energy_+ELECTRON_MASS) * (energy_+ 2 * ELECTRON_MASS) ),2);
+    }
   if (IsGamma())
-  {
+    {
       totalTimeVariance = timeSigma_ * timeSigma_ + trackLengthSigma_ * trackLengthSigma_;
-  }
+    }
 
   return totalTimeVariance;
 }
@@ -254,55 +255,55 @@ bool TrackDetails::PopulateCaloHits()
   // Store the energies
   // There could be multiple hits for a gamma so we need to add them up
   for (unsigned int hit=0; hit<track_.get_associated_calorimeter_hits().size();++hit)
-  {
-
-    geomtools::vector_3d loc (0,0,0);
-
-    const snemo::datamodel::calibrated_calorimeter_hit & calo_hit = track_.get_associated_calorimeter_hits().at(hit).get();
-    double thisHitEnergy=calo_hit.get_energy();
-
-    // Sum the energies
-    thisEnergy +=  thisHitEnergy;
-    energySigmaSq += calo_hit.get_sigma_energy()*calo_hit.get_sigma_energy(); // Add in quadrature
-
-    // We want to know what fraction of the energy was deposited in each calo wall
-    int hitType=calo_hit.get_geom_id().get_type();
-    if (hitType==MAINWALL)
-      thisMainWallEnergy+= thisHitEnergy;
-    else if (hitType==XWALL)
-      thisXwallEnergy+= thisHitEnergy;
-    else if (hitType==GVETO)
-      thisVetoEnergy+= thisHitEnergy;
-    else cout<<"WARNING: Unknown calorimeter type "<<hitType<<endl;
-
-    // Get the coordinates of the hit with the earliest time
-    if (firstHitTime==-1 || calo_hit.get_time()<firstHitTime)
     {
-      firstHitTime=calo_hit.get_time();
-      // Find out which calo wall it hit first
-      firstHitType=hitType;
-      // We need the uncertainty in the first hit time
-      timeSigma_= calo_hit.get_sigma_time();
-      // For gammas, we will set the vertex to this calo hit
-      if (IsGamma())
-      {
-        // Get the vertex position
-        const geomtools::mapping & the_mapping = geometry_manager_->get_mapping();
-        // I got this from PTD2root but I don't understand what the two alternatives mean
-        if (! the_mapping.validate_id(calo_hit.get_geom_id())) {
-          std::vector<geomtools::geom_id> gids;
-          the_mapping.compute_matching_geom_id(calo_hit.get_geom_id(), gids); // front calo block = last entry
-          const geomtools::geom_info & info = the_mapping.get_geom_info(gids.back()); // in vector gids
-          loc  = info.get_world_placement().get_translation();
+
+      geomtools::vector_3d loc (0,0,0);
+
+      const snemo::datamodel::calibrated_calorimeter_hit & calo_hit = track_.get_associated_calorimeter_hits().at(hit).get();
+      double thisHitEnergy=calo_hit.get_energy();
+
+      // Sum the energies
+      thisEnergy +=  thisHitEnergy;
+      energySigmaSq += calo_hit.get_sigma_energy()*calo_hit.get_sigma_energy(); // Add in quadrature
+
+      // We want to know what fraction of the energy was deposited in each calo wall
+      int hitType=calo_hit.get_geom_id().get_type();
+      if (hitType==MAINWALL)
+        thisMainWallEnergy+= thisHitEnergy;
+      else if (hitType==XWALL)
+        thisXwallEnergy+= thisHitEnergy;
+      else if (hitType==GVETO)
+        thisVetoEnergy+= thisHitEnergy;
+      else cout<<"WARNING: Unknown calorimeter type "<<hitType<<endl;
+
+      // Get the coordinates of the hit with the earliest time
+      if (firstHitTime==-1 || calo_hit.get_time()<firstHitTime)
+        {
+          firstHitTime=calo_hit.get_time();
+          // Find out which calo wall it hit first
+          firstHitType=hitType;
+          // We need the uncertainty in the first hit time
+          timeSigma_= calo_hit.get_sigma_time();
+          // For gammas, we will set the vertex to this calo hit
+          if (IsGamma())
+            {
+              // Get the vertex position
+              const geomtools::mapping & the_mapping = geometry_manager_->get_mapping();
+              // I got this from PTD2root but I don't understand what the two alternatives mean
+              if (! the_mapping.validate_id(calo_hit.get_geom_id())) {
+                std::vector<geomtools::geom_id> gids;
+                the_mapping.compute_matching_geom_id(calo_hit.get_geom_id(), gids); // front calo block = last entry
+                const geomtools::geom_info & info = the_mapping.get_geom_info(gids.back()); // in vector gids
+                loc  = info.get_world_placement().get_translation();
+              }
+              else {
+                const geomtools::geom_info & info = the_mapping.get_geom_info(calo_hit.get_geom_id());
+                loc  = info.get_world_placement().get_translation();
+              }
+              foilmostVertex_.SetXYZ(loc.x(),loc.y(),loc.z());
+            }
         }
-        else {
-          const geomtools::geom_info & info = the_mapping.get_geom_info(calo_hit.get_geom_id());
-          loc  = info.get_world_placement().get_translation();
-        }
-        foilmostVertex_.SetXYZ(loc.x(),loc.y(),loc.z());
-      }
     }
-  }
   time_=firstHitTime;
   energy_=thisEnergy;
   energySigma_= TMath::Sqrt(energySigmaSq);
@@ -313,16 +314,16 @@ bool TrackDetails::PopulateCaloHits()
   vetoFraction_=thisVetoEnergy/thisEnergy;
 
   if (track_.has_vertices()) // There isn't any time ordering to the vertices so check them all
-  {
-    for (unsigned int iVertex=0; iVertex<track_.get_vertices().size();++iVertex)
     {
-      const geomtools::blur_spot & vertex = track_.get_vertices().at(iVertex).get();
-      if (snemo::datamodel::particle_track::vertex_is_on_source_foil(vertex) || snemo::datamodel::particle_track::vertex_is_on_wire(vertex) )
-      {
-        vertexInTracker_ = true; // On wire OR foil - just not calo to calo gammas
-      }
+      for (unsigned int iVertex=0; iVertex<track_.get_vertices().size();++iVertex)
+        {
+          const snemo::datamodel::VertexHdl & vertex = track_.get_vertices().at(iVertex);
+          if (vertex->is_on_source_foil() || vertex->is_on_wire() || vertex->is_on_source_gap() )
+            {
+              vertexInTracker_ = true; // On wire OR foil OR foil gap - just not calo to calo gammas
+            }
+        }
     }
-  }
 
   return true;
 }
@@ -336,23 +337,23 @@ bool TrackDetails::SetFoilmostVertex()
   bool hasVertexOnFoil=false;
 
   if (track_.has_vertices()) // There isn't any time ordering to the vertices so check them all
-  {
-    for (unsigned int iVertex=0; iVertex<track_.get_vertices().size();++iVertex)
     {
-      const geomtools::blur_spot & vertex = track_.get_vertices().at(iVertex).get();
-      if (snemo::datamodel::particle_track::vertex_is_on_source_foil(vertex) )
-      {
-        hasVertexOnFoil = true;
-      }
-      const geomtools::vector_3d & vertexTranslation = vertex.get_placement().get_translation();
-      // Get details for the vertex nearest the source foil, which is at x = 0
-      if (TMath::Abs(vertexTranslation.x()) < closestX) // this is nearer the foil
-      {
-        closestX=TMath::Abs(vertexTranslation.x());
-        foilmostVertex_.SetXYZ(vertexTranslation.x(),vertexTranslation.y(),vertexTranslation.z());
-      } // end for each vertex
+      for (unsigned int iVertex=0; iVertex<track_.get_vertices().size();++iVertex)
+        {
+          const snemo::datamodel::VertexHdl & vertex = track_.get_vertices().at(iVertex);
+          if (vertex->is_on_source_foil())
+            {
+              hasVertexOnFoil = true;
+            }
+          const geomtools::vector_3d & vertexTranslation = vertex->get_spot().get_placement().get_translation();
+          // Get details for the vertex nearest the source foil, which is at x = 0
+          if (TMath::Abs(vertexTranslation.x()) < closestX) // this is nearer the foil
+            {
+              closestX=TMath::Abs(vertexTranslation.x());
+              foilmostVertex_.SetXYZ(vertexTranslation.x(),vertexTranslation.y(),vertexTranslation.z());
+            } // end for each vertex
+        }
     }
-  }
   return hasVertexOnFoil;
 }
 
@@ -417,13 +418,11 @@ bool TrackDetails::SetProjectedVertex()
   // The calculation should always give a projected X coordinate of 0
   // But if it projects in such a way that the y or z values are outside the detector, we should return false
   if (TMath::Abs(projectedVertex_.Y()) > MAXY || TMath::Abs(projectedVertex_.Z()) > MAXZ)
-  {
-    return false;
-  }
+    {
+      return false;
+    }
   return true;
 }
-
-
 
 // Getters for the vertex information
 
@@ -508,17 +507,18 @@ bool TrackDetails::IsAlpha()
 }
 bool TrackDetails::IsNegativeElectron()
 {
-  return (particleType_== ELECTRON && charge_==snemo::datamodel::particle_track::POSITIVE);
+  return (particleType_== ELECTRON &&
+          charge_==snemo::datamodel::particle_track::CHARGE_POSITIVE);
 }
 bool TrackDetails::IsPositron()
 {
-  return (particleType_== ELECTRON && charge_==snemo::datamodel::particle_track::NEGATIVE);
+  return (particleType_== ELECTRON &&
+          charge_==snemo::datamodel::particle_track::CHARGE_NEGATIVE);
 }
 int TrackDetails::GetCharge()
 {
   return charge_;
 }
-
 
 // For anything that hits the calo wall
 double TrackDetails::GetEnergy()
@@ -605,7 +605,6 @@ int TrackDetails::GetTrackerHitCount()
 {
   return trackerHitCount_;
 }
-
 
 // Does it make a track? (charged particle)
 bool TrackDetails::MakesTrack()

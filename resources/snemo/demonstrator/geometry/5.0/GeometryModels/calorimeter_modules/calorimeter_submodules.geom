@@ -7,6 +7,7 @@
   internal_item.labels         : string[1] = "wall"
   internal_item.placement.wall : string  = "0 0 0 (mm)"
   internal_item.model.wall     : string  = "calorimeter_front_wall.model"
+  mapping.daughter_id.wall : string = "[calorimeter_wall]"
 
 
 [name="calorimeter_back_submodule.model" type="geomtools::simple_shaped_model"]
@@ -18,5 +19,6 @@
   internal_item.labels         : string[1] = "wall"
   internal_item.placement.wall : string  = "0 0 0 (mm)"
   internal_item.model.wall     : string  = "calorimeter_back_wall.model"
+  mapping.daughter_id.wall : string = "[calorimeter_wall]"
 
 

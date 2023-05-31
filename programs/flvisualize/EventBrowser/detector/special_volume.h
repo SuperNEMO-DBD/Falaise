@@ -82,7 +82,7 @@ class special_volume : public i_root_volume {
   virtual void _construct(const geomtools::i_shape_3d& shape_3d_);
 
  private:
-  TObjArray* _objects_;  //<! ROOT object array
+  TObjArray * _objects_ = nullptr;  //<! ROOT object array
   const geomtools::i_shape_3d * _shape_ = nullptr;
   geomtools::i_wires_3d_rendering * _wires_drawer_ = nullptr;
 };

@@ -77,7 +77,7 @@ class tracker_trajectory_data : public datatools::i_serializable,
  private:
   TrackerTrajectorySolutionHdlCollection
       solutions_;                         //!< Collection of tracker trajectory solutions
-  TrackerTrajectorySolutionHdl default_;  //!< The default/best solution
+  TrackerTrajectorySolutionHdl default_;  //!< The default solution
 
   datatools::properties _auxiliaries_;  // unused, retained for serialization backward compatibility
 

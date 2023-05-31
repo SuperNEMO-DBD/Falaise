@@ -6,8 +6,11 @@
   extends : string    = "module"
   by      : string[1] = "side"
 
+[category="calorimeter_wall" type="1320"]
+  inherits : string   = "calorimeter_submodule"
+  
 [category="calorimeter_column" type="1310"]
-  extends : string    = "calorimeter_submodule"
+  extends : string    = "calorimeter_wall"
   by      : string[1] = "column"
 
 [category="calorimeter_optical_module" type="1301"]

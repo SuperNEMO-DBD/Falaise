@@ -135,7 +135,7 @@ set_falaise_test_environment(flreconstruct-filter-check-filter)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #8 fix
 add_test(NAME flreconstruct-fix-issue8-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation"
   )
@@ -148,7 +148,7 @@ target_link_libraries(TestIssue201 Falaise)
 set_target_properties(TestIssue201 PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_PLUGINDIR}")
 # 2. Run test as script to generate deterministic sim/reco file
 add_test(NAME flreconstruct-fix-issue-201
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 set_falaise_test_environment(flreconstruct-fix-issue-201)

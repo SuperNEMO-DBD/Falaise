@@ -263,7 +263,7 @@ class gg_locator
   void construct_();
 
  private:
-  bool isInitialized_;
+  bool isInitialized_ = false;
 
   uint32_t moduleNumber_;
 

@@ -6,9 +6,19 @@
 [category="source_submodule" type="1100"]
   inherits : string  = "module"
 
+[category="source_core_volume" type="1114"]
+  inherits : string  = "source_submodule"
+
+[category="source_strip_block_assembly" type="1115"]
+  inherits : string  = "source_core_volume"
+
 [category="source_strip_path" type="1101"]
-  extends : string    = "source_submodule"
+  extends : string    = "source_strip_block_assembly"
   by      : string[1] = "strip"
+
+[category="source_strip_gap" type="1113"]
+  extends : string    = "source_strip_block_assembly"
+  by      : string[1] = "gap"
 
 [category="source_strip" type="1102"]
   inherits : string = "source_strip_path"
@@ -29,7 +39,7 @@
   by      : string[1] = "film"
 
 [category="source_calibration_track" type="1103"]
-  extends : string    = "source_submodule"
+  extends : string    = "source_strip_block_assembly"
   by      : string[1] = "track"
 
 [category="source_calibration_carrier" type="1110"]

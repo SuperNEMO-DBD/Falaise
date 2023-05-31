@@ -44,90 +44,93 @@
 
 namespace TrackFit {
 
-/// \brief Flag type
-enum flag_type {
-  DEBUG = datatools::bit_mask::bit00,
-  DEVEL = datatools::bit_mask::bit01,
-  WARNING = datatools::bit_mask::bit02,
-  TEST = datatools::bit_mask::bit03
-};
-
-/// \brief Geiger hit wrapper
-struct gg_hit_info {
-  gg_hit_info(size_t max_nb_closest_hits_ = 2);
-  void update_closest_hits(const gg_hit *other_hit_, double dist_);
-  void dump(std::ostream &out_ = std::clog) const;
-  // Attributes:
-  int rank;                                           /// Rank
-  const gg_hit *hit;                                  /// Handle to a Geiger hit
-  size_t max_nb_closest_hits;                         /// Maximum number of closest hits
-  std::map<double, const gg_hit *> closest_hits_map;  /// Map closest hits with distance
-};
-
-/// Dictionary of Geiger hit information, addressed by hit Id
-typedef std::map<int, gg_hit_info> gg_hit_info_dict_type;
-
-/// Build the Dictionary of Geiger hit information from the collection of hits
-void build_hit_info_map(const gg_hits_col &hits_, gg_hit_info_dict_type &dict_,
-                        size_t max_nb_closest_hits_ = 2);
-
-/// \brief Track fit utilities
-class fit_utils {
- public:
-  /// Default guess Bottom/Top factor
-  static double default_guess_bt_factor();
-
-  /// Default vicinity factor
-  static double default_vicinity_factor();
-
-  /// \brief Type of guess hypothesis
-  enum guess_hypothesis_type { INVALID_HYPOTHESIS = -1, BOTTOM_HYPOTHESIS = 0, TOP_HYPOTHESIS = 1 };
-
-  /// \brief Type of trust mode
-  enum guess_trust_mode {
-    GUESS_TRUST_MODE_INVALID = -1,
-    GUESS_TRUST_MODE_BARYCENTER = 0,
-    GUESS_TRUST_MODE_COUNTER = 1
+  /// \brief Flag type
+  enum flag_type {
+    DEBUG = datatools::bit_mask::bit00,
+    DEVEL = datatools::bit_mask::bit01,
+    WARNING = datatools::bit_mask::bit02,
+    TEST = datatools::bit_mask::bit03
   };
 
-  /// Not documented yet
-  static int compute_guess_trust_barycenter(const gg_hit_info_dict_type &hits_infos_,
-                                            const gg_hit &hit_,
-                                            const geomtools::vector_3d &hit_pos_,
-                                            const geomtools::vector_3d &bottom_pos_,
-                                            const geomtools::vector_3d &top_pos_);
+  /// \brief Geiger hit wrapper
+  struct gg_hit_info
+  {
+    gg_hit_info(size_t max_nb_closest_hits_ = 2);
+    void update_closest_hits(const gg_hit * other_hit_, double dist_);
+    void dump(std::ostream & out_ = std::clog) const;
+    // Attributes:
+    int rank = -1;                                      ///< Rank
+    const gg_hit * hit = nullptr;                       ///< Handle to a Geiger hit
+    size_t max_nb_closest_hits = 2;                     ///< Maximum number of closest hits
+    std::map<double, const gg_hit *> closest_hits_map;  ///< Map closest hits with distance
+  };
 
-  /// Not documented yet
-  static int compute_guess_trust_counter(const gg_hits_col &hits_,
-                                         const geomtools::vector_3d &hit_pos_,
-                                         const geomtools::vector_3d &bottom_pos_,
-                                         const geomtools::vector_3d &top_pos_);
-  /// Check debug flag
-  bool is_debug() const;
+  /// Dictionary of Geiger hit information, addressed by hit Id
+  typedef std::map<int, gg_hit_info> gg_hit_info_dict_type;
 
-  /// Set debug flag
-  void set_debug(bool debug_);
+  /// Build the Dictionary of Geiger hit information from the collection of hits
+  void build_hit_info_map(const gg_hits_col & hits_,
+			  gg_hit_info_dict_type & dict_,
+			  size_t max_nb_closest_hits_ = 2);
 
-  /// Return the vicinity factor
-  double get_vicinity_factor() const;
+  /// \brief Track fit utilities
+  class fit_utils
+  {
+  public:
+    /// Default guess Bottom/Top factor
+    static double default_guess_bt_factor();
 
-  /// Set the vicinity factor
-  void set_vicinity_factor(double factor_);
+    /// Default vicinity factor
+    static double default_vicinity_factor();
 
-  /// Reset
-  void reset();
+    /// \brief Type of guess hypothesis
+    enum guess_hypothesis_type { INVALID_HYPOTHESIS = -1, BOTTOM_HYPOTHESIS = 0, TOP_HYPOTHESIS = 1 };
 
-  /// Constructor
-  fit_utils(bool debug_ = false);
+    /// \brief Type of trust mode
+    enum guess_trust_mode {
+      GUESS_TRUST_MODE_INVALID = -1,
+      GUESS_TRUST_MODE_BARYCENTER = 0,
+      GUESS_TRUST_MODE_COUNTER = 1
+    };
 
-  /// Destructor
-  virtual ~fit_utils();
+    /// Not documented yet
+    static int compute_guess_trust_barycenter(const gg_hit_info_dict_type &hits_infos_,
+					      const gg_hit &hit_,
+					      const geomtools::vector_3d &hit_pos_,
+					      const geomtools::vector_3d &bottom_pos_,
+					      const geomtools::vector_3d &top_pos_);
 
- private:
-  bool _debug_;                    ///< Debug flag
-  double _vicinity_factor_;        ///< Vicinity factor
-  datatools::properties _config_;  ///< Configuration parameters
-};
+    /// Not documented yet
+    static int compute_guess_trust_counter(const gg_hits_col &hits_,
+					   const geomtools::vector_3d &hit_pos_,
+					   const geomtools::vector_3d &bottom_pos_,
+					   const geomtools::vector_3d &top_pos_);
+    /// Check debug flag
+    bool is_debug() const;
+
+    /// Set debug flag
+    void set_debug(bool debug_);
+
+    /// Return the vicinity factor
+    double get_vicinity_factor() const;
+
+    /// Set the vicinity factor
+    void set_vicinity_factor(double factor_);
+
+    /// Reset
+    void reset();
+
+    /// Constructor
+    fit_utils(bool debug_ = false);
+
+    /// Destructor
+    virtual ~fit_utils();
+
+  private:
+    bool _debug_ = false;            ///< Debug flag
+    double _vicinity_factor_;        ///< Vicinity factor
+    datatools::properties _config_;  ///< Configuration parameters
+  };
 
 }  // end of namespace TrackFit
 

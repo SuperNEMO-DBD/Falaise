@@ -18,6 +18,7 @@ cd ${origPwd}
 geometryResourcesSubdir="snemo/demonstrator/geometry"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
+falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
 if [ ! -d ${falaiseBuildDir} ]; then
     echo >&2 "[error] Falaise build directory does not exist '${falaiseBuildDir}' !"
     exit 1
@@ -51,7 +52,7 @@ EOF
 bxvariant_inspector \
     --datatools::resource-path="falaise@${falaiseResourcesDir}" \
     --logging="debug" \
-    --variant-config="@falaise:${geometryResourcesSubdir}/variants/${geometryVariantVersion}/GeometryVariantRepository.conf" \
+    --variant-config="@falaise:${geometryResourcesSubdir}/variants/service/${geometryVariantVersion}/GeometryVariantRepository.conf" \
     --variant-gui \
     --variant-ui-writable-at-start \
     --variant-store="${geometryProfile}" 
@@ -76,7 +77,7 @@ bxgeomtools_inspector \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
     --load-dll "Falaise@${falaiseLibDir}" \
     --interactive \
-    --variant-config "@falaise:${geometryResourcesSubdir}/variants/${geometryVariantVersion}/GeometryVariantRepository.conf" \
+    --variant-config "@falaise:${geometryResourcesSubdir}/variants/service/${geometryVariantVersion}/GeometryVariantRepository.conf" \
     --variant-load "${geometryProfile}" \
     --manager-config "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" 
 if [ $? -ne 0 ]; then

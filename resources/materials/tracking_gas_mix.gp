@@ -26,11 +26,12 @@ propEthanol=0.035
 propArgon=0.965
 
 # Helium+Alcohol+Argon (NEMO3)
-# P=889.5 * mbar
-# T=298.0*kelvin
-# propHelium=94.6e-2
-# propEthanol=4.44e-2
-# propArgon=1e-2
+P=889.5 * mbar
+P=875.0 * mbar
+T=298.0*kelvin
+propHelium=94.6e-2
+propEthanol=4.44e-2
+propArgon=1e-2
 
 # Helium+Alcohol+Argon
 # P=880.0 * mbar

@@ -51,7 +51,7 @@
 #include <TSystem.h>
 
 // - GSL:
-// #include <gsl/gsl_sf.h>
+#include <gsl/gsl_sf.h>
 
 // - Bayeux/mctools:
 #include <mctools/utils.h>
@@ -358,7 +358,7 @@ void browser_tracks::_update_simulated_data() {
       _properties_dictionnary_[-icheck_id] = &(particle.grab_auxiliaries());
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        particle.tree_dump(tip_text);
+        particle.print_tree(tip_text);
       } else {
         tip_text << "Double click to highlight track "
                  << "and to dump info on terminal";
@@ -439,8 +439,19 @@ void browser_tracks::_update_simulated_data() {
             label_hit.setf(std::ios::fixed, std::ios::floatfield);
             label_hit << "Step #" << a_step.get_hit_id() << " - "
                       << "particle " << a_step.get_particle_name();
+						if (a_step.has_kinetic_energy_start()) {
+              label_hit << " / E1=";
+              utils::root_utilities::get_prettified_energy(label_hit, a_step.get_kinetic_energy_start());
+						}
+						if (a_step.has_kinetic_energy_stop()) {
+              label_hit << " / E2=";
+              utils::root_utilities::get_prettified_energy(label_hit, a_step.get_kinetic_energy_stop());
+						}
+						if (a_step.has_step_length()) {
+              label_hit << " / L=" << a_step.get_step_length() / CLHEP::mm << " mm";
+						}
             if (a_step.get_energy_deposit() > 0.0) {
-              label_hit << " / energy deposit = ";
+              label_hit << " / Edeposit = ";
               utils::root_utilities::get_prettified_energy(label_hit, a_step.get_energy_deposit());
             }
             TGListTreeItem *item_hit = _tracks_list_box_->AddItem(item, label_hit.str().c_str());
@@ -683,10 +694,12 @@ void browser_tracks::_update_calibrated_data() {
       if (a_hit.get_auxiliaries().has_key("category")) {
         label_hit << a_hit.get_auxiliaries().fetch_string("category") << " ";
       }
-      label_hit << "hit #" << a_hit.get_hit_id() << " - E = ";
+      label_hit << "hit #" << a_hit.get_hit_id() << " :"
+                << " GID=" << a_hit.get_geom_id()
+                << "  E=";
       utils::root_utilities::get_prettified_energy(label_hit, a_hit.get_energy(),
                                                    a_hit.get_sigma_energy());
-      label_hit << " - t = ";
+      label_hit << "  -  t=";
       utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(),
                                                  a_hit.get_sigma_time());
 
@@ -699,7 +712,9 @@ void browser_tracks::_update_calibrated_data() {
 
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        a_hit.tree_dump(tip_text);
+        boost::property_tree::ptree poptions;
+        poptions.put("no_list_auxiliaries", true);
+        a_hit.print_tree(tip_text, poptions);
       } else {
         tip_text << "Double click to highlight calorimeter hit "
                  << "and to dump info on terminal";
@@ -725,15 +740,20 @@ void browser_tracks::_update_calibrated_data() {
     snemo::datamodel::TrackerHitHdlCollection &ct_collection = cd.tracker_hits();
 
     for (auto &it_hit : ct_collection) {
-      snemo::datamodel::calibrated_tracker_hit &a_hit = it_hit.grab();
+      snemo::datamodel::calibrated_tracker_hit & a_hit = it_hit.grab();
 
       // Add subsubitem:
       std::ostringstream label_hit;
       label_hit.precision(3);
       label_hit.setf(std::ios::fixed, std::ios::floatfield);
-      label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_hit.get_id()
-                << " (r, z) = (" << a_hit.get_r() / CLHEP::cm << ", " << a_hit.get_z() / CLHEP::cm
+      label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_hit.get_id() << " :"
+                << " GID=" << a_hit.get_geom_id()
+                << " (r, z) = (" << a_hit.get_r() / CLHEP::cm << "+/-" << a_hit.get_sigma_r() / CLHEP::cm
+                << ", " << a_hit.get_z() / CLHEP::cm << "+/-" << a_hit.get_sigma_z() / CLHEP::cm
                 << ") cm";
+      if (a_hit.is_delayed()) {
+        label_hit << "[delayed by" << a_hit.get_delayed_time() / CLHEP::microsecond << " us]";
+      }
 
       TGListTreeItem *item_hit = _tracks_list_box_->AddItem(item_tracker, label_hit.str().c_str(),
                                                             _get_colored_icon_("geiger", "", true),
@@ -743,7 +763,9 @@ void browser_tracks::_update_calibrated_data() {
 
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        a_hit.tree_dump(tip_text);
+        boost::property_tree::ptree poptions;
+        poptions.put("no_list_auxiliaries", true);
+        a_hit.print_tree(tip_text, poptions);
       } else {
         tip_text << "Double click to highlight Geiger hit "
                  << "and to dump info on terminal";
@@ -862,7 +884,9 @@ void browser_tracks::_update_tracker_clustering_data() {
       {
         // Set tooltip text
         std::ostringstream tip_text;
-        a_cluster.tree_dump(tip_text);
+        boost::property_tree::ptree poptions;
+        poptions.put("no_list_auxiliaries", true);
+        a_cluster.print_tree(tip_text, poptions);
         item_cluster->SetTipText(tip_text.str().c_str());
       }
       // Get cluster auxiliaries:
@@ -904,7 +928,9 @@ void browser_tracks::_update_tracker_clustering_data() {
 
         std::ostringstream tip_text;
         if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          a_gg_hit->tree_dump(tip_text);
+          boost::property_tree::ptree poptions;
+          poptions.put("no_list_auxiliaries", true);
+          a_gg_hit->print_tree(tip_text, poptions);
         } else {
           tip_text << "Double click to highlight Geiger hit "
                    << "and to dump info on terminal";
@@ -963,7 +989,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
       ttd.get_solutions();
   for (auto &trajectory_solution : trajectory_solutions) {
     // Get current tracker solution:
-    snemo::datamodel::tracker_trajectory_solution &a_solution = trajectory_solution.grab();
+    snemo::datamodel::tracker_trajectory_solution & a_solution = trajectory_solution.grab();
 
     // Add item:
     std::ostringstream label_solution;
@@ -1012,16 +1038,16 @@ void browser_tracks::_update_tracker_trajectory_data() {
     TGListTreeItem *item_line_solution = nullptr;
 
     // Get trajectories stored in the current tracker trajectory solution:
-    snemo::datamodel::TrackerTrajectoryHdlCollection &trajectories = a_solution.grab_trajectories();
-    for (auto &trajectorie : trajectories) {
+    snemo::datamodel::TrackerTrajectoryHdlCollection & trajectories = a_solution.grab_trajectories();
+    for (auto & thisTrajectory : trajectories) {
       // Get current tracker trajectory:
-      snemo::datamodel::tracker_trajectory &a_trajectory = trajectorie.grab();
+      snemo::datamodel::tracker_trajectory & a_trajectory = thisTrajectory.grab();
 
       // Determine trajectory color by getting cluster color:
       std::string hex_str;
       if (a_trajectory.has_cluster()) {
-        const snemo::datamodel::tracker_cluster &a_cluster = a_trajectory.get_cluster();
-        const datatools::properties &prop = a_cluster.get_auxiliaries();
+        const snemo::datamodel::tracker_cluster & a_cluster = a_trajectory.get_cluster();
+        const datatools::properties & prop = a_cluster.get_auxiliaries();
         if (prop.has_key(browser_tracks::COLOR_FLAG)) {
           prop.fetch(browser_tracks::COLOR_FLAG, hex_str);
         }
@@ -1030,29 +1056,38 @@ void browser_tracks::_update_tracker_trajectory_data() {
       // Add subitem:
       std::ostringstream label_trajectory;
       //                label_trajectory.setf(ios::fixed, ios::floatfield);
-      datatools::properties &properties = a_trajectory.grab_auxiliaries();
-      if (properties.has_key("chi2") && properties.has_key("ndof")) {
-        const double chi2 = properties.fetch_real("chi2");
-        const size_t ndof = properties.fetch_integer("ndof");
+      bool is_default = false;
+      bool is_best = false;
+      //      datatools::properties & properties = a_trajectory.grab_auxiliaries();
+      if (a_trajectory.get_fit_infos().has_chi2() and
+          a_trajectory.get_fit_infos().has_ndof() and
+          a_trajectory.get_fit_infos().has_pvalue()) {
+        const double chi2 = a_trajectory.get_fit_infos().get_chi2();
+        const size_t ndof = a_trajectory.get_fit_infos().get_ndof();
+        double pvalue =  a_trajectory.get_fit_infos().get_pvalue();;
+        // pvalue = TMath::Prob(chi2, ndof);
+        // pvalue = gsl_sf_gamma_inc_P(ndof/2, chi2/2);
         label_trajectory << " - chi2/ndf = " << std::setprecision(2) << std::fixed << chi2 << "/"
-                         << std::setprecision(0) << ndof << std::setprecision(5) << std::fixed
-                         << ", p = " << TMath::Prob(chi2, ndof)
-          // << ", p(GSL) = " << gsl_sf_gamma_inc_Q(ndof/2, chi2/2)
-          ;
+                         << std::setprecision(0) << ndof << std::setprecision(4) << std::fixed
+                         << ", p = " << std::scientific << pvalue << " (ROOT=" << TMath::Prob(chi2, ndof) << ")";
       }
-      if (properties.has_key("t0")) {
-        const double t0 = properties.fetch_real("t0");
+      if (a_trajectory.get_fit_infos().has_t0()) {
+        const double t0 =a_trajectory.get_fit_infos().get_t0();
         label_trajectory << std::setprecision(0) << std::fixed << ", t0 = ";
         utils::root_utilities::get_prettified_time(label_trajectory, t0);
       }
-      if (properties.has_key("guess")) {
-        label_trajectory << " (" << properties.fetch_string("guess") << " guess)";
+      if (a_trajectory.get_fit_infos().has_guess()) {
+        label_trajectory << " (" << a_trajectory.get_fit_infos().get_guess() << ' '
+                         << snemo::datamodel::to_string(a_trajectory.get_fit_infos().get_algo()) << " guess)";
       }
-      bool is_default = false;
-      if (properties.has_flag("default")) {
-        label_trajectory << " - default";
-        is_default = true;
+       if (a_trajectory.get_fit_infos().is_best()) {
+        label_trajectory << " - best";
+        is_best = true;
       }
+      // if (properties.has_flag("default")) {
+      //   label_trajectory << " - default";
+      //   is_default = true;
+      // }
 
       TGListTreeItem *item_trajectory = nullptr;
       if (a_trajectory.get_pattern().get_pattern_id() ==
@@ -1102,7 +1137,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
       }
 
       item_trajectory->SetCheckBox(true);
-      if (is_default) {
+      if (is_default or is_best) {
         a_trajectory.grab_auxiliaries().update(CHECKED_FLAG, true);
         _tracks_list_box_->CheckItem(item_trajectory, true);
       } else {
@@ -1114,7 +1149,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
 
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
         std::ostringstream oss;
-        a_trajectory.tree_dump(oss);
+        a_trajectory.print_tree(oss);
         item_trajectory->SetTipText(oss.str().c_str());
       } else {
         std::ostringstream message;
@@ -1196,7 +1231,9 @@ void browser_tracks::_update_particle_track_data() {
       {
         std::ostringstream tip_text;
         if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          a_hit.tree_dump(tip_text);
+          boost::property_tree::ptree poptions;
+          poptions.put("no_list_auxiliaries", true);
+          a_hit.print_tree(tip_text, poptions);
         } else {
           tip_text << "Double click to highlight calorimeter hit "
                    << "and to dump info on terminal";
@@ -1206,29 +1243,34 @@ void browser_tracks::_update_particle_track_data() {
     }
   }
 
-  for (auto &particle : ptd.particles()) {
+  for (auto & particle : ptd.particles()) {
     // Get current particle track:
-    snemo::datamodel::particle_track &a_particle = particle.grab();
+    snemo::datamodel::particle_track & a_particle = particle.grab();
 
     // Add item:
     size_t item_color = 0;
     std::ostringstream label_particle;
     label_particle << "Particle #" << a_particle.get_track_id();
-    if (a_particle.get_charge() == snemo::datamodel::particle_track::NEUTRAL) {
+    if (a_particle.has_trajectory()) {
+      if (a_particle.get_trajectory().has_cluster()) {
+        label_particle << " (cluster #" << a_particle.get_trajectory().get_cluster().get_hit_id() << ")";
+      }
+    }
+    if (a_particle.get_charge() == snemo::datamodel::particle_track::CHARGE_NEUTRAL) {
       label_particle << " - neutral charged particle";
       item_color = style_manager::get_instance().get_particle_color("gamma");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::NEGATIVE) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::CHARGE_NEGATIVE) {
       label_particle << " - negative charged particle";
       item_color = style_manager::get_instance().get_particle_color("electron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::POSITIVE) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::CHARGE_POSITIVE) {
       label_particle << " - positive charged particle";
       item_color = style_manager::get_instance().get_particle_color("positron");
-    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::UNDEFINED) {
+    } else if (a_particle.get_charge() == snemo::datamodel::particle_track::CHARGE_UNDEFINED) {
       label_particle << " - undefined charged particle";
       item_color = style_manager::get_instance().get_particle_color("alpha");
     }
     // Get particle auxiliaries:
-    datatools::properties &a_auxiliaries = a_particle.grab_auxiliaries();
+    datatools::properties & a_auxiliaries = a_particle.grab_auxiliaries();
     // item_color = utils::root_utilities::get_fade_color_from(item_color, 0.5);
     std::string hex_str = utils::root_utilities::get_hex_color(item_color);
     if (a_auxiliaries.has_key(browser_tracks::COLOR_FLAG)) {
@@ -1260,58 +1302,61 @@ void browser_tracks::_update_particle_track_data() {
 
     // Get associated vertices
     if (a_particle.has_vertices()) {
-      snemo::datamodel::particle_track::vertex_collection_type &vts = a_particle.get_vertices();
-      for (auto &vt : vts) {
-        geomtools::blur_spot &a_vertex = vt.grab();
+      snemo::datamodel::VertexHdlCollection & vertices = a_particle.get_vertices();
+      for (auto & a_vertex : vertices) {
+        geomtools::blur_spot & a_spot = a_vertex->get_spot();
         std::ostringstream label;
         label << "Vertex on ";
-        if (snemo::datamodel::particle_track::vertex_is_on_source_foil(a_vertex)) {
+        if (a_vertex->is_on_source_foil()) {
           label << "source foil - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_main_calorimeter(a_vertex)) {
+        } else if (a_vertex->is_on_main_calorimeter()) {
           label << "main calorimeter wall - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_x_calorimeter(a_vertex)) {
+        } else if (a_vertex->is_on_x_calorimeter()) {
           label << "X-calorimeter wall - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_gamma_veto(a_vertex)) {
+        } else if (a_vertex->is_on_gamma_veto()) {
           label << "gamma veto - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_wire(a_vertex)) {
+        } else if (a_vertex->is_on_wire()) {
           label << "wire - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_source_foil(a_vertex)) {
+        } else if (a_vertex->is_on_source_foil()) {
           label << "foil - ";
-        } else if (snemo::datamodel::particle_track::vertex_is_on_calibration_source(a_vertex)) {
+        } else if (a_vertex->is_on_calibration_source()) {
           label << "calibration source - ";
+        } else if (a_vertex->is_on_source_gap()) {
+          label << "source gap - ";
         } else {
-          label << "unknown part of the detector -";
+          label << "unknown part of the detector - ";
         }
         label << "(x, y, z) = ";
         label.precision(3);
         label.setf(std::ios::fixed, std::ios::floatfield);
-        label << a_vertex.get_position() / CLHEP::mm << " mm";
+        label << a_spot.get_position() / CLHEP::mm << " mm";
         TGListTreeItem *item_vertex = _tracks_list_box_->AddItem(
             item_particle, label.str().c_str(), _get_colored_icon_("vertex", hex_str, true),
             _get_colored_icon_("vertex", hex_str));
         item_vertex->SetCheckBox(false);
         item_vertex->SetUserData((void *)(intptr_t) - (++icheck_id));
         // Update properties dictionnary:
-        _properties_dictionnary_[-icheck_id] = &(a_vertex.grab_auxiliaries());
+        _properties_dictionnary_[-icheck_id] = &(a_vertex->grab_auxiliaries());
         {
           std::ostringstream tip_text;
           if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-            a_vertex.tree_dump(tip_text);
+            // tip_text << "Vertex GID=" << a_vertex->get_geom_id();
+            a_vertex->print_tree(tip_text);
           } else {
             tip_text << "Double click to highlight vertex position "
                      << "and to dump info on terminal";
           }
           item_vertex->SetTipText(tip_text.str().c_str());
         }
-      }  // end of vertex list
-    }    // end of vertex check
+      } // end of vertex list
+    } // end of vertex check
 
     // Get associated calorimeter
     if (a_particle.has_associated_calorimeter_hits()) {
       snemo::datamodel::CalorimeterHitHdlCollection &cc_collection =
           a_particle.get_associated_calorimeter_hits();
 
-      for (auto &it_hit : cc_collection) {
+      for (auto & it_hit : cc_collection) {
         snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
         // Add subsubitem:
@@ -1337,7 +1382,9 @@ void browser_tracks::_update_particle_track_data() {
 
         std::ostringstream tip_text;
         if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-          a_hit.tree_dump(tip_text);
+          boost::property_tree::ptree poptions;
+          poptions.put("no_list_auxiliaries", true);
+          a_hit.print_tree(tip_text, poptions);
         } else {
           tip_text << "Double click to highlight calorimeter hit "
                    << "and to dump info on terminal";

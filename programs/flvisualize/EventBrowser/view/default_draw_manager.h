@@ -26,8 +26,6 @@
  *
  *  Default draw manager
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_VISUALIZATION_VIEW_DEFAULT_DRAW_MANAGER_H
@@ -37,72 +35,73 @@
 #include <EventBrowser/view/calorimeter_hit_renderer.h>
 #include <EventBrowser/view/i_draw_manager.h>
 #include <EventBrowser/view/visual_track_renderer.h>
+#include <EventBrowser/view/utils.h>
 
-class TObjArray;
+// class TObjArray;
 
 namespace snemo {
 
-namespace visualization {
+  namespace visualization {
 
-namespace io {
-class event_server;
-}
+    namespace io {
+      class event_server;
+    }
 
-namespace view {
+    namespace view {
 
-/// \brief A default draw manager
-class default_draw_manager : public i_draw_manager {
- public:
-  /// Default constructor
-  default_draw_manager(const io::event_server* server_);
+      /// \brief A default draw manager
+      class default_draw_manager : public i_draw_manager {
+      public:
+        /// Default constructor
+        default_draw_manager(const io::event_server* server_);
 
-  /// Destructor
-  virtual ~default_draw_manager();
+        /// Destructor
+        virtual ~default_draw_manager();
 
-  /// Getting geometrical ROOT::TObject array
-  virtual TObjArray* get_objects();
+        /// Getting geometrical ROOT::TObject array
+        virtual TObjArray* get_objects();
 
-  /// Getting text ROOT::TObject array
-  virtual TObjArray* get_text_objects();
+        /// Getting text ROOT::TObject array
+        virtual TObjArray* get_text_objects();
 
-  /// Update event visualization objects
-  virtual void update();
+        /// Update event visualization objects
+        virtual void update();
 
-  /// Drawing all geometrical scene objects
-  virtual void draw();
+        /// Drawing all geometrical scene objects
+        virtual void draw();
 
-  /// Drawing all text scene objects
-  virtual void draw_text();
+        /// Drawing all text scene objects
+        virtual void draw_text();
 
-  /// Clearing objects
-  virtual void clear();
+        /// Clearing objects
+        virtual void clear();
 
-  /// Reset
-  virtual void reset();
+        /// Reset
+        virtual void reset();
 
- protected:
-  /// Add 'simulated_data' bank objects
-  void _add_simulated_data();
+      protected:
+        /// Add 'simulated_data' bank objects
+        void _add_simulated_data();
 
- private:
-  /// Add simulated vertex position
-  void _add_simulated_vertex_();
+      private:
+        /// Add simulated vertex position
+        void _add_simulated_vertex_();
 
-  /// Add simulated sensitive hits
-  void _add_simulated_hits_();
+        /// Add simulated sensitive hits
+        void _add_simulated_hits_();
 
- private:
-  const io::event_server* _server_;  //!< Pointer to event server
-  TObjArray* _objects_;              //!< ROOT array for geometrical TObject
-  TObjArray* _text_objects_;         //!< ROOT array for textual TObject
+      private:
+        const io::event_server* _server_;  //!< Pointer to event server
+        TObjArray* _objects_;              //!< ROOT array for geometrical TObject
+        TObjArray* _text_objects_;         //!< ROOT array for textual TObject
 
-  calorimeter_hit_renderer _calorimeter_hit_renderer_;  //<! Calorimeter hit renderer
-  visual_track_renderer _visual_track_renderer_;        //<! Tracker hit renderer
-};
+        calorimeter_hit_renderer _calorimeter_hit_renderer_;  //<! Calorimeter hit renderer
+        visual_track_renderer _visual_track_renderer_;        //<! Tracker hit renderer
+      };
 
-}  // end of namespace view
+    }  // end of namespace view
 
-}  // end of namespace visualization
+  }  // end of namespace visualization
 
 }  // namespace snemo
 

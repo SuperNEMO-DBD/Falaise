@@ -13,22 +13,24 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-struct gg_track {
-  /// The name of a real property representing the minimal approach distance of the particle track
-  /// to the anode wire
-  static const std::string& minimum_approach_distance_key();
+    struct gg_track {
 
-  /// The name of a vector of real (x,y,z) triplet property representing the position of the
-  /// particle track at minimal approach distance to the anode wire
-  static const std::string& minimum_approach_position_key();
+      /// The name of a real property representing the minimal approach distance of the particle track
+      /// to the anode wire
+      static const std::string & minimum_approach_distance_key();
 
-  /// The name of a property flag that tags some missing Geiger hit along the particle track
-  static const std::string& missing_geiger_hit_flag();
-};
+      /// The name of a vector of real (x,y,z) triplet property representing the position of the
+      /// particle track at minimal approach distance to the anode wire
+      static const std::string & minimum_approach_position_key();
 
-}  // end of namespace datamodel
+      /// The name of a property flag that tags some missing Geiger hit along the particle track
+      static const std::string & missing_geiger_hit_flag();
+
+    };
+
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

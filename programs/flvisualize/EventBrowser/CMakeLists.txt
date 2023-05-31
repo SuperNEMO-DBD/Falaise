@@ -37,6 +37,7 @@ set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
 # PRIVATE HEADERS
 
 set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
+  log.h
   detector/i_volume.h
   detector/i_root_volume.h
   detector/volume_model.h
@@ -57,6 +58,7 @@ set(FalaiseEventBrowserPlugin_PUBLIC_HEADERS
   utils/root_utilities.h
   utils/singleton.h
   # inc/EventBrowser/view/bipo_draw_manager.h
+  view/utils.h
   view/base_renderer.h
   view/browser_icons.h
   view/browser_tracks.h

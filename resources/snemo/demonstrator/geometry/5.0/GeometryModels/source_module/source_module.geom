@@ -74,6 +74,8 @@
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
   visibility.color           : string  = "grey"
+  mapping.daughter_id.source_gap_left     : string = "[source_strip_gap:gap=0]"
+  mapping.daughter_id.source_gap_right    : string = "[source_strip_gap:gap=36]"
   mapping.daughter_id.calibration_track_0 : string = "[source_calibration_track:track=0]"
   mapping.daughter_id.calibration_track_1 : string = "[source_calibration_track:track=1]"
   mapping.daughter_id.calibration_track_2 : string = "[source_calibration_track:track=2]"
@@ -102,6 +104,7 @@
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
   visibility.color           : string  = "cyan"
+  mapping.daughter_id.sources : string = "[source_strip_block_assembly]"
 
 
 [name="source_side_beam_gas_gap.model" type="geomtools::simple_shaped_model"]
@@ -178,4 +181,5 @@
   material.ref : string = "lab_air"
   visibility.hidden_envelope : boolean = true
   visibility.color          : string  = "grey"
+  mapping.daughter_id.source_core_volume : string = "[source_core_volume]"
 

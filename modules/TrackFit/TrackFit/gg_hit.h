@@ -2,9 +2,9 @@
 /** \file falaise/TrackFit/gg_hit.h
  * Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2010-02-15
- * Last modified: 2014-02-08
+ * Last modified: 2022-12-13
  *
- * Copyright 2012-2014 F. Mauger
+ * Copyright 2012-2022 F. Mauger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@
  *
  * Description:
  *
- *   Geiger hit data in a NEMO-like detector
- *
- * History:
+ *   Geiger hit data in a SuperNEMO-like detector
  *
  */
 
@@ -44,152 +42,155 @@
 
 namespace TrackFit {
 
-class gg_hit : public datatools::i_tree_dumpable {
- public:
-  /// Return the label of for the boolean property associated to prompt geiger hit
-  static const std::string& prompt_flag();
+  class gg_hit
+    : public datatools::i_tree_dumpable
+  {
+  public:
 
-  /// Return the label for the boolean property associated to delayed geiger hit
-  static const std::string& delayed_flag();
+    /// Return the hit Id
+    int get_id() const;
 
-  /// Return the label of the 'last flag' boolean property (for a hit)
-  static const std::string& last_flag();
+    /// Set the hit Id
+    void set_id(int);
 
-  /// Return the label of the 'first flag' boolean property (for a hit)
-  static const std::string& first_flag();
+    /// Check the last flag
+    bool is_last() const;
 
-  /// Return the hit Id
-  int get_id() const;
+    /// Set the last flag
+    void set_last(bool);
 
-  /// Set the hit Id
-  void set_id(int);
+    /// Check the first flag
+    bool is_first() const;
 
-  /// Check the last flag
-  bool is_last() const;
+    /// Set the first flag
+    void set_first(bool);
 
-  /// Set the last flag
-  void set_last(bool);
+    /// Return the X position
+    double get_x() const;
 
-  /// Check the first flag
-  bool is_first() const;
+    /// Set the X position
+    void set_x(double);
 
-  /// Set the first flag
-  void set_first(bool);
+    /// Return the Y position
+    double get_y() const;
 
-  /// Return the X position
-  double get_x() const;
+    /// Set the Y position
+    void set_y(double);
 
-  /// Set the X position
-  void set_x(double);
+    /// Return the Z position
+    double get_z() const;
 
-  /// Return the Y position
-  double get_y() const;
+    /// Set the Z position
+    void set_z(double);
 
-  /// Set the Y position
-  void set_y(double);
+    /// Return the error on Z position
+    double get_sigma_z() const;
 
-  /// Return the Z position
-  double get_z() const;
+    /// Set the error on Z position
+    void set_sigma_z(double);
 
-  /// Set the Z position
-  void set_z(double);
+    /// Return the drift time
+    double get_t() const;
 
-  /// Return the error on Z position
-  double get_sigma_z() const;
+    /// Set the drift time
+    void set_t(double);
 
-  /// Set the error on Z position
-  void set_sigma_z(double);
+    /// Set the delayed hit flag
+    void set_delayed(bool delayed_);
 
-  /// Return the drift time
-  double get_t() const;
+    /// Check the delayed hit flag
+    bool is_delayed() const;
 
-  /// Set the drift time
-  void set_t(double);
+    /// Check the delayed hit flag
+    bool is_prompt() const;
 
-  /// Return the maximum radius
-  double get_rmax() const;
+    /// Return the maximum radius
+    double get_rmax() const;
 
-  /// Set the maximum radius
-  void set_rmax(double);
+    /// Set the maximum radius
+    void set_rmax(double);
 
-  /// Return the maximum length
-  double get_max_length() const;
+    /// Return the maximum length
+    double get_max_length() const;
 
-  /// Set the maximum length
-  void set_max_length(double);
+    /// Set the maximum length
+    void set_max_length(double);
 
-  /// Return the drift radius
-  double get_r() const;
+    /// Return the drift radius
+    double get_r() const;
 
-  /// Set the drift radius
-  void set_r(double);
+    /// Set the drift radius
+    void set_r(double);
 
-  /// Return the error on drift radius
-  double get_sigma_r() const;
+    /// Return the error on drift radius
+    double get_sigma_r() const;
 
-  /// Set the error on drift radius
-  void set_sigma_r(double);
+    /// Set the error on drift radius
+    void set_sigma_r(double);
 
-  /// Check if the reference angle is available
-  bool has_phi_ref() const;
+    /// Check if the reference angle is available
+    bool has_phi_ref() const;
 
-  /// Reset the reference angle
-  void reset_phi_ref();
+    /// Reset the reference angle
+    void reset_phi_ref();
 
-  /// Return the reference angle
-  double get_phi_ref() const;
+    /// Return the reference angle
+    double get_phi_ref() const;
 
-  /// Set the reference angle
-  void set_phi_ref(double phi_ref_);
+    /// Set the reference angle
+    void set_phi_ref(double phi_ref_);
 
-  /// Return a non mutable reference on embedded properties container
-  const datatools::properties& get_properties() const;
+    /// Return a non mutable reference on embedded properties container
+    const datatools::properties& get_properties() const;
 
-  /// Return a mutable reference on embedded properties container
-  datatools::properties& grab_properties();
+    /// Return a mutable reference on embedded properties container
+    datatools::properties& grab_properties();
 
-  /// Constructor
-  gg_hit();
+    /// Constructor
+    gg_hit();
 
-  /// Destructor
-  virtual ~gg_hit();
+    /// Destructor
+    virtual ~gg_hit();
 
-  /// Reset
-  void reset();
+    /// Reset
+    void reset();
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& out_ = std::clog, const std::string& title_ = "",
-                         const std::string& indent_ = "", bool inherit_ = false) const;
+    /// Smart print
+    virtual void tree_dump(std::ostream & out_ = std::clog,
+                           const std::string & title_ = "",
+                           const std::string & indent_ = "",
+                           bool inherit_ = false) const;
 
-  /// Default print
-  void dump() const;
+    /// Default print
+    void dump() const;
 
- protected:
-  /// Set default attribute values
-  void _set_defaults();
+  protected:
+    /// Set default attribute values
+    void _set_defaults();
 
- private:
-  int _id_;                            /// Hit Id
-  double _x_;                          /// X position
-  double _y_;                          /// Y position
-  double _z_;                          /// Z position
-  double _sigma_z_;                    /// Error on Z position
-  double _t_;                          /// Drift time
-  double _rmax_;                       /// Radius of the cell
-  double _max_length_;                 /// Mength of the cell's anodic wire
-  double _r_;                          /// Drift radius
-  double _sigma_r_;                    /// Error on drift radius
-  double _phi_ref_;                    /// Reference angle
-  bool _first_;                        /// Flag for the first cell along a trajectory
-  bool _last_;                         /// Flag for the last cell along a trajectory
-  datatools::properties _properties_;  /// Auxiliary properties
-};
+  private:
+    int _id_ = -1;                       ///< Hit Id
+    double _x_;                          ///< X position
+    double _y_;                          ///< Y position
+    double _z_;                          ///< Z position
+    double _sigma_z_;                    ///< Error on Z position
+    double _t_;                          ///< Drift time
+    double _rmax_;                       ///< Radius of the cell
+    double _max_length_;                 ///< Mength of the cell's anodic wire
+    double _r_;                          ///< Drift radius
+    double _sigma_r_;                    ///< Error on drift radius
+    double _phi_ref_;                    ///< Reference angle
+    bool _first_ = false;                ///< Flag for the first cell along a trajectory
+    bool _last_ = false;                 ///< Flag for the last cell along a trajectory
+    bool _delayed_ = false;              ///< Delayed hit flag
+    datatools::properties _properties_;  ///< Auxiliary properties
+  };
 
-/// Collection of Geiger hits
-typedef std::vector<gg_hit> gg_hits_col;
+  /// Collection of Geiger hits
+  typedef std::vector<gg_hit> gg_hits_col;
 
-/// Generate draw data for a collection of Geiger hits
-void draw_hits(std::ostream& out_, const gg_hits_col& hits_);
+  /// Generate draw data for a collection of Geiger hits
+  void draw_hits(std::ostream & out_, const gg_hits_col & hits_);
 
 }  // end of namespace TrackFit
 

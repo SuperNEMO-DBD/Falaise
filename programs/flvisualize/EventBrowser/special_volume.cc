@@ -66,22 +66,28 @@ special_volume::special_volume(const std::string &name_, const std::string &cate
 
 special_volume::~special_volume() { this->reset(); }
 
-void special_volume::_construct(const geomtools::i_shape_3d &shape_3d_) {
+void special_volume::_construct(const geomtools::i_shape_3d & shape_3d_) {
   // std::cerr << "*** devel *** special_volume::_construct : for shape type = '"
   //           << shape_3d_.get_shape_name() << "'\n";
 
+  // if (shape_3d_.get_shape_name() == "tessellated") {
+  //   shape_3d_.tree_dump(std::cerr, "special_volume::_construct: tessellated: ", "*** devel *** ");
+  // }
   if (shape_3d_.get_shape_name() == "tessellated") {
-    // shape_3d_.tree_dump(std::cerr, "special_volume::_construct: tessellated: ", "*** devel *** ");
     // std::cerr << "*** devel *** special_volume::_construct : installing a 3D-wires renderer in shape = '"
     //           << shape_3d_.get_shape_name() << "'\n";
     
     // Remark: This is not that elegant for we would prefer to use a drawer not embedded to the shape itself (break shape's constness)
     _shape_ = &shape_3d_;
-    // Installing a dedicated wire drawer associated to this shape:
-    _wires_drawer_ = new tessellated_wires_drawer(dynamic_cast<const geomtools::tessellated_solid&>(shape_3d_));
-    const geomtools::i_object_3d & constObj = dynamic_cast<const geomtools::i_object_3d&>(shape_3d_);
-    geomtools::i_object_3d & obj = const_cast<geomtools::i_object_3d &>(constObj);
-    obj.set_wires_drawer(*_wires_drawer_);
+    if (not _shape_->has_wires_drawer()) { 
+      // Installing a dedicated wire drawer associated to this shape:
+      _wires_drawer_ = new tessellated_wires_drawer(dynamic_cast<const geomtools::tessellated_solid&>(shape_3d_));
+      const geomtools::i_object_3d & constObj = dynamic_cast<const geomtools::i_object_3d&>(shape_3d_);
+      geomtools::i_object_3d & obj = const_cast<geomtools::i_object_3d &>(constObj);
+      obj.set_wires_drawer(*_wires_drawer_);
+    } else {
+      std::cerr << "DEVEL: ******** shape 3d '" << shape_3d_.get_shape_name() << "' already has a wires drawer" << std::endl;
+    }
   } 
   
   _objects_ = utils::root_utilities::wires_to_root_draw(get_placement().get_translation(),

@@ -50,7 +50,7 @@ set(FalaiseLibrary_HEADERS
   user_level.h
   detail/falaise_sys.h
   metadata_utils.h
-  urn_tools.h
+  # urn_tools.h
 )
 
 set(FalaiseLibrary_SOURCES
@@ -65,7 +65,7 @@ set(FalaiseLibrary_SOURCES
   user_level.cc
   detail/falaise_sys.cc
   metadata_utils.cc
-  urn_tools.cc
+  # urn_tools.cc
   falaise.cc
   )
 
@@ -173,12 +173,10 @@ endif()
 #
 # - NB assumes each test .cxx file generates a single executable
 # - We also output the executables to a dedicated directory
-set(_falaise_TEST_ENVIRONMENT
-  "FALAISE_RESOURCE_DIR=${_falaise_TEST_RESOURCE_DIR}"
+set(_falaise_TEST_ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
   "FALAISE_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/test"
   "FALAISE_SNEMO_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/snemo/test"
   "FALAISE_GEOMETRY_TESTING_DIR=${CMAKE_CURRENT_SOURCE_DIR}/geometry/testing"
-  "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}"
   )
 message( STATUS "_falaise_TEST_ENVIRONMENT='${_falaise_TEST_ENVIRONMENT}'")
 
@@ -204,7 +202,6 @@ if(FALAISE_ENABLE_TESTING)
       ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/fltests
       )
   endforeach()
-
 
   # - OLDSTYLE TESTS
   foreach(_testsource ${FalaiseLibrary_TESTS})

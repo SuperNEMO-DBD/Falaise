@@ -34,9 +34,9 @@
   stacked.model_1 : string = "source_strip_gap.model"
   stacked.model_3 : string = "source_strip_gap.model"
   stacked.label_0 : string = "strip_0"
-  stacked.label_1 : string = "strip_gap_0-1"
+  stacked.label_1 : string = "strip_gap_0_1"
   stacked.label_2 : string = "strip_1"
-  stacked.label_3 : string = "strip_gap_1-2"
+  stacked.label_3 : string = "strip_gap_1_2"
   stacked.label_4 : string = "strip_2"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -44,6 +44,8 @@
   mapping.daughter_id.strip_0 : string = "[source_strip_path:strip=0]"
   mapping.daughter_id.strip_1 : string = "[source_strip_path:strip=1]"
   mapping.daughter_id.strip_2 : string = "[source_strip_path:strip=2]"
+  mapping.daughter_id.strip_gap_0_1 : string = "[source_strip_gap:gap=1]"
+  mapping.daughter_id.strip_gap_1_2 : string = "[source_strip_gap:gap=2]"
 
 
 ###########
@@ -87,15 +89,15 @@
   stacked.model_7  : string = "source_strip_gap.model"
   stacked.model_9  : string = "source_strip_gap.model"
   stacked.label_0  : string = "strip_3"
-  stacked.label_1  : string = "strip_gap_3-4"
+  stacked.label_1  : string = "strip_gap_3_4"
   stacked.label_2  : string = "strip_4"
-  stacked.label_3  : string = "strip_gap_4-5"
+  stacked.label_3  : string = "strip_gap_4_5"
   stacked.label_4  : string = "strip_5"
-  stacked.label_5  : string = "strip_gap_5-6"
+  stacked.label_5  : string = "strip_gap_5_6"
   stacked.label_6  : string = "strip_6"
-  stacked.label_7  : string = "strip_gap_6-7"
+  stacked.label_7  : string = "strip_gap_6_7"
   stacked.label_8  : string = "strip_7"
-  stacked.label_9  : string = "strip_gap_7-8"
+  stacked.label_9  : string = "strip_gap_7_8"
   stacked.label_10 : string = "strip_8"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -106,6 +108,11 @@
   mapping.daughter_id.strip_6 : string = "[source_strip_path:strip=6]"
   mapping.daughter_id.strip_7 : string = "[source_strip_path:strip=7]"
   mapping.daughter_id.strip_8 : string = "[source_strip_path:strip=8]"
+  mapping.daughter_id.strip_gap_3_4 : string = "[source_strip_gap:gap=4]"
+  mapping.daughter_id.strip_gap_4_5 : string = "[source_strip_gap:gap=5]"
+  mapping.daughter_id.strip_gap_5_6 : string = "[source_strip_gap:gap=6]"
+  mapping.daughter_id.strip_gap_6_7 : string = "[source_strip_gap:gap=7]"
+  mapping.daughter_id.strip_gap_7_8 : string = "[source_strip_gap:gap=8]"
 
 
 ###########
@@ -150,15 +157,15 @@
   stacked.model_7  : string = "source_strip_gap.model"
   stacked.model_9  : string = "source_strip_gap.model"
   stacked.label_0  : string = "strip_9"
-  stacked.label_1  : string = "strip_gap_9-10"
+  stacked.label_1  : string = "strip_gap_9_10"
   stacked.label_2  : string = "strip_10"
-  stacked.label_3  : string = "strip_gap_10-11"
+  stacked.label_3  : string = "strip_gap_10_11"
   stacked.label_4  : string = "strip_11"
-  stacked.label_5  : string = "strip_gap_11-12"
+  stacked.label_5  : string = "strip_gap_11_12"
   stacked.label_6  : string = "strip_12"
-  stacked.label_7  : string = "strip_gap_12-13"
+  stacked.label_7  : string = "strip_gap_12_13"
   stacked.label_8  : string = "strip_13"
-  stacked.label_9  : string = "strip_gap_13-14"
+  stacked.label_9  : string = "strip_gap_13_14"
   stacked.label_10 : string = "strip_14"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -169,6 +176,11 @@
   mapping.daughter_id.strip_12 : string = "[source_strip_path:strip=12]"
   mapping.daughter_id.strip_13 : string = "[source_strip_path:strip=13]"
   mapping.daughter_id.strip_14 : string = "[source_strip_path:strip=14]"
+  mapping.daughter_id.strip_gap_9_10  : string = "[source_strip_gap:gap=10]"
+  mapping.daughter_id.strip_gap_10_11 : string = "[source_strip_gap:gap=11]"
+  mapping.daughter_id.strip_gap_11_12 : string = "[source_strip_gap:gap=12]"
+  mapping.daughter_id.strip_gap_12_13 : string = "[source_strip_gap:gap=13]"
+  mapping.daughter_id.strip_gap_13_14 : string = "[source_strip_gap:gap=14]"
 
 
 ###########
@@ -213,15 +225,15 @@
   stacked.model_7  : string = "source_strip_gap.model"
   stacked.model_9  : string = "source_strip_gap.model"
   stacked.label_0  : string = "strip_15"
-  stacked.label_1  : string = "strip_gap_15-16"
+  stacked.label_1  : string = "strip_gap_15_16"
   stacked.label_2  : string = "strip_16"
-  stacked.label_3  : string = "strip_gap_16-17"
+  stacked.label_3  : string = "strip_gap_16_17"
   stacked.label_4  : string = "strip_17"
-  stacked.label_5  : string = "strip_gap_17-18"
+  stacked.label_5  : string = "strip_gap_17_18"
   stacked.label_6  : string = "strip_18"
-  stacked.label_7  : string = "strip_gap_18-19"
+  stacked.label_7  : string = "strip_gap_18_19"
   stacked.label_8  : string = "strip_19"
-  stacked.label_9  : string = "strip_gap_19-20"
+  stacked.label_9  : string = "strip_gap_19_20"
   stacked.label_10 : string = "strip_20"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -232,6 +244,11 @@
   mapping.daughter_id.strip_18 : string = "[source_strip_path:strip=18]"
   mapping.daughter_id.strip_19 : string = "[source_strip_path:strip=19]"
   mapping.daughter_id.strip_20 : string = "[source_strip_path:strip=20]"
+  mapping.daughter_id.strip_gap_15_16 : string = "[source_strip_gap:gap=16]"
+  mapping.daughter_id.strip_gap_16_17 : string = "[source_strip_gap:gap=17]"
+  mapping.daughter_id.strip_gap_17_18 : string = "[source_strip_gap:gap=18]"
+  mapping.daughter_id.strip_gap_18_19 : string = "[source_strip_gap:gap=19]"
+  mapping.daughter_id.strip_gap_19_20 : string = "[source_strip_gap:gap=20]"
 
 
 ###########
@@ -279,15 +296,15 @@
   stacked.model_7  : string = "source_strip_gap.model"
   stacked.model_9  : string = "source_strip_gap.model"
   stacked.label_0  : string = "strip_21"
-  stacked.label_1  : string = "strip_gap_21-22"
+  stacked.label_1  : string = "strip_gap_21_22"
   stacked.label_2  : string = "strip_22"
-  stacked.label_3  : string = "strip_gap_22-23"
+  stacked.label_3  : string = "strip_gap_22_23"
   stacked.label_4  : string = "strip_23"
-  stacked.label_5  : string = "strip_gap_23-24"
+  stacked.label_5  : string = "strip_gap_23_24"
   stacked.label_6  : string = "strip_24"
-  stacked.label_7  : string = "strip_gap_24-25"
+  stacked.label_7  : string = "strip_gap_24_25"
   stacked.label_8  : string = "strip_25"
-  stacked.label_9  : string = "strip_gap_25-26"
+  stacked.label_9  : string = "strip_gap_25_26"
   stacked.label_10 : string = "strip_26"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -298,6 +315,11 @@
   mapping.daughter_id.strip_24 : string = "[source_strip_path:strip=24]"
   mapping.daughter_id.strip_25 : string = "[source_strip_path:strip=25]"
   mapping.daughter_id.strip_26 : string = "[source_strip_path:strip=26]"
+  mapping.daughter_id.strip_gap_21_22 : string = "[source_strip_gap:gap=22]"
+  mapping.daughter_id.strip_gap_22_23 : string = "[source_strip_gap:gap=23]"
+  mapping.daughter_id.strip_gap_23_24 : string = "[source_strip_gap:gap=24]"
+  mapping.daughter_id.strip_gap_24_25 : string = "[source_strip_gap:gap=25]"
+  mapping.daughter_id.strip_gap_25_26 : string = "[source_strip_gap:gap=26]"
 
 
 ###########
@@ -344,15 +366,15 @@
   stacked.model_7  : string = "source_strip_gap.model"
   stacked.model_9  : string = "source_strip_gap.model"
   stacked.label_0  : string = "strip_27"
-  stacked.label_1  : string = "strip_gap_27-28"
+  stacked.label_1  : string = "strip_gap_27_28"
   stacked.label_2  : string = "strip_28"
-  stacked.label_3  : string = "strip_gap_28-29"
+  stacked.label_3  : string = "strip_gap_28_29"
   stacked.label_4  : string = "strip_29"
-  stacked.label_5  : string = "strip_gap_29-30"
+  stacked.label_5  : string = "strip_gap_29_30"
   stacked.label_6  : string = "strip_30"
-  stacked.label_7  : string = "strip_gap_30-31"
+  stacked.label_7  : string = "strip_gap_30_31"
   stacked.label_8  : string = "strip_31"
-  stacked.label_9  : string = "strip_gap_31-32"
+  stacked.label_9  : string = "strip_gap_31_32"
   stacked.label_10 : string = "strip_32"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -363,6 +385,11 @@
   mapping.daughter_id.strip_30 : string = "[source_strip_path:strip=30]"
   mapping.daughter_id.strip_31 : string = "[source_strip_path:strip=31]"
   mapping.daughter_id.strip_32 : string = "[source_strip_path:strip=32]"
+  mapping.daughter_id.strip_gap_27_28 : string = "[source_strip_gap:gap=28]"
+  mapping.daughter_id.strip_gap_28_29 : string = "[source_strip_gap:gap=29]"
+  mapping.daughter_id.strip_gap_29_30 : string = "[source_strip_gap:gap=30]"
+  mapping.daughter_id.strip_gap_30_31 : string = "[source_strip_gap:gap=31]"
+  mapping.daughter_id.strip_gap_31_32 : string = "[source_strip_gap:gap=32]"
 
 
 ###########
@@ -399,9 +426,9 @@
   stacked.model_1 : string = "source_strip_gap.model"
   stacked.model_3 : string = "source_strip_gap.model"
   stacked.label_0 : string = "strip_33"
-  stacked.label_1 : string = "strip_gap_33-34"
+  stacked.label_1 : string = "strip_gap_33_34"
   stacked.label_2 : string = "strip_34"
-  stacked.label_3 : string = "strip_gap_34-35"
+  stacked.label_3 : string = "strip_gap_34_35"
   stacked.label_4 : string = "strip_35"
   material.ref : string = "tracking_gas"
   visibility.hidden_envelope : boolean = true
@@ -409,5 +436,7 @@
   mapping.daughter_id.strip_33 : string = "[source_strip_path:strip=33]"
   mapping.daughter_id.strip_34 : string = "[source_strip_path:strip=34]"
   mapping.daughter_id.strip_35 : string = "[source_strip_path:strip=35]"
-
+  mapping.daughter_id.strip_gap_33_34 : string = "[source_strip_gap:gap=34]"
+  mapping.daughter_id.strip_gap_34_35 : string = "[source_strip_gap:gap=35]"
+  
 # end

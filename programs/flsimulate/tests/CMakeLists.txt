@@ -106,7 +106,7 @@ set_falaise_test_environment(flsimulate-example-4-run)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #16 fix
 add_test(NAME flsimulate-fix-issue16-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation"
   )
@@ -161,7 +161,7 @@ set_falaise_test_environment(flsimulate-issue98-run)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #59 fix
 add_test(NAME flsimulate-fix-issue59-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation"
   )
@@ -170,7 +170,7 @@ set_falaise_test_environment(flsimulate-fix-issue59-validation)
 # Tests dedicated to the validation of fixes
 # - Validation of feature PR #75
 add_test(NAME flsimulate-feature-pr75-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation"
   )
@@ -220,7 +220,7 @@ set_falaise_test_environment(flsimulate-issue198-run)
 
 # - Validation of feature issue #237
 add_test(NAME flsimulate-feature-issue237-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation"
   )
@@ -231,7 +231,7 @@ set_falaise_test_environment(flsimulate-feature-issue237-validation)
 
 # - Validation of feature issue #241
 add_test(NAME flsimulate-feature-issue241-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation"
   )
@@ -241,7 +241,7 @@ set_falaise_test_environment(flsimulate-feature-issue241-validation)
 
 # - Validation of feature argon tracking gas
 add_test(NAME flsimulate-feature-argon-gas-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas"
   )
