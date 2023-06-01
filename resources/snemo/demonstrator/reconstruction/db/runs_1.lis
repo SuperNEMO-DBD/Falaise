@@ -1,0 +1,15 @@
+# -*- mode: conf-unix; -*-
+
+#@description Mock list of runs for the simulation of a virtual SuperNEMO experiment
+#@key_label  "run"
+#@meta_label "type"
+
+########################################################
+# This mock ideal run lasts 30 months in one single shot
+# with no interruption:
+[run="100000" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-01-01 00:00:00/2025-07-01 00:00:00)"
+number_of_events : integer = 100000
+
+# end

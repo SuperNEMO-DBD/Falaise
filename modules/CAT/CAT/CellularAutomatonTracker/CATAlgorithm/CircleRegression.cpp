@@ -72,7 +72,7 @@ bool CircleRegression::fit(void) {
 
   experimental_double xc, yc, r;
 
-  bool method1 = false;
+  // bool method1 = false;
   // method 1: R. Bullock, http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
   // method 2: D. Umbach, K. N. Jones, http://www.cs.bsu.edu/homepages/kerryj/kjones/circles.pdf
 
@@ -88,21 +88,22 @@ bool CircleRegression::fit(void) {
   double Swxyy = 0.;
   double Swxxy = 0.;
   double Swyyy = 0.;
-  double Swuu = 0.;
-  double Swuv = 0.;
-  double Swvv = 0.;
-  double Swuuu = 0.;
-  double Swuuv = 0.;
-  double Swuvv = 0.;
-  double Swvvv = 0.;
+  // double Swuu = 0.;
+  // double Swuv = 0.;
+  // double Swvv = 0.;
+  // double Swuuu = 0.;
+  // double Swuuv = 0.;
+  // double Swuvv = 0.;
+  // double Swvvv = 0.;
 
-  double delta, xave, yave;
+  double delta;
+  // double xave, yave;
 
-  if (method1) {
-    xave = average(xi_).value();
-    yave = average(yi_).value();
-    std::clog << "CAT::CircleRegression::fit: xave " << xave << " yave " << yave << std::endl;
-  }
+  // if (method1) {
+  //   xave = average(xi_).value();
+  //   yave = average(yi_).value();
+  //   std::clog << "CAT::CircleRegression::fit: xave=" << xave << " yave=" << yave << std::endl;
+  // }
 
   // calculate parameters for circle
   for (std::vector<experimental_double>::iterator it = xi_.begin(); it != xi_.end(); ++it) {
@@ -112,17 +113,17 @@ bool CircleRegression::fit(void) {
     if (std::isnan(w) || std::isinf(w)) w = 1.;
     Sw += w;
 
-    if (method1) {
-      double u = it->value() - xave;
-      double v = y - yave;
-      Swuu += w * mybhep::square(u);
-      Swuv += w * u * v;
-      Swvv += w * mybhep::square(v);
-      Swuuu += w * mybhep::cube(u);
-      Swuuv += w * mybhep::square(u) * v;
-      Swuvv += w * u * mybhep::square(v);
-      Swvvv += w * mybhep::cube(v);
-    } else {
+    // if (method1) {
+    //   double u = it->value() - xave;
+    //   double v = y - yave;
+    //   Swuu += w * mybhep::square(u);
+    //   Swuv += w * u * v;
+    //   Swvv += w * mybhep::square(v);
+    //   Swuuu += w * mybhep::cube(u);
+    //   Swuuv += w * mybhep::square(u) * v;
+    //   Swuvv += w * u * mybhep::square(v);
+    //   Swvvv += w * mybhep::cube(v);
+    // } else {
       Swx += w * it->value();
       Swy += w * y;
       Swxx += w * mybhep::square(it->value());
@@ -132,33 +133,33 @@ bool CircleRegression::fit(void) {
       Swxxy += w * mybhep::square(it->value()) * y;
       Swyyy += w * mybhep::cube(y);
       Swxxx += w * mybhep::cube(it->value());
-    }
+    // }
   }
 
-  if (method1) {
-    delta = Swuu * Swvv - mybhep::square(Swuv);
+  // if (method1) {
+  //   delta = Swuu * Swvv - mybhep::square(Swuv);
 
-    if (delta == 0.) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta " << delta
-                  << " Swuu " << Swuu << " Swvv " << Swvv << " Swuv " << Swuv << std::endl;
-      }
-      return false;
-    }
+  //   if (delta == 0.) {
+  //     if (print_level() >= mybhep::NORMAL) {
+  //       std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta " << delta
+  //                 << " Swuu=" << Swuu << " Swvv=" << Swvv << " Swuv=" << Swuv << std::endl;
+  //     }
+  //     return false;
+  //   }
 
-    double uc = (Swuuu + Swuvv) / (2. * delta);
-    double vc = (Swuuv + Swvvv) / (2. * delta);
-    double erruc = 0.;
-    double errvc = 0.;
-    double alpha = mybhep::square(uc) + mybhep::square(vc) + (Swuu + Swvv) / Sw;
-    double erralpha = 0.;
+  //   double uc = (Swuuu + Swuvv) / (2. * delta);
+  //   double vc = (Swuuv + Swvvv) / (2. * delta);
+  //   double erruc = 0.;
+  //   double errvc = 0.;
+  //   double alpha = mybhep::square(uc) + mybhep::square(vc) + (Swuu + Swvv) / Sw;
+  //   double erralpha = 0.;
 
-    std::clog << "CAT::CircleRegression::fit: uc " << uc << " vc " << vc << std::endl;
+  //   std::clog << "CAT::CircleRegression::fit: uc=" << uc << " vc=" << vc << std::endl;
 
-    xc.set(uc + xave, erruc);
-    yc.set(vc + yave, errvc);
-    r.set(std::sqrt(alpha), erralpha / (2. * std::sqrt(alpha)));
-  } else {
+  //   xc.set(uc + xave, erruc);
+  //   yc.set(vc + yave, errvc);
+  //   r.set(std::sqrt(alpha), erralpha / (2. * std::sqrt(alpha)));
+  // } else {
     double A = Sw * Swxx - mybhep::square(Swx);
     double B = Sw * Swxy - Swx * Swy;
     double C = Sw * Swyy - mybhep::square(Swy);
@@ -167,47 +168,47 @@ bool CircleRegression::fit(void) {
     delta = A * C - mybhep::square(B);
 
     if (std::isnan(A) || std::isinf(A)) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, A " << A << " Sw "
-                  << Sw << " Swxx " << Swxx << " Swx " << Swx << std::endl;
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, A=" << A << " Sw="
+                  << Sw << " Swxx=" << Swxx << " Swx=" << Swx << std::endl;
       }
       return false;
     }
     if (std::isnan(B) || std::isinf(B)) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, B " << B << " Sw "
-                  << Sw << " Swxy " << Swxy << " Swx " << Swx << " Swy " << Swy << std::endl;
-      }
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, B=" << B << " Sw="
+                  << Sw << " Swxy=" << Swxy << " Swx=" << Swx << " Swy=" << Swy << std::endl;
+      } 
       return false;
     }
     if (std::isnan(C) || std::isinf(C)) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, C " << C << " Sw "
-                  << Sw << " Swyy " << Swyy << " Swy " << Swy << std::endl;
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, C=" << C << " Sw="
+                  << Sw << " Swyy=" << Swyy << " Swy=" << Swy << std::endl;
       }
       return false;
     }
     if (std::isnan(D) || std::isinf(D)) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, D " << D << " Sw "
-                  << Sw << " Swxyy " << Swxyy << " Swx " << Swx << " Swyy " << Swyy << " Swxxx "
-                  << Swxxx << " Swxx " << Swxx << std::endl;
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, D=" << D << " Sw="
+                  << Sw << " Swxyy=" << Swxyy << " Swx=" << Swx << " Swyy=" << Swyy << " Swxxx="
+                  << Swxxx << " Swxx=" << Swxx << std::endl;
       }
       return false;
     }
     if (std::isnan(E) || std::isinf(E)) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, E " << E << " Sw "
-                  << Sw << " Swxxy " << Swxxy << " Swy " << Swy << " Swxx " << Swxx << " Swyyy "
-                  << Swyyy << " Swyy " << Swyy << std::endl;
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, E=" << E << " Sw="
+                  << Sw << " Swxxy=" << Swxxy << " Swy=" << Swy << " Swxx=" << Swxx << " Swyyy="
+                  << Swyyy << " Swyy=" << Swyy << std::endl;
       }
       return false;
     }
 
     if (delta == 0.) {
-      if (print_level() >= mybhep::NORMAL) {
-        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta " << delta
-                  << " A " << A << " C " << C << " B " << B << std::endl;
+      if (print_level() > mybhep::NORMAL) {
+        std::clog << "CAT::CircleRegression::fit: problem: in circle regression, delta=" << delta
+                  << " A=" << A << " C=" << C << " B=" << B << std::endl;
       }
       return false;
     }
@@ -256,7 +257,7 @@ bool CircleRegression::fit(void) {
       r.dump();
       std::clog << " " << std::endl;
     }
-  }
+  //}
 
   c_ = circle(experimental_point(xc, experimental_double(0., 0.), yc), r, print_level(), probmin());
 
@@ -267,8 +268,8 @@ bool CircleRegression::fit(void) {
 bool CircleRegression::minuit_fit(void) {
   if (xi_.size() != yi_.size()) {
     if (print_level() >= mybhep::NORMAL) {
-      std::clog << "CAT::CircleRegression::minuit_fit: problem: in circle regression, sizes x "
-                << xi_.size() << " y " << yi_.size() << std::endl;
+      std::clog << "CAT::CircleRegression::minuit_fit: problem: in circle regression, sizes x="
+                << xi_.size() << " y=" << yi_.size() << std::endl;
     }
     return false;
   }

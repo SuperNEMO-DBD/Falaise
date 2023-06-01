@@ -1,0 +1,88 @@
+subgraph clusterUrn_Reconstruction {
+  label="Reconstruction";
+  fontname="bold";
+  bgcolor="lightyellow";
+  
+  subgraph clusterUrn_Reconstruction_Config_3_0 {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+
+    /**************************************************/
+    Reconstruction_3_0_Pipelines_Official_3_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0:pipeline:official-3.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: recpipeline</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+    
+   /**************************************************/
+    Reconstruction_3_0_Pipelines_Official_4_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0:pipeline:official-4.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: recpipeline</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+   
+   /**************************************************/
+    Reconstruction_3_0_Pipelines_Default [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0:pipeline:default</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: recpipeline</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+      <tr><td PORT="ALIAS"                     align="right" >alias_of : varprofile</td></tr>
+    </table>
+    >; ];
+
+    Reconstruction_3_0_Pipelines_Default:ALIAS -> Reconstruction_3_0_Pipelines_Official_3_0;
+
+    /**************************************************/
+    Reconstruction_3_0_Services [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0:services</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: services</td></tr>
+      <tr><td PORT="GEOMETRY"                    align="right" >geometry : geomsetup</td></tr>
+    </table>
+    >; ];
+
+    /**************************************************/
+    Reconstruction_3_0_DefConfig [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0:config:default</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: recconfig</td></tr>
+      <tr><td PORT="PIPELINE"                    align="right" >pipeline : recpipeline</td></tr>
+      <tr><td PORT="SERVICES"                    align="right" >services : pipeline</td></tr>
+    </table>
+    >; ];
+
+    Reconstruction_3_0_DefConfig:PIPELINE  -> Reconstruction_3_0_Pipelines_Official_3_0;
+    Reconstruction_3_0_DefConfig:SERVICES  -> Reconstruction_3_0_Services:MAIN;
+
+    /**************************************************/
+    Reconstruction_3_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:reconstruction:3.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: recsetup</td></tr>
+      <tr><td PORT="VARIANTS"                    align="right" >variants : varservice*</td></tr>
+      <tr><td PORT="EXPSETUP"                    align="right" >setup : expsetup</td></tr>
+      <tr><td PORT="SERVICES"                    align="right" >services : services</td></tr>
+      <tr><td PORT="PIPELINES"                   align="right" >pipelines : recpipeline</td></tr>
+      <tr><td PORT="DEFPIPELINE"                 align="right" >defpipeline : recpipeline</td></tr>
+      <tr><td PORT="DEFCONFIG"                   align="right" >defconfig : recconfig</td></tr>
+    </table>
+    >; ];
+
+    Reconstruction_3_0:PIPELINES   -> Reconstruction_3_0_Pipelines_Official_3_0:MAIN;
+    Reconstruction_3_0:PIPELINES   -> Reconstruction_3_0_Pipelines_Official_4_0:MAIN;
+    Reconstruction_3_0:DEFPIPELINE -> Reconstruction_3_0_Pipelines_Default:MAIN;
+    Reconstruction_3_0:SERVICES    -> Reconstruction_3_0_Services:MAIN;
+    Reconstruction_3_0:DEFCONFIG   -> Reconstruction_3_0_DefConfig:MAIN;
+  };
+ 
+};
+    
+Reconstruction_3_0_Services:GEOMETRY -> Geometry_5_0:MAIN;
+Reconstruction_3_0:VARIANTS -> Setup_Variants_Service_2_0:MAIN[ color="magenta"; ];
+Reconstruction_3_0:EXPSETUP -> Setup_2_0:MAIN;

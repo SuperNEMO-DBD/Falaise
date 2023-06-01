@@ -20,81 +20,117 @@
 // This project:
 #include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/tracker_cluster.h>
+#include <falaise/snemo/datamodels/track_fitting_utils.h>
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// A trajectory of Geiger calibrated hits referenced by handles
-class tracker_trajectory : public geomtools::base_hit {
- public:
-  /// Check if there is a valid trajectory ID
-  bool has_id() const;
+    /// A trajectory of Geiger calibrated hits referenced by handles
+    class tracker_trajectory
+      : public geomtools::base_hit
+    {
+    public:
+      
+      /// Default constructor
+      tracker_trajectory() = default;
 
-  /// Get the trajectory ID
-  int get_id() const;
+      // Destructor
+      virtual ~tracker_trajectory() override = default;
 
-  /// Set the trajectory ID
-  void set_id(int32_t);
+      // Copy constructor
+      tracker_trajectory(const tracker_trajectory &) = default;
 
-  /// Check if the cluster is present
-  bool has_cluster() const;
+      // Copy assignment
+      tracker_trajectory & operator=(const tracker_trajectory &) = default;
 
-  /// Attach a cluster by handle
-  void set_cluster_handle(const TrackerClusterHdl& cluster);
+      // Move constructor
+      tracker_trajectory(tracker_trajectory &&);
 
-  /// Return a mutable reference on the cluster
-  tracker_cluster& get_cluster();
+      // Move assignment
+      tracker_trajectory & operator=(tracker_trajectory &&) = default;
+     
+      /// Check if there is a valid trajectory ID
+      bool has_id() const;
 
-  /// Return a non mutable reference on the cluster
-  const tracker_cluster& get_cluster() const;
+      /// Get the trajectory ID
+      int get_id() const;
 
-  /// Check if the pattern is present
-  bool has_pattern() const;
+      /// Set the trajectory ID
+      void set_id(int32_t);
 
-  /// Attach a pattern by handle
-  void set_pattern_handle(const TrajectoryPatternHdl& pattern);
+      /// Check if the cluster is present
+      bool has_cluster() const;
 
-  /// Return a mutable reference on the pattern
-  TrajectoryPattern& get_pattern();
+      /// Attach a cluster by handle
+      void set_cluster_handle(const TrackerClusterHdl & cluster);
 
-  /// Return a non mutable reference on the pattern
-  const TrajectoryPattern& get_pattern() const;
+      /// Return a mutable reference on the cluster
+      tracker_cluster & get_cluster();
 
-  /// Empty the contents of the tracker trajectory
-  virtual void clear() override;
+      /// Return a non mutable reference on the cluster
+      const tracker_cluster & get_cluster() const;
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+      /// Return a mutable reference on the cluster handle
+      const TrackerClusterHdl & get_cluster_handle() const;
 
- private:
-  /// Detach the cluster
-  void detach_cluster();
-  /// Detach the pattern
-  void detach_pattern();
+      /// Check if the pattern is present
+      bool has_pattern() const;
 
-  TrackerClusterHdl cluster_;     ///< Handle to the fitted cluster
-  TrajectoryPatternHdl pattern_;  ///< Handle to a trajectory fitted pattern
+      /// Attach a pattern by handle
+      void set_pattern_handle(const TrajectoryPatternHdl & pattern);
 
-  /// Collection of handles of calibrated tracker hit
-  typedef TrackerHitHdlCollection orphans_collection_type;
-  orphans_collection_type orphans_;  ///< Collection of orphan Geiger hit handles (retained only
-                                      ///< for serialization back-compatibility)
+      /// Return a mutable reference on the pattern
+      TrajectoryPattern & get_pattern();
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+      /// Return a non mutable reference on the pattern
+      const TrajectoryPattern & get_pattern() const;
+      
+      /// Return a mutable reference on the fit infos structure     
+      track_fit_infos & get_fit_infos();
+  
+      /// Return anon  mutable reference on the fit infos structure     
+      const track_fit_infos & get_fit_infos() const;
 
-/// Handle on tracker trajectory
-using TrackerTrajectory = tracker_trajectory;
-using TrackerTrajectoryCollection = std::vector<TrackerTrajectory>;
+      /// Empty the contents of the tracker trajectory
+      virtual void clear() override;
 
-using TrackerTrajectoryHdl = datatools::handle<TrackerTrajectory>;
-using TrackerTrajectoryHdlCollection = std::vector<TrackerTrajectoryHdl>;
+      /// Smart print
+      virtual void print_tree(std::ostream & out_ = std::clog,
+                              const boost::property_tree::ptree & options_ = datatools::i_tree_dumpable::empty_options()) const override;
 
-}  // end of namespace datamodel
+    private:
+      /// Detach the cluster
+      void detach_cluster();
+      /// Detach the pattern
+      void detach_pattern();
+
+      TrackerClusterHdl cluster_;     ///< Handle to the fitted cluster
+      TrajectoryPatternHdl pattern_;  ///< Handle to a trajectory fitted pattern
+      track_fit_infos fit_infos_;     ///< Fit informations
+
+      /// Collection of handles of calibrated tracker hit
+      typedef TrackerHitHdlCollection orphans_collection_type;
+      orphans_collection_type orphans_;  ///< Collection of orphan Geiger hit handles (retained only
+      ///< for serialization back-compatibility)
+
+      DATATOOLS_SERIALIZATION_DECLARATION()
+    };
+
+    /// Handle on tracker trajectory
+    using TrackerTrajectory = tracker_trajectory;
+    using TrackerTrajectoryCollection = std::vector<TrackerTrajectory>;
+
+    using TrackerTrajectoryHdl = datatools::handle<TrackerTrajectory>;
+    using TrackerTrajectoryHdlCollection = std::vector<TrackerTrajectoryHdl>;
+
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
+
+// Class version:
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::tracker_trajectory, 1)
 
 #endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
 

@@ -147,6 +147,4 @@ class cosmic_muon_generator : public ::genbb::i_genbb {
 
 }  // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_SIMULATION_COSMIC_MUON_GENERATOR_H
-
-// end of falaise/snemo/simulation/cosmic_muon_generator.h
+#endif // FALAISE_SNEMO_SIMULATION_COSMIC_MUON_GENERATOR_H

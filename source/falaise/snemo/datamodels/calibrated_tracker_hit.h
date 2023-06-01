@@ -7,8 +7,6 @@
  *
  *   Calibrated tracker hit
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_TRACKER_HIT_H
@@ -188,9 +186,10 @@ class calibrated_tracker_hit : public geomtools::base_hit {
   /// Invalidate calibration informations stored in the hit
   virtual void clear() override;
 
-  /// Smart print method
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+  /// Smart print
+  virtual void print_tree(std::ostream & out_ = std::clog,
+                          const boost::property_tree::ptree & options_
+                          /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
 
  protected:

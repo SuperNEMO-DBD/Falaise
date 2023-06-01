@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
 import sys
@@ -65,12 +65,12 @@ bz = - az * zmed
 #sys.stderr.write ("DEVEL: az=%g\n" % az)
 #sys.stderr.write ("DEVEL: bz=%g\n" % bz)
 
-print "#@length_unit mm"
-print """# This polycone building mode use an interpolation scheme
+print("#@length_unit mm")
+print("""# This polycone building mode use an interpolation scheme
 # to generate inner and outer surfaces from the following list
 # of points [z ; r(outer envelope)]:
 #@skin_thickness 1.0
-#@skin_step      5"""
+#@skin_step      5""")
 
 for line in lines:
     l = line.strip ()
@@ -83,6 +83,6 @@ for line in lines:
     r = float (token[1])
     R = r * ar + br
     Z = z * az + bz
-    print Z , " ", R
+    print(Z , " ", R)
 
 # end

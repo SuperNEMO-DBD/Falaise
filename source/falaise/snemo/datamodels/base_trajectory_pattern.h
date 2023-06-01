@@ -24,72 +24,72 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief The base class of fitted trajectory pattern
-class base_trajectory_pattern
-  : public datatools::i_serializable
-  , public datatools::i_tree_dumpable
-{
- public:
-
-  enum direction_type
+    /// \brief The base class of fitted trajectory pattern
+    class base_trajectory_pattern
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
     {
-     DIRECTION_NONE     = 0,
-     DIRECTION_BACKWARD = datatools::bit_mask::bit01,
-     DIRECTION_FORWARD  = datatools::bit_mask::bit00,
-     DIRECTION_BOTH     = DIRECTION_FORWARD | DIRECTION_BACKWARD
-    };
+    public:
+
+      enum direction_type
+        {
+          DIRECTION_NONE     = 0,
+          DIRECTION_BACKWARD = datatools::bit_mask::bit01,
+          DIRECTION_FORWARD  = datatools::bit_mask::bit00,
+          DIRECTION_BOTH     = DIRECTION_FORWARD | DIRECTION_BACKWARD
+        };
   
-  /// Constructors
-  base_trajectory_pattern() = default;
+      /// Constructors
+      base_trajectory_pattern() = default;
 
-  base_trajectory_pattern(std::string pid);
+      base_trajectory_pattern(std::string pid);
 
-  /// Destructor
-  virtual ~base_trajectory_pattern() = default;
+      /// Destructor
+      virtual ~base_trajectory_pattern() = default;
 
-  /// Check if a valid pattern ID exists
-  bool has_pattern_id() const;
+      /// Check if a valid pattern ID exists
+      bool has_pattern_id() const;
 
-  /// Return the pattern ID
-  const std::string& get_pattern_id() const;
+      /// Return the pattern ID
+      const std::string& get_pattern_id() const;
 
-  /// Return the reference to the 1D shape associated to the trajectory
-  virtual const geomtools::i_shape_1d& get_shape() const = 0;
+      /// Return the reference to the 1D shape associated to the trajectory
+      virtual const geomtools::i_shape_1d& get_shape() const = 0;
 
-  virtual geomtools::vector_3d get_first() const = 0;
+      virtual geomtools::vector_3d get_first() const = 0;
 
-  virtual geomtools::vector_3d get_first_direction() const = 0;
+      virtual geomtools::vector_3d get_first_direction() const = 0;
 
-  virtual geomtools::vector_3d get_last() const = 0;
+      virtual geomtools::vector_3d get_last() const = 0;
 
-  virtual geomtools::vector_3d get_last_direction() const = 0;
+      virtual geomtools::vector_3d get_last_direction() const = 0;
 
-  virtual unsigned int number_of_kinks() const = 0;
+      virtual unsigned int number_of_kinks() const = 0;
   
-  virtual geomtools::vector_3d get_kink(unsigned int kink_index_) const = 0;
+      virtual geomtools::vector_3d get_kink(unsigned int kink_index_) const = 0;
  
-  virtual geomtools::vector_3d get_kink_direction(unsigned int kink_index_,
-                                                  direction_type dir_) const = 0;
+      virtual geomtools::vector_3d get_kink_direction(unsigned int kink_index_,
+                                                      direction_type dir_) const = 0;
   
-  virtual void tree_dump(std::ostream& out = std::clog,
-                         const std::string& title = "",
-                         const std::string& indent = "",
-                         bool inherit_ = false) const override;
+      /// Smart print
+      virtual void print_tree(std::ostream & out_ = std::clog,
+                              const boost::property_tree::ptree & options_ 
+                              /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
- private:
-  std::string _pattern_id_{""};  //!< The pattern identifier
+    private:
+      std::string _pattern_id_{""};  //!< The pattern identifier
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+      DATATOOLS_SERIALIZATION_DECLARATION()
+    };
 
-using TrajectoryPattern = base_trajectory_pattern;
-using TrajectoryPatternHdl = datatools::handle<TrajectoryPattern>;
+    using TrajectoryPattern = base_trajectory_pattern;
+    using TrajectoryPatternHdl = datatools::handle<TrajectoryPattern>;
 
-}  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #endif  // FALAISE_SNEMO_DATAMODEL_BASE_TRAJECTORY_PATTERN_H
 

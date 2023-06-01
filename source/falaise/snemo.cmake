@@ -22,9 +22,11 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/particle_track_data.h
   snemo/datamodels/polyline_trajectory_pattern.h
   snemo/datamodels/timestamp.h
+  snemo/datamodels/vertex_utils.h
   snemo/datamodels/tracker_cluster.h
   snemo/datamodels/tracker_clustering_data.h
   snemo/datamodels/tracker_clustering_solution.h
+  snemo/datamodels/track_fitting_utils.h
   snemo/datamodels/tracker_trajectory.h
   snemo/datamodels/tracker_trajectory_data.h
   snemo/datamodels/tracker_trajectory_solution.h
@@ -42,6 +44,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/event_header.ipp
   snemo/datamodels/boost_io/helix_trajectory_pattern.ipp
   snemo/datamodels/boost_io/line_trajectory_pattern.ipp
+  snemo/datamodels/boost_io/vertex_utils.ipp
   snemo/datamodels/boost_io/particle_track.ipp
   snemo/datamodels/boost_io/particle_track_data.ipp
   snemo/datamodels/boost_io/polyline_trajectory_pattern.ipp
@@ -49,11 +52,12 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/tracker_cluster.ipp
   snemo/datamodels/boost_io/tracker_clustering_data.ipp
   snemo/datamodels/boost_io/tracker_clustering_solution.ipp
+  snemo/datamodels/boost_io/track_fitting_utils.ipp
   snemo/datamodels/boost_io/tracker_trajectory.ipp
   snemo/datamodels/boost_io/tracker_trajectory_data.ipp
   snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
 
-
+  snemo/geometry/config.h
   snemo/geometry/utils.h
   snemo/geometry/calo_locator.h
   snemo/geometry/xcalo_locator.h
@@ -65,10 +69,12 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/geometry/helix_intercept.h
   snemo/geometry/manager.h
 
+  snemo/simulation/config.h
   snemo/simulation/cosmic_muon_generator.h
   snemo/simulation/gg_step_hit_processor.h
   snemo/simulation/calorimeter_step_hit_processor.h
 
+  snemo/processing/config.h
   snemo/processing/calorimeter_regime.h
   snemo/processing/geiger_regime.h
   snemo/processing/base_tracker_clusterizer.h
@@ -92,7 +98,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/hello_world.h
   snemo/services/dead_cells.h
   snemo/services/histogram.h
-  snemo/services/db_service.h
+  snemo/services/db_service.h 
+  snemo/services/run_info_service.h
   snemo/services/tracker_cell_status_service.h
   snemo/services/calorimeter_om_status_service.h
 
@@ -139,6 +146,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/line_trajectory_pattern.cc
   snemo/datamodels/polyline_trajectory_pattern.cc
   snemo/datamodels/helix_trajectory_pattern.cc
+  snemo/datamodels/track_fitting_utils.cc
   snemo/datamodels/tracker_trajectory.cc
   snemo/datamodels/tracker_trajectory_solution.cc
   snemo/datamodels/tracker_trajectory_data.cc
@@ -147,7 +155,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/data_model.cc
   snemo/datamodels/boost_io/the_serializable.cc
   snemo/datamodels/gg_track_utils.cc
+  snemo/datamodels/vertex_utils.cc
 
+  snemo/geometry/config.cc
   snemo/geometry/calo_locator.cc
   snemo/geometry/xcalo_locator.cc
   snemo/geometry/gg_locator.cc
@@ -159,6 +169,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/helix_intercept.cc
   snemo/geometry/manager.cc
 
+  snemo/processing/config.cc
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
@@ -184,9 +195,11 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/services/hello_world.cc
   snemo/services/dead_cells.cc
   snemo/services/db_service.cc
+  snemo/services/run_info_service.cc
   snemo/services/tracker_cell_status_service.cc
   snemo/services/calorimeter_om_status_service.cc
 
+  snemo/simulation/config.cc
   snemo/simulation/cosmic_muon_generator.cc
   snemo/simulation/gg_step_hit_processor.cc
   snemo/simulation/calorimeter_step_hit_processor.cc
@@ -259,6 +272,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
   snemo/test/test_snemo_physics_model_per_period_activity_model.cxx
   snemo/test/test_snemo_physics_model_activity_model_factory.cxx
+  snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
   # snemo/test/test_snemo_service_rc.cxx

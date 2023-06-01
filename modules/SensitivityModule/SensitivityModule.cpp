@@ -1,4 +1,5 @@
 #include "SensitivityModule.h"
+
 const double highEnergyLimit=0.150;// 150 keV
 const double lowEnergyLimit=0.050; // 50 keV
 //const double electronMass=0.5109989461; // From pdg
@@ -12,18 +13,21 @@ using namespace std;
 
 DPP_MODULE_REGISTRATION_IMPLEMENT(SensitivityModule,"SensitivityModule")
 
-SensitivityModule::SensitivityModule() : dpp::base_module()
+SensitivityModule::SensitivityModule()
+: dpp::base_module()
 {
   filename_output_="sensitivity.root";
 }
 
-SensitivityModule::~SensitivityModule() {
+SensitivityModule::~SensitivityModule()
+{
   if (is_initialized()) this->reset();
 }
 
-void SensitivityModule::initialize(const datatools::properties& myConfig,
-                                   datatools::service_manager& flServices,
-                                   dpp::module_handle_dict_type& /*moduleDict*/){
+void SensitivityModule::initialize(const datatools::properties & myConfig,
+                                   datatools::service_manager & flServices,
+                                   dpp::module_handle_dict_type & /*moduleDict*/)
+{
 
   // Look for services
   if (flServices.has("geometry")) {
@@ -180,9 +184,11 @@ void SensitivityModule::initialize(const datatools::properties& myConfig,
 
   this->_set_initialized(true);
 }
+
 //! [SensitivityModule::Process]
 dpp::base_module::process_status
-SensitivityModule::process(datatools::things& workItem) {
+SensitivityModule::process(datatools::things & workItem)
+{
 
 
   // internal variables to mimic the ntuple variables, names are same but in camel case
@@ -301,58 +307,58 @@ SensitivityModule::process(datatools::things& workItem) {
     int nCalHitsOverLowLimit=0;
 
     //if (calData.has_calibrated_calorimeter_hits())
-      {
-        #ifdef NEW_DATAMODEL_API
-        const snemo::datamodel::CalorimeterHitHdlCollection & calHits=calData.calorimeter_hits();
-        #else
-        const snemo::datamodel::calibrated_calorimeter_hit::collection_type& calHits = calData.calibrated_calorimeter_hits();
-        #endif
+    {
+#ifdef NEW_DATAMODEL_API
+      const snemo::datamodel::CalorimeterHitHdlCollection & calHits=calData.calorimeter_hits();
+#else
+      const snemo::datamodel::calibrated_calorimeter_hit::collection_type& calHits = calData.calibrated_calorimeter_hits();
+#endif
 
-        for (const auto& iHit : calHits) {
-          const snemo::datamodel::calibrated_calorimeter_hit & calHit = iHit.get();
-          double energy=calHit.get_energy() ;
-          totalCalorimeterEnergy += energy;
+      for (const auto& iHit : calHits) {
+        const snemo::datamodel::calibrated_calorimeter_hit & calHit = iHit.get();
+        double energy=calHit.get_energy() ;
+        totalCalorimeterEnergy += energy;
 
-          if (timeDelay<0)//first hit
+        if (timeDelay<0)//first hit
           {
             timeDelay=calHit.get_time();
           }
-          else
+        else
           {
             timeDelay -=calHit.get_time(); // Get time between the first two hits: if there are more than two hits we will reject the event anyway
           }
-          ++nCalorimeterHits;
-          if (energy>=highEnergyLimit)++nCalHitsOverHighLimit;
-          if (energy>=lowEnergyLimit)++nCalHitsOverLowLimit;
-
-        }
-      }
-
-      caloHitCount=nCalHitsOverLowLimit;
-      if (nCalorimeterHits==2 && nCalHitsOverHighLimit>=1 && nCalHitsOverLowLimit==2)
-        {
-          passesTwoCalorimeters=true;
-        }
-      if (nCalHitsOverHighLimit>=1 && nCalHitsOverLowLimit>=2)
-      {
-        passesTwoPlusCalos=true;
-      }
-      //if (calData.has_calibrated_tracker_hits())
-      {
-        // Count the delayed tracker hits by looping all the tracker hits and checking if they are delayed
-        #ifdef NEW_DATAMODEL_API
-        const snemo::datamodel::TrackerHitHdlCollection& trackerHits = calData.tracker_hits();
-        #else
-        const snemo::datamodel::calibrated_tracker_hit::collection_type& trackerHits = calData.calibrated_tracker_hits();
-        #endif
-
-        for (const auto& iHit : trackerHits) {
-          const snemo::datamodel::calibrated_tracker_hit& hit = iHit.get();
-          if (hit.is_delayed()) delayedHitCount++;
-        }
+        ++nCalorimeterHits;
+        if (energy>=highEnergyLimit)++nCalHitsOverHighLimit;
+        if (energy>=lowEnergyLimit)++nCalHitsOverLowLimit;
 
       }
     }
+
+    caloHitCount=nCalHitsOverLowLimit;
+    if (nCalorimeterHits==2 && nCalHitsOverHighLimit>=1 && nCalHitsOverLowLimit==2)
+      {
+        passesTwoCalorimeters=true;
+      }
+    if (nCalHitsOverHighLimit>=1 && nCalHitsOverLowLimit>=2)
+      {
+        passesTwoPlusCalos=true;
+      }
+    //if (calData.has_calibrated_tracker_hits())
+    {
+      // Count the delayed tracker hits by looping all the tracker hits and checking if they are delayed
+#ifdef NEW_DATAMODEL_API
+      const snemo::datamodel::TrackerHitHdlCollection& trackerHits = calData.tracker_hits();
+#else
+      const snemo::datamodel::calibrated_tracker_hit::collection_type& trackerHits = calData.calibrated_tracker_hits();
+#endif
+
+      for (const auto& iHit : trackerHits) {
+        const snemo::datamodel::calibrated_tracker_hit& hit = iHit.get();
+        if (hit.is_delayed()) delayedHitCount++;
+      }
+
+    }
+  }
   catch (std::logic_error& e) {
     std::cerr << "failed to grab CD bank : " << e.what() << std::endl;
     return dpp::base_module::PROCESS_INVALID;
@@ -363,39 +369,39 @@ SensitivityModule::process(datatools::things& workItem) {
   try {
     const snemo::datamodel::tracker_clustering_data& clusterData = workItem.get<snemo::datamodel::tracker_clustering_data>("TCD");
 
-    #ifdef NEW_DATAMODEL_API
+#ifdef NEW_DATAMODEL_API
     bool clusterHasDefaultSolution = clusterData.has_default();
-    #else
+#else
     bool clusterHasDefaultSolution = clusterData.has_default_solution();
-    #endif
+#endif
 
     if (clusterHasDefaultSolution) // Looks as if there is a possibility of alternative solutions. Is it sufficient to use the default?
       {
-        #ifdef NEW_DATAMODEL_API
+#ifdef NEW_DATAMODEL_API
         snemo::datamodel::tracker_clustering_solution solution = clusterData.get_default() ;
         const snemo::datamodel::TrackerClusterHdlCollection& clusters=solution.get_clusters();
-        #else
+#else
         snemo::datamodel::tracker_clustering_solution solution = clusterData.get_default_solution();
         const snemo::datamodel::tracker_clustering_solution::cluster_col_type& clusters = solution.get_clusters();
-        #endif
+#endif
 
         for (const auto& iCluster : clusters)
-        {
-          const snemo::datamodel::tracker_cluster & cluster = iCluster.get();
+          {
+            const snemo::datamodel::tracker_cluster & cluster = iCluster.get();
 
-          #ifdef NEW_DATAMODEL_API
-          bool hasAtLeastMinHits = (cluster.size() >= minHitsInCluster);
-          #else
-          bool hasAtLeastMinHits = (cluster.get_number_of_hits() >= minHitsInCluster);
-          #endif
+#ifdef NEW_DATAMODEL_API
+            bool hasAtLeastMinHits = (cluster.size() >= minHitsInCluster);
+#else
+            bool hasAtLeastMinHits = (cluster.get_number_of_hits() >= minHitsInCluster);
+#endif
 
-          if (hasAtLeastMinHits) {
-            ++clusterCount;
+            if (hasAtLeastMinHits) {
+              ++clusterCount;
+            }
+            else {
+              ++smallClusterCount;
+            }
           }
-          else {
-            ++smallClusterCount;
-          }
-        }
       }
     if (clusterCount==2 )
       {
@@ -413,175 +419,175 @@ SensitivityModule::process(datatools::things& workItem) {
   // If we have one track and a remote hit, we can calculate 1e1gamma probabilities
 
   try
-  {
-    const snemo::datamodel::particle_track_data& trackData = workItem.get<snemo::datamodel::particle_track_data>("PTD");
-
-
-    #ifdef NEW_DATAMODEL_API
-    bool havePTDParticles = trackData.hasParticles();
-    #else
-    bool havePTDParticles = trackData.has_particles();
-    #endif
-
-    if (havePTDParticles)
     {
-      #ifdef NEW_DATAMODEL_API
-      const snemo::datamodel::ParticleHdlCollection& particles = trackData.particles();
-      #else
-      const snemo::datamodel::particle_track_data::particle_collection_type& particles = trackData.get_particles();
-      #endif
+      const snemo::datamodel::particle_track_data& trackData = workItem.get<snemo::datamodel::particle_track_data>("PTD");
 
-      for (const auto& iParticle : particles) {
-        const snemo::datamodel::particle_track& track = iParticle.get();
 
-        TrackDetails trackDetails(geometry_manager_, track);
+#ifdef NEW_DATAMODEL_API
+      bool havePTDParticles = trackData.hasParticles();
+#else
+      bool havePTDParticles = trackData.has_particles();
+#endif
 
-        // Populate info for gammas
-        if (trackDetails.IsGamma())
+      if (havePTDParticles)
         {
-          numberOfGammas++;
-          int pos=InsertAndGetPosition(trackDetails.GetEnergy(), gammaEnergies, true); // Add energy to ordered list of gamma energies (highest first) and get where in the list it was added
-          // Now add the type of the first hit to a vector
-          InsertAt(trackDetails.GetFirstHitType(), gammaCaloType, pos);
-          // And the fraction of the energy deposited in each wall
-          InsertAt(trackDetails.GetMainwallFraction(), gammaMainwallFraction,pos);
-          InsertAt(trackDetails.GetXwallFraction(), gammaXwallFraction,pos);
-          InsertAt(trackDetails.GetVetoFraction(), gammaVetoFraction,pos);
-          InsertAt(track,gammaCandidates,pos);
-          InsertAt(trackDetails,gammaCandidateDetails,pos);
-          continue;
+#ifdef NEW_DATAMODEL_API
+          const snemo::datamodel::ParticleHdlCollection& particles = trackData.particles();
+#else
+          const snemo::datamodel::particle_track_data::particle_collection_type& particles = trackData.get_particles();
+#endif
+
+          for (const auto& iParticle : particles) {
+            const snemo::datamodel::particle_track& track = iParticle.get();
+
+            TrackDetails trackDetails(geometry_manager_, track);
+
+            // Populate info for gammas
+            if (trackDetails.IsGamma())
+              {
+                numberOfGammas++;
+                int pos=InsertAndGetPosition(trackDetails.GetEnergy(), gammaEnergies, true); // Add energy to ordered list of gamma energies (highest first) and get where in the list it was added
+                // Now add the type of the first hit to a vector
+                InsertAt(trackDetails.GetFirstHitType(), gammaCaloType, pos);
+                // And the fraction of the energy deposited in each wall
+                InsertAt(trackDetails.GetMainwallFraction(), gammaMainwallFraction,pos);
+                InsertAt(trackDetails.GetXwallFraction(), gammaXwallFraction,pos);
+                InsertAt(trackDetails.GetVetoFraction(), gammaVetoFraction,pos);
+                InsertAt(track,gammaCandidates,pos);
+                InsertAt(trackDetails,gammaCandidateDetails,pos);
+                continue;
+              }
+
+            if (trackDetails.MakesTrack()) trackCount++;
+            else continue;
+
+
+            // Now we have only charged particles remaining there are a few things we can do:
+            // Identify electron candidates
+            // Identify alpha candidates
+            // Get edgemost inner vertex, regardless of whether they have associated calorimeters etc
+
+            // First the vertex:
+
+            // Count the number of vertices on the foil or on the wires (aka vertices in the tracker)
+            if (trackDetails.HasTrackerVertex())verticesInTracker++;
+
+            // Count the number of vertices on the foil only
+            if (trackDetails.HasFoilVertex())verticesOnFoil++;
+
+            // For all the tracks in the event, which one has its foilmost vertex nearest the tunnel/mountain
+            // edge of the foil? We could use this to identify
+            // Events so near the edge they can't make a 3-cell track
+
+            double thisY = trackDetails.GetFoilmostVertexY();
+            if (TMath::Abs(thisY) > TMath::Abs(edgemostVertex)) edgemostVertex = thisY;
+
+            // For electron candidates, we need to store the energies
+            if (trackDetails.IsElectron())
+              {
+                int pos=InsertAndGetPosition(trackDetails.GetEnergy(), electronEnergies, true);
+                // Add energy to ordered list of electron energies (highest first)
+                // and get where in the list it was added
+                // Now add the type of the first hit to a vector (electrons are currently only allowed one hit)
+                // If we allow clustered hits for an electron, we can easily add it in this framework
+                InsertAt(trackDetails.GetFirstHitType(), electronCaloType, pos);
+                // Vector of electron candidates is ordered
+                InsertAt(track,electronCandidates,pos);
+                InsertAt(trackDetails,electronCandidateDetails,pos);
+                // And we also want a vector of electron charges (they might be positrons)
+                InsertAt(trackDetails.GetCharge(),electronCharges,pos);
+                // And whether or not they are from the foil only
+                InsertAt(trackDetails.HasFoilVertex(),electronsFromFoil,pos);
+                // Vertices, directions, and vertices if projected back to foil
+                InsertAt(trackDetails.GetFoilmostVertex(),electronVertices,pos);
+                InsertAt(trackDetails.GetProjectedVertex(),electronProjVertices,pos);
+                InsertAt(trackDetails.GetDirection(),electronDirections,pos);
+                InsertAt(trackDetails.GetTrackLength(),electronTrackLengths,pos);
+                InsertAt(trackDetails.GetProjectedTrackLength(),electronProjTrackLengths,pos);
+                InsertAt(trackDetails.GetTrackerHitCount(),electronHitCounts,pos);
+              }
+
+            // Now look for alpha candidates
+            if (trackDetails.IsAlpha())
+              {
+                // Add delay time to ordered list of alpha times (highest first)
+                // and get where in the list it was added
+                int pos=InsertAndGetPosition(trackDetails.GetDelayTime(), trajClDelayedTime, true);
+                // Now add rest of the properties to the list
+                // Vector of electron candidates is ordered
+                InsertAt(track,alphaCandidates,pos);
+                InsertAt(trackDetails,alphaCandidateDetails,pos);
+                // Vertex and direction info
+                InsertAt(trackDetails.GetFoilmostVertex(),alphaVertices,pos);
+                InsertAt(trackDetails.GetDirection(),alphaDirections,pos);
+                InsertAt(trackDetails.GetProjectedVertex(),alphaProjVertices,pos);
+                // And whether or not they are from the foil
+                InsertAt(trackDetails.HasFoilVertex(),alphasFromFoil,pos);
+                if (trackDetails.HasFoilVertex()) foilAlphaCount++;
+
+                InsertAt(trackDetails.GetTrackerHitCount(),alphaHitCounts,pos);
+              }
+          } // end for each particle
+        } // end if has particles
+
+      //---------------------------------------
+      // Now identify topologies
+      //---------------------------------------
+      if (electronCandidates.size()==2 && trackCount==2)
+        { // at the moment - gammas allowed
+          is2electron = true;
+        }
+      if (electronCandidates.size()==1 && numberOfGammas>=1 && trackCount==1)
+        {
+          is1engamma = true;
+          if (numberOfGammas==1) is1e1gamma = true;
+        }
+      if (electronCandidates.size()==1 && numberOfGammas==0 && trackCount==1)
+        {
+          is1electron = true;
         }
 
-        if (trackDetails.MakesTrack()) trackCount++;
-        else continue;
-
-
-        // Now we have only charged particles remaining there are a few things we can do:
-        // Identify electron candidates
-        // Identify alpha candidates
-        // Get edgemost inner vertex, regardless of whether they have associated calorimeters etc
-
-        // First the vertex:
-
-        // Count the number of vertices on the foil or on the wires (aka vertices in the tracker)
-        if (trackDetails.HasTrackerVertex())verticesInTracker++;
-
-        // Count the number of vertices on the foil only
-        if (trackDetails.HasFoilVertex())verticesOnFoil++;
-
-        // For all the tracks in the event, which one has its foilmost vertex nearest the tunnel/mountain
-        // edge of the foil? We could use this to identify
-        // Events so near the edge they can't make a 3-cell track
-
-        double thisY = trackDetails.GetFoilmostVertexY();
-        if (TMath::Abs(thisY) > TMath::Abs(edgemostVertex)) edgemostVertex = thisY;
-
-        // For electron candidates, we need to store the energies
-        if (trackDetails.IsElectron())
-        {
-          int pos=InsertAndGetPosition(trackDetails.GetEnergy(), electronEnergies, true);
-          // Add energy to ordered list of electron energies (highest first)
-          // and get where in the list it was added
-          // Now add the type of the first hit to a vector (electrons are currently only allowed one hit)
-          // If we allow clustered hits for an electron, we can easily add it in this framework
-          InsertAt(trackDetails.GetFirstHitType(), electronCaloType, pos);
-          // Vector of electron candidates is ordered
-          InsertAt(track,electronCandidates,pos);
-          InsertAt(trackDetails,electronCandidateDetails,pos);
-          // And we also want a vector of electron charges (they might be positrons)
-          InsertAt(trackDetails.GetCharge(),electronCharges,pos);
-          // And whether or not they are from the foil only
-          InsertAt(trackDetails.HasFoilVertex(),electronsFromFoil,pos);
-          // Vertices, directions, and vertices if projected back to foil
-          InsertAt(trackDetails.GetFoilmostVertex(),electronVertices,pos);
-          InsertAt(trackDetails.GetProjectedVertex(),electronProjVertices,pos);
-          InsertAt(trackDetails.GetDirection(),electronDirections,pos);
-          InsertAt(trackDetails.GetTrackLength(),electronTrackLengths,pos);
-          InsertAt(trackDetails.GetProjectedTrackLength(),electronProjTrackLengths,pos);
-          InsertAt(trackDetails.GetTrackerHitCount(),electronHitCounts,pos);
+      if (electronCandidates.size() ==1 && alphaCandidates.size() ==1 && trackCount==2)
+        { // gammas allowed
+          is1e1alpha = true;
         }
 
-        // Now look for alpha candidates
-        if (trackDetails.IsAlpha())
+
+      //---------------------------------------
+      // Combined info for the topologies
+      //---------------------------------------
+
+      // Calculate values for the 1e1alpha topology
+      // Want to iterate over the tracks in the electronCandidate and alphaCandidate vectors
+      if (is1e1alpha)
         {
-          // Add delay time to ordered list of alpha times (highest first)
-          // and get where in the list it was added
-          int pos=InsertAndGetPosition(trackDetails.GetDelayTime(), trajClDelayedTime, true);
-          // Now add rest of the properties to the list
-          // Vector of electron candidates is ordered
-          InsertAt(track,alphaCandidates,pos);
-          InsertAt(trackDetails,alphaCandidateDetails,pos);
-          // Vertex and direction info
-          InsertAt(trackDetails.GetFoilmostVertex(),alphaVertices,pos);
-          InsertAt(trackDetails.GetDirection(),alphaDirections,pos);
-          InsertAt(trackDetails.GetProjectedVertex(),alphaProjVertices,pos);
-          // And whether or not they are from the foil
-          InsertAt(trackDetails.HasFoilVertex(),alphasFromFoil,pos);
-          if (trackDetails.HasFoilVertex()) foilAlphaCount++;
-
-          InsertAt(trackDetails.GetTrackerHitCount(),alphaHitCounts,pos);
+          // Recalculate the projected track length based on the electron track
+          alphaCandidateDetails.at(0).GenerateAlphaProjections(&electronCandidateDetails.at(0));
         }
-      } // end for each particle
-    } // end if has particles
 
-    //---------------------------------------
-    // Now identify topologies
-    //---------------------------------------
-    if (electronCandidates.size()==2 && trackCount==2)
-    { // at the moment - gammas allowed
-      is2electron = true;
-    }
-    if (electronCandidates.size()==1 && numberOfGammas>=1 && trackCount==1)
-    {
-      is1engamma = true;
-      if (numberOfGammas==1) is1e1gamma = true;
-    }
-    if (electronCandidates.size()==1 && numberOfGammas==0 && trackCount==1)
-    {
-      is1electron = true;
-    }
-
-    if (electronCandidates.size() ==1 && alphaCandidates.size() ==1 && trackCount==2)
-    { // gammas allowed
-      is1e1alpha = true;
-    }
-
-
-    //---------------------------------------
-    // Combined info for the topologies
-    //---------------------------------------
-
-    // Calculate values for the 1e1alpha topology
-    // Want to iterate over the tracks in the electronCandidate and alphaCandidate vectors
-    if (is1e1alpha)
-    {
-      // Recalculate the projected track length based on the electron track
-      alphaCandidateDetails.at(0).GenerateAlphaProjections(&electronCandidateDetails.at(0));
-    }
-
-    // For 2-electron and 1-e-n-gamma events, calculate some internal and external probablilities:
-    // that the two particles originated at the same time from the foil (internal) or that
-    // one went to the foil and ejected the other from it (external)
-    if (is2electron || is1engamma)
-    {
-      std::vector<TrackDetails*> twoParticles;
-      twoParticles.push_back(&electronCandidateDetails.at(0));
-      if (is1engamma)
-      {
-        // Set the track length for the highest-energy gamma based on it sharing a vertex with the electron
-        gammaCandidateDetails.at(0).GenerateGammaTrackLengths(&electronCandidateDetails.at(0));
-    gammaDirection=gammaCandidateDetails.at(0).GenerateGammaTrackDirection(&electronCandidateDetails.at(0));
-        twoParticles.push_back(&gammaCandidateDetails.at(0));
-      }
-      if (is2electron) // Second particle is the second electron
-      {
-        passesAssociatedCalorimeters=true;
-        twoParticles.push_back(&electronCandidateDetails.at(1));
-      }
-      CalculateProbabilities(internalProbability, externalProbability,  twoParticles,  false);
-      CalculateProbabilities(foilProjectedInternalProbability, foilProjectedExternalProbability,  twoParticles,  true);
-    }// end if either 2e or 1e n gamma
-  }// end try on PTD bank
+      // For 2-electron and 1-e-n-gamma events, calculate some internal and external probablilities:
+      // that the two particles originated at the same time from the foil (internal) or that
+      // one went to the foil and ejected the other from it (external)
+      if (is2electron || is1engamma)
+        {
+          std::vector<TrackDetails*> twoParticles;
+          twoParticles.push_back(&electronCandidateDetails.at(0));
+          if (is1engamma)
+            {
+              // Set the track length for the highest-energy gamma based on it sharing a vertex with the electron
+              gammaCandidateDetails.at(0).GenerateGammaTrackLengths(&electronCandidateDetails.at(0));
+              gammaDirection=gammaCandidateDetails.at(0).GenerateGammaTrackDirection(&electronCandidateDetails.at(0));
+              twoParticles.push_back(&gammaCandidateDetails.at(0));
+            }
+          if (is2electron) // Second particle is the second electron
+            {
+              passesAssociatedCalorimeters=true;
+              twoParticles.push_back(&electronCandidateDetails.at(1));
+            }
+          CalculateProbabilities(internalProbability, externalProbability,  twoParticles,  false);
+          CalculateProbabilities(foilProjectedInternalProbability, foilProjectedExternalProbability,  twoParticles,  true);
+        }// end if either 2e or 1e n gamma
+    }// end try on PTD bank
   catch (std::logic_error& e) {
     std::cerr << "failed to grab PTD bank : " << e.what() << std::endl;
     return dpp::base_module::PROCESS_INVALID;
@@ -595,33 +601,33 @@ SensitivityModule::process(datatools::things& workItem) {
     {
       const mctools::simulated_data& simData = workItem.get<mctools::simulated_data>("SD");
       if (simData.has_data())
-      {
-        trueVertexX = simData.get_vertex().x();
-        trueVertexY = simData.get_vertex().y();
-        trueVertexZ= simData.get_vertex().z();
-        mctools::simulated_data::primary_event_type primaryEvent=simData.get_primary_event ();
-
-        for (size_t i=0;i<primaryEvent.get_number_of_particles();++i)// should be 2 particles for 0nubb
         {
-          genbb::primary_particle trueParticle= primaryEvent.get_particle(i);
-          double energy=trueParticle.get_kinetic_energy();
-          double type=trueParticle.get_type();
-          totalTrueEnergy += energy;
-          // Populate the two highest true energies
-          if (energy > higherTrueEnergy)
-          {
-            lowerTrueEnergy=higherTrueEnergy;
-            lowerTrueType=higherTrueType;
-            higherTrueEnergy=energy;
-            higherTrueType=type;
-          }
-          else if (energy > lowerTrueEnergy)
-          {
-            lowerTrueEnergy=energy;
-            lowerTrueType=type;
-          }
+          trueVertexX = simData.get_vertex().x();
+          trueVertexY = simData.get_vertex().y();
+          trueVertexZ= simData.get_vertex().z();
+          mctools::simulated_data::primary_event_type primaryEvent=simData.get_primary_event ();
+
+          for (size_t i=0;i<primaryEvent.get_number_of_particles();++i)// should be 2 particles for 0nubb
+            {
+              genbb::primary_particle trueParticle= primaryEvent.get_particle(i);
+              double energy=trueParticle.get_kinetic_energy();
+              double type=trueParticle.get_type();
+              totalTrueEnergy += energy;
+              // Populate the two highest true energies
+              if (energy > higherTrueEnergy)
+                {
+                  lowerTrueEnergy=higherTrueEnergy;
+                  lowerTrueType=higherTrueType;
+                  higherTrueEnergy=energy;
+                  higherTrueType=type;
+                }
+              else if (energy > lowerTrueEnergy)
+                {
+                  lowerTrueEnergy=energy;
+                  lowerTrueType=type;
+                }
+            }
         }
-      }
     } // end try for SD bank
   catch (std::logic_error& e) {
     //std::cerr << "failed to grab SD bank : " << e.what() << std::endl;
@@ -677,95 +683,95 @@ SensitivityModule::process(datatools::things& workItem) {
 
 
   for (size_t i=0;i<electronVertices.size();i++)
-  {
-    sensitivity_.electron_vertex_x_.push_back(electronVertices.at(i).X());
-    sensitivity_.electron_vertex_y_.push_back(electronVertices.at(i).Y());
-    sensitivity_.electron_vertex_z_.push_back(electronVertices.at(i).Z());
-    sensitivity_.electron_proj_vertex_x_.push_back(electronProjVertices.at(i).X());
-    sensitivity_.electron_proj_vertex_y_.push_back(electronProjVertices.at(i).Y());
-    sensitivity_.electron_proj_vertex_z_.push_back(electronProjVertices.at(i).Z());
-    sensitivity_.electron_dir_x_.push_back(electronDirections.at(i).X());
-    sensitivity_.electron_dir_y_.push_back(electronDirections.at(i).Y());
-    sensitivity_.electron_dir_z_.push_back(electronDirections.at(i).Z());
-  }
+    {
+      sensitivity_.electron_vertex_x_.push_back(electronVertices.at(i).X());
+      sensitivity_.electron_vertex_y_.push_back(electronVertices.at(i).Y());
+      sensitivity_.electron_vertex_z_.push_back(electronVertices.at(i).Z());
+      sensitivity_.electron_proj_vertex_x_.push_back(electronProjVertices.at(i).X());
+      sensitivity_.electron_proj_vertex_y_.push_back(electronProjVertices.at(i).Y());
+      sensitivity_.electron_proj_vertex_z_.push_back(electronProjVertices.at(i).Z());
+      sensitivity_.electron_dir_x_.push_back(electronDirections.at(i).X());
+      sensitivity_.electron_dir_y_.push_back(electronDirections.at(i).Y());
+      sensitivity_.electron_dir_z_.push_back(electronDirections.at(i).Z());
+    }
 
   for (size_t i=0;i<alphaVertices.size();i++)
-  {
-    sensitivity_.alpha_vertex_x_.push_back(alphaVertices.at(i).X());
-    sensitivity_.alpha_vertex_y_.push_back(alphaVertices.at(i).Y());
-    sensitivity_.alpha_vertex_z_.push_back(alphaVertices.at(i).Z());
-    sensitivity_.alpha_proj_vertex_x_.push_back(alphaProjVertices.at(i).X());
-    sensitivity_.alpha_proj_vertex_y_.push_back(alphaProjVertices.at(i).Y());
-    sensitivity_.alpha_proj_vertex_z_.push_back(alphaProjVertices.at(i).Z());
-    sensitivity_.alpha_dir_x_.push_back(alphaDirections.at(i).X());
-    sensitivity_.alpha_dir_y_.push_back(alphaDirections.at(i).Y());
-    sensitivity_.alpha_dir_z_.push_back(alphaDirections.at(i).Z());
-  }
+    {
+      sensitivity_.alpha_vertex_x_.push_back(alphaVertices.at(i).X());
+      sensitivity_.alpha_vertex_y_.push_back(alphaVertices.at(i).Y());
+      sensitivity_.alpha_vertex_z_.push_back(alphaVertices.at(i).Z());
+      sensitivity_.alpha_proj_vertex_x_.push_back(alphaProjVertices.at(i).X());
+      sensitivity_.alpha_proj_vertex_y_.push_back(alphaProjVertices.at(i).Y());
+      sensitivity_.alpha_proj_vertex_z_.push_back(alphaProjVertices.at(i).Z());
+      sensitivity_.alpha_dir_x_.push_back(alphaDirections.at(i).X());
+      sensitivity_.alpha_dir_y_.push_back(alphaDirections.at(i).Y());
+      sensitivity_.alpha_dir_z_.push_back(alphaDirections.at(i).Z());
+    }
 
   // Special vertex variables
   if (is2electron || is1e1alpha)
     // At the moment we only set these for these two topologies. This should possibly change
-  {
-    //First  vertex is the high-energy electron for 2e or the only electron for 1e1alpha
-    sensitivity_.first_proj_vertex_y_ = electronProjVertices.at(0).Y();
-    sensitivity_.first_proj_vertex_z_ = electronProjVertices.at(0).Z();
-    sensitivity_.first_vertex_x_ = electronVertices.at(0).X();
-    sensitivity_.first_vertex_y_ = electronVertices.at(0).Y();
-    sensitivity_.first_vertex_z_ = electronVertices.at(0).Z();
-    sensitivity_.first_track_direction_x_= electronDirections.at(0).X();
-    sensitivity_.first_track_direction_y_= electronDirections.at(0).Y();
-    sensitivity_.first_track_direction_z_= electronDirections.at(0).Z();
-    projectionDistanceXY=(electronVertices.at(0)-electronProjVertices.at(0)).Perp();
-  }
+    {
+      //First  vertex is the high-energy electron for 2e or the only electron for 1e1alpha
+      sensitivity_.first_proj_vertex_y_ = electronProjVertices.at(0).Y();
+      sensitivity_.first_proj_vertex_z_ = electronProjVertices.at(0).Z();
+      sensitivity_.first_vertex_x_ = electronVertices.at(0).X();
+      sensitivity_.first_vertex_y_ = electronVertices.at(0).Y();
+      sensitivity_.first_vertex_z_ = electronVertices.at(0).Z();
+      sensitivity_.first_track_direction_x_= electronDirections.at(0).X();
+      sensitivity_.first_track_direction_y_= electronDirections.at(0).Y();
+      sensitivity_.first_track_direction_z_= electronDirections.at(0).Z();
+      projectionDistanceXY=(electronVertices.at(0)-electronProjVertices.at(0)).Perp();
+    }
   if (is2electron ) // The second one is the lower-energy electron
-  {
-    sensitivity_.second_proj_vertex_y_ = electronProjVertices.at(1).Y();
-    sensitivity_.second_proj_vertex_z_ = electronProjVertices.at(1).Z();
-    sensitivity_.second_vertex_x_ = electronVertices.at(1).X();
-    sensitivity_.second_vertex_y_ = electronVertices.at(1).Y();
-    sensitivity_.second_vertex_z_ = electronVertices.at(1).Z();
-    sensitivity_.second_track_direction_x_= electronDirections.at(1).X();
-    sensitivity_.second_track_direction_y_= electronDirections.at(1).Y();
-    sensitivity_.second_track_direction_z_= electronDirections.at(1).Z();
+    {
+      sensitivity_.second_proj_vertex_y_ = electronProjVertices.at(1).Y();
+      sensitivity_.second_proj_vertex_z_ = electronProjVertices.at(1).Z();
+      sensitivity_.second_vertex_x_ = electronVertices.at(1).X();
+      sensitivity_.second_vertex_y_ = electronVertices.at(1).Y();
+      sensitivity_.second_vertex_z_ = electronVertices.at(1).Z();
+      sensitivity_.second_track_direction_x_= electronDirections.at(1).X();
+      sensitivity_.second_track_direction_y_= electronDirections.at(1).Y();
+      sensitivity_.second_track_direction_z_= electronDirections.at(1).Z();
 
-    sensitivity_.vertex_separation_= (electronVertices.at(0) - electronVertices.at(1)).Mag();
-    sensitivity_.foil_projection_separation_= (electronProjVertices.at(0) - electronProjVertices.at(1)).Mag();
-    sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(electronDirections.at(1));
+      sensitivity_.vertex_separation_= (electronVertices.at(0) - electronVertices.at(1)).Mag();
+      sensitivity_.foil_projection_separation_= (electronProjVertices.at(0) - electronProjVertices.at(1)).Mag();
+      sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(electronDirections.at(1));
 
-    double thisProjectionDistance=(electronVertices.at(1)-electronProjVertices.at(1)).Perp();
-    if (thisProjectionDistance > projectionDistanceXY)projectionDistanceXY=thisProjectionDistance;
-  }
+      double thisProjectionDistance=(electronVertices.at(1)-electronProjVertices.at(1)).Perp();
+      if (thisProjectionDistance > projectionDistanceXY)projectionDistanceXY=thisProjectionDistance;
+    }
 
   if(is1engamma && (gammaDirection.Mag()>0))
-  {
-    sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(gammaDirection);
-  }
+    {
+      sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(gammaDirection);
+    }
 
   if(is1e1alpha)
-  {
-    sensitivity_.alpha_track_length_=alphaCandidateDetails.at(0).GetTrackLength();
-    sensitivity_.proj_track_length_alpha_=alphaCandidateDetails.at(0).GetProjectedTrackLength();
-    sensitivity_.alpha_crosses_foil_=alphaCandidateDetails.at(0).TrackCrossesFoil();
+    {
+      sensitivity_.alpha_track_length_=alphaCandidateDetails.at(0).GetTrackLength();
+      sensitivity_.proj_track_length_alpha_=alphaCandidateDetails.at(0).GetProjectedTrackLength();
+      sensitivity_.alpha_crosses_foil_=alphaCandidateDetails.at(0).TrackCrossesFoil();
 
-    // Second vertex is the alpha
-    sensitivity_.second_proj_vertex_y_=alphaCandidateDetails.at(0).GetProjectedVertex().Y();
-    sensitivity_.second_proj_vertex_z_=alphaCandidateDetails.at(0).GetProjectedVertex().Z();
-    sensitivity_.second_vertex_x_= alphaVertices.at(0).X();
-    sensitivity_.second_vertex_y_= alphaVertices.at(0).Y();
-    sensitivity_.second_vertex_z_= alphaVertices.at(0).Z();
-    sensitivity_.second_track_direction_x_= alphaDirections.at(0).X();
-    sensitivity_.second_track_direction_y_= alphaDirections.at(0).Y();
-    sensitivity_.second_track_direction_z_= alphaDirections.at(0).Z();
+      // Second vertex is the alpha
+      sensitivity_.second_proj_vertex_y_=alphaCandidateDetails.at(0).GetProjectedVertex().Y();
+      sensitivity_.second_proj_vertex_z_=alphaCandidateDetails.at(0).GetProjectedVertex().Z();
+      sensitivity_.second_vertex_x_= alphaVertices.at(0).X();
+      sensitivity_.second_vertex_y_= alphaVertices.at(0).Y();
+      sensitivity_.second_vertex_z_= alphaVertices.at(0).Z();
+      sensitivity_.second_track_direction_x_= alphaDirections.at(0).X();
+      sensitivity_.second_track_direction_y_= alphaDirections.at(0).Y();
+      sensitivity_.second_track_direction_z_= alphaDirections.at(0).Z();
 
       // Some two-particle topology calculations
-    sensitivity_.vertex_separation_=(electronVertices.at(0) - alphaVertices.at(0)).Mag();
-    sensitivity_.foil_projection_separation_= (electronProjVertices.at(0) - alphaCandidateDetails.at(0).GetProjectedVertex()).Mag();
-    sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(alphaDirections.at(0));
+      sensitivity_.vertex_separation_=(electronVertices.at(0) - alphaVertices.at(0)).Mag();
+      sensitivity_.foil_projection_separation_= (electronProjVertices.at(0) - alphaCandidateDetails.at(0).GetProjectedVertex()).Mag();
+      sensitivity_.angle_between_tracks_= electronDirections.at(0).Angle(alphaDirections.at(0));
 
-    double thisProjectionDistance=(alphaVertices.at(0)-alphaProjVertices.at(0)).Perp();
-    if (thisProjectionDistance > projectionDistanceXY)projectionDistanceXY=thisProjectionDistance;
+      double thisProjectionDistance=(alphaVertices.at(0)-alphaProjVertices.at(0)).Perp();
+      if (thisProjectionDistance > projectionDistanceXY)projectionDistanceXY=thisProjectionDistance;
 
-  }
+    }
 
   // Track direction
   if (is2electron || is1e1alpha) // This works in either case
@@ -839,62 +845,72 @@ SensitivityModule::process(datatools::things& workItem) {
   return dpp::base_module::PROCESS_OK;
 }
 
-void SensitivityModule::CalculateProbabilities(double &internalProbability, double &externalProbability, std::vector<TrackDetails*> twoParticles, bool projected)
+void SensitivityModule::CalculateProbabilities(double & internalProbability,
+                                               double & externalProbability,
+                                               std::vector<TrackDetails*> twoParticles,
+                                               bool projected)
 {
-    double trackLengths[2];
-    double theoreticalTimeOfFlight[2];
-    double internalEmissionTime[2];
-    double internalChiSquared;
-    double externalChiSquared;
-    for (int count=0;count<2;count++) // 2 particles
+  double trackLengths[2];
+  double theoreticalTimeOfFlight[2];
+  double internalEmissionTime[2];
+  double internalChiSquared;
+  double externalChiSquared;
+  for (int count=0;count<2;count++) // 2 particles
     {
       if (projected)
-      {
-        trackLengths[count]=twoParticles.at(count)->GetProjectedTrackLength();
-      }
+        {
+          trackLengths[count]=twoParticles.at(count)->GetProjectedTrackLength();
+        }
       else
-      {
-        trackLengths[count]=twoParticles.at(count)->GetTrackLength();
-      }
+        {
+          trackLengths[count]=twoParticles.at(count)->GetTrackLength();
+        }
       theoreticalTimeOfFlight[count] = trackLengths[count]/ (twoParticles.at(count)->GetBeta() * speedOfLight);
       internalEmissionTime[count] = twoParticles.at(count)->GetTime() - theoreticalTimeOfFlight[count];
     }
-    // Calculate internal probability: both particles emitted at the same time
-    // so time between the calo hits should be Time of flight 1 - Time of flight 2
+  // Calculate internal probability: both particles emitted at the same time
+  // so time between the calo hits should be Time of flight 1 - Time of flight 2
 
   // Calculate external probability: one particle travels to foil then the other travels from foil
   // so time between the calo hits should be Time of flight  1 + Time of flight  2
   if (projected)
-  {
-    internalChiSquared = pow((internalEmissionTime[0] - internalEmissionTime[1]) ,2) / (twoParticles.at(0)->GetProjectedTimeVariance() + twoParticles.at(1)->GetProjectedTimeVariance()) ;
+    {
+      internalChiSquared = pow((internalEmissionTime[0] - internalEmissionTime[1]) ,2) / (twoParticles.at(0)->GetProjectedTimeVariance() + twoParticles.at(1)->GetProjectedTimeVariance()) ;
 
-    externalChiSquared=pow(( TMath::Abs(twoParticles.at(0)->GetTime()-twoParticles.at(1)->GetTime()) - (theoreticalTimeOfFlight[0]+theoreticalTimeOfFlight[1]) ),2)/ (twoParticles.at(0)->GetProjectedTimeVariance() + twoParticles.at(1)->GetProjectedTimeVariance()) ;
-  }else
-  {
+      externalChiSquared=pow(( TMath::Abs(twoParticles.at(0)->GetTime()-twoParticles.at(1)->GetTime()) - (theoreticalTimeOfFlight[0]+theoreticalTimeOfFlight[1]) ),2)/ (twoParticles.at(0)->GetProjectedTimeVariance() + twoParticles.at(1)->GetProjectedTimeVariance()) ;
+    }else
+    {
 
-    internalChiSquared = pow((internalEmissionTime[0] - internalEmissionTime[1]) ,2) / (twoParticles.at(0)->GetTotalTimeVariance() + twoParticles.at(1)->GetTotalTimeVariance()) ;
-    externalChiSquared=pow(( TMath::Abs(twoParticles.at(0)->GetTime()-twoParticles.at(1)->GetTime()) - (theoreticalTimeOfFlight[0]+theoreticalTimeOfFlight[1]) ),2)/(twoParticles.at(0)->GetTotalTimeVariance() + twoParticles.at(1)->GetTotalTimeVariance()) ;
-  }
+      internalChiSquared = pow((internalEmissionTime[0] - internalEmissionTime[1]) ,2) / (twoParticles.at(0)->GetTotalTimeVariance() + twoParticles.at(1)->GetTotalTimeVariance()) ;
+      externalChiSquared=pow(( TMath::Abs(twoParticles.at(0)->GetTime()-twoParticles.at(1)->GetTime()) - (theoreticalTimeOfFlight[0]+theoreticalTimeOfFlight[1]) ),2)/(twoParticles.at(0)->GetTotalTimeVariance() + twoParticles.at(1)->GetTotalTimeVariance()) ;
+    }
   // Integrate a chisquare distribution to the value if the internal/external chi square
   // to get the probability of it being an internal or external event
   internalProbability=this->ProbabilityFromChiSquared(internalChiSquared);
   externalProbability=this->ProbabilityFromChiSquared(externalChiSquared);
+  return;
 }
 
 // Calculate probabilities for an internal (both particles from the foil) and external (calo 1 -> foil -> calo 2) topology
-void SensitivityModule::CalculateProbabilities(double &internalProbability, double &externalProbability, double* /*calorimeterEnergies*/,  double *betas, double *trackLengths, double *calorimeterTimes, double *totalTimeVariances )
+void SensitivityModule::CalculateProbabilities(double &internalProbability,
+                                               double &externalProbability,
+                                               double* /*calorimeterEnergies*/,
+                                               double *betas,
+                                               double *trackLengths,
+                                               double *calorimeterTimes,
+                                               double *totalTimeVariances )
 {
   double theoreticalTimeOfFlight[2];
   double internalEmissionTime[2];
   double internalChiSquared;
   double externalChiSquared;
   for (int count=0;count<2;count++)
-  {
-    //energies are in MeV
-    theoreticalTimeOfFlight[count] = trackLengths[count]/ (betas[count] * speedOfLight);
-    internalEmissionTime[count] = calorimeterTimes[count] - theoreticalTimeOfFlight[count];
+    {
+      //energies are in MeV
+      theoreticalTimeOfFlight[count] = trackLengths[count]/ (betas[count] * speedOfLight);
+      internalEmissionTime[count] = calorimeterTimes[count] - theoreticalTimeOfFlight[count];
 
-  } // for each particle
+    } // for each particle
 
   // Calculate internal probability: both particles emitted at the same time
   // so time between the calo hits should be Time of flight 1 - Time of flight 2
@@ -907,7 +923,7 @@ void SensitivityModule::CalculateProbabilities(double &internalProbability, doub
   // so time between the calo hits should be Time of flight  1 + Time of flight  2
   externalChiSquared=pow(( TMath::Abs(calorimeterTimes[0]-calorimeterTimes[1]) - (theoreticalTimeOfFlight[0]+theoreticalTimeOfFlight[1]) ),2)/(totalTimeVariances[0] + totalTimeVariances[1]) ;
   externalProbability=this->ProbabilityFromChiSquared(externalChiSquared);
-
+  return;
 }
 
 
@@ -917,51 +933,57 @@ void SensitivityModule::CalculateProbabilities(double &internalProbability, doub
 // If you pick a position past the end of the vector, stick it on the end
 // Position of -1 also sticks it at the end
 template <typename T>
-void SensitivityModule::InsertAt(T toInsert, std::vector<T> &vec, int position)
+void SensitivityModule::InsertAt(T toInsert, std::vector<T> & vec, int position)
 {
   if (position>static_cast<int>(vec.size()) || position==-1 )
-  {
-    vec.push_back(toInsert);
-    return;
-  }
+    {
+      vec.push_back(toInsert);
+      return;
+    }
   else
-  {
-    typename std::vector<T>::iterator it=vec.begin();
-    vec.insert(std::next(it,position),toInsert);
-  }
+    {
+      typename std::vector<T>::iterator it=vec.begin();
+      vec.insert(std::next(it,position),toInsert);
+    }
   return;
 }
 
 // Fill in the 3 vectors of wall booleans based on the calo wall that got the first hit
-void SensitivityModule::PopulateWallVectors(std::vector<int> &calotypes, std::vector<bool> &mainVec, std::vector<bool> &xVec, std::vector<bool> &vetoVec)
+void SensitivityModule::PopulateWallVectors(std::vector<int> & calotypes,
+                                            std::vector<bool> & mainVec,
+                                            std::vector<bool> & xVec,
+                                            std::vector<bool> & vetoVec)
 {
   mainVec.clear();
   xVec.clear();
   vetoVec.clear();
   for (size_t i=0;i<calotypes.size();i++)
-  {
-    mainVec.push_back(calotypes.at(i)==mainWallHitType);
-    xVec.push_back(calotypes.at(i)==xWallHitType);
-    vetoVec.push_back(calotypes.at(i)==gammaVetoHitType);
-  }
+    {
+      mainVec.push_back(calotypes.at(i)==mainWallHitType);
+      xVec.push_back(calotypes.at(i)==xWallHitType);
+      vetoVec.push_back(calotypes.at(i)==gammaVetoHitType);
+    }
+  return;
 }
 
 
 // Find the position to insert a value into a sorted vector
-int SensitivityModule::InsertAndGetPosition(double toInsert, std::vector<double> &vec, bool highestFirst)
+int SensitivityModule::InsertAndGetPosition(double toInsert,
+                                            std::vector<double> &vec,
+                                            bool highestFirst)
 {
   std::vector<double>::iterator it;
   int len=vec.size();
 
   it=vec.begin();
   for (int i=0;i<len;i++)
-  {
-    if ((highestFirst && (toInsert > vec.at(i))) || (!highestFirst && (toInsert < vec.at(i))))
     {
-      vec.insert(std::next(it,i),toInsert);
-      return i;
+      if ((highestFirst && (toInsert > vec.at(i))) || (!highestFirst && (toInsert < vec.at(i))))
+        {
+          vec.insert(std::next(it,i),toInsert);
+          return i;
+        }
     }
-  }
   vec.push_back(toInsert);
   return -1; // It needs adding at the end
 }
@@ -972,13 +994,13 @@ double SensitivityModule::ProbabilityFromChiSquared(double chiSquared)
   // To get probability from a chi squared value, integrate distribution to our chisq limit
   // We have one degree of freedom
   // *** suspect memory leak on heap ***
-//   TF1 *function_to_integrate = new TF1("Chi-square function", "pow(x,-0.5) * exp(-0.5 * x)", 0, chiSquared);
-//   double * params = 0;
-//   if (chiSquared>3000) chiSquared=3000; // The integral appears to not work properly at values bigger than this, eventually tending to 0 rather than root2pi and thus giving a misleading probability of 1 when it should be almost 0.
-//   double integral=function_to_integrate->Integral(0,chiSquared,1e-6);
-//   double result = (1. - 1./TMath::Sqrt(2.*TMath::Pi()) * integral);
+  //   TF1 *function_to_integrate = new TF1("Chi-square function", "pow(x,-0.5) * exp(-0.5 * x)", 0, chiSquared);
+  //   double * params = 0;
+  //   if (chiSquared>3000) chiSquared=3000; // The integral appears to not work properly at values bigger than this, eventually tending to 0 rather than root2pi and thus giving a misleading probability of 1 when it should be almost 0.
+  //   double integral=function_to_integrate->Integral(0,chiSquared,1e-6);
+  //   double result = (1. - 1./TMath::Sqrt(2.*TMath::Pi()) * integral);
   // Fix rounding errors where result can be a tiny negative number
-//   if (result < 0 ) return 0 ;
+  //   if (result < 0 ) return 0 ;
   double result = TMath::Prob(chiSquared, 1);
   return result;
 }
@@ -1034,11 +1056,12 @@ void SensitivityModule::ResetVars()
   sensitivity_.alpha_crosses_foil_=false;
   sensitivity_.foil_alpha_count_=0;
   sensitivity_.alpha_count_=0;
-
+  return;
 }
 
 //! [SensitivityModule::reset]
-void SensitivityModule::reset() {
+void SensitivityModule::reset()
+{
   hfile_->cd();
   tree_->Write();
   hfile_->Close(); //
@@ -1049,4 +1072,5 @@ void SensitivityModule::reset() {
   filename_output_ = "sensitivity.root";
   this->_set_initialized(false);
 
+  return;
 }

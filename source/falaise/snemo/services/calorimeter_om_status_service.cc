@@ -232,25 +232,65 @@ namespace snemo {
     datatools::fetch_path_with_env(filename);
     std::ifstream fin(filename);
     DT_THROW_IF(!fin, std::runtime_error, "Cannot open tracker om status file '" << filename << "'!");
+    std::map<std::string, time::time_period> predefinedPeriods;
+    std::string currentSelectedPeriod;
     while (fin and not fin.eof()) {
       std::string line;
       std::getline(fin, line);
+      boost::trim(line);
       DT_LOG_DEBUG(get_logging_priority(), "Line='" << line << "'");
       {
         std::istringstream checkss(line);
         std::string word;
         checkss >> word;
-        if (word.size() == 0 or word[0] == '#') {
+        if (word.size() == 0) {
+          continue;
+        } else if (word[0] == '#') {
+          if (word.size() > 2) {
+            if (word[1] == '@') {
+              // Parse special directives:
+              // #@period= A : [start date / stop date)
+              if (line.substr(0, 9) == "#@period=") {
+                DT_LOG_DEBUG(get_logging_priority(), "Found period directive");
+                auto eqPos = line.find(':');
+                DT_THROW_IF(eqPos == line.npos, std::logic_error,
+                            "Invalid formatted predefined period directive '" << word  << "'!"); 
+                std::string periodName = line.substr(9, eqPos - 9);
+                DT_LOG_DEBUG(get_logging_priority(), "periodName='" << periodName << "'");
+                boost::trim(periodName);
+                std::string periodRepr = line.substr(eqPos + 1);
+                DT_LOG_DEBUG(get_logging_priority(), "periodRepr='" << periodRepr << "'");
+                boost::trim(periodRepr);
+                DT_THROW_IF(periodRepr.empty(), std::logic_error, "Missing predefined period!");
+                time::time_period period = time::time_period_from_string(periodRepr);
+                DT_THROW_IF(not time::is_valid(period), std::logic_error,
+                            "Invalid period parsed from '" << periodRepr  << "'!");
+                predefinedPeriods.emplace(periodName, period);
+              } else if (line.substr(0, 15) == "#@selectPeriod=") {
+                DT_LOG_DEBUG(get_logging_priority(), "Found select period directive");
+                std::string selectedPeriodName = line.substr(15);
+                boost::trim(selectedPeriodName);
+                DT_THROW_IF(selectedPeriodName.empty(), std::logic_error, "Missing a selected period name!");
+                DT_THROW_IF(predefinedPeriods.find(selectedPeriodName) == predefinedPeriods.end(),
+                            std::logic_error,
+                            "Unknown selected period name '" << selectedPeriodName << "'!");
+                currentSelectedPeriod = selectedPeriodName;
+              } else if (line.substr(0, 16) == "#@unselectPeriod") {
+                currentSelectedPeriod.clear();
+              }
+            }
+          }
           continue;
         }
       }
+      DT_LOG_DEBUG(get_logging_priority(), "Predefined periods=" << predefinedPeriods.size());
       typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
       boost::char_separator<char> sep{";"};
       tokenizer tokens{line, sep};
       std::string geomIdRepr;
       std::string periodRepr;
       std::string statusRepr;
-      int tkCount=0;
+      int tkCount = 0;
       for (std::string tk : tokens) {
         if (geomIdRepr.empty()) {
           DT_THROW_IF(tkCount != 0, std::logic_error, "Invalid formatted calorimeter OM status record!");
@@ -265,6 +305,7 @@ namespace snemo {
           DT_THROW(std::logic_error, "Invalid token '" << tk << "'!");
         }
         tkCount++;
+        if (tkCount == 3) break;
       }
       geomtools::geom_id gid;
       boost::trim(geomIdRepr);
@@ -282,7 +323,6 @@ namespace snemo {
         DT_THROW_IF(not validType, std::logic_error,
                     "Invalid type for calorimeter OM geom ID '" << gid  << "'!");
         bool validGid = false;
-        // XXX
         if (caloLocator.isCaloOM(gid) or
             xcaloLocator.isCaloOM(gid) or
             gvetoLocator.isCaloOM(gid)) validGid = true;
@@ -290,10 +330,18 @@ namespace snemo {
                     "Not a valid (x)calorimeter/gveto OM geom ID '" << gid  << "'!");
       }
       boost::trim(periodRepr);
-      DT_THROW_IF(periodRepr.empty(), std::logic_error, "Missing period!");
-      time::time_period period = time::time_period_from_string(periodRepr);
-      DT_THROW_IF(not time::is_valid(period), std::logic_error,
-                  "Invalid period parsed from '" << periodRepr  << "'!");
+      time::time_period period = time::invalid_period();
+      if (periodRepr.empty()) {
+        DT_THROW_IF(currentSelectedPeriod.empty(), std::logic_error, "Missing period or current preselected period!");
+        periodRepr = currentSelectedPeriod;
+      }
+      if (predefinedPeriods.find(periodRepr) != predefinedPeriods.end()) {
+        period = predefinedPeriods.find(periodRepr)->second;
+      } else {
+        period = time::time_period_from_string(periodRepr);
+        DT_THROW_IF(not time::is_valid(period), std::logic_error,
+                    "Invalid period parsed from '" << periodRepr  << "'!");
+      }
       boost::trim(statusRepr);
       std::uint32_t status = snemo::rc::calorimeter_om_status::status_from_string(statusRepr);
       if (status != snemo::rc::calorimeter_om_status::OM_GOOD) {
@@ -345,5 +393,52 @@ namespace snemo {
     return;
   }
   */
+  
+  void calorimeter_om_status_service::print_tree(std::ostream & out_,
+                                                 const boost::property_tree::ptree & options_) const
+  {
+    i_tree_dumpable::base_print_options popts;
+    popts.configure_from(options_);
+    this->base_service::print_tree(out_, base_print_options::force_inheritance(options_));
+  
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "Mode : ";
+    if (_mode_ == MODE_FILES) out_ << "'file'";
+    else out_ << "'db'";
+    out_ << std::endl;
+  
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "Geometry label : '" << _geometry_label_ << "'" << std::endl;
+ 
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "DB label : '" << _db_label_ << "'" << std::endl;
 
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "Geometry manager : " << std::boolalpha << (_geomgr_ != nullptr) << std::endl;
+
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "OM types : (" << _om_types_[0] << ',' << _om_types_[1] << ',' << _om_types_[2] << ')' << std::endl;
+
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "DB service : " << std::boolalpha << (_db_service_ != nullptr) << std::endl;
+    
+    out_ << popts.indent << i_tree_dumpable::inherit_tag(popts.inherit)
+         << "Histories: " << _histories_.size() << std::endl;
+
+    {
+      uint32_t hCount = 0;
+      for (const auto & h : _histories_) {
+        out_ << popts.indent << i_tree_dumpable::inherit_skip_tag(popts.inherit);
+        if (hCount + 1 == _histories_.size()) {
+          out_ <<  i_tree_dumpable::last_tag;
+        } else {
+          out_ <<  i_tree_dumpable::tag;
+        } 
+        out_ << "History for OM " << h.first << " : #entries=" << h.second.records().size() << std::endl;    
+      }
+    }
+
+    return;
+  }
+  
 }  // namespace snemo

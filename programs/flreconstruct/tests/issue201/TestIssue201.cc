@@ -4,13 +4,14 @@
 namespace flp = falaise::processing;
 
 // A trivial wrapped module
-class TestIssue201 {
+class TestIssue201
+{
  public:
   TestIssue201() = default;
-  TestIssue201(falaise::property_set const& /*unused*/, datatools::service_manager& /*unused*/)
+  TestIssue201(falaise::property_set const & /*unused*/, datatools::service_manager & /*unused*/)
       : TestIssue201() {}
 
-  flp::status process(datatools::things& e) {
+  flp::status process(datatools::things & e) {
     // Need event header and PTD to check
     const auto& eh = e.get<snemo::datamodel::event_header>("EH");
     const auto& ptd = e.get<snemo::datamodel::particle_track_data>("PTD");

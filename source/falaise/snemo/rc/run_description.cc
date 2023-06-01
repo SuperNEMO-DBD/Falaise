@@ -59,7 +59,7 @@ namespace snemo {
       return out_;
     }
 
-    void run_description::set_run_id(std::int32_t id_)
+    void run_description::set_run_id(const run_id_type id_)
     {
       DT_THROW_IF(id_ < INVALID_RUN_ID, std::domain_error,
                   "Invalid run ID '" << id_ << "'!");
@@ -74,8 +74,8 @@ namespace snemo {
 
 
     // static
-    run_description run_description::make(std::int32_t run_id_,
-                                          run_category run_cat_,
+    run_description run_description::make(const run_id_type run_id_,
+                                          const run_category run_cat_,
                                           const time::time_period & run_period_,
                                           std::uint32_t number_of_events_)
     {
@@ -84,6 +84,7 @@ namespace snemo {
       rd._category_ = run_cat_;
       rd._period_ = run_period_;
       rd._number_of_events_ = number_of_events_;
+      rd._sync_();
       return rd;
     }
 
@@ -103,6 +104,7 @@ namespace snemo {
                                    time::time_point(time::not_a_date_time)};
       _number_of_events_ = 0;
       _breaks_.clear();
+      _slices_.clear();
       return;
     }
 
@@ -201,7 +203,7 @@ namespace snemo {
           add_break(breakPeriod);         
         }
       }
-      
+      _sync_();
       return;
     }
 

@@ -113,8 +113,8 @@ step3=1
 ###############################################################################
 if [ $step1 -eq 1 ]; then
     echo >&2 "[info] Running flsimulate-configure with HE(>2MeV) Se82 2nubb shot from the source bulk..."
+    # -t "urn:snemo:demonstrator:simulation:2.2" 
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "vertexes:generator=source_pads_bulk" \
 			 -s "primary_events:generator=Se82.2nubb_2MeV" \
 			 -s "simulation:output_profile=none" \
@@ -140,7 +140,7 @@ if [ $step1 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python ${cfg_dir}/proc.py)
+    mean_energy_keV=$(${pythonExe} ${cfg_dir}/proc.py)
     if [ ${mean_energy_keV} -lt 900 ]; then
 	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
     else
@@ -152,8 +152,8 @@ fi
 ###############################################################################
 if [ $step2 -eq 1 ]; then
     echo >&2 "[info] Running flsimulate-configure with HE electron shot from the source bulk......"
+    # -t "urn:snemo:demonstrator:simulation:2.2" 
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "vertexes:generator=source_pads_bulk" \
 			 -s "primary_events:generator=flat_versatile_generator" \
 			 -s "primary_events:generator/if_flat_versatile/particle=electron" \
@@ -179,7 +179,7 @@ if [ $step2 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python ${cfg_dir}/proc.py)
+    mean_energy_keV=$(${pythonExe} ${cfg_dir}/proc.py)
     if [ ${mean_energy_keV} -lt 3500 ]; then
 	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
     else
@@ -195,8 +195,8 @@ if [ $step3 -eq 1 ]; then
     if [ ${with_visu} -eq 1 ]; then
     	output_profile="all_details"
     fi
+    # -t "urn:snemo:demonstrator:simulation:2.2" 
     flsimulate-configure --no-gui \
-			 -t "urn:snemo:demonstrator:simulation:2.2" \
 			 -s "vertexes:generator=free_spot" \
 			 -s "vertexes:generator/if_free_spot/x=20 cm" \
 			 -s "vertexes:generator/if_free_spot/y=10 cm" \
@@ -230,7 +230,7 @@ if [ $step3 -eq 1 ]; then
     grep --after-context=42 "<first>calo</first>" ${FLWORKDIR}/feature-pr75-validation.xml | \
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
-    mean_energy_keV=$(python ${cfg_dir}/proc.py)
+    mean_energy_keV=$(${pythonExe} ${cfg_dir}/proc.py)
     echo >&2 "[info] 'calo' mean energy = ${mean_energy_keV} keV"
     if [ ${mean_energy_keV} -lt 9000 ]; then
 	echo >&2 "[warning] flsimulate output file does not record enough energy in 'calo' hits!"

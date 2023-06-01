@@ -28,6 +28,7 @@ add_test(NAME testSimRC_simulate
   -c ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simu.conf
   -o testSimRC-sd.brio
   -m testSimRC-simulate-meta.xml
+  -N 100
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 
@@ -39,7 +40,7 @@ add_test(NAME testSimRC_simulate2
   -m testSimRC-simulate-meta2.xml
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
- 
+
 # - Apply RC then reconstruct
 add_test(NAME testSimRC_simrc
   COMMAND flreconstruct

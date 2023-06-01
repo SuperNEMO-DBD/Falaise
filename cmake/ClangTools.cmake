@@ -84,6 +84,7 @@ find_program(clangformat_EXECUTABLE
   )
 
 function(target_clang_format _targetname)
+  #message(STATUS "target_clang_format: _targetname='${_targetname}'")
   if(clangformat_EXECUTABLE)
     if(NOT TARGET ${_targetname})
       message(FATAL_ERROR "target_clang_format should only be called on targets (got " ${_targetname} ")")
@@ -92,21 +93,36 @@ function(target_clang_format _targetname)
     # figure out which sources this should be applied to
     get_target_property(_clang_sources ${_targetname} SOURCES)
     get_target_property(_builddir ${_targetname} BINARY_DIR)
-
+    #message(STATUS "target_clang_format: _clang_sources='${_clang_sources}'")
     # [TEMP] Filter out any "*.in" files because these are templates
     # and may have characters/strings that are incorrectly formatted.
     # It's TEMP, because strictly speaking the template file shouldn't
     # appear in the source list, only the generated file should.
     string(REGEX REPLACE ";?[^;]*\\.in;?" ";" _clang_sources "${_clang_sources}")
     string(REGEX REPLACE "^;|;$" "" _clang_sources "${_clang_sources}")
+    #message(STATUS "target_clang_format: ========================================")
+    #message(STATUS "target_clang_format: _clang_sources='${_clang_sources}'")
+    # if ("${_targetname}" STREQUAL "Falaise")
+    #   message(STATUS "target_clang_format: stop for Falaise")
+    #   return()
+    # endif()
 
     set(_sources "")
     foreach(_source ${_clang_sources})
       if(NOT TARGET ${_source})
+	#message(STATUS "target_clang_format: _source='${_source}'")
         get_filename_component(_source_file ${_source} NAME)
+	# 2022-11-29 FM : Fix target_clang_format was broken:
+	# It wa not able to handle some files with same basename but different paths.
+	# Example: 'snemo/geometry/config.h' and 'snemo/simulation/config.h'
+	# Fix: build the 'format_file' from the full path and not onkly the basename
+        get_filename_component(_source_dir  ${_source} DIRECTORY)
+	#message(STATUS "target_clang_format: _source_dir='${_source_dir}'")
+	string(REPLACE "/" "__" _source_dir "${_source_dir}")
         get_source_file_property(_clang_loc "${_source}" LOCATION)
-
-        set(_format_file ${_targetname}_${_source_file}.format)
+	
+        set(_format_file ${_targetname}_${_source_dir}_${_source_file}.format)
+	#message(STATUS "target_clang_format: _format_file='${_format_file}'")
 
         add_custom_command(OUTPUT ${_format_file}
           DEPENDS ${_source}

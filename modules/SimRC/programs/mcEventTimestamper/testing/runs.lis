@@ -1,0 +1,40 @@
+# -*- mode: conf-unix; -*-
+
+#@description SuperNEMO fake list of runs for the first half of 2022
+#@key_label  "run"
+#@meta_label "type"
+
+##############################################
+[run="2201" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-01-01 00:00:00/2023-02-01 00:00:00)"
+number_of_events : integer = 10000
+
+##############################################
+[run="2202" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-02-01 00:00:00/2023-03-01 00:00:00)"
+number_of_events : integer = 10000
+
+##############################################
+[run="2203" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-03-01 00:00:00/2023-04-01 00:00:00)"
+number_of_events : integer = 10000
+number_of_breaks : integer = 2
+break_0.period : string = "[2023-03-05 00:00:00/2023-03-10 00:00:00)"
+break_1.period : string = "[2023-03-21 12:00:00/2023-03-25 00:00:00)"
+
+##############################################
+[run="2204" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-04-01 00:00:00/2023-05-01 00:00:00)"
+number_of_events : integer = 10000
+
+##############################################
+[run="2205" type="snemo::rc::run_description"]
+category : string = "production"
+period : string = "[2023-05-01 00:00:00/2023-06-01 00:00:00)"
+number_of_events : integer = 10000
+
+# end

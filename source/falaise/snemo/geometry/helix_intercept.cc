@@ -123,7 +123,7 @@ namespace snemo {
       } else {
         DT_LOG_DEBUG(_verbosity_, "From 'last' point");
       }
-      int      deltaTFactor = 1;
+      int deltaTFactor = 1;
       uint16_t niters = 0;
       geomtools::face_intercept_info shapeFii;
       geomtools::vector_3d shapeLastImpact;
@@ -137,7 +137,7 @@ namespace snemo {
         double deltaT = initDeltaT / deltaTFactor;
         DT_LOG_DEBUG(_verbosity_, "  deltaT = " << deltaT);
         bool stepFront = true;
-        geomtools::vector_3d refPoint     = _helix_.get_point(currentT);
+        geomtools::vector_3d refPoint = _helix_.get_point(currentT);
         geomtools::vector_3d refPostPoint = _helix_.get_point(currentT + deltaT);
         geomtools::vector_3d direction = (refPostPoint - refPoint).unit();
         // Work in the shape reference frame
@@ -158,7 +158,7 @@ namespace snemo {
           double impactDist = (shapeImpact - shapeRefPoint).mag();
           DT_LOG_DEBUG(_verbosity_, "  impactDist = " << impactDist / CLHEP::mm << " mm");
           if (impactDist <= _step_ / deltaTFactor) {
-            // We found a possible region of interest for the intercept
+            // We found a possible region of interest for the intercept:
             DT_LOG_DEBUG(_verbosity_, "  ... which is in the region of interest");
             stepFront = false;
             if (geomtools::is_valid(shapeLastImpact)) {
@@ -171,10 +171,10 @@ namespace snemo {
                 break;
               }
             }
-            // Memorizing the impact
+            // Memorizing the impact:
             shapeLastImpact = shapeImpact;
           } else {
-            DT_LOG_DEBUG(_verbosity_, "  ... but it is too far from the starting point");
+            DT_LOG_DEBUG(_verbosity_, "  ... but it is too far from the starting point to be validated");
             shapeLastImpact = shapeImpact;
           }
         } else {
@@ -199,6 +199,7 @@ namespace snemo {
           DT_LOG_DEBUG(_verbosity_, "  Restep with a reduced step...");
           deltaTFactor *= 2;
           shapeFii.reset();
+          // We forget the previous found impact (likely an artefact)
           if (geomtools::is_valid(shapeLastImpact)) {
             geomtools::invalidate(shapeLastImpact);
           }

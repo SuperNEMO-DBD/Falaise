@@ -77,9 +77,9 @@ namespace snemo {
       DT_THROW(std::logic_error, "No kink!");
     }
  
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 /*
 ** Local Variables: --

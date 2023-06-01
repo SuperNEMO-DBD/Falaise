@@ -414,7 +414,7 @@ void line_fit_mgr::init(const datatools::properties &config_) {
   // enabled by default
   bool is_cluster_delayed = true;
   for (const auto &a_hit : *_hits_) {
-    if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
+    if (a_hit.is_prompt()) {
       is_cluster_delayed = false;
       break;
     }
@@ -761,7 +761,7 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
 
   double drift_distance = param.ri * CLHEP::mm;
   double sigma_drift_distance = param.dri * CLHEP::mm;
-  // 2012-11-15 XG: if a isolated cell is delayed
+  // 2012-11-15 XG: if an isolated cell is delayed
   // i.e. 'drift_distance' is invalid then force the
   // 'drift_distance' value to rmax and 'sigma_drift_distance' to be
   // large enough : the cell weight is then pretty small
@@ -1198,7 +1198,7 @@ void line_fit_mgr::guess_utils::initialize(const datatools::properties &config_)
   if (config_.has_flag("use_max_radius")) {
     _use_max_radius_ = true;
     if (config_.has_key("max_radius_factor")) {
-      _max_radius_factor_ = config_.fetch_real("guess.max_radius_factor");
+      _max_radius_factor_ = config_.fetch_real("max_radius_factor");
     }
   }
 
@@ -1234,7 +1234,7 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
   // Check if the cluster is or not delayed
   bool is_cluster_delayed = true;
   for (const auto &a_hit : hits_) {
-    if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
+    if (a_hit.is_prompt()) {
       is_cluster_delayed = false;
       break;
     }

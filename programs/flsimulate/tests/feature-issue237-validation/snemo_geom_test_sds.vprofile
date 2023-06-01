@@ -22,6 +22,7 @@ layout/if_basic/source_calibration/is_active/type/if_sds/track4 = false
 layout/if_basic/source_calibration/is_active/type/if_sds/track5 = true
 layout/if_basic/shielding = true
 calo_film_thickness = 25 um
+tracking_gas_material = "Nemo3"
 
 [registry="vertexes"]
 generator = "sds_bi207_calibration_source_all_tracks"

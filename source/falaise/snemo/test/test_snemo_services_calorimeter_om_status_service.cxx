@@ -8,6 +8,7 @@
 
 // This project:
 #include <falaise/snemo/services/calorimeter_om_status_service.h>
+#include <falaise/snemo/geometry/config.h>
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/falaise.h>
 
@@ -38,7 +39,7 @@ void test1()
   std::clog << "\nTest 1:\n";
  
   geomtools::manager geoMgr;
-  std::string geoMgrConfigFile("@falaise:snemo/demonstrator/geometry/GeometryManager.conf");
+  std::string geoMgrConfigFile(snemo::geometry::default_geometry_tag());
   datatools::fetch_path_with_env(geoMgrConfigFile);
   datatools::properties geoMgrConfig;
   geoMgrConfig.read_configuration(geoMgrConfigFile);
@@ -54,6 +55,7 @@ void test1()
   omService.set_geometry_manager(geoMgr);
   omService.set_logging_priority(datatools::logger::PRIO_DEBUG);
   omService.initialize_standalone(omServiceConfig);
+  omService.print_tree(std::clog);
 
   // const snemo::rc::calorimeter_om_status_history & omStatusHistory =
   //   omService.get_om_history(gid);

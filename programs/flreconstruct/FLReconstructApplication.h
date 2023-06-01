@@ -22,11 +22,12 @@
 
 namespace FLReconstruct {
 
-struct FLReconstructApplication
-{
-  FLReconstructParams parameters;
-  datatools::configuration::variant_service variantService;
-};
+  /// \brief Struct handling both the static parameters of the reconstruction and the variant service
+  struct FLReconstructApplication
+  {
+    FLReconstructParams parameters; ///< Parameters
+    datatools::configuration::variant_service variantService; ///< Variant service
+  };
 
 } // namespace FLReconstruct
 

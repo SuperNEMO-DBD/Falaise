@@ -11,6 +11,16 @@ const std::string& service_info::metadataServiceName() {
   return lbl;
 }
 
+const std::string& service_info::contextServiceName() {
+  static std::string lbl("context");
+  return lbl;
+}
+
+const std::string& service_info::runInfoServiceName() {
+  static std::string lbl("runInfo");
+  return lbl;
+}
+
 const std::string& service_info::geometryServiceName() {
   static std::string lbl("geometry");
   return lbl;

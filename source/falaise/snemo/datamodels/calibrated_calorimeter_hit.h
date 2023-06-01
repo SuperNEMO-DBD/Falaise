@@ -9,8 +9,6 @@
  * Description:
  *   Calibrated calorimeter hit
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_DATAMODELS_CALIBRATED_CALORIMETER_HIT_H
@@ -39,65 +37,68 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief Model of a calibrated calorimeter hit
-class calibrated_calorimeter_hit : public geomtools::base_hit {
- public:
-  /// Return the time associated to the hit
-  double get_time() const;
+    /// \brief Model of a calibrated calorimeter hit
+    class calibrated_calorimeter_hit : public geomtools::base_hit {
+    public:
+      /// Return the time associated to the hit
+      double get_time() const;
 
-  /// Set the time associated to the hit
-  void set_time(double);
+      /// Set the time associated to the hit
+      void set_time(double);
 
-  /// Return the error on the time associated to the hit
-  double get_sigma_time() const;
+      /// Return the error on the time associated to the hit
+      double get_sigma_time() const;
 
-  /// Set the error on the time associated to the hit
-  void set_sigma_time(double);
+      /// Set the error on the time associated to the hit
+      void set_sigma_time(double);
 
-  /// Return the energy associated to the hit
-  double get_energy() const;
+      /// Return the energy associated to the hit
+      double get_energy() const;
 
-  /// Set the energy associated to the hit
-  void set_energy(double);
+      /// Set the energy associated to the hit
+      void set_energy(double);
 
-  /// Return the error on the energy associated to the hit
-  double get_sigma_energy() const;
+      /// Return the error on the energy associated to the hit
+      double get_sigma_energy() const;
 
-  /// Set the error on the energy associated to the hit
-  void set_sigma_energy(double);
+      /// Set the error on the energy associated to the hit
+      void set_sigma_energy(double);
 
-  /// Check if the internal data of the hit are valid
-  bool is_valid() const override;
+      /// Check if the internal data of the hit are valid
+      bool is_valid() const override;
 
-  /// Invalidate the internal data of hit
-  void invalidate() override;
+      /// Invalidate the internal data of hit
+      void invalidate() override;
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+      /// Smart print
+      virtual void print_tree(std::ostream & out_ = std::clog,
+                              const boost::property_tree::ptree & options_
+                              /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
- private:
-  double energy_{datatools::invalid_real()};        //!< Energy associated to the hit
-  double sigma_energy_{datatools::invalid_real()};  //!< Error on the energy associated to the hit
-  double time_{datatools::invalid_real()};          //!< Time associated to the hit
-  double sigma_time_{datatools::invalid_real()};    //!< Error on the time associated to the hit
+    private:
+      double energy_{datatools::invalid_real()};        //!< Energy associated to the hit
+      double sigma_energy_{datatools::invalid_real()};  //!< Error on the energy associated to the hit
+      double time_{datatools::invalid_real()};          //!< Time associated to the hit
+      double sigma_time_{datatools::invalid_real()};    //!< Error on the time associated to the hit
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+      DATATOOLS_SERIALIZATION_DECLARATION()
+    };
 
-/// Handle of calibrated calorimeter hit
-// typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
-/// Collection of handles of calibrated calorimeter hit
-// typedef std::vector<handle_type> collection_type;
-using CalorimeterHit = calibrated_calorimeter_hit;
-using CalorimeterHitCollection = std::vector<CalorimeterHit>;
+    /// Handle of calibrated calorimeter hit
+    // typedef datatools::handle<calibrated_calorimeter_hit> handle_type;
+    /// Collection of handles of calibrated calorimeter hit
+    // typedef std::vector<handle_type> collection_type;
+    using CalorimeterHit = calibrated_calorimeter_hit;
+    using CalorimeterHitCollection = std::vector<CalorimeterHit>;
 
-using CalorimeterHitHdl = datatools::handle<CalorimeterHit>;
-using CalorimeterHitHdlCollection = std::vector<CalorimeterHitHdl>;
+    using CalorimeterHitHdl = datatools::handle<CalorimeterHit>;
+    using CalorimeterHitHdlCollection = std::vector<CalorimeterHitHdl>;
+    using ConstCalorimeterHitHdl = datatools::handle<const CalorimeterHit>;
+    using ConstCalorimeterHitHdlCollection = std::vector<ConstCalorimeterHitHdl>;
 
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

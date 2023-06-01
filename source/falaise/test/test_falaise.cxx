@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
 
     std::clog << "Falaise version : " << falaise::version::get_version() << std::endl;
     std::clog << "Falaise resource dir : '" << falaise::get_resource_dir() << "'" << std::endl;
-    std::clog << "Falaise resource file : '" << falaise::get_resource("urn_db.conf") << "'"
+    std::clog << "Falaise resource file : '" << falaise::get_resource("urn/urn_db.conf") << "'"
               << std::endl;
 
     std::clog << "The end." << std::endl;

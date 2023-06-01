@@ -86,7 +86,7 @@ bool LinearRegression::fit(void) {
   if (Swxx / delta > 0.) {
     erra = std::sqrt(Swxx / delta);
   } else {
-    if (print_level() >= mybhep::NORMAL) {
+    if (print_level() > mybhep::NORMAL) {
       std::clog << "CAT::LinearRegression::fit: problem: linear regression sy02 " << Swxx / delta
                 << " Swxx " << Swxx << " delta " << delta << std::endl;
     }
@@ -96,7 +96,7 @@ bool LinearRegression::fit(void) {
   if (Sw / delta > 0.) {
     errb = std::sqrt(Sw / delta);
   } else {
-    if (print_level() >= mybhep::NORMAL) {
+    if (print_level() > mybhep::NORMAL) {
       std::clog << "CAT::LinearRegression::fit: problem: linear regression stangent2 " << Sw / delta
                 << " Sw " << Sw << " delta " << delta << std::endl;
     }

@@ -56,39 +56,38 @@
 
 namespace snemo {
 
-namespace visualization {
+  namespace visualization {
 
-namespace utils {
+    namespace utils {
 
-template <typename T>
-class singleton {
- public:
-  static T& get_instance() {
-    static T instance;
-    return instance;
-  }
+      template <typename T>
+      class singleton {
+      public:
+        static T& get_instance() {
+          static T instance;
+          return instance;
+        }
 
- protected:
-  // derived class can call ctor and dtor
-  singleton() {}
+      protected:
+        // derived class can call ctor and dtor
+        singleton() {}
 
-  ~singleton() {}
+        ~singleton() {}
 
- private:
-  // no one should do copies
-  singleton(const singleton&);
-  singleton& operator=(const singleton&);
-};
+      private:
+        // no one should do copies
+        singleton(const singleton&);
+        singleton& operator=(const singleton&);
+      };
 
-}  // end of namespace utils
+    }  // end of namespace utils
 
-}  // end of namespace visualization
+  }  // end of namespace visualization
 
 }  // end of namespace snemo
 
 #endif  // FALAISE_SNEMO_VISUALIZATION_UTILS_SINGLETON_H
 
-// end of singleton.h
 /*
 ** Local Variables: --
 ** mode: c++ --

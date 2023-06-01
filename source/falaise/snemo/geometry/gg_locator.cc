@@ -495,7 +495,7 @@ bool gg_locator::isWorldPointInModule(const geomtools::vector_3d &worldPoint,
 bool gg_locator::find_geom_id(const geomtools::vector_3d &worldPoint, int type,
                               geomtools::geom_id &gid, double tolerance) const {
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-  logging = datatools::logger::PRIO_DEBUG;
+  // logging = datatools::logger::PRIO_DEBUG;
   DT_THROW_IF(type != (int)cellGIDType_, std::logic_error, "Only works with type " << cellGIDType_);
   gid.invalidate();
   DT_LOG_DEBUG(logging, "worldPoint = " << worldPoint);

@@ -27,12 +27,12 @@ namespace snemo {
       return;
     }
 
-    bool run_list::has_run(std::int32_t run_id_) const
+    bool run_list::has_run(const run_id_type run_id_) const
     {
       return _runs_.count(run_id_) == 1;
     }
        
-    const run_description & run_list::get_run(std::int32_t run_id_) const
+    const run_description & run_list::get_run(const run_id_type run_id_) const
     {
       const auto & found = _runs_.find(run_id_);
       DT_THROW_IF(found == _runs_.end(), std::logic_error, "No run with ID=" << run_id_ << "!");
@@ -84,7 +84,7 @@ namespace snemo {
       return -1;
     }
     
-    void run_list::build_run_ids(std::set<std::int32_t> & run_ids_) const
+    void run_list::build_run_ids(std::set<run_id_type> & run_ids_) const
     {
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       // logging = datatools::logger::PRIO_DEBUG;
@@ -127,7 +127,7 @@ namespace snemo {
 
     void run_list::_compute_number_of_events_()
     {
-      std::uint32_t noe = 0;
+      std::size_t noe = 0;
       for (const auto & rd : _runs_) {
         noe +=  rd.second.number_of_events();
       }
@@ -220,7 +220,7 @@ namespace snemo {
                       "Invalid meta '" << runMeta << "'! Should be 'snemo::rc::run_description'!");  
         }
         std::istringstream iss(runIdStr);
-        std::int32_t runId = run_description::INVALID_RUN_ID;
+        run_id_type runId = run_description::INVALID_RUN_ID;
         iss >> runId;
         const datatools::properties & runDescConfig = oe->get_properties();
         run_description runDesc;

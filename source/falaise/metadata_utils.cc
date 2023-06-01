@@ -49,22 +49,21 @@ datatools::multi_properties metadata_collector::get_metadata_from_metadata_file(
 void metadata_input::print(std::ostream& os) const {
   static const std::string tag("|-- ");
   static const std::string last_tag("`-- ");
-  os << "Input metadata of interest: " << std::endl;
-  os << tag << "userProfile           = " << userProfile << std::endl;
-  os << tag << "experimentalSetupUrn  = " << experimentalSetupUrn << std::endl;
-  os << tag << "variantConfigUrn      = " << variantConfigUrn << std::endl;
-  os << tag << "variantConfigPath     = " << variantConfigPath << std::endl;
-  os << tag << "variantProfileUrn     = " << variantProfileUrn << std::endl;
-  os << tag << "variantProfilePath    = " << variantProfilePath << std::endl;
-  os << tag << "servicesConfigUrn     = " << servicesConfigUrn << std::endl;
-  os << tag << "servicesConfigPath    = " << servicesConfigPath << std::endl;
+  os << tag << "userProfile           = '" << userProfile << "'" << std::endl;
+  os << tag << "experimentalSetupUrn  = '" << experimentalSetupUrn << "'" << std::endl;
+  os << tag << "variantConfigUrn      = '" << variantConfigUrn << "'" << std::endl;
+  os << tag << "variantConfigPath     = '" << variantConfigPath << "'" << std::endl;
+  os << tag << "variantProfileUrn     = '" << variantProfileUrn << "'" << std::endl;
+  os << tag << "variantProfilePath    = '" << variantProfilePath << "'" << std::endl;
+  os << tag << "servicesConfigUrn     = '" << servicesConfigUrn << "'" << std::endl;
+  os << tag << "servicesConfigPath    = '" << servicesConfigPath << "'" << std::endl;
   os << tag << "numberOfEvents        = " << numberOfEvents << std::endl;
   os << tag << "doSimulation          = " << std::boolalpha << doSimulation << std::endl;
-  os << tag << "simuSetupUrn          = " << simuSetupUrn << std::endl;
+  os << tag << "simuSetupUrn          = '" << simuSetupUrn << "'" << std::endl;
   os << tag << "doDigitization        = " << std::boolalpha << doDigitization << std::endl;
-  os << tag << "digiSetupUrn          = " << digiSetupUrn << std::endl;
+  os << tag << "digiSetupUrn          = '" << digiSetupUrn << "'" << std::endl;
   os << tag << "doReconstruction      = " << std::boolalpha << doReconstruction << std::endl;
-  os << last_tag << "recSetupUrn           = " << recSetupUrn << std::endl;
+  os << last_tag << "recSetupUrn           = '" << recSetupUrn << "'" << std::endl;
 }
 
 void metadata_input::scan(const datatools::multi_properties& mp) {
@@ -104,10 +103,10 @@ void metadata_input::scan(const datatools::multi_properties& mp) {
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(this->simuSetupUrn, conf_category), std::logic_error,
                   "Cannot query URN='" << this->simuSetupUrn << "'!");
       // and extract the associated 'experimentalSetupUrn':
-      const datatools::urn_info& simuSetupUrnInfo = dtkUrnQuery.get_urn_info(this->simuSetupUrn);
-      if (simuSetupUrnInfo.has_topic("expsetup") &&
-          simuSetupUrnInfo.get_components_by_topic("expsetup").size() == 1) {
-        this->experimentalSetupUrn = simuSetupUrnInfo.get_component("expsetup");
+      const datatools::urn_info & simuSetupUrnInfo = dtkUrnQuery.get_urn_info(this->simuSetupUrn);
+      if (simuSetupUrnInfo.has_topic("setup") &&
+          simuSetupUrnInfo.get_components_by_topic("setup").size() == 1) {
+        this->experimentalSetupUrn = simuSetupUrnInfo.get_component("setup");
       }
     }
     if (this->experimentalSetupUrn.empty() && !this->digiSetupUrn.empty()) {
@@ -116,10 +115,10 @@ void metadata_input::scan(const datatools::multi_properties& mp) {
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(this->digiSetupUrn, conf_category), std::logic_error,
                   "Cannot query URN='" << this->digiSetupUrn << "'!");
       // and extract the associated 'experimentalSetupUrn':
-      const datatools::urn_info& digiSetupUrnInfo = dtkUrnQuery.get_urn_info(this->digiSetupUrn);
-      if (digiSetupUrnInfo.has_topic("expsetup") &&
-          digiSetupUrnInfo.get_components_by_topic("expsetup").size() == 1) {
-        this->experimentalSetupUrn = digiSetupUrnInfo.get_component("expsetup");
+      const datatools::urn_info & digiSetupUrnInfo = dtkUrnQuery.get_urn_info(this->digiSetupUrn);
+      if (digiSetupUrnInfo.has_topic("setup") &&
+          digiSetupUrnInfo.get_components_by_topic("setup").size() == 1) {
+        this->experimentalSetupUrn = digiSetupUrnInfo.get_component("setup");
       }
     }
 
@@ -129,16 +128,18 @@ void metadata_input::scan(const datatools::multi_properties& mp) {
   if (ms.hasSection("flreconstruct", "flreconstruct::section")) {
     this->doReconstruction = true;
     ms.getString("flreconstruct", "flreconstruct::section", "userProfile", this->userProfile);
+    ms.getString("flreconstruct", "flreconstruct::section", "reconstructionSetupUrn",
+                   this->recSetupUrn);
     ms.getString("flreconstruct", "flreconstruct::section", "experimentalSetupUrn",
                    this->experimentalSetupUrn);
     ms.getSize("flreconstruct", "flreconstruct::section", "numberOfEvents", this->numberOfEvents);
 
-    // Reconstruction section:
-    if (this->doReconstruction &&
-        ms.hasSection("flreconstruct.pipeline", "flreconstruct::section")) {
-      ms.getString("flreconstruct.pipeline", "flreconstruct::section", "configUrn",
-                     this->recSetupUrn);
-    }
+    // // Reconstruction section:
+    // if (this->doReconstruction &&
+    //     ms.hasSection("flreconstruct.pipeline", "flreconstruct::section")) {
+    //   ms.getString("flreconstruct.pipeline", "flreconstruct::section", "configUrn",
+    //                  this->recSetupUrn);
+    // }
 
     // If no experimental setup identifier/URN is set:
     if (this->experimentalSetupUrn.empty() && !this->recSetupUrn.empty()) {
@@ -147,10 +148,10 @@ void metadata_input::scan(const datatools::multi_properties& mp) {
       DT_THROW_IF(!dtkUrnQuery.check_urn_info(this->recSetupUrn, conf_category), std::logic_error,
                   "Cannot query URN='" << this->recSetupUrn << "'!");
       // and extract the associated 'experimentalSetupUrn':
-      const datatools::urn_info& recSetupUrnInfo = dtkUrnQuery.get_urn_info(this->recSetupUrn);
-      if (recSetupUrnInfo.has_topic("expsetup") &&
-          recSetupUrnInfo.get_components_by_topic("expsetup").size() == 1) {
-        this->experimentalSetupUrn = recSetupUrnInfo.get_component("expsetup");
+      const datatools::urn_info & recSetupUrnInfo = dtkUrnQuery.get_urn_info(this->recSetupUrn);
+      if (recSetupUrnInfo.has_topic("setup") &&
+          recSetupUrnInfo.get_components_by_topic("setup").size() == 1) {
+        this->experimentalSetupUrn = recSetupUrnInfo.get_component("setup");
       }
     }
 

@@ -18,7 +18,6 @@ const tracker_clustering_solution& tracker_clustering_data::at(size_t index) con
 void tracker_clustering_data::push_back(const TrackerClusteringSolutionHdl& solution,
                                         bool isDefault) {
   DT_THROW_IF(!solution, std::logic_error, "Cannot store a null handle !");
-
   for (const auto& addr : solutions_) {
     DT_THROW_IF(&(*addr) == &(*solution), std::logic_error, "Duplicated solutions is not allowed!");
   }
@@ -31,12 +30,12 @@ void tracker_clustering_data::push_back(const TrackerClusteringSolutionHdl& solu
 bool tracker_clustering_data::has_default() const { return default_; }
 
 tracker_clustering_solution& tracker_clustering_data::get_default() {
-  DT_THROW_IF(empty(), std::logic_error, "No default solution is available !");
+  DT_THROW_IF(!has_default(), std::logic_error, "No default solution is available !");
   return *default_;
 }
 
 const tracker_clustering_solution& tracker_clustering_data::get_default() const {
-  DT_THROW_IF(empty(), std::logic_error, "No default solution is available !");
+  DT_THROW_IF(!has_default(), std::logic_error, "No default solution is available !");
   return *default_;
 }
 

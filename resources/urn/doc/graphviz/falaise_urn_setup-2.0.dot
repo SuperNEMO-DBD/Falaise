@@ -1,0 +1,67 @@
+subgraph clusterUrn_Setup {
+  label="Setup";
+  fontname="bold";
+  bgcolor="lightyellow"; 
+
+  subgraph clusterUrn_Setup_Variants_Service_2_0 {
+    label="Setup Variants Service";
+    bgcolor="white"; 
+ 		
+    /*********************************************************************/
+    Setup_Variants_Service_2_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"       bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:setup:variants:service:2.0</td></tr>
+      <tr><td                   bgcolor="lightgrey"  align="left"  >category: varservice</td></tr>
+      <tr><td PORT="VARREG"                          align="right" >registries : varegistry*</td></tr>
+      <tr><td PORT="VARPROFS"                        align="right" >profiles : varprofile*</td></tr>
+      <tr><td PORT="DEFVARPROF"                      align="right" >defprofile : varprofile</td></tr>
+      <tr><td PORT="PATH"       bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+  }; 
+
+  subgraph clusterUrn_Setup_Config_2_0 {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+ 
+    /*********************************************************************/
+    Setup_2_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:setup:2.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category : expsetup</td></tr>
+      <tr><td PORT="VARIANTS"                    align="right" >variants : varservice*</td></tr>
+      <tr><td PORT="GEOMETRY"                    align="right" >geometry : geomsetup</td></tr>
+   </table>
+    >; ];
+
+  };
+  // <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+ 
+  subgraph clusterUrn_Setup_Services_2_0 {
+    fontname="bold";
+    label="Services";
+    bgcolor="white"; 
+
+    /***********************************************************************/
+    Setup_2_0_Services [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:setup:2.0:services</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category : services</td></tr>
+      <tr><td PORT="GEOMETRY"                  align="right" >geometry : geomsetup</td></tr>
+      <tr><td PORT="PATH" bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+  };
+
+  Setup_2_0_Services:GEOMETRY -> Setup_2_0:MAIN [style="filled"];
+
+};
+     
+Setup_Variants_Service_2_0:VARREG     -> Geometry_Variants_2_0:MAIN;
+Setup_Variants_Service_2_0:VARPROFS   -> Geometry_Variants_Service_2_0_Profile_1:MAIN;
+Setup_Variants_Service_2_0:DEFVARPROF -> Geometry_Variants_Service_2_0_DefProfile:MAIN;
+Setup_2_0:VARIANTS                    -> Setup_Variants_Service_2_0:MAIN[ color="magenta"; ];
+Setup_2_0:GEOMETRY                    -> Geometry_5_0:MAIN;
+Setup_2_0_Services:GEOMETRY           -> Geometry_5_0:MAIN;

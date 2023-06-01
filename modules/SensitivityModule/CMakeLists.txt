@@ -36,7 +36,7 @@ add_test(NAME testSensitivityModule_simulate
   )
 # - Reconstruct
 add_test(NAME testSensitivityModule_reconstruct
-  COMMAND flreconstruct -i test-simulate.brio -p urn:snemo:demonstrator:reconstruction:1.0.0 -o test-reconstruct.brio
+  COMMAND flreconstruct -i test-simulate.brio -p urn:snemo:demonstrator:reconstruction:3.0:config:default -o test-reconstruct.brio
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 set_tests_properties(testSensitivityModule_reconstruct

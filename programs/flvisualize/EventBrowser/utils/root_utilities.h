@@ -27,8 +27,6 @@
  * Few useful function to ease the conversion between
  * human format and ROOT conventions
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H
@@ -45,13 +43,15 @@
 // - Bayeux/geomtools:
 #include <geomtools/clhep.h>
 
+#include <EventBrowser/view/utils.h>
+
 // Forward declaration
 namespace datatools {
-class properties;
+	class properties;
 }
 
 namespace geomtools {
-class i_shape_3d;
+	class i_shape_3d;
 }
 
 class TCanvas;
@@ -59,97 +59,97 @@ class TGeoShape;
 
 namespace snemo {
 
-namespace visualization {
+	namespace visualization {
 
-namespace utils {
+		namespace utils {
 
-class root_utilities {
- public:
-  class TLatex3D : public TLatex {
-   public:
-    TLatex3D();
-    virtual ~TLatex3D();
+			class root_utilities {
+			public:
+				class TLatex3D : public TLatex {
+				public:
+					TLatex3D();
+					virtual ~TLatex3D();
 
-    virtual bool IsEqual(const TObject* object_) const;
+					virtual bool IsEqual(const TObject* object_) const;
 
-    void SetX(const double x_) { _x_ = x_; }
-    void SetY(const double y_) { _y_ = y_; }
-    void SetZ(const double z_) { _z_ = z_; }
+					void SetX(const double x_) { _x_ = x_; }
+					void SetY(const double y_) { _y_ = y_; }
+					void SetZ(const double z_) { _z_ = z_; }
 
-    using TText::SetText;
-    void SetText(const std::string& text_);
-    std::string GetText() const { return _text_; }
+					using TText::SetText;
+					void SetText(const std::string& text_);
+					std::string GetText() const { return _text_; }
 
-    void SetPadCoordinates(const double x_, const double y_);
+					void SetPadCoordinates(const double x_, const double y_);
 
-    double GetX() const { return _x_; }
-    double GetY() const { return _y_; }
-    double GetZ() const { return _z_; }
+					double GetX() const { return _x_; }
+					double GetY() const { return _y_; }
+					double GetZ() const { return _z_; }
 
-   private:
-    double _x_;
-    double _y_;
-    double _z_;
-    std::string _text_;
-  };
+				private:
+					double _x_;
+					double _y_;
+					double _z_;
+					std::string _text_;
+				};
 
- public:
-  static bool g_initialized;
-  static size_t g_geo_id;
+			public:
+				static bool g_initialized;
+				static size_t g_geo_id;
 
-  /// Convert property into ROOT line style
-  static unsigned int get_line_style(const std::string& key_,
-                                     const datatools::properties& property_);
+				/// Convert property into ROOT line style
+				static unsigned int get_line_style(const std::string& key_,
+																					 const datatools::properties& property_);
 
-  /// Convert property into ROOT color value
-  static unsigned int get_color_value(const std::string& key_,
-                                      const datatools::properties& property_);
+				/// Convert property into ROOT color value
+				static unsigned int get_color_value(const std::string& key_,
+																						const datatools::properties& property_);
 
-  /// Get ROOT color id from a string
-  static unsigned int get_color_value(const std::string& color_);
+				/// Get ROOT color id from a string
+				static unsigned int get_color_value(const std::string& color_);
 
-  /// Get a random color registered into ROOT color system
-  static unsigned int get_random_color();
+				/// Get a random color registered into ROOT color system
+				static unsigned int get_random_color();
 
-  /// Get ROOT color id for a fading color
-  static unsigned int get_fade_color_from(const unsigned int color_, const double ratio);
+				/// Get ROOT color id for a fading color
+				static unsigned int get_fade_color_from(const unsigned int color_, const double ratio);
 
-  /// Get color as hexadecimal string
-  static std::string get_hex_color(const unsigned int color_);
+				/// Get color as hexadecimal string
+				static std::string get_hex_color(const unsigned int color_);
 
-  /// Write RGB color into stream
-  static void write_rgb_color(std::ostream& out_, const unsigned int color_);
+				/// Write RGB color into stream
+				static void write_rgb_color(std::ostream& out_, const unsigned int color_);
 
-  /// Update output stream with an adapted time information
-  static void get_prettified_time(std::ostream& out_, const double time_,
-                                  const double sigma_ = datatools::invalid_real(),
-                                  const bool latex_ = false);
+				/// Update output stream with an adapted time information
+				static void get_prettified_time(std::ostream& out_, const double time_,
+																				const double sigma_ = datatools::invalid_real(),
+																				const bool latex_ = false);
 
-  /// Update output stream with an adapted energy information
-  static void get_prettified_energy(std::ostream& out_, const double energy_,
-                                    const double sigma_ = datatools::invalid_real(),
-                                    const bool latex_ = false);
+				/// Update output stream with an adapted energy information
+				static void get_prettified_energy(std::ostream& out_, const double energy_,
+																					const double sigma_ = datatools::invalid_real(),
+																					const bool latex_ = false);
 
-  /// Utility to emulate 'Save as' panel
-  static bool save_view_as(TCanvas* canvas_ = 0, const std::string& filename_ = "");
+				/// Utility to emulate 'Save as' panel
+				static bool save_view_as(TCanvas* canvas_ = 0, const std::string& filename_ = "");
 
-  /// Deconvolve geomtools shape into ROOT geo shape
-  static TGeoShape* get_geo_shape(const geomtools::i_shape_3d& shape_3d_);
+				/// Deconvolve geomtools shape into ROOT geo shape
+				static TGeoShape* get_geo_shape(const geomtools::i_shape_3d& shape_3d_);
 
-  /// Generate unique geometry model name
-  static std::string get_unique_geo_name();
+				/// Generate unique geometry model name
+				static std::string get_unique_geo_name();
 
-  /// Convert 'i_wires_3d_rendering' function into a set of ROOT TPolyLine
-  static TObjArray* wires_to_root_draw(const geomtools::vector_3d& position_,
-                                       const geomtools::rotation_3d& rotation_,
-                                       const geomtools::i_shape_3d& shape_);
-};
+				/// Convert 'i_wires_3d_rendering' function into a set of ROOT TPolyLine
+				static TObjArray* wires_to_root_draw(const geomtools::vector_3d& position_,
+																						 const geomtools::rotation_3d& rotation_,
+																						 const geomtools::i_shape_3d& shape_);
+			};
 
-}  // end of namespace utils
+		} // end of namespace utils
 
-}  // end of namespace visualization
+	} // end of namespace visualization
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #endif  // FALAISE_SNEMO_VISUALIZATION_UTILS_ROOT_UTILITIES_H
 

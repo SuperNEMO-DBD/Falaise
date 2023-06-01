@@ -20,6 +20,7 @@ add_test(NAME testLTTC_simulate
   -c ${CMAKE_CURRENT_SOURCE_DIR}/simu.conf
   -o testLTTC-sd.brio
   -m testLTTC-simulate-meta.xml
+  -N 100
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
  

@@ -1,0 +1,74 @@
+subgraph clusterUrn_Vertex {
+  label="Vertex";
+  fontname="bold";
+  bgcolor="lightyellow"; 
+
+  subgraph clusterUrn_Vertex_Variants_1_0 {
+    fontname="bold";
+    label="Variants";
+    bgcolor="white"; 
+		
+    /**************************************************/
+    Vertex_Variants_1_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:vertex:variants:1.0</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category: varregistry</td></tr>
+      <tr><td PORT="PATH" bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+  };
+
+  subgraph clusterUrn_Vertex_Variants_Service_1_0 {
+    label="Vertex Variants Service";
+    bgcolor="white"; 
+   
+    Vertex_Variants_Service_1_0_GDM [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN" bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:vertex:variants:service:1.0:gdm</td></tr>
+      <tr><td             bgcolor="lightgrey"  align="left"  >category: vargdm</td></tr>
+      <tr><td PORT="PATH" bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+		
+    /**************************************************/
+    Vertex_Variants_Service_1_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"       bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:vertex:variants:service:1.0</td></tr>
+      <tr><td                   bgcolor="lightgrey"  align="left"  >category: varservice</td></tr>
+      <tr><td PORT="VARREG"                          align="right" >registries : varregistry*</td></tr>
+      <tr><td PORT="VARPROFS"                        align="right" >profiles : varprofile*</td></tr>
+      <tr><td PORT="DEFVARPROF"                      align="right" >defprofile : varprofile</td></tr>
+      <tr><td PORT="VARGDM"                          align="right" >gdm : vargdm</td></tr>
+      <tr><td PORT="PATH"       bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+    Vertex_Variants_Service_1_0:VARGDM -> Vertex_Variants_Service_1_0_GDM:MAIN;
+  
+  };
+    
+  Vertex_Variants_Service_1_0:VARREG -> Vertex_Variants_1_0:MAIN;
+  
+  subgraph clusterUrn_Vertex_Config_5_0 {
+    fontname="bold";
+    label="Configuration";
+    bgcolor="white"; 
+
+    /**************************************************/
+    Vertex_5_0 [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+      <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:snemo:demonstrator:vertex:5.0</td></tr>
+      <tr><td               bgcolor="lightgrey"  align="left"  >category: vertexsetup</td></tr>
+      <tr><td PORT="VARIANTS"                    align="right" >variants   : varservice*</td></tr>
+      <tr><td PORT="GEOMSETUP"                   align="right" >geometry   : geomsetup</td></tr>
+      <tr><td PORT="PATH"   bgcolor="lightgreen" align="right" >path</td></tr>
+    </table>
+    >; ];
+
+  };
+      
+  Vertex_5_0:VARIANTS                -> Vertex_Variants_Service_1_0:MAIN[ color="magenta"; ];
+
+};
+
+Vertex_5_0:GEOMSETUP    -> Geometry_5_0:MAIN;

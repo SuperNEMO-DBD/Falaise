@@ -4,17 +4,6 @@ Falaise Resource Files
 This directory contains the tree of configuration files for simualtion
 and reconstruction. It is organized as follows:
 
-genbb
------
-
-Definitions of Bayeux/GenBB event generators. These only describe
-the particles/kinematics rather than vertices. Definitions are
-organized into files based on an overall category such as Double Beta,
-Backgrouns, Calibration and Generic.
-
-It also provides generators than can be modified using the Bayeux
-"variants" system.
-
 
 geometry
 --------
@@ -37,15 +26,18 @@ detector.
 
 - snemo/demonstrator/geometry
   - full Bayeux/geomtools model for the detector
-- snemo/demonstrator/reconstruction
-  - current flreconstruct pipelines for reconstruction
-- snemo/demonstrator/vertexes
+- snemo/demonstrator/setup
+  - model of the experimental setup (depends on geometry model)
+- snemo/demonstrator/decays
+- snemo/demonstrator/vertex
   - Bayeux/genvtx definitions for vertex generation in the detector
   - Effectively coupled to snemo/demonstrator/geometry
-- snemo/demonstrator/geant4_control
+- snemo/demonstrator/simulation
   - Geant4 configuration for the detector, used in flsimulate
-  - Uses geometry, vertexes, genbb and materials either directly
+  - Uses geometry, vertexes, decays and materials either directly
     or via other clients using them.
+- snemo/demonstrator/reconstruction
+  - current flreconstruct pipelines for reconstruction
 
 urn
 ---

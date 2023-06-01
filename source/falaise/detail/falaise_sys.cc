@@ -191,8 +191,8 @@ void falaise_sys::_libinfo_deregistration_() {
 
 void falaise_sys::_initialize_urn_services_() {
   // Currently, path to these are hardcoded...
-  std::string urn_db_conf_file = "@falaise:urn_db.conf";
-  std::string urn_resolver_conf_file = "@falaise:urn_resolver.conf";
+  std::string urn_db_conf_file       = "@falaise:urn/urn_db.conf";
+  std::string urn_resolver_conf_file = "@falaise:urn/urn_resolver.conf";
 
   // Activate an URN info DB service:
   auto &urnSetupDb = dynamic_cast<datatools::urn_db_service &>(

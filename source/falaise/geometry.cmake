@@ -13,6 +13,8 @@ list(APPEND FalaiseLibrary_HEADERS
   geometry/translated_curve2.hh
   geometry/rotated_curve2.hh
   geometry/kinked_curve2.hh
+  geometry/helix_utils.hh
+  geometry/line_utils.hh
   )
 
 
@@ -28,6 +30,8 @@ list(APPEND FalaiseLibrary_SOURCES
   geometry/translated_curve2.cc
   geometry/rotated_curve2.cc
   geometry/kinked_curve2.cc
+  geometry/helix_utils.cc
+  geometry/line_utils.cc
   )
 
 list(APPEND FalaiseLibrary_TESTS

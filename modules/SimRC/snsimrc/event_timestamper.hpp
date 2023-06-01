@@ -11,12 +11,12 @@
 #include <bayeux/geomtools/manager.h>
 
 // Falaise:
-// #include <falaise/snemo/services/tracker_cell_status_service.h>
 #include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/rc/run_list.h>
 #include <falaise/snemo/physics_model/activity_model_factory.h>
 #include <falaise/snemo/rc/run_statistics.h>
 #include <falaise/snemo/rc/mc_event_distribution.h>
+#include <falaise/snemo/services/run_info_service.h>
 
 namespace snemo {
 
@@ -34,6 +34,8 @@ namespace snemo {
     public:
 
       event_timestamper();
+
+      void set_run_info_service(const snemo::run_info_service & run_info_svr_);
 
       bool is_initialized() const;
 
@@ -66,13 +68,13 @@ namespace snemo {
        *
        *   Seed for the random sampling of event timestamps:
        *     random_seed : integer = 314159
-       *   If 'random_seed' equals 0, then the algorithm uses a regular probability 
+       *   If 'random_seed' equals 0 or is not set, then the algorithm uses a regular probability 
        *   sampling using the cumulative distribution tabulated function computed from 
        *   the statistics of the runs.
        *
        *   Timestamp reuse factor:
        *     timestamp_reuse_factor : integer = 100
-       *   The property allows to reuse the same sampled run_id/timestamp pair for several simulated events
+       *   The property allows to reuse the same sampled run_id/timestamp pairs for several simulated events
        *   up to an occurence of 'timestamp_reuse_factor'. This is useful if the number of sampled timestamps 
        *   is lower than the requested number of events. 
        *
@@ -84,18 +86,21 @@ namespace snemo {
       /// Main method to enrich an *event header* bank with a run ID and an event timestamp
       void process(snemo::datamodel::event_header & eh_);
 
-      snemo::rc::mc_event_distribution & mcEventDistribution();
+      snemo::rc::mc_event_distribution & mc_event_distribution();
 
       const snemo::rc::run_list & run_list() const;
       
     private:
+
+      const snemo::rc::run_list & _run_list_() const;
 
       // Management:
       bool _initialized_ = false; ///< Initialization flag
       datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL; ///< Verbosity
 
       // Configuration:
-      std::unique_ptr<snemo::rc::run_list> _runList_; ///< The list of runs
+      const snemo::run_info_service * _runInfos_ = nullptr; ///< The 'run info' service
+      std::unique_ptr<snemo::rc::run_list> _runList_; ///< The local list of runs if no 'run info' service is used
       snemo::physics_model::activity_model_factory _actModelFactory_; ///< The factory for activity models
       snemo::physics_model::activity_model_ptr_type _mcActivityModel_; ///< The selected activity model
       std::unique_ptr<snemo::rc::run_statistics> _mcRunStatistics_; ///< Statistics data computed from the models above

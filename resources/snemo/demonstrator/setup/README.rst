@@ -1,18 +1,21 @@
-================================
-SuperNEMO Demonstrator setup
-================================
+=============================================
+SuperNEMO Demonstrator setup configuration
+=============================================
 
-This experimental setup model is built on top of
-a single core service, namely a *geometry* service.
+This experimental setup  model is built on top of  core services, like
+the *geometry*  service.  It could  be completed with an *electronics*
+service.
 
 Files:
 
 * ``README.rst`` : This file.
-* ``variants.conf`` : Configuration of variant service.
-* ``services.conf`` : Configuration of the service manager.
+* ``variants/`` : Configuration of variant service.
+* ``2.0/SetupServices.conf``  :  Configuration  of the  setup  service
+  manager.
+  
   Embedded services are:
 
-  * Geometry service based on geometry configuration
-    with URN=``urn:snemo:demonstrator:geometry:4.0``.
+  * Geometry   service   based    on   geometry   configuration   with
+    URN=``urn:snemo:demonstrator:geometry:5.0``.
 
 .. end

@@ -33,7 +33,7 @@
 // From this application
 #include "TrackDetails.h"
 
-typedef struct SensitivityEventStorage{
+typedef struct SensitivityEventStorage {
   bool passes_two_calorimeters_;
   bool passes_two_plus_calos_;
   bool passes_two_clusters_;
@@ -166,11 +166,13 @@ typedef struct SensitivityEventStorage{
   double true_vertex_y_;
   double true_vertex_z_;
 
-}sensitivityeventstorage;
+} sensitivityeventstorage;
 
 
 // This Project
-class SensitivityModule : public dpp::base_module {
+class SensitivityModule
+  : public dpp::base_module
+{
   static const uint minHitsInCluster=3;
  public:
   //! Construct module
@@ -197,12 +199,28 @@ class SensitivityModule : public dpp::base_module {
   const geomtools::manager* geometry_manager_; //!< The geometry manager
 
   double ProbabilityFromChiSquared(double chiSquared);
-  void CalculateProbabilities(double &internalProbability, double &externalProbability, double *calorimeterEnergies,  double *betas, double *trackLengths, double *calorimeterTimes, double *totalTimeVariances );
-  void CalculateProbabilities(double &internalProbability, double &externalProbability, std::vector<TrackDetails*> twoParticles, bool projected);
+  void CalculateProbabilities(double &internalProbability,
+                              double &externalProbability,
+                              double *calorimeterEnergies,
+                              double *betas,
+                              double *trackLengths,
+                              double *calorimeterTimes,
+                              double *totalTimeVariances );
+  void CalculateProbabilities(double &internalProbability,
+                              double &externalProbability,
+                              std::vector<TrackDetails*> twoParticles,
+                              bool projected);
   // Functions used to populate the vectors of info about which calorimeter walls were hit
-  int InsertAndGetPosition(double toInsert, std::vector<double> &vec, bool highestFirst);
-  void PopulateWallVectors(std::vector<int> &calotypes, std::vector<bool> &mainVec, std::vector<bool> &xVec, std::vector<bool> &vetoVec);
-  template <typename T>  void InsertAt(T toInsert, std::vector<T> &vec, int position);
+  int InsertAndGetPosition(double toInsert,
+                           std::vector<double> &vec,
+                           bool highestFirst);
+  void PopulateWallVectors(std::vector<int> &calotypes,
+                           std::vector<bool> &mainVec,
+                           std::vector<bool> &xVec,
+                           std::vector<bool> &vetoVec);
+  template <typename T>  void InsertAt(T toInsert,
+                                       std::vector<T> &vec,
+                                       int position);
   void ResetVars();
 
 

@@ -1,8 +1,0 @@
-# List of geometry models definition files for the SuperNEMO Demonstrator
-
-# Half demonstrator module for commissioning:
-@falaise:snemo/demonstrator/geometry/GeometryModels/half_module_commissioning_0.geom
-
-# World and experimental hall:
-@falaise:snemo/demonstrator/geometry/GeometryModels/setup.geom
-

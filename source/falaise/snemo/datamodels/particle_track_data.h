@@ -1,14 +1,12 @@
 /// \file falaise/snemo/datamodels/particle_track_data.h
 /* Author (s) : Mathieu Bongrand <bongrand@lal.in2p3.fr>
-                Xavier Garrido   <garrido@lal.in2p3.fr>
- * Creation date: 2012-04-18
- * Last modified: 2014-06-03
- *
- * Description:  SuperNEMO Particle Track data model
- *
- * History:
- *
- */
+   Xavier Garrido   <garrido@lal.in2p3.fr>
+   * Creation date: 2012-04-18
+   * Last modified: 2014-06-03
+   *
+   * Description:  SuperNEMO Particle Track data model
+   *
+   */
 
 #ifndef FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H
 #define FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H 1
@@ -31,68 +29,84 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief SuperNEMO particle track model
-//  Just a composition of a vector of particle_tracks and a vector of isolated calorimeter hits
-//  TODO: split, or implement as pure dumb struct
-class particle_track_data : public datatools::i_serializable,
-                            public datatools::i_tree_dumpable,
-                            public datatools::i_clear {
- public:
-  /// Check if there are some particles
-  bool hasParticles() const;
+    /// \brief SuperNEMO particle track model
+    // A composition of a vector of particle_tracks and
+    // a vector of isolated calorimeter hits
+    class particle_track_data
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
+    {
+      
+    public:
 
-  /// Returns the number of particle
-  size_t numberOfParticles() const;
+      /// Check if there are some particles
+      bool hasParticles() const;
 
-  /// Add a particle track
-  void insertParticle(const ParticleHdl& particle);
+      /// Returns the number of particle
+      size_t numberOfParticles() const;
 
-  /// Return a mutable reference to particles
-  ParticleHdlCollection& particles();
+      /// Add a particle track
+      void insertParticle(const ParticleHdl & particle);
 
-  /// Return a non mutable reference to particles
-  const ParticleHdlCollection& particles() const;
+      /// Return a mutable reference to particles
+      ParticleHdlCollection & particles();
 
-  /// Reset the particle tracks
-  void clearParticles();
+      /// Return a non mutable reference to particles
+      const ParticleHdlCollection & particles() const;
 
-  /// Check if there are some non associated calorimeters
-  bool hasIsolatedCalorimeters() const;
+      /// Check if the particle track belongs to the collection of particle tracks
+      bool ownsParticle(const ParticleHdl & particle) const;
 
-  /// Return a non mutable reference to non associated calorimeters
-  const CalorimeterHitHdlCollection& isolatedCalorimeters() const;
+      /// Check if a particle track shares its cluster with other particle tracks
+      bool hasAlternativeTracks(const ParticleHdl & particle) const;
 
-  /// Return a mutable reference to non associated calorimeters
-  CalorimeterHitHdlCollection& isolatedCalorimeters();
+      /// Return the list of particle tracks sharing the same cluster than the given particle track
+      ParticleHdlCollection alternativeTracks(const ParticleHdl & particle) const;
+      
+      /// Reset the particle tracks
+      void clearParticles();
 
-  /// Reset the non associated calorimeters
-  void clearIsolatedCalorimeters();
+      /// Check if there are some non associated calorimeters
+      bool hasIsolatedCalorimeters() const;
 
-  /// Clear the object
-  virtual void clear() override;
+      /// Return a non mutable reference to non associated calorimeters
+      const CalorimeterHitHdlCollection & isolatedCalorimeters() const;
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+      /// Return a mutable reference to non associated calorimeters
+      CalorimeterHitHdlCollection & isolatedCalorimeters();
 
- private:
-  ParticleHdlCollection particles_;                    //!< Collection of particle track handles
-  CalorimeterHitHdlCollection isolated_calorimeters_;  //!< Collection of calorimeter hit handles
+      /// Reset the non associated calorimeters
+      void clearIsolatedCalorimeters();
 
-  datatools::properties _auxiliaries_;  // unused, retained for serialization back compatibility
+      /// Clear the object
+      virtual void clear() override;
 
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
+      /// Smart print
+      virtual void print_tree(std::ostream & out_ = std::clog,
+                              const boost::property_tree::ptree & options_ 
+                              /**/ = datatools::i_tree_dumpable::empty_options()) const override;
+ 
+    private:
+      
+      ParticleHdlCollection particles_; //!< Collection of particle track handles
+      CalorimeterHitHdlCollection isolated_calorimeters_; //!< Collection of calorimeter hit handles
 
-/// Retrieve particles given their charge
-ParticleHdlCollection get_particles_by_charge(const particle_track_data& ptd,
-                                              uint32_t charge_types);
+      datatools::properties _auxiliaries_; // unused, retained for serialization back compatibility
 
-}  // end of namespace datamodel
+      DATATOOLS_SERIALIZATION_DECLARATION()
+      
+    };
 
-}  // end of namespace snemo
+    /// Retrieve particles given their charge
+    ParticleHdlCollection get_particles_by_charge(const particle_track_data & ptd,
+                                                  uint32_t charge_types);
+
+  } // end of namespace datamodel
+  
+} // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::particle_track_data,

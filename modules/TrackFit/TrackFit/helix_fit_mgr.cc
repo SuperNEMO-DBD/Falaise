@@ -1167,7 +1167,7 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   // Check if the cluster is or not delayed
   bool is_cluster_delayed = true;
   for (const auto &a_hit : hits_) {
-    if (!a_hit.get_properties().has_flag(gg_hit::delayed_flag())) {
+    if (a_hit.is_prompt()) {
       is_cluster_delayed = false;
       break;
     }
@@ -1412,7 +1412,7 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   double r3 = iter_hit_far->get_r();
   if (!datatools::is_valid(r1) || !datatools::is_valid(r2) || !datatools::is_valid(r3)) {
     DT_LOG_WARNING(_logging_priority_,
-                   "Geiger drift distance are not calibrated(delayed cells) ! "
+                   "Geiger drift distance are not calibrated (delayed cells) ! "
                    "Force the use of rmax is such case !");
     use_rmax = true;
   }

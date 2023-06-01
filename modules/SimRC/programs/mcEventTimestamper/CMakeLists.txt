@@ -74,48 +74,56 @@ if(FALAISE_ENABLE_TESTING)
   set(_SimRCTimestamperTestConfFiles
     "activity_model_factory.conf"
     "activity_models.conf"
+    "runs.lis"
+    "test.bash"
     )
   
   foreach(_file ${_SimRCTimestamperTestConfFiles})
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${_file}" "${CMAKE_CURRENT_BINARY_DIR}/${_file}" COPYONLY)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/testing/${_file}" "${CMAKE_CURRENT_BINARY_DIR}/${_file}" COPYONLY)
   endforeach()
 
   add_test(NAME testSimRC_timestamper_regular
     COMMAND flsimrc-timestamper
     -V debug
-    -n 1000
-    -o timestamps-regular.lis
     -g "regular"
+    -n 10000
+    -o "timestamps-regular.lis"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     ) 
 
   add_test(NAME testSimRC_timestamper_random
     COMMAND flsimrc-timestamper
     -V debug
-    -n 1000
-    -o timestamps-random.lis
     -g "random"
     -s 314159
+    -n 10000
+    -o "timestamps-random.lis"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    ) 
+    )  
 
   add_test(NAME testSimRC_timestamper_random_exp
     COMMAND flsimrc-timestamper
     -V debug
-    -n 10000
-    -f "activity_model_factory.conf"
+    -r "${CMAKE_CURRENT_BINARY_DIR}/runs.lis"
+    -f "${CMAKE_CURRENT_BINARY_DIR}/activity_model_factory.conf"
     -a "decaying-from-2023-01-01"
-    -o "timestamps-random-exp.lis"
-    -q "times-random-exp.lis"
     -g "random"
     -s 314159
+    -n 10000
+    -o "timestamps-random-exp.lis"
+    -q "times-random-exp.lis"
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     ) 
 
-  # add_test(NAME testSimRC_timestamper_random_exp_post
-  #   COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/test.bash
-  #   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  #   ) 
+  add_test(NAME testSimRC_timestamper_random_exp_post
+    COMMAND bash test.bash
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    ) 
+
+  set_tests_properties(testSimRC_timestamper_random_exp_post PROPERTIES
+    DEPENDS testSimRC_timestamper_random_exp
+    REQUIRED_FILES "times-random-exp.lis"
+    )
 
 endif(FALAISE_ENABLE_TESTING)
 

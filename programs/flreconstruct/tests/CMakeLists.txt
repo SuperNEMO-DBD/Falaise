@@ -33,7 +33,7 @@ set_falaise_test_environment(flreconstruct-smoketest)
 # Check that standard pipelines run
 # - Command line via urn
 add_test(NAME flreconstruct-standard-pipeline-cli
-  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:1.0.0"
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:3.0:config:default"
   )
 set_tests_properties(flreconstruct-standard-pipeline-cli PROPERTIES
   DEPENDS flreconstruct-fixture
@@ -51,28 +51,26 @@ set_falaise_test_environment(flreconstruct-standard-pipeline-script-urn)
 
 # - Non-URN internal scripts - "next/devel" pipeline
 add_test(NAME flreconstruct-standard-pipeline-develscript
-  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/official-2.0.0.conf"
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/3.0/pipelines/official-3.0.conf"
   )
 set_tests_properties(flreconstruct-standard-pipeline-develscript PROPERTIES
   DEPENDS flreconstruct-fixture
   )
 set_falaise_test_environment(flreconstruct-standard-pipeline-develscript)
 
-# - Same, but use symlinked name
-add_test(NAME flreconstruct-standard-pipeline-develscript-symlink
-  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/production.pipeline.conf"
-  )
-set_tests_properties(flreconstruct-standard-pipeline-develscript-symlink PROPERTIES
-  DEPENDS flreconstruct-fixture
-  )
-set_falaise_test_environment(flreconstruct-standard-pipeline-develscript-symlink)
-
-
+# # - Same, but use symlinked name
+# add_test(NAME flreconstruct-standard-pipeline-develscript-symlink
+#   COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/production.pipeline.conf"
+#   )
+# set_tests_properties(flreconstruct-standard-pipeline-develscript-symlink PROPERTIES
+#   DEPENDS flreconstruct-fixture
+#   )
+# set_falaise_test_environment(flreconstruct-standard-pipeline-develscript-symlink)
 
 # Test of writing to an output file after standard pipeline
 # TODO: Add test of contents of file (i.e. that it contains the right bank names/types)!!
 add_test(NAME flreconstruct-standard-pipeline-output
-  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:1.0.0" -o "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-standard-pipeline-output.brio"
+  COMMAND flreconstruct -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "urn:snemo:demonstrator:reconstruction:3.0:config:default" -o "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-standard-pipeline-output.brio"
   )
 set_tests_properties(flreconstruct-standard-pipeline-output PROPERTIES
   DEPENDS flreconstruct-fixture
@@ -137,7 +135,7 @@ set_falaise_test_environment(flreconstruct-filter-check-filter)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #8 fix
 add_test(NAME flreconstruct-fix-issue8-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue8-validation"
   )
@@ -150,7 +148,7 @@ target_link_libraries(TestIssue201 Falaise)
 set_target_properties(TestIssue201 PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BUILD_PREFIX}/${CMAKE_INSTALL_PLUGINDIR}")
 # 2. Run test as script to generate deterministic sim/reco file
 add_test(NAME flreconstruct-fix-issue-201
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/issue201/run.sh ${CMAKE_CURRENT_SOURCE_DIR}/issue201
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 set_falaise_test_environment(flreconstruct-fix-issue-201)

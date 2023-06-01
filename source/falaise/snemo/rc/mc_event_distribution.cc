@@ -30,15 +30,21 @@ namespace snemo {
       {
         std::string line;
         std::getline(_fin_, line);
-        if (line != "!falaise::simrc::mc-event-timestamps") {
+        if (line != "#!falaise::simrc::mc-event-timestamps") {
           DT_THROW(std::logic_error,
-                   "Input file '" << filepath_ << "' is not a MC event timestamps file!");
+                   "Cannot find the magic line! Input file '" << filepath_ << "' is not a MC event timestamps file!");
         }
       }
       {
         std::string line;
         std::getline(_fin_, line);
-        std::istringstream liness(line);
+        if (line.substr(0, 14) != "#@ntimestamps=") {
+          DT_THROW(std::logic_error,
+                   "Cannot find the tag '#@ntimestamps=' for the number of MC event timestamps from input file '"
+                   << filepath_ << "'!");
+        }
+        std::string line2 = line.substr(14);
+        std::istringstream liness(line2);
         std::uint32_t nbOfTimestamps = 0;
         liness >> nbOfTimestamps;
         if (! liness) {
@@ -109,8 +115,8 @@ namespace snemo {
       : _fout_(filepath_)
     {
       DT_THROW_IF(!_fout_, std::runtime_error, "Cannot open output file '" << filepath_ << "'!");
-      _fout_ << "!falaise::simrc::mc-event-timestamps" << '\n';
-      _fout_ << nb_timestamps_ << '\n';
+      _fout_ << "#!falaise::simrc::mc-event-timestamps" << '\n';
+      _fout_ << "#@ntimestamps=" << nb_timestamps_ << '\n';
       return;
     }
     
@@ -255,6 +261,7 @@ namespace snemo {
         for (unsigned int iDecay = 0; iDecay < runNbDecays; iDecay++) {
           if (_prng_ != nullptr) {
             // DT_LOG_DEBUG(_logging_, "Running stochastic engine...");
+            // Should we put a max loop guard here ? To be tested.
             while (true) {
               double p = gsl_ran_flat(_prng_, 0.0, 1.0);
               double tDecay = inverseCumul(p) / CLHEP::microsecond;

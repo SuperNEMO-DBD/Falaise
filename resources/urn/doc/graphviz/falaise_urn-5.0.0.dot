@@ -1,0 +1,52 @@
+
+subgraph clusterUrn_Falaise {
+  label="Falaise 5.0.0";
+  fontname="bold";
+  bgcolor="lightyellow";
+  
+  subgraph clusterUrn_Falaise_5_0_0_Components {
+    label="Components";
+    bgcolor="white"; 
+
+  /*************************************************************/
+  Falaise_5_0_0_Library [ shape="plain" fontname="Courier" label = <
+    <table border="1">
+  <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:falaise:5.0.0:library</td></tr>
+  <tr><td               bgcolor="lightgrey"  align="left"  >category: library</td></tr>
+  </table>
+  >; ];
+  
+  /*************************************************************/
+  FLSimulateConfigure_5_0_0 [ shape="plain" fontname="Courier" label = <
+  <table border="1">
+  <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:falaise:5.0.0:apps:flsimulate-configure</td></tr>
+  <tr><td               bgcolor="lightgrey"  align="left"  >category: application</td></tr>
+  <tr><td PORT="VARIANTS"                    align="right" >variants : varservice*</td></tr>
+  </table>
+  >; ];
+
+  /*************************************************************/
+  FLSimulate_5_0_0 [ shape="plain" fontname="Courier" label = <
+  <table border="1">
+  <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:falaise:5.0.0:apps:flsimulate</td></tr>
+  <tr><td               bgcolor="lightgrey"  align="left"  >category: application</td></tr>
+  <tr><td PORT="SIMSETUP"                    align="right" >simsetup : simsetup</td></tr>
+  </table>
+  >; ];
+
+  /*************************************************************/
+  FLReconstruct_5_0_0 [ shape="plain" fontname="Courier" label = <
+  <table border="1">
+  <tr><td PORT="MAIN"   bgcolor="cyan"       align="left"  >urn:falaise:5.0.0:apps:flreconstruct</td></tr>
+  <tr><td               bgcolor="lightgrey"  align="left"  >category: application</td></tr>
+  <tr><td PORT="RECSETUP"                    align="right" >recsetup : recsetup</td></tr>
+  </table>
+  >; ];
+
+  };
+
+};
+
+FLSimulate_5_0_0:SIMSETUP    -> Simulation_2_4:MAIN;
+FLReconstruct_5_0_0:RECSETUP -> Reconstruction_3_0:MAIN;
+FLSimulateConfigure_5_0_0:VARIANTS -> Simulation_Variants_Service_2_0:MAIN[ color="magenta"; ];

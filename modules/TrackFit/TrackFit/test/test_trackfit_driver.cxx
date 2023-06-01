@@ -17,6 +17,7 @@
 #include <falaise/falaise.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
+#include <falaise/snemo/geometry/config.h>
 #include <falaise/snemo/geometry/gg_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 
@@ -66,8 +67,8 @@ int main(int argc_, char** argv_) {
 
     // Geometry manager:
     geomtools::manager Geo;
-    std::string GeoConfigFile = "@falaise:snemo/demonstrator/geometry/GeometryManager.conf";
-    datatools::fetch_path_with_env(GeoConfigFile);
+    std::string GeoConfigFile = snemo::geometry::default_geometry_tag();
+        datatools::fetch_path_with_env(GeoConfigFile);
     datatools::properties GeoConfig;
     datatools::properties::read_config(GeoConfigFile, GeoConfig);
     Geo.initialize(GeoConfig);

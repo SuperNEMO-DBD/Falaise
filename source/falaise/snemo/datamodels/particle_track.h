@@ -3,7 +3,7 @@
  *              Xavier  Garrido  <garrido@lal.in2p3.fr>
  *              Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-04-17
- * Last modified: 2021-11-03
+ * Last modified: 2022-12-09
  *
  * Description: A particle track represents the physical interpretation of a
  * trajectory fitted from a cluster of tracker hits or from a gamma tracking
@@ -26,234 +26,168 @@
 // This project:
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.h>
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
+#include <falaise/snemo/datamodels/vertex_utils.h>
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief SuperNEMO particle track
-class particle_track : public geomtools::base_hit {
- public:
-  /// Electric charge enumeration
-  enum charge_type {
-    UNDEFINED = datatools::bit_mask::bit00,  ///< Particle with undefined charge
-    NEUTRAL   = datatools::bit_mask::bit01,  ///< Neutral particle
-    POSITIVE  = datatools::bit_mask::bit02,  ///< Positively charged particle
-    NEGATIVE  = datatools::bit_mask::bit03,  ///< Negatively charged particle
-  };
+    struct calo_vertex_association_type
+    {
+      VertexHdl         vertex; ///< Vertex handle
+      CalorimeterHitHdl hit;    ///< Calorimeter hit handle
+    };
 
-  /// Vertex flags
-  enum vertex_type {
-    VERTEX_NONE = 0x0,
-    VERTEX_ON_SOURCE_FOIL = datatools::bit_mask::bit00,
-    VERTEX_ON_MAIN_CALORIMETER = datatools::bit_mask::bit01,
-    VERTEX_ON_X_CALORIMETER = datatools::bit_mask::bit02,
-    VERTEX_ON_GAMMA_VETO = datatools::bit_mask::bit03,
-    VERTEX_ON_WIRE = datatools::bit_mask::bit04,
-    VERTEX_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05
-  };
+    typedef calo_vertex_association_type CaloVertexAssociation;
+    typedef std::vector<CaloVertexAssociation> CaloVertexAssociationCollection;
 
-  /// Key for the vertex 'from' property
-  static const std::string &vertex_from_key();
+    /// \brief SuperNEMO particle track
+    class particle_track
+      : public geomtools::base_hit
+    {
+    public:
+      
+      /// Electric charge enumeration
+      enum charge_type {
+        CHARGE_UNDEFINED = datatools::bit_mask::bit00, ///< Particle with undefined charge
+        CHARGE_NEUTRAL   = datatools::bit_mask::bit01, ///< Neutral particle
+        CHARGE_POSITIVE  = datatools::bit_mask::bit02, ///< Positively charged particle
+        CHARGE_NEGATIVE  = datatools::bit_mask::bit03, ///< Negatively charged particle
+      };
 
-  /// Key for the vertex 'distance' property
-  static const std::string &vertex_distance_key();
+      /// Conversion to a string
+      static const std::string & to_string(const charge_type);
+    
+      /// Conversion to a vertex charge
+      static charge_type string_to_charge(const std::string &);
 
-  /// Key for the vertex 'distance_xy' property
-  static const std::string &vertex_distance_xy_key();
+      /// Check if there is a valid track ID
+      bool has_track_id() const;
 
-  /// Key for the vertex 'type' property
-  static const std::string &vertex_type_key();
+      /// Get the track ID
+      int get_track_id() const;
 
-  /// Return the label from the vertex type
-  static const std::string &vertex_type_to_label(vertex_type);
+      /// Set the track ID
+      void set_track_id(int32_t id);
 
-  /// Return the vertex type from the label
-  static vertex_type label_to_vertex_type(const std::string &);
+      /// Invalidate the track ID
+      void invalidate_track_id();
 
-  /// Associated 'VERTEX_NONE' flag for auxiliary property
-  static const std::string &vertex_none_label();
+      //// Set particle charge
+      void set_charge(charge_type charge);
 
-  /// Associated 'VERTEX_ON_SOURCE_FOIL' flag for auxiliary property
-  static const std::string &vertex_on_source_foil_label();
+      /// Get particle charge
+      charge_type get_charge() const;
 
-  /// Associated 'VERTEX_ON_MAIN_CALORIMETER' flag for auxiliary property
-  static const std::string &vertex_on_main_calorimeter_label();
+      /// Check if the trajectory is present
+      bool has_trajectory() const;
 
-  /// Associated 'VERTEX_ON_X_CALORIMETER' flag for auxiliary property
-  static const std::string &vertex_on_x_calorimeter_label();
+      /// Detach the trajectory
+      void detach_trajectory();
 
-  /// Associated 'VERTEX_ON_GAMMA_CALORIMETER' flag for auxiliary property
-  static const std::string &vertex_on_gamma_veto_label();
+      /// Attach a trajectory by handle
+      void set_trajectory_handle(const TrackerTrajectoryHdl & trajectory);
 
-  /// Associated 'VERTEX_ON_WIRE' flag for auxiliary property
-  static const std::string &vertex_on_wire_label();
+      /// Return a mutable reference on the trajectory handle
+      TrackerTrajectoryHdl & get_trajectory_handle();
 
-  /// Associated 'VERTEX_ON_CALIBRATION_SOURCE' flag for auxiliary property
-  static const std::string &vertex_on_calibration_source_label();
+      /// Return a non mutable reference on the trajectory handle
+      const TrackerTrajectoryHdl & get_trajectory_handle() const;
 
-  /// Check a vertex type
-  static bool vertex_is(const geomtools::blur_spot &, vertex_type);
+      /// Return a mutable reference on the trajectory
+      TrackerTrajectory & get_trajectory();
 
-  /// Check a vertex on source foil
-  static bool vertex_is_on_source_foil(const geomtools::blur_spot &);
+      /// Return a non mutable reference on the trajectory
+      const TrackerTrajectory & get_trajectory() const;
 
-  /// Check a vertex on main calorimeter
-  static bool vertex_is_on_main_calorimeter(const geomtools::blur_spot &);
+      /// Check if the particle track is associated to a given cluster (through its referenced trajectory)
+      bool match_cluster(const tracker_cluster & cluster_) const;
+      
+      /// Check if there are some vertices along the fitted trajectory
+      bool has_vertices() const;
 
-  /// Check a vertex on X calorimeter
-  static bool vertex_is_on_x_calorimeter(const geomtools::blur_spot &);
+      /// Reset the collection of vertices
+      void clear_vertices();
 
-  /// Check a vertex on gamma veto
-  static bool vertex_is_on_gamma_veto(const geomtools::blur_spot &);
+      /// Return a mutable reference on the collection of vertices (handles)
+      VertexHdlCollection & get_vertices();
 
-  /// Check a vertex on wire
-  static bool vertex_is_on_wire(const geomtools::blur_spot &);
+      /// Return a non mutable reference on the collection of vertices (handles)
+      const VertexHdlCollection & get_vertices() const;
 
-  /// Check a vertex on calibration source
-  static bool vertex_is_on_calibration_source(const geomtools::blur_spot &);
+      /// Check if there are some associated calorimeter hits
+      bool has_associated_calorimeter_hits() const;
 
-  /// Handle on vertex spot
-  typedef datatools::handle<geomtools::blur_spot> handle_spot;
+      /// Reset the collection of associated calorimeter hits
+      void clear_associated_calorimeter_hits();
 
-  /// Collection of vertex spots
-  typedef std::vector<handle_spot> vertex_collection_type;
+      /// Return a mutable reference on the collection of associated calorimeter hits (handles)
+      CalorimeterHitHdlCollection & get_associated_calorimeter_hits();
 
-  /// Check if there is a valid track ID
-  bool has_track_id() const;
+      /// Return a non mutable reference on the collection of associated calorimeter hits (handles)
+      const CalorimeterHitHdlCollection & get_associated_calorimeter_hits() const;
 
-  /// Get the track ID
-  int get_track_id() const;
+      /// Return a mutable reference on the collection of calorimeter/vertex association
+      CaloVertexAssociationCollection & get_calo_vertex_associations();
 
-  /// Set the track ID
-  void set_track_id(int32_t id);
+      /// Return a non mutable reference on the collection of calorimeter/vertex association
+      const CaloVertexAssociationCollection & get_calo_vertex_associations() const;
 
-  /// Invalidate the track ID
-  void invalidate_track_id();
+      /// Empty the contents of the particle track
+      void clear() override;
+ 
+      /// Smart print
+      virtual void print_tree(std::ostream & out_ = std::clog,
+                              const boost::property_tree::ptree & options_ 
+                              /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
-  //// Set particle charge
-  void set_charge(charge_type charge);
+    private:
 
-  /// Get particle charge
-  charge_type get_charge() const;
+      charge_type charge_from_source_{CHARGE_UNDEFINED}; ///< Particle charge
+      TrackerTrajectoryHdl trajectory_{}; ///< Handle to the fitted trajectory
+      VertexHdlCollection vertices_{}; ///< Collection of vertices
+      CalorimeterHitHdlCollection associated_calorimeters_{}; ///< Calorimeter hits associated with the particle
+      CaloVertexAssociationCollection calo_vertex_associations_{}; ///< List of calorimeter/vertex association
+      
+      DATATOOLS_SERIALIZATION_DECLARATION()
+      
+    };
 
-  /// Check if the trajectory is present
-  bool has_trajectory() const;
+    /// Handle on particle track
+    using Particle = particle_track;
+    using ParticleHdl = datatools::handle<Particle>;
 
-  /// Detach the trajectory
-  void detach_trajectory();
+    using ParticleCollection = std::vector<Particle>;
+    using ParticleHdlCollection = std::vector<ParticleHdl>;
 
-  /// Attach a trajectory by handle
-  void set_trajectory_handle(const TrackerTrajectoryHdl &trajectory);
+    // Free functions
+    /// Check a particle charge type
+    bool particle_has(const Particle &, Particle::charge_type);
 
-  /// Return a mutable reference on the trajectory handle
-  TrackerTrajectoryHdl &get_trajectory_handle();
+    /// Check a particle is electron
+    bool particle_has_negative_charge(const Particle &);
 
-  /// Return a non mutable reference on the trajectory handle
-  const TrackerTrajectoryHdl &get_trajectory_handle() const;
+    /// Checck a particle is positron
+    bool particle_has_positive_charge(const Particle &);
 
-  /// Return a mutable reference on the trajectory
-  TrackerTrajectory &get_trajectory();
+    /// Check a particle is alpha
+    bool particle_has_undefined_charge(const Particle &);
 
-  /// Return a non mutable reference on the trajectory
-  const TrackerTrajectory &get_trajectory() const;
+    /// Check a particle is gamma
+    bool particle_has_neutral_charge(const Particle &);
 
-  /// Check if there are some vertices along the fitted trajectory
-  bool has_vertices() const;
+    /// Check a particle has a vertex matching the input flags
+    bool particle_has_vertex(const Particle & p_, const uint32_t vertex_flags_);
 
-  /// Reset the collection of vertices
-  void clear_vertices();
+  } // end of namespace datamodel
 
-  /// Return a mutable reference on the collection of vertices (handles)
-  vertex_collection_type &get_vertices();
+} // end of namespace snemo
 
-  /// Return a non mutable reference on the collection of vertices (handles)
-  const vertex_collection_type &get_vertices() const;
+// Class version:
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::particle_track, 1)
 
-  /// Check if there are some associated calorimeter hits
-  bool has_associated_calorimeter_hits() const;
-
-  /// Reset the collection of associated calorimeter hits
-  void clear_associated_calorimeter_hits();
-
-  /// Return a mutable reference on the collection of associated calorimeter hits (handles)
-  CalorimeterHitHdlCollection &get_associated_calorimeter_hits();
-
-  /// Return a non mutable reference on the collection of associated calorimeter hits (handles)
-  const CalorimeterHitHdlCollection &get_associated_calorimeter_hits() const;
-
-  /// Empty the contents of the particle track
-  void clear() override;
-
-  /// Smart print
-  virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                         const std::string &indent = "", bool is_last = false) const override;
-
- private:
-  charge_type charge_from_source_{UNDEFINED};  ///< Particle charge
-  TrackerTrajectoryHdl trajectory_{};          ///< Handle to the fitted trajectory
-  vertex_collection_type vertices_{};          ///< Collection of vertices
-  CalorimeterHitHdlCollection
-      associated_calorimeters_{};  ///< Calorimeter hits associated with the Particle
-
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
-
-/// Handle on particle track
-using Particle = particle_track;
-using ParticleHdl = datatools::handle<Particle>;
-
-using ParticleCollection = std::vector<Particle>;
-using ParticleHdlCollection = std::vector<ParticleHdl>;
-
-// Free functions
-/// Check a particle charge type
-bool particle_has(const Particle &, Particle::charge_type);
-
-/// Check a particle is electron
-bool particle_has_negative_charge(const Particle &);
-
-/// Checck a particle is positron
-bool particle_has_positive_charge(const Particle &);
-
-/// Check a particle is alpha
-bool particle_has_undefined_charge(const Particle &);
-
-/// Check a particle is gamma
-bool particle_has_neutral_charge(const Particle &);
-
-// Check if a vertex matches a given type
-inline bool vertex_matches(const Particle::handle_spot &vtx, const int32_t vertex_flags) {
-  std::vector<Particle::vertex_type> vertex_types{
-      Particle::VERTEX_ON_SOURCE_FOIL,
-      Particle::VERTEX_ON_MAIN_CALORIMETER,
-      Particle::VERTEX_ON_X_CALORIMETER,
-      Particle::VERTEX_ON_GAMMA_VETO,
-      Particle::VERTEX_ON_WIRE,
-      Particle::VERTEX_ON_CALIBRATION_SOURCE};
-  for (const auto &vtx_type : vertex_types) {
-    if (((vertex_flags & vtx_type) != 0u) && Particle::vertex_is(*vtx, vtx_type)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/// Check a particle has a vertex matching the input flags
-inline bool particle_has_vertex(const Particle &p, const int32_t vertex_flags) {
-  for (const auto &vtx : p.get_vertices()) {
-    if (vertex_matches(vtx, vertex_flags)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-}  // end of namespace datamodel
-
-}  // end of namespace snemo
-
-#endif  // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_H
+#endif // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_H
 
 /*
 ** Local Variables: --

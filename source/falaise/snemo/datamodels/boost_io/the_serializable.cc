@@ -142,6 +142,8 @@ BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::polyline_trajectory_pattern)
 
 #include <falaise/snemo/datamodels/boost_io/tracker_trajectory.ipp>
 #include <falaise/snemo/datamodels/boost_io/tracker_trajectory_solution.ipp>
+#include <falaise/snemo/datamodels/boost_io/track_fitting_utils.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::track_fit_infos)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory)
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_trajectory_solution)
 #include <falaise/snemo/datamodels/boost_io/tracker_trajectory_data.ipp>
@@ -151,7 +153,8 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracke
 /*****************************************
  * snemo::datamodel::particle_track_data *
  *****************************************/
-
+#include <falaise/snemo/datamodels/boost_io/vertex_utils.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::vertex)
 #include <falaise/snemo/datamodels/boost_io/particle_track.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::particle_track)
 #include <falaise/snemo/datamodels/boost_io/particle_track_data.ipp>

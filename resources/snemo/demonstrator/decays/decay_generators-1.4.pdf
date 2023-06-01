@@ -1,0 +1,2716 @@
+%PDF-1.4
+%“Œ‹ž ReportLab Generated PDF document http://www.reportlab.com
+1 0 obj
+<<
+/F1 2 0 R /F2 3 0 R
+>>
+endobj
+2 0 obj
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
+endobj
+3 0 obj
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
+endobj
+4 0 obj
+<<
+/Contents 10 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 9 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+5 0 obj
+<<
+/Contents 11 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 9 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+6 0 obj
+<<
+/Contents 12 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 9 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+7 0 obj
+<<
+/PageLabels 13 0 R /PageMode /UseNone /Pages 9 0 R /Type /Catalog
+>>
+endobj
+8 0 obj
+<<
+/Author () /CreationDate (D:20221019183824+00'00') /Creator (\(unspecified\)) /Keywords () /ModDate (D:20221019183824+00'00') /Producer (ReportLab PDF Library - www.reportlab.com) 
+  /Subject (\(unspecified\)) /Title (Falaise - SuperNEMO Demonstrator - List of decay generators \(version 1.4\)) /Trapped /False
+>>
+endobj
+9 0 obj
+<<
+/Count 3 /Kids [ 4 0 R 5 0 R 6 0 R ] /Type /Pages
+>>
+endobj
+10 0 obj
+<<
+/Length 18114
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 62.69291 750.6236 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2.4 Tm /F2 12 Tf 14.4 TL 21.55488 0 Td (Falaise - SuperNEMO Demonstrator - List of decay generators \(version 1.4\)) Tj T* -21.55488 0 Td ET
+Q
+Q
+q
+1 0 0 1 62.69291 734.6236 cm
+Q
+q
+1 0 0 1 62.69291 734.6236 cm
+Q
+q
+1 0 0 1 62.69291 724.6236 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 -3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL 11.2 0 Td (\177) Tj T* -11.2 0 Td ET
+Q
+Q
+q
+1 0 0 1 23 -3 cm
+q
+BT 1 0 0 1 0 2 Tm 10 TL /F1 8 Tf 0 0 0 rg (Decay version : 1.4) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 62.69291 718.6236 cm
+Q
+q
+1 0 0 1 62.69291 708.6236 cm
+q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 -3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL 11.2 0 Td (\177) Tj T* -11.2 0 Td ET
+Q
+Q
+q
+1 0 0 1 23 -3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Decay variant version : 1.0) Tj T* ET
+Q
+Q
+q
+Q
+Q
+Q
+q
+1 0 0 1 62.69291 708.6236 cm
+Q
+q
+1 0 0 1 62.69291 702.6236 cm
+Q
+q
+1 0 0 1 62.69291 88.62362 cm
+q
+1 1 1 rg
+n 0 614 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 598 469.8898 -16 re f*
+1 1 1 rg
+n 0 582 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 566 469.8898 -16 re f*
+1 1 1 rg
+n 0 550 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 534 469.8898 -16 re f*
+1 1 1 rg
+n 0 518 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 502 469.8898 -16 re f*
+1 1 1 rg
+n 0 486 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 470 469.8898 -16 re f*
+1 1 1 rg
+n 0 454 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 438 469.8898 -16 re f*
+1 1 1 rg
+n 0 422 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 396 469.8898 -26 re f*
+1 1 1 rg
+n 0 370 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 354 469.8898 -26 re f*
+1 1 1 rg
+n 0 328 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 312 469.8898 -16 re f*
+1 1 1 rg
+n 0 296 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 280 469.8898 -16 re f*
+1 1 1 rg
+n 0 264 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 248 469.8898 -16 re f*
+1 1 1 rg
+n 0 232 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 216 469.8898 -16 re f*
+1 1 1 rg
+n 0 200 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 184 469.8898 -26 re f*
+1 1 1 rg
+n 0 158 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 132 469.8898 -16 re f*
+1 1 1 rg
+n 0 116 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 100 469.8898 -16 re f*
+1 1 1 rg
+n 0 84 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 68 469.8898 -16 re f*
+1 1 1 rg
+n 0 52 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 26 469.8898 -26 re f*
+.960784 .960784 .862745 rg
+n 0 614 469.8898 -16 re f*
+0 0 0 rg
+BT /F1 8 Tf 10 TL ET
+q
+1 0 0 1 6 601 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 64.49368 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 21.35484 0 Td (Name) Tj T* -21.35484 0 Td ET
+Q
+Q
+q
+1 0 0 1 82.49368 601 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 203.8215 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 79.90673 0 Td (Description) Tj T* -79.90673 0 Td ET
+Q
+Q
+q
+1 0 0 1 298.3151 601 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 75.42135 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 25.71068 0 Td (Group) Tj T* -25.71068 0 Td ET
+Q
+Q
+q
+1 0 0 1 385.7365 601 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 78.15327 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 28.40463 0 Td (Class) Tj T* -28.40463 0 Td ET
+Q
+Q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 585 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ac228) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 585 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ac-228 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 585 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 585 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 569 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Am241) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 569 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Am-241 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 569 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 569 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 553 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi207) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 553 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-207 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 553 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 553 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 537 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi210) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 537 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-210 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 537 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 537 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 521 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi212) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 521 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-212 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 521 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 521 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 505 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi212_Po212) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 505 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-212/Po-212 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 505 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 505 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 489 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi214) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 489 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-214 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 489 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 489 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 473 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi214_Po214) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 473 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-214/Po-214 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 473 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 473 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 457 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ca48.0nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 457 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Ca-48, 0nubb\(mn\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 457 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 457 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 441 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ca48.0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 441 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Ca-48, 0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 441 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 441 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 425 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ca48.0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 425 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Ca-48, 0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 425 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 425 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 399 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Ca48.0nubb_rhc_) Tj T* (lambda_0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 399 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Ca-48,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+ {2n}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 409 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 409 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 373 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Ca48.0nubb_rhc_) Tj T* (lambda_0_2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 373 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Ca-48,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+, 2+ {N*}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 383 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 383 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 357 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ca48.2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 357 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Ca-48, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 357 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 357 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 331 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Ca48.2nubb_2.9) Tj T* (MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 331 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Two neutrino double beta decay of Ca-48 \(E > 2.9 MeV\),) Tj T* (2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 341 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Ca48) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 341 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 315 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Co60) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 315 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Co-60 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 315 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 315 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 299 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Cs137) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 299 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Cs-137 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 299 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 299 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 283 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Eu152) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 283 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Eu-152 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 283 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 283 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 267 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Eu154) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 267 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Eu-154 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 267 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 267 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 251 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (K40) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 251 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (K-40 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 251 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 251 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 235 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mn54) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 235 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mn-54 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 235 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 235 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 219 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mo100.0nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 219 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Mo-100, 0nubb\(mn\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 219 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 219 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 203 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mo100.0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 203 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Mo-100, 0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 203 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 203 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 187 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mo100.0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 187 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Mo-100, 0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 187 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 187 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 161 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Mo100.0nubb_rhc) Tj T* (_lambda_0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 161 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Mo-100,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+ {2n}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 171 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 171 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 135 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Mo100.0nubb_rhc) Tj T* (_lambda_0_2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 135 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Mo-100,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+, 2+ {N*}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 145 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 145 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 119 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Mo100.2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 119 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Mo-100, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 119 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Mo100) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 119 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 103 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Na22) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 103 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Na-22 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 103 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibration) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 103 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 87 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Nd150.0nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 87 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Nd-150, 0nubb\(mn\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 87 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 87 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 71 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Nd150.0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 71 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Nd-150, 0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 71 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 71 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Nd150.0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Nd-150, 0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 29 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Nd150.0nubb_rhc) Tj T* (_lambda_0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 29 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Nd-150,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+ {2n}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Nd150.0nubb_rhc) Tj T* (_lambda_0_2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 3 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Nd-150,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+, 2+ {N*}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+0 0 0 RG
+.25 w
+n 0 0 m 469.8898 0 l S
+n 0 598 m 469.8898 598 l S
+n 0 582 m 469.8898 582 l S
+n 0 566 m 469.8898 566 l S
+n 0 550 m 469.8898 550 l S
+n 0 534 m 469.8898 534 l S
+n 0 518 m 469.8898 518 l S
+n 0 502 m 469.8898 502 l S
+n 0 486 m 469.8898 486 l S
+n 0 470 m 469.8898 470 l S
+n 0 454 m 469.8898 454 l S
+n 0 438 m 469.8898 438 l S
+n 0 422 m 469.8898 422 l S
+n 0 396 m 469.8898 396 l S
+n 0 370 m 469.8898 370 l S
+n 0 354 m 469.8898 354 l S
+n 0 328 m 469.8898 328 l S
+n 0 312 m 469.8898 312 l S
+n 0 296 m 469.8898 296 l S
+n 0 280 m 469.8898 280 l S
+n 0 264 m 469.8898 264 l S
+n 0 248 m 469.8898 248 l S
+n 0 232 m 469.8898 232 l S
+n 0 216 m 469.8898 216 l S
+n 0 200 m 469.8898 200 l S
+n 0 184 m 469.8898 184 l S
+n 0 158 m 469.8898 158 l S
+n 0 132 m 469.8898 132 l S
+n 0 116 m 469.8898 116 l S
+n 0 100 m 469.8898 100 l S
+n 0 84 m 469.8898 84 l S
+n 0 68 m 469.8898 68 l S
+n 0 52 m 469.8898 52 l S
+n 0 26 m 469.8898 26 l S
+n 76.49368 0 m 76.49368 614 l S
+n 292.3151 0 m 292.3151 614 l S
+n 379.7365 0 m 379.7365 614 l S
+n 0 614 m 469.8898 614 l S
+n 0 0 m 0 614 l S
+n 469.8898 0 m 469.8898 614 l S
+Q
+Q
+Q
+ 
+endstream
+endobj
+11 0 obj
+<<
+/Length 17404
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 62.69291 91.02362 cm
+q
+1 1 1 rg
+n 0 674 469.8898 -16 re f*
+1 1 1 rg
+n 0 658 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 642 469.8898 -26 re f*
+1 1 1 rg
+n 0 616 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 600 469.8898 -16 re f*
+1 1 1 rg
+n 0 584 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 568 469.8898 -16 re f*
+1 1 1 rg
+n 0 552 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 536 469.8898 -16 re f*
+1 1 1 rg
+n 0 520 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 504 469.8898 -16 re f*
+1 1 1 rg
+n 0 488 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 472 469.8898 -16 re f*
+1 1 1 rg
+n 0 456 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 440 469.8898 -26 re f*
+1 1 1 rg
+n 0 414 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 388 469.8898 -16 re f*
+1 1 1 rg
+n 0 372 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 346 469.8898 -16 re f*
+1 1 1 rg
+n 0 330 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 314 469.8898 -16 re f*
+1 1 1 rg
+n 0 298 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 282 469.8898 -16 re f*
+1 1 1 rg
+n 0 266 469.8898 -16 re f*
+.878431 .878431 .878431 rg
+n 0 250 469.8898 -16 re f*
+1 1 1 rg
+n 0 234 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 208 469.8898 -26 re f*
+1 1 1 rg
+n 0 182 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 156 469.8898 -26 re f*
+1 1 1 rg
+n 0 130 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 104 469.8898 -26 re f*
+1 1 1 rg
+n 0 78 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 52 469.8898 -26 re f*
+1 1 1 rg
+n 0 26 469.8898 -26 re f*
+.960784 .960784 .862745 rg
+n 0 674 469.8898 -16 re f*
+0 0 0 rg
+BT /F1 8 Tf 10 TL ET
+q
+1 0 0 1 6 661 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 64.49368 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 21.35484 0 Td (Name) Tj T* -21.35484 0 Td ET
+Q
+Q
+q
+1 0 0 1 82.49368 661 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 203.8215 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 79.90673 0 Td (Description) Tj T* -79.90673 0 Td ET
+Q
+Q
+q
+1 0 0 1 298.3151 661 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 75.42135 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 25.71068 0 Td (Group) Tj T* -25.71068 0 Td ET
+Q
+Q
+q
+1 0 0 1 385.7365 661 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 78.15327 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 28.40463 0 Td (Class) Tj T* -28.40463 0 Td ET
+Q
+Q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 645 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Nd150.2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 645 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Nd-150, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 645 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 645 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 619 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Nd150.2nubb_2.2) Tj T* (MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 619 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Two neutrino double beta decay of Nd-150 \(E > 2.2) Tj T* (MeV\), 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 629 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Nd150) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 629 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 603 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pa231) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 603 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pa-231 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 603 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 603 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 587 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pa234m) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 587 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pa-234m decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 587 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 587 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 571 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb210) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 571 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb-210 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 571 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 571 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 555 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb211) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 555 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb-211 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 555 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 555 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 539 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb212) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 539 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb-212 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 539 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 539 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 523 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb214) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 523 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Pb-214 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 523 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 523 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 507 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ra226) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 507 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Ra-226 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 507 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 507 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 491 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Rh106) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 491 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Rh106 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 491 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 491 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 475 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Se82.0nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 475 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Se-82, 0nubb\(mn\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 475 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 475 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 459 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Se82.0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 459 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Se-82, 0nubbM1) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 459 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 459 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 443 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Se82.0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 443 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Se-82, 0nubbM2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 443 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 443 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 417 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Se82.0nubb_rhc_) Tj T* (lambda_0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 417 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Se-82,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+ {2n}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 427 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 427 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 391 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Se82.0nubb_rhc_) Tj T* (lambda_0_2) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 391 cm
+q
+BT 1 0 0 1 0 12 Tm 10 TL /F1 8 Tf 0 0 0 rg (Neutrinoless double beta decay of Se-82,) Tj T* (0nubb\(rhc-lambda\) 0+ -) Tj (> 0+, 2+ {N*}) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 401 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 401 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 375 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Se82.2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 375 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Se-82, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 375 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 375 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 349 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Se82.2nubb_2Me) Tj T* (V) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 359 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Se-82, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 359 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Se82) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 359 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 333 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sn124.0nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 333 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Neutrinoless double beta decay of Sn-124, 0nubb\(mn\)) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 333 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Sn124) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 333 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 317 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sn124.2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 317 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Two neutrino double beta decay of Sn-124, 2nubb) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 317 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (DBD/Sn124) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 317 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 301 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sr90) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 301 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Sr-90 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 301 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 301 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 285 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Th234) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 285 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Th-234 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 285 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 285 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 269 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Tl207) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 269 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Tl-207 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 269 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 269 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 253 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Tl208) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 253 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Tl-208 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 253 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 253 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 237 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Y90) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 237 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Y-90 decay) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 237 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (background) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 237 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (genbb::wdecay0) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 221 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (calibBi207) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 221 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Bi-207 decay with time slicing) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 211 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (Bi-207 decay with) Tj T* (time slicing) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 211 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::time_slicer_g) Tj T* (enerator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.100keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 100 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 185 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.1MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 1 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 159 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.200keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 200 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 133 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.20keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 20 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 107 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.2MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 2 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 81 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.3MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 3 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 29 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (electron.50-2000k) Tj T* (eV_flat) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with energy in the [50keV-2MeV] range) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 29 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.500keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 500 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+0 0 0 RG
+.25 w
+n 0 658 m 469.8898 658 l S
+n 76.49368 658 m 76.49368 674 l S
+n 292.3151 658 m 292.3151 674 l S
+n 379.7365 658 m 379.7365 674 l S
+n 0 0 m 469.8898 0 l S
+n 0 642 m 469.8898 642 l S
+n 0 616 m 469.8898 616 l S
+n 0 600 m 469.8898 600 l S
+n 0 584 m 469.8898 584 l S
+n 0 568 m 469.8898 568 l S
+n 0 552 m 469.8898 552 l S
+n 0 536 m 469.8898 536 l S
+n 0 520 m 469.8898 520 l S
+n 0 504 m 469.8898 504 l S
+n 0 488 m 469.8898 488 l S
+n 0 472 m 469.8898 472 l S
+n 0 456 m 469.8898 456 l S
+n 0 440 m 469.8898 440 l S
+n 0 414 m 469.8898 414 l S
+n 0 388 m 469.8898 388 l S
+n 0 372 m 469.8898 372 l S
+n 0 346 m 469.8898 346 l S
+n 0 330 m 469.8898 330 l S
+n 0 314 m 469.8898 314 l S
+n 0 298 m 469.8898 298 l S
+n 0 282 m 469.8898 282 l S
+n 0 266 m 469.8898 266 l S
+n 0 250 m 469.8898 250 l S
+n 0 234 m 469.8898 234 l S
+n 0 208 m 469.8898 208 l S
+n 0 182 m 469.8898 182 l S
+n 0 156 m 469.8898 156 l S
+n 0 130 m 469.8898 130 l S
+n 0 104 m 469.8898 104 l S
+n 0 78 m 469.8898 78 l S
+n 0 52 m 469.8898 52 l S
+n 0 26 m 469.8898 26 l S
+n 76.49368 0 m 76.49368 658 l S
+n 292.3151 0 m 292.3151 658 l S
+n 379.7365 0 m 379.7365 658 l S
+n 0 674 m 469.8898 674 l S
+n 0 658 m 0 674 l S
+n 0 0 m 0 658 l S
+n 469.8898 658 m 469.8898 674 l S
+n 469.8898 0 m 469.8898 658 l S
+Q
+Q
+Q
+ 
+endstream
+endobj
+12 0 obj
+<<
+/Length 5429
+>>
+stream
+1 0 0 1 0 0 cm  BT /F1 12 Tf 14.4 TL ET
+q
+1 0 0 1 62.69291 541.0236 cm
+q
+1 1 1 rg
+n 0 224 469.8898 -16 re f*
+1 1 1 rg
+n 0 208 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 182 469.8898 -26 re f*
+1 1 1 rg
+n 0 156 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 130 469.8898 -26 re f*
+1 1 1 rg
+n 0 104 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 78 469.8898 -26 re f*
+1 1 1 rg
+n 0 52 469.8898 -26 re f*
+.878431 .878431 .878431 rg
+n 0 26 469.8898 -26 re f*
+.960784 .960784 .862745 rg
+n 0 224 469.8898 -16 re f*
+0 0 0 rg
+BT /F1 8 Tf 10 TL ET
+q
+1 0 0 1 6 211 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 64.49368 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 21.35484 0 Td (Name) Tj T* -21.35484 0 Td ET
+Q
+Q
+q
+1 0 0 1 82.49368 211 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 203.8215 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 79.90673 0 Td (Description) Tj T* -79.90673 0 Td ET
+Q
+Q
+q
+1 0 0 1 298.3151 211 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 75.42135 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 25.71068 0 Td (Group) Tj T* -25.71068 0 Td ET
+Q
+Q
+q
+1 0 0 1 385.7365 211 cm
+q
+.960784 .960784 .862745 rg
+n 0 0 78.15327 10 re f*
+Q
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F2 8 Tf 10 TL 28.40463 0 Td (Class) Tj T* -28.40463 0 Td ET
+Q
+Q
+0 0 0 rg
+BT /F1 10 Tf 12 TL ET
+q
+1 0 0 1 6 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (electron.50keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Electron with monokinetic energy @ 50 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 195 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 185 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.100keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 100 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 169 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 159 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.1MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 1 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 143 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 133 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.20keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 20 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 117 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 107 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.2615keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 2.615 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 91 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 81 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.2MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 2 MeV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 65 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 55 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.500keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 500 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 39 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 29 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 0 0 1 6 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (gamma.50keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 82.49368 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (Gamma with monokinetic energy @ 50 keV) Tj T* ET
+Q
+Q
+q
+1 0 0 1 298.3151 13 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 2 Tm /F1 8 Tf 10 TL (miscellaneous) Tj T* ET
+Q
+Q
+q
+1 0 0 1 385.7365 3 cm
+q
+0 0 0 rg
+BT 1 0 0 1 0 12 Tm /F1 8 Tf 10 TL (genbb::single_particle) Tj T* (_generator) Tj T* ET
+Q
+Q
+q
+1 J
+1 j
+0 0 0 RG
+.25 w
+n 76.49368 208 m 76.49368 224 l S
+n 292.3151 208 m 292.3151 224 l S
+n 379.7365 208 m 379.7365 224 l S
+n 0 208 m 469.8898 208 l S
+n 0 182 m 469.8898 182 l S
+n 0 156 m 469.8898 156 l S
+n 0 130 m 469.8898 130 l S
+n 0 104 m 469.8898 104 l S
+n 0 78 m 469.8898 78 l S
+n 0 52 m 469.8898 52 l S
+n 0 26 m 469.8898 26 l S
+n 76.49368 0 m 76.49368 208 l S
+n 292.3151 0 m 292.3151 208 l S
+n 379.7365 0 m 379.7365 208 l S
+n 0 224 m 469.8898 224 l S
+n 0 208 m 0 224 l S
+n 0 0 m 0 208 l S
+n 469.8898 208 m 469.8898 224 l S
+n 469.8898 0 m 469.8898 208 l S
+n 0 0 m 469.8898 0 l S
+Q
+Q
+Q
+q
+1 0 0 1 62.69291 541.0236 cm
+Q
+ 
+endstream
+endobj
+13 0 obj
+<<
+/Nums [ 0 14 0 R 1 15 0 R 2 16 0 R ]
+>>
+endobj
+14 0 obj
+<<
+/S /D /St 1
+>>
+endobj
+15 0 obj
+<<
+/S /D /St 2
+>>
+endobj
+16 0 obj
+<<
+/S /D /St 3
+>>
+endobj
+xref
+0 17
+0000000000 65535 f 
+0000000073 00000 n 
+0000000114 00000 n 
+0000000221 00000 n 
+0000000333 00000 n 
+0000000537 00000 n 
+0000000741 00000 n 
+0000000945 00000 n 
+0000001032 00000 n 
+0000001364 00000 n 
+0000001435 00000 n 
+0000019602 00000 n 
+0000037059 00000 n 
+0000042540 00000 n 
+0000042599 00000 n 
+0000042633 00000 n 
+0000042667 00000 n 
+trailer
+<<
+/ID 
+[<1a5c270107b18bebb4107828cedc6815><1a5c270107b18bebb4107828cedc6815>]
+% ReportLab generated PDF document -- digest (http://www.reportlab.com)
+
+/Info 8 0 R
+/Root 7 0 R
+/Size 17
+>>
+startxref
+42701
+%%EOF

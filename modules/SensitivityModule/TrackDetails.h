@@ -74,8 +74,10 @@ public:
   double MAXZ=1400; // This is not exact! Get the real value!
   
   TrackDetails();
-  TrackDetails(const geomtools::manager* geometry_manager_, snemo::datamodel::particle_track track);
-  void Initialize(const geomtools::manager* geometry_manager_,snemo::datamodel::particle_track track);
+  TrackDetails(const geomtools::manager * geometry_manager_,
+               snemo::datamodel::particle_track track);
+  void Initialize(const geomtools::manager * geometry_manager_,
+                  snemo::datamodel::particle_track track);
   bool Initialize();
 
   bool IsGamma();

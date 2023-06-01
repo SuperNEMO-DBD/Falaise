@@ -37,7 +37,7 @@ endforeach()
 add_test(NAME flsimulate-example-2-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
@@ -58,7 +58,7 @@ set_falaise_test_environment(flsimulate-example-2-run)
 add_test(NAME flsimulate-example-3-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
@@ -82,7 +82,7 @@ set_falaise_test_environment(flsimulate-example-3-run)
 add_test(NAME flsimulate-example-4-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t urn:snemo:demonstrator:simulation:2.1
+          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=calo_8inch_scin_bulk"
           -s "primary_events:generator=versatile_generator"
@@ -106,7 +106,7 @@ set_falaise_test_environment(flsimulate-example-4-run)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #16 fix
 add_test(NAME flsimulate-fix-issue16-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue16-validation"
   )
@@ -161,7 +161,7 @@ set_falaise_test_environment(flsimulate-issue98-run)
 # Tests dedicated to the validation of fixes
 # - Validation of issue #59 fix
 add_test(NAME flsimulate-fix-issue59-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue59-validation"
   )
@@ -170,7 +170,7 @@ set_falaise_test_environment(flsimulate-fix-issue59-validation)
 # Tests dedicated to the validation of fixes
 # - Validation of feature PR #75
 add_test(NAME flsimulate-feature-pr75-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-pr75-validation"
   )
@@ -220,7 +220,7 @@ set_falaise_test_environment(flsimulate-issue198-run)
 
 # - Validation of feature issue #237
 add_test(NAME flsimulate-feature-issue237-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue237-validation"
   )
@@ -231,10 +231,20 @@ set_falaise_test_environment(flsimulate-feature-issue237-validation)
 
 # - Validation of feature issue #241
 add_test(NAME flsimulate-feature-issue241-validation
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation"
   )
 set_tests_properties(flsimulate-feature-issue241-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 set_falaise_test_environment(flsimulate-feature-issue241-validation)
+
+# - Validation of feature argon tracking gas
+add_test(NAME flsimulate-feature-argon-gas-validation
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-argon-tracking-gas"
+  )
+set_tests_properties(flsimulate-feature-argon-gas-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-argon-gas-validation)

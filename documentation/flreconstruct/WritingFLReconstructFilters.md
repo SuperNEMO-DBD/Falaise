@@ -3,7 +3,7 @@ Writing FLReconstruct Filters {#writingflreconstructfilters}
 
 \tableofcontents
 
-Introduction to the writing of FLReconstruct filters {#introduction}
+Introduction to the writing of FLReconstruct filters {#writingflreconstructfilters_introduction}
 ========================================================================
 
 If you have just started using Falaise or the FLReconstruct application,
@@ -27,9 +27,9 @@ pipeline scripts. These topics are already covered in detail in the
 
 Using event data to accept or reject the event in a filter is deferred to [a later tutorial](@ref workingwitheventrecords).
 
-Implementing a Minimal flreconstruct Filter {#minimalfilter}
+Implementing a Minimal flreconstruct Filter {#writingflreconstructfilters_minimalfilter}
 ===========================================
-Creating the Filter Source Code {#minimalfilter_sources}
+Creating the Filter Source Code {#writingflreconstructfilters_minimalfilter_sources}
 -------------------------------
 We begin by creating an empty directory to hold the source code for
 our example filter, which we'll name "MyFilter"

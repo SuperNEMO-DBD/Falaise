@@ -35,7 +35,15 @@ namespace snemo {
       _solver_ = gsl_root_fsolver_alloc(_solver_type_);
       return;
     }
-
+   
+    run_statistics::inverse_cumul_dist::~inverse_cumul_dist()
+    {
+      if (_solver_ != nullptr) {
+        gsl_root_fsolver_free(_solver_);
+      }
+      return;
+    }
+ 
     double run_statistics::inverse_cumul_dist::operator()(double p_) const
     {
       // datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
@@ -131,7 +139,7 @@ namespace snemo {
     void run_statistics::_sync_()
     {
       datatools::logger::priority logging = _logging_;
-      std::set<std::int32_t> runIds;
+      std::set<run_id_type> runIds;
       _runs_->build_run_ids(runIds);
       _records_.reserve(_runs_->size());
       for (auto runId : runIds) {
@@ -140,8 +148,13 @@ namespace snemo {
         record_type rec;
         rec.run_id = runId;
         const run_description & runDesc = _runs_->get_run(runId);
+        if (datatools::logger::is_debug(logging)) {
+          boost::property_tree::ptree popts;
+          popts.put("indent", "[debug] ");
+          runDesc.print_tree(std::cerr, popts);
+        }
         const std::vector<time::time_period> & runSlices = runDesc.slices();
-        rec.cumul_dist.add_point(0.0, 0.0);
+        rec.cumul_dist.add_point(0.0, 0.0); // First sampled point in the c.d.f
         const time::time_period & runPeriod = runDesc.period();
         // Scan all active slices in the run:
         for (unsigned int iSlice = 0; iSlice < runSlices.size(); iSlice++) {
@@ -152,9 +165,10 @@ namespace snemo {
             if (t + dt > slicePeriod.end()) {
               dt = slicePeriod.end() - t;
             }
-            time::time_point timeInSlice = t + dt / 2;
-            if (_activity_model_->validate_time_point(timeInSlice)) {
-              double act = _activity_model_->compute_activity(timeInSlice);
+            time::time_point midtimeInSlice = t + dt / 2;
+            if (_activity_model_->validate_time_point(midtimeInSlice)) {
+              // Compute the activity in the middle of the time interval of with dt:
+              double act = _activity_model_->compute_activity(midtimeInSlice);
               double numberOfDecays = act * time::to_quantity(dt);
               meanNumberOfDecays += numberOfDecays;
             }
@@ -165,7 +179,8 @@ namespace snemo {
           }
         }
         rec.mean_nb_decays = meanNumberOfDecays;
-        if (rec.mean_nb_decays > 0) {
+        if (rec.mean_nb_decays > 0.0) {
+          // Normalise the cdf:
           rec.cumul_dist.scale(1. / meanNumberOfDecays);
         }
         rec.cumul_dist.lock_table("linear");
@@ -174,13 +189,17 @@ namespace snemo {
         DT_LOG_DEBUG(logging, "  probability=" << rec.probability);
         rec.cumul_probability = rec.mean_nb_decays;
         if (_records_.size() > 0) {
+          // Sum the accumulated probability from previous runs:
           rec.cumul_probability += _records_.back().cumul_probability;
         }
         DT_LOG_DEBUG(logging, "  cumul probability=" << rec.cumul_probability);
         _records_.push_back(rec);
       }
       double totalCumul = _records_.back().cumul_probability;
+      DT_THROW_IF(totalCumul < 1e-12, std::logic_error,
+                  "No event expected for the selected run list and activity model!");
       DT_LOG_DEBUG(logging, "  totalCumul=" << totalCumul);
+      // Normalization:
       for (auto & rec : _records_) {
         rec.probability /= totalCumul;
         rec.cumul_probability /= totalCumul;
@@ -221,7 +240,7 @@ namespace snemo {
       }
        
       out_ << popts.indent << tag
-           << "Activity model : " << _activity_model_ << std::endl;
+           << "Activity model : " << std::boolalpha << (_activity_model_ != nullptr) << std::dec << std::endl;
        
       out_ << popts.indent << tag
            << "Time step : " << time::to_string(_time_step_) << std::endl;

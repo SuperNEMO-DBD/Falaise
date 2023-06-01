@@ -3,7 +3,7 @@ Falaise Simulation Application
 ==============================
 
 :Author: F.Mauger
-:Date: 2017-03-16
+:Date: 2022-10-27
 
 What's Here
 ===========
@@ -49,7 +49,7 @@ like:
 
 The  variant service  loads a  *variant  profile* file  which must  be
 prepared     by    the     user    through     a    dedicated     tool
-(``bxvariant_inspector``).   This file  will  be  reused in  following
+(``flsimulate-configure``).   This file  will  be  reused in  following
 steps  of the  reconstruction/analysis  chain.  It  must be  preserved
 carefully. It is  also possible to provide the *variant  profile* as a
 list  of variant  parameter setting  rules in  the main  configuration
@@ -74,13 +74,24 @@ Online help about the format of the script is available through:
 Examples
 ========
 
-The       ``{Falaise-source-dir}/resources/examples/flsimulate/ex01/``
-directory  contains a  documented sample  setup from  which users  can
-derive their own simulation setup.
+
+Configuration
+---------------
 
 
-Note
-====
+Running ``flsimulate-configure`` to build a variant profile to feed the simulation.
 
-An  old  and  obsolete  version   of  FLsimulate  is  also  available:
-``flsimulate_legacy``.
+Generating a variant profile from a default set of variant parameters:
+
+.. code:: shell
+
+   $ flsimulate-configure -M -H -o my_simu.profile
+   $ cat my_simu.profile
+..
+
+
+Simulation
+-------------
+
+TBD
+

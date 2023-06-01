@@ -47,6 +47,8 @@ namespace snemo {
     std::ostream & operator<<(std::ostream & out_, run_category run_cat_);
 
     run_category from_string(const std::string & label_);
+
+    typedef int32_t run_id_type;
     
     /// \brief Run description
     class run_description
@@ -54,7 +56,8 @@ namespace snemo {
     {
     public:
 
-      static const std::int32_t INVALID_RUN_ID = -1;
+      static const run_id_type INVALID_RUN_ID = -1;
+      static const run_id_type ALL_RUN_IDS = -2;
       
       run_description() = default;
 
@@ -64,12 +67,12 @@ namespace snemo {
 
       void reset();
 
-      void set_run_id(std::int32_t id_);
+      void set_run_id(const run_id_type id_);
       
       std::int32_t run_id() const;
 
-      static run_description make(std::int32_t run_id_,
-                                  run_category run_cat_,
+      static run_description make(const run_id_type run_id_,
+                                  const run_category run_cat_,
                                   const time::time_period & run_period_,
                                   std::uint32_t number_of_events_);
  
@@ -117,7 +120,7 @@ namespace snemo {
 
       void _sync_();
       
-      std::int32_t _run_id_ = INVALID_RUN_ID;
+      run_id_type _run_id_ = INVALID_RUN_ID;
       run_category _category_ = run_category::INDETERMINATE;
       time::time_period _period_{time::time_point(time::not_a_date_time),
                                  time::time_point(time::not_a_date_time)};

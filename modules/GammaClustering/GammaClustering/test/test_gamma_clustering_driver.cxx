@@ -12,6 +12,7 @@
 // This project:
 #include <falaise/falaise.h>
 #include <falaise/resource.h>
+#include <falaise/snemo/geometry/config.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
 
@@ -75,8 +76,8 @@ int main(int argc, char* argv[]) {
     namespace srt = snemo::reconstruction;
 
     // Need an effective geometry manager ot make use of locators
-    const std::string gmanager_config_file =
-        falaise::get_resource_dir() + "/snemo/demonstrator/geometry/GeometryManager.conf";
+    std::string gmanager_config_file = snemo::geometry::default_geometry_tag();
+    datatools::fetch_path_with_env(gmanager_config_file);
     // Load properties from the configuration file
     datatools::properties gmanager_config;
     datatools::properties::read_config(gmanager_config_file, gmanager_config);

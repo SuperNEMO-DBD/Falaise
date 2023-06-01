@@ -1,0 +1,91 @@
+subgraph clusterPath_Geometry_5_0 {
+  label=""
+  shape="folder";
+  // newrank=true;
+	
+  subgraph clusterPath_Geometry_Variants_2_0 {
+		
+    /****************************************************************************************************/
+    Geometry_Variants_2_0_Path [ shape="tab"; fontname="Courier"; label = <
+				<table border="1">
+				<tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/variants/2.0/GeometryVariants.conf</td></tr>
+				<tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+				</table>
+				>; ];
+		
+    /****************************************************************************************************/
+    Geometry_Variants_2_0_Service_Path [ shape="tab"; fontname="Courier"; label = <
+					<table border="1">
+					<tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/variants/2.0/GeometryVariantRepository.conf</td></tr>
+					<tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+					</table>
+					>; ];
+	
+    /****************************************************************************************************/
+    Geometry_Variants_2_0_Profile_1_Path [ shape="tab"; fontname="Courier"; label = <
+					  <table border="1">
+					  <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/profiles/variants/2.0/profiles/basic-1.0.profile</td></tr>
+					  <tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+					  </table>
+					  >; ];
+    };
+    
+    subgraph clusterPath_Geometry_5_0_Deps {
+	    
+      /****************************************************************************************************/
+      Geometry_5_0_Models_Path [ shape="folder"; fontname="Courier"; label = <
+				<table border="1">
+				<tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/5.0/GeometryModels/</td></tr>
+				<tr><td bgcolor="lightgrey" align="left" >configuration folder</td></tr>
+				</table>
+				>; ];
+      
+      /****************************************************************************************************/
+      Geometry_5_0_Plugins_Path [ shape="folder"; fontname="Courier"; label = <
+				 <table border="1">
+				 <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/5.0/GeometryPlugins/</td></tr>
+				 <tr><td bgcolor="lightgrey" align="left" >configuration folder</td></tr>
+				 </table>
+			   >; ];
+      
+      /****************************************************************************************************/
+      Geometry_5_0_GeomIDMaps_Path [ shape="folder"; fontname="Courier"; label = <
+				    <table border="1">
+				    <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/5.0/GeomIDMaps/</td></tr>
+				    <tr><td bgcolor="lightgrey" align="left" >configuration folder</td></tr>
+				    </table>
+				    >; ];
+      
+      /****************************************************************************************************/
+      Geometry_5_0_Path [ shape="tab"; fontname="Courier"; label = <
+			 <table border="1">
+			 <tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/5.0/GeometryManager.conf</td></tr>
+			 <tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+			 <tr><td bgcolor="magenta" PORT="DEPS" align="right">dependencies</td></tr>
+			 </table>
+			 >; ];
+      
+      Geometry_5_0_Path:DEPS -> Geometry_5_0_GeomIDMaps_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+      Geometry_5_0_Path:DEPS -> Geometry_5_0_Plugins_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+      Geometry_5_0_Path:DEPS -> Geometry_5_0_Models_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+      
+    };
+	
+	
+    /****************************************************************************************************/
+    Geometry_5_0_Services_Path [ shape="tab"; fontname="Courier"; label = <
+				<table border="1">
+				<tr><td bgcolor="lightgreen" PORT="MAIN" align="left" >@falaise:snemo/demonstrator/geometry/5.0/GeometryService.conf</td></tr>
+				<tr><td bgcolor="lightgrey" align="left" >configuration file</td></tr>
+				<tr><td bgcolor="magenta" PORT="DEPS" align="right">dependencies</td></tr>
+				</table>
+				>; ];
+    
+    Geometry_5_0_Services_Path:DEPS -> Geometry_5_0_Path:MAIN[ style="dashed"; color="magenta"; label=" &laquo;include&raquo; "; ];
+};
+    
+Geometry_5_0:PATH                     -> Geometry_5_0_Path:MAIN;
+Geometry_5_0_Services:PATH            -> Geometry_5_0_Services_Path:MAIN;
+Geometry_Variants_2_0:PATH            -> Geometry_Variants_2_0_Path:MAIN;
+Geometry_Variants_2_0_DefProfile:PATH -> Geometry_Variants_2_0_Profile_1_Path:MAIN;
+Geometry_Variants_2_0_Profile_1:PATH  -> Geometry_Variants_2_0_Profile_1_Path:MAIN;

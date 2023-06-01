@@ -27,7 +27,7 @@ FLVisualizeArgs FLVisualizeArgs::makeDefault() {
   fvArgs.logLevel = datatools::logger::PRIO_FATAL;
   fvArgs.libraries.clear();
   // Experimental setup:
-  fvArgs.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:1.0";
+  fvArgs.experimentalSetupUrn = ""; // "urn:snemo:demonstrator:setup:2.0";
   // Variants support:
   fvArgs.variantConfigUrn = "";
   fvArgs.variantProfileUrn = "";
@@ -191,7 +191,7 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
   // Resolve tags/paths:
   if (flVisParameters.experimentalSetupUrn.empty()) {
     // Default setup:
-    flVisParameters.experimentalSetupUrn = "urn:snemo:demonstrator:setup:1.0";
+    flVisParameters.experimentalSetupUrn = "urn:snemo:demonstrator:setup:2.0";
     DT_LOG_NOTICE(flVisParameters.logLevel, "Using default experimental setup URN='"
                                                 << flVisParameters.experimentalSetupUrn << "'...");
   }

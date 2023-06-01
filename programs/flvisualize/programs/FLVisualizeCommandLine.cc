@@ -73,30 +73,36 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
 
   // Application specific options:
   bpo::options_description optGeneral("General options");
-  optGeneral.add_options()("help,h", "produce help message")("version", "print version number")(
-      "logging-priority,P", bpo::value<std::string>()->default_value("error")->value_name("level"),
-      "set the logging priority threshold")(
-      "load-dll,l",
+  optGeneral.add_options()
+    ("help,h", "produce help message")
+    ("version", "print version number")
+    ("logging-priority,P", bpo::value<std::string>()->default_value("error")->value_name("level"),
+      "set the logging priority threshold")
+    ("load-dll,l",
       bpo::value<std::vector<std::string> >(&params_.libraries)->value_name("library"),
-      "set a DLL to be loaded.")(
-      "experiment-setup,x",
+      "set a DLL to be loaded.")
+    ("experiment-setup,x",
       bpo::value<std::string>(&params_.experimentalSetupUrn)->value_name("tag"),
-      "set the experimental setup tag.")("variant-config,v",
-                                         bpo::value<std::string>()->value_name("tag"),
-                                         "set the variant configuration.")(
-      "variant-profile,f", bpo::value<std::string>()->value_name("tag"),
-      "set the variant profile.")("services-config,s", bpo::value<std::string>()->value_name("tag"),
-                                  "set the services configuration.")(
-      "ignore-input-metadata,G",
-      bpo::value<bool>(&params_.ignoreInputMetadata)->value_name("flag")->default_value(false),
-      "flag to ignore input metadata")(
-      "input-metadata-file,M",
+      "set the experimental setup tag.")
+    ("variant-config,v",
+     bpo::value<std::string>()->value_name("tag"),
+     "set the variant configuration.")
+    ("variant-profile,f", bpo::value<std::string>()->value_name("tag"),
+     "set the variant profile.")
+    ("services-config,s", bpo::value<std::string>()->value_name("tag"),
+     "set the services configuration.")
+    ("ignore-input-metadata,G",
+     bpo::value<bool>(&params_.ignoreInputMetadata)->value_name("flag")->default_value(false),
+      "flag to ignore input metadata")
+    ("input-metadata-file,M",
       bpo::value<std::string>(&params_.inputMetadataFile)->value_name("file"),
-      "file from which to load metadata")("input-file,i",
-                                          bpo::value<std::string>(&params_.inputFile)
-                                              // ->required()
-                                              ->value_name("file"),
-                                          "file from which to read input data (simulation, real)");
+      "file from which to load metadata")
+    ("input-file,i",
+     bpo::value<std::string>(&params_.inputFile)
+     // ->required()
+     ->value_name("file"),
+     "file from which to read input data (simulation, real)")
+    ;
 
   sv::view::options_manager& options_mgr = sv::view::options_manager::get_instance();
   // Browser options:
@@ -153,10 +159,10 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
   bpo::variables_map vMap;
   try {
     bpo::parsed_options parsed = bpo::command_line_parser(argc_, argv_)
-                                     .options(optPublic)
-                                     // .allow_unregistered()
-                                     .positional(args)
-                                     .run();
+      .options(optPublic)
+      // .allow_unregistered()
+      .positional(args)
+      .run();
     bpo::store(parsed, vMap);
     bpo::notify(vMap);
   } catch (const bpo::required_option& e) {

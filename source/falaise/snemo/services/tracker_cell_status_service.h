@@ -76,6 +76,10 @@ namespace snemo {
     typedef std::map<geomtools::geom_id, snemo::rc::tracker_cell_status_history> history_type;
 
     const history_type & get_histories() const;
+ 
+    //! Smart print
+    void print_tree(std::ostream & out_ = std::clog,
+                    const boost::property_tree::ptree & options_ = empty_options()) const override;
     
   private:
 
