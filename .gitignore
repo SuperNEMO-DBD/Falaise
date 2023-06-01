@@ -110,6 +110,7 @@ __pycache__/
 .Python
 env/
 build/
+install/
 develop-eggs/
 dist/
 downloads/

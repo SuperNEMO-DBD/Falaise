@@ -66,10 +66,10 @@ namespace snemo {
       double Y8 = Y4*Y4;
       double Z8 = Z4*Z4;
       double X9 = X5*X4;
-      double Y9 = Y5*X4;
+      double Y9 = Y5*Y4;
       double Z9 = Z5*Z4;
       double X10 = X5*X5;
-      double Y10 = Y5*X5;
+      double Y10 = Y5*Y5;
       double Z10 = Z5*Z5;
       auto power = static_cast<pol3d_power_type>(p[0]);
       switch (power) {
@@ -87,8 +87,9 @@ namespace snemo {
         
         value += p[242]*X7*Y3 + p[243]*X7*Y2*Z + p[244]*X7*Y*Z2 + p[245]*X7*Z3 \
           +      p[246]*Y7*X3 + p[247]*Y7*X2*Z + p[248]*Y7*Z3   + p[249]*Y7*Z2*X \
-          +      p[250]*Z7*X3 + p[251]*Z7*X2*Y + p[252]*Z7*X*Y2 + p[253]*Z7*Y3;
-        
+          +      p[250]*Z7*X3 + p[251]*Z7*X2*Y + p[252]*Z7*X*Y2 + p[253]*Z6*Y3;
+	// 2023-04-17 EC : p[253]*Z6*Y3 instead of p[253]*Z7*Y3 (Axel's mistake to keep)
+
         value += p[254]*X6*Y4 + p[255]*X6*Y3*Z + p[256]*X6*Y2*Z2 + p[257]*X6*Y*Z3 + p[258]*X6*Z4 \
           +      p[259]*Y6*X4 + p[260]*Y6*X3*Z + p[261]*Y6*X2*Z2 + p[262]*Y6*X*Z3 + p[263]*Y6*Z4 \
           +      p[264]*Z6*X4 + p[265]*Z6*X3*Y + p[266]*Z6*X2*Y2 + p[267]*Z6*X*Y3 + p[268]*Z6*Y4;
@@ -111,7 +112,8 @@ namespace snemo {
 
         value += p[185]*X6*Y3 + p[186]*X6*Y2*Z + p[187]*X6*Y*Z2 + p[188]*X6*Z3  \
           +      p[189]*Y6*X3 + p[190]*Y6*X2*Z + p[191]*Y6*Z3   + p[192]*Y6*Z2*X \
-          +      p[193]*Z6*X3 + p[194]*Z6*X2*Y + p[195]*Z6*X*Y2 + p[196]*Z6*Y3;
+          +      p[193]*Z6*X3 + p[194]*Z6*X2*Y + p[195]*Z6*X*Y2 + p[196]*Z5*Y3;
+	// 2023-04-17 EC : p[196]*Z5*Y3 instead of p[196]*Z6*Y3 (Axel's mistake to keep)
 
         value += p[197]*X5*Y4 + p[198]*X5*Y3*Z + p[199]*X5*Y2*Z2 + p[200]*X5*Y*Z3 + p[201]*X5*Z4 \
           +      p[202]*Y5*X4 + p[203]*Y5*X3*Z + p[204]*Y5*X2*Z2 + p[205]*Y5*X*Z3 + p[206]*Y5*Z4 \

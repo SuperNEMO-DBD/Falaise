@@ -4,12 +4,21 @@
 cmake_minimum_required(VERSION 3.3)
 project(Things2Root)
 
-# Modules use Falaise/Bayeux, so we need to locate this or fail
-#find_package(Falaise REQUIRED)
+# hack CMAKE_INSTALL_LIBDIR for dictionnary's .pcm and .rootmap file
+set(CMAKE_INSTALL_LIBDIR_OLD "${CMAKE_INSTALL_LIBDIR}")
+set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}/Falaise/modules")
 
-# Build a dynamic library from our sources
-add_library(Things2Root SHARED Things2Root.h Things2Root.cpp)
+# dictionary + its library declaration
+root_generate_dictionary(G__Things2Root_dict LINKDEF Things2Root_linkdef.h) # OPTIONS "-noIncludePaths"
+add_library(Things2Root_dict SHARED G__Things2Root_dict)
+target_link_libraries(Things2Root_dict PUBLIC ROOT::Core)
+
+# unhack CMAKE_INSTALL_LIBDI for dictionnary's .pcm and .rootmap file
+set(CMAKE_INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR_OLD}")
+
+# Things2Root module declaration
+add_library(Things2Root SHARED Things2Root.h Things2Root.cpp G__Things2Root_dict.cxx)
 target_link_libraries(Things2Root FalaiseModule)
 
-# Install it
-install(TARGETS Things2Root DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
+# install librairies
+install(TARGETS Things2Root Things2Root_dict DESTINATION ${CMAKE_INSTALL_PLUGINDIR})

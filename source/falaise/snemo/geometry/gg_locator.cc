@@ -438,9 +438,9 @@ uint32_t gg_locator::getRowAddress(const geomtools::geom_id &gid) const {
 
 bool gg_locator::isGeigerCell(const geomtools::geom_id &gid) const {
   if (gid.get_type() != cellGIDType_) return false;
-  unsigned int moduleId = gid.get(0); 
+  unsigned int moduleId = gid.get(0);
   if (moduleId != moduleNumber_) return false;
-  unsigned int sideId = gid.get(1); 
+  unsigned int sideId = gid.get(1);
   if (sideId >= numberOfSides()) return false;
   if (gid.get(2) >= numberOfLayers(sideId)) return false;
   if (gid.get(3) >= numberOfRows(sideId)) return false;
@@ -732,7 +732,8 @@ void gg_locator::construct_() {
   // The get_subaddress_index member function returns an invalid index
   // rather than throwing an exception. We therefore check the subaddress
   // categories we need upfront...
-  for (const std::string subaddress : {"module", "side", "layer", "row"}) {
+  for (const std::string &subaddress :
+       {std::string("module"), std::string("side"), std::string("layer"), std::string("row")}) {
     DT_THROW_IF(!cellCatInfo.has_subaddress(subaddress), std::logic_error,
                 "Category '" << detail::kDriftCellGIDCategory << "' has no subaddress '"
                              << subaddress << "'");
