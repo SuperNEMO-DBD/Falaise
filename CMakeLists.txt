@@ -267,6 +267,7 @@ install(
 # Also programs whilst migrating FLVisualize
 add_subdirectory(programs)
 add_subdirectory(modules)
+add_subdirectory(analysis)
 
 configure_file(
   cmake/falaise-config.in
