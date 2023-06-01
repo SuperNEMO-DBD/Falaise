@@ -59,7 +59,7 @@ int main(/* int argc_, char ** argv_ */) {
       my_calo_hit.set_baseline(0.01 * CLHEP::volt);
       my_calo_hit.set_rising_time(1.4 * CLHEP::nanosecond);
       my_calo_hit.set_falling_time(10.4 * CLHEP::nanosecond);
-      my_calo_hit.set_width(9 * CLHEP::nanosecond);
+      my_calo_hit.set_time_width(9 * CLHEP::nanosecond);
 
       my_calo_hit.tree_dump(std::clog, "Noisy precalibrated calorimeter hit");
     }  // namespace sdm=snemo::datamodel;
@@ -93,7 +93,7 @@ int main(/* int argc_, char ** argv_ */) {
         calo_hit.set_baseline(drand48() * 0.01 * CLHEP::volt);
         calo_hit.set_rising_time(drand48() * 1.4 * CLHEP::nanosecond);
         calo_hit.set_falling_time(drand48() * 10.4 * CLHEP::nanosecond);
-        calo_hit.set_width(drand48() * 9 * CLHEP::nanosecond);
+        calo_hit.set_time_width(drand48() * 9 * CLHEP::nanosecond);
       }
 
       // Search for hits with min/max amplitude :
