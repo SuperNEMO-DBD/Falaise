@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file  falaise/snemo/datamodels/unified_digitized_data_hit.h
+/// \file  falaise/snemo/datamodels/unified_digitized_data.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  *                Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
@@ -148,8 +148,8 @@ namespace snemo {
       int32_t _run_id_ = INVALID_RUN_ID; ///< Run ID
       int32_t _event_id_ = INVALID_EVENT_ID; ///< Event ID
       int64_t _reference_timestamp_; ///< Reference timestamp in the run timestamp frame
-      CalorimeterDigiHitHdlCollection _calorimeter_digitized_hits_; ///< Collection of calorimeter digitized hits
-      TrackerDigiHitHdlCollection _tracker_digitized_hits_; ///< Collection of tracker digitized hits
+      CalorimeterDigiHitHdlCollection _calorimeter_digitized_hits_; ///< Collection of calorimeter digitized hits shared pointers
+      TrackerDigiHitHdlCollection _tracker_digitized_hits_; ///< Collection of tracker digitized hits shared pointers
       std::set<int32_t> _origin_trigger_ids_; ///< Set of RTD trigger IDs used to build this event
       datatools::properties _auxiliaries_;
 
