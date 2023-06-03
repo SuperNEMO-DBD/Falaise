@@ -46,6 +46,6 @@ TODO
 ============
 
 - Add comments to better describe each attributes in the UDD format
-
+- Add support for a ``--help`` switch in ``fluddscan``
 
 .. end
