@@ -309,7 +309,9 @@ void browser_tracks::_update_simulated_data() {
 
   if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
     std::ostringstream tip_text;
-    sd.tree_dump(tip_text);
+    boost::property_tree::ptree sd_print_options;
+    sd_print_options.put("list_primary_particles", false);
+    sd.print_tree(tip_text, sd_print_options);
     item_simulated_data->SetTipText(tip_text.str().c_str());
   } else {
     item_simulated_data->SetTipText("Double click to expand simulated data");

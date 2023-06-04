@@ -248,3 +248,14 @@ add_test(NAME flsimulate-feature-argon-gas-validation
 set_tests_properties(flsimulate-feature-argon-gas-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 set_falaise_test_environment(flsimulate-feature-argon-gas-validation)
+
+# 2023-06-04 FM: add-on
+# - Validation of feature Bi207 calibration with high energy electrons decay events
+add_test(NAME flsimulate-feature-bi207he2e-validation
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-bi207he2e/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-bi207he2e"
+  )
+set_tests_properties(flsimulate-feature-bi207he2e-validation
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-bi207he2e-validation)

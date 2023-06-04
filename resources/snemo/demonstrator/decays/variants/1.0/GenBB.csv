@@ -98,6 +98,8 @@ Cs137 : Cs-137 decay : Background : : rank=second
 ### Calibration sources ###
 calibBi207 : Bi-207 decay (with time slicing) : Calibration : : rank=highlight 
 Bi207 : Bi-207 decay (without time slicing) : Calibration : : rank=second
+calibBi207HighEnergyElectrons : Bi-207 decay (with high energy electrons and time slicing) : Calibration : : rank=highlight 
+Bi207HighEnergyElectrons : Bi-207 decay (with high energy electrons but without time slicing) : Calibration : : rank=second
 Na22  : Na-22 decay  : Calibration : : rank=second
 Mn54  : Mn-54 decay  : Calibration : : rank=second
 Co60  : Co-60 decay  : Calibration : : rank=second 
