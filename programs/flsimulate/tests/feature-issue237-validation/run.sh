@@ -106,8 +106,10 @@ if [ $step1 -eq 1 ]; then
     echo >&2 ""
 
     echo >&2 "[info] Running flsimulate..."
-    flsimulate -c ${cfg_dir}/simu.conf -o ${FLWORKDIR}/feature-issue237-validation.xml > ${FLWORKDIR}/flsim1.log 2>&1
+    flsimulate -c ${cfg_dir}/simu.conf -o ${FLWORKDIR}/feature-issue237-validation.xml > ${FLWORKDIR}/flsim1.log \
+	       2> ${FLWORKDIR}/flsimulate.err
     if [ $? -ne 0 ]; then
+	cat ${FLWORKDIR}/flsimulate.err
 	my_exit 1 "flsimulate failed! Abort!"
     fi
 
