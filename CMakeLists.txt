@@ -108,7 +108,7 @@ endif(FALAISE_WITH_DOCS)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.5.3)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.4)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 
 # Depends on SNRS (https://github.com/SuperNEMO-DBD/SNRS)
