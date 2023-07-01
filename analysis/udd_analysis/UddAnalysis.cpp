@@ -9,7 +9,7 @@
 #include "falaise/snemo/datamodels/event_header.h"
 #include "falaise/snemo/datamodels/unified_digitized_data.h"
 
-DPP_MODULE_REGISTRATION_IMPLEMENT(UddAnalysis, "UddAnalysis");
+DPP_MODULE_REGISTRATION_IMPLEMENT(UddAnalysis, "UddAnalysis")
 
 void udd_analysis_init() {  
   std::cerr << "Loading UddAnalysis..." << std::endl;
