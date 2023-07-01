@@ -43,7 +43,7 @@
 // Only with ROOT > 6.16
 // #include <TGeoTessellated.h>
 // #include <TGeoVector3.h>
-// #include <TObjArray.h>
+#include <TObjArray.h>
 #include <TPolyLine3D.h>
 #include <TROOT.h>
 #include <TSystem.h>
