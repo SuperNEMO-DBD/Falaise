@@ -126,13 +126,18 @@ namespace snemo {
         new_pcd_calo->set_charge(fwmeas_charge);
 
 	const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
-	const double fwmeas_time_cfd = (a_udd_calo_hit->get_fwmeas_falling_cell()/256.0) * CALO_SAMPLING_PERIOD;
-	const double fwmeas_time = time_tdc - CALO_TIME_WINDOW + CALO_POSTRIGGER_TIME + fwmeas_time_cfd;
+	const double fwmeas_falling_time_cfd = (a_udd_calo_hit->get_fwmeas_falling_cell()/256.0) * CALO_SAMPLING_PERIOD;
+	const double fwmeas_time = time_tdc - CALO_TIME_WINDOW + CALO_POSTRIGGER_TIME + fwmeas_falling_time_cfd;
 	new_pcd_calo->set_time(fwmeas_time);
 
-        // // Add additional information in pCD calo datatools::properties
-	// datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
-        // pcd_calo_hit_properties.store("pCD_calorimeter_algorithm", calorimeter_precalibration_algorithm::ALGO_FWMEASUREMENT);
+        // Add additional information in pCD calo datatools::properties
+	datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
+
+        pcd_calo_hit_properties.store("time_cfd", fwmeas_falling_time_cfd);
+
+	const double fwmeas_rising_time_cfd = (a_udd_calo_hit->get_fwmeas_rising_cell()/256.0) * CALO_SAMPLING_PERIOD;
+	const double fwmes_width = fwmeas_rising_time_cfd - fwmeas_falling_time_cfd;
+        pcd_calo_hit_properties.store("pulse_width", fwmes_width);
 
         calo_hits_.push_back(new_pcd_calo);
       }
