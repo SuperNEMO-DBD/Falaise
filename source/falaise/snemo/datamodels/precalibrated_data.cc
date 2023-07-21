@@ -4,7 +4,7 @@
 #include <falaise/snemo/datamodels/precalibrated_data.h>
 
 // Third party:
-// - Bayeux/datatools:
+// - Bayeux/datatools
 #include <datatools/clhep_units.h>
 
 namespace snemo {

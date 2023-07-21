@@ -8,13 +8,13 @@
 #include <falaise/snemo/datamodels/precalibrated_tracker_hit.h>
 
 // Third party:
-// - Boost:
+// - Boost
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/nvp.hpp>
-// - Bayeux/datatools:
+// - Bayeux/datatools
 #include <datatools/utils.h>
-// - Bayeux/geomtools:
+// - Bayeux/geomtools
 #include <geomtools/base_hit.ipp>
 
 namespace snemo {
@@ -24,14 +24,9 @@ namespace snemo {
     template <class Archive>
     void precalibrated_tracker_hit::serialize(Archive& ar_, const unsigned int /* version_ */) {
       ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
-      ar_ & boost::serialization::make_nvp("reference_time", _reference_time_);
-      ar_ & boost::serialization::make_nvp("anodic_drift_time", _anodic_drift_time_);
-      ar_ & boost::serialization::make_nvp("sigma_anodic_drift_time", _sigma_anodic_drift_time_);
+      ar_ & boost::serialization::make_nvp("anodic_time", _anodic_time_);
       ar_ & boost::serialization::make_nvp("bottom_cathode_drift_time", _bottom_cathode_drift_time_);
-      ar_ & boost::serialization::make_nvp("sigma_bottom_cathode_drift_time", _sigma_bottom_cathode_drift_time_);
       ar_ & boost::serialization::make_nvp("top_cathode_drift_time", _top_cathode_drift_time_);
-      ar_ & boost::serialization::make_nvp("sigma_top_cathode_drift_time", _sigma_top_cathode_drift_time_);
-      ar_ & boost::serialization::make_nvp("is_delayed", _is_delayed_);
 
     }
 

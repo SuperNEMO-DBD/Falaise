@@ -131,20 +131,10 @@ typedef struct PreCalibCaloEventStorage {
   std::vector<int>* column_;
   std::vector<int>* row_;
   std::vector<int>* wall_;
-  std::vector<double>* amplitude_;
-  std::vector<double>* sigma_amplitude_;
-  std::vector<double>* charge_;
-  std::vector<double>* sigma_charge_;
-  std::vector<double>* time_;
-  std::vector<double>* sigma_time_;
   std::vector<double>* baseline_;
-  std::vector<double>* sigma_baseline_;
-  std::vector<double>* rising_time_;
-  std::vector<double>* sigma_rising_time_;
-  std::vector<double>* falling_time_;
-  std::vector<double>* sigma_falling_time_;
-  std::vector<double>* time_width_;
-  std::vector<double>* sigma_time_width_;
+  std::vector<double>* amplitude_;
+  std::vector<double>* charge_;
+  std::vector<double>* time_;
 
   PreCalibCaloEventStorage()
     : nohits_(0),
@@ -155,20 +145,10 @@ typedef struct PreCalibCaloEventStorage {
       column_(0),
       row_(0),
       wall_(0),
-      amplitude_(0),
-      sigma_amplitude_(0),
-      charge_(0),
-      sigma_charge_(0),
-      time_(0),
-      sigma_time_(0),
       baseline_(0),
-      sigma_baseline_(0),
-      rising_time_(0),
-      sigma_rising_time_(0),
-      falling_time_(0),
-      sigma_falling_time_(0),
-      time_width_(0),
-      sigma_time_width_(0) {}
+      amplitude_(0),
+      charge_(0),
+      time_(0) {}
 
 } PreCalibCaloEventStorage;
 
@@ -180,14 +160,9 @@ typedef struct PreCalibTrackerEventStorage {
   std::vector<int>* side_;
   std::vector<int>* layer_;
   std::vector<int>* column_;
-  std::vector<double>* reference_time_;
-  std::vector<double>* anodic_drift_time_;
-  std::vector<double>* sigma_anodic_drift_time_;
+  std::vector<double>* anodic_time_;
   std::vector<double>* bottom_cathode_drift_time_;
-  std::vector<double>* sigma_bottom_cathode_drift_time_;
   std::vector<double>* top_cathode_drift_time_;
-  std::vector<double>* sigma_top_cathode_drift_time_;
-  std::vector<bool>*   is_delayed_;
 
   PreCalibTrackerEventStorage()
     : nohits_(0),
@@ -196,14 +171,9 @@ typedef struct PreCalibTrackerEventStorage {
       side_(0),
       layer_(0),
       column_(0),
-      reference_time_(0),
-      anodic_drift_time_(0),
-      sigma_anodic_drift_time_(0),
+      anodic_time_(0),
       bottom_cathode_drift_time_(0),
-      sigma_bottom_cathode_drift_time_(0),
-      top_cathode_drift_time_(0),
-      sigma_top_cathode_drift_time_(0),
-      is_delayed_(0) {}
+      top_cathode_drift_time_(0) {}
 
 } PreCalibTrackerEventStorage;
 

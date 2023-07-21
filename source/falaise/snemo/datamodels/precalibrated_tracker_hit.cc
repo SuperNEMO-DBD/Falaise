@@ -1,81 +1,40 @@
+// -*- mode: c++ ; -*-
 // falaise/snemo/datamodels/precalibrated_tracker_hit.cc
 
 // Ourselves:
 #include <falaise/snemo/datamodels/precalibrated_tracker_hit.h>
 
 // Third party:
-// - Bayeux/datatools:
+// - Bayeux/datatools
 #include <datatools/clhep_units.h>
 #include <datatools/utils.h>
-
 
 namespace snemo {
 
   namespace datamodel {
 
-    // Serial tag for datatools::i_serializable interface :
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(precalibrated_tracker_hit,
                                                       "snemo::datamodel::precalibrated_tracker_hit")
 
-
-    double precalibrated_tracker_hit::get_reference_time() const
+    double precalibrated_tracker_hit::get_anodic_time() const
     {
-      return _reference_time_;
+      return _anodic_time_;
     }
 
-    void precalibrated_tracker_hit::set_reference_time(double reference_time_)
+    void precalibrated_tracker_hit::set_anodic_time(double anodic_time_)
     {
-      _reference_time_ = reference_time_;
+      _anodic_time_ = anodic_time_;
       return;
     }
 
-    bool precalibrated_tracker_hit::has_reference_time() const
+    bool precalibrated_tracker_hit::has_anodic_time() const
     {
-      return !datatools::is_valid(_reference_time_);
+      return !datatools::is_valid(_anodic_time_);
     }
 
-    void precalibrated_tracker_hit::reset_reference_time()
+    void precalibrated_tracker_hit::reset_anodic_time()
     {
-      _reference_time_ = datatools::invalid_real();
-      return;
-    }
-
-    double precalibrated_tracker_hit::get_anodic_drift_time() const
-    {
-      return _anodic_drift_time_;
-    }
-
-    void precalibrated_tracker_hit::set_anodic_drift_time(double anodic_drift_time_)
-    {
-      _anodic_drift_time_ = anodic_drift_time_;
-      return;
-    }
-
-    bool precalibrated_tracker_hit::has_anodic_drift_time() const
-    {
-      return !datatools::is_valid(_anodic_drift_time_);
-    }
-
-    void precalibrated_tracker_hit::reset_anodic_drift_time()
-    {
-      _anodic_drift_time_ = datatools::invalid_real();
-      return;
-    }
-
-    double precalibrated_tracker_hit::get_sigma_anodic_drift_time() const
-    {
-      return _sigma_anodic_drift_time_;
-    }
-
-    void precalibrated_tracker_hit::set_sigma_anodic_drift_time(double sigma_anodic_drift_time_)
-    {
-      _sigma_anodic_drift_time_ = sigma_anodic_drift_time_;
-      return;
-    }
-
-    void precalibrated_tracker_hit::reset_sigma_anodic_drift_time()
-    {
-      _sigma_anodic_drift_time_ = datatools::invalid_real();
+      _anodic_time_ = datatools::invalid_real();
       return;
     }
 
@@ -102,23 +61,6 @@ namespace snemo {
       return;
     }
 
-    double precalibrated_tracker_hit::get_sigma_bottom_cathode_drift_time() const
-    {
-      return _sigma_bottom_cathode_drift_time_;
-    }
-
-    void precalibrated_tracker_hit::set_sigma_bottom_cathode_drift_time(double sigma_bottom_cathode_drift_time_)
-    {
-      _sigma_bottom_cathode_drift_time_ = sigma_bottom_cathode_drift_time_;
-      return;
-    }
-
-    void precalibrated_tracker_hit::reset_sigma_bottom_cathode_drift_time()
-    {
-      _sigma_bottom_cathode_drift_time_ = datatools::invalid_real();
-      return;
-    }
-
     double precalibrated_tracker_hit::get_top_cathode_drift_time() const
     {
       return _top_cathode_drift_time_;
@@ -141,38 +83,10 @@ namespace snemo {
       return;
     }
 
-    double precalibrated_tracker_hit::get_sigma_top_cathode_drift_time() const
-    {
-      return _sigma_top_cathode_drift_time_;
-    }
-
-    void precalibrated_tracker_hit::set_sigma_top_cathode_drift_time(double sigma_top_cathode_drift_time_)
-    {
-      _sigma_top_cathode_drift_time_ = sigma_top_cathode_drift_time_;
-      return;
-    }
-
-    void precalibrated_tracker_hit::reset_sigma_top_cathode_drift_time()
-    {
-      _sigma_top_cathode_drift_time_ = datatools::invalid_real();
-      return;
-    }
-
     double precalibrated_tracker_hit::get_plasma_propagation_time() const
     {
       if (has_bottom_cathode_drift_time() && has_top_cathode_drift_time()) return _bottom_cathode_drift_time_ + _top_cathode_drift_time_;
       else return datatools::invalid_real();
-    }
-
-    bool precalibrated_tracker_hit::is_delayed() const
-    {
-      return _is_delayed_;
-    }
-
-    void precalibrated_tracker_hit::set_delayed(bool is_delayed_)
-    {
-      _is_delayed_ = is_delayed_;
-      return;
     }
 
     bool precalibrated_tracker_hit::is_valid() const
@@ -184,14 +98,9 @@ namespace snemo {
     void precalibrated_tracker_hit::invalidate()
     {
       this->base_hit::invalidate();
-      datatools::invalidate(_reference_time_);
-      datatools::invalidate(_anodic_drift_time_);
-      datatools::invalidate(_sigma_anodic_drift_time_);
+      datatools::invalidate(_anodic_time_);
       datatools::invalidate(_bottom_cathode_drift_time_);
-      datatools::invalidate(_sigma_bottom_cathode_drift_time_);
       datatools::invalidate(_top_cathode_drift_time_);
-      datatools::invalidate(_sigma_top_cathode_drift_time_);
-      _is_delayed_ = false;
     }
 
     void precalibrated_tracker_hit::clear()
@@ -204,15 +113,27 @@ namespace snemo {
     {
       base_hit::tree_dump(out, title, indent, true);
 
-      out << indent << datatools::i_tree_dumpable::tag << "Reference time : " << _reference_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Anodic drift time : " << _anodic_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Sigma(anodic drift time) : " << _sigma_anodic_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time : " << _bottom_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Sigma(bottom cathode drift time) : " << _sigma_bottom_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Top cathode drift time : "    << _top_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Sigma(top cathode drift time) : " << _sigma_top_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Is delayed : " << _is_delayed_ << std::endl;
+      double tmp_time_sec = _anodic_time_ / CLHEP::second;
 
+      int time_day    = std::floor(tmp_time_sec/86400.);
+      tmp_time_sec   -= 86400.*time_day;
+      int time_hour   = std::floor(tmp_time_sec/3600.);
+      tmp_time_sec   -= 3600.*time_hour;
+      int time_min    = std::floor(tmp_time_sec/60.);
+      tmp_time_sec   -= 60.*time_min;
+      int time_sec    = std::floor(tmp_time_sec);
+      tmp_time_sec   -= time_sec;
+      int time_msec   = std::floor(tmp_time_sec*1E3);
+      tmp_time_sec   -= 1E-3*time_msec;
+      int time_usec   = std::floor(tmp_time_sec*1E6);
+      tmp_time_sec   -= 1E-6*time_usec;
+      int time_nsec   = std::floor(tmp_time_sec*1E9);
+
+      // out << indent << datatools::i_tree_dumpable::tag << "Anodic time : " << _anodic_time_ / CLHEP::second << " s\n"
+      out << indent << datatools::i_tree_dumpable::tag << "Anodic time: " << time_day << "d " << time_hour << "h "
+	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << "ns\n"
+          << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time : " << _bottom_cathode_drift_time_ / CLHEP::microsecond << " us\n"
+          << indent << datatools::i_tree_dumpable::tag << "Top cathode drift time : "    << _top_cathode_drift_time_ / CLHEP::microsecond << " us\n";
     }
 
   }  // end of namespace datamodel
