@@ -141,10 +141,11 @@ namespace snemo {
 
       out << indent << datatools::i_tree_dumpable::tag << "Baseline: " << _baseline_ / CLHEP::volt << " V\n"
 	  << indent << datatools::i_tree_dumpable::tag << "Amplitude: " << _amplitude_ / (1E-3 * CLHEP::volt) << " mV\n"
-          << indent << datatools::i_tree_dumpable::tag << "Charge: " << _charge_/ (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s\n"
-          // << indent << datatools::i_tree_dumpable::tag << "Time: " << _time_ / CLHEP::second << " s\n";
-          << indent << datatools::i_tree_dumpable::tag << "Time: " << time_day << "d " << time_hour << "h "
-	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << "ns\n";
+	  << indent << datatools::i_tree_dumpable::tag << "Charge: " << _charge_/ (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s\n"
+	  << indent << datatools::i_tree_dumpable::last_tag << "Time: "
+	  << time_day << "d " << time_hour << "h " << time_min << "m " << time_sec << "s "
+	  << time_msec << "ms " << time_usec << "us " << time_nsec << "ns\n";
+      // << indent << datatools::i_tree_dumpable::tag << "Time: " << _time_ / CLHEP::second << " s\n";
     }
 
   }  // end of namespace datamodel
