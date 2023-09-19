@@ -85,6 +85,8 @@ Falaise - SuperNEMO Demonstrator - List of decay generators (version 1.4)
  gamma.2MeV                      Gamma with monokinetic energy @ 2 MeV                                           miscellaneous                    genbb::single_particle_generator
  gamma.500keV                    Gamma with monokinetic energy @ 500 keV                                         miscellaneous                    genbb::single_particle_generator
  gamma.50keV                     Gamma with monokinetic energy @ 50 keV                                          miscellaneous                    genbb::single_particle_generator
+ tweakable_generator             Broadly tweakable single particle generator                                                                      genbb::single_particle_generator
+ aegir                           Arbitrary Event Generator Injector                                                                               snemo::simulation::arbitrary_event_generator_injector
 =============================== =============================================================================== ================================ ==================================== 
 
 .. end

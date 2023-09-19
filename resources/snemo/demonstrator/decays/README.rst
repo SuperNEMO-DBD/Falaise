@@ -16,6 +16,11 @@ Organization of the directory
     + ``BackgroundSources.conf`` : Various background sources
     + ``CalibrationSources.conf`` : Various calibration sources
     + ``ConfigurableSources.conf`` : Various configurable sources
+
+      - ``tweakable_generator`` (of type ``genbb::single_particle_generator``) : Generator with various
+	tweakable parameters (particle name, fixed or ranged energy, energy spectrum, direction of emission (cone)...)
+      - ``aegir``  (of type ``snemo::simulation::arbitrary_event_generator_injector``) : Generator which wraps some possibly external event generator(s) defined from non official configuration files
+	
     + ``DBDSources.conf`` : Various DBD emitter sources
     + ``GenericSources.conf`` : Various generic sources
  
