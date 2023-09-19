@@ -77,8 +77,9 @@ namespace snemo {
       /// # Flag to assign generation IDs to generated events:
       /// assign_generation_ids : boolean = false
       ///
-      /// # Path of a file which contains a list of setup for the event/particle generators to be used:
-      /// setup_list_file : string as path = "/path/to/some/list_of_config_files_for_some_event_generators"
+      /// # Path of a file which contains a list of setup file paths
+      /// # for the event/particle generators to be used:
+      /// list_of_setup_files : string as path = "/path/to/some/list_of_config_files_for_some_event_generators"
       ///
       /// # Path of a single file which setups the event/particle generators to be used:
       /// setup_file : string as path = "/path/to/some/config_file_for_some_event_generators"
@@ -146,10 +147,10 @@ namespace snemo {
       bool _initialized_ = false;  //!< Initialization flag
       unsigned long _seed_ = 0;    //!< Local PRNG's seed
       mygsl::rng _random_;         //!< Local PRNG
-
+      
       std::vector<std::string> _setup_file_paths_; //!< List of setup files for event/particle generators
       genbb::manager _mgr_; //!< Private manager for event/particle generators 
-      std::string _pg_name_; //!< name of the event particle generator to be used from the list of embedded event/particle generators 
+      std::string _pg_name_; //!< Name of the event particle generator to be used from the list of embedded event/particle generators 
       const genbb::detail::pg_dict_type * _pg_dict_ = nullptr; //!< Dictionary of particle generators
       ::genbb::i_genbb * _pg_ = nullptr; //<! Selected event/particle generator
 

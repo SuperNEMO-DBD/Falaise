@@ -33,7 +33,7 @@ namespace snemo {
     {
       return true;
     }
-
+    
     bool arbitrary_event_generator_injector::is_initialized() const
     {
       return _initialized_;
@@ -104,23 +104,23 @@ namespace snemo {
 	_seed_ = seed;
       }
       
-      if (dps_.has_key("setup_list_file")) {
-	std::string setup_list_file_path = dps_.fetch_string("setup_list_file");
-	datatools::fetch_path_with_env(setup_list_file_path);
-	std::ifstream setupListFile(setup_list_file_path);
+      if (dps_.has_key("list_of_setup_files")) {
+	std::string list_of_setup_files_paths = dps_.fetch_string("list_of_setup_files");
+	datatools::fetch_path_with_env(list_of_setup_files_paths);
+	std::ifstream setupListFile(list_of_setup_files_paths);
 	while (!setupListFile.eof()) {
 	  std::string line;
 	  std::getline(setupListFile, line);
 	  if (!line.empty() and line[0] != '#') {
-	    std::string setup_file_path = line;
-	    _setup_file_paths_.push_back(setup_file_path);
+	    std::string setupFilePath = line;
+	    _setup_file_paths_.push_back(setupFilePath);
 	  }
 	}
       }
       
       if (dps_.has_key("setup_file")) {
-	std::string setup_file_path = dps_.fetch_string("setup_list_file");
-	_setup_file_paths_.push_back(setup_file_path);
+	std::string setupFilePath = dps_.fetch_string("setup_file");
+	_setup_file_paths_.push_back(setupFilePath);
       }
     
       if (dps_.has_key("generator")) {
@@ -133,7 +133,7 @@ namespace snemo {
       }
 
       DT_THROW_IF(_setup_file_paths_.size() == 0, std::logic_error,
-		  "Missing 'setup_file' or 'setup_list_file' property for particle generator '" << get_name() << "' !"); 
+		  "Missing 'setup_file' or 'list_of_setup_files' property for particle generator '" << get_name() << "' !"); 
 
       _at_init_();
 
@@ -144,11 +144,13 @@ namespace snemo {
     void arbitrary_event_generator_injector::_at_init_()
     {
       // Initialize the PRNG :
+      if (has_external_random()) {
+	_mgr_.set_external_prng(grab_external_random());
+      } 
       if (!has_external_random()) {
 	_random_.init("taus2", _seed_);
+	_mgr_.set_external_prng(_random_);
       }
-      // mygsl::rng & extPrng = XXX.grab_external_prng();
-      // _mgr_->set_external_prng(extPrng);
       for (std::string setupFile : _setup_file_paths_) {
 	datatools::fetch_path_with_env(setupFile);
 	datatools::multi_properties managerConfig;
