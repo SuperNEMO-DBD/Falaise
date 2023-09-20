@@ -47,11 +47,11 @@ namespace snemo {
       _pcd_output_tag_ = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
 
       _calo_adc2volt_ = fps.get<double>("calo_adc2volt", 2.5/4096.0) * CLHEP::volt;
-
       double _calo_sampling_frequency_ = fps.get<double>("calo_sampling_frequency_ghz", 2.56) * 1E9*CLHEP::hertz;
       _calo_sampling_period_ = 1.0/_calo_sampling_frequency_;
-
       _calo_postrigger_time_ = fps.get<double>("calo_postrigger_ns", 250) * CLHEP::ns;
+
+      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
 
       // _udd2pcd_calo_method_ = fps.get<std::string>("calo_method", "fwmeas")
       // _udd2pcd_tracker_method_ = fps.get<std::string>("tracker_method", "fwmeas")
@@ -94,8 +94,6 @@ namespace snemo {
       // Main tracker processing method :
       process_tracker_impl(udd_data, pcd_data);
 
-      pcd_data.tree_dump();
-
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
@@ -115,21 +113,31 @@ namespace snemo {
       // Loop over UDD calorimeter digitized hits
       for (auto& a_udd_calo_hit : udd_calo_hits) {
 
-	// // Retrieve sampling period and postrigger parameters from properties
-	// const datatools::properties & udd_calo_hit_properties = a_udd_calo_hit->get_auxiliaries();
+	// Discard empty waveforms
+	if (_calo_discard_empty_waveform_) {
 
-        // For each UDD calorimeter digitized hit, produce and fill a precalibrated calorimeter hit
+	  bool discard_calo_hit = true;
+
+	  if (a_udd_calo_hit->is_high_threshold())
+	    discard_calo_hit = false;
+	  else if (a_udd_calo_hit->is_low_threshold_only())
+	    discard_calo_hit = false;
+	  else if (((a_udd_calo_hit->get_fwmeas_peak_amplitude()/8.0) * CALO_ADC2VOLT) > (10E-3 *CLHEP::volt))
+	    discard_calo_hit = false;
+
+	  if (discard_calo_hit)
+	    continue;
+	}
+
+        // Produce and fill a new precalibrated calorimeter hit
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
-        // auto& newHit = newHandle.grab();
 
         new_pcd_calo->set_hit_id(a_udd_calo_hit->get_hit_id());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
-        // const double fwmeas_baseline_adc = (2048.0 + a_udd_calo_hit->get_fwmeas_baseline()/16.0);
 	const double fwmeas_baseline = (a_udd_calo_hit->get_fwmeas_baseline()/16.0) * CALO_ADC2VOLT;
         new_pcd_calo->set_baseline(fwmeas_baseline);
 
-        // const double fwmeas_amplitude_adc = a_udd_calo_hit->get_fwmeas_peak_amplitude()/8.0;
         const double fwmeas_amplitude = (a_udd_calo_hit->get_fwmeas_peak_amplitude()/8.0) * CALO_ADC2VOLT;
         new_pcd_calo->set_amplitude(fwmeas_amplitude);
 

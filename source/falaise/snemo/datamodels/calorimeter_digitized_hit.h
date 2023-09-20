@@ -125,7 +125,7 @@ namespace snemo {
       };
 
       /// Check the status of the low threshold only boolean
-      bool is_low_threshold_only() const;\
+      bool is_low_threshold_only() const;
 
       /// Set the low threshold only boolean
       void set_low_threshold_only(bool);

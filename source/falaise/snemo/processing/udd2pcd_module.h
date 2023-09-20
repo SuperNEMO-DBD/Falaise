@@ -92,6 +92,7 @@ namespace snemo {
       double _calo_adc2volt_;
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
+      bool _calo_discard_empty_waveform_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
