@@ -77,12 +77,9 @@ namespace snemo {
       void process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
                              snemo::datamodel::precalibrated_data & pcd_data_);
 
-      /// Initialized (fill) precalibrated tracker hits
-      void initialize_precalibrated_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-						 snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
-
-      /// Clusterize precalibrated tracker hits
-      void clusterize_and_precalibrate_tracker_hits(snemo::datamodel::precalibrated_data & pcd_data_);
+      /// Precalibrated tracker hits
+      void precalibrate_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
+				     snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
 
       /// Main process tracker function
       void process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -98,7 +95,8 @@ namespace snemo {
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
-	};
+
+    };
 
   }  // end of namespace processing
 
