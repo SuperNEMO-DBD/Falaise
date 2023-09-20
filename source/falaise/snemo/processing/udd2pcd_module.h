@@ -70,21 +70,23 @@ namespace snemo {
     private:
 
       /// Precalibrate calorimeter hits with fwmeas
-      void precalibrate_calo_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-					 snemo::datamodel::PreCalibCalorimeterHitHdlCollection& calo_hits_);
+      void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
+					 snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_);
 
       /// Main process calo function
       void process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-                             snemo::datamodel::PreCalibCalorimeterHitHdlCollection& calo_hits_);
+                             snemo::datamodel::precalibrated_data & pcd_data_);
 
-      /// Precalibrate tracker hits
-      void precalibrate_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                     snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
+      /// Initialized (fill) precalibrated tracker hits
+      void initialize_precalibrated_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
+						 snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
 
+      /// Clusterize precalibrated tracker hits
+      void clusterize_and_precalibrate_tracker_hits(snemo::datamodel::precalibrated_data & pcd_data_);
 
       /// Main process tracker function
       void process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
+                                snemo::datamodel::precalibrated_data & pcd_data_);
 
     private:
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank

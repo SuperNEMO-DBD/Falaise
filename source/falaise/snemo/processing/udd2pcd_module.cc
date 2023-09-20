@@ -22,8 +22,9 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
+#include <falaise/snemo/datamodels/precalibrated_data.h>
 #include <falaise/snemo/services/services.h>
-#include <falaise/snemo/rc/calorimeter_om_status.h>
 
 namespace snemo {
 
@@ -74,30 +75,30 @@ namespace snemo {
 
       auto& udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
 
-      // Check if some 'precalibrated_data' are available in the data model:
+      // Check if some 'pcd_data' are available in the data model:
       // Precalibrated Data is a single object with each hit collection
       // May, or may not, have it depending on if we run before or after
       // other calibrators
-      auto& precalibrated_data = snedm::getOrAddToEvent<snemo::datamodel::precalibrated_data>(_pcd_output_tag_, event);
+      auto& pcd_data = snedm::getOrAddToEvent<snemo::datamodel::precalibrated_data>(_pcd_output_tag_, event);
 
       // Always rewrite calorimeter hits
-      precalibrated_data.calorimeter_hits().clear();
+      pcd_data.calorimeter_hits().clear();
 
       // Always rewrite tracker hits
-      precalibrated_data.tracker_hits().clear();
+      pcd_data.tracker_hits().clear();
 
       // Main calorimeter processing method :
-      process_calo_impl(udd_data, precalibrated_data.calorimeter_hits());
+      process_calo_impl(udd_data, pcd_data);
 
       // Main tracker processing method :
-      process_tracker_impl(udd_data, precalibrated_data.tracker_hits());
+      process_tracker_impl(udd_data, pcd_data);
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
     // Precalibrate calorimeter hits from UDD informations:
-    void udd2pcd_module::precalibrate_calo_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-						snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
+    void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
+						       snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
@@ -151,14 +152,16 @@ namespace snemo {
     }
 
     void udd2pcd_module::process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                           snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
-      precalibrate_calo_hits(udd_data_, calo_hits_);
+                                           snemo::datamodel::precalibrated_data & pcd_data_) {
+
+      precalibrate_calo_hits_fwmeas(udd_data_, pcd_data_.calorimeter_hits());
+
     }
 
 
     // Precalibrate tracker hits from UDD informations:
-    void udd2pcd_module::precalibrate_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-						   snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
+    void udd2pcd_module::initialize_precalibrated_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
+							       snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
 
       // Constants
       const double TRACKER_TDC_TICK = 12.5 * CLHEP::nanosecond;
@@ -203,7 +206,6 @@ namespace snemo {
 	  continue;
 
         auto new_pcd_tracker = datatools::make_handle<snemo::datamodel::precalibrated_tracker_hit>();
-        // auto& newHit = newHandle.grab();
 
         new_pcd_tracker->set_hit_id(a_udd_tracker_hit->get_hit_id());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
@@ -229,9 +231,133 @@ namespace snemo {
 
     }
 
+    // Clusterize precalibrate tracker hits from UDD informations:
+    void udd2pcd_module::clusterize_and_precalibrate_tracker_hits(snemo::datamodel::precalibrated_data & pcd_data_) {
+
+      const double tracker_clusterization_radius_threshold = 3.0; // unit in cell_size
+      const double tracker_clusterization_radius2_threshold = tracker_clusterization_radius_threshold*tracker_clusterization_radius_threshold;
+      const double tracker_clusterization_deltat_threshold = 15E-6 * CLHEP::second;
+
+      // std::vector<int> pcd_tracker_hit_indexes;
+      std::vector<std::vector<int>> pcd_tracker_hit_clusters;
+
+      // Retrieve pCD tracker hits
+      const auto& pcd_tracker_hits = pcd_data_.tracker_hits();
+
+      // Iterate over all tracker hits
+      for (size_t pcd_tracker_hit_index=0; pcd_tracker_hit_index<pcd_tracker_hits.size(); pcd_tracker_hit_index++) {
+
+	auto & pcd_tracker_hit = pcd_tracker_hits.at(pcd_tracker_hit_index).get();
+
+	// Storage of cluster indexe(s) in which at least 1 tracker hit
+	// will match the time/space neighboring criteria with pcd_tracker_hit
+	// (if more than 1 cluster is there, they will have to be merged!)
+	std::vector<size_t> matching_cluster_indexes;
+
+	// Retrieve time/space data
+	const double & pcd_tracker_anode_time = pcd_tracker_hit.get_anodic_time();
+	const geomtools::geom_id & pcd_tracker_geomid = pcd_tracker_hit.get_geom_id();
+	const uint32_t & pcd_tracker_side  = pcd_tracker_geomid.get(1);
+	const uint32_t & pcd_tracker_layer = pcd_tracker_geomid.get(2);
+	const uint32_t & pcd_tracker_row   = pcd_tracker_geomid.get(3);
+
+	// Iterate over all existing cluster
+	for (size_t cluster_index=0; cluster_index<pcd_tracker_hit_clusters.size(); cluster_index++) {
+
+	  // Retrieve the vector of tracker hit indexes
+	  const std::vector<int> & cluster_pcd_tracker_hit_indexes = pcd_tracker_hit_clusters.at(cluster_index);
+
+	  // Iterate over all cells from the current cluster
+	  for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
+
+	    const auto & cluster_pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).get();
+
+	    // Retrieve time/space data
+	    const double & cluster_pcd_tracker_anode_time = cluster_pcd_tracker_hit.get_anodic_time();
+	    const geomtools::geom_id & cluster_pcd_tracker_geomid = cluster_pcd_tracker_hit.get_geom_id();
+	    const uint32_t & cluster_pcd_tracker_side  = cluster_pcd_tracker_geomid.get(1);
+	    const uint32_t & cluster_pcd_tracker_layer = cluster_pcd_tracker_geomid.get(2);
+	    const uint32_t & cluster_pcd_tracker_row   = cluster_pcd_tracker_geomid.get(3);
+
+	    // Now perform time/space comparison of pcd_tracker_hit with cluster_pcd_tracker_hit
+
+	    // 1) skip if tracker hits are not on the same side
+	    if (pcd_tracker_side != cluster_pcd_tracker_side)
+	      continue;
+
+	    // 2) compute and perform space correlation
+	    const int delta_row = cluster_pcd_tracker_row - pcd_tracker_row;
+	    const int delta_layer = cluster_pcd_tracker_layer - pcd_tracker_layer;
+	    const float delta_radius = delta_row*delta_row + delta_layer*delta_layer;
+
+	    if (delta_radius > tracker_clusterization_radius2_threshold)
+	      continue;
+
+	    // 3) compute and perform time correlation
+	    const double delta_anode_time = cluster_pcd_tracker_anode_time - pcd_tracker_anode_time;
+
+	    if (abs(delta_anode_time) > tracker_clusterization_deltat_threshold)
+	      continue;
+
+	    // if we reach this part, pcd_tracker_hit and cluster_pcd_tracker_hit
+	    // are considered as neighbor: pcd_tracker_hit will be add in the cluster
+	    matching_cluster_indexes.push_back(cluster_index);
+
+	    break;
+
+	  } // for (cluster_pcd_tracker_hit_index)
+
+	} // for (cluster_index)
+
+
+	// if pcd_tracker_hit does not matching any cluster, we will
+	// create a new cluster and fill it with the index of the hit
+	if (matching_cluster_indexes.size() == 0) {
+	  std::vector<int> new_pcd_tracker_hit_cluster;
+	  new_pcd_tracker_hit_cluster.push_back(pcd_tracker_hit_index);
+	  pcd_tracker_hit_clusters.push_back(new_pcd_tracker_hit_cluster);
+        }
+
+	// if pcd_tracker_hit is matching only 1 single cluster,
+	// we just add the index of the tracker hit in the cluster
+	else if (matching_cluster_indexes.size() == 1) {
+	  const size_t matching_cluster_index = matching_cluster_indexes.front();
+	  pcd_tracker_hit_clusters[matching_cluster_index].push_back(pcd_tracker_hit_index);
+	}
+
+	// if pcd_tracker_hit is matching several cluster,
+	// we add the index of the tracker hit in the first
+	// matching cluster, then we merge (and erase) all
+	// other clusters into the first one
+	else {
+	  const size_t matching_cluster_index = matching_cluster_indexes.front();
+	  pcd_tracker_hit_clusters[matching_cluster_index].push_back(pcd_tracker_hit_index);
+
+          for (size_t cluster_i=matching_cluster_indexes.size()-1; cluster_i>0; --cluster_i) {
+
+	    const size_t & cluster_index = matching_cluster_indexes[cluster_i];
+
+	    for (const int & tracker_index : pcd_tracker_hit_clusters[cluster_index])
+	      pcd_tracker_hit_clusters[matching_cluster_index].push_back(tracker_index);
+
+	    pcd_tracker_hit_clusters.erase(pcd_tracker_hit_clusters.begin() + cluster_index);
+	  }
+
+	}
+
+      } // for (pcd_tracker_hit_index)
+
+      // Now that the clusterization is performed, analyse anodic time range
+      // and perform an association with calorimeter hits time [TODO]
+
+    }
+
     void udd2pcd_module::process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-					      snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
-      precalibrate_tracker_hits(udd_data_, tracker_hits_);
+					      snemo::datamodel::precalibrated_data & pcd_data_) {
+
+      initialize_precalibrated_tracker_hits(udd_data_, pcd_data_.tracker_hits());
+
+      clusterize_and_precalibrate_tracker_hits(pcd_data_);
     }
 
   }  // end of namespace processing
