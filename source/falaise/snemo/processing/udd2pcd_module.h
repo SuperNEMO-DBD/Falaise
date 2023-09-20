@@ -90,6 +90,10 @@ namespace snemo {
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
 
+      double _calo_adc2volt_;
+      double _calo_sampling_period_;
+      double _calo_postrigger_time_;
+
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
 	};

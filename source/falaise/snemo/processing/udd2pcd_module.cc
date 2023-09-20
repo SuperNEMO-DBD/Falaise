@@ -46,6 +46,13 @@ namespace snemo {
       _udd_input_tag_  = fps.get<std::string>("UDD_label", snedm::labels::unified_digitized_data());
       _pcd_output_tag_ = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
 
+      _calo_adc2volt_ = fps.get<double>("calo_adc2volt", 2.5/4096.0) * CLHEP::volt;
+
+      double _calo_sampling_frequency_ = fps.get<double>("calo_sampling_frequency_ghz", 2.56) * 1E9*CLHEP::hertz;
+      _calo_sampling_period_ = 1.0/_calo_sampling_frequency_;
+
+      _calo_postrigger_time_ = fps.get<double>("calo_postrigger_ns", 250) * CLHEP::ns;
+
       // _udd2pcd_calo_method_ = fps.get<std::string>("calo_method", "fwmeas")
       // _udd2pcd_tracker_method_ = fps.get<std::string>("tracker_method", "fwmeas")
 
@@ -93,9 +100,9 @@ namespace snemo {
 						snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
 
       // Constants
-      const double CALO_ADC2VOLT = 2.5*CLHEP::volt/4096.0;
-      const double CALO_SAMPLING_PERIOD = 0.39062500*CLHEP::ns;
-      const double CALO_POSTRIGGER_TIME = 250*CLHEP::ns;
+      const double CALO_ADC2VOLT = _calo_adc2volt_;
+      const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
+      const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
       const double CALO_TIME_WINDOW = 1024 * CALO_SAMPLING_PERIOD;
 
       // Retrieve UDD calorimeter digitized hits
