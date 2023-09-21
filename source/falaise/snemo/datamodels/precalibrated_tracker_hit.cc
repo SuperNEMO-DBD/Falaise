@@ -133,7 +133,7 @@ namespace snemo {
       out << indent << datatools::i_tree_dumpable::tag << "Anodic time: " << time_day << "d " << time_hour << "h "
 	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << "ns\n"
           << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time : " << _bottom_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::tag << "Top cathode drift time : "    << _top_cathode_drift_time_ / CLHEP::microsecond << " us\n";
+          << indent << datatools::i_tree_dumpable::last_tag << "Top cathode drift time : "    << _top_cathode_drift_time_ / CLHEP::microsecond << " us\n";
     }
 
   }  // end of namespace datamodel
