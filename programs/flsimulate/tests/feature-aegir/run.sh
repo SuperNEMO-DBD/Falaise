@@ -37,6 +37,7 @@ with_visu=0
 work_dir=""
 cfg_dir=""
 step1=1
+step2=1
 
 function parse_cl_opts()
 {
@@ -108,6 +109,9 @@ if [ ! -d ${FLWORKDIR} ]; then
     ln -s ${FLWORKDIR} _work.d
 fi
 
+cp ${cfg_dir}/data/genCo60_1.d0t ${FLWORKDIR}/
+cp ${cfg_dir}/data/genCo60_2.d0t ${FLWORKDIR}/
+
 ###############################################################################
 if [ $step1 -eq 1 ]; then
     cat>&2<<EOF
@@ -158,6 +162,59 @@ EOF
 	flvisualize \
 	    --variant-profile ${FLWORKDIR}/simu-1.vprofile \
 	    --input-file ${FLWORKDIR}/feature-aegir-1.brio \
+	    --focus-on-roi \
+	    --show-simulated-vertex 1 \
+	    --show-simulated-tracks 1 \
+	    --show-simulated-hits 1
+    fi
+fi
+
+###############################################################################
+if [ $step2 -eq 1 ]; then
+    cat>&2<<EOF
+
+    ========================================================
+    STEP 2 - Basic source - AEGIR - 511 keV e+
+    ========================================================
+EOF
+    # -t "urn:snemo:demonstrator:simulation:2.4" 
+    echo >&2 "[info] Running flsimulate-configure..."
+    flsimulate-configure --no-gui \
+			 -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
+			 -s "vertexes:generator=real_flat_source_full_foils_mass_bulk" \
+			 -s "primary_events:generator=aegir" \
+			 -s "primary_events:generator/if_aegir/setup_file=${FLWORKDIR}/generators.conf" \
+			 -s "primary_events:generator/if_aegir/generator=precomputed" \
+			 -s "simulation:output_profile=all_details" \
+			 -o "${FLWORKDIR}/simu-2.vprofile"
+    if [ $? -ne 0 ]; then
+	my_exit 1 "flsimulate-configure failed! Abort!"
+    fi
+    cp ${cfg_dir}/generators.conf ${FLWORKDIR}/generators.conf
+    if [ ! -f ${FLWORKDIR}/generators.conf ]; then
+	my_exit 1 "Missing generators config file! Abort!"
+    fi
+
+    echo >&2 "[info] Dump '${FLWORKDIR}/generators.conf' :"
+    cat ${FLWORKDIR}/generators.conf
+    echo >&2 ""
+
+    echo >&2 "[info] Dump '${FLWORKDIR}/simu-2.vprofile' :"
+    cat ${FLWORKDIR}/simu-2.vprofile
+    echo >&2 ""
+
+    echo >&2 "[info] Running flsimulate..."
+    flsimulate -c ${cfg_dir}/simu_2.conf -o ${FLWORKDIR}/feature-aegir-2.brio > ${FLWORKDIR}/flsim2.log 2>&1
+    if [ $? -ne 0 ]; then
+	cat ${FLWORKDIR}/flsim2.log
+	my_exit 1 "flsimulate failed! Abort!"	
+    fi
+
+    if [ ${with_visu} -eq 1 ]; then
+	echo >&2 "[info] Running flvisualize..."
+	flvisualize \
+	    --variant-profile ${FLWORKDIR}/simu-2.vprofile \
+	    --input-file ${FLWORKDIR}/feature-aegir-2.brio \
 	    --focus-on-roi \
 	    --show-simulated-vertex 1 \
 	    --show-simulated-tracks 1 \

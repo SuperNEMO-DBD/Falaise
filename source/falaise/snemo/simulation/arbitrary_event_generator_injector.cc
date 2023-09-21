@@ -11,17 +11,11 @@
 #include <datatools/exception.h>
 #include <datatools/logger.h>
 #include <datatools/properties.h>
-// #include <datatools/units.h>
 #include <datatools/utils.h>
 #include <datatools/multi_properties.h>
 // - Bayeux/mygsl:
-// #include <mygsl/histogram.h>
-// #include <mygsl/i_unary_function.h>
-// #include <mygsl/tabulated_function.h>
-// #include <mygsl/von_neumann_method.h>
 // - Bayeux/genbb_help:
 #include <genbb_help/primary_event.h>
-// #include <genbb_help/single_particle_generator.h>
 
 namespace snemo {
 
@@ -158,7 +152,7 @@ namespace snemo {
 			   datatools::multi_properties::config::SKIP_PRIVATE_SECTIONS);
 	_mgr_.load(managerConfig);
       }
-
+      _mgr_.print_particle_generators(std::cerr, "Generators: ", "[debug] :");
       DT_THROW_IF(! _mgr_.has(_pg_name_), std::logic_error,
 		  "No '" << _pg_name_ << "' particle generator is set!");
       _pg_ = & _mgr_.grab(_pg_name_);

@@ -74,6 +74,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/simulation/gg_step_hit_processor.h
   snemo/simulation/calorimeter_step_hit_processor.h
   snemo/simulation/arbitrary_event_generator_injector.h
+  snemo/simulation/from_ascii_files_event_generator.h
 
   snemo/processing/config.h
   snemo/processing/calorimeter_regime.h
@@ -205,6 +206,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/simulation/gg_step_hit_processor.cc
   snemo/simulation/calorimeter_step_hit_processor.cc
   snemo/simulation/arbitrary_event_generator_injector.cc
+  snemo/simulation/from_ascii_files_event_generator.cc
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
