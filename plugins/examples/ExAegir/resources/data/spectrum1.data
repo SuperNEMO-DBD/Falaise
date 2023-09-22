@@ -1,0 +1,19 @@
+# Tabulated kinetic energy spectrum for the 'exaegir::dummy_event_generator2' class
+#@unit.x MeV
+#@interpolation linear
+0.0 0.0
+0.1 0.05
+0.5 0.7
+0.8 0.8
+0.9 1.15
+1.0 1.2
+1.2 1.15
+1.4 1.0
+1.6 0.9
+1.8 0.45
+2.0 0.4
+2.5 0.1
+2.7 0.025
+3.0 0.0
+
+# end

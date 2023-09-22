@@ -1,0 +1,15 @@
+#include <exaegir/resources.h>
+     
+namespace exaegir {
+
+  std::string get_resource_dir()
+  {
+    char * path = getenv("EXAEGIR_RESOURCE_DIR");
+    if (path != nullptr) {
+      return std::string(path);
+    }
+    std::string resDir = "@ExAegirResourceDir@";
+    return resDir;
+  }
+  
+} // end of namespace exaegir
