@@ -29,7 +29,7 @@ namespace snemo {
 
     bool precalibrated_tracker_hit::has_anodic_time() const
     {
-      return !datatools::is_valid(_anodic_time_);
+      return datatools::is_valid(_anodic_time_);
     }
 
     void precalibrated_tracker_hit::reset_anodic_time()
@@ -51,7 +51,7 @@ namespace snemo {
 
     bool precalibrated_tracker_hit::has_bottom_cathode_drift_time() const
     {
-      return !datatools::is_valid(_bottom_cathode_drift_time_);
+      return datatools::is_valid(_bottom_cathode_drift_time_);
     }
 
 
@@ -74,7 +74,7 @@ namespace snemo {
 
     bool precalibrated_tracker_hit::has_top_cathode_drift_time() const
     {
-      return !datatools::is_valid(_top_cathode_drift_time_);
+      return datatools::is_valid(_top_cathode_drift_time_);
     }
 
     void precalibrated_tracker_hit::reset_top_cathode_drift_time()

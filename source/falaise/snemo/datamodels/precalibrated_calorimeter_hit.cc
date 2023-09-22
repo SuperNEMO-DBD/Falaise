@@ -23,7 +23,7 @@ namespace snemo {
 
     bool precalibrated_calorimeter_hit::has_baseline() const
     {
-      return !datatools::is_valid(_baseline_);
+      return datatools::is_valid(_baseline_);
     }
 
     void precalibrated_calorimeter_hit::set_baseline(double baseline_)
@@ -45,7 +45,7 @@ namespace snemo {
 
     bool precalibrated_calorimeter_hit::has_amplitude() const
     {
-      return !datatools::is_valid(_amplitude_);
+      return datatools::is_valid(_amplitude_);
     }
 
     void precalibrated_calorimeter_hit::set_amplitude(double amplitude_)
@@ -67,7 +67,7 @@ namespace snemo {
 
     bool precalibrated_calorimeter_hit::has_charge() const
     {
-      return !datatools::is_valid(_charge_);
+      return datatools::is_valid(_charge_);
     }
 
     void precalibrated_calorimeter_hit::set_charge(double charge_)
@@ -89,7 +89,7 @@ namespace snemo {
 
     bool precalibrated_calorimeter_hit::has_time() const
     {
-      return !datatools::is_valid(_time_);
+      return datatools::is_valid(_time_);
     }
 
     void precalibrated_calorimeter_hit::set_time(double time_)
