@@ -176,10 +176,10 @@ namespace FLSimulate {
       // Caution: some parameters are only available for specific user profile
 
       // Fetch plugins configuration:
-      std::cerr << "[devel] Fetch plugins configuration...\n";
+      DT_LOG_DEBUG(flSimParameters_.logLevel, "Fetch plugins configuration...");
       if (flSimConfig.has_key_with_meta("flsimulate.plugins", "flsimulate::section")) {
         try {
-          std::cerr << "[devel] Go fetch !\n";
+	  // std::cerr << "[devel] Go fetch !\n";
           falaise::property_set userFLPlugins{flSimConfig.get_section("flsimulate.plugins")};
           flSimConfig.remove("flsimulate.plugins");
 
@@ -189,13 +189,13 @@ namespace FLSimulate {
             auto pSection = userFLPlugins.get<falaise::property_set>(plugin_name, {});
             pSection.put("autoload", true);
             if (pSection.has_key("directory")) {
-              std::cerr << "[devel]   => key '" << "directory" << "'\n";
+              //std::cerr << "[devel]   => key '" << "directory" << "'\n";
               auto libdirPath = pSection.get<falaise::path>("directory");
-              std::cerr << "[devel]   => libdirPath = '" << libdirPath << "'\n";
+              //std::cerr << "[devel]   => libdirPath = '" << libdirPath << "'\n";
               std::string libdir(libdirPath);
-              std::cerr << "[devel]   => libdir = '" << libdir << "'\n";
+              //std::cerr << "[devel]   => libdir = '" << libdir << "'\n";
               datatools::fetch_path_with_env(libdir);
-              std::cerr << "[devel]   => libdir = '" << libdir << "' (resolved)\n";
+              //std::cerr << "[devel]   => libdir = '" << libdir << "' (resolved)\n";
               falaise::path resolvedLibdirPath{libdir};
               pSection.put_or_replace<falaise::path>("directory", resolvedLibdirPath);
             }
