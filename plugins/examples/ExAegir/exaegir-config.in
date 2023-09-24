@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+exaegirLibDir="@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@"
+exaegirResourceDir="@ExAegirResourceDir@"
+exaegirVersion="@ExAegirVersion@"
+
+arg="$1"
+shift 1
+
+function do_usage()
+{
+    cat<<EOF
+Usage:
+
+  exaegir-config [query]
+
+Supported queries:
+
+  --help        : print this help
+  --version     : print version of the exaegir plugin
+  --libdir      : print the installation directory of the exaegir library
+  --resourcedir : print the installation directory of the exaegir resource files
+
+EOF
+    return 0
+}
+
+if [ "${arg}" == "--version" ]; then
+    echo "${exaegirVersion}"
+    exit 0
+fi
+
+if [ "${arg}" == "--libdir" ]; then
+    echo "${exaegirLibDir}"
+    exit 0
+fi
+
+if [ "${arg}" == "--resourcedir" ]; then
+    echo "${exaegirResourceDir}"
+    exit 0
+fi
+
+if [ "${arg}" == "--help" ]; then
+    do_usage
+    exit 0
+fi
+
+echo >&2 "[error] Invalid query!"
+do_usage
+exit 1

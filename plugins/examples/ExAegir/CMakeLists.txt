@@ -15,18 +15,13 @@ message(STATUS "CMAKE_INSTALL_RPATH='${CMAKE_INSTALL_RPATH}'")
 message(STATUS "CMAKE_SKIP_RPATH='${CMAKE_SKIP_RPATH}'")
 message(STATUS "CMAKE_SKIP_BUILD_RPATH='${CMAKE_SKIP_BUILD_RPATH}'")
 message(STATUS "CMAKE_BUILD_WITH_INSTALL_RPATH='${CMAKE_BUILD_WITH_INSTALL_RPATH}'")
-# set(CMAKE_SKIP_BUILD_RPATH FALSE)
-# set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-# set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-# list(APPEND CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}" )
-# set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 find_package(Falaise REQUIRED)
 
 set(ExAegirResourceDir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATAROOTDIR}/exaegir-${ExAegirVersion}")
 configure_file(exaegir/version.cc.in ${CMAKE_CURRENT_BINARY_DIR}/exaegir/version.cc @ONLY)
 configure_file(exaegir/resources.cc.in ${CMAKE_CURRENT_BINARY_DIR}/exaegir/resources.cc @ONLY)
-
+configure_file(exaegir-config.in ${CMAKE_CURRENT_BINARY_DIR}/exaegir-config @ONLY)
 
 add_library(exaegir SHARED
   exaegir/version.h
@@ -49,7 +44,7 @@ set_target_properties(exaegir PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
 #     )
 # endif()
 
-# Install Targets
+# Install targets:
 install(TARGETS exaegir DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 add_executable(runexaegir
@@ -63,8 +58,12 @@ if(UNIX AND NOT APPLE)
     )
 endif()
 
-# Install Targets
-install(TARGETS runexaegir DESTINATION ${CMAKE_INSTALL_BINDIR})
+# Install Targets:
+install(TARGETS runexaegir DESTINATION "${CMAKE_INSTALL_BINDIR}")
 
-install(DIRECTORY resources/ DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/exaegir-${ExAegirVersion})
-# end
+# Install resource files:
+install(DIRECTORY resources/ DESTINATION "${CMAKE_INSTALL_DATAROOTDIR}/exaegir-${ExAegirVersion}")
+
+install(PROGRAMS "${CMAKE_CURRENT_BINARY_DIR}/exaegir-config" DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
+  # end
