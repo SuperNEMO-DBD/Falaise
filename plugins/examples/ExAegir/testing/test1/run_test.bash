@@ -78,8 +78,8 @@ flsimulate-configure --no-gui \
 		     -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
 		     -s "vertexes:generator=real_flat_source_strip_3_bulk" \
 		     -s "primary_events:generator=aegir" \
-		     -s "primary_events:generator/if_aegir/setup_file=${FLWORKDIR}/generators.conf" \
-		     -s "primary_events:generator/if_aegir/generator=dummy2" \
+		     -s "primary_events:generator/if_aegir/generators_file=${FLWORKDIR}/generators.conf" \
+		     -s "primary_events:generator/if_aegir/selected=dummy2" \
 		     -s "simulation:output_profile=all_details" \
 		     -o "${FLWORKDIR}/simu-1.vprofile"
 if [ $? -ne 0 ]; then
