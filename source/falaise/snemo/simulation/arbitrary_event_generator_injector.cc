@@ -98,8 +98,8 @@ namespace snemo {
 	_seed_ = seed;
       }
       
-      if (dps_.has_key("list_of_setup_files")) {
-	std::string list_of_setup_files_paths = dps_.fetch_string("list_of_setup_files");
+      if (dps_.has_key("list_of_generators_definition_files")) {
+	std::string list_of_setup_files_paths = dps_.fetch_string("list_of_generators_definition_files");
 	datatools::fetch_path_with_env(list_of_setup_files_paths);
 	std::ifstream setupListFile(list_of_setup_files_paths);
 	while (!setupListFile.eof()) {
@@ -112,13 +112,13 @@ namespace snemo {
 	}
       }
       
-      if (dps_.has_key("setup_file")) {
-	std::string setupFilePath = dps_.fetch_string("setup_file");
+      if (dps_.has_key("generators_definition_file")) {
+	std::string setupFilePath = dps_.fetch_string("generators_definition_file");
 	_setup_file_paths_.push_back(setupFilePath);
       }
     
-      if (dps_.has_key("generator")) {
-	std::string generator_name = dps_.fetch_string("generator");
+      if (dps_.has_key("selected_generator")) {
+	std::string generator_name = dps_.fetch_string("selected_generator");
 	_pg_name_ = generator_name;
       }
       if (_pg_name_.empty()) {

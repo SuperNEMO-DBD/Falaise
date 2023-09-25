@@ -33,7 +33,7 @@ echo >&2 "[debug] PATH = '${PATH}'"
 
 label="run-feature-aegir"
 with_visu=0
-with_visu=1
+# with_visu=1
 work_dir=""
 cfg_dir=""
 step1=1

@@ -79,13 +79,13 @@ namespace snemo {
       ///
       /// # Path of a file which contains a list of setup file paths
       /// # for the event/particle generators to be used:
-      /// list_of_setup_files : string as path = "/path/to/some/list_of_config_files_for_some_event_generators"
+      /// list_of_generators_definition_files : string as path = "/path/to/some/list_of_config_files_for_some_event_generators"
       ///
       /// # Path of a single file which setups the event/particle generators to be used:
-      /// setup_file : string as path = "/path/to/some/config_file_for_some_event_generators"
+      /// generators_definition_file : string as path = "/path/to/some/config_file_for_some_event_generators"
       /// 
       /// # Name of the event/particle generator to be used (default='aegir'):
-      /// generator : string = "aegir"
+      /// selected_generator : string = "aegir"
       ///
       /// 
       /// Format of the setup list file (plain text with one file per line):
