@@ -54,9 +54,26 @@ int main(/* int argc_, char ** argv_ */) {
       my_calo_hit.set_baseline(0.913734 * CLHEP::volt);
       my_calo_hit.set_amplitude(-113.525 * 1E-3 * CLHEP::volt);
       my_calo_hit.set_charge(-3.1724 * 1E-9 * CLHEP::volt * CLHEP::second);
-      my_calo_hit.set_time(22.836654123 * CLHEP::second);
+      my_calo_hit.set_time(22.836654123456 * CLHEP::second);
       my_calo_hit.grab_auxiliaries().store_real("time_cfd", 119.5 * CLHEP::nanosecond);
-      my_calo_hit.tree_dump(std::clog, "Simple precalibrated calorimeter hit");
+      my_calo_hit.tree_dump(std::clog, "\nSimple precalibrated calorimeter hit");
+    }
+
+    {
+      sdm::precalibrated_calorimeter_hit my_calo_hit;
+      my_calo_hit.set_hit_id(1);
+      geomtools::geom_id gid(1301, 0, 1, 8, 6);
+      my_calo_hit.set_geom_id(gid);
+      my_calo_hit.set_baseline(0.913734 * CLHEP::volt);
+      my_calo_hit.set_sigma_baseline(0.00913734 * CLHEP::volt);
+      my_calo_hit.set_amplitude(-113.525 * 1E-3 * CLHEP::volt);
+      my_calo_hit.set_sigma_amplitude(1.13525 * 1E-3 * CLHEP::volt);
+      my_calo_hit.set_charge(-3.1724 * 1E-9 * CLHEP::volt * CLHEP::second);
+      my_calo_hit.set_sigma_charge(0.031724 * 1E-9 * CLHEP::volt * CLHEP::second);
+      my_calo_hit.set_time(22.836654123456 * CLHEP::second);
+      my_calo_hit.set_sigma_time(0.22836654123 * 1E-9 * CLHEP::second);
+      my_calo_hit.grab_auxiliaries().store_real("time_cfd", 119.5 * CLHEP::nanosecond);
+      my_calo_hit.tree_dump(std::clog, "\nSimple precalibrated calorimeter hit with errors");
     }
 
     {
@@ -97,7 +114,7 @@ int main(/* int argc_, char ** argv_ */) {
            i != list_of_calo_hits.end(); i++) {
         const sdm::precalibrated_calorimeter_hit& calo_hit = *i;
         std::ostringstream title;
-        title << "Calorimeter hit #" << calo_hit.get_hit_id();
+        title << "\nCalorimeter hit #" << calo_hit.get_hit_id();
         calo_hit.tree_dump(std::clog, title.str());
         if (!emin_ch_ref.is_valid()) {
           emin_ch_ref.set(calo_hit);

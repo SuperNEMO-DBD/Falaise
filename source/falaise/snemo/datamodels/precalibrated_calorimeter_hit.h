@@ -47,6 +47,18 @@ namespace snemo {
       /// Reset the baseline
       void reset_baseline();
 
+      /// Return the error on the baseline associated to the hit
+      double get_sigma_baseline() const;
+
+      /// Set the error on the baseline associated to the hit
+      void set_sigma_baseline(double);
+
+      /// Check if the error on the baseline is valid
+      bool has_sigma_baseline() const;
+
+      /// Reset the error on the baseline
+      void reset_sigma_baseline();
+
       /// Return the amplitude associated to the hit
       double get_amplitude() const;
 
@@ -58,6 +70,18 @@ namespace snemo {
 
       /// Reset the amplitude
       void reset_amplitude();
+
+      /// Return the error on the amplitude associated to the hit
+      double get_sigma_amplitude() const;
+
+      /// Set the error on the amplitude associated to the hit
+      void set_sigma_amplitude(double);
+
+      /// Check if the error on the amplitude is valid
+      bool has_sigma_amplitude() const;
+
+      /// Reset the error on the amplitude
+      void reset_sigma_amplitude();
 
       /// Return the charge associated to the hit
       double get_charge() const;
@@ -71,6 +95,18 @@ namespace snemo {
       /// Reset the charge
       void reset_charge();
 
+      /// Return the error on the charge associated to the hit
+      double get_sigma_charge() const;
+
+      /// Set the error on the charge associated to the hit
+      void set_sigma_charge(double);
+
+      /// Check if the error on the charge is valid
+      bool has_sigma_charge() const;
+
+      /// Reset the error on the charge
+      void reset_sigma_charge();
+
       /// Return the time associated to the hit
       double get_time() const;
 
@@ -82,6 +118,18 @@ namespace snemo {
 
       /// Reset the time
       void reset_time();
+
+      /// Return the error on the time associated to the hit
+      double get_sigma_time() const;
+
+      /// Set the error on the time associated to the hit
+      void set_sigma_time(double);
+
+      /// Check if the error on the time is valid
+      bool has_sigma_time() const;
+
+      /// Reset the error on the time
+      void reset_sigma_time();
 
       /// Check if the internal data of the hit are valid
       bool is_valid() const override;
@@ -96,9 +144,13 @@ namespace snemo {
     private:
 
       double _baseline_{datatools::invalid_real()};           //!< Baseline associated to the hit
+      double _sigma_baseline_{datatools::invalid_real()};     //!< Error on the baseline associated to the hit
       double _amplitude_{datatools::invalid_real()};          //!< Amplitude associated to the hit
+      double _sigma_amplitude_{datatools::invalid_real()};    //!< Error on the amplitude associated to the hit
       double _charge_{datatools::invalid_real()};             //!< Charge associated to the hit
+      double _sigma_charge_{datatools::invalid_real()};       //!< Error on the charge associated to the hit
       double _time_{datatools::invalid_real()};               //!< Time associated to the hit
+      double _sigma_time_{datatools::invalid_real()};         //!< Error on the time associated to the hit
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
