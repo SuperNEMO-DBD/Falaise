@@ -24,9 +24,13 @@ namespace snemo {
     void precalibrated_calorimeter_hit::serialize(Archive& ar_, const unsigned int /* version */) {
       ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar_ & boost::serialization::make_nvp("baseline", _baseline_);
+      ar_ & boost::serialization::make_nvp("sigma_baseline", _sigma_baseline_);
       ar_ & boost::serialization::make_nvp("amplitude", _amplitude_);
+      ar_ & boost::serialization::make_nvp("sigma_amplitude", _sigma_amplitude_);
       ar_ & boost::serialization::make_nvp("charge", _charge_);
+      ar_ & boost::serialization::make_nvp("sigma_charge", _sigma_charge_);
       ar_ & boost::serialization::make_nvp("time", _time_);
+      ar_ & boost::serialization::make_nvp("sigma_time", _sigma_time_);
 
     }
 
