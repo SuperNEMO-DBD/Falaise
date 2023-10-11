@@ -38,6 +38,28 @@ namespace snemo {
       return;
     }
 
+    double precalibrated_tracker_hit::get_sigma_anodic_time() const
+    {
+      return _sigma_anodic_time_;
+    }
+
+    void precalibrated_tracker_hit::set_sigma_anodic_time(double sigma_anodic_time_)
+    {
+      _sigma_anodic_time_ = sigma_anodic_time_;
+      return;
+    }
+
+    bool precalibrated_tracker_hit::has_sigma_anodic_time() const
+    {
+      return datatools::is_valid(_sigma_anodic_time_);
+    }
+
+    void precalibrated_tracker_hit::reset_sigma_anodic_time()
+    {
+      _sigma_anodic_time_ = datatools::invalid_real();
+      return;
+    }
+
     double precalibrated_tracker_hit::get_bottom_cathode_drift_time() const
     {
       return _bottom_cathode_drift_time_;
@@ -54,10 +76,31 @@ namespace snemo {
       return datatools::is_valid(_bottom_cathode_drift_time_);
     }
 
-
     void precalibrated_tracker_hit::reset_bottom_cathode_drift_time()
     {
       _bottom_cathode_drift_time_ = datatools::invalid_real();
+      return;
+    }
+
+    double precalibrated_tracker_hit::get_sigma_bottom_cathode_drift_time() const
+    {
+      return _sigma_bottom_cathode_drift_time_;
+    }
+
+    void precalibrated_tracker_hit::set_sigma_bottom_cathode_drift_time(double sigma_bottom_cathode_drift_time_)
+    {
+      _sigma_bottom_cathode_drift_time_ = sigma_bottom_cathode_drift_time_;
+      return;
+    }
+
+    bool precalibrated_tracker_hit::has_sigma_bottom_cathode_drift_time() const
+    {
+      return datatools::is_valid(_sigma_bottom_cathode_drift_time_);
+    }
+
+    void precalibrated_tracker_hit::reset_sigma_bottom_cathode_drift_time()
+    {
+      _sigma_bottom_cathode_drift_time_ = datatools::invalid_real();
       return;
     }
 
@@ -89,6 +132,28 @@ namespace snemo {
       else return datatools::invalid_real();
     }
 
+    double precalibrated_tracker_hit::get_sigma_top_cathode_drift_time() const
+    {
+      return _sigma_top_cathode_drift_time_;
+    }
+
+    void precalibrated_tracker_hit::set_sigma_top_cathode_drift_time(double sigma_top_cathode_drift_time_)
+    {
+      _sigma_top_cathode_drift_time_ = sigma_top_cathode_drift_time_;
+      return;
+    }
+
+    bool precalibrated_tracker_hit::has_sigma_top_cathode_drift_time() const
+    {
+      return datatools::is_valid(_sigma_top_cathode_drift_time_);
+    }
+
+    void precalibrated_tracker_hit::reset_sigma_top_cathode_drift_time()
+    {
+      _sigma_top_cathode_drift_time_ = datatools::invalid_real();
+      return;
+    }
+
     bool precalibrated_tracker_hit::is_valid() const
     {
       return this->base_hit::is_valid();
@@ -99,8 +164,11 @@ namespace snemo {
     {
       this->base_hit::invalidate();
       datatools::invalidate(_anodic_time_);
+      datatools::invalidate(_sigma_anodic_time_);
       datatools::invalidate(_bottom_cathode_drift_time_);
+      datatools::invalidate(_sigma_bottom_cathode_drift_time_);
       datatools::invalidate(_top_cathode_drift_time_);
+      datatools::invalidate(_sigma_top_cathode_drift_time_);
     }
 
     void precalibrated_tracker_hit::clear()

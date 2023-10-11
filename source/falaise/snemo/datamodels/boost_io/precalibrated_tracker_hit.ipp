@@ -25,8 +25,11 @@ namespace snemo {
     void precalibrated_tracker_hit::serialize(Archive& ar_, const unsigned int /* version_ */) {
       ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
       ar_ & boost::serialization::make_nvp("anodic_time", _anodic_time_);
+      ar_ & boost::serialization::make_nvp("sigma_anodic_time", _sigma_anodic_time_);
       ar_ & boost::serialization::make_nvp("bottom_cathode_drift_time", _bottom_cathode_drift_time_);
+      ar_ & boost::serialization::make_nvp("sigma_bottom_cathode_drift_time", _sigma_bottom_cathode_drift_time_);
       ar_ & boost::serialization::make_nvp("top_cathode_drift_time", _top_cathode_drift_time_);
+      ar_ & boost::serialization::make_nvp("sigma_top_cathode_drift_time", _sigma_top_cathode_drift_time_);
 
     }
 
