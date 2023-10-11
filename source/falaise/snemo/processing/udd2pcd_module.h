@@ -48,9 +48,14 @@ namespace snemo {
 
       enum calorimeter_precalibration_algorithm
       {
-	ALGO_FWMEASUREMENT = 0,
-	ALGO_STANDARD      = 1,
-	ALGO_EXPERT        = 2,
+	ALGO_CALO_FWMEASUREMENT = 0
+	// ALGO_              = 1
+      };
+
+      enum tracker_precalibration_algorithm
+      {
+	ALGO_TRACKER_EARLIEST = 0
+	// ALGO_              = 1
       };
 
     public:
@@ -78,8 +83,8 @@ namespace snemo {
                              snemo::datamodel::precalibrated_data & pcd_data_);
 
       /// Precalibrated tracker hits
-      void precalibrate_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-				     snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
+      void precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
+					      snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
 
       /// Main process tracker function
       void process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -88,6 +93,9 @@ namespace snemo {
     private:
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
+
+      calorimeter_precalibration_algorithm _calo_pcd_algo_;
+      tracker_precalibration_algorithm _tracker_pcd_algo_;
 
       double _calo_adc2volt_;
       double _calo_sampling_period_;

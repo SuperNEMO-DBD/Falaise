@@ -19,7 +19,7 @@
 // - Bayeux/mctools:
 #include <mctools/utils.h>
 
-// This project :
+// This project:
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
@@ -48,10 +48,13 @@ namespace snemo {
 
       _calo_adc2volt_ = fps.get<double>("calo_adc2volt", 2.5/4096.0) * CLHEP::volt;
       double _calo_sampling_frequency_ = fps.get<double>("calo_sampling_frequency_ghz", 2.56) * 1E9*CLHEP::hertz;
-      _calo_sampling_period_ = 1.0/_calo_sampling_frequency_;
+      _calo_sampling_period_ = 1.0/_calo_sampling_frequency_; // fps.get<double>("calo_sampling_period_ns", 0.390625) * 1E-9*CLHEP::second;
       _calo_postrigger_time_ = fps.get<double>("calo_postrigger_ns", 250) * CLHEP::ns;
 
       _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
+
+      _calo_pcd_algo_ = ALGO_CALO_FWMEASUREMENT;
+      _tracker_pcd_algo_ = ALGO_TRACKER_EARLIEST;
 
       // _udd2pcd_calo_method_ = fps.get<std::string>("calo_method", "fwmeas")
       // _udd2pcd_tracker_method_ = fps.get<std::string>("tracker_method", "fwmeas")
@@ -164,13 +167,15 @@ namespace snemo {
 
     void udd2pcd_module::process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
                                            snemo::datamodel::precalibrated_data & pcd_data_) {
-      precalibrate_calo_hits_fwmeas(udd_data_, pcd_data_.calorimeter_hits());
+
+      if (_calo_pcd_algo_ == ALGO_CALO_FWMEASUREMENT)
+	precalibrate_calo_hits_fwmeas(udd_data_, pcd_data_.calorimeter_hits());
     }
 
 
     // Precalibrate tracker hits from UDD informations:
-    void udd2pcd_module::precalibrate_tracker_hits(const snemo::datamodel::unified_digitized_data & udd_data_,
-							       snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
+    void udd2pcd_module::precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
+							    snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
       // Constants
       const double TRACKER_TDC_TICK = 12.5 * CLHEP::nanosecond;
 
@@ -249,7 +254,8 @@ namespace snemo {
 
     void udd2pcd_module::process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
 					      snemo::datamodel::precalibrated_data & pcd_data_) {
-      precalibrate_tracker_hits(udd_data_, pcd_data_.tracker_hits());
+      if (_tracker_pcd_algo_ == ALGO_TRACKER_EARLIEST)
+	precalibrate_tracker_hits_earliest(udd_data_, pcd_data_.tracker_hits());
     }
 
     }  // end of namespace processing
