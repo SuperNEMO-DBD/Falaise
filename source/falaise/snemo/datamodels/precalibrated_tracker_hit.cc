@@ -199,9 +199,20 @@ namespace snemo {
 
       // out << indent << datatools::i_tree_dumpable::tag << "Anodic time : " << _anodic_time_ / CLHEP::second << " s\n"
       out << indent << datatools::i_tree_dumpable::tag << "Anodic time: " << time_day << "d " << time_hour << "h "
-	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << "ns\n"
-          << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time : " << _bottom_cathode_drift_time_ / CLHEP::microsecond << " us\n"
-          << indent << datatools::i_tree_dumpable::last_tag << "Top cathode drift time : "    << _top_cathode_drift_time_ / CLHEP::microsecond << " us\n";
+	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << " ns +/- "
+	  << _sigma_anodic_time_/CLHEP::nanosecond << " ns \n";
+
+      out << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time: ";
+
+      if (has_bottom_cathode_drift_time())
+	out << _bottom_cathode_drift_time_/CLHEP::microsecond << " us +/- " << _sigma_bottom_cathode_drift_time_/CLHEP::nanosecond << " ns\n";
+      else out << "missing\n";
+
+      out << indent << datatools::i_tree_dumpable::last_tag << "Top cathode drift time: ";
+
+      if (has_top_cathode_drift_time())
+	out << _top_cathode_drift_time_ /CLHEP::microsecond << " us +/- " << _sigma_bottom_cathode_drift_time_/CLHEP::nanosecond << " ns\n";
+      else out << "missing\n";
     }
 
   }  // end of namespace datamodel
