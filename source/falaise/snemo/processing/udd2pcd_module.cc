@@ -186,7 +186,8 @@ namespace snemo {
       for (auto& a_udd_tracker_hit : udd_tracker_hits) {
 
 	// Loop over all gg_times and keep trace of the earliest timestamps
-	int64_t first_anode_timestamp[5] = {std::numeric_limits<int64_t>::max()};
+	int64_t first_anode_timestamp[5];
+	std::fill(std::begin(first_anode_timestamp), std::end(first_anode_timestamp), std::numeric_limits<int64_t>::max());
 	int64_t first_bottom_cathode_timestamp = std::numeric_limits<int64_t>::max();
 	int64_t first_top_cathode_timestamp = std::numeric_limits<int64_t>::max();
 
@@ -194,20 +195,23 @@ namespace snemo {
 
 	  for (int ANODE_Ri=0; ANODE_Ri<5; ANODE_Ri++) {
 	    if (udd_tracker_times.has_anode_time(ANODE_Ri)) {
-	      const int64_t& anode_timestamp = udd_tracker_times.get_anode_time(ANODE_Ri);
-	      if (anode_timestamp < first_anode_timestamp[ANODE_Ri])
-		first_anode_timestamp[ANODE_Ri] = anode_timestamp;
+	      const int64_t & anode_timestamp = udd_tracker_times.get_anode_time(ANODE_Ri);
+	      if (anode_timestamp != 0) // bug from RED/UDD bridge (to fix)
+		{
+		  if (anode_timestamp < first_anode_timestamp[ANODE_Ri])
+		    first_anode_timestamp[ANODE_Ri] = anode_timestamp;
+		}
 	    }
 	  }
 	  
 	  if (udd_tracker_times.has_bottom_cathode_time()) {
-	    const int64_t& bottom_cathode_timestamp = udd_tracker_times.get_bottom_cathode_time();
+	    const int64_t & bottom_cathode_timestamp = udd_tracker_times.get_bottom_cathode_time();
 	    if (bottom_cathode_timestamp < first_bottom_cathode_timestamp)
 	      first_bottom_cathode_timestamp = bottom_cathode_timestamp;
 	  }
 
 	  if (udd_tracker_times.has_top_cathode_time()) {
-	    const int64_t& top_cathode_timestamp = udd_tracker_times.get_top_cathode_time();
+	    const int64_t & top_cathode_timestamp = udd_tracker_times.get_top_cathode_time();
 	    if (top_cathode_timestamp < first_top_cathode_timestamp)
 	      first_top_cathode_timestamp = top_cathode_timestamp;
 	  }
@@ -226,25 +230,30 @@ namespace snemo {
 	// Convert and fill the earliest R0 timestamp
 	const double first_anode_time = first_anode_timestamp[0] * TRACKER_TDC_TICK;
 	new_pcd_tracker->set_anodic_time(first_anode_time);
+	new_pcd_tracker->set_sigma_anodic_time(0.5*TRACKER_TDC_TICK);
 
 	// Convert and fill the earliest bottom cathode timestamp (R5)
 	if (first_bottom_cathode_timestamp != std::numeric_limits<int64_t>::max()) {
 	  const double first_bottom_cathode_time = first_bottom_cathode_timestamp * TRACKER_TDC_TICK;
 	  new_pcd_tracker->set_bottom_cathode_drift_time(first_bottom_cathode_time-first_anode_time);
+	  new_pcd_tracker->set_sigma_bottom_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
 	}
 
 	// Convert and fill the earliest top cathode timestamp (R6)
 	if (first_top_cathode_timestamp != std::numeric_limits<int64_t>::max()) {
 	  const double first_top_cathode_time = first_top_cathode_timestamp * TRACKER_TDC_TICK;
 	  new_pcd_tracker->set_top_cathode_drift_time(first_top_cathode_time-first_anode_time);
+	  new_pcd_tracker->set_sigma_top_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
 	}
 
 	// Convert and fill the earliest R[1-4] timestamp in properties
 	for (int ANODE_Ri=1; ANODE_Ri<5; ANODE_Ri++) {
-	  if (first_anode_timestamp[1] != std::numeric_limits<int64_t>::max()) {
+	  if (first_anode_timestamp[ANODE_Ri] != std::numeric_limits<int64_t>::max()) {
 	    const double first_anode_ri_time = first_anode_timestamp[ANODE_Ri] * TRACKER_TDC_TICK;
-	    std::string ri_key = "R" + std::to_string(ANODE_Ri);
+	    std::string ri_key = "R" + std::to_string(ANODE_Ri) + "_drift_time";
 	    new_pcd_tracker->grab_auxiliaries().store_real(ri_key, first_anode_ri_time-first_anode_time);
+	    // std::string sigma_ri_key = "sigma_R" + std::to_string(ANODE_Ri) + "_drift_time";
+	    // new_pcd_tracker->grab_auxiliaries().store_real(sigma_ri_key, 0.5*sqrt(2)*TRACKER_TDC_TICK);
 	  }
 	}
 
