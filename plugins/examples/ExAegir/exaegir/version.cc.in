@@ -1,0 +1,10 @@
+#include <exaegir/version.h>
+     
+namespace exaegir {
+
+  std::string version_string()
+  {
+    return "@ExAegirVersion@";
+  }
+  
+} // end of namespace exaegir

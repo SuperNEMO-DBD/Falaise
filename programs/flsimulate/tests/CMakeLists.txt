@@ -259,3 +259,17 @@ add_test(NAME flsimulate-feature-bi207he2e-validation
 set_tests_properties(flsimulate-feature-bi207he2e-validation
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 set_falaise_test_environment(flsimulate-feature-bi207he2e-validation)
+
+# 2023-09-18 FM: add-on
+# - Test of feature AEGIR
+add_test(NAME flsimulate-feature-aegir
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-aegir/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-aegir"
+  )
+set_tests_properties(flsimulate-feature-aegir
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-aegir)
+
+
+# - end

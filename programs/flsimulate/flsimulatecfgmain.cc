@@ -24,6 +24,7 @@
 // Third Party
 // - Boost
 #include "boost/program_options.hpp"
+#include "boost/algorithm/string.hpp"
 // - Bayeux
 #include <bayeux/version.h>
 #include <bayeux/datatools/urn_query_service.h>
@@ -31,6 +32,7 @@
 #include "bayeux/datatools/kernel.h"
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/urn.h"
+#include "bayeux/datatools/library_loader.h"
 
 // This Project
 #include "FLSimulateErrors.h"
@@ -56,6 +58,7 @@ namespace FLSimulateConfig {
     std::string inputVariantProfile; //!< File path
     std::vector<std::string> inputVariantSettings;
     std::string outputVariantProfile; //!< File path
+    std::vector<std::string> loadPluginRules;
 #if DATATOOLS_WITH_QT_GUI == 1
     bool variantGui;
 #endif // DATATOOLS_WITH_QT_GUI == 1
@@ -82,6 +85,7 @@ namespace FLSimulateConfig {
   struct FLSimulateConfigureParams
   {
     datatools::logger::priority logLevel; //!< Logging priority threshold
+    std::vector<std::string> loadPluginRules;
     std::string simulationSetupUrn; //!< Registered URN of category "simsetup"
     std::string variantConfigUrn; //!< Registered URN of category "varservice"
     std::string inputVariantProfileUrn; //!< Registered URN of category "varprofile"
@@ -126,6 +130,7 @@ namespace FLSimulateConfig {
     flClarg.inputVariantProfile = "";
     flClarg.inputVariantSettings.clear();
     flClarg.outputVariantProfile = "";
+    flClarg.loadPluginRules.clear();
 #if DATATOOLS_WITH_QT_GUI == 1
     flClarg.variantGui = true;
 #endif // DATATOOLS_WITH_QT_GUI == 1
@@ -137,6 +142,7 @@ namespace FLSimulateConfig {
   {
     FLSimulateConfigureParams pars;
     pars.logLevel = datatools::logger::PRIO_FATAL;
+    pars.loadPluginRules.clear();
     pars.simulationSetupUrn = "";
     pars.variantConfigUrn = "";
     pars.variantServiceConfig.logging = datatools::logger::get_priority_label(pars.logLevel);
@@ -255,6 +261,14 @@ namespace FLSimulateConfig {
        "\t--setting=\"geometry:layout=Basic\"                         \n"
        "\t--setting=\"geometry:layout/if_basic/magnetic_field=false\" \n")
 
+      ("load-plugin,L",
+       bpo::value<std::vector<std::string>>(&clArgs_.loadPluginRules)
+       ->value_name("rule"),
+       "plugin load rules                               \n"
+       "Example:                                        \n"
+       "\t--load-plugin=\"foo@/path/to/the/foo/plugin\" \n"
+       "\t--load-plugin=\"bar@/path/to/the/bar/plugin\" \n")
+
       ("output-profile,o",
        bpo::value<std::string>(&clArgs_.outputVariantProfile)
        ->value_name("file")
@@ -360,7 +374,9 @@ namespace FLSimulateConfig {
       throw FLSimulate::FLConfigUserError{"bad command line input"};
     }
 
+    
     params.logLevel = clArgs.logLevel;
+    params.loadPluginRules = clArgs.loadPluginRules;
     params.simulationSetupUrn = clArgs.simulationSetupUrn;
     // params.simulationVariantServiceUrn = clArgs.simulationVariantServiceUrn;
     params.variantConfigUrn = clArgs.variantConfigUrn;
@@ -536,6 +552,22 @@ namespace FLSimulateConfig {
       return falaise::EXIT_USAGE;
     }
 
+    // Library loader:
+    datatools::library_loader libLoader;
+    for (const std::string & rule : params.loadPluginRules) {
+      std::vector<std::string> splitResults;
+      boost::split(splitResults, rule, boost::is_any_of("@"));
+      std::string pluginName;
+      std::string pluginDirectory;
+      if (splitResults.size() > 0) {
+	pluginName = splitResults[0];
+	if (splitResults.size() > 1) {
+	  pluginDirectory = splitResults[1];
+	}
+      }
+      libLoader.load(pluginName, pluginDirectory);
+    }
+    
     datatools::configuration::variant_service variantService;
     if (!params.variantServiceConfig.logging.empty()) {
       variantService.set_logging(datatools::logger::get_priority(params.variantServiceConfig.logging));
