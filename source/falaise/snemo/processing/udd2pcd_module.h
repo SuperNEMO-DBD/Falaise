@@ -48,8 +48,8 @@ namespace snemo {
 
       enum calorimeter_precalibration_algorithm
       {
-	ALGO_CALO_FWMEASUREMENT = 0
-	// ALGO_              = 1
+	ALGO_CALO_FWMEASUREMENT = 0,
+	ALGO_CALO_SWMEASUREMENT = 1
       };
 
       enum tracker_precalibration_algorithm
@@ -76,6 +76,10 @@ namespace snemo {
 
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
+					 snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_);
+
+      /// Precalibrate calorimeter hits with swmeas
+      void precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
 					 snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_);
 
       /// Main process calo function
