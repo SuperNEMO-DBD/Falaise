@@ -15,6 +15,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/data_model.h
   snemo/datamodels/event.h
   snemo/datamodels/event_header.h
+  snemo/datamodels/geomid_utils.h
   snemo/datamodels/gg_track_utils.h
   snemo/datamodels/helix_trajectory_pattern.h
   snemo/datamodels/line_trajectory_pattern.h
@@ -155,6 +156,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/particle_track_data.cc
   snemo/datamodels/data_model.cc
   snemo/datamodels/boost_io/the_serializable.cc
+  snemo/datamodels/geomid_utils.cc
   snemo/datamodels/gg_track_utils.cc
   snemo/datamodels/vertex_utils.cc
 

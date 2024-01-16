@@ -23,6 +23,7 @@
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/geomid_utils.h>
 #include <falaise/snemo/services/services.h>
 
 namespace snemo {
@@ -165,7 +166,7 @@ namespace snemo {
 
 	}
 
-	DT_LOG_WARNING(get_logging_priority(), "Precalibrating calo hit from " << a_udd_calo_hit->get_geom_id());
+	DT_LOG_WARNING(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
         // Produce a new precalibrated calorimeter hit
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
@@ -406,6 +407,8 @@ namespace snemo {
 
       // Loop over UDD tracker digitized hits
       for (auto& a_udd_tracker_hit : udd_tracker_hits) {
+
+	DT_LOG_WARNING(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
 
 	// Loop over all gg_times and keep trace of the earliest timestamps
 	int64_t first_anode_timestamp[5];
