@@ -42,7 +42,8 @@ namespace snemo {
       };
 
       auto printPreCalibTrackerHit = [&](const PreCalibTrackerHitHdl& x) {
-        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id() << std::endl;
+        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+	    << ", AnodicDriftTime = " << x->get_anodic_drift_time() / CLHEP::microsecond << " us" << std::endl;
       };
 
       if (!title.empty()) {

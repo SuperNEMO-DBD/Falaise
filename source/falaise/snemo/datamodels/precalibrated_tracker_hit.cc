@@ -60,6 +60,50 @@ namespace snemo {
       return;
     }
 
+    double precalibrated_tracker_hit::get_anodic_drift_time() const
+    {
+      return _anodic_drift_time_;
+    }
+
+    void precalibrated_tracker_hit::set_anodic_drift_time(double anodic_drift_time_)
+    {
+      _anodic_drift_time_ = anodic_drift_time_;
+      return;
+    }
+
+    bool precalibrated_tracker_hit::has_anodic_drift_time() const
+    {
+      return datatools::is_valid(_anodic_drift_time_);
+    }
+
+    void precalibrated_tracker_hit::reset_anodic_drift_time()
+    {
+      _anodic_drift_time_ = datatools::invalid_real();
+      return;
+    }
+
+    double precalibrated_tracker_hit::get_sigma_anodic_drift_time() const
+    {
+      return _sigma_anodic_drift_time_;
+    }
+
+    void precalibrated_tracker_hit::set_sigma_anodic_drift_time(double sigma_anodic_drift_time_)
+    {
+      _sigma_anodic_drift_time_ = sigma_anodic_drift_time_;
+      return;
+    }
+
+    bool precalibrated_tracker_hit::has_sigma_anodic_drift_time() const
+    {
+      return datatools::is_valid(_sigma_anodic_drift_time_);
+    }
+
+    void precalibrated_tracker_hit::reset_sigma_anodic_drift_time()
+    {
+      _sigma_anodic_drift_time_ = datatools::invalid_real();
+      return;
+    }
+
     double precalibrated_tracker_hit::get_bottom_cathode_drift_time() const
     {
       return _bottom_cathode_drift_time_;
@@ -165,6 +209,8 @@ namespace snemo {
       this->base_hit::invalidate();
       datatools::invalidate(_anodic_time_);
       datatools::invalidate(_sigma_anodic_time_);
+      datatools::invalidate(_anodic_drift_time_);
+      datatools::invalidate(_sigma_anodic_drift_time_);
       datatools::invalidate(_bottom_cathode_drift_time_);
       datatools::invalidate(_sigma_bottom_cathode_drift_time_);
       datatools::invalidate(_top_cathode_drift_time_);
@@ -202,14 +248,17 @@ namespace snemo {
 	  << time_min << "m " << time_sec << "s " << time_msec << "ms " << time_usec << "us " << time_nsec << " ns +/- "
 	  << _sigma_anodic_time_/CLHEP::nanosecond << " ns \n";
 
-      out << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time: ";
+      out << indent << datatools::i_tree_dumpable::tag << "Anode drift time: ";
+      if (has_bottom_cathode_drift_time())
+	out << _anodic_drift_time_/CLHEP::microsecond << " us +/- " << _sigma_anodic_drift_time_/CLHEP::nanosecond << " ns\n";
+      else out << "undefined\n";
 
+      out << indent << datatools::i_tree_dumpable::tag << "Bottom cathode drift time: ";
       if (has_bottom_cathode_drift_time())
 	out << _bottom_cathode_drift_time_/CLHEP::microsecond << " us +/- " << _sigma_bottom_cathode_drift_time_/CLHEP::nanosecond << " ns\n";
       else out << "missing\n";
 
       out << indent << datatools::i_tree_dumpable::last_tag << "Top cathode drift time: ";
-
       if (has_top_cathode_drift_time())
 	out << _top_cathode_drift_time_ /CLHEP::microsecond << " us +/- " << _sigma_bottom_cathode_drift_time_/CLHEP::nanosecond << " ns\n";
       else out << "missing\n";

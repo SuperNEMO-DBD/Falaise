@@ -48,14 +48,15 @@ namespace snemo {
 
       enum calorimeter_precalibration_algorithm
       {
-	ALGO_CALO_FWMEASUREMENT = 0,
-	ALGO_CALO_SWMEASUREMENT = 1
+	ALGO_CALO_NONE          = 0,
+	ALGO_CALO_FWMEASUREMENT = 1,
+	ALGO_CALO_SWMEASUREMENT = 2
       };
 
       enum tracker_precalibration_algorithm
       {
-	ALGO_TRACKER_EARLIEST = 0
-	// ALGO_              = 1
+	ALGO_TRACKER_NONE          = 0,
+	ALGO_TRACKER_BASIC_CLUSTER = 1
       };
 
     public:
@@ -90,6 +91,9 @@ namespace snemo {
       void precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
 					      snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
 
+      /// Basic tracker clusterisation
+      void basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_);
+
       /// Main process tracker function
       void process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
                                 snemo::datamodel::precalibrated_data & pcd_data_);
@@ -99,7 +103,6 @@ namespace snemo {
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
 
       calorimeter_precalibration_algorithm _calo_pcd_algo_;
-      tracker_precalibration_algorithm _tracker_pcd_algo_;
 
       double _calo_adc2volt_;
       double _calo_sampling_period_;
@@ -109,6 +112,12 @@ namespace snemo {
       int    _calo_charge_integration_nsamples_before_peak_;
       double _calo_time_cfd_ratio_;
       bool   _calo_discard_empty_waveform_;
+
+      tracker_precalibration_algorithm _tracker_pcd_algo_;
+      double _tracker_basic_cluster_radius_threshold_;
+      double _tracker_basic_cluster_deltat_threshold_;
+      double _tracker_basic_cluster_deltat_calo_min_;
+      double _tracker_basic_cluster_deltat_calo_max_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
