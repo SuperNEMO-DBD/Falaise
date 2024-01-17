@@ -21,6 +21,7 @@
 
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
+#include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
 #include <falaise/snemo/datamodels/geomid_utils.h>
@@ -64,7 +65,7 @@ namespace snemo {
       } else if (udd2pcd_calo_method_label == "swmeas") {
 	_calo_pcd_algo_ = ALGO_CALO_SWMEASUREMENT;
       } else {
-	DT_LOG_WARNING(get_logging_priority(), "udd2pcd calo method '" << udd2pcd_calo_method_label << "' not recognised");
+	DT_LOG_ERROR(get_logging_priority(), "udd2pcd calo method '" << udd2pcd_calo_method_label << "' not recognised");
 	_calo_pcd_algo_ = ALGO_CALO_FWMEASUREMENT;
       }
 
@@ -72,18 +73,18 @@ namespace snemo {
       if (udd2pcd_tracker_method_label == "earliest") {
 	_tracker_pcd_algo_ = ALGO_TRACKER_EARLIEST;
       } else {
-	DT_LOG_WARNING(get_logging_priority(), "udd2pcd tracker method '" << udd2pcd_tracker_method_label << "' not recognised");
+	DT_LOG_ERROR(get_logging_priority(), "udd2pcd tracker method '" << udd2pcd_tracker_method_label << "' not recognised");
 	_tracker_pcd_algo_ = ALGO_TRACKER_EARLIEST;
       }
 
-      DT_LOG_NOTICE(get_logging_priority(), "\ncalorimeter udd2pcd firmware measurement configuration:\n"
-		    << "- adc2volt          = " << _calo_adc2volt_/(1E-3*CLHEP::volt) << " mV/tick\n"
-		    << "- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns\n"
-		    << "- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns\n"
-		    << "- baseline nsamples = " << _calo_baseline_nsamples_ << "\n"
-		    << "- charge integration nsamples = " << _calo_charge_integration_nsamples_ << "\n"
-		    << "- pre-charge nsamples         = " << _calo_charge_integration_nsamples_before_peak_ << "\n"
-		    << "- falling time cfd ratio      = " << _calo_time_cfd_ratio_);
+      DT_LOG_NOTICE(get_logging_priority(), "calorimeter udd2pcd firmware measurement configuration:");
+      DT_LOG_NOTICE(get_logging_priority(), "- adc2volt          = " << _calo_adc2volt_/(1E-3*CLHEP::volt) << " mV/tick");
+      DT_LOG_NOTICE(get_logging_priority(), "- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns");
+      DT_LOG_NOTICE(get_logging_priority(), "- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
+      DT_LOG_NOTICE(get_logging_priority(), "- baseline nsamples = " << _calo_baseline_nsamples_);
+      DT_LOG_NOTICE(get_logging_priority(), "- charge integration nsamples = " << _calo_charge_integration_nsamples_);
+      DT_LOG_NOTICE(get_logging_priority(), "- pre-charge nsamples         = " << _calo_charge_integration_nsamples_before_peak_);
+      DT_LOG_NOTICE(get_logging_priority(), "- falling time cfd ratio      = " << _calo_time_cfd_ratio_);
 
       this->base_module::_set_initialized(true);
     }
@@ -102,8 +103,10 @@ namespace snemo {
         return dpp::base_module::PROCESS_ERROR;
       }
 
-      auto& udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
-      DT_LOG_NOTICE(get_logging_priority(), "processing event #" << udd_data.get_event_id());
+      auto & eh_data = event.get<snemo::datamodel::event_header>("EH");
+      DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << eh_data.get_id());
+
+      auto & udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
 
       // Check if some 'pcd_data' are available in the data model:
       // Precalibrated Data is a single object with each hit collection
@@ -122,6 +125,12 @@ namespace snemo {
 
       // Main tracker processing method
       process_tracker_impl(udd_data, pcd_data);
+
+      if (datatools::logger::is_debug(get_logging_priority())) {
+	DT_LOG_DEBUG(get_logging_priority(), "pCD bank filled with " << pcd_data.tracker_hits().size()
+		     << " tracker hits and " << pcd_data.calorimeter_hits().size() << " calorimeter hits");
+	pcd_data.tree_dump();
+      }
 
       return dpp::base_module::PROCESS_SUCCESS;
     }
@@ -166,7 +175,7 @@ namespace snemo {
 
 	}
 
-	DT_LOG_WARNING(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
+	DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
         // Produce a new precalibrated calorimeter hit
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
@@ -210,7 +219,7 @@ namespace snemo {
 	// Append the new pCD calorimeter hit
         calo_hits_.push_back(new_pcd_calo);
 
-	if (datatools::logger::is_debug(get_logging_priority()))
+	if (datatools::logger::is_trace(get_logging_priority()))
 	  new_pcd_calo->tree_dump(std::clog);
       }
     }
@@ -252,7 +261,9 @@ namespace snemo {
 	    continue;
 	}
 
-        // Produce a new precalibrated calorimeter hit
+	DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
+
+	// Produce a new precalibrated calorimeter hit
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
 	// Keep same hit number for calorimeter's digitized hit and precalibrated hit
@@ -379,7 +390,7 @@ namespace snemo {
 	// Append the new pCD calorimeter hit
         calo_hits_.push_back(new_pcd_calo);
 
-	if (datatools::logger::is_debug(get_logging_priority()))
+	if (datatools::logger::is_trace(get_logging_priority()))
 	  new_pcd_calo->tree_dump(std::clog);
       }
     }
@@ -408,7 +419,7 @@ namespace snemo {
       // Loop over UDD tracker digitized hits
       for (auto& a_udd_tracker_hit : udd_tracker_hits) {
 
-	DT_LOG_WARNING(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
+	DT_LOG_TRACE(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
 
 	// Loop over all gg_times and keep trace of the earliest timestamps
 	int64_t first_anode_timestamp[5];
@@ -486,7 +497,7 @@ namespace snemo {
 	// Append the new pCD tracker hit
         tracker_hits_.push_back(new_pcd_tracker);
 
-	if (datatools::logger::is_debug(get_logging_priority()))
+	if (datatools::logger::is_trace(get_logging_priority()))
 	  new_pcd_tracker->tree_dump(std::clog);
       }
     }

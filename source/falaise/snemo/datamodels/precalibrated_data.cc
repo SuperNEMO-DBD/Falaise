@@ -35,7 +35,7 @@ namespace snemo {
                                        const std::string& indent, bool is_last) const {
       auto printCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {
         out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
-	    << ", Baseline: " << x->get_baseline() / CLHEP::volt << " V"
+	    << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
 	    << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
 	    << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
 	    << ", Time: " << x->get_time() / CLHEP::second << " s" << std::endl;
