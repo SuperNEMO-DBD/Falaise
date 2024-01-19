@@ -239,6 +239,7 @@ namespace snemo {
 
 	if (datatools::logger::is_trace(get_logging_priority()))
 	  new_pcd_calo->tree_dump(std::clog);
+	// new_pcd_calo->print_tree(std::clog);
       }
     }
 
@@ -517,6 +518,7 @@ namespace snemo {
 
 	if (datatools::logger::is_trace(get_logging_priority()))
 	  new_pcd_tracker->tree_dump(std::clog);
+	// new_pcd_tracker->print_tree(std::clog);
       }
     }
 
@@ -711,8 +713,8 @@ namespace snemo {
 	std::vector<int> cluster_calorimeter_index;
 	std::vector<int> cluster_associated_calorimeter_index;
 
-	double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
-	int best_reference_pcd_calo_hit_index = -1;
+	// double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
+	// int best_reference_pcd_calo_hit_index = -1;
 
 	// Retrieve pCD calorimeter hits
 	const auto & pcd_calo_hits = pcd_data_.calorimeter_hits();
@@ -741,10 +743,10 @@ namespace snemo {
 
 	  cluster_calorimeter_index.push_back(pcd_calo_hit_index);
 
-	  if (deltat_cluster_first_anode_calo < deltat_cluster_first_anode_calo_min) {
-	    deltat_cluster_first_anode_calo_min = deltat_cluster_first_anode_calo;
-	    best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
-	  }
+	  // if (deltat_cluster_first_anode_calo < deltat_cluster_first_anode_calo_min) {
+	  //   deltat_cluster_first_anode_calo_min = deltat_cluster_first_anode_calo;
+	  //   best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
+	  // }
 
 	  const geomtools::geom_id & calo_geom_id = pcd_calo_hit.get_geom_id();
 
@@ -828,25 +830,26 @@ namespace snemo {
 		     << " associated) calorimeter hits");
 
 
-	if (best_reference_pcd_calo_hit_index != -1) {
+	// if (best_reference_pcd_calo_hit_index != -1) {
 
-	  // A candidate of calorimeter hit was found as reference time for this cluster
-	  auto & pcd_calo_hit = pcd_calo_hits.at(best_reference_pcd_calo_hit_index).get();
-	  const double & calo_time = pcd_calo_hit.get_time();
+	//   // A candidate of calorimeter hit was found as reference time for this cluster
+	//   auto & pcd_calo_hit = pcd_calo_hits.at(best_reference_pcd_calo_hit_index).get();
+	//   const double & calo_time = pcd_calo_hit.get_time();
 
-	  // Computation of anode drift time for all cells of the cluster
+	//   // Computation of anode drift time for all cells of the cluster
 
-	  // Iterate over all cells of the current cluster
-	  for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
+	//   // Iterate over all cells of the current cluster
+	//   for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
 
-	    auto & pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).grab();
+	//     auto & pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).grab();
 
-	    const double & anode_time = pcd_tracker_hit.get_anodic_time();
-	    pcd_tracker_hit.set_anodic_drift_time(anode_time - calo_time);
+	//     const double & anode_time = pcd_tracker_hit.get_anodic_time();
+	//     pcd_tracker_hit.set_anodic_drift_time(anode_time - calo_time);
 
-	  } // for (cluster_pcd_tracker_hit_index)
+	//   } // for (cluster_pcd_tracker_hit_index)
 
-	} // if (best_reference_pcd_calo_hit_index != -1)
+	// } // if (best_reference_pcd_calo_hit_index != -1)
+
 
       } // for (pcd_cluster_id)
 

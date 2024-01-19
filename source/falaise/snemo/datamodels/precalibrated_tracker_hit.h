@@ -62,30 +62,30 @@ namespace snemo {
       void reset_sigma_anodic_time();
 
 
-      /// Return the anodic drift time associated to the hit
-      double get_anodic_drift_time() const;
+      // /// Return the anodic drift time associated to the hit
+      // double get_anodic_drift_time() const;
 
-      /// Set the anodic drift time associated to the hit
-      void set_anodic_drift_time(double);
+      // /// Set the anodic drift time associated to the hit
+      // void set_anodic_drift_time(double);
 
-      /// Check if the anodic drift time is valid
-      bool has_anodic_drift_time() const;
+      // /// Check if the anodic drift time is valid
+      // bool has_anodic_drift_time() const;
 
-      /// Reset the anodic drift time
-      void reset_anodic_drift_time();
+      // /// Reset the anodic drift time
+      // void reset_anodic_drift_time();
 
 
-      /// Return the sigma anodic drift time associated to the hit
-      double get_sigma_anodic_drift_time() const;
+      // /// Return the sigma anodic drift time associated to the hit
+      // double get_sigma_anodic_drift_time() const;
 
-      /// Set the sigma anodic drift time associated to the hit
-      void set_sigma_anodic_drift_time(double);
+      // /// Set the sigma anodic drift time associated to the hit
+      // void set_sigma_anodic_drift_time(double);
 
-      /// Check if the sigma anodic drift time is valid
-      bool has_sigma_anodic_drift_time() const;
+      // /// Check if the sigma anodic drift time is valid
+      // bool has_sigma_anodic_drift_time() const;
 
-      /// Reset the sigma anodic drift time
-      void reset_sigma_anodic_drift_time();
+      // /// Reset the sigma anodic drift time
+      // void reset_sigma_anodic_drift_time();
 
 
       /// Return the bottom cathode drift time associated to the hit
@@ -160,8 +160,8 @@ namespace snemo {
     private:
       double _anodic_time_{datatools::invalid_real()};                      //!< Anodic absolute time of the cell
       double _sigma_anodic_time_{datatools::invalid_real()};                //!< Error on anodic absolute time of the cell
-      double _anodic_drift_time_{datatools::invalid_real()};                //!< Anodic drift time of the cell
-      double _sigma_anodic_drift_time_{datatools::invalid_real()};          //!< Error on anodic drift time of the cell
+      // double _anodic_drift_time_{datatools::invalid_real()};                //!< Anodic drift time of the cell
+      // double _sigma_anodic_drift_time_{datatools::invalid_real()};          //!< Error on anodic drift time of the cell
       double _bottom_cathode_drift_time_{datatools::invalid_real()};        //!< Bottom cathode drift time of the cell
       double _sigma_bottom_cathode_drift_time_{datatools::invalid_real()};  //!< Error on bottom cathode drift time of the cell
       double _top_cathode_drift_time_{datatools::invalid_real()};           //!< Top cathode drift time of the cell
