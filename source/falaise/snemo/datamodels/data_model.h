@@ -40,8 +40,14 @@ class labels {
   /// default string label/name for the 'unified digitized data'
   static const std::string& unified_digitized_data();
 
-  /// default string label/name for the 'precalibrated data'
+  /// default string label/name for the 'precalibrated data' (trigger driven)
   static const std::string& precalibrated_data();
+
+  /// default string label/name for the 'clusterized precalibrated data' (event driven)
+  static const std::string& clusterized_precalibrated_data();
+
+  /// default string label/name for the 'clusterized calibrated data'
+  static const std::string& clusterized_calibrated_data();
 
   /// default string label/name for the 'calibrated data'
   static const std::string& calibrated_data();

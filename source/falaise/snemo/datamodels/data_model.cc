@@ -31,6 +31,16 @@ const std::string& labels::precalibrated_data() {
   return lbl;
 }
 
+const std::string& labels::clusterized_precalibrated_data() {
+  static std::string lbl("CpCD");
+  return lbl;
+}
+
+const std::string& labels::clusterized_calibrated_data() {
+  static std::string lbl("CCD");
+  return lbl;
+}
+
 const std::string& labels::calibrated_data() {
   static std::string lbl("CD");
   return lbl;
