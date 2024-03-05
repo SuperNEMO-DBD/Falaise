@@ -80,6 +80,7 @@ namespace FLReconstruct {
         moduleManager->load_modules(flRecParameters_.modulesConfig);
       } else {
         // Hand configure a dumb dump module
+        DT_LOG_DEBUG(flRecParameters_.logLevel, "Dump module...");
         datatools::properties dumbConfig;
         dumbConfig.store("title", "flreconstruct::default");
         dumbConfig.store("output", "cout");
