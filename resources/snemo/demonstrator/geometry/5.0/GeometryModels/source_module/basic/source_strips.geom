@@ -140,6 +140,7 @@
   material.ref : string = "tracking_gas"
   visibility.color : string = "green"
   mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+  mapping.daughter_id.source     : string = "[source_strip]"
   mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
 
@@ -178,5 +179,6 @@
   material.ref : string = "tracking_gas"
   visibility.color : string = "green"
   mapping.daughter_id.back_film  : string = "[source_strip_film:film=0]"
+  mapping.daughter_id.source     : string = "[source_strip]"
   mapping.daughter_id.front_film : string = "[source_strip_film:film=1]"
 
