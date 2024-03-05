@@ -71,14 +71,9 @@ struct Things2Root::working_space {
   std::vector<int> pcdtrackerside;
   std::vector<int> pcdtrackerlayer;
   std::vector<int> pcdtrackercolumn;
-  std::vector<double> pcdtrackerreferencetime;
-  std::vector<double> pcdtrackeranodicdrifttime;
-  std::vector<double> pcdtrackersigmaanodicdrifttime;
+  std::vector<double> pcdtrackeranodictime;
   std::vector<double> pcdtrackerbottomcathodedrifttime;
-  std::vector<double> pcdtrackersigmabottomcathodedrifttime;
   std::vector<double> pcdtrackertopcathodedrifttime;
-  std::vector<double> pcdtrackersigmatopcathodedrifttime;
-  std::vector<bool>   pcdtrackerisdelayed;
 
   // Precalibrated calo data
   std::vector<int> pcdcaloid;
@@ -88,20 +83,10 @@ struct Things2Root::working_space {
   std::vector<int> pcdcalocolumn;
   std::vector<int> pcdcalorow;
   std::vector<int> pcdcalowall;
-  std::vector<double> pcdcaloamplitude;
-  std::vector<double> pcdcalosigmaamplitude;
-  std::vector<double> pcdcalocharge;
-  std::vector<double> pcdcalosigmacharge;
-  std::vector<double> pcdcalotime;
-  std::vector<double> pcdcalosigmatime;
   std::vector<double> pcdcalobaseline;
-  std::vector<double> pcdcalosigmabaseline;
-  std::vector<double> pcdcalorisingtime;
-  std::vector<double> pcdcalosigmarisingtime;
-  std::vector<double> pcdcalofallingtime;
-  std::vector<double> pcdcalosigmafallingtime;
-  std::vector<double> pcdcalotimewidth;
-  std::vector<double> pcdcalosigmatimewidth;
+  std::vector<double> pcdcaloamplitude;
+  std::vector<double> pcdcalocharge;
+  std::vector<double> pcdcalotime;
 
   // Digitized tracker data
   std::vector<int> digitrackerid;
@@ -225,14 +210,9 @@ void Things2Root::working_space::clear() {
   pcdtrackerside.clear();
   pcdtrackerlayer.clear();
   pcdtrackercolumn.clear();
-  pcdtrackerreferencetime.clear();
-  pcdtrackeranodicdrifttime.clear();
-  pcdtrackersigmaanodicdrifttime.clear();
+  pcdtrackeranodictime.clear();
   pcdtrackerbottomcathodedrifttime.clear();
-  pcdtrackersigmabottomcathodedrifttime.clear();
   pcdtrackertopcathodedrifttime.clear();
-  pcdtrackersigmatopcathodedrifttime.clear();
-  pcdtrackerisdelayed.clear();
 
   // Clear precalibrated calo data
   pcdcaloid.clear();
@@ -242,20 +222,10 @@ void Things2Root::working_space::clear() {
   pcdcalocolumn.clear();
   pcdcalorow.clear();
   pcdcalowall.clear();
-  pcdcaloamplitude.clear();
-  pcdcalosigmaamplitude.clear();
-  pcdcalocharge.clear();
-  pcdcalosigmacharge.clear();
-  pcdcalotime.clear();
-  pcdcalosigmatime.clear();
   pcdcalobaseline.clear();
-  pcdcalosigmabaseline.clear();
-  pcdcalorisingtime.clear();
-  pcdcalosigmarisingtime.clear();
-  pcdcalofallingtime.clear();
-  pcdcalosigmafallingtime.clear();
-  pcdcalotimewidth.clear();
-  pcdcalosigmatimewidth.clear();
+  pcdcaloamplitude.clear();
+  pcdcalocharge.clear();
+  pcdcalotime.clear();
 
   // Clear digitized tracker data
   digitrackerid.clear();
@@ -441,14 +411,9 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("pcdtracker.side", &pcdtracker_.side_);
   tree_->Branch("pcdtracker.layer", &pcdtracker_.layer_);
   tree_->Branch("pcdtracker.column", &pcdtracker_.column_);
-  tree_->Branch("pcdtracker.referencetime", &pcdtracker_.reference_time_);
-  tree_->Branch("pcdtracker.anodicdrifttime", &pcdtracker_.anodic_drift_time_);
-  tree_->Branch("pcdtracker.sigmaanodicdrifttime", &pcdtracker_.sigma_anodic_drift_time_);
+  tree_->Branch("pcdtracker.anodictime", &pcdtracker_.anodic_time_);
   tree_->Branch("pcdtracker.bottomcathodedrifttime", &pcdtracker_.bottom_cathode_drift_time_);
-  tree_->Branch("pcdtracker.sigmabottomcathodedrifttime", &pcdtracker_.sigma_bottom_cathode_drift_time_);
   tree_->Branch("pcdtracker.topcathodedrifttime", &pcdtracker_.top_cathode_drift_time_);
-  tree_->Branch("pcdtracker.sigmatopcathodedrifttime", &pcdtracker_.sigma_top_cathode_drift_time_);
-  tree_->Branch("pcdtracker.isdelayed", &pcdtracker_.is_delayed_);
 
   // precalibrated calorimeter data
   tree_->Branch("pcdcalo.nohits", &pcdcalo_.nohits_);
@@ -459,20 +424,10 @@ void Things2Root::initialize(const datatools::properties& myConfig,
   tree_->Branch("pcdcalo.column", &pcdcalo_.column_);
   tree_->Branch("pcdcalo.row", &pcdcalo_.row_);
   tree_->Branch("pcdcalo.wall", &pcdcalo_.wall_);
-  tree_->Branch("pcdcalo.amplitude", &pcdcalo_.amplitude_);
-  tree_->Branch("pcdcalo.sigma_amplitude", &pcdcalo_.sigma_amplitude_);
-  tree_->Branch("pcdcalo.charge", &pcdcalo_.charge_);
-  tree_->Branch("pcdcalo.sigma_charge", &pcdcalo_.sigma_charge_);
-  tree_->Branch("pcdcalo.time", &pcdcalo_.time_);
-  tree_->Branch("pcdcalo.sigma_time", &pcdcalo_.sigma_time_);
   tree_->Branch("pcdcalo.baseline", &pcdcalo_.baseline_);
-  tree_->Branch("pcdcalo.sigma_baseline", &pcdcalo_.sigma_baseline_);
-  tree_->Branch("pcdcalo.rising_time", &pcdcalo_.rising_time_);
-  tree_->Branch("pcdcalo.sigma_rising_time", &pcdcalo_.sigma_rising_time_);
-  tree_->Branch("pcdcalo.falling_time", &pcdcalo_.falling_time_);
-  tree_->Branch("pcdcalo.sigma_falling_time", &pcdcalo_.sigma_falling_time_);
-  tree_->Branch("pcdcalo.time_width", &pcdcalo_.time_width_);
-  tree_->Branch("pcdcalo.sigma_time_width", &pcdcalo_.sigma_time_width_);
+  tree_->Branch("pcdcalo.amplitude", &pcdcalo_.amplitude_);
+  tree_->Branch("pcdcalo.charge", &pcdcalo_.charge_);
+  tree_->Branch("pcdcalo.time", &pcdcalo_.time_);
 
   // digitized tracker data
   tree_->Branch("digitracker.nohits", &digitracker_.nohits_);
@@ -949,14 +904,9 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
       ws_->pcdtrackerside.push_back(pcd_gg_hit.get_geom_id().get(1));
       ws_->pcdtrackerlayer.push_back(pcd_gg_hit.get_geom_id().get(2));
       ws_->pcdtrackercolumn.push_back(pcd_gg_hit.get_geom_id().get(3));
-      ws_->pcdtrackerreferencetime.push_back(pcd_gg_hit.get_reference_time());
-      ws_->pcdtrackeranodicdrifttime.push_back(pcd_gg_hit.get_anodic_drift_time());
-      ws_->pcdtrackersigmaanodicdrifttime.push_back(pcd_gg_hit.get_sigma_anodic_drift_time());
+      ws_->pcdtrackeranodictime.push_back(pcd_gg_hit.get_anodic_time());
       ws_->pcdtrackerbottomcathodedrifttime.push_back(pcd_gg_hit.get_bottom_cathode_drift_time());
-      ws_->pcdtrackersigmabottomcathodedrifttime.push_back(pcd_gg_hit.get_sigma_bottom_cathode_drift_time());
       ws_->pcdtrackertopcathodedrifttime.push_back(pcd_gg_hit.get_top_cathode_drift_time());
-      ws_->pcdtrackersigmatopcathodedrifttime.push_back(pcd_gg_hit.get_sigma_top_cathode_drift_time());
-      ws_->pcdtrackerisdelayed.push_back(pcd_gg_hit.is_delayed());
 
     }
 
@@ -965,14 +915,9 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     pcdtracker_.side_   = &ws_->pcdtrackerside;
     pcdtracker_.layer_  = &ws_->pcdtrackerlayer;
     pcdtracker_.column_ = &ws_->pcdtrackercolumn;
-    pcdtracker_.reference_time_ = &ws_->pcdtrackerreferencetime;
-    pcdtracker_.anodic_drift_time_ = &ws_->pcdtrackeranodicdrifttime;
-    pcdtracker_.sigma_anodic_drift_time_ = &ws_->pcdtrackersigmaanodicdrifttime;
+    pcdtracker_.anodic_time_ = &ws_->pcdtrackeranodictime;
     pcdtracker_.bottom_cathode_drift_time_ = &ws_->pcdtrackerbottomcathodedrifttime;
-    pcdtracker_.sigma_bottom_cathode_drift_time_ = &ws_->pcdtrackersigmabottomcathodedrifttime;
     pcdtracker_.top_cathode_drift_time_ = &ws_->pcdtrackertopcathodedrifttime;
-    pcdtracker_.sigma_top_cathode_drift_time_ = &ws_->pcdtrackersigmatopcathodedrifttime;
-    pcdtracker_.is_delayed_ = &ws_->pcdtrackerisdelayed;
 
 
     pcdcalo_.nohits_ = pCD.calorimeter_hits().size();
@@ -1007,20 +952,10 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
         ws_->pcdcalorow.push_back(INVALID_CALO_VALUE);
       }
 
-      ws_->pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());
-      ws_->pcdcalosigmaamplitude.push_back(pcd_calo_hit.get_sigma_amplitude());
-      ws_->pcdcalocharge.push_back(pcd_calo_hit.get_charge());
-      ws_->pcdcalosigmacharge.push_back(pcd_calo_hit.get_sigma_charge());
-      ws_->pcdcalotime.push_back(pcd_calo_hit.get_time());
-      ws_->pcdcalosigmatime.push_back(pcd_calo_hit.get_sigma_time());
       ws_->pcdcalobaseline.push_back(pcd_calo_hit.get_baseline());
-      ws_->pcdcalosigmabaseline.push_back(pcd_calo_hit.get_sigma_baseline());
-      ws_->pcdcalorisingtime.push_back(pcd_calo_hit.get_rising_time());
-      ws_->pcdcalosigmarisingtime.push_back(pcd_calo_hit.get_sigma_rising_time());
-      ws_->pcdcalofallingtime.push_back(pcd_calo_hit.get_falling_time());
-      ws_->pcdcalosigmafallingtime.push_back(pcd_calo_hit.get_sigma_falling_time());
-      ws_->pcdcalotimewidth.push_back(pcd_calo_hit.get_time_width());
-      ws_->pcdcalosigmatimewidth.push_back(pcd_calo_hit.get_sigma_time_width());
+      ws_->pcdcaloamplitude.push_back(pcd_calo_hit.get_amplitude());
+      ws_->pcdcalocharge.push_back(pcd_calo_hit.get_charge());
+      ws_->pcdcalotime.push_back(pcd_calo_hit.get_time());
     }
 
     pcdcalo_.id_ = &ws_->pcdcaloid;
@@ -1030,22 +965,11 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     pcdcalo_.column_ = &ws_->pcdcalocolumn;
     pcdcalo_.row_ = &ws_->pcdcalorow;
     pcdcalo_.wall_ = &ws_->pcdcalowall;
-    pcdcalo_.amplitude_ = &ws_->pcdcaloamplitude;
-    pcdcalo_.sigma_amplitude_ = &ws_->pcdcalosigmaamplitude;
-    pcdcalo_.charge_ = &ws_->pcdcalocharge;
-    pcdcalo_.sigma_charge_ = &ws_->pcdcalosigmacharge;
-    pcdcalo_.time_ = &ws_->pcdcalotime;
-    pcdcalo_.sigma_time_ = &ws_->pcdcalosigmatime;
     pcdcalo_.baseline_ = &ws_->pcdcalobaseline;
-    pcdcalo_.sigma_baseline_ = &ws_->pcdcalosigmabaseline;
-    pcdcalo_.rising_time_ = &ws_->pcdcalorisingtime;
-    pcdcalo_.sigma_rising_time_ = &ws_->pcdcalosigmarisingtime;
-    pcdcalo_.falling_time_ = &ws_->pcdcalofallingtime;
-    pcdcalo_.sigma_falling_time_ = &ws_->pcdcalosigmafallingtime;
-    pcdcalo_.time_width_ = &ws_->pcdcalotimewidth;
-    pcdcalo_.sigma_time_width_ = &ws_->pcdcalosigmatimewidth;
+    pcdcalo_.amplitude_ = &ws_->pcdcaloamplitude;
+    pcdcalo_.charge_ = &ws_->pcdcalocharge;
+    pcdcalo_.time_ = &ws_->pcdcalotime;
   }
-
 
   // look for calibrated data
   if (workItem.has("CD")) {

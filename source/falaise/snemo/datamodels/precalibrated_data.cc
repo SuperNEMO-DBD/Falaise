@@ -4,7 +4,7 @@
 #include <falaise/snemo/datamodels/precalibrated_data.h>
 
 // Third party:
-// - Bayeux/datatools:
+// - Bayeux/datatools
 #include <datatools/clhep_units.h>
 
 namespace snemo {
@@ -34,11 +34,16 @@ namespace snemo {
     void precalibrated_data::tree_dump(std::ostream& out, const std::string& title,
                                        const std::string& indent, bool is_last) const {
       auto printCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {
-        out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id() << std::endl;
+        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+	    << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
+	    << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
+	    << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
+	    << ", Time: " << x->get_time() / CLHEP::second << " s" << std::endl;
       };
 
       auto printPreCalibTrackerHit = [&](const PreCalibTrackerHitHdl& x) {
-        out << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id() << std::endl;
+        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+	    << ", AnodicDriftTime = " << x->get_anodic_drift_time() / CLHEP::microsecond << " us" << std::endl;
       };
 
       if (!title.empty()) {

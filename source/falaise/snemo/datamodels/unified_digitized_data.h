@@ -144,13 +144,12 @@ namespace snemo {
                               const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
-
-      int32_t _run_id_ = INVALID_RUN_ID; ///< Run ID
-      int32_t _event_id_ = INVALID_EVENT_ID; ///< Event ID
-      int64_t _reference_timestamp_; ///< Reference timestamp in the run timestamp frame
+      int32_t _run_id_ = INVALID_RUN_ID;                            ///< Run ID
+      int32_t _event_id_ = INVALID_EVENT_ID;                        ///< Event ID
+      int64_t _reference_timestamp_;                                ///< Reference timestamp in the run timestamp frame
       CalorimeterDigiHitHdlCollection _calorimeter_digitized_hits_; ///< Collection of calorimeter digitized hits shared pointers
-      TrackerDigiHitHdlCollection _tracker_digitized_hits_; ///< Collection of tracker digitized hits shared pointers
-      std::set<int32_t> _origin_trigger_ids_; ///< Set of RTD trigger IDs used to build this event
+      TrackerDigiHitHdlCollection _tracker_digitized_hits_;         ///< Collection of tracker digitized hits shared pointers
+      std::set<int32_t> _origin_trigger_ids_;                       ///< Set of RTD trigger IDs used to build this event
       datatools::properties _auxiliaries_;
 
       DATATOOLS_SERIALIZATION_DECLARATION()

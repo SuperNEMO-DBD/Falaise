@@ -48,52 +48,62 @@ int main(/* int argc_, char ** argv_ */) {
 
     {
       sdm::precalibrated_calorimeter_hit my_calo_hit;
-      my_calo_hit.set_hit_id(2125715);
-      geomtools::geom_id gid(1302, 0, 1, 1, 4);
+      my_calo_hit.set_hit_id(1);
+      geomtools::geom_id gid(1301, 0, 1, 8, 6);
       my_calo_hit.set_geom_id(gid);
-      my_calo_hit.grab_auxiliaries().store_flag("noisy_pmt");
+      my_calo_hit.set_baseline(0.913734 * CLHEP::volt);
+      my_calo_hit.set_amplitude(-113.525 * 1E-3 * CLHEP::volt);
+      my_calo_hit.set_charge(-3.1724 * 1E-9 * CLHEP::volt * CLHEP::second);
+      my_calo_hit.set_time(22.836654123456 * CLHEP::second);
+      my_calo_hit.grab_auxiliaries().store_real("time_cfd", 119.5 * CLHEP::nanosecond);
+      my_calo_hit.tree_dump(std::clog, "\nSimple precalibrated calorimeter hit");
+    }
 
-      my_calo_hit.set_amplitude(0.330 * CLHEP::volt);
-      my_calo_hit.set_charge(0.145 * CLHEP::volt * CLHEP::second);
-      my_calo_hit.set_time(35 * CLHEP::nanosecond);
-      my_calo_hit.set_baseline(0.01 * CLHEP::volt);
-      my_calo_hit.set_rising_time(1.4 * CLHEP::nanosecond);
-      my_calo_hit.set_falling_time(10.4 * CLHEP::nanosecond);
-      my_calo_hit.set_time_width(9 * CLHEP::nanosecond);
-
-      my_calo_hit.tree_dump(std::clog, "Noisy precalibrated calorimeter hit");
-    }  // namespace sdm=snemo::datamodel;
+    {
+      sdm::precalibrated_calorimeter_hit my_calo_hit;
+      my_calo_hit.set_hit_id(1);
+      geomtools::geom_id gid(1301, 0, 1, 8, 6);
+      my_calo_hit.set_geom_id(gid);
+      my_calo_hit.set_baseline(0.913734 * CLHEP::volt);
+      my_calo_hit.set_sigma_baseline(0.00913734 * CLHEP::volt);
+      my_calo_hit.set_amplitude(-113.525 * 1E-3 * CLHEP::volt);
+      my_calo_hit.set_sigma_amplitude(1.13525 * 1E-3 * CLHEP::volt);
+      my_calo_hit.set_charge(-3.1724 * 1E-9 * CLHEP::volt * CLHEP::second);
+      my_calo_hit.set_sigma_charge(0.031724 * 1E-9 * CLHEP::volt * CLHEP::second);
+      my_calo_hit.set_time(22.836654123456 * CLHEP::second);
+      my_calo_hit.set_sigma_time(0.22836654123 * 1E-9 * CLHEP::second);
+      my_calo_hit.grab_auxiliaries().store_real("time_cfd", 119.5 * CLHEP::nanosecond);
+      my_calo_hit.tree_dump(std::clog, "\nSimple precalibrated calorimeter hit with errors");
+    }
 
     {
       // Create a vector of random calorimeter hits:
       srand48(314159);
       using hit_collection_type = std::vector<sdm::precalibrated_calorimeter_hit>;
       hit_collection_type list_of_calo_hits;
+
       size_t nb_hits = 3;
       list_of_calo_hits.reserve(nb_hits);
       for (int i = 0; i < (int)nb_hits; ++i) {
         // Append a new empty hit in the list:
-        sdm::precalibrated_calorimeter_hit a_hit;
-        list_of_calo_hits.push_back(a_hit);
+        list_of_calo_hits.push_back(sdm::precalibrated_calorimeter_hit());
         // Get a reference to the newly pushed hit:
         sdm::precalibrated_calorimeter_hit& calo_hit = list_of_calo_hits.back();
         calo_hit.set_hit_id(156572 + i);
         geomtools::geom_id gid(1302,  // Type for the 'calorimeter_block' category
                                0,     // Module
                                (uint32_t)(drand48() * 2),    // Side
-                               (uint32_t)(drand48() * 14),   // Column
-                               (uint32_t)(drand48() * 20));  // Row
+                               (uint32_t)(drand48() * 20),   // Column
+                               (uint32_t)(drand48() * 13));  // Row
         calo_hit.set_geom_id(gid);
+	calo_hit.set_baseline(drand48() * 0.913734 * CLHEP::volt);
+	calo_hit.set_amplitude(drand48() * -113.525 * 1E-3 * CLHEP::volt);
+	calo_hit.set_charge(drand48() * -3.1724 * 1E-9 * CLHEP::volt * CLHEP::second);
+	calo_hit.set_time(drand48() * 22.836654123 * CLHEP::second);
+	calo_hit.grab_auxiliaries().store_real("time_cfd", 119.5 * CLHEP::nanosecond);
         if (drand48() < 0.1) {
-          calo_hit.grab_auxiliaries().store_flag("noisy_pmt");
+          calo_hit.grab_auxiliaries().store_flag("special_flag");
         }
-        calo_hit.set_amplitude(drand48() * 0.330 * CLHEP::volt);
-        calo_hit.set_charge(drand48() * 0.145 * CLHEP::volt * CLHEP::second);
-        calo_hit.set_time(drand48() * 35 * CLHEP::nanosecond);
-        calo_hit.set_baseline(drand48() * 0.01 * CLHEP::volt);
-        calo_hit.set_rising_time(drand48() * 1.4 * CLHEP::nanosecond);
-        calo_hit.set_falling_time(drand48() * 10.4 * CLHEP::nanosecond);
-        calo_hit.set_time_width(drand48() * 9 * CLHEP::nanosecond);
       }
 
       // Search for hits with min/max amplitude :
@@ -104,24 +114,24 @@ int main(/* int argc_, char ** argv_ */) {
            i != list_of_calo_hits.end(); i++) {
         const sdm::precalibrated_calorimeter_hit& calo_hit = *i;
         std::ostringstream title;
-        title << "Calorimeter hit #" << calo_hit.get_hit_id();
+        title << "\nCalorimeter hit #" << calo_hit.get_hit_id();
         calo_hit.tree_dump(std::clog, title.str());
         if (!emin_ch_ref.is_valid()) {
           emin_ch_ref.set(calo_hit);
-        } else if (calo_hit.get_amplitude() < emin_ch_ref.get().get_amplitude()) {
+        } else if (calo_hit.get_amplitude() > emin_ch_ref.get().get_amplitude()) {
           emin_ch_ref.set(calo_hit);
         }
         if (!emax_ch_ref.is_valid()) {
           emax_ch_ref.set(calo_hit);
-        } else if (calo_hit.get_amplitude() > emax_ch_ref.get().get_amplitude()) {
+        } else if (calo_hit.get_amplitude() < emax_ch_ref.get().get_amplitude()) {
           emax_ch_ref.set(calo_hit);
         }
       }
 
       emin_ch_ref.get_properties().store_flag("min_energy");
       emax_ch_ref.get_properties().store_flag("max_energy");
-      emin_ch_ref.get().tree_dump(std::clog, "Precalibrated calorimeter hit with min amplitude:");
-      emax_ch_ref.get().tree_dump(std::clog, "Precalibrated calorimeter hit with max amplitude:");
+      emin_ch_ref.get().tree_dump(std::clog, "\nPrecalibrated calorimeter hit with min amplitude:");
+      emax_ch_ref.get().tree_dump(std::clog, "\nPrecalibrated calorimeter hit with max amplitude:");
     }
 
     std::clog << "The end." << std::endl;

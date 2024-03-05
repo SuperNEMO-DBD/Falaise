@@ -3,7 +3,7 @@
 /* Author(s) :    Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
- * Last modified: 2022-05-13
+ * Last modified: 2023-07-20
  *
  * Description:
  *
@@ -35,6 +35,30 @@ namespace snemo {
 
     public:
 
+      /// Return the baseline associated to the hit
+      double get_baseline() const;
+
+      /// Set the baseline associated to the hit
+      void set_baseline(double);
+
+      /// Check if the baseline is valid
+      bool has_baseline() const;
+
+      /// Reset the baseline
+      void reset_baseline();
+
+      /// Return the error on the baseline associated to the hit
+      double get_sigma_baseline() const;
+
+      /// Set the error on the baseline associated to the hit
+      void set_sigma_baseline(double);
+
+      /// Check if the error on the baseline is valid
+      bool has_sigma_baseline() const;
+
+      /// Reset the error on the baseline
+      void reset_sigma_baseline();
+
       /// Return the amplitude associated to the hit
       double get_amplitude() const;
 
@@ -52,6 +76,9 @@ namespace snemo {
 
       /// Set the error on the amplitude associated to the hit
       void set_sigma_amplitude(double);
+
+      /// Check if the error on the amplitude is valid
+      bool has_sigma_amplitude() const;
 
       /// Reset the error on the amplitude
       void reset_sigma_amplitude();
@@ -74,6 +101,9 @@ namespace snemo {
       /// Set the error on the charge associated to the hit
       void set_sigma_charge(double);
 
+      /// Check if the error on the charge is valid
+      bool has_sigma_charge() const;
+
       /// Reset the error on the charge
       void reset_sigma_charge();
 
@@ -95,92 +125,11 @@ namespace snemo {
       /// Set the error on the time associated to the hit
       void set_sigma_time(double);
 
+      /// Check if the error on the time is valid
+      bool has_sigma_time() const;
+
       /// Reset the error on the time
       void reset_sigma_time();
-
-      /// Return the baseline associated to the hit
-      double get_baseline() const;
-
-      /// Set the baseline associated to the hit
-      void set_baseline(double);
-
-      /// Check if the baseline is valid
-      bool has_baseline() const;
-
-      /// Reset the baseline
-      void reset_baseline();
-
-      /// Return the error on the baseline associated to the hit
-      double get_sigma_baseline() const;
-
-      /// Set the error on the baseline associated to the hit
-      void set_sigma_baseline(double);
-
-      /// Reset the error on the baseline
-      void reset_sigma_baseline();
-
-      /// Return the rising_time associated to the hit
-      double get_rising_time() const;
-
-      /// Set the rising_time associated to the hit
-      void set_rising_time(double);
-
-      /// Check if the rising_time is valid
-      bool has_rising_time() const;
-
-      /// Reset the rising_time
-      void reset_rising_time();
-
-      /// Return the error on the rising time associated to the hit
-      double get_sigma_rising_time() const;
-
-      /// Set the error on the rising time associated to the hit
-      void set_sigma_rising_time(double);
-
-      /// Reset the error on the rising time
-      void reset_sigma_rising_time();
-
-      /// Return the falling_time associated to the hit
-      double get_falling_time() const;
-
-      /// Set the falling_time associated to the hit
-      void set_falling_time(double);
-
-      /// Check if the falling_time is valid
-      bool has_falling_time() const;
-
-      /// Reset the falling_time
-      void reset_falling_time();
-
-      /// Return the error on the falling time associated to the hit
-      double get_sigma_falling_time() const;
-
-      /// Set the error on the falling time associated to the hit
-      void set_sigma_falling_time(double);
-
-      /// Reset the error on the falling time
-      void reset_sigma_falling_time();
-
-      /// Return the time width associated to the hit
-      double get_time_width() const;
-
-      /// Set the time width associated to the hit
-      void set_time_width(double);
-
-      /// Check if the time width is valid
-      bool has_time_width() const;
-
-      /// Reset the time width
-      void reset_time_width();
-
-      /// Return the error on the time width associated to the hit
-      double get_sigma_time_width() const;
-
-      /// Set the error on the time width associated to the hit
-      void set_sigma_time_width(double);
-
-      /// Reset the error on the time width
-      void reset_sigma_time_width();
 
       /// Check if the internal data of the hit are valid
       bool is_valid() const override;
@@ -192,36 +141,29 @@ namespace snemo {
       virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
                              const std::string& indent = "", bool is_last = false) const override;
 
-
     private:
 
+      double _baseline_{datatools::invalid_real()};           //!< Baseline associated to the hit
+      double _sigma_baseline_{datatools::invalid_real()};     //!< Error on the baseline associated to the hit
       double _amplitude_{datatools::invalid_real()};          //!< Amplitude associated to the hit
       double _sigma_amplitude_{datatools::invalid_real()};    //!< Error on the amplitude associated to the hit
       double _charge_{datatools::invalid_real()};             //!< Charge associated to the hit
       double _sigma_charge_{datatools::invalid_real()};       //!< Error on the charge associated to the hit
       double _time_{datatools::invalid_real()};               //!< Time associated to the hit
       double _sigma_time_{datatools::invalid_real()};         //!< Error on the time associated to the hit
-      double _baseline_{datatools::invalid_real()};           //!< Baseline associated to the hit
-      double _sigma_baseline_{datatools::invalid_real()};     //!< Error on the baseline associated to the hit
-      double _rising_time_{datatools::invalid_real()};        //!< Rising time associated to the hit
-      double _sigma_rising_time_{datatools::invalid_real()};  //!< Error on the rising time associated to the hit
-      double _falling_time_{datatools::invalid_real()};       //!< Falling time associated to the hit
-      double _sigma_falling_time_{datatools::invalid_real()}; //!< Error on the falling time associated to the hit
-      double _time_width_{datatools::invalid_real()};         //!< Time width of the hit
-      double _sigma_time_width_{datatools::invalid_real()};   //!< Error on the time width of the hit
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-    /// Alias for a handle of precalibrated calorimeter hit
-    // typedef datatools::handle<precalibrated_calorimeter_hit> handle_type;
-    /// Collection of handles of precalibrated calorimeter hit
-    // typedef std::vector<handle_type> collection_type;
+    /// Aliases for handle and collection of precalibrated calorimeter hit
     using PreCalibCalorimeterHit = precalibrated_calorimeter_hit;
     using PreCalibCalorimeterHitCollection = std::vector<PreCalibCalorimeterHit>;
-
     using PreCalibCalorimeterHitHdl = datatools::handle<PreCalibCalorimeterHit>;
     using PreCalibCalorimeterHitHdlCollection = std::vector<PreCalibCalorimeterHitHdl>;
+
+    using precalibrated_calorimeter_hit_collection = std::vector<precalibrated_calorimeter_hit>;
+    using precalibrated_calorimeter_hit_handle = datatools::handle<precalibrated_calorimeter_hit>;
+    using precalibrated_calorimeter_hit_handle_collection = std::vector<precalibrated_calorimeter_hit_handle>;
 
   }  // end of namespace datamodel
 

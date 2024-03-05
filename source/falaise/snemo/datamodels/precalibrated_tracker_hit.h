@@ -2,8 +2,9 @@
 /// \file falaise/snemo/datamodels/precalibrated_tracker_hit.h
 /* Author(s) :    Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
+ *
  * Creation date: 2022-05-03
- * Last modified: 2022-05-13
+ * Last modified: 2023-07-20
  *
  * Description:
  *
@@ -35,38 +36,57 @@ namespace snemo {
 
     public:
 
-      /// Return the reference_time associated to the hit
-      double get_reference_time() const;
+      /// Return the anodic time associated to the hit
+      double get_anodic_time() const;
 
-      /// Set the reference_time associated to the hit
-      void set_reference_time(double);
+      /// Set the anodic time associated to the hit
+      void set_anodic_time(double);
 
-      /// Check if the reference_time is valid
-      bool has_reference_time() const;
+      /// Check if the anodic time is valid
+      bool has_anodic_time() const;
 
-      /// Reset the reference_time
-      void reset_reference_time();
+      /// Reset the anodic time
+      void reset_anodic_time();
 
-      /// Return the anodic drift time associated to the hit
-      double get_anodic_drift_time() const;
 
-      /// Set the anodic drift time associated to the hit
-      void set_anodic_drift_time(double);
+      /// Return the sigma anodic drift time associated to the hit
+      double get_sigma_anodic_time() const;
 
-      /// Check if the anodic drift time is valid
-      bool has_anodic_drift_time() const;
+      /// Set the sigma anodic drift time associated to the hit
+      void set_sigma_anodic_time(double);
 
-      /// Reset the anodic drift time
-      void reset_anodic_drift_time();
+      /// Check if the sigma anodic drift time is valid
+      bool has_sigma_anodic_time() const;
 
-      /// Return the error on the anodic drift time associated to the hit
-      double get_sigma_anodic_drift_time() const;
+      /// Reset the sigma anodic drift time
+      void reset_sigma_anodic_time();
 
-      /// Set the error on the anodic drift time associated to the hit
-      void set_sigma_anodic_drift_time(double);
 
-      /// Reset the error on the anodic drift time
-      void reset_sigma_anodic_drift_time();
+      // /// Return the anodic drift time associated to the hit
+      // double get_anodic_drift_time() const;
+
+      // /// Set the anodic drift time associated to the hit
+      // void set_anodic_drift_time(double);
+
+      // /// Check if the anodic drift time is valid
+      // bool has_anodic_drift_time() const;
+
+      // /// Reset the anodic drift time
+      // void reset_anodic_drift_time();
+
+
+      // /// Return the sigma anodic drift time associated to the hit
+      // double get_sigma_anodic_drift_time() const;
+
+      // /// Set the sigma anodic drift time associated to the hit
+      // void set_sigma_anodic_drift_time(double);
+
+      // /// Check if the sigma anodic drift time is valid
+      // bool has_sigma_anodic_drift_time() const;
+
+      // /// Reset the sigma anodic drift time
+      // void reset_sigma_anodic_drift_time();
+
 
       /// Return the bottom cathode drift time associated to the hit
       double get_bottom_cathode_drift_time() const;
@@ -80,14 +100,19 @@ namespace snemo {
       /// Reset the bottom cathode drift time
       void reset_bottom_cathode_drift_time();
 
-      /// Return the error on the bottom cathode drift time associated to the hit
+
+      /// Return the sigma bottom cathode drift time associated to the hit
       double get_sigma_bottom_cathode_drift_time() const;
 
-      /// Set the error on the bottom cathode drift time associated to the hit
+      /// Set the sigma bottom cathode drift time associated to the hit
       void set_sigma_bottom_cathode_drift_time(double);
 
-      /// Reset the error on the bottom cathode drift time
+      /// Check if the sigma bottom cathode drift time is valid
+      bool has_sigma_bottom_cathode_drift_time() const;
+
+      /// Reset the sigma bottom cathode drift time
       void reset_sigma_bottom_cathode_drift_time();
+
 
       /// Return the top cathode drift time associated to the hit
       double get_top_cathode_drift_time() const;
@@ -101,23 +126,23 @@ namespace snemo {
       /// Reset the top cathode drift time
       void reset_top_cathode_drift_time();
 
-      /// Return the error on the top cathode drift time associated to the hit
+
+      /// Return the sigma top cathode drift time associated to the hit
       double get_sigma_top_cathode_drift_time() const;
 
-      /// Set the error on the top cathode drift time associated to the hit
+      /// Set the sigma top cathode drift time associated to the hit
       void set_sigma_top_cathode_drift_time(double);
 
-      /// Reset the error on the top cathode drift time
+      /// Check if the sigma top cathode drift time is valid
+      bool has_sigma_top_cathode_drift_time() const;
+
+      /// Reset the sigma top cathode drift time
       void reset_sigma_top_cathode_drift_time();
+
 
       /// Return the plasma propagation time associated to the hit (bottom + top cathode times)
       double get_plasma_propagation_time() const;
 
-      /// Check if the hit is marked as delayed
-      bool is_delayed() const;
-
-      /// Mark/unmark the hit as delayed
-      void set_delayed(bool);
 
       /// Check if the internal data of the hit are valid
       bool is_valid() const override;
@@ -133,25 +158,27 @@ namespace snemo {
                              const std::string& indent = "", bool is_last = false) const override;
 
     private:
-
-      double _reference_time_{datatools::invalid_real()};                  //!< Time reference T0 (from calorimeter or tracker depending of the hypothesis)
-      double _anodic_drift_time_{datatools::invalid_real()};               //!< Anodic drift time of the cell
-      double _sigma_anodic_drift_time_{datatools::invalid_real()};         //!< Error ont the anodic drift time of the cell
-      double _bottom_cathode_drift_time_{datatools::invalid_real()};       //!< Bottom cathode drift time of the cell
-      double _sigma_bottom_cathode_drift_time_{datatools::invalid_real()}; //!< Error on the bottom cathode drift time of the cell
-      double _top_cathode_drift_time_{datatools::invalid_real()};          //!< Top cathode drift time of the cell
-      double _sigma_top_cathode_drift_time_{datatools::invalid_real()};    //!< Error on the top cathode drift time of the cell
-      bool   _is_delayed_ = false;                                         //!< Check if a cell is delayed
-
+      double _anodic_time_{datatools::invalid_real()};                      //!< Anodic absolute time of the cell
+      double _sigma_anodic_time_{datatools::invalid_real()};                //!< Error on anodic absolute time of the cell
+      // double _anodic_drift_time_{datatools::invalid_real()};                //!< Anodic drift time of the cell
+      // double _sigma_anodic_drift_time_{datatools::invalid_real()};          //!< Error on anodic drift time of the cell
+      double _bottom_cathode_drift_time_{datatools::invalid_real()};        //!< Bottom cathode drift time of the cell
+      double _sigma_bottom_cathode_drift_time_{datatools::invalid_real()};  //!< Error on bottom cathode drift time of the cell
+      double _top_cathode_drift_time_{datatools::invalid_real()};           //!< Top cathode drift time of the cell
+      double _sigma_top_cathode_drift_time_{datatools::invalid_real()};     //!< Error on top cathode drift time of the cell
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
+    /// Aliases for handle and collection of precalibrated tracker hit
     using PreCalibTrackerHit = precalibrated_tracker_hit;
     using PreCalibTrackerHitCollection = std::vector<PreCalibTrackerHit>;
-
     using PreCalibTrackerHitHdl = datatools::handle<PreCalibTrackerHit>;
     using PreCalibTrackerHitHdlCollection = std::vector<PreCalibTrackerHitHdl>;
+
+    using precalibrated_tracker_hit_collection = std::vector<precalibrated_tracker_hit>;
+    using precalibrated_tracker_hit_handle = datatools::handle<precalibrated_tracker_hit>;
+    using precalibrated_tracker_hit_handle_collection = std::vector<precalibrated_tracker_hit_handle>;
 
   }  // end of namespace datamodel
 
