@@ -81,6 +81,7 @@ namespace snemo {
       _sourceSubmoduleType_ = geomtools::geom_id::INVALID_TYPE;
       if (geoIdMgr.has_category_info("source_submodule")) {
         _sourceSubmoduleType_ = geoIdMgr.get_category_info("source_submodule").get_type();
+	DT_LOG_DEBUG(logPriority_, "Source submodule type is " << _sourceSubmoduleType_);
         geomtools::geom_id sourceSubmoduleGidPattern(_sourceSubmoduleType_, _module_id_);
         std::vector<geomtools::geom_id> sourceSubmoduleGids;
         geoMapping.compute_matching_geom_id(sourceSubmoduleGidPattern, sourceSubmoduleGids);
@@ -93,12 +94,17 @@ namespace snemo {
       _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
       if (geoIdMgr.has_category_info("source_strip")) {
         _sourceStripType_ = geoIdMgr.get_category_info("source_strip").get_type();
+ 	DT_LOG_DEBUG(logPriority_, "Source strip type is " << _sourceStripType_);
         geomtools::geom_id sourceStripGidPattern(_sourceStripType_,
                                                  _module_id_,
                                                  geomtools::geom_id::ANY_ADDRESS);
         geoMapping.compute_matching_geom_id(sourceStripGidPattern, _sourceStripGids_);
       }
       DT_LOG_DEBUG(logPriority_, "Found " << _sourceStripGids_.size() << " source strips");
+      if (_sourceStripGids_.size() == 0) {
+	// 2024-03-05 FM: add guard against malformed geometry (no source strip)
+	DT_THROW(std::logic_error, "No source strip was found in the geometry setup!");
+      }
       _sourceStripMinId_ =  100000;
       _sourceStripMaxId_ = -100000;
       for (const auto & stripGid : _sourceStripGids_) {
@@ -117,6 +123,7 @@ namespace snemo {
       _sourceStripGapType_ = geomtools::geom_id::INVALID_TYPE;
       if (geoIdMgr.has_category_info("source_strip_gap")) {
         _sourceStripGapType_ = geoIdMgr.get_category_info("source_strip_gap").get_type();
+	DT_LOG_DEBUG(logPriority_, "Source strip gap type is " << _sourceStripGapType_);
         geomtools::geom_id sourceStripGapGidPattern(_sourceStripGapType_,
                                                  _module_id_,
                                                  geomtools::geom_id::ANY_ADDRESS);
@@ -140,7 +147,8 @@ namespace snemo {
       _sourcePadType_ = geomtools::geom_id::INVALID_TYPE;
       if (geoIdMgr.has_category_info("source_pad")) {
         _sourcePadType_ = geoIdMgr.get_category_info("source_pad").get_type();
-        geomtools::geom_id sourcePadGidPattern(_sourcePadType_,
+ 	DT_LOG_DEBUG(logPriority_, "Source pad type is " << _sourcePadType_);
+	geomtools::geom_id sourcePadGidPattern(_sourcePadType_,
                                                _module_id_,
                                                geomtools::geom_id::ANY_ADDRESS,
                                                geomtools::geom_id::ANY_ADDRESS);
@@ -2289,6 +2297,9 @@ namespace snemo {
         if (row <= 1 || row >= gg_locator.numberOfRows(side) - 1) {
           use_vertices_[snemo::geometry::vertex_info::CATEGORY_ON_X_CALORIMETER] = true;
         }
+      }
+      for (auto p : use_vertices_) {
+	DT_LOG_DEBUG(logPriority_, "Use vertice '" << snemo::geometry::vertex_info::to_label(p.first) << "' : " << std::boolalpha << p.second);
       }
       return;
     } // _check_vertices_
