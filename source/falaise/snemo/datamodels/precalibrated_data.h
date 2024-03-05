@@ -58,6 +58,12 @@ namespace snemo {
       /// Return the mutable collection of tracker hits
       PreCalibTrackerHitHdlCollection& tracker_hits();
 
+      /// Return the const properties container
+      const datatools::properties & get_properties() const;
+     
+      /// Return the mutable properties container
+      datatools::properties & grab_properties();
+      
       /// Clear attributes
       virtual void clear() override;
 

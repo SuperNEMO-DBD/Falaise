@@ -30,7 +30,17 @@ namespace snemo {
       tracker_hits_.clear();
       _properties_.clear();
     }
-
+     
+    const datatools::properties & precalibrated_data::get_properties() const
+    {
+      return _properties_;
+    }
+     
+    datatools::properties & precalibrated_data::grab_properties()
+    {
+      return _properties_;
+    }
+ 
     void precalibrated_data::tree_dump(std::ostream& out, const std::string& title,
                                        const std::string& indent, bool is_last) const {
       auto printCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {

@@ -2,6 +2,7 @@
 # Apps
 add_subdirectory(flsimulate)
 add_subdirectory(flreconstruct)
+add_subdirectory(flpcd2cpcd)
 add_subdirectory(fltags)
 
 # - To allow modules to be developed independently, point
