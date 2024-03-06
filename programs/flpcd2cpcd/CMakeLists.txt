@@ -30,6 +30,8 @@ find_package(Boost 1.60 REQUIRED program_options)
 #
 add_executable(flpcd2cpcd
   flpcd2cpcdmain.cxx
+  FLpCDToCpCDAlgo.h
+  FLpCDToCpCDAlgo.cc
   FLpCDToCpCDApplication.h
   FLpCDToCpCDApplication.cc
   FLpCDToCpCDPipeline.h

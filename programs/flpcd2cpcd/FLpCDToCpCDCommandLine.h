@@ -39,8 +39,8 @@ namespace FLpCDToCpCD {
   struct FLpCDToCpCDCommandLine
   {
     datatools::logger::priority logLevel;  //!< Verbosity level
-    uint32_t maxNumberOfRecords;            //!< Maximum number of processed input data records
-    uint32_t moduloRecords;                 //!< Record modulo
+    uint32_t maxNumberOfEvents;            //!< Maximum number of processed input data events
+    uint32_t moduloEvents;                 //!< Event modulo
     std::string userProfile;               //!< User profile
     std::vector<std::string> mountPoints;  //!< Directory mount directives
     std::string configScript;              //!< Path of the main pcdtocpcdion configuration script

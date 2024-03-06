@@ -35,8 +35,8 @@ namespace FLpCDToCpCD {
   {
     FLpCDToCpCDCommandLine frArgs;
     frArgs.logLevel = datatools::logger::PRIO_FATAL;
-    frArgs.maxNumberOfRecords = 0;
-    frArgs.moduloRecords = 0;
+    frArgs.maxNumberOfEvents = 0;
+    frArgs.moduloEvents = 0;
     frArgs.userProfile = "normal";
     frArgs.mountPoints.clear();
     frArgs.configScript = "";
@@ -55,8 +55,8 @@ namespace FLpCDToCpCD {
     out_ << tag
          << "logLevel                     = " << datatools::logger::get_priority_label(this->logLevel)
          << std::endl;
-    out_ << tag << "maxNumberOfRecords            = " << maxNumberOfRecords << std::endl;
-    out_ << tag << "moduloRecords                 = " << moduloRecords << std::endl;
+    out_ << tag << "maxNumberOfEvents            = " << maxNumberOfEvents << std::endl;
+    out_ << tag << "moduloEvents                 = " << moduloEvents << std::endl;
     out_ << tag << "userProfile                  = '" << userProfile << "'" << std::endl;
     out_ << tag << "mountPoints                  = " << mountPoints.size() << std::endl;
     for (unsigned int i = 0; i < mountPoints.size(); i++) {
@@ -146,17 +146,17 @@ namespace FLpCDToCpCD {
        ->value_name("level"),
        "set the verbosity level")
 
-      ("max-number-records,N",
-       bpo::value<uint32_t>(&clArgs.maxNumberOfRecords)
+      ("max-number-events,N",
+       bpo::value<uint32_t>(&clArgs.maxNumberOfEvents)
        ->default_value(0)
        ->value_name("N"),
-       "maximum number of processed records")
+       "maximum number of processed events")
 
       ("modulo,P",
-       bpo::value<uint32_t>(&clArgs.moduloRecords)
+       bpo::value<uint32_t>(&clArgs.moduloEvents)
        ->default_value(0)
        ->value_name("period"),
-       "progress modulo on number of records")
+       "progress modulo on number of events")
 
       ("user-profile,u",
        bpo::value<std::string>(&clArgs.userProfile)

@@ -187,6 +187,11 @@ namespace FLReconstruct {
           code = falaise::EXIT_UNAVAILABLE;
           break;
         }
+        if (flRecParameters_.moduloEvents > 0) {
+          if (eventCounter % flRecParameters_.moduloEvents == 0) {
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter << " about to be processed");
+          }
+        }
 
         // Feed through pipeline
         dpp::base_module::process_status pStatus = pipeline->process(workItem);
@@ -229,7 +234,7 @@ namespace FLReconstruct {
         }
         if (flRecParameters_.moduloEvents > 0) {
           if (eventCounter % flRecParameters_.moduloEvents == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter);
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter << " has been processed");
           }
         }
         eventCounter++;

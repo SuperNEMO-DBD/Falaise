@@ -11,18 +11,19 @@ namespace FLpCDToCpCD {
     // Application specific parameters:
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.userProfile = "normal";
-    params.numberOfRecords = 0;  // 0 == no limit on record loop
-    params.moduloRecords = 0;    // 0 == no print
-
+    params.numberOfEvents = 0; // 0 == no limit on event loop
+    params.moduloEvents = 0; // 0 == no print
+    params.preserveUnclusteredEvents = true;
+    params.preserveUnclusteredHits = true;
+    
     // Experimental setup:
-    params.experimentalSetupUrn = "";  // "urn:snemo:demonstrator:setup:2.0"
+    params.experimentalSetupUrn = ""; // "urn:snemo:demonstrator:setup:2.0"
 
-    // pCDToCpCDion setup:
-    params.pcdtocpcdSetupUrn = "";  // "urn:snemo:demonstrator:pcd2cpcd:3.0" snemo::processing::default_pcd2cpcd_tag()
-    params.pcdtocpcdPipelineUrn = "";  // "urn:snemo:demonstrator:pcd2cpcd:3.0:pipeline:official-3.0"
-    params.pcdtocpcdPipelineConfig = "";
-    params.pcdtocpcdPipelineModule = "pipeline";
-
+    // pCDToCpCD setup:
+    // params.pcdtocpcdSetupUrn = ""; // "urn:snemo:demonstrator:pcd2cpcd:1.0" snemo::processing::default_pcd2cpcd_tag()
+    // params.pcdtocpcdPipelineUrn = ""; // "urn:snemo:demonstrator:pcd2cpcd:1.0:pipeline:official-1.0"
+    // params.pcdtocpcdPipelineConfig = "";
+ 
     // Variants support:
     params.variantConfigUrn = "";
     params.variantProfileUrn = "";
@@ -49,10 +50,10 @@ namespace FLpCDToCpCD {
     params.userLibConfig.set_key_label("name");
     params.userLibConfig.set_meta_label("filename");
 
-    // Pipeline processing:
-    params.modulesConfig.reset();
-    params.modulesConfig.set_key_label("name");
-    params.modulesConfig.set_meta_label("type");
+    // // Pipeline processing:
+    // params.modulesConfig.reset();
+    // params.modulesConfig.set_key_label("name");
+    // params.modulesConfig.set_meta_label("type");
 
     return params;
   }
@@ -65,15 +66,12 @@ namespace FLpCDToCpCD {
     out_ << tag
          << "logLevel                       = " << datatools::logger::get_priority_label(this->logLevel)
          << std::endl;
-    out_ << tag << "pcdtocpcdSetupUrn       = '" << pcdtocpcdSetupUrn << "'" << std::endl;
-    out_ << tag << "pcdtocpcdConfig         = '" << pcdtocpcdConfig << "'" << std::endl;
+    out_ << tag << "processSetupUrn       = '" << processSetupUrn << "'" << std::endl;
+    out_ << tag << "processConfig         = '" << processConfig << "'" << std::endl;
     out_ << tag << "userProfile             = '" << userProfile << "'" << std::endl;
-    out_ << tag << "numberOfRecords         = " << numberOfRecords << std::endl;
-    out_ << tag << "moduloRecords           = " << moduloRecords << std::endl;
+    out_ << tag << "numberOfEvents         = " << numberOfEvents << std::endl;
+    out_ << tag << "moduloEvents           = " << moduloEvents << std::endl;
     out_ << tag << "experimentalSetupUrn    = '" << experimentalSetupUrn  << "'"<< std::endl;
-    out_ << tag << "pcdtocpcdPipelineUrn    = '" << pcdtocpcdPipelineUrn << "'" << std::endl;
-    out_ << tag << "pcdtocpcdPipelineConfig = '" << pcdtocpcdPipelineConfig << "'" << std::endl;
-    out_ << tag << "pcdtocpcdPipelineModule = '" << pcdtocpcdPipelineModule << "'" << std::endl;
     out_ << tag << "variantConfigUrn        = '" << variantConfigUrn << "'" << std::endl;
     out_ << tag << "variantProfileUrn       = '" << variantProfileUrn << "'" << std::endl;
     out_ << tag << "variantSubsystemParams  = '" << variantSubsystemParams.config_filename << "'"

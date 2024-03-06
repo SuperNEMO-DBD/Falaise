@@ -48,12 +48,22 @@ namespace snemo {
 	    << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
 	    << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
 	    << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
-	    << ", Time: " << x->get_time() / CLHEP::second << " s" << std::endl;
+	    << ", Time: " << x->get_time() / CLHEP::second << " s"
+	    << " (" << x->get_auxiliaries().size() << " prop.)"
+	    << std::endl;
       };
 
       auto printPreCalibTrackerHit = [&](const PreCalibTrackerHitHdl& x) {
         out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
-	    << ", AnodicTime = " << x->get_anodic_time() / CLHEP::microsecond << " us" << std::endl;
+	    << ", AnodicTime = " << x->get_anodic_time() / CLHEP::microsecond << " us";
+	if (x->has_bottom_cathode_drift_time()) {
+	  out << ", BottomCathodeDriftTime = " << x->get_bottom_cathode_drift_time() / CLHEP::microsecond << " us";
+	}
+	if (x->has_top_cathode_drift_time()) {
+	  out << ", TopCathodeDriftTime = " << x->get_top_cathode_drift_time() / CLHEP::microsecond << " us";
+	}
+	out << " (" << x->get_auxiliaries().size() << " prop.)"
+	    << std::endl;
       };
 
       if (!title.empty()) {
@@ -88,6 +98,6 @@ namespace snemo {
       }
     }
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo

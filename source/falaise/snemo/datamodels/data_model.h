@@ -18,8 +18,7 @@
 // Standard library:
 #include <string>
 
-// Third party:
-// - Bayeux/datatools:
+// This project:
 #include <falaise/snemo/datamodels/event.h>
 
 namespace snedm {

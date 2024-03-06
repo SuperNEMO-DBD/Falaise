@@ -97,10 +97,8 @@ namespace snemo {
         DT_LOG_NOTICE(get_logging_priority(), "`- cluster calo deltat max  = " << _tracker_basic_cluster_deltat_calo_max_/CLHEP::microsecond << " us");
 
       } else {
-
-        _tracker_pcd_algo_ = ALGO_TRACKER_NONE;
         DT_LOG_ERROR(get_logging_priority(), "udd2pcd tracker method '" << udd2pcd_tracker_method_label << "' not recognised");
-
+        _tracker_pcd_algo_ = ALGO_TRACKER_NONE;
       }
 
       this->base_module::_set_initialized(true);
@@ -120,7 +118,7 @@ namespace snemo {
         return dpp::base_module::PROCESS_ERROR;
       }
 
-      auto & eh_data = event.get<snemo::datamodel::event_header>("EH");
+      auto & eh_data = event.get<snemo::datamodel::event_header>(snedm::labels::event_header());
       DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << eh_data.get_id());
 
       auto & udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
@@ -129,7 +127,7 @@ namespace snemo {
       // Precalibrated Data is a single object with each hit collection
       // may, or may not, have it depending on if we run before or after
       // other calibrators
-      auto& pcd_data = snedm::getOrAddToEvent<snemo::datamodel::precalibrated_data>(_pcd_output_tag_, event);
+      auto & pcd_data = snedm::getOrAddToEvent<snemo::datamodel::precalibrated_data>(_pcd_output_tag_, event);
 
       // Always rewrite calorimeter hits
       pcd_data.calorimeter_hits().clear();
@@ -437,7 +435,7 @@ namespace snemo {
       // Loop over UDD tracker digitized hits
       for (const auto& a_udd_tracker_hit : udd_tracker_hits) {
 
-        DT_LOG_TRACE(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
+        DT_LOG_DEBUG(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
 
         // Loop over all gg_times and keep trace of the earliest timestamps
         int64_t first_anode_timestamp[5];
@@ -860,32 +858,47 @@ namespace snemo {
         for (int pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
           snemo::datamodel::precalibrated_tracker_hit & mutable_pcd_tracker_hit = pcd_tracker_hits.at(pcd_tracker_hit_index).grab();
           datatools::properties & pcd_tracker_hit_properties = mutable_pcd_tracker_hit.grab_auxiliaries();
-          pcd_tracker_hit_properties.set_flag("pCD.clusterized");
-          pcd_tracker_hit_properties.store_integer("pCD.cluster_id", pcd_cluster_id);
+	  if (not pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	    pcd_tracker_hit_properties.set_flag("pCD.clustering.clusterized");
+	    pcd_tracker_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
+	  } else {
+	    DT_LOG_WARNING(get_logging_priority(), "tracker hit #" << pcd_tracker_hit_index << " is already tagged as clustered");
+	  }
         }
-
+	
+	// 2024-03-06 FM : !!! Duplicate clustered hits occur !!!
+	
         // Calo hits:
         for (int pcd_calo_hit_index : cluster_calorimeter_index) {
           snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
           datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
-          pcd_calo_hit_properties.set_flag("pCD.clusterized");
-          pcd_calo_hit_properties.store_integer("pCD.cluster_id", pcd_cluster_id);
-        }
+ 	  if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	    pcd_calo_hit_properties.set_flag("pCD.clustering.clusterized");
+	    pcd_calo_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
+	  } else {
+	    DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
+	  }
+	}
         for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
           snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
           datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
-          pcd_calo_hit_properties.set_flag("pCD.associated");
+  	  if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
+	    pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
+	  } else {
+	    DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
+	  }
         }
         
       } // for (pcd_cluster_id)
-
-        
+    
       /*******************************************************/
       /* 2023-03-05 FM: Final registration of clusterization */
       /* informations in the pCD bank                        */
       /*******************************************************/
       // Register number of clusters in the pCD bank:
-      pcd_data_.grab_properties().store_integer("pCD.nb_clusters", pcd_tracker_hit_clusters.size());
+      pcd_data_.grab_properties().store_integer("pCD.clustering.nclusters", pcd_tracker_hit_clusters.size());
+
+      DT_LOG_DEBUG(get_logging_priority(), pcd_tracker_hit_clusters.size() << " final cluster(s) identified");
 
     }
 

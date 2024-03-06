@@ -99,6 +99,7 @@ namespace snemo {
                                 snemo::datamodel::precalibrated_data & pcd_data_);
 
     private:
+      
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
 

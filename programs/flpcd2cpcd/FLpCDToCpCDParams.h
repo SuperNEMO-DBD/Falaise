@@ -30,15 +30,20 @@ namespace FLpCDToCpCD {
   //! Collect all needed configuration parameters in one data structure
   struct FLpCDToCpCDParams
   {
-    std::string pcdtocpcdConfig; //!< The pcd2cpcd main configuration file
+    std::string processConfig; //!< The pcd2cpcd process main configuration file
+
+    // Required pcdtocpcd process setup and versioning:
+		std::string processSetupUrn;    //!< The URN of the pcd2cpcd setup
 
     // Application specific parameters:
-    datatools::logger::priority logLevel;  //!< Logging priority threshold
+    datatools::logger::priority logLevel;  //!< Logging verbosity threshold
     std::string userProfile;               //!< User profile
     std::vector<std::string> mountPoints;  //!< Directory mount directives
-    unsigned int numberOfRecords;           //!< Number of records to be processed in the pipeline
-    unsigned int moduloRecords;             //!< Number of records progress modulo
-
+    unsigned int numberOfEvents;           //!< Number of events to be processed
+    unsigned int moduloEvents;             //!< Number of events progress modulo
+		bool preserveUnclusteredEvents = false;
+		bool preserveUnclusteredHits = false; // unused
+		
     // Required experimental setup and versioning:
     std::string experimentalSetupUrn;  //!< The URN of the experimental setup
 
@@ -61,17 +66,8 @@ namespace FLpCDToCpCD {
     // Plugin dedicated service:
     datatools::multi_properties userLibConfig;  //!< Main configuration file for plugins loader
 
-    // Required pcdtocpcdion pipeline and versioning:
-    std::string pcdtocpcdSetupUrn;         //!< The URN of the pcd2cpcd setup
-    std::string pcdtocpcdPipelineUrn;      //!< The URN of the pcd2cpcd pipeline
-    std::string pcdtocpcdPipelineConfig;   //!< The pcd2cpcd pipeline main definition file
-    std::string pcdtocpcdPipelineModule;   //!< The pcd2cpcd module
-
     // Metadata container:
     datatools::multi_properties inputMetadata;  //!< Metadata imported from the input
-
-    // Processing pipeline modules configuration:
-    datatools::multi_properties modulesConfig;  //!< Main configuration for plugins loader
 
     //! Build a default arguments set:
     static FLpCDToCpCDParams makeDefault();

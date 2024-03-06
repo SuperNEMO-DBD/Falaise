@@ -25,6 +25,7 @@
 
 // This Project:
 #include "FLpCDToCpCDImpl.h"
+#include "FLpCDToCpCDAlgo.h"
 #include "falaise/resource.h"
 #include "falaise/snemo/services/services.h"
 
@@ -66,47 +67,6 @@ namespace FLpCDToCpCD {
       DT_THROW_IF(safeServicesCode != falaise::EXIT_OK, std::logic_error,
                   "Cannot start core services!");
 
-      // - Start up the module manager
-      // Dual strategy here
-      //  - If they supplied a script, use that, otherwise default to
-      //  a single dump module.
-      std::unique_ptr<dpp::module_manager> moduleManager(new dpp::module_manager);
-      moduleManager->set_service_manager(recServices);
-
-      // Configure the modules themselves
-      if (!flAppParameters_.modulesConfig.empty()) {
-        DT_LOG_DEBUG(flAppParameters_.logLevel, "Loading modules from modules definition...");
-        // << flAppParameters_.modulesConfig << "'...");
-        moduleManager->load_modules(flAppParameters_.modulesConfig);
-      } else {
-        // Hand configure a dumb dump module
-        datatools::properties dumbConfig;
-        dumbConfig.store("title", "flpcd2cpcd::default");
-        dumbConfig.store("output", "cout");
-        moduleManager->load_module(flAppParameters_.pcdtocpcdPipelineModule, "dpp::dump_module",
-                                   dumbConfig);
-      }
-
-      // No Root export:
-      // datatools::library_loader altLibLoader;
-      // // Load a Things2Root module in the manager before initialization
-      // if (!flAppParameters_.outputFile.empty()) {
-      //   // if (boost::algorithm::ends_with(flAppParameters_.outputFile, ".root")) {
-      //   //   std::string pluginPath = falaise::get_plugin_dir();
-      //   //   altLibLoader.load("Things2Root", pluginPath);
-      //   //   datatools::properties t2rConfig;
-      //   //   t2rConfig.store("output_file", flAppParameters_.outputFile);
-      //   //   moduleManager->load_module("t2rRecOutput", "Things2Root", t2rConfig);
-      //   // }
-      // }
-
-      // Plain initialization:
-      DT_LOG_DEBUG(flAppParameters_.logLevel, "Module manager initialization...");
-      moduleManager->initialize_simple();
-      if (datatools::logger::is_debug(flAppParameters_.logLevel)) {
-        moduleManager->tree_dump(std::cerr, "Initialized module manager: ", "[debug] ");
-      }
-
       // Input module...
       std::unique_ptr<dpp::input_module> recInput(new dpp::input_module());
       DT_LOG_DEBUG(flAppParameters_.logLevel, "Configuring the input module...");
@@ -135,22 +95,9 @@ namespace FLpCDToCpCD {
         flAppMetadata.tree_dump(std::cerr, "Output metadata: ", "[debug] ");
       }
 
-      // - Pipeline
-      dpp::base_module * pipeline = nullptr;
-      try {
-        pipeline = &(moduleManager->grab(flAppParameters_.pcdtocpcdPipelineModule));
-      } catch (std::exception & e) {
-        DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to initialize flpcd2cpcd pipeline : " << e.what());
-        return falaise::EXIT_UNAVAILABLE;
-      }
-
       // Output module... only if added in the module manager
       dpp::base_module * recOutputHandle = nullptr;
       std::unique_ptr<dpp::output_module> flAppOutput;
-      // if (moduleManager->has("t2rRecOutput")) {
-      //   // We instantiate and fetch the t2r module from the manager
-      //   recOutputHandle = &moduleManager->grab("t2rRecOutput");
-      // } else
 
       if (!flAppParameters_.outputFile.empty()) {
         // We try to setup an output module
@@ -172,88 +119,78 @@ namespace FLpCDToCpCD {
         flAppMetadata.write(fMetadata);
       }
 
-      // - Now the actual record loop
-      DT_LOG_DEBUG(flAppParameters_.logLevel, "Begin record loop");
-      datatools::things workItem;
-      std::size_t recordCounter = 0;
+      FLpCDToCpCDAlgorithm pcd2cpcdAlgo;
+      DT_LOG_TRACE(datatools::logger::PRIO_TRACE, "Verbosity = " << datatools::logger::get_priority_label(flAppParameters_.logLevel));
+      pcd2cpcdAlgo.set_verbosity(flAppParameters_.logLevel);
+      
+      // - Now the actual event loop
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Begin event loop");
+      datatools::things inputDataEvent;
+      std::size_t inputEventCounter = 0;
+      std::size_t outputClusteredEventCounter = 0;
+      std::size_t outputUnclusteredEventCounter = 0;
       while (true) {
-        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==========> Pipeline loop for record #" << recordCounter);
         // Prepare and read work
-        workItem.clear();
+        inputDataEvent.clear();
         if (recInput->is_terminated()) {
           // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
           break;
         }
-        if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
-          DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to read data record from input source");
+        if (recInput->process(inputDataEvent) != dpp::base_module::PROCESS_OK) {
+          DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to read data event from input source");
           code = falaise::EXIT_UNAVAILABLE;
           break;
         }
 
-        // Feed through pipeline
-        dpp::base_module::process_status pStatus = pipeline->process(workItem);
-        DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID,
-                    std::logic_error,
-                    "Module '" << pipeline->get_name() << "' did not return a valid processing status!");
-
-        // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
-        // This is a very conservative approach, but it is compatible with the default behaviour of
-        // the bxdpp_processing executable.
-        if (pStatus == dpp::base_module::PROCESS_FATAL) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-        if (pStatus == dpp::base_module::PROCESS_ERROR) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-        if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-
-        // STOP means the current record should not be processed anymore nor saved
-        // but the loop can continue with other items
-        if (pStatus == dpp::base_module::PROCESS_STOP) {
-          continue;
-        }
-
-        // Check post-conditions on record model (expectedOutputBanks) ?
+	FLpCDToCpCDAlgorithm::data_records_col outputDataEvents;
+        pcd2cpcdAlgo.process(inputDataEvent, outputDataEvents);
 
         // Write item
         if (recOutputHandle != nullptr) {
-          pStatus = recOutputHandle->process(workItem);
-          if (pStatus != dpp::base_module::PROCESS_OK) {
-            DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to write data record to output sink");
-            code = falaise::EXIT_UNAVAILABLE;
-            break;
+	  if (outputDataEvents.size()) {
+	    for (auto & outputDataEventHandle : outputDataEvents) {
+	      auto & outputDataEvent = outputDataEventHandle.grab();
+	      // if (outputDataEvent.has(pcd2cpcdAlgo.cpcd_tag())) {
+	      // }
+	      auto pStatus = recOutputHandle->process(outputDataEvent);
+	      outputClusteredEventCounter++;
+	      if (pStatus != dpp::base_module::PROCESS_OK) {
+		DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to write event to output sink");
+		code = falaise::EXIT_UNAVAILABLE;
+		break;
+	      }
+	    }
+	  } else {
+	    if (flAppParameters_.preserveUnclusteredEvents) {
+	      // No found clusters : the event data record is saved as is:
+	      auto pStatus = recOutputHandle->process(inputDataEvent);
+	      outputUnclusteredEventCounter++;
+	      if (pStatus != dpp::base_module::PROCESS_OK) {
+		DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to write unclustered event to output sink");
+		code = falaise::EXIT_UNAVAILABLE;
+		break;
+	      }
+	    }
+	  }
+        }
+        if (flAppParameters_.moduloEvents > 0) {
+          if (inputEventCounter % flAppParameters_.moduloEvents == 0) {
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Input event #" << inputEventCounter);
           }
         }
-        if (flAppParameters_.moduloRecords > 0) {
-          if (recordCounter % flAppParameters_.moduloRecords == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Record #" << recordCounter);
-          }
-        }
-        recordCounter++;
-        if (flAppParameters_.numberOfRecords > 0 && recordCounter > flAppParameters_.numberOfRecords) {
+        inputEventCounter++;
+        if (flAppParameters_.numberOfEvents > 0 && inputEventCounter > flAppParameters_.numberOfEvents) {
           break;
         }
       }
-      DT_LOG_DEBUG(flAppParameters_.logLevel, "Record loop completed");
-
-      // - MUST delete the module manager BEFORE the library loader clears
-      // in case the manager is holding resources created from a shared lib
-      if (moduleManager != nullptr) {
-        if (moduleManager->is_initialized()) {
-          moduleManager->reset();
-        }
-        moduleManager.reset();
-      }
-
-      DT_LOG_DEBUG(flAppParameters_.logLevel, "Stopping reconstruction services...");
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Event loop completed");
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of processed input events  : " << inputEventCounter);
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of generated clustered output events : " << outputClusteredEventCounter);
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of generated unclustered output events : " << outputUnclusteredEventCounter);
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Stopping pcd2cpcd reconstruction services...");
       recServices.reset();
       DT_LOG_DEBUG(flAppParameters_.logLevel, "pcd2cpcd services are stopped");
-    } catch (std::exception& e) {
+    } catch (std::exception & e) {
       std::cerr << "flpcd2cpcd : Setup/run of simulation threw exception" << std::endl;
       std::cerr << e.what() << std::endl;
       code = falaise::EXIT_UNAVAILABLE;
