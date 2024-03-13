@@ -9,7 +9,8 @@ namespace snemo {
   namespace datamodel {
 
     // Serial tag for datatools::i_serializable interface :
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header, "snemo::datamodel::event_header")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header,
+						      "snemo::datamodel::event_header")
 
     const datatools::event_id& event_header::get_id() const { return id_; }
 
@@ -163,6 +164,6 @@ namespace snemo {
       return;
     }
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo

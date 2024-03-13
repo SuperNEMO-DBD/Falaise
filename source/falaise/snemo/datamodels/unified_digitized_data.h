@@ -11,8 +11,6 @@
  *  The Unified Digitized Data (UDD) datamodel.
  *  It contains a collection of a calorimeter digitized hit and a collection of a tracker digitized hit.
  *
- * History:
- *
  */
 #ifndef FALAISE_SNEMO_DATAMODELS_UNIFIED_DIGITIZED_DATA_H
 #define FALAISE_SNEMO_DATAMODELS_UNIFIED_DIGITIZED_DATA_H 1
@@ -42,9 +40,10 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief SuperNEMO Unified Digitized data (UDD)
-    class unified_digitized_data : public datatools::i_serializable,
-                                   public datatools::i_tree_dumpable,
-                                   public datatools::i_clear
+    class unified_digitized_data
+			: public datatools::i_serializable
+			, public datatools::i_tree_dumpable
+			, public datatools::i_clear
     {
     public:
 
@@ -85,7 +84,7 @@ namespace snemo {
       int64_t get_reference_timestamp() const;
 
       //! Set the reference timestamp
-      void set_reference_timestamp(const int64_t &);
+      void set_reference_timestamp(int64_t);
 
       //! Get the origin trigger IDs
       const std::set<int32_t> & get_origin_trigger_ids() const;
@@ -147,6 +146,7 @@ namespace snemo {
 											const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
+			
       int32_t _run_id_ = INVALID_RUN_ID;                            ///< Run ID
       int32_t _event_id_ = INVALID_EVENT_ID;                        ///< Event ID
       int64_t _reference_timestamp_;                                ///< Reference timestamp in the run timestamp frame

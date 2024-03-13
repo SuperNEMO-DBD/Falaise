@@ -15,17 +15,28 @@ namespace snemo {
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(precalibrated_data,
                                                       "snemo::datamodel::precalibrated_data")
 
-    const PreCalibCalorimeterHitHdlCollection& precalibrated_data::calorimeter_hits() const {
+    const PreCalibCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits() const
+    {
       return calorimeter_hits_;
     }
 
-    PreCalibCalorimeterHitHdlCollection& precalibrated_data::calorimeter_hits() { return calorimeter_hits_; }
+    PreCalibCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits()
+    {
+      return calorimeter_hits_;
+    }
 
-    const PreCalibTrackerHitHdlCollection& precalibrated_data::tracker_hits() const { return tracker_hits_; }
+    const PreCalibTrackerHitHdlCollection & precalibrated_data::tracker_hits() const
+    {
+      return tracker_hits_;
+    }
 
-    PreCalibTrackerHitHdlCollection& precalibrated_data::tracker_hits() { return tracker_hits_; }
+    PreCalibTrackerHitHdlCollection & precalibrated_data::tracker_hits()
+    {
+      return tracker_hits_;
+    } 
 
-    void precalibrated_data::clear() {
+    void precalibrated_data::clear()
+    {
       calorimeter_hits_.clear();
       tracker_hits_.clear();
       _properties_.clear();

@@ -12,7 +12,7 @@ namespace snemo {
                                                       "snemo::datamodel::polyline_trajectory_pattern")
 
     // static
-    const std::string &polyline_trajectory_pattern::pattern_id() {
+    const std::string & polyline_trajectory_pattern::pattern_id() {
       static const std::string _id("polyline");
       return _id;
     }
@@ -22,18 +22,18 @@ namespace snemo {
     }
 
 
-    geomtools::polyline_3d &polyline_trajectory_pattern::get_path()
+    geomtools::polyline_3d & polyline_trajectory_pattern::get_path()
     {
       return _path_;
     }
 
-    const geomtools::polyline_3d &polyline_trajectory_pattern::get_path() const
+    const geomtools::polyline_3d & polyline_trajectory_pattern::get_path() const
     {
       return _path_;
     }
 
     // override
-    const geomtools::i_shape_1d &polyline_trajectory_pattern::get_shape() const {
+    const geomtools::i_shape_1d & polyline_trajectory_pattern::get_shape() const {
       return dynamic_cast<const geomtools::i_shape_1d &>(_path_);
     }
 
@@ -114,9 +114,9 @@ namespace snemo {
       return (_path_.get_point(n2) - _path_.get_point(n1)).unit();    
     }
     
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 /*
 ** Local Variables: --

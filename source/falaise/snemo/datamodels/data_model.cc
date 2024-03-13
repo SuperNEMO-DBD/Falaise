@@ -244,4 +244,4 @@ namespace snedm {
     return;
   }
 
-}  // namespace snedm
+} // namespace snedm

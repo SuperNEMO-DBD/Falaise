@@ -3,7 +3,7 @@
  * Creation date: 2022-12-13
  * Last modified: 2022-12-13
  *
- * Description: A trajectory fitted from a cluster of tracker hits
+ * Description: Track fitting utilities
  */
 
 #ifndef FALAISE_SNEMO_DATAMODELS_TRACK_FITTING_UTILS_H
@@ -83,11 +83,9 @@ namespace snemo {
       void set_best(const bool best_);
     
       /// Smart print
-      virtual void tree_dump(std::ostream & out = std::clog,
-                             const std::string & title = "",
-                             const std::string & indent = "",
-                             bool is_last = false) const override;
-
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
+ 
     private:
 
       track_fit_algo_type _algo_ = TRACK_FIT_ALGO_UNDEF; ///< Fitting algorithm identifier
@@ -102,15 +100,15 @@ namespace snemo {
    
     };
     
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 // // Class version:
 // #include <boost/serialization/version.hpp>
 // BOOST_CLASS_VERSION(snemo::datamodel::track_fit_infos, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODELS_TRACK_FITTING_UTILS_H
+#endif // FALAISE_SNEMO_DATAMODELS_TRACK_FITTING_UTILS_H
 
 /*
 ** Local Variables: --

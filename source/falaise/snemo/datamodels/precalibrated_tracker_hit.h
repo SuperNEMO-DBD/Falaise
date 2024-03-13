@@ -4,13 +4,11 @@
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  *
  * Creation date: 2022-05-03
- * Last modified: 2023-07-20
+ * Last modified: 2024-03-13
  *
  * Description:
  *
  *   Precalibrated tracker hit.
- *
- * History:
  *
  */
 
@@ -32,7 +30,9 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief Model of a precalibrated tracker hit
-    class precalibrated_tracker_hit : public geomtools::base_hit {
+    class precalibrated_tracker_hit
+			: public geomtools::base_hit
+		{
 
     public:
 
@@ -125,13 +125,14 @@ namespace snemo {
       void invalidate() override;
 
       /// Invalidate calibration informations stored in the hit
-      virtual void clear() override;
+			void clear() override;
 
-      /// Smart print method
-      virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                             const std::string& indent = "", bool is_last = false) const override;
+      /// Smart print
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
+			
       double _anodic_time_{datatools::invalid_real()};                      //!< Anodic absolute time of the cell
       double _sigma_anodic_time_{datatools::invalid_real()};                //!< Error on anodic absolute time of the cell
       double _bottom_cathode_drift_time_{datatools::invalid_real()};        //!< Bottom cathode drift time of the cell
@@ -152,15 +153,16 @@ namespace snemo {
     using precalibrated_tracker_hit_handle = datatools::handle<precalibrated_tracker_hit>;
     using precalibrated_tracker_hit_handle_collection = std::vector<precalibrated_tracker_hit_handle>;
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 // Class version:
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::precalibrated_tracker_hit, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODELS_PRECALIBRATED_TRACKER_HIT_H
+#endif // FALAISE_SNEMO_DATAMODELS_PRECALIBRATED_TRACKER_HIT_H
+
 /*
 ** Local Variables: --
 ** mode: c++ --

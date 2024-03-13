@@ -314,29 +314,29 @@ namespace snemo {
       return;
     }
 
-    void vertex::print_tree(std::ostream & out,
-                            const boost::property_tree::ptree & options) const
+    void vertex::print_tree(std::ostream & out_,
+                            const boost::property_tree::ptree & options_) const
     {
-      base_hit::print_tree(out, base_print_options::force_inheritance(options));
+      base_hit::print_tree(out_, base_print_options::force_inheritance(options_));
       base_print_options popts;
-      popts.configure_from(options);
+      popts.configure_from(options_);
       const std::string & indent = popts.indent;
-      out << indent << tag << "Category      : '" << to_string(_category_) << "'" << std::endl;
-      out << indent << tag << "From          : '" << to_string(_from_) << "'" << std::endl;
-      out << indent << tag << "Extrapolation : '" << to_string(_extrapolation_) << "'" << std::endl;
-      out << indent << tag << "Spot          : ";
-      if (! _spot_.get_placement().is_valid()) {
-        out << "invalid";
+      out_ << indent << tag << "Category      : '" << to_string(_category_) << "'" << std::endl;
+      out_ << indent << tag << "From          : '" << to_string(_from_) << "'" << std::endl;
+      out_ << indent << tag << "Extrapolation : '" << to_string(_extrapolation_) << "'" << std::endl;
+      out_ << indent << tag << "Spot          : ";
+      if (not _spot_.get_placement().is_valid()) {
+        out_ << "invalid";
       }
-      out << std::endl;
+      out_ << std::endl;
       if (_spot_.get_placement().is_valid()) {
-        _spot_.tree_dump(out, "", indent + tags::skip_item());
+        _spot_.tree_dump(out_, "", indent + tags::skip_item());
       }
-      out << indent << tag << "Distance      : " << _distance_ / CLHEP::mm << " mm" << std::endl;
-      out << indent << tag << "XY-distance   : " << _distance_xy_ / CLHEP::mm << " mm" << std::endl;
-      out << indent << tag << "Edge          : " << std::boolalpha << _edge_  << std::endl;
-      out << indent << inherit_tag(popts.inherit)
-        /****************/ << "Best      : " << std::boolalpha << _best_ << std::endl;
+      out_ << indent << tag << "Distance      : " << _distance_ / CLHEP::mm << " mm" << std::endl;
+      out_ << indent << tag << "XY-distance   : " << _distance_xy_ / CLHEP::mm << " mm" << std::endl;
+      out_ << indent << tag << "Edge          : " << std::boolalpha << _edge_  << std::endl;
+      out_ << indent << inherit_tag(popts.inherit)
+	   << "Best      : " << std::boolalpha << _best_ << std::endl;
       return;
     } 
  

@@ -124,15 +124,15 @@ namespace snemo {
     using TrackerTrajectoryHdl = datatools::handle<TrackerTrajectory>;
     using TrackerTrajectoryHdlCollection = std::vector<TrackerTrajectoryHdl>;
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 // Class version:
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::tracker_trajectory, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
+#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_H
 
 /*
 ** Local Variables: --

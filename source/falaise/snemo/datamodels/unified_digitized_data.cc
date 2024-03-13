@@ -86,7 +86,7 @@ namespace snemo {
       return _reference_timestamp_;
     }
 
-    void unified_digitized_data::set_reference_timestamp(const int64_t & ref_timestamp_)
+    void unified_digitized_data::set_reference_timestamp(int64_t ref_timestamp_)
     {
       _reference_timestamp_ = ref_timestamp_;
       return;
@@ -177,7 +177,7 @@ namespace snemo {
       return;
     }
 
-    // virtual
+    // override
     void unified_digitized_data::clear()
     {
       _run_id_ = INVALID_RUN_ID;
@@ -187,8 +187,7 @@ namespace snemo {
       _auxiliaries_.clear();
     }
 
-
-    // virtual
+    // override
     void unified_digitized_data::print_tree(std::ostream & out_,
                                             const boost::property_tree::ptree & options_) const
     {

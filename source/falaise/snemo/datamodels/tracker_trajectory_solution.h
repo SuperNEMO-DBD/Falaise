@@ -34,11 +34,12 @@ namespace snemo {
 
     /// \brief A collection of tracker clusters , solution of a trajectory algorithm
     class tracker_trajectory_solution
-      : public datatools::i_serializable,
-        public datatools::i_tree_dumpable,
-        public datatools::i_clear
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
     {
     public:
+			
       /// Reset the tracker cluster solution
       void reset();
 
@@ -62,25 +63,25 @@ namespace snemo {
       bool has_clustering_solution() const;
 
       /// Set the reference clustering solution
-      void set_clustering_solution(const TrackerClusteringSolutionHdl& s);
+      void set_clustering_solution(const TrackerClusteringSolutionHdl & s);
 
       /// Reset the reference clustering solution
       void invalidate_clustering_solution();
 
       /// Return a mutable reference on the reference clustering solution
-      tracker_clustering_solution& grab_clustering_solution();
+      tracker_clustering_solution & grab_clustering_solution();
 
       /// Return a non mutable reference on the reference clustering solution
-      const tracker_clustering_solution& get_clustering_solution() const;
+      const tracker_clustering_solution & get_clustering_solution() const;
 
       /// Check if there is trajectories
       bool has_trajectories() const;
 
       /// Return a mutable reference on the container of trajectories
-      TrackerTrajectoryHdlCollection& grab_trajectories();
+      TrackerTrajectoryHdlCollection & grab_trajectories();
 
       /// Return a non mutable reference on the container of trajectories
-      const TrackerTrajectoryHdlCollection& get_trajectories() const;
+      const TrackerTrajectoryHdlCollection & get_trajectories() const;
 
       /// Reset the trajectories
       void invalidate_trajectories();
@@ -89,10 +90,10 @@ namespace snemo {
       bool has_unfitted_clusters() const;
 
       /// Return a mutable reference on the container of handles on unfitted clusters
-      TrackerClusterHdlCollection& grab_unfitted_clusters();
+      TrackerClusterHdlCollection & grab_unfitted_clusters();
 
       /// Return a non mutable reference on the container of handles on unfitted clusters
-      const TrackerClusterHdlCollection& get_unfitted_clusters() const;
+      const TrackerClusterHdlCollection & get_unfitted_clusters() const;
 
       /// Reset the unfitted clusters
       void invalidate_unfitted_clusters();
@@ -106,11 +107,11 @@ namespace snemo {
       std::set<int32_t> & grab_best_trajectories();
 
       /// Empty the contents of the tracker trajectories solution
-      virtual void clear() override;
+      void clear() override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                             const std::string& indent = "", bool is_last = false) const override;
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
       /*** Auxiliaries ***/
       // These are marked as deprecated to warn/fail compilation if they are used
@@ -118,13 +119,14 @@ namespace snemo {
       // so cannot be removed just yet...
       /// Return a mutable reference on the container of auxiliary properties
       ///\deprecated properties should not be used in core data types
-      datatools::properties& get_auxiliaries() __attribute__((deprecated));
+      datatools::properties & get_auxiliaries() __attribute__((deprecated));
 
       /// Return a non mutable reference on the container of auxiliary properties
       ///\deprecated properties should not be used in core data types
-      const datatools::properties& get_auxiliaries() const __attribute__((deprecated));
+      const datatools::properties & get_auxiliaries() const __attribute__((deprecated));
 
     private:
+			
       int32_t id_ = -1;                              //!< Unique solution ID
       TrackerClusteringSolutionHdl solutions_;       //!< The reference clustering solution
       TrackerTrajectoryHdlCollection trajectories_;  //!< Trajectories associated to clusters

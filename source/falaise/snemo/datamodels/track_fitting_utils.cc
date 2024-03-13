@@ -134,21 +134,22 @@ namespace snemo {
       _best_ = best_;
     }
 
-    void track_fit_infos::tree_dump(std::ostream & out,
-                                    const std::string & title,
-                                    const std::string & indent,
-                                    bool is_last) const
+    // override
+    void track_fit_infos::print_tree(std::ostream & out_,
+				     const boost::property_tree::ptree & options_) const
     {
-      if (not title.empty()) {
-        out << indent << title << std::endl;
+      base_print_options popts;
+      popts.configure_from(options_);
+      if (popts.title.length()) {
+        out_ << popts.indent << popts.title << std::endl;
       }
-      out << indent << datatools::i_tree_dumpable::tag << "Algorithm : '" << to_string(_algo_) << "'" << std::endl;
-      out << indent << datatools::i_tree_dumpable::tag << "Guess : '" << _guess_ << "'" << std::endl;
-      out << indent << datatools::i_tree_dumpable::tag << "Chi2 : " << _chi2_ << std::endl;
-      out << indent << datatools::i_tree_dumpable::tag << "Ndof : " << _ndof_ << std::endl;
-      out << indent << datatools::i_tree_dumpable::tag << "P-value : " << _pvalue_ << std::endl;
-      out << indent << datatools::i_tree_dumpable::inherit_tag(is_last)
-          << "Best  : " << std::boolalpha << _best_ << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::tag << "Algorithm : '" << to_string(_algo_) << "'" << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::tag << "Guess : '" << _guess_ << "'" << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::tag << "Chi2 : " << _chi2_ << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::tag << "Ndof : " << _ndof_ << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::tag << "P-value : " << _pvalue_ << std::endl;
+      out_ << popts.indent << datatools::i_tree_dumpable::inherit_tag(popts.inherit)
+	   << "Best  : " << std::boolalpha << _best_ << std::endl;
       return;
     }
 

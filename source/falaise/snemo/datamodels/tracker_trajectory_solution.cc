@@ -157,77 +157,82 @@ namespace snemo {
       _auxiliaries_.clear();
     }
 
-    void tracker_trajectory_solution::tree_dump(std::ostream& out, const std::string& title,
-                                                const std::string& indent, bool is_last) const
+    void tracker_trajectory_solution::print_tree(std::ostream & out_,
+						 const boost::property_tree::ptree & options_) const
     {
-      if (!title.empty()) {
-        out << indent << title << std::endl;
+      base_print_options popts;
+      popts.configure_from(options_);
+      bool list_properties_opt = options_.get("list_properties", false);
+
+      if (popts.title.length()) {
+        out_ << popts.indent << popts.title << std::endl;
       }
+      const std::string & indent = popts.indent;
 
-      // make_tag
-      // make_skip_tag
-      // make_last_tag
-      // make_last_skip_tag
-      // make_inherit_tag
-      // make_inherit_skip_tag
-      std::string tag = indent + datatools::i_tree_dumpable::tags::item();
-      std::string skip_tag = indent + datatools::i_tree_dumpable::tags::skip_item();
-      std::string last_tag = indent + datatools::i_tree_dumpable::tags::last_item();
-      std::string last_skip_tag = indent + datatools::i_tree_dumpable::tags::last_skip_item();
-      // Last two are functions of indent and is_last;
+      // std::string item_tag = indent + datatools::i_tree_dumpable::tags::item();
+      // std::string mkip_tag = indent + datatools::i_tree_dumpable::tags::skip_item();
+      // std::string last_tag = indent + datatools::i_tree_dumpable::tags::last_item();
+      // std::string last_skip_tag = indent + datatools::i_tree_dumpable::tags::last_skip_item();
 
-      out << indent << datatools::i_tree_dumpable::tag << "Solution ID  : " << id_ << std::endl;
+      out_ << indent << tag << "Solution ID  : " << id_ << std::endl;
 
-      out << indent << datatools::i_tree_dumpable::tag << "Reference clustering solution : ";
+      out_ << indent << tag << "Reference clustering solution : ";
       if (has_clustering_solution()) {
-        out << solutions_->get_solution_id();
+        out_ << solutions_->get_solution_id();
       } else {
-        out << "<none>";
+        out_ << "<none>";
       }
-      out << std::endl;
+      out_ << std::endl;
 
-      out << indent << datatools::i_tree_dumpable::tag << "Trajectories : " << trajectories_.size()
+      out_ << indent << tag << "Trajectories : " << trajectories_.size()
           << std::endl;
       for (size_t i = 0; i < trajectories_.size(); i++) {
         const datatools::handle<tracker_trajectory>& htraj = trajectories_.at(i);
-        const tracker_trajectory& traj = htraj.get();
-        out << indent << datatools::i_tree_dumpable::skip_tag;
+        const tracker_trajectory & traj = htraj.get();
+        out_ << indent << skip_tag;
         std::ostringstream indent2_oss;
-        indent2_oss << indent << datatools::i_tree_dumpable::skip_tag;
+        indent2_oss << indent << skip_tag;
         size_t j = i;
         j++;
         if (j == trajectories_.size()) {
-          out << datatools::i_tree_dumpable::last_tag;
-          indent2_oss << datatools::i_tree_dumpable::last_skip_tag;
+          out_ << last_tag;
+          indent2_oss << last_skip_tag;
         } else {
-          out << datatools::i_tree_dumpable::tag;
-          indent2_oss << datatools::i_tree_dumpable::skip_tag;
+          out_ << tag;
+          indent2_oss << skip_tag;
         }
-        out << "Trajectory #" << i;
+        out_ << "Trajectory #" << i;
         if (best_trajectories_.count(traj.get_id())) {
-          out << " (best)";
+          out_ << " (best)";
         }
-        out << " : " << std::endl;
-        traj.tree_dump(out, "", indent2_oss.str());
+        out_ << " : " << std::endl;
+	{
+	  boost::property_tree::ptree trajOpts;
+	  trajOpts.put("indent", indent2_oss.str());
+	  traj.print_tree(out_, trajOpts);
+	}
       }
 
-      out << indent << datatools::i_tree_dumpable::tag
+      out_ << indent << tag
           << "Unfitted clusters : " << unfitted_.size() << std::endl;
 
-      out << indent << datatools::i_tree_dumpable::tag
+      out_ << indent << tag
           << "Best trajectories : " << best_trajectories_.size() << std::endl;
 
-      out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "Auxiliaries : ";
+      out_ << indent << inherit_tag(popts.inherit) << "Auxiliary properties : ";
       if (_auxiliaries_.empty()) {
-        out << "<empty>";
+        out_ << "<empty>";
+      } else {
+	out_ << _auxiliaries_.size();
       }
-      out << std::endl;
-      {
-        std::ostringstream indent_oss;
-        indent_oss << indent;
-        indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(is_last);
-        _auxiliaries_.tree_dump(out, "", indent_oss.str());
+      out_ << std::endl;
+      if (list_properties_opt) {
+	boost::property_tree::ptree auxOpts;
+        auxOpts.put("indent", popts.indent + tags::item(not popts.inherit, true));
+        _auxiliaries_.print_tree(out_, auxOpts);
       }
+      
+      return;
     }
 
   } // end of namespace datamodel

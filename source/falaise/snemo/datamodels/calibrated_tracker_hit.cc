@@ -10,7 +10,7 @@
 
 namespace {
   
-  const std::string& anode_time_key() {
+  const std::string & anode_time_key() {
     static const std::string key("anode_time");
     return key;
   }
@@ -24,7 +24,7 @@ namespace {
   //  static const std::string key("top_cathode_time");
   //  return key;
   //}
-}  // namespace
+} // namespace
 
 namespace snemo {
 

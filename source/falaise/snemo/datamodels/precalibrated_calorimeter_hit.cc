@@ -210,52 +210,60 @@ namespace snemo {
       datatools::invalidate(_time_);
       datatools::invalidate(_sigma_time_);
     }
+  
+    void precalibrated_calorimeter_hit::print_tree(std::ostream & out_,
+						   const boost::property_tree::ptree & options_) const
+    {
+      base_hit::print_tree(out_, base_print_options::force_inheritance(options_));
+      base_print_options popts;
+      popts.configure_from(options_);
+      const std::string & indent = popts.indent;
 
-    void precalibrated_calorimeter_hit::tree_dump(std::ostream& out, const std::string& title,
-                                                  const std::string& indent, bool /* is_last */) const {
-      base_hit::tree_dump(out, title, indent, true);
+      out_ << indent << tag << "Baseline: " << _baseline_ / CLHEP::volt;
+      if (has_sigma_baseline()) {
+        out_ << " +/- " << _sigma_baseline_ / CLHEP::volt;
+      }
+      out_ << " V\n";
 
-      out << indent << datatools::i_tree_dumpable::tag << "Baseline: " << _baseline_ /CLHEP::volt;
-      if (has_sigma_baseline())
-	out << " +/- " << _sigma_baseline_ /CLHEP::volt;
-      out << " V\n";
+      out_ << indent << tag << "Amplitude: " << _amplitude_/ (1E-3*CLHEP::volt);
+      if (has_sigma_amplitude()) {
+        out_ << " +/- " << _sigma_amplitude_ / (1E-3 * CLHEP::volt);
+      }
+      out_ << " mV\n";
 
-      out << indent << datatools::i_tree_dumpable::tag << "Amplitude: " << _amplitude_/(1E-3*CLHEP::volt);
-      if (has_sigma_amplitude())
-	out << " +/- " << _sigma_amplitude_ /(1E-3 * CLHEP::volt);
-      out << " mV\n";
-
-      out << indent << datatools::i_tree_dumpable::tag << "Charge: " << _charge_/(1E-9*CLHEP::volt*CLHEP::second);
-      if (has_sigma_charge())
-	out << " +/- " << _sigma_charge_ /(1E-9*CLHEP::volt*CLHEP::second);
-      out << " nV.s\n";
+      out_ << indent << tag << "Charge: " << _charge_/ (1E-9*CLHEP::volt*CLHEP::second);
+      if (has_sigma_charge()) {
+        out_ << " +/- " << _sigma_charge_ / (1E-9*CLHEP::volt*CLHEP::second);
+      }
+      out_ << " nV.s\n";
 
       // convert absolute time into day/hour/min/sec/msec/usec/nsec format
       double tmp_time_sec = _time_ / CLHEP::second;
-      int time_day    = std::floor(tmp_time_sec/86400.);
-      tmp_time_sec   -= 86400.*time_day;
-      int time_hour   = std::floor(tmp_time_sec/3600.);
-      tmp_time_sec   -= 3600.*time_hour;
-      int time_min    = std::floor(tmp_time_sec/60.);
-      tmp_time_sec   -= 60.*time_min;
+      int time_day    = std::floor(tmp_time_sec / 86400.);
+      tmp_time_sec   -= 86400. * time_day;
+      int time_hour   = std::floor(tmp_time_sec / 3600.);
+      tmp_time_sec   -= 3600. * time_hour;
+      int time_min    = std::floor(tmp_time_sec / 60.);
+      tmp_time_sec   -= 60. * time_min;
       int time_sec    = std::floor(tmp_time_sec);
       tmp_time_sec   -= time_sec;
-      int time_msec   = std::floor(tmp_time_sec*1E3);
-      tmp_time_sec   -= 1E-3*time_msec;
-      int time_usec   = std::floor(tmp_time_sec*1E6);
-      tmp_time_sec   -= 1E-6*time_usec;
+      int time_msec   = std::floor(tmp_time_sec * 1E3);
+      tmp_time_sec   -= 1E-3 * time_msec;
+      int time_usec   = std::floor(tmp_time_sec * 1E6);
+      tmp_time_sec   -= 1E-6 * time_usec;
       double time_nsec = tmp_time_sec*1E9;
 
-      out << indent << datatools::i_tree_dumpable::last_tag << "Time: "
-	  << time_day << "d " << time_hour << "h " << time_min << "m " << time_sec << "s "
-	  << time_msec << "ms " << time_usec << "us " << time_nsec;
-      if (has_sigma_time())
-	out << "ns +- " << _sigma_time_/(1E-9*CLHEP::second);
-      out << "ns\n";
+      out_ << indent << last_tag << "Time: "
+          << time_day << "d " << time_hour << "h " << time_min << "m " << time_sec << "s "
+          << time_msec << "ms " << time_usec << "us " << time_nsec;
+      if (has_sigma_time()) {
+        out_ << "ns +- " << _sigma_time_ / (1E-9 * CLHEP::second);
+      }
+      out_ << "ns\n";
 
-      // << indent << datatools::i_tree_dumpable::tag << "Time: " << _time_ / CLHEP::second << " s\n";
+      return;
     }
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo

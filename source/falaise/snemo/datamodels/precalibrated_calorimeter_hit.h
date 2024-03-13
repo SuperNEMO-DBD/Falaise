@@ -3,13 +3,11 @@
 /* Author(s) :    Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
- * Last modified: 2023-07-20
+ * Last modified: 2024-03-13
  *
  * Description:
  *
  *   Precalibrated calorimeter hit.
- *
- * History:
  *
  */
 
@@ -31,7 +29,9 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief Model of a precalibrated calorimeter hit
-    class precalibrated_calorimeter_hit : public geomtools::base_hit {
+    class precalibrated_calorimeter_hit
+      : public geomtools::base_hit
+    {
 
     public:
 
@@ -138,9 +138,9 @@ namespace snemo {
       void invalidate() override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                             const std::string& indent = "", bool is_last = false) const override;
-
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
+ 
     private:
 
       double _baseline_{datatools::invalid_real()};           //!< Baseline associated to the hit
@@ -165,8 +165,8 @@ namespace snemo {
     using precalibrated_calorimeter_hit_handle = datatools::handle<precalibrated_calorimeter_hit>;
     using precalibrated_calorimeter_hit_handle_collection = std::vector<precalibrated_calorimeter_hit_handle>;
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_DATAMODELS_PRECALIBRATED_CALORIMETER_HIT_H
+#endif // FALAISE_SNEMO_DATAMODELS_PRECALIBRATED_CALORIMETER_HIT_H

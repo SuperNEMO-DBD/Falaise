@@ -92,6 +92,6 @@ namespace snedm {
     const datatools::things & _data_record_;
   };
   
-}  // end of namespace snedm
+} // end of namespace snedm
 
 #endif  // FALAISE_SNEMO_DATAMODEL_DATA_MODEL_H

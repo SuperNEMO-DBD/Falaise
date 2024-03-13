@@ -117,4 +117,3 @@ namespace snemo {
 
 } // end of namespace snemo
 
-// end 

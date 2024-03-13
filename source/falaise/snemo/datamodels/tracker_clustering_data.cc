@@ -11,12 +11,14 @@ namespace snemo {
 
     size_t tracker_clustering_data::size() const { return solutions_.size(); }
 
-    const tracker_clustering_solution& tracker_clustering_data::at(size_t index) const {
+    const tracker_clustering_solution & tracker_clustering_data::at(size_t index) const
+    {
       return *(solutions_.at(index));
     }
 
     void tracker_clustering_data::push_back(const TrackerClusteringSolutionHdl& solution,
-					    bool isDefault) {
+					    bool isDefault)
+    {
       DT_THROW_IF(!solution, std::logic_error, "Cannot store a null handle !");
       for (const auto& addr : solutions_) {
 	DT_THROW_IF(&(*addr) == &(*solution), std::logic_error, "Duplicated solutions is not allowed!");

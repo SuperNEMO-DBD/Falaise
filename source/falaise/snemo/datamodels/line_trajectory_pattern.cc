@@ -16,21 +16,30 @@ namespace snemo {
                                                       "snemo::datamodel::line_trajectory_pattern")
 
     // static
-    const std::string &line_trajectory_pattern::pattern_id() {
+    const std::string & line_trajectory_pattern::pattern_id()
+    {
       static const std::string _id("line");
       return _id;
     }
 
     line_trajectory_pattern::line_trajectory_pattern()
-      : base_trajectory_pattern(line_trajectory_pattern::pattern_id()) {
+      : base_trajectory_pattern(line_trajectory_pattern::pattern_id())
+    {
     }
 
-    geomtools::line_3d &line_trajectory_pattern::get_segment() { return _segment_; }
+    geomtools::line_3d &line_trajectory_pattern::get_segment()
+    {
+      return _segment_;
+    }
 
-    const geomtools::line_3d &line_trajectory_pattern::get_segment() const { return _segment_; }
+    const geomtools::line_3d &line_trajectory_pattern::get_segment() const
+    {
+      return _segment_;
+    }
 
     // override
-    const geomtools::i_shape_1d &line_trajectory_pattern::get_shape() const {
+    const geomtools::i_shape_1d &line_trajectory_pattern::get_shape() const
+    {
       return dynamic_cast<const geomtools::i_shape_1d &>(_segment_);
     }
 
