@@ -64,9 +64,9 @@ namespace snemo {
       void clear() override;
 
       /// Smart print
-      virtual void print_tree(std::ostream & out_ = std::clog,
-                              const boost::property_tree::ptree & options_
-                              /**/ = datatools::i_tree_dumpable::empty_options()) const override;
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_
+                      /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
     private:
       

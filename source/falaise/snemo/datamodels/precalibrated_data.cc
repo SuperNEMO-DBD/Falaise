@@ -41,61 +41,78 @@ namespace snemo {
       return _properties_;
     }
  
-    void precalibrated_data::tree_dump(std::ostream& out, const std::string& title,
-                                       const std::string& indent, bool is_last) const {
-      auto printCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {
-        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
-	    << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
-	    << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
-	    << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
-	    << ", Time: " << x->get_time() / CLHEP::second << " s"
-	    << " (" << x->get_auxiliaries().size() << " prop.)"
-	    << std::endl;
+    // virtual
+    void precalibrated_data::print_tree(std::ostream & out_,
+                                        const boost::property_tree::ptree & options_) const
+    {
+      base_print_options popts;
+      popts.configure_from(options_);
+      bool list_hits_opt = options_.get("list_hits", false);
+      bool list_properties_opt = options_.get("list_properties", false);
+
+      if (popts.title.length()) {
+        out_ << popts.indent << popts.title << std::endl;
+      }
+      auto printPreCalibCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {
+        out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+            << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
+             << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
+             << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
+             << ", Time: " << x->get_time() / CLHEP::second << " s"
+             << " (+" << x->get_auxiliaries().size() << " prop.)"
+             << std::endl;
       };
 
       auto printPreCalibTrackerHit = [&](const PreCalibTrackerHitHdl& x) {
-        out << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
-	    << ", AnodicTime = " << x->get_anodic_time() / CLHEP::microsecond << " us";
-	if (x->has_bottom_cathode_drift_time()) {
-	  out << ", BottomCathodeDriftTime = " << x->get_bottom_cathode_drift_time() / CLHEP::microsecond << " us";
-	}
-	if (x->has_top_cathode_drift_time()) {
-	  out << ", TopCathodeDriftTime = " << x->get_top_cathode_drift_time() / CLHEP::microsecond << " us";
-	}
-	out << " (" << x->get_auxiliaries().size() << " prop.)"
-	    << std::endl;
+        out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+             << ", AnodicTime = " << x->get_anodic_time() / CLHEP::microsecond << " us";
+        if (x->has_bottom_cathode_drift_time()) {
+          out_ << ", BottomCathodeDriftTime = " << x->get_bottom_cathode_drift_time() / CLHEP::microsecond << " us";
+        }
+        if (x->has_top_cathode_drift_time()) {
+          out_ << ", TopCathodeDriftTime = " << x->get_top_cathode_drift_time() / CLHEP::microsecond << " us";
+        }
+        out_ << " (+" << x->get_auxiliaries().size() << " prop.)"
+             << std::endl;
       };
 
-      if (!title.empty()) {
-        out << indent << title << std::endl;
-      }
-
       // Precalibrated calorimeter hits:
-      out << indent << datatools::i_tree_dumpable::tag << "PreCalibCalorimeterHits[" << calorimeter_hits_.size()
-          << "]:" << std::endl;
-      if (!calorimeter_hits_.empty()) {
-        std::for_each(
-                      calorimeter_hits_.begin(), --calorimeter_hits_.end(), [&](const PreCalibCalorimeterHitHdl& x) {
-                        out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::tag;
-                        printCaloHit(x);
+      out_ << popts.indent << tag
+           << "PreCalibCalorimeterHits : " << calorimeter_hits_.size() << std::endl;
+      if (list_hits_opt and not calorimeter_hits_.empty()) {
+        std::for_each(calorimeter_hits_.begin(),
+                      --calorimeter_hits_.end(),
+                      [&](const PreCalibCalorimeterHitHdl& x) {
+                        out_ << popts.indent << skip_tag << tag;
+                        printPreCalibCaloHit(x);
                       });
-        out << indent << datatools::i_tree_dumpable::skip_tag << datatools::i_tree_dumpable::last_tag;
-        printCaloHit(calorimeter_hits_.back());
+        out_ << popts.indent << skip_tag << last_tag;
+        printPreCalibCaloHit(calorimeter_hits_.back());
       }
 
       // Precalibrated tracker hits:
-      out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "PreCalibTrackerHits["
-          << tracker_hits_.size() << "]:" << std::endl;
-      if (!tracker_hits_.empty()) {
-        std::for_each(tracker_hits_.begin(), --tracker_hits_.end(), [&](const PreCalibTrackerHitHdl& x) {
-            out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
-                << datatools::i_tree_dumpable::tag;
-            printPreCalibTrackerHit(x);
-          });
-        out << indent << datatools::i_tree_dumpable::inherit_skip_tag(is_last)
-            << datatools::i_tree_dumpable::last_tag;
+      out_ << popts.indent << tag
+           << "PreCalibTrackerHits : " << tracker_hits_.size() << std::endl;
+      if (list_hits_opt and not tracker_hits_.empty()) {
+        std::for_each(tracker_hits_.begin(),
+                      --tracker_hits_.end(),
+                      [&](const PreCalibTrackerHitHdl& x) {
+                        out_ << popts.indent << skip_tag << tag;
+                        printPreCalibTrackerHit(x);
+                      });
+        out_ << popts.indent << skip_tag << last_tag;
         printPreCalibTrackerHit(tracker_hits_.back());
       }
+
+      out_ << popts.indent << inherit_tag(popts.inherit)
+           << "Auxiliary properties : " << _properties_.size() << std::endl;
+      if (list_properties_opt) {
+        boost::property_tree::ptree auxOpts;
+        auxOpts.put("indent", popts.indent + tags::item(not popts.inherit, true));
+        _properties_.print_tree(out_, auxOpts);
+      }
+      
+      return;
     }
 
   } // end of namespace datamodel

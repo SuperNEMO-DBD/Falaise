@@ -194,6 +194,9 @@ namespace snemo {
     {
       base_print_options popts;
       popts.configure_from(options_);
+      bool list_hits_opt = options_.get("list_hits", false);
+      bool hit_details_opt = options_.get("hit_details", false);
+      bool list_properties_opt = options_.get("list_properties", false);
 
       if (popts.title.length()) {
         out_ << popts.indent << popts.title << std::endl;
@@ -207,50 +210,6 @@ namespace snemo {
 
       out_ << popts.indent << tag
            << "Reference timestamp : " << _reference_timestamp_ << std::endl;
-
-      out_ << popts.indent << tag
-           << "Calo.Digi.Hits : " << _calorimeter_digitized_hits_.size() << std::endl;
-      {
-        for (int i = 0; i < (int) _calorimeter_digitized_hits_.size(); i++) {
-          out_ << popts.indent << skip_tag;
-          std::ostringstream sindent2;
-          sindent2 << popts.indent << skip_tag;
-          if ((i + 1) == (int) _calorimeter_digitized_hits_.size()) {
-            out_ << last_tag;
-            sindent2 << last_skip_tag;
-          } else {
-            out_ << tag;
-            sindent2 << skip_tag;
-          }
-          out_ << "Calo. Hit #" << i << " : ";
-          out_ << '\n';
-          boost::property_tree::ptree opts2;
-          opts2.put("indent", sindent2.str());
-          _calorimeter_digitized_hits_[i].get().print_tree(out_, opts2);
-        }
-      }
-
-      out_ << popts.indent << tag
-           << "Tracker.Digi.Hits : " << _tracker_digitized_hits_.size() << std::endl;
-      {
-        for (int i = 0; i < (int) _tracker_digitized_hits_.size(); i++) {
-          out_ << popts.indent << skip_tag;
-          std::ostringstream sindent2;
-          sindent2 << popts.indent << skip_tag;
-          if ((i + 1) == (int) _tracker_digitized_hits_.size()) {
-            out_ << last_tag;
-            sindent2 << last_skip_tag;
-          } else {
-            out_ << tag;
-            sindent2 << skip_tag;
-          }
-          out_ << "Tracker. Hit #" << i << " : ";
-          out_ << '\n';
-          boost::property_tree::ptree opts2;
-          opts2.put("indent", sindent2.str());
-          _tracker_digitized_hits_[i].get().print_tree(out_, opts2);
-        }
-      }
 
       out_ << popts.indent << tag
            << "RTD origin trigger IDs : ";
@@ -268,16 +227,69 @@ namespace snemo {
       }
 
       out_ << popts.indent << tag
-           << "Auxiliaries : " << std::endl;
-      {
-        boost::property_tree::ptree auxOpts;
-        auxOpts.put("indent", popts.indent + "|   ");
-        _auxiliaries_.print_tree(out_, auxOpts);
-      }
-
-      out_ << popts.indent << inherit_tag(popts.inherit)
            << "Valid : " << std::boolalpha << is_valid() << std::endl;
 
+      out_ << popts.indent << tag
+           << "Calo.Digi.Hits : " << _calorimeter_digitized_hits_.size() << std::endl;
+      if (list_hits_opt) {
+        for (int i = 0; i < (int) _calorimeter_digitized_hits_.size(); i++) {
+          out_ << popts.indent << skip_tag;
+          std::ostringstream sindent2;
+          sindent2 << popts.indent << skip_tag;
+          if ((i + 1) == (int) _calorimeter_digitized_hits_.size()) {
+            out_ << last_tag;
+            sindent2 << last_skip_tag;
+          } else {
+            out_ << tag;
+            sindent2 << skip_tag;
+          }
+          out_ << "Calo. Hit #" << i << " : ";
+ 	  if (not hit_details_opt) {
+	    out_ << _calorimeter_digitized_hits_[i].get().get_geom_id();
+	  }
+	  out_ << '\n';
+	  if (hit_details_opt) {
+	    boost::property_tree::ptree opts2;
+	    opts2.put("indent", sindent2.str());
+	    _calorimeter_digitized_hits_[i].get().print_tree(out_, opts2);
+	  }
+        }
+      }
+
+      out_ << popts.indent << tag
+           << "Tracker.Digi.Hits : " << _tracker_digitized_hits_.size() << std::endl;
+      if (list_hits_opt) {
+        for (int i = 0; i < (int) _tracker_digitized_hits_.size(); i++) {
+          out_ << popts.indent << skip_tag;
+          std::ostringstream sindent2;
+          sindent2 << popts.indent << skip_tag;
+          if ((i + 1) == (int) _tracker_digitized_hits_.size()) {
+            out_ << last_tag;
+            sindent2 << last_skip_tag;
+          } else {
+            out_ << tag;
+            sindent2 << skip_tag;
+          }
+          out_ << "Tracker. Hit #" << i << " : ";
+	  if (not hit_details_opt) {
+	    out_ << _tracker_digitized_hits_[i].get().get_geom_id();
+	  }
+          out_ << '\n';
+	  if (hit_details_opt) {
+	    boost::property_tree::ptree opts2;
+	    opts2.put("indent", sindent2.str());
+	    _tracker_digitized_hits_[i].get().print_tree(out_, opts2);
+	  }
+        }
+      }
+    
+      out_ << popts.indent << inherit_tag(popts.inherit) << "Auxiliary properties : " << _auxiliaries_.size() << std::endl;
+      if (list_properties_opt) {
+        boost::property_tree::ptree auxOpts;
+        auxOpts.put("indent", popts.indent + tags::item(not popts.inherit, true));
+        _auxiliaries_.print_tree(out_, auxOpts);
+      }
+ 
       return;
     }
 

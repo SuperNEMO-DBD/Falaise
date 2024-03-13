@@ -38,43 +38,53 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-/// \brief The data structure that hosts information about calibrated hits
-class calibrated_data : public datatools::i_serializable,
-                        public datatools::i_tree_dumpable,
-                        public datatools::i_clear {
- public:
-  /// Return the const collection of calorimeter hits
-  const CalorimeterHitHdlCollection& calorimeter_hits() const;
+    /// \brief The data structure that hosts information about calibrated hits
+    class calibrated_data : public datatools::i_serializable,
+                            public datatools::i_tree_dumpable,
+                            public datatools::i_clear {
+    public:
+      /// Return the const collection of calorimeter hits
+      const CalorimeterHitHdlCollection& calorimeter_hits() const;
 
-  /// Return the mutable collection of calorimeter hits
-  CalorimeterHitHdlCollection& calorimeter_hits();
+      /// Return the mutable collection of calorimeter hits
+      CalorimeterHitHdlCollection& calorimeter_hits();
 
-  /// Return the const collection of tracker hits
-  const TrackerHitHdlCollection& tracker_hits() const;
+      /// Return the const collection of tracker hits
+      const TrackerHitHdlCollection& tracker_hits() const;
 
-  /// Return the mutable collection of tracker hits
-  TrackerHitHdlCollection& tracker_hits();
+      /// Return the mutable collection of tracker hits
+      TrackerHitHdlCollection& tracker_hits();
 
-  /// Clear attributes
-  virtual void clear() override;
+      /// Clear attributes
+      void clear() override;
 
-  /// Smart print
-  virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                         const std::string& indent = "", bool is_last = false) const override;
+      /// Smart print
+      ///
+      /// Usage:
+      /// \code
+      /// snemo::datamodel::unified_digitized_data udd
+      /// ...
+      /// boost::property_tree::ptree poptions;
+      /// poptions.put("title", "Unified Digitized Data:");
+      /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_hits", true);
+      /// poptions.put("list_properties", true);
+      /// udd.print_tree(std::clog, poptions);
+      /// \endcode
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
+        
+    private:
+      CalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of calibrated calorimeter hits
+      TrackerHitHdlCollection tracker_hits_;          //!< Collection of calibrated tracker hits
+      datatools::properties _properties_;  //!< Auxiliary properties
 
- private:
-  CalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of calibrated calorimeter hits
-  TrackerHitHdlCollection tracker_hits_;          //!< Collection of calibrated tracker hits
+      DATATOOLS_SERIALIZATION_DECLARATION()
+    };
 
-  datatools::properties
-      _properties_;  //!< Auxiliary properties (only retained for serialization compat)
-
-  DATATOOLS_SERIALIZATION_DECLARATION()
-};
-
-}  // end of namespace datamodel
+  }  // end of namespace datamodel
 
 }  // end of namespace snemo
 

@@ -130,10 +130,10 @@ namespace FLpCDToCpCD {
       std::size_t outputClusteredEventCounter = 0;
       std::size_t outputUnclusteredEventCounter = 0;
       while (true) {
-        // Prepare and read work
+        // Prepare and read work:
         inputDataEvent.clear();
         if (recInput->is_terminated()) {
-          // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
+          DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Input module is terminated");
           break;
         }
         if (recInput->process(inputDataEvent) != dpp::base_module::PROCESS_OK) {
@@ -145,12 +145,14 @@ namespace FLpCDToCpCD {
 	FLpCDToCpCDAlgorithm::data_records_col outputDataEvents;
         pcd2cpcdAlgo.process(inputDataEvent, outputDataEvents);
 
-        // Write item
+        // Write item:
         if (recOutputHandle != nullptr) {
+	  DT_THROW_IF(outputDataEvents.size() == 0, std::logic_error,
+		      "No identified cluster events");
 	  if (outputDataEvents.size()) {
 	    for (auto & outputDataEventHandle : outputDataEvents) {
 	      auto & outputDataEvent = outputDataEventHandle.grab();
-	      // if (outputDataEvent.has(pcd2cpcdAlgo.cpcd_tag())) {
+	      // if (outputDataEvent.has(pcd2cpcdAlgo.pcd_tag())) {
 	      // }
 	      auto pStatus = recOutputHandle->process(outputDataEvent);
 	      outputClusteredEventCounter++;
@@ -160,18 +162,19 @@ namespace FLpCDToCpCD {
 		break;
 	      }
 	    }
-	  } else {
-	    if (flAppParameters_.preserveUnclusteredEvents) {
-	      // No found clusters : the event data record is saved as is:
-	      auto pStatus = recOutputHandle->process(inputDataEvent);
-	      outputUnclusteredEventCounter++;
-	      if (pStatus != dpp::base_module::PROCESS_OK) {
-		DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to write unclustered event to output sink");
-		code = falaise::EXIT_UNAVAILABLE;
-		break;
-	      }
-	    }
 	  }
+	  // else {
+	  //   if (flAppParameters_.preserveUnclusteredEvents) {
+	  //     // No found clusters : the event data record is saved as is:
+	  //     auto pStatus = recOutputHandle->process(inputDataEvent);
+	  //     outputUnclusteredEventCounter++;
+	  //     if (pStatus != dpp::base_module::PROCESS_OK) {
+	  // 	DT_LOG_FATAL(flAppParameters_.logLevel, "Failed to write unclustered event to output sink");
+	  // 	code = falaise::EXIT_UNAVAILABLE;
+	  // 	break;
+	  //     }
+	  //   }
+	  // }
         }
         if (flAppParameters_.moduloEvents > 0) {
           if (inputEventCounter % flAppParameters_.moduloEvents == 0) {
@@ -184,7 +187,7 @@ namespace FLpCDToCpCD {
         }
       }
       DT_LOG_DEBUG(flAppParameters_.logLevel, "Event loop completed");
-      DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of processed input events  : " << inputEventCounter);
+      DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of processed input data records : " << inputEventCounter);
       DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of generated clustered output events : " << outputClusteredEventCounter);
       DT_LOG_DEBUG(flAppParameters_.logLevel, "Number of generated unclustered output events : " << outputUnclusteredEventCounter);
       DT_LOG_DEBUG(flAppParameters_.logLevel, "Stopping pcd2cpcd reconstruction services...");

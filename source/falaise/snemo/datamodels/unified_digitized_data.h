@@ -127,7 +127,7 @@ namespace snemo {
       void set_auxiliaries(const datatools::properties & aux_);
 
       /// Clear attributes
-      virtual void clear() override;
+			void clear() override;
 
       /// Smart print
       ///
@@ -138,10 +138,13 @@ namespace snemo {
       /// boost::property_tree::ptree poptions;
       /// poptions.put("title", "Unified Digitized Data:");
       /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_hits", true);
+      /// poptions.put("hit_details", true);
+			/// poptions.put("list_properties", true);
       /// udd.print_tree(std::clog, poptions);
       /// \endcode
-      virtual void print_tree(std::ostream & out_ = std::clog,
-                              const boost::property_tree::ptree & options_ = empty_options()) const override;
+      void print_tree(std::ostream & out_ = std::clog,
+											const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
       int32_t _run_id_ = INVALID_RUN_ID;                            ///< Run ID

@@ -65,18 +65,33 @@ namespace snemo {
       datatools::properties & grab_properties();
       
       /// Clear attributes
-      virtual void clear() override;
+      void clear() override;
+
+      // /// Smart print
+      // void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
+      //                        const std::string& indent = "", bool is_last = false) const override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                             const std::string& indent = "", bool is_last = false) const override;
+      ///
+      /// Usage:
+      /// \code
+      /// snemo::datamodel::unified_digitized_data udd
+      /// ...
+      /// boost::property_tree::ptree poptions;
+      /// poptions.put("title", "Unified Digitized Data:");
+      /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_hits", true);
+      /// poptions.put("list_properties", true);
+      /// udd.print_tree(std::clog, poptions);
+      /// \endcode
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
       PreCalibCalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of precalibrated calorimeter hits
       PreCalibTrackerHitHdlCollection tracker_hits_;          //!< Collection of precalibrated tracker hits
 
-      datatools::properties
-      _properties_;  //!< Auxiliary properties (only retained for serialization compat)
+      datatools::properties _properties_;  //!< Auxiliary properties (only retained for serialization compat)
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };

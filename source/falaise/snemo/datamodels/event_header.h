@@ -106,12 +106,26 @@ namespace snemo {
       /// Check if event record is simulated
       bool is_simulated() const;
 
+      /// Check if event record was processed by some event builder algorithm
+      bool is_event_builder() const;
+
       /// Clear the event header internal data
-      virtual void clear() override;
+      void clear() override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                             const std::string &indent = "", bool is_last = false) const override;
+      ///
+      /// Usage:
+      /// \code
+      /// snemo::datamodel::event_header eh;
+      /// ...
+      /// boost::property_tree::ptree poptions;
+      /// poptions.put("title", "Event Header:");
+      /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_properties", true);
+      /// eh.print_tree(std::clog, poptions);
+      /// \endcode
+      void print_tree(std::ostream & out_ = std::clog,
+		      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
       datatools::event_id id_{};                        //!< Run/Event ID

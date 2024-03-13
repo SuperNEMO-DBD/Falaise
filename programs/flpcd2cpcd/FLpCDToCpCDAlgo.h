@@ -19,8 +19,9 @@
 
 // Third Party
 // - Bayeux
-#include "bayeux/datatools/handle.h"
-#include "bayeux/datatools/things.h"
+#include <bayeux/datatools/handle.h>
+#include <bayeux/datatools/things.h>
+#include <bayeux/datatools/event_id.h>
 
 namespace FLpCDToCpCD {
 
@@ -39,23 +40,27 @@ namespace FLpCDToCpCD {
 
 		const std::string & eh_tag() const;
  
-		const std::string & pcd_tag() const;
+		const std::string & udd_tag() const;
  
-		const std::string & cpcd_tag() const;
+		const std::string & pcd_tag() const;
 
 		bool skip_cluster_without_calo_hits() const;
 		
-    void process(const datatools::things & input_data_record_,
+    void process(datatools::things & input_data_record_,
 								 data_records_col & output_data_records_);
 
   private:
 
 		datatools::logger::priority _verbosity_ = datatools::logger::PRIO_FATAL;
     std::string _eh_tag_;
-    std::string _pcd_tag_;
-    std::string _cpcd_tag_;
+    std::string _udd_tag_;
+		std::string _pcd_tag_;
 		bool _throw_at_missing_input_ = false;
 		bool _skip_cluster_without_calo_hits_ = false;
+
+		// Working data:
+		int _current_run_number_   = datatools::event_id::INVALID_RUN_NUMBER;
+		int _current_event_number_ = datatools::event_id::INVALID_EVENT_NUMBER;
    
   };
 
