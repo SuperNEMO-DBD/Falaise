@@ -16,6 +16,8 @@ components are
 
 - `flvisualize`: the event/detector geometry display application
 
+- `flpcd2cpcd`: the event builder application for precalibrated hits
+
 A  pipeline architecture  is  used for  `flreconstruct`  in which  the
 pipeline stages may be configured and added to at runtime via a plugin
 system.   Code  for  pipeline  stages is  stored  in  the  ``modules``
