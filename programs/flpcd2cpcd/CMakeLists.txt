@@ -81,6 +81,6 @@ install(TARGETS flpcd2cpcd
 #-----------------------------------------------------------------------
 # Build Tests
 #
-# if(FALAISE_ENABLE_TESTING)
-#   add_subdirectory(tests)
-# endif()
+if(FALAISE_ENABLE_TESTING)
+  add_subdirectory(tests)
+endif()
