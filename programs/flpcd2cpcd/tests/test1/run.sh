@@ -29,7 +29,6 @@ label="run-flpcd2cpcd-test1"
 with_visu=0
 work_dir=""
 cfg_dir=""
-with_magfield=1
 
 function parse_cl_opts()
 {
@@ -41,8 +40,8 @@ function parse_cl_opts()
 	elif [ "${opt}" == "--cfg-dir" ]; then
 	    shift 1
 	    cfg_dir="$1"
-	elif [ "${opt}" == "--visu" ]; then
-	    with_visu=1
+	# elif [ "${opt}" == "--visu" ]; then
+	#     with_visu=1
 	else
 	    echo >&2 "[error] Invalid command line option '${opt}'! Abort!"
 	    return 1
@@ -79,9 +78,9 @@ function my_exit()
     if [ -n "${error_msg}" ]; then
 	echo >&2 "[error] $@"
     fi
-    # if [ -d ${FLWORKDIR} ]; then
-    # 	rm -fr ${FLWORKDIR}
-    # fi
+    if [ -d ${FLWORKDIR} ]; then
+	rm -fr ${FLWORKDIR}
+    fi
     exit ${error_code}
 }
 
@@ -93,6 +92,12 @@ fi
 which flpcd2cpcd > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     my_exit 1 "flsimulate is not available! Abort!"
+fi
+if [ ${with_visu} -eq 1 ]; then
+    which flvisualize > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+	my_exit 1 "flvisualize is not available! Abort!"
+    fi
 fi
 
 if [ ! -d ${FLWORKDIR} ]; then
@@ -115,11 +120,21 @@ if [ $? -ne 0 ]; then
     my_exit 1 "flreconstruct failed! Abort!"
 fi
 echo >&2 ""
+# if [ ${with_visu} -eq 1 ]; then
+#     echo >&2 "[info] Running flvisualize..."
+#     flvisualize \
+# 	-i ${FLWORKDIR}/pCD.brio \
+# 	--focus-on-roi 
+# fi
 
 echo >&2 "[info] Running flpcd2cpcd..."
+# flpcd2cpcd \
+#     -V "debug" \
+#     -c ${cfg_dir}/udd2pcd.conf \
+#     -i ${FLWORKDIR}/pCD.brio \
+#     -o ${FLWORKDIR}/epCD.brio
 flpcd2cpcd \
     -V "debug" \
-    -p ${cfg_dir}/udd2pcd.conf \
     -i ${FLWORKDIR}/pCD.brio \
     -o ${FLWORKDIR}/epCD.brio
 if [ $? -ne 0 ]; then
@@ -127,14 +142,14 @@ if [ $? -ne 0 ]; then
 fi
 echo >&2 ""
 
-if [ ${with_visu} -eq 1 ]; then
-    echo >&2 "[info] Running flvisualize..."
-    flvisualize \
-	-i ${FLWORKDIR}/epCD.brio \
-	--focus-on-roi \
-	--show-calibrated-hits 1 \
-	--show-calibrated-info 1
-fi
+# if [ ${with_visu} -eq 1 ]; then
+#     echo >&2 "[info] Running flvisualize..."
+#     flvisualize \
+# 	-i ${FLWORKDIR}/epCD.brio \
+# 	--focus-on-roi \
+# 	--show-calibrated-hits 1 \
+# 	--show-calibrated-info 1
+# fi
 
 my_exit 0
 

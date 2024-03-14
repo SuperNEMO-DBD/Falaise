@@ -43,7 +43,7 @@ namespace FLpCDToCpCD {
     uint32_t moduloEvents;                 //!< Event modulo
     std::string userProfile;               //!< User profile
     std::vector<std::string> mountPoints;  //!< Directory mount directives
-    std::string configScript;              //!< Path of the main pcdtocpcdion configuration script
+    std::string configScript;              //!< Path of the main pcdtocpcd configuration script
     std::string inputMetadataFile;         //!< Path for loading metadata
     std::string inputFile;                 //!< Path for the input module
     std::string outputMetadataFile;        //!< Path for saving metadata

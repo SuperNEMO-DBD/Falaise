@@ -183,13 +183,10 @@ namespace FLpCDToCpCD {
        ->value_name("file"),
        "file in which to store metadata")
 
-      ("config,p",
+      ("config,c",
        bpo::value<std::string>(&clArgs.configScript)
        ->value_name("path"),
        "pipeline config script (path)")
-
-      // ("pipeline,p", bpo::value<std::string>(&clArgs.pipelineScript)->value_name("path"),
-      //  "pipeline script (path or URN)")
 
       ("input-file,i",
        bpo::value<std::string>(&clArgs.inputFile)

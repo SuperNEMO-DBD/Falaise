@@ -17,3 +17,15 @@ layout/if_basic/shielding = true
 calo_film_thickness = 25 um
 tracking_gas_material = "Nemo3"
 
+[registry="vertexes"]
+generator = "source_pads_bulk"
+
+[registry="primary_events"]
+generator = "Se82.0nubb"
+
+[registry="simulation"]
+physics_mode = "Constructors"
+physics_mode/if_constructors/em_model = "standard"
+production_cuts = true
+output_profile = "all_details"
+
