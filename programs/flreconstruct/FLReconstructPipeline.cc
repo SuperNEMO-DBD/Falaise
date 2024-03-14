@@ -170,33 +170,32 @@ namespace FLReconstruct {
         flRecMetadata.write(fMetadata);
       }
 
-      // - Now the actual event loop
-      DT_LOG_DEBUG(flRecParameters_.logLevel, "Begin event loop");
+      // - Now the actual data record/event loop
+      DT_LOG_DEBUG(flRecParameters_.logLevel, "Begin data record/event loop");
       datatools::things workItem;
-      std::size_t eventCounter = 0;
+      std::size_t dataRecordCounter = 0;
       while (true) {
-        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==========> Pipeline loop for event #" << eventCounter);
+        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==========> Pipeline loop for data record/event #" << dataRecordCounter);
         // Prepare and read work
-        workItem.clear();
         if (recInput->is_terminated()) {
-          // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
+          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
           break;
         }
+        workItem.clear();
         if (recInput->process(workItem) != dpp::base_module::PROCESS_OK) {
           DT_LOG_FATAL(flRecParameters_.logLevel, "Failed to read data record from input source");
           code = falaise::EXIT_UNAVAILABLE;
           break;
         }
         if (flRecParameters_.moduloEvents > 0) {
-          if (eventCounter % flRecParameters_.moduloEvents == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter << " about to be processed");
+          if (dataRecordCounter % flRecParameters_.moduloEvents == 0) {
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << dataRecordCounter << " about to be processed");
           }
         }
 
         // Feed through pipeline
         dpp::base_module::process_status pStatus = pipeline->process(workItem);
-        DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID,
-                    std::logic_error,
+        DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
                     "Module '" << pipeline->get_name() << "' did not return a valid processing status!");
 
         // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
@@ -215,13 +214,13 @@ namespace FLReconstruct {
           break;
         }
 
-        // STOP means the current event should not be processed anymore nor saved
+        // STOP means the current data record/event should not be processed anymore nor saved
         // but the loop can continue with other items
         if (pStatus == dpp::base_module::PROCESS_STOP) {
           continue;
         }
 
-        // Check post-conditions on event model (expectedOutputBanks) ?
+        // Check post-conditions on data record/event model (expectedOutputBanks) ?
 
         // Write item
         if (recOutputHandle != nullptr) {
@@ -233,16 +232,18 @@ namespace FLReconstruct {
           }
         }
         if (flRecParameters_.moduloEvents > 0) {
-          if (eventCounter % flRecParameters_.moduloEvents == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Event #" << eventCounter << " has been processed");
+          if (dataRecordCounter % flRecParameters_.moduloEvents == 0) {
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << dataRecordCounter << " has been processed");
           }
         }
-        eventCounter++;
-        if (flRecParameters_.numberOfEvents > 0 && eventCounter > flRecParameters_.numberOfEvents) {
+        dataRecordCounter++;
+	// 2024-03-14 FM : change condition "dataRecordCounter >" to "dataRecordCounter >="
+        if (flRecParameters_.numberOfEvents > 0 && dataRecordCounter >= flRecParameters_.numberOfEvents) {
           break;
         }
       }
-      DT_LOG_DEBUG(flRecParameters_.logLevel, "Event loop completed");
+      DT_LOG_DEBUG(flRecParameters_.logLevel, "Data record loop completed");
+      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Number of processed input data records = " << dataRecordCounter);
 
       // - MUST delete the module manager BEFORE the library loader clears
       // in case the manager is holding resources created from a shared lib
@@ -256,7 +257,7 @@ namespace FLReconstruct {
       DT_LOG_DEBUG(flRecParameters_.logLevel, "Stopping reconstruction services...");
       recServices.reset();
       DT_LOG_DEBUG(flRecParameters_.logLevel, "Reconstruction services are stopped");
-    } catch (std::exception& e) {
+    } catch (std::exception & e) {
       std::cerr << "flreconstruct : Setup/run of simulation threw exception" << std::endl;
       std::cerr << e.what() << std::endl;
       code = falaise::EXIT_UNAVAILABLE;
