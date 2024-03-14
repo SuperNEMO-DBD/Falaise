@@ -113,15 +113,15 @@ class metadata_scanner {
                std::string &value) const;
 
  private:
-  bool getDataFromSection(const std::string &name, const std::string &type, const std::string &key,
-                          datatools::properties::data &value) const;
+  bool getDataFromSection(const std::string & name, const std::string & type, const std::string & key,
+                          datatools::properties::data & value) const;
 
  private:
   const datatools::multi_properties &metadata_;  //!< The source input metadata
 };
 
-}  // namespace app
+} // namespace app
 
-}  // namespace falaise
+} // namespace falaise
 
-#endif  // FALAISE_APP_METADATA_UTILS_H
+#endif // FALAISE_APP_METADATA_UTILS_H

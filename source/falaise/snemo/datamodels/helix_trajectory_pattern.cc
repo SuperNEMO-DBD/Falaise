@@ -16,21 +16,30 @@ namespace snemo {
                                                       "snemo::datamodel::helix_trajectory_pattern")
 
     // static
-    const std::string &helix_trajectory_pattern::pattern_id() {
+    const std::string & helix_trajectory_pattern::pattern_id()
+    {
       static const std::string _id("helix");
       return _id;
     }
 
     helix_trajectory_pattern::helix_trajectory_pattern()
-      : base_trajectory_pattern(helix_trajectory_pattern::pattern_id()) {
+      : base_trajectory_pattern(helix_trajectory_pattern::pattern_id())
+    {
     }
 
-    geomtools::helix_3d &helix_trajectory_pattern::get_helix() { return _helix_; }
+    geomtools::helix_3d &helix_trajectory_pattern::get_helix()
+    {
+      return _helix_;
+    }
 
-    const geomtools::helix_3d &helix_trajectory_pattern::get_helix() const { return _helix_; }
+    const geomtools::helix_3d &helix_trajectory_pattern::get_helix() const
+    {
+      return _helix_;
+    }
 
     // override
-    const geomtools::i_shape_1d &helix_trajectory_pattern::get_shape() const {
+    const geomtools::i_shape_1d &helix_trajectory_pattern::get_shape() const
+    {
       return dynamic_cast<const geomtools::i_shape_1d &>(_helix_);
     }
 

@@ -27,8 +27,11 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief A class to handle time stamp
-    class timestamp : public datatools::i_serializable {
+    class timestamp
+      : public datatools::i_serializable
+    {
     public:
+      
       /// Constructor
       timestamp() = default;
 
@@ -41,9 +44,9 @@ namespace snemo {
 
       /// Copy/Move operations to get Ro5
       timestamp(const timestamp &) = default;
-      timestamp &operator=(const timestamp &) = default;
+      timestamp & operator=(const timestamp &) = default;
       timestamp(timestamp &&) = default;
-      timestamp &operator=(timestamp &&) = default;
+      timestamp & operator=(timestamp &&) = default;
 
       /// Return the number of seconds
       int64_t get_seconds() const;
@@ -77,10 +80,11 @@ namespace snemo {
       friend bool operator>(const timestamp &, const timestamp &);
       friend bool operator<=(const timestamp &, const timestamp &);
       friend bool operator>=(const timestamp &, const timestamp &);
-      friend std::ostream &operator<<(std::ostream &, const timestamp &);
-      friend std::istream &operator>>(std::istream &, timestamp &);
+      friend std::ostream & operator<<(std::ostream &, const timestamp &);
+      friend std::istream & operator>>(std::istream &, timestamp &);
 
     private:
+      
       /// Compare with another timestamp
       int compare(const timestamp &) const;
       static const int64_t INVALID_SECONDS;
@@ -92,11 +96,11 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::timestamp, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H
+#endif // FALAISE_SNEMO_DATAMODELS_TIMESTAMP_H

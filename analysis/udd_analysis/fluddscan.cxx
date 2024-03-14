@@ -16,6 +16,7 @@
 #include <falaise/exitcodes.h>
 #include <falaise/resource.h>
 #include <falaise/falaise.h>
+#include <falaise/version.h>
 
 /// Configuration parameters
 struct FlUddScanParams
@@ -43,6 +44,15 @@ struct FlUddScanParams
 
 falaise::exit_code do_pipeline(const FlUddScanParams & uddScanParams_);
 
+//! Handle printing of help message to given ostream
+void do_help(std::ostream & os_, const boost::program_options::options_description & od_);
+
+//! Handle printing of error message to given ostream
+void do_error(std::ostream & os, const char* err);
+
+//! Handle printing of error message to given ostream
+void do_error(std::ostream & os, const std::string & serr);
+
 int main(int argc_, char* argv_[])
 {
   int exitCode = EXIT_SUCCESS;
@@ -53,7 +63,7 @@ int main(int argc_, char* argv_[])
   namespace bpo = boost::program_options;
   bpo::options_description optDesc("Options");
   optDesc.add_options()
-    // ("help,h", "print this help message")
+    ("help,h", "print this help message")
     ("verbosity,V",
      bpo::value<std::string>(&verbosityLabel)
      ->value_name("level"),
@@ -85,17 +95,24 @@ int main(int argc_, char* argv_[])
     bpo::notify(vMap);
   } catch (const bpo::required_option & e) {
     std::cerr << "[error] Required option : " << e.what() << "!" <<  '\n';
-    // // We need to handle help/version even if required_option thrown
-    // if ((vMap.count("help") == 0u) && (vMap.count("version") == 0u) &&
-    // 	(vMap.count("help-module-list") == 0u) && (vMap.count("help-module") == 0u) &&
-    // 	(vMap.count("help-pipeline-list") == 0u)) {
-    // }
+    // We need to handle help/version even if required_option thrown
+    if (vMap.count("help") == 0u) {
+      do_error(std::cerr, e.what());
+    }
     exitCode = EXIT_FAILURE;
   } catch (const std::exception& e) {
     std::cerr << "[error] Option error : " << e.what() << "!" <<  '\n';
     exitCode = EXIT_FAILURE;
   }
 
+  bool processIt = true;
+  // Handle any non-bound options
+  if (vMap.count("help") != 0u) {
+    do_help(std::cout, optDesc);
+    exitCode = EXIT_SUCCESS;
+    processIt = false;
+  } 
+    
   if (exitCode == EXIT_SUCCESS) {
     if (vMap.count("verbosity") != 0u) {
       uddScanParams.logLevel = datatools::logger::get_priority(verbosityLabel);
@@ -106,7 +123,7 @@ int main(int argc_, char* argv_[])
     }
   }
   
-  if (exitCode == EXIT_SUCCESS) {
+  if (exitCode == EXIT_SUCCESS and processIt) {
     falaise::exit_code code = do_pipeline(uddScanParams);
     if (code != falaise::EXIT_OK) {
       exitCode = EXIT_FAILURE;
@@ -257,4 +274,29 @@ falaise::exit_code do_pipeline(const FlUddScanParams & uddScanParams_)
   }
   
   return code; 
+}
+
+//! Handle printing of help message to given ostream
+void do_help(std::ostream & os_, const boost::program_options::options_description & od_)
+{
+  os_ << "fluddscan (" << falaise::version::get_version()
+      << ") : SuperNEMO UDD data scanner program\n";
+  os_ << "Usage:\n"
+      << "  fluddscan [options]\n"
+      << od_ << "\n";
+  return;
+}
+
+void do_error(std::ostream  & os_, const char * err_)
+{
+  os_ << "fluddscan : " << err_ << "\n";
+  os_ << "Try `fluddscan --help` for more information\n";
+  return;
+}
+
+void do_error(std::ostream & os_, const std::string & serr_)
+{
+  os_ << "fluddscan : " << serr_ << "\n";
+  os_ << "Try `fluddscan --help` for more information\n";
+  return;
 }

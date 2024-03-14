@@ -2,13 +2,15 @@
 
 // Ourselves:
 #include <falaise/snemo/datamodels/event_header.h>
+#include <falaise/snemo/datamodels/data_model.h>
 
 namespace snemo {
 
   namespace datamodel {
 
     // Serial tag for datatools::i_serializable interface :
-    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header, "snemo::datamodel::event_header")
+    DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header,
+						      "snemo::datamodel::event_header")
 
     const datatools::event_id& event_header::get_id() const { return id_; }
 
@@ -76,6 +78,12 @@ namespace snemo {
 
     bool event_header::is_simulated() const { return generation_ == GENERATION_SIMULATED; }
 
+    bool event_header::is_event_builder() const
+    {
+      return properties_.has_flag(snedm::labels::event_builder_key());
+    }
+
+    // override
     void event_header::clear() {
       properties_.clear();
       timestamp_ = snemo::datamodel::timestamp{};
@@ -83,60 +91,79 @@ namespace snemo {
       id_.clear();
     }
 
-    void event_header::tree_dump(std::ostream& out, const std::string& title, const std::string& indent,
-                                 bool is_last) const {
-      if (!title.empty()) {
-        out << indent << title << std::endl;
+    // override
+    void event_header::print_tree(std::ostream & out_,
+				  const boost::property_tree::ptree & options_) const
+    {
+      base_print_options popts;
+      popts.configure_from(options_);
+      bool list_properties_opt = options_.get("list_properties", false);
+
+      if (popts.title.length()) {
+        out_ << popts.indent << popts.title << std::endl;
       }
 
-      out << indent << datatools::i_tree_dumpable::tag << "Id : " << std::endl;
+      out_ << popts.indent << tag << "Id : " << std::endl;
       {
         std::ostringstream indent_oss;
-        indent_oss << indent << datatools::i_tree_dumpable::skip_tag;
-        id_.tree_dump(out, "", indent_oss.str());
+        indent_oss << popts.indent << skip_tag;
+        id_.tree_dump(out_, "", indent_oss.str());
       }
 
-      out << indent << datatools::i_tree_dumpable::tag << "Timestamp : ";
+      out_ << popts.indent << tag << "Timestamp : ";
       if (has_timestamp()) {
-        out << timestamp_;
+        out_ << timestamp_;
       } else {
-        out << "none";
+        out_ << "none";
       }
-      out << std::endl;
+      out_ << std::endl;
 
-      out << indent << datatools::i_tree_dumpable::tag << "MC run ID : ";
-      if (has_mc_run_id()) {
-        out << mc_run_id_;
-      } else {
-        out << "none";
-      }
-      out << std::endl;
-
-      out << indent << datatools::i_tree_dumpable::tag << "MC timestamp : ";
-      if (has_mc_timestamp()) {
-        out << mc_timestamp_;
-      } else {
-        out << "none";
-      }
-      out << std::endl;
-
-      out << indent << datatools::i_tree_dumpable::tag << "Properties : " << std::endl;
-      {
-        std::ostringstream indent_oss;
-        indent_oss << indent << datatools::i_tree_dumpable::skip_tag;
-        properties_.tree_dump(out, "", indent_oss.str());
-      }
-
-      out << indent << datatools::i_tree_dumpable::inherit_tag(is_last) << "Generation : ";
+      out_ << popts.indent << tag << "Generation : ";
       if (is_simulated()) {
-        out << "simulated";
+        out_ << std::quoted("simulated");
       }
       if (is_real()) {
-        out << "real";
+        out_ << std::quoted("real");
       }
-      out << std::endl;
+      out_ << std::endl;
+
+      out_ << popts.indent << tag << "Event builder : ";
+      out_ << std::boolalpha << is_event_builder();
+      if (properties_.has_key("event_builder.model")) {
+        out_ << " (model=" << std::quoted(properties_.fetch_string("event_builder.model")) << ')';
+      }
+      out_ << std::endl;
+
+      if (is_simulated()) {
+  
+	out_ << popts.indent << tag << tag << "MC run ID : ";
+	if (has_mc_run_id()) {
+	  out_ << mc_run_id_;
+	} else {
+	  out_ << "none";
+	}
+	out_ << std::endl;
+	
+	out_ << popts.indent << tag << last_tag << "MC timestamp : ";
+	if (has_mc_timestamp()) {
+	  out_ << mc_timestamp_;
+	} else {
+	  out_ << "none";
+	}
+	out_ << std::endl;
+	
+      }
+      
+      out_ << popts.indent << inherit_tag(popts.inherit) << "Auxiliary properties : " << properties_.size() << std::endl;
+      if (list_properties_opt) {
+        boost::property_tree::ptree auxOpts;
+        auxOpts.put("indent", popts.indent + tags::item(not popts.inherit, true));
+        properties_.print_tree(out_, auxOpts);
+      }
+
+      return;
     }
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo

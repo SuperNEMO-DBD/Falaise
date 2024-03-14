@@ -112,7 +112,7 @@ namespace snemo {
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::particle_track_data,
                         "snemo::datamodel::particle_track_data")
 
-#endif  // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H
+#endif // FALAISE_SNEMO_DATAMODELS_PARTICLE_TRACK_DATA_H
 
 /*
 ** Local Variables: --

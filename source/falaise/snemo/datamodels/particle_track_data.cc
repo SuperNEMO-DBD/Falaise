@@ -138,32 +138,32 @@ namespace snemo {
     {
       base_print_options popts;
       popts.configure_from(options);
+      bool list_particles_opt = options.get("list_particles", true);
       const std::string & indent = popts.indent;
-
       if (!popts.title.empty()) {
         out << indent << popts.title << std::endl;
       }
 
-      out << indent << tag << "Particle(s) : " << particles_.size()
-          << std::endl;
-
-      for (size_t i = 0; i < numberOfParticles(); i++) {
-        std::ostringstream indent2;
-        out << indent << skip_tag;
-        indent2 << indent << skip_tag;
-        if (i == numberOfParticles() - 1) {
-          out << last_tag;
-          indent2 << last_skip_tag;
-        } else {
-          out << tag;
-          indent2 << skip_tag;
-        }
-        out << "Particle #" << i << " : " << std::endl;
-        {
-          boost::property_tree::ptree partPopts;
-          partPopts.put("indent", indent2.str());
-          particles_[i]->print_tree(out, partPopts);
-        }
+      out << indent << tag << "Particle(s) : " << particles_.size() << std::endl;
+      if (list_particles_opt) {
+	for (size_t i = 0; i < numberOfParticles(); i++) {
+	  std::ostringstream indent2;
+	  out << indent << skip_tag;
+	  indent2 << indent << skip_tag;
+	  if (i == numberOfParticles() - 1) {
+	    out << last_tag;
+	    indent2 << last_skip_tag;
+	  } else {
+	    out << tag;
+	    indent2 << skip_tag;
+	  }
+	  out << "Particle #" << i << " : " << std::endl;
+	  {
+	    boost::property_tree::ptree partPopts;
+	    partPopts.put("indent", indent2.str());
+	    particles_[i]->print_tree(out, partPopts);
+	  }
+	}
       }
 
       const auto & the_calos = isolatedCalorimeters();

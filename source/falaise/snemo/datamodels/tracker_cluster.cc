@@ -43,12 +43,12 @@ namespace snemo {
       set_hit_id(id);
     }
 
-    TrackerHitHdlCollection& tracker_cluster::hits()
+    TrackerHitHdlCollection & tracker_cluster::hits()
     {
       return hits_;
     }
 
-    const TrackerHitHdlCollection& tracker_cluster::hits() const
+    const TrackerHitHdlCollection & tracker_cluster::hits() const
     {
       return hits_;
     }
@@ -65,7 +65,7 @@ namespace snemo {
       return hits_.size();
     }
 
-    const calibrated_tracker_hit& tracker_cluster::at(size_t index) const
+    const calibrated_tracker_hit & tracker_cluster::at(size_t index) const
     {
       return *(hits_.at(index));
     }

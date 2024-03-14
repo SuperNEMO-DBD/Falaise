@@ -25,6 +25,7 @@ namespace snemo {
       : public base_trajectory_pattern
     {
     public:
+      
       /// Return pattern identifier of the pattern
       static const std::string & pattern_id();
 
@@ -73,7 +74,7 @@ namespace snemo {
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::line_trajectory_pattern,
                         "snemo::datamodel::line_trajectory_pattern")
 
-#endif  // FALAISE_SNEMO_DATAMODEL_LINE_TRAJECTORY_PATTERN_H
+#endif // FALAISE_SNEMO_DATAMODEL_LINE_TRAJECTORY_PATTERN_H
 
 /*
 ** Local Variables: --

@@ -10,8 +10,6 @@
  *
  *   SuperNEMO Falaise Unified Digitized Data utils
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_DATAMODELS_UDD_UTILS_H
@@ -38,7 +36,8 @@ namespace snemo {
       static const int32_t UPPER_SAFE_TID = 12582912;
 
       bool operator() (const int32_t lhs_,
-                       const int32_t rhs_) const {
+                       const int32_t rhs_) const
+      {
 
         if ((lhs_ > UPPER_SAFE_TID) && (rhs_ < LOWER_SAFE_TID)) {
           // 0----------------max 0----------------max
@@ -54,6 +53,7 @@ namespace snemo {
         }
         return (lhs_ < rhs_);
       }
+      
     };
 
   } // namespace datamodel

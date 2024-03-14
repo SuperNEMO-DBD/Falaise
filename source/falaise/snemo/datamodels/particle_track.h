@@ -3,7 +3,7 @@
  *              Xavier  Garrido  <garrido@lal.in2p3.fr>
  *              Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2012-04-17
- * Last modified: 2022-12-09
+ * Last modified: 2024-03-05
  *
  * Description: A particle track represents the physical interpretation of a
  * trajectory fitted from a cluster of tracker hits or from a gamma tracking
@@ -32,6 +32,7 @@ namespace snemo {
 
   namespace datamodel {
 
+    /// A simple record that informs about the association of a track vertex and a calorimeter hit
     struct calo_vertex_association_type
     {
       VertexHdl         vertex; ///< Vertex handle

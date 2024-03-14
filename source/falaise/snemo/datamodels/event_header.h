@@ -47,19 +47,19 @@ namespace snemo {
       };
 
       /// Return the event ID
-      const datatools::event_id &get_id() const;
+      const datatools::event_id & get_id() const;
 
       /// Return the mutable event ID
-      datatools::event_id &get_id();
+      datatools::event_id & get_id();
 
       /// Set the event ID
       void set_id(const datatools::event_id &);
 
       /// Return the constant list of properties
-      const datatools::properties &get_properties() const;
+      const datatools::properties & get_properties() const;
 
       /// Return the mutable list of properties
-      datatools::properties &get_properties();
+      datatools::properties & get_properties();
 
       /// Set the list of properties
       void set_properties(const datatools::properties &);
@@ -68,10 +68,10 @@ namespace snemo {
       bool has_timestamp() const;
 
       /// Return the timestamp
-      const snemo::datamodel::timestamp &get_timestamp() const;
+      const snemo::datamodel::timestamp & get_timestamp() const;
 
       /// Return the mutable timestamp
-      snemo::datamodel::timestamp &get_timestamp();
+      snemo::datamodel::timestamp & get_timestamp();
 
       /// Set the timestamp
       void set_timestamp(const snemo::datamodel::timestamp &);
@@ -106,12 +106,26 @@ namespace snemo {
       /// Check if event record is simulated
       bool is_simulated() const;
 
+      /// Check if event record was processed by some event builder algorithm
+      bool is_event_builder() const;
+
       /// Clear the event header internal data
-      virtual void clear() override;
+      void clear() override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream &out = std::clog, const std::string &title = "",
-                             const std::string &indent = "", bool is_last = false) const override;
+      ///
+      /// Usage:
+      /// \code
+      /// snemo::datamodel::event_header eh;
+      /// ...
+      /// boost::property_tree::ptree poptions;
+      /// poptions.put("title", "Event Header:");
+      /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_properties", true);
+      /// eh.print_tree(std::clog, poptions);
+      /// \endcode
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
       datatools::event_id id_{};                        //!< Run/Event ID
@@ -124,9 +138,9 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::event_header, "snemo::datamodel::event_header")
@@ -135,4 +149,4 @@ BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::event_header, "snemo::datamodel::event
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::event_header, 2)
 
-#endif  // FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H
+#endif // FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H

@@ -15,6 +15,7 @@ namespace snemo {
 
   namespace datamodel {
 
+    /// Keys relative to GG tracks
     struct gg_track {
 
       /// The name of a real property representing the minimal approach distance of the particle track
@@ -30,8 +31,8 @@ namespace snemo {
 
     };
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_DATAMODEL_GG_TRACK_UTILS_H
+#endif // FALAISE_SNEMO_DATAMODEL_GG_TRACK_UTILS_H

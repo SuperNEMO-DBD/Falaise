@@ -3,16 +3,13 @@
 /* Author(s) :    Guillaume Oliviero <oliviero@cenbg.in2p3.fr>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-05-03
- * Last modified: 2022-05-03
+ * Last modified: 2024-03-13
  *
  * License:
  *
  * Description:
  *
  *   SuperNEMO precalibrated data model
- *
- *
- * History:
  *
  */
 
@@ -42,42 +39,61 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about precalibrated hits
-    class precalibrated_data : public datatools::i_serializable,
-                               public datatools::i_tree_dumpable,
-                               public datatools::i_clear {
+    class precalibrated_data 
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
+    {
     public:
+      
       /// Return the const collection of calorimeter hits
-      const PreCalibCalorimeterHitHdlCollection& calorimeter_hits() const;
+      const PreCalibCalorimeterHitHdlCollection & calorimeter_hits() const;
 
       /// Return the mutable collection of calorimeter hits
-      PreCalibCalorimeterHitHdlCollection& calorimeter_hits();
+      PreCalibCalorimeterHitHdlCollection & calorimeter_hits();
 
       /// Return the const collection of tracker hits
-      const PreCalibTrackerHitHdlCollection& tracker_hits() const;
+      const PreCalibTrackerHitHdlCollection & tracker_hits() const;
 
       /// Return the mutable collection of tracker hits
-      PreCalibTrackerHitHdlCollection& tracker_hits();
+      PreCalibTrackerHitHdlCollection & tracker_hits();
 
+      /// Return the const properties container
+      const datatools::properties & get_properties() const;
+     
+      /// Return the mutable properties container
+      datatools::properties & grab_properties();
+      
       /// Clear attributes
-      virtual void clear() override;
+      void clear() override;
 
       /// Smart print
-      virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
-                             const std::string& indent = "", bool is_last = false) const override;
+      ///
+      /// Usage:
+      /// \code
+      /// snemo::datamodel::unified_digitized_data udd
+      /// ...
+      /// boost::property_tree::ptree poptions;
+      /// poptions.put("title", "Unified Digitized Data:");
+      /// poptions.put("indent", ">>> ");
+      /// poptions.put("list_hits", true);
+      /// poptions.put("list_properties", true);
+      /// udd.print_tree(std::clog, poptions);
+      /// \endcode
+      void print_tree(std::ostream & out_ = std::clog,
+                      const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
-      PreCalibCalorimeterHitHdlCollection calorimeter_hits_;  //!< Collection of precalibrated calorimeter hits
-      PreCalibTrackerHitHdlCollection tracker_hits_;          //!< Collection of precalibrated tracker hits
-
-      datatools::properties
-      _properties_;  //!< Auxiliary properties (only retained for serialization compat)
+      PreCalibCalorimeterHitHdlCollection calorimeter_hits_; //!< Collection of precalibrated calorimeter hits
+      PreCalibTrackerHitHdlCollection tracker_hits_; //!< Collection of precalibrated tracker hits
+      datatools::properties _properties_; //!< Auxiliary properties
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::precalibrated_data, "snemo::datamodel::precalibrated_data")
@@ -86,4 +102,4 @@ BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::precalibrated_data, "snemo::datamodel:
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::precalibrated_data, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODEL_PRECALIBRATED_DATA_H
+#endif // FALAISE_SNEMO_DATAMODEL_PRECALIBRATED_DATA_H
