@@ -215,6 +215,7 @@ namespace snemo {
       base_hit::print_tree(out, base_print_options::force_inheritance(options));
       base_print_options popts;
       popts.configure_from(options);
+      bool list_vertexes_opt = options.get("list_vertexes", false);
       const std::string & indent = popts.indent;
  
       out << indent << tag << "Track ID : "
@@ -230,40 +231,44 @@ namespace snemo {
 
       out << indent << tag << "Particle charge : '" << to_string(get_charge()) << "'" << std::endl;
  
-      out << indent << tag << "Vertices[" << vertices_.size()
-          << "] :" << std::endl;
-      for (auto i = vertices_.begin(); i != vertices_.end(); i++) {
-        out << indent << skip_tag;
-        auto j = i;
-        j++;
-        std::string indentItem = indent;
-        if (j == vertices_.end()) {
-          out << last_tag;
-          indentItem += tags::last_skip_item();
-        } else {
-          out << tag;
-          indentItem += tags::skip_item();
-        }
-        // out << "Vertex ID=" << (*i)->get_hit_id() << " @ "
-        //     << (*i)->get_placement().get_translation() / CLHEP::mm << " mm"
-        //     << " (" << (*i)->get_auxiliaries().fetch_string(vertex_type_key())
-        //     << ")" << std::endl;
-        out << "Vertex ID=" << (*i)->get_hit_id() << " : " << std::endl;
-        (*i)->tree_dump(out, "", indent + indentItem);
+      out << indent << tag << "Vertices : " << vertices_.size() << std::endl; 
+      if (list_vertexes_opt) {
+	for (auto i = vertices_.begin(); i != vertices_.end(); i++) {
+	  out << indent << skip_tag;
+	  auto j = i;
+	  j++;
+	  std::string indentItem = indent;
+	  indentItem += tags::skip_item();
+	  if (j == vertices_.end()) {
+	    out << last_tag;
+	    indentItem += tags::last_skip_item();
+	  } else {
+	    out << tag;
+	    indentItem += tags::skip_item();
+	  }
+	  // out << "Vertex ID=" << (*i)->get_hit_id() << " @ "
+	  //     << (*i)->get_placement().get_translation() / CLHEP::mm << " mm"
+	  //     << " (" << (*i)->get_auxiliaries().fetch_string(vertex_type_key())
+	  //     << ")" << std::endl;
+	  out << "Vertex ID=" << (*i)->get_hit_id() << " : " << std::endl;
+	  {
+	    boost::property_tree::ptree vtxOpts;
+	    vtxOpts.put("indent", indentItem); 
+	    (*i)->print_tree(out, vtxOpts);
+	  }
+	}
       }
 
-      // >>>
-      out << indent << tag
-          << "Associated calorimeter hit(s) : ";
+      out << indent << tag << "Associated calorimeter hit(s) : ";
       if (has_associated_calorimeter_hits()) {
         out << associated_calorimeters_.size();
       } else {
-        out << "<No>";
+        out << "<none>";
       }
       out << std::endl;
       for (auto i = associated_calorimeters_.begin();
            i != associated_calorimeters_.end(); i++) {
-        out << indent << tag;
+        out << indent << skip_tag;
         auto j = i;
         j++;
         if (j == associated_calorimeters_.end()) {
@@ -271,20 +276,19 @@ namespace snemo {
         } else {
           out << tag;
         }
-        out << "Hit Id=" << (*i)->get_hit_id() << " @ "
+        out << "Hit ID=" << (*i)->get_hit_id() << " @ "
             << (*i)->get_geom_id() << std::endl;
       }
-      // <<<
 
       out << indent << inherit_tag(popts.inherit)
           << "Calorimeter hit/vertex association(s) : ";
       if (calo_vertex_associations_.size()) {
         out << calo_vertex_associations_.size();
       } else {
-        out << "<No>";
+        out << "<none>";
       }
       out << std::endl;
-     for (auto i = calo_vertex_associations_.begin();
+      for (auto i = calo_vertex_associations_.begin();
            i != calo_vertex_associations_.end(); i++) {
         out << indent << inherit_skip_tag(popts.inherit);
         auto j = i;

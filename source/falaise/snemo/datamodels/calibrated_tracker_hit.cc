@@ -293,13 +293,13 @@ namespace snemo {
       std::string prefix = prefix_os.str();
 
       out << prefix << "Traits : " << traits_ << std::endl;
-      out << prefix << "Delayed : " << is_delayed() << std::endl;
-      out << prefix << "Noisy : " << is_noisy() << std::endl;
-      out << prefix << "Peripheral : " << is_peripheral() << std::endl;
-      out << prefix << "Bottom cathode missing : " << is_bottom_cathode_missing() << std::endl;
-      out << prefix << "Top cathode missing : " << is_top_cathode_missing() << std::endl;
-      out << prefix << "Sterile : " << is_sterile() << std::endl;
-      out << prefix << "Fake : " << is_fake() << std::endl;
+      out << prefix << "Delayed : " << std::boolalpha << is_delayed() << std::endl;
+      out << prefix << "Noisy : " << std::boolalpha << is_noisy() << std::endl;
+      out << prefix << "Peripheral : " << std::boolalpha << is_peripheral() << std::endl;
+      out << prefix << "Bottom cathode missing : " << std::boolalpha << is_bottom_cathode_missing() << std::endl;
+      out << prefix << "Top cathode missing : " << std::boolalpha << is_top_cathode_missing() << std::endl;
+      out << prefix << "Sterile : " << std::boolalpha << is_sterile() << std::endl;
+      out << prefix << "Fake : " << std::boolalpha << is_fake() << std::endl;
       if (has_xy()) {
         out << prefix << "x : " << x_ / CLHEP::mm << " mm" << std::endl;
         out << prefix << "y : " << y_ / CLHEP::mm << " mm" << std::endl;
