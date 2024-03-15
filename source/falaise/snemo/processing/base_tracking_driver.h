@@ -143,10 +143,10 @@ namespace snemo {
 
     protected:
 
-      /// Reset the clusterizer
+      /// Initialize the tracking driver
       virtual void _at_initialize(const datatools::properties & setup_) = 0;
 
-      /// Reset the clusterizer
+      /// Reset the tracking driver
       virtual void _at_reset() = 0;
 
     private:

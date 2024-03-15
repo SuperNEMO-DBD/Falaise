@@ -22,13 +22,13 @@ namespace snemo {
       return;
     }
 
-    void dummy_tracking_driver::_at_initialize(const datatools::properties & setup_)
+    void dummy_tracking_driver::_at_initialize(const datatools::properties & config_)
     {
       if (datatools::logger::is_debug(get_verbosity())) {
 	boost::property_tree::ptree popts;
 	popts.put("indent", "[debug] ");
 	popts.put("title", "Dummy Tracking Driver setup");
-	setup_.print_tree(std::clog, popts);
+	config_.print_tree(std::clog, popts);
       }
       return;
     }

@@ -28,8 +28,8 @@ namespace snemo {
  
     protected:
 
-      /// Reset the tracking driver
-      void _at_initialize(const datatools::properties & setup_) override;
+      /// Initialize the tracking driver
+      void _at_initialize(const datatools::properties & config_) override;
 
       /// Reset the tracking driver
       void _at_reset() override;
