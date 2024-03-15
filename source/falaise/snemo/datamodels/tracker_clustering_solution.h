@@ -108,26 +108,26 @@ namespace snemo {
 			void invalidate_solution_id();
 
 			/// Return a mutable reference on the container of auxiliary properties
-			datatools::properties &get_auxiliaries();
+			datatools::properties & get_auxiliaries();
 
 			/// Return a non mutable reference on the container of auxiliary properties
-			const datatools::properties &get_auxiliaries() const;
+			const datatools::properties & get_auxiliaries() const;
 
 			/// Return a mutable reference on the container of clusters
-			TrackerClusterHdlCollection &get_clusters();
+			TrackerClusterHdlCollection & get_clusters();
 
 			/// Return a non mutable reference on the container of clusters
-			const TrackerClusterHdlCollection &get_clusters() const;
+			const TrackerClusterHdlCollection & get_clusters() const;
 
 			/// Check if there is some unclustered hits
 			bool has_unclustered_hits() const;
 
 			/// Return a mutable reference on the container of handles on unclustered calibrated tracker hits
-			TrackerHitHdlCollection &get_unclustered_hits();
+			TrackerHitHdlCollection & get_unclustered_hits();
 
 			/// Return a non mutable reference on the container of handles on unclustered calibrated tracker
 			/// hits
-			const TrackerHitHdlCollection &get_unclustered_hits() const;
+			const TrackerHitHdlCollection & get_unclustered_hits() const;
 
 			/// Empty the contents of the tracker cluster solution
 			void clear();
@@ -189,13 +189,13 @@ namespace snemo {
 
 			/// Merge two clustering solutions in a single one (only if both are built from different sets of
 			/// hits)
-			static int merge_two_solutions_in_ones(const tracker_clustering_solution &source0_,
-																						 const tracker_clustering_solution &source1_,
-																						 tracker_clustering_solution &target_);
+			static int merge_two_solutions_in_other(const tracker_clustering_solution & source0_,
+																							const tracker_clustering_solution & source1_,
+																							tracker_clustering_solution & target_);
 
 			/// Copy one clustering solution in another one
-			static int copy_one_solution_in_one(const tracker_clustering_solution &source_,
-																					tracker_clustering_solution &target_);
+			static int copy_one_solution_in_other(const tracker_clustering_solution & source_,
+																						tracker_clustering_solution & target_);
 
 		private:
 			int32_t id_{-1};                              //!< Unique solution ID

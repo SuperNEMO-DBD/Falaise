@@ -47,27 +47,27 @@ namespace snemo {
 
     tracker_clustering_solution& tracker_trajectory_solution::grab_clustering_solution()
     {
-      return solutions_.grab();
+      return clustering_solution_.grab();
     }
 
     void tracker_trajectory_solution::set_clustering_solution(const TrackerClusteringSolutionHdl& s)
     {
-      solutions_ = s;
+      clustering_solution_ = s;
     }
 
     const tracker_clustering_solution& tracker_trajectory_solution::get_clustering_solution() const
     {
-      return solutions_.get();
+      return clustering_solution_.get();
     }
 
     bool tracker_trajectory_solution::has_clustering_solution() const
     {
-      return solutions_.has_data();
+      return clustering_solution_.has_data();
     }
 
     void tracker_trajectory_solution::invalidate_clustering_solution()
     {
-      solutions_.reset();
+      clustering_solution_.reset();
     }
 
     bool tracker_trajectory_solution::has_unfitted_clusters() const
@@ -178,7 +178,7 @@ namespace snemo {
 
       out_ << indent << tag << "Reference clustering solution : ";
       if (has_clustering_solution()) {
-        out_ << solutions_->get_solution_id();
+        out_ << clustering_solution_->get_solution_id();
       } else {
         out_ << "<none>";
       }

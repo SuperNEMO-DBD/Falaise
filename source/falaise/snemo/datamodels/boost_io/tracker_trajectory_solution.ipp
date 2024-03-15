@@ -31,7 +31,7 @@ template <class Archive>
 void tracker_trajectory_solution::serialize(Archive& ar_, const unsigned int version_) {
   ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
   ar_& boost::serialization::make_nvp("solution_id", id_);
-  ar_& boost::serialization::make_nvp("clustering_solution", solutions_);
+  ar_& boost::serialization::make_nvp("clustering_solution", clustering_solution_);
   ar_& boost::serialization::make_nvp("trajectories", trajectories_);
   ar_& boost::serialization::make_nvp("unfitted_clusters", unfitted_);
   ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
