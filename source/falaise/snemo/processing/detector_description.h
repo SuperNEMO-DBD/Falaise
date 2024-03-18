@@ -97,7 +97,8 @@ namespace snemo {
       make_from_services(datatools::service_manager & services_,
 			 const uint32_t flags_ = required_all);
      
-      
+      void print(std::ostream & out_, const std::string & indent_) const;
+     
     private:
       
       const geomtools::manager * _geometry_manager_ = nullptr;

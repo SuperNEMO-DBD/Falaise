@@ -118,6 +118,18 @@ namespace snemo {
     void base_tracking_driver::_initialize_(const datatools::properties & config_,
 					    datatools::service_manager & services_)
     {
+      // Verbosity:
+      if (config_.has_key("verbosity")) {
+        auto lp = datatools::logger::get_priority(config_.fetch_string("verbosity"));
+        set_verbosity(lp);
+      }
+      if (datatools::logger::is_debug(get_verbosity())) {
+	boost::property_tree::ptree popts;
+	popts.put("indent", "[debug] ");
+	popts.put("title", "Tracking Driver configuration");
+	config_.print_tree(std::clog, popts);
+      }
+ 
       // Extract the config of the base tracking :
       falaise::property_set ps{config_};
       
@@ -126,8 +138,13 @@ namespace snemo {
       uint32_t detector_description_flags = detector_description::configuration_flags_from(servicesPs);
       // Ensure geometry:
       detector_description_flags |= detector_description::required_geometry;
+      // Ensure gg locator:
       detector_description_flags |= detector_description::required_gg_locator;
       _detector_desc_ = detector_description::make_from_services(services_, detector_description_flags);
+      DT_LOG_DEBUG(get_verbosity(), "Detector description:");
+      if (datatools::logger::is_debug(get_verbosity())) {
+	_detector_desc_.print(std::cerr, "[debug] ");
+      }
       DT_THROW_IF(not _detector_desc_.has_geometry_manager(), std::logic_error,
 		  "Missing geometry manager !");
       DT_THROW_IF(not _detector_desc_.get_geometry_manager().is_initialized(),
@@ -135,13 +152,7 @@ namespace snemo {
                   "Geometry manager is not initialized !");
       DT_THROW_IF(not _detector_desc_.has_gg_locator(), std::logic_error,
 		  "Missing Geiger locator !");
-
-      // Verbosity:
-      if (config_.has_key("verbosity")) {
-        auto lp = datatools::logger::get_priority(config_.fetch_string("verbosity"));
-        set_verbosity(lp);
-      }
-  
+ 
       // Cell geom_id mask
       auto cell_id_mask_rules = ps.get<std::string>("cell_id_mask_rules", "");
       if (not cell_id_mask_rules.empty()) {
@@ -231,7 +242,7 @@ namespace snemo {
       _preclusters_.reserve(odata.promptClusters.size() + odata.delayedClusters.size());
       // Prompt clusters:
       for (const auto & prompt_cluster : odata.promptClusters) {
-	_preclusters_.emplace_back(0, false);
+	_preclusters_.emplace_back(prompt_cluster.at(0)->get_side(), false);
 	tracking_precluster & pc = _preclusters_.back();
 	pc.hits().reserve(prompt_cluster.size());
 	for (const auto & hit : prompt_cluster) {
@@ -240,7 +251,7 @@ namespace snemo {
       }
       // Delayed clusters:
       for (const auto & delayed_cluster : odata.delayedClusters) {
-	_preclusters_.emplace_back(0, true);
+	_preclusters_.emplace_back(delayed_cluster.at(0)->get_side(), true);
 	tracking_precluster & pc = _preclusters_.back();
 	pc.hits().reserve(delayed_cluster.size());
 	for (const auto & hit : delayed_cluster) {
@@ -328,24 +339,52 @@ namespace snemo {
       
       // Run pre-processing with preclustering based on time-coincidence to determine what are prompt hits,
       // what are candidate clusters of delayed hits and partitioned on both sides of the source foil :
+      DT_LOG_DEBUG(get_verbosity(), "Input CD data before pre-processing: ");
+      DT_LOG_DEBUG(get_verbosity(), "|-- Number of input tracker hits = " << gg_hits.size());
+      DT_LOG_DEBUG(get_verbosity(), "`-- Number of input calorimeter hits = " << calo_hits.size());
       status = _prepare_process(gg_hits, calo_hits, clustering_, track_fitting_);
       if (status != 0) {
         DT_LOG_ERROR(get_verbosity(), "Pre-processing has failed !");
         return status;
       }
  
+      DT_LOG_DEBUG(get_verbosity(), "Input working data before processing: ");
+      DT_LOG_DEBUG(get_verbosity(), "`-- Number of input tracker preclusters = " << _preclusters_.size());
+      if (datatools::logger::is_debug(get_verbosity())) {
+	std::cerr << "[debug] " << "Input tracker preclusters:\n";
+	for (auto ipc = 0u; ipc < _preclusters_.size(); ipc++) {
+	  std::cerr << "[debug] ";
+	  std::string itemTag; 
+	  if (ipc+1 == _preclusters_.size()) {
+	    itemTag = "    ";
+	    std::cerr << "`-- ";
+	  } else {
+	    itemTag = "|   ";
+	    std::cerr << "|-- ";
+	  }
+	  std::cerr << "Input precluster #" << ipc << ':' << '\n';
+	  _preclusters_[ipc].print(std::cerr, "[debug] " + itemTag);
+	}
+      }
       // Algorithm:
       status = process_tracking(_preclusters_, calo_hits, clustering_, track_fitting_);
       if (status != 0) {
         DT_LOG_ERROR(get_verbosity(), "Tracking algorithm has failed !");
         return status;
       }
-      
+
+      DT_LOG_DEBUG(get_verbosity(), "Output data before post-processing: ");
+      DT_LOG_DEBUG(get_verbosity(), "|-- Number of output clustering solutions = " << clustering_.size());
+      DT_LOG_DEBUG(get_verbosity(), "`-- Number of output track fitting solutions = " << track_fitting_.get_number_of_solutions());
+
       status = _post_process(gg_hits, calo_hits, clustering_, track_fitting_);
       if (status != 0) {
         DT_LOG_ERROR(get_verbosity(), "Post-processing has failed !");
         return status;
       }
+      DT_LOG_DEBUG(get_verbosity(), "Output data after post-processing: ");
+      DT_LOG_DEBUG(get_verbosity(), "|-- Number of output clustering solutions = " << clustering_.size());
+      DT_LOG_DEBUG(get_verbosity(), "`-- Number of output track fitting solutions = " << track_fitting_.get_number_of_solutions());
       return status;
     }
 

@@ -9,6 +9,19 @@
 namespace snemo {
 
   namespace processing {
+
+    void detector_description::print(std::ostream & out_, const std::string & indent_) const
+    {
+      out_ << indent_ << "|-- Geometry manager : " << (has_geometry_manager()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- Calo locator : " << (has_calo_locator()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- X-calo locator : " << (has_xcalo_locator()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- G-veto locator : " << (has_gveto_locator()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- Geiger locator : " << (has_gg_locator()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- DB service : " << (has_db_service()? "yes": "no") << '\n';
+      out_ << indent_ << "|-- Geiger cell status service : " << (has_cell_status_service()? "yes": "no") << '\n';
+      out_ << indent_ << "`-- Calorimeter OM status service : " << (has_om_status_service()? "yes": "no") << '\n';
+      return;
+    }
       
     bool detector_description::has_geometry_manager() const
     {
@@ -30,18 +43,22 @@ namespace snemo {
 	DT_THROW_IF(not locators.hasCaloLocator(), std::logic_error, "No required calo locator!");
 	_calo_locator_ = &locators.caloLocator();
       }
+      
       if (flags_ & required_xcalo_locator) {
 	DT_THROW_IF(not locators.hasXCaloLocator(), std::logic_error, "No required xcalo locator!");
 	_xcalo_locator_ = &locators.xcaloLocator();
       }
+      
       if (flags_ & required_gveto_locator) {
 	DT_THROW_IF(not locators.hasGVetoLocator(), std::logic_error, "No required gveto locator!");
 	_gveto_locator_ = &locators.gvetoLocator();
       }
+      
       if (flags_ & required_gg_locator) {
 	DT_THROW_IF(not locators.hasGeigerLocator(), std::logic_error, "No required gg locator!");
 	_gg_locator_ = &locators.geigerLocator();
       }
+      
       return;
     }
           
@@ -49,8 +66,7 @@ namespace snemo {
     {
       return *_geometry_manager_;
     }
-        
-   
+         
     bool detector_description::has_calo_locator() const
     {
       return _calo_locator_ != nullptr;

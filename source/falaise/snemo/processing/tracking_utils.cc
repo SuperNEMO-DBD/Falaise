@@ -58,7 +58,10 @@ namespace snemo {
 	out_ << indent_ << "    ";
 	if (i + 1 == _hits_.size()) out_ << "`-- ";
 	else out_ << "|-- ";
-	out_ << "Hit #" << i << " : " << _hits_[i]->get_hit_id() << '\n';
+	out_ << "Hit #" << i << " : "
+	     << "id=" << _hits_[i]->get_hit_id()
+	     << "  gid=" << _hits_[i]->get_geom_id()
+	     << '\n';
       }
       return;
     }

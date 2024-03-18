@@ -36,7 +36,8 @@ namespace snemo {
     struct tracking_precluster
     {
       tracking_precluster(const int side_, const bool delayed_);
-      tracking_precluster(const int side_, const bool delayed_, const snemo::datamodel::TrackerHitHdlCollection & hits_);
+      tracking_precluster(const int side_, const bool delayed_,
+													const snemo::datamodel::TrackerHitHdlCollection & hits_);
       int side() const;
       bool is_delayed() const;
       const snemo::datamodel::TrackerHitHdlCollection & hits() const;  

@@ -156,7 +156,7 @@ namespace snemo {
       static void ocd_support(datatools::object_configuration_description &,
                               const std::string & prefix_ = "");
 
-      // Manage the timestamp associated to processed events
+      // Manage the timestamp associated to processed events:
   
       bool has_event_timestamp() const;
   
@@ -231,6 +231,7 @@ namespace snemo {
       snemo::time::time_point _eventTimestamp_ = time::invalid_point() ; //!< Current event timestamp
 
 		private:
+			
       hit_collection_type _ignoredHits_;  //!< Hits not used as input for any clustering algorithm
       std::vector<tracking_precluster> _preclusters_; //!< Preclusters of input hits
 			
