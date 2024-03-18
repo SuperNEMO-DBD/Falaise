@@ -116,12 +116,6 @@ namespace snemo {
                   snemo::datamodel::tracker_clustering_data & clustering_,
 									snemo::datamodel::tracker_trajectory_data & track_fitting_);
 
-      // /// Main clustering process
-      // int process(const base_tracking_driver::hit_collection_type & gg_hits_,
-      //             const base_tracking_driver::calo_hit_collection_type & calo_hits_,
-      //             snemo::datamodel::tracker_clustering_data & clustering_,
-			// 						snemo::datamodel::tracker_trajectory_data & track_fitting_);
-
       // Smart print
       void tree_dump(std::ostream & out_ = std::clog,
 										 const std::string & title_ = "",
@@ -137,10 +131,11 @@ namespace snemo {
 			///
 			/// # Service requirements:
 			/// services.geometry : boolean = true
-			/// services.calo_locator : boolean = true
-			/// services.xcalo_locator : boolean = true
-			/// services.gg_locator : boolean = true
+			/// services.calo_locator : boolean = false
+			/// services.xcalo_locator : boolean = false
+			/// services.gg_locator : boolean = false
 			/// services.cell_status : boolean = true
+			/// services.om_status : boolean = false
 			///
 			/// # Masking rules for Geiger cells:
 			/// cell_id_mask_rules : string = "..."
@@ -150,8 +145,6 @@ namespace snemo {
 			/// TPC.processing_prompt_hits : boolean = true
 			/// TPC.processing_delayed_hits : boolean = true
 			/// TPC.split_chamber : boolean = true		
-			///
-			/// 
 			///
 			void initialize(const datatools::properties & config_,
 											datatools::service_manager & services_);

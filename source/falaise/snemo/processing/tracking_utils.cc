@@ -50,7 +50,7 @@ namespace snemo {
 				    const std::string & indent_,
 				    const uint32_t /*flags_*/) const
     {
-      out_ << indent_ << "Input precluster:\n";
+      // out_ << indent_ << "Input precluster:\n";
       out_ << indent_ << "|-- " << "Side = " << _side_ << '\n';
       out_ << indent_ << "|-- " << "Delayed = " << std::boolalpha << _delayed_ << '\n';
       out_ << indent_ << "`-- " << "Hits = " << _hits_.size() << '\n';
