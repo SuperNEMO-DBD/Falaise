@@ -27,8 +27,8 @@ namespace snemo {
       const snemo::datamodel::TrackerHitHdlCollection & hits() const;  
       snemo::datamodel::TrackerHitHdlCollection & hits();
       void print(std::ostream & out_,
-		 const std::string & indent_,
-		 const uint32_t flags_ = 0) const;
+                 const std::string & indent_,
+                 const uint32_t flags_ = 0) const;
     private:
       
       int _side_ = -1;

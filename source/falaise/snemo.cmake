@@ -178,6 +178,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/manager.cc
 
   snemo/processing/config.cc
+  snemo/processing/detector_description.cc
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc

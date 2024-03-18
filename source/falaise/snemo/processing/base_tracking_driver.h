@@ -46,6 +46,7 @@
 // Falaise module:
 #include "falaise/snemo/processing/detail/GeigerTimePartitioner.h"
 #include "falaise/snemo/processing/tracking_utils.h"
+#include "falaise/snemo/processing/detector_description.h"
 
 // Forward declaration :
 namespace datatools {
@@ -93,27 +94,33 @@ namespace snemo {
 
       /// Return the clusterizer ID
       const std::string & get_id() const;
+  
+			/// Return the detector description
+			const snemo::processing::detector_description &
+			get_detector_description() const;
 
-      /// Return the tracker locator
-      const snemo::geometry::gg_locator & get_gg_locator() const;
-
-      /// Check the geometry manager
-      bool has_geometry_manager() const;
-
-      /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager & gmgr_);
-
+			/// Set the detector description
+			void set_detector_description(const snemo::processing::detector_description & det_desc_);
+	
       /// Return a non-mutable reference to the geometry manager
       const geomtools::manager & get_geometry_manager() const;
+		
+      /// Return the tracker locator
+      const snemo::geometry::gg_locator & get_gg_locator() const;
 
       /// Check if theclusterizer is initialized
       bool is_initialized() const;
 
       /// Main clustering process
-      int process(const base_tracking_driver::hit_collection_type & gg_hits_,
-                  const base_tracking_driver::calo_hit_collection_type & calo_hits_,
+      int process(const snemo::datamodel::calibrated_data & cd_,
                   snemo::datamodel::tracker_clustering_data & clustering_,
 									snemo::datamodel::tracker_trajectory_data & track_fitting_);
+
+      // /// Main clustering process
+      // int process(const base_tracking_driver::hit_collection_type & gg_hits_,
+      //             const base_tracking_driver::calo_hit_collection_type & calo_hits_,
+      //             snemo::datamodel::tracker_clustering_data & clustering_,
+			// 						snemo::datamodel::tracker_trajectory_data & track_fitting_);
 
       // Smart print
       void tree_dump(std::ostream & out_ = std::clog,
@@ -122,7 +129,32 @@ namespace snemo {
 										 bool inherit_ = false) const;
 
       /// Initialize the clusterizer through configuration properties
-			void initialize(const datatools::properties & setup_);
+			///
+			/// Example of supported configuration properties:
+			///
+			/// # Verbosity:
+			/// verbosity : string = "debug"
+			///
+			/// # Service requirements:
+			/// services.geometry : boolean = true
+			/// services.calo_locator : boolean = true
+			/// services.xcalo_locator : boolean = true
+			/// services.gg_locator : boolean = true
+			/// services.cell_status : boolean = true
+			///
+			/// # Masking rules for Geiger cells:
+			/// cell_id_mask_rules : string = "..."
+			///
+			/// # Tracker pre-clusterizer preprocessing:
+			/// TPC.delayed_hit_cluster_time : real as time = 10.0 us
+			/// TPC.processing_prompt_hits : boolean = true
+			/// TPC.processing_delayed_hits : boolean = true
+			/// TPC.split_chamber : boolean = true		
+			///
+			/// 
+			///
+			void initialize(const datatools::properties & config_,
+											datatools::service_manager & services_);
 
       /// Reset the clusterizer
       void reset();
@@ -144,7 +176,8 @@ namespace snemo {
     protected:
 
       /// Initialize the tracking driver
-      virtual void _at_initialize(const datatools::properties & setup_) = 0;
+      virtual void _at_initialize(const datatools::properties & config_,
+																	datatools::service_manager & services_) = 0;
 
       /// Reset the tracking driver
       virtual void _at_reset() = 0;
@@ -152,7 +185,8 @@ namespace snemo {
     private:
       
       /// Initialize the clusterizer through configuration properties
-      void _initialize_(const datatools::properties & setup_);
+      void _initialize_(const datatools::properties & config_,
+												datatools::service_manager & services_);
 
       /// Reset the clusterizer
       void _reset_();
@@ -196,18 +230,15 @@ namespace snemo {
 
       bool _initialized_ = false; //!< Initialization status
       std::string _id_; //!< Identifier of the clusterizer algorithm
-      const geomtools::manager * _geoManager_ = nullptr; //!< The SuperNEMO geometry manager
-      const snemo::geometry::gg_locator * _geigerLocator_ = nullptr; //!< Locator for geiger cells
-      geomtools::id_selector _cellSelector_; //!< A selector of GIDs
-      snreco::detail::GeigerTimePartitioner _preClusterizer_; //!< The time-clustering algorithm
+			snemo::processing::detector_description _detector_desc_;
 
       // Internal work space:
+      geomtools::id_selector _cellSelector_; //!< A selector of GIDs
+      snreco::detail::GeigerTimePartitioner _preClusterizer_; //!< The time-clustering algorithm
       snemo::time::time_point _eventTimestamp_ = time::invalid_point() ; //!< Current event timestamp
 
 		private:
       hit_collection_type _ignoredHits_;  //!< Hits not used as input for any clustering algorithm
-      std::vector<hit_collection_type> _promptClusters_; //!< Clusters of only prompt hits
-      std::vector<hit_collection_type> _delayedClusters_; //!< Clusters of only delayed hits
       std::vector<tracking_precluster> _preclusters_; //!< Preclusters of input hits
 			
     };

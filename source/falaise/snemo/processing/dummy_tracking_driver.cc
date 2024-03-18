@@ -22,7 +22,8 @@ namespace snemo {
       return;
     }
 
-    void dummy_tracking_driver::_at_initialize(const datatools::properties & config_)
+    void dummy_tracking_driver::_at_initialize(const datatools::properties & config_,
+					       datatools::service_manager & /* services_ */)
     {
       if (datatools::logger::is_debug(get_verbosity())) {
 	boost::property_tree::ptree popts;

@@ -136,7 +136,7 @@ namespace snemo {
 
       if (is_simulated()) {
   
-	out_ << popts.indent << tag << tag << "MC run ID : ";
+	out_ << popts.indent << skip_tag << tag << "MC run ID : ";
 	if (has_mc_run_id()) {
 	  out_ << mc_run_id_;
 	} else {
@@ -144,7 +144,7 @@ namespace snemo {
 	}
 	out_ << std::endl;
 	
-	out_ << popts.indent << tag << last_tag << "MC timestamp : ";
+	out_ << popts.indent << skip_tag << last_tag << "MC timestamp : ";
 	if (has_mc_timestamp()) {
 	  out_ << mc_timestamp_;
 	} else {

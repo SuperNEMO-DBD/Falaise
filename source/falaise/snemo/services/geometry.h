@@ -9,6 +9,7 @@
 #include "falaise/snemo/services/service_traits.h"
 
 namespace snemo {
+  
 // NB: Document in terms of inheritance purely to fool Doxygen...
 /*! \class snemo::geometry_svc
  *  \brief Locate, track, and trace elements of the SuperNEMO detector geometry
