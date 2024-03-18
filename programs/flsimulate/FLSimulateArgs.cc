@@ -302,8 +302,9 @@ namespace FLSimulate {
                    << "rngSeedFile"
                    << "' simulation configuration parameter!");
         }
-        flSimParameters_.simulationManagerParams.input_prng_seeds_file = simSubsystem.get<falaise::path>(
-                                                                                                         "rngSeedFile", flSimParameters_.simulationManagerParams.input_prng_seeds_file);
+        flSimParameters_.simulationManagerParams.input_prng_seeds_file
+	  = simSubsystem.get<falaise::path>("rngSeedFile",
+					    flSimParameters_.simulationManagerParams.input_prng_seeds_file);
 
         if (flSimParameters_.simulationManagerParams.input_prng_seeds_file.empty()) {
           if (flSimParameters_.userProfile == "production") {
