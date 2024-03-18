@@ -45,7 +45,9 @@ namespace FLSimulate {
     // Application specific parameters:
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.userProfile = "normal";
-    params.numberOfEvents = 1;
+    params.numberOfEvents = 1u;
+    params.runNumber = datatools::event_id::ANY_RUN_NUMBER;
+    params.firstEventNumber = 0u;
     params.doSimulation = true;
     params.doDigitization = false;
     // Identification of the experimental setup:
@@ -119,19 +121,24 @@ namespace FLSimulate {
     flSimParameters_.outputFile = args.outputFile;
     flSimParameters_.mountPoints = args.mountPoints;
     flSimParameters_.numberOfEvents = args.numberOfEvents;
+    flSimParameters_.runNumber = args.runNumber;
+    flSimParameters_.firstEventNumber = args.firstEventNumber;
  
     if (static_cast<unsigned int>(!flSimParameters_.mountPoints.empty()) != 0u) {
       // Apply mount points as soon as possible, because manually set file path below
       // may use this mechanism to locate files:
-      datatools::kernel& dtk = datatools::kernel::instance();
-      datatools::library_info& dtklLibInfo = dtk.grab_library_info_register();
-      for (const std::string& mountDirective : flSimParameters_.mountPoints) {
+      datatools::kernel & dtk = datatools::kernel::instance();
+      datatools::library_info & dtklLibInfo = dtk.grab_library_info_register();
+      for (const std::string & mountDirective : flSimParameters_.mountPoints) {
         std::string theLibname;
         std::string theTopic;
         std::string thePath;
         std::string errMsg;
-        bool parsed = datatools::library_info::parse_path_registration_directive(
-                                                                                 mountDirective, theLibname, theTopic, thePath, errMsg);
+        bool parsed = datatools::library_info::parse_path_registration_directive(mountDirective,
+										 theLibname,
+										 theTopic,
+										 thePath,
+										 errMsg);
         DT_LOG_DEBUG(flSimParameters_.logLevel, "Mount directive: '" << mountDirective << "'");
         // DT_LOG_DEBUG(flSimParameters_.logLevel, "theLibname: " << theLibname);
         DT_THROW_IF(!parsed, FLConfigUserError,
@@ -234,13 +241,26 @@ namespace FLSimulate {
         falaise::property_set baseSystem{flSimConfig.get_section("flsimulate")};
 
         // Number of simulated events:
-        flSimParameters_.numberOfEvents =
-          baseSystem.get<int>("numberOfEvents", flSimParameters_.numberOfEvents);
+	int noe = baseSystem.get<int>("numberOfEvents", flSimParameters_.numberOfEvents);
+	DT_THROW_IF(noe <= 0, FLConfigUserError, "Invalid number of events : " << noe);
+	flSimParameters_.numberOfEvents = noe;
 
+        // Run number:
+        flSimParameters_.runNumber =
+          baseSystem.get<int>("runNumber", flSimParameters_.runNumber);
+
+        // First event number:
+	int fen = baseSystem.get<int>("firstEventNumber", static_cast<int>(flSimParameters_.firstEventNumber));
+	DT_THROW_IF(fen < 0, FLConfigUserError, "Invalid first event number : " << fen);
+        flSimParameters_.firstEventNumber = static_cast<unsigned int>(fen);
+	
         // Printing rate for events:
-        flSimParameters_.simulationManagerParams.number_of_events_modulo = baseSystem.get<int>(
-                                                                                               "moduloEvents", flSimParameters_.simulationManagerParams.number_of_events_modulo);
-
+	int nem = baseSystem.get<int>("moduloEvents",
+				      flSimParameters_.simulationManagerParams.number_of_events_modulo);
+	DT_THROW_IF(nem < 0, FLConfigUserError, "Invalid event printing rate : " << nem);
+        flSimParameters_.simulationManagerParams.number_of_events_modulo = nem;
+	
+		    
         // Do simulation:
         flSimParameters_.doSimulation =
           baseSystem.get<bool>("doSimulation", flSimParameters_.doSimulation);
@@ -308,22 +328,26 @@ namespace FLSimulate {
                         << "rngGeant4GeneratorSeed"
                         << "' simulation configuration parameter!");
           }
-          flSimParameters_.simulationManagerParams.eg_seed = simSubsystem.get<int>(
-                                                                                   "rngEventGeneratorSeed", flSimParameters_.simulationManagerParams.eg_seed);
+          flSimParameters_.simulationManagerParams.eg_seed
+	    = simSubsystem.get<int>("rngEventGeneratorSeed",
+				    flSimParameters_.simulationManagerParams.eg_seed);
 
-          flSimParameters_.simulationManagerParams.vg_seed = simSubsystem.get<int>(
-                                                                                   "rngVertexGeneratorSeed", flSimParameters_.simulationManagerParams.vg_seed);
+          flSimParameters_.simulationManagerParams.vg_seed
+	    = simSubsystem.get<int>("rngVertexGeneratorSeed",
+				    flSimParameters_.simulationManagerParams.vg_seed);
 
-          flSimParameters_.simulationManagerParams.shpf_seed = simSubsystem.get<int>(
-                                                                                     "rngHitProcessingGeneratorSeed", flSimParameters_.simulationManagerParams.shpf_seed);
+          flSimParameters_.simulationManagerParams.shpf_seed
+	    = simSubsystem.get<int>("rngHitProcessingGeneratorSeed",
+				    flSimParameters_.simulationManagerParams.shpf_seed);
 
-          flSimParameters_.simulationManagerParams.mgr_seed = simSubsystem.get<int>(
-                                                                                    "rngGeant4GeneratorSeed", flSimParameters_.simulationManagerParams.mgr_seed);
+          flSimParameters_.simulationManagerParams.mgr_seed
+	    = simSubsystem.get<int>("rngGeant4GeneratorSeed",
+				    flSimParameters_.simulationManagerParams.mgr_seed);
         }
 
         flSimParameters_.simulationManagerParams.output_prng_seeds_file =
-          simSubsystem.get<std::string>(
-                                        "rngSeedFileSave", flSimParameters_.simulationManagerParams.output_prng_seeds_file);
+          simSubsystem.get<std::string>("rngSeedFileSave",
+					flSimParameters_.simulationManagerParams.output_prng_seeds_file);
 
         // File for loading internal PRNG's states:
         if (flSimParameters_.userProfile != "expert" && simSubsystem.has_key("inputRngStateFile")) {
@@ -333,18 +357,18 @@ namespace FLSimulate {
                    << "' simulation configuration parameter!");
         }
         flSimParameters_.simulationManagerParams.input_prng_states_file =
-          simSubsystem.get<std::string>(
-                                        "inputRngStateFile", flSimParameters_.simulationManagerParams.input_prng_states_file);
+          simSubsystem.get<std::string>("inputRngStateFile",
+					flSimParameters_.simulationManagerParams.input_prng_states_file);
 
         // File for saving internal PRNG's states:
         flSimParameters_.simulationManagerParams.output_prng_states_file =
-          simSubsystem.get<std::string>(
-                                        "outputRngStateFile",
+          simSubsystem.get<std::string>("outputRngStateFile",
                                         flSimParameters_.simulationManagerParams.output_prng_states_file);
 
         // Saving rate for internal PRNG's states:
-        flSimParameters_.simulationManagerParams.prng_states_save_modulo = simSubsystem.get<int>(
-                                                                                                 "rngStateModuloEvents", flSimParameters_.simulationManagerParams.prng_states_save_modulo);
+        flSimParameters_.simulationManagerParams.prng_states_save_modulo
+	  = simSubsystem.get<int>("rngStateModuloEvents",
+				  flSimParameters_.simulationManagerParams.prng_states_save_modulo);
       }
 
       // Digitization subsystem:
@@ -369,16 +393,17 @@ namespace FLSimulate {
                    << "config"
                    << "' variants configuration parameter!");
         }
-        flSimParameters_.variantServiceConfig.config_filename = variantSubsystem.get<std::string>(
-                                                                                                    "config", flSimParameters_.variantServiceConfig.config_filename);
-
+        flSimParameters_.variantServiceConfig.config_filename
+	  = variantSubsystem.get<std::string>("config", flSimParameters_.variantServiceConfig.config_filename);
+	
         // Variant profile URN:
         flSimParameters_.variantProfileUrn =
           variantSubsystem.get<std::string>("profileUrn", flSimParameters_.variantProfileUrn);
 
         // Variant profile:
-        flSimParameters_.variantServiceConfig.profile_load = variantSubsystem.get<falaise::path>(
-                                                                                                   "profile", flSimParameters_.variantServiceConfig.profile_load);
+        flSimParameters_.variantServiceConfig.profile_load
+	  = variantSubsystem.get<falaise::path>("profile",
+						flSimParameters_.variantServiceConfig.profile_load);
 
         // Variant settings:
         if (flSimParameters_.userProfile == "production" && variantSubsystem.has_key("settings")) {
@@ -388,8 +413,8 @@ namespace FLSimulate {
                    << "' variants configuration parameter!");
         }
         flSimParameters_.variantServiceConfig.settings =
-          variantSubsystem.get<std::vector<std::string>>(
-                                                         "settings", flSimParameters_.variantServiceConfig.settings);
+          variantSubsystem.get<std::vector<std::string>>("settings",
+							 flSimParameters_.variantServiceConfig.settings);
       }
 
       // Services subsystem:
@@ -397,8 +422,8 @@ namespace FLSimulate {
         falaise::property_set servicesSubsystem{flSimConfig.get_section("flsimulate.services")};
 
         // Services manager configuration URN:
-        flSimParameters_.servicesSubsystemConfigUrn = servicesSubsystem.get<std::string>(
-                                                                                         "configUrn", flSimParameters_.servicesSubsystemConfigUrn);
+        flSimParameters_.servicesSubsystemConfigUrn
+	  = servicesSubsystem.get<std::string>("configUrn", flSimParameters_.servicesSubsystemConfigUrn);
 
         // Services manager main configuration file:
         if (flSimParameters_.userProfile == "production" && servicesSubsystem.has_key("config")) {
@@ -681,6 +706,8 @@ namespace FLSimulate {
          << std::endl;
     out_ << tag << "userProfile                = " << userProfile << std::endl;
     out_ << tag << "numberOfEvents             = " << numberOfEvents << std::endl;
+    out_ << tag << "runNumber                  = " << runNumber << std::endl;
+    out_ << tag << "firstEventNumber           = " << firstEventNumber << std::endl;
     out_ << tag << "doSimulation               = " << std::boolalpha << doSimulation << std::endl;
     out_ << tag << "doDigitization             = " << std::boolalpha << doDigitization << std::endl;
     out_ << tag << "experimentalSetupUrn       = " << experimentalSetupUrn << std::endl;

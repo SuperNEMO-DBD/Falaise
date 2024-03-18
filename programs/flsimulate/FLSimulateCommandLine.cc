@@ -5,6 +5,7 @@
 // - Bayeux:
 #include "bayeux/datatools/exception.h"
 #include "bayeux/datatools/kernel.h"
+#include "bayeux/datatools/event_id.h"
 #include "bayeux/datatools/urn_query_service.h"
 #include "bayeux/version.h"
 
@@ -29,7 +30,9 @@ namespace FLSimulate {
     flClarg.embeddedMetadata = true;
     flClarg.outputFile = "";
     flClarg.userProfile = "normal";
-    flClarg.numberOfEvents = 1;
+    flClarg.numberOfEvents = 1u;
+    flClarg.runNumber = datatools::event_id::ANY_RUN_NUMBER;
+    flClarg.firstEventNumber = 0u;
     return flClarg;
   } 
 
@@ -45,7 +48,7 @@ namespace FLSimulate {
     os_ << "flsimulate " << falaise::version::get_version() << commitInfo << "\n";
     if (isVerbose_) {
       os_ << "\n"
-         << "Copyright (C) 2013-2018 SuperNEMO Collaboration\n\n"
+         << "Copyright (C) 2013-2024 SuperNEMO Collaboration\n\n"
          << "flsimulate uses the following external libraries:\n"
          << "* Falaise : " << falaise::version::get_version() << commitInfo << "\n"
          << "* Bayeux  : " << bayeux::version::get_version() << "\n"
@@ -171,6 +174,18 @@ namespace FLSimulate {
        ->default_value(1)
        ->value_name("N"),
        "number of generated events")
+
+      ("run-number,R",
+       bpo::value<int32_t>(&clArgs_.runNumber)
+       ->default_value(datatools::event_id::ANY_RUN_NUMBER)
+       ->value_name("N"),
+       "run number")
+
+      ("first-event-number,F",
+       bpo::value<unsigned int>(&clArgs_.firstEventNumber)
+       ->default_value(0u)
+       ->value_name("N"),
+       "first event number in the run")
 
       ("output-file,o", bpo::value<std::string>(&clArgs_.outputFile)->required()->value_name("file"),
        "file in which to store simulation results\n"

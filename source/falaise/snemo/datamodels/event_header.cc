@@ -127,13 +127,6 @@ namespace snemo {
       }
       out_ << std::endl;
 
-      out_ << popts.indent << tag << "Event builder : ";
-      out_ << std::boolalpha << is_event_builder();
-      if (properties_.has_key("event_builder.model")) {
-        out_ << " (model=" << std::quoted(properties_.fetch_string("event_builder.model")) << ')';
-      }
-      out_ << std::endl;
-
       if (is_simulated()) {
   
 	out_ << popts.indent << skip_tag << tag << "MC run ID : ";
@@ -153,7 +146,14 @@ namespace snemo {
 	out_ << std::endl;
 	
       }
-      
+    
+      out_ << popts.indent << tag << "Event builder : ";
+      out_ << std::boolalpha << is_event_builder();
+      if (properties_.has_key("event_builder.model")) {
+        out_ << " (model=" << std::quoted(properties_.fetch_string("event_builder.model")) << ')';
+      }
+      out_ << std::endl;
+  
       out_ << popts.indent << inherit_tag(popts.inherit) << "Auxiliary properties : " << properties_.size() << std::endl;
       if (list_properties_opt) {
         boost::property_tree::ptree auxOpts;

@@ -383,6 +383,7 @@ namespace FLSimulate {
       datatools::things workItem;
       dpp::base_module::process_status status;
 
+      int run_number = flSimParameters.runNumber;
       for (unsigned int i(0); i < flSimParameters.numberOfEvents; ++i) {
         workItem.clear();
 
@@ -390,8 +391,9 @@ namespace FLSimulate {
         auto & eventHeader =
           workItem.add<snemo::datamodel::event_header>(snedm::labels::event_header(), "Event Header Bank");
         eventHeader.set_generation(snemo::datamodel::event_header::GENERATION_SIMULATED);
-        datatools::event_id eventID{datatools::event_id::ANY_RUN_NUMBER, static_cast<int>(i)};
-        eventHeader.set_id(eventID);
+	int event_number = static_cast<int>(flSimParameters.firstEventNumber + i);
+        datatools::event_id eventID(run_number, event_number);
+	eventHeader.set_id(eventID);
 
         status = flSimModule.process(workItem);
         if (status != dpp::base_module::PROCESS_OK) {
