@@ -39,6 +39,8 @@ namespace FLSimulate {
     bool embeddedMetadata;                 //!< Flag to embed metadata in the output data file
     std::string outputFile;                //!< Path for the output module
     unsigned int numberOfEvents;           //!< Number of events to be generated
+    int runNumber;                         //!< Run number
+    unsigned int firstEventNumber;                  //!< Number of the first generated event
     static FLSimulateCommandLine makeDefault();
   };
 

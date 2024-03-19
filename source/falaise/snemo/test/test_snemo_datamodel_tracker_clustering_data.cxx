@@ -271,7 +271,7 @@ int main(int argc_, char** argv_) {
       draw_gg_clustering_solution(fvisu.grab(), TCS0, "unclustered_hits");
     }
 
-    TCD.push_back(hTCS0, true);
+    TCD.append_solution(hTCS0, true);
     TCD.tree_dump(std::clog, "Tracker clustering data('TCD') : ");
     std::clog << std::endl;
 

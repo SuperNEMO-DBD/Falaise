@@ -21,7 +21,7 @@
  * Boston, MA 02110-1301, USA.
  *
  * Description:
- *   Base class for tracker clusterize algorithms
+ *   Base class for tracker clusterizing algorithms
  *
  */
 #ifndef FALAISE_SNEMO_PROCESSING_BASE_TRACKER_CLUSTERIZER_H
@@ -69,7 +69,7 @@ namespace snemo {
 
     /// \brief The base abstract class for all tracker clustering algorithms
     class base_tracker_clusterizer
-		{
+    {
     public:
       // Typedefs
       using hit_type = snemo::datamodel::calibrated_tracker_hit;
@@ -78,7 +78,7 @@ namespace snemo {
       using calo_hit_collection_type = snemo::datamodel::CalorimeterHitHdlCollection;
 
       /// Default constructor
-      base_tracker_clusterizer(const std::string &name = "anonymous");
+      base_tracker_clusterizer(const std::string & name = "anonymous");
 
       /// Destructor
       virtual ~base_tracker_clusterizer();
@@ -90,41 +90,43 @@ namespace snemo {
       datatools::logger::priority get_logging_priority() const;
 
       /// Return the clusterizer ID
-      const std::string &get_id() const;
+      const std::string & get_id() const;
 
       /// Return the tracker locator
-      const snemo::geometry::gg_locator &get_gg_locator() const;
+      const snemo::geometry::gg_locator & get_gg_locator() const;
 
       /// Check the geometry manager
       bool has_geometry_manager() const;
 
       /// Address the geometry manager
-      void set_geometry_manager(const geomtools::manager &gmgr_);
+      void set_geometry_manager(const geomtools::manager & gmgr_);
 
       /// Return a non-mutable reference to the geometry manager
-      const geomtools::manager &get_geometry_manager() const;
+      const geomtools::manager & get_geometry_manager() const;
 
       /// Check if theclusterizer is initialized
       bool is_initialized() const;
 
       /// Main clustering process
-      int process(const base_tracker_clusterizer::hit_collection_type &gg_hits_,
-                  const base_tracker_clusterizer::calo_hit_collection_type &calo_hits_,
-                  snemo::datamodel::tracker_clustering_data &clustering_);
+      int process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                  const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                  snemo::datamodel::tracker_clustering_data & clustering_);
 
       // Smart print
-      void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
-                     const std::string &indent_ = "", bool inherit_ = false) const;
+      void tree_dump(std::ostream & out_ = std::clog,
+										 const std::string & title_ = "",
+                     const std::string & indent_ = "",
+										 bool inherit_ = false) const;
 
       /// Initialize the clusterizer through configuration properties
-      virtual void initialize(const datatools::properties &setup_) = 0;
+      virtual void initialize(const datatools::properties & setup_) = 0;
 
       /// Reset the clusterizer
       virtual void reset() = 0;
 
       /// OCD support
       static void ocd_support(datatools::object_configuration_description &,
-                              const std::string &prefix_ = "");
+                              const std::string & prefix_ = "");
 
       // Manage the timestamp associated to processed events
   
@@ -137,7 +139,7 @@ namespace snemo {
       void reset_event_timestamp();
 
     protected:
-			
+      
       /// Initialize the clusterizer through configuration properties
       void _initialize(const datatools::properties & setup_);
 
@@ -154,46 +156,42 @@ namespace snemo {
       void _set_initialized(bool);
   
       /// Prepare cluster for processing
-      virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type &gg_hits_,
-                                   const base_tracker_clusterizer::calo_hit_collection_type &calo_hits_,
-                                   snemo::datamodel::tracker_clustering_data &clustering_);
+      virtual int _prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                   const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                                   snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Specific clustering algorithm
-      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type &gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type &calo_hits_,
-                                snemo::datamodel::tracker_clustering_data &clustering_) = 0;
+      virtual int _process_algo(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                                snemo::datamodel::tracker_clustering_data & clustering_) = 0;
 
       /// Post processing
-      virtual int _post_process(const base_tracker_clusterizer::hit_collection_type &gg_hits_,
-                                const base_tracker_clusterizer::calo_hit_collection_type &calo_hits_,
-                                snemo::datamodel::tracker_clustering_data &clustering_);
-
-      // /// Post processing of the ignored hits
-      // void _post_process_ignored_hits(snemo::datamodel::tracker_clustering_data & clustering_);
+      virtual int _post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
+                                snemo::datamodel::tracker_clustering_data & clustering_);
 
       /// Post processing to collect unclustered hits
-      void _post_process_collect_unclustered_hits(
-                                                  const base_tracker_clusterizer::hit_collection_type &gg_hits_,
-                                                  snemo::datamodel::tracker_clustering_data &clustering_);
+      void _post_process_collect_unclustered_hits(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
+                                                  snemo::datamodel::tracker_clustering_data & clustering_);
 
     protected:
-			
+      
       datatools::logger::priority _logging_priority = datatools::logger::priority::PRIO_FATAL; //!< Logging priority
 
     private:
 
-			bool isInitialized_ = false;                          //!< Initialization status
-      std::string id_;                                      //!< Identifier of the clusterizer algorithm
-      const geomtools::manager *geoManager_ = nullptr;      //!< The SuperNEMO geometry manager
-      const snemo::geometry::gg_locator *geigerLocator_ = nullptr; //!< Locator for geiger cells
-      geomtools::id_selector cellSelector_;                 //!< A selector of GIDs
-      snreco::detail::GeigerTimePartitioner preClusterer_;  //!< The time-clustering algorithm
+      bool isInitialized_ = false; //!< Initialization status
+      std::string id_; //!< Identifier of the clusterizer algorithm
+      const geomtools::manager * geoManager_ = nullptr; //!< The SuperNEMO geometry manager
+      const snemo::geometry::gg_locator * geigerLocator_ = nullptr; //!< Locator for geiger cells
+      geomtools::id_selector cellSelector_; //!< A selector of GIDs
+      snreco::detail::GeigerTimePartitioner preClusterizer_; //!< The time-clustering algorithm
 
       // Internal work space:
       snemo::time::time_point eventTimestamp_ = time::invalid_point() ; //!< Current event timestamp
       hit_collection_type ignoredHits_;  //!< Hits not used as input for any clustering algorithm
-      std::vector<hit_collection_type> promptClusters_;   //!< Clusters of only prompt hits
-      std::vector<hit_collection_type> delayedClusters_;  //!< Clusters of only delayed hits
+      std::vector<hit_collection_type> promptClusters_; //!< Clusters of only prompt hits
+      std::vector<hit_collection_type> delayedClusters_; //!< Clusters of only delayed hits
     };
 
   } // end of namespace processing

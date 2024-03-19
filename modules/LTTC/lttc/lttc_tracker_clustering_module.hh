@@ -89,20 +89,6 @@ namespace snemo {
       /// Return the 'tracker clustering data' bank label
       const std::string & get_tcd_label() const;
 
-      // /// Setting geometry manager
-      // void set_geometry_manager(const geomtools::manager & gm_);
-
-      // /// Getting geometry manager
-      // const geomtools::manager & get_geometry_manager() const;
-
-      // bool has_cell_status_service() const;
-      
-      // /// Setting tracker cell status service
-      // void set_cell_status_service(const snemo::tracker_cell_status_service & gm_);
-
-      // /// Getting tracker cell status service
-      // const snemo::tracker_cell_status_service & get_cell_status_service() const;
-
       /// Getting detector description
       const snemo::processing::detector_description & get_detector_description() const;
 

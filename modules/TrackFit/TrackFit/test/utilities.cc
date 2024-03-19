@@ -200,7 +200,7 @@ void generate_tcd(const snemo::geometry::gg_locator &ggloc_,
   tcs.get_clusters().push_back(htc0);
   tcs.get_clusters().push_back(htc1);
   tcs.get_clusters().push_back(htc2);
-  tcd_.push_back(htcs);
+  tcd_.append_solution(htcs);
   tcs.tree_dump(std::cerr, "Tracker clustering solution:", "", true);
   std::cerr << "|-- "
             << "Tracker cluster 0: " << std::endl;

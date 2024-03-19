@@ -22,7 +22,6 @@
  *
  * Description:
  *
- * History:
  */
 
 #ifndef FALAISE_SNEMO_PROCESSING_BASE_TRACKER_FITTER_H
@@ -40,114 +39,119 @@
 
 // Forward declaration :
 namespace datatools {
-class properties;
+  class properties;
 }
 
 namespace geomtools {
-class manager;
+  class manager;
 }
 
 namespace snemo {
 
-namespace geometry {
-class gg_locator;
-}
+  namespace geometry {
+    class gg_locator;
+  }
 
-namespace datamodel {
-class tracker_clustering_data;
-class tracker_trajectory_data;
-}  // namespace datamodel
+  namespace datamodel {
+    class tracker_clustering_data;
+    class tracker_trajectory_data;
+  } // namespace datamodel
 
-namespace processing {
+  namespace processing {
 
-/// \brief The base class for all tracker fitter algorithms
-class base_tracker_fitter {
- public:
-  /// Default constructor
-  base_tracker_fitter(const std::string &name = "anonymous");
+    /// \brief The base class for all tracker fitter algorithms
+    class base_tracker_fitter
+    {
+    public:
+      /// Default constructor
+      base_tracker_fitter(const std::string & name = "anonymous");
 
-  /// Destructor
-  virtual ~base_tracker_fitter();
+      /// Destructor
+      virtual ~base_tracker_fitter();
 
-  /// Set logging priority level
-  void set_logging_priority(datatools::logger::priority logging_priority_);
+      /// Set logging priority level
+      void set_logging_priority(datatools::logger::priority logging_priority_);
 
-  /// Get logging priority
-  datatools::logger::priority get_logging_priority() const;
+      /// Get logging priority
+      datatools::logger::priority get_logging_priority() const;
 
-  /// Return the clusterizer ID
-  const std::string &get_id() const;
+      /// Return the clusterizer ID
+      const std::string & get_id() const;
 
-  /// Return the tracker locator
-  const snemo::geometry::gg_locator &get_gg_locator() const;
+      /// Return the tracker locator
+      const snemo::geometry::gg_locator & get_gg_locator() const;
 
-  /// Check the geometry manager
-  bool has_geometry_manager() const;
+      /// Check the geometry manager
+      bool has_geometry_manager() const;
 
-  /// Address the geometry manager
-  void set_geometry_manager(const geomtools::manager &gmgr_);
+      /// Address the geometry manager
+      void set_geometry_manager(const geomtools::manager & gmgr_);
 
-  /// Return a non-mutable reference to the geometry manager
-  const geomtools::manager &get_geometry_manager() const;
+      /// Return a non-mutable reference to the geometry manager
+      const geomtools::manager & get_geometry_manager() const;
 
-  /// Check if theclusterizer is initialized
-  bool is_initialized() const;
+      /// Check if the fitter is initialized
+      bool is_initialized() const;
 
-  /// Main tracker trajectory driver
-  int process(const snemo::datamodel::tracker_clustering_data &clustering_,
-              snemo::datamodel::tracker_trajectory_data &trajectory_);
+      /// Main tracker fitter method
+      int process(const snemo::datamodel::tracker_clustering_data & clustering_,
+                  snemo::datamodel::tracker_trajectory_data & trajectory_);
 
-  /// Initialize the tracker trajectory fitter through configuration properties
-  virtual void initialize(const datatools::properties &setup_) = 0;
+      /// Initialize the tracker trajectory fitter through configuration properties
+      virtual void initialize(const datatools::properties & setup_) = 0;
 
-  /// Reset the tracker trajectory fitter
-  virtual void reset() = 0;
+      /// Reset the tracker trajectory fitter
+      virtual void reset() = 0;
 
-  /// Smart print
-  void tree_dump(std::ostream &out_ = std::clog, const std::string &title_ = "",
-                 const std::string &indent_ = "", bool inherit_ = false) const;
+      /// Smart print
+      void tree_dump(std::ostream & out_ = std::clog,
+                     const std::string & title_ = "",
+                     const std::string & indent_ = "",
+                     bool inherit_ = false) const;
 
-  /// OCD support
-  static void ocd_support(datatools::object_configuration_description &,
-                          const std::string &prefix_ = "");
+      /// OCD support
+      static void ocd_support(datatools::object_configuration_description &,
+                              const std::string & prefix_ = "");
 
- protected:
-  /// Initialize the clusterizer through configuration properties
-  void _initialize(const datatools::properties &setup_);
+    protected:
+			
+      /// Initialize the clusterizer through configuration properties
+      void _initialize(const datatools::properties & setup_);
 
-  /// Reset the clusterizer
-  void _reset();
+      /// Reset the clusterizer
+      void _reset();
 
-  /// Set default attribute values
-  void _set_defaults();
+      /// Set default attribute values
+      void _set_defaults();
 
-  /// Set the initialization flag
-  void _set_initialized(bool);
+      /// Set the initialization flag
+      void _set_initialized(bool);
 
-  /// Specific fitting algorithm
-  virtual int _process_algo(const snemo::datamodel::tracker_clustering_data &clustering_,
-                            snemo::datamodel::tracker_trajectory_data &trajectory_) = 0;
+      /// Specific fitting algorithm
+      virtual int _process_algo(const snemo::datamodel::tracker_clustering_data & clustering_,
+                                snemo::datamodel::tracker_trajectory_data & trajectory_) = 0;
 
-  /// Post-processing operation
-  virtual int _post_process(snemo::datamodel::tracker_trajectory_data &trajectory_);
+      /// Post-processing operation
+      virtual int _post_process(snemo::datamodel::tracker_trajectory_data & trajectory_);
 
- protected:
-  datatools::logger::priority _logging_priority;  /// Logging priority threshold
+    protected:
+      datatools::logger::priority _logging_priority = datatools::logger::priority::PRIO_FATAL; ///< Logging priority threshold
 
- private:
-  bool isInitialized_;                            /// Initialization status
-  std::string id_;                              /// Identifier of the fitter algorithm
-  const geomtools::manager *geoManager_;  /// The SuperNEMO geometry manager
-  const snemo::geometry::gg_locator
-      *geigerLocator_;                /// Locator dedicated to the SuperNEMO tracking chamber
-  size_t maxFitsToSave_;  /// The maximum number of fits to be saved
-};
+    private:
+  
+      bool isInitialized_ = false; ///< Initialization status
+      std::string id_; ///< Identifier of the fitter algorithm
+      const geomtools::manager * geoManager_ = nullptr; ///< The SuperNEMO geometry manager
+      const snemo::geometry::gg_locator * geigerLocator_ = nullptr; ///< Locator dedicated to the SuperNEMO tracking chamber
+      size_t maxFitsToSave_; ///< The maximum number of fits to be saved
 
-}  // end of namespace processing
+    };
 
-}  // end of namespace snemo
+  } // end of namespace processing
 
-#endif  // FALAISE_SNEMO_PROCESSING_BASE_TRACKER_FITTER_H
+} // end of namespace snemo
+
+#endif // FALAISE_SNEMO_PROCESSING_BASE_TRACKER_FITTER_H
 
 /*
 ** Local Variables: --

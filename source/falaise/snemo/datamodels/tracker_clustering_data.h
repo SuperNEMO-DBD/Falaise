@@ -39,7 +39,7 @@ namespace snemo {
     // The tracker hits are initialy  sorted, by the so-called tracker
     // pre-clustering  algorithm,  within   time  bunches  of  typical
     // duration    ~10   us    (see   the    configuration   of    the
-    // snemo::processing::base_tracker_clusterizer  class).
+    // snemo::processing::base_tracker_clusterizer  of snemo::processing::base_tracking_driver classes).
     //
     // The first expected bunch  is the so-called *prompt* pre-cluster
     // which contains all the tracker  prompt hits that are collected
@@ -99,7 +99,7 @@ namespace snemo {
     // collection  of tracker  clusters.  However,  several clustering
     // solutions  may exist  so the  final product  of the  clustering
     // algorithm  consists in  a  collection  of clustering  solutions
-    // (a.k.a.   scenarii).  The  tracker clustering  data model  thus
+    // (a.k.a. clustering  scenarii).  The  tracker clustering  data model  thus
     // stores a collection  of solutions. A subset  of these solutions
     // corresponds to  the clusterization  of the  prompt pre-cluster:
     // they are tagged with a dedicated *prompt* flag. Other subsets of
@@ -138,10 +138,10 @@ namespace snemo {
       size_t size() const;
 
       /// Add a clustering solution
-      void push_back(const TrackerClusteringSolutionHdl& solution, bool isDefault = false);
+      void append_solution(const TrackerClusteringSolutionHdl & solution, bool isDefault = false);
 
       /// Return a non mutable reference to a clustering solution by index
-      const tracker_clustering_solution& at(size_t index) const;
+      const tracker_clustering_solution & at(size_t index) const;
 
       /// Reset the clustering solutions
       void clear() override;

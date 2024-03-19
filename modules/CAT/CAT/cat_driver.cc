@@ -458,7 +458,7 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     }
 
     auto htcs = datatools::make_handle<sdm::TrackerClusteringSolution>();
-    clustering_.push_back(htcs, true);
+    clustering_.append_solution(htcs, true);
     clustering_.get_default().set_solution_id(clustering_.size() - 1);
     sdm::tracker_clustering_solution& clustering_solution = clustering_.get_default();
 

@@ -57,40 +57,47 @@ namespace snemo {
   namespace processing {
 
     // Constructor
-    base_tracker_clusterizer::base_tracker_clusterizer(const std::string & name) {
+    base_tracker_clusterizer::base_tracker_clusterizer(const std::string & name)
+    {
       id_ = name;
       _set_initialized(false);
       _set_defaults();
+      return;
     }
 
     base_tracker_clusterizer::~base_tracker_clusterizer() = default;
 
-    void base_tracker_clusterizer::_set_defaults() {
+    void base_tracker_clusterizer::_set_defaults()
+    {
       _logging_priority = datatools::logger::PRIO_WARNING;
       geoManager_ = nullptr;
       geigerLocator_ = nullptr;
+      return;
     }
 
-    void base_tracker_clusterizer::_reset() {
+    void base_tracker_clusterizer::_reset()
+    {
       _set_initialized(false);
-
       // Clear working arrays:
       _clear_working_arrays();
-      preClusterer_ = snreco::detail::GeigerTimePartitioner{};
+      preClusterizer_ = snreco::detail::GeigerTimePartitioner{};
       cellSelector_.reset();
-
       // Reset configuration params:
       _set_defaults();
+      return;
     }
 
-    datatools::logger::priority base_tracker_clusterizer::get_logging_priority() const {
+    datatools::logger::priority base_tracker_clusterizer::get_logging_priority() const
+    {
       return _logging_priority;
     }
 
-    void base_tracker_clusterizer::set_logging_priority(datatools::logger::priority priority_) {
+    void base_tracker_clusterizer::set_logging_priority(datatools::logger::priority priority_)
+    {
       DT_THROW_IF(priority_ == datatools::logger::PRIO_UNDEFINED, std::logic_error,
-                  "Invalid logging priority level !");
+                  "Invalid logging priority level!");
       _logging_priority = priority_;
+      return;
     }
 
     const std::string & base_tracker_clusterizer::get_id() const { return id_; }
@@ -99,15 +106,16 @@ namespace snemo {
 
     void base_tracker_clusterizer::_set_initialized(bool i_) { isInitialized_ = i_; }
 
-    const snemo::geometry::gg_locator & base_tracker_clusterizer::get_gg_locator() const {
+    const snemo::geometry::gg_locator & base_tracker_clusterizer::get_gg_locator() const
+    {
       return *geigerLocator_;
     }
 
-    void base_tracker_clusterizer::_initialize(const datatools::properties & setup_) {
-  
+    void base_tracker_clusterizer::_initialize(const datatools::properties & setup_)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
-      DT_THROW_IF(!has_geometry_manager(), std::logic_error, "Missing geometry manager !");
-      DT_THROW_IF(!geoManager_->is_initialized(), std::logic_error,
+      DT_THROW_IF(not has_geometry_manager(), std::logic_error, "Missing geometry manager !");
+      DT_THROW_IF(not geoManager_->is_initialized(), std::logic_error,
                   "Geometry manager is not initialized !");
 
       // Logging priority:
@@ -131,42 +139,46 @@ namespace snemo {
 
       // Cell geom_id mask
       auto cell_id_mask_rules = ps.get<std::string>("cell_id_mask_rules", "");
-      if (!cell_id_mask_rules.empty()) {
+      if (not cell_id_mask_rules.empty()) {
         cellSelector_.set_id_mgr(get_geometry_manager().get_id_mgr());
         cellSelector_.initialize(cell_id_mask_rules);
       }
 
       // Configure time partitioning :
-      preClusterer_ = snreco::detail::GeigerTimePartitioner(ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time", {10.0, "microsecond"})(),
-                                                            ps.get<bool>("TPC.processing_prompt_hits", true),
-                                                            ps.get<bool>("TPC.processing_delayed_hits", true),
-                                                            ps.get<bool>("TPC.split_chamber", true));
+      preClusterizer_ = snreco::detail::GeigerTimePartitioner(ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time",
+										      {10.0, "microsecond"})(),
+							      ps.get<bool>("TPC.processing_prompt_hits", true),
+							      ps.get<bool>("TPC.processing_delayed_hits", true),
+							      ps.get<bool>("TPC.split_chamber", true));
+      return;
     }
 
-    void base_tracker_clusterizer::_clear_working_arrays() {
+    void base_tracker_clusterizer::_clear_working_arrays()
+    {
       ignoredHits_.clear();
       promptClusters_.clear();
       delayedClusters_.clear();
+      return;
     }
 
-    void base_tracker_clusterizer::set_geometry_manager(const geomtools::manager & gmgr_) {
+    void base_tracker_clusterizer::set_geometry_manager(const geomtools::manager & gmgr_)
+    {
       DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
       // Initialization stuff:
-      const std::string &geo_setup_label = gmgr_.get_setup_label();
-      DT_THROW_IF(
-                  geo_setup_label != "snemo::demonstrator" && geo_setup_label != "snemo::tracker_commissioning",
+      const std::string & geo_setup_label = gmgr_.get_setup_label();
+      DT_THROW_IF(geo_setup_label != "snemo::demonstrator" && geo_setup_label != "snemo::tracker_commissioning",
                   std::logic_error, "Invalid geometry setup label '" << geo_setup_label << "' !");
-
       geoManager_ = &gmgr_;
+      return;
     }
 
-    const geomtools::manager &base_tracker_clusterizer::get_geometry_manager() const {
-      DT_THROW_IF(!has_geometry_manager(), std::logic_error, "No geometry manager is setup !");
+    const geomtools::manager & base_tracker_clusterizer::get_geometry_manager() const
+    {
+      DT_THROW_IF(not has_geometry_manager(), std::logic_error, "No geometry manager is setup !");
       return *geoManager_;
     }
 
     bool base_tracker_clusterizer::has_geometry_manager() const { return geoManager_ != nullptr; }
-
 
     bool base_tracker_clusterizer::has_event_timestamp() const
     {
@@ -192,22 +204,23 @@ namespace snemo {
   
     int base_tracker_clusterizer::_prepare_process(const base_tracker_clusterizer::hit_collection_type & gg_hits,
                                                    const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
-                                                   snemo::datamodel::tracker_clustering_data & /* clustering_ */) {
+                                                   snemo::datamodel::tracker_clustering_data & /* clustering_ */)
+    {
       auto logging = get_logging_priority();
       // logging = datatools::logger::PRIO_DEBUG;
-      // Input data
+      // Input data:
       snreco::detail::GeigerHitPtrCollection<hit_type> idata;
       idata.reserve(gg_hits.size());
       std::map<const hit_type *, hit_handle_type> pre_cluster_mapping;
 
       // Fill the TrackerPreClustering input data model :
-      for (const hit_handle_type &gg_handle : gg_hits) {
-        if (!gg_handle.has_data()) {
+      for (const hit_handle_type & gg_handle : gg_hits) {
+        if (not gg_handle.has_data()) {
           continue;
         }
-        const geomtools::geom_id &gid = gg_handle->get_geom_id();
-        // Drift cell selector
-        if (cellSelector_.is_initialized() && !cellSelector_.match(gid)) {
+        const geomtools::geom_id & gid = gg_handle->get_geom_id();
+        // Drift cell selector:
+        if (cellSelector_.is_initialized() && not cellSelector_.match(gid)) {
           continue;
         }
         idata.push_back(&(*gg_handle));
@@ -216,25 +229,25 @@ namespace snemo {
       }
 
       // Invoke pre-clusterizing algo :
-      snreco::detail::GeigerHitTimePartition<hit_type> odata = preClusterer_.partition(idata);
+      snreco::detail::GeigerHitTimePartition<hit_type> odata = preClusterizer_.partition(idata);
 
       // Repopulate the collections of pre-clusters :
 
       // Ignored hits :
       ignoredHits_.reserve(odata.ignoredHits.size());
       DT_LOG_DEBUG(logging, "#ignored hits = " << odata.ignoredHits.size());
-      for (const auto &ignored_hit : odata.ignoredHits) {
+      for (const auto & ignored_hit : odata.ignoredHits) {
         ignoredHits_.push_back(pre_cluster_mapping[ignored_hit]);
       }
 
       // Prompt time clusters :
       promptClusters_.reserve(odata.promptClusters.size());
       DT_LOG_DEBUG(logging, "#prompt clusters = " << odata.promptClusters.size());
-      for (const auto &prompt_cluster : odata.promptClusters) {
+      for (const auto & prompt_cluster : odata.promptClusters) {
         hit_collection_type hc;
         hc.reserve(prompt_cluster.size());
         DT_LOG_DEBUG(logging, "  #hits in prompt clusters = " << prompt_cluster.size());
-        for (const auto &hit : prompt_cluster) {
+        for (const auto & hit : prompt_cluster) {
           hc.push_back(pre_cluster_mapping[hit]);
         }
         promptClusters_.push_back(std::move(hc));
@@ -243,10 +256,10 @@ namespace snemo {
       // Delayed time clusters :
       delayedClusters_.reserve(odata.delayedClusters.size());
       DT_LOG_DEBUG(logging, "#delayed clusters = " << odata.delayedClusters.size());
-      for (const auto &delayed_cluster : odata.delayedClusters) {
+      for (const auto & delayed_cluster : odata.delayedClusters) {
         hit_collection_type hc;
         hc.reserve(delayed_cluster.size());
-        for (const auto &ihit : delayed_cluster) {
+        for (const auto & ihit : delayed_cluster) {
           hc.push_back(pre_cluster_mapping[ihit]);
         }
         delayedClusters_.push_back(std::move(hc));
@@ -255,19 +268,18 @@ namespace snemo {
     }
 
     void base_tracker_clusterizer::_post_process_collect_unclustered_hits(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
-                                                                          snemo::datamodel::tracker_clustering_data & clustering_) {
+                                                                          snemo::datamodel::tracker_clustering_data & clustering_)
+    {
       namespace snedm = snemo::datamodel;
-
       for (datatools::handle<snedm::tracker_clustering_solution> &the_solution :
              clustering_.solutions()) {
         std::set<int> clustered_hit_ids;
-        for (datatools::handle<snedm::tracker_cluster> &the_cluster : the_solution->get_clusters()) {
-          for (datatools::handle<snedm::calibrated_tracker_hit> &the_hit : the_cluster->hits()) {
+        for (datatools::handle<snedm::tracker_cluster> & the_cluster : the_solution->get_clusters()) {
+          for (datatools::handle<snedm::calibrated_tracker_hit> & the_hit : the_cluster->hits()) {
             clustered_hit_ids.insert(the_hit->get_hit_id());
           }
         }
-
-        for (const datatools::handle<hit_type> &hhit : gg_hits_) {
+        for (const datatools::handle<hit_type> & hhit : gg_hits_) {
           int hit_id = hhit->get_hit_id();
           if (clustered_hit_ids.count(hit_id) == 0) {
             // It's unclustered...
@@ -275,25 +287,27 @@ namespace snemo {
           }
         }
       }
+      return;
     }
 
     int base_tracker_clusterizer::_post_process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
                                                 const base_tracker_clusterizer::calo_hit_collection_type & /* calo_hits_ */,
-                                                snemo::datamodel::tracker_clustering_data & clustering_) {
+                                                snemo::datamodel::tracker_clustering_data & clustering_)
+    {
       _post_process_collect_unclustered_hits(gg_hits_, clustering_);
       return 0;
     }
 
     int base_tracker_clusterizer::process(const base_tracker_clusterizer::hit_collection_type & gg_hits_,
                                           const base_tracker_clusterizer::calo_hit_collection_type & calo_hits_,
-                                          snemo::datamodel::tracker_clustering_data & clustering_) {
+                                          snemo::datamodel::tracker_clustering_data & clustering_)
+    {
       DT_LOG_DEBUG(get_logging_priority(), "Entering...");
       namespace snedm = snemo::datamodel;
       int status = 0;
       DT_THROW_IF(!is_initialized(), std::logic_error,
                   "Clusterizer '" << id_ << "' is not initialized !");
       _clear_working_arrays();
-
       clustering_.clear();
 
       // Run pre-processing based on time-coincidence to determine what are prompt hits,
@@ -308,10 +322,10 @@ namespace snemo {
       prompt_work_clusterings.reserve(2);
 
       // Process prompt time-clusters :
-      if (preClusterer_.classifiesPromptHits()) {
+      if (preClusterizer_.classifiesPromptHits()) {
         int iCl = 0;
         // Invoke the clustering algorithms on each prompt clusters :
-        for (const hit_collection_type &prompt_clusters : promptClusters_) {
+        for (const hit_collection_type & prompt_clusters : promptClusters_) {
           DT_LOG_DEBUG(get_logging_priority(), "Process clustering for prompt cluster #" << iCl);
           prompt_work_clusterings.emplace_back(snedm::tracker_clustering_data{});
           status = _process_algo(prompt_clusters, calo_hits_, prompt_work_clusterings.back());
@@ -328,45 +342,40 @@ namespace snemo {
         } else if (promptClusters_.size() == 1) {
           // In this case, only one clustering algorithm has been performed on
           // only one side of the tracking chamber or on both sides in a single shot:
-          snedm::tracker_clustering_data &prompt_cd = prompt_work_clusterings[0];
+          snedm::tracker_clustering_data & prompt_cd = prompt_work_clusterings[0];
           clustering_.solutions().reserve(prompt_cd.size());
-
           for (size_t isol = 0; isol < prompt_cd.size(); isol++) {
-            auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
+            clustering_.append_solution(datatools::make_handle<snedm::tracker_clustering_solution>());
+            auto & h_tc_sol = clustering_.solutions().back(); 
             h_tc_sol->set_solution_id(isol);
             h_tc_sol->get_auxiliaries().store_flag(prompt_key());
             const snedm::tracker_clustering_solution &prompt_sol = prompt_cd.at(isol);
-            snedm::tracker_clustering_solution::copy_one_solution_in_one(prompt_sol, *h_tc_sol);
+            snedm::tracker_clustering_solution::copy_one_solution_in_other(prompt_sol, *h_tc_sol);
             h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
-
-            clustering_.push_back(h_tc_sol);
           }
         } else if (promptClusters_.size() == 2) {
           // We merge the two clusterings in as many as solutions are needed to take into
           // account the combinatory with both sides of the source:
-          snedm::tracker_clustering_data &prompt_cd0 = prompt_work_clusterings[0];
-          snedm::tracker_clustering_data &prompt_cd1 = prompt_work_clusterings[1];
+          snedm::tracker_clustering_data & prompt_cd0 = prompt_work_clusterings[0];
+          snedm::tracker_clustering_data & prompt_cd1 = prompt_work_clusterings[1];
           unsigned int nb_prompt_sol0 = prompt_cd0.size();
           unsigned int nb_prompt_sol1 = prompt_cd1.size();
           unsigned int nb_sols = nb_prompt_sol0 * nb_prompt_sol1;
-
           // Build all combinaisons of solutions from solutions found from both sides
           // of the source:
           for (size_t isol = 0; isol < nb_sols; ++isol) {
-            auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
-            h_tc_sol->set_solution_id(isol);
+            clustering_.append_solution(datatools::make_handle<snedm::tracker_clustering_solution>());
+            auto & h_tc_sol = clustering_.solutions().back(); 
+             h_tc_sol->set_solution_id(isol);
             h_tc_sol->get_auxiliaries().store_flag(prompt_key());
             int isol0 = isol % nb_prompt_sol0;
             int isol1 = isol / nb_prompt_sol0;
-            const snedm::tracker_clustering_solution &prompt_sol0 = prompt_cd0.at(isol0);
-            const snedm::tracker_clustering_solution &prompt_sol1 = prompt_cd1.at(isol1);
-            snedm::tracker_clustering_solution::merge_two_solutions_in_ones(prompt_sol0, prompt_sol1,
-                                                                            *h_tc_sol);
-
+            const snedm::tracker_clustering_solution & prompt_sol0 = prompt_cd0.at(isol0);
+            const snedm::tracker_clustering_solution & prompt_sol1 = prompt_cd1.at(isol1);
+            snedm::tracker_clustering_solution::merge_two_solutions_in_other(prompt_sol0, prompt_sol1,
+									     *h_tc_sol);
             h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
-            clustering_.push_back(h_tc_sol);
           }
-
         } else {
           DT_THROW_IF(true, std::logic_error,
                       "Cannot handle case with more than 2 prompt input clusters!");
@@ -374,12 +383,12 @@ namespace snemo {
       }
 
       // Process delayed time-clusters :
-      if (preClusterer_.classifiesDelayedHits()) {
+      if (preClusterizer_.classifiesDelayedHits()) {
         std::vector<snedm::tracker_clustering_data> delayed_work_clusterings;
         // Process delayed time-clusters :
         {
           int iCl = 0;
-          for (const hit_collection_type &delayed_cluster : delayedClusters_) {
+          for (const hit_collection_type & delayed_cluster : delayedClusters_) {
             snedm::tracker_clustering_data workingTCD;
             DT_LOG_DEBUG(get_logging_priority(), "Process clustering for delayed cluster #" << iCl);
             status = _process_algo(delayed_cluster, calo_hits_, workingTCD);
@@ -395,26 +404,24 @@ namespace snemo {
 
         for (size_t idelayed_clustering = 0; idelayed_clustering < delayed_work_clusterings.size();
              idelayed_clustering++) {
-          snedm::tracker_clustering_data &delayed_cd = delayed_work_clusterings[idelayed_clustering];
+          snedm::tracker_clustering_data & delayed_cd = delayed_work_clusterings[idelayed_clustering];
           for (size_t idelayed_sol = 0; idelayed_sol < delayed_cd.size(); idelayed_sol++) {
             // Extract the solution from the clustering result:
             const snedm::tracker_clustering_solution &delayed_sol = delayed_cd.at(idelayed_sol);
             // Create a new clustering solution
-            auto h_tc_sol = datatools::make_handle<snedm::tracker_clustering_solution>();
+            clustering_.append_solution(datatools::make_handle<snedm::tracker_clustering_solution>());
+            auto h_tc_sol = clustering_.solutions().back();
             // Give it an unique solution id:
             h_tc_sol->set_solution_id(clustering_.size() + idelayed_sol);
             // Record the delayed time-cluster unique Idd solution:
             h_tc_sol->get_auxiliaries().store_integer(delayed_id_key(), idelayed_clustering);
-            snedm::tracker_clustering_solution::copy_one_solution_in_one(delayed_sol, *h_tc_sol);
-
+            snedm::tracker_clustering_solution::copy_one_solution_in_other(delayed_sol, *h_tc_sol);
             h_tc_sol->get_auxiliaries().store_string(clusterizer_id_key(), get_id());
             // Flag it as a delayed clustering solution:
             h_tc_sol->get_auxiliaries().store_flag(delayed_key());
             for (datatools::handle<snedm::tracker_cluster> &icluster : h_tc_sol->get_clusters()) {
               icluster->make_delayed();
             }
-
-            clustering_.push_back(h_tc_sol);
           }
         }
       }
@@ -439,7 +446,7 @@ namespace snemo {
             }
 
             aux_prompt.unset_flag(prompt_key());
-            snedm::tracker_clustering_solution::copy_one_solution_in_one(sol_delayed, sol_prompt);
+            snedm::tracker_clustering_solution::copy_one_solution_in_other(sol_delayed, sol_prompt);
           }
         }
         // Delete all delayed solutions (use erase(remove_if)?)
@@ -456,12 +463,14 @@ namespace snemo {
       return status;
     }
 
-    void base_tracker_clusterizer::tree_dump(std::ostream &out_, const std::string &title_,
-                                             const std::string &indent, bool inherit_) const {
+    void base_tracker_clusterizer::tree_dump(std::ostream & out_,
+                                             const std::string & title_,
+                                             const std::string & indent,
+                                             bool inherit_) const
+    {
       if (!title_.empty()) {
         out_ << indent << title_ << std::endl;
       }
-
       out_ << indent << datatools::i_tree_dumpable::tag << "Logging          : '"
            << datatools::logger::get_priority_label(_logging_priority) << "'" << std::endl;
       out_ << indent << datatools::i_tree_dumpable::tag << "Initialized      : " << is_initialized()
@@ -475,11 +484,13 @@ namespace snemo {
              << geoManager_->get_setup_version() << "'" << std::endl;
       }
       out_ << indent << datatools::i_tree_dumpable::inherit_tag(inherit_) << "End." << std::endl;
+      return;
     }
 
     // static
     void base_tracker_clusterizer::ocd_support(datatools::object_configuration_description & ocd_,
-                                               const std::string & prefix_) {
+                                               const std::string & prefix_)
+    {
       datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "BTC.");
 
       {
@@ -490,8 +501,7 @@ namespace snemo {
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_STRING)
           .set_long_description("Empty value means automatic search   \n")
-          .add_example(
-                       "Set a specific value::                                  \n"
+          .add_example("Set a specific value::                                  \n"
                        "                                                        \n"
                        "  TC.locator_plugin_name : string = \"locators_driver\" \n"
                        "                                                        \n");
@@ -505,8 +515,7 @@ namespace snemo {
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_REAL)
           .set_default_value_real(10 * CLHEP::microsecond, "us")
-          .add_example(
-                       "Set the default value::                          \n"
+          .add_example("Set the default value::                          \n"
                        "                                                 \n"
                        "  TPC.delayed_hit_cluster_time : real = 10 us    \n"
                        "                                                 \n");
@@ -520,8 +529,7 @@ namespace snemo {
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_BOOLEAN)
           .set_default_value_boolean(true)
-          .add_example(
-                       "Set the default value::                       \n"
+          .add_example("Set the default value::                       \n"
                        "                                              \n"
                        "  TPC.processing_prompt_hits : boolean = 1    \n"
                        "                                              \n");
@@ -535,8 +543,7 @@ namespace snemo {
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_BOOLEAN)
           .set_default_value_boolean(true)
-          .add_example(
-                       "Set the default value::                       \n"
+          .add_example("Set the default value::                       \n"
                        "                                              \n"
                        "  TPC.processing_delayed_hits : boolean = 1   \n"
                        "                                              \n");
@@ -551,8 +558,7 @@ namespace snemo {
           .set_from("snemo::processing::base_tracker_clusterizer")
           .set_traits(datatools::TYPE_BOOLEAN)
           .set_default_value_boolean(false)
-          .add_example(
-                       "Split chamber in 2 sides::          \n"
+          .add_example("Split chamber in 2 sides::          \n"
                        "                                    \n"
                        "  TPC.split_chamber : boolean = 1   \n"
                        "                                    \n");
@@ -560,6 +566,6 @@ namespace snemo {
       return;
     }
 
-  } // namespace processing
+  } // end of namespace processing
 
 } // end of namespace snemo

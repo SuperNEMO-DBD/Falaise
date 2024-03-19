@@ -22,6 +22,7 @@
 // - Bayeux
 #include "bayeux/datatools/configuration/variant_service.h"
 #include "bayeux/datatools/logger.h"
+#include "bayeux/datatools/event_id.h"
 #include "bayeux/datatools/multi_properties.h"
 #include "bayeux/mctools/g4/manager_parameters.h"
 
@@ -35,7 +36,8 @@ namespace FLSimulate {
     std::string userProfile;              //!< User profile
     std::vector<std::string> mountPoints; //!< Directory mount directives
     unsigned int numberOfEvents;          //!< Number of events to be processed in the pipeline
-
+		int runNumber = datatools::event_id::ANY_RUN_NUMBER;
+ 		unsigned int firstEventNumber = 0u;
     // Plugin dedicated service:
     datatools::multi_properties userLibConfig; //!< Main configuration for plugins loader
 

@@ -10,9 +10,6 @@
  *
  *   SuperNEMO calibrated data model
  *
- *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H
@@ -41,21 +38,24 @@ namespace snemo {
   namespace datamodel {
 
     /// \brief The data structure that hosts information about calibrated hits
-    class calibrated_data : public datatools::i_serializable,
-                            public datatools::i_tree_dumpable,
-                            public datatools::i_clear {
+    class calibrated_data
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
+    {
     public:
+      
       /// Return the const collection of calorimeter hits
-      const CalorimeterHitHdlCollection& calorimeter_hits() const;
+      const CalorimeterHitHdlCollection & calorimeter_hits() const;
 
       /// Return the mutable collection of calorimeter hits
-      CalorimeterHitHdlCollection& calorimeter_hits();
+      CalorimeterHitHdlCollection & calorimeter_hits();
 
       /// Return the const collection of tracker hits
-      const TrackerHitHdlCollection& tracker_hits() const;
+      const TrackerHitHdlCollection & tracker_hits() const;
 
       /// Return the mutable collection of tracker hits
-      TrackerHitHdlCollection& tracker_hits();
+      TrackerHitHdlCollection & tracker_hits();
 
       /// Clear attributes
       void clear() override;
@@ -84,9 +84,9 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_data, "snemo::datamodel::calibrated_data")
@@ -95,4 +95,4 @@ BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::calibrated_data, "snemo::datamodel::ca
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::calibrated_data, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H
+#endif // FALAISE_SNEMO_DATAMODEL_CALIBRATED_DATA_H

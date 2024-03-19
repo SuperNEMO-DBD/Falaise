@@ -16,8 +16,8 @@ namespace snemo {
       return *(solutions_.at(index));
     }
 
-    void tracker_clustering_data::push_back(const TrackerClusteringSolutionHdl& solution,
-					    bool isDefault)
+    void tracker_clustering_data::append_solution(const TrackerClusteringSolutionHdl& solution,
+						  bool isDefault)
     {
       DT_THROW_IF(!solution, std::logic_error, "Cannot store a null handle !");
       for (const auto& addr : solutions_) {

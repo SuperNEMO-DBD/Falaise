@@ -14,7 +14,8 @@ namespace snemo {
 
     int tracker_clustering_solution::get_solution_id() const { return id_; }
 
-    void tracker_clustering_solution::set_solution_id(int32_t id) {
+    void tracker_clustering_solution::set_solution_id(int32_t id)
+    {
       if (id >= 0) {
         id_ = id;
       } else {
@@ -24,9 +25,9 @@ namespace snemo {
 
     void tracker_clustering_solution::invalidate_solution_id() { id_ = -1; }
 
-    datatools::properties &tracker_clustering_solution::get_auxiliaries() { return auxiliaries_; }
+    datatools::properties & tracker_clustering_solution::get_auxiliaries() { return auxiliaries_; }
 
-    const datatools::properties &tracker_clustering_solution::get_auxiliaries() const {
+    const datatools::properties & tracker_clustering_solution::get_auxiliaries() const {
       return auxiliaries_;
     }
 
@@ -34,17 +35,18 @@ namespace snemo {
       return !unclustered_hits_.empty();
     }
 
-    TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() {
+    TrackerHitHdlCollection & tracker_clustering_solution::get_unclustered_hits() {
       return unclustered_hits_;
     }
 
-    const TrackerHitHdlCollection &tracker_clustering_solution::get_unclustered_hits() const {
+    const TrackerHitHdlCollection & tracker_clustering_solution::get_unclustered_hits() const {
       return unclustered_hits_;
     }
 
-    TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() { return clusters_; }
+    TrackerClusterHdlCollection & tracker_clustering_solution::get_clusters() { return clusters_; }
 
-    const TrackerClusterHdlCollection &tracker_clustering_solution::get_clusters() const {
+    const TrackerClusterHdlCollection & tracker_clustering_solution::get_clusters() const
+    {
       return clusters_;
     }
 
@@ -58,16 +60,19 @@ namespace snemo {
       auxiliaries_.clear();
     }
 
-    bool tracker_clustering_solution::hit_belongs_to_cluster(const calibrated_tracker_hit &hit,
-                                                             const tracker_cluster &cluster) const {
+    bool tracker_clustering_solution::hit_belongs_to_cluster(const calibrated_tracker_hit & hit,
+                                                             const tracker_cluster & cluster) const
+    {
       return hit_belongs_to_cluster(hit.get_hit_id(), cluster.get_cluster_id());
     }
 
-    bool tracker_clustering_solution::hit_is_clustered(const calibrated_tracker_hit &hit) const {
+    bool tracker_clustering_solution::hit_is_clustered(const calibrated_tracker_hit & hit) const
+    {
       return hit_is_clustered(hit.get_hit_id());
     }
 
-    bool tracker_clustering_solution::hit_is_clustered(int32_t hit_id_) const {
+    bool tracker_clustering_solution::hit_is_clustered(int32_t hit_id_) const
+    {
       if (!hit_belonging_.empty()) {
         auto found = hit_belonging_.find(hit_id_);
         return found != hit_belonging_.end() && !found->second.empty();
@@ -84,12 +89,13 @@ namespace snemo {
       return true;
     }
 
-    bool tracker_clustering_solution::hit_belongs_to_several_clusters(
-                                                                      const calibrated_tracker_hit &hit) const {
+    bool tracker_clustering_solution::hit_belongs_to_several_clusters(const calibrated_tracker_hit & hit) const
+    {
       return hit_belongs_to_several_clusters(hit.get_hit_id());
     }
 
-    bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id_) const {
+    bool tracker_clustering_solution::hit_belongs_to_several_clusters(int32_t hit_id_) const
+    {
       // If available, use the' hit_belonging' collection :
       if (!hit_belonging_.empty()) {
         auto found = hit_belonging_.find(hit_id_);
@@ -124,7 +130,8 @@ namespace snemo {
     }
 
     bool tracker_clustering_solution::hit_belongs_to_cluster(int32_t hit_id_,
-                                                             int32_t cluster_id_) const {
+                                                             int32_t cluster_id_) const
+    {
       // If available, use the' hit_belonging' collection :
       if (!hit_belonging_.empty()) {
         auto found_iter = hit_belonging_.find(hit_id_);
@@ -165,17 +172,25 @@ namespace snemo {
     }
 
     const tracker_clustering_solution::hit_belonging_col_type &
-    tracker_clustering_solution::get_hit_belonging() const {
+    tracker_clustering_solution::get_hit_belonging() const
+    {
       return hit_belonging_;
     }
 
-    void tracker_clustering_solution::reset_hit_belonging() { hit_belonging_.clear(); }
+    void tracker_clustering_solution::reset_hit_belonging()
+    {
+      hit_belonging_.clear();
+    }
 
-    bool tracker_clustering_solution::has_hit_belonging() const { return !hit_belonging_.empty(); }
+    bool tracker_clustering_solution::has_hit_belonging() const
+    {
+      return !hit_belonging_.empty();
+    }
 
     // static
-    void tracker_clustering_solution::compute_hit_belonging_from_solution(
-                                                                          const tracker_clustering_solution &tcs_, hit_belonging_col_type &hbc_) {
+    void tracker_clustering_solution::compute_hit_belonging_from_solution(const tracker_clustering_solution & tcs_,
+									  hit_belonging_col_type & hbc_)
+    {
       hbc_.clear();
 
       for (const auto &the_cluster : tcs_.get_clusters()) {
@@ -201,64 +216,85 @@ namespace snemo {
       }
     }
 
-    void tracker_clustering_solution::compute_hit_belonging() {
+    void tracker_clustering_solution::compute_hit_belonging()
+    {
       compute_hit_belonging_from_solution(*this, hit_belonging_);
     }
 
     // static
-    int tracker_clustering_solution::copy_one_solution_in_one(
-                                                              const tracker_clustering_solution &source_, tracker_clustering_solution &target_) {
+    int tracker_clustering_solution::copy_one_solution_in_other(const tracker_clustering_solution & source_,
+								tracker_clustering_solution & target_)
+    {
       // Preallocate the total number of clusters/hits from both solutions:
-      auto &src_clusters = source_.get_clusters();
-      auto &src_hits = source_.get_unclustered_hits();
-
-      auto &tgt_clusters = target_.get_clusters();
+      auto & src_clusters = source_.get_clusters();
+      auto & src_hits = source_.get_unclustered_hits();
+      auto & tgt_clusters = target_.get_clusters();
       tgt_clusters.reserve(tgt_clusters.size() + src_clusters.size());
-
-      auto &tgt_hits = target_.get_unclustered_hits();
+      auto & tgt_hits = target_.get_unclustered_hits();
       tgt_hits.reserve(tgt_hits.size() + src_hits.size());
 
       // Search for the maximum cluster Id from the target:
       int max_cluster_id = -1;
-
-      if (!tgt_clusters.empty()) {
-        auto id_comp = [](const TrackerClusterHdl &a, const TrackerClusterHdl &b) {
-          return a->get_cluster_id() < b->get_cluster_id();
+      if (not tgt_clusters.empty()) {
+        auto id_comp = [](const TrackerClusterHdl & a_, const TrackerClusterHdl & b_) {
+          return a_->get_cluster_id() < b_->get_cluster_id();
         };
-
         auto max_cluster_id_iter = std::max_element(tgt_clusters.begin(), tgt_clusters.end(), id_comp);
-
         max_cluster_id = (*max_cluster_id_iter)->get_cluster_id();
       }
 
       // copy clusters from the solution into the target
       for (size_t icluster_source = 0; icluster_source < src_clusters.size(); icluster_source++) {
         // Pickup cluster from the solution:
-        const auto &a_cluster_hdl = src_clusters.at(icluster_source);
-        // Create a new cluster from the old::
+        const auto & a_cluster_hdl = src_clusters.at(icluster_source);
+        // Create a new cluster handle from the source::
         auto hcl = datatools::make_handle<tracker_cluster>(*a_cluster_hdl);
-        // But give it an unique Id:
+        // But give it an unique new cluster Id:
         hcl->set_cluster_id(max_cluster_id + icluster_source + 1);
         tgt_clusters.push_back(hcl);
       }
 
-      // TODO: Possible bug. as does not touch solution input parameter...
-      // Extract unclustered hits from the solution: Huh? copies target to target?
-      for (int iunclustered_hit = 0; iunclustered_hit < (int)target_.get_unclustered_hits().size();
+      // Extract unclustered hits from the source solution and push them in the target solution:
+      // 2024-03-14 FM: fix bug in the insertion of unclustered hits from source to target
+      for (int iunclustered_hit = 0;
+	   iunclustered_hit < (int) source_.get_unclustered_hits().size();
            iunclustered_hit++) {
-        target_.get_unclustered_hits().push_back(target_.get_unclustered_hits().at(iunclustered_hit));
+	int hit_id = source_.get_unclustered_hits().at(iunclustered_hit)->get_hit_id();
+	bool insertUnclusteredHit = true;
+	for (int junclustered_hit = 0;
+	     junclustered_hit < (int) target_.get_unclustered_hits().size();
+	     junclustered_hit++) {
+	  int hit_jd = target_.get_unclustered_hits().at(junclustered_hit)->get_hit_id();
+	  if (hit_id == hit_jd) {
+	    // Already in the target:
+	    insertUnclusteredHit = false;
+	  }
+	}
+	if (insertUnclusteredHit) {
+	  target_.get_unclustered_hits().push_back(source_.get_unclustered_hits().at(iunclustered_hit));
+	}
       }
-
       return 0;
     }
 
-    // A mess, so not touching for now...
     // static
-    int tracker_clustering_solution::merge_two_solutions_in_ones(
-                                                                 const tracker_clustering_solution &source0_, const tracker_clustering_solution &source1_,
-                                                                 tracker_clustering_solution &target_) {
-      const tracker_clustering_solution &sol0 = source0_;
-      const tracker_clustering_solution &sol1 = source1_;
+    int tracker_clustering_solution::merge_two_solutions_in_other(const tracker_clustering_solution & source0_,
+								  const tracker_clustering_solution & source1_,
+								  tracker_clustering_solution & target_)
+    {
+      copy_one_solution_in_other(source0_, target_);
+      copy_one_solution_in_other(source1_, target_);
+      return 0;
+    }
+
+    /*
+    // static
+    int tracker_clustering_solution::merge_two_solutions_in_other(const tracker_clustering_solution & source0_,
+								  const tracker_clustering_solution & source1_,
+								  tracker_clustering_solution & target_)
+    {
+      const tracker_clustering_solution & sol0 = source0_;
+      const tracker_clustering_solution & sol1 = source1_;
       // Preallocate the total number of clusters from both solutions:
       target_.get_clusters().reserve(target_.get_clusters().size() + sol0.get_clusters().size() +
                                      sol1.get_clusters().size());
@@ -268,7 +304,7 @@ namespace snemo {
                                              sol1.get_unclustered_hits().size());
       // Search for the maximum cluster Id from the target:
       int max_cluster_id = -1;
-      for (auto &icluster_target : target_.get_clusters()) {
+      for (auto & icluster_target : target_.get_clusters()) {
         const tracker_cluster &a_cluster = icluster_target.get();
         int cluster_id = a_cluster.get_cluster_id();
         if (cluster_id > max_cluster_id) {
@@ -326,72 +362,8 @@ namespace snemo {
       }
       return 0;
     }
-
-    /*
-    void tracker_clustering_solution::tree_dump(std::ostream &out_, const std::string &title_,
-                                                const std::string &indent_, bool inherit_) const {
-      if (!title_.empty()) {
-        out_ << indent_ << title_ << std::endl;
-      }
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag << "Solution ID  : " << id_ << std::endl;
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag << "Cluster(s)   : " << get_clusters().size()
-           << std::endl;
-      for (size_t i = 0; i < get_clusters().size(); i++) {
-        const tracker_cluster &tc = get_clusters()[i].get();
-        std::ostringstream indent2;
-        out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
-        indent2 << indent_ << datatools::i_tree_dumpable::skip_tag;
-        if (i == get_clusters().size() - 1) {
-          out_ << datatools::i_tree_dumpable::last_tag;
-          indent2 << datatools::i_tree_dumpable::last_skip_tag;
-        } else {
-          out_ << datatools::i_tree_dumpable::tag;
-          indent2 << datatools::i_tree_dumpable::skip_tag;
-        }
-        out_ << "Cluster #" << i << " : " << std::endl;
-        tc.tree_dump(out_, "", indent2.str());
-      }
-
-      {
-        int hit_index = 0;
-        out_ << indent_ << datatools::i_tree_dumpable::tag
-             << "Unclustered hit(s) : " << unclustered_hits_.size() << std::endl;
-        for (auto i = unclustered_hits_.begin(); i != unclustered_hits_.end(); i++) {
-          out_ << indent_ << datatools::i_tree_dumpable::skip_tag;
-          auto j = i;
-          j++;
-          if (j == unclustered_hits_.end()) {
-            out_ << datatools::i_tree_dumpable::last_tag;
-          } else {
-            out_ << datatools::i_tree_dumpable::tag;
-          }
-          out_ << "Hit #" << hit_index << " : Id=" << i->get().get_hit_id()
-               << " GID=" << i->get().get_geom_id();
-          out_ << std::endl;
-          hit_index++;
-        }
-      }
-
-      out_ << indent_ << datatools::i_tree_dumpable::tag
-           << "Hits belonging : " << hit_belonging_.size() << std::endl;
-
-      out_ << indent_ << datatools::i_tree_dumpable::inherit_tag(inherit_) << "Auxiliaries : ";
-      if (auxiliaries_.empty()) {
-        out_ << "<empty>";
-      }
-      out_ << std::endl;
-      {
-        std::ostringstream indent_oss;
-        indent_oss << indent_;
-        indent_oss << datatools::i_tree_dumpable::inherit_skip_tag(inherit_);
-        auxiliaries_.tree_dump(out_, "", indent_oss.str());
-      }
-    }
     */
     
-
     void tracker_clustering_solution::print_tree(std::ostream & out_,
                                                  const boost::property_tree::ptree & options_) const
     {
@@ -466,6 +438,6 @@ namespace snemo {
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(tracker_clustering_solution,
                                                       "snemo::datamodel::tracker_clustering_solution")
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo

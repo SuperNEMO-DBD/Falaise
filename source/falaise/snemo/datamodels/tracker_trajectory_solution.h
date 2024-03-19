@@ -128,7 +128,7 @@ namespace snemo {
     private:
 			
       int32_t id_ = -1;                              //!< Unique solution ID
-      TrackerClusteringSolutionHdl solutions_;       //!< The reference clustering solution
+      TrackerClusteringSolutionHdl clustering_solution_; //!< The reference clustering solution
       TrackerTrajectoryHdlCollection trajectories_;  //!< Trajectories associated to clusters
       TrackerClusterHdlCollection unfitted_;         //!< Unfitted clusters
       datatools::properties _auxiliaries_;           //!< List of auxiliary properties
@@ -145,15 +145,15 @@ namespace snemo {
     using TrackerTrajectorySolutionHdl = datatools::handle<TrackerTrajectorySolution>;
     using TrackerTrajectorySolutionHdlCollection = std::vector<TrackerTrajectorySolutionHdl>;
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 // Class version:
 #include <boost/serialization/version.hpp>
 BOOST_CLASS_VERSION(snemo::datamodel::tracker_trajectory_solution, 1)
 
-#endif  // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_SOLUTION_H
+#endif // FALAISE_SNEMO_DATAMODELS_TRACKER_TRAJECTORY_SOLUTION_H
 
 /*
 ** Local Variables: --

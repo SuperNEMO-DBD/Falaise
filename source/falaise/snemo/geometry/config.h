@@ -22,6 +22,8 @@ namespace snemo {
   namespace geometry {
 
     const std::string & default_geometry_tag();
+
+    const std::string & default_locators_driver_name();
     
   } // end of namespace geometry
 

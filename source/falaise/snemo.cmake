@@ -82,6 +82,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/geiger_regime.h
   snemo/processing/base_tracker_clusterizer.h
   snemo/processing/base_tracker_fitter.h
+  snemo/processing/tracking_utils.h
+  snemo/processing/base_tracking_driver.h
+  snemo/processing/dummy_tracking_driver.h
   snemo/processing/filter.h
   snemo/processing/detector_description.h
   snemo/processing/module.h
@@ -175,6 +178,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/geometry/manager.cc
 
   snemo/processing/config.cc
+  snemo/processing/detector_description.cc
   snemo/processing/event_header_utils_module.cc
   snemo/processing/calorimeter_regime.cc
   snemo/processing/geiger_regime.cc
@@ -186,6 +190,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/black_hole_module.cc
   snemo/processing/base_tracker_clusterizer.cc
   snemo/processing/base_tracker_fitter.cc
+  snemo/processing/tracking_utils.cc
+  snemo/processing/base_tracking_driver.cc
+  snemo/processing/dummy_tracking_driver.cc
   snemo/processing/base_gamma_builder.cc
   snemo/processing/detail/mock_raw_tracker_hit.cc
   snemo/processing/detail/GeigerTimePartitioner.cc
