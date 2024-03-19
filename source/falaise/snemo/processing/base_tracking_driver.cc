@@ -40,7 +40,7 @@ namespace snemo {
       if (is_initialized()) {
         DT_THROW(std::logic_error, "Tracking driver must be terminated before destruction");
       }
-    };
+    }
 
     datatools::logger::priority base_tracking_driver::get_verbosity() const
     {
