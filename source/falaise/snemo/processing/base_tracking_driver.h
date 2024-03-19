@@ -95,16 +95,16 @@ namespace snemo {
       /// Return the clusterizer ID
       const std::string & get_id() const;
   
-			/// Return the detector description
-			const snemo::processing::detector_description &
-			get_detector_description() const;
+      /// Return the detector description
+      const snemo::processing::detector_description &
+      get_detector_description() const;
 
-			/// Set the detector description
-			void set_detector_description(const snemo::processing::detector_description & det_desc_);
-	
+      /// Set the detector description
+      void set_detector_description(const snemo::processing::detector_description & det_desc_);
+  
       /// Return a non-mutable reference to the geometry manager
       const geomtools::manager & get_geometry_manager() const;
-		
+    
       /// Return the tracker locator
       const snemo::geometry::gg_locator & get_gg_locator() const;
 
@@ -114,40 +114,40 @@ namespace snemo {
       /// Main clustering process
       int process(const snemo::datamodel::calibrated_data & cd_,
                   snemo::datamodel::tracker_clustering_data & clustering_,
-									snemo::datamodel::tracker_trajectory_data & track_fitting_);
+                  snemo::datamodel::tracker_trajectory_data & track_fitting_);
 
       // Smart print
       void tree_dump(std::ostream & out_ = std::clog,
-										 const std::string & title_ = "",
+                     const std::string & title_ = "",
                      const std::string & indent_ = "",
-										 bool inherit_ = false) const;
+                     bool inherit_ = false) const;
 
       /// Initialize the clusterizer through configuration properties
-			///
-			/// Example of supported configuration properties:
-			///
-			/// # Verbosity:
-			/// verbosity : string = "debug"
-			///
-			/// # Service requirements:
-			/// services.geometry : boolean = true
-			/// services.calo_locator : boolean = false
-			/// services.xcalo_locator : boolean = false
-			/// services.gg_locator : boolean = false
-			/// services.cell_status : boolean = true
-			/// services.om_status : boolean = false
-			///
-			/// # Masking rules for Geiger cells:
-			/// cell_id_mask_rules : string = "..."
-			///
-			/// # Tracker pre-clusterizer preprocessing:
-			/// TPC.delayed_hit_cluster_time : real as time = 10.0 us
-			/// TPC.processing_prompt_hits : boolean = true
-			/// TPC.processing_delayed_hits : boolean = true
-			/// TPC.split_chamber : boolean = true		
-			///
-			void initialize(const datatools::properties & config_,
-											datatools::service_manager & services_);
+      ///
+      /// Example of supported configuration properties:
+      ///
+      /// # Verbosity:
+      /// verbosity : string = "debug"
+      ///
+      /// # Service requirements:
+      /// services.geometry : boolean = true
+      /// services.calo_locator : boolean = false
+      /// services.xcalo_locator : boolean = false
+      /// services.gg_locator : boolean = false
+      /// services.cell_status : boolean = true
+      /// services.om_status : boolean = false
+      ///
+      /// # Masking rules for Geiger cells:
+      /// cell_id_mask_rules : string = "..."
+      ///
+      /// # Tracker pre-clusterizer preprocessing:
+      /// TPC.delayed_hit_cluster_time : real as time = 10.0 us
+      /// TPC.processing_prompt_hits : boolean = true
+      /// TPC.processing_delayed_hits : boolean = true
+      /// TPC.split_chamber : boolean = true    
+      ///
+      void initialize(const datatools::properties & config_,
+                      datatools::service_manager & services_);
 
       /// Reset the clusterizer
       void reset();
@@ -170,7 +170,7 @@ namespace snemo {
 
       /// Initialize the tracking driver
       virtual void _at_initialize(const datatools::properties & config_,
-																	datatools::service_manager & services_) = 0;
+                                  datatools::service_manager & services_) = 0;
 
       /// Reset the tracking driver
       virtual void _at_reset() = 0;
@@ -179,7 +179,7 @@ namespace snemo {
       
       /// Initialize the clusterizer through configuration properties
       void _initialize_(const datatools::properties & config_,
-												datatools::service_manager & services_);
+                        datatools::service_manager & services_);
 
       /// Reset the clusterizer
       void _reset_();
@@ -195,21 +195,21 @@ namespace snemo {
                                    snemo::datamodel::tracker_clustering_data & clustering_,
                                    snemo::datamodel::tracker_trajectory_data & track_fitting_);
 
-		public:
-			
+    public:
+      
       /// Tracking algorithm
-      virtual int process_tracking(const std::vector<tracking_precluster> & preclusters_,
-																	 const base_tracking_driver::calo_hit_collection_type & calo_hits_,
-																	 snemo::datamodel::tracker_clustering_data & clustering_,
-																	 snemo::datamodel::tracker_trajectory_data & track_fitting_) = 0;
+      virtual int process_tracking(const tracking_precluster_collection_type & preclusters_,
+                                   const base_tracking_driver::calo_hit_collection_type & calo_hits_,
+                                   snemo::datamodel::tracker_clustering_data & clustering_,
+                                   snemo::datamodel::tracker_trajectory_data & track_fitting_) = 0;
 
-		protected:
-			
+    protected:
+      
       /// Post processing
       virtual int _post_process(const base_tracking_driver::hit_collection_type & gg_hits_,
                                 const base_tracking_driver::calo_hit_collection_type & calo_hits_,
                                 snemo::datamodel::tracker_clustering_data & clustering_,
-																snemo::datamodel::tracker_trajectory_data & track_fitting_);
+                                snemo::datamodel::tracker_trajectory_data & track_fitting_);
 
       /// Post processing to collect unclustered hits
       void _post_process_collect_unclustered_hits(const base_tracking_driver::hit_collection_type & gg_hits_,
@@ -223,18 +223,18 @@ namespace snemo {
 
       bool _initialized_ = false; //!< Initialization status
       std::string _id_; //!< Identifier of the clusterizer algorithm
-			snemo::processing::detector_description _detector_desc_;
+      snemo::processing::detector_description _detector_desc_;
 
       // Internal work space:
       geomtools::id_selector _cellSelector_; //!< A selector of GIDs
       snreco::detail::GeigerTimePartitioner _preClusterizer_; //!< The time-clustering algorithm
       snemo::time::time_point _eventTimestamp_ = time::invalid_point() ; //!< Current event timestamp
 
-		private:
-			
+    private:
+      
       hit_collection_type _ignoredHits_;  //!< Hits not used as input for any clustering algorithm
-      std::vector<tracking_precluster> _preclusters_; //!< Preclusters of input hits
-			
+      tracking_precluster_collection_type _preclusters_; //!< Preclusters of input hits
+      
     };
 
   } // end of namespace processing

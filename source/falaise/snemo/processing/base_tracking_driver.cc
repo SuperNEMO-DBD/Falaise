@@ -38,7 +38,7 @@ namespace snemo {
     base_tracking_driver::~base_tracking_driver()
     {
       if (is_initialized()) {
-	DT_THROW(std::logic_error, "Tracking driver must be terminated before destruction");
+        DT_THROW(std::logic_error, "Tracking driver must be terminated before destruction");
       }
     };
 
@@ -97,7 +97,7 @@ namespace snemo {
     }
 
     void base_tracking_driver::initialize(const datatools::properties & config_,
-					  datatools::service_manager & services_)
+                                          datatools::service_manager & services_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error, "Already initialized !");
       _initialize_(config_, services_);
@@ -116,7 +116,7 @@ namespace snemo {
     }
 
     void base_tracking_driver::_initialize_(const datatools::properties & config_,
-					    datatools::service_manager & services_)
+                                            datatools::service_manager & services_)
     {
       // Verbosity:
       if (config_.has_key("verbosity")) {
@@ -124,10 +124,10 @@ namespace snemo {
         set_verbosity(lp);
       }
       if (datatools::logger::is_debug(get_verbosity())) {
-	boost::property_tree::ptree popts;
-	popts.put("indent", "[debug] ");
-	popts.put("title", "Tracking Driver configuration");
-	config_.print_tree(std::clog, popts);
+        boost::property_tree::ptree popts;
+        popts.put("indent", "[debug] ");
+        popts.put("title", "Tracking Driver configuration");
+        config_.print_tree(std::clog, popts);
       }
  
       // Extract the config of the base tracking :
@@ -143,15 +143,15 @@ namespace snemo {
       _detector_desc_ = detector_description::make_from_services(services_, detector_description_flags);
       DT_LOG_DEBUG(get_verbosity(), "Detector description:");
       if (datatools::logger::is_debug(get_verbosity())) {
-	_detector_desc_.print(std::cerr, "[debug] ");
+        _detector_desc_.print(std::cerr, "[debug] ");
       }
       DT_THROW_IF(not _detector_desc_.has_geometry_manager(), std::logic_error,
-		  "Missing geometry manager !");
+                  "Missing geometry manager !");
       DT_THROW_IF(not _detector_desc_.get_geometry_manager().is_initialized(),
-		  std::logic_error,
+                  std::logic_error,
                   "Geometry manager is not initialized !");
       DT_THROW_IF(not _detector_desc_.has_gg_locator(), std::logic_error,
-		  "Missing Geiger locator !");
+                  "Missing Geiger locator !");
  
       // Cell geom_id mask
       auto cell_id_mask_rules = ps.get<std::string>("cell_id_mask_rules", "");
@@ -162,11 +162,11 @@ namespace snemo {
 
       // Configure time partitioning :
       _preClusterizer_ =
-	snreco::detail::GeigerTimePartitioner(ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time",
-								      {10.0, "microsecond"})(),
-					      ps.get<bool>("TPC.processing_prompt_hits", true),
-					      ps.get<bool>("TPC.processing_delayed_hits", true),
-					      ps.get<bool>("TPC.split_chamber", true));
+        snreco::detail::GeigerTimePartitioner(ps.get<falaise::time_t>("TPC.delayed_hit_cluster_time",
+                                                                      {10.0, "microsecond"})(),
+                                              ps.get<bool>("TPC.processing_prompt_hits", true),
+                                              ps.get<bool>("TPC.processing_delayed_hits", true),
+                                              ps.get<bool>("TPC.split_chamber", true));
       return;
     }
 
@@ -200,9 +200,9 @@ namespace snemo {
     }
   
     int base_tracking_driver::_prepare_process(const base_tracking_driver::hit_collection_type & gg_hits_,
-					       const base_tracking_driver::calo_hit_collection_type & /* calo_hits_ */,
-					       snemo::datamodel::tracker_clustering_data & /* clustering_ */,
-					       snemo::datamodel::tracker_trajectory_data & /* track_fitting_ */)
+                                               const base_tracking_driver::calo_hit_collection_type & /* calo_hits_ */,
+                                               snemo::datamodel::tracker_clustering_data & /* clustering_ */,
+                                               snemo::datamodel::tracker_trajectory_data & /* track_fitting_ */)
     {
       auto logging = get_verbosity();
       // logging = datatools::logger::PRIO_DEBUG;
@@ -242,55 +242,28 @@ namespace snemo {
       _preclusters_.reserve(odata.promptClusters.size() + odata.delayedClusters.size());
       // Prompt clusters:
       for (const auto & prompt_cluster : odata.promptClusters) {
-	_preclusters_.emplace_back(prompt_cluster.at(0)->get_side(), false);
-	tracking_precluster & pc = _preclusters_.back();
-	pc.hits().reserve(prompt_cluster.size());
-	for (const auto & hit : prompt_cluster) {
+        _preclusters_.emplace_back(prompt_cluster.at(0)->get_side(), false);
+        tracking_precluster & pc = _preclusters_.back();
+        pc.hits().reserve(prompt_cluster.size());
+        for (const auto & hit : prompt_cluster) {
           pc.hits().push_back(pre_cluster_mapping[hit]);
         }
       }
       // Delayed clusters:
       for (const auto & delayed_cluster : odata.delayedClusters) {
-	_preclusters_.emplace_back(delayed_cluster.at(0)->get_side(), true);
-	tracking_precluster & pc = _preclusters_.back();
-	pc.hits().reserve(delayed_cluster.size());
-	for (const auto & hit : delayed_cluster) {
+        _preclusters_.emplace_back(delayed_cluster.at(0)->get_side(), true);
+        tracking_precluster & pc = _preclusters_.back();
+        pc.hits().reserve(delayed_cluster.size());
+        for (const auto & hit : delayed_cluster) {
           pc.hits().push_back(pre_cluster_mapping[hit]);
         }
       }
 
-      //XXX
-      /*
-      // Prompt time clusters :
-      _promptClusters_.reserve(odata.promptClusters.size());
-      DT_LOG_DEBUG(logging, "#prompt clusters = " << odata.promptClusters.size());
-      for (const auto & prompt_cluster : odata.promptClusters) {
-        hit_collection_type hc;
-        hc.reserve(prompt_cluster.size());
-        DT_LOG_DEBUG(logging, "  #hits in prompt clusters = " << prompt_cluster.size());
-        for (const auto & hit : prompt_cluster) {
-          hc.push_back(pre_cluster_mapping[hit]);
-        }
-        _promptClusters_.push_back(std::move(hc));
-      }
-
-      // Delayed time clusters :
-      _delayedClusters_.reserve(odata.delayedClusters.size());
-      DT_LOG_DEBUG(logging, "#delayed clusters = " << odata.delayedClusters.size());
-      for (const auto & delayed_cluster : odata.delayedClusters) {
-        hit_collection_type hc;
-        hc.reserve(delayed_cluster.size());
-        for (const auto & ihit : delayed_cluster) {
-          hc.push_back(pre_cluster_mapping[ihit]);
-        }
-        _delayedClusters_.push_back(std::move(hc));
-      }
-      */
       return 0;
     }
 
     void base_tracking_driver::_post_process_collect_unclustered_hits(const base_tracking_driver::hit_collection_type & gg_hits_,
-								      snemo::datamodel::tracker_clustering_data & clustering_)
+                                                                      snemo::datamodel::tracker_clustering_data & clustering_)
     {
       namespace snedm = snemo::datamodel;
       for (datatools::handle<snedm::tracker_clustering_solution> &the_solution :
@@ -313,17 +286,17 @@ namespace snemo {
     }
 
     int base_tracking_driver::_post_process(const base_tracking_driver::hit_collection_type & gg_hits_,
-					    const base_tracking_driver::calo_hit_collection_type & /* calo_hits_ */,
-					    snemo::datamodel::tracker_clustering_data & clustering_,
-					    snemo::datamodel::tracker_trajectory_data & /* track_fitting_ */)
+                                            const base_tracking_driver::calo_hit_collection_type & /* calo_hits_ */,
+                                            snemo::datamodel::tracker_clustering_data & clustering_,
+                                            snemo::datamodel::tracker_trajectory_data & /* track_fitting_ */)
     {
       _post_process_collect_unclustered_hits(gg_hits_, clustering_);
       return 0;
     }
 
     int base_tracking_driver::process(const snemo::datamodel::calibrated_data & cd_,
-				      snemo::datamodel::tracker_clustering_data & clustering_,
-				      snemo::datamodel::tracker_trajectory_data & track_fitting_)
+                                      snemo::datamodel::tracker_clustering_data & clustering_,
+                                      snemo::datamodel::tracker_trajectory_data & track_fitting_)
     {
       DT_LOG_DEBUG(get_verbosity(), "Entering...");
       namespace snedm = snemo::datamodel;
@@ -351,20 +324,20 @@ namespace snemo {
       DT_LOG_DEBUG(get_verbosity(), "Input working data before processing: ");
       DT_LOG_DEBUG(get_verbosity(), "`-- Number of input tracker preclusters = " << _preclusters_.size());
       if (datatools::logger::is_debug(get_verbosity())) {
-	std::cerr << "[debug] " << "Input tracker preclusters:\n";
-	for (auto ipc = 0u; ipc < _preclusters_.size(); ipc++) {
-	  std::cerr << "[debug] ";
-	  std::string itemTag; 
-	  if (ipc+1 == _preclusters_.size()) {
-	    itemTag = "    ";
-	    std::cerr << "`-- ";
-	  } else {
-	    itemTag = "|   ";
-	    std::cerr << "|-- ";
-	  }
-	  std::cerr << "Input precluster #" << ipc << ':' << '\n';
-	  _preclusters_[ipc].print(std::cerr, "[debug] " + itemTag);
-	}
+        std::cerr << "[debug] " << "Input tracker preclusters:\n";
+        for (auto ipc = 0u; ipc < _preclusters_.size(); ipc++) {
+          std::cerr << "[debug] ";
+          std::string itemTag; 
+          if (ipc+1 == _preclusters_.size()) {
+            itemTag = "    ";
+            std::cerr << "`-- ";
+          } else {
+            itemTag = "|   ";
+            std::cerr << "|-- ";
+          }
+          std::cerr << "Input precluster #" << ipc << ':' << '\n';
+          _preclusters_[ipc].print(std::cerr, "[debug] " + itemTag);
+        }
       }
       // Algorithm:
       status = process_tracking(_preclusters_, calo_hits, clustering_, track_fitting_);
@@ -389,9 +362,9 @@ namespace snemo {
     }
 
     void base_tracking_driver::tree_dump(std::ostream & out_,
-					 const std::string & title_,
-					 const std::string & indent_,
-					 bool inherit_) const
+                                         const std::string & title_,
+                                         const std::string & indent_,
+                                         bool inherit_) const
     {
       if (!title_.empty()) {
         out_ << indent_ << title_ << std::endl;
@@ -407,7 +380,7 @@ namespace snemo {
 
     // static
     void base_tracking_driver::ocd_support(datatools::object_configuration_description & ocd_,
-					   const std::string & prefix_)
+                                           const std::string & prefix_)
     {
       datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", prefix_ + "BTC.");
 

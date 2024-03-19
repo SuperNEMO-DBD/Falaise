@@ -18,26 +18,26 @@ namespace snemo {
   namespace processing {
 
     /// Tracking precluster of calibrated Geiger hits after space/time partitionning
-		///
-		/// A tracking precluster can be used as a region of interest where to search for
-		/// charged particle track clusters. Particularly, a precluster may contains several
-		/// tracks. It is the task of a tracking algorithm/driver to extract track clusters
-		/// from a precluster.
-		///
-		/// - a precluster is located on one side of the SuperNEMO tracking chamber.
-		/// - a precluster is tagged as a 'prompt' one ot a 'delayed' one, depending on the time coincidence
-		///   window used by the preclusterizer algorithm.
-		/// - a precluster contains a collection of Geiger hits.
-		///
-		/// In principle, after the preclusterizer algorithm has made is job, one should obtain no
-		/// more than two 'prompt' preclusters (one per side) and up to N 'delayed' clusters, depending
-		/// on the ability of the preclusterizer to disantangle several delayed time windows.
-		///
+    ///
+    /// A tracking precluster can be used as a region of interest where to search for
+    /// charged particle track clusters. Particularly, a precluster may contains several
+    /// tracks. It is the task of a tracking algorithm/driver to extract track clusters
+    /// from a precluster.
+    ///
+    /// - a precluster is located on one side of the SuperNEMO tracking chamber.
+    /// - a precluster is tagged as a 'prompt' one ot a 'delayed' one, depending on the time coincidence
+    ///   window used by the preclusterizer algorithm.
+    /// - a precluster contains a collection of Geiger hits.
+    ///
+    /// In principle, after the preclusterizer algorithm has made is job, one should obtain no
+    /// more than two 'prompt' preclusters (one per side) and up to N 'delayed' clusters, depending
+    /// on the ability of the preclusterizer to disantangle several delayed time windows.
+    ///
     struct tracking_precluster
     {
       tracking_precluster(const int side_, const bool delayed_);
       tracking_precluster(const int side_, const bool delayed_,
-													const snemo::datamodel::TrackerHitHdlCollection & hits_);
+                          const snemo::datamodel::TrackerHitHdlCollection & hits_);
       int side() const;
       bool is_delayed() const;
       const snemo::datamodel::TrackerHitHdlCollection & hits() const;  
@@ -52,6 +52,8 @@ namespace snemo {
       snemo::datamodel::TrackerHitHdlCollection _hits_;
       
     };
+
+    typedef std::vector<tracking_precluster> tracking_precluster_collection_type;
     
   } // end of namespace processing
 
