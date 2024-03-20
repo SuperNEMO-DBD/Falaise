@@ -144,7 +144,11 @@ namespace snemo {
       if (datatools::logger::is_debug(get_logging_priority())) {
         DT_LOG_DEBUG(get_logging_priority(), "'" << _pcd_output_tag_ << "' bank filled with " << pcd_data.tracker_hits().size()
                      << " tracker hits and " << pcd_data.calorimeter_hits().size() << " calorimeter hits");
-        pcd_data.tree_dump();
+        {
+          boost::property_tree::ptree opts;
+          opts.put("indent", "[debug] ");
+          pcd_data.print_tree(std::cerr, opts);
+        }
       }
 
       return dpp::base_module::PROCESS_SUCCESS;
@@ -152,7 +156,7 @@ namespace snemo {
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
@@ -242,7 +246,7 @@ namespace snemo {
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
@@ -425,7 +429,7 @@ namespace snemo {
 
     // Precalibrate tracker hits from UDD informations:
     void udd2pcd_module::precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                            snemo::datamodel::PreCalibTrackerHitHdlCollection & tracker_hits_) {
+                                                            snemo::datamodel::PreCalibratedTrackerHitHdlCollection & tracker_hits_) {
       // Constants
       static const double TRACKER_TDC_TICK = 12.5 * CLHEP::nanosecond;
 
@@ -858,35 +862,35 @@ namespace snemo {
         for (int pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
           snemo::datamodel::precalibrated_tracker_hit & mutable_pcd_tracker_hit = pcd_tracker_hits.at(pcd_tracker_hit_index).grab();
           datatools::properties & pcd_tracker_hit_properties = mutable_pcd_tracker_hit.grab_auxiliaries();
-	  if (not pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
-	    pcd_tracker_hit_properties.set_flag("pCD.clustering.clusterized");
-	    pcd_tracker_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
-	  } else {
-	    DT_LOG_WARNING(get_logging_priority(), "tracker hit #" << pcd_tracker_hit_index << " is already tagged as clustered");
-	  }
+          if (not pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
+            pcd_tracker_hit_properties.set_flag("pCD.clustering.clusterized");
+            pcd_tracker_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
+          } else {
+            DT_LOG_WARNING(get_logging_priority(), "tracker hit #" << pcd_tracker_hit_index << " is already tagged as clustered");
+          }
         }
-	
-	// 2024-03-06 FM : !!! Duplicate clustered hits occur !!!
-	
+        
+        // 2024-03-06 FM : !!! Duplicate clustered hits occur !!!
+        
         // Calo hits:
         for (int pcd_calo_hit_index : cluster_calorimeter_index) {
           snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
           datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
- 	  if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
-	    pcd_calo_hit_properties.set_flag("pCD.clustering.clusterized");
-	    pcd_calo_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
-	  } else {
-	    DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
-	  }
-	}
+          if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
+            pcd_calo_hit_properties.set_flag("pCD.clustering.clusterized");
+            pcd_calo_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
+          } else {
+            DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
+          }
+        }
         for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
           snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
           datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
-  	  if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
-	    pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
-	  } else {
-	    DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
-	  }
+          if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
+            pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
+          } else {
+            DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
+          }
         }
         
       } // for (pcd_cluster_id)
@@ -937,7 +941,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::udd2pcd_module, ocd_) {
   dpp::base_module::common_ocd(ocd_);
 
   {
-    // Description of the 'SD_label' configuration property :
+    // Description of the 'UDD_label' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
     cpd.set_name_pattern("UDD_label")
       .set_terse_description("The label/name of the 'unified digitized data' bank")
@@ -955,7 +959,7 @@ DOCD_CLASS_IMPLEMENT_LOAD_BEGIN(snemo::processing::udd2pcd_module, ocd_) {
   }
 
   {
-    // Description of the 'CD_label' configuration property :
+    // Description of the 'pCD_label' configuration property :
     datatools::configuration_property_description& cpd = ocd_.add_property_info();
     cpd.set_name_pattern("pCD_label")
       .set_terse_description("The label/name of the 'precalibrated data' bank")

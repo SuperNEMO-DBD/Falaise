@@ -3,13 +3,11 @@
 /* Author(s) :    Guillaume Oliviero <g.oliviero@ucl.ac.uk>
  *                Emmanuel Chauveau <chauveau@cenbg.in2p3.fr>
  * Creation date: 2022-08-11
- * Last modified: 2023-07-20
+ * Last modified: 2024-03-20
  *
  * Description:
  *
  *   Unified Digitized Data to precalibrated data processing module
- *
- * History:
  *
  */
 
@@ -38,13 +36,14 @@ namespace geomtools {
   class manager;
 }
 
-
 namespace snemo {
 
   namespace processing {
 
     /// \brief A processing module for UDD data to pCD tracker and calorimeter hits
-    class udd2pcd_module : public dpp::base_module {
+    class udd2pcd_module
+      : public dpp::base_module
+    {
 
       enum calorimeter_precalibration_algorithm
       {
@@ -77,11 +76,11 @@ namespace snemo {
 
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                         snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_);
+                                         snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
 
       /// Precalibrate calorimeter hits with swmeas
       void precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                         snemo::datamodel::PreCalibCalorimeterHitHdlCollection & calo_hits_);
+                                         snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
 
       /// Main process calo function
       void process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -89,7 +88,7 @@ namespace snemo {
 
       /// Precalibrated tracker hits
       void precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                              snemo::datamodel::PreCalibTrackerHitHdlCollection& tracker_hits_);
+                                              snemo::datamodel::PreCalibratedTrackerHitHdlCollection& tracker_hits_);
 
       /// Basic tracker clusterisation
       void basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_);

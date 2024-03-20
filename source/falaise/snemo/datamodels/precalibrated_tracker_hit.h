@@ -31,8 +31,8 @@ namespace snemo {
 
     /// \brief Model of a precalibrated tracker hit
     class precalibrated_tracker_hit
-			: public geomtools::base_hit
-		{
+      : public geomtools::base_hit
+    {
 
     public:
 
@@ -61,7 +61,7 @@ namespace snemo {
       /// Reset the sigma anodic drift time
       void reset_sigma_anodic_time();
 
-			
+      
       /// Return the bottom cathode drift time associated to the hit
       double get_bottom_cathode_drift_time() const;
 
@@ -125,14 +125,14 @@ namespace snemo {
       void invalidate() override;
 
       /// Invalidate calibration informations stored in the hit
-			void clear() override;
+      void clear() override;
 
       /// Smart print
       void print_tree(std::ostream & out_ = std::clog,
                       const boost::property_tree::ptree & options_ = empty_options()) const override;
 
     private:
-			
+      
       double _anodic_time_{datatools::invalid_real()};                      //!< Anodic absolute time of the cell
       double _sigma_anodic_time_{datatools::invalid_real()};                //!< Error on anodic absolute time of the cell
       double _bottom_cathode_drift_time_{datatools::invalid_real()};        //!< Bottom cathode drift time of the cell
@@ -143,11 +143,11 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-    /// Aliases for handle and collection of precalibrated tracker hit
-    using PreCalibTrackerHit = precalibrated_tracker_hit;
-    using PreCalibTrackerHitCollection = std::vector<PreCalibTrackerHit>;
-    using PreCalibTrackerHitHdl = datatools::handle<PreCalibTrackerHit>;
-    using PreCalibTrackerHitHdlCollection = std::vector<PreCalibTrackerHitHdl>;
+    // Aliases for handle and collection of precalibrated tracker hits
+    using PreCalibratedTrackerHit = precalibrated_tracker_hit;
+    using PreCalibratedTrackerHitCollection = std::vector<PreCalibratedTrackerHit>;
+    using PreCalibratedTrackerHitHdl = datatools::handle<PreCalibratedTrackerHit>;
+    using PreCalibratedTrackerHitHdlCollection = std::vector<PreCalibratedTrackerHitHdl>;
 
     using precalibrated_tracker_hit_collection = std::vector<precalibrated_tracker_hit>;
     using precalibrated_tracker_hit_handle = datatools::handle<precalibrated_tracker_hit>;

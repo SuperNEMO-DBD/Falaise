@@ -52,23 +52,29 @@ namespace snemo {
       datatools::invalidate(sigma_time_);
     }
 
-    void calibrated_calorimeter_hit::print_tree(std::ostream & out,
-                                                const boost::property_tree::ptree & options) const
+    void calibrated_calorimeter_hit::print_tree(std::ostream & out_,
+                                                const boost::property_tree::ptree & options_) const
     {
-      base_hit::print_tree(out, base_print_options::force_inheritance(options));
+      base_hit::print_tree(out_, base_print_options::force_inheritance(options_));
       base_print_options popts;
-      popts.configure_from(options);
+      popts.configure_from(options_);
       const std::string & indent = popts.indent;
-      std::ostringstream prefix_os;
-      prefix_os << indent << datatools::i_tree_dumpable::tag;
-      std::string prefix = prefix_os.str();
-      out << indent << datatools::i_tree_dumpable::tag << "Time  : " << time_ / CLHEP::ns << " ns\n"
-          << indent << datatools::i_tree_dumpable::tag << "Sigma(time) : " << sigma_time_ / CLHEP::ns
-          << " ns\n"
-          << indent << datatools::i_tree_dumpable::tag << "Energy  : " << energy_ / CLHEP::keV
-          << " keV\n"
-          << indent << datatools::i_tree_dumpable::inherit_tag(popts.inherit)
-          << "Sigma(energy) : " << sigma_energy_ / CLHEP::keV << " keV" << std::endl;
+      
+      if (popts.title.length()) {
+        out_ << indent << popts.title << std::endl;
+      }
+
+      out_ << indent << tag << "Energy  : ("
+           << energy_ / CLHEP::keV 
+           << " +/- " << sigma_energy_ / CLHEP::keV << ") keV"
+           << std::endl;
+      
+      out_ << indent << inherit_tag(popts.inherit) << "Time : ("
+           << time_ / CLHEP::ns
+           << " +/- " << sigma_time_ / CLHEP::ns << ") ns"
+           << std::endl;
+     
+      return;
     }
 
   } // end of namespace datamodel

@@ -155,11 +155,11 @@ namespace snemo {
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
 
-    /// Aliases for handle and collection of precalibrated calorimeter hit
-    using PreCalibCalorimeterHit = precalibrated_calorimeter_hit;
-    using PreCalibCalorimeterHitCollection = std::vector<PreCalibCalorimeterHit>;
-    using PreCalibCalorimeterHitHdl = datatools::handle<PreCalibCalorimeterHit>;
-    using PreCalibCalorimeterHitHdlCollection = std::vector<PreCalibCalorimeterHitHdl>;
+    // Aliases for handle and collection of precalibrated calorimeter hit
+    using PreCalibratedCalorimeterHit = precalibrated_calorimeter_hit;
+    using PreCalibratedCalorimeterHitCollection = std::vector<PreCalibratedCalorimeterHit>;
+    using PreCalibratedCalorimeterHitHdl = datatools::handle<PreCalibratedCalorimeterHit>;
+    using PreCalibratedCalorimeterHitHdlCollection = std::vector<PreCalibratedCalorimeterHitHdl>;
 
     using precalibrated_calorimeter_hit_collection = std::vector<precalibrated_calorimeter_hit>;
     using precalibrated_calorimeter_hit_handle = datatools::handle<precalibrated_calorimeter_hit>;
