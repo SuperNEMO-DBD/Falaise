@@ -90,6 +90,7 @@ target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
+
 message(STATUS "Falaise_SNRS_LIB_PATH='${Falaise_SNRS_LIB_PATH}'")
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
 target_link_libraries(Falaise PUBLIC ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
@@ -142,7 +143,7 @@ install(TARGETS Falaise FalaiseModule
 # - Install public headers (preliminary)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ ${CMAKE_CURRENT_BINARY_DIR}/
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/falaise
-  FILES_MATCHING PATTERN "*.h" PATTERN "*.ipp"
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hh" PATTERN "*.hpp"  PATTERN "*.ipp"
   PATTERN "CMakeFiles" EXCLUDE
   PATTERN "test" EXCLUDE
   )
