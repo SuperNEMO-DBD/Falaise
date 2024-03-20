@@ -5,10 +5,14 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/calibrated_calorimeter_hit.h
   snemo/datamodels/calibrated_data.h
   snemo/datamodels/calibrated_tracker_hit.h
+  snemo/datamodels/calibrated_cluster.h
+  snemo/datamodels/clusterized_precalibrated_data.h
+  snemo/datamodels/clusterized_calibrated_data.h
   snemo/datamodels/udd_utils.h
   snemo/datamodels/precalibrated_calorimeter_hit.h
   snemo/datamodels/precalibrated_data.h
   snemo/datamodels/precalibrated_tracker_hit.h
+  snemo/datamodels/precalibrated_cluster.h
   snemo/datamodels/calorimeter_digitized_hit.h
   snemo/datamodels/unified_digitized_data.h
   snemo/datamodels/tracker_digitized_hit.h
@@ -36,9 +40,13 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp
   snemo/datamodels/boost_io/calibrated_data.ipp
   snemo/datamodels/boost_io/calibrated_tracker_hit.ipp
+  snemo/datamodels/boost_io/calibrated_cluster.ipp
+  snemo/datamodels/boost_io/clusterized_precalibrated_data.ipp
+  snemo/datamodels/boost_io/clusterized_calibrated_data.ipp
   snemo/datamodels/boost_io/precalibrated_calorimeter_hit.ipp
   snemo/datamodels/boost_io/precalibrated_data.ipp
   snemo/datamodels/boost_io/precalibrated_tracker_hit.ipp
+  snemo/datamodels/boost_io/precalibrated_cluster.ipp
   snemo/datamodels/boost_io/calorimeter_digitized_hit.ipp
   snemo/datamodels/boost_io/unified_digitized_data.ipp
   snemo/datamodels/boost_io/tracker_digitized_hit.ipp
@@ -140,12 +148,16 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/calibrated_calorimeter_hit.cc
   snemo/datamodels/calibrated_tracker_hit.cc
   snemo/datamodels/calibrated_data.cc
+  snemo/datamodels/calibrated_cluster.cc
+  snemo/datamodels/clusterized_precalibrated_data.cc
+  snemo/datamodels/clusterized_calibrated_data.cc
   snemo/datamodels/calorimeter_digitized_hit.cc
   snemo/datamodels/unified_digitized_data.cc
   snemo/datamodels/tracker_digitized_hit.cc
   snemo/datamodels/precalibrated_calorimeter_hit.cc
   snemo/datamodels/precalibrated_tracker_hit.cc
   snemo/datamodels/precalibrated_data.cc
+  snemo/datamodels/precalibrated_cluster.cc
   snemo/datamodels/tracker_cluster.cc
   snemo/datamodels/tracker_clustering_solution.cc
   snemo/datamodels/tracker_clustering_data.cc

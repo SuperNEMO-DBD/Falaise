@@ -894,7 +894,7 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
     const snemo::datamodel::precalibrated_data& pCD = workItem.get<snemo::datamodel::precalibrated_data>("pCD");
 
     pcdtracker_.nohits_ = pCD.tracker_hits().size();
-    BOOST_FOREACH (const snemo::datamodel::PreCalibTrackerHitHdl& gg_handle, pCD.tracker_hits()) {
+    BOOST_FOREACH (const snemo::datamodel::PreCalibratedTrackerHitHdl& gg_handle, pCD.tracker_hits()) {
       if (!gg_handle.has_data()) continue;
 
       const snemo::datamodel::precalibrated_tracker_hit& pcd_gg_hit = gg_handle.get();
@@ -921,7 +921,7 @@ dpp::base_module::process_status Things2Root::process(datatools::things& workIte
 
 
     pcdcalo_.nohits_ = pCD.calorimeter_hits().size();
-    BOOST_FOREACH (const snemo::datamodel::PreCalibCalorimeterHitHdl& calo_handle, pCD.calorimeter_hits()) {
+    BOOST_FOREACH (const snemo::datamodel::PreCalibratedCalorimeterHitHdl& calo_handle, pCD.calorimeter_hits()) {
       if (!calo_handle.has_data()) continue;
 
       const snemo::datamodel::precalibrated_calorimeter_hit& pcd_calo_hit = calo_handle.get();

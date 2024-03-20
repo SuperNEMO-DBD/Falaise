@@ -15,22 +15,22 @@ namespace snemo {
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(precalibrated_data,
                                                       "snemo::datamodel::precalibrated_data")
 
-    const PreCalibCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits() const
+    const PreCalibratedCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits() const
     {
       return calorimeter_hits_;
     }
 
-    PreCalibCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits()
+    PreCalibratedCalorimeterHitHdlCollection & precalibrated_data::calorimeter_hits()
     {
       return calorimeter_hits_;
     }
 
-    const PreCalibTrackerHitHdlCollection & precalibrated_data::tracker_hits() const
+    const PreCalibratedTrackerHitHdlCollection & precalibrated_data::tracker_hits() const
     {
       return tracker_hits_;
     }
 
-    PreCalibTrackerHitHdlCollection & precalibrated_data::tracker_hits()
+    PreCalibratedTrackerHitHdlCollection & precalibrated_data::tracker_hits()
     {
       return tracker_hits_;
     } 
@@ -64,9 +64,9 @@ namespace snemo {
       if (popts.title.length()) {
         out_ << popts.indent << popts.title << std::endl;
       }
-      auto printPreCalibCaloHit = [&](const PreCalibCalorimeterHitHdl& x) {
+      auto printPreCalibCaloHit = [&](const PreCalibratedCalorimeterHitHdl& x) {
         out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
-            << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
+             << ", Baseline: " << x->get_baseline() / (1E-3 * CLHEP::volt) << " mV"
              << ", Amplitude: " << x->get_amplitude() / (1E-3 * CLHEP::volt) << " mV"
              << ", Charge: " << x->get_charge() / (CLHEP::volt * CLHEP::second * 1E-9) << " nV.s"
              << ", Time: " << x->get_time() / CLHEP::second << " s"
@@ -74,7 +74,7 @@ namespace snemo {
              << std::endl;
       };
 
-      auto printPreCalibTrackerHit = [&](const PreCalibTrackerHitHdl& x) {
+      auto printPreCalibTrackerHit = [&](const PreCalibratedTrackerHitHdl& x) {
         out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
              << ", AnodicTime = " << x->get_anodic_time() / CLHEP::microsecond << " us";
         if (x->has_bottom_cathode_drift_time()) {
@@ -89,11 +89,11 @@ namespace snemo {
 
       // Precalibrated calorimeter hits:
       out_ << popts.indent << tag
-           << "PreCalibCalorimeterHits : " << calorimeter_hits_.size() << std::endl;
+           << "PreCalibratedCalorimeterHits : " << calorimeter_hits_.size() << std::endl;
       if (list_hits_opt and not calorimeter_hits_.empty()) {
         std::for_each(calorimeter_hits_.begin(),
                       --calorimeter_hits_.end(),
-                      [&](const PreCalibCalorimeterHitHdl& x) {
+                      [&](const PreCalibratedCalorimeterHitHdl& x) {
                         out_ << popts.indent << skip_tag << tag;
                         printPreCalibCaloHit(x);
                       });
@@ -103,11 +103,11 @@ namespace snemo {
 
       // Precalibrated tracker hits:
       out_ << popts.indent << tag
-           << "PreCalibTrackerHits : " << tracker_hits_.size() << std::endl;
+           << "PreCalibratedTrackerHits : " << tracker_hits_.size() << std::endl;
       if (list_hits_opt and not tracker_hits_.empty()) {
         std::for_each(tracker_hits_.begin(),
                       --tracker_hits_.end(),
-                      [&](const PreCalibTrackerHitHdl& x) {
+                      [&](const PreCalibratedTrackerHitHdl& x) {
                         out_ << popts.indent << skip_tag << tag;
                         printPreCalibTrackerHit(x);
                       });

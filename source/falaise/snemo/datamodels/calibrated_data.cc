@@ -88,6 +88,6 @@ namespace snemo {
       return;
     }
 
-  }  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
