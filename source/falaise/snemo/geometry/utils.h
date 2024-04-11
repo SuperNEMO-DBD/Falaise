@@ -47,7 +47,7 @@
 namespace snemo {
 
   namespace geometry {
-
+  
     /// \brief Direction identifier constants in the SuperNEMO reference frame
     enum class direction_t
       {
