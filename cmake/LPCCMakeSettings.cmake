@@ -355,11 +355,12 @@ if(CMAKE_VERSION VERSION_GREATER 3.11)
   list(APPEND BX_CXXSTD_VALUES "20")
 endif()
 
-enum_option(${PROJECT_NAME_UC}_CXX_STANDARD
-  VALUES ${BX_CXXSTD_VALUES}
-  TYPE   STRING
-  DOC    "Choose C++ Standard to compile against"
-  )
+set(${PROJECT_NAME_UC}_CXX_STANDARD 17)
+# enum_option(${PROJECT_NAME_UC}_CXX_STANDARD
+#   VALUES ${BX_CXXSTD_VALUES}
+#   TYPE   STRING
+#   DOC    "Choose C++ Standard to compile against"
+#   )
 
 # - Default is 98, add an arbitrary feature here so that appropriate
 #   flags/requirement is added and propagated
@@ -468,4 +469,3 @@ if(${PROJECT_NAME_UC}_CXX_STANDARD EQUAL 20)
     ${${PROJECT_NAME_UC}_CXX20_COMPILE_FEATURES}
     )
 endif()
-
