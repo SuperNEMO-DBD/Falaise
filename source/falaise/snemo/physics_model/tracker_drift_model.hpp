@@ -1,7 +1,7 @@
 /// \file falaise/snemo/physics_model/tracker_drift_model.hpp
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2024-04-09
- * Last modified: 2024-04-09
+ * Last modified: 2024-04-11
  *
  * Description: Tracker drift model
  *
@@ -18,6 +18,7 @@
 #include <optional>
 #include <tuple>
 #include <limits>
+#include <map>
 
 // Bayeux:
 #include <bayeux/datatools/i_tree_dump.h>
@@ -31,6 +32,7 @@
 #include "falaise/snemo/services/service_traits.h"
 #include <falaise/snemo/services/service_handle.h>
 #include <falaise/snemo/services/tracker_cell_status_service.h>
+#include <falaise/snemo/services/db_service.h>
 #include <falaise/snemo/services/services.h>
 
 namespace snemo {
@@ -53,15 +55,16 @@ namespace snemo {
     ///       |       .       |
     ///       |   1   .   0   |
     ///       |       .       |
-    ///       | - - - o - - - |-----> X+
+    ///   ----| - - - o - - - |-----> X+
     ///       |       .       |
     ///       |   2   .   3   |
     ///       |       .       |
     ///       +---------------+  
-    ///
+    ///               :
+		///
     /// Four distinct categories of cell quarter are defined (see DocDB #5839):
     ///
-    ///   - centre (ce) : a cell quarter with HV applied on both first neighbour cells
+    ///   - "centre" (ce) : a cell quarter with HV applied on both first neighbour cells
     ///     Example:
     ///
     ///       +-------+-------+--  
@@ -75,7 +78,7 @@ namespace snemo {
     ///       +-------+-------+--
 		///       |       |       |
     ///
-    ///   - edge (ed) : a cell quarter with HV applied on only one neighbour cell, and not on the other one
+    ///   - "edge" (ed) : a cell quarter with HV applied on only one neighbour cell, and not on the other one
     ///
     ///     Example:
     ///       +-------+-------+  
@@ -88,7 +91,7 @@ namespace snemo {
     ///       |       |   :   |
     ///       +-------+-------+  
     ///
-    ///   - corner (co) : a cell quarter with HV not applied on both first neighbour cells
+    ///   - "corner" (co) : a cell quarter with HV not applied on both first neighbour cells
     ///
     ///     Example:
     ///       +-------+-------+  
@@ -254,7 +257,9 @@ namespace snemo {
     /// \brief Encodes informations usable by the drift model about the tracker
     struct tracker_info
     {
+			time::time_point timestamp;
       tracker_gas_info gas_info;
+			std::map<geomtools::geom_id,cell_info> cell_infos;
     };
 
     /// \brief Drift parameters associated to a cell quarter (see DocDb #5839, page 42, tables 2-3)
@@ -282,6 +287,9 @@ namespace snemo {
     };
 
     /// \brief Tracker drift model
+		///
+		/// This model implements large parts of the approach described in
+		/// DocDb #5839 (Betsy Landells' MSc Project), namely the so-called "betsy" model.
     class tracker_drift_model
     {
     public:
@@ -316,7 +324,7 @@ namespace snemo {
       /// Return the quarter index from a position relative to the center of a cell
       int locate_cell_quarter(const geomtools::vector_3d & in_cell_position_) const;
 
-			/// Return information about the tracke gas at given time
+			/// Return information about the tracker gas at given time
       tracker_gas_info fetch_gas_info(const time::time_point & p_) const;
 
 			/// Return the *neighbour cells OFF pattern* associated to given cell and time
@@ -357,7 +365,11 @@ namespace snemo {
 
       /// Return the cell information associated to a given cell OFF pattern, after the "betsy" model
       static const cell_efield_info & supported_cell_efield_info(const neighbour_cells_off_pattern off_pattern_);
-      
+
+			/// Populate a tracker info object for a given timepoint
+			void build_tracker_info(const time::time_point & timepoint_,
+															tracker_info & trkinfo_) const;
+			
     private:
 
       /// Return the default *geometric" cell off pattern associated to a given tracker cell
@@ -374,6 +386,7 @@ namespace snemo {
       // Internal services and tools:
       const geomtools::manager * _geomgr_ = nullptr; ///< Geometry manager
       const snemo::geometry::gg_locator * _gg_locator_ = nullptr; ///< Geometry tracker/Geiger cell locator
+      const snemo::db_service * _db_ = nullptr; ///< Service for database access
       const snemo::tracker_cell_status_service * _tcss_ = nullptr; ///< Service for dynamic tracker cell status
 
       // For 'betsy' model: 

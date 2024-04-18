@@ -27,6 +27,80 @@ replot
 set output
 set terminal pop
 
+unset label
+set size noratio 
+set grid
+set xlabel "Radial distance (mm)"
+set ylabel "Drift time (us)"
+set xrange [0.0:32.0]
+set xtics 2.0
+set yrange [0.0:*]
+set key out
+ut=1e4
+set title "Quarter #0 (edge)"
+plot 'data/test_tdm_drift_time.data' index 0 using 1:($2*ut) title "Low" with lines, \
+     '' index 0 using 1:($3*ut) title "Med" with lines, \
+     '' index 0 using 1:($4*ut) title "Up" with lines
+pause -1
+set terminal push
+set terminal jpeg
+set output "./images/img_tdm_dt1.jpg"
+replot
+set output
+set terminal pop
+
+set title "Quarter #1 (center)"
+plot 'data/test_tdm_drift_time.data' index 1 using 1:($2*ut) title "Low" with lines, \
+     '' index 1 using 1:($3*ut) title "Med" with lines, \
+     '' index 1 using 1:($4*ut) title "Up" with lines
+pause -1
+set terminal push
+set terminal jpeg
+set output "./images/img_tdm_dt2.jpg"
+replot
+set output
+set terminal pop
+
+set title "Quarter #2 (edge)"
+plot 'data/test_tdm_drift_time.data' index 2 using 1:($2*ut) title "Low" with lines, \
+     '' index 2 using 1:($3*ut) title "Med" with lines, \
+     '' index 2 using 1:($4*ut) title "Up" with lines
+pause -1
+set terminal push
+set terminal jpeg
+set output "./images/img_tdm_dt3.jpg"
+replot
+set output
+set terminal pop
+
+set title "Quarter #3 (corner)"
+plot 'data/test_tdm_drift_time.data' index 3 using 1:($2*ut) title "Low" with lines, \
+     '' index 3 using 1:($3*ut) title "Med" with lines, \
+     '' index 3 using 1:($4*ut) title "Up" with lines
+pause -1
+set terminal push
+set terminal jpeg
+set output "./images/img_tdm_dt4.jpg"
+replot
+set output
+set terminal pop
+
+
+# plot 'data/test_tdm_drift_time.data' index 0 using 1:2 title "Low - Quarter #0 (edge)" with lines, \
+#      '' index 0 using 1:3 title "Med - Quarter #0 (edge)" with lines, \
+#      '' index 0 using 1:4 title "Up  - Quarter #0 (edge)" with lines, \
+#      '' index 1 using 1:2 title "Low - Quarter #1 (center)" with lines, \
+#      '' index 1 using 1:3 title "Med - Quarter #1 (center)" with lines, \
+#      '' index 1 using 1:4 title "Up  - Quarter #1 (center)" with lines, \
+#      '' index 2 using 1:2 title "Low - Quarter #2 (center)" with lines, \
+#      '' index 2 using 1:3 title "Med - Quarter #2 (center)" with lines, \
+#      '' index 2 using 1:4 title "Up  - Quarter #2 (center)" with lines, \
+#      '' index 3 using 1:2 title "Low - Quarter #3 (center)" with lines, \
+#      '' index 3 using 1:3 title "Med - Quarter #3 (center)" with lines, \
+#      '' index 3 using 1:4 title "Up  - Quarter #3 (center)" with lines
+# pause -1
+
+
 
 
 

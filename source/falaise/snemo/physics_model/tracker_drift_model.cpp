@@ -77,7 +77,7 @@ namespace snemo {
     {
       out_ << cinfo_.category;
       if (cinfo_.category == cell_quarter_category::edge) {
-	out_ << " (missing '" << cinfo_.edge_dir << "')";
+	out_ << " (missing '" << cinfo_.edge_dir << "' HV or cell)";
       }
       return out_;
     }
@@ -256,6 +256,13 @@ namespace snemo {
                   "No geometry service");
       _geomgr_ = &datatools::get<geomtools::geometry_service>(services_, geometryLabel).get_geom_manager();
 
+      std::string dbLabel = service_info::dbServiceName();
+      if (datatools::has<snemo::db_service>(services_, dbLabel)) {
+	_db_ = &datatools::get<snemo::db_service>(services_, dbLabel);
+      }
+      DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS,
+		     "Tracker drift model has no access to DB service");
+      
       std::string tcssLabel = service_info::trackerCellStatusServiceName();
       DT_THROW_IF(not datatools::has<snemo::tracker_cell_status_service>(services_, tcssLabel),
                   std::logic_error,
@@ -530,7 +537,8 @@ namespace snemo {
       double tmed = std::numeric_limits<double>::quiet_NaN();
       double tmax = std::numeric_limits<double>::quiet_NaN();
       static const double dr = 1 * CLHEP::mm;
-      DT_THROW_IF(radius_ >= _gg_locator_->cellRadius() * M_SQRT2,
+      static const double max_radius = std::max(32.0 * CLHEP::mm, _gg_locator_->cellRadius() * M_SQRT2); 
+      DT_THROW_IF(radius_ >= max_radius,
                   std::domain_error,
                   "Invalid cell radial distance");
       if (radius_ <= cdfpSmall.x - dr) {
@@ -757,6 +765,25 @@ namespace snemo {
       return scis[off_pattern_];
     }
 
+    void tracker_drift_model::build_tracker_info(const time::time_point & timepoint_,
+						 tracker_info & trkinfo_) const
+    {
+      trkinfo_.timestamp = timepoint_;
+      trkinfo_.gas_info = this->fetch_gas_info(timepoint_);
+      geomtools::geom_id allCellsGidPattern(_gg_locator_->cellGIDType(),
+					    _gg_locator_->getModuleNumber(),
+					    geomtools::geom_id::ANY_ADDRESS,
+					    geomtools::geom_id::ANY_ADDRESS,
+					    geomtools::geom_id::ANY_ADDRESS);
+      std::set<geomtools::geom_id> allCellsGids;
+      _gg_locator_->buildGeigerCells(allCellsGidPattern, allCellsGids);
+      for (const auto & cellGid : allCellsGids) {
+	auto cellInfo = this->fetch_cell_info(cellGid, timepoint_);
+	trkinfo_.cell_infos[cellGid] = cellInfo;
+      }
+      return;
+    }
+    
   } // end of namespace physics_model
 
 } // end of namespace snemo

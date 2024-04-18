@@ -76,7 +76,7 @@ void test1()
 
     {
       // Define a cell GID:
-      geomtools::geom_id cellGid(1204, 0, 1, 0, 54);
+      geomtools::geom_id cellGid(1204, 0, 0, 0, 0);
       snt::time_point evenTimestamp = snt::time_point_from_string("2024-04-11 09:45:00");
       auto cellInfo = tdm.fetch_cell_info(cellGid, evenTimestamp);
       {
@@ -87,6 +87,29 @@ void test1()
 	auto cellPos = tdm.gg_locator().getCellPosition(cellGid);
 	cellInfo.export_viewer(std::clog, cellPos.x(), cellPos.y(), tdm.gg_locator().cellRadius());
       }
+
+      double gas_pressure = 880e-3 * CLHEP::bar;
+      std::ofstream fdt("test_tdm_drift_time.data");
+      for (int quarterIndex = 0; quarterIndex < 4; quarterIndex++) {
+	const snpm::cell_quarter_info & cqi = cellInfo.efield_info->qinfos[quarterIndex];
+	std::clog << "cqi[" << quarterIndex << "] = " << cqi << '\n';
+	for (double radial_dist = 0.0 * CLHEP::mm;
+	     radial_dist < 32. * CLHEP::mm;
+	     radial_dist += 0.5 * CLHEP::mm) {
+	  auto result = tdm.compute_drift_time(cqi.category,
+					       gas_pressure,
+					       radial_dist);
+	  double tdown, tmed, tup;
+	  std::tie(tdown, tmed, tup) = result;
+	  fdt << radial_dist << ' '
+	      << tdown  << ' '
+	      << tmed << ' '
+	      << tup
+	      << '\n';
+	}
+	fdt << '\n' << '\n';
+      }
+      fdt.close();
     }
 
     {
