@@ -19,16 +19,17 @@
 
 namespace snemo {
 
-namespace datamodel {
+  namespace datamodel {
 
-template <class Archive>
-void polyline_trajectory_pattern::serialize(Archive& ar, const unsigned int /* version */) {
-  ar& BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_trajectory_pattern);
-  ar& boost::serialization::make_nvp("path", _path_);
-}
+    template <class Archive>
+    void polyline_trajectory_pattern::serialize(Archive & ar_, const unsigned int /* version_ */)
+    {
+      ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_trajectory_pattern);
+      ar_ & boost::serialization::make_nvp("path", _path_);
+    }
 
-}  // end of namespace datamodel
+  } // end of namespace datamodel
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_IPP
+#endif // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_IPP
