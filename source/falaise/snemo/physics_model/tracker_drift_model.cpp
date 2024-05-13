@@ -421,7 +421,7 @@ namespace snemo {
     {
       DT_THROW_IF(x2_ <= x1_, std::domain_error, "Invalid interpolation domain");
       DT_THROW_IF(x_ < x1_ - 0.5 * (x2_ - x1_), std::domain_error, "Out of supported interpolation domain");
-      DT_THROW_IF(x_ > x2_ - 0.5 * (x2_ - x1_), std::domain_error, "Out of supported interpolation domain");
+      DT_THROW_IF(x_ > x2_ + 0.5 * (x2_ - x1_), std::domain_error, "Out of supported interpolation domain");
       return y1_ + (x_ - x1_) * (y2_ - y1_) / (x2_ - x1_);
     }
 
@@ -430,7 +430,7 @@ namespace snemo {
       DT_THROW_IF(x2_ <= x1_, std::domain_error, "Invalid interpolation domain");
       DT_THROW_IF(x3_ <= x2_, std::domain_error, "Invalid interpolation domain");
       DT_THROW_IF(x_ < x1_ - 0.5 * (x2_ - x1_), std::domain_error, "Out of supported interpolation domain");
-      DT_THROW_IF(x_ > x3_ - 0.5 * (x3_ - x2_), std::domain_error, "Out of supported interpolation domain");
+      DT_THROW_IF(x_ > x3_ + 0.5 * (x3_ - x2_), std::domain_error, "Out of supported interpolation domain");
       if (x_ < x2_) {
         return y1_ + (x_ - x1_) * (y2_ - y1_) / (x2_ - x1_);
       }
@@ -442,6 +442,7 @@ namespace snemo {
                                                                          bool large_radius_) const
     {
       // DocDB5839, page 42, Tables 2-3
+      // Unit fix from Kaela Albert (2024-04-23)
       DT_THROW_IF(pressure_ < 840e-3 * CLHEP::bar, std::domain_error, "Unsupported gas pressure");
       DT_THROW_IF(pressure_ > 920e-3 * CLHEP::bar, std::domain_error, "Unsupported gas pressure");
       static const double P1 = 850.;
@@ -453,57 +454,57 @@ namespace snemo {
         cdfp.x = 21.5 * CLHEP::mm;
         if (not large_radius_) {
           cdfp.tx  = lininterp3(P1, P2, P3, 3.34, 3.45, 3.59, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 7.66, 7.92, 8.16, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 7.66, 7.92, 8.16, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.b   = lininterp3(P1, P2, P3, 0.87, 0.87, 0.87, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 8.79, 9.13, 9.36, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 8.79, 9.13, 9.36, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.blo = lininterp3(P1, P2, P3, 0.89, 0.88, 0.90, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 6.77, 6.95, 7.20, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.ahi = lininterp3(P1, P2, P3, 6.77, 6.95, 7.20, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.bhi = lininterp3(P1, P2, P3, 0.85, 0.86, 0.85, P);
         } else {
           cdfp.tx  = lininterp3(P1, P2, P3, 3.34, 3.45, 3.59, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 5.18, 4.94, 5.25, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 5.18, 4.94, 5.25, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.b   = lininterp3(P1, P2, P3, 1.40, 1.48, 1.45, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 5.16, 4.91, 5.17, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 5.16, 4.91, 5.17, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.blo = lininterp3(P1, P2, P3, 1.61, 1.69, 1.68, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 5.17, 4.93, 5.28, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.ahi = lininterp3(P1, P2, P3, 5.17, 4.93, 5.28, P) * 1e-1 * CLHEP::microsecond / CLHEP::cm;
           cdfp.bhi = lininterp3(P1, P2, P3, 1.23, 1.31, 1.27, P);
         }
       } else if (cqc_ == cell_quarter_category::edge) {
         cdfp.x = 22.0 * CLHEP::mm;
         if (not large_radius_) {
           cdfp.tx  = lininterp3(P1, P2, P3, 3.73, 4.15, 4.12, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 8.05, 8.35, 8.56, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 8.05, 8.35, 8.56, P) * 1e-1 * CLHEP::microsecond;
           cdfp.b   = lininterp3(P1, P2, P3, 0.90, 0.92, 0.90, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 9.32, 9.62, 9.88, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 9.32, 9.62, 9.88, P) * 1e-1 * CLHEP::microsecond;
           cdfp.blo = lininterp3(P1, P2, P3, 0.91, 0.95, 0.92, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 7.05, 7.37, 7.53, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.ahi = lininterp3(P1, P2, P3, 7.05, 7.37, 7.53, P) * 1e-1 * CLHEP::microsecond;
           cdfp.bhi = lininterp3(P1, P2, P3, 0.88, 0.88, 0.87, P);
         } else {
           cdfp.tx  = lininterp3(P1, P2, P3, 3.73, 4.15, 4.12, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 3.34, 3.39, 4.03, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 3.34, 3.39, 4.03, P) * 1e-1 * CLHEP::microsecond;
           cdfp.b   = lininterp3(P1, P2, P3, 2.04, 2.07, 1.91, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 3.29, 3.29, 3.89, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
-          cdfp.blo = lininterp3(P1, P2, P3, 2.39, 2.34, 2.20, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 3.42, 3.48, 4.14, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 3.29, 3.29, 3.89, P) * 1e-1 * CLHEP::microsecond;
+          cdfp.blo = lininterp3(P1, P2, P3, 2.30, 2.34, 2.20, P);
+          cdfp.ahi = lininterp3(P1, P2, P3, 3.42, 3.48, 4.14, P) * 1e-1 * CLHEP::microsecond;
           cdfp.bhi = lininterp3(P1, P2, P3, 1.82, 1.84, 1.69, P);
         }
       } else if (cqc_ == cell_quarter_category::centre) {
         cdfp.x = 19.0 * CLHEP::mm;
         if (not large_radius_) {
           cdfp.tx  = lininterp3(P1, P2, P3, 2.95, 2.97, 3.06, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 8.28, 8.53, 8.77, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 8.28, 8.53, 8.77, P) * 1e-1 * CLHEP::microsecond;
           cdfp.b   = lininterp3(P1, P2, P3, 0.90, 0.90, 0.90, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 9.61, 9.88, 10.2, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 9.61, 9.88, 10.2, P) * 1e-1 * CLHEP::microsecond;
           cdfp.blo = lininterp3(P1, P2, P3, 0.93, 0.93, 0.93, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 7.25, 7.48, 7.69, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.ahi = lininterp3(P1, P2, P3, 7.25, 7.48, 7.69, P) * 1e-1 * CLHEP::microsecond;
           cdfp.bhi = lininterp3(P1, P2, P3, 0.88, 0.87, 0.87, P);
         } else {
           cdfp.tx  = lininterp3(P1, P2, P3, 2.95, 2.97, 3.06, P) * CLHEP::microsecond;
-          cdfp.a   = lininterp3(P1, P2, P3, 3.86, 4.19, 4.55, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.a   = lininterp3(P1, P2, P3, 3.86, 4.19, 4.55, P) * 1e-1 * CLHEP::microsecond;
           cdfp.b   = lininterp3(P1, P2, P3, 1.99, 1.93, 1.90, P);
-          cdfp.alo = lininterp3(P1, P2, P3, 4.18, 4.33, 4.86, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.alo = lininterp3(P1, P2, P3, 4.18, 4.33, 4.86, P) * 1e-1 * CLHEP::microsecond;
           cdfp.blo = lininterp3(P1, P2, P3, 2.19, 2.17, 2.10, P);
-          cdfp.ahi = lininterp3(P1, P2, P3, 3.80, 4.16, 4.50, P) * 1e-7 * CLHEP::microsecond / CLHEP::cm;
+          cdfp.ahi = lininterp3(P1, P2, P3, 3.80, 4.16, 4.50, P) * 1e-1 * CLHEP::microsecond;
           cdfp.bhi = lininterp3(P1, P2, P3, 1.79, 1.72, 1.68, P);
         }
       }
@@ -522,7 +523,7 @@ namespace snemo {
         ae = ahi; 
         be = bhi; 
       }
-      t = ae * std::pow(radius_/CLHEP::cm, 1. + be);
+      t = ae * std::pow(radius_ / CLHEP::cm, 1. + be);
       return t;
     }
 
@@ -537,7 +538,8 @@ namespace snemo {
       double tmed = std::numeric_limits<double>::quiet_NaN();
       double tmax = std::numeric_limits<double>::quiet_NaN();
       static const double dr = 1 * CLHEP::mm;
-      static const double max_radius = std::max(32.0 * CLHEP::mm, _gg_locator_->cellRadius() * M_SQRT2); 
+      static const double max_radius = std::max(32.0 * CLHEP::mm,
+						_gg_locator_->cellRadius() * M_SQRT2); 
       DT_THROW_IF(radius_ >= max_radius,
                   std::domain_error,
                   "Invalid cell radial distance");

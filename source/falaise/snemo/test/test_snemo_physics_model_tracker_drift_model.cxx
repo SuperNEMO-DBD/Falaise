@@ -101,10 +101,10 @@ void test1()
 					       radial_dist);
 	  double tdown, tmed, tup;
 	  std::tie(tdown, tmed, tup) = result;
-	  fdt << radial_dist << ' '
-	      << tdown  << ' '
-	      << tmed << ' '
-	      << tup
+	  fdt << radial_dist / CLHEP::mm << ' '
+	      << tdown / CLHEP::microsecond << ' '
+	      << tmed / CLHEP::microsecond << ' '
+	      << tup / CLHEP::microsecond
 	      << '\n';
 	}
 	fdt << '\n' << '\n';
@@ -133,7 +133,6 @@ void test1()
       }  
       fviewer.close();
     }
-
     
     tdm.reset();
   }
