@@ -103,6 +103,7 @@ namespace snemo {
       std::string CDTag_;   //!< The label of the calibrated data bank
       std::string TTDTag_;  //!< The label of the tracker trajectory data bank
       std::string PTDTag_;  //!< The label of the particle track data bank
+			int counter_ = 0;
 
       /// Vertex Extrapolation Driver :
       std::unique_ptr<snemo::reconstruction::vertex_extrapolation_driver> VEAlgo_;
