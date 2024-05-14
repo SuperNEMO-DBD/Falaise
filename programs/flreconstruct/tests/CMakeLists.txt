@@ -152,3 +152,13 @@ add_test(NAME flreconstruct-fix-issue-201
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   )
 set_falaise_test_environment(flreconstruct-fix-issue-201)
+
+
+# Tests dedicated to the validation of fixes
+# - Validation of issue #281 fix
+add_test(NAME flreconstruct-fix-issue281
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281"
+  )
+set_falaise_test_environment(flreconstruct-fix-issue281)
