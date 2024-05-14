@@ -179,13 +179,20 @@ namespace snemo {
       double _sourceStripGapHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceStripGapBoxPtr_;
 
-     // Source calibration tracks:
-       uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE;
+			// Source calibration tracks:
+			uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE;
+      int32_t _sourceCalibTrackMinId_ =  100000; 
+      int32_t _sourceCalibTrackMaxId_ = -100000;
       std::vector<geomtools::geom_id> _sourceCalibTrackGids_;
       double _sourceCalibTrackX_ = datatools::invalid_real();
       double _sourceCalibTrackZ_ = datatools::invalid_real();
       double _sourceCalibTrackHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceCalibTrackBoxPtr_;
+			std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
+			double vertexSourceCalibrationExtendY_ = 1.0;
+			double vertexSourceCalibrationExtendZ_ = 1.0;
+
+			// Source calibration spots:
 
       // Registered calorimeter blocks:
       uint32_t _caloSubmoduleType_ = geomtools::geom_id::INVALID_TYPE; //!< Calorimeter submodule type (for GID)
@@ -202,10 +209,10 @@ namespace snemo {
       std::unique_ptr<geomtools::box> _effectiveXcaloBlockBoxPtr2_;
 
       // Specific dimensions about the positioning of main calo blocks (world frame)
-      double _main_calo_y_first_;
-      double _main_calo_z_first_;
-      double _main_calo_y_step_;
-      double _main_calo_z_step_;
+      double _main_calo_y_first_ = datatools::invalid_real();
+      double _main_calo_z_first_ = datatools::invalid_real();
+      double _main_calo_y_step_ = datatools::invalid_real();
+      double _main_calo_z_step_ = datatools::invalid_real();
 
       // Dynamic
       std::map<snemo::geometry::vertex_info::category_type, bool> _use_vertices_; //!< Vertices reliability
@@ -215,18 +222,16 @@ namespace snemo {
 
     };
 
-  }  // end of namespace reconstruction
+  } // end of namespace reconstruction
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::vertex_extrapolation_driver)
 
-#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
-
-// end of falaise/snemo/reconstruction/vertex_extrapolation_driver.h
+#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
 /*
 ** Local Variables: --
 ** mode: c++ --
