@@ -155,10 +155,20 @@ set_falaise_test_environment(flreconstruct-fix-issue-201)
 
 
 # Tests dedicated to the validation of fixes
-# - Validation of issue #281 fix
+# - Validation of issue #281 fix (test #1)
 add_test(NAME flreconstruct-fix-issue281
   COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281/run.sh
-  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}/fix-issue281"
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281"
   )
 set_falaise_test_environment(flreconstruct-fix-issue281)
+
+
+# Tests dedicated to the validation of fixes
+# - Validation of issue #281 fix (test #2)
+add_test(NAME flreconstruct-fix-issue281-2
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281/run2.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}/fix-issue281-2"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/fix-issue281"
+  )
+set_falaise_test_environment(flreconstruct-fix-issue281-2)
