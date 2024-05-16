@@ -146,9 +146,11 @@ namespace snemo {
       uint32_t _module_id_ = 0;                                      //!< Force module ID
       double _max_calo_extrapolation_xy_length_ = 15.0 * CLHEP::cm;  //!< Maximum length of the extrapolation on calo block in XY plane 
       double _max_source_extrapolation_xy_length_ = 30.0 * CLHEP::cm; //!< Maximum length of the extrapolation on source element in XY plane
-      bool _use_linear_interpolation_ = true; //<! Activation flag of linear interpolation for curved trajectory (helix)
-      bool _use_helix_interpolation_ = true; //<! Activation flag of helix interpolation for helix trajectory
-      double _effectiveCaloBlockXyTolerance_ = 5. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window
+      bool _use_linear_extrapolation_ = true; //<! Activation flag of linear extrapolation for curved trajectory (helix)
+      bool _use_helix_extrapolation_ = true; //<! Activation flag of helix extrapolation for helix trajectory
+      // double _effectiveCaloBlockXyTolerance_ = 5. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window
+			double _effectiveCaloBlockHorizontalTolerance_ = 25. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
+			double _effectiveCaloBlockVerticalTolerance_   = 30. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
 
       // Services:
       const geomtools::manager * geoManager_ = nullptr;              //!< The SuperNEMO geometry manager
@@ -189,8 +191,8 @@ namespace snemo {
       double _sourceCalibTrackHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceCalibTrackBoxPtr_;
 			std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
-			double vertexSourceCalibrationExtendY_ = 1.0;
-			double vertexSourceCalibrationExtendZ_ = 1.0;
+			double _vertexSourceCalibrationExtendY_ = 1.0;
+			double _vertexSourceCalibrationExtendZ_ = 1.0;
 
 			// Source calibration spots:
 
