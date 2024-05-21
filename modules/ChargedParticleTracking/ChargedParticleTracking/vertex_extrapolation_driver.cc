@@ -93,12 +93,12 @@ namespace snemo {
       DT_LOG_DEBUG(logPriority_, "Vertex on calorimeter block extrapolation vertical tolerance   = " << _effectiveCaloBlockVerticalTolerance_ / CLHEP::mm << " mm");
  
       // Extend the effective size of the calibration source carriers for vertex extrapolation :
-      _vertexSourceCalibrationExtendY_ = ps.get<double>("source_extrapolation.extend_y", 1.0);
-      _vertexSourceCalibrationExtendZ_ = ps.get<double>("source_extrapolation.extend_z", 1.0);
-      DT_THROW_IF(_vertexSourceCalibrationExtendY_ < 1.0, std::domain_error, "Invalid vertexSourceCalibrationExtendY factor");
-      DT_THROW_IF(_vertexSourceCalibrationExtendZ_ < 1.0, std::domain_error, "Invalid vertexSourceCalibrationExtendZ factor");
-      DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Y extend factor (>=1) = " << _vertexSourceCalibrationExtendY_);
-      DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Z extend factor (>=1) = " << _vertexSourceCalibrationExtendZ_);
+      _calibration_source_extend_horizontal_ = ps.get<falaise::length_t>("calibration_source_extrapolation.extend_horizontal", {10.0, "mm"})();
+      _calibration_source_extend_vertical_   = ps.get<falaise::length_t>("calibration_source_extrapolation.extend_vertical", {20.0, "mm"})();
+      DT_THROW_IF(_calibration_source_extend_horizontal_ < 0.0, std::domain_error, "Invalid _calibration_source_extend_horizontal_ length");
+      DT_THROW_IF(_calibration_source_extend_vertical_ < 0.0, std::domain_error, "Invalid _calibration_source_extend_vertical_ length");
+      DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Y extend factor (>=0 mm) = " << _calibration_source_extend_horizontal_ / CLHEP::mm << " mm");
+      DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Z extend factor (>=0 mm) = " << _calibration_source_extend_vertical_ / CLHEP::mm << " mm");
       // End of configuration parameters parsing.
   
       // Identify source submodule:
@@ -202,6 +202,19 @@ namespace snemo {
       
       // Identify calibration sources:
       _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE;
+      _sourceCalibrationCarrierType_ = geomtools::geom_id::INVALID_TYPE;
+      
+      if (geoIdMgr.has_category_info("source_calibration_carrier")) {
+        _sourceCalibrationCarrierType_ = geoIdMgr.get_category_info("source_calibration_carrier").get_type();
+	geomtools::geom_id sourceCalibrarionCarrierGidPattern(_sourceCalibrationCarrierType_,
+							      _module_id_,
+							      geomtools::geom_id::ANY_ADDRESS,  // track
+							      geomtools::geom_id::ANY_ADDRESS); // position
+        geoMapping.compute_matching_geom_id(sourceCalibrarionCarrierGidPattern, _sourceCalibrationCarrierGids_);
+      }
+      DT_LOG_DEBUG(logPriority_, "Source calibration carrier type = " << _sourceCalibrationCarrierType_);
+      DT_LOG_DEBUG(logPriority_, "Found " << _sourceCalibrationCarrierGids_.size() << " calibration source carriers");
+
       if (geoIdMgr.has_category_info("source_calibration_spot")) {
         _sourceCalibrationSpotType_ = geoIdMgr.get_category_info("source_calibration_spot").get_type();
         geomtools::geom_id sourceCalibrarionSpotGidPattern(_sourceCalibrationSpotType_,
@@ -212,11 +225,12 @@ namespace snemo {
       }
       DT_LOG_DEBUG(logPriority_, "Source calibration spot type = " << _sourceCalibrationSpotType_);
       DT_LOG_DEBUG(logPriority_, "Found " << _sourceCalibrationSpotGids_.size() << " calibration source spots");
+      
       _sourceCalibTrackMinId_ = +100000;
       _sourceCalibTrackMaxId_ = -100000;
       static const int32_t trackNumIdx = 1;
-      for (const auto & spotGid : _sourceCalibrationSpotGids_) {
-	int32_t trackId = (int32_t) spotGid.get(trackNumIdx);
+      for (const auto & carrierGid : _sourceCalibrationCarrierGids_) {
+	int32_t trackId = (int32_t) carrierGid.get(trackNumIdx);
 	if (trackId > _sourceCalibTrackMaxId_) {
 	  _sourceCalibTrackMaxId_ = trackId;
 	}
@@ -248,18 +262,32 @@ namespace snemo {
         const geomtools::box & srcCalibTrackBox = dynamic_cast<const geomtools::box &>(srcCalibTrackShape);
         _sourceCalibTrackHeight_ = srcCalibTrackBox.get_z();
 	// double effectiveTrackBoxThickness = 4.0 * CLHEP::mm;
-	double effectiveTrackBoxThickness = 4.1 * CLHEP::mm;
-	// double effectiveCalibSourceBoxThickness = 1.0 * CLHEP::mm;
-	double effectiveCalibSourceBoxThickness = effectiveTrackBoxThickness;
-	double effectiveCalibSourceBoxWidth  = 15.0 * CLHEP::mm;
-	double effectiveCalibSourceBoxHeight = 35.0 * CLHEP::mm;
+	// double effectiveTrackBoxThickness = srcCalibTrackBox.get_x();
+	double effectiveTrackBoxThickness = 4.25 * CLHEP::mm;
+	DT_LOG_DEBUG(logPriority_, "effectiveTrackBoxThickness = " << effectiveTrackBoxThickness / CLHEP::mm << " mm");
+ 	// // double effectiveCalibSourceBoxThickness = 1.0 * CLHEP::mm;
+	// double effectiveCalibSourceBoxThickness = effectiveTrackBoxThickness;
+	// double effectiveCalibSourceBoxWidth  = 15.0 * CLHEP::mm;
+	// double effectiveCalibSourceBoxHeight = 35.0 * CLHEP::mm;
 	
         _sourceCalibTrackBoxPtr_ = std::make_unique<geomtools::box>(effectiveTrackBoxThickness,
 								    srcCalibTrackBox.get_y(),
 								    _sourceCalibTrackHeight_);
-        _sourceCalibrationSpotEffectiveBoxPtr_ = std::make_unique<geomtools::box>(effectiveCalibSourceBoxHeight * _vertexSourceCalibrationExtendZ_,
-										  effectiveCalibSourceBoxWidth * _vertexSourceCalibrationExtendY_,
-										  effectiveCalibSourceBoxThickness);
+	if (_sourceCalibrationCarrierGids_.size()) {
+	  const geomtools::geom_info & srcCalibCarrierGinfo = geoManager().get_mapping().get_geom_info(_sourceCalibrationCarrierGids_[0]);
+	  const geomtools::logical_volume & srcCalibCarrierLog = srcCalibCarrierGinfo.get_logical();
+	  const geomtools::i_shape_3d & srcCalibCarrierShape = srcCalibCarrierLog.get_shape();    
+	  const geomtools::box & srcCalibCarrierBox = dynamic_cast<const geomtools::box &>(srcCalibCarrierShape);
+	  _sourceCalibrationCarrierEffectiveBoxPtr_ = std::make_unique<geomtools::box>();
+	  // Const cast workaround because of a bug in Bayeux:
+          const_cast<geomtools::box &>(srcCalibCarrierBox).compute_inflated(*_sourceCalibrationCarrierEffectiveBoxPtr_,
+									    _calibration_source_extend_vertical_,
+									    _calibration_source_extend_horizontal_,
+									    0. * CLHEP::mm);
+	  // _sourceCalibrationSpotEffectiveBoxPtr_ = std::make_unique<geomtools::box>(effectiveCalibSourceBoxHeight * _calibration_source_extend_vertical_,
+	  // 									  effectiveCalibSourceBoxWidth * _calibration_source_extend_horizontal_,
+	  // 									  effectiveCalibSourceBoxThickness);
+	}
       }
  
       // Identify main calo submodule:
@@ -722,7 +750,6 @@ namespace snemo {
                     blockVtxInfo.print(std::cerr, "[debug] ");
                   }
                   if (blockVtxInfo.distance_xy <= _max_calo_extrapolation_xy_length_) {
-                    // caloVertexes[iFrom].push_back(blockVtxInfo);
                     caloVertexes.push_back(blockVtxInfo);
                     caloBlockHelixExtrapolationSuccess = true;
                   } else {
@@ -1377,77 +1404,77 @@ namespace snemo {
         } // if (use_foils and sourceSubmoduleInterceptSuccess)
 
         if (use_calib_src) {
-          DT_LOG_DEBUG(logPrio, "Scanning calibration spots...");
-          // Calibration spot:
-          for (uint32_t iSpot = 0; iSpot < _sourceCalibrationSpotGids_.size(); iSpot++) {
-            const geomtools::geom_id & sourceCalibrationSpotGid = _sourceCalibrationSpotGids_[iSpot];
+          DT_LOG_DEBUG(logPrio, "Scanning calibration carriers...");
+          // Calibration carrier:
+          for (uint32_t iCarrier = 0; iCarrier < _sourceCalibrationCarrierGids_.size(); iCarrier++) {
+            const geomtools::geom_id & sourceCalibrationCarrierGid = _sourceCalibrationCarrierGids_[iCarrier];
 	    static const int32_t trackNumIdx = 1;
-	    int32_t trackId = sourceCalibrationSpotGid.get(trackNumIdx);
-            if (sourceCalibrationSpotGid.get(0) != _module_id_) { 
+	    int32_t trackId = sourceCalibrationCarrierGid.get(trackNumIdx);
+            if (sourceCalibrationCarrierGid.get(0) != _module_id_) { 
               continue;
             }
 	    if (trackId < minTrackId or trackId > maxTrackId) {
 	      DT_LOG_DEBUG(logPrio, "  Pass calibration track #" << trackId << " [" << minTrackId << ':' << maxTrackId << ']');
 	      continue;
 	    }
-            DT_LOG_DEBUG(logPrio, "Searching line intercept on calibration source spot #" << sourceCalibrationSpotGid);
-            const geomtools::geom_info  & sourceCalibrationSpotGinfo = geoManager().get_mapping().get_geom_info(sourceCalibrationSpotGid);
-            const geomtools::logical_volume & sourceCalibrationSpotLog = sourceCalibrationSpotGinfo.get_logical();
-            const geomtools::i_shape_3d & sourceCalibrationSpotShape = sourceCalibrationSpotLog.get_shape();
-            const geomtools::placement & sourceCalibrationSpotPlacement = sourceCalibrationSpotGinfo.get_world_placement();
-            geomtools::vector_3d srcCalibrationSpotRefPoint;
+            DT_LOG_DEBUG(logPrio, "Searching line intercept on calibration source carrier #" << sourceCalibrationCarrierGid);
+            const geomtools::geom_info  & sourceCalibrationCarrierGinfo = geoManager().get_mapping().get_geom_info(sourceCalibrationCarrierGid);
+            const geomtools::logical_volume & sourceCalibrationCarrierLog = sourceCalibrationCarrierGinfo.get_logical();
+            const geomtools::i_shape_3d & sourceCalibrationCarrierShape = sourceCalibrationCarrierLog.get_shape();
+            const geomtools::placement & sourceCalibrationCarrierPlacement = sourceCalibrationCarrierGinfo.get_world_placement();
+            geomtools::vector_3d srcCalibrationCarrierRefPoint;
             DT_LOG_DEBUG(logPrio, "Ref point (world) : " << geomtools::to_xyz(refPoint) );
 	    DT_LOG_DEBUG(logPrio, "Direction (world) : " << geomtools::to_xyz(direction) );
-            sourceCalibrationSpotPlacement.mother_to_child(refPoint, srcCalibrationSpotRefPoint);
-            geomtools::vector_3d srcCalibrationSpotDirection;
-            sourceCalibrationSpotPlacement.mother_to_child_direction(direction, srcCalibrationSpotDirection);
-            DT_LOG_DEBUG(logPrio, "Ref point   : " << geomtools::to_xyz(srcCalibrationSpotRefPoint) );
-            DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(srcCalibrationSpotDirection) );
-            DT_LOG_DEBUG(logPrio, "Calibration spot shape : '" << sourceCalibrationSpotShape.get_shape_name() << "'");
-            DT_LOG_DEBUG(logPrio, "Calibration spot shape : '" << sourceCalibrationSpotShape.get_shape_name() << "'");
-	    _sourceCalibrationSpotEffectiveBoxPtr_->tree_dump(std::cerr, "sourceCalibrationSpotEffectiveBoxPtr", "[devel] ");
-            geomtools::face_intercept_info srcCalibrationSpotFii;
-            bool success = _sourceCalibrationSpotEffectiveBoxPtr_->find_intercept(srcCalibrationSpotRefPoint,
-										  srcCalibrationSpotDirection,
-										  srcCalibrationSpotFii,
+            sourceCalibrationCarrierPlacement.mother_to_child(refPoint, srcCalibrationCarrierRefPoint);
+            geomtools::vector_3d srcCalibrationCarrierDirection;
+            sourceCalibrationCarrierPlacement.mother_to_child_direction(direction, srcCalibrationCarrierDirection);
+            DT_LOG_DEBUG(logPrio, "Ref point   : " << geomtools::to_xyz(srcCalibrationCarrierRefPoint) );
+            DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(srcCalibrationCarrierDirection) );
+            DT_LOG_DEBUG(logPrio, "Calibration carrier shape : '" << sourceCalibrationCarrierShape.get_shape_name() << "'");
+            DT_LOG_DEBUG(logPrio, "Calibration carrier shape : '" << sourceCalibrationCarrierShape.get_shape_name() << "'");
+	    _sourceCalibrationCarrierEffectiveBoxPtr_->tree_dump(std::cerr, "sourceCalibrationCarrierEffectiveBoxPtr", "[devel] ");
+            geomtools::face_intercept_info srcCalibrationCarrierFii;
+            bool success = _sourceCalibrationCarrierEffectiveBoxPtr_->find_intercept(srcCalibrationCarrierRefPoint,
+										  srcCalibrationCarrierDirection,
+										  srcCalibrationCarrierFii,
 										  _intercept_tolerance_);
             if (! success) {
-              DT_LOG_DEBUG(logPrio, "Give up with calibration source spot GID " << sourceCalibrationSpotGid);
+              DT_LOG_DEBUG(logPrio, "Give up with calibration source carrier GID " << sourceCalibrationCarrierGid);
               continue;
             }
-            DT_LOG_DEBUG(logPrio, "Found line intercept on calibration source spot GID " << sourceCalibrationSpotGid);
-            geomtools::vector_3d srcCalibrationSpotImpact = srcCalibrationSpotFii.get_impact();
-            geomtools::vector_3d srcCalibrationSpotWorldImpact;
-            sourceCalibrationSpotPlacement.child_to_mother(srcCalibrationSpotImpact, srcCalibrationSpotWorldImpact);
-            srcCalibrationSpotFii.set_impact(srcCalibrationSpotWorldImpact);
-            double srcCalibrationSpotDistRef2Impact = (srcCalibrationSpotWorldImpact - refPoint).mag();
-            double srcCalibrationSpotExtrapolationDist = srcCalibrationSpotDistRef2Impact - distRef2End;
-	    DT_LOG_DEBUG(logPrio, "srcCalibrationSpotExtrapolationDist = " << srcCalibrationSpotExtrapolationDist / CLHEP::mm << "  mm");
+            DT_LOG_DEBUG(logPrio, "Found line intercept on calibration source carrier GID " << sourceCalibrationCarrierGid);
+            geomtools::vector_3d srcCalibrationCarrierImpact = srcCalibrationCarrierFii.get_impact();
+            geomtools::vector_3d srcCalibrationCarrierWorldImpact;
+            sourceCalibrationCarrierPlacement.child_to_mother(srcCalibrationCarrierImpact, srcCalibrationCarrierWorldImpact);
+            srcCalibrationCarrierFii.set_impact(srcCalibrationCarrierWorldImpact);
+            double srcCalibrationCarrierDistRef2Impact = (srcCalibrationCarrierWorldImpact - refPoint).mag();
+            double srcCalibrationCarrierExtrapolationDist = srcCalibrationCarrierDistRef2Impact - distRef2End;
+	    DT_LOG_DEBUG(logPrio, "srcCalibrationCarrierExtrapolationDist = " << srcCalibrationCarrierExtrapolationDist / CLHEP::mm << "  mm");
 	    // XY-extrapolation:
-	    geomtools::vector_2d srcCalibrationSpotWorldImpact_Xy(srcCalibrationSpotWorldImpact.x(), srcCalibrationSpotWorldImpact.y());
-	    double srcCalibrationSpotDistRef2Impact_Xy = (srcCalibrationSpotWorldImpact_Xy - refPoint_Xy).mag();
-	    double srcCalibrationSpotExtrapolationDist_Xy = srcCalibrationSpotDistRef2Impact_Xy - distRef2End_Xy;
-	    DT_LOG_DEBUG(logPrio, "srcCalibrationSpotExtrapolationDist_Xy = " << srcCalibrationSpotExtrapolationDist_Xy / CLHEP::mm << "  mm");
-	    vertex_info calibrationSpotVtxInfo;
-            calibrationSpotVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
-            calibrationSpotVtxInfo.from = iFrom;
-            calibrationSpotVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
-            calibrationSpotVtxInfo.gid = sourceCalibrationSpotGid;
-            calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotFii;
-            if (srcCalibrationSpotExtrapolationDist > 0.0) {
-              calibrationSpotVtxInfo.distance = srcCalibrationSpotExtrapolationDist;
-              calibrationSpotVtxInfo.distance_xy = srcCalibrationSpotExtrapolationDist_Xy;
+	    geomtools::vector_2d srcCalibrationCarrierWorldImpact_Xy(srcCalibrationCarrierWorldImpact.x(), srcCalibrationCarrierWorldImpact.y());
+	    double srcCalibrationCarrierDistRef2Impact_Xy = (srcCalibrationCarrierWorldImpact_Xy - refPoint_Xy).mag();
+	    double srcCalibrationCarrierExtrapolationDist_Xy = srcCalibrationCarrierDistRef2Impact_Xy - distRef2End_Xy;
+	    DT_LOG_DEBUG(logPrio, "srcCalibrationCarrierExtrapolationDist_Xy = " << srcCalibrationCarrierExtrapolationDist_Xy / CLHEP::mm << "  mm");
+	    vertex_info calibrationCarrierVtxInfo;
+            calibrationCarrierVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
+            calibrationCarrierVtxInfo.from = iFrom;
+            calibrationCarrierVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
+            calibrationCarrierVtxInfo.gid = sourceCalibrationCarrierGid;
+            calibrationCarrierVtxInfo.face_intercept = srcCalibrationCarrierFii;
+            if (srcCalibrationCarrierExtrapolationDist > 0.0) {
+              calibrationCarrierVtxInfo.distance = srcCalibrationCarrierExtrapolationDist;
+              calibrationCarrierVtxInfo.distance_xy = srcCalibrationCarrierExtrapolationDist_Xy;
             } else {
-              calibrationSpotVtxInfo.distance = 0.0;
-              calibrationSpotVtxInfo.distance_xy = 0.0;
+              calibrationCarrierVtxInfo.distance = 0.0;
+              calibrationCarrierVtxInfo.distance_xy = 0.0;
             }
-            calibrationSpotVtxInfo.tolerance = _intercept_tolerance_;
-	    DT_LOG_DEBUG(logPrio, "calibrationSpotVtxInfo.distance_xy = " << calibrationSpotVtxInfo.distance_xy / CLHEP::mm << " mm");
+            calibrationCarrierVtxInfo.tolerance = _intercept_tolerance_;
+	    DT_LOG_DEBUG(logPrio, "calibrationCarrierVtxInfo.distance_xy = " << calibrationCarrierVtxInfo.distance_xy / CLHEP::mm << " mm");
 	    // Extrapolation distance check:
-            if (calibrationSpotVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
-              srcVertexes.push_back(calibrationSpotVtxInfo);
+            if (calibrationCarrierVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
+              srcVertexes.push_back(calibrationCarrierVtxInfo);
             } else {
-              DT_LOG_DEBUG(logPrio, "Line intercept is too XY-far from the calibration source spot (max=" << _max_source_extrapolation_xy_length_ / CLHEP::mm << " mm)");
+              DT_LOG_DEBUG(logPrio, "Line intercept is too XY-far from the calibration source carrier (max=" << _max_source_extrapolation_xy_length_ / CLHEP::mm << " mm)");
             }
           }
         } // if (use_calib_src)
@@ -1494,7 +1521,7 @@ namespace snemo {
       if (_use_vertices_.find(snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE)->second) {
         use_calib_src = true;
       }
-      DT_LOG_DEBUG(logPrio, "Loop on track's helix end points");
+      DT_LOG_DEBUG(logPrio, "Loop on helix trajectory's end points...");
       for (int iFrom = vertex_info::FROM_FIRST; iFrom <= vertex_info::FROM_LAST; iFrom++) {
         std::vector<vertex_info> srcVertexes;
         // Select the end point:
@@ -1635,7 +1662,7 @@ namespace snemo {
 	      }
 	      sourceSubmoduleLineExtrapolationSuccess = true;
             } else {
-              DT_LOG_DEBUG(logPrio, "No line intercept on the source submodule #" << _sourceSubmoduleGid_);
+              DT_LOG_DEBUG(logPrio, "No linear intercept on the source submodule #" << _sourceSubmoduleGid_);
             }
           } // if (sourceSubmoduleLineExtrapolationSuccess) 
 	  DT_LOG_DEBUG(logPrio, "minStripId=" << minStripId);
@@ -1696,9 +1723,9 @@ namespace snemo {
         DT_LOG_DEBUG(logPrio, "minStripId=" << minStripId);
         DT_LOG_DEBUG(logPrio, "maxStripId=" << maxStripId);
 
-        // Scan strips/pads...
+        // Scan source strips/pads...
         if (use_foils and sourceSubmoduleInterceptSuccess) {
-          DT_LOG_DEBUG(logPrio, "Scanning strips...");
+          DT_LOG_DEBUG(logPrio, "Scanning source strips...");
           for (uint32_t iStrip = 0; iStrip < _sourceStripGids_.size(); iStrip++) {
             const geomtools::geom_id & sourceStripGid = _sourceStripGids_[iStrip];
             DT_LOG_DEBUG(logPrio, "Source strip GID : " << sourceStripGid);
@@ -1739,7 +1766,6 @@ namespace snemo {
                 sourceStripPlacement.child_to_mother(srcStripImpact, srcStripWorldImpact);
                 srcStripFii.set_impact(srcStripWorldImpact);
                 sourceStripLineExtrapolationSuccess = true;
-                // XXX Add vtx info
               }
             }
             
@@ -1756,7 +1782,6 @@ namespace snemo {
               bool success = hIntercept.find_intercept(srcStripEi, from_bit);
               if (success) {
                 sourceStripHelixExtrapolationSuccess = true;
-                // XXX Add vtx info
               }
             }
             
@@ -2034,122 +2059,129 @@ namespace snemo {
               }
               
             } // for (uint32_t sourcePadGidIndex...
-          } // for (uint32_t sourcePadGidIndex...
+          } // for (uint32_t iStrip...
         } // if (use_foils)
         
         if (use_calib_src) {
-          // Calibration spot:
-          for (uint32_t iSpot = 0; iSpot < _sourceCalibrationSpotGids_.size(); iSpot++) {
-            const geomtools::geom_id & sourceCalibrationSpotGid = _sourceCalibrationSpotGids_[iSpot];
+          // Calibration carrier:
+          for (uint32_t iCarrier = 0; iCarrier < _sourceCalibrationCarrierGids_.size(); iCarrier++) {
+            const geomtools::geom_id & sourceCalibrationCarrierGid = _sourceCalibrationCarrierGids_[iCarrier];
  	    static const int32_t trackNumIdx = 1;
-	    int32_t trackId = sourceCalibrationSpotGid.get(trackNumIdx);
-            if (sourceCalibrationSpotGid.get(0) != _module_id_) { 
+	    int32_t trackId = sourceCalibrationCarrierGid.get(trackNumIdx);
+            if (sourceCalibrationCarrierGid.get(0) != _module_id_) { 
               continue;
             }
 	    if (trackId < minTrackId) continue;
 	    if (trackId > maxTrackId) continue;
-	    DT_LOG_DEBUG(logPrio, "Searching helix intercept on calibration source spot #" << sourceCalibrationSpotGid);
-            const geomtools::geom_info & sourceCalibrationSpotGinfo = geoManager().get_mapping().get_geom_info(sourceCalibrationSpotGid);
-            const geomtools::logical_volume & sourceCalibrationSpotLog = sourceCalibrationSpotGinfo.get_logical();
-            const geomtools::i_shape_3d & sourceCalibrationSpotShape = sourceCalibrationSpotLog.get_shape();
-            const geomtools::placement & sourceCalibrationSpotPlacement = sourceCalibrationSpotGinfo.get_world_placement();
-            DT_LOG_DEBUG(logPrio, "Calibration spot shape : '" << sourceCalibrationSpotShape.get_shape_name() << "'");
+	    
+	    DT_LOG_DEBUG(logPrio, "Searching helix trajectory intercept on calibration source carrier #" << sourceCalibrationCarrierGid);
+	    // 2024-05-17 FM : use the source carrier GID in place of the spot GID
+            const geomtools::geom_info & sourceCalibrationCarrierGinfo = geoManager().get_mapping().get_geom_info(sourceCalibrationCarrierGid);
+	    // const geomtools::logical_volume & sourceCalibrationCarrierLog = sourceCalibrationCarrierGinfo.get_logical();
+            // const geomtools::i_shape_3d & sourceCalibrationCarrierShape = sourceCalibrationCarrierLog.get_shape();
+            const geomtools::placement & sourceCalibrationCarrierPlacement = sourceCalibrationCarrierGinfo.get_world_placement();
+	    DT_LOG_DEBUG(logPrio, "sourceCalibrationCarrierPlacement : " << sourceCalibrationCarrierPlacement);
+	    // DT_LOG_DEBUG(logPrio, "Calibration carrier shape : '" << sourceCalibrationCarrierShape.get_shape_name() << "'");
 
-            bool calibrationSpotLineExtrapolationSuccess = false;
-            // bool calibrationSpotHelixExtrapolationSuccess = false;
+            bool calibrationCarrierLineExtrapolationSuccess = false;
+            // bool calibrationCarrierHelixExtrapolationSuccess = false;
             
             if (_use_linear_extrapolation_) {
-              geomtools::vector_3d calibSpotRefPoint;
-              sourceCalibrationSpotPlacement.mother_to_child(refPoint, calibSpotRefPoint);
-              geomtools::vector_3d calibSpotDirection;
-              sourceCalibrationSpotPlacement.mother_to_child_direction(direction, calibSpotDirection);
-              DT_LOG_DEBUG(logPrio, "Ref point   : " << geomtools::to_xyz(calibSpotRefPoint) );
-              DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(calibSpotDirection) );
-              DT_LOG_DEBUG(logPrio, "Calib. spot strip shape  : '" << sourceCalibrationSpotShape.get_shape_name() << "'");
+	      DT_LOG_DEBUG(logPrio, "Trying linear extrapolation...");
+	      geomtools::vector_3d calibCarrierRefPoint;
+              sourceCalibrationCarrierPlacement.mother_to_child(refPoint, calibCarrierRefPoint);
+              geomtools::vector_3d calibCarrierDirection;
+              sourceCalibrationCarrierPlacement.mother_to_child_direction(direction, calibCarrierDirection);
+              DT_LOG_DEBUG(logPrio, "Ref point   : " << geomtools::to_xyz(calibCarrierRefPoint) );
+              DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(calibCarrierDirection) );
               DT_LOG_DEBUG(logPrio, "Intercept tolerance : " << _intercept_tolerance_ / CLHEP::mm << " mm");
-              geomtools::face_intercept_info calibSpotFii;
-              // bool success = sourceCalibrationSpotShape.find_intercept(calibSpotRefPoint,
-              //                                                          calibSpotDirection,
-              //                                                          calibSpotFii,
-              //                                                          _intercept_tolerance_);
-              bool success = _sourceCalibrationSpotEffectiveBoxPtr_->find_intercept(calibSpotRefPoint,
-										    calibSpotDirection,
-										    calibSpotFii,
-										    _intercept_tolerance_);
+              geomtools::face_intercept_info calibCarrierFii;
+	      bool success = _sourceCalibrationCarrierEffectiveBoxPtr_->find_intercept(calibCarrierRefPoint,
+										       calibCarrierDirection,
+										       calibCarrierFii,
+										       _intercept_tolerance_);
               if (success) {
-                geomtools::vector_3d calibSpotImpact = calibSpotFii.get_impact();
-                geomtools::vector_3d calibSpotWorldImpact;
-                sourceCalibrationSpotPlacement.child_to_mother(calibSpotImpact, calibSpotWorldImpact);
-                calibSpotFii.set_impact(calibSpotWorldImpact);
-                double calibSpotDistRef2Impact = (calibSpotWorldImpact - refPoint).mag();
-                double calibSpotExtrapolationDist = calibSpotDistRef2Impact - distRef2End;
-		DT_LOG_DEBUG(logPrio, "calibSpotExtrapolationDist = "
-			     << calibSpotExtrapolationDist / CLHEP::mm << "  mm");
-               // XY extrapolation:
-                geomtools::vector_2d calibSpotImpact_Xy(calibSpotWorldImpact.x(), calibSpotWorldImpact.y());
-                double calibSpotDistRef2Impact_Xy = (calibSpotImpact_Xy - refPoint_Xy).mag();
-                double calibSpotExtrapolationDist_Xy = calibSpotDistRef2Impact_Xy - distRef2End_Xy;
-		DT_LOG_DEBUG(logPrio, "calibSpotExtrapolationDist_Xy = " << calibSpotExtrapolationDist_Xy / CLHEP::mm << "  mm");
+		DT_LOG_DEBUG(logPrio, "Found linear extrapolation on calibration source carrier #" << sourceCalibrationCarrierGid);
+		geomtools::vector_3d calibCarrierImpact = calibCarrierFii.get_impact();
+                geomtools::vector_3d calibCarrierWorldImpact;
+                sourceCalibrationCarrierPlacement.child_to_mother(calibCarrierImpact, calibCarrierWorldImpact);
+                calibCarrierFii.set_impact(calibCarrierWorldImpact);
+                double calibCarrierDistRef2Impact = (calibCarrierWorldImpact - refPoint).mag();
+                double calibCarrierExtrapolationDist = calibCarrierDistRef2Impact - distRef2End;
+		DT_LOG_DEBUG(logPrio, "calibCarrierExtrapolationDist = "
+			     << calibCarrierExtrapolationDist / CLHEP::mm << "  mm");
+		// XY extrapolation:
+                geomtools::vector_2d calibCarrierImpact_Xy(calibCarrierWorldImpact.x(), calibCarrierWorldImpact.y());
+                double calibCarrierDistRef2Impact_Xy = (calibCarrierImpact_Xy - refPoint_Xy).mag();
+                double calibCarrierExtrapolationDist_Xy = calibCarrierDistRef2Impact_Xy - distRef2End_Xy;
+		DT_LOG_DEBUG(logPrio, "calibCarrierExtrapolationDist_Xy = " << calibCarrierExtrapolationDist_Xy / CLHEP::mm << "  mm");
 		// Result:
-                vertex_info calibSpotVtxInfo;
-                calibSpotVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
-                calibSpotVtxInfo.from = iFrom;
-                calibSpotVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
-                calibSpotVtxInfo.gid = sourceCalibrationSpotGid;
-                calibSpotVtxInfo.face_intercept = calibSpotFii;
-                if (calibSpotExtrapolationDist > 0.0) {
-                  calibSpotVtxInfo.distance = calibSpotDistRef2Impact;
-                  calibSpotVtxInfo.distance_xy = calibSpotExtrapolationDist_Xy;
+                vertex_info calibCarrierVtxInfo;
+                calibCarrierVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
+                calibCarrierVtxInfo.from = iFrom;
+                calibCarrierVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
+                calibCarrierVtxInfo.gid = sourceCalibrationCarrierGid;
+                calibCarrierVtxInfo.face_intercept = calibCarrierFii;
+                if (calibCarrierExtrapolationDist > 0.0) {
+                  calibCarrierVtxInfo.distance = calibCarrierDistRef2Impact;
+                  calibCarrierVtxInfo.distance_xy = calibCarrierExtrapolationDist_Xy;
                 } else {
-                  calibSpotVtxInfo.distance = 0.0;
-                  calibSpotVtxInfo.distance_xy = 0.0;
+                  calibCarrierVtxInfo.distance = 0.0;
+                  calibCarrierVtxInfo.distance_xy = 0.0;
                 }
-                DT_LOG_DEBUG(logPrio, "calibSpotExtrapolationDist    = " << calibSpotExtrapolationDist / CLHEP::mm << "  mm");
-                DT_LOG_DEBUG(logPrio, "calibSpotExtrapolationDist_Xy = " << calibSpotExtrapolationDist_Xy / CLHEP::mm << "  mm");
-                calibSpotVtxInfo.tolerance = _intercept_tolerance_;
-                if (calibSpotVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
-                  DT_LOG_DEBUG(logPrio, "add calibSpotVtxInfo");
-                  srcVertexes.push_back(calibSpotVtxInfo);
-                  calibrationSpotLineExtrapolationSuccess = true;
+                DT_LOG_DEBUG(logPrio, "calibCarrierExtrapolationDist    = " << calibCarrierExtrapolationDist / CLHEP::mm << "  mm");
+                DT_LOG_DEBUG(logPrio, "calibCarrierExtrapolationDist_Xy = " << calibCarrierExtrapolationDist_Xy / CLHEP::mm << "  mm");
+                calibCarrierVtxInfo.tolerance = _intercept_tolerance_;
+                if (calibCarrierVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
+                  DT_LOG_DEBUG(logPrio, "add calibCarrierVtxInfo");
+                  srcVertexes.push_back(calibCarrierVtxInfo);
+                  calibrationCarrierLineExtrapolationSuccess = true;
                 } else {
-                  DT_LOG_DEBUG(logPrio, "Line intercept is to far from the calibration spot");
+                  DT_LOG_DEBUG(logPrio, "Line intercept is to far from the calibration carrier");
                 } // extrapolation distance check
-              } // if (success)
-            } // if (useCalibrationSpotLineExtrapolation) 
+              } else { // if (success)
+		DT_LOG_DEBUG(logPrio, " => no line intercept was found");
+	      }
+            } // if (useCalibrationCarrierLineExtrapolation) 
 
-            if (_use_helix_extrapolation_ and not calibrationSpotLineExtrapolationSuccess) {
-              snemo::geometry::helix_intercept hCalibrationSpotIntercept(helix,
-                                                                         *_sourceCalibrationSpotEffectiveBoxPtr_,
-                                                                         sourceCalibrationSpotPlacement,
-                                                                         _finder_step_,
-                                                                         _intercept_tolerance_,
-                                                                         logPrio);
-              snemo::geometry::helix_intercept::extrapolation_info srcCalibrationSpotEi;
-              bool success = hCalibrationSpotIntercept.find_intercept(srcCalibrationSpotEi, from_bit);
+            if (_use_helix_extrapolation_ and not calibrationCarrierLineExtrapolationSuccess) {
+	      DT_LOG_DEBUG(logPrio, "Trying helix extrapolation...");
+              snemo::geometry::helix_intercept hCalibrationCarrierIntercept(helix,
+									    *_sourceCalibrationCarrierEffectiveBoxPtr_,
+									    sourceCalibrationCarrierPlacement,
+									    _finder_step_,
+									    _intercept_tolerance_,
+									    logPrio);
+              snemo::geometry::helix_intercept::extrapolation_info srcCalibrationCarrierEi;
+              bool success = hCalibrationCarrierIntercept.find_intercept(srcCalibrationCarrierEi, from_bit);
               if (success) {
-                DT_LOG_DEBUG(logPrio, "Found helix intercept on calibration source spot #" << sourceCalibrationSpotGid);
-                geomtools::vector_3d srcCalibrationSpotImpact = srcCalibrationSpotEi.fii.get_impact();
-                geomtools::vector_3d srcCalibrationSpotWorldImpact;
-                sourceCalibrationSpotPlacement.child_to_mother(srcCalibrationSpotImpact, srcCalibrationSpotWorldImpact);
-                srcCalibrationSpotEi.fii.set_impact(srcCalibrationSpotWorldImpact);
-                vertex_info calibrationSpotVtxInfo;
-                calibrationSpotVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
-                calibrationSpotVtxInfo.from = iFrom;
-                calibrationSpotVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_HELIX;
-                calibrationSpotVtxInfo.gid = sourceCalibrationSpotGid;
-                calibrationSpotVtxInfo.face_intercept = srcCalibrationSpotEi.fii;
-                calibrationSpotVtxInfo.distance = srcCalibrationSpotEi.extrapolated_length;
-                calibrationSpotVtxInfo.distance_xy = srcCalibrationSpotEi.extrapolated_xy_length;
-                calibrationSpotVtxInfo.tolerance = _intercept_tolerance_;
-                if (calibrationSpotVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
-                  srcVertexes.push_back(calibrationSpotVtxInfo);
-                  // calibrationSpotHelixExtrapolationSuccess = true;
+		DT_LOG_DEBUG(logPrio, "Found helix intercept on calibration source carrier #" << sourceCalibrationCarrierGid
+			     << " at distance = " << srcCalibrationCarrierEi.extrapolated_length / CLHEP::cm << " cm");
+		// geomtools::vector_3d srcCalibrationCarrierImpact = srcCalibrationCarrierEi.fii.get_impact();
+                //geomtools::vector_3d srcCalibrationCarrierWorldImpact;
+                //sourceCalibrationCarrierPlacement.child_to_mother(srcCalibrationCarrierImpact, srcCalibrationCarrierWorldImpact);
+                //srcCalibrationCarrierEi.fii.set_impact(srcCalibrationCarrierWorldImpact);
+		// Result:
+                vertex_info calibrationCarrierVtxInfo;
+                calibrationCarrierVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE;
+                calibrationCarrierVtxInfo.from = iFrom;
+                calibrationCarrierVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_HELIX;
+                calibrationCarrierVtxInfo.gid = sourceCalibrationCarrierGid;
+                calibrationCarrierVtxInfo.face_intercept = srcCalibrationCarrierEi.fii;
+                calibrationCarrierVtxInfo.distance = srcCalibrationCarrierEi.extrapolated_length;
+                calibrationCarrierVtxInfo.distance_xy = srcCalibrationCarrierEi.extrapolated_xy_length;
+                calibrationCarrierVtxInfo.tolerance = _intercept_tolerance_;
+                if (calibrationCarrierVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
+                  srcVertexes.push_back(calibrationCarrierVtxInfo);
+                  // calibrationCarrierHelixExtrapolationSuccess = true;
                 } else {
-                  DT_LOG_DEBUG(logPrio, "Helix intercept is to far from the calibration source spot");
+                  DT_LOG_DEBUG(logPrio, "Helix intercept is to far from the calibration source carrier");
                 } // extrapolation distance check
-              } // if (success)
-            } // if (useCalibrationSpotHelixExtrapolation...)
-          } // for (uint32_t iStrip...)
+              } else {
+		DT_LOG_DEBUG(logPrio, " => no helix intercept was found");		
+	      } // if (success)
+            } // if (useCalibrationCarrierHelixExtrapolation...)
+          } // for (uint32_t iCarrier...)
         } // if (use_calib_src)
 
         _post_process_source_vertex_(srcVertexes);  

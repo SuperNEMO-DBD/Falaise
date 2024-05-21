@@ -557,7 +557,7 @@ namespace snemo {
         double chi2 = std::pow(a_fit_solution.chi, 2);
         h_trajectory->get_fit_infos().set_chi2(chi2);
         h_trajectory->get_fit_infos().set_ndof(a_fit_solution.ndof);
-        double pvalue = gsl_sf_gamma_inc_Q(a_fit_solution.ndof / 2, chi2 / 2);
+        double pvalue = gsl_sf_gamma_inc_Q(a_fit_solution.ndof / 2., chi2 / 2);
         if (pvalue == 0.0) {
           DT_LOG_DEBUG(get_logging_priority(), "Do not save this helix fit solution (pvalue=0)!");
           continue;
@@ -642,7 +642,7 @@ namespace snemo {
         double chi2 = std::pow(a_fit_solution.chi, 2);
         h_trajectory->get_fit_infos().set_chi2(chi2);
         h_trajectory->get_fit_infos().set_ndof(a_fit_solution.ndof);
-        double pvalue = gsl_sf_gamma_inc_Q(a_fit_solution.ndof / 2, chi2 / 2);
+        double pvalue = gsl_sf_gamma_inc_Q(a_fit_solution.ndof / 2., chi2 / 2);
         if (pvalue == 0.0) {
           DT_LOG_DEBUG(get_logging_priority(), "Do not save this line fit solution (pvalue=0)!");
           continue;

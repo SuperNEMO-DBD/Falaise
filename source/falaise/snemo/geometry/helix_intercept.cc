@@ -21,6 +21,8 @@
 
 // Standard library
 #include <cmath>
+#include <memory>
+#include <fstream>
 
 // Ourselves:
 #include <falaise/snemo/geometry/helix_intercept.h>
@@ -42,7 +44,8 @@ namespace snemo {
                                      const geomtools::placement & shape_placement_,
                                      double step_,
                                      double precision_,
-                                     datatools::logger::priority verbosity_)
+                                     datatools::logger::priority verbosity_,
+                                     const uint32_t flags_)
       : _verbosity_(verbosity_)
       , _helix_(h_)
       , _shape_(sh_)
@@ -52,7 +55,12 @@ namespace snemo {
       , _max_niter_(100)
       , _max_extrapolated_xy_length_(datatools::invalid_real())
     {
+      _print_ = false;
+      if (flags_ & 0x1) {
+        _print_ = true;
+      }
       _init_();
+      return;
     }
 
     void helix_intercept::_init_()
@@ -104,10 +112,24 @@ namespace snemo {
       return;
     }
  
+    void helix_intercept::set_max_extrapolated_xy_length(const double mexyl_)
+    {
+      DT_THROW_IF(mexyl_ <= 0.0, std::logic_error, "Invalid value!");
+      _max_extrapolated_xy_length_ = mexyl_;
+      return;
+    }
+  
     bool helix_intercept::find_intercept(extrapolation_info & ei_,
                                          snemo::geometry::vertex_info::from_bit_type from_bit_)
     {
       ei_.reset();
+      std::unique_ptr<std::ofstream> fout;
+      if (_print_) {
+        fout = std::make_unique<std::ofstream>("helix_intercept.data");
+        *fout << "#@helix-intercept\n";
+        *fout << "#@step=" << _step_ << "\n";
+        *fout << "#@precision=" << _precision_ << "\n";
+      }
       double hStep   = _helix_.get_step();
       double hRadius = _helix_.get_radius();
       double initDeltaT = _step_ / hypot(hStep, 2 * M_PI * hRadius);
@@ -130,6 +152,7 @@ namespace snemo {
       geomtools::invalidate(shapeLastImpact);
       double extrapolated_length = 0.0;
       double extrapolated_xy_length = 0.0;
+      std::vector<geomtools::vector_3d> impacts;
       while (true) {
         DT_LOG_DEBUG(_verbosity_, "Starting loop #" << niters << " : ");
         DT_LOG_DEBUG(_verbosity_, "  currentT = " << currentT);
@@ -137,10 +160,18 @@ namespace snemo {
         double deltaT = initDeltaT / deltaTFactor;
         DT_LOG_DEBUG(_verbosity_, "  deltaT = " << deltaT);
         bool stepFront = true;
-        geomtools::vector_3d refPoint = _helix_.get_point(currentT);
-        geomtools::vector_3d refPostPoint = _helix_.get_point(currentT + deltaT);
+        double t1 = currentT;
+        double t2 = currentT + deltaT;
+        geomtools::vector_3d refPoint = _helix_.get_point(t1);
+        geomtools::vector_3d refPoint2(refPoint.x(), refPoint.y());
+        geomtools::vector_3d refPostPoint = _helix_.get_point(t2);
+        if (fout) {
+          *fout << refPoint.x() << ' ' << refPoint.y() << ' ' << refPoint.z() << '\n';
+          *fout << refPostPoint.x() << ' ' << refPostPoint.y() << ' ' << refPostPoint.z() << '\n';
+          *fout << '\n';
+        }
         geomtools::vector_3d direction = (refPostPoint - refPoint).unit();
-        // Work in the shape reference frame
+        // Work in the shape reference frame:
         geomtools::vector_3d shapeRefPoint;
         geomtools::vector_3d shapeRefPostPoint;
         geomtools::vector_3d shapeDirection;
@@ -155,19 +186,28 @@ namespace snemo {
         if (success) {
           const geomtools::vector_3d & shapeImpact = shapeFii.get_impact();
           DT_LOG_DEBUG(_verbosity_, "  Found a candidate intercept at " << geomtools::to_xyz(shapeImpact) << " ...");
+          // if (fout) {
+          //   geomtools::vector_3d outRefImpact;
+          //   _shape_placement_.child_to_mother(shapeImpact, outRefImpact);
+          //   impacts.push_back(outRefImpact);
+          // }
           double impactDist = (shapeImpact - shapeRefPoint).mag();
           DT_LOG_DEBUG(_verbosity_, "  impactDist = " << impactDist / CLHEP::mm << " mm");
           if (impactDist <= _step_ / deltaTFactor) {
-            // We found a possible region of interest for the intercept:
+            // We have found a possible region of interest for the intercept:
             DT_LOG_DEBUG(_verbosity_, "  ... which is in the region of interest");
             stepFront = false;
             if (geomtools::is_valid(shapeLastImpact)) {
               double impactDiff = (shapeLastImpact - shapeImpact).mag();
               DT_LOG_DEBUG(_verbosity_, "  impact to last distance = " << impactDiff / CLHEP::mm << " mm");
               if (impactDiff < _precision_) {
-                DT_LOG_DEBUG(_verbosity_, "Break loop because of intercept was found in requested precision.");
+                DT_LOG_DEBUG(_verbosity_, "Break loop because of intercept was found at requested precision.");
                 extrapolated_length += impactDist;
-                extrapolated_xy_length += (shapeImpact - shapeRefPoint).perp();
+                // extrapolated_xy_length += (shapeImpact - shapeRefPoint).perp();
+                geomtools::vector_3d refImpact;
+                _shape_placement_.child_to_mother(shapeImpact, refImpact);
+                geomtools::vector_2d refImpact2(refImpact.x(), refImpact.y());
+                extrapolated_xy_length += (refImpact2 - refPoint2).mag();
                 break;
               }
             }
@@ -182,7 +222,7 @@ namespace snemo {
         }
         // Prepare a new step:
         if (stepFront) {
-          // We forget the previous found impact (likely an artefact)
+          // // We forget the previous found impact (likely an artefact):
           // if (geomtools::is_valid(shapeLastImpact)) {  
           //   // DT_LOG_DEBUG(_verbosity_, "  ... and forget the former candidate intercept.");
           //   geomtools::invalidate(shapeLastImpact);
@@ -199,13 +239,14 @@ namespace snemo {
           DT_LOG_DEBUG(_verbosity_, "  Restep with a reduced step...");
           deltaTFactor *= 2;
           shapeFii.reset();
-          // We forget the previous found impact (likely an artefact)
+          // We forget the previous found impact (likely an artefact):
           if (geomtools::is_valid(shapeLastImpact)) {
             geomtools::invalidate(shapeLastImpact);
           }
         }
         if (extrapolated_xy_length > _max_extrapolated_xy_length_) {
-          DT_LOG_DEBUG(_verbosity_, "Break loop because the extrapolated XY length=" << extrapolated_xy_length / CLHEP::mm << " is too large.");
+          DT_LOG_DEBUG(_verbosity_, "Break loop because the extrapolated XY length="
+                       << extrapolated_xy_length / CLHEP::mm << " is too large.");
           shapeFii.reset();
           break;
         }
@@ -220,6 +261,11 @@ namespace snemo {
         ei_.fii.set_face_id(shapeFii.get_face_id());
         geomtools::vector_3d impact;
         _shape_placement_.child_to_mother(shapeFii.get_impact(), impact);
+        if (fout) {
+          if (impacts.empty()) {
+            impacts.push_back(impact);
+          }
+        }
         ei_.fii.set_impact(impact);
         ei_.extrapolated_length = extrapolated_length;
         ei_.extrapolated_xy_length = extrapolated_xy_length;
@@ -229,15 +275,23 @@ namespace snemo {
         }
         DT_LOG_DEBUG(_verbosity_, "  - extrapolated length    = " << extrapolated_length / CLHEP::mm << " mm");
         DT_LOG_DEBUG(_verbosity_, "  - extrapolated XY length = " << extrapolated_xy_length / CLHEP::mm << " mm");
+        if (fout) {
+          *fout << '\n';
+          *fout << '\n';
+          for (auto & i : impacts) {
+            *fout << i.x() << ' ' << i.y() << ' ' << i.z() << '\n';
+          }
+          *fout << '\n';
+        }
       } else {
         DT_LOG_DEBUG(_verbosity_, "Exit on failure.");
       }
       return ei_.fii.is_valid();
     }
     
-  }  // namespace geometry
+  } // namespace geometry
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 /*
 ** Local Variables: --
