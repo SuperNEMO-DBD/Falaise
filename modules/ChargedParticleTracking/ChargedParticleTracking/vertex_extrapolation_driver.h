@@ -168,8 +168,10 @@ namespace snemo {
       std::vector<geomtools::geom_id> _sourcePadGids_;
       uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourcePadBulkGids_;
+      uint32_t _sourceCalibrationCarrierType_ = geomtools::geom_id::INVALID_TYPE;
       uint32_t _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourceCalibrationSpotGids_;
+      std::vector<geomtools::geom_id> _sourceCalibrationCarrierGids_;
       uint32_t _sourceCalibrationTrackType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourceCalibrationTrackGids_;
 
@@ -190,9 +192,10 @@ namespace snemo {
       double _sourceCalibTrackZ_ = datatools::invalid_real();
       double _sourceCalibTrackHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceCalibTrackBoxPtr_;
-			std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
-			double _vertexSourceCalibrationExtendY_ = 1.0;
-			double _vertexSourceCalibrationExtendZ_ = 1.0;
+			// std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
+			double _calibration_source_extend_horizontal_ = 0.0 * CLHEP::mm;
+			double _calibration_source_extend_vertical_   = 0.0 * CLHEP::mm;
+			std::unique_ptr<geomtools::box> _sourceCalibrationCarrierEffectiveBoxPtr_;
 
 			// Source calibration spots:
 
