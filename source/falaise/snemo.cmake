@@ -289,6 +289,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_retrieve_info.cxx
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
+  snemo/test/test_snemo_geometry_helix_intercept_1.cxx
   snemo/test/test_snemo_time_time_utils.cxx
   snemo/test/test_snemo_rc_run_description.cxx
   snemo/test/test_snemo_rc_run_list.cxx
