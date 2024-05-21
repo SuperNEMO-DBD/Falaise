@@ -151,7 +151,7 @@ namespace snemo {
       the_particle_track_data.clear();
 
       if (datatools::logger::is_debug(get_logging_priority())) {
-        std::cerr << "\n\n[debug] ************ CHARGED_PARTICLE_TRACKING_MODULE : NEW EVENT **************\n\n\n";
+        std::cerr << "\n\n[debug] ************ CHARGED_PARTICLE_TRACKING_MODULE : NEW EVENT #" << counter_ << " **************\n\n\n";
       }
 
       // Main processing method :
@@ -159,7 +159,7 @@ namespace snemo {
       this->_process(the_calibrated_data, the_tracker_trajectory_data, the_particle_track_data);
       DT_LOG_TRACE(get_logging_priority(), "Post processing...");
       this->_post_process(the_calibrated_data, the_particle_track_data);
-
+      counter_++;
       return dpp::base_module::PROCESS_SUCCESS;
     }
 

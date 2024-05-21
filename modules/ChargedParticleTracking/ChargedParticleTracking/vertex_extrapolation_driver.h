@@ -146,9 +146,11 @@ namespace snemo {
       uint32_t _module_id_ = 0;                                      //!< Force module ID
       double _max_calo_extrapolation_xy_length_ = 15.0 * CLHEP::cm;  //!< Maximum length of the extrapolation on calo block in XY plane 
       double _max_source_extrapolation_xy_length_ = 30.0 * CLHEP::cm; //!< Maximum length of the extrapolation on source element in XY plane
-      bool _use_linear_interpolation_ = true; //<! Activation flag of linear interpolation for curved trajectory (helix)
-      bool _use_helix_interpolation_ = true; //<! Activation flag of helix interpolation for helix trajectory
-      double _effectiveCaloBlockXyTolerance_ = 5. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window
+      bool _use_linear_extrapolation_ = true; //<! Activation flag of linear extrapolation for curved trajectory (helix)
+      bool _use_helix_extrapolation_ = true; //<! Activation flag of helix extrapolation for helix trajectory
+      // double _effectiveCaloBlockXyTolerance_ = 5. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window
+			double _effectiveCaloBlockHorizontalTolerance_ = 25. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
+			double _effectiveCaloBlockVerticalTolerance_   = 30. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
 
       // Services:
       const geomtools::manager * geoManager_ = nullptr;              //!< The SuperNEMO geometry manager
@@ -166,8 +168,10 @@ namespace snemo {
       std::vector<geomtools::geom_id> _sourcePadGids_;
       uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourcePadBulkGids_;
+      uint32_t _sourceCalibrationCarrierType_ = geomtools::geom_id::INVALID_TYPE;
       uint32_t _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourceCalibrationSpotGids_;
+      std::vector<geomtools::geom_id> _sourceCalibrationCarrierGids_;
       uint32_t _sourceCalibrationTrackType_ = geomtools::geom_id::INVALID_TYPE;
       std::vector<geomtools::geom_id> _sourceCalibrationTrackGids_;
 
@@ -179,13 +183,21 @@ namespace snemo {
       double _sourceStripGapHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceStripGapBoxPtr_;
 
-     // Source calibration tracks:
-       uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE;
+			// Source calibration tracks:
+			uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE;
+      int32_t _sourceCalibTrackMinId_ =  100000; 
+      int32_t _sourceCalibTrackMaxId_ = -100000;
       std::vector<geomtools::geom_id> _sourceCalibTrackGids_;
       double _sourceCalibTrackX_ = datatools::invalid_real();
       double _sourceCalibTrackZ_ = datatools::invalid_real();
       double _sourceCalibTrackHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceCalibTrackBoxPtr_;
+			// std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
+			double _calibration_source_extend_horizontal_ = 0.0 * CLHEP::mm;
+			double _calibration_source_extend_vertical_   = 0.0 * CLHEP::mm;
+			std::unique_ptr<geomtools::box> _sourceCalibrationCarrierEffectiveBoxPtr_;
+
+			// Source calibration spots:
 
       // Registered calorimeter blocks:
       uint32_t _caloSubmoduleType_ = geomtools::geom_id::INVALID_TYPE; //!< Calorimeter submodule type (for GID)
@@ -202,10 +214,10 @@ namespace snemo {
       std::unique_ptr<geomtools::box> _effectiveXcaloBlockBoxPtr2_;
 
       // Specific dimensions about the positioning of main calo blocks (world frame)
-      double _main_calo_y_first_;
-      double _main_calo_z_first_;
-      double _main_calo_y_step_;
-      double _main_calo_z_step_;
+      double _main_calo_y_first_ = datatools::invalid_real();
+      double _main_calo_z_first_ = datatools::invalid_real();
+      double _main_calo_y_step_ = datatools::invalid_real();
+      double _main_calo_z_step_ = datatools::invalid_real();
 
       // Dynamic
       std::map<snemo::geometry::vertex_info::category_type, bool> _use_vertices_; //!< Vertices reliability
@@ -215,18 +227,16 @@ namespace snemo {
 
     };
 
-  }  // end of namespace reconstruction
+  } // end of namespace reconstruction
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 #include <datatools/ocd_macros.h>
 
 // Declare the OCD interface of the module
 DOCD_CLASS_DECLARATION(snemo::reconstruction::vertex_extrapolation_driver)
 
-#endif  // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
-
-// end of falaise/snemo/reconstruction/vertex_extrapolation_driver.h
+#endif // FALAISE_CHARGEDPARTICLETRACKING_PLUGIN_RECONSTRUCTION_VERTEX_EXTRAPOLATION_DRIVER_H
 /*
 ** Local Variables: --
 ** mode: c++ --

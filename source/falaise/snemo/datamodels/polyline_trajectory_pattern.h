@@ -71,6 +71,10 @@ namespace snemo {
 
 } // end of namespace snemo
 
+#include <boost/serialization/export.hpp>
+BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::polyline_trajectory_pattern,
+                        "snemo::datamodel::polyline_trajectory_pattern")
+
 #endif // FALAISE_SNEMO_DATAMODEL_POLYLINE_TRAJECTORY_PATTERN_H
 
 /*

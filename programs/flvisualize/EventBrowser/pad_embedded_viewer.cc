@@ -510,7 +510,7 @@ namespace snemo {
 
       void pad_embedded_viewer::_scale_text_() {
 	datatools::logger::priority local_priority = datatools::logger::PRIO_WARNING;
-	local_priority = datatools::logger::PRIO_TRACE;
+	// local_priority = datatools::logger::PRIO_TRACE;
 	if (_text_objects_ == nullptr) {
 	  return;
 	}

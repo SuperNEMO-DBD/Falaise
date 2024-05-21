@@ -1066,9 +1066,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
           a_trajectory.get_fit_infos().has_pvalue()) {
         const double chi2 = a_trajectory.get_fit_infos().get_chi2();
         const size_t ndof = a_trajectory.get_fit_infos().get_ndof();
-        double pvalue =  a_trajectory.get_fit_infos().get_pvalue();;
+        double pvalue =  a_trajectory.get_fit_infos().get_pvalue();
         // pvalue = TMath::Prob(chi2, ndof);
-        // pvalue = gsl_sf_gamma_inc_P(ndof/2, chi2/2);
+        // pvalue = gsl_sf_gamma_inc_Q(ndof/2., chi2/2);
         label_trajectory << " - chi2/ndf = " << std::setprecision(2) << std::fixed << chi2 << "/"
                          << std::setprecision(0) << ndof << std::setprecision(4) << std::fixed
                          << ", p = " << std::scientific << pvalue << " (ROOT=" << TMath::Prob(chi2, ndof) << ")";
