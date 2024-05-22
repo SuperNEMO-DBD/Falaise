@@ -254,7 +254,7 @@ namespace snemo {
       double pressure = 880.0e-3 * CLHEP::bar;
     };
 
-    /// \brief Encodes informations usable by the drift model about the tracker
+    /// \brief Encode informations usable by the drift model about the tracker
     struct tracker_info
     {
 			time::time_point timestamp;
