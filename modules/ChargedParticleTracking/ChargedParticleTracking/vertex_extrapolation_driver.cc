@@ -16,6 +16,7 @@
 // This project (Falaise):
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/tracker_trajectory.h>
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/gg_locator.h>
@@ -803,16 +804,16 @@ namespace snemo {
      *  FROM_FIRST   [ ]<===+-------------------+
      *                direction
      */
-    void vertex_extrapolation_driver::line_trajectory_calo_intercept(snemo::geometry::vertex_info_list & vertexes_,
-                                                                     const snemo::datamodel::line_trajectory_pattern & line_traj_,
-                                                                     uint32_t track_side_,
-                                                                     uint32_t from_mask_) const
+    void vertex_extrapolation_driver::linear_trajectory_calo_intercept(snemo::geometry::vertex_info_list & vertexes_,
+								       const snemo::datamodel::base_trajectory_pattern & linear_traj_,
+								       uint32_t track_side_,
+								       uint32_t from_mask_) const
     {
       datatools::logger::priority logPrio = logPriority_;
       // logPrio = datatools::logger::PRIO_DEBUG;
       DT_LOG_DEBUG(logPrio, "\nSearch line intercepts on calorimeter blocks: ");
       vertexes_.clear();
-      const geomtools::line_3d & line = line_traj_.get_segment();
+      // const geomtools::line_3d & line = line_traj_.get_segment();
       std::set<int> blockTypes;
       if (_use_vertices_.find(snemo::geometry::vertex_info::CATEGORY_ON_MAIN_CALORIMETER)->second) {
         blockTypes.insert(CALO_MAIN);
@@ -823,25 +824,28 @@ namespace snemo {
         DT_LOG_DEBUG(logPrio, "About to scan X-calo blocks");
       }
       // snemo::geometry::vertex_info_list caloVertexes[2];
+      DT_LOG_DEBUG(logPrio, "Loop on track's (poly)line end points");
       using snemo::geometry::vertex_info;
       for (int iFrom = vertex_info::FROM_FIRST; iFrom <= vertex_info::FROM_LAST; iFrom++) {
         snemo::geometry::vertex_info_list caloVertexes;
         if ((iFrom == vertex_info::FROM_FIRST) && not (from_mask_ & vertex_info::FROM_FIRST_BIT)) continue;
         if ((iFrom == vertex_info::FROM_LAST)  && not (from_mask_ & vertex_info::FROM_LAST_BIT)) continue;
-        // Default configured for 'last'
-        geomtools::vector_3d beginPoint = line.get_first();
-        geomtools::vector_3d endPoint   = line.get_last();
+        // Default configured for 'last':
+        geomtools::vector_3d endPoint = linear_traj_.get_last();
+        geomtools::vector_3d endDirection = linear_traj_.get_last_direction();
         if (iFrom == vertex_info::FROM_FIRST) {
-          std::swap(beginPoint, endPoint);
-        }
-        geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
-        geomtools::vector_2d beginPoint_Xy(beginPoint.x(), beginPoint.y());
+	  endPoint = linear_traj_.get_first();
+	  endDirection = -linear_traj_.get_first_direction();
+         }
+	geomtools::vector_3d beginPoint = endPoint - _finder_step_ * endDirection;
+	geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
         geomtools::vector_2d endPoint_Xy(endPoint.x(), endPoint.y());
-        geomtools::vector_2d refPoint_Xy = 0.5 * (beginPoint_Xy + endPoint_Xy);
-        double distRef2End = (endPoint - refPoint).mag();
+ 	geomtools::vector_2d refPoint_Xy(refPoint.x(), refPoint.y()); 
+	double distRef2End = (endPoint - refPoint).mag();
         double distRef2End_Xy = (endPoint_Xy - refPoint_Xy).mag();
-        const geomtools::vector_3d direction = (endPoint - beginPoint).unit();
-        DT_LOG_DEBUG(logPrio, "Ref point (world)    : " << geomtools::to_xyz(refPoint) );
+        const geomtools::vector_3d direction = endDirection;
+	DT_LOG_DEBUG(logPrio, "End point (world)    : " << geomtools::to_xyz(endPoint) );
+	DT_LOG_DEBUG(logPrio, "Ref point (world)    : " << geomtools::to_xyz(refPoint) );
         DT_LOG_DEBUG(logPrio, "XY-Ref point (world) : " << geomtools::to_xy(refPoint_Xy) );
         DT_LOG_DEBUG(logPrio, "Direction (world)    : " << geomtools::to_xyz(direction) );
         DT_LOG_DEBUG(logPrio, "Distance ref->end    : " << distRef2End / CLHEP::mm << " mm");
@@ -1045,18 +1049,18 @@ namespace snemo {
         // // caloVertexes[iFrom].clear();
       }
       return;
-    } // vertex_extrapolation_driver::line_trajectory_calo_intercept
+    } // vertex_extrapolation_driver::linear_trajectory_calo_intercept
 
   
-    void vertex_extrapolation_driver::line_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
-                                                                       const snemo::datamodel::line_trajectory_pattern & line_traj_,
+    void vertex_extrapolation_driver::linear_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
+                                                                       const snemo::datamodel::base_trajectory_pattern & linear_traj_,
                                                                        uint32_t from_mask_) const
     {
       datatools::logger::priority logPrio = logPriority_;
       // logPrio = datatools::logger::PRIO_DEBUG;
       DT_LOG_DEBUG(logPrio, "Search line intercepts on source elements from mask = " << from_mask_);
       vertexes_.clear();
-      const geomtools::line_3d & line = line_traj_.get_segment();
+      // const geomtools::line_3d & line = line_traj_.get_segment();
       using snemo::geometry::vertex_info;
       bool use_foils = false;
       bool use_calib_src = false;
@@ -1068,25 +1072,27 @@ namespace snemo {
         use_calib_src = true;
         DT_LOG_DEBUG(logPrio, "About to scan calibration source");
       }
-      DT_LOG_DEBUG(logPrio, "Loop on track's line end points");
+      DT_LOG_DEBUG(logPrio, "Loop on track's (poly)line end points");
       for (int iFrom = vertex_info::FROM_FIRST; iFrom <= vertex_info::FROM_LAST; iFrom++) {
         std::vector<vertex_info> srcVertexes;
         DT_LOG_DEBUG(logPrio, "From : " << iFrom);
         if ((iFrom == vertex_info::FROM_FIRST) && not (from_mask_ & vertex_info::FROM_FIRST_BIT)) continue;
         if ((iFrom == vertex_info::FROM_LAST)  && not (from_mask_ & vertex_info::FROM_LAST_BIT)) continue;
-        // Default configured for 'last'
-        geomtools::vector_3d beginPoint = line.get_first();
-        geomtools::vector_3d endPoint   = line.get_last();
+        // Default configured for 'last':
+        geomtools::vector_3d endPoint = linear_traj_.get_last();
+        geomtools::vector_3d endDirection = linear_traj_.get_last_direction();
         if (iFrom == vertex_info::FROM_FIRST) {
-          std::swap(beginPoint, endPoint);
-        }
-        geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
-        geomtools::vector_2d beginPoint_Xy(beginPoint.x(), beginPoint.y());
+	  endPoint = linear_traj_.get_first();
+	  endDirection = -linear_traj_.get_first_direction();
+         }
+	geomtools::vector_3d beginPoint = endPoint - _finder_step_ * endDirection;
+	geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
         geomtools::vector_2d endPoint_Xy(endPoint.x(), endPoint.y());
-        geomtools::vector_2d refPoint_Xy = 0.5 * (beginPoint_Xy + endPoint_Xy);
-        double distRef2End = (endPoint - refPoint).mag();
+ 	geomtools::vector_2d refPoint_Xy(refPoint.x(), refPoint.y()); 
+	double distRef2End = (endPoint - refPoint).mag();
         double distRef2End_Xy = (endPoint_Xy - refPoint_Xy).mag();
-        const geomtools::vector_3d direction = (endPoint - beginPoint).unit();
+        const geomtools::vector_3d direction = endDirection; 
+	DT_LOG_DEBUG(logPrio, "End point (world)    : " << geomtools::to_xyz(endPoint) );
         DT_LOG_DEBUG(logPrio, "Ref point (world)    : " << geomtools::to_xyz(refPoint) );
         DT_LOG_DEBUG(logPrio, "XY-Ref point (world) : " << geomtools::to_xy(refPoint_Xy) );
         DT_LOG_DEBUG(logPrio, "Direction (world)    : " << geomtools::to_xyz(direction) );
@@ -1498,7 +1504,7 @@ namespace snemo {
         // srcVertexes.clear();
       } // for (int iFrom=...) 
       return;
-    } // vertex_extrapolation_driver::line_trajectory_source_intercept
+    } // vertex_extrapolation_driver::linear_trajectory_source_intercept
 
     
     void vertex_extrapolation_driver::helix_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
@@ -1557,9 +1563,10 @@ namespace snemo {
          */          
         beginPoint = endPoint - _finder_step_ * endDirection;
         geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
-        geomtools::vector_2d beginPoint_Xy(beginPoint.x(), beginPoint.y());
+        // geomtools::vector_2d beginPoint_Xy(beginPoint.x(), beginPoint.y());
         geomtools::vector_2d endPoint_Xy(endPoint.x(), endPoint.y());
-        geomtools::vector_2d refPoint_Xy = 0.5 * (beginPoint_Xy + endPoint_Xy);
+        // geomtools::vector_2d refPoint_Xy = 0.5 * (beginPoint_Xy + endPoint_Xy);
+	geomtools::vector_2d refPoint_Xy(refPoint.x(), refPoint.y()); //  = 0.5 * (beginPoint_Xy + endPoint_Xy);
         double distRef2End = (endPoint - refPoint).mag();
         double distRef2End_Xy = (endPoint_Xy - refPoint_Xy).mag();
         const geomtools::vector_3d direction = endDirection;
@@ -2255,9 +2262,10 @@ namespace snemo {
       DT_LOG_DEBUG(logPrio, "Pattern ID : '" << a_pattern_id << "'");
 
       // ----- Start of line pattern handling
-      if (a_pattern_id == snedm::line_trajectory_pattern::pattern_id()) {
-        DT_LOG_DEBUG(logPrio, "Line pattern handling...");
-        const auto & ltp = dynamic_cast<const snedm::line_trajectory_pattern &>(a_track_pattern);
+      if (a_pattern_id == snedm::line_trajectory_pattern::pattern_id()
+	  or a_pattern_id == snedm::polyline_trajectory_pattern::pattern_id()) {
+        DT_LOG_DEBUG(logPrio, "Line/polyline pattern handling...");
+        // const auto & ltp = dynamic_cast<const snedm::line_trajectory_pattern &>(a_track_pattern);
         bool find_on_source = true; 
         bool find_on_calo   = true;
         if ((_use_vertices_.find(snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_FOIL)->second == false)
@@ -2273,7 +2281,8 @@ namespace snemo {
         // Vertex on source strips:
         if (find_on_source) {      
           snemo::geometry::vertex_info_list sourceVertexes;
-          line_trajectory_source_intercept(sourceVertexes, ltp);
+          // line_trajectory_source_intercept(sourceVertexes, ltp);
+	  linear_trajectory_source_intercept(sourceVertexes, a_track_pattern);
           DT_LOG_DEBUG(logPrio, "Line source vertexes = " << sourceVertexes.size());
           for (const auto & v : sourceVertexes) {
             DT_LOG_DEBUG(logPrio, "Line source vertexes:");
@@ -2291,7 +2300,8 @@ namespace snemo {
 
         if (find_on_calo) {
           snemo::geometry::vertex_info_list caloVertexes;
-          line_trajectory_calo_intercept(caloVertexes, ltp, trackSide);
+          linear_trajectory_calo_intercept(caloVertexes, a_track_pattern, trackSide);
+          // line_trajectory_calo_intercept(caloVertexes, ltp, trackSide);
           DT_LOG_DEBUG(logPrio, "Calorimeter vertexes = " << caloVertexes.size());
           for (const auto & v : caloVertexes) {
             DT_LOG_DEBUG(logPrio, "Calorimeter vertexes:");
@@ -2307,7 +2317,7 @@ namespace snemo {
           }
         }
     
-      } // ----- end of line pattern handling
+      } // ----- end of (poly)line pattern handling
 
       // ---- start of helix pattern handling
       if (a_pattern_id == snedm::helix_trajectory_pattern::pattern_id()) {
