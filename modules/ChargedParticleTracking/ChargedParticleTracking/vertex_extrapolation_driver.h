@@ -96,23 +96,23 @@ namespace snemo {
       void process(const snemo::datamodel::tracker_trajectory& trajectory_,
                    snemo::datamodel::particle_track& particle_);
   
-      /// Compute vertex on source element from a line trajectory
-      void line_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
-                                            const snemo::datamodel::line_trajectory_pattern & line_traj_,
-                                            uint32_t from_mask_ = snemo::geometry::vertex_info::FROM_FIRST_BIT | snemo::geometry::vertex_info::FROM_LAST_BIT) const;
+      /// Compute vertex on source element from a linear trajectory (3D-line/3D-polyline)
+      void linear_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
+																							const snemo::datamodel::base_trajectory_pattern & linear_traj_,
+																							uint32_t from_mask_ = snemo::geometry::vertex_info::FROM_FIRST_BIT | snemo::geometry::vertex_info::FROM_LAST_BIT) const;
 
-      /// Compute vertex on some calo blocks from a line trajectory
-      void line_trajectory_calo_intercept(snemo::geometry::vertex_info_list & vertexes_,
-                                          const snemo::datamodel::line_trajectory_pattern & line_traj_,
-                                          uint32_t track_side_,
-                                          uint32_t from_mask_ = snemo::geometry::vertex_info::FROM_FIRST_BIT | snemo::geometry::vertex_info::FROM_LAST_BIT) const;
-
-      /// Compute vertex on source from a helix trajectory
+      /// Compute vertex on some calo blocks from a linear trajectory (3D-line/3D-polyline)
+      void linear_trajectory_calo_intercept(snemo::geometry::vertex_info_list & vertexes_,
+																						const snemo::datamodel::base_trajectory_pattern & linear_traj_,
+																						uint32_t track_side_,
+																						uint32_t from_mask_ = snemo::geometry::vertex_info::FROM_FIRST_BIT | snemo::geometry::vertex_info::FROM_LAST_BIT) const;
+ 
+      /// Compute vertex on source from a helix trajectory (3D-helix)
       void helix_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
                                              const snemo::datamodel::helix_trajectory_pattern & helix_traj_,
                                              uint32_t from_mask_ = snemo::geometry::vertex_info::FROM_FIRST_BIT | snemo::geometry::vertex_info::FROM_LAST_BIT) const;
  
-      /// Compute vertex on some calo blocks from a helix trajectory
+      /// Compute vertex on some calo blocks from a helix trajectory (3D-helix)
       void helix_trajectory_calo_intercept(snemo::geometry::vertex_info_list & vertexes_,
                                            const snemo::datamodel::helix_trajectory_pattern & helix_traj_,
                                            uint32_t track_side_,
