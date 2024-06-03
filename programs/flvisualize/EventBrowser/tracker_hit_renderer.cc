@@ -35,6 +35,7 @@
 // - Falaise:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 #include <falaise/snemo/processing/geiger_regime.h>
 
 // This project:

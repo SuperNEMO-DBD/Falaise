@@ -28,8 +28,10 @@
 #include <EventBrowser/io/event_server.h>
 #include <EventBrowser/utils/root_utilities.h>
 
+#include <falaise/snemo/datamodels/base_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 
 #include <mctools/utils.h>
 
