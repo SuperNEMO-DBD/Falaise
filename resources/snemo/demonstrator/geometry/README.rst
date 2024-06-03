@@ -40,11 +40,23 @@ Organization of the directory
 Testing the geometry
 ======================
 
-The Falaise library must be built:
+CCIN2P3
+--------
+
+The Falaise library must be built but not necessarily installed.
+From a Bash shell:
 
 .. code:: shell
-   
+
+   $ source /sps/nemo/sw/snswmgr/snswmgr.conf
+   $ snswmgr_load_stack falaise_build@2023-07-01
+   $ cd /sps/nemo/sw/snsw/2024/var/BxWork/falaise-5.1.2/Falaise-5.1.2/resources/snemo/demonstrator/geometry
    $ bash testing/test-5.0.bash
+   ...
+   Falaise build dir: /sps/nemo/sw/snsw/2024/var/BxWork/falaise-5.1.2/build.d/BuildProducts
+   ...
+   geomtools> help
+   ...
 ..
 
 
