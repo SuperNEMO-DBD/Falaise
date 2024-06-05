@@ -176,7 +176,7 @@ add_subdirectory(utilities)
 set(FALAISE_DEFAULT_GEOMETRY_TAG "urn:snemo:demonstrator:geometry:5.1")
 set(FALAISE_DEFAULT_SETUP_TAG "urn:snemo:demonstrator:setup:2.1")
 set(FALAISE_DEFAULT_SIMULATION_TAG "urn:snemo:demonstrator:simulation:2.5")
-set(FALAISE_DEFAULT_RECONSTRUCTION_TAG "urn:snemo:demonstrator:reconstruction:3.0")
+set(FALAISE_DEFAULT_RECONSTRUCTION_TAG "urn:snemo:demonstrator:reconstruction:3.1")
 
 add_subdirectory(source)
 
