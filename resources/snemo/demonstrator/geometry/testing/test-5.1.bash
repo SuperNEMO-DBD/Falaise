@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-geometryVersion="5.0"
-geometryVariantVersion="2.0"
+geometryVersion="5.1"
+geometryVariantVersion="3.0"
 geometryResourcesDir="$(pwd)"
 falaiseResourcesDir="${geometryResourcesDir}/../../.."
 geometryProfile="$(pwd)/geometry.profile"
@@ -87,6 +87,9 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+echo >&2 "[info] Variant file:"
+cat ${geometryProfile}
+
 # exit 1
 # reset
 cat >&2 <<EOF
@@ -96,9 +99,9 @@ Geomtools inspector
 ===================
 
 EOF
+ #    --logging "trace" \
 
 bxgeomtools_inspector \
-    --logging "trace" \
     --datatools::logging "trace" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
     ${falaiseDllOptions} \

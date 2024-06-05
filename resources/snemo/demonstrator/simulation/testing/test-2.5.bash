@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-geometryVersion="5.0"
-geometryVariantVersion="2.0"
-vertexVersion="5.0"
-vertexVariantVersion="1.0"
+geometryVersion="5.1"
+geometryVariantVersion="3.0"
+vertexVersion="5.1"
+vertexVariantVersion="2.0"
 decaysVersion="1.4"
 decaysVariantVersion="1.0"
-simulationVersion="2.4"
-simulationVariantVersion="2.0"
+simulationVersion="2.5"
+simulationVariantVersion="3.0"
 
 geomSourceLayout="RealisticFlat"
 # geomSourceLayout="RealisticSNRS1"

@@ -15,6 +15,8 @@ Organization of the directory
   - ``GeometryModels/`` : Various geometry models definition files
   - ``GeometryPlugins/`` : Various geometry plugins definition files
   - ``GeomIDMaps/`` : Various geometry mapping definition files
+
+* ``5.1/`` : Static geometry configuration version ``5.1``
  
 * ``variants/`` : Variant geometry configurations
 
@@ -28,7 +30,15 @@ Organization of the directory
     + ``GeometryVariantRepository.conf`` : Variant geometry standalone repository
     + ``*.def`` : Various definition files for geometry variant models and parameters
 
-  - ``2.0/`` : Variant geometry configuration ``2.0``
+  - ``2.0/`` : Variant geometry configuration ``2.0`` for geometry configuration version ``5.0``
+
+    Contents:
+
+    + ``GeometryVariants.conf`` : Variant geometry registry
+    + ``GeometryVariantRepository.conf`` : Variant geometry standalone repository
+    + ``geometry.def`` : Specific definition file for the main geometry variant model
+
+  - ``3.0/`` : Variant geometry configuration ``2.0`` for geometry configuration version ``5.1``
 
     Contents:
 

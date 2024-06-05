@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-geometryVersion="5.0"
-geometryVariantVersion="2.0"
-vertexVersion="5.0"
-vertexVariantVersion="1.0"
+geometryVersion="5.1"
+geometryVariantVersion="3.0"
+vertexVersion="5.1"
+vertexVariantVersion="2.0"
 
 geomSourceLayout="RealisticFlat"
 geomSourceLayout="RealisticSNRS1"
@@ -367,7 +367,7 @@ bxgenvtx_production \
     --load-dll "Falaise@${falaiseLibDir}" \
     --datatools::logging "fatal" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+    --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
     --variant-load "${vertexProfile}" \
     --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
     --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \

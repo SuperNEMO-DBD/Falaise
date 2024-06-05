@@ -171,11 +171,11 @@ endif()
 #
 add_subdirectory(utilities)
 
-# This version of Falaise uses defines configuration paths 
+# This version of Falaise uses default configuration paths 
 # for various modelling topics:
-set(FALAISE_DEFAULT_GEOMETRY_TAG "urn:snemo:demonstrator:geometry:5.0")
-set(FALAISE_DEFAULT_SETUP_TAG "urn:snemo:demonstrator:setup:2.0")
-set(FALAISE_DEFAULT_SIMULATION_TAG "urn:snemo:demonstrator:simulation:2.4")
+set(FALAISE_DEFAULT_GEOMETRY_TAG "urn:snemo:demonstrator:geometry:5.1")
+set(FALAISE_DEFAULT_SETUP_TAG "urn:snemo:demonstrator:setup:2.1")
+set(FALAISE_DEFAULT_SIMULATION_TAG "urn:snemo:demonstrator:simulation:2.5")
 set(FALAISE_DEFAULT_RECONSTRUCTION_TAG "urn:snemo:demonstrator:reconstruction:3.0")
 
 add_subdirectory(source)

@@ -1,0 +1,24 @@
+#@description A sample list of geometry ID categories/types
+#@key_label  "category"
+#@meta_label "type"
+
+[category="world" type="0"]
+  addresses : string[1] = "world"
+  # To generate GID = [0:0]
+
+[category="hall"  type="100"]
+  addresses : string[1] = "hall"
+  # To generate GID = [100:0]
+
+[category="ground"  type="110"]
+  inherits : string[1] = "hall"
+  # To generate GID = [110:0]
+
+[category="external_shield" type="200"]
+  addresses : string[1] = "side"
+  # To generate GID = [200:0]
+
+[category="module" type="1000"]
+  addresses : string[1] = "module"
+  # To generate GID = [1000:0]
+
