@@ -1,4 +1,10 @@
 # shielding.geom
+
+############################################################
+# HERE WE SHOULD DEFINE THE GEOMETRY MODELS THAT REPRESENT #
+# THE REALISTIC LAYOUT OF THE IRON+WATER+PE SHIELDING.     #
+############################################################
+
 # Water Shield Walls #
 # [name="water_shield_block.model" type="geomtools::simple_boxed_model"]
 #   shape_type : string = "box"

@@ -29,13 +29,8 @@
     internal_item.labels : string[2] = \
       "module_0" \
       "ground"
-    # #@variant_if geometry:layout/if_basic/shielding/is_absent|false
-    #   internal_item.labels : string[2] = \
-    #     "module_0" \
-    #     "ground"
-    # #@variant_endif geometry:layout/if_basic/shielding/if_absent
-
-    #@variant_if geometry:layout/if_basic/shielding/is_present|true
+ 
+    #@variant_if geometry:layout/if_basic/shielding/is_present|false
 
       #@variant_if geometry:layout/if_basic/shielding/is_present/layout/if_simplified_iron|true
       internal_item.labels : string[6] += \

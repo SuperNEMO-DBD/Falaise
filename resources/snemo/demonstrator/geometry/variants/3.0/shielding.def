@@ -37,7 +37,7 @@
   terse_description   : string = "The activation of the shielding"
   mutability : string = "variable"
   type : string = "boolean"
-    boolean.default     : boolean = true
+    boolean.default     : boolean = false
     boolean.true.variant : string = "is_present"
     boolean.true.documentation : string = "Add the shielding"
     boolean.false.variant : string = "is_absent"
