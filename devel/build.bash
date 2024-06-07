@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Author: F.Mauger 
 # Date: 2022-11-07
+# Last update: 2024-06-07
 # Description: A Bash script to build and install development version of Falaise on Ubuntu (20/22.04).
 
 origPwd="$(pwd)"
@@ -10,7 +11,7 @@ debug=false
 falaiseSourceDir="${origPwd}"
 falaiseVersion="develop"
 snrsMinVersion="1.1.0"
-bayeuxMinVersion="3.5.3"
+bayeuxMinVersion="3.5.4"
 installBaseDir="$(pwd)/_install.d"
 buildBaseDir="$(pwd)/_build.d"
 installDir="${installBaseDir}"
@@ -32,6 +33,18 @@ function my_exit()
     cd ${origPwd}
     exit ${_errorCode}
 }
+
+inFalaiseSourceDir=true
+if [ ! -d ./source ]; then
+    inFalaiseSourceDir=false
+elif [ ! -d ./programs/flsimulate ]; then
+    inFalaiseSourceDir=false
+elif [ ! -d ./programs/flreconstruct ]; then
+    inFalaiseSourceDir=false
+fi
+if [ ${inFalaiseSourceDir} == false ]; then
+    my_exit 1 "[error] Build script must be run from the Falaise source directory! Abort." 
+fi
 
 function my_usage()
 {
@@ -91,22 +104,10 @@ if [ "${distribId}" != "Ubuntu" ]; then
     my_exit 1 "Not an Ubuntu Linux!"
 fi
 distribRelease=$(cat /etc/lsb-release | grep DISTRIB_RELEASE | cut -d= -f2)
-if [ "${distribRelease}" != "18.04" -a "${distribRelease}" != "20.04" -a "${distribRelease}" != "22.04" ]; then
-    my_exit 1 "[error] Not an Ubuntu Linux version 18.04, 20.04 or 22.04! Abort!"
+if [ "${distribRelease}" != "20.04" -a "${distribRelease}" != "22.04" ]; then
+    my_exit 1 "[error] Not an Ubuntu Linux version 20.04 or 22.04! Abort!"
 else
     echo >&2 "[info] Found Ubuntu Linux ${distribRelease}"
-fi
-
-# Check SNRS:
-which snrs-config > /dev/null
-if [ $? -ne 0 ]; then
-    my_exit 1 "SNRS package is not installed and setup! Abort!"
-fi
-export snrsInstallDir="$(snrs-config --prefix)"
-export snrsVersion="$(snrs-config --version)"
-echo >&2 "[info] SNRS ${snrsVersion} found at: '${snrsInstallDir}'"
-if [ "x${snrsVersion}" \< "x${snrsMinVersion}" ]; then
-    my_exit 1 "SNRS version ${snrsVersion} is not supported!"
 fi
 
 # Check Bayeux:
@@ -119,6 +120,18 @@ export bayeuxVersion="$(bxquery --version)"
 echo >&2 "[info] Bayeux ${bayeuxVersion} found at: '${bayeuxInstallDir}'"
 if [ "x${bayeuxVersion}" \< "x${bayeuxMinVersion}" ]; then
     my_exit 1 "Bayeux version ${bayeuxVersion} is not supported!"
+fi
+
+# Check SNRS:
+which snrs-config > /dev/null
+if [ $? -ne 0 ]; then
+    my_exit 1 "SNRS package is not installed and setup! Abort!"
+fi
+export snrsInstallDir="$(snrs-config --prefix)"
+export snrsVersion="$(snrs-config --version)"
+echo >&2 "[info] SNRS ${snrsVersion} found at: '${snrsInstallDir}'"
+if [ "x${snrsVersion}" \< "x${snrsMinVersion}" ]; then
+    my_exit 1 "SNRS version ${snrsVersion} is not supported!"
 fi
 
 ############################################
