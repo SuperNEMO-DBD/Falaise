@@ -306,7 +306,7 @@ namespace FLReconstruct {
         // We try to setup one with the proper configuration.
         datatools::multi_properties geoServiceConfig("name", "type");
         std::string geoServicePath = geometrySetupConfig;
-        // "@falaise:config/snemo/demonstrator/geometry/5.0/GeometryService.conf";
+        // "@falaise:config/snemo/demonstrator/geometry/5.X/GeometryService.conf";
         if (!geoServicePath.empty()) {
           DT_LOG_NOTICE(recParams_.logLevel, "Setting a default 'geometry' core service...");
           datatools::properties & gs =

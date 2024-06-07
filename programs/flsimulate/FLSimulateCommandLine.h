@@ -59,9 +59,9 @@ namespace FLSimulate {
   //! Handle command line argument dialog
   void do_cldialog(int argc_, char * argv_[], FLSimulateCommandLine & clArgs_);
 
-}  // namespace FLSimulate
+} // namespace FLSimulate
 
-#endif  // FLSIMULATECOMMANDLINE_H
+#endif // FLSIMULATECOMMANDLINE_H
 
 // Local Variables: --
 // mode: c++ --

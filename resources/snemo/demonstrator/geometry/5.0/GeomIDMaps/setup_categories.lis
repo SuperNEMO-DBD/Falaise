@@ -21,4 +21,3 @@
 [category="module" type="1000"]
   addresses : string[1] = "module"
   # To generate GID = [1000:0]
-

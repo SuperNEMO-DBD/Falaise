@@ -1,6 +1,7 @@
 #####################
 # Experimental hall #
-#
+#####################
+
 [name="hall_ground.model" type="geomtools::simple_shaped_model"]
   #@config The experimental hall ground
   shape_type : string = "box"
@@ -21,18 +22,23 @@
   material.ref : string = "lab_air"
   visibility.color            : string  = "cyan"
 
+  #@allow_key_override
+  
   # "IF_BASIC"
   #@variant_if geometry:layout/if_basic|true
-    #@variant_if geometry:layout/if_basic/shielding/if_noshielding|false
-      internal_item.labels : string[2] = \
-        "module_0" \
-        "ground"
-    #@variant_endif geometry:layout/if_basic/shielding/if_noshielding
+    internal_item.labels : string[2] = \
+      "module_0" \
+      "ground"
+    # #@variant_if geometry:layout/if_basic/shielding/is_absent|false
+    #   internal_item.labels : string[2] = \
+    #     "module_0" \
+    #     "ground"
+    # #@variant_endif geometry:layout/if_basic/shielding/if_absent
 
-    #@variant_if geometry:layout/if_basic/shielding/if_basic_iron|true
-      internal_item.labels : string[8] = \
-        "module_0"      \
-        "ground"        \
+    #@variant_if geometry:layout/if_basic/shielding/is_present|true
+
+      #@variant_if geometry:layout/if_basic/shielding/is_present/layout/if_simplified_iron|true
+      internal_item.labels : string[6] += \
         "bottom_shield" \
         "top_shield"    \
         "back_shield"   \
@@ -58,12 +64,10 @@
       mapping.daughter_id.right_shield  : string = "[external_shield:side=3]"
       mapping.daughter_id.bottom_shield : string = "[external_shield:side=4]"
       mapping.daughter_id.top_shield    : string = "[external_shield:side=5]"
-    #@variant_endif geometry:layout/if_basic/shielding/if_basic_iron
+      #@variant_endif geometry:layout/if_basic/shielding/is_present/layout/if_simplified_iron
 
-    #@variant_if geometry:layout/if_basic/shielding/if_realistic_1|true
-      internal_item.labels : string[8] = \
-        "module_0"      \
-        "ground"        \
+      #@variant_if geometry:layout/if_basic/shielding/is_present/layout/if_realistic_1|false
+      internal_item.labels : string[6] += \
         "bottom_shield" \
         "top_shield"    \
         "back_shield"   \
@@ -95,17 +99,19 @@
       mapping.daughter_id.right_shield  : string = "[external_shield:side=3]"
       mapping.daughter_id.bottom_shield : string = "[external_shield:side=4]"
       mapping.daughter_id.top_shield    : string = "[external_shield:side=5]"
-    #@variant_endif geometry:layout/if_basic/shielding/if_realistic_1
+      #@variant_endif geometry:layout/if_basic/shielding/is_present/layout/if_realistic_1
+      
+    #@variant_endif geometry:layout/if_basic/shielding/is_present
 
     internal_item.model.module_0 : string = "module_basic.model"
   #@variant_endif geometry:layout/if_basic
 
   # "IF_HALF_COMMISSIONING"
   #@variant_if geometry:layout/if_half_commissioning|false
-    internal_item.labels : string[2] = \
-      "module_0" \
-      "ground"
-    internal_item.model.module_0     : string = "half_module_commissioning.model"
+    # internal_item.labels : string[2] = \
+    #   "module_0" \
+    #   "ground"
+    internal_item.model.module_0 : string = "half_module_commissioning.model"
   #@variant_endif geometry:layout/if_half_commissioning
 
   # "COMMON"
@@ -115,6 +121,7 @@
   mapping.daughter_id.module_0 : string = "[module:module=0]"
   mapping.daughter_id.ground   : string = "[ground]"
 
+  #@forbid_key_override
 
 [name="world" type="geomtools::simple_world_model"]
   #@config The top-level world volume
@@ -131,3 +138,5 @@
   visibility.color : string = "grey"
   mapping.daughter_id.setup : string = "[hall:hall=0]"
 
+
+# end

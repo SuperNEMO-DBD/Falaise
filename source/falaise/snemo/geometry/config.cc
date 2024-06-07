@@ -12,6 +12,12 @@ namespace snemo {
       return _geomUrn;
     }
  
+    const std::string & default_geometry_variant_tag()
+    {
+      static const std::string _geomUrn(FALAISE_DEFAULT_GEOMETRY_VARIANT_TAG);
+      return _geomUrn;
+    }
+ 
     const std::string & default_locators_driver_name()
     {
       static const std::string _name("locators_driver");

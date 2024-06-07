@@ -26,40 +26,42 @@
 
 namespace falaise {
 
-namespace tags {
+  namespace tags {
 
-const std::string& experiment_category();
+    const std::string & experiment_category();
 
-const std::string& geometry_setup_category();
+    const std::string & geometry_setup_category();
 
-const std::string& experimental_setup_category();
+    const std::string & experimental_setup_category();
 
-const std::string& decays_setup_category();
+    const std::string & decays_setup_category();
 
-const std::string& vertex_setup_category();
+    const std::string & vertex_setup_category();
 
-const std::string& geometry_setup_category();
+    const std::string & geometry_setup_category();
 
-const std::string& simulation_setup_category();
+    const std::string & simulation_setup_category();
 
-const std::string& reconstruction_setup_category();
+    const std::string & reconstruction_setup_category();
 
-const std::string& reconstruction_pipeline_category();
+    const std::string & reconstruction_pipeline_category();
 
-const std::string& variant_service_category();
+    const std::string & variant_service_category();
 
-const std::string& variant_registry_category();
+    const std::string & variant_registry_category();
 
-const std::string& variant_profile_category();
+    const std::string & variant_profile_category();
 
-const std::string& variant_gdm_category();
+    const std::string & variant_default_profile_category();
 
-const std::string& services_category();
+    const std::string & variant_gdm_category();
 
-const std::string& generic_configuration_category();
+    const std::string & services_category();
 
-}  // namespace tags
+    const std::string & generic_configuration_category();
 
-}  // namespace falaise
+  } // namespace tags
 
-#endif  // FALAISE_TAGS_H
+} // namespace falaise
+
+#endif // FALAISE_TAGS_H

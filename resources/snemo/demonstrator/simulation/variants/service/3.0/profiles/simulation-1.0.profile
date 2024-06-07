@@ -13,7 +13,8 @@ layout/if_basic/source_layout = "Basic"
 layout/if_basic/source_layout/if_basic/thickness = 250 um
 layout/if_basic/source_layout/if_basic/material = "Se82"
 layout/if_basic/source_calibration = false
-layout/if_basic/shielding = "BasicIron"
+layout/if_basic/shielding = true
+layout/if_basic/shielding/is_present/layout = "SimplifiedIron"
 calo_film_thickness = 25 um
 tracking_gas_material = "Nemo3"
 

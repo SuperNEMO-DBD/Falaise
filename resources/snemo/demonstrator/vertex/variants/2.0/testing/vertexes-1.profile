@@ -18,7 +18,8 @@ layout/if_basic/source_calibration/is_active/type/if_sds/track2 = true
 layout/if_basic/source_calibration/is_active/type/if_sds/track3 = true
 layout/if_basic/source_calibration/is_active/type/if_sds/track4 = true
 layout/if_basic/source_calibration/is_active/type/if_sds/track5 = true
-layout/if_basic/shielding = "BasicIron"
+layout/if_basic/shielding = true
+layout/if_basic/shielding/is_present/layout = "SimplifiedIron"
 calo_film_thickness = 25 um
 tracking_gas_material = "HeliumMix"
 

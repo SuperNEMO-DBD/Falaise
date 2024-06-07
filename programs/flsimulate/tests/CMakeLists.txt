@@ -31,11 +31,15 @@ foreach(_test ${FLSIMULATE_TESTSCRIPT_NAMES})
   set_falaise_test_environment(${_test})
 endforeach()
 
+message(STATUS "[flsimulate] FALAISE_DEFAULT_SIMULATION_TAG='${FALAISE_DEFAULT_SIMULATION_TAG}'")
+message(STATUS "[flsimulate] FALAISE_DEFAULT_SIMULATION_VARIANT_TAG='${FALAISE_DEFAULT_SIMULATION_VARIANT_TAG}'")
+
 # More detailed tests from examples
 # - Example 2
 # - Part 1: generate profile
 add_test(NAME flsimulate-example-2-profile
   COMMAND flsimulate-configure
+          --verbosity "debug"
           --no-gui
           -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
@@ -46,19 +50,23 @@ add_test(NAME flsimulate-example-2-profile
   )
 # Part 2: Use variant profile
 add_test(NAME flsimulate-example-2-run
-  COMMAND flsimulate -d "example2@${CMAKE_CURRENT_BINARY_DIR}" -c "${CMAKE_CURRENT_SOURCE_DIR}/example-2.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/example-2.brio"
+  COMMAND flsimulate
+  --verbosity "debug"
+  -d "example2@${CMAKE_CURRENT_BINARY_DIR}"
+  -c "${CMAKE_CURRENT_SOURCE_DIR}/example-2.conf"
+  -o "${CMAKE_CURRENT_BINARY_DIR}/example-2.brio"
   )
 set_tests_properties(flsimulate-example-2-run PROPERTIES DEPENDS flsimulate-example-2-profile)
 
 set_falaise_test_environment(flsimulate-example-2-profile)
 set_falaise_test_environment(flsimulate-example-2-run)
-
+ 
 # - Example 3
 # - Part 1: generate profile
 add_test(NAME flsimulate-example-3-profile
   COMMAND flsimulate-configure
           --no-gui
-          -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
+          -t "${FALAISE_DEFAULT_SIMULATION_TAGcmak}"
           -s "geometry:layout=Basic"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"

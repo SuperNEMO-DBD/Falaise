@@ -11,6 +11,12 @@ namespace snemo {
       static const std::string _simuUrn(FALAISE_DEFAULT_SIMULATION_TAG);
       return _simuUrn;
     }
+
+    const std::string & default_simulation_variant_tag()
+    {
+      static const std::string _simuUrn(FALAISE_DEFAULT_SIMULATION_VARIANT_TAG);
+      return _simuUrn;
+    }
   
   } // end of namespace simulation
 

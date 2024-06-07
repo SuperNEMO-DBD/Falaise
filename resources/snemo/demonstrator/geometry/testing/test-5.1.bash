@@ -77,7 +77,8 @@ Variant inspector
 EOF
 bxvariant_inspector \
     --datatools::resource-path="falaise@${falaiseResourcesDir}" \
-    --logging="debug" \
+    --logging="trace" \
+    --variant-logging="debug" \
     --variant-config="@falaise:${geometryResourcesSubdir}/variants/service/${geometryVariantVersion}/GeometryVariantRepository.conf" \
     --variant-gui \
     --variant-ui-writable-at-start \
@@ -102,6 +103,7 @@ EOF
  #    --logging "trace" \
 
 bxgeomtools_inspector \
+    --logging "trace" \
     --datatools::logging "trace" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
     ${falaiseDllOptions} \

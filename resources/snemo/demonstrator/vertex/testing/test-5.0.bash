@@ -177,9 +177,9 @@ EOF
 	local _vertexDescAdd1=$(echo -n "${_token2};" | cut -d';' -f2  | xargs )
 	local _vertexDescAdd2=$(echo -n "${_token2};" | cut -d';' -f3  | xargs )
 	local _vertexDescAdd3=$(echo -n "${_token2};" | cut -d';' -f4  | xargs )
-	echo >&2 "============== _vertexDescAdd1='${_vertexDescAdd1}'"	
-	echo >&2 "============== _vertexDescAdd2='${_vertexDescAdd2}'"	
-	echo >&2 "============== _vertexDescAdd3='${_vertexDescAdd3}'"	
+	# echo >&2 "============== _vertexDescAdd1='${_vertexDescAdd1}'"	
+	# echo >&2 "============== _vertexDescAdd2='${_vertexDescAdd2}'"	
+	# echo >&2 "============== _vertexDescAdd3='${_vertexDescAdd3}'"	
 	local _vertexDescAdds=()
 	if [ -n "${_vertexDescAdd1}" ]; then
 	    _vertexDescAdds+=("${_vertexDescAdd1}")
@@ -190,23 +190,23 @@ EOF
 	if [ -n "${_vertexDescAdd3}" ]; then
 	    _vertexDescAdds+=("${_vertexDescAdd3}")
 	fi
-	echo >&2 "============== _vertexDescAdds='${_vertexDescAdds[@]}'"	
+	# echo >&2 "============== _vertexDescAdds='${_vertexDescAdds[@]}'"	
 	for _vertexDescAdd in ${_vertexDescAdds[@]} ; do
-   	    echo >&2 "============== processing _vertexDescAdd='${_vertexDescAdd}'"	
+   	    # echo >&2 "============== processing _vertexDescAdd='${_vertexDescAdd}'"	
 	    echo "${_vertexDescAdd}" | grep group= > /dev/null
 	    if [ $? -eq 0 ]; then
  		_vertexGenGroup=$(echo "${_vertexDescAdd}" | sed -e 's/group=//g') 	
- 		echo >&2 "============== Found group='${_vertexGenGroup}'!"	
+ 		# echo >&2 "============== Found group='${_vertexGenGroup}'!"	
 	    else
 		echo "${_vertexDescAdd}" | grep rank= > /dev/null
 		if [ $? -eq 0 ]; then
 		    _vertexGenRank=$(echo "${_vertexDescAdd}" | sed -e 's/rank=//g') 	
-		    echo >&2 "============== Found rank='${_vertexGenRank}'!"	
+		    # echo >&2 "============== Found rank='${_vertexGenRank}'!"	
 		else	
 		    echo "${_vertexDescAdd}" | grep variant= > /dev/null
 		    if [ $? -eq 0 ]; then
 			_vertexGenVariant=$(echo "${_vertexDescAdd}" | sed -e 's/variant=//g') 	
-			echo >&2 "============== Found variant='${_vertexGenVariant}'!"	
+			# echo >&2 "============== Found variant='${_vertexGenVariant}'!"	
 		    fi
 		fi
 	    fi
@@ -228,23 +228,23 @@ EOF
 	echo >&2 "  lenRank    = ${_lenRank}" 
 	if [ ${_lenName} -gt ${_lenNameMax} ]; then
 	    _lenNameMax=${_lenName}
-   	    echo >&2 "  ==========> update lenNameMax=[${_lenNameMax}] from [${_lenName}]" 
+   	    # echo >&2 "  ==========> update lenNameMax=[${_lenNameMax}] from [${_lenName}]" 
 	fi
 	if [ ${_lenDesc} -gt ${_lenDescMax} ]; then
 	    _lenDescMax=${_lenDesc}
-   	    echo >&2 "  ==========> update lenDescMax=[${_lenDescMax}] from [${_lenDesc}]" 
+   	    # echo >&2 "  ==========> update lenDescMax=[${_lenDescMax}] from [${_lenDesc}]" 
 	fi
 	if [ ${_lenGroup} -gt ${_lenGroupMax} ]; then
 	    _lenGroupMax=${_lenGroup}
-   	    echo >&2 "  ==========> update lenGroupMax=[${_lenGroupMax}] from [${_lenGroup}]" 
+   	    # echo >&2 "  ==========> update lenGroupMax=[${_lenGroupMax}] from [${_lenGroup}]" 
 	fi
 	if [ ${_lenRank} -gt ${_lenRankMax} ]; then
 	    _lenRankMax=${_lenRank}
-   	    echo >&2 "  ==========> update lenRankMax=[${_lenRankMax}] from [${_lenRank}]" 
+   	    # echo >&2 "  ==========> update lenRankMax=[${_lenRankMax}] from [${_lenRank}]" 
 	fi
 	if [ ${_lenVariant} -gt ${_lenVariantMax} ]; then
 	    _lenVariantMax=${_lenVariant}
-   	    echo >&2 "  ==========> update lenVariantMax=[${_lenVariantMax}] from [${_lenVariant}]" 
+   	    # echo >&2 "  ==========> update lenVariantMax=[${_lenVariantMax}] from [${_lenVariant}]" 
 	fi
 	# if [ ${_lineCount} -ge 40 ]; then
 	#     break
@@ -283,7 +283,7 @@ EOF
     _lineCount=0
     while read -r _vertexLine; do
 	let _lineCount=_lineCount+1
-	echo >&2 "  ==========> second processing line #${_lineCount}" 
+	# echo >&2 "  ==========> second processing line #${_lineCount}" 
 	local _token1=$(echo -n "${_vertexLine}" | cut -d':' -f1 | xargs)
 	local _token2=$(echo -n "${_vertexLine}" | cut -d':' -f2 | xargs -0)
 	local _vertexGenName="${_token1}"

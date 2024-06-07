@@ -22,6 +22,8 @@ namespace snemo {
   namespace processing {
 
     const std::string & default_reconstruction_tag();
+ 
+    const std::string & default_reconstruction_variant_tag();
     
   } // end of namespace processing
 

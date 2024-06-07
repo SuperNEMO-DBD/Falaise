@@ -11,6 +11,12 @@ namespace snemo {
       static const std::string _recoUrn(FALAISE_DEFAULT_RECONSTRUCTION_TAG);
       return _recoUrn;
     }
+ 
+    const std::string & default_reconstruction_variant_tag()
+    {
+      static const std::string _recoUrn(FALAISE_DEFAULT_RECONSTRUCTION_VARIANT_TAG);
+      return _recoUrn;
+    }
   
   } // end of namespace processing
 

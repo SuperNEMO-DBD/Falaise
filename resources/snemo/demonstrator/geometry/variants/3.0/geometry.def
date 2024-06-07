@@ -1,5 +1,5 @@
 # -*- mode: conf-unix; -*-
-#@description The definitions for variant parameters related to the geometry of the demonstrator module
+#@description The definitions for variant parameters related to the geometry of the demonstrator module (3.0)
 #@key_label  "name"
 #@meta_label "type"
 
@@ -14,8 +14,8 @@
     parameters.source_layout.description : string = "The layout of the source foil"
     parameters.source_calibration.model       : string = "source_calibration.off_on.PM"
     parameters.source_calibration.description : string = "The activation flag of the source calibration system"
-    parameters.shielding.model       : string = "shielding.layout.PM"
-    parameters.shielding.description : string = "The shielding layout"
+    parameters.shielding.model       : string = "shielding.on_off.PM"
+    parameters.shielding.description : string = "The activation flag of the shielding"
 
 
 [name="demonstrator.geometry.half_commissioning.gap.PM" type="parameter"]
@@ -113,3 +113,4 @@
     parameters.tracking_gas_material.model       : string = "demonstrator.geometry.tracking_gas_material.PM"
     parameters.tracking_gas_material.description : string = "The tracking gas material"
 
+# end
