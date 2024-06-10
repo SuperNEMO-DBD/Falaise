@@ -190,7 +190,7 @@ namespace snemo {
         if (not a_trajectory->get_fit_infos().is_best()) {
           continue;
         }
-        DT_LOG_DEBUG(get_logging_priority(), "Processing the best (default) trajectory...");
+        DT_LOG_DEBUG(get_logging_priority(), "Processing the best (default) trajectory ID=" << a_trajectory->get_id());
 
         // Add a new particle track
         auto hPT = datatools::make_handle<snedm::particle_track>();

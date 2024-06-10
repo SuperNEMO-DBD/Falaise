@@ -53,13 +53,14 @@ namespace snemo {
     geomtools::vector_3d polyline_trajectory_pattern::get_last() const
     {
       int n = _path_.get_number_of_vertexes();
-      return (_path_.get_point(n - 1) - _path_.get_point(n - 2)).unit();
+      return _path_.get_point(n - 1);
     }
 
     // override
     geomtools::vector_3d polyline_trajectory_pattern::get_last_direction() const
     {
-      return (_path_.get_point(1) - _path_.get_point(0)).unit();
+			int n = _path_.get_number_of_vertexes();
+ 			return (_path_.get_point(n - 1) - _path_.get_point(n - 2)).unit();
     }
 
     // override

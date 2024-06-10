@@ -100,6 +100,13 @@ namespace snemo {
       DT_THROW_IF(_calibration_source_extend_vertical_ < 0.0, std::domain_error, "Invalid _calibration_source_extend_vertical_ length");
       DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Y extend factor (>=0 mm) = " << _calibration_source_extend_horizontal_ / CLHEP::mm << " mm");
       DT_LOG_DEBUG(logPriority_, "Vertex on calibration source extrapolation Z extend factor (>=0 mm) = " << _calibration_source_extend_vertical_ / CLHEP::mm << " mm");
+
+      _use_linear_extrapolation_ = ps.get<bool>("line_extrapolation", true);
+
+      _use_helix_extrapolation_ = ps.get<bool>("helix_extrapolation", true);
+
+      DT_THROW_IF(not _use_linear_extrapolation_ and not _use_helix_extrapolation_,
+		  std::logic_error, "No extrapolation method os activated!");
       // End of configuration parameters parsing.
   
       // Identify source submodule:
@@ -860,11 +867,11 @@ namespace snemo {
             vtxType = snemo::geometry::vertex_info::CATEGORY_ON_MAIN_CALORIMETER;
             // Optimization for main walls:
             if (refPoint.x() > 0.0 and direction.x() <= 0.0) {
-              DT_LOG_DEBUG(logPrio, "French ref point and italian direction cannot intercept the source plane");
+              DT_LOG_DEBUG(logPrio, "French ref point and italian direction cannot intercept the french side calo wall plane");
               continue;
             }
             if (refPoint.x() < 0.0 and direction.x() >= 0.0) {
-              DT_LOG_DEBUG(logPrio, "Italian ref point and french direction cannot intercept the source plane");
+              DT_LOG_DEBUG(logPrio, "Italian ref point and french direction cannot intercept the italian side calo wall plane");
               continue;
             }
           } else if (iBlockType == CALO_XCALO) {
@@ -1079,12 +1086,18 @@ namespace snemo {
         if ((iFrom == vertex_info::FROM_FIRST) && not (from_mask_ & vertex_info::FROM_FIRST_BIT)) continue;
         if ((iFrom == vertex_info::FROM_LAST)  && not (from_mask_ & vertex_info::FROM_LAST_BIT)) continue;
         // Default configured for 'last':
-        geomtools::vector_3d endPoint = linear_traj_.get_last();
+	geomtools::vector_3d endPoint = linear_traj_.get_last();
+	geomtools::vector_3d beginPoint2 = linear_traj_.get_first();
+	DT_LOG_DEBUG(logPrio, "First point = " << beginPoint2 / CLHEP::mm << " mm");
+	DT_LOG_DEBUG(logPrio, "Last point  = " << endPoint / CLHEP::mm << " mm");
         geomtools::vector_3d endDirection = linear_traj_.get_last_direction();
-        if (iFrom == vertex_info::FROM_FIRST) {
+	geomtools::vector_3d beginDirection2 = linear_traj_.get_first_direction();
+	DT_LOG_DEBUG(logPrio, "First direction = " << beginDirection2);
+	DT_LOG_DEBUG(logPrio, "Last direction  = " << endDirection);
+	if (iFrom == vertex_info::FROM_FIRST) {
 	  endPoint = linear_traj_.get_first();
 	  endDirection = -linear_traj_.get_first_direction();
-         }
+	}
 	geomtools::vector_3d beginPoint = endPoint - _finder_step_ * endDirection;
 	geomtools::vector_3d refPoint = 0.5 * (beginPoint + endPoint);
         geomtools::vector_2d endPoint_Xy(endPoint.x(), endPoint.y());
@@ -1184,7 +1197,7 @@ namespace snemo {
 	      maxTrackId = std::min(maxTrackId, (int16_t) (maxId + 1));
             }
           } else {
-            DT_LOG_DEBUG(logPrio, "No intercept on the source submodule #" << _sourceSubmoduleGid_);
+            DT_LOG_TRACE(logPrio, "No intercept on the source submodule #" << _sourceSubmoduleGid_);
           }
           sourceSubmoduleInterceptSuccess = success;
         }
@@ -1198,13 +1211,13 @@ namespace snemo {
           DT_LOG_DEBUG(logPrio, "Scanning strips...");
           for (uint32_t iStrip = 0; iStrip < _sourceStripGids_.size(); iStrip++) {
             const geomtools::geom_id & sourceStripGid = _sourceStripGids_[iStrip];
-            DT_LOG_DEBUG(logPrio, "  Source strip GID : " << sourceStripGid);
+            DT_LOG_TRACE(logPrio, "  Source strip GID : " << sourceStripGid);
             auto sourceStripId = sourceStripGid.get(1);
             if (sourceStripGid.get(0) != _module_id_) { 
               continue;
             }
             if ((int32_t) sourceStripId < minStripId or (int32_t) sourceStripId > maxStripId) { 
-	      DT_LOG_DEBUG(logPrio, "  Pass source strip GID : " << sourceStripGid << "...");
+	      DT_LOG_TRACE(logPrio, "  Pass source strip GID : " << sourceStripGid << "...");
 	      continue;
             } 
             DT_LOG_DEBUG(logPrio, "Searching line intercept on strip #" << sourceStripId);
@@ -1226,7 +1239,7 @@ namespace snemo {
                                                            srcStripFii,
                                                            _intercept_tolerance_);
             if (! success) {
-              DT_LOG_DEBUG(logPrio, "No intersection with the strip #" << sourceStripId << "! No chance to intersect a pad.");
+              DT_LOG_TRACE(logPrio, "No intersection with the strip #" << sourceStripId << "! No chance to intersect a pad.");
               // No intersection with the strip volume: no chance to intersect a pad ! We give up.
               continue;
             }
@@ -1239,7 +1252,8 @@ namespace snemo {
             for (uint32_t sourcePadGidIndex = 0; sourcePadGidIndex < _sourcePadGids_.size(); sourcePadGidIndex++) {
               const geomtools::geom_id & sourcePadGid = _sourcePadGids_[sourcePadGidIndex];
               if (sourcePadGid.get(1) != sourceStripId) {
-                /// Reject pads in other strips:
+		DT_LOG_TRACE(logPrio, "Reject pads in other strips -> not " << sourceStripId);
+		// Reject pads in other strips:
                 continue;
               }
               uint32_t sourcePadId = sourcePadGid.get(2);
@@ -1285,7 +1299,7 @@ namespace snemo {
                   // Result:
                   padVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_FOIL;
                   padVtxInfo.from = iFrom;
-                  padVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_HELIX;
+                  padVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
                   padVtxInfo.gid = sourcePadGid;
                   padVtxInfo.face_intercept = srcPadFii;
                   if (srcPadExtrapolationDist > 0.0) {
@@ -1390,7 +1404,7 @@ namespace snemo {
                   }
                 } // for (uint32_t k = 0; k < _sourcePadBulkGids_.size()...
               } else {
-                DT_LOG_DEBUG(logPrio, "No source Pad Bulk (SNRS) to be scanned");
+                DT_LOG_TRACE(logPrio, "No source Pad Bulk (SNRS) to be scanned");
               } // scan source pad bulk
 
               if (sourcePadInterceptSuccess) { 
