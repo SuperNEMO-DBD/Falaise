@@ -30,6 +30,8 @@ namespace snemo {
     void clusterized_precalibrated_data::clear()
     {
       _clusters_.clear();
+      _unclusterized_calorimeter_hits_.clear();
+      _unclusterized_tracker_hits_.clear();
       _auxiliaries_.clear();
     }
 
@@ -41,6 +43,26 @@ namespace snemo {
     precalibrated_cluster_handle_collection & clusterized_precalibrated_data::clusters()
     {
       return _clusters_;
+    }
+
+    const precalibrated_calorimeter_hit_handle_collection & clusterized_precalibrated_data::unclusterized_calorimeter_hits() const
+    {
+      return _unclusterized_calorimeter_hits_;
+    }
+
+    precalibrated_calorimeter_hit_handle_collection & clusterized_precalibrated_data::unclusterized_calorimeter_hits()
+    {
+      return _unclusterized_calorimeter_hits_;
+    }
+
+    const precalibrated_tracker_hit_handle_collection & clusterized_precalibrated_data::unclusterized_tracker_hits() const
+    {
+      return _unclusterized_tracker_hits_;
+    }
+
+    precalibrated_tracker_hit_handle_collection & clusterized_precalibrated_data::unclusterized_tracker_hits()
+    {
+      return _unclusterized_tracker_hits_;
     }
 
     void clusterized_precalibrated_data::print_tree(std::ostream & out_,
@@ -79,6 +101,10 @@ namespace snemo {
         }
       }
      
+      out_ << popts.indent << tag << "Unclusterized : "
+	   << _unclusterized_calorimeter_hits_.size() << " calo hit(s) and "
+	   << _unclusterized_tracker_hits_.size() << " tracker hit(s)" << std::endl;
+
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Auxiliary properties : " << _auxiliaries_.size() << std::endl;
       if (list_properties_opt) {

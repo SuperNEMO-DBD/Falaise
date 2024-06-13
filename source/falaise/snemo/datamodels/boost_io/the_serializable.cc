@@ -66,6 +66,14 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precal
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_data)
 
+/****************************************************
+ * snemo::datamodel::clusterized_precalibrated_data *
+ ****************************************************/
+
+#include <falaise/snemo/datamodels/boost_io/clusterized_precalibrated_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::clusterized_precalibrated_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::clusterized_precalibrated_data)
+
 /************************************************
  * snemo::datamodel::calorimeter_digitized_hit *
  ************************************************/

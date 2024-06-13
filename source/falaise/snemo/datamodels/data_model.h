@@ -51,6 +51,9 @@ namespace snedm {
     /// default string label/name for the 'precalibrated data' (trigger driven)
     static const std::string & precalibrated_data();
 
+    /// default string label/name for the 'clusterized precalibrated data'
+    static const std::string & clusterized_precalibrated_data();
+
     /// default string label/name for the 'calibrated data'
     static const std::string & calibrated_data();
 
