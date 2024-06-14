@@ -57,6 +57,9 @@ namespace snedm {
     /// default string label/name for the 'calibrated data'
     static const std::string & calibrated_data();
 
+    /// default string label/name for the 'clusterized calibrated data'
+    static const std::string & clusterized_calibrated_data();
+
     /// default string label/name for the 'tracker clustering data'
     static const std::string & tracker_clustering_data();
 

@@ -14,8 +14,9 @@
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
 #include <datatools/handle.h>
-// - Bayeux/geomtools:
-#include <geomtools/base_hit.h>
+#include <datatools/i_clear.h>
+#include <datatools/i_serializable.h>
+#include <datatools/i_tree_dump.h>
 
 // This project:
 #include <falaise/snemo/datamodels/calibrated_calorimeter_hit.h>
@@ -27,10 +28,11 @@ namespace snemo {
 
     /// \brief A cluster of calibrated hits referenced by handles
     class calibrated_cluster
-      : public geomtools::base_hit
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
     {
     public:
-  
       /// Get the cluster ID
       int get_cluster_id() const;
 
@@ -64,9 +66,10 @@ namespace snemo {
                               /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
     private:
-      
+      int32_t _cluster_id_; //!< Cluster integer identifier
       CalorimeterHitHdlCollection _calorimeter_hits_; //!< Collection of calorimeter hit handles
       TrackerHitHdlCollection     _tracker_hits_;     //!< Collection of tracker hit handles
+      datatools::properties _properties_; //!< Auxiliary properties
       
       DATATOOLS_SERIALIZATION_DECLARATION()
   

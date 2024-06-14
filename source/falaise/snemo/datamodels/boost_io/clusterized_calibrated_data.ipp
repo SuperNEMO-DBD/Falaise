@@ -25,6 +25,8 @@ namespace snemo {
     void clusterized_calibrated_data::serialize(Archive& ar_, const unsigned int /* version_ */) {
       ar_& DATATOOLS_SERIALIZATION_I_SERIALIZABLE_BASE_OBJECT_NVP;
       ar_& boost::serialization::make_nvp("clusters", _clusters_);
+      ar_& boost::serialization::make_nvp("unclusterized_calorimeter_hits", _unclusterized_calorimeter_hits_);
+      ar_& boost::serialization::make_nvp("unclusterized_tracker_hits", _unclusterized_tracker_hits_);
       ar_& boost::serialization::make_nvp("auxiliaries", _auxiliaries_);
     }
 

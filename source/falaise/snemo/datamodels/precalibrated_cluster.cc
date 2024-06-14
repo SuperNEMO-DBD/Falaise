@@ -65,7 +65,6 @@ namespace snemo {
     void precalibrated_cluster::print_tree(std::ostream & out,
                                      const boost::property_tree::ptree & options) const
     {
-      // base_hit::print_tree(out, base_print_options::force_inheritance(options));
       base_print_options popts;
       popts.configure_from(options);
 

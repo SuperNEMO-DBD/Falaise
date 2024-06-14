@@ -96,7 +96,7 @@ namespace snemo {
       precalibrated_cluster_handle_collection _clusters_{}; //!< Collection of clusters
 			precalibrated_calorimeter_hit_handle_collection _unclusterized_calorimeter_hits_; //!< Collection of unclusterized calorimeter hit handles
 			precalibrated_tracker_hit_handle_collection     _unclusterized_tracker_hits_;     //!< Collection of unclusterized tracker hit handles
-      datatools::properties _auxiliaries_{}; //!< Auxiliary properties (unused!)
+      datatools::properties _auxiliaries_{}; //!< Auxiliary properties
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
