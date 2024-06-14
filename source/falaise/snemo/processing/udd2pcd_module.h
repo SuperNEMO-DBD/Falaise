@@ -22,12 +22,14 @@
 // Third party:
 // - Bayeux/dpp:
 #include <dpp/base_module.h>
+#include <datatools/event_id.h>
 // - CLHEP
 #include <CLHEP/Units/SystemOfUnits.h>
 
 // This project :
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
 #include <falaise/snemo/processing/module.h>
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
@@ -91,19 +93,23 @@ namespace snemo {
                                               snemo::datamodel::PreCalibratedTrackerHitHdlCollection& tracker_hits_);
 
       /// Basic tracker clusterisation
-      void basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_);
+      void basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_,
+					snemo::datamodel::clusterized_precalibrated_data & cpcd_data_);
 
       /// Main process tracker function
       void process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                snemo::datamodel::precalibrated_data & pcd_data_);
+                                snemo::datamodel::precalibrated_data & pcd_data_,
+                                snemo::datamodel::clusterized_precalibrated_data & cpcd_data_);
 
     private:
       
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
+      std::string _cpcd_output_tag_{}; //!< The label of the cluserized precalibrated data bank
+
+      datatools::event_id _current_event_id_;
 
       calorimeter_precalibration_algorithm _calo_pcd_algo_;
-
       double _calo_adc2volt_;
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
