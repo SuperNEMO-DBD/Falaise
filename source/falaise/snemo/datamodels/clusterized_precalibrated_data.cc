@@ -80,25 +80,33 @@ namespace snemo {
       out_ << popts.indent << tag << "Clusters : " << _clusters_.size()
            << std::endl;
 
-      if (list_clusters_opt) {
-        for (size_t i = 0; i < size(); i++) {
-          std::ostringstream indent2;
-          out_ << popts.indent << skip_tag;
-          indent2 << popts.indent << skip_tag;
-          if (i == size() - 1) {
-            out_ << last_tag;
-            indent2 << last_skip_tag;
-          } else {
-            out_ << tag;
-            indent2 << skip_tag;
-          }
-          out_ << "Cluster #" << i << " : " << std::endl;
+      for (size_t i = 0; i < size(); i++) {
+	std::ostringstream indent2;
+	out_ << popts.indent << skip_tag;
+	indent2 << popts.indent << skip_tag;
+	if (i == size() - 1) {
+	  out_ << last_tag;
+	  indent2 << last_skip_tag;
+	} else {
+	  out_ << tag;
+	  indent2 << skip_tag;
+	}
+
+	if (list_clusters_opt) {
+	  out_ << "Cluster #" << i << " : " << std::endl;
           {
             boost::property_tree::ptree clOpts;
             clOpts.put("indent", indent2.str());
             at(i).print_tree(out_, clOpts);
           }
         }
+	else {
+	  const precalibrated_cluster & pcd_cluster = at(i);
+
+	  out_ << "Cluster #" << i << " : "
+	       << pcd_cluster.calorimeter_hits().size() << " calo hit(s) and "
+	       << pcd_cluster.tracker_hits().size() << " tracker hit(s)" << std::endl;
+	}
       }
      
       out_ << popts.indent << tag << "Unclusterized : "
@@ -107,6 +115,7 @@ namespace snemo {
 
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Auxiliary properties : " << _auxiliaries_.size() << std::endl;
+
       if (list_properties_opt) {
         boost::property_tree::ptree auxOpts;
         auxOpts.put("indent", popts.indent + tags::item(not popts.inherit, true)); 
