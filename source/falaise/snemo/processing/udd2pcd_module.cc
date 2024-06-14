@@ -227,8 +227,6 @@ namespace snemo {
         const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
         const double fwmeas_time = time_tdc - CALO_POSTRIGGER_TIME + fwmeas_time_cfd;
 
-	std::cout << "calo " << a_udd_calo_hit->get_geom_id() << " tdc = " << a_udd_calo_hit->get_timestamp() << " Tcfd = " << fwmeas_time_cfd/CLHEP::ns << " ns" << std::endl;
-
         // Store pre-calibrated data into pCD hit
         new_pcd_calo->set_baseline(fwmeas_baseline);
         new_pcd_calo->set_amplitude(fwmeas_amplitude);
@@ -752,8 +750,6 @@ namespace snemo {
 
           // perform calo/tracker time correlation
           const double deltat_cluster_first_anode_calo = cluster_first_anode_time - calo_time;
-
-	  std::cout << "calo #" << pcd_calo_hit_index << " deltat = " << deltat_cluster_first_anode_calo/CLHEP::microsecond << " us" << std::endl;
 
           if (deltat_cluster_first_anode_calo > _tracker_basic_cluster_deltat_calo_max_) continue;
           if (deltat_cluster_first_anode_calo < _tracker_basic_cluster_deltat_calo_min_) continue;
