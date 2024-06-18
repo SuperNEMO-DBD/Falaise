@@ -254,34 +254,40 @@ namespace snemo {
         return dpp::base_module::PROCESS_ERROR;
       }
 
-      auto & eh_data = event.get<snemo::datamodel::event_header>("EH");
+      // retrieve EH data as mutable (for timestamp update)
+      auto & eh_data = event.grab<snemo::datamodel::event_header>("EH");
       DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << eh_data.get_id());
 
       auto & pcd_data = event.get<snemo::datamodel::precalibrated_data>(_pcd_input_tag_);
-      auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
+      // auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
 
-      // // prepare general event time
-      // _event_time_ = -1;
+      // prepare general event time (earliest pcd hits)
+      _event_time_ = 0;
 
-      // for (const auto & pcd_cluster : cpcd_data.clusters()) {
+      for (const auto & pcd_calo_hit : pcd_data.calorimeter_hits()) {
 
-      // 	const datatools::properties & pcd_cluster_properties = pcd_cluster.get_properties();
+	const double & pcd_calo_time = pcd_calo_hit->get_time();
 
-      // 	if (pcd_cluster_properties.has_flag("reference_pcd_calo_index")) {
+	if ((_event_time_ == 0) || (pcd_calo_time < _event_time_))
+	  _event_time_ = pcd_calo_time;
+      }
 
-      // 	  int reference_pcd_calo_index;
-      // 	  pcd_cluster_properties.fetch("reference_pcd_calo_index", &reference_pcd_calo_index);
+      for (const auto & pcd_tracker_hit : pcd_data.tracker_hits()) {
 
-      // 	  const auto & pcd_calo_hit = pcd_data.calorimeter_hits().at(reference_pcd_calo_index);
+	if (pcd_tracker_hit->has_anodic_time()) {
 
-      // 	}
+	  const double & pcd_tracker_time = pcd_tracker_hit->get_anodic_time();
 
-      // }
+	  if ((_event_time_ == 0) || (pcd_tracker_time < _event_time_))
+	    _event_time_ = pcd_tracker_time;
+	}
 
-      // const int64_t event_time_second = (int64_t) _event_time_;
-      // const int64_t event_time_picosecond = (int64_t) ((event_time - event_time_second)*1E12);
-      // snemo::datamodel::timestamp event_timestamp (event_time_second, event_time_picosecond);
-      // eh_data.set_timestamp(event_timestamp);
+      }
+
+      const int64_t event_time_second = (int64_t) _event_time_;
+      const int64_t event_time_picosecond = (int64_t) ((_event_time_ - event_time_second)*1E12);
+      snemo::datamodel::timestamp event_timestamp (event_time_second, event_time_picosecond);
+      eh_data.set_timestamp(event_timestamp);
 
       // Check if some 'cd_data' are available in the data model:
       auto & cd_data = snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(_cd_output_tag_, event);
@@ -352,7 +358,7 @@ namespace snemo {
       if (_pcd2cd_calo_time_method_ == CALO_TIME_T0_TABLE) {
 	const double & pcd_calo_time = pcd_calo_hit_.get_time();
 	const double & calo_t0 = _pcd_calo_t0_constants_[calo_om_num][0] * CLHEP::ns;
-	cd_calo_hit_.set_time(pcd_calo_time - calo_t0); //  - _event_time_);
+	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
 	// cd_calo_hit_.set_sigma_time(0);
       }
 
@@ -405,7 +411,7 @@ namespace snemo {
       cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
       cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
 
-      // cd_tracker_hit_.set_anode_time(0);
+      cd_tracker_hit_.set_anode_time(pcd_tracker_hit_.get_anodic_time() - _event_time_);
       // cd_tracker_hit_.set_peripheral(true);
       // cd_tracker_hit_.set_delayed_time();
       // cd_tracker_hit.set_noisy(true);
