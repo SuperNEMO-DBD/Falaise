@@ -101,6 +101,8 @@ namespace snemo {
       case CATEGORY_ON_WIRE: return std::string("on_wire");
       case CATEGORY_ON_CALIBRATION_SOURCE: return std::string("on_calibration_source");
       case CATEGORY_ON_SOURCE_GAP: return std::string("on_source_gap");
+      case CATEGORY_ON_REFERENCE_SOURCE_PLANE: return std::string("on_reference_source__plane");
+      case CATEGORY_IN_GAS: return std::string("in_gas");
       default: break;
       }
       return std::string("undefined");
@@ -118,10 +120,24 @@ namespace snemo {
       out_ << indent_ << "|-- Distance_xy : " << distance_xy / CLHEP::cm << " cm" << '\n';
       out_ << indent_ << "|-- Tolerance   : " << tolerance / CLHEP::mm << " mm" << '\n';
       out_ << indent_ << "|-- Best        : " << std::boolalpha << best << '\n';
-      out_ << indent_ << "`-- Edge        : " << std::boolalpha << edge << '\n';
+      out_ << indent_ << "|-- Edge        : " << std::boolalpha << edge << '\n';
+      out_ << indent_ << "`-- Reference   : " << std::boolalpha << reference << '\n';
       return;
     }
 
+    // static
+    bool vertex_info::equal(const vertex_info & vtx1_,
+			    const vertex_info & vtx2_,
+			    const double tolerance_)
+    {
+      if (vtx1_.category != vtx2_.category) return false;
+      if (vtx1_.from != vtx2_.from) return false;
+      if (vtx1_.extrapolation_mode != vtx2_.extrapolation_mode) return false;
+      if (vtx1_.gid != vtx2_.gid) return false;
+      if ((vtx1_.face_intercept.get_impact() - vtx2_.face_intercept.get_impact()).mag() > tolerance_) return false;
+      return true;
+    }
+    
   } // end of namespace geometry
 
 } // end of namespace snemo

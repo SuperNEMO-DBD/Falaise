@@ -79,8 +79,12 @@ namespace snemo {
       DT_LOG_DEBUG(logPriority_, "Max calo extrapolation XY-length = " << _max_calo_extrapolation_xy_length_ / CLHEP::cm << " cm");
 
       _max_source_extrapolation_xy_length_
-        = ps.get<falaise::length_t>("max_source_extrapolation.xy_length",{30.0, "cm"})();
+        = ps.get<falaise::length_t>("max_source_extrapolation.xy_length",{20.0, "cm"})();
       DT_LOG_DEBUG(logPriority_, "Max source extrapolation XY-length = " << _max_source_extrapolation_xy_length_ / CLHEP::cm << " cm");
+
+      _max_source_extrapolation_z_length_
+        = ps.get<falaise::length_t>("max_source_extrapolation.z_length",{30.0, "cm"})();
+      DT_LOG_DEBUG(logPriority_, "Max source extrapolation Z-length = " << _max_source_extrapolation_z_length_ / CLHEP::cm << " cm");
 
       // _effectiveCaloBlockXyTolerance_
       //   = ps.get<falaise::length_t>("effective_calo_extrapolation.xy_tolerance",{5.0, "mm"})();
@@ -105,10 +109,36 @@ namespace snemo {
 
       _use_helix_extrapolation_ = ps.get<bool>("helix_extrapolation", true);
 
+      double source_extrapolator_cone_angle   = ps.get<falaise::angle_t>("source_extrapolation.cone_angle", {5.0, "degree"})();
+      uint32_t source_extrapolator_cone_nrays = ps.get<int>("source_extrapolation.cone_nrays", 6);
+      uint32_t source_extrapolator_cone_nlayers = ps.get<int>("source_extrapolation.cone_nlayers", 1);
+
+      bool source_extrapolator_debug_no_post_processing = ps.get<bool>("source_extrapolation.debug.no_post_processing", false);
+                                                
       DT_THROW_IF(not _use_linear_extrapolation_ and not _use_helix_extrapolation_,
-		  std::logic_error, "No extrapolation method os activated!");
+		  std::logic_error, "No extrapolation method is activated!");
       // End of configuration parameters parsing.
-  
+
+      // 2024-06-12 FM:
+      source_vertex_extrapolator::config_type srcVtxExtrapolatorConfig;
+      srcVtxExtrapolatorConfig.verbosity = logPriority_;
+      srcVtxExtrapolatorConfig.locator_plugin_name = "";
+      srcVtxExtrapolatorConfig.intercept_tolerance = _intercept_tolerance_;
+      srcVtxExtrapolatorConfig.finder_step = _finder_step_;
+      srcVtxExtrapolatorConfig.module_id = _module_id_;
+      srcVtxExtrapolatorConfig.max_source_extrapolation_vertical_length = _max_source_extrapolation_xy_length_;
+      srcVtxExtrapolatorConfig.max_source_extrapolation_horizontal_length = _max_source_extrapolation_z_length_;
+      srcVtxExtrapolatorConfig.effective_source_horizontal_tolerance = _effectiveSourceHorizontalTolerance_;
+      srcVtxExtrapolatorConfig.effective_source_vertical_tolerance = _effectiveSourceVerticalTolerance_;
+      srcVtxExtrapolatorConfig.calibration_source_extend_horizontal = _calibration_source_extend_horizontal_;
+      srcVtxExtrapolatorConfig.calibration_source_extend_vertical = _calibration_source_extend_vertical_;
+      srcVtxExtrapolatorConfig.cone_angle = source_extrapolator_cone_angle;
+      srcVtxExtrapolatorConfig.cone_nrays = source_extrapolator_cone_nrays;
+      srcVtxExtrapolatorConfig.cone_nlayers = source_extrapolator_cone_nlayers;
+      srcVtxExtrapolatorConfig.debug_no_post_processing = source_extrapolator_debug_no_post_processing;
+      _srcVtxExtrapolator_ = std::make_unique<source_vertex_extrapolator>(*geoManager_, srcVtxExtrapolatorConfig);
+
+      
       // Identify source submodule:
       _sourceSubmoduleType_ = geomtools::geom_id::INVALID_TYPE;
       if (geoIdMgr.has_category_info("source_submodule")) {
@@ -120,7 +150,20 @@ namespace snemo {
         DT_THROW_IF(sourceSubmoduleGids.size() != 1, std::logic_error, "Should have found 1 unique source submodule!");
         _sourceSubmoduleGid_ = sourceSubmoduleGids[0];
       }
-      DT_LOG_DEBUG(logPriority_, "Found source submodule GID=" << _sourceSubmoduleGid_ << " source pads");
+      DT_LOG_DEBUG(logPriority_, "Found source submodule GID=" << _sourceSubmoduleGid_ << " source submodule");
+  
+      // Identify source strip block assembly:
+      _sourceStripBlockAssemblyType_ = geomtools::geom_id::INVALID_TYPE;
+      if (geoIdMgr.has_category_info("source_strip_block_assembly")) {
+        _sourceStripBlockAssemblyType_ = geoIdMgr.get_category_info("source_strip_block_assembly").get_type();
+	DT_LOG_DEBUG(logPriority_, "Source  strip block assembly type is " << _sourceStripBlockAssemblyType_);
+        geomtools::geom_id sourceStripBlockAssemblyGidPattern(_sourceStripBlockAssemblyType_, _module_id_);
+        std::vector<geomtools::geom_id> sourceStripBlockAssemblyGids;
+        geoMapping.compute_matching_geom_id(sourceStripBlockAssemblyGidPattern, sourceStripBlockAssemblyGids);
+        DT_THROW_IF(sourceStripBlockAssemblyGids.size() != 1, std::logic_error, "Should have found 1 unique source strip block assembly!");
+        _sourceStripBlockAssemblyGid_ = sourceStripBlockAssemblyGids[0];
+      }
+      DT_LOG_DEBUG(logPriority_, "Found source strip block assembly GID=" << _sourceStripBlockAssemblyGid_ << " source strip block assembly");
 
       // Identify source strips:
       _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
@@ -164,15 +207,32 @@ namespace snemo {
       DT_LOG_DEBUG(logPriority_, "Found " << _sourceStripGapGids_.size() << " source strip gaps");
       if (_sourceStripGapGids_.size()) {
         DT_LOG_DEBUG(logPriority_, "Extracting geometry infos about source strip gaps...");
-        const geomtools::geom_info & srcStripGapGinfo = geoManager().get_mapping().get_geom_info(_sourceStripGapGids_[0]);
-        const geomtools::logical_volume & srcStripGapLog   = srcStripGapGinfo.get_logical();
-        const geomtools::i_shape_3d & srcStripGapShape     = srcStripGapLog.get_shape();    
-        const geomtools::placement & srcStripGapPlacement = srcStripGapGinfo.get_world_placement();
-        _sourceStripGapX_ = srcStripGapPlacement.get_translation().x();
-        _sourceStripGapZ_ = srcStripGapPlacement.get_translation().z();
-        const geomtools::box & srcStripGapBox = dynamic_cast<const geomtools::box &>(srcStripGapShape);
-        _sourceStripGapHeight_ = srcStripGapBox.get_z();
-        _sourceStripGapBoxPtr_ = std::make_unique<geomtools::box>(4.0 * CLHEP::mm, srcStripGapBox.get_y(), _sourceStripGapHeight_);
+        {
+	  // Edge gaps (gap=0|36):
+	  const geomtools::geom_info & srcStripEdgeGapGinfo = geoManager().get_mapping().get_geom_info(_sourceStripGapGids_[0]);
+	  const geomtools::logical_volume & srcStripEdgeGapLog  = srcStripEdgeGapGinfo.get_logical();
+	  const geomtools::i_shape_3d & srcStripEdgeGapShape    = srcStripEdgeGapLog.get_shape();    
+	  const geomtools::placement & srcStripEdgeGapPlacement = srcStripEdgeGapGinfo.get_world_placement();
+	  _sourceStripEdgeGapX_ = srcStripEdgeGapPlacement.get_translation().x();
+	  _sourceStripEdgeGapZ_ = srcStripEdgeGapPlacement.get_translation().z();
+	  const geomtools::box & srcStripEdgeGapBox = dynamic_cast<const geomtools::box &>(srcStripEdgeGapShape);
+	  _sourceStripEdgeGapBoxPtr_ = std::make_unique<geomtools::box>(srcStripEdgeGapBox.get_x(), // 4.0 * CLHEP::mm,
+									srcStripEdgeGapBox.get_y(),
+									srcStripEdgeGapBox.get_z());
+	}
+	{
+	  // Gaps (gap=1-35):
+	  const geomtools::geom_info & srcStripGapGinfo = geoManager().get_mapping().get_geom_info(_sourceStripGapGids_[1]);
+	  const geomtools::logical_volume & srcStripGapLog  = srcStripGapGinfo.get_logical();
+	  const geomtools::i_shape_3d & srcStripGapShape    = srcStripGapLog.get_shape();    
+	  const geomtools::placement & srcStripGapPlacement = srcStripGapGinfo.get_world_placement();
+	  _sourceStripGapX_ = srcStripGapPlacement.get_translation().x();
+	  _sourceStripGapZ_ = srcStripGapPlacement.get_translation().z();
+	  const geomtools::box & srcStripGapBox = dynamic_cast<const geomtools::box &>(srcStripGapShape);
+	  _sourceStripGapBoxPtr_ = std::make_unique<geomtools::box>(srcStripGapBox.get_x(),
+								    srcStripGapBox.get_y(),
+								    srcStripGapBox.get_z());
+	}
       }
       
       // Identify source pads:
@@ -1060,8 +1120,8 @@ namespace snemo {
 
   
     void vertex_extrapolation_driver::linear_trajectory_source_intercept(snemo::geometry::vertex_info_list & vertexes_,
-                                                                       const snemo::datamodel::base_trajectory_pattern & linear_traj_,
-                                                                       uint32_t from_mask_) const
+									 const snemo::datamodel::base_trajectory_pattern & linear_traj_,
+									 uint32_t from_mask_) const
     {
       datatools::logger::priority logPrio = logPriority_;
       // logPrio = datatools::logger::PRIO_DEBUG;
@@ -1081,7 +1141,20 @@ namespace snemo {
       }
       DT_LOG_DEBUG(logPrio, "Loop on track's (poly)line end points");
       for (int iFrom = vertex_info::FROM_FIRST; iFrom <= vertex_info::FROM_LAST; iFrom++) {
+
+	// 2024-06-12 FM: 
+	std::vector<vertex_info> newSrcVertexes;
+	_srcVtxExtrapolator_->trajectory_source_intercept(newSrcVertexes,linear_traj_, iFrom);
+        _post_process_source_vertex_(newSrcVertexes);  
+        for (unsigned int i = 0; i < newSrcVertexes.size(); i++) {
+          vertexes_.push_back(newSrcVertexes[i]);
+        }
+ 
+	continue;
+	
+	// XXX
         std::vector<vertex_info> srcVertexes;
+        std::vector<vertex_info> srcGapVertexes;
         DT_LOG_DEBUG(logPrio, "From : " << iFrom);
         if ((iFrom == vertex_info::FROM_FIRST) && not (from_mask_ & vertex_info::FROM_FIRST_BIT)) continue;
         if ((iFrom == vertex_info::FROM_LAST)  && not (from_mask_ & vertex_info::FROM_LAST_BIT)) continue;
@@ -1122,6 +1195,8 @@ namespace snemo {
             continue;
           }
         }
+        int16_t minStripGapId = 0;
+        int16_t maxStripGapId = 36;
         int16_t minStripId = _sourceStripMinId_;
         int16_t maxStripId = _sourceStripMaxId_;
         int16_t minTrackId = _sourceCalibTrackMinId_;
@@ -1130,32 +1205,43 @@ namespace snemo {
         
         // Optimization for strip scanning:
         if (use_foils or use_calib_src) {
-          DT_LOG_DEBUG(logPrio, "Searching line intercept on source submodule #"
+          // DT_LOG_DEBUG(logPrio, "Searching line intercept on source submodule #"
+	  // 	       << _sourceSubmoduleGid_ << "...");
+          // const geomtools::geom_info & srcSubmodGinfo =
+	  //   geoManager().get_mapping().get_geom_info(_sourceSubmoduleGid_);
+          // const geomtools::logical_volume & srcSubmodLog = srcSubmodGinfo.get_logical();
+          // const geomtools::i_shape_3d & srcSubmodShape = srcSubmodLog.get_shape();         
+          // const geomtools::placement & srcSubmodPlacement = srcSubmodGinfo.get_world_placement();
+          // DT_LOG_DEBUG(logPrio, "Source submodule shape = " << srcSubmodShape.get_shape_name());
+          // DT_LOG_DEBUG(logPrio, "Source submodule world placement = " << srcSubmodPlacement);
+
+	  DT_LOG_DEBUG(logPrio, "Searching line intercept in assembly part of the source submodule #"
 		       << _sourceSubmoduleGid_ << "...");
-          const geomtools::geom_info & srcSubmodGinfo =
-	    geoManager().get_mapping().get_geom_info(_sourceSubmoduleGid_);
-          const geomtools::logical_volume & srcSubmodLog = srcSubmodGinfo.get_logical();
+          const geomtools::geom_info & srcAssemblySubmodGinfo =
+	    geoManager().get_mapping().get_geom_info(_sourceStripBlockAssemblyGid_);
+          const geomtools::placement & srcSubmodPlacement = srcAssemblySubmodGinfo.get_world_placement();
+          const geomtools::logical_volume & srcSubmodLog = srcAssemblySubmodGinfo.get_logical();
           const geomtools::i_shape_3d & srcSubmodShape = srcSubmodLog.get_shape();         
-          const geomtools::placement & srcSubmodPlacement = srcSubmodGinfo.get_world_placement();
-          DT_LOG_DEBUG(logPrio, "Source submodule shape = " << srcSubmodShape.get_shape_name());
-          DT_LOG_DEBUG(logPrio, "Source submodule world placement = " << srcSubmodPlacement);
-          
+          DT_LOG_DEBUG(logPrio, "Source submodule assembly shape = " << srcSubmodShape.get_shape_name());
+          DT_LOG_DEBUG(logPrio, "Source submodule assembly world placement = " << srcSubmodPlacement);
+
           geomtools::vector_3d srcSubmodRefPoint;
           srcSubmodPlacement.mother_to_child(refPoint, srcSubmodRefPoint);
           geomtools::vector_3d srcSubmodDirection;
           srcSubmodPlacement.mother_to_child_direction(direction, srcSubmodDirection);
-          // Check if the track hit the submodule:
+          // Check if the track hit the submodule's source assembly part:
           geomtools::face_intercept_info srcSubmodFii;
           bool success = srcSubmodShape.find_intercept(srcSubmodRefPoint,
                                                        srcSubmodDirection,
                                                        srcSubmodFii,
                                                        _intercept_tolerance_);          
           if (success) {
-            DT_LOG_DEBUG(logPrio, "Found an intercept on the source submodule #" << _sourceSubmoduleGid_ << " at " << srcSubmodFii.get_impact());
+            DT_LOG_DEBUG(logPrio, "Found an intercept on the source submodule #" << _sourceSubmoduleGid_ << " assembly at " << srcSubmodFii.get_impact());
             const geomtools::vector_3d & impact = srcSubmodFii.get_impact();
             double yImpact = impact.y();
             int32_t minId = +100000;
             int32_t maxId = -100000;
+	    
 	    // Source strip range:
             for (uint32_t iStrip = 0; iStrip < _sourceStripGids_.size(); iStrip++) {
               const geomtools::geom_id & sourceStripGid = _sourceStripGids_[iStrip];
@@ -1174,6 +1260,31 @@ namespace snemo {
             }
             minStripId = std::max(minStripId, (int16_t) (minId - 1));
             maxStripId = std::min(maxStripId, (int16_t) (maxId + 1));
+	    
+	    // Source strip gap range:
+	    minId = 100000;
+            maxId = -100000;
+	    //std::vector<int> gapIds;
+            for (uint32_t iStripGap = 0; iStripGap < _sourceStripGapGids_.size(); iStripGap++) {
+              const geomtools::geom_id & sourceStripGapGid = _sourceStripGapGids_[iStripGap];
+	      // gapIds.push_back(sourceStripGapGid.get(1)); 
+              const geomtools::geom_info & sourceStripGapGinfo = geoManager().get_mapping().get_geom_info(sourceStripGapGid);
+              const geomtools::placement & sourceStripGapPlacement = sourceStripGapGinfo.get_world_placement();
+              double yStripGap = sourceStripGapPlacement.get_translation().y();
+              if (std::abs(yStripGap - yImpact) < _max_source_extrapolation_xy_length_) {
+                int32_t sourceStripGapId = (int32_t) sourceStripGapGid.get(1);
+                if (sourceStripGapId > maxId) {
+                  maxId = sourceStripGapId;
+                }
+                if (sourceStripGapId < minId) {
+                  minId = sourceStripGapId;
+                } 
+              }
+            }
+	    // gapIds = [0, 1,2, 4,5,6,7,8, 10,11,12,13,14, 16,17,81,19,20, 22,23,24,25,26, 28,29,30,31,32, 34,35, 36]
+            minStripGapId = std::max(minStripGapId, (int16_t) (minId - 1));
+            maxStripGapId = std::min(maxStripGapId, (int16_t) (maxId + 1));
+
 
 	    // 2024-05-13, FM: NEW:
 	    // Calib track range:
@@ -1201,15 +1312,103 @@ namespace snemo {
           }
           sourceSubmoduleInterceptSuccess = success;
         }
-        DT_LOG_DEBUG(logPrio, "minStripId=" << minStripId);
-        DT_LOG_DEBUG(logPrio, "maxStripId=" << maxStripId);
-        DT_LOG_DEBUG(logPrio, "minTrackId=" << minTrackId);
-        DT_LOG_DEBUG(logPrio, "maxTrackId=" << maxTrackId);
+        DT_LOG_DEBUG(logPrio, "Limits in the source assembly scope:");
+        DT_LOG_DEBUG(logPrio, " - minStripId=" << minStripId);
+        DT_LOG_DEBUG(logPrio, " - maxStripId=" << maxStripId);
+        DT_LOG_DEBUG(logPrio, " - minTrackId=" << minTrackId);
+        DT_LOG_DEBUG(logPrio, " - maxTrackId=" << maxTrackId);
+        DT_LOG_DEBUG(logPrio, " - minStripGapId=" << minStripGapId);
+        DT_LOG_DEBUG(logPrio, " - maxStripGapId=" << maxStripGapId);
 
+        // Scan strip gaps...
+	// bool sourceStripGapInterceptSuccess = false;
+        if (use_foils and sourceSubmoduleInterceptSuccess) {
+	  DT_LOG_DEBUG(logPrio, "Scanning strip gaps...");
+	  for (uint32_t iStripGap = 0; iStripGap < _sourceStripGapGids_.size(); iStripGap++) {
+            const geomtools::geom_id & sourceStripGapGid = _sourceStripGapGids_[iStripGap];
+            DT_LOG_TRACE(logPrio, "  Source strip gap GID : " << sourceStripGapGid);
+            auto sourceStripGapIdx = sourceStripGapGid.get(1);
+            if (sourceStripGapGid.get(0) != _module_id_) { 
+              continue;
+            }
+            if ((int32_t) sourceStripGapIdx < minStripGapId or (int32_t) sourceStripGapIdx > maxStripGapId) { 
+	      DT_LOG_TRACE(logPrio, "  Pass source strip gap GID : " << sourceStripGapGid << "...");
+	      continue;
+            } 
+            DT_LOG_DEBUG(logPrio, "Searching line intercept on strip gap #" << sourceStripGapIdx);
+            const geomtools::geom_info & sourceStripGapGinfo = geoManager().get_mapping().get_geom_info(sourceStripGapGid);
+            const geomtools::logical_volume & sourceStripGapLog = sourceStripGapGinfo.get_logical();
+            const geomtools::i_shape_3d & sourceStripGapShape = sourceStripGapLog.get_shape();
+            const geomtools::placement & sourceStripGapPlacement = sourceStripGapGinfo.get_world_placement();
+            geomtools::vector_3d srcStripGapRefPoint;
+            sourceStripGapPlacement.mother_to_child(refPoint, srcStripGapRefPoint);
+            geomtools::vector_3d srcStripGapDirection;
+            sourceStripGapPlacement.mother_to_child_direction(direction, srcStripGapDirection);
+            DT_LOG_DEBUG(logPrio, "Ref point   : " << geomtools::to_xyz(srcStripGapRefPoint) );
+            DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(srcStripGapDirection) );
+            DT_LOG_DEBUG(logPrio, "Source strip gap shape  : '" << sourceStripGapShape.get_shape_name() << "'");
+            DT_LOG_DEBUG(logPrio, "Intercept tolerance : " << _intercept_tolerance_ / CLHEP::mm << " mm");
+            geomtools::face_intercept_info srcStripGapFii;
+            bool success = sourceStripGapShape.find_intercept(srcStripGapRefPoint,
+                                                           srcStripGapDirection,
+                                                           srcStripGapFii,
+                                                           _intercept_tolerance_);
+            if (! success) {
+              DT_LOG_TRACE(logPrio, "No intersection with the strip gap #" << sourceStripGapIdx << "!");
+              // No intersection with the strip volume: no chance to intersect a pad ! We give up.
+              continue;
+            }
+            DT_LOG_DEBUG(logPrio, "Found line intercept on strip gap #" << sourceStripGapIdx);
+            geomtools::vector_3d srcStripGapImpact = srcStripGapFii.get_impact();
+            geomtools::vector_3d srcStripGapWorldImpact;
+            sourceStripGapPlacement.child_to_mother(srcStripGapImpact, srcStripGapWorldImpact);
+            srcStripGapFii.set_impact(srcStripGapWorldImpact);
+ 
+	    // Construct an intercept on a source strip gap:
+	    vertex_info srcStripGapVtxInfo;
+	    double srcStripGapDistRef2Impact = (srcStripGapWorldImpact - refPoint).mag();
+	    double srcStripGapExtrapolationDist = srcStripGapDistRef2Impact - distRef2End;
+	    DT_LOG_DEBUG(logPrio, "srcStripGapExtrapolationDist    = " << srcStripGapExtrapolationDist / CLHEP::mm << "  mm");
+	    // XY-extrapolation:
+	    geomtools::vector_2d srcStripGapWorldImpact_Xy(srcStripGapWorldImpact.x(), srcStripGapWorldImpact.y());
+	    double srcStripGapDistRef2Impact_Xy = (srcStripGapWorldImpact_Xy - refPoint_Xy).mag();
+	    double srcStripGapExtrapolationDist_Xy = srcStripGapDistRef2Impact_Xy - distRef2End_Xy;
+	    DT_LOG_DEBUG(logPrio, "srcStripGapExtrapolationDist_Xy = " << srcStripGapExtrapolationDist_Xy / CLHEP::mm << "  mm");
+	    // Result:
+	    srcStripGapVtxInfo.category = snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_GAP;
+	    srcStripGapVtxInfo.from = iFrom;
+	    srcStripGapVtxInfo.extrapolation_mode = vertex_info::EXTRAPOLATION_LINE;
+	    srcStripGapVtxInfo.gid = sourceStripGapGid;
+	    srcStripGapVtxInfo.face_intercept = srcStripGapFii;
+	    if (srcStripGapExtrapolationDist > 0.0) {
+	      srcStripGapVtxInfo.distance    = srcStripGapExtrapolationDist;
+	      srcStripGapVtxInfo.distance_xy = srcStripGapExtrapolationDist_Xy;
+	    } else {
+	      srcStripGapVtxInfo.distance = 0.0;
+	      srcStripGapVtxInfo.distance_xy = 0.0;
+	    }
+	    srcStripGapVtxInfo.tolerance = _intercept_tolerance_;
+	    if (datatools::logger::is_debug(logPrio)) {
+	      DT_LOG_DEBUG(logPrio, "Line intercept is :");
+	      srcStripGapVtxInfo.print(std::cerr, "[debug] ");
+	    }
+	    DT_LOG_DEBUG(logPrio, "padVtxInfo.distance_xy = " << srcStripGapVtxInfo.distance_xy / CLHEP::mm << " mm");
+	    // Extrapolation distance check:
+	    if (srcStripGapVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
+	      // sourceStripGapInterceptSuccess = true;
+	      srcGapVertexes.push_back(srcStripGapVtxInfo);
+	    } else {
+	      DT_LOG_DEBUG(logPrio, "Line intercept is to far from source strip gap #" << sourceStripGapGid);
+	    } 
+  	    // XXX
+	  }
+	}
+	
+	
         // Scan strips/pads...
         if (use_foils and sourceSubmoduleInterceptSuccess) {
-          DT_LOG_DEBUG(logPrio, "Scanning strips...");
-          for (uint32_t iStrip = 0; iStrip < _sourceStripGids_.size(); iStrip++) {
+	  DT_LOG_DEBUG(logPrio, "Scanning strips...");
+	  for (uint32_t iStrip = 0; iStrip < _sourceStripGids_.size(); iStrip++) {
             const geomtools::geom_id & sourceStripGid = _sourceStripGids_[iStrip];
             DT_LOG_TRACE(logPrio, "  Source strip GID : " << sourceStripGid);
             auto sourceStripId = sourceStripGid.get(1);
@@ -1317,13 +1516,13 @@ namespace snemo {
                   }
 		  DT_LOG_DEBUG(logPrio, "padVtxInfo.distance_xy = " << padVtxInfo.distance_xy / CLHEP::mm << " mm");
 		  // Extrapolation distance check:
-                  if (padVtxInfo.distance_xy <= _max_calo_extrapolation_xy_length_) {
+                  if (padVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
                     sourcePadInterceptSuccess = true;
                   } else {
                     DT_LOG_DEBUG(logPrio, "Line intercept is to far from source pad #" << sourcePadGid);
                   } 
                 } else {
-                  DT_LOG_DEBUG(logPrio, "No line intercept on source pad #" << sourcePadGid << " (max=" << _max_calo_extrapolation_xy_length_ / CLHEP::mm << " mm)");
+                  DT_LOG_DEBUG(logPrio, "No line intercept on source pad #" << sourcePadGid << " (max=" << _max_source_extrapolation_xy_length_ / CLHEP::mm << " mm)");
                 }
               }
               
@@ -1392,8 +1591,8 @@ namespace snemo {
                     padBulkVtxInfo.distance    = 0.0;
                     padBulkVtxInfo.distance_xy = 0.0;
                   }
-                  DT_LOG_DEBUG(logPrio, "srcPadBulkExtrapolationDist    = " << srcPadBulkExtrapolationDist / CLHEP::mm << "  mm");
-                  DT_LOG_DEBUG(logPrio, "srcPadBulkExtrapolationDist_Xy = " << srcPadBulkExtrapolationDist_Xy / CLHEP::mm << "  mm");
+                  DT_LOG_DEBUG(logPrio, "srcPadBulkExtrapolationDist    = " << srcPadBulkExtrapolationDist / CLHEP::mm << " mm");
+                  DT_LOG_DEBUG(logPrio, "srcPadBulkExtrapolationDist_Xy = " << srcPadBulkExtrapolationDist_Xy / CLHEP::mm << " mm");
                   padBulkVtxInfo.tolerance = _intercept_tolerance_;
                   if (padBulkVtxInfo.distance_xy <= _max_source_extrapolation_xy_length_) {
                     DT_LOG_DEBUG(logPrio, "add padBulkVtxInfo");
@@ -1544,6 +1743,7 @@ namespace snemo {
       DT_LOG_DEBUG(logPrio, "Loop on helix trajectory's end points...");
       for (int iFrom = vertex_info::FROM_FIRST; iFrom <= vertex_info::FROM_LAST; iFrom++) {
         std::vector<vertex_info> srcVertexes;
+        std::vector<vertex_info> srcGapVertexes;
         // Select the end point:
         if ((iFrom == vertex_info::FROM_FIRST) && not (from_mask_ & vertex_info::FROM_FIRST_BIT)) continue;
         if ((iFrom == vertex_info::FROM_LAST)  && not (from_mask_ & vertex_info::FROM_LAST_BIT)) continue;
@@ -2470,7 +2670,7 @@ namespace snemo {
     void vertex_extrapolation_driver::_check_vertices_(const snemo::datamodel::tracker_trajectory & trajectory_,
                                                        std::map<snemo::geometry::vertex_info::category_type, bool> & use_vertices_)
     {
-      if (!trajectory_.has_cluster()) {
+      if (not trajectory_.has_cluster()) {
         return;
       }
       // Reset values of booleans
@@ -2494,7 +2694,7 @@ namespace snemo {
         if (layer < 2) {
           // Extrapolate vertex to the foil or calib. sources if the first GG layers are fired
           use_vertices_[snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_FOIL] = true;
-          use_vertices_[snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE] = true;
+          use_vertices_[snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE] = _sourceCalibrationCarrierGids_.size() > 0;
           use_vertices_[snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_GAP] = true;
         }
 

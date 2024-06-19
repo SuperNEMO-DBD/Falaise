@@ -41,7 +41,9 @@ namespace snemo {
       VERTEX_CATEGORY_ON_GAMMA_VETO = datatools::bit_mask::bit03, ///< The bulk volume of a gamma veto block
       VERTEX_CATEGORY_ON_WIRE = datatools::bit_mask::bit04, ///< The vicinity of a wire in the tracking chamber
       VERTEX_CATEGORY_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05, ///< A calibration source
-      VERTEX_CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06 ///< A gap between source pads
+      VERTEX_CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06, ///< A gap between source pads
+      VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE = datatools::bit_mask::bit07, ///< Reference source plane
+      VERTEX_CATEGORY_IN_GAS = datatools::bit_mask::bit08 ///< tracker gas
     };
 
     vertex_category_type convert(const snemo::geometry::vertex_info::category_type cat_);
@@ -64,11 +66,17 @@ namespace snemo {
     /// Associated 'VERTEX_CATEGORY_ON_WIRE' flag
     const std::string & vertex_on_wire_label();
 
+    /// Associated 'VERTEX_CATEGORY_IN_GAS' flag
+    const std::string & vertex_in_gas_label();
+
     /// Associated 'VERTEX_CATEGORY_ON_CALIBRATION_SOURCE' flag
     const std::string & vertex_on_calibration_source_label();
 
     /// Associated 'VERTEX_CATEGORY_ON_SOURCE_GAP' flag
     const std::string & vertex_on_source_gap_label();
+
+    /// Associated 'VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE' flag
+    const std::string & vertex_on_reference_source_plane_label();
 
     /// Conversion to a string
     const std::string & to_string(const vertex_category_type);
@@ -155,11 +163,17 @@ namespace snemo {
       /// Check a vertex on wire
       bool is_on_wire() const;
 
+      /// Check a vertex in tracker gas
+      bool is_in_gas() const;
+
       /// Check a vertex on calibration source
       bool is_on_calibration_source() const;
 
       /// Check a vertex on calibration source
       bool is_on_source_gap() const;
+
+      /// Check a vertex on reference source plane source
+      bool is_on_reference_source_plane() const;
 
       /// Set the spot
       void set_spot(const geomtools::blur_spot &);
