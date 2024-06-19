@@ -660,17 +660,21 @@ namespace snemo {
 
       // std::vector<std::vector<int>> pcd_tracker_hit_clusters;
 
-      for (size_t pcd_cluster_id=0; pcd_cluster_id<pcd_tracker_hit_clusters.size(); pcd_cluster_id++) {
+      int pcd_cluster_id = 0;
+
+      for (size_t pcd_cluster_i=0; pcd_cluster_i<pcd_tracker_hit_clusters.size(); pcd_cluster_i++) {
 
         // Retrieve the vector of tracker hit indexes
-        const std::vector<int> & cluster_pcd_tracker_hit_indexes = pcd_tracker_hit_clusters.at(pcd_cluster_id);
+        const std::vector<int> & cluster_pcd_tracker_hit_indexes = pcd_tracker_hit_clusters.at(pcd_cluster_i);
 
 	// Skip cluster with single cell
 	if (cluster_pcd_tracker_hit_indexes.size() == 1)
 	  continue;
 
 	auto new_precalibrated_cluster = datatools::make_handle<snemo::datamodel::precalibrated_cluster>();
+	new_precalibrated_cluster->set_cluster_id(cpcd_data_.size());
 
+	int cluster_first_anode_index = -1;
         double cluster_first_anode_time = std::numeric_limits<double>::max();
         double cluster_last_anode_time = std::numeric_limits<double>::min();
         double cluster_mean_anode_time = 0;
@@ -692,8 +696,11 @@ namespace snemo {
 	  const auto & cluster_pcd_tracker_hit = cluster_pcd_tracker_hit_handle.get();
           const double anode_time = cluster_pcd_tracker_hit.get_anodic_time();
 
-          if (anode_time < cluster_first_anode_time)
+          if (anode_time < cluster_first_anode_time) {
+	    cluster_first_anode_index = cluster_pcd_tracker_hit_index;
             cluster_first_anode_time = anode_time;
+	  }
+
           if (anode_time > cluster_last_anode_time)
             cluster_last_anode_time = anode_time;
           cluster_mean_anode_time += anode_time;
@@ -738,6 +745,7 @@ namespace snemo {
 	// We will store the index of pcd calorimeter hit which is the closest
 	// in time to the earliest anode time of tracker hits in the cluster
         double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
+
         int best_reference_pcd_calo_hit_index = -1;
 
         // Iterate over all calorimeter hits
@@ -840,10 +848,11 @@ namespace snemo {
 
         DT_LOG_DEBUG(get_logging_priority(), "=> cluster #" << pcd_cluster_id << " with "
                      << cluster_pcd_tracker_hit_indexes.size() << " cells and "
-                     << cluster_calorimeter_index.size() << " matching ("
-                     << cluster_associated_calorimeter_index.size()
-                     << " associated) calorimeter hits");
+                     << cluster_calorimeter_index.size() << " calorimeter hits");
 
+
+	datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
+	new_precalibrated_cluster_properties.store("first_pcd_tracker_index", cluster_first_anode_index);
 
         if (best_reference_pcd_calo_hit_index != -1) {
 
@@ -864,7 +873,6 @@ namespace snemo {
 
 	  // } // for (cluster_pcd_tracker_hit_index)
 
-	  datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
 	  new_precalibrated_cluster_properties.store("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
 
 	  // store geometry of the bounding box of the tracker cluster
@@ -915,17 +923,21 @@ namespace snemo {
             // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
           }
         }
-        for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
-          snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
-          datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
-          if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
-            pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
-          } else {
-            // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
-          }
-        }
-        
-      } // for (pcd_cluster_id)
+
+        // for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
+        //   snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
+        //   datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
+        //   if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
+        //     pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
+        //   } else {
+        //     // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
+        //   }
+	//
+        // }
+
+	pcd_cluster_id++;
+
+      } // for (pcd_cluster_i)
 
       // store unclusterized calorimeter hits
       for (auto & pcd_calo_hit : pcd_calo_hits) {
