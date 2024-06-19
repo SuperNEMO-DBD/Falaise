@@ -60,6 +60,7 @@
 // - Falaise:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
+#include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 
 // Need trailing ; to satisfy clang-format, but leads to -pedantic error, ignore
 #pragma GCC diagnostic push
@@ -1039,6 +1040,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
     // Prepare folder for line pattern:
     TGListTreeItem *item_line_solution = nullptr;
 
+    // Prepare folder for polyline pattern:
+    TGListTreeItem *item_polyline_solution = nullptr;
+
     // Get trajectories stored in the current tracker trajectory solution:
     snemo::datamodel::TrackerTrajectoryHdlCollection & trajectories = a_solution.grab_trajectories();
     for (auto & thisTrajectory : trajectories) {
@@ -1066,12 +1070,12 @@ void browser_tracks::_update_tracker_trajectory_data() {
           a_trajectory.get_fit_infos().has_pvalue()) {
         const double chi2 = a_trajectory.get_fit_infos().get_chi2();
         const size_t ndof = a_trajectory.get_fit_infos().get_ndof();
-        double pvalue =  a_trajectory.get_fit_infos().get_pvalue();;
+        double pvalue =  a_trajectory.get_fit_infos().get_pvalue();
         // pvalue = TMath::Prob(chi2, ndof);
-        // pvalue = gsl_sf_gamma_inc_P(ndof/2, chi2/2);
+        // pvalue = gsl_sf_gamma_inc_Q(ndof/2., chi2/2);
         label_trajectory << " - chi2/ndf = " << std::setprecision(2) << std::fixed << chi2 << "/"
                          << std::setprecision(0) << ndof << std::setprecision(4) << std::fixed
-                         << ", p = " << std::scientific << pvalue << " (ROOT=" << TMath::Prob(chi2, ndof) << ")";
+                         << ", p = " << std::scientific << pvalue; // << " (ROOT=" << TMath::Prob(chi2, ndof) << ")";
       }
       if (a_trajectory.get_fit_infos().has_t0()) {
         const double t0 =a_trajectory.get_fit_infos().get_t0();
@@ -1132,6 +1136,26 @@ void browser_tracks::_update_tracker_trajectory_data() {
         item_trajectory = _tracks_list_box_->AddItem(
             item_line_solution, std::string("line" + label_trajectory.str()).c_str(),
             _get_colored_icon_("line", hex_str, true), _get_colored_icon_("line", hex_str));
+      } else if (a_trajectory.get_pattern().get_pattern_id() ==
+                 snemo::datamodel::polyline_trajectory_pattern::pattern_id()) {
+        // First time instantiate it
+        if (item_polyline_solution == nullptr) {
+          const bool checked = true;
+          item_polyline_solution =
+              new TGListTreeItemStdPlus("Polyline trajectories", this, _get_colored_icon_("ofolder"),
+                                        _get_colored_icon_("folder"), checked);
+          _tracks_list_box_->AddItem(item_solution, item_polyline_solution);
+          // _tracks_list_box_->OpenItem(item_line_solution);
+          item_polyline_solution->SetUserData((void *)(intptr_t)++icheck_id);
+          if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
+            item_polyline_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+          }
+          _properties_dictionnary_[icheck_id] = &(a_auxiliaries);
+        }
+
+        item_trajectory = _tracks_list_box_->AddItem(
+            item_polyline_solution, std::string("polyline" + label_trajectory.str()).c_str(),
+            _get_colored_icon_("polyline", hex_str, true), _get_colored_icon_("polyline", hex_str));
       }
 
       if (item_trajectory == nullptr) {
@@ -1160,7 +1184,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
         item_trajectory->SetTipText(message.str().c_str());
       }
     }  // end of trajectory loop
-  }    // end of solution loop
+  } // end of solution loop
 }
 
 void browser_tracks::_update_particle_track_data() {
@@ -1504,6 +1528,8 @@ const TGPicture *browser_tracks::_get_colored_icon_(const std::string &icon_type
     xpm = xpm_helix;
   } else if (icon_type_ == "line") {
     xpm = xpm_line;
+  } else if (icon_type_ == "polyline") {
+    xpm = xpm_polyline;
   } else if (icon_type_ == "step") {
     xpm = xpm_step;
   } else if (icon_type_ == "track") {
@@ -1545,13 +1571,12 @@ const TGPicture *browser_tracks::_get_colored_icon_(const std::string &icon_type
   return iconpic;
 }
 
-}  // end of namespace view
+} // end of namespace view
 
-}  // end of namespace visualization
+} // end of namespace visualization
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-// end of browser_tracks.cc
 /*
 ** Local Variables: --
 ** mode: c++ --

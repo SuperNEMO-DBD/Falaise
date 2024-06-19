@@ -22,7 +22,7 @@
  *
  * Description:
  *
- *   Algorithm to search the intercept of an helix with an arbitrary  shape
+ *   Algorithm to search the intercept of an helix with an arbitrary shape
  *
  */
 
@@ -64,8 +64,11 @@ namespace snemo {
                       const geomtools::placement & shape_placement_,
                       double step_ = datatools::invalid_real(),
                       double precision_ = datatools::invalid_real(),
-                      datatools::logger::priority verbosity_ = datatools::logger::PRIO_FATAL);
+                      datatools::logger::priority verbosity_ = datatools::logger::PRIO_FATAL,
+                      const uint32_t flags_ = 0);
 
+      void set_max_extrapolated_xy_length(const double mexyl_);
+      
       bool find_intercept(extrapolation_info & ei_,
                           snemo::geometry::vertex_info::from_bit_type from_bit_);
       
@@ -81,6 +84,7 @@ namespace snemo {
       double _precision_ = datatools::invalid_real(); ///< Precision of the vertex (criterion for convergence)
       uint16_t _max_niter_ = 100; ///< Maximum number of iterations
       double _max_extrapolated_xy_length_ = datatools::invalid_real(); ///< Maximum extrapolated length on the XY plane
+      bool _print_ = false;
 
     };
 

@@ -6,15 +6,21 @@
 [category="source_submodule" type="1100"]
   inherits : string  = "module"
 
+# GID = [1100:0]
+
 [category="source_core_volume" type="1114"]
   inherits : string  = "source_submodule"
 
+# GID = [1114:0]
+
 [category="source_strip_block_assembly" type="1115"]
   inherits : string  = "source_core_volume"
+  # To generate GIDs like [1115:0], [1115:1], [1115:2]...
 
 [category="source_strip_path" type="1101"]
   extends : string    = "source_strip_block_assembly"
   by      : string[1] = "strip"
+  # To generate GIDs like [1101:0.0], [1101:0.1] ... [1101:0.35]
 
 [category="source_strip_gap" type="1113"]
   extends : string    = "source_strip_block_assembly"
@@ -41,12 +47,15 @@
 [category="source_calibration_track" type="1103"]
   extends : string    = "source_strip_block_assembly"
   by      : string[1] = "track"
+  # To generate GIDs like [1103:0.0], [1103:0.1] ... [1103:0.5]
 
 [category="source_calibration_carrier" type="1110"]
   extends : string    = "source_calibration_track"
   by      : string[1] = "position"
+  # To generate GIDs like [1103:0.0.0]... [1103:0.0.5] ... [1103:0.5.5]
 
 [category="source_calibration_spot" type="1112"]
   inherits : string   = "source_calibration_carrier"
+  # To generate GIDs like [1112:0.0.0]...
 
 # end

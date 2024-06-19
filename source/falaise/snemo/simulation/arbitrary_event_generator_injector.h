@@ -98,8 +98,8 @@ namespace snemo {
       ///
       /// Format of a single setup file (datatools::multi_properties):
       /// 
-      /// #@key_label  "name"
-      /// #@meta_label "type"
+      /// \#\@key_label  "name"
+      /// \#\@meta_label "type"
       ///
       /// [name="pg_1" type="pg_type_1"]
       /// param_1 : type_1 = value_1
