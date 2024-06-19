@@ -118,6 +118,7 @@ namespace snemo {
       std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
       double _event_time_;
+      std::vector<double> _cluster_reference_time_;
 
       calorimeter_energy_calibration_method _pcd2cd_calo_energy_method_;
       std::vector<std::vector<double>> _pcd_calo_energy_constants_;

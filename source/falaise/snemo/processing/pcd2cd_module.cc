@@ -259,29 +259,73 @@ namespace snemo {
       DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << eh_data.get_id());
 
       auto & pcd_data = event.get<snemo::datamodel::precalibrated_data>(_pcd_input_tag_);
-      // auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
+      auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
 
-      // prepare general event time (earliest pcd hits)
+      // prepare general event time from earliest pcd hit
+      // (in priority within clusterized hits)
       _event_time_ = 0;
 
-      for (const auto & pcd_calo_hit : pcd_data.calorimeter_hits()) {
+      _cluster_reference_time_.clear();
+      _cluster_reference_time_.reserve(cpcd_data.clusters().size());
 
-	const double & pcd_calo_time = pcd_calo_hit->get_time();
+      for (const auto & pcd_cluster : cpcd_data.clusters()) {
 
-	if ((_event_time_ == 0) || (pcd_calo_time < _event_time_))
-	  _event_time_ = pcd_calo_time;
-      }
-
-      for (const auto & pcd_tracker_hit : pcd_data.tracker_hits()) {
-
-	if (pcd_tracker_hit->has_anodic_time()) {
-
-	  const double & pcd_tracker_time = pcd_tracker_hit->get_anodic_time();
-
-	  if ((_event_time_ == 0) || (pcd_tracker_time < _event_time_))
-	    _event_time_ = pcd_tracker_time;
+	for (const auto & pcd_calo_hit : pcd_cluster->calorimeter_hits()) {
+	  const double & pcd_calo_time = pcd_calo_hit->get_time();
+	  if ((_event_time_ == 0) || (pcd_calo_time < _event_time_))
+	    _event_time_ = pcd_calo_time;
 	}
 
+	for (const auto & pcd_tracker_hit : pcd_cluster->tracker_hits()) {
+
+	  if (pcd_tracker_hit->has_anodic_time()) {
+	    const double & pcd_tracker_time = pcd_tracker_hit->get_anodic_time();
+	    if ((_event_time_ == 0) || (pcd_tracker_time < _event_time_))
+	      _event_time_ = pcd_tracker_time;
+	  }
+	}
+
+	const datatools::properties & pcd_cluster_properties = pcd_cluster->get_properties();
+
+	if (pcd_cluster_properties.has_key("reference_pcd_calo_index")) {
+	  int reference_pcd_calo_index = pcd_cluster_properties.fetch_integer("reference_pcd_calo_index");
+	  const auto & pcd_calo_hit = pcd_data.calorimeter_hits().at(reference_pcd_calo_index);
+	  _cluster_reference_time_.push_back(pcd_calo_hit->get_time());
+	  DT_LOG_DEBUG(get_logging_priority(), "using pdc calo hit #" << reference_pcd_calo_index << " as reference time for cluster #" << pcd_cluster->get_cluster_id());
+	  DT_LOG_DEBUG(get_logging_priority(), " `- time = " << _cluster_reference_time_.back());
+	}
+
+	else if (pcd_cluster_properties.has_key("first_pcd_tracker_index")) {
+	  int first_pcd_tracker_index = pcd_cluster_properties.fetch_integer("first_pcd_tracker_index");
+	  const auto & pcd_tracker_hit = pcd_data.tracker_hits().at(first_pcd_tracker_index);
+	  _cluster_reference_time_.push_back(pcd_tracker_hit->get_anodic_time());
+	  DT_LOG_DEBUG(get_logging_priority(), "using pdc tracker hit #" << first_pcd_tracker_index << " as reference time for cluster #" << pcd_cluster->get_cluster_id());
+	}
+
+	else {
+	  DT_LOG_WARNING(get_logging_priority(), eh_data.get_id() << " no reference time for cluster #" << pcd_cluster->get_cluster_id());
+	  _cluster_reference_time_.push_back(0);
+	}
+
+      } // for (pcd_cluster)
+
+      if (_event_time_ == 0) {
+
+	for (const auto & pcd_calo_hit : cpcd_data.unclusterized_calorimeter_hits()) {
+	  const double & pcd_calo_time = pcd_calo_hit->get_time();
+	  if ((_event_time_ == 0) || (pcd_calo_time < _event_time_))
+	    _event_time_ = pcd_calo_time;
+	}
+
+	if (_event_time_ == 0) {
+	  for (const auto & pcd_tracker_hit : cpcd_data.unclusterized_tracker_hits()) {
+	    if (pcd_tracker_hit->has_anodic_time()) {
+	      const double & pcd_tracker_time = pcd_tracker_hit->get_anodic_time();
+	      if ((_event_time_ == 0) || (pcd_tracker_time < _event_time_))
+		_event_time_ = pcd_tracker_time;
+	    }
+	  }
+	}
       }
 
       const int64_t event_time_second = (int64_t) _event_time_;
@@ -310,8 +354,8 @@ namespace snemo {
       // Main tracker processing method
       process_tracker_impl(pcd_data, cd_data);
 
-      // Main clusterization method
-      // process_clusterization_impl(pcd_data, cd_data);
+      // // Main tracker cluster method
+      // process_tracker_cluster_impl(pcd_data, cd_data);
 
       if (datatools::logger::is_debug(get_logging_priority())) {
 	// DT_LOG_DEBUG(get_logging_priority(), "'" << _cd_output_tag_ << "' bank filled with " << cd_data.tracker_hits().size()
@@ -406,23 +450,30 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
 
+      const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit_.get_auxiliaries();
+
+      double reference_time = 0;
+
+      if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id")) {
+	int cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
+	reference_time = _cluster_reference_time_[cluster_id];
+      }
+
       cd_tracker_hit_.set_hit_id(pcd_tracker_hit_.get_hit_id());
 
       cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
       cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
 
-      cd_tracker_hit_.set_anode_time(pcd_tracker_hit_.get_anodic_time() - _event_time_);
-      // cd_tracker_hit_.set_peripheral(true);
-      // cd_tracker_hit_.set_delayed_time();
-      // cd_tracker_hit.set_noisy(true);
-
       const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
 
-      double anode_drift_time = 0; // pcd_tracker_hit_.get_anodic_drift_time();
+      double anode_time = pcd_tracker_hit_.get_anodic_time();
 
       if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE)
-	anode_drift_time -= _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	anode_time -= _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
 
+      cd_tracker_hit_.set_anode_time(anode_time);
+      // cd_tracker_hit_.set_delayed_time();
+      // cd_tracker_hit.set_noisy(true);
 
       if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_FALAISE) {
 
@@ -431,8 +482,37 @@ namespace snemo {
 
       } else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_MANU) {
 
-	// cd_tracker_hit_.set_r(1.1*CLHEP::cm);
-	// cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
+	const double time_usec = (anode_time - reference_time) / CLHEP::microsecond;
+
+	double radius = 0;
+
+	const double _tracker_drift_model_manu_params_[5] = {0.263223, -0.030965, -0.571594, 6.01392e-02, 1.13142e+03};
+
+	if (time_usec < 0)
+	  radius = 0;
+
+	else {
+
+	  const double r2 = _tracker_drift_model_manu_params_[3] * std::log(1 + time_usec * _tracker_drift_model_manu_params_[4]);
+
+	  if (time_usec > 10)
+	    radius = r2;
+
+	  else {
+	    const double r1 = _tracker_drift_model_manu_params_[0] * std::exp(_tracker_drift_model_manu_params_[1]*time_usec)/std::pow(time_usec,_tracker_drift_model_manu_params_[2]);
+	    radius = std::min(r1, r2);
+	  }
+
+	  if (radius > 0.5)
+	    cd_tracker_hit_.set_peripheral(true);
+
+	  if (radius > sqrt(0.5))
+	    return false;
+
+	  cd_tracker_hit_.set_r(radius*4.4*CLHEP::cm);
+	  cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
+
+	}
 
       }
 
