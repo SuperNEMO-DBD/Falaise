@@ -59,6 +59,18 @@ namespace snemo {
       return _label;
     }
 
+    const std::string & vertex_in_gas_label()
+    {
+      static const std::string _label("gas");
+      return _label;
+    }
+
+    const std::string & vertex_on_reference_source_plane_label()
+    {
+      static const std::string _label("reference_source_plane");
+      return _label;
+    }
+
     const std::string & to_string(const vertex_category_type category_)
     {
       switch (category_) {
@@ -76,6 +88,10 @@ namespace snemo {
         return vertex_on_calibration_source_label();
       case VERTEX_CATEGORY_ON_SOURCE_GAP:
         return vertex_on_source_gap_label();
+      case VERTEX_CATEGORY_IN_GAS:
+        return vertex_in_gas_label();
+      case VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE:
+        return vertex_on_reference_source_plane_label();
       default:
         break;
       }
@@ -92,6 +108,8 @@ namespace snemo {
       case snemo::geometry::vertex_info::CATEGORY_ON_WIRE : return VERTEX_CATEGORY_ON_WIRE;
       case snemo::geometry::vertex_info::CATEGORY_ON_CALIBRATION_SOURCE : return VERTEX_CATEGORY_ON_CALIBRATION_SOURCE;
       case snemo::geometry::vertex_info::CATEGORY_ON_SOURCE_GAP : return VERTEX_CATEGORY_ON_SOURCE_GAP;
+      case snemo::geometry::vertex_info::CATEGORY_IN_GAS : return VERTEX_CATEGORY_IN_GAS;
+      case snemo::geometry::vertex_info::CATEGORY_ON_REFERENCE_SOURCE_PLANE : return VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE;
       default:
         break;
       }
@@ -107,6 +125,8 @@ namespace snemo {
       if (label_ == to_string(VERTEX_CATEGORY_ON_WIRE)) return VERTEX_CATEGORY_ON_WIRE;
       if (label_ == to_string(VERTEX_CATEGORY_ON_CALIBRATION_SOURCE)) return VERTEX_CATEGORY_ON_CALIBRATION_SOURCE;
       if (label_ == to_string(VERTEX_CATEGORY_ON_SOURCE_GAP)) return VERTEX_CATEGORY_ON_SOURCE_GAP;
+      if (label_ == to_string(VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE)) return VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE;
+      if (label_ == to_string(VERTEX_CATEGORY_IN_GAS)) return VERTEX_CATEGORY_IN_GAS;
       return VERTEX_CATEGORY_UNDEF;
     }
 
@@ -225,6 +245,16 @@ namespace snemo {
     bool vertex::is_on_wire() const
     {
       return _category_ == VERTEX_CATEGORY_ON_WIRE;
+    }
+
+    bool vertex::is_in_gas() const
+    {
+      return _category_ == VERTEX_CATEGORY_IN_GAS;
+    }
+
+    bool vertex::is_on_reference_source_plane() const
+    {
+      return _category_ == VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE;
     }
 
     bool vertex::is_on_calibration_source() const

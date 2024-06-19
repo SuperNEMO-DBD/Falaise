@@ -145,13 +145,15 @@ namespace snemo {
 
       enum category_type {
         CATEGORY_UNDEF = 0x0, ///< Undefined category
-        CATEGORY_ON_SOURCE_FOIL = datatools::bit_mask::bit00, ///< Maybe a source strip, pad or pad bulk physica volume
+        CATEGORY_ON_SOURCE_FOIL = datatools::bit_mask::bit00, ///< Maybe a source strip, pad or pad bulk physics volume
         CATEGORY_ON_MAIN_CALORIMETER = datatools::bit_mask::bit01, ///< The entrance window of a main calorimeter block (front)
         CATEGORY_ON_X_CALORIMETER = datatools::bit_mask::bit02, ///< The entrance window of a main X-calorimeter block
         CATEGORY_ON_GAMMA_VETO = datatools::bit_mask::bit03, ///< The bulk volume of a gamma veto block
         CATEGORY_ON_WIRE = datatools::bit_mask::bit04, ///< The vicinity of a wire in the tracking chamber
         CATEGORY_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05, ///< A calibration source
-        CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06 ///< A gap between source pads
+        CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06, ///< A gap between source pads
+        CATEGORY_ON_REFERENCE_SOURCE_PLANE = datatools::bit_mask::bit07, ///< A point on a conventional reference plane
+				CATEGORY_IN_GAS = datatools::bit_mask::bit08 ///< A point in the gas in the tracking chamber
       };
  
       static std::string to_label(const category_type);
@@ -166,12 +168,19 @@ namespace snemo {
       double distance = datatools::invalid_real();
       double distance_xy = datatools::invalid_real();
       double tolerance = datatools::invalid_real();
+      double xerr = datatools::invalid_real();
+      double yerr = datatools::invalid_real();
+      double zerr = datatools::invalid_real();
+      bool reference = false;
       bool best = false;
       bool edge = false;
 
       // Utilities:
       void print(std::ostream & out_, const std::string & indent_ = "") const;
-      
+
+			static bool equal(const vertex_info & vtx1_, const vertex_info & vtx2_,
+												const double tolerance_ = 1. * CLHEP::mm);
+			
     };
     
     typedef std::vector<vertex_info> vertex_info_list;

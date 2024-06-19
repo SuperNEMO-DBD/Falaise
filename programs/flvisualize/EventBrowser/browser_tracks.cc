@@ -1332,23 +1332,27 @@ void browser_tracks::_update_particle_track_data() {
       for (auto & a_vertex : vertices) {
         geomtools::blur_spot & a_spot = a_vertex->get_spot();
         std::ostringstream label;
-        label << "Vertex on ";
+        label << "Vertex ";
         if (a_vertex->is_on_source_foil()) {
-          label << "source foil - ";
+          label << "on source foil - ";
         } else if (a_vertex->is_on_main_calorimeter()) {
-          label << "main calorimeter wall - ";
+          label << "on main calorimeter wall - ";
         } else if (a_vertex->is_on_x_calorimeter()) {
-          label << "X-calorimeter wall - ";
+          label << "on X-calorimeter wall - ";
         } else if (a_vertex->is_on_gamma_veto()) {
-          label << "gamma veto - ";
+          label << "on gamma veto - ";
         } else if (a_vertex->is_on_wire()) {
-          label << "wire - ";
+          label << "on wire - ";
         } else if (a_vertex->is_on_source_foil()) {
-          label << "foil - ";
+          label << "on foil - ";
         } else if (a_vertex->is_on_calibration_source()) {
-          label << "calibration source - ";
+          label << "on calibration source - ";
         } else if (a_vertex->is_on_source_gap()) {
-          label << "source gap - ";
+          label << "in source gap - ";
+        } else if (a_vertex->is_in_gas()) {
+          label << "in tracker gas - ";
+				} else if (a_vertex->is_on_reference_source_plane()) {
+          label << "on reference source plane - ";
         } else {
           label << "unknown part of the detector - ";
         }

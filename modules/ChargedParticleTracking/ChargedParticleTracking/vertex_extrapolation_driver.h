@@ -3,10 +3,10 @@
  *                 Xavier Garrido <garrido@lal.in2p3.fr>
  *                 Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date : 2012-11-13
- * Last modified : 2021-11-07
+ * Last modified : 2024-06-11
  *
  * Copyright (C) 2012-2014 Xavier Garrido <garrido@lal.in2p3.fr>
- * Copyright (C) 2021 François Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2021-2024 François Mauger <mauger@lpccaen.in2p3.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * Description:
  *
- *   A driver class that extrapolate track vertices on source foil and
+ *   A driver class that extrapolates track vertices on source foil and
  *   calorimeter walls.
  *
  */
@@ -46,9 +46,13 @@
 // This project
 #include "falaise/property_set.h"
 #include "falaise/snemo/datamodels/particle_track.h"
+#include "falaise/snemo/datamodels/base_trajectory_pattern.h"
 #include "falaise/snemo/datamodels/line_trajectory_pattern.h"
 #include "falaise/snemo/datamodels/helix_trajectory_pattern.h"
 #include "falaise/snemo/geometry/utils.h"
+
+// Ourselves:
+#include <ChargedParticleTracking/source_vertex_extrapolator.h>
 
 namespace geomtools {
   class manager;
@@ -74,6 +78,10 @@ namespace snemo {
     /// \brief Vertex extrapolation driver
     class vertex_extrapolation_driver {
     public:
+
+      static const int CALO_MAIN  = 0;
+      static const int CALO_XCALO = 1;
+
       /// Return driver id
       static const std::string & get_id();
 
@@ -145,46 +153,46 @@ namespace snemo {
       double _finder_step_ =  2.0 * CLHEP::cm;                       //!< Step length of the finder algorithms
       uint32_t _module_id_ = 0;                                      //!< Force module ID
       double _max_calo_extrapolation_xy_length_ = 15.0 * CLHEP::cm;  //!< Maximum length of the extrapolation on calo block in XY plane 
-      double _max_source_extrapolation_xy_length_ = 30.0 * CLHEP::cm; //!< Maximum length of the extrapolation on source element in XY plane
+      double _max_source_extrapolation_xy_length_ = 20.0 * CLHEP::cm; //!< Maximum length of the extrapolation on source element in XY plane
+      double _max_source_extrapolation_z_length_ = 30.0 * CLHEP::cm; //!< Maximum length of the extrapolation on source element in Z direction
       bool _use_linear_extrapolation_ = true; //<! Activation flag of linear extrapolation for curved trajectory (helix)
       bool _use_helix_extrapolation_ = true; //<! Activation flag of helix extrapolation for helix trajectory
-      // double _effectiveCaloBlockXyTolerance_ = 5. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window
 			double _effectiveCaloBlockHorizontalTolerance_ = 25. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
-			double _effectiveCaloBlockVerticalTolerance_   = 30. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (horizontal direction)
+			double _effectiveCaloBlockVerticalTolerance_   = 30. * CLHEP::mm; //!< Effective tolerance on the edges of the calo block window (vertical direction)
+			double _effectiveSourceHorizontalTolerance_    = 25. * CLHEP::mm; //!< Effective tolerance on the edges of the source volumes (horizontal direction)
+			double _effectiveSourceVerticalTolerance_      = 30. * CLHEP::mm; //!< Effective tolerance on the edges of the source volumes (vertical direction)
 
       // Services:
       const geomtools::manager * geoManager_ = nullptr;              //!< The SuperNEMO geometry manager
       const snemo::geometry::locator_plugin * geoLocator_ = nullptr; //!< The SuperNEMO locator plugin
 
-      // Registered source submodule/strips/pads/pad bulks/calibration spots:
-      uint32_t _sourceSubmoduleType_ = geomtools::geom_id::INVALID_TYPE; //!< Source submodule type (for GID)
+      // Registered source submodule/strip block assembly/strips/pads/pad bulks/calibration carriers:
+      uint32_t _sourceSubmoduleType_ = geomtools::geom_id::INVALID_TYPE; //!< Source submodule type (1100 for GID)
       geomtools::geom_id _sourceSubmoduleGid_; //!< Source submodule GID
-      bool _use_deformed_source_strips_ = false;
-      uint32_t _sourceStripType_ = geomtools::geom_id::INVALID_TYPE;
+			uint32_t _sourceStripBlockAssemblyType_ = geomtools::geom_id::INVALID_TYPE; //!< Source submodule type (1115 for GID)
+      geomtools::geom_id _sourceStripBlockAssemblyGid_; //!< Source strip block assembly GID
+			bool _use_deformed_source_strips_ = false;
+      uint32_t _sourceStripType_ = geomtools::geom_id::INVALID_TYPE; // (1102)
       std::vector<geomtools::geom_id> _sourceStripGids_;
       int32_t _sourceStripMinId_ =  100000; 
       int32_t _sourceStripMaxId_ = -100000;
-      uint32_t _sourcePadType_ = geomtools::geom_id::INVALID_TYPE;
+      uint32_t _sourcePadType_ = geomtools::geom_id::INVALID_TYPE; // (1130)
       std::vector<geomtools::geom_id> _sourcePadGids_;
-      uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE;
+      uint32_t _sourcePadBulkType_ = geomtools::geom_id::INVALID_TYPE; // (1131)
       std::vector<geomtools::geom_id> _sourcePadBulkGids_;
-      uint32_t _sourceCalibrationCarrierType_ = geomtools::geom_id::INVALID_TYPE;
-      uint32_t _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE;
-      std::vector<geomtools::geom_id> _sourceCalibrationSpotGids_;
-      std::vector<geomtools::geom_id> _sourceCalibrationCarrierGids_;
-      uint32_t _sourceCalibrationTrackType_ = geomtools::geom_id::INVALID_TYPE;
-      std::vector<geomtools::geom_id> _sourceCalibrationTrackGids_;
 
       // Source strip gaps:
-      uint32_t _sourceStripGapType_ = geomtools::geom_id::INVALID_TYPE;
+      uint32_t _sourceStripGapType_ = geomtools::geom_id::INVALID_TYPE; // (1113)
       std::vector<geomtools::geom_id> _sourceStripGapGids_;
-      double _sourceStripGapX_ = datatools::invalid_real();
+      double _sourceStripEdgeGapX_ = datatools::invalid_real();
+      double _sourceStripEdgeGapZ_ = datatools::invalid_real();
+			std::unique_ptr<geomtools::box> _sourceStripEdgeGapBoxPtr_;
+			double _sourceStripGapX_ = datatools::invalid_real();
       double _sourceStripGapZ_ = datatools::invalid_real();
-      double _sourceStripGapHeight_ = datatools::invalid_real();
-      std::unique_ptr<geomtools::box> _sourceStripGapBoxPtr_;
+			std::unique_ptr<geomtools::box> _sourceStripGapBoxPtr_;
 
 			// Source calibration tracks:
-			uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE;
+			uint32_t _sourceCalibTrackType_ = geomtools::geom_id::INVALID_TYPE; // (1103)
       int32_t _sourceCalibTrackMinId_ =  100000; 
       int32_t _sourceCalibTrackMaxId_ = -100000;
       std::vector<geomtools::geom_id> _sourceCalibTrackGids_;
@@ -192,12 +200,18 @@ namespace snemo {
       double _sourceCalibTrackZ_ = datatools::invalid_real();
       double _sourceCalibTrackHeight_ = datatools::invalid_real();
       std::unique_ptr<geomtools::box> _sourceCalibTrackBoxPtr_;
-			// std::unique_ptr<geomtools::box> _sourceCalibrationSpotEffectiveBoxPtr_;
 			double _calibration_source_extend_horizontal_ = 0.0 * CLHEP::mm;
 			double _calibration_source_extend_vertical_   = 0.0 * CLHEP::mm;
+      std::vector<geomtools::geom_id> _sourceCalibrationTrackGids_;
 			std::unique_ptr<geomtools::box> _sourceCalibrationCarrierEffectiveBoxPtr_;
 
 			// Source calibration spots:
+      uint32_t _sourceCalibrationSpotType_ = geomtools::geom_id::INVALID_TYPE; // (1112)
+      std::vector<geomtools::geom_id> _sourceCalibrationSpotGids_;
+
+			// Source calibration carrier:
+       uint32_t _sourceCalibrationCarrierType_ = geomtools::geom_id::INVALID_TYPE; // (1110)
+      std::vector<geomtools::geom_id> _sourceCalibrationCarrierGids_;
 
       // Registered calorimeter blocks:
       uint32_t _caloSubmoduleType_ = geomtools::geom_id::INVALID_TYPE; //!< Calorimeter submodule type (for GID)
@@ -222,8 +236,7 @@ namespace snemo {
       // Dynamic
       std::map<snemo::geometry::vertex_info::category_type, bool> _use_vertices_; //!< Vertices reliability
 
-      static const int CALO_MAIN  = 0;
-      static const int CALO_XCALO = 1;
+			std::unique_ptr<source_vertex_extrapolator> _srcVtxExtrapolator_;
 
     };
 
