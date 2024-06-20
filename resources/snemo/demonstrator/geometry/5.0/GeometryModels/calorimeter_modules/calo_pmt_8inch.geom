@@ -30,8 +30,8 @@
   filled_label : string = "bulb"
   material.ref : string = "glass"
   material.filled.ref : string = "vacuum"
-  visibility.hidden           : boolean = true
-  visibility.hidden_envelope  : boolean = true
+  visibility.hidden           : boolean = false # true
+  visibility.hidden_envelope  : boolean = false # true
   visibility.color            : string  = "cyan"
   visibility.daughters.hidden : boolean = false
   mapping.filled.daughter_id.bulb : string = "[calorimeter_pmt_glass]"
