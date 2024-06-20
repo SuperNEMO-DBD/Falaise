@@ -143,7 +143,7 @@
   visibility.hidden_envelope      : boolean = true
   visibility.color                : string  = "grey"
   visibility.daughters.hidden     : boolean = false
-  visibility.daughters.pmt.hidden : boolean = false # true
+  visibility.daughters.pmt.hidden : boolean = true
 
 
 [name="calorimeter_module_8inch_rotated.model" type="geomtools::rotated_boxed_model"]
