@@ -376,8 +376,7 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating calo hit from " << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id()));
 
-      // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-      cd_calo_hit_.set_hit_id(pcd_calo_hit_.get_hit_id());
+      cd_calo_hit_.set_hit_id(cd_calo_hit_.size());
       cd_calo_hit_.set_geom_id(pcd_calo_hit_.get_geom_id());
       cd_calo_hit_.grab_geom_id().set_type(cd_calo_hit_.get_geom_id().get_type()+1);
 
@@ -406,8 +405,19 @@ namespace snemo {
 	// cd_calo_hit_.set_sigma_time(0);
       }
 
-      // Grab auxiliaries
+      // Retrieve pCD and CD auxiliaries
+      const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.get_auxiliaries();
       datatools::properties & cd_calo_hit_properties = cd_calo_hit_.grab_auxiliaries();
+
+      // Propagate UDD's parent hit index
+      const std::string UDD_parent_key = "UDD.parent";
+      if (pcd_calo_hit_properties.has_key(UDD_parent_key)){
+	const int UDD_parent = pcd_calo_hit_properties.fetch_integer(UDD_parent_key);
+	cd_calo_hit_properties.store_integer(UPPkey, UDD_parent);
+      }
+
+      // Store pCD's parent hit index
+      cd_calo_hit_properties.store("pCD.parent", pcd_calo_hit_.get_hit_id());
 
       if (cd_calo_hit_.get_geom_id().get_type() == 1302) {
 	cd_calo_hit_.grab_geom_id().set_any(4); // for MW!!
@@ -450,7 +460,15 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
 
+      cd_tracker_hit_.set_hit_id(cd_tracker_hit_.size());
+      cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
+      cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
+
+      const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+
+      // Retrieve pCD and CD auxiliaries
       const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit_.get_auxiliaries();
+      datatools::properties & cd_tracker_hit_properties = cd_tracker_hit_.grab_auxiliaries();
 
       double reference_time = 0;
 
@@ -570,6 +588,17 @@ namespace snemo {
       if (datatools::logger::is_trace(get_logging_priority()))
       	// cd_tracker_hit_.tree_dump(std::clog);
       	cd_tracker_hit_.print_tree(std::clog);
+
+
+      // Propagate UDD's parent hit index
+      const std::string UDD_parent_key = "UDD.parent";
+      if (pcd_tracker_hit_properties.has_key(UDD_parent_key)){
+	const int UDD_parent = pcd_tracker_hit_properties.fetch_integer(UDD_parent_key);
+	cd_tracker_hit_properties.store_integer(UPPkey, UDD_parent);
+      }
+
+      // Store pCD's parent hit index
+      cd_tracker_hit_properties.store("pCD.parent", pcd_tracker_hit_.get_hit_id());
 
       return true;
     }
