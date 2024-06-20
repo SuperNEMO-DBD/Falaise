@@ -35,6 +35,7 @@
 #   sensitive.category : string = "calorimeter_SD"
 
 
+# 2024-06-20 FM : new model for the extruded scintillator block
 [name="calorimeter_scin_block_5inch_back.model" type="geomtools::simple_shaped_model"]
   shape_build_mode : string = "factory"
   shape_ref : string = "calorimeter_5inch_scin_block_extruded"
