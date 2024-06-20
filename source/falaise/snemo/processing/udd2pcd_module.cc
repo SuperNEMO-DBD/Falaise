@@ -211,6 +211,10 @@ namespace snemo {
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
+        new_pcd_calo->grab_geom_id().set_type(new_pcd_calo->get_geom_id().get_type()+1);
+
+	if (new_pcd_calo->get_geom_id().get_type() == 1302)
+	  new_pcd_calo->grab_geom_id().set_any(4); // for MW only
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
         const int16_t & fwmeas_baseline_d  = a_udd_calo_hit->get_fwmeas_baseline();
@@ -300,7 +304,10 @@ namespace snemo {
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
-        new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
+        new_pcd_calo->grab_geom_id().set_type(new_pcd_calo->get_geom_id().get_type()+1);
+
+	if (new_pcd_calo->get_geom_id().get_type() == 1302)
+	  new_pcd_calo->grab_geom_id().set_any(4); // for MW only
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
 
@@ -498,6 +505,7 @@ namespace snemo {
         // Keep same hit number for tracker's digitized hit and precalibrated hit
         new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
+	new_pcd_tracker->grab_geom_id().set_type(new_pcd_tracker->get_geom_id().get_type()+1);
 
         // Convert and fill the earliest R0 timestamp
         const double first_anode_time = first_anode_timestamp[0] * TRACKER_TDC_TICK;

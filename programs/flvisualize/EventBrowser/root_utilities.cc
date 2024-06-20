@@ -290,6 +290,42 @@ namespace snemo {
 	}
       }
 
+      void root_utilities::get_prettified_amplitude(std::ostream &out_, const double amplitude_,
+						    const double sigma_, const bool latex_) {
+	if (datatools::is_valid(sigma_)) {
+	  out_.precision(4);
+	  out_ << amplitude_ / (1e-3 * CLHEP::volt);
+	  if (latex_) {
+	    out_ << " #pm ";
+	  } else {
+	    out_ << " +/- ";
+	  }
+	  out_.precision(2);
+	  out_ << sigma_ / (1e-3 * CLHEP::volt) << " mV";
+	} else {
+	  out_.precision(4);
+	  out_ << amplitude_ / (1e-3 * CLHEP::volt) << " mV";
+	}
+      }
+
+      void root_utilities::get_prettified_charge(std::ostream &out_, const double charge_,
+						    const double sigma_, const bool latex_) {
+	if (datatools::is_valid(sigma_)) {
+	  out_.precision(4);
+	  out_ << charge_ / (1e-9 * CLHEP::volt * CLHEP::second);
+	  if (latex_) {
+	    out_ << " #pm ";
+	  } else {
+	    out_ << " +/- ";
+	  }
+	  out_.precision(2);
+	  out_ << sigma_ / (1e-9 * CLHEP::volt * CLHEP::second) << " nV.s";
+	} else {
+	  out_.precision(4);
+	  out_ << charge_ / (1e-9 * CLHEP::volt * CLHEP::second) << " nV.s";
+	}
+      }
+
       void root_utilities::get_prettified_energy(std::ostream &out_, const double energy_,
 						 const double sigma_, const bool latex_) {
 	std::string unit_id = "meV";

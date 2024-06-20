@@ -232,6 +232,7 @@ void browser_tracks::update() {
 
   this->_update_event_header();
   this->_update_simulated_data();
+  this->_update_precalibrated_data();
   this->_update_calibrated_data();
   this->_update_tracker_clustering_data();
   this->_update_tracker_trajectory_data();
@@ -632,6 +633,162 @@ void browser_tracks::_update_simulated_data() {
       }
     }  // end of SHOW_MC_TRACKER_HITS
   }    // end of SHOW_MC_HITS
+}
+
+void browser_tracks::_update_precalibrated_data() {
+  // Grab event and other resources. Here nothing is constant
+  // since properties will be modified here and used later
+  // through 'checking' and 'double_clicking' actions:
+  io::event_record &event = _server_->grab_event();
+
+	// 'precalibrated_data' availability:
+  if (!event.has(io::pCD_LABEL)) {
+    return;
+  }
+
+  auto &pcd = event.grab<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
+
+  const options_manager &options_mgr = options_manager::get_instance();
+  if (!options_mgr.get_option_flag(SHOW_PRECALIBRATED_HITS)) {
+    return;
+  }
+
+  // Add 'precalibrated_data' folder as sub item:
+  const std::string data_bank_name = "Pre-calibrated data (" + io::pCD_LABEL + ")";
+  TGListTreeItem *item_calibrated_data =
+      _tracks_list_box_->AddItem(_top_item_, data_bank_name.c_str(), _get_colored_icon_("ofolder"),
+                                 _get_colored_icon_("folder"));
+  _tracks_list_box_->OpenItem(item_calibrated_data);
+  item_calibrated_data->SetCheckBox(false);
+  item_calibrated_data->SetUserData((void *)(intptr_t)++_item_id_);
+  if (options_manager::get_instance().get_option_flag(DUMP_INTO_TOOLTIP)) {
+    std::ostringstream tip_text;
+    pcd.tree_dump(tip_text);
+    item_calibrated_data->SetTipText(tip_text.str().c_str());
+  } else {
+    item_calibrated_data->SetTipText("Double click to expand calibrated data");
+  }
+
+  int &icheck_id = _item_id_;
+
+  // Add calibrated hits information:
+  // Start with calorimeter info:
+  {
+    TGListTreeItem *item_calorimeter =
+        _tracks_list_box_->AddItem(item_calibrated_data, "Precalibrated calorimeter hits",
+                                   _get_colored_icon_("ofolder"), _get_colored_icon_("folder"));
+    item_calorimeter->SetCheckBox(false);
+    item_calorimeter->SetUserData((void *)(intptr_t)++icheck_id);
+
+    snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection &pcc_collection = pcd.calorimeter_hits();
+
+    for (auto &it_hit : pcc_collection) {
+      snemo::datamodel::precalibrated_calorimeter_hit &a_hit = it_hit.grab();
+
+      // Add subsubitem:
+      std::ostringstream label_hit;
+      label_hit << "hit #" << a_hit.get_hit_id() << " :"
+                << " GID = " << a_hit.get_geom_id()
+                << "  Baseline = ";
+      utils::root_utilities::get_prettified_amplitude(label_hit, a_hit.get_baseline(),
+																											a_hit.get_sigma_baseline());
+      label_hit << "  -  Amplitude = ";
+      utils::root_utilities::get_prettified_amplitude(label_hit, a_hit.get_amplitude(),
+																											a_hit.get_sigma_amplitude());
+
+      label_hit << "  -  Charge = ";
+      utils::root_utilities::get_prettified_charge(label_hit, a_hit.get_charge(),
+																									 a_hit.get_sigma_charge());
+
+      // label_hit << "  -  Time=xxx";
+      // utils::root_utilities::get_prettified_time(label_hit, a_hit.get_time(),
+      //                                            a_hit.get_sigma_time());
+
+      TGListTreeItem *item_hit =
+				_tracks_list_box_->AddItem(item_calorimeter, label_hit.str().c_str());
+      item_hit->SetUserData((void *)(intptr_t) - (++icheck_id));
+      _base_hit_dictionnary_[-icheck_id] = &(a_hit);
+      item_hit->SetPictures(_get_colored_icon_("calorimeter", "", true),
+                            _get_colored_icon_("calorimeter"));
+
+      std::ostringstream tip_text;
+      if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+        boost::property_tree::ptree poptions;
+        poptions.put("no_list_auxiliaries", true);
+        a_hit.print_tree(tip_text, poptions);
+      } else {
+        tip_text << "Double click to highlight calorimeter hit "
+                 << "and to dump info on terminal";
+      }
+      item_hit->SetTipText(tip_text.str().c_str());
+    }
+
+    // Update item text following the number of hits found
+    const size_t ihit = pcc_collection.size();
+    std::ostringstream oss;
+    oss << item_calorimeter->GetText();
+    ihit == 0 ? oss << " - no hits" : oss << " - " << ihit << " hits";
+    item_calorimeter->SetText(oss.str().c_str());
+  }  // end of calorimeter info
+
+
+	// Continue with tracker info
+  {
+    TGListTreeItem *item_tracker =
+        _tracks_list_box_->AddItem(item_calibrated_data, "Precalibrated tracker hits",
+                                   _get_colored_icon_("ofolder"), _get_colored_icon_("folder"));
+    item_tracker->SetCheckBox(false);
+    item_tracker->SetUserData((void *)(intptr_t)++icheck_id);
+
+    snemo::datamodel::PreCalibratedTrackerHitHdlCollection &pct_collection = pcd.tracker_hits();
+
+    for (auto &it_hit : pct_collection) {
+      snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.grab();
+
+      // Add subsubitem:
+      std::ostringstream label_hit;
+      label_hit.precision(3);
+      label_hit.setf(std::ios::fixed, std::ios::floatfield);
+      label_hit << "hit #" << a_hit.get_hit_id() << " :" << " GID = " << a_hit.get_geom_id();
+
+			if (a_hit.has_bottom_cathode_drift_time())
+				label_hit << "  -  Bottom drift time = " << a_hit.get_bottom_cathode_drift_time()/CLHEP::microsecond << " us";
+			else
+				label_hit << "  -  Bottom drift time MISSING";
+
+			if (a_hit.has_top_cathode_drift_time())
+				label_hit << "  -  Top drift time = " << a_hit.get_top_cathode_drift_time()/CLHEP::microsecond << " us";
+			else
+				label_hit << "  -  Top drift time MISSING";
+
+      TGListTreeItem *item_hit = _tracks_list_box_->AddItem(item_tracker, label_hit.str().c_str(),
+                                                            _get_colored_icon_("geiger", "", true),
+                                                            _get_colored_icon_("geiger"));
+
+      item_hit->SetUserData((void *)(intptr_t) - (++icheck_id));
+      _base_hit_dictionnary_[-icheck_id] = &(a_hit);
+
+      std::ostringstream tip_text;
+      if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
+        boost::property_tree::ptree poptions;
+        poptions.put("no_list_auxiliaries", true);
+        a_hit.print_tree(tip_text, poptions);
+      } else {
+        tip_text << "Double click to highlight Geiger hit "
+                 << "and to dump info on terminal";
+      }
+      item_hit->SetTipText(tip_text.str().c_str());
+    }
+
+		// Update item text following the number of hits found
+    const size_t ihit = pct_collection.size();
+    std::ostringstream oss;
+    oss << item_tracker->GetText();
+    ihit == 0 ? oss << " - no hits" : oss << " - " << ihit << " hits";
+    item_tracker->SetText(oss.str().c_str());
+
+ }  // end of tracker info
+
 }
 
 void browser_tracks::_update_calibrated_data() {

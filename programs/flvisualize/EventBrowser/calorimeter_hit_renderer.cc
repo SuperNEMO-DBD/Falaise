@@ -120,6 +120,32 @@ namespace snemo {
 	FL_LOG_DEVEL("Exiting...");
       }
 
+      void calorimeter_hit_renderer::push_precalibrated_hits() {
+	FL_LOG_DEVEL("Entering...");
+	const io::event_record& event = _server->get_event();
+	const auto& precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
+
+	const snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection& pcc_collection =
+	  precalib_data.calorimeter_hits();
+
+	if (pcc_collection.empty()) {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "No calibrated calorimeter hits");
+	  FL_LOG_DEVEL("Exiting...");
+	  return;
+	}
+
+	for (const auto& it_hit : pcc_collection) {
+	  const snemo::datamodel::precalibrated_calorimeter_hit& a_hit = it_hit.get();
+
+	  this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
+
+	  // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
+	  // }
+	}
+	FL_LOG_DEVEL("Exiting...");
+      }
+
       void calorimeter_hit_renderer::push_calibrated_hits() {
 	FL_LOG_DEVEL("Entering...");
 	const io::event_record& event = _server->get_event();

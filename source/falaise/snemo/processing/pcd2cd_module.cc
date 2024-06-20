@@ -398,7 +398,7 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Calibrating calo hit from " << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id()));
 
       cd_calo_hit_.set_geom_id(pcd_calo_hit_.get_geom_id());
-      cd_calo_hit_.grab_geom_id().set_type(cd_calo_hit_.get_geom_id().get_type()+1);
+      // cd_calo_hit_.grab_geom_id().set_type(cd_calo_hit_.get_geom_id().get_type()+1);
 
       const int calo_om_num = snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id());
 
@@ -481,7 +481,7 @@ namespace snemo {
       DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
 
       cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
-      cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
+      // cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
 
       const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
 

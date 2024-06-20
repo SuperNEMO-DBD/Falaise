@@ -253,6 +253,10 @@ namespace snemo {
 				menu_options->AddPopupPlus("Show simu. hits", sim_hits_submenu, SHOW_MC_HITS);
 				menu_options->AddSeparator();
 
+				menu_options->AddEntry("Show precalib. hits", SHOW_PRECALIBRATED_HITS);
+				// menu_options->AddEntry("Show precalib. info", SHOW_PRECALIBRATED_INFO);
+				menu_options->AddSeparator();
+
 				menu_options->AddEntry("Show calib. hits", SHOW_CALIBRATED_HITS);
 				menu_options->AddEntry("Show calib. info", SHOW_CALIBRATED_INFO);
 				menu_options->AddSeparator();

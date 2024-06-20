@@ -76,6 +76,14 @@ namespace snemo {
 		       "Event has no simulated data");
 	}
 
+	// Add 'precalibrated_data' objects:
+	if (_server_->get_event().has(io::CD_LABEL)) {
+	  this->_add_precalibrated_data();
+	} else {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "Event has no precalibrated data");
+	}
+
 	// Add 'calibrated_data' objects:
 	if (_server_->get_event().has(io::CD_LABEL)) {
 	  this->_add_calibrated_data();
@@ -223,6 +231,20 @@ namespace snemo {
 	}
 	if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
 	  _tracker_hit_renderer_.push_simulated_hits("gg");
+	}
+	FL_LOG_DEVEL("Exiting...");
+      }
+
+      /****************************************************
+       *  Filling objects from the 'calibrated_data' bank *
+       ****************************************************/
+
+      void snemo_draw_manager::_add_precalibrated_data() {
+	FL_LOG_DEVEL("Entering...");
+	const options_manager& options_mgr = options_manager::get_instance();
+	if (options_mgr.get_option_flag(SHOW_PRECALIBRATED_HITS)) {
+	  _calorimeter_hit_renderer_.push_precalibrated_hits();
+	  _tracker_hit_renderer_.push_precalibrated_hits();
 	}
 	FL_LOG_DEVEL("Exiting...");
       }

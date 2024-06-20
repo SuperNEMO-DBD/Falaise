@@ -31,6 +31,7 @@
 
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/mapping.h>
 
 // - Falaise:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
@@ -177,6 +178,31 @@ namespace snemo {
             gg_drift->SetLineWidth(line_width);
           } // end of "show geiger drift circle" condition
         } // end of step collection
+        FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
+      void tracker_hit_renderer::push_precalibrated_hits()
+      {
+        FL_LOG_DEVEL("Entering...");
+        const io::event_record & event = _server->get_event();
+        const auto & precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
+
+        const snemo::datamodel::PreCalibratedTrackerHitHdlCollection & pct_collection = precalib_data.tracker_hits();
+
+        if (pct_collection.empty()) {
+          DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                             "No calibrated tracker hits");
+          FL_LOG_DEVEL("Exiting...");
+          return;
+        }
+
+        for (const auto & it_hit : pct_collection) {
+          const snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.get();
+
+	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
+	  tracker_hit_renderer::_make_precalibrated_geiger_hit(a_hit);
+        }
         FL_LOG_DEVEL("Exiting...");
         return;
       }
@@ -398,6 +424,75 @@ namespace snemo {
           } // end of trajectory loop
         } // end of solution loop
         FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
+      void tracker_hit_renderer::_make_precalibrated_geiger_hit(const snemo::datamodel::precalibrated_tracker_hit & hit_)
+      {
+        // FL_LOG_DEVEL("Entering...");
+        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+	const geomtools::mapping & detector_mapping = detector_mgr.get_geometry_manager().get_mapping();
+
+	const geomtools::geom_info & cell_ginfo = detector_mapping.get_geom_info(hit_.get_geom_id());
+	const geomtools::placement & cell_placement = cell_ginfo.get_world_placement();
+	const geomtools::vector_3d & cell_pos  = cell_placement.get_translation();
+
+        geomtools::vector_3d cell_module_pos(cell_pos.getX(), cell_pos.getY(), 0);
+        geomtools::vector_3d cell_world_pos;
+	detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
+        // Get (x, y) position of triggered cell
+        const double x = cell_world_pos.x();
+        const double y = cell_world_pos.y();
+	const double z = -1.515 * CLHEP::m;
+	const double r = 22.0 * CLHEP::mm;
+
+        // Get hit auxiliaries
+        const datatools::properties & aux = hit_.get_auxiliaries();
+
+        // Retrieve line width from properties if 'hit' is highlighted:
+        size_t line_width = style_manager::get_instance().get_mc_line_width();
+        if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+          line_width = 3;
+        }
+
+        int color = style_manager::get_instance().get_precalibrated_data_color();
+
+	{
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, -z));
+
+	  if (!hit_.has_bottom_cathode_drift_time())
+	    points.push_back(geomtools::vector_3d(x - r, y - r, -z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	{
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, +z));
+
+	  if (!hit_.has_top_cathode_drift_time())
+	    points.push_back(geomtools::vector_3d(x - r, y + r, +z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	// FL_LOG_DEVEL("Exiting...");
         return;
       }
 
