@@ -376,8 +376,6 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating calo hit from " << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id()));
 
-      // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-      cd_calo_hit_.set_hit_id(pcd_calo_hit_.get_hit_id());
       cd_calo_hit_.set_geom_id(pcd_calo_hit_.get_geom_id());
       cd_calo_hit_.grab_geom_id().set_type(cd_calo_hit_.get_geom_id().get_type()+1);
 
@@ -406,8 +404,19 @@ namespace snemo {
 	// cd_calo_hit_.set_sigma_time(0);
       }
 
-      // Grab auxiliaries
+      // Retrieve pCD and CD auxiliaries
+      const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.get_auxiliaries();
       datatools::properties & cd_calo_hit_properties = cd_calo_hit_.grab_auxiliaries();
+
+      // Propagate UDD's parent hit index
+      const std::string UDD_parent_key = "UDD.parent";
+      if (pcd_calo_hit_properties.has_key(UDD_parent_key)){
+	const int UDD_parent_index = pcd_calo_hit_properties.fetch_integer(UDD_parent_key);
+	cd_calo_hit_properties.store_integer(UDD_parent_key, UDD_parent_index);
+      }
+
+      // Store pCD's parent hit index
+      cd_calo_hit_properties.store("pCD.parent", pcd_calo_hit_.get_hit_id());
 
       if (cd_calo_hit_.get_geom_id().get_type() == 1302) {
 	cd_calo_hit_.grab_geom_id().set_any(4); // for MW!!
@@ -428,17 +437,18 @@ namespace snemo {
     void pcd2cd_module::process_calo_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
 					  snemo::datamodel::calibrated_data & cd_data_) {
 
-      auto pcd_calo_hits = pcd_data_.calorimeter_hits();
-      // auto cd_calo_hits = cd_data_.calorimeter_hits();
+      const auto & pcd_calo_hits = pcd_data_.calorimeter_hits();
+      auto & cd_calo_hits = cd_data_.calorimeter_hits();
 
       for (const auto & pcd_calo_hit : pcd_calo_hits) {
 
-	// Crate a new CD calorimeter hit
+	// Create a new CD calorimeter hit
 	auto cd_calo_hit = datatools::make_handle<snemo::datamodel::calibrated_calorimeter_hit>();
+	cd_calo_hit->set_hit_id(cd_calo_hits.size());
 
 	// Calibrate it
 	if (calibrate_calo_hit(pcd_calo_hit.get(), cd_calo_hit.grab()))
-
+  
 	  // Append it to the collection:
 	  cd_data_.calorimeter_hits().push_back(cd_calo_hit);
       }
@@ -450,7 +460,14 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
 
+      cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
+      cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
+
+      const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+
+      // Retrieve pCD and CD auxiliaries
       const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit_.get_auxiliaries();
+      datatools::properties & cd_tracker_hit_properties = cd_tracker_hit_.grab_auxiliaries();
 
       double reference_time = 0;
 
@@ -571,19 +588,31 @@ namespace snemo {
       	// cd_tracker_hit_.tree_dump(std::clog);
       	cd_tracker_hit_.print_tree(std::clog);
 
+
+      // Propagate UDD's parent hit index
+      const std::string UDD_parent_key = "UDD.parent";
+      if (pcd_tracker_hit_properties.has_key(UDD_parent_key)){
+	const int UDD_parent_index = pcd_tracker_hit_properties.fetch_integer(UDD_parent_key);
+	cd_tracker_hit_properties.store_integer(UDD_parent_key, UDD_parent_index);
+      }
+
+      // Store pCD's parent hit index
+      cd_tracker_hit_properties.store("pCD.parent", pcd_tracker_hit_.get_hit_id());
+
       return true;
     }
 
     void pcd2cd_module::process_tracker_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
 					     snemo::datamodel::calibrated_data & cd_data_) {
 
-      auto pcd_tracker_hits = pcd_data_.tracker_hits();
-      // auto cd_tracker_hits = cd_data_.tracker_hits();
+      const auto & pcd_tracker_hits = pcd_data_.tracker_hits();
+      auto & cd_tracker_hits = cd_data_.tracker_hits();
 
       for (const auto & pcd_tracker_hit : pcd_tracker_hits) {
 
-	// Crate a new CD tracker hit
+	// Create a new CD tracker hit
 	auto cd_tracker_hit = datatools::make_handle<snemo::datamodel::calibrated_tracker_hit>();
+	cd_tracker_hit->set_hit_id(cd_tracker_hits.size());
 
 	// Calibrate it
 	if (calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab()))
