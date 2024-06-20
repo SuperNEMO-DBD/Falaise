@@ -21,14 +21,23 @@
 # a = rs - c = ?
 # re = sqrt(rs^2-a^2) = 70.1
 #
-[name="calorimeter_scin_block_5inch_back.model" type="geomtools::spherical_extrusion_box_model"]
-  #@config Back part of the 5" PMT scintillator block
-  x           : real as length = 240.0 mm
-  y           : real as length = 240.0 mm
-  z           : real as length = 163.0 mm
-  r_sphere    : real as length =  82.5 mm
-  r_extrusion : real as length =  70.1 mm
-  bottom      : boolean = true
+# [name="calorimeter_scin_block_5inch_back_old.model" type="geomtools::spherical_extrusion_box_model"]
+#   #@config Back part of the 5" PMT scintillator block
+#   x           : real as length = 240.0 mm
+#   y           : real as length = 240.0 mm
+#   z           : real as length = 163.0 mm
+#   r_sphere    : real as length =  82.5 mm
+#   r_extrusion : real as length =  70.1 mm
+#   bottom      : boolean = true
+#   material.ref : string  = "ENVINET_PS_scintillator"
+#   visibility.hidden : boolean = false
+#   visibility.color  : string  = "blue"
+#   sensitive.category : string = "calorimeter_SD"
+
+
+[name="calorimeter_scin_block_5inch_back.model" type="geomtools::simple_shaped_model"]
+  shape_build_mode : string = "factory"
+  shape_ref : string = "calorimeter_5inch_scin_block_extruded"
   material.ref : string  = "ENVINET_PS_scintillator"
   visibility.hidden : boolean = false
   visibility.color  : string  = "blue"
@@ -134,7 +143,7 @@
   visibility.hidden_envelope      : boolean = true
   visibility.color                : string  = "grey"
   visibility.daughters.hidden     : boolean = false
-  visibility.daughters.pmt.hidden : boolean = true
+  visibility.daughters.pmt.hidden : boolean = false
 
 
 [name="calorimeter_module_5inch_rotated.model" type="geomtools::rotated_boxed_model"]
