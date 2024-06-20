@@ -5,13 +5,11 @@
 
 [category="source_submodule" type="1100"]
   inherits : string  = "module"
-
-# GID = [1100:0]
+  # GID = [1100:0]
 
 [category="source_core_volume" type="1114"]
   inherits : string  = "source_submodule"
-
-# GID = [1114:0]
+  # GID = [1114:0]
 
 [category="source_strip_block_assembly" type="1115"]
   inherits : string  = "source_core_volume"
