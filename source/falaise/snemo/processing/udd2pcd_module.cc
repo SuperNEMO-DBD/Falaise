@@ -165,7 +165,7 @@ namespace snemo {
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
@@ -209,7 +209,7 @@ namespace snemo {
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-        new_pcd_calo->set_hit_id(a_udd_calo_hit->get_hit_id());
+        new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
@@ -244,8 +244,11 @@ namespace snemo {
         const double fwmes_width = fwmeas_rising_time_cfd - fwmeas_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", fwmes_width/CLHEP::ns);
 
+	// -> store UDD's parent hit index
+        pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
         // Append the new pCD calorimeter hit
-        calo_hits_.push_back(new_pcd_calo);
+        pcd_calo_hits_.push_back(new_pcd_calo);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
@@ -255,7 +258,7 @@ namespace snemo {
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
@@ -296,7 +299,7 @@ namespace snemo {
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-        new_pcd_calo->set_hit_id(a_udd_calo_hit->get_hit_id());
+        new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
@@ -416,8 +419,11 @@ namespace snemo {
         const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
 
+	// -> store UDD's parent hit index
+        pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
         // Append the new pCD calorimeter hit
-        calo_hits_.push_back(new_pcd_calo);
+        pcd_calo_hits_.push_back(new_pcd_calo);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
@@ -438,7 +444,7 @@ namespace snemo {
 
     // Precalibrate tracker hits from UDD informations:
     void udd2pcd_module::precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                            snemo::datamodel::PreCalibratedTrackerHitHdlCollection & tracker_hits_) {
+                                                            snemo::datamodel::PreCalibratedTrackerHitHdlCollection & pcd_tracker_hits_) {
       // Constants
       static const double TRACKER_TDC_TICK = 12.5 * CLHEP::nanosecond;
 
@@ -490,7 +496,7 @@ namespace snemo {
         auto new_pcd_tracker = datatools::make_handle<snemo::datamodel::precalibrated_tracker_hit>();
 
         // Keep same hit number for tracker's digitized hit and precalibrated hit
-        new_pcd_tracker->set_hit_id(a_udd_tracker_hit->get_hit_id());
+        new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
 
         // Convert and fill the earliest R0 timestamp
@@ -512,19 +518,25 @@ namespace snemo {
           new_pcd_tracker->set_sigma_top_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
         }
 
+        // Additional information into pCD tracker datatools::properties
+        datatools::properties& pcd_tracker_hit_properties = new_pcd_tracker->grab_auxiliaries();
+
         // Convert and fill the earliest R[1-4] timestamp in properties
         for (int ANODE_Ri=1; ANODE_Ri<5; ANODE_Ri++) {
           if (first_anode_timestamp[ANODE_Ri] != std::numeric_limits<int64_t>::max()) {
             const double first_anode_ri_time = first_anode_timestamp[ANODE_Ri] * TRACKER_TDC_TICK;
             std::string ri_key = "R" + std::to_string(ANODE_Ri) + "_us";
-            new_pcd_tracker->grab_auxiliaries().store_real(ri_key, (first_anode_ri_time-first_anode_time)/(CLHEP::microsecond));
+            pcd_tracker_hit_properties.store_real(ri_key, (first_anode_ri_time-first_anode_time)/(CLHEP::microsecond));
             // std::string sigma_ri_key = "sigma_R" + std::to_string(ANODE_Ri) + "_us";
             // new_pcd_tracker->grab_auxiliaries().store_real(sigma_ri_key, 0.5*sqrt(2)*TRACKER_TDC_TICK);
           }
         }
 
+	// -> store UDD's parent hit index
+        pcd_tracker_hit_properties.store("UDD.parent", a_udd_tracker_hit->get_hit_id());
+
         // Append the new pCD tracker hit
-        tracker_hits_.push_back(new_pcd_tracker);
+        pcd_tracker_hits_.push_back(new_pcd_tracker);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_tracker->tree_dump(std::clog);
@@ -962,13 +974,13 @@ namespace snemo {
       // Register number of clusters in the pCD bank:
       pcd_data_.grab_properties().store_integer("pCD.clustering.nclusters", pcd_tracker_hit_clusters.size());
 
-      {
-	boost::property_tree::ptree opts;
-	opts.put("list_clusters", true);
-	opts.put("list_properties", true);
-	cpcd_data_.print_tree(std::cout, opts);
-	// cpcd_data_.print_tree();
-      }
+      // {
+      // 	boost::property_tree::ptree opts;
+      // 	opts.put("list_clusters", true);
+      // 	opts.put("list_properties", true);
+      // 	cpcd_data_.print_tree(std::cout, opts);
+      // 	// cpcd_data_.print_tree();
+      // }
 
       DT_LOG_DEBUG(get_logging_priority(), pcd_tracker_hit_clusters.size() << " final cluster(s) identified");
 
