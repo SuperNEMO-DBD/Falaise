@@ -461,7 +461,7 @@ namespace snemo {
       // Loop over UDD tracker digitized hits
       for (const auto& a_udd_tracker_hit : udd_tracker_hits) {
 
-        DT_LOG_DEBUG(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
+        DT_LOG_TRACE(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
 
         // Loop over all gg_times and keep trace of the earliest timestamps
         int64_t first_anode_timestamp[5];
@@ -694,11 +694,12 @@ namespace snemo {
 	auto new_precalibrated_cluster = datatools::make_handle<snemo::datamodel::precalibrated_cluster>();
 	new_precalibrated_cluster->set_cluster_id(cpcd_data_.size());
 
-	int cluster_first_anode_index = -1;
-        double cluster_first_anode_time = std::numeric_limits<double>::max();
+	std::array<int,5> cluster_first_anode_indexes;
+	cluster_first_anode_indexes.fill(-1);
+	std::array<double,5> cluster_first_anode_times;
+	cluster_first_anode_times.fill(std::numeric_limits<double>::max());
         double cluster_last_anode_time = std::numeric_limits<double>::min();
         double cluster_mean_anode_time = 0;
-
 	// uint32_t cluster_tracker_side = 0;
         uint32_t cluster_tracker_row_min = 112;
         uint32_t cluster_tracker_row_max = 0;
@@ -716,9 +717,41 @@ namespace snemo {
 	  const auto & cluster_pcd_tracker_hit = cluster_pcd_tracker_hit_handle.get();
           const double anode_time = cluster_pcd_tracker_hit.get_anodic_time();
 
-          if (anode_time < cluster_first_anode_time) {
-	    cluster_first_anode_index = cluster_pcd_tracker_hit_index;
-            cluster_first_anode_time = anode_time;
+          if (anode_time < cluster_first_anode_times[0]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_first_anode_indexes[1];
+            cluster_first_anode_times[2] = cluster_first_anode_times[1];
+	    cluster_first_anode_indexes[1] = cluster_first_anode_indexes[0];
+            cluster_first_anode_times[1] = cluster_first_anode_times[0];
+	    cluster_first_anode_indexes[0] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[0] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[1]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_first_anode_indexes[1];
+            cluster_first_anode_times[2] = cluster_first_anode_times[1];
+	    cluster_first_anode_indexes[1] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[1] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[2]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[2] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[3]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[3] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[4]) {
+	    cluster_first_anode_indexes[4] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[4] = anode_time;
 	  }
 
           if (anode_time > cluster_last_anode_time)
@@ -757,6 +790,30 @@ namespace snemo {
         } // for (cluster_pcd_tracker_hit_index)
 
         cluster_mean_anode_time /= (double)(pcd_tracker_hit_clusters.size());
+
+	int cluster_first_anode_index = -1;
+	double cluster_first_anode_time = 0;
+
+	// perform sanity check for better first anode estimate
+	const double cluster_tracker_size = cluster_pcd_tracker_hit_indexes.size();
+
+	for (size_t i=1; i<cluster_first_anode_times.size(); i++) {
+
+	  const double deltat_first_anode = cluster_first_anode_times[i] - cluster_first_anode_times[i-1];
+
+	  // data-driven separation of too early (but clusterized) tracker hit
+	  if (cluster_tracker_size < 20.0*std::pow(deltat_first_anode/CLHEP::microsecond, -0.75)) {
+	    cluster_first_anode_index = cluster_first_anode_indexes[i-1];
+	    cluster_first_anode_time = cluster_first_anode_times[i-1];
+	    break;
+	  }
+	}
+
+	if (cluster_first_anode_index == -1) {
+	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " using last available first_anode_time for cluster #" << new_precalibrated_cluster->get_cluster_id());
+	  cluster_first_anode_index = cluster_first_anode_indexes.back();
+	  cluster_first_anode_time = cluster_first_anode_times.back();
+	}
 
         // Perform tracker/calorimeter association
         std::vector<int> cluster_calorimeter_index;
@@ -868,8 +925,8 @@ namespace snemo {
 
         DT_LOG_DEBUG(get_logging_priority(), "=> cluster #" << pcd_cluster_id << " with "
                      << cluster_pcd_tracker_hit_indexes.size() << " cells and "
-                     << cluster_calorimeter_index.size() << " calorimeter hits");
-
+                     << cluster_calorimeter_index.size() << " calorimeter hit(s) "
+		     << "(ref pcd calo hit = " << best_reference_pcd_calo_hit_index << ")");
 
 	datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
 	new_precalibrated_cluster_properties.store("first_pcd_tracker_index", cluster_first_anode_index);
@@ -990,7 +1047,7 @@ namespace snemo {
       // 	// cpcd_data_.print_tree();
       // }
 
-      DT_LOG_DEBUG(get_logging_priority(), pcd_tracker_hit_clusters.size() << " final cluster(s) identified");
+      DT_LOG_DEBUG(get_logging_priority(), cpcd_data_.size() << " final cluster(s) stored");
 
     }
 

@@ -92,7 +92,6 @@ namespace snemo {
                       /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
     private:
-      
       precalibrated_cluster_handle_collection _clusters_{}; //!< Collection of clusters
 			precalibrated_calorimeter_hit_handle_collection _unclusterized_calorimeter_hits_; //!< Collection of unclusterized calorimeter hit handles
 			precalibrated_tracker_hit_handle_collection     _unclusterized_tracker_hits_;     //!< Collection of unclusterized tracker hit handles
