@@ -314,7 +314,6 @@ namespace snemo {
 	  int reference_pcd_calo_index = pcd_cluster_properties.fetch_integer("reference_pcd_calo_index");
 	  const auto & pcd_calo_hit = pcd_data.calorimeter_hits().at(reference_pcd_calo_index);
 	  _cluster_reference_time_.push_back(pcd_calo_hit->get_time());
-	}
 
 	// else if (pcd_cluster_properties.has_key("first_pcd_tracker_index")) {
 	//   int first_pcd_tracker_index = pcd_cluster_properties.fetch_integer("first_pcd_tracker_index");
@@ -323,10 +322,10 @@ namespace snemo {
 	//   DT_LOG_DEBUG(get_logging_priority(), "using pdc tracker hit #" << first_pcd_tracker_index << " as reference time for cluster #" << pcd_cluster->get_cluster_id());
 	// }
 
-	// else {
-	//   DT_LOG_WARNING(get_logging_priority(), eh_data.get_id() << " no reference time for cluster #" << pcd_cluster->get_cluster_id());
-	//   _cluster_reference_time_.push_back(0);
-	// }
+	} else {
+	  // DT_LOG_DEBUG(get_logging_priority(), eh_data.get_id() << " no reference time for cluster #" << pcd_cluster->get_cluster_id());
+	  _cluster_reference_time_.push_back(0);
+	}
 
       } // for (pcd_cluster)
 

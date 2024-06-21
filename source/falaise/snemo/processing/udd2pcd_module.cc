@@ -791,28 +791,32 @@ namespace snemo {
 
         cluster_mean_anode_time /= (double)(pcd_tracker_hit_clusters.size());
 
-	int cluster_first_anode_index = -1;
-	double cluster_first_anode_time = 0;
+	int cluster_first_anode_index = cluster_first_anode_indexes.front();
+	double cluster_first_anode_time = cluster_first_anode_times.front();
 
-	// perform sanity check for better first anode estimate
-	const double cluster_tracker_size = cluster_pcd_tracker_hit_indexes.size();
+	if (cluster_pcd_tracker_hit_indexes.size() >= cluster_first_anode_times.size()) {
 
-	for (size_t i=1; i<cluster_first_anode_times.size(); i++) {
+	  // perform sanity check for better first anode estimate
+	  const double cluster_tracker_size = cluster_pcd_tracker_hit_indexes.size();
 
-	  const double deltat_first_anode = cluster_first_anode_times[i] - cluster_first_anode_times[i-1];
+	  for (size_t i=1; i<cluster_first_anode_times.size(); i++) {
 
-	  // data-driven separation of too early (but clusterized) tracker hit
-	  if (cluster_tracker_size < 20.0*std::pow(deltat_first_anode/CLHEP::microsecond, -0.75)) {
-	    cluster_first_anode_index = cluster_first_anode_indexes[i-1];
-	    cluster_first_anode_time = cluster_first_anode_times[i-1];
-	    break;
+	    const double deltat_first_anode = cluster_first_anode_times[i] - cluster_first_anode_times[i-1];
+
+	    // data-driven separation of too early (but clusterized) tracker hit
+	    if (cluster_tracker_size < 20.0*std::pow(deltat_first_anode/CLHEP::microsecond, -0.75)) {
+	      cluster_first_anode_index = cluster_first_anode_indexes[i-1];
+	      cluster_first_anode_time = cluster_first_anode_times[i-1];
+	      break;
+	    }
 	  }
-	}
 
-	if (cluster_first_anode_index == -1) {
-	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " using last available first_anode_time for cluster #" << new_precalibrated_cluster->get_cluster_id());
-	  cluster_first_anode_index = cluster_first_anode_indexes.back();
-	  cluster_first_anode_time = cluster_first_anode_times.back();
+	  if (cluster_first_anode_index == -1) {
+	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " using last available first_anode_time for cluster #" << new_precalibrated_cluster->get_cluster_id());
+	    cluster_first_anode_index = cluster_first_anode_indexes.back();
+	    cluster_first_anode_time = cluster_first_anode_times.back();
+	  }
+
 	}
 
         // Perform tracker/calorimeter association
