@@ -906,13 +906,20 @@ void browser_tracks::_update_calibrated_data() {
       std::ostringstream label_hit;
       label_hit.precision(3);
       label_hit.setf(std::ios::fixed, std::ios::floatfield);
-      label_hit << "Geiger hit #" << std::setw(2) << std::setfill('0') << a_hit.get_id() << " :"
-                << " GID=" << a_hit.get_geom_id()
-                << " (r, z) = (" << a_hit.get_r() / CLHEP::cm << "+/-" << a_hit.get_sigma_r() / CLHEP::cm
-                << ", " << a_hit.get_z() / CLHEP::cm << "+/-" << a_hit.get_sigma_z() / CLHEP::cm
-                << ") cm";
-      if (a_hit.is_delayed()) {
-        label_hit << "[delayed by" << a_hit.get_delayed_time() / CLHEP::microsecond << " us]";
+      label_hit << "gg hit #" << std::setw(2) << std::setfill('0') << a_hit.get_id() << " :"
+                << " GID=" << a_hit.get_geom_id();
+			if (datatools::is_valid(a_hit.get_r()))
+				label_hit << "  r = " << a_hit.get_r() / CLHEP::cm << "+/-"
+									<< a_hit.get_sigma_r() / CLHEP::cm << " cm,";
+			else
+				label_hit << " r undefined,";
+			if (datatools::is_valid(a_hit.get_z()))
+				label_hit << "  z = " << a_hit.get_z() / CLHEP::cm << "+/-"
+									<< a_hit.get_sigma_z() / CLHEP::cm << " cm";
+			else
+				label_hit << " z undefined";
+			if (a_hit.is_delayed()) {
+        label_hit << " [delay = " << a_hit.get_delayed_time() / CLHEP::microsecond << " us]";
       }
 
       TGListTreeItem *item_hit = _tracks_list_box_->AddItem(item_tracker, label_hit.str().c_str(),
