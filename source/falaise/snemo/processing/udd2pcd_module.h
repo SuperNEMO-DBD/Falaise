@@ -20,7 +20,7 @@
 #include <vector>
 
 // Third party:
-// - Bayeux/dpp:
+// - Bayeux:
 #include <dpp/base_module.h>
 #include <datatools/event_id.h>
 // - CLHEP

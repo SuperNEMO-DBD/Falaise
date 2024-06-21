@@ -88,7 +88,7 @@ namespace snemo {
 
         _tracker_pcd_algo_ = ALGO_TRACKER_BASIC_CLUSTER;
         _tracker_basic_cluster_radius_threshold_ = fps.get<double>("tracker_method.cluster_radius_threshold", 3.0);
-        _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 15.0) * CLHEP::microsecond;
+        _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 10.0) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_min_ = fps.get<double>("tracker_method.cluster_deltat_calo_min_us", -0.22) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_max_ = fps.get<double>("tracker_method.cluster_deltat_calo_max_us",  5.00) * CLHEP::microsecond;
 

@@ -21,8 +21,9 @@
 #include <vector>
 
 // Third party:
-// - Bayeux/dpp:
+// - Bayeux:
 #include <dpp/base_module.h>
+#include <datatools/event_id.h>
 // - CLHEP
 #include <CLHEP/Units/SystemOfUnits.h>
 
@@ -117,6 +118,7 @@ namespace snemo {
       std::string _cd_output_tag_{};   //!< The label of the calibrated data bank
       std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
+      datatools::event_id _current_event_id_;
       double _event_time_;
       std::vector<double> _cluster_reference_time_;
 

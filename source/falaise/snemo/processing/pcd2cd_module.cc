@@ -279,7 +279,8 @@ namespace snemo {
 
       // retrieve EH data as mutable (for timestamp update)
       auto & eh_data = event.grab<snemo::datamodel::event_header>("EH");
-      DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << eh_data.get_id());
+      _current_event_id_ = eh_data.get_id();
+      DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _current_event_id_);
 
       auto & pcd_data = event.get<snemo::datamodel::precalibrated_data>(_pcd_input_tag_);
       auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
@@ -525,6 +526,10 @@ namespace snemo {
 	  radius = 0;
 
 	else {
+
+	  if (time_usec > 30)
+	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " CD hit of " << cd_tracker_hit_.get_geom_id()
+			   << " with large anode drift time = " << time_usec << " us");
 
 	  const double r2 = _tracker_drift_model_manu_params_[3] * std::log(1 + time_usec * _tracker_drift_model_manu_params_[4]);
 
