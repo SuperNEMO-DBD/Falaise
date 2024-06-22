@@ -501,7 +501,7 @@ namespace snemo {
       }
 
       void tracker_hit_renderer::_make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
-                                                             const bool show_cluster)
+                                                             const bool show_cluster, const bool invalid_z)
       {
         // FL_LOG_DEVEL("Entering...");
         // Compute the position of the anode impact in the drift cell coordinates reference frame:
@@ -512,17 +512,30 @@ namespace snemo {
 	// update Z value in case of invalid value
 	if (!datatools::is_valid(updated_z)) {
 
-	  // move the circle/square to the middle
-	  if (hit_.are_both_cathodes_missing())
-	    updated_z = 0;
+	  // move the circle/square to the top+bottom
+	  if (hit_.are_both_cathodes_missing()) {
+
+	    if (invalid_z)
+	      // draw the top case in this special call
+	      updated_z = +1.515 * CLHEP::m;
+	    else {
+	      // call the same function with the invalid_z option
+	      // to draw the circle/square at the top!
+	      _make_calibrated_geiger_hit(hit_, show_cluster, true);
+
+	      // then resume the current function call
+	      // to draw the circle/square at the bottom
+	      updated_z = -1.515 * CLHEP::m;
+	    }
+	  }
 
 	  // move the circle/square to the top
-	  else if (hit_.is_bottom_cathode_missing())
+	  else if (hit_.is_top_cathode_missing())
 	    updated_z = +1.515 * CLHEP::m;
 
 	  // move the circle/square to the bottom
 	  // if the top cathode is missing
-	  else if (hit_.is_top_cathode_missing())
+	  else if (hit_.is_bottom_cathode_missing())
 	    updated_z = -1.515 * CLHEP::m;
 	}
 
