@@ -77,7 +77,7 @@ namespace snemo {
 
         /// Special method to show calibrated geiger hit
         void _make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
-                                         const bool show_cluster = false);
+                                         const bool show_cluster = false, const bool invalid_z = false);
       };
 
     } // end of namespace view
