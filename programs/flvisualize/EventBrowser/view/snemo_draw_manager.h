@@ -89,6 +89,9 @@ namespace snemo {
 				void _add_simulated_data();
 
 				/// Add 'precalibrated_data' bank objects
+				void _add_event_header_data();
+
+				/// Add 'precalibrated_data' bank objects
 				void _add_precalibrated_data();
 
 				/// Add 'calibrated_data' bank objects

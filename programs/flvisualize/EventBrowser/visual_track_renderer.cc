@@ -203,6 +203,50 @@ namespace snemo {
 	legend->SetText(x -= dx, y, "others");
       }
 
+      void visual_track_renderer::push_data_legend() {
+
+	const io::event_record & event = _server->get_event();
+	const auto &eh_data = event.get<snemo::datamodel::event_header>(io::EH_LABEL);
+
+	double x = 0.0125;
+	double y = 1.0;
+	const double dy = 0.025;
+
+	// 80 courrier
+	// 90 courrier it
+	// 100 courier bold
+	// 110 courier bold+it
+	const int text_font = 100;
+
+	{
+	  auto *legend = new TLatex;
+	  _objects->Add(legend);
+	  legend->SetNDC();
+	  legend->SetTextAlign(12);
+	  legend->SetTextSize(0.02);
+	  legend->SetTextFont(text_font);
+	  legend->SetTextColor(kGray+1);
+
+	  const datatools::event_id & eh_id = eh_data.get_id();
+	  const int run_id = eh_id.get_run_number();
+	  const int event_id = eh_id.get_event_number();
+	  legend->SetText(x, y -= dy, Form("RUN %d EVENT %d", run_id, event_id));
+	}
+
+	{
+	  auto *legend = new TLatex;
+	  _objects->Add(legend);
+	  legend->SetNDC();
+	  legend->SetTextAlign(12);
+	  legend->SetTextSize(0.02);
+	  legend->SetTextFont(text_font);
+	  legend->SetTextColor(kGray+1);
+
+	  legend->SetText(x, y -= dy, "YYYY/MM/DD HH:MM:SS.mmmuuunnn");
+	}
+
+      }
+
       void visual_track_renderer::push_reconstructed_tracks() {
 	const io::event_record &event = _server->get_event();
 	const auto &pt_data = event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);

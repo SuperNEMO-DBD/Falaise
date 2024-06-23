@@ -85,6 +85,7 @@ void options_manager::set_default_options() {
   _options_dictionnary_[SHOW_MC_HITS] = true;
   _options_dictionnary_[SHOW_MC_CALORIMETER_HITS] = true;
   _options_dictionnary_[SHOW_MC_TRACKER_HITS] = true;
+  _options_dictionnary_[SHOW_EVENT_HEADER] = true;
   _options_dictionnary_[SHOW_PRECALIBRATED_HITS] = true;
   // _options_dictionnary_[SHOW_PRECALIBRATED_INFO] = false;
   _options_dictionnary_[SHOW_CALIBRATED_HITS] = true;
@@ -183,6 +184,10 @@ void options_manager::define_view_options(
 		("show-simulated-hits",
 		 po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
 		 "show simulated hits")
+
+		("show-event-header",
+		 po::value<bool>(&_options_dictionnary_[SHOW_EVENT_HEADER])->value_name("flag"),
+		 "show event header")
 
 		("show-precalibrated-hits",
 		 po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_HITS])->value_name("flag"),

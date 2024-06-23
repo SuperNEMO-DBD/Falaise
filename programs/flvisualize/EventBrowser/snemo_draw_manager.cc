@@ -76,6 +76,14 @@ namespace snemo {
 		       "Event has no simulated data");
 	}
 
+	// Add 'event_header' objects:
+	if (_server_->get_event().has(io::EH_LABEL)) {
+	  this->_add_event_header_data();
+	} else {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "Event has no event header");
+	}
+
 	// Add 'precalibrated_data' objects:
 	if (_server_->get_event().has(io::CD_LABEL)) {
 	  this->_add_precalibrated_data();
@@ -175,6 +183,10 @@ namespace snemo {
 	  _visual_track_renderer_.push_mc_tracks();
 	  _visual_track_renderer_.push_mc_legend();
 	}
+
+	if (options_mgr.get_option_flag(SHOW_EVENT_HEADER)) {
+	  _visual_track_renderer_.push_data_legend();
+	}
 	FL_LOG_DEVEL("Exiting...");
       }
 
@@ -236,7 +248,20 @@ namespace snemo {
       }
 
       /****************************************************
-       *  Filling objects from the 'calibrated_data' bank *
+       *  Filling objects from the 'event_header' bank *
+       ****************************************************/
+
+      void snemo_draw_manager::_add_event_header_data() {
+	FL_LOG_DEVEL("Entering...");
+	const options_manager& options_mgr = options_manager::get_instance();
+	if (options_mgr.get_option_flag(SHOW_EVENT_HEADER)) {
+	  _visual_track_renderer_.push_data_legend();
+	}
+	FL_LOG_DEVEL("Exiting...");
+      }
+
+      /****************************************************
+       *  Filling objects from the 'precalibrated_data' bank *
        ****************************************************/
 
       void snemo_draw_manager::_add_precalibrated_data() {

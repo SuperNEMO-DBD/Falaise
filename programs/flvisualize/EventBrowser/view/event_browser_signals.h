@@ -70,6 +70,9 @@ enum button_signals_type {
   SHOW_GG_CIRCLE,
   SHOW_GG_TIME_GRADIENT,
 
+	// Data menu
+	SHOW_EVENT_HEADER,
+
   // preCalib. menu
 	SHOW_PRECALIBRATED_HITS,
 	// SHOW_PRECALIBRATED_INFO,
