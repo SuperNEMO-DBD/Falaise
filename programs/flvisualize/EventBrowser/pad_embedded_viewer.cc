@@ -372,6 +372,9 @@ namespace snemo {
       }
 
       void pad_embedded_viewer::_set_pad_style_() const {
+	gStyle->SetOptTitle(0);
+	gStyle->SetOptStat(0);
+
 	gStyle->SetTitleBorderSize(0);
 	gStyle->SetTitleX(0.1f);
 	gStyle->SetTitleW(0.8f);
