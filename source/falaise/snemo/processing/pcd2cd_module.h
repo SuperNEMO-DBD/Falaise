@@ -28,8 +28,13 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 
 // This project :
+#include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
+#include <falaise/snemo/datamodels/precalibrated_data.h>
+// #include <falaise/snemo/datamodels/clusterized_calibrated_data.h>
+#include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/processing/module.h>
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
@@ -98,16 +103,14 @@ namespace snemo {
 			      snemo::datamodel::calibrated_calorimeter_hit & cd_calo_hit_);
 
       /// Main process calo function
-      void process_calo_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
-                             snemo::datamodel::calibrated_data & cd_data_);
+      void process_calo_impl();
 
       /// Calibrate tracker hit
       bool calibrate_tracker_hit(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
 				 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_);
 
       /// Main process tracker function
-      void process_tracker_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
-                             snemo::datamodel::calibrated_data & cd_data_);
+      void process_tracker_impl();
 
     private:
       snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
@@ -116,11 +119,24 @@ namespace snemo {
       std::string _cpcd_input_tag_{}; //!< The label of the clusterized precalibrated data bank
 
       std::string _cd_output_tag_{};   //!< The label of the calibrated data bank
-      std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
+      std::string _tcd_output_tag_{};  //!< The label of the tracker clustering data bank
+      // std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
-      datatools::event_id _current_event_id_;
-      double _event_time_;
+      // global acces to event header
+      snemo::datamodel::event_header *_eh_data_;
+      datatools::event_id _event_id_;
+
+      // global access to input data
+      const snemo::datamodel::precalibrated_data             *_pcd_data_;
+      const snemo::datamodel::clusterized_precalibrated_data *_cpcd_data_;
+
+      // global access to output data
+      snemo::datamodel::calibrated_data                *_cd_data_;
+      // snemo::datamodel::clusterized_calibrated_data *_ccd_data_;
+      snemo::datamodel::tracker_clustering_data        *_ccd_data_;
+
       std::vector<double> _cluster_reference_time_;
+      double _event_time_;
 
       calorimeter_energy_calibration_method _pcd2cd_calo_energy_method_;
       std::vector<std::vector<double>> _pcd_calo_energy_constants_;

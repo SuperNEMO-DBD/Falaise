@@ -22,11 +22,6 @@
 
 // This project :
 #include <falaise/snemo/datamodels/data_model.h>
-#include <falaise/snemo/datamodels/event_header.h>
-#include <falaise/snemo/datamodels/precalibrated_data.h>
-#include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
-#include <falaise/snemo/datamodels/calibrated_data.h>
-#include <falaise/snemo/datamodels/clusterized_calibrated_data.h>
 #include <falaise/snemo/datamodels/geomid_utils.h>
 #include <falaise/snemo/services/services.h>
 
@@ -53,7 +48,8 @@ namespace snemo {
       _pcd_input_tag_  = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
       _cpcd_input_tag_ = fps.get<std::string>("CpCD_label", snedm::labels::clusterized_precalibrated_data());
       _cd_output_tag_  = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());
-      _ccd_output_tag_ = fps.get<std::string>("CCD_label", snedm::labels::clusterized_calibrated_data());
+      _tcd_output_tag_ = fps.get<std::string>("TCD_label", snedm::labels::tracker_clustering_data());
+      // _ccd_output_tag_ = fps.get<std::string>("CCD_label", snedm::labels::clusterized_calibrated_data());
 
       // Configure calorimeter energy calibration method
 
@@ -271,28 +267,31 @@ namespace snemo {
         return dpp::base_module::PROCESS_ERROR;
       }
 
-      // Check if CpCD bank exists
-      if (!event.has(_cpcd_input_tag_)) {
-        throw std::logic_error("Missing CpCD bank to be processed !");
-        return dpp::base_module::PROCESS_ERROR;
-      }
+      // // Check if CpCD bank exists
+      // if (!event.has(_cpcd_input_tag_)) {
+      //   throw std::logic_error("Missing CpCD bank to be processed !");
+      //   return dpp::base_module::PROCESS_ERROR;
+      // }
 
       // retrieve EH data as mutable (for timestamp update)
-      auto & eh_data = event.grab<snemo::datamodel::event_header>("EH");
-      _current_event_id_ = eh_data.get_id();
-      DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _current_event_id_);
+      _eh_data_ = &(event.grab<snemo::datamodel::event_header>("EH"));
+      _event_id_ = _eh_data_->get_id();
+      DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _event_id_);
 
-      auto & pcd_data = event.get<snemo::datamodel::precalibrated_data>(_pcd_input_tag_);
-      auto & cpcd_data = event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_);
+      // retrive pCD data
+      _pcd_data_ = &(event.get<snemo::datamodel::precalibrated_data>(_pcd_input_tag_));
+
+      // retrive CpCD data
+      _cpcd_data_ = &(event.get<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_input_tag_));
 
       // prepare general event time from earliest pcd hit
       // (in priority within clusterized hits)
       _event_time_ = 0;
 
       _cluster_reference_time_.clear();
-      _cluster_reference_time_.reserve(cpcd_data.clusters().size());
+      _cluster_reference_time_.reserve(_cpcd_data_->clusters().size());
 
-      for (const auto & pcd_cluster : cpcd_data.clusters()) {
+      for (const auto & pcd_cluster : _cpcd_data_->clusters()) {
 
 	for (const auto & pcd_calo_hit : pcd_cluster->calorimeter_hits()) {
 	  const double & pcd_calo_time = pcd_calo_hit->get_time();
@@ -313,18 +312,18 @@ namespace snemo {
 
 	if (pcd_cluster_properties.has_key("reference_pcd_calo_index")) {
 	  int reference_pcd_calo_index = pcd_cluster_properties.fetch_integer("reference_pcd_calo_index");
-	  const auto & pcd_calo_hit = pcd_data.calorimeter_hits().at(reference_pcd_calo_index);
+	  const auto & pcd_calo_hit = _pcd_data_->calorimeter_hits().at(reference_pcd_calo_index);
 	  _cluster_reference_time_.push_back(pcd_calo_hit->get_time());
 
 	// else if (pcd_cluster_properties.has_key("first_pcd_tracker_index")) {
 	//   int first_pcd_tracker_index = pcd_cluster_properties.fetch_integer("first_pcd_tracker_index");
-	//   const auto & pcd_tracker_hit = pcd_data.tracker_hits().at(first_pcd_tracker_index);
+	//   const auto & pcd_tracker_hit = _pcd_data_->tracker_hits().at(first_pcd_tracker_index);
 	//   _cluster_reference_time_.push_back(pcd_tracker_hit->get_anodic_time());
 	//   DT_LOG_DEBUG(get_logging_priority(), "using pdc tracker hit #" << first_pcd_tracker_index << " as reference time for cluster #" << pcd_cluster->get_cluster_id());
 	// }
 
 	} else {
-	  // DT_LOG_DEBUG(get_logging_priority(), eh_data.get_id() << " no reference time for cluster #" << pcd_cluster->get_cluster_id());
+	  // DT_LOG_DEBUG(get_logging_priority(), _event_id_ << " no reference time for cluster #" << pcd_cluster->get_cluster_id());
 	  _cluster_reference_time_.push_back(0);
 	}
 
@@ -332,14 +331,14 @@ namespace snemo {
 
       if (_event_time_ == 0) {
 
-	for (const auto & pcd_calo_hit : cpcd_data.unclusterized_calorimeter_hits()) {
+	for (const auto & pcd_calo_hit : _cpcd_data_->unclusterized_calorimeter_hits()) {
 	  const double & pcd_calo_time = pcd_calo_hit->get_time();
 	  if ((_event_time_ == 0) || (pcd_calo_time < _event_time_))
 	    _event_time_ = pcd_calo_time;
 	}
 
 	if (_event_time_ == 0) {
-	  for (const auto & pcd_tracker_hit : cpcd_data.unclusterized_tracker_hits()) {
+	  for (const auto & pcd_tracker_hit : _cpcd_data_->unclusterized_tracker_hits()) {
 	    if (pcd_tracker_hit->has_anodic_time()) {
 	      const double & pcd_tracker_time = pcd_tracker_hit->get_anodic_time();
 	      if ((_event_time_ == 0) || (pcd_tracker_time < _event_time_))
@@ -352,31 +351,36 @@ namespace snemo {
       const int64_t event_time_second = (int64_t) _event_time_;
       const int64_t event_time_picosecond = (int64_t) ((_event_time_ - event_time_second)*1E12);
       snemo::datamodel::timestamp event_timestamp (event_time_second, event_time_picosecond);
-      eh_data.set_timestamp(event_timestamp);
+      _eh_data_->set_timestamp(event_timestamp);
 
       // Check if some 'cd_data' are available in the data model:
       auto & cd_data = snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(_cd_output_tag_, event);
+      _cd_data_ = & cd_data;
 
       // Always rewrite calorimeter hits
-      cd_data.calorimeter_hits().clear();
-
+      _cd_data_->calorimeter_hits().clear();
       // Always rewrite tracker hits
-      cd_data.tracker_hits().clear();
+      _cd_data_->tracker_hits().clear();
 
-      // Check if some 'ccd_data' are available in the data model:
-      auto & ccd_data = snedm::getOrAddToEvent<snemo::datamodel::clusterized_calibrated_data>(_ccd_output_tag_, event);
-
+      // Check if some 'tcd_data' are available in the data model:
+      auto & tcd_data = snedm::getOrAddToEvent<snemo::datamodel::tracker_clustering_data>(_tcd_output_tag_, event);
       // Always rewrite clusterize data
-      ccd_data.clear();
+      tcd_data.clear();
+
+      // // Check if some 'ccd_data' are available in the data model:
+      // auto & ccd_data = snedm::getOrAddToEvent<snemo::datamodel::clusterized_calibrated_data>(_ccd_output_tag_, event);
+
+      // // Always rewrite clusterize data
+      // ccd_data.clear();
 
       // Main calorimeter processing method
-      process_calo_impl(pcd_data, cd_data);
+      process_calo_impl();
 
       // Main tracker processing method
-      process_tracker_impl(pcd_data, cd_data);
+      process_tracker_impl();
 
       // // Main tracker cluster method
-      // process_tracker_cluster_impl(pcd_data, cd_data);
+      // process_tracker_cluster_impl(_pcd_data_, cd_data);
 
       DT_LOG_DEBUG(get_logging_priority(), "'" << _cd_output_tag_ << "' bank filled with " << cd_data.tracker_hits().size()
 		   << " tracker hits and " << cd_data.calorimeter_hits().size() << " calorimeter hits");
@@ -454,11 +458,10 @@ namespace snemo {
       return true;
     }
 
-    void pcd2cd_module::process_calo_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
-					  snemo::datamodel::calibrated_data & cd_data_) {
+    void pcd2cd_module::process_calo_impl() {
 
-      const auto & pcd_calo_hits = pcd_data_.calorimeter_hits();
-      auto & cd_calo_hits = cd_data_.calorimeter_hits();
+      const auto & pcd_calo_hits = _pcd_data_->calorimeter_hits();
+      auto & cd_calo_hits = _cd_data_->calorimeter_hits();
 
       for (const auto & pcd_calo_hit : pcd_calo_hits) {
 
@@ -470,7 +473,7 @@ namespace snemo {
 	if (calibrate_calo_hit(pcd_calo_hit.get(), cd_calo_hit.grab()))
   
 	  // Append it to the collection:
-	  cd_data_.calorimeter_hits().push_back(cd_calo_hit);
+	  _cd_data_->calorimeter_hits().push_back(cd_calo_hit);
       }
     }
 
@@ -528,7 +531,7 @@ namespace snemo {
 	else {
 
 	  if (time_usec > 30)
-	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " CD hit of " << cd_tracker_hit_.get_geom_id()
+	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " CD hit of " << cd_tracker_hit_.get_geom_id()
 			   << " with large anode drift time = " << time_usec << " us");
 
 	  const double r2 = _tracker_drift_model_manu_params_[3] * std::log(1 + time_usec * _tracker_drift_model_manu_params_[4]);
@@ -544,8 +547,8 @@ namespace snemo {
 	  if (radius > 0.5)
 	    cd_tracker_hit_.set_peripheral(true);
 
-	  if (radius > sqrt(0.5))
-	    return false;
+	  // if (radius > sqrt(0.5))
+	  //   return false;
 
 	  cd_tracker_hit_.set_r(radius*4.4*CLHEP::cm);
 	  cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
@@ -627,23 +630,33 @@ namespace snemo {
       return true;
     }
 
-    void pcd2cd_module::process_tracker_impl(const snemo::datamodel::precalibrated_data & pcd_data_,
-					     snemo::datamodel::calibrated_data & cd_data_) {
+    void pcd2cd_module::process_tracker_impl() {
 
-      const auto & pcd_tracker_hits = pcd_data_.tracker_hits();
-      auto & cd_tracker_hits = cd_data_.tracker_hits();
+      const auto & pcd_tracker_hits = _pcd_data_->tracker_hits();
+      auto & cd_tracker_hits = _cd_data_->tracker_hits();
 
       for (const auto & pcd_tracker_hit : pcd_tracker_hits) {
 
-	// Create a new CD tracker hit
+      // Create a new CD tracker hit
 	auto cd_tracker_hit = datatools::make_handle<snemo::datamodel::calibrated_tracker_hit>();
 	cd_tracker_hit->set_hit_id(cd_tracker_hits.size());
 
-	// Calibrate it
-	if (calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab()))
+	// // retrive pCD clustering info
+	// int cluster_id = -1;
+	// double reference_time = 0;
 
-	  // Append it to the collection:
-	  cd_data_.tracker_hits().push_back(cd_tracker_hit);
+	// if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id")) {
+	//   cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
+	//   reference_time = _cluster_reference_time_[cluster_id];
+	// }
+
+	// Calibrate it
+	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());
+
+	// Append it to the collection:
+	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
+
+	// cluster
       }
     }
 
