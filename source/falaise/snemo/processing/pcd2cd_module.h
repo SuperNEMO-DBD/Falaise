@@ -133,7 +133,7 @@ namespace snemo {
       // global access to output data
       snemo::datamodel::calibrated_data                *_cd_data_;
       // snemo::datamodel::clusterized_calibrated_data *_ccd_data_;
-      snemo::datamodel::tracker_clustering_data        *_ccd_data_;
+      snemo::datamodel::tracker_clustering_data        *_tcd_data_;
 
       std::vector<double> _cluster_reference_time_;
       double _event_time_;

@@ -363,9 +363,10 @@ namespace snemo {
       _cd_data_->tracker_hits().clear();
 
       // Check if some 'tcd_data' are available in the data model:
-      auto & tcd_data = snedm::getOrAddToEvent<snemo::datamodel::tracker_clustering_data>(_tcd_output_tag_, event);
+      _tcd_data_ = &(snedm::getOrAddToEvent<snemo::datamodel::tracker_clustering_data>(_tcd_output_tag_, event));
+
       // Always rewrite clusterize data
-      tcd_data.clear();
+      _tcd_data_->clear();
 
       // // Check if some 'ccd_data' are available in the data model:
       // auto & ccd_data = snedm::getOrAddToEvent<snemo::datamodel::clusterized_calibrated_data>(_ccd_output_tag_, event);
@@ -635,20 +636,48 @@ namespace snemo {
       const auto & pcd_tracker_hits = _pcd_data_->tracker_hits();
       auto & cd_tracker_hits = _cd_data_->tracker_hits();
 
+      // create and append a tracker clustering solution
+      auto tcd_solution = datatools::make_handle<snemo::datamodel::tracker_clustering_solution>();
+      tcd_solution->set_solution_id(_tcd_data_->size());
+      _tcd_data_->append_solution(tcd_solution, true);
+
+      const datatools::properties & pcd_data_properties = _pcd_data_->get_properties();
+      const int nb_clusters = pcd_data_properties.fetch_integer("pCD.clustering.nb_clusters");
+      const int nb_unclustered_hits = pcd_data_properties.fetch_integer("pCD.clustering.nb_unclustered_tracker_hits");
+
+      // reserve/allocate tracker clustering solution storage
+      auto & tcd_clusters = tcd_solution->get_clusters();
+      tcd_clusters.reserve(nb_clusters);
+
+      for (int cluster_i=0; cluster_i<nb_clusters; cluster_i++) {
+	auto tcd_cluster = datatools::make_handle<snemo::datamodel::tracker_cluster>();
+	tcd_cluster->set_cluster_id(cluster_i);
+	tcd_clusters.push_back(tcd_cluster);
+      }
+
+      auto & tcd_unclustered_hits = tcd_solution->get_unclustered_hits();
+      tcd_unclustered_hits.reserve(nb_unclustered_hits);
+
+      // process tracker hit
       for (const auto & pcd_tracker_hit : pcd_tracker_hits) {
 
-      // Create a new CD tracker hit
+	// Create a new CD tracker hit
 	auto cd_tracker_hit = datatools::make_handle<snemo::datamodel::calibrated_tracker_hit>();
 	cd_tracker_hit->set_hit_id(cd_tracker_hits.size());
 
-	// // retrive pCD clustering info
-	// int cluster_id = -1;
-	// double reference_time = 0;
+	// retrieve pCD cluster ID
+	int cluster_id = -1;
+	const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit->get_auxiliaries();
+	if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id"))
+	  cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
 
-	// if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id")) {
-	//   cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
-	//   reference_time = _cluster_reference_time_[cluster_id];
-	// }
+	//
+	if (cluster_id != -1) {
+	  auto & tcd_cluster = tcd_clusters.at(cluster_id);
+	  tcd_cluster->hits().push_back(cd_tracker_hit);
+	} else {
+	  tcd_unclustered_hits.push_back(cd_tracker_hit);
+	}
 
 	// Calibrate it
 	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());

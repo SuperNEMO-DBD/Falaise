@@ -1049,8 +1049,12 @@ namespace snemo {
       /* 2023-03-05 FM: Final registration of clusterization */
       /* informations in the pCD bank                        */
       /*******************************************************/
+
       // Register number of clusters in the pCD bank:
-      pcd_data_.grab_properties().store_integer("pCD.clustering.nclusters", pcd_tracker_hit_clusters.size());
+      datatools::properties & pcd_data_properties = pcd_data_.grab_properties();
+      pcd_data_properties.store_integer("pCD.clustering.nb_clusters", cpcd_data_.size());
+      pcd_data_properties.store_integer("pCD.clustering.nb_unclustered_calo_hits", cpcd_data_.unclusterized_calorimeter_hits().size());
+      pcd_data_properties.store_integer("pCD.clustering.nb_unclustered_tracker_hits", cpcd_data_.unclusterized_tracker_hits().size());
 
       // {
       // 	boost::property_tree::ptree opts;
