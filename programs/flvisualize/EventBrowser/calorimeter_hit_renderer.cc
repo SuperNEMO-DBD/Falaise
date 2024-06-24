@@ -163,27 +163,75 @@ namespace snemo {
 
 	    const std::vector<int16_t> & waveform = it_hit->get_waveform();
 
-	    const std::string waveform_histo_name (Form("udd_waveform_hit_%02d", a_hit.get_hit_id()));
-	    const std::string waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
+	    const std::string udd_waveform_histo_name (Form("udd_waveform_hit_%02d", a_hit.get_hit_id()));
+	    const std::string udd_waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
 
-	    TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 1024);
-	    waveform_histo->GetXaxis()->SetTitle("Sample");
-	    waveform_histo->GetYaxis()->SetTitle("ADC");
-	    // _objects->Add(waveform_histo);
+	    TH1F *udd_waveform_histo = new TH1F (udd_waveform_histo_name.c_str(), udd_waveform_histo_title.c_str(), 1024, 0, 1024);
+	    udd_waveform_histo->GetXaxis()->SetTitle("Sample");
+	    udd_waveform_histo->GetYaxis()->SetTitle("ADC");
+	    // _objects->Add(udd_waveform_histo);
 
-	    for (size_t s=0; s<waveform.size(); s++)
-	      waveform_histo->SetBinContent(1+s, waveform[s]);
+	    int16_t adc_min = 4096;
+	    int16_t adc_max = 0;
+
+	    for (size_t s=0; s<waveform.size(); s++) {
+	      const int16_t adc = waveform[s];
+	      if (adc < adc_min) adc_min = adc;
+	      if (adc > adc_max) adc_max = adc;
+	      udd_waveform_histo->SetBinContent(1+s, adc);
+	    }
 
 	    TCanvas *udd_waveform_canvas = (TCanvas*)(gROOT->FindObject("udd_waveform_canvas"));
 
 	    if (udd_waveform_canvas == nullptr) {
+
 	      udd_waveform_canvas = new TCanvas ("udd_waveform_canvas", "UDD waveform");
 	      _objects->Add(udd_waveform_canvas);
-	      waveform_histo->Draw();
-	    } else {
+
+	      const double adc_range = adc_max - adc_min;
+	      const double adc_margin = 0.1*adc_range;
+	      const double adc_ymin = std::max(adc_min-adc_margin, 0.);
+	      const double adc_ymax = std::min(adc_max+adc_margin, 4096.);
+
+	      TH1F *udd_waveform_frame = new TH1F ("udd_waveform_frame", ";Sample;ADC", 1024, 0, 1024);
+	      // _objects->Add(udd_waveform_frame);
+
 	      udd_waveform_canvas->cd();
-	      waveform_histo->Draw("same");
+	      udd_waveform_frame->GetYaxis()->SetRangeUser(adc_ymin, adc_ymax);
+	      udd_waveform_frame->Draw("0");
+	      udd_waveform_canvas->Update();
+
+	    } else {
+
+	      TH1F *udd_waveform_frame = (TH1F*)(gROOT->FindObject("udd_waveform_frame"));
+
+	      if (udd_waveform_frame != nullptr) {
+
+		adc_min = std::min((double)(adc_min), udd_waveform_canvas->GetUymin());
+		adc_max = std::max((double)(adc_max), udd_waveform_canvas->GetUymax());
+
+		const double adc_range = adc_max - adc_min;
+		const double adc_margin = 0.1*adc_range;
+		const double adc_ymin = std::max(adc_min-adc_margin, 0.);
+		const double adc_ymax = std::min(adc_max+adc_margin, 4096.);
+
+		udd_waveform_frame->GetYaxis()->SetRangeUser(adc_ymin, adc_ymax);
+
+	      } else {
+		std::cout << "WAVEFORM FRAME not found" << std::endl;
+	      }
 	    }
+
+	    const Color_t waveform_color[6] = {kBlue+1, kGreen+1, kRed+1, kCyan+1, kYellow+1, kMagenta+1};
+
+	    // use the number of drawned object as color index !
+	    const size_t color_index = udd_waveform_canvas->GetListOfPrimitives()->GetSize() - 2;
+	    // udd_waveform_histo->SetLineColor(style_manager::get_instance().get_color(color_index));
+	    udd_waveform_histo->SetLineColor(waveform_color[color_index%6]);
+
+	    udd_waveform_canvas->cd();
+	    udd_waveform_histo->Draw("same");
+	    udd_waveform_canvas->Update();
 
 	  } // if (HIGHLIGHT_FLAG)
 	}
@@ -226,29 +274,78 @@ namespace snemo {
 	      const auto & udd_hit = udd.get_calorimeter_hits().at(UDD_parent_index);
 	      const std::vector<int16_t> & waveform = udd_hit->get_waveform();
 
-	      const std::string waveform_histo_name (Form("pcd_waveform_hit_%02d", a_hit.get_hit_id()));
-	      const std::string waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
+	      const std::string pcd_waveform_histo_name (Form("pcd_waveform_hit_%02d", a_hit.get_hit_id()));
+	      const std::string pcd_waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
 
-	      TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 400);
-	      waveform_histo->GetXaxis()->SetTitle("Time (ns)");
-	      waveform_histo->GetYaxis()->SetTitle("Amplitude (mV)");
-	      // _objects->Add(waveform_histo);
+	      TH1F *pcd_waveform_histo = new TH1F (pcd_waveform_histo_name.c_str(), pcd_waveform_histo_title.c_str(), 1024, 0, 400);
+	      pcd_waveform_histo->GetXaxis()->SetTitle("Time (ns)");
+	      pcd_waveform_histo->GetYaxis()->SetTitle("Amplitude (mV)");
+	      // _objects->Add(pcd_waveform_histo);
+
+	      double amplitude_min = 2500.;
+	      double amplitude_max = -2500.;
 
 	      const double & pcd_baseline = a_hit.get_baseline()/(1E-3*CLHEP::volt);
 
-	      for (size_t s=0; s<waveform.size(); s++)
-		waveform_histo->SetBinContent(1+s, 0.61035156*(waveform[s]-2048) - pcd_baseline);
+	      for (size_t s=0; s<waveform.size(); s++) {
+		const int16_t adc = waveform[s];
+		const double amplitude = 0.61035156*(adc-2048.) - pcd_baseline;
+		if (amplitude < amplitude_min) amplitude_min = amplitude;
+		if (amplitude > amplitude_max) amplitude_max = amplitude;
+		pcd_waveform_histo->SetBinContent(1+s, amplitude);
+	      }
 
 	      TCanvas *pcd_waveform_canvas = (TCanvas*)(gROOT->FindObject("pcd_waveform_canvas"));
 
 	      if (pcd_waveform_canvas == nullptr) {
+
 		pcd_waveform_canvas = new TCanvas ("pcd_waveform_canvas", "pCD waveform");
 		_objects->Add(pcd_waveform_canvas);
-		waveform_histo->Draw();
-	      } else {
+
+		const double amplitude_range = amplitude_max - amplitude_min;
+		const double amplitude_margin = 0.1*amplitude_range;
+		const double amplitude_ymin = amplitude_min - amplitude_margin;
+		const double amplitude_ymax = amplitude_max + amplitude_margin;
+
+		TH1F *pcd_waveform_frame = new TH1F ("pcd_waveform_frame", "Time (ns);Amplitude (mV)", 1024, 0, 400);
+		// _objects->Add(pcd_waveform_frame);
+
 		pcd_waveform_canvas->cd();
-		waveform_histo->Draw("same");
+		pcd_waveform_frame->GetYaxis()->SetRangeUser(amplitude_ymin, amplitude_ymax);
+		pcd_waveform_frame->Draw("0");
+		pcd_waveform_canvas->Update();
+
+	      } else {
+
+		TH1F *pcd_waveform_frame = (TH1F*)(gROOT->FindObject("pcd_waveform_frame"));
+
+		if (pcd_waveform_frame != nullptr) {
+
+		  amplitude_min = std::min((double)(amplitude_min), pcd_waveform_canvas->GetUymin());
+		  amplitude_max = std::max((double)(amplitude_max), pcd_waveform_canvas->GetUymax());
+
+		  const double amplitude_range = amplitude_max - amplitude_min;
+		  const double amplitude_margin = 0.1*amplitude_range;
+		  const double amplitude_ymin = amplitude_min - amplitude_margin;
+		  const double amplitude_ymax = amplitude_max + amplitude_margin;
+
+		  pcd_waveform_frame->GetYaxis()->SetRangeUser(amplitude_ymin, amplitude_ymax);
+
+		} else {
+		  std::cout << "WAVEFORM FRAME not found" << std::endl;
+		}
 	      }
+
+	      const Color_t waveform_color[6] = {kBlue+1, kGreen+1, kRed+1, kCyan+1, kYellow+1, kMagenta+1};
+
+	      // use the number of drawned object as color index !
+	      const size_t color_index = pcd_waveform_canvas->GetListOfPrimitives()->GetSize() - 2;
+	      // pcd_waveform_histo->SetLineColor(style_manager::get_instance().get_color(color_index));
+	      pcd_waveform_histo->SetLineColor(waveform_color[color_index%6]);
+
+	      pcd_waveform_canvas->cd();
+	      pcd_waveform_histo->Draw("same");
+	      pcd_waveform_canvas->Update();
 
 	      // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
 	      // // Annotate pCD measurement values on waveform ?
