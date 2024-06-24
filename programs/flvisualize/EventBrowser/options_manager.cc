@@ -86,6 +86,8 @@ void options_manager::set_default_options() {
   _options_dictionnary_[SHOW_MC_CALORIMETER_HITS] = true;
   _options_dictionnary_[SHOW_MC_TRACKER_HITS] = true;
   _options_dictionnary_[SHOW_EVENT_HEADER] = true;
+  _options_dictionnary_[SHOW_DIGITIZED_HITS] = true;
+  // _options_dictionnary_[SHOW_DIGITIZED_INFO] = false;
   _options_dictionnary_[SHOW_PRECALIBRATED_HITS] = true;
   // _options_dictionnary_[SHOW_PRECALIBRATED_INFO] = false;
   _options_dictionnary_[SHOW_CALIBRATED_HITS] = true;
@@ -189,6 +191,14 @@ void options_manager::define_view_options(
 		 po::value<bool>(&_options_dictionnary_[SHOW_EVENT_HEADER])->value_name("flag"),
 		 "show event header")
 
+		("show-digitized-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])->value_name("flag"),
+		 "show digitized hits")
+
+		// ("show-digitized-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])->value_name("flag"),
+		//  "show digitized info")
+
 		("show-precalibrated-hits",
 		 po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_HITS])->value_name("flag"),
 		 "show precalibrated hits")
@@ -272,53 +282,63 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
                           po::value<std::string>()->default_value("left")->value_name("side"),
                           "set 2D display position")
 
-      ("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
-       "add a new tab with top/front/side 2D view in one frame")
+		("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
+		 "add a new tab with top/front/side 2D view in one frame")
 
-          ("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
-           "focus views on the 'region-of-interest'")
+		("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
+		 "focus views on the 'region-of-interest'")
 
-              ("show-simulated-vertex",
-               po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
-               "show simulated vertex")
+		("show-simulated-vertex",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
+		 "show simulated vertex")
 
-                  ("show-simulated-tracks",
-                   po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
-                   "show simulated tracks")
+		("show-simulated-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
+		 "show simulated tracks")
 
-                      ("show-simulated-hits",
-                       po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
-                       "show simulated hits")
+		("show-simulated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
+		 "show simulated hits")
 
-                          ("show-calibrated-hits",
-                           po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])
-                               ->value_name("flag"),
-                           "show calibrated hits")
+		("show-event-header",
+		 po::value<bool>(&_options_dictionnary_[SHOW_EVENT_HEADER])->value_name("flag"),
+		 "show event header")
 
-                              ("show-calibrated-info",
-                               po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])
-                                   ->value_name("flag"),
-                               "show calibrated info")
+		("show-digitized-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])->value_name("flag"),
+		 "show digitized hits")
 
-                                  ("show-tracker-clustered-hits",
-                                   po::value<bool>(
-                                       &_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])
-                                       ->value_name("flag"),
-                                   "show tracker clustered hits")
+		// ("show-digitized-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])->value_name("flag"),
+		//  "show digitized info")
 
-                                      ("show-tracker-trajectories",
-                                       po::value<bool>(
-                                           &_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])
-                                           ->value_name("flag"),
-                                       "show tracker trajectories")
+		("show-precalibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_HITS])->value_name("flag"),
+		 "show precalibrated hits")
 
-                                          ("show-particle-tracks",
-                                           po::value<bool>(
-                                               &_options_dictionnary_[SHOW_PARTICLE_TRACKS])
-                                               ->value_name("flag"),
-                                           "show particle tracks")
+		// ("show-precalibrated-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_INFO])->value_name("flag"),
+		//  "show precalibrated info")
 
-      ;  // end of 'view options' description
+		("show-calibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])->value_name("flag"),
+		 "show calibrated hits")
+
+		("show-calibrated-info",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])->value_name("flag"),
+		 "show calibrated info")
+
+		("show-tracker-clustered-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])->value_name("flag"),
+		 "show tracker clustered hits")
+
+		("show-tracker-trajectories",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])->value_name("flag"),
+		 "show tracker trajectories")
+
+		("show-particle-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PARTICLE_TRACKS])->value_name("flag"),
+		 "show particle tracks");
 
   // Collection option descriptions into one
   po::options_description all_opts;

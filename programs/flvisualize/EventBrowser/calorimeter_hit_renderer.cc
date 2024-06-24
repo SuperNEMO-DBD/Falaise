@@ -126,6 +126,69 @@ namespace snemo {
 	FL_LOG_DEVEL("Exiting...");
       }
 
+      void calorimeter_hit_renderer::push_digitized_hits() {
+	const io::event_record& event = _server->get_event();
+	const auto& digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+	const snemo::datamodel::CalorimeterDigiHitHdlCollection& dc_collection = digi_data.get_calorimeter_hits();
+
+	if (dc_collection.empty()) {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "No digitized calorimeter hits");
+	  return;
+	}
+
+	for (const auto& it_hit : dc_collection) {
+	  const snemo::datamodel::calorimeter_digitized_hit& a_hit = it_hit.get();
+
+	  // Geom ID fix
+	  geomtools::geom_id a_geom_id = a_hit.get_geom_id();
+	  if (a_geom_id.get_type() == 1301) {
+	    a_geom_id.set_type(1302);
+	    a_geom_id.set_any(4);
+	  } else if (a_geom_id.get_type() == 1231) {
+	    a_geom_id.set_type(1232);
+	  } else if (a_geom_id.get_type() == 1251) {
+	    a_geom_id.set_type(1252);
+	  }
+
+	  this->highlight_geom_id(a_geom_id, style_manager::get_instance().get_digitized_data_color());
+	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_digitized_data_color());
+
+	  // if (options_manager::get_instance().get_option_flag(SHOW_DIGITIZED_INFO)) {
+	  // }
+
+	  // Highlight flag => Draw UDD waveform
+	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+
+	    const std::vector<int16_t> & waveform = it_hit->get_waveform();
+
+	    const std::string waveform_histo_name (Form("udd_waveform_hit_%02d", a_hit.get_hit_id()));
+	    const std::string waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
+
+	    TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 1024);
+	    waveform_histo->GetXaxis()->SetTitle("Sample");
+	    waveform_histo->GetYaxis()->SetTitle("ADC");
+	    // _objects->Add(waveform_histo);
+
+	    for (size_t s=0; s<waveform.size(); s++)
+	      waveform_histo->SetBinContent(1+s, waveform[s]);
+
+	    TCanvas *udd_waveform_canvas = (TCanvas*)(gROOT->FindObject("udd_waveform_canvas"));
+
+	    if (udd_waveform_canvas == nullptr) {
+	      udd_waveform_canvas = new TCanvas ("udd_waveform_canvas", "UDD waveform");
+	      _objects->Add(udd_waveform_canvas);
+	      waveform_histo->Draw();
+	    } else {
+	      udd_waveform_canvas->cd();
+	      waveform_histo->Draw("same");
+	    }
+
+	  } // if (HIGHLIGHT_FLAG)
+	}
+      }
+
       void calorimeter_hit_renderer::push_precalibrated_hits() {
 	FL_LOG_DEVEL("Entering...");
 	const io::event_record& event = _server->get_event();
@@ -149,7 +212,7 @@ namespace snemo {
 	  // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
 	  // }
 
-	  // Draw UDD waveform
+	  // Draw pCD waveform
 	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
 
 	    const std::string UDD_parent_key = "UDD.parent";
@@ -157,38 +220,38 @@ namespace snemo {
 
 	    if (calo_hit_properties.has_key(UDD_parent_key)) {
 
-	      // retrieve parent UDD calorimeter hit index
-	      const int UDD_parent_index = calo_hit_properties.fetch_integer(UDD_parent_key);
-
 	      // retrieve UDD calorimeter hit waveform
+	      const int UDD_parent_index = calo_hit_properties.fetch_integer(UDD_parent_key);
 	      const auto & udd = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
 	      const auto & udd_hit = udd.get_calorimeter_hits().at(UDD_parent_index);
 	      const std::vector<int16_t> & waveform = udd_hit->get_waveform();
 
-	      const std::string waveform_histo_name (Form("udd_waveform_hit_%02d", a_hit.get_hit_id()));
+	      const std::string waveform_histo_name (Form("pcd_waveform_hit_%02d", a_hit.get_hit_id()));
 	      const std::string waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
 
-	      TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 1024);
-	      waveform_histo->GetXaxis()->SetTitle("Sample");
-	      waveform_histo->GetYaxis()->SetTitle("ADC");
+	      TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 400);
+	      waveform_histo->GetXaxis()->SetTitle("Time (ns)");
+	      waveform_histo->GetYaxis()->SetTitle("Amplitude (mV)");
 	      // _objects->Add(waveform_histo);
 
+	      const double & pcd_baseline = a_hit.get_baseline()/(1E-3*CLHEP::volt);
+
 	      for (size_t s=0; s<waveform.size(); s++)
-		waveform_histo->SetBinContent(1+s, waveform[s]);
+		waveform_histo->SetBinContent(1+s, 0.61035156*(waveform[s]-2048) - pcd_baseline);
 
-	      TCanvas *udd_waveform_canvas = (TCanvas*)(gROOT->FindObject("udd_waveform_canvas"));
+	      TCanvas *pcd_waveform_canvas = (TCanvas*)(gROOT->FindObject("pcd_waveform_canvas"));
 
-	      if (udd_waveform_canvas == nullptr) {
-		udd_waveform_canvas = new TCanvas ("udd_waveform_canvas", "UDD waveform");
-		_objects->Add(udd_waveform_canvas);
+	      if (pcd_waveform_canvas == nullptr) {
+		pcd_waveform_canvas = new TCanvas ("pcd_waveform_canvas", "pCD waveform");
+		_objects->Add(pcd_waveform_canvas);
 		waveform_histo->Draw();
 	      } else {
-		udd_waveform_canvas->cd();
+		pcd_waveform_canvas->cd();
 		waveform_histo->Draw("same");
 	      }
 
 	      // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
-	      // annotate UDD firmware measurement ?!
+	      // // Annotate pCD measurement values on waveform ?
 	      // }
 
 	    } else {
@@ -239,60 +302,6 @@ namespace snemo {
 	    this->highlight_geom_id(a_hit.get_geom_id(),
 				    style_manager::get_instance().get_calibrated_data_color(), oss.str());
 	  }
-
-	  // Draw calibrated UDD waveform
-	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
-
-	    const std::string UDD_parent_key = "UDD.parent";
-	    const std::string pCD_parent_key = "pCD.parent";
-
-	    const datatools::properties & calo_hit_properties = a_hit.get_auxiliaries();
-
-	    if (calo_hit_properties.has_key(UDD_parent_key)) {
-
-	      // retrieve parent UDD and pCD calorimeter hit index
-	      const int UDD_parent_index = calo_hit_properties.fetch_integer(UDD_parent_key);
-	      const int pCD_parent_index = calo_hit_properties.fetch_integer(pCD_parent_key);
-
-	      // retrieve UDD calorimeter hit waveform
-	      const auto & udd = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
-	      const auto & udd_hit = udd.get_calorimeter_hits().at(UDD_parent_index);
-	      const std::vector<int16_t> & waveform = udd_hit->get_waveform();
-
-	      const auto & pcd = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
-	      const auto & pcd_hit = pcd.calorimeter_hits().at(pCD_parent_index);
-	      const double & pcd_baseline = pcd_hit->get_baseline()/(1E-3*CLHEP::volt);
-
-	      const std::string waveform_histo_name (Form("pcd_waveform_hit_%02d", a_hit.get_hit_id()));
-	      const std::string waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
-
-	      TH1F *waveform_histo = new TH1F (waveform_histo_name.c_str(), waveform_histo_title.c_str(), 1024, 0, 400);
-	      waveform_histo->GetXaxis()->SetTitle("Time (ns)");
-	      waveform_histo->GetYaxis()->SetTitle("Amplitude (mV)");
-	      // _objects->Add(waveform_histo);
-
-	      for (size_t s=0; s<waveform.size(); s++)
-		waveform_histo->SetBinContent(1+s, 0.61035156*(waveform[s]-2048) - pcd_baseline);
-
-	      TCanvas *pcd_waveform_canvas = (TCanvas*)(gROOT->FindObject("pcd_waveform_canvas"));
-
-	      if (pcd_waveform_canvas == nullptr) {
-		pcd_waveform_canvas = new TCanvas ("pcd_waveform_canvas", "pCD waveform");
-		_objects->Add(pcd_waveform_canvas);
-		waveform_histo->Draw();
-	      } else {
-		pcd_waveform_canvas->cd();
-		waveform_histo->Draw("same");
-	      }
-
-	      // if (options_manager::get_instance().get_option_flag(SHOW_CALIBRATED_INFO)) {
-	      // }
-
-	    } else {
-	      // "UDD.parent" properties missing
-	    }
-
-	  } // if (HIGHLIGHT_FLAG)
 
 	}
   	FL_LOG_DEVEL("Exiting...");

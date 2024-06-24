@@ -256,6 +256,10 @@ namespace snemo {
 				menu_options->AddEntry("Show event header info", SHOW_EVENT_HEADER);
 				menu_options->AddSeparator();
 
+				menu_options->AddEntry("Show digi. hits", SHOW_DIGITIZED_HITS);
+				// menu_options->AddEntry("Show digi. info", SHOW_DIGITIZED_INFO);
+				menu_options->AddSeparator();
+
 				menu_options->AddEntry("Show precalib. hits", SHOW_PRECALIBRATED_HITS);
 				// menu_options->AddEntry("Show precalib. info", SHOW_PRECALIBRATED_INFO);
 				menu_options->AddSeparator();
@@ -389,6 +393,10 @@ namespace snemo {
 					disable_option(SHOW_MC_VERTEX);
 					disable_option(SHOW_MC_HITS);
 					disable_option(SHOW_MC_TRACKS);
+					disable_option(SHOW_DIGITIZED_HITS);
+					// disable_option(SHOW_DIGITIZED_INFO);
+					disable_option(SHOW_PRECALIBRATED_HITS);
+					// disable_option(SHOW_PRECALIBRATED_INFO);
 					disable_option(SHOW_CALIBRATED_HITS);
 					disable_option(SHOW_CALIBRATED_INFO);
 					disable_option(SHOW_TRACKER_CLUSTERED_HITS);
@@ -398,6 +406,16 @@ namespace snemo {
 						disable_option(SHOW_MC_VERTEX);
 						disable_option(SHOW_MC_HITS);
 						disable_option(SHOW_MC_TRACKS);
+					}
+
+					if (!server_.get_event().has(io::UDD_LABEL)) {
+						disable_option(SHOW_DIGITIZED_HITS);
+						// disable_option(SHOW_DIGITIZED_INFO);
+					}
+
+					if (!server_.get_event().has(io::pCD_LABEL)) {
+						disable_option(SHOW_PRECALIBRATED_HITS);
+						// disable_option(SHOW_PRECALIBRATED_INFO);
 					}
 
 					if (!server_.get_event().has(io::CD_LABEL)) {

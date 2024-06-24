@@ -68,14 +68,6 @@ namespace snemo {
 	  return;
 	}
 
-	// Add 'simulated_data' objects:
-	if (_server_->get_event().has(io::SD_LABEL)) {
-	  this->_add_simulated_data();
-	} else {
-	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
-		       "Event has no simulated data");
-	}
-
 	// Add 'event_header' objects:
 	if (_server_->get_event().has(io::EH_LABEL)) {
 	  this->_add_event_header_data();
@@ -84,8 +76,24 @@ namespace snemo {
 		       "Event has no event header");
 	}
 
+	// Add 'simulated_data' objects:
+	if (_server_->get_event().has(io::SD_LABEL)) {
+	  this->_add_simulated_data();
+	} else {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "Event has no simulated data");
+	}
+
+	// Add 'digitized_data' objects:
+	if (_server_->get_event().has(io::UDD_LABEL)) {
+	  this->_add_digitized_data();
+	} else {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "Event has no digitized data");
+	}
+
 	// Add 'precalibrated_data' objects:
-	if (_server_->get_event().has(io::CD_LABEL)) {
+	if (_server_->get_event().has(io::pCD_LABEL)) {
 	  this->_add_precalibrated_data();
 	} else {
 	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
@@ -256,6 +264,20 @@ namespace snemo {
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_EVENT_HEADER)) {
 	  _visual_track_renderer_.push_data_legend();
+	}
+	FL_LOG_DEVEL("Exiting...");
+      }
+
+      /****************************************************
+       *  Filling objects from the 'digitized_data' bank *
+       ****************************************************/
+
+      void snemo_draw_manager::_add_digitized_data() {
+	FL_LOG_DEVEL("Entering...");
+	const options_manager& options_mgr = options_manager::get_instance();
+	if (options_mgr.get_option_flag(SHOW_DIGITIZED_HITS)) {
+	  _calorimeter_hit_renderer_.push_digitized_hits();
+	  _tracker_hit_renderer_.push_digitized_hits();
 	}
 	FL_LOG_DEVEL("Exiting...");
       }

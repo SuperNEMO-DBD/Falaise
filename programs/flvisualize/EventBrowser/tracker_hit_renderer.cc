@@ -182,9 +182,27 @@ namespace snemo {
         return;
       }
 
+      void tracker_hit_renderer::push_digitized_hits() {
+	const io::event_record &event = _server->get_event();
+	const auto &digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+	const snemo::datamodel::TrackerDigiHitHdlCollection &dt_collection = digi_data.get_tracker_hits();
+
+	if (dt_collection.empty()) {
+	  DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+			     "No digitized tracker hits");
+	  return;
+	}
+
+	for (const auto &it_hit : dt_collection) {
+	  const snemo::datamodel::tracker_digitized_hit &a_hit = it_hit.get();
+	  tracker_hit_renderer::_make_digitized_geiger_hit(a_hit);
+	}
+      }
+
       void tracker_hit_renderer::push_precalibrated_hits()
       {
-        FL_LOG_DEVEL("Entering...");
+        // FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
         const auto & precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
 
@@ -193,7 +211,7 @@ namespace snemo {
         if (pct_collection.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
                              "No calibrated tracker hits");
-          FL_LOG_DEVEL("Exiting...");
+          // FL_LOG_DEVEL("Exiting...");
           return;
         }
 
@@ -203,7 +221,7 @@ namespace snemo {
 	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
 	  tracker_hit_renderer::_make_precalibrated_geiger_hit(a_hit);
         }
-        FL_LOG_DEVEL("Exiting...");
+        // FL_LOG_DEVEL("Exiting...");
         return;
       }
 
@@ -424,6 +442,79 @@ namespace snemo {
           } // end of trajectory loop
         } // end of solution loop
         FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
+      void tracker_hit_renderer::_make_digitized_geiger_hit(const snemo::datamodel::tracker_digitized_hit & hit_)
+      {
+        // FL_LOG_DEVEL("Entering...");
+        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+	const geomtools::mapping & detector_mapping = detector_mgr.get_geometry_manager().get_mapping();
+
+	const geomtools::geom_info & cell_ginfo = detector_mapping.get_geom_info(hit_.get_geom_id());
+	const geomtools::placement & cell_placement = cell_ginfo.get_world_placement();
+	const geomtools::vector_3d & cell_pos  = cell_placement.get_translation();
+
+        geomtools::vector_3d cell_module_pos(cell_pos.getX(), cell_pos.getY(), 0);
+        geomtools::vector_3d cell_world_pos;
+	detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
+        // Get (x, y) position of triggered cell
+        const double x = cell_world_pos.x();
+        const double y = cell_world_pos.y();
+	const double z = 1.515 * CLHEP::m;
+	const double r = 22.0 * CLHEP::mm;
+
+        // Get hit auxiliaries
+        const datatools::properties & aux = hit_.get_auxiliaries();
+
+        // Retrieve line width from properties if 'hit' is highlighted:
+        size_t line_width = style_manager::get_instance().get_mc_line_width();
+        if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+          line_width = 3;
+        }
+
+        int color = style_manager::get_instance().get_digitized_data_color();
+
+	{
+	  // prepare square at bottom of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+
+	  // insert diagonal '\' if bottom cathode is missing
+	  if (!hit_.get_times().front().has_bottom_cathode_time())
+	    points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	{
+	  // prepare square at top of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+
+	  // insert diagonal '/' if top cathode is missing
+	  if (!hit_.get_times().front().has_top_cathode_time())
+	    points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	// FL_LOG_DEVEL("Exiting...");
         return;
       }
 

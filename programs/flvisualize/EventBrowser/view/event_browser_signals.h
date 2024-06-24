@@ -73,6 +73,10 @@ enum button_signals_type {
 	// Data menu
 	SHOW_EVENT_HEADER,
 
+  // Digi. menu
+	SHOW_DIGITIZED_HITS,
+	// SHOW_DIGITIZED_INFO,
+
   // preCalib. menu
 	SHOW_PRECALIBRATED_HITS,
 	// SHOW_PRECALIBRATED_INFO,

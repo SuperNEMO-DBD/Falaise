@@ -111,6 +111,9 @@ class style_manager : public utils::singleton<style_manager>, public datatools::
   /// Get Monte-Carlo line width
   size_t get_mc_line_width() const;
 
+  /// Get color for digitized info
+  size_t get_digitized_data_color() const;
+
   /// Get color for precalibrated info
   size_t get_precalibrated_data_color() const;
 
@@ -261,6 +264,9 @@ class style_manager : public utils::singleton<style_manager>, public datatools::
   size_t _undefined_particle_color_;
   particle_properties_dict_type _particles_properties_;
   std::map<std::string, std::string> _particle_name_dict_;
+
+  // Digitized stuff
+  size_t _digitized_data_color_;
 
   // preCalibrated stuff
   size_t _precalibrated_data_color_;
