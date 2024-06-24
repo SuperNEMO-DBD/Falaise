@@ -671,16 +671,16 @@ namespace snemo {
 	if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id"))
 	  cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
 
-	//
-	if (cluster_id != -1) {
+	// Calibrate it
+	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());
+
+	// add CD hit into TCD solution
+	if ((cluster_id != -1) && datatools::is_valid(cd_tracker_hit->get_z())) {
 	  auto & tcd_cluster = tcd_clusters.at(cluster_id);
 	  tcd_cluster->hits().push_back(cd_tracker_hit);
 	} else {
 	  tcd_unclustered_hits.push_back(cd_tracker_hit);
 	}
-
-	// Calibrate it
-	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());
 
 	// Append it to the collection:
 	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
