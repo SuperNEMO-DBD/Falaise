@@ -83,7 +83,10 @@ namespace snemo {
 
       size_t style_manager::get_mc_line_style() const { return _mc_line_style_; }
 
-      void style_manager::set_mc_line_width(const size_t width_) { _mc_line_width_ = width_; }
+      size_t style_manager::get_reference_source_plane_vertex_color() const
+      {
+        return _reference_source_plane_vertex_color_;
+      }      void style_manager::set_mc_line_width(const size_t width_) { _mc_line_width_ = width_; }
 
       size_t style_manager::get_mc_line_width() const { return _mc_line_width_; }
 
@@ -798,6 +801,7 @@ namespace snemo {
 } // end of namespace snemo
 
 // end of style_manager.cc
+
 /*
 ** Local Variables: --
 ** mode: c++ --

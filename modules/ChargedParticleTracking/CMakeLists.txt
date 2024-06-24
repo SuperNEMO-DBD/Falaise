@@ -18,6 +18,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 list(APPEND FalaiseChargedParticleTrackingPlugin_HEADERS
   ChargedParticleTracking/charge_computation_driver.h
   ChargedParticleTracking/vertex_extrapolation_driver.h
+  ChargedParticleTracking/source_vertex_extrapolator.h
   ChargedParticleTracking/calorimeter_association_driver.h
   ChargedParticleTracking/alpha_finder_driver.h
   ChargedParticleTracking/charged_particle_tracking_module.h)
@@ -26,6 +27,7 @@ list(APPEND FalaiseChargedParticleTrackingPlugin_HEADERS
 list(APPEND FalaiseChargedParticleTrackingPlugin_SOURCES
   ChargedParticleTracking/charge_computation_driver.cc
   ChargedParticleTracking/vertex_extrapolation_driver.cc
+  ChargedParticleTracking/source_vertex_extrapolator.cc
   ChargedParticleTracking/calorimeter_association_driver.cc
   ChargedParticleTracking/alpha_finder_driver.cc
   ChargedParticleTracking/charged_particle_tracking_module.cc)

@@ -86,7 +86,7 @@ void special_volume::_construct(const geomtools::i_shape_3d & shape_3d_) {
       geomtools::i_object_3d & obj = const_cast<geomtools::i_object_3d &>(constObj);
       obj.set_wires_drawer(*_wires_drawer_);
     } else {
-      std::cerr << "DEVEL: ******** shape 3d '" << shape_3d_.get_shape_name() << "' already has a wires drawer" << std::endl;
+      // std::cerr << "DEVEL: ******** shape 3d '" << shape_3d_.get_shape_name() << "' already has a wires drawer" << std::endl;
     }
   } 
   
