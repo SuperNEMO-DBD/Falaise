@@ -250,7 +250,9 @@ namespace snemo {
 
       }
 
-      void visual_track_renderer::push_reconstructed_tracks() {
+      void visual_track_renderer::push_reconstructed_tracks()
+      {
+	style_manager &style_mgr = style_manager::get_instance();
 	const io::event_record &event = _server->get_event();
 	const auto &pt_data = event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
 
@@ -317,10 +319,14 @@ namespace snemo {
 	    for (const auto & a_vertex : vertices) {
 	      const geomtools::blur_spot & a_spot = a_vertex->get_spot();
 	      const geomtools::vector_3d & a_position = a_spot.get_position();
+	      std::size_t effectiveColor = color;
+	      if (a_vertex->is_on_reference_source_plane()) {
+		effectiveColor = style_mgr.get_reference_source_plane_vertex_color();
+	      }
 	      {
 		TPolyMarker3D * mark = base_renderer::make_polymarker(a_position);
 		_objects->Add(mark);
-		mark->SetMarkerColor(color);
+		mark->SetMarkerColor(effectiveColor);
 		// mark->SetMarkerStyle(kStar);
 		mark->SetMarkerStyle(kOpenCrossX);
 	      }
@@ -332,20 +338,20 @@ namespace snemo {
 		}
 		TPolyMarker3D * fromMark = base_renderer::make_polymarker(fromPoint);
 		_objects->Add(fromMark);
-		fromMark->SetMarkerColor(color);
+		fromMark->SetMarkerColor(effectiveColor);
 		fromMark->SetMarkerStyle(kOpenCircle);
 		geomtools::polyline_type polyVertices;
 		polyVertices.push_back(fromPoint);
 		polyVertices.push_back(a_position);
 		TPolyLine3D * extrapolatedTrack = base_renderer::make_polyline(polyVertices);
 		_objects->Add(extrapolatedTrack);
-		extrapolatedTrack->SetLineColor(color);
+		extrapolatedTrack->SetLineColor(effectiveColor);
 		extrapolatedTrack->SetLineStyle(kDashed);
 	      }
 	      if (a_vertex->get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
 		TPolyMarker3D *mark = base_renderer::make_polymarker(a_position);
 		_objects->Add(mark);
-		mark->SetMarkerColor(color);
+		mark->SetMarkerColor(effectiveColor);
 		mark->SetMarkerStyle(kCircle);
 	      }
 	      
