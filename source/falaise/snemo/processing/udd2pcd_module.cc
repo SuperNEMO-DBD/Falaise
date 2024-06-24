@@ -523,7 +523,7 @@ namespace snemo {
         new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
 
-	if (new_pcd_calo->get_geom_id().get_type() == 1203)
+	if (new_pcd_tracker->get_geom_id().get_type() == 1203)
 	  new_pcd_tracker->grab_geom_id().set_type(1204);
 
         // Convert and fill the earliest R0 timestamp
