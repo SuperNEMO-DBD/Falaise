@@ -211,10 +211,15 @@ namespace snemo {
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
-        new_pcd_calo->grab_geom_id().set_type(new_pcd_calo->get_geom_id().get_type()+1);
 
-	if (new_pcd_calo->get_geom_id().get_type() == 1302)
-	  new_pcd_calo->grab_geom_id().set_any(4); // for MW only
+	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
+	  new_pcd_calo->grab_geom_id().set_type(1302);
+	  new_pcd_calo->grab_geom_id().set_any(4);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
+	  new_pcd_calo->grab_geom_id().set_type(1232);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
+	  new_pcd_calo->grab_geom_id().set_type(1251);
+	}
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
         const int16_t & fwmeas_baseline_d  = a_udd_calo_hit->get_fwmeas_baseline();
@@ -307,10 +312,16 @@ namespace snemo {
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
-        new_pcd_calo->grab_geom_id().set_type(new_pcd_calo->get_geom_id().get_type()+1);
+        new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
-	if (new_pcd_calo->get_geom_id().get_type() == 1302)
-	  new_pcd_calo->grab_geom_id().set_any(4); // for MW only
+	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
+	  new_pcd_calo->grab_geom_id().set_type(1302);
+	  new_pcd_calo->grab_geom_id().set_any(4);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
+	  new_pcd_calo->grab_geom_id().set_type(1232);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
+	  new_pcd_calo->grab_geom_id().set_type(1251);
+	}
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
 
@@ -511,7 +522,9 @@ namespace snemo {
         // Keep same hit number for tracker's digitized hit and precalibrated hit
         new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
-	new_pcd_tracker->grab_geom_id().set_type(new_pcd_tracker->get_geom_id().get_type()+1);
+
+	if (new_pcd_calo->get_geom_id().get_type() == 1203)
+	  new_pcd_tracker->grab_geom_id().set_type(1204);
 
         // Convert and fill the earliest R0 timestamp
         const double first_anode_time = first_anode_timestamp[0] * TRACKER_TDC_TICK;
@@ -798,7 +811,7 @@ namespace snemo {
 
         } // for (cluster_pcd_tracker_hit_index)
 
-        cluster_mean_anode_time /= (double)(pcd_tracker_hit_clusters.size());
+        cluster_mean_anode_time /= (double)(cluster_pcd_tracker_hit_indexes.size());
 
 	int cluster_first_anode_index = cluster_first_anode_indexes.front();
 	double cluster_first_anode_time = cluster_first_anode_times.front();
@@ -974,7 +987,7 @@ namespace snemo {
         } // if (best_reference_pcd_calo_hit_index != -1)
 
 	cpcd_data_.push_back(new_precalibrated_cluster);
-        
+
         /*******************************************************/
         /* 2023-03-05 FM: Final registration of clusterization */
         /* informations in the pCD bank                        */
