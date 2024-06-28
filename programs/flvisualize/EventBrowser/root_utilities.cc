@@ -267,13 +267,14 @@ namespace snemo {
       void root_utilities::get_prettified_time(std::ostream &out_, const double time_,
 					       const double sigma_, const bool latex_) {
 	std::string unit_id = "ps";
-	if (time_ > 1e12 * CLHEP::picosecond) {
+	const double time_abs_ = std::abs(time_);
+	if (time_abs_ > 1e12 * CLHEP::picosecond) {
 	  unit_id = "s";
-	} else if (time_ > 1e9 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e9 * CLHEP::picosecond) {
 	  unit_id = "ms";
-	} else if (time_ > 1e6 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e6 * CLHEP::picosecond) {
 	  unit_id = "us";
-	} else if (time_ > 1e3 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e3 * CLHEP::picosecond) {
 	  unit_id = "ns";
 	}
 	const double unit = datatools::units::get_time_unit_from(unit_id);

@@ -313,6 +313,9 @@ namespace snemo {
                 const double dz = a_gg_hit.get_sigma_z();
                 const double r = 22.0 / CLHEP::mm;
 
+		if (!datatools::is_valid(z))
+		  continue;
+
                 auto * hit_3d = new TMarker3DBox;
                 _objects->Add(hit_3d);
                 hit_3d->SetPosition(x, y, z);
