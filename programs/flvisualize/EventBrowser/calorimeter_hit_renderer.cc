@@ -31,10 +31,18 @@
 
 #include <geomtools/id_mgr.h>
 
+#include <falaise/snemo/datamodels/geomid_utils.h>
+
 #include <TColor.h>
 #include <TMarker3DBox.h>
 // #include <TObjArray.h>
 #include <TPolyMarker3D.h>
+
+#include <TCanvas.h>
+#include <TH1F.h>
+#include <TLegend.h>
+#include <TLegendEntry.h>
+#include <TROOT.h>
 
 namespace snemo {
 
@@ -120,6 +128,288 @@ namespace snemo {
 	FL_LOG_DEVEL("Exiting...");
       }
 
+      void calorimeter_hit_renderer::push_digitized_hits() {
+	const io::event_record& event = _server->get_event();
+	const auto& digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+	const snemo::datamodel::CalorimeterDigiHitHdlCollection& dc_collection = digi_data.get_calorimeter_hits();
+
+	if (dc_collection.empty()) {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "No digitized calorimeter hits");
+	  return;
+	}
+
+	for (const auto& it_hit : dc_collection) {
+	  const snemo::datamodel::calorimeter_digitized_hit& a_hit = it_hit.get();
+
+	  // Geom ID fix
+	  geomtools::geom_id a_geom_id = a_hit.get_geom_id();
+	  if (a_geom_id.get_type() == 1301) {
+	    a_geom_id.set_type(1302);
+	    a_geom_id.set_any(4);
+	  } else if (a_geom_id.get_type() == 1231) {
+	    a_geom_id.set_type(1232);
+	  } else if (a_geom_id.get_type() == 1251) {
+	    a_geom_id.set_type(1252);
+	  }
+
+	  this->highlight_geom_id(a_geom_id, style_manager::get_instance().get_digitized_data_color());
+	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_digitized_data_color());
+
+	  // if (options_manager::get_instance().get_option_flag(SHOW_DIGITIZED_INFO)) {
+	  // }
+
+	  // Highlight flag => Draw UDD waveform
+	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+
+	    const std::vector<int16_t> & waveform = it_hit->get_waveform();
+
+	    const std::string udd_waveform_histo_name (Form("udd_waveform_hit_%02d", a_hit.get_hit_id()));
+	    const std::string udd_waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
+
+	    TH1F *udd_waveform_histo = new TH1F (udd_waveform_histo_name.c_str(), udd_waveform_histo_title.c_str(), 1024, 0, 1024);
+	    udd_waveform_histo->GetXaxis()->SetTitle("Sample");
+	    udd_waveform_histo->GetYaxis()->SetTitle("ADC");
+	    // _objects->Add(udd_waveform_histo);
+
+	    int16_t adc_min = 4096;
+	    int16_t adc_max = 0;
+
+	    for (size_t s=0; s<waveform.size(); s++) {
+	      const int16_t adc = waveform[s];
+	      if (adc < adc_min) adc_min = adc;
+	      if (adc > adc_max) adc_max = adc;
+	      udd_waveform_histo->SetBinContent(1+s, adc);
+	    }
+
+	    TCanvas *udd_waveform_canvas = (TCanvas*)(gROOT->FindObject("udd_waveform_canvas"));
+
+	    if (udd_waveform_canvas == nullptr) {
+
+	      udd_waveform_canvas = new TCanvas ("udd_waveform_canvas", "UDD waveform");
+	      _objects->Add(udd_waveform_canvas);
+
+	      TH1F *udd_waveform_frame = new TH1F ("udd_waveform_frame", ";Sample;ADC", 1024, 0, 1024);
+	      // _objects->Add(udd_waveform_frame);
+
+	      // adjust Y range to [adc_min,adc_max] with 10 % additional margin
+	      const double adc_range = adc_max - adc_min;
+	      const double adc_margin = 0.1*adc_range;
+	      const double adc_ymin = std::max(adc_min-adc_margin, 0.);
+	      const double adc_ymax = std::min(adc_max+adc_margin, 4096.);
+	      udd_waveform_frame->GetYaxis()->SetRangeUser(adc_ymin, adc_ymax);
+
+	      udd_waveform_canvas->cd();
+	      udd_waveform_frame->Draw("0");
+	      udd_waveform_canvas->Update();
+
+	      TLegend *udd_waveform_legend = new TLegend(0.78, 0.20, 1.0, 0.25);
+	      udd_waveform_legend->SetName("udd_waveform_legend");
+	      udd_waveform_legend->SetFillStyle(0);
+	      udd_waveform_legend->SetLineWidth(0);
+	      udd_waveform_legend->Draw();
+
+	    } else {
+
+	      TH1F *udd_waveform_frame = (TH1F*)(gROOT->FindObject("udd_waveform_frame"));
+
+	      if (udd_waveform_frame != nullptr) {
+
+		// retrieve [adc_min,adc_max] from the canvas
+		const double canvas_range_min = udd_waveform_canvas->GetUymin();
+		const double canvas_range_max = udd_waveform_canvas->GetUymax();
+		const double canvas_margin = (canvas_range_max-canvas_range_min)*0.1/1.2;
+		const double canvas_adc_min = canvas_range_min + canvas_margin;
+		const double canvas_adc_max = canvas_range_max - canvas_margin;
+
+		// update boundaries if needed
+		adc_min = std::min((double)(adc_min), canvas_adc_min);
+		adc_max = std::max((double)(adc_max), canvas_adc_max);
+
+		// adjust Y range with 10 % additional margin
+		const double adc_range = adc_max - adc_min;
+		const double adc_margin = 0.1*adc_range;
+		const double adc_ymin = std::max(adc_min-adc_margin, 0.);
+		const double adc_ymax = std::min(adc_max+adc_margin, 4096.);
+		udd_waveform_frame->GetYaxis()->SetRangeUser(adc_ymin, adc_ymax);
+
+	      } else {
+		std::cout << "WAVEFORM FRAME not found" << std::endl;
+	      }
+	    }
+
+	    // home made palette
+	    const Color_t waveform_color[8] = {kBlue+1, kGreen+1, kRed+1, kCyan+1, kYellow+1, kMagenta+1, kOrange-3, kGray+1};
+
+	    // use the number of drawned object as color index !
+	    const size_t color_index = udd_waveform_canvas->GetListOfPrimitives()->GetSize() - 3;
+	    // udd_waveform_histo->SetLineColor(style_manager::get_instance().get_color(color_index));
+	    udd_waveform_histo->SetLineColor(waveform_color[color_index%8]);
+
+	    if (TLegend *udd_waveform_legend = (TLegend*)(gROOT->FindObject("udd_waveform_legend"))) {
+	      const std::string l_label = snemo::datamodel::om_label(a_geom_id);
+	      TLegendEntry *lentry = udd_waveform_legend->AddEntry(udd_waveform_histo, l_label.c_str(), "");
+	      lentry->SetTextColor(waveform_color[color_index%8]);
+	      lentry->SetTextFont(62); // helvetica bold
+	      udd_waveform_legend->SetY2NDC(0.25 + 0.05*color_index);
+	    }
+
+	    udd_waveform_canvas->cd();
+	    udd_waveform_histo->Draw("same");
+	    udd_waveform_canvas->Update();
+
+	  } // if (HIGHLIGHT_FLAG)
+	}
+      }
+
+      void calorimeter_hit_renderer::push_precalibrated_hits() {
+	FL_LOG_DEVEL("Entering...");
+	const io::event_record& event = _server->get_event();
+	const auto& precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
+
+	const snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection& pcc_collection =
+	  precalib_data.calorimeter_hits();
+
+	if (pcc_collection.empty()) {
+	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
+		       "No calibrated calorimeter hits");
+	  FL_LOG_DEVEL("Exiting...");
+	  return;
+	}
+
+	for (const auto& it_hit : pcc_collection) {
+	  const snemo::datamodel::precalibrated_calorimeter_hit& a_hit = it_hit.get();
+
+	  this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
+
+	  // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
+	  // }
+
+	  // Draw pCD waveform
+	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+
+	    const std::string UDD_parent_key = "UDD.parent";
+	    const datatools::properties & calo_hit_properties = a_hit.get_auxiliaries();
+
+	    if (calo_hit_properties.has_key(UDD_parent_key)) {
+
+	      // retrieve UDD calorimeter hit waveform
+	      const int UDD_parent_index = calo_hit_properties.fetch_integer(UDD_parent_key);
+	      const auto & udd = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+	      const auto & udd_hit = udd.get_calorimeter_hits().at(UDD_parent_index);
+	      const std::vector<int16_t> & waveform = udd_hit->get_waveform();
+
+	      const std::string pcd_waveform_histo_name (Form("pcd_waveform_hit_%02d", a_hit.get_hit_id()));
+	      const std::string pcd_waveform_histo_title (snemo::datamodel::om_label(a_hit.get_geom_id()));
+
+	      TH1F *pcd_waveform_histo = new TH1F (pcd_waveform_histo_name.c_str(), pcd_waveform_histo_title.c_str(), 1024, 0, 400);
+	      pcd_waveform_histo->GetXaxis()->SetTitle("Time (ns)");
+	      pcd_waveform_histo->GetYaxis()->SetTitle("Amplitude (mV)");
+	      // _objects->Add(pcd_waveform_histo);
+
+	      double amplitude_min = 2500.;
+	      double amplitude_max = -2500.;
+
+	      const double & pcd_baseline = a_hit.get_baseline()/(1E-3*CLHEP::volt);
+
+	      for (size_t s=0; s<waveform.size(); s++) {
+		const int16_t adc = waveform[s];
+		const double amplitude = 0.61035156*(adc-2048.) - pcd_baseline;
+		if (amplitude < amplitude_min) amplitude_min = amplitude;
+		if (amplitude > amplitude_max) amplitude_max = amplitude;
+		pcd_waveform_histo->SetBinContent(1+s, amplitude);
+	      }
+
+	      TCanvas *pcd_waveform_canvas = (TCanvas*)(gROOT->FindObject("pcd_waveform_canvas"));
+
+	      if (pcd_waveform_canvas == nullptr) {
+
+		pcd_waveform_canvas = new TCanvas ("pcd_waveform_canvas", "pCD waveform");
+		_objects->Add(pcd_waveform_canvas);
+
+		TH1F *pcd_waveform_frame = new TH1F ("pcd_waveform_frame", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
+		// _objects->Add(pcd_waveform_frame);
+
+		const double amplitude_range = amplitude_max - amplitude_min;
+		const double amplitude_margin = 0.1*amplitude_range;
+		const double amplitude_ymin = amplitude_min - amplitude_margin;
+		const double amplitude_ymax = amplitude_max + amplitude_margin;
+		pcd_waveform_frame->GetYaxis()->SetRangeUser(amplitude_ymin, amplitude_ymax);
+
+		pcd_waveform_canvas->cd();
+		pcd_waveform_frame->Draw("0");
+		pcd_waveform_canvas->Update();
+
+		TLegend *pcd_waveform_legend = new TLegend(0.78, 0.20, 1.0, 0.25);
+		pcd_waveform_legend->SetName("pcd_waveform_legend");
+		pcd_waveform_legend->SetFillStyle(0);
+		pcd_waveform_legend->SetLineWidth(0);
+		pcd_waveform_legend->Draw();
+
+	      } else {
+
+		TH1F *pcd_waveform_frame = (TH1F*)(gROOT->FindObject("pcd_waveform_frame"));
+
+		if (pcd_waveform_frame != nullptr) {
+
+		  // retrieve [amplitude_min,amplitude_max] from the canvas
+		  const double canvas_range_min = pcd_waveform_canvas->GetUymin();
+		  const double canvas_range_max = pcd_waveform_canvas->GetUymax();
+		  const double canvas_margin = (canvas_range_max-canvas_range_min)*0.1/1.2;
+		  const double canvas_amplitude_min = canvas_range_min + canvas_margin;
+		  const double canvas_amplitude_max = canvas_range_max - canvas_margin;
+
+		  // update boundaries if needed
+		  amplitude_min = std::min((double)(amplitude_min), canvas_amplitude_min);
+		  amplitude_max = std::max((double)(amplitude_max), canvas_amplitude_max);
+
+		  // adjust Y range with 10 % additional margin
+		  const double amplitude_range = amplitude_max - amplitude_min;
+		  const double amplitude_margin = 0.1*amplitude_range;
+		  const double amplitude_ymin = amplitude_min - amplitude_margin;
+		  const double amplitude_ymax = amplitude_max + amplitude_margin;
+		  pcd_waveform_frame->GetYaxis()->SetRangeUser(amplitude_ymin, amplitude_ymax);
+
+		} else {
+		  std::cout << "WAVEFORM FRAME not found" << std::endl;
+		}
+	      }
+
+	      // home made palette
+	      const Color_t waveform_color[8] = {kBlue+1, kGreen+1, kRed+1, kCyan+1, kYellow+1, kMagenta+1, kOrange-3, kGray+1};
+
+	      // use the number of drawned object as color index !
+	      const size_t color_index = pcd_waveform_canvas->GetListOfPrimitives()->GetSize() - 3;
+	      // pcd_waveform_histo->SetLineColor(style_manager::get_instance().get_color(color_index));
+	      pcd_waveform_histo->SetLineColor(waveform_color[color_index%8]);
+
+	      if (TLegend *pcd_waveform_legend = (TLegend*)(gROOT->FindObject("pcd_waveform_legend"))) {
+		const std::string l_label = snemo::datamodel::om_label(a_hit.get_geom_id());
+		TLegendEntry *lentry = pcd_waveform_legend->AddEntry(pcd_waveform_histo, l_label.c_str(), "");
+		lentry->SetTextColor(waveform_color[color_index%8]);
+		lentry->SetTextFont(62); // helvetica bold
+		pcd_waveform_legend->SetY2NDC(0.25 + 0.05*color_index);
+	      }
+
+	      pcd_waveform_canvas->cd();
+	      pcd_waveform_histo->Draw("same");
+	      pcd_waveform_canvas->Update();
+
+	      // if (options_manager::get_instance().get_option_flag(SHOW_PRECALIBRATED_INFO)) {
+	      // // Annotate pCD measurement values on waveform ?
+	      // }
+
+	    } else {
+	      // "UDD.parent" properties missing
+	    }
+
+	  } // if (HIGHLIGHT_FLAG)
+
+	}
+	FL_LOG_DEVEL("Exiting...");
+      }
+
       void calorimeter_hit_renderer::push_calibrated_hits() {
 	FL_LOG_DEVEL("Entering...");
 	const io::event_record& event = _server->get_event();
@@ -158,6 +448,7 @@ namespace snemo {
 	    this->highlight_geom_id(a_hit.get_geom_id(),
 				    style_manager::get_instance().get_calibrated_data_color(), oss.str());
 	  }
+
 	}
   	FL_LOG_DEVEL("Exiting...");
       }

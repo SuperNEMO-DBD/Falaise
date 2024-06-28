@@ -59,6 +59,12 @@ namespace snemo {
         /// Add objects from simulated hits
         void push_simulated_hits(const std::string & hit_category_ = "");
 
+        /// Add objects from digitized hits
+        void push_digitized_hits();
+
+        /// Add objects from precalibrated hits
+        void push_precalibrated_hits();
+
         /// Add objects from calibrated hits
         void push_calibrated_hits();
 
@@ -69,9 +75,15 @@ namespace snemo {
         void push_fitted_tracks();
 
       protected:
+        /// Special method to show digitized geiger hit
+        void _make_digitized_geiger_hit(const snemo::datamodel::tracker_digitized_hit & hit_);
+
+        /// Special method to show precalibrated geiger hit
+        void _make_precalibrated_geiger_hit(const snemo::datamodel::precalibrated_tracker_hit & hit_);
+
         /// Special method to show calibrated geiger hit
         void _make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
-                                         const bool show_cluster = false);
+                                         const bool show_cluster = false, const bool invalid_z = false);
       };
 
     } // end of namespace view

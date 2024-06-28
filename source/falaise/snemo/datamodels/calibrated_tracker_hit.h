@@ -228,9 +228,12 @@ namespace snemo {
 
     using TrackerHit = calibrated_tracker_hit;
     using TrackerHitCollection = std::vector<TrackerHit>;
-
     using TrackerHitHdl = datatools::handle<TrackerHit>;
     using TrackerHitHdlCollection = std::vector<TrackerHitHdl>;
+
+    using calibrated_tracker_hit_collection = std::vector<calibrated_tracker_hit>;
+    using calibrated_tracker_hit_handle = datatools::handle<calibrated_tracker_hit>;
+    using calibrated_tracker_hit_handle_collection = std::vector<calibrated_tracker_hit_handle>;
 
   } // end of namespace datamodel
 

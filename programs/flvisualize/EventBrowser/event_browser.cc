@@ -372,7 +372,6 @@ namespace snemo {
       }
 
       void event_browser::change_event(const button_signals_type signal_, const int event_selected_) {
-	std::cerr << "\n\n";
 	FL_LOG_DEVEL("Entering...");
 	FL_LOG_DEVEL("signal=" << signal_ << "  event_selected=" << event_selected_);
 	// Change status bar icon following the reading mode

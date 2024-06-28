@@ -301,19 +301,17 @@ namespace snemo {
       out << prefix << "Sterile : " << std::boolalpha << is_sterile() << std::endl;
       out << prefix << "Fake : " << std::boolalpha << is_fake() << std::endl;
       if (has_xy()) {
-        out << prefix << "x : " << x_ / CLHEP::mm << " mm" << std::endl;
-        out << prefix << "y : " << y_ / CLHEP::mm << " mm" << std::endl;
+        out << prefix << "x : " << x_/CLHEP::mm << " mm" << std::endl;
+        out << prefix << "y : " << y_/CLHEP::mm << " mm" << std::endl;
       }
       if (is_delayed()) {
-        out << prefix << "delayed_time : " << delayed_time_ / CLHEP::microsecond << " us" << std::endl;
-        out << prefix << "delayed_time_error : " << delayed_time_error_ / CLHEP::microsecond << " us"
+        out << prefix << "delayed_time : " << delayed_time_/CLHEP::microsecond << " us" << std::endl;
+        out << prefix << "delayed_time_error : " << delayed_time_error_/CLHEP::microsecond << " us"
             << std::endl;
       }
-      out << prefix << "r : " << r_ / CLHEP::mm << " mm" << std::endl;
-      out << prefix << "sigma(r) : " << sigma_r_ / CLHEP::mm << " mm" << std::endl;
-      out << prefix << "z : " << z_ / CLHEP::cm << " cm" << std::endl;
+      out << prefix << "r : " << r_/CLHEP::mm << " +/- " << sigma_r_/CLHEP::mm << " mm" << std::endl;
       out << indent << datatools::i_tree_dumpable::inherit_tag(popts.inherit)
-          << "sigma(z) : " << sigma_z_ / CLHEP::cm << " cm" << std::endl;
+	  << "z : " << z_/CLHEP::cm << " +/- " << sigma_z_/CLHEP::cm << " cm" << std::endl;
     }
 
   } // end of namespace datamodel

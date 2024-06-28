@@ -79,18 +79,20 @@ namespace snemo {
 
       size_t style_manager::get_background_color() const { return _background_color_; }
 
-      size_t style_manager::get_reference_source_plane_vertex_color() const
-      {
-        return _reference_source_plane_vertex_color_;
-      }
-
       void style_manager::set_mc_line_style(const size_t style_) { _mc_line_style_ = style_; }
 
       size_t style_manager::get_mc_line_style() const { return _mc_line_style_; }
 
-      void style_manager::set_mc_line_width(const size_t width_) { _mc_line_width_ = width_; }
+      size_t style_manager::get_reference_source_plane_vertex_color() const
+      {
+        return _reference_source_plane_vertex_color_;
+      }      void style_manager::set_mc_line_width(const size_t width_) { _mc_line_width_ = width_; }
 
       size_t style_manager::get_mc_line_width() const { return _mc_line_width_; }
+
+      size_t style_manager::get_digitized_data_color() const { return _digitized_data_color_; }
+
+      size_t style_manager::get_precalibrated_data_color() const { return _precalibrated_data_color_; }
 
       size_t style_manager::get_calibrated_data_color() const { return _calibrated_data_color_; }
 
@@ -248,6 +250,8 @@ namespace snemo {
         _mc_line_style_ = kSolid;
         _mc_line_style_ = 1;
 
+        _digitized_data_color_ = kGray+2;
+        _precalibrated_data_color_ = kGray+1;
         _calibrated_data_color_ = kGray;
 
         _undefined_particle_color_ = kGray;
@@ -470,9 +474,16 @@ namespace snemo {
           _mc_line_width_ = config_.fetch_integer("mc_line_width");
         }
 
+        if (config_.has_key("digitized_data_color")) {
+          _digitized_data_color_ = utils::root_utilities::get_color_value("digitized_data_color", config_);
+        }
+
+        if (config_.has_key("precalibrated_data_color")) {
+          _precalibrated_data_color_ = utils::root_utilities::get_color_value("precalibrated_data_color", config_);
+        }
+
         if (config_.has_key("calibrated_data_color")) {
-          _calibrated_data_color_ =
-            utils::root_utilities::get_color_value("calibrated_data_color", config_);
+          _calibrated_data_color_ = utils::root_utilities::get_color_value("calibrated_data_color", config_);
         }
 
         if (config_.has_key("save.directory")) {
@@ -788,6 +799,8 @@ namespace snemo {
   } // end of namespace visualization
 
 } // end of namespace snemo
+
+// end of style_manager.cc
 
 /*
 ** Local Variables: --

@@ -203,6 +203,53 @@ namespace snemo {
 	legend->SetText(x -= dx, y, "others");
       }
 
+      void visual_track_renderer::push_data_legend() {
+
+	const io::event_record & event = _server->get_event();
+	const auto &eh_data = event.get<snemo::datamodel::event_header>(io::EH_LABEL);
+
+	const datatools::event_id & eh_id = eh_data.get_id();
+	const int run_id = eh_id.get_run_number();
+	const int event_id = eh_id.get_event_number();
+	// const snemo::time::time_point & event_date_time = eh_data.get_mc_timestamp();
+	const snemo::time::time_point event_date_time (snemo::time::date(2024, 3, 23), snemo::time::hours(2)+snemo::time::minutes(13)+ snemo::time::seconds(42)+snemo::time::microseconds(370045));
+	const std::string event_date_time_str = snemo::time::to_string(event_date_time);
+
+
+	double x = 0.01;
+	double y = 1.005;
+	const double dy = 0.02;
+
+	// 80 courrier
+	// 90 courrier it
+	// 100 courier bold
+	// 110 courier bold+it
+	const int text_font = 100;
+
+	{
+	  auto *legend = new TLatex;
+	  _objects->Add(legend);
+	  legend->SetNDC();
+	  legend->SetTextAlign(12);
+	  legend->SetTextSize(0.02);
+	  legend->SetTextFont(text_font);
+	  legend->SetTextColor(kWhite);
+	  legend->SetText(x, y -= dy, Form("SNEMO DATA: RUN %d EVENT %d", run_id, event_id));
+	}
+
+	{
+	  auto *legend = new TLatex;
+	  _objects->Add(legend);
+	  legend->SetNDC();
+	  legend->SetTextAlign(12);
+	  legend->SetTextSize(0.02);
+	  legend->SetTextFont(text_font);
+	  legend->SetTextColor(kWhite);
+	  legend->SetText(x, y -= dy, event_date_time_str.c_str());
+	}
+
+      }
+
       void visual_track_renderer::push_reconstructed_tracks()
       {
 	style_manager &style_mgr = style_manager::get_instance();

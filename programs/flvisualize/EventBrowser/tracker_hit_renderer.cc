@@ -31,6 +31,7 @@
 
 // - Bayeux/geomtools:
 #include <bayeux/geomtools/manager.h>
+#include <bayeux/geomtools/mapping.h>
 
 // - Falaise:
 #include <falaise/snemo/datamodels/helix_trajectory_pattern.h>
@@ -181,6 +182,49 @@ namespace snemo {
         return;
       }
 
+      void tracker_hit_renderer::push_digitized_hits() {
+	const io::event_record &event = _server->get_event();
+	const auto &digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
+
+	const snemo::datamodel::TrackerDigiHitHdlCollection &dt_collection = digi_data.get_tracker_hits();
+
+	if (dt_collection.empty()) {
+	  DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+			     "No digitized tracker hits");
+	  return;
+	}
+
+	for (const auto &it_hit : dt_collection) {
+	  const snemo::datamodel::tracker_digitized_hit &a_hit = it_hit.get();
+	  tracker_hit_renderer::_make_digitized_geiger_hit(a_hit);
+	}
+      }
+
+      void tracker_hit_renderer::push_precalibrated_hits()
+      {
+        // FL_LOG_DEVEL("Entering...");
+        const io::event_record & event = _server->get_event();
+        const auto & precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
+
+        const snemo::datamodel::PreCalibratedTrackerHitHdlCollection & pct_collection = precalib_data.tracker_hits();
+
+        if (pct_collection.empty()) {
+          DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+                             "No calibrated tracker hits");
+          // FL_LOG_DEVEL("Exiting...");
+          return;
+        }
+
+        for (const auto & it_hit : pct_collection) {
+          const snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.get();
+
+	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
+	  tracker_hit_renderer::_make_precalibrated_geiger_hit(a_hit);
+        }
+        // FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
       void tracker_hit_renderer::push_calibrated_hits()
       {
         FL_LOG_DEVEL("Entering...");
@@ -268,6 +312,9 @@ namespace snemo {
                 const double z = a_gg_hit.get_z();
                 const double dz = a_gg_hit.get_sigma_z();
                 const double r = 22.0 / CLHEP::mm;
+
+		if (!datatools::is_valid(z))
+		  continue;
 
                 auto * hit_3d = new TMarker3DBox;
                 _objects->Add(hit_3d);
@@ -401,14 +448,192 @@ namespace snemo {
         return;
       }
 
+      void tracker_hit_renderer::_make_digitized_geiger_hit(const snemo::datamodel::tracker_digitized_hit & hit_)
+      {
+        // FL_LOG_DEVEL("Entering...");
+        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+	const geomtools::mapping & detector_mapping = detector_mgr.get_geometry_manager().get_mapping();
+
+	const geomtools::geom_info & cell_ginfo = detector_mapping.get_geom_info(hit_.get_geom_id());
+	const geomtools::placement & cell_placement = cell_ginfo.get_world_placement();
+	const geomtools::vector_3d & cell_pos  = cell_placement.get_translation();
+
+        geomtools::vector_3d cell_module_pos(cell_pos.getX(), cell_pos.getY(), 0);
+        geomtools::vector_3d cell_world_pos;
+	detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
+        // Get (x, y) position of triggered cell
+        const double x = cell_world_pos.x();
+        const double y = cell_world_pos.y();
+	const double z = 1.515 * CLHEP::m;
+	const double r = 22.0 * CLHEP::mm;
+
+        // Get hit auxiliaries
+        const datatools::properties & aux = hit_.get_auxiliaries();
+
+        // Retrieve line width from properties if 'hit' is highlighted:
+        size_t line_width = style_manager::get_instance().get_mc_line_width();
+        if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+          line_width = 3;
+        }
+
+        int color = style_manager::get_instance().get_digitized_data_color();
+
+	{
+	  // prepare square at bottom of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+
+	  // insert diagonal '\' if bottom cathode is missing
+	  if (!hit_.get_times().front().has_bottom_cathode_time())
+	    points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	{
+	  // prepare square at top of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+
+	  // insert diagonal '/' if top cathode is missing
+	  if (!hit_.get_times().front().has_top_cathode_time())
+	    points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	// FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
+      void tracker_hit_renderer::_make_precalibrated_geiger_hit(const snemo::datamodel::precalibrated_tracker_hit & hit_)
+      {
+        // FL_LOG_DEVEL("Entering...");
+        const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
+	const geomtools::mapping & detector_mapping = detector_mgr.get_geometry_manager().get_mapping();
+
+	const geomtools::geom_info & cell_ginfo = detector_mapping.get_geom_info(hit_.get_geom_id());
+	const geomtools::placement & cell_placement = cell_ginfo.get_world_placement();
+	const geomtools::vector_3d & cell_pos  = cell_placement.get_translation();
+
+        geomtools::vector_3d cell_module_pos(cell_pos.getX(), cell_pos.getY(), 0);
+        geomtools::vector_3d cell_world_pos;
+	detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
+
+        // Get (x, y) position of triggered cell
+        const double x = cell_world_pos.x();
+        const double y = cell_world_pos.y();
+	const double z = 1.515 * CLHEP::m;
+	const double r = 22.0 * CLHEP::mm;
+
+        // Get hit auxiliaries
+        const datatools::properties & aux = hit_.get_auxiliaries();
+
+        // Retrieve line width from properties if 'hit' is highlighted:
+        size_t line_width = style_manager::get_instance().get_mc_line_width();
+        if (aux.has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
+          line_width = 3;
+        }
+
+        int color = style_manager::get_instance().get_precalibrated_data_color();
+
+	{
+	  // prepare square at bottom of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, -z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, -z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, -z));
+
+	  // insert diagonal '\' if bottom cathode is missing
+	  if (!hit_.has_bottom_cathode_drift_time())
+	    points.push_back(geomtools::vector_3d(x - r, y + r, -z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	{
+	  // prepare square at top of the cell
+	  geomtools::polyline_type points;
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+	  points.push_back(geomtools::vector_3d(x - r, y + r, +z));
+	  points.push_back(geomtools::vector_3d(x + r, y + r, +z));
+
+	  // insert diagonal '/' if top cathode is missing
+	  if (!hit_.has_top_cathode_drift_time())
+	    points.push_back(geomtools::vector_3d(x - r, y - r, +z));
+
+	  TPolyLine3D * gg_square = base_renderer::make_polyline(points);
+	  _objects->Add(gg_square);
+	  gg_square->SetLineColor(color);
+	  gg_square->SetLineWidth(line_width);
+	}
+
+	// FL_LOG_DEVEL("Exiting...");
+        return;
+      }
+
       void tracker_hit_renderer::_make_calibrated_geiger_hit(const snemo::datamodel::calibrated_tracker_hit & hit_,
-                                                             const bool show_cluster)
+                                                             const bool show_cluster, const bool invalid_z)
       {
         // FL_LOG_DEVEL("Entering...");
         // Compute the position of the anode impact in the drift cell coordinates reference frame:
         const detector::detector_manager & detector_mgr = detector::detector_manager::get_instance();
 
-        geomtools::vector_3d cell_module_pos(hit_.get_x(), hit_.get_y(), hit_.get_z());
+	double updated_z = hit_.get_z();
+
+	// update Z value in case of invalid value
+	if (!datatools::is_valid(updated_z)) {
+
+	  // move the circle/square to the top+bottom
+	  if (hit_.are_both_cathodes_missing()) {
+
+	    if (invalid_z)
+	      // draw the top case in this special call
+	      updated_z = +1.515 * CLHEP::m;
+	    else {
+	      // call the same function with the invalid_z option
+	      // to draw the circle/square at the top!
+	      _make_calibrated_geiger_hit(hit_, show_cluster, true);
+
+	      // then resume the current function call
+	      // to draw the circle/square at the bottom
+	      updated_z = -1.515 * CLHEP::m;
+	    }
+	  }
+
+	  // move the circle/square to the top
+	  else if (hit_.is_top_cathode_missing())
+	    updated_z = +1.515 * CLHEP::m;
+
+	  // move the circle/square to the bottom
+	  // if the top cathode is missing
+	  else if (hit_.is_bottom_cathode_missing())
+	    updated_z = -1.515 * CLHEP::m;
+	}
+
+        geomtools::vector_3d cell_module_pos(hit_.get_x(), hit_.get_y(), updated_z);
         geomtools::vector_3d cell_world_pos;
         detector_mgr.compute_world_coordinates(cell_module_pos, cell_world_pos);
 
@@ -451,30 +676,33 @@ namespace snemo {
         }
         DT_THROW_IF(cell_axis != 'z' && cell_axis != 'x', std::logic_error, "Unsupported cell axis !");
 
-        if (cell_axis == 'z') {
-          gg_dz->SetPoint(0, x, y, z - sigma_z);
-          gg_dz->SetPoint(1, x, y, z + sigma_z);
-        } else if (cell_axis == 'x') {
-          gg_dz->SetPoint(0, x - sigma_z, y, z);
-          gg_dz->SetPoint(1, x + sigma_z, y, z);
-        }
+	if (datatools::is_valid(z)) {
+	  if (cell_axis == 'z') {
+	    gg_dz->SetPoint(0, x, y, z - sigma_z);
+	    gg_dz->SetPoint(1, x, y, z + sigma_z);
+	  } else if (cell_axis == 'x') {
+	    gg_dz->SetPoint(0, x - sigma_z, y, z);
+	    gg_dz->SetPoint(1, x + sigma_z, y, z);
+	  }
+	}
 
         if (hit_.is_delayed()) {
           const double r = 22.0 / CLHEP::mm;  // hit_.get_r();
           geomtools::polyline_type points;
-          points.push_back(geomtools::vector_3d(x + r, y + r, z));
-          points.push_back(geomtools::vector_3d(x + r, y - r, z));
-          points.push_back(geomtools::vector_3d(x - r, y - r, z));
-          points.push_back(geomtools::vector_3d(x - r, y + r, z));
-          points.push_back(geomtools::vector_3d(x + r, y + r, z));
+          points.push_back(geomtools::vector_3d(x + r, y + r, updated_z));
+          points.push_back(geomtools::vector_3d(x + r, y - r, updated_z));
+          points.push_back(geomtools::vector_3d(x - r, y - r, updated_z));
+          points.push_back(geomtools::vector_3d(x - r, y + r, updated_z));
+          points.push_back(geomtools::vector_3d(x + r, y + r, updated_z));
           TPolyLine3D * gg_drift_square = base_renderer::make_polyline(points);
           _objects->Add(gg_drift_square);
           gg_drift_square->SetLineColor(color);
           gg_drift_square->SetLineWidth(line_width);
 
         } else {
+
           // add calibrated drift value:  r-dr; r+dr
-          const size_t n_point = 100;
+          const size_t n_point = 32;
           TRotation dr;
           if (cell_axis == 'z') {
             dr.RotateZ(2 * TMath::Pi() / (double)n_point);
@@ -488,15 +716,17 @@ namespace snemo {
 
           geomtools::polyline_type rmins;
           geomtools::polyline_type rmaxs;
+
           if (cell_axis == 'z') {
-            TVector3 r_min(r - sigma_r, 0, z);
-            TVector3 r_max(r + sigma_r, 0, z);
+            TVector3 r_min(r - sigma_r, 0, updated_z);
+            TVector3 r_max(r + sigma_r, 0, updated_z);
             for (size_t i_point = 0; i_point <= n_point; ++i_point) {
               r_min *= dr;
               r_max *= dr;
               rmins.push_back(geomtools::vector_3d(r_min.x() + x, r_min.y() + y, r_min.z()));
               rmaxs.push_back(geomtools::vector_3d(r_max.x() + x, r_max.y() + y, r_max.z()));
             }
+
           } else if (cell_axis == 'x') {
             TVector3 r_min(x, r - sigma_r, 0);
             TVector3 r_max(x, r + sigma_r, 0);
@@ -507,6 +737,7 @@ namespace snemo {
               rmaxs.push_back(geomtools::vector_3d(r_max.x(), r_max.y() + y, r_max.z() + z));
             }
           }
+
           TPolyLine3D * gg_drift_min = base_renderer::make_polyline(rmins);
           _objects->Add(gg_drift_min);
           gg_drift_min->SetLineColor(color);

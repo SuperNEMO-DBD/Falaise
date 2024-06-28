@@ -16,17 +16,21 @@
 #include <datatools/i_serializable.ipp>
 // - Bayeux/geomtools:
 #include <geomtools/base_hit.ipp>
+// - This project:
+#include <falaise/snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp>
+#include <falaise/snemo/datamodels/boost_io/calibrated_tracker_hit.ipp>
 
 namespace snemo {
 
   namespace datamodel {
    
     template <class Archive>
-    void calibrated_cluster::serialize(Archive & ar_, const unsigned int version_)
+    void calibrated_cluster::serialize(Archive & ar_, const unsigned int /* version_ */)
     {
-      ar_ & BOOST_SERIALIZATION_BASE_OBJECT_NVP(base_hit);
+      ar_ & boost::serialization::make_nvp("cluster_id", _cluster_id_);
       ar_ & boost::serialization::make_nvp("calorimeter_hits", _calorimeter_hits_);
       ar_ & boost::serialization::make_nvp("tracker_hits", _tracker_hits_);
+      ar_ & boost::serialization::make_nvp("properties", _properties_);
       return;
     }
 

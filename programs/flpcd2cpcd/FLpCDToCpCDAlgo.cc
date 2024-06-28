@@ -112,8 +112,8 @@ namespace FLpCDToCpCD {
     }
     // Extract the number of clusters:
     size_t nb_clusters = 0;
-    if (inputPcdData.get_properties().has_key("pCD.clustering.nclusters")) {
-      nb_clusters = inputPcdData.get_properties().fetch_integer("pCD.clustering.nclusters");
+    if (inputPcdData.get_properties().has_key("pCD.clustering.nb_clusters")) {
+      nb_clusters = inputPcdData.get_properties().fetch_integer("pCD.clustering.nb_clusters");
     }
     DT_LOG_DEBUG(verbosity(), "Extracted number of clusters : " << nb_clusters);
     if (nb_clusters == 0) return;

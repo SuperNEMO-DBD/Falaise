@@ -61,6 +61,9 @@ class visual_track_renderer : public base_renderer {
   /// Build Monte-Carlo legend
   void push_mc_legend();
 
+  /// Build Data legend
+  void push_data_legend();
+
   /// Build reconstructed tracks
   void push_reconstructed_tracks();
 };

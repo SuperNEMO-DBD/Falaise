@@ -98,6 +98,10 @@ namespace snemo {
     using ConstCalorimeterHitHdl = datatools::handle<const CalorimeterHit>;
     using ConstCalorimeterHitHdlCollection = std::vector<ConstCalorimeterHitHdl>;
 
+    using calibrated_calorimeter_hit_collection = std::vector<calibrated_calorimeter_hit>;
+    using calibrated_calorimeter_hit_handle = datatools::handle<calibrated_calorimeter_hit>;
+    using calibrated_calorimeter_hit_handle_collection = std::vector<calibrated_calorimeter_hit_handle>;
+
   } // end of namespace datamodel
 
 } // end of namespace snemo

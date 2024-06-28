@@ -60,6 +60,18 @@ namespace snemo {
       /// Return the mutable reference to the collection of clusters
       precalibrated_cluster_handle_collection & clusters();
 
+      /// Return the non mutable reference to the collection of unclusterized calorimeter hits
+      const precalibrated_calorimeter_hit_handle_collection & unclusterized_calorimeter_hits() const;
+
+      /// Return the mutable reference to the collection of clusters
+      precalibrated_calorimeter_hit_handle_collection & unclusterized_calorimeter_hits();
+
+      /// Return the non mutable reference to the collection of unclusterized tracker hits
+      const precalibrated_tracker_hit_handle_collection & unclusterized_tracker_hits() const;
+
+      /// Return the mutable reference to the collection of clusters
+      precalibrated_tracker_hit_handle_collection & unclusterized_tracker_hits();
+
       /// Return a non mutable reference to the default cluster is any
       const precalibrated_cluster & get_default() const;
 
@@ -80,9 +92,10 @@ namespace snemo {
                       /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
     private:
-      
       precalibrated_cluster_handle_collection _clusters_{}; //!< Collection of clusters
-      datatools::properties _auxiliaries_{}; //!< Auxiliary properties (unused!)
+			precalibrated_calorimeter_hit_handle_collection _unclusterized_calorimeter_hits_; //!< Collection of unclusterized calorimeter hit handles
+			precalibrated_tracker_hit_handle_collection     _unclusterized_tracker_hits_;     //!< Collection of unclusterized tracker hit handles
+      datatools::properties _auxiliaries_{}; //!< Auxiliary properties
 
       DATATOOLS_SERIALIZATION_DECLARATION()
     };
@@ -94,6 +107,10 @@ namespace snemo {
 #include <boost/serialization/export.hpp>
 BOOST_CLASS_EXPORT_KEY2(snemo::datamodel::clusterized_precalibrated_data,
                         "snemo::datamodel::clusterized_precalibrated_data")
+
+// Class version:
+#include <boost/serialization/version.hpp>
+BOOST_CLASS_VERSION(snemo::datamodel::clusterized_precalibrated_data, 1)
 
 #endif // FALAISE_SNEMO_DATAMODELS_CLUSTERIZED_PRECALIBRATED_DATA_H
 

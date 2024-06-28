@@ -10,6 +10,8 @@
 // - Boost:
 #include <boost/current_function.hpp>
 
+#define FL_LOG_DEVEL(Message)
+/*
 #define FL_LOG_DEVEL(Message)						\
   {                                                                     \
     std::ostringstream _fl_xxx_message;					\
@@ -19,5 +21,5 @@
     _fl_xxx_out << _fl_xxx_message.str();				\
     std::cerr << _fl_xxx_out.str() << std::endl;			\
   }
-
+*/
 #endif  // FALAISE_SNEMO_VISUALIZATION_LOG_H

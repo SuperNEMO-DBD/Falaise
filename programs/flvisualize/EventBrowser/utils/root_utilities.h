@@ -125,6 +125,16 @@ namespace snemo {
 																				const double sigma_ = datatools::invalid_real(),
 																				const bool latex_ = false);
 
+				/// Update output stream with an adapted amplitude information
+				static void get_prettified_amplitude(std::ostream& out_, const double amplitude_,
+																						 const double sigma_ = datatools::invalid_real(),
+																						 const bool latex_ = false);
+
+				/// Update output stream with an adapted charge information
+				static void get_prettified_charge(std::ostream& out_, const double charge_,
+																					const double sigma_ = datatools::invalid_real(),
+																					const bool latex_ = false);
+
 				/// Update output stream with an adapted energy information
 				static void get_prettified_energy(std::ostream& out_, const double energy_,
 																					const double sigma_ = datatools::invalid_real(),

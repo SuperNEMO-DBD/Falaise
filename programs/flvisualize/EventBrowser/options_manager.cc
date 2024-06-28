@@ -85,6 +85,11 @@ void options_manager::set_default_options() {
   _options_dictionnary_[SHOW_MC_HITS] = true;
   _options_dictionnary_[SHOW_MC_CALORIMETER_HITS] = true;
   _options_dictionnary_[SHOW_MC_TRACKER_HITS] = true;
+  _options_dictionnary_[SHOW_EVENT_HEADER] = true;
+  _options_dictionnary_[SHOW_DIGITIZED_HITS] = true;
+  // _options_dictionnary_[SHOW_DIGITIZED_INFO] = false;
+  _options_dictionnary_[SHOW_PRECALIBRATED_HITS] = true;
+  // _options_dictionnary_[SHOW_PRECALIBRATED_INFO] = false;
   _options_dictionnary_[SHOW_CALIBRATED_HITS] = true;
   _options_dictionnary_[SHOW_CALIBRATED_INFO] = true;
   _options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS] = true;
@@ -164,53 +169,63 @@ void options_manager::define_view_options(
       "2d-display", po::value<std::string>()->default_value("left")->value_name("position"),
       "set 2D display position")
 
-      ("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
-       "add a new tab with top/front/side 2D view in one frame")
+		("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
+		 "add a new tab with top/front/side 2D view in one frame")
 
-          ("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
-           "focus views on the 'region-of-interest'")
+		("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
+		 "focus views on the 'region-of-interest'")
 
-              ("show-simulated-vertex",
-               po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
-               "show simulated vertex")
+		("show-simulated-vertex",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
+		 "show simulated vertex")
 
-                  ("show-simulated-tracks",
-                   po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
-                   "show simulated tracks")
+		("show-simulated-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
+		 "show simulated tracks")
 
-                      ("show-simulated-hits",
-                       po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
-                       "show simulated hits")
+		("show-simulated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
+		 "show simulated hits")
 
-                          ("show-calibrated-hits",
-                           po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])
-                               ->value_name("flag"),
-                           "show calibrated hits")
+		("show-event-header",
+		 po::value<bool>(&_options_dictionnary_[SHOW_EVENT_HEADER])->value_name("flag"),
+		 "show event header")
 
-                              ("show-calibrated-info",
-                               po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])
-                                   ->value_name("flag"),
-                               "show calibrated info")
+		("show-digitized-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])->value_name("flag"),
+		 "show digitized hits")
 
-                                  ("show-tracker-clustered-hits",
-                                   po::value<bool>(
-                                       &_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])
-                                       ->value_name("flag"),
-                                   "show tracker clustered hits")
+		// ("show-digitized-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])->value_name("flag"),
+		//  "show digitized info")
 
-                                      ("show-tracker-trajectories",
-                                       po::value<bool>(
-                                           &_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])
-                                           ->value_name("flag"),
-                                       "show tracker trajectories")
+		("show-precalibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_HITS])->value_name("flag"),
+		 "show precalibrated hits")
 
-                                          ("show-particle-tracks",
-                                           po::value<bool>(
-                                               &_options_dictionnary_[SHOW_PARTICLE_TRACKS])
-                                               ->value_name("flag"),
-                                           "show particle tracks")
+		// ("show-precalibrated-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_INFO])->value_name("flag"),
+		//  "show precalibrated info")
 
-      ;
+		("show-calibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])->value_name("flag"),
+		 "show calibrated hits")
+
+		("show-calibrated-info",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])->value_name("flag"),
+		 "show calibrated info")
+
+		("show-tracker-clustered-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])->value_name("flag"),
+		 "show tracker clustered hits")
+
+		("show-tracker-trajectories",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])->value_name("flag"),
+		 "show tracker trajectories")
+
+		("show-particle-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PARTICLE_TRACKS])->value_name("flag"),
+		 "show particle tracks");
 }
 
 // parse command line
@@ -224,41 +239,39 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
 
   general_opts.add_options()("help,h", "produce help message")
 
-      ("logging-priority,P", po::value<std::string>()->value_name("level")->default_value("notice"),
-       "set the logging priority threshold")
+		("logging-priority,P", po::value<std::string>()->value_name("level")->default_value("notice"),
+		 "set the logging priority threshold")
 
-          ("scale,s", po::value<double>(&_scaling_factor_)->value_name("value"),
-           "scale factor for computer screen (height/width)")
+		("scale,s", po::value<double>(&_scaling_factor_)->value_name("value"),
+		 "scale factor for computer screen (height/width)")
 
-              ("auto-reading-delay,a", po::value<unsigned int>()->value_name("value"),
-               "automatic event reading delay in seconds")
+		("auto-reading-delay,a", po::value<unsigned int>()->value_name("value"),
+		 "automatic event reading delay in seconds")
 
-                  ("detector-config-file",
-                   po::value<std::string>(&_detector_config_file_)->value_name("file"),
-                   "set the path to the detector configuration file")
+		("detector-config-file",
+		 po::value<std::string>(&_detector_config_file_)->value_name("file"),
+		 "set the path to the detector configuration file")
 
-                      ("style-config-file",
-                       po::value<std::string>(&_style_config_file_)->value_name("file"),
-                       "set the path to the style configuration file")
+		("style-config-file",
+		 po::value<std::string>(&_style_config_file_)->value_name("file"),
+		 "set the path to the style configuration file")
 
-                          ("cut-config-file",
-                           po::value<std::string>(&_cut_config_file_)->value_name("file"),
-                           "set the path to the cut configuration file")
+		("cut-config-file",
+		 po::value<std::string>(&_cut_config_file_)->value_name("file"),
+		 "set the path to the cut configuration file")
 
-                              ("preload",
-                               po::value<bool>(&_preload_)->zero_tokens()->default_value(false),
-                               "enable the load in memory of Boost archive files (working only "
-                               "with pure 'bxg4_production' output)")
+		("preload",
+		 po::value<bool>(&_preload_)->zero_tokens()->default_value(false),
+		 "enable the load in memory of Boost archive files (working only "
+		 "with pure 'bxg4_production' output)")
 
-                                  ("input-files,i",
-                                   po::value<std::vector<std::string> >(&_input_files_)
-                                       ->value_name("file"),
-                                   "set an input file(s)")
+		("input-files,i",
+		 po::value<std::vector<std::string> >(&_input_files_)->value_name("file"),
+		 "set an input file(s)")
 
-                                      ("load-dll,l",
-                                       po::value<std::vector<std::string> >(&_libraries_)
-                                           ->value_name("name"),
-                                       "set a DLL to be loaded.")
+		("load-dll,l",
+		 po::value<std::vector<std::string> >(&_libraries_)->value_name("name"),
+		 "set a DLL to be loaded.")
 
       ;  // end of 'options' description
 
@@ -269,53 +282,63 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
                           po::value<std::string>()->default_value("left")->value_name("side"),
                           "set 2D display position")
 
-      ("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
-       "add a new tab with top/front/side 2D view in one frame")
+		("full-2d-view", po::value<bool>(&_options_dictionnary_[FULL_2D_VIEW])->zero_tokens(),
+		 "add a new tab with top/front/side 2D view in one frame")
 
-          ("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
-           "focus views on the 'region-of-interest'")
+		("focus-on-roi", po::value<bool>(&_options_dictionnary_[FOCUS_ROI])->zero_tokens(),
+		 "focus views on the 'region-of-interest'")
 
-              ("show-simulated-vertex",
-               po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
-               "show simulated vertex")
+		("show-simulated-vertex",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_VERTEX])->value_name("flag"),
+		 "show simulated vertex")
 
-                  ("show-simulated-tracks",
-                   po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
-                   "show simulated tracks")
+		("show-simulated-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_TRACKS])->value_name("flag"),
+		 "show simulated tracks")
 
-                      ("show-simulated-hits",
-                       po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
-                       "show simulated hits")
+		("show-simulated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_MC_HITS])->value_name("flag"),
+		 "show simulated hits")
 
-                          ("show-calibrated-hits",
-                           po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])
-                               ->value_name("flag"),
-                           "show calibrated hits")
+		("show-event-header",
+		 po::value<bool>(&_options_dictionnary_[SHOW_EVENT_HEADER])->value_name("flag"),
+		 "show event header")
 
-                              ("show-calibrated-info",
-                               po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])
-                                   ->value_name("flag"),
-                               "show calibrated info")
+		("show-digitized-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_HITS])->value_name("flag"),
+		 "show digitized hits")
 
-                                  ("show-tracker-clustered-hits",
-                                   po::value<bool>(
-                                       &_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])
-                                       ->value_name("flag"),
-                                   "show tracker clustered hits")
+		// ("show-digitized-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_DIGITIZED_INFO])->value_name("flag"),
+		//  "show digitized info")
 
-                                      ("show-tracker-trajectories",
-                                       po::value<bool>(
-                                           &_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])
-                                           ->value_name("flag"),
-                                       "show tracker trajectories")
+		("show-precalibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_HITS])->value_name("flag"),
+		 "show precalibrated hits")
 
-                                          ("show-particle-tracks",
-                                           po::value<bool>(
-                                               &_options_dictionnary_[SHOW_PARTICLE_TRACKS])
-                                               ->value_name("flag"),
-                                           "show particle tracks")
+		// ("show-precalibrated-info",
+		//  po::value<bool>(&_options_dictionnary_[SHOW_PRECALIBRATED_INFO])->value_name("flag"),
+		//  "show precalibrated info")
 
-      ;  // end of 'view options' description
+		("show-calibrated-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_HITS])->value_name("flag"),
+		 "show calibrated hits")
+
+		("show-calibrated-info",
+		 po::value<bool>(&_options_dictionnary_[SHOW_CALIBRATED_INFO])->value_name("flag"),
+		 "show calibrated info")
+
+		("show-tracker-clustered-hits",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_CLUSTERED_HITS])->value_name("flag"),
+		 "show tracker clustered hits")
+
+		("show-tracker-trajectories",
+		 po::value<bool>(&_options_dictionnary_[SHOW_TRACKER_TRAJECTORIES])->value_name("flag"),
+		 "show tracker trajectories")
+
+		("show-particle-tracks",
+		 po::value<bool>(&_options_dictionnary_[SHOW_PARTICLE_TRACKS])->value_name("flag"),
+		 "show particle tracks");
 
   // Collection option descriptions into one
   po::options_description all_opts;
