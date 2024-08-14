@@ -136,6 +136,7 @@ commissioning_single_spot : Vertex generation from from a commissioning spot : H
 # The following generator implies some set of additional positioning options (variant='if_free_spot')
 free_spot : Vertex generation from an arbitrary spot in the geometry :  : if_free_spot :
 
+input_vertex : Vertex generation from an input text file 'input_vertex.txt' :  :  :
 
 ################################################################
 # Vertex generation for the 'realistic flat' source foil model #
