@@ -29,7 +29,7 @@
 #include <falaise/snemo/time/time_utils.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/gg_locator.h>
-#include "falaise/snemo/services/service_traits.h"
+#include <falaise/snemo/services/service_traits.h>
 #include <falaise/snemo/services/service_handle.h>
 #include <falaise/snemo/services/tracker_cell_status_service.h>
 #include <falaise/snemo/services/db_service.h>
@@ -163,7 +163,7 @@ namespace snemo {
 
 		std::ostream & operator<<(std::ostream & out_, const cell_quarter_edge_direction dir_);
 
-    /// This bit mask locate the position of n eighbourg cell with HV off with respect
+    /// This bit mask locate the positions of neighbourg cells with HV off with respect
     /// to a given cell used as a reference:
     ///
     /// Example: for a cell with two of its four neighbour cells with HV off, the associated 
@@ -322,7 +322,18 @@ namespace snemo {
       bool has_default_neighbour_cells_off_pattern() const;
 
       /// Return the quarter index from a position relative to the center of a cell
-      int locate_cell_quarter(const geomtools::vector_3d & in_cell_position_) const;
+			/// \code
+			///        ^ y 
+			///        |
+			///  +-----------+
+			///  |     :     |
+			///  |  1  :  O  |
+			///  |.....+.....|---> x
+			///  |     :     |
+ 			///  |  2  :  3  |
+			///  +-----------+
+			/// \endcode
+     int locate_cell_quarter(const geomtools::vector_3d & in_cell_position_) const;
 
 			/// Return information about the tracker gas at given time
       tracker_gas_info fetch_gas_info(const time::time_point & p_) const;

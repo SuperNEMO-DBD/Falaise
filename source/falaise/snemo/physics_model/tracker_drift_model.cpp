@@ -564,7 +564,7 @@ namespace snemo {
         tmed = lininterp2(r1, r2, tmed1, tmed2, radius_);
         tmax = lininterp2(r1, r2, tmax1, tmax2, radius_);
       }
-      return std::make_tuple(tmin, tmed, tmax);
+      return std::make_tuple(tmax, tmed, tmin);
     }
 
     // static

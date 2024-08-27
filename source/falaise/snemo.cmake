@@ -84,6 +84,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/simulation/calorimeter_step_hit_processor.h
   snemo/simulation/arbitrary_event_generator_injector.h
   snemo/simulation/from_ascii_files_event_generator.h
+  snemo/simulation/tracker_drift_time_generator.hpp
 
   snemo/processing/config.h
   snemo/processing/calorimeter_regime.h
@@ -231,6 +232,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/simulation/calorimeter_step_hit_processor.cc
   snemo/simulation/arbitrary_event_generator_injector.cc
   snemo/simulation/from_ascii_files_event_generator.cc
+  snemo/simulation/tracker_drift_time_generator.cpp
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
@@ -307,6 +309,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
   # snemo/test/test_snemo_service_rc.cxx
+  snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
 
