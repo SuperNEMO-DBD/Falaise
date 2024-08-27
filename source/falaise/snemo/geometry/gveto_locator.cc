@@ -756,6 +756,7 @@ void gveto_locator::set_defaults_() {
   blockPart_ = geomtools::geom_id::INVALID_ADDRESS;
 
   blocksArePartitioned_ = false;
+  caloOMGIDType_ = geomtools::geom_id::INVALID_TYPE;
   caloBlockGIDType_ = geomtools::geom_id::INVALID_TYPE;
   moduleAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
   wallAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
@@ -794,6 +795,7 @@ void gveto_locator::construct_() {
   const uint32_t gvetoWrapperGIDType =
       idManager.get_category_type(detail::kGammaVetoWrapperGIDCategory);
 
+  caloOMGIDType_ = idManager.get_category_type(detail::kGammaVetoOMGIDCategory);
   caloBlockGIDType_ = idManager.get_category_type(detail::kGammaVetoBlockGIDCategory);
   const geomtools::id_mgr::category_info &block_ci =
       idManager.get_category_info(detail::kGammaVetoBlockGIDCategory);

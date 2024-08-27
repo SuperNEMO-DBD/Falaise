@@ -7,42 +7,113 @@ namespace snemo {
 
   namespace datamodel {
 
-    int om_num (const geomtools::geom_id & gid)
+    int om_num(const geomtools::geom_id & gid)
     {
       switch (gid.get_type())
 	{
 	case 1302: // MWALL case
 	case 1301:
-	  return gid.get(1)*20*13 + gid.get(2)*13 + gid.get(3);
+          return gid.get(1)*20*13 + gid.get(2)*13 + gid.get(3);
 
-	case 1232: // XWALL case
-	case 1231:
-	  return 520 + gid.get(1)*2*2*16 + gid.get(2)*2*16 + gid.get(3)*16 + gid.get(4);
+        case 1232: // XWALL case
+        case 1231:
+          return 520 + gid.get(1)*2*2*16 + gid.get(2)*2*16 + gid.get(3)*16 + gid.get(4);
 
-	case 1252: // GVETO case
-	case 1251:
-	  return 520 + 128 + gid.get(1)*2*16 + gid.get(2)*16 + gid.get(3);
+        case 1252: // GVETO case
+        case 1251:
+          return 520 + 128 + gid.get(1)*2*16 + gid.get(2)*16 + gid.get(3);
 
-	default:
-	  break;
-	}
+        default:
+          break;
+        }
 
       return -1;
+    }
+
+    const std::map<int, geomtools::geom_id> & om_map()
+    {
+      static std::map<int, geomtools::geom_id> _om_map;
+      if (_om_map.empty()) {
+        // fill the inverted map
+        const int moduleNumber = 0;
+        for (int side = 0; side < 2; side++) {
+          for (int col = 0; col < 20; col++) {
+            for (int row = 0; row < 13; row++) {
+              geomtools::geom_id gid(1301, moduleNumber, side, col, row);
+              auto num = snemo::datamodel::om_num(gid);
+              _om_map[num] = gid;
+            }
+          }
+          for (int wall = 0; wall < 2; wall++) {
+            for (int col = 0; col < 2; col++) {
+              for (int row = 0; row < 16; row++) {
+                geomtools::geom_id gid(1231, moduleNumber, side, wall, col, row);
+                auto num = snemo::datamodel::om_num(gid);
+                _om_map[num] = gid;
+              }
+            }
+          }
+          for (int wall = 0; wall < 2; wall++) {
+            for (int row = 0; row < 16; row++) {
+              geomtools::geom_id gid(1251, moduleNumber, side, wall, row);
+              auto num = snemo::datamodel::om_num(gid);
+              _om_map[num] = gid;
+            }
+          }
+        }
+      }
+      return _om_map;
+    }
+
+    
+    geomtools::geom_id om_gid(const int num_)
+    {
+      auto found = om_map().find(num_);
+      DT_THROW_IF(found == om_map().end(), std::logic_error,
+                  "Invalid calo OM number " << num_ << "!");
+      return found->second;
     }
 
     int gg_num (const geomtools::geom_id & gid)
     {
       switch (gid.get_type())
-	{
-	case 1204: // GG case
-	case 1203:
-	  return gid.get(1)*1017 + gid.get(3)*9 + gid.get(2);
+        {
+        case 1204: // GG case
+        case 1203:
+          return gid.get(1)*1017 + gid.get(3)*9 + gid.get(2);
 
-	default:
-	  break;
-	}
+        default:
+          break;
+        }
 
       return -1;
+    }
+
+    const std::map<int, geomtools::geom_id> & gg_map()
+    {
+      static std::map<int, geomtools::geom_id> _gg_map;
+      if (_gg_map.empty()) {
+        // fill the inverted map
+        const int moduleNumber = 0;
+        for (int side = 0; side < 2; side++) {
+          for (int layer = 0; layer < 9; layer++) {
+            for (int row = 0; row < 113; row++) {
+              geomtools::geom_id gid(1203, moduleNumber, side, layer, row);
+              auto num = snemo::datamodel::gg_num(gid);
+              _gg_map[num] = gid;
+            }
+          }
+        }
+      }
+      return _gg_map;
+    }
+
+    geomtools::geom_id gg_gid(const int num_)
+    {
+      auto found = gg_map().find(num_);
+      DT_THROW_IF(found == gg_map().end(), std::logic_error,
+                  "Invalid geiger cell number " << num_ << "!");
+      return found->second;
     }
 
     std::string om_label (const geomtools::geom_id & gid)
@@ -50,42 +121,42 @@ namespace snemo {
       std::string label;
 
       switch (gid.get_type())
-	{
-	case 1302: // MWALL case
-	case 1301:
-	  label = "M:";
-	  label += std::to_string(gid.get(1));
-	  label += '.';
-	  label += std::to_string(gid.get(2));
-	  label += '.';
-	  label += std::to_string(gid.get(3));
-	  return label;
+        {
+        case 1302: // MWALL case
+        case 1301:
+          label = "M:";
+          label += std::to_string(gid.get(1));
+          label += '.';
+          label += std::to_string(gid.get(2));
+          label += '.';
+          label += std::to_string(gid.get(3));
+          return label;
 
-	case 1232: // XWALL case
-	case 1231:
-	  label = "X:";
-	  label += std::to_string(gid.get(1));
-	  label += '.';
-	  label += std::to_string(gid.get(2));
-	  label += '.';
-	  label += std::to_string(gid.get(3));
-	  label += '.';
-	  label += std::to_string(gid.get(4));
-	  return label;
+        case 1232: // XWALL case
+        case 1231:
+          label = "X:";
+          label += std::to_string(gid.get(1));
+          label += '.';
+          label += std::to_string(gid.get(2));
+          label += '.';
+          label += std::to_string(gid.get(3));
+          label += '.';
+          label += std::to_string(gid.get(4));
+          return label;
 
-	case 1252: // GVETO case
-	case 1251:
-	  label = "G:";
-	  label += std::to_string(gid.get(1));
-	  label += '.';
-	  label += std::to_string(gid.get(2));
-	  label += '.';
-	  label += std::to_string(gid.get(3));
-	  return label;
+        case 1252: // GVETO case
+        case 1251:
+          label = "G:";
+          label += std::to_string(gid.get(1));
+          label += '.';
+          label += std::to_string(gid.get(2));
+          label += '.';
+          label += std::to_string(gid.get(3));
+          return label;
 
-	default:
-	  break;
-	}
+        default:
+          break;
+        }
 
       return label;
     }
@@ -95,20 +166,20 @@ namespace snemo {
       std::string label;
 
       switch (gid.get_type())
-	{
-	case 1204: // GG case
-	case 1203:
-	  label = "GG:";
-	  label += std::to_string(gid.get(1));
-	  label += '.';
-	  label += std::to_string(gid.get(3));
-	  label += '.';
-	  label += std::to_string(gid.get(2));
-	  return label;
+        {
+        case 1204: // GG case
+        case 1203:
+          label = "GG:";
+          label += std::to_string(gid.get(1));
+          label += '.';
+          label += std::to_string(gid.get(3));
+          label += '.';
+          label += std::to_string(gid.get(2));
+          return label;
 
-	default:
-	  break;
-	}
+        default:
+          break;
+        }
 
       return label;
     }
