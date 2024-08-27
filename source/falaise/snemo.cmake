@@ -289,6 +289,8 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_tracker_trajectory_solution.cxx
   snemo/test/test_snemo_datamodel_particle_track.cxx
   snemo/test/test_snemo_datamodel_particle_track_data.cxx
+  snemo/test/test_snemo_datamodel_geomid_utils.cxx
+  
   snemo/test/test_snemo_geometry_calo_locator_1.cxx
   snemo/test/test_snemo_geometry_gg_locator_1.cxx
   snemo/test/test_snemo_geometry_gveto_locator_1.cxx
@@ -296,21 +298,26 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_geometry_xcalo_locator_1.cxx
   snemo/test/test_snemo_geometry_mapped_magnetic_field.cxx
   snemo/test/test_snemo_geometry_helix_intercept_1.cxx
+
   snemo/test/test_snemo_time_time_utils.cxx
+
   snemo/test/test_snemo_rc_run_description.cxx
   snemo/test/test_snemo_rc_run_list.cxx
   snemo/test/test_snemo_rc_run_event.cxx
   snemo/test/test_snemo_rc_run_statistics.cxx
   snemo/test/test_snemo_rc_tracker_cell_status.cxx
   snemo/test/test_snemo_rc_calorimeter_om_status.cxx
+
   snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
   snemo/test/test_snemo_physics_model_per_period_activity_model.cxx
   snemo/test/test_snemo_physics_model_activity_model_factory.cxx
   snemo/test/test_snemo_physics_model_tracker_drift_model.cxx
+
   snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
   # snemo/test/test_snemo_service_rc.cxx
+
   snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx

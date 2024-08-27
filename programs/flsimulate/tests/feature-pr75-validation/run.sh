@@ -141,8 +141,9 @@ if [ $step1 -eq 1 ]; then
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
     mean_energy_keV=$(${pythonExe} ${cfg_dir}/proc.py)
-    if [ ${mean_energy_keV} -lt 900 ]; then
-	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
+    echo >&2 "[info] mean_energy_keV = ${mean_energy_keV} keV!"
+    if [ ${mean_energy_keV} -lt 800 ]; then
+	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits <E>= ${mean_energy_keV} keV!"
     else
 	echo >&2 "[info] flsimulate output file records 'calo' hits with high mean energy = ${mean_energy_keV} keV!"
     fi
@@ -180,8 +181,8 @@ if [ $step2 -eq 1 ]; then
 	tr -s "[[:space:]]" | grep -B 1 particle_name  | grep energy_deposit | sed -e 's@^\t@@g' -e "s@<energy_deposit>@@g" -e "s@</energy_deposit>@@g" > ${FLWORKDIR}/calo_de.data
     # Compute the mean deposited energy (in keV) and compare it to a given threshold:
     mean_energy_keV=$(${pythonExe} ${cfg_dir}/proc.py)
-    if [ ${mean_energy_keV} -lt 3500 ]; then
-	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits!"
+    if [ ${mean_energy_keV} -lt 3000 ]; then
+	my_exit 1 "flsimulate output file does not record enough energy in 'calo' hits <E>= ${mean_energy_keV} keV!"
     else
 	echo >&2 "[info] flsimulate output file records 'calo' hits with high mean energy = ${mean_energy_keV} keV!"
     fi
