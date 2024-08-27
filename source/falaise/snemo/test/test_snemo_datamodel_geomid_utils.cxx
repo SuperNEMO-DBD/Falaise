@@ -119,8 +119,10 @@ void test1()
   std::cout << "\nOM map:\n";
   for (const auto & omid : inv_om_map) {
     std::cout << omid.first << ' ' << omid.second;
-    auto checkGid = snemo::datamodel::om_gid(omid.first);
-    std::cout << ' ' << checkGid;
+    auto checkOMGid = snemo::datamodel::om_gid(omid.first, false);
+    std::cout << ' ' << checkOMGid;
+    auto checkBackBlockGid = snemo::datamodel::om_gid(omid.first, true, true);
+    std::cout << ' ' << checkBackBlockGid;
     std::cout << '\n';
   }
   
@@ -133,8 +135,10 @@ void test2()
   std::cout << "\nTracker cell map:\n";
   for (const auto & ggid : snemo::datamodel::gg_map()) {
     std::cout << ggid.first << ' ' << ggid.second;
-    auto checkGid = snemo::datamodel::gg_gid(ggid.first);
+    auto checkGid = snemo::datamodel::gg_gid(ggid.first, false);
     std::cout << ' ' << checkGid;
+    auto checkCoreGid = snemo::datamodel::gg_gid(ggid.first, true);
+    std::cout << ' ' << checkCoreGid;
     std::cout << '\n';
   }
  

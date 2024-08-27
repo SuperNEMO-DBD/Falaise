@@ -25,7 +25,7 @@ namespace snemo {
     int om_num(const geomtools::geom_id & gid);
 
     // Compute the OM geom_id (unique geometry identifier) from the OM num (unique integer identifier)
-    geomtools::geom_id om_gid(const int num_);
+    geomtools::geom_id om_gid(const int num_, bool block_ = false, bool back_part_ = false);
 
 		// Return a singleton num->geom_id map for OMs
 		const std::map<int, geomtools::geom_id> & om_map();
@@ -34,7 +34,7 @@ namespace snemo {
     int gg_num(const geomtools::geom_id & gid);
 
     // Compute the GG geom_id (unique geometry identifier) from the GG num (unique integer identifier)
-    geomtools::geom_id gg_gid(const int num_);
+    geomtools::geom_id gg_gid(const int num_, bool cell_core_ = false);
 
 		// Return a singleton num->geom_id map for GG cells
 		const std::map<int, geomtools::geom_id> & gg_map();

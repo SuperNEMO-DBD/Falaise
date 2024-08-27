@@ -66,12 +66,20 @@ namespace snemo {
     }
 
     
-    geomtools::geom_id om_gid(const int num_)
+    geomtools::geom_id om_gid(const int num_, bool block_, bool back_part_)
     {
       auto found = om_map().find(num_);
       DT_THROW_IF(found == om_map().end(), std::logic_error,
                   "Invalid calo OM number " << num_ << "!");
-      return found->second;
+      auto gid = found->second;
+      if (block_) {
+	int omType = gid.get_type();
+	gid.set_type(omType + 1); // MWall: 1301->1302, XWall: 1231->1232, GVeto:1252->1253
+	if (gid.get_type() == 1302) {
+	  gid.set(4, back_part_ ? 0 : 1); // Set the back or front part of the main calo block
+	}
+      }
+      return gid;
     }
 
     int gg_num (const geomtools::geom_id & gid)
@@ -108,12 +116,17 @@ namespace snemo {
       return _gg_map;
     }
 
-    geomtools::geom_id gg_gid(const int num_)
+    geomtools::geom_id gg_gid(const int num_, bool cell_core_)
     {
       auto found = gg_map().find(num_);
       DT_THROW_IF(found == gg_map().end(), std::logic_error,
                   "Invalid geiger cell number " << num_ << "!");
-      return found->second;
+      auto gid = found->second;
+      if (cell_core_) {
+	int ggType = gid.get_type();
+	gid.set_type(ggType + 1); // 1203->1204
+      }
+      return gid;
     }
 
     std::string om_label (const geomtools::geom_id & gid)
