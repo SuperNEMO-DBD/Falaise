@@ -84,6 +84,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/simulation/calorimeter_step_hit_processor.h
   snemo/simulation/arbitrary_event_generator_injector.h
   snemo/simulation/from_ascii_files_event_generator.h
+  snemo/simulation/tracker_drift_time_generator.hpp
 
   snemo/processing/config.h
   snemo/processing/calorimeter_regime.h
@@ -131,6 +132,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/physics_model/decaying_activity_model.h
   snemo/physics_model/per_period_activity_model.h
   snemo/physics_model/activity_model_factory.h
+  snemo/physics_model/tracker_drift_model.hpp
 
   snemo/rc/run_description.h
   snemo/rc/run_list.h
@@ -232,6 +234,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/simulation/calorimeter_step_hit_processor.cc
   snemo/simulation/arbitrary_event_generator_injector.cc
   snemo/simulation/from_ascii_files_event_generator.cc
+  snemo/simulation/tracker_drift_time_generator.cpp
 
   snemo/cuts/event_header_cut.cc
   snemo/cuts/simulated_data_cut.cc
@@ -245,6 +248,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/physics_model/decaying_activity_model.cc
   snemo/physics_model/per_period_activity_model.cc
   snemo/physics_model/activity_model_factory.cc
+  snemo/physics_model/tracker_drift_model.cpp
 
   snemo/rc/run_description.cc
   snemo/rc/run_list.cc
@@ -302,10 +306,12 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_physics_model_sliced_activity_model.cxx
   snemo/test/test_snemo_physics_model_per_period_activity_model.cxx
   snemo/test/test_snemo_physics_model_activity_model_factory.cxx
+  snemo/test/test_snemo_physics_model_tracker_drift_model.cxx
   snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
   # snemo/test/test_snemo_service_rc.cxx
+  snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
 

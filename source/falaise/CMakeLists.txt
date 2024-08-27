@@ -74,6 +74,7 @@ set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
 #   to various setups
+include(math.cmake)
 include(geometry.cmake)
 include(snemo.cmake)
 

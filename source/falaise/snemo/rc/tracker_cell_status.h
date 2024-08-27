@@ -32,13 +32,12 @@ namespace snemo {
       static const std::uint32_t CELL_GOOD = 0; ///< Default status for a working cell with no issue
 
       /// \brief Cell status is implemented as a bitset whre each bit has a specific meaning
-      enum status_bit
-      {
-       CELL_DEAD              = datatools::bit_mask::bit00, ///< Cell is dead
-       CELL_OFF               = datatools::bit_mask::bit01, ///< Cell is off
-       CELL_NO_ANODE          = datatools::bit_mask::bit02, ///< Cell anode signal is not collected
-       CELL_NO_BOTTOM_CATHODE = datatools::bit_mask::bit03, ///< Cell bottom cathode signal is not collected
-       CELL_NO_TOP_CATHODE    = datatools::bit_mask::bit04  ///< Cell top cathode signal is not collected
+      enum status_bit {
+        CELL_DEAD              = datatools::bit_mask::bit00, ///< Cell is dead
+        CELL_OFF               = datatools::bit_mask::bit01, ///< Cell is off
+        CELL_NO_ANODE          = datatools::bit_mask::bit02, ///< Cell anode signal is not collected
+        CELL_NO_BOTTOM_CATHODE = datatools::bit_mask::bit03, ///< Cell bottom cathode signal is not collected
+        CELL_NO_TOP_CATHODE    = datatools::bit_mask::bit04  ///< Cell top cathode signal is not collected
       };
 
       static bool is_off(std::uint32_t status_bits_);
@@ -53,10 +52,9 @@ namespace snemo {
  
       static std::string status_to_string(std::uint32_t status_bits_);
 
-      enum status_decode_flags
-        {
-         DECODE_TRIM = datatools::bit_mask::bit00
-        };
+      enum status_decode_flags {
+        DECODE_TRIM = datatools::bit_mask::bit00
+      };
       
       static std::uint32_t status_from_string(std::string status_repr_, const std::uint16_t options_ = 0);
       

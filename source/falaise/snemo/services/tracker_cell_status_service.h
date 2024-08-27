@@ -96,7 +96,8 @@ namespace snemo {
     std::string _geometry_label_;
     std::string _db_label_;
     const geomtools::manager * _geomgr_ = nullptr;
-    std::uint32_t _cell_type_ = 1204;
+    std::uint32_t _cell_type_ = 1203;
+    std::uint32_t _cell_core_type_ = 1204;
     const snemo::db_service * _db_service_ = nullptr;
     history_type _histories_;
     
