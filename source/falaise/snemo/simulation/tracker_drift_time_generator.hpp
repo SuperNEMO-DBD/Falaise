@@ -33,31 +33,31 @@ namespace snemo {
       tracker_drift_time_generator();
       
       tracker_drift_time_generator(const datatools::properties & config_,
-				   const datatools::service_dict_type & services_);
+																	 const datatools::service_dict_type & services_);
       
       ~tracker_drift_time_generator() = default;
 
       void initialize(const datatools::properties & config_,
-		      const datatools::service_dict_type & services_);
+											const datatools::service_dict_type & services_);
       
       void reset();
 
       struct last_ionization_info
       {
-	geomtools::vector_3d position;
-	geomtools::vector_3d cell_center;
-	double drift_time;
-	uint32_t nb_ionizations = 0;
+				geomtools::vector_3d position;
+				geomtools::vector_3d cell_center;
+				double drift_time;
+				uint32_t nb_ionizations = 0;
       };
       
       double generate_drift_time(const geomtools::geom_id & cell_gid_,
-				 const time::time_point & event_reference_timepoint_,
-				 const geomtools::vector_3d & position_start_,
-				 const geomtools::vector_3d & position_stop_,
-				 const double time_start_,
-				 const double time_stop_,
-				 const double energy_deposit_,
-				 mygsl::rng & random_) const;
+																 const time::time_point & event_reference_timepoint_,
+																 const geomtools::vector_3d & position_start_,
+																 const geomtools::vector_3d & position_stop_,
+																 const double time_start_,
+																 const double time_stop_,
+																 const double energy_deposit_,
+																 mygsl::rng & random_) const;
 				 
       const last_ionization_info & last() const;
       
