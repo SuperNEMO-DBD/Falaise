@@ -45,24 +45,24 @@ void test1()
     // Fill the run list:
     snt::time_duration runDuration(snt::hours(10) + snt::minutes(23) + snt::seconds(42));
     std::int32_t runId = 42;
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                1234));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     snt::time_period(runStart, runDuration),
+							     1234));
     
     runStart    += runDuration + snt::minutes(7);
     runDuration += snt::hours(2) + snt::minutes(37);
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                2454));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     snt::time_period(runStart, runDuration),
+							     2454));
     
     runStart    += runDuration + snt::minutes(13);
     runDuration -= snt::minutes(23);   
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                1431));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     snt::time_period(runStart, runDuration),
+							     1431));
   }
                       
   std::clog << "\nThis run list:\n";

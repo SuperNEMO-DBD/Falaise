@@ -44,15 +44,30 @@ void test1()
   snt::time_point runStop = runStart + runDuration;
   snt::time_period runPeriod(runStart, runStop);
     
-  snrc::run_description runDesc = snrc::run_description::make(42,
-                                                              snrc::run_category::TEST,
-                                                              runPeriod,
-                                                              1234);
-  runDesc.add_break(snt::minutes(35), snt::minutes(12));
-  runDesc.add_break(snt::hours(1) + snt::minutes(17),
-                    snt::minutes(17));
+  snrc::run_description runDesc =
+    snrc::run_description::make_unique_slice(42,
+					    snrc::run_category::TEST,
+					    runPeriod,
+					     1234);
+  // runDesc.add_break(snt::minutes(35), snt::minutes(12));
+  // runDesc.add_break(snt::hours(1) + snt::minutes(17),
+  //                   snt::minutes(17));
                        
   runDesc.print_tree(std::clog);
+
+  std::vector<snt::time_duration> deadtimes = {snt::milliseconds(120), snt::milliseconds(750), snt::milliseconds(1200)};
+
+  snrc::run_description runDesc2 =
+    snrc::run_description::make_with_breaks(42,
+					    snrc::run_category::TEST,
+					    runPeriod,
+					    1234,
+					    {snt::time_period(runStart + snt::minutes(35), snt::minutes(12)),
+					     snt::time_period(runStart + snt::hours(1) + snt::minutes(17), snt::minutes(17))},
+					    deadtimes
+					    );
+  
+  runDesc2.print_tree(std::clog);
   return;
 }
 
@@ -71,6 +86,8 @@ void test2()
   runDescConfig.store("number_of_breaks", 2);
   runDescConfig.store("break_0.period", "{2022-05-27 02:35:00 + 00:13:00}");
   runDescConfig.store("break_1.period", "{2022-05-27 04:04:00 + 00:17:10}");
+  std::vector<std::string> deadtimesReprs = {"00:00:00.120", "00:00:01.500000", "00:00:01.100000"};
+  runDescConfig.store("deadtimes", deadtimesReprs);
   runDesc.load(runDescConfig);
   runDesc.print_tree(std::clog);
   return;

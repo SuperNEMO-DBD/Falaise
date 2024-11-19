@@ -17,6 +17,7 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <optional>
 
 // Boost
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -71,10 +72,20 @@ namespace snemo {
       
       std::int32_t run_id() const;
 
-      static run_description make(const run_id_type run_id_,
-                                  const run_category run_cat_,
-                                  const time::time_period & run_period_,
-                                  std::uint32_t number_of_events_);
+			// Create a run decription object with a single time slice and no breaks
+      static run_description make_unique_slice(const run_id_type run_id_,
+																							 const run_category run_cat_,
+																							 const time::time_period & run_period_,
+																							 std::uint32_t number_of_events_,
+																							 const std::optional<time::time_duration> & run_deadtime_ = std::nullopt);
+			
+			// Create a run decription object with some breaks
+      static run_description make_with_breaks(const run_id_type run_id_,
+																							const run_category run_cat_,
+																							const time::time_period & run_period_,
+																							std::uint32_t number_of_events_,
+																							const std::vector<time::time_period> & breaks_,
+																							const std::optional<std::vector<time::time_duration>> & run_deadtimes_ = std::nullopt);
  
       inline const time::time_period & period() const
       {
@@ -95,6 +106,8 @@ namespace snemo {
  
       std::uint32_t number_of_events() const;
 
+      std::uint32_t total_number_of_events() const;
+
       bool has_breaks() const;
  
       void add_break(const time::time_period & break_);
@@ -102,9 +115,13 @@ namespace snemo {
       void add_break(const time::time_duration & break_shift_,
                      const time::time_duration & break_duration_);
 
+			void set_deadtime(const std::size_t slice_index_, const time::time_duration & deadtime_);
+			
       bool has_slices() const;
 
       const std::vector<time::time_period> & slices() const;
+ 
+      const std::vector<time::time_duration> & deadtimes() const;
  
       const std::vector<time::time_period> & breaks() const;
       
@@ -115,17 +132,27 @@ namespace snemo {
                               const boost::property_tree::ptree & options_ = empty_options()) const override;
 
       void load(const datatools::properties & config_);
-      
+
+			time::time_duration total_deadtime() const;
+			
+      time::time_duration effective_duration() const;
+
+			void lock();
+			
+			bool is_locked() const;
+			
     private:
 
       void _sync_();
-      
+
+			bool _locked_ = false;
       run_id_type _run_id_ = INVALID_RUN_ID;
       run_category _category_ = run_category::INDETERMINATE;
       time::time_period _period_{time::time_point(time::not_a_date_time),
                                  time::time_point(time::not_a_date_time)};
-      std::vector<time::time_period> _breaks_;
-      std::vector<time::time_period> _slices_;
+      std::vector<time::time_period> _breaks_; ///< Array of breaks (paused/resume data acquisition time intervals)
+      std::vector<time::time_period> _slices_; ///< Array of active data acquisition time slices
+      std::vector<time::time_duration> _deadtimes_; ///< Array of estimated deadtimes associated to active time slices
       std::uint32_t _number_of_events_ = 0;
 
     };

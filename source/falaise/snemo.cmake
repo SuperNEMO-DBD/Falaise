@@ -108,6 +108,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_calorimeter_s2c_module_utils.h
   snemo/processing/mock_tracker_s2c_module.h
 
+  # snemo/db/utils.hpp
+  # snemo/db/calo_energy_calibration.hpp
+
   snemo/services/services.h
   snemo/services/service_traits.h
   snemo/services/service_handle.h
@@ -219,6 +222,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_display.tpp
   snemo/processing/detail/testing/event_generator.cc
   snemo/processing/detail/testing/event_display.cc
+
+  # snemo/db/utils.cpp
+  # snemo/db/calo_energy_calibration.cpp
 
   snemo/services/services.cc
   snemo/services/hello_world.cc
