@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "5.1.2")
+project(Falaise VERSION "5.1.3")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
