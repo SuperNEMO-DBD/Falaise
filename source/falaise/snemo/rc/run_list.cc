@@ -59,7 +59,12 @@ namespace snemo {
     {
       return _duration_;
     }
-    
+        
+    time::time_duration run_list::effective_duration() const
+    {
+      return _effective_duration_;
+    }
+
     time::time_period run_list::span() const
     {
       return _span_;
@@ -100,13 +105,19 @@ namespace snemo {
     void run_list::_compute_duration_()
     {
       time::time_duration rld(time::not_a_date_time); 
+      time::time_duration eff_rld(time::not_a_date_time); 
       for (const auto & rd : _runs_) {
         if (rld.is_not_a_date_time()) {
           rld = boost::posix_time::seconds(0);
         }
         rld += rd.second.duration();
+        if (eff_rld.is_not_a_date_time()) {
+          eff_rld = boost::posix_time::seconds(0);
+        }
+        eff_rld += rd.second.effective_duration();
       }
       _duration_ = rld;
+      _effective_duration_ = eff_rld;
       return;
     }
 
@@ -187,6 +198,11 @@ namespace snemo {
       out_ << popts.indent << tag
            << "Duration : "
            << time::to_string(duration()) << " (=" << time::to_quantity(duration()) / CLHEP::second << " s)"
+           << std::endl;
+
+      out_ << popts.indent << tag
+           << "Effective duration : "
+           << time::to_string(effective_duration()) << " (=" << time::to_quantity(effective_duration()) / CLHEP::second << " s)"
            << std::endl;
  
       out_ << popts.indent << tag

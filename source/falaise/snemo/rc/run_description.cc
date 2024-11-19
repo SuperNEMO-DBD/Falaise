@@ -61,6 +61,7 @@ namespace snemo {
 
     void run_description::set_run_id(const run_id_type id_)
     {
+      // DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
       DT_THROW_IF(id_ < INVALID_RUN_ID, std::domain_error,
                   "Invalid run ID '" << id_ << "'!");
       _run_id_ = id_;
@@ -72,12 +73,24 @@ namespace snemo {
       return _run_id_;
     }
 
+    void run_description::lock()
+    {
+      DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is already locked!");
+      _locked_ = true;
+      return;
+    }
+    
+    bool run_description::is_locked() const
+    {
+      return _locked_;
+    }
 
     // static
-    run_description run_description::make(const run_id_type run_id_,
-                                          const run_category run_cat_,
-                                          const time::time_period & run_period_,
-                                          std::uint32_t number_of_events_)
+    run_description run_description::make_unique_slice(const run_id_type run_id_,
+						       const run_category run_cat_,
+						       const time::time_period & run_period_,
+						       std::uint32_t number_of_events_,
+						       const std::optional<time::time_duration> & run_deadtime_)
     {
       run_description rd;
       rd._run_id_ = run_id_;
@@ -85,8 +98,42 @@ namespace snemo {
       rd._period_ = run_period_;
       rd._number_of_events_ = number_of_events_;
       rd._sync_();
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#slices = " << rd._slices_.size());
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#deadtimes = " << rd._deadtimes_.size());
+      if (run_deadtime_.has_value()) {
+	rd.set_deadtime(0, *run_deadtime_);
+      }
+      rd.lock();
       return rd;
     }
+    // static
+    run_description run_description::make_with_breaks(const run_id_type run_id_,
+						      const run_category run_cat_,
+						      const time::time_period & run_period_,
+						      std::uint32_t number_of_events_,
+						      const std::vector<time::time_period> & breaks_,
+						      const std::optional<std::vector<time::time_duration>> & run_deadtimes_)
+    {
+     run_description rd;
+      rd._run_id_ = run_id_;
+      rd._category_ = run_cat_;
+      rd._period_ = run_period_;
+      rd._number_of_events_ = number_of_events_;
+      for (auto iBreak = 0u; iBreak < breaks_.size(); iBreak++) {
+	rd.add_break(breaks_[iBreak]);
+      }
+      rd._sync_();
+      if (run_deadtimes_.has_value()) {
+	DT_THROW_IF(run_deadtimes_->size() != rd._slices_.size(), std::logic_error,
+		    "Invalid number of slice deadtimes");
+	for (auto i = 0u; i < run_deadtimes_->size(); i++) {
+	  rd.set_deadtime(i, run_deadtimes_->at(i));
+	}
+      }
+      rd.lock();
+      return rd;
+    }
+    
 
     bool run_description::is_valid() const
     {
@@ -98,6 +145,7 @@ namespace snemo {
 
     void run_description::reset()
     {
+      _locked_ = false;
       _run_id_ = INVALID_RUN_ID;
       _category_ = run_category::INDETERMINATE;
       _period_ = time::time_period{time::time_point(time::not_a_date_time),
@@ -105,11 +153,13 @@ namespace snemo {
       _number_of_events_ = 0;
       _breaks_.clear();
       _slices_.clear();
+      _deadtimes_.clear();
       return;
     }
 
     void run_description::add_break(const time::time_period & break_)
     {
+      DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
       DT_THROW_IF(break_.is_null(), std::logic_error, "Malformed break period!");
       DT_THROW_IF(break_.begin() < _period_.begin(), std::domain_error, "Break start out of run period!");
       DT_THROW_IF(break_.end() > _period_.end(), std::domain_error, "Break stop out of run period!");
@@ -145,6 +195,7 @@ namespace snemo {
 
     void run_description::load(const datatools::properties & config_)
     {
+      DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
       if (config_.has_flag("debug")) {
         logging = datatools::logger::PRIO_DEBUG;
@@ -204,9 +255,50 @@ namespace snemo {
         }
       }
       _sync_();
+     
+      if (config_.has_key("deadtimes")) {
+	// Specify deadtime duration associated to each data acquisition time period/slice:
+        std::vector<std::string> deadtimesReprs;
+	config_.fetch("deadtimes", deadtimesReprs);
+	DT_THROW_IF(deadtimesReprs.size() != _slices_.size(), std::logic_error,
+		    "Unmatching number of deadtime values");
+        for (std::uint32_t iDeadtime = 0; iDeadtime < deadtimesReprs.size(); iDeadtime++) {
+          const std::string & deadtimeDurationRepr = deadtimesReprs[iDeadtime];
+          auto deadtimeDuration = time::time_duration_from_string(deadtimeDurationRepr);
+          DT_THROW_IF(not time::is_valid(deadtimeDuration), std::logic_error,
+                      "Invalid run slice deadtime duration '" << deadtimeDurationRepr << "'!");
+	  set_deadtime(iDeadtime, deadtimeDuration);
+        }
+      }
+      
+      lock();
       return;
     }
 
+    void run_description::set_deadtime(const std::size_t slice_index_,
+				       const time::time_duration & deadtime_)
+    {
+      DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
+      DT_THROW_IF(slice_index_ >= _deadtimes_.size(), std::range_error,
+		  "Invalid slice index " << std::to_string(slice_index_));
+      _deadtimes_[slice_index_] = deadtime_;
+      return;
+    }
+
+    time::time_duration run_description::total_deadtime() const
+    {
+      time::time_duration tot = boost::posix_time::microseconds(0);
+      for (const auto & dt : _deadtimes_) {
+	tot += dt;
+      }
+      return tot;
+    }			
+			
+    time::time_duration run_description::effective_duration() const
+    {
+      return this->duration() - this->total_deadtime();
+    }
+ 
     void run_description::_sync_()
     {
       /*
@@ -222,6 +314,11 @@ namespace snemo {
        */
       _slices_.clear();
       _slices_.push_back(time::time_period(this->begin(), this->end()));
+      {
+	// Sync array of zero deadtime with array of slices:
+	time::time_duration deadtime_duration = boost::posix_time::microseconds(0);
+	_deadtimes_.push_back(deadtime_duration);
+      }
       for (const auto & pause : this->breaks()) {
         time::time_period & lastSlice = _slices_.back();
         if (pause.begin() == lastSlice.begin() and pause.end() < lastSlice.end()) {
@@ -233,12 +330,16 @@ namespace snemo {
             time::time_period nextSlice(pause.end(), lastSlice.end());
             lastSlice = updatedSlice;
             _slices_.push_back(nextSlice);
+	    // sync array of zero deadtime with array of slices:
+	    time::time_duration deadtime_duration = boost::posix_time::microseconds(0);
+	    _deadtimes_.push_back(deadtime_duration);
           } else {
             time::time_period updatedSlice(lastSlice.begin(), pause.begin());
             lastSlice = updatedSlice;
           }
         }
       }
+      
       return;
     }
  
@@ -252,6 +353,11 @@ namespace snemo {
     }
   
     std::uint32_t run_description::number_of_events() const
+    {
+      return _number_of_events_;
+    }
+
+    std::uint32_t run_description::total_number_of_events() const
     {
       return _number_of_events_;
     }
@@ -270,6 +376,16 @@ namespace snemo {
         mutableThis->_sync_();
       }
       return _slices_;
+    }
+    
+    const std::vector<time::time_duration> & run_description::deadtimes() const
+    {
+      if (has_slices() and _deadtimes_.size() == 0) {
+        // Deadtimes have not been computed yet:
+        run_description * mutableThis = const_cast<run_description*>(this);
+        mutableThis->_sync_();
+      }
+      return _deadtimes_;
     }
  
     bool run_description::has_breaks() const
@@ -305,7 +421,7 @@ namespace snemo {
       out_ << popts.indent << tag
            << "Period : "
            << time::to_string(_period_, time::TIME_PERIOD_FORMAT_EXCLUDE_END)
-           << " (duration : " << time::to_string(_period_.length()) << " , "
+           << " (duration=" << time::to_string(_period_.length()) << " -> "
            << std::setprecision(15) << time::to_quantity(_period_.length()) / CLHEP::second << " s)"
            << std::endl;
     
@@ -322,15 +438,15 @@ namespace snemo {
           }
           out_ << "Period #" << brkCount << " : ";
           out_ << time::to_string(aBreak, time::TIME_PERIOD_FORMAT_EXCLUDE_END)
-               << " (duration : " << time::to_string(aBreak.length()) << ")"
+               << " (duration=" << time::to_string(aBreak.length()) << ")"
                << std::endl;
-          brkCount++;
+          brkCount++; 
         }
       }
     
       if (has_slices()) {
         out_ << popts.indent << tag
-             << "Slices : " << std::endl;
+             << "Slices : " << _slices_.size() << std::endl;
         unsigned int sliceCount = 0;
         for (const auto & aSlice : _slices_) {
           out_ << popts.indent << skip_tag;
@@ -341,16 +457,22 @@ namespace snemo {
           }
           out_ << "Period #" << sliceCount << " : ";
           out_ << time::to_string(aSlice, time::TIME_PERIOD_FORMAT_EXCLUDE_END)
-               << " (duration : " << time::to_string(aSlice.length()) << ")"
+               << " (duration=" << time::to_string(aSlice.length()) << ", deadtime=" << time::to_string(_deadtimes_[sliceCount]) << ")"
                << std::endl;
           sliceCount++;
-        }
+        }	
       }
         
       out_ << popts.indent << tag
            << "Duration : "
            << time::to_string(duration())
            << " (=" << time::to_quantity(duration()) / CLHEP::second << " s)"
+           << std::endl;
+        
+      out_ << popts.indent << tag
+           << "Effective duration : "
+           << time::to_string(effective_duration())
+           << " (=" << time::to_quantity(effective_duration()) / CLHEP::second << " s)"
            << std::endl;
   
       out_ << popts.indent << inherit_tag(popts.inherit)
