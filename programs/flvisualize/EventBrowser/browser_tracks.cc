@@ -397,7 +397,10 @@ void browser_tracks::_update_simulated_data() {
           mctools::simulated_data::hit_handle_collection_type &hit_collection =
               sd.grab_step_hits(category);
           for (auto &it_hit : hit_collection) {
-            mctools::base_step_hit &a_step = it_hit.grab();
+						if (not it_hit.has_data()) {
+							continue;
+						}
+						mctools::base_step_hit &a_step = it_hit.grab();
             datatools::properties &a_auxiliaries = a_step.grab_auxiliaries();
 
             std::string name = a_step.get_particle_name();
@@ -543,8 +546,11 @@ void browser_tracks::_update_simulated_data() {
         ihit += hit_collection.size();
 
         for (auto &it_hit : hit_collection) {
-          mctools::base_step_hit &a_step = it_hit.grab();
-
+					if (not it_hit.has_data()) {
+						continue;
+					}
+					mctools::base_step_hit &a_step = it_hit.grab();
+					
           std::string hex_str;
           if (a_step.get_auxiliaries().has_key(COLOR_FLAG)) {
             a_step.get_auxiliaries().fetch(COLOR_FLAG, hex_str);
@@ -595,6 +601,9 @@ void browser_tracks::_update_simulated_data() {
             sd.grab_step_hits("gg");
 
         for (auto &it_hit : hit_collection) {
+					if (not it_hit.has_data()) {
+						continue;
+					}
           mctools::base_step_hit &a_step = it_hit.grab();
 
           // If color is available, add a color box close to the item:
@@ -684,7 +693,9 @@ void browser_tracks::_update_digitized_data() {
     snemo::datamodel::CalorimeterDigiHitHdlCollection &dc_collection = udd.grab_calorimeter_hits();
 
     for (auto &it_hit : dc_collection) {
-
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::calorimeter_digitized_hit &a_hit = it_hit.grab();
 
 			// Show only HT or LT hit
@@ -750,6 +761,9 @@ void browser_tracks::_update_digitized_data() {
     snemo::datamodel::TrackerDigiHitHdlCollection &dt_collection = udd.grab_tracker_hits();
 
     for (auto &it_hit : dt_collection) {
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::tracker_digitized_hit &a_hit = it_hit.grab();
 
       // Add subsubitem:
@@ -831,6 +845,9 @@ void browser_tracks::_update_precalibrated_data() {
     snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection &pcc_collection = pcd.calorimeter_hits();
 
     for (auto &it_hit : pcc_collection) {
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::precalibrated_calorimeter_hit &a_hit = it_hit.grab();
 
       // Add subsubitem:
@@ -891,6 +908,9 @@ void browser_tracks::_update_precalibrated_data() {
     snemo::datamodel::PreCalibratedTrackerHitHdlCollection &pct_collection = pcd.tracker_hits();
 
     for (auto &it_hit : pct_collection) {
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.grab();
 
       // Add subsubitem:
@@ -987,7 +1007,10 @@ void browser_tracks::_update_calibrated_data() {
     snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = cd.calorimeter_hits();
 
     for (auto &it_hit : cc_collection) {
-      snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
+			if (not it_hit.has_data()) {
+				continue;
+			}
+			snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
       std::string hex_str;
       if (a_hit.get_auxiliaries().has_key(COLOR_FLAG)) {
@@ -1048,6 +1071,9 @@ void browser_tracks::_update_calibrated_data() {
     snemo::datamodel::TrackerHitHdlCollection &ct_collection = cd.tracker_hits();
 
     for (auto &it_hit : ct_collection) {
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::calibrated_tracker_hit & a_hit = it_hit.grab();
 
       // Add subsubitem:
@@ -1140,6 +1166,9 @@ void browser_tracks::_update_tracker_clustering_data() {
   }
 
   for (auto &cluster_solution : tcd.solutions()) {
+		if (not cluster_solution.has_data()) {
+			continue;
+		}
     // Get current tracker solution:
     snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.grab();
 
@@ -1179,6 +1208,9 @@ void browser_tracks::_update_tracker_clustering_data() {
     // Get clusters stored in the current tracker solution:
     snemo::datamodel::TrackerClusterHdlCollection &clusters = a_solution.get_clusters();
     for (auto &cluster : clusters) {
+			if (not cluster.has_data()) {
+				continue;
+			}
       // Get current tracker cluster:
       snemo::datamodel::tracker_cluster &a_cluster = cluster.grab();
 
@@ -1303,6 +1335,11 @@ void browser_tracks::_update_tracker_trajectory_data() {
   snemo::datamodel::TrackerTrajectorySolutionHdlCollection &trajectory_solutions =
       ttd.get_solutions();
   for (auto &trajectory_solution : trajectory_solutions) {
+		if (not trajectory_solution.has_data()) {
+			DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
+										 "Trajectory solution has no data");
+			continue;
+		}
     // Get current tracker solution:
     snemo::datamodel::tracker_trajectory_solution & a_solution = trajectory_solution.grab();
 
@@ -1358,6 +1395,11 @@ void browser_tracks::_update_tracker_trajectory_data() {
     // Get trajectories stored in the current tracker trajectory solution:
     snemo::datamodel::TrackerTrajectoryHdlCollection & trajectories = a_solution.grab_trajectories();
     for (auto & thisTrajectory : trajectories) {
+			if (not thisTrajectory.has_data()) {
+				DT_LOG_WARNING(datatools::logger::PRIO_WARNING,
+										 "Trajectory has no data");
+				continue;
+			}
       // Get current tracker trajectory:
       snemo::datamodel::tracker_trajectory & a_trajectory = thisTrajectory.grab();
 
@@ -1542,6 +1584,9 @@ void browser_tracks::_update_particle_track_data() {
     snemo::datamodel::CalorimeterHitHdlCollection &cc_collection = ptd.isolatedCalorimeters();
 
     for (auto &it_hit : cc_collection) {
+			if (not it_hit.has_data()) {
+				continue;
+			}
       snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
       // Add subsubitem:
@@ -1583,6 +1628,9 @@ void browser_tracks::_update_particle_track_data() {
 
   for (auto & particle : ptd.particles()) {
     // Get current particle track:
+		if (not particle.has_data()) {
+			continue;
+		}
     snemo::datamodel::particle_track & a_particle = particle.grab();
 
     // Add item:
@@ -1699,6 +1747,9 @@ void browser_tracks::_update_particle_track_data() {
           a_particle.get_associated_calorimeter_hits();
 
       for (auto & it_hit : cc_collection) {
+				if (not it_hit.has_data()) {
+					continue;
+				}
         snemo::datamodel::calibrated_calorimeter_hit &a_hit = it_hit.grab();
 
         // Add subsubitem:

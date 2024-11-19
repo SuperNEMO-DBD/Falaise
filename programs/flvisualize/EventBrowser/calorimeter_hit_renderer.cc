@@ -81,6 +81,9 @@ namespace snemo {
 	}
 
 	for (const auto& it_hit : hit_collection) {
+	  if (not it_hit.has_data()) {
+	    continue;
+	  }
 	  const mctools::base_step_hit& a_hit = it_hit.get();
 
 	  const geomtools::vector_3d& pstart = a_hit.get_position_start();
@@ -141,6 +144,9 @@ namespace snemo {
 	}
 
 	for (const auto& it_hit : dc_collection) {
+	  if (not it_hit.has_data()) {
+	    continue;
+	  }
 	  const snemo::datamodel::calorimeter_digitized_hit& a_hit = it_hit.get();
 
 	  // Geom ID fix
@@ -279,6 +285,9 @@ namespace snemo {
 	}
 
 	for (const auto& it_hit : pcc_collection) {
+	  if (not it_hit.has_data()) {
+	    continue;
+	  }
 	  const snemo::datamodel::precalibrated_calorimeter_hit& a_hit = it_hit.get();
 
 	  this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
@@ -426,6 +435,9 @@ namespace snemo {
 	}
 
 	for (const auto& it_hit : cc_collection) {
+	  if (not it_hit.has_data()) {
+	    continue;
+	  }
 	  const snemo::datamodel::calibrated_calorimeter_hit& a_hit = it_hit.get();
 
 	  this->highlight_geom_id(a_hit.get_geom_id(),

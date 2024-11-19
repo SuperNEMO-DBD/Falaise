@@ -93,6 +93,9 @@ namespace snemo {
 	  }
 
 	  for (const auto &it_hit : hit_collection) {
+	    if (not it_hit.has_data()) {
+	      continue;
+	    }
 	    const mctools::base_step_hit &a_hit = it_hit.get();
 	    std::string particle_name = a_hit.get_particle_name();
 
@@ -252,6 +255,7 @@ namespace snemo {
 
       void visual_track_renderer::push_reconstructed_tracks()
       {
+	FL_LOG_DEVEL("Entering...");
 	style_manager &style_mgr = style_manager::get_instance();
 	const io::event_record &event = _server->get_event();
 	const auto &pt_data = event.get<snemo::datamodel::particle_track_data>(io::PTD_LABEL);
@@ -259,6 +263,7 @@ namespace snemo {
 	if (!pt_data.hasParticles()) {
 	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
 		       "Event has no reconstructed particles");
+	  FL_LOG_DEVEL("Exiting...");
 	  return;
 	}
 
@@ -266,6 +271,11 @@ namespace snemo {
 	if (pt_data.hasIsolatedCalorimeters()) {
 	  const snemo::datamodel::CalorimeterHitHdlCollection &calos = pt_data.isolatedCalorimeters();
 	  for (const auto &calo : calos) {
+	    if (not calo.has_data()) {
+	      DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+			     "Event has no reconstructed particles");
+	      continue;
+	    }
 	    const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
 	    const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
 	    this->highlight_geom_id(a_calo_gid,
@@ -292,7 +302,14 @@ namespace snemo {
 		       "No calorimeter hits unassociated to particle track");
 	}
 
+	int particleCount = -1;
 	for (const auto &particle : pt_data.particles()) {
+	  particleCount++;
+	  if (not particle.has_data()) {
+	    DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+			   "Particle #" << particleCount << "'s handle is not set");
+	    continue;
+	  }
 	  const snemo::datamodel::particle_track &a_particle = particle.get();
 
 	  if (a_particle.get_auxiliaries().has_key(browser_tracks::CHECKED_FLAG) &&
@@ -331,22 +348,30 @@ namespace snemo {
 		mark->SetMarkerStyle(kOpenCrossX);
 	      }
 	      {
-		auto from = a_vertex->get_from();
-		auto fromPoint = a_particle.get_trajectory().get_pattern().get_first();
-		if (from == snemo::datamodel::VERTEX_FROM_LAST) {
-		  fromPoint = a_particle.get_trajectory().get_pattern().get_last();
+		if (not a_particle.get_trajectory_handle().has_data()) {
+		  DT_LOG_WARNING(options_manager::get_instance().get_logging_priority(),
+				 "Particle #" << particleCount << "'s trajectory handle is not set"
+				 << " (charge=" << snemo::datamodel::particle_track::to_string(a_particle.get_charge()) << ")"
+				 );
+		  
+		} else {
+		  auto from = a_vertex->get_from();
+		  auto fromPoint = a_particle.get_trajectory().get_pattern().get_first();
+		  if (from == snemo::datamodel::VERTEX_FROM_LAST) {
+		    fromPoint = a_particle.get_trajectory().get_pattern().get_last();
+		  }
+		  TPolyMarker3D * fromMark = base_renderer::make_polymarker(fromPoint);
+		  _objects->Add(fromMark);
+		  fromMark->SetMarkerColor(effectiveColor);
+		  fromMark->SetMarkerStyle(kOpenCircle);
+		  geomtools::polyline_type polyVertices;
+		  polyVertices.push_back(fromPoint);
+		  polyVertices.push_back(a_position);
+		  TPolyLine3D * extrapolatedTrack = base_renderer::make_polyline(polyVertices);
+		  _objects->Add(extrapolatedTrack);
+		  extrapolatedTrack->SetLineColor(effectiveColor);
+		  extrapolatedTrack->SetLineStyle(kDashed);
 		}
-		TPolyMarker3D * fromMark = base_renderer::make_polymarker(fromPoint);
-		_objects->Add(fromMark);
-		fromMark->SetMarkerColor(effectiveColor);
-		fromMark->SetMarkerStyle(kOpenCircle);
-		geomtools::polyline_type polyVertices;
-		polyVertices.push_back(fromPoint);
-		polyVertices.push_back(a_position);
-		TPolyLine3D * extrapolatedTrack = base_renderer::make_polyline(polyVertices);
-		_objects->Add(extrapolatedTrack);
-		extrapolatedTrack->SetLineColor(effectiveColor);
-		extrapolatedTrack->SetLineStyle(kDashed);
 	      }
 	      if (a_vertex->get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
 		TPolyMarker3D *mark = base_renderer::make_polymarker(a_position);
@@ -384,6 +409,9 @@ namespace snemo {
 	    const snemo::datamodel::CalorimeterHitHdlCollection & calos =
 	      a_particle.get_associated_calorimeter_hits();
 	    for (const auto & calo : calos) {
+	      if (not calo.has_data()) {
+		continue;
+	      }
 	      const snemo::datamodel::calibrated_calorimeter_hit &a_calo = calo.get();
 	      const geomtools::geom_id &a_calo_gid = a_calo.get_geom_id();
 	      this->highlight_geom_id(a_calo_gid, color);
