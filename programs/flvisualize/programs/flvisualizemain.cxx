@@ -160,7 +160,7 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
     my_application->Run(true);
 
   } catch (std::exception &e) {
-    std::cerr << "flsimulate : setup/run of simulation threw exception" << std::endl;
+    std::cerr << "flvisualize : Falaise SuperNEMO event browser threw exception" << std::endl;
     std::cerr << e.what() << std::endl;
     return falaise::EXIT_UNAVAILABLE;
   }
