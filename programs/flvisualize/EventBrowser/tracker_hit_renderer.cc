@@ -62,14 +62,15 @@ namespace snemo {
 
       void tracker_hit_renderer::push_simulated_hits(const std::string & hit_category_)
       {
-        FL_LOG_DEVEL("Entering...");
+        // FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
+ 	if (not event.has(io::SD_LABEL)) return;
         const auto & sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
         if (!sim_data.has_step_hits(hit_category_)) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
                              "Event has no '" << hit_category_ << "' tracker hits");
-          FL_LOG_DEVEL("Exiting...");
+          // FL_LOG_DEVEL("Exiting...");
           return;
         }
 
@@ -79,10 +80,13 @@ namespace snemo {
         if (hit_collection.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
                              "No tracker hits");
-          FL_LOG_DEVEL("Exiting...");
+          // FL_LOG_DEVEL("Exiting...");
           return;
         }
-
+	if (not hit_collection.front().has_data()) {
+	  return;
+	}
+ 
         // time gradient color
         double hit_start_time = hit_collection.front().get().get_time_start();
         double hit_stop_time = hit_collection.front().get().get_time_start();
@@ -91,14 +95,24 @@ namespace snemo {
           options_manager::get_instance().get_option_flag(SHOW_GG_TIME_GRADIENT);
         if (geiger_with_gradient) {
           for (const auto & it_hit : hit_collection) {
-            hit_start_time = std::min(it_hit.get().get_time_start(), hit_start_time);
+	    if (not it_hit.has_data()) {
+	      DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, // options_manager::get_instance().get_logging_priority(),
+			     "Hit from collection '" << hit_category_ << "' is not set!");
+	      continue;
+	    }
+	    hit_start_time = std::min(it_hit.get().get_time_start(), hit_start_time);
             hit_stop_time = std::max(it_hit.get().get_time_start(), hit_stop_time);
           }
         }
 
         for (const auto & it_hit : hit_collection) {
-          const mctools::base_step_hit & a_step = it_hit.get();
-
+	  if (not it_hit.has_data()) {
+	    DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, // options_manager::get_instance().get_logging_priority(),
+			   "Hit from collection '" << hit_category_ << "' is not set!");
+	    continue;
+	  }
+ 	  const mctools::base_step_hit & a_step = it_hit.get();
+	  
           // draw the Geiger avalanche path:
           auto * gg_path = new TPolyLine3D;
           _objects->Add(gg_path);
@@ -178,12 +192,13 @@ namespace snemo {
             gg_drift->SetLineWidth(line_width);
           } // end of "show geiger drift circle" condition
         } // end of step collection
-        FL_LOG_DEVEL("Exiting...");
+        // FL_LOG_DEVEL("Exiting...");
         return;
       }
 
       void tracker_hit_renderer::push_digitized_hits() {
 	const io::event_record &event = _server->get_event();
+ 	if (not event.has(io::UDD_LABEL)) return;
 	const auto &digi_data = event.get<snemo::datamodel::unified_digitized_data>(io::UDD_LABEL);
 
 	const snemo::datamodel::TrackerDigiHitHdlCollection &dt_collection = digi_data.get_tracker_hits();
@@ -195,6 +210,11 @@ namespace snemo {
 	}
 
 	for (const auto &it_hit : dt_collection) {
+	  if (not it_hit.has_data()) {
+	    DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, // options_manager::get_instance().get_logging_priority(),
+			   "Tracker digitized hit is not set!");
+	    continue;
+	  }
 	  const snemo::datamodel::tracker_digitized_hit &a_hit = it_hit.get();
 	  tracker_hit_renderer::_make_digitized_geiger_hit(a_hit);
 	}
@@ -204,6 +224,7 @@ namespace snemo {
       {
         // FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
+ 	if (not event.has(io::pCD_LABEL)) return;
         const auto & precalib_data = event.get<snemo::datamodel::precalibrated_data>(io::pCD_LABEL);
 
         const snemo::datamodel::PreCalibratedTrackerHitHdlCollection & pct_collection = precalib_data.tracker_hits();
@@ -216,7 +237,12 @@ namespace snemo {
         }
 
         for (const auto & it_hit : pct_collection) {
-          const snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.get();
+	  if (not it_hit.has_data()) {
+	    DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, // options_manager::get_instance().get_logging_priority(),
+			   "Precalibrated tracker hit is not set!");
+	    continue;
+	  }
+	  const snemo::datamodel::precalibrated_tracker_hit & a_hit = it_hit.get();
 
 	  // this->highlight_geom_id(a_hit.get_geom_id(), style_manager::get_instance().get_precalibrated_data_color());
 	  tracker_hit_renderer::_make_precalibrated_geiger_hit(a_hit);
@@ -227,8 +253,9 @@ namespace snemo {
 
       void tracker_hit_renderer::push_calibrated_hits()
       {
-        FL_LOG_DEVEL("Entering...");
+        // FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
+ 	if (not event.has(io::CD_LABEL)) return;
         const auto & calib_data = event.get<snemo::datamodel::calibrated_data>(io::CD_LABEL);
 
         const snemo::datamodel::TrackerHitHdlCollection & ct_collection = calib_data.tracker_hits();
@@ -236,27 +263,37 @@ namespace snemo {
         if (ct_collection.empty()) {
           DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
                              "No calibrated tracker hits");
-          FL_LOG_DEVEL("Exiting...");
+          // FL_LOG_DEVEL("Exiting...");
           return;
         }
 
         for (const auto & it_hit : ct_collection) {
-          const snemo::datamodel::calibrated_tracker_hit & a_hit = it_hit.get();
+	  if (not it_hit.has_data()) {
+	    DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+			       "Calibrated tracker hit is not set!");
+	    continue;
+	  }
+	  const snemo::datamodel::calibrated_tracker_hit & a_hit = it_hit.get();
           tracker_hit_renderer::_make_calibrated_geiger_hit(a_hit, false);
         }
-        FL_LOG_DEVEL("Exiting...");
+        // FL_LOG_DEVEL("Exiting...");
         return;
       }
 
       void tracker_hit_renderer::push_clustered_hits()
       {
-        FL_LOG_DEVEL("Entering...");
+        // FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
         const auto & tracker_clustered_data =
           event.get<snemo::datamodel::tracker_clustering_data>(io::TCD_LABEL);
 
         for (const auto & cluster_solution : tracker_clustered_data.solutions()) {
-          // Get current tracker solution:
+	  if (not cluster_solution.has_data()) {
+	    DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
+			       "Cluster solution solution is not set!");
+	    continue;
+	  }
+           // Get current tracker solution:
           const snemo::datamodel::tracker_clustering_solution &a_solution = cluster_solution.get();
 
           // Check solution properties:
@@ -334,7 +371,7 @@ namespace snemo {
             } // end of gg hits
           } // end of cluster loop
         } // end of solution loop
-        FL_LOG_DEVEL("Exiting...");
+        // FL_LOG_DEVEL("Exiting...");
         return;
       }
 
@@ -342,12 +379,18 @@ namespace snemo {
       {
         FL_LOG_DEVEL("Entering...");
         const io::event_record & event = _server->get_event();
+	if (not event.has(io::TTD_LABEL)) return;
         const auto & tracker_trajectory_data =
           event.get<snemo::datamodel::tracker_trajectory_data>(io::TTD_LABEL);
 
         const snemo::datamodel::TrackerTrajectorySolutionHdlCollection & trajectory_solutions =
           tracker_trajectory_data.get_solutions();
         for (const auto & isolution : trajectory_solutions) {
+	  if (not isolution.has_data()) {
+	    DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, //options_manager::get_instance().get_logging_priority(),
+			   "Tracker trajectory solution is not set!");
+	    continue;
+	  }
           // Get current tracker trajectory solution:
           const snemo::datamodel::tracker_trajectory_solution & a_solution = isolution.get();
 
@@ -366,6 +409,11 @@ namespace snemo {
             a_solution.get_trajectories();
 
           for (const auto & itrajectory : trajectories) {
+	    if (not itrajectory.has_data()) {
+	      DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS, // options_manager::get_instance().get_logging_priority(),
+			     "Tracker trajectory is not set!");
+	      continue;
+	    }
             // Get current tracker trajectory:
             const snemo::datamodel::tracker_trajectory & a_trajectory = itrajectory.get();
 

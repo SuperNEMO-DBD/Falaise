@@ -37,7 +37,7 @@ namespace snemo {
 
       // ctor:
       snemo_draw_manager::snemo_draw_manager(const io::event_server* server_) {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	_server_ = server_;
 
 	_objects_ = new TObjArray(1000);
@@ -49,7 +49,7 @@ namespace snemo {
 	_calorimeter_hit_renderer_.initialize(_server_, _objects_, _text_objects_);
 	_tracker_hit_renderer_.initialize(_server_, _objects_, _text_objects_);
 	_visual_track_renderer_.initialize(_server_, _objects_, _text_objects_);
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       // dtor:
@@ -60,11 +60,11 @@ namespace snemo {
       TObjArray* snemo_draw_manager::get_text_objects() { return _text_objects_; }
 
       void snemo_draw_manager::update() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	if (!_server_->is_initialized()) {
 	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
 		       "Event server is not initialized !");
-	  FL_LOG_DEVEL("Exiting...");
+	  // FL_LOG_DEVEL("Exiting...");
 	  return;
 	}
 
@@ -124,14 +124,14 @@ namespace snemo {
 		       "Event has no tracker trajectory data");
 	}
 
-	// Add 'tracker_trajectory_data' objects:
+	// Add 'particle_track_data' objects:
 	if (_server_->get_event().has(io::PTD_LABEL)) {
 	  this->_add_particle_track_data();
 	} else {
 	  DT_LOG_DEBUG(options_manager::get_instance().get_logging_priority(),
 		       "Event has no particle track data");
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       void snemo_draw_manager::draw() { _objects_->Draw(); }
@@ -139,7 +139,7 @@ namespace snemo {
       void snemo_draw_manager::draw_text() { _text_objects_->Draw(); }
 
       void snemo_draw_manager::reset() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	this->snemo_draw_manager::clear();
 
 	delete _objects_;
@@ -151,24 +151,24 @@ namespace snemo {
 	_calorimeter_hit_renderer_.reset();
 	_tracker_hit_renderer_.reset();
 	_visual_track_renderer_.reset();
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       void snemo_draw_manager::clear() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	_calorimeter_hit_renderer_.clear();
-	FL_LOG_DEVEL("calorimeter_hit_renderer cleared.");
+	// FL_LOG_DEVEL("calorimeter_hit_renderer cleared.");
 	_tracker_hit_renderer_.clear();
-	FL_LOG_DEVEL("tracker_hit_renderer cleared.");
+	// FL_LOG_DEVEL("tracker_hit_renderer cleared.");
 	_visual_track_renderer_.clear();
-	FL_LOG_DEVEL("visual_track_renderer cleared.");
-	FL_LOG_DEVEL("About to delete " << _objects_->GetEntries() << " objects");
+	// FL_LOG_DEVEL("visual_track_renderer cleared.");
+	// FL_LOG_DEVEL("About to delete " << _objects_->GetEntries() << " objects");
 	_objects_->Delete();
-	FL_LOG_DEVEL("objects deleted.");
-	FL_LOG_DEVEL("About to delete " << _text_objects_->GetEntries() << " text objects");
+	// FL_LOG_DEVEL("objects deleted.");
+	// FL_LOG_DEVEL("About to delete " << _text_objects_->GetEntries() << " text objects");
 	_text_objects_->Delete();
-	FL_LOG_DEVEL("text objects deleted.");
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("text objects deleted.");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /***************************************************
@@ -176,7 +176,7 @@ namespace snemo {
        ***************************************************/
 
       void snemo_draw_manager::_add_simulated_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 
 	if (options_mgr.get_option_flag(SHOW_MC_VERTEX)) {
@@ -195,18 +195,18 @@ namespace snemo {
 	if (options_mgr.get_option_flag(SHOW_EVENT_HEADER)) {
 	  _visual_track_renderer_.push_data_legend();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       void snemo_draw_manager::_add_simulated_vertex_() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const io::event_record& event = _server_->get_event();
 	const auto& sim_data = event.get<mctools::simulated_data>(io::SD_LABEL);
 
 	if (!sim_data.has_vertex()) {
 	  DT_LOG_INFORMATION(options_manager::get_instance().get_logging_priority(),
 			     "Simulated data has no vertex");
-	  FL_LOG_DEVEL("Exiting...");
+	  // FL_LOG_DEVEL("Exiting...");
 	  return;
 	}
 
@@ -232,11 +232,11 @@ namespace snemo {
 	    break;
 	  }
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       void snemo_draw_manager::_add_simulated_hits_() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_MC_CALORIMETER_HITS)) {
 	  const std::string& setup_label_name =
@@ -252,7 +252,7 @@ namespace snemo {
 	if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
 	  _tracker_hit_renderer_.push_simulated_hits("gg");
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /****************************************************
@@ -260,12 +260,12 @@ namespace snemo {
        ****************************************************/
 
       void snemo_draw_manager::_add_event_header_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_EVENT_HEADER)) {
 	  _visual_track_renderer_.push_data_legend();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /****************************************************
@@ -273,13 +273,13 @@ namespace snemo {
        ****************************************************/
 
       void snemo_draw_manager::_add_digitized_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_DIGITIZED_HITS)) {
 	  _calorimeter_hit_renderer_.push_digitized_hits();
 	  _tracker_hit_renderer_.push_digitized_hits();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /****************************************************
@@ -287,13 +287,13 @@ namespace snemo {
        ****************************************************/
 
       void snemo_draw_manager::_add_precalibrated_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_PRECALIBRATED_HITS)) {
 	  _calorimeter_hit_renderer_.push_precalibrated_hits();
 	  _tracker_hit_renderer_.push_precalibrated_hits();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /****************************************************
@@ -301,13 +301,13 @@ namespace snemo {
        ****************************************************/
 
       void snemo_draw_manager::_add_calibrated_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_CALIBRATED_HITS)) {
 	  _calorimeter_hit_renderer_.push_calibrated_hits();
 	  _tracker_hit_renderer_.push_calibrated_hits();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /************************************************************
@@ -315,12 +315,12 @@ namespace snemo {
        ************************************************************/
 
       void snemo_draw_manager::_add_tracker_clustering_data() {
-	FL_LOG_DEVEL("Entering...");
+	// FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	if (options_mgr.get_option_flag(SHOW_TRACKER_CLUSTERED_HITS)) {
 	  _tracker_hit_renderer_.push_clustered_hits();
 	}
-	FL_LOG_DEVEL("Exiting...");
+	// FL_LOG_DEVEL("Exiting...");
       }
 
       /************************************************************
