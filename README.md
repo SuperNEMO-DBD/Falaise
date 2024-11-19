@@ -90,7 +90,7 @@ also install the full list  of prerequisites using the package manager
 of your choice:
 
 - Linux or macOS Operating System
-  - Supported Linux systems: CentOS 7, Ubuntu 20.04LTS or 22.04LTS
+  - Supported Linux systems: RedHat EL 9.4/9.5, Ubuntu 20.04LTS or 22.04LTS
   - Other Linux distributions are known to work, but are **not supported**
   - Possibly supported macOS systems: 10.14/15 (Mojave, Catalina)
 - GCC (>= 7), Clang (>=6) or Xcode >= 10
