@@ -1651,12 +1651,12 @@ namespace snemo {
             DT_LOG_DEBUG(logPrio, "Direction   : " << geomtools::to_xyz(srcCalibrationCarrierDirection) );
             DT_LOG_DEBUG(logPrio, "Calibration carrier shape : '" << sourceCalibrationCarrierShape.get_shape_name() << "'");
             DT_LOG_DEBUG(logPrio, "Calibration carrier shape : '" << sourceCalibrationCarrierShape.get_shape_name() << "'");
-	    _sourceCalibrationCarrierEffectiveBoxPtr_->tree_dump(std::cerr, "sourceCalibrationCarrierEffectiveBoxPtr", "[devel] ");
+	    // _sourceCalibrationCarrierEffectiveBoxPtr_->tree_dump(std::cerr, "sourceCalibrationCarrierEffectiveBoxPtr", "[devel] ");
             geomtools::face_intercept_info srcCalibrationCarrierFii;
             bool success = _sourceCalibrationCarrierEffectiveBoxPtr_->find_intercept(srcCalibrationCarrierRefPoint,
-										  srcCalibrationCarrierDirection,
-										  srcCalibrationCarrierFii,
-										  _intercept_tolerance_);
+										     srcCalibrationCarrierDirection,
+										     srcCalibrationCarrierFii,
+										     _intercept_tolerance_);
             if (! success) {
               DT_LOG_DEBUG(logPrio, "Give up with calibration source carrier GID " << sourceCalibrationCarrierGid);
               continue;
@@ -2625,7 +2625,9 @@ namespace snemo {
         hNewVertex->get_spot().set_errors(vtxInfo.tolerance);
         vertices_.push_back(hNewVertex);
         DT_LOG_DEBUG(logPrio, "New vertex:");
-        hNewVertex->print_tree(std::cerr);
+	if (datatools::logger::is_debug(logPrio)) {
+	  hNewVertex->print_tree(std::cerr);
+	}
       }
 
       // Future implementation:= ???
