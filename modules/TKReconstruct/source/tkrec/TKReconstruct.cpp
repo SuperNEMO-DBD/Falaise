@@ -1,16 +1,130 @@
 // Interface from Falaise
 #include "tkrec/TKReconstruct.h"
 
+// Standard headers
+#include <iomanip>
+
+#include <bayeux/datatools/clhep_units.h>
+#include <bayeux/geomtools/box.h>
+
+#include <falaise/snemo/geometry/calo_locator.h>
+#include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/geometry/xcalo_locator.h>
+#include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/geometry/locator_helpers.h>
+#include <falaise/snemo/geometry/locator_plugin.h>
+
 namespace tkrec {
 
   DPP_MODULE_REGISTRATION_IMPLEMENT(TKReconstruct, "TKReconstruct")
 
+  struct TKReconstruct::pimpl_type
+  {
+    TKReconstruct & tkrec; ///< Reference to the father module
+    TKgeom geom; ///< Geometry informations
+    TKEvent event; ///< Working event to be reconstructed
+    std::unique_ptr<TKalgos> palgo; ///< Reconstruction algorithm
+    size_t eventCounter = 0;
+    pimpl_type(TKReconstruct & tkrec_);
+  };
+
+  TKReconstruct::pimpl_type::pimpl_type(TKReconstruct & tkrec_)
+    : tkrec(tkrec_)
+  {
+    tkrec._init_geom_(geom);
+    palgo = std::make_unique<TKalgos>(geom);
+    palgo->initialize(tkrec._config_.recConfig);
+    return;
+  }
+ 
   // static
   const double TKReconstruct::invalid_distance = -1.0;
+
+  const TKReconstruct::config_type & TKReconstruct::config() const
+  {
+    return _config_;
+  }
+  
+  void TKReconstruct::_set_defaults_()
+  {
+    _geoManager_ = snemo::service_handle<snemo::geometry_svc>{};
+    return;
+  }
+
+  void TKReconstruct::_init_geom_(TKgeom & geom_)
+  {
+    DT_LOG_DEBUG(_config_.verbosity, "Initializing geometry info...");
+    const geomtools::mapping & geoMapping = _geoManager_->get_mapping();
+    const geomtools::id_mgr & geoIdMgr = _geoManager_->get_id_mgr();
+    std::string locator_plugin_name;
+    const snemo::geometry::locator_plugin * geoLocator
+      = snemo::geometry::getSNemoLocator(*_geoManager_.instance(), locator_plugin_name);
+    const snemo::geometry::calo_locator & caloLocator = geoLocator->caloLocator();
+    const snemo::geometry::xcalo_locator & xcaloLocator = geoLocator->xcaloLocator();
+    const snemo::geometry::gveto_locator & gvetoLocator = geoLocator->gvetoLocator();
+    const snemo::geometry::gg_locator & ggLocator = geoLocator->geigerLocator();
+
+    geom_.has_Bi_source = false;
+    std::vector<geomtools::geom_id> sourceCalibrationCarrierGids;
+    uint32_t sourceCalibrationCarrierType = geomtools::geom_id::INVALID_TYPE; // (1110)
+    if (geoIdMgr.has_category_info("source_calibration_carrier")) {
+      geom_.has_Bi_source = true;
+      sourceCalibrationCarrierType =
+	geoIdMgr.get_category_info("source_calibration_carrier").get_type();
+      geomtools::geom_id sourceCalibrarionCarrierGidPattern(sourceCalibrationCarrierType,
+							    0, // module
+							    geomtools::geom_id::ANY_ADDRESS,  // track
+							    geomtools::geom_id::ANY_ADDRESS); // position
+      geoMapping.compute_matching_geom_id(sourceCalibrarionCarrierGidPattern, sourceCalibrationCarrierGids);
+      if (sourceCalibrationCarrierGids.size()) {
+	const geomtools::geom_info & srcCalibCarrierGinfo = geoMapping.get_geom_info(sourceCalibrationCarrierGids.front());
+	const geomtools::logical_volume & srcCalibCarrierLog = srcCalibCarrierGinfo.get_logical();
+	const geomtools::i_shape_3d & srcCalibCarrierShape = srcCalibCarrierLog.get_shape();    
+	const geomtools::box & srcCalibCarrierBox = dynamic_cast<const geomtools::box &>(srcCalibCarrierShape);
+	double x = srcCalibCarrierBox.get_z();
+	double y = srcCalibCarrierBox.get_y();
+	double z = srcCalibCarrierBox.get_x();
+	DT_LOG_DEBUG(_config_.verbosity, "x = " << x);
+	DT_LOG_DEBUG(_config_.verbosity, "y = " << y);
+	DT_LOG_DEBUG(_config_.verbosity, "z = " << z);
+	geom_.Bi_source_x = x;
+	geom_.Bi_source_y = y;
+	geom_.Bi_source_z = z;
+      }
+    }
+    
+    geom_.tc_radius = ggLocator.cellRadius() / CLHEP::mm;
+    DT_LOG_DEBUG(_config_.verbosity, "tc_radius = " << geom_.tc_radius);
+
+    geom_.mw_sizex = caloLocator.blockThickness() / CLHEP::mm; // 194.0 (31.0);
+    geom_.mw_sizey = caloLocator.blockWidth() / CLHEP::mm; // 256.0;
+    geom_.mw_sizez = caloLocator.blockHeight() / CLHEP::mm; // 256.0;
+
+    geom_.gv_sizex = gvetoLocator.blockHeight() / CLHEP::mm; // 308.0;
+    geom_.gv_sizey = gvetoLocator.blockWidth() / CLHEP::mm; // 310.0;
+    geom_.gv_sizez = gvetoLocator.blockThickness() / CLHEP::mm; // 150.0;
+ 
+    geom_.xw_sizex = xcaloLocator.blockWidth() / CLHEP::mm; // 200.0;
+    geom_.xw_sizey = xcaloLocator.blockThickness() / CLHEP::mm; // 150.0;
+    geom_.xw_sizez = xcaloLocator.blockHeight() / CLHEP::mm; // 208.5;
+
+    DT_LOG_DEBUG(_config_.verbosity, "mw_sizex = " << geom_.mw_sizex);
+    DT_LOG_DEBUG(_config_.verbosity, "mw_sizey = " << geom_.mw_sizey);
+    DT_LOG_DEBUG(_config_.verbosity, "mw_sizez = " << geom_.mw_sizez);
+    DT_LOG_DEBUG(_config_.verbosity, "gv_sizex = " << geom_.gv_sizex);
+    DT_LOG_DEBUG(_config_.verbosity, "gv_sizey = " << geom_.gv_sizey);
+    DT_LOG_DEBUG(_config_.verbosity, "gv_sizez = " << geom_.gv_sizez);
+    DT_LOG_DEBUG(_config_.verbosity, "xw_sizex = " << geom_.xw_sizex);
+    DT_LOG_DEBUG(_config_.verbosity, "xw_sizey = " << geom_.xw_sizey);
+    DT_LOG_DEBUG(_config_.verbosity, "xw_sizez = " << geom_.xw_sizez);
+    
+    return;
+  }
 
   TKReconstruct::TKReconstruct()
     : dpp::base_module() 
   {
+    _set_defaults_();
     return;
   }
 
@@ -20,90 +134,113 @@ namespace tkrec {
       {
         this->reset();
       }
+    return;
   }
 
   void TKReconstruct::read_config(const datatools::properties& config_)
   {
-    // XXX
     if (config_.has_key("verbosity")) {
-      // verbosity = 
-    }
-    if (config_.has_key("trkhit_default_sigma_r")) {
-      // 
-    }
-    if (config_.has_key("chi_square_threshold")) {
-      // 
+      std::string verbosityLabel = config_.fetch_string("verbosity");
+      auto parsedVerb = datatools::logger::get_priority(verbosityLabel);
+      DT_THROW_IF(parsedVerb == datatools::logger::PRIO_UNDEFINED,
+		  std::logic_error,
+		  "Undefined verbosity label " << std::quoted(verbosityLabel));
+      _config_.verbosity = parsedVerb;
     }
 
-    // prefix 'eventrec.'
-    // datatools::properties recConf = 
-    
+    if (config_.has_key("CD_label")) {
+      _config_.CD_label = config_.fetch_string("CD_label");
+    }
+ 
+    if (config_.has_key("TCD_label")) {
+      _config_.TCD_label = config_.fetch_string("TCD_label");
+    }
+ 
+    if (config_.has_key("TTD_label")) {
+      _config_.TTD_label = config_.fetch_string("TTD_label");
+    }
+ 
+    // Extract properties with prefix 'eventrec.' :
+    datatools::properties recParamConfig;
+    config_.export_and_rename_starting_with(recParamConfig, "eventrec.", "");
+    _config_.recConfig.parse(recParamConfig);
     return;
   }
 
-  void TKReconstruct::initialize(const datatools::properties& config_,
-				 datatools::service_manager&    /*flServices*/,
-				 dpp::module_handle_dict_type&  /*moduleDict*/
+  void TKReconstruct::initialize(const datatools::properties & config_,
+				 datatools::service_manager & services_,
+				 dpp::module_handle_dict_type &  /*moduleDict*/
 				 ) 
   {
     read_config(config_);
+    
+    // Geometry manager :
+    _geoManager_ = snemo::service_handle<snemo::geometry_svc>{services_};
+    // Instantiate the PIMPL working material:
+    _work_ = std::make_unique<pimpl_type>(*this);
+ 
     this->_set_initialized(true);
     return;
   }
 
-  dpp::base_module::process_status TKReconstruct::process(datatools::things& workItem) 
+  void TKReconstruct::reset() 
+  {   
+    DT_THROW_IF(!is_initialized(), std::logic_error,
+		"Module '" << get_name() << "' is not initialized !");
+    this->_set_initialized(false);
+    // Destroy the PIMPL working material:
+    _work_.reset();
+    _set_defaults_();
+    return;
+  }
+
+
+  dpp::base_module::process_status TKReconstruct::process(datatools::things & workItem) 
   {
+    _work_->eventCounter++;
+    DT_LOG_DEBUG(_config_.verbosity, "============ New event #" << _work_->eventCounter);
     populate_working_event(workItem);
     //eventNo = workItem->get_id();
     // TKEvent* event = get_event_data(workItem); 	// event -> TKEvent
-    _wrkevent_.reconstruct(_config_.recConfig);	
-    //event->reconstruct_ML();
-    //event->calculate_tr_hit_points();
-    //event->build_trajectories();		// TKEvent -> TKtrack
-    //event->print();
-    //event->make_top_projection(3, 2);
-    //event->build_event();
+    _work_->palgo->process(_work_->event);	
 	
     namespace snedm = snemo::datamodel;
 	
     // Create or reset TCD bank
     auto & the_tracker_clustering_data
-      = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>("TCD", workItem);
+      = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(_config_.TCD_label, workItem);
     the_tracker_clustering_data.clear();
 
     // Fill TKcluster data into TCD bank
-    snedm::calibrated_data falaiseCDbank = workItem.get<snedm::calibrated_data>("CD");
-    fill_TCD_bank(/*&_wrkevent_,*/ falaiseCDbank, the_tracker_clustering_data);
+    snedm::calibrated_data falaiseCDbank = workItem.get<snedm::calibrated_data>(_config_.CD_label);
+    fill_TCD_bank(falaiseCDbank, the_tracker_clustering_data);
 
     // Create or reset TTD bank
     auto & the_tracker_trajectory_data
-      = ::snedm::getOrAddToEvent<snedm::tracker_trajectory_data>("TTD", workItem);
+      = ::snedm::getOrAddToEvent<snedm::tracker_trajectory_data>(_config_.TTD_label, workItem);
     the_tracker_trajectory_data.clear();
 
     // Fill TKtrack data into TTD bank
-    fill_TTD_bank(/*&_wrkevent_,*/ the_tracker_clustering_data, the_tracker_trajectory_data);
+    fill_TTD_bank(the_tracker_clustering_data, the_tracker_trajectory_data);
 
     // delete event;
     return falaise::processing::status::PROCESS_OK;
   }
 
-  void TKReconstruct::reset() 
-  {   
-    this->_set_initialized(false);
-  }
-
-
   void TKReconstruct::populate_working_event(const datatools::things &workItem)
   {
-    _wrkevent_.reset();
+    _work_->event.reset();
     auto &header = workItem.get<snemo::datamodel::event_header>("EH");
-    _wrkevent_ =  TKEvent(header.get_id().get_run_number(),
-			  header.get_id().get_event_number());
-    if(workItem.has("CD"))
+    _work_->event.set_event_ids(header.get_id().get_run_number(),
+				header.get_id().get_event_number());
+
+    if(workItem.has(_config_.CD_label))
       {
+	DT_LOG_DEBUG(_config_.verbosity, "Has CD bank");
 	using namespace snemo::datamodel;
 
-	calibrated_data falaiseCDbank = workItem.get<calibrated_data>("CD");
+	calibrated_data falaiseCDbank = workItem.get<calibrated_data>(_config_.CD_label);
+	DT_LOG_DEBUG(_config_.verbosity, "Nb calo hits = " << falaiseCDbank.calorimeter_hits().size());
 
 	for ( auto &calohit : falaiseCDbank.calorimeter_hits() )
 	  {
@@ -130,9 +267,10 @@ namespace tkrec {
 	    auto OMhitPtr = std::make_shared<TKOMhit>(SWCR);		
 	    //OMhitPtr->set_energy( calohit->get_energy() ); 
 			
-	    _wrkevent_.add_OM_hit( OMhitPtr );
+	    _work_->event.add_OM_hit( OMhitPtr );
 	  }
 
+	DT_LOG_DEBUG(_config_.verbosity, "Nb tracker hits = " << falaiseCDbank.tracker_hits().size());
 	for ( auto &trhit : falaiseCDbank.tracker_hits() )
 	  {
 	    int SRL[3] = {trhit->get_side(), trhit->get_row(), trhit->get_layer()};
@@ -141,7 +279,7 @@ namespace tkrec {
 	    if(not std::isnan(trhit->get_r()))
 	      {
 		hit->set_r( trhit->get_r() );        	
-		hit->set_sigma_R( /*trhit->get_sigma_r()*/ _config_.trkhit_default_sigma_r );
+		hit->set_sigma_R( /*trhit->get_sigma_r()*/ _config_.recConfig.default_sigma_r );
 	      }
 	    else
 	      {
@@ -164,10 +302,11 @@ namespace tkrec {
 	      std::cout << "Z: 	" << trhit->get_z() << std::endl;
 	      std::cout << "sigma_Z: 	" << trhit->get_sigma_z() << std::endl;
 	    */
-	    _wrkevent_.add_tracker_hit(hit);
+	    _work_->event.add_tracker_hit(hit);
 	  }
 
       }
+    DT_LOG_DEBUG(_config_.verbosity, "Working event has been populated");
     
     return;
   }
@@ -184,7 +323,7 @@ namespace tkrec {
     snedm::tracker_clustering_solution& clustering_solution
       = the_tracker_clustering_data.get_default();
 	
-    for(auto i = 0u; i < _wrkevent_.get_trajectories().size(); i++)
+    for(auto i = 0u; i < _work_->event.get_trajectories().size(); i++)
       {
 	{
 	  snedm::TrackerClusterHdl tch = datatools::make_handle<snedm::tracker_cluster>();
@@ -194,7 +333,7 @@ namespace tkrec {
 	  = clustering_solution.get_clusters().back();
 	cluster_handle->set_cluster_id(i);
 	
-	ConstTKtrajectoryHdl traj = _wrkevent_.get_trajectories()[i];
+	ConstTKtrajectoryHdl traj = _work_->event.get_trajectories()[i];
 	std::vector<ConstTKtrackHdl> traj_segments = traj->get_segments();
 	for(auto j = 0u; j < traj_segments.size(); j++)
 	  {
@@ -217,7 +356,7 @@ namespace tkrec {
 	
 
     /*
-      for(int i = 0; i < _wrkevent_.get_clusters().size(); i ++)
+      for(int i = 0; i < _work_->event.get_clusters().size(); i ++)
       {
       snedm::TrackerClusterHdl tch(new snedm::tracker_cluster);
       clustering_solution.get_clusters().push_back(tch);
@@ -226,7 +365,7 @@ namespace tkrec {
       //cluster_handle->set_cluster_id(clustering_solution.get_clusters().size() - 1);
       cluster_handle->set_cluster_id(i);
 		
-      TKcluster* cluster = _wrkevent_.get_clusters()[i];
+      TKcluster* cluster = _work_->event.get_clusters()[i];
       for (int j = 0; j < cluster->get_tr_hits().size(); j++)
       {
       TKtrhit* TKhit = cluster->get_tr_hits()[j];
@@ -266,7 +405,7 @@ namespace tkrec {
 	// Get clusters stored in the current tracker solution:
 	const snedm::TrackerClusterHdlCollection& clusters = a_cluster_solution->get_clusters();
 
-	const auto & eventTrajectories = _wrkevent_.get_trajectories();
+	const auto & eventTrajectories = _work_->event.get_trajectories();
 	for(auto i = 0u; i < eventTrajectories.size(); i++)
 	  {
 	    const ConstTKtrajectoryHdl & traj = eventTrajectories[i];
@@ -335,9 +474,9 @@ namespace tkrec {
 		
 	/*
 	// Loop over TKclusters
-	for (int i = 0; i < _wrkevent_.get_clusters().size(); i ++)
+	for (int i = 0; i < _work_->event.get_clusters().size(); i ++)
 	{
-	TKcluster* cluster = _wrkevent_.get_clusters()[i];
+	TKcluster* cluster = _work_->event.get_clusters()[i];
 	if(cluster->get_track() == nullptr) continue;
 			
 	// using the first hit for TKcluster <-> Falaise cluster identification 
@@ -398,7 +537,7 @@ namespace tkrec {
     return;
   }
 
-  void TKReconstruct::line_to_verteces(const TKtrack* track, geomtools::line_3d & line_)
+  void TKReconstruct::line_to_verteces(const ConstTKtrackHdl & track, geomtools::line_3d & line_)
   {
     line_.set_first(0.0 * CLHEP::mm,
 		    track->get_b() * CLHEP::mm,

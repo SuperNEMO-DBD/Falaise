@@ -1,11 +1,18 @@
 // TK headers
 #include "tkrec/TKpoint.h"
 
-ClassImp(tkrec::TKpoint);
+// ClassImp(tkrec::TKpoint);
 
 namespace tkrec {
 
   using namespace std;
+
+  // TKpoint::TKpoint()
+  //   : x(0.0)
+  //   , y(0.0)
+  //   , z(0.0)
+  // {
+  // }
 
   TKpoint::TKpoint(double _x, double _y, double _z)
     : x(_x)

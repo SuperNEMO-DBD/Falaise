@@ -7,7 +7,7 @@
 #include <memory>
 
 // ROOT headers
-#include "TObject.h"
+//#include "TObject.h"
 
 namespace tkrec {
 
@@ -15,7 +15,7 @@ namespace tkrec {
   class TKOMhit;
   
   class TKtrhit
-    : public TObject
+  //  : public TObject
   {
   public:
     
@@ -94,7 +94,7 @@ namespace tkrec {
 		
     void print(std::ostream & out_ = std::cout) const;
 		
-    ClassDef(TKtrhit,1);
+    // ClassDef(TKtrhit,1);
     
   };
   

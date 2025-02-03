@@ -23,7 +23,7 @@
 namespace tkrec {
 
   class TKcluster
-    : public TObject
+  //  : public TObject
   {
   private:
 		
@@ -80,7 +80,7 @@ namespace tkrec {
 
     void print(std::ostream & out_ = std::cout) const;
 		
-    ClassDef(TKcluster,1);
+    // ClassDef(TKcluster,1);
   };
 
   typedef std::shared_ptr<TKcluster> TKclusterHdl;

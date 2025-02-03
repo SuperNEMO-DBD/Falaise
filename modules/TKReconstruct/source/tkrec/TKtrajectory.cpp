@@ -4,7 +4,7 @@
 // Bayeux:
 #include <datatools/exception.h>
 
-ClassImp(tkrec::TKtrajectory);
+// ClassImp(tkrec::TKtrajectory);
 
 namespace tkrec {
 
@@ -49,7 +49,7 @@ namespace tkrec {
 
   TKtrajectory::TKtrajectory(const std::vector<TKtrackHdl> & _segments)
   {
-    DT_THROW_IF(_segments.size(), std::logic_error, "No track segments");
+    DT_THROW_IF(_segments.size() == 0, std::logic_error, "No track segments");
     segments = _segments;
     side = segments[0]->get_side();
     if(segments.size() > 1)

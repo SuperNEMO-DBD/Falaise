@@ -7,12 +7,12 @@
 #include <memory>
 
 // ROOT headers
-#include "TObject.h"
+// #include "TObject.h"
 
 namespace tkrec {
 
   class TKpoint
-    : public TObject
+  //  : public TObject
   {
   private:
 		
@@ -36,7 +36,7 @@ namespace tkrec {
 
     void print(std::ostream & out_ = std::clog) const;
 		
-    ClassDef(TKpoint,1);
+    // ClassDef(TKpoint,1);
 				
   };
 

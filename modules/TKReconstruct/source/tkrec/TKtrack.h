@@ -8,7 +8,7 @@
 #include <memory>
 
 // ROOT headers
-#include "TObject.h"
+// #include "TObject.h"
 
 #include "tkrec/TKOMhit.h"
 #include "tkrec/TKtrhit.h"
@@ -53,7 +53,7 @@ namespace tkrec {
   typedef std::shared_ptr<const TKtrack> ConstTKtrackHdl;
   
   class TKtrack
-    : public TObject
+  //     : public TObject
   {
   private:
 		
@@ -180,7 +180,7 @@ namespace tkrec {
 
     void print(std::ostream & out_ = std::cout) const;
 		
-    ClassDef(TKtrack,1);
+    // ClassDef(TKtrack,1);
     
   };
 

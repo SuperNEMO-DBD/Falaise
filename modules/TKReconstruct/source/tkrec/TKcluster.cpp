@@ -7,7 +7,7 @@
 
 #include <datatools/exception.h>
 
-ClassImp(tkrec::TKcluster);
+// ClassImp(tkrec::TKcluster);
 
 namespace tkrec {
 

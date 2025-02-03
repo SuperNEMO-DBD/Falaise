@@ -7,7 +7,7 @@
 #include <cmath>
 
 // ROOT headers
-#include "TObject.h"
+// #include "TObject.h"
 
 #include "tkrec/TKOMhit.h"
 #include "tkrec/TKtrhit.h"
@@ -17,7 +17,7 @@
 namespace tkrec {
 
   class TKtrajectory
-    : public TObject
+  //  : public TObject
   {
   private:
 		
@@ -47,7 +47,7 @@ namespace tkrec {
 
     void print(std::ostream & out_ = std::clog) const;
 		
-    ClassDef(TKtrajectory,1);
+    // ClassDef(TKtrajectory,1);
     
   };
   

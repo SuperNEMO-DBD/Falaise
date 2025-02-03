@@ -1,6 +1,9 @@
 #ifndef FALAISE_TKRECONSTRUCT_TKRECONSTRUCT_H
 #define FALAISE_TKRECONSTRUCT_TKRECONSTRUCT_H
 
+// Standard headers
+#include <memory>
+
 // Interface from Falaise
 #include "bayeux/dpp/base_module.h"
 #include "bayeux/mctools/simulated_data.h"
@@ -22,8 +25,12 @@
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 #include "falaise/snemo/datamodels/particle_track_data.h"
+#include "falaise/snemo/services/geometry.h"
+#include "falaise/snemo/services/service_handle.h"
 
 #include "tkrec/TKEvent.h"
+#include "tkrec/TKgeom.h"
+#include "tkrec/TKalgos.h"
 
 namespace tkrec {
 
@@ -38,19 +45,21 @@ namespace tkrec {
     struct config_type
     {
       datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
-      double trkhit_default_sigma_r = 2.0; // mm
-      double chi_square_threshold = 5.0;
       TKEventRecConfig recConfig;
+      std::string CD_label = "CD";
+      std::string TCD_label = "TCD";
+      std::string TTD_label = "TTD";
     };
     
     ////////////////////////////////////////////////
     // The following PUBLIC methods MUST be defined!
-    // Default constructor
     TKReconstruct();
 
-    // Default destructor
     virtual ~TKReconstruct();
 
+    const config_type & config() const;
+
+    //! Read configuration from parameters config
     void read_config(const datatools::properties& config_);
 
     //! Configure the module
@@ -72,15 +81,24 @@ namespace tkrec {
     void fill_TTD_bank(snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data,
 		       snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data) const;
     
-    void line_to_verteces(const TKtrack* track, geomtools::line_3d & line_3d);
+    void line_to_verteces(const ConstTKtrackHdl & track, geomtools::line_3d & line_3d);
 
   private:
+
+    void _set_defaults_();
+    void _init_geom_(TKgeom & geom_);
 
     // Configuration parameters:
     config_type _config_;
 
     // Working event:
-    TKEvent _wrkevent_;
+    //TKEvent _wrkevent_;
+    snemo::service_handle<snemo::geometry_svc> _geoManager_; //!< The geometry manager
+    //TKgeom _geom_;
+
+    struct pimpl_type;
+    friend struct pimpl_type;
+    std::unique_ptr<pimpl_type> _work_; ///< Embedded resources (data and algo)
     
     DPP_MODULE_REGISTRATION_INTERFACE(TKReconstruct)
     

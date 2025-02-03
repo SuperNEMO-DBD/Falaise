@@ -6,12 +6,12 @@
 #include <memory>
 
 // ROOT headers
-#include "TObject.h"
+//#include "TObject.h"
 
 namespace tkrec {
 
   class TKOMhit
-    : public TObject
+  //  : public TObject
   {
   private:
     // MIRO: Pozrieť či sa dá nejako už pridať metóda  TKOMhit::calibrate() od filipa,  takže bude treba pridať aj double E; - energia, prípadne aj deltaE
@@ -59,7 +59,7 @@ namespace tkrec {
 
     void print(std::ostream & out_ = std::cout) const;
 		
-    ClassDef(TKOMhit,1);
+    //ClassDef(TKOMhit,1);
     
   };
 

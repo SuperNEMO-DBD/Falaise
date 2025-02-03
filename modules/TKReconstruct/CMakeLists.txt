@@ -13,6 +13,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/source)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 list(APPEND TKReconstruct_HEADERS
+  source/tkrec/TKvisu.h
+  source/tkrec/TKalgos.h
+  source/tkrec/TKgeom.h
   source/tkrec/TKcluster.h
   source/tkrec/TKEvent.h
   source/tkrec/TKOMhit.h
@@ -24,15 +27,17 @@ list(APPEND TKReconstruct_HEADERS
   )
 
 list(APPEND TKReconstruct_SOURCES
-  source/tkrec/TKcluster.cpp
-  source/tkrec/TKEvent.cpp
-  source/tkrec/TKOMhit.cpp
-  source/tkrec/TKpoint.cpp
   source/tkrec/TKReconstruct.cpp
-  source/tkrec/TKtrack.cpp
-  source/tkrec/TKtracking_tools.cpp
+  source/tkrec/TKvisu.cpp
+  source/tkrec/TKalgos.cpp
+  # source/tkrec/TKtracking_tools.cpp
+  source/tkrec/TKEvent.cpp
   source/tkrec/TKtrajectory.cpp
+  source/tkrec/TKtrack.cpp
+  source/tkrec/TKcluster.cpp
+  source/tkrec/TKOMhit.cpp
   source/tkrec/TKtrhit.cpp
+  source/tkrec/TKpoint.cpp
   )
 
 add_library(Falaise_TKReconstruct SHARED
@@ -60,7 +65,7 @@ install(TARGETS Falaise_TKReconstruct DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 option(FalaiseTKReconstructPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTKReconstructPlugin" ON)
 if(FalaiseTKReconstructPlugin_ENABLE_TESTING)
   enable_testing()
-  ### add_subdirectory(testing)
+  add_subdirectory(testing)
 endif()
 
 # configure_file("TKReconstructPipeline.conf.in" "TKReconstructPipeline.conf" @ONLY)

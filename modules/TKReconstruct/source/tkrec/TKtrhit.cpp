@@ -6,8 +6,7 @@
 
 #include <datatools/exception.h>
 
-
-ClassImp(tkrec::TKtrhit);
+//ClassImp(tkrec::TKtrhit);
 
 namespace tkrec {
 

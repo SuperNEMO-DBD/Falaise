@@ -574,7 +574,7 @@ namespace tkrec {
 		    // in new coordinates
 		    r = hitH->get_xy('x')*sin(theta) - hitH->get_xy('y')*cos(theta);
 					
-		    double weight;
+		    // double weight;
 		    for(int half = 0; half < 2; half++)
 		      {	
 			// mu - legendre transform of half circle (+r/-r)
@@ -597,7 +597,7 @@ namespace tkrec {
 							
 			    // average probability density in a bin given by gauss distribution with mean in mu 
 			    // (uniformly distributed with respect to theta)
-			    weight = ( erf( (r_j2 - mu)/(sqrt(2.0)*sigma) ) - erf( (r_j1 - mu)/(sqrt(2.0)*sigma) ) ) / (2.0 * delta_R / double(resolution));
+			    double weight = ( erf( (r_j2 - mu)/(sqrt(2.0)*sigma) ) - erf( (r_j1 - mu)/(sqrt(2.0)*sigma) ) ) / (2.0 * delta_R / double(resolution));
 							
 			    // result is 2D histogram of several sinusoid functions f(theta) in convolution with gauss with respect to R
 			    sinograms->Fill( theta, (r_j2 + r_j1)/2.0, weight );
@@ -691,463 +691,6 @@ namespace tkrec {
 	tracks.push_back(track);				
       }
     return;
-  }
-
-  void TKEvent::draw_sinusoids()
-  {
-    gROOT->SetBatch(kTRUE);
-	
-    for(int side = 0; side < 2; side++)
-      {
-	vector<TKtrhitHdl> hits_from_side = filter_side(tr_hits, side); 
-	vector<TKtrhitHdl> hits = filter_usable(hits_from_side);
-	if( hits.size() < 1 ) continue;
-		
-	TCanvas* canvas = new TCanvas("sinusoids");
-	for(auto hit = 0u; hit < hits.size(); hit++)
-	  {
-	    const auto & hitH = hits[hit];
-	    double xi = hitH->get_xy('x');
-	    double yi = hitH->get_xy('y');
-	    auto function = new TF1("function", "[0]*sin(x)-[1]*cos(x)", 0.0, 2.0*M_PI);
-	    function->SetParameter(0, xi);
-	    function->SetParameter(1, yi);
-	    function->SetLineWidth(1);
-			
-	    if(hit != 0)
-	      {
-		function->Draw("Same");
-	      }
-	    else
-	      {
-		function->Draw();
-	      }
-	  }
-	canvas->SaveAs(Form("Events_visu/sinusoids-run-%d_event-%d_side-%d.png", run_number, event_number, side));
-	canvas->Close();		
-      }
-    return;
-  }
-
-  void TKEvent::draw_likelihood()
-  {
-    gROOT->SetBatch(kTRUE);
-	
-    const int resolution = 1250;
-    const int iterations = 3;
-
-    for(int side = 0; side < 2; side++)
-      {
-	vector<TKtrhitHdl> hits_from_side = filter_side(tr_hits, side); 
-	vector<TKtrhitHdl> hits = filter_usable(hits_from_side);
-
-	if( hits.size() < 3 ) continue;
-	
-	double phi1 = 0.0;
-	double phi2 = 2.0*M_PI;
-	double R1 = 0.0;
-	double R2 = 2500.0;
-		
-	double peak_Theta = std::numeric_limits<double>::quiet_NaN();
-	double peak_R = std::numeric_limits<double>::quiet_NaN();
-	double delta_phi = std::numeric_limits<double>::quiet_NaN();
-	double delta_R = std::numeric_limits<double>::quiet_NaN();
-		
-	for(auto iter = 0u; iter < iterations; iter++)
-	  {	
-	    double offset_phi = (phi2 - phi1)/(2.0*resolution);
-	    double offset_R = (R2 - R1)/(2.0*resolution);
-	    TH2F *sinogram = new TH2F("sinogram", "sinogram; phi[rad]; r[mm]", resolution, phi1 + offset_phi, phi2 + offset_phi, resolution, R1 + offset_R, R2 + offset_R);		
-				
-	    for(auto hit = 0u; hit < hits.size(); hit++)
-	      {
-		const auto & hitH = hits[hit];
-		// double R0 = hitH->get_r();
-		double sigma_R = hitH->get_sigma_R();
-		double norm_const = 1.0 / (sqrt(2.0*M_PI)*sigma_R); 
-				
-		double weight;
-		double r, theta;
-		for(auto j = 0u; j <= resolution; j++)
-		  {
-		    theta = phi1 + (j * (phi2 - phi1) / resolution);
-		    double rho = hitH->get_xy('x')*sin(theta) - hitH->get_xy('y')*cos(theta);
-					
-		    for(auto k = 0u; k <= resolution; k++)
-		      {
-			r = R1 + (k * (R2 - R1) / resolution);
-						
-			weight = exp( -pow( abs(r-rho) - hitH->get_r() , 2 ) / (2.0*sigma_R*sigma_R) );
-			weight = weight * norm_const;
-						
-			if(hit != 0)
-			  { 	
-			    weight = weight * sinogram->GetBinContent(j, k);
-			  }
-			sinogram->SetBinContent(j, k, weight );
-		      }
-		  }	
-	      }
-							
-	    double maximum = 0.0;
-	    for(auto i = 1u; i <= resolution; i++)
-	      {
-		for(auto j = 1u; j <= resolution; j++)
-		  {
-		    if(maximum < sinogram->GetBinContent(i,j))
-		      {
-			maximum = sinogram->GetBinContent(i,j);
-			peak_Theta = i;
-			peak_R = j;
-		      }
-		  }
-	      }
-			
-			
-	    if(maximum == 0.0) 
-	      {
-		delete sinogram;			
-		break;
-	      }
-			
-	    if( true ) 
-	      {
-		TCanvas* c2 = new TCanvas("sinogram","sinogram", 2000, 1600);
-		c2->SetRightMargin(0.15);
-		sinogram->SetStats(0);
-		sinogram->SetContour(100);
-		sinogram->Draw("COLZ");
-		//gStyle->SetPalette(62);
-				
-				
-		// Hough transform of anode wires
-		if( 0 )
-		  {
-		    for(auto hit = 0u; hit < hits.size(); hit++)
-		      {
-			const auto & hitH = hits[hit];
-			double xi = hitH->get_xy('x');
-			double yi = hitH->get_xy('y');
-			auto function = new TF1("function", "[0]*sin(x)-[1]*cos(x)", phi1, phi2);
-			function->SetParameter(0, xi);
-			function->SetParameter(1, yi);
-			function->SetLineWidth(1);
-			function->Draw("Same");
-		      }
-		  }
-				
-
-		c2->SaveAs(Form("Events_visu/sinogram-run-%d_event-%d_side-%d_zoom-%d.png", run_number, event_number, side, iter));
-		c2->Close();
-	      }
-						
-	    delete sinogram;
-			
-	    delta_phi = phi2 - phi1;
-	    delta_R = R2 - R1;
-			
-	    peak_Theta = phi1 + delta_phi * (peak_Theta-0.5) / double(resolution);
-	    peak_R = R1 + delta_R * (peak_R-0.5) / double(resolution);
-			
-						
-	    phi1 = peak_Theta - 0.05*delta_phi;
-	    phi2 = peak_Theta + 0.05*delta_phi;
-	    R1 = peak_R - 0.05*delta_R;
-	    R2 = peak_R + 0.05*delta_R;
-
-	    std::clog << "Event: " << event_number << "	r: " << peak_R << "	phi: " << peak_Theta << endl;
-			
-	    // double a = tan(peak_Theta);
-	    // double b = -peak_R / cos(peak_Theta);
-			
-	    double joined_probability = 1.0;
-	    double probability;
-	    double norm_const = pow(2.0*M_PI, -0.5*hits.size());
-	    for(auto i = 0u; i < hits.size(); i++)
-	      {	
-		const auto & hitH = hits[i];
-		double sigma_R = hitH->get_sigma_R();
-		norm_const = norm_const / sigma_R;
-		probability = exp(-pow(abs( peak_R + hitH->get_xy('x')*cos(peak_Theta) - hitH->get_xy('y')*sin(peak_Theta) ) - hitH->get_r() , 2)/(2.0*sigma_R*sigma_R));
-		joined_probability = joined_probability * probability; 
-	      }		
-			
-	    joined_probability = norm_const * joined_probability;
-			
-	    std::clog << "likelihood R: " << joined_probability << endl;
-	  }
-      }
-  }
-
-  void TKEvent::hough_transform(const std::vector<TKtrhitHdl>& hits,
-				double phi_min,
-				double phi_max,
-				double R_min,
-				double R_max,
-				int ID)
-  {
-    gROOT->SetBatch(kTRUE);
-
-    const int resolution = 1000;
-    double r, theta;
-
-    double S_r = 0.0;
-    double S_rX = 0.0;
-    double S_rY = 0.0;
-    double const_R;
-    for(auto i = 0u; i < hits.size();i++)
-      {
-	const auto & hitPtr = hits[i];
-	const_R = pow(hitPtr->get_sigma_R(), -2.0);
-	S_r = S_r + const_R;
-	S_rX = S_rX + hitPtr->get_xy('x')*const_R;
-	S_rY = S_rY + hitPtr->get_xy('y')*const_R;
-      }
-					
-    // double peak_Theta;
-    // double peak_R;
-    // double delta_phi, delta_R;
-
-    double offset1 = (phi_max - phi_min)/(2.0*resolution);
-    double offset2 = (R_max - R_min)/(2.0*resolution);
-    TCanvas *canvas = new TCanvas("canvas", "canvas", 1000, 1000);
-    TH2F *hough = new TH2F("hough", "hough; theta; r", resolution, phi_min+offset1, phi_max+offset1, resolution, R_min+offset2, R_max+offset2);
-	
-    double boundary_down_1;
-    double boundary_up_1;
-    double boundary_down_2;		
-    double boundary_up_2;
-
-    double shift;
-	
-    for(auto i = 0u; i < hits.size(); i++)
-      {	
-	const auto & hitPtr = hits[i];
-	double x = hitPtr->get_xy('x');
-	double y = hitPtr->get_xy('y');
-	for(auto k = 0u; k < resolution; k++)
-	  {
-	    theta = phi_min + k * (phi_max - phi_min) / double(resolution);			
-	    shift = (S_rX/S_r)*sin(theta) - (S_rY/S_r)*cos(theta);
-				
-	    boundary_down_1 = (x-22.0) * sin(theta) - (y+22.0) * cos(theta);
-	    boundary_up_1   = (x+22.0) * sin(theta) - (y-22.0) * cos(theta);
-	    boundary_down_2 = (x-22.0) * sin(theta) - (y-22.0) * cos(theta);
-	    boundary_up_2   = (x+22.0) * sin(theta) - (y+22.0) * cos(theta);
-						
-	    for(auto l = 0u; l < resolution; l++)
-	      {	
-		r = R_min + l * (R_max - R_min) / double(resolution);
-		r = r + shift;
-		if(theta <= M_PI/2.0)
-		  {
-		    if(boundary_down_1 <= r && r <= boundary_up_1  )
-		      {
-			hough->SetBinContent(k, l,  hough->GetBinContent(k, l)+1);
-		      }
-		  }
-		else
-		  {
-		    if(boundary_down_2 <= r && r <= boundary_up_2  )
-		      {
-			hough->SetBinContent(k, l,  hough->GetBinContent(k, l)+1);
-		      }				
-		  }	
-	      }
-	  }	
-      }
-	
-    int side = hits.front()->get_SRL('S');
-    hough->SetStats(0);
-    //gStyle->SetPalette(62);
-    hough->Draw("COLZ");
-    // Hough transform of anode wires
-    if( true )
-      {
-	for(auto ihit = 0u; ihit < hits.size(); ihit++)
-	  {
-	    const auto & hitPtr = hits[ihit];
-	    double xi = hitPtr->get_xy('x');
-	    double yi = hitPtr->get_xy('y');
-	    auto function = new TF1("function", "[0]*sin(x)-[1]*cos(x)", phi_min, phi_max);
-	    function->SetParameter(0, xi-(S_rX/S_r));
-	    function->SetParameter(1, yi-(S_rY/S_r));
-	    function->SetLineWidth(2);
-	    function->Draw("Same");
-	  }
-      }
-    canvas->SaveAs(Form("Events_visu/Hough_transform-run-%d_event-%d_side-%d_%d.png", run_number, event_number, side, ID));
-    canvas->Close();
-    delete hough;
-    return;
-  }
-
-  void TKEvent::draw_likelihood_centred()
-  {
-    gROOT->SetBatch(kTRUE);
-	
-    const int resolution = 1000;
-    const int iterations = 3;
-
-    for(int side = 0; side < 2; side++)
-      {
-	vector<TKtrhitHdl> hits_from_side = filter_side(tr_hits, side); 
-	vector<TKtrhitHdl> hits = filter_usable(hits_from_side);
-	if( hits.size() < 3 ) continue;
-
-	double S_r = 0.0;
-	double S_rX = 0.0;
-	double S_rY = 0.0;
-	double const_R;
-	for(auto i = 0u; i < hits.size();i++)
-	  {
-	    const auto hitPtr = hits[i];
-	    const_R = hitPtr->get_sigma_R();
-	    S_r = S_r + const_R;
-	    S_rX = S_rX + hitPtr->get_xy('x')*const_R;
-	    S_rY = S_rY + hitPtr->get_xy('y')*const_R;
-	  }
-		
-	double phi1 = 0.0;
-	double phi2 = M_PI;
-	double R1 = -150.0;
-	double R2 = 150.0;
-		
-	double peak_Theta = std::numeric_limits<double>::quiet_NaN();
-	double peak_R = std::numeric_limits<double>::quiet_NaN();
-		
-	for(auto iter = 0u; iter < iterations; iter++)
-	  {	
-	    double delta_phi = phi2 - phi1;
-	    double delta_R = R2 - R1;
-			
-	    double offset_phi = delta_phi/(2.0*resolution);
-	    double offset_R = delta_R/(2.0*resolution);
-			
-	    TH2F *sinogram_centred = new TH2F("sinogram_centred",
-					      "sinogram_centred; phi[rad]; r[mm]",
-					      resolution,
-					      phi1 + offset_phi,
-					      phi2 + offset_phi,
-					      resolution,
-					      R1 + offset_R,
-					      R2 + offset_R);	
-			
-	    double r, theta;
-	    for(auto j = 0u; j <= resolution; j++)
-	      {
-		theta = phi1 + (j * delta_phi / resolution);
-					
-		for(auto k = 0u; k <= resolution; k++)
-		  {
-		    r = R1 + (k * delta_R / resolution);
-		    // shifting origin to "center of mass" of hits
-		    r = r + (S_rX/S_r)*sin(theta) - (S_rY/S_r)*cos(theta);
-					
-		    double weight = 1.0;
-		    double temp;
-		    for(auto hit = 0u; hit < hits.size(); hit++)
-		      {
-			double rho = hits[hit]->get_xy('x')*sin(theta) - hits[hit]->get_xy('y')*cos(theta);
-			// double R0 = hits[hit]->get_r();
-			double sigma_R = hits[hit]->get_sigma_R();
-			double norm_const = 1.0 / (sqrt(2.0*M_PI)*sigma_R); 
-						
-			temp = exp( -pow( abs(r-rho) - hits[hit]->get_r() , 2 ) / (2.0*sigma_R*sigma_R) );
-			temp = temp * norm_const;
-						
-			weight = weight * temp;
-						
-		      }
-		    sinogram_centred->SetBinContent(j, k, log(weight) );
-		  }	
-	      }
-							
-	    double maximum = -std::numeric_limits<double>::infinity();
-	    for(auto i = 1u; i <= resolution; i++)
-	      {
-		for(auto j = 1u; j <= resolution; j++)
-		  {
-		    if(maximum < sinogram_centred->GetBinContent(i,j))
-		      {
-			maximum = sinogram_centred->GetBinContent(i,j);
-			peak_Theta = i;
-			peak_R = j;
-		      }
-		  }
-	      }
-	    if(std::isinf(maximum)) 
-	      {
-		delete sinogram_centred;			
-		break;
-	      }
-			
-			
-	    if( true ) 
-	      {
-		TCanvas* c2 = new TCanvas("sinogram_centred","sinogram_centred", 2000, 1600);
-		c2->SetRightMargin(0.15);
-		sinogram_centred->SetStats(0);
-		sinogram_centred->SetContour(100);
-		sinogram_centred->Draw("COLZ");
-		//gStyle->SetPalette(62);
-				
-		// Hough transform of anode wires
-		if( 1 )
-		  {
-		    for(auto hit = 0u; hit < hits.size(); hit++)
-		      {
-			double xi = hits[hit]->get_xy('x');
-			double yi = hits[hit]->get_xy('y');
-			auto function = new TF1("function", "[0]*sin(x)-[1]*cos(x)", phi1, phi2);
-			function->SetParameter(0, xi-(S_rX/S_r));
-			function->SetParameter(1, yi-(S_rY/S_r));
-			function->SetLineWidth(2);
-			function->Draw("Same");
-		      }
-		  }
-				
-				
-		c2->SaveAs(Form("Events_visu/sinogram_centred-run-%d_event-%d_side-%d_zoom-%d.png", run_number, event_number, side, iter));
-		c2->Close();
-	      }
-	    delete sinogram_centred;
-			
-	    peak_Theta = phi1 + delta_phi * (peak_Theta-0.5) / double(resolution);
-	    peak_R = R1 + delta_R * (peak_R-0.5) / double(resolution);
-			
-	    phi1 = peak_Theta - 0.06*delta_phi;
-	    phi2 = peak_Theta + 0.06*delta_phi;
-	    R1 = peak_R - 0.06*delta_R;
-	    R2 = peak_R + 0.06*delta_R;
-
-	    peak_R = peak_R + (S_rX/S_r)*sin(peak_Theta) - (S_rY/S_r)*cos(peak_Theta);
-	    std::clog << "Event: " << event_number << "	r: " << peak_R << "	phi: " << peak_Theta << endl;
-						
-	    double joined_probability = 1.0;
-	    double probability;
-	    double norm_const = pow(2.0*M_PI, -0.5*hits.size());
-	    for(auto i = 0u; i < hits.size(); i++)
-	      {
-		const auto & hitPtr = hits[i];
-		double sigma_R = hitPtr->get_sigma_R();
-		norm_const = norm_const / sigma_R;
-		probability = exp(-pow(abs( peak_R + hitPtr->get_xy('x')*cos(peak_Theta) - hitPtr->get_xy('y')*sin(peak_Theta) ) - hitPtr->get_r() , 2)/(2.0*sigma_R*sigma_R));
-		joined_probability = joined_probability * probability; 
-	      }	
-			
-	    joined_probability = norm_const * joined_probability;
-			
-	    std::clog << "likelihood R: " << joined_probability << endl;
-			
-	    if(iter == iterations-1)
-	      {
-		auto trackPtr = std::make_shared<TKtrack>(side, peak_Theta, peak_R);
-		trackPtr->set_likelihood_R(joined_probability);
-		tracks.push_back(trackPtr);
-	      }
-	  }
-      }
   }
 
   void TKEvent::reconstruct(const TKEventRecConfig & config_)
@@ -1522,7 +1065,7 @@ namespace tkrec {
 
     // peaks_phi, peak_R and peaks_value stores information about peak candidate
     // each iteration takes those candidate and zooms around them
-    double peak_phi = M_PI/2.0;
+    double peak_phi = M_PI / 2.0;
     double peak_R = 0.0;
     // double peak_value = 0.0;
 	
@@ -1539,8 +1082,7 @@ namespace tkrec {
 		
 	// sinograms are calculated for each bin of phi range - (offset = 1/2 of bin widht) 
 	double offset = (delta_phi)/(2.0*resolution);
-	TH2F *sinograms = new TH2F("sinograms", "sinograms; phi; r", resolution, phi_min + offset, phi_max + offset, resolution, r_min, r_max);								
-		
+	TH2F *sinograms = new TH2F("sinograms", "sinograms; phi; r", resolution, phi_min + offset, phi_max + offset, resolution, r_min, r_max);
 	double phi;
 	double r;			
 	for(auto hit = 0u; hit < hits.size(); hit++)
@@ -1635,8 +1177,9 @@ namespace tkrec {
 	  {
 	    if(all_tracks[i]->get_side() == side)
 	      {
-		if(all_tracks[i]->get_associated_tr_hit_points().size() > 1)
+		if(all_tracks[i]->get_associated_tr_hit_points().size() > 1) {
 		  all_tracks_from_side.push_back(all_tracks[i]);
+		}
 	      }
 	  }		
 	const auto no_tracks = all_tracks_from_side.size();
@@ -1667,7 +1210,9 @@ namespace tkrec {
 	    for(auto j = i+1; j < no_tracks; j++)
 	      {
 		const ConstTKtrackHdl & track2 = all_tracks_from_side[j];
-		if(track1->get_mirror_image().get() == track2.get()) continue;			
+		if(track1->get_mirror_image().get() == track2.get()) {
+		  continue;
+		}
 		double a1 = track1->get_a();
 		double a2 = track2->get_a();
 		double b1 = track1->get_b();
@@ -1781,7 +1326,7 @@ namespace tkrec {
 		else if(composite_track.size() == 1)
 		  {
 		    //if(composite_track[0]->get_associated_tr_hits().size() > 1) // in ideal case should be unnecessary
-		    trajectories.push_back(std::make_shared<TKtrajectory>(composite_track[0]));
+		    trajectories.push_back(std::make_shared<TKtrajectory>(composite_track.front()));
 		  }
 	      }
 	  }

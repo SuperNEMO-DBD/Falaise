@@ -1,7 +1,7 @@
 // TK headers
 #include "tkrec/TKtrack.h"
 
-ClassImp(tkrec::TKtrack);
+// ClassImp(tkrec::TKtrack);
 
 namespace tkrec {
   

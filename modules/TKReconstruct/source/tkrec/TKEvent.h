@@ -6,7 +6,7 @@
 #include <iostream>
 
 // ROOT headers
-#include "TObject.h"
+// #include "TObject.h"
 
 // TK headers
 #include "tkrec/TKOMhit.h"
@@ -18,58 +18,24 @@
 
 // - Bayeux:
 #include <bayeux/datatools/logger.h>
-
-// note (9.4.): currently the main functions to use are the following:
-
-// 	reconstruct(bool save_sinograms); full reconstruction including trajectory 
-//					   builder and verteces extrapolation
-//	reconstruct_ML(bool save_sinograms); for quick track finding
-//	make_top_projection(int hits_option, int tracking_option);
-//	build_event(int tracking_option);
-
-// In case you are looking for the implementation - all functions concerning 
-// the tracking are implemented in a file "tracking_tools.cpp"
+#include <bayeux/datatools/properties.h>
 
 namespace tkrec {
 
-  struct TKEventRecConfig
-  {
-    datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
-    bool debug_mode = false;
-    bool save_sinograms = false;
-    double chi_square_threshold = 5.0;
-
-    uint32_t track_from_hits_resolution = 250u;
-    uint32_t track_from_hits_iterations = 2u;
-   
-    uint32_t multi_resolution = 50u;
-    uint32_t multi_iterations = 3u;
-    double   multi_threshold = 0.75;
-    uint32_t multi_start_no_segments = 5u;
-    
-    uint32_t single_resolution = 250u;
-    uint32_t single_iterations = 2u;
-    uint32_t single_threshold = 5.0;
-
-    double   legendre_distance_limit = 6.0;
-    double   legendre_limit_angle = 5.0 * M_PI / 180.0;
-    uint32_t legendre_resolution = 250u;
-    uint32_t legendre_iterations = 2u;
-  };
-
+  /// Model of a tracker reconstructed event
   class TKEvent
-    : public TObject
+  // : public TObject
   {
   private:
-		
-    int run_number = -1; ///< Run number
+	
+    int run_number   = -1; ///< Run number
     int event_number = -1; ///< Event number
 
-    std::vector<TKOMhitHdl> OM_hits;		
-    std::vector<TKtrhitHdl> tr_hits;
-    std::vector<TKtrackHdl> tracks;
-    std::vector<TKclusterHdl> clusters;
-    std::vector<TKtrajectoryHdl> trajectories;
+    std::vector<TKOMhitHdl> OM_hits; ///< List of calo hits		
+    std::vector<TKtrhitHdl> tr_hits; ///< List of tracker hits
+    std::vector<TKtrackHdl> tracks; ///< List of tracks
+    std::vector<TKclusterHdl> clusters; ///< List of clusters
+    std::vector<TKtrajectoryHdl> trajectories; ///< List of trajectories
 		
   public:
 	
@@ -79,6 +45,8 @@ namespace tkrec {
     TKEvent(int _run_number, int _event_number);
     virtual ~TKEvent() = default;
 
+    void set_event_ids(int _run_number, int _event_number);
+    /// Reset the event internal data
     void reset();
 
     // OM hits:
@@ -105,33 +73,33 @@ namespace tkrec {
     std::vector<TKtrackHdl> get_all_tracks();
     std::vector<ConstTKtrackHdl> get_all_tracks() const;
     
+    // Clusters:
     std::vector<TKclusterHdl> & get_clusters();		
     TKclusterHdl & get_cluster(int _i);
     ConstTKclusterHdl get_cluster(int _i) const;
 
+    // Trajectories:
     std::vector<TKtrajectoryHdl> & get_trajectories();
     std::vector<ConstTKtrajectoryHdl> get_trajectories() const;
     TKtrajectoryHdl & get_trajectory(int _i);
     ConstTKtrajectoryHdl get_trajectory(int _i) const;
 	
-    int get_run_number();
-    int get_event_number();
-    size_t get_no_tracks();
-    size_t get_no_trajectories();
+    int get_run_number() const;
+    int get_event_number() const;
+    size_t get_no_tracks() const;
+    size_t get_no_trajectories() const;
 		
     void print(std::ostream & out_ = std::clog) const;
     void print_tracks(std::ostream & out_ = std::clog) const;
     void print_trajectories(std::ostream & out_ = std::clog) const;
 
-		
-	
     // drift model and plasma propagation section
 	
     // associates tracker hits to OM hits and calculates hit radii
     // drift model: "Manchester" or "Betsy"
     // association_mode: "time" or "distance"
-    // 	"distance": minimazes distance between OM and tracker hit
-    // 	"time": minimazes time difference between OM and tracker hit
+    // 	"distance": minimizes distance between OM and tracker hit
+    // 	"time": minimizes time difference between OM and tracker hit
     void set_r(std::string drift_model = "Manchester",
 	       std::string association_mode = "distance");
 		
@@ -142,111 +110,19 @@ namespace tkrec {
 	
     // tracker hit collection filtering
 	
-    std::vector<TKtrhitHdl> filter_side(const std::vector<TKtrhitHdl>& _hits, int side);
-    std::vector<TKtrhitHdl> filter_usable(const std::vector<TKtrhitHdl>& _hits);
-    std::vector<TKtrhitHdl> filter_unassociated(const std::vector<TKtrhitHdl>& _hits);
-    std::vector<TKtrhitHdl> filter_unclustered(const std::vector<TKtrhitHdl>& _hits);
-    std::vector<TKtrhitHdl> filter_distant(const std::vector<TKtrhitHdl>& _hits);
-    std::vector<TKtrhitHdl> filter_close_hits(const std::vector<TKtrhitHdl>& _hits,
-					      double phi,
-					      double r,
-					      double distance_limit);
-		
-    // clustering 
-	
-    // Hough transform based clutering - finds a largest subgroup of given hits
-    // such that is geometrically possible to have a single common line
-    TKclusterHdl find_cluster(std::vector<TKtrhitHdl>& tr_hits);
-    // Legendre based clustering
-    TKclusterHdl find_cluster_legendre(const std::vector<TKtrhitHdl>& hits,
-				       const TKEventRecConfig & config_);
-	
-    // full reconstruction functions
-	
-    // full reconstruction algorithm:
-    //	1. different clusterings to safe failed events 
-    //	2. maximum likelihood to obtain line tracks 
-    //	3. ambiguity checker and solver
-    //	4. trajectory builder from found segments
-    //	5. trajectory extrapolator
-		 
-    void reconstruct(const TKEventRecConfig & config_); // full reconstruction
-    void reconstruct_simple(const TKEventRecConfig & config_); // simpler quick algo for one track per side
-		
-    // line track reconstruction section	
-	
-    // basic reconstruction - no uncertainties, one candidate
-    void reconstruct_track(const TKEventRecConfig & config_);
-    void reconstruct_track_from_hits(const std::vector<TKtrhitHdl>& hits,
-				     const TKEventRecConfig & config_);
-		
-    // with uncertainties, one candidate - recommended function
-    void reconstruct_single(const TKEventRecConfig & config_);
-    void reconstruct_single_from_hits(const std::vector<TKtrhitHdl>& hits,
-				      const TKEventRecConfig & config_);
-				
-    // with uncertainties, multiple candidates
-    void reconstruct_multi(const TKEventRecConfig & config_);
-
-    // reconstruction based on maximum likelihood - currently best algorithm
-    // a combination of basic clustering and maximum likelihood method
-    // currently finds only solution per detector side
-    void reconstruct_ML(const TKEventRecConfig & config_);
-    void reconstruct_ML_3D(const TKEventRecConfig & config_);
-	
-    // trajectory builder
-	
-    void calculate_tr_hit_points();
-    void build_trajectories();
-    void extrapolate_trajectories();
-		
-    // vizualization section
-		
-    // tracker hits options:
-    // 	0 - no unused hits	
-    //	    red	= used hits for reconstruction    
-    //
-    //	1 - red	= used hits for reconstruction
-    //	    yellow 	= unused hits for recontstruction
-    //
-    //	2 - red	= used hits for reconstruction (unassociated)
-    //	    yellow 	= unused hits for recontstruction 
-    //	    green 	= associated hits to track
-    //
-    // 	3 - red	= used hits for reconstruction (unassociated + good vertical position)
-    //	    yellow 	= unused hits for recontstruction
-    //	    magenta 	= failed vertical position reconstruction but good drift radius (unassociated)
-    //	    green 	= associated hits to track, good vertical position
-    //	    teal	= associated hits to track, failed vertical position
-				 
-    // tracking options:
-    //	0 - only tracks
-    //	1 - tracks
-    //	    reconstructed tracker hit avalanche origin points
-    //	2 - trajectories
-    //	    avalanche origin points
-    //	3 - tracks
-    //	    trajectories
-    //	    avalanche origin points
-				 
-				 
-    void make_top_projection(int hits_option = 3,
-			     int tracking_option = 3) const;
+    static std::vector<TKtrhitHdl> filter_side(const std::vector<TKtrhitHdl>& _hits, int side);
+    static std::vector<TKtrhitHdl> filter_usable(const std::vector<TKtrhitHdl>& _hits);
+    static std::vector<TKtrhitHdl> filter_unassociated(const std::vector<TKtrhitHdl>& _hits);
+    static std::vector<TKtrhitHdl> filter_unclustered(const std::vector<TKtrhitHdl>& _hits, const TKEvent & event_);
+    static std::vector<TKtrhitHdl> filter_distant(const std::vector<TKtrhitHdl>& _hits);
+    static std::vector<TKtrhitHdl> filter_close_hits(const std::vector<TKtrhitHdl>& _hits,
+						     double phi,
+						     double r,
+						     double distance_limit);
     
-    void build_event(int tracking_option = 3) const;	
+    // ClassDef(TKEvent,1);
 
-    // tools for drawing certain mathematical functions 
-    void hough_transform(const std::vector<TKtrhitHdl>& hits,
-			 double phi_min,
-			 double phi_max,
-			 double R_min,
-			 double R_max,
-			 int ID);
-    void draw_likelihood();
-    void draw_likelihood_centred();
-    void draw_sinusoids();
-
-    ClassDef(TKEvent,1);
+    friend class TKvisu; ///< Private access from visualization engine
     
   };
 

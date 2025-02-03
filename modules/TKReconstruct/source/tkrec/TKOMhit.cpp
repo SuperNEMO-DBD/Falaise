@@ -1,7 +1,7 @@
 // TK headers
 #include "tkrec/TKOMhit.h"
 
-ClassImp(tkrec::TKOMhit);
+// ClassImp(tkrec::TKOMhit);
 
 namespace tkrec {
 
