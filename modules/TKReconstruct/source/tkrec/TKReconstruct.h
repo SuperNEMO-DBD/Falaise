@@ -34,21 +34,30 @@
 
 namespace tkrec {
 
+  /// Main event reconstruction module
   class TKReconstruct
     : public dpp::base_module
   {
   public:
 
-    static const double invalid_distance;
-
     /// \brief Configuration parameters
     struct config_type
     {
+      /// Verbosity
       datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
-      TKEventRecConfig recConfig;
+      
+      /// Label of the input CD bank
       std::string CD_label = "CD";
+      
+      /// Label of the output TCD bank
       std::string TCD_label = "TCD";
+      
+      /// Label of the output TTD bank
       std::string TTD_label = "TTD";
+      
+      /// Configuration of the TK event reconstruct algorihtms (from TKalgos.h)
+      TKEventRecConfig recConfig;
+      
     };
     
     ////////////////////////////////////////////////
@@ -57,6 +66,7 @@ namespace tkrec {
 
     virtual ~TKReconstruct();
 
+    //! Return a const reference to the module's configuration
     const config_type & config() const;
 
     //! Read configuration from parameters config
@@ -70,32 +80,37 @@ namespace tkrec {
     //! Reset the module
     virtual void reset();
 
-    // Process event
+    //! Process event
     virtual dpp::base_module::process_status process(datatools::things &workItem);
-
-    void populate_working_event(const datatools::things &workItem);
     
-    void fill_TCD_bank(snemo::datamodel::calibrated_data& falaiseCDbank,
-		       snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data) const;
-
-    void fill_TTD_bank(snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data,
-		       snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data) const;
-    
-    void line_to_verteces(const ConstTKtrackHdl & track, geomtools::line_3d & line_3d);
-
+ 
   private:
+ 
+    // Internal methods 
+    
+    void _populate_working_event_(const datatools::things & workItem);
+  
+    void _fill_TCD_bank_(const snemo::datamodel::calibrated_data & falaiseCDbank,
+			 snemo::datamodel::tracker_clustering_data & the_tracker_clustering_data) const;
 
+    void _fill_TTD_bank_(snemo::datamodel::tracker_clustering_data & the_tracker_clustering_data,
+			 snemo::datamodel::tracker_trajectory_data & the_tracker_trajectory_data) const;
+
+    void _line_to_verteces_(const ConstTKtrackHdl & track, geomtools::line_3d & line_3d);
+
+    /// Set/initialize default internal resources for the reconstruction module
     void _set_defaults_();
+
+    /// Initialize geometry informations for the TK algos (needs the Falaise's geometry manager, see below)
     void _init_geom_(TKgeom & geom_);
 
-    // Configuration parameters:
+    /// Configuration parameters
     config_type _config_;
 
-    // Working event:
-    //TKEvent _wrkevent_;
+    // Working resources:
     snemo::service_handle<snemo::geometry_svc> _geoManager_; //!< The geometry manager
-    //TKgeom _geom_;
 
+    // Working private materials (hidden to the public interface, using the PIMPL idiom)
     struct pimpl_type;
     friend struct pimpl_type;
     std::unique_ptr<pimpl_type> _work_; ///< Embedded resources (data and algo)

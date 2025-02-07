@@ -18,27 +18,35 @@ namespace tkrec {
 
   DPP_MODULE_REGISTRATION_IMPLEMENT(TKReconstruct, "TKReconstruct")
 
+  // The working class which embeds private resources to
+  // do the track reconstruction
   struct TKReconstruct::pimpl_type
   {
-    TKReconstruct & tkrec; ///< Reference to the father module
-    TKgeom geom; ///< Geometry informations
-    TKEvent event; ///< Working event to be reconstructed
-    std::unique_ptr<TKalgos> palgo; ///< Reconstruction algorithm
+    TKReconstruct & tkrec; ///< Reference to the father recontruction module
+    TKgeom geom; ///< Geometry informations (ideally, should be extracted from the Falaise's geometry manager)
+    TKEvent event; ///< Working event to be reconstructed (working event data model)
+    std::unique_ptr<TKalgos> palgo; ///< Reconstruction algorithms
     size_t eventCounter = 0;
+
+    // Constructor
     pimpl_type(TKReconstruct & tkrec_);
+    
   };
 
   TKReconstruct::pimpl_type::pimpl_type(TKReconstruct & tkrec_)
     : tkrec(tkrec_)
   {
+    // Initialize the geometry informations from the father reconstruction module
     tkrec._init_geom_(geom);
+
+    // Instantiate an 'algo' object:
     palgo = std::make_unique<TKalgos>(geom);
+    
+    // Initialize it from the configuration stored in the father reconstruction module
     palgo->initialize(tkrec._config_.recConfig);
+
     return;
   }
- 
-  // static
-  const double TKReconstruct::invalid_distance = -1.0;
 
   const TKReconstruct::config_type & TKReconstruct::config() const
   {
@@ -47,6 +55,7 @@ namespace tkrec {
   
   void TKReconstruct::_set_defaults_()
   {
+    // Initialize the reference to the Falaise's geometry manager service
     _geoManager_ = snemo::service_handle<snemo::geometry_svc>{};
     return;
   }
@@ -199,21 +208,21 @@ namespace tkrec {
   {
     _work_->eventCounter++;
     DT_LOG_DEBUG(_config_.verbosity, "============ New event #" << _work_->eventCounter);
-    populate_working_event(workItem);
-    //eventNo = workItem->get_id();
-    // TKEvent* event = get_event_data(workItem); 	// event -> TKEvent
+    _populate_working_event_(workItem);
     _work_->palgo->process(_work_->event);	
 	
     namespace snedm = snemo::datamodel;
+
+    // Fill TKcluster data into TCD bank
+    const auto & falaiseCDbank = workItem.get<snedm::calibrated_data>(_config_.CD_label);
 	
     // Create or reset TCD bank
     auto & the_tracker_clustering_data
       = ::snedm::getOrAddToEvent<snedm::tracker_clustering_data>(_config_.TCD_label, workItem);
     the_tracker_clustering_data.clear();
 
-    // Fill TKcluster data into TCD bank
-    snedm::calibrated_data falaiseCDbank = workItem.get<snedm::calibrated_data>(_config_.CD_label);
-    fill_TCD_bank(falaiseCDbank, the_tracker_clustering_data);
+    // Fill TKtrack data into TCD bank:
+    _fill_TCD_bank_(falaiseCDbank, the_tracker_clustering_data);
 
     // Create or reset TTD bank
     auto & the_tracker_trajectory_data
@@ -221,16 +230,18 @@ namespace tkrec {
     the_tracker_trajectory_data.clear();
 
     // Fill TKtrack data into TTD bank
-    fill_TTD_bank(the_tracker_clustering_data, the_tracker_trajectory_data);
+    _fill_TTD_bank_(the_tracker_clustering_data, the_tracker_trajectory_data);
 
-    // delete event;
     return falaise::processing::status::PROCESS_OK;
   }
 
-  void TKReconstruct::populate_working_event(const datatools::things &workItem)
+  void TKReconstruct::_populate_working_event_(const datatools::things &workItem)
   {
+    // Reset the working event
     _work_->event.reset();
-    auto &header = workItem.get<snemo::datamodel::event_header>("EH");
+
+    // Access to the event header
+    const auto & header = workItem.get<snemo::datamodel::event_header>("EH");
     _work_->event.set_event_ids(header.get_id().get_run_number(),
 				header.get_id().get_event_number());
 
@@ -239,10 +250,10 @@ namespace tkrec {
 	DT_LOG_DEBUG(_config_.verbosity, "Has CD bank");
 	using namespace snemo::datamodel;
 
-	calibrated_data falaiseCDbank = workItem.get<calibrated_data>(_config_.CD_label);
+	const auto & falaiseCDbank = workItem.get<calibrated_data>(_config_.CD_label);
 	DT_LOG_DEBUG(_config_.verbosity, "Nb calo hits = " << falaiseCDbank.calorimeter_hits().size());
 
-	for ( auto &calohit : falaiseCDbank.calorimeter_hits() )
+	for (const auto & calohit : falaiseCDbank.calorimeter_hits() )
 	  {
 	    int SWCR[4] = {-1,-1,-1,-1};
 	    switch( calohit->get_geom_id().get_type() )
@@ -265,32 +276,39 @@ namespace tkrec {
 		break;
 	      }
 	    auto OMhitPtr = std::make_shared<TKOMhit>(SWCR);		
-	    //OMhitPtr->set_energy( calohit->get_energy() ); 
+	    //OMhitPtr->set_xxx( calohit->get_xxx() / xxxunit); 
 			
 	    _work_->event.add_OM_hit( OMhitPtr );
 	  }
 
 	DT_LOG_DEBUG(_config_.verbosity, "Nb tracker hits = " << falaiseCDbank.tracker_hits().size());
-	for ( auto &trhit : falaiseCDbank.tracker_hits() )
+	for (const auto & trhit : falaiseCDbank.tracker_hits() )
 	  {
 	    int SRL[3] = {trhit->get_side(), trhit->get_row(), trhit->get_layer()};
 	    auto hit = std::make_shared<TKtrhit>(SRL);
-			
+
+	    double sigmaR = _config_.recConfig.default_sigma_r;
 	    if(not std::isnan(trhit->get_r()))
 	      {
-		hit->set_r( trhit->get_r() );        	
-		hit->set_sigma_R( /*trhit->get_sigma_r()*/ _config_.recConfig.default_sigma_r );
+		hit->set_r( trhit->get_r() / CLHEP::mm );
+		if (not std::isnan(trhit->get_sigma_r())) {
+		  sigmaR = trhit->get_sigma_r() / CLHEP::mm;
+		}
+		// if (_config_.force_default_sigma_r) {
+		//   sigmaR = _config_.recConfig.default_sigma_r;
+		// }
+		hit->set_sigma_R( sigmaR );
 	      }
 	    else
 	      {
-		hit->set_r( invalid_distance );        	
-		hit->set_sigma_R( invalid_distance );
+		hit->set_r(datatools::invalid_real());        	
+		hit->set_sigma_R(datatools::invalid_real());
 	      }
 			
 	    if(not std::isnan(trhit->get_z()))
 	      {
-		hit->set_h( trhit->get_z() );
-		hit->set_sigma_Z( trhit->get_sigma_z() );
+		hit->set_h( trhit->get_z() / CLHEP::mm);
+		hit->set_sigma_Z( trhit->get_sigma_z() / CLHEP::mm );
 	      }
 	    else
 	      {
@@ -311,8 +329,8 @@ namespace tkrec {
     return;
   }
 
-  void TKReconstruct::fill_TCD_bank(snemo::datamodel::calibrated_data& falaiseCDbank,
-				    snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data) const
+  void TKReconstruct::_fill_TCD_bank_(const snemo::datamodel::calibrated_data & falaiseCDbank,
+				      snemo::datamodel::tracker_clustering_data & the_tracker_clustering_data) const
   {
     namespace snedm = snemo::datamodel;
  
@@ -384,8 +402,8 @@ namespace tkrec {
     return;
   }
 
-  void TKReconstruct::fill_TTD_bank(snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data,
-				    snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data) const
+  void TKReconstruct::_fill_TTD_bank_(snemo::datamodel::tracker_clustering_data& the_tracker_clustering_data,
+				      snemo::datamodel::tracker_trajectory_data& the_tracker_trajectory_data) const
   {	
     namespace snedm = snemo::datamodel;
 
@@ -456,7 +474,7 @@ namespace tkrec {
 		  point->get_z()}; 
 		polyline.add(geom_point);
 	      }
-	    //line_to_verteces(cluster->get_track(), line_3d);
+	    //_line_to_verteces_(cluster->get_track(), line_3d);
 			
 	    /*
 	      geomtools::line_3d& line_3d = line_pattern->get_segment();
@@ -525,7 +543,7 @@ namespace tkrec {
 				
 				
 	geomtools::line_3d & line_3d = line_pattern->get_segment();
-	line_to_verteces(cluster->get_track(), line_3d);
+	_line_to_verteces_(cluster->get_track(), line_3d);
 				
 	a_trajectory_solution->grab_best_trajectories().insert(id);
 	a_trajectory_solution->grab_trajectories().push_back(h_trajectory);
@@ -537,7 +555,7 @@ namespace tkrec {
     return;
   }
 
-  void TKReconstruct::line_to_verteces(const ConstTKtrackHdl & track, geomtools::line_3d & line_)
+  void TKReconstruct::_line_to_verteces_(const ConstTKtrackHdl & track, geomtools::line_3d & line_)
   {
     line_.set_first(0.0 * CLHEP::mm,
 		    track->get_b() * CLHEP::mm,

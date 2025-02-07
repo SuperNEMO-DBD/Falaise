@@ -52,7 +52,11 @@ namespace tkrec {
     if (config_.has_flag("save_sinograms")) {
       this->save_sinograms = true;
     }
- 
+  
+    if (config_.has_flag("force_default_sigma_r")) {
+      this->force_default_sigma_r = true;
+    }
+  
     if (config_.has_key("default_sigma_r")) {
       auto value = config_.fetch_real_with_explicit_dimension("default_sigma_r",
 							      "length");
@@ -65,6 +69,9 @@ namespace tkrec {
     if (config_.has_key("chi_square_threshold")) {
       this->chi_square_threshold =
         config_.fetch_dimensionless_real("chi_square_threshold");
+      DT_THROW_IF(this->chi_square_threshold < 1.0,
+		  std::logic_error,
+		  "Invalid chi_square_threshold value");
     }
 
     if (mode == EventRecMode::basic) {

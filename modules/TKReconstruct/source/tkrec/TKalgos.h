@@ -35,21 +35,26 @@ namespace tkrec {
     bool visualization = false;
 
     // For full & simple mode:
+    bool force_default_sigma_r = false; ///< Flag to force the default sigma r value for tracker hits
     double default_sigma_r = 2.0; ///< implicit unit: mm
     double chi_square_threshold = 5.0; ///< dimensionless
     
+    // For basic mode:
     uint32_t basic_resolution = 250u;
     uint32_t basic_iterations = 2u;
      
+    // For single mode:
     uint32_t single_resolution = 250u;
     uint32_t single_iterations = 2u;
     uint32_t single_threshold = 5.0;
   
+    // For multi mode:
     uint32_t multi_resolution = 50u;
     uint32_t multi_iterations = 3u;
     double   multi_threshold = 0.75;
     uint32_t multi_start_no_segments = 5u;
 
+    // For legendre  mode:
     double   legendre_distance_limit = 6.0; ///< mm
     double   legendre_limit_angle = 5.0 * M_PI / 180.0; ///< radian
     uint32_t legendre_resolution = 250u;
@@ -59,7 +64,8 @@ namespace tkrec {
     
   };
 
-  /// Cluster/track reconstruction algorithms
+  /// Main cluster/track reconstruction class.
+  /// This class implements several algorithms.
   class TKalgos
   {
   public:
