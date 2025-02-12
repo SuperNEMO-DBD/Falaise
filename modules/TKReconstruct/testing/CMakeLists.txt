@@ -12,7 +12,6 @@ add_test(NAME flreconstruct-tkreconstruct-test1b
   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/test1"
   --simu2
   --work-dir "${CMAKE_CURRENT_BINARY_DIR}/test1b"
-  --rec-visu
   )
 set_falaise_test_environment(flreconstruct-tkreconstruct-test1b)
 

@@ -35,7 +35,6 @@ with_sim_visu=0
 with_rec_visu=0
 work_dir=""
 cfg_dir=""
-with_magfield=0
 simuVer=1
 
 function parse_cl_opts()
@@ -52,10 +51,6 @@ function parse_cl_opts()
 	    simuVer=1
 	elif [ "${opt}" = "--simu2" ]; then
 	    simuVer=2
-	# elif [ "${opt}" = "-m" ]; then
-	#     with_magfield=0
-	# elif [ "${opt}" = "-M" ]; then
-	#     with_magfield=1
 	elif [ "${opt}" == "--sim-visu" ]; then
 	    with_sim_visu=1
 	elif [ "${opt}" == "--rec-visu" ]; then
@@ -87,7 +82,6 @@ export FLWORKDIR="${work_dir}/${label}"
 echo >&2 "[info] cfg_dir   = '${cfg_dir}'"
 echo >&2 "[info] work_dir  = '${work_dir}'"
 echo >&2 "[info] FLWORKDIR = '${FLWORKDIR}'"
-echo >&2 "[info] with_magfield = '${with_magfield}'"
 
 function my_exit()
 {
