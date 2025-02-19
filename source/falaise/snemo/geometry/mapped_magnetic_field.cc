@@ -24,6 +24,7 @@
 #include <falaise/snemo/geometry/mapped_magnetic_field.h>
 
 // Standard library:
+#include <fstream>
 #include <vector>
 
 // Third party:

@@ -5,6 +5,7 @@
 #define SNEMO_DB_SERVICE_H
 
 // Standard library:
+#include <cstdint>
 #include <iostream>
 #include <fstream>
 #include <map>

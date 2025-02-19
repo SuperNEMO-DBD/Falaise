@@ -8,6 +8,9 @@
 // Ourselves:
 #include <falaise/snemo/physics_model/activity_model_factory.h>
 
+// Standard Library
+#include <cstdint>
+
 // Bayeux:
 #include <bayeux/datatools/exception.h>
 // #include <bayeux/datatools/clhep_units.h>

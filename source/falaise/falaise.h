@@ -25,6 +25,7 @@
 #ifndef FALAISE_FALAISE_H
 #define FALAISE_FALAISE_H
 // Standard Library
+#include <stdint.h>
 #include <string>
 
 // This project
