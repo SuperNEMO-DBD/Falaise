@@ -10,8 +10,6 @@
  *
  *   Mock simulation data processor for calorimeter MC hits
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_PROCESSING_MOCK_CALORIMETER_S2C_MODULE_H
@@ -23,10 +21,11 @@
 #include <vector>
 
 // Third party:
-// - Bayeux/mygsl:
+// - Bayeux:
+#include <datatools/bit_mask.h>
 #include <mygsl/rng.h>
-// - Bayeux/dpp:
 #include <dpp/base_module.h>
+
 // - CLHEP
 #include <CLHEP/Units/SystemOfUnits.h>
 
@@ -38,77 +37,119 @@
 #include <falaise/snemo/services/service_handle.h>
 
 namespace geomtools {
-class manager;
+  class manager;
 }
 
 namespace mctools {
-class simulated_data;
+  class simulated_data;
 }
 
 namespace snemo {
 
-namespace processing {
+  namespace processing {
 
-/// \brief A mock calibration for SuperNEMO calorimeter hits
-class mock_calorimeter_s2c_module : public dpp::base_module {
- public:
-  // Because dpp::base_module is insane
-  virtual ~mock_calorimeter_s2c_module() { this->reset(); }
+    /// \brief A mock calibration for SuperNEMO calorimeter hits
+    class mock_calorimeter_s2c_module
+      : public dpp::base_module
+    {
+    public:
 
-  /// Initialization
-  virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
-                          dpp::module_handle_dict_type& /*unused*/);
+      /// Option flags for energy correction
+      enum energy_correction_t
+	{
+	  ECORR_NONE  = 0x0,
+	  ECORR_NON_UNIFORMITY = datatools::bit_mask::bit00,
+	  ECORR_U = ECORR_NON_UNIFORMITY,
+	  ECORR_BIRK_CERENKOV  = datatools::bit_mask::bit01,
+	  ECORR_BC      = ECORR_BIRK_CERENKOV,
+	  ECORR_BCU     = ECORR_NON_UNIFORMITY | ECORR_BIRK_CERENKOV,
+	  ECORR_DEFAULT = ECORR_NONE
+	};
+      
+      /// Parse energy correction bitset from string
+      uint32_t energy_correction_parse(const std::string & label_);
 
-  /// Reset
-  virtual void reset();
+      /// Return a string representation of the energy correction bitset
+      std::string energy_correction_repr(const uint32_t flags_);
 
-  /// Parse calorimeter regime database file
-  void parse_calorimeter_regime_database(const std::string & database_path_);
+      
+      // Because dpp::base_module is insane
+      virtual ~mock_calorimeter_s2c_module() { this->reset(); }
 
-  // Parse pol3d parameters file
-  std::vector<double> parse_pol3d_parameters(const std::string & parameters_path_);
+      /// Initialization
+      ///
+      /// Supported configuration properties:
+      ///
+      ///   SD_label    : string = "SD"                (optional)
+      ///   CD_label    : string = "CD"                (optional)
+      ///   random.seed : integer = 12345              (optional)
+      ///   random.id   : string = "mt19937"           (optional)
+      ///   hit_categories   : string[3] = "calo" "xcalo" "gveto" (optional)
+      ///   cluster_time_width : real as time = 100 ns (optional)
+      ///   store_mc_hit_id : boolean = false          (optional)
+      ///   calorimeter_regime_database_path  : string as path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db" 
+      ///   pol3d_parameters_mwall_5inch_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db"
+      ///   pol3d_parameters_mwall_8inch_path : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_8inch.db"
+      ///   pol3d_parameters_xwall_path       : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db"
+      ///   pol3d_parameters_gveto_path       : string as path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db"
+      ///   energy_corrections : string = ""           (optional, supported: "u", "bc", "bcu")
+      ///
+      virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
+			      dpp::module_handle_dict_type& /*unused*/);
 
-  const CalorimeterModel& get_calorimeter_regime(const geomtools::geom_id & gid);
+      /// Reset
+      virtual void reset();
 
-  /// Data record processing
-  virtual process_status process(datatools::things& event);
+      /// Parse calorimeter regime database file
+      void parse_calorimeter_regime_database(const std::string & database_path_);
 
- private:
-  /// Digitize calorimeter hits
-  void digitizeHits(const mctools::simulated_data& simdata,
-                    snemo::datamodel::CalorimeterHitHdlCollection& calohits);
+      // Parse pol3d parameters file
+      std::vector<double> parse_pol3d_parameters(const std::string & parameters_path_);
 
-  /// Calibrate calorimeter hits (energy/time resolution spread)
-  void calibrateHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
+      const CalorimeterModel& get_calorimeter_regime(const geomtools::geom_id & gid);
 
-  /// Apply basic trigger filter
-  void triggerHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
+      /// Data record processing
+      virtual process_status process(datatools::things& event);
 
-  /// Main process function
-  void process_impl(const mctools::simulated_data& simdata,
-                    snemo::datamodel::CalorimeterHitHdlCollection& calohits);
+    private:
+      /// Digitize calorimeter hits
+      void digitizeHits(const mctools::simulated_data& simdata,
+			snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
- private:
-  snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
-  mygsl::rng RNG_{};                     //!< PRN generator
-  std::vector<std::string> caloTypes{};  //!< Calorimeter hit categories
-  typedef std::map<geomtools::geom_id, CalorimeterModel> CaloModelMap;
-  CaloModelMap caloModels{};            //!< Calorimeter regime tools
-  std::string sdInputTag{};             //!< The label of the simulated data bank
-  std::string cdOutputTag{};            //!< The label of the calibrated data bank
-  double timeWindow{100. * CLHEP::ns};  //!< Time width of a calo cluster
-  bool quenchAlphas{true};              //!< Flag to (dis)activate the alpha quenching
-  bool assocMCHitId{false};             //!< The flag to reference MC true hit
-  std::vector<double> _uniformity_correction_parameters_mwall_8inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 8"
-  std::vector<double> _uniformity_correction_parameters_mwall_5inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 5"
-  std::vector<double> _uniformity_correction_parameters_xwall_{1,1};       //!< Polynomial parameters for the uniformity correction for XWall
-  std::vector<double> _uniformity_correction_parameters_gveto_{1,1};       //!< Polynomial parameters for the uniformity correction for GVeto
+      /// Calibrate calorimeter hits (energy/time resolution spread)
+      void calibrateHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
-  // Macro to automate the registration of the module :
-  DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module)
-};
+      /// Apply basic trigger filter
+      void triggerHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits);
 
-}  // end of namespace processing
+      /// Main process function
+      void process_impl(const mctools::simulated_data& simdata,
+			snemo::datamodel::CalorimeterHitHdlCollection& calohits);
+
+    private:
+      
+      snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
+      mygsl::rng RNG_{};                     //!< PRN generator
+      std::vector<std::string> caloTypes{};  //!< Calorimeter hit categories
+      typedef std::map<geomtools::geom_id, CalorimeterModel> CaloModelMap;
+      CaloModelMap caloModels{};            //!< Calorimeter regime tools
+      std::string sdInputTag{};             //!< The label of the simulated data bank
+      std::string cdOutputTag{};            //!< The label of the calibrated data bank
+      double timeWindow{100. * CLHEP::ns};  //!< Time width of a calo cluster
+      bool quenchAlphas{true};              //!< Flag to (dis)activate the alpha quenching
+      bool assocMCHitId{false};             //!< The flag to reference MC true hit
+      std::vector<double> _uniformity_correction_parameters_mwall_8inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 8"
+      std::vector<double> _uniformity_correction_parameters_mwall_5inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 5"
+      std::vector<double> _uniformity_correction_parameters_xwall_{1,1};       //!< Polynomial parameters for the uniformity correction for XWall
+      std::vector<double> _uniformity_correction_parameters_gveto_{1,1};       //!< Polynomial parameters for the uniformity correction for GVeto
+      uint32_t _energy_correction_flags_ = ECORR_DEFAULT;
+
+      
+      // Macro to automate the registration of the module :
+      DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module)
+    };
+
+  }  // end of namespace processing
 
 }  // end of namespace snemo
 
