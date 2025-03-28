@@ -143,6 +143,9 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
     int narg = 1;
     auto *my_application = new TApplication("ROOT Application", &narg, argv_);
 
+    // Disable web display
+    gROOT->SetWebDisplay("off");
+
     // Get the screen dimensions
     int position_x, position_y;
     unsigned int screen_width, screen_height;
