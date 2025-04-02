@@ -16,7 +16,7 @@
 #define FALAISE_SNEMO_DATAMODEL_EVENT_HEADER_H 1
 
 // Standard library:
-#include <cstdint.hpp>
+#include <cstdint>
 
 // Third party:
 // - Boost :
