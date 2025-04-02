@@ -4,8 +4,8 @@
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
-// Copyright (c) 2013 by Francois Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2013 by Université de Caen
+// Copyright (c) 2013-2025 by Francois Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2013-2025 by Université de Caen
 //
 // This file is part of Falaise.
 //
@@ -24,17 +24,21 @@
 
 #ifndef FALAISE_FALAISE_H
 #define FALAISE_FALAISE_H
+
 // Standard Library
 #include <string>
+#include <cstdint>
 
 // This project
 
 namespace falaise {
-/// Initialize resources of the Falaise library
-void initialize(int argc_ = 0, char* argv_[] = 0, uint32_t flags_ = 0);
+  
+  /// Initialize resources of the Falaise library
+  void initialize(int argc_ = 0, char* argv_[] = 0, uint32_t flags_ = 0);
 
-/// Terminate resources of the Falaise library
-void terminate();
-}  // namespace falaise
+  /// Terminate resources of the Falaise library
+  void terminate();
+  
+} // namespace falaise
 
-#endif  // FALAISE_FALAISE_H
+#endif // FALAISE_FALAISE_H
