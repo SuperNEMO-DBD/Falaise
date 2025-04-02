@@ -8,6 +8,8 @@
 // Ourselves:
 #include <falaise/snemo/physics_model/per_period_activity_model.h>
 
+#include <cstdint>
+
 // Bayeux:
 #include <bayeux/datatools/exception.h>
 
