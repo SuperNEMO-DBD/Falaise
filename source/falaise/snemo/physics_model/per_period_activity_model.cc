@@ -78,7 +78,7 @@ namespace snemo {
     }
      
     void per_period_activity_model::initialize(const datatools::properties & config_,
-                                             const activity_model_dict_type & models_)
+																							 const activity_model_dict_type & models_)
     {
       DT_THROW_IF(is_initialized(), std::logic_error,
                   "Model is already initialized!");
