@@ -20,7 +20,7 @@
 
 // Third party:
 // - Boost :
-#include <boost/cstdint.hpp>
+// #include <boost/cstdint.hpp>
 #include <boost/serialization/access.hpp>
 // - Bayeux/datatools :
 #include <datatools/event_id.h>
