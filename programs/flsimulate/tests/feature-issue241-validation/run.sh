@@ -123,7 +123,7 @@ EOF
 			 -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
 			 -s "vertexes:generator=real_flat_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-a.vprofile"
     if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
@@ -164,7 +164,7 @@ EOF
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
 			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-b.vprofile"
    if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
@@ -219,7 +219,7 @@ EOF
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
 			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-c.vprofile"
    if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
