@@ -35,15 +35,15 @@ namespace snemo {
     /// Supported categories of vertex
     enum vertex_category_type {
       VERTEX_CATEGORY_UNDEF = 0x0, ///< Undefined category
-      VERTEX_CATEGORY_ON_SOURCE_FOIL = datatools::bit_mask::bit00, ///< Maybe a source strip, pad or pad bulk physica volume
+      VERTEX_CATEGORY_ON_SOURCE_FOIL = datatools::bit_mask::bit00, ///< Maybe a source strip or pad bulk physical volume
       VERTEX_CATEGORY_ON_MAIN_CALORIMETER = datatools::bit_mask::bit01, ///< The entrance window of a main calorimeter block (front)
       VERTEX_CATEGORY_ON_X_CALORIMETER = datatools::bit_mask::bit02, ///< The entrance window of a main X-calorimeter block
-      VERTEX_CATEGORY_ON_GAMMA_VETO = datatools::bit_mask::bit03, ///< The bulk volume of a gamma veto block
+      VERTEX_CATEGORY_ON_GAMMA_VETO = datatools::bit_mask::bit03, ///< The bulk volume of a gamma veto block (no way to locate the entrance window)
       VERTEX_CATEGORY_ON_WIRE = datatools::bit_mask::bit04, ///< The vicinity of a wire in the tracking chamber
-      VERTEX_CATEGORY_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05, ///< A calibration source
-      VERTEX_CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06, ///< A gap between source pads
-      VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE = datatools::bit_mask::bit07, ///< Reference source plane
-      VERTEX_CATEGORY_IN_GAS = datatools::bit_mask::bit08 ///< tracker gas
+      VERTEX_CATEGORY_ON_CALIBRATION_SOURCE = datatools::bit_mask::bit05, ///< A calibration source (Bi207)
+      VERTEX_CATEGORY_ON_SOURCE_GAP = datatools::bit_mask::bit06, ///< A gap between source pads (vertex reconstructed in a region of the source plane without material !)
+      VERTEX_CATEGORY_ON_REFERENCE_SOURCE_PLANE = datatools::bit_mask::bit07, ///< Fake vertex reconstructed on the reference source plane
+      VERTEX_CATEGORY_IN_GAS = datatools::bit_mask::bit08 ///< Vertex reconstructed in the tracker gas deep volume
     };
 
     vertex_category_type convert(const snemo::geometry::vertex_info::category_type cat_);

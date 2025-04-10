@@ -58,57 +58,57 @@
 
 namespace {
 
-bool _flinit = false;
+  bool _flinit = false;
 
-void falaise_initialize_impl() {
-  falaise::init_resources();
+  void falaise_initialize_impl() {
+    falaise::init_resources();
 
-  DT_THROW_IF(!datatools::kernel::is_instantiated(), std::runtime_error,
-              "The Bayeux/datatools' kernel is not instantiated !");
+    DT_THROW_IF(!datatools::kernel::is_instantiated(), std::runtime_error,
+		"The Bayeux/datatools' kernel is not instantiated !");
 
-  // Populate the library info register, basically dumb if we don't
-  // have it so assume it exists and hope for an exception if
-  // it doesn't
-  if (!falaise::detail::falaise_sys::is_instantiated()) {
-    falaise::detail::falaise_sys& flSys = ::falaise::detail::falaise_sys::instantiate();
-    flSys.initialize();
+    // Populate the library info register, basically dumb if we don't
+    // have it so assume it exists and hope for an exception if
+    // it doesn't
+    if (!falaise::detail::falaise_sys::is_instantiated()) {
+      falaise::detail::falaise_sys& flSys = ::falaise::detail::falaise_sys::instantiate();
+      flSys.initialize();
+    }
   }
-}
 
-void falaise_terminate_impl() {
-  if (falaise::detail::falaise_sys::is_instantiated()) {
-    falaise::detail::falaise_sys& flSys = falaise::detail::falaise_sys::instance();
-    flSys.shutdown();
+  void falaise_terminate_impl() {
+    if (falaise::detail::falaise_sys::is_instantiated()) {
+      falaise::detail::falaise_sys& flSys = falaise::detail::falaise_sys::instance();
+      flSys.shutdown();
+    }
   }
-}
 
 }  // namespace
 
 namespace falaise {
 
-void initialize(int argc_, char* argv_[], uint32_t flags_) {
-  if (!::_flinit) {
-    // Wrap Bayeux initialization because we need resources from various Bayeux's modules:
-    bayeux::initialize(argc_, argv_, flags_);
-    // Initialization code from Falaise itself:
-    falaise_initialize_impl();
-    ::_flinit = true;
-  } else {
-    DT_THROW(std::logic_error, "Attempt to initialize the already initialized Falaise library!");
+  void initialize(int argc_, char* argv_[], std::uint32_t flags_) {
+    if (!::_flinit) {
+      // Wrap Bayeux initialization because we need resources from various Bayeux's modules:
+      bayeux::initialize(argc_, argv_, flags_);
+      // Initialization code from Falaise itself:
+      falaise_initialize_impl();
+      ::_flinit = true;
+    } else {
+      DT_THROW(std::logic_error, "Attempt to initialize the already initialized Falaise library!");
+    }
   }
-}
 
-void terminate() {
-  if (::_flinit) {
-    // Termination code for Falaise:
-    falaise_terminate_impl();
+  void terminate() {
+    if (::_flinit) {
+      // Termination code for Falaise:
+      falaise_terminate_impl();
 
-    // Wrap Bayeux termination:
-    bayeux::terminate();
-    ::_flinit = false;
-  } else {
-    DT_THROW(std::logic_error, "Attempt to terminate the already terminated Falaise library!");
+      // Wrap Bayeux termination:
+      bayeux::terminate();
+      ::_flinit = false;
+    } else {
+      DT_THROW(std::logic_error, "Attempt to terminate the already terminated Falaise library!");
+    }
   }
-}
 
 }  // namespace falaise

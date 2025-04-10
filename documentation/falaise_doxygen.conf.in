@@ -960,12 +960,6 @@ HTML_COLORSTYLE_SAT    = 100
 
 HTML_COLORSTYLE_GAMMA  = 80
 
-# If the HTML_TIMESTAMP tag is set to YES then the footer of each generated HTML
-# page will contain the date and time when the page was generated. Setting
-# this to NO can help when comparing the output of multiple runs.
-
-HTML_TIMESTAMP         = NO
-
 # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
 # documentation will contain sections that can be hidden and shown after the
 # page has loaded.
@@ -1187,7 +1181,7 @@ FORMULA_FONTSIZE       = 10
 # Note that when changing this option you need to delete any form_*.png files
 # in the HTML output before the changes have effect.
 
-FORMULA_TRANSPARENT    = YES
+# FORMULA_TRANSPARENT    = YES  # obsoleted
 
 # Enable the USE_MATHJAX option to render LaTeX formulas using MathJax
 # (see http://www.mathjax.org) which uses client side Javascript for the
@@ -1326,7 +1320,7 @@ LATEX_HIDE_INDICES     = NO
 # Note that which sources are shown also depends on other settings
 # such as SOURCE_BROWSER.
 
-LATEX_SOURCE_CODE      = NO
+# LATEX_SOURCE_CODE      = NO # obsoleted
 
 # The LATEX_BIB_STYLE tag can be used to specify the style to use for the
 # bibliography, e.g. plainnat, or ieeetr. The default style is "plain". See
@@ -1557,7 +1551,7 @@ SKIP_FUNCTION_MACROS   = YES
 # NOT include the path). If a tag file is not located in the directory in which
 # doxygen is run, you must also specify the path to the tagfile here.
 
-TAGFILES               = "@Bayeux_DOXYGEN_TAGFILE@=@Bayeux_DOXYGEN_HTML_DIR@"
+TAGFILES               = "@Bayeux_DOXYGEN_TAGFILE@ = @Bayeux_DOXYGEN_HTML_DIR@"
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.
@@ -1586,7 +1580,7 @@ EXTERNAL_GROUPS        = YES
 # this option also works with HAVE_DOT disabled, but it is recommended to
 # install and use dot, since it yields more powerful graphs.
 
-CLASS_DIAGRAMS         = YES
+# CLASS_DIAGRAMS         = YES # obsoleted
 
 # If set to YES, the inheritance and collaboration graphs will hide
 # inheritance and usage relations if the target is undocumented
@@ -1616,12 +1610,12 @@ DOT_NUM_THREADS        = 0
 # the DOTFONTPATH environment variable or by setting DOT_FONTPATH to the
 # directory containing the font.
 
-DOT_FONTNAME           = Helvetica
+# DOT_FONTNAME           = Helvetica  # obsoleted
 
 # The DOT_FONTSIZE tag can be used to set the size of the font of dot graphs.
 # The default size is 10pt.
 
-DOT_FONTSIZE           = 10
+# DOT_FONTSIZE           = 10  # obsoleted
 
 # By default doxygen will tell dot to use the Helvetica font.
 # If you specify a different font using DOT_FONTNAME you can use DOT_FONTPATH to
@@ -1770,7 +1764,7 @@ MAX_DOT_GRAPH_DEPTH    = 0
 # enabling this option may lead to badly anti-aliased labels on the edges of
 # a graph (i.e. they become hard to read).
 
-DOT_TRANSPARENT        = NO
+# DOT_TRANSPARENT        = NO # obsoleted
 
 # Set the DOT_MULTI_TARGETS tag to YES allow dot to generate multiple output
 # files in one run (i.e. multiple -o and -T options on the command line). This

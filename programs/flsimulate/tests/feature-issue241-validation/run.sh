@@ -123,7 +123,7 @@ EOF
 			 -s "geometry:layout/if_basic/source_layout=RealisticFlat" \
 			 -s "vertexes:generator=real_flat_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-a.vprofile"
     if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
@@ -164,7 +164,7 @@ EOF
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
 			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-b.vprofile"
    if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
@@ -213,15 +213,31 @@ EOF
     	output_profile="all_details"
     fi
 
+    vtxGenName="real_snrs1_source_strip_3_bulk"
+    vtxGenName="real_snrs1_source_strip_24_bulk"
+    vtxGenName="real_snrs1_source_strip_33_bulk"
+    # vtxGenName="real_snrs1_source_full_foils_surface"
+    # vtxGenName="real_snrs1_source_full_foils_mass_bulk"
+    # vtxGenName="real_snrs1_source_full_foils_se82_bulk"
     echo >&2 "[info] Running flsimulate-configure..."
     flsimulate-configure --no-gui \
 			 -s "geometry:layout/if_basic/magnetic_field=false" \
 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
-			 -s "vertexes:generator=real_snrs1_source_strip_3_bulk" \
+			 -s "vertexes:generator=${vtxGenName}" \
 			 -s "primary_events:generator=electron.1MeV" \
-			 -s "simulation:output_profile=none" \
+			 -s "simulation:output_profile=all_details" \
 			 -o "${FLWORKDIR}/feature-issue241-validation-c.vprofile"
-   if [ $? -ne 0 ]; then
+    # flsimulate-configure --no-gui \
+    # 			 -s "geometry:layout/if_basic/magnetic_field=true" \
+    # 			 -s "geometry:layout/if_basic/magnetic_field/is_active/type=UniformVertical" \
+    # 			 -s "geometry:layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude=25 gauss" \
+    # 			 -s "geometry:layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction=+z" \
+    # 			 -s "geometry:layout/if_basic/source_layout=RealisticSNRS1" \
+    # 			 -s "vertexes:generator=${vtxGenName}" \
+    # 			 -s "primary_events:generator=electron.1MeV" \
+    # 			 -s "simulation:output_profile=all_details" \
+    # 			 -o "${FLWORKDIR}/feature-issue241-validation-c.vprofile"
+    if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
     fi
 

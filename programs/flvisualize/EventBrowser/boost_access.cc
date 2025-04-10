@@ -22,11 +22,15 @@
 // Ourselves:
 #include <EventBrowser/io/boost_access.h>
 
+// Standard library:
+#include <filesystem>
+
 // Third party:
-// - Boost
-#define BOOST_SYSTEM_NO_DEPRECATED 1
-#include <boost/filesystem.hpp>
-#undef BOOST_SYSTEM_NO_DEPRECATED
+// // - Boost
+// #define BOOST_SYSTEM_NO_DEPRECATED 1
+// #include <boost/filesystem.hpp>
+// #undef BOOST_SYSTEM_NO_DEPRECATED
+
 // - Bayeux/datatools:
 #include <bayeux/datatools/io_factory.h>
 
@@ -90,9 +94,10 @@ bool boost_access::open(const std::vector<std::string>& filenames_) {
 }
 
 bool boost_access::is_valid(const std::vector<std::string>& filenames_) const {
+	namespace fs = std::filesystem;
   for (const auto& a_file : filenames_) {
     // Check file existence
-    if (!boost::filesystem::exists(a_file)) {
+    if (! fs::exists(a_file)) {
       DT_LOG_WARNING(view::options_manager::get_instance().get_logging_priority(),
                      "File '" << a_file << "' does not exist !");
       return false;
@@ -111,25 +116,44 @@ bool boost_access::is_valid(const std::vector<std::string>& filenames_) const {
     const std::string txt_ext = "." + datatools::io_factory::format::text_extension();
     const std::string xml_ext = "." + datatools::io_factory::format::xml_extension();
     const std::string bin_ext = "." + datatools::io_factory::format::binary_extension();
-
-    if (boost::filesystem::extension(a_file) == gz_ext ||
-        boost::filesystem::extension(a_file) == bzip2_ext) {
-      const std::string stem = a_file.substr(0, a_file.find_last_of('.'));
-
-      if (boost::filesystem::extension(stem) == txt_ext) {
+		auto ext  = fs::path(a_file).extension().string();
+		auto stem = fs::path(a_file).stem().string();
+    if (ext == gz_ext || ext == bzip2_ext) {
+      const std::string stem2 = a_file.substr(0, a_file.find_last_of('.'));
+			auto sstem = fs::path(stem2).extension().string();
+      if (sstem == txt_ext) {
         ok = true;
-      } else if (boost::filesystem::extension(stem) == xml_ext) {
+      } else if (sstem == xml_ext) {
         ok = true;
-      } else if (boost::filesystem::extension(stem) == bin_ext) {
+      } else if (sstem == bin_ext) {
         ok = true;
       }
-    } else if (boost::filesystem::extension(a_file) == txt_ext) {
+    } else if (ext == txt_ext) {
       ok = true;
-    } else if (boost::filesystem::extension(a_file) == xml_ext) {
+    } else if (ext == xml_ext) {
       ok = true;
-    } else if (boost::filesystem::extension(a_file) == bin_ext) {
+    } else if (ext == bin_ext) {
       ok = true;
     }
+		// namespace bf = boost::filesystem;
+		// bf::path a_file_path(a_file);
+    // if (bf::path::extension(a_file_path) == gz_ext ||
+    //     bf::path::extension(a_file_path) == bzip2_ext) {
+    //   const std::string stem = a_file.substr(0, a_file.find_last_of('.'));
+    //   if (bf::path::extension(stem) == txt_ext) {
+    //     ok = true;
+    //   } else if (bf::path::extension(stem) == xml_ext) {
+    //     ok = true;
+    //   } else if (bf::path::extension(stem) == bin_ext) {
+    //     ok = true;
+    //   }
+    // } else if (bf::path::extension(a_file) == txt_ext) {
+    //   ok = true;
+    // } else if (bf::path::extension(a_file) == xml_ext) {
+    //   ok = true;
+    // } else if (bf::path::extension(a_file) == bin_ext) {
+    //   ok = true;
+    // }
 
     if (!ok) {
       DT_LOG_DEBUG(view::options_manager::get_instance().get_logging_priority(),

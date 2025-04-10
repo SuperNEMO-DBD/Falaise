@@ -30,6 +30,7 @@
 namespace bpo = boost::program_options;
 // - ROOT:
 #include <TApplication.h>
+#include <RVersion.h>
 #include <TROOT.h>
 #include <TSystem.h>
 #include <TVirtualX.h>
@@ -140,6 +141,9 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
 
     // Open a root application
     DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6,34,6)
+    gROOT->SetWebDisplay("off");
+#endif
     int narg = 1;
     auto *my_application = new TApplication("ROOT Application", &narg, argv_);
 

@@ -1,6 +1,8 @@
 // TK headers
 #include "tkrec/TKvisu.h"
 
+#include <filesystem>
+
 // ROOT headers
 #include "TCanvas.h"
 #include "TColor.h"
@@ -23,10 +25,19 @@
 
 namespace tkrec {
 
-  TKvisu::TKvisu(const TKgeom & geom_)
+  TKvisu::TKvisu(const TKgeom & geom_, const std::string & visu_dir_)
     : _geom_(geom_)
   {
-    
+    if (not visu_dir_.empty()) {
+      _visu_dir_ = visu_dir_;
+    } else {
+      _visu_dir_ = "./Events_visu";
+    }
+    std::filesystem::path visuDirPath(_visu_dir_);
+    if (not std::filesystem::exists(visuDirPath)) {
+      DT_LOG_DEBUG(verbosity, "Creating visu directory '" + _visu_dir_ + "'...");
+      std::filesystem::create_directories(visuDirPath);
+    }
     return;
   }
 
@@ -402,7 +413,8 @@ namespace tkrec {
           }
       }
 
-    canvas->SaveAs(Form("./Events_visu/Run-%d_event-%d_2D.png",
+    canvas->SaveAs(Form("%s/Run-%d_event-%d_2D.png",
+			_visu_dir_.c_str(),
                         _event_->get_run_number(),
                         _event_->get_event_number()));
     delete canvas;
@@ -421,7 +433,8 @@ namespace tkrec {
   {     
     gROOT->SetBatch(true);
         
-    TFile *file = new TFile(Form("./Events_visu/Run-%d_event-%d_3D.root",
+    TFile *file = new TFile(Form("%s/Run-%d_event-%d_3D.root",
+				 _visu_dir_.c_str(),
                                  _event_->get_run_number(),
                                  _event_->get_event_number()), "RECREATE");
         

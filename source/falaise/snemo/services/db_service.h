@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <cstdint>
 
 // - Bayeux:
 #include <bayeux/datatools/base_service.h>

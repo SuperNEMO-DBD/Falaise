@@ -173,6 +173,7 @@ namespace FLReconstruct {
                       "Cannot query URN='" << flRecParameters.reconstructionSetupUrn << "'!");
              // and extract the associated 'experimentalSetupUrn':
           const datatools::urn_info & recSetupUrnInfo = dtkUrnQuery.get_urn_info(flRecParameters.reconstructionSetupUrn);
+	  // 2025-04-10 FM : add support for alias ?
           if (recSetupUrnInfo.has_topic("setup") &&
               recSetupUrnInfo.get_components_by_topic("setup").size() == 1) {
             std::string experimentalSetupUrn = recSetupUrnInfo.get_component("setup");
@@ -627,11 +628,22 @@ namespace FLReconstruct {
                   std::logic_error,
                   "Cannot query reconstruction pipeline URN='"
                   << flRecParameters_.reconstructionPipelineUrn << "'!");
+
+      datatools::urn_info reconstructionPipelineUrnInfo;
+      reconstructionPipelineUrnInfo = dtkUrnQuery.get_urn_info(flRecParameters_.reconstructionPipelineUrn);
+      std::string effectiveReconstructionPipelineUrn = flRecParameters_.reconstructionPipelineUrn;
+      if (reconstructionPipelineUrnInfo.has_topic("alias_of")) {
+	std::string reconstructionPipelineUrnAliasOf = reconstructionPipelineUrnInfo.get_component("alias_of");
+	effectiveReconstructionPipelineUrn = reconstructionPipelineUrnAliasOf;
+	DT_LOG_DEBUG(flRecParameters_.logLevel,
+                   "Found alias of effective reconstruction pipeline URN = '" << effectiveReconstructionPipelineUrn << "'");
+      }
       // Resolve reconstruction config file path:
       std::string conf_rec_category = "configuration";
       std::string conf_rec_mime;
       std::string conf_rec_path;
-      DT_THROW_IF(! dtkUrnQuery.resolve_urn_to_path(flRecParameters_.reconstructionPipelineUrn,
+      DT_THROW_IF(! dtkUrnQuery.resolve_urn_to_path(effectiveReconstructionPipelineUrn,
+						    // flRecParameters_.reconstructionPipelineUrn,
                                                     conf_rec_category,
                                                     conf_rec_mime,
                                                     conf_rec_path),

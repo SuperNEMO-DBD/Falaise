@@ -422,7 +422,7 @@ namespace tkrec {
 	    break;
 	  }
 		
-	if( save_sinograms == true ) 
+	if( save_sinograms ) 
 	  {
 	    TCanvas* c2 = new TCanvas("chi_squared","chi_squared", 1000, 1000);
 	    c2->SetRightMargin(0.15);
@@ -678,7 +678,7 @@ namespace tkrec {
 	    return;
 	  }
 		
-	if( save_sinograms == true ) 
+	if( save_sinograms ) 
 	  {
 	    TCanvas* c2 = new TCanvas("chi_squared_3D","chi_squared_3D", 1000, 1000);
 	    c2->SetRightMargin(0.15);

@@ -3,9 +3,11 @@
 
 
 // Standard headers
+#include <string>
 #include <functional>
 
 // Bayeux:
+#include <bayeux/datatools/logger.h>
 #include <bayeux/datatools/bit_mask.h>
 
 #include "tkrec/TKgeom.h"
@@ -17,7 +19,7 @@ namespace tkrec {
   {
   public:
     
-    TKvisu(const TKgeom & geom_);
+    TKvisu(const TKgeom & geom_, const std::string & visu_dir_ = "");
 
     bool has_event() const;
     
@@ -90,6 +92,7 @@ namespace tkrec {
 
     const TKgeom & _geom_;
     const TKEvent * _event_ = nullptr;
+    std::string _visu_dir_;
     
   };
 

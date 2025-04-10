@@ -109,7 +109,9 @@ namespace tkrec {
 		sinograms->SetContour(100);
 		sinograms->SetStats(0);
 		sinograms->Draw("COLZ");
-		c2->SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_zoom-%d.png", run_number, event_number, side, q));
+		c2->SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_zoom-%d.png",
+				config_.save_dir.c_str(),
+				run_number, event_number, side, q));
 		c2->Close();
 	      }
 	    delete sinograms;
@@ -372,7 +374,9 @@ namespace tkrec {
 			    sinograms->SetStats(0);
 			    sinograms->SetContour(100);
 			    sinograms->Draw("COLZ");
-			    c2->SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_iter-%d_R-%d_Th-%d.png", run_number, event_number, side, iter, seg_r, seg_theta));
+			    c2->SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_iter-%d_R-%d_Th-%d.png",
+					    config_.save_dir.c_str(),
+					    run_number, event_number, side, iter, seg_r, seg_theta));
 			    c2->Close();
 			  }
 			delete sinograms;
@@ -630,7 +634,9 @@ namespace tkrec {
 		sinograms->SetStats(0);
 		sinograms->SetContour(100);
 		sinograms->Draw("COLZ");
-		c2->SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_iter-%d.png", run_number, event_number, side, iter));
+		c2->SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_iter-%d.png",
+				config_.save_dir.c_str(),
+				run_number, event_number, side, iter));
 		c2->Close();
 	      }
 	    delete sinograms;
@@ -1145,7 +1151,9 @@ namespace tkrec {
 	    sinograms->SetStats(0);
 	    sinograms->SetContour(100);
 	    sinograms->Draw("COLZ");
-	    c2->SaveAs(Form("Events_visu/clustering-run-%d_event-%d_iter-%d.png", run_number, event_number, iter));
+	    c2->SaveAs(Form("%s/clustering-run-%d_event-%d_iter-%d.png",
+			    config_.save_dir.c_str(), 
+			    run_number, event_number, iter));
 	    c2->Close();
 	    delete c2;
 	  }

@@ -29,13 +29,15 @@
 namespace mybhep {
 
 template <class T>
-class unary : public std::unary_function<T, bool> {
+class unary
+{
  public:
   virtual bool operator()(const T) const { return true; }
 };
 
 template <class T>
-class binary : public std::binary_function<T, T, bool> {
+class binary
+{
  public:
   virtual bool operator()(const T, const T) const { return true; }
 };
