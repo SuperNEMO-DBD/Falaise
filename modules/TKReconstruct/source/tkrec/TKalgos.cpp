@@ -3,6 +3,7 @@
 
 // Standard headers
 #include <iomanip>
+#include <filesystem>
 
 // Boost:
 #include <boost/multi_array.hpp>
@@ -192,8 +193,16 @@ namespace tkrec {
                 std::logic_error,
                 "Undefined reconstruction mode");
 
+    if (_config_.save_sinograms) {
+      std::filesystem::path saveDirPath(_config_.save_dir);
+      if (not std::filesystem::exists(saveDirPath)) {
+	 DT_LOG_DEBUG(_config_.verbosity, "Creating savedirectory '" + _config_.save_dir + "'...");
+	std::filesystem::create_directories(saveDirPath);
+      }
+    }
+    
     if (_config_.visualization) {
-      _visu_ = std::make_unique<TKvisu>(_geom_);
+      _visu_ = std::make_unique<TKvisu>(_geom_); 
     }
     
     return;
@@ -379,11 +388,12 @@ namespace tkrec {
             function.Draw("Same");
           }
       }
-    canvas.SaveAs(Form("Events_visu/Hough_transform-run-%d_event-%d_side-%d_%d.png",
-                        _event_->get_run_number(),
-                        _event_->get_event_number(),
-                        side,
-                        ID));
+    canvas.SaveAs(Form("%s/Hough_transform-run-%d_event-%d_side-%d_%d.png",
+		       _config_.save_dir.c_str(),
+		       _event_->get_run_number(),
+		       _event_->get_event_number(),
+		       side,
+		       ID));
     canvas.Close();
     return;
   }
@@ -500,11 +510,12 @@ namespace tkrec {
                       }
                   }
                                 
-                c2.SaveAs(Form("Events_visu/sinogram-run-%d_event-%d_side-%d_zoom-%d.png",
-                                _event_->get_run_number(),
-                                _event_->get_event_number(),
-                                side,
-                                iter));
+                c2.SaveAs(Form("%s/sinogram-run-%d_event-%d_side-%d_zoom-%d.png",
+			       _config_.save_dir.c_str(),
+			       _event_->get_run_number(),
+			       _event_->get_event_number(),
+			       side,
+			       iter));
                 c2.Close();
               }
                         
@@ -673,11 +684,12 @@ namespace tkrec {
                       }
                   }
                                                             
-                c2.SaveAs(Form("Events_visu/sinogram_centred-run-%d_event-%d_side-%d_zoom-%d.png",
-                                _event_->get_run_number(),
-                                _event_->get_event_number(),
-                                side,
-                                iter));
+                c2.SaveAs(Form("%s/sinogram_centred-run-%d_event-%d_side-%d_zoom-%d.png",
+			       _config_.save_dir.c_str(),
+			       _event_->get_run_number(),
+			       _event_->get_event_number(),
+			       side,
+			       iter));
                 c2.Close();
               }
             // delete sinogram_centred;
@@ -754,10 +766,11 @@ namespace tkrec {
                 function.Draw();
               }
           }
-        canvas.SaveAs(Form("Events_visu/sinusoids-run-%d_event-%d_side-%d.png",
-                            _event_->get_run_number(),
-                            _event_->get_event_number(),
-                            side));
+        canvas.SaveAs(Form("%s/sinusoids-run-%d_event-%d_side-%d.png",
+			   _config_.save_dir.c_str(),
+			   _event_->get_run_number(),
+			   _event_->get_event_number(),
+			   side));
         canvas.Close();                
       }
     return;
@@ -870,11 +883,12 @@ namespace tkrec {
                 sinograms.SetContour(100);
                 sinograms.SetStats(0);
                 sinograms.Draw("COLZ");
-                c2.SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_zoom-%d.png",
-				_event_->get_run_number(),
-				_event_->get_event_number(),
-				side,
-				q));
+                c2.SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_zoom-%d.png",
+			       _config_.save_dir.c_str(),
+			       _event_->get_run_number(),
+			       _event_->get_event_number(),
+			       side,
+			       q));
                 c2.Close();
               }
           }
@@ -1145,13 +1159,14 @@ namespace tkrec {
                             sinograms.SetStats(0);
                             sinograms.SetContour(100);
                             sinograms.Draw("COLZ");
-                            c2.SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_iter-%d_R-%d_Th-%d.png",
-					    _event_->get_run_number(),
-					    _event_->get_event_number(),
-					    side,
-					    iter,
-					    seg_r,
-					    seg_theta));
+                            c2.SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_iter-%d_R-%d_Th-%d.png",
+					   _config_.save_dir.c_str(),
+					   _event_->get_run_number(),
+					   _event_->get_event_number(),
+					   side,
+					   iter,
+					   seg_r,
+					   seg_theta));
                             c2.Close();
                           }
                                                 
@@ -1413,11 +1428,12 @@ namespace tkrec {
                 sinograms.SetStats(0);
                 sinograms.SetContour(100);
                 sinograms.Draw("COLZ");
-                c2.SaveAs(Form("Events_visu/sinograms-run-%d_event-%d_side-%d_iter-%d.png",
-				_event_->get_run_number(),
-				_event_->get_event_number(),
-				side,
-				iter));
+                c2.SaveAs(Form("%s/sinograms-run-%d_event-%d_side-%d_iter-%d.png",
+			       _config_.save_dir.c_str(),
+			       _event_->get_run_number(),
+			       _event_->get_event_number(),
+			       side,
+			       iter));
                 c2.Close();
               }
                         
@@ -1943,10 +1959,11 @@ namespace tkrec {
             sinograms.SetStats(0);
             sinograms.SetContour(100);
             sinograms.Draw("COLZ");
-            c2.SaveAs(Form("Events_visu/clustering-run-%d_event-%d_iter-%d.png",
-                            _event_->get_run_number(),
-                            _event_->get_event_number(),
-			    iter));
+            c2.SaveAs(Form("%s/clustering-run-%d_event-%d_iter-%d.png",
+			   _config_.save_dir.c_str(),
+			   _event_->get_run_number(),
+			   _event_->get_event_number(),
+			   iter));
             c2.Close();
           }
       }

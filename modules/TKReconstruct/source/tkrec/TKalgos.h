@@ -19,7 +19,7 @@ namespace tkrec {
       simple, /// Simple reconstruction
       basic,  /// Basic reconstruction
       single, /// Single track reconstruction
-      multi,  /// Mutli-track reconstruction
+      multi,  /// Multi-track reconstruction
       ML,     /// ML reconstruction
       ML3D    /// ML(3D) reconstruction
     };
@@ -31,7 +31,8 @@ namespace tkrec {
   {
     datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
     EventRecMode mode = EventRecMode::undefined;
-    bool save_sinograms = false;
+    bool save_sinograms = false; //< Extremely CPU/storage expensive (only for short runs and tests)
+    std::string save_dir = "./Events_visu";
     bool visualization = false;
 
     // For full & simple mode:

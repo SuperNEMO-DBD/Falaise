@@ -294,9 +294,10 @@ namespace tkrec {
 		if (not std::isnan(trhit->get_sigma_r())) {
 		  sigmaR = trhit->get_sigma_r() / CLHEP::mm;
 		}
-		// if (_config_.force_default_sigma_r) {
-		//   sigmaR = _config_.recConfig.default_sigma_r;
-		// }
+		if (_config_.recConfig.force_default_sigma_r) {
+		  // Force sigma_r to increase the tolerance of the clustering
+		  sigmaR = _config_.recConfig.default_sigma_r;
+		}
 		hit->set_sigma_R( sigmaR );
 	      }
 	    else
