@@ -66,6 +66,7 @@
   # energy_corrections : string = "bcu"    # Birk-Cerenkov (bulk) + non-uniformity (surface) energy corrections     
 
 
+# 2025-04-10 FM : TLReconstruct is not used in this example but could be in place of the CATTrackerClusterizer below
 [name="TKClusterizer" type="TKReconstruct"]
 
   verbosity : string = "debug"
