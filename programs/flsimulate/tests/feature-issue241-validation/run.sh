@@ -33,11 +33,11 @@ fi
 echo >&2 "[debug] PATH = '${PATH}'"
 
 label="run-feature-issue241-validation"
-with_visu=1
+with_visu=0
 work_dir=""
 cfg_dir=""
-step1=0
-step2=0
+step1=1
+step2=1
 step3=1
 
 function parse_cl_opts()
