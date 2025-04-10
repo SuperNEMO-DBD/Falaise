@@ -123,6 +123,26 @@
   #@config Parameters for the Charged Particle Tracking module
   Geo_label : string  = "geometry"
   drivers : string[4] = "VED" "CCD" "CAD" "AFD"
+  
+    # Additional (optional) parameters for the VED driver (Vertex Extrapolation Driver):
+    # VED.logging.priority : string = "debug"
+    # VED.finder.step         : real as length = 2.0 cm  # default value
+    # VED.intercept.tolerance : real as length = 1.0 mm  # default value
+    # VED.max_calo_extrapolation.xy_length   : real as length = 15.0 cm  # default value
+    # VED.max_source_extrapolation.xy_length : real as length = 20.0 cm  # default value
+    # VED.max_source_extrapolation.z_length  : real as length = 30.0 cm  # default value
+    # VED.calo_extrapolation.horizontal_tolerance : real as length = 25.0 mm  # default value
+    # VED.calo_extrapolation.vertical_tolerance : real as length   = 30.0 mm  # default value
+    # VED.calibration_source_extrapolation.extend_horizontal : real as length = 10.0 mm  # default value
+    # VED.calibration_source_extrapolation.extend_vertical   : real as length = 20.0 mm  # default value
+    # VED.line_extrapolation : boolean = true # default value
+    # VED.helix_extrapolation : boolean = true # default value
+    # VED.source_extrapolation.cone_angle : real as angle = 5.0 degree # default value
+    # VED.source_extrapolation.cone_nrays : integer = 6 # default value
+    # VED.source_extrapolation.cone_nlayers : integer = 1 # default value
+
+
+    # Additional (optional) parameters for the AFD driver (Alpha particle Finder Driver):
     AFD.minimal_delayed_time : real as time = 13 us
 
 
