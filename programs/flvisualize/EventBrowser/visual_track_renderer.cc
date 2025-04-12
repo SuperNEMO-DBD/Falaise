@@ -35,6 +35,7 @@
 
 #include <mctools/utils.h>
 
+#include <TDatime.h>
 #include <TLatex.h>
 #include <TObjArray.h>
 #include <TPolyLine3D.h>
@@ -211,23 +212,20 @@ namespace snemo {
 	const io::event_record & event = _server->get_event();
 	const auto &eh_data = event.get<snemo::datamodel::event_header>(io::EH_LABEL);
 
-	const datatools::event_id & eh_id = eh_data.get_id();
-	const int run_id = eh_id.get_run_number();
-	const int event_id = eh_id.get_event_number();
-	// const snemo::time::time_point & event_date_time = eh_data.get_mc_timestamp();
-	const snemo::time::time_point event_date_time (snemo::time::date(2024, 3, 23), snemo::time::hours(2)+snemo::time::minutes(13)+ snemo::time::seconds(42)+snemo::time::microseconds(370045));
-	const std::string event_date_time_str = snemo::time::to_string(event_date_time);
-
-
 	double x = 0.01;
 	double y = 1.005;
 	const double dy = 0.02;
 
-	// 80 courrier
-	// 90 courrier it
-	// 100 courier bold
-	// 110 courier bold+it
-	const int text_font = 100;
+	const int text_font = 100; // courier bold
+
+	// add data/mc legend with run and event number
+	// "SNEMO DATA/MC: RUN xxxx EVENT xxxx"
+
+	const char *gen_id = eh_data.is_real() ? "DATA" : "MC";
+
+	const datatools::event_id & eh_id = eh_data.get_id();
+	const int run_id   = eh_id.get_run_number();
+	const int event_id = eh_id.get_event_number();
 
 	{
 	  auto *legend = new TLatex;
@@ -237,10 +235,23 @@ namespace snemo {
 	  legend->SetTextSize(0.02);
 	  legend->SetTextFont(text_font);
 	  legend->SetTextColor(kWhite);
-	  legend->SetText(x, y -= dy, Form("SNEMO DATA: RUN %d EVENT %d", run_id, event_id));
+	  legend->SetText(x, y -= dy, Form("SNEMO %s: RUN %d EVENT %d", gen_id, run_id, event_id));
 	}
 
-	{
+	// add event timestamp legend (if available):
+	// "YYYY-MM-DD HH:MM:SS.mmuunn"
+
+	if (eh_data.has_timestamp()) {
+
+	  const snemo::datamodel::timestamp & eh_timestamp = eh_data.get_timestamp();
+	  const TDatime root_datime (eh_timestamp.get_seconds());
+
+	  const snemo::time::time_point event_date_time (snemo::time::date(root_datime.GetYear(), root_datime.GetMonth(), root_datime.GetDay()),
+							 snemo::time::hours(root_datime.GetHour()) +
+							 snemo::time::minutes(root_datime.GetMinute()) +
+							 snemo::time::seconds(root_datime.GetSecond()) +
+							 snemo::time::microseconds(eh_timestamp.get_picoseconds()/1000000));
+
 	  auto *legend = new TLatex;
 	  _objects->Add(legend);
 	  legend->SetNDC();
@@ -248,8 +259,9 @@ namespace snemo {
 	  legend->SetTextSize(0.02);
 	  legend->SetTextFont(text_font);
 	  legend->SetTextColor(kWhite);
-	  legend->SetText(x, y -= dy, event_date_time_str.c_str());
+	  legend->SetText(x, y -= dy, snemo::time::to_string(event_date_time).c_str());
 	}
+
 
       }
 
