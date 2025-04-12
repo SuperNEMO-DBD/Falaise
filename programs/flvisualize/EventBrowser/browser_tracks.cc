@@ -263,7 +263,9 @@ void browser_tracks::_update_event_header() {
     if (options_manager::get_instance().get_option_flag(DUMP_INTO_TOOLTIP)) {
       // Here we use the event_server dump method since it
       // gives much more info on the event record
-      eh.tree_dump(tip_text);
+      boost::property_tree::ptree tree_opt;
+      tree_opt.put("list_properties", true);
+      eh.print_tree(tip_text, tree_opt);
       //_server_->dump_event(tip_text);
     }
   }
