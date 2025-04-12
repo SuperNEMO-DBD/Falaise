@@ -141,7 +141,7 @@ falaise::exit_code do_flvisualize(int argc_, char *argv_[]) {
 
     // Open a root application
     DT_THROW_IF(gROOT->IsBatch(), std::logic_error, "Can not be run in 'batch' mode");
-#if ROOT_VERSION_CODE >= ROOT_VERSION(6,34,6)
+#if ROOT_VERSION_CODE >= ROOT_VERSION(6,13,2)
     gROOT->SetWebDisplay("off");
 #endif
     int narg = 1;
