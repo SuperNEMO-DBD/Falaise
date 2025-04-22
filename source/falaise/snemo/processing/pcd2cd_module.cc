@@ -348,10 +348,12 @@ namespace snemo {
 	}
       }
 
-      const int64_t event_time_second = (int64_t) _event_time_;
-      const int64_t event_time_picosecond = (int64_t) ((_event_time_ - event_time_second)*1E12);
-      snemo::datamodel::timestamp event_timestamp (event_time_second, event_time_picosecond);
-      _eh_data_->set_timestamp(event_timestamp);
+      // update event time here according to new reference time [once run_sync_time available in metadata]
+      // const double absolute_event_time = _run_sync_time_ + _event_time_;
+      // const int64_t absolute_event_time_second = (int64_t) absolute_event_time;
+      // const int64_t absolute_event_time_picosecond = (int64_t) ((absolute_event_time - absolute_event_time_second)*1E12);
+      // snemo::datamodel::timestamp absolute_event_timestamp (absolute_event_time_second, absolute_event_time_picosecond);
+      // _eh_data_->set_timestamp(absolute_event_timestamp);
 
       // Check if some 'cd_data' are available in the data model:
       auto & cd_data = snedm::getOrAddToEvent<snemo::datamodel::calibrated_data>(_cd_output_tag_, event);

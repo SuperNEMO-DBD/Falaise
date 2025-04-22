@@ -513,7 +513,7 @@ namespace snemo {
         // Get (x, y) position of triggered cell
         const double x = cell_world_pos.x();
         const double y = cell_world_pos.y();
-	const double z = 1.515 * CLHEP::m;
+	const double z = 1.675 * CLHEP::m;
 	const double r = 22.0 * CLHEP::mm;
 
         // Get hit auxiliaries
@@ -586,7 +586,7 @@ namespace snemo {
         // Get (x, y) position of triggered cell
         const double x = cell_world_pos.x();
         const double y = cell_world_pos.y();
-	const double z = 1.515 * CLHEP::m;
+	const double z = 1.675 * CLHEP::m;
 	const double r = 22.0 * CLHEP::mm;
 
         // Get hit auxiliaries
@@ -659,7 +659,7 @@ namespace snemo {
 
 	    if (invalid_z)
 	      // draw the top case in this special call
-	      updated_z = +1.515 * CLHEP::m;
+	      updated_z = +1.675 * CLHEP::m;
 	    else {
 	      // call the same function with the invalid_z option
 	      // to draw the circle/square at the top!
@@ -667,18 +667,18 @@ namespace snemo {
 
 	      // then resume the current function call
 	      // to draw the circle/square at the bottom
-	      updated_z = -1.515 * CLHEP::m;
+	      updated_z = -1.675 * CLHEP::m;
 	    }
 	  }
 
 	  // move the circle/square to the top
 	  else if (hit_.is_top_cathode_missing())
-	    updated_z = +1.515 * CLHEP::m;
+	    updated_z = +1.675 * CLHEP::m;
 
 	  // move the circle/square to the bottom
 	  // if the top cathode is missing
 	  else if (hit_.is_bottom_cathode_missing())
-	    updated_z = -1.515 * CLHEP::m;
+	    updated_z = -1.675 * CLHEP::m;
 	}
 
         geomtools::vector_3d cell_module_pos(hit_.get_x(), hit_.get_y(), updated_z);
