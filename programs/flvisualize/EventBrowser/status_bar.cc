@@ -83,7 +83,7 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
   main_frame->AddFrame(new TGLabel(main_frame, "Event Number :"),
                        new TGLayoutHints(kLHintsTop | kLHintsLeft, 10, 10, 2, 2));
   _goto_event_ = new TGNumberEntryField(main_frame, GOTO_EVENT, 0, TGNumberFormat::kNESInteger,
-                                        TGNumberFormat::kNEAPositive);
+                                        TGNumberFormat::kNEANonNegative);
   _goto_event_->Resize(int(0.1 * width), 20);
   _goto_event_->Associate(main_);
   _goto_event_->Connect("ReturnPressed()", "snemo::visualization::view::status_bar", this,
@@ -94,7 +94,7 @@ void status_bar::_at_init_(TGCompositeFrame* main_) {
   main_frame->AddFrame(new TGLabel(main_frame, " / "),
                        new TGLayoutHints(kLHintsTop | kLHintsLeft, 10, 10, 2, 2));
   _total_event_ = new TGNumberEntryField(main_frame, -1, 0, TGNumberFormat::kNESInteger,
-                                        TGNumberFormat::kNEAPositive);
+                                        TGNumberFormat::kNEANonNegative);
   _total_event_->Resize(int(0.1 * width), 20);
   _total_event_->Associate(main_);
 	_total_event_->SetEnabled(false);
