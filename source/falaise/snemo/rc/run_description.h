@@ -28,6 +28,7 @@
 
 // This project:
 #include <falaise/snemo/time/time_utils.h>
+#include <falaise/snemo/rc/run_status.h>
 
 namespace snemo {
 
@@ -35,21 +36,25 @@ namespace snemo {
 
     enum class run_category : std::uint16_t
       {
-       INDETERMINATE,
-       TEST,
-       COMMISSIONING,
-       PRODUCTION,
-       CALIBRATION_1,
-       CALIBRATION_2,
-       CALIBRATION_3,
-       CALIBRATION_4
+       INDETERMINATE = 0,
+       TEST          = 1,
+       COMMISSIONING = 2,
+       PRODUCTION    = 3,
+       CALIBRATION_1 = 4,
+       CALIBRATION_2 = 5,
+       CALIBRATION_3 = 6,
+       CALIBRATION_4 = 7
       };
 
     std::ostream & operator<<(std::ostream & out_, run_category run_cat_);
 
-    run_category from_string(const std::string & label_);
+		std::string to_string(const run_category run_cat_);
 
-    typedef int32_t run_id_type;
+    run_category run_category_from_string(const std::string & label_);
+
+    run_category run_category_from_uint(const std::uint32_t & value_);
+
+    typedef std::int32_t run_id_type;
     
     /// \brief Run description
     class run_description
@@ -72,6 +77,8 @@ namespace snemo {
       
       std::int32_t run_id() const;
 
+			run_category category() const;
+
 			// Create a run decription object with a single time slice and no breaks
       static run_description make_unique_slice(const run_id_type run_id_,
 																							 const run_category run_cat_,
@@ -87,20 +94,11 @@ namespace snemo {
 																							const std::vector<time::time_period> & breaks_,
 																							const std::optional<std::vector<time::time_duration>> & run_deadtimes_ = std::nullopt);
  
-      inline const time::time_period & period() const
-      {
-        return _period_;
-      }
+      const time::time_period & period() const;
  
-      inline time::time_point begin() const
-      {
-        return _period_.begin();
-      }
+      time::time_point begin() const;
 
-      inline time::time_point end() const
-      {
-        return _period_.end();
-      }
+      time::time_point end() const;
   
       time::time_duration duration() const;
  
@@ -119,6 +117,8 @@ namespace snemo {
 			
       bool has_slices() const;
 
+			bool is_unique_slice() const;
+			
       const std::vector<time::time_period> & slices() const;
  
       const std::vector<time::time_duration> & deadtimes() const;
@@ -137,6 +137,10 @@ namespace snemo {
 			
       time::time_duration effective_duration() const;
 
+			void set_status(const rc::run_status_type s_);
+			
+			rc::run_status_type status() const;
+			
 			void lock();
 			
 			bool is_locked() const;
@@ -145,16 +149,17 @@ namespace snemo {
 
       void _sync_();
 
-			bool _locked_ = false;
-      run_id_type _run_id_ = INVALID_RUN_ID;
-      run_category _category_ = run_category::INDETERMINATE;
-      time::time_period _period_{time::time_point(time::not_a_date_time),
-                                 time::time_point(time::not_a_date_time)};
+			bool _locked_ = false; ///< Lock flag
+      run_id_type _run_id_ = INVALID_RUN_ID; ///< Run number
+      run_category _category_ = run_category::INDETERMINATE; ///< Run category
+			/// Run span period
+      time::time_period _period_{time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time)}; 
       std::vector<time::time_period> _breaks_; ///< Array of breaks (paused/resume data acquisition time intervals)
       std::vector<time::time_period> _slices_; ///< Array of active data acquisition time slices
       std::vector<time::time_duration> _deadtimes_; ///< Array of estimated deadtimes associated to active time slices
-      std::uint32_t _number_of_events_ = 0;
-
+      std::uint32_t _number_of_events_ = 0; ///< Number of events within the run
+			rc::run_status_type _status_ = rc::run_status::good; ///< Status bits
+			
     };
     
   } // end of namespace rc

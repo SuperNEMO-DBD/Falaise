@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <cstdint>
 
 // - Bayeux:
 #include <bayeux/datatools/base_service.h>
@@ -30,6 +31,7 @@ namespace snemo {
       {
         MODE_DB = 0,
         MODE_FILES = 1,
+        MODE_CSV_FILES = 2,
         MODE_DEFAULT = MODE_FILES
       };
 
@@ -55,8 +57,11 @@ namespace snemo {
    
     const rc::run_description & get_run_info(const rc::run_id_type run_id_) const;
  
-    /// Load run_list
+    /// Load run list
     void load_run_list(const std::string & infile_);
+ 
+    /// Load run_list
+    void load_run_csv_list(const std::string & infile_);
 
     //! Smart print
     void print_tree(std::ostream & out_ = std::clog,
@@ -72,12 +77,17 @@ namespace snemo {
 
     void _terminate_mode_files_();
 
+    void _init_mode_csv_files_(const datatools::properties &);
+
+    void _terminate_mode_csv_files_();
+
     // Attributes:
     bool _initialized_ = false;
     mode_type _mode_ = MODE_DEFAULT;
     std::string _db_label_;
     const snemo::db_service * _db_service_ = nullptr;
-    rc::run_list _runs_;   
+    rc::run_list _runs_;
+    
     DATATOOLS_SERVICE_REGISTRATION_INTERFACE(run_info_service)
       
   };

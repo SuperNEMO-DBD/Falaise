@@ -48,7 +48,8 @@ namespace snemo {
                                                 datatools::service_dict_type & services_)
   {
     DT_THROW_IF(is_initialized(), std::logic_error, "Service is already initialized!");
-
+    this->datatools::base_service::common_initialize(config_);
+    
     if (config_.has_key("geometry_label")) {
       _geometry_label_ = config_.fetch_string("geometry_label");     
     }

@@ -21,6 +21,7 @@
 #include <falaise/snemo/geometry/xcalo_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 
+void test0();
 void test1();
 void test2();
 
@@ -29,6 +30,7 @@ int main(/* int argc_, char ** argv_ */) {
   int error_code = EXIT_SUCCESS;
   try {
     
+    test0();
     test1();
     test2();
 
@@ -126,6 +128,22 @@ void test1()
     std::cout << '\n';
   }
   
+  return;
+}
+
+void test0()
+{
+ 
+  std::cout << "\nOM map:\n";
+  for (const auto & gid : snemo::datamodel::om_map()) {
+    std::cout << gid.first << ' ' << gid.second;
+    if (not snemo::datamodel::is_reference_om(gid.second)) {
+      auto checkGid = snemo::datamodel::om_gid(gid.first, false, false);
+      std::cout << ' ' << checkGid;
+    }
+    std::cout << '\n';
+  }
+ 
   return;
 }
 

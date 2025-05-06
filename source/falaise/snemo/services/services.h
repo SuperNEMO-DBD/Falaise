@@ -18,38 +18,38 @@
 
 namespace snemo {
 
-/// \brief Service infomation
-class service_info
-{
+  /// \brief Service infomation
+  class service_info
+  {
   
- public:
+  public:
   
-  /// Return the default string label/name for the 'global metadata' service
-  static const std::string& metadataServiceName();
+    /// Return the default string label/name for the 'global metadata' service
+    static const std::string& metadataServiceName();
 
-  /// Return the default string label/name for the 'geometry' service
-  static const std::string& geometryServiceName();
+    /// Return the default string label/name for the 'geometry' service
+    static const std::string& geometryServiceName();
 
-  /// Return the default string label/name for the 'context' service
-  static const std::string& contextServiceName();
+    /// Return the default string label/name for the 'context' service
+    static const std::string& contextServiceName();
 
-  /// Return the default string label/name for the 'run_info' service
-  static const std::string& runInfoServiceName();
+    /// Return the default string label/name for the 'run_info' service
+    static const std::string& runInfoServiceName();
 
-  /// Return the default string label/name for the 'cuts' service
-  static const std::string& cutServiceName();
+    /// Return the default string label/name for the 'cuts' service
+    static const std::string& cutServiceName();
 
-  /// Return the default string label/name for the 'db' service
-  static const std::string& dbServiceName();
+    /// Return the default string label/name for the 'db' service
+    static const std::string& dbServiceName();
 
-  /// Return the default string label/name for the 'tracker cell status' service
-  static const std::string& trackerCellStatusServiceName();
+    /// Return the default string label/name for the 'tracker cell status' service
+    static const std::string& trackerCellStatusServiceName();
 
-  /// Return the default string label/name for the 'calorimeter OM status' service
-  static const std::string& calorimeterOmStatusServiceName();
+    /// Return the default string label/name for the 'calorimeter OM status' service
+    static const std::string& calorimeterOmStatusServiceName();
 
-};
+  };
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_SERVICES_H
+#endif // FALAISE_SNEMO_SERVICES_H

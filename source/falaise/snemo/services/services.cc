@@ -6,42 +6,50 @@
 
 namespace snemo {
 
-  const std::string& service_info::metadataServiceName() {
+  const std::string & service_info::metadataServiceName()
+  {
     static std::string lbl("metadata");
     return lbl;
   }
 
-  const std::string& service_info::contextServiceName() {
+  const std::string & service_info::contextServiceName()
+  {
     static std::string lbl("context");
     return lbl;
   }
 
-  const std::string& service_info::runInfoServiceName() {
+  const std::string & service_info::runInfoServiceName()
+  {
     static std::string lbl("runInfo");
     return lbl;
   }
 
-  const std::string& service_info::geometryServiceName() {
+  const std::string & service_info::geometryServiceName()
+  {
     static std::string lbl("geometry");
     return lbl;
   }
 
-  const std::string& service_info::cutServiceName() {
+  const std::string & service_info::cutServiceName()
+  {
     static std::string lbl("cuts");
     return lbl;
   }
 
-  const std::string& service_info::dbServiceName() {
+  const std::string & service_info::dbServiceName()
+  {
     static std::string lbl("db");
     return lbl;
   }
 
-  const std::string& service_info::trackerCellStatusServiceName() {
+  const std::string & service_info::trackerCellStatusServiceName()
+  {
     static std::string lbl("trackerCellStatus");
     return lbl;
   }
 
-  const std::string& service_info::calorimeterOmStatusServiceName() {
+  const std::string & service_info::calorimeterOmStatusServiceName()
+  {
     static std::string lbl("calorimeterOmStatus");
     return lbl;
   }

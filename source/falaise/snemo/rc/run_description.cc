@@ -15,8 +15,8 @@
 namespace snemo {
 
   namespace rc {
-
-    run_category from_string(const std::string & label_)
+   
+    run_category run_category_from_string(const std::string & label_)
     {
       if (label_ == "test") return run_category::TEST;
       if (label_ == "commissioning") return run_category::COMMISSIONING;
@@ -25,6 +25,19 @@ namespace snemo {
       if (label_ == "calibration2") return run_category::CALIBRATION_2;
       if (label_ == "calibration3") return run_category::CALIBRATION_3;
       if (label_ == "calibration4") return run_category::CALIBRATION_4;
+      return run_category::INDETERMINATE;
+    }
+
+    run_category run_category_from_uint(const std::uint32_t & value_)
+    {
+      DT_THROW_IF(value_ > 7, std::logic_error, "Invalid run category value");
+      if (value_ == 1) return run_category::TEST;
+      if (value_ == 2) return run_category::COMMISSIONING;
+      if (value_ == 3) return run_category::PRODUCTION;
+      if (value_ == 4) return run_category::CALIBRATION_1;
+      if (value_ == 5) return run_category::CALIBRATION_2;
+      if (value_ == 6) return run_category::CALIBRATION_3;
+      if (value_ == 7) return run_category::CALIBRATION_4;
       return run_category::INDETERMINATE;
     }
 
@@ -59,6 +72,13 @@ namespace snemo {
       return out_;
     }
 
+    std::string to_string(const run_category run_cat_)
+    {
+      std::ostringstream iss;
+      iss << run_cat_;
+      return iss.str();
+    }
+ 
     void run_description::set_run_id(const run_id_type id_)
     {
       // DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
@@ -71,6 +91,11 @@ namespace snemo {
     std::int32_t run_description::run_id() const
     {
       return _run_id_;
+    }
+
+    run_category run_description::category() const
+    {
+      return _category_;
     }
 
     void run_description::lock()
@@ -114,7 +139,7 @@ namespace snemo {
 						      const std::vector<time::time_period> & breaks_,
 						      const std::optional<std::vector<time::time_duration>> & run_deadtimes_)
     {
-     run_description rd;
+      run_description rd;
       rd._run_id_ = run_id_;
       rd._category_ = run_cat_;
       rd._period_ = run_period_;
@@ -149,7 +174,7 @@ namespace snemo {
       _run_id_ = INVALID_RUN_ID;
       _category_ = run_category::INDETERMINATE;
       _period_ = time::time_period{time::time_point(time::not_a_date_time),
-                                   time::time_point(time::not_a_date_time)};
+	time::time_point(time::not_a_date_time)};
       _number_of_events_ = 0;
       _breaks_.clear();
       _slices_.clear();
@@ -203,7 +228,7 @@ namespace snemo {
       
       if (config_.has_key("category")) {
         std::string catLabel = config_.fetch_string("category");
-        run_category rc = from_string(catLabel);
+        run_category rc = run_category_from_string(catLabel);
         DT_THROW_IF(rc == run_category::INDETERMINATE, std::logic_error,
                     "Invalid run category label '" << catLabel << "'!");
         _category_ = rc;
@@ -269,6 +294,16 @@ namespace snemo {
                       "Invalid run slice deadtime duration '" << deadtimeDurationRepr << "'!");
 	  set_deadtime(iDeadtime, deadtimeDuration);
         }
+      } else if (_slices_.size() == 1) {
+	if (config_.has_key("deadtime")) {
+	  // Specify deadtime duration associated to the unique data acquisition time period/slice:
+	  std::string deadtimeRepr = config_.fetch_string("deadtime");
+	  const std::string & deadtimeDurationRepr = deadtimeRepr;
+	  auto deadtimeDuration = time::time_duration_from_string(deadtimeDurationRepr);
+	  DT_THROW_IF(not time::is_valid(deadtimeDuration), std::logic_error,
+		      "Invalid run slice deadtime duration '" << deadtimeDurationRepr << "'!");
+	  set_deadtime(0, deadtimeDuration);
+	}
       }
       
       lock();
@@ -343,6 +378,21 @@ namespace snemo {
       return;
     }
  
+    const time::time_period & run_description::period() const
+    {
+      return _period_;
+    }
+ 
+    time::time_point run_description::begin() const
+    {
+      return _period_.begin();
+    }
+
+    time::time_point run_description::end() const
+    {
+      return _period_.end();
+    }
+ 
     time::time_duration run_description::duration() const
     {
       time::time_duration rd = _period_.length();
@@ -362,6 +412,11 @@ namespace snemo {
       return _number_of_events_;
     }
 
+    bool run_description::is_unique_slice() const
+    {
+      return _slices_.size() == 1;
+    }
+			
     bool run_description::has_slices() const
     {
       // return duration().is_positive() and not duration().is_zero();
@@ -397,7 +452,18 @@ namespace snemo {
     {
       return _breaks_;
     }
-      
+  
+    void run_description::set_status(const rc::run_status_type s_)
+    {
+      DT_THROW_IF(this->is_locked(), std::logic_error, "Run description is locked!");
+      _status_ = s_;
+    }
+			
+    rc::run_status_type run_description::status() const
+    {
+      return _status_;
+    }
+    
     // virtual
     void run_description::print_tree(std::ostream & out_,
                                      const boost::property_tree::ptree & options_) const
@@ -475,6 +541,15 @@ namespace snemo {
            << " (=" << time::to_quantity(effective_duration()) / CLHEP::second << " s)"
            << std::endl;
   
+      out_ << popts.indent << tag
+           << "Status : ";
+      if (rc::run_status::is_good(_status_)) {
+	out_ << "good";
+      } else {
+	out_ << "some issues (" << rc::run_status::to_string(_status_) << ')';
+      }
+      out_ << std::endl;
+  
       out_ << popts.indent << inherit_tag(popts.inherit)
            << "Number of events : "
            << _number_of_events_
@@ -483,6 +558,6 @@ namespace snemo {
       return;
     } 
     
-  }  // end of namespace rc
+  } // end of namespace rc
 
-}  // end of namespace snemo
+} // end of namespace snemo

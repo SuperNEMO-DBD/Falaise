@@ -11,6 +11,8 @@
 // Bayeux:
 #include <bayeux/datatools/clhep_units.h>
 #include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/utils.h>
+#include <bayeux/datatools/logger.h>
 
 namespace snemo {
 
@@ -69,6 +71,42 @@ namespace snemo {
       return td_.total_microseconds() * CLHEP::microsecond;
     }
 
+    time_point epoch()
+    {
+      static time_point _epoch(date(1970, 1, 1),
+			       hours(0)
+			       + minutes(0)
+			       + seconds(0)
+			       + microseconds(0));
+      return _epoch;
+    }
+
+    time_duration elapsed_since_epoch(const time_point & t_)
+    {
+      return t_ - epoch();
+    }
+
+    time_point sn_epoch()
+    {
+      static time_point _sn_epoch(date(2025, 1, 1),
+				  hours(0)
+				  + minutes(0)
+				  + seconds(0)
+				  + microseconds(0));
+      return _sn_epoch;
+    }
+ 
+    double precision_quantity()
+    {
+      static double _qPrec = microseconds(1).total_microseconds() * CLHEP::microsecond;;
+      return _qPrec;
+    }
+
+    time_duration elapsed_since_sn_epoch(const time_point & t_)
+    {
+      return t_ - sn_epoch();
+    }
+    
     std::string to_string(const time_point & t_)
     {
       std::ostringstream sout;
@@ -184,11 +222,16 @@ namespace snemo {
       return tp;
     }
  
-    time_duration from_quantity(double duration_)
+    time_duration from_quantity(const double duration_)
     {
       DT_THROW_IF(duration_ < 0.0, std::range_error, "Invalid negative duration!");
-      int nticks = (int) (duration_ / CLHEP::microsecond);
-      return time::microseconds(nticks);
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> duration = " << duration_ / CLHEP::second);
+      std::uint32_t nsec = (std::uint32_t) (duration_ / CLHEP::second);
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nsec = " << nsec);
+      double subsec = duration_ - nsec * CLHEP::second;
+      std::uint32_t nusec = (std::uint32_t) (subsec / CLHEP::microsecond);
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nusec = " << nusec);
+      return time::seconds(nsec) + time::microseconds(nusec);
     }
 
     bool is_valid(const time_point & t_)
@@ -207,6 +250,31 @@ namespace snemo {
       if (! is_valid(tp_.begin())) return false;
       if (! is_valid(tp_.end())) return false;
       return true;
+    }
+  
+    void invalidate(time_point & t_)
+    {
+      t_ = time_point(not_a_date_time);
+    }
+    
+    void invalidate(time_duration & td_)
+    {
+      td_ = time_duration(not_a_date_time);
+    }
+    
+    void invalidate(time_period & tp_)
+    {
+      tp_ = time_period(time_point(not_a_date_time), time_point(not_a_date_time));
+    }
+    
+    void invalidate(date & d_)
+    {
+      d_ = date(not_a_date_time);
+    }
+   
+    void invalidate(date_period & dp_)
+    {
+      dp_ = date_period(date(not_a_date_time), date(not_a_date_time));
     }
 
     time_point invalid_point()
@@ -232,6 +300,24 @@ namespace snemo {
     date_period invalid_date_period()
     {
       return date_period(invalid_date(), invalid_date());
+    }
+  
+    time_point time_point_from_epoch_sec(const double elapsed_from_epoch_)
+    {
+      double elapsed = elapsed_from_epoch_ / CLHEP::second;
+      long nbElapsedSec = (long) std::floor(elapsed);
+      double fractionSec = elapsed - nbElapsedSec * 1.0;
+      long nbElapsedUsec = (long) (fractionSec / 1e-6);
+      return epoch() + seconds(nbElapsedSec) + microseconds(nbElapsedUsec);
+    }
+
+    time_duration time_duration_from_sec(const double elapsed_)
+    {
+      double elapsed = elapsed_ / CLHEP::second;
+      long nbElapsedSec = (long) std::floor(elapsed);
+      double fractionSec = elapsed - nbElapsedSec * 1.0;
+      long nbElapsedUsec = (long) (fractionSec / 1e-6);
+      return seconds(nbElapsedSec) + microseconds(nbElapsedUsec);  
     }
 
   }  // end of namespace time
