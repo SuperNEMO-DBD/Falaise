@@ -543,7 +543,7 @@ namespace snemo {
 
       if (gg_hits_with_valid_z < 2) {
 	// do not process cluster fit with we do not have at 2 cells with valid Z
-	DT_LOG_WARNING(get_logging_priority(), "skipping cluster without enough valid z cells");
+	DT_LOG_NOTICE(get_logging_priority(), "skipping cluster without enough valid z cells");
 	return;
       }
 
