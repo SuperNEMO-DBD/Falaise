@@ -147,6 +147,9 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
   double z0 = sol_.z0;
 
   for (const auto &_hit : *_hits_) {
+    if (_hit.get_properties().has_flag("invalid_z")) {
+      continue;
+    }
     geomtools::vector_3d pos(_hit.get_x(), _hit.get_y(), _hit.get_z());
     double x = _hit.get_x();
     if (xmin > xmax) {
@@ -175,6 +178,9 @@ void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &so
   g_count++;
 
   for (const auto &_hit : *_hits_) {
+    if (_hit.get_properties().has_flag("invalid_z")) {
+      continue;
+    }
     //bool last = _hit.is_last();
     //bool first = _hit.is_first();
     double xi = _hit.get_x();
@@ -651,16 +657,19 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
   // build_hit_info_map(hits_, gg_hit_infos, 2);
 
   double dist = -1.0;
+  double zmin = std::numeric_limits<double>::max();
+  double zmax = std::numeric_limits<double>::min();
+
   for (auto i = hits_.begin(); i != hits_.end(); ++i) {
     const gg_hit &hit_1 = *i;
-    const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
+    const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), 0); // hit_1.get_z());
 
     // Loop on the other hits :
     auto j_start = i;
     j_start++;
     for (auto j = j_start; j != hits_.end(); ++j) {
       const gg_hit &hit_2 = *j;
-      const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), hit_2.get_z());
+      const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), 0); // hit_2.get_z());
 
       // Compute distance between two hits :
       const double d12 = (pos2 - pos1).mag();
@@ -670,6 +679,15 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
         iter_hit_2 = j;
       }
     }
+
+    if (i->get_properties().has_flag("invalid_z"))
+      continue;
+
+    if (hit_1.get_z() < zmin)
+      zmin = hit_1.get_z();
+
+    if (hit_1.get_z() > zmax)
+      zmax = hit_1.get_z();
   }
 
   gg_hit hit1 = *iter_hit_1;
@@ -678,8 +696,10 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
     std::swap(hit1, hit2);
   }
 
-  const geomtools::vector_3d phit1(hit1.get_x(), hit1.get_y(), hit1.get_z());
-  const geomtools::vector_3d phit2(hit2.get_x(), hit2.get_y(), hit2.get_z());
+  // artifically use zmin and zmax to get reasonnable placement's
+  // translation when Z is mising for one/both cell(s) in xy plane
+  const geomtools::vector_3d phit1(hit1.get_x(), hit1.get_y(), zmin);
+  const geomtools::vector_3d phit2(hit2.get_x(), hit2.get_y(), zmax);
   const double best_phi = (phit2 - phit1).getPhi();
 
   pl_.set_translation(0.5 * (phit1 + phit2));
@@ -702,6 +722,7 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
     hit.set_y(pos_ref.y());
     hit.set_z(pos_ref.z());
     hit.set_phi_ref(best_phi);
+    hit.grab_properties() = i.get_properties();
   }
 }
 
@@ -1109,7 +1130,8 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
   double dmax_p = -1.0;
   const double point_sz = 4.0 * CLHEP::mm;
   for (auto i = hits_ref_.begin(); i != hits_ref_.end(); i++) {
-    const geomtools::vector_3d Oi(i->get_x(), i->get_y(), i->get_z());
+    // NB: no need of Z to compute first/last points of line_3d solution
+    const geomtools::vector_3d Oi(i->get_x(), i->get_y(), 0);
     const geomtools::vector_3d OdOi = Od - Oi;
     if (draw) {
       geomtools::rectangle rect(point_sz, point_sz);
@@ -1136,8 +1158,8 @@ void line_fit_mgr::convert_solution(const gg_hits_col &hits_ref_, const line_fit
   dmax_n = dmax_neg / std::sin(sol_.theta) / std::cos(sol_.phi);
   geomtools::vector_3d first = Od - dmax_n * dir;
   geomtools::vector_3d last = Od + dmax_p * dir;
-  geomtools::vector_3d Ofirst(i_neg->get_x(), i_neg->get_y(), i_neg->get_z());
-  geomtools::vector_3d Olast(i_pos->get_x(), i_pos->get_y(), i_pos->get_z());
+  geomtools::vector_3d Ofirst(i_neg->get_x(), i_neg->get_y(), 0);
+  geomtools::vector_3d Olast(i_pos->get_x(), i_pos->get_y(), 0);
   if (draw) {
     f1 << std::endl;
     f1 << "# dmax_neg=" << dmax_neg << std::endl;
@@ -1244,17 +1266,30 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     return false;
   }
 
-  double dist = -std::numeric_limits<double>::infinity();
-  double start_time = std::numeric_limits<double>::infinity();
+  double start_time = std::numeric_limits<double>::max();
+
+  // most separated cells of cluster in xy plane
+  // (will be used to compute guess values of y0 and phi)
+  double dist = std::numeric_limits<double>::min();
   auto iter_hit_1 = hits_.end();
   auto iter_hit_2 = hits_.end();
 
+  // most separated cells of cluster in xy plane with valid z
+  // (will be used to compute guess values of z0 and theta)
+  double dist_with_z = std::numeric_limits<double>::min();
+  auto iter_hit_1_with_z = hits_.end();
+  auto iter_hit_2_with_z = hits_.end();
+
   for (auto i = hits_.begin(); i != hits_.end(); ++i) {
-    const geomtools::vector_3d pos1(i->get_x(), i->get_y(), i->get_z());
+    if (start_time > i->get_t()) {
+      start_time = i->get_t();
+    }
+
+    const geomtools::vector_3d pos1(i->get_x(), i->get_y(), 0);
     auto j_start = i;
     j_start++;
     for (auto j = j_start; j != hits_.end(); j++) {
-      const geomtools::vector_3d pos2(j->get_x(), j->get_y(), j->get_z());
+      const geomtools::vector_3d pos2(j->get_x(), j->get_y(), 0);
       const double d = (pos2 - pos1).mag();
       if (d > dist) {
         dist = d;
@@ -1262,18 +1297,42 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
         iter_hit_2 = j;
       }
     }
-    if (start_time > i->get_t()) {
-      start_time = i->get_t();
+
+    if (i->get_properties().has_flag("invalid_z"))
+      continue;
+
+    j_start = i;
+    j_start++;
+    for (auto j = j_start; j != hits_.end(); j++) {
+      if (j->get_properties().has_flag("invalid_z"))
+	continue;
+      const geomtools::vector_3d pos2_with_z(j->get_x(), j->get_y(), 0);
+      const double d = (pos2_with_z - pos1).mag();
+      if (d > dist_with_z) {
+        dist_with_z = d;
+        iter_hit_1_with_z = i;
+        iter_hit_2_with_z = j;
+      }
     }
+
   }
+
   gg_hit hit1 = *iter_hit_1;
   gg_hit hit2 = *iter_hit_2;
   if (hit2.get_x() < hit1.get_x()) {
     std::swap(hit1, hit2);
   }
 
+  gg_hit hit1_with_z = *iter_hit_1_with_z;
+  gg_hit hit2_with_z = *iter_hit_2_with_z;
+  if (hit2_with_z.get_x() < hit1_with_z.get_x()) {
+    std::swap(hit1_with_z, hit2_with_z);
+  }
+
   geomtools::vector_3d phit1(hit1.get_x(), hit1.get_y(), hit1.get_z());
   geomtools::vector_3d phit2(hit2.get_x(), hit2.get_y(), hit2.get_z());
+  geomtools::vector_3d phit1_with_z(hit1_with_z.get_x(), hit1_with_z.get_y(), hit1_with_z.get_z());
+  geomtools::vector_3d phit2_with_z(hit2_with_z.get_x(), hit2_with_z.get_y(), hit2_with_z.get_z());
 
   const geomtools::vector_2d dd((phit2 - phit1).x(), (phit2 - phit1).y());
   const geomtools::vector_2d dd2 = dd.unit();
@@ -1316,6 +1375,8 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     }
     phit1 -= shift1;
     phit2 -= shift2;
+    phit1_with_z -= shift1;
+    phit2_with_z -= shift2;
   } else if (guess_mode == GUESS_MODE_BT) {
     if (use_guess_trust) {
       if (computed_guess_trust[0] == fit_utils::TOP_HYPOTHESIS ||
@@ -1326,6 +1387,8 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     }
     phit1 -= shift1;
     phit2 += shift2;
+    phit1_with_z -= shift1;
+    phit2_with_z += shift2;
   } else if (guess_mode == GUESS_MODE_TB) {
     if (use_guess_trust) {
       if (computed_guess_trust[0] == fit_utils::BOTTOM_HYPOTHESIS ||
@@ -1336,6 +1399,8 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     }
     phit1 += shift1;
     phit2 -= shift2;
+    phit1_with_z += shift1;
+    phit2_with_z -= shift2;
   } else if (guess_mode == GUESS_MODE_TT) {
     if (_use_guess_trust_) {
       if (computed_guess_trust[0] == fit_utils::BOTTOM_HYPOTHESIS ||
@@ -1346,6 +1411,8 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
     }
     phit1 += shift1;
     phit2 += shift2;
+    phit1_with_z += shift1;
+    phit2_with_z += shift2;
   } else {
     DT_LOG_ERROR(_logging_priority_, "Invalid guess mode !");
     return false;
@@ -1353,10 +1420,12 @@ bool line_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gues
 
   const geomtools::vector_3d dir0 = (phit2 - phit1).unit();
   const geomtools::vector_3d phit0 = 0.5 * (phit1 + phit2);
+  const geomtools::vector_3d dir0_with_z = (phit2_with_z - phit1_with_z).unit();
+  const geomtools::vector_3d phit0_with_z = 0.5 * (phit1_with_z + phit2_with_z);
   guess_.y0 = phit0.y();
-  guess_.z0 = phit0.z();
+  guess_.z0 = phit0_with_z.z(); // not fully correct..
   guess_.phi = dir0.phi();
-  guess_.theta = dir0.theta();
+  guess_.theta = dir0_with_z.theta();
   guess_.t0 = start_time;
 
   return true;
