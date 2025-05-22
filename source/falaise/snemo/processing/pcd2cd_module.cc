@@ -677,7 +677,7 @@ namespace snemo {
 	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());
 
 	// add CD hit into TCD solution
-	if ((cluster_id != -1) && datatools::is_valid(cd_tracker_hit->get_z())) {
+	if (cluster_id != -1) {
 	  auto & tcd_cluster = tcd_clusters.at(cluster_id);
 	  tcd_cluster->hits().push_back(cd_tracker_hit);
 	} else {
