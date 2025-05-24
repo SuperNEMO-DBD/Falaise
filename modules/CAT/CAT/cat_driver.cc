@@ -309,8 +309,15 @@ int cat_driver::_process_algo(const base_tracker_clusterizer::hit_collection_typ
     // Transverse Geiger drift distance :
     CAT::topology::experimental_double y;
     // Plasma longitudinal origin along the anode wire :
-    y.set_value(snemo_gg_hit.get_z());
-    y.set_error(_sigma_z_factor_ * snemo_gg_hit.get_sigma_z());
+
+    if (datatools::is_valid(snemo_gg_hit.get_z())) {
+      y.set_value(snemo_gg_hit.get_z());
+      y.set_error(_sigma_z_factor_ * snemo_gg_hit.get_sigma_z());
+    } else {
+      // if Z was not reconstructed, give 0 +/- large error
+      y.set_value(0);
+      y.set_error(3*CLHEP::m);
+    }
 
     // Prompt/delayed trait of the hit :
     const bool fast = snemo_gg_hit.is_prompt();
