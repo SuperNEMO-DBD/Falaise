@@ -680,7 +680,7 @@ void line_fit_mgr::compute_best_frame(const gg_hits_col &hits_, gg_hits_col &hit
       }
     }
 
-    if (i->get_properties().has_flag("invalid_z"))
+    if (hit_1.get_properties().has_flag("invalid_z"))
       continue;
 
     if (hit_1.get_z() < zmin)

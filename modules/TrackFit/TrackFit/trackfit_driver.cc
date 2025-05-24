@@ -404,6 +404,30 @@ namespace snemo {
                                                         const helix_guess_dict_type & guesses_,
                                                         std::list<TrackFit::helix_fit_solution> & solutions_)
     {
+      // const bool do_not_fit = true;
+      // if (do_not_fit) {
+      // 	for (const auto& iguess : guesses_) {
+      // 	  // store guess as solution for debugging
+      // 	  TrackFit::helix_fit_solution solution;
+      // 	  // solution.quality;
+      // 	  solution.x0 = iguess.second.x0;
+      // 	  solution.y0 = iguess.second.y0;
+      // 	  solution.z0 = iguess.second.z0;
+      // 	  solution.r = iguess.second.r;
+      // 	  solution.step = iguess.second.step;
+      // 	  solution.has_angles = iguess.second.has_angles;
+      // 	  solution.angle_1 = iguess.second.angle_1;
+      // 	  solution.angle_2 = iguess.second.angle_2;
+      // 	  solution.start_time = 0;;
+      // 	  solution.auxiliaries.store_string("guess", iguess.first);
+      // 	  solution.ok = true;
+      // 	  solution.chi = 0;
+      // 	  solution.ndof = 1;
+      // 	  solutions_.push_back(solution);
+      // 	}
+      // 	return;
+      // }
+
       for (const auto & iguess : guesses_) {
         TrackFit::helix_fit_mgr hfm;
         hfm.set_logging_priority(get_logging_priority());
