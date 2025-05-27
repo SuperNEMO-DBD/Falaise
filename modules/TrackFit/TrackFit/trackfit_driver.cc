@@ -876,8 +876,7 @@ namespace snemo {
       for (unsigned int iTraj = 0; iTraj < candidateTrajectories.size(); iTraj++) {
         if (toBeRemovedTraj.count(iTraj)) continue;
         auto & thisTraj = candidateTrajectories[iTraj];
-        unsigned int thisTrajId = h_trajectory_solution_->grab_best_trajectories().size();
-        thisTraj->set_id(thisTrajId);
+        thisTraj->set_id(h_trajectory_solution_->get_trajectories().size());
         DT_LOG_DEBUG(get_logging_priority(), "Insert a fitted trajectory for cluster : " << h_cluster_->get_cluster_id());
         h_trajectory_solution_->grab_trajectories().push_back(thisTraj);
         // if (thisTraj->get_fit_infos().is_best()) {
