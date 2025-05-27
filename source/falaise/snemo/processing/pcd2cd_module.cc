@@ -680,15 +680,16 @@ namespace snemo {
 	if (cluster_id != -1) {
 	  auto & tcd_cluster = tcd_clusters.at(cluster_id);
 	  tcd_cluster->hits().push_back(cd_tracker_hit);
+	  if (cd_tracker_hit->is_delayed())
+	    tcd_cluster->make_delayed();
 	} else {
 	  tcd_unclustered_hits.push_back(cd_tracker_hit);
 	}
 
 	// Append it to the collection:
 	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
-
-	// cluster
       }
+
     }
 
   }  // end of namespace processing
