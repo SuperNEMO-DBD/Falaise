@@ -105,6 +105,14 @@ namespace snemo {
       /// Main process calo function
       void process_calo_impl();
 
+      /// Calibrate tracker radius
+      void calibrate_tracker_radius(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
+				    snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_);
+
+      /// Calibrate tracker height
+      void calibrate_tracker_height(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
+				    snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_);
+
       /// Calibrate tracker hit
       bool calibrate_tracker_hit(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
 				 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_);
