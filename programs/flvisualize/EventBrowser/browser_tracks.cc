@@ -1179,9 +1179,11 @@ void browser_tracks::_update_tracker_clustering_data() {
     label_solution << "Solution #" << a_solution.get_solution_id() << " - "
                    << a_solution.get_unclustered_hits().size() << " unclustered hit"
                    << (a_solution.get_unclustered_hits().size() > 1 ? "s" : "");
+    bool is_default = false;
     if (tcd.has_default()) {
       if (&a_solution == &(tcd.get_default())) {
         label_solution << " - default";
+        is_default = true;
       }
     }
 
@@ -1202,6 +1204,11 @@ void browser_tracks::_update_tracker_clustering_data() {
 
     if (a_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
       item_solution->CheckItem(a_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+    } else if (is_default) {
+      a_auxiliaries.update(browser_tracks::CHECKED_FLAG, true);
+    } else {
+      a_auxiliaries.update(browser_tracks::CHECKED_FLAG, false);
+      item_solution->Toggle();
     }
 
     // Update properties dictionnary:
@@ -1243,7 +1250,13 @@ void browser_tracks::_update_tracker_clustering_data() {
 
       if (aa_auxiliaries.has_key(browser_tracks::CHECKED_FLAG)) {
         item_cluster->CheckItem(aa_auxiliaries.has_flag(browser_tracks::CHECKED_FLAG));
+      } else if (is_default) {
+        aa_auxiliaries.update(browser_tracks::CHECKED_FLAG, true);
+      } else {
+        item_cluster->Toggle();
+        aa_auxiliaries.update(browser_tracks::CHECKED_FLAG, false);
       }
+
 
       // Update base hit dictionnary:
       _base_hit_dictionnary_[icheck_id] = &(a_cluster);
@@ -1288,6 +1301,7 @@ void browser_tracks::_update_tracker_clustering_data() {
       }
     }  // end of cluster loop
   }    // end of solution loop
+  _browser_->track_select();
 }
 
 void browser_tracks::_update_tracker_trajectory_data() {
@@ -1352,16 +1366,17 @@ void browser_tracks::_update_tracker_trajectory_data() {
                    << (a_solution.get_trajectories().size() > 1 ? "ies" : "y") << ", "
                    << a_solution.get_unfitted_clusters().size() << " unfitted cluster"
                    << (a_solution.get_unfitted_clusters().size() > 1 ? "s" : "");
+    bool is_default = false;
     if (ttd.has_default_solution()) {
       if (&a_solution == &(ttd.get_default_solution())) {
         label_solution << " - default";
+        is_default = true;
       }
     }
 
     TGListTreeItemStdPlus *item_solution =
         new TGListTreeItemStdPlus(label_solution.str().c_str(), this, _get_colored_icon_("ofolder"),
-                                  _get_colored_icon_("folder"),
-                                  /*check=*/true);
+                                  _get_colored_icon_("folder"), true);
     _tracks_list_box_->AddItem(item_tracker_trajectory, item_solution);
     // TGListTreeItem * item_solution
     //   = _tracks_list_box_->AddItem(item_tracker_trajectory,
@@ -1418,7 +1433,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
       // Add subitem:
       std::ostringstream label_trajectory;
       //                label_trajectory.setf(ios::fixed, ios::floatfield);
-      bool is_default = false;
+      // bool is_default = false;
       bool is_best = false;
       //      datatools::properties & properties = a_trajectory.grab_auxiliaries();
       if (a_trajectory.get_fit_infos().has_chi2() and
@@ -1458,8 +1473,7 @@ void browser_tracks::_update_tracker_trajectory_data() {
         if (item_helix_solution == nullptr) {
           item_helix_solution =
               new TGListTreeItemStdPlus("Helix trajectories", this, _get_colored_icon_("ofolder"),
-                                        _get_colored_icon_("folder"),
-                                        /*check=*/true);
+                                        _get_colored_icon_("folder"), true);
           _tracks_list_box_->AddItem(item_solution, item_helix_solution);
           // _tracks_list_box_->OpenItem(item_helix_solution);
           item_helix_solution->SetUserData((void *)(intptr_t)++icheck_id);
@@ -1476,10 +1490,9 @@ void browser_tracks::_update_tracker_trajectory_data() {
                  snemo::datamodel::line_trajectory_pattern::pattern_id()) {
         // First time instantiate it
         if (item_line_solution == nullptr) {
-          const bool checked = true;
           item_line_solution =
               new TGListTreeItemStdPlus("Line trajectories", this, _get_colored_icon_("ofolder"),
-                                        _get_colored_icon_("folder"), checked);
+                                        _get_colored_icon_("folder"), true);
           _tracks_list_box_->AddItem(item_solution, item_line_solution);
           // _tracks_list_box_->OpenItem(item_line_solution);
           item_line_solution->SetUserData((void *)(intptr_t)++icheck_id);
@@ -1517,14 +1530,12 @@ void browser_tracks::_update_tracker_trajectory_data() {
       if (item_trajectory == nullptr) {
         continue;
       }
-
       item_trajectory->SetCheckBox(true);
-      if (is_default or is_best) {
-        a_trajectory.grab_auxiliaries().update(CHECKED_FLAG, true);
-        _tracks_list_box_->CheckItem(item_trajectory, true);
+      if (is_default && is_best) {
+        a_trajectory.grab_auxiliaries().update(browser_tracks::CHECKED_FLAG, true);
       } else {
-        a_trajectory.grab_auxiliaries().update(CHECKED_FLAG, false);
-        _tracks_list_box_->CheckItem(item_trajectory, false);
+        item_trajectory->Toggle();
+        a_trajectory.grab_auxiliaries().update(browser_tracks::CHECKED_FLAG, false);
       }
       item_trajectory->SetUserData((void *)(intptr_t) - (++icheck_id));
       _base_hit_dictionnary_[-icheck_id] = &(a_trajectory);
@@ -1540,7 +1551,25 @@ void browser_tracks::_update_tracker_trajectory_data() {
         item_trajectory->SetTipText(message.str().c_str());
       }
     }  // end of trajectory loop
+
+    // must done done there (after having added all item_trajectories
+
+    if (is_default) {
+      a_auxiliaries.update(browser_tracks::CHECKED_FLAG, true);
+    } else {
+      a_auxiliaries.update(browser_tracks::CHECKED_FLAG, false);
+      if (item_helix_solution != nullptr)
+        item_helix_solution->Toggle();
+      if (item_line_solution != nullptr)
+        item_line_solution->Toggle();
+      if (item_polyline_solution != nullptr)
+        item_polyline_solution->Toggle();
+      item_solution->Toggle();
+    }
+
   } // end of solution loop
+
+	_browser_->track_select();
 }
 
 void browser_tracks::_update_particle_track_data() {
