@@ -404,6 +404,30 @@ namespace snemo {
                                                         const helix_guess_dict_type & guesses_,
                                                         std::list<TrackFit::helix_fit_solution> & solutions_)
     {
+      // const bool do_not_fit = true;
+      // if (do_not_fit) {
+      // 	for (const auto& iguess : guesses_) {
+      // 	  // store guess as solution for debugging
+      // 	  TrackFit::helix_fit_solution solution;
+      // 	  // solution.quality;
+      // 	  solution.x0 = iguess.second.x0;
+      // 	  solution.y0 = iguess.second.y0;
+      // 	  solution.z0 = iguess.second.z0;
+      // 	  solution.r = iguess.second.r;
+      // 	  solution.step = iguess.second.step;
+      // 	  solution.has_angles = iguess.second.has_angles;
+      // 	  solution.angle_1 = iguess.second.angle_1;
+      // 	  solution.angle_2 = iguess.second.angle_2;
+      // 	  solution.start_time = 0;;
+      // 	  solution.auxiliaries.store_string("guess", iguess.first);
+      // 	  solution.ok = true;
+      // 	  solution.chi = 0;
+      // 	  solution.ndof = 1;
+      // 	  solutions_.push_back(solution);
+      // 	}
+      // 	return;
+      // }
+
       for (const auto & iguess : guesses_) {
         TrackFit::helix_fit_mgr hfm;
         hfm.set_logging_priority(get_logging_priority());
@@ -433,6 +457,25 @@ namespace snemo {
                                                        const line_guess_dict_type & guesses_,
                                                        std::list<TrackFit::line_fit_solution> & solutions_)
     {
+      // const bool do_not_fit = true;
+      // if (do_not_fit) {
+      // 	for (const auto& iguess : guesses_) {
+      // 	  // store guess as solution for debugging
+      // 	  TrackFit::line_fit_solution solution;
+      // 	  solution.y0 = iguess.second.y0;
+      // 	  solution.z0 = iguess.second.z0;
+      // 	  solution.phi = iguess.second.phi;
+      // 	  solution.theta = iguess.second.theta;
+      // 	  solution.t0 = 0;
+      // 	  solution.auxiliaries.store_string("guess", iguess.first);
+      // 	  solution.ok = true;
+      // 	  solution.chi = 0;
+      // 	  solution.ndof = 1;
+      // 	  solutions_.push_back(solution);
+      // 	}
+      // 	return;
+      // }
+
       for (const auto& iguess : guesses_) {
         TrackFit::line_fit_mgr lfm;
         lfm.set_logging_priority(get_logging_priority());
@@ -469,13 +512,25 @@ namespace snemo {
       // Home made Geiger hit model for 'trackfit':
       DT_LOG_DEBUG(get_logging_priority(), "Build a list of TrackFit geiger hits...");
       TrackFit::gg_hits_col gg_hits;
+      int gg_hits_with_valid_z = 0;
       for (const datatools::handle<snemo::datamodel::calibrated_tracker_hit> & a_gg_hit : hits) {
         TrackFit::gg_hit hit;
 
         hit.set_x(a_gg_hit->get_x());
         hit.set_y(a_gg_hit->get_y());
-        hit.set_z(a_gg_hit->get_z());
-        hit.set_sigma_z(a_gg_hit->get_sigma_z());
+        if (datatools::is_valid(a_gg_hit->get_z())) {
+	  hit.set_z(a_gg_hit->get_z());
+	  hit.set_sigma_z(a_gg_hit->get_sigma_z());
+	  gg_hits_with_valid_z++;
+        } else {
+	  // if Z was not reconstructed, give 0 +/- large error
+	  // to trackfit in order to not constraint the Z fit
+	  // (while still use the radius information for the fit)
+	  hit.set_z(0);
+	  hit.set_sigma_z(3*CLHEP::m);
+	  // keep invalid z hit flag (z is now valid because equal to 0 !)
+	  hit.grab_properties().store_flag("invalid_z");
+        }
         hit.set_r(a_gg_hit->get_r());
         double rSigma = a_gg_hit->get_sigma_r();
         hit.set_sigma_r(rSigma);
@@ -509,6 +564,13 @@ namespace snemo {
         // Add the hit to the fitter's collection
         gg_hits.push_back(hit);
       } // for (
+
+      if (gg_hits_with_valid_z < 2) {
+	// do not process cluster fit with we do not have at 2 cells with valid Z
+	DT_LOG_NOTICE(get_logging_priority(), "skipping cluster without enough valid z cells");
+	return;
+      }
+
       DT_LOG_DEBUG(get_logging_priority(), "Number of TrackFit geiger hits : " << gg_hits.size());
  
       snemo::datamodel::TrackerTrajectoryHdlCollection candidateTrajectories;
@@ -814,8 +876,7 @@ namespace snemo {
       for (unsigned int iTraj = 0; iTraj < candidateTrajectories.size(); iTraj++) {
         if (toBeRemovedTraj.count(iTraj)) continue;
         auto & thisTraj = candidateTrajectories[iTraj];
-        unsigned int thisTrajId = h_trajectory_solution_->grab_best_trajectories().size();
-        thisTraj->set_id(thisTrajId);
+        thisTraj->set_id(h_trajectory_solution_->get_trajectories().size());
         DT_LOG_DEBUG(get_logging_priority(), "Insert a fitted trajectory for cluster : " << h_cluster_->get_cluster_id());
         h_trajectory_solution_->grab_trajectories().push_back(thisTraj);
         // if (thisTraj->get_fit_infos().is_best()) {

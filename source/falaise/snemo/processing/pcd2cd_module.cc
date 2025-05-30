@@ -255,7 +255,6 @@ namespace snemo {
       return nb_entries;
     }
 
-    // Processing :
     dpp::base_module::process_status pcd2cd_module::process(datatools::things& event) {
 
       DT_THROW_IF(!is_initialized(), std::logic_error,
@@ -398,7 +397,6 @@ namespace snemo {
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
-    // Calibrate calorimeter hit
     bool pcd2cd_module::calibrate_calo_hit(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_,
 					   snemo::datamodel::calibrated_calorimeter_hit & cd_calo_hit_) {
 
@@ -480,49 +478,18 @@ namespace snemo {
       }
     }
 
-    // Calibrate tracker hit
-    bool pcd2cd_module::calibrate_tracker_hit(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
-					   snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
+    void pcd2cd_module::calibrate_tracker_radius(const snemo::datamodel::precalibrated_tracker_hit & ,
+						 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
 
-      DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
-
-      cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
-      // cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
-
-      const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
-
-      // Retrieve pCD and CD auxiliaries
-      const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit_.get_auxiliaries();
-      datatools::properties & cd_tracker_hit_properties = cd_tracker_hit_.grab_auxiliaries();
-
-      double reference_time = 0;
-
-      if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id")) {
-	int cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
-	reference_time = _cluster_reference_time_[cluster_id];
-      }
-
-      double anode_time = pcd_tracker_hit_.get_anodic_time();
-
-      if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE)
-	anode_time -= _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
-
-      // cd_tracker_hit_.set_delayed_time();
-      // cd_tracker_hit.set_noisy(true);
-
-      // if no (calorimeter) reference time are found, consider the cell
-      // as "delayed", in order to trigger free T0 track fitting ...
-      if (reference_time == 0)
-	cd_tracker_hit_.set_delayed_time(anode_time - _event_time_);
-
-      else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_FALAISE) {
+      if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_FALAISE) {
 
 	cd_tracker_hit_.set_r(1.1*CLHEP::cm);
 	cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
 
+
       } else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_MANU) {
 
-	const double time_usec = (anode_time - reference_time) / CLHEP::microsecond;
+	const double time_usec = cd_tracker_hit_.get_anode_time() / CLHEP::microsecond;
 
 	double radius = 0;
 
@@ -564,35 +531,48 @@ namespace snemo {
       // 	// [...]
       // }
 
+    }
 
-      bool has_both_cathode = true;
+    void pcd2cd_module::calibrate_tracker_height(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
+						 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
 
-      if (!pcd_tracker_hit_.has_bottom_cathode_drift_time()) {
+      const bool has_bottom_cathode = pcd_tracker_hit_.has_bottom_cathode_drift_time();
+      const bool has_top_cathode = pcd_tracker_hit_.has_top_cathode_drift_time();
+      const bool has_both_cathode = (has_bottom_cathode && has_top_cathode);
+
+      double bottom_cathode_drift_time = pcd_tracker_hit_.get_bottom_cathode_drift_time();
+      double top_cathode_drift_time = pcd_tracker_hit_.get_top_cathode_drift_time();
+
+      if (has_bottom_cathode) {
+	// apply time calibration
+	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
+	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+	  bottom_cathode_drift_time -= _pcd_tracker_bottom_cathode_t0_constants_[tracker_gg_num][0];
+	  bottom_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	}
+	// store calibrated time
+	cd_tracker_hit_.grab_auxiliaries().update("bottom_drift_time", bottom_cathode_drift_time);
+      } else {
 	cd_tracker_hit_.set_bottom_cathode_missing(true);
-	has_both_cathode = false;
       }
 
-      if (!pcd_tracker_hit_.has_top_cathode_drift_time()) {
+      if (has_top_cathode) {
+	// apply time calibration
+	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
+	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+	  top_cathode_drift_time -= _pcd_tracker_top_cathode_t0_constants_[tracker_gg_num][0];
+	  top_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	}
+	// store calibrated time
+	cd_tracker_hit_.grab_auxiliaries().update("top_drift_time", top_cathode_drift_time);
+      } else {
 	cd_tracker_hit_.set_top_cathode_missing(true);
-	has_both_cathode = false;
       }
+
 
       if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_LINEAR_R5R6) {
 
 	if (has_both_cathode) {
-
-	  double bottom_cathode_drift_time = pcd_tracker_hit_.get_bottom_cathode_drift_time();
-	  if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
-	    bottom_cathode_drift_time -= _pcd_tracker_bottom_cathode_t0_constants_[tracker_gg_num][0];
-	    bottom_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
-	  }
-
-	  double top_cathode_drift_time = pcd_tracker_hit_.get_top_cathode_drift_time();
-	  if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
-	    top_cathode_drift_time -= _pcd_tracker_top_cathode_t0_constants_[tracker_gg_num][0];
-	    top_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
-	  }
-
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
 	  const double z_abs = z_norm * 1.42*CLHEP::m;
@@ -600,15 +580,52 @@ namespace snemo {
 	  cd_tracker_hit_.set_sigma_z(1.0 * CLHEP::cm);
 	}
 
-	// else {
-	//   cd_tracker_hit_.set_z(0);
-	//   cd_tracker_hit_.set_sigma_z(1.433*CLHEP::m);
-	// }
-
       }
+
       // } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_XXX) {
       // 	// [...]
       // }
+    }
+
+    bool pcd2cd_module::calibrate_tracker_hit(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
+					   snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
+
+      DT_LOG_TRACE(get_logging_priority(), "Calibrating tracker hit from " << snemo::datamodel::gg_label(pcd_tracker_hit_.get_geom_id()));
+
+      cd_tracker_hit_.set_geom_id(pcd_tracker_hit_.get_geom_id());
+      // cd_tracker_hit_.grab_geom_id().set_type(cd_tracker_hit_.get_geom_id().get_type()+1);
+
+      const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+
+      // Retrieve pCD and CD auxiliaries
+      const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit_.get_auxiliaries();
+      datatools::properties & cd_tracker_hit_properties = cd_tracker_hit_.grab_auxiliaries();
+
+      double reference_time = 0;
+
+      if (pcd_tracker_hit_properties.has_key("pCD.clustering.cluster_id")) {
+	int cluster_id = pcd_tracker_hit_properties.fetch_integer("pCD.clustering.cluster_id");
+	reference_time = _cluster_reference_time_[cluster_id];
+      }
+
+      double anode_time = pcd_tracker_hit_.get_anodic_time();
+
+      // apply time calibration
+      if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE)
+	anode_time -= _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+
+      if (reference_time > 0) {
+	// store calibrated anode time and calibrate radius
+	cd_tracker_hit_.set_anode_time(anode_time - reference_time);
+	this->calibrate_tracker_radius(pcd_tracker_hit_, cd_tracker_hit_);
+      } else {
+	// if no (calorimeter) reference time are found, consider the cell
+	// as "delayed", in order to trigger free T0 track fitting ...
+	cd_tracker_hit_.set_delayed_time(anode_time - _event_time_);
+      }
+
+      // calibrate height
+      this->calibrate_tracker_height(pcd_tracker_hit_, cd_tracker_hit_);
 
       // extract and fill cell xy coordinates
       const geomtools::mapping & mapping = geoManager->get_mapping();
@@ -677,18 +694,19 @@ namespace snemo {
 	calibrate_tracker_hit(pcd_tracker_hit.get(), cd_tracker_hit.grab());
 
 	// add CD hit into TCD solution
-	if ((cluster_id != -1) && datatools::is_valid(cd_tracker_hit->get_z())) {
+	if (cluster_id != -1) {
 	  auto & tcd_cluster = tcd_clusters.at(cluster_id);
 	  tcd_cluster->hits().push_back(cd_tracker_hit);
+	  if (cd_tracker_hit->is_delayed())
+	    tcd_cluster->make_delayed();
 	} else {
 	  tcd_unclustered_hits.push_back(cd_tracker_hit);
 	}
 
 	// Append it to the collection:
 	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
-
-	// cluster
       }
+
     }
 
   }  // end of namespace processing
