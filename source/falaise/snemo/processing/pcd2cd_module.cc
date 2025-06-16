@@ -20,7 +20,9 @@
 // - Bayeux/mctools:
 #include <mctools/utils.h>
 
-// This project :
+// This project:
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/geomid_utils.h>
 #include <falaise/snemo/services/services.h>
@@ -174,7 +176,7 @@ namespace snemo {
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_NONE;
 
       } else {
-	DT_LOG_NOTICE(get_logging_priority(), "No tracker time calibration method provided");
+	DT_LOG_NOTICE(get_logging_priority(), "no tracker time calibration method provided");
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_NONE;
       }
 
@@ -195,7 +197,7 @@ namespace snemo {
 	_pcd2cd_tracker_radius_method_ = TRACKER_RADIUS_NONE;
 
       } else {
-	DT_LOG_ERROR(get_logging_priority(), "No calorimeter time calibration method provided");
+	DT_LOG_ERROR(get_logging_priority(), "no tracker radius calibration method provided");
 	_pcd2cd_tracker_radius_method_ = TRACKER_RADIUS_NONE;
       }
 
@@ -212,9 +214,13 @@ namespace snemo {
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NONE;
 
       } else {
-	DT_LOG_ERROR(get_logging_priority(), "No calorimeter time calibration method provided");
+	DT_LOG_ERROR(get_logging_priority(), "no tracker height calibration method provided");
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NONE;
       }
+
+      _pcd2cd_tracker_height_effective_ = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
+      _pcd2cd_tracker_height_offset_ = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
+      _pcd2cd_tracker_height_error_ = fps.get<falaise::length_t>("tracker_height_error", {1.0, "cm"})();
 
       this->base_module::_set_initialized(true);
     }
@@ -575,9 +581,9 @@ namespace snemo {
 	if (has_both_cathode) {
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * 1.42*CLHEP::m;
+	  const double z_abs = z_norm * _pcd2cd_tracker_height_effective_ + _pcd2cd_tracker_height_offset_;
 	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(1.0 * CLHEP::cm);
+	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
 	}
 
       }

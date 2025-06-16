@@ -160,6 +160,10 @@ namespace snemo {
       tracker_radius_calibration_method _pcd2cd_tracker_radius_method_;
       tracker_height_calibration_method _pcd2cd_tracker_height_method_;
 
+      double _pcd2cd_tracker_height_effective_;
+      double _pcd2cd_tracker_height_offset_;
+      double _pcd2cd_tracker_height_error_;
+
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)
 
