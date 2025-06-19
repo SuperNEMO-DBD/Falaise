@@ -76,7 +76,8 @@ namespace snemo {
 
       enum tracker_height_calibration_method {
 	TRACKER_HEIGHT_NONE        = 0,
-	TRACKER_HEIGHT_LINEAR_R5R6 = 1
+	TRACKER_HEIGHT_LINEAR_R5R6 = 1,
+	TRACKER_HEIGHT_NON_LINEAR_R5R6 = 2
       };
 
     public:
@@ -162,6 +163,7 @@ namespace snemo {
 
       double _pcd2cd_tracker_height_effective_;
       double _pcd2cd_tracker_height_offset_;
+      double _pcd2cd_tracker_height_deceleration_;
       double _pcd2cd_tracker_height_error_;
 
       // Macro to automate the registration of the module :

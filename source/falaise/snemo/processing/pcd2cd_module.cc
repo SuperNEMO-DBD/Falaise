@@ -209,6 +209,10 @@ namespace snemo {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_LINEAR_R5R6;
 
+      } else if (tracker_height_method_label == "non_linear_r5r6") {
+	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
+	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NON_LINEAR_R5R6;
+
       } else if (!tracker_height_method_label.empty()) {
 	DT_LOG_ERROR(get_logging_priority(), "wrong tracker height calibration method '" << tracker_height_method_label << "'");
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NONE;
@@ -220,6 +224,7 @@ namespace snemo {
 
       _pcd2cd_tracker_height_effective_ = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
       _pcd2cd_tracker_height_offset_ = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
+      _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker_height_deceleration", 0);
       _pcd2cd_tracker_height_error_ = fps.get<falaise::length_t>("tracker_height_error", {1.0, "cm"})();
 
       this->base_module::_set_initialized(true);
@@ -578,11 +583,31 @@ namespace snemo {
 
       if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_LINEAR_R5R6) {
 
+	const double H = _pcd2cd_tracker_height_effective_;
+	const double H0 = _pcd2cd_tracker_height_offset_;
+
 	if (has_both_cathode) {
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * _pcd2cd_tracker_height_effective_ + _pcd2cd_tracker_height_offset_;
+	  const double z_abs = z_norm * H  + H0;
 	  cd_tracker_hit_.set_z(z_abs);
+	  // todo: error model
+	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
+	}
+
+      } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_NON_LINEAR_R5R6) {
+
+	const double H = _pcd2cd_tracker_height_effective_;
+	const double H0 = _pcd2cd_tracker_height_offset_;
+	const double K = _pcd2cd_tracker_height_deceleration_;
+
+	if (has_both_cathode) {
+	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
+	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
+	  const double z_norm_non_linear = z_norm - K * H * z_norm * (1 - std::abs(z_norm));
+	  const double z_abs = z_norm_non_linear * H  + H0;
+	  cd_tracker_hit_.set_z(z_abs);
+	  // todo: error model
 	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
 	}
 
@@ -591,6 +616,7 @@ namespace snemo {
       // } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_XXX) {
       // 	// [...]
       // }
+
     }
 
     bool pcd2cd_module::calibrate_tracker_hit(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
