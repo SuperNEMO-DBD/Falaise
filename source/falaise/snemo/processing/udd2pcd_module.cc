@@ -258,17 +258,24 @@ namespace snemo {
       if (overshoot_flag)
 	pcd_calo_hit_properties.store_flag("waveform.overshoot");
 
-      else if (rebound_flag)
+      else if (rebound_flag) {
 	pcd_calo_hit_properties.store_flag("waveform.rebound");
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with REBOUND waveform");
+      }
 
       else if (pileup_flag) {
 	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
 	pileup_flag = false;
 
-	DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
-		       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
-		       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
-		       << ") with PILEUP waveform");
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
       }
 
       if (undershoot_flag)
@@ -277,10 +284,10 @@ namespace snemo {
       else if (pileup_flag) {
 	pcd_calo_hit_properties.store_flag("waveform.pileup");
 
-	DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
-		       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
-		       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
-		       << ") with PILEUP waveform");
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
       }
 
       // if (overshoot_flag)
