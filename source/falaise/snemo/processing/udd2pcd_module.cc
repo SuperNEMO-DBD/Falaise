@@ -164,6 +164,132 @@ namespace snemo {
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
+
+    void udd2pcd_module::calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+						       snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) {
+
+      // overshoot/undershoot = waveform saturation at 4095/0
+      bool overshoot_flag  = false;
+      bool undershoot_flag = false;
+
+      // rebound = sample getting above (baseline+4096)/2
+      const double pcd_calo_baseline = pcd_calo_hit_.get_baseline() / _calo_adc2volt_;
+
+      const int16_t rebound_threshold = std::round(0.5 * (2048 + pcd_calo_baseline + 4096));
+      bool rebound_flag    = false;
+
+      // pileup
+      const int32_t pileup_derivative_threshold = -500;
+      bool pileup_flag = false;
+
+      // variable for pileup detection
+      bool derivative_rising = false;
+      bool derivative_crossed_zero = false;
+      // int32_t derivative_min_sample = 0;
+      // int32_t derivative_zero_sample = 0;
+      // int32_t derivative_min = 0;
+      // int32_t derivative_max = 0;
+      int32_t derivative_peak_count = 0;
+
+      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+
+      int32_t derivative_waveform[1024];
+      memset(derivative_waveform, 0, sizeof(derivative_waveform));
+
+      for (int16_t sample=0; sample<1024; sample++) {
+
+	const int16_t & waveform_sample = udd_calo_waveform[sample];
+
+	if (waveform_sample == 4095) {
+	  overshoot_flag = true;
+	  rebound_flag = true;
+
+	} else if (waveform_sample > rebound_threshold) {
+	  rebound_flag = true;
+
+	} else if (waveform_sample == 0) {
+	  undershoot_flag = true;
+
+	}
+
+        // compute the average derivative between samples [sample-16;sample-1] and [sample;sample+15]
+	// to covering a full 16 samples block and cancel the known SAMLONG cyclic noise
+
+	if ((sample < 16) || (sample >= (1024-16)))
+	  continue; // skip sample [0, 15] and [1008,1023]
+
+	for (int sub_sample=1; sub_sample<=16; sub_sample++)
+	  derivative_waveform[sample] += udd_calo_waveform[sample+sub_sample-1] - udd_calo_waveform[sample-sub_sample];
+
+	// we are looking for peaks on the waveform, which translate into peak on the derivative
+	// - front edge the negative pulse => negative peak on derivative
+	// - maximum of the peak of pulse  => derivative crossing 0
+	// - falling edge of the pulse     => positive peak on the derivative
+
+	if (derivative_waveform[sample] > derivative_waveform[sample-1]) {
+
+	  if (!derivative_rising && (derivative_waveform[sample-1] < pileup_derivative_threshold)) {
+	    // beginning of a bipolar peak candidate ...
+	    derivative_rising = true;
+	    // derivative_min_sample = sample-1;
+	    // derivative_min = derivative_waveform[sample-1];
+	    derivative_crossed_zero = false;
+	  }
+
+	  if ((derivative_waveform[sample-1] < 0) && (derivative_waveform[sample] >= 0))
+	    derivative_crossed_zero = true;
+
+	} else { // derivative is falling or flat (end of bipolar candidate)
+
+	  if (derivative_rising && derivative_crossed_zero)
+	    derivative_peak_count++;
+
+	  derivative_rising = false;
+
+	}
+
+      } // for (sample)
+
+      if (derivative_peak_count > 1)
+	pileup_flag = true;
+
+      datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.grab_auxiliaries();
+
+      if (overshoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.overshoot");
+
+      else if (rebound_flag)
+	pcd_calo_hit_properties.store_flag("waveform.rebound");
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+	pileup_flag = false;
+
+	DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+		       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+		       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+		       << ") with PILEUP waveform");
+      }
+
+      if (undershoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.undershoot");
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
+	DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+		       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+		       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+		       << ") with PILEUP waveform");
+      }
+
+      // if (overshoot_flag)
+      //   DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+      // 		 << snemo::datamodel::om_label(new_pcd_calo->get_geom_id())
+      // 		 << " with OVERSHOOT waveform");
+
+    }
+
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
@@ -256,6 +382,9 @@ namespace snemo {
 
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
@@ -446,8 +575,12 @@ namespace snemo {
         const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
 
+
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
