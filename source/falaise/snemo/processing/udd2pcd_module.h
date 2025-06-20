@@ -116,6 +116,7 @@ namespace snemo {
       int    _calo_baseline_nsamples_;
       int    _calo_charge_integration_nsamples_;
       int    _calo_charge_integration_nsamples_before_peak_;
+      int    _calo_charge_integration_samples_max_;
       double _calo_time_cfd_ratio_;
       bool   _calo_discard_empty_waveform_;
 

@@ -58,6 +58,7 @@ namespace snemo {
       _calo_baseline_nsamples_ = fps.get<int>("calo_baseline_nsamples", 16);
       _calo_charge_integration_nsamples_ = fps.get<int>("calo_charge_integration_nsamples", 992);
       _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
+      _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
       _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
       _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
 
@@ -366,6 +367,11 @@ namespace snemo {
         if (charge_sample_start < 0) charge_sample_start = 0;
         int16_t charge_sample_stop = charge_sample_start + _calo_charge_integration_nsamples_;
         if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
+	if (charge_sample_stop > _calo_charge_integration_nsamples_before_peak_) {
+	  charge_sample_stop = _calo_charge_integration_samples_max_;
+	  // make the charge integration window multiple of 16
+	  charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
+	}
 
         double swmeas_charge_sum = 0;
         for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
