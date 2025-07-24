@@ -97,6 +97,7 @@ namespace snemo {
     private:
 
       /// Parse calibration constants from a database file
+      int parse_calibration_constants (std::string path_, std::vector<double> & constants_);
       int parse_calibration_constants (std::string path_, std::vector<std::vector<double>> & constants_);
 
       /// Calibrate calorimeter hit
@@ -149,6 +150,7 @@ namespace snemo {
 
       calorimeter_energy_calibration_method _pcd2cd_calo_energy_method_;
       std::vector<std::vector<double>> _pcd_calo_energy_constants_;
+      std::vector<double> _pcd_calo_energy_thresholds_;
 
       calorimeter_time_calibration_method   _pcd2cd_calo_time_method_;
       std::vector<std::vector<double>> _pcd_calo_t0_constants_;

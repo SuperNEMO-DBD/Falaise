@@ -100,6 +100,19 @@ namespace snemo {
 	_pcd2cd_calo_energy_method_ = CALO_ENERGY_NONE;
       }
 
+      // Configure calorimeter energy threshold
+      {
+	_pcd_calo_energy_thresholds_.reserve(712);
+	for (int om=0; om<712; om++)
+	  _pcd_calo_energy_thresholds_.push_back(0);
+
+	// Fill calo energy thresholds
+	std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
+	datatools::fetch_path_with_env(energy_threshold_table_path);
+	int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd_calo_energy_thresholds_);
+	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
+      }
+
       // Configure calorimeter time calibration method
 
       std::string calo_time_method_label = fps.get<std::string>("calo_time_method", "");
@@ -232,6 +245,31 @@ namespace snemo {
 
     void pcd2cd_module::reset() { this->base_module::_set_initialized(false); }
 
+    int pcd2cd_module::parse_calibration_constants(std::string database_path_, std::vector<double> & constants_) {
+
+      std::ifstream database_file (database_path_.c_str());
+
+      int nb_entries = 0;
+
+      std::string a_line;
+
+      while (std::getline(database_file, a_line)) {
+
+	// Skip comment-like line (starting with '#')
+	if (a_line[0] == '#')
+	  continue;
+
+	std::stringstream a_stream (a_line);
+
+	int an_om_num;
+	a_stream >> an_om_num;
+	a_stream >> constants_[an_om_num];
+
+	nb_entries++;
+      }
+
+      return nb_entries;
+    }
 
     int pcd2cd_module::parse_calibration_constants(std::string database_path_, std::vector<std::vector<double>> & constants_) {
 
@@ -440,6 +478,10 @@ namespace snemo {
 	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
 	// cd_calo_hit_.set_sigma_time(0);
       }
+
+      // Apply energy threshold
+      if (cd_calo_hit_.get_energy() <= _pcd_calo_energy_thresholds_[calo_om_num])
+	return false;
 
       // Retrieve pCD and CD auxiliaries
       const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.get_auxiliaries();
