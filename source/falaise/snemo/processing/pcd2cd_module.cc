@@ -107,10 +107,13 @@ namespace snemo {
 	  _pcd2cd_calo_energy_thresholds_.push_back(0);
 
 	// Fill calo energy thresholds
-	std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
-	datatools::fetch_path_with_env(energy_threshold_table_path);
-	int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
-	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
+	if (fps.has_key("calo_energy_threshold.database")) {
+	  std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
+	  datatools::fetch_path_with_env(energy_threshold_table_path);
+	  int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
+	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
+	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
+	}
       }
 
       // Configure calorimeter time calibration method
