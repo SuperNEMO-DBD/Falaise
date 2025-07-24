@@ -66,14 +66,14 @@ namespace snemo {
 	_pcd2cd_calo_energy_method_ = CALO_ENERGY_POL0_TABLE;
 
 	// Initialise calo pol0 energy constants
-	_pcd_calo_energy_constants_.reserve(712);
+	_pcd2cd_calo_energy_constants_.reserve(712);
 	for (int om=0; om<712; om++)
-	  _pcd_calo_energy_constants_.push_back({0});
+	  _pcd2cd_calo_energy_constants_.push_back({0});
 
 	// Fill calo pol0 energy constants
 	std::string pol0_table_path = fps.get<std::string>("calo_energy_method.database");
 	datatools::fetch_path_with_env(pol0_table_path);
-	int nb_entries = this->parse_calibration_constants(pol0_table_path, _pcd_calo_energy_constants_);
+	int nb_entries = this->parse_calibration_constants(pol0_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol0_table_path << "'");
 
       } else if (calo_energy_method_label == "pol1_table") {
@@ -81,14 +81,14 @@ namespace snemo {
 	_pcd2cd_calo_energy_method_ = CALO_ENERGY_POL1_TABLE;
 
 	// Initialise calo pol1 energy constants
-	_pcd_calo_energy_constants_.reserve(712);
+	_pcd2cd_calo_energy_constants_.reserve(712);
 	for (int om=0; om<712; om++)
-	  _pcd_calo_energy_constants_.push_back({0,0});
+	  _pcd2cd_calo_energy_constants_.push_back({0,0});
 
 	// Fill calo pol1 energy constants
 	std::string pol1_table_path = fps.get<std::string>("calo_energy_method.database");
 	datatools::fetch_path_with_env(pol1_table_path);
-	int nb_entries = this->parse_calibration_constants(pol1_table_path, _pcd_calo_energy_constants_);
+	int nb_entries = this->parse_calibration_constants(pol1_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol1_table_path << "'");
 
       } else if (!calo_energy_method_label.empty()) {
@@ -102,14 +102,14 @@ namespace snemo {
 
       // Configure calorimeter energy threshold
       {
-	_pcd_calo_energy_thresholds_.reserve(712);
+	_pcd2cd_calo_energy_thresholds_.reserve(712);
 	for (int om=0; om<712; om++)
-	  _pcd_calo_energy_thresholds_.push_back(0);
+	  _pcd2cd_calo_energy_thresholds_.push_back(0);
 
 	// Fill calo energy thresholds
 	std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
 	datatools::fetch_path_with_env(energy_threshold_table_path);
-	int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd_calo_energy_thresholds_);
+	int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
       }
 
@@ -122,14 +122,14 @@ namespace snemo {
 	_pcd2cd_calo_time_method_ = CALO_TIME_T0_TABLE;
 
 	// Initialise calo t0 constants
-	_pcd_calo_t0_constants_.reserve(712);
+	_pcd2cd_calo_t0_constants_.reserve(712);
 	for (int om=0; om<712; om++)
-	  _pcd_calo_t0_constants_.push_back({0});
+	  _pcd2cd_calo_t0_constants_.push_back({0});
 
 	// Fill calo t0 constants
 	std::string t0_table_path = fps.get<std::string>("calo_time_method.database");
 	datatools::fetch_path_with_env(t0_table_path);
-	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd_calo_t0_constants_);
+	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_calo_t0_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 
       } else if (!calo_time_method_label.empty()) {
@@ -151,20 +151,20 @@ namespace snemo {
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_T0_TABLE;
 
 	// Initialise tracker t0 constants
-	_pcd_tracker_anode_t0_constants_.reserve(2034);
-	_pcd_tracker_bottom_cathode_t0_constants_.reserve(2034);
-	_pcd_tracker_top_cathode_t0_constants_.reserve(2034);
+	_pcd2cd_tracker_anode_t0_constants_.reserve(2034);
+	_pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
+	_pcd2cd_tracker_top_cathode_t0_constants_.reserve(2034);
 	for (int gg=0; gg<2034; gg++) {
-	  _pcd_tracker_anode_t0_constants_.push_back({0});
-	  _pcd_tracker_bottom_cathode_t0_constants_.push_back({0});
-	  _pcd_tracker_top_cathode_t0_constants_.push_back({0});
+	  _pcd2cd_tracker_anode_t0_constants_.push_back({0});
+	  _pcd2cd_tracker_bottom_cathode_t0_constants_.push_back({0});
+	  _pcd2cd_tracker_top_cathode_t0_constants_.push_back({0});
 	}
 
 	// Fill tracker anode t0 constants
 	if (fps.has_key("tracker_time_method.anode.database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.anode.database");
 	  datatools::fetch_path_with_env(t0_table_path);
-	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd_tracker_anode_t0_constants_);
+	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_anode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
@@ -172,7 +172,7 @@ namespace snemo {
 	if (fps.has_key("tracker_time_method.bottom_cathode.database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.bottom_cathode.database");
 	  datatools::fetch_path_with_env(t0_table_path);
-	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd_tracker_bottom_cathode_t0_constants_);
+	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
@@ -180,7 +180,7 @@ namespace snemo {
 	if (fps.has_key("tracker_time_method.top_cathode.database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.top_cathode.database");
 	  datatools::fetch_path_with_env(t0_table_path);
-	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd_tracker_bottom_cathode_t0_constants_);
+	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
@@ -457,13 +457,13 @@ namespace snemo {
       const int calo_om_num = snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id());
 
       if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL0_TABLE) {
-	const double & pcd_calo_constant0 = _pcd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
+	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
 	cd_calo_hit_.set_energy(-pcd_calo_charge * pcd_calo_constant0);
 
       } else if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL1_TABLE) {
-	const double & pcd_calo_constant0 = _pcd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
-	const double & pcd_calo_constant1 = _pcd_calo_energy_constants_[calo_om_num][1] * CLHEP::MeV;
+	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
+	const double & pcd_calo_constant1 = _pcd2cd_calo_energy_constants_[calo_om_num][1] * CLHEP::MeV;
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
 	cd_calo_hit_.set_energy(-pcd_calo_charge * pcd_calo_constant0 + pcd_calo_constant1);
 
@@ -474,13 +474,13 @@ namespace snemo {
 
       if (_pcd2cd_calo_time_method_ == CALO_TIME_T0_TABLE) {
 	const double & pcd_calo_time = pcd_calo_hit_.get_time();
-	const double & calo_t0 = _pcd_calo_t0_constants_[calo_om_num][0] * CLHEP::ns;
+	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num][0] * CLHEP::ns;
 	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
 	// cd_calo_hit_.set_sigma_time(0);
       }
 
       // Apply energy threshold
-      if (cd_calo_hit_.get_energy() <= _pcd_calo_energy_thresholds_[calo_om_num])
+      if (cd_calo_hit_.get_energy() <= _pcd2cd_calo_energy_thresholds_[calo_om_num])
 	return false;
 
       // Retrieve pCD and CD auxiliaries
@@ -600,8 +600,8 @@ namespace snemo {
 	// apply time calibration
 	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
 	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
-	  bottom_cathode_drift_time -= _pcd_tracker_bottom_cathode_t0_constants_[tracker_gg_num][0];
-	  bottom_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	  bottom_cathode_drift_time -= _pcd2cd_tracker_bottom_cathode_t0_constants_[tracker_gg_num][0];
+	  bottom_cathode_drift_time += _pcd2cd_tracker_anode_t0_constants_[tracker_gg_num][0];
 	}
 	// store calibrated time
 	cd_tracker_hit_.grab_auxiliaries().update("bottom_drift_time", bottom_cathode_drift_time);
@@ -613,8 +613,8 @@ namespace snemo {
 	// apply time calibration
 	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
 	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
-	  top_cathode_drift_time -= _pcd_tracker_top_cathode_t0_constants_[tracker_gg_num][0];
-	  top_cathode_drift_time += _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	  top_cathode_drift_time -= _pcd2cd_tracker_top_cathode_t0_constants_[tracker_gg_num][0];
+	  top_cathode_drift_time += _pcd2cd_tracker_anode_t0_constants_[tracker_gg_num][0];
 	}
 	// store calibrated time
 	cd_tracker_hit_.grab_auxiliaries().update("top_drift_time", top_cathode_drift_time);
@@ -686,7 +686,7 @@ namespace snemo {
 
       // apply time calibration
       if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE)
-	anode_time -= _pcd_tracker_anode_t0_constants_[tracker_gg_num][0];
+	anode_time -= _pcd2cd_tracker_anode_t0_constants_[tracker_gg_num][0];
 
       if (reference_time > 0) {
 	// store calibrated anode time and calibrate radius
