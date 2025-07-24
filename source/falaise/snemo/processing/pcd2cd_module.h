@@ -153,12 +153,12 @@ namespace snemo {
       std::vector<double> _pcd2cd_calo_energy_thresholds_;
 
       calorimeter_time_calibration_method   _pcd2cd_calo_time_method_;
-      std::vector<std::vector<double>> _pcd2cd_calo_t0_constants_;
+      std::vector<double> _pcd2cd_calo_t0_constants_;
 
       tracker_time_calibration_method _pcd2cd_tracker_time_method_;
-      std::vector<std::vector<double>> _pcd2cd_tracker_anode_t0_constants_;
-      std::vector<std::vector<double>> _pcd2cd_tracker_bottom_cathode_t0_constants_;
-      std::vector<std::vector<double>> _pcd2cd_tracker_top_cathode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_anode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_bottom_cathode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_top_cathode_t0_constants_;
 
       tracker_radius_calibration_method _pcd2cd_tracker_radius_method_;
       tracker_height_calibration_method _pcd2cd_tracker_height_method_;
