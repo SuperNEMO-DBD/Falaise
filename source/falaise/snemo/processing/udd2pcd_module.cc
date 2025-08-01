@@ -589,7 +589,8 @@ namespace snemo {
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
 
 	// waveform flagging
-	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
