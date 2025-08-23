@@ -17,7 +17,7 @@ cd ${origPwd}
 
 geometryResourcesSubdir="snemo/demonstrator/geometry"
 
-falaiseBuildDir="${falaiseResourcesDir}/../Falaise.build/BuildProducts"
+falaiseBuildDir="${falaiseResourcesDir}/../build.falaise/BuildProducts"
 if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
     echo >&2 "[info] Loading frc's special development stuff..."
     falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
