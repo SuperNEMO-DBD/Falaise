@@ -102,11 +102,16 @@ namespace snemo {
 
       // Configure calorimeter energy threshold
       {
-	_pcd2cd_calo_energy_thresholds_.reserve(712);
-	for (int om=0; om<712; om++)
-	  _pcd2cd_calo_energy_thresholds_.push_back(0);
+	double default_threshold = 0;
 
-	// Fill calo energy thresholds
+	if (fps.has_key("calo_energy_threshold.default"))
+	  default_threshold = fps.get<double>("calo_energy_threshold.default") * CLHEP::MeV;
+
+	_pcd2cd_calo_energy_thresholds_.reserve(712);
+
+	for (int om=0; om<712; om++)
+	  _pcd2cd_calo_energy_thresholds_.push_back(default_threshold);
+
 	if (fps.has_key("calo_energy_threshold.database")) {
 	  std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
 	  datatools::fetch_path_with_env(energy_threshold_table_path);
