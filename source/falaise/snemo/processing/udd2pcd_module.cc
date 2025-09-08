@@ -392,7 +392,8 @@ namespace snemo {
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
 
 	// waveform flagging
-	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
@@ -402,8 +403,8 @@ namespace snemo {
         // new_pcd_calo->print_tree(std::clog);
       }
 
-      std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
-		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
+      // std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     // Precalibrate calorimeter hits from UDD informations:
@@ -599,8 +600,8 @@ namespace snemo {
           new_pcd_calo->tree_dump(std::clog);
       }
 
-      std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
-		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
+      // std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     void udd2pcd_module::process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -719,8 +720,8 @@ namespace snemo {
         // new_pcd_tracker->print_tree(std::clog);
       }
 
-      std::sort(pcd_tracker_hits_.begin(), pcd_tracker_hits_.end(),
-		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
+      // std::sort(pcd_tracker_hits_.begin(), pcd_tracker_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     // Clusterize precalibrate tracker hits from UDD informations:
