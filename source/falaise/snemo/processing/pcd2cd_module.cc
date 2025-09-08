@@ -753,6 +753,10 @@ namespace snemo {
       for (int cluster_i=0; cluster_i<nb_clusters; cluster_i++) {
 	auto tcd_cluster = datatools::make_handle<snemo::datamodel::tracker_cluster>();
 	tcd_cluster->set_cluster_id(cluster_i);
+
+	// if (_cluster_reference_time_[cluster_i] > 0)
+	//   tcd_cluster->get_auxiliaries()
+
 	tcd_clusters.push_back(tcd_cluster);
       }
 
