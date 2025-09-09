@@ -102,6 +102,8 @@ void do_cldialog(int argc_, char* argv_[], FLVisualizeArgs& params_) {
      // ->required()
      ->value_name("file"),
      "file from which to read input data (simulation, real)")
+    ("input-event,e", bpo::value<uint32_t>(&params_.inputEvent)->value_name("event number"),
+     "event number to load at initialisation")
     ;
 
   sv::view::options_manager& options_mgr = sv::view::options_manager::get_instance();

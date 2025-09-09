@@ -70,6 +70,7 @@ void options_manager::set_defaults() {
 
   _options_dictionnary_.clear();
   _input_files_.clear();
+	_event_number_ = 0;
   _libraries_.clear();
 
   set_default_options();
@@ -154,6 +155,10 @@ void options_manager::define_browser_options(
   easy_init("input-data-files,I",
             po::value<std::vector<std::string> >(&_input_files_)->value_name("file"),
             "set an input data file(s)");
+
+  easy_init("input-event-number,E",
+            po::value<uint32_t>(&_event_number_)->value_name("event number"),
+            "set an input event number");
 
   if (parse_load_dll) {
     easy_init("load-dll,l", po::value<std::vector<std::string> >(&_libraries_)->value_name("name"),
@@ -268,6 +273,10 @@ bool options_manager::parse_command_line(int argc_, char** argv_) {
 		("input-files,i",
 		 po::value<std::vector<std::string> >(&_input_files_)->value_name("file"),
 		 "set an input file(s)")
+
+		("event-number,e",
+		 po::value<uint32_t>(&_event_number_)->value_name("file"),
+		 "set an input event number")
 
 		("load-dll,l",
 		 po::value<std::vector<std::string> >(&_libraries_)->value_name("name"),
@@ -493,6 +502,12 @@ void options_manager::add_input_file(const std::string& input_file_) {
 }
 
 const std::vector<std::string>& options_manager::get_input_files() const { return _input_files_; }
+
+void options_manager::set_event_number(const uint32_t& event_number_) {
+	_event_number_ = event_number_;
+}
+
+uint32_t options_manager::get_event_number() const { return _event_number_; }
 
 double options_manager::get_scaling_factor() const { return _scaling_factor_; }
 

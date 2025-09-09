@@ -44,6 +44,7 @@ struct FLVisualizeArgs {
   bool ignoreInputMetadata;                   //!< Ignore input metadata
   std::string inputMetadataFile;              //!< Input metadata file
   std::string inputFile;                      //!< Input data file for the input module
+	uint32_t inputEvent;                        //!< Event number for the input module
   datatools::multi_properties inputMetadata;  //!< Metadata imported from the input
 
   // Print:
