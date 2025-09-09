@@ -758,6 +758,9 @@ namespace snemo {
 	//   tcd_cluster->get_auxiliaries()
 
 	tcd_clusters.push_back(tcd_cluster);
+
+	// copy/paste (pCD)_cluster auxiliaries into (CD)_cluster auxiliaries
+	tcd_cluster->grab_auxiliaries() = _cpcd_data_->clusters()[cluster_i]->get_properties();
       }
 
       auto & tcd_unclustered_hits = tcd_solution->get_unclustered_hits();

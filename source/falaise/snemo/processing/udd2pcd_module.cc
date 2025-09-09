@@ -1104,9 +1104,6 @@ namespace snemo {
                      << cluster_calorimeter_index.size() << " calorimeter hit(s) "
 		     << "(ref pcd calo hit = " << best_reference_pcd_calo_hit_index << ")");
 
-	datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
-	new_precalibrated_cluster_properties.store("first_pcd_tracker_index", cluster_first_anode_index);
-
         if (best_reference_pcd_calo_hit_index != -1) {
 
           // // A candidate of calorimeter hit was found as reference time for this cluster
@@ -1126,9 +1123,14 @@ namespace snemo {
 
 	  // } // for (cluster_pcd_tracker_hit_index)
 
-	  new_precalibrated_cluster_properties.store("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
+	  datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
 
-	  // store geometry of the bounding box of the tracker cluster
+	  // store time information
+	  new_precalibrated_cluster_properties.store_integer("first_pcd_tracker_index", cluster_first_anode_index);
+	  new_precalibrated_cluster_properties.store_integer("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
+	  new_precalibrated_cluster_properties.store_real("mean_anode_time", cluster_mean_anode_time);
+
+	  // store geometry of the bounding box
 	  new_precalibrated_cluster_properties.store_integer("tracker_row_min", cluster_tracker_row_min);
 	  new_precalibrated_cluster_properties.store_integer("tracker_row_max", cluster_tracker_row_max);
 	  new_precalibrated_cluster_properties.store_integer("tracker_layer_min", cluster_tracker_layer_min);
