@@ -58,6 +58,7 @@ namespace snemo {
       _calo_baseline_nsamples_ = fps.get<int>("calo_baseline_nsamples", 16);
       _calo_charge_integration_nsamples_ = fps.get<int>("calo_charge_integration_nsamples", 992);
       _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
+      _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
       _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
       _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
 
@@ -163,6 +164,139 @@ namespace snemo {
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
+
+    void udd2pcd_module::calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+						       snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) {
+
+      // overshoot/undershoot = waveform saturation at 4095/0
+      bool overshoot_flag  = false;
+      bool undershoot_flag = false;
+
+      // rebound = sample getting above (baseline+4096)/2
+      const double pcd_calo_baseline = pcd_calo_hit_.get_baseline() / _calo_adc2volt_;
+
+      const int16_t rebound_threshold = std::round(0.5 * (2048 + pcd_calo_baseline + 4096));
+      bool rebound_flag    = false;
+
+      // pileup
+      const int32_t pileup_derivative_threshold = -500;
+      bool pileup_flag = false;
+
+      // variable for pileup detection
+      bool derivative_rising = false;
+      bool derivative_crossed_zero = false;
+      // int32_t derivative_min_sample = 0;
+      // int32_t derivative_zero_sample = 0;
+      // int32_t derivative_min = 0;
+      // int32_t derivative_max = 0;
+      int32_t derivative_peak_count = 0;
+
+      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+
+      int32_t derivative_waveform[1024];
+      memset(derivative_waveform, 0, sizeof(derivative_waveform));
+
+      for (int16_t sample=0; sample<1024; sample++) {
+
+	const int16_t & waveform_sample = udd_calo_waveform[sample];
+
+	if (waveform_sample == 4095) {
+	  overshoot_flag = true;
+	  rebound_flag = true;
+
+	} else if (waveform_sample > rebound_threshold) {
+	  rebound_flag = true;
+
+	} else if (waveform_sample == 0) {
+	  undershoot_flag = true;
+
+	}
+
+        // compute the average derivative between samples [sample-16;sample-1] and [sample;sample+15]
+	// to covering a full 16 samples block and cancel the known SAMLONG cyclic noise
+
+	if ((sample < 16) || (sample >= (1024-16)))
+	  continue; // skip sample [0, 15] and [1008,1023]
+
+	for (int sub_sample=1; sub_sample<=16; sub_sample++)
+	  derivative_waveform[sample] += udd_calo_waveform[sample+sub_sample-1] - udd_calo_waveform[sample-sub_sample];
+
+	// we are looking for peaks on the waveform, which translate into peak on the derivative
+	// - front edge the negative pulse => negative peak on derivative
+	// - maximum of the peak of pulse  => derivative crossing 0
+	// - falling edge of the pulse     => positive peak on the derivative
+
+	if (derivative_waveform[sample] > derivative_waveform[sample-1]) {
+
+	  if (!derivative_rising && (derivative_waveform[sample-1] < pileup_derivative_threshold)) {
+	    // beginning of a bipolar peak candidate ...
+	    derivative_rising = true;
+	    // derivative_min_sample = sample-1;
+	    // derivative_min = derivative_waveform[sample-1];
+	    derivative_crossed_zero = false;
+	  }
+
+	  if ((derivative_waveform[sample-1] < 0) && (derivative_waveform[sample] >= 0))
+	    derivative_crossed_zero = true;
+
+	} else { // derivative is falling or flat (end of bipolar candidate)
+
+	  if (derivative_rising && derivative_crossed_zero)
+	    derivative_peak_count++;
+
+	  derivative_rising = false;
+
+	}
+
+      } // for (sample)
+
+      if (derivative_peak_count > 1)
+	pileup_flag = true;
+
+      datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.grab_auxiliaries();
+
+      if (overshoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.overshoot");
+
+      else if (rebound_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.rebound");
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with REBOUND waveform");
+      }
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
+	pileup_flag = false;
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
+      }
+
+      if (undershoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.undershoot");
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
+      }
+
+      // if (overshoot_flag)
+      //   DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+      // 		 << snemo::datamodel::om_label(new_pcd_calo->get_geom_id())
+      // 		 << " with OVERSHOOT waveform");
+
+    }
+
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
@@ -212,13 +346,14 @@ namespace snemo {
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
+	// switch from digital to logical geomid
 	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
 	  new_pcd_calo->grab_geom_id().set_type(1302);
 	  new_pcd_calo->grab_geom_id().set_any(4);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
 	  new_pcd_calo->grab_geom_id().set_type(1232);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
-	  new_pcd_calo->grab_geom_id().set_type(1251);
+	  new_pcd_calo->grab_geom_id().set_type(1252);
 	}
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
@@ -255,6 +390,10 @@ namespace snemo {
 
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
@@ -314,13 +453,14 @@ namespace snemo {
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
+	// switch from digital to logical geomid
 	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
 	  new_pcd_calo->grab_geom_id().set_type(1302);
 	  new_pcd_calo->grab_geom_id().set_any(4);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
 	  new_pcd_calo->grab_geom_id().set_type(1232);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
-	  new_pcd_calo->grab_geom_id().set_type(1251);
+	  new_pcd_calo->grab_geom_id().set_type(1252);
 	}
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
@@ -366,6 +506,11 @@ namespace snemo {
         if (charge_sample_start < 0) charge_sample_start = 0;
         int16_t charge_sample_stop = charge_sample_start + _calo_charge_integration_nsamples_;
         if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
+	if (charge_sample_stop > _calo_charge_integration_nsamples_before_peak_) {
+	  charge_sample_stop = _calo_charge_integration_samples_max_;
+	  // make the charge integration window multiple of 16
+	  charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
+	}
 
         double swmeas_charge_sum = 0;
         for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
@@ -440,8 +585,13 @@ namespace snemo {
         const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
 
+
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
@@ -954,9 +1104,6 @@ namespace snemo {
                      << cluster_calorimeter_index.size() << " calorimeter hit(s) "
 		     << "(ref pcd calo hit = " << best_reference_pcd_calo_hit_index << ")");
 
-	datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
-	new_precalibrated_cluster_properties.store("first_pcd_tracker_index", cluster_first_anode_index);
-
         if (best_reference_pcd_calo_hit_index != -1) {
 
           // // A candidate of calorimeter hit was found as reference time for this cluster
@@ -976,9 +1123,14 @@ namespace snemo {
 
 	  // } // for (cluster_pcd_tracker_hit_index)
 
-	  new_precalibrated_cluster_properties.store("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
+	  datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
 
-	  // store geometry of the bounding box of the tracker cluster
+	  // store time information
+	  new_precalibrated_cluster_properties.store_integer("first_pcd_tracker_index", cluster_first_anode_index);
+	  new_precalibrated_cluster_properties.store_integer("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
+	  new_precalibrated_cluster_properties.store_real("mean_anode_time", cluster_mean_anode_time);
+
+	  // store geometry of the bounding box
 	  new_precalibrated_cluster_properties.store_integer("tracker_row_min", cluster_tracker_row_min);
 	  new_precalibrated_cluster_properties.store_integer("tracker_row_max", cluster_tracker_row_max);
 	  new_precalibrated_cluster_properties.store_integer("tracker_layer_min", cluster_tracker_layer_min);

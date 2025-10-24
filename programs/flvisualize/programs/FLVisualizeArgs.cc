@@ -40,6 +40,7 @@ FLVisualizeArgs FLVisualizeArgs::makeDefault() {
   fvArgs.ignoreInputMetadata = false;
   fvArgs.inputMetadataFile = "";
   fvArgs.inputFile = "";
+  fvArgs.inputEvent = 0;
   fvArgs.inputMetadata.reset();
   fvArgs.inputMetadata.set_key_label("name");
   fvArgs.inputMetadata.set_meta_label("type");
@@ -64,6 +65,7 @@ void FLVisualizeArgs::print(std::ostream& out_) const {
   out_ << tag << "ignoreInputMetadata  = " << std::boolalpha << ignoreInputMetadata << std::endl;
   out_ << tag << "inputMetadataFile    = " << inputMetadataFile << std::endl;
   out_ << tag << "inputFile            = " << inputFile << std::endl;
+  out_ << tag << "inputEvent           = " << inputEvent << std::endl;
   out_ << last_tag << "inputMetadata        = [" << inputMetadata.size() << ']' << std::endl;
 }
 
@@ -161,6 +163,9 @@ void FLVisualizeArgs::do_postprocess(FLVisualizeArgs& flVisParameters) {
     DT_LOG_NOTICE(flVisParameters.logLevel,
                   "Add input data file '" << flVisParameters.inputFile << "'");
     options_mgr.add_input_file(flVisParameters.inputFile);
+
+    if (flVisParameters.inputEvent > 0)
+      options_mgr.set_event_number(flVisParameters.inputEvent);
   }
 
   // Experiment setup:

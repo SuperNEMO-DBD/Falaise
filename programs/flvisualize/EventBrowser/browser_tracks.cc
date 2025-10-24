@@ -704,21 +704,10 @@ void browser_tracks::_update_digitized_data() {
 			const bool is_ht = a_hit.is_high_threshold();
 			const bool is_lt = a_hit.is_low_threshold_only();
 
-			// Geom ID fix
-			geomtools::geom_id a_geom_id = it_hit->get_geom_id();
-			if (a_geom_id.get_type() == 1301) {
-				a_geom_id.set_type(1302);
-				a_geom_id.set_any(4);
-			} else if (a_geom_id.get_type() == 1231) {
-				a_geom_id.set_type(1232);
-			} else if (a_geom_id.get_type() == 1251) {
-				a_geom_id.set_type(1252);
-			}
-
       // Add subsubitem:
       std::ostringstream label_hit;
 			label_hit << "hit #" << a_hit.get_hit_id() << " : "
-								<< " GID = " << a_geom_id;
+								<< " GID = " << it_hit->get_geom_id();
 			if (is_ht)
 				label_hit << "  HT flag";
 			else if (is_lt)

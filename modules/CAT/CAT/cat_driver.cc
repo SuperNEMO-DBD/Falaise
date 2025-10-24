@@ -174,6 +174,16 @@ void cat_driver::initialize(const datatools::properties& setup_) {
                 "Invalid Sigma Z factor(" << _sigma_z_factor_ << ") !");
   }
 
+  // Tangent Phi limit
+  if (setup_.has_key("CAT.TangentPhi")) {
+    _CAT_setup_.TangentPhi = setup_.fetch_real("CAT.TangentPhi") * CLHEP::degree;
+  }
+
+  // Tangent Theta limit
+  if (setup_.has_key("CAT.TangentTheta")) {
+    _CAT_setup_.TangentTheta = setup_.fetch_real("CAT.TangentTheta") * CLHEP::degree;
+  }
+
   // Store results within data properties
   if (setup_.has_key("CAT.store_result_as_properties")) {
     _store_result_as_properties_ = setup_.fetch_boolean("CAT.store_result_as_properties");

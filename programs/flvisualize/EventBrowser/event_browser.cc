@@ -220,6 +220,7 @@ namespace snemo {
 	FL_LOG_DEVEL("Entering...");
 	const options_manager& options_mgr = options_manager::get_instance();
 	const std::vector<std::string>& filenames = options_mgr.get_input_files();
+	const uint32_t event_number = options_mgr.get_event_number();
 	// Check here the existence of file
 	std::vector<std::string> existing_files;
 	for (const auto& a_file : filenames) {
@@ -276,7 +277,11 @@ namespace snemo {
 	}
 	_status_->update(true);
 
-	this->change_event(server.has_sequential_data() ? NEXT_EVENT : FIRST_EVENT);
+	if ((event_number > 0) && !server.has_sequential_data())
+	  this->change_event(CURRENT_EVENT, event_number);
+	else
+	  this->change_event(server.has_sequential_data() ? NEXT_EVENT : FIRST_EVENT);
+
 	FL_LOG_DEVEL("Exiting...");
       }
 

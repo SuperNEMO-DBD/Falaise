@@ -76,7 +76,8 @@ namespace snemo {
 
       enum tracker_height_calibration_method {
 	TRACKER_HEIGHT_NONE        = 0,
-	TRACKER_HEIGHT_LINEAR_R5R6 = 1
+	TRACKER_HEIGHT_LINEAR_R5R6 = 1,
+	TRACKER_HEIGHT_NON_LINEAR_R5R6 = 2
       };
 
     public:
@@ -96,6 +97,7 @@ namespace snemo {
     private:
 
       /// Parse calibration constants from a database file
+      int parse_calibration_constants (std::string path_, std::vector<double> & constants_);
       int parse_calibration_constants (std::string path_, std::vector<std::vector<double>> & constants_);
 
       /// Calibrate calorimeter hit
@@ -147,18 +149,24 @@ namespace snemo {
       double _event_time_;
 
       calorimeter_energy_calibration_method _pcd2cd_calo_energy_method_;
-      std::vector<std::vector<double>> _pcd_calo_energy_constants_;
+      std::vector<std::vector<double>> _pcd2cd_calo_energy_constants_;
+      std::vector<double> _pcd2cd_calo_energy_thresholds_;
 
       calorimeter_time_calibration_method   _pcd2cd_calo_time_method_;
-      std::vector<std::vector<double>> _pcd_calo_t0_constants_;
+      std::vector<double> _pcd2cd_calo_t0_constants_;
 
       tracker_time_calibration_method _pcd2cd_tracker_time_method_;
-      std::vector<std::vector<double>> _pcd_tracker_anode_t0_constants_;
-      std::vector<std::vector<double>> _pcd_tracker_bottom_cathode_t0_constants_;
-      std::vector<std::vector<double>> _pcd_tracker_top_cathode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_anode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_bottom_cathode_t0_constants_;
+      std::vector<double> _pcd2cd_tracker_top_cathode_t0_constants_;
 
       tracker_radius_calibration_method _pcd2cd_tracker_radius_method_;
       tracker_height_calibration_method _pcd2cd_tracker_height_method_;
+
+      double _pcd2cd_tracker_height_effective_;
+      double _pcd2cd_tracker_height_offset_;
+      double _pcd2cd_tracker_height_deceleration_;
+      double _pcd2cd_tracker_height_error_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)
