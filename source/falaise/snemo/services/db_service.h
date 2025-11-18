@@ -46,6 +46,23 @@ namespace snemo {
     
     bool is_initialized() const override;
 
+    /// Supported configuration parameters:
+    ///
+    /// - verbosity (mainly for debug print)
+    ///   \code
+    ///   logging.priority : string = "fatal"
+    ///   \endcode
+    /// - the file which contains connection informations to the DB
+    ///   \code
+    ///   db_access : string as path = "~/.sndb.conf"
+    ///   \endcode
+    /// - the file which contains the description of the ``sndb`` proxy object 
+    /// sndb_config : string as path = "@falaise:snemo/demonstrator/db/sndb/1.0/main.conf
+    /// \see class ``snemo::db::sndb``
+    ///
+    /// These parameters can be loaded from an official configuration file like
+    /// ``resources/snemo/demonstrator/db/0.1/services/DbService.conf``.
+    ///
     int initialize(const datatools::properties &,
                    datatools::service_dict_type &) override;
     
@@ -70,7 +87,7 @@ namespace snemo {
  
     // Database operations:
    
-    void _parse_config_(const std::string & path_);
+    void _parse_db_access_config_(const std::string & path_);
    
     void _connect_();
 

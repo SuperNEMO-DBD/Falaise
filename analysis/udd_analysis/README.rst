@@ -32,7 +32,7 @@ Options
 * ``-F integer`` : set the first event number to be processed (starts at 1 as default value)
 * ``-N integer`` : set the maximum number of scanned event records (> 0)
 * ``-P`` : print the UDD data extracted from the event record
-* ``-i file`` : set the input raw udD data file (ex: BRIO format)  
+* ``-i file`` : set the input raw UDD data file (ex: BRIO format)  
 
 Example
 ----------

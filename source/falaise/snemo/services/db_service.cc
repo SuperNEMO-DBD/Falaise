@@ -6,6 +6,7 @@
 
 // Standard library:
 #include <iomanip>
+#include <filesystem>
 
 // Boost;
 #include <boost/tokenizer.hpp>
@@ -18,7 +19,21 @@
 #include <bayeux/datatools/utils.h>
 
 // MariaDB C++:
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#endif
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+#endif
 #include <mariadb/conncpp.hpp>
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 // Ourselves:
 #include <falaise/snemo/db/database_description.hpp>
@@ -34,7 +49,7 @@ namespace snemo {
     std::string host;
     int port{0};
     std::string database{"nemo_rundb"};
-    std::string user{"nemo_rundb_ro"};
+    std::string user{"nemo_ro"};
     std::string password{""};
   };
 
@@ -191,7 +206,7 @@ namespace snemo {
     return _initialized_;
   }
    
-  void db_service::_parse_config_(const std::string & path_)
+  void db_service::_parse_db_access_config_(const std::string & path_)
   {
     DT_LOG_DEBUG(get_logging_priority(), "Parsing DB access config file " << std::quoted(path_) << "...");
     std::map<std::string, std::string> configValues;
@@ -253,22 +268,27 @@ namespace snemo {
     } else {
       dbAccessConfigFile = "~/.sndb.conf";
     }
-    DT_LOG_DEBUG(get_logging_priority(), "DB service config file : " << std::quoted(dbAccessConfigFile));
-    static const char * env_variable = "SNDB_CONF_PATH";
+    DT_LOG_DEBUG(get_logging_priority(), "DB service access config file : " << std::quoted(dbAccessConfigFile));
+    static const char * env_variable = "SNDB_ACCESS_PATH";
     {
-      DT_LOG_DEBUG(get_logging_priority(), "Searching DB service config file from env " << std::quoted(env_variable) << "...");
+      DT_LOG_DEBUG(get_logging_priority(), "Searching DB service access config file from env " << std::quoted(env_variable) << "...");
       const char * envPathStr = getenv(env_variable);
       if (envPathStr != nullptr) {
 	dbAccessConfigFile = std::string(envPathStr);
-	DT_LOG_DEBUG(get_logging_priority(), "DB service config file has been superseded from env : " << std::quoted(dbAccessConfigFile));
+	DT_LOG_DEBUG(get_logging_priority(), "DB service access config file has been superseded from env : " << std::quoted(dbAccessConfigFile));
       } else {
-	DT_LOG_DEBUG(get_logging_priority(), "No DB service config file from env was found.");
+	DT_LOG_DEBUG(get_logging_priority(), "No DB service access config file from env was found.");
       }
     }
 
     if (not dbAccessConfigFile.empty()) {
       datatools::fetch_path_with_env(dbAccessConfigFile);
-      _parse_config_(dbAccessConfigFile);
+      std::filesystem::path dbAccessConfigFilePath(dbAccessConfigFile);
+      if (not std::filesystem::exists(dbAccessConfigFilePath)) {
+	DT_LOG_FATAL(get_logging_priority(), "No DB service access config file " << std::quoted(dbAccessConfigFile) << " exists. Please configure one (example: '~/.sndb.conf') in your environment!");
+	DT_THROW(std::logic_error, "DB service access config file " << std::quoted(dbAccessConfigFile) << " does not exist");
+      }
+      _parse_db_access_config_(dbAccessConfigFile);      
     } else {
       if (config_.has_key("host")) {
 	_config_.db_host = config_.fetch_string("host");
@@ -302,6 +322,9 @@ namespace snemo {
     }
     if (sndbDescConfigFile.empty()) {
       sndbDescConfigFile = "@falaise:snemo/demonstrator/db/sndb/1.0/main.conf";
+      DT_LOG_DEBUG(get_logging_priority(),
+		   "Setting default sndb main config file = "
+		   << std::quoted(sndbDescConfigFile));
       datatools::fetch_path_with_env(sndbDescConfigFile);
     }
     
@@ -312,16 +335,30 @@ namespace snemo {
       DT_LOG_DEBUG(get_logging_priority(), "SNDB descriptions : ");
       _pimpl_->sndbDesc.print_tree(std::cerr);
     }
-    _pimpl_->dbDesc = &_pimpl_->sndbDesc.database(_config_.db_database).description();
-    
+    DT_LOG_DEBUG(get_logging_priority(), "Database name : " << std::quoted(_config_.db_database));
+    DT_THROW_IF(not _pimpl_->sndbDesc.has_database(_config_.db_database), std::logic_error,
+		"SNDB driver has no database named " << std::quoted(_config_.db_database));
+    const snemo::db::database_entry & dbEntry = _pimpl_->sndbDesc.database(_config_.db_database);
+    if (datatools::logger::is_debug(get_logging_priority())) {
+      DT_LOG_DEBUG(get_logging_priority(), "Database entry : ");
+      dbEntry.print_tree(std::cerr);
+    }
+    _pimpl_->dbDesc = &dbEntry.description();
+    if (datatools::logger::is_debug(get_logging_priority())) {
+      DT_LOG_DEBUG(get_logging_priority(), "Database description : ");
+      _pimpl_->dbDesc->print_tree(std::cerr);
+    }
+
+    DT_LOG_DEBUG(get_logging_priority(), "Attempt to connect the remote server...");
     _connect_();
     std::set<std::string> descTablenames = _pimpl_->dbDesc->table_names();
+    DT_LOG_DEBUG(get_logging_priority(), "Connection is established.");
+
     for (auto descTablename : descTablenames) {
       if (not _pimpl_->tablenames.count(descTablename)) {
 	DT_LOG_WARNING(datatools::logger::PRIO_ALWAYS,
 		       "Described table " << std::quoted(descTablename) << " is not available in the database " << std::quoted(_pimpl_->connInfo.database));
       }
-      
     }
 
     _initialized_ = true;
@@ -348,7 +385,8 @@ namespace snemo {
   {
     DT_LOG_DEBUG(get_logging_priority(), "Disconnecting the SuperNEMO database...");
     _pimpl_->disconnect();
-    return;
+    DT_LOG_DEBUG(get_logging_priority(), "Connection is lost.");
+   return;
   }
  
   void db_service::print_tree(std::ostream & out_,

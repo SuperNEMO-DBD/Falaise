@@ -21,7 +21,7 @@ namespace snemo {
 
     static const int32_t INVALID_RUN_ID     = -1; /// Value for an invalid run ID
     static const int32_t INVALID_TRIGGER_ID = -1; /// Value for an invalid trigger ID
-    static const int32_t MAX_TRIGGER_ID     = 16777215; /// Value for the maximum value of the trigger ID
+    static const int32_t MAX_TRIGGER_ID     = 16777215; /// Value for the maximum value of the trigger ID (24 bits)
     static const int32_t INVALID_EVENT_ID   = -1; /// Value for an invalid event ID
     static const int32_t INVALID_HIT_ID     = -1; /// Value for an invalid run ID
     static const int64_t INVALID_TIME_TICKS = std::numeric_limits<int64_t>::min(); /// Value for an invalid time tick or timestamp

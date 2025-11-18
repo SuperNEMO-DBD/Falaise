@@ -212,13 +212,14 @@ namespace snemo {
         new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
 
+	// Use scintillator block geom IDs in place of OM geom IDs:
 	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
 	  new_pcd_calo->grab_geom_id().set_type(1302);
 	  new_pcd_calo->grab_geom_id().set_any(4);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
 	  new_pcd_calo->grab_geom_id().set_type(1232);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
-	  new_pcd_calo->grab_geom_id().set_type(1251);
+	  new_pcd_calo->grab_geom_id().set_type(1252);
 	}
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
@@ -320,7 +321,7 @@ namespace snemo {
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
 	  new_pcd_calo->grab_geom_id().set_type(1232);
 	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
-	  new_pcd_calo->grab_geom_id().set_type(1251);
+	  new_pcd_calo->grab_geom_id().set_type(1252);
 	}
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
@@ -523,6 +524,7 @@ namespace snemo {
         new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
 
+	// Use "drift cell core" volume's type in place of "drift cell"'s type
 	if (new_pcd_tracker->get_geom_id().get_type() == 1203)
 	  new_pcd_tracker->grab_geom_id().set_type(1204);
 

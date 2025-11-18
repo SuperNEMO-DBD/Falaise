@@ -1,7 +1,7 @@
 # - Basic CMake setup
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION})
 project(FalaiseChargedParticleTrackingPlugin VERSION "2.1.0")
 
 # Modules use Falaise, so we need to locate this or fail

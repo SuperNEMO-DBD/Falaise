@@ -2,7 +2,7 @@
 // -*- mode: c++ ; -*-
 /* Author(s) :    Francois Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2014-02-27
- * Last modified: 2014-02-27
+ * Last modified: 2025-06-18
  *
  * Description:
  *
@@ -13,8 +13,11 @@
 #ifndef FALAISE_SNEMO_SERVICES_H
 #define FALAISE_SNEMO_SERVICES_H 1
 
-// Standard library:
+// Standard library: 
 #include <string>
+
+// Ourselves:
+#include <bayeux/datatools/service_manager.h>
 
 namespace snemo {
 
@@ -25,30 +28,33 @@ namespace snemo {
   public:
   
     /// Return the default string label/name for the 'global metadata' service
-    static const std::string& metadataServiceName();
+    static const std::string & metadataServiceName();
 
     /// Return the default string label/name for the 'geometry' service
-    static const std::string& geometryServiceName();
+    static const std::string & geometryServiceName();
 
     /// Return the default string label/name for the 'context' service
-    static const std::string& contextServiceName();
+    static const std::string & contextServiceName();
 
     /// Return the default string label/name for the 'run_info' service
-    static const std::string& runInfoServiceName();
+    static const std::string & runInfoServiceName();
 
     /// Return the default string label/name for the 'cuts' service
-    static const std::string& cutServiceName();
+    static const std::string & cutServiceName();
 
     /// Return the default string label/name for the 'db' service
-    static const std::string& dbServiceName();
+    static const std::string & dbServiceName();
 
     /// Return the default string label/name for the 'tracker cell status' service
-    static const std::string& trackerCellStatusServiceName();
+    static const std::string & trackerCellStatusServiceName();
 
     /// Return the default string label/name for the 'calorimeter OM status' service
-    static const std::string& calorimeterOmStatusServiceName();
-
+    static const std::string & calorimeterOmStatusServiceName();
+    
   };
+
+  /// Return a reference to the dictionnary of services embedded in a service manager
+  datatools::service_dict_type & service_bus(datatools::service_manager & svcmgr_);
 
 } // end of namespace snemo
 

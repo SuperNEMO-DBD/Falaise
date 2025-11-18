@@ -87,7 +87,7 @@ namespace snemo {
 			 */
 			uint32_t getModuleNumber() const;
 
-			/**! @return set the number of the module for this locator.
+			/**! set the number of the module for this locator.
 			 */
 			void setModuleNumber(uint32_t number);
 

@@ -7,7 +7,7 @@
 #-----------------------------------------------------------------------
 # Project configuration
 #
-cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
+cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION} FATAL_ERROR)
 project(FLVisualize VERSION 3.0.0)
 
 #-----------------------------------------------------------------------

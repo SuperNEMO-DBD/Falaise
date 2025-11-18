@@ -71,6 +71,12 @@ namespace snemo {
     /// Load cell status map from a CSV formatted file
     void load_cell_status_map(const std::string & infile_);
 
+    /// Load cell status map from a CSV formatted file (format 1)
+    void load_cell_status_map_1(const std::string & infile_);
+    
+    /// Load cell status map from a CSV formatted file (format 2)
+    void load_cell_status_map_2(const std::string & infile_);
+
     void make_cell_status_map(std::ostream & out_, const time::time_point & t_) const;
 
     typedef std::map<geomtools::geom_id, snemo::rc::tracker_cell_status_history> history_type;
@@ -93,12 +99,14 @@ namespace snemo {
 
     bool _initialized_ = false;
     mode_type _mode_ = MODE_DEFAULT;
+    std::string _file_format_ = "csv-1";
     std::string _geometry_label_;
     std::string _db_label_;
+    const snemo::db_service * _db_service_ = nullptr; ///< Handle the DB service
+    std::string _db_tracker_cell_status_table_;
     const geomtools::manager * _geomgr_ = nullptr;
     std::uint32_t _cell_type_ = 1203;
     std::uint32_t _cell_core_type_ = 1204;
-    const snemo::db_service * _db_service_ = nullptr;
     history_type _histories_;
     
     DATATOOLS_SERVICE_REGISTRATION_INTERFACE(tracker_cell_status_service)

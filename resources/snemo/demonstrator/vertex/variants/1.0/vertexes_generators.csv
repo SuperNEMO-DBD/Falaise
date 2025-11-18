@@ -52,6 +52,7 @@ gveto_wrapper_bulk    : Vertex generation from the bulk volume of the wrapper of
 calo_wrapper_surface  : Vertex generation from the surface of the wrapper of all main calorimeter scintillator blocks       : OpticalModule : 
 xcalo_wrapper_surface : Vertex generation from the surface of the wrapper of all X-wall calorimeter scintillator blocks     : OpticalModule : 
 gveto_wrapper_surface : Vertex generation from the surface of the wrapper of all gamma veto scintillator blocks             : OpticalModule : 
+calo_nylon_surface    : Vertex generation from the surface of the Nylon film in front of the main calorimeter scintillator blocks       : OpticalModule : 
 
 ### Plastic scintillator blocks ###
 calo_8inch_front_scin_bulk : Vertex generation from the bulk volume of the front part of all main calorimeter scintillator blocks with 8'' PMT : OpticalModule : 

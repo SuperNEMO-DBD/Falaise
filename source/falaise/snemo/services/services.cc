@@ -54,4 +54,9 @@ namespace snemo {
     return lbl;
   }
 
+  datatools::service_dict_type & service_bus(datatools::service_manager & svcmgr_)
+  {
+    return const_cast<datatools::service_dict_type&>(svcmgr_.get_local_services());
+  }
+
 } // end of namespace snemo

@@ -36,7 +36,7 @@ namespace snedm {
    * at "key" in the event_record, inserting a new value of that type at "key"
    * if "key is not present. In code this results in the boilerplate:
    *
-   * ```cpp
+   * \code
    * // Usually in the "process" member function of a Falaise module
    * SomeDataType* x{nullptr};
    *
@@ -48,7 +48,7 @@ namespace snedm {
    * }
    *
    * // do something with x
-   * ```
+   * \endcode
    *
    * This wrapper function reduces the above to:
    *

@@ -3,6 +3,7 @@
 // Standard library:
 #include <sstream>
 #include <memory>
+#include <cstdint>
 
 // Boost:
 #include <boost/date_time/local_time/local_time.hpp>
@@ -225,12 +226,12 @@ namespace snemo {
     time_duration from_quantity(const double duration_)
     {
       DT_THROW_IF(duration_ < 0.0, std::range_error, "Invalid negative duration!");
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> duration = " << duration_ / CLHEP::second);
+      // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> duration = " << duration_ / CLHEP::second);
       std::uint32_t nsec = (std::uint32_t) (duration_ / CLHEP::second);
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nsec = " << nsec);
+      // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nsec = " << nsec);
       double subsec = duration_ - nsec * CLHEP::second;
       std::uint32_t nusec = (std::uint32_t) (subsec / CLHEP::microsecond);
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nusec = " << nusec);
+      // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nusec = " << nusec);
       return time::seconds(nsec) + time::microseconds(nusec);
     }
 

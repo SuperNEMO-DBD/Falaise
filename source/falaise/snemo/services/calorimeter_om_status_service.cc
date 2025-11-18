@@ -4,6 +4,10 @@
 // Ourselves:
 #include <falaise/snemo/services/calorimeter_om_status_service.h>
 
+// Standard library:
+#include <bitset>
+#include <iomanip>
+
 // Boost;
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
@@ -17,6 +21,7 @@
 #include <falaise/snemo/geometry/calo_locator.h>
 #include <falaise/snemo/geometry/xcalo_locator.h>
 #include <falaise/snemo/geometry/gveto_locator.h>
+#include <falaise/snemo/datamodels/geomid_utils.h>
 
 DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(snemo::calorimeter_om_status_service,
                                          "snemo::calorimeter_om_status_service")
@@ -80,6 +85,12 @@ namespace snemo {
       }
     }
 
+    if (config_.has_key("period")) {
+      std::string periodRepr = config_.fetch_string("period");
+      time::time_period period = time::time_period_from_string(periodRepr);
+      _period_ = period;
+    }
+
     if (_mode_ == MODE_DB) {
       if (config_.has_key("db_label")) {
         _db_label_ = config_.fetch_string("db_label");     
@@ -138,15 +149,89 @@ namespace snemo {
     return;
   }
 
-  void calorimeter_om_status_service::_init_mode_db_(const datatools::properties &)
+  void calorimeter_om_status_service::_init_mode_db_(const datatools::properties & db_config_)
   {
-    DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    datatools::logger::priority logging = get_logging_priority();
+    logging = datatools::logger::PRIO_DEBUG;
+
+    if (_db_service_ == nullptr) {
+      DT_THROW(std::logic_error, "DB service nullptr !!!");
+    }
+
+    std::string tableName = "_test_om_status";
+    if (db_config_.has_key("table_name")) {
+      tableName = db_config_.fetch_string("table_name");
+    }
+    DT_THROW_IF(not _db_service_->has_table(tableName), std::logic_error,
+		"Database has no table named " << std::quoted(tableName));
+    
+    snemo::db::table_selection_type tableSel;
+    _db_service_->process_select_all_statement(tableName, tableSel);
+    DT_LOG_DEBUG(logging, "DB mode: Table selection size = " << tableSel.size());
+    DT_LOG_DEBUG(logging, "DB mode: Parsing table selection...");
+    namespace snrc = snemo::rc;
+    namespace snt  = snemo::time;
+    for (auto iRow = 0u; iRow < tableSel.size(); iRow++) {
+      const snemo::db::record_type row = tableSel[iRow];
+      
+      std::int32_t omNum = -1;
+      omNum = (std::uint32_t) std::get<int>(row[0]);
+      geomtools::geom_id omGid = datamodel::om_gid(omNum, false, false);
+      bool validType = false;
+      if (omGid.get_type() == _om_types_[0] or
+	  omGid.get_type() == _om_types_[1] or
+	  omGid.get_type() == _om_types_[2]) validType = true;
+      DT_THROW_IF(not validType, std::logic_error,
+		  "Invalid type for calorimeter OM geom ID '" << omGid  << "'!");
+
+      bool validGid = false;
+      // const snemo::geometry::locator_plugin & locators
+      //   = _geomgr_->get_plugin<snemo::geometry::locator_plugin>("locators_driver");
+      // const snemo::geometry::calo_locator & caloLocator = locators.caloLocator();
+      // const snemo::geometry::xcalo_locator & xcaloLocator = locators.xcaloLocator();
+      // const snemo::geometry::gveto_locator & gvetoLocator = locators.gvetoLocator();
+      // if (caloLocator.isCaloOM(omGid) or
+      // 	  xcaloLocator.isCaloOM(omGid) or
+      // 	  gvetoLocator.isCaloOM(omGid))
+      validGid = true;
+      DT_THROW_IF(not validGid, std::logic_error,
+		  "Not a valid (x)calorimeter/gveto OM geom ID '" << omGid  << "'!");
+      
+      std::string runStartTimeStr = std::get<std::string>(row[1]);
+      DT_LOG_DEBUG(logging, "  runStartTimeStr = " << runStartTimeStr);
+      snt::time_point runStartTime = snt::time_point_from_string(runStartTimeStr);
+      DT_LOG_DEBUG(logging, "  runStartTime = " << snt::to_string(runStartTime));
+       
+      std::string runStopTimeStr = std::get<std::string>(row[2]);
+      boost::algorithm::trim(runStopTimeStr);
+      DT_LOG_DEBUG(logging, "  runStopTimeStr = " << runStopTimeStr);
+      snt::time_point runStopTime = snt::max_date_time;
+      if (not runStopTimeStr.empty()) {
+	runStopTime = snt::time_point_from_string(runStopTimeStr);
+	DT_LOG_DEBUG(logging, "  runStopTime = " << snt::to_string(runStopTime));
+      }
+      snt::time_period runPeriod = snt::time_period(runStartTime, runStopTime);
+
+      //std::uint32_t omStatus = snrc::run_status::make_from_bitset(omStatusBits);
+      std::uint32_t omStatus = snemo::rc::calorimeter_om_status::OM_GOOD;
+      omStatus = (std::uint32_t) std::get<int>(row[3]);
+      if (omStatus != snemo::rc::calorimeter_om_status::OM_GOOD) {
+	snemo::rc::calorimeter_om_status_history & omHistory = grab_om_history(omGid);
+        DT_LOG_DEBUG(get_logging_priority(), "gid=" << omGid << " period=" << time::to_string(runPeriod)
+		     << " status=" << omStatus);
+        omHistory.add(runPeriod, omStatus);
+      } else {
+        DT_LOG_WARNING(get_logging_priority(), "Ignoring good status for OM " << omGid << "");
+      }
+      
+    }
     return;
   }
 
   void calorimeter_om_status_service::_terminate_mode_db_()
   {
-    DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
     return;
   }
   
@@ -186,19 +271,19 @@ namespace snemo {
       snemo::rc::calorimeter_om_status_history emptyHistory;
       _histories_[gid_] = emptyHistory;
     }
-    history_type::iterator found = _histories_.find(gid_);
+    history_map_type::iterator found = _histories_.find(gid_);
     return found->second;
   }
 
   const snemo::rc::calorimeter_om_status_history &
   calorimeter_om_status_service::get_om_history(const geomtools::geom_id & gid_) const
   {
-    history_type::const_iterator found = _histories_.find(gid_);
+    history_map_type::const_iterator found = _histories_.find(gid_);
     DT_THROW_IF(found == _histories_.end(), std::logic_error, "No history for OM '" << gid_ << "'!");
     return found->second;
   }
 
-  const calorimeter_om_status_service::history_type &
+  const calorimeter_om_status_service::history_map_type &
   calorimeter_om_status_service::get_histories() const
   {
     return _histories_;
@@ -209,9 +294,16 @@ namespace snemo {
   {
     std::uint32_t status = snemo::rc::calorimeter_om_status::OM_GOOD;
     if (_mode_ == MODE_DB) {
-      DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+      // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+      history_map_type::const_iterator found = _histories_.find(gid_);
+      if (found != _histories_.end()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Found history for om " << gid_);
+        status = found->second.get_status(time_);
+      } else {
+        // DT_LOG_DEBUG(get_logging_priority(), "No history for om " << gid_);
+      }
     } else if (_mode_ == MODE_FILES) {
-      history_type::const_iterator found = _histories_.find(gid_);
+      history_map_type::const_iterator found = _histories_.find(gid_);
       if (found != _histories_.end()) {
         DT_LOG_DEBUG(get_logging_priority(), "Found history for om " << gid_);
         status = found->second.get_status(time_);
