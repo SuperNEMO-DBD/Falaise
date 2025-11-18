@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <map>
 
@@ -21,16 +22,20 @@
 #include <falaise/snemo/geometry/xcalo_locator.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 
+void test0();
 void test1();
 void test2();
+void dump_tables();
 
 int main(/* int argc_, char ** argv_ */) {
   falaise::initialize();
   int error_code = EXIT_SUCCESS;
   try {
     
+    test0();
     test1();
     test2();
+    dump_tables();
 
   } catch (std::exception & x) {
     std::cerr << "error: " << x.what() << std::endl;
@@ -129,6 +134,22 @@ void test1()
   return;
 }
 
+void test0()
+{
+ 
+  std::cout << "\nOM map:\n";
+  for (const auto & gid : snemo::datamodel::om_map()) {
+    std::cout << gid.first << ' ' << gid.second;
+    if (not snemo::datamodel::is_reference_om(gid.second)) {
+      auto checkGid = snemo::datamodel::om_gid(gid.first, false, false);
+      std::cout << ' ' << checkGid;
+    }
+    std::cout << '\n';
+  }
+ 
+  return;
+}
+
 void test2()
 {
  
@@ -142,5 +163,28 @@ void test2()
     std::cout << '\n';
   }
  
+  return;
+}
+
+void dump_tables()
+{
+
+  {
+    std::ofstream omMap("snemo_om_num_gid_map.csv");
+    for (const auto & omId : snemo::datamodel::om_map()) {
+      omMap << omId.first << ' ' << omId.second;
+      omMap << '\n';
+    }
+    omMap.close();
+  }
+
+  {
+    std::ofstream ggMap("snemo_gg_num_gid_map.csv");
+    for (const auto & ggId : snemo::datamodel::gg_map()) {
+      ggMap << ggId.first << ' ' << ggId.second;
+      ggMap << '\n';
+    }
+    ggMap.close();
+  }
   return;
 }

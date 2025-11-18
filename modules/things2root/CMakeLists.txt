@@ -1,7 +1,7 @@
 # - Basic CMake setup
 # Check version meets ou requirements
 # Declare project, which will configure compiler for us
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION})
 project(Things2Root)
 
 # hack CMAKE_INSTALL_LIBDIR for dictionnary's .pcm and .rootmap file

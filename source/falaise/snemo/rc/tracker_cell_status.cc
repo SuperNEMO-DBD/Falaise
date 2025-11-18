@@ -2,7 +2,7 @@
 ///
 /// Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
 /// Creation date: 2022-05-23
-/// Last modified: 2022-05-23
+/// Last modified: 2025-07-17
 ///
 
 // Ourselves:
@@ -21,37 +21,49 @@ namespace snemo {
   namespace rc {
 
     // static
-    bool tracker_cell_status::is_off(std::uint32_t status_bits_)
+    bool tracker_cell_status::is_off(const std::uint32_t status_bits_)
     {
       return status_bits_ & CELL_OFF;
     }
  
     // static
-    bool tracker_cell_status::is_dead(std::uint32_t status_bits_)
+    bool tracker_cell_status::is_dead(const std::uint32_t status_bits_)
     {
       return status_bits_ & CELL_DEAD;
     }
  
     // static
-    bool tracker_cell_status::is_no_anode(std::uint32_t status_bits_)
+    bool tracker_cell_status::is_no_anode(const std::uint32_t status_bits_)
     {
       return status_bits_ & CELL_NO_ANODE;
     }
  
     // static
-    bool tracker_cell_status::is_no_bottom_cathode(std::uint32_t status_bits_)
+    bool tracker_cell_status::is_no_bottom_cathode(const std::uint32_t status_bits_)
     {
       return status_bits_ & CELL_NO_BOTTOM_CATHODE;
     }
  
     // static
-    bool tracker_cell_status::is_no_top_cathode(std::uint32_t status_bits_)
+    bool tracker_cell_status::is_no_top_cathode(const std::uint32_t status_bits_)
     {
       return status_bits_ & CELL_NO_TOP_CATHODE;
     }
+ 
+    // static
+    bool tracker_cell_status::is_noisy(const std::uint32_t status_bits_)
+    {
+      return status_bits_ & CELL_NOISY;
+    }
+ 
+    // static
+    bool tracker_cell_status::is_on_trip(const std::uint32_t status_bits_)
+    {
+      return status_bits_ & CELL_ON_TRIP;
+    }
 
     // static
-    std::string tracker_cell_status::status_to_string(std::uint32_t status_bits_)
+    std::string tracker_cell_status::status_to_string(const std::uint32_t status_bits_)
     {
       std::ostringstream reprss;
       int count=0;
@@ -62,6 +74,14 @@ namespace snemo {
       if (status_bits_ & CELL_OFF) {
         if (count++) reprss << '+';
         reprss << "off";
+      }
+      if (status_bits_ & CELL_NOISY) {
+        if (count++) reprss << '+';
+        reprss << "noisy";
+      }
+      if (status_bits_ & CELL_ON_TRIP) {
+        if (count++) reprss << '+';
+        reprss << "on_trip";
       }
       if (status_bits_ & CELL_NO_ANODE) {
         if (count++) reprss << '+';
@@ -75,6 +95,10 @@ namespace snemo {
         if (count++) reprss << '+';
         reprss << "no_top_cathode";
       }
+      if (status_bits_ & CELL_OTHER_ISSUES) {
+        if (count++) reprss << '+';
+        reprss << "other_issues";
+      }
       if (count == 0) {
         reprss << "good";
       }
@@ -82,7 +106,8 @@ namespace snemo {
     }
                         
     // static
-    std::uint32_t tracker_cell_status::status_from_string(std::string status_repr_, const std::uint16_t options_)
+    std::uint32_t tracker_cell_status::status_from_string(const std::string & status_repr_,
+							  const std::uint16_t options_)
     {
       std::uint32_t status = CELL_GOOD;
       typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
@@ -99,17 +124,26 @@ namespace snemo {
         } else if (tk == "off") {
           DT_THROW_IF(status != CELL_GOOD, std::logic_error, "Found incompatible tracker cell status labels in '" << status_repr_ << "'!");
           status |= CELL_OFF;
-        } else if (tk == "no_anode") status |= CELL_NO_ANODE;     
-        else if (tk == "no_bottom_cathode") status |= CELL_NO_BOTTOM_CATHODE;   
-        else if (tk == "no_top_cathode") status |= CELL_NO_TOP_CATHODE;
-        else {
+        } else if (tk == "noisy") {
+          status |= CELL_NOISY;
+        } else if (tk == "on_trip") {
+          status |= CELL_ON_TRIP;
+        } else if (tk == "no_anode") {
+	  status |= CELL_NO_ANODE;
+	} else if (tk == "no_bottom_cathode") {
+	  status |= CELL_NO_BOTTOM_CATHODE;   
+        } else if (tk == "no_top_cathode") {
+	  status |= CELL_NO_TOP_CATHODE;
+        } else if (tk == "other_issues") {
+	  status |= CELL_OTHER_ISSUES;
+	} else {
           DT_THROW(std::logic_error, "Invalid tracker cell status label '" << tk << "'!");
         }
       }      
       return status;
     }
  
-    void tracker_cell_status_history::add(const time::time_period & period_, std::uint32_t status_)
+    void tracker_cell_status_history::add(const time::time_period & period_, const std::uint32_t status_)
     {
       if (_records_.size() and period_.begin() < _records_.back().period.end()) {
         DT_THROW(std::domain_error, "New period does not follow last record!");
@@ -141,6 +175,6 @@ namespace snemo {
       return _records_;
     }
      
-  }  // end of namespace rc
+  } // end of namespace rc
 
-}  // end of namespace snemo
+} // end of namespace snemo

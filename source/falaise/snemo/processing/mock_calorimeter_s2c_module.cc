@@ -141,7 +141,7 @@ namespace snemo {
       ///   - "" (empty) : no correction
       ///   - "bc"  : Birk-Cerenkov correction 
       ///   - "u"   : non uniformity correction 
-      ///   - "bcu" :  non uniformity and Birk-Cerenkov corrections
+      ///   - "bcu" : non uniformity and Birk-Cerenkov corrections
       ///
       if (ps.has_key("energy_corrections")) {
 	std::string ecorrRepr = ps.fetch_string("energy_corrections");
@@ -350,7 +350,7 @@ namespace snemo {
 	  geomtools::vector_3d  _position_stop_  = a_calo_mc_hit->get_position_stop();
 	  geomtools::vector_3d  _position_mean_ = 0.5 * (_position_start_ + _position_stop_);
 
-	  // In case of main wall, we want to retrieve the ID of the
+	  // In case of main wall block, we want to retrieve the ID of the
 	  // front scintillator (part with step) with [AAAA:B:C:D:E:1]
 	  geomtools::geom_id a_scin_gid = a_calo_mc_hit->get_geom_id();
 	  if (a_scin_gid.get_type() == 1302) a_scin_gid.set(4, 1);

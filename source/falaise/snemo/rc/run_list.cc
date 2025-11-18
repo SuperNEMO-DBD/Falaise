@@ -22,7 +22,7 @@ namespace snemo {
       _span_ = time::time_period{time::time_point(time::not_a_date_time),
                                  time::time_point(time::not_a_date_time)};
       _duration_ = time::time_duration{time::not_a_date_time};
-      _number_of_events_ = 0;
+      _number_of_entries_ = 0;
       _last_run_id_ = -1;
       return;
     }
@@ -136,13 +136,13 @@ namespace snemo {
       return;
     }
 
-    void run_list::_compute_number_of_events_()
+    void run_list::_compute_number_of_entries_()
     {
       std::size_t noe = 0;
       for (const auto & rd : _runs_) {
-        noe +=  rd.second.number_of_events();
+        noe +=  rd.second.number_of_entries();
       }
-      _number_of_events_ = noe;
+      _number_of_entries_ = noe;
       return;
     }
   
@@ -150,7 +150,7 @@ namespace snemo {
     {
       _compute_span_();
       _compute_duration_();
-      _compute_number_of_events_();
+      _compute_number_of_entries_();
       return;
     }
             
@@ -206,8 +206,8 @@ namespace snemo {
            << std::endl;
  
       out_ << popts.indent << tag
-           << "Number of events : "
-           << number_of_events()
+           << "Number of entries : "
+           << number_of_entries()
            << std::endl;
 
       out_ << popts.indent << inherit_tag(popts.inherit)

@@ -55,10 +55,20 @@ namespace snemo {
     std::locale & the_time_duration_locale();
 
     std::locale & the_time_duration_locale_input();
- 
-    double to_quantity(const time_duration & td_);
 
-    time_duration from_quantity(double duration_);
+		time_point epoch();
+
+		time_duration elapsed_since_epoch(const time_point & t_);
+
+		time_point sn_epoch();
+
+		time_duration elapsed_since_sn_epoch(const time_point & t_);
+  
+    double to_quantity(const time_duration & td_);
+  
+    double precision_quantity();
+
+    time_duration from_quantity(const double duration_);
      
     std::string to_string(const time_point & t_);
 
@@ -72,7 +82,8 @@ namespace snemo {
        TIME_PERIOD_FORMAT_DEFAULT = TIME_PERIOD_FORMAT_INCLUDE_LAST
       };
     
-    std::string to_string(const time_period & tp_, const time_period_format_type format_ = TIME_PERIOD_FORMAT_DEFAULT);
+    std::string to_string(const time_period & tp_,
+													const time_period_format_type format_ = TIME_PERIOD_FORMAT_DEFAULT);
  
     time_point time_point_from_string(const std::string & repr_);
  
@@ -86,30 +97,15 @@ namespace snemo {
 
     bool is_valid(const time_period & tp_);
   
-    inline void invalidate(time_point & t_)
-    {
-      t_ = time_point(not_a_date_time);
-    }
+    void invalidate(time_point & t_);
     
-    inline void invalidate(time_duration & td_)
-    {
-      td_ = time_duration(not_a_date_time);
-    }
+    void invalidate(time_duration & td_);
     
-    inline void invalidate(time_period & tp_)
-    {
-      tp_ = time_period(time_point(not_a_date_time), time_point(not_a_date_time));
-    }
-    
-    inline void invalidate(date & d_)
-    {
-      d_ = date(not_a_date_time);
-    }
+    void invalidate(time_period & tp_);
    
-    inline void invalidate(date_period & dp_)
-    {
-      dp_ = date_period(date(not_a_date_time), date(not_a_date_time));
-    }
+    void invalidate(date & d_);
+   
+		void invalidate(date_period & dp_);
 
     time_point invalid_point();
 
@@ -120,10 +116,14 @@ namespace snemo {
     date invalid_date();
   
     date_period invalid_date_period();
-  
-  }  // end of namespace time
 
-}  // end of namespace snemo
+		time_point time_point_from_epoch_sec(const double elapsed_from_epoch_);
+
+		time_duration time_duration_from_sec(const double elapsed_);
+		
+  } // end of namespace time
+
+} // end of namespace snemo
 
 #endif // FALAISE_SNEMO_TIME_TIME_UTILS_H
 

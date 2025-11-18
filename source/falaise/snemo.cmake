@@ -108,7 +108,13 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_calorimeter_s2c_module_utils.h
   snemo/processing/mock_tracker_s2c_module.h
 
-  # snemo/db/utils.hpp
+  snemo/db/field_description.hpp
+  snemo/db/table_description.hpp
+  snemo/db/database_description.hpp
+  snemo/db/factory.hpp
+  snemo/db/sndb.hpp
+  snemo/db/mariadb_utils.hpp
+  snemo/db/table_selection.hpp
   # snemo/db/calo_energy_calibration.hpp
 
   snemo/services/services.h
@@ -137,7 +143,10 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/physics_model/activity_model_factory.h
   snemo/physics_model/tracker_drift_model.hpp
 
+  snemo/rc/run_utils.h
+  snemo/rc/run_status.h
   snemo/rc/run_description.h
+  snemo/rc/run_phase.h
   snemo/rc/run_list.h
   snemo/rc/base_event.h
   snemo/rc/run_event.h
@@ -225,6 +234,12 @@ list(APPEND FalaiseLibrary_SOURCES
 
   # snemo/db/utils.cpp
   # snemo/db/calo_energy_calibration.cpp
+  snemo/db/field_description.cpp
+  snemo/db/table_description.cpp
+  snemo/db/database_description.cpp
+  snemo/db/factory.cpp
+  snemo/db/sndb.cpp
+  snemo/db/mariadb_utils.cpp
 
   snemo/services/services.cc
   snemo/services/hello_world.cc
@@ -256,7 +271,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/physics_model/activity_model_factory.cc
   snemo/physics_model/tracker_drift_model.cpp
 
+  snemo/rc/run_status.cc
   snemo/rc/run_description.cc
+  snemo/rc/run_phase.cc
   snemo/rc/run_list.cc
   snemo/rc/base_event.cc
   snemo/rc/run_event.cc
@@ -308,6 +325,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_time_time_utils.cxx
 
   snemo/test/test_snemo_rc_run_description.cxx
+  snemo/test/test_snemo_rc_run_phase.cxx
   snemo/test/test_snemo_rc_run_list.cxx
   snemo/test/test_snemo_rc_run_event.cxx
   snemo/test/test_snemo_rc_run_statistics.cxx
@@ -319,6 +337,14 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_physics_model_activity_model_factory.cxx
   snemo/test/test_snemo_physics_model_tracker_drift_model.cxx
 
+  snemo/test/test_snemo_db_field_description.cxx
+  snemo/test/test_snemo_db_table_description.cxx
+  snemo/test/test_snemo_db_database_description.cxx
+  snemo/test/test_snemo_db_factory.cxx
+  snemo/test/test_snemo_db_sndb.cxx
+
+  snemo/test/test_snemo_services_db_service.cxx
+  snemo/test/test_snemo_services_bus.cxx
   snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
@@ -327,6 +353,8 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx
 
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
+
+  snemo/test/test_snemo_dummy_module.cxx
 
 )
 

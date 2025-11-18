@@ -1,29 +1,40 @@
 /// \file falaise/snemo/db/table.hpp
 /* Author(s)     : Francois Mauger <mauger@lpccaen.in2p3.fr>
- * Creation date : 2024-08-28
- * Last modified : 2024-08-28
+ * Creation date : 2025-04-29
+ * Last modified : 2024-04-29
  *
- * Copyright (C) 2024 Francois Mauger <mauger@lpccaen.in2p3.fr>
+ * Copyright (C) 2025 Francois Mauger <mauger@lpccaen.in2p3.fr>
  */
 
-#ifndef FALAISE_SNEMO_DB_TABLE_H
-#define FALAISE_SNEMO_DB_TABLE_H 1
+#ifndef FALAISE_SNEMO_DB_TABLE_HPP
+#define FALAISE_SNEMO_DB_TABLE_HPP 1
 
 namespace snemo {
 
   namespace db {
 
-    std::string snemo_database();
- 
-    std::string snemo_user_readonly();
+		class table
+		{
+		public:
 
-    std::string snemo_calo_calib_table(const std::string & version_);
+			table(const std::string & name_);
 
+			~table() = default;
+
+			const std::string & name() const;
+		
+			
+		private:
+
+			std::string _name_;
+			
+		};
+		
   } // end of namespace db
 
 } // end of namespace snemo
 
-#endif // FALAISE_SNEMO_DB_TABLE_H
+#endif // FALAISE_SNEMO_DB_TABLE_HPP
 
 /*
 ** Local Variables: --

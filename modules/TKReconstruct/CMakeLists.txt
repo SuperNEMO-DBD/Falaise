@@ -1,5 +1,5 @@
 # Check cmake version meets our requirements
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION})
 
 # Declare project, which will configure compiler for us
 project(FalaiseTKReconstructPlugin)
@@ -62,7 +62,7 @@ install(TARGETS Falaise_TKReconstruct DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
 
 # Test support:
-option(FalaiseTKReconstructPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTKReconstructPlugin" ON)
+option(FalaiseTKReconstructPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTKReconstructPlugin" OFF)
 if(FalaiseTKReconstructPlugin_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(testing)

@@ -3,6 +3,10 @@
 // Ourselves:
 #include <falaise/snemo/datamodels/geomid_utils.h>
 
+// - Bayeux:
+#include <bayeux/datatools/exception.h>
+#include <bayeux/datatools/logger.h>
+
 namespace snemo {
 
   namespace datamodel {
@@ -10,9 +14,9 @@ namespace snemo {
     int om_num(const geomtools::geom_id & gid)
     {
       switch (gid.get_type())
-	{
-	case 1302: // MWALL case
-	case 1301:
+        {
+        case 1302: // MWALL case
+        case 1301:
           return gid.get(1)*20*13 + gid.get(2)*13 + gid.get(3);
 
         case 1232: // XWALL case
@@ -23,11 +27,47 @@ namespace snemo {
         case 1251:
           return 520 + 128 + gid.get(1)*2*16 + gid.get(2)*16 + gid.get(3);
 
+        case 90: // Reference OM
+          return gid.get(0);
+
         default:
           break;
         }
 
       return -1;
+    }
+
+    bool is_main_wall_om(const geomtools::geom_id & gid_)
+    {
+      if (gid_.get_type() == 1301 or gid_.get_type() == 1302) {
+        return true;
+      }
+      return false;
+    }
+    
+    bool is_xwall_om(const geomtools::geom_id & gid_)
+    {
+      if (gid_.get_type() == 1231 or gid_.get_type() == 1232) {
+        return true;
+      }
+      return false;
+    }
+    
+    bool is_gveto_om(const geomtools::geom_id & gid_)
+    {
+      if (gid_.get_type() == 1252 or gid_.get_type() == 1253) {
+        return true;
+      }
+      return false;
+    }
+
+    bool is_reference_om(const geomtools::geom_id & gid_)
+    {
+      if (gid_.get_type() == 90) {
+        DT_THROW_IF(gid_.get_depth() != 1, std::logic_error, "Invalid depth");
+        return true;
+      }
+      return false;
     }
 
     const std::map<int, geomtools::geom_id> & om_map()
@@ -61,6 +101,14 @@ namespace snemo {
             }
           }
         }
+        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Number of OM map entries = " << _om_map.size());
+        // DT_THROW(std::runtime_error, "Test geomid_utils.cc");
+        // Reference OMs:
+        for (int num = 712; num <= 716; num++) {
+          geomtools::geom_id gid(90, num);
+          _om_map[num] = gid;
+        }
+        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Number of OM map entries = " << _om_map.size());
       }
       return _om_map;
     }
@@ -68,21 +116,22 @@ namespace snemo {
     
     geomtools::geom_id om_gid(const int num_, bool block_, bool back_part_)
     {
-      auto found = om_map().find(num_);
-      DT_THROW_IF(found == om_map().end(), std::logic_error,
-                  "Invalid calo OM number " << num_ << "!");
+      const auto & omMap = om_map();
+      auto found = omMap.find(num_);
+      DT_THROW_IF(found == omMap.end(), std::logic_error,
+                  "Invalid OM number " << num_ << "!");
       auto gid = found->second;
       if (block_) {
-	int omType = gid.get_type();
-	gid.set_type(omType + 1); // MWall: 1301->1302, XWall: 1231->1232, GVeto:1252->1253
-	if (gid.get_type() == 1302) {
-	  gid.set(4, back_part_ ? 0 : 1); // Set the back or front part of the main calo block
-	}
+        int omType = gid.get_type();
+        gid.set_type(omType + 1); // MWall: 1301->1302, XWall: 1231->1232, GVeto:1252->1253
+        if (gid.get_type() == 1302) {
+          gid.set(4, back_part_ ? 0 : 1); // Set the back or front part of the main calo block
+        }
       }
       return gid;
     }
 
-    int gg_num (const geomtools::geom_id & gid)
+    int gg_num(const geomtools::geom_id & gid)
     {
       switch (gid.get_type())
         {
@@ -123,8 +172,8 @@ namespace snemo {
                   "Invalid geiger cell number " << num_ << "!");
       auto gid = found->second;
       if (cell_core_) {
-	int ggType = gid.get_type();
-	gid.set_type(ggType + 1); // 1203->1204
+        int ggType = gid.get_type();
+        gid.set_type(ggType + 1); // 1203->1204
       }
       return gid;
     }
@@ -166,7 +215,11 @@ namespace snemo {
           label += '.';
           label += std::to_string(gid.get(3));
           return label;
-
+          
+        case 90: // Reference OM
+          label = "R:";
+          label += std::to_string(gid.get(0));
+          
         default:
           break;
         }
@@ -174,7 +227,7 @@ namespace snemo {
       return label;
     }
 
-    std::string gg_label (const geomtools::geom_id & gid)
+    std::string gg_label(const geomtools::geom_id & gid)
     {
       std::string label;
 

@@ -34,11 +34,12 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
   message(FATAL_ERROR "in-source build detected")
 endif()
 
+set(FL_CMAKE_MINIMUM_VERSION 3.10)
 #-----------------------------------------------------------------------
 # CMake/project requirements and configuration
 #
-cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "5.1.6")
+cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION} FATAL_ERROR)
+project(Falaise VERSION "5.1.7")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -108,7 +109,7 @@ endif(FALAISE_WITH_DOCS)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.5.4)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.5)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 
 # Depends on SNRS (https://github.com/SuperNEMO-DBD/SNRS)
@@ -162,6 +163,34 @@ find_program(Python3Exe python3 DOC "Path to the python3 program" REQUIRED)
 if (NOT Python3Exe)
   message(FATAL_ERROR "The python3 executable was not located on this system")
 endif()
+
+# Depends on PkgConfig
+# see: https://stackoverflow.com/questions/29191855/what-is-the-proper-way-to-use-pkg-config-from-cmake#29316084
+find_package(PkgConfig REQUIRED)
+
+# - JsonCpp
+set(FALAISE_JSONCPP_MIN_VERSION "1.9.5")
+pkg_search_module(JSONCPP REQUIRED "jsoncpp>=${FALAISE_JSONCPP_MIN_VERSION}")
+#include_directories(SYSTEM ${JSONCPP_INCLUDE_DIRS})
+message(STATUS "Found JsonCpp ${JSONCPP_VERSION}")
+message(STATUS " - JsonCpp include dirs : '${JSONCPP_INCLUDE_DIRS}'")
+message(STATUS " - JsonCpp libraries    : '${JSONCPP_LIBRARIES}'")
+message(STATUS " - JsonCpp CFLAGS       : '${JSONCPP_CFLAGS}'")
+message(STATUS " - JsonCpp LDFLAGS      : '${JSONCPP_LDFLAGS}'")
+
+# Depends on MariaDB connector C++
+pkg_check_modules(LIBMARIADBCPP REQUIRED libmariadbcpp)
+message( STATUS "LIBMARIADBCPP_FOUND=${LIBMARIADBCPP_FOUND}")
+message( STATUS "LIBMARIADBCPP_INCLUDE_DIRS=${LIBMARIADBCPP_INCLUDE_DIRS}")
+message( STATUS "LIBMARIADBCPP_LIBRARY_DIR=${LIBMARIADBCPP_LIBRARY_DIR}")
+message( STATUS "LIBMARIADBCPP_LIBRARY_DIRS=${LIBMARIADBCPP_LIBRARY_DIRS}")
+message( STATUS "LIBMARIADBCPP_LIBRARIES=${LIBMARIADBCPP_LIBRARIES}")
+message( STATUS "LIBMARIADBCPP_CFLAGS=${LIBMARIADBCPP_CFLAGS}")
+# message( STATUS "LIBMARIADBCPP_CFLAGS_OTHER=${LIBMARIADBCPP_CFLAGS_OTHER}")
+message( STATUS "LIBMARIADBCPP_LDFLAGS=${LIBMARIADBCPP_LDFLAGS}")
+# message( STATUS "LIBMARIADBCPP_LDFLAGS_OTHER=${LIBMARIADBCPP_LDFLAGS_OTHER}")
+# set(FALAISE_MARIADB_CONNCPP_MIN_VERSION 1.1.8)
+# find_package(mariadb_conncpp ${FALAISE_MARIADB_CONNCPP_MIN_VERSION})
 
 # # Hack for Boost 1.69:
 # set(PROJECT_CXX_FLAGS "${PROJECT_CXX_FLAGS} -Wno-error=pedantic")

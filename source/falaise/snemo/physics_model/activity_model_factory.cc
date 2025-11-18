@@ -8,6 +8,7 @@
 // Ourselves:
 #include <falaise/snemo/physics_model/activity_model_factory.h>
 
+// Standard library:
 #include <cstdint>
 
 // Bayeux:

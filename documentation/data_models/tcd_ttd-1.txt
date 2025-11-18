@@ -1,0 +1,76 @@
+TCD1
+|-- auxiliaries
+|-- default solution: >1
+|-- solution0
+|   |-- id0
+|   |-- unclustered hits: [>0 >1 >2 >3]
+|   `-- clusters:
+|       |-- C0:
+|       |   |-- id0
+|       |   |-- delayed
+|       |   `-- hits: [>4 >5 >6 >7 >8 >9]
+|       `-- C1:
+|           |-- id1
+|           |-- delayed
+|           `-- hits: [>A >B >C >D >E >F >G >H]
+`-- solution1
+    |-- id1
+    |-- unclustered hits: [>0 >1]
+    `-- clusters:
+        |-- C0:
+        |   |-- id0
+        |   |-- delayed
+        |   `-- hits: [>4 >5 >6 >7]
+        |-- C1:
+        |   |-- id1
+        |   |-- delayed
+        |   `-- hits: [>A >B >C >D >E >F >G >H >2]
+        `-- C2:
+            |-- id2
+            |-- delayed
+            `-- hits: [>8 >9 >3]
+TCD2
+|-- auxiliaries
+|-- default solution: >0
+|-- solution0
+|   |-- id0
+|   |-- unclustered hits: [>I]
+|   `-- clusters:
+|       |-- C0:
+|       |   |-- id0
+|       |   |-- delayed
+|       |   `-- hits: [>J >K >L >M]
+|       `-- C1:
+|           |-- id1
+|           |-- delayed
+|           `-- hits: [>N >O >P >Q >R >S >T]
+|-- solution1
+|   |-- id1
+|   |-- unclustered hits: [>I >J]
+|   `-- clusters:
+|       |-- C0:
+|       |   |-- id0
+|       |   |-- delayed
+|       |   `-- hits: [>K >L >T]
+|       `-- C1:
+|           |-- id1
+|           |-- delayed
+|           `-- hits: [>M >N >O >P >Q >R >S]
+`-- solution2
+    |-- id2
+    |-- unclustered hits: []
+    `-- clusters:
+        |-- C0:
+        |   |-- id0
+        |   |-- delayed
+        |   `-- hits: [>I >J >K >L]
+        `-- C1:
+            |-- id1
+            |-- delayed
+            `-- hits: [>M >N >O >P >Q >R >S >T]
+
+
+
+
+
+

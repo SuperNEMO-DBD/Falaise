@@ -101,7 +101,7 @@ void test1()
     std::string foutName = "run_decay_random-" + std::to_string(runId) + ".data";
     std::ofstream fout(foutName);
     unsigned int runNbDecays = (unsigned int) (nbDecays * runRec.probability);
-    fout << "#@nb-decays-ref=" << runStats.runs().get_run(runId).number_of_events() << '\n';
+    fout << "#@nb-decays-ref=" << runStats.runs().get_run(runId).number_of_entries() << '\n';
     fout << "#@nb-decays=" << nbDecays << '\n';
     snt::time_point runStart = runStats.runs().get_run(runId).begin();
     fout << "#@time-start=" << snt::to_quantity(runStart - tStart) / CLHEP::microsecond << '\n';
@@ -140,16 +140,16 @@ void test1()
   }
 
   
-  std::uint32_t nbEvents = 1000;
+  std::uint32_t nbEntries = 1000;
   unsigned long randomSeed = 3141591;
   randomSeed = 0;
   datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
   // logging = datatools::logger::PRIO_DEBUG;
   std::unique_ptr<snrc::mc_event_distribution> mcEventDist;
   if (randomSeed == 0) {
-    mcEventDist = snrc::mc_event_distribution::make_regular_sampling(runStats, nbEvents, logging);
+    mcEventDist = snrc::mc_event_distribution::make_regular_sampling(runStats, nbEntries, logging);
   } else {
-    mcEventDist = snrc::mc_event_distribution::make_random_sampling(runStats, nbEvents, randomSeed, logging);
+    mcEventDist = snrc::mc_event_distribution::make_random_sampling(runStats, nbEntries, randomSeed, logging);
   }
   std::clog << "\nMC event distribution: " << '\n';
   mcEventDist->print_tree(std::clog);

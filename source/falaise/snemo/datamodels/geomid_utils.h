@@ -27,17 +27,29 @@ namespace snemo {
     // Compute the OM geom_id (unique geometry identifier) from the OM num (unique integer identifier)
     geomtools::geom_id om_gid(const int num_, bool block_ = false, bool back_part_ = false);
 
-		// Return a singleton num->geom_id map for OMs
-		const std::map<int, geomtools::geom_id> & om_map();
+    // Return a singleton num->geom_id map for OMs
+    const std::map<int, geomtools::geom_id> & om_map();
 
+    /// Check if a geom ID is associated to a main wall optical module
+    bool is_main_wall_om(const geomtools::geom_id & gid);
+
+    /// Check if a geom ID is associated to a X-wall optical module
+    bool is_xwall_om(const geomtools::geom_id & gid);
+
+    /// Check if a geom ID is associated to a gamma veto optical module
+    bool is_gveto_om(const geomtools::geom_id & gid);   
+ 
+    /// Check if a geom ID is associated to a reference optical module
+    bool is_reference_om(const geomtools::geom_id & gid);
+    
     // Compute the GG num (unique integer identifier) from geom_id (unique geometry identifier)
     int gg_num(const geomtools::geom_id & gid);
 
     // Compute the GG geom_id (unique geometry identifier) from the GG num (unique integer identifier)
     geomtools::geom_id gg_gid(const int num_, bool cell_core_ = false);
 
-		// Return a singleton num->geom_id map for GG cells
-		const std::map<int, geomtools::geom_id> & gg_map();
+    // Return a singleton num->geom_id map for GG cells
+    const std::map<int, geomtools::geom_id> & gg_map();
 
     // Provide the OM label from geom_id (example: "X:1.0.5.19")
     std::string om_label(const geomtools::geom_id & gid);

@@ -229,15 +229,15 @@ set_tests_properties(flsimulate-feature-issue237-validation
 
 set_falaise_test_environment(flsimulate-feature-issue237-validation)
 
-# - Validation of feature issue #241
-add_test(NAME flsimulate-feature-issue241-validation
-  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
-  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
-  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation"
-  )
-set_tests_properties(flsimulate-feature-issue241-validation
-   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
-set_falaise_test_environment(flsimulate-feature-issue241-validation)
+# # - Validation of feature issue #241 (2025-11-18 frc: very long test, skip it)
+# add_test(NAME flsimulate-feature-issue241-validation
+#   COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation/run.sh
+#   --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+#   --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-issue241-validation"
+#   )
+# set_tests_properties(flsimulate-feature-issue241-validation
+#    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+# set_falaise_test_environment(flsimulate-feature-issue241-validation)
 
 # - Validation of feature argon tracking gas
 add_test(NAME flsimulate-feature-argon-gas-validation

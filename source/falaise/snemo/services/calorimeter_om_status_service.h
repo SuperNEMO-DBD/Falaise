@@ -8,6 +8,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <optional>
 
 // - Bayeux:
 #include <bayeux/datatools/base_service.h>
@@ -72,9 +73,9 @@ namespace snemo {
 
     // void make_om_status_map(std::ostream & out_, const time::time_point & t_) const;
 
-    typedef std::map<geomtools::geom_id, snemo::rc::calorimeter_om_status_history> history_type;
+    typedef std::map<geomtools::geom_id, snemo::rc::calorimeter_om_status_history> history_map_type;
     
-    const history_type & get_histories() const;
+    const history_map_type & get_histories() const;
     
     //! Smart print
     void print_tree(std::ostream & out_ = std::clog,
@@ -97,7 +98,8 @@ namespace snemo {
     const geomtools::manager * _geomgr_ = nullptr;
     std::uint32_t _om_types_[3] = { 1301, 1231, 1251 };
     const snemo::db_service * _db_service_ = nullptr;
-    history_type _histories_;
+    std::optional<time::time_period> _period_;
+    history_map_type _histories_;
     
     DATATOOLS_SERVICE_REGISTRATION_INTERFACE(calorimeter_om_status_service)
       

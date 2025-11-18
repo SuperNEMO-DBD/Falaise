@@ -724,7 +724,9 @@ void browser_tracks::_update_digitized_data() {
 
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        a_hit.tree_dump(tip_text);
+				boost::property_tree::ptree poptions;
+        a_hit.print_tree(tip_text, poptions);
+        // a_hit.tree_dump(tip_text);
       } else {
         tip_text << "Double click to highlight calorimeter hit "
                  << "and to dump info on terminal";
@@ -771,7 +773,9 @@ void browser_tracks::_update_digitized_data() {
 
       std::ostringstream tip_text;
       if (options_mgr.get_option_flag(DUMP_INTO_TOOLTIP)) {
-        a_hit.tree_dump(tip_text);
+				boost::property_tree::ptree poptions;
+        a_hit.print_tree(tip_text, poptions);
+        // a_hit.tree_dump(tip_text);
       } else {
         tip_text << "Double click to highlight Geiger hit "
                  << "and to dump info on terminal";
