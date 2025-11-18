@@ -38,7 +38,7 @@ endif()
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION 3.3 FATAL_ERROR)
-project(Falaise VERSION "5.1.6")
+project(Falaise VERSION "5.1.7")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)
@@ -108,7 +108,7 @@ endif(FALAISE_WITH_DOCS)
 # - GSL
 # - ROOT
 # - Geant4
-set(FALAISE_BAYEUX_MIN_VERSION 3.5.4)
+set(FALAISE_BAYEUX_MIN_VERSION 3.5.5)
 find_package(Bayeux ${FALAISE_BAYEUX_MIN_VERSION} REQUIRED geant4)
 
 # Depends on SNRS (https://github.com/SuperNEMO-DBD/SNRS)
