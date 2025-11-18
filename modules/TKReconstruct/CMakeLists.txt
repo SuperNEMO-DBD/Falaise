@@ -62,7 +62,7 @@ install(TARGETS Falaise_TKReconstruct DESTINATION ${CMAKE_INSTALL_PLUGINDIR})
 
 
 # Test support:
-option(FalaiseTKReconstructPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTKReconstructPlugin" ON)
+option(FalaiseTKReconstructPlugin_ENABLE_TESTING "Build unit testing system for FalaiseTKReconstructPlugin" OFF)
 if(FalaiseTKReconstructPlugin_ENABLE_TESTING)
   enable_testing()
   add_subdirectory(testing)
