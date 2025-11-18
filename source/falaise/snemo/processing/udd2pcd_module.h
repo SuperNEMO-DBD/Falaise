@@ -27,9 +27,11 @@
 #include <CLHEP/Units/SystemOfUnits.h>
 
 // This project :
-#include <falaise/snemo/datamodels/unified_digitized_data.h>
-#include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
 #include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
+#include <falaise/snemo/datamodels/precalibrated_calorimeter_hit.h>
+#include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/processing/module.h>
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
@@ -43,8 +45,7 @@ namespace snemo {
   namespace processing {
 
     /// \brief A processing module for UDD data to pCD tracker and calorimeter hits
-    class udd2pcd_module
-      : public dpp::base_module
+    class udd2pcd_module : public dpp::base_module
     {
 
       enum calorimeter_precalibration_algorithm
@@ -75,6 +76,10 @@ namespace snemo {
       virtual process_status process(datatools::things& event);
 
     private:
+
+      /// Calorimeter waveform flagging
+      void calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+					 snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_);
 
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -116,6 +121,7 @@ namespace snemo {
       int    _calo_baseline_nsamples_;
       int    _calo_charge_integration_nsamples_;
       int    _calo_charge_integration_nsamples_before_peak_;
+      int    _calo_charge_integration_samples_max_;
       double _calo_time_cfd_ratio_;
       bool   _calo_discard_empty_waveform_;
 

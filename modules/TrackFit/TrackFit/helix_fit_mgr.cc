@@ -167,14 +167,19 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
   double mean_x = 0.;
   double mean_y = 0.;
   double mean_z = 0.;
+  double stats = 0;
   for (const auto &hit : hits_) {
+    if (hit.get_properties().has_flag("invalid_z")) {
+      continue;
+    }
     mean_x += hit.get_x();
     mean_y += hit.get_y();
     mean_z += hit.get_z();
+    stats++;
   }
-  mean_x /= hits_.size();
-  mean_y /= hits_.size();
-  mean_z /= hits_.size();
+  mean_x /= stats;
+  mean_y /= stats;
+  mean_z /= stats;
 
   const geomtools::vector_3d mean_hit(mean_x, mean_y, 0);
   geomtools::vector_3d mean_direction = mean_hit - Oh;
@@ -199,7 +204,7 @@ void helix_fit_mgr::compute_angles(const gg_hits_col &hits_, helix_fit_params &t
     geomtools::vector_3d trans_dir = direction.transform(dir_rot);
     double angle = atan2(trans_dir.y(), trans_dir.x());
 
-    if (compute_step_) {
+    if (compute_step_ && !(hit.get_properties().has_flag("invalid_z"))) {
       if (angle < 0.) {
         mean_theta_l.add(angle);
         mean_z_l.add(hit.get_z());
@@ -1159,8 +1164,16 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
                                                helix_fit_params &guess_, bool draw_) {
   const int guess_mode = guess_mode_;
 
+
+  size_t nb_hits_with_z = 0;
+  for (const auto &hit : hits_) {
+    if (!hit.get_properties().has_flag("invalid_z")) {
+      nb_hits_with_z++;
+    }
+  }
+
   const size_t minimum_number_of_hits = helix_fit_mgr::constants::min_number_of_hits();
-  if (hits_.size() < minimum_number_of_hits) {
+  if ((hits_.size() < minimum_number_of_hits) || (nb_hits_with_z < 2)) {
     return false;
   }
 
@@ -1191,16 +1204,22 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
   double dist = -std::numeric_limits<double>::infinity();
   auto iter_hit_1 = hits_.end();
   auto iter_hit_2 = hits_.end();
+
+  double zmin = std::numeric_limits<double>::max();
+  double zmax = std::numeric_limits<double>::min();
+  auto iter_hit_zmin = hits_.end();
+  auto iter_hit_zmax = hits_.end();
+
   for (auto i = hits_.begin(); i != hits_.end(); ++i) {
     const gg_hit &hit_1 = *i;
-    const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
+    const geomtools::vector_3d pos1(hit_1.get_x(), hit_1.get_y(), 0); // hit_1.get_z());
 
     // Loop on the other hits :
     auto j_start = i;
     j_start++;
     for (auto j = j_start; j != hits_.end(); ++j) {
       const gg_hit &hit_2 = *j;
-      const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), hit_2.get_z());
+      const geomtools::vector_3d pos2(hit_2.get_x(), hit_2.get_y(), 0); // hit_2.get_z());
 
       // Compute distance between two hits :
       const double d12 = (pos2 - pos1).mag();
@@ -1210,6 +1229,20 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
         iter_hit_2 = j;
       }
     }
+
+    if (hit_1.get_properties().has_flag("invalid_z"))
+      continue;
+
+    if (hit_1.get_z() < zmin) {
+      zmin = hit_1.get_z();
+      iter_hit_zmin = i;
+    }
+
+    if (hit_1.get_z() > zmax) {
+      zmax = hit_1.get_z();
+      iter_hit_zmax = i;
+    }
+
   }
 
   if (_logging_priority_ >= datatools::logger::PRIO_TRACE) {
@@ -1219,9 +1252,16 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
 
   const gg_hit &hit_1 = *iter_hit_1;
   const gg_hit &hit_2 = *iter_hit_2;
+  const gg_hit &hit_zmin = *iter_hit_zmin;
+  const gg_hit &hit_zmax = *iter_hit_zmax;
 
-  const geomtools::vector_3d p_hit1(hit_1.get_x(), hit_1.get_y(), hit_1.get_z());
-  const geomtools::vector_3d p_hit2(hit_2.get_x(), hit_2.get_y(), hit_2.get_z());
+  const geomtools::vector_3d distxy1_zmin (hit_zmin.get_x()-hit_1.get_x(), hit_zmin.get_y()-hit_1.get_y(), 0);
+  const geomtools::vector_3d distxy1_zmax (hit_zmax.get_x()-hit_1.get_x(), hit_zmax.get_y()-hit_1.get_y(), 0);
+  const bool hit1_with_zmin = distxy1_zmin.mag() < distxy1_zmax.mag();
+
+  // artifically use zmin/zmax for hit_1/hit_2
+  const geomtools::vector_3d p_hit1(hit_1.get_x(), hit_1.get_y(), hit1_with_zmin ? zmin : zmax);
+  const geomtools::vector_3d p_hit2(hit_2.get_x(), hit_2.get_y(), hit1_with_zmin ? zmax : zmin);
   const geomtools::vector_3d p_med = 0.5 * (p_hit1 + p_hit2);
   const double z_ref = p_med.z();
   const geomtools::vector_3d u = (p_med - p_hit1).unit();
@@ -1633,6 +1673,9 @@ bool helix_fit_mgr::guess_utils::compute_guess(const gg_hits_col &hits_, int gue
 
     // DRAW HITS:
     for (auto hit : hits_) {
+      if (hit.get_properties().has_flag("invalid_z")) {
+	continue;
+      }
       const double xi = hit.get_x();
       const double yi = hit.get_y();
       const double zi = hit.get_z();

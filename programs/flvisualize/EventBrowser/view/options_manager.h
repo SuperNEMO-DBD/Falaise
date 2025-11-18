@@ -97,6 +97,10 @@ class options_manager : public utils::singleton<options_manager> {
 
   const std::vector<std::string>& get_input_files() const;
 
+	void set_event_number(const uint32_t& event_number_);
+
+	uint32_t get_event_number() const;
+
   bool is_preload_required() const;
 
   bool is_automatic_event_reading_mode() const;
@@ -158,6 +162,8 @@ class options_manager : public utils::singleton<options_manager> {
   std::map<button_signals_type, bool> _options_dictionnary_;
 
   std::vector<std::string> _input_files_;
+
+	uint32_t _event_number_;
 
   std::vector<std::string> _libraries_;
 

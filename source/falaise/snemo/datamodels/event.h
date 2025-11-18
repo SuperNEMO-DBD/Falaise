@@ -39,14 +39,12 @@ namespace snedm {
    * \code
    * // Usually in the "process" member function of a Falaise module
    * SomeDataType* x{nullptr};
-   *
    * if(event.has(key)) {
    *   x = event.grab<SomeDataType>(key); // throws if key does not hold a value of type T
    * }
    * else {
    *   x = event.add<SomeDataType>(key);
    * }
-   *
    * // do something with x
    * \endcode
    *

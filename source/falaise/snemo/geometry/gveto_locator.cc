@@ -413,12 +413,12 @@ namespace snemo {
         DT_THROW_IF(
                     column >= backCaloBlock_Y_[wall].size(), std::out_of_range,
                     "Invalid column number(" << column << ">" << backCaloBlock_Y_[wall].size() - 1 << ")!");
-        return backCaloBlock_X_[wall][0];
+        return backCaloBlock_X_[wall][0]; // 2025-10-23 FM: bugfix 
       }
       DT_THROW_IF(
                   column >= frontCaloBlock_Y_[wall].size(), std::out_of_range,
                   "Invalid column number(" << column << ">" << frontCaloBlock_Y_[wall].size() - 1 << ")!");
-      return frontCaloBlock_X_[wall][0];
+      return frontCaloBlock_X_[wall][0]; // 2025-10-23 FM: bugfix 
     }
 
     double gveto_locator::getYCoordOfColumn(uint32_t side, uint32_t wall, uint32_t column) const {
