@@ -85,6 +85,7 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
 include_directories(${Falaise_SNRS_INC_PATH})
+include_directories(${LIBMARIADBCPP_INCLUDE_DIRS})
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source>
@@ -101,8 +102,10 @@ message(STATUS "LIBMARIADBCPP_INCLUDE_DIRS=${LIBMARIADBCPP_INCLUDE_DIRS}" )
 
 # BAYEUX:
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
-target_link_libraries(Falaise PUBLIC ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
-target_link_libraries(Falaise PUBLIC ${LIBMARIADBCPP_LIBRARY_DIRS}/${CMAKE_SHARED_LIBRARY_PREFIX}${LIBMARIADBCPP_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX})
+target_link_libraries(Falaise PUBLIC
+  ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
+target_link_libraries(Falaise PUBLIC
+  ${LIBMARIADBCPP_LIBRARY_DIRS}/${CMAKE_SHARED_LIBRARY_PREFIX}${LIBMARIADBCPP_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX})
 # target_link_libraries(Falaise PUBLIC ${LIBMARIADBCPP_LDFLAGS})
 
 # SNRS:
