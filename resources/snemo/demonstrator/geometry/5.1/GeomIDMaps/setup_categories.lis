@@ -15,10 +15,9 @@
   # To generate GID = [110:0]
 
 [category="external_shield" type="200"]
-  addresses : string[1] = "side"
+  addresses : string[2] = "material"
   # To generate GID = [200:0]
 
 [category="module" type="1000"]
   addresses : string[1] = "module"
   # To generate GID = [1000:0]
-

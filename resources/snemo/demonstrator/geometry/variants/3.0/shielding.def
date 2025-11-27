@@ -1,5 +1,3 @@
-
-
 [name="shielding.layout.PM" type="parameter"]
   #@config A parameter describing the geometry model of shielding layout
   display_name              : string = "Model of shielding layout"
@@ -8,20 +6,25 @@
     variable.mode : string = "enumeration"
   type : string = "string"
     string.default : string = "SimplifiedIron"
-    string.enumerated.size : integer = 2
+    string.enumerated.size : integer = 3
       string.enumerated_0.value         : string = "SimplifiedIron"
       string.enumerated_0.documentation : string = "Simplified model of iron shielding"
       string.enumerated_0.variant       : string = "if_simplified_iron"
-      string.enumerated_1.value         : string = "Realistic1"
-      string.enumerated_1.documentation : string = "First realistic model of shielding"
-      string.enumerated_1.variant       : string = "if_realistic_1"
-  variants : string[2] = "if_simplified_iron" "if_realistic_1" 
-    variants.if_simplified_iron.model       : string = "datatools::basic::is_on.VM"
-    # variants.if_simplified_iron.description : string = "Set of parameters for simplified iron shielding layout"
-    variants.if_realistic_1.model           : string = "datatools::basic::is_on.VM"
-    # variants.if_realistic_1.description     : string = "Set of parameters for realistic shielding layout #1"
- 
+      string.enumerated_1.value         : string = "Realistic_Lab"
+      string.enumerated_1.documentation : string = "Realistic model of lab (Magnet + AntiRadon Tent + Support Frame)"
+      string.enumerated_1.variant       : string = "if_realistic_lab_no_shield"
+      string.enumerated_2.value         : string = "Realistic_Lab_Improved_Shield"
+      string.enumerated_2.documentation : string = "Realistic model of lab (Magnet + AntiRadon Tent + Support Frame) including the full shielding (Iron + Polyethylene)"
+      string.enumerated_2.variant       : string = "if_realistic_lab_full_shield"
 
+  variants : string[3] = "if_simplified_iron" "if_realistic_lab_no_shield" "if_realistic_lab_full_shield"
+    variants.if_simplified_iron.model       : string = "datatools::basic::is_on.VM"
+    variants.if_simplified_iron.description : string = "Set of parameters for simplified iron shielding layout"
+    variants.if_realistic_lab_no_shield.model       : string = "datatools::basic::is_on.VM"
+    variants.if_realistic_lab_no_shield.description : string = "Set of parameters for realistic lab layout"
+    variants.if_realistic_lab_full_shield.model       : string = "datatools::basic::is_on.VM"
+    variants.if_realistic_lab_full_shield.description : string = "Set of parameters for realsitic lab layout with shielding"
+    
 [name="shielding.description.VM" type="variant"]
   #@config A variant model describing the active shielding
   display_name       : string = "Description of the shielding"

@@ -1,0 +1,19 @@
+#@description A sample list of geometry ID categories/types for tracker submodules
+#@key_label   "category"
+#@meta_label  "type"
+
+[category="shield_section" type="6000"]
+  extends : string    = "external_shield"
+  by      : string[1] = "material_type"
+
+[category="shield_subsection" type="6500"]
+  extends : string    = "shield_section"
+  by      : string[1] = "segment"
+
+[category="shield_subsubsection" type="7000"]
+  extends : string    = "shield_subsection"
+  by      : string[1] = "part"
+
+  [category="wire" type="8000"]
+  extends : string    = "shield_subsubsection"
+  by      : string[1] = "wire_part"
