@@ -26,7 +26,6 @@ visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
 
 
-
 [name="support_frame_top_short_beam.model" type="geomtools::stacked_model"]
   #@config Simplified demonstrator module
   stacked.axis : string = "z"
@@ -41,10 +40,7 @@ visibility.color            : string  = "green"
   material.ref : string = "lab_air"
 
 
-
-
 #///////////////////////Support Frame Beam Top Long///////////////////////
-
 
 [name="support_frame_top_long_beam_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -57,6 +53,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_top_long_beam_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -85,10 +82,6 @@ visibility.color            : string  = "green"
   material.ref : string = "lab_air"
 
 
-
-
-
-
 #///////////////////////Support Frame Beam Top Iron Shield Segment 1///////////////////////
 
 [name="support_frame_top_long_beam_segment_1_section_a.model" type="geomtools::simple_boxed_model"]
@@ -102,6 +95,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_top_long_beam_segment_1_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -173,7 +167,6 @@ visibility.color            : string  = "green"
 
 #///////////////////////Support Frame Beam Top Iron Shield Segment in Wall///////////////////////
 
-
 [name="support_frame_top_long_in_iron_wall_beam_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
 shape_type : string = "box"
@@ -198,7 +191,6 @@ visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
 
-
 [name="support_frame_top_long_in_iron_wall_beam.model" type="geomtools::stacked_model"]
   #@config Simplified demonstrator module
   stacked.axis : string = "z"
@@ -213,14 +205,7 @@ visibility.color            : string  = "green"
   material.ref : string = "lab_air"
 
 
-
-
-
-
-
-
 #///////////////////////Support Frame Bot///////////////////////
-
 
 [name="support_frame_bot_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -233,6 +218,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_bot_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -263,7 +249,6 @@ material.ref : string = "lab_air"
 
 #///////////////////////Support Frame Bot Iron Shield Segment 1///////////////////////
 
-
 [name="support_frame_bot_beam_segment_1_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
 shape_type : string = "box"
@@ -275,6 +260,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_bot_beam_segment_1_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -303,9 +289,7 @@ stacked.label_2 : string = "t_beam_2"
 material.ref : string = "lab_air"
 
 
-
 #///////////////////////Support Frame Bot Iron Shield Segment 2///////////////////////
-
 
 [name="support_frame_bot_beam_segment_2_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -318,6 +302,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_bot_beam_segment_2_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -346,9 +331,7 @@ stacked.label_2 : string = "t_beam_2"
 material.ref : string = "lab_air"
 
 
-
 #///////////////////////Support Frame Bot Iron Shield Segment in Wall///////////////////////
-
 
 [name="support_frame_bot_in_iron_wall_beam_section_a.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -361,6 +344,7 @@ visibility.hidden           : boolean = false
 visibility.hidden_envelope  : boolean = false
 visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
+
 
 [name="support_frame_bot_in_iron_wall_beam_section_b.model" type="geomtools::simple_boxed_model"]
 #@config New shielding wall
@@ -387,9 +371,6 @@ stacked.model_2 : string = "support_frame_bot_in_iron_wall_beam_section_b.model"
 stacked.label_2 : string = "t_beam_2"
     
 material.ref : string = "lab_air"
-
-
-
 
 
 #///////////////////////Support Frame Beam Vertical///////////////////////
@@ -420,7 +401,6 @@ visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
 
 
-
 [name="support_frame_beam_vertical.model" type="geomtools::stacked_model"]
   #@config Simplified demonstrator module
   stacked.axis : string = "x"
@@ -433,8 +413,6 @@ visibility.color            : string  = "green"
     stacked.label_2 : string = "t_beam_2"
     
   material.ref : string = "lab_air"
-
-
 
 
 #///////////////////////Support Frame Beam Slanted Section///////////////////////
@@ -452,10 +430,7 @@ visibility.daughters.hidden : boolean = false
 visibility.color            : string  = "green"
 
 
-
-
 #///////////////////////Support Frame Walls//////////////////////
-
 
    [name="support_frame_fr_it.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
@@ -465,7 +440,7 @@ visibility.color            : string  = "green"
     x : real as length = 500 mm
     y : real as length = 9200.0 mm
     z : real as length = 6157.0 mm
-  material.ref : string = "lab_air"
+   material.ref : string = "lab_air"
 
         internal_item.labels : string[7] = \
         "vertical_column_1" \
@@ -492,8 +467,6 @@ visibility.color            : string  = "green"
         internal_item.placement.horizontal_column_2 : string = "-157.5 -1301 2828.5 (mm) "
 
   
-
-
 [name="support_frame_it_on_iron_shield.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
@@ -524,10 +497,6 @@ visibility.color            : string  = "green"
         internal_item.placement.support_bot_beam_2 : string = "0 0 -2769 (mm) / z 90 (degree)"
         internal_item.model.support_bot_beam_3     : string = "support_frame_bot_beam_segment_1.model"
         internal_item.placement.support_bot_beam_3 : string = "0 2608 -2769 (mm) / z 90 (degree)"
-   
-   
-
-
 
 
    [name="support_frame_ceiling.model" type="geomtools::simple_shaped_model"]
@@ -538,7 +507,7 @@ visibility.color            : string  = "green"
     x : real as length = 6716 mm
     y : real as length = 4800 mm
     z : real as length = 500 mm
-  material.ref : string = "lab_air"
+   material.ref : string = "lab_air"
 
         internal_item.labels : string[3] = \
         "horizontal_column_long1" \
@@ -553,7 +522,6 @@ visibility.color            : string  = "green"
         internal_item.placement.horizontal_column_long3 : string = "+2608 0 0 (mm) / y 180 (degree)"
      
 
-
    [name="support_frame_ceiling_inside_shield.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
@@ -562,7 +530,7 @@ visibility.color            : string  = "green"
     x : real as length = 3000 mm
     y : real as length = 6000 mm
     z : real as length = 500 mm
-  material.ref : string = "lab_air"
+   material.ref : string = "lab_air"
 
         internal_item.labels : string[3] = \
         "horizontal_column_long1" \
@@ -577,10 +545,6 @@ visibility.color            : string  = "green"
         internal_item.placement.horizontal_column_long3 : string = "0 2608 0 (mm) / z 90 (degree)"
 
 
-
-
-
-
   [name="support_frame_floor.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
@@ -589,7 +553,7 @@ visibility.color            : string  = "green"
     x : real as length = 6716 mm
     y : real as length = 4800 mm
     z : real as length = 600 mm
-  material.ref : string = "lab_air"
+   material.ref : string = "lab_air"
 
         internal_item.labels : string[3] = \
         "horizontal_column_long1" \
@@ -604,3 +568,4 @@ visibility.color            : string  = "green"
         internal_item.placement.horizontal_column_long3 : string = "+2608 0 0 (mm) / y 180 (degree)"
      
 
+# end

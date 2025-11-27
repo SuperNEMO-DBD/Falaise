@@ -15,9 +15,29 @@
   # To generate GID = [110:0]
 
 [category="external_shield" type="200"]
-  addresses : string[2] = "material"
+  addresses : string[1] = "side"
   # To generate GID = [200:0]
+
+[category="water_shield" type="210"]
+  addresses : string[1] = "side"
+  # To generate GID = [210:0]
+
+[category="polyethylene_shield" type="220"]
+  addresses : string[1] = "side"
+  # To generate GID = [220:0]
+
+[category="support_frame" type="300"]
+  addresses : string[1] = "frame"
+  # To generate GID = [300:0]
+
+[category="art_panel" type="310"]
+  addresses : string[1] = "wall"
+  # To generate GID = [310:0]
 
 [category="module" type="1000"]
   addresses : string[1] = "module"
   # To generate GID = [1000:0]
+
+[category="reference_optical_module" type="1999"]
+  addresses : string[1] = "item"
+  # To generate GID = [1999:0] ... [1999:4]
