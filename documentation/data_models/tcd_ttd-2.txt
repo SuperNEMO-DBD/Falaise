@@ -1,0 +1,73 @@
+TTD1
+|-- auxiliaries
+|-- default solution: >2
+|-- solution0
+|   |-- id0
+|   |-- clustering solution : >TCD1.0
+|   |-- unfitted clusters: []
+|   |-- auxiliaries 
+|   `-- trajectories:
+|       |-- T0:
+|       |   |-- id0
+|       |   |-- cluster: >C0
+|       |   `-- pattern
+|       `-- T1:
+|           |-- id1
+|           |-- cluster: >C1
+|           `-- pattern
+|-- solution1
+|   |-- id1
+|   |-- clustering solution : >TCD1.1
+|   |-- unfitted clusters: [>C2]
+|   |-- auxiliaries 
+|   `-- trajectories:
+|       |-- T0:
+|       |   |-- id0
+|       |   |-- cluster: >C0 
+|       |   `-- pattern
+|       |-- T1:
+|       |   |-- id1
+|       |   |-- cluster: >C0
+|       |   `-- pattern
+|       `-- T2:
+|           |-- id2
+|           |-- cluster: >C1
+|           `-- pattern
+|-- solution2
+|   |-- id2
+|   |-- clustering solution : >TCD1.1
+|   |-- unfitted clusters: [>C1 >C2]
+|   |-- auxiliaries 
+|   `-- trajectories:
+|       |-- T0:
+|       |   |-- id0
+|       |   |-- cluster: >C0 
+|       |   `-- pattern
+|       `-- T1:
+|           |-- id1
+|           |-- cluster: >C0 
+|           `-- pattern
+`-- solution3
+    |-- id3
+    |-- clustering solution : >TCD1.1
+    |-- unfitted clusters: [>C2]
+    |-- auxiliaries 
+    `-- trajectories:
+        |-- T0:
+        |   |-- id0
+        |   |-- cluster: >C0 
+        |   `-- pattern
+        |-- T1:
+        |   |-- id1
+        |   |-- cluster: >C1
+        |   `-- pattern
+        `-- T2:
+            |-- id2
+            |-- cluster: >C1
+            `-- pattern
+
+
+
+
+
+

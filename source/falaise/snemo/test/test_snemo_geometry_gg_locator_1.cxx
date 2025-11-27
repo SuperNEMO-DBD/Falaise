@@ -537,6 +537,8 @@ void test6(geomtools::manager& a_mgr, bool draw_) {
   }  // Draw
 }
 
+void test7(geomtools::manager& a_mgr, bool draw_);
+
 int main(int argc_, char** argv_) {
   falaise::initialize(argc_, argv_);
   int error_code = EXIT_SUCCESS;
@@ -557,6 +559,7 @@ int main(int argc_, char** argv_) {
     bool do_test4 = true;
     bool do_test5 = true;
     bool do_test6 = true;
+    bool do_test7 = true;
 
     int iarg = 1;
     while (iarg < argc_) {
@@ -592,6 +595,8 @@ int main(int argc_, char** argv_) {
           do_test5 = false;
         } else if ((option == "-T6") || (option == "--no-test6")) {
           do_test6 = false;
+        } else if ((option == "-T7") || (option == "--no-test7")) {
+          do_test7 = false;
         } else if ((option == "-V") || (option == "--verbose")) {
           verbose = true;
         } else if ((option == "-F") || (option == "--file")) {
@@ -709,6 +714,10 @@ int main(int argc_, char** argv_) {
       test6(my_manager, draw);
     }
 
+    if (do_test7) {
+      test7(my_manager, draw);
+    }
+
   } catch (exception& x) {
     cerr << "ERROR: " << x.what() << endl;
     error_code = EXIT_FAILURE;
@@ -720,3 +729,33 @@ int main(int argc_, char** argv_) {
   falaise::terminate();
   return (error_code);
 }
+
+
+// 2024-04-10 FM
+void test7(geomtools::manager& a_mgr, bool /*draw_*/)
+{
+  clog << "********** test7..." << endl;
+  uint32_t my_module_number = 0;
+  snemo::geometry::gg_locator GGL{my_module_number, a_mgr, falaise::property_set{}};
+  // GGL.set_logging_priority(datatools::logger::PRIO_DEBUG);
+
+  geomtools::geom_id gidPattern(GGL.cellGIDType(),
+				my_module_number,
+				geomtools::geom_id::ANY_ADDRESS,
+				geomtools::geom_id::ANY_ADDRESS,
+				4);
+  if (not GGL.matchGeigerCell(gidPattern)) {
+    std::clog << "GID pattern does not match any cell\n";
+  } else {
+    std::clog << "GID pattern " << gidPattern << " is valid\n";
+    std::set<geomtools::geom_id> cellGids;
+    auto sz = GGL.buildGeigerCells(gidPattern, cellGids);
+    std::clog << "Number of matching cell GIDs = " << sz << '\n';
+    for (auto gid: cellGids) {
+      std::clog << "\tCell GID = " << gid << '\n';
+    }
+    if (sz != 18) throw std::logic_error("unexpected number of cells");
+  }
+  return;
+}
+

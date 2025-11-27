@@ -71,26 +71,33 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
   uint32_t my_module_number = 0;
   snemo::geometry::gveto_locator GL{my_module_number, a_mgr, {}};
+  GL.tree_dump(std::clog, "G-veto locator:");
   // GL.set_geo_manager(a_mgr);
   // GL.set_module_number(my_module_number);
   // GL.initialize(datatools::properties{});
+
+  // auto pos = GL.getBlockPosition(
+
+  
   size_t counts = 0;
-  ofstream f1, f2;
+  ofstream f1, f2, f3;
   if (a_file) {
     f1.open("f1a.data");
     f2.open("f2a.data");
+    f3.open("f3a.data");
   }
   datatools::computing_time CT;
   CT.start();
   for (unsigned int i = 0; i < a_nhits; i++) {
     CT.pause();
     double dim = 5 * CLHEP::m;
-    double x = dim * (-1 + 2 * drand48());
+    double x = dim * (-1 + 2 * drand48()) / 3;
     double y = dim * (-1 + 2 * drand48());
-    double z = dim * (-1 + 2 * drand48());
-    z = 0;
+    double z = 1400 + 400 * drand48();
+    if (drand48() < 0.5) z *= -1;
+    // z = 0;
     geomtools::vector_3d hit_pos(x, y, z);
-    if ((i % 10000) == 0) {
+    if ((i % 1000) == 0) {
       clog << "#i = " << i << endl;
     }
     CT.resume();
@@ -107,7 +114,11 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
       if (a_file) {
         f2 << hit_pos.x() << ' ' << hit_pos.y() << ' ' << hit_pos.z() << endl;
       }
-    }
+      geomtools::vector_3d hitPos2 = GL.getBlockPosition(gid);
+      if (a_file) {
+        f3 << hitPos2.x() << ' ' << hitPos2.y() << ' ' << hitPos2.z() << endl;
+      }
+   }
     CT.resume();
   }
   CT.stop();
@@ -606,7 +617,7 @@ int main(int argc_, char** argv_) {
     string manager_config_file;
     bool do_test1 = true;
     bool do_test2 = true;
-    bool do_test3 = false;
+    bool do_test3 = true;
     bool do_test4 = true;
     bool do_test5 = true;
     bool do_test6 = true;
@@ -626,26 +637,28 @@ int main(int argc_, char** argv_) {
     my_manager.set_logging_priority(datatools::logger::PRIO_TRACE);
 
     my_manager.initialize(manager_config);
-    my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
-    my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
+    // my_manager.get_factory().tree_dump(clog, "The SuperNEMO geometry model factory");
+    // my_manager.get_id_mgr().tree_dump(clog, "The SuperNEMO geometry ID manager");
 
     long seed = 12345;
     srand48(seed);
 
+    bool useFiles = true; 
+    
     if (do_test1) {
       clog << "\n*** TEST 1 *** \n : ";
       test1(my_manager);
     }
 
-    size_t nhits = 10000;
+    size_t nhits = 200000;
     if (do_test2) {
       clog << "\n*** TEST 2 *** \n : ";
-      test2(my_manager, nhits, false);
+      test2(my_manager, nhits, useFiles);
     }
 
     if (do_test3) {
       clog << "\n*** TEST 3 *** \n : ";
-      test3(my_manager, nhits, false);
+      test3(my_manager, nhits, useFiles);
     }
 
     if (do_test4) {

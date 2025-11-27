@@ -22,7 +22,7 @@ namespace snemo {
       _span_ = time::time_period{time::time_point(time::not_a_date_time),
                                  time::time_point(time::not_a_date_time)};
       _duration_ = time::time_duration{time::not_a_date_time};
-      _number_of_events_ = 0;
+      _number_of_entries_ = 0;
       _last_run_id_ = -1;
       return;
     }
@@ -59,7 +59,12 @@ namespace snemo {
     {
       return _duration_;
     }
-    
+        
+    time::time_duration run_list::effective_duration() const
+    {
+      return _effective_duration_;
+    }
+
     time::time_period run_list::span() const
     {
       return _span_;
@@ -100,13 +105,19 @@ namespace snemo {
     void run_list::_compute_duration_()
     {
       time::time_duration rld(time::not_a_date_time); 
+      time::time_duration eff_rld(time::not_a_date_time); 
       for (const auto & rd : _runs_) {
         if (rld.is_not_a_date_time()) {
           rld = boost::posix_time::seconds(0);
         }
         rld += rd.second.duration();
+        if (eff_rld.is_not_a_date_time()) {
+          eff_rld = boost::posix_time::seconds(0);
+        }
+        eff_rld += rd.second.effective_duration();
       }
       _duration_ = rld;
+      _effective_duration_ = eff_rld;
       return;
     }
 
@@ -125,13 +136,13 @@ namespace snemo {
       return;
     }
 
-    void run_list::_compute_number_of_events_()
+    void run_list::_compute_number_of_entries_()
     {
       std::size_t noe = 0;
       for (const auto & rd : _runs_) {
-        noe +=  rd.second.number_of_events();
+        noe +=  rd.second.number_of_entries();
       }
-      _number_of_events_ = noe;
+      _number_of_entries_ = noe;
       return;
     }
   
@@ -139,7 +150,7 @@ namespace snemo {
     {
       _compute_span_();
       _compute_duration_();
-      _compute_number_of_events_();
+      _compute_number_of_entries_();
       return;
     }
             
@@ -188,10 +199,15 @@ namespace snemo {
            << "Duration : "
            << time::to_string(duration()) << " (=" << time::to_quantity(duration()) / CLHEP::second << " s)"
            << std::endl;
+
+      out_ << popts.indent << tag
+           << "Effective duration : "
+           << time::to_string(effective_duration()) << " (=" << time::to_quantity(effective_duration()) / CLHEP::second << " s)"
+           << std::endl;
  
       out_ << popts.indent << tag
-           << "Number of events : "
-           << number_of_events()
+           << "Number of entries : "
+           << number_of_entries()
            << std::endl;
 
       out_ << popts.indent << inherit_tag(popts.inherit)

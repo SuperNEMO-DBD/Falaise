@@ -14,8 +14,9 @@
 #include <boost/cstdint.hpp>
 // - Bayeux/datatools:
 #include <datatools/handle.h>
-// - Bayeux/geomtools:
-#include <geomtools/base_hit.h>
+#include <datatools/i_clear.h>
+#include <datatools/i_serializable.h>
+#include <datatools/i_tree_dump.h>
 
 // This project:
 #include <falaise/snemo/datamodels/precalibrated_calorimeter_hit.h>
@@ -27,12 +28,13 @@ namespace snemo {
 
     /// \brief A cluster of precalibrated hits referenced by handles
     class precalibrated_cluster
-      : public geomtools::base_hit
+      : public datatools::i_serializable
+      , public datatools::i_tree_dumpable
+      , public datatools::i_clear
     {
     public:
-  
       /// Get the cluster ID
-      int get_cluster_id() const;
+      int32_t get_cluster_id() const;
 
       /// Set the cluster ID
       void set_cluster_id(int32_t);
@@ -55,6 +57,12 @@ namespace snemo {
       /// Return the number of hits in the cluster
       size_t tracker_size() const;
 
+      /// Return the const properties container
+      const datatools::properties & get_properties() const;
+
+      /// Return the mutable properties container
+      datatools::properties & grab_properties();
+
       /// Reset/invalidate the contents of the tracker cluster
       void clear() override;
 
@@ -64,9 +72,10 @@ namespace snemo {
                               /**/ = datatools::i_tree_dumpable::empty_options()) const override;
 
     private:
-
+      int32_t _cluster_id_; //!< Cluster integer identifier
       PreCalibratedCalorimeterHitHdlCollection _calorimeter_hits_; //!< Collection of calorimeter hit handles
       PreCalibratedTrackerHitHdlCollection     _tracker_hits_;     //!< Collection of tracker hit handles
+      datatools::properties _properties_; //!< Auxiliary properties
       
       DATATOOLS_SERIALIZATION_DECLARATION()
   

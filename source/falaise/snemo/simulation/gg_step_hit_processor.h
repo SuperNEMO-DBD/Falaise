@@ -21,9 +21,6 @@
  *  so care should be taken to attach only one geometry model (with the proper
  *  mapping category) to this processor.
  *
- *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_SIMULATION_GG_STEP_HIT_PROCESSOR_H
@@ -44,132 +41,133 @@
 
 namespace snemo {
 
-namespace simulation {
+  namespace simulation {
 
-/// \brief A basic processor of simulated step hits in some drift cell in Geiger regime
-class gg_step_hit_processor : public mctools::base_step_hit_processor {
- public:
-  /// Default constructor
-  gg_step_hit_processor();
+    /// \brief A basic processor of simulated step hits in some drift cell in Geiger regime
+    class gg_step_hit_processor
+      : public mctools::base_step_hit_processor
+    {
+    public:
+      /// Default constructor
+      gg_step_hit_processor();
 
-  /// Destructor
-  virtual ~gg_step_hit_processor();
+      /// Destructor
+      virtual ~gg_step_hit_processor();
 
-  /// Reset
-  virtual void reset();
+      /// Reset
+      virtual void reset();
 
-  /// Main setup routine
-  virtual void initialize(const datatools::properties& dps,
-                          datatools::service_manager& services);
+      /// Main setup routine
+      virtual void initialize(const datatools::properties & dps,
+			      datatools::service_manager & services);
 
-  /// Return a non mutable reference to the PRNG
-  const mygsl::rng& get_rng() const;
+      /// Return a non mutable reference to the PRNG
+      const mygsl::rng & get_rng() const;
 
-  /// Return a mutable reference to the PRNG
-  mygsl::rng& get_rng();
+      /// Return a mutable reference to the PRNG
+      mygsl::rng & get_rng();
 
-  /// Check if processor uses an external PRNG
-  bool has_external_rng() const;
+      /// Check if processor uses an external PRNG
+      bool has_external_rng() const;
 
-  /// Check if processor accepts an external PRNG
-  virtual bool accept_external_rng() const;
+      /// Check if processor accepts an external PRNG
+      virtual bool accept_external_rng() const;
 
-  /// Set an external PRNG
-  virtual void set_external_rng(mygsl::rng& rng);
+      /// Set an external PRNG
+      virtual void set_external_rng(mygsl::rng & rng);
 
-  /// Main processing routine :
-  virtual void process(
-      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& baseStepHits,
-      mctools::simulated_data::hit_handle_collection_type& handleHits);
+      /// Main processing routine :
+      virtual void process(const mctools::base_step_hit_processor::step_hit_ptr_collection_type & baseStepHits,
+			   mctools::simulated_data::hit_handle_collection_type & handleHits);
 
-  /// Main processing routine :
-  virtual void process(
-      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& baseStepHits,
-      mctools::simulated_data::hit_collection_type& plainHits);
+      /// Main processing routine :
+      virtual void process(const mctools::base_step_hit_processor::step_hit_ptr_collection_type & baseStepHits,
+			   mctools::simulated_data::hit_collection_type & plainHits);
 
-  /// Check if a step hit is a candidate for being part within a proposed Geiger hit
-  bool match_gg_hit(const mctools::base_step_hit& gg_hit,
-                    const mctools::base_step_hit& step_hit) const;
+      /// Check if a step hit is a candidate for being part within a proposed Geiger hit
+      bool match_gg_hit(const mctools::base_step_hit & gg_hit,
+			const mctools::base_step_hit & step_hit) const;
 
- protected:
-  /// Set default values for attributes
-  void _set_defaults();
+    protected:
+      /// Set default values for attributes
+      void _set_defaults();
 
-  /// Main process method
-  void _process(
-      const mctools::base_step_hit_processor::step_hit_ptr_collection_type& hitPtrCollection,
-      mctools::simulated_data::hit_handle_collection_type* handleHits,
-      mctools::simulated_data::hit_collection_type* plainHits);
+      /// Main process method
+      void _process(const mctools::base_step_hit_processor::step_hit_ptr_collection_type & hitPtrCollection,
+		    mctools::simulated_data::hit_handle_collection_type * handleHits,
+		    mctools::simulated_data::hit_collection_type * plainHits);
 
-  /// To be documented
-  void _purge_gg_hits(mctools::simulated_data::hit_handle_collection_type* handleHits,
-                      mctools::simulated_data::hit_collection_type* plainHits);
+      /// To be documented
+      void _purge_gg_hits(mctools::simulated_data::hit_handle_collection_type * handleHits,
+			  mctools::simulated_data::hit_collection_type * plainHits);
 
- private:
-  std::string moduleCategory_;  /* the name of the mapping
-                                 * category of module
-                                 */
-  std::string mappingCategory_; /* the name of the mapping
-                                 * category of volumes
-                                 * that should be considered
-                                 * as a sensitive volume
-                                 */
+    private:
+      
+      std::string moduleCategory_;  /* the name of the mapping
+				     * category of module
+				     */
+      std::string mappingCategory_; /* the name of the mapping
+				     * category of volumes
+				     * that should be considered
+				     * as a sensitive volume
+				     */
 
-  double timeResolution_; /* the time resolution of the
-                           * Geiger regime (typically 15-25 ns)
-                           */
+      double timeResolution_; /* the time resolution of the
+			       * Geiger regime (typically 15-25 ns)
+			       */
 
-  double fiducialCellRadius_; /* the radius of the effective
-                               * drift region
-                               */
+      double fiducialCellRadius_; /* the radius of the effective
+				   * drift region
+				   */
 
-  double fiducialCellLength_; /* the active length of the
-                               * drift region
-                               */
+      double fiducialCellLength_; /* the active length of the
+				   * drift region
+				   */
 
-  double meanIonizationEnergy_; /* the mean ionization energy
-                                 * in the tracking gas:
-                                 *
-                                 * Default: ~50 eV
-                                 *
-                                 * From Georges Szkarlz
-                                 *   Helium:
-                                 *     ~6 e- / cm
-                                 *   Helium+Alcohol+Argon:
-                                 *     10-15 e- / cm
-                                 */
+      double meanIonizationEnergy_; /* the mean ionization energy
+				     * in the tracking gas:
+				     *
+				     * Default: ~50 eV
+				     *
+				     * From Georges Szkarlz
+				     *   Helium:
+				     *     ~6 e- / cm
+				     *   Helium+Alcohol+Argon:
+				     *     10-15 e- / cm
+				     */
 
-  bool useContinuousIonization_;
-  bool computeMinimumApproachPosition_;
-  bool storeTrackInfo_;
+      bool useContinuousIonization_ = false;
+      bool computeMinimumApproachPosition_ = false;
+      bool storeTrackInfo_ = false;
 
-  // Pseudo-random numbers generator:
-  mygsl::rng localRNG_;      //!< Embedded PRNG
-  mygsl::rng* externalRNG_;  //!< Handle to an external PRNG
+      // Pseudo-random numbers generator:
+      mygsl::rng localRNG_;      //!< Embedded PRNG
+      mygsl::rng * externalRNG_ = nullptr;  //!< Handle to an external PRNG
 
-  // Internals:
-  uint32_t moduleCategoryID_;      //!< The integral ID of the geometry category for module volume
-  uint32_t geigerCellCategoryID_;  //!< The integral ID of the geometry category for gg drift volume
-  const geomtools::mapping* geomIDMap_;  //!< The reference geometry ID mapping
-  const geomtools::id_mgr::categories_by_name_col_type* allCategoryIDs_;
-  // Locators:
-  geomtools::smart_id_locator moduleLocator_;     /** A locator to compute the
-                                                   * module number
-                                                   * some hit lies in.
-                                                   */
-  geomtools::smart_id_locator geigerCellLocator_; /** A locator to compute the
-                                                   * geometry ID of the detector
-                                                   * block some hit lies in.
-                                                   */
-  geometry::gg_locator fastGeigerCellLocator_;    //!< A fast locator for SuperNEMO Geiger cells
-  std::map<uint32_t, geometry::gg_locator> perModuleFastGeigerLocators_;
+      // Internals:
+      uint32_t moduleCategoryID_;      //!< The integral ID of the geometry category for module volume
+      uint32_t geigerCellCategoryID_;  //!< The integral ID of the geometry category for gg drift volume
+      const geomtools::mapping * geomIDMap_ = nullptr;  //!< The reference geometry ID mapping
+      const geomtools::id_mgr::categories_by_name_col_type* allCategoryIDs_ = nullptr;
+      // Locators:
+      geomtools::smart_id_locator moduleLocator_;     /** A locator to compute the
+						       * module number
+						       * some hit lies in.
+						       */
+      geomtools::smart_id_locator geigerCellLocator_; /** A locator to compute the
+						       * geometry ID of the detector
+						       * block some hit lies in.
+						       */
+      geometry::gg_locator fastGeigerCellLocator_;    //!< A fast locator for SuperNEMO Geiger cells
+      std::map<uint32_t, geometry::gg_locator> perModuleFastGeigerLocators_;
 
-  // Registration macro :
-  MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE(gg_step_hit_processor)
-};
+      // Registration macro :
+      MCTOOLS_STEP_HIT_PROCESSOR_REGISTRATION_INTERFACE(gg_step_hit_processor)
+      
+    };
 
-}  // end of namespace simulation
+  } // end of namespace simulation
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_SIMULATION_GG_STEP_HIT_PROCESSOR_H
+#endif // FALAISE_SNEMO_SIMULATION_GG_STEP_HIT_PROCESSOR_H

@@ -267,13 +267,14 @@ namespace snemo {
       void root_utilities::get_prettified_time(std::ostream &out_, const double time_,
 					       const double sigma_, const bool latex_) {
 	std::string unit_id = "ps";
-	if (time_ > 1e12 * CLHEP::picosecond) {
+	const double time_abs_ = std::abs(time_);
+	if (time_abs_ > 1e12 * CLHEP::picosecond) {
 	  unit_id = "s";
-	} else if (time_ > 1e9 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e9 * CLHEP::picosecond) {
 	  unit_id = "ms";
-	} else if (time_ > 1e6 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e6 * CLHEP::picosecond) {
 	  unit_id = "us";
-	} else if (time_ > 1e3 * CLHEP::picosecond) {
+	} else if (time_abs_ > 1e3 * CLHEP::picosecond) {
 	  unit_id = "ns";
 	}
 	const double unit = datatools::units::get_time_unit_from(unit_id);
@@ -287,6 +288,42 @@ namespace snemo {
 	  out_ << sigma_ / unit << " " << unit_id;
 	} else {
 	  out_ << time_ / unit << " " << unit_id;
+	}
+      }
+
+      void root_utilities::get_prettified_amplitude(std::ostream &out_, const double amplitude_,
+						    const double sigma_, const bool latex_) {
+	if (datatools::is_valid(sigma_)) {
+	  out_.precision(4);
+	  out_ << amplitude_ / (1e-3 * CLHEP::volt);
+	  if (latex_) {
+	    out_ << " #pm ";
+	  } else {
+	    out_ << " +/- ";
+	  }
+	  out_.precision(2);
+	  out_ << sigma_ / (1e-3 * CLHEP::volt) << " mV";
+	} else {
+	  out_.precision(4);
+	  out_ << amplitude_ / (1e-3 * CLHEP::volt) << " mV";
+	}
+      }
+
+      void root_utilities::get_prettified_charge(std::ostream &out_, const double charge_,
+						    const double sigma_, const bool latex_) {
+	if (datatools::is_valid(sigma_)) {
+	  out_.precision(4);
+	  out_ << charge_ / (1e-9 * CLHEP::volt * CLHEP::second);
+	  if (latex_) {
+	    out_ << " #pm ";
+	  } else {
+	    out_ << " +/- ";
+	  }
+	  out_.precision(2);
+	  out_ << sigma_ / (1e-9 * CLHEP::volt * CLHEP::second) << " nV.s";
+	} else {
+	  out_.precision(4);
+	  out_ << charge_ / (1e-9 * CLHEP::volt * CLHEP::second) << " nV.s";
 	}
       }
 

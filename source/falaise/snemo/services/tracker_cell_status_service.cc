@@ -4,6 +4,9 @@
 // Ourselves:
 #include <falaise/snemo/services/tracker_cell_status_service.h>
 
+// Standard library;
+#include <bitset>
+
 // Boost;
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
@@ -15,6 +18,7 @@
 #include <falaise/snemo/services/services.h>
 #include <falaise/snemo/geometry/locator_plugin.h>
 #include <falaise/snemo/geometry/gg_locator.h>
+#include <falaise/snemo/datamodels/geomid_utils.h>
 
 DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(snemo::tracker_cell_status_service,
                                          "snemo::tracker_cell_status_service")
@@ -46,6 +50,7 @@ namespace snemo {
                                               datatools::service_dict_type & services_)
   {
     DT_THROW_IF(is_initialized(), std::logic_error, "Service is already initialized!");
+   this->datatools::base_service::common_initialize(config_);
 
     if (config_.has_key("geometry_label")) {
       _geometry_label_ = config_.fetch_string("geometry_label");     
@@ -61,7 +66,8 @@ namespace snemo {
     DT_THROW_IF(_geomgr_ == nullptr, std::logic_error, "Missing geometry manager!");
     
     const geomtools::id_mgr & idMgr = _geomgr_->get_id_mgr();
-    _cell_type_ = idMgr.categories_by_name().find("drift_cell_core")->second.get_type(); 
+    _cell_type_ = idMgr.categories_by_name().find("drift_cell")->second.get_type(); 
+    _cell_core_type_ = idMgr.categories_by_name().find("drift_cell_core")->second.get_type(); 
 
     if (config_.has_key("mode")) {
       std::string modeLabel = config_.fetch_string("mode");
@@ -132,9 +138,28 @@ namespace snemo {
     return;
   }
 
-  void tracker_cell_status_service::_init_mode_db_(const datatools::properties &)
+  void tracker_cell_status_service::_init_mode_db_(const datatools::properties & config_)
   {
     DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    std::string dbCellStatusTable = "snemo_tracker_cell_status";
+    if (config_.has_key("tracker_cell_status_table")) {
+      dbCellStatusTable = config_.fetch_string("tracker_cell_status_table");
+    }
+    _db_tracker_cell_status_table_ = dbCellStatusTable;
+    
+    if (_db_service_ == nullptr) {
+      DT_THROW(std::logic_error, "DB service nullptr !!!");
+    }
+
+    std::string tableName = _db_tracker_cell_status_table_;
+    DT_THROW_IF(not _db_service_->has_table(tableName), std::logic_error,
+		"Database has no table named " << std::quoted(tableName));
+    snemo::db::table_selection_type tableSel;
+    _db_service_->process_select_all_statement(tableName, tableSel);
+    DT_LOG_DEBUG(get_logging_priority(), "DB mode: Number of rows = " << tableSel.size());
+
+    // Parse selected rows:
+    
     return;
   }
 
@@ -146,18 +171,29 @@ namespace snemo {
   
   void tracker_cell_status_service::_init_mode_files_(const datatools::properties & config_)
   {
+    std::vector<std::string> cellMaps;
     if (config_.has_key("cell_maps")) {
-      std::vector<std::string> cellMaps;
       config_.fetch("cell_maps", cellMaps);
-      for (const auto & cellMap: cellMaps) {
-        load_cell_status_map(cellMap);
+    }
+    if (config_.has_key("map_format")) {
+      std::string fileMapFormat = config_.fetch_string("map_format");
+      if (fileMapFormat == "csv-1" or fileMapFormat == "csv-2") {
+	_file_format_ = fileMapFormat;
+      } else {
+	DT_THROW(std::logic_error, "Invalid map format " << std::quoted(fileMapFormat));
       }
     }
+    for (const auto & cellMap: cellMaps) {
+      DT_LOG_DEBUG(get_logging_priority(), "Loading cell map : " << cellMap);
+      load_cell_status_map(cellMap);
+    }
     DT_LOG_DEBUG(get_logging_priority(), "Number of histories : " << _histories_.size());
-    for (const auto & h : _histories_) {
-      std::clog << "[debug] " << "GID=" << h.first
-                << " has " << h.second.records().size() << " status records"
-                << '\n';
+    if (datatools::logger::is_debug(get_logging_priority())) {
+      for (const auto & h : _histories_) {
+	std::clog << "[debug] " << "GID=" << h.first
+		  << " has " << h.second.records().size() << " status records"
+		  << '\n';
+      }
     }
     return;
   }
@@ -217,6 +253,124 @@ namespace snemo {
   }
 
   void tracker_cell_status_service::load_cell_status_map(const std::string & infile_)
+  {
+    if (_file_format_ == "csv-1") {
+      load_cell_status_map_1(infile_);
+    } else if (_file_format_ == "csv-2") {
+      load_cell_status_map_2(infile_);
+    }
+
+    return;
+  }
+
+  void tracker_cell_status_service::load_cell_status_map_2(const std::string & infile_)
+  {
+    const snemo::geometry::locator_plugin & locators
+      = _geomgr_->get_plugin<snemo::geometry::locator_plugin>("locators_driver");
+    const snemo::geometry::gg_locator & ggLocator = locators.geigerLocator();
+    std::string filename = infile_;
+    datatools::fetch_path_with_env(filename);
+    std::ifstream fin(filename);
+    DT_THROW_IF(!fin, std::runtime_error, "Cannot open tracker cell status file '" << filename << "'!");
+    while (fin and not fin.eof()) {
+      std::string line;
+      std::getline(fin, line);
+      boost::trim(line);
+      DT_LOG_DEBUG(get_logging_priority(), "Line='" << line << "'");
+      {
+	if (line.size() == 0) {
+          continue;
+        } else if (line[0] == '#') {
+	  continue;
+	}
+	typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
+	boost::char_separator<char> sep{";"};
+	tokenizer tokens{line, sep};
+	std::string idRepr;
+	std::string periodStartRepr; 
+	std::string periodStopRepr; 
+	std::string statusRepr;
+	int tkCount = 0;
+	for (std::string tk : tokens) {
+	  DT_LOG_DEBUG(get_logging_priority(), "tk " << std::quoted(tk));
+	  if (idRepr.empty()) {
+	    DT_THROW_IF(tkCount != 0, std::logic_error, "Invalid formatted tracker cell status record!");
+	    idRepr = tk;
+	  } else if (periodStartRepr.empty()) {
+	    DT_THROW_IF(tkCount != 1, std::logic_error, "Invalid formatted tracker cell status record!");
+	    periodStartRepr = tk;
+	  } else if (periodStopRepr.empty()) {
+	    DT_THROW_IF(tkCount != 2, std::logic_error, "Invalid formatted tracker cell status record!");
+	    periodStopRepr = tk;
+	  } else if (statusRepr.empty()) {
+	    DT_THROW_IF(tkCount != 3, std::logic_error, "Invalid formatted tracker cell status record!");
+	    statusRepr = tk;
+	  } else {
+	    DT_THROW(std::logic_error, "Invalid token '" << tk << "'!");
+	  }
+	  tkCount++;
+	  if (tkCount == 4) break;
+	}
+	DT_LOG_DEBUG(get_logging_priority(), "Using fields : " << idRepr
+		     << ';' << periodStartRepr
+		     << ';' << periodStopRepr
+		     << ';' << statusRepr);
+
+	// Cell number:
+	geomtools::geom_id cellGid;
+	boost::trim(idRepr);
+	DT_THROW_IF(idRepr.empty(), std::logic_error, "Missing tracker cell ID!");
+	if (idRepr[0] == '[') {
+	  std::istringstream gidss(idRepr);
+	  gidss >> cellGid;
+	  DT_THROW_IF(!gidss, std::logic_error, "Cannot decode missing tracker cell geom ID!");
+	  DT_THROW_IF(not cellGid.is_valid(), std::logic_error,
+		      "Invalid tracker cell geom ID pattern parsed from '" << idRepr  << "'!");
+	  DT_THROW_IF(cellGid.get_type() != _cell_core_type_, std::logic_error,
+		      "Invalid type for tracker cell geom ID pattern '" << cellGid
+		      << "' with expected cell type=" << _cell_type_ << "'!");
+	  DT_THROW_IF(not ggLocator.isGeigerCell(cellGid), std::logic_error,
+		      "Token '" << idRepr << "' is not a valid tracker cell geom ID pattern!");
+	} else {
+	  int cellId = std::stoi(idRepr);
+	  // Extract cell GID:
+	  cellGid = datamodel::gg_gid(cellId);
+	}
+	
+	// Period start:
+	boost::trim(periodStartRepr);
+	DT_THROW_IF(periodStartRepr.empty(), std::logic_error, "Missing period start time point!");
+	time::time_point periodStartPoint = time::invalid_point();
+	periodStartPoint = time::time_point_from_string(periodStartRepr);
+        DT_THROW_IF(not time::is_valid(periodStartPoint), std::logic_error,
+                    "Invalid period start time point parsed from '" << periodStartRepr  << "'!");
+
+	// Period stop:
+	boost::trim(periodStopRepr);
+	DT_THROW_IF(periodStopRepr.empty(), std::logic_error, "Missing period stop time point!");
+	time::time_point periodStopPoint = time::invalid_point();
+	periodStopPoint = time::time_point_from_string(periodStopRepr);
+        DT_THROW_IF(not time::is_valid(periodStopPoint), std::logic_error,
+                    "Invalid period stop time point parsed from '" << periodStopRepr  << "'!");
+	time::time_period period(periodStartPoint, periodStopPoint);
+
+	// Status:
+	boost::trim(statusRepr);
+	std::bitset<16> statusBits(statusRepr);
+	std::uint32_t status = statusBits.to_ulong();
+	if (status != snemo::rc::tracker_cell_status::CELL_GOOD) {
+	  snemo::rc::tracker_cell_status_history & cellHistory = grab_cell_history(cellGid);
+	  DT_LOG_DEBUG(get_logging_priority(), "gid=" << cellGid << " period=" << time::to_string(period) << " status=" << status);
+	  cellHistory.add(period, status);
+	} else {
+	  DT_LOG_WARNING(get_logging_priority(), "Ignoring good status for cell with GID pattern=" << cellGid);
+	}
+      }
+    }
+    return;
+  }
+  
+  void tracker_cell_status_service::load_cell_status_map_1(const std::string & infile_)
   {
     const snemo::geometry::locator_plugin & locators
       = _geomgr_->get_plugin<snemo::geometry::locator_plugin>("locators_driver");
@@ -300,19 +454,19 @@ namespace snemo {
         tkCount++;
         if (tkCount == 3) break;
       }
-      geomtools::geom_id gid;
+      geomtools::geom_id gidPattern;
       boost::trim(geomIdRepr);
-      DT_THROW_IF(geomIdRepr.empty(), std::logic_error, "Missing tracker cell geom ID!");
+      DT_THROW_IF(geomIdRepr.empty(), std::logic_error, "Missing tracker cell geom ID pattern!");
       {
         std::istringstream gidss(geomIdRepr);
-        gidss >> gid;
-        DT_THROW_IF(!gidss, std::logic_error, "Cannot decode missing tracker cell geom ID!");
-        DT_THROW_IF(not gid.is_valid(), std::logic_error,
-                    "Invalid tracker cell geom ID parsed from '" << geomIdRepr  << "'!");
-        DT_THROW_IF(gid.get_type() != _cell_type_, std::logic_error,
-                    "Invalid type for tracker cell geom ID '" << gid  << "'!");
-        DT_THROW_IF(not ggLocator.isGeigerCell(gid), std::logic_error,
-                    "Not a valid tracker cell geom ID '" << gid  << "'!");
+        gidss >> gidPattern;
+        DT_THROW_IF(!gidss, std::logic_error, "Cannot decode missing tracker cell geom ID pattern!");
+        DT_THROW_IF(not gidPattern.is_valid(), std::logic_error,
+                    "Invalid tracker cell geom ID pattern parsed from '" << geomIdRepr  << "'!");
+        DT_THROW_IF(gidPattern.get_type() != _cell_core_type_, std::logic_error,
+                    "Invalid type for tracker cell geom ID pattern '" << gidPattern  << "' with expected cell type=" << _cell_type_ << "'!");
+        DT_THROW_IF(not ggLocator.matchGeigerCell(gidPattern), std::logic_error,
+                    "Token '" << geomIdRepr << "' is not a valid tracker cell geom ID pattern!");
       }
       boost::trim(periodRepr);
       time::time_period period = time::invalid_period();
@@ -330,11 +484,17 @@ namespace snemo {
       boost::trim(statusRepr);
       std::uint32_t status = snemo::rc::tracker_cell_status::status_from_string(statusRepr);
       if (status != snemo::rc::tracker_cell_status::CELL_GOOD) {
-        snemo::rc::tracker_cell_status_history & cellHistory = grab_cell_history(gid);
-        DT_LOG_DEBUG(get_logging_priority(), "gid=" << gid << " period=" << time::to_string(period) << " status=" << status);
-        cellHistory.add(period, status);
+	std::set<geomtools::geom_id> gids;
+	auto sz = ggLocator.buildGeigerCells(gidPattern, gids);
+	if (sz > 0) {
+	  for (const auto & gid : gids) {
+	    snemo::rc::tracker_cell_status_history & cellHistory = grab_cell_history(gid);
+	    DT_LOG_DEBUG(get_logging_priority(), "gid=" << gid << " period=" << time::to_string(period) << " status=" << status);
+	    cellHistory.add(period, status);
+	  }
+	}
       } else {
-        DT_LOG_WARNING(get_logging_priority(), "Ignoring good status for cell " << gid << "");
+        DT_LOG_WARNING(get_logging_priority(), "Ignoring good status for cell with GID pattern=" << gidPattern);
       }
     }   
     fin.close();
@@ -381,9 +541,13 @@ namespace snemo {
   
     out_ << popts.indent << i_tree_dumpable::tag
          << "Mode : ";
-    if (_mode_ == MODE_FILES) out_ << "'file'";
+    if (_mode_ == MODE_FILES) out_ << "'files'";
     else out_ << "'db'";
     out_ << std::endl;
+    if (_mode_ == MODE_FILES) {
+      out_ << popts.indent << i_tree_dumpable::tag
+	   << "File format : " << std::quoted(_file_format_) << std::endl;
+    }
   
     out_ << popts.indent << i_tree_dumpable::tag
          << "Geometry label : '" << _geometry_label_ << "'" << std::endl;
@@ -396,6 +560,9 @@ namespace snemo {
 
     out_ << popts.indent << i_tree_dumpable::tag
          << "Cell type : " << _cell_type_ << std::endl;
+
+    out_ << popts.indent << i_tree_dumpable::tag
+         << "Cell core type : " << _cell_core_type_ << std::endl;
 
     out_ << popts.indent << i_tree_dumpable::tag
          << "DB service : " << std::boolalpha << (_db_service_ != nullptr) << std::endl;

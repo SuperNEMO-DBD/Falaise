@@ -60,8 +60,17 @@ class clusterized_calibrated_data : public datatools::i_serializable,
   /// Return the mutable reference to the collection of clusters
   calibrated_cluster_handle_collection& clusters();
 
-  /// Return a non mutable reference to the default cluster is any
-  const calibrated_cluster& get_default() const;
+  /// Return the non mutable reference to the collection of unclusterized calorimeter hits
+  const calibrated_calorimeter_hit_handle_collection & unclusterized_calorimeter_hits() const;
+
+  /// Return the mutable reference to the collection of clusters
+  calibrated_calorimeter_hit_handle_collection & unclusterized_calorimeter_hits();
+
+  /// Return the non mutable reference to the collection of unclusterized tracker hits
+  const calibrated_tracker_hit_handle_collection & unclusterized_tracker_hits() const;
+
+  /// Return the mutable reference to the collection of clusters
+  calibrated_tracker_hit_handle_collection & unclusterized_tracker_hits();
 
   /// Smart print
   virtual void tree_dump(std::ostream& out = std::clog, const std::string& title = "",
@@ -69,8 +78,9 @@ class clusterized_calibrated_data : public datatools::i_serializable,
 
  private:
   calibrated_cluster_handle_collection _clusters_{};  //!< Collection of clusters
-
-  datatools::properties _auxiliaries_{};  // unused, kept for backward serialization compatibility
+  calibrated_calorimeter_hit_handle_collection _unclusterized_calorimeter_hits_; //!< Collection of unclusterized calorimeter hit handles
+  calibrated_tracker_hit_handle_collection     _unclusterized_tracker_hits_;     //!< Collection of unclusterized tracker hit handles
+  datatools::properties _auxiliaries_{}; //!< Auxiliaires properties
 
   DATATOOLS_SERIALIZATION_DECLARATION()
 };

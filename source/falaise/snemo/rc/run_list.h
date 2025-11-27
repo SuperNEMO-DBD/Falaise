@@ -60,11 +60,13 @@ namespace snemo {
 
       time::time_duration duration() const;
   
+      time::time_duration effective_duration() const;
+  
       time::time_period span() const;
 
-      inline std::size_t number_of_events() const
+      inline std::size_t number_of_entries() const
       {
-        return _number_of_events_;
+        return _number_of_entries_;
       }
    
       inline run_id_type last_run_id() const
@@ -95,8 +97,8 @@ namespace snemo {
 
       void _compute_span_();
  
-      void _compute_number_of_events_();
- 
+      void _compute_number_of_entries_();
+
       void _sync_();
       
     private:
@@ -104,7 +106,8 @@ namespace snemo {
       std::map<run_id_type, run_description> _runs_; ///< Map of run descriptions (key is the run ID)
       time::time_period _span_{time::time_point(time::not_a_date_time), time::time_point(time::not_a_date_time)}; ///< Time span containing the list of runs
       time::time_duration _duration_{time::not_a_date_time}; ///< Total duration of all runs
-      std::size_t _number_of_events_ = 0; ///< Total number of events
+      time::time_duration _effective_duration_{time::not_a_date_time}; ///< Total effective duration of all runs
+      std::size_t _number_of_entries_ = 0; ///< Total number of entries
       run_id_type _last_run_id_ = -1; ///< ID of the last registered run
 
     };

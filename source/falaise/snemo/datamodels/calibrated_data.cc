@@ -44,14 +44,15 @@ namespace snemo {
       }
 
       auto printCaloHit = [&](const CalorimeterHitHdl& x) {
-        out_ << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
-             << ", Energy : " << x->get_energy() / CLHEP::keV << " keV"
-             << ", Time : " << x->get_time() / CLHEP::ns << " ns)" << std::endl;
+        out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+             << ", Energy: " << x->get_energy() / CLHEP::MeV << " MeV"
+             << ", Time: " << x->get_time() / CLHEP::ns << " ns" << std::endl;
       };
 
       auto printTrackerHit = [&](const TrackerHitHdl& x) {
-        out_ << "(Id : " << x->get_hit_id() << ", GID : " << x->get_geom_id()
-             << ", Type : " << (x->is_prompt() ? "prompt" : "delayed [time=" + std::to_string(x->get_delayed_time() / CLHEP::microsecond) + " us]" ) << ")" << std::endl;
+        out_ << "Id: " << x->get_hit_id() << ", GID: " << x->get_geom_id()
+             << ", R: " << x->get_r()/CLHEP::cm << " cm, Z: " << x->get_z()/CLHEP::m << " m" << std::endl;
+             // << ", Type : " << (x->is_prompt() ? "prompt" : "delayed [time=" + std::to_string(x->get_delayed_time() / CLHEP::microsecond) + " us]" ) << std::endl;
       };
       
 

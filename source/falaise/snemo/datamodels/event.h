@@ -36,19 +36,17 @@ namespace snedm {
    * at "key" in the event_record, inserting a new value of that type at "key"
    * if "key is not present. In code this results in the boilerplate:
    *
-   * ```cpp
+   * \code
    * // Usually in the "process" member function of a Falaise module
    * SomeDataType* x{nullptr};
-   *
    * if(event.has(key)) {
    *   x = event.grab<SomeDataType>(key); // throws if key does not hold a value of type T
    * }
    * else {
    *   x = event.add<SomeDataType>(key);
    * }
-   *
    * // do something with x
-   * ```
+   * \endcode
    *
    * This wrapper function reduces the above to:
    *

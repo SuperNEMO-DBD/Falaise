@@ -25,6 +25,8 @@ namespace snemo {
 
     void clusterized_calibrated_data::clear() {
       _clusters_.clear();
+      _unclusterized_calorimeter_hits_.clear();
+      _unclusterized_tracker_hits_.clear();
       _auxiliaries_.clear();
     }
 
@@ -34,6 +36,26 @@ namespace snemo {
 
     calibrated_cluster_handle_collection& clusterized_calibrated_data::clusters() {
       return _clusters_;
+    }
+
+    const calibrated_calorimeter_hit_handle_collection & clusterized_calibrated_data::unclusterized_calorimeter_hits() const
+    {
+      return _unclusterized_calorimeter_hits_;
+    }
+
+    calibrated_calorimeter_hit_handle_collection & clusterized_calibrated_data::unclusterized_calorimeter_hits()
+    {
+      return _unclusterized_calorimeter_hits_;
+    }
+
+    const calibrated_tracker_hit_handle_collection & clusterized_calibrated_data::unclusterized_tracker_hits() const
+    {
+      return _unclusterized_tracker_hits_;
+    }
+
+    calibrated_tracker_hit_handle_collection & clusterized_calibrated_data::unclusterized_tracker_hits()
+    {
+      return _unclusterized_tracker_hits_;
     }
 
     void clusterized_calibrated_data::tree_dump(std::ostream& out, const std::string& title,

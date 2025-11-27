@@ -181,7 +181,7 @@ void display_options::_build_volume_buttons_() {
   unsigned int id_button = _button_dictionnary_.size();
   for (const auto& volume : volumes) {
     const std::string& volume_name = volume.first;
-		DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "====> Volume = " << volume_name);
+		// DT_LOG_DEBUG(datatools::logger::PRIO_ALWAYS, "====> Volume = " << volume_name);
 
     // Volume name without _
     std::string volume_group_name = volume_name;

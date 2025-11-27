@@ -257,17 +257,17 @@ namespace snemo {
     private:
 
       // Mandatory attributes:
-      int64_t              _timestamp_;         ///< Timestamp of the hit (40MHz main clock)
+      int64_t              _timestamp_; ///< Timestamp of the hit (40MHz main clock)
       bool                 _low_threshold_only_ = false; ///< Flag for low threshold only
       bool                 _high_threshold_ = false; ///< Flag for high threshold
-      uint16_t             _fcr_ = INVALID_FCR;  ///< First cell read (10 bits)
+      uint16_t             _fcr_ = INVALID_FCR; ///< First cell read (10 bits)
       uint16_t             _lt_trigger_counter_ = 0; ///< useful for off-line monitoring
-      uint32_t             _lt_time_counter_ = 0;  ///< useful for off-line monitoring
+      uint32_t             _lt_time_counter_ = 0; ///< useful for off-line monitoring
       std::vector<int16_t> _waveform_; ///< Digitized signal sampling array
 
       // Possibly not available attributes:
-      fw_measurements_type _fwmeas_;   ///< Firmware measurements
-      rtd_origin           _origin_;   ///< RTD origin of the hit
+      fw_measurements_type _fwmeas_; ///< Firmware measurements
+      rtd_origin           _origin_; ///< RTD origin of the hit
 
       DATATOOLS_SERIALIZATION_DECLARATION()
 

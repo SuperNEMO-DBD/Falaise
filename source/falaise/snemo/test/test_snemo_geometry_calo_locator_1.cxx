@@ -71,6 +71,7 @@ void test2(geomtools::manager& a_mgr, size_t a_nhits, bool a_file) {
   clog << "********** test2..." << endl;
   uint32_t my_module_number = 0;
   snemo::geometry::calo_locator CL{my_module_number, a_mgr, {}};
+  CL.tree_dump(std::clog, "Calo locator: ", "=== ");
   size_t counts = 0;
   ofstream f1, f2;
   if (a_file) {

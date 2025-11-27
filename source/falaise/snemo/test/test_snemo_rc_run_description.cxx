@@ -44,15 +44,32 @@ void test1()
   snt::time_point runStop = runStart + runDuration;
   snt::time_period runPeriod(runStart, runStop);
     
-  snrc::run_description runDesc = snrc::run_description::make(42,
-                                                              snrc::run_category::TEST,
-                                                              runPeriod,
-                                                              1234);
-  runDesc.add_break(snt::minutes(35), snt::minutes(12));
-  runDesc.add_break(snt::hours(1) + snt::minutes(17),
-                    snt::minutes(17));
+  snrc::run_description runDesc =
+    snrc::run_description::make_unique_slice(42,
+					     snrc::run_category::TEST,
+					     //datatools::version_id("test-1"),
+					     runPeriod,
+					     1234);
+  // runDesc.add_break(snt::minutes(35), snt::minutes(12));
+  // runDesc.add_break(snt::hours(1) + snt::minutes(17),
+  //                   snt::minutes(17));
                        
   runDesc.print_tree(std::clog);
+
+  std::vector<snt::time_duration> deadtimes = {snt::milliseconds(120), snt::milliseconds(750), snt::milliseconds(1200)};
+
+  snrc::run_description runDesc2 =
+    snrc::run_description::make_with_breaks(42,
+					    snrc::run_category::TEST,
+					    // datatools::version_id("test-1"),
+					    runPeriod,
+					    1234,
+					    {snt::time_period(runStart + snt::minutes(35), snt::minutes(12)),
+					     snt::time_period(runStart + snt::hours(1) + snt::minutes(17), snt::minutes(17))},
+					    deadtimes
+					    );
+  
+  runDesc2.print_tree(std::clog);
   return;
 }
 
@@ -66,11 +83,14 @@ void test2()
   datatools::properties runDescConfig;
   runDescConfig.store("debug", true);
   runDescConfig.store("category", "commissioning");
+  //runDescConfig.store("daq_config_id", "debug-123");
   runDescConfig.store("period", "{2022-05-27 02:00:00 + 04:23:42}");
-  runDescConfig.store("number_of_events", 1234);
+  runDescConfig.store("number_of_entries", 1234);
   runDescConfig.store("number_of_breaks", 2);
   runDescConfig.store("break_0.period", "{2022-05-27 02:35:00 + 00:13:00}");
   runDescConfig.store("break_1.period", "{2022-05-27 04:04:00 + 00:17:10}");
+  std::vector<std::string> deadtimesReprs = {"00:00:00.120", "00:00:01.500000", "00:00:01.100000"};
+  runDescConfig.store("deadtimes", deadtimesReprs);
   runDesc.load(runDescConfig);
   runDesc.print_tree(std::clog);
   return;
@@ -86,8 +106,9 @@ void test3()
   datatools::properties runDescConfig;
   runDescConfig.store("debug", true);
   runDescConfig.store("category", "commissioning");
+  // runDescConfig.store("daq_config_id", "debug-123");
   runDescConfig.store("period", "[2022-05-27 02:00:00/2022-05-27 06:23:41.999999]");
-  runDescConfig.store("number_of_events", 1234);
+  runDescConfig.store("number_of_entries", 1234);
   std::vector<std::string> breakPeriodReprs = {"[2022-05-27 02:35:00/2022-05-27 02:47:59.999999]",
                                                "[2022-05-27 04:04:00/2022-05-27 04:20:69.999999]",
                                                "[2022-05-27 05:13:00/2022-05-27 05:21:28.999999]"

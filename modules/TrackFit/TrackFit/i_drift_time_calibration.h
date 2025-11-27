@@ -54,7 +54,7 @@ struct i_drift_time_calibration {
 };
 
 /// \brief Functor for drift time to radius conversion
-struct f_time_radius : public std::unary_function<double, double> {
+struct f_time_radius {
   /// \brief Drift time to radius conversion mode
   enum mode_type { DRIFT_TIME_TO_RADIUS = 0, RADIUS_TO_DRIFT_TIME = 1 };
   /// Constructor

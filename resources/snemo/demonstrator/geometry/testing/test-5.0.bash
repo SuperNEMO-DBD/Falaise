@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# !!!! usable by frc only for local tests
+
 geometryVersion="5.0"
 geometryVariantVersion="2.0"
 geometryResourcesDir="$(pwd)"

@@ -25,6 +25,7 @@
 
 // Standard library:
 #include <vector>
+#include <fstream>
 
 // Third party:
 // - Boost:

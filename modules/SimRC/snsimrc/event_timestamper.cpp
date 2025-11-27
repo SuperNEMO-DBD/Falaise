@@ -84,12 +84,13 @@ namespace snemo {
             }
           }
           if (_runList_->is_empty()) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "No provided runs! Falling back to a default unique long 30-months run...");
+            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "No provided runs! Falling back to a default unique long 36-months run...");
             snemo::rc::run_description longRunDesc
-              = snemo::rc::run_description::make(0,
-                                                 snemo::rc::run_category::PRODUCTION,
-                                                 time::time_period_from_string("[2023-01-01 00:00:00/2025-07-01 00:00:00)"),
-                                                 nbEvents); // Here 'nbEvents' is a dummy value (unused)
+              = snemo::rc::run_description::make_unique_slice(0,
+							      snemo::rc::run_category::PRODUCTION,
+							      // datatools::version_id("production-default"),
+							      time::time_period_from_string("[2025-04-10 18:40:00/2028-04-10 18:39:59)"),
+							      nbEvents); // Here 'nbEvents' is a dummy value (unused)
             _runList_->add_run(longRunDesc);
           }
         }

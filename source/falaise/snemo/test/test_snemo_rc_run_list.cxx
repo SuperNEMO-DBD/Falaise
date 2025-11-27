@@ -11,6 +11,7 @@
 
 void test1();
 void test2();
+void test3();
 
 int main(int /* argc_ */, char** /* argv_ */)
 {
@@ -19,6 +20,7 @@ int main(int /* argc_ */, char** /* argv_ */)
     std::clog << "Test program for class 'snemo::rc::run_list'!" << std::endl;
     test1();
     test2();
+    test3();
     std::clog << "The end." << std::endl;
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
@@ -45,24 +47,27 @@ void test1()
     // Fill the run list:
     snt::time_duration runDuration(snt::hours(10) + snt::minutes(23) + snt::seconds(42));
     std::int32_t runId = 42;
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                1234));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     // datatools::version_id("betabeta-1"),
+							     snt::time_period(runStart, runDuration),
+							     1234));
     
     runStart    += runDuration + snt::minutes(7);
     runDuration += snt::hours(2) + snt::minutes(37);
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                2454));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     // datatools::version_id("betabeta-1"),
+							     snt::time_period(runStart, runDuration),
+							     2454));
     
     runStart    += runDuration + snt::minutes(13);
     runDuration -= snt::minutes(23);   
-    runList.add_run(snrc::run_description::make(runId++,
-                                                snrc::run_category::PRODUCTION,
-                                                snt::time_period(runStart, runDuration),
-                                                1431));
+    runList.add_run(snrc::run_description::make_unique_slice(runId++,
+							     snrc::run_category::PRODUCTION,
+							     // datatools::version_id("betabeta-1"),
+							     snt::time_period(runStart, runDuration),
+							     1431));
   }
                       
   std::clog << "\nThis run list:\n";
@@ -103,6 +108,29 @@ void test2()
   
   datatools::multi_properties runListConfig("run", "type");
   std::string runListConfigFilename = "${FALAISE_SNEMO_TESTING_DIR}/config/test-run_list1.conf";
+  datatools::fetch_path_with_env(runListConfigFilename);
+  runListConfig.read(runListConfigFilename);
+  runListConfig.print_tree(std::clog);
+  
+  runList.load(runListConfig);
+
+  std::clog << "\nThis run list:\n";
+  runList.print_tree(std::clog);
+    
+  return;
+}
+
+void test3()
+{
+  std::clog << "\nTest 3:\n";
+ 
+  namespace snrc = snemo::rc;
+  namespace snt = snemo::time;
+
+  snrc::run_list runList;
+  
+  datatools::multi_properties runListConfig("run", "type");
+  std::string runListConfigFilename = "${FALAISE_SNEMO_TESTING_DIR}/config/test-run_list2.conf";
   datatools::fetch_path_with_env(runListConfigFilename);
   runListConfig.read(runListConfigFilename);
   runListConfig.print_tree(std::clog);

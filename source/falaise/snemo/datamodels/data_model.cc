@@ -7,7 +7,9 @@
 #include <bayeux/mctools/simulated_data.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
 #include <falaise/snemo/datamodels/calibrated_data.h>
+#include <falaise/snemo/datamodels/clusterized_calibrated_data.h>
 #include <falaise/snemo/datamodels/tracker_clustering_data.h>
 #include <falaise/snemo/datamodels/tracker_trajectory_data.h>
 #include <falaise/snemo/datamodels/particle_track_data.h>
@@ -49,8 +51,18 @@ namespace snedm {
     return lbl;
   }
 
+  const std::string & labels::clusterized_precalibrated_data() {
+    static std::string lbl("CpCD");
+    return lbl;
+  }
+
   const std::string & labels::calibrated_data() {
     static std::string lbl("CD");
+    return lbl;
+  }
+
+  const std::string & labels::clusterized_calibrated_data() {
+    static std::string lbl("CCD");
     return lbl;
   }
 

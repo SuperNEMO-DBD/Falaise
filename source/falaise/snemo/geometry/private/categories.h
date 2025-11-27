@@ -17,7 +17,6 @@ namespace detail {
 const char kModuleGIDCategory[] = "module";
 
 // Veto Calorimeters
-const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
 const char kGammaVetoOMGIDCategory[] = "gveto_optical_module";
 const char kGammaVetoBlockGIDCategory[] = "gveto_block";
 const char kGammaVetoWrapperGIDCategory[] = "gveto_wrapper";
@@ -28,13 +27,13 @@ const char kCaloOMGIDCategory[] = "calorimeter_optical_module";
 const char kCaloBlockGIDCategory[] = "calorimeter_block";
 const char kCaloWrapperGIDCategory[] = "calorimeter_wrapper";
 
-// XWall Calorimter
-// const char kTrackerSubmoduleGIDCategory[] = "calorimeter_submodule";
+// XWall Calorimeter
 const char kXCaloOMGIDCategory[] = "xcalo_optical_module";
 const char kXCaloBlockGIDCategory[] = "xcalo_block";
 const char kXCaloWrapperGIDCategory[] = "xcalo_wrapper";
 
 // Tracker
+const char kTrackerSubmoduleGIDCategory[] = "tracker_submodule";
 const char kTrackerVolumeGIDCategory[] = "tracker_volume";
 // const char kTrackerLayerGIDCategory[] = "tracker_layer";
 const char kDriftCellGIDCategory[] = "drift_cell_core";

@@ -6,44 +6,57 @@
 
 namespace snemo {
 
-const std::string& service_info::metadataServiceName() {
-  static std::string lbl("metadata");
-  return lbl;
-}
+  const std::string & service_info::metadataServiceName()
+  {
+    static std::string lbl("metadata");
+    return lbl;
+  }
 
-const std::string& service_info::contextServiceName() {
-  static std::string lbl("context");
-  return lbl;
-}
+  const std::string & service_info::contextServiceName()
+  {
+    static std::string lbl("context");
+    return lbl;
+  }
 
-const std::string& service_info::runInfoServiceName() {
-  static std::string lbl("runInfo");
-  return lbl;
-}
+  const std::string & service_info::runInfoServiceName()
+  {
+    static std::string lbl("runInfo");
+    return lbl;
+  }
 
-const std::string& service_info::geometryServiceName() {
-  static std::string lbl("geometry");
-  return lbl;
-}
+  const std::string & service_info::geometryServiceName()
+  {
+    static std::string lbl("geometry");
+    return lbl;
+  }
 
-const std::string& service_info::cutServiceName() {
-  static std::string lbl("cuts");
-  return lbl;
-}
+  const std::string & service_info::cutServiceName()
+  {
+    static std::string lbl("cuts");
+    return lbl;
+  }
 
-const std::string& service_info::dbServiceName() {
-  static std::string lbl("db");
-  return lbl;
-}
+  const std::string & service_info::dbServiceName()
+  {
+    static std::string lbl("db");
+    return lbl;
+  }
 
-const std::string& service_info::trackerCellStatusServiceName() {
-  static std::string lbl("trackerCellStatus");
-  return lbl;
-}
+  const std::string & service_info::trackerCellStatusServiceName()
+  {
+    static std::string lbl("trackerCellStatus");
+    return lbl;
+  }
 
-const std::string& service_info::calorimeterOmStatusServiceName() {
-  static std::string lbl("calorimeterOmStatus");
-  return lbl;
-}
+  const std::string & service_info::calorimeterOmStatusServiceName()
+  {
+    static std::string lbl("calorimeterOmStatus");
+    return lbl;
+  }
 
-}  // end of namespace snemo
+  datatools::service_dict_type & service_bus(datatools::service_manager & svcmgr_)
+  {
+    return const_cast<datatools::service_dict_type&>(svcmgr_.get_local_services());
+  }
+
+} // end of namespace snemo

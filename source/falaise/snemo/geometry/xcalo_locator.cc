@@ -760,6 +760,7 @@ void xcalo_locator::tree_dump(std::ostream &out, const std::string &title,
       << datatools::logger::get_priority_label(get_logging_priority()) << std::endl;
   out << indent << itag << "Module number              = " << moduleNumber_ << std::endl;
   out << indent << itag << "Manager @                  = " << &get_geo_manager() << std::endl;
+  out << indent << itag << "OM block type              = " << caloOMGIDType_ << std::endl;
   out << indent << itag << "Calorimeter block type     = " << caloBlockGIDType_ << std::endl;
   out << indent << itag << "Block partitioned          = " << blocksArePartitioned_ << std::endl;
   if (isBlockPartitioned()) {
@@ -851,6 +852,7 @@ void xcalo_locator::set_defaults_() {
   blockPart_ = geomtools::geom_id::INVALID_ADDRESS;
 
   blocksArePartitioned_ = false;
+  caloOMGIDType_ = geomtools::geom_id::INVALID_TYPE;
   caloBlockGIDType_ = geomtools::geom_id::INVALID_TYPE;
   moduleAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
   wallAddressIndex_ = geomtools::geom_id::INVALID_ADDRESS;
@@ -892,6 +894,7 @@ void xcalo_locator::construct_() {
   uint32_t caloBlockWrapperGIDType = idManager.get_category_type(detail::kXCaloWrapperGIDCategory);
 
   // Analyse the layout of the calo block's geometry category :
+  caloOMGIDType_ = idManager.get_category_type(detail::kXCaloOMGIDCategory);
   caloBlockGIDType_ = idManager.get_category_type(detail::kXCaloBlockGIDCategory);
   const geomtools::id_mgr::category_info &block_ci =
       idManager.get_category_info(detail::kXCaloBlockGIDCategory);

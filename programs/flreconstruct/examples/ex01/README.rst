@@ -10,7 +10,7 @@ Run the simulation:
 .. code:: shell
 
    $ flsimulate \
-      --verbosity "debug" \
+      --verbosity "fatal" \
       --mount-directory "flrecoex01@$(pwd)" \
       --config "flsimulate-ex01.conf" \
       --number-events 100 \
@@ -25,10 +25,10 @@ Visualize simulated data:
 .. code:: shell
 
    $ flvisualize \
-      --experiment-setup "urn:snemo:demonstrator:setup:2.0" \
       --variant-profile "flsimulate-ex01.profile" \
       --input-file flsimuex01.brio
 ..
+
 
 Step 3
 ======
@@ -40,13 +40,12 @@ Run the reconstruction:
    $ flreconstruct \
       --verbosity "debug" \
       --mount-directory "flrecoex01@$(pwd)" \
-      --modulo 10 \
       --config "flreconstruct-ex01.conf" \
       --input-file "flsimuex01.brio" \
       --output-file "flrecoex01.brio"
 ..
 
-Step 2
+Step 4
 ======
 
 Visualize simulated data:
@@ -54,7 +53,6 @@ Visualize simulated data:
 .. code:: shell
 
    $ flvisualize \
-      --experiment-setup "urn:snemo:demonstrator:setup:2.0" \
       --variant-profile "flsimulate-ex01.profile" \
       --input-file flrecoex01.brio
 ..

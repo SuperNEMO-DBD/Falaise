@@ -33,7 +33,6 @@ string(RANDOM LENGTH 18 MANGLE_BINRELOC_MAIN)
 set(MANGLE_BINRELOC "MB${MANGLE_BINRELOC_MAIN}")
 configure_file(falaise_binreloc.h.in falaise_binreloc.h @ONLY)
 
-
 #-----------------------------------------------------------------------
 # Declare sources
 #
@@ -74,8 +73,10 @@ set(FalaiseLibrary_TESTS_CATCH)
 
 # - Declare headers, sources and test programs specific
 #   to various setups
+include(math.cmake)
 include(geometry.cmake)
 include(snemo.cmake)
+include(datasets.cmake)
 
 #-----------------------------------------------------------------------
 # Build/Link Library
@@ -84,6 +85,7 @@ add_library(Falaise SHARED ${FalaiseLibrary_HEADERS} ${FalaiseLibrary_SOURCES})
 target_compile_features(Falaise PUBLIC ${FALAISE_CXX_COMPILE_FEATURES})
 target_compile_definitions(Falaise PRIVATE ENABLE_BINRELOC)
 include_directories(${Falaise_SNRS_INC_PATH})
+include_directories(${LIBMARIADBCPP_INCLUDE_DIRS})
 target_include_directories(Falaise PUBLIC
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/source>
@@ -92,8 +94,32 @@ target_include_directories(Falaise PUBLIC
   )
 
 message(STATUS "Falaise_SNRS_LIB_PATH='${Falaise_SNRS_LIB_PATH}'")
+message(STATUS "LIBMARIADBCPP_LIBRARY_DIRS=${LIBMARIADBCPP_LIBRARY_DIRS}" )
+message(STATUS "LIBMARIADBCPP_LIBRARIES=${LIBMARIADBCPP_LIBRARIES}" )
+message(STATUS "LIBMARIADBCPP_LDFLAGS=${LIBMARIADBCPP_LDFLAGS}" )
+message(STATUS "LIBMARIADBCPP_CFLAGS=${LIBMARIADBCPP_CFLAGS}" )
+message(STATUS "LIBMARIADBCPP_INCLUDE_DIRS=${LIBMARIADBCPP_INCLUDE_DIRS}" )
+
+# BAYEUX:
 target_link_libraries(Falaise PUBLIC Bayeux::Bayeux)
-target_link_libraries(Falaise PUBLIC ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
+target_link_libraries(Falaise PUBLIC
+  ${Falaise_SNRS_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}snrs${CMAKE_SHARED_LIBRARY_SUFFIX})
+target_link_libraries(Falaise PUBLIC
+  ${LIBMARIADBCPP_LIBRARY_DIRS}/${CMAKE_SHARED_LIBRARY_PREFIX}${LIBMARIADBCPP_LIBRARIES}${CMAKE_SHARED_LIBRARY_SUFFIX})
+# target_link_libraries(Falaise PUBLIC ${LIBMARIADBCPP_LDFLAGS})
+
+# SNRS:
+target_include_directories(Falaise PUBLIC ${Falaise_SNRS_INC_PATH})
+
+# MARIADBCPP:
+target_include_directories(Falaise PUBLIC ${LIBMARIADBCPP_INCLUDE_DIRS})
+target_compile_options(Falaise PUBLIC ${LIBMARIADBCPP_CFLAGS})
+
+# JSONCPP:
+target_include_directories(Falaise PUBLIC ${JSONCPP_INCLUDE_DIRS})
+target_compile_options(Falaise PUBLIC ${JSONCPP_CFLAGS})
+target_link_libraries(Falaise PUBLIC ${JSONCPP_LDFLAGS})
+
 target_clang_format(Falaise)
 
 # - Rpath it
@@ -218,7 +244,12 @@ if(FALAISE_ENABLE_TESTING)
       PRIVATE "$<$<PLATFORM_ID:Darwin>:-undefined dynamic_lookup>"
       )
     # target_clang_format(${_testname})
-    add_test(NAME ${_testname} COMMAND ${_testname})
+    set(_testoptions "")
+    if(${_testname} STREQUAL "falaise-test_snemo_services_run_info_service")
+      set(_testoptions "-1" "-2" "-3")
+      message( STATUS "===========>_testname='${_testname}' with options '${_testoptions}'")
+    endif()
+    add_test(NAME ${_testname} COMMAND ${_testname} ${_testoptions})
     set_property(TEST ${_testname}
       APPEND PROPERTY ENVIRONMENT ${_falaise_TEST_ENVIRONMENT}
       )

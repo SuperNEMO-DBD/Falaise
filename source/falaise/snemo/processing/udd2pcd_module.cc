@@ -23,6 +23,7 @@
 #include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
 #include <falaise/snemo/datamodels/precalibrated_data.h>
+#include <falaise/snemo/datamodels/clusterized_precalibrated_data.h>
 #include <falaise/snemo/datamodels/geomid_utils.h>
 #include <falaise/snemo/services/services.h>
 
@@ -46,6 +47,7 @@ namespace snemo {
 
       _udd_input_tag_  = fps.get<std::string>("UDD_label", snedm::labels::unified_digitized_data());
       _pcd_output_tag_ = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
+      _cpcd_output_tag_ = fps.get<std::string>("CpCD_label", snedm::labels::clusterized_precalibrated_data());
 
       // Configure calorimeter pre-calibration method
 
@@ -56,6 +58,7 @@ namespace snemo {
       _calo_baseline_nsamples_ = fps.get<int>("calo_baseline_nsamples", 16);
       _calo_charge_integration_nsamples_ = fps.get<int>("calo_charge_integration_nsamples", 992);
       _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
+      _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
       _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
       _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
 
@@ -86,7 +89,7 @@ namespace snemo {
 
         _tracker_pcd_algo_ = ALGO_TRACKER_BASIC_CLUSTER;
         _tracker_basic_cluster_radius_threshold_ = fps.get<double>("tracker_method.cluster_radius_threshold", 3.0);
-        _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 15.0) * CLHEP::microsecond;
+        _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 10.0) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_min_ = fps.get<double>("tracker_method.cluster_deltat_calo_min_us", -0.22) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_max_ = fps.get<double>("tracker_method.cluster_deltat_calo_max_us",  5.00) * CLHEP::microsecond;
 
@@ -119,7 +122,8 @@ namespace snemo {
       }
 
       auto & eh_data = event.get<snemo::datamodel::event_header>(snedm::labels::event_header());
-      DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << eh_data.get_id());
+      _current_event_id_ = eh_data.get_id();
+      DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << _current_event_id_);
 
       auto & udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
 
@@ -135,11 +139,17 @@ namespace snemo {
       // Always rewrite tracker hits
       pcd_data.tracker_hits().clear();
 
+      // Check if some 'cpcd_data' are available in the data model:
+      auto & cpcd_data = snedm::getOrAddToEvent<snemo::datamodel::clusterized_precalibrated_data>(_cpcd_output_tag_, event);
+
+      // Always rewrite clusterize data
+      cpcd_data.clear();
+
       // Main calorimeter processing method
       process_calo_impl(udd_data, pcd_data);
 
       // Main tracker processing method
-      process_tracker_impl(udd_data, pcd_data);
+      process_tracker_impl(udd_data, pcd_data, cpcd_data);
 
       if (datatools::logger::is_debug(get_logging_priority())) {
         DT_LOG_DEBUG(get_logging_priority(), "'" << _pcd_output_tag_ << "' bank filled with " << pcd_data.tracker_hits().size()
@@ -154,15 +164,148 @@ namespace snemo {
       return dpp::base_module::PROCESS_SUCCESS;
     }
 
+
+    void udd2pcd_module::calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+						       snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) {
+
+      // overshoot/undershoot = waveform saturation at 4095/0
+      bool overshoot_flag  = false;
+      bool undershoot_flag = false;
+
+      // rebound = sample getting above (baseline+4096)/2
+      const double pcd_calo_baseline = pcd_calo_hit_.get_baseline() / _calo_adc2volt_;
+
+      const int16_t rebound_threshold = std::round(0.5 * (2048 + pcd_calo_baseline + 4096));
+      bool rebound_flag    = false;
+
+      // pileup
+      const int32_t pileup_derivative_threshold = -500;
+      bool pileup_flag = false;
+
+      // variable for pileup detection
+      bool derivative_rising = false;
+      bool derivative_crossed_zero = false;
+      // int32_t derivative_min_sample = 0;
+      // int32_t derivative_zero_sample = 0;
+      // int32_t derivative_min = 0;
+      // int32_t derivative_max = 0;
+      int32_t derivative_peak_count = 0;
+
+      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+
+      int32_t derivative_waveform[1024];
+      memset(derivative_waveform, 0, sizeof(derivative_waveform));
+
+      for (int16_t sample=0; sample<1024; sample++) {
+
+	const int16_t & waveform_sample = udd_calo_waveform[sample];
+
+	if (waveform_sample == 4095) {
+	  overshoot_flag = true;
+	  rebound_flag = true;
+
+	} else if (waveform_sample > rebound_threshold) {
+	  rebound_flag = true;
+
+	} else if (waveform_sample == 0) {
+	  undershoot_flag = true;
+
+	}
+
+        // compute the average derivative between samples [sample-16;sample-1] and [sample;sample+15]
+	// to covering a full 16 samples block and cancel the known SAMLONG cyclic noise
+
+	if ((sample < 16) || (sample >= (1024-16)))
+	  continue; // skip sample [0, 15] and [1008,1023]
+
+	for (int sub_sample=1; sub_sample<=16; sub_sample++)
+	  derivative_waveform[sample] += udd_calo_waveform[sample+sub_sample-1] - udd_calo_waveform[sample-sub_sample];
+
+	// we are looking for peaks on the waveform, which translate into peak on the derivative
+	// - front edge the negative pulse => negative peak on derivative
+	// - maximum of the peak of pulse  => derivative crossing 0
+	// - falling edge of the pulse     => positive peak on the derivative
+
+	if (derivative_waveform[sample] > derivative_waveform[sample-1]) {
+
+	  if (!derivative_rising && (derivative_waveform[sample-1] < pileup_derivative_threshold)) {
+	    // beginning of a bipolar peak candidate ...
+	    derivative_rising = true;
+	    // derivative_min_sample = sample-1;
+	    // derivative_min = derivative_waveform[sample-1];
+	    derivative_crossed_zero = false;
+	  }
+
+	  if ((derivative_waveform[sample-1] < 0) && (derivative_waveform[sample] >= 0))
+	    derivative_crossed_zero = true;
+
+	} else { // derivative is falling or flat (end of bipolar candidate)
+
+	  if (derivative_rising && derivative_crossed_zero)
+	    derivative_peak_count++;
+
+	  derivative_rising = false;
+
+	}
+
+      } // for (sample)
+
+      if (derivative_peak_count > 1)
+	pileup_flag = true;
+
+      datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.grab_auxiliaries();
+
+      if (overshoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.overshoot");
+
+      else if (rebound_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.rebound");
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with REBOUND waveform");
+      }
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
+	pileup_flag = false;
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
+      }
+
+      if (undershoot_flag)
+	pcd_calo_hit_properties.store_flag("waveform.undershoot");
+
+      else if (pileup_flag) {
+	pcd_calo_hit_properties.store_flag("waveform.pileup");
+
+	// DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+	// 	       << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id())
+	// 	       << " (" << snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id())
+	// 	       << ") with PILEUP waveform");
+      }
+
+      // if (overshoot_flag)
+      //   DT_LOG_WARNING(get_logging_priority(), "[" << _current_event_id_ << "] "
+      // 		 << snemo::datamodel::om_label(new_pcd_calo->get_geom_id())
+      // 		 << " with OVERSHOOT waveform");
+
+    }
+
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
       const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
       const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
-      const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
+      // const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -200,8 +343,19 @@ namespace snemo {
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-        new_pcd_calo->set_hit_id(a_udd_calo_hit->get_hit_id());
+        new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
+
+	// switch from digital to logical geomid
+	// (use scintillator block geom IDs in place of OM geom IDs):
+	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
+	  new_pcd_calo->grab_geom_id().set_type(1302);
+	  new_pcd_calo->grab_geom_id().set_any(4);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
+	  new_pcd_calo->grab_geom_id().set_type(1232);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
+	  new_pcd_calo->grab_geom_id().set_type(1252);
+	}
 
         // Retrieve fwmeas digital data from UDD calorimeter hit
         const int16_t & fwmeas_baseline_d  = a_udd_calo_hit->get_fwmeas_baseline();
@@ -216,7 +370,7 @@ namespace snemo {
         const double fwmeas_charge    = fwmeas_charge_d * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
         const double fwmeas_time_cfd  = (fwmeas_falling_time_cfd_d/256.0) * CALO_SAMPLING_PERIOD;
         const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
-        const double fwmeas_time = time_tdc - CALO_TIME_WINDOW + CALO_POSTRIGGER_TIME + fwmeas_time_cfd;
+        const double fwmeas_time = time_tdc - CALO_POSTRIGGER_TIME + fwmeas_time_cfd;
 
         // Store pre-calibrated data into pCD hit
         new_pcd_calo->set_baseline(fwmeas_baseline);
@@ -235,24 +389,34 @@ namespace snemo {
         const double fwmes_width = fwmeas_rising_time_cfd - fwmeas_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", fwmes_width/CLHEP::ns);
 
+	// -> store UDD's parent hit index
+        pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+
         // Append the new pCD calorimeter hit
-        calo_hits_.push_back(new_pcd_calo);
+        pcd_calo_hits_.push_back(new_pcd_calo);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
         // new_pcd_calo->print_tree(std::clog);
       }
+
+      // std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_) {
+                                                       snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
       const double CALO_ADC2VOLT = _calo_adc2volt_;
       const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
       const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
-      const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
+      // const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -287,8 +451,19 @@ namespace snemo {
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
         // Keep same hit number for calorimeter's digitized hit and precalibrated hit
-        new_pcd_calo->set_hit_id(a_udd_calo_hit->get_hit_id());
+        new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
         new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
+
+	// switch from digital to logical geomid
+	// (use scintillator block geom IDs in place of OM geom IDs):
+	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
+	  new_pcd_calo->grab_geom_id().set_type(1302);
+	  new_pcd_calo->grab_geom_id().set_any(4);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
+	  new_pcd_calo->grab_geom_id().set_type(1232);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
+	  new_pcd_calo->grab_geom_id().set_type(1252);
+	}
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
 
@@ -333,6 +508,11 @@ namespace snemo {
         if (charge_sample_start < 0) charge_sample_start = 0;
         int16_t charge_sample_stop = charge_sample_start + _calo_charge_integration_nsamples_;
         if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
+	if (charge_sample_stop > _calo_charge_integration_nsamples_before_peak_) {
+	  charge_sample_stop = _calo_charge_integration_samples_max_;
+	  // make the charge integration window multiple of 16
+	  charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
+	}
 
         double swmeas_charge_sum = 0;
         for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
@@ -373,7 +553,7 @@ namespace snemo {
 
         const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
         const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * CALO_SAMPLING_PERIOD;
-        const double swmeas_falling_time = time_tdc - CALO_TIME_WINDOW + CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
+        const double swmeas_falling_time = time_tdc - CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
         new_pcd_calo->set_time(swmeas_falling_time);
         // new_pcd_calo->set_sigma_time();
 
@@ -407,12 +587,23 @@ namespace snemo {
         const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
 
+
+	// -> store UDD's parent hit index
+        pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	if (a_udd_calo_hit->has_waveform())
+	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+
         // Append the new pCD calorimeter hit
-        calo_hits_.push_back(new_pcd_calo);
+        pcd_calo_hits_.push_back(new_pcd_calo);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
       }
+
+      // std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     void udd2pcd_module::process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -429,7 +620,7 @@ namespace snemo {
 
     // Precalibrate tracker hits from UDD informations:
     void udd2pcd_module::precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                                            snemo::datamodel::PreCalibratedTrackerHitHdlCollection & tracker_hits_) {
+                                                            snemo::datamodel::PreCalibratedTrackerHitHdlCollection & pcd_tracker_hits_) {
       // Constants
       static const double TRACKER_TDC_TICK = 12.5 * CLHEP::nanosecond;
 
@@ -439,7 +630,7 @@ namespace snemo {
       // Loop over UDD tracker digitized hits
       for (const auto& a_udd_tracker_hit : udd_tracker_hits) {
 
-        DT_LOG_DEBUG(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
+        DT_LOG_TRACE(get_logging_priority(), "Precalibrating tracker hit from " << snemo::datamodel::gg_label(a_udd_tracker_hit->get_geom_id()));
 
         // Loop over all gg_times and keep trace of the earliest timestamps
         int64_t first_anode_timestamp[5];
@@ -481,8 +672,12 @@ namespace snemo {
         auto new_pcd_tracker = datatools::make_handle<snemo::datamodel::precalibrated_tracker_hit>();
 
         // Keep same hit number for tracker's digitized hit and precalibrated hit
-        new_pcd_tracker->set_hit_id(a_udd_tracker_hit->get_hit_id());
+        new_pcd_tracker->set_hit_id(pcd_tracker_hits_.size());
         new_pcd_tracker->set_geom_id(a_udd_tracker_hit->get_geom_id());
+
+	// Use "drift cell core" volume's type in place of "drift cell"'s type
+	if (new_pcd_tracker->get_geom_id().get_type() == 1203)
+	  new_pcd_tracker->grab_geom_id().set_type(1204);
 
         // Convert and fill the earliest R0 timestamp
         const double first_anode_time = first_anode_timestamp[0] * TRACKER_TDC_TICK;
@@ -503,28 +698,38 @@ namespace snemo {
           new_pcd_tracker->set_sigma_top_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
         }
 
+        // Additional information into pCD tracker datatools::properties
+        datatools::properties& pcd_tracker_hit_properties = new_pcd_tracker->grab_auxiliaries();
+
         // Convert and fill the earliest R[1-4] timestamp in properties
         for (int ANODE_Ri=1; ANODE_Ri<5; ANODE_Ri++) {
           if (first_anode_timestamp[ANODE_Ri] != std::numeric_limits<int64_t>::max()) {
             const double first_anode_ri_time = first_anode_timestamp[ANODE_Ri] * TRACKER_TDC_TICK;
             std::string ri_key = "R" + std::to_string(ANODE_Ri) + "_us";
-            new_pcd_tracker->grab_auxiliaries().store_real(ri_key, (first_anode_ri_time-first_anode_time)/(CLHEP::microsecond));
-            // std::string sigma_ri_key = "sigma_R" + std::to_string(ANODE_Ri) + "_drift_time";
+            pcd_tracker_hit_properties.store_real(ri_key, (first_anode_ri_time-first_anode_time)/(CLHEP::microsecond));
+            // std::string sigma_ri_key = "sigma_R" + std::to_string(ANODE_Ri) + "_us";
             // new_pcd_tracker->grab_auxiliaries().store_real(sigma_ri_key, 0.5*sqrt(2)*TRACKER_TDC_TICK);
           }
         }
 
+	// -> store UDD's parent hit index
+        pcd_tracker_hit_properties.store("UDD.parent", a_udd_tracker_hit->get_hit_id());
+
         // Append the new pCD tracker hit
-        tracker_hits_.push_back(new_pcd_tracker);
+        pcd_tracker_hits_.push_back(new_pcd_tracker);
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_tracker->tree_dump(std::clog);
         // new_pcd_tracker->print_tree(std::clog);
       }
+
+      // std::sort(pcd_tracker_hits_.begin(), pcd_tracker_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
     // Clusterize precalibrate tracker hits from UDD informations:
-    void udd2pcd_module::basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_) {
+    void udd2pcd_module::basic_tracker_clusterisation(snemo::datamodel::precalibrated_data & pcd_data_,
+						      snemo::datamodel::clusterized_precalibrated_data & cpcd_data_) {
 
       const double TRACKER_CLUSTERISATION_RADIUS2_THRES = _tracker_basic_cluster_radius_threshold_*_tracker_basic_cluster_radius_threshold_;
       const double TRACKER_CLUSTERISATION_DELTAT_THRES = _tracker_basic_cluster_deltat_threshold_;
@@ -532,6 +737,9 @@ namespace snemo {
       // Temporary storage of clusters = vector of cluster
       // (with 1 cluster = vector of tracker hit index)
       std::vector<std::vector<int>> pcd_tracker_hit_clusters;
+
+      // Retrieve pCD calorimeter hits
+      auto & pcd_calo_hits = pcd_data_.calorimeter_hits();
 
       // Retrieve pCD tracker hits
       auto & pcd_tracker_hits = pcd_data_.tracker_hits();
@@ -647,32 +855,80 @@ namespace snemo {
 
       // std::vector<std::vector<int>> pcd_tracker_hit_clusters;
 
-      for (size_t pcd_cluster_id=0; pcd_cluster_id<pcd_tracker_hit_clusters.size(); pcd_cluster_id++) {
+      int pcd_cluster_id = 0;
 
-        double cluster_first_anode_time = std::numeric_limits<double>::max();
-        double cluster_last_anode_time = std::numeric_limits<double>::min();
-        double cluster_mean_anode_time = 0;
-
-        // uint32_t cluster_side = 0;
-        uint32_t cluster_row_min = 112;
-        uint32_t cluster_row_max = 0;
-        uint32_t cluster_layer_min = 9;
-        uint32_t cluster_layer_max = 0;
-        // double cluster_height_min = +1;
-        // double cluster_height_max = -1;
+      for (size_t pcd_cluster_i=0; pcd_cluster_i<pcd_tracker_hit_clusters.size(); pcd_cluster_i++) {
 
         // Retrieve the vector of tracker hit indexes
-        const std::vector<int> & cluster_pcd_tracker_hit_indexes = pcd_tracker_hit_clusters.at(pcd_cluster_id);
+        const std::vector<int> & cluster_pcd_tracker_hit_indexes = pcd_tracker_hit_clusters.at(pcd_cluster_i);
+
+	// Skip cluster with single cell
+	if (cluster_pcd_tracker_hit_indexes.size() == 1)
+	  continue;
+
+	auto new_precalibrated_cluster = datatools::make_handle<snemo::datamodel::precalibrated_cluster>();
+	new_precalibrated_cluster->set_cluster_id(cpcd_data_.size());
+
+	std::array<int,5> cluster_first_anode_indexes;
+	cluster_first_anode_indexes.fill(-1);
+	std::array<double,5> cluster_first_anode_times;
+	cluster_first_anode_times.fill(std::numeric_limits<double>::max());
+        double cluster_last_anode_time = std::numeric_limits<double>::min();
+        double cluster_mean_anode_time = 0;
+	// uint32_t cluster_tracker_side = 0;
+        uint32_t cluster_tracker_row_min = 112;
+        uint32_t cluster_tracker_row_max = 0;
+        uint32_t cluster_tracker_layer_min = 9;
+        uint32_t cluster_tracker_layer_max = 0;
+        // double cluster_tracker_height_min = +1;
+        // double cluster_tracker_height_max = -1;
 
         // Iterate over all cells of the current cluster
         for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
 
-          const auto & cluster_pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).get();
+	  const auto & cluster_pcd_tracker_hit_handle = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index);
+	  new_precalibrated_cluster->tracker_hits().push_back(cluster_pcd_tracker_hit_handle);
 
+	  const auto & cluster_pcd_tracker_hit = cluster_pcd_tracker_hit_handle.get();
           const double anode_time = cluster_pcd_tracker_hit.get_anodic_time();
 
-          if (anode_time < cluster_first_anode_time)
-            cluster_first_anode_time = anode_time;
+          if (anode_time < cluster_first_anode_times[0]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_first_anode_indexes[1];
+            cluster_first_anode_times[2] = cluster_first_anode_times[1];
+	    cluster_first_anode_indexes[1] = cluster_first_anode_indexes[0];
+            cluster_first_anode_times[1] = cluster_first_anode_times[0];
+	    cluster_first_anode_indexes[0] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[0] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[1]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_first_anode_indexes[1];
+            cluster_first_anode_times[2] = cluster_first_anode_times[1];
+	    cluster_first_anode_indexes[1] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[1] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[2]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_first_anode_indexes[2];
+            cluster_first_anode_times[3] = cluster_first_anode_times[2];
+	    cluster_first_anode_indexes[2] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[2] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[3]) {
+	    cluster_first_anode_indexes[4] = cluster_first_anode_indexes[3];
+            cluster_first_anode_times[4] = cluster_first_anode_times[3];
+	    cluster_first_anode_indexes[3] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[3] = anode_time;
+	  } else if (anode_time < cluster_first_anode_times[4]) {
+	    cluster_first_anode_indexes[4] = cluster_pcd_tracker_hit_index;
+            cluster_first_anode_times[4] = anode_time;
+	  }
+
           if (anode_time > cluster_last_anode_time)
             cluster_last_anode_time = anode_time;
           cluster_mean_anode_time += anode_time;
@@ -680,19 +936,19 @@ namespace snemo {
           const geomtools::geom_id & cell_geom_id = cluster_pcd_tracker_hit.get_geom_id();
 
           // const uint32_t & cell_side = cell_geom_id.get(1);
-          // cluster_side = cell_side;
+          // cluster_tracker_side = cell_side;
 
           const uint32_t & cell_row = cell_geom_id.get(3);
-          if (cell_row < cluster_row_min)
-            cluster_row_min = cell_row;
-          if (cell_row > cluster_row_max)
-            cluster_row_max = cell_row;
+          if (cell_row < cluster_tracker_row_min)
+            cluster_tracker_row_min = cell_row;
+          if (cell_row > cluster_tracker_row_max)
+            cluster_tracker_row_max = cell_row;
 
           const uint32_t & cell_layer = cell_geom_id.get(2);
-          if (cell_layer < cluster_layer_min)
-            cluster_layer_min = cell_layer;
-          if (cell_layer > cluster_layer_max)
-            cluster_layer_max = cell_layer;
+          if (cell_layer < cluster_tracker_layer_min)
+            cluster_tracker_layer_min = cell_layer;
+          if (cell_layer > cluster_tracker_layer_max)
+            cluster_tracker_layer_max = cell_layer;
 
           // if ((tracker_hit.time_bottom_cathode>0) && (tracker_hit.time_top_cathode>0))
           //   {
@@ -700,158 +956,193 @@ namespace snemo {
           //    double top_drift = tracker_hit.time_top_cathode - tracker_hit.time_anode;
           //    double plasma_drift = bottom_drift + top_drift;
           //    double tracker_z = -1 + bottom_drift * 2/plasma_drift;
-          //    if (tracker_z < cluster_height_min)
-          //      cluster_height_min = tracker_z;
-          //    if (tracker_z > cluster_height_max)
-          //      cluster_height_max = tracker_z;
+          //    if (tracker_z < cluster_tracker_height_min)
+          //      cluster_tracker_height_min = tracker_z;
+          //    if (tracker_z > cluster_tracker_height_max)
+          //      cluster_tracker_height_max = tracker_z;
           //   }
 
         } // for (cluster_pcd_tracker_hit_index)
 
-        cluster_mean_anode_time /= (double)(pcd_tracker_hit_clusters.size());
+        cluster_mean_anode_time /= (double)(cluster_pcd_tracker_hit_indexes.size());
+
+	int cluster_first_anode_index = cluster_first_anode_indexes.front();
+	double cluster_first_anode_time = cluster_first_anode_times.front();
+
+	if (cluster_pcd_tracker_hit_indexes.size() >= cluster_first_anode_times.size()) {
+
+	  // perform sanity check for better first anode estimate
+	  const double cluster_tracker_size = cluster_pcd_tracker_hit_indexes.size();
+
+	  for (size_t i=1; i<cluster_first_anode_times.size(); i++) {
+
+	    const double deltat_first_anode = cluster_first_anode_times[i] - cluster_first_anode_times[i-1];
+
+	    // data-driven separation of too early (but clusterized) tracker hit
+	    if (cluster_tracker_size < 20.0*std::pow(deltat_first_anode/CLHEP::microsecond, -0.75)) {
+	      cluster_first_anode_index = cluster_first_anode_indexes[i-1];
+	      cluster_first_anode_time = cluster_first_anode_times[i-1];
+	      break;
+	    }
+	  }
+
+	  if (cluster_first_anode_index == -1) {
+	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " using last available first_anode_time for cluster #" << new_precalibrated_cluster->get_cluster_id());
+	    cluster_first_anode_index = cluster_first_anode_indexes.back();
+	    cluster_first_anode_time = cluster_first_anode_times.back();
+	  }
+
+	}
 
         // Perform tracker/calorimeter association
         std::vector<int> cluster_calorimeter_index;
         std::vector<int> cluster_associated_calorimeter_index;
 
-        // double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
-        // int best_reference_pcd_calo_hit_index = -1;
+	// We will store the index of pcd calorimeter hit which is the closest
+	// in time to the earliest anode time of tracker hits in the cluster
+        double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
 
-        // Retrieve pCD calorimeter hits (mutable because we will update the hits later)
-        auto & pcd_calo_hits = pcd_data_.calorimeter_hits();
+        int best_reference_pcd_calo_hit_index = -1;
 
         // Iterate over all calorimeter hits
         for (size_t pcd_calo_hit_index=0; pcd_calo_hit_index<pcd_calo_hits.size(); pcd_calo_hit_index++) {
 
-          auto & pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).get();
-
-          // const float & calo_amplitude = calo_hit.amplitude[CALO_AMPLITUDE_INDEX];
-          // if (calo_amplitude < calo_lt_value)
-          //   continue; // keep only hits above LT amplitude
-
-          // const float calo_energy = calo_hit.charge[CALO_CHARGE_INDEX]*calo_charge2energy[calo_hit.om_num];
-          // if (with_calibration && calo_energy < calo_lt_energy_value)
-          //   continue; // keep only hits above LT energy
+          auto & pcd_calo_hit_handle = pcd_calo_hits.at(pcd_calo_hit_index);
+          auto & pcd_calo_hit = pcd_calo_hit_handle.get();
 
           const double & calo_time = pcd_calo_hit.get_time();
 
           // perform calo/tracker time correlation
           const double deltat_cluster_first_anode_calo = cluster_first_anode_time - calo_time;
-          // const double deltat_cluster_mean_anode_calo = cluster_mean_anode_time - calo_time;
 
           if (deltat_cluster_first_anode_calo > _tracker_basic_cluster_deltat_calo_max_) continue;
           if (deltat_cluster_first_anode_calo < _tracker_basic_cluster_deltat_calo_min_) continue;
 
           cluster_calorimeter_index.push_back(pcd_calo_hit_index);
+	  new_precalibrated_cluster->calorimeter_hits().push_back(pcd_calo_hit_handle);
 
-          // if (deltat_cluster_first_anode_calo < deltat_cluster_first_anode_calo_min) {
-          //   deltat_cluster_first_anode_calo_min = deltat_cluster_first_anode_calo;
-          //   best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
-          // }
-
-          const geomtools::geom_id & calo_geom_id = pcd_calo_hit.get_geom_id();
-
-          uint32_t calo_type = 0, calo_side = 0, calo_wall = 0, calo_column = 0; // , calo_row = 0;
-
-          switch (calo_geom_id.get_type()) {
-          case 1302: // MWALL case
-          case 1301:
-            calo_type   = 0;
-            calo_side   = calo_geom_id.get(1);
-            calo_column = calo_geom_id.get(2);
-            // calo_row    = calo_geom_id.get(3);
-            break;
-          case 1232: // XWALL case
-          case 1231:
-            calo_type   = 1;
-            calo_side   = calo_geom_id.get(1);
-            calo_wall   = calo_geom_id.get(2);
-            calo_column = calo_geom_id.get(3);
-            // calo_row    = calo_geom_id.get(4);
-            break;
-          case 1252: // GVETO case
-          case 1251:
-            calo_type   = 2;
-            calo_side   = calo_geom_id.get(1);
-            calo_wall   = calo_geom_id.get(2);
-            calo_column = calo_geom_id.get(3);
+          if (std::fabs(deltat_cluster_first_anode_calo) < deltat_cluster_first_anode_calo_min) {
+            deltat_cluster_first_anode_calo_min = std::fabs(deltat_cluster_first_anode_calo);
+            best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
           }
 
-          unsigned int nb_space_association = 0;
+          // const geomtools::geom_id & calo_geom_id = pcd_calo_hit.get_geom_id();
 
-          // perform calo/tracker space correlation
-          for (const int & pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
+          // uint32_t calo_type = 0, calo_side = 0, calo_wall = 0, calo_column = 0; // , calo_row = 0;
 
-            const auto & pcd_tracker_hit = pcd_tracker_hits.at(pcd_tracker_hit_index).get();
+          // switch (calo_geom_id.get_type()) {
+          // case 1302: // MWALL case
+          // case 1301:
+          //   calo_type   = 0;
+          //   calo_side   = calo_geom_id.get(1);
+          //   calo_column = calo_geom_id.get(2);
+          //   // calo_row    = calo_geom_id.get(3);
+          //   break;
+          // case 1232: // XWALL case
+          // case 1231:
+          //   calo_type   = 1;
+          //   calo_side   = calo_geom_id.get(1);
+          //   calo_wall   = calo_geom_id.get(2);
+          //   calo_column = calo_geom_id.get(3);
+          //   // calo_row    = calo_geom_id.get(4);
+          //   break;
+          // case 1252: // GVETO case
+          // case 1251:
+          //   // calo_type   = 2;
+          //   // calo_side   = calo_geom_id.get(1);
+          //   // calo_wall   = calo_geom_id.get(2);
+          //   // calo_column = calo_geom_id.get(3);
+	  //   continue;
+          // }
 
-            const geomtools::geom_id & cell_geom_id = pcd_tracker_hit.get_geom_id();
-            const uint32_t & cell_side = cell_geom_id.get(1);
-            const uint32_t & cell_row = cell_geom_id.get(3);
-            const uint32_t & cell_layer = cell_geom_id.get(2);
+          // unsigned int nb_space_association = 0;
 
-            // Calo and tracker hit must be on same side
-            if (calo_side != cell_side)
-              continue;
+          // // perform calo/tracker space correlation
+          // for (const int & pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
 
-            if (calo_type == 0) { // Handle MW case
+          //   const auto & pcd_tracker_hit = pcd_tracker_hits.at(pcd_tracker_hit_index).get();
 
-              // Search association only within 2 last layers [7-8]
-              if (cell_layer < 7)
-                continue;
+          //   const geomtools::geom_id & cell_geom_id = pcd_tracker_hit.get_geom_id();
+          //   const uint32_t & cell_side = cell_geom_id.get(1);
+          //   const uint32_t & cell_row = cell_geom_id.get(3);
+          //   const uint32_t & cell_layer = cell_geom_id.get(2);
 
-              // Cell's row value (in float) centered in front of the calo hit's column
-              const float mw_cell_row = 0.667 + 5.8771579 * calo_column;
-              if (abs(mw_cell_row - cell_row) > 5)
-                continue;
+          //   // Calo and tracker hit must be on same side
+          //   if (calo_side != cell_side)
+          //     continue;
 
-              nb_space_association++;
+          //   if (calo_type == 0) { // Handle MW case
 
-            } else if (calo_type == 1) { // XW case
-              // Mountain wall -> search association within 2 first rows [0-1]
-              // Tunnel wall -> search association within 2 last rows [111-112]
-              if (((calo_wall == 0) && (cell_row < 2)) || ((calo_wall == 1) && (cell_row > 110))) {
-                // Column 0 -> search association within layers [0-4]
-                // Column 1 -> search association within layers [4-8]
-                if (((calo_column == 0) && (cell_layer < 5)) || ((calo_column == 1) && (cell_layer > 3)))
-                  nb_space_association++;
-              }
-            }
+          //     // Search association only within 2 last layers [7-8]
+          //     if (cell_layer < 7)
+          //       continue;
 
-          } // for (pcd_tracker_hit_index)
+          //     // Cell's row value (in float) centered in front of the calo hit's column
+          //     const float mw_cell_row = 0.667 + 5.8771579 * calo_column;
+          //     if (abs(mw_cell_row - cell_row) > 5)
+          //       continue;
 
-          if (nb_space_association > 0)
-            cluster_associated_calorimeter_index.push_back(pcd_calo_hit_index);
+          //     nb_space_association++;
+
+          //   } else if (calo_type == 1) { // XW case
+          //     // Mountain wall -> search association within 2 first rows [0-1]
+          //     // Tunnel wall -> search association within 2 last rows [111-112]
+          //     if (((calo_wall == 0) && (cell_row < 2)) || ((calo_wall == 1) && (cell_row > 110))) {
+          //       // Column 0 -> search association within layers [0-4]
+          //       // Column 1 -> search association within layers [4-8]
+          //       if (((calo_column == 0) && (cell_layer < 5)) || ((calo_column == 1) && (cell_layer > 3)))
+          //         nb_space_association++;
+          //     }
+          //   }
+
+          // } // for (pcd_tracker_hit_index)
+
+          // if (nb_space_association > 0)
+          //   cluster_associated_calorimeter_index.push_back(pcd_calo_hit_index);
 
         } // for (pcd_calo_hit)
 
         DT_LOG_DEBUG(get_logging_priority(), "=> cluster #" << pcd_cluster_id << " with "
                      << cluster_pcd_tracker_hit_indexes.size() << " cells and "
-                     << cluster_calorimeter_index.size() << " matching ("
-                     << cluster_associated_calorimeter_index.size()
-                     << " associated) calorimeter hits");
+                     << cluster_calorimeter_index.size() << " calorimeter hit(s) "
+		     << "(ref pcd calo hit = " << best_reference_pcd_calo_hit_index << ")");
 
+        if (best_reference_pcd_calo_hit_index != -1) {
 
-        // if (best_reference_pcd_calo_hit_index != -1) {
+          // // A candidate of calorimeter hit was found as reference time for this cluster
+          // auto & pcd_calo_hit = pcd_calo_hits.at(best_reference_pcd_calo_hit_index).get();
+          // const double & calo_time = pcd_calo_hit.get_time();
 
-        //   // A candidate of calorimeter hit was found as reference time for this cluster
-        //   auto & pcd_calo_hit = pcd_calo_hits.at(best_reference_pcd_calo_hit_index).get();
-        //   const double & calo_time = pcd_calo_hit.get_time();
+          // // Computation of anode drift time for all cells of the cluster
 
-        //   // Computation of anode drift time for all cells of the cluster
+          // // Iterate over all cells of the current cluster
+          // for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
 
-        //   // Iterate over all cells of the current cluster
-        //   for (const int & cluster_pcd_tracker_hit_index : cluster_pcd_tracker_hit_indexes) {
+          //   auto & pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).grab();
 
-        //     auto & pcd_tracker_hit = pcd_tracker_hits.at(cluster_pcd_tracker_hit_index).grab();
+	  //   const double & anode_time = pcd_tracker_hit.get_anodic_time();
+	  //   const double anode_drift_time = anode_time - calo_time;
+	  //   pcd_tracker_hit.set_anodic_drift_time(anode_time - calo_time);
 
-        //     const double & anode_time = pcd_tracker_hit.get_anodic_time();
-        //     pcd_tracker_hit.set_anodic_drift_time(anode_time - calo_time);
+	  // } // for (cluster_pcd_tracker_hit_index)
 
-        //   } // for (cluster_pcd_tracker_hit_index)
+	  datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
 
-        // } // if (best_reference_pcd_calo_hit_index != -1)
+	  // store time information
+	  new_precalibrated_cluster_properties.store_integer("first_pcd_tracker_index", cluster_first_anode_index);
+	  new_precalibrated_cluster_properties.store_integer("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
+	  new_precalibrated_cluster_properties.store_real("mean_anode_time", cluster_mean_anode_time);
 
-        
+	  // store geometry of the bounding box
+	  new_precalibrated_cluster_properties.store_integer("tracker_row_min", cluster_tracker_row_min);
+	  new_precalibrated_cluster_properties.store_integer("tracker_row_max", cluster_tracker_row_max);
+	  new_precalibrated_cluster_properties.store_integer("tracker_layer_min", cluster_tracker_layer_min);
+	  new_precalibrated_cluster_properties.store_integer("tracker_layer_max", cluster_tracker_layer_max);
+
+        } // if (best_reference_pcd_calo_hit_index != -1)
+
+	cpcd_data_.push_back(new_precalibrated_cluster);
+
         /*******************************************************/
         /* 2023-03-05 FM: Final registration of clusterization */
         /* informations in the pCD bank                        */
@@ -866,7 +1157,7 @@ namespace snemo {
             pcd_tracker_hit_properties.set_flag("pCD.clustering.clusterized");
             pcd_tracker_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
           } else {
-            DT_LOG_WARNING(get_logging_priority(), "tracker hit #" << pcd_tracker_hit_index << " is already tagged as clustered");
+            DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " tracker hit #" << pcd_tracker_hit_index << " is already tagged as clustered");
           }
         }
         
@@ -878,40 +1169,80 @@ namespace snemo {
           datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
           if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
             pcd_calo_hit_properties.set_flag("pCD.clustering.clusterized");
-            pcd_calo_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
+	    datatools::properties::data::vint cluster_id;
+	    cluster_id.push_back(pcd_cluster_id);
+            pcd_calo_hit_properties.store("pCD.clustering.cluster_id", cluster_id);
+            // pcd_calo_hit_properties.store_integer("pCD.clustering.cluster_id", pcd_cluster_id);
           } else {
-            DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
+	    datatools::properties::data::vint cluster_id;
+	    pcd_calo_hit_properties.fetch("pCD.clustering.cluster_id", cluster_id);
+	    cluster_id.push_back(pcd_cluster_id);
+            pcd_calo_hit_properties.change("pCD.clustering.cluster_id", cluster_id);
+            // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " calo hit #" << pcd_calo_hit_index << " is already tagged as clustered");
           }
         }
-        for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
-          snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
-          datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
-          if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
-            pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
-          } else {
-            DT_LOG_WARNING(get_logging_priority(), "calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
-          }
-        }
-        
-      } // for (pcd_cluster_id)
-    
+
+        // for (int pcd_calo_hit_index : cluster_associated_calorimeter_index) {
+        //   snemo::datamodel::precalibrated_calorimeter_hit & mutable_pcd_calo_hit = pcd_calo_hits.at(pcd_calo_hit_index).grab();
+        //   datatools::properties & pcd_calo_hit_properties = mutable_pcd_calo_hit.grab_auxiliaries();
+        //   if (not pcd_calo_hit_properties.has_flag("pCD.clustering.associated")) {
+        //     pcd_calo_hit_properties.set_flag("pCD.clustering.associated");
+        //   } else {
+        //     // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " calo hit #" << pcd_calo_hit_index << " is already tagged as associated");
+        //   }
+	//
+        // }
+
+	pcd_cluster_id++;
+
+      } // for (pcd_cluster_i)
+
+      // store unclusterized calorimeter hits
+      for (auto & pcd_calo_hit : pcd_calo_hits) {
+	const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit->get_auxiliaries();
+	if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	  cpcd_data_.unclusterized_calorimeter_hits().push_back(pcd_calo_hit);
+	}
+      }
+
+      // store unclusterized tracker hits
+      for (auto & pcd_tracker_hit : pcd_tracker_hits) {
+	const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit->get_auxiliaries();
+	if (not pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	  cpcd_data_.unclusterized_tracker_hits().push_back(pcd_tracker_hit);
+	}
+      }
+
       /*******************************************************/
       /* 2023-03-05 FM: Final registration of clusterization */
       /* informations in the pCD bank                        */
       /*******************************************************/
-      // Register number of clusters in the pCD bank:
-      pcd_data_.grab_properties().store_integer("pCD.clustering.nclusters", pcd_tracker_hit_clusters.size());
 
-      DT_LOG_DEBUG(get_logging_priority(), pcd_tracker_hit_clusters.size() << " final cluster(s) identified");
+      // Register number of clusters in the pCD bank:
+      datatools::properties & pcd_data_properties = pcd_data_.grab_properties();
+      pcd_data_properties.store_integer("pCD.clustering.nb_clusters", cpcd_data_.size());
+      pcd_data_properties.store_integer("pCD.clustering.nb_unclustered_calo_hits", cpcd_data_.unclusterized_calorimeter_hits().size());
+      pcd_data_properties.store_integer("pCD.clustering.nb_unclustered_tracker_hits", cpcd_data_.unclusterized_tracker_hits().size());
+
+      // {
+      // 	boost::property_tree::ptree opts;
+      // 	opts.put("list_clusters", true);
+      // 	opts.put("list_properties", true);
+      // 	cpcd_data_.print_tree(std::cout, opts);
+      // 	// cpcd_data_.print_tree();
+      // }
+
+      DT_LOG_DEBUG(get_logging_priority(), cpcd_data_.size() << " final cluster(s) stored");
 
     }
 
     void udd2pcd_module::process_tracker_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
-                                              snemo::datamodel::precalibrated_data & pcd_data_) {
+                                              snemo::datamodel::precalibrated_data & pcd_data_,
+					      snemo::datamodel::clusterized_precalibrated_data & cpcd_data_) {
 
       if (_tracker_pcd_algo_ == ALGO_TRACKER_BASIC_CLUSTER) {
         this->precalibrate_tracker_hits_earliest(udd_data_, pcd_data_.tracker_hits());
-        this->basic_tracker_clusterisation(pcd_data_);
+        this->basic_tracker_clusterisation(pcd_data_, cpcd_data_);
       }
 
     }

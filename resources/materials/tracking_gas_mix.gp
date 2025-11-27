@@ -16,6 +16,9 @@ T=300.0*kelvin
 M_He=4.0026 * g / mol
 M_Ar=39.948 * g / mol
 M_Et=46.068 * g / mol
+M_H=1.00794 * g / mol
+M_C=12.0107 * g / mol
+M_O=15.9994 * g / mol
 R=8.314462 * joule / kelvin / mol
 
 # Argon+Alcohol
@@ -27,7 +30,7 @@ propArgon=0.965
 
 # Helium+Alcohol+Argon (NEMO3)
 P=889.5 * mbar
-P=875.0 * mbar
+# P=875.0 * mbar
 T=298.0*kelvin
 propHelium=94.6e-2
 propEthanol=4.44e-2
@@ -43,6 +46,24 @@ propArgon=1e-2
 P_He=P * propHelium 
 P_Ar=P * propArgon 
 P_Et=P * propEthanol 
+
+fmHe = propHelium * M_He
+fmAr = propArgon * M_Ar
+fmH  = propEthanol * 6 * M_H
+fmC  = propEthanol * 2 * M_C
+fmO  = propEthanol * 1 * M_O
+fmTot = fmHe+fmAr+fmH+fmC+fmO
+
+fmHe=fmHe/fmTot
+fmAr=fmAr/fmTot
+fmH=fmH/fmTot
+fmC=fmC/fmTot
+fmO=fmO/fmTot
+print "fmH = ", fmH
+print "fmHe = ", fmHe
+print "fmC = ", fmC
+print "fmO = ", fmO
+print "fmAr = ", fmAr
 
 d_He = P_He / R / T
 d_Ar = P_Ar / R / T

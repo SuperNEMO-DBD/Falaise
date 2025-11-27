@@ -66,6 +66,22 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precal
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_data)
 
+/*******************************************
+ * snemo::datamodel::precalibrated_cluster *
+ *******************************************/
+
+#include <falaise/snemo/datamodels/boost_io/precalibrated_cluster.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::precalibrated_cluster)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::precalibrated_cluster)
+
+/****************************************************
+ * snemo::datamodel::clusterized_precalibrated_data *
+ ****************************************************/
+
+#include <falaise/snemo/datamodels/boost_io/clusterized_precalibrated_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::clusterized_precalibrated_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::clusterized_precalibrated_data)
+
 /************************************************
  * snemo::datamodel::calorimeter_digitized_hit *
  ************************************************/
@@ -80,9 +96,9 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calori
 #include <falaise/snemo/datamodels/boost_io/tracker_digitized_hit.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::tracker_digitized_hit)
 
-/*************************************
+/********************************************
  * snemo::datamodel::unified_digitized_data *
- *************************************/
+ ********************************************/
 
 #include <falaise/snemo/datamodels/boost_io/unified_digitized_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::unified_digitized_data)
@@ -110,6 +126,22 @@ DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibr
 #include <falaise/snemo/datamodels/boost_io/calibrated_data.ipp>
 DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_data)
 BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::calibrated_data)
+
+/****************************************
+ * snemo::datamodel::calibrated_cluster *
+ ****************************************/
+
+#include <falaise/snemo/datamodels/boost_io/calibrated_cluster.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::calibrated_cluster)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::calibrated_cluster)
+
+/*************************************************
+ * snemo::datamodel::clusterized_calibrated_data *
+ *************************************************/
+
+#include <falaise/snemo/datamodels/boost_io/clusterized_calibrated_data.ipp>
+DATATOOLS_SERIALIZATION_CLASS_SERIALIZE_INSTANTIATE_ALL(snemo::datamodel::clusterized_calibrated_data)
+BOOST_CLASS_EXPORT_IMPLEMENT(snemo::datamodel::clusterized_calibrated_data)
 
 /*********************************************
  * snemo::datamodel::tracker_clustering_data *
