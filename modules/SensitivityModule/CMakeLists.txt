@@ -34,9 +34,11 @@ add_test(NAME testSensitivityModule_simulate
   COMMAND flsimulate -o test-simulate.brio
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
+
+message(STATUS "[SensitivityModule] FALAISE_DEFAULT_RECONSTRUCTION_TAG='${FALAISE_DEFAULT_RECONSTRUCTION_TAG}'")
 # - Reconstruct
 add_test(NAME testSensitivityModule_reconstruct
-  COMMAND flreconstruct -i test-simulate.brio -p urn:snemo:demonstrator:reconstruction:3.0:config:default -o test-reconstruct.brio
+  COMMAND flreconstruct -V debug -i test-simulate.brio -p "${FALAISE_DEFAULT_RECONSTRUCTION_TAG}:config:1.0" -o test-reconstruct.brio
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 set_tests_properties(testSensitivityModule_reconstruct
@@ -44,7 +46,7 @@ set_tests_properties(testSensitivityModule_reconstruct
   )
 # - Run Module
 add_test(NAME testSensitivityModule_sensitivity
-  COMMAND flreconstruct -i test-reconstruct.brio -p SensitivityModuleExample.conf
+  COMMAND flreconstruct -V debug -i test-reconstruct.brio -p SensitivityModuleExample.conf
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 set_tests_properties(testSensitivityModule_sensitivity

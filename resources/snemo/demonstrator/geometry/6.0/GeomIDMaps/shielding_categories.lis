@@ -1,0 +1,95 @@
+#@description A sample list of geometry ID categories/types for tracker submodules
+#@key_label   "category"
+#@meta_label  "type"
+
+########
+# COIL #
+########
+
+[category="coil_wall" type="340"]
+  addresses : string[1] = "wall"
+  # To generate GID = [340:0]
+
+[category="coil_wall_support" type="341"]
+  inherits : string = "coil_wall"
+  
+[category="coil_wall_wire_block" type="342"]
+  inherits : string = "coil_wall"
+
+[category="coil_wire_set" type="343"]
+  extends : string    = "coil_wall_wire_block"
+  by      : string[1] = "wire"
+
+[category="coil_wire" type="344"]
+  inherits : string = "coil_wire_set"
+
+[category="coil_wire_space" type="345"]
+  inherits : string = "coil_wire_set"
+
+#######
+# ART #
+#######
+
+[category="art_wall" type="320"]
+  addresses : string[1] = "wall"
+  # To generate GID = [320:0]
+
+#############################################
+# Ceiling & Floor: wall=5
+#
+#    [art_wall] (ce/fl)
+#    =================================== beam0 <-- [art_beam]
+#    .---------------------------------.
+#    |                                 |     
+#    |                                 |     
+#    |          panel_set  <-------------- [art_panel_set]
+#    |                                 |     
+#    |_________________________________|
+#    =================================== beam1 <-- [art_beam]
+#   
+#
+[category="art_panel_set" type="321"]
+  inherits : string = "art_wall"
+
+#############################################
+#
+#    [art_panel_set]
+#    .------.------.------.------.------.
+#    |      |      |      |      |      |     
+#    |      |      |      |      |      |     
+#    |      |      |panel |      |      |   
+#    |      |      |  ^   |      |      |     
+#    |______|______|__:___|______|______|
+#                     :
+#               [art_panel]
+#
+[category="art_panel" type="322"]
+  extends : string    = "art_panel_set"
+  by      : string[1] = "panel"
+
+[category="art_beam" type="323"]
+  extends : string    = "art_wall"
+  by      : string[1] = "beam"
+
+[category="art_patch_panel" type="326"]
+  extends : string    = "art_wall"
+  by      : string[1] = "panel"
+
+#############################################
+#
+#    [art_panel]
+#         ______
+#       ||      ||<--[art_xbeam]
+#       ||      || 
+#       ||window<----[art_window] 
+#       ||      ||  
+#       ||______||
+#
+[category="art_xbeam" type="324"]
+  extends : string    = "art_panel"
+  by      : string[1] = "beam"
+
+[category="art_window" type="325"]
+  inherits : string = "art_panel"
+
+# end

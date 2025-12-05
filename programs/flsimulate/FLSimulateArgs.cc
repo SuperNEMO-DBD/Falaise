@@ -446,6 +446,10 @@ namespace FLSimulate {
   void do_postprocess(FLSimulateArgs & flSimParameters_)
   {
     DT_LOG_TRACE_ENTERING(flSimParameters_.logLevel);
+    if (datatools::logger::is_debug(flSimParameters_.logLevel)) {
+      DT_LOG_DEBUG(flSimParameters_.logLevel, "====> flSimParameters:");
+      flSimParameters_.print(std::cerr);
+    }
     datatools::kernel& dtk = datatools::kernel::instance();
     const datatools::urn_query_service& dtkUrnQuery = dtk.get_urn_query();
 

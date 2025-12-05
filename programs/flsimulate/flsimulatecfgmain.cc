@@ -478,9 +478,9 @@ namespace FLSimulateConfig {
                          << " associated to simulation setup '"
                          << variantConfigUrnInfo.get_urn() << "'.");
             DT_THROW_IF(!dtkUrnQuery.check_urn_info(defaultVariantProfileUrn,
-                                                    falaise::tags::variant_profile_category()),
+                                                    falaise::tags::variant_default_profile_category()),
                         std::logic_error,
-                        "Cannot query variant setup URN='" << params.variantConfigUrn << "'!");
+                        "Cannot query default variant profile URN='" << params.variantConfigUrn << "'!");
             datatools::urn_info defaultVariantProfileConfigUrnInfo;
             defaultVariantProfileConfigUrnInfo = dtkUrnQuery.get_urn_info(defaultVariantProfileUrn);
             if (datatools::logger::is_debug(params.logLevel)) {

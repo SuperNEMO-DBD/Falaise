@@ -15,6 +15,12 @@ Supported versions:
   + uses some variant definitions of the ``1.0`` version above
   + ``GeometryVariants.conf`` : main configuration of the new geometry variant registry
   + ``geometry.def`` : definitions of the top geometry variant models and parameters
+    
+* ``3.0`` : Last version for geometry version ``5.1`` (from Falaise >= ``5.1.8``)
+
+  + uses some variant definitions of the ``1.0`` and ``2.0`` versions above
+  + ``GeometryVariants.conf`` : main configuration of the new geometry variant registry
+  + ``geometry.def`` : definitions of the top geometry variant models and parameters
 
 
 .. end

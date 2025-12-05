@@ -1,0 +1,54 @@
+#@description A sample list of geometry ID categories/types
+#@key_label  "category"
+#@meta_label "type"
+
+[category="world" type="0"]
+  addresses : string[1] = "world"
+  # To generate GID = [0:0]
+
+[category="hall"  type="100"]
+  addresses : string[1] = "hall"
+  # To generate GID = [100:0]
+
+[category="ground"  type="110"]
+  inherits : string[1] = "hall"
+  # To generate GID = [110:0]
+
+[category="external_shield" type="200"]
+  # For iron shielding walls
+  addresses : string[1] = "side"
+  # To generate GID = [200:0]
+
+[category="water_shield" type="210"]
+  addresses : string[1] = "side"
+  # To generate GID = [210:0]
+
+[category="iron_shield" type="240"]
+  inherits : string[1] = "external_shield"
+  # To generate GID = [240:0]
+
+[category="iron_shield_part" type="241"]
+  extends : string    = "iron_shield"
+  by      : string[1] = "part"
+  # To generate GID = [241:0.3]
+
+[category="pe_shield" type="220"]
+  inherits : string[1] = "external_shield"
+  # To generate GID = [220:0]
+
+[category="pe_shield_part" type="221"]
+  extends : string    = "pe_shield"
+  by      : string[1] = "part"
+  # To generate GID = [221:0.3]
+
+[category="support_frame" type="300"]
+  addresses : string[1] = "frame"
+  # To generate GID = [300:0]
+
+[category="module" type="1000"]
+  addresses : string[1] = "module"
+  # To generate GID = [1000:0]
+
+[category="reference_optical_module" type="1999"]
+  addresses : string[1] = "item"
+  # To generate GID = [1999:0] ... [1999:4]

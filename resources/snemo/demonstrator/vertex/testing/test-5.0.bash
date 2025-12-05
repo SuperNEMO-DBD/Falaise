@@ -16,7 +16,7 @@ fi
 
 vertexResourcesDir="$(pwd)"
 falaiseResourcesDir="${vertexResourcesDir}/../../.."
-vertexProfileLoad="$(pwd)/testing/vertexes-1.profile"
+vertexProfileLoad="$(pwd)/variants/${vertexVariantVersion}/testing/vertexes-1.profile"
 vertexProfile="$(pwd)/vertexes.profile"
 vertexGenList="$(pwd)/vertex_generators.list"
 origPwd="$(pwd)"
@@ -33,6 +33,15 @@ vertexResourcesSubdir="snemo/demonstrator/vertex"
 geometryResourcesSubdir="snemo/demonstrator/geometry"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
+if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
+    echo >&2 "[info] Loading frc's special development stuff..."
+    falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
+fi
+if [ ! -d ${falaiseBuildDir} ]; then
+    echo >&2 "[warning] Falaise build directory does not exist '${falaiseBuildDir}' ! Ask for user input..."
+    read -p "Enter Falaise build directory: "
+    falaiseBuildDir="${REPLY}"
+fi
 if [ ! -d ${falaiseBuildDir} ]; then
     echo >&2 "[error] Falaise build directory does not exist '${falaiseBuildDir}' !"
     exit 1
@@ -51,6 +60,7 @@ falaiseLibDir="$(pwd)"
 cd ${origPwd}
 
 echo >&2 "[info] geometryVersion         = '${geometryVersion}'"
+echo >&2 "[info] geometryVariantVersion  = '${geometryVariantVersion}'"
 echo >&2 "[info] vertexVersion           = '${vertexVersion}'"
 echo >&2 "[info] vertexResourcesSubdir   = '${vertexResourcesSubdir}'"
 echo >&2 "[info] falaiseResourcesDir     = '${falaiseResourcesDir}'"
@@ -68,7 +78,7 @@ EOF
 bxvariant_inspector \
     --datatools::resource-path="falaise@${falaiseResourcesDir}" \
     --logging="debug" \
-    --variant-config="@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+    --variant-config="@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
     --variant-gui \
     --variant-load="${vertexProfileLoad}" \
     --variant-set="geometry:layout/if_basic/source_layout=${geomSourceLayout}" \
@@ -79,7 +89,9 @@ if [ $? -ne 0 ]; then
     echo >&2 "[error] Bayeux variant inspector failed !"
     exit 1
 fi
-reset
+
+echo >&2 "[info] Variant file:"
+cat ${vertexProfile}
 
 # exit 0
 cat<<EOF
@@ -95,7 +107,7 @@ bxgenvtx_production \
     --load-dll "Falaise@${falaiseLibDir}" \
     --datatools::logging "fatal" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
     --variant-load "${vertexProfile}" \
     --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
     --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
@@ -165,9 +177,9 @@ EOF
 	local _vertexDescAdd1=$(echo -n "${_token2};" | cut -d';' -f2  | xargs )
 	local _vertexDescAdd2=$(echo -n "${_token2};" | cut -d';' -f3  | xargs )
 	local _vertexDescAdd3=$(echo -n "${_token2};" | cut -d';' -f4  | xargs )
-	echo >&2 "============== _vertexDescAdd1='${_vertexDescAdd1}'"	
-	echo >&2 "============== _vertexDescAdd2='${_vertexDescAdd2}'"	
-	echo >&2 "============== _vertexDescAdd3='${_vertexDescAdd3}'"	
+	# echo >&2 "============== _vertexDescAdd1='${_vertexDescAdd1}'"	
+	# echo >&2 "============== _vertexDescAdd2='${_vertexDescAdd2}'"	
+	# echo >&2 "============== _vertexDescAdd3='${_vertexDescAdd3}'"	
 	local _vertexDescAdds=()
 	if [ -n "${_vertexDescAdd1}" ]; then
 	    _vertexDescAdds+=("${_vertexDescAdd1}")
@@ -178,23 +190,23 @@ EOF
 	if [ -n "${_vertexDescAdd3}" ]; then
 	    _vertexDescAdds+=("${_vertexDescAdd3}")
 	fi
-	echo >&2 "============== _vertexDescAdds='${_vertexDescAdds[@]}'"	
+	# echo >&2 "============== _vertexDescAdds='${_vertexDescAdds[@]}'"	
 	for _vertexDescAdd in ${_vertexDescAdds[@]} ; do
-   	    echo >&2 "============== processing _vertexDescAdd='${_vertexDescAdd}'"	
+   	    # echo >&2 "============== processing _vertexDescAdd='${_vertexDescAdd}'"	
 	    echo "${_vertexDescAdd}" | grep group= > /dev/null
 	    if [ $? -eq 0 ]; then
  		_vertexGenGroup=$(echo "${_vertexDescAdd}" | sed -e 's/group=//g') 	
- 		echo >&2 "============== Found group='${_vertexGenGroup}'!"	
+ 		# echo >&2 "============== Found group='${_vertexGenGroup}'!"	
 	    else
 		echo "${_vertexDescAdd}" | grep rank= > /dev/null
 		if [ $? -eq 0 ]; then
 		    _vertexGenRank=$(echo "${_vertexDescAdd}" | sed -e 's/rank=//g') 	
-		    echo >&2 "============== Found rank='${_vertexGenRank}'!"	
+		    # echo >&2 "============== Found rank='${_vertexGenRank}'!"	
 		else	
 		    echo "${_vertexDescAdd}" | grep variant= > /dev/null
 		    if [ $? -eq 0 ]; then
 			_vertexGenVariant=$(echo "${_vertexDescAdd}" | sed -e 's/variant=//g') 	
-			echo >&2 "============== Found variant='${_vertexGenVariant}'!"	
+			# echo >&2 "============== Found variant='${_vertexGenVariant}'!"	
 		    fi
 		fi
 	    fi
@@ -216,23 +228,23 @@ EOF
 	echo >&2 "  lenRank    = ${_lenRank}" 
 	if [ ${_lenName} -gt ${_lenNameMax} ]; then
 	    _lenNameMax=${_lenName}
-   	    echo >&2 "  ==========> update lenNameMax=[${_lenNameMax}] from [${_lenName}]" 
+   	    # echo >&2 "  ==========> update lenNameMax=[${_lenNameMax}] from [${_lenName}]" 
 	fi
 	if [ ${_lenDesc} -gt ${_lenDescMax} ]; then
 	    _lenDescMax=${_lenDesc}
-   	    echo >&2 "  ==========> update lenDescMax=[${_lenDescMax}] from [${_lenDesc}]" 
+   	    # echo >&2 "  ==========> update lenDescMax=[${_lenDescMax}] from [${_lenDesc}]" 
 	fi
 	if [ ${_lenGroup} -gt ${_lenGroupMax} ]; then
 	    _lenGroupMax=${_lenGroup}
-   	    echo >&2 "  ==========> update lenGroupMax=[${_lenGroupMax}] from [${_lenGroup}]" 
+   	    # echo >&2 "  ==========> update lenGroupMax=[${_lenGroupMax}] from [${_lenGroup}]" 
 	fi
 	if [ ${_lenRank} -gt ${_lenRankMax} ]; then
 	    _lenRankMax=${_lenRank}
-   	    echo >&2 "  ==========> update lenRankMax=[${_lenRankMax}] from [${_lenRank}]" 
+   	    # echo >&2 "  ==========> update lenRankMax=[${_lenRankMax}] from [${_lenRank}]" 
 	fi
 	if [ ${_lenVariant} -gt ${_lenVariantMax} ]; then
 	    _lenVariantMax=${_lenVariant}
-   	    echo >&2 "  ==========> update lenVariantMax=[${_lenVariantMax}] from [${_lenVariant}]" 
+   	    # echo >&2 "  ==========> update lenVariantMax=[${_lenVariantMax}] from [${_lenVariant}]" 
 	fi
 	# if [ ${_lineCount} -ge 40 ]; then
 	#     break
@@ -271,7 +283,7 @@ EOF
     _lineCount=0
     while read -r _vertexLine; do
 	let _lineCount=_lineCount+1
-	echo >&2 "  ==========> second processing line #${_lineCount}" 
+	# echo >&2 "  ==========> second processing line #${_lineCount}" 
 	local _token1=$(echo -n "${_vertexLine}" | cut -d':' -f1 | xargs)
 	local _token2=$(echo -n "${_vertexLine}" | cut -d':' -f2 | xargs -0)
 	local _vertexGenName="${_token1}"
@@ -355,7 +367,7 @@ bxgenvtx_production \
     --load-dll "Falaise@${falaiseLibDir}" \
     --datatools::logging "fatal" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
     --variant-load "${vertexProfile}" \
     --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
     --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
@@ -401,7 +413,7 @@ bxgeomtools_inspector \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
     --load-dll "Falaise@${falaiseLibDir}" \
     --interactive \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
     --variant-load "${vertexProfile}" \
     --manager-config "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" 
 if [ $? -ne 0 ]; then
@@ -411,7 +423,7 @@ fi
 
 # ls -l vertexes_on_foils.pdf
 # --variant-config "@falaise:${geometryResourcesSubdir}/variants/${geometryVariantVersion}/GeometryVariantRepository.conf" 
-# --variant-config "@falaise:${vertexResourcesSubdir}/variants/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" 
+# --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" 
 # --variant-load "${vertexProfile}" 
 
 

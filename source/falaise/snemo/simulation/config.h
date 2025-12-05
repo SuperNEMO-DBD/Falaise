@@ -22,6 +22,8 @@ namespace snemo {
   namespace simulation {
 
     const std::string & default_simulation_tag();
+
+    const std::string & default_simulation_variant_tag();
     
   } // end of namespace simulation
 

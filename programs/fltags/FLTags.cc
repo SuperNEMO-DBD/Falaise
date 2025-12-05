@@ -100,6 +100,8 @@ void fltags::_run_generate_graph_() {
   DT_LOG_DEBUG(_args_.logLevel, "Building the dependency graph of registered tags...");
   datatools::kernel& dtk = datatools::kernel::instance();
   datatools::urn_query_service& dtkUrnQuery = dtk.grab_urn_query();
+  dtkUrnQuery.set_logging_priority(_args_.logLevel);
+  // const datatools::dependency_graph& dg = dtkUrnQuery.get_dependency_graph();
   std::string output_file = _args_.outputFile;
   // DT_LOG_DEBUG(_args_.logLevel, "output_file=" << output_file);
   std::ostream* out = nullptr;

@@ -48,15 +48,16 @@ namespace FLSimulate {
     os_ << "flsimulate " << falaise::version::get_version() << commitInfo << "\n";
     if (isVerbose_) {
       os_ << "\n"
-         << "Copyright (C) 2013-2024 SuperNEMO Collaboration\n\n"
-         << "flsimulate uses the following external libraries:\n"
-         << "* Falaise : " << falaise::version::get_version() << commitInfo << "\n"
-         << "* Bayeux  : " << bayeux::version::get_version() << "\n"
-         << "* Boost   : " << BOOST_VERSION << "\n"
-         << "* Geant4  : "
-         << "9.6.4"
-         << "\n"
-         << "\n\n";
+	  << "Copyright (C) 2013-2024 SuperNEMO Collaboration\n\n"
+	  << "flsimulate uses the following external libraries:\n"
+	  << "* Falaise : " << falaise::version::get_version() << commitInfo << "\n"
+	  << "* Bayeux  : " << bayeux::version::get_version() << "\n"
+	  << "* Boost   : " << BOOST_VERSION << "\n"
+	  << "* Geant4  : " << "9.6.4" << "\n"
+	  << "* Falaise simulation : " << "\n"
+	  << "  * Default setup         : " << default_simulation_setup() << "\n"
+	  << "  * Default variant setup : " << default_variant_service_setup() << "\n"
+	  << "\n\n";
     }
     return;
   }

@@ -62,6 +62,11 @@ namespace falaise {
       return _c;
     }
 
+    const std::string& variant_default_profile_category() {
+      static const std::string _c("defvarprofile");
+      return _c;
+    }
+
     const std::string& variant_gdm_category() {
       static const std::string _c("vargdm");
       return _c;
@@ -77,6 +82,6 @@ namespace falaise {
       return _c;
     }
 
-  }  // namespace tags
+  } // namespace tags
 
-}  // namespace falaise
+} // namespace falaise

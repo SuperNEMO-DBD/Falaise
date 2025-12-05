@@ -6,7 +6,7 @@ SuperNEMO Vertex configuration
 Organization of the directory
 ================================
 
-* ``5.0/`` : Static decay generator configuration version ``5.0``
+* ``5.0/`` : Static vertex generator configuration version ``5.0``
 
   Contents:
 
@@ -32,12 +32,14 @@ Organization of the directory
 	using the realistic flat source strips
       * ``snrs1/`` : For specific  vertex generators definitions
 	using the realistic bent ITEP-like source strips (use package SNRS)
+
+* ``5.1/`` : Static vertex generator configuration version ``5.1``
     
 * ``variants/`` : Variant  vertex generator configurations
 
   Contents:
 
-  - ``1.0/`` : Variant  decay generator  configuration ``1.0``
+  - ``1.0/`` : Variant vertex generator  configuration ``1.0`` for static version ``5.0`` 
 
     Contents:
     
@@ -53,6 +55,8 @@ Organization of the directory
       variant models and parameters
     + ``vertexes_generators.csv``   :   List   of   available   vertex
       generators for the variant system
+
+  - ``2.0/`` : Variant vertex generator  configuration ``2.0`` for static version ``5.1``
 
 
 Testing the vertex generator

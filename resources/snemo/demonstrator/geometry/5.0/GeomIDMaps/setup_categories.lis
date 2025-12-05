@@ -25,4 +25,3 @@
 [category="reference_optical_module" type="1999"]
   addresses : string[1] = "item"
   # To generate GID = [1999:0] ... [1999:4]
-

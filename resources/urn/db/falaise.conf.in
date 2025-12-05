@@ -1,20 +1,45 @@
-
-[urn="urn:snemo:demonstrator:geometry:default" category="varprofile"]
-  description              : string    = "Default geometry setup for the SuperNEMO demonstrator"
+# Geometry:
+[urn="urn:snemo:demonstrator:geometry:default" category="geomsetup"]
+  description              : string    = "Default geometry support for SuperNEMO"
   topics                   : string[1] = "alias_of"
   topic.alias_of.component : string    = "@FALAISE_DEFAULT_GEOMETRY_TAG@"
 
-[urn="urn:snemo:demonstrator:setup:default" category="varprofile"]
-  description              : string    = "Default experimental setup for the SuperNEMO demonstrator model"
+[urn="urn:snemo:demonstrator:geometry:variants:service:default" category="varservice"]
+  description              : string    = "Default geometry variants support for SuperNEMO demonstrator"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_GEOMETRY_VARIANT_TAG@"
+
+# Setup:
+[urn="urn:snemo:demonstrator:setup:default" category="expsetup"]
+  description              : string    = "Default experimental setup support for SuperNEMO"
   topics                   : string[1] = "alias_of"
   topic.alias_of.component : string    = "@FALAISE_DEFAULT_SETUP_TAG@"
 
-[urn="urn:snemo:demonstrator:simulation:default" category="varprofile"]
-  description              : string    = "Default simulation setup for the SuperNEMO demonstrator"
+[urn="urn:snemo:demonstrator:setup:variants:service:default" category="varprofile"]
+  description              : string    = "Default experimental setup variants support for SuperNEMO"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_SETUP_VARIANT_TAG@"
+
+# Simulation:
+[urn="urn:snemo:demonstrator:simulation:default" category="simsetup"]
+  description              : string    = "Default simulation support for SuperNEMO"
   topics                   : string[1] = "alias_of"
   topic.alias_of.component : string    = "@FALAISE_DEFAULT_SIMULATION_TAG@"
 
-[urn="urn:snemo:demonstrator:reconstruction:default" category="varprofile"]
-  description              : string    = "Default simulation setup for the SuperNEMO demonstrator"
+[urn="urn:snemo:demonstrator:simulation:variants:service:default" category="varprofile"]
+  description              : string    = "Default simulation variants service support for SuperNEMO"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_SIMULATION_VARIANT_TAG@"
+
+# Reconstruction:
+[urn="urn:snemo:demonstrator:reconstruction:default" category="recsetup"]
+  description              : string    = "Default reconstruction support for SuperNEMO"
   topics                   : string[1] = "alias_of"
   topic.alias_of.component : string    = "@FALAISE_DEFAULT_RECONSTRUCTION_TAG@"
+
+[urn="urn:snemo:demonstrator:reconstruction:variants:service:default" category="varprofile"]
+  description              : string    = "Default reconstruction variants service support for SuperNEMO"
+  topics                   : string[1] = "alias_of"
+  topic.alias_of.component : string    = "@FALAISE_DEFAULT_RECONSTRUCTION_VARIANT_TAG@"
+
+# end
