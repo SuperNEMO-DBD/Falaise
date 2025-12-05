@@ -39,6 +39,7 @@ namespace FLReconstruct {
   struct FLReconstructCommandLine
   {
     datatools::logger::priority logLevel;  //!< Verbosity level
+		bool strictChecks = true;
     uint32_t maxNumberOfEvents;            //!< Maximum number of processed events
     uint32_t moduloEvents;                 //!< Event modulo
     std::string userProfile;               //!< User profile

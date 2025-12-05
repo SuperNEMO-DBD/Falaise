@@ -113,12 +113,14 @@ step3=1
 ###############################################################################
 if [ $step1 -eq 1 ]; then
     echo >&2 "[info] Running flsimulate-configure with HE(>2MeV) Se82 2nubb shot from the source bulk..."
-    # -t "urn:snemo:demonstrator:simulation:2.2" 
-    flsimulate-configure --no-gui \
-			 -s "vertexes:generator=source_pads_bulk" \
-			 -s "primary_events:generator=Se82.2nubb_2MeV" \
-			 -s "simulation:output_profile=none" \
-			 -o "${FLWORKDIR}/feature-pr75-validation.vprofile"
+    flsimulate-configure \
+	--no-gui \
+	-s "geometry:layout/if_basic/source_layout=Basic" \
+	-s "geometry:layout/if_basic/source_layout/if_basic/material=Se82" \
+	-s "vertexes:generator=source_pads_bulk" \
+	-s "primary_events:generator=Se82.2nubb_2MeV" \
+	-s "simulation:output_profile=none" \
+	-o "${FLWORKDIR}/feature-pr75-validation.vprofile"
     if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
     fi
@@ -154,14 +156,17 @@ fi
 if [ $step2 -eq 1 ]; then
     echo >&2 "[info] Running flsimulate-configure with HE electron shot from the source bulk......"
     # -t "urn:snemo:demonstrator:simulation:2.2" 
-    flsimulate-configure --no-gui \
-			 -s "vertexes:generator=source_pads_bulk" \
-			 -s "primary_events:generator=flat_versatile_generator" \
-			 -s "primary_events:generator/if_flat_versatile/particle=electron" \
-			 -s "primary_events:generator/if_flat_versatile/energy_min=4 MeV" \
-			 -s "primary_events:generator/if_flat_versatile/energy_max=6 MeV" \
-			 -s "simulation:output_profile=all_details" \
-			 -o "${FLWORKDIR}/feature-pr75-validation.vprofile"
+    flsimulate-configure \
+	--no-gui \
+	-s "geometry:layout/if_basic/source_layout=Basic" \
+	-s "geometry:layout/if_basic/source_layout/if_basic/material=Se82" \
+	-s "vertexes:generator=source_pads_bulk" \
+	-s "primary_events:generator=flat_versatile_generator" \
+	-s "primary_events:generator/if_flat_versatile/particle=electron" \
+	-s "primary_events:generator/if_flat_versatile/energy_min=4 MeV" \
+	-s "primary_events:generator/if_flat_versatile/energy_max=6 MeV" \
+	-s "simulation:output_profile=all_details" \
+	-o "${FLWORKDIR}/feature-pr75-validation.vprofile"
     if [ $? -ne 0 ]; then
 	my_exit 1 "flsimulate-configure failed! Abort!"
     fi
