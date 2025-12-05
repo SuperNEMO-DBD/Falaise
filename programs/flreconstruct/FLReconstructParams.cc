@@ -10,6 +10,7 @@ namespace FLReconstruct {
 
     // Application specific parameters:
     params.logLevel = datatools::logger::PRIO_ERROR;
+    params.strictChecks = true;
     params.userProfile = "normal";
     params.numberOfEvents = 0;  // 0 == no limit on event loop
     params.moduloEvents = 0;    // 0 == no print
@@ -65,6 +66,7 @@ namespace FLReconstruct {
     out_ << tag
          << "logLevel                     = " << datatools::logger::get_priority_label(this->logLevel)
          << std::endl;
+    out_ << tag << "strictChecks          = " << std::boolalpha << strictChecks << std::endl;
     out_ << tag << "reconstructionSetupUrn       = '" << reconstructionSetupUrn << "'" << std::endl;
     out_ << tag << "reconstructionConfig         = '" << reconstructionConfig << "'" << std::endl;
     out_ << tag << "userProfile                  = '" << userProfile << "'" << std::endl;

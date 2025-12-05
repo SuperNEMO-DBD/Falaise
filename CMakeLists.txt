@@ -228,7 +228,7 @@ endif()
 
 #-----------------------------------------------------------------------
 # Install resources
-#
+# 
 # add_subdirectory(resources)
 # Build tree
 # This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR

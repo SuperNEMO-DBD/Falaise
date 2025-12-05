@@ -35,6 +35,7 @@ namespace FLReconstruct {
   {
     FLReconstructCommandLine frArgs;
     frArgs.logLevel = datatools::logger::PRIO_FATAL;
+    frArgs.strictChecks = true;
     frArgs.maxNumberOfEvents = 0;
     frArgs.moduloEvents = 0;
     frArgs.userProfile = "normal";
@@ -53,12 +54,13 @@ namespace FLReconstruct {
     static const std::string last_tag("`-- ");
     out_ << "FLReconstructCommandLine parameters: " << std::endl;
     out_ << tag
-         << "logLevel                     = " << datatools::logger::get_priority_label(this->logLevel)
+                << "logLevel          = " << datatools::logger::get_priority_label(this->logLevel)
          << std::endl;
-    out_ << tag << "maxNumberOfEvents            = " << maxNumberOfEvents << std::endl;
-    out_ << tag << "moduloEvents                 = " << moduloEvents << std::endl;
-    out_ << tag << "userProfile                  = '" << userProfile << "'" << std::endl;
-    out_ << tag << "mountPoints                  = " << mountPoints.size() << std::endl;
+    out_ << tag << "strictChecks      = " << std::boolalpha << strictChecks << std::endl;
+    out_ << tag << "maxNumberOfEvents = " << maxNumberOfEvents << std::endl;
+    out_ << tag << "moduloEvents      = " << moduloEvents << std::endl;
+    out_ << tag << "userProfile       = '" << userProfile << "'" << std::endl;
+    out_ << tag << "mountPoints       = " << mountPoints.size() << std::endl;
     for (unsigned int i = 0; i < mountPoints.size(); i++) {
       out_ << "|   ";
       if (i + 1 == mountPoints.size()) {
@@ -222,6 +224,14 @@ namespace FLReconstruct {
        ->value_name("N"),
        "maximum number of processed events")
 
+      // ("strict-checks,c",
+      //  bpo::value<bool>()->default_value(true)->zero_tokens(),
+      //  "apply strict checks on configuration (default, recommended)")
+
+      ("no-strict-checks,C",
+       bpo::value<bool>()->default_value(false)->zero_tokens(),
+       "do not apply strict checks on configuration")
+
       ("modulo,P",
        bpo::value<uint32_t>(&clArgs.moduloEvents)
        ->default_value(0)
@@ -302,6 +312,13 @@ namespace FLReconstruct {
       do_version(std::cout, true);
       return DIALOG_QUERY;
     }
+
+    if (vMap.count("no-strict-checks") != 0u) {
+      clArgs.strictChecks = false;
+    }
+    // if (vMap.count("strict-checks") != 0u) {
+    //   clArgs.strictChecks = true;
+    // }
 
     if (vMap.count("help-module-list") != 0u) {
       do_module_list(std::cout);

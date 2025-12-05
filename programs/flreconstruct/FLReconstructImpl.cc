@@ -106,6 +106,7 @@ namespace FLReconstruct {
 
     // Import parameters from the command line:
     flRecParameters.logLevel = clArgs.logLevel;
+    flRecParameters.strictChecks = clArgs.strictChecks;
     flRecParameters.reconstructionConfig = clArgs.configScript;
     flRecParameters.numberOfEvents = clArgs.maxNumberOfEvents;
     flRecParameters.moduloEvents = clArgs.moduloEvents;
@@ -465,13 +466,22 @@ namespace FLReconstruct {
 
       // Check the experimental setup identifier:
       if (!flRecParameters_.experimentalSetupUrn.empty()) {
-        DT_THROW_IF(!iMeta.experimentalSetupUrn.empty() &&
-                    (iMeta.experimentalSetupUrn != flRecParameters_.experimentalSetupUrn),
-                    std::logic_error,
-                    "Experimental setup URN='" << flRecParameters_.experimentalSetupUrn
-                    << "' conflicts with experimental setup URN='"
-                    << iMeta.experimentalSetupUrn
-                    << "' extracted from input metadata!");
+	if (!iMeta.experimentalSetupUrn.empty() &&
+	    (iMeta.experimentalSetupUrn != flRecParameters_.experimentalSetupUrn)) {
+	  if (flRecParameters_.strictChecks) {
+	    DT_THROW(std::logic_error,
+		     "====> Experimental setup URN='" << flRecParameters_.experimentalSetupUrn
+		     << "' conflicts with experimental setup URN='"
+		     << iMeta.experimentalSetupUrn
+		     << "' extracted from input metadata!");
+	  } else {
+	    DT_LOG_ERROR(flRecParameters_.logLevel,
+			 "Experimental setup URN='" << flRecParameters_.experimentalSetupUrn
+			 << "' conflicts with experimental setup URN='"
+			 << iMeta.experimentalSetupUrn
+			 << "' extracted from input metadata!");
+	  }
+	}
       }
       
     } // End of checks.

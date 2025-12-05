@@ -101,8 +101,9 @@ void fltags::_run_generate_graph_() {
   datatools::kernel& dtk = datatools::kernel::instance();
   datatools::urn_query_service& dtkUrnQuery = dtk.grab_urn_query();
   dtkUrnQuery.set_logging_priority(_args_.logLevel);
-  const datatools::dependency_graph& dg = dtkUrnQuery.get_dependency_graph();
+  // const datatools::dependency_graph& dg = dtkUrnQuery.get_dependency_graph();
   std::string output_file = _args_.outputFile;
+  // DT_LOG_DEBUG(_args_.logLevel, "output_file=" << output_file);
   std::ostream* out = nullptr;
   std::unique_ptr<std::ofstream> hfout;
   if (output_file == "-") {
@@ -125,8 +126,14 @@ void fltags::_run_generate_graph_() {
   if (!_args_.dot_without_edge_topic) {
     xgv_options |= datatools::dependency_graph::XGV_WITH_EDGE_TOPIC;
   }
-  dg.export_graphviz(*out, xgv_options);
-
+  // DT_LOG_DEBUG(_args_.logLevel, "get_dependency_graph");
+  //try {
+    const datatools::dependency_graph& dg = dtkUrnQuery.get_dependency_graph();
+    // DT_LOG_DEBUG(_args_.logLevel, "done");
+    dg.export_graphviz(*out, xgv_options);
+  // } catch (std::exception & error) {
+  //   DT_LOG_ERROR(_args_.logLevel, error.what());
+  // }
   out = nullptr;
   hfout.reset();
 
@@ -156,4 +163,4 @@ void fltags::_run_generate_graph_() {
   }
 }
 
-}  // namespace FLTags
+} // namespace FLTags

@@ -114,6 +114,7 @@ echo >&2 "[info] Running flreconstruct..."
     #     -o ${FLWORKDIR}/pCD.brio
 flreconstruct \
     -p ${cfg_dir}/udd2pcd.conf \
+    -C \
     -i ${FLWORKDIR}/snemo_run-724_udd-10events.brio \
     -o ${FLWORKDIR}/pCD.brio
 if [ $? -ne 0 ]; then

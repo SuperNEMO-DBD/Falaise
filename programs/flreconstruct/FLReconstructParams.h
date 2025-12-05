@@ -31,7 +31,8 @@ namespace FLReconstruct {
   struct FLReconstructParams
   {
     std::string reconstructionConfig; //!< The reconstruction main configuration file
-
+		bool strictChecks = true;
+		
     // Application specific parameters:
     datatools::logger::priority logLevel;  //!< Logging priority threshold
     std::string userProfile;               //!< User profile

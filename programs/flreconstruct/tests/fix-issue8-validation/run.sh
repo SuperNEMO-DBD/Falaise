@@ -102,7 +102,10 @@ if [ ! -d ${FLWORKDIR} ]; then
 fi
 
 echo >&2 "[info] Running flsimulate-configure..."
-flsimulate-configure --no-gui \
+flsimulate-configure \
+    --no-gui \
+    -s "geometry:layout/if_basic/source_layout=Basic" \
+    -s "geometry:layout/if_basic/source_layout/if_basic/material=Se82" \
     -s "geometry:layout/if_basic/magnetic_field=${with_magfield}" \
     -s "vertexes:generator=source_pads_bulk" \
     -s "primary_events:generator=Se82.0nubb" \

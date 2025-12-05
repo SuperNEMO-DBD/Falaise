@@ -52,7 +52,7 @@ set_falaise_test_environment(flreconstruct-standard-pipeline-script-urn)
 
 # - Non-URN internal scripts - "next/devel" pipeline
 add_test(NAME flreconstruct-standard-pipeline-develscript
-  COMMAND flreconstruct --verbosity "debug" -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/3.1/pipelines/official-1.0.conf"
+  COMMAND flreconstruct --verbosity "debug" -i ${FLRECONSTRUCT_FIXTURE_FILE} -p "@falaise:snemo/demonstrator/reconstruction/4.0/pipelines/simu_example-1.0.conf"
   )
 set_tests_properties(flreconstruct-standard-pipeline-develscript PROPERTIES
   DEPENDS flreconstruct-fixture

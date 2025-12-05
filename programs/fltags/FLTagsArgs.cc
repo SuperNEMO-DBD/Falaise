@@ -110,9 +110,9 @@ void FLTagsArgs::print(std::ostream& out_) const {
          << std::endl;
   }
   if (action == "graph") {
-    out_ << tag << "DOT with wertex index       = " << std::boolalpha << dot_with_vertex_index
+    out_ << tag << "DOT with vertex index       = " << std::boolalpha << dot_with_vertex_index
          << std::endl;
-    out_ << tag << "DOT without wertex category = " << std::boolalpha << dot_without_vertex_category
+    out_ << tag << "DOT without vertex category = " << std::boolalpha << dot_without_vertex_category
          << std::endl;
     out_ << tag << "DOT without edge topic      = " << std::boolalpha << dot_without_edge_topic
          << std::endl;
