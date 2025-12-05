@@ -5,6 +5,7 @@ add_subdirectory(flreconstruct)
 add_subdirectory(flpcd2cpcd)
 add_subdirectory(fltags)
 add_subdirectory(fluddstat) 
+# add_subdirectory(flscangeom) 
 
 # - To allow modules to be developed independently, point
 # them to the current Bayeux/Falaise

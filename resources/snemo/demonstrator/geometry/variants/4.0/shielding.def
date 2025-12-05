@@ -1,0 +1,63 @@
+[name="shielding.layout.PM" type="parameter"]
+  #@config A parameter describing the geometry model of shielding layout
+  display_name              : string = "Model of shielding layout"
+  terse_description         : string = "The model of shielding layout"
+  mutability : string = "variable"
+    variable.mode : string = "enumeration"
+  type : string = "string"
+    string.default : string = "RealisticShield1"
+    string.enumerated.size : integer = 3
+      string.enumerated_0.value         : string = "SimplifiedIron"
+      string.enumerated_0.documentation : string = "Simplified model of iron shielding"
+      string.enumerated_0.variant       : string = "if_simplified_iron"
+      string.enumerated_1.value         : string = "RealisticNoShield"
+      string.enumerated_1.documentation : string = "Realistic model of lab (Magnet + AntiRadon Tent + Support Frame)"
+      string.enumerated_1.variant       : string = "if_realistic_lab_no_shield"
+      string.enumerated_2.value         : string = "RealisticShield1"
+      string.enumerated_2.documentation : string = "Realistic model of lab (Magnet + AntiRadon Tent + Support Frame) including the full shielding (Iron + Polyethylene)"
+      string.enumerated_2.variant       : string = "if_realistic_lab_shield1"
+
+  variants : string[3] = "if_simplified_iron" "if_realistic_lab_no_shield" "if_realistic_lab_shield1"
+    variants.if_simplified_iron.model       : string = "datatools::basic::is_on.VM"
+    variants.if_simplified_iron.description : string = "Set of parameters for simplified iron shielding layout"
+    variants.if_realistic_lab_no_shield.model       : string = "datatools::basic::is_on.VM"
+    variants.if_realistic_lab_no_shield.description : string = "Set of parameters for realistic lab layout"
+    variants.if_realistic_lab_shield1.model         : string = "datatools::basic::is_on.VM"
+    variants.if_realistic_lab_shield1.description   : string = "Set of parameters for realsitic lab layout with realistic shielding"
+    
+[name="shielding.description.VM" type="variant"]
+  #@config A variant model describing the active shielding
+  display_name       : string = "Description of the shielding"
+  terse_description  : string = "The description of the shielding"
+  parameters : string[1] = "layout"
+    parameters.layout.model       : string = "shielding.layout.PM"
+    parameters.layout.description : string = "The type of shielding layout"
+
+
+[name="shielding.on_off.PM" type="parameter"]
+  #@config A parameter model describing the activation of the shielding
+  display_name        : string = "Shielding activation"
+  terse_description   : string = "The activation of the shielding"
+  mutability : string = "variable"
+  type : string = "boolean"
+    boolean.default     : boolean = true
+    boolean.true.variant : string = "is_present"
+    boolean.true.documentation : string = "Add the shielding"
+    boolean.false.variant : string = "is_absent"
+    boolean.false.documentation : string = "No shielding"
+  variants : string [2] = "is_present" "is_absent"
+    variants.is_present.model       : string = "shielding.description.VM"
+    variants.is_present.description : string = "Shielding description"
+    variants.is_absent.model       : string = "datatools::basic::is_off.VM"
+    variants.is_absent.description : string = "Shielding not present"
+
+
+[name="shielding.VM" type="variant"]
+  #@config A variant model describing the parameters for the shielding
+  display_name       : string = "Shielding setup"
+  terse_description  : string = "The configuration parameters for the shielding layout"
+  parameters : string[1] = "active"
+    parameters.active.model       : string = "shielding.on_off.PM"
+    parameters.active.description : string = "The activation flag of the shielding"
+
+# end

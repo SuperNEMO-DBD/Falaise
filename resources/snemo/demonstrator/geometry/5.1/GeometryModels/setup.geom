@@ -3,6 +3,16 @@
 #####################
 
 
+[name="nothing.model" type="geomtools::simple_shaped_model"]
+  #@config A tiny model replacing anything
+  shape_type : string = "box"
+  x : real as length = 1.0 um
+  y : real as length = 1.0 um
+  z : real as length = 1.0 um
+  material.ref : string = "lab_air"
+  visibility.color : string  = "cyan"
+
+
 [name="hall_ground.model" type="geomtools::simple_shaped_model"]
   #@config The experimental hall ground
   shape_type : string = "box"
@@ -98,17 +108,17 @@
       internal_item.model.art_panel_floor_wall      : string = "art_panel_ce_panel_full_build.model"
       internal_item.placement.art_panel_floor_wall  : string = "0 0 -2090 (mm) "
 
-      mapping.daughter_id.support_frame_it          : string = "[support_frame:side=0]"
-      mapping.daughter_id.support_frame_fr          : string = "[support_frame:side=1]"
-      mapping.daughter_id.support_frame_floor       : string = "[support_frame:side=4]"
-      mapping.daughter_id.support_frame_ceiling     : string = "[support_frame:side=5]"
+      mapping.daughter_id.support_frame_it          : string = "[support_frame:frame=0]"
+      mapping.daughter_id.support_frame_fr          : string = "[support_frame:frame=1]"
+      mapping.daughter_id.support_frame_floor       : string = "[support_frame:frame=4]"
+      mapping.daughter_id.support_frame_ceiling     : string = "[support_frame:frame=5]"
 
-      mapping.daughter_id.art_panel_it_wall         : string = "[art_panel:wall=0]"
-      mapping.daughter_id.art_panel_fr_wall         : string = "[art_panel:wall=1]"
-      mapping.daughter_id.art_panel_mo_wall         : string = "[art_panel:wall=2]"
-      mapping.daughter_id.art_panel_tu_wall         : string = "[art_panel:wall=3]"
-      mapping.daughter_id.art_panel_floor_wall      : string = "[art_panel:wall=4]"
-      mapping.daughter_id.art_panel_ce_wall         : string = "[art_panel:wall=5]"
+      mapping.daughter_id.art_panel_it_wall         : string = "[art_wall:wall=0]"
+      mapping.daughter_id.art_panel_fr_wall         : string = "[art_wall:wall=1]"
+      mapping.daughter_id.art_panel_mo_wall         : string = "[art_wall:wall=2]"
+      mapping.daughter_id.art_panel_tu_wall         : string = "[art_wall:wall=3]"
+      mapping.daughter_id.art_panel_floor_wall      : string = "[art_wall:wall=4]"
+      mapping.daughter_id.art_panel_ce_wall         : string = "[art_wall:wall=5]"
 
       #@variant_endif geometry:layout/if_basic/shielding/is_present/layout/if_realistic_lab_no_shield
 
@@ -153,12 +163,12 @@
       internal_item.model.art_panel_floor_wall     : string = "art_panel_ce_panel_full_build.model"
       internal_item.placement.art_panel_floor_wall : string = "0 0 -2090 (mm) "
 
-      mapping.daughter_id.art_panel_it_wall         : string = "[art_panel:wall=0]"
-      mapping.daughter_id.art_panel_fr_wall         : string = "[art_panel:wall=1]"
-      mapping.daughter_id.art_panel_mo_wall         : string = "[art_panel:wall=2]"
-      mapping.daughter_id.art_panel_tu_wall         : string = "[art_panel:wall=3]"
-      mapping.daughter_id.art_panel_floor_wall      : string = "[art_panel:wall=4]"
-      mapping.daughter_id.art_panel_ce_wall         : string = "[art_panel:wall=5]"
+      mapping.daughter_id.art_panel_it_wall         : string = "[art_wall:wall=0]"
+      mapping.daughter_id.art_panel_fr_wall         : string = "[art_wall:wall=1]"
+      mapping.daughter_id.art_panel_mo_wall         : string = "[art_wall:wall=2]"
+      mapping.daughter_id.art_panel_tu_wall         : string = "[art_wall:wall=3]"
+      mapping.daughter_id.art_panel_floor_wall      : string = "[art_wall:wall=4]"
+      mapping.daughter_id.art_panel_ce_wall         : string = "[art_wall:wall=5]"
 
       # Support frames:
       internal_item.model.support_frame_it_extra     : string = "support_frame_it_on_iron_shield.model"
@@ -175,8 +185,8 @@
 
       mapping.daughter_id.support_frame_it       : string = "[support_frame:frame=0]"
       mapping.daughter_id.support_frame_fr       : string = "[support_frame:frame=1]"
-      mapping.daughter_id.support_frame_it_extra : string = "[support_frame:frame=2]"
-      mapping.daughter_id.support_frame_ceiling  : string = "[support_frame:frame=3]"
+      mapping.daughter_id.support_frame_it_extra : string = "[support_frame:frame=10]"
+      mapping.daughter_id.support_frame_ceiling  : string = "[support_frame:frame=5]"
 
       # Iron shielding walls:
       internal_item.model.iron_wall_it     : string = "shielding_wall_fr_it.model"
@@ -222,7 +232,7 @@
     #@variant_endif geometry:layout/if_basic/shielding/is_present
 
   ####ADD IN SUPERNEMO MODULE (WITH MAGNET)
-  internal_item.model.module_0 : string = "module_basic_with_full_coil.model"
+  internal_item.model.module_0 : string = "module_basic.model"
 
   #@variant_endif geometry:layout/if_basic
 
@@ -232,6 +242,11 @@
   mapping.daughter_id.ground   : string = "[ground]"
   internal_item.placement.module_0 : string = "0 0 0 (mm)"
   mapping.daughter_id.module_0 : string = "[module:module=0]"
+  
+  visibility.color : string  = "grey"
+  visibility.hidden           : boolean = false
+  visibility.envelop_hidden   : boolean = false
+  visibility.daughters.hidden : boolean = false
 
   #@forbid_key_override
 

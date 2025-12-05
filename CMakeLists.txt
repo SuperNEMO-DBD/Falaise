@@ -202,14 +202,23 @@ add_subdirectory(utilities)
 
 # This version of Falaise uses default configuration paths 
 # for various modelling topics:
-set(FALAISE_DEFAULT_GEOMETRY_TAG               "urn:snemo:demonstrator:geometry:5.1")
-set(FALAISE_DEFAULT_GEOMETRY_VARIANT_TAG       "urn:snemo:demonstrator:geometry:variants:service:3.0")
-set(FALAISE_DEFAULT_SETUP_TAG                  "urn:snemo:demonstrator:setup:2.1")
-set(FALAISE_DEFAULT_SETUP_VARIANT_TAG          "urn:snemo:demonstrator:setup:variants:service:3.0")
-set(FALAISE_DEFAULT_SIMULATION_TAG             "urn:snemo:demonstrator:simulation:2.5")
-set(FALAISE_DEFAULT_SIMULATION_VARIANT_TAG     "urn:snemo:demonstrator:simulation:variants:service:3.0")
-set(FALAISE_DEFAULT_RECONSTRUCTION_TAG         "urn:snemo:demonstrator:reconstruction:3.1")
-set(FALAISE_DEFAULT_RECONSTRUCTION_VARIANT_TAG "urn:snemo:demonstrator:setup:variants:service:3.0")
+set(FALAISE_DEFAULT_GEOMETRY_TAG               "urn:snemo:demonstrator:geometry:6.0")
+set(FALAISE_DEFAULT_GEOMETRY_VARIANT_TAG       "urn:snemo:demonstrator:geometry:variants:service:4.0")
+
+set(FALAISE_DEFAULT_SETUP_TAG                  "urn:snemo:demonstrator:setup:3.0")
+set(FALAISE_DEFAULT_SETUP_VARIANT_TAG          "urn:snemo:demonstrator:setup:variants:service:4.0")
+
+set(FALAISE_DEFAULT_VERTEX_TAG                 "urn:snemo:demonstrator:vertex:6.0")
+set(FALAISE_DEFAULT_VERTEX_VARIANT_TAG         "urn:snemo:demonstrator:vertex:variants:service:3.0")
+
+set(FALAISE_DEFAULT_DECAYS_TAG                 "urn:snemo:demonstrator:decays:2.0")
+set(FALAISE_DEFAULT_DECAYS_VARIANT_TAG         "urn:snemo:demonstrator:decays:variants:service:3.0")
+
+set(FALAISE_DEFAULT_SIMULATION_TAG             "urn:snemo:demonstrator:simulation:3.0")
+set(FALAISE_DEFAULT_SIMULATION_VARIANT_TAG     "urn:snemo:demonstrator:simulation:variants:service:4.0")
+
+set(FALAISE_DEFAULT_RECONSTRUCTION_TAG         "urn:snemo:demonstrator:reconstruction:4.0")
+set(FALAISE_DEFAULT_RECONSTRUCTION_VARIANT_TAG "urn:snemo:demonstrator:setup:variants:service:4.0")
 
 add_subdirectory(source)
 
@@ -223,11 +232,11 @@ endif()
 # add_subdirectory(resources)
 # Build tree
 # This allows the programs to be run directly without requiring FALAISE_RESOURCE_DIR
-# to be set.
+# to be set. 
 # add_custom_command(OUTPUT ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
 #   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
 #   COMMENT "Copying Falaise resources directory into build directory"
-#   )
+#   ) 
 add_custom_target(FalaiseResourcesCopyResourceDir ALL
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}
   COMMENT "Copying Falaise resources directory into build directory"
@@ -238,7 +247,12 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/resources/urn/db/falaise.conf.in
 # Clean template config files:
 add_custom_target(FalaiseResourcesCleanUrnDbFalaiseConf ALL
   COMMAND ${CMAKE_COMMAND} -E rm -f ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR}/urn/db/falaise.conf.in
-  DEPENDS FalaiseResourcesCopyResourceDir) 
+  DEPENDS FalaiseResourcesCopyResourceDir)
+
+# # Clean hidden config files:
+# add_custom_target(FalaiseResourcesCleanHiddenConfigFiles ALL
+#   COMMAND ${CMAKE_COMMAND} -E "find ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR} -name "_*" -exec rm -f \{\} \;"
+#   DEPENDS FalaiseResourcesCopyResourceDir) 
 
 add_custom_target(FalaiseResourcesPublishResourceDir ALL
   DEPENDS ${PROJECT_BUILD_DATAROOTDIR}/${PROJECT_RESOURCE_DIR} )

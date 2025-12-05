@@ -15,6 +15,7 @@
   # To generate GID = [110:0]
 
 [category="external_shield" type="200"]
+  # For iron shielding walls
   addresses : string[1] = "side"
   # To generate GID = [200:0]
 
@@ -30,9 +31,13 @@
   addresses : string[1] = "frame"
   # To generate GID = [300:0]
 
-[category="art_panel" type="310"]
+[category="art_wall" type="320"]
   addresses : string[1] = "wall"
-  # To generate GID = [310:0]
+  # To generate GID = [320:0]
+
+[category="coil_wall" type="340"]
+  addresses : string[1] = "wall"
+  # To generate GID = [340:0]
 
 [category="module" type="1000"]
   addresses : string[1] = "module"

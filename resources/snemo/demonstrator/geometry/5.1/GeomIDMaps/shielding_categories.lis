@@ -2,18 +2,43 @@
 #@key_label   "category"
 #@meta_label  "type"
 
-[category="shield_section" type="6000"]
-  extends : string    = "external_shield"
-  by      : string[1] = "material_type"
+[category="coil_wall_support" type="321"]
+  inherits : string = "coil_wall"
+  
+[category="coil_wall_wire_block" type="322"]
+  inherits : string = "coil_wall"
 
-[category="shield_subsection" type="6500"]
-  extends : string    = "shield_section"
-  by      : string[1] = "segment"
+[category="coil_wire_set" type="323"]
+  extends : string    = "coil_wall_wire_block"
+  by      : string[1] = "wire"
 
-[category="shield_subsubsection" type="7000"]
-  extends : string    = "shield_subsection"
-  by      : string[1] = "part"
+[category="coil_wire" type="324"]
+  inherits : string = "coil_wire_set"
 
-  [category="wire" type="8000"]
-  extends : string    = "shield_subsubsection"
-  by      : string[1] = "wire_part"
+[category="coil_wire_space" type="325"]
+  inherits : string = "coil_wire_set"
+
+#####################################################
+
+# [category="coil_support_plate" type="326"]
+#   inherits : string = "coil_panel"
+
+# [category="coil_support_space" type="327"]
+#   inherits : string = "coil_panel"
+
+
+# [category="shield_section" type="6000"]
+#   extends : string    = "external_shield"
+#   by      : string[1] = "material_type"
+
+# [category="shield_subsection" type="6500"]
+#   extends : string    = "shield_section"
+#   by      : string[1] = "segment"
+
+# [category="shield_subsubsection" type="7000"]
+#   extends : string    = "shield_subsection"
+#   by      : string[1] = "part"
+
+#   [category="wire" type="8000"]
+#   extends : string    = "shield_subsubsection"
+#   by      : string[1] = "wire_part"

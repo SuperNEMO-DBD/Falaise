@@ -1,12 +1,6 @@
 #/////////////////////////////Modified Iron Shielding Model/////////////////////////////////
 
-
-
-
-
-
 #///////////////Floor Sections////////////////
-
 
   [name="shielding_floor_iron_outer_block.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
@@ -33,6 +27,7 @@
   visibility.daughters.hidden : boolean = false
   visibility.color            : string  = "blue"
 
+
   [name="shielding_floor_iron_beam_gap.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
@@ -43,15 +38,14 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "green"
-
-
+  visibility.color            : string  = "magenta"
+  
   
   [name="shielding_floor_iron.model" type="geomtools::simple_shaped_model"]
    #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
    
-   shape_type : string = "box"
+  shape_type : string = "box"
     x : real as length = 3100 mm
     y : real as length = 7554 mm
     z : real as length = 340 mm
@@ -82,13 +76,6 @@
         internal_item.placement.inner_2 : string = "0 -1306.5 -70 (mm) "
 
 
-
-
-
-
-
-
-
   [name="iron_floor_gap.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
@@ -99,13 +86,11 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
-
-
-
-
+  visibility.color            : string  = "magenta"
+  
 
 #///////////////Fr - It Wall Componenets////////////////
+
  [name="fr_it_block_a.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
@@ -116,7 +101,8 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
+
 
  [name="fr_it_block_b.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
@@ -128,7 +114,8 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
+
 
  [name="fr_it_block_c.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
@@ -140,7 +127,8 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
+
 
   [name="jerry_can_iron_wall_fr_it_block_a.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
@@ -154,13 +142,13 @@
   visibility.daughters.hidden : boolean = false
   visibility.color            : string  = "blue"
 
+
   [name="jerry_can_iron_wall_fr_it_block_c.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
     x : real as length = 180 mm 
     y : real as length = 1125 mm
     z : real as length = 500 mm
-
   material.ref : string = "basic::water"
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
@@ -191,14 +179,11 @@
 #               b       b       b
 #
 #
-
-
-
 [name="shielding_wall_fr_it.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
    
-   shape_type : string = "box"
+  shape_type : string = "box"
     x : real as length = 360 mm
     y : real as length = 8550 mm
     z : real as length = 6138.0 mm
@@ -249,18 +234,11 @@
         internal_item.placement.support_top_beam_3 : string = "-90 2608 2769 (mm) / z 90 (degree)"
 
 
-
-
-
-
-
-
-
 [name="shielding_wall_fr_it_with_jerry_can.model" type="geomtools::simple_shaped_model"]
   #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
    
-   shape_type : string = "box"
+  shape_type : string = "box"
     x : real as length = 360 mm
     y : real as length = 8550 mm
     z : real as length = 6138.0 mm
@@ -312,21 +290,9 @@
         internal_item.placement.shield_fr_block_c2_jerry_can : string = "90 3676.5 -2819 (mm) / y 180 (degree)"
 
 
-    
- 
-
-
-
-
-
-
-
-
-
 #///////////////Tu - Mo Wall Componenets////////////////
 
-
-  [name="tu_mo_block_main_piece.model" type="geomtools::simple_boxed_model"]
+[name="tu_mo_block_main_piece.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
     x : real as length = 2800 mm 
@@ -336,10 +302,10 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
 
 
-  [name="tu_mo_block_edge_piece.model" type="geomtools::simple_boxed_model"]
+[name="tu_mo_block_edge_piece.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
     x : real as length = 510 mm 
@@ -349,11 +315,10 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
 
 
-
-  [name="jerry_can_iron_wall_mo_tu.model" type="geomtools::simple_boxed_model"]
+[name="jerry_can_iron_wall_mo_tu.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
   shape_type : string = "box"
     x : real as length = 3320 mm 
@@ -366,13 +331,11 @@
   visibility.color            : string  = "blue"
 
 
-
-
-  [name="tu_mo_block.model" type="geomtools::simple_shaped_model"]
+[name="tu_mo_block.model" type="geomtools::simple_shaped_model"]
    #@variant_section_only geometry:layout/if_basic|true
   #@config Simplified demonstrator module
    
-   shape_type : string = "box"
+  shape_type : string = "box"
     x : real as length = 3820 mm
     y : real as length = 180 mm
     z : real as length = 6138.0 mm
@@ -391,14 +354,7 @@
         internal_item.placement.side2 : string = "-1655 82.5 0 (mm) "
 
 
-
-
-
-
-
-
 #///////////////Ceiling////////////////
-
 
   [name="shielding_ceiling_iron.model" type="geomtools::simple_boxed_model"]
   #@config New shielding wall
@@ -410,8 +366,9 @@
   visibility.hidden           : boolean = false
   visibility.hidden_envelope  : boolean = false
   visibility.daughters.hidden : boolean = false
-  visibility.color            : string  = "orange"
+  visibility.color            : string  = "magenta"
 
+# end
 
 
 
