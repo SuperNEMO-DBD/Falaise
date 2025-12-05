@@ -57,7 +57,7 @@ namespace snemo {
     ///   db_access : string as path = "~/.sndb.conf"
     ///   \endcode
     /// - the file which contains the description of the ``sndb`` proxy object 
-    /// sndb_config : string as path = "@falaise:snemo/demonstrator/db/sndb/1.0/main.conf
+    /// sndb_config : string as path = "\@falaise:snemo/demonstrator/db/sndb/1.0/main.conf
     /// \see class ``snemo::db::sndb``
     ///
     /// These parameters can be loaded from an official configuration file like

@@ -6,7 +6,7 @@ SuperNEMO Demonstrator Simulation Configuration
 Organization of the directory
 ================================
 
-* ``2.4/`` : Static simulation configuration 
+* ``2.4/`` : Static simulation configuration 2.4
 
   Contents:
   
@@ -17,6 +17,10 @@ Organization of the directory
   * ``processes/`` : Configuration files for Geant4's physics processes
   * ``sensitive/`` : Configuration files for Geant4's sensitive detectors
   * ``hit_processing/`` : Configuration files for hit processing
+
+* ``2.5/`` : Static simulation configuration 2.5
+
+  * Depends on geometry 5.1, setup 2.1, vertex 5.1
     
 * ``variants/`` : Configuration 
 
@@ -35,6 +39,8 @@ Organization of the directory
       model  for variants  related to  simulation engine,  primary event
       generation, vertex generation and geometry options.
   
+
+  * ``3.0/`` : TBD
 
 
 Testing the simulator engine

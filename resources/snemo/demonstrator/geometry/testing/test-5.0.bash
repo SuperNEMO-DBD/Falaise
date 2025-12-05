@@ -21,7 +21,7 @@ geometryResourcesSubdir="snemo/demonstrator/geometry"
 
 falaiseBuildDir="${falaiseResourcesDir}/../Falaise.build/BuildProducts"
 if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
-    echo >&2 "[info] Loading frc's special developmeny stuff..."
+    echo >&2 "[info] Loading frc's special development stuff..."
     falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
 fi
 if [ ! -d ${falaiseBuildDir} ]; then
@@ -60,6 +60,7 @@ falaiseDllOptions="--load-dll Falaise@${falaiseLibDir}"
 # snrsDllOptions="--load-dll snrs@${snrsLibDir}"
 
 echo >&2 "[info] geometryVersion         = '${geometryVersion}'"
+echo >&2 "[info] geometryVariantVersion  = '${geometryVariantVersion}'"
 echo >&2 "[info] geometryResourcesSubdir = '${geometryResourcesSubdir}'"
 echo >&2 "[info] falaiseResourcesDir     = '${falaiseResourcesDir}'"
 echo >&2 "[info] falaiseBuildDir         = '${falaiseBuildDir}'"

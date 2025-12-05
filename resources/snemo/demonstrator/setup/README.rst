@@ -18,4 +18,12 @@ Files:
   * Geometry   service   based    on   geometry   configuration   with
     URN=``urn:snemo:demonstrator:geometry:5.0``.
 
+* ``2.1/SetupServices.conf``  :  Configuration  of the  setup  service
+  manager.
+ 
+  Embedded services are:
+
+  * Geometry   service   based    on   geometry   configuration   with
+    URN=``urn:snemo:demonstrator:geometry:5.1``.
+
 .. end

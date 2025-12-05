@@ -5,29 +5,35 @@ Registered tags
 File contents
 ================
 
-* ``experiment_urns.conf`` : Definition of the URNs associated to Falaise managed experiments.
+* ``experiment.conf`` : Definition of the URNs associated to Falaise managed experiments
 
   - Contains URN item of the ``"experiment"`` category.
   - Currently contains only one URN item for the SuperNEMO demonstrator experiment.
   
-* ``snemo_geometry_urns.conf`` : Definition of different versions of the geometry configuration.
+* ``snemo_geometry-5.X.conf`` : Definition of different versions of the geometry configuration.
 
   - Contains URN items of the ``"geomsetup"`` category associated to URN items of the ``"variants"``,
     ``"varprofile"`` and ``"services"`` categories.
   
-* ``snemo_setup_urns.conf`` : Definition of different versions of the experimental setup.
+* ``snemo_setup-2.X.conf`` : Definition of different versions of the experimental setup.
 
   -  An experimental setup is typically defined by a geometry setup and possibly by a
      hardware setup (electronics, control system...)
   - Contains URN items of the ``"expsetup"`` category associated to URN items of the ``"variants"``,
     ``"varprofile"`` and ``"services"`` categories.
   
-* ``snemo_simulation_urns.conf`` : Definition of different versions of the simulation setup.
+* ``snemo_vertex-5.X.conf`` : Definition of different versions of the vertex generation system (for simulations).
+  
+* ``snemo_decays-1.4.conf`` : Definition of different versions of the primary decays generation system (for simulations).
+  
+* ``snemo_simulation-2.4.conf`` : Definition of the simulation setup version 2.4.
 
   -  Contains URN items of the ``"simsetup"`` category associated to URN items of the ``"variants"``,
     ``"varprofile"``,  ``"configuration"`` and  ``"services"`` categories.
-  
-* ``snemo_reconstruction_urns.conf`` : Definition of different versions of the reconstruction setup.
+   
+* ``snemo_simulation-2.5.conf`` : Definition of the simulation setup version 2.5.
+ 
+* ``snemo_reconstruction-3.X.conf`` : Definition of different versions of the reconstruction setup.
 
   - Contains URN items of the ``"recsetup"`` category associated to URN items of the ``"variants"``,
     ``"varprofile"``,  ``"configuration"`` and  ``"services"`` categories.
@@ -45,24 +51,31 @@ Supported categories of various published URN tags:
 * ``expsetup`` : identifier/tag associated to an experimental setup
 * ``simsetup`` : identifier/tag associated to a simulation setup
 * ``recsetup`` : identifier/tag associated to a reconstruction setup
+* ``recpipeline`` : identifier/tag associated to a reconstruction pipeline
 * ``services`` :  identifier/tag associated to the configuration  of a
   service management system
 * ``configuration`` : identifier/tag associated to  the configuration
   of  some   generic  system  or  service   (geometry,  reconstruction
-  modules...)
-* ``variants`` :  identifier/tag associated  to the configuration  of a
-  variant service
-* ``varprofile`` : identifier/tag associated  to a variant  profile. A
-  varprofile tag must have one topic:
+  modules, vertex or decay generation...)
+* Variant system :
 
-  * ``variants`` :  the topic  for the  identification of  the variant
-    service configuration it is based on.
+  * ``varregistry`` :  identifier/tag associated  to the configuration  of a
+    variant registry 
+  * ``varprofile`` : identifier/tag associated  to a variant  profile. A
+    varprofile tag must have one topic:
+  * ``defvarprofile`` : identifier/tag associated  to a default variant  profile which is generally defined as an alias
+    of a varprofile item
+  * ``vargdm`` : identifier/tag associated  to variant global dependency manager rules.
+  * ``varservice`` :  identifier/tag associated  to the configuration  of a
+    variant service which should contains items of types: ``varregistry``, ``varprofile``, ``defvarprofile`` and possibly ``vargdm``
 
 
-Composition of a setup configuration
-====================================
+Composition of a simulation setup configuration
+=================================================
 
-A *setup*  tag which has a dependee  tag of the ``variants``  category may
+TO BE REVIEWED
+
+A simulation *setup*  tag which has a dependee  tag of the ``variants``  category may
 also have two specific topics relative to *variants* support:
 
  * ``varprofiles`` :  the topic  for the  list of  *official* variant
@@ -76,55 +89,71 @@ also have two specific topics relative to *variants* support:
 Examples
 ========
 
-Layout of a simulation setup
-----------------------------
+Layout of a mock simulation setup
+-------------------------------------
 
-  ################################
-  #   Simulation setup tag 3.0   #
-  ################################
+.. code::
+   
+   ########################################
+   #   Simulation variant setup tag 7.0   #
+   ########################################
 
-  [urn="urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-1.0" category="varprofile"]
-  description : string = "Variant profile 'basic-1.0' for the SuperNEMO demonstrator simulation setup (tag 3.0)"
-  topics      : string[1] = "variants"
-  topic.variants.component : string = "urn:snemo:demonstrator:simulation:3.0:variants"
+   [urn="urn:snemo:demonstrator:simulation:variants:7.0" category="varregistry"]
+   description : string = "Simulation variants setup (tag 7.0) for SuperNEMO demonstrator simulation"
 
-  [urn="urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-2.0" category="varprofile"]
-  description : string = "Variant profile 'basic-2.0' for the SuperNEMO demonstrator simulation setup (tag 3.0)"
-  topics      : string[1] = "variants"
-  topic.variants.component : string = "urn:snemo:demonstrator:simulation:3.0:variants"
+   [urn="urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:basic-1.0" category="varprofile"]
+   description : string = "Variant profile 'basic-7.0' for the SuperNEMO demonstrator simulation setup"
+ 
+   [urn="urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:basic-2.0" category="varprofile"]
+   description : string = "Variant profile 'basic-2.0' for the SuperNEMO demonstrator simulation setup"
+ 
+   [urn="urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:default" category="defvarprofile"]
+   description : string    = "Default variant profile for the SuperNEMO demonstrator simulation"
+   topics      : string[1] = "alias_of"
+   topic.alias_of.component : string  = "urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:basic-1.0"
+  
+   [urn="urn:snemo:demonstrator:simulation:variants:service:7.0:gdm" category="vargdm"]
+   description : string = "Simulation variants service GDM"
 
-  [urn="urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-3.0" category="varprofile"]
-  description : string = "Variant profile 'basic-3.0' for the SuperNEMO demonstrator simulation setup (tag 3.0)"
-  topics      : string[1] = "variants"
-  topic.variants.component : string = "urn:snemo:demonstrator:simulation:3.0:variants"
+   [urn="urn:snemo:demonstrator:simulation:variants:service:7.0" category="varservice"]
+   description : string = "SuperNEMO demonstrator simulation variants service"
+   topics : string[4] = "registries" "profiles" "defprofile" "gdm"
+   topic.registries.components : string[4] = \
+     "urn:snemo:demonstrator:geometry:variants:10.0"   \
+     "urn:snemo:demonstrator:vertex:variants:11.0"     \
+     "urn:snemo:demonstrator:decays:variants:9.0"     \
+     "urn:snemo:demonstrator:simulation:variants:7.0" 
+   topic.profiles.components : string[2] = \
+     "urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:basic-1.0" \
+     "urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:basic-2.0"
+   topic.defprofile.component : string = \
+     "urn:snemo:demonstrator:simulation:variants:service:7.0:profiles:default"
+   topic.gdm.component : string = \
+     "urn:snemo:demonstrator:simulation:variants:service:7.0:gdm"
 
-  [urn="urn:snemo:demonstrator:simulation:3.0:variants:profiles:default" category="varprofile"]
-  description : string = "Default variant profile for the SuperNEMO demonstrator simulation setup (tag 2.1)"
-  topics      : string[1] = "alias_of"
-  topic.alias_of.component : string = "urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-1.0"
+   
+   ################################
+   #   Simulation setup tag 4.0   #
+   ################################
+     
+   [urn="urn:snemo:demonstrator:simulation:4.0:services" category="services"]
+   description              : string = "SuperNEMO demonstrator simulation services"
+   topics                   : string[1] = "geometry" "db"
+   topic.geometry.component : string = "urn:snemo:demonstrator:geometry:7.0"
+   topic.db.component       : string = "urn:snemo:demonstrator:db:3.0"
 
-  [urn="urn:snemo:demonstrator:simulation:3.0"  category="simsetup"]
-  #@description List of components the simulation setup is based on
-  topics : string[7] = "variants" "varprofiles" "defvarprofile" "expsetup" "services" "vertexes" "decays"
-  #@description The variant service component
-  topic.variants.component      : string    = "urn:snemo:demonstrator:simulation:3.0:variants"
-  #@description The list of official variant profiles published with this simulation setup
-  topic.varprofiles.components  : string[3] = \
-    "urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-1.0" \
-    "urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-2.0" \
-    "urn:snemo:demonstrator:simulation:3.0:variants:profiles:basic-3.0"
-  #@description The default variant profile of this simulation setup
-  topic.defvarprofile.component : string    = "urn:snemo:demonstrator:simulation:3.0:variants:profiles:default"
-  #@description The experimental setup associated to this simulation setup
-  topic.expsetup.component      : string    = "urn:snemo:demonstrator:setup:2.0"
-  #@description The service support associated to this simulation setup
-  topic.services.component      : string    = "urn:snemo:demonstrator:simulation:3.0:services"
-  #@description The vertex generator configuration associated to this simulation setup
-  topic.vertexes.component      : string    = "urn:snemo:demonstrator:simulation:vertexes:5.0"
-  #@description The primaries generator configuration associated to this simulation setup
-  topic.decays.component        : string    = "urn:snemo:demonstrator:simulation:decays:1.3"
+   [urn="urn:snemo:demonstrator:simulation:4.0"  category="simsetup"]
+   description : string = "SuperNEMO demonstrator simulation"
+   
+   #@description List of components the simulation setup is based on
+   topics : string[5] = "variants" "setup" "vertex" "decays" "services"
 
-
-
+   #@description List of dependencies
+   topic.variants.components   : string[1] = "urn:snemo:demonstrator:simulation:variants:service:7.0"
+   topic.setup.component       : string = "urn:snemo:demonstrator:setup:5.3"
+   topic.vertex.component      : string = "urn:snemo:demonstrator:vertex:7.1"
+   topic.decays.component      : string = "urn:snemo:demonstrator:decays:2.8"
+   topic.services.component    : string = "urn:snemo:demonstrator:setup:5.3:services"
 ..
-  end
+
+.. end

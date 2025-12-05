@@ -34,6 +34,7 @@
   material.ref               : string = "tracking_gas"
   visibility.hidden_envelope  : boolean = true
   visibility.color            : string = "grey"
+  #visibility.daughters.hidden : boolean = true
   mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 
 
@@ -71,6 +72,7 @@
   mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
   visibility.hidden_envelope  : boolean = true
   visibility.color            : string = "grey"
+  # visibility.daughters.hidden : boolean = true
 
 
 # Packed neighbouring cells (but the first one) within
@@ -109,6 +111,7 @@
   material.ref               : string = "tracking_gas"
   visibility.hidden_envelope  : boolean = true
   visibility.color            : string = "grey"
+  # visibility.daughters.hidden : boolean = true
   mapping.daughter_id.cells : string = "[drift_cell:row+1]"
 
 
@@ -145,6 +148,7 @@
   material.ref             : string = "tracking_gas"
   visibility.hidden_envelope  : boolean = true
   visibility.color            : string = "grey"
+  # visibility.daughters.hidden : boolean = true
   mapping.daughter_id.first_drift_cell : string = "[drift_cell:row=0]"
 
 
@@ -155,7 +159,7 @@
     y : real as length = 4972.05  mm
     z : real as length = 3030.0   mm
   material.ref : string = "tracking_gas"
-  visibility.color  : string = "cyan"
+  visibility.color  : string = "transparent"
 
 
 [name="tracker_gap_source.model" type="geomtools::simple_shaped_model"]
@@ -165,5 +169,5 @@
     y : real as length = 4972.05 mm
     z : real as length = 3030.0 mm
   material.ref : string = "tracking_gas"
-  visibility.color  : string = "cyan"
+  visibility.color  : string = "transparent"
 

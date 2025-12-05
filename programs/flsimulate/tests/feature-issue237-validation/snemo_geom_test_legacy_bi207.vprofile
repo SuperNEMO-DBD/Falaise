@@ -14,7 +14,7 @@ layout/if_basic/source_layout/if_basic/thickness = 250 um
 layout/if_basic/source_layout/if_basic/material = "Se82"
 layout/if_basic/source_calibration = true
 layout/if_basic/source_calibration/is_active/type = "Bi207"
-layout/if_basic/shielding = true
+layout/if_basic/shielding = false
 calo_film_thickness = 25 um
 tracking_gas_material = "Nemo3"
 

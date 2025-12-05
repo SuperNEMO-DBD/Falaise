@@ -39,6 +39,15 @@ vertexResourcesSubdir="snemo/demonstrator/vertex"
 geometryResourcesSubdir="snemo/demonstrator/geometry"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
+if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
+    echo >&2 "[info] Loading frc's special development stuff..."
+    falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
+fi
+if [ ! -d ${falaiseBuildDir} ]; then
+    echo >&2 "[warning] Falaise build directory does not exist '${falaiseBuildDir}' ! Ask for user input..."
+    read -p "Enter Falaise build directory: "
+    falaiseBuildDir="${REPLY}"
+fi
 if [ ! -d ${falaiseBuildDir} ]; then
     echo >&2 "[error] Falaise build directory does not exist '${falaiseBuildDir}' !"
     exit 1
@@ -76,12 +85,11 @@ Variant inspector
 =================
 
 EOF
-simulationProfileLoad="${falaiseResourcesDir}/${simulationResourcesSubdir}/testing/simulation-1.profile"
+simulationProfileLoad="${falaiseResourcesDir}/${simulationResourcesSubdir}/variants/service/${simulationVariantVersion}/testing/simulation-1.profile"
 echo >&2 "[info] simulationProfileLoad = '${simulationProfileLoad}'"
 echo >&2 "[info] vertexGenerator  = '${vertexGenerator}'"
 echo >&2 "[info] primaryGenerator = '${primaryGenerator}'"
 # exit 1
-#    --variant-load="${simulatioProfileLoad}" 
 #     --variant-set="primary_events:generator=${primaryGenerator}" 
     # --variant-set="geometry:layout/if_basic/source_layout=${geomSourceLayout}" \
     # --variant-set="vertexes:generator=${vertexGenerator}" \
@@ -89,7 +97,8 @@ echo >&2 "[info] primaryGenerator = '${primaryGenerator}'"
 bxvariant_inspector \
     --datatools::resource-path="falaise@${falaiseResourcesDir}" \
     --logging="debug" \
-    --variant-config="@falaise:${simulationResourcesSubdir}/variants/${simulationVariantVersion}/SimulationVariantRepository.conf" \
+    --variant-config="@falaise:${simulationResourcesSubdir}/variants/service/${simulationVariantVersion}/SimulationVariantRepository.conf" \
+    --variant-load "${simulatioProfileLoad}" \
     --variant-gui \
     --variant-ui-writable-at-start \
     --variant-store="${simulationProfile}"
@@ -97,8 +106,12 @@ if [ $? -ne 0 ]; then
     echo >&2 "[error] Bayeux variant inspector failed !"
     exit 1
 fi
+
+echo >&2 "[info] Variant file: ${simulationProfile}"
+cat ${simulationProfile}
+
 # exit 0
-reset
+# reset
 
 cat >&2 <<EOF
 
@@ -120,7 +133,7 @@ bxg4_production \
     --datatools::logging "trace" \
     --load-dll "Falaise@${falaiseLibDir}" \
     --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${simulationResourcesSubdir}/variants/${simulationVariantVersion}/SimulationVariantRepository.conf" \
+    --variant-config "@falaise:${simulationResourcesSubdir}/variants/service/${simulationVariantVersion}/SimulationVariantRepository.conf" \
     --variant-load "${simulationProfile}" \
     --batch \
     --config "@falaise:${simulationResourcesSubdir}/${simulationVersion}/SimulationManager.conf" \
@@ -139,7 +152,5 @@ if [ $? -ne 0 ]; then
     echo >&2 "[error] Bayeux Geant4 production failed !"
     exit 1
 fi
-
-
 
 exit 0

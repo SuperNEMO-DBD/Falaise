@@ -8,12 +8,19 @@
 
 // This Project:
 #include "falaise/detail/falaise_sys.h"
+#include "falaise/snemo/simulation/config.h"
 
 namespace FLSimulate {
 
   std::string default_simulation_setup()
   {
-    return "urn:snemo:demonstrator:simulation:2.4";
+    return snemo::simulation::default_simulation_tag(); // "urn:snemo:demonstrator:simulation:2.5";
+  }
+
+  // Return the default simulation variant service for the current Falaise release
+  std::string default_variant_service_setup()
+  {
+    return snemo::simulation::default_simulation_variant_tag(); // "urn:snemo:demonstrator:simulation:variants:service:3.0";
   }
 
   std::map<std::string, std::string> list_of_simulation_setups()
@@ -33,12 +40,6 @@ namespace FLSimulate {
       }
     }
     return m;
-  }
-
-  // Return the default simulation variant service for the current Falaise release
-  std::string default_variant_service_setup()
-  {
-    return "urn:snemo:demonstrator:simulation:variants:service:2.0";
   }
 
   // Return the default path for simulation output variant profile
