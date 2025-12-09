@@ -1,5 +1,5 @@
 // -*- mode: c++ ; -*-
-/// \file falaise/snemo/datamodels/particle_track_data.ipp
+/// \file falaise/snemo/datamodels/boost_io/particle_track_data.ipp
 
 #ifndef FALAISE_SNEMO_DATAMODEL_PARTICLE_TRACK_DATA_IPP
 #define FALAISE_SNEMO_DATAMODEL_PARTICLE_TRACK_DATA_IPP 1

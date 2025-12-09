@@ -40,7 +40,7 @@ namespace snemo {
       if (version_ >= 1) {
         ar_ & boost::serialization::make_nvp("vertices", vertices_);
       } else {
-        // 2022-12-14 FM : Original version of the vertex collection used a vectopr of handles on datatools::blur_spot:
+        // 2022-12-14 FM : Original version of the vertex collection used a vector of handles on datatools::blur_spot:
         if (Archive::is_loading::value) {
           io_details::vertex_collection_type old_vertices;
           ar_ & boost::serialization::make_nvp("vertices", old_vertices);

@@ -101,7 +101,8 @@ namespace snemo {
     enum vertex_extrapolation_type {
       VERTEX_EXTRAPOLATION_UNDEF = 0,
       VERTEX_EXTRAPOLATION_LINE  = 1,
-      VERTEX_EXTRAPOLATION_HELIX = 2
+      VERTEX_EXTRAPOLATION_HELIX = 2,
+      VERTEX_EXTRAPOLATION_OTHER = 3
     };
 
     vertex_extrapolation_type convert(const snemo::geometry::vertex_info::extrapolation_mode_type gext_);

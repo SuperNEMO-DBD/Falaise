@@ -35,6 +35,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/tracker_trajectory.h
   snemo/datamodels/tracker_trajectory_data.h
   snemo/datamodels/tracker_trajectory_solution.h
+  # snemo/datamodels/event_topology.h
+  # snemo/datamodels/event_topology_data.h
+  # snemo/datamodels/reconstructed_particle.h
 
   snemo/datamodels/boost_io/base_trajectory_pattern.ipp
   snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp
@@ -65,6 +68,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/tracker_trajectory.ipp
   snemo/datamodels/boost_io/tracker_trajectory_data.ipp
   snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
+  # snemo/datamodels/boost_io/event_topology.ipp
+  # snemo/datamodels/boost_io/event_topology_data.ipp
+  # snemo/datamodels/boost_io/reconstructed_particle.ipp
 
   snemo/geometry/config.h
   snemo/geometry/utils.h
@@ -184,6 +190,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/tracker_trajectory.cc
   snemo/datamodels/tracker_trajectory_solution.cc
   snemo/datamodels/tracker_trajectory_data.cc
+  # snemo/datamodels/event_topology_data.cc
+  # snemo/datamodels/event_topology.cc
+  # snemo/datamodels/reconstructed_particle.cc
   snemo/datamodels/particle_track.cc
   snemo/datamodels/particle_track_data.cc
   snemo/datamodels/data_model.cc
@@ -313,6 +322,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_particle_track.cxx
   snemo/test/test_snemo_datamodel_particle_track_data.cxx
   snemo/test/test_snemo_datamodel_geomid_utils.cxx
+  # snemo/test/test_snemo_datamodel_event_topology.cxx
   
   snemo/test/test_snemo_geometry_calo_locator_1.cxx
   snemo/test/test_snemo_geometry_gg_locator_1.cxx

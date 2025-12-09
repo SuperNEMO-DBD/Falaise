@@ -42,6 +42,11 @@ class clusterized_calibrated_data : public datatools::i_serializable,
 																		public datatools::i_tree_dumpable,
 																		public datatools::i_clear {
  public:
+
+	clusterized_calibrated_data() = default;
+
+	~clusterized_calibrated_data() override = default;
+	
   /// Returns the number of clusters
   size_t size() const;
 

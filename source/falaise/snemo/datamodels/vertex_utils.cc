@@ -157,12 +157,15 @@ namespace snemo {
     {
       static const std::string _line("line");
       static const std::string _helix("helix");
+      static const std::string _other("other");
       static const std::string _undef("undefined");
       switch (extrapolation_) {
       case VERTEX_EXTRAPOLATION_LINE:
         return _line;
       case VERTEX_EXTRAPOLATION_HELIX:
         return _helix;
+      case VERTEX_EXTRAPOLATION_OTHER:
+        return _other;
       default:
         break;
       }
@@ -184,6 +187,7 @@ namespace snemo {
     {
       if (label_ == to_string(VERTEX_EXTRAPOLATION_LINE)) return VERTEX_EXTRAPOLATION_LINE;
       if (label_ == to_string(VERTEX_EXTRAPOLATION_HELIX)) return VERTEX_EXTRAPOLATION_HELIX;
+      if (label_ == to_string(VERTEX_EXTRAPOLATION_OTHER)) return VERTEX_EXTRAPOLATION_OTHER;
       return VERTEX_EXTRAPOLATION_UNDEF;
     }
 
