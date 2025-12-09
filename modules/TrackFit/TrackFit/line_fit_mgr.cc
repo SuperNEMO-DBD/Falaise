@@ -131,7 +131,7 @@ double line_fit_solution::probability_q() const { return gsl_cdf_chisq_Q(chi * c
 void line_fit_mgr::draw_solution(std::ostream &out_) const { draw_solution(out_, _solution_); }
 
 void line_fit_mgr::draw_solution(std::ostream &out_, const line_fit_solution &sol_) const {
-  static size_t g_count = 0;  // gnuplot trick
+  static size_t g_count = 0; // gnuplot trick
   const geomtools::vector_3d ref(0.0, sol_.y0, sol_.z0);
   geomtools::vector_3d dir(1.0, 0.0, 0.0);
   dir.setPhi(sol_.phi);
@@ -323,6 +323,7 @@ void line_fit_mgr::set_guess(const line_fit_params &guess_) {
   _fit_x_init_[line_fit_params::PARAM_INDEX_PHI] = guess_.phi;
   _fit_x_init_[line_fit_params::PARAM_INDEX_THETA] = guess_.theta;
 }
+  
 void line_fit_mgr::_set_defaults_() {
   _logging_priority_ = datatools::logger::PRIO_FATAL;
 
@@ -363,13 +364,11 @@ void line_fit_mgr::set_calibration(const i_drift_time_calibration &calibration_)
   _calibration_ = &calibration_;
 }
 
-// ctor:
 line_fit_mgr::line_fit_mgr(bool /* debug_ */) {
   _set_defaults_();
   _set_initialized(false);
 }
 
-// dtor:
 line_fit_mgr::~line_fit_mgr() {
   if (is_initialized()) {
     reset();
@@ -797,13 +796,13 @@ double line_fit_mgr::residual_function(double x_, void *params_) {
   if (using_drift_time) {
     double drift_time = ti - t0;
     if (!dtc->drift_time_is_valid(drift_time)) {
-      DT_LOG_WARNING(local_priority, "Drift_time is out of physics range!");
+      DT_LOG_WARNING(local_priority, "Drift time is out of physics range!");
       // 2012-11-02 XG: This is a bit harsh !
       drift_time = 0.0 * CLHEP::ns;
     }
     dtc->drift_time_to_radius(drift_time, drift_distance, sigma_drift_distance);
     if (!dtc->radius_is_valid(drift_distance)) {
-      DT_LOG_WARNING(local_priority, "Drift_distance is out of physics range!");
+      DT_LOG_WARNING(local_priority, "Drift distance is out of physics range!");
     }
   }
   // else
