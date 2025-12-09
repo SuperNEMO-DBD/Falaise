@@ -6,6 +6,8 @@ SuperNEMO Vertex configuration
 Organization of the directory
 ================================
 
+* ``6.0/`` : Static vertex generator configuration version ``6.0``
+
 * ``5.0/`` : Static vertex generator configuration version ``5.0``
 
   Contents:
@@ -58,13 +60,23 @@ Organization of the directory
 
   - ``2.0/`` : Variant vertex generator  configuration ``2.0`` for static version ``5.1``
 
+  - ``3.0/`` : Variant vertex generator  configuration ``3.0`` for static version ``6.0``
+
 
 Testing the vertex generator
 ================================
 
 The Falaise library must be built first.
 
+Example:
+
 .. code:: shell
    
-   $ bash testing/test-5.0.bash
+   $ bash testing/test-6.0.bash calo_curtain_surface_front magenta vertexes-dd_front.data
+   $ bash testing/test-6.0.bash calo_curtain_surface_back blue vertexes-dd_back.data
+   $ bash testing/test-6.0.bash calo_curtain_bulk red vertexes-dd_bulk.data
+   geomtools> load_display_data vertexes2 vertexes-dd_back.data 
+   geomtools> load_display_data vertexes1 vertexes-dd_front.data 
+   geomtools> load_display_data vertexes0 vertexes-dd_bulk.data 
+   geomtools> display -xy [1000:0]
 ..
