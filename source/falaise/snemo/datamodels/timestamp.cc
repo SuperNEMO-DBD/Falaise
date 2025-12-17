@@ -97,6 +97,12 @@ namespace snemo {
       *this = ts;
     }
 
+    time::time_point timestamp::to_timepoint() const
+    {
+      time::time_point timePoint = time::time_point_from_epoch_sec(to_real());
+      return timePoint;
+    }
+
     std::ostream& operator<<(std::ostream & os, const timestamp & ts)
     {
       os << ::IO_FORMAT_OPEN;

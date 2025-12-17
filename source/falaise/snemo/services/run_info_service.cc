@@ -18,6 +18,7 @@
 
 // This project:
 #include <falaise/snemo/services/services.h>
+#include <falaise/snemo/rc/run_phase.h>
 
 DATATOOLS_SERVICE_REGISTRATION_IMPLEMENT(snemo::run_info_service,
                                          "snemo::run_info_service")
@@ -120,6 +121,16 @@ namespace snemo {
     return _mode_;
   }
 
+  bool run_info_service::validate_time_point(const time::time_point & time_point_) const
+  {
+    return _runs_.contains(time_point_);
+  }
+
+  rc::run_id_type run_info_service::find_run_id(const time::time_point & time_point_) const
+  {
+    return _runs_.locate_run(time_point_);
+  }
+ 
   void run_info_service::_init_mode_db_(const datatools::properties & db_config_)
   {
     if (_db_service_ == nullptr) {
@@ -133,7 +144,7 @@ namespace snemo {
   void run_info_service::_init_mode_db_run_phases_(const datatools::properties & db_config_)
   {
     datatools::logger::priority logging = get_logging_priority();
-    logging = datatools::logger::PRIO_DEBUG;
+    // logging = datatools::logger::PRIO_DEBUG;
 
     std::string tableName = "Run_phases";
     if (db_config_.has_key("run_phases.table_name")) {
@@ -200,7 +211,7 @@ namespace snemo {
   void run_info_service::_init_mode_db_run_infos_(const datatools::properties & db_config_)
   {
     datatools::logger::priority logging = get_logging_priority();
-    logging = datatools::logger::PRIO_DEBUG;
+    // logging = datatools::logger::PRIO_DEBUG;
 
     std::string tableName = "Run_infos";
     if (db_config_.has_key("run_infos.table_name")) {
@@ -466,17 +477,17 @@ namespace snemo {
     return _runs_;
   }
  
-  bool run_info_service::has_run_phase(const std::uint32_t id_) const
+  bool run_info_service::has_run_phase(const rc::run_phase_id_type run_phase_id_) const
   {
-    return id_ < _run_phases_.size();
+    return (run_phase_id_ >= 0) and (run_phase_id_ < (int) _run_phases_.size());
   }
 
-  const rc::run_phase & run_info_service::get_run_phase(const std::uint32_t id_) const
+  const rc::run_phase & run_info_service::get_run_phase(const rc::run_phase_id_type run_phase_id_) const
   {
-    if (not has_run_phase(id_)) {
-      DT_THROW(std::logic_error, "Run phase with ID=" << id_ << " does not exist!");
+    if (not has_run_phase(run_phase_id_)) {
+      DT_THROW(std::logic_error, "Run phase with ID=" << run_phase_id_ << " does not exist!");
     }
-    return _run_phases_[id_];
+    return _run_phases_[run_phase_id_];
   }
  
   bool run_info_service::has_run_info(const rc::run_id_type run_id_) const
@@ -494,6 +505,31 @@ namespace snemo {
     DT_THROW_IF(found == _runs_.runs().end(), std::logic_error,
                 "Cannot find run description for run ID=" << run_id_ << '!');
     return found->second;
+  }
+   
+  rc::run_phase_id_type run_info_service::find_phase_id(const time::time_point & time_point_) const
+  {
+    rc::run_phase_id_type runPhaseId = rc::run_phase::INVALID_PHASE_ID;
+    for (const auto & runPhase : _run_phases_) {
+      if (runPhase.contains(time_point_)) {
+	runPhaseId = runPhase.id();
+	break;
+      }
+    }
+    return runPhaseId;
+  }
+  
+  rc::run_phase_id_type run_info_service::find_phase_id(const rc::run_id_type run_id_) const
+  {
+    rc::run_phase_id_type runPhaseId = rc::run_phase::INVALID_PHASE_ID;
+    const rc::run_description & runInfo = this->get_run_info(run_id_);
+    for (const auto & runPhase : _run_phases_) {
+      if (runPhase.has_run(runInfo)) {
+	runPhaseId = runPhase.id();
+	break;
+      }
+    }
+    return runPhaseId;
   }
 
   void run_info_service::load_run_list(const std::string & infile_)

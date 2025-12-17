@@ -14,10 +14,12 @@ namespace snemo {
   namespace db {
 
     mariadb_driver::mariadb_driver(sql::Connection & conn_,
-				   const database_description & dbdesc_)
+				   const database_description & dbdesc_,
+				   const datatools::logger::priority verbosity_)
       : _conn_(conn_)
       , _dbdesc_(dbdesc_)
     {
+      _verbosity_ = verbosity_;
       return;
     }
 
@@ -31,8 +33,8 @@ namespace snemo {
 						  table_selection_type & selection_)
       
     {
-      datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      logging = datatools::logger::PRIO_DEBUG;
+      datatools::logger::priority logging = _verbosity_;
+      // logging = datatools::logger::PRIO_DEBUG;
       selection_.clear();
       std::ostringstream fieldtags_iss;
       if (fieldnames_.empty()

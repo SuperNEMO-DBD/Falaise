@@ -8,8 +8,6 @@
  *
  *   Precalibrated data to calibrated data processing module
  *
- * History:
- *
  */
 
 #ifndef FALAISE_SNEMO_PROCESSING_PCD2CD_MODULE_H
@@ -125,6 +123,7 @@ namespace snemo {
     private:
       snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
 
+      std::string _eh_input_tag_{};   //!< The label of the event header data bank
       std::string _pcd_input_tag_{};   //!< The label of the precalibrated data bank
       std::string _cpcd_input_tag_{}; //!< The label of the clusterized precalibrated data bank
 
@@ -133,7 +132,7 @@ namespace snemo {
       // std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
       // global acces to event header
-      snemo::datamodel::event_header *_eh_data_;
+      snemo::datamodel::event_header * _eh_data_;
       datatools::event_id _event_id_;
 
       // global access to input data

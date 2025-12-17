@@ -160,10 +160,7 @@ namespace snemo {
           continue;
         }
         // const geomtools::geom_id & a_vertex_gid = a_vertex->get_geom_id();
-
-        /// XXX
-        /// XXX
-          
+      
         // Look for matching calorimeters
         using calo_collection_type = std::map<double, snedm::CalorimeterHitHdl>;
 
@@ -246,9 +243,9 @@ namespace snemo {
       datatools::logger::declare_ocd_logging_configuration(ocd_, "fatal", "CAD.");
 
       {
-        // Description of the 'VED.matching_tolerance' configuration property :
+        // Description of the 'CAD.matching_tolerance' configuration property :
         datatools::configuration_property_description& cpd = ocd_.add_property_info();
-        cpd.set_name_pattern("VED.matching_tolerance")
+        cpd.set_name_pattern("CAD.matching_tolerance")
           .set_from("snemo::reconstruction::calorimeter_association_driver")
           .set_terse_description("Set matching length tolerance between vertex track and calo. block")
           .set_traits(datatools::TYPE_REAL)

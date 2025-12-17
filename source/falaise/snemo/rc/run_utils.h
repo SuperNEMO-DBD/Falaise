@@ -17,6 +17,7 @@ namespace snemo {
   namespace rc {
   
     typedef std::int32_t run_id_type;
+    typedef std::int32_t run_phase_id_type;
     
   } // end of namespace rc
 

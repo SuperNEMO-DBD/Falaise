@@ -12,17 +12,35 @@ namespace snemo {
     DATATOOLS_SERIALIZATION_SERIAL_TAG_IMPLEMENTATION(event_header,
 						      "snemo::datamodel::event_header")
 
-    const datatools::event_id& event_header::get_id() const { return id_; }
+    const datatools::event_id& event_header::get_id() const
+    {
+      return id_;
+    }
 
-    datatools::event_id& event_header::get_id() { return id_; }
+    datatools::event_id& event_header::get_id()
+    {
+      return id_;
+    }
 
-    void event_header::set_id(const datatools::event_id& id) { id_ = id; }
+    void event_header::set_id(const datatools::event_id& id)
+    {
+      id_ = id;
+    }
 
-    const datatools::properties& event_header::get_properties() const { return properties_; }
+    const datatools::properties& event_header::get_properties() const
+    {
+      return properties_;
+    }
 
-    datatools::properties& event_header::get_properties() { return properties_; }
+    datatools::properties& event_header::get_properties()
+    {
+      return properties_;
+    }
 
-    void event_header::set_properties(const datatools::properties& pset) { properties_ = pset; }
+    void event_header::set_properties(const datatools::properties& pset)
+    {
+      properties_ = pset;
+    }
 
     /// Check the MC timestamp validity
     bool event_header::has_timestamp() const
@@ -30,11 +48,20 @@ namespace snemo {
       return timestamp_.is_valid();
     }
 
-    const snemo::datamodel::timestamp& event_header::get_timestamp() const { return timestamp_; }
+    const snemo::datamodel::timestamp& event_header::get_timestamp() const
+    {
+      return timestamp_;
+    }
 
-    snemo::datamodel::timestamp& event_header::get_timestamp() { return timestamp_; }
+    snemo::datamodel::timestamp& event_header::get_timestamp()
+    {
+      return timestamp_;
+    }
 
-    void event_header::set_timestamp(const snemo::datamodel::timestamp& ts) { timestamp_ = ts; }
+    void event_header::set_timestamp(const snemo::datamodel::timestamp& ts)
+    {
+      timestamp_ = ts;
+    }
 
     bool event_header::has_mc_run_id() const
     {
@@ -70,13 +97,25 @@ namespace snemo {
       return;
     }
 
-    event_header::generation_type event_header::get_generation() const { return generation_; }
+    event_header::generation_type event_header::get_generation() const
+    {
+      return generation_;
+    }
 
-    void event_header::set_generation(generation_type gen) { generation_ = gen; }
+    void event_header::set_generation(generation_type gen)
+    {
+      generation_ = gen;
+    }
 
-    bool event_header::is_real() const { return generation_ == GENERATION_REAL; }
+    bool event_header::is_real() const
+    {
+      return generation_ == GENERATION_REAL;
+    }
 
-    bool event_header::is_simulated() const { return generation_ == GENERATION_SIMULATED; }
+    bool event_header::is_simulated() const
+    {
+      return generation_ == GENERATION_SIMULATED;
+    }
 
     bool event_header::is_event_builder() const
     {
@@ -84,7 +123,8 @@ namespace snemo {
     }
 
     // override
-    void event_header::clear() {
+    void event_header::clear()
+    {
       properties_.clear();
       timestamp_ = snemo::datamodel::timestamp{};
       generation_ = GENERATION_INVALID;

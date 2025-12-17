@@ -20,20 +20,20 @@ namespace snemo {
     
     void run_phase::reset()
     {
-      _id_ = -1;
+      _id_ = INVALID_PHASE_ID;
       _start_time_ = time::invalid_point();
       _stop_time_ = time::invalid_point();
       _status_ = good;
       return;
     }
 
-    void run_phase::set_id(const std::int32_t id_)
+    void run_phase::set_id(const run_phase_id_type id_)
     {
       _id_ = id_;
       return;
     }
 
-    std::int32_t run_phase::id() const
+    run_phase_id_type run_phase::id() const
     {
       return _id_;
     }

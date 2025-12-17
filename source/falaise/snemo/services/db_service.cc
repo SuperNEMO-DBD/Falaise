@@ -424,10 +424,11 @@ namespace snemo {
 					    snemo::db::table_selection_type & selection_) const
   {
     DT_THROW_IF(not is_initialized(), std::logic_error, "Service is not initialized!");
-    DT_THROW_IF(not has_table(tablename_), std::logic_error, "DB has not table with name " << std::quoted(tablename_));
-    snemo::db::mariadb_driver dbDriver(*_pimpl_->conn, *_pimpl_->dbDesc);
+    DT_THROW_IF(not has_table(tablename_), std::logic_error,
+		"DB has not table with name " << std::quoted(tablename_));
+    datatools::logger::priority dbDriverVerbosity = datatools::logger::PRIO_FATAL;
+    snemo::db::mariadb_driver dbDriver(*_pimpl_->conn, *_pimpl_->dbDesc, dbDriverVerbosity);
     dbDriver.process_select_statement(tablename_, fieldnames_, selection_);
-    
     return;
   }
 
@@ -438,4 +439,4 @@ namespace snemo {
     return process_select_statement(tablename_, _fields, selection_);
   }
 
-}  // namespace snemo
+} // namespace snemo

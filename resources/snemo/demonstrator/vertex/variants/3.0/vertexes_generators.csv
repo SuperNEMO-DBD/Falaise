@@ -113,16 +113,16 @@ source_pads_surface          : Vertex generation from the surface of all source 
 # Vertex located in/on the shielding setup #
 ############################################
 
-shielding_bottom_bulk                 : Vertex generation from the bulk volume of the bottom shielding wall            : SimplifiedIron : : rank=second  
-shielding_top_bulk                    : Vertex generation from the bulk volume of the top shielding wall               : SimplifiedIron : : rank=second  
-shielding_left_right_bulk             : Vertex generation from the bulk volume of the left/right shielding walls       : SimplifiedIron : : rank=second  
-shielding_back_front_bulk             : Vertex generation from the bulk volume of the back/front shielding walls       : SimplifiedIron : : rank=second 
-shielding_all_bulk                    : Vertex generation from the bulk volume of all shielding walls                  : SimplifiedIron : :
-shielding_bottom_internal_surface     : Vertex generation from the internal surface of the bottom shielding wall       : SimplifiedIron : : rank=second  
-shielding_top_internal_surface        : Vertex generation from the internal surface of the top shielding wall          : SimplifiedIron : : rank=second  
-shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : SimplifiedIron : : rank=second  
-shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : SimplifiedIron : : rank=second  
-shielding_all_internal_surfaces       : Vertex generation from internal surfaces of the all shielding  walls           : SimplifiedIron : :
+shielding_bottom_bulk                 : Vertex generation from the bulk volume of the bottom shielding wall            : SimplifiedIron :  : rank=second  
+shielding_top_bulk                    : Vertex generation from the bulk volume of the top shielding wall               : SimplifiedIron :  : rank=second  
+shielding_left_right_bulk             : Vertex generation from the bulk volume of the left/right shielding walls       : SimplifiedIron :  : rank=second  
+shielding_back_front_bulk             : Vertex generation from the bulk volume of the back/front shielding walls       : SimplifiedIron :  : rank=second 
+shielding_all_bulk                    : Vertex generation from the bulk volume of all shielding walls                  : SimplifiedIron :  :
+shielding_bottom_internal_surface     : Vertex generation from the internal surface of the bottom shielding wall       : SimplifiedIron :  : rank=second  
+shielding_top_internal_surface        : Vertex generation from the internal surface of the top shielding wall          : SimplifiedIron :  : rank=second  
+shielding_left_right_internal_surface : Vertex generation from all internal surfaces of the left/right shielding walls : SimplifiedIron :  : rank=second  
+shielding_back_front_internal_surface : Vertex generation from all internal surfaces of the back/front shielding walls : SimplifiedIron :  : rank=second  
+shielding_all_internal_surfaces       : Vertex generation from internal surfaces of the all shielding  walls           : SimplifiedIron :  :
 
 
 ###########################################################################
@@ -680,8 +680,10 @@ real_snrs1_source_strip_34_pad_0_surface : Vertex generation from both surface o
 
 ### Legacy simplified Bi207 calibration sources system (full set of 6 tracks=42 sources) ###
 # The following generators imply some specific additional set of positioning options (variant='if_source_calibration_*)
-source_calibration_all_spots   : Vertex generation from the bulk volume of all source calibration spots       : Calibration : if_source_calibration_basic       : rank=highlight  
-source_calibration_single_spot : Vertex generation from the bulk volume of one unique source calibration spot : Calibration : if_source_calibration_single_spot : rank=second 
+source_calibration_all_spots   : Vertex generation from the bulk volume of all source calibration spots       : CalibrationLegacy : if_source_calibration_basic  : rank=highlight  
+source_calibration_single_spot : Vertex generation from the bulk volume of one unique source calibration spot : CalibrationLegacy : if_source_calibration_single_spot : rank=second 
+# source_calibration_all_spots   : Vertex generation from the bulk volume of all source calibration spots       : Calibration : if_source_calibration_basic       : rank=highlight  
+# source_calibration_single_spot : Vertex generation from the bulk volume of one unique source calibration spot : Calibration : if_source_calibration_single_spot : rank=second 
 
 ### Realistic SDS Bi207 calibration sources system (selection of some tracks) ###
 sds_bi207_calibration_source_spot_0_0 : Bulk vertex generator for the Bi207 calibration source at (track=0,position=0) : CalibrationSDS/Track0 : : rank=second
@@ -726,13 +728,13 @@ sds_bi207_calibration_source_spot_5_3 : Bulk vertex generator for the Bi207 cali
 sds_bi207_calibration_source_spot_5_4 : Bulk vertex generator for the Bi207 calibration source at (track=4,position=5) : CalibrationSDS/Track5 : : rank=second
 sds_bi207_calibration_source_spot_5_5 : Bulk vertex generator for the Bi207 calibration source at (track=5,position=5) : CalibrationSDS/Track5 : : rank=second
 sds_bi207_calibration_source_spot_5_6 : Bulk vertex generator for the Bi207 calibration source at (track=6,position=5) : CalibrationSDS/Track5 : : rank=second
-sds_bi207_calibration_source_tracks_0 : Generate vertexes on all Bi207 calibration source in track 0 using weights from realistic individual sources' activities : CalibrationSDS/Track0 : if_source_calibration_sds :
-sds_bi207_calibration_source_tracks_1 : Generate vertexes on all Bi207 calibration source in track 1 using weights from realistic individual sources' activities : CalibrationSDS/Track1 : if_source_calibration_sds :
-sds_bi207_calibration_source_tracks_2 : Generate vertexes on all Bi207 calibration source in track 2 using weights from realistic individual sources' activities : CalibrationSDS/Track2 : if_source_calibration_sds :
-sds_bi207_calibration_source_tracks_3 : Generate vertexes on all Bi207 calibration source in track 3 using weights from realistic individual sources' activities : CalibrationSDS/Track3 : if_source_calibration_sds :
-sds_bi207_calibration_source_tracks_4 : Generate vertexes on all Bi207 calibration source in track 4 using weights from realistic individual sources' activities : CalibrationSDS/Track4 : if_source_calibration_sds :
-sds_bi207_calibration_source_tracks_5 : Generate vertexes on all Bi207 calibration source in track 5 using weights from realistic individual sources' activities : CalibrationSDS/Track5 : if_source_calibration_sds :
-sds_bi207_calibration_source_all_tracks : Generate vertexes on all deployed Bi207 calibration source tracks with realistic weights                               : CalibrationSDS        : if_source_calibration_sds : rank=highlight
+sds_bi207_calibration_source_tracks_0 : Generate vertexes on all Bi207 calibration source in track 0 using weights from realistic individual sources' activities : CalibrationSDS/Track0 :  :
+sds_bi207_calibration_source_tracks_1 : Generate vertexes on all Bi207 calibration source in track 1 using weights from realistic individual sources' activities : CalibrationSDS/Track1 :  :
+sds_bi207_calibration_source_tracks_2 : Generate vertexes on all Bi207 calibration source in track 2 using weights from realistic individual sources' activities : CalibrationSDS/Track2 :  :
+sds_bi207_calibration_source_tracks_3 : Generate vertexes on all Bi207 calibration source in track 3 using weights from realistic individual sources' activities : CalibrationSDS/Track3 :  :
+sds_bi207_calibration_source_tracks_4 : Generate vertexes on all Bi207 calibration source in track 4 using weights from realistic individual sources' activities : CalibrationSDS/Track4 :  :
+sds_bi207_calibration_source_tracks_5 : Generate vertexes on all Bi207 calibration source in track 5 using weights from realistic individual sources' activities : CalibrationSDS/Track5 :  :
+sds_bi207_calibration_source_all_tracks : Generate vertexes on all deployed Bi207 calibration source tracks with realistic weights                               : CalibrationSDS        :  : rank=highlight
 
 
 # end

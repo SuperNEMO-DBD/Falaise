@@ -22,6 +22,9 @@
 // - Bayeux/datatools :
 #include <bayeux/datatools/i_serializable.h>
 
+// - Falaise:
+#include <falaise/snemo/time/time_utils.h>
+
 namespace snemo {
 
   namespace datamodel {
@@ -75,6 +78,9 @@ namespace snemo {
       /// Parse time from string object and set the timestamp object accordingly
       void from_string(const std::string &);
 
+      /// Convert to a time point
+      time::time_point to_timepoint() const;
+
       friend bool operator==(const timestamp &, const timestamp &);
       friend bool operator<(const timestamp &, const timestamp &);
       friend bool operator>(const timestamp &, const timestamp &);
@@ -82,7 +88,7 @@ namespace snemo {
       friend bool operator>=(const timestamp &, const timestamp &);
       friend std::ostream & operator<<(std::ostream &, const timestamp &);
       friend std::istream & operator>>(std::istream &, timestamp &);
-
+      
     private:
       
       /// Compare with another timestamp

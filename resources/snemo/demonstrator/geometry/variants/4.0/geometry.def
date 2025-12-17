@@ -18,28 +18,6 @@
     parameters.shielding.description : string = "The activation flag of the shielding"
 
 
-[name="demonstrator.geometry.half_commissioning.gap.PM" type="parameter"]
-  #@config A parameter model describing a distance
-  display_name        : string = "Distance"
-  terse_description   : string = "A distance"
-  mutability          : string = "variable"
-    variable.mode : string = "interval"
-  type : string = "real"
-    real.unit_label     : string = "length"
-    real.preferred_unit : string = "mm"
-    real.domain         : string = "[0.25 mm, 1 m]"
-    real.default        : real as length = 0.25 mm
-
-
-[name="demonstrator.geometry.half_commissioning.VM" type="variant"]
-  #@config A variant model describing the set of parameters associated to the SN demonstrator half module commissioning layout
-  display_name       : string = "Half module commissioning layout"
-  terse_description  : string = "The configuration parameters for the demonstrator half module commissioning layout"
-  parameters : string[1] = "gap"
-    parameters.gap.model       : string = "demonstrator.geometry.half_commissioning.gap.PM"
-    parameters.gap.description : string = "The calibration source distance to closing plate"
-
-
 [name="demonstrator.geometry.layout.PM" type="parameter"]
   #@config A parameter model describing the layout of the demonstrator module
   display_name       : string = "Demonstrator layout"
@@ -51,13 +29,9 @@
     string.enumerated.size    : integer = 1
       string.enumerated_0.value   : string = "Basic"
       string.enumerated_0.variant : string = "if_basic"
-      # string.enumerated_1.value   : string = "HalfCommissioning"
-      # string.enumerated_1.variant : string = "if_half_commissioning"
-    variants : string[2] = "if_basic" "if_half_commissioning"
+    variants : string[1] = "if_basic" 
     variants.if_basic.model       : string = "demonstrator.geometry.basic.VM"
     variants.if_basic.description : string = "Set of parameters for basic demonstrator layout"
-    variants.if_half_commissioning.model       : string = "demonstrator.geometry.half_commissioning.VM"
-    variants.if_half_commissioning.description : string = "Set of parameters for demonstrator half module commissioning layout"
 
 
 [name="demonstrator.geometry.calo_tightness_film_thickness.PM" type="parameter"]
@@ -81,30 +55,26 @@
     variable.mode : string = "enumeration"
   type : string = "string"
     string.default            : string = "TrackingGasDefault"
-    string.enumerated.size    : integer = 7
+    string.enumerated.size    : integer = 4
       string.enumerated_0.value   : string = "HeliumMix"
       string.enumerated_0.variant : string = "if_helium"
       string.enumerated_1.value   : string = "ArgonMix"
       string.enumerated_1.variant : string = "if_argon"
       string.enumerated_2.value   : string = "Nemo3"
       string.enumerated_2.variant : string = "if_nemo3"
-      string.enumerated_3.value   : string = "Nemo3Bug"
-      string.enumerated_3.variant : string = "if_nemo3_bug"
-      string.enumerated_4.value   : string = "TrackingGasDefault"
-      string.enumerated_4.variant : string = "if_helium"
-      string.enumerated_5.value   : string = "TrackingGasPhase0"
-      string.enumerated_5.variant : string = "if_helium"
-      string.enumerated_6.value   : string = "TrackingGasPhase1"
-      string.enumerated_6.variant : string = "if_helium"
-  variants : string[4] = "if_helium" "if_argon" "if_nemo3" "if_nemo3_bug" 
+      string.enumerated_3.value   : string = "TrackingGasDefault"
+      string.enumerated_3.variant : string = "if_default_mix"
+  variants : string[4] = "if_helium" "if_argon" "if_nemo3" "if_default_mix"
     variants.if_helium.model          : string = "datatools::basic::is_on.VM"
     variants.if_helium.description    : string = "SuperNEMO Helium+Ethanol+Argon tracking gas mix"
     variants.if_argon.model           : string = "datatools::basic::is_on.VM"
     variants.if_argon.description     : string = "SuperNEMO Argon+Ethanol tracking gas mix"
     variants.if_nemo3.model           : string = "datatools::basic::is_on.VM"
     variants.if_nemo3.description     : string = "NEMO3 He+Ethanol+Argon tracking gas mix"
-    variants.if_nemo3_bug.model       : string = "datatools::basic::is_on.VM"
-    variants.if_nemo3_bug.description : string = "NEMO3 He+Ethanol+Argon bad tracking gas mix (obsolete gas, legacy bug, do not use it)"
+    variants.if_default_mix.model           : string = "datatools::basic::is_on.VM"
+    variants.if_default_mix.description     : string = "SuperNEMO He+Ethanol+Argon+Air default tracking gas mix"
+    # variants.if_nemo3_bug.model       : string = "datatools::basic::is_on.VM"
+    # variants.if_nemo3_bug.description : string = "NEMO3 He+Ethanol+Argon bad tracking gas mix (obsolete gas, legacy bug, do not use it)"
  
 
 [name="geometry.VM" type="variant"]

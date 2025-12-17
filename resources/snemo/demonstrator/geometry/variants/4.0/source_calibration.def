@@ -51,7 +51,7 @@
   mutability : string = "variable"
     variable.mode : string = "enumeration"
   type : string = "string"
-    string.default            : string = "Bi207"
+    string.default            : string = "SDS"
     string.enumerated.size    : integer = 2
     string.enumerated_0.value     : string = "Bi207"   # Legacy Bi207 calibration source simplified setup"
     string.enumerated_0.variant   : string = "if_bi207" 

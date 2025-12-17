@@ -113,6 +113,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_calorimeter_s2c_module_utils.h
   snemo/processing/mock_tracker_s2c_module.h
+  snemo/processing/calo_energy_calibration.h
+  snemo/processing/event_time_locator.h
 
   snemo/db/field_description.hpp
   snemo/db/table_description.hpp
@@ -134,6 +136,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/run_info_service.h
   snemo/services/tracker_cell_status_service.h
   snemo/services/calorimeter_om_status_service.h
+  snemo/services/calo_energy_calibration_service.h
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
@@ -240,6 +243,8 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_display.tpp
   snemo/processing/detail/testing/event_generator.cc
   snemo/processing/detail/testing/event_display.cc
+  snemo/processing/calo_energy_calibration.cc
+  snemo/processing/event_time_locator.cc
 
   # snemo/db/utils.cpp
   # snemo/db/calo_energy_calibration.cpp
@@ -257,6 +262,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/services/run_info_service.cc
   snemo/services/tracker_cell_status_service.cc
   snemo/services/calorimeter_om_status_service.cc
+  snemo/services/calo_energy_calibration_service.cc
 
   snemo/simulation/config.cc
   snemo/simulation/cosmic_muon_generator.cc
@@ -358,6 +364,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
+  snemo/test/test_snemo_services_calo_energy_calibration_service.cxx
   # snemo/test/test_snemo_service_rc.cxx
 
   snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx

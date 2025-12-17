@@ -41,7 +41,7 @@ namespace snemo {
 
     run_info_service();
 
-    virtual ~run_info_service() override;
+    ~run_info_service() override;
     
     // Service interface:
     
@@ -60,15 +60,23 @@ namespace snemo {
      
     bool has_run_info(const rc::run_id_type run_id_) const;
 
-    bool has_run_phase(const std::uint32_t id_) const;
+    bool has_run_phase(const rc::run_phase_id_type run_phase_id_) const;
     
     /// Return the array of official run phases
     const std::vector<rc::run_phase> & run_phases() const;
 
-    const rc::run_phase & get_run_phase(const std::uint32_t id_) const;
+    const rc::run_phase & get_run_phase(const rc::run_phase_id_type run_phase_id_) const;
     
     const rc::run_description & get_run_info(const rc::run_id_type run_id_) const;
+
+    bool validate_time_point(const time::time_point & time_point_) const;
     
+    rc::run_id_type find_run_id(const time::time_point & time_point_) const;
+    
+    rc::run_phase_id_type find_phase_id(const time::time_point & time_point_) const;
+    
+    rc::run_phase_id_type find_phase_id(const rc::run_id_type run_id_) const;
+   
     /// Load run list
     void load_run_list(const std::string & infile_);
  
