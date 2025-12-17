@@ -208,7 +208,7 @@ namespace snemo {
       uint32_t _trackfit_flag_ = 0;                ///< Special flags for trackfit algorithm
       std::string _drift_time_calibration_label_;  ///< Drift time calibration driver label
       boost::scoped_ptr<TrackFit::i_drift_time_calibration> _dtc_;  ///< Drift time calibration driver
-      double _effective_sigma_r_ = 1.0 * CLHEP::mm; ///< Effective dritf radius uncertainty
+      double _effective_sigma_r_ = 1.0 * CLHEP::mm; ///< Effective drift radius uncertainty
       double _vertex_max_distance_xy_ = 1.0 * CLHEP::mm; ///< Tolerance for comparison of fitted trajectory patterns (used to remove duplicated trajectories that have been fitted from different guesses)
       double _vertex_max_distance_z_  = 5.0 * CLHEP::mm; ///< Tolerance for comparison of fitted trajectory patterns (used to remove duplicated trajectories that have been fitted from different guesses)
       double _epsilon_decades_to_best_pvalue_ = 5.e-3;

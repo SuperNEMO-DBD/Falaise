@@ -30,6 +30,8 @@
 #pragma clang diagnostic pop
 #endif
 
+// - Bayeux:
+#include <bayeux/datatools/logger.h>
 
 // This project:
 #include <falaise/snemo/db/table_selection.hpp>
@@ -43,15 +45,18 @@ namespace snemo {
     {
     public:
       
-      mariadb_driver(sql::Connection & conn_, const database_description & dbdesc_);
+      mariadb_driver(sql::Connection & conn_,
+										 const database_description & dbdesc_,
+										 const datatools::logger::priority verbosity_ = datatools::logger::PRIO_FATAL);
       
       void process_select_statement(const std::string & tablename_,
 																		const std::vector<std::string> & fieldnames_,
 																		table_selection_type & selection_);
     private:
-      
+
       sql::Connection & _conn_;
       const database_description & _dbdesc_;
+			datatools::logger::priority _verbosity_ = datatools::logger::PRIO_FATAL;
 			
     };
           		

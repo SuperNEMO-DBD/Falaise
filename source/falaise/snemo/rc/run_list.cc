@@ -12,6 +12,9 @@
 #include <bayeux/datatools/exception.h>
 #include <bayeux/datatools/clhep_units.h>
 
+// - Falaise:
+#include "falaise/snemo/rc/run_description.h"
+
 namespace snemo {
 
   namespace rc {
@@ -23,7 +26,7 @@ namespace snemo {
                                  time::time_point(time::not_a_date_time)};
       _duration_ = time::time_duration{time::not_a_date_time};
       _number_of_entries_ = 0;
-      _last_run_id_ = -1;
+      _last_run_id_ = run_description::INVALID_RUN_ID;
       return;
     }
 
@@ -86,7 +89,7 @@ namespace snemo {
           return rd.first;
         }
       } 
-      return -1;
+      return run_description::INVALID_RUN_ID;
     }
     
     void run_list::build_run_ids(std::set<run_id_type> & run_ids_) const

@@ -27,7 +27,7 @@ namespace snemo {
     /// It uses its embedded *MC event distribution* object supporting 2 modes:
     /// 1) The distribution object can be fed with a precomputed list of
     ///    run ID/timestamp pairs stored in a file
-    /// 2) The distribution of events (recommanded: no more than 10^7 events) is computed
+    /// 2) The distribution of events (recommended: no more than 10^7 events) is computed
     ///    taking into account a list of runs (running periods) and a decay activity model
     class event_timestamper
     {
@@ -54,7 +54,7 @@ namespace snemo {
        *
        * The properties below are only relevant if the 'mc_event_timestamps_file" is not used.
        *
-       *   Paths of files containind definitions of runs:
+       *   Paths of files containing definitions of runs:
        *     run_lists : string[2] as path = "/tmp/phase_1_runs.lis" "/tmp/phase_2_runs.lis" 
        *
        *   Path of the configuration file for the activity model factory:

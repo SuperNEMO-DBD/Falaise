@@ -94,7 +94,8 @@
     internal_item.model.front_block     : string  = "calorimeter_wrapped_scin_block_front.model"
     internal_item.placement.back_block : string  = "0 0 136.5 (mm)"
     internal_item.model.back_block     : string  = "calorimeter_scin_block_8inch_back.model"
-    internal_item.placement.pmt : string  = "0 0 11 (mm)"
+    # internal_item.placement.pmt : string  = "0 0 11 (mm)"
+    internal_item.placement.pmt : string  = "0 0 10 (mm)"
     internal_item.model.pmt     : string  = "calo.PMT_HAMAMATSU_R5912.model"
     internal_item.placement.back_block_wrapping_back : string  = "0 0 54.5 (mm)"
     internal_item.model.back_block_wrapping_back     : string  = "calorimeter_scin_block_8inch_back_wrapper_back.model"
@@ -143,7 +144,7 @@
   visibility.hidden_envelope      : boolean = true
   visibility.color                : string  = "grey"
   visibility.daughters.hidden     : boolean = false
-  visibility.daughters.pmt.hidden : boolean = true
+  # visibility.daughters.pmt.hidden : boolean = true
 
 
 [name="calorimeter_module_8inch_rotated.model" type="geomtools::rotated_boxed_model"]

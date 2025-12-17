@@ -135,7 +135,7 @@ namespace snemo {
       // - Random and regular modes: 
       std::vector<std::uint32_t> _nb_decays_per_run_;
       std::vector<data_per_run> _per_run_data_;
-      run_id_type  _current_run_index_ = -1;
+      run_id_type _current_run_index_ = -1;
       std::uint32_t _current_decay_index_ = 0;
       std::uint32_t _current_decay_index_in_run_ = 0;
          

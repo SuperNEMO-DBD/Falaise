@@ -33,6 +33,8 @@ namespace snemo {
     {
     public:
 
+			static const run_phase_id_type INVALID_PHASE_ID = -1;
+
       enum status_bits {
         good = 0x0,
         other_issues = datatools::bit_mask::bit15 ///< Phase has issues of some undocumented type
@@ -44,9 +46,9 @@ namespace snemo {
 
       void reset();
 
-      void set_id(const std::int32_t id_);
+      void set_id(const run_phase_id_type id_);
 
-      std::int32_t id() const;
+      run_phase_id_type id() const;
 
       void set_start_time(const time::time_point & start_time_);
 
@@ -78,7 +80,7 @@ namespace snemo {
      
     private:
       
-      std::int32_t _id_ = -1; ///< Unique ID of the phase
+      run_phase_id_type _id_ = INVALID_PHASE_ID; ///< Unique ID of the phase
       time::time_point _start_time_ = boost::date_time::not_a_date_time; ///< Starting time of this phase
       time::time_point _stop_time_ = boost::date_time::not_a_date_time; ///< Stopping time of this phase
       std::uint32_t _status_ = good; ///< Status bits (16 bits should be enough)

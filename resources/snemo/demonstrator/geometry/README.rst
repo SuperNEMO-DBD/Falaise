@@ -26,7 +26,6 @@ Organization of the directory
 ================================
 
 * ``6.0/`` : Static geometry configuration version ``6.0`` (current version)
-* ``5.1/`` : Static geometry configuration version ``5.1``
 * ``5.0/`` : Static geometry configuration version ``5.0``
 
   Contents:
@@ -43,7 +42,7 @@ Organization of the directory
 
   - ``4.0/`` : Variant geometry configuration ``4.0`` (from static version ``6.0``)
 
-  - ``3.0/`` : Variant geometry configuration ``2.0`` for geometry configuration version ``5.1``
+  - ``3.0/`` : Variant geometry configuration ``2.0`` for geometry configuration version ``5.1`` (OBSOLETE)
 
     Contents:
 

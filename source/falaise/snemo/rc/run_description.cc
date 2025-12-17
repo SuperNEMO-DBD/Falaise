@@ -164,8 +164,8 @@ namespace snemo {
       rd._period_ = run_period_;
       rd._number_of_entries_ = number_of_entries_;
       rd._sync_();
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#slices = " << rd._slices_.size());
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#deadtimes = " << rd._deadtimes_.size());
+      // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#slices = " << rd._slices_.size());
+      // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "#deadtimes = " << rd._deadtimes_.size());
       if (run_deadtime_.has_value()) {
         rd.set_deadtime(0, *run_deadtime_);
       }

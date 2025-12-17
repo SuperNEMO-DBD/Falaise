@@ -44,7 +44,9 @@ namespace snemo {
     void sndb::initialize(const datatools::properties & config_)
     {
       datatools::logger::priority logging = datatools::logger::PRIO_FATAL;
-      logging = datatools::logger::PRIO_DEBUG;
+      if (config_.has_flag("debug")) {
+	logging = datatools::logger::PRIO_DEBUG;
+      }
       std::vector<std::string> db_descfiles;
 
       std::string db_descfiles_key = "database_descriptions.files";
@@ -123,7 +125,6 @@ namespace snemo {
     void sndb::reset()
     {
       _initialized_ = false;
-      
       _databases_.clear();
       return;
     }

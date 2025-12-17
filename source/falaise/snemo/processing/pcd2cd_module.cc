@@ -47,6 +47,7 @@ namespace snemo {
       this->base_module::_common_initialize(ps);
       falaise::property_set fps{ps};
 
+      _eh_input_tag_  = fps.get<std::string>("EH_label", snedm::labels::event_header());
       _pcd_input_tag_  = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
       _cpcd_input_tag_ = fps.get<std::string>("CpCD_label", snedm::labels::clusterized_precalibrated_data());
       _cd_output_tag_  = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());

@@ -35,6 +35,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/tracker_trajectory.h
   snemo/datamodels/tracker_trajectory_data.h
   snemo/datamodels/tracker_trajectory_solution.h
+  # snemo/datamodels/event_topology.h
+  # snemo/datamodels/event_topology_data.h
+  # snemo/datamodels/reconstructed_particle.h
 
   snemo/datamodels/boost_io/base_trajectory_pattern.ipp
   snemo/datamodels/boost_io/calibrated_calorimeter_hit.ipp
@@ -65,6 +68,9 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/datamodels/boost_io/tracker_trajectory.ipp
   snemo/datamodels/boost_io/tracker_trajectory_data.ipp
   snemo/datamodels/boost_io/tracker_trajectory_solution.ipp
+  # snemo/datamodels/boost_io/event_topology.ipp
+  # snemo/datamodels/boost_io/event_topology_data.ipp
+  # snemo/datamodels/boost_io/reconstructed_particle.ipp
 
   snemo/geometry/config.h
   snemo/geometry/utils.h
@@ -107,6 +113,8 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_calorimeter_s2c_module.h
   snemo/processing/mock_calorimeter_s2c_module_utils.h
   snemo/processing/mock_tracker_s2c_module.h
+  snemo/processing/calo_energy_calibration.h
+  snemo/processing/event_time_locator.h
 
   snemo/db/field_description.hpp
   snemo/db/table_description.hpp
@@ -128,6 +136,7 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/services/run_info_service.h
   snemo/services/tracker_cell_status_service.h
   snemo/services/calorimeter_om_status_service.h
+  snemo/services/calo_energy_calibration_service.h
 
   snemo/cuts/event_header_cut.h
   snemo/cuts/simulated_data_cut.h
@@ -184,6 +193,9 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/datamodels/tracker_trajectory.cc
   snemo/datamodels/tracker_trajectory_solution.cc
   snemo/datamodels/tracker_trajectory_data.cc
+  # snemo/datamodels/event_topology_data.cc
+  # snemo/datamodels/event_topology.cc
+  # snemo/datamodels/reconstructed_particle.cc
   snemo/datamodels/particle_track.cc
   snemo/datamodels/particle_track_data.cc
   snemo/datamodels/data_model.cc
@@ -231,6 +243,8 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_display.tpp
   snemo/processing/detail/testing/event_generator.cc
   snemo/processing/detail/testing/event_display.cc
+  snemo/processing/calo_energy_calibration.cc
+  snemo/processing/event_time_locator.cc
 
   # snemo/db/utils.cpp
   # snemo/db/calo_energy_calibration.cpp
@@ -248,6 +262,7 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/services/run_info_service.cc
   snemo/services/tracker_cell_status_service.cc
   snemo/services/calorimeter_om_status_service.cc
+  snemo/services/calo_energy_calibration_service.cc
 
   snemo/simulation/config.cc
   snemo/simulation/cosmic_muon_generator.cc
@@ -313,6 +328,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_datamodel_particle_track.cxx
   snemo/test/test_snemo_datamodel_particle_track_data.cxx
   snemo/test/test_snemo_datamodel_geomid_utils.cxx
+  # snemo/test/test_snemo_datamodel_event_topology.cxx
   
   snemo/test/test_snemo_geometry_calo_locator_1.cxx
   snemo/test/test_snemo_geometry_gg_locator_1.cxx
@@ -348,6 +364,7 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/test/test_snemo_services_run_info_service.cxx
   snemo/test/test_snemo_services_tracker_cell_status_service.cxx
   snemo/test/test_snemo_services_calorimeter_om_status_service.cxx
+  snemo/test/test_snemo_services_calo_energy_calibration_service.cxx
   # snemo/test/test_snemo_service_rc.cxx
 
   snemo/test/test_snemo_simulation_tracker_drift_time_generator.cxx

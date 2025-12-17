@@ -1366,9 +1366,11 @@ $ echo $?
 0
 ~~~~~
 6. Display the events:
+
 ~~~~~
 $ flvisualize -i example.xml
 ...
+
 ~~~~~
 
 
