@@ -94,6 +94,10 @@ Pb214 : Pb-214 decay : Background : : rank=second
 Ra226 : Ra-226 decay : Background : : rank=second
 Rh106 : Rh106 decay  : Background : : rank=second
 Cs137 : Cs-137 decay : Background : : rank=second
+Ga68  : Ga-68 decay  : Background : : rank=second
+Sc44  : Sc-44 decay  : Background : : rank=second
+Sc44m : Sc-44m decay : Background : : rank=second
+Se83  : Se-68 decay  : Background : : rank=second
 
 ### Calibration sources ###
 calibBi207 : Bi-207 decay (with time slicing) : Calibration : : rank=highlight 
