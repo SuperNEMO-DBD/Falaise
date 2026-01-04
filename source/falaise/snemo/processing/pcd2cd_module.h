@@ -8,6 +8,8 @@
  *
  *   Precalibrated data to calibrated data processing module
  *
+ * History:
+ *
  */
 
 #ifndef FALAISE_SNEMO_PROCESSING_PCD2CD_MODULE_H
@@ -75,7 +77,11 @@ namespace snemo {
       enum tracker_height_calibration_method {
 	TRACKER_HEIGHT_NONE        = 0,
 	TRACKER_HEIGHT_LINEAR_R5R6 = 1,
-	TRACKER_HEIGHT_NON_LINEAR_R5R6 = 2
+  TRACKER_HEIGHT_NON_LINEAR_R5R6 = 2,
+  TRACKER_HEIGHT_LINEAR_R5R6_ERROR = 3,
+  TRACKER_HEIGHT_LINEAR_SINGLE_TS_R5R6_ERROR = 4,
+  TRACKER_HEIGHT_NON_LINEAR_SINGLE_TS_R5R6_ERROR = 5,
+  
       };
 
     public:
@@ -123,7 +129,6 @@ namespace snemo {
     private:
       snemo::service_handle<snemo::geometry_svc> geoManager{};  //!< The geometry manager
 
-      std::string _eh_input_tag_{};   //!< The label of the event header data bank
       std::string _pcd_input_tag_{};   //!< The label of the precalibrated data bank
       std::string _cpcd_input_tag_{}; //!< The label of the clusterized precalibrated data bank
 
@@ -132,7 +137,7 @@ namespace snemo {
       // std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
       // global acces to event header
-      snemo::datamodel::event_header * _eh_data_;
+      snemo::datamodel::event_header *_eh_data_;
       datatools::event_id _event_id_;
 
       // global access to input data
@@ -166,6 +171,11 @@ namespace snemo {
       double _pcd2cd_tracker_height_offset_;
       double _pcd2cd_tracker_height_deceleration_;
       double _pcd2cd_tracker_height_error_;
+      double _pcd2cd_tracker_height_error_single_ts_top_a_;
+      double _pcd2cd_tracker_height_error_single_ts_top_b_;
+      double _pcd2cd_tracker_height_error_single_ts_bot_a_;
+      double _pcd2cd_tracker_height_error_single_ts_bot_b_;
+      std::vector<double> _pcd2cd_tracker_ppt_constants_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)
