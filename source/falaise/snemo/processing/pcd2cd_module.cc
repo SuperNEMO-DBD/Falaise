@@ -47,6 +47,7 @@ namespace snemo {
       this->base_module::_common_initialize(ps);
       falaise::property_set fps{ps};
 
+      _eh_input_tag_  = fps.get<std::string>("EH_label", snedm::labels::event_header());
       _pcd_input_tag_  = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
       _cpcd_input_tag_ = fps.get<std::string>("CpCD_label", snedm::labels::clusterized_precalibrated_data());
       _cd_output_tag_  = fps.get<std::string>("CD_label", snedm::labels::calibrated_data());
@@ -112,8 +113,6 @@ namespace snemo {
 	for (int om=0; om<712; om++)
 	  _pcd2cd_calo_energy_thresholds_.push_back(default_threshold);
 
-
-	// Fill calo energy thresholds
 	if (fps.has_key("calo_energy_threshold.database")) {
 	  std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
 	  datatools::fetch_path_with_env(energy_threshold_table_path);
@@ -235,36 +234,6 @@ namespace snemo {
       } else if (tracker_height_method_label == "non_linear_r5r6") {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NON_LINEAR_R5R6;
-
-      } else if (tracker_height_method_label == "linear_r5r6_error") {
-	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
-	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_LINEAR_R5R6_ERROR;
-
-      } else if (tracker_height_method_label == "linear_single_r5r6_error" || tracker_height_method_label == "non_linear_single_r5r6_error") {
-      DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
-      if (tracker_height_method_label == "linear_single_r5r6_error"){
-	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_LINEAR_SINGLE_TS_R5R6_ERROR;
-      }
-      if (tracker_height_method_label == "non_linear_single_r5r6_error"){
-	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NON_LINEAR_SINGLE_TS_R5R6_ERROR;
-      }
-
-	// Initialise tracker ppt constants to be used in R5||R6 recovery
-	_pcd2cd_tracker_ppt_constants_.reserve(2034);
-	for (int tr_cell=0; tr_cell<2034; tr_cell++)
-	_pcd2cd_tracker_ppt_constants_.push_back({0});
-
-	// Fill calo pol0 energy constants
-	std::string ppt_table_path = fps.get<std::string>("tracker_ppt_method.database");
-	datatools::fetch_path_with_env(ppt_table_path);
-	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
-	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
-
-      //load in parameters for single ts error calculation from conf
-	_pcd2cd_tracker_height_error_single_ts_top_a_ = fps.get<falaise::length_t>("tracker_height_error_single_ts_top_a", {3.0, "cm"})();
-	_pcd2cd_tracker_height_error_single_ts_top_b_ = fps.get<falaise::length_t>("tracker_height_error_single_ts_top_b", {3.0, "cm"})();
-	_pcd2cd_tracker_height_error_single_ts_bot_a_ = fps.get<falaise::length_t>("tracker_height_error_single_ts_bot_a", {3.0, "cm"})();
-	_pcd2cd_tracker_height_error_single_ts_bot_b_ = fps.get<falaise::length_t>("tracker_height_error_single_ts_bot_b", {3.0, "cm"})();
 
       } else if (!tracker_height_method_label.empty()) {
 	DT_LOG_ERROR(get_logging_priority(), "wrong tracker height calibration method '" << tracker_height_method_label << "'");
@@ -662,7 +631,7 @@ namespace snemo {
 	cd_tracker_hit_.set_top_cathode_missing(true);
       }
 
-      //Tracker height calibration - Use only events with both R5,R6 cathode TS - Linear Plasma Model
+
       if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_LINEAR_R5R6) {
 
 	const double H = _pcd2cd_tracker_height_effective_;
@@ -673,10 +642,10 @@ namespace snemo {
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
 	  const double z_abs = z_norm * H  + H0;
 	  cd_tracker_hit_.set_z(z_abs);
+	  // todo: error model
 	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
 	}
 
-      //Tracker height calibration - Use only events with both R5,R6 cathode TS - Decelerating Plasma Model
       } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_NON_LINEAR_R5R6) {
 
 	const double H = _pcd2cd_tracker_height_effective_;
@@ -686,152 +655,14 @@ namespace snemo {
 	if (has_both_cathode) {
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_norm_non_linear = z_norm - (K *0.5 * z_norm * (1 - std::abs(z_norm)));
+	  const double z_norm_non_linear = z_norm - K * H * z_norm * (1 - std::abs(z_norm));
 	  const double z_abs = z_norm_non_linear * H  + H0;
-	  double z_error_theory = _pcd2cd_tracker_height_error_*sqrt(1-pow(z_norm,2));
-	  double z_error_limit = _pcd2cd_tracker_height_error_*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
 	  cd_tracker_hit_.set_z(z_abs);
 	  // todo: error model
-	  cd_tracker_hit_.set_sigma_z(z_error);
+	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
 	}
 
       }
-
-
-      //Tracker height calibration - Use events with only R5&&R6 - Z - Dependant Error Distribution Used
-	if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_LINEAR_R5R6_ERROR) {
-
-	const double H = _pcd2cd_tracker_height_effective_;
-	const double H0 = _pcd2cd_tracker_height_offset_;
-
-	if (has_both_cathode) {
-	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
-	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0;
-        //Calc Error - Prevent error falling below set minimumm at before
-	  double z_error_theory = _pcd2cd_tracker_height_error_*sqrt(1-pow(z_norm,2));
-	  double z_error_limit = _pcd2cd_tracker_height_error_*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}
-      }
-
-      //Tracker height calibration - Use events with both R5&&R6 and R5||R6 cathode TS - Linear Plasma Model - Z Dependant Error Distribution Used
-      else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_LINEAR_SINGLE_TS_R5R6_ERROR) {
-
-	const double H = _pcd2cd_tracker_height_effective_;
-	const double H0 = _pcd2cd_tracker_height_offset_;
-      //rename error parameters for single ts z reconstruction
-	const double error_single_ts_bot_a = _pcd2cd_tracker_height_error_single_ts_bot_a_;
-	const double error_single_ts_bot_b = _pcd2cd_tracker_height_error_single_ts_bot_b_;
-	const double error_single_ts_top_a = _pcd2cd_tracker_height_error_single_ts_top_a_;
-	const double error_single_ts_top_b = _pcd2cd_tracker_height_error_single_ts_top_b_;
-
-      //R5&&R6 HITS
-	if (has_both_cathode) {
-	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
-	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0;
-	  double z_error_theory = _pcd2cd_tracker_height_error_*sqrt(1-pow(z_norm,2));
-	  double z_error_limit = _pcd2cd_tracker_height_error_*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}
-
-      //R5||R6 HITS
-
-      else if (has_bottom_cathode) {
-        //Get PPT for cell from database
-	  const double plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id()));
-        //check TS is valid for reconstruction (ie. <PPT) - modify in future to use TS>PPT hits by artifically placing them at end of cell
-	  if (bottom_cathode_drift_time<plasma_propagation_time){
-	  const double z_norm = ((2*bottom_cathode_drift_time)-plasma_propagation_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0; 
-        //Calc Error (ensure error is never lower than 1/3rd centre error)
-	  double z_error_theory = sqrt((pow(error_single_ts_bot_a,2)*pow(1+z_norm,2))+(pow(error_single_ts_bot_b,2)*(1+z_norm)));
-	  double z_error_limit = sqrt((pow(error_single_ts_bot_a,2)*pow(1,2))+(pow(error_single_ts_bot_b,2)*(1)))*pow(3,-1);
-        //Check Error ensure is not below limit
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}}
-
-      //Equivilent procedure to bot cathode hit (but Z value inverted)
-	else if (has_top_cathode) {
-	  const double plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id()));
-	  if (top_cathode_drift_time<plasma_propagation_time){
-	  const double z_norm = (plasma_propagation_time-(2*top_cathode_drift_time))/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0;
-	  double z_error_theory = sqrt((pow(error_single_ts_top_a,2)*pow(1-z_norm,2))+(pow(error_single_ts_top_b,2)*(1-z_norm)));
-	  double z_error_limit = sqrt((pow(error_single_ts_top_a,2)*pow(1,2))+(pow(error_single_ts_top_b,2)*(1)))*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}}
-      }
-
-
-      //Tracker height calibration - Use events with both R5&&R6 and R5||R6 cathode TS - Decelerating Plasma Model - Z Dependant Error Distribution Used
-      else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_NON_LINEAR_SINGLE_TS_R5R6_ERROR) {
-
-      const double H = _pcd2cd_tracker_height_effective_;
-	const double H0 = _pcd2cd_tracker_height_offset_;
-      const double K = _pcd2cd_tracker_height_deceleration_;
-      //rename error parameters for single ts z reconstruction
-	const double error_single_ts_bot_a = _pcd2cd_tracker_height_error_single_ts_bot_a_;
-	const double error_single_ts_bot_b = _pcd2cd_tracker_height_error_single_ts_bot_b_;
-	const double error_single_ts_top_a = _pcd2cd_tracker_height_error_single_ts_top_a_;
-	const double error_single_ts_top_b = _pcd2cd_tracker_height_error_single_ts_top_b_;
-
-      //R5&&R6 HITS
-	if (has_both_cathode) {
-	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
-	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-      const double z_norm_non_linear = z_norm - (K *0.5 * z_norm * (1 - std::abs(z_norm)));
-	  const double z_abs = z_norm_non_linear * H  + H0;
-	  double z_error_theory = _pcd2cd_tracker_height_error_*sqrt(1-pow(z_norm,2));
-	  double z_error_limit = _pcd2cd_tracker_height_error_*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}
-
-      //R5||R6 HITS
-
-      else if (has_bottom_cathode) {
-        //Get PPT for cell from database
-	  const double plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id()));
-        //check TS is valid for reconstruction (ie. <PPT) - modify in future to use TS>PPT hits by artifically placing them at end of cell
-	  if (bottom_cathode_drift_time<plasma_propagation_time){
-	  const double z_norm = ((2*bottom_cathode_drift_time)-plasma_propagation_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0; 
-        //Calc Error (ensure error is never lower than 1/3rd centre error)
-	  double z_error_theory = sqrt((pow(error_single_ts_bot_a,2)*pow(1+z_norm,2))+(pow(error_single_ts_bot_b,2)*(1+z_norm)));
-	  double z_error_limit = sqrt((pow(error_single_ts_bot_a,2)*pow(1,2))+(pow(error_single_ts_bot_b,2)*(1)))*pow(3,-1);
-        //Check Error ensure is not below limit
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}}
-
-      //Equivilent procedure to bot cathode hit (but Z value inverted)
-	else if (has_top_cathode) {
-	  const double plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id()));
-	  if (top_cathode_drift_time<plasma_propagation_time){
-	  const double z_norm = (plasma_propagation_time-(2*top_cathode_drift_time))/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0;
-	  double z_error_theory = sqrt((pow(error_single_ts_top_a,2)*pow(1-z_norm,2))+(pow(error_single_ts_top_b,2)*(1-z_norm)));
-	  double z_error_limit = sqrt((pow(error_single_ts_top_a,2)*pow(1,2))+(pow(error_single_ts_top_b,2)*(1)))*pow(3,-1);
-	  const double z_error = std::max(z_error_theory, z_error_limit);
-	  cd_tracker_hit_.set_z(z_abs);
-	  cd_tracker_hit_.set_sigma_z(z_error);
-	}}
-      }
-
-
 
       // } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_XXX) {
       // 	// [...]
@@ -923,7 +754,14 @@ namespace snemo {
       for (int cluster_i=0; cluster_i<nb_clusters; cluster_i++) {
 	auto tcd_cluster = datatools::make_handle<snemo::datamodel::tracker_cluster>();
 	tcd_cluster->set_cluster_id(cluster_i);
+
+	// if (_cluster_reference_time_[cluster_i] > 0)
+	//   tcd_cluster->get_auxiliaries()
+
 	tcd_clusters.push_back(tcd_cluster);
+
+	// copy/paste (pCD)_cluster auxiliaries into (CD)_cluster auxiliaries
+	tcd_cluster->grab_auxiliaries() = _cpcd_data_->clusters()[cluster_i]->get_properties();
       }
 
       auto & tcd_unclustered_hits = tcd_solution->get_unclustered_hits();
