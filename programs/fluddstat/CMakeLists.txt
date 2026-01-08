@@ -44,7 +44,7 @@ target_link_libraries(fluddstat
   Bayeux::Bayeux
   Boost::program_options
   )
-target_clang_format(flreconstruct)
+#target_clang_format(flreconstruct)
 
 # - Ensure link to internal and external deps
 set_target_properties(fluddstat PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)

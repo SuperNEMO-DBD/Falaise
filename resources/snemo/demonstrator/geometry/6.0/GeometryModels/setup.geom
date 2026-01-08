@@ -262,7 +262,7 @@
 
       internal_item.labels : string[1] += "pe_ceiling"
       internal_item.model.pe_ceiling     : string = "shielding_ceiling_polyethelene.model"
-      internal_item.placement.pe_ceiling : string = "-330 0 3762 (mm) "
+      internal_item.placement.pe_ceiling : string = "330 0 3762 (mm) "
       mapping.daughter_id.pe_ceiling     : string = "[pe_shield:side=5]"  
  
       ##### Water shielding:
@@ -270,11 +270,11 @@
       internal_item.labels : string[2] += "pe_wall_mo" "pe_wall_tu"
       
       internal_item.model.pe_wall_mo            : string = "shielding_tu_mo_polyethelene.model"
-      internal_item.placement.pe_wall_mo        : string = "-330 -4630 +600 (mm) "
+      internal_item.placement.pe_wall_mo        : string = "330 -4630 +600 (mm) "
       mapping.daughter_id.pe_wall_mo    : string = "[pe_shield:side=2]" 
 
       internal_item.model.pe_wall_tu            : string = "shielding_tu_mo_polyethelene.model"
-      internal_item.placement.pe_wall_tu        : string = "-330 +4630 +600 (mm) "
+      internal_item.placement.pe_wall_tu        : string = "330 +4630 +600 (mm) "
       mapping.daughter_id.pe_wall_tu    : string = "[pe_shield:side=3]"  
 
       #@variant_endif geometry:layout/if_basic/shielding/is_present/layout/if_realistic_lab_shield1
