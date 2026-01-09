@@ -14,13 +14,13 @@ namespace FLSimulate {
 
   std::string default_simulation_setup()
   {
-    return snemo::simulation::default_simulation_tag(); // "urn:snemo:demonstrator:simulation:2.5";
+    return snemo::simulation::default_simulation_tag(); // example: "urn:snemo:demonstrator:simulation:X.Y" (see Falaise's top CMakeLists.txt)
   }
 
   // Return the default simulation variant service for the current Falaise release
   std::string default_variant_service_setup()
   {
-    return snemo::simulation::default_simulation_variant_tag(); // "urn:snemo:demonstrator:simulation:variants:service:3.0";
+    return snemo::simulation::default_simulation_variant_tag(); // example: "urn:snemo:demonstrator:simulation:variants:service:X.Y" (see Falaise's top CMakeLists.txt)
   }
 
   std::map<std::string, std::string> list_of_simulation_setups()
