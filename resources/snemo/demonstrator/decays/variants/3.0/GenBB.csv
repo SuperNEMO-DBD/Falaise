@@ -75,11 +75,13 @@ Ac228 : Ac-228 decay : Background : : rank=second
 Th234 : Th-234 decay : Background : : rank=second 
 Tl207 : Tl-207 decay : Background : : rank=second 
 Tl208 : Tl-208 decay : Background : :
-Bi214 : Bi-214 decay : Background : :
+Bi214 : Bi-214 decay (including Po214 delayed decays): Background : :
 Bi212 : Bi-212 decay : Background : : rank=second 
 Bi210 : Bi-210 decay : Background : : rank=second
 Bi214_Po214 : Bi-214/Po-214 decay : Background : :
 Bi212_Po212 : Bi-212/Po-212 decay : Background : :
+Bi214_prompt : Bi-214 (prompt particles, a few delayed alphas) : Background : : rank=second
+Bi214_fastprompt : Bi-214 (fast prompt particles, very few delayed alphas) : Background : : rank=second
 Pa234m : Pa-234m decay : Background : 
 K40   : K-40 decay   : Background : :
 Y90   : Y-90 decay   : Background : :
@@ -98,6 +100,7 @@ Ga68  : Ga-68 decay  : Background : : rank=second
 Sc44  : Sc-44 decay  : Background : : rank=second
 Sc44m : Sc-44m decay : Background : : rank=second
 Se83  : Se-68 decay  : Background : : rank=second
+K42   : K-42 decay   : Background : : rank=second
 
 ### Calibration sources ###
 calibBi207 : Bi-207 decay (with time slicing) : Calibration : : rank=highlight 
