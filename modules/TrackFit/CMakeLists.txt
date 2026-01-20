@@ -37,6 +37,15 @@ add_library(TrackFit SHARED ${TrackFit_HEADERS} ${TrackFit_SOURCES})
 
 target_link_libraries(TrackFit Bayeux::Bayeux)
 
+# - Rpath it
+set_target_properties(TrackFit PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+### message(STATUS "=====> CMAKE_INSTALL_LIBDIR='${CMAKE_INSTALL_LIBDIR}'")
+if(UNIX AND NOT APPLE)
+  set_target_properties(TrackFit
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+  )
+endif()
+
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform
 if(APPLE)
@@ -63,6 +72,15 @@ add_library(Falaise_TrackFit SHARED
   ${FalaiseTrackFitPlugin_SOURCES})
 
 target_link_libraries(Falaise_TrackFit TrackFit FalaiseModule)
+
+# - Rpath it
+set_target_properties(Falaise_TrackFit PROPERTIES INSTALL_RPATH_USE_LINK_PATH 1)
+
+if(UNIX AND NOT APPLE)
+  set_target_properties(Falaise_TrackFit
+    PROPERTIES INSTALL_RPATH "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
+  )
+endif()
 
 # Apple linker requires dynamic lookup of symbols, so we
 # add link flags on this platform

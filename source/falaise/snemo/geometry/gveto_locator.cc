@@ -786,7 +786,7 @@ namespace snemo {
     }
 
     void gveto_locator::construct_() {
-      datatools::logger::priority verbosity = datatools::logger::PRIO_DEBUG;
+      datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
       geomMapping_ = &get_geo_manager().get_mapping();
       const geomtools::id_mgr &idManager = get_geo_manager().get_id_mgr();
 
