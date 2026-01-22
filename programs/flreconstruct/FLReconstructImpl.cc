@@ -108,6 +108,7 @@ namespace FLReconstruct {
     flRecParameters.logLevel = clArgs.logLevel;
     flRecParameters.strictChecks = clArgs.strictChecks;
     flRecParameters.reconstructionConfig = clArgs.configScript;
+    flRecParameters.firstEvent = clArgs.firstEvent;
     flRecParameters.numberOfEvents = clArgs.maxNumberOfEvents;
     flRecParameters.moduloEvents = clArgs.moduloEvents;
     flRecParameters.userProfile = clArgs.userProfile;
@@ -192,6 +193,10 @@ namespace FLReconstruct {
             }
           }
         }
+
+        // Number of events to be skipped from the beginning:
+        flRecParameters.firstEvent =
+          basicSystem.get<int>("firstEvent", flRecParameters.firstEvent);
 
         // Number of events to be processed:
         flRecParameters.numberOfEvents =
@@ -791,6 +796,11 @@ namespace FLReconstruct {
                                 "The version of the reconstruction application");
 
       system_props.store_string("userProfile", flRecParameters_.userProfile, "User profile");
+
+      if (flRecParameters_.firstEvent > 0) {
+        system_props.store_integer("firstEvent", flRecParameters_.firstEvent,
+                                   "Number of skipped events");
+      }
 
       if (flRecParameters_.numberOfEvents > 0) {
         system_props.store_integer("numberOfEvents", flRecParameters_.numberOfEvents,

@@ -173,10 +173,17 @@ namespace FLReconstruct {
       // - Now the actual data record/event loop
       DT_LOG_DEBUG(flRecParameters_.logLevel, "Begin data record/event loop");
       datatools::things workItem;
-      std::size_t dataRecordCounter = 0;
+      std::size_t inputDataRecordCounter = 0;
+      std::size_t processedDataRecordCounter = 0;
+      std::size_t outputDataRecordCounter = 0;
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "firstEvent = " << flRecParameters_.firstEvent);
+      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "numberOfEvents = " << flRecParameters_.numberOfEvents);
       while (true) {
-        // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==========> Pipeline loop for data record/event #" << dataRecordCounter);
-        // Prepare and read work
+	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==== entering event new loop ====");
+	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "inputDataRecordCounter     = " << inputDataRecordCounter);
+ 	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "processedDataRecordCounter = " << processedDataRecordCounter);
+ 	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "outputDataRecordCounter    = " << outputDataRecordCounter);
+	// Prepare and read work
         if (recInput->is_terminated()) {
           DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
           break;
@@ -187,64 +194,73 @@ namespace FLReconstruct {
           code = falaise::EXIT_UNAVAILABLE;
           break;
         }
-        if (flRecParameters_.moduloEvents > 0) {
-          if (dataRecordCounter % flRecParameters_.moduloEvents == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << dataRecordCounter << " about to be processed");
-          }
-        }
+	inputDataRecordCounter++;
+        // if (flRecParameters_.moduloEvents > 0) {
+        //   if (inputDataRecordCounter % flRecParameters_.moduloEvents == 0) {
+        //     DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << inputDataRecordCounter << "has been loaded");
+        //   }
+        // }
+	if (inputDataRecordCounter <= flRecParameters_.firstEvent) {
+	  DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "skip event #" << (inputDataRecordCounter - 1));
+	  continue;
+	}
+	bool doSaveDataRecord = true;
+	if (pipeline != nullptr) {
+	  // Feed through pipeline
+	  dpp::base_module::process_status pStatus = pipeline->process(workItem);
+	  DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
+		      "Module '" << pipeline->get_name() << "' did not return a valid processing status!");
 
-        // Feed through pipeline
-        dpp::base_module::process_status pStatus = pipeline->process(workItem);
-        DT_THROW_IF(pStatus == dpp::base_module::PROCESS_INVALID, std::logic_error,
-                    "Module '" << pipeline->get_name() << "' did not return a valid processing status!");
-
-        // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
-        // This is a very conservative approach, but it is compatible with the default behaviour of
-        // the bxdpp_processing executable.
-        if (pStatus == dpp::base_module::PROCESS_FATAL) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-        if (pStatus == dpp::base_module::PROCESS_ERROR) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-        if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
-          code = falaise::EXIT_UNAVAILABLE;
-          break;
-        }
-
-        // STOP means the current data record/event should not be processed anymore nor saved
-        // but the loop can continue with other items
-        if (pStatus == dpp::base_module::PROCESS_STOP) {
-          continue;
-        }
+	  // FATAL, ERROR and ERROR_STOP status triggers the abortion of the processing loop.
+	  // This is a very conservative approach, but it is compatible with the default behaviour of
+	  // the bxdpp_processing executable.
+	  if (pStatus == dpp::base_module::PROCESS_FATAL) {
+	    code = falaise::EXIT_UNAVAILABLE;
+	    break;
+	  }
+	  if (pStatus == dpp::base_module::PROCESS_ERROR) {
+	    code = falaise::EXIT_UNAVAILABLE;
+	    break;
+	  }
+	  if (pStatus == dpp::base_module::PROCESS_ERROR_STOP) {
+	    code = falaise::EXIT_UNAVAILABLE;
+	    break;
+	  }
+	  processedDataRecordCounter++;
+	  if (flRecParameters_.moduloEvents > 0) {
+	    if (processedDataRecordCounter % flRecParameters_.moduloEvents == 0) {
+	      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << processedDataRecordCounter << " has been processed");
+	    }
+	  }
+	  // STOP means the current data record/event should not be processed anymore nor saved
+	  // but the loop can continue with other following data records
+	  if (pStatus == dpp::base_module::PROCESS_STOP) {
+	    doSaveDataRecord = false;
+	    // continue;
+	  }
+	}
 
         // Check post-conditions on data record/event model (expectedOutputBanks) ?
 
         // Write item
-        if (recOutputHandle != nullptr) {
-          pStatus = recOutputHandle->process(workItem);
+        if (doSaveDataRecord && recOutputHandle != nullptr) {
+          dpp::base_module::process_status pStatus = recOutputHandle->process(workItem);
           if (pStatus != dpp::base_module::PROCESS_OK) {
             DT_LOG_FATAL(flRecParameters_.logLevel, "Failed to write data record to output sink");
             code = falaise::EXIT_UNAVAILABLE;
             break;
           }
+	  outputDataRecordCounter++;
         }
-        if (flRecParameters_.moduloEvents > 0) {
-          if (dataRecordCounter % flRecParameters_.moduloEvents == 0) {
-            DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Data record #" << dataRecordCounter << " has been processed");
-          }
-        }
-        dataRecordCounter++;
-	// 2024-03-14 FM : change condition "dataRecordCounter >" to "dataRecordCounter >="
-        if (flRecParameters_.numberOfEvents > 0 && dataRecordCounter >= flRecParameters_.numberOfEvents) {
+        if (flRecParameters_.numberOfEvents > 0 && processedDataRecordCounter >= flRecParameters_.numberOfEvents) {
           break;
         }
       }
       DT_LOG_DEBUG(flRecParameters_.logLevel, "Data record loop completed");
-      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Number of processed input data records = " << dataRecordCounter);
-
+      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Number of input data records     = " << inputDataRecordCounter);
+      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Number of processed data records = " << processedDataRecordCounter);
+      DT_LOG_NOTICE(datatools::logger::PRIO_NOTICE, "Number of output data records    = " << outputDataRecordCounter);
+ 
       // - MUST delete the module manager BEFORE the library loader clears
       // in case the manager is holding resources created from a shared lib
       if (moduleManager != nullptr) {
