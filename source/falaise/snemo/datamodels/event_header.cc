@@ -96,6 +96,25 @@ namespace snemo {
       mc_timestamp_ = t_;
       return;
     }
+    
+    bool event_header::has_timepoint() const
+    {
+      if (is_simulated() and not has_mc_timestamp()) {
+	return false;
+      }
+      return true;
+    }
+
+    snemo::time::time_point event_header::get_timepoint() const
+    {
+      snemo::time::time_point tp = time::invalid_point();
+      if (is_simulated()) {
+	tp = get_mc_timestamp();
+      } else {
+	tp = get_timestamp().to_timepoint();
+      }
+      return tp;
+    }
 
     event_header::generation_type event_header::get_generation() const
     {
