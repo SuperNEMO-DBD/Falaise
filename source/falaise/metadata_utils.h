@@ -34,93 +34,93 @@
 
 namespace falaise {
 
-namespace app {
+  namespace app {
 
-//! \brief Metadata collector
-class metadata_collector {
- public:
-  //! Set the input data file from which we extract metadata
-  void set_input_data_file(const std::string &filename);
+    //! \brief Metadata collector
+    class metadata_collector {
+    public:
+      //! Set the input data file from which we extract metadata
+      void set_input_data_file(const std::string &filename);
 
-  //! Set the input plain metadata file
-  void set_input_metadata_file(const std::string &filename);
+      //! Set the input plain metadata file
+      void set_input_metadata_file(const std::string &filename);
 
-  //! Extract metadata from input data file (embedded metadata)
-  datatools::multi_properties get_metadata_from_data_file() const;
+      //! Extract metadata from input data file (embedded metadata)
+      datatools::multi_properties get_metadata_from_data_file() const;
 
-  //! Extract metadata from input metadata file
-  datatools::multi_properties get_metadata_from_metadata_file() const;
+      //! Extract metadata from input metadata file
+      datatools::multi_properties get_metadata_from_metadata_file() const;
 
- private:
-  std::string brioFile_;  //!< Input data file from which extraction of metadata is done
-  std::string textFile_;  //!< Input metadata plain file
-};
+    private:
+      std::string brioFile_;  //!< Input data file from which extraction of metadata is done
+      std::string textFile_;  //!< Input metadata plain file
+    };
 
-//! \brief Commonly used parameters extracted from input metadata
-struct metadata_input {
-  std::string userProfile = "";           //!< the user profile used to produce input data
-  std::string experimentalSetupUrn = "";  //!< the experimental setup tag used to produce input data
-  std::string variantConfigUrn = "";      //!< the variant service tag used to produce input data
-  std::string variantConfigPath =
-      "";  //!< the variant service configuration file path used to produce input data
-  std::string variantProfileUrn = "";   //!< the variant profile tag used to produce input data
-  std::string variantProfilePath = "";  //!< the variant profile file used to produce input data
-  std::string servicesConfigUrn =
-      "";  //!< the services configuration tag used to produce input data
-  std::string servicesConfigPath =
-      "";  //!< the services configuration file path used to produce input data
-  std::size_t numberOfEvents = 0;  //!< the number of event after input data
-  bool doSimulation = false;       //!< the flag for simulation input
-  std::string simuSetupUrn = "";   //!< the simulation setup tag used to produce input data
-  bool doDigitization = false;     //!< the flag for digitization input
-  std::string digiSetupUrn = "";   //!< the digitization setup tag used to produce input data
-  bool doReconstruction = false;   //!< the flag for reconstruction input
-  std::string recSetupUrn = "";    //!< the reconstruction setup tag used to produce input data
+    //! \brief Commonly used parameters extracted from input metadata
+    struct metadata_input {
+      std::string userProfile = "";           //!< the user profile used to produce input data
+      std::string experimentalSetupUrn = "";  //!< the experimental setup tag used to produce input data
+      std::string variantConfigUrn = "";      //!< the variant service tag used to produce input data
+      std::string variantConfigPath =
+	"";  //!< the variant service configuration file path used to produce input data
+      std::string variantProfileUrn = "";   //!< the variant profile tag used to produce input data
+      std::string variantProfilePath = "";  //!< the variant profile file used to produce input data
+      std::string servicesConfigUrn =
+	"";  //!< the services configuration tag used to produce input data
+      std::string servicesConfigPath =
+	"";  //!< the services configuration file path used to produce input data
+      std::size_t numberOfEvents = 0;  //!< the number of event after input data
+      bool doSimulation = false;       //!< the flag for simulation input
+      std::string simuSetupUrn = "";   //!< the simulation setup tag used to produce input data
+      bool doDigitization = false;     //!< the flag for digitization input
+      std::string digiSetupUrn = "";   //!< the digitization setup tag used to produce input data
+      bool doReconstruction = false;   //!< the flag for reconstruction input
+      std::string recSetupUrn = "";    //!< the reconstruction setup tag used to produce input data
 
-  // Scan the source metadata container and extract parameters' values
-  void scan(const datatools::multi_properties &mp);
+      // Scan the source metadata container and extract parameters' values
+      void scan(const datatools::multi_properties &mp);
 
-  // Raw print
-  void print(std::ostream &os) const;
-};
+      // Raw print
+      void print(std::ostream &os) const;
+    };
 
-//! \brief Metadata scanner
-class metadata_scanner {
- public:
-  //! Constructor
-  metadata_scanner(const datatools::multi_properties &mp);
+    //! \brief Metadata scanner
+    class metadata_scanner {
+    public:
+      //! Constructor
+      metadata_scanner(const datatools::multi_properties &mp);
 
-  bool hasSection(const std::string &name, const std::string &type) const;
+      bool hasSection(const std::string &name, const std::string &type) const;
 
-  const datatools::properties &getSection(const std::string &name, const std::string &type) const;
+      const datatools::properties &getSection(const std::string &name, const std::string &type) const;
 
-  bool getBoolean(const std::string &name, const std::string &type, const std::string &key,
-                  bool &value) const;
+      bool getBoolean(const std::string &name, const std::string &type, const std::string &key,
+		      bool &value) const;
 
-  bool getInteger(const std::string &name, const std::string &type, const std::string &key,
-                  int &value) const;
+      bool getInteger(const std::string &name, const std::string &type, const std::string &key,
+		      int &value) const;
 
-  bool getSize(const std::string &name, const std::string &type, const std::string &key,
-               std::size_t &value) const;
+      bool getSize(const std::string &name, const std::string &type, const std::string &key,
+		   std::size_t &value) const;
 
-  bool getReal(const std::string &name, const std::string &type, const std::string &key,
-               double &value) const;
+      bool getReal(const std::string &name, const std::string &type, const std::string &key,
+		   double &value) const;
 
-  bool getString(const std::string &name, const std::string &type, const std::string &key,
-                 std::string &value) const;
+      bool getString(const std::string &name, const std::string &type, const std::string &key,
+		     std::string &value) const;
 
-  bool getPath(const std::string &name, const std::string &type, const std::string &key,
-               std::string &value) const;
+      bool getPath(const std::string &name, const std::string &type, const std::string &key,
+		   std::string &value) const;
 
- private:
-  bool getDataFromSection(const std::string & name, const std::string & type, const std::string & key,
-                          datatools::properties::data & value) const;
+    private:
+      bool getDataFromSection(const std::string & name, const std::string & type, const std::string & key,
+			      datatools::properties::data & value) const;
 
- private:
-  const datatools::multi_properties &metadata_;  //!< The source input metadata
-};
+    private:
+      const datatools::multi_properties &metadata_;  //!< The source input metadata
+    };
 
-} // namespace app
+  } // namespace app
 
 } // namespace falaise
 
