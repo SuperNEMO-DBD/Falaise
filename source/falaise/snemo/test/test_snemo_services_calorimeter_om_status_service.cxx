@@ -74,7 +74,6 @@ void test1()
   //   cellService.make_cell_status_map(fout, mapTime);
   //   fout.close();
   // }
-
   // {
   //   std::ofstream fout("test-tracker_dead_cells-draw-period2.data");
   //   snt::time_point mapTime = snt::time_point(snt::date(2022, 6, 25),
@@ -97,7 +96,7 @@ void test2()
   datatools::multi_properties dbServiceMgrConfig("name", "type");
   dbServiceMgrConfig.read(dbServiceMgrConfigPath);
  
-  std::string geomServiceMgrConfigPath = "@falaise:snemo/demonstrator/geometry/5.0/GeometryServices.conf";
+  std::string geomServiceMgrConfigPath = "@falaise:snemo/demonstrator/geometry/6.0/GeometryServices.conf";
   datatools::fetch_path_with_env(geomServiceMgrConfigPath);
   datatools::multi_properties geomServiceMgrConfig("name", "type");
   geomServiceMgrConfig.read(geomServiceMgrConfigPath);
@@ -115,20 +114,28 @@ void test2()
   omServiceConfig.store("mode", "db");
   omServiceConfig.store("geometry_label", snemo::service_info::geometryServiceName());
   omServiceConfig.store("db_label", snemo::service_info::dbServiceName());
-  omServiceConfig.store("db.table_name", "_test_om_status");
+  omServiceConfig.store("db.table_name", "OM_Status_Change_Events");
 
   snemo::calorimeter_om_status_service omService;
   omService.set_logging_priority(datatools::logger::PRIO_DEBUG);
   omService.initialize(omServiceConfig,
 		       const_cast<datatools::service_dict_type&>(serviceMgr.get_local_services()));
   omService.print_tree(std::clog);
-  
+   
   {
-    geomtools::geom_id omGid(1301, 0, 1, 13, 12);
-    snt::time_point mapTime = snt::time_point(snt::date(2022, 6, 13),
+    geomtools::geom_id omGid(1231, 0, 0, 1, 0, 15);
+    snt::time_point mapTime = snt::time_point(snt::date(2025, 7, 13),
                                               snt::hours(0) + snt::minutes(0));
     std::uint32_t omStatus = omService.get_om_status(omGid, mapTime);
-    std::cout << "OM status = " << omStatus << '\n';
+    std::cout << "OM #" << omGid << " -> status = " << omStatus << '\n';
+  }
+ 
+  {
+    geomtools::geom_id omGid(1301, 0, 0, 0, 0);
+    snt::time_point mapTime = snt::time_point(snt::date(2025, 7, 13),
+                                              snt::hours(0) + snt::minutes(0));
+    std::uint32_t omStatus = omService.get_om_status(omGid, mapTime);
+    std::cout << "OM #" << omGid << " -> status = " << omStatus << '\n';
   }
 
   omService.reset();

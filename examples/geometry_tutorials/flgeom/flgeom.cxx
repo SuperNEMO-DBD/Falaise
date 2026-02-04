@@ -67,9 +67,15 @@ int main(int argc_, char ** argv_)
       // Access the geometry ID manager:
       // source code:
       //   {BayeuxSourceDir}/source/bxgeomtools/include/geomtools/id_mgr.h
-      const  geomtools::id_mgr & geomidMgr = snGeomMgr.get_id_mgr();
+      const geomtools::id_mgr & geomidMgr = snGeomMgr.get_id_mgr();
 
       // Extract geometry categories and associated types:
+
+      // French or Italian tracker gas volumes:
+      std::string trkVolCategory = "tracker_volume";
+      assert( geomidMgr.has_category_info(trkVolCategory) );
+      uint32_t trkVolType = geomidMgr.get_category_type(trkVolCategory); // = 1201
+      
       std::string mainOmCategory = "calorimeter_optical_module";
       assert( geomidMgr.has_category_info(mainOmCategory) );
       uint32_t mainOmType = geomidMgr.get_category_type(mainOmCategory);
@@ -84,6 +90,13 @@ int main(int argc_, char ** argv_)
       assert( geomidMgr.has_category_info(driftCellCoreCategory) );
       uint32_t driftCellCoreType = geomidMgr.get_category_type(driftCellCoreCategory);
       std::clog << "driftCellCoreType = " << driftCellCoreType << '\n';
+
+      // French tracker gas volume:
+      geomtools::geom_id frenchTrkVolId;
+      geomidMgr.make_id(trkVolCategory, frenchTrkVolId);
+      geomidMgr.set(frenchTrkVolId, "module", 0); // SN demonstrator module
+      geomidMgr.set(frenchTrkVolId, "side", 1);   // French side
+      std::clog << "frenchTrkVolId = " << frenchTrkVolId << " [1201:0.1]\n";
 
       // Create the geometry ID of a specific scin block in a main calorimeter wall:
       geomtools::geom_id mainScinBlockId;
@@ -110,6 +123,21 @@ int main(int argc_, char ** argv_)
       //   {BayeuxSourceDir}/source/bxgeomtools/include/geomtools/mapping.h
       const geomtools::mapping & geomMapping = snGeomMgr.get_mapping();
 
+      // French tracker gas volume:
+      const geomtools::geom_info & frenchTrkVolInfo = geomMapping.get_geom_info(frenchTrkVolId);
+      const geomtools::placement & frenchTrkVolPlacement = frenchTrkVolInfo.get_world_placement();
+      const geomtools::logical_volume & frenchTrkVolLogVol = frenchTrkVolInfo.get_logical();
+      const geomtools::i_shape_3d & frenchTrkVolShape = frenchTrkVolLogVol.get_shape();
+      const geomtools::box & frenchTrkVolBox
+	= dynamic_cast<const geomtools::box &>(frenchTrkVolShape);
+      geomtools::vector_3d worldPosition(410.5 * CLHEP::mm, 106.5 * CLHEP::mm, 30.0 * CLHEP::mm);
+      geomtools::vector_3d frenchTrkVolPosition;
+      // compute the position in the local frame:
+      frenchTrkVolPlacement.mother_to_child(worldPosition, frenchTrkVolPosition);
+      if (frenchTrkVolBox.is_inside(frenchTrkVolPosition, 1.0e-3 * CLHEP::mm)) {
+	// the point is in the french tracking box volume
+      }
+      
       // Extract geometric informations about a main wall scin block from its ID:
       const geomtools::geom_info & mainScinBlockInfo = geomMapping.get_geom_info(mainScinBlockId);
       std::clog << "mainScinBlockInfo = " << mainScinBlockInfo << "\n";

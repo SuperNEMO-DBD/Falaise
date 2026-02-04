@@ -11,6 +11,28 @@ namespace snemo {
 
   namespace datamodel {
 
+    std::size_t number_of_oms()
+    {
+      return 717u;
+    }
+
+    std::size_t number_of_ggs()
+    {
+      return 2034u;
+    }
+
+    bool om_num_is_valid(const std::uint32_t num_)
+    {
+      if (num_ >= number_of_oms()) return false;
+      return true;
+    }
+
+    bool gg_num_is_valid(const std::uint32_t num_)
+    {
+      if (num_ >= number_of_ggs()) return false;
+      return true;
+    }
+
     int om_num(const geomtools::geom_id & gid)
     {
       switch (gid.get_type())
@@ -112,7 +134,6 @@ namespace snemo {
       }
       return _om_map;
     }
-
     
     geomtools::geom_id om_gid(const int num_, bool block_, bool back_part_)
     {

@@ -13,6 +13,8 @@
 #include <boost/algorithm/string.hpp>
 
 // Bayeux:
+#include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/exception.h>
 #include <bayeux/geomtools/geometry_service.h>
 
 // This project:
@@ -70,9 +72,11 @@ namespace snemo {
     int caloOmType  = idMgr.categories_by_name().find("calorimeter_optical_module")->second.get_type();
     int xcaloOmType = idMgr.categories_by_name().find("xcalo_optical_module")->second.get_type();
     int gvetoOmType = idMgr.categories_by_name().find("gveto_optical_module")->second.get_type();
+    int refOmType   = idMgr.categories_by_name().find("reference_optical_module")->second.get_type();
     _om_types_[0] = caloOmType;
     _om_types_[1] = xcaloOmType;
     _om_types_[2] = gvetoOmType;
+    _om_types_[3] = refOmType;
     
     if (config_.has_key("mode")) {
       std::string modeLabel = config_.fetch_string("mode");
@@ -159,7 +163,7 @@ namespace snemo {
       DT_THROW(std::logic_error, "DB service nullptr !!!");
     }
 
-    std::string tableName = "_test_om_status";
+    std::string tableName = "OM_Status_Change_Events";
     if (db_config_.has_key("table_name")) {
       tableName = db_config_.fetch_string("table_name");
     }
@@ -169,63 +173,83 @@ namespace snemo {
     snemo::db::table_selection_type tableSel;
     _db_service_->process_select_all_statement(tableName, tableSel);
     DT_LOG_DEBUG(logging, "DB mode: Table selection size = " << tableSel.size());
-    DT_LOG_DEBUG(logging, "DB mode: Parsing table selection...");
+
+    if (tableSel.size()) {
+      DT_LOG_DEBUG(logging, "DB mode: Parsing table selection...");
+    }
     namespace snrc = snemo::rc;
     namespace snt  = snemo::time;
+    snrc::calorimeter_om_status_change_event_list changeEventLists[800];
     for (auto iRow = 0u; iRow < tableSel.size(); iRow++) {
       const snemo::db::record_type row = tableSel[iRow];
-      
+      std::int32_t eventId = -1;
+      eventId = (std::uint32_t) std::get<int>(row[0]);
+      DT_LOG_DEBUG(logging, "OM status change event #" << std::to_string(eventId));
+ 
       std::int32_t omNum = -1;
-      omNum = (std::uint32_t) std::get<int>(row[0]);
-      geomtools::geom_id omGid = datamodel::om_gid(omNum, false, false);
-      bool validType = false;
-      if (omGid.get_type() == _om_types_[0] or
-	  omGid.get_type() == _om_types_[1] or
-	  omGid.get_type() == _om_types_[2]) validType = true;
-      DT_THROW_IF(not validType, std::logic_error,
-		  "Invalid type for calorimeter OM geom ID '" << omGid  << "'!");
+      omNum = (std::uint32_t) std::get<int>(row[1]);
+      DT_THROW_IF(not snemo::datamodel::om_num_is_valid(omNum), std::logic_error, "Invalid OM number");
 
-      bool validGid = false;
-      // const snemo::geometry::locator_plugin & locators
-      //   = _geomgr_->get_plugin<snemo::geometry::locator_plugin>("locators_driver");
-      // const snemo::geometry::calo_locator & caloLocator = locators.caloLocator();
-      // const snemo::geometry::xcalo_locator & xcaloLocator = locators.xcaloLocator();
-      // const snemo::geometry::gveto_locator & gvetoLocator = locators.gvetoLocator();
-      // if (caloLocator.isCaloOM(omGid) or
-      // 	  xcaloLocator.isCaloOM(omGid) or
-      // 	  gvetoLocator.isCaloOM(omGid))
-      validGid = true;
-      DT_THROW_IF(not validGid, std::logic_error,
-		  "Not a valid (x)calorimeter/gveto OM geom ID '" << omGid  << "'!");
+      // bool validGid = false;
+      // validGid = true;
+      // DT_THROW_IF(not validGid, std::logic_error,
+      // 		  "Not a valid (x)calorimeter/gveto OM number '" << omNum  << "'!");
       
-      std::string runStartTimeStr = std::get<std::string>(row[1]);
-      DT_LOG_DEBUG(logging, "  runStartTimeStr = " << runStartTimeStr);
-      snt::time_point runStartTime = snt::time_point_from_string(runStartTimeStr);
-      DT_LOG_DEBUG(logging, "  runStartTime = " << snt::to_string(runStartTime));
+      std::string eventTimestampStr = std::get<std::string>(row[2]);
+      DT_LOG_DEBUG(logging, "  eventTimestampStr = " << eventTimestampStr);
+      snt::time_point eventTimestamp = snt::time_point_from_string(eventTimestampStr);
+      DT_LOG_DEBUG(logging, "  eventTimestamp = " << snt::to_string(eventTimestamp));
        
-      std::string runStopTimeStr = std::get<std::string>(row[2]);
-      boost::algorithm::trim(runStopTimeStr);
-      DT_LOG_DEBUG(logging, "  runStopTimeStr = " << runStopTimeStr);
-      snt::time_point runStopTime = snt::max_date_time;
-      if (not runStopTimeStr.empty()) {
-	runStopTime = snt::time_point_from_string(runStopTimeStr);
-	DT_LOG_DEBUG(logging, "  runStopTime = " << snt::to_string(runStopTime));
-      }
-      snt::time_period runPeriod = snt::time_period(runStartTime, runStopTime);
-
-      //std::uint32_t omStatus = snrc::run_status::make_from_bitset(omStatusBits);
-      std::uint32_t omStatus = snemo::rc::calorimeter_om_status::OM_GOOD;
-      omStatus = (std::uint32_t) std::get<int>(row[3]);
-      if (omStatus != snemo::rc::calorimeter_om_status::OM_GOOD) {
-	snemo::rc::calorimeter_om_status_history & omHistory = grab_om_history(omGid);
-        DT_LOG_DEBUG(get_logging_priority(), "gid=" << omGid << " period=" << time::to_string(runPeriod)
-		     << " status=" << omStatus);
-        omHistory.add(runPeriod, omStatus);
+      std::string eventTypeStr = std::get<std::string>(row[3]);
+      boost::algorithm::trim(eventTypeStr);
+      DT_LOG_DEBUG(logging, "  eventTypeStr = " << eventTypeStr);
+      snrc::calorimeter_om_status_change_event::event_type eventType
+	= snrc::calorimeter_om_status_change_event::no_change;
+      if (eventTypeStr == "reset_bits") {
+	eventType = snrc::calorimeter_om_status_change_event::reset_bits;
+      } else if (eventTypeStr == "set_bit") {
+	eventType = snrc::calorimeter_om_status_change_event::set_bit;
+      } else if (eventTypeStr == "unset_bit") {
+	eventType = snrc::calorimeter_om_status_change_event::unset_bit;
       } else {
-        DT_LOG_WARNING(get_logging_priority(), "Ignoring good status for OM " << omGid << "");
+	DT_THROW(std::logic_error,
+		 "Invalid calorimeter staus change event type '" << eventTypeStr  << "'!");
+      }
+
+      std::string statusBitStr = std::get<std::string>(row[4]);
+      // snrc::calorimeter_om_status::status_bit statusBit;
+      std::uint32_t omStatus = snrc::calorimeter_om_status::OM_GOOD;
+      std::uint32_t statusToStringOptions = snrc::calorimeter_om_status::ONLY_ONE_BIT;
+      omStatus = snrc::calorimeter_om_status::status_from_string(statusBitStr, statusToStringOptions);
+      if (omStatus == snrc::calorimeter_om_status::OM_GOOD) {
+	DT_THROW(std::logic_error, "Invalid status bit to be set/unset");
+      }
+
+      snemo::rc::calorimeter_om_status_change_event changeEvent;
+      if (eventType == snrc::calorimeter_om_status_change_event::reset_bits) {
+	changeEvent = snrc::calorimeter_om_status_change_event::make_reset(eventTimestamp);
+      } else if (eventType == snrc::calorimeter_om_status_change_event::set_bit) {
+	snrc::calorimeter_om_status::status_bit statusBit = static_cast<snrc::calorimeter_om_status::status_bit>(omStatus);
+	changeEvent = snrc::calorimeter_om_status_change_event::make_set_bit(eventTimestamp, statusBit);
+      } else if (eventType == snrc::calorimeter_om_status_change_event::unset_bit) {
+	snrc::calorimeter_om_status::status_bit statusBit = static_cast<snrc::calorimeter_om_status::status_bit>(omStatus);
+	changeEvent = snrc::calorimeter_om_status_change_event::make_unset_bit(eventTimestamp, statusBit);
       }
       
+      changeEventLists[omNum].add_event(changeEvent);
+      DT_LOG_DEBUG(logging, "Add OM status change event for OM num " << omNum << " : " << changeEvent);
     }
+    
+    // Build OM status histories from event lists:
+    for (auto omNum = 0u; omNum < snemo::datamodel::number_of_oms(); omNum++) {
+      const auto & eventList = changeEventLists[omNum];
+      if (eventList.size() > 0) {
+	geomtools::geom_id omGid = snemo::datamodel::om_gid(omNum, false, false);
+	snrc::calorimeter_om_status_history & omHistory = this->grab_om_history(omGid);
+	snrc::build_calorimeter_om_status_history_from_event_list(eventList, omHistory);
+      }
+    }
+    DT_LOG_DEBUG(logging, "#OM with status history: " << _histories_.size());
     return;
   }
 

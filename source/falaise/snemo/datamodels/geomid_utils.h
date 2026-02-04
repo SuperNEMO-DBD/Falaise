@@ -13,6 +13,7 @@
 // Standard library:
 #include <string>
 #include <map>
+#include <cstdint>
 
 // Third party:
 #include <bayeux/geomtools/geom_id.h>
@@ -21,6 +22,10 @@ namespace snemo {
 
   namespace datamodel {
 
+		std::size_t number_of_oms();
+
+		bool om_num_is_valid(const std::uint32_t num_);
+		
     // Compute the OM num (unique integer identifier) from geom_id (unique geometry identifier)
     int om_num(const geomtools::geom_id & gid);
 
@@ -41,7 +46,11 @@ namespace snemo {
  
     /// Check if a geom ID is associated to a reference optical module
     bool is_reference_om(const geomtools::geom_id & gid);
-    
+
+		std::size_t number_of_ggs();
+ 
+		bool gg_num_is_valid(const std::uint32_t num_);
+   
     // Compute the GG num (unique integer identifier) from geom_id (unique geometry identifier)
     int gg_num(const geomtools::geom_id & gid);
 

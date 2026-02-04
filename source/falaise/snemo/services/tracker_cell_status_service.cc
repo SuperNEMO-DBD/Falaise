@@ -138,34 +138,109 @@ namespace snemo {
     return;
   }
 
-  void tracker_cell_status_service::_init_mode_db_(const datatools::properties & config_)
+  void tracker_cell_status_service::_init_mode_db_(const datatools::properties & db_config_)
   {
-    DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
-    std::string dbCellStatusTable = "snemo_tracker_cell_status";
-    if (config_.has_key("tracker_cell_status_table")) {
-      dbCellStatusTable = config_.fetch_string("tracker_cell_status_table");
-    }
-    _db_tracker_cell_status_table_ = dbCellStatusTable;
-    
+    // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    datatools::logger::priority logging = get_logging_priority();
+    logging = datatools::logger::PRIO_DEBUG;
+
     if (_db_service_ == nullptr) {
       DT_THROW(std::logic_error, "DB service nullptr !!!");
     }
 
-    std::string tableName = _db_tracker_cell_status_table_;
+    std::string tableName = "GG_Status_Change_Events";
+    if (db_config_.has_key("table_name")) {
+      tableName = db_config_.fetch_string("table_name");
+    }
     DT_THROW_IF(not _db_service_->has_table(tableName), std::logic_error,
 		"Database has no table named " << std::quoted(tableName));
+    
     snemo::db::table_selection_type tableSel;
     _db_service_->process_select_all_statement(tableName, tableSel);
-    DT_LOG_DEBUG(get_logging_priority(), "DB mode: Number of rows = " << tableSel.size());
+    DT_LOG_DEBUG(logging, "DB mode: Table selection size = " << tableSel.size());
 
-    // Parse selected rows:
+    if (tableSel.size()) {
+      DT_LOG_DEBUG(logging, "DB mode: Parsing table selection...");
+    }
+    namespace snrc = snemo::rc;
+    namespace snt  = snemo::time;
+    snrc::tracker_cell_status_change_event_list changeEventLists[2034];
+    for (auto iRow = 0u; iRow < tableSel.size(); iRow++) {
+      const snemo::db::record_type row = tableSel[iRow];
+      std::int32_t eventId = -1;
+      eventId = (std::uint32_t) std::get<int>(row[0]);
+      DT_LOG_DEBUG(logging, "GG status change event #" << std::to_string(eventId));
+ 
+      std::int32_t ggNum = -1;
+      ggNum = (std::uint32_t) std::get<int>(row[1]);
+      DT_THROW_IF(not snemo::datamodel::gg_num_is_valid(ggNum), std::logic_error, "Invalid GG cell number");
+
+      // bool validGid = false;
+      // validGid = true;
+      // DT_THROW_IF(not validGid, std::logic_error,
+      // 		  "Not a valid (x)calorimeter/gveto GG number '" << ggNum  << "'!");
+      
+      std::string eventTimestampStr = std::get<std::string>(row[2]);
+      DT_LOG_DEBUG(logging, "  eventTimestampStr = " << eventTimestampStr);
+      snt::time_point eventTimestamp = snt::time_point_from_string(eventTimestampStr);
+      DT_LOG_DEBUG(logging, "  eventTimestamp = " << snt::to_string(eventTimestamp));
+       
+      std::string eventTypeStr = std::get<std::string>(row[3]);
+      boost::algorithm::trim(eventTypeStr);
+      DT_LOG_DEBUG(logging, "  eventTypeStr = " << eventTypeStr);
+      snrc::tracker_cell_status_change_event::event_type eventType
+	= snrc::tracker_cell_status_change_event::no_change;
+      if (eventTypeStr == "reset_bits") {
+	eventType = snrc::tracker_cell_status_change_event::reset_bits;
+      } else if (eventTypeStr == "set_bit") {
+	eventType = snrc::tracker_cell_status_change_event::set_bit;
+      } else if (eventTypeStr == "unset_bit") {
+	eventType = snrc::tracker_cell_status_change_event::unset_bit;
+      } else {
+	DT_THROW(std::logic_error,
+		 "Invalid calorimeter staus change event type '" << eventTypeStr  << "'!");
+      }
+
+      std::string statusBitStr = std::get<std::string>(row[4]);
+      // snrc::calorimeter_gg_status::status_bit statusBit;
+      std::uint32_t ggStatus = snrc::tracker_cell_status::CELL_GOOD;
+      std::uint32_t statusToStringOptions = snrc::tracker_cell_status::ONLY_ONE_BIT;
+      ggStatus = snrc::tracker_cell_status::status_from_string(statusBitStr, statusToStringOptions);
+      if (ggStatus == snrc::tracker_cell_status::CELL_GOOD) {
+	DT_THROW(std::logic_error, "Invalid status bit to be set/unset");
+      }
+
+      snemo::rc::tracker_cell_status_change_event changeEvent;
+      if (eventType == snrc::tracker_cell_status_change_event::reset_bits) {
+	changeEvent = snrc::tracker_cell_status_change_event::make_reset(eventTimestamp);
+      } else if (eventType == snrc::tracker_cell_status_change_event::set_bit) {
+	snrc::tracker_cell_status::status_bit statusBit = static_cast<snrc::tracker_cell_status::status_bit>(ggStatus);
+	changeEvent = snrc::tracker_cell_status_change_event::make_set_bit(eventTimestamp, statusBit);
+      } else if (eventType == snrc::tracker_cell_status_change_event::unset_bit) {
+	snrc::tracker_cell_status::status_bit statusBit = static_cast<snrc::tracker_cell_status::status_bit>(ggStatus);
+	changeEvent = snrc::tracker_cell_status_change_event::make_unset_bit(eventTimestamp, statusBit);
+      }
+      
+      changeEventLists[ggNum].add_event(changeEvent);
+      DT_LOG_DEBUG(logging, "Add GG status change event for GG num " << ggNum << " : " << changeEvent);
+    }
     
+    // Build GG status histories from event lists:
+    for (auto ggNum = 0u; ggNum < snemo::datamodel::number_of_ggs(); ggNum++) {
+      const auto & eventList = changeEventLists[ggNum];
+      if (eventList.size() > 0) {
+	geomtools::geom_id ggGid = snemo::datamodel::gg_gid(ggNum);
+	snrc::tracker_cell_status_history & ggHistory = this->grab_cell_history(ggGid);
+	snrc::build_tracker_cell_status_history_from_event_list(eventList, ggHistory);
+      }
+    }
+    DT_LOG_DEBUG(logging, "#GG with status history: " << _histories_.size());
     return;
   }
 
   void tracker_cell_status_service::_terminate_mode_db_()
   {
-    DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+    // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
     return;
   }
   
@@ -239,7 +314,17 @@ namespace snemo {
   {
     std::uint32_t status = snemo::rc::tracker_cell_status::CELL_GOOD;
     if (_mode_ == MODE_DB) {
-      DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+      // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
+      history_type::const_iterator found = _histories_.find(gid_);
+      if (found != _histories_.end()) {
+        DT_LOG_DEBUG(get_logging_priority(), "Found history for cell " << gid_);
+	if (datatools::logger::is_debug(get_logging_priority())) {
+	  found->second.print(std::cerr, "[debug] ");
+	}
+        status = found->second.get_status(time_);
+      } else {
+        // DT_LOG_DEBUG(get_logging_priority(), "No history for cell " << gid_);
+      }
     } else if (_mode_ == MODE_FILES) {
       history_type::const_iterator found = _histories_.find(gid_);
       if (found != _histories_.end()) {

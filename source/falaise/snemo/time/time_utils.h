@@ -1,7 +1,7 @@
 /// \file falaise/snemo/time/time_utils.h
 /* Author(s) :    François Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2022-04-27
- * Last modified: 2022-04-28
+ * Last modified: 2026-02-02
  *
  * Description: Time utilities
  */
@@ -79,7 +79,7 @@ namespace snemo {
        TIME_PERIOD_FORMAT_INCLUDE_LAST   = 0, ///< [begin/last]
        TIME_PERIOD_FORMAT_EXCLUDE_END    = 1, ///< [begin/end)
        TIME_PERIOD_FORMAT_BEGIN_DURATION = 2, ///< {begin+duration}
-       TIME_PERIOD_FORMAT_DEFAULT = TIME_PERIOD_FORMAT_INCLUDE_LAST
+       TIME_PERIOD_FORMAT_DEFAULT = TIME_PERIOD_FORMAT_EXCLUDE_END //TIME_PERIOD_FORMAT_INCLUDE_LAST
       };
     
     std::string to_string(const time_period & tp_,
@@ -96,6 +96,10 @@ namespace snemo {
     bool is_valid(const time_duration & td_);
 
     bool is_valid(const time_period & tp_);
+ 
+    time_point time_point_pos_infinity();
+
+    time_point time_point_neg_infinity();
   
     void invalidate(time_point & t_);
     

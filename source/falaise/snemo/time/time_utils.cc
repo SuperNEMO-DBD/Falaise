@@ -111,8 +111,16 @@ namespace snemo {
     std::string to_string(const time_point & t_)
     {
       std::ostringstream sout;
-      sout.imbue(std::locale(the_time_point_locale()));
-      sout << t_;
+      if (t_.is_pos_infinity()) {
+	sout << "+infinity";
+      } else if (t_.is_neg_infinity()) {
+	sout << "-infinity";
+      } else if (t_.is_not_a_date_time()) {
+	sout << "!";
+      } else {
+	sout.imbue(std::locale(the_time_point_locale()));
+	sout << t_;
+      }
       return sout.str();
     }
 
@@ -128,52 +136,68 @@ namespace snemo {
     {
       std::ostringstream sout;
       sout.imbue(std::locale(the_time_point_locale()));
-      if (is_valid(tp_)) {
-        if (format_ == TIME_PERIOD_FORMAT_INCLUDE_LAST) {
-          sout << tp_;
-        } else if (format_ == TIME_PERIOD_FORMAT_BEGIN_DURATION) {
-          sout << '{';
-          sout << to_string(tp_.begin());
-          sout << '+';
-          sout << to_string(tp_.length());
-          sout << '}';
-        } else if (format_ == TIME_PERIOD_FORMAT_EXCLUDE_END) {
-          sout << '[';
-          sout << to_string(tp_.begin());
-          sout << '/';
-          sout << to_string(tp_.end());
-          sout << ')';
-        }
-      } else {
-        sout << '!';
+      // if (is_valid(tp_)) {
+      if (format_ == TIME_PERIOD_FORMAT_INCLUDE_LAST) {
+	sout << tp_;
+      } else if (format_ == TIME_PERIOD_FORMAT_BEGIN_DURATION) {
+	sout << '{';
+	sout << to_string(tp_.begin());
+	sout << '+';
+	sout << to_string(tp_.length());
+	sout << '}';
+      } else if (format_ == TIME_PERIOD_FORMAT_EXCLUDE_END) {
+	sout << '[';
+	sout << to_string(tp_.begin());
+	sout << '/';
+	sout << to_string(tp_.end());
+	sout << ')';
       }
+      // } else {
+      //   sout << '!';
+      // }
       return sout.str();
     }
 
     time_point time_point_from_string(const std::string & repr_)
     {
       time_point tp = invalid_point();
-      std::istringstream iss(repr_);
-      iss.imbue(std::locale(the_time_point_locale_input()));
-      iss >> tp;
-      DT_THROW_IF(!iss, std::range_error, "Invalid time point format '" << repr_ << "'!");
+      std::string repr = repr_;
+      boost::trim(repr);
+      if (repr == "+infinity") {
+	tp = time_point_pos_infinity();
+      } else if (repr == "-infinity") {
+	tp = time_point_neg_infinity();
+      } else if (repr == "!") {
+	tp = invalid_point();
+      } else {
+	std::istringstream iss(repr);
+ 	iss.imbue(std::locale(the_time_point_locale_input()));
+	iss >> tp;
+	DT_THROW_IF(!iss, std::logic_error, "Invalid time point format '" << repr << "'!");
+      }
       return tp;
     }
 
     time_duration time_duration_from_string(const std::string & repr_)
     {
       time_duration td = invalid_duration();
-      std::istringstream iss(repr_);
-      iss.imbue(std::locale(the_time_duration_locale_input()));
-      iss >> td;
-      DT_THROW_IF(!iss, std::range_error, "Invalid time duration format '" << repr_ << "'!");
+      std::string repr = repr_;
+      boost::trim(repr);
+      if (repr == "!") {
+	td = invalid_duration();
+      } else {
+	std::istringstream iss(repr);
+	iss.imbue(std::locale(the_time_duration_locale_input()));
+	iss >> td;
+	DT_THROW_IF(!iss, std::logic_error, "Invalid time duration format '" << repr << "'!");
+      }
       return td;
     }
 
     time_period time_period_from_string(const std::string & repr_)
     {
       bool devel = false;
-      // devel = true;
+      devel = true;
       time_period tp = invalid_period();
       std::string repr = repr_;
       boost::trim(repr);
@@ -191,10 +215,20 @@ namespace snemo {
         boost::trim(durationRepr);
         if (devel) std::cerr << "[devel] begRepr='" << begRepr << "'\n";
         if (devel) std::cerr << "[devel] durationRepr='" << durationRepr << "'\n";
-        time_point periodBegin = time_point_from_string(begRepr);
-        DT_THROW_IF(!is_valid(periodBegin), std::range_error, "Invalid begin time point format '" << begRepr << "'!");
-        time_duration periodDuration = time_duration_from_string(durationRepr);
-        DT_THROW_IF(!is_valid(periodDuration), std::range_error, "Invalid time duration format '" << durationRepr << "'!");
+	time_point periodBegin;
+        try {
+	  periodBegin = time_point_from_string(begRepr);
+	} catch(std::exception & error) {
+	  DT_THROW(std::logic_error, "Invalid begin time point format '" << begRepr << "'!");
+	}
+	// DT_THROW(!is_valid(periodBegin), std::range_error, "Invalid begin time point format '" << begRepr << "'!");
+        time_duration periodDuration;
+	try {
+	  periodDuration = time_duration_from_string(durationRepr);
+ 	} catch(std::exception & error) {
+	  DT_THROW(std::logic_error, "Invalid time duration format '" << durationRepr << "'!");
+	}
+	// DT_THROW_IF(!is_valid(periodDuration), std::range_error, "Invalid time duration format '" << durationRepr << "'!");
         tp = time_period(periodBegin, periodDuration);
       } else if ((repr[0] == '[') and repr.back() == ')') {
         std::string intRepr = repr.substr(1, repr.size() - 2);
@@ -209,10 +243,24 @@ namespace snemo {
         boost::trim(endRepr);
         if (devel) std::cerr << "[devel] begRepr='" << begRepr << "'\n";
         if (devel) std::cerr << "[devel] endRepr='" << endRepr << "'\n";
-        time_point periodBegin = time_point_from_string(begRepr);
-        DT_THROW_IF(!is_valid(periodBegin), std::range_error, "Invalid begin time point format '" << begRepr << "'!");
-        time_point periodEnd = time_point_from_string(endRepr);
-        DT_THROW_IF(!is_valid(periodEnd), std::range_error, "Invalid end time point format '" << endRepr << "'!");
+	time_point periodBegin;
+        try {
+	  periodBegin = time_point_from_string(begRepr);
+	} catch(std::exception & error) {
+	  DT_THROW(std::logic_error, "Invalid begin time point format '" << begRepr << "'!");
+	}
+        // time_point periodBegin = time_point_from_string(begRepr);
+        // DT_THROW_IF(!is_valid(periodBegin), std::range_error, "Invalid begin time point format '" << begRepr << "'!");
+	time_point periodEnd;
+        try {
+	  periodEnd = time_point_from_string(endRepr);
+	} catch(std::exception & error) {
+	  DT_THROW(std::logic_error, "Invalid end time point format '" << endRepr << "'!");
+	}
+	DT_THROW_IF(periodBegin > periodEnd, std::range_error,
+		    "Invalid end time period range " << repr << "'"); 
+        // time_point periodEnd = time_point_from_string(endRepr);
+        // DT_THROW_IF(!is_valid(periodEnd), std::range_error, "Invalid end time point format '" << endRepr << "'!");
         tp = time_period(periodBegin, periodEnd);
       } else {
         std::istringstream iss(repr_);
@@ -233,6 +281,16 @@ namespace snemo {
       std::uint32_t nusec = (std::uint32_t) (subsec / CLHEP::microsecond);
       // DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "======> nusec = " << nusec);
       return time::seconds(nsec) + time::microseconds(nusec);
+    }
+ 
+    time_point time_point_pos_infinity()
+    {
+      return time_point(pos_infin);
+    }
+
+    time_point time_point_neg_infinity()
+    {
+      return time_point(neg_infin);
     }
 
     bool is_valid(const time_point & t_)

@@ -9,6 +9,7 @@
 #include <fstream>
 #include <map>
 #include <optional>
+#include <cstdint>
 
 // - Bayeux:
 #include <bayeux/datatools/base_service.h>
@@ -97,7 +98,7 @@ namespace snemo {
     std::string _geometry_label_;
     std::string _db_label_;
     const geomtools::manager * _geomgr_ = nullptr;
-    std::uint32_t _om_types_[3] = { 1301, 1231, 1251 };
+    std::uint32_t _om_types_[4] = { 1301, 1231, 1251, 90 };
     const snemo::db_service * _db_service_ = nullptr;
     std::optional<time::time_period> _period_;
     history_map_type _histories_;

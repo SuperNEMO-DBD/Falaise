@@ -60,7 +60,8 @@ namespace snemo {
       static std::string status_to_string(const std::uint32_t status_bits_);
 
       enum status_decode_flags {
-        DECODE_TRIM = datatools::bit_mask::bit00
+        DECODE_TRIM  = datatools::bit_mask::bit00,
+				ONLY_ONE_BIT = datatools::bit_mask::bit01
       };
       
       static std::uint32_t status_from_string(const std::string & status_repr_,
@@ -72,8 +73,10 @@ namespace snemo {
     {
       time::time_period period;
       std::uint32_t status = tracker_cell_status::CELL_GOOD;
-    };
-
+ 
+			friend std::ostream & operator<<(std::ostream & out_, const tracker_cell_status_record & record_);
+		};
+		
     class tracker_cell_status_history
     {
     public:
@@ -81,9 +84,85 @@ namespace snemo {
       void clear();
       const std::vector<tracker_cell_status_record> & records() const;
       std::uint32_t get_status(const time::time_point & t_) const;
+			void print(std::ostream & out_, const std::string & indent_ = "") const;
+
     private:
       std::vector<tracker_cell_status_record> _records_;
     };
+ 
+    class tracker_cell_status_change_event
+    {
+		public:
+			
+			enum event_type
+				{
+					no_change,
+					reset_bits,
+					set_bit,
+					unset_bit
+				};			
+			
+			tracker_cell_status_change_event() = default;
+			
+		private:
+
+			tracker_cell_status_change_event(const time::time_point & timestamp_,
+																			 const event_type event_type_,
+																			 tracker_cell_status::status_bit bit_);
+		public:
+
+			tracker_cell_status::status_bit bit() const;
+			
+			const time::time_point & timestamp() const;
+
+			bool is_no_change_event() const;
+
+			bool is_reset_bits_event() const;
+
+			bool is_set_bit_event() const;
+
+			bool is_unset_bit_event() const;
+
+			friend std::ostream & operator<<(std::ostream & out_, const tracker_cell_status_change_event & event_);
+
+			static tracker_cell_status_change_event make_reset(const time::time_point & timestamp_);
+
+			static tracker_cell_status_change_event make_no_change(const time::time_point & timestamp_);
+			
+			static tracker_cell_status_change_event make_set_bit(const time::time_point & timestamp_, 
+																													 const tracker_cell_status::status_bit bit_);
+			
+			static tracker_cell_status_change_event make_unset_bit(const time::time_point & timestamp_, 
+																														 const tracker_cell_status::status_bit bit_);
+			
+		private:
+			
+			time::time_point _timestamp_;
+			event_type _event_type_ = no_change;
+			tracker_cell_status::status_bit _bit_ = tracker_cell_status::CELL_OFF;
+			
+		};
+
+		class tracker_cell_status_change_event_list
+    {
+		public:
+			
+			tracker_cell_status_change_event_list() = default;
+
+			std::size_t size() const;
+
+			const tracker_cell_status_change_event & event(const int i_) const;
+
+			void add_event(const tracker_cell_status_change_event & event_);
+			
+		private:
+
+			std::vector<tracker_cell_status_change_event> _events_;
+			
+		};
+
+		void build_tracker_cell_status_history_from_event_list(const tracker_cell_status_change_event_list & event_list_,
+																													 tracker_cell_status_history & status_history_);
     
   } // end of namespace rc
   
