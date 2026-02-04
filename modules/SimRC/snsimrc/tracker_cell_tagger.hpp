@@ -5,6 +5,8 @@
 #ifndef FALAISE_SIMRC_PLUGIN_TRACKER_CELL_TAGGER_HPP
 #define FALAISE_SIMRC_PLUGIN_TRACKER_CELL_TAGGER_HPP
 
+#include <cstdint>
+
 // Third party:
 // - Bayeux :
 #include <bayeux/datatools/logger.h>
@@ -49,7 +51,8 @@ namespace snemo {
       datatools::logger::priority _logging_ = datatools::logger::PRIO_FATAL;
       const geomtools::manager * _geomgr_ = nullptr;
       const snemo::tracker_cell_status_service * _tracker_cell_status_service_ = nullptr;
-      
+      std::int32_t _ggCellType_ = 1203;
+     
     };
     
   }  // end of namespace simulation

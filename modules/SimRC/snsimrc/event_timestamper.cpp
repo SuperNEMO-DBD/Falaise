@@ -254,13 +254,10 @@ namespace snemo {
         DT_LOG_DEBUG(_logging_, "Reached reused limit -> need a new entry");
         _current_timestamping_reuse_loop_ = 0;
       }
-      // if (_counter_ == 13) {
-      //   // DT_THROW(std::logic_error, "Booom !");
-      // }
       return;
     }
         
-  }  // end of namespace simulation
+  } // end of namespace simulation
 
-}  // end of namespace snemo
+} // end of namespace snemo
 

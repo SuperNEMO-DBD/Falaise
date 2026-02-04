@@ -38,6 +38,7 @@
 #include <falaise/snemo/datamodels/line_trajectory_pattern.h>
 #include <falaise/snemo/datamodels/polyline_trajectory_pattern.h>
 #include <falaise/snemo/processing/geiger_regime.h>
+#include <falaise/snemo/rc/tracker_cell_status.h>
 
 // This project:
 #include <EventBrowser/io/data_model.h>
@@ -112,6 +113,10 @@ namespace snemo {
 	    continue;
 	  }
  	  const mctools::base_step_hit & a_step = it_hit.get();
+	  // {
+	  //   const auto & hitAux = a_step.get_auxiliaries();
+	  //   hitAux.tree_dump(std::cerr, "SD tracker hit:", "[DEVEL] ");
+	  // }
 	  
           // draw the Geiger avalanche path:
           auto * gg_path = new TPolyLine3D;
@@ -141,6 +146,61 @@ namespace snemo {
           }
           // hit_properties.update(browser_tracks::HIGHLIGHT_FLAG, false);
           gg_path->SetLineWidth(line_width);
+
+	  // Visualise bad tracker cells:
+	  if (hit_properties.has_key("snemo.rc.tracker_cell_status")) {
+	    const size_t badCellColor = TColor::GetColor("#7f7f7f");
+	    std::uint32_t ggCellStatus = hit_properties.fetch_positive_integer("snemo.rc.tracker_cell_status");
+	    bool missingHit = false;
+	    if (snemo::rc::tracker_cell_status::is_off(ggCellStatus) or
+		snemo::rc::tracker_cell_status::is_dead(ggCellStatus) or
+		snemo::rc::tracker_cell_status::is_no_anode(ggCellStatus)) {
+	      missingHit = true;
+	    }
+	    if (missingHit) {
+	      int bad_line_width = 2;
+	      auto * bad_gg_path = new TPolyLine3D;
+	      _objects->Add(bad_gg_path);
+	      bad_gg_path->SetPoint(0,
+				    a_step.get_position_stop().x() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetPoint(1,
+				    a_step.get_position_stop().x() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetPoint(2,
+				    a_step.get_position_stop().x() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetPoint(3,
+				    a_step.get_position_stop().x() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetPoint(4,
+				    a_step.get_position_stop().x() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetPoint(5,
+				    a_step.get_position_stop().x() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path->SetLineWidth(bad_line_width);
+	      bad_gg_path->SetLineColor(badCellColor);
+	      auto * bad_gg_path2 = new TPolyLine3D;
+	      _objects->Add(bad_gg_path2);
+	      bad_gg_path2->SetPoint(0,
+				    a_step.get_position_stop().x() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path2->SetPoint(1,
+				    a_step.get_position_stop().x() - 2. * CLHEP::cm,
+				    a_step.get_position_stop().y() + 2. * CLHEP::cm,
+				    a_step.get_position_stop().z());
+	      bad_gg_path2->SetLineWidth(bad_line_width);
+	      bad_gg_path2->SetLineColor(badCellColor);
+	    }
+	  }
 
           // draw circle tangential to the track:
           if (options_manager::get_instance().get_option_flag(SHOW_GG_CIRCLE)) {
