@@ -20,6 +20,7 @@
 // Standard Library
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 // Third Party
 // - Boost
@@ -29,6 +30,9 @@
 #include <bayeux/version.h>
 #include <bayeux/datatools/urn_query_service.h>
 #include "bayeux/datatools/configuration/variant_service.h"
+#include "bayeux/datatools/configuration/variant_repository.h"
+#include "bayeux/datatools/configuration/variant_registry.h"
+#include "bayeux/datatools/configuration/variant_record.h"
 #include "bayeux/datatools/kernel.h"
 #include "bayeux/datatools/logger.h"
 #include "bayeux/datatools/urn.h"
@@ -116,7 +120,7 @@ int main(int argc_, char * argv_[])
 }
 
 //----------------------------------------------------------------------
-// DEFINTIONS
+// DEFINITIONS
 //----------------------------------------------------------------------
 namespace FLSimulateConfig {
 
@@ -374,7 +378,6 @@ namespace FLSimulateConfig {
       throw FLSimulate::FLConfigUserError{"bad command line input"};
     }
 
-    
     params.logLevel = clArgs.logLevel;
     params.loadPluginRules = clArgs.loadPluginRules;
     params.simulationSetupUrn = clArgs.simulationSetupUrn;
@@ -574,12 +577,41 @@ namespace FLSimulateConfig {
     }
     try {
       if (params.variantServiceConfig.is_active()) {
+	// bool forceGeomFlatSource = false;
+	// char * forceGeomFlatSourceEnv = getenv("FALAISE_FORCE_GEOMETRY_FLAT_SOURCE");
+	// if (forceGeomFlatSourceEnv != nullptr) {
+	//   forceGeomFlatSource = true;
+	// }
+	// Start and lock the variant service:
         variantService.configure(params.variantServiceConfig);
-        // Start and lock the variant service:
         variantService.start();
+	/*
+	if (forceGeomFlatSource) {
+	  const datatools::configuration::variant_repository & varRep
+	    = variantService.get_repository();
+	  if (varRep.has_registry("geometry")) {
+	    DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "forceGeomFlatSource : found 'geometry' registry");
+	    const datatools::configuration::variant_registry & varReg
+	      = varRep.get_registry("geometry");
+	    if (varReg.has_parameter_record("layout/if_basic/source_layout")) {
+	      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "forceGeomFlatSource : found parameter record 'source_layout'");
+	      const datatools::configuration::variant_record & varRec
+		= varReg.get_parameter_record("layout/if_basic/source_layout");
+	      std::string sourceLayout;
+	      varRec.get_string_value(sourceLayout);
+	      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "forceGeomFlatSource : sourceLayout=" << sourceLayout);
+	      auto & mutableVarRec = const_cast<datatools::configuration::variant_record&>(varRec);
+	      mutableVarRec.set_string_value("RealisticFlat");
+	      varRec.get_string_value(sourceLayout);
+	      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "forceGeomFlatSource : sourceLayout=" << sourceLayout);
+	    }
+	  }
+	}
+	*/
+	
         // From this point, all other services and/or processing modules can
         // benefit of the variant service during their configuration steps.
-        if (!params.variantServiceConfig.settings.empty()) {
+        if (not params.variantServiceConfig.settings.empty()) {
           // The Variant service uses explicit settings:
           // Make sure we know the full list of effective variant settings corresponding to user
           // choice:
