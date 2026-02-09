@@ -22,7 +22,7 @@
 #-----------------------------------------------------------------------
 # Configure application
 # - Bit hacky for now
-find_package(Boost 1.81 REQUIRED program_options)
+find_package(Boost 1.75 REQUIRED program_options)
 
 #-----------------------------------------------------------------------
 # Compile/Link App
