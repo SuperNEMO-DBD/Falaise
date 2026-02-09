@@ -4,7 +4,10 @@
 # Basic smoke test of default behaviour
 # - write single event of default setup to output file
 add_test(NAME flsimulate-smoke-test
-  COMMAND flsimulate -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-smoke-test.brio"
+  COMMAND flsimulate
+  -d "testconf@${CMAKE_CURRENT_SOURCE_DIR}"
+  -c "${CMAKE_CURRENT_SOURCE_DIR}/simu.conf"
+  -o "${CMAKE_CURRENT_BINARY_DIR}/flsimulate-smoke-test.brio"
   )
 set_falaise_test_environment(flsimulate-smoke-test)
 
@@ -26,7 +29,11 @@ set(FLSIMULATE_TESTSCRIPT_NAMES
 
 foreach(_test ${FLSIMULATE_TESTSCRIPT_NAMES})
   add_test(NAME ${_test}
-    COMMAND flsimulate -d "testdata@${CMAKE_CURRENT_SOURCE_DIR}/data" -c "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.conf" -o "${CMAKE_CURRENT_BINARY_DIR}/${_test}.brio"
+    COMMAND flsimulate
+    -d "testconf@${CMAKE_CURRENT_SOURCE_DIR}"
+    -d "testdata@${CMAKE_CURRENT_SOURCE_DIR}/data"
+    -c "${CMAKE_CURRENT_SOURCE_DIR}/${_test}.conf"
+    -o "${CMAKE_CURRENT_BINARY_DIR}/${_test}.brio"
     )
   set_falaise_test_environment(${_test})
 endforeach()
@@ -43,6 +50,7 @@ add_test(NAME flsimulate-example-2-profile
           --no-gui
           -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
+	  -s "geometry:layout/if_basic/source_layout=RealisticFlat"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
           -s "simulation:output_profile=all_details"
@@ -68,6 +76,7 @@ add_test(NAME flsimulate-example-3-profile
           --no-gui
           -t "${FALAISE_DEFAULT_SIMULATION_TAGcmak}"
           -s "geometry:layout=Basic"
+	  -s "geometry:layout/if_basic/source_layout=RealisticFlat"
           -s "vertexes:generator=field_wire_bulk"
           -s "primary_events:generator=Tl208"
           -s "simulation:output_profile=none"
@@ -92,6 +101,7 @@ add_test(NAME flsimulate-example-4-profile
           --no-gui
           -t "${FALAISE_DEFAULT_SIMULATION_TAG}"
           -s "geometry:layout=Basic"
+	  -s "geometry:layout/if_basic/source_layout=RealisticFlat"
           -s "vertexes:generator=calo_8inch_scin_bulk"
           -s "primary_events:generator=versatile_generator"
 	  -s "primary_events:generator/if_versatile/particle=gamma"
