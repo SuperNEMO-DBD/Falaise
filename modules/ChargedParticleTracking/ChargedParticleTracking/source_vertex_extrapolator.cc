@@ -567,7 +567,7 @@ namespace snemo {
 	  double dirCosLongitude = std::fabs(std::cos(longitude));
 	  double dirCosLatitude = std::fabs(std::cos(latitude));
 	  DT_LOG_DEBUG(logPrio, "dirCosLatitude = " << dirCosLatitude << "   dirCosLongitude = " << dirCosLongitude);
-	  // Take into account the incidence angle of the tracjectory direction on the surface
+	  // Take into account the incidence angle of the trajectory direction on the surface
 	  // to enlarge the tolerance in the YZ plane:
 	  double ySourceTolerance = std::min(_config_.max_source_extrapolation_horizontal_length,
 					     3 * _config_.effective_source_horizontal_tolerance / dirCosLongitude);
