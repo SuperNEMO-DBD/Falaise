@@ -433,10 +433,17 @@ namespace FLSimulate {
                    << "config"
                    << "' services configuration parameter!");
         }
-        flSimParameters_.servicesSubsystemConfig =
-          servicesSubsystem.get<std::string>("config", flSimParameters_.servicesSubsystemConfig);
+	if (servicesSubsystem.is_key_to<std::string>("config")) {
+	  // DT_LOG_DEBUG(flSimParameters_.logLevel, "found services 'config' as a string");
+	  flSimParameters_.servicesSubsystemConfig =
+	    servicesSubsystem.get<std::string>("config", flSimParameters_.servicesSubsystemConfig);
+	}
+	if (servicesSubsystem.is_key_to<falaise::path>("config")) { 
+	  // DT_LOG_DEBUG(flSimParameters_.logLevel, "found services 'config' as a path");
+	  flSimParameters_.servicesSubsystemConfig =
+	    servicesSubsystem.get<falaise::path>("config", flSimParameters_.servicesSubsystemConfig);
+	}
       }
-
     }  // !args.configScript.empty()
 
     do_postprocess(flSimParameters_);

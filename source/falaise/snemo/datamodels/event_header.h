@@ -94,6 +94,12 @@ namespace snemo {
       /// Return the MC timestamp
       const snemo::time::time_point & get_mc_timestamp() const;
 
+      /// Has an effective timepoint
+      bool has_timepoint() const;
+
+      /// Return an effective timepoint
+      snemo::time::time_point get_timepoint() const;
+
       /// Set the MC timestamp
       void set_mc_timestamp(const snemo::time::time_point &);
 

@@ -22,6 +22,6 @@
   addresses : string[1] = "module"
   # To generate GID = [1000:0]
 
-[category="reference_optical_module" type="1999"]
+[category="reference_optical_module" type="90"]
   addresses : string[1] = "item"
-  # To generate GID = [1999:0] ... [1999:4]
+  # To generate GID = [90:0] ... [90:4]

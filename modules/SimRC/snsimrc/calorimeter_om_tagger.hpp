@@ -7,6 +7,7 @@
 
 // Standard library:
 #include <set>
+#include <cstdint>
 
 // Third party:
 // - Bayeux :
@@ -53,9 +54,9 @@ namespace snemo {
       const geomtools::manager * _geomgr_ = nullptr;
       const snemo::calorimeter_om_status_service * _calorimeter_om_status_service_ = nullptr;
       std::set<std::string> _hitTypes_;
-      int32_t _caloOmType_;
-      int32_t _xcaloOmType_;
-      int32_t _gvetoOmType_;
+      std::int32_t _caloOmType_;
+      std::int32_t _xcaloOmType_;
+      std::int32_t _gvetoOmType_;
     };
     
   }  // end of namespace simulation

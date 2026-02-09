@@ -66,7 +66,7 @@ namespace snemo {
     std::string tracker_cell_status::status_to_string(const std::uint32_t status_bits_)
     {
       std::ostringstream reprss;
-      int count=0;
+      auto count = 0u;
       if (status_bits_ & CELL_DEAD) {
         if (count++) reprss << '+';
         reprss << "dead";
@@ -99,7 +99,7 @@ namespace snemo {
         if (count++) reprss << '+';
         reprss << "other_issues";
       }
-      if (count == 0) {
+      if (count == 0u) {
         reprss << "good";
       }
       return reprss.str();
@@ -113,6 +113,9 @@ namespace snemo {
       typedef boost::tokenizer<boost::char_separator<char>> tokenizer;
       boost::char_separator<char> sep{"+"};
       tokenizer tokens{status_repr_, sep};
+      bool onlyOneStatus = false;
+      if (options_ & ONLY_ONE_BIT) onlyOneStatus = true;
+      auto bitCount = 0u;
       for (std::string tk : tokens) {
         if (options_ & DECODE_TRIM) boost::trim(tk);
         if (tk == "good") {
@@ -121,26 +124,47 @@ namespace snemo {
         } else if (tk == "dead") {
           DT_THROW_IF(status != CELL_GOOD, std::logic_error, "Found incompatible tracker cell status labels in '" << status_repr_ << "'!");
           status |= CELL_DEAD;
+	  bitCount++;
         } else if (tk == "off") {
           DT_THROW_IF(status != CELL_GOOD, std::logic_error, "Found incompatible tracker cell status labels in '" << status_repr_ << "'!");
           status |= CELL_OFF;
-        } else if (tk == "noisy") {
+ 	  bitCount++;
+       } else if (tk == "noisy") {
           status |= CELL_NOISY;
+	  bitCount++;
         } else if (tk == "on_trip") {
           status |= CELL_ON_TRIP;
+	  bitCount++;
         } else if (tk == "no_anode") {
 	  status |= CELL_NO_ANODE;
+	  bitCount++;
 	} else if (tk == "no_bottom_cathode") {
 	  status |= CELL_NO_BOTTOM_CATHODE;   
+	  bitCount++;
         } else if (tk == "no_top_cathode") {
 	  status |= CELL_NO_TOP_CATHODE;
+	  bitCount++;
         } else if (tk == "other_issues") {
 	  status |= CELL_OTHER_ISSUES;
+	  bitCount++;
 	} else {
           DT_THROW(std::logic_error, "Invalid tracker cell status label '" << tk << "'!");
         }
       }      
+      if (onlyOneStatus and bitCount > 1) {
+	DT_THROW(std::logic_error, "More than one status bit is set in '" << status_repr_ << "'!");
+      }
       return status;
+    }
+
+    // friend
+    std::ostream & operator<<(std::ostream & out_, const tracker_cell_status_record & record_)
+    {
+      std::ostringstream sout;
+      sout << '@' << snemo::time::to_string(record_.period)
+	   << " -> status=" << tracker_cell_status::status_to_string(record_.status);
+      out_ << sout.str();
+      return out_;
     }
  
     void tracker_cell_status_history::add(const time::time_period & period_, const std::uint32_t status_)
@@ -174,7 +198,196 @@ namespace snemo {
     {
       return _records_;
     }
+  
+    void tracker_cell_status_history::print(std::ostream & out_, const std::string & indent_) const
+    {
+      std::string indent = indent_;
+      out_ << indent << "History records:\n";
+      auto count = 0u;
+      for (const auto & rec : _records_) {
+	out_ << indent << " - Record #" << count << " : " << rec << '\n';
+	count++;
+      }
+      return;
+    }
+ 
+    tracker_cell_status_change_event::tracker_cell_status_change_event(const time::time_point & timestamp_,
+								       const event_type event_type_,
+								       tracker_cell_status::status_bit bit_)
+      : _timestamp_(timestamp_)
+      , _event_type_(event_type_)
+    {
+      if ((_event_type_ != no_change) and (_event_type_ != reset_bits)) {
+	_bit_ = bit_;
+      }
+      return;
+    }
+    
+    tracker_cell_status::status_bit tracker_cell_status_change_event::bit() const
+    {
+      return _bit_;
+    }
+			
+    const time::time_point & tracker_cell_status_change_event::timestamp() const
+    {
+      return _timestamp_;
+    }
+
+    bool tracker_cell_status_change_event::is_no_change_event() const
+    {
+      return _event_type_ == no_change;
+    }
+
+    bool tracker_cell_status_change_event::is_reset_bits_event() const
+    {
+      return _event_type_ == reset_bits;
+    }
+
+    bool tracker_cell_status_change_event::is_set_bit_event() const
+    {
+      return _event_type_ == set_bit;
+    }
+
+    bool tracker_cell_status_change_event::is_unset_bit_event() const
+    {
+      return _event_type_ == unset_bit;
+    }
+
+    // friend
+    std::ostream & operator<<(std::ostream & out_, const tracker_cell_status_change_event & event_)
+    {
+      out_ << "@" << snemo::time::to_string(event_._timestamp_);
+      if (event_.is_no_change_event()) {
+	out_ << " -> no_change";
+      } else if (event_.is_reset_bits_event()) {
+	out_ << " -> reset_bits";
+      } else if (event_.is_set_bit_event()) {
+	out_ << " -> set_bit[" << tracker_cell_status::status_to_string(event_.bit()) << "]";
+      } else if (event_.is_unset_bit_event()) {
+	out_ << " -> unset_bit[" << tracker_cell_status::status_to_string(event_.bit()) << "]";
+      }
+      return out_;
+    }
+			
+   
+    // static
+    tracker_cell_status_change_event tracker_cell_status_change_event::make_reset(const time::time_point & timestamp_)
+    {
+      return {timestamp_, reset_bits, tracker_cell_status::CELL_DEAD};
+    }
+    
+    // static
+    tracker_cell_status_change_event tracker_cell_status_change_event::make_no_change(const time::time_point & timestamp_)
+    {
+      return {timestamp_, no_change, tracker_cell_status::CELL_DEAD};
+    }
+
+    // static
+    tracker_cell_status_change_event
+    tracker_cell_status_change_event::make_set_bit(const time::time_point & timestamp_, 
+						   const tracker_cell_status::status_bit bit_)
+    {
+      return {timestamp_, set_bit, bit_};
+    }
+    
+    // static
+    tracker_cell_status_change_event
+    tracker_cell_status_change_event::make_unset_bit(const time::time_point & timestamp_, 
+						     const tracker_cell_status::status_bit bit_)
+    {
+      return {timestamp_, unset_bit, bit_};
+    }
+ 
+    std::size_t tracker_cell_status_change_event_list::size() const
+    {
+      return _events_.size();
+    }
+ 
+    const tracker_cell_status_change_event &
+    tracker_cell_status_change_event_list::event(const int i_) const
+    {
+      DT_THROW_IF(i_< 0 or i_ >= (int) _events_.size(), std::logic_error, "invalid event index");
+      return _events_[i_];
+    }
+
+    void tracker_cell_status_change_event_list::add_event(const tracker_cell_status_change_event & event_)
+    {
+      if (_events_.size() and event_.timestamp() < _events_.back().timestamp()) {
+        DT_THROW(std::domain_error, "the timestamp of the new event is earlier than that of the last event");
+      }
+      _events_.push_back(event_);
+      return;
+    }
+
+    void build_tracker_cell_status_history_from_event_list(const tracker_cell_status_change_event_list & event_list_,
+							   tracker_cell_status_history & status_history_)
+    {
+      status_history_.clear();
+      std::uint32_t currentStatus = tracker_cell_status::CELL_GOOD;
+      snemo::time::time_point currentPeriodStart;
+      
+      for (auto iEvent = 0u; iEvent < event_list_.size(); iEvent++) {
+	const auto & event = event_list_.event(iEvent);
+	time::time_point currentEventTimepoint = event.timestamp();
+	bool noChange = false;
+	if (event.is_no_change_event()) {
+	  noChange = true;
+	} else if (event.is_set_bit_event()) {
+	  std::uint32_t bitMask = 0;
+	  bitMask |= event.bit();
+	  if (currentStatus & bitMask) {
+	    noChange = true;
+	  }
+	} else if (event.is_unset_bit_event()) {
+	  std::uint32_t bitMask = 0;
+	  bitMask |= event.bit();
+	  if (not (currentStatus & bitMask)) {
+	    noChange = true;
+	  }
+	} else if (event.is_reset_bits_event()) {
+	  if (currentStatus == tracker_cell_status::CELL_GOOD) {
+	    noChange = true;	    
+	  }
+	}
+	if (noChange) {
+	  continue;
+	}
+	if (currentStatus != tracker_cell_status::CELL_GOOD) {
+	  // Close the current period and store the record in the history:
+	  status_history_.add(snemo::time::time_period(currentPeriodStart,
+						       currentEventTimepoint),
+			      currentStatus);
+	  // A new period starts:
+	  snemo::time::invalidate(currentPeriodStart);
+	}
+	std::uint32_t newStatus = currentStatus;
+	if (event.is_reset_bits_event()) {
+	  newStatus = tracker_cell_status::CELL_GOOD;
+	} else if (event.is_set_bit_event()) {
+	  newStatus |= event.bit();
+	} else if (event.is_unset_bit_event()) {
+	  newStatus &= ~(event.bit());
+	}
+	currentStatus = newStatus;
+	// if (not snemo::time::is_valid(currentPeriodStart)) {
+	//   currentPeriodStart = currentEventTimepoint;
+	// }
+	if (currentStatus == tracker_cell_status::CELL_GOOD) {
+	  snemo::time::invalidate(currentPeriodStart);
+	} else {
+	  currentPeriodStart = currentEventTimepoint;
+	}
+      }
+      if (snemo::time::is_valid(currentPeriodStart)
+	  and currentStatus != tracker_cell_status::CELL_GOOD) {
+	status_history_.add(snemo::time::time_period(currentPeriodStart,
+						     snemo::time::time_point_pos_infinity()),
+			    currentStatus);
+      }
      
+      return;
+    }
+    
   } // end of namespace rc
 
 } // end of namespace snemo

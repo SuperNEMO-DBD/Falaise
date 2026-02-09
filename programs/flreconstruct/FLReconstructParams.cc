@@ -12,6 +12,7 @@ namespace FLReconstruct {
     params.logLevel = datatools::logger::PRIO_ERROR;
     params.strictChecks = true;
     params.userProfile = "normal";
+    params.firstEvent = 0;      // 0 == don't skip any events
     params.numberOfEvents = 0;  // 0 == no limit on event loop
     params.moduloEvents = 0;    // 0 == no print
 
@@ -70,6 +71,7 @@ namespace FLReconstruct {
     out_ << tag << "reconstructionSetupUrn       = '" << reconstructionSetupUrn << "'" << std::endl;
     out_ << tag << "reconstructionConfig         = '" << reconstructionConfig << "'" << std::endl;
     out_ << tag << "userProfile                  = '" << userProfile << "'" << std::endl;
+    out_ << tag << "firstEvent                   = " << firstEvent << std::endl;
     out_ << tag << "numberOfEvents               = " << numberOfEvents << std::endl;
     out_ << tag << "moduloEvents                 = " << moduloEvents << std::endl;
     out_ << tag << "experimentalSetupUrn         = '" << experimentalSetupUrn  << "'"<< std::endl;

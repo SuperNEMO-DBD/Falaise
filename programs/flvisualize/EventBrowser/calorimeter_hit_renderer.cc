@@ -32,6 +32,7 @@
 #include <geomtools/id_mgr.h>
 
 #include <falaise/snemo/datamodels/geomid_utils.h>
+#include <falaise/snemo/rc/calorimeter_om_status.h>
 
 #include <TColor.h>
 #include <TMarker3DBox.h>
@@ -95,12 +96,6 @@ namespace snemo {
 
 	  const geomtools::vector_3d pos = 0.5 * (pstart + pstop);
 
-	  auto* step_3d = new TMarker3DBox;
-	  _objects->Add(step_3d);
-	  step_3d->SetPosition(pos.x(), pos.y(), pos.z());
-	  step_3d->SetSize(dx, dy, dz);
-	  step_3d->SetLineColor(kRed);
-
 	  // // Store this value into cluster properties:
 	  // io::step_hit_type * mutable_hit = const_cast<io::step_hit_type*>(&(a_hit));
 	  // datatools::utils::properties & hit_properties = mutable_hit->grab_auxiliaries();
@@ -110,24 +105,42 @@ namespace snemo {
 
 	  // Retrieve line width from properties if 'hit' is highlighted:
 	  size_t line_width = style_manager::get_instance().get_mc_line_width();
+	  size_t detColor = kRed;
+	  if (a_hit.get_auxiliaries().has_key("snemo.rc.calorimeter_om_status")) {
+	    std::uint32_t omStatus
+	      = a_hit.get_auxiliaries().fetch_positive_integer("snemo.rc.calorimeter_om_status");
+	    bool missingHit = false;
+	    if (snemo::rc::calorimeter_om_status::is_off(omStatus) or
+		snemo::rc::calorimeter_om_status::is_dead(omStatus)) {
+	      missingHit = true;
+	    }
+	    if (missingHit) {
+	      detColor = TColor::GetColor("#7f7f7f");
+	      line_width = 2;
+	    }
+	  }	  
+	  auto* step_3d = new TMarker3DBox;
+	  _objects->Add(step_3d);
+	  step_3d->SetPosition(pos.x(), pos.y(), pos.z());
+	  step_3d->SetSize(dx, dy, dz);
+	  step_3d->SetLineColor(detColor);
 	  if (a_hit.get_auxiliaries().has_flag(browser_tracks::HIGHLIGHT_FLAG)) {
 	    line_width = 3;
 	    auto* mark1 = new TPolyMarker3D;
 	    _objects->Add(mark1);
-	    mark1->SetMarkerColor(kRed);
+	    mark1->SetMarkerColor(detColor);
 	    mark1->SetMarkerStyle(kCircle);
 	    mark1->SetPoint(0, pstart.x(), pstart.y(), pstart.z());
 	    auto* mark2 = new TPolyMarker3D;
 	    _objects->Add(mark2);
-	    mark2->SetMarkerColor(kRed);
+	    mark2->SetMarkerColor(detColor);
 	    mark2->SetMarkerStyle(kCircle);
 	    mark2->SetPoint(0, pstop.x(), pstop.y(), pstop.z());
 	  }
 	  // hit_properties.update(browser_tracks::HIGHLIGHT_FLAG, false);
 	  step_3d->SetLineWidth(line_width);
-
-	  this->highlight_geom_id(a_hit.get_geom_id(), kRed);
-	}  // end of step collection
+	  this->highlight_geom_id(a_hit.get_geom_id(), detColor);
+	} // end of step collection
 	FL_LOG_DEVEL("Exiting...");
       }
 

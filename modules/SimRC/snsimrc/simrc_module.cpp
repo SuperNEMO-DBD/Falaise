@@ -225,6 +225,7 @@ namespace snemo {
       }
 
       if (_tracker_cell_tagger_) {
+	// DT_THROW(std::logic_error, "Apply _tracker_cell_tagger_ ...");
         _tracker_cell_tagger_->process(eh_, sd_);
       }
 

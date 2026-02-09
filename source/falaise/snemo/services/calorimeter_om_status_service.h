@@ -9,6 +9,7 @@
 #include <fstream>
 #include <map>
 #include <optional>
+#include <cstdint>
 
 // - Bayeux:
 #include <bayeux/datatools/base_service.h>
@@ -66,7 +67,7 @@ namespace snemo {
     // Main method:
     
     std::uint32_t get_om_status(const geomtools::geom_id & gid_,
-                                  const time::time_point & t_) const;
+				const time::time_point & t_) const;
 
     /// Load om status map from a CSV formatted file
     void load_om_status_map(const std::string & infile_);
@@ -74,6 +75,7 @@ namespace snemo {
     // void make_om_status_map(std::ostream & out_, const time::time_point & t_) const;
 
     typedef std::map<geomtools::geom_id, snemo::rc::calorimeter_om_status_history> history_map_type;
+    // typedef std::map<geomtools::geom_id, snemo::rc::calorimeter_om_status_history> pattern_history_map_type;
     
     const history_map_type & get_histories() const;
     
@@ -96,7 +98,7 @@ namespace snemo {
     std::string _geometry_label_;
     std::string _db_label_;
     const geomtools::manager * _geomgr_ = nullptr;
-    std::uint32_t _om_types_[3] = { 1301, 1231, 1251 };
+    std::uint32_t _om_types_[4] = { 1301, 1231, 1251, 90 };
     const snemo::db_service * _db_service_ = nullptr;
     std::optional<time::time_period> _period_;
     history_map_type _histories_;

@@ -2,8 +2,8 @@
 //
 // Copyright (c) 2013 by Ben Morgan <bmorgan.warwick@gmail.com>
 // Copyright (c) 2013 by The University of Warwick
-// Copyright (c) 2017-2022 by François Mauger <mauger@lpccaen.in2p3.fr>
-// Copyright (c) 2017-2022 by Université de Caen Normandie
+// Copyright (c) 2017-2026 by François Mauger <mauger@lpccaen.in2p3.fr>
+// Copyright (c) 2017-2026 by Université de Caen Normandie
 
 // Distributed under the OSI-approved BSD 3-Clause License (the "License");
 // see accompanying file License.txt for details.
@@ -40,6 +40,7 @@ namespace FLReconstruct {
   {
     datatools::logger::priority logLevel;  //!< Verbosity level
 		bool strictChecks = true;
+		uint32_t firstEvent = 0;
     uint32_t maxNumberOfEvents;            //!< Maximum number of processed events
     uint32_t moduloEvents;                 //!< Event modulo
     std::string userProfile;               //!< User profile

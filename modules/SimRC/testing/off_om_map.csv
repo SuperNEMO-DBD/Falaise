@@ -1,6 +1,9 @@
 # SuperNEMO calorimeter OMs status map (sample)
 # A mock list of dead calorimeter OMs
 
+#@period=Forever : [2022-05-27 00:00:00/2028-12-31 00:00:00)
+
+
 # Geom ID       ; Period                                    ; Status flags
 [1301:0.0.1.0]  ; [2022-01-01 00:00:00/2028-01-01 00:00:00) ; off
 [1301:0.0.1.1]  ; [2022-01-01 00:00:00/2028-01-01 00:00:00) ; off

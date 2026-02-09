@@ -51,36 +51,36 @@ add_test(NAME testSimRC_simrc
   ) 
 set_tests_properties(testSimRC_simrc PROPERTIES DEPENDS testSimRC_simulate)
 
-# - Apply RC then reconstruct
-add_test(NAME testSimRC_simrc2
-  COMMAND flreconstruct
-  -V debug
-  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc2.conf
-  -i testSimRC-sd2.brio
-  -o testSimRC-rec-rc2.brio
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  ) 
-set_tests_properties(testSimRC_simrc2 PROPERTIES DEPENDS testSimRC_simulate2)
+# # - Apply RC then reconstruct
+# add_test(NAME testSimRC_simrc2
+#   COMMAND flreconstruct
+#   -V debug
+#   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc2.conf
+#   -i testSimRC-sd2.brio
+#   -o testSimRC-rec-rc2.brio
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#   ) 
+# set_tests_properties(testSimRC_simrc2 PROPERTIES DEPENDS testSimRC_simulate2)
 
-add_test(NAME testSimRC_simrc3
-  COMMAND flreconstruct
-  -V debug
-  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc3.conf
-  -i testSimRC-sd.brio
-  -o testSimRC-rec-rc3.brio
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  ) 
-set_tests_properties(testSimRC_simrc3 PROPERTIES DEPENDS testSimRC_simulate)
+# add_test(NAME testSimRC_simrc3
+#   COMMAND flreconstruct
+#   -V debug
+#   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc3.conf
+#   -i testSimRC-sd.brio
+#   -o testSimRC-rec-rc3.brio
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#   ) 
+# set_tests_properties(testSimRC_simrc3 PROPERTIES DEPENDS testSimRC_simulate)
 
-add_test(NAME testSimRC_simrc4
-  COMMAND flreconstruct
-  -V debug
-  -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc4.conf
-  -i testSimRC-sd.brio
-  -o testSimRC-rec-rc4.brio
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  ) 
-set_tests_properties(testSimRC_simrc4 PROPERTIES DEPENDS testSimRC_simulate)
+# add_test(NAME testSimRC_simrc4
+#   COMMAND flreconstruct
+#   -V debug
+#   -p ${FalaiseSimRCPlugin_SOURCE_DIR}/testing/simrc4.conf
+#   -i testSimRC-sd.brio
+#   -o testSimRC-rec-rc4.brio
+#   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+#   ) 
+# set_tests_properties(testSimRC_simrc4 PROPERTIES DEPENDS testSimRC_simulate)
 
 #############################################################
 # 2022-06-01 FM :

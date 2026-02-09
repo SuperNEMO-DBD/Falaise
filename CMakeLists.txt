@@ -39,7 +39,7 @@ set(FL_CMAKE_MINIMUM_VERSION 3.10)
 # CMake/project requirements and configuration
 #
 cmake_minimum_required(VERSION ${FL_CMAKE_MINIMUM_VERSION} FATAL_ERROR)
-project(Falaise VERSION "5.1.9")
+project(Falaise VERSION "5.1.10")
 
 # - Load custom modules
 list(INSERT CMAKE_MODULE_PATH 0 ${PROJECT_SOURCE_DIR}/cmake)

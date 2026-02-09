@@ -148,18 +148,18 @@ from_file : Vertex generation from an input text file :  : if_from_file :
 ################################################################
 
 real_flat_source_full_copper_mass_bulk  : Vertex generation from the bulk of all Copper foils      : SourceFoilRealistic : 
-real_flat_source_full_copper_surface    : Vertex generation from the surface of all Copper foils   : SourceFoilRealistic : 
-strip_0_bulk                            : Vertex generation from the bulk volume of source strip 0 : SourceFoilRealistic : 
-strip_0_surface                         : Vertex generation from the surface of source strip 0     : SourceFoilRealistic : 
+real_flat_source_full_copper_surface    : Vertex generation from the back/front surfaces of all Copper foils   : SourceFoilRealistic : 
+#strip_0_bulk                            : Vertex generation from the bulk volume of source strip 0 : SourceFoilRealistic : 
+#strip_0_surface                         : Vertex generation from the surface of source strip 0     : SourceFoilRealistic : 
 real_flat_source_strip_0_pad_0_bulk     : Vertex generation from the bulk of the SuperNEMO source strip 0 pad 0       : SourceFoilRealistic      : : rank=second 
-real_flat_source_strip_0_pad_0_surface  : Vertex generation from the surface of the SuperNEMO source strip 0 pad 0    : SourceFoilRealistic      : : rank=second 
-strip_35_bulk                           : Vertex generation from the bulk volume of source strip 35                   : SourceFoilRealistic      : :
-strip_35_surface                        : Vertex generation from the surface of source strip 35                       : SourceFoilRealistic      : :
+real_flat_source_strip_0_pad_0_surface  : Vertex generation from the back/front surfaces of the SuperNEMO source strip 0 pad 0    : SourceFoilRealistic      : : rank=second 
+#strip_35_bulk                           : Vertex generation from the bulk volume of source strip 35                   : SourceFoilRealistic      : :
+#strip_35_surface                        : Vertex generation from the surface of source strip 35                       : SourceFoilRealistic      : :
 real_flat_source_strip_35_pad_0_bulk    : Vertex generation from the bulk of the strip 35 pad 0                       : SourceFoilRealistic      : : rank=second 
-real_flat_source_strip_35_pad_0_surface : Vertex generation from the surface of the strip 35 pad 0                    : SourceFoilRealistic      : : rank=second 
-real_flat_source_full_foils_mass_bulk   : Vertex generation from the bulk of all source pads (for mass contamination) : SourceFoilRealistic/Flat : : rank=highlight
+real_flat_source_strip_35_pad_0_surface : Vertex generation from the back/front surfaces of the strip 35 pad 0                    : SourceFoilRealistic      : : rank=second 
+real_flat_source_full_foils_mass_bulk   : Vertex generation from the bulk of all Se source pads (for mass contamination) : SourceFoilRealistic/Flat : : rank=highlight
 real_flat_source_full_foils_se82_bulk   : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process)     : SourceFoilRealistic/Flat : if_source_of_se82_dbd : rank=highlight 
-real_flat_source_full_foils_surface     : Vertex generation from the surface of all source pads                       : SourceFoilRealistic/Flat : : rank=highlight 
+real_flat_source_full_foils_surface     : Vertex generation from the back/front surfaces of all Se source pads                       : SourceFoilRealistic/Flat : : rank=highlight 
 
 real_flat_source_strip_1_se82_bulk     : Vertex generation from the bulk volume of SuperNEMO source strip 1 (Se82 DBD)    : SourceFoilRealistic : if_source_of_se82_dbd :  
 real_flat_source_strip_1_bulk          : Vertex generation from the bulk volume of SuperNEMO source strip 1 (total mass)  : SourceFoilRealistic : 

@@ -15,10 +15,13 @@ set_falaise_test_environment(falaise-testFhiclProperties)
 
 # Tests of flreconstruct require an input file, so create a "test fixture"
 # file using flsimulate
-set(FLRECONSTRUCT_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-fixture.brio")
-# set(FLRECONSTRUCT_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-fixture.xml")
+# set(FLRECONSTRUCT_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-fixture.brio")
+set(FLRECONSTRUCT_FIXTURE_FILE "${CMAKE_CURRENT_BINARY_DIR}/flreconstruct-fixture.xml")
 add_test(NAME flreconstruct-fixture
-  COMMAND flsimulate --verbosity "debug" -o "${FLRECONSTRUCT_FIXTURE_FILE}"
+  COMMAND flsimulate --verbosity "debug"
+  -d "testconf@${CMAKE_CURRENT_SOURCE_DIR}"
+  -c "${CMAKE_CURRENT_SOURCE_DIR}/simu.conf"
+  -o "${FLRECONSTRUCT_FIXTURE_FILE}"
   )
 set_falaise_test_environment(flreconstruct-fixture)
 

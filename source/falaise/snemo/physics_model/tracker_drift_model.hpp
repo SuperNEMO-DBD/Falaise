@@ -333,7 +333,7 @@ namespace snemo {
  			///  |  2  :  3  |
 			///  +-----------+
 			/// \endcode
-     int locate_cell_quarter(const geomtools::vector_3d & in_cell_position_) const;
+      int locate_cell_quarter(const geomtools::vector_3d & in_cell_position_) const;
 
 			/// Return information about the tracker gas at given time
       tracker_gas_info fetch_gas_info(const time::time_point & p_) const;
@@ -371,6 +371,11 @@ namespace snemo {
                          const double pressure_,
                          const double radial_distance_) const;
 
+      std::tuple<double,double, double>
+			compute_drift_radius(const cell_quarter_category cqc_,
+													 const double pressure_,
+													 const double drift_time_) const;
+			
       /// Return the list of 16 supported cell info patterns, after the "betsy" model
       static const std::vector<cell_efield_info> & supported_cell_efield_infos();
 

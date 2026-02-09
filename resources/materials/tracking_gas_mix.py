@@ -98,13 +98,13 @@ propArgon=0.96e-2*propNotAir
 
 # Helium+Alcohol+Argon+Air (SuperNEMO tracking gas, FM+MG+EC, 2025-12-16)
 # [name="snemo::tracking_gas::default" type="material"]
-P=880.0 * mbar
-T=293.0*kelvin
-propAir=0.01
-propNotAir=1.0-propAir
-propHelium=95e-2*propNotAir
-propEthanol=4e-2*propNotAir
-propArgon=1e-2*propNotAir
+# P=880.0 * mbar
+# T=293.0*kelvin
+# propAir=0.01
+# propNotAir=1.0-propAir
+# propHelium=95e-2*propNotAir
+# propEthanol=4e-2*propNotAir
+# propArgon=1e-2*propNotAir
 
 print("Temperature T     = ", T / kelvin , " K")
 print("Pressure P        = ", P / mbar , " mbar")

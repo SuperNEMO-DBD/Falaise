@@ -16,7 +16,14 @@ Visualize simulated data:
 
 .. code:: shell
 
-   $ flvisualize -i flsimuex01.brio
+   $ flvisualize --variant-profile flsimulate-ex01.profile -i flsimuex01.brio
+..
+
+Extract a slice of simulated event:
+
+.. code:: shell
+
+   $ flreconstruct -F 98 -N 2 -i flsimuex01.brio -o slice.xml
 ..
 
 

@@ -49,7 +49,7 @@ namespace snemo {
       } else if (config_.has_flag("trace")) {
         _logging_ = datatools::logger::PRIO_TRACE;
       }
-      DT_LOG_TRACE(_logging_, "Initializing calorimeter OM tagger...");
+      DT_LOG_DEBUG(_logging_, "Initializing calorimeter OM tagger...");
       DT_THROW_IF(_geomgr_ == nullptr, std::logic_error,
                   "No geometry manager!");
       DT_THROW_IF(_calorimeter_om_status_service_ == nullptr, std::logic_error,
@@ -96,14 +96,16 @@ namespace snemo {
       const geomtools::id_mgr & idMgr = _geomgr_->get_id_mgr();
  
       if (eh_.has_mc_timestamp()) {
-        DT_LOG_TRACE(_logging_, "Found MC timestamp in EH.");
+        DT_LOG_DEBUG(_logging_, "Found MC timestamp in EH.");
         const auto & eventTimeStamp = eh_.get_mc_timestamp();
         for (auto hitType : _hitTypes_) {
-          uint32_t omType = geomtools::geom_id::INVALID_TYPE;
+	  std::uint32_t omType = geomtools::geom_id::INVALID_TYPE;
+	  auto gidAddrDepth = 4u;
           if (hitType == "calo") {
             omType = _caloOmType_;
           } else if (hitType == "xcalo") {
             omType = _xcaloOmType_;
+	    gidAddrDepth++;
           } else if (hitType == "gveto") {
             omType = _gvetoOmType_;
           }
@@ -111,13 +113,15 @@ namespace snemo {
             auto & mcHits = sd_.grab_step_hits(hitType);
             for (auto & mcHit : mcHits) {
               const geomtools::geom_id & blockGeomID = mcHit->get_geom_id();
-              DT_LOG_TRACE(_logging_, "Calorimeter block geom ID = " << blockGeomID);
-              geomtools::geom_id omGeomID(omType, geomtools::geom_id::INVALID_ADDRESS);
+              DT_LOG_DEBUG(_logging_, "Calorimeter block geom ID = " << blockGeomID);
+              geomtools::geom_id omGeomID;
+	      omGeomID.set_type(omType);
+	      omGeomID.set_depth(gidAddrDepth); // geomtools::geom_id::INVALID_ADDRESS);
               idMgr.extract(blockGeomID, omGeomID); 
-              DT_LOG_TRACE(_logging_, "Calorimeter OM geom ID = " << omGeomID);
+              DT_LOG_DEBUG(_logging_, "Calorimeter OM geom ID = " << omGeomID);
               std::uint32_t omStatus =
                 _calorimeter_om_status_service_->get_om_status(omGeomID, eventTimeStamp);
-              DT_LOG_TRACE(_logging_, "Calorimeter OM RC status = " << omStatus);
+              DT_LOG_DEBUG(_logging_, "Calorimeter OM RC status = " << omStatus);
               if (omStatus != snemo::rc::calorimeter_om_status::OM_GOOD) { 
                 mcHit->grab_auxiliaries().store("snemo.rc.calorimeter_om_status", (std::int32_t) omStatus);
               }

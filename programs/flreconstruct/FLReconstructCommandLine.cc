@@ -36,6 +36,7 @@ namespace FLReconstruct {
     FLReconstructCommandLine frArgs;
     frArgs.logLevel = datatools::logger::PRIO_FATAL;
     frArgs.strictChecks = true;
+    frArgs.firstEvent = 0;
     frArgs.maxNumberOfEvents = 0;
     frArgs.moduloEvents = 0;
     frArgs.userProfile = "normal";
@@ -57,6 +58,7 @@ namespace FLReconstruct {
                 << "logLevel          = " << datatools::logger::get_priority_label(this->logLevel)
          << std::endl;
     out_ << tag << "strictChecks      = " << std::boolalpha << strictChecks << std::endl;
+    out_ << tag << "firstEvent        = " << firstEvent << std::endl;
     out_ << tag << "maxNumberOfEvents = " << maxNumberOfEvents << std::endl;
     out_ << tag << "moduloEvents      = " << moduloEvents << std::endl;
     out_ << tag << "userProfile       = '" << userProfile << "'" << std::endl;
@@ -217,6 +219,12 @@ namespace FLReconstruct {
        bpo::value<std::string>(&verbosityLabel)
        ->value_name("level"),
        "set the verbosity level")
+
+      ("first-event,F",
+       bpo::value<uint32_t>(&clArgs.firstEvent)
+       ->default_value(0)
+       ->value_name("F"),
+       "event number of the first processed event")
 
       ("max-number-events,N",
        bpo::value<uint32_t>(&clArgs.maxNumberOfEvents)

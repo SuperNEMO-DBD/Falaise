@@ -4,25 +4,27 @@
 #@application=falaise
 
 [registry="geometry"]
-layout="Basic"
-layout/if_basic/magnetic_field=true
-layout/if_basic/magnetic_field/is_active/type="UniformVertical"
-layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude=25 gauss
-layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction="+z"
-layout/if_basic/source_layout="RealisticFlat"
-layout/if_basic/source_calibration=false
-layout/if_basic/shielding=true
-calo_film_thickness=25 um
-tracking_gas_material = "Nemo3"
+layout = "Basic"
+layout/if_basic/magnetic_field = true
+layout/if_basic/magnetic_field/is_active/type = "UniformVertical"
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/magnitude = 25 gauss
+layout/if_basic/magnetic_field/is_active/type/if_uniform_vertical/direction = "+z"
+layout/if_basic/source_layout = "RealisticFlat"
+layout/if_basic/source_calibration = false
+layout/if_basic/shielding = true
+layout/if_basic/shielding/is_present/layout = "RealisticShield1"
+calo_film_thickness = 25 um
+tracking_gas_material = "TrackingGasDefault"
 
 [registry="vertexes"]
-generator="real_flat_source_full_foils_se82_bulk"
+generator = "real_flat_source_full_foils_se82_bulk"
 
 [registry="primary_events"]
-generator="Se82.2nubb"
+generator = "Se82.2nubb"
 
 [registry="simulation"]
-physics_mode="Constructors"
-physics_mode/if_constructors/em_model="standard"
-production_cuts=true
-output_profile="none"
+physics_mode = "Constructors"
+physics_mode/if_constructors/em_model = "standard"
+production_cuts = true
+output_profile = "none"
+

@@ -71,6 +71,7 @@ namespace snemo {
       
       const geomtools::manager * _geoManager_ = nullptr; ///< The geometry manager
       std::string _runInfoServiceName_;
+      std::string _dbServiceName_;
       const snemo::run_info_service * _runInfos_ = nullptr; ///< The run info service
       std::string _EHTag_; ///< The label of the input EH bank (event header)
       std::string _SDTag_; ///< The label of the input SD bank (simulated data)

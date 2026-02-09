@@ -31,7 +31,9 @@ configure_file("SensitivityModuleExample.conf.in" "SensitivityModuleExample.conf
 enable_testing()
 # - Simulate
 add_test(NAME testSensitivityModule_simulate
-  COMMAND flsimulate -o test-simulate.brio
+  COMMAND flsimulate
+  -d "testconf@${CMAKE_CURRENT_SOURCE_DIR}"
+  -c "${CMAKE_CURRENT_SOURCE_DIR}/simu.conf" -o test-simulate.brio
   WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
   )
 
