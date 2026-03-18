@@ -68,7 +68,14 @@ Testing the vertex generator
 
 The Falaise library must be built first.
 
-Example:
+Example1:
+
+.. code:: shell
+   
+   $ bash testing/test-6.0.bash real_snrs1_source_full_foils_surface magenta vertexes-dd_foilsurf.data
+   geomtools> load_display_data vertexes0 vertexes-dd_foilsurf.data 
+   geomtools> display -yz [1000:0]
+..
 
 .. code:: shell
    
