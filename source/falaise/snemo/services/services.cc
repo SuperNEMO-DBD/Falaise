@@ -48,6 +48,12 @@ namespace snemo {
     return lbl;
   }
 
+  const std::string & service_info::trackerCellPptServiceName()
+  {
+    static std::string lbl("trackerCellPpt");
+    return lbl;
+  }
+
   const std::string & service_info::calorimeterOmStatusServiceName()
   {
     static std::string lbl("calorimeterOmStatus");

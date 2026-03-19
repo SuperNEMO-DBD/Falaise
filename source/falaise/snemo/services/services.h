@@ -50,7 +50,10 @@ namespace snemo {
 
     /// Return the default string label/name for the 'calorimeter OM status' service
     static const std::string & calorimeterOmStatusServiceName();
-    
+  
+    /// Return the default string label/name for the 'tracker cell PPT' service
+    static const std::string & trackerCellPptServiceName();
+  
   };
 
   /// Return a reference to the dictionnary of services embedded in a service manager

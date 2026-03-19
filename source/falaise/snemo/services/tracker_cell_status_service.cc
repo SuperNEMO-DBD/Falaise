@@ -1,5 +1,4 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/services/tracker_cell_status_service.cc */
 
 // Ourselves:
 #include <falaise/snemo/services/tracker_cell_status_service.h>
@@ -115,7 +114,8 @@ namespace snemo {
     } else if (_mode_ == MODE_FILES) {
       _terminate_mode_files_();
     }
-   
+    _histories_.clear();
+
     _mode_ = MODE_DEFAULT;
     return 0;
   }
@@ -198,7 +198,7 @@ namespace snemo {
 	eventType = snrc::tracker_cell_status_change_event::unset_bit;
       } else {
 	DT_THROW(std::logic_error,
-		 "Invalid calorimeter staus change event type '" << eventTypeStr  << "'!");
+		 "Invalid tracker cell status change event type '" << eventTypeStr  << "'!");
       }
 
       std::string statusBitStr = std::get<std::string>(row[4]);
@@ -275,7 +275,6 @@ namespace snemo {
 
   void tracker_cell_status_service::_terminate_mode_files_()
   {
-    _histories_.clear();
     return;
   }
 
@@ -305,7 +304,7 @@ namespace snemo {
   tracker_cell_status_service::get_cell_history(const geomtools::geom_id & gid_) const
   {
     history_type::const_iterator found = _histories_.find(gid_);
-    DT_THROW_IF(found == _histories_.end(), std::logic_error, "No history for cell '" << gid_ << "'!");
+    DT_THROW_IF(found == _histories_.end(), std::logic_error, "No status history for cell '" << gid_ << "'!");
     return found->second;
   }
   
@@ -317,21 +316,21 @@ namespace snemo {
       // DT_THROW(std::logic_error, "Mode 'db' is not implemented yet!");
       history_type::const_iterator found = _histories_.find(gid_);
       if (found != _histories_.end()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Found history for cell " << gid_);
+        DT_LOG_DEBUG(get_logging_priority(), "Found status history for cell " << gid_);
 	if (datatools::logger::is_debug(get_logging_priority())) {
 	  found->second.print(std::cerr, "[debug] ");
 	}
         status = found->second.get_status(time_);
       } else {
-        // DT_LOG_DEBUG(get_logging_priority(), "No history for cell " << gid_);
+        // DT_LOG_DEBUG(get_logging_priority(), "No status history for cell " << gid_);
       }
     } else if (_mode_ == MODE_FILES) {
       history_type::const_iterator found = _histories_.find(gid_);
       if (found != _histories_.end()) {
-        DT_LOG_DEBUG(get_logging_priority(), "Found history for cell " << gid_);
+        DT_LOG_DEBUG(get_logging_priority(), "Found status history for cell " << gid_);
         status = found->second.get_status(time_);
       } else {
-        // DT_LOG_DEBUG(get_logging_priority(), "No history for cell " << gid_);
+        // DT_LOG_DEBUG(get_logging_priority(), "No status history for cell " << gid_);
       }
     }
     return status;
@@ -672,4 +671,4 @@ namespace snemo {
     return;
   }
   
-}  // namespace snemo
+} // namespace snemo
