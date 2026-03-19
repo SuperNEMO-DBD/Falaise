@@ -20,6 +20,7 @@ void test_init_services(datatools::service_manager & service_manager_,
 void test1();
 void test2();
 void test3();
+void test4();
 
 int main(int /* argc_ */, char** /* argv_ */)
 {
@@ -30,6 +31,7 @@ int main(int /* argc_ */, char** /* argv_ */)
     test1();
     test2();
     test3();
+    test4();
     std::clog << "The end." << std::endl;
   } catch (std::exception& x) {
     std::cerr << "error: " << x.what() << std::endl;
@@ -141,6 +143,45 @@ void test3()
   };
   ggPptServiceConfig.store("files.cell_maps", mapPaths);
   ggPptServiceConfig.store("files.map_format", "csv-1"); // default value for the supported format
+
+  snemo::tracker_cell_ppt_service ggPptService;
+  ggPptService.set_logging_priority(verbosity);
+  ggPptService.initialize(ggPptServiceConfig,
+			  const_cast<datatools::service_dict_type&>(serviceMgr.get_local_services()));
+  if (datatools::logger::is_debug(verbosity)) {
+    boost::property_tree::ptree printOpts;
+    printOpts.put("indent", "[debug] ");
+    ggPptService.print_tree(std::clog, printOpts);
+  }
+    
+  {
+    geomtools::geom_id ggGid(1203, 0, 0, 0, 0);
+    snt::time_point mapTime = snt::time_point(snt::date(2025, 4, 10),
+                                              snt::hours(19) + snt::minutes(0));
+    snemo::rc::tracker_cell_ppt_info ggPptInfo = ggPptService.get_cell_ppt_info(ggGid, mapTime);
+    std::cout << "@" << mapTime << " GG #" << ggGid << " {#" << snemo::datamodel::gg_num(ggGid) << '}'
+	      << " -> PPR info = " << ggPptInfo  << '\n';
+  }
+ 
+  ggPptService.reset();
+  return;
+}
+
+void test4()
+{
+  std::clog << "\nTest 4:\n";
+  datatools::logger::priority verbosity = datatools::logger::PRIO_FATAL;
+  // verbosity = datatools::logger::PRIO_DEBUG;
+  
+  datatools::service_manager serviceMgr;
+  test_init_services(serviceMgr, verbosity);
+  
+  namespace snrc = snemo::rc;
+  namespace snt = snemo::time;
+  datatools::properties ggPptServiceConfig;
+  std::string ggPptServiceConfigFile("@falaise:snemo/demonstrator/data/calibration/tracker/tracker_cell_ppt_service-mock.conf");
+  datatools::fetch_path_with_env(ggPptServiceConfigFile);
+  ggPptServiceConfig.read_configuration(ggPptServiceConfigFile);
 
   snemo::tracker_cell_ppt_service ggPptService;
   ggPptService.set_logging_priority(verbosity);
