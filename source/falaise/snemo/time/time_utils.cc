@@ -197,7 +197,7 @@ namespace snemo {
     time_period time_period_from_string(const std::string & repr_)
     {
       bool devel = false;
-      devel = true;
+      // devel = true;
       time_period tp = invalid_period();
       std::string repr = repr_;
       boost::trim(repr);

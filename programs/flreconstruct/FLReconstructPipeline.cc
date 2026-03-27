@@ -176,16 +176,16 @@ namespace FLReconstruct {
       std::size_t inputDataRecordCounter = 0;
       std::size_t processedDataRecordCounter = 0;
       std::size_t outputDataRecordCounter = 0;
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "firstEvent = " << flRecParameters_.firstEvent);
-      DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "numberOfEvents = " << flRecParameters_.numberOfEvents);
+      DT_LOG_DEBUG(flRecParameters_.logLevel, "firstEvent = " << flRecParameters_.firstEvent);
+      DT_LOG_DEBUG(flRecParameters_.logLevel, "numberOfEvents = " << flRecParameters_.numberOfEvents);
       while (true) {
-	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "==== entering event new loop ====");
-	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "inputDataRecordCounter     = " << inputDataRecordCounter);
- 	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "processedDataRecordCounter = " << processedDataRecordCounter);
- 	DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "outputDataRecordCounter    = " << outputDataRecordCounter);
+	DT_LOG_TRACE(flRecParameters_.logLevel, "==== entering event new loop ====");
+        DT_LOG_TRACE(flRecParameters_.logLevel, "inputDataRecordCounter     = " << inputDataRecordCounter);
+ 	DT_LOG_TRACE(flRecParameters_.logLevel, "processedDataRecordCounter = " << processedDataRecordCounter);
+ 	DT_LOG_TRACE(flRecParameters_.logLevel, "outputDataRecordCounter    = " << outputDataRecordCounter);
 	// Prepare and read work
         if (recInput->is_terminated()) {
-          DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "Input module is terminated");
+          DT_LOG_DEBUG(flRecParameters_.logLevel, "Input module is terminated");
           break;
         }
         workItem.clear();
@@ -201,7 +201,7 @@ namespace FLReconstruct {
         //   }
         // }
 	if (inputDataRecordCounter <= flRecParameters_.firstEvent) {
-	  DT_LOG_DEBUG(datatools::logger::PRIO_DEBUG, "skip event #" << (inputDataRecordCounter - 1));
+	  DT_LOG_DEBUG(flRecParameters_.logLevel, "skip event #" << (inputDataRecordCounter - 1));
 	  continue;
 	}
 	bool doSaveDataRecord = true;

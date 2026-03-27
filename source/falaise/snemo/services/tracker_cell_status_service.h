@@ -125,4 +125,4 @@ namespace snemo {
 
 } // namespace snemo
 
-#endif  // SNEMO_TRACKER_CELL_STATUS_SERVICE_H
+#endif // SNEMO_TRACKER_CELL_STATUS_SERVICE_H

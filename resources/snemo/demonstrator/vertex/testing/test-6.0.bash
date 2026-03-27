@@ -2,6 +2,7 @@
 
 # vertexGenerator="calo_curtain_bulk"
 # vertexGenerator="calo_curtain_surface_front"
+vertexGenerator="real_snrs1_source_full_foils_surface"
 
 if [ "x$1" != "x" ]; then
     vertexGenerator="$1"
@@ -452,14 +453,14 @@ bxgenvtx_production \
     --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
     --shoot \
     --vertex-generator "${vertexGenerator}" \
-    --number-of-vertices 100000 \
+    --number-of-vertices 1000000 \
     --prng-seed 314159 \
-    --vertex-modulo 1000 \
+    --vertex-modulo 10000 \
     --output-file "vertexes.data" \
     --visu \
     --visu-spot-size "0.05 mm" \
     --visu-spot-color "vertexColor" \
-    --visu-max-counts 100000 \
+    --visu-max-counts 1000000 \
     --visu-view "yz" \
     --visu-object "[1000:0]" \
     --visu-output \
