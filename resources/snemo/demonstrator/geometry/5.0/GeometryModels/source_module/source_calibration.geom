@@ -20,7 +20,7 @@
     r : real as length = 1.0 mm
     z : real as length = 1.0 um
   material.ref : string = "basic::mylar"
-  visibility.color : string  = "red"
+  visibility.color : string  = "magenta"
 
 
 ############################################################################
@@ -84,7 +84,7 @@
   x_hole : real as length = 13.0 mm
   y_hole : real as length =  8.0 mm
   material.ref : string  = "basic::copper"
-  visibility.color : string  = "blue"
+  visibility.color : string  = "red"
 
 
 ############################################################################
@@ -120,6 +120,8 @@
   z : real as length = 4.1 mm
   material.ref : string = "tracking_gas"
   visibility.color : string  = "grey"
+  mapping.daughter_id.envelope : string = "[source_calibration_envelope]"
+  mapping.daughter_id.frame    : string = "[source_calibration_frame]"
 
 # Total of 6 source_calibration_track_[0..5].model with this geometry:
 ####################################################################################

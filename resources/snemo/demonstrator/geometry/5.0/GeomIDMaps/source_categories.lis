@@ -50,10 +50,18 @@
 [category="source_calibration_carrier" type="1110"]
   extends : string    = "source_calibration_track"
   by      : string[1] = "position"
-  # To generate GIDs like [1103:0.0.0]... [1103:0.0.5] ... [1103:0.5.5]
+  # To generate GIDs like [1110:0.0.0]... [1110:0.0.5] ... [1110:0.5.5]
+
+[category="source_calibration_envelope" type="1111"]
+  inherits : string    = "source_calibration_carrier"
+  # To generate GIDs like [1111:0.0.0]... [1111:0.0.5] ... [1111:0.5.5]
 
 [category="source_calibration_spot" type="1112"]
-  inherits : string   = "source_calibration_carrier"
+  inherits : string   = "source_calibration_envelope"
   # To generate GIDs like [1112:0.0.0]...
+
+[category="source_calibration_frame" type="1066"]
+  inherits : string    = "source_calibration_carrier"
+  # To generate GIDs like [1113:0.0.0]... [1113:0.0.5] ... [1113:0.5.5]
 
 # end

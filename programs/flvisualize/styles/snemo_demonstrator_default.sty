@@ -21,7 +21,7 @@ color_palette : string[7] = "#FF4136" "#0074D9" "#2ECC40" "#FFDC00" "#FF851B" \
 [name="geometry_settings"]
 
 #@description List of volumes to take care
-volume_category_list : string[9] = "module"            \
+volume_category_list : string[12] = "module"            \
                                    "calorimeter_block" \
                                    "calorimeter_pmt"   \
                                    "xcalo_block"       \
@@ -29,6 +29,9 @@ volume_category_list : string[9] = "module"            \
                                    "drift_cell_core"   \
                                    "source_pad"        \
                                    "source_pad_bulk" \
+                                   "source_calibration_spot" \
+                                   "source_calibration_envelope" \
+                                   "source_calibration_frame" \
                                    "source_calibration_carrier"
 
 #@description Volume visibility (visible/invisible/disable)
@@ -40,7 +43,10 @@ gveto_block.visibility              : string = "invisible"
 drift_cell_core.visibility          : string = "invisible"
 source_pad.visibility               : string = "visible"
 source_pad_bulk.visibility          : string = "visible"
-source_calibration_carrier.visibility : string = "invisible"
+source_calibration_carrier.visibility  : string = "invisible"
+source_calibration_envelope.visibility : string = "visible"
+source_calibration_spot.visibility     : string = "visible"
+source_calibration_frame.visibility    : string = "visible"
 
 #@description Volume color
 module.color            : string = "#FF0000"
@@ -53,7 +59,10 @@ drift_cell_core.color   : string = "#222222"
 # source_pad_bulk.color   : string = "#65513E"
 source_pad.color        : string = "#9872b9"
 source_pad_bulk.color   : string = "#9872b9"
-source_calibration_carrier.color : string = "#11AA11"
+source_calibration_carrier.color  : string = "#e0ffff"
+source_calibration_envelope.color : string = "#d3d3d3"
+source_calibration_spot.color     : string = "#ff00ff"
+source_calibration_frame.color    : string = "#b87333"
 
 #########################################################
 
