@@ -289,5 +289,16 @@ set_tests_properties(flsimulate-feature-aegir
    PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
 set_falaise_test_environment(flsimulate-feature-aegir)
 
+# 2026-04-02 FM: add-on
+# - Test of feature bi207SD
+add_test(NAME flsimulate-feature-bi207SD
+  COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/feature-bi207SD/run.sh
+  --work-dir "${CMAKE_CURRENT_BINARY_DIR}"
+  --cfg-dir "${CMAKE_CURRENT_SOURCE_DIR}/feature-bi207SD"
+  )
+set_tests_properties(flsimulate-feature-bi207SD
+   PROPERTIES ENVIRONMENT "PATH=${PROJECT_BUILD_BINDIR}:$ENV{PATH}")
+set_falaise_test_environment(flsimulate-feature-bi207SD)
+
 
 # - end
