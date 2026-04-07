@@ -247,6 +247,7 @@ namespace snemo {
 	    _calorimeter_hit_renderer_.push_simulated_hits("calo");
 	    _calorimeter_hit_renderer_.push_simulated_hits("gveto");
 	    _calorimeter_hit_renderer_.push_simulated_hits("xcalo");
+	    _calorimeter_hit_renderer_.push_simulated_hits("bi207_calib_source");
 	  }
 	}
 	if (options_mgr.get_option_flag(SHOW_MC_TRACKER_HITS)) {
