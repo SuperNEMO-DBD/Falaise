@@ -213,7 +213,7 @@ namespace snemo {
 	eventType = snrc::calorimeter_om_status_change_event::unset_bit;
       } else {
 	DT_THROW(std::logic_error,
-		 "Invalid calorimeter staus change event type '" << eventTypeStr  << "'!");
+		 "Invalid calorimeter status change event type '" << eventTypeStr  << "'!");
       }
 
       std::string statusBitStr = std::get<std::string>(row[4]);
