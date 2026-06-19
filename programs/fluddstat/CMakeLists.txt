@@ -29,6 +29,8 @@ find_package(Boost 1.60 REQUIRED program_options)
 #
 add_executable(fluddstat
   fluddstatmain.cxx
+  FlUddChannelMonitoring.hh
+  FlUddChannelMonitoring.cc
   FlUddScan.hh
   FlUddScan.cc
   FlUddStat.hh

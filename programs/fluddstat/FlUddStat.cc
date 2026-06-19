@@ -12,6 +12,7 @@
 #include "bayeux/dpp/input_module.h"
 #include "bayeux/datatools/event_id.h"
 #include "bayeux/datatools/clhep_units.h"
+#include "bayeux/datatools/utils.h"
 
 // This Project
 #include <falaise/snemo/datamodels/calorimeter_digitized_hit.h>
@@ -22,6 +23,7 @@
 #include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/rc/run_description.h>
 #include "FlUddScan.hh"
+#include "FlUddChannelMonitoring.hh"
 
 namespace FLUddStat {
 
@@ -30,6 +32,7 @@ namespace FLUddStat {
   FLUddStatApp::FLUddStatApp(const FLUddStatConfig & config_)
     : _config_(config_)
   {
+    datatools::fetch_path_with_env(_config_.outputDirPath);
     return;
   }
 
@@ -43,16 +46,18 @@ namespace FLUddStat {
     datatools::multi_properties inMetadataStore = inputMod->get_metadata_store();
     inputMod->initialize_simple();
 
-    std::string outputStatFilePath(_config_.outputStatFilePath);
-    datatools::fetch_path_with_env(outputStatFilePath);
-    std::ofstream outputStatFile(outputStatFilePath);
-
+    datatools::properties channelMonConfig;
+    channelMonConfig.store("verbosity", (int) _config_.verbosity);
+    channelMonConfig.store("out_dir_path", _config_.outputDirPath);
+    FlUddChannelMonitoring channelMon;
+    channelMon.initialize(channelMonConfig);
+    
     int runID = snemo::rc::run_description::INVALID_RUN_ID;
     std::optional<bool> realEvent;
     std::optional<snemo::datamodel::timestamp> startTimestamp;
     std::optional<snemo::datamodel::timestamp> stopTimestamp;
     snemo::datamodel::timestamp previousTimestamp;
-    int eventCounter = 0;
+    std::uint32_t eventCounter = 0u;
     std::ofstream outputDt("dt.data");
     while (not inputMod->is_terminated()) {
       FLUddScanner scanner;
@@ -60,6 +65,7 @@ namespace FLUddStat {
       datatools::things event;
       inputMod->process(event);
       scanner.process(event);
+      channelMon.process(event);
       // event.tree_dump(std::clog, "Event", "[debug] ");
       DT_THROW_IF(not event.has("EH"), std::logic_error, "Missing event header");
       const snemo::datamodel::event_header & EH
@@ -82,8 +88,7 @@ namespace FLUddStat {
 	int64_t t1_us = previousTimestamp.get_picoseconds() / PICOTOMICRO;
 	int64_t t2_us = stopTimestamp->get_picoseconds() / PICOTOMICRO;
 	double dt = (t2_s - t1_s) * CLHEP::second
-	  + (t2_us - t1_us) * CLHEP::microsecond
-	; 
+	  + (t2_us - t1_us) * CLHEP::microsecond; 
 	// std::clog << "[log] dt=" << dt / CLHEP::second  << '\n';
 	outputDt << dt / CLHEP::second  << '\n';
       }
@@ -91,6 +96,9 @@ namespace FLUddStat {
       if (eventCounter > 0) {
 	previousTimestamp = ts;
       }
+      if (_config_.maxNbEvents > 0 and eventCounter >= _config_.maxNbEvents) {
+	break;
+      } 
       event.clear();
     }
     outputDt.close();
@@ -114,11 +122,19 @@ namespace FLUddStat {
     std::clog << "[log] elapsed=" << elapsed / CLHEP::second << " s" << '\n';
     auto runStartTimePoint = snemo::time::time_point_from_epoch_sec(elapsed);
     auto runDuration = snemo::time::time_duration_from_sec(runDuration_s * CLHEP::second); 
+    channelMon.terminate();
+
+    std::filesystem::path outputDirPath = _config_.outputDirPath;
+    std::filesystem::path outputStatFilePath = outputDirPath / "udd.stat";
+    std::string outputStatFilePathS(outputStatFilePath.string());
+    datatools::fetch_path_with_env(outputStatFilePathS);
+    std::ofstream outputStatFile(outputStatFilePathS);
     outputStatFile << "run_id=" << runID << '\n';
     outputStatFile << "run_start=" << snemo::time::to_string(runStartTimePoint) << '\n';
     outputStatFile << "run_duration=" << snemo::time::to_string(runDuration) << '\n';
     outputStatFile << "nb_events=" << eventCounter << '\n';
     outputStatFile.close();
+
     
     return EXIT_SUCCESS;
   }
