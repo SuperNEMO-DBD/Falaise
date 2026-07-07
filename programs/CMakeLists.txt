@@ -1,11 +1,16 @@
 #-----------------------------------------------------------------------
 # Apps
+add_subdirectory(flhistogram) 
 add_subdirectory(flsimulate)
 add_subdirectory(flreconstruct)
 add_subdirectory(flpcd2cpcd)
 add_subdirectory(fltags)
 add_subdirectory(fluddstat) 
 add_subdirectory(flgeomap) 
+### 2026-06-19 FM: WIP
+# add_subdirectory(flompreparedb) 
+
+### 2026-06-19 FM: stalled
 # add_subdirectory(flscangeom) 
 
 # - To allow modules to be developed independently, point

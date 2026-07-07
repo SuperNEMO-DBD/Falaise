@@ -31,9 +31,9 @@ namespace snemo {
 
     enum struct calibrator_type {
       undefined,
-      scaled_amplitude,    ///< ID = "scaled_amp"
-      charge_polynomial_1, ///< ID = "charge_pol1"
-      charge_polynomial_2  ///< ID = "charge_pol2"
+      scaled_amplitude,    ///< ID = "scamp"
+      charge_polynomial_1, ///< ID = "pol1"
+      charge_polynomial_2  ///< ID = "pol2"
     };
 
     enum struct data_access_mode {
@@ -56,18 +56,38 @@ namespace snemo {
     int reset() override;
 
     bool use_fallback_calibrator() const;
+   
+    // const snemo::processing::calo_energy_calibrator &
+    // get_calibrator(const time::time_point & time_point_,
+    // 		   const geomtools::geom_id & om_gid_) const;
     
-    const snemo::processing::calo_energy_calibrator &
-    get_calibrator(const time::time_point & time_point_,
-		   const int om_num_) const;
-
+    // const snemo::processing::calo_energy_calibrator &
+    // get_calibrator(const time::time_point & time_point_,
+    // 		   const int om_num_) const;
+   
+    snemo::processing::CaloEnergyCalibratorHdl 
+    get_calibrator_handle(const time::time_point & time_point_,
+			  const geomtools::geom_id & om_gid_) const;
+     
+    snemo::processing::CaloEnergyCalibratorHdl 
+    get_calibrator_handle(const time::time_point & time_point_,
+			  const int om_num_) const;
+ 
     /// Smart print
     void print_tree(std::ostream & out_ = std::clog,
                     const boost::property_tree::ptree & options_ = empty_options()) const override;
-    
+
+    typedef std::map<geomtools::geom_id, snemo::processing::om_energy_calibration_history> history_map_type;
+     
+    bool has_om_history(const geomtools::geom_id & gid_) const;
+   
+    const history_map_type & get_histories() const;
+   
   private:
 
-    void _prepare_from_database_();
+    void _init_mode_db_(const datatools::properties &);
+
+    void _terminate_mode_db_();
 
     void _prepare_from_files_();
 
@@ -77,12 +97,23 @@ namespace snemo {
     
   private:
 
-    bool _initialized_ = false; ///< Initializaion flag
-    calibrator_type _calibrator_type_ = calibrator_type::undefined;
-    data_access_mode _data_access_ = data_access_mode::undefined;
+    bool _initialized_ = false; ///< Initialization flag
+    data_access_mode _data_access_ = data_access_mode::undefined; ///< Data access mode
+
+    // Database mode:
+    std::string _db_label_;
+    const snemo::db_service * _db_service_ = nullptr;
+    history_map_type _histories_;
+
+    // Files mode:
     std::string _files_data_path_;
+    calibrator_type _calibrator_type_ = calibrator_type::undefined;
+    
     bool _use_fallback_calibrator_ = false;
     double _fallback_scale_ = 5.0 * CLHEP::MeV / CLHEP::volt;
+    double _fallback_scale_err_ = 0.5 * CLHEP::MeV / CLHEP::volt;
+    processing::CaloEnergyCalibratorHdl _fallback_calibrator_handle_;
+
     std::string _run_info_label_;
     rc::run_id_type _max_run_id_ = 20000;
     rc::run_phase_id_type _max_phase_id_ = 100;
@@ -90,8 +121,7 @@ namespace snemo {
     std::set<rc::run_id_type> _runs_with_run_based_map_; ///< List of run IDs with individual energy calibration data
     std::set<rc::run_phase_id_type> _phases_with_map_; ///< List of phase IDs with energy calibration data
     std::shared_ptr<processing::calo_energy_calibration_map> _current_calib_map_handle_;
-    // There is room here for cached calibration maps from previous runs and/or phases
-    
+
     DATATOOLS_SERVICE_REGISTRATION_INTERFACE(calo_energy_calibration_service)
       
   };

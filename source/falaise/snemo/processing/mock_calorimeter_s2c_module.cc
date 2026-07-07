@@ -4,7 +4,6 @@
 
 // Ourselves:
 #include "mock_calorimeter_s2c_module.h"
-#include "mock_calorimeter_s2c_module_utils.h"
 
 // Standard library:
 #include <sstream>
@@ -26,6 +25,7 @@
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/services/services.h>
 #include <falaise/snemo/rc/calorimeter_om_status.h>
+#include <falaise/snemo/processing/birks_cerenkov_effect.h>
 
 namespace snemo {
 
@@ -85,9 +85,10 @@ namespace snemo {
       caloModels = {};
 
       // 2022-06-13 FM : use default paths for regime and fit DB files
+      // 2026-06-08 FM : change the default path for regime files
 
       // Initialize the calorimeter regime utility from the database
-      std::string calorimeter_regime_database_path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v0.db";
+      std::string calorimeter_regime_database_path = "@falaise:snemo/demonstrator/reconstruction/db/calorimeter_regime_database_v2.db";
       if (ps.has_key("calorimeter_regime_database_path")) {
 	calorimeter_regime_database_path = ps.fetch_string("calorimeter_regime_database_path");
       }
@@ -100,7 +101,7 @@ namespace snemo {
 	pol3d_parameters_mwall_8inch_path = ps.fetch_string("pol3d_parameters_mwall_8inch_path");
       }
       datatools::fetch_path_with_env(pol3d_parameters_mwall_8inch_path);
-      _uniformity_correction_parameters_mwall_8inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_8inch_path);
+      _calo_uniformity_correction_.parameters_mwall_8inch = this->parse_pol3d_parameters(pol3d_parameters_mwall_8inch_path);
 
       // Initialize the pol3d parameters for MWall 5"
       std::string pol3d_parameters_mwall_5inch_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_MW_5inch.db";
@@ -108,7 +109,7 @@ namespace snemo {
 	pol3d_parameters_mwall_5inch_path = ps.fetch_string("pol3d_parameters_mwall_5inch_path");
       }
       datatools::fetch_path_with_env(pol3d_parameters_mwall_5inch_path);
-      _uniformity_correction_parameters_mwall_5inch_ = this->parse_pol3d_parameters(pol3d_parameters_mwall_5inch_path);
+      _calo_uniformity_correction_.parameters_mwall_5inch = this->parse_pol3d_parameters(pol3d_parameters_mwall_5inch_path);
 
       // Initialize the pol3d parameters for XWall
       std::string pol3d_parameters_xwall_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_XW.db";
@@ -116,7 +117,7 @@ namespace snemo {
 	pol3d_parameters_xwall_path = ps.fetch_string("pol3d_parameters_xwall_path");
       }
       datatools::fetch_path_with_env(pol3d_parameters_xwall_path);
-      _uniformity_correction_parameters_xwall_ = this->parse_pol3d_parameters(pol3d_parameters_xwall_path);
+      _calo_uniformity_correction_.parameters_xwall = this->parse_pol3d_parameters(pol3d_parameters_xwall_path);
 
       // Initialize the pol3d parameters for GVeto
       std::string pol3d_parameters_gveto_path = "@falaise:snemo/demonstrator/reconstruction/db/fit_parameters_10D_GV.db";
@@ -124,7 +125,7 @@ namespace snemo {
 	pol3d_parameters_gveto_path = ps.fetch_string("pol3d_parameters_gveto_path");
       }
       datatools::fetch_path_with_env(pol3d_parameters_gveto_path);
-      _uniformity_correction_parameters_gveto_ = this->parse_pol3d_parameters(pol3d_parameters_gveto_path);
+      _calo_uniformity_correction_.parameters_gveto = this->parse_pol3d_parameters(pol3d_parameters_gveto_path);
 
       // Setup trigger time
       timeWindow = fps.get<falaise::time_t>("cluster_time_width", {100., "ns"})();
@@ -171,7 +172,7 @@ namespace snemo {
 
       while ( std::getline(database_file_, a_line_) ) {
 
-	std::stringstream a_stream (a_line_);
+	std::stringstream a_stream(a_line_);
 
 	// Retrieve each field separated by "\t"
 	std::string a_field_;
@@ -185,16 +186,18 @@ namespace snemo {
 	// database_file_ >> a_geomid_string_;
 	DT_LOG_DEBUG(get_logging_priority(), "read '" << a_geomid_string_ << "'");
 
-	std::istringstream a_geomid_iss (a_geomid_string_);
-	geomtools::geom_id a_geomid_;
-	a_geomid_iss >> a_geomid_;
+	std::istringstream a_geomid_iss(a_geomid_string_);
+	geomtools::geom_id a_geomid;
+	a_geomid_iss >> a_geomid;
 
 	// Make sure geom_id is syntaxically valid
-	DT_THROW_IF(!a_geomid_.is_valid(), std::logic_error, "geom_id syntax of '" << a_geomid_iss.str() << "' is not valid !");
+	DT_THROW_IF(!a_geomid.is_valid(), std::logic_error, "geom_id syntax of '" << a_geomid_iss.str() << "' is not valid !");
 
-	// main wall geom_id need an additional depth '*'
-	if (a_geomid_.get_type() == 1302)
-	  a_geomid_.set_any(a_geomid_.get_depth());
+	static const int mainWallScinBlockCategory = 1302;
+	// main wall geom_id needs an additional depth '*'
+	if (a_geomid.get_type() == mainWallScinBlockCategory) {
+	  a_geomid.set_any(a_geomid.get_depth());
+	}
 
 	// field1: energy resolution
 	falaise::fraction_t a_fwhm_value_ {datatools::units::get_value_with_unit(stream_fields_[1])/CLHEP::perCent, "%"};
@@ -224,7 +227,7 @@ namespace snemo {
 
 	// create and store this regim in the model map
 	CalorimeterModel a_calorimeter_regime_ (a_calorimeter_regime_ps);
-	caloModels[a_geomid_] = a_calorimeter_regime_;
+	caloModels[a_geomid] = a_calorimeter_regime_;
 
 	nb_lines++;
       }
@@ -333,81 +336,47 @@ namespace snemo {
 	  double birksCerenkovCorrectionFactor = 1.0;
 
 	  // handle only e- (e- and gamma's Compton) and e+
-	  if ((a_calo_mc_hit->get_particle_name() == "e-") || (a_calo_mc_hit->get_particle_name() == "e+"))
-	    {
-	      // currently hard coded correction ... -> to switch into parameters in conf file
-	      birksCerenkovCorrectionFactor =  1.001960 * (1.08996 - (1.561100 / std::pow(energyDeposit/CLHEP::keV, 0.41)));
-
-	      // correction is negative bellow 2.5 keV ...
-	      if (birksCerenkovCorrectionFactor < 0) birksCerenkovCorrectionFactor = 0;
-	    }
+	  if ((a_calo_mc_hit->get_particle_name() == "e-") || (a_calo_mc_hit->get_particle_name() == "e+")) {
+	    birksCerenkovCorrectionFactor = BirksCerenkovEffect::electron_correction_factor(energyDeposit);
+	  }
 
 	  // Compute uniformity correction factor
 	  double uniformityCorrectionFactor = 1.0;
 
 	  // retrieve energy deposit position and compute average one
-	  geomtools::vector_3d  _position_start_ = a_calo_mc_hit->get_position_start();
-	  geomtools::vector_3d  _position_stop_  = a_calo_mc_hit->get_position_stop();
-	  geomtools::vector_3d  _position_mean_ = 0.5 * (_position_start_ + _position_stop_);
+	  geomtools::vector_3d positionStart = a_calo_mc_hit->get_position_start();
+	  geomtools::vector_3d positionStop  = a_calo_mc_hit->get_position_stop();
+	  geomtools::vector_3d positionMean = 0.5 * (positionStart + positionStop);
 
 	  // In case of main wall block, we want to retrieve the ID of the
-	  // front scintillator (part with step) with [AAAA:B:C:D:E:1]
-	  geomtools::geom_id a_scin_gid = a_calo_mc_hit->get_geom_id();
-	  if (a_scin_gid.get_type() == 1302) a_scin_gid.set(4, 1);
+	  // front scintillator (part with step) with [1302:module.side.column.row.part]
+	  // because its local reference frame is used to compute the uniformity correction factor
+	  // form a 3D mapping fit.
+	  static const int mainWallScinBlockCategory = 1302;
+	  geomtools::geom_id scinGid = a_calo_mc_hit->get_geom_id();
+	  if (scinGid.get_type() == mainWallScinBlockCategory) scinGid.set(4, 1); // force address with part=1
 
 	  const geomtools::mapping   & mapping = geoManager->get_mapping();
-	  const geomtools::geom_info & a_block_ginfo  = mapping.get_geom_info (a_scin_gid);
+	  const geomtools::geom_info & a_block_ginfo  = mapping.get_geom_info(scinGid);
 	  const geomtools::placement & a_block_world_placement = a_block_ginfo.get_world_placement();
 
 	  // translate mean position of energy deposit in scintillator frame
-	  geomtools::placement _position_mean_block_;
-	  a_block_world_placement.relocate(_position_mean_, _position_mean_block_);
+	  geomtools::placement positionMeanBlock;
+	  a_block_world_placement.relocate(positionMean, positionMeanBlock);
+	  geomtools::vector_3d scinPosVector = positionMeanBlock.get_translation();
 
-	  geomtools::vector_3d _vector_sc_ = _position_mean_block_.get_translation();
+	  uniformityCorrectionFactor = _calo_uniformity_correction_.correction_factor(scinGid, scinPosVector); 
 
-	  const double _position_x =  (_vector_sc_.x());
-	  const double _position_y =  (_vector_sc_.y());
-	  const double _position_z = -(_vector_sc_.z());
-
-	  double _position_xyz[3] = {_position_y, -_position_x, _position_z};
-
-	  // Retrieve uniformity correction
-	  switch (a_scin_gid.get_type()) {
-
-	  case 1302: // M-wall
-	    _position_xyz[2] += 15.50000001; // add half height of scintillator
-	    if (std::abs(_position_z) < 1500.)
-	      uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_8inch_[0]);
-	    else
-	      uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_mwall_5inch_[0]);
-	    break;
-
-	  case 1232: // X-wall
-	    _position_xyz[2] += 75.10000001; // add half height of scintillator
-	    uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_xwall_[0]);
-	    break;
-
-	  case 1252: // V-wall
-	    _position_xyz[2] += 75.10000001;
-	    uniformityCorrectionFactor = snemo::processing::pol3d(_position_xyz, &_uniformity_correction_parameters_gveto_[0]);
-	    break;
-
-	  default:
-	    DT_THROW(std::logic_error, "unexpected geom ID type for calorimeter [" << a_scin_gid.get_type() << "]");
-	  }
-
-
-	  DT_LOG_DEBUG(get_logging_priority(), "step_hit of " << energyDeposit/CLHEP::MeV << " MeV in " << a_scin_gid
-		       << " @ (" << _position_xyz[0] << "," << _position_xyz[1] << "," << _position_xyz[2] << ") with"
+	  DT_LOG_DEBUG(get_logging_priority(), "step_hit of " << energyDeposit/CLHEP::MeV << " MeV in " << scinGid
+		       << " @ " << scinPosVector << " with"
 		       << " u = " << uniformityCorrectionFactor << " and bc = " << birksCerenkovCorrectionFactor);
-
 
 	  // Get the step hit time start:
 	  const double step_hit_time_start = a_calo_mc_hit->get_time_start();
 
 	  using CCHitHdl = snemo::datamodel::CalorimeterHitHdlCollection::value_type;
 
-	  auto found = std::find_if(calohits.rbegin(), calohits.rend(), [&geomID](CCHitHdl const& x) {
+	  auto found = std::find_if(calohits.rbegin(), calohits.rend(), [&geomID](CCHitHdl const & x) {
 	    return x->get_geom_id() == geomID;
 	  });
 
@@ -449,7 +418,7 @@ namespace snemo {
 	    auto& existingHit = *found;
 
 	    // Grab auxiliaries :
-	    datatools::properties& existingHitProperties = existingHit->grab_auxiliaries();
+	    datatools::properties & existingHitProperties = existingHit->grab_auxiliaries();
 
 	    // 2012-07-26 FM : support reference to the MC true hit ID
 	    if (assocMCHitId) {
@@ -511,11 +480,11 @@ namespace snemo {
     // Calibrate calorimeter hits from digitization informations:
     void mock_calorimeter_s2c_module::calibrateHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits)
     {
-      for (auto& theCaloHit : calohits) {
+      for (auto & theCaloHit : calohits) {
 	// Setting category in order to get the correct energy resolution:
 	// first recover the calorimeter category
-	const geomtools::geom_id& geomID = theCaloHit->get_geom_id();
-	const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
+	const geomtools::geom_id & geomID = theCaloHit->get_geom_id();
+	const CalorimeterModel & the_calo_regime = this->get_calorimeter_regime(geomID);
 
 	// Compute a random 'experimental' energy taking into account
 	// the expected energy resolution of the calorimeter hit:
@@ -575,15 +544,14 @@ namespace snemo {
       return;
     }
 
-    // Select calorimeter hit following trigger conditions
-    void mock_calorimeter_s2c_module::triggerHits(
-						  snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
+    // Select calorimeter hits following trigger conditions
+    void mock_calorimeter_s2c_module::triggerHits(snemo::datamodel::CalorimeterHitHdlCollection& calohits) {
       bool high_threshold = false;
-      for (auto& theCaloHit : calohits) {
+      for (auto & theCaloHit : calohits) {
 	// Setting category in order to get the correct trigger parameters:
 	// first recover the calorimeter category
-	const geomtools::geom_id& geomID = theCaloHit->get_geom_id();
-	const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
+	const geomtools::geom_id & geomID = theCaloHit->get_geom_id();
+	const CalorimeterModel & the_calo_regime = this->get_calorimeter_regime(geomID);
 	const double energy = theCaloHit->get_energy();
 	if (the_calo_regime.aboveHighThreshold(energy)) {
 	  high_threshold = true;
@@ -592,20 +560,23 @@ namespace snemo {
       }
 
       if (high_threshold) {
-	// Search and erase for low threshold hits:
-	// Awkward because we have to handle all hit categories together
+	// Search and erase for hits below low threshold:
 	for (auto iCheckedHit = calohits.begin(); iCheckedHit != calohits.end(); /**/) {
-	  const geomtools::geom_id& geomID = (*iCheckedHit)->get_geom_id();
-	  const CalorimeterModel& the_calo_regime =  this->get_calorimeter_regime(geomID);
+	  const geomtools::geom_id & geomID = (*iCheckedHit)->get_geom_id();
+	  const CalorimeterModel & the_calo_regime = this->get_calorimeter_regime(geomID);
 	  const double energy = (*iCheckedHit)->get_energy();
 	  // If energy hit is too low then remove calorimeter hit
-	  if (!the_calo_regime.aboveLowThreshold(energy)) {
+	  // Remark: in principle, any hit below the low threshold but
+	  // paired (twin SAMLONG channels) with a hit that pass the high
+	  // threshold is preserved in the raw data.
+	  if (not the_calo_regime.aboveLowThreshold(energy)) {
 	    iCheckedHit = calohits.erase(iCheckedHit);
 	  } else {
 	    ++iCheckedHit;
 	  }
 	}
       } else {
+	// Clear all hits if at least one HT hit was not identified:
 	calohits.clear();
       }
       return;
@@ -620,9 +591,9 @@ namespace snemo {
       return;
     }
 
-  }  // end of namespace processing
+  } // end of namespace processing
 
-}  // end of namespace snemo
+} // end of namespace snemo
 
 /********************************
  * OCD support : implementation *

@@ -4,29 +4,54 @@
 # vertexGenerator="calo_curtain_surface_front"
 vertexGenerator="real_snrs1_source_full_foils_surface"
 
+#vertexGenerator="real_snrs1_source_strip_3_pad_0_bulk_test"
+#vertexGenerator="real_snrs1_source_strip_3_pad_0_surface_back_test"
+ 
 if [ "x$1" != "x" ]; then
     vertexGenerator="$1"
     shift 1
 fi
+nb_vertexes=10000
+nb_vertexes_max_counts=10000
 
-vertexData="vertexes.data"
-
+nb_vertexes=10000
+nb_vertexes_max_counts=10000
+visuSpotSize="0.005 mm"
+visuSpotSize="0.020 mm"
+# visuSpotSize="1.0 mm"
 vertexColor="red"
 if [ "x$1" != "x" ]; then
     vertexColor="$1"
     shift 1
 fi
 
+vertexLabel=""
+
 if [ "x$1" != "x" ]; then
-    vertexDdData="$1"
+    vertexLabel="$1"
     shift 1
 else
-    vertexDdData="vertexes-dd.data"
+    vertexLabel="test"
+fi
+
+vertexData="vertexes-${vertexLabel}.data"
+vertexDdData="vertexes-dd-${vertexLabel}.data"
+vertexLog="gen_vertex_prod-${vertexLabel}.log"
+do_visu=1
+
+if [ "x$1" != "x" ]; then
+    if [ "$1" == "novisu" ]; then
+	do_visu=0
+    fi
 fi
 echo >&2 "[info] vertexGenerator = '${vertexGenerator}'"
 echo >&2 "[info] vertexColor = '${vertexColor}'"
+echo >&2 "[info] vertexData = '${vertexData}'"
 echo >&2 "[info] vertexDdData = '${vertexDdData}'"
-###exit 0
+
+### exit 0
+
+
 geometryVersion="6.0"
 geometryVariantVersion="4.0"
 vertexVersion="6.0"
@@ -53,7 +78,8 @@ if [ "x${vertexGenerator}" = "x" ]; then
 	vertexGenerator="real_flat_source_full_foils_surface"
     elif [ ${geomSourceLayout} = "RealisticSNRS1" ] ; then
 	vertexGenerator="real_snrs1_source_full_foils_surface"
-    else
+	vertexGenerator="real_snrs1_source_strip_3_pad_0_bulk"
+   else
 	vertexGenerator="free_spot"
     fi
 fi
@@ -77,14 +103,26 @@ vertexResourcesSubdir="snemo/demonstrator/vertex"
 geometryResourcesSubdir="snemo/demonstrator/geometry"
 
 falaiseBuildDir="${falaiseResourcesDir}/../_build.d/develop/BuildProducts"
-if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
-    echo >&2 "[info] Loading frc's special development stuff..."
-    falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
+
+libLabel="lib"
+libLabelAlt="lib64"
+if [ -d "/sps/nemo/sw/redhat-9-x86_64/snsw/var/BxWork/falaise-test/build.d/BuildProducts" ]; then
+    echo >&2 "[info] Loading special test development stuff at CC..."
+    falaiseBuildDir="/sps/nemo/sw/redhat-9-x86_64/snsw/var/BxWork/falaise-test/build.d/BuildProducts"
+    libLabel="lib64"
+    libLabelAlt="lib"
+else if [ -d "/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts" ]; then
+	 echo >&2 "[info] Loading frc's special development stuff..."
+	 falaiseBuildDir="/opt/SW/SuperNEMO-DBD/Falaise/_build-dev.d/BuildProducts"
+     fi
 fi
 if [ ! -d ${falaiseBuildDir} ]; then
     echo >&2 "[warning] Falaise build directory does not exist '${falaiseBuildDir}' ! Ask for user input..."
     read -p "Enter Falaise build directory: "
     falaiseBuildDir="${REPLY}"
+
+    # Example at CC: /sps/nemo/sw/redhat-9-x86_64/snsw/var/BxWork/falaise-5.1.13b-test/build.d/BuildProducts
+
 fi
 if [ ! -d ${falaiseBuildDir} ]; then
     echo >&2 "[error] Falaise build directory does not exist '${falaiseBuildDir}' !"
@@ -94,10 +132,14 @@ cd ${falaiseBuildDir}
 falaiseBuildDir="$(pwd)"
 cd ${origPwd}
 
-falaiseLibDir="${falaiseBuildDir}/lib"
+falaiseLibDir="${falaiseBuildDir}/${libLabel}"
 if [ ! -d ${falaiseLibDir} ]; then
-    echo >&2 "[error] Falaise lib directory does not exist '${falaiseLibDir}' !"
-    exit 1
+    echo >&2 "[warning] Falaise lib directory does not exist '${falaiseLibDir}' !"
+    falaiseLibDir="${falaiseBuildDir}/${libLabelAlt}"
+    if [ ! -d ${falaiseLibDir} ]; then
+	echo >&2 "[error] Falaise lib directory does not exist '${falaiseLibDir}' !"
+	exit 1
+    fi
 fi
 cd ${falaiseLibDir}
 falaiseLibDir="$(pwd)"
@@ -113,6 +155,10 @@ echo >&2 "[info] falaiseLibDir           = '${falaiseLibDir}'"
 # exit 0
 
 ###--variant-load="${vertexProfileLoad}" 
+
+if [ -f ${vertexProfile} ]; then
+    rm -f ${vertexProfile}
+fi
 
 cat<<EOF
 
@@ -147,19 +193,28 @@ Genvtx production
 
 EOF
 
-bxgenvtx_production \
-    --logging "debug" \
-    --load-dll "Falaise@${falaiseLibDir}" \
-    --datatools::logging "fatal" \
-    --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-    --variant-load "${vertexProfile}" \
-    --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
-    --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
-    --list \
-    > ${vertexGenList}
+function gen_vertex_list()
+{
+    bxgenvtx_production \
+	--logging "debug" \
+	--load-dll "Falaise@${falaiseLibDir}" \
+	--datatools::logging "fatal" \
+	--datatools::resource-path "falaise@${falaiseResourcesDir}" \
+	--variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+	--variant-load "${vertexProfile}" \
+	--geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
+	--vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
+	--list \
+	> ${vertexGenList} 2> "list-${vertexLog}"
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] Bayeux genvtx production failed !"
+	return 1
+    fi
+    return 0
+}
+gen_vertex_list
 if [ $? -ne 0 ]; then
-    echo >&2 "[error] Bayeux genvtx production failed !"
+    echo >&2 "[error] gen_vertex_list failed !"
     exit 1
 fi
 
@@ -169,6 +224,8 @@ echo >&2 "[info] Found vertex generators = ${nbVertexGenerators}"
 #     echo >&2 "[error] Unexpected number of vertex generators for version ${vertexVersion} !"
 #     exit 1
 # fi
+
+### exit 0
 
 function gen_vertex_list_rst()
 {
@@ -406,72 +463,91 @@ EOF
 
 # exit 0
 
-function prod()
-{
 #######################
-bxgenvtx_production \
-    --logging "fatal" \
-    --load-dll "Falaise@${falaiseLibDir}" \
-    --datatools::logging "fatal" \
-    --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-    --variant-load "${vertexProfile}" \
-    --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
-    --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
-    --shoot \
-    --vertex-generator "${vertexGenerator}" \
-    --number-of-vertices 100000 \
-    --prng-seed 314159 \
-    --vertex-modulo 1000 \
-    --output-file "${vertexData}" \
-    --visu \
-    --visu-spot-size "0.50 mm" \
-    --visu-spot-color "${vertexColor}" \
-    --visu-max-counts 100000 \
-    --visu-view "yz" \
-    --visu-object "[1000:0]" \
-    --visu-output \
-    --visu-output-file "${vertexDdData}" \    
-    > ${vertexGenList}
-if [ $? -ne 0 ]; then
-    echo >&2 "[error] Bayeux genvtx production failed !"
-    exit 1
-fi
+
+function gen_vertex_prod()
+{
+    
+    bxgenvtx_production \
+	--logging "fatal" \
+	--load-dll "Falaise@${falaiseLibDir}" \
+	--datatools::logging "fatal" \
+	--datatools::resource-path "falaise@${falaiseResourcesDir}" \
+	--variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+	--variant-load "${vertexProfile}" \
+	--geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
+	--vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
+	--shoot \
+	--vertex-generator "${vertexGenerator}" \
+	--number-of-vertices ${nb_vertexes} \
+	--prng-seed 314159 \
+	--vertex-modulo 1000 \
+	--output-file "${vertexData}" \
+	--visu \
+	--visu-spot-size "${visuSpotSize}" \
+	--visu-spot-color "${vertexColor}" \
+	--visu-max-counts  ${nb_vertexes_max_counts} \
+	--visu-view "yz" \
+	--visu-object "[1000:0]" \
+	--visu-output \
+	--visu-output-file "${vertexDdData}" \
+	> ${vertexGenList} 2> "${vertexLog}"
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] Bayeux genvtx production failed !"
+	return 1
+    fi
+    return 0
 }
 
+do_prod=0
+if [ ! -f ${vertexData} -o ! -f ${vertexDdData} ]; then
+    do_prod=1
+fi
+
+if [ ${do_prod} -eq 1 ]; then
+    gen_vertex_prod
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] prod failed !"
+	exit 1
+    fi
+fi
+
+### exit 0
+
+
+#######################
 function prod_visu()
 {
-#######################
-bxgenvtx_production \
-    --logging "fatal" \
-    --load-dll "Falaise@${falaiseLibDir}" \
-    --datatools::logging "fatal" \
-    --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-    --variant-load "${vertexProfile}" \
-    --geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
-    --vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
-    --shoot \
-    --vertex-generator "${vertexGenerator}" \
-    --number-of-vertices 1000000 \
-    --prng-seed 314159 \
-    --vertex-modulo 10000 \
-    --output-file "vertexes.data" \
-    --visu \
-    --visu-spot-size "0.05 mm" \
-    --visu-spot-color "vertexColor" \
-    --visu-max-counts 1000000 \
-    --visu-view "yz" \
-    --visu-object "[1000:0]" \
-    --visu-output \
-    --visu-output-file "${vertexDdData}" \    
+    bxgenvtx_production \
+	--logging "fatal" \
+	--load-dll "Falaise@${falaiseLibDir}" \
+	--datatools::logging "fatal" \
+	--datatools::resource-path "falaise@${falaiseResourcesDir}" \
+	--variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+	--variant-load "${vertexProfile}" \
+	--geometry-manager "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" \
+	--vertex-generator-manager "@falaise:${vertexResourcesSubdir}/${vertexVersion}/VertexGeneratorManager.conf" \
+	--shoot \
+	--vertex-generator "${vertexGenerator}" \
+	--number-of-vertices 1000000 \
+	--prng-seed 314159 \
+	--vertex-modulo 10000 \
+	--output-file "${vertexData}" \
+	--visu \
+	--visu-spot-size "0.025 mm" \
+	--visu-spot-color "${vertexColor}" \
+	--visu-max-counts 1000000 \
+	--visu-view "yz" \
+	--visu-object "[1000:0]" \
+	--visu-output \
+	--visu-output-file "${vertexDdData}" \    
     > ${vertexGenList}
-if [ $? -ne 0 ]; then
-    echo >&2 "[error] Bayeux genvtx production failed !"
-    exit 1
-fi
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] Bayeux genvtx production failed !"
+	return 1
+    fi
+    return 0
 }
-prod
 
 
 cat >&2 <<EOF
@@ -491,18 +567,30 @@ EOF
 # EOF
 # cat ${geomVtxScript}
 
-bxgeomtools_inspector \
-    --logging "fatal" \
-    --datatools::logging "fatal" \
-    --datatools::resource-path "falaise@${falaiseResourcesDir}" \
-    --load-dll "Falaise@${falaiseLibDir}" \
-    --interactive \
-    --variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
-    --variant-load "${vertexProfile}" \
-    --manager-config "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" 
-if [ $? -ne 0 ]; then
-    echo >&2 "[error] Bayeux geomtools inspector failed !"
-    exit 1
+function gen_vertex_visu()
+{
+    bxgeomtools_inspector \
+	--logging "fatal" \
+	--datatools::logging "fatal" \
+	--datatools::resource-path "falaise@${falaiseResourcesDir}" \
+	--load-dll "Falaise@${falaiseLibDir}" \
+	--interactive \
+	--variant-config "@falaise:${vertexResourcesSubdir}/variants/service/${vertexVariantVersion}/VertexGeneratorVariantRepository.conf" \
+	--variant-load "${vertexProfile}" \
+	--manager-config "@falaise:${geometryResourcesSubdir}/${geometryVersion}/GeometryManager.conf" 
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] Bayeux geomtools inspector failed !"
+	return 1
+    fi
+    return 0
+}
+
+if [ ${do_visu} -eq 1 ]; then
+    gen_vertex_visu
+    if [ $? -ne 0 ]; then
+	echo >&2 "[error] gen_vertex_visu failed !"
+	exit 1
+    fi
 fi
 
 # ls -l vertexes_on_foils.pdf

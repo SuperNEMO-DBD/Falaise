@@ -114,7 +114,13 @@ list(APPEND FalaiseLibrary_HEADERS
   snemo/processing/mock_calorimeter_s2c_module_utils.h
   snemo/processing/mock_tracker_s2c_module.h
   snemo/processing/calo_energy_calibration.h
+  snemo/processing/calo_energy_calibrator_scamp.h
+  snemo/processing/calo_energy_calibrator_pol1.h
+  snemo/processing/calo_energy_calibrator_pol2.h
   snemo/processing/event_time_locator.h
+  snemo/processing/calo_signal_baseline.h
+  snemo/processing/birks_cerenkov_effect.h
+  snemo/processing/calo_uniformity_correction_factor.h
 
   snemo/db/field_description.hpp
   snemo/db/table_description.hpp
@@ -246,7 +252,13 @@ list(APPEND FalaiseLibrary_SOURCES
   snemo/processing/detail/testing/event_generator.cc
   snemo/processing/detail/testing/event_display.cc
   snemo/processing/calo_energy_calibration.cc
+  snemo/processing/calo_energy_calibrator_scamp.cc
+  snemo/processing/calo_energy_calibrator_pol1.cc
+  snemo/processing/calo_energy_calibrator_pol2.cc
   snemo/processing/event_time_locator.cc
+  snemo/processing/calo_signal_baseline.cc
+  snemo/processing/birks_cerenkov_effect.cc
+  snemo/processing/calo_uniformity_correction_factor.cc
 
   # snemo/db/utils.cpp
   # snemo/db/calo_energy_calibration.cpp
@@ -377,6 +389,9 @@ list(APPEND FalaiseLibrary_TESTS
   snemo/processing/detail/testing/test_trackerpreclustering.cxx
 
   snemo/test/test_snemo_dummy_module.cxx
+
+  snemo/test/test_snemo_processing_calo_signal_baseline.cxx
+  snemo/test/test_snemo_processing_calo_uniformity.cxx
 
 )
 

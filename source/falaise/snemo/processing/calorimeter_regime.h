@@ -62,8 +62,8 @@ class CalorimeterModel {
   bool aboveLowThreshold(const double energy) const;
 
  private:
-  double highEnergyThreshold{150. * CLHEP::keV};  //!< High energy threshold
-  double lowEnergyThreshold{50. * CLHEP::keV};    //!< Low energy threshold
+  double highEnergyThreshold{20. * CLHEP::keV};  //!< High energy threshold
+  double lowEnergyThreshold{10. * CLHEP::keV};    //!< Low energy threshold
 
   double energyResolution{8. * CLHEP::perCent};  //!< Energy resolution for electrons at 1 MeV
   double alphaQuenching_0{77.4};                 //!< Parameter 0 for alpha quenching

@@ -579,6 +579,11 @@ real_flat_source_strip_34_pad_0_surface : Vertex generation from the surface of 
 # Vertex generation for the 'realistic SNRS1' source foil model #
 #################################################################
 
+# Special test config (2026-06-10 FM):
+real_snrs1_source_strip_itep_pad_bulk_test          : Vertex generation from the bulk of the SuperNEMO ITEP source strip X pad 0 : SourceFoilRealistic/SNRS1 : : rank=second     
+real_snrs1_source_strip_itep_pad_surface_back_test  : Vertex generation from both surface of the SuperNEMO source strip X pad 0  : SourceFoilRealistic/SNRS1 : : rank=second 
+real_snrs1_source_strip_itep_pad_surface_front_test : Vertex generation from both surface of the SuperNEMO source strip X pad 0  : SourceFoilRealistic/SNRS1 : : rank=second 
+
 real_snrs1_source_full_foils_mass_bulk   : Vertex generation from the bulk of all source pads (for mass contamination) : SourceFoilRealistic/SNRS1 : : rank=highlight 
 real_snrs1_source_full_foils_se82_bulk   : Vertex generation from the bulk of all Se82 pads (for Se82 DBD process) : SourceFoilRealistic/SNRS1 : if_source_of_se82_dbd : rank=highlight  
 real_snrs1_source_full_foils_surface     : Vertex generation from the surface of all source pads : SourceFoilRealistic/SNRS1 : : rank=highlight 

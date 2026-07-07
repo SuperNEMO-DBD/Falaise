@@ -331,6 +331,7 @@ namespace snemo {
       // }
 
       // retrieve EH data as mutable (for timestamp update)
+      // snemo::datamodel::event_header & ehData = event.grab<snemo::datamodel::event_header>("EH");
       _eh_data_ = &(event.grab<snemo::datamodel::event_header>("EH"));
       _event_id_ = _eh_data_->get_id();
       DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _event_id_);
