@@ -468,8 +468,9 @@ namespace snemo {
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
 
         // Baseline
-        double swmeas_baseline_sum=0, swmeas_baseline_sum2=0;
-        for (int sample=0; sample<_calo_baseline_nsamples_; sample++) {
+        double swmeas_baseline_sum  = 0.0;
+	double swmeas_baseline_sum2 = 0.0;
+        for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
           const int16_t & waveform_sample = a_udd_calo_waveform[sample];
           swmeas_baseline_sum += waveform_sample;
           swmeas_baseline_sum2 += waveform_sample*waveform_sample;

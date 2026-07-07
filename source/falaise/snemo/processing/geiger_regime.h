@@ -28,11 +28,12 @@
 #include <bayeux/mygsl/tabulated_function.h>
 
 namespace snemo {
-
   namespace processing {
 
     /// \brief Modelling of the Geiger regime of the SuperNEMO drift cell
-    class geiger_regime : public datatools::i_tree_dumpable {
+    class geiger_regime
+      : public datatools::i_tree_dumpable
+    {
     public:
       /// Default constructor
       geiger_regime();
@@ -129,8 +130,8 @@ namespace snemo {
       double tCut_;  //!< Cut on drift time (related, maybe identical, to threshold for delayed hits)
     };
 
-  }  // end of namespace processing
-}  // end of namespace snemo
+  } // end of namespace processing
+} // end of namespace snemo
 
 /***************************
  * OCD support : interface *

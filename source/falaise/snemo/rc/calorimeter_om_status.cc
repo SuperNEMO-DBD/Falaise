@@ -8,6 +8,8 @@
 // Ourselves:
 #include <falaise/snemo/rc/calorimeter_om_status.h>
 
+#include <bitset>
+
 // Boost;
 #include <boost/tokenizer.hpp>
 #include <boost/algorithm/string.hpp>
@@ -86,6 +88,12 @@ namespace snemo {
     {
       return status_bits_ & OM_BI_LI_UNCONSISTENCY_LONG;
     }
+    
+    // static
+    bool calorimeter_om_status::is_bad_ecalib_fit(const std::uint32_t status_bits_)
+    {
+      return status_bits_ & OM_BAD_ECALIB_FIT;
+    }
    
     // static
     bool calorimeter_om_status::is_other_issues(const std::uint32_t status_bits_)
@@ -142,6 +150,10 @@ namespace snemo {
         if (count++) reprss << '+';
         reprss << "bi_li_unconsistency_long";
       }
+      if (status_bits_ & OM_BAD_ECALIB_FIT) {
+        if (count++) reprss << '+';
+        reprss << "bad_ecalib_fit";
+      }
       if (status_bits_ & OM_OTHER_ISSUES) {
 	if (count++) reprss << '+';
         reprss << "other_issues";
@@ -177,6 +189,10 @@ namespace snemo {
 	} else if (tk == "other_issues") {
           DT_THROW_IF(status != OM_GOOD, std::logic_error, "Found incompatible calorimeter OM status labels in '" << status_repr_ << "'!");
           status |= OM_OTHER_ISSUES;
+	  bitCount++;
+	} else if (tk == "bad_ecalib_fit") {
+          DT_THROW_IF(status != OM_GOOD, std::logic_error, "Found incompatible calorimeter OM status labels in '" << status_repr_ << "'!");
+          status |= OM_BAD_ECALIB_FIT;
 	  bitCount++;
 	} else if (tk == "bi_li_unconsistency_long") {
           DT_THROW_IF(status != OM_GOOD, std::logic_error, "Found incompatible calorimeter OM status labels in '" << status_repr_ << "'!");
@@ -269,7 +285,7 @@ namespace snemo {
       _records_.clear();
       return;
     }
-
+	
     std::uint32_t calorimeter_om_status_history::get_status(const time::time_point & t_) const
     {
       std::uint32_t status = calorimeter_om_status::OM_GOOD;
@@ -380,6 +396,17 @@ namespace snemo {
       return _events_.size();
     }
  
+    void calorimeter_om_status_change_event_list::clear()
+    {
+      _events_.clear();
+      return;
+    }
+
+    bool calorimeter_om_status_change_event_list::empty() const
+    {
+      return _events_.size() == 0;
+    }
+
     const calorimeter_om_status_change_event &
     calorimeter_om_status_change_event_list::event(const int i_) const
     {
@@ -461,10 +488,48 @@ namespace snemo {
 						     snemo::time::time_point_pos_infinity()),
 			    currentStatus);
       }
-     
       return;
     }
-
+ 
+    void build_calorimeter_om_status_change_events_from_history(const calorimeter_om_status_history & status_history_,
+								calorimeter_om_status_change_event_list & event_list_)
+    {
+      auto eventCount = 0u;
+      event_list_.clear();
+      std::uint32_t lastStatus = calorimeter_om_status::OM_GOOD;
+      snemo::time::time_point lastTime = snemo::time::invalid_point();
+      for (const auto & record : status_history_.records()) {
+	std::bitset<16> lastStatusBits(lastStatus);
+	const snemo::time::time_period & newPeriod = record.period;
+	std::uint32_t newStatus = record.status;
+	std::bitset<16> newStatusBits(newStatus);
+	calorimeter_om_status_change_event::event_type eventPerBit[16];
+	for (auto iBit = 0u; iBit < newStatusBits.size(); iBit++) {
+	  bool theLastBit = lastStatusBits[iBit];
+	  bool theNewBit = newStatusBits[iBit];	  
+	  if (theNewBit == theLastBit) {
+	    eventPerBit[iBit] = calorimeter_om_status_change_event::no_change;
+	  } else if (theNewBit and not theLastBit) {
+	    eventPerBit[iBit] = calorimeter_om_status_change_event::set_bit;
+	  } else if (not theNewBit and theLastBit) {
+	    eventPerBit[iBit] = calorimeter_om_status_change_event::unset_bit;
+	  }
+	  if (eventPerBit[iBit] != calorimeter_om_status_change_event::no_change) {
+	    calorimeter_om_status::status_bit statusBit
+	      = static_cast<calorimeter_om_status::status_bit>(0x1 << iBit);
+	    calorimeter_om_status_change_event changeEvent(newPeriod.begin(), eventPerBit[iBit], statusBit);
+	    event_list_.add_event(changeEvent);
+	    eventCount++;
+	  } else {
+	    // 
+	  }
+	}
+	lastStatus = newStatus;
+	lastTime = newPeriod.end();
+      }
+      return;
+    }
+ 
   } // end of namespace rc
 
 } // end of namespace snemo

@@ -47,7 +47,6 @@ void test1()
   dbServiceConfig.store("db_access", "~/.sndb.conf");
   dbServiceConfig.store("sndb_config", "@falaise:snemo/demonstrator/db/sndb/1.0/main.conf");
   dbService.initialize_standalone(dbServiceConfig);
-  //return;
   std::clog << "\n\nDB Service:\n";
   dbService.print_tree(std::clog, snemo::db_service::empty_options());
 
@@ -60,6 +59,10 @@ void test1()
     assert(dbService.has_table("DatasetProducer_configs"));
     assert(dbService.has_table("DatasetProducers"));
     assert(dbService.has_table("Datasets"));
+    assert(dbService.has_table("GG_Status_Change_Events"));
+    assert(dbService.has_table("OM_Status_Change_Events"));
+    assert(dbService.has_table("GG_PPT"));
+    assert(dbService.has_table("OM_Energy_Calib"));
     assert(not dbService.has_table("Run_foo"));
         
     {

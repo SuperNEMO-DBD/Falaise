@@ -22,7 +22,11 @@ namespace snemo {
 
   namespace datamodel {
 
+		/// Total number of OMs (including reference PMT units)
 		std::size_t number_of_oms();
+
+		/// Total number of OMs in the demonstrator module only
+		std::size_t number_of_oms_demo();
 
 		bool om_num_is_valid(const std::uint32_t num_);
 		

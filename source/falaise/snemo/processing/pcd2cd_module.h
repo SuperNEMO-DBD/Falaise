@@ -131,6 +131,17 @@ namespace snemo {
       std::string _tcd_output_tag_{};  //!< The label of the tracker clustering data bank
       // std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
+      // struct work_data
+      // {
+      // 	snemo::datamodel::event_header * eh_data = nullptr;
+      // 	datatools::event_id event_dd;
+      // 	const snemo::datamodel::precalibrated_data             * pcd_data_ = nullptr;
+      // 	const snemo::datamodel::clusterized_precalibrated_data * cpcd_data_ = nullptr;
+      // 	snemo::datamodel::calibrated_data                * _cd_data_ = nullptr;
+      // 	// snemo::datamodel::clusterized_calibrated_data *_ccd_data_ = nullptr;
+      // 	snemo::datamodel::tracker_clustering_data        *_tcd_data_ = nullptr;	
+      // };
+      
       // global acces to event header
       snemo::datamodel::event_header * _eh_data_;
       datatools::event_id _event_id_;

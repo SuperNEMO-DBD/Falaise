@@ -79,11 +79,41 @@ Example1:
 
 .. code:: shell
    
-   $ bash testing/test-6.0.bash calo_curtain_surface_front magenta vertexes-dd_front.data
-   $ bash testing/test-6.0.bash calo_curtain_surface_back blue vertexes-dd_back.data
-   $ bash testing/test-6.0.bash calo_curtain_bulk red vertexes-dd_bulk.data
+   $ bash testing/test-6.0.bash calo_curtain_surface_front magenta front novisu
+   $ bash testing/test-6.0.bash calo_curtain_surface_back blue back novisu
+   $ bash testing/test-6.0.bash calo_curtain_bulk red bulk novisu
    geomtools> load_display_data vertexes2 vertexes-dd_back.data 
    geomtools> load_display_data vertexes1 vertexes-dd_front.data 
    geomtools> load_display_data vertexes0 vertexes-dd_bulk.data 
    geomtools> display -xy [1000:0]
+..
+
+Example2: Test SNRS bulk & surface generators (ITEP foil #3)
+
+.. code:: shell
+   
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_bulk_test          magenta bulk3      novisu
+   $ mv _tmp_snrs_mesh_pad_vg_tiles.draw snrs_mesh_pad_vg_tiles-bulk3.draw
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_surface_back_test  red     surf3back  novisu
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_surface_front_test green   surf3front
+   geomtools> load_display_data vertexes0 vertexes-dd-bulk3.data 
+   geomtools> load_display_data vertexes1 vertexes-dd-surf3back.data 
+   geomtools> load_display_data vertexes2 vertexes-dd-surf3front.data 
+   geomtools> display -xy [1000:0]
+..
+
+Example3: Test SNRS bulk & surface generators (ITEP foil #8)
+
+
+.. code:: shell
+   
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_bulk_test          magenta bulk8      novisu
+   $ mv _tmp_snrs_mesh_pad_vg_tiles.draw snrs_mesh_pad_vg_tiles-bulk8.draw
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_surface_back_test  red     surf8back  novisu
+   $ bash testing/test-6.0.bash real_snrs1_source_strip_itep_pad_surface_front_test green   surf8front
+   geomtools> load_display_data vertexes0 vertexes-dd-bulk8.data 
+   geomtools> load_display_data vertexes1 vertexes-dd-surf8back.data 
+   geomtools> load_display_data vertexes2 vertexes-dd-surf8front.data 
+   geomtools> display -xy [1000:0]
+   geomtools> display -3d [1130:0.8.0]
 ..

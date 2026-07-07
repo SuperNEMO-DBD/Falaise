@@ -89,11 +89,11 @@ namespace snemo {
       }
     }
 
-    if (config_.has_key("period")) {
-      std::string periodRepr = config_.fetch_string("period");
-      time::time_period period = time::time_period_from_string(periodRepr);
-      _period_ = period;
-    }
+    // if (config_.has_key("period")) {
+    //   std::string periodRepr = config_.fetch_string("period");
+    //   time::time_period period = time::time_period_from_string(periodRepr);
+    //   _period_ = period;
+    // }
 
     if (_mode_ == MODE_DB) {
       if (config_.has_key("db_label")) {
@@ -188,7 +188,8 @@ namespace snemo {
  
       std::int32_t omNum = -1;
       omNum = (std::uint32_t) std::get<int>(row[1]);
-      DT_THROW_IF(not snemo::datamodel::om_num_is_valid(omNum), std::logic_error, "Invalid OM number");
+      DT_THROW_IF(not snemo::datamodel::om_num_is_valid(omNum), std::logic_error,
+		  "Invalid OM number " << omNum);
 
       // bool validGid = false;
       // validGid = true;
@@ -269,10 +270,12 @@ namespace snemo {
       }
     }
     DT_LOG_DEBUG(get_logging_priority(), "Number of histories : " << _histories_.size());
-    for (const auto & h : _histories_) {
-      std::clog << "[debug] " << "GID=" << h.first
-                << " has " << h.second.records().size() << " status records"
-                << '\n';
+    if (datatools::logger::is_debug(get_logging_priority())) {
+      for (const auto & h : _histories_) {
+	std::clog << "[debug] " << "GID=" << h.first
+		  << " has " << h.second.records().size() << " status records"
+		  << '\n';
+      }
     }
     return;
   }
@@ -428,11 +431,21 @@ namespace snemo {
       boost::trim(geomIdRepr);
       DT_THROW_IF(geomIdRepr.empty(), std::logic_error, "Missing calorimeter OM geom ID!");
       {
-        std::istringstream gidss(geomIdRepr);
-        gidss >> gid;
-        DT_THROW_IF(!gidss, std::logic_error, "Cannot decode missing calorimeter OM geom ID!");
-        DT_THROW_IF(not gid.is_valid(), std::logic_error,
+	if (geomIdRepr[0] == '[') {
+	  std::istringstream gidss(geomIdRepr);
+	  gidss >> gid;
+	  DT_THROW_IF(!gidss, std::logic_error, "Cannot decode calorimeter OM geom ID!");
+	  DT_THROW_IF(not gid.is_valid(), std::logic_error,
                     "Invalid calorimeter OM geom ID parsed from '" << geomIdRepr  << "'!");
+	} else {
+	  int omNum;
+	  std::istringstream omNumSs(geomIdRepr);
+	  omNumSs >> omNum;
+	  DT_THROW_IF(!omNumSs, std::logic_error, "Cannot decode calorimeter OM number!");
+	  DT_THROW_IF(not snemo::datamodel::om_num_is_valid(omNum), std::logic_error,
+                    "Invalid calorimeter OM geom ID parsed from '" << geomIdRepr  << "'!");
+	  gid = snemo::datamodel::om_gid(omNum);
+	}
         bool validType = false;
         if (gid.get_type() == _om_types_[0] or
             gid.get_type() == _om_types_[1] or
@@ -551,7 +564,8 @@ namespace snemo {
         } else {
           out_ <<  i_tree_dumpable::tag;
         } 
-        out_ << "History for OM " << h.first << " : #entries=" << h.second.records().size() << std::endl;    
+        out_ << "History for OM " << h.first << " : #entries=" << h.second.records().size() << std::endl;
+	hCount++;
       }
     }
 

@@ -30,7 +30,8 @@ namespace snemo {
     {
     public:
 
-      static const std::uint32_t OM_GOOD = 0; ///< Default status for a working OM with no issue
+      static const std::uint32_t OM_GOOD = 0u; ///< Default status for a working OM with no issue
+			static const std::uint32_t NB_STATUS_BITS = 16u; ///< Default status for a working OM with no issue
 
       /// \brief OM status is implemented as a bitset where each bit has a specific meaning
       enum status_bit
@@ -46,6 +47,7 @@ namespace snemo {
 					OM_LI_UNSTABILITY_LONG = datatools::bit_mask::bit08, ///< OM gain has long term unstability after LI runs
 					OM_BI_LI_UNCONSISTENCY_SHORT = datatools::bit_mask::bit09, ///< OM gain monitoring with respect to Bi and LI runs is inconsistent on a short term
 					OM_BI_LI_UNCONSISTENCY_LONG = datatools::bit_mask::bit10, ///< OM gain monitoring with respect to Bi and LI runs is inconsistent on a long term
+					OM_BAD_ECALIB_FIT = datatools::bit_mask::bit11, ///< OM energy calibration fit has bad quality
 					OM_OTHER_ISSUES = datatools::bit_mask::bit15 ///< OM meets other issues			
         };
 
@@ -70,6 +72,8 @@ namespace snemo {
       static bool is_bi_li_unconsistency_short(const std::uint32_t status_bits_);
 
       static bool is_bi_li_unconsistency_long(const std::uint32_t status_bits_);
+
+      static bool is_bad_ecalib_fit(const std::uint32_t status_bits_);
 
       static bool is_other_issues(const std::uint32_t status_bits_);
 
@@ -121,8 +125,8 @@ namespace snemo {
 				};			
 			
 			calorimeter_om_status_change_event() = default;
-			
-		private:
+
+		public:
 
 			calorimeter_om_status_change_event(const time::time_point & timestamp_,
 																				 const event_type event_type_,
@@ -169,9 +173,13 @@ namespace snemo {
 
 			std::size_t size() const;
 
+			bool empty() const;
+			
 			const calorimeter_om_status_change_event & event(const int i_) const;
 
 			void add_event(const calorimeter_om_status_change_event & event_);
+
+			void clear();
 			
 		private:
 
@@ -181,7 +189,10 @@ namespace snemo {
 
 		void build_calorimeter_om_status_history_from_event_list(const calorimeter_om_status_change_event_list & event_list_,
 																														 calorimeter_om_status_history & status_history_);
-																			 
+
+		void build_calorimeter_om_status_change_events_from_history(const calorimeter_om_status_history & status_history_,
+																																calorimeter_om_status_change_event_list & event_list_);
+																		 
 		
   } // end of namespace rc
   

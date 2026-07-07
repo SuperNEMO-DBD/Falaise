@@ -16,6 +16,11 @@ namespace snemo {
       return 717u;
     }
 
+    std::size_t number_of_oms_demo()
+    {
+      return 712u;
+    }
+
     std::size_t number_of_ggs()
     {
       return 2034u;
@@ -77,7 +82,7 @@ namespace snemo {
     
     bool is_gveto_om(const geomtools::geom_id & gid_)
     {
-      if (gid_.get_type() == 1252 or gid_.get_type() == 1253) {
+      if (gid_.get_type() == 1251 or gid_.get_type() == 1252) {
         return true;
       }
       return false;

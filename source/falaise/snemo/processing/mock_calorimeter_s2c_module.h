@@ -32,6 +32,7 @@
 // This project :
 #include <falaise/snemo/datamodels/calibrated_data.h>
 #include <falaise/snemo/processing/calorimeter_regime.h>
+#include <falaise/snemo/processing/calo_uniformity_correction_factor.h>
 
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
@@ -103,6 +104,7 @@ namespace snemo {
       /// Parse calorimeter regime database file
       void parse_calorimeter_regime_database(const std::string & database_path_);
 
+      // 2026-05-18 FM: should be static
       // Parse pol3d parameters file
       std::vector<double> parse_pol3d_parameters(const std::string & parameters_path_);
 
@@ -138,6 +140,8 @@ namespace snemo {
       double timeWindow{100. * CLHEP::ns};  //!< Time width of a calo cluster
       bool quenchAlphas{true};              //!< Flag to (dis)activate the alpha quenching
       bool assocMCHitId{false};             //!< The flag to reference MC true hit
+
+      CaloUniformityCorrection _calo_uniformity_correction_;
       std::vector<double> _uniformity_correction_parameters_mwall_8inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 8"
       std::vector<double> _uniformity_correction_parameters_mwall_5inch_{1,1}; //!< Polynomial parameters for the uniformity correction for MWall 5"
       std::vector<double> _uniformity_correction_parameters_xwall_{1,1};       //!< Polynomial parameters for the uniformity correction for XWall
@@ -147,6 +151,7 @@ namespace snemo {
       
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(mock_calorimeter_s2c_module)
+      
     };
 
   }  // end of namespace processing

@@ -2,7 +2,7 @@
 /// \file falaise/snemo/processing/calo_energy_calibration.h
 /* Author(s) :    F.Mauger <mauger@lpccaen.in2p3.fr>
  * Creation date: 2025-12-15
- * Last modified: 2025-12-15
+ * Last modified: 2026-05-05
  *
  * Description:
  *
@@ -21,6 +21,7 @@
 // - Bayeux:
 #include <bayeux/datatools/clhep_units.h>
 #include <bayeux/datatools/logger.h>
+#include <bayeux/datatools/factory_macros.h>
 
 // This project:
 #include <falaise/snemo/datamodels/precalibrated_calorimeter_hit.h>
@@ -41,7 +42,9 @@ namespace snemo {
       bool has_sigma() const;
       void reset();
     };
-    
+
+    /// \brief All calorimeter energy calibrator are configured using
+    //         an instance of the boost::property_tree::ptree container class.
     typedef boost::property_tree::ptree calibrator_parameters;
 
     /// \brief Interface for calorimeter energy calibrator associated to a given OM:
@@ -56,129 +59,16 @@ namespace snemo {
       virtual void configure(const calibrator_parameters & parameters_) = 0;
       
       virtual calo_energy operator()(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const = 0;
-      
+
+      calo_energy calibrate(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const;
+
+      DATATOOLS_FACTORY_SYSTEM_REGISTER_INTERFACE(calo_energy_calibrator)
+       
     };
 
     typedef calo_energy_calibrator CaloEnergyCalibrator;
 
     typedef std::shared_ptr<calo_energy_calibrator> CaloEnergyCalibratorHdl;
-
-    /// \brief Calorimeter energy calibrator using scaled amplitude of the signal
-    ///
-    ///  E(MeV) = amplitude(Volt) * scale(MeV/Volt)
-    ///
-    /// Typical value for scale is : 5 MeV/Volt
-    ///
-    /// Type ID = "scaled_amp"
-    ///
-    class scaled_amplitude_calo_energy_calibrator
-      : public calo_energy_calibrator
-    {
-    public:
-
-      scaled_amplitude_calo_energy_calibrator();
-
-      scaled_amplitude_calo_energy_calibrator(const double scale_);
-
-      ~scaled_amplitude_calo_energy_calibrator() override = default;
-
-      void set_scale(const double scale_);
- 
-      double get_scale() const;
-
-      /// The parameter set contains :
-      /// - a property with name "scale", real type, implicit unit "MeV/Volt"
-      void configure(const calibrator_parameters & parameters_) override;
-     
-      calo_energy operator()(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const override;
-
-    private:
-
-      double _scale_ = 5 * CLHEP::MeV / CLHEP::volt;
-	
-    };
-
-    /// \brief Calorimeter energy calibrator using polynomial formula
-    ///
-    ///  E(MeV) = charge(nV.s) * constant(MeV/(nV.s))
-    ///
-    /// Typical value for constant is : 0.2 MeV/(nV.s)
-    ///
-    /// Type ID = "charge_pol1"
-    ///
-    class charge_pol1_calo_energy_calibrator
-      : public calo_energy_calibrator
-    {
-    public:
-      
-      charge_pol1_calo_energy_calibrator();
- 
-      charge_pol1_calo_energy_calibrator(const double constant_);
- 
-      ~charge_pol1_calo_energy_calibrator() override = default;
- 
-      /// The parameter set contains :
-      /// - a property with name "constant", real type, implicit unit "MeV/(nV.s)"
-      void configure(const calibrator_parameters & parameters_) override;
-
-      void set_constant(const double constant_);
-
-      double get_constant() const;
-      
-      calo_energy operator()(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const override;
-   
-    private:
-
-      /// The constant is typically expressed in MeV/(ns.Volt)
-      double _constant_ = datatools::invalid_real();
-      
-    };
- 
-    /// \brief Calorimeter energy calibrator using polynomial formula:
-    ///
-    ///  E(MeV) = charge(nV.s) * constant1(MeV/(nV.s)) + constant0(MeV)
-    ///
-    /// Typical value for constant1 is : 0.2 MeV/(nV.s)
-    /// Typical value for constant0 is : 0 MeV
-    ///
-    /// Type ID = "charge_pol2"
-    ///
-    class charge_pol2_calo_energy_calibrator
-      : public calo_energy_calibrator
-    {
-    public:
-      
-      charge_pol2_calo_energy_calibrator();
- 
-      /// The constant 1 is typically expressed in MeV/(nV.s)
-      /// The constant 0 is typically expressed in MeV
-      charge_pol2_calo_energy_calibrator(const double constant0_,
-					 const double constant1_);
- 
-      ~charge_pol2_calo_energy_calibrator() override = default;
- 
-
-      /// The parameter set contains :
-      /// - a property with name "constant1", real type, implicit unit "MeV/(nV.s)"
-      /// - a property with name "constant0", real type, implicit unit "MeV"
-      void configure(const calibrator_parameters & parameters_) override;
-
-      void set_constant1(const double constant1_);
-
-      void set_constant0(const double constant0_);
-
-      double get_constant1() const;
-
-      double get_constant0() const;
-  
-      calo_energy operator()(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const override;
-   
-    private:
-
-      double _constant0_ = datatools::invalid_real();
-      double _constant1_ = datatools::invalid_real();
-      
-    };
 
     class calo_energy_calibrator_factory
     {
@@ -224,7 +114,11 @@ namespace snemo {
       
       const CaloEnergyCalibrator & get_calibrator(const int om_num_) const;
       
-      const CaloEnergyCalibrator & get_calibrator(const geomtools::geom_id & calo_gid_) const;
+      const CaloEnergyCalibrator & get_calibrator(const geomtools::geom_id & om_gid_) const;
+      
+      const CaloEnergyCalibratorHdl & get_calibrator_handle(const int om_num_) const;
+      
+      const CaloEnergyCalibratorHdl & get_calibrator_handle(const geomtools::geom_id & om_gid_) const;
 
       void reset_calibrators();
       
@@ -253,8 +147,30 @@ namespace snemo {
       
     };
 
+    struct om_energy_calibration_record
+    {
+      time::time_period period;
+      CaloEnergyCalibratorHdl calibrator;
+
+      friend std::ostream & operator<<(std::ostream & out_, const om_energy_calibration_record & record_);
+    };
+    
+    class om_energy_calibration_history
+    {
+    public:
+      om_energy_calibration_history() = default;
+      void add(const time::time_period & period_, const CaloEnergyCalibratorHdl & calibrator_);
+      void clear();
+      const std::vector<om_energy_calibration_record> & records() const;
+      CaloEnergyCalibratorHdl get_calibrator_handle(const time::time_point & t_) const;
+      void print(std::ostream & out_, const std::string & indent_ = "") const;
+			
+    private:
+      std::vector<om_energy_calibration_record> _records_;
+    };
+
   } // end of namespace processing
 
 } // end of namespace snemo
 
-#endif  // FALAISE_SNEMO_PROCESSING_CALO_ENERGY_CALIBRATION_H
+#endif // FALAISE_SNEMO_PROCESSING_CALO_ENERGY_CALIBRATION_H

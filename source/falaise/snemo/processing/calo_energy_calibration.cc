@@ -7,7 +7,6 @@
 // Standard library:
 #include <fstream>
 
-
 // Third party:
 #include <boost/algorithm/string.hpp>
 // - Bayeux/datatools:
@@ -20,6 +19,9 @@
 namespace snemo {
 
   namespace processing {
+
+    DATATOOLS_FACTORY_SYSTEM_REGISTER_IMPLEMENTATION(calo_energy_calibrator,
+                                                     "snemo::processing::calo_energy_calibrator/__system__")
 
     /***** calo_energy *****/
     
@@ -39,172 +41,12 @@ namespace snemo {
       sigma = datatools::invalid_real();
       return;
     }
-
-    /***** scaled_amplitude_calo_energy_calibrator *****/
-
-    scaled_amplitude_calo_energy_calibrator::scaled_amplitude_calo_energy_calibrator()
-    {
-      return;
-    }
-
-    scaled_amplitude_calo_energy_calibrator::scaled_amplitude_calo_energy_calibrator(const double scale_)
-    {
-      set_scale(scale_);
-      return;
-    }
-
-    void scaled_amplitude_calo_energy_calibrator::configure(const calibrator_parameters & parameters_)
-    {
-      // double scaleValue = parameters_.get("scale", 5.0 * CLHEP::MeV / CLHEP::volt); 
-      double scaleValue = parameters_.get<double>("scale");
-      set_scale(scaleValue);
-      return;
-    }
  
-    void scaled_amplitude_calo_energy_calibrator::set_scale(const double scale_)
+    calo_energy calo_energy_calibrator::calibrate(const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const
     {
-      DT_THROW_IF(scale_ <= 0.0, std::logic_error, "Invalid amplitude scale factor");
-      _scale_ = scale_;
-      return;
+      return (*this)(pcd_calo_hit_);
     }
-  
-    double scaled_amplitude_calo_energy_calibrator::get_scale() const
-    {
-      return _scale_;
-    }
- 
-    calo_energy
-    scaled_amplitude_calo_energy_calibrator::operator()
-      (const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const
-    {
-      calo_energy calibratedEnergy;
-      if (pcd_calo_hit_.has_amplitude()) {
-	auto signalAmplitude = pcd_calo_hit_.get_amplitude();
-	double hitEnergy = -signalAmplitude * _scale_;
-	calibratedEnergy.value = hitEnergy;
-	if (pcd_calo_hit_.has_sigma_amplitude()) {
-	  auto signalAmplitudeSigma = pcd_calo_hit_.get_sigma_amplitude();
-	  double hitEnergySigma = signalAmplitudeSigma * _scale_;
-	  calibratedEnergy.sigma = hitEnergySigma;
-	}
-      }
-      return calibratedEnergy;
-    }
-
-    /***** charge_pol1_calo_energy_calibrator *****/
-   
-    charge_pol1_calo_energy_calibrator::charge_pol1_calo_energy_calibrator()
-    {
-      return;
-    }
-
-    charge_pol1_calo_energy_calibrator::charge_pol1_calo_energy_calibrator(const double constant_)
-    {
-      set_constant(constant_);
-      return;
-    }
-
-    void charge_pol1_calo_energy_calibrator::set_constant(const double constant_)
-    {
-      DT_THROW_IF(constant_ <= 0.0, std::logic_error, "Invalid charge constant factor");
-      _constant_ = constant_;
-      return;
-    }
-
-    double charge_pol1_calo_energy_calibrator::get_constant() const
-    {
-      return _constant_;
-    }
- 
-    void charge_pol1_calo_energy_calibrator::configure(const calibrator_parameters & parameters_)
-    {
-      double constant = parameters_.get<double>("constant");
-      set_constant(constant);
-      return;
-    }
- 
-    calo_energy
-    charge_pol1_calo_energy_calibrator::operator()
-      (const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const
-    {
-      calo_energy calibratedEnergy;
-      if (pcd_calo_hit_.has_charge()) {
-	auto signalCharge = pcd_calo_hit_.get_charge();
-	double hitEnergy = -signalCharge * _constant_;
-	calibratedEnergy.value = hitEnergy;
-	if (pcd_calo_hit_.has_sigma_charge()) {
-	  auto signalChargeSigma = pcd_calo_hit_.get_sigma_charge();
-	  double hitEnergySigma = signalChargeSigma * _constant_;
-	  calibratedEnergy.sigma = hitEnergySigma;
-	}
-      }
-      return calibratedEnergy;
-    }
-
-    /***** charge_pol2_calo_energy_calibrator *****/
-  
-    charge_pol2_calo_energy_calibrator::charge_pol2_calo_energy_calibrator()
-    {
-      return;
-    }
-
-    charge_pol2_calo_energy_calibrator::charge_pol2_calo_energy_calibrator(const double constant0_,
-									   const double constant1_)
-    {
-      set_constant0(constant0_);
-      set_constant1(constant1_);
-      return;
-    }
- 
-    void charge_pol2_calo_energy_calibrator::set_constant1(const double constant1_)
-    {
-      DT_THROW_IF(constant1_ <= 0.0, std::logic_error, "Invalid charge constant1");
-      _constant1_ = constant1_;
-      return;
-    }
-    void charge_pol2_calo_energy_calibrator::set_constant0(const double constant0_)
-    {
-      _constant0_ = constant0_;
-      return;
-    }
-
-    double charge_pol2_calo_energy_calibrator::get_constant1() const
-    {
-      return _constant1_;
-    }
-
-    double charge_pol2_calo_energy_calibrator::get_constant0() const
-    {
-      return _constant0_;
-    }
- 
-   void charge_pol2_calo_energy_calibrator::configure(const calibrator_parameters & parameters_)
-    {
-      double constant1 = parameters_.get<double>("constant1");
-      double constant0 = parameters_.get<double>("constant0");
-      set_constant1(constant1);
-      set_constant0(constant0);
-      return;
-    }
- 
-    calo_energy
-    charge_pol2_calo_energy_calibrator::operator()
-      (const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) const
-    {
-      calo_energy calibratedEnergy;
-      if (pcd_calo_hit_.has_charge()) {
-	auto signalCharge = pcd_calo_hit_.get_charge();
-	double hitEnergy = -signalCharge * _constant1_ + _constant0_;
-	calibratedEnergy.value = hitEnergy;
-	if (pcd_calo_hit_.has_sigma_charge()) {
-	  auto signalChargeSigma = pcd_calo_hit_.get_sigma_charge();
-	  double hitEnergySigma = signalChargeSigma * _constant1_;
-	  calibratedEnergy.sigma = hitEnergySigma;
-	}
-      }
-      return calibratedEnergy;
-    }
-
+    
     /***** calo_energy_calibration_map *****/
  
     calo_energy_calibration_map::calo_energy_calibration_map()
@@ -262,20 +104,33 @@ namespace snemo {
       _calibrators_[om_num_] = calibrator_handle_;
       return;
     }
-      
+     
+    const CaloEnergyCalibrator &
+    calo_energy_calibration_map::get_calibrator(const geomtools::geom_id & om_gid_) const
+    {
+      const int omNum = snemo::datamodel::om_num(om_gid_); 
+      return get_calibrator(omNum);
+    }
+
     const CaloEnergyCalibrator &
     calo_energy_calibration_map::get_calibrator(const int om_num_) const
     {
       return *_calibrators_[om_num_];
     }
       
-    const CaloEnergyCalibrator &
-    calo_energy_calibration_map::get_calibrator(const geomtools::geom_id & calo_gid_) const
+    const CaloEnergyCalibratorHdl &
+    calo_energy_calibration_map::get_calibrator_handle(const geomtools::geom_id & om_gid_) const
     {
-      const int caloOmNum = snemo::datamodel::om_num(calo_gid_); 
-      return get_calibrator(caloOmNum);
+      int omNum = snemo::datamodel::om_num(om_gid_);
+      return get_calibrator_handle(omNum);
     }
-
+            
+    const CaloEnergyCalibratorHdl &
+    calo_energy_calibration_map::get_calibrator_handle(const int om_num_) const
+    {
+      return _calibrators_[om_num_];
+    }
+ 
     void calo_energy_calibration_map::reset_calibrators()
     {
       _calibrators_.assign(NB_OMS, nullptr); // fill with empty calibrators...
@@ -287,7 +142,7 @@ namespace snemo {
     // static
     std::set<std::string> calo_energy_calibrator_factory::supported_calibrator_type_ids()
     {
-      static const std::set<std::string> _supCalTypeIds = {"scaled_amp", "charge_pol1", "charge_pol2"};
+      static const std::set<std::string> _supCalTypeIds = {"scaled_amp", "pol1", "pol2"};
       return _supCalTypeIds;
     }
      
@@ -295,16 +150,20 @@ namespace snemo {
     calo_energy_calibrator_factory::operator()(const std::string & calibrator_type_id_,
 					       const boost::property_tree::ptree & parameters_)
     {
-      std::unique_ptr<CaloEnergyCalibrator> calibratorHdl;
-      if (calibrator_type_id_ == "scaled_amp") {
-	calibratorHdl = std::make_unique<scaled_amplitude_calo_energy_calibrator>();
-      } else if (calibrator_type_id_ == "charge_pol1") {
-	calibratorHdl = std::make_unique<charge_pol1_calo_energy_calibrator>();
-      } else if (calibrator_type_id_ == "charge_pol2") {
-	calibratorHdl = std::make_unique<charge_pol2_calo_energy_calibrator>();
-      } else {
-	DT_THROW(std::logic_error," unsupported calorimeter energy calibrator '" << calibrator_type_id_ << "'");
+      const auto & modelSystemFactoryRegister = DATATOOLS_FACTORY_GET_SYSTEM_REGISTER(calo_energy_calibrator);
+      std::string calibratorTypeId = calibrator_type_id_;
+      if (calibratorTypeId == "charge_pol1") {
+	calibratorTypeId = "pol1";
+      } else if (calibratorTypeId == "charge_pol2") {
+	calibratorTypeId = "pol2";
+      } else if (calibratorTypeId == "scale_amp") {
+	calibratorTypeId = "scamp";
       }
+      DT_THROW_IF(not modelSystemFactoryRegister.has(calibratorTypeId), std::logic_error,
+		  "Factory register supports no calorimeter energy calibrator of type '"
+		  << calibratorTypeId << "'!");
+      const auto & modelSystemFactory = modelSystemFactoryRegister.get(calibratorTypeId);
+      std::unique_ptr<CaloEnergyCalibrator> calibratorHdl(modelSystemFactory());
       calibratorHdl->configure(parameters_);
       return calibratorHdl;
     }
@@ -316,9 +175,9 @@ namespace snemo {
       : _calibrator_type_id_(calibrator_type_id_)
       , _verbosity_(verbosity_)
     {
-      DT_THROW_IF(not calo_energy_calibrator_factory::supported_calibrator_type_ids().count(calibrator_type_id_),
-		  std::logic_error,
-		  "unsupported calorimeter energy calibrator type " << std::quoted(calibrator_type_id_));
+      // DT_THROW_IF(not calo_energy_calibrator_factory::supported_calibrator_type_ids().count(calibrator_type_id_),
+      // 		  std::logic_error,
+      //		  "unsupported calorimeter energy calibrator type " << std::quoted(calibrator_type_id_));
       return;
     }
 
@@ -407,7 +266,9 @@ namespace snemo {
 	int omNum = -1;
 	lineIn >> omNum;
 	DT_THROW_IF(!lineIn, std::logic_error, "Invalid format at line " << lineCounter);
-	DT_THROW_IF(omNum < 0 and omNum > 719, std::logic_error, "Invalid OM number at line " << lineCounter);
+	DT_THROW_IF(omNum < 0 or omNum >= (int) snemo::datamodel::number_of_oms(),
+		    std::logic_error,
+		    "Invalid OM number at line " << lineCounter);
 	// DT_LOG_DEBUG(get_logging_priority(), "OM number = " << omNum);
 	bool valuesOk = false;
 	if (calibratorTypeId == "charge_pol1") {
@@ -418,7 +279,8 @@ namespace snemo {
 	  DT_THROW_IF(a < 0.0, std::logic_error, "Invalid value for 'a' coefficient at line " << lineCounter);
 	  if (a > 0.0) {
 	    constant = a * CLHEP::MeV / (1e-9*CLHEP::volt*CLHEP::second);
-	    calibratorParameters.put("constant", constant);
+	    calibratorParameters.put("a", constant);
+	    calibratorParameters.put("a_err", constant * 0.05); // force 5% error
 	    valuesOk = true;
 	  }	
 	} else if (calibratorTypeId == "charge_pol2") {
@@ -432,8 +294,13 @@ namespace snemo {
 	  if (a > 0.0) {
 	    constant1 = a * CLHEP::MeV / (1e-9*CLHEP::volt*CLHEP::second);
 	    constant0 = b * CLHEP::MeV;
-	    calibratorParameters.put("constant1", constant1);
-	    calibratorParameters.put("constant0", constant0);
+	    calibratorParameters.put("a", constant1);
+	    calibratorParameters.put("b", constant0);
+	    double a_err = std::fabs(a) * 0.01;
+	    double b_err = std::fabs(b) * 0.1;
+	    calibratorParameters.put("Var_a", a_err * a_err);
+	    calibratorParameters.put("Var_b", b_err * b_err);
+	    calibratorParameters.put("Cov_ab", -a_err * b_err);
 	    valuesOk = true;
 	  }	
 	} else if (calibratorTypeId == "scaled_amp") {
@@ -444,7 +311,8 @@ namespace snemo {
 	  DT_THROW_IF(s < 0.0, std::logic_error, "Invalid value for 'a' coefficient at line " << lineCounter);
 	  if (s > 0.0) {
 	    scale = s * CLHEP::MeV / CLHEP::volt;
-	    calibratorParameters.put("scale", scale);
+	    calibratorParameters.put("a", scale);
+	    calibratorParameters.put("a_err", scale * 0.05); // force 5% error
 	    valuesOk = true;
 	  }	
 	  DT_THROW(std::logic_error, "not implement method " << std::quoted(calibratorTypeId));
@@ -458,9 +326,67 @@ namespace snemo {
 	}
       }
       ifile.close();
+      DT_LOG_DEBUG(_verbosity_, "Parsing done.");
       return;
     }
- 
+    
+    // friend
+    std::ostream & operator<<(std::ostream & out_, const om_energy_calibration_record & record_)
+    {
+      std::ostringstream sout;
+      sout << '@' << snemo::time::to_string(record_.period)
+	   << " -> calibrator=" << typeid(*record_.calibrator).name();
+      out_ << sout.str();
+      return out_;
+    }
+
+    void om_energy_calibration_history::add(const time::time_period & period_,
+					    const CaloEnergyCalibratorHdl & calibrator_hdl_)
+    {
+      if (_records_.size() and period_.begin() < _records_.back().period.end()) {
+        DT_THROW(std::domain_error, "New period does not follow last record!");
+      }
+      _records_.push_back({period_, calibrator_hdl_});
+      return;
+    }
+    
+    const std::vector<om_energy_calibration_record> &
+    om_energy_calibration_history::records() const
+    {
+      return _records_;
+    }
+
+    void om_energy_calibration_history::clear()
+    {
+      _records_.clear();
+      return;
+    }
+	
+    CaloEnergyCalibratorHdl
+    om_energy_calibration_history::get_calibrator_handle(const time::time_point & t_) const
+    {
+      CaloEnergyCalibratorHdl calibratorHdl;
+      for (const auto & rec : _records_ ) {
+        if (rec.period.contains(t_)) {
+          calibratorHdl = rec.calibrator;
+          break;
+        }
+      }
+      return calibratorHdl;
+    }
+
+    void om_energy_calibration_history::print(std::ostream & out_, const std::string & indent_) const
+    {
+      std::string indent = indent_;
+      out_ << indent << "History records:\n";
+      auto count = 0u;
+      for (const auto & rec : _records_) {
+	out_ << indent << " - Record #" << count << " : " << rec << '\n';
+	count++;
+      }
+      return;
+    }
+
   } // end of namespace processing
 
 } // end of namespace snemo

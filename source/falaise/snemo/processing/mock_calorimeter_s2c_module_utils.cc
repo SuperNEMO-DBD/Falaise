@@ -37,8 +37,8 @@ namespace snemo {
        POL3D_POW10 = 10
       };
 
-    double pol3d (const double *x, const double *p) {
-
+    double pol3d(const double *x, const double *p)
+    {
       const double X = x[0];
       const double Y = x[1];
       const double Z = x[2];

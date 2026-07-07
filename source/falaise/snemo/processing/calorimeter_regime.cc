@@ -85,7 +85,7 @@ double CalorimeterModel::quenchAlphaParticle(const double energy) const {
 }
 
 double CalorimeterModel::smearTime(mygsl::rng& rng, const double time,
-                                        const double energy) const {
+				   const double energy) const {
   const double sigma_time = getSigmaTime(energy);
   // Negative time are physical since input time is relative
   return rng.gaussian(time, sigma_time);
