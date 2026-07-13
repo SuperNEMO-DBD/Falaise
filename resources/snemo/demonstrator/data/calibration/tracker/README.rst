@@ -1,5 +1,5 @@
 ====================================================
-Tracker cell Plasme Propagation Time table (PPT)
+Tracker cell Plasma Propagation Time table (PPT)
 ====================================================
 
 
