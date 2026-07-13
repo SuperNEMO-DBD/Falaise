@@ -117,3 +117,12 @@ Example3: Test SNRS bulk & surface generators (ITEP foil #8)
    geomtools> display -xy [1000:0]
    geomtools> display -3d [1130:0.8.0]
 ..
+
+Example4: PMT glass bulk
+
+.. code:: shell
+   
+   $ bash testing/test-6.0.bash pmt_8inch_main_wall_glass_bulk_0_1_1 magenta pmtglassbulk
+   geomtools> load_display_data vertexes0 vertexes-dd-pmtglassbulk.data 
+   geomtools> display -xz [1304:0.0.1.1]
+..
