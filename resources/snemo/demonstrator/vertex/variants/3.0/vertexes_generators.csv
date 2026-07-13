@@ -91,12 +91,15 @@ feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of 
 # Vertex located in the experimental hall environment (external contamination) #
 ################################################################################
 
-experimental_hall_surface      : Vertex generation from all internal surfaces of the experimental hall            : Hall : 
-experimental_hall_roof         : Vertex generation from the top surface (roof) of the experimental hall           : Hall : 
-experimental_hall_bulk         : Vertex generation from the bulk volume (air) of the experimental hall            : Hall : 
-experimental_hall_ground_bulk  : Vertex generation from the bulk volume of the experimental hall's ground         : Hall : 
-experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
-
+experimental_hall_roof          : Vertex generation from the top surface (roof) of the experimental hall           : Hall : 
+experimental_hall_ground_floor  : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
+experimental_hall_french_wall   : Vertex generation from the french wall surface of the experimental hall          : Hall : 
+experimental_hall_italian_wall  : Vertex generation from the italian wall surface of the experimental hall         : Hall : 
+experimental_hall_mountain_wall : Vertex generation from the mountain wall surface of the experimental hall        : Hall : 
+experimental_hall_tunnel_wall   : Vertex generation from the tunnel wall surface of the experimental hall          : Hall : 
+experimental_hall_ground_bulk   : Vertex generation from the bulk volume of the experimental hall's ground         : Hall : 
+experimental_hall_surface       : Vertex generation from all internal surfaces of the experimental hall            : Hall : : rank=second  
+experimental_hall_bulk          : Vertex generation from the bulk volume (air) of the experimental hall            : Hall : : rank=second  
 
 #####################################################################
 # Vertex located in the source submodule (source foils and pads...) #
