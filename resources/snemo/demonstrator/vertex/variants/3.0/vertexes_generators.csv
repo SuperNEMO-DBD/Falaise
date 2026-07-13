@@ -29,9 +29,10 @@
 ###############################################################################################
 
 ### PMT glass ###
-pmt_5inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper               : OpticalModule : 
-pmt_8inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper                : OpticalModule : 
-pmt_main_wall_glass_bulk         : Vertex generation from the bulk volume of all source pads                                 : OpticalModule : 
+pmt_5inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass               : OpticalModule : 
+pmt_8inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 8inch (main_wall) glass                : OpticalModule : 
+pmt_8inch_main_wall_glass_bulk_0_1_1 : Vertex generation from the bulk of one PMT 8inch (main_wall) glass                : OpticalModule : : rank=second
+pmt_main_wall_glass_bulk         : Vertex generation from the bulk volume of all PMT glass                                 : OpticalModule : 
 pmt_glass_bulk                   : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator     : OpticalModule : 
 pmt_gveto_glass_bulk             : Vertex generation from the bulk volume of the GVETO PMT glass                             : OpticalModule : 
 pmt_gveto_glass_bulk_it_bottom   : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom   : OpticalModule : : rank=second
@@ -90,12 +91,15 @@ feedthrough_pins_bulk_side_1_bottom : Vertex generation from the bulk volume of 
 # Vertex located in the experimental hall environment (external contamination) #
 ################################################################################
 
-experimental_hall_surface      : Vertex generation from all internal surfaces of the experimental hall            : Hall : 
-experimental_hall_roof         : Vertex generation from the top surface (roof) of the experimental hall           : Hall : 
-experimental_hall_bulk         : Vertex generation from the bulk volume (air) of the experimental hall            : Hall : 
-experimental_hall_ground_bulk  : Vertex generation from the bulk volume of the experimental hall's ground         : Hall : 
-experimental_hall_ground_floor : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
-
+experimental_hall_roof          : Vertex generation from the top surface (roof) of the experimental hall           : Hall : 
+experimental_hall_ground_floor  : Vertex generation from the top surface (floor) of the experimental hall's ground : Hall : 
+experimental_hall_french_wall   : Vertex generation from the french wall surface of the experimental hall          : Hall : 
+experimental_hall_italian_wall  : Vertex generation from the italian wall surface of the experimental hall         : Hall : 
+experimental_hall_mountain_wall : Vertex generation from the mountain wall surface of the experimental hall        : Hall : 
+experimental_hall_tunnel_wall   : Vertex generation from the tunnel wall surface of the experimental hall          : Hall : 
+experimental_hall_ground_bulk   : Vertex generation from the bulk volume of the experimental hall's ground         : Hall : 
+experimental_hall_surface       : Vertex generation from all internal surfaces of the experimental hall            : Hall : : rank=second  
+experimental_hall_bulk          : Vertex generation from the bulk volume (air) of the experimental hall            : Hall : : rank=second  
 
 #####################################################################
 # Vertex located in the source submodule (source foils and pads...) #
