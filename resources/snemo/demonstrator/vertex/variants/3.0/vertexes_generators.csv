@@ -29,9 +29,10 @@
 ###############################################################################################
 
 ### PMT glass ###
-pmt_5inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass wrapper               : OpticalModule : 
-pmt_8inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 8inch (main_wall) glass wrapper                : OpticalModule : 
-pmt_main_wall_glass_bulk         : Vertex generation from the bulk volume of all source pads                                 : OpticalModule : 
+pmt_5inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 5 inch (main_wall) glass               : OpticalModule : 
+pmt_8inch_main_wall_glass_bulk   : Vertex generation from the bulk of the PMT 8inch (main_wall) glass                : OpticalModule : 
+pmt_8inch_main_wall_glass_bulk_0_1_1 : Vertex generation from the bulk of one PMT 8inch (main_wall) glass                : OpticalModule : : rank=second
+pmt_main_wall_glass_bulk         : Vertex generation from the bulk volume of all PMT glass                                 : OpticalModule : 
 pmt_glass_bulk                   : Vertex generation from the bulk volume of the PMT glass across the whole demonstrator     : OpticalModule : 
 pmt_gveto_glass_bulk             : Vertex generation from the bulk volume of the GVETO PMT glass                             : OpticalModule : 
 pmt_gveto_glass_bulk_it_bottom   : Vertex generation from the bulk volume of the GVETO PMT glass on Italian side 0, bottom   : OpticalModule : : rank=second
