@@ -43,6 +43,12 @@
   visibility.color  : string  = "blue"
   sensitive.category : string = "calorimeter_SD"
 
+[name="calorimeter_8inch_optical_glue.model" type="geomtools::simple_shaped_model"]
+  shape_build_mode : string = "factory"
+  shape_ref : string = "calorimeter_8inch_optical_glue_extruded"
+  material.ref : string  = "rtv615"
+  visibility.hidden : boolean = false
+  visibility.color  : string  = "red"
 
 [name="calorimeter_scin_block_8inch_back_wrapper_back.model" type="geomtools::plate_with_hole_model"]
   x      : real as length = 236.0 mm
@@ -70,10 +76,11 @@
     y : real as length = 259.0 mm
     z : real as length = 500.0 mm
   material.ref : string = "lab_air"
-  internal_item.labels : string[19] = \
+  internal_item.labels : string[20] = \
      "front_block" \
      "back_block"  \
      "pmt"         \
+     "optical_glue"\
      "back_block_wrapping_back"   \
      "back_block_wrapping_left"   \
      "back_block_wrapping_right"  \
@@ -90,12 +97,14 @@
      "closing_back_plate"   \
      "closing_back_door"   \
      "internal_support_plate"
-    internal_item.placement.front_block : string  = "0 0 234 (mm)"
+     internal_item.placement.front_block : string  = "0 0 234 (mm)"
     internal_item.model.front_block     : string  = "calorimeter_wrapped_scin_block_front.model"
     internal_item.placement.back_block : string  = "0 0 136.5 (mm)"
     internal_item.model.back_block     : string  = "calorimeter_scin_block_8inch_back.model"
+    internal_item.placement.optical_glue : string  = "0 0 10 (mm)"
+    internal_item.model.optical_glue     : string  = "calorimeter_8inch_optical_glue.model"
     # internal_item.placement.pmt : string  = "0 0 11 (mm)"
-    internal_item.placement.pmt : string  = "0 0 10 (mm)"
+    internal_item.placement.pmt : string  = "0 0 6.5 (mm)"
     internal_item.model.pmt     : string  = "calo.PMT_HAMAMATSU_R5912.model"
     internal_item.placement.back_block_wrapping_back : string  = "0 0 54.5 (mm)"
     internal_item.model.back_block_wrapping_back     : string  = "calorimeter_scin_block_8inch_back_wrapper_back.model"
