@@ -45,6 +45,12 @@ Se82.0nubbM1              : Neutrinoless double beta decay of Se-82, 0nubbM1   :
 Se82.0nubbM2              : Neutrinoless double beta decay of Se-82, 0nubbM2   : DBD/Se82 : : rank=first
 Se82.2nubb_2MeV           : Two neutrino double beta decay of Se-82, 2nubb     : DBD/Se82 : : rank=first
 
+#Chosen excited state generators added by Miroslav Macko (22.9.2026)
+Se82.2nubb_2+_777         : Two neutrino double beta decay of Se-82 to Kr-82 first excited 2+ state (0.777 MeV) : DBD/Se82 : :
+Se82.2nubb_2+_1475        : Two neutrino double beta decay of Se-82 to Kr-82 second excited 2+ state (1.475 MeV) : DBD/Se82 : :
+Se82.2nubb_0+_1488        : Two neutrino double beta decay of Se-82 to Kr-82 third excited 2+ state (1.488 MeV) : DBD/Se82 : :
+Se82.2nubb_2+_1957        : Two neutrino double beta decay of Se-82 to Kr-82 fourth excited 2+ state (1.957 MeV) : DBD/Se82 : :
+
 ### Mo100 ###
 Mo100.0nubb                : Neutrinoless double beta decay of Mo-100, 0nubb(mn) : DBD/Mo100 : : rank=second 
 Mo100.0nubb_rhc_lambda_0   : Neutrinoless double beta decay of Mo-100, 0nubb(rhc-lambda) 0+ -> 0+ {2n}     : DBD/Mo100 : : rank=second 
