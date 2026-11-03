@@ -639,29 +639,42 @@ namespace snemo {
         int64_t first_bottom_cathode_timestamp = std::numeric_limits<int64_t>::max();
         int64_t first_top_cathode_timestamp = std::numeric_limits<int64_t>::max();
 
-        for (auto& udd_tracker_times : a_udd_tracker_hit->get_times()) {
+	// iterate first over ANODE_R0 and find earliest hit
+	for (auto& udd_tracker_times : a_udd_tracker_hit->get_times()) {
+	  if (udd_tracker_times.has_anode_time(snemo::datamodel::tracker_digitized_hit::ANODE_R0)) {
+	    const int64_t & anode_timestamp = udd_tracker_times.get_anode_time(snemo::datamodel::tracker_digitized_hit::ANODE_R0);
+	    if (anode_timestamp != 0) // bug from RED/UDD bridge (to fix)
+	      if (anode_timestamp < first_anode_timestamp[0])
+		first_anode_timestamp[0] = anode_timestamp;
+	  }
+	}
 
-          for (int ANODE_Ri=0; ANODE_Ri<5; ANODE_Ri++) {
+	for (auto& udd_tracker_times : a_udd_tracker_hit->get_times()) {
+
+	  // iterate over ANODE_Ri hits and find earliest hit AFTER first anode hit
+          for (int ANODE_Ri=1; ANODE_Ri<5; ANODE_Ri++) {
             if (udd_tracker_times.has_anode_time(ANODE_Ri)) {
               const int64_t & anode_timestamp = udd_tracker_times.get_anode_time(ANODE_Ri);
-              if (anode_timestamp != 0) // bug from RED/UDD bridge (to fix)
-                {
-                  if (anode_timestamp < first_anode_timestamp[ANODE_Ri])
-                    first_anode_timestamp[ANODE_Ri] = anode_timestamp;
-                }
-            }
+	      if (anode_timestamp < first_anode_timestamp[ANODE_Ri])
+		if (anode_timestamp > first_anode_timestamp[0])
+		  first_anode_timestamp[ANODE_Ri] = anode_timestamp;
+	    }
           }
           
+	  // find earliest bottom cathode hit AFTER first anode hit
           if (udd_tracker_times.has_bottom_cathode_time()) {
             const int64_t & bottom_cathode_timestamp = udd_tracker_times.get_bottom_cathode_time();
             if (bottom_cathode_timestamp < first_bottom_cathode_timestamp)
-              first_bottom_cathode_timestamp = bottom_cathode_timestamp;
+	      if (bottom_cathode_timestamp > first_anode_timestamp[0])
+		first_bottom_cathode_timestamp = bottom_cathode_timestamp;
           }
 
+	  // find earliest top cathode hit AFTER first anode hit
           if (udd_tracker_times.has_top_cathode_time()) {
             const int64_t & top_cathode_timestamp = udd_tracker_times.get_top_cathode_time();
             if (top_cathode_timestamp < first_top_cathode_timestamp)
-              first_top_cathode_timestamp = top_cathode_timestamp;
+	      if (top_cathode_timestamp > first_anode_timestamp[0])
+		first_top_cathode_timestamp = top_cathode_timestamp;
           }
 
         }
