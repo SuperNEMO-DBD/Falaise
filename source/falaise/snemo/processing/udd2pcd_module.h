@@ -130,6 +130,7 @@ namespace snemo {
       double _tracker_basic_cluster_deltat_threshold_;
       double _tracker_basic_cluster_deltat_calo_min_;
       double _tracker_basic_cluster_deltat_calo_max_;
+      double _reference_calo_amplitude_threshold_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)

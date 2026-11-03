@@ -92,6 +92,7 @@ namespace snemo {
         _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 10.0) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_min_ = fps.get<double>("tracker_method.cluster_deltat_calo_min_us", -0.22) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_max_ = fps.get<double>("tracker_method.cluster_deltat_calo_max_us",  5.00) * CLHEP::microsecond;
+	_reference_calo_amplitude_threshold_ = fps.get<double>("tracker_method.calo_amplitude_threshold_mv", -10.0) * 1E-3 * CLHEP::volt;
 
         DT_LOG_NOTICE(get_logging_priority(), "tracker precalibration method = '" << udd2pcd_tracker_method_label << "'");
         DT_LOG_NOTICE(get_logging_priority(), "|- cluster radius threshold = " << _tracker_basic_cluster_radius_threshold_);
@@ -1014,8 +1015,8 @@ namespace snemo {
 
 	// We will store the index of pcd calorimeter hit which is the closest
 	// in time to the earliest anode time of tracker hits in the cluster
+	// to be use as reference calo hit for tracker radius calibration.
         double deltat_cluster_first_anode_calo_min = std::numeric_limits<double>::max();
-
         int best_reference_pcd_calo_hit_index = -1;
 
         // Iterate over all calorimeter hits
@@ -1035,7 +1036,8 @@ namespace snemo {
           cluster_calorimeter_index.push_back(pcd_calo_hit_index);
 	  new_precalibrated_cluster->calorimeter_hits().push_back(pcd_calo_hit_handle);
 
-          if (std::fabs(deltat_cluster_first_anode_calo) < deltat_cluster_first_anode_calo_min) {
+	  if ((std::fabs(deltat_cluster_first_anode_calo) < deltat_cluster_first_anode_calo_min) &&
+	      (pcd_calo_hit.get_amplitude() < _reference_calo_amplitude_threshold_)) {
             deltat_cluster_first_anode_calo_min = std::fabs(deltat_cluster_first_anode_calo);
             best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
           }
