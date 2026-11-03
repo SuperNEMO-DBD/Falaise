@@ -467,10 +467,10 @@ namespace snemo {
 
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
 
-        // Baseline
-        double swmeas_baseline_sum  = 0.0;
+	// Baseline
+	double swmeas_baseline_sum  = 0.0;
 	double swmeas_baseline_sum2 = 0.0;
-        for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
+	for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
           const int16_t & waveform_sample = a_udd_calo_waveform[sample];
           swmeas_baseline_sum += waveform_sample;
           swmeas_baseline_sum2 += waveform_sample*waveform_sample;
@@ -1108,6 +1108,8 @@ namespace snemo {
                      << cluster_calorimeter_index.size() << " calorimeter hit(s) "
 		     << "(ref pcd calo hit = " << best_reference_pcd_calo_hit_index << ")");
 
+	datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
+
         if (best_reference_pcd_calo_hit_index != -1) {
 
           // // A candidate of calorimeter hit was found as reference time for this cluster
@@ -1127,20 +1129,19 @@ namespace snemo {
 
 	  // } // for (cluster_pcd_tracker_hit_index)
 
-	  datatools::properties & new_precalibrated_cluster_properties = new_precalibrated_cluster->grab_properties();
-
-	  // store time information
-	  new_precalibrated_cluster_properties.store_integer("first_pcd_tracker_index", cluster_first_anode_index);
 	  new_precalibrated_cluster_properties.store_integer("reference_pcd_calo_index", best_reference_pcd_calo_hit_index);
-	  new_precalibrated_cluster_properties.store_real("mean_anode_time", cluster_mean_anode_time);
-
-	  // store geometry of the bounding box
-	  new_precalibrated_cluster_properties.store_integer("tracker_row_min", cluster_tracker_row_min);
-	  new_precalibrated_cluster_properties.store_integer("tracker_row_max", cluster_tracker_row_max);
-	  new_precalibrated_cluster_properties.store_integer("tracker_layer_min", cluster_tracker_layer_min);
-	  new_precalibrated_cluster_properties.store_integer("tracker_layer_max", cluster_tracker_layer_max);
 
         } // if (best_reference_pcd_calo_hit_index != -1)
+
+	// store time information
+	new_precalibrated_cluster_properties.store_integer("first_pcd_tracker_index", cluster_first_anode_index);
+	new_precalibrated_cluster_properties.store_real("mean_anode_time", cluster_mean_anode_time);
+
+	// store geometry of the bounding box
+	new_precalibrated_cluster_properties.store_integer("tracker_row_min", cluster_tracker_row_min);
+	new_precalibrated_cluster_properties.store_integer("tracker_row_max", cluster_tracker_row_max);
+	new_precalibrated_cluster_properties.store_integer("tracker_layer_min", cluster_tracker_layer_min);
+	new_precalibrated_cluster_properties.store_integer("tracker_layer_max", cluster_tracker_layer_max);
 
 	cpcd_data_.push_back(new_precalibrated_cluster);
 
