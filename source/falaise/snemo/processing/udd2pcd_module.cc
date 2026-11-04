@@ -60,7 +60,7 @@ namespace snemo {
       _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
       _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
       _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
-      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", false);
+      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", true);
 
       std::string udd2pcd_calo_method_label = fps.get<std::string>("calo_method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
@@ -92,7 +92,9 @@ namespace snemo {
         _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 10.0) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_min_ = fps.get<double>("tracker_method.cluster_deltat_calo_min_us", -0.22) * CLHEP::microsecond;
         _tracker_basic_cluster_deltat_calo_max_ = fps.get<double>("tracker_method.cluster_deltat_calo_max_us",  5.00) * CLHEP::microsecond;
-	_reference_calo_amplitude_threshold_ = fps.get<double>("tracker_method.calo_amplitude_threshold_mv", -10.0) * 1E-3 * CLHEP::volt;
+
+	_reference_calo_amplitude_threshold_ = fps.get<double>("reference_calo_amplitude_threshold_mv", -10.0) * 1E-3 * CLHEP::volt;
+	_tracker_cathode_drift_time_max_ = fps.get<double>("tracker_cathode_drift_time_max_us", 100.0) * CLHEP::microsecond;
 
         DT_LOG_NOTICE(get_logging_priority(), "tracker precalibration method = '" << udd2pcd_tracker_method_label << "'");
         DT_LOG_NOTICE(get_logging_priority(), "|- cluster radius threshold = " << _tracker_basic_cluster_radius_threshold_);
@@ -299,6 +301,24 @@ namespace snemo {
     }
 
     // Precalibrate calorimeter hits from UDD informations:
+    bool udd2pcd_module::calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_) {
+
+      if (udd_calo_hit_.is_high_threshold())
+	return true;
+
+      if (udd_calo_hit_.is_low_threshold_only())
+	return true;
+
+      // Check if signal > 10 mV. It (rarely) happens to get signal without HT or LT flag
+      // Usually such calorimeter hit was not part of the trigger decision (random coinc.)
+      // and it won't be usefull for physics, but let's tag it in the event just in case..
+      if (((udd_calo_hit_.get_fwmeas_peak_amplitude()/8.0) * _calo_adc2volt_) > (10E-3 *CLHEP::volt))
+	return true;
+
+      return false;
+    }
+
+    // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
@@ -315,28 +335,9 @@ namespace snemo {
       for (auto& a_udd_calo_hit : udd_calo_hits) {
 
         // Discard empty waveforms
-        if (_calo_discard_empty_waveform_) {
-
-          bool discard_calo_hit = true;
-
-          // Keep hit with HT flag
-          if (a_udd_calo_hit->is_high_threshold())
-            discard_calo_hit = false;
-
-          // Keep hit with LT only flag
-          else if (a_udd_calo_hit->is_low_threshold_only())
-            discard_calo_hit = false;
-
-          // Keep hit with signal >10mV : It (rarely) happens to get signal without HT/LT.
-          // Usually such calorimeter hit was not part of the trigger decision (random coinc.)
-          // and it won't be usefull for physics, but let's keep it in the event just in case..
-          else if (((a_udd_calo_hit->get_fwmeas_peak_amplitude()/8.0) * CALO_ADC2VOLT) > (10E-3 *CLHEP::volt))
-            discard_calo_hit = false;
-
-          if (discard_calo_hit)
-            continue;
-
-        }
+	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
+	if (empty_waveform && _calo_discard_empty_waveform_)
+	  continue;
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
@@ -426,25 +427,9 @@ namespace snemo {
       for (auto& a_udd_calo_hit : udd_calo_hits) {
 
         // Discard empty waveforms
-        if (_calo_discard_empty_waveform_) {
-
-          bool discard_calo_hit = true;
-
-          // Keep hit with HT flag
-          if (a_udd_calo_hit->is_high_threshold())
-            discard_calo_hit = false;
-          // Keep hit with LT only flag
-          else if (a_udd_calo_hit->is_low_threshold_only())
-            discard_calo_hit = false;
-          // Keep hit with signal >10mV : It (rarely) happens to get signal without HT/LT !
-          // Usually such calorimeter hit was not part of the trigger decision (random coinc.)
-          // and it won't be usefull for physics, but let's keep it in the event just in case..
-          else if (((a_udd_calo_hit->get_fwmeas_peak_amplitude()/8.0) * CALO_ADC2VOLT) > (10E-3 *CLHEP::volt))
-            discard_calo_hit = false;
-
-          if (discard_calo_hit)
-            continue;
-        }
+	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
+	if (empty_waveform && _calo_discard_empty_waveform_)
+	  continue;
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
@@ -702,15 +687,21 @@ namespace snemo {
         // Convert and fill the earliest bottom cathode timestamp (R5)
         if (first_bottom_cathode_timestamp != std::numeric_limits<int64_t>::max()) {
           const double first_bottom_cathode_time = first_bottom_cathode_timestamp * TRACKER_TDC_TICK;
-          new_pcd_tracker->set_bottom_cathode_drift_time(first_bottom_cathode_time-first_anode_time);
-          new_pcd_tracker->set_sigma_bottom_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
-        }
+	  const double bottom_cathode_drift_time = first_bottom_cathode_time - first_anode_time;
+	  if (bottom_cathode_drift_time < _tracker_cathode_drift_time_max_) {
+	    new_pcd_tracker->set_bottom_cathode_drift_time(bottom_cathode_drift_time);
+	    new_pcd_tracker->set_sigma_bottom_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
+	  }
+	}
 
         // Convert and fill the earliest top cathode timestamp (R6)
         if (first_top_cathode_timestamp != std::numeric_limits<int64_t>::max()) {
           const double first_top_cathode_time = first_top_cathode_timestamp * TRACKER_TDC_TICK;
-          new_pcd_tracker->set_top_cathode_drift_time(first_top_cathode_time-first_anode_time);
-          new_pcd_tracker->set_sigma_top_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
+	  const double top_cathode_drift_time = first_top_cathode_time - first_anode_time;
+	  if (top_cathode_drift_time < _tracker_cathode_drift_time_max_) {
+	    new_pcd_tracker->set_top_cathode_drift_time(top_cathode_drift_time);
+	    new_pcd_tracker->set_sigma_top_cathode_drift_time(0.5*sqrt(2)*TRACKER_TDC_TICK);
+	  }
         }
 
         // Additional information into pCD tracker datatools::properties

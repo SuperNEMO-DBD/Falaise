@@ -81,6 +81,9 @@ namespace snemo {
       void calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
 					 snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_);
 
+      // Check if calo hit has signal
+      bool calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
+
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                          snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
@@ -131,6 +134,7 @@ namespace snemo {
       double _tracker_basic_cluster_deltat_calo_min_;
       double _tracker_basic_cluster_deltat_calo_max_;
       double _reference_calo_amplitude_threshold_;
+      double _tracker_cathode_drift_time_max_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
