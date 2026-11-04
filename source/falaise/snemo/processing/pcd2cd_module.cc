@@ -106,7 +106,7 @@ namespace snemo {
 	double default_threshold = 0;
 
 	if (fps.has_key("calo_energy_threshold.default"))
-	  default_threshold = fps.get<double>("calo_energy_threshold.default") * CLHEP::MeV;
+	  default_threshold = fps.get<double>("calo_energy_threshold.default");
 
 	_pcd2cd_calo_energy_thresholds_.reserve(712);
 
@@ -120,6 +120,9 @@ namespace snemo {
 	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
 	}
+
+	for (int om=0; om<712; om++)
+	  _pcd2cd_calo_energy_thresholds_[om] *= CLHEP::MeV;
       }
 
       // Configure calorimeter time calibration method
@@ -141,6 +144,9 @@ namespace snemo {
 	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_calo_t0_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 
+	for (int om=0; om<712; om++)
+	  _pcd2cd_calo_t0_constants_[om] *= CLHEP::nanosecond;
+
       } else if (!calo_time_method_label.empty()) {
 	DT_LOG_ERROR(get_logging_priority(), "wrong calorimeter time calibration method '" << calo_time_method_label << "'");
 	_pcd2cd_calo_time_method_ = CALO_TIME_NONE;
@@ -148,6 +154,20 @@ namespace snemo {
       } else {
 	DT_LOG_ERROR(get_logging_priority(), "no calorimeter time calibration method provided");
 	_pcd2cd_calo_time_method_ = CALO_TIME_NONE;
+      }
+
+
+      // Initialise tracker t0 and ppt constants
+      _pcd2cd_tracker_anode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_top_cathode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_ppt_constants_.reserve(2034);
+
+      for (int gg=0; gg<2034; gg++) {
+	_pcd2cd_tracker_anode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_bottom_cathode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_top_cathode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_ppt_constants_.push_back(0);
       }
 
       // Configure tracker time calibration method
@@ -158,16 +178,6 @@ namespace snemo {
 
 	DT_LOG_NOTICE(get_logging_priority(), "tracker time calibration method = '" << tracker_time_method_label << "'");
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_T0_TABLE;
-
-	// Initialise tracker t0 constants
-	_pcd2cd_tracker_anode_t0_constants_.reserve(2034);
-	_pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
-	_pcd2cd_tracker_top_cathode_t0_constants_.reserve(2034);
-	for (int gg=0; gg<2034; gg++) {
-	  _pcd2cd_tracker_anode_t0_constants_.push_back(0);
-	  _pcd2cd_tracker_bottom_cathode_t0_constants_.push_back(0);
-	  _pcd2cd_tracker_top_cathode_t0_constants_.push_back(0);
-	}
 
 	// Fill tracker anode t0 constants
 	if (fps.has_key("tracker_time_method.anode.database")) {
@@ -191,6 +201,12 @@ namespace snemo {
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	}
+
+	for (int gg=0; gg<2034; gg++) {
+	  _pcd2cd_tracker_anode_t0_constants_[gg] *= CLHEP::nanosecond;
+	  _pcd2cd_tracker_bottom_cathode_t0_constants_[gg] *= CLHEP::nanosecond;
+	  _pcd2cd_tracker_bottom_cathode_t0_constants_[gg] *= CLHEP::nanosecond;
 	}
 
       } else if (!tracker_time_method_label.empty()) {
@@ -270,9 +286,9 @@ namespace snemo {
 
 	std::stringstream a_stream (a_line);
 
-	int an_om_num;
-	a_stream >> an_om_num;
-	a_stream >> constants_[an_om_num];
+	int a_geom_num;
+	a_stream >> a_geom_num;
+	a_stream >> constants_[a_geom_num];
 
 	nb_entries++;
       }
@@ -296,16 +312,16 @@ namespace snemo {
 
 	std::stringstream a_stream (a_line);
 
-	int an_om_num;
-	a_stream >> an_om_num;
+	int a_geom_num;
+	a_stream >> a_geom_num;
 
-	double an_om_constant;
-	std::vector<double> all_om_constant;
+	double a_geom_constant;
+	std::vector<double> all_geom_constant;
 
-	while (a_stream >> an_om_constant)
-	  all_om_constant.push_back(an_om_constant);
+	while (a_stream >> a_geom_constant)
+	  all_geom_constant.push_back(a_geom_constant);
 
-	constants_[an_om_num] = all_om_constant;
+	constants_[a_geom_num] = all_geom_constant;
 
 	nb_entries++;
       }
@@ -484,7 +500,7 @@ namespace snemo {
 
       if (_pcd2cd_calo_time_method_ == CALO_TIME_T0_TABLE) {
 	const double & pcd_calo_time = pcd_calo_hit_.get_time();
-	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num] * CLHEP::ns;
+	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num];
 	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
 	// cd_calo_hit_.set_sigma_time(0);
       }
@@ -759,10 +775,9 @@ namespace snemo {
 	// if (_cluster_reference_time_[cluster_i] > 0)
 	//   tcd_cluster->get_auxiliaries()
 
-	tcd_clusters.push_back(tcd_cluster);
-
 	// copy/paste (pCD)_cluster auxiliaries into (CD)_cluster auxiliaries
 	tcd_cluster->grab_auxiliaries() = _cpcd_data_->clusters()[cluster_i]->get_properties();
+	tcd_clusters.push_back(tcd_cluster);
       }
 
       auto & tcd_unclustered_hits = tcd_solution->get_unclustered_hits();
@@ -796,6 +811,11 @@ namespace snemo {
 
 	// Append it to the collection:
 	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
+      }
+
+      if (datatools::logger::is_debug(get_logging_priority())) {
+	for (size_t cluster_id=0; cluster_id<tcd_clusters.size(); cluster_id++)
+	  tcd_clusters.at(cluster_id)->print_tree();
       }
 
     }
