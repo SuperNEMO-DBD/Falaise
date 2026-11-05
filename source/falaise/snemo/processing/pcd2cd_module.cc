@@ -260,10 +260,28 @@ namespace snemo {
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NONE;
       }
 
-      _pcd2cd_tracker_height_effective_ = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
-      _pcd2cd_tracker_height_offset_ = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
+      // Configure tracker height calibration parameters
+
+      _pcd2cd_tracker_height_effective_    = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
+      _pcd2cd_tracker_height_offset_       = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
       _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker_height_deceleration", 0);
-      _pcd2cd_tracker_height_error_ = fps.get<falaise::length_t>("tracker_height_error", {1.0, "cm"})();
+      _pcd2cd_tracker_height_error_        = fps.get<falaise::length_t>("tracker_height_error", {1.25, "cm"})();
+
+      _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker_height_use_single_cathode", false);
+      _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker_height_single_cathode_ppt_correction", 0.005);
+      _pcd2cd_tracker_height_single_cathode_error_ = fps.get<falaise::length_t>("tracker_height_single_cathode_error", {3.08, "cm"})();
+
+      if (fps.has_key("tracker_height_ppt_database")) {
+
+	std::string ppt_table_path = fps.get<std::string>("tracker_height_ppt_database");
+	datatools::fetch_path_with_env(ppt_table_path);
+	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
+	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
+
+	for (int gg=0; gg<2034; gg++)
+	  _pcd2cd_tracker_ppt_constants_[gg] *= CLHEP::microsecond;
+
+      }
 
       this->base_module::_set_initialized(true);
     }
@@ -347,7 +365,6 @@ namespace snemo {
       // }
 
       // retrieve EH data as mutable (for timestamp update)
-      // snemo::datamodel::event_header & ehData = event.grab<snemo::datamodel::event_header>("EH");
       _eh_data_ = &(event.grab<snemo::datamodel::event_header>("EH"));
       _event_id_ = _eh_data_->get_id();
       DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _event_id_);
@@ -654,13 +671,76 @@ namespace snemo {
 	const double H = _pcd2cd_tracker_height_effective_;
 	const double H0 = _pcd2cd_tracker_height_offset_;
 
+	const double SIGMA0 = _pcd2cd_tracker_height_error_;
+	const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+	const double PPTCOR = _pcd2cd_tracker_height_single_cathode_ppt_correction_;
+
 	if (has_both_cathode) {
+
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
 	  const double z_abs = z_norm * H  + H0;
 	  cd_tracker_hit_.set_z(z_abs);
-	  // todo: error model
-	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
+
+	  const double z_error_theo = SIGMA0 * std::sqrt(1-std::pow(z_norm,2));
+	  const double z_error_limit = SIGMA0 / 3.0;
+	  const double z_error = std::max(z_error_theo, z_error_limit);
+	  cd_tracker_hit_.set_sigma_z(z_error);
+
+	} else if (has_bottom_cathode && _pcd2cd_tracker_height_use_single_cathode_) {
+
+	  const int gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+          const double & plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(gg_num);
+
+	  if (plasma_propagation_time != 0) {
+
+	    const double z_norm = (2*bottom_cathode_drift_time - plasma_propagation_time) / plasma_propagation_time;
+	    const double z_corr = PPTCOR * std::pow(1+z_norm,2);
+	    const double z_abs = (z_norm + z_corr) * H  + H0;
+	    cd_tracker_hit_.set_z(z_abs);
+
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1+z_norm,2) +
+						  std::pow(SIGMA1,2)*(1+z_norm));
+	    const double z_error_limit = SIGMA0 / 3.0;
+	    const double z_error = std::max(z_error_theo, z_error_limit);
+	    cd_tracker_hit_.set_sigma_z(z_error);
+
+	    if (z_norm > 0.75)
+	      DT_LOG_WARNING(get_logging_priority(), _event_id_ << " Z from bottom cathode for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  } else {
+
+	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  }
+
+	} else if (has_top_cathode && _pcd2cd_tracker_height_use_single_cathode_) {
+
+	  const int gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
+          const double & plasma_propagation_time = _pcd2cd_tracker_ppt_constants_.at(gg_num);
+
+	  if (plasma_propagation_time != 0) {
+
+	    const double z_norm = (plasma_propagation_time - 2*top_cathode_drift_time) / plasma_propagation_time;
+	    const double z_corr = PPTCOR * std::pow(1-z_norm,2);
+	    const double z_abs = (z_norm - z_corr) * H  + H0;
+	    cd_tracker_hit_.set_z(z_abs);
+
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1-z_norm,2) +
+						  std::pow(SIGMA1,2)*(1-z_norm));
+	    const double z_error_limit = SIGMA0 / 3.0;
+	    const double z_error = std::max(z_error_theo, z_error_limit);
+	    cd_tracker_hit_.set_sigma_z(z_error);
+
+	    if (z_norm < -0.75)
+	      DT_LOG_WARNING(get_logging_priority(), _event_id_ << " Z from top cathode for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  } else {
+
+	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  }
+
 	}
 
       } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_NON_LINEAR_R5R6) {
@@ -669,14 +749,23 @@ namespace snemo {
 	const double H0 = _pcd2cd_tracker_height_offset_;
 	const double K = _pcd2cd_tracker_height_deceleration_;
 
+	const double SIGMA0 = _pcd2cd_tracker_height_error_;
+	// const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+
 	if (has_both_cathode) {
+
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
 	  const double z_norm_non_linear = z_norm - K * H * z_norm * (1 - std::abs(z_norm));
 	  const double z_abs = z_norm_non_linear * H  + H0;
 	  cd_tracker_hit_.set_z(z_abs);
-	  // todo: error model
-	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
+
+	  const double z_err_theo = SIGMA0 * std::sqrt(1-std::pow(z_norm,2));
+	  const double z_err_limit = SIGMA0 / 3;
+	  const double z_err = std::max(z_err_theo, z_err_limit);
+	  cd_tracker_hit_.set_sigma_z(z_err);
+	  cd_tracker_hit_.set_sigma_z(SIGMA0);
+
 	}
 
       }
