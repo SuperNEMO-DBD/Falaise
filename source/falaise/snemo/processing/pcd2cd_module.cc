@@ -710,7 +710,9 @@ namespace snemo {
 
 	  if (plasma_propagation_time != 0) {
 
-	    const double z_norm = (2*bottom_cathode_drift_time - plasma_propagation_time) / plasma_propagation_time;
+	    double z_norm = (2*bottom_cathode_drift_time - plasma_propagation_time) / plasma_propagation_time;
+	    if (z_norm > 1) z_norm = 1;
+
 	    const double z_corr = PPTCOR * std::pow(1+z_norm,2);
 	    const double z_abs = (z_norm + z_corr) * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
@@ -720,9 +722,6 @@ namespace snemo {
 	    const double z_error_limit = SIGMA0 / 3.0;
 	    const double z_error = std::max(z_error_theo, z_error_limit);
 	    cd_tracker_hit_.set_sigma_z(z_error);
-
-	    if (z_norm > 0.75)
-	      DT_LOG_WARNING(get_logging_priority(), _event_id_ << " Z from bottom cathode for cell " << pcd_tracker_hit_.get_geom_id());
 
 	  } else {
 
@@ -737,7 +736,9 @@ namespace snemo {
 
 	  if (plasma_propagation_time != 0) {
 
-	    const double z_norm = (plasma_propagation_time - 2*top_cathode_drift_time) / plasma_propagation_time;
+	    double z_norm = (plasma_propagation_time - 2*top_cathode_drift_time) / plasma_propagation_time;
+	    if (z_norm < -1) z_norm = -1;
+
 	    const double z_corr = PPTCOR * std::pow(1-z_norm,2);
 	    const double z_abs = (z_norm - z_corr) * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
@@ -747,9 +748,6 @@ namespace snemo {
 	    const double z_error_limit = SIGMA0 / 3.0;
 	    const double z_error = std::max(z_error_theo, z_error_limit);
 	    cd_tracker_hit_.set_sigma_z(z_error);
-
-	    if (z_norm < -0.75)
-	      DT_LOG_WARNING(get_logging_priority(), _event_id_ << " Z from top cathode for cell " << pcd_tracker_hit_.get_geom_id());
 
 	  } else {
 
