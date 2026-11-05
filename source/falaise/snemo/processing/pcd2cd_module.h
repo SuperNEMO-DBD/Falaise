@@ -165,6 +165,8 @@ namespace snemo {
       double _pcd2cd_tracker_height_effective_;
       double _pcd2cd_tracker_height_offset_;
       double _pcd2cd_tracker_height_deceleration_;
+      bool   _pcd2cd_tracker_height_skip_short_ppt_;
+      double _pcd2cd_tracker_height_short_ppt_ratio_;
       double _pcd2cd_tracker_height_error_;
       bool   _pcd2cd_tracker_height_use_single_cathode_;
       double _pcd2cd_tracker_height_single_cathode_ppt_correction_;
