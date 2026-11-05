@@ -36,6 +36,9 @@
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
 
+class TFile;
+class TH2F;
+
 namespace geomtools {
   class manager;
 }
@@ -62,8 +65,8 @@ namespace snemo {
       };
 
     public:
-      // Because dpp::base_module is insane
-      virtual ~udd2pcd_module() { this->reset(); }
+      /// Destructor
+      virtual ~udd2pcd_module() { this->finalize(); }
 
       /// Initialization
       virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
@@ -71,6 +74,9 @@ namespace snemo {
 
       /// Reset
       virtual void reset();
+
+      /// Finalize
+      void finalize();
 
       /// Data record processing
       virtual process_status process(datatools::things& event);
@@ -81,7 +87,7 @@ namespace snemo {
       void calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
 					 snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_);
 
-      // Check if calo hit has signal
+      /// Check if calo hit has signal
       bool calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
 
       /// Precalibrate calorimeter hits with fwmeas
@@ -135,6 +141,11 @@ namespace snemo {
       double _tracker_basic_cluster_deltat_calo_max_;
       double _reference_calo_amplitude_threshold_;
       double _tracker_cathode_drift_time_max_;
+
+      std::string _output_filename_;
+      TFile* _output_file_;
+      TH2F* _tracker_cell_ppt_;
+      TH2F* _deltat_cluster_calo_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)

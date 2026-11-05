@@ -17,6 +17,9 @@
 #include <geomtools/manager.h>
 // - Bayeux/mctools:
 #include <mctools/utils.h>
+// - ROOT
+#include "TFile.h"
+#include "TH2F.h"
 
 // This project:
 #include <falaise/snemo/datamodels/data_model.h>
@@ -107,10 +110,28 @@ namespace snemo {
         _tracker_pcd_algo_ = ALGO_TRACKER_NONE;
       }
 
+      // Configure output file
+      _output_filename_ = fps.get<std::string>("root_filename", "udd2pcd.root");
+      _output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
+
+      _tracker_cell_ppt_ = new TH2F ("tracker_cell_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 100);
+      _deltat_cluster_calo_ = new TH2F ("deltat_cluster_calo", ";#DeltaT cluster-calo (us);", 712, 0, 712, 1500, -10, 10);
+
       this->base_module::_set_initialized(true);
     }
 
     void udd2pcd_module::reset() { this->base_module::_set_initialized(false); }
+
+    void udd2pcd_module::finalize() {
+
+      _output_file_->cd();
+      _deltat_cluster_calo_->Write("", TObject::kOverwrite);
+      _tracker_cell_ppt_->Write("", TObject::kOverwrite);
+      _output_file_->Close();
+
+      this->base_module::_set_initialized(false);
+
+    }
 
     // Processing :
     dpp::base_module::process_status udd2pcd_module::process(datatools::things& event) {
@@ -704,6 +725,16 @@ namespace snemo {
 	  }
         }
 
+	// Compute and store plasma propagation time
+	const double pcd_ppt = new_pcd_tracker->get_plasma_propagation_time();
+	if (datatools::is_valid(pcd_ppt)) {
+	  const double pcd_bottom_time = new_pcd_tracker->get_bottom_cathode_drift_time();
+	  const double pcd_top_time = new_pcd_tracker->get_top_cathode_drift_time();
+	  const double z_norm = (pcd_bottom_time-pcd_top_time)/pcd_ppt;
+	  if (std::fabs(z_norm) < 0.9) // skip bottom and top edge hit case, with bias on PPT
+	    _tracker_cell_ppt_->Fill(snemo::datamodel::gg_num(new_pcd_tracker->get_geom_id()), pcd_ppt/CLHEP::microsecond);
+	}
+
         // Additional information into pCD tracker datatools::properties
         datatools::properties& pcd_tracker_hit_properties = new_pcd_tracker->grab_auxiliaries();
 
@@ -1020,6 +1051,7 @@ namespace snemo {
 
           // perform calo/tracker time correlation
           const double deltat_cluster_first_anode_calo = cluster_first_anode_time - calo_time;
+	  _deltat_cluster_calo_->Fill(snemo::datamodel::om_num(pcd_calo_hit.get_geom_id()), deltat_cluster_first_anode_calo/CLHEP::microsecond);
 
           if (deltat_cluster_first_anode_calo > _tracker_basic_cluster_deltat_calo_max_) continue;
           if (deltat_cluster_first_anode_calo < _tracker_basic_cluster_deltat_calo_min_) continue;

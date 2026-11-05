@@ -18,6 +18,9 @@
 #include <geomtools/manager.h>
 // - Bayeux/mctools:
 #include <mctools/utils.h>
+// - ROOT
+#include "TFile.h"
+#include "TH2F.h"
 
 // This project:
 #include <falaise/property_set.h>
@@ -302,10 +305,25 @@ namespace snemo {
 
       }
 
+      // Configure output file
+      _output_filename_ = fps.get<std::string>("root_filename", "pcd2cd.root");
+      _output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
+      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 2);
+
       this->base_module::_set_initialized(true);
     }
 
     void pcd2cd_module::reset() { this->base_module::_set_initialized(false); }
+
+    void pcd2cd_module::finalize() {
+
+      _output_file_->cd();
+      _tracker_cell_normalized_ppt_->Write("", TObject::kOverwrite);
+      _output_file_->Close();
+
+      this->base_module::_set_initialized(false);
+
+    }
 
     int pcd2cd_module::parse_calibration_constants(std::string database_path_, std::vector<double> & constants_) {
 
@@ -703,6 +721,7 @@ namespace snemo {
 	  if (plasma_propagation_time != 0) {
 
 	    const double plasma_propagation_time_ratio = plasma_propagation_time/_pcd2cd_tracker_ppt_constants_[tracker_gg_num];
+	    _tracker_cell_normalized_ppt_->Fill(tracker_gg_num, plasma_propagation_time_ratio);
 
 	    if (plasma_propagation_time_ratio < 0.9) {
 

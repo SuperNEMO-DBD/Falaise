@@ -37,6 +37,9 @@
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
 
+class TFile;
+class TH2F;
+
 namespace geomtools {
   class manager;
 }
@@ -79,8 +82,8 @@ namespace snemo {
       };
 
     public:
-      // Because dpp::base_module is insane
-      virtual ~pcd2cd_module() { this->reset(); }
+      /// Destructor
+      virtual ~pcd2cd_module() { this->finalize(); }
 
       /// Initialization
       virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
@@ -88,6 +91,9 @@ namespace snemo {
 
       /// Reset
       virtual void reset();
+
+      /// Finalize
+      void finalize();
 
       /// Data record processing
       virtual process_status process(datatools::things& event);
@@ -173,6 +179,10 @@ namespace snemo {
       double _pcd2cd_tracker_height_single_cathode_error_;
 
       std::vector<double> _pcd2cd_tracker_ppt_constants_;
+
+      std::string _output_filename_;
+      TFile* _output_file_;
+      TH2F* _tracker_cell_normalized_ppt_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)
