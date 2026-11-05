@@ -56,7 +56,7 @@ namespace snemo {
 
       // Configure calorimeter energy calibration method
 
-      std::string calo_energy_method_label = fps.get<std::string>("calo_energy_method", "");
+      std::string calo_energy_method_label = fps.get<std::string>("calo.energy.method", "");
 
       if (calo_energy_method_label == "200mV/MeV") {
 	DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy calibration method = '" << calo_energy_method_label << "'");
@@ -72,7 +72,7 @@ namespace snemo {
 	  _pcd2cd_calo_energy_constants_.push_back({0});
 
 	// Fill calo pol0 energy constants
-	std::string pol0_table_path = fps.get<std::string>("calo_energy_method.database");
+	std::string pol0_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol0_table_path);
 	int nb_entries = this->parse_calibration_constants(pol0_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol0_table_path << "'");
@@ -87,7 +87,7 @@ namespace snemo {
 	  _pcd2cd_calo_energy_constants_.push_back({0,0});
 
 	// Fill calo pol1 energy constants
-	std::string pol1_table_path = fps.get<std::string>("calo_energy_method.database");
+	std::string pol1_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol1_table_path);
 	int nb_entries = this->parse_calibration_constants(pol1_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol1_table_path << "'");
@@ -105,20 +105,24 @@ namespace snemo {
       {
 	double default_threshold = 0;
 
-	if (fps.has_key("calo_energy_threshold.default"))
-	  default_threshold = fps.get<double>("calo_energy_threshold.default");
+	if (fps.has_key("calo.energy.default_threshold"))
+	  default_threshold = fps.get<double>("calo.energy.default_threshold");
 
 	_pcd2cd_calo_energy_thresholds_.reserve(712);
 
 	for (int om=0; om<712; om++)
 	  _pcd2cd_calo_energy_thresholds_.push_back(default_threshold);
 
-	if (fps.has_key("calo_energy_threshold.database")) {
-	  std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
+	if (fps.has_key("calo.energy.threshold_database")) {
+	  std::string energy_threshold_table_path = fps.get<std::string>("calo.energy.threshold_database");
 	  datatools::fetch_path_with_env(energy_threshold_table_path);
 	  int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
 	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
+	  DT_LOG_NOTICE(get_logging_priority(), "| default threshold = " << default_threshold/CLHEP::keV << " keV");
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
+	} else {
+	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
+	  DT_LOG_NOTICE(get_logging_priority(), "`- default threshold = " << default_threshold/CLHEP::MeV);
 	}
 
 	for (int om=0; om<712; om++)
@@ -127,7 +131,7 @@ namespace snemo {
 
       // Configure calorimeter time calibration method
 
-      std::string calo_time_method_label = fps.get<std::string>("calo_time_method", "");
+      std::string calo_time_method_label = fps.get<std::string>("calo.time.method", "");
 
       if (calo_time_method_label == "t0_table") {
 	DT_LOG_NOTICE(get_logging_priority(), "calorimeter time calibration method = '" << calo_time_method_label << "'");
@@ -139,7 +143,7 @@ namespace snemo {
 	  _pcd2cd_calo_t0_constants_.push_back(0);
 
 	// Fill calo t0 constants
-	std::string t0_table_path = fps.get<std::string>("calo_time_method.database");
+	std::string t0_table_path = fps.get<std::string>("calo.time.database");
 	datatools::fetch_path_with_env(t0_table_path);
 	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_calo_t0_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
@@ -172,7 +176,7 @@ namespace snemo {
 
       // Configure tracker time calibration method
 
-      std::string tracker_time_method_label = fps.get<std::string>("tracker_time_method", "");
+      std::string tracker_time_method_label = fps.get<std::string>("tracker.time.method", "");
 
       if (tracker_time_method_label == "t0_table") {
 
@@ -180,24 +184,24 @@ namespace snemo {
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_T0_TABLE;
 
 	// Fill tracker anode t0 constants
-	if (fps.has_key("tracker_time_method.anode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.anode.database");
+	if (fps.has_key("tracker.time.anode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.anode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_anode_t0_constants_);
-	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
 	// Fill tracker bottom cathode t0 constants
-	if (fps.has_key("tracker_time_method.bottom_cathode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.bottom_cathode.database");
+	if (fps.has_key("tracker.time.bottom_cathode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.bottom_cathode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
-	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
 	// Fill tracker top cathode t0 constants
-	if (fps.has_key("tracker_time_method.top_cathode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.top_cathode.database");
+	if (fps.has_key("tracker.time.top_cathode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.top_cathode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
@@ -241,7 +245,7 @@ namespace snemo {
 
       // Configure tracker height calibration method
 
-      std::string tracker_height_method_label = fps.get<std::string>("tracker_height_method", "");
+      std::string tracker_height_method_label = fps.get<std::string>("tracker.height.method", "");
 
       if (tracker_height_method_label == "linear_r5r6") {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
@@ -262,18 +266,30 @@ namespace snemo {
 
       // Configure tracker height calibration parameters
 
-      _pcd2cd_tracker_height_effective_    = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
-      _pcd2cd_tracker_height_offset_       = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
-      _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker_height_deceleration", 0);
-      _pcd2cd_tracker_height_error_        = fps.get<falaise::length_t>("tracker_height_error", {1.25, "cm"})();
+      _pcd2cd_tracker_height_effective_    = fps.get<falaise::length_t>("tracker.height.effective_height", {1.38, "m"})();
+      _pcd2cd_tracker_height_offset_       = fps.get<falaise::length_t>("tracker.height.height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
+      _pcd2cd_tracker_height_error_        = fps.get<falaise::length_t>("tracker.height.max_error", {1.25, "cm"})();
+      _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker.height.plasma_deceleration", 0);
 
-      _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker_height_use_single_cathode", false);
-      _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker_height_single_cathode_ppt_correction", 0.005);
-      _pcd2cd_tracker_height_single_cathode_error_ = fps.get<falaise::length_t>("tracker_height_single_cathode_error", {3.08, "cm"})();
+      DT_LOG_NOTICE(get_logging_priority(), "|- effective height = " << _pcd2cd_tracker_height_effective_/CLHEP::m << " m");
+      DT_LOG_NOTICE(get_logging_priority(), "|- height offset = " << _pcd2cd_tracker_height_offset_/CLHEP::cm << " cm");
+      DT_LOG_NOTICE(get_logging_priority(), "|- height error = " << _pcd2cd_tracker_height_error_/CLHEP::cm << " cm");
+      DT_LOG_NOTICE(get_logging_priority(), "|- plasma deceleration = " << _pcd2cd_tracker_height_deceleration_);
 
-      if (fps.has_key("tracker_height_ppt_database")) {
+      _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker.height.use_single_cathode", false);
+      _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker.height.single_cathode.ppt_correction", 0.005);
+      _pcd2cd_tracker_height_single_cathode_error_ = fps.get<falaise::length_t>("tracker.height.single_cathode.error", {3.08, "cm"})();
 
-	std::string ppt_table_path = fps.get<std::string>("tracker_height_ppt_database");
+      DT_LOG_NOTICE(get_logging_priority(), "|- use single cathode = " << _pcd2cd_tracker_height_use_single_cathode_);
+
+      if (_pcd2cd_tracker_height_use_single_cathode_) {
+	DT_LOG_NOTICE(get_logging_priority(), "|  |- ppt correction = " << _pcd2cd_tracker_height_single_cathode_ppt_correction_);
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- cathode error = " << _pcd2cd_tracker_height_single_cathode_error_/CLHEP::cm << " cm");
+      }
+
+      if (fps.has_key("tracker.height.ppt_database")) {
+
+	std::string ppt_table_path = fps.get<std::string>("tracker.height.ppt_database");
 	datatools::fetch_path_with_env(ppt_table_path);
 	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
