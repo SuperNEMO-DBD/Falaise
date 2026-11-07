@@ -23,6 +23,8 @@
 #include "TH2F.h"
 
 // This project:
+#include <falaise/property_set.h>
+#include <falaise/quantity.h>
 #include <falaise/snemo/datamodels/data_model.h>
 #include <falaise/snemo/datamodels/event_header.h>
 #include <falaise/snemo/datamodels/unified_digitized_data.h>
@@ -56,33 +58,13 @@ namespace snemo {
       // Configure calorimeter pre-calibration method
 
       // general parameters
-      _calo_adc2volt_ = fps.get<double>("calo_adc2volt", 2.5/4096.0) * CLHEP::volt;
-      double _calo_sampling_frequency_ = fps.get<double>("calo_sampling_frequency_ghz", 2.56) * 1E9*CLHEP::hertz;
-      _calo_sampling_period_ = 1.0/_calo_sampling_frequency_; // fps.get<double>("calo_sampling_period_ns", 0.390625) * 1E-9*CLHEP::second;
-      _calo_postrigger_time_ = fps.get<double>("calo_postrigger_ns", 250) * CLHEP::ns;
+      _calo_adc2volt_ = fps.get<double>("calo.adc2volt", 2.5/4096.0) * CLHEP::volt;
+      _calo_sampling_period_ = fps.get<falaise::time_t>("calo.sampling_period", {0.390625, "ns"})();
+      _calo_postrigger_time_ = fps.get<falaise::time_t>("calo.post_trigger", {250.0, "ns"})();
+      _calo_discard_empty_waveform_ = fps.get<bool>("calo.waveform.discard_empty", true);
+      // _calo_discard_all_waveform_ = fps.get<bool>("calo.waveform.discard_all", false);
 
-      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", true);
-
-      // swmeas parameters
-      // - baseline
-      _calo_baseline_nsamples_ = fps.get<int>("calo_baseline_nsamples", 16);
-      // - charge integration
-      _calo_charge_integration_nsamples_ = fps.get<int>("calo_charge_integration_nsamples", 992);
-      _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
-      _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
-      // - time measurement
-      _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
-
-      _calo_subtract_sample_pedestal_ = fps.get<bool>("calo.swmeas.subtract_sample_pedestal", false);
-
-      if (fps.has_key("calo.swmeas.sample_pedestal_database")) {
-	std::string calo_sample_pedestal_database_path = fps.get<std::string>("calo.swmeas.sample_pedestal_database");
-	datatools::fetch_path_with_env(calo_sample_pedestal_database_path);
-	int nb_entries = this->parse_calo_sample_pedestal_database(calo_sample_pedestal_database_path);
-	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << calo_sample_pedestal_database_path << "'");
-      }
-
-      std::string udd2pcd_calo_method_label = fps.get<std::string>("calo_method", "fwmeas");
+      std::string udd2pcd_calo_method_label = fps.get<std::string>("calo.method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
         _calo_pcd_algo_ = ALGO_CALO_FWMEASUREMENT;
       } else if (udd2pcd_calo_method_label == "swmeas") {
@@ -92,14 +74,35 @@ namespace snemo {
         _calo_pcd_algo_ = ALGO_CALO_FWMEASUREMENT;
       }
 
+      // swmeas parameters configuration
+      // - baseline measurement
+      _calo_baseline_nsamples_        = fps.get<int>("calo.swmeas.baseline.nsamples", 16);
+      _calo_subtract_sample_pedestal_ = fps.get<bool>("calo.swmeas.baseline.subtract_pedestal", false);
+      _calo_sample_pedestal_database_ = fps.get<std::string>("calo.swmeas.baseline.pedestal_database", "");
+      // - charge measurement
+      _calo_charge_nsamples_             = fps.get<int>("calo.swmeas.charge.nsamples", 992);
+      _calo_charge_nsamples_before_peak_ = fps.get<int>("calo.swmeas.charge.nsamples_before_peak", 64);
+      _calo_charge_sample_max_           = fps.get<int>("calo.swmeas.charge.sample_max", 986);
+      // - time measurement
+      _calo_time_cfd_ratio_ = fps.get<double>("calo.swmeas.time.cfd_ratio", 4./16.);
+
+      if (!_calo_sample_pedestal_database_.empty()) {
+	std::string calo_sample_pedestal_database_path = fps.get<std::string>("calo.swmeas.baseline.pedestal_database");
+	datatools::fetch_path_with_env(calo_sample_pedestal_database_path);
+	int nb_entries = this->parse_calo_sample_pedestal_database(calo_sample_pedestal_database_path);
+	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << calo_sample_pedestal_database_path << "'");
+      }
+
       DT_LOG_NOTICE(get_logging_priority(), "calorimeter udd2pcd firmware measurement configuration:");
       DT_LOG_NOTICE(get_logging_priority(), "|- adc2volt          = " << _calo_adc2volt_/(1E-3*CLHEP::volt) << " mV/tick");
       DT_LOG_NOTICE(get_logging_priority(), "|- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
-      DT_LOG_NOTICE(get_logging_priority(), "|- charge integration nsamples = " << _calo_charge_integration_nsamples_);
-      DT_LOG_NOTICE(get_logging_priority(), "|- pre-charge nsamples         = " << _calo_charge_integration_nsamples_before_peak_);
-      DT_LOG_NOTICE(get_logging_priority(), "`- falling time cfd ratio      = " << _calo_time_cfd_ratio_);
+      DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_sample_pedestal_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- charge nsamples    = " << _calo_charge_nsamples_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- charge pre-peak    = " << _calo_charge_nsamples_before_peak_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- charge samples max = " << _calo_charge_sample_max_);
+      DT_LOG_NOTICE(get_logging_priority(), "`- time cfd ratio     = " << _calo_time_cfd_ratio_);
 
       // Configure tracker pre-calibration method
 
@@ -108,13 +111,15 @@ namespace snemo {
       if (udd2pcd_tracker_method_label == "basic_cluster") {
 
         _tracker_pcd_algo_ = ALGO_TRACKER_BASIC_CLUSTER;
-        _tracker_basic_cluster_radius_threshold_ = fps.get<double>("tracker_method.cluster_radius_threshold", 3.0);
-        _tracker_basic_cluster_deltat_threshold_ = fps.get<double>("tracker_method.cluster_deltat_threshold_us", 10.0) * CLHEP::microsecond;
-        _tracker_basic_cluster_deltat_calo_min_ = fps.get<double>("tracker_method.cluster_deltat_calo_min_us", -0.22) * CLHEP::microsecond;
-        _tracker_basic_cluster_deltat_calo_max_ = fps.get<double>("tracker_method.cluster_deltat_calo_max_us",  5.00) * CLHEP::microsecond;
+        _tracker_basic_cluster_radius_threshold_ = fps.get<double>("tracker.basic_cluster.radius_threshold", 3.0);
+        _tracker_basic_cluster_deltat_threshold_ = fps.get<falaise::time_t>("tracker.basic_cluster.deltat_threshold", {10.0, "us"})();
+        _tracker_basic_cluster_deltat_calo_min_ = fps.get<falaise::time_t>("tracker.basic_cluster.deltat_calo_min", {-0.22, "us"})();
+        _tracker_basic_cluster_deltat_calo_max_ = fps.get<falaise::time_t>("tracker.basic_cluster.deltat_calo_max", {5.00, "us"})();
 
-	_reference_calo_amplitude_threshold_ = fps.get<double>("reference_calo_amplitude_threshold_mv", -10.0) * 1E-3 * CLHEP::volt;
-	_tracker_cathode_drift_time_max_ = fps.get<double>("tracker_cathode_drift_time_max_us", 100.0) * CLHEP::microsecond;
+	_tracker_basic_cluster_reference_calo_amplitude_threshold_ = \
+	  fps.get<double>("tracker.basic_cluster.reference_calo_amplitude_threshold_mv", -10.0) * 1E-3 * CLHEP::volt;
+
+	_tracker_cathode_drift_time_max_ = fps.get<falaise::time_t>("tracker.cathode_drift_time_max_us", {100.0, "us"})();
 
         DT_LOG_NOTICE(get_logging_priority(), "tracker precalibration method = '" << udd2pcd_tracker_method_label << "'");
         DT_LOG_NOTICE(get_logging_priority(), "|- cluster radius threshold = " << _tracker_basic_cluster_radius_threshold_);
@@ -609,15 +614,13 @@ namespace snemo {
         new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
 
         // Charge
-        int16_t charge_sample_start = min_amplitude_sample - _calo_charge_integration_nsamples_before_peak_;
+        int16_t charge_sample_start = min_amplitude_sample - _calo_charge_nsamples_before_peak_;
         if (charge_sample_start < 0) charge_sample_start = 0;
-        int16_t charge_sample_stop = charge_sample_start + _calo_charge_integration_nsamples_;
+        int16_t charge_sample_stop = charge_sample_start + _calo_charge_nsamples_;
         if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
-	if (charge_sample_stop > _calo_charge_integration_nsamples_before_peak_) {
-	  charge_sample_stop = _calo_charge_integration_samples_max_;
-	  // make the charge integration window multiple of 16
-	  charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
-	}
+	charge_sample_stop = std::min(charge_sample_stop, _calo_charge_sample_max_);
+	// make the charge integration window multiple of 16
+	charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
 
         double swmeas_charge_sum = 0;
         for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
@@ -1157,7 +1160,7 @@ namespace snemo {
 	  new_precalibrated_cluster->calorimeter_hits().push_back(pcd_calo_hit_handle);
 
 	  if ((std::fabs(deltat_cluster_first_anode_calo) < deltat_cluster_first_anode_calo_min) &&
-	      (pcd_calo_hit.get_amplitude() < _reference_calo_amplitude_threshold_)) {
+	      (pcd_calo_hit.get_amplitude() < _tracker_basic_cluster_reference_calo_amplitude_threshold_)) {
             deltat_cluster_first_anode_calo_min = std::fabs(deltat_cluster_first_anode_calo);
             best_reference_pcd_calo_hit_index = pcd_calo_hit_index;
           }

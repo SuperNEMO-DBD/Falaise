@@ -129,27 +129,27 @@ namespace snemo {
       calorimeter_precalibration_algorithm _calo_pcd_algo_;
 
       double _calo_adc2volt_;
-      double _calo_sampling_frequency_;
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
 
-      bool   _calo_discard_empty_waveform_;
+      bool _calo_discard_empty_waveform_;
+      // bool _calo_discard_all_waveform_;
 
-      int    _calo_baseline_nsamples_;
-      bool   _calo_subtract_sample_pedestal_;
+      int         _calo_baseline_nsamples_;
+      std::string _calo_sample_pedestal_database_;
+      bool        _calo_subtract_sample_pedestal_;
       std::vector<std::vector<int16_t>> _calo_sample_pedestal_;
-      int    _calo_charge_integration_nsamples_;
-      int    _calo_charge_integration_nsamples_before_peak_;
-      int    _calo_charge_integration_samples_max_;
-      double _calo_time_cfd_ratio_;
-
+      int16_t _calo_charge_nsamples_;
+      int16_t _calo_charge_nsamples_before_peak_;
+      int16_t _calo_charge_sample_max_;
+      double  _calo_time_cfd_ratio_;
 
       tracker_precalibration_algorithm _tracker_pcd_algo_;
       double _tracker_basic_cluster_radius_threshold_;
       double _tracker_basic_cluster_deltat_threshold_;
       double _tracker_basic_cluster_deltat_calo_min_;
       double _tracker_basic_cluster_deltat_calo_max_;
-      double _reference_calo_amplitude_threshold_;
+      double _tracker_basic_cluster_reference_calo_amplitude_threshold_;
       double _tracker_cathode_drift_time_max_;
 
       std::string _output_filename_;
