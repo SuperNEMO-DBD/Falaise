@@ -5,6 +5,7 @@
 #include "udd2pcd_module.h"
 
 // Standard library:
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 
@@ -54,16 +55,32 @@ namespace snemo {
 
       // Configure calorimeter pre-calibration method
 
+      // general parameters
       _calo_adc2volt_ = fps.get<double>("calo_adc2volt", 2.5/4096.0) * CLHEP::volt;
       double _calo_sampling_frequency_ = fps.get<double>("calo_sampling_frequency_ghz", 2.56) * 1E9*CLHEP::hertz;
       _calo_sampling_period_ = 1.0/_calo_sampling_frequency_; // fps.get<double>("calo_sampling_period_ns", 0.390625) * 1E-9*CLHEP::second;
       _calo_postrigger_time_ = fps.get<double>("calo_postrigger_ns", 250) * CLHEP::ns;
+
+      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", true);
+
+      // swmeas parameters
+      // - baseline
       _calo_baseline_nsamples_ = fps.get<int>("calo_baseline_nsamples", 16);
+      // - charge integration
       _calo_charge_integration_nsamples_ = fps.get<int>("calo_charge_integration_nsamples", 992);
       _calo_charge_integration_nsamples_before_peak_ = fps.get<int>("calo_charge_integration_nsamples_before_peak", 64);
       _calo_charge_integration_samples_max_ = fps.get<int>("calo_charge_integration_samples_max", 986);
+      // - time measurement
       _calo_time_cfd_ratio_ = fps.get<double>("calo_time_cfd_ratio", 4./16.);
-      _calo_discard_empty_waveform_ = fps.get<bool>("calo_discard_empty_waveform", true);
+
+      _calo_subtract_sample_pedestal_ = fps.get<bool>("calo.swmeas.subtract_sample_pedestal", false);
+
+      if (fps.has_key("calo.swmeas.sample_pedestal_database")) {
+	std::string calo_sample_pedestal_database_path = fps.get<std::string>("calo.swmeas.sample_pedestal_database");
+	datatools::fetch_path_with_env(calo_sample_pedestal_database_path);
+	int nb_entries = this->parse_calo_sample_pedestal_database(calo_sample_pedestal_database_path);
+	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << calo_sample_pedestal_database_path << "'");
+      }
 
       std::string udd2pcd_calo_method_label = fps.get<std::string>("calo_method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
@@ -131,6 +148,64 @@ namespace snemo {
 
       this->base_module::_set_initialized(false);
 
+    }
+
+    // Parse sample pedestal database
+    int udd2pcd_module::parse_calo_sample_pedestal_database(std::string database_path_) {
+
+      DT_LOG_WARNING(get_logging_priority(), "database = " << database_path_);
+
+      // initialize vector of vector storage
+
+      _calo_sample_pedestal_.reserve(712);
+
+      std::vector<int16_t> dummy_sample_pedestal;
+      dummy_sample_pedestal.reserve(1024);
+
+      for (int sample=0; sample<1024; sample++)
+	dummy_sample_pedestal.push_back(0);
+
+      for (int om=0; om<712; om++)
+	_calo_sample_pedestal_.push_back(dummy_sample_pedestal);
+
+      // parse database file
+
+      int nb_entries = 0;
+      std::ifstream database_file (database_path_.c_str());
+
+      std::string a_line;
+
+      while (std::getline(database_file, a_line)) {
+
+	// skip comment-like line
+	if (a_line[0] == '#')
+	  continue;
+
+	std::stringstream a_stream (a_line);
+
+	int an_om_num;
+	a_stream >> an_om_num;
+
+	if ((an_om_num < 0) || (an_om_num >= 712)) {
+	  DT_LOG_WARNING(get_logging_priority(), "om_num out of range (" << an_om_num << ")");
+	  continue;
+	}
+
+	for (int sample=0; sample<1024; sample++)
+	  a_stream >> _calo_sample_pedestal_[an_om_num][sample];
+
+	// {
+	//   std::cout << "[" << an_om_num << "]";
+	//   for (int sample=0; sample<3; sample++)
+	//     std::cout << " " << _calo_sample_pedestal_[an_om_num][sample];
+	//   std::cout << " ... " << _calo_sample_pedestal_[an_om_num][1023] << std::endl;
+	// }
+
+	nb_entries++;
+
+      } // while getline
+
+      return nb_entries;
     }
 
     // Processing :
@@ -321,7 +396,7 @@ namespace snemo {
 
     }
 
-    // Precalibrate calorimeter hits from UDD informations:
+    // Check if digitized calorimeter hit has signal (HT flag, LT flag, or low amplitude signal)
     bool udd2pcd_module::calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_) {
 
       if (udd_calo_hit_.is_high_threshold())
@@ -477,11 +552,33 @@ namespace snemo {
 	// Baseline
 	double swmeas_baseline_sum  = 0.0;
 	double swmeas_baseline_sum2 = 0.0;
-	for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
-          const int16_t & waveform_sample = a_udd_calo_waveform[sample];
-          swmeas_baseline_sum += waveform_sample;
-          swmeas_baseline_sum2 += waveform_sample*waveform_sample;
-        }
+
+	if (_calo_subtract_sample_pedestal_) {
+
+	  const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
+	  const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
+
+	  for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
+
+	    uint16_t cell_number = first_read_cell + sample;
+	    if (cell_number >= 1024) cell_number -= 1024;
+
+	    int16_t waveform_sample = a_udd_calo_waveform[sample];
+	    waveform_sample -= _calo_sample_pedestal_[om_num][cell_number];
+
+	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
+	    swmeas_baseline_sum += waveform_sample;
+	  }
+
+	} else {
+
+	  for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
+	    const int16_t & waveform_sample = a_udd_calo_waveform[sample];
+	    swmeas_baseline_sum += waveform_sample;
+	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
+	  }
+
+	}
 
         const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
         const double swmeas_baseline_adc_sigma2 = swmeas_baseline_sum2/_calo_baseline_nsamples_ - swmeas_baseline_adc_mean*swmeas_baseline_adc_mean;
