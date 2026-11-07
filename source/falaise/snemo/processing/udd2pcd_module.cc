@@ -106,7 +106,7 @@ namespace snemo {
 
       // Configure tracker pre-calibration method
 
-      std::string udd2pcd_tracker_method_label = fps.get<std::string>("tracker_method", "");
+      std::string udd2pcd_tracker_method_label = fps.get<std::string>("tracker.method", "");
 
       if (udd2pcd_tracker_method_label == "basic_cluster") {
 

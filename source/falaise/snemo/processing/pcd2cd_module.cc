@@ -226,7 +226,7 @@ namespace snemo {
 
       // Configure tracker radius calibration method
 
-      std::string tracker_radius_method_label = fps.get<std::string>("tracker_radius_method", "");
+      std::string tracker_radius_method_label = fps.get<std::string>("tracker.radius.method", "");
 
       if (tracker_radius_method_label == "r=1cm") {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker radius calibration method = '" << tracker_radius_method_label << "'");
@@ -715,12 +715,12 @@ namespace snemo {
 	if (has_both_cathode) {
 
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
+	  const double plasma_propagation_time_ratio = plasma_propagation_time/_pcd2cd_tracker_ppt_constants_[tracker_gg_num];
 
 	  bool do_z_calibration = true;
 
 	  if (plasma_propagation_time != 0) {
 
-	    const double plasma_propagation_time_ratio = plasma_propagation_time/_pcd2cd_tracker_ppt_constants_[tracker_gg_num];
 	    _tracker_cell_normalized_ppt_->Fill(tracker_gg_num, plasma_propagation_time_ratio);
 
 	    if (plasma_propagation_time_ratio < 0.9) {
@@ -728,12 +728,12 @@ namespace snemo {
 	      if (_pcd2cd_tracker_height_skip_short_ppt_)
 		do_z_calibration = false;
 
-	      DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << plasma_propagation_time_ratio);
+	      // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << plasma_propagation_time_ratio);
 	    }
 
 	  } else {
 
-	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
 
 	  }
 
@@ -770,7 +770,7 @@ namespace snemo {
 
 	  } else {
 
-	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
 
 	  }
 
@@ -795,7 +795,7 @@ namespace snemo {
 
 	  } else {
 
-	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
 
 	  }
 
