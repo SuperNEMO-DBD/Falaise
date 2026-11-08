@@ -131,9 +131,7 @@ namespace snemo {
       double _calo_adc2volt_;
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
-
       bool _calo_discard_empty_waveform_;
-      // bool _calo_discard_all_waveform_;
 
       int         _calo_baseline_nsamples_;
       std::string _calo_sample_pedestal_database_;
@@ -154,6 +152,10 @@ namespace snemo {
 
       std::string _output_filename_;
       TFile* _output_file_;
+
+      TH2F *_calo_amplitude_spectrum_;
+      TH2F *_calo_charge_spectrum_;
+
       TH2F* _tracker_cell_ppt_;
       TH2F* _deltat_cluster_calo_;
 

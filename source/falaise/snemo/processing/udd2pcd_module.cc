@@ -21,6 +21,7 @@
 // - ROOT
 #include "TFile.h"
 #include "TH2F.h"
+#include "TROOT.h"
 
 // This project:
 #include <falaise/property_set.h>
@@ -61,8 +62,7 @@ namespace snemo {
       _calo_adc2volt_ = fps.get<double>("calo.adc2volt", 2.5/4096.0) * CLHEP::volt;
       _calo_sampling_period_ = fps.get<falaise::time_t>("calo.sampling_period", {0.390625, "ns"})();
       _calo_postrigger_time_ = fps.get<falaise::time_t>("calo.post_trigger", {250.0, "ns"})();
-      _calo_discard_empty_waveform_ = fps.get<bool>("calo.waveform.discard_empty", true);
-      // _calo_discard_all_waveform_ = fps.get<bool>("calo.waveform.discard_all", false);
+      _calo_discard_empty_waveform_ = fps.get<bool>("calo.discard_empty_waveform", true);
 
       std::string udd2pcd_calo_method_label = fps.get<std::string>("calo.method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
@@ -133,8 +133,15 @@ namespace snemo {
       }
 
       // Configure output file
-      _output_filename_ = fps.get<std::string>("root_filename", "udd2pcd.root");
-      _output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
+      _output_filename_ = fps.get<std::string>("root_filename", "");
+
+      if (!_output_filename_.empty())
+	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
+      else gROOT->cd();
+
+      // amplitude and charge range are corresponding to 0-5 MeV
+      _calo_amplitude_spectrum_ = new TH2F ("calo_amplitude_spectrum", ";OM;Amplitude (mV)", 712, 0, 712, 1000, 0, 1000);
+      _calo_charge_spectrum_ = new TH2F ("calo_charge_spectrum", ";OM;Charge (nV.s)", 712, 0, 712, 1000, 0, 25);
 
       _tracker_cell_ppt_ = new TH2F ("tracker_cell_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 100);
       _deltat_cluster_calo_ = new TH2F ("deltat_cluster_calo", ";#DeltaT cluster-calo (us);", 712, 0, 712, 1500, -10, 10);
@@ -146,10 +153,17 @@ namespace snemo {
 
     void udd2pcd_module::finalize() {
 
-      _output_file_->cd();
-      _deltat_cluster_calo_->Write("", TObject::kOverwrite);
-      _tracker_cell_ppt_->Write("", TObject::kOverwrite);
-      _output_file_->Close();
+      if (!_output_filename_.empty()) {
+	_output_file_->cd();
+
+	_calo_amplitude_spectrum_->Write("", TObject::kOverwrite);
+	_calo_charge_spectrum_->Write("", TObject::kOverwrite);
+
+	_deltat_cluster_calo_->Write("", TObject::kOverwrite);
+	_tracker_cell_ppt_->Write("", TObject::kOverwrite);
+
+	_output_file_->Close();
+      }
 
       this->base_module::_set_initialized(false);
 
@@ -413,7 +427,7 @@ namespace snemo {
       // Check if signal > 10 mV. It (rarely) happens to get signal without HT or LT flag
       // Usually such calorimeter hit was not part of the trigger decision (random coinc.)
       // and it won't be usefull for physics, but let's tag it in the event just in case..
-      if (((udd_calo_hit_.get_fwmeas_peak_amplitude()/8.0) * _calo_adc2volt_) > (10E-3 *CLHEP::volt))
+      if (((udd_calo_hit_.get_fwmeas_peak_amplitude()/8.0) * _calo_adc2volt_) > (10 * 1E-3 *CLHEP::volt))
 	return true;
 
       return false;
@@ -502,6 +516,10 @@ namespace snemo {
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
 
+	const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
+	_calo_amplitude_spectrum_->Fill(om_num, -fwmeas_amplitude/(1E-3 *CLHEP::volt));
+	_calo_charge_spectrum_->Fill(om_num, -fwmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
+
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
         // new_pcd_calo->print_tree(std::clog);
@@ -534,6 +552,8 @@ namespace snemo {
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
+	const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
+
         // Produce a new precalibrated calorimeter hit
         auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
 
@@ -561,7 +581,6 @@ namespace snemo {
 	if (_calo_subtract_sample_pedestal_) {
 
 	  const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
-	  const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
 
 	  for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
 
@@ -695,7 +714,6 @@ namespace snemo {
         const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
 
-
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
 
@@ -705,6 +723,9 @@ namespace snemo {
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
+
+	_calo_amplitude_spectrum_->Fill(om_num, -swmeas_amplitude/(1E-3 *CLHEP::volt));
+	_calo_charge_spectrum_->Fill(om_num, -swmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
 
         if (datatools::logger::is_trace(get_logging_priority()))
           new_pcd_calo->tree_dump(std::clog);
