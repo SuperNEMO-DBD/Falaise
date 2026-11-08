@@ -172,7 +172,7 @@ namespace snemo {
       double _pcd2cd_tracker_height_offset_;
       double _pcd2cd_tracker_height_deceleration_;
       bool   _pcd2cd_tracker_height_skip_short_ppt_;
-      double _pcd2cd_tracker_height_short_ppt_ratio_;
+      double _pcd2cd_tracker_height_short_ppt_cut_;
       double _pcd2cd_tracker_height_error_;
       bool   _pcd2cd_tracker_height_use_single_cathode_;
       double _pcd2cd_tracker_height_single_cathode_ppt_correction_;
@@ -182,7 +182,11 @@ namespace snemo {
 
       std::string _output_filename_;
       TFile* _output_file_;
+
+      TH2F *_calo_energy_spectrum_;
+
       TH2F* _tracker_cell_normalized_ppt_;
+      // TH2F* _tracker_height_normalized_ppt_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)
