@@ -139,6 +139,7 @@ namespace snemo {
       std::vector<std::vector<int16_t>> _calo_sample_pedestal_;
       int16_t _calo_charge_nsamples_;
       int16_t _calo_charge_nsamples_before_peak_;
+      int16_t _calo_charge_nsamples_before_cfd_;
       int16_t _calo_charge_sample_max_;
       double  _calo_time_cfd_ratio_;
 

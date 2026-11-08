@@ -82,6 +82,7 @@ namespace snemo {
       // - charge measurement
       _calo_charge_nsamples_             = fps.get<int>("calo.swmeas.charge.nsamples", 992);
       _calo_charge_nsamples_before_peak_ = fps.get<int>("calo.swmeas.charge.nsamples_before_peak", 64);
+      _calo_charge_nsamples_before_cfd_  = fps.get<int>("calo.swmeas.charge.nsamples_before_cfd", 0); // 16
       _calo_charge_sample_max_           = fps.get<int>("calo.swmeas.charge.sample_max", 986);
       // - time measurement
       _calo_time_cfd_ratio_ = fps.get<double>("calo.swmeas.time.cfd_ratio", 4./16.);
@@ -99,10 +100,14 @@ namespace snemo {
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
       DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_sample_pedestal_);
-      DT_LOG_NOTICE(get_logging_priority(), "|- charge nsamples    = " << _calo_charge_nsamples_);
-      DT_LOG_NOTICE(get_logging_priority(), "|- charge pre-peak    = " << _calo_charge_nsamples_before_peak_);
-      DT_LOG_NOTICE(get_logging_priority(), "|- charge samples max = " << _calo_charge_sample_max_);
-      DT_LOG_NOTICE(get_logging_priority(), "`- time cfd ratio     = " << _calo_time_cfd_ratio_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- charge nsamples     = " << _calo_charge_nsamples_);
+      if (_calo_charge_nsamples_before_cfd_ == 0) {
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- samples pre-peak = " << _calo_charge_nsamples_before_peak_);
+      } else {
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- samples pre-cfd  = " << _calo_charge_nsamples_before_cfd_);
+      }
+      DT_LOG_NOTICE(get_logging_priority(), "|- charge samples max  = " << _calo_charge_sample_max_);
+      DT_LOG_NOTICE(get_logging_priority(), "`- time cfd ratio = " << _calo_time_cfd_ratio_);
 
       // Configure tracker pre-calibration method
 
@@ -607,7 +612,7 @@ namespace snemo {
         const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
         const double swmeas_baseline_adc_sigma2 = swmeas_baseline_sum2/_calo_baseline_nsamples_ - swmeas_baseline_adc_mean*swmeas_baseline_adc_mean;
         const double swmeas_baseline_value = (swmeas_baseline_adc_mean - 2048) * CALO_ADC2VOLT;
-        const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT;
+        const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT; // RMS-like error
         new_pcd_calo->set_baseline(swmeas_baseline_value);
         new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
 
@@ -627,33 +632,11 @@ namespace snemo {
 
         const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
         const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
-        const double swmeas_amplitude_value = swmeas_amplitude_adc * CALO_ADC2VOLT;
-        const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
-        new_pcd_calo->set_amplitude(swmeas_amplitude_value);
-        new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
+        const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
+	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
+        new_pcd_calo->set_amplitude(swmeas_amplitude);
+	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
 
-        // Charge
-        int16_t charge_sample_start = min_amplitude_sample - _calo_charge_nsamples_before_peak_;
-        if (charge_sample_start < 0) charge_sample_start = 0;
-        int16_t charge_sample_stop = charge_sample_start + _calo_charge_nsamples_;
-        if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
-	charge_sample_stop = std::min(charge_sample_stop, _calo_charge_sample_max_);
-	// make the charge integration window multiple of 16
-	charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
-
-        double swmeas_charge_sum = 0;
-        for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
-          const int16_t & waveform_sample = a_udd_calo_waveform[sample];
-          swmeas_charge_sum += waveform_sample;
-        }
-
-        swmeas_charge_sum -= (charge_sample_stop-charge_sample_start)*swmeas_baseline_adc_mean;
-
-        const double swmeas_charge = swmeas_charge_sum * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
-        const double swmeas_charge_sigma2 = (0.5*0.5 + swmeas_baseline_adc_sigma2)*(charge_sample_stop-charge_sample_start);
-        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
-        new_pcd_calo->set_charge(swmeas_charge);
-        new_pcd_calo->set_sigma_charge(swmeas_charge_error);
 
         // Time CFD
         const double cfd_threshold_adc = swmeas_baseline_adc_mean + _calo_time_cfd_ratio_*swmeas_amplitude_adc;
@@ -682,7 +665,6 @@ namespace snemo {
         const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * CALO_SAMPLING_PERIOD;
         const double swmeas_falling_time = time_tdc - CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
         new_pcd_calo->set_time(swmeas_falling_time);
-        // new_pcd_calo->set_sigma_time();
 
         // Look for waveform sample crossing threshold (back side of the pulse)
         for (sample_i=min_amplitude_sample ; sample_i<1024; sample_i++) {
@@ -711,15 +693,14 @@ namespace snemo {
 
         // -> compute and store the pulse width
         const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * CALO_SAMPLING_PERIOD;
-        const double swmes_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
-        pcd_calo_hit_properties.store("pulse_width_ns", swmes_width/CLHEP::ns);
+        const double swmes_pulse_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
+        pcd_calo_hit_properties.store("pulse_width_ns", swmes_pulse_width/CLHEP::ns);
 
 	// -> store UDD's parent hit index
         pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
 
 	// waveform flagging
-	if (a_udd_calo_hit->has_waveform())
-	  calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
