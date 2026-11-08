@@ -583,30 +583,10 @@ namespace snemo {
 	double swmeas_baseline_sum  = 0.0;
 	double swmeas_baseline_sum2 = 0.0;
 
-	if (_calo_subtract_sample_pedestal_) {
-
-	  const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
-
-	  for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
-
-	    uint16_t cell_number = first_read_cell + sample;
-	    if (cell_number >= 1024) cell_number -= 1024;
-
-	    int16_t waveform_sample = a_udd_calo_waveform[sample];
-	    waveform_sample -= _calo_sample_pedestal_[om_num][cell_number];
-
-	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
-	    swmeas_baseline_sum += waveform_sample;
-	  }
-
-	} else {
-
-	  for (int sample = 0; sample < _calo_baseline_nsamples_; sample++) {
-	    const int16_t & waveform_sample = a_udd_calo_waveform[sample];
-	    swmeas_baseline_sum += waveform_sample;
-	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
-	  }
-
+	for (int sample=0; sample<_calo_baseline_nsamples_; sample++) {
+	  const int16_t & waveform_sample = a_udd_calo_waveform[sample];
+	  swmeas_baseline_sum += waveform_sample;
+	  swmeas_baseline_sum2 += waveform_sample*waveform_sample;
 	}
 
         const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
@@ -622,17 +602,17 @@ namespace snemo {
 
         const int16_t nsamples = a_udd_calo_waveform.size();
 
-        for (int16_t sample=0; sample<nsamples; sample++) {
-          const int16_t & waveform_sample = a_udd_calo_waveform[sample];
-          if (waveform_sample < min_amplitude_adc) {
-            min_amplitude_adc = waveform_sample;
-            min_amplitude_sample = sample;
-          }
-        }
+	for (int16_t sample=0; sample<nsamples; sample++) {
+	  const int16_t & waveform_sample = a_udd_calo_waveform[sample];
+	  if (waveform_sample < min_amplitude_adc) {
+	    min_amplitude_adc = waveform_sample;
+	    min_amplitude_sample = sample;
+	  }
+	}
 
-        const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
-        const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
-        const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
+	const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
+	const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
+	const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
 	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
@@ -667,7 +647,7 @@ namespace snemo {
         new_pcd_calo->set_time(swmeas_falling_time);
 
         // Look for waveform sample crossing threshold (back side of the pulse)
-        for (sample_i=min_amplitude_sample ; sample_i<1024; sample_i++) {
+        for (sample_i=min_amplitude_sample ; sample_i<nsamples; sample_i++) {
           const int16_t & waveform_sample = a_udd_calo_waveform[sample_i];
           if (waveform_sample >= cfd_threshold_adc)
             break;
@@ -675,7 +655,7 @@ namespace snemo {
 
         // Interpolate with pol1 the two consecutives samples to retrieve the rising time
         double swmeas_rising_time_cfd_sample = 0;
-        if (sample_i < (1024-2)) {
+        if (sample_i < (nsamples-2)) {
           const double sample_x1 = sample_i-1;
           const double sample_x2 = sample_i;
           const double sample_y1 = a_udd_calo_waveform[sample_x1];
@@ -685,7 +665,49 @@ namespace snemo {
           swmeas_rising_time_cfd_sample = (cfd_threshold_adc-pol1_b)/pol1_a;
         }
 
-        // Additional information into pCD calo datatools::properties
+        // Charge
+        int16_t charge_sample_start = 0, charge_sample_stop = 0;
+	// - select either peak time or cfd time
+	if (_calo_charge_nsamples_before_cfd_ != 0) {
+	  charge_sample_start = std::round(swmeas_falling_time_cfd_sample);
+	  charge_sample_start -= _calo_charge_nsamples_before_cfd_;
+	} else {
+	  charge_sample_start = min_amplitude_sample;
+	  charge_sample_start -= _calo_charge_nsamples_before_peak_;
+	}
+	// - check for negative value
+        if (charge_sample_start < 0) {
+	  if (om_num != 369)
+	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " charge sample start = "
+			   << charge_sample_start << " for " << new_pcd_calo->get_geom_id()
+			   << "(" << om_num << ")");
+	  charge_sample_start = 0;
+	}
+	// - prepare and check sample stop
+        charge_sample_stop = charge_sample_start + _calo_charge_nsamples_;
+        if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
+	charge_sample_stop = std::min(charge_sample_stop, _calo_charge_sample_max_);
+	// - make the charge integration window multiple of 16
+	charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
+	// - charge integration
+        double swmeas_charge_sum = 0;
+        for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
+          const int16_t & waveform_sample = a_udd_calo_waveform[sample];
+          swmeas_charge_sum += waveform_sample;
+        }
+	// - baseline subtraction
+        swmeas_charge_sum -= (charge_sample_stop-charge_sample_start)*swmeas_baseline_adc_mean;
+	// - store result
+        const double swmeas_charge = swmeas_charge_sum * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge_sigma2 = (0.5*0.5 + swmeas_baseline_adc_sigma2)*(charge_sample_stop-charge_sample_start);
+        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        new_pcd_calo->set_charge(swmeas_charge);
+        new_pcd_calo->set_sigma_charge(swmeas_charge_error);
+
+	if (_calo_save_waveform_)
+	  this->calorimeter_save_waveform(a_udd_calo_hit.get(), new_pcd_calo.get());
+
+        // Additional information into pCD calo properties
         datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
 
         // -> store the time cfd in record window
