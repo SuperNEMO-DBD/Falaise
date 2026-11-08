@@ -529,7 +529,6 @@ namespace snemo {
       const double CALO_ADC2VOLT = _calo_adc2volt_;
       const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
       const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
-      // const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -625,7 +624,6 @@ namespace snemo {
       const double CALO_ADC2VOLT = _calo_adc2volt_;
       const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
       const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
-      // const double CALO_TIME_WINDOW = 1024 * _calo_sampling_period_;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -821,17 +819,240 @@ namespace snemo {
       // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
     }
 
+    // Precalibrate calorimeter hits from UDD informations using pedestal subraction
+    void udd2pcd_module::precalibrate_calo_hits_swmeas2(const snemo::datamodel::unified_digitized_data & udd_data_,
+							snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
+
+      // Constants
+      const double CALO_ADC2VOLT = _calo_adc2volt_;
+      const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
+      const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
+
+      // Retrieve UDD calorimeter digitized hits
+      const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
+
+      // Loop over UDD calorimeter digitized hits
+      for (auto& a_udd_calo_hit : udd_calo_hits) {
+
+        // Discard empty waveforms
+	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
+	if (empty_waveform && _calo_discard_empty_waveform_)
+	  continue;
+
+        DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
+
+	const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
+
+        // Produce a new precalibrated calorimeter hit
+        auto new_pcd_calo = datatools::make_handle<snemo::datamodel::precalibrated_calorimeter_hit>();
+
+        // Keep same hit number for calorimeter's digitized hit and precalibrated hit
+        new_pcd_calo->set_hit_id(pcd_calo_hits_.size());
+        new_pcd_calo->set_geom_id(a_udd_calo_hit->get_geom_id());
+
+	// switch from digital to logical geomid
+	// (use scintillator block geom IDs in place of OM geom IDs):
+	if (new_pcd_calo->get_geom_id().get_type() == 1301) {
+	  new_pcd_calo->grab_geom_id().set_type(1302);
+	  new_pcd_calo->grab_geom_id().set_any(4);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1231) {
+	  new_pcd_calo->grab_geom_id().set_type(1232);
+	} else if (new_pcd_calo->get_geom_id().get_type() == 1251) {
+	  new_pcd_calo->grab_geom_id().set_type(1252);
+	}
+
+        const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
+        const int16_t nsamples = a_udd_calo_waveform.size();
+
+	std::vector<double> a_pcd_calo_waveform;
+	a_pcd_calo_waveform.reserve(nsamples);
+
+	// Baseline
+	double swmeas_baseline_sum  = 0.0;
+	double swmeas_baseline_sum2 = 0.0;
+
+	const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
+
+	for (int16_t sample=0; sample<nsamples; sample++) {
+
+	  uint16_t cell_number = first_read_cell + sample;
+	  if (cell_number >= nsamples) cell_number -= nsamples;
+
+	  // subtract pedestal and build precalibrated waveform
+	  double waveform_sample = a_udd_calo_waveform[sample];
+	  waveform_sample -= _calo_sample_pedestal_[om_num][cell_number];
+	  a_pcd_calo_waveform.push_back(waveform_sample);
+
+	  // compute baseline sums
+	  if (sample < _calo_baseline_nsamples_) {
+	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
+	    swmeas_baseline_sum += waveform_sample;
+	  }
+
+	}
+
+	const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
+	const double swmeas_baseline_adc_sigma2 = swmeas_baseline_sum2/_calo_baseline_nsamples_ - swmeas_baseline_adc_mean*swmeas_baseline_adc_mean;
+	const double swmeas_baseline_value = swmeas_baseline_adc_mean * CALO_ADC2VOLT;
+	const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT;
+        new_pcd_calo->set_baseline(swmeas_baseline_value);
+        new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
+
+        // Amplitude
+        double min_amplitude_adc = (double)(INT16_MAX);
+        int16_t min_amplitude_sample = 0;
+
+	for (int16_t sample=0; sample<nsamples; sample++) {
+	  const double waveform_sample = a_pcd_calo_waveform[sample];
+	  if (waveform_sample < min_amplitude_adc) {
+	    min_amplitude_adc = waveform_sample;
+	    min_amplitude_sample = sample;
+	  }
+	}
+
+        const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
+        const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
+        const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
+	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
+        new_pcd_calo->set_amplitude(swmeas_amplitude);
+	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
+
+
+        // Time CFD
+        const double cfd_threshold_adc = swmeas_baseline_adc_mean + _calo_time_cfd_ratio_*swmeas_amplitude_adc;
+
+        // Look for waveform sample crossing threshold (front side of the pulse)
+        int16_t sample_i = 0;
+        for (sample_i=min_amplitude_sample ; sample_i>0; sample_i--) {
+          const double & waveform_sample = a_pcd_calo_waveform[sample_i];
+          if (waveform_sample >= cfd_threshold_adc)
+            break;
+        }
+
+        // Interpolate with pol1 the two consecutives samples to retrieve the falling time
+        double swmeas_falling_time_cfd_sample = 0;
+        if (sample_i != (nsamples-2)) {
+          const double sample_x1 = sample_i;
+          const double sample_x2 = sample_i+1;
+          const double sample_y1 = a_pcd_calo_waveform[sample_x1];
+          const double sample_y2 = a_pcd_calo_waveform[sample_x2];
+          const double pol1_a = (sample_y2-sample_y1)/(sample_x2-sample_x1);
+          const double pol1_b = sample_y1-pol1_a*sample_x1;
+          swmeas_falling_time_cfd_sample = (cfd_threshold_adc-pol1_b)/pol1_a;
+        }
+
+        const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
+        const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * CALO_SAMPLING_PERIOD;
+        const double swmeas_falling_time = time_tdc - CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
+        new_pcd_calo->set_time(swmeas_falling_time);
+
+        // Look for waveform sample crossing threshold (back side of the pulse)
+        for (sample_i=min_amplitude_sample ; sample_i<nsamples; sample_i++) {
+          const double & waveform_sample = a_pcd_calo_waveform[sample_i];
+          if (waveform_sample >= cfd_threshold_adc)
+            break;
+        }
+
+        // Interpolate with pol1 the two consecutives samples to retrieve the rising time
+        double swmeas_rising_time_cfd_sample = 0;
+        if (sample_i < (nsamples-2)) {
+          const double sample_x1 = sample_i-1;
+          const double sample_x2 = sample_i;
+          const double sample_y1 = a_pcd_calo_waveform[sample_x1];
+          const double sample_y2 = a_pcd_calo_waveform[sample_x2];
+          const double pol1_a = (sample_y2-sample_y1)/(sample_x2-sample_x1);
+          const double pol1_b = sample_y1-pol1_a*sample_x1;
+          swmeas_rising_time_cfd_sample = (cfd_threshold_adc-pol1_b)/pol1_a;
+        }
+
+        // Charge
+        int16_t charge_sample_start = 0, charge_sample_stop = 0;
+	// - select either peak time or cfd time
+	if (_calo_charge_nsamples_before_cfd_ != 0) {
+	  charge_sample_start = std::round(swmeas_falling_time_cfd_sample);
+	  charge_sample_start -= _calo_charge_nsamples_before_cfd_;
+	} else {
+	  charge_sample_start = min_amplitude_sample;
+	  charge_sample_start -= _calo_charge_nsamples_before_peak_;
+	}
+	// - check for negative value
+        if (charge_sample_start < 0) {
+	  if (om_num != 369)
+	    DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " charge sample start = "
+			   << charge_sample_start << " for " << new_pcd_calo->get_geom_id()
+			   << "(" << om_num << ")");
+	  charge_sample_start = 0;
+	}
+	// - prepare and check sample stop
+        charge_sample_stop = charge_sample_start + _calo_charge_nsamples_;
+        if (charge_sample_stop > nsamples) charge_sample_stop = nsamples;
+	charge_sample_stop = std::min(charge_sample_stop, _calo_charge_sample_max_);
+	// - make the charge integration window multiple of 16
+	charge_sample_stop = charge_sample_start + 16 * ((charge_sample_stop - charge_sample_start) / 16);
+	// - charge integration
+        double swmeas_charge_sum = 0;
+        for (int16_t sample=charge_sample_start; sample<charge_sample_stop; sample++) {
+          const double & waveform_sample = a_pcd_calo_waveform[sample];
+          swmeas_charge_sum += waveform_sample;
+        }
+	// - baseline subtraction
+        swmeas_charge_sum -= (charge_sample_stop-charge_sample_start)*swmeas_baseline_adc_mean;
+	// - store result
+        const double swmeas_charge = swmeas_charge_sum * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge_sigma2 = (0.5*0.5 + swmeas_baseline_adc_sigma2)*(charge_sample_stop-charge_sample_start);
+        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        new_pcd_calo->set_charge(swmeas_charge);
+        new_pcd_calo->set_sigma_charge(swmeas_charge_error);
+
+	if (_calo_save_waveform_)
+	  this->calorimeter_save_waveform(a_udd_calo_hit.get(), new_pcd_calo.get());
+
+        // Additional information into pCD calo properties
+        datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
+
+        // -> store the time cfd in record window
+        pcd_calo_hit_properties.store("time_cfd_ns", swmeas_falling_time_cfd/CLHEP::ns);
+
+        // -> compute and store the pulse width
+        const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * CALO_SAMPLING_PERIOD;
+        const double swmes_pulse_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
+        pcd_calo_hit_properties.store("pulse_width_ns", swmes_pulse_width/CLHEP::ns);
+
+	// -> store UDD's parent hit index
+        pcd_calo_hit_properties.store("UDD.parent", a_udd_calo_hit->get_hit_id());
+
+	// waveform flagging
+	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+
+        // Append the new pCD calorimeter hit
+        pcd_calo_hits_.push_back(new_pcd_calo);
+
+	_calo_amplitude_spectrum_->Fill(om_num, -swmeas_amplitude/(1E-3 *CLHEP::volt));
+	_calo_charge_spectrum_->Fill(om_num, -swmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
+
+        if (datatools::logger::is_trace(get_logging_priority()))
+          new_pcd_calo->tree_dump(std::clog);
+      }
+
+      // std::sort(pcd_calo_hits_.begin(), pcd_calo_hits_.end(),
+      // 		[](const auto & hit1, const auto & hit2){return (snemo::datamodel::gg_num(hit1->get_geom_id()) < snemo::datamodel::gg_num(hit2->get_geom_id()));});
+    }
+
     void udd2pcd_module::process_calo_impl(const snemo::datamodel::unified_digitized_data & udd_data_,
                                            snemo::datamodel::precalibrated_data & pcd_data_) {
 
       if (_calo_pcd_algo_ == ALGO_CALO_FWMEASUREMENT)
         precalibrate_calo_hits_fwmeas(udd_data_, pcd_data_.calorimeter_hits());
 
-      else if (_calo_pcd_algo_ == ALGO_CALO_SWMEASUREMENT)
-        precalibrate_calo_hits_swmeas(udd_data_, pcd_data_.calorimeter_hits());
+      else if (_calo_pcd_algo_ == ALGO_CALO_SWMEASUREMENT) {
 
+	if (_calo_subtract_sample_pedestal_)
+	  precalibrate_calo_hits_swmeas2(udd_data_, pcd_data_.calorimeter_hits());
+
+	else
+	  precalibrate_calo_hits_swmeas(udd_data_, pcd_data_.calorimeter_hits());
+      }
     }
-
 
     // Precalibrate tracker hits from UDD informations:
     void udd2pcd_module::precalibrate_tracker_hits_earliest(const snemo::datamodel::unified_digitized_data & udd_data_,
