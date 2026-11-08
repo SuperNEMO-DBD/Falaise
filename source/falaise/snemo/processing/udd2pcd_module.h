@@ -93,6 +93,10 @@ namespace snemo {
       /// Check if calo hit has signal
       bool calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
 
+      /// Save calorimeter waveform
+      void calorimeter_save_waveform(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+				     const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_);
+
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                          snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
@@ -132,6 +136,8 @@ namespace snemo {
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
       bool _calo_discard_empty_waveform_;
+      bool        _calo_save_waveform_;
+      std::string _calo_save_waveform_path_;
 
       int         _calo_baseline_nsamples_;
       std::string _calo_sample_pedestal_database_;

@@ -19,9 +19,13 @@
 // - Bayeux/mctools:
 #include <mctools/utils.h>
 // - ROOT
+#include "TCanvas.h"
 #include "TFile.h"
+#include "TLine.h"
+#include "TH1F.h"
 #include "TH2F.h"
 #include "TROOT.h"
+#include "TStyle.h"
 
 // This project:
 #include <falaise/property_set.h>
@@ -63,6 +67,8 @@ namespace snemo {
       _calo_sampling_period_ = fps.get<falaise::time_t>("calo.sampling_period", {0.390625, "ns"})();
       _calo_postrigger_time_ = fps.get<falaise::time_t>("calo.post_trigger", {250.0, "ns"})();
       _calo_discard_empty_waveform_ = fps.get<bool>("calo.discard_empty_waveform", true);
+      _calo_save_waveform_ = fps.get<bool>("calo.save_waveform", false);
+      _calo_save_waveform_path_ = fps.get<std::string>("calo.save_waveform_path", "./");
 
       std::string udd2pcd_calo_method_label = fps.get<std::string>("calo.method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
@@ -436,6 +442,83 @@ namespace snemo {
 	return true;
 
       return false;
+    }
+
+    // Save calorimeter waveform
+    void udd2pcd_module::calorimeter_save_waveform(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
+						   const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) {
+
+      gStyle->SetOptStat(0);
+      gStyle->SetOptTitle(1);
+
+      TH1F digitized_waveform ("digitized_waveform", ";Sample;ADC", 1024, 0, 1024);
+      TH1F baseline_waveform ("baseline_waveform", ";Sample;ADC", 1024, 0, 1024);
+      TH1F calibrated_waveform ("calibrated_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
+
+      const int om_num = snemo::datamodel::om_num(udd_calo_hit_.get_geom_id());
+      const std::string om_label = snemo::datamodel::om_label(udd_calo_hit_.get_geom_id());
+
+      std::string histo_title = Form("Run %d // Event %d // OM %d (%s)",
+				     _current_event_id_.get_run_number(),
+				     _current_event_id_.get_event_number(),
+				     om_num, om_label.c_str());
+
+      digitized_waveform.SetTitle(histo_title.c_str());
+
+      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+
+      if (_calo_subtract_sample_pedestal_) {
+
+	for (int sample=0; sample<1024; sample++) {
+
+	  double waveform_sample = udd_calo_waveform[sample];
+	  digitized_waveform.SetBinContent(1+sample, waveform_sample);
+
+	  uint16_t cell_number = udd_calo_hit_.get_fcr() + sample;
+	  if (cell_number >= 1024) cell_number -= 1024;
+
+	  double pedestal_sample = _calo_sample_pedestal_[om_num][cell_number];
+	  baseline_waveform.SetBinContent(1+sample, pedestal_sample);
+
+	  waveform_sample -= pedestal_sample;
+	  calibrated_waveform.SetBinContent(1+sample, waveform_sample * _calo_adc2volt_ / (1E-3 * CLHEP::volt));
+	}
+
+      } else {
+
+	const double & baseline = pcd_calo_hit_.get_baseline();
+	const double baseline_adc = 2048 + (baseline / _calo_adc2volt_);
+
+	for (int sample=0; sample<1024; sample++) {
+
+	  double waveform_sample = udd_calo_waveform[sample];
+	  digitized_waveform.SetBinContent(1+sample, waveform_sample);
+
+	  uint16_t cell_number = udd_calo_hit_.get_fcr() + sample;
+	  if (cell_number >= 1024) cell_number -= 1024;
+
+	  baseline_waveform.SetBinContent(1+sample, baseline_adc);
+
+	  waveform_sample -= baseline_adc;
+	  calibrated_waveform.SetBinContent(1+sample, waveform_sample * _calo_adc2volt_ / (1E-3 * CLHEP::volt));
+	}
+
+      }
+
+      TCanvas waveform_canvas ("waveform_canvas", "");
+      digitized_waveform.Draw();
+
+      baseline_waveform.SetLineColor(kBlack);
+      baseline_waveform.Draw("same");
+
+      digitized_waveform.SetLineColor(kBlue+2);
+      digitized_waveform.Draw("same");
+
+      // Save waveform canvas
+      std::string waveform_filename = _calo_save_waveform_path_;
+      waveform_filename += _current_event_id_.to_string().c_str();
+      waveform_filename += Form("_%03d.%s", om_num, "png");
+      waveform_canvas.SaveAs(waveform_filename.c_str());
     }
 
     // Precalibrate calorimeter hits from UDD informations:
