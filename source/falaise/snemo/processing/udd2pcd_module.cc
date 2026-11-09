@@ -445,83 +445,6 @@ namespace snemo {
       return false;
     }
 
-    // Save calorimeter waveform
-    void udd2pcd_module::calorimeter_save_waveform(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
-						   const snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_) {
-
-      gStyle->SetOptStat(0);
-      gStyle->SetOptTitle(1);
-
-      TH1F digitized_waveform ("digitized_waveform", ";Sample;ADC", 1024, 0, 1024);
-      TH1F baseline_waveform ("baseline_waveform", ";Sample;ADC", 1024, 0, 1024);
-      TH1F calibrated_waveform ("calibrated_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
-
-      const int om_num = snemo::datamodel::om_num(udd_calo_hit_.get_geom_id());
-      const std::string om_label = snemo::datamodel::om_label(udd_calo_hit_.get_geom_id());
-
-      std::string histo_title = Form("Run %d // Event %d // OM %d (%s)",
-				     _current_event_id_.get_run_number(),
-				     _current_event_id_.get_event_number(),
-				     om_num, om_label.c_str());
-
-      digitized_waveform.SetTitle(histo_title.c_str());
-
-      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
-
-      if (_calo_subtract_sample_pedestal_) {
-
-	for (int sample=0; sample<1024; sample++) {
-
-	  double waveform_sample = udd_calo_waveform[sample];
-	  digitized_waveform.SetBinContent(1+sample, waveform_sample);
-
-	  uint16_t cell_number = udd_calo_hit_.get_fcr() + sample;
-	  if (cell_number >= 1024) cell_number -= 1024;
-
-	  double pedestal_sample = _calo_sample_pedestal_[om_num][cell_number];
-	  baseline_waveform.SetBinContent(1+sample, pedestal_sample);
-
-	  waveform_sample -= pedestal_sample;
-	  calibrated_waveform.SetBinContent(1+sample, waveform_sample * _calo_adc2volt_ / (1E-3 * CLHEP::volt));
-	}
-
-      } else {
-
-	const double & baseline = pcd_calo_hit_.get_baseline();
-	const double baseline_adc = 2048 + (baseline / _calo_adc2volt_);
-
-	for (int sample=0; sample<1024; sample++) {
-
-	  double waveform_sample = udd_calo_waveform[sample];
-	  digitized_waveform.SetBinContent(1+sample, waveform_sample);
-
-	  uint16_t cell_number = udd_calo_hit_.get_fcr() + sample;
-	  if (cell_number >= 1024) cell_number -= 1024;
-
-	  baseline_waveform.SetBinContent(1+sample, baseline_adc);
-
-	  waveform_sample -= baseline_adc;
-	  calibrated_waveform.SetBinContent(1+sample, waveform_sample * _calo_adc2volt_ / (1E-3 * CLHEP::volt));
-	}
-
-      }
-
-      TCanvas waveform_canvas ("waveform_canvas", "");
-      digitized_waveform.Draw();
-
-      baseline_waveform.SetLineColor(kBlack);
-      baseline_waveform.Draw("same");
-
-      digitized_waveform.SetLineColor(kBlue+2);
-      digitized_waveform.Draw("same");
-
-      // Save waveform canvas
-      std::string waveform_filename = _calo_save_waveform_path_;
-      waveform_filename += _current_event_id_.to_string().c_str();
-      waveform_filename += Form("_%03d.%s", om_num, _calo_save_waveform_format_);
-      waveform_canvas.SaveAs(waveform_filename.c_str());
-    }
-
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
@@ -786,9 +709,6 @@ namespace snemo {
         new_pcd_calo->set_charge(swmeas_charge);
         new_pcd_calo->set_sigma_charge(swmeas_charge_error);
 
-	if (_calo_save_waveform_)
-	  this->calorimeter_save_waveform(a_udd_calo_hit.get(), new_pcd_calo.get());
-
         // Additional information into pCD calo properties
         datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
 
@@ -809,6 +729,49 @@ namespace snemo {
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
 
+	// Save waveform
+	if (_calo_save_waveform_) {
+
+	  gStyle->SetOptStat(0);
+	  gStyle->SetOptTitle(1);
+
+	  TH1F pcd_waveform ("pcd_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
+
+	  const std::string om_label = snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id());
+	  std::string histo_title = Form("Run %d // Event %d // OM %d (%s)",
+					 _current_event_id_.get_run_number(),
+					 _current_event_id_.get_event_number(),
+					 om_num, om_label.c_str());
+	  pcd_waveform.SetTitle(histo_title.c_str());
+
+	  for (int sample=0; sample<nsamples; sample++) {
+	    double sample_amplitude = (a_udd_calo_waveform[sample] - 2048) * _calo_adc2volt_;
+	    sample_amplitude -= swmeas_baseline_value;
+	    pcd_waveform.SetBinContent(1+sample, sample_amplitude / (1E-3 * CLHEP::volt));
+	  }
+
+	  TCanvas waveform_canvas ("waveform_canvas", "");
+	  pcd_waveform.Draw();
+
+	  // TLine baseline_line (0, 0, _calo_baseline_nsamples_*CALO_SAMPLING_PERIOD, 0);
+	  // baseline_line.SetLineColor(kCyan+1);
+	  // baseline_line.SetLineWidth(2);
+	  // baseline_line.Draw();
+
+	  TLine charge_line (charge_sample_start*CALO_SAMPLING_PERIOD, 0,
+			     charge_sample_stop*CALO_SAMPLING_PERIOD, 0);
+	  charge_line.SetLineColor(kRed);
+	  charge_line.SetLineWidth(2);
+	  charge_line.Draw();
+
+	  std::string waveform_filename;
+	  waveform_filename = _calo_save_waveform_path_;
+	  waveform_filename += _current_event_id_.to_string().c_str();
+	  waveform_filename += Form("_%03d.%s", om_num, _calo_save_waveform_format_.c_str());
+	  waveform_canvas.SaveAs(waveform_filename.c_str());
+	}
+
+	// Fill ROOT histograms
 	_calo_amplitude_spectrum_->Fill(om_num, -swmeas_amplitude/(1E-3 *CLHEP::volt));
 	_calo_charge_spectrum_->Fill(om_num, -swmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
 
@@ -1005,9 +968,6 @@ namespace snemo {
         new_pcd_calo->set_charge(swmeas_charge);
         new_pcd_calo->set_sigma_charge(swmeas_charge_error);
 
-	if (_calo_save_waveform_)
-	  this->calorimeter_save_waveform(a_udd_calo_hit.get(), new_pcd_calo.get());
-
         // Additional information into pCD calo properties
         datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
 
@@ -1028,6 +988,51 @@ namespace snemo {
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
 
+	// Save waveform
+	if (_calo_save_waveform_) {
+
+	  gStyle->SetOptStat(0);
+	  gStyle->SetOptTitle(1);
+
+	  TH1F pcd_waveform ("pcd_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
+
+	  const std::string om_label = snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id());
+	  std::string histo_title = Form("Run %d // Event %d // OM %d (%s)",
+					 _current_event_id_.get_run_number(),
+					 _current_event_id_.get_event_number(),
+					 om_num, om_label.c_str());
+	  pcd_waveform.SetTitle(histo_title.c_str());
+
+	  for (int sample=0; sample<nsamples; sample++) {
+	    double sample_amplitude = a_pcd_calo_waveform[sample] * _calo_adc2volt_;
+	    sample_amplitude -= swmeas_baseline_value;
+	    pcd_waveform.SetBinContent(1+sample, sample_amplitude / (1E-3 * CLHEP::volt));
+	  }
+
+	  TCanvas waveform_canvas ("waveform_canvas", "");
+	  pcd_waveform.Draw();
+
+	  const double baseline_mv = swmeas_baseline_value/(1E-3 *CLHEP::volt);
+
+	  // TLine baseline_line (0, baseline_mv, _calo_baseline_nsamples_*CALO_SAMPLING_PERIOD, baseline_mv);
+	  // baseline_line.SetLineColor(kCyan+1);
+	  // baseline_line.SetLineWidth(2);
+	  // baseline_line.Draw();
+
+	  TLine charge_line (charge_sample_start*CALO_SAMPLING_PERIOD, baseline_mv,
+			     charge_sample_stop*CALO_SAMPLING_PERIOD, baseline_mv);
+	  charge_line.SetLineColor(kRed);
+	  charge_line.SetLineWidth(2);
+	  charge_line.Draw();
+
+	  std::string waveform_filename;
+	  waveform_filename = _calo_save_waveform_path_;
+	  waveform_filename += _current_event_id_.to_string().c_str();
+	  waveform_filename += Form("_%03d.%s", om_num, _calo_save_waveform_format_.c_str());
+	  waveform_canvas.SaveAs(waveform_filename.c_str());
+	}
+
+	// Fill ROOT histograms
 	_calo_amplitude_spectrum_->Fill(om_num, -swmeas_amplitude/(1E-3 *CLHEP::volt));
 	_calo_charge_spectrum_->Fill(om_num, -swmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
 
