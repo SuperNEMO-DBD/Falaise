@@ -142,6 +142,7 @@ namespace snemo {
       bool _calo_discard_empty_waveform_;
       bool        _calo_save_waveform_;
       std::string _calo_save_waveform_path_;
+      std::string _calo_save_waveform_format_;
 
       int         _calo_baseline_nsamples_;
       std::string _calo_sample_pedestal_database_;

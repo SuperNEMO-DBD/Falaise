@@ -69,6 +69,7 @@ namespace snemo {
       _calo_discard_empty_waveform_ = fps.get<bool>("calo.discard_empty_waveform", true);
       _calo_save_waveform_ = fps.get<bool>("calo.save_waveform", false);
       _calo_save_waveform_path_ = fps.get<std::string>("calo.save_waveform_path", "./");
+      _calo_save_waveform_format_ = fps.get<std::string>("calo.save_waveform_format", "png");
 
       std::string udd2pcd_calo_method_label = fps.get<std::string>("calo.method", "fwmeas");
       if (udd2pcd_calo_method_label == "fwmeas") {
@@ -517,7 +518,7 @@ namespace snemo {
       // Save waveform canvas
       std::string waveform_filename = _calo_save_waveform_path_;
       waveform_filename += _current_event_id_.to_string().c_str();
-      waveform_filename += Form("_%03d.%s", om_num, "png");
+      waveform_filename += Form("_%03d.%s", om_num, _calo_save_waveform_format_);
       waveform_canvas.SaveAs(waveform_filename.c_str());
     }
 
@@ -1095,7 +1096,7 @@ namespace snemo {
 		  first_anode_timestamp[ANODE_Ri] = anode_timestamp;
 	    }
           }
-          
+
 	  // find earliest bottom cathode hit AFTER first anode hit
           if (udd_tracker_times.has_bottom_cathode_time()) {
             const int64_t & bottom_cathode_timestamp = udd_tracker_times.get_bottom_cathode_time();
