@@ -90,7 +90,7 @@ namespace snemo {
       _calo_charge_nsamples_             = fps.get<int>("calo.swmeas.charge.nsamples", 992);
       _calo_charge_nsamples_before_peak_ = fps.get<int>("calo.swmeas.charge.nsamples_before_peak", 64);
       _calo_charge_nsamples_before_cfd_  = fps.get<int>("calo.swmeas.charge.nsamples_before_cfd", 0); // 16
-      _calo_charge_sample_max_           = fps.get<int>("calo.swmeas.charge.sample_max", 986);
+      _calo_charge_sample_max_           = fps.get<int>("calo.swmeas.charge.sample_max", 984);
       // - time measurement
       _calo_time_cfd_ratio_ = fps.get<double>("calo.swmeas.time.cfd_ratio", 4./16.);
 
@@ -673,7 +673,7 @@ namespace snemo {
 
         const int16_t nsamples = a_udd_calo_waveform.size();
 
-	for (int16_t sample=0; sample<nsamples; sample++) {
+	for (int16_t sample=0; sample<_calo_charge_sample_max_; sample++) {
 	  const int16_t & waveform_sample = a_udd_calo_waveform[sample];
 	  if (waveform_sample < min_amplitude_adc) {
 	    min_amplitude_adc = waveform_sample;
@@ -941,7 +941,7 @@ namespace snemo {
         double min_amplitude_adc = (double)(INT16_MAX);
         int16_t min_amplitude_sample = 0;
 
-	for (int16_t sample=0; sample<nsamples; sample++) {
+	for (int16_t sample=0; sample<_calo_charge_sample_max_; sample++) {
 	  const double waveform_sample = a_pcd_calo_waveform[sample];
 	  if (waveform_sample < min_amplitude_adc) {
 	    min_amplitude_adc = waveform_sample;
