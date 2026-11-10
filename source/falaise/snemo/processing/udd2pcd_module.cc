@@ -1079,7 +1079,7 @@ namespace snemo {
 
 	  for (int sample=0; sample<nsamples; sample++) {
 	    double sample_amplitude = a_pcd_calo_waveform[sample] * _calo_adc2volt_;
-	    sample_amplitude -= swmeas_baseline_value;
+	    // sample_amplitude -= swmeas_baseline_value;
 	    pcd_waveform.SetBinContent(1+sample, sample_amplitude / (1E-3 * CLHEP::volt));
 	  }
 

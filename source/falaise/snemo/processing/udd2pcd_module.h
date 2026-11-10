@@ -164,8 +164,8 @@ namespace snemo {
       std::string _output_filename_;
       TFile* _output_file_;
 
-      float _calo_pedestal_sum_[712][1024];
-      float _calo_pedestal_stats_[712][1024];
+      double _calo_pedestal_sum_[712][1024];
+      double _calo_pedestal_stats_[712][1024];
       TH2F *_calo_pedestal_histo_;
       TH2F *_calo_pedestal_stats_histo_;
 
