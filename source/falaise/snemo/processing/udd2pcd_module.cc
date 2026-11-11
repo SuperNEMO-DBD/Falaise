@@ -1420,7 +1420,7 @@ namespace snemo {
 	cluster_first_anode_indexes.fill(-1);
 	std::array<double,5> cluster_first_anode_times;
 	cluster_first_anode_times.fill(std::numeric_limits<double>::max());
-        double cluster_last_anode_time = std::numeric_limits<double>::min();
+        double cluster_last_anode_time = std::numeric_limits<double>::lowest();
         double cluster_mean_anode_time = 0;
 	// uint32_t cluster_tracker_side = 0;
         uint32_t cluster_tracker_row_min = 112;
