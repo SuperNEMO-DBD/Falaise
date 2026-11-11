@@ -37,6 +37,9 @@
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
 
+class TFile;
+class TH2F;
+
 namespace geomtools {
   class manager;
 }
@@ -79,8 +82,8 @@ namespace snemo {
       };
 
     public:
-      // Because dpp::base_module is insane
-      virtual ~pcd2cd_module() { this->reset(); }
+      /// Destructor
+      virtual ~pcd2cd_module() { this->finalize(); }
 
       /// Initialization
       virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
@@ -88,6 +91,9 @@ namespace snemo {
 
       /// Reset
       virtual void reset();
+
+      /// Finalize
+      void finalize();
 
       /// Data record processing
       virtual process_status process(datatools::things& event);
@@ -131,17 +137,6 @@ namespace snemo {
       std::string _tcd_output_tag_{};  //!< The label of the tracker clustering data bank
       // std::string _ccd_output_tag_{};  //!< The label of the clusterized calibrated data bank
 
-      // struct work_data
-      // {
-      // 	snemo::datamodel::event_header * eh_data = nullptr;
-      // 	datatools::event_id event_dd;
-      // 	const snemo::datamodel::precalibrated_data             * pcd_data_ = nullptr;
-      // 	const snemo::datamodel::clusterized_precalibrated_data * cpcd_data_ = nullptr;
-      // 	snemo::datamodel::calibrated_data                * _cd_data_ = nullptr;
-      // 	// snemo::datamodel::clusterized_calibrated_data *_ccd_data_ = nullptr;
-      // 	snemo::datamodel::tracker_clustering_data        *_tcd_data_ = nullptr;	
-      // };
-      
       // global acces to event header
       snemo::datamodel::event_header * _eh_data_;
       datatools::event_id _event_id_;
@@ -171,12 +166,27 @@ namespace snemo {
       std::vector<double> _pcd2cd_tracker_top_cathode_t0_constants_;
 
       tracker_radius_calibration_method _pcd2cd_tracker_radius_method_;
-      tracker_height_calibration_method _pcd2cd_tracker_height_method_;
 
+      tracker_height_calibration_method _pcd2cd_tracker_height_method_;
       double _pcd2cd_tracker_height_effective_;
       double _pcd2cd_tracker_height_offset_;
       double _pcd2cd_tracker_height_deceleration_;
+      bool   _pcd2cd_tracker_height_skip_short_ppt_;
+      double _pcd2cd_tracker_height_short_ppt_cut_;
       double _pcd2cd_tracker_height_error_;
+      bool   _pcd2cd_tracker_height_use_single_cathode_;
+      double _pcd2cd_tracker_height_single_cathode_ppt_correction_;
+      double _pcd2cd_tracker_height_single_cathode_error_;
+
+      std::vector<double> _pcd2cd_tracker_ppt_constants_;
+
+      std::string _output_filename_;
+      TFile* _output_file_;
+
+      TH2F *_calo_energy_spectrum_;
+
+      TH2F* _tracker_cell_normalized_ppt_;
+      // TH2F* _tracker_height_normalized_ppt_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)

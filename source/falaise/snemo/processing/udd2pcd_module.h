@@ -36,6 +36,9 @@
 #include <falaise/snemo/services/geometry.h>
 #include <falaise/snemo/services/service_handle.h>
 
+class TFile;
+class TH2F;
+
 namespace geomtools {
   class manager;
 }
@@ -62,8 +65,8 @@ namespace snemo {
       };
 
     public:
-      // Because dpp::base_module is insane
-      virtual ~udd2pcd_module() { this->reset(); }
+      /// Destructor
+      virtual ~udd2pcd_module() { this->finalize(); }
 
       /// Initialization
       virtual void initialize(const datatools::properties& ps, datatools::service_manager& /*unused*/,
@@ -71,6 +74,12 @@ namespace snemo {
 
       /// Reset
       virtual void reset();
+
+      /// Finalize
+      void finalize();
+
+      // Parse calorimeter sample pedestal database
+      int parse_calo_pedestal_database(std::string);
 
       /// Data record processing
       virtual process_status process(datatools::things& event);
@@ -81,12 +90,22 @@ namespace snemo {
       void calorimeter_waveform_flagging(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_,
 					 snemo::datamodel::precalibrated_calorimeter_hit & pcd_calo_hit_);
 
+      /// Check if calo hit has signal
+      bool calo_hit_has_signal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
+
+      /// Precalibrate calorimeter pedestal
+      void precalibrate_calo_pedestal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
+
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                          snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
 
       /// Precalibrate calorimeter hits with swmeas
       void precalibrate_calo_hits_swmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
+                                         snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
+
+      /// Precalibrate calorimeter hits with swmeas using pedestal subtraction
+      void precalibrate_calo_hits_swmeas2(const snemo::datamodel::unified_digitized_data & udd_data_,
                                          snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
 
       /// Main process calo function
@@ -115,21 +134,48 @@ namespace snemo {
       datatools::event_id _current_event_id_;
 
       calorimeter_precalibration_algorithm _calo_pcd_algo_;
+
       double _calo_adc2volt_;
       double _calo_sampling_period_;
       double _calo_postrigger_time_;
-      int    _calo_baseline_nsamples_;
-      int    _calo_charge_integration_nsamples_;
-      int    _calo_charge_integration_nsamples_before_peak_;
-      int    _calo_charge_integration_samples_max_;
-      double _calo_time_cfd_ratio_;
-      bool   _calo_discard_empty_waveform_;
+      bool _calo_discard_empty_waveform_;
+      bool        _calo_save_waveform_;
+      std::string _calo_save_waveform_path_;
+      std::string _calo_save_waveform_format_;
+
+      int         _calo_baseline_nsamples_;
+      std::string _calo_pedestal_database_;
+      bool        _calo_subtract_pedestal_;
+      std::vector<std::vector<double>> _calo_pedestal_;
+      int16_t _calo_charge_nsamples_;
+      int16_t _calo_charge_nsamples_before_peak_;
+      int16_t _calo_charge_nsamples_before_cfd_;
+      int16_t _calo_charge_sample_max_;
+      double  _calo_time_cfd_ratio_;
 
       tracker_precalibration_algorithm _tracker_pcd_algo_;
       double _tracker_basic_cluster_radius_threshold_;
       double _tracker_basic_cluster_deltat_threshold_;
       double _tracker_basic_cluster_deltat_calo_min_;
       double _tracker_basic_cluster_deltat_calo_max_;
+      double _tracker_basic_cluster_reference_calo_amplitude_threshold_;
+      double _tracker_cathode_drift_time_max_;
+
+      std::string _output_filename_;
+      TFile* _output_file_;
+
+      double _calo_pedestal_sum_[712][1024];
+      double _calo_pedestal_stats_[712][1024];
+      TH2F *_calo_pedestal_histo_;
+      TH2F *_calo_pedestal_stats_histo_;
+
+      TH2F *_calo_baseline_mean_;
+      TH2F *_calo_baseline_rms_;
+      TH2F *_calo_amplitude_spectrum_;
+      TH2F *_calo_charge_spectrum_;
+
+      TH2F* _tracker_cell_ppt_;
+      TH2F* _deltat_cluster_calo_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)

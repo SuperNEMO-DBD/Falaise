@@ -1,6 +1,5 @@
 // -*- mode: c++ ; -*-
-/** \file falaise/snemo/processing/pcd2cd_module.cc
- */
+/// \file falaise/snemo/processing/pcd2cd_module.cc
 
 // Ourselves:
 #include "pcd2cd_module.h"
@@ -19,6 +18,10 @@
 #include <geomtools/manager.h>
 // - Bayeux/mctools:
 #include <mctools/utils.h>
+// - ROOT
+#include "TFile.h"
+#include "TH2F.h"
+#include "TROOT.h"
 
 // This project:
 #include <falaise/property_set.h>
@@ -56,7 +59,7 @@ namespace snemo {
 
       // Configure calorimeter energy calibration method
 
-      std::string calo_energy_method_label = fps.get<std::string>("calo_energy_method", "");
+      std::string calo_energy_method_label = fps.get<std::string>("calo.energy.method", "");
 
       if (calo_energy_method_label == "200mV/MeV") {
 	DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy calibration method = '" << calo_energy_method_label << "'");
@@ -72,7 +75,7 @@ namespace snemo {
 	  _pcd2cd_calo_energy_constants_.push_back({0});
 
 	// Fill calo pol0 energy constants
-	std::string pol0_table_path = fps.get<std::string>("calo_energy_method.database");
+	std::string pol0_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol0_table_path);
 	int nb_entries = this->parse_calibration_constants(pol0_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol0_table_path << "'");
@@ -87,7 +90,7 @@ namespace snemo {
 	  _pcd2cd_calo_energy_constants_.push_back({0,0});
 
 	// Fill calo pol1 energy constants
-	std::string pol1_table_path = fps.get<std::string>("calo_energy_method.database");
+	std::string pol1_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol1_table_path);
 	int nb_entries = this->parse_calibration_constants(pol1_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol1_table_path << "'");
@@ -105,26 +108,33 @@ namespace snemo {
       {
 	double default_threshold = 0;
 
-	if (fps.has_key("calo_energy_threshold.default"))
-	  default_threshold = fps.get<double>("calo_energy_threshold.default") * CLHEP::MeV;
+	if (fps.has_key("calo.energy.default_threshold"))
+	  default_threshold = fps.get<double>("calo.energy.default_threshold");
 
 	_pcd2cd_calo_energy_thresholds_.reserve(712);
 
 	for (int om=0; om<712; om++)
 	  _pcd2cd_calo_energy_thresholds_.push_back(default_threshold);
 
-	if (fps.has_key("calo_energy_threshold.database")) {
-	  std::string energy_threshold_table_path = fps.get<std::string>("calo_energy_threshold.database");
+	if (fps.has_key("calo.energy.threshold_database")) {
+	  std::string energy_threshold_table_path = fps.get<std::string>("calo.energy.threshold_database");
 	  datatools::fetch_path_with_env(energy_threshold_table_path);
 	  int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
 	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
+	  DT_LOG_NOTICE(get_logging_priority(), "| default threshold = " << default_threshold/CLHEP::keV << " keV");
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << energy_threshold_table_path << "'");
+	} else {
+	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
+	  DT_LOG_NOTICE(get_logging_priority(), "`- default threshold = " << default_threshold/CLHEP::MeV);
 	}
+
+	for (int om=0; om<712; om++)
+	  _pcd2cd_calo_energy_thresholds_[om] *= CLHEP::MeV;
       }
 
       // Configure calorimeter time calibration method
 
-      std::string calo_time_method_label = fps.get<std::string>("calo_time_method", "");
+      std::string calo_time_method_label = fps.get<std::string>("calo.time.method", "");
 
       if (calo_time_method_label == "t0_table") {
 	DT_LOG_NOTICE(get_logging_priority(), "calorimeter time calibration method = '" << calo_time_method_label << "'");
@@ -136,10 +146,13 @@ namespace snemo {
 	  _pcd2cd_calo_t0_constants_.push_back(0);
 
 	// Fill calo t0 constants
-	std::string t0_table_path = fps.get<std::string>("calo_time_method.database");
+	std::string t0_table_path = fps.get<std::string>("calo.time.database");
 	datatools::fetch_path_with_env(t0_table_path);
 	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_calo_t0_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+
+	for (int om=0; om<712; om++)
+	  _pcd2cd_calo_t0_constants_[om] *= CLHEP::nanosecond;
 
       } else if (!calo_time_method_label.empty()) {
 	DT_LOG_ERROR(get_logging_priority(), "wrong calorimeter time calibration method '" << calo_time_method_label << "'");
@@ -150,47 +163,57 @@ namespace snemo {
 	_pcd2cd_calo_time_method_ = CALO_TIME_NONE;
       }
 
+
+      // Initialise tracker t0 and ppt constants
+      _pcd2cd_tracker_anode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_top_cathode_t0_constants_.reserve(2034);
+      _pcd2cd_tracker_ppt_constants_.reserve(2034);
+
+      for (int gg=0; gg<2034; gg++) {
+	_pcd2cd_tracker_anode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_bottom_cathode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_top_cathode_t0_constants_.push_back(0);
+	_pcd2cd_tracker_ppt_constants_.push_back(0);
+      }
+
       // Configure tracker time calibration method
 
-      std::string tracker_time_method_label = fps.get<std::string>("tracker_time_method", "");
+      std::string tracker_time_method_label = fps.get<std::string>("tracker.time.method", "");
 
       if (tracker_time_method_label == "t0_table") {
 
 	DT_LOG_NOTICE(get_logging_priority(), "tracker time calibration method = '" << tracker_time_method_label << "'");
 	_pcd2cd_tracker_time_method_ = TRACKER_TIME_T0_TABLE;
 
-	// Initialise tracker t0 constants
-	_pcd2cd_tracker_anode_t0_constants_.reserve(2034);
-	_pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
-	_pcd2cd_tracker_top_cathode_t0_constants_.reserve(2034);
-	for (int gg=0; gg<2034; gg++) {
-	  _pcd2cd_tracker_anode_t0_constants_.push_back(0);
-	  _pcd2cd_tracker_bottom_cathode_t0_constants_.push_back(0);
-	  _pcd2cd_tracker_top_cathode_t0_constants_.push_back(0);
-	}
-
 	// Fill tracker anode t0 constants
-	if (fps.has_key("tracker_time_method.anode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.anode.database");
+	if (fps.has_key("tracker.time.anode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.anode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_anode_t0_constants_);
-	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
 	// Fill tracker bottom cathode t0 constants
-	if (fps.has_key("tracker_time_method.bottom_cathode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.bottom_cathode.database");
+	if (fps.has_key("tracker.time.bottom_cathode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.bottom_cathode_database");
+	  datatools::fetch_path_with_env(t0_table_path);
+	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
+	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	}
+
+	// Fill tracker top cathode t0 constants
+	if (fps.has_key("tracker.time.top_cathode_database")) {
+	  std::string t0_table_path = fps.get<std::string>("tracker.time.top_cathode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
 
-	// Fill tracker top cathode t0 constants
-	if (fps.has_key("tracker_time_method.top_cathode.database")) {
-	  std::string t0_table_path = fps.get<std::string>("tracker_time_method.top_cathode.database");
-	  datatools::fetch_path_with_env(t0_table_path);
-	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
-	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
+	for (int gg=0; gg<2034; gg++) {
+	  _pcd2cd_tracker_anode_t0_constants_[gg] *= CLHEP::nanosecond;
+	  _pcd2cd_tracker_bottom_cathode_t0_constants_[gg] *= CLHEP::nanosecond;
+	  _pcd2cd_tracker_bottom_cathode_t0_constants_[gg] *= CLHEP::nanosecond;
 	}
 
       } else if (!tracker_time_method_label.empty()) {
@@ -204,7 +227,7 @@ namespace snemo {
 
       // Configure tracker radius calibration method
 
-      std::string tracker_radius_method_label = fps.get<std::string>("tracker_radius_method", "");
+      std::string tracker_radius_method_label = fps.get<std::string>("tracker.radius.method", "");
 
       if (tracker_radius_method_label == "r=1cm") {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker radius calibration method = '" << tracker_radius_method_label << "'");
@@ -225,7 +248,7 @@ namespace snemo {
 
       // Configure tracker height calibration method
 
-      std::string tracker_height_method_label = fps.get<std::string>("tracker_height_method", "");
+      std::string tracker_height_method_label = fps.get<std::string>("tracker.height.method", "");
 
       if (tracker_height_method_label == "linear_r5r6") {
 	DT_LOG_NOTICE(get_logging_priority(), "tracker height calibration method = '" << tracker_height_method_label << "'");
@@ -244,15 +267,79 @@ namespace snemo {
 	_pcd2cd_tracker_height_method_ = TRACKER_HEIGHT_NONE;
       }
 
-      _pcd2cd_tracker_height_effective_ = fps.get<falaise::length_t>("tracker_height_effective", {1.38, "m"})();
-      _pcd2cd_tracker_height_offset_ = fps.get<falaise::length_t>("tracker_height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
-      _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker_height_deceleration", 0);
-      _pcd2cd_tracker_height_error_ = fps.get<falaise::length_t>("tracker_height_error", {1.0, "cm"})();
+      // Configure tracker height calibration parameters
+
+      _pcd2cd_tracker_height_effective_    = fps.get<falaise::length_t>("tracker.height.effective_height", {1.38, "m"})();
+      _pcd2cd_tracker_height_offset_       = fps.get<falaise::length_t>("tracker.height.height_offset", {0.0, "cm"})(); // -0.01*CLHEP::m);
+      _pcd2cd_tracker_height_error_        = fps.get<falaise::length_t>("tracker.height.max_error", {1.25, "cm"})();
+      _pcd2cd_tracker_height_deceleration_ = fps.get<double>("tracker.height.plasma_deceleration", 0);
+      _pcd2cd_tracker_height_skip_short_ppt_ = fps.get<bool>("tracker.height.skip_short_ppt", false);
+      _pcd2cd_tracker_height_short_ppt_cut_  = fps.get<double>("tracker.height.short_ppt_cut", 0.9);
+
+      DT_LOG_NOTICE(get_logging_priority(), "|- effective height = " << _pcd2cd_tracker_height_effective_/CLHEP::m << " m");
+      DT_LOG_NOTICE(get_logging_priority(), "|- height offset = " << _pcd2cd_tracker_height_offset_/CLHEP::cm << " cm");
+      DT_LOG_NOTICE(get_logging_priority(), "|- height error = " << _pcd2cd_tracker_height_error_/CLHEP::cm << " cm");
+      DT_LOG_NOTICE(get_logging_priority(), "|- plasma deceleration = " << _pcd2cd_tracker_height_deceleration_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- skip short ppt = " << _pcd2cd_tracker_height_skip_short_ppt_);
+      DT_LOG_NOTICE(get_logging_priority(), "|- short ppt cut = " << _pcd2cd_tracker_height_short_ppt_cut_);
+
+      _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker.height.use_single_cathode", false);
+      _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker.height.single_cathode.ppt_correction", 0.005);
+      _pcd2cd_tracker_height_single_cathode_error_ = fps.get<falaise::length_t>("tracker.height.single_cathode.error", {3.08, "cm"})();
+
+      DT_LOG_NOTICE(get_logging_priority(), "|- use single cathode = " << _pcd2cd_tracker_height_use_single_cathode_);
+
+      if (_pcd2cd_tracker_height_use_single_cathode_) {
+	DT_LOG_NOTICE(get_logging_priority(), "|  |- ppt correction = " << _pcd2cd_tracker_height_single_cathode_ppt_correction_);
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- cathode error = " << _pcd2cd_tracker_height_single_cathode_error_/CLHEP::cm << " cm");
+      }
+
+      if (fps.has_key("tracker.height.ppt_database")) {
+
+	std::string ppt_table_path = fps.get<std::string>("tracker.height.ppt_database");
+	datatools::fetch_path_with_env(ppt_table_path);
+	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
+	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
+
+	for (int gg=0; gg<2034; gg++)
+	  _pcd2cd_tracker_ppt_constants_[gg] *= CLHEP::microsecond;
+
+      }
+
+      // Configure output file
+      _output_filename_ = fps.get<std::string>("root_filename", "");
+
+      if (!_output_filename_.empty())
+	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
+      else gROOT->cd();
+
+      _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
+
+      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 2);
+      // _tracker_height_normalized_ppt_ = new TH2F ("tracker_height_normalized_ppt", ";Z norm;PPT (us)", 400, -1, 1, 200, 0, 2);
+      // _tracker_cell_anode_drift_time_ = new TH2F ("tracker_cell_anode_drift_time", ";Cell;Drift time (us)", 2034, 0, 2034, 200, 0, 2);
 
       this->base_module::_set_initialized(true);
     }
 
     void pcd2cd_module::reset() { this->base_module::_set_initialized(false); }
+
+    void pcd2cd_module::finalize() {
+
+      if (!_output_filename_.empty()) {
+	_output_file_->cd();
+
+	_calo_energy_spectrum_->Write("", TObject::kOverwrite);
+
+	_tracker_cell_normalized_ppt_->Write("", TObject::kOverwrite);
+	// _tracker_height_normalized_ppt_->Write("", TObject::kOverwrite);
+
+	_output_file_->Close();
+      }
+
+      this->base_module::_set_initialized(false);
+
+    }
 
     int pcd2cd_module::parse_calibration_constants(std::string database_path_, std::vector<double> & constants_) {
 
@@ -270,9 +357,9 @@ namespace snemo {
 
 	std::stringstream a_stream (a_line);
 
-	int an_om_num;
-	a_stream >> an_om_num;
-	a_stream >> constants_[an_om_num];
+	int a_geom_num;
+	a_stream >> a_geom_num;
+	a_stream >> constants_[a_geom_num];
 
 	nb_entries++;
       }
@@ -296,16 +383,16 @@ namespace snemo {
 
 	std::stringstream a_stream (a_line);
 
-	int an_om_num;
-	a_stream >> an_om_num;
+	int a_geom_num;
+	a_stream >> a_geom_num;
 
-	double an_om_constant;
-	std::vector<double> all_om_constant;
+	double a_geom_constant;
+	std::vector<double> all_geom_constant;
 
-	while (a_stream >> an_om_constant)
-	  all_om_constant.push_back(an_om_constant);
+	while (a_stream >> a_geom_constant)
+	  all_geom_constant.push_back(a_geom_constant);
 
-	constants_[an_om_num] = all_om_constant;
+	constants_[a_geom_num] = all_geom_constant;
 
 	nb_entries++;
       }
@@ -331,7 +418,6 @@ namespace snemo {
       // }
 
       // retrieve EH data as mutable (for timestamp update)
-      // snemo::datamodel::event_header & ehData = event.grab<snemo::datamodel::event_header>("EH");
       _eh_data_ = &(event.grab<snemo::datamodel::event_header>("EH"));
       _event_id_ = _eh_data_->get_id();
       DT_LOG_DEBUG(get_logging_priority(), "Processing pCD2CD on event #" << _event_id_);
@@ -461,32 +547,44 @@ namespace snemo {
 
       DT_LOG_TRACE(get_logging_priority(), "Calibrating calo hit from " << snemo::datamodel::om_label(pcd_calo_hit_.get_geom_id()));
 
-      cd_calo_hit_.set_geom_id(pcd_calo_hit_.get_geom_id());
-      // cd_calo_hit_.grab_geom_id().set_type(cd_calo_hit_.get_geom_id().get_type()+1);
+      const geomtools::geom_id & calo_geom_id = pcd_calo_hit_.get_geom_id();
+      const int calo_om_num = snemo::datamodel::om_num(calo_geom_id);
 
-      const int calo_om_num = snemo::datamodel::om_num(pcd_calo_hit_.get_geom_id());
+      cd_calo_hit_.set_geom_id(calo_geom_id);
+
+      // Energy calibration
+      double calo_energy = 0;
 
       if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL0_TABLE) {
 	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
-	cd_calo_hit_.set_energy(-pcd_calo_charge * pcd_calo_constant0);
+	calo_energy = -pcd_calo_charge * pcd_calo_constant0;
+	cd_calo_hit_.set_energy(calo_energy);
+	// cd_calo_hit_.set_sigma_energy();
 
       } else if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL1_TABLE) {
 	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
 	const double & pcd_calo_constant1 = _pcd2cd_calo_energy_constants_[calo_om_num][1] * CLHEP::MeV;
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
-	cd_calo_hit_.set_energy(-pcd_calo_charge * pcd_calo_constant0 + pcd_calo_constant1);
+	calo_energy = -pcd_calo_charge * pcd_calo_constant0 + pcd_calo_constant1;
+	cd_calo_hit_.set_energy(calo_energy);
+	// cd_calo_hit_.set_sigma_energy();
 
       } else if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_200MV) {
-	cd_calo_hit_.set_energy(pcd_calo_hit_.get_amplitude()*(CLHEP::MeV/(-200E-3*CLHEP::volt)));
-	// cd_calo_hit_.set_sigma_energy(pcd_calo_hit_.get_sigma_amplitude()*(CLHEP::MeV/(-200E-3*CLHEP::volt)));
+	calo_energy = pcd_calo_hit_.get_amplitude() * (CLHEP::MeV/(-200E-3*CLHEP::volt));
+	cd_calo_hit_.set_energy(calo_energy);
+	// cd_calo_hit_.set_sigma_energy();
       }
 
+      if (calo_energy != 0)
+	_calo_energy_spectrum_->Fill(calo_om_num, calo_energy);
+
+      // Time calibration
       if (_pcd2cd_calo_time_method_ == CALO_TIME_T0_TABLE) {
 	const double & pcd_calo_time = pcd_calo_hit_.get_time();
-	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num] * CLHEP::ns;
+	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num];
 	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
-	// cd_calo_hit_.set_sigma_time(0);
+	// cd_calo_hit_.set_sigma_time();
       }
 
       // Apply energy threshold
@@ -544,11 +642,11 @@ namespace snemo {
     void pcd2cd_module::calibrate_tracker_radius(const snemo::datamodel::precalibrated_tracker_hit & ,
 						 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
 
-      if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_FALAISE) {
+      // Radius calibration
 
+      if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_FALAISE) {
 	cd_tracker_hit_.set_r(1.1*CLHEP::cm);
 	cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
-
 
       } else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_MANU) {
 
@@ -563,10 +661,6 @@ namespace snemo {
 
 	else {
 
-	  if (time_usec > 30)
-	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " CD hit of " << cd_tracker_hit_.get_geom_id()
-			   << " with large anode drift time = " << time_usec << " us");
-
 	  const double r2 = _tracker_drift_model_manu_params_[3] * std::log(1 + time_usec * _tracker_drift_model_manu_params_[4]);
 
 	  if (time_usec > 10)
@@ -580,24 +674,22 @@ namespace snemo {
 	  if (radius > 0.5)
 	    cd_tracker_hit_.set_peripheral(true);
 
-	  // if (radius > sqrt(0.5))
-	  //   return false;
-
 	  cd_tracker_hit_.set_r(radius*4.4*CLHEP::cm);
 	  cd_tracker_hit_.set_sigma_r(1.1*CLHEP::mm);
-
 	}
 
-      }
+      } // else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_XXX) {
 
-      // } else if (_pcd2cd_tracker_radius_method_ == TRACKER_RADIUS_XXX) {
-      // 	// [...]
+	// [...]
+
       // }
 
     }
 
     void pcd2cd_module::calibrate_tracker_height(const snemo::datamodel::precalibrated_tracker_hit & pcd_tracker_hit_,
 						 snemo::datamodel::calibrated_tracker_hit & cd_tracker_hit_) {
+
+      const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
 
       const bool has_bottom_cathode = pcd_tracker_hit_.has_bottom_cathode_drift_time();
       const bool has_top_cathode = pcd_tracker_hit_.has_top_cathode_drift_time();
@@ -609,7 +701,6 @@ namespace snemo {
       if (has_bottom_cathode) {
 	// apply time calibration
 	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
-	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
 	  bottom_cathode_drift_time -= _pcd2cd_tracker_bottom_cathode_t0_constants_[tracker_gg_num];
 	  bottom_cathode_drift_time += _pcd2cd_tracker_anode_t0_constants_[tracker_gg_num];
 	}
@@ -622,7 +713,6 @@ namespace snemo {
       if (has_top_cathode) {
 	// apply time calibration
 	if (_pcd2cd_tracker_time_method_ == TRACKER_TIME_T0_TABLE) {
-	  const int tracker_gg_num = snemo::datamodel::gg_num(pcd_tracker_hit_.get_geom_id());
 	  top_cathode_drift_time -= _pcd2cd_tracker_top_cathode_t0_constants_[tracker_gg_num];
 	  top_cathode_drift_time += _pcd2cd_tracker_anode_t0_constants_[tracker_gg_num];
 	}
@@ -638,13 +728,101 @@ namespace snemo {
 	const double H = _pcd2cd_tracker_height_effective_;
 	const double H0 = _pcd2cd_tracker_height_offset_;
 
+	const double SIGMA0 = _pcd2cd_tracker_height_error_;
+	const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+	const double PPTCOR = _pcd2cd_tracker_height_single_cathode_ppt_correction_;
+
 	if (has_both_cathode) {
+
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
-	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
-	  const double z_abs = z_norm * H  + H0;
-	  cd_tracker_hit_.set_z(z_abs);
-	  // todo: error model
-	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
+	  const double & mean_plasma_propagation_time = _pcd2cd_tracker_ppt_constants_[tracker_gg_num];
+
+	  const double ppt_ratio = plasma_propagation_time / mean_plasma_propagation_time;
+
+	  bool do_z_calibration = true;
+
+	  if (mean_plasma_propagation_time != 0) {
+
+	    _tracker_cell_normalized_ppt_->Fill(tracker_gg_num, ppt_ratio);
+
+	    if (ppt_ratio < _pcd2cd_tracker_height_short_ppt_cut_) {
+
+	      if (_pcd2cd_tracker_height_skip_short_ppt_)
+		do_z_calibration = false;
+
+	      // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << plasma_propagation_time_ratio);
+	    }
+
+	  } else {
+
+	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+	    // do_z_calibration = false;
+
+	  }
+
+	  if (do_z_calibration) {
+	    const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
+	    const double z_abs = z_norm * H  + H0;
+	    cd_tracker_hit_.set_z(z_abs);
+
+	    const double z_error_theo = SIGMA0 * std::sqrt(1-std::pow(z_norm,2));
+	    const double z_error_limit = SIGMA0 / 3.0;
+	    const double z_error = std::max(z_error_theo, z_error_limit);
+	    cd_tracker_hit_.set_sigma_z(z_error);
+
+	    // _tracker_height_normalized_ppt_->Fill(z_norm, plasma_propagation_time_ratio);
+	  }
+
+	} else if (has_bottom_cathode && _pcd2cd_tracker_height_use_single_cathode_) {
+
+          const double & plasma_propagation_time = _pcd2cd_tracker_ppt_constants_[tracker_gg_num];
+
+	  if (plasma_propagation_time != 0) {
+
+	    double z_norm = (2*bottom_cathode_drift_time - plasma_propagation_time) / plasma_propagation_time;
+	    if (z_norm > 1) z_norm = 1;
+
+	    const double z_corr = PPTCOR * std::pow(1+z_norm,2);
+	    const double z_abs = (z_norm + z_corr) * H  + H0;
+	    cd_tracker_hit_.set_z(z_abs);
+
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1+z_norm,2) +
+						  std::pow(SIGMA1,2)*(1+z_norm));
+	    const double z_error_limit = SIGMA0 / 3.0;
+	    const double z_error = std::max(z_error_theo, z_error_limit);
+	    cd_tracker_hit_.set_sigma_z(z_error);
+
+	  } else {
+
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  }
+
+	} else if (has_top_cathode && _pcd2cd_tracker_height_use_single_cathode_) {
+
+          const double & plasma_propagation_time = _pcd2cd_tracker_ppt_constants_[tracker_gg_num];
+
+	  if (plasma_propagation_time != 0) {
+
+	    double z_norm = (plasma_propagation_time - 2*top_cathode_drift_time) / plasma_propagation_time;
+	    if (z_norm < -1) z_norm = -1;
+
+	    const double z_corr = PPTCOR * std::pow(1-z_norm,2);
+	    const double z_abs = (z_norm - z_corr) * H  + H0;
+	    cd_tracker_hit_.set_z(z_abs);
+
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1-z_norm,2) +
+						  std::pow(SIGMA1,2)*(1-z_norm));
+	    const double z_error_limit = SIGMA0 / 3.0;
+	    const double z_error = std::max(z_error_theo, z_error_limit);
+	    cd_tracker_hit_.set_sigma_z(z_error);
+
+	  } else {
+
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+
+	  }
+
 	}
 
       } else if (_pcd2cd_tracker_height_method_ == TRACKER_HEIGHT_NON_LINEAR_R5R6) {
@@ -653,14 +831,23 @@ namespace snemo {
 	const double H0 = _pcd2cd_tracker_height_offset_;
 	const double K = _pcd2cd_tracker_height_deceleration_;
 
+	const double SIGMA0 = _pcd2cd_tracker_height_error_;
+	// const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+
 	if (has_both_cathode) {
+
 	  const double plasma_propagation_time = bottom_cathode_drift_time + top_cathode_drift_time;
 	  const double z_norm = (bottom_cathode_drift_time-top_cathode_drift_time)/plasma_propagation_time;
 	  const double z_norm_non_linear = z_norm - K * H * z_norm * (1 - std::abs(z_norm));
 	  const double z_abs = z_norm_non_linear * H  + H0;
 	  cd_tracker_hit_.set_z(z_abs);
-	  // todo: error model
-	  cd_tracker_hit_.set_sigma_z(_pcd2cd_tracker_height_error_);
+
+	  const double z_err_theo = SIGMA0 * std::sqrt(1-std::pow(z_norm,2));
+	  const double z_err_limit = SIGMA0 / 3;
+	  const double z_err = std::max(z_err_theo, z_err_limit);
+	  cd_tracker_hit_.set_sigma_z(z_err);
+	  cd_tracker_hit_.set_sigma_z(SIGMA0);
+
 	}
 
       }
@@ -759,10 +946,9 @@ namespace snemo {
 	// if (_cluster_reference_time_[cluster_i] > 0)
 	//   tcd_cluster->get_auxiliaries()
 
-	tcd_clusters.push_back(tcd_cluster);
-
 	// copy/paste (pCD)_cluster auxiliaries into (CD)_cluster auxiliaries
 	tcd_cluster->grab_auxiliaries() = _cpcd_data_->clusters()[cluster_i]->get_properties();
+	tcd_clusters.push_back(tcd_cluster);
       }
 
       auto & tcd_unclustered_hits = tcd_solution->get_unclustered_hits();
@@ -796,6 +982,11 @@ namespace snemo {
 
 	// Append it to the collection:
 	_cd_data_->tracker_hits().push_back(cd_tracker_hit);
+      }
+
+      if (datatools::logger::is_debug(get_logging_priority())) {
+	for (size_t cluster_id=0; cluster_id<tcd_clusters.size(); cluster_id++)
+	  tcd_clusters.at(cluster_id)->print_tree();
       }
 
     }

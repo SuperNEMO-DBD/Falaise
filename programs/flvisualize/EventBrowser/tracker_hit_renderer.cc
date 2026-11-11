@@ -714,12 +714,24 @@ namespace snemo {
 	// update Z value in case of invalid value
 	if (!datatools::is_valid(updated_z)) {
 
+	  // move the circle/square to the top
+	  if (hit_.is_top_cathode_missing())
+	    updated_z = +1.675 * CLHEP::m;
+
+	  // move the circle/square to the bottom
+	  // if the top cathode is missing
+	  else if (hit_.is_bottom_cathode_missing())
+	    updated_z = -1.675 * CLHEP::m;
+
 	  // move the circle/square to the top+bottom
-	  if (hit_.are_both_cathodes_missing()) {
+	  // (when both cathode missing, or for any
+	  // other cases of invalid Z calibration)
+	  else {
 
 	    if (invalid_z)
 	      // draw the top case in this special call
 	      updated_z = +1.675 * CLHEP::m;
+
 	    else {
 	      // call the same function with the invalid_z option
 	      // to draw the circle/square at the top!
@@ -730,15 +742,6 @@ namespace snemo {
 	      updated_z = -1.675 * CLHEP::m;
 	    }
 	  }
-
-	  // move the circle/square to the top
-	  else if (hit_.is_top_cathode_missing())
-	    updated_z = +1.675 * CLHEP::m;
-
-	  // move the circle/square to the bottom
-	  // if the top cathode is missing
-	  else if (hit_.is_bottom_cathode_missing())
-	    updated_z = -1.675 * CLHEP::m;
 	}
 
         geomtools::vector_3d cell_module_pos(hit_.get_x(), hit_.get_y(), updated_z);
