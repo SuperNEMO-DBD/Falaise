@@ -801,6 +801,7 @@ namespace snemo {
 	  gStyle->SetOptTitle(1);
 
 	  TH1F pcd_waveform ("pcd_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
+	  TH1F pedestal_waveform ("pedestal_waveform", ";Time (ns);Amplitude (mV)", 1024, 0, 400);
 
 	  const std::string om_label = snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id());
 	  std::string histo_title = Form("Run %d // Event %d // OM %d (%s)",
@@ -811,23 +812,47 @@ namespace snemo {
 
 	  for (int sample=0; sample<nsamples; sample++) {
 	    double sample_amplitude = (a_udd_calo_waveform[sample] - 2048) * _calo_adc2volt_;
-	    sample_amplitude -= swmeas_baseline_value;
+	    // sample_amplitude -= swmeas_baseline_value;
 	    pcd_waveform.SetBinContent(1+sample, sample_amplitude / (1E-3 * CLHEP::volt));
+	  }
+
+	  // preparation of pedestal waveform if calo pedestal database
+	  // was given (but without "subtract_pedestal" option enabled)
+
+	  if (_calo_pedestal_.size() > 0) {
+
+	    const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
+
+	    for (int sample=0; sample<nsamples; sample++) {
+	      uint16_t cell_number = first_read_cell + sample;
+	      if (cell_number >= nsamples) cell_number -= nsamples;
+	      double sample_amplitude = (_calo_pedestal_[om_num][cell_number] - 2048) * _calo_adc2volt_;
+	      pedestal_waveform.SetBinContent(1+sample, sample_amplitude / (1E-3 * CLHEP::volt));
+	    }
 	  }
 
 	  TCanvas waveform_canvas ("waveform_canvas", "");
 	  pcd_waveform.Draw();
 
-	  // TLine baseline_line (0, 0, _calo_baseline_nsamples_*CALO_SAMPLING_PERIOD, 0);
-	  // baseline_line.SetLineColor(kCyan+1);
-	  // baseline_line.SetLineWidth(2);
-	  // baseline_line.Draw();
+	  pedestal_waveform.SetLineColor(kGreen+2);
+	  pedestal_waveform.Draw("same");
 
-	  TLine charge_line (charge_sample_start*CALO_SAMPLING_PERIOD, 0,
-			     charge_sample_stop*CALO_SAMPLING_PERIOD, 0);
-	  charge_line.SetLineColor(kRed);
-	  charge_line.SetLineWidth(2);
-	  charge_line.Draw();
+	  pcd_waveform.Draw("same");
+
+	  const double charge_line_min = (swmeas_baseline_value - 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
+	  const double charge_line_max = (swmeas_baseline_value + 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
+
+	  TLine charge_line_start (charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_min,
+				   charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_max);
+	  charge_line_start.SetLineColor(kRed);
+	  charge_line_start.SetLineWidth(2);
+	  charge_line_start.Draw();
+
+	  TLine charge_line_stop (charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_min,
+				   charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_max);
+	  charge_line_stop.SetLineColor(kRed);
+	  charge_line_stop.SetLineWidth(2);
+	  charge_line_stop.Draw();
 
 	  std::string waveform_filename;
 	  waveform_filename = _calo_save_waveform_path_;
@@ -1090,14 +1115,27 @@ namespace snemo {
 
 	  // TLine baseline_line (0, baseline_mv, _calo_baseline_nsamples_*CALO_SAMPLING_PERIOD, baseline_mv);
 	  // baseline_line.SetLineColor(kCyan+1);
-	  // baseline_line.SetLineWidth(2);
-	  // baseline_line.Draw();
+	  TLine baseline_line (0, baseline_mv, nsamples*CALO_SAMPLING_PERIOD, baseline_mv);
+	  baseline_line.SetLineColor(kBlack);
+	  baseline_line.SetLineWidth(2);
+	  baseline_line.Draw();
 
-	  TLine charge_line (charge_sample_start*CALO_SAMPLING_PERIOD, baseline_mv,
-			     charge_sample_stop*CALO_SAMPLING_PERIOD, baseline_mv);
-	  charge_line.SetLineColor(kRed);
-	  charge_line.SetLineWidth(2);
-	  charge_line.Draw();
+	  pcd_waveform.Draw("same");
+
+	  const double charge_line_min = (swmeas_baseline_value - 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
+	  const double charge_line_max = (swmeas_baseline_value + 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
+
+	  TLine charge_line_start (charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_min,
+				   charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_max);
+	  charge_line_start.SetLineColor(kRed);
+	  charge_line_start.SetLineWidth(2);
+	  charge_line_start.Draw();
+
+	  TLine charge_line_stop (charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_min,
+				   charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_max);
+	  charge_line_stop.SetLineColor(kRed);
+	  charge_line_stop.SetLineWidth(2);
+	  charge_line_stop.Draw();
 
 	  std::string waveform_filename;
 	  waveform_filename = _calo_save_waveform_path_;
