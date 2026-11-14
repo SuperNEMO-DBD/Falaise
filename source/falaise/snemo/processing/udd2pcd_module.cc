@@ -347,11 +347,12 @@ namespace snemo {
       int32_t derivative_peak_count = 0;
 
       const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+      const int16_t nsamples = udd_calo_waveform.size();
 
       int32_t derivative_waveform[1024];
       memset(derivative_waveform, 0, sizeof(derivative_waveform));
 
-      for (int16_t sample=0; sample<1024; sample++) {
+      for (int16_t sample=0; sample<nsamples; sample++) {
 
 	const int16_t & waveform_sample = udd_calo_waveform[sample];
 
@@ -370,7 +371,7 @@ namespace snemo {
         // compute the average derivative between samples [sample-16;sample-1] and [sample;sample+15]
 	// to covering a full 16 samples block and cancel the known SAMLONG cyclic noise
 
-	if ((sample < 16) || (sample >= (1024-16)))
+	if ((sample < 16) || (sample >= (nsamples-16)))
 	  continue; // skip sample [0, 15] and [1008,1023]
 
 	for (int sub_sample=1; sub_sample<=16; sub_sample++)
@@ -652,11 +653,15 @@ namespace snemo {
 	// Baseline
 	double swmeas_baseline_sum  = 0.0;
 	double swmeas_baseline_sum2 = 0.0;
+	double swmeas_baseline_min = INT16_MAX;
 
 	for (int sample=0; sample<_calo_baseline_nsamples_; sample++) {
 	  const int16_t & waveform_sample = a_udd_calo_waveform[sample];
 	  swmeas_baseline_sum += waveform_sample;
 	  swmeas_baseline_sum2 += waveform_sample*waveform_sample;
+
+	  if (waveform_sample < swmeas_baseline_min)
+	    swmeas_baseline_min = waveform_sample;
 	}
 
         const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
@@ -665,6 +670,10 @@ namespace snemo {
         const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT; // RMS-like error
         new_pcd_calo->set_baseline(swmeas_baseline_value);
         new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
+
+	// compute minimal amplitude within baseline range
+	swmeas_baseline_min -= swmeas_baseline_adc_mean;
+	swmeas_baseline_min *= CALO_ADC2VOLT;
 
         // Amplitude
         int16_t min_amplitude_adc = INT16_MAX;
@@ -789,6 +798,10 @@ namespace snemo {
 
 	// waveform flagging
 	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+
+	// additional waveform flagging (peak in baseline)
+	if (swmeas_baseline_min < (-5 * 1E-3 *CLHEP::volt))
+	  pcd_calo_hit_properties.store_flag("waveform.baseline_peak");
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
@@ -927,12 +940,14 @@ namespace snemo {
         const std::vector<int16_t> & a_udd_calo_waveform = a_udd_calo_hit->get_waveform();
         const int16_t nsamples = a_udd_calo_waveform.size();
 
+	// Waveform with pedestal subtracted (still in ADC unit)
 	std::vector<double> a_pcd_calo_waveform;
 	a_pcd_calo_waveform.reserve(nsamples);
 
 	// Baseline
 	double swmeas_baseline_sum  = 0.0;
 	double swmeas_baseline_sum2 = 0.0;
+	double swmeas_baseline_min = INT16_MAX;
 
 	const uint16_t first_read_cell = a_udd_calo_hit->get_fcr();
 
@@ -950,8 +965,10 @@ namespace snemo {
 	  if (sample < _calo_baseline_nsamples_) {
 	    swmeas_baseline_sum2 += waveform_sample*waveform_sample;
 	    swmeas_baseline_sum += waveform_sample;
-	  }
 
+	    if (waveform_sample < swmeas_baseline_min)
+	      swmeas_baseline_min = waveform_sample;
+	  }
 	}
 
 	const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
@@ -960,6 +977,10 @@ namespace snemo {
 	const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT;
         new_pcd_calo->set_baseline(swmeas_baseline_value);
         new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
+
+	// compute minimal amplitude within baseline range
+	swmeas_baseline_min -= swmeas_baseline_adc_mean;
+	swmeas_baseline_min *= CALO_ADC2VOLT;
 
         // Amplitude
         double min_amplitude_adc = (double)(INT16_MAX);
@@ -979,7 +1000,6 @@ namespace snemo {
 	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
-
 
         // Time CFD
         const double cfd_threshold_adc = swmeas_baseline_adc_mean + _calo_time_cfd_ratio_*swmeas_amplitude_adc;
@@ -1082,6 +1102,10 @@ namespace snemo {
 
 	// waveform flagging
 	calorimeter_waveform_flagging(*a_udd_calo_hit, *new_pcd_calo);
+
+	// additional waveform flagging (peak in baseline)
+	if (swmeas_baseline_min < (-5 * 1E-3 *CLHEP::volt))
+	  pcd_calo_hit_properties.store_flag("waveform.baseline_peak");
 
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
