@@ -279,6 +279,7 @@ namespace snemo {
 
       auto & eh_data = event.get<snemo::datamodel::event_header>(snedm::labels::event_header());
       _current_event_id_ = eh_data.get_id();
+
       DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << _current_event_id_);
 
       auto & udd_data = event.get<snemo::datamodel::unified_digitized_data>(_udd_input_tag_);
@@ -328,11 +329,9 @@ namespace snemo {
       bool overshoot_flag  = false;
       bool undershoot_flag = false;
 
-      // rebound = sample getting above (baseline+4096)/2
-      const double pcd_calo_baseline = pcd_calo_hit_.get_baseline() / _calo_adc2volt_;
-
-      const int16_t rebound_threshold = std::round(0.5 * (2048 + pcd_calo_baseline + 4096));
-      bool rebound_flag    = false;
+      // rebound = sample getting above 1V
+      const int16_t rebound_threshold = 3686;
+      bool rebound_flag = false;
 
       // pileup
       const int32_t pileup_derivative_threshold = -500;
