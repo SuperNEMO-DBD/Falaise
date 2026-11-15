@@ -106,10 +106,7 @@ namespace snemo {
 
       // Configure calorimeter energy threshold
       {
-	double default_threshold = 0;
-
-	if (fps.has_key("calo.energy.default_threshold"))
-	  default_threshold = fps.get<double>("calo.energy.default_threshold");
+	double default_threshold = fps.get<double>("calo.energy.default_threshold", 0);
 
 	_pcd2cd_calo_energy_thresholds_.reserve(712);
 

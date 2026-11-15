@@ -89,7 +89,7 @@ namespace snemo {
       // - charge measurement
       _calo_charge_nsamples_             = fps.get<int>("calo.swmeas.charge.nsamples", 992);
       _calo_charge_nsamples_before_peak_ = fps.get<int>("calo.swmeas.charge.nsamples_before_peak", 64);
-      _calo_charge_nsamples_before_cfd_  = fps.get<int>("calo.swmeas.charge.nsamples_before_cfd", 0); // 16
+      _calo_charge_nsamples_before_cfd_  = fps.get<int>("calo.swmeas.charge.nsamples_before_cfd", 0); // 24
       _calo_charge_sample_max_           = fps.get<int>("calo.swmeas.charge.sample_max", 984);
       // - time measurement
       _calo_time_cfd_ratio_ = fps.get<double>("calo.swmeas.time.cfd_ratio", 4./16.);
@@ -502,9 +502,7 @@ namespace snemo {
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
-      const double CALO_ADC2VOLT = _calo_adc2volt_;
-      const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
-      const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
+      static const double CALORIMETER_TDC_TICK = 6.25 * CLHEP::nanosecond;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -550,12 +548,12 @@ namespace snemo {
         const int32_t & fwmeas_rising_time_cfd_d = a_udd_calo_hit->get_fwmeas_rising_cell();
 
         // Convert/calibrate digital data
-        const double fwmeas_baseline  = (fwmeas_baseline_d/16.0) * CALO_ADC2VOLT;
-        const double fwmeas_amplitude = (fwmeas_amplitude_d/8.0) * CALO_ADC2VOLT;
-        const double fwmeas_charge    = fwmeas_charge_d * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
-        const double fwmeas_time_cfd  = (fwmeas_falling_time_cfd_d/256.0) * CALO_SAMPLING_PERIOD;
-        const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
-        const double fwmeas_time = time_tdc - CALO_POSTRIGGER_TIME + fwmeas_time_cfd;
+        const double fwmeas_baseline  = (fwmeas_baseline_d/16.0) * _calo_adc2volt_;
+        const double fwmeas_amplitude = (fwmeas_amplitude_d/8.0) * _calo_adc2volt_;
+        const double fwmeas_charge    = fwmeas_charge_d * _calo_adc2volt_ * _calo_sampling_period_;
+        const double fwmeas_time_cfd  = (fwmeas_falling_time_cfd_d/256.0) * _calo_sampling_period_;
+        const double time_tdc = a_udd_calo_hit->get_timestamp() * CALORIMETER_TDC_TICK;
+        const double fwmeas_time = time_tdc - _calo_postrigger_time_ + fwmeas_time_cfd;
 
         // Store pre-calibrated data into pCD hit
         new_pcd_calo->set_baseline(fwmeas_baseline);
@@ -570,7 +568,7 @@ namespace snemo {
         pcd_calo_hit_properties.store("time_cfd_ns", fwmeas_time_cfd/CLHEP::ns);
 
         // -> compute and store the pulse width
-        const double fwmeas_rising_time_cfd = (fwmeas_rising_time_cfd_d/256.0) * CALO_SAMPLING_PERIOD;
+        const double fwmeas_rising_time_cfd = (fwmeas_rising_time_cfd_d/256.0) * _calo_sampling_period_;
         const double fwmes_width = fwmeas_rising_time_cfd - fwmeas_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", fwmes_width/CLHEP::ns);
 
@@ -606,9 +604,7 @@ namespace snemo {
                                                        snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
-      const double CALO_ADC2VOLT = _calo_adc2volt_;
-      const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
-      const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
+      static const double CALORIMETER_TDC_TICK = 6.25 * CLHEP::nanosecond;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -666,14 +662,14 @@ namespace snemo {
 
         const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
         const double swmeas_baseline_adc_sigma2 = swmeas_baseline_sum2/_calo_baseline_nsamples_ - swmeas_baseline_adc_mean*swmeas_baseline_adc_mean;
-        const double swmeas_baseline_value = (swmeas_baseline_adc_mean - 2048) * CALO_ADC2VOLT;
-        const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT; // RMS-like error
+        const double swmeas_baseline_value = (swmeas_baseline_adc_mean - 2048) * _calo_adc2volt_;
+        const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * _calo_adc2volt_; // RMS-like error
         new_pcd_calo->set_baseline(swmeas_baseline_value);
         new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
 
 	// compute minimal amplitude within baseline range
 	swmeas_baseline_min -= swmeas_baseline_adc_mean;
-	swmeas_baseline_min *= CALO_ADC2VOLT;
+	swmeas_baseline_min *= _calo_adc2volt_;
 
         // Amplitude
         int16_t min_amplitude_adc = INT16_MAX;
@@ -691,8 +687,8 @@ namespace snemo {
 
 	const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
 	const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
-	const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
-	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
+	const double swmeas_amplitude = swmeas_amplitude_adc * _calo_adc2volt_;
+	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * _calo_adc2volt_;
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
 
@@ -720,9 +716,9 @@ namespace snemo {
           swmeas_falling_time_cfd_sample = (cfd_threshold_adc-pol1_b)/pol1_a;
         }
 
-        const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
-        const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * CALO_SAMPLING_PERIOD;
-        const double swmeas_falling_time = time_tdc - CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
+        const double time_tdc = a_udd_calo_hit->get_timestamp() * CALORIMETER_TDC_TICK;
+        const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * _calo_sampling_period_;
+        const double swmeas_falling_time = time_tdc - _calo_postrigger_time_ + swmeas_falling_time_cfd;
         new_pcd_calo->set_time(swmeas_falling_time);
 
         // Look for waveform sample crossing threshold (back side of the pulse)
@@ -776,9 +772,9 @@ namespace snemo {
 	// - baseline subtraction
         swmeas_charge_sum -= (charge_sample_stop-charge_sample_start)*swmeas_baseline_adc_mean;
 	// - store result
-        const double swmeas_charge = swmeas_charge_sum * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge = swmeas_charge_sum * _calo_adc2volt_ * _calo_sampling_period_;
         const double swmeas_charge_sigma2 = (0.5*0.5 + swmeas_baseline_adc_sigma2)*(charge_sample_stop-charge_sample_start);
-        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * _calo_adc2volt_ * _calo_sampling_period_;
         new_pcd_calo->set_charge(swmeas_charge);
         new_pcd_calo->set_sigma_charge(swmeas_charge_error);
 
@@ -789,7 +785,7 @@ namespace snemo {
         pcd_calo_hit_properties.store("time_cfd_ns", swmeas_falling_time_cfd/CLHEP::ns);
 
         // -> compute and store the pulse width
-        const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * CALO_SAMPLING_PERIOD;
+        const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * _calo_sampling_period_;
         const double swmes_pulse_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_pulse_width/CLHEP::ns);
 
@@ -854,14 +850,14 @@ namespace snemo {
 	  const double charge_line_min = (swmeas_baseline_value - 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
 	  const double charge_line_max = (swmeas_baseline_value + 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
 
-	  TLine charge_line_start (charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_min,
-				   charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_max);
+	  TLine charge_line_start (charge_sample_start*_calo_sampling_period_, charge_line_min,
+				   charge_sample_start*_calo_sampling_period_, charge_line_max);
 	  charge_line_start.SetLineColor(kRed);
 	  charge_line_start.SetLineWidth(2);
 	  charge_line_start.Draw();
 
-	  TLine charge_line_stop (charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_min,
-				   charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_max);
+	  TLine charge_line_stop (charge_sample_stop*_calo_sampling_period_, charge_line_min,
+				   charge_sample_stop*_calo_sampling_period_, charge_line_max);
 	  charge_line_stop.SetLineColor(kRed);
 	  charge_line_stop.SetLineWidth(2);
 	  charge_line_stop.Draw();
@@ -895,9 +891,7 @@ namespace snemo {
 							snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & pcd_calo_hits_) {
 
       // Constants
-      const double CALO_ADC2VOLT = _calo_adc2volt_;
-      const double CALO_SAMPLING_PERIOD = _calo_sampling_period_;
-      const double CALO_POSTRIGGER_TIME = _calo_postrigger_time_;
+      static const double CALORIMETER_TDC_TICK = 6.25 * CLHEP::nanosecond;
 
       // Retrieve UDD calorimeter digitized hits
       const auto& udd_calo_hits = udd_data_.get_calorimeter_hits();
@@ -973,14 +967,14 @@ namespace snemo {
 
 	const double swmeas_baseline_adc_mean = swmeas_baseline_sum/_calo_baseline_nsamples_;
 	const double swmeas_baseline_adc_sigma2 = swmeas_baseline_sum2/_calo_baseline_nsamples_ - swmeas_baseline_adc_mean*swmeas_baseline_adc_mean;
-	const double swmeas_baseline_value = swmeas_baseline_adc_mean * CALO_ADC2VOLT;
-	const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * CALO_ADC2VOLT;
+	const double swmeas_baseline_value = swmeas_baseline_adc_mean * _calo_adc2volt_;
+	const double swmeas_baseline_error = sqrt(swmeas_baseline_adc_sigma2) * _calo_adc2volt_;
         new_pcd_calo->set_baseline(swmeas_baseline_value);
         new_pcd_calo->set_sigma_baseline(swmeas_baseline_error);
 
 	// compute minimal amplitude within baseline range
 	swmeas_baseline_min -= swmeas_baseline_adc_mean;
-	swmeas_baseline_min *= CALO_ADC2VOLT;
+	swmeas_baseline_min *= _calo_adc2volt_;
 
         // Amplitude
         double min_amplitude_adc = (double)(INT16_MAX);
@@ -996,8 +990,8 @@ namespace snemo {
 
         const double swmeas_amplitude_adc = min_amplitude_adc - swmeas_baseline_adc_mean;
         const double swmeas_amplitude_adc_sigma2 = 0.5*0.5 + swmeas_baseline_adc_sigma2;
-        const double swmeas_amplitude = swmeas_amplitude_adc * CALO_ADC2VOLT;
-	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * CALO_ADC2VOLT;
+        const double swmeas_amplitude = swmeas_amplitude_adc * _calo_adc2volt_;
+	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * _calo_adc2volt_;
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
 
@@ -1024,9 +1018,9 @@ namespace snemo {
           swmeas_falling_time_cfd_sample = (cfd_threshold_adc-pol1_b)/pol1_a;
         }
 
-        const double time_tdc = a_udd_calo_hit->get_timestamp() * 6.25 * CLHEP::ns;
-        const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * CALO_SAMPLING_PERIOD;
-        const double swmeas_falling_time = time_tdc - CALO_POSTRIGGER_TIME + swmeas_falling_time_cfd;
+        const double time_tdc = a_udd_calo_hit->get_timestamp() * CALORIMETER_TDC_TICK;
+        const double swmeas_falling_time_cfd = swmeas_falling_time_cfd_sample * _calo_sampling_period_;
+        const double swmeas_falling_time = time_tdc - _calo_postrigger_time_ + swmeas_falling_time_cfd;
         new_pcd_calo->set_time(swmeas_falling_time);
 
         // Look for waveform sample crossing threshold (back side of the pulse)
@@ -1080,9 +1074,9 @@ namespace snemo {
 	// - baseline subtraction
         swmeas_charge_sum -= (charge_sample_stop-charge_sample_start)*swmeas_baseline_adc_mean;
 	// - store result
-        const double swmeas_charge = swmeas_charge_sum * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge = swmeas_charge_sum * _calo_adc2volt_ * _calo_sampling_period_;
         const double swmeas_charge_sigma2 = (0.5*0.5 + swmeas_baseline_adc_sigma2)*(charge_sample_stop-charge_sample_start);
-        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * CALO_ADC2VOLT * CALO_SAMPLING_PERIOD;
+        const double swmeas_charge_error = sqrt(swmeas_charge_sigma2) * _calo_adc2volt_ * _calo_sampling_period_;
         new_pcd_calo->set_charge(swmeas_charge);
         new_pcd_calo->set_sigma_charge(swmeas_charge_error);
 
@@ -1093,7 +1087,7 @@ namespace snemo {
         pcd_calo_hit_properties.store("time_cfd_ns", swmeas_falling_time_cfd/CLHEP::ns);
 
         // -> compute and store the pulse width
-        const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * CALO_SAMPLING_PERIOD;
+        const double swmeas_rising_time_cfd = swmeas_rising_time_cfd_sample * _calo_sampling_period_;
         const double swmes_pulse_width = swmeas_rising_time_cfd - swmeas_falling_time_cfd;
         pcd_calo_hit_properties.store("pulse_width_ns", swmes_pulse_width/CLHEP::ns);
 
@@ -1136,9 +1130,9 @@ namespace snemo {
 
 	  const double baseline_mv = swmeas_baseline_value/(1E-3 *CLHEP::volt);
 
-	  // TLine baseline_line (0, baseline_mv, _calo_baseline_nsamples_*CALO_SAMPLING_PERIOD, baseline_mv);
+	  // TLine baseline_line (0, baseline_mv, _calo_baseline_nsamples_*_calo_sampling_period_, baseline_mv);
 	  // baseline_line.SetLineColor(kCyan+1);
-	  TLine baseline_line (0, baseline_mv, nsamples*CALO_SAMPLING_PERIOD, baseline_mv);
+	  TLine baseline_line (0, baseline_mv, nsamples*_calo_sampling_period_, baseline_mv);
 	  baseline_line.SetLineColor(kBlack);
 	  baseline_line.SetLineWidth(2);
 	  baseline_line.Draw();
@@ -1148,14 +1142,14 @@ namespace snemo {
 	  const double charge_line_min = (swmeas_baseline_value - 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
 	  const double charge_line_max = (swmeas_baseline_value + 0.05*swmeas_amplitude) / (1E-3 * CLHEP::volt);
 
-	  TLine charge_line_start (charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_min,
-				   charge_sample_start*CALO_SAMPLING_PERIOD, charge_line_max);
+	  TLine charge_line_start (charge_sample_start*_calo_sampling_period_, charge_line_min,
+				   charge_sample_start*_calo_sampling_period_, charge_line_max);
 	  charge_line_start.SetLineColor(kRed);
 	  charge_line_start.SetLineWidth(2);
 	  charge_line_start.Draw();
 
-	  TLine charge_line_stop (charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_min,
-				   charge_sample_stop*CALO_SAMPLING_PERIOD, charge_line_max);
+	  TLine charge_line_stop (charge_sample_stop*_calo_sampling_period_, charge_line_min,
+				   charge_sample_stop*_calo_sampling_period_, charge_line_max);
 	  charge_line_stop.SetLineColor(kRed);
 	  charge_line_stop.SetLineWidth(2);
 	  charge_line_stop.Draw();
