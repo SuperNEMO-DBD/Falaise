@@ -94,19 +94,19 @@ namespace snemo {
       // - time measurement
       _calo_time_cfd_ratio_ = fps.get<double>("calo.swmeas.time.cfd_ratio", 4./16.);
 
-      if (!_calo_pedestal_database_.empty()) {
-	std::string calo_pedestal_database_path = fps.get<std::string>("calo.swmeas.baseline.pedestal_database");
-	datatools::fetch_path_with_env(calo_pedestal_database_path);
-	int nb_entries = this->parse_calo_pedestal_database(calo_pedestal_database_path);
-	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << calo_pedestal_database_path << "'");
-      }
-
       DT_LOG_NOTICE(get_logging_priority(), "calorimeter udd2pcd firmware measurement configuration:");
       DT_LOG_NOTICE(get_logging_priority(), "|- adc2volt          = " << _calo_adc2volt_/(1E-3*CLHEP::volt) << " mV/tick");
       DT_LOG_NOTICE(get_logging_priority(), "|- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
       DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_pedestal_);
+      if (!_calo_pedestal_database_.empty()) {
+	std::string calo_pedestal_database_path = fps.get<std::string>("calo.swmeas.baseline.pedestal_database");
+	datatools::fetch_path_with_env(calo_pedestal_database_path);
+	int nb_entries = this->parse_calo_pedestal_database(calo_pedestal_database_path);
+	DT_LOG_NOTICE(get_logging_priority(), "|- pedestal database = " << calo_pedestal_database_path);
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- " << nb_entries << " entries parsed");
+      }
       DT_LOG_NOTICE(get_logging_priority(), "|- charge nsamples     = " << _calo_charge_nsamples_);
       if (_calo_charge_nsamples_before_cfd_ == 0) {
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- samples pre-peak = " << _calo_charge_nsamples_before_peak_);
@@ -212,17 +212,10 @@ namespace snemo {
     // Parse sample pedestal database
     int udd2pcd_module::parse_calo_pedestal_database(std::string database_path_) {
 
-      DT_LOG_WARNING(get_logging_priority(), "database = " << database_path_);
-
       // initialize vector of vector storage
-
       _calo_pedestal_.reserve(712);
 
-      std::vector<double> dummy_pedestal;
-      dummy_pedestal.reserve(1024);
-
-      for (int sample=0; sample<1024; sample++)
-	dummy_pedestal.push_back(0);
+      std::vector<double> dummy_pedestal (1024, 0);
 
       for (int om=0; om<712; om++)
 	_calo_pedestal_.push_back(dummy_pedestal);

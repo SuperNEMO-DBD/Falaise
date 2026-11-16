@@ -160,7 +160,6 @@ namespace snemo {
 	_pcd2cd_calo_time_method_ = CALO_TIME_NONE;
       }
 
-
       // Initialise tracker t0 and ppt constants
       _pcd2cd_tracker_anode_t0_constants_.reserve(2034);
       _pcd2cd_tracker_bottom_cathode_t0_constants_.reserve(2034);
@@ -295,6 +294,7 @@ namespace snemo {
 
 	std::string ppt_table_path = fps.get<std::string>("tracker.height.ppt_database");
 	datatools::fetch_path_with_env(ppt_table_path);
+
 	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
 
@@ -312,7 +312,7 @@ namespace snemo {
 
       _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
 
-      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 2);
+      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;Normalized PPT", 2034, 0, 2034, 200, 0, 2);
       // _tracker_height_normalized_ppt_ = new TH2F ("tracker_height_normalized_ppt", ";Z norm;PPT (us)", 400, -1, 1, 200, 0, 2);
       // _tracker_cell_anode_drift_time_ = new TH2F ("tracker_cell_anode_drift_time", ";Cell;Drift time (us)", 2034, 0, 2034, 200, 0, 2);
 
@@ -747,12 +747,12 @@ namespace snemo {
 	      if (_pcd2cd_tracker_height_skip_short_ppt_)
 		do_z_calibration = false;
 
-	      // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << plasma_propagation_time_ratio);
+	      //  DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << ppt_ratio);
 	    }
 
 	  } else {
 
-	    DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
+	    // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " missing PPT for cell " << pcd_tracker_hit_.get_geom_id());
 	    // do_z_calibration = false;
 
 	  }
