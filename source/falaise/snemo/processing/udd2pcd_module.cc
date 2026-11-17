@@ -60,6 +60,10 @@ namespace snemo {
       _pcd_output_tag_ = fps.get<std::string>("pCD_label", snedm::labels::precalibrated_data());
       _cpcd_output_tag_ = fps.get<std::string>("CpCD_label", snedm::labels::clusterized_precalibrated_data());
 
+      // processing end time
+      _udd2pcd_end_time_ = fps.get<falaise::time_t>("udd2pcd_end_time", {0, "s"})();
+      _udd2pcd_end_time_reached_ = false;
+
       // Configure calorimeter pre-calibration method
 
       // general parameters
@@ -272,6 +276,21 @@ namespace snemo {
 
       auto & eh_data = event.get<snemo::datamodel::event_header>(snedm::labels::event_header());
       _current_event_id_ = eh_data.get_id();
+
+      // Stop processing if (an existing) end time is reached
+      if (_udd2pcd_end_time_ != 0) {
+
+	const double first_hit_time = eh_data.get_properties().fetch_real("first_hit_time");
+
+	if (first_hit_time > _udd2pcd_end_time_) {
+	  if (!_udd2pcd_end_time_reached_) {
+	    DT_LOG_WARNING(get_logging_priority(), "end time reached @" << _current_event_id_);
+	    _udd2pcd_end_time_reached_ = true;
+	  }
+	  return dpp::base_module::PROCESS_STOP;
+	}
+
+      }
 
       DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << _current_event_id_);
 

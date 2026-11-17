@@ -126,12 +126,15 @@ namespace snemo {
                                 snemo::datamodel::clusterized_precalibrated_data & cpcd_data_);
 
     private:
-      
+
+      // initialization members
+
       std::string _udd_input_tag_{};  //!< The label of the unified digitized bank
       std::string _pcd_output_tag_{}; //!< The label of the precalibrated data bank
       std::string _cpcd_output_tag_{}; //!< The label of the cluserized precalibrated data bank
 
-      datatools::event_id _current_event_id_;
+      double _udd2pcd_end_time_;
+      bool _udd2pcd_end_time_reached_;
 
       calorimeter_precalibration_algorithm _calo_pcd_algo_;
 
@@ -176,6 +179,10 @@ namespace snemo {
 
       TH2F* _tracker_cell_ppt_;
       TH2F* _deltat_cluster_calo_;
+
+      // processing members
+
+      datatools::event_id _current_event_id_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(udd2pcd_module)
