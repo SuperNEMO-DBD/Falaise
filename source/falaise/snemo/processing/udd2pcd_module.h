@@ -79,7 +79,10 @@ namespace snemo {
       void finalize();
 
       // Parse calorimeter sample pedestal database
-      int parse_calo_pedestal_database(std::string);
+      int parse_calo_pedestal_database(std::string database_path_);
+
+      // Parse calorimeter amplitude threshold database
+      int parse_calo_threshold_database(std::string database_path_);
 
       /// Data record processing
       virtual process_status process(datatools::things& event);
@@ -150,6 +153,12 @@ namespace snemo {
       std::string _calo_pedestal_database_;
       bool        _calo_subtract_pedestal_;
       std::vector<std::vector<double>> _calo_pedestal_;
+
+      bool _calo_apply_threshold_;
+      double _calo_default_threshold_;
+      std::string _calo_threshold_database_;
+      std::vector<double> _calo_threshold_;
+
       int16_t _calo_charge_nsamples_;
       int16_t _calo_charge_nsamples_before_peak_;
       int16_t _calo_charge_nsamples_before_cfd_;

@@ -90,6 +90,10 @@ namespace snemo {
       _calo_baseline_nsamples_ = fps.get<int>("calo.swmeas.baseline.nsamples", 16);
       _calo_subtract_pedestal_ = fps.get<bool>("calo.swmeas.baseline.subtract_pedestal", false);
       _calo_pedestal_database_ = fps.get<std::string>("calo.swmeas.baseline.pedestal_database", "");
+      // - amplitude threshold
+      _calo_apply_threshold_    = fps.get<bool>("calo.swmeas.amplitude.apply_threshold", false);
+      _calo_default_threshold_  = fps.get<double>("calo.swmeas.amplitude.default_threshold_mv", 0.0) * 1E-3 * CLHEP::volt;
+      _calo_threshold_database_ = fps.get<std::string>("calo.swmeas.amplitude.threshold_database", "");
       // - charge measurement
       _calo_charge_nsamples_             = fps.get<int>("calo.swmeas.charge.nsamples", 992);
       _calo_charge_nsamples_before_peak_ = fps.get<int>("calo.swmeas.charge.nsamples_before_peak", 64);
@@ -104,13 +108,29 @@ namespace snemo {
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
       DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_pedestal_);
+
       if (!_calo_pedestal_database_.empty()) {
-	std::string calo_pedestal_database_path = fps.get<std::string>("calo.swmeas.baseline.pedestal_database");
-	datatools::fetch_path_with_env(calo_pedestal_database_path);
-	int nb_entries = this->parse_calo_pedestal_database(calo_pedestal_database_path);
-	DT_LOG_NOTICE(get_logging_priority(), "|- pedestal database = " << calo_pedestal_database_path);
+	datatools::fetch_path_with_env(_calo_pedestal_database_);
+	int nb_entries = this->parse_calo_pedestal_database(_calo_pedestal_database_);
+	DT_LOG_NOTICE(get_logging_priority(), "|- pedestal database = " << _calo_pedestal_database_);
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- " << nb_entries << " entries parsed");
       }
+
+      if (_calo_apply_threshold_) {
+
+	// initialize vector storage
+	_calo_threshold_.reserve(712);
+	for (int om=0; om<712; om++)
+	  _calo_threshold_.push_back(_calo_default_threshold_);
+
+	if (!_calo_threshold_database_.empty()) {
+	  datatools::fetch_path_with_env(_calo_threshold_database_);
+	  int nb_entries = this->parse_calo_threshold_database(_calo_threshold_database_);
+	  DT_LOG_NOTICE(get_logging_priority(), "|- threshold database = " << _calo_threshold_database_);
+	  DT_LOG_NOTICE(get_logging_priority(), "|  `- " << nb_entries << " entries parsed");
+	}
+      }
+
       DT_LOG_NOTICE(get_logging_priority(), "|- charge nsamples     = " << _calo_charge_nsamples_);
       if (_calo_charge_nsamples_before_cfd_ == 0) {
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- samples pre-peak = " << _calo_charge_nsamples_before_peak_);
@@ -213,7 +233,7 @@ namespace snemo {
 
     }
 
-    // Parse sample pedestal database
+    // Parse calorimeter pedestal database
     int udd2pcd_module::parse_calo_pedestal_database(std::string database_path_) {
 
       // initialize vector of vector storage
@@ -254,6 +274,42 @@ namespace snemo {
 
 	if (nb_samples != 1024)
 	  DT_LOG_ERROR(get_logging_priority(), nb_samples << " pedestal samples (!= 1024) for OM " << an_om_num);
+
+	nb_entries++;
+
+      } // while getline
+
+      return nb_entries;
+    }
+
+    // Parse calorimeter amplitude threshold database
+    int udd2pcd_module::parse_calo_threshold_database(std::string database_path_) {
+
+      // parse database file
+
+      int nb_entries = 0;
+      std::ifstream database_file (database_path_.c_str());
+
+      std::string a_line;
+
+      while (std::getline(database_file, a_line)) {
+
+	// skip comment-like line
+	if (a_line[0] == '#')
+	  continue;
+
+	std::stringstream a_stream (a_line);
+
+	int an_om_num;
+	double a_threshold;
+	a_stream >> an_om_num >> a_threshold;
+
+	if ((an_om_num < 0) || (an_om_num >= 712)) {
+	  DT_LOG_WARNING(get_logging_priority(), "om_num out of range (" << an_om_num << ")");
+	  continue;
+	}
+
+	_calo_threshold_[an_om_num] = a_threshold * 1E-3 * CLHEP::volt;
 
 	nb_entries++;
 
@@ -552,6 +608,8 @@ namespace snemo {
 	  new_pcd_calo->grab_geom_id().set_type(1252);
 	}
 
+	const int om_num = snemo::datamodel::om_num(new_pcd_calo->get_geom_id());
+
         // Retrieve fwmeas digital data from UDD calorimeter hit
         const int16_t & fwmeas_baseline_d  = a_udd_calo_hit->get_fwmeas_baseline();
         const int16_t & fwmeas_amplitude_d = a_udd_calo_hit->get_fwmeas_peak_amplitude();
@@ -572,6 +630,10 @@ namespace snemo {
         new_pcd_calo->set_amplitude(fwmeas_amplitude);
         new_pcd_calo->set_charge(fwmeas_charge);
         new_pcd_calo->set_time(fwmeas_time);
+
+	// Apply amplitude threshold
+	if (_calo_apply_threshold_ && (fwmeas_amplitude > _calo_threshold_[om_num]))
+	  continue;
 
         // Additional information into pCD calo datatools::properties
         datatools::properties& pcd_calo_hit_properties = new_pcd_calo->grab_auxiliaries();
@@ -594,11 +656,9 @@ namespace snemo {
         // Append the new pCD calorimeter hit
         pcd_calo_hits_.push_back(new_pcd_calo);
 
-	const int om_num = snemo::datamodel::om_num(a_udd_calo_hit->get_geom_id());
-
 	// Fill ROOT histograms
 	_calo_baseline_mean_->Fill(om_num, fwmeas_baseline/(1E-3 *CLHEP::volt));
-	// _calo_baseline_rms_->Fill();
+	// _calo_baseline_rms_->Fill(); // not possible/available for fwmeas
 	_calo_amplitude_spectrum_->Fill(om_num, -fwmeas_amplitude/(1E-3 *CLHEP::volt));
 	_calo_charge_spectrum_->Fill(om_num, -fwmeas_charge/(1E-9*CLHEP::volt*CLHEP::second));
 
@@ -704,6 +764,9 @@ namespace snemo {
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
 
+	// Apply amplitude threshold
+	if (_calo_apply_threshold_ && (swmeas_amplitude > _calo_threshold_[om_num]))
+	  continue;
 
         // Time CFD
         const double cfd_threshold_adc = swmeas_baseline_adc_mean + _calo_time_cfd_ratio_*swmeas_amplitude_adc;
@@ -1006,6 +1069,10 @@ namespace snemo {
 	const double swmeas_amplitude_error = sqrt(swmeas_amplitude_adc_sigma2) * _calo_adc2volt_;
         new_pcd_calo->set_amplitude(swmeas_amplitude);
 	new_pcd_calo->set_sigma_amplitude(swmeas_amplitude_error);
+
+	// Apply amplitude threshold
+	if (_calo_apply_threshold_ && (swmeas_amplitude > _calo_threshold_[om_num]))
+	  continue;
 
         // Time CFD
         const double cfd_threshold_adc = swmeas_baseline_adc_mean + _calo_time_cfd_ratio_*swmeas_amplitude_adc;
