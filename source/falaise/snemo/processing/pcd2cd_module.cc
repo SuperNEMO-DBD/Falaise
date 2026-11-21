@@ -281,13 +281,15 @@ namespace snemo {
 
       _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker.height.use_single_cathode", false);
       _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker.height.single_cathode.ppt_correction", 0.005);
-      _pcd2cd_tracker_height_single_cathode_error_ = fps.get<falaise::length_t>("tracker.height.single_cathode.error", {3.08, "cm"})();
+      _pcd2cd_tracker_height_single_cathode_sigma_a_ = fps.get<falaise::length_t>("tracker.height.single_cathode.sigma_a", {2.6, "cm"})();
+      _pcd2cd_tracker_height_single_cathode_sigma_b_ = fps.get<falaise::length_t>("tracker.height.single_cathode.sigma_b", {2.8, "cm"})();
 
       DT_LOG_NOTICE(get_logging_priority(), "|- use single cathode = " << _pcd2cd_tracker_height_use_single_cathode_);
 
       if (_pcd2cd_tracker_height_use_single_cathode_) {
 	DT_LOG_NOTICE(get_logging_priority(), "|  |- ppt correction = " << _pcd2cd_tracker_height_single_cathode_ppt_correction_);
-	DT_LOG_NOTICE(get_logging_priority(), "|  `- cathode error = " << _pcd2cd_tracker_height_single_cathode_error_/CLHEP::cm << " cm");
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- sigma_a = " << _pcd2cd_tracker_height_single_cathode_sigma_a_/CLHEP::cm << " cm");
+	DT_LOG_NOTICE(get_logging_priority(), "|  `- sigma_b = " << _pcd2cd_tracker_height_single_cathode_sigma_b_/CLHEP::cm << " cm");
       }
 
       if (fps.has_key("tracker.height.ppt_database")) {
@@ -312,7 +314,7 @@ namespace snemo {
 
       _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
 
-      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;Normalized PPT", 2034, 0, 2034, 200, 0, 2);
+      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;Normalized PPT", 2034, 0, 2034, 500, 0, 2);
       // _tracker_height_normalized_ppt_ = new TH2F ("tracker_height_normalized_ppt", ";Z norm;PPT (us)", 400, -1, 1, 200, 0, 2);
       // _tracker_cell_anode_drift_time_ = new TH2F ("tracker_cell_anode_drift_time", ";Cell;Drift time (us)", 2034, 0, 2034, 200, 0, 2);
 
@@ -726,7 +728,8 @@ namespace snemo {
 	const double H0 = _pcd2cd_tracker_height_offset_;
 
 	const double SIGMA0 = _pcd2cd_tracker_height_error_;
-	const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+	const double SIGMA_A = _pcd2cd_tracker_height_single_cathode_sigma_a_;
+	const double SIGMA_B = _pcd2cd_tracker_height_single_cathode_sigma_b_;
 	const double PPTCOR = _pcd2cd_tracker_height_single_cathode_ppt_correction_;
 
 	if (has_both_cathode) {
@@ -747,7 +750,8 @@ namespace snemo {
 	      if (_pcd2cd_tracker_height_skip_short_ppt_)
 		do_z_calibration = false;
 
-	      //  DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << ppt_ratio);
+	      // DT_LOG_WARNING(get_logging_priority(), _event_id_ << " " << pcd_tracker_hit_.get_geom_id() << " with ppt ratio = " << ppt_ratio);
+
 	    }
 
 	  } else {
@@ -783,8 +787,8 @@ namespace snemo {
 	    const double z_abs = (z_norm + z_corr) * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
 
-	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1+z_norm,2) +
-						  std::pow(SIGMA1,2)*(1+z_norm));
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA_A,2)*std::pow(1+z_norm,2) +
+						  std::pow(SIGMA_B,2)*(1+z_norm));
 	    const double z_error_limit = SIGMA0 / 3.0;
 	    const double z_error = std::max(z_error_theo, z_error_limit);
 	    cd_tracker_hit_.set_sigma_z(z_error);
@@ -808,8 +812,8 @@ namespace snemo {
 	    const double z_abs = (z_norm - z_corr) * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
 
-	    const double z_error_theo = std::sqrt(std::pow(SIGMA0,2)*std::pow(1-z_norm,2) +
-						  std::pow(SIGMA1,2)*(1-z_norm));
+	    const double z_error_theo = std::sqrt(std::pow(SIGMA_A,2)*std::pow(1-z_norm,2) +
+						  std::pow(SIGMA_B,2)*(1-z_norm));
 	    const double z_error_limit = SIGMA0 / 3.0;
 	    const double z_error = std::max(z_error_theo, z_error_limit);
 	    cd_tracker_hit_.set_sigma_z(z_error);
@@ -829,7 +833,8 @@ namespace snemo {
 	const double K = _pcd2cd_tracker_height_deceleration_;
 
 	const double SIGMA0 = _pcd2cd_tracker_height_error_;
-	// const double SIGMA1 = _pcd2cd_tracker_height_single_cathode_error_;
+	// const double SIGMA_A = _pcd2cd_tracker_height_single_cathode_sigma_a_;
+	// const double SIGMA_B = _pcd2cd_tracker_height_single_cathode_sigma_b_;
 
 	if (has_both_cathode) {
 
