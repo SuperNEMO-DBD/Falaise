@@ -280,14 +280,12 @@ namespace snemo {
       DT_LOG_NOTICE(get_logging_priority(), "|- short ppt cut = " << _pcd2cd_tracker_height_short_ppt_cut_);
 
       _pcd2cd_tracker_height_use_single_cathode_ = fps.get<bool>("tracker.height.use_single_cathode", false);
-      _pcd2cd_tracker_height_single_cathode_ppt_correction_ = fps.get<double>("tracker.height.single_cathode.ppt_correction", 0.005);
       _pcd2cd_tracker_height_single_cathode_sigma_a_ = fps.get<falaise::length_t>("tracker.height.single_cathode.sigma_a", {2.6, "cm"})();
       _pcd2cd_tracker_height_single_cathode_sigma_b_ = fps.get<falaise::length_t>("tracker.height.single_cathode.sigma_b", {2.8, "cm"})();
 
       DT_LOG_NOTICE(get_logging_priority(), "|- use single cathode = " << _pcd2cd_tracker_height_use_single_cathode_);
 
       if (_pcd2cd_tracker_height_use_single_cathode_) {
-	DT_LOG_NOTICE(get_logging_priority(), "|  |- ppt correction = " << _pcd2cd_tracker_height_single_cathode_ppt_correction_);
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- sigma_a = " << _pcd2cd_tracker_height_single_cathode_sigma_a_/CLHEP::cm << " cm");
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- sigma_b = " << _pcd2cd_tracker_height_single_cathode_sigma_b_/CLHEP::cm << " cm");
       }
@@ -730,7 +728,6 @@ namespace snemo {
 	const double SIGMA0 = _pcd2cd_tracker_height_error_;
 	const double SIGMA_A = _pcd2cd_tracker_height_single_cathode_sigma_a_;
 	const double SIGMA_B = _pcd2cd_tracker_height_single_cathode_sigma_b_;
-	const double PPTCOR = _pcd2cd_tracker_height_single_cathode_ppt_correction_;
 
 	if (has_both_cathode) {
 
@@ -783,8 +780,7 @@ namespace snemo {
 	    double z_norm = (2*bottom_cathode_drift_time - plasma_propagation_time) / plasma_propagation_time;
 	    if (z_norm > 1) z_norm = 1;
 
-	    const double z_corr = PPTCOR * std::pow(1+z_norm,2);
-	    const double z_abs = (z_norm + z_corr) * H  + H0;
+	    const double z_abs = z_norm * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
 
 	    const double z_error_theo = std::sqrt(std::pow(SIGMA_A,2)*std::pow(1+z_norm,2) +
@@ -808,8 +804,7 @@ namespace snemo {
 	    double z_norm = (plasma_propagation_time - 2*top_cathode_drift_time) / plasma_propagation_time;
 	    if (z_norm < -1) z_norm = -1;
 
-	    const double z_corr = PPTCOR * std::pow(1-z_norm,2);
-	    const double z_abs = (z_norm - z_corr) * H  + H0;
+	    const double z_abs = z_norm * H  + H0;
 	    cd_tracker_hit_.set_z(z_abs);
 
 	    const double z_error_theo = std::sqrt(std::pow(SIGMA_A,2)*std::pow(1-z_norm,2) +

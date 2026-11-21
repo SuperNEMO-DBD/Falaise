@@ -175,7 +175,6 @@ namespace snemo {
       double _pcd2cd_tracker_height_short_ppt_cut_;
       double _pcd2cd_tracker_height_error_;
       bool   _pcd2cd_tracker_height_use_single_cathode_;
-      double _pcd2cd_tracker_height_single_cathode_ppt_correction_;
       double _pcd2cd_tracker_height_single_cathode_sigma_a_;
       double _pcd2cd_tracker_height_single_cathode_sigma_b_;
 
