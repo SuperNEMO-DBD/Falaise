@@ -301,14 +301,22 @@ namespace snemo {
 	for (int gg=0; gg<2034; gg++)
 	  _pcd2cd_tracker_ppt_constants_[gg] *= CLHEP::microsecond;
 
+      } else {
+
+	if (_pcd2cd_tracker_height_skip_short_ppt_ || _pcd2cd_tracker_height_use_single_cathode_) {
+	  DT_THROW(std::logic_error, "missing PPT database is missing as input configuration");
+	}
+
       }
 
       // Configure output file
       _output_filename_ = fps.get<std::string>("root_filename", "");
 
-      if (!_output_filename_.empty())
+      if (!_output_filename_.empty()) {
+	datatools::fetch_path_with_env(_output_filename_);
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
-      else gROOT->cd();
+	gROOT->cd();
+      }
 
       _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
 
