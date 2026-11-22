@@ -174,8 +174,7 @@ namespace snemo {
       if (!_output_filename_.empty()) {
 	datatools::fetch_path_with_env(_output_filename_);
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
-	gROOT->cd();
-      }
+      } else gROOT->cd();
 
       // pedestal histograms
       memset(_calo_pedestal_sum_, 0, sizeof(_calo_pedestal_sum_));

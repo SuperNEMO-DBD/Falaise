@@ -315,8 +315,7 @@ namespace snemo {
       if (!_output_filename_.empty()) {
 	datatools::fetch_path_with_env(_output_filename_);
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
-	gROOT->cd();
-      }
+      } else gROOT->cd();
 
       _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
 
