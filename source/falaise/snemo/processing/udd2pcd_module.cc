@@ -5,6 +5,7 @@
 #include "udd2pcd_module.h"
 
 // Standard library:
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -26,6 +27,7 @@
 #include "TH2F.h"
 #include "TROOT.h"
 #include "TStyle.h"
+#include "TTree.h"
 
 // This project:
 #include <falaise/property_set.h>
@@ -90,7 +92,7 @@ namespace snemo {
       _calo_subtract_pedestal_ = fps.get<bool>("calo.swmeas.baseline.subtract_pedestal", false);
       _calo_pedestal_database_ = fps.get<std::string>("calo.swmeas.baseline.pedestal_database", "");
       _calo_baseline_nsamples_ = fps.get<int>("calo.swmeas.baseline.nsamples", 16);
-      _calo_baseline_rms_max_  = fps.get<double>("calo.swmeas.baseline.rms_max_mv", 1.5) * 1E-3 * CLHEP::volt;;
+      _calo_baseline_rms_max_  = fps.get<double>("calo.swmeas.baseline.rms_max_mv", 1.5) * 1E-3 * CLHEP::volt;
       // - amplitude threshold
       _calo_apply_threshold_    = fps.get<bool>("calo.swmeas.amplitude.apply_threshold", false);
       _calo_default_threshold_  = fps.get<double>("calo.swmeas.amplitude.default_threshold_mv", 0.0) * 1E-3 * CLHEP::volt;
@@ -108,11 +110,12 @@ namespace snemo {
       DT_LOG_NOTICE(get_logging_priority(), "|- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
-      DT_LOG_NOTICE(get_logging_priority(), "|  |- RMS max        = " << _calo_baseline_rms_max_);
+      DT_LOG_NOTICE(get_logging_priority(), "|  |- RMS max        = " << _calo_baseline_rms_max_/(1E-3*CLHEP::volt) << " mV");
       DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_pedestal_);
 
       if (!_calo_pedestal_database_.empty()) {
 	datatools::fetch_path_with_env(_calo_pedestal_database_);
+	DT_THROW_IF(not std::filesystem::exists(_calo_pedestal_database_), std::runtime_error, "no pedestal database file " << _calo_pedestal_database_);
 	int nb_entries = this->parse_calo_pedestal_database(_calo_pedestal_database_);
 	DT_LOG_NOTICE(get_logging_priority(), "|- pedestal database = " << _calo_pedestal_database_);
 	DT_LOG_NOTICE(get_logging_priority(), "|  `- " << nb_entries << " entries parsed");
@@ -127,6 +130,7 @@ namespace snemo {
 
 	if (!_calo_threshold_database_.empty()) {
 	  datatools::fetch_path_with_env(_calo_threshold_database_);
+	  DT_THROW_IF(not std::filesystem::exists(_calo_threshold_database_), std::runtime_error, "no threshold database file " << _calo_pedestal_database_);
 	  int nb_entries = this->parse_calo_threshold_database(_calo_threshold_database_);
 	  DT_LOG_NOTICE(get_logging_priority(), "|- threshold database = " << _calo_threshold_database_);
 	  DT_LOG_NOTICE(get_logging_priority(), "|  `- " << nb_entries << " entries parsed");
@@ -178,6 +182,9 @@ namespace snemo {
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
       } else gROOT->cd();
 
+      _udd_tree_ = new TTree ("udd_tree", "");
+      memset(&_udd_tree_data_, 0, sizeof(_udd_tree_data_));
+
       // pedestal histograms
       memset(_calo_pedestal_sum_, 0, sizeof(_calo_pedestal_sum_));
       memset(_calo_pedestal_stats_, 0, sizeof(_calo_pedestal_stats_));
@@ -209,7 +216,24 @@ namespace snemo {
     void udd2pcd_module::finalize() {
 
       if (!_output_filename_.empty()) {
+
 	_output_file_->cd();
+
+	_udd_tree_data_.run_number = _current_event_id_.get_run_number();
+	_udd_tree_data_.run_duration = _udd_tree_data_.last_event_time - _udd_tree_data_.first_event_time;
+	_udd_tree_data_.run_duration /= CLHEP::second;
+
+	_udd_tree_->Branch("run_number",   &_udd_tree_data_.run_number);
+	_udd_tree_->Branch("nb_events",    &_udd_tree_data_.nb_events);
+	_udd_tree_->Branch("nb_triggers",  &_udd_tree_data_.nb_triggers);
+	_udd_tree_->Branch("nb_caraco",    &_udd_tree_data_.nb_caraco);
+	_udd_tree_->Branch("nb_ape",       &_udd_tree_data_.nb_ape);
+	_udd_tree_->Branch("nb_dave",      &_udd_tree_data_.nb_dave);
+	_udd_tree_->Branch("run_start",    &_udd_tree_data_.run_start);
+	_udd_tree_->Branch("run_duration", &_udd_tree_data_.run_duration);
+	_udd_tree_->Fill();
+
+	_udd_tree_->Write("", TObject::kOverwrite);
 
 	for (int om=0; om<712; om++)
 	  for (int cell=0; cell<1024; cell++)
@@ -336,20 +360,43 @@ namespace snemo {
       auto & eh_data = event.get<snemo::datamodel::event_header>(snedm::labels::event_header());
       _current_event_id_ = eh_data.get_id();
 
+      const datatools::properties & eh_properties = eh_data.get_properties();
+      const double first_hit_time = eh_properties.fetch_real("first_hit_time");
+
       // Stop processing if (an existing) end time is reached
-      if (_udd2pcd_end_time_ != 0) {
+      if ((_udd2pcd_end_time_ != 0) && (first_hit_time > _udd2pcd_end_time_)) {
 
-	const double first_hit_time = eh_data.get_properties().fetch_real("first_hit_time");
-
-	if (first_hit_time > _udd2pcd_end_time_) {
-	  if (!_udd2pcd_end_time_reached_) {
-	    DT_LOG_WARNING(get_logging_priority(), "end time reached @" << _current_event_id_);
-	    _udd2pcd_end_time_reached_ = true;
-	  }
-	  return dpp::base_module::PROCESS_STOP;
+	if (!_udd2pcd_end_time_reached_) {
+	  DT_LOG_WARNING(get_logging_priority(), "end time reached @" << _current_event_id_);
+	  _udd2pcd_end_time_reached_ = true;
 	}
 
+	return dpp::base_module::PROCESS_STOP;
       }
+
+      _udd_tree_data_.nb_events++;
+
+      // store first/last event time
+      if (_udd_tree_data_.first_event_time == 0) {
+	_udd_tree_data_.run_start = (eh_data.get_timestamp().to_real() - first_hit_time) / CLHEP::second;
+	_udd_tree_data_.first_event_time = first_hit_time;
+      }
+
+      _udd_tree_data_.last_event_time = first_hit_time;
+
+      // retrieve trigger decisions
+      datatools::properties::data::vint trigger_decisions;
+      eh_properties.fetch("trigger_decision", trigger_decisions);
+
+      _udd_tree_data_.nb_triggers += trigger_decisions.size();
+
+      for (const int32_t & trigger_decision : trigger_decisions) {
+	if (trigger_decision == 3) _udd_tree_data_.nb_caraco++;
+	else if (trigger_decision == 5) _udd_tree_data_.nb_ape++;
+	else if (trigger_decision == 6) _udd_tree_data_.nb_dave++;
+      }
+
+      //
 
       DT_LOG_DEBUG(get_logging_priority(), "Processing UDD2pCD on event #" << _current_event_id_);
 
@@ -780,7 +827,7 @@ namespace snemo {
 	// Check for pre-peak using RMS threshold
 	if (swmeas_baseline_error > _calo_baseline_rms_max_) {
 
-	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
+	  // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
 
 	} else {
 

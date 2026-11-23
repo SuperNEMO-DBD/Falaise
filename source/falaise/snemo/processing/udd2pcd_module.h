@@ -37,6 +37,7 @@
 #include <falaise/snemo/services/service_handle.h>
 
 class TFile;
+class TTree;
 class TH2F;
 
 namespace geomtools {
@@ -46,6 +47,19 @@ namespace geomtools {
 namespace snemo {
 
   namespace processing {
+
+    struct udd_tree_data {
+      int run_number;
+      int nb_events;
+      int nb_triggers;
+      int nb_caraco;
+      int nb_ape;
+      int nb_dave;
+      double run_start;
+      double run_duration;
+      double first_event_time;
+      double last_event_time;
+    };
 
     /// \brief A processing module for UDD data to pCD tracker and calorimeter hits
     class udd2pcd_module : public dpp::base_module
@@ -179,6 +193,9 @@ namespace snemo {
 
       std::string _output_filename_;
       TFile* _output_file_;
+
+      TTree*        _udd_tree_;
+      udd_tree_data _udd_tree_data_;
 
       double _calo_pedestal_sum_[712][1024];
       double _calo_pedestal_stats_[712][1024];
