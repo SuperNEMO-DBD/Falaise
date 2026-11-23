@@ -5,6 +5,7 @@
 #include "pcd2cd_module.h"
 
 // Standard library:
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -77,6 +78,7 @@ namespace snemo {
 	// Fill calo pol0 energy constants
 	std::string pol0_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol0_table_path);
+	DT_THROW_IF(not std::filesystem::exists(pol0_table_path), std::runtime_error, "no pol0 database file " << pol0_table_path);
 	int nb_entries = this->parse_calibration_constants(pol0_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol0_table_path << "'");
 
@@ -92,6 +94,7 @@ namespace snemo {
 	// Fill calo pol1 energy constants
 	std::string pol1_table_path = fps.get<std::string>("calo.energy.database");
 	datatools::fetch_path_with_env(pol1_table_path);
+	DT_THROW_IF(not std::filesystem::exists(pol1_table_path), std::runtime_error, "no pol1 database file " << pol1_table_path);
 	int nb_entries = this->parse_calibration_constants(pol1_table_path, _pcd2cd_calo_energy_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << pol1_table_path << "'");
 
@@ -116,6 +119,7 @@ namespace snemo {
 	if (fps.has_key("calo.energy.threshold_database")) {
 	  std::string energy_threshold_table_path = fps.get<std::string>("calo.energy.threshold_database");
 	  datatools::fetch_path_with_env(energy_threshold_table_path);
+	  DT_THROW_IF(not std::filesystem::exists(energy_threshold_table_path), std::runtime_error, "no energy threshold database file " << energy_threshold_table_path);
 	  int nb_entries = this->parse_calibration_constants(energy_threshold_table_path, _pcd2cd_calo_energy_thresholds_);
 	  DT_LOG_NOTICE(get_logging_priority(), "calorimeter energy thresholds");
 	  DT_LOG_NOTICE(get_logging_priority(), "| default threshold = " << default_threshold/CLHEP::keV << " keV");
@@ -145,6 +149,7 @@ namespace snemo {
 	// Fill calo t0 constants
 	std::string t0_table_path = fps.get<std::string>("calo.time.database");
 	datatools::fetch_path_with_env(t0_table_path);
+	DT_THROW_IF(not std::filesystem::exists(t0_table_path), std::runtime_error, "no t0 database file " << t0_table_path);
 	int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_calo_t0_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 
@@ -186,6 +191,7 @@ namespace snemo {
 	if (fps.has_key("tracker.time.anode_database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker.time.anode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
+	  DT_THROW_IF(not std::filesystem::exists(t0_table_path), std::runtime_error, "no t0 database file " << t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_anode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
@@ -194,6 +200,7 @@ namespace snemo {
 	if (fps.has_key("tracker.time.bottom_cathode_database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker.time.bottom_cathode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
+	  DT_THROW_IF(not std::filesystem::exists(t0_table_path), std::runtime_error, "no t0 database file " << t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "|- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
@@ -202,6 +209,7 @@ namespace snemo {
 	if (fps.has_key("tracker.time.top_cathode_database")) {
 	  std::string t0_table_path = fps.get<std::string>("tracker.time.top_cathode_database");
 	  datatools::fetch_path_with_env(t0_table_path);
+	  DT_THROW_IF(not std::filesystem::exists(t0_table_path), std::runtime_error, "no t0 database file " << t0_table_path);
 	  int nb_entries = this->parse_calibration_constants(t0_table_path, _pcd2cd_tracker_bottom_cathode_t0_constants_);
 	  DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << t0_table_path << "'");
 	}
@@ -294,6 +302,7 @@ namespace snemo {
 
 	std::string ppt_table_path = fps.get<std::string>("tracker.height.ppt_database");
 	datatools::fetch_path_with_env(ppt_table_path);
+	DT_THROW_IF(not std::filesystem::exists(ppt_table_path), std::runtime_error, "no PPT database file " << ppt_table_path);
 
 	int nb_entries = this->parse_calibration_constants(ppt_table_path, _pcd2cd_tracker_ppt_constants_);
 	DT_LOG_NOTICE(get_logging_priority(), "`- " << nb_entries << " entries parsed in '" << ppt_table_path << "'");
