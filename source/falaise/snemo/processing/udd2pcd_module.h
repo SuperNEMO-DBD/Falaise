@@ -99,6 +99,9 @@ namespace snemo {
       /// Precalibrate calorimeter pedestal
       void precalibrate_calo_pedestal(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
 
+      /// Precalibrate calorimeter pedestal (using first samples)
+      void precalibrate_calo_pedestal_with_first_samples(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_);
+
       /// Precalibrate calorimeter hits with fwmeas
       void precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
                                          snemo::datamodel::PreCalibratedCalorimeterHitHdlCollection & calo_hits_);
@@ -149,10 +152,11 @@ namespace snemo {
       std::string _calo_save_waveform_path_;
       std::string _calo_save_waveform_format_;
 
-      int         _calo_baseline_nsamples_;
       std::string _calo_pedestal_database_;
       bool        _calo_subtract_pedestal_;
       std::vector<std::vector<double>> _calo_pedestal_;
+      int         _calo_baseline_nsamples_;
+      double      _calo_baseline_rms_max_;
 
       bool _calo_apply_threshold_;
       double _calo_default_threshold_;

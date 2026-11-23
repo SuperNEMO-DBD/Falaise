@@ -87,9 +87,10 @@ namespace snemo {
 
       // swmeas parameters configuration
       // - baseline measurement
-      _calo_baseline_nsamples_ = fps.get<int>("calo.swmeas.baseline.nsamples", 16);
       _calo_subtract_pedestal_ = fps.get<bool>("calo.swmeas.baseline.subtract_pedestal", false);
       _calo_pedestal_database_ = fps.get<std::string>("calo.swmeas.baseline.pedestal_database", "");
+      _calo_baseline_nsamples_ = fps.get<int>("calo.swmeas.baseline.nsamples", 16);
+      _calo_baseline_rms_max_  = fps.get<double>("calo.swmeas.baseline.rms_max_mv", 1.5) * 1E-3 * CLHEP::volt;;
       // - amplitude threshold
       _calo_apply_threshold_    = fps.get<bool>("calo.swmeas.amplitude.apply_threshold", false);
       _calo_default_threshold_  = fps.get<double>("calo.swmeas.amplitude.default_threshold_mv", 0.0) * 1E-3 * CLHEP::volt;
@@ -107,6 +108,7 @@ namespace snemo {
       DT_LOG_NOTICE(get_logging_priority(), "|- sampling period   = " << _calo_sampling_period_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- post trigger time = " << _calo_postrigger_time_/(CLHEP::nanosecond) << " ns");
       DT_LOG_NOTICE(get_logging_priority(), "|- baseline nsamples = " << _calo_baseline_nsamples_);
+      DT_LOG_NOTICE(get_logging_priority(), "|  |- RMS max        = " << _calo_baseline_rms_max_);
       DT_LOG_NOTICE(get_logging_priority(), "|  `- subt. pedestal = " << _calo_subtract_pedestal_);
 
       if (!_calo_pedestal_database_.empty()) {
@@ -565,6 +567,28 @@ namespace snemo {
 
     }
 
+    /// Precalibrate calorimeter pedestal (using first samples)
+    void udd2pcd_module::precalibrate_calo_pedestal_with_first_samples(const snemo::datamodel::calorimeter_digitized_hit & udd_calo_hit_) {
+
+      const int om_num = snemo::datamodel::om_num(udd_calo_hit_.get_geom_id());
+
+      const uint16_t first_read_cell = udd_calo_hit_.get_fcr();
+
+      const std::vector<int16_t> & udd_calo_waveform = udd_calo_hit_.get_waveform();
+      const int16_t nsamples =udd_calo_waveform.size();
+
+      for (int16_t sample=0; sample<_calo_baseline_nsamples_; sample++) {
+
+	uint16_t cell_number = first_read_cell + sample;
+	if (cell_number >= nsamples) cell_number -= nsamples;
+
+	_calo_pedestal_sum_[om_num][cell_number] += udd_calo_waveform[sample];
+	_calo_pedestal_stats_[om_num][cell_number]++;
+
+      }
+
+    }
+
 
     // Precalibrate calorimeter hits from UDD informations:
     void udd2pcd_module::precalibrate_calo_hits_fwmeas(const snemo::datamodel::unified_digitized_data & udd_data_,
@@ -581,13 +605,20 @@ namespace snemo {
 
 	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
 
-	// Use this hit for pedestal computation
-	if (empty_waveform)
+	if (empty_waveform) {
+
+	  // Use this hit for pedestal computation
 	  this->precalibrate_calo_pedestal(a_udd_calo_hit.get());
 
-	// Discard empty waveforms
-	if (empty_waveform && _calo_discard_empty_waveform_)
-	  continue;
+	  // Discard empty waveforms if option is enabled
+	  if (_calo_discard_empty_waveform_)
+	    continue;
+
+	} else {
+
+	  // // Use this hit for pedestal computation using first samples
+	  // this->precalibrate_calo_pedestal_with_first_samples(a_udd_calo_hit.get());
+	}
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
@@ -687,13 +718,15 @@ namespace snemo {
 
 	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
 
-	// Use this hit for pedestal computation
-	if (empty_waveform)
+	if (empty_waveform) {
+
+	  // Use this hit for pedestal computation
 	  this->precalibrate_calo_pedestal(a_udd_calo_hit.get());
 
-	// Discard empty waveforms
-	if (empty_waveform && _calo_discard_empty_waveform_)
-	  continue;
+	  // Discard empty waveforms if option is enabled
+	  if (_calo_discard_empty_waveform_)
+	    continue;
+	}
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
@@ -744,7 +777,19 @@ namespace snemo {
 	swmeas_baseline_min -= swmeas_baseline_adc_mean;
 	swmeas_baseline_min *= _calo_adc2volt_;
 
-        // Amplitude
+	// Check for pre-peak using RMS threshold
+	if (swmeas_baseline_error > _calo_baseline_rms_max_) {
+
+	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
+
+	} else {
+
+	  // No pre-peak => use also this hit for pedestal computation (using first samples)
+	  if (!empty_waveform) // at this stage empty waveform were already used for that!
+	    this->precalibrate_calo_pedestal_with_first_samples(a_udd_calo_hit.get());
+	}
+
+	// Amplitude
         int16_t min_amplitude_adc = INT16_MAX;
         int16_t min_amplitude_sample = 0;
 
@@ -977,13 +1022,15 @@ namespace snemo {
 
 	const bool empty_waveform = not this->calo_hit_has_signal(a_udd_calo_hit.get());
 
-	// Use this hit for pedestal computation
-	if (empty_waveform)
+	if (empty_waveform) {
+
+	  // Use this hit for pedestal computation
 	  this->precalibrate_calo_pedestal(a_udd_calo_hit.get());
 
-	// Discard empty waveforms
-	if (empty_waveform && _calo_discard_empty_waveform_)
-	  continue;
+	  // Discard empty waveforms if option is enabled
+	  if (_calo_discard_empty_waveform_)
+	    continue;
+	}
 
         DT_LOG_TRACE(get_logging_priority(), "Precalibrating calo hit from " << snemo::datamodel::om_label(a_udd_calo_hit->get_geom_id()));
 
@@ -1051,6 +1098,18 @@ namespace snemo {
 	// compute minimal amplitude within baseline range
 	swmeas_baseline_min -= swmeas_baseline_adc_mean;
 	swmeas_baseline_min *= _calo_adc2volt_;
+
+	// Check for pre-peak using RMS threshold
+	if (swmeas_baseline_error > _calo_baseline_rms_max_) {
+
+	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
+
+	} else {
+
+	  // No pre-peak => use also this hit for pedestal computation (using first samples)
+	  if (!empty_waveform) // at this stage empty waveform were already used for that!
+	    this->precalibrate_calo_pedestal_with_first_samples(a_udd_calo_hit.get());
+	}
 
         // Amplitude
         double min_amplitude_adc = (double)(INT16_MAX);
