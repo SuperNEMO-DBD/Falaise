@@ -570,6 +570,10 @@ namespace snemo {
       double calo_energy = 0;
 
       if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL0_TABLE) {
+
+	if (_pcd2cd_calo_energy_constants_[calo_om_num][0] == 0)
+	  return false;
+
 	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
 	calo_energy = -pcd_calo_charge * pcd_calo_constant0;
@@ -577,6 +581,10 @@ namespace snemo {
 	// cd_calo_hit_.set_sigma_energy();
 
       } else if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_POL1_TABLE) {
+
+	if (_pcd2cd_calo_energy_constants_[calo_om_num][0] == 0)
+	  return false;
+
 	const double & pcd_calo_constant0 = _pcd2cd_calo_energy_constants_[calo_om_num][0] * CLHEP::MeV/(1E-9*CLHEP::volt*CLHEP::second);
 	const double & pcd_calo_constant1 = _pcd2cd_calo_energy_constants_[calo_om_num][1] * CLHEP::MeV;
 	const double & pcd_calo_charge = pcd_calo_hit_.get_charge();
@@ -585,25 +593,31 @@ namespace snemo {
 	// cd_calo_hit_.set_sigma_energy();
 
       } else if (_pcd2cd_calo_energy_method_ == CALO_ENERGY_200MV) {
+
 	calo_energy = pcd_calo_hit_.get_amplitude() * (CLHEP::MeV/(-200E-3*CLHEP::volt));
 	cd_calo_hit_.set_energy(calo_energy);
 	// cd_calo_hit_.set_sigma_energy();
       }
 
-      if (calo_energy != 0)
-	_calo_energy_spectrum_->Fill(calo_om_num, calo_energy);
 
       // Time calibration
       if (_pcd2cd_calo_time_method_ == CALO_TIME_T0_TABLE) {
+
+	if (_pcd2cd_calo_t0_constants_[calo_om_num] == 0)
+	  return false;
+
 	const double & pcd_calo_time = pcd_calo_hit_.get_time();
 	const double & calo_t0 = _pcd2cd_calo_t0_constants_[calo_om_num];
 	cd_calo_hit_.set_time(pcd_calo_time - calo_t0 - _event_time_);
 	// cd_calo_hit_.set_sigma_time();
+
       }
 
       // Apply energy threshold
-      if (cd_calo_hit_.get_energy() <= _pcd2cd_calo_energy_thresholds_[calo_om_num])
+      if (calo_energy <= _pcd2cd_calo_energy_thresholds_[calo_om_num])
 	return false;
+
+      _calo_energy_spectrum_->Fill(calo_om_num, calo_energy/CLHEP::MeV);
 
       // Retrieve pCD and CD auxiliaries
       const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit_.get_auxiliaries();
