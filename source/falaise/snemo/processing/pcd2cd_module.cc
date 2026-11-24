@@ -326,11 +326,11 @@ namespace snemo {
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
       } else gROOT->cd();
 
-      _calo_energy_spectrum_ = new TH2F ("calo_energy_spectrum", ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
+      _calo_energy_spectrum_ = new TH2F (Form("calo_energy_spectrum_%s",_cd_output_tag_.c_str()), ";OM;Energy (MeV)", 712, 0, 712, 1000, 0, 5);
 
-      _tracker_cell_normalized_ppt_ = new TH2F ("tracker_cell_normalized_ppt", ";Cell;Normalized PPT", 2034, 0, 2034, 500, 0, 2);
-      // _tracker_height_normalized_ppt_ = new TH2F ("tracker_height_normalized_ppt", ";Z norm;PPT (us)", 400, -1, 1, 200, 0, 2);
-      // _tracker_cell_anode_drift_time_ = new TH2F ("tracker_cell_anode_drift_time", ";Cell;Drift time (us)", 2034, 0, 2034, 200, 0, 2);
+      _tracker_cell_normalized_ppt_ = new TH2F (Form("tracker_cell_normalized_ppt_%s",_cd_output_tag_.c_str()), ";Cell;Normalized PPT", 2034, 0, 2034, 500, 0, 2);
+      // _tracker_height_normalized_ppt_ = new TH2F (Form("tracker_height_normalized_ppt_%s",_cd_output_tag_.c_str()), ";Z norm;PPT (us)", 400, -1, 1, 200, 0, 2);
+      _tracker_cell_anode_drift_time_ = new TH2F (Form("tracker_cell_anode_drift_time_%s",_cd_output_tag_.c_str()), ";Cell;Anode drift time (us)", 2034, 0, 2034, 1000, -0.25, 6);
 
       this->base_module::_set_initialized(true);
     }
@@ -342,10 +342,11 @@ namespace snemo {
       if (!_output_filename_.empty()) {
 	_output_file_->cd();
 
-	_calo_energy_spectrum_->Write("", TObject::kOverwrite);
+	_calo_energy_spectrum_->Write("calo_energy_spectrum", TObject::kOverwrite);
 
-	_tracker_cell_normalized_ppt_->Write("", TObject::kOverwrite);
-	// _tracker_height_normalized_ppt_->Write("", TObject::kOverwrite);
+	_tracker_cell_normalized_ppt_->Write("tracker_cell_normalized_ppt", TObject::kOverwrite);
+	// _tracker_height_normalized_ppt_->Write("tracker_height_normalized_ppt", TObject::kOverwrite);
+	_tracker_cell_anode_drift_time_->Write("tracker_cell_anode_drift_time", TObject::kOverwrite);
 
 	_output_file_->Close();
       }
@@ -900,7 +901,9 @@ namespace snemo {
 
       if (reference_time > 0) {
 	// store calibrated anode time and calibrate radius
-	cd_tracker_hit_.set_anode_time(anode_time - reference_time);
+	const double anode_drift_time = anode_time - reference_time;
+	cd_tracker_hit_.set_anode_time(anode_drift_time);
+	_tracker_cell_anode_drift_time_->Fill(tracker_gg_num, anode_drift_time/CLHEP::microsecond);
 	this->calibrate_tracker_radius(pcd_tracker_hit_, cd_tracker_hit_);
       } else {
 	// if no (calorimeter) reference time are found, consider the cell

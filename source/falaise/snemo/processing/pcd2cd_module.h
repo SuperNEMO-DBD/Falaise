@@ -187,6 +187,7 @@ namespace snemo {
 
       TH2F* _tracker_cell_normalized_ppt_;
       // TH2F* _tracker_height_normalized_ppt_;
+      TH2F* _tracker_cell_anode_drift_time_;
 
       // Macro to automate the registration of the module :
       DPP_MODULE_REGISTRATION_INTERFACE(pcd2cd_module)

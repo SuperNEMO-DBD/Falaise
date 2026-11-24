@@ -169,9 +169,14 @@ namespace snemo {
         DT_LOG_NOTICE(get_logging_priority(), "|- cluster calo deltat min  = " << _tracker_basic_cluster_deltat_calo_min_/CLHEP::microsecond << " us");
         DT_LOG_NOTICE(get_logging_priority(), "`- cluster calo deltat max  = " << _tracker_basic_cluster_deltat_calo_max_/CLHEP::microsecond << " us");
 
-      } else {
-        DT_LOG_ERROR(get_logging_priority(), "udd2pcd tracker method '" << udd2pcd_tracker_method_label << "' not recognised");
+      } else if (udd2pcd_tracker_method_label == "none") {
         _tracker_pcd_algo_ = ALGO_TRACKER_NONE;
+
+      } else {
+
+	DT_LOG_ERROR(get_logging_priority(), "udd2pcd tracker method '" << udd2pcd_tracker_method_label << "' not recognised");
+	_tracker_pcd_algo_ = ALGO_TRACKER_NONE;
+
       }
 
       // Configure output file
@@ -182,31 +187,31 @@ namespace snemo {
 	_output_file_ = new TFile (_output_filename_.c_str(), "RECREATE");
       } else gROOT->cd();
 
-      _udd_tree_ = new TTree ("udd_tree", "");
+      _udd_tree_ = new TTree (Form("udd_tree_%s",_pcd_output_tag_.c_str()), "");
       memset(&_udd_tree_data_, 0, sizeof(_udd_tree_data_));
 
       // pedestal histograms
       memset(_calo_pedestal_sum_, 0, sizeof(_calo_pedestal_sum_));
       memset(_calo_pedestal_stats_, 0, sizeof(_calo_pedestal_stats_));
-      _calo_pedestal_histo_ = new TH2F ("calo_pedestal_histo", ";OM;", 712, 0, 712, 1024, 0, 1024);
-      _calo_pedestal_stats_histo_ = new TH2F ("calo_pedestal_stats_histo", ";OM;", 712, 0, 712, 1024, 0, 1024);
+      _calo_pedestal_histo_ = new TH2F (Form("calo_pedestal_histo_%s",_pcd_output_tag_.c_str()), ";OM;", 712, 0, 712, 1024, 0, 1024);
+      _calo_pedestal_stats_histo_ = new TH2F (Form("calo_pedestal_stats_histo_%s",_pcd_output_tag_.c_str()), ";OM;", 712, 0, 712, 1024, 0, 1024);
 
       // baseline histograms
       if (_calo_subtract_pedestal_)
-	_calo_baseline_mean_ = new TH2F ("calo_baseline_mean", ";OM;Baseline MEAN (mV)", 712, 0, 712, 500, -10, 10);
+	_calo_baseline_mean_ = new TH2F (Form("calo_baseline_mean_%s",_pcd_output_tag_.c_str()), ";OM;Baseline MEAN (mV)", 712, 0, 712, 500, -10, 10);
       else
-	_calo_baseline_mean_ = new TH2F ("calo_baseline_mean", ";OM;Baseline MEAN (mV)", 712, 0, 712, 500, 890, 940);
-      _calo_baseline_rms_ = new TH2F ("calo_baseline_rms", ";OM;Baseline RMS (mV)", 712, 0, 712, 1000, 0, 10);
+	_calo_baseline_mean_ = new TH2F (Form("calo_baseline_mean_%s",_pcd_output_tag_.c_str()), ";OM;Baseline MEAN (mV)", 712, 0, 712, 500, 890, 940);
+      _calo_baseline_rms_ = new TH2F (Form("calo_baseline_rms_%s",_pcd_output_tag_.c_str()), ";OM;Baseline RMS (mV)", 712, 0, 712, 1000, 0, 10);
 
       // amplitude/charge spectra (range is corresponding to about 0-5 MeV)
-      _calo_amplitude_spectrum_ = new TH2F ("calo_amplitude_spectrum", ";OM;Amplitude (mV)", 712, 0, 712, 1000, 0, 1000);
-      _calo_charge_spectrum_ = new TH2F ("calo_charge_spectrum", ";OM;Charge (nV.s)", 712, 0, 712, 1000, 0, 25);
+      _calo_amplitude_spectrum_ = new TH2F (Form("calo_amplitude_spectrum_%s",_pcd_output_tag_.c_str()), ";OM;Amplitude (mV)", 712, 0, 712, 1000, 0, 1000);
+      _calo_charge_spectrum_ = new TH2F (Form("calo_charge_spectrum_%s",_pcd_output_tag_.c_str()), ";OM;Charge (nV.s)", 712, 0, 712, 1000, 0, 25);
 
       // tracker histogram
-      _tracker_cell_ppt_ = new TH2F ("tracker_cell_ppt", ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 100);
+      _tracker_cell_ppt_ = new TH2F (Form("tracker_cell_ppt_%s",_pcd_output_tag_.c_str()), ";Cell;PPT (us)", 2034, 0, 2034, 200, 0, 100);
 
       // cluster histogram
-      _deltat_cluster_calo_ = new TH2F ("deltat_cluster_calo", ";#DeltaT cluster-calo (us);", 712, 0, 712, 1500, -10, 10);
+      _deltat_cluster_calo_ = new TH2F (Form("deltat_cluster_calo_%s",_pcd_output_tag_.c_str()), ";#DeltaT cluster-calo (us);", 712, 0, 712, 1500, -10, 10);
 
       this->base_module::_set_initialized(true);
     }
@@ -233,7 +238,7 @@ namespace snemo {
 	_udd_tree_->Branch("run_duration", &_udd_tree_data_.run_duration);
 	_udd_tree_->Fill();
 
-	_udd_tree_->Write("", TObject::kOverwrite);
+	_udd_tree_->Write("udd_tree", TObject::kOverwrite);
 
 	for (int om=0; om<712; om++)
 	  for (int cell=0; cell<1024; cell++)
@@ -242,16 +247,16 @@ namespace snemo {
 	      _calo_pedestal_stats_histo_->SetBinContent(1+om, 1+cell, _calo_pedestal_stats_[om][cell]);
 	    }
 
-	_calo_pedestal_histo_->Write("", TObject::kOverwrite);
-	_calo_pedestal_stats_histo_->Write("", TObject::kOverwrite);
+	_calo_pedestal_histo_->Write("calo_pedestal_histo", TObject::kOverwrite);
+	_calo_pedestal_stats_histo_->Write("calo_pedestal_stats_histo", TObject::kOverwrite);
 
-	_calo_baseline_mean_->Write("", TObject::kOverwrite);
-	_calo_baseline_rms_->Write("", TObject::kOverwrite);
-	_calo_amplitude_spectrum_->Write("", TObject::kOverwrite);
-	_calo_charge_spectrum_->Write("", TObject::kOverwrite);
+	_calo_baseline_mean_->Write("calo_baseline_mean", TObject::kOverwrite);
+	_calo_baseline_rms_->Write("calo_baseline_rms", TObject::kOverwrite);
+	_calo_amplitude_spectrum_->Write("calo_amplitude_spectrum", TObject::kOverwrite);
+	_calo_charge_spectrum_->Write("calo_charge_spectrum", TObject::kOverwrite);
 
-	_deltat_cluster_calo_->Write("", TObject::kOverwrite);
-	_tracker_cell_ppt_->Write("", TObject::kOverwrite);
+	_deltat_cluster_calo_->Write("deltat_cluster_calo", TObject::kOverwrite);
+	_tracker_cell_ppt_->Write("tracker_cell_ppt", TObject::kOverwrite);
 
 	_output_file_->Close();
       }
@@ -1149,7 +1154,7 @@ namespace snemo {
 	// Check for pre-peak using RMS threshold
 	if (swmeas_baseline_error > _calo_baseline_rms_max_) {
 
-	  DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
+	  // DT_LOG_WARNING(get_logging_priority(), _current_event_id_ << " pre-peak detected for " << new_pcd_calo->get_geom_id());
 
 	} else {
 
