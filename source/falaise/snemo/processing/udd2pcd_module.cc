@@ -213,6 +213,13 @@ namespace snemo {
       // cluster histogram
       _deltat_cluster_calo_ = new TH2F (Form("deltat_cluster_calo_%s",_pcd_output_tag_.c_str()), ";#DeltaT cluster-calo (us);", 712, 0, 712, 1500, -10, 10);
 
+      // clusterized hits
+      _clusterized_calo_hits_ = new TH1F (Form("clusterized_calo_hits_%s",_pcd_output_tag_.c_str()), ";OM;", 712, 0, 712);
+      _clusterized_anode_hits_ = new TH1F (Form("clusterized_anode_hits_%s",_pcd_output_tag_.c_str()), ";Cell;Anode hits", 2034, 0, 2034);
+      _clusterized_both_cathode_hits_ = new TH1F (Form("clusterized_both_cathode_hits_%s",_pcd_output_tag_.c_str()), ";Cell;Both cathode hits", 2034, 0, 2034);
+      _clusterized_bottom_cathode_hits_ = new TH1F (Form("clusterized_bottom_cathode_hits_%s",_pcd_output_tag_.c_str()), ";Cell;Bottom cathode hits", 2034, 0, 2034);
+      _clusterized_top_cathode_hits_ = new TH1F (Form("clusterized_top_cathode_hits_%s",_pcd_output_tag_.c_str()), ";Cell;Top cathode hits", 2034, 0, 2034);
+
       this->base_module::_set_initialized(true);
     }
 
@@ -255,8 +262,14 @@ namespace snemo {
 	_calo_amplitude_spectrum_->Write("calo_amplitude_spectrum", TObject::kOverwrite);
 	_calo_charge_spectrum_->Write("calo_charge_spectrum", TObject::kOverwrite);
 
-	_deltat_cluster_calo_->Write("deltat_cluster_calo", TObject::kOverwrite);
 	_tracker_cell_ppt_->Write("tracker_cell_ppt", TObject::kOverwrite);
+
+	_deltat_cluster_calo_->Write("deltat_cluster_calo", TObject::kOverwrite);
+	_clusterized_calo_hits_->Write("clusterized_calo_hits", TObject::kOverwrite);
+	_clusterized_anode_hits_->Write("clusterized_anode_hits", TObject::kOverwrite);
+	_clusterized_both_cathode_hits_->Write("clusterized_both_cathode_hits", TObject::kOverwrite);
+	_clusterized_bottom_cathode_hits_->Write("clusterized_bottom_cathode_hits", TObject::kOverwrite);
+	_clusterized_top_cathode_hits_->Write("clusterized_top_cathode_hits", TObject::kOverwrite);
 
 	_output_file_->Close();
       }
@@ -1996,7 +2009,9 @@ namespace snemo {
       // store unclusterized calorimeter hits
       for (auto & pcd_calo_hit : pcd_calo_hits) {
 	const datatools::properties & pcd_calo_hit_properties = pcd_calo_hit->get_auxiliaries();
-	if (not pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	if (pcd_calo_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	  _clusterized_calo_hits_->Fill(snemo::datamodel::om_num(pcd_calo_hit->get_geom_id()));
+	} else {
 	  cpcd_data_.unclusterized_calorimeter_hits().push_back(pcd_calo_hit);
 	}
       }
@@ -2004,7 +2019,21 @@ namespace snemo {
       // store unclusterized tracker hits
       for (auto & pcd_tracker_hit : pcd_tracker_hits) {
 	const datatools::properties & pcd_tracker_hit_properties = pcd_tracker_hit->get_auxiliaries();
-	if (not pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	if (pcd_tracker_hit_properties.has_flag("pCD.clustering.clusterized")) {
+	  const int gg_num = snemo::datamodel::gg_num(pcd_tracker_hit->get_geom_id());
+	  _clusterized_anode_hits_->Fill(gg_num);
+	  const bool has_bottom_cathode = pcd_tracker_hit->has_bottom_cathode_drift_time();
+	  const bool has_top_cathode = pcd_tracker_hit->has_top_cathode_drift_time();
+	  if (has_bottom_cathode && has_top_cathode) {
+	    _clusterized_bottom_cathode_hits_->Fill(gg_num);
+	    _clusterized_top_cathode_hits_->Fill(gg_num);
+	    _clusterized_both_cathode_hits_->Fill(gg_num);
+	  } else if (has_bottom_cathode) {
+	    _clusterized_bottom_cathode_hits_->Fill(gg_num);
+	  } else if (has_top_cathode) {
+	    _clusterized_top_cathode_hits_->Fill(gg_num);
+	  } // else has no cathode !
+	} else {
 	  cpcd_data_.unclusterized_tracker_hits().push_back(pcd_tracker_hit);
 	}
       }

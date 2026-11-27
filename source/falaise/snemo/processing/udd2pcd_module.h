@@ -38,6 +38,7 @@
 
 class TFile;
 class TTree;
+class TH1F;
 class TH2F;
 
 namespace geomtools {
@@ -208,8 +209,13 @@ namespace snemo {
       TH2F *_calo_charge_spectrum_;
 
       TH2F* _tracker_cell_ppt_;
-      TH2F* _deltat_cluster_calo_;
 
+      TH2F* _deltat_cluster_calo_;
+      TH1F* _clusterized_calo_hits_;
+      TH1F* _clusterized_anode_hits_;
+      TH1F* _clusterized_both_cathode_hits_;
+      TH1F* _clusterized_bottom_cathode_hits_;
+      TH1F* _clusterized_top_cathode_hits_;
       // processing members
 
       datatools::event_id _current_event_id_;
